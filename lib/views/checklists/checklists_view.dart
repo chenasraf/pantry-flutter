@@ -103,10 +103,20 @@ class _ChecklistsBody extends StatelessWidget {
 
     return Column(
       children: [
-        _ListSelector(
-          lists: controller.lists,
-          currentList: controller.currentList,
-          onSelected: controller.selectList,
+        Row(
+          children: [
+            Expanded(
+              child: _ListSelector(
+                lists: controller.lists,
+                currentList: controller.currentList,
+                onSelected: controller.selectList,
+              ),
+            ),
+            _SortButton(
+              currentSort: controller.sortBy,
+              onSelected: controller.setSortBy,
+            ),
+          ],
         ),
         Expanded(child: itemsArea),
       ],
@@ -128,7 +138,7 @@ class _ListSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
       child: DropdownButtonFormField<int>(
         initialValue: currentList?.id,
         decoration: const InputDecoration(
@@ -193,11 +203,57 @@ class _ItemList extends StatelessWidget {
       );
     }
 
-    return ListView(
-      children: [
-        for (final item in unchecked)
-          ChecklistItemTile(
-            key: ValueKey(item.id),
+    return CustomScrollView(
+      slivers: [
+        _ReorderablePartition(items: unchecked, controller: controller),
+        if (checked.isNotEmpty) ...[
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  child: Text(
+                    m.checklists.completedCount(checked.length),
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _ReorderablePartition(items: checked, controller: controller),
+        ],
+      ],
+    );
+  }
+}
+
+class _ReorderablePartition extends StatelessWidget {
+  final List<ListItem> items;
+  final ChecklistsController controller;
+
+  const _ReorderablePartition({required this.items, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverReorderableList(
+      itemCount: items.length,
+      onReorder: (oldIndex, newIndex) {
+        if (newIndex > oldIndex) newIndex--;
+        controller.reorderItems(items, oldIndex, newIndex);
+      },
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return ReorderableDragStartListener(
+          key: ValueKey(item.id),
+          index: index,
+          child: ChecklistItemTile(
             item: item,
             category: item.categoryId != null
                 ? controller.categories[item.categoryId]
@@ -205,28 +261,61 @@ class _ItemList extends StatelessWidget {
             houseId: controller.houseId,
             onToggle: controller.toggleItem,
           ),
-        if (checked.isNotEmpty) ...[
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Text(
-              m.checklists.completedCount(checked.length),
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+        );
+      },
+    );
+  }
+}
+
+class _SortButton extends StatelessWidget {
+  final String currentSort;
+  final ValueChanged<String> onSelected;
+
+  const _SortButton({required this.currentSort, required this.onSelected});
+
+  static const _sortKeys = [
+    'newest',
+    'oldest',
+    'name_asc',
+    'name_desc',
+    'custom',
+  ];
+
+  static String _label(String key) => switch (key) {
+    'newest' => m.checklists.sort.newestFirst,
+    'oldest' => m.checklists.sort.oldestFirst,
+    'name_asc' => m.checklists.sort.nameAZ,
+    'name_desc' => m.checklists.sort.nameZA,
+    'custom' => m.checklists.sort.custom,
+    _ => key,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.sort),
+      tooltip: '',
+      onSelected: onSelected,
+      itemBuilder: (context) => [
+        for (final key in _sortKeys)
+          PopupMenuItem<String>(
+            value: key,
+            child: Row(
+              children: [
+                Icon(
+                  key == currentSort
+                      ? Icons.radio_button_checked
+                      : Icons.radio_button_unchecked,
+                  size: 20,
+                  color: key == currentSort
+                      ? Theme.of(context).colorScheme.primary
+                      : null,
+                ),
+                const SizedBox(width: 12),
+                Text(_label(key)),
+              ],
             ),
           ),
-          for (final item in checked)
-            ChecklistItemTile(
-              key: ValueKey(item.id),
-              item: item,
-              category: item.categoryId != null
-                  ? controller.categories[item.categoryId]
-                  : null,
-              houseId: controller.houseId,
-              onToggle: controller.toggleItem,
-            ),
-        ],
       ],
     );
   }

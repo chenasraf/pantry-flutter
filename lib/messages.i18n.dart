@@ -233,6 +233,37 @@ class ChecklistsMessages {
   /// "Remove item"
   /// ```
   String get removeItem => """Remove item""";
+  SortChecklistsMessages get sort => SortChecklistsMessages(this);
+}
+
+class SortChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const SortChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Newest first"
+  /// ```
+  String get newestFirst => """Newest first""";
+
+  /// ```dart
+  /// "Oldest first"
+  /// ```
+  String get oldestFirst => """Oldest first""";
+
+  /// ```dart
+  /// "Name A–Z"
+  /// ```
+  String get nameAZ => """Name A–Z""";
+
+  /// ```dart
+  /// "Name Z–A"
+  /// ```
+  String get nameZA => """Name Z–A""";
+
+  /// ```dart
+  /// "Custom"
+  /// ```
+  String get custom => """Custom""";
 }
 
 class RecurrenceMessages {
@@ -346,6 +377,11 @@ Please complete login in your browser.""",
   """checklists.failedToLoadItems""": """Failed to load items.""",
   """checklists.editItem""": """Edit item""",
   """checklists.removeItem""": """Remove item""",
+  """checklists.sort.newestFirst""": """Newest first""",
+  """checklists.sort.oldestFirst""": """Oldest first""",
+  """checklists.sort.nameAZ""": """Name A–Z""",
+  """checklists.sort.nameZA""": """Name Z–A""",
+  """checklists.sort.custom""": """Custom""",
   """recurrence.dayNames.monday""": """Monday""",
   """recurrence.dayNames.tuesday""": """Tuesday""",
   """recurrence.dayNames.wednesday""": """Wednesday""",

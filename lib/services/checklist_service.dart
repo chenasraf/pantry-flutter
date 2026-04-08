@@ -53,12 +53,32 @@ class ChecklistService {
     );
   }
 
-  Future<List<ListItem>> getItems(int houseId, int listId) async {
+  Future<List<ListItem>> getItems(
+    int houseId,
+    int listId, {
+    String sortBy = 'custom',
+  }) async {
     return ApiClient.instance.get<List, List<ListItem>>(
       '/houses/$houseId/lists/$listId/items',
+      query: {'sortBy': sortBy},
       fromJson: (data) => data
           .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
           .toList(),
+    );
+  }
+
+  Future<String> getItemSortPref(int houseId) async {
+    return ApiClient.instance.get<Map<String, dynamic>, String>(
+      '/houses/$houseId/prefs/checklist-item-sort',
+      fromJson: (data) => data['sort'] as String? ?? 'custom',
+    );
+  }
+
+  Future<void> setItemSortPref(int houseId, String sort) async {
+    await ApiClient.instance.put<Map<String, dynamic>, void>(
+      '/houses/$houseId/prefs/checklist-item-sort',
+      body: {'sort': sort},
+      fromJson: (_) {},
     );
   }
 
@@ -79,6 +99,22 @@ class ChecklistService {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items/$itemId/toggle',
       fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
+  Future<void> reorderItems(
+    int houseId,
+    int listId,
+    List<({int id, int sortOrder})> order,
+  ) async {
+    await ApiClient.instance.post<Map<String, dynamic>, void>(
+      '/houses/$houseId/lists/$listId/items/reorder',
+      body: {
+        'items': order
+            .map((e) => {'id': e.id, 'sortOrder': e.sortOrder})
+            .toList(),
+      },
+      fromJson: (_) {},
     );
   }
 }

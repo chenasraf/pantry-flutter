@@ -22,6 +22,9 @@ class ChecklistsController extends ChangeNotifier {
   Map<int, models.Category> _categories = {};
   Map<int, models.Category> get categories => _categories;
 
+  String _sortBy = 'custom';
+  String get sortBy => _sortBy;
+
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
@@ -46,6 +49,7 @@ class ChecklistsController extends ChangeNotifier {
       final results = await Future.wait([
         _checklistService.getLists(houseId),
         _categoryService.getCategories(houseId),
+        _checklistService.getItemSortPref(houseId),
       ]);
 
       _lists = results[0] as List<ChecklistList>;
@@ -53,6 +57,8 @@ class ChecklistsController extends ChangeNotifier {
 
       final cats = results[1] as List<models.Category>;
       _categories = {for (final c in cats) c.id: c};
+      _sortBy = results[2] as String;
+      _checklistService.cache.set('sortBy', _sortBy);
 
       if (_lists.isNotEmpty) {
         final target = _currentList != null
@@ -78,6 +84,9 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   void _restoreFromCache() {
+    // Sort preference
+    _sortBy = _checklistService.cache.get<String>('sortBy') ?? 'custom';
+
     // Categories
     final cachedCats = _categoryService.getCached(houseId);
     if (cachedCats != null && _categories.isEmpty) {
@@ -126,7 +135,11 @@ class ChecklistsController extends ChangeNotifier {
 
     // Fetch fresh data in background
     try {
-      final freshItems = await _checklistService.getItems(houseId, list.id);
+      final freshItems = await _checklistService.getItems(
+        houseId,
+        list.id,
+        sortBy: _sortBy,
+      );
       _checklistService.cacheItems(list.id, freshItems);
       if (_currentList?.id == list.id) {
         _items = freshItems;
@@ -140,6 +153,58 @@ class ChecklistsController extends ChangeNotifier {
         _isLoading = false;
         notifyListeners();
       }
+    }
+  }
+
+  Future<void> setSortBy(String sort) async {
+    if (sort == _sortBy) return;
+    _sortBy = sort;
+    _checklistService.cache.set('sortBy', sort);
+    notifyListeners();
+
+    // Persist to server
+    _checklistService.setItemSortPref(houseId, sort);
+
+    // Reload items with new sort
+    if (_currentList != null) {
+      _checklistService.invalidateItems();
+      await selectList(_currentList!);
+    }
+  }
+
+  Future<void> reorderItems(
+    List<ListItem> partition,
+    int oldIndex,
+    int newIndex,
+  ) async {
+    if (oldIndex == newIndex) return;
+
+    final item = partition.removeAt(oldIndex);
+    partition.insert(newIndex, item);
+
+    // Reassign sortOrder within the partition
+    final order = <({int id, int sortOrder})>[];
+    for (var i = 0; i < partition.length; i++) {
+      order.add((id: partition[i].id, sortOrder: i));
+    }
+
+    // Rebuild full items list preserving partition order
+    final unchecked = _items.where((i) => !i.done).toList();
+    final checked = _items.where((i) => i.done).toList();
+    final isUncheckedPartition = partition.isNotEmpty && !partition.first.done;
+    if (isUncheckedPartition) {
+      _items = [...partition, ...checked];
+    } else {
+      _items = [...unchecked, ...partition];
+    }
+
+    _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    notifyListeners();
+
+    try {
+      await _checklistService.reorderItems(houseId, _currentList!.id, order);
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to reorder: $e');
     }
   }
 

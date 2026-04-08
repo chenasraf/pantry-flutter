@@ -34,6 +34,12 @@ checklists:
   completedCount(int count): "Completed ($count)"
   editItem: Edit item
   removeItem: Remove item
+  sort:
+    newestFirst: Newest first
+    oldestFirst: Oldest first
+    nameAZ: "Name A\u2013Z"
+    nameZA: "Name Z\u2013A"
+    custom: Custom
 
 recurrence:
   every(String unit): "every $unit"

@@ -26,53 +26,58 @@ class ChecklistItemTile extends StatelessWidget {
     final theme = Theme.of(context);
     final dimmed = item.done;
 
-    return Opacity(
-      opacity: dimmed ? 0.5 : 1.0,
-      child: InkWell(
-        onTap: () => onToggle(item),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          child: Row(
-            children: [
-              Checkbox(value: item.done, onChanged: (_) => onToggle(item)),
-              if (item.imageFileId != null) ...[
-                GestureDetector(
-                  onTap: () => _showImagePreview(context),
-                  child: Hero(
-                    tag: 'item-image-${item.id}',
-                    child: _ItemImage(
-                      houseId: houseId,
-                      fileId: item.imageFileId!,
-                      owner: item.imageUploadedBy ?? '',
+    return Material(
+      type: MaterialType.transparency,
+      child: Opacity(
+        opacity: dimmed ? 0.5 : 1.0,
+        child: InkWell(
+          onTap: () => onToggle(item),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            child: Row(
+              children: [
+                Checkbox(value: item.done, onChanged: (_) => onToggle(item)),
+                if (item.imageFileId != null) ...[
+                  GestureDetector(
+                    onTap: () => _showImagePreview(context),
+                    child: Hero(
+                      tag: 'item-image-${item.id}',
+                      child: _ItemImage(
+                        houseId: houseId,
+                        fileId: item.imageFileId!,
+                        owner: item.imageUploadedBy ?? '',
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-              ],
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.name,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        decoration: dimmed ? TextDecoration.lineThrough : null,
-                      ),
-                    ),
-                    if (_hasBadges)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Wrap(
-                          spacing: 4,
-                          runSpacing: 4,
-                          children: _buildBadges(context),
+                  const SizedBox(width: 8),
+                ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.name,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          decoration: dimmed
+                              ? TextDecoration.lineThrough
+                              : null,
                         ),
                       ),
-                  ],
+                      if (_hasBadges)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Wrap(
+                            spacing: 4,
+                            runSpacing: 4,
+                            children: _buildBadges(context),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              _MoreMenuButton(item: item),
-            ],
+                _MoreMenuButton(item: item),
+              ],
+            ),
           ),
         ),
       ),

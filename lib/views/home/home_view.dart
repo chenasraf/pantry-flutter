@@ -54,13 +54,20 @@ class _HomeViewBody extends StatefulWidget {
 class _HomeViewBodyState extends State<_HomeViewBody> {
   int _tabIndex = 0;
 
+  String get _tabTitle => switch (_tabIndex) {
+    0 => m.nav.checklists,
+    1 => m.nav.photoBoard,
+    2 => m.nav.notesWall,
+    _ => m.common.appTitle,
+  };
+
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<HomeController>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(controller.currentHouse?.name ?? m.common.appTitle),
+        title: Text(_tabTitle),
         actions: [
           _UserMenuButton(
             houses: controller.houses,
