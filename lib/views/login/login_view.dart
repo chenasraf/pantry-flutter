@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pantry/i18n.dart';
 import 'package:provider/provider.dart';
 
 import 'login_controller.dart';
@@ -73,7 +74,7 @@ class _LoginViewBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Pantry',
+                    m.common.appTitle,
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -81,7 +82,7 @@ class _LoginViewBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Connect to your Nextcloud instance',
+                    m.login.connectToNextcloud,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
@@ -92,8 +93,8 @@ class _LoginViewBody extends StatelessWidget {
                     controller: urlController,
                     enabled: !controller.isLoading && !controller.isPolling,
                     decoration: InputDecoration(
-                      labelText: 'Server URL',
-                      hintText: 'cloud.example.com',
+                      labelText: m.login.serverUrl,
+                      hintText: m.login.serverUrlHint,
                       prefixIcon: const Icon(Icons.cloud_outlined),
                       border: const OutlineInputBorder(),
                       errorText: controller.error,
@@ -107,14 +108,14 @@ class _LoginViewBody extends StatelessWidget {
                     const LinearProgressIndicator(),
                     const SizedBox(height: 16),
                     Text(
-                      'Waiting for authentication...\nPlease complete login in your browser.',
+                      m.login.waitingForAuth,
                       style: Theme.of(context).textTheme.bodySmall,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
                     OutlinedButton(
                       onPressed: controller.cancelLogin,
-                      child: const Text('Cancel'),
+                      child: Text(m.common.cancel),
                     ),
                   ] else
                     FilledButton(
@@ -127,7 +128,7 @@ class _LoginViewBody extends StatelessWidget {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Connect'),
+                          : Text(m.login.connect),
                     ),
                 ],
               ),

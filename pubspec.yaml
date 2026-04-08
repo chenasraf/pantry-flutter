@@ -41,6 +41,9 @@ dependencies:
   flutter_svg: ^2.2.4
   wakelock_plus: ^1.5.1
   path_provider: ^2.1.5
+  intl: ^0.20.2
+  i18n:
+    git: https://github.com/chenasraf/i18n
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +55,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
+  build_runner: ^2.5.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -97,3 +103,21 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#0082C9"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  web:
+    generate: true
+    image_path: "assets/icon/icon.png"
+
+flutter_native_splash:
+  color: "#0082C9"
+  image: "assets/icon/splash.png"
+  android_12:
+    color: "#0082C9"
+    image: "assets/icon/splash.png"

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/prefs_service.dart';
@@ -25,7 +26,7 @@ class HomeController extends ChangeNotifier {
       _houses = await HouseService.instance.getHouses();
 
       if (_houses.isEmpty) {
-        _error = 'No houses found. Create one in Nextcloud first.';
+        _error = m.home.noHouses;
         _isLoading = false;
         notifyListeners();
         return;
@@ -45,7 +46,7 @@ class HomeController extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('[HomeController] Failed to load houses: $e');
-      _error = 'Failed to load houses.';
+      _error = m.home.failedToLoadHouses;
       _isLoading = false;
       notifyListeners();
     }

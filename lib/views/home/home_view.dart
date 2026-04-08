@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
@@ -59,7 +60,7 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(controller.currentHouse?.name ?? 'Pantry'),
+        title: Text(controller.currentHouse?.name ?? m.common.appTitle),
         actions: [
           _UserMenuButton(
             houses: controller.houses,
@@ -74,15 +75,18 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tabIndex,
         onDestinationSelected: (i) => setState(() => _tabIndex = i),
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.assignment_turned_in),
-            label: 'Checklists',
+            icon: const Icon(Icons.assignment_turned_in),
+            label: m.nav.checklists,
           ),
-          NavigationDestination(icon: Icon(Icons.photo), label: 'Photo Board'),
           NavigationDestination(
-            icon: Icon(Icons.insert_drive_file),
-            label: 'Notes Wall',
+            icon: const Icon(Icons.photo),
+            label: m.nav.photoBoard,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.insert_drive_file),
+            label: m.nav.notesWall,
           ),
         ],
       ),
@@ -105,7 +109,7 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: controller.load,
-                child: const Text('Retry'),
+                child: Text(m.common.retry),
               ),
             ],
           ),
@@ -121,9 +125,9 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
           houseId: houseId,
         );
       case 1:
-        return const Center(child: Text('Photo Board'));
+        return Center(child: Text(m.nav.photoBoard));
       case 2:
-        return const Center(child: Text('Notes Wall'));
+        return Center(child: Text(m.nav.notesWall));
       default:
         return const SizedBox.shrink();
     }
@@ -192,13 +196,13 @@ class _UserMenuButton extends StatelessWidget {
           ),
         ],
         const PopupMenuDivider(),
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: 'logout',
           child: Row(
             children: [
-              Icon(Icons.logout, size: 18),
-              SizedBox(width: 8),
-              Text('Logout'),
+              const Icon(Icons.logout, size: 18),
+              const SizedBox(width: 8),
+              Text(m.common.logout),
             ],
           ),
         ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:pantry/i18n.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -62,7 +63,7 @@ class LoginController extends ChangeNotifier {
       _startPolling(normalizedUrl);
     } catch (e) {
       _isLoading = false;
-      _error = 'Could not connect to server. Please check the URL.';
+      _error = m.login.couldNotConnect;
       notifyListeners();
     }
   }

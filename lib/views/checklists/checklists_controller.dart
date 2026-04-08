@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/category_service.dart';
@@ -86,7 +87,7 @@ class ChecklistsController extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load: $e');
-      _error = 'Failed to load checklists.';
+      _error = m.checklists.failedToLoad;
       _isLoading = false;
       notifyListeners();
     }
@@ -120,7 +121,7 @@ class ChecklistsController extends ChangeNotifier {
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load items: $e');
       if (cached == null) {
-        _error = 'Failed to load items.';
+        _error = m.checklists.failedToLoadItems;
         _isLoading = false;
         notifyListeners();
       }

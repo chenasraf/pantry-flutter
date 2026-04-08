@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
@@ -149,7 +150,6 @@ class ChecklistItemTile extends StatelessWidget {
   }
 
   static String _formatRrule(String rrule) {
-    // Simple human-readable rrule summary
     final parts = rrule.split(';');
     final map = <String, String>{};
     for (final part in parts) {
@@ -163,39 +163,31 @@ class ChecklistItemTile extends StatelessWidget {
 
     if (freq == null) return rrule;
 
+    final r = m.recurrence;
+
     final dayNames = {
-      'MO': 'Monday',
-      'TU': 'Tuesday',
-      'WE': 'Wednesday',
-      'TH': 'Thursday',
-      'FR': 'Friday',
-      'SA': 'Saturday',
-      'SU': 'Sunday',
+      'MO': r.dayNames.monday,
+      'TU': r.dayNames.tuesday,
+      'WE': r.dayNames.wednesday,
+      'TH': r.dayNames.thursday,
+      'FR': r.dayNames.friday,
+      'SA': r.dayNames.saturday,
+      'SU': r.dayNames.sunday,
     };
 
-    const singularNames = {
-      'daily': 'day',
-      'weekly': 'week',
-      'monthly': 'month',
-      'yearly': 'year',
-    };
-    const pluralNames = {
-      'daily': 'days',
-      'weekly': 'weeks',
-      'monthly': 'months',
-      'yearly': 'years',
+    final unit = switch (freq) {
+      'daily' => r.day(interval),
+      'weekly' => r.week(interval),
+      'monthly' => r.month(interval),
+      'yearly' => r.year(interval),
+      _ => freq,
     };
 
-    String prefix;
-    if (interval == 1) {
-      prefix = 'every ${singularNames[freq] ?? freq}';
-    } else {
-      prefix = 'every $interval ${pluralNames[freq] ?? freq}';
-    }
+    final prefix = interval == 1 ? r.every(unit) : r.everyN(interval, unit);
 
     if (byDay != null && freq == 'weekly') {
       final days = byDay.split(',').map((d) => dayNames[d] ?? d).join(', ');
-      return '$prefix on $days';
+      return '$prefix ${r.onDays(days)}';
     }
 
     return prefix;
@@ -292,23 +284,23 @@ class _MoreMenuButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),
       itemBuilder: (context) => [
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'edit',
           child: Row(
             children: [
-              Icon(Icons.edit, size: 18),
-              SizedBox(width: 8),
-              Text('Edit item'),
+              const Icon(Icons.edit, size: 18),
+              const SizedBox(width: 8),
+              Text(m.checklists.editItem),
             ],
           ),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: 'remove',
           child: Row(
             children: [
-              Icon(Icons.delete, size: 18),
-              SizedBox(width: 8),
-              Text('Remove item'),
+              const Icon(Icons.delete, size: 18),
+              const SizedBox(width: 8),
+              Text(m.checklists.removeItem),
             ],
           ),
         ),

@@ -1,0 +1,53 @@
+common:
+  appTitle: Pantry
+  cancel: Cancel
+  delete: Delete
+  save: Save
+  retry: Retry
+  logout: Logout
+  loading: Loading...
+  error: Error
+
+login:
+  connectToNextcloud: Connect to your Nextcloud instance
+  serverUrl: Server URL
+  serverUrlHint: cloud.example.com
+  connect: Connect
+  waitingForAuth: "Waiting for authentication...\nPlease complete login in your browser."
+  couldNotConnect: Could not connect to server. Please check the URL.
+  loginFailed: Login failed. Please try again.
+
+home:
+  noHouses: No houses found. Create one in Nextcloud first.
+  failedToLoadHouses: Failed to load houses.
+
+nav:
+  checklists: Checklists
+  photoBoard: Photo Board
+  notesWall: Notes Wall
+
+checklists:
+  noChecklists: No checklists yet.
+  noItems: No items in this list.
+  failedToLoad: Failed to load checklists.
+  failedToLoadItems: Failed to load items.
+  completedCount(int count): "Completed ($count)"
+  editItem: Edit item
+  removeItem: Remove item
+
+recurrence:
+  every(String unit): "every $unit"
+  everyN(int count, String unit): "every $count $unit"
+  onDays(String days): "on $days"
+  day(int count): "${_plural(count, one: 'day', many: 'days')}"
+  week(int count): "${_plural(count, one: 'week', many: 'weeks')}"
+  month(int count): "${_plural(count, one: 'month', many: 'months')}"
+  year(int count): "${_plural(count, one: 'year', many: 'years')}"
+  dayNames:
+    monday: Monday
+    tuesday: Tuesday
+    wednesday: Wednesday
+    thursday: Thursday
+    friday: Friday
+    saturday: Saturday
+    sunday: Sunday

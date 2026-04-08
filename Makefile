@@ -355,10 +355,14 @@ endif
 
 .PHONY: icons
 icons:
+	mkdir -p assets/icon
+	rsvg-convert -h 1024 assets/logo_icon.svg > assets/icon/icon.png
 	dart run flutter_launcher_icons
 
 .PHONY: splash
 splash:
+	mkdir -p assets/icon
+	rsvg-convert -h 512 --page-width 1024 --page-height 1024 --top 256 --left 256 assets/logo_icon.svg > assets/icon/splash.png
 	dart run flutter_native_splash:create
 
 # Website

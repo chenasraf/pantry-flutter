@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantry/i18n.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry/models/checklist.dart';
@@ -61,7 +62,7 @@ class _ChecklistsBody extends StatelessWidget {
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: controller.load,
-                child: const Text('Retry'),
+                child: Text(m.common.retry),
               ),
             ],
           ),
@@ -70,7 +71,7 @@ class _ChecklistsBody extends StatelessWidget {
     }
 
     if (controller.lists.isEmpty) {
-      return const Center(child: Text('No checklists yet.'));
+      return Center(child: Text(m.checklists.noChecklists));
     }
 
     Widget itemsArea;
@@ -87,7 +88,7 @@ class _ChecklistsBody extends StatelessWidget {
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: controller.load,
-                child: const Text('Retry'),
+                child: Text(m.common.retry),
               ),
             ],
           ),
@@ -185,9 +186,9 @@ class _ItemList extends StatelessWidget {
 
     if (controller.items.isEmpty) {
       return ListView(
-        children: const [
-          SizedBox(height: 100),
-          Center(child: Text('No items in this list.')),
+        children: [
+          const SizedBox(height: 100),
+          Center(child: Text(m.checklists.noItems)),
         ],
       );
     }
@@ -209,7 +210,7 @@ class _ItemList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Text(
-              'Completed (${checked.length})',
+              m.checklists.completedCount(checked.length),
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),

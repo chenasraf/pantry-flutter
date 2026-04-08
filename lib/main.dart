@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'i18n.dart';
 import 'services/auth_service.dart';
 import 'services/checklist_service.dart';
 import 'services/prefs_service.dart';
@@ -58,7 +59,7 @@ class PantryAppState extends State<PantryApp> {
     final color = ThemingService.instance.effectiveColor;
     return MaterialApp(
       navigatorKey: rootNavigatorKey,
-      title: 'Pantry',
+      title: m.common.appTitle,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: color,
