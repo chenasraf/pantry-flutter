@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/views/checklists/checklists_view.dart';
 import 'home_controller.dart';
 
 class HomeView extends StatefulWidget {
@@ -112,10 +113,13 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
       );
     }
 
-    // TODO: Replace with actual tab content
+    final houseId = controller.currentHouse!.id;
     switch (_tabIndex) {
       case 0:
-        return const Center(child: Text('Checklists'));
+        return ChecklistsView(
+          key: ValueKey('checklists-$houseId'),
+          houseId: houseId,
+        );
       case 1:
         return const Center(child: Text('Photo Board'));
       case 2:

@@ -6,14 +6,10 @@ class HouseService {
   static final HouseService instance = HouseService._();
 
   Future<List<House>> getHouses() async {
-    return ApiClient.instance.get(
+    return ApiClient.instance.get<List, List<House>>(
       '/houses',
-      fromJson: (json) {
-        final data = json['ocs']['data'] as List;
-        return data
-            .map((e) => House.fromJson(e as Map<String, dynamic>))
-            .toList();
-      },
+      fromJson: (data) =>
+          data.map((e) => House.fromJson(e as Map<String, dynamic>)).toList(),
     );
   }
 }

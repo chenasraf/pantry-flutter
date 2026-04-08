@@ -34,44 +34,44 @@ class ApiClient {
   }
 
   Map<String, String> get _headers => {
-        ..._credentials.basicAuthHeaders,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      };
+    ..._credentials.basicAuthHeaders,
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  };
 
-  Future<T> get<T>(
+  Future<T> get<D, T>(
     String path, {
     Map<String, String>? query,
-    required T Function(dynamic json) fromJson,
+    required T Function(D data) fromJson,
   }) async {
     final response = await http.get(_uri(path, query), headers: _headers);
-    return _handleResponse(response, fromJson);
+    return _handleResponse<D, T>(response, fromJson);
   }
 
-  Future<T> post<T>(
+  Future<T> post<D, T>(
     String path, {
     Map<String, dynamic>? body,
-    required T Function(dynamic json) fromJson,
+    required T Function(D data) fromJson,
   }) async {
     final response = await http.post(
       _uri(path),
       headers: _headers,
       body: body != null ? jsonEncode(body) : null,
     );
-    return _handleResponse(response, fromJson);
+    return _handleResponse<D, T>(response, fromJson);
   }
 
-  Future<T> put<T>(
+  Future<T> put<D, T>(
     String path, {
     Map<String, dynamic>? body,
-    required T Function(dynamic json) fromJson,
+    required T Function(D data) fromJson,
   }) async {
     final response = await http.put(
       _uri(path),
       headers: _headers,
       body: body != null ? jsonEncode(body) : null,
     );
-    return _handleResponse(response, fromJson);
+    return _handleResponse<D, T>(response, fromJson);
   }
 
   Future<void> delete(String path) async {
@@ -81,11 +81,16 @@ class ApiClient {
     }
   }
 
-  T _handleResponse<T>(http.Response response, T Function(dynamic) fromJson) {
+  Uri buildUri(String path, [Map<String, String>? query]) => _uri(path, query);
+
+  Map<String, String> get authHeaders => _credentials.basicAuthHeaders;
+
+  T _handleResponse<D, T>(http.Response response, T Function(D) fromJson) {
     if (response.statusCode >= 400) {
       throw ApiException(response.statusCode, response.body);
     }
     final json = jsonDecode(response.body);
-    return fromJson(json);
+    final data = json['ocs']?['data'] ?? json;
+    return fromJson(data as D);
   }
 }

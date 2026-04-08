@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'services/auth_service.dart';
+import 'services/checklist_service.dart';
 import 'services/prefs_service.dart';
 import 'services/theming_service.dart';
 import 'views/home/home_view.dart';
@@ -18,7 +19,10 @@ void main() async {
   await AuthService.instance.loadCredentials();
   await PrefsService.instance.load();
   if (AuthService.instance.isLoggedIn) {
-    await ThemingService.instance.fetchTheme();
+    await Future.wait([
+      ThemingService.instance.fetchTheme(),
+      ChecklistService.instance.loadFromDisk(),
+    ]);
   }
   runApp(const PantryApp());
 }

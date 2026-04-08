@@ -40,6 +40,7 @@ dependencies:
   flutter_secure_storage: ^10.0.0
   flutter_svg: ^2.2.4
   wakelock_plus: ^1.5.1
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
