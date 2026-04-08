@@ -28,33 +28,14 @@ class ChecklistsController extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
-  ChecklistService get _service => ChecklistService.instance;
+  ChecklistService get _checklistService => ChecklistService.instance;
+  CategoryService get _categoryService => CategoryService.instance;
 
   Future<void> load() async {
     _error = null;
 
-    // Restore from cache immediately
-    final cachedLists = _service.getCachedLists(houseId);
-    if (cachedLists != null && _lists.isEmpty) {
-      _lists = cachedLists;
-      if (_lists.isNotEmpty) {
-        final savedId = _service.selectedListId;
-        _currentList =
-            (savedId != null
-                ? _lists.cast<ChecklistList?>().firstWhere(
-                    (l) => l!.id == savedId,
-                    orElse: () => null,
-                  )
-                : null) ??
-            _lists.first;
-        final cached = _service.getCachedItems(_currentList!.id);
-        if (cached != null) {
-          _items = cached;
-          _isLoading = false;
-          notifyListeners();
-        }
-      }
-    }
+    // Restore all from cache
+    _restoreFromCache();
 
     if (_lists.isEmpty) {
       _isLoading = true;
@@ -63,12 +44,13 @@ class ChecklistsController extends ChangeNotifier {
 
     try {
       final results = await Future.wait([
-        _service.getLists(houseId),
-        CategoryService.instance.getCategories(houseId),
+        _checklistService.getLists(houseId),
+        _categoryService.getCategories(houseId),
       ]);
 
       _lists = results[0] as List<ChecklistList>;
-      _service.cacheLists(houseId, _lists);
+      _checklistService.cacheLists(houseId, _lists);
+
       final cats = results[1] as List<models.Category>;
       _categories = {for (final c in cats) c.id: c};
 
@@ -87,18 +69,51 @@ class ChecklistsController extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load: $e');
-      _error = m.checklists.failedToLoad;
-      _isLoading = false;
-      notifyListeners();
+      if (_lists.isEmpty) {
+        _error = m.checklists.failedToLoad;
+        _isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
+
+  void _restoreFromCache() {
+    // Categories
+    final cachedCats = _categoryService.getCached(houseId);
+    if (cachedCats != null && _categories.isEmpty) {
+      _categories = {for (final c in cachedCats) c.id: c};
+    }
+
+    // Lists + items
+    final cachedLists = _checklistService.getCachedLists(houseId);
+    if (cachedLists != null && _lists.isEmpty) {
+      _lists = cachedLists;
+      if (_lists.isNotEmpty) {
+        final savedId = _checklistService.selectedListId;
+        _currentList =
+            (savedId != null
+                ? _lists.cast<ChecklistList?>().firstWhere(
+                    (l) => l!.id == savedId,
+                    orElse: () => null,
+                  )
+                : null) ??
+            _lists.first;
+        final cachedItems = _checklistService.getCachedItems(_currentList!.id);
+        if (cachedItems != null) {
+          _items = cachedItems;
+          _isLoading = false;
+          notifyListeners();
+        }
+      }
     }
   }
 
   Future<void> selectList(ChecklistList list) async {
     _currentList = list;
-    _service.selectedListId = list.id;
+    _checklistService.selectedListId = list.id;
 
     // Show cached items immediately, or spinner if no cache for this list
-    final cached = _service.getCachedItems(list.id);
+    final cached = _checklistService.getCachedItems(list.id);
     if (cached != null) {
       _items = cached;
       _isLoading = false;
@@ -111,8 +126,8 @@ class ChecklistsController extends ChangeNotifier {
 
     // Fetch fresh data in background
     try {
-      final freshItems = await _service.getItems(houseId, list.id);
-      _service.cacheItems(list.id, freshItems);
+      final freshItems = await _checklistService.getItems(houseId, list.id);
+      _checklistService.cacheItems(list.id, freshItems);
       if (_currentList?.id == list.id) {
         _items = freshItems;
         _isLoading = false;
@@ -130,7 +145,7 @@ class ChecklistsController extends ChangeNotifier {
 
   Future<void> refresh() async {
     await load();
-    _service.invalidateCache(keepListId: _currentList?.id);
+    _checklistService.invalidateItems(keepListId: _currentList?.id);
   }
 
   Future<void> toggleItem(ListItem item) async {
@@ -139,18 +154,22 @@ class ChecklistsController extends ChangeNotifier {
 
     // Optimistic update
     _items[index] = item.copyWith(done: !item.done);
-    _service.cacheItems(item.listId, List.of(_items));
+    _checklistService.cacheItems(item.listId, List.of(_items));
     notifyListeners();
 
     try {
-      final updated = await _service.toggleItem(houseId, item.listId, item.id);
+      final updated = await _checklistService.toggleItem(
+        houseId,
+        item.listId,
+        item.id,
+      );
       _items[index] = updated;
-      _service.cacheItems(item.listId, List.of(_items));
+      _checklistService.cacheItems(item.listId, List.of(_items));
       notifyListeners();
     } catch (e) {
       // Revert on failure
       _items[index] = item;
-      _service.cacheItems(item.listId, List.of(_items));
+      _checklistService.cacheItems(item.listId, List.of(_items));
       notifyListeners();
     }
   }

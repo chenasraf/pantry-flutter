@@ -4,7 +4,9 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'i18n.dart';
 import 'services/auth_service.dart';
+import 'services/category_service.dart';
 import 'services/checklist_service.dart';
+import 'services/house_service.dart';
 import 'services/prefs_service.dart';
 import 'services/theming_service.dart';
 import 'views/home/home_view.dart';
@@ -22,7 +24,9 @@ void main() async {
   if (AuthService.instance.isLoggedIn) {
     await Future.wait([
       ThemingService.instance.fetchTheme(),
-      ChecklistService.instance.loadFromDisk(),
+      HouseService.instance.cache.load(),
+      CategoryService.instance.cache.load(),
+      ChecklistService.instance.cache.load(),
     ]);
   }
   runApp(const PantryApp());

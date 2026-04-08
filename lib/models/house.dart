@@ -26,4 +26,14 @@ class House {
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
   );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'description': description,
+    'ownerUid': ownerUid,
+    'role': role,
+    'createdAt': createdAt,
+    'updatedAt': updatedAt,
+  };
 }

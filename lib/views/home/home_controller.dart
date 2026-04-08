@@ -18,9 +18,21 @@ class HomeController extends ChangeNotifier {
   String? get error => _error;
 
   Future<void> load() async {
-    _isLoading = true;
     _error = null;
-    notifyListeners();
+
+    // Restore from cache
+    final cached = HouseService.instance.getCached();
+    if (cached != null && _houses.isEmpty) {
+      _houses = cached;
+      _restoreSelection();
+      _isLoading = false;
+      notifyListeners();
+    }
+
+    if (_houses.isEmpty) {
+      _isLoading = true;
+      notifyListeners();
+    }
 
     try {
       _houses = await HouseService.instance.getHouses();
@@ -32,24 +44,31 @@ class HomeController extends ChangeNotifier {
         return;
       }
 
-      final lastId = PrefsService.instance.lastHouseId;
-      _currentHouse =
-          _houses.cast<House?>().firstWhere(
-            (h) => h!.id == lastId,
-            orElse: () => null,
-          ) ??
-          _houses.first;
-
+      _restoreSelection();
       await PrefsService.instance.setLastHouseId(_currentHouse!.id);
 
       _isLoading = false;
       notifyListeners();
     } catch (e) {
       debugPrint('[HomeController] Failed to load houses: $e');
-      _error = m.home.failedToLoadHouses;
-      _isLoading = false;
-      notifyListeners();
+      if (_houses.isEmpty) {
+        _error = m.home.failedToLoadHouses;
+        _isLoading = false;
+        notifyListeners();
+      }
     }
+  }
+
+  void _restoreSelection() {
+    final lastId = PrefsService.instance.lastHouseId;
+    _currentHouse =
+        (lastId != null
+            ? _houses.cast<House?>().firstWhere(
+                (h) => h!.id == lastId,
+                orElse: () => null,
+              )
+            : null) ??
+        _houses.first;
   }
 
   Future<void> selectHouse(House house) async {

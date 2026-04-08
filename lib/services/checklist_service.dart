@@ -1,99 +1,48 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/api_client.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:pantry/services/cache_store.dart';
 
 class ChecklistService {
   ChecklistService._();
   static final ChecklistService instance = ChecklistService._();
 
-  final Map<int, List<ListItem>> _itemCache = {};
-  List<ChecklistList>? _listsCache;
-  int? _listsCacheHouseId;
-  int? selectedListId;
+  final cache = CacheStore('checklist_cache.json');
 
-  static const _cacheFileName = 'checklist_cache.json';
+  static const _listsKey = 'lists';
+  static const _itemsPrefix = 'items';
+  static const _houseIdKey = 'houseId';
+  static const _selectedListKey = 'selectedListId';
 
-  Future<File> get _cacheFile async {
-    final dir = await getApplicationDocumentsDirectory();
-    return File('${dir.path}/$_cacheFileName');
+  // -- Cache accessors --
+
+  int? get selectedListId => cache.get<int>(_selectedListKey);
+  set selectedListId(int? id) => cache.set(_selectedListKey, id);
+
+  List<ChecklistList>? getCachedLists(int houseId) {
+    if (cache.get<int>(_houseIdKey) != houseId) return null;
+    return cache.getList(_listsKey, ChecklistList.fromJson);
   }
-
-  Future<void> loadFromDisk() async {
-    try {
-      final file = await _cacheFile;
-      if (!await file.exists()) return;
-      final json =
-          jsonDecode(await file.readAsString()) as Map<String, dynamic>;
-
-      _listsCacheHouseId = json['houseId'] as int?;
-      selectedListId = json['selectedListId'] as int?;
-
-      if (json['lists'] != null) {
-        _listsCache = (json['lists'] as List)
-            .map((e) => ChecklistList.fromJson(e as Map<String, dynamic>))
-            .toList();
-      }
-
-      if (json['items'] != null) {
-        final items = json['items'] as Map<String, dynamic>;
-        for (final entry in items.entries) {
-          _itemCache[int.parse(entry.key)] = (entry.value as List)
-              .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
-              .toList();
-        }
-      }
-    } catch (e) {
-      debugPrint('[ChecklistService] Failed to load cache from disk: $e');
-    }
-  }
-
-  Future<void> _saveToDisk() async {
-    try {
-      final json = {
-        'houseId': _listsCacheHouseId,
-        'selectedListId': selectedListId,
-        'lists': _listsCache?.map((l) => l.toJson()).toList(),
-        'items': _itemCache.map(
-          (k, v) => MapEntry(k.toString(), v.map((i) => i.toJson()).toList()),
-        ),
-      };
-      final file = await _cacheFile;
-      await file.writeAsString(jsonEncode(json));
-    } catch (e) {
-      debugPrint('[ChecklistService] Failed to save cache to disk: $e');
-    }
-  }
-
-  List<ChecklistList>? getCachedLists(int houseId) =>
-      _listsCacheHouseId == houseId ? _listsCache : null;
 
   void cacheLists(int houseId, List<ChecklistList> lists) {
-    _listsCache = lists;
-    _listsCacheHouseId = houseId;
-    _saveToDisk();
+    cache.set(_houseIdKey, houseId);
+    cache.setList(_listsKey, lists, (l) => l.toJson());
   }
 
-  List<ListItem>? getCachedItems(int listId) => _itemCache[listId];
+  List<ListItem>? getCachedItems(int listId) =>
+      cache.getKeyedList(_itemsPrefix, '$listId', ListItem.fromJson);
 
   void cacheItems(int listId, List<ListItem> items) {
-    _itemCache[listId] = items;
-    _saveToDisk();
+    cache.setKeyedList(_itemsPrefix, '$listId', items, (i) => i.toJson());
   }
 
-  void invalidateCache({int? keepListId}) {
-    if (keepListId != null) {
-      _itemCache.removeWhere((id, _) => id != keepListId);
-    } else {
-      _itemCache.clear();
-    }
-    _listsCache = null;
-    _listsCacheHouseId = null;
-    _saveToDisk();
+  void invalidateItems({int? keepListId}) {
+    cache.removeKeyed(
+      _itemsPrefix,
+      keepKey: keepListId != null ? '$keepListId' : null,
+    );
   }
+
+  // -- API --
 
   Future<List<ChecklistList>> getLists(int houseId) async {
     return ApiClient.instance.get<List, List<ChecklistList>>(

@@ -29,4 +29,15 @@ class Category {
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
   );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'houseId': houseId,
+    'name': name,
+    'icon': icon,
+    'color': color,
+    'sortOrder': sortOrder,
+    'createdAt': createdAt,
+    'updatedAt': updatedAt,
+  };
 }
