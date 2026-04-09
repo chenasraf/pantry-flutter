@@ -34,6 +34,23 @@ checklists:
   completedCount(int count): "Completed ($count)"
   editItem: Edit item
   removeItem: Remove item
+  viewItem:
+    quantity: "Quantity:"
+    category: "Category:"
+    recurrence: "Recurrence:"
+  itemForm:
+    addTitle: Add item
+    editTitle: Edit item
+    name: Item name
+    description: Description
+    quantity: Quantity
+    category: Category
+    noCategory: None
+    noCategories: No categories available.
+    repeat: Repeat
+    saveFailed: Failed to save item.
+    deleteFailed: Failed to delete item.
+    deleteConfirm: Delete this item?
   sort:
     newestFirst: Newest first
     oldestFirst: Oldest first
@@ -42,6 +59,30 @@ checklists:
     custom: Custom
 
 recurrence:
+  title: Recurrence
+  presets: Presets
+  daily: Daily
+  weekly: Weekly
+  everyTwoWeeks: Every 2 weeks
+  monthly: Monthly
+  everyLabel: Every
+  unit: Unit
+  unitDays: days
+  unitWeeks: weeks
+  unitMonths: months
+  unitYears: years
+  repeatOn: Repeat on
+  ends: Ends
+  never: Never
+  after: After
+  occurrences: occurrences
+  onDate: On date
+  countFromCompletion: Count interval from when the item is ticked off
+  countFromCompletionHintOff: "The schedule is fixed: the item reappears on its next scheduled occurrence, regardless of when you tick it off."
+  countFromCompletionHintOn: "The next occurrence is counted from the moment you tick the item off, so it always comes back a full interval after it was completed."
+  summary: Summary
+  notSet: not set
+  set: set
   every(String unit): "every $unit"
   everyN(int count, String unit): "every $count $unit"
   onDays(String days): "on $days"
@@ -57,3 +98,11 @@ recurrence:
     friday: Friday
     saturday: Saturday
     sunday: Sunday
+  dayAbbr:
+    mo: Mo
+    tu: Tu
+    we: We
+    th: Th
+    fr: Fr
+    sa: Sa
+    su: Su

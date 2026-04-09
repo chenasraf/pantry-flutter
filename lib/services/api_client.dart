@@ -74,6 +74,19 @@ class ApiClient {
     return _handleResponse<D, T>(response, fromJson);
   }
 
+  Future<T> patch<D, T>(
+    String path, {
+    Map<String, dynamic>? body,
+    required T Function(D data) fromJson,
+  }) async {
+    final response = await http.patch(
+      _uri(path),
+      headers: _headers,
+      body: body != null ? jsonEncode(body) : null,
+    );
+    return _handleResponse<D, T>(response, fromJson);
+  }
+
   Future<void> delete(String path) async {
     final response = await http.delete(_uri(path), headers: _headers);
     if (response.statusCode >= 400) {

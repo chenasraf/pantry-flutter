@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
+import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -61,11 +63,16 @@ class AuthService {
   Uint8List? _avatarBytes;
   Uint8List? get avatarBytes => _avatarBytes;
 
+  /// First day of week from Nextcloud user settings.
+  /// 0 = Sunday, 1 = Monday, ..., 6 = Saturday.
+  int _firstDayOfWeek = _firstDayFromLocale();
+  int get firstDayOfWeek => _firstDayOfWeek;
+
   Future<void> loadCredentials() async {
     final json = await _storage.read(key: _credentialsKey);
     if (json != null) {
       _credentials = NextcloudCredentials.fromJson(jsonDecode(json));
-      await fetchAvatar();
+      await Future.wait([fetchAvatar(), fetchFirstDayOfWeek()]);
     }
   }
 
@@ -87,9 +94,156 @@ class AuthService {
     }
   }
 
+  static String get _userAgent {
+    final platform = kIsWeb
+        ? 'Web'
+        : Platform.isAndroid
+        ? 'Android'
+        : Platform.isIOS
+        ? 'iOS'
+        : Platform.isMacOS
+        ? 'macOS'
+        : Platform.isLinux
+        ? 'Linux'
+        : Platform.isWindows
+        ? 'Windows'
+        : 'Unknown';
+    return 'Pantry ($platform)';
+  }
+
+  Future<void> fetchFirstDayOfWeek() async {
+    if (_credentials == null) return;
+    try {
+      final uri = Uri.parse(
+        '${_credentials!.serverUrl}/ocs/v2.php/apps/pantry/api/prefs',
+      );
+      final response = await http.get(
+        uri,
+        headers: {
+          ..._credentials!.basicAuthHeaders,
+          'Accept': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final prefs = data['ocs']?['data'] as Map<String, dynamic>?;
+        final firstDay = prefs?['firstDayOfWeek'] as int?;
+        _firstDayOfWeek = (firstDay != null && firstDay >= 0)
+            ? firstDay
+            : _firstDayFromLocale();
+      }
+    } catch (e) {
+      debugPrint('[AuthService] Failed to fetch first day of week: $e');
+      _firstDayOfWeek = _firstDayFromLocale();
+    }
+  }
+
+  /// Derives the first day of week from the device locale.
+  /// Returns 0 = Sunday, 1 = Monday, ..., 6 = Saturday.
+  static int _firstDayFromLocale() {
+    final tag = ui.PlatformDispatcher.instance.locale.toLanguageTag();
+    final region = _regionFromLocale(tag);
+
+    // Countries/regions where Sunday is the first day of week
+    const sundayFirst = {
+      'US',
+      'CA',
+      'BR',
+      'JP',
+      'KR',
+      'TW',
+      'IL',
+      'SA',
+      'AE',
+      'BH',
+      'DZ',
+      'EG',
+      'IQ',
+      'JO',
+      'KW',
+      'LY',
+      'OM',
+      'QA',
+      'SY',
+      'YE',
+      'AG',
+      'AS',
+      'BD',
+      'BZ',
+      'BT',
+      'BO',
+      'BS',
+      'BW',
+      'CO',
+      'DM',
+      'DO',
+      'ET',
+      'GU',
+      'GT',
+      'GY',
+      'HK',
+      'HN',
+      'ID',
+      'IN',
+      'JM',
+      'KE',
+      'KH',
+      'LA',
+      'MH',
+      'MM',
+      'MO',
+      'MT',
+      'MX',
+      'MZ',
+      'NI',
+      'NP',
+      'PA',
+      'PE',
+      'PH',
+      'PK',
+      'PR',
+      'PT',
+      'PY',
+      'SG',
+      'SV',
+      'TH',
+      'TT',
+      'UM',
+      'VE',
+      'VI',
+      'WS',
+      'ZA',
+      'ZW',
+    };
+
+    // Countries where Saturday is the first day
+    const saturdayFirst = {'AF', 'IR'};
+
+    if (region != null) {
+      if (sundayFirst.contains(region)) return 0;
+      if (saturdayFirst.contains(region)) return 6;
+    }
+
+    // Default: Monday
+    return 1;
+  }
+
+  static String? _regionFromLocale(String tag) {
+    // Handle both "en_US" and "en-US" formats
+    final parts = tag.split(RegExp(r'[_-]'));
+    if (parts.length >= 2) {
+      final candidate = parts[1].toUpperCase();
+      if (candidate.length == 2) return candidate;
+    }
+    return null;
+  }
+
   Future<LoginFlowResult> initiateLoginFlow(String serverUrl) async {
     final url = '$serverUrl/index.php/login/v2';
-    final response = await http.post(Uri.parse(url));
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'User-Agent': _userAgent},
+    );
 
     if (response.statusCode != 200) {
       throw Exception('Failed to initiate login flow: ${response.statusCode}');

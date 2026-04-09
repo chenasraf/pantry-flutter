@@ -5,6 +5,7 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/widgets/image_preview.dart';
 
 class ChecklistItemTile extends StatelessWidget {
@@ -12,6 +13,9 @@ class ChecklistItemTile extends StatelessWidget {
   final models.Category? category;
   final int houseId;
   final ValueChanged<ListItem> onToggle;
+  final ValueChanged<ListItem> onView;
+  final ValueChanged<ListItem> onEdit;
+  final ValueChanged<ListItem> onDelete;
 
   const ChecklistItemTile({
     super.key,
@@ -19,6 +23,9 @@ class ChecklistItemTile extends StatelessWidget {
     this.category,
     required this.houseId,
     required this.onToggle,
+    required this.onView,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -75,7 +82,17 @@ class ChecklistItemTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                _MoreMenuButton(item: item),
+                IconButton(
+                  icon: Icon(
+                    Icons.visibility_outlined,
+                    size: 20,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () => onView(item),
+                ),
+                _MoreMenuButton(item: item, onEdit: onEdit, onDelete: onDelete),
               ],
             ),
           ),
@@ -154,49 +171,7 @@ class ChecklistItemTile extends StatelessWidget {
     return value != null ? Color(value) : null;
   }
 
-  static String _formatRrule(String rrule) {
-    final parts = rrule.split(';');
-    final map = <String, String>{};
-    for (final part in parts) {
-      final kv = part.split('=');
-      if (kv.length == 2) map[kv[0]] = kv[1];
-    }
-
-    final freq = map['FREQ']?.toLowerCase();
-    final interval = int.tryParse(map['INTERVAL'] ?? '1') ?? 1;
-    final byDay = map['BYDAY'];
-
-    if (freq == null) return rrule;
-
-    final r = m.recurrence;
-
-    final dayNames = {
-      'MO': r.dayNames.monday,
-      'TU': r.dayNames.tuesday,
-      'WE': r.dayNames.wednesday,
-      'TH': r.dayNames.thursday,
-      'FR': r.dayNames.friday,
-      'SA': r.dayNames.saturday,
-      'SU': r.dayNames.sunday,
-    };
-
-    final unit = switch (freq) {
-      'daily' => r.day(interval),
-      'weekly' => r.week(interval),
-      'monthly' => r.month(interval),
-      'yearly' => r.year(interval),
-      _ => freq,
-    };
-
-    final prefix = interval == 1 ? r.every(unit) : r.everyN(interval, unit);
-
-    if (byDay != null && freq == 'weekly') {
-      final days = byDay.split(',').map((d) => dayNames[d] ?? d).join(', ');
-      return '$prefix ${r.onDays(days)}';
-    }
-
-    return prefix;
-  }
+  static String _formatRrule(String rrule) => formatRrule(rrule);
 }
 
 class _ItemImage extends StatelessWidget {
@@ -275,8 +250,14 @@ class _Badge extends StatelessWidget {
 
 class _MoreMenuButton extends StatelessWidget {
   final ListItem item;
+  final ValueChanged<ListItem> onEdit;
+  final ValueChanged<ListItem> onDelete;
 
-  const _MoreMenuButton({required this.item});
+  const _MoreMenuButton({
+    required this.item,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -311,7 +292,12 @@ class _MoreMenuButton extends StatelessWidget {
         ),
       ],
       onSelected: (value) {
-        // TODO: Implement edit/remove
+        switch (value) {
+          case 'edit':
+            onEdit(item);
+          case 'remove':
+            onDelete(item);
+        }
       },
     );
   }

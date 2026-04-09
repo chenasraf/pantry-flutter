@@ -233,7 +233,94 @@ class ChecklistsMessages {
   /// "Remove item"
   /// ```
   String get removeItem => """Remove item""";
+  ViewItemChecklistsMessages get viewItem => ViewItemChecklistsMessages(this);
+  ItemFormChecklistsMessages get itemForm => ItemFormChecklistsMessages(this);
   SortChecklistsMessages get sort => SortChecklistsMessages(this);
+}
+
+class ViewItemChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const ViewItemChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Quantity:"
+  /// ```
+  String get quantity => """Quantity:""";
+
+  /// ```dart
+  /// "Category:"
+  /// ```
+  String get category => """Category:""";
+
+  /// ```dart
+  /// "Recurrence:"
+  /// ```
+  String get recurrence => """Recurrence:""";
+}
+
+class ItemFormChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const ItemFormChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Add item"
+  /// ```
+  String get addTitle => """Add item""";
+
+  /// ```dart
+  /// "Edit item"
+  /// ```
+  String get editTitle => """Edit item""";
+
+  /// ```dart
+  /// "Item name"
+  /// ```
+  String get name => """Item name""";
+
+  /// ```dart
+  /// "Description"
+  /// ```
+  String get description => """Description""";
+
+  /// ```dart
+  /// "Quantity"
+  /// ```
+  String get quantity => """Quantity""";
+
+  /// ```dart
+  /// "Category"
+  /// ```
+  String get category => """Category""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get noCategory => """None""";
+
+  /// ```dart
+  /// "No categories available."
+  /// ```
+  String get noCategories => """No categories available.""";
+
+  /// ```dart
+  /// "Repeat"
+  /// ```
+  String get repeat => """Repeat""";
+
+  /// ```dart
+  /// "Failed to save item."
+  /// ```
+  String get saveFailed => """Failed to save item.""";
+
+  /// ```dart
+  /// "Failed to delete item."
+  /// ```
+  String get deleteFailed => """Failed to delete item.""";
+
+  /// ```dart
+  /// "Delete this item?"
+  /// ```
+  String get deleteConfirm => """Delete this item?""";
 }
 
 class SortChecklistsMessages {
@@ -271,6 +358,129 @@ class RecurrenceMessages {
   const RecurrenceMessages(this._parent);
 
   /// ```dart
+  /// "Recurrence"
+  /// ```
+  String get title => """Recurrence""";
+
+  /// ```dart
+  /// "Presets"
+  /// ```
+  String get presets => """Presets""";
+
+  /// ```dart
+  /// "Daily"
+  /// ```
+  String get daily => """Daily""";
+
+  /// ```dart
+  /// "Weekly"
+  /// ```
+  String get weekly => """Weekly""";
+
+  /// ```dart
+  /// "Every 2 weeks"
+  /// ```
+  String get everyTwoWeeks => """Every 2 weeks""";
+
+  /// ```dart
+  /// "Monthly"
+  /// ```
+  String get monthly => """Monthly""";
+
+  /// ```dart
+  /// "Every"
+  /// ```
+  String get everyLabel => """Every""";
+
+  /// ```dart
+  /// "Unit"
+  /// ```
+  String get unit => """Unit""";
+
+  /// ```dart
+  /// "days"
+  /// ```
+  String get unitDays => """days""";
+
+  /// ```dart
+  /// "weeks"
+  /// ```
+  String get unitWeeks => """weeks""";
+
+  /// ```dart
+  /// "months"
+  /// ```
+  String get unitMonths => """months""";
+
+  /// ```dart
+  /// "years"
+  /// ```
+  String get unitYears => """years""";
+
+  /// ```dart
+  /// "Repeat on"
+  /// ```
+  String get repeatOn => """Repeat on""";
+
+  /// ```dart
+  /// "Ends"
+  /// ```
+  String get ends => """Ends""";
+
+  /// ```dart
+  /// "Never"
+  /// ```
+  String get never => """Never""";
+
+  /// ```dart
+  /// "After"
+  /// ```
+  String get after => """After""";
+
+  /// ```dart
+  /// "occurrences"
+  /// ```
+  String get occurrences => """occurrences""";
+
+  /// ```dart
+  /// "On date"
+  /// ```
+  String get onDate => """On date""";
+
+  /// ```dart
+  /// "Count interval from when the item is ticked off"
+  /// ```
+  String get countFromCompletion =>
+      """Count interval from when the item is ticked off""";
+
+  /// ```dart
+  /// "The schedule is fixed: the item reappears on its next scheduled occurrence, regardless of when you tick it off."
+  /// ```
+  String get countFromCompletionHintOff =>
+      """The schedule is fixed: the item reappears on its next scheduled occurrence, regardless of when you tick it off.""";
+
+  /// ```dart
+  /// "The next occurrence is counted from the moment you tick the item off, so it always comes back a full interval after it was completed."
+  /// ```
+  String get countFromCompletionHintOn =>
+      """The next occurrence is counted from the moment you tick the item off, so it always comes back a full interval after it was completed.""";
+
+  /// ```dart
+  /// "Summary"
+  /// ```
+  String get summary => """Summary""";
+
+  /// ```dart
+  /// "not set"
+  /// ```
+  String get notSet => """not set""";
+
+  /// ```dart
+  /// "set"
+  /// ```
+  String get set => """set""";
+
+  /// ```dart
   /// "every $unit"
   /// ```
   String every(String unit) => """every $unit""";
@@ -306,6 +516,7 @@ class RecurrenceMessages {
   /// ```
   String year(int count) => """${_plural(count, one: 'year', many: 'years')}""";
   DayNamesRecurrenceMessages get dayNames => DayNamesRecurrenceMessages(this);
+  DayAbbrRecurrenceMessages get dayAbbr => DayAbbrRecurrenceMessages(this);
 }
 
 class DayNamesRecurrenceMessages {
@@ -348,6 +559,46 @@ class DayNamesRecurrenceMessages {
   String get sunday => """Sunday""";
 }
 
+class DayAbbrRecurrenceMessages {
+  final RecurrenceMessages _parent;
+  const DayAbbrRecurrenceMessages(this._parent);
+
+  /// ```dart
+  /// "Mo"
+  /// ```
+  String get mo => """Mo""";
+
+  /// ```dart
+  /// "Tu"
+  /// ```
+  String get tu => """Tu""";
+
+  /// ```dart
+  /// "We"
+  /// ```
+  String get we => """We""";
+
+  /// ```dart
+  /// "Th"
+  /// ```
+  String get th => """Th""";
+
+  /// ```dart
+  /// "Fr"
+  /// ```
+  String get fr => """Fr""";
+
+  /// ```dart
+  /// "Sa"
+  /// ```
+  String get sa => """Sa""";
+
+  /// ```dart
+  /// "Su"
+  /// ```
+  String get su => """Su""";
+}
+
 Map<String, String> get messagesMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Cancel""",
@@ -377,11 +628,53 @@ Please complete login in your browser.""",
   """checklists.failedToLoadItems""": """Failed to load items.""",
   """checklists.editItem""": """Edit item""",
   """checklists.removeItem""": """Remove item""",
+  """checklists.viewItem.quantity""": """Quantity:""",
+  """checklists.viewItem.category""": """Category:""",
+  """checklists.viewItem.recurrence""": """Recurrence:""",
+  """checklists.itemForm.addTitle""": """Add item""",
+  """checklists.itemForm.editTitle""": """Edit item""",
+  """checklists.itemForm.name""": """Item name""",
+  """checklists.itemForm.description""": """Description""",
+  """checklists.itemForm.quantity""": """Quantity""",
+  """checklists.itemForm.category""": """Category""",
+  """checklists.itemForm.noCategory""": """None""",
+  """checklists.itemForm.noCategories""": """No categories available.""",
+  """checklists.itemForm.repeat""": """Repeat""",
+  """checklists.itemForm.saveFailed""": """Failed to save item.""",
+  """checklists.itemForm.deleteFailed""": """Failed to delete item.""",
+  """checklists.itemForm.deleteConfirm""": """Delete this item?""",
   """checklists.sort.newestFirst""": """Newest first""",
   """checklists.sort.oldestFirst""": """Oldest first""",
   """checklists.sort.nameAZ""": """Name A–Z""",
   """checklists.sort.nameZA""": """Name Z–A""",
   """checklists.sort.custom""": """Custom""",
+  """recurrence.title""": """Recurrence""",
+  """recurrence.presets""": """Presets""",
+  """recurrence.daily""": """Daily""",
+  """recurrence.weekly""": """Weekly""",
+  """recurrence.everyTwoWeeks""": """Every 2 weeks""",
+  """recurrence.monthly""": """Monthly""",
+  """recurrence.everyLabel""": """Every""",
+  """recurrence.unit""": """Unit""",
+  """recurrence.unitDays""": """days""",
+  """recurrence.unitWeeks""": """weeks""",
+  """recurrence.unitMonths""": """months""",
+  """recurrence.unitYears""": """years""",
+  """recurrence.repeatOn""": """Repeat on""",
+  """recurrence.ends""": """Ends""",
+  """recurrence.never""": """Never""",
+  """recurrence.after""": """After""",
+  """recurrence.occurrences""": """occurrences""",
+  """recurrence.onDate""": """On date""",
+  """recurrence.countFromCompletion""":
+      """Count interval from when the item is ticked off""",
+  """recurrence.countFromCompletionHintOff""":
+      """The schedule is fixed: the item reappears on its next scheduled occurrence, regardless of when you tick it off.""",
+  """recurrence.countFromCompletionHintOn""":
+      """The next occurrence is counted from the moment you tick the item off, so it always comes back a full interval after it was completed.""",
+  """recurrence.summary""": """Summary""",
+  """recurrence.notSet""": """not set""",
+  """recurrence.set""": """set""",
   """recurrence.dayNames.monday""": """Monday""",
   """recurrence.dayNames.tuesday""": """Tuesday""",
   """recurrence.dayNames.wednesday""": """Wednesday""",
@@ -389,4 +682,11 @@ Please complete login in your browser.""",
   """recurrence.dayNames.friday""": """Friday""",
   """recurrence.dayNames.saturday""": """Saturday""",
   """recurrence.dayNames.sunday""": """Sunday""",
+  """recurrence.dayAbbr.mo""": """Mo""",
+  """recurrence.dayAbbr.tu""": """Tu""",
+  """recurrence.dayAbbr.we""": """We""",
+  """recurrence.dayAbbr.th""": """Th""",
+  """recurrence.dayAbbr.fr""": """Fr""",
+  """recurrence.dayAbbr.sa""": """Sa""",
+  """recurrence.dayAbbr.su""": """Su""",
 };

@@ -95,6 +95,63 @@ class ChecklistService {
     });
   }
 
+  Future<ListItem> createItem(
+    int houseId,
+    int listId, {
+    required String name,
+    String? description,
+    String? quantity,
+    int? categoryId,
+    String? rrule,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
+      '/houses/$houseId/lists/$listId/items',
+      body: {
+        'name': name,
+        if (description != null && description.isNotEmpty)
+          'description': description,
+        if (quantity != null && quantity.isNotEmpty) 'quantity': quantity,
+        if (categoryId != null) 'categoryId': categoryId,
+        if (rrule != null && rrule.isNotEmpty) 'rrule': rrule,
+      },
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
+  Future<ListItem> updateItem(
+    int houseId,
+    int listId,
+    int itemId, {
+    String? name,
+    String? description,
+    String? quantity,
+    int? categoryId,
+    bool clearCategory = false,
+    String? rrule,
+    bool? repeatFromCompletion,
+  }) async {
+    return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
+      '/houses/$houseId/lists/$listId/items/$itemId',
+      body: {
+        if (name != null) 'name': name,
+        if (description != null) 'description': description,
+        if (quantity != null) 'quantity': quantity,
+        if (clearCategory) 'categoryId': 0,
+        if (!clearCategory && categoryId != null) 'categoryId': categoryId,
+        if (rrule != null) 'rrule': rrule,
+        if (repeatFromCompletion != null)
+          'repeatFromCompletion': repeatFromCompletion,
+      },
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
+  Future<void> deleteItem(int houseId, int listId, int itemId) async {
+    await ApiClient.instance.delete(
+      '/houses/$houseId/lists/$listId/items/$itemId',
+    );
+  }
+
   Future<ListItem> toggleItem(int houseId, int listId, int itemId) async {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items/$itemId/toggle',

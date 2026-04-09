@@ -213,6 +213,66 @@ class ChecklistsController extends ChangeNotifier {
     _checklistService.invalidateItems(keepListId: _currentList?.id);
   }
 
+  Future<ListItem> addItem({
+    required String name,
+    String? description,
+    String? quantity,
+    int? categoryId,
+    String? rrule,
+  }) async {
+    final item = await _checklistService.createItem(
+      houseId,
+      _currentList!.id,
+      name: name,
+      description: description,
+      quantity: quantity,
+      categoryId: categoryId,
+      rrule: rrule,
+    );
+    _items.insert(0, item);
+    _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    notifyListeners();
+    return item;
+  }
+
+  Future<ListItem> updateItem(
+    ListItem item, {
+    String? name,
+    String? description,
+    String? quantity,
+    int? categoryId,
+    bool clearCategory = false,
+    String? rrule,
+    bool? repeatFromCompletion,
+  }) async {
+    final updated = await _checklistService.updateItem(
+      houseId,
+      item.listId,
+      item.id,
+      name: name,
+      description: description,
+      quantity: quantity,
+      categoryId: categoryId,
+      clearCategory: clearCategory,
+      rrule: rrule,
+      repeatFromCompletion: repeatFromCompletion,
+    );
+    final index = _items.indexWhere((i) => i.id == item.id);
+    if (index != -1) {
+      _items[index] = updated;
+      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+      notifyListeners();
+    }
+    return updated;
+  }
+
+  Future<void> deleteItem(ListItem item) async {
+    await _checklistService.deleteItem(houseId, item.listId, item.id);
+    _items.removeWhere((i) => i.id == item.id);
+    _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    notifyListeners();
+  }
+
   Future<void> toggleItem(ListItem item) async {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index == -1) return;

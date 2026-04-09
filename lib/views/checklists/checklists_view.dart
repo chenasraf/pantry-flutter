@@ -6,6 +6,8 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'checklist_item_tile.dart';
 import 'checklists_controller.dart';
+import 'item_detail_view.dart';
+import 'item_form_view.dart';
 
 class ChecklistsView extends StatefulWidget {
   final int houseId;
@@ -101,24 +103,46 @@ class _ChecklistsBody extends StatelessWidget {
       );
     }
 
-    return Column(
+    return Stack(
       children: [
-        Row(
+        Column(
           children: [
-            Expanded(
-              child: _ListSelector(
-                lists: controller.lists,
-                currentList: controller.currentList,
-                onSelected: controller.selectList,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: _ListSelector(
+                    lists: controller.lists,
+                    currentList: controller.currentList,
+                    onSelected: controller.selectList,
+                  ),
+                ),
+                _SortButton(
+                  currentSort: controller.sortBy,
+                  onSelected: controller.setSortBy,
+                ),
+              ],
             ),
-            _SortButton(
-              currentSort: controller.sortBy,
-              onSelected: controller.setSortBy,
-            ),
+            Expanded(child: itemsArea),
           ],
         ),
-        Expanded(child: itemsArea),
+        if (controller.currentList != null)
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: FloatingActionButton(
+              onPressed: () async {
+                final added = await Navigator.of(context).push<bool>(
+                  MaterialPageRoute(
+                    builder: (_) => ItemFormView(controller: controller),
+                  ),
+                );
+                if (added == true) {
+                  controller.refresh();
+                }
+              },
+              child: const Icon(Icons.add),
+            ),
+          ),
       ],
     );
   }
@@ -240,6 +264,71 @@ class _ReorderablePartition extends StatelessWidget {
 
   const _ReorderablePartition({required this.items, required this.controller});
 
+  void _viewItem(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ItemDetailView(
+          item: item,
+          category: item.categoryId != null
+              ? controller.categories[item.categoryId]
+              : null,
+          houseId: controller.houseId,
+          controller: controller,
+        ),
+      ),
+    );
+  }
+
+  void _editItem(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) {
+    Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => ItemFormView(controller: controller, item: item),
+      ),
+    );
+  }
+
+  void _deleteItem(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) {
+    showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.itemForm.deleteConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.common.delete),
+          ),
+        ],
+      ),
+    ).then((confirmed) async {
+      if (confirmed != true) return;
+      try {
+        await controller.deleteItem(item);
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(m.checklists.itemForm.deleteFailed)),
+          );
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SliverReorderableList(
@@ -250,7 +339,7 @@ class _ReorderablePartition extends StatelessWidget {
       },
       itemBuilder: (context, index) {
         final item = items[index];
-        return ReorderableDragStartListener(
+        return ReorderableDelayedDragStartListener(
           key: ValueKey(item.id),
           index: index,
           child: ChecklistItemTile(
@@ -260,6 +349,9 @@ class _ReorderablePartition extends StatelessWidget {
                 : null,
             houseId: controller.houseId,
             onToggle: controller.toggleItem,
+            onView: (item) => _viewItem(context, controller, item),
+            onEdit: (item) => _editItem(context, controller, item),
+            onDelete: (item) => _deleteItem(context, controller, item),
           ),
         );
       },
