@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImagePreview extends StatelessWidget {
@@ -52,11 +53,11 @@ class ImagePreview extends StatelessWidget {
           child: Center(
             child: Hero(
               tag: heroTag,
-              child: Image.network(
-                imageUrl,
-                headers: headers,
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                httpHeaders: headers,
                 fit: BoxFit.contain,
-                errorBuilder: (_, _, _) => const Icon(
+                errorWidget: (_, _, _) => const Icon(
                   Icons.broken_image_outlined,
                   size: 64,
                   color: Colors.white54,

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
@@ -122,11 +123,11 @@ class _CoverImage extends StatelessWidget {
     );
     final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
 
-    return Image.network(
-      uri.toString(),
-      headers: headers,
+    return CachedNetworkImage(
+      imageUrl: uri.toString(),
+      httpHeaders: headers,
       fit: BoxFit.cover,
-      errorBuilder: (_, _, _) => Center(
+      errorWidget: (_, _, _) => Center(
         child: Icon(
           Icons.broken_image_outlined,
           size: 48,

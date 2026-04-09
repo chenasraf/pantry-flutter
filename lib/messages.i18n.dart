@@ -67,6 +67,7 @@ class Messages {
   HomeMessages get home => HomeMessages(this);
   NavMessages get nav => NavMessages(this);
   ChecklistsMessages get checklists => ChecklistsMessages(this);
+  PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
   RecurrenceMessages get recurrence => RecurrenceMessages(this);
 }
 
@@ -346,6 +347,117 @@ class SortChecklistsMessages {
   /// "Name Z–A"
   /// ```
   String get nameZA => """Name Z–A""";
+
+  /// ```dart
+  /// "Custom"
+  /// ```
+  String get custom => """Custom""";
+}
+
+class PhotoBoardMessages {
+  final Messages _parent;
+  const PhotoBoardMessages(this._parent);
+
+  /// ```dart
+  /// "No photos yet."
+  /// ```
+  String get noPhotos => """No photos yet.""";
+
+  /// ```dart
+  /// "Failed to load photos."
+  /// ```
+  String get failedToLoad => """Failed to load photos.""";
+
+  /// ```dart
+  /// "Failed to upload photo."
+  /// ```
+  String get uploadFailed => """Failed to upload photo.""";
+
+  /// ```dart
+  /// "Failed to delete photo."
+  /// ```
+  String get deleteFailed => """Failed to delete photo.""";
+
+  /// ```dart
+  /// "Delete this photo?"
+  /// ```
+  String get deleteConfirm => """Delete this photo?""";
+
+  /// ```dart
+  /// "Delete folder"
+  /// ```
+  String get deleteFolder => """Delete folder""";
+
+  /// ```dart
+  /// "Delete this folder?"
+  /// ```
+  String get deleteFolderConfirm => """Delete this folder?""";
+
+  /// ```dart
+  /// "Move photos to root"
+  /// ```
+  String get deleteFolderKeepPhotos => """Move photos to root""";
+
+  /// ```dart
+  /// "Delete folder and photos"
+  /// ```
+  String get deleteFolderDeleteAll => """Delete folder and photos""";
+
+  /// ```dart
+  /// "New folder"
+  /// ```
+  String get newFolder => """New folder""";
+
+  /// ```dart
+  /// "Folder name"
+  /// ```
+  String get folderName => """Folder name""";
+
+  /// ```dart
+  /// "Rename folder"
+  /// ```
+  String get renameFolder => """Rename folder""";
+
+  /// ```dart
+  /// "Caption"
+  /// ```
+  String get caption => """Caption""";
+
+  /// ```dart
+  /// "$count"
+  /// ```
+  String photoCount(int count) => """$count""";
+  SortPhotoBoardMessages get sort => SortPhotoBoardMessages(this);
+}
+
+class SortPhotoBoardMessages {
+  final PhotoBoardMessages _parent;
+  const SortPhotoBoardMessages(this._parent);
+
+  /// ```dart
+  /// "Folders first"
+  /// ```
+  String get foldersFirst => """Folders first""";
+
+  /// ```dart
+  /// "Newest first"
+  /// ```
+  String get newestFirst => """Newest first""";
+
+  /// ```dart
+  /// "Oldest first"
+  /// ```
+  String get oldestFirst => """Oldest first""";
+
+  /// ```dart
+  /// "Caption A–Z"
+  /// ```
+  String get captionAZ => """Caption A–Z""";
+
+  /// ```dart
+  /// "Caption Z–A"
+  /// ```
+  String get captionZA => """Caption Z–A""";
 
   /// ```dart
   /// "Custom"
@@ -648,6 +760,25 @@ Please complete login in your browser.""",
   """checklists.sort.nameAZ""": """Name A–Z""",
   """checklists.sort.nameZA""": """Name Z–A""",
   """checklists.sort.custom""": """Custom""",
+  """photoBoard.noPhotos""": """No photos yet.""",
+  """photoBoard.failedToLoad""": """Failed to load photos.""",
+  """photoBoard.uploadFailed""": """Failed to upload photo.""",
+  """photoBoard.deleteFailed""": """Failed to delete photo.""",
+  """photoBoard.deleteConfirm""": """Delete this photo?""",
+  """photoBoard.deleteFolder""": """Delete folder""",
+  """photoBoard.deleteFolderConfirm""": """Delete this folder?""",
+  """photoBoard.deleteFolderKeepPhotos""": """Move photos to root""",
+  """photoBoard.deleteFolderDeleteAll""": """Delete folder and photos""",
+  """photoBoard.newFolder""": """New folder""",
+  """photoBoard.folderName""": """Folder name""",
+  """photoBoard.renameFolder""": """Rename folder""",
+  """photoBoard.caption""": """Caption""",
+  """photoBoard.sort.foldersFirst""": """Folders first""",
+  """photoBoard.sort.newestFirst""": """Newest first""",
+  """photoBoard.sort.oldestFirst""": """Oldest first""",
+  """photoBoard.sort.captionAZ""": """Caption A–Z""",
+  """photoBoard.sort.captionZA""": """Caption Z–A""",
+  """photoBoard.sort.custom""": """Custom""",
   """recurrence.title""": """Recurrence""",
   """recurrence.presets""": """Presets""",
   """recurrence.daily""": """Daily""",

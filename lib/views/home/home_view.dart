@@ -1,5 +1,4 @@
-import 'dart:typed_data';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +6,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
+import 'package:pantry/views/photos/photo_board_view.dart';
 import 'home_controller.dart';
 
 class HomeView extends StatefulWidget {
@@ -72,7 +72,6 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
           _UserMenuButton(
             houses: controller.houses,
             currentHouse: controller.currentHouse,
-            avatarBytes: AuthService.instance.avatarBytes,
             onHouseSelected: controller.selectHouse,
             onLogout: widget.onLogout,
           ),
@@ -132,7 +131,10 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
           houseId: houseId,
         );
       case 1:
-        return Center(child: Text(m.nav.photoBoard));
+        return PhotoBoardView(
+          key: ValueKey('photos-$houseId'),
+          houseId: houseId,
+        );
       case 2:
         return Center(child: Text(m.nav.notesWall));
       default:
@@ -144,31 +146,40 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
 class _UserMenuButton extends StatelessWidget {
   final List<House> houses;
   final House? currentHouse;
-  final Uint8List? avatarBytes;
   final ValueChanged<House> onHouseSelected;
   final VoidCallback onLogout;
 
   const _UserMenuButton({
     required this.houses,
     required this.currentHouse,
-    required this.avatarBytes,
     required this.onHouseSelected,
     required this.onLogout,
   });
 
   @override
   Widget build(BuildContext context) {
-    final loginName = AuthService.instance.credentials?.loginName ?? '';
+    final creds = AuthService.instance.credentials;
+    final loginName = creds?.loginName ?? '';
 
     return PopupMenuButton<Object>(
       offset: const Offset(0, 48),
       tooltip: loginName,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: avatarBytes != null
-            ? CircleAvatar(
-                radius: 16,
-                backgroundImage: MemoryImage(avatarBytes!),
+        child: creds != null
+            ? CachedNetworkImage(
+                imageUrl: '${creds.serverUrl}/index.php/avatar/$loginName/128',
+                httpHeaders: creds.basicAuthHeaders,
+                imageBuilder: (_, imageProvider) =>
+                    CircleAvatar(radius: 16, backgroundImage: imageProvider),
+                errorWidget: (_, _, _) => const CircleAvatar(
+                  radius: 16,
+                  child: Icon(Icons.person, size: 20),
+                ),
+                placeholder: (_, _) => const CircleAvatar(
+                  radius: 16,
+                  child: Icon(Icons.person, size: 20),
+                ),
               )
             : const CircleAvatar(
                 radius: 16,

@@ -60,9 +60,6 @@ class AuthService {
   NextcloudCredentials? get credentials => _credentials;
   bool get isLoggedIn => _credentials != null;
 
-  Uint8List? _avatarBytes;
-  Uint8List? get avatarBytes => _avatarBytes;
-
   /// First day of week from Nextcloud user settings.
   /// 0 = Sunday, 1 = Monday, ..., 6 = Saturday.
   int _firstDayOfWeek = _firstDayFromLocale();
@@ -72,25 +69,7 @@ class AuthService {
     final json = await _storage.read(key: _credentialsKey);
     if (json != null) {
       _credentials = NextcloudCredentials.fromJson(jsonDecode(json));
-      await Future.wait([fetchAvatar(), fetchFirstDayOfWeek()]);
-    }
-  }
-
-  Future<void> fetchAvatar() async {
-    if (_credentials == null) return;
-    try {
-      final uri = Uri.parse(
-        '${_credentials!.serverUrl}/index.php/avatar/${_credentials!.loginName}/128',
-      );
-      final response = await http.get(
-        uri,
-        headers: _credentials!.basicAuthHeaders,
-      );
-      if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
-        _avatarBytes = response.bodyBytes;
-      }
-    } catch (e) {
-      debugPrint('[AuthService] Failed to load avatar: $e');
+      await fetchFirstDayOfWeek();
     }
   }
 
@@ -314,7 +293,6 @@ class AuthService {
       }
     }
     _credentials = null;
-    _avatarBytes = null;
     await _storage.delete(key: _credentialsKey);
   }
 }

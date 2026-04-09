@@ -94,6 +94,53 @@ class ApiClient {
     }
   }
 
+  /// Upload raw bytes (e.g. image) via POST with a given content type.
+  Future<T> uploadBytes<D, T>(
+    String path, {
+    required List<int> bytes,
+    required String contentType,
+    Map<String, String>? query,
+    required T Function(D data) fromJson,
+  }) async {
+    final headers = {
+      ..._credentials.basicAuthHeaders,
+      'Accept': 'application/json',
+      'Content-Type': contentType,
+    };
+    final response = await http.post(
+      _uri(path, query),
+      headers: headers,
+      body: bytes,
+    );
+    return _handleResponse<D, T>(response, fromJson);
+  }
+
+  /// Upload a file via multipart form POST.
+  Future<T> uploadMultipart<D, T>(
+    String path, {
+    required List<int> bytes,
+    required String fileName,
+    required String mimeType,
+    String fieldName = 'file',
+    Map<String, String>? fields,
+    required T Function(D data) fromJson,
+  }) async {
+    final request = http.MultipartRequest('POST', _uri(path))
+      ..headers.addAll({
+        ..._credentials.basicAuthHeaders,
+        'Accept': 'application/json',
+      })
+      ..files.add(
+        http.MultipartFile.fromBytes(fieldName, bytes, filename: fileName),
+      );
+    if (fields != null) {
+      request.fields.addAll(fields);
+    }
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+    return _handleResponse<D, T>(response, fromJson);
+  }
+
   Uri buildUri(String path, [Map<String, String>? query]) => _uri(path, query);
 
   Map<String, String> get authHeaders => _credentials.basicAuthHeaders;

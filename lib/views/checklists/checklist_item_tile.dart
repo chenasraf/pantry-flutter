@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
@@ -197,13 +198,13 @@ class _ItemImage extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
-      child: Image.network(
-        uri.toString(),
-        headers: headers,
+      child: CachedNetworkImage(
+        imageUrl: uri.toString(),
+        httpHeaders: headers,
         width: 40,
         height: 40,
         fit: BoxFit.cover,
-        errorBuilder: (_, _, _) => const SizedBox(
+        errorWidget: (_, _, _) => const SizedBox(
           width: 40,
           height: 40,
           child: Icon(Icons.broken_image_outlined, size: 20),

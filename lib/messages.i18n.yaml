@@ -58,6 +58,29 @@ checklists:
     nameZA: "Name Z\u2013A"
     custom: Custom
 
+photoBoard:
+  noPhotos: No photos yet.
+  failedToLoad: Failed to load photos.
+  uploadFailed: Failed to upload photo.
+  deleteFailed: Failed to delete photo.
+  deleteConfirm: Delete this photo?
+  deleteFolder: Delete folder
+  deleteFolderConfirm: Delete this folder?
+  deleteFolderKeepPhotos: Move photos to root
+  deleteFolderDeleteAll: Delete folder and photos
+  newFolder: New folder
+  folderName: Folder name
+  renameFolder: Rename folder
+  caption: Caption
+  photoCount(int count): "$count"
+  sort:
+    foldersFirst: Folders first
+    newestFirst: Newest first
+    oldestFirst: Oldest first
+    captionAZ: "Caption A\u2013Z"
+    captionZA: "Caption Z\u2013A"
+    custom: Custom
+
 recurrence:
   title: Recurrence
   presets: Presets
