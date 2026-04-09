@@ -47,6 +47,12 @@ checklists:
     category: Category
     noCategory: None
     noCategories: No categories available.
+    createCategory: New category
+    categoryName: Name
+    categoryIcon: Icon
+    categoryColor: Color
+    categoryCreated: Category created.
+    categoryCreateFailed: Failed to create category.
     repeat: Repeat
     saveFailed: Failed to save item.
     deleteFailed: Failed to delete item.

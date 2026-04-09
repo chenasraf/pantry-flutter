@@ -23,4 +23,17 @@ class CategoryService {
     cache.setKeyedList(_prefix, '$houseId', categories, (c) => c.toJson());
     return categories;
   }
+
+  Future<Category> createCategory(
+    int houseId, {
+    required String name,
+    required String icon,
+    required String color,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, Category>(
+      '/houses/$houseId/categories',
+      body: {'name': name, 'icon': icon, 'color': color},
+      fromJson: (data) => Category.fromJson(data),
+    );
+  }
 }

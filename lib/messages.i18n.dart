@@ -305,6 +305,36 @@ class ItemFormChecklistsMessages {
   String get noCategories => """No categories available.""";
 
   /// ```dart
+  /// "New category"
+  /// ```
+  String get createCategory => """New category""";
+
+  /// ```dart
+  /// "Name"
+  /// ```
+  String get categoryName => """Name""";
+
+  /// ```dart
+  /// "Icon"
+  /// ```
+  String get categoryIcon => """Icon""";
+
+  /// ```dart
+  /// "Color"
+  /// ```
+  String get categoryColor => """Color""";
+
+  /// ```dart
+  /// "Category created."
+  /// ```
+  String get categoryCreated => """Category created.""";
+
+  /// ```dart
+  /// "Failed to create category."
+  /// ```
+  String get categoryCreateFailed => """Failed to create category.""";
+
+  /// ```dart
   /// "Repeat"
   /// ```
   String get repeat => """Repeat""";
@@ -850,6 +880,13 @@ Please complete login in your browser.""",
   """checklists.itemForm.category""": """Category""",
   """checklists.itemForm.noCategory""": """None""",
   """checklists.itemForm.noCategories""": """No categories available.""",
+  """checklists.itemForm.createCategory""": """New category""",
+  """checklists.itemForm.categoryName""": """Name""",
+  """checklists.itemForm.categoryIcon""": """Icon""",
+  """checklists.itemForm.categoryColor""": """Color""",
+  """checklists.itemForm.categoryCreated""": """Category created.""",
+  """checklists.itemForm.categoryCreateFailed""":
+      """Failed to create category.""",
   """checklists.itemForm.repeat""": """Repeat""",
   """checklists.itemForm.saveFailed""": """Failed to save item.""",
   """checklists.itemForm.deleteFailed""": """Failed to delete item.""",

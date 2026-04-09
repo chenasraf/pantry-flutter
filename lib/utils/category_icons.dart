@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const _iconMap = <String, IconData>{
+const categoryIconMap = <String, IconData>{
   'tag': Icons.label,
   'food': Icons.lunch_dining,
   'fruit': Icons.apple,
@@ -25,5 +25,5 @@ const _iconMap = <String, IconData>{
 const defaultCategoryIcon = Icons.label;
 
 IconData categoryIcon(String? key) {
-  return _iconMap[key ?? ''] ?? defaultCategoryIcon;
+  return categoryIconMap[key ?? ''] ?? defaultCategoryIcon;
 }
