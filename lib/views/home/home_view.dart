@@ -6,6 +6,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
+import 'package:pantry/views/notes/notes_wall_view.dart';
 import 'package:pantry/views/photos/photo_board_view.dart';
 import 'home_controller.dart';
 
@@ -136,7 +137,7 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
           houseId: houseId,
         );
       case 2:
-        return Center(child: Text(m.nav.notesWall));
+        return NotesWallView(key: ValueKey('notes-$houseId'), houseId: houseId);
       default:
         return const SizedBox.shrink();
     }

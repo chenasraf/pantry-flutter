@@ -67,6 +67,7 @@ class Messages {
   HomeMessages get home => HomeMessages(this);
   NavMessages get nav => NavMessages(this);
   ChecklistsMessages get checklists => ChecklistsMessages(this);
+  NotesWallMessages get notesWall => NotesWallMessages(this);
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
   RecurrenceMessages get recurrence => RecurrenceMessages(this);
 }
@@ -347,6 +348,92 @@ class SortChecklistsMessages {
   /// "Name Z–A"
   /// ```
   String get nameZA => """Name Z–A""";
+
+  /// ```dart
+  /// "Custom"
+  /// ```
+  String get custom => """Custom""";
+}
+
+class NotesWallMessages {
+  final Messages _parent;
+  const NotesWallMessages(this._parent);
+
+  /// ```dart
+  /// "No notes yet."
+  /// ```
+  String get noNotes => """No notes yet.""";
+
+  /// ```dart
+  /// "Failed to load notes."
+  /// ```
+  String get failedToLoad => """Failed to load notes.""";
+
+  /// ```dart
+  /// "Failed to save note."
+  /// ```
+  String get saveFailed => """Failed to save note.""";
+
+  /// ```dart
+  /// "Failed to delete note."
+  /// ```
+  String get deleteFailed => """Failed to delete note.""";
+
+  /// ```dart
+  /// "Delete this note?"
+  /// ```
+  String get deleteConfirm => """Delete this note?""";
+
+  /// ```dart
+  /// "New note"
+  /// ```
+  String get newNote => """New note""";
+
+  /// ```dart
+  /// "Edit note"
+  /// ```
+  String get editNote => """Edit note""";
+
+  /// ```dart
+  /// "Title"
+  /// ```
+  String get title => """Title""";
+
+  /// ```dart
+  /// "Content"
+  /// ```
+  String get content => """Content""";
+
+  /// ```dart
+  /// "Color"
+  /// ```
+  String get color => """Color""";
+  SortNotesWallMessages get sort => SortNotesWallMessages(this);
+}
+
+class SortNotesWallMessages {
+  final NotesWallMessages _parent;
+  const SortNotesWallMessages(this._parent);
+
+  /// ```dart
+  /// "Newest first"
+  /// ```
+  String get newestFirst => """Newest first""";
+
+  /// ```dart
+  /// "Oldest first"
+  /// ```
+  String get oldestFirst => """Oldest first""";
+
+  /// ```dart
+  /// "Title A–Z"
+  /// ```
+  String get titleAZ => """Title A–Z""";
+
+  /// ```dart
+  /// "Title Z–A"
+  /// ```
+  String get titleZA => """Title Z–A""";
 
   /// ```dart
   /// "Custom"
@@ -760,6 +847,21 @@ Please complete login in your browser.""",
   """checklists.sort.nameAZ""": """Name A–Z""",
   """checklists.sort.nameZA""": """Name Z–A""",
   """checklists.sort.custom""": """Custom""",
+  """notesWall.noNotes""": """No notes yet.""",
+  """notesWall.failedToLoad""": """Failed to load notes.""",
+  """notesWall.saveFailed""": """Failed to save note.""",
+  """notesWall.deleteFailed""": """Failed to delete note.""",
+  """notesWall.deleteConfirm""": """Delete this note?""",
+  """notesWall.newNote""": """New note""",
+  """notesWall.editNote""": """Edit note""",
+  """notesWall.title""": """Title""",
+  """notesWall.content""": """Content""",
+  """notesWall.color""": """Color""",
+  """notesWall.sort.newestFirst""": """Newest first""",
+  """notesWall.sort.oldestFirst""": """Oldest first""",
+  """notesWall.sort.titleAZ""": """Title A–Z""",
+  """notesWall.sort.titleZA""": """Title Z–A""",
+  """notesWall.sort.custom""": """Custom""",
   """photoBoard.noPhotos""": """No photos yet.""",
   """photoBoard.failedToLoad""": """Failed to load photos.""",
   """photoBoard.uploadFailed""": """Failed to upload photo.""",

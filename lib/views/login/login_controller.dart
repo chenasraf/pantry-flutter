@@ -81,10 +81,8 @@ class LoginController extends ChangeNotifier {
           notifyListeners();
           _onLoginSuccess?.call();
         }
-      } catch (e, stack) {
-        debugPrint('[LoginController] Poll error: $e');
-        debugPrint('[LoginController] Stack: $stack');
-        // Transient network errors — keep polling
+      } catch (_) {
+        // Expected — 404 until login completes, or transient network errors
       }
     });
   }

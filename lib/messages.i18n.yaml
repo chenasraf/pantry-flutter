@@ -58,6 +58,24 @@ checklists:
     nameZA: "Name Z\u2013A"
     custom: Custom
 
+notesWall:
+  noNotes: No notes yet.
+  failedToLoad: Failed to load notes.
+  saveFailed: Failed to save note.
+  deleteFailed: Failed to delete note.
+  deleteConfirm: Delete this note?
+  newNote: New note
+  editNote: Edit note
+  title: Title
+  content: Content
+  color: Color
+  sort:
+    newestFirst: Newest first
+    oldestFirst: Oldest first
+    titleAZ: "Title A\u2013Z"
+    titleZA: "Title Z\u2013A"
+    custom: Custom
+
 photoBoard:
   noPhotos: No photos yet.
   failedToLoad: Failed to load photos.

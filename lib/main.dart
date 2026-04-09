@@ -7,6 +7,8 @@ import 'services/auth_service.dart';
 import 'services/category_service.dart';
 import 'services/checklist_service.dart';
 import 'services/house_service.dart';
+import 'services/note_service.dart';
+import 'services/photo_service.dart';
 import 'services/prefs_service.dart';
 import 'services/theming_service.dart';
 import 'views/home/home_view.dart';
@@ -27,6 +29,8 @@ void main() async {
       HouseService.instance.cache.load(),
       CategoryService.instance.cache.load(),
       ChecklistService.instance.cache.load(),
+      PhotoService.instance.cache.load(),
+      NoteService.instance.cache.load(),
     ]);
   }
   runApp(const PantryApp());
@@ -52,7 +56,14 @@ class PantryAppState extends State<PantryApp> {
   Future<void> _onLogout() async {
     await AuthService.instance.logout();
     ThemingService.instance.clear();
-    await PrefsService.instance.clear();
+    await Future.wait([
+      PrefsService.instance.clear(),
+      HouseService.instance.cache.clear(),
+      CategoryService.instance.cache.clear(),
+      ChecklistService.instance.cache.clear(),
+      PhotoService.instance.cache.clear(),
+      NoteService.instance.cache.clear(),
+    ]);
     _isLoggedIn = false;
     rootNavigatorKey.currentState?.pushReplacementNamed('/login');
     if (mounted) setState(() {});

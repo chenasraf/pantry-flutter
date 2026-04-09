@@ -49,7 +49,6 @@ class ChecklistsController extends ChangeNotifier {
       final results = await Future.wait([
         _checklistService.getLists(houseId),
         _categoryService.getCategories(houseId),
-        _checklistService.getItemSortPref(houseId),
       ]);
 
       _lists = results[0] as List<ChecklistList>;
@@ -57,8 +56,14 @@ class ChecklistsController extends ChangeNotifier {
 
       final cats = results[1] as List<models.Category>;
       _categories = {for (final c in cats) c.id: c};
-      _sortBy = results[2] as String;
-      _checklistService.cache.set('sortBy', _sortBy);
+
+      // Sort pref is non-fatal
+      try {
+        _sortBy = await _checklistService.getItemSortPref(houseId);
+        _checklistService.cache.set('sortBy', _sortBy);
+      } catch (e) {
+        debugPrint('[ChecklistsController] Failed to load sort pref: $e');
+      }
 
       if (_lists.isNotEmpty) {
         final target = _currentList != null
