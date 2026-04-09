@@ -23,6 +23,51 @@ class NotesController extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  // -- Selection --
+
+  bool _selectMode = false;
+  bool get selectMode => _selectMode;
+
+  final Set<int> _selected = {};
+  Set<int> get selected => _selected;
+
+  void toggleSelectMode() {
+    _selectMode = !_selectMode;
+    if (!_selectMode) _selected.clear();
+    notifyListeners();
+  }
+
+  void toggleSelection(int noteId) {
+    if (_selected.contains(noteId)) {
+      _selected.remove(noteId);
+    } else {
+      _selected.add(noteId);
+    }
+    notifyListeners();
+  }
+
+  void clearSelection() {
+    _selected.clear();
+    _selectMode = false;
+    notifyListeners();
+  }
+
+  Future<void> deleteSelected() async {
+    final ids = Set<int>.from(_selected);
+    for (final id in ids) {
+      try {
+        await _service.deleteNote(houseId, id);
+        _notes.removeWhere((n) => n.id == id);
+      } catch (e) {
+        debugPrint('[NotesController] Failed to delete note $id: $e');
+      }
+    }
+    _selected.clear();
+    _selectMode = false;
+    _service.cacheNotes(houseId, _notes);
+    notifyListeners();
+  }
+
   // -- Drag reorder state --
 
   int? _draggingId;

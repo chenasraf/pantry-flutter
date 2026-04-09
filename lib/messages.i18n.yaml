@@ -64,6 +64,7 @@ notesWall:
   saveFailed: Failed to save note.
   deleteFailed: Failed to delete note.
   deleteConfirm: Delete this note?
+  deleteSelectedConfirm(int count): "Delete ${_plural(count, one: 'this note', many: '$count notes')}?"
   newNote: New note
   editNote: Edit note
   title: Title
@@ -82,6 +83,7 @@ photoBoard:
   uploadFailed: Failed to upload photo.
   deleteFailed: Failed to delete photo.
   deleteConfirm: Delete this photo?
+  deleteSelectedConfirm(int count): "Delete ${_plural(count, one: 'this photo', many: '$count photos')}?"
   deleteFolder: Delete folder
   deleteFolderConfirm: Delete this folder?
   deleteFolderKeepPhotos: Move photos to root

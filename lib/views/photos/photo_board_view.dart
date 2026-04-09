@@ -120,7 +120,16 @@ class _TopBar extends StatelessWidget {
             ),
           ] else
             const Spacer(),
-          _SortButton(controller: controller),
+          if (controller.selectMode)
+            _SelectionActions(controller: controller)
+          else ...[
+            IconButton(
+              icon: const Icon(Icons.checklist),
+              tooltip: '',
+              onPressed: controller.toggleSelectMode,
+            ),
+            _SortButton(controller: controller),
+          ],
         ],
       ),
     );
@@ -188,6 +197,104 @@ class _SortButton extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+class _SelectionActions extends StatelessWidget {
+  final PhotoBoardController controller;
+
+  const _SelectionActions({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final count = controller.selected.length;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('$count', style: Theme.of(context).textTheme.titleSmall),
+        IconButton(
+          icon: const Icon(Icons.drive_file_move_outlined),
+          tooltip: '',
+          onPressed: count > 0 ? () => _showMoveDialog(context) : null,
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete_outlined),
+          tooltip: '',
+          onPressed: count > 0 ? () => _confirmDelete(context) : null,
+        ),
+        IconButton(
+          icon: const Icon(Icons.close),
+          tooltip: '',
+          onPressed: controller.clearSelection,
+        ),
+      ],
+    );
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          m.photoBoard.deleteSelectedConfirm(controller.selected.length),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              controller.deleteSelected();
+            },
+            child: Text(m.common.delete),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showMoveDialog(BuildContext context) {
+    final folders = controller.folders;
+    showDialog(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(m.photoBoard.folderName),
+        children: [
+          // Move to root option
+          if (controller.currentFolderId != null)
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(ctx);
+                controller.moveSelectedToFolder(null);
+              },
+              child: const Row(
+                children: [
+                  Icon(Icons.home_outlined, size: 20),
+                  SizedBox(width: 12),
+                  Text('Root'),
+                ],
+              ),
+            ),
+          ...folders.map(
+            (f) => SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(ctx);
+                controller.moveSelectedToFolder(f.id);
+              },
+              child: Row(
+                children: [
+                  const Icon(Icons.folder, size: 20),
+                  const SizedBox(width: 12),
+                  Text(f.name),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -601,11 +708,73 @@ class _PhotoTile extends StatelessWidget {
     final uri = PhotoService.instance.photoPreviewUri(houseId, photo.id);
     final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
 
+    if (controller.selectMode) {
+      final isSelected = controller.selected.contains(photo.id);
+      return GestureDetector(
+        onTap: () => controller.toggleSelection(photo.id),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CachedNetworkImage(
+                imageUrl: uri.toString(),
+                httpHeaders: headers,
+                fit: BoxFit.cover,
+                errorWidget: (_, _, _) => Container(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  child: const Icon(Icons.broken_image_outlined, size: 32),
+                ),
+              ),
+              if (photo.caption != null && photo.caption!.isNotEmpty)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withAlpha(180),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    child: Text(
+                      photo.caption!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.white,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              Positioned(
+                top: 4,
+                left: 4,
+                child: Icon(
+                  isSelected ? Icons.check_circle : Icons.circle_outlined,
+                  color: isSelected ? theme.colorScheme.primary : Colors.white,
+                  size: 24,
+                  shadows: const [Shadow(blurRadius: 4)],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return DragTarget<int>(
       onWillAcceptWithDetails: (details) => details.data != photo.id,
-      onAcceptWithDetails: (_) {
-        // Drop finalized — endDrag is called via onDragEnd
-      },
+      onAcceptWithDetails: (_) {},
       onMove: (details) {
         controller.hoverReorder(photo.id);
       },

@@ -67,6 +67,70 @@ class PhotoBoardController extends ChangeNotifier {
   final List<UploadTask> _uploads = [];
   List<UploadTask> get uploads => _uploads;
 
+  // -- Selection --
+
+  bool _selectMode = false;
+  bool get selectMode => _selectMode;
+
+  final Set<int> _selected = {};
+  Set<int> get selected => _selected;
+
+  void toggleSelectMode() {
+    _selectMode = !_selectMode;
+    if (!_selectMode) _selected.clear();
+    notifyListeners();
+  }
+
+  void toggleSelection(int photoId) {
+    if (_selected.contains(photoId)) {
+      _selected.remove(photoId);
+    } else {
+      _selected.add(photoId);
+    }
+    notifyListeners();
+  }
+
+  void clearSelection() {
+    _selected.clear();
+    _selectMode = false;
+    notifyListeners();
+  }
+
+  Future<void> deleteSelected() async {
+    final ids = Set<int>.from(_selected);
+    for (final id in ids) {
+      try {
+        await _service.deletePhoto(houseId, id);
+        _photos.removeWhere((p) => p.id == id);
+      } catch (e) {
+        debugPrint('[PhotoBoardController] Failed to delete photo $id: $e');
+      }
+    }
+    _selected.clear();
+    _selectMode = false;
+    _service.cachePhotos(houseId, _photos);
+    notifyListeners();
+  }
+
+  Future<void> moveSelectedToFolder(int? folderId) async {
+    final ids = Set<int>.from(_selected);
+    for (final id in ids) {
+      try {
+        await _service.updatePhoto(
+          houseId,
+          id,
+          folderId: folderId,
+          moveToRoot: folderId == null,
+        );
+      } catch (e) {
+        debugPrint('[PhotoBoardController] Failed to move photo $id: $e');
+      }
+    }
+    _selected.clear();
+    _selectMode = false;
+    await _reloadPhotos();
+  }
+
   /// Items visible in the current view (folders at root + photos in current folder).
   List<Photo> get visiblePhotos {
     if (_currentFolderId != null) {

@@ -76,7 +76,16 @@ class _NotesWallBody extends StatelessWidget {
               child: Row(
                 children: [
                   const Spacer(),
-                  _SortButton(controller: controller),
+                  if (controller.selectMode)
+                    _NoteSelectionActions(controller: controller)
+                  else ...[
+                    IconButton(
+                      icon: const Icon(Icons.checklist),
+                      tooltip: '',
+                      onPressed: controller.toggleSelectMode,
+                    ),
+                    _SortButton(controller: controller),
+                  ],
                 ],
               ),
             ),
@@ -103,6 +112,57 @@ class _NotesWallBody extends StatelessWidget {
   void _createNote(BuildContext context, NotesController controller) {
     Navigator.of(context).push<bool>(
       MaterialPageRoute(builder: (_) => _NoteFormPage(controller: controller)),
+    );
+  }
+}
+
+class _NoteSelectionActions extends StatelessWidget {
+  final NotesController controller;
+
+  const _NoteSelectionActions({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final count = controller.selected.length;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('$count', style: Theme.of(context).textTheme.titleSmall),
+        IconButton(
+          icon: const Icon(Icons.delete_outlined),
+          tooltip: '',
+          onPressed: count > 0 ? () => _confirmDelete(context) : null,
+        ),
+        IconButton(
+          icon: const Icon(Icons.close),
+          tooltip: '',
+          onPressed: controller.clearSelection,
+        ),
+      ],
+    );
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          m.notesWall.deleteSelectedConfirm(controller.selected.length),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              controller.deleteSelected();
+            },
+            child: Text(m.common.delete),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -220,6 +280,27 @@ class _NoteTile extends StatelessWidget {
     final bgColor =
         _parseColor(note.color) ?? theme.colorScheme.surfaceContainerHighest;
     final textColor = _contrastColor(bgColor);
+
+    if (controller.selectMode) {
+      final isSelected = controller.selected.contains(note.id);
+      return GestureDetector(
+        onTap: () => controller.toggleSelection(note.id),
+        child: Stack(
+          children: [
+            _buildCard(theme, bgColor, textColor),
+            Positioned(
+              top: 4,
+              left: 4,
+              child: Icon(
+                isSelected ? Icons.check_circle : Icons.circle_outlined,
+                color: isSelected ? theme.colorScheme.primary : textColor,
+                size: 24,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     return DragTarget<int>(
       onWillAcceptWithDetails: (details) => details.data != note.id,
