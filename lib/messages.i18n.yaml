@@ -35,7 +35,21 @@ nav:
   photoBoard: Photo Board
   notesWall: Notes Wall
 
+categories:
+  manageTitle: Manage categories
+  noCategories: No categories yet.
+  editTitle: Edit category
+  addTitle: New category
+  name: Name
+  icon: Icon
+  color: Color
+  saveFailed: Failed to save category.
+  deleteFailed: Failed to delete category.
+  deleteConfirm: Delete this category?
+  deleteConfirmBody: "Items currently in this category will be uncategorized. This cannot be undone."
+
 checklists:
+  categories: Categories
   noChecklists: No checklists yet.
   noItems: No items in this list.
   failedToLoad: Failed to load checklists.

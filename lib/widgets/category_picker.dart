@@ -4,6 +4,9 @@ import 'package:pantry/models/category.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 
+/// Sentinel value used for the "Create category" dropdown item.
+const int _createCategoryValue = -1;
+
 class CategoryPicker extends StatelessWidget {
   final List<Category> categories;
   final int? selectedId;
@@ -33,41 +36,49 @@ class CategoryPicker extends StatelessWidget {
     final theme = Theme.of(context);
     final f = m.checklists.itemForm;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        DropdownButtonFormField<int?>(
-          initialValue: selectedId,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            isDense: true,
+    return DropdownButtonFormField<int?>(
+      initialValue: selectedId,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        isDense: true,
+      ),
+      items: [
+        DropdownMenuItem<int?>(value: null, child: Text(f.noCategory)),
+        ...categories.map((cat) {
+          final color = _parseColor(cat.color) ?? theme.colorScheme.primary;
+          return DropdownMenuItem<int?>(
+            value: cat.id,
+            child: Row(
+              children: [
+                Icon(categoryIcon(cat.icon), size: 20, color: color),
+                const SizedBox(width: 8),
+                Text(cat.name),
+              ],
+            ),
+          );
+        }),
+        DropdownMenuItem<int?>(
+          value: _createCategoryValue,
+          child: Row(
+            children: [
+              Icon(Icons.add, size: 20, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                f.createCategory,
+                style: TextStyle(color: theme.colorScheme.primary),
+              ),
+            ],
           ),
-          items: [
-            DropdownMenuItem<int?>(value: null, child: Text(f.noCategory)),
-            ...categories.map((cat) {
-              final color = _parseColor(cat.color) ?? theme.colorScheme.primary;
-              return DropdownMenuItem<int?>(
-                value: cat.id,
-                child: Row(
-                  children: [
-                    Icon(categoryIcon(cat.icon), size: 20, color: color),
-                    const SizedBox(width: 8),
-                    Text(cat.name),
-                  ],
-                ),
-              );
-            }),
-          ],
-          onChanged: onChanged,
-        ),
-        const SizedBox(height: 8),
-        TextButton.icon(
-          onPressed: () => _showCreateDialog(context),
-          icon: const Icon(Icons.add, size: 18),
-          label: Text(f.createCategory),
         ),
       ],
+      onChanged: (value) {
+        if (value == _createCategoryValue) {
+          _showCreateDialog(context);
+        } else {
+          onChanged(value);
+        }
+      },
     );
   }
 

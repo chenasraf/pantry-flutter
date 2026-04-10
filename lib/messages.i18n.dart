@@ -66,6 +66,7 @@ class Messages {
   LoginMessages get login => LoginMessages(this);
   HomeMessages get home => HomeMessages(this);
   NavMessages get nav => NavMessages(this);
+  CategoriesMessages get categories => CategoriesMessages(this);
   ChecklistsMessages get checklists => ChecklistsMessages(this);
   NotesWallMessages get notesWall => NotesWallMessages(this);
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
@@ -244,9 +245,75 @@ class NavMessages {
   String get notesWall => """Notes Wall""";
 }
 
+class CategoriesMessages {
+  final Messages _parent;
+  const CategoriesMessages(this._parent);
+
+  /// ```dart
+  /// "Manage categories"
+  /// ```
+  String get manageTitle => """Manage categories""";
+
+  /// ```dart
+  /// "No categories yet."
+  /// ```
+  String get noCategories => """No categories yet.""";
+
+  /// ```dart
+  /// "Edit category"
+  /// ```
+  String get editTitle => """Edit category""";
+
+  /// ```dart
+  /// "New category"
+  /// ```
+  String get addTitle => """New category""";
+
+  /// ```dart
+  /// "Name"
+  /// ```
+  String get name => """Name""";
+
+  /// ```dart
+  /// "Icon"
+  /// ```
+  String get icon => """Icon""";
+
+  /// ```dart
+  /// "Color"
+  /// ```
+  String get color => """Color""";
+
+  /// ```dart
+  /// "Failed to save category."
+  /// ```
+  String get saveFailed => """Failed to save category.""";
+
+  /// ```dart
+  /// "Failed to delete category."
+  /// ```
+  String get deleteFailed => """Failed to delete category.""";
+
+  /// ```dart
+  /// "Delete this category?"
+  /// ```
+  String get deleteConfirm => """Delete this category?""";
+
+  /// ```dart
+  /// "Items currently in this category will be uncategorized. This cannot be undone."
+  /// ```
+  String get deleteConfirmBody =>
+      """Items currently in this category will be uncategorized. This cannot be undone.""";
+}
+
 class ChecklistsMessages {
   final Messages _parent;
   const ChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Categories"
+  /// ```
+  String get categories => """Categories""";
 
   /// ```dart
   /// "No checklists yet."
@@ -921,6 +988,19 @@ Please complete login in your browser.""",
   """nav.checklists""": """Checklists""",
   """nav.photoBoard""": """Photo Board""",
   """nav.notesWall""": """Notes Wall""",
+  """categories.manageTitle""": """Manage categories""",
+  """categories.noCategories""": """No categories yet.""",
+  """categories.editTitle""": """Edit category""",
+  """categories.addTitle""": """New category""",
+  """categories.name""": """Name""",
+  """categories.icon""": """Icon""",
+  """categories.color""": """Color""",
+  """categories.saveFailed""": """Failed to save category.""",
+  """categories.deleteFailed""": """Failed to delete category.""",
+  """categories.deleteConfirm""": """Delete this category?""",
+  """categories.deleteConfirmBody""":
+      """Items currently in this category will be uncategorized. This cannot be undone.""",
+  """checklists.categories""": """Categories""",
   """checklists.noChecklists""": """No checklists yet.""",
   """checklists.noItems""": """No items in this list.""",
   """checklists.failedToLoad""": """Failed to load checklists.""",

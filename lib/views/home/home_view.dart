@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/views/categories/categories_view.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
 import 'package:pantry/views/notes/notes_wall_view.dart';
 import 'package:pantry/views/photos/photo_board_view.dart';
@@ -67,10 +68,24 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
   Widget build(BuildContext context) {
     final controller = context.watch<HomeController>();
 
+    final houseId = controller.currentHouse?.id;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_tabTitle),
         actions: [
+          if (_tabIndex == 0 && houseId != null)
+            IconButton(
+              icon: const Icon(Icons.sell_outlined),
+              tooltip: m.checklists.categories,
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CategoriesView(houseId: houseId),
+                  ),
+                );
+              },
+            ),
           UserMenuButton(
             houses: controller.houses,
             currentHouse: controller.currentHouse,

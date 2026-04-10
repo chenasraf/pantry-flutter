@@ -36,4 +36,26 @@ class CategoryService {
       fromJson: (data) => Category.fromJson(data),
     );
   }
+
+  Future<Category> updateCategory(
+    int houseId,
+    int categoryId, {
+    String? name,
+    String? icon,
+    String? color,
+  }) async {
+    return ApiClient.instance.patch<Map<String, dynamic>, Category>(
+      '/houses/$houseId/categories/$categoryId',
+      body: {
+        if (name != null) 'name': name,
+        if (icon != null) 'icon': icon,
+        if (color != null) 'color': color,
+      },
+      fromJson: (data) => Category.fromJson(data),
+    );
+  }
+
+  Future<void> deleteCategory(int houseId, int categoryId) async {
+    await ApiClient.instance.delete('/houses/$houseId/categories/$categoryId');
+  }
 }

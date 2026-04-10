@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
+import 'package:pantry/models/category.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 
@@ -19,17 +20,31 @@ const categoryColors = [
 class CreateCategoryDialog extends StatefulWidget {
   final int houseId;
 
-  const CreateCategoryDialog({super.key, required this.houseId});
+  /// If non-null, we're editing this category instead of creating a new one.
+  final Category? existing;
+
+  const CreateCategoryDialog({super.key, required this.houseId, this.existing});
 
   @override
   State<CreateCategoryDialog> createState() => _CreateCategoryDialogState();
 }
 
 class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
-  final _nameController = TextEditingController();
-  String _selectedIcon = 'tag';
-  String _selectedColor = categoryColors.first;
+  late final TextEditingController _nameController;
+  late String _selectedIcon;
+  late String _selectedColor;
   bool _saving = false;
+
+  bool get _isEditing => widget.existing != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final e = widget.existing;
+    _nameController = TextEditingController(text: e?.name ?? '');
+    _selectedIcon = e?.icon ?? 'tag';
+    _selectedColor = e?.color ?? categoryColors.first;
+  }
 
   @override
   void dispose() {
@@ -43,18 +58,26 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
 
     setState(() => _saving = true);
     try {
-      final category = await CategoryService.instance.createCategory(
-        widget.houseId,
-        name: name,
-        icon: _selectedIcon,
-        color: _selectedColor,
-      );
+      final category = _isEditing
+          ? await CategoryService.instance.updateCategory(
+              widget.houseId,
+              widget.existing!.id,
+              name: name,
+              icon: _selectedIcon,
+              color: _selectedColor,
+            )
+          : await CategoryService.instance.createCategory(
+              widget.houseId,
+              name: name,
+              icon: _selectedIcon,
+              color: _selectedColor,
+            );
       if (mounted) Navigator.of(context).pop(category);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(m.checklists.itemForm.categoryCreateFailed)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.categories.saveFailed)));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -73,7 +96,7 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
     final f = m.checklists.itemForm;
 
     return AlertDialog(
-      title: Text(f.createCategory),
+      title: Text(_isEditing ? m.categories.editTitle : m.categories.addTitle),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
