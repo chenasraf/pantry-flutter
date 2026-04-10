@@ -162,6 +162,11 @@ class _UserMenuButton extends StatelessWidget {
     final creds = AuthService.instance.credentials;
     final loginName = creds?.loginName ?? '';
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final avatarPath = isDark
+        ? 'index.php/avatar/$loginName/128/dark'
+        : 'index.php/avatar/$loginName/128';
+
     return PopupMenuButton<Object>(
       offset: const Offset(0, 48),
       tooltip: loginName,
@@ -169,7 +174,7 @@ class _UserMenuButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: creds != null
             ? CachedNetworkImage(
-                imageUrl: '${creds.serverUrl}/index.php/avatar/$loginName/128',
+                imageUrl: '${creds.serverUrl}/$avatarPath',
                 httpHeaders: creds.basicAuthHeaders,
                 imageBuilder: (_, imageProvider) =>
                     CircleAvatar(radius: 16, backgroundImage: imageProvider),
