@@ -3,7 +3,8 @@ import 'package:pantry/i18n.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry/models/checklist.dart';
-import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/widgets/checklist_selector.dart';
+import 'package:pantry/widgets/checklist_sort_button.dart';
 import 'checklist_item_tile.dart';
 import 'checklists_controller.dart';
 import 'item_detail_view.dart';
@@ -110,13 +111,13 @@ class _ChecklistsBody extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: _ListSelector(
+                  child: ChecklistSelector(
                     lists: controller.lists,
                     currentList: controller.currentList,
                     onSelected: controller.selectList,
                   ),
                 ),
-                _SortButton(
+                ChecklistSortButton(
                   currentSort: controller.sortBy,
                   onSelected: controller.setSortBy,
                 ),
@@ -144,66 +145,6 @@ class _ChecklistsBody extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-class _ListSelector extends StatelessWidget {
-  final List<ChecklistList> lists;
-  final ChecklistList? currentList;
-  final ValueChanged<ChecklistList> onSelected;
-
-  const _ListSelector({
-    required this.lists,
-    required this.currentList,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-      child: DropdownButtonFormField<int>(
-        initialValue: currentList?.id,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          isDense: true,
-        ),
-        items: lists
-            .map(
-              (list) => DropdownMenuItem(
-                value: list.id,
-                child: Row(
-                  children: [
-                    Icon(checklistIcon(list.icon), size: 20),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(list.name, overflow: TextOverflow.ellipsis),
-                    ),
-                  ],
-                ),
-              ),
-            )
-            .toList(),
-        selectedItemBuilder: (context) => lists
-            .map(
-              (list) => Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(checklistIcon(list.icon), size: 20),
-                  const SizedBox(width: 8),
-                  Text(list.name, overflow: TextOverflow.ellipsis),
-                ],
-              ),
-            )
-            .toList(),
-        onChanged: (id) {
-          if (id == null) return;
-          final list = lists.firstWhere((l) => l.id == id);
-          onSelected(list);
-        },
-      ),
     );
   }
 }
@@ -355,60 +296,6 @@ class _ReorderablePartition extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _SortButton extends StatelessWidget {
-  final String currentSort;
-  final ValueChanged<String> onSelected;
-
-  const _SortButton({required this.currentSort, required this.onSelected});
-
-  static const _sortKeys = [
-    'newest',
-    'oldest',
-    'name_asc',
-    'name_desc',
-    'custom',
-  ];
-
-  static String _label(String key) => switch (key) {
-    'newest' => m.checklists.sort.newestFirst,
-    'oldest' => m.checklists.sort.oldestFirst,
-    'name_asc' => m.checklists.sort.nameAZ,
-    'name_desc' => m.checklists.sort.nameZA,
-    'custom' => m.checklists.sort.custom,
-    _ => key,
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      icon: const Icon(Icons.sort),
-      tooltip: '',
-      onSelected: onSelected,
-      itemBuilder: (context) => [
-        for (final key in _sortKeys)
-          PopupMenuItem<String>(
-            value: key,
-            child: Row(
-              children: [
-                Icon(
-                  key == currentSort
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_unchecked,
-                  size: 20,
-                  color: key == currentSort
-                      ? Theme.of(context).colorScheme.primary
-                      : null,
-                ),
-                const SizedBox(width: 12),
-                Text(_label(key)),
-              ],
-            ),
-          ),
-      ],
     );
   }
 }

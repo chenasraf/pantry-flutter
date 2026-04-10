@@ -1,14 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry/i18n.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
 import 'package:pantry/views/notes/notes_wall_view.dart';
 import 'package:pantry/views/photos/photo_board_view.dart';
+import 'package:pantry/widgets/server_app_missing_view.dart';
+import 'package:pantry/widgets/user_menu_button.dart';
 import 'home_controller.dart';
 
 class HomeView extends StatefulWidget {
@@ -71,7 +69,7 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
       appBar: AppBar(
         title: Text(_tabTitle),
         actions: [
-          _UserMenuButton(
+          UserMenuButton(
             houses: controller.houses,
             currentHouse: controller.currentHouse,
             onHouseSelected: controller.selectHouse,
@@ -107,7 +105,7 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
     }
 
     if (controller.serverAppMissing) {
-      return _ServerAppMissingView(onRetry: controller.load);
+      return ServerAppMissingView(onRetry: controller.load);
     }
 
     if (controller.error != null) {
@@ -145,171 +143,6 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
         return NotesWallView(key: ValueKey('notes-$houseId'), houseId: houseId);
       default:
         return const SizedBox.shrink();
-    }
-  }
-}
-
-class _UserMenuButton extends StatelessWidget {
-  final List<House> houses;
-  final House? currentHouse;
-  final ValueChanged<House> onHouseSelected;
-  final VoidCallback onLogout;
-
-  const _UserMenuButton({
-    required this.houses,
-    required this.currentHouse,
-    required this.onHouseSelected,
-    required this.onLogout,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final creds = AuthService.instance.credentials;
-    final loginName = creds?.loginName ?? '';
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final avatarPath = isDark
-        ? 'index.php/avatar/$loginName/128/dark'
-        : 'index.php/avatar/$loginName/128';
-
-    return PopupMenuButton<Object>(
-      offset: const Offset(0, 48),
-      tooltip: loginName,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: creds != null
-            ? CachedNetworkImage(
-                imageUrl: '${creds.serverUrl}/$avatarPath',
-                httpHeaders: creds.basicAuthHeaders,
-                imageBuilder: (_, imageProvider) =>
-                    CircleAvatar(radius: 16, backgroundImage: imageProvider),
-                errorWidget: (_, _, _) => const CircleAvatar(
-                  radius: 16,
-                  child: Icon(Icons.person, size: 20),
-                ),
-                placeholder: (_, _) => const CircleAvatar(
-                  radius: 16,
-                  child: Icon(Icons.person, size: 20),
-                ),
-              )
-            : const CircleAvatar(
-                radius: 16,
-                child: Icon(Icons.person, size: 20),
-              ),
-      ),
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          enabled: false,
-          child: Text(loginName, style: Theme.of(context).textTheme.titleSmall),
-        ),
-        if (houses.isNotEmpty) ...[
-          const PopupMenuDivider(),
-          ...houses.map(
-            (house) => PopupMenuItem<House>(
-              value: house,
-              child: Row(
-                children: [
-                  if (house.id == currentHouse?.id)
-                    Icon(
-                      Icons.check,
-                      size: 18,
-                      color: Theme.of(context).colorScheme.primary,
-                    )
-                  else
-                    const SizedBox(width: 18),
-                  const SizedBox(width: 8),
-                  Text(house.name),
-                ],
-              ),
-            ),
-          ),
-        ],
-        const PopupMenuDivider(),
-        PopupMenuItem<String>(
-          value: 'logout',
-          child: Row(
-            children: [
-              const Icon(Icons.logout, size: 18),
-              const SizedBox(width: 8),
-              Text(m.common.logout),
-            ],
-          ),
-        ),
-      ],
-      onSelected: (value) {
-        if (value is House) {
-          onHouseSelected(value);
-        } else if (value == 'logout') {
-          onLogout();
-        }
-      },
-    );
-  }
-}
-
-class _ServerAppMissingView extends StatelessWidget {
-  final VoidCallback onRetry;
-
-  const _ServerAppMissingView({required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final serverUrl = AuthService.instance.credentials?.serverUrl ?? '';
-    // Nextcloud app store path for pantry
-    final appUrl = '$serverUrl/settings/apps/organization/pantry';
-    final infoUrl = 'https://apps.nextcloud.com/apps/pantry';
-
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.extension_off_outlined,
-              size: 72,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              m.home.serverAppMissingTitle,
-              style: theme.textTheme.headlineSmall,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              m.home.serverAppMissingBody,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: () => _launch(appUrl),
-              icon: const Icon(Icons.open_in_new),
-              label: Text(m.home.openAppStore),
-            ),
-            const SizedBox(height: 8),
-            TextButton.icon(
-              onPressed: () => _launch(infoUrl),
-              icon: const Icon(Icons.info_outline),
-              label: Text(m.home.learnMore),
-            ),
-            const SizedBox(height: 16),
-            TextButton(onPressed: onRetry, child: Text(m.common.retry)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _launch(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 }

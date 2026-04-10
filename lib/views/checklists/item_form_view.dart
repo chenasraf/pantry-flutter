@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
-import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/widgets/category_picker.dart';
 import 'package:pantry/widgets/recurrence_dialog.dart';
+import 'package:pantry/widgets/repeat_button.dart';
 import 'checklists_controller.dart';
 
 class ItemFormView extends StatefulWidget {
@@ -157,7 +157,7 @@ class _ItemFormViewState extends State<ItemFormView> {
             },
           ),
           const SizedBox(height: 16),
-          _RepeatButton(
+          RepeatButton(
             rrule: _rrule,
             onTap: () async {
               final result = await showRecurrenceDialog(
@@ -174,56 +174,6 @@ class _ItemFormViewState extends State<ItemFormView> {
             },
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _RepeatButton extends StatelessWidget {
-  final String? rrule;
-  final VoidCallback onTap;
-
-  const _RepeatButton({required this.rrule, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final hasValue = rrule != null && rrule!.isNotEmpty;
-    final summary = hasValue ? formatRrule(rrule!) : m.recurrence.notSet;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          children: [
-            Icon(
-              Icons.event_repeat,
-              size: 20,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              '${m.checklists.itemForm.repeat}: ',
-              style: theme.textTheme.bodyMedium,
-            ),
-            Text(
-              summary,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: hasValue
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const Spacer(),
-            Icon(
-              Icons.chevron_right,
-              size: 20,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ],
-        ),
       ),
     );
   }
