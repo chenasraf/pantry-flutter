@@ -44,3 +44,17 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /openapi.json
+
+# Environment
+.env
+
+# Android signing
+android/key.properties
+android/app/*.jks
+android/app/*.keystore
+
+# Fastlane
+android/fastlane/play-store-key.json
+ios/fastlane/report.xml
+android/fastlane/report.xml
+/.envrc

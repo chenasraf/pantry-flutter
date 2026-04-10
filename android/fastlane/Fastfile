@@ -1,0 +1,82 @@
+default_platform(:android)
+
+platform :android do
+  def version_info
+    pubspec = File.read(File.expand_path("../../pubspec.yaml", __dir__))
+    version = pubspec.match(/^version:\s*(.+)$/)[1].strip
+    name, build = version.split("+")
+    { name: name, build: build }
+  end
+
+  def version_name
+    v = version_info
+    "#{v[:build]} (#{v[:name]})"
+  end
+
+  def changelog_notes
+    version = version_info[:name]
+    changelog_path = File.expand_path("../../CHANGELOG.md", __dir__)
+    return "Release #{version}" unless File.exist?(changelog_path)
+
+    changelog = File.read(changelog_path)
+    pattern = /^## \[#{Regexp.escape(version)}\].*?\n(.*?)(?=^## \[|\z)/m
+    match = changelog.match(pattern)
+    return "Release #{version}" unless match
+
+    match[1].strip
+      .gsub(/\s*\(\[[\da-f]+\]\([^)]+\)\)/, "")
+      .gsub(/^\*\s+\*\*[^*]+:\*\*\s*/m, "- ")
+      .gsub(/^\*\s+/, "- ")
+      .gsub(/^### /, "")
+      .gsub(/\n{3,}/, "\n\n")
+      .strip
+      .then { |n| n.empty? ? "Release #{version}" : n }
+  end
+
+  desc "Upload AAB to Google Play"
+  lane :deploy do |options|
+    # Write release notes to the metadata tree so `supply` picks it up
+    # keyed by the current versionCode.
+    version_code = version_info[:build]
+    changelog_dir = File.expand_path("metadata/android/en-US/changelogs", __dir__)
+    FileUtils.mkdir_p(changelog_dir)
+    File.write(File.join(changelog_dir, "#{version_code}.txt"), changelog_notes)
+
+    upload_to_play_store(
+      aab: File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__),
+      track: options[:track] || "internal",
+      release_status: options[:status] || "draft",
+      version_name: version_name,
+      metadata_path: File.expand_path("metadata/android", __dir__),
+    )
+  end
+
+  desc "Sync metadata and screenshots only (no AAB upload)"
+  lane :metadata do
+    upload_to_play_store(
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      metadata_path: File.expand_path("metadata/android", __dir__),
+    )
+  end
+
+  desc "Promote a release from one track to another"
+  lane :promote do |options|
+    from = options[:from] || "internal"
+    to = options[:to] || "production"
+    status = options[:status] || "draft"
+
+    upload_to_play_store(
+      track: from,
+      track_promote_to: to,
+      release_status: status,
+      version_name: version_name,
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+end

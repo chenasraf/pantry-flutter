@@ -1,0 +1,63 @@
+default_platform(:ios)
+
+platform :ios do
+  def api_key
+    key_id = ENV.fetch("APP_STORE_API_KEY")
+    app_store_connect_api_key(
+      key_id: key_id,
+      issuer_id: ENV.fetch("APP_STORE_ISSUER_ID"),
+      key_filepath: File.join(ENV.fetch("APP_STORE_KEY_PATH"), "AuthKey_#{key_id}.p8"),
+    )
+  end
+
+  def find_ipa
+    ipa_path = Dir[File.expand_path("../../build/ios/ipa/*.ipa", __dir__)].first
+    UI.user_error!("No IPA found in build/ios/ipa/. Run 'make ios-build' first.") unless ipa_path
+    ipa_path
+  end
+
+  def changelog_notes
+    root = File.expand_path("../..", __dir__)
+    pubspec = File.read(File.join(root, "pubspec.yaml"))
+    version = pubspec.match(/^version:\s*(.+)$/)[1].strip.split("+").first
+
+    changelog_path = File.join(root, "CHANGELOG.md")
+    return "Release #{version}" unless File.exist?(changelog_path)
+
+    changelog = File.read(changelog_path)
+    pattern = /^## \[#{Regexp.escape(version)}\].*?\n(.*?)(?=^## \[|\z)/m
+    match = changelog.match(pattern)
+    return "Release #{version}" unless match
+
+    match[1].strip
+      .gsub(/\s*\(\[[\da-f]+\]\([^)]+\)\)/, "")
+      .gsub(/^\*\s+\*\*[^*]+:\*\*\s*/m, "- ")
+      .gsub(/^\*\s+/, "- ")
+      .gsub(/^### /, "")
+      .gsub(/\n{3,}/, "\n\n")
+      .strip
+      .then { |n| n.empty? ? "Release #{version}" : n }
+  end
+
+  desc "Upload to TestFlight"
+  lane :beta do
+    upload_to_testflight(
+      api_key: api_key,
+      ipa: find_ipa,
+      changelog: changelog_notes,
+      skip_waiting_for_build_processing: true,
+    )
+  end
+
+  desc "Upload to App Store"
+  lane :release do
+    deliver(
+      api_key: api_key,
+      ipa: find_ipa,
+      skip_metadata: true,
+      skip_screenshots: true,
+      submit_for_review: false,
+      release_notes: { "en-US" => changelog_notes },
+    )
+  end
+end

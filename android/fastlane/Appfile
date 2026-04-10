@@ -1,0 +1,2 @@
+json_key_file(ENV["GOOGLE_PLAY_KEY_FILE"])
+package_name("dev.casraf.pantry")
