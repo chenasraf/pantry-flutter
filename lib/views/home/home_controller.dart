@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
+import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 
@@ -17,8 +18,14 @@ class HomeController extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  /// True when the Pantry server app is not installed on the user's
+  /// Nextcloud instance (API returns 404).
+  bool _serverAppMissing = false;
+  bool get serverAppMissing => _serverAppMissing;
+
   Future<void> load() async {
     _error = null;
+    _serverAppMissing = false;
 
     // Restore from cache
     final cached = HouseService.instance.getCached();
@@ -52,7 +59,11 @@ class HomeController extends ChangeNotifier {
     } catch (e) {
       debugPrint('[HomeController] Failed to load houses: $e');
       if (_houses.isEmpty) {
-        _error = m.home.failedToLoadHouses;
+        if (e is ApiException && e.statusCode == 404) {
+          _serverAppMissing = true;
+        } else {
+          _error = m.home.failedToLoadHouses;
+        }
         _isLoading = false;
         notifyListeners();
       }

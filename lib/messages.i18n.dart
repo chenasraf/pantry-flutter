@@ -175,6 +175,27 @@ class HomeMessages {
   /// "Failed to load houses."
   /// ```
   String get failedToLoadHouses => """Failed to load houses.""";
+
+  /// ```dart
+  /// "Pantry is not installed"
+  /// ```
+  String get serverAppMissingTitle => """Pantry is not installed""";
+
+  /// ```dart
+  /// "This app is a client for the Pantry app on Nextcloud. It looks like Pantry isn't installed on your server yet. Ask your administrator to install it from the Nextcloud app store, or install it yourself if you have admin access."
+  /// ```
+  String get serverAppMissingBody =>
+      """This app is a client for the Pantry app on Nextcloud. It looks like Pantry isn't installed on your server yet. Ask your administrator to install it from the Nextcloud app store, or install it yourself if you have admin access.""";
+
+  /// ```dart
+  /// "Open Nextcloud apps"
+  /// ```
+  String get openAppStore => """Open Nextcloud apps""";
+
+  /// ```dart
+  /// "Learn more"
+  /// ```
+  String get learnMore => """Learn more""";
 }
 
 class NavMessages {
@@ -860,6 +881,11 @@ Please complete login in your browser.""",
   """login.loginFailed""": """Login failed. Please try again.""",
   """home.noHouses""": """No houses found. Create one in Nextcloud first.""",
   """home.failedToLoadHouses""": """Failed to load houses.""",
+  """home.serverAppMissingTitle""": """Pantry is not installed""",
+  """home.serverAppMissingBody""":
+      """This app is a client for the Pantry app on Nextcloud. It looks like Pantry isn't installed on your server yet. Ask your administrator to install it from the Nextcloud app store, or install it yourself if you have admin access.""",
+  """home.openAppStore""": """Open Nextcloud apps""",
+  """home.learnMore""": """Learn more""",
   """nav.checklists""": """Checklists""",
   """nav.photoBoard""": """Photo Board""",
   """nav.notesWall""": """Notes Wall""",

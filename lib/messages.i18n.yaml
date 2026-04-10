@@ -20,6 +20,10 @@ login:
 home:
   noHouses: No houses found. Create one in Nextcloud first.
   failedToLoadHouses: Failed to load houses.
+  serverAppMissingTitle: Pantry is not installed
+  serverAppMissingBody: "This app is a client for the Pantry app on Nextcloud. It looks like Pantry isn't installed on your server yet. Ask your administrator to install it from the Nextcloud app store, or install it yourself if you have admin access."
+  openAppStore: Open Nextcloud apps
+  learnMore: Learn more
 
 nav:
   checklists: Checklists
