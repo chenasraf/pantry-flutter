@@ -65,11 +65,37 @@ class AuthService {
   int _firstDayOfWeek = _firstDayFromLocale();
   int get firstDayOfWeek => _firstDayOfWeek;
 
+  String? _displayName;
+  String? get displayName => _displayName;
+
   Future<void> loadCredentials() async {
     final json = await _storage.read(key: _credentialsKey);
     if (json != null) {
       _credentials = NextcloudCredentials.fromJson(jsonDecode(json));
-      await fetchFirstDayOfWeek();
+      await Future.wait([fetchFirstDayOfWeek(), fetchDisplayName()]);
+    }
+  }
+
+  Future<void> fetchDisplayName() async {
+    if (_credentials == null) return;
+    try {
+      final uri = Uri.parse('${_credentials!.serverUrl}/ocs/v2.php/cloud/user');
+      final response = await http.get(
+        uri,
+        headers: {
+          ..._credentials!.basicAuthHeaders,
+          'Accept': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final userData = data['ocs']?['data'] as Map<String, dynamic>?;
+        _displayName =
+            userData?['display-name'] as String? ??
+            userData?['displayname'] as String?;
+      }
+    } catch (e) {
+      debugPrint('[AuthService] Failed to fetch display name: $e');
     }
   }
 

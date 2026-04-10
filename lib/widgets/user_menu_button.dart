@@ -25,41 +25,106 @@ class UserMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final creds = AuthService.instance.credentials;
     final loginName = creds?.loginName ?? '';
+    final displayName = AuthService.instance.displayName ?? loginName;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final avatarPath = isDark
         ? 'index.php/avatar/$loginName/128/dark'
         : 'index.php/avatar/$loginName/128';
 
-    return PopupMenuButton<Object>(
-      offset: const Offset(0, 48),
-      tooltip: loginName,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: creds != null
-            ? CachedNetworkImage(
-                imageUrl: '${creds.serverUrl}/$avatarPath',
-                httpHeaders: creds.basicAuthHeaders,
-                imageBuilder: (_, imageProvider) =>
-                    CircleAvatar(radius: 16, backgroundImage: imageProvider),
-                errorWidget: (_, _, _) => const CircleAvatar(
-                  radius: 16,
-                  child: Icon(Icons.person, size: 20),
-                ),
-                placeholder: (_, _) => const CircleAvatar(
-                  radius: 16,
-                  child: Icon(Icons.person, size: 20),
-                ),
-              )
-            : const CircleAvatar(
-                radius: 16,
-                child: Icon(Icons.person, size: 20),
-              ),
+    final avatar = creds != null
+        ? CachedNetworkImage(
+            imageUrl: '${creds.serverUrl}/$avatarPath',
+            httpHeaders: creds.basicAuthHeaders,
+            imageBuilder: (_, imageProvider) =>
+                CircleAvatar(radius: 18, backgroundImage: imageProvider),
+            errorWidget: (_, _, _) => const CircleAvatar(
+              radius: 18,
+              child: Icon(Icons.person, size: 22),
+            ),
+            placeholder: (_, _) => const CircleAvatar(
+              radius: 18,
+              child: Icon(Icons.person, size: 22),
+            ),
+          )
+        : const CircleAvatar(radius: 18, child: Icon(Icons.person, size: 22));
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () => _showMenu(context, displayName, loginName, avatar),
+          child: Padding(padding: const EdgeInsets.all(4), child: avatar),
+        ),
       ),
-      itemBuilder: (context) => [
+    );
+  }
+
+  Future<void> _showMenu(
+    BuildContext context,
+    String displayName,
+    String loginName,
+    Widget avatar,
+  ) async {
+    final theme = Theme.of(context);
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final button = context.findRenderObject() as RenderBox;
+    final position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(
+          button.size.bottomRight(Offset.zero),
+          ancestor: overlay,
+        ),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    final value = await showMenu<Object>(
+      context: context,
+      position: position,
+      elevation: 8,
+      constraints: const BoxConstraints(minWidth: 260, maxWidth: 320),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      items: [
         PopupMenuItem(
           enabled: false,
-          child: Text(loginName, style: Theme.of(context).textTheme.titleSmall),
+          padding: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: Row(
+              children: [
+                SizedBox(width: 40, height: 40, child: avatar),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        displayName,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        loginName,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
         if (houses.isNotEmpty) ...[
           const PopupMenuDivider(),
@@ -72,7 +137,7 @@ class UserMenuButton extends StatelessWidget {
                     Icon(
                       Icons.check,
                       size: 18,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: theme.colorScheme.primary,
                     )
                   else
                     const SizedBox(width: 18),
@@ -106,15 +171,14 @@ class UserMenuButton extends StatelessWidget {
           ),
         ),
       ],
-      onSelected: (value) {
-        if (value is House) {
-          onHouseSelected(value);
-        } else if (value == 'create_house') {
-          onCreateHouse();
-        } else if (value == 'logout') {
-          onLogout();
-        }
-      },
     );
+
+    if (value is House) {
+      onHouseSelected(value);
+    } else if (value == 'create_house') {
+      onCreateHouse();
+    } else if (value == 'logout') {
+      onLogout();
+    }
   }
 }

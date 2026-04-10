@@ -80,6 +80,13 @@ class PantryAppState extends State<PantryApp> {
           seedColor: color,
         ).copyWith(primary: color),
         useMaterial3: true,
+        popupMenuTheme: PopupMenuThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 8,
+          position: PopupMenuPosition.under,
+        ),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -87,6 +94,13 @@ class PantryAppState extends State<PantryApp> {
           brightness: Brightness.dark,
         ).copyWith(primary: color),
         useMaterial3: true,
+        popupMenuTheme: PopupMenuThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 8,
+          position: PopupMenuPosition.under,
+        ),
       ),
       themeMode: ThemeMode.system,
       onGenerateInitialRoutes: (initialRoute) => [
