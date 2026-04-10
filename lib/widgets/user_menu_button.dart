@@ -9,6 +9,7 @@ class UserMenuButton extends StatelessWidget {
   final List<House> houses;
   final House? currentHouse;
   final ValueChanged<House> onHouseSelected;
+  final VoidCallback onCreateHouse;
   final VoidCallback onLogout;
 
   const UserMenuButton({
@@ -16,6 +17,7 @@ class UserMenuButton extends StatelessWidget {
     required this.houses,
     required this.currentHouse,
     required this.onHouseSelected,
+    required this.onCreateHouse,
     required this.onLogout,
   });
 
@@ -83,6 +85,17 @@ class UserMenuButton extends StatelessWidget {
         ],
         const PopupMenuDivider(),
         PopupMenuItem<String>(
+          value: 'create_house',
+          child: Row(
+            children: [
+              const Icon(Icons.add, size: 18),
+              const SizedBox(width: 8),
+              Text(m.home.createHouse),
+            ],
+          ),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem<String>(
           value: 'logout',
           child: Row(
             children: [
@@ -96,6 +109,8 @@ class UserMenuButton extends StatelessWidget {
       onSelected: (value) {
         if (value is House) {
           onHouseSelected(value);
+        } else if (value == 'create_house') {
+          onCreateHouse();
         } else if (value == 'logout') {
           onLogout();
         }

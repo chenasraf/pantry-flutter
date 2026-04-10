@@ -45,7 +45,7 @@ class HomeController extends ChangeNotifier {
       _houses = await HouseService.instance.getHouses();
 
       if (_houses.isEmpty) {
-        _error = m.home.noHouses;
+        _currentHouse = null;
         _isLoading = false;
         notifyListeners();
         return;
@@ -86,5 +86,20 @@ class HomeController extends ChangeNotifier {
     _currentHouse = house;
     await PrefsService.instance.setLastHouseId(house.id);
     notifyListeners();
+  }
+
+  Future<House> addHouse({required String name, String? description}) async {
+    final house = await HouseService.instance.createHouse(
+      name: name,
+      description: description,
+    );
+    _houses = [..._houses, house];
+    HouseService.instance.cache.setList('houses', _houses, (h) => h.toJson());
+    _currentHouse = house;
+    _serverAppMissing = false;
+    _error = null;
+    await PrefsService.instance.setLastHouseId(house.id);
+    notifyListeners();
+    return house;
   }
 }

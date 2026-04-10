@@ -5,6 +5,8 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
 import 'package:pantry/views/notes/notes_wall_view.dart';
 import 'package:pantry/views/photos/photo_board_view.dart';
+import 'package:pantry/widgets/create_house_dialog.dart';
+import 'package:pantry/widgets/no_houses_view.dart';
 import 'package:pantry/widgets/server_app_missing_view.dart';
 import 'package:pantry/widgets/user_menu_button.dart';
 import 'home_controller.dart';
@@ -73,6 +75,7 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
             houses: controller.houses,
             currentHouse: controller.currentHouse,
             onHouseSelected: controller.selectHouse,
+            onCreateHouse: () => showCreateHouseDialog(context, controller),
             onLogout: widget.onLogout,
           ),
         ],
@@ -106,6 +109,10 @@ class _HomeViewBodyState extends State<_HomeViewBody> {
 
     if (controller.serverAppMissing) {
       return ServerAppMissingView(onRetry: controller.load);
+    }
+
+    if (controller.currentHouse == null && controller.error == null) {
+      return NoHousesView(controller: controller);
     }
 
     if (controller.error != null) {

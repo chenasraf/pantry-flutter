@@ -167,9 +167,35 @@ class HomeMessages {
   const HomeMessages(this._parent);
 
   /// ```dart
-  /// "No houses found. Create one in Nextcloud first."
+  /// "No houses yet."
   /// ```
-  String get noHouses => """No houses found. Create one in Nextcloud first.""";
+  String get noHouses => """No houses yet.""";
+
+  /// ```dart
+  /// "Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes."
+  /// ```
+  String get noHousesBody =>
+      """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""";
+
+  /// ```dart
+  /// "Create house"
+  /// ```
+  String get createHouse => """Create house""";
+
+  /// ```dart
+  /// "House name"
+  /// ```
+  String get houseName => """House name""";
+
+  /// ```dart
+  /// "Description (optional)"
+  /// ```
+  String get houseDescription => """Description (optional)""";
+
+  /// ```dart
+  /// "Failed to create house."
+  /// ```
+  String get createHouseFailed => """Failed to create house.""";
 
   /// ```dart
   /// "Failed to load houses."
@@ -879,7 +905,13 @@ Please complete login in your browser.""",
   """login.couldNotConnect""":
       """Could not connect to server. Please check the URL.""",
   """login.loginFailed""": """Login failed. Please try again.""",
-  """home.noHouses""": """No houses found. Create one in Nextcloud first.""",
+  """home.noHouses""": """No houses yet.""",
+  """home.noHousesBody""":
+      """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""",
+  """home.createHouse""": """Create house""",
+  """home.houseName""": """House name""",
+  """home.houseDescription""": """Description (optional)""",
+  """home.createHouseFailed""": """Failed to create house.""",
   """home.failedToLoadHouses""": """Failed to load houses.""",
   """home.serverAppMissingTitle""": """Pantry is not installed""",
   """home.serverAppMissingBody""":

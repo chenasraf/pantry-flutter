@@ -21,4 +21,16 @@ class HouseService {
     cache.setList(_housesKey, houses, (h) => h.toJson());
     return houses;
   }
+
+  Future<House> createHouse({required String name, String? description}) async {
+    return ApiClient.instance.post<Map<String, dynamic>, House>(
+      '/houses',
+      body: {
+        'name': name,
+        if (description != null && description.isNotEmpty)
+          'description': description,
+      },
+      fromJson: (data) => House.fromJson(data),
+    );
+  }
 }
