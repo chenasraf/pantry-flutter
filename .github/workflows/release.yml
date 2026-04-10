@@ -98,7 +98,7 @@ jobs:
 
   build-android:
     needs: release-please
-    if: false # TEMPORARILY DISABLED — was: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
 
     steps:
@@ -226,8 +226,8 @@ jobs:
             build/ios/ipa/pantry-${{ needs.release-please.outputs.version }}-unsigned.ipa
 
   post-release-comment:
-    needs: [release-please, build-android, build-ios]
-    if: false # TEMPORARILY DISABLED — was: ${{ needs.release-please.outputs.release_created }}
+    needs: [release-please, build-android]
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
 
     steps:
