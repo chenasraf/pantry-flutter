@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
+import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 
 const _colorOptions = [
@@ -32,6 +33,8 @@ class _NoteFormViewState extends State<NoteFormView> {
   late final TextEditingController _contentController;
   String? _selectedColor;
   bool _saving = false;
+  TextDirection _titleDir = TextDirection.ltr;
+  TextDirection _contentDir = TextDirection.ltr;
 
   bool get _isEditing => widget.note != null;
 
@@ -43,6 +46,16 @@ class _NoteFormViewState extends State<NoteFormView> {
       text: widget.note?.content ?? '',
     );
     _selectedColor = widget.note?.color;
+    _titleDir = detectTextDirection(widget.note?.title);
+    _contentDir = detectTextDirection(widget.note?.content);
+    _titleController.addListener(() {
+      final dir = detectTextDirection(_titleController.text);
+      if (dir != _titleDir) setState(() => _titleDir = dir);
+    });
+    _contentController.addListener(() {
+      final dir = detectTextDirection(_contentController.text);
+      if (dir != _contentDir) setState(() => _contentDir = dir);
+    });
   }
 
   @override
@@ -112,6 +125,7 @@ class _NoteFormViewState extends State<NoteFormView> {
             autofocus: !_isEditing,
             textCapitalization: TextCapitalization.sentences,
             textInputAction: TextInputAction.next,
+            textDirection: _titleDir,
           ),
           const SizedBox(height: 16),
           TextField(
@@ -124,6 +138,7 @@ class _NoteFormViewState extends State<NoteFormView> {
             textCapitalization: TextCapitalization.sentences,
             maxLines: 10,
             minLines: 4,
+            textDirection: _contentDir,
           ),
           const SizedBox(height: 16),
           Text(

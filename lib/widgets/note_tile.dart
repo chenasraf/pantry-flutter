@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
+import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
@@ -69,6 +71,9 @@ class NoteTile extends StatelessWidget {
   }
 
   Widget _buildCard(ThemeData theme, Color bgColor, Color textColor) {
+    final titleDir = detectTextDirection(note.title);
+    final contentDir = detectTextDirection(note.content);
+
     return Container(
       decoration: BoxDecoration(
         color: bgColor,
@@ -81,14 +86,17 @@ class NoteTile extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  note.title,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
+                child: Directionality(
+                  textDirection: titleDir,
+                  child: Text(
+                    note.title,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               _NoteMenuButton(
@@ -101,12 +109,55 @@ class NoteTile extends StatelessWidget {
           if (note.content != null && note.content!.isNotEmpty) ...[
             const SizedBox(height: 6),
             Expanded(
-              child: Text(
-                note.content!,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: textColor.withAlpha(200),
+              child: Directionality(
+                textDirection: contentDir,
+                child: MarkdownBody(
+                  data: note.content!,
+                  shrinkWrap: true,
+                  fitContent: false,
+                  styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                    p: theme.textTheme.bodySmall?.copyWith(
+                      color: textColor.withAlpha(200),
+                    ),
+                    h1: theme.textTheme.titleMedium?.copyWith(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    h2: theme.textTheme.titleSmall?.copyWith(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    h3: theme.textTheme.bodyMedium?.copyWith(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    listBullet: theme.textTheme.bodySmall?.copyWith(
+                      color: textColor.withAlpha(200),
+                    ),
+                    strong: TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    em: TextStyle(
+                      color: textColor.withAlpha(200),
+                      fontStyle: FontStyle.italic,
+                    ),
+                    code: TextStyle(
+                      color: textColor,
+                      backgroundColor: textColor.withAlpha(30),
+                      fontFamily: 'monospace',
+                      fontSize: 12,
+                    ),
+                    blockquote: theme.textTheme.bodySmall?.copyWith(
+                      color: textColor.withAlpha(180),
+                      fontStyle: FontStyle.italic,
+                    ),
+                    a: TextStyle(
+                      color: textColor,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
                 ),
-                overflow: TextOverflow.fade,
               ),
             ),
           ],
