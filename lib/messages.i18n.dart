@@ -662,6 +662,11 @@ class SortChecklistsMessages {
   String get nameZA => """Name Z–A""";
 
   /// ```dart
+  /// "By category"
+  /// ```
+  String get category => """By category""";
+
+  /// ```dart
   /// "Custom"
   /// ```
   String get custom => """Custom""";
@@ -1231,6 +1236,7 @@ Please complete login in your browser.""",
   """checklists.sort.oldestFirst""": """Oldest first""",
   """checklists.sort.nameAZ""": """Name A–Z""",
   """checklists.sort.nameZA""": """Name Z–A""",
+  """checklists.sort.category""": """By category""",
   """checklists.sort.custom""": """Custom""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",

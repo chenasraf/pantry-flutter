@@ -17,6 +17,7 @@ class ChecklistSortButton extends StatelessWidget {
     'oldest',
     'name_asc',
     'name_desc',
+    'category',
     'custom',
   ];
 
@@ -25,6 +26,7 @@ class ChecklistSortButton extends StatelessWidget {
     'oldest' => m.checklists.sort.oldestFirst,
     'name_asc' => m.checklists.sort.nameAZ,
     'name_desc' => m.checklists.sort.nameZA,
+    'category' => m.checklists.sort.category,
     'custom' => m.checklists.sort.custom,
     _ => key,
   };

@@ -120,6 +120,7 @@ checklists:
     oldestFirst: Oldest first
     nameAZ: "Name A\u2013Z"
     nameZA: "Name Z\u2013A"
+    category: By category
     custom: Custom
 
 notesWall:
