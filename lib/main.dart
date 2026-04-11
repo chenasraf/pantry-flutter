@@ -1,18 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'i18n.dart';
 import 'services/auth_service.dart';
+import 'services/background_notification_task.dart';
 import 'services/category_service.dart';
 import 'services/checklist_service.dart';
 import 'services/house_service.dart';
+import 'services/local_notifications_service.dart';
 import 'services/note_service.dart';
 import 'services/photo_service.dart';
 import 'services/prefs_service.dart';
 import 'services/theming_service.dart';
 import 'views/home/home_view.dart';
 import 'views/login/login_view.dart';
+import 'views/notifications_intro/notifications_intro_view.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -23,6 +28,7 @@ void main() async {
   }
   await AuthService.instance.loadCredentials();
   await PrefsService.instance.load();
+  await LocalNotificationsService.instance.init();
   if (AuthService.instance.isLoggedIn) {
     await Future.wait([
       ThemingService.instance.fetchTheme(),
@@ -32,6 +38,10 @@ void main() async {
       PhotoService.instance.cache.load(),
       NoteService.instance.cache.load(),
     ]);
+    // Kick off the periodic background poll if notifications are enabled.
+    if (PrefsService.instance.notificationsEnabled) {
+      unawaited(registerBackgroundNotificationPoll());
+    }
   }
   runApp(const PantryApp());
 }
@@ -49,11 +59,20 @@ class PantryAppState extends State<PantryApp> {
   Future<void> _onLoginSuccess() async {
     await ThemingService.instance.fetchTheme();
     _isLoggedIn = true;
-    rootNavigatorKey.currentState?.pushReplacementNamed('/home');
+    final nextRoute = PrefsService.instance.notificationsIntroSeen
+        ? '/home'
+        : '/notifications-intro';
+    rootNavigatorKey.currentState?.pushReplacementNamed(nextRoute);
     if (mounted) setState(() {});
   }
 
+  void _onIntroDone() {
+    rootNavigatorKey.currentState?.pushReplacementNamed('/home');
+  }
+
   Future<void> _onLogout() async {
+    await cancelBackgroundNotificationPoll();
+    await LocalNotificationsService.instance.cancelAll();
     await AuthService.instance.logout();
     ThemingService.instance.clear();
     await Future.wait([
@@ -106,7 +125,9 @@ class PantryAppState extends State<PantryApp> {
       onGenerateInitialRoutes: (initialRoute) => [
         MaterialPageRoute(
           builder: (_) => _isLoggedIn
-              ? HomeView(onLogout: _onLogout)
+              ? (PrefsService.instance.notificationsIntroSeen
+                    ? HomeView(onLogout: _onLogout)
+                    : NotificationsIntroView(onDone: _onIntroDone))
               : LoginView(onLoginSuccess: _onLoginSuccess),
         ),
       ],
@@ -115,6 +136,10 @@ class PantryAppState extends State<PantryApp> {
           case '/home':
             return MaterialPageRoute(
               builder: (_) => HomeView(onLogout: _onLogout),
+            );
+          case '/notifications-intro':
+            return MaterialPageRoute(
+              builder: (_) => NotificationsIntroView(onDone: _onIntroDone),
             );
           case '/login':
           default:

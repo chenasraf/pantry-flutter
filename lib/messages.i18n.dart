@@ -66,6 +66,10 @@ class Messages {
   LoginMessages get login => LoginMessages(this);
   HomeMessages get home => HomeMessages(this);
   NavMessages get nav => NavMessages(this);
+  NotificationsIntroMessages get notificationsIntro =>
+      NotificationsIntroMessages(this);
+  SettingsMessages get settings => SettingsMessages(this);
+  NotificationsMessages get notifications => NotificationsMessages(this);
   CategoriesMessages get categories => CategoriesMessages(this);
   ChecklistsMessages get checklists => ChecklistsMessages(this);
   NotesWallMessages get notesWall => NotesWallMessages(this);
@@ -243,6 +247,170 @@ class NavMessages {
   /// "Notes Wall"
   /// ```
   String get notesWall => """Notes Wall""";
+}
+
+class NotificationsIntroMessages {
+  final Messages _parent;
+  const NotificationsIntroMessages(this._parent);
+
+  /// ```dart
+  /// "Stay in the loop"
+  /// ```
+  String get title => """Stay in the loop""";
+
+  /// ```dart
+  /// "Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
+  /// ```
+  String get body =>
+      """Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""";
+
+  /// ```dart
+  /// "Household activity alerts"
+  /// ```
+  String get bullet1 => """Household activity alerts""";
+
+  /// ```dart
+  /// "Fetched directly from your server"
+  /// ```
+  String get bullet2 => """Fetched directly from your server""";
+
+  /// ```dart
+  /// "Works even when the app is closed"
+  /// ```
+  String get bullet3 => """Works even when the app is closed""";
+
+  /// ```dart
+  /// "Enable notifications"
+  /// ```
+  String get enableButton => """Enable notifications""";
+
+  /// ```dart
+  /// "Not now"
+  /// ```
+  String get skipButton => """Not now""";
+
+  /// ```dart
+  /// "Permission denied"
+  /// ```
+  String get permissionDeniedTitle => """Permission denied""";
+
+  /// ```dart
+  /// "You can enable notifications later in App Settings. If your device blocks them, you'll need to allow them in system settings first."
+  /// ```
+  String get permissionDeniedBody =>
+      """You can enable notifications later in App Settings. If your device blocks them, you'll need to allow them in system settings first.""";
+
+  /// ```dart
+  /// "OK"
+  /// ```
+  String get ok => """OK""";
+}
+
+class SettingsMessages {
+  final Messages _parent;
+  const SettingsMessages(this._parent);
+
+  /// ```dart
+  /// "App Settings"
+  /// ```
+  String get title => """App Settings""";
+
+  /// ```dart
+  /// "Notifications"
+  /// ```
+  String get notificationsSection => """Notifications""";
+
+  /// ```dart
+  /// "Enable notifications"
+  /// ```
+  String get enableNotifications => """Enable notifications""";
+
+  /// ```dart
+  /// "Show alerts when household members add or update content."
+  /// ```
+  String get enableNotificationsBody =>
+      """Show alerts when household members add or update content.""";
+
+  /// ```dart
+  /// "Check for new activity"
+  /// ```
+  String get pollInterval => """Check for new activity""";
+
+  /// ```dart
+  /// "Every 15 minutes"
+  /// ```
+  String get pollInterval15m => """Every 15 minutes""";
+
+  /// ```dart
+  /// "Every 30 minutes"
+  /// ```
+  String get pollInterval30m => """Every 30 minutes""";
+
+  /// ```dart
+  /// "Every hour"
+  /// ```
+  String get pollInterval1h => """Every hour""";
+
+  /// ```dart
+  /// "Every 2 hours"
+  /// ```
+  String get pollInterval2h => """Every 2 hours""";
+
+  /// ```dart
+  /// "Every 6 hours"
+  /// ```
+  String get pollInterval6h => """Every 6 hours""";
+
+  /// ```dart
+  /// "Notification permission was denied. Enable it in system settings."
+  /// ```
+  String get permissionDenied =>
+      """Notification permission was denied. Enable it in system settings.""";
+}
+
+class NotificationsMessages {
+  final Messages _parent;
+  const NotificationsMessages(this._parent);
+
+  /// ```dart
+  /// "Notifications"
+  /// ```
+  String get title => """Notifications""";
+
+  /// ```dart
+  /// "No new notifications."
+  /// ```
+  String get empty => """No new notifications.""";
+
+  /// ```dart
+  /// "Failed to load notifications."
+  /// ```
+  String get failedToLoad => """Failed to load notifications.""";
+
+  /// ```dart
+  /// "Dismiss all"
+  /// ```
+  String get dismissAll => """Dismiss all""";
+
+  /// ```dart
+  /// "just now"
+  /// ```
+  String get justNow => """just now""";
+
+  /// ```dart
+  /// "${count}m ago"
+  /// ```
+  String minutesAgo(int count) => """${count}m ago""";
+
+  /// ```dart
+  /// "${count}h ago"
+  /// ```
+  String hoursAgo(int count) => """${count}h ago""";
+
+  /// ```dart
+  /// "${count}d ago"
+  /// ```
+  String daysAgo(int count) => """${count}d ago""";
 }
 
 class CategoriesMessages {
@@ -988,6 +1156,36 @@ Please complete login in your browser.""",
   """nav.checklists""": """Checklists""",
   """nav.photoBoard""": """Photo Board""",
   """nav.notesWall""": """Notes Wall""",
+  """notificationsIntro.title""": """Stay in the loop""",
+  """notificationsIntro.body""":
+      """Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""",
+  """notificationsIntro.bullet1""": """Household activity alerts""",
+  """notificationsIntro.bullet2""": """Fetched directly from your server""",
+  """notificationsIntro.bullet3""": """Works even when the app is closed""",
+  """notificationsIntro.enableButton""": """Enable notifications""",
+  """notificationsIntro.skipButton""": """Not now""",
+  """notificationsIntro.permissionDeniedTitle""": """Permission denied""",
+  """notificationsIntro.permissionDeniedBody""":
+      """You can enable notifications later in App Settings. If your device blocks them, you'll need to allow them in system settings first.""",
+  """notificationsIntro.ok""": """OK""",
+  """settings.title""": """App Settings""",
+  """settings.notificationsSection""": """Notifications""",
+  """settings.enableNotifications""": """Enable notifications""",
+  """settings.enableNotificationsBody""":
+      """Show alerts when household members add or update content.""",
+  """settings.pollInterval""": """Check for new activity""",
+  """settings.pollInterval15m""": """Every 15 minutes""",
+  """settings.pollInterval30m""": """Every 30 minutes""",
+  """settings.pollInterval1h""": """Every hour""",
+  """settings.pollInterval2h""": """Every 2 hours""",
+  """settings.pollInterval6h""": """Every 6 hours""",
+  """settings.permissionDenied""":
+      """Notification permission was denied. Enable it in system settings.""",
+  """notifications.title""": """Notifications""",
+  """notifications.empty""": """No new notifications.""",
+  """notifications.failedToLoad""": """Failed to load notifications.""",
+  """notifications.dismissAll""": """Dismiss all""",
+  """notifications.justNow""": """just now""",
   """categories.manageTitle""": """Manage categories""",
   """categories.noCategories""": """No categories yet.""",
   """categories.editTitle""": """Edit category""",

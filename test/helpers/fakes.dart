@@ -3,9 +3,11 @@ import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/models/note.dart';
+import 'package:pantry/models/notification.dart';
 import 'package:pantry/models/photo.dart';
 import 'package:pantry/views/home/home_controller.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
+import 'package:pantry/views/notifications/notifications_controller.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 
 /// A fake [PhotoBoardController] that does not touch any services.
@@ -171,6 +173,65 @@ class FakeHomeController extends HomeController {
     lastAdded = house;
     notifyListeners();
     return house;
+  }
+}
+
+/// A fake [NotificationsController] that does not touch any services.
+class FakeNotificationsController extends NotificationsController {
+  FakeNotificationsController({
+    List<NcNotification>? notifications,
+    bool isLoading = false,
+    String? error,
+  }) : _notifications = notifications ?? [],
+       _isLoading = isLoading,
+       _error = error;
+
+  final List<NcNotification> _notifications;
+  @override
+  List<NcNotification> get notifications => _notifications;
+
+  @override
+  int get unreadCount => _notifications.length;
+
+  final bool _isLoading;
+  @override
+  bool get isLoading => _isLoading;
+
+  final String? _error;
+  @override
+  String? get error => _error;
+
+  int loadCalls = 0;
+  int refreshCalls = 0;
+  int dismissCalls = 0;
+  int dismissAllCalls = 0;
+  NcNotification? lastDismissed;
+
+  @override
+  Future<void> load() async {
+    loadCalls++;
+  }
+
+  @override
+  Future<void> refresh() async {
+    refreshCalls++;
+  }
+
+  @override
+  Future<void> dismiss(NcNotification notification) async {
+    dismissCalls++;
+    lastDismissed = notification;
+    _notifications.removeWhere(
+      (n) => n.notificationId == notification.notificationId,
+    );
+    notifyListeners();
+  }
+
+  @override
+  Future<void> dismissAll() async {
+    dismissAllCalls++;
+    _notifications.clear();
+    notifyListeners();
   }
 }
 

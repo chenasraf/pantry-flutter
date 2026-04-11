@@ -14,10 +14,17 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
-  ApiClient._();
-  static final ApiClient instance = ApiClient._();
+  final String basePath;
 
-  static const _basePath = '/ocs/v2.php/apps/pantry/api';
+  /// Creates a client for the given base path (appended to the server URL
+  /// from [AuthService]). Use [ApiClient.instance] for the default Pantry
+  /// endpoint.
+  const ApiClient({required this.basePath});
+
+  /// Default Pantry app API client.
+  static const ApiClient instance = ApiClient(
+    basePath: '/ocs/v2.php/apps/pantry/api',
+  );
 
   NextcloudCredentials get _credentials {
     final creds = AuthService.instance.credentials;
@@ -28,7 +35,7 @@ class ApiClient {
   Uri _uri(String path, [Map<String, String>? queryParameters]) {
     final base = Uri.parse(_credentials.serverUrl);
     return base.replace(
-      path: '$_basePath$path',
+      path: '$basePath$path',
       queryParameters: queryParameters,
     );
   }

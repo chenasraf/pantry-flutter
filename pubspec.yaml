@@ -43,8 +43,10 @@ dependencies:
   path_provider: ^2.1.5
   intl: ^0.20.2
   cached_network_image: ^3.4.1
+  flutter_local_notifications: ^18.0.1
   flutter_markdown_plus: ^1.0.3
   image_picker: ^1.1.2
+  workmanager: ^0.9.0+3
   i18n:
     git: https://github.com/chenasraf/i18n
 

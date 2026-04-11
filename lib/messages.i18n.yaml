@@ -35,6 +35,41 @@ nav:
   photoBoard: Photo Board
   notesWall: Notes Wall
 
+notificationsIntro:
+  title: Stay in the loop
+  body: "Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
+  bullet1: Household activity alerts
+  bullet2: Fetched directly from your server
+  bullet3: Works even when the app is closed
+  enableButton: Enable notifications
+  skipButton: Not now
+  permissionDeniedTitle: Permission denied
+  permissionDeniedBody: "You can enable notifications later in App Settings. If your device blocks them, you'll need to allow them in system settings first."
+  ok: OK
+
+settings:
+  title: App Settings
+  notificationsSection: Notifications
+  enableNotifications: Enable notifications
+  enableNotificationsBody: Show alerts when household members add or update content.
+  pollInterval: Check for new activity
+  pollInterval15m: Every 15 minutes
+  pollInterval30m: Every 30 minutes
+  pollInterval1h: Every hour
+  pollInterval2h: Every 2 hours
+  pollInterval6h: Every 6 hours
+  permissionDenied: Notification permission was denied. Enable it in system settings.
+
+notifications:
+  title: Notifications
+  empty: No new notifications.
+  failedToLoad: Failed to load notifications.
+  dismissAll: Dismiss all
+  justNow: just now
+  minutesAgo(int count): "${count}m ago"
+  hoursAgo(int count): "${count}h ago"
+  daysAgo(int count): "${count}d ago"
+
 categories:
   manageTitle: Manage categories
   noCategories: No categories yet.
