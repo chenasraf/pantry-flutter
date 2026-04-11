@@ -69,15 +69,15 @@ class ChecklistService {
 
   Future<String> getItemSortPref(int houseId) async {
     return ApiClient.instance.get<Map<String, dynamic>, String>(
-      '/houses/$houseId/prefs/checklist-item-sort',
-      fromJson: (data) => data['sort'] as String? ?? 'custom',
+      '/houses/$houseId/prefs',
+      fromJson: (data) => data['checklistItemSort'] as String? ?? 'custom',
     );
   }
 
   Future<void> setItemSortPref(int houseId, String sort) async {
     await ApiClient.instance.put<Map<String, dynamic>, void>(
-      '/houses/$houseId/prefs/checklist-item-sort',
-      body: {'sort': sort},
+      '/houses/$houseId/prefs',
+      body: {'checklistItemSort': sort},
       fromJson: (_) {},
     );
   }

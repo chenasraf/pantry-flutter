@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
@@ -167,13 +169,22 @@ class ChecklistsController extends ChangeNotifier {
     _checklistService.cache.set('sortBy', sort);
     notifyListeners();
 
-    // Persist to server
-    _checklistService.setItemSortPref(houseId, sort);
+    // Fire-and-forget the server persist so a slow or failing pref write
+    // never blocks the item reload.
+    unawaited(_persistSortPref(sort));
 
     // Reload items with new sort
     if (_currentList != null) {
       _checklistService.invalidateItems();
       await selectList(_currentList!);
+    }
+  }
+
+  Future<void> _persistSortPref(String sort) async {
+    try {
+      await _checklistService.setItemSortPref(houseId, sort);
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to persist sort pref: $e');
     }
   }
 
