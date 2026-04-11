@@ -1,0 +1,3 @@
+Bug Fixes
+
+- sorting prefs persistence & error wrapping

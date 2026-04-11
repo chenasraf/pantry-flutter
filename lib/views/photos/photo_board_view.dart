@@ -73,25 +73,36 @@ class _PhotoBoardBody extends StatelessWidget {
       );
     }
 
-    return Stack(
-      children: [
-        Column(
-          children: [
-            _TopBar(controller: controller),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: controller.refresh,
-                child: _PhotoGrid(controller: controller),
+    final inFolder = controller.currentFolderId != null;
+
+    return PopScope(
+      canPop: !inFolder,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (controller.currentFolderId != null) {
+          controller.exitFolder();
+        }
+      },
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              _TopBar(controller: controller),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: controller.refresh,
+                  child: _PhotoGrid(controller: controller),
+                ),
               ),
-            ),
-          ],
-        ),
-        Positioned(
-          right: 16,
-          bottom: 16,
-          child: PhotoAddButton(controller: controller),
-        ),
-      ],
+            ],
+          ),
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: PhotoAddButton(controller: controller),
+          ),
+        ],
+      ),
     );
   }
 }
