@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/chenasraf/pantry-flutter/compare/v0.2.0...v0.2.1) (2026-04-11)
+
+
+### Bug Fixes
+
+* sorting prefs persistence & error wrapping ([a5c8e5b](https://github.com/chenasraf/pantry-flutter/commit/a5c8e5b479e92f87ea910b5af19ca24711ce7b16))
+
 ## [0.2.0](https://github.com/chenasraf/pantry-flutter/compare/v0.1.0...v0.2.0) (2026-04-11)
 
 
