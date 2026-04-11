@@ -55,6 +55,7 @@ android/app/*.keystore
 
 # Fastlane
 android/fastlane/play-store-key.json
+android/fastlane/.image_hashes.json
 ios/fastlane/report.xml
 android/fastlane/report.xml
 /.envrc

@@ -1,0 +1,8 @@
+Features
+
+- add sorting by category for checklist
+- notifications support
+
+Bug Fixes
+
+- add bottom padding to accomodate fab
