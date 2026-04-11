@@ -63,6 +63,7 @@ class _HomeViewBody extends StatefulWidget {
 class _HomeViewBodyState extends State<_HomeViewBody>
     with WidgetsBindingObserver {
   int _tabIndex = 0;
+  final _pageController = PageController();
   final _notificationsController = NotificationsController();
 
   @override
@@ -86,6 +87,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   void dispose() {
     DeepLinkService.instance.pending.removeListener(_consumePendingDeepLink);
     WidgetsBinding.instance.removeObserver(this);
+    _pageController.dispose();
     _notificationsController.dispose();
     super.dispose();
   }
@@ -96,6 +98,15 @@ class _HomeViewBodyState extends State<_HomeViewBody>
       _notificationsController.refresh();
       _consumePendingDeepLink();
     }
+  }
+
+  void _goToTab(int index) {
+    if (index == _tabIndex) return;
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeInOut,
+    );
   }
 
   void _consumePendingDeepLink() {
@@ -115,7 +126,12 @@ class _HomeViewBodyState extends State<_HomeViewBody>
       }
     }
 
-    if (mounted) setState(() => _tabIndex = link.tabIndex);
+    if (!mounted) return;
+    if (_pageController.hasClients) {
+      _goToTab(link.tabIndex);
+    } else {
+      setState(() => _tabIndex = link.tabIndex);
+    }
   }
 
   String get _tabTitle => switch (_tabIndex) {
@@ -173,22 +189,14 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         ],
       ),
       body: _buildBody(controller),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _tabIndex,
-        onDestinationSelected: (i) => setState(() => _tabIndex = i),
+      bottomNavigationBar: _AnimatedBottomNav(
+        pageController: _pageController,
+        currentIndex: _tabIndex,
+        onTap: _goToTab,
         destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.assignment_turned_in),
-            label: m.nav.checklists,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.photo),
-            label: m.nav.photoBoard,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.insert_drive_file),
-            label: m.nav.notesWall,
-          ),
+          (icon: Icons.assignment_turned_in, label: m.nav.checklists),
+          (icon: Icons.photo, label: m.nav.photoBoard),
+          (icon: Icons.insert_drive_file, label: m.nav.notesWall),
         ],
       ),
     );
@@ -227,21 +235,125 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     }
 
     final houseId = controller.currentHouse!.id;
-    switch (_tabIndex) {
-      case 0:
-        return ChecklistsView(
-          key: ValueKey('checklists-$houseId'),
-          houseId: houseId,
-        );
-      case 1:
-        return PhotoBoardView(
-          key: ValueKey('photos-$houseId'),
-          houseId: houseId,
-        );
-      case 2:
-        return NotesWallView(key: ValueKey('notes-$houseId'), houseId: houseId);
-      default:
-        return const SizedBox.shrink();
-    }
+    return PageView(
+      controller: _pageController,
+      physics: const ClampingScrollPhysics(),
+      onPageChanged: (i) => setState(() => _tabIndex = i),
+      children: [
+        ChecklistsView(key: ValueKey('checklists-$houseId'), houseId: houseId),
+        PhotoBoardView(key: ValueKey('photos-$houseId'), houseId: houseId),
+        NotesWallView(key: ValueKey('notes-$houseId'), houseId: houseId),
+      ],
+    );
+  }
+}
+
+typedef _NavDestination = ({IconData icon, String label});
+
+/// Bottom navigation bar that continuously interpolates its indicator
+/// and icon colors based on a [PageController]'s fractional page value.
+class _AnimatedBottomNav extends StatelessWidget {
+  final PageController pageController;
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+  final List<_NavDestination> destinations;
+
+  const _AnimatedBottomNav({
+    required this.pageController,
+    required this.currentIndex,
+    required this.onTap,
+    required this.destinations,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+
+    return Material(
+      color: cs.surface,
+      elevation: 3,
+      surfaceTintColor: cs.surfaceTint,
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 72,
+          child: AnimatedBuilder(
+            animation: pageController,
+            builder: (context, _) {
+              final page = pageController.hasClients
+                  ? (pageController.page ?? currentIndex.toDouble())
+                  : currentIndex.toDouble();
+              return Row(
+                children: List.generate(destinations.length, (i) {
+                  final d = destinations[i];
+                  final distance = (page - i).abs().clamp(0.0, 1.0);
+                  final t = 1.0 - distance;
+                  final iconColor = Color.lerp(
+                    cs.onSurfaceVariant,
+                    cs.onSecondaryContainer,
+                    t,
+                  )!;
+                  final labelColor = Color.lerp(
+                    cs.onSurfaceVariant,
+                    cs.onSurface,
+                    t,
+                  )!;
+                  return Expanded(
+                    child: InkWell(
+                      onTap: () => onTap(i),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _AnimatedIndicator(
+                            opacity: t,
+                            color: cs.secondaryContainer,
+                            child: Icon(d.icon, color: iconColor, size: 24),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            d.label,
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: labelColor,
+                              fontWeight: t > 0.5
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AnimatedIndicator extends StatelessWidget {
+  final double opacity;
+  final Color color;
+  final Widget child;
+
+  const _AnimatedIndicator({
+    required this.opacity,
+    required this.color,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: opacity),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: child,
+    );
   }
 }
