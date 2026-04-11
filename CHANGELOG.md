@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/chenasraf/pantry-flutter/compare/v0.1.0...v0.2.0) (2026-04-11)
+
+
+### Features
+
+* add sorting by category for checklist ([5ae3afc](https://github.com/chenasraf/pantry-flutter/commit/5ae3afcd41628db0d1a758602e1a6fae652788ae))
+* notifications support ([4d0c28f](https://github.com/chenasraf/pantry-flutter/commit/4d0c28f2633c75647b41e765fa02935386798034))
+
+
+### Bug Fixes
+
+* add bottom padding to accomodate fab ([3b89798](https://github.com/chenasraf/pantry-flutter/commit/3b897982d60f71d0cadd5ac21386929aad10851e))
+
 ## 0.1.0 (2026-04-10)
 
 
