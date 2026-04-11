@@ -151,6 +151,7 @@ class _CategoriesViewState extends State<CategoriesView> {
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 96),
                 itemCount: _categories.length,
                 itemBuilder: (context, index) {
                   final cat = _categories[index];

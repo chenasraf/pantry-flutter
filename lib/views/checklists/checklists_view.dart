@@ -194,6 +194,7 @@ class _ItemList extends StatelessWidget {
           ),
           _ReorderablePartition(items: checked, controller: controller),
         ],
+        const SliverToBoxAdapter(child: SizedBox(height: 88)),
       ],
     );
   }

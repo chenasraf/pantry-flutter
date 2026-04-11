@@ -207,7 +207,7 @@ ios-release: ios-build
 
 .PHONY: android-upload
 android-upload:
-	@echo "$(or $(TRACK),internal)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TRACK '$(TRACK)'. Must be: internal, alpha, beta, production"; exit 1)
+	@echo "$(or $(TRACK),beta)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TRACK '$(TRACK)'. Must be: internal, alpha, beta, production"; exit 1)
 	@echo "$(or $(STATUS),draft)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
 	@echo "Track: $(or $(TRACK),internal) | Status: $(or $(STATUS),draft)"
 	cd android && bundle exec fastlane deploy track:$(or $(TRACK),internal) status:$(or $(STATUS),draft)
