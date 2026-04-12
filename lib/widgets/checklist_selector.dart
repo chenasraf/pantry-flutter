@@ -18,7 +18,7 @@ class ChecklistSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+      padding: const EdgeInsetsDirectional.only(start: 16, top: 8, bottom: 8),
       child: DropdownButtonFormField<int>(
         initialValue: currentList?.id,
         decoration: const InputDecoration(

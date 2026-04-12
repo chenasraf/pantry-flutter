@@ -52,7 +52,7 @@ class UserMenuButton extends StatelessWidget {
         : const CircleAvatar(radius: 18, child: Icon(Icons.person, size: 22));
 
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsetsDirectional.only(end: 8),
       child: Material(
         color: Colors.transparent,
         shape: const CircleBorder(),

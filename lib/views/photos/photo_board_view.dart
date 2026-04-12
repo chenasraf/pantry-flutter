@@ -115,7 +115,12 @@ class _TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 4),
+      padding: const EdgeInsetsDirectional.only(
+        start: 16,
+        top: 8,
+        bottom: 8,
+        end: 4,
+      ),
       child: Row(
         children: [
           if (controller.currentFolderId != null) ...[

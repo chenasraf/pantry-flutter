@@ -75,7 +75,11 @@ class _NotesWallBody extends StatelessWidget {
         Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 4, top: 8, bottom: 8),
+              padding: const EdgeInsetsDirectional.only(
+                end: 4,
+                top: 8,
+                bottom: 8,
+              ),
               child: Row(
                 children: [
                   const Spacer(),

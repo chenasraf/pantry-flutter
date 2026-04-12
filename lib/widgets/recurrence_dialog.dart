@@ -372,7 +372,7 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 4),
+                  padding: const EdgeInsetsDirectional.only(start: 4),
                   child: Text(
                     _repeatFromCompletion
                         ? r.countFromCompletionHintOn
