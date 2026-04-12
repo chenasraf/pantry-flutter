@@ -1,0 +1,8 @@
+Features
+
+- improve main page navigations
+- move items between lists
+
+Bug Fixes
+
+- support back button when in photos foldeer
