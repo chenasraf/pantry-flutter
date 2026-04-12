@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'i18n.dart';
@@ -113,9 +114,15 @@ class PantryAppState extends State<PantryApp> {
     return Directionality(
       textDirection: LocaleService.instance.textDirection,
       child: MaterialApp(
+        key: ValueKey(locale),
         navigatorKey: rootNavigatorKey,
         locale: locale,
         supportedLocales: supportedLocales,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
         title: m.common.appTitle,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(

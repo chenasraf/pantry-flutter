@@ -12,6 +12,20 @@ class ChecklistsController extends ChangeNotifier {
 
   ChecklistsController({required this.houseId});
 
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (_disposed) return;
+    super.notifyListeners();
+  }
+
   List<ChecklistList> _lists = [];
   List<ChecklistList> get lists => _lists;
 

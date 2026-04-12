@@ -129,8 +129,8 @@ class _ChecklistsBody extends StatelessWidget {
           ],
         ),
         if (controller.currentList != null)
-          Positioned(
-            right: 16,
+          PositionedDirectional(
+            end: 16,
             bottom: 16,
             child: FloatingActionButton(
               onPressed: () async {

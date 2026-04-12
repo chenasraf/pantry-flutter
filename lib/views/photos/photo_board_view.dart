@@ -96,8 +96,8 @@ class _PhotoBoardBody extends StatelessWidget {
               ),
             ],
           ),
-          Positioned(
-            right: 16,
+          PositionedDirectional(
+            end: 16,
             bottom: 16,
             child: PhotoAddButton(controller: controller),
           ),

@@ -9,6 +9,20 @@ class NotesController extends ChangeNotifier {
 
   NotesController({required this.houseId});
 
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (_disposed) return;
+    super.notifyListeners();
+  }
+
   NoteService get _service => NoteService.instance;
 
   List<Note> _notes = [];

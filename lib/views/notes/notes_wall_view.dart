@@ -100,8 +100,8 @@ class _NotesWallBody extends StatelessWidget {
             ),
           ],
         ),
-        Positioned(
-          right: 16,
+        PositionedDirectional(
+          end: 16,
           bottom: 16,
           child: FloatingActionButton(
             onPressed: () => _createNote(context, controller),
