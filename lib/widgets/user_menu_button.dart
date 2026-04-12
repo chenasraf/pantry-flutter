@@ -51,18 +51,9 @@ class UserMenuButton extends StatelessWidget {
           )
         : const CircleAvatar(radius: 18, child: Icon(Icons.person, size: 22));
 
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(end: 8),
-      child: Material(
-        color: Colors.transparent,
-        shape: const CircleBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: () => _showMenu(context, displayName, loginName, avatar),
-          child: Padding(padding: const EdgeInsets.all(4), child: avatar),
-        ),
-      ),
+    return IconButton(
+      onPressed: () => _showMenu(context, displayName, loginName, avatar),
+      icon: avatar,
     );
   }
 
