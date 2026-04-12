@@ -1,9 +1,6 @@
 # Version from pubspec.yaml (without build number)
 VERSION := $(shell grep '^version:' pubspec.yaml | sed 's/version: *//;s/+.*//')
 
-# Get staged Dart files
-STAGED_DART_FILES := $(shell git diff --cached --name-only --diff-filter=ACM | grep '\.dart$$' 2>/dev/null)
-
 # Default target
 .PHONY: help
 help:
@@ -12,7 +9,7 @@ help:
 	@echo "  Setup:"
 	@echo "    get                 Install dependencies"
 	@echo "    clean               Clean build artifacts"
-	@echo "    install-precommit   Install git pre-commit hook"
+	@echo "    install-hooks       Install git hooks via lefthook"
 	@echo "    pods                Update CocoaPods repo and install pods"
 	@echo ""
 	@echo "  i18n:"
@@ -22,13 +19,9 @@ help:
 	@echo "  Development:"
 	@echo "    run                 Run the app in debug mode"
 	@echo "    webapp-run          Run the web app in default browser"
-	@echo "    format              Format staged Dart files"
-	@echo "    analyze             Analyze staged Dart files"
-	@echo "    check               Check staged files (format + analyze, no changes)"
-	@echo "    precommit           Run pre-commit checks on staged files"
-	@echo "    format-all          Format all Dart files"
-	@echo "    analyze-all         Analyze all Dart files"
-	@echo "    check-all           Check all files (format + analyze, no changes)"
+	@echo "    format              Format all Dart files"
+	@echo "    analyze             Analyze all Dart files"
+	@echo "    check               Check all files (format + analyze, no changes)"
 	@echo ""
 	@echo "  Testing:"
 	@echo "    test                Run all tests"
@@ -96,50 +89,14 @@ webapp-run:
 
 .PHONY: format
 format:
-	@if [ -n "$(STAGED_DART_FILES)" ]; then \
-		echo "Formatting staged files..."; \
-		dart format $(STAGED_DART_FILES); \
-	else \
-		echo "No staged Dart files to format."; \
-	fi
+	dart format .
 
 .PHONY: analyze
 analyze:
-	@if [ -n "$(STAGED_DART_FILES)" ]; then \
-		echo "Analyzing staged files..."; \
-		dart analyze $(STAGED_DART_FILES); \
-	else \
-		echo "No staged Dart files to analyze."; \
-	fi
+	flutter analyze --no-fatal-infos
 
 .PHONY: check
 check:
-	@if [ -n "$(STAGED_DART_FILES)" ]; then \
-		echo "Checking staged files..."; \
-		dart format --output=none --set-exit-if-changed $(STAGED_DART_FILES); \
-		dart analyze $(STAGED_DART_FILES); \
-	else \
-		echo "No staged Dart files to check."; \
-	fi
-
-.PHONY: precommit
-precommit: format analyze
-	@if [ -n "$(STAGED_DART_FILES)" ]; then \
-		echo "Re-staging formatted files..."; \
-		git add $(STAGED_DART_FILES); \
-	fi
-
-# Full project commands
-.PHONY: format-all
-format-all:
-	dart format .
-
-.PHONY: analyze-all
-analyze-all:
-	flutter analyze --no-fatal-infos
-
-.PHONY: check-all
-check-all:
 	dart format --output=none --set-exit-if-changed .
 	flutter analyze --no-fatal-infos
 
@@ -252,17 +209,9 @@ pods:
 	cd macos && pod install --repo-update
 
 # Git hooks
-.PHONY: install-precommit
-install-precommit:
-	@if [ ! -f .git/hooks/pre-commit ]; then \
-		echo "Installing pre-commit hook..."; \
-		echo '#!/bin/sh' > .git/hooks/pre-commit; \
-		echo 'make precommit' >> .git/hooks/pre-commit; \
-		chmod +x .git/hooks/pre-commit; \
-		echo "Pre-commit hook installed."; \
-	else \
-		echo "Pre-commit hook already exists, skipping."; \
-	fi
+.PHONY: install-hooks
+install-hooks:
+	lefthook install
 
 # API
 .PHONY: fetch-openapi
