@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/chenasraf/pantry-flutter/compare/v0.2.1...v0.3.0) (2026-04-12)
+
+
+### Features
+
+* improve main page navigations ([ea8ff9a](https://github.com/chenasraf/pantry-flutter/commit/ea8ff9aabd0924f8273927c907b800576c7cd697))
+* move items between lists ([c5595c0](https://github.com/chenasraf/pantry-flutter/commit/c5595c0d1ae07c3c2dbf35fba5a70a957fc9af17))
+
+
+### Bug Fixes
+
+* support back button when in photos foldeer ([e6284b9](https://github.com/chenasraf/pantry-flutter/commit/e6284b95774a5bd967af95626acb6ec3562ae9a5))
+
 ## [0.2.1](https://github.com/chenasraf/pantry-flutter/compare/v0.2.0...v0.2.1) (2026-04-11)
 
 
