@@ -38,6 +38,9 @@ class _SettingsViewState extends State<SettingsView> {
 
   String _localeLabel(String? code) => switch (code) {
     'en' => m.settings.languageNames.english,
+    'de' => m.settings.languageNames.german,
+    'es' => m.settings.languageNames.spanish,
+    'fr' => m.settings.languageNames.french,
     'he' => m.settings.languageNames.hebrew,
     _ => m.settings.languageNames.system,
   };
@@ -109,6 +112,18 @@ class _SettingsViewState extends State<SettingsView> {
                 DropdownMenuItem<String?>(
                   value: 'en',
                   child: Text(m.settings.languageNames.english),
+                ),
+                DropdownMenuItem<String?>(
+                  value: 'de',
+                  child: Text(m.settings.languageNames.german),
+                ),
+                DropdownMenuItem<String?>(
+                  value: 'es',
+                  child: Text(m.settings.languageNames.spanish),
+                ),
+                DropdownMenuItem<String?>(
+                  value: 'fr',
+                  child: Text(m.settings.languageNames.french),
                 ),
                 DropdownMenuItem<String?>(
                   value: 'he',

@@ -55,6 +55,9 @@ settings:
     system: "System default"
     english: English
     hebrew: עברית
+    german: Deutsch
+    spanish: Español
+    french: Français
   notificationsSection: Notifications
   enableNotifications: Enable notifications
   enableNotificationsBody: Show alerts when household members add or update content.

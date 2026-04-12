@@ -55,6 +55,9 @@ settings:
     system: ברירת מחדל (שפת המערכת)
     english: English
     hebrew: עברית
+    german: Deutsch
+    spanish: Español
+    french: Français
   notificationsSection: התראות
   enableNotifications: הפעל התראות
   enableNotificationsBody: הצג התראות כשבני משק הבית מוסיפים או מעדכנים תוכן.

@@ -398,6 +398,21 @@ class LanguageNamesSettingsMessages {
   /// "עברית"
   /// ```
   String get hebrew => """עברית""";
+
+  /// ```dart
+  /// "Deutsch"
+  /// ```
+  String get german => """Deutsch""";
+
+  /// ```dart
+  /// "Español"
+  /// ```
+  String get spanish => """Español""";
+
+  /// ```dart
+  /// "Français"
+  /// ```
+  String get french => """Français""";
 }
 
 class NotificationsMessages {
@@ -1246,6 +1261,9 @@ Please complete login in your browser.""",
   """settings.languageNames.system""": """System default""",
   """settings.languageNames.english""": """English""",
   """settings.languageNames.hebrew""": """עברית""",
+  """settings.languageNames.german""": """Deutsch""",
+  """settings.languageNames.spanish""": """Español""",
+  """settings.languageNames.french""": """Français""",
   """settings.notificationsSection""": """Notifications""",
   """settings.enableNotifications""": """Enable notifications""",
   """settings.enableNotificationsBody""":

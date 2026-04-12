@@ -1,0 +1,232 @@
+common:
+  appTitle: Pantry
+  cancel: Annuler
+  delete: Supprimer
+  save: Enregistrer
+  retry: "R\xE9essayer"
+  logout: "D\xE9connexion"
+  loading: Chargement...
+  error: Erreur
+
+login:
+  connectToNextcloud: "Connectez-vous \xE0 votre instance Nextcloud"
+  serverUrl: URL du serveur
+  serverUrlHint: cloud.example.com
+  connect: Connexion
+  waitingForAuth: "En attente d'authentification...\nVeuillez terminer la connexion dans votre navigateur."
+  couldNotConnect: "Impossible de se connecter au serveur. Veuillez v\xE9rifier l'URL."
+  loginFailed: "\xC9chec de la connexion. Veuillez r\xE9essayer."
+
+home:
+  noHouses: Aucune maison pour le moment.
+  noHousesBody: "Les maisons sont des espaces partag\xE9s pour votre foyer. Cr\xE9ez votre premi\xE8re maison pour commencer \xE0 ajouter des listes, des photos et des notes."
+  createHouse: "Cr\xE9er une maison"
+  houseName: Nom de la maison
+  houseDescription: Description (facultatif)
+  createHouseFailed: "Impossible de cr\xE9er la maison."
+  failedToLoadHouses: Impossible de charger les maisons.
+  serverAppMissingTitle: "Pantry n'est pas install\xE9"
+  serverAppMissingBody: "Cette application est un client pour l'application Pantry sur Nextcloud. Il semble que Pantry ne soit pas encore installé sur votre serveur. Demandez à votre administrateur de l'installer depuis le magasin d'applications Nextcloud, ou installez-le vous-même si vous avez un accès administrateur."
+  openAppStore: Ouvrir les apps Nextcloud
+  learnMore: En savoir plus
+
+nav:
+  checklists: Listes
+  photoBoard: Tableau photos
+  notesWall: Mur de notes
+
+notificationsIntro:
+  title: "Restez inform\xE9"
+  body: "Pantry peut vous notifier lorsque les membres du foyer ajoutent des articles aux listes, téléchargent des photos ou laissent des notes. Les notifications sont récupérées depuis votre propre serveur Nextcloud — rien ne passe par Google ou des tiers."
+  bullet1: "Alertes d'activit\xE9 du foyer"
+  bullet2: "R\xE9cup\xE9r\xE9es directement depuis votre serveur"
+  bullet3: "Fonctionne m\xEAme lorsque l'app est ferm\xE9e"
+  enableButton: Activer les notifications
+  skipButton: Pas maintenant
+  permissionDeniedTitle: "Permission refus\xE9e"
+  permissionDeniedBody: "Vous pourrez activer les notifications plus tard dans les r\xE9glages de l'app. Si votre appareil les bloque, vous devrez d'abord les autoriser dans les r\xE9glages syst\xE8me."
+  ok: OK
+
+settings:
+  title: "R\xE9glages de l'app"
+  generalSection: "G\xE9n\xE9ral"
+  language: Langue
+  languageNames:
+    system: "Par d\xE9faut du syst\xE8me"
+    english: English
+    hebrew: "\u05E2\u05D1\u05E8\u05D9\u05EA"
+    german: Deutsch
+    spanish: "Espa\xF1ol"
+    french: "Fran\xE7ais"
+  notificationsSection: Notifications
+  enableNotifications: Activer les notifications
+  enableNotificationsBody: Afficher des alertes lorsque les membres du foyer ajoutent ou modifient du contenu.
+  pollInterval: "V\xE9rifier les nouvelles activit\xE9s"
+  pollInterval15m: Toutes les 15 minutes
+  pollInterval30m: Toutes les 30 minutes
+  pollInterval1h: Toutes les heures
+  pollInterval2h: Toutes les 2 heures
+  pollInterval6h: Toutes les 6 heures
+  permissionDenied: "La permission de notification a \xE9t\xE9 refus\xE9e. Activez-la dans les r\xE9glages syst\xE8me."
+
+notifications:
+  title: Notifications
+  empty: Aucune nouvelle notification.
+  failedToLoad: Impossible de charger les notifications.
+  dismissAll: Tout ignorer
+  justNow: "\xE0 l'instant"
+  minutesAgo(int count): "il y a ${count} min"
+  hoursAgo(int count): "il y a ${count} h"
+  daysAgo(int count): "il y a ${count} j"
+
+categories:
+  manageTitle: "G\xE9rer les cat\xE9gories"
+  noCategories: "Aucune cat\xE9gorie pour le moment."
+  editTitle: "Modifier la cat\xE9gorie"
+  addTitle: "Nouvelle cat\xE9gorie"
+  name: Nom
+  icon: "Ic\xF4ne"
+  color: Couleur
+  saveFailed: "Impossible d'enregistrer la cat\xE9gorie."
+  deleteFailed: "Impossible de supprimer la cat\xE9gorie."
+  deleteConfirm: "Supprimer cette cat\xE9gorie ?"
+  deleteConfirmBody: "Les articles de cette cat\xE9gorie seront non cat\xE9goris\xE9s. Cette action est irr\xE9versible."
+
+checklists:
+  categories: "Cat\xE9gories"
+  noChecklists: Aucune liste pour le moment.
+  noItems: Aucun article dans cette liste.
+  failedToLoad: Impossible de charger les listes.
+  failedToLoadItems: Impossible de charger les articles.
+  completedCount(int count): "Termin\xE9s ($count)"
+  editItem: Modifier l'article
+  removeItem: Supprimer l'article
+  moveItem: "D\xE9placer vers une liste"
+  moveFailed: "Impossible de d\xE9placer l'article."
+  createList: Nouvelle liste
+  listName: Nom de la liste
+  listDescription: Description (facultatif)
+  listIcon: "Ic\xF4ne"
+  createListFailed: "Impossible de cr\xE9er la liste."
+  viewItem:
+    quantity: "Quantité :"
+    category: "Catégorie :"
+    recurrence: "Récurrence :"
+  itemForm:
+    addTitle: Ajouter un article
+    editTitle: Modifier l'article
+    name: "Nom de l'article"
+    description: Description
+    quantity: "Quantit\xE9"
+    category: "Cat\xE9gorie"
+    noCategory: Aucune
+    noCategories: "Aucune cat\xE9gorie disponible."
+    createCategory: "Nouvelle cat\xE9gorie"
+    categoryName: Nom
+    categoryIcon: "Ic\xF4ne"
+    categoryColor: Couleur
+    categoryCreated: "Cat\xE9gorie cr\xE9\xE9e."
+    categoryCreateFailed: "Impossible de cr\xE9er la cat\xE9gorie."
+    repeat: "R\xE9p\xE9ter"
+    saveFailed: "Impossible d'enregistrer l'article."
+    deleteFailed: Impossible de supprimer l'article.
+    deleteConfirm: Supprimer cet article ?
+  sort:
+    newestFirst: "Plus r\xE9cents"
+    oldestFirst: Plus anciens
+    nameAZ: "Nom A\u2013Z"
+    nameZA: "Nom Z\u2013A"
+    category: "Par cat\xE9gorie"
+    custom: Personnalis\xE9
+
+notesWall:
+  noNotes: Aucune note pour le moment.
+  failedToLoad: Impossible de charger les notes.
+  saveFailed: "Impossible d'enregistrer la note."
+  deleteFailed: Impossible de supprimer la note.
+  deleteConfirm: Supprimer cette note ?
+  deleteSelectedConfirm(int count): "Supprimer ${_plural(count, one: 'cette note', many: '$count notes')} ?"
+  newNote: Nouvelle note
+  editNote: Modifier la note
+  title: Titre
+  content: Contenu
+  color: Couleur
+  sort:
+    newestFirst: "Plus r\xE9cents"
+    oldestFirst: Plus anciens
+    titleAZ: "Titre A\u2013Z"
+    titleZA: "Titre Z\u2013A"
+    custom: "Personnalis\xE9"
+
+photoBoard:
+  noPhotos: Aucune photo pour le moment.
+  failedToLoad: Impossible de charger les photos.
+  uploadFailed: "Impossible de t\xE9l\xE9charger la photo."
+  deleteFailed: Impossible de supprimer la photo.
+  deleteConfirm: Supprimer cette photo ?
+  deleteSelectedConfirm(int count): "Supprimer ${_plural(count, one: 'cette photo', many: '$count photos')} ?"
+  deleteFolder: Supprimer le dossier
+  deleteFolderConfirm: Supprimer ce dossier ?
+  deleteFolderKeepPhotos: "D\xE9placer les photos \xE0 la racine"
+  deleteFolderDeleteAll: Supprimer le dossier et les photos
+  newFolder: Nouveau dossier
+  folderName: Nom du dossier
+  renameFolder: Renommer le dossier
+  caption: "L\xE9gende"
+  photoCount(int count): "$count"
+  sort:
+    foldersFirst: Dossiers en premier
+    newestFirst: "Plus r\xE9cents"
+    oldestFirst: Plus anciens
+    captionAZ: "L\xE9gende A\u2013Z"
+    captionZA: "L\xE9gende Z\u2013A"
+    custom: "Personnalis\xE9"
+
+recurrence:
+  title: "R\xE9currence"
+  presets: "Pr\xE9r\xE9glages"
+  daily: Quotidien
+  weekly: Hebdomadaire
+  everyTwoWeeks: Toutes les 2 semaines
+  monthly: Mensuel
+  everyLabel: Tous les
+  unit: "Unit\xE9"
+  unitDays: jours
+  unitWeeks: semaines
+  unitMonths: mois
+  unitYears: "ann\xE9es"
+  repeatOn: "R\xE9p\xE9ter le"
+  ends: Se termine
+  never: Jamais
+  after: "Apr\xE8s"
+  occurrences: "r\xE9p\xE9titions"
+  onDate: "\xC0 la date"
+  countFromCompletion: "Compter l'intervalle \xE0 partir du moment o\xF9 l'article est coch\xE9"
+  countFromCompletionHintOff: "Le calendrier est fixe : l'article réapparaît à sa prochaine occurrence prévue, peu importe quand vous le cochez."
+  countFromCompletionHintOn: "La prochaine occurrence est comptée à partir du moment où vous cochez l'article, de sorte qu'il revient toujours un intervalle complet après son achèvement."
+  summary: "R\xE9sum\xE9"
+  notSet: "non d\xE9fini"
+  set: "d\xE9fini"
+  every(String unit): "tous les $unit"
+  everyN(int count, String unit): "tous les $count $unit"
+  onDays(String days): "le $days"
+  day(int count): "${_plural(count, one: 'jour', many: 'jours')}"
+  week(int count): "${_plural(count, one: 'semaine', many: 'semaines')}"
+  month(int count): "${_plural(count, one: 'mois', many: 'mois')}"
+  year(int count): "${_plural(count, one: 'an', many: 'ans')}"
+  dayNames:
+    monday: Lundi
+    tuesday: Mardi
+    wednesday: Mercredi
+    thursday: Jeudi
+    friday: Vendredi
+    saturday: Samedi
+    sunday: Dimanche
+  dayAbbr:
+    mo: Lu
+    tu: Ma
+    we: Me
+    th: Je
+    fr: Ve
+    sa: Sa
+    su: Di

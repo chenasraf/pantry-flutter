@@ -3,12 +3,21 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/messages.i18n.dart';
+import 'package:pantry/messages_de.i18n.dart' as de;
+import 'package:pantry/messages_es.i18n.dart' as es;
+import 'package:pantry/messages_fr.i18n.dart' as fr;
 import 'package:pantry/messages_he.i18n.dart' as he;
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 
 /// Supported app locales.
-const supportedLocales = [Locale('en'), Locale('he')];
+const supportedLocales = [
+  Locale('en'),
+  Locale('de'),
+  Locale('es'),
+  Locale('fr'),
+  Locale('he'),
+];
 
 class LocaleService extends ChangeNotifier {
   LocaleService._();
@@ -60,6 +69,12 @@ class LocaleService extends ChangeNotifier {
 
   static Messages _messagesFor(Locale locale) {
     switch (locale.languageCode) {
+      case 'de':
+        return de.MessagesDe();
+      case 'es':
+        return es.MessagesEs();
+      case 'fr':
+        return fr.MessagesFr();
       case 'he':
         return he.MessagesHe();
       default:

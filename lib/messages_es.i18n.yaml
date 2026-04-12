@@ -1,0 +1,232 @@
+common:
+  appTitle: Pantry
+  cancel: Cancelar
+  delete: Eliminar
+  save: Guardar
+  retry: Reintentar
+  logout: Cerrar sesión
+  loading: Cargando...
+  error: Error
+
+login:
+  connectToNextcloud: "Con\xE9ctate a tu instancia de Nextcloud"
+  serverUrl: URL del servidor
+  serverUrlHint: cloud.example.com
+  connect: Conectar
+  waitingForAuth: "Esperando autenticación...\nPor favor, completa el inicio de sesión en tu navegador."
+  couldNotConnect: No se pudo conectar al servidor. Por favor, verifica la URL.
+  loginFailed: "Inicio de sesi\xF3n fallido. Por favor, int\xE9ntalo de nuevo."
+
+home:
+  noHouses: "A\xFAn no hay casas."
+  noHousesBody: "Las casas son espacios compartidos para tu hogar. Crea tu primera casa para comenzar a agregar listas, fotos y notas."
+  createHouse: Crear casa
+  houseName: Nombre de la casa
+  houseDescription: "Descripci\xF3n (opcional)"
+  createHouseFailed: No se pudo crear la casa.
+  failedToLoadHouses: No se pudieron cargar las casas.
+  serverAppMissingTitle: Pantry no está instalado
+  serverAppMissingBody: "Esta app es un cliente para la app Pantry en Nextcloud. Parece que Pantry aún no está instalado en tu servidor. Pide a tu administrador que lo instale desde la tienda de apps de Nextcloud, o instálalo tú mismo si tienes acceso de administrador."
+  openAppStore: Abrir apps de Nextcloud
+  learnMore: "M\xE1s informaci\xF3n"
+
+nav:
+  checklists: Listas
+  photoBoard: Tablero de fotos
+  notesWall: Muro de notas
+
+notificationsIntro:
+  title: "Mantente al d\xEDa"
+  body: "Pantry puede notificarte cuando los miembros del hogar agreguen artículos a las listas, suban fotos o dejen notas. Las notificaciones se obtienen de tu propio servidor Nextcloud — nada pasa por Google ni terceros."
+  bullet1: Alertas de actividad del hogar
+  bullet2: Obtenidas directamente de tu servidor
+  bullet3: "Funciona incluso con la app cerrada"
+  enableButton: Activar notificaciones
+  skipButton: Ahora no
+  permissionDeniedTitle: Permiso denegado
+  permissionDeniedBody: "Puedes activar las notificaciones más tarde en los ajustes de la app. Si tu dispositivo las bloquea, primero deberás permitirlas en los ajustes del sistema."
+  ok: OK
+
+settings:
+  title: Ajustes de la app
+  generalSection: General
+  language: Idioma
+  languageNames:
+    system: Predeterminado del sistema
+    english: English
+    hebrew: "\u05E2\u05D1\u05E8\u05D9\u05EA"
+    german: Deutsch
+    spanish: "Espa\xF1ol"
+    french: "Fran\xE7ais"
+  notificationsSection: Notificaciones
+  enableNotifications: Activar notificaciones
+  enableNotificationsBody: Mostrar alertas cuando los miembros del hogar agreguen o actualicen contenido.
+  pollInterval: Buscar nueva actividad
+  pollInterval15m: Cada 15 minutos
+  pollInterval30m: Cada 30 minutos
+  pollInterval1h: Cada hora
+  pollInterval2h: Cada 2 horas
+  pollInterval6h: Cada 6 horas
+  permissionDenied: "El permiso de notificaciones fue denegado. Act\xEDvalo en los ajustes del sistema."
+
+notifications:
+  title: Notificaciones
+  empty: No hay notificaciones nuevas.
+  failedToLoad: No se pudieron cargar las notificaciones.
+  dismissAll: Descartar todas
+  justNow: ahora mismo
+  minutesAgo(int count): "hace ${count} min"
+  hoursAgo(int count): "hace ${count} h"
+  daysAgo(int count): "hace ${count} d"
+
+categories:
+  manageTitle: "Gestionar categor\xEDas"
+  noCategories: "A\xFAn no hay categor\xEDas."
+  editTitle: "Editar categor\xEDa"
+  addTitle: "Nueva categor\xEDa"
+  name: Nombre
+  icon: Icono
+  color: Color
+  saveFailed: "No se pudo guardar la categor\xEDa."
+  deleteFailed: "No se pudo eliminar la categor\xEDa."
+  deleteConfirm: "\xBFEliminar esta categor\xEDa?"
+  deleteConfirmBody: "Los art\xEDculos en esta categor\xEDa quedar\xE1n sin categor\xEDa. Esta acci\xF3n no se puede deshacer."
+
+checklists:
+  categories: "Categor\xEDas"
+  noChecklists: "A\xFAn no hay listas."
+  noItems: No hay artículos en esta lista.
+  failedToLoad: No se pudieron cargar las listas.
+  failedToLoadItems: "No se pudieron cargar los art\xEDculos."
+  completedCount(int count): "Completados ($count)"
+  editItem: "Editar art\xEDculo"
+  removeItem: "Eliminar art\xEDculo"
+  moveItem: Mover a lista
+  moveFailed: "No se pudo mover el art\xEDculo."
+  createList: Nueva lista
+  listName: Nombre de la lista
+  listDescription: "Descripci\xF3n (opcional)"
+  listIcon: Icono
+  createListFailed: No se pudo crear la lista.
+  viewItem:
+    quantity: "Cantidad:"
+    category: "Categoría:"
+    recurrence: "Recurrencia:"
+  itemForm:
+    addTitle: "Agregar art\xEDculo"
+    editTitle: "Editar art\xEDculo"
+    name: "Nombre del art\xEDculo"
+    description: "Descripci\xF3n"
+    quantity: Cantidad
+    category: "Categor\xEDa"
+    noCategory: Ninguna
+    noCategories: "No hay categor\xEDas disponibles."
+    createCategory: "Nueva categor\xEDa"
+    categoryName: Nombre
+    categoryIcon: Icono
+    categoryColor: Color
+    categoryCreated: "Categor\xEDa creada."
+    categoryCreateFailed: "No se pudo crear la categor\xEDa."
+    repeat: Repetir
+    saveFailed: "No se pudo guardar el art\xEDculo."
+    deleteFailed: "No se pudo eliminar el art\xEDculo."
+    deleteConfirm: "\xBFEliminar este art\xEDculo?"
+  sort:
+    newestFirst: "M\xE1s recientes"
+    oldestFirst: "M\xE1s antiguos"
+    nameAZ: "Nombre A\u2013Z"
+    nameZA: "Nombre Z\u2013A"
+    category: "Por categor\xEDa"
+    custom: Personalizado
+
+notesWall:
+  noNotes: "A\xFAn no hay notas."
+  failedToLoad: No se pudieron cargar las notas.
+  saveFailed: No se pudo guardar la nota.
+  deleteFailed: No se pudo eliminar la nota.
+  deleteConfirm: "\xBFEliminar esta nota?"
+  deleteSelectedConfirm(int count): "\xBFEliminar ${_plural(count, one: 'esta nota', many: '$count notas')}?"
+  newNote: Nueva nota
+  editNote: Editar nota
+  title: "T\xEDtulo"
+  content: Contenido
+  color: Color
+  sort:
+    newestFirst: "M\xE1s recientes"
+    oldestFirst: "M\xE1s antiguos"
+    titleAZ: "T\xEDtulo A\u2013Z"
+    titleZA: "T\xEDtulo Z\u2013A"
+    custom: Personalizado
+
+photoBoard:
+  noPhotos: "A\xFAn no hay fotos."
+  failedToLoad: No se pudieron cargar las fotos.
+  uploadFailed: No se pudo subir la foto.
+  deleteFailed: No se pudo eliminar la foto.
+  deleteConfirm: "\xBFEliminar esta foto?"
+  deleteSelectedConfirm(int count): "\xBFEliminar ${_plural(count, one: 'esta foto', many: '$count fotos')}?"
+  deleteFolder: Eliminar carpeta
+  deleteFolderConfirm: "\xBFEliminar esta carpeta?"
+  deleteFolderKeepPhotos: "Mover fotos a la ra\xEDz"
+  deleteFolderDeleteAll: Eliminar carpeta y fotos
+  newFolder: Nueva carpeta
+  folderName: Nombre de la carpeta
+  renameFolder: Renombrar carpeta
+  caption: "Descripci\xF3n"
+  photoCount(int count): "$count"
+  sort:
+    foldersFirst: Carpetas primero
+    newestFirst: "M\xE1s recientes"
+    oldestFirst: "M\xE1s antiguos"
+    captionAZ: "Descripci\xF3n A\u2013Z"
+    captionZA: "Descripci\xF3n Z\u2013A"
+    custom: Personalizado
+
+recurrence:
+  title: Recurrencia
+  presets: Preajustes
+  daily: Diario
+  weekly: Semanal
+  everyTwoWeeks: Cada 2 semanas
+  monthly: Mensual
+  everyLabel: Cada
+  unit: Unidad
+  unitDays: "d\xEDas"
+  unitWeeks: semanas
+  unitMonths: meses
+  unitYears: "a\xF1os"
+  repeatOn: Repetir en
+  ends: Termina
+  never: Nunca
+  after: "Despu\xE9s de"
+  occurrences: repeticiones
+  onDate: En fecha
+  countFromCompletion: "Contar intervalo desde que se marca el art\xEDculo"
+  countFromCompletionHintOff: "El horario es fijo: el artículo reaparece en su próxima ocurrencia programada, sin importar cuándo lo marques."
+  countFromCompletionHintOn: "La próxima ocurrencia se cuenta desde el momento en que marcas el artículo, así que siempre vuelve un intervalo completo después de completarlo."
+  summary: Resumen
+  notSet: no establecido
+  set: establecido
+  every(String unit): "cada $unit"
+  everyN(int count, String unit): "cada $count $unit"
+  onDays(String days): "los $days"
+  day(int count): "${_plural(count, one: 'd\xEDa', many: 'd\xEDas')}"
+  week(int count): "${_plural(count, one: 'semana', many: 'semanas')}"
+  month(int count): "${_plural(count, one: 'mes', many: 'meses')}"
+  year(int count): "${_plural(count, one: 'a\xF1o', many: 'a\xF1os')}"
+  dayNames:
+    monday: Lunes
+    tuesday: Martes
+    wednesday: "Mi\xE9rcoles"
+    thursday: Jueves
+    friday: Viernes
+    saturday: "S\xE1bado"
+    sunday: Domingo
+  dayAbbr:
+    mo: Lu
+    tu: Ma
+    we: Mi
+    th: Ju
+    fr: Vi
+    sa: "S\xE1"
+    su: Do

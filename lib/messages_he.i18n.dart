@@ -398,6 +398,21 @@ class LanguageNamesSettingsMessagesHe extends LanguageNamesSettingsMessages {
   /// "עברית"
   /// ```
   String get hebrew => """עברית""";
+
+  /// ```dart
+  /// "Deutsch"
+  /// ```
+  String get german => """Deutsch""";
+
+  /// ```dart
+  /// "Español"
+  /// ```
+  String get spanish => """Español""";
+
+  /// ```dart
+  /// "Français"
+  /// ```
+  String get french => """Français""";
 }
 
 class NotificationsMessagesHe extends NotificationsMessages {
@@ -1248,6 +1263,9 @@ Map<String, String> get messagesHeMap => {
   """settings.languageNames.system""": """ברירת מחדל (שפת המערכת)""",
   """settings.languageNames.english""": """English""",
   """settings.languageNames.hebrew""": """עברית""",
+  """settings.languageNames.german""": """Deutsch""",
+  """settings.languageNames.spanish""": """Español""",
+  """settings.languageNames.french""": """Français""",
   """settings.notificationsSection""": """התראות""",
   """settings.enableNotifications""": """הפעל התראות""",
   """settings.enableNotificationsBody""":
