@@ -96,6 +96,61 @@ jobs:
         with:
           release-type: dart
 
+      - name: Update fastlane changelog on release PR
+        if: ${{ steps.release.outputs.pr && !steps.release.outputs.release_created }}
+        env:
+          PR_JSON: ${{ steps.release.outputs.pr }}
+        run: |
+          PR_BRANCH=$(echo "$PR_JSON" | jq -r .headBranchName)
+          git clone --depth=5 --branch "$PR_BRANCH" \
+            https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git _pr
+          cd _pr
+
+          VERSION_LINE=$(grep '^version:' pubspec.yaml)
+          VERSION=$(echo "$VERSION_LINE" | sed 's/version: *//;s/+.*//')
+          CODE=$(echo "$VERSION_LINE" | sed 's/.*+//')
+          OUT_DIR="fastlane/metadata/android/en-US/changelogs"
+          OUT_FILE="$OUT_DIR/$CODE.txt"
+
+          mkdir -p "$OUT_DIR"
+
+          NOTES=$(awk "
+            /^## \\[${VERSION//./\\.}\\]/ { found=1; next }
+            /^## / { if (found) exit }
+            found { print }
+          " CHANGELOG.md)
+
+          NOTES=$(echo "$NOTES" \
+            | sed -E 's/ *\(\[[0-9a-f]+\]\([^)]+\)\)//g' \
+            | sed -E 's/^\* \*\*[^*]+:\*\* */- /; s/^\* /- /' \
+            | sed 's/^### //' \
+            | sed '/^[[:space:]]*$/d')
+
+          NOTES=$(echo "$NOTES" | sed -e '/./,$!d' -e :a -e '/^\n*$/{$d;N;ba;}')
+          [ -z "$NOTES" ] && NOTES="Release $VERSION"
+
+          MAX=500
+          TRAILER=$'\n\n… see full notes on GitHub.'
+          if [ ${#NOTES} -gt $MAX ]; then
+            BUDGET=$((MAX - ${#TRAILER}))
+            NOTES="${NOTES:0:$BUDGET}"
+            NOTES=$(echo "$NOTES" | sed '$d')
+            NOTES="${NOTES}${TRAILER}"
+          fi
+
+          echo "$NOTES" > "$OUT_FILE"
+          echo "Wrote $OUT_FILE ($(wc -c < "$OUT_FILE") bytes)"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$OUT_DIR/"
+          if git diff --cached --quiet; then
+            echo "No changelog changes."
+          else
+            git commit -m "chore: update fastlane changelog for $VERSION"
+            git push
+          fi
+
   build-android:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
