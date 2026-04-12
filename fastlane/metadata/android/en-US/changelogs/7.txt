@@ -1,0 +1,6 @@
+Features
+- add de, es, fr locales
+Bug Fixes
+- allow arbitrary text in quantity
+- improve rtl layout spacings
+- rtl layout + switching
