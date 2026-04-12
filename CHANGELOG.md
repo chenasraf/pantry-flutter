@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/chenasraf/pantry-flutter/compare/v0.3.0...v0.4.0) (2026-04-12)
+
+
+### Features
+
+* add hebrew language translation ([7c572a6](https://github.com/chenasraf/pantry-flutter/commit/7c572a6e64eafcf3433a2e6599b698312ffa9cbe))
+
+
+### Bug Fixes
+
+* description field in items saving+displaying ([4d99694](https://github.com/chenasraf/pantry-flutter/commit/4d9969410935d0b8d64fcfbc3e11d317a17979a6))
+
 ## [0.3.0](https://github.com/chenasraf/pantry-flutter/compare/v0.2.1...v0.3.0) (2026-04-12)
 
 
