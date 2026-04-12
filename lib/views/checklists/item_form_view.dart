@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/category_picker.dart';
 import 'package:pantry/widgets/recurrence_dialog.dart';
 import 'package:pantry/widgets/repeat_button.dart';
@@ -27,6 +28,8 @@ class _ItemFormViewState extends State<ItemFormView> {
   String? _rrule;
   bool _repeatFromCompletion = false;
   bool _saving = false;
+  TextDirection _nameDir = TextDirection.ltr;
+  TextDirection _descriptionDir = TextDirection.ltr;
 
   bool get _isEditing => widget.item != null;
 
@@ -39,11 +42,23 @@ class _ItemFormViewState extends State<ItemFormView> {
     super.initState();
     final item = widget.item;
     _nameController = TextEditingController(text: item?.name ?? '');
-    _descriptionController = TextEditingController();
+    _descriptionController = TextEditingController(
+      text: item?.description ?? '',
+    );
     _quantityController = TextEditingController(text: item?.quantity ?? '');
     _selectedCategoryId = item?.categoryId;
     _rrule = item?.rrule;
     _repeatFromCompletion = item?.repeatFromCompletion ?? false;
+    _nameDir = detectTextDirection(item?.name);
+    _nameController.addListener(() {
+      final dir = detectTextDirection(_nameController.text);
+      if (dir != _nameDir) setState(() => _nameDir = dir);
+    });
+    _descriptionDir = detectTextDirection(item?.description);
+    _descriptionController.addListener(() {
+      final dir = detectTextDirection(_descriptionController.text);
+      if (dir != _descriptionDir) setState(() => _descriptionDir = dir);
+    });
   }
 
   @override
@@ -121,6 +136,7 @@ class _ItemFormViewState extends State<ItemFormView> {
             ),
             autofocus: !_isEditing,
             textCapitalization: TextCapitalization.sentences,
+            textDirection: _nameDir,
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: 16),
@@ -131,6 +147,7 @@ class _ItemFormViewState extends State<ItemFormView> {
               border: const OutlineInputBorder(),
             ),
             textCapitalization: TextCapitalization.sentences,
+            textDirection: _descriptionDir,
             maxLines: 3,
             minLines: 2,
           ),

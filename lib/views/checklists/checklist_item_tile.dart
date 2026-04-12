@@ -133,17 +133,6 @@ class ChecklistItemTile extends StatelessWidget {
     final badges = <Widget>[];
     final theme = Theme.of(context);
 
-    if (item.quantity != null && item.quantity!.isNotEmpty) {
-      badges.add(
-        _Badge(
-          icon: Icons.close,
-          label: item.quantity!,
-          color: theme.colorScheme.surfaceContainerHighest,
-          textColor: theme.colorScheme.onSurface,
-        ),
-      );
-    }
-
     if (category != null) {
       final catColor =
           _parseColor(category!.color) ?? theme.colorScheme.primary;
@@ -153,6 +142,17 @@ class ChecklistItemTile extends StatelessWidget {
           label: category!.name,
           color: catColor.withAlpha(30),
           textColor: catColor,
+        ),
+      );
+    }
+
+    if (item.quantity != null && item.quantity!.isNotEmpty) {
+      badges.add(
+        _Badge(
+          icon: Icons.close,
+          label: item.quantity!,
+          color: theme.colorScheme.surfaceContainerHighest,
+          textColor: theme.colorScheme.onSurface,
         ),
       );
     }

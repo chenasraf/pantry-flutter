@@ -46,6 +46,7 @@ class ListItem {
   final int id;
   final int listId;
   final String name;
+  final String? description;
   final int? categoryId;
   final String? quantity;
   final bool done;
@@ -64,6 +65,7 @@ class ListItem {
     required this.id,
     required this.listId,
     required this.name,
+    this.description,
     this.categoryId,
     this.quantity,
     required this.done,
@@ -83,6 +85,7 @@ class ListItem {
     id: json['id'] as int,
     listId: json['listId'] as int,
     name: json['name'] as String,
+    description: json['description'] as String?,
     categoryId: json['categoryId'] as int?,
     quantity: json['quantity'] as String?,
     done: json['done'] as bool,
@@ -102,6 +105,7 @@ class ListItem {
     'id': id,
     'listId': listId,
     'name': name,
+    'description': description,
     'categoryId': categoryId,
     'quantity': quantity,
     'done': done,
@@ -121,6 +125,7 @@ class ListItem {
     id: id,
     listId: listId,
     name: name,
+    description: description,
     categoryId: categoryId,
     quantity: quantity,
     done: done ?? this.done,

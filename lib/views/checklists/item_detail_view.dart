@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
@@ -7,6 +8,7 @@ import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/rrule.dart';
+import 'package:pantry/utils/text_direction.dart';
 import 'checklists_controller.dart';
 import 'item_form_view.dart';
 
@@ -30,6 +32,8 @@ class ItemDetailView extends StatelessWidget {
     final hasImage = item.imageFileId != null;
     final v = m.checklists.viewItem;
 
+    final nameDir = detectTextDirection(item.name);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -47,7 +51,10 @@ class ItemDetailView extends StatelessWidget {
           SliverAppBar(
             expandedHeight: hasImage ? 280 : 0,
             pinned: true,
-            title: Text(item.name),
+            title: Directionality(
+              textDirection: nameDir,
+              child: Text(item.name),
+            ),
             flexibleSpace: hasImage
                 ? FlexibleSpaceBar(
                     background: _CoverImage(
@@ -62,6 +69,22 @@ class ItemDetailView extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             sliver: SliverList.list(
               children: [
+                if (item.description != null &&
+                    item.description!.isNotEmpty) ...[
+                  Directionality(
+                    textDirection: detectTextDirection(item.description),
+                    child: MarkdownBody(
+                      data: item.description!,
+                      shrinkWrap: true,
+                      styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                        p: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 if (item.quantity != null && item.quantity!.isNotEmpty) ...[
                   _DetailRow(
                     label: v.quantity,
