@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/chenasraf/pantry-flutter/compare/v0.4.0...v0.5.0) (2026-04-12)
+
+
+### Features
+
+* add de, es, fr locales ([7ec9526](https://github.com/chenasraf/pantry-flutter/commit/7ec952620db2d957278d58c3798e5b03ab8c59fc))
+
+
+### Bug Fixes
+
+* allow arbitrary text in quantity ([32326be](https://github.com/chenasraf/pantry-flutter/commit/32326beb8d39d4713c9f65d01dfb243c44a5dbda))
+* improve rtl layout spacings ([9d474a6](https://github.com/chenasraf/pantry-flutter/commit/9d474a62fe6ae19f3c08cdb634eac725ffb403c4))
+* rtl layout + switching ([b0fcd93](https://github.com/chenasraf/pantry-flutter/commit/b0fcd937922badb59467f1bf164e3668c658e531))
+
 ## [0.4.0](https://github.com/chenasraf/pantry-flutter/compare/v0.3.0...v0.4.0) (2026-04-12)
 
 
