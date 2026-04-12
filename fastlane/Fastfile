@@ -88,10 +88,15 @@ platform :android do
 
   desc "Upload AAB to Google Play"
   lane :deploy do |options|
+    # Write changelog if not already present (CI generates it during the
+    # release PR, but this covers manual deploys).
     version_code = version_info[:build]
     changelog_dir = File.expand_path("metadata/android/en-US/changelogs", __dir__)
-    FileUtils.mkdir_p(changelog_dir)
-    File.write(File.join(changelog_dir, "#{version_code}.txt"), play_changelog)
+    changelog_file = File.join(changelog_dir, "#{version_code}.txt")
+    unless File.exist?(changelog_file)
+      FileUtils.mkdir_p(changelog_dir)
+      File.write(changelog_file, play_changelog)
+    end
 
     changed = images_changed?
     UI.message(changed ? "Images changed — uploading." : "Images unchanged — skipping.")

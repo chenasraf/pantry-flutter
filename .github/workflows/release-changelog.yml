@@ -1,0 +1,99 @@
+name: Update Fastlane Changelog
+
+# Runs when release-please opens or updates its PR.
+# Generates the fastlane changelog file and pushes it to the PR branch
+# so the release commit (which gets tagged) includes the changelog.
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  update-changelog:
+    # Only run on release-please PRs
+    if: startsWith(github.head_ref, 'release-please--')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from pubspec.yaml
+        id: version
+        run: |
+          VERSION_LINE=$(grep '^version:' pubspec.yaml)
+          VERSION_NAME=$(echo "$VERSION_LINE" | sed 's/version: *//;s/+.*//')
+          VERSION_CODE=$(echo "$VERSION_LINE" | sed 's/.*+//')
+          echo "name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "Version: $VERSION_NAME+$VERSION_CODE"
+
+      - name: Generate fastlane changelog
+        run: |
+          VERSION="${{ steps.version.outputs.name }}"
+          CODE="${{ steps.version.outputs.code }}"
+          CHANGELOG="CHANGELOG.md"
+          OUT_DIR="fastlane/metadata/android/en-US/changelogs"
+          OUT_FILE="$OUT_DIR/$CODE.txt"
+
+          mkdir -p "$OUT_DIR"
+
+          if [ ! -f "$CHANGELOG" ]; then
+            echo "Release $VERSION" > "$OUT_FILE"
+            echo "No CHANGELOG.md, wrote fallback."
+            exit 0
+          fi
+
+          # Extract the section for this version
+          NOTES=$(awk "
+            /^## \\[${VERSION//./\\.}\\]/ { found=1; next }
+            /^## / { if (found) exit }
+            found { print }
+          " "$CHANGELOG")
+
+          # Strip commit links, reformat bullets, strip markdown headers
+          NOTES=$(echo "$NOTES" \
+            | sed -E 's/ *\(\[[0-9a-f]+\]\([^)]+\)\)//g' \
+            | sed -E 's/^\* \*\*[^*]+:\*\* */- /; s/^\* /- /' \
+            | sed 's/^### //' \
+            | sed '/^[[:space:]]*$/d')
+
+          # Trim leading/trailing blank lines
+          NOTES=$(echo "$NOTES" | sed -e '/./,$!d' -e :a -e '/^\n*$/{$d;N;ba;}')
+
+          if [ -z "$NOTES" ]; then
+            NOTES="Release $VERSION"
+          fi
+
+          # Truncate to 500 chars (Play Store limit)
+          MAX=500
+          TRAILER=$'\n\n… see full notes on GitHub.'
+          if [ ${#NOTES} -gt $MAX ]; then
+            BUDGET=$((MAX - ${#TRAILER}))
+            NOTES="${NOTES:0:$BUDGET}"
+            # Cut at last newline
+            NOTES=$(echo "$NOTES" | sed '$d')
+            NOTES="${NOTES}${TRAILER}"
+          fi
+
+          echo "$NOTES" > "$OUT_FILE"
+          echo "Wrote $OUT_FILE ($(wc -c < "$OUT_FILE") bytes)"
+          cat "$OUT_FILE"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fastlane/metadata/android/en-US/changelogs/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: update fastlane changelog for ${{ steps.version.outputs.name }}"
+            git push
+          fi
