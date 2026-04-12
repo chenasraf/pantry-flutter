@@ -1,0 +1,229 @@
+common:
+  appTitle: Pantry
+  cancel: ביטול
+  delete: מחיקה
+  save: שמירה
+  retry: נסה שוב
+  logout: התנתקות
+  loading: טוען...
+  error: שגיאה
+
+login:
+  connectToNextcloud: התחבר לשרת ה-Nextcloud שלך
+  serverUrl: כתובת השרת
+  serverUrlHint: cloud.example.com
+  connect: התחבר
+  waitingForAuth: "ממתין לאימות...\nאנא השלם את ההתחברות בדפדפן."
+  couldNotConnect: לא ניתן להתחבר לשרת. אנא בדוק את הכתובת.
+  loginFailed: ההתחברות נכשלה. אנא נסה שוב.
+
+home:
+  noHouses: אין בתים עדיין.
+  noHousesBody: "בתים הם מרחבים משותפים למשק הבית שלך. צור את הבית הראשון שלך כדי להתחיל להוסיף רשימות, תמונות והערות."
+  createHouse: צור בית
+  houseName: שם הבית
+  houseDescription: תיאור (אופציונלי)
+  createHouseFailed: יצירת הבית נכשלה.
+  failedToLoadHouses: טעינת הבתים נכשלה.
+  serverAppMissingTitle: Pantry לא מותקן
+  serverAppMissingBody: "אפליקציה זו היא לקוח עבור אפליקציית Pantry ב-Nextcloud. נראה ש-Pantry עדיין לא מותקן בשרת שלך. בקש ממנהל המערכת להתקין אותו מחנות האפליקציות של Nextcloud, או התקן בעצמך אם יש לך הרשאות מנהל."
+  openAppStore: פתח אפליקציות Nextcloud
+  learnMore: למד עוד
+
+nav:
+  checklists: רשימות
+  photoBoard: לוח תמונות
+  notesWall: קיר הערות
+
+notificationsIntro:
+  title: הישאר מעודכן
+  body: "Pantry יכול להודיע לך כשבני משק הבית מוסיפים פריטים לרשימות, מעלים תמונות או משאירים הערות. ההתראות נשלפות מהשרת שלך — שום דבר לא עובר דרך Google או צדדים שלישיים."
+  bullet1: התראות על פעילות במשק הבית
+  bullet2: נשלפות ישירות מהשרת שלך
+  bullet3: עובד גם כשהאפליקציה סגורה
+  enableButton: הפעל התראות
+  skipButton: לא עכשיו
+  permissionDeniedTitle: ההרשאה נדחתה
+  permissionDeniedBody: "תוכל להפעיל התראות מאוחר יותר בהגדרות האפליקציה. אם המכשיר חוסם אותן, תצטרך לאשר אותן קודם בהגדרות המערכת."
+  ok: אישור
+
+settings:
+  title: הגדרות האפליקציה
+  generalSection: כללי
+  language: שפה
+  languageNames:
+    system: ברירת מחדל (שפת המערכת)
+    english: English
+    hebrew: עברית
+  notificationsSection: התראות
+  enableNotifications: הפעל התראות
+  enableNotificationsBody: הצג התראות כשבני משק הבית מוסיפים או מעדכנים תוכן.
+  pollInterval: בדוק פעילות חדשה
+  pollInterval15m: כל 15 דקות
+  pollInterval30m: כל 30 דקות
+  pollInterval1h: כל שעה
+  pollInterval2h: כל שעתיים
+  pollInterval6h: כל 6 שעות
+  permissionDenied: הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.
+
+notifications:
+  title: התראות
+  empty: אין התראות חדשות.
+  failedToLoad: טעינת ההתראות נכשלה.
+  dismissAll: סגור הכל
+  justNow: הרגע
+  minutesAgo(int count): "לפני ${count} ד׳"
+  hoursAgo(int count): "לפני ${count} שע׳"
+  daysAgo(int count): "לפני ${count} י׳"
+
+categories:
+  manageTitle: ניהול קטגוריות
+  noCategories: אין קטגוריות עדיין.
+  editTitle: עריכת קטגוריה
+  addTitle: קטגוריה חדשה
+  name: שם
+  icon: אייקון
+  color: צבע
+  saveFailed: שמירת הקטגוריה נכשלה.
+  deleteFailed: מחיקת הקטגוריה נכשלה.
+  deleteConfirm: למחוק את הקטגוריה?
+  deleteConfirmBody: "פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו."
+
+checklists:
+  categories: קטגוריות
+  noChecklists: אין רשימות עדיין.
+  noItems: אין פריטים ברשימה.
+  failedToLoad: טעינת הרשימות נכשלה.
+  failedToLoadItems: טעינת הפריטים נכשלה.
+  completedCount(int count): "הושלמו ($count)"
+  editItem: ערוך פריט
+  removeItem: הסר פריט
+  moveItem: העבר לרשימה
+  moveFailed: העברת הפריט נכשלה.
+  createList: רשימה חדשה
+  listName: שם הרשימה
+  listDescription: תיאור (אופציונלי)
+  listIcon: אייקון
+  createListFailed: יצירת הרשימה נכשלה.
+  viewItem:
+    quantity: "כמות:"
+    category: "קטגוריה:"
+    recurrence: "חזרה:"
+  itemForm:
+    addTitle: הוסף פריט
+    editTitle: ערוך פריט
+    name: שם הפריט
+    description: תיאור
+    quantity: כמות
+    category: קטגוריה
+    noCategory: ללא
+    noCategories: אין קטגוריות זמינות.
+    createCategory: קטגוריה חדשה
+    categoryName: שם
+    categoryIcon: אייקון
+    categoryColor: צבע
+    categoryCreated: הקטגוריה נוצרה.
+    categoryCreateFailed: יצירת הקטגוריה נכשלה.
+    repeat: חזרה
+    saveFailed: שמירת הפריט נכשלה.
+    deleteFailed: מחיקת הפריט נכשלה.
+    deleteConfirm: למחוק את הפריט?
+  sort:
+    newestFirst: החדש ביותר
+    oldestFirst: הישן ביותר
+    nameAZ: "שם א\u2013ת"
+    nameZA: "שם ת\u2013א"
+    category: לפי קטגוריה
+    custom: מותאם אישית
+
+notesWall:
+  noNotes: אין הערות עדיין.
+  failedToLoad: טעינת ההערות נכשלה.
+  saveFailed: שמירת ההערה נכשלה.
+  deleteFailed: מחיקת ההערה נכשלה.
+  deleteConfirm: למחוק את ההערה?
+  deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'הערה זו', many: '$count הערות')}?"
+  newNote: הערה חדשה
+  editNote: עריכת הערה
+  title: כותרת
+  content: תוכן
+  color: צבע
+  sort:
+    newestFirst: החדש ביותר
+    oldestFirst: הישן ביותר
+    titleAZ: "כותרת א\u2013ת"
+    titleZA: "כותרת ת\u2013א"
+    custom: מותאם אישית
+
+photoBoard:
+  noPhotos: אין תמונות עדיין.
+  failedToLoad: טעינת התמונות נכשלה.
+  uploadFailed: העלאת התמונה נכשלה.
+  deleteFailed: מחיקת התמונה נכשלה.
+  deleteConfirm: למחוק את התמונה?
+  deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'תמונה זו', many: '$count תמונות')}?"
+  deleteFolder: מחק תיקייה
+  deleteFolderConfirm: למחוק את התיקייה?
+  deleteFolderKeepPhotos: העבר תמונות לשורש
+  deleteFolderDeleteAll: מחק תיקייה ותמונות
+  newFolder: תיקייה חדשה
+  folderName: שם התיקייה
+  renameFolder: שנה שם תיקייה
+  caption: כיתוב
+  photoCount(int count): "$count"
+  sort:
+    foldersFirst: תיקיות קודם
+    newestFirst: החדש ביותר
+    oldestFirst: הישן ביותר
+    captionAZ: "כיתוב א\u2013ת"
+    captionZA: "כיתוב ת\u2013א"
+    custom: מותאם אישית
+
+recurrence:
+  title: חזרה
+  presets: הגדרות מוכנות
+  daily: יומי
+  weekly: שבועי
+  everyTwoWeeks: כל שבועיים
+  monthly: חודשי
+  everyLabel: כל
+  unit: יחידה
+  unitDays: ימים
+  unitWeeks: שבועות
+  unitMonths: חודשים
+  unitYears: שנים
+  repeatOn: חזור ב
+  ends: מסתיים
+  never: לעולם לא
+  after: אחרי
+  occurrences: חזרות
+  onDate: בתאריך
+  countFromCompletion: חשב מרווח מרגע סימון הפריט
+  countFromCompletionHintOff: "לוח הזמנים קבוע: הפריט יופיע מחדש במועד המתוכנן הבא, ללא קשר למתי סימנת אותו."
+  countFromCompletionHintOn: "המועד הבא נספר מרגע סימון הפריט, כך שהוא תמיד חוזר מרווח מלא לאחר ההשלמה."
+  summary: סיכום
+  notSet: לא נקבע
+  set: נקבע
+  every(String unit): "כל $unit"
+  everyN(int count, String unit): "כל $count $unit"
+  onDays(String days): "ב$days"
+  day(int count): "${_plural(count, one: 'יום', many: 'ימים')}"
+  week(int count): "${_plural(count, one: 'שבוע', many: 'שבועות')}"
+  month(int count): "${_plural(count, one: 'חודש', many: 'חודשים')}"
+  year(int count): "${_plural(count, one: 'שנה', many: 'שנים')}"
+  dayNames:
+    monday: יום שני
+    tuesday: יום שלישי
+    wednesday: יום רביעי
+    thursday: יום חמישי
+    friday: יום שישי
+    saturday: שבת
+    sunday: יום ראשון
+  dayAbbr:
+    mo: ב׳
+    tu: ג׳
+    we: ד׳
+    th: ה׳
+    fr: ו׳
+    sa: ש׳
+    su: א׳

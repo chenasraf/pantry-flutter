@@ -316,6 +316,18 @@ class SettingsMessages {
   String get title => """App Settings""";
 
   /// ```dart
+  /// "General"
+  /// ```
+  String get generalSection => """General""";
+
+  /// ```dart
+  /// "Language"
+  /// ```
+  String get language => """Language""";
+  LanguageNamesSettingsMessages get languageNames =>
+      LanguageNamesSettingsMessages(this);
+
+  /// ```dart
   /// "Notifications"
   /// ```
   String get notificationsSection => """Notifications""";
@@ -366,6 +378,26 @@ class SettingsMessages {
   /// ```
   String get permissionDenied =>
       """Notification permission was denied. Enable it in system settings.""";
+}
+
+class LanguageNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const LanguageNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "System default"
+  /// ```
+  String get system => """System default""";
+
+  /// ```dart
+  /// "English"
+  /// ```
+  String get english => """English""";
+
+  /// ```dart
+  /// "עברית"
+  /// ```
+  String get hebrew => """עברית""";
 }
 
 class NotificationsMessages {
@@ -1209,6 +1241,11 @@ Please complete login in your browser.""",
       """You can enable notifications later in App Settings. If your device blocks them, you'll need to allow them in system settings first.""",
   """notificationsIntro.ok""": """OK""",
   """settings.title""": """App Settings""",
+  """settings.generalSection""": """General""",
+  """settings.language""": """Language""",
+  """settings.languageNames.system""": """System default""",
+  """settings.languageNames.english""": """English""",
+  """settings.languageNames.hebrew""": """עברית""",
   """settings.notificationsSection""": """Notifications""",
   """settings.enableNotifications""": """Enable notifications""",
   """settings.enableNotificationsBody""":

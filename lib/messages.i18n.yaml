@@ -49,6 +49,12 @@ notificationsIntro:
 
 settings:
   title: App Settings
+  generalSection: General
+  language: Language
+  languageNames:
+    system: "System default"
+    english: English
+    hebrew: עברית
   notificationsSection: Notifications
   enableNotifications: Enable notifications
   enableNotificationsBody: Show alerts when household members add or update content.

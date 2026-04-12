@@ -68,15 +68,19 @@ class AuthService {
   String? _displayName;
   String? get displayName => _displayName;
 
+  /// Language code from the Nextcloud user profile (e.g. "en", "he").
+  String? _serverLanguage;
+  String? get serverLanguage => _serverLanguage;
+
   Future<void> loadCredentials() async {
     final json = await _storage.read(key: _credentialsKey);
     if (json != null) {
       _credentials = NextcloudCredentials.fromJson(jsonDecode(json));
-      await Future.wait([fetchFirstDayOfWeek(), fetchDisplayName()]);
+      await Future.wait([fetchFirstDayOfWeek(), fetchUserProfile()]);
     }
   }
 
-  Future<void> fetchDisplayName() async {
+  Future<void> fetchUserProfile() async {
     if (_credentials == null) return;
     try {
       final uri = Uri.parse('${_credentials!.serverUrl}/ocs/v2.php/cloud/user');
@@ -93,9 +97,15 @@ class AuthService {
         _displayName =
             userData?['display-name'] as String? ??
             userData?['displayname'] as String?;
+        // Nextcloud returns language as e.g. "en", "he", "en_GB"
+        final lang = userData?['language'] as String?;
+        if (lang != null && lang.isNotEmpty) {
+          // Normalize "en_GB" → "en"
+          _serverLanguage = lang.split(RegExp(r'[_-]')).first.toLowerCase();
+        }
       }
     } catch (e) {
-      debugPrint('[AuthService] Failed to fetch display name: $e');
+      debugPrint('[AuthService] Failed to fetch user profile: $e');
     }
   }
 

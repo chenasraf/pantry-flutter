@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/background_notification_task.dart';
 import 'package:pantry/services/local_notifications_service.dart';
+import 'package:pantry/services/locale_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 
 class SettingsView extends StatefulWidget {
@@ -15,6 +16,7 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   late bool _notificationsEnabled;
   late int _pollIntervalMinutes;
+  late String? _selectedLocale;
 
   static const _pollOptions = [15, 30, 60, 120, 360];
 
@@ -23,7 +25,24 @@ class _SettingsViewState extends State<SettingsView> {
     super.initState();
     _notificationsEnabled = PrefsService.instance.notificationsEnabled;
     _pollIntervalMinutes = PrefsService.instance.pollIntervalMinutes;
+    _selectedLocale = PrefsService.instance.locale;
   }
+
+  // -- Language --
+
+  Future<void> _setLocale(String? value) async {
+    await LocaleService.instance.setLocale(value);
+    if (!mounted) return;
+    setState(() => _selectedLocale = value);
+  }
+
+  String _localeLabel(String? code) => switch (code) {
+    'en' => m.settings.languageNames.english,
+    'he' => m.settings.languageNames.hebrew,
+    _ => m.settings.languageNames.system,
+  };
+
+  // -- Notifications --
 
   Future<void> _toggleNotifications(bool value) async {
     if (value) {
@@ -70,22 +89,37 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(title: Text(m.settings.title)),
       body: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              m.settings.notificationsSection,
-              style: theme.textTheme.titleSmall?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.bold,
-              ),
+          // -- General --
+          _SectionHeader(m.settings.generalSection),
+          ListTile(
+            title: Text(m.settings.language),
+            subtitle: Text(_localeLabel(_selectedLocale)),
+            trailing: DropdownButton<String?>(
+              value: _selectedLocale,
+              onChanged: (v) => _setLocale(v),
+              items: [
+                DropdownMenuItem<String?>(
+                  value: null,
+                  child: Text(m.settings.languageNames.system),
+                ),
+                DropdownMenuItem<String?>(
+                  value: 'en',
+                  child: Text(m.settings.languageNames.english),
+                ),
+                DropdownMenuItem<String?>(
+                  value: 'he',
+                  child: Text(m.settings.languageNames.hebrew),
+                ),
+              ],
             ),
           ),
+
+          // -- Notifications --
+          _SectionHeader(m.settings.notificationsSection),
           SwitchListTile(
             title: Text(m.settings.enableNotifications),
             subtitle: Text(m.settings.enableNotificationsBody),
@@ -109,6 +143,26 @@ class _SettingsViewState extends State<SettingsView> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  const _SectionHeader(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: Text(
+        title,
+        style: theme.textTheme.titleSmall?.copyWith(
+          color: theme.colorScheme.primary,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

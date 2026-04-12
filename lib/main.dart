@@ -7,6 +7,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import 'i18n.dart';
 import 'services/auth_service.dart';
 import 'services/background_notification_task.dart';
+import 'services/locale_service.dart';
 import 'services/category_service.dart';
 import 'services/checklist_service.dart';
 import 'services/house_service.dart';
@@ -43,6 +44,7 @@ void main() async {
       unawaited(registerBackgroundNotificationPoll());
     }
   }
+  LocaleService.instance.apply();
   runApp(const PantryApp());
 }
 
@@ -55,6 +57,22 @@ class PantryApp extends StatefulWidget {
 
 class PantryAppState extends State<PantryApp> {
   bool _isLoggedIn = AuthService.instance.isLoggedIn;
+
+  @override
+  void initState() {
+    super.initState();
+    LocaleService.instance.addListener(_onLocaleChange);
+  }
+
+  @override
+  void dispose() {
+    LocaleService.instance.removeListener(_onLocaleChange);
+    super.dispose();
+  }
+
+  void _onLocaleChange() {
+    if (mounted) setState(() {});
+  }
 
   Future<void> _onLoginSuccess() async {
     await ThemingService.instance.fetchTheme();
@@ -91,63 +109,69 @@ class PantryAppState extends State<PantryApp> {
   @override
   Widget build(BuildContext context) {
     final color = ThemingService.instance.effectiveColor;
-    return MaterialApp(
-      navigatorKey: rootNavigatorKey,
-      title: m.common.appTitle,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: color,
-        ).copyWith(primary: color),
-        useMaterial3: true,
-        popupMenuTheme: PopupMenuThemeData(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+    final locale = LocaleService.instance.effectiveLocale;
+    return Directionality(
+      textDirection: LocaleService.instance.textDirection,
+      child: MaterialApp(
+        navigatorKey: rootNavigatorKey,
+        locale: locale,
+        supportedLocales: supportedLocales,
+        title: m.common.appTitle,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: color,
+          ).copyWith(primary: color),
+          useMaterial3: true,
+          popupMenuTheme: PopupMenuThemeData(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 8,
+            position: PopupMenuPosition.under,
           ),
-          elevation: 8,
-          position: PopupMenuPosition.under,
         ),
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: color,
-          brightness: Brightness.dark,
-        ).copyWith(primary: color),
-        useMaterial3: true,
-        popupMenuTheme: PopupMenuThemeData(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: color,
+            brightness: Brightness.dark,
+          ).copyWith(primary: color),
+          useMaterial3: true,
+          popupMenuTheme: PopupMenuThemeData(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 8,
+            position: PopupMenuPosition.under,
           ),
-          elevation: 8,
-          position: PopupMenuPosition.under,
         ),
+        themeMode: ThemeMode.system,
+        onGenerateInitialRoutes: (initialRoute) => [
+          MaterialPageRoute(
+            builder: (_) => _isLoggedIn
+                ? (PrefsService.instance.notificationsIntroSeen
+                      ? HomeView(onLogout: _onLogout)
+                      : NotificationsIntroView(onDone: _onIntroDone))
+                : LoginView(onLoginSuccess: _onLoginSuccess),
+          ),
+        ],
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
+            case '/home':
+              return MaterialPageRoute(
+                builder: (_) => HomeView(onLogout: _onLogout),
+              );
+            case '/notifications-intro':
+              return MaterialPageRoute(
+                builder: (_) => NotificationsIntroView(onDone: _onIntroDone),
+              );
+            case '/login':
+            default:
+              return MaterialPageRoute(
+                builder: (_) => LoginView(onLoginSuccess: _onLoginSuccess),
+              );
+          }
+        },
       ),
-      themeMode: ThemeMode.system,
-      onGenerateInitialRoutes: (initialRoute) => [
-        MaterialPageRoute(
-          builder: (_) => _isLoggedIn
-              ? (PrefsService.instance.notificationsIntroSeen
-                    ? HomeView(onLogout: _onLogout)
-                    : NotificationsIntroView(onDone: _onIntroDone))
-              : LoginView(onLoginSuccess: _onLoginSuccess),
-        ),
-      ],
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/home':
-            return MaterialPageRoute(
-              builder: (_) => HomeView(onLogout: _onLogout),
-            );
-          case '/notifications-intro':
-            return MaterialPageRoute(
-              builder: (_) => NotificationsIntroView(onDone: _onIntroDone),
-            );
-          case '/login':
-          default:
-            return MaterialPageRoute(
-              builder: (_) => LoginView(onLoginSuccess: _onLoginSuccess),
-            );
-        }
-      },
     );
   }
 }
