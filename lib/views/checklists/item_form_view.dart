@@ -158,7 +158,7 @@ class _ItemFormViewState extends State<ItemFormView> {
               labelText: f.quantity,
               border: const OutlineInputBorder(),
             ),
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.text,
           ),
           const SizedBox(height: 16),
           Text(f.category, style: theme.textTheme.bodyMedium),
