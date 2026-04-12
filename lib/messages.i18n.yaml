@@ -187,7 +187,6 @@ recurrence:
   presets: Presets
   daily: Daily
   weekly: Weekly
-  everyTwoWeeks: Every 2 weeks
   monthly: Monthly
   everyLabel: Every
   unit: Unit
@@ -208,12 +207,12 @@ recurrence:
   notSet: not set
   set: set
   every(String unit): "every $unit"
-  everyN(int count, String unit): "every $count $unit"
+  everyButton(String unit): "Every $unit"
   onDays(String days): "on $days"
-  day(int count): "${_plural(count, one: 'day', many: 'days')}"
-  week(int count): "${_plural(count, one: 'week', many: 'weeks')}"
-  month(int count): "${_plural(count, one: 'month', many: 'months')}"
-  year(int count): "${_plural(count, one: 'year', many: 'years')}"
+  day(int count): "${_plural(count, one: 'day', many: '$count days')}"
+  week(int count): "${_plural(count, one: 'week', many: '$count weeks')}"
+  month(int count): "${_plural(count, one: 'month', many: '$count months')}"
+  year(int count): "${_plural(count, one: 'year', many: '$count years')}"
   dayNames:
     monday: Monday
     tuesday: Tuesday

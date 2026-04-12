@@ -62,7 +62,7 @@ String formatRrule(String rrule) {
     _ => freq,
   };
 
-  final prefix = interval == 1 ? r.every(unit) : r.everyN(interval, unit);
+  final prefix = r.every(unit);
 
   if (byDay != null && freq == 'weekly') {
     final days = byDay.split(',').map((d) => dayNames[d] ?? d).join(', ');

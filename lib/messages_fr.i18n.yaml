@@ -187,7 +187,6 @@ recurrence:
   presets: "Pr\xE9r\xE9glages"
   daily: Quotidien
   weekly: Hebdomadaire
-  everyTwoWeeks: Toutes les 2 semaines
   monthly: Mensuel
   everyLabel: Tous les
   unit: "Unit\xE9"
@@ -208,12 +207,12 @@ recurrence:
   notSet: "non d\xE9fini"
   set: "d\xE9fini"
   every(String unit): "tous les $unit"
-  everyN(int count, String unit): "tous les $count $unit"
+  everyButton(String unit): "Tous les $unit"
   onDays(String days): "le $days"
-  day(int count): "${_plural(count, one: 'jour', many: 'jours')}"
-  week(int count): "${_plural(count, one: 'semaine', many: 'semaines')}"
-  month(int count): "${_plural(count, one: 'mois', many: 'mois')}"
-  year(int count): "${_plural(count, one: 'an', many: 'ans')}"
+  day(int count): "${_plural(count, one: 'jour', many: '$count jours')}"
+  week(int count): "${_plural(count, one: 'semaine', many: '$count semaines')}"
+  month(int count): "${_plural(count, one: 'mois', many: '$count mois')}"
+  year(int count): "${_plural(count, one: 'an', many: '$count ans')}"
   dayNames:
     monday: Lundi
     tuesday: Mardi

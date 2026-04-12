@@ -174,7 +174,7 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                       onTap: () => _applyPreset('WEEKLY', 1),
                     ),
                     _PresetChip(
-                      label: r.everyTwoWeeks,
+                      label: r.everyButton(r.week(2)),
                       selected: _freq == 'WEEKLY' && _interval == 2,
                       onTap: () => _applyPreset('WEEKLY', 2),
                     ),

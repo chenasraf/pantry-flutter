@@ -187,7 +187,6 @@ recurrence:
   presets: הגדרות מוכנות
   daily: יומי
   weekly: שבועי
-  everyTwoWeeks: כל שבועיים
   monthly: חודשי
   everyLabel: כל
   unit: יחידה
@@ -208,12 +207,12 @@ recurrence:
   notSet: לא נקבע
   set: נקבע
   every(String unit): "כל $unit"
-  everyN(int count, String unit): "כל $count $unit"
+  everyButton(String unit): "כל $unit"
   onDays(String days): "ב$days"
-  day(int count): "${_plural(count, one: 'יום', many: 'ימים')}"
-  week(int count): "${_plural(count, one: 'שבוע', many: 'שבועות')}"
-  month(int count): "${_plural(count, one: 'חודש', many: 'חודשים')}"
-  year(int count): "${_plural(count, one: 'שנה', many: 'שנים')}"
+  day(int count): "${_plural(count, one: 'יום', two: 'יומיים', many: '$count ימים')}"
+  week(int count): "${_plural(count, one: 'שבוע', two: 'שבועיים', many: '$count שבועות')}"
+  month(int count): "${_plural(count, one: 'חודש', two: 'חודשיים', many: '$count חודשים')}"
+  year(int count): "${_plural(count, one: 'שנה', two: 'שנתיים', many: '$count שנים')}"
   dayNames:
     monday: יום שני
     tuesday: יום שלישי

@@ -992,11 +992,6 @@ class RecurrenceMessagesFr extends RecurrenceMessages {
   String get weekly => """Hebdomadaire""";
 
   /// ```dart
-  /// "Toutes les 2 semaines"
-  /// ```
-  String get everyTwoWeeks => """Toutes les 2 semaines""";
-
-  /// ```dart
   /// "Mensuel"
   /// ```
   String get monthly => """Mensuel""";
@@ -1100,9 +1095,9 @@ class RecurrenceMessagesFr extends RecurrenceMessages {
   String every(String unit) => """tous les $unit""";
 
   /// ```dart
-  /// "tous les $count $unit"
+  /// "Tous les $unit"
   /// ```
-  String everyN(int count, String unit) => """tous les $count $unit""";
+  String everyButton(String unit) => """Tous les $unit""";
 
   /// ```dart
   /// "le $days"
@@ -1110,25 +1105,28 @@ class RecurrenceMessagesFr extends RecurrenceMessages {
   String onDays(String days) => """le $days""";
 
   /// ```dart
-  /// "${_plural(count, one: 'jour', many: 'jours')}"
+  /// "${_plural(count, one: 'jour', many: '$count jours')}"
   /// ```
-  String day(int count) => """${_plural(count, one: 'jour', many: 'jours')}""";
+  String day(int count) =>
+      """${_plural(count, one: 'jour', many: '$count jours')}""";
 
   /// ```dart
-  /// "${_plural(count, one: 'semaine', many: 'semaines')}"
+  /// "${_plural(count, one: 'semaine', many: '$count semaines')}"
   /// ```
   String week(int count) =>
-      """${_plural(count, one: 'semaine', many: 'semaines')}""";
+      """${_plural(count, one: 'semaine', many: '$count semaines')}""";
 
   /// ```dart
-  /// "${_plural(count, one: 'mois', many: 'mois')}"
+  /// "${_plural(count, one: 'mois', many: '$count mois')}"
   /// ```
-  String month(int count) => """${_plural(count, one: 'mois', many: 'mois')}""";
+  String month(int count) =>
+      """${_plural(count, one: 'mois', many: '$count mois')}""";
 
   /// ```dart
-  /// "${_plural(count, one: 'an', many: 'ans')}"
+  /// "${_plural(count, one: 'an', many: '$count ans')}"
   /// ```
-  String year(int count) => """${_plural(count, one: 'an', many: 'ans')}""";
+  String year(int count) =>
+      """${_plural(count, one: 'an', many: '$count ans')}""";
   DayNamesRecurrenceMessagesFr get dayNames =>
       DayNamesRecurrenceMessagesFr(this);
   DayAbbrRecurrenceMessagesFr get dayAbbr => DayAbbrRecurrenceMessagesFr(this);
@@ -1386,7 +1384,6 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """recurrence.presets""": """Préréglages""",
   """recurrence.daily""": """Quotidien""",
   """recurrence.weekly""": """Hebdomadaire""",
-  """recurrence.everyTwoWeeks""": """Toutes les 2 semaines""",
   """recurrence.monthly""": """Mensuel""",
   """recurrence.everyLabel""": """Tous les""",
   """recurrence.unit""": """Unité""",

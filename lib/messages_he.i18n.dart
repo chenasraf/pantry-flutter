@@ -990,11 +990,6 @@ class RecurrenceMessagesHe extends RecurrenceMessages {
   String get weekly => """שבועי""";
 
   /// ```dart
-  /// "כל שבועיים"
-  /// ```
-  String get everyTwoWeeks => """כל שבועיים""";
-
-  /// ```dart
   /// "חודשי"
   /// ```
   String get monthly => """חודשי""";
@@ -1097,9 +1092,9 @@ class RecurrenceMessagesHe extends RecurrenceMessages {
   String every(String unit) => """כל $unit""";
 
   /// ```dart
-  /// "כל $count $unit"
+  /// "כל $unit"
   /// ```
-  String everyN(int count, String unit) => """כל $count $unit""";
+  String everyButton(String unit) => """כל $unit""";
 
   /// ```dart
   /// "ב$days"
@@ -1107,26 +1102,28 @@ class RecurrenceMessagesHe extends RecurrenceMessages {
   String onDays(String days) => """ב$days""";
 
   /// ```dart
-  /// "${_plural(count, one: 'יום', many: 'ימים')}"
+  /// "${_plural(count, one: 'יום', two: 'יומיים', many: '$count ימים')}"
   /// ```
-  String day(int count) => """${_plural(count, one: 'יום', many: 'ימים')}""";
+  String day(int count) =>
+      """${_plural(count, one: 'יום', two: 'יומיים', many: '$count ימים')}""";
 
   /// ```dart
-  /// "${_plural(count, one: 'שבוע', many: 'שבועות')}"
+  /// "${_plural(count, one: 'שבוע', two: 'שבועיים', many: '$count שבועות')}"
   /// ```
   String week(int count) =>
-      """${_plural(count, one: 'שבוע', many: 'שבועות')}""";
+      """${_plural(count, one: 'שבוע', two: 'שבועיים', many: '$count שבועות')}""";
 
   /// ```dart
-  /// "${_plural(count, one: 'חודש', many: 'חודשים')}"
+  /// "${_plural(count, one: 'חודש', two: 'חודשיים', many: '$count חודשים')}"
   /// ```
   String month(int count) =>
-      """${_plural(count, one: 'חודש', many: 'חודשים')}""";
+      """${_plural(count, one: 'חודש', two: 'חודשיים', many: '$count חודשים')}""";
 
   /// ```dart
-  /// "${_plural(count, one: 'שנה', many: 'שנים')}"
+  /// "${_plural(count, one: 'שנה', two: 'שנתיים', many: '$count שנים')}"
   /// ```
-  String year(int count) => """${_plural(count, one: 'שנה', many: 'שנים')}""";
+  String year(int count) =>
+      """${_plural(count, one: 'שנה', two: 'שנתיים', many: '$count שנים')}""";
   DayNamesRecurrenceMessagesHe get dayNames =>
       DayNamesRecurrenceMessagesHe(this);
   DayAbbrRecurrenceMessagesHe get dayAbbr => DayAbbrRecurrenceMessagesHe(this);
@@ -1374,7 +1371,6 @@ Map<String, String> get messagesHeMap => {
   """recurrence.presets""": """הגדרות מוכנות""",
   """recurrence.daily""": """יומי""",
   """recurrence.weekly""": """שבועי""",
-  """recurrence.everyTwoWeeks""": """כל שבועיים""",
   """recurrence.monthly""": """חודשי""",
   """recurrence.everyLabel""": """כל""",
   """recurrence.unit""": """יחידה""",

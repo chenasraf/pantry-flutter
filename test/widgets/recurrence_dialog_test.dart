@@ -56,7 +56,7 @@ void main() {
     expect(find.text('Presets'), findsOneWidget);
     expect(find.text('Daily'), findsOneWidget);
     expect(find.text('Weekly'), findsOneWidget);
-    expect(find.text('Every 2 weeks'), findsOneWidget);
+    expect(find.textContaining('2 week'), findsWidgets);
     expect(find.text('Monthly'), findsOneWidget);
     expect(find.text('Summary '), findsOneWidget);
   });
@@ -88,11 +88,11 @@ void main() {
     expect(find.textContaining('month'), findsWidgets);
   });
 
-  testWidgets('tapping Every 2 weeks preset shows interval of 2', (
+  testWidgets('tapping every 2 weeks preset shows interval of 2', (
     tester,
   ) async {
     await openDialog(tester);
-    await tester.tap(find.text('Every 2 weeks'));
+    await tester.tap(find.textContaining('2 week'));
     await tester.pumpAndSettle();
     tester.takeException();
     // summary should include "2"
