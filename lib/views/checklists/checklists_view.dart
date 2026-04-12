@@ -3,8 +3,10 @@ import 'package:pantry/i18n.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/widgets/checklist_selector.dart';
 import 'package:pantry/widgets/checklist_sort_button.dart';
+import 'package:pantry/widgets/create_list_dialog.dart';
 import 'checklist_item_tile.dart';
 import 'checklists_controller.dart';
 import 'item_detail_view.dart';
@@ -225,6 +227,80 @@ class _ReorderablePartition extends StatelessWidget {
     );
   }
 
+  void _moveItem(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) {
+    final otherLists = controller.lists
+        .where((l) => l.id != controller.currentList?.id)
+        .toList();
+
+    showDialog<int>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(m.checklists.moveItem),
+        children: [
+          ...otherLists.map(
+            (list) => SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, list.id),
+              child: Row(
+                children: [
+                  Icon(checklistIcon(list.icon), size: 20),
+                  const SizedBox(width: 12),
+                  Text(list.name),
+                ],
+              ),
+            ),
+          ),
+          const Divider(),
+          SimpleDialogOption(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final created = await showCreateListDialog(context, controller);
+              if (created != null && context.mounted) {
+                try {
+                  await controller.moveItem(item, created.id);
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(m.checklists.moveFailed)),
+                    );
+                  }
+                }
+              }
+            },
+            child: Row(
+              children: [
+                Icon(
+                  Icons.add,
+                  size: 20,
+                  color: Theme.of(ctx).colorScheme.primary,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  m.checklists.createList,
+                  style: TextStyle(color: Theme.of(ctx).colorScheme.primary),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ).then((targetListId) async {
+      if (targetListId == null) return;
+      try {
+        await controller.moveItem(item, targetListId);
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(m.checklists.moveFailed)));
+        }
+      }
+    });
+  }
+
   void _editItem(
     BuildContext context,
     ChecklistsController controller,
@@ -293,6 +369,7 @@ class _ReorderablePartition extends StatelessWidget {
             onToggle: controller.toggleItem,
             onView: (item) => _viewItem(context, controller, item),
             onEdit: (item) => _editItem(context, controller, item),
+            onMove: (item) => _moveItem(context, controller, item),
             onDelete: (item) => _deleteItem(context, controller, item),
           ),
         );

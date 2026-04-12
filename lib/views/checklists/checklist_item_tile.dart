@@ -16,6 +16,7 @@ class ChecklistItemTile extends StatelessWidget {
   final ValueChanged<ListItem> onToggle;
   final ValueChanged<ListItem> onView;
   final ValueChanged<ListItem> onEdit;
+  final ValueChanged<ListItem> onMove;
   final ValueChanged<ListItem> onDelete;
 
   const ChecklistItemTile({
@@ -26,6 +27,7 @@ class ChecklistItemTile extends StatelessWidget {
     required this.onToggle,
     required this.onView,
     required this.onEdit,
+    required this.onMove,
     required this.onDelete,
   });
 
@@ -93,7 +95,12 @@ class ChecklistItemTile extends StatelessWidget {
                   constraints: const BoxConstraints(),
                   onPressed: () => onView(item),
                 ),
-                _MoreMenuButton(item: item, onEdit: onEdit, onDelete: onDelete),
+                _MoreMenuButton(
+                  item: item,
+                  onEdit: onEdit,
+                  onMove: onMove,
+                  onDelete: onDelete,
+                ),
               ],
             ),
           ),
@@ -252,11 +259,13 @@ class _Badge extends StatelessWidget {
 class _MoreMenuButton extends StatelessWidget {
   final ListItem item;
   final ValueChanged<ListItem> onEdit;
+  final ValueChanged<ListItem> onMove;
   final ValueChanged<ListItem> onDelete;
 
   const _MoreMenuButton({
     required this.item,
     required this.onEdit,
+    required this.onMove,
     required this.onDelete,
   });
 
@@ -282,6 +291,16 @@ class _MoreMenuButton extends StatelessWidget {
           ),
         ),
         PopupMenuItem(
+          value: 'move',
+          child: Row(
+            children: [
+              const Icon(Icons.drive_file_move_outlined, size: 18),
+              const SizedBox(width: 8),
+              Text(m.checklists.moveItem),
+            ],
+          ),
+        ),
+        PopupMenuItem(
           value: 'remove',
           child: Row(
             children: [
@@ -296,6 +315,8 @@ class _MoreMenuButton extends StatelessWidget {
         switch (value) {
           case 'edit':
             onEdit(item);
+          case 'move':
+            onMove(item);
           case 'remove':
             onDelete(item);
         }

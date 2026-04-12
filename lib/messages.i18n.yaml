@@ -92,6 +92,13 @@ checklists:
   completedCount(int count): "Completed ($count)"
   editItem: Edit item
   removeItem: Remove item
+  moveItem: Move to list
+  moveFailed: Failed to move item.
+  createList: New list
+  listName: List name
+  listDescription: Description (optional)
+  listIcon: Icon
+  createListFailed: Failed to create list.
   viewItem:
     quantity: "Quantity:"
     category: "Category:"

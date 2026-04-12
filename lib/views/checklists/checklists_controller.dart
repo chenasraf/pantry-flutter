@@ -229,6 +229,35 @@ class ChecklistsController extends ChangeNotifier {
     _checklistService.invalidateItems(keepListId: _currentList?.id);
   }
 
+  Future<ChecklistList> createList({
+    required String name,
+    String? description,
+    String? icon,
+  }) async {
+    final list = await _checklistService.createList(
+      houseId,
+      name: name,
+      description: description,
+      icon: icon,
+    );
+    _lists = [..._lists, list];
+    _checklistService.cacheLists(houseId, _lists);
+    notifyListeners();
+    return list;
+  }
+
+  Future<void> moveItem(ListItem item, int targetListId) async {
+    await _checklistService.moveItem(
+      houseId,
+      item.listId,
+      item.id,
+      targetListId: targetListId,
+    );
+    _items.removeWhere((i) => i.id == item.id);
+    _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    notifyListeners();
+  }
+
   Future<ListItem> addItem({
     required String name,
     String? description,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const _iconMap = <String, IconData>{
+const checklistIconMap = <String, IconData>{
   'clipboard-check': Icons.assignment_turned_in,
   'clipboard-list': Icons.assignment,
   'format-list-checks': Icons.checklist,
@@ -44,5 +44,5 @@ const _iconMap = <String, IconData>{
 const defaultChecklistIcon = Icons.assignment_turned_in;
 
 IconData checklistIcon(String? key) {
-  return _iconMap[key ?? ''] ?? defaultChecklistIcon;
+  return checklistIconMap[key ?? ''] ?? defaultChecklistIcon;
 }

@@ -95,6 +95,37 @@ class ChecklistService {
     });
   }
 
+  Future<ChecklistList> createList(
+    int houseId, {
+    required String name,
+    String? description,
+    String? icon,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ChecklistList>(
+      '/houses/$houseId/lists',
+      body: {
+        'name': name,
+        if (description != null && description.isNotEmpty)
+          'description': description,
+        if (icon != null && icon.isNotEmpty) 'icon': icon,
+      },
+      fromJson: (data) => ChecklistList.fromJson(data),
+    );
+  }
+
+  Future<ListItem> moveItem(
+    int houseId,
+    int listId,
+    int itemId, {
+    required int targetListId,
+  }) async {
+    return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
+      '/houses/$houseId/lists/$listId/items/$itemId',
+      body: {'targetListId': targetListId},
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
   Future<ListItem> createItem(
     int houseId,
     int listId, {
