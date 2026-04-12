@@ -147,8 +147,8 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changelog changes."
           else
-            git commit -m "chore: update fastlane changelog for $VERSION"
-            git push
+            git commit --amend --no-edit
+            git push --force-with-lease
           fi
 
   build-android:
