@@ -1,69 +1,62 @@
 require "digest"
 require "json"
 
+# -- Shared helpers --
+
+def version_info
+  pubspec = File.read(File.expand_path("../pubspec.yaml", __dir__))
+  version = pubspec.match(/^version:\s*(.+)$/)[1].strip
+  name, build = version.split("+")
+  { name: name, build: build }
+end
+
+def version_name
+  v = version_info
+  "#{v[:build]} (#{v[:name]})"
+end
+
+def changelog_notes
+  version = version_info[:name]
+  changelog_path = File.expand_path("../CHANGELOG.md", __dir__)
+  return "Release #{version}" unless File.exist?(changelog_path)
+
+  changelog = File.read(changelog_path)
+  escaped = Regexp.escape(version)
+  pattern = /^## (?:\[#{escaped}\]|#{escaped}[\s(]).*?\n(.*?)(?=^## |\z)/m
+  match = changelog.match(pattern)
+  return "Release #{version}" unless match
+
+  match[1].strip
+    .gsub(/\s*\(\[[\da-f]+\]\([^)]+\)\)/, "")
+    .gsub(/^\*\s+\*\*[^*]+:\*\*\s*/m, "- ")
+    .gsub(/^\*\s+/, "- ")
+    .gsub(/^### /, "")
+    .gsub(/\n{3,}/, "\n\n")
+    .strip
+    .then { |n| n.empty? ? "Release #{version}" : n }
+end
+
+# -- Android --
+
 default_platform(:android)
 
 platform :android do
-  def version_info
-    pubspec = File.read(File.expand_path("../../pubspec.yaml", __dir__))
-    version = pubspec.match(/^version:\s*(.+)$/)[1].strip
-    name, build = version.split("+")
-    { name: name, build: build }
-  end
-
-  def version_name
-    v = version_info
-    "#{v[:build]} (#{v[:name]})"
-  end
-
   # Google Play enforces a 500-char limit on release notes per language.
   PLAY_NOTES_MAX = 500
   PLAY_NOTES_TRAILER = "\n\n… see full notes on GitHub."
 
-  def changelog_notes
-    version = version_info[:name]
-    changelog_path = File.expand_path("../../CHANGELOG.md", __dir__)
-    return "Release #{version}" unless File.exist?(changelog_path)
-
-    changelog = File.read(changelog_path)
-    # Match the release heading (both `## [x.y.z]...` and `## x.y.z ...` forms),
-    # capture until the next `## ` heading (any form) or EOF.
-    escaped = Regexp.escape(version)
-    pattern = /^## (?:\[#{escaped}\]|#{escaped}[\s(]).*?\n(.*?)(?=^## |\z)/m
-    match = changelog.match(pattern)
-    return "Release #{version}" unless match
-
-    notes = match[1].strip
-      .gsub(/\s*\(\[[\da-f]+\]\([^)]+\)\)/, "")
-      .gsub(/^\*\s+\*\*[^*]+:\*\*\s*/m, "- ")
-      .gsub(/^\*\s+/, "- ")
-      .gsub(/^### /, "")
-      .gsub(/\n{3,}/, "\n\n")
-      .strip
-      .then { |n| n.empty? ? "Release #{version}" : n }
-
-    truncate_for_play(notes)
-  end
-
-  # Truncate release notes to fit within the Play Store limit. If the
-  # notes exceed the limit, trim to a line boundary and append a trailer
-  # so the total stays under [PLAY_NOTES_MAX].
-  def truncate_for_play(notes)
+  def play_changelog
+    notes = changelog_notes
     return notes if notes.length <= PLAY_NOTES_MAX
 
     budget = PLAY_NOTES_MAX - PLAY_NOTES_TRAILER.length
     truncated = notes[0, budget]
-
-    # Cut at the last newline so we don't chop a bullet mid-word.
     last_newline = truncated.rindex("\n")
     truncated = truncated[0, last_newline] if last_newline && last_newline > budget / 2
-
     truncated.rstrip + PLAY_NOTES_TRAILER
   end
 
   # -- Image change detection --
-  # We hash every file under metadata/android/*/images/ and compare to a
-  # cache file. If nothing changed, we skip image uploads entirely.
 
   IMAGE_HASH_CACHE = File.expand_path(".image_hashes.json", __dir__)
 
@@ -95,18 +88,16 @@ platform :android do
 
   desc "Upload AAB to Google Play"
   lane :deploy do |options|
-    # Write release notes to the metadata tree so `supply` picks it up
-    # keyed by the current versionCode.
     version_code = version_info[:build]
     changelog_dir = File.expand_path("metadata/android/en-US/changelogs", __dir__)
     FileUtils.mkdir_p(changelog_dir)
-    File.write(File.join(changelog_dir, "#{version_code}.txt"), changelog_notes)
+    File.write(File.join(changelog_dir, "#{version_code}.txt"), play_changelog)
 
     changed = images_changed?
     UI.message(changed ? "Images changed — uploading." : "Images unchanged — skipping.")
 
     upload_to_play_store(
-      aab: File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__),
+      aab: File.expand_path("../build/app/outputs/bundle/release/app-release.aab", __dir__),
       track: options[:track] || "internal",
       release_status: options[:status] || "draft",
       version_name: version_name,
@@ -151,6 +142,47 @@ platform :android do
       skip_upload_changelogs: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
+    )
+  end
+end
+
+# -- iOS --
+
+platform :ios do
+  def api_key
+    key_id = ENV.fetch("APP_STORE_API_KEY")
+    app_store_connect_api_key(
+      key_id: key_id,
+      issuer_id: ENV.fetch("APP_STORE_ISSUER_ID"),
+      key_filepath: File.join(ENV.fetch("APP_STORE_KEY_PATH"), "AuthKey_#{key_id}.p8"),
+    )
+  end
+
+  def find_ipa
+    ipa_path = Dir[File.expand_path("../build/ios/ipa/*.ipa", __dir__)].first
+    UI.user_error!("No IPA found in build/ios/ipa/. Run 'make ios-build' first.") unless ipa_path
+    ipa_path
+  end
+
+  desc "Upload to TestFlight"
+  lane :beta do
+    upload_to_testflight(
+      api_key: api_key,
+      ipa: find_ipa,
+      changelog: changelog_notes,
+      skip_waiting_for_build_processing: true,
+    )
+  end
+
+  desc "Upload to App Store"
+  lane :release do
+    deliver(
+      api_key: api_key,
+      ipa: find_ipa,
+      skip_metadata: true,
+      skip_screenshots: true,
+      submit_for_review: false,
+      release_notes: { "en-US" => changelog_notes },
     )
   end
 end

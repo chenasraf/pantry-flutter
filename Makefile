@@ -210,7 +210,7 @@ android-upload:
 	@echo "$(or $(TRACK),beta)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TRACK '$(TRACK)'. Must be: internal, alpha, beta, production"; exit 1)
 	@echo "$(or $(STATUS),draft)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
 	@echo "Track: $(or $(TRACK),internal) | Status: $(or $(STATUS),draft)"
-	cd android && bundle exec fastlane deploy track:$(or $(TRACK),internal) status:$(or $(STATUS),draft)
+	bundle exec fastlane deploy track:$(or $(TRACK),internal) status:$(or $(STATUS),draft)
 
 .PHONY: android-deploy
 android-deploy: android-build-aab android-upload
@@ -221,16 +221,16 @@ android-promote:
 	@echo "$(or $(TO),production)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TO '$(TO)'. Must be: internal, alpha, beta, production"; exit 1)
 	@echo "$(or $(STATUS),draft)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
 	@echo "Promote: $(or $(FROM),internal) -> $(or $(TO),production) | Status: $(or $(STATUS),draft)"
-	cd android && bundle exec fastlane promote from:$(or $(FROM),internal) to:$(or $(TO),production) status:$(or $(STATUS),draft)
+	bundle exec fastlane promote from:$(or $(FROM),internal) to:$(or $(TO),production) status:$(or $(STATUS),draft)
 
 .PHONY: ios-upload
 ios-upload:
 	@echo "$(or $(DEST),testflight)" | grep -qE '^(testflight|appstore)$$' || (echo "Error: Invalid DEST '$(DEST)'. Must be: testflight, appstore"; exit 1)
 	@echo "Destination: $(or $(DEST),testflight)"
 	@if [ "$(or $(DEST),testflight)" = "appstore" ]; then \
-		cd ios && bundle exec fastlane release; \
+		bundle exec fastlane ios release; \
 	else \
-		cd ios && bundle exec fastlane beta; \
+		bundle exec fastlane ios beta; \
 	fi
 
 .PHONY: ios-deploy

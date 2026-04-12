@@ -1,5 +1,9 @@
+# Android
+json_key_file(ENV["GOOGLE_PLAY_KEY_FILE"])
+package_name("dev.casraf.pantry")
+
+# iOS
 app_identifier("dev.casraf.pantry")
 apple_id(ENV["APPLE_ID"])
-
 itc_team_id(ENV["ITC_TEAM_ID"])
 team_id(ENV["APPLE_TEAM_ID"])
