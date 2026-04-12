@@ -1,0 +1,7 @@
+Features
+
+- add hebrew language translation
+
+Bug Fixes
+
+- description field in items saving+displaying
