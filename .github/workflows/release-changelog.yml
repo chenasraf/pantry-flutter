@@ -1,28 +1,22 @@
 name: Update Fastlane Changelog
 
-# Runs when release-please opens or updates its PR.
-# Generates the fastlane changelog file and pushes it to the PR branch
-# so the release commit (which gets tagged) includes the changelog.
+# Runs when the release-please branch is pushed (either by the release-please
+# action creating/updating the PR, or by manual pushes to the branch).
 on:
-  pull_request:
-    types: [opened, synchronize]
-    branches: [master]
+  push:
+    branches:
+      - 'release-please--**'
 
 permissions:
   contents: write
 
 jobs:
   update-changelog:
-    # Only run on release-please PRs
-    if: startsWith(github.head_ref, 'release-please--')
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout PR branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract version from pubspec.yaml
         id: version
