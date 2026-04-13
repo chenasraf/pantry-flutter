@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/chenasraf/pantry-flutter/compare/v0.5.0...v0.6.0) (2026-04-13)
+
+
+### Features
+
+* show next due date for list items ([e7ff39a](https://github.com/chenasraf/pantry-flutter/commit/e7ff39a2328ecd9967a3b162dc389bac8a645f38))
+
+
+### Bug Fixes
+
+* appbar icon spacings ([1197254](https://github.com/chenasraf/pantry-flutter/commit/11972542da777a5922aec564684b7f37b3330aa0))
+* improve i18n recurrence string rules ([1e85d0c](https://github.com/chenasraf/pantry-flutter/commit/1e85d0c2a6d46d7561105f02683bbed97c907792))
+
 ## [0.5.0](https://github.com/chenasraf/pantry-flutter/compare/v0.4.0...v0.5.0) (2026-04-12)
 
 
