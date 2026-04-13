@@ -112,6 +112,9 @@ checklists:
     quantity: "Quantity:"
     category: "Category:"
     recurrence: "Recurrence:"
+    nextDue: "Next due:"
+    nextDueFromCompletion: "Next due (from completion):"
+    overdue: Overdue
   itemForm:
     addTitle: Add item
     editTitle: Edit item

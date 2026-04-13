@@ -112,6 +112,9 @@ checklists:
     quantity: "Cantidad:"
     category: "Categoría:"
     recurrence: "Recurrencia:"
+    nextDue: "Próximo vencimiento:"
+    nextDueFromCompletion: "Próximo vencimiento (desde finalización):"
+    overdue: Vencido
   itemForm:
     addTitle: "Agregar art\xEDculo"
     editTitle: "Editar art\xEDculo"

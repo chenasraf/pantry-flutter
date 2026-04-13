@@ -7,6 +7,7 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/utils/date_format.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'checklists_controller.dart';
@@ -115,6 +116,28 @@ class ItemDetailView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
+                  if (item.nextDueAt != null) ...[
+                    _DetailRow(
+                      label: item.repeatFromCompletion
+                          ? v.nextDueFromCompletion
+                          : v.nextDue,
+                      child: _Badge(
+                        icon: isOverdue(item.nextDueAt!)
+                            ? Icons.warning_amber
+                            : Icons.schedule,
+                        label: isOverdue(item.nextDueAt!)
+                            ? '${formatDate(item.nextDueAt!)} (${v.overdue})'
+                            : formatDate(item.nextDueAt!),
+                        color: isOverdue(item.nextDueAt!)
+                            ? theme.colorScheme.errorContainer
+                            : theme.colorScheme.surfaceContainerHighest,
+                        textColor: isOverdue(item.nextDueAt!)
+                            ? theme.colorScheme.onErrorContainer
+                            : theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                 ],
               ],
             ),

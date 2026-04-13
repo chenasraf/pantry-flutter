@@ -626,6 +626,22 @@ class ViewItemChecklistsMessagesFr extends ViewItemChecklistsMessages {
   /// "Récurrence :"
   /// ```
   String get recurrence => """Récurrence :""";
+
+  /// ```dart
+  /// "Prochaine échéance :"
+  /// ```
+  String get nextDue => """Prochaine échéance :""";
+
+  /// ```dart
+  /// "Prochaine échéance (à partir de la complétion) :"
+  /// ```
+  String get nextDueFromCompletion =>
+      """Prochaine échéance (à partir de la complétion) :""";
+
+  /// ```dart
+  /// "En retard"
+  /// ```
+  String get overdue => """En retard""";
 }
 
 class ItemFormChecklistsMessagesFr extends ItemFormChecklistsMessages {
@@ -1317,6 +1333,10 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.viewItem.quantity""": """Quantité :""",
   """checklists.viewItem.category""": """Catégorie :""",
   """checklists.viewItem.recurrence""": """Récurrence :""",
+  """checklists.viewItem.nextDue""": """Prochaine échéance :""",
+  """checklists.viewItem.nextDueFromCompletion""":
+      """Prochaine échéance (à partir de la complétion) :""",
+  """checklists.viewItem.overdue""": """En retard""",
   """checklists.itemForm.addTitle""": """Ajouter un article""",
   """checklists.itemForm.editTitle""": """Modifier l'article""",
   """checklists.itemForm.name""": """Nom de l'article""",

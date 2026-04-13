@@ -622,6 +622,21 @@ class ViewItemChecklistsMessages {
   /// "Recurrence:"
   /// ```
   String get recurrence => """Recurrence:""";
+
+  /// ```dart
+  /// "Next due:"
+  /// ```
+  String get nextDue => """Next due:""";
+
+  /// ```dart
+  /// "Next due (from completion):"
+  /// ```
+  String get nextDueFromCompletion => """Next due (from completion):""";
+
+  /// ```dart
+  /// "Overdue"
+  /// ```
+  String get overdue => """Overdue""";
 }
 
 class ItemFormChecklistsMessages {
@@ -1308,6 +1323,10 @@ Please complete login in your browser.""",
   """checklists.viewItem.quantity""": """Quantity:""",
   """checklists.viewItem.category""": """Category:""",
   """checklists.viewItem.recurrence""": """Recurrence:""",
+  """checklists.viewItem.nextDue""": """Next due:""",
+  """checklists.viewItem.nextDueFromCompletion""":
+      """Next due (from completion):""",
+  """checklists.viewItem.overdue""": """Overdue""",
   """checklists.itemForm.addTitle""": """Add item""",
   """checklists.itemForm.editTitle""": """Edit item""",
   """checklists.itemForm.name""": """Item name""",

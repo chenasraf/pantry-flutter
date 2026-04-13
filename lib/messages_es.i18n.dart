@@ -626,6 +626,22 @@ class ViewItemChecklistsMessagesEs extends ViewItemChecklistsMessages {
   /// "Recurrencia:"
   /// ```
   String get recurrence => """Recurrencia:""";
+
+  /// ```dart
+  /// "Próximo vencimiento:"
+  /// ```
+  String get nextDue => """Próximo vencimiento:""";
+
+  /// ```dart
+  /// "Próximo vencimiento (desde finalización):"
+  /// ```
+  String get nextDueFromCompletion =>
+      """Próximo vencimiento (desde finalización):""";
+
+  /// ```dart
+  /// "Vencido"
+  /// ```
+  String get overdue => """Vencido""";
 }
 
 class ItemFormChecklistsMessagesEs extends ItemFormChecklistsMessages {
@@ -1316,6 +1332,10 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.viewItem.quantity""": """Cantidad:""",
   """checklists.viewItem.category""": """Categoría:""",
   """checklists.viewItem.recurrence""": """Recurrencia:""",
+  """checklists.viewItem.nextDue""": """Próximo vencimiento:""",
+  """checklists.viewItem.nextDueFromCompletion""":
+      """Próximo vencimiento (desde finalización):""",
+  """checklists.viewItem.overdue""": """Vencido""",
   """checklists.itemForm.addTitle""": """Agregar artículo""",
   """checklists.itemForm.editTitle""": """Editar artículo""",
   """checklists.itemForm.name""": """Nombre del artículo""",

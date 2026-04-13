@@ -112,6 +112,9 @@ checklists:
     quantity: "כמות:"
     category: "קטגוריה:"
     recurrence: "חזרה:"
+    nextDue: "מועד הבא:"
+    nextDueFromCompletion: "מועד הבא (מהשלמה):"
+    overdue: באיחור
   itemForm:
     addTitle: הוסף פריט
     editTitle: ערוך פריט

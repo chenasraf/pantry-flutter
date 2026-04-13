@@ -624,6 +624,21 @@ class ViewItemChecklistsMessagesHe extends ViewItemChecklistsMessages {
   /// "חזרה:"
   /// ```
   String get recurrence => """חזרה:""";
+
+  /// ```dart
+  /// "מועד הבא:"
+  /// ```
+  String get nextDue => """מועד הבא:""";
+
+  /// ```dart
+  /// "מועד הבא (מהשלמה):"
+  /// ```
+  String get nextDueFromCompletion => """מועד הבא (מהשלמה):""";
+
+  /// ```dart
+  /// "באיחור"
+  /// ```
+  String get overdue => """באיחור""";
 }
 
 class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
@@ -1309,6 +1324,9 @@ Map<String, String> get messagesHeMap => {
   """checklists.viewItem.quantity""": """כמות:""",
   """checklists.viewItem.category""": """קטגוריה:""",
   """checklists.viewItem.recurrence""": """חזרה:""",
+  """checklists.viewItem.nextDue""": """מועד הבא:""",
+  """checklists.viewItem.nextDueFromCompletion""": """מועד הבא (מהשלמה):""",
+  """checklists.viewItem.overdue""": """באיחור""",
   """checklists.itemForm.addTitle""": """הוסף פריט""",
   """checklists.itemForm.editTitle""": """ערוך פריט""",
   """checklists.itemForm.name""": """שם הפריט""",

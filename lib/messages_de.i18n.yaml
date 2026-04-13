@@ -112,6 +112,9 @@ checklists:
     quantity: "Menge:"
     category: "Kategorie:"
     recurrence: "Wiederholung:"
+    nextDue: "Nächstes Fälligkeitsdatum:"
+    nextDueFromCompletion: "Nächstes Fälligkeitsdatum (ab Erledigung):"
+    overdue: Überfällig
   itemForm:
     addTitle: "Eintrag hinzuf\xFCgen"
     editTitle: Eintrag bearbeiten

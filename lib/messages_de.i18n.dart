@@ -627,6 +627,22 @@ class ViewItemChecklistsMessagesDe extends ViewItemChecklistsMessages {
   /// "Wiederholung:"
   /// ```
   String get recurrence => """Wiederholung:""";
+
+  /// ```dart
+  /// "Nächstes Fälligkeitsdatum:"
+  /// ```
+  String get nextDue => """Nächstes Fälligkeitsdatum:""";
+
+  /// ```dart
+  /// "Nächstes Fälligkeitsdatum (ab Erledigung):"
+  /// ```
+  String get nextDueFromCompletion =>
+      """Nächstes Fälligkeitsdatum (ab Erledigung):""";
+
+  /// ```dart
+  /// "Überfällig"
+  /// ```
+  String get overdue => """Überfällig""";
 }
 
 class ItemFormChecklistsMessagesDe extends ItemFormChecklistsMessages {
@@ -1322,6 +1338,10 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.viewItem.quantity""": """Menge:""",
   """checklists.viewItem.category""": """Kategorie:""",
   """checklists.viewItem.recurrence""": """Wiederholung:""",
+  """checklists.viewItem.nextDue""": """Nächstes Fälligkeitsdatum:""",
+  """checklists.viewItem.nextDueFromCompletion""":
+      """Nächstes Fälligkeitsdatum (ab Erledigung):""",
+  """checklists.viewItem.overdue""": """Überfällig""",
   """checklists.itemForm.addTitle""": """Eintrag hinzufügen""",
   """checklists.itemForm.editTitle""": """Eintrag bearbeiten""",
   """checklists.itemForm.name""": """Eintragsname""",
