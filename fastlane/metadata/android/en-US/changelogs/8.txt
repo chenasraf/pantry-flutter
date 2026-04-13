@@ -1,0 +1,5 @@
+Features
+- show next due date for list items
+Bug Fixes
+- appbar icon spacings
+- improve i18n recurrence string rules
