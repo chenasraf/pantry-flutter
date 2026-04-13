@@ -69,6 +69,7 @@ class MessagesDe extends Messages {
   NavMessagesDe get nav => NavMessagesDe(this);
   NotificationsIntroMessagesDe get notificationsIntro =>
       NotificationsIntroMessagesDe(this);
+  AboutMessagesDe get about => AboutMessagesDe(this);
   SettingsMessagesDe get settings => SettingsMessagesDe(this);
   NotificationsMessagesDe get notifications => NotificationsMessagesDe(this);
   CategoriesMessagesDe get categories => CategoriesMessagesDe(this);
@@ -308,6 +309,46 @@ class NotificationsIntroMessagesDe extends NotificationsIntroMessages {
   String get ok => """OK""";
 }
 
+class AboutMessagesDe extends AboutMessages {
+  final MessagesDe _parent;
+  const AboutMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Über"
+  /// ```
+  String get title => """Über""";
+
+  /// ```dart
+  /// "Entwickler"
+  /// ```
+  String get developer => """Entwickler""";
+
+  /// ```dart
+  /// "E-Mail"
+  /// ```
+  String get email => """E-Mail""";
+
+  /// ```dart
+  /// "Quellcode"
+  /// ```
+  String get repository => """Quellcode""";
+
+  /// ```dart
+  /// "Nextcloud-App"
+  /// ```
+  String get nextcloudApp => """Nextcloud-App""";
+
+  /// ```dart
+  /// "Datenschutzerklärung"
+  /// ```
+  String get privacyPolicy => """Datenschutzerklärung""";
+
+  /// ```dart
+  /// "Feedback & Probleme"
+  /// ```
+  String get feedback => """Feedback & Probleme""";
+}
+
 class SettingsMessagesDe extends SettingsMessages {
   final MessagesDe _parent;
   const SettingsMessagesDe(this._parent) : super(_parent);
@@ -328,6 +369,13 @@ class SettingsMessagesDe extends SettingsMessages {
   String get language => """Sprache""";
   LanguageNamesSettingsMessagesDe get languageNames =>
       LanguageNamesSettingsMessagesDe(this);
+
+  /// ```dart
+  /// "Design"
+  /// ```
+  String get theme => """Design""";
+  ThemeNamesSettingsMessagesDe get themeNames =>
+      ThemeNamesSettingsMessagesDe(this);
 
   /// ```dart
   /// "Benachrichtigungen"
@@ -415,6 +463,26 @@ class LanguageNamesSettingsMessagesDe extends LanguageNamesSettingsMessages {
   /// "Français"
   /// ```
   String get french => """Français""";
+}
+
+class ThemeNamesSettingsMessagesDe extends ThemeNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const ThemeNamesSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Systemstandard"
+  /// ```
+  String get system => """Systemstandard""";
+
+  /// ```dart
+  /// "Hell"
+  /// ```
+  String get light => """Hell""";
+
+  /// ```dart
+  /// "Dunkel"
+  /// ```
+  String get dark => """Dunkel""";
 }
 
 class NotificationsMessagesDe extends NotificationsMessages {
@@ -539,9 +607,9 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get noChecklists => """Noch keine Checklisten.""";
 
   /// ```dart
-  /// "Keine Eintr\xE4ge in dieser Liste."
+  /// "Keine Einträge in dieser Liste."
   /// ```
-  String get noItems => """Keine Eintr\xE4ge in dieser Liste.""";
+  String get noItems => """Keine Einträge in dieser Liste.""";
 
   /// ```dart
   /// "Checklisten konnten nicht geladen werden."
@@ -1280,6 +1348,13 @@ Bitte melde dich in deinem Browser an.""",
   """notificationsIntro.permissionDeniedBody""":
       """Du kannst Benachrichtigungen später in den App-Einstellungen aktivieren. Wenn dein Gerät sie blockiert, musst du sie zuerst in den Systemeinstellungen erlauben.""",
   """notificationsIntro.ok""": """OK""",
+  """about.title""": """Über""",
+  """about.developer""": """Entwickler""",
+  """about.email""": """E-Mail""",
+  """about.repository""": """Quellcode""",
+  """about.nextcloudApp""": """Nextcloud-App""",
+  """about.privacyPolicy""": """Datenschutzerklärung""",
+  """about.feedback""": """Feedback & Probleme""",
   """settings.title""": """App-Einstellungen""",
   """settings.generalSection""": """Allgemein""",
   """settings.language""": """Sprache""",
@@ -1289,6 +1364,10 @@ Bitte melde dich in deinem Browser an.""",
   """settings.languageNames.german""": """Deutsch""",
   """settings.languageNames.spanish""": """Español""",
   """settings.languageNames.french""": """Français""",
+  """settings.theme""": """Design""",
+  """settings.themeNames.system""": """Systemstandard""",
+  """settings.themeNames.light""": """Hell""",
+  """settings.themeNames.dark""": """Dunkel""",
   """settings.notificationsSection""": """Benachrichtigungen""",
   """settings.enableNotifications""": """Benachrichtigungen aktivieren""",
   """settings.enableNotificationsBody""":
@@ -1321,7 +1400,7 @@ Bitte melde dich in deinem Browser an.""",
       """Einträge in dieser Kategorie werden unkategorisiert. Dies kann nicht rückgängig gemacht werden.""",
   """checklists.categories""": """Kategorien""",
   """checklists.noChecklists""": """Noch keine Checklisten.""",
-  """checklists.noItems""": """Keine Eintr\xE4ge in dieser Liste.""",
+  """checklists.noItems""": """Keine Einträge in dieser Liste.""",
   """checklists.failedToLoad""":
       """Checklisten konnten nicht geladen werden.""",
   """checklists.failedToLoadItems""":

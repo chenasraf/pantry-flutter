@@ -69,6 +69,7 @@ class MessagesFr extends Messages {
   NavMessagesFr get nav => NavMessagesFr(this);
   NotificationsIntroMessagesFr get notificationsIntro =>
       NotificationsIntroMessagesFr(this);
+  AboutMessagesFr get about => AboutMessagesFr(this);
   SettingsMessagesFr get settings => SettingsMessagesFr(this);
   NotificationsMessagesFr get notifications => NotificationsMessagesFr(this);
   CategoriesMessagesFr get categories => CategoriesMessagesFr(this);
@@ -308,6 +309,46 @@ class NotificationsIntroMessagesFr extends NotificationsIntroMessages {
   String get ok => """OK""";
 }
 
+class AboutMessagesFr extends AboutMessages {
+  final MessagesFr _parent;
+  const AboutMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "À propos"
+  /// ```
+  String get title => """À propos""";
+
+  /// ```dart
+  /// "Développeur"
+  /// ```
+  String get developer => """Développeur""";
+
+  /// ```dart
+  /// "E-mail"
+  /// ```
+  String get email => """E-mail""";
+
+  /// ```dart
+  /// "Code source"
+  /// ```
+  String get repository => """Code source""";
+
+  /// ```dart
+  /// "App Nextcloud"
+  /// ```
+  String get nextcloudApp => """App Nextcloud""";
+
+  /// ```dart
+  /// "Politique de confidentialité"
+  /// ```
+  String get privacyPolicy => """Politique de confidentialité""";
+
+  /// ```dart
+  /// "Commentaires & problèmes"
+  /// ```
+  String get feedback => """Commentaires & problèmes""";
+}
+
 class SettingsMessagesFr extends SettingsMessages {
   final MessagesFr _parent;
   const SettingsMessagesFr(this._parent) : super(_parent);
@@ -328,6 +369,13 @@ class SettingsMessagesFr extends SettingsMessages {
   String get language => """Langue""";
   LanguageNamesSettingsMessagesFr get languageNames =>
       LanguageNamesSettingsMessagesFr(this);
+
+  /// ```dart
+  /// "Thème"
+  /// ```
+  String get theme => """Thème""";
+  ThemeNamesSettingsMessagesFr get themeNames =>
+      ThemeNamesSettingsMessagesFr(this);
 
   /// ```dart
   /// "Notifications"
@@ -415,6 +463,26 @@ class LanguageNamesSettingsMessagesFr extends LanguageNamesSettingsMessages {
   /// "Français"
   /// ```
   String get french => """Français""";
+}
+
+class ThemeNamesSettingsMessagesFr extends ThemeNamesSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const ThemeNamesSettingsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Par défaut du système"
+  /// ```
+  String get system => """Par défaut du système""";
+
+  /// ```dart
+  /// "Clair"
+  /// ```
+  String get light => """Clair""";
+
+  /// ```dart
+  /// "Sombre"
+  /// ```
+  String get dark => """Sombre""";
 }
 
 class NotificationsMessagesFr extends NotificationsMessages {
@@ -769,9 +837,9 @@ class SortChecklistsMessagesFr extends SortChecklistsMessages {
   String get category => """Par catégorie""";
 
   /// ```dart
-  /// "Personnalis\xE9"
+  /// "Personnalisé"
   /// ```
-  String get custom => """Personnalis\xE9""";
+  String get custom => """Personnalisé""";
 }
 
 class NotesWallMessagesFr extends NotesWallMessages {
@@ -1277,6 +1345,13 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """notificationsIntro.permissionDeniedBody""":
       """Vous pourrez activer les notifications plus tard dans les réglages de l'app. Si votre appareil les bloque, vous devrez d'abord les autoriser dans les réglages système.""",
   """notificationsIntro.ok""": """OK""",
+  """about.title""": """À propos""",
+  """about.developer""": """Développeur""",
+  """about.email""": """E-mail""",
+  """about.repository""": """Code source""",
+  """about.nextcloudApp""": """App Nextcloud""",
+  """about.privacyPolicy""": """Politique de confidentialité""",
+  """about.feedback""": """Commentaires & problèmes""",
   """settings.title""": """Réglages de l'app""",
   """settings.generalSection""": """Général""",
   """settings.language""": """Langue""",
@@ -1286,6 +1361,10 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """settings.languageNames.german""": """Deutsch""",
   """settings.languageNames.spanish""": """Español""",
   """settings.languageNames.french""": """Français""",
+  """settings.theme""": """Thème""",
+  """settings.themeNames.system""": """Par défaut du système""",
+  """settings.themeNames.light""": """Clair""",
+  """settings.themeNames.dark""": """Sombre""",
   """settings.notificationsSection""": """Notifications""",
   """settings.enableNotifications""": """Activer les notifications""",
   """settings.enableNotificationsBody""":
@@ -1363,7 +1442,7 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.sort.nameAZ""": """Nom A–Z""",
   """checklists.sort.nameZA""": """Nom Z–A""",
   """checklists.sort.category""": """Par catégorie""",
-  """checklists.sort.custom""": """Personnalis\xE9""",
+  """checklists.sort.custom""": """Personnalisé""",
   """notesWall.noNotes""": """Aucune note pour le moment.""",
   """notesWall.failedToLoad""": """Impossible de charger les notes.""",
   """notesWall.saveFailed""": """Impossible d'enregistrer la note.""",

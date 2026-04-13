@@ -1,7 +1,7 @@
 common:
   appTitle: Pantry
   cancel: Abbrechen
-  delete: "L\xF6schen"
+  delete: "Löschen"
   save: Speichern
   retry: Erneut versuchen
   logout: Abmelden
@@ -14,20 +14,20 @@ login:
   serverUrlHint: cloud.example.com
   connect: Verbinden
   waitingForAuth: "Warte auf Authentifizierung...\nBitte melde dich in deinem Browser an."
-  couldNotConnect: "Verbindung zum Server fehlgeschlagen. Bitte \xFCberpr\xFCfe die URL."
+  couldNotConnect: "Verbindung zum Server fehlgeschlagen. Bitte überprüfe die URL."
   loginFailed: Anmeldung fehlgeschlagen. Bitte versuche es erneut.
 
 home:
-  noHouses: "Noch keine H\xE4user."
-  noHousesBody: "H\xE4user sind gemeinsame Bereiche f\xFCr deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzuf\xFCgen."
+  noHouses: "Noch keine Häuser."
+  noHousesBody: "Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen."
   createHouse: Haus erstellen
   houseName: Hausname
   houseDescription: Beschreibung (optional)
   createHouseFailed: Haus konnte nicht erstellt werden.
-  failedToLoadHouses: "H\xE4user konnten nicht geladen werden."
+  failedToLoadHouses: "Häuser konnten nicht geladen werden."
   serverAppMissingTitle: Pantry ist nicht installiert
-  serverAppMissingBody: "Diese App ist ein Client f\xFCr die Pantry-App auf Nextcloud. Es scheint, dass Pantry noch nicht auf deinem Server installiert ist. Bitte deinen Administrator, es aus dem Nextcloud App Store zu installieren, oder installiere es selbst, wenn du Administratorzugang hast."
-  openAppStore: "Nextcloud-Apps \xF6ffnen"
+  serverAppMissingBody: "Diese App ist ein Client für die Pantry-App auf Nextcloud. Es scheint, dass Pantry noch nicht auf deinem Server installiert ist. Bitte deinen Administrator, es aus dem Nextcloud App Store zu installieren, oder installiere es selbst, wenn du Administratorzugang hast."
+  openAppStore: "Nextcloud-Apps öffnen"
   learnMore: Mehr erfahren
 
 nav:
@@ -37,15 +37,24 @@ nav:
 
 notificationsIntro:
   title: Bleib auf dem Laufenden
-  body: "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Eintr\xE4ge zu Checklisten hinzuf\xFCgen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen \u2014 nichts geht \xFCber Google oder Drittanbieter."
-  bullet1: "Benachrichtigungen \xFCber Haushaltsaktivit\xE4ten"
+  body: "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."
+  bullet1: "Benachrichtigungen über Haushaltsaktivitäten"
   bullet2: Direkt von deinem Server abgerufen
   bullet3: "Funktioniert auch bei geschlossener App"
   enableButton: Benachrichtigungen aktivieren
   skipButton: Nicht jetzt
   permissionDeniedTitle: Berechtigung verweigert
-  permissionDeniedBody: "Du kannst Benachrichtigungen sp\xE4ter in den App-Einstellungen aktivieren. Wenn dein Ger\xE4t sie blockiert, musst du sie zuerst in den Systemeinstellungen erlauben."
+  permissionDeniedBody: "Du kannst Benachrichtigungen später in den App-Einstellungen aktivieren. Wenn dein Gerät sie blockiert, musst du sie zuerst in den Systemeinstellungen erlauben."
   ok: OK
+
+about:
+  title: "Über"
+  developer: Entwickler
+  email: E-Mail
+  repository: Quellcode
+  nextcloudApp: Nextcloud-App
+  privacyPolicy: "Datenschutzerklärung"
+  feedback: Feedback & Probleme
 
 settings:
   title: App-Einstellungen
@@ -54,17 +63,22 @@ settings:
   languageNames:
     system: Systemstandard
     english: English
-    hebrew: "\u05E2\u05D1\u05E8\u05D9\u05EA"
+    hebrew: "עברית"
     german: Deutsch
-    spanish: "Espa\xF1ol"
-    french: "Fran\xE7ais"
+    spanish: "Español"
+    french: "Français"
+  theme: Design
+  themeNames:
+    system: Systemstandard
+    light: Hell
+    dark: Dunkel
   notificationsSection: Benachrichtigungen
   enableNotifications: Benachrichtigungen aktivieren
   enableNotificationsBody: Zeige Benachrichtigungen, wenn Haushaltsmitglieder Inhalte hinzufugen oder aktualisieren.
-  pollInterval: "Auf neue Aktivit\xE4t pr\xFCfen"
+  pollInterval: "Auf neue Aktivität prüfen"
   pollInterval15m: Alle 15 Minuten
   pollInterval30m: Alle 30 Minuten
-  pollInterval1h: "St\xFCndlich"
+  pollInterval1h: "Stündlich"
   pollInterval2h: Alle 2 Stunden
   pollInterval6h: Alle 6 Stunden
   permissionDenied: Benachrichtigungsberechtigung wurde verweigert. Aktiviere sie in den Systemeinstellungen.
@@ -88,16 +102,16 @@ categories:
   icon: Symbol
   color: Farbe
   saveFailed: Kategorie konnte nicht gespeichert werden.
-  deleteFailed: "Kategorie konnte nicht gel\xF6scht werden."
-  deleteConfirm: "Diese Kategorie l\xF6schen?"
-  deleteConfirmBody: "Eintr\xE4ge in dieser Kategorie werden unkategorisiert. Dies kann nicht r\xFCckg\xE4ngig gemacht werden."
+  deleteFailed: "Kategorie konnte nicht gelöscht werden."
+  deleteConfirm: "Diese Kategorie löschen?"
+  deleteConfirmBody: "Einträge in dieser Kategorie werden unkategorisiert. Dies kann nicht rückgängig gemacht werden."
 
 checklists:
   categories: Kategorien
   noChecklists: Noch keine Checklisten.
-  noItems: Keine Eintr\xE4ge in dieser Liste.
+  noItems: Keine Einträge in dieser Liste.
   failedToLoad: Checklisten konnten nicht geladen werden.
-  failedToLoadItems: "Eintr\xE4ge konnten nicht geladen werden."
+  failedToLoadItems: "Einträge konnten nicht geladen werden."
   completedCount(int count): "Erledigt ($count)"
   editItem: Eintrag bearbeiten
   removeItem: Eintrag entfernen
@@ -116,14 +130,14 @@ checklists:
     nextDueFromCompletion: "Nächstes Fälligkeitsdatum (ab Erledigung):"
     overdue: Überfällig
   itemForm:
-    addTitle: "Eintrag hinzuf\xFCgen"
+    addTitle: "Eintrag hinzufügen"
     editTitle: Eintrag bearbeiten
     name: Eintragsname
     description: Beschreibung
     quantity: Menge
     category: Kategorie
     noCategory: Keine
-    noCategories: "Keine Kategorien verf\xFCgbar."
+    noCategories: "Keine Kategorien verfügbar."
     createCategory: Neue Kategorie
     categoryName: Name
     categoryIcon: Symbol
@@ -132,13 +146,13 @@ checklists:
     categoryCreateFailed: Kategorie konnte nicht erstellt werden.
     repeat: Wiederholen
     saveFailed: Eintrag konnte nicht gespeichert werden.
-    deleteFailed: "Eintrag konnte nicht gel\xF6scht werden."
-    deleteConfirm: "Diesen Eintrag l\xF6schen?"
+    deleteFailed: "Eintrag konnte nicht gelöscht werden."
+    deleteConfirm: "Diesen Eintrag löschen?"
   sort:
     newestFirst: Neueste zuerst
-    oldestFirst: "\xC4lteste zuerst"
-    nameAZ: "Name A\u2013Z"
-    nameZA: "Name Z\u2013A"
+    oldestFirst: "Älteste zuerst"
+    nameAZ: "Name A–Z"
+    nameZA: "Name Z–A"
     category: Nach Kategorie
     custom: Benutzerdefiniert
 
@@ -146,9 +160,9 @@ notesWall:
   noNotes: Noch keine Notizen.
   failedToLoad: Notizen konnten nicht geladen werden.
   saveFailed: Notiz konnte nicht gespeichert werden.
-  deleteFailed: "Notiz konnte nicht gel\xF6scht werden."
-  deleteConfirm: "Diese Notiz l\xF6schen?"
-  deleteSelectedConfirm(int count): "${_plural(count, one: 'Diese Notiz', many: '$count Notizen')} l\xF6schen?"
+  deleteFailed: "Notiz konnte nicht gelöscht werden."
+  deleteConfirm: "Diese Notiz löschen?"
+  deleteSelectedConfirm(int count): "${_plural(count, one: 'Diese Notiz', many: '$count Notizen')} löschen?"
   newNote: Neue Notiz
   editNote: Notiz bearbeiten
   title: Titel
@@ -156,22 +170,22 @@ notesWall:
   color: Farbe
   sort:
     newestFirst: Neueste zuerst
-    oldestFirst: "\xC4lteste zuerst"
-    titleAZ: "Titel A\u2013Z"
-    titleZA: "Titel Z\u2013A"
+    oldestFirst: "Älteste zuerst"
+    titleAZ: "Titel A–Z"
+    titleZA: "Titel Z–A"
     custom: Benutzerdefiniert
 
 photoBoard:
   noPhotos: Noch keine Fotos.
   failedToLoad: Fotos konnten nicht geladen werden.
   uploadFailed: Foto konnte nicht hochgeladen werden.
-  deleteFailed: "Foto konnte nicht gel\xF6scht werden."
-  deleteConfirm: "Dieses Foto l\xF6schen?"
-  deleteSelectedConfirm(int count): "${_plural(count, one: 'Dieses Foto', many: '$count Fotos')} l\xF6schen?"
-  deleteFolder: "Ordner l\xF6schen"
-  deleteFolderConfirm: "Diesen Ordner l\xF6schen?"
+  deleteFailed: "Foto konnte nicht gelöscht werden."
+  deleteConfirm: "Dieses Foto löschen?"
+  deleteSelectedConfirm(int count): "${_plural(count, one: 'Dieses Foto', many: '$count Fotos')} löschen?"
+  deleteFolder: "Ordner löschen"
+  deleteFolderConfirm: "Diesen Ordner löschen?"
   deleteFolderKeepPhotos: Fotos ins Stammverzeichnis verschieben
-  deleteFolderDeleteAll: "Ordner und Fotos l\xF6schen"
+  deleteFolderDeleteAll: "Ordner und Fotos löschen"
   newFolder: Neuer Ordner
   folderName: Ordnername
   renameFolder: Ordner umbenennen
@@ -180,16 +194,16 @@ photoBoard:
   sort:
     foldersFirst: Ordner zuerst
     newestFirst: Neueste zuerst
-    oldestFirst: "\xC4lteste zuerst"
-    captionAZ: "Beschriftung A\u2013Z"
-    captionZA: "Beschriftung Z\u2013A"
+    oldestFirst: "Älteste zuerst"
+    captionAZ: "Beschriftung A–Z"
+    captionZA: "Beschriftung Z–A"
     custom: Benutzerdefiniert
 
 recurrence:
   title: Wiederholung
   presets: Voreinstellungen
-  daily: "T\xE4glich"
-  weekly: "W\xF6chentlich"
+  daily: "Täglich"
+  weekly: "Wöchentlich"
   monthly: Monatlich
   everyLabel: Alle
   unit: Einheit
@@ -204,8 +218,8 @@ recurrence:
   occurrences: Wiederholungen
   onDate: Am Datum
   countFromCompletion: Intervall ab dem Zeitpunkt der Erledigung berechnen
-  countFromCompletionHintOff: "Der Zeitplan ist fest: Der Eintrag erscheint zum n\xE4chsten geplanten Zeitpunkt wieder, unabh\xE4ngig davon, wann du ihn abhakst."
-  countFromCompletionHintOn: "Der n\xE4chste Zeitpunkt wird ab dem Moment berechnet, in dem du den Eintrag abhakst, sodass er immer ein volles Intervall nach der Erledigung zur\xFCckkehrt."
+  countFromCompletionHintOff: "Der Zeitplan ist fest: Der Eintrag erscheint zum nächsten geplanten Zeitpunkt wieder, unabhängig davon, wann du ihn abhakst."
+  countFromCompletionHintOn: "Der nächste Zeitpunkt wird ab dem Moment berechnet, in dem du den Eintrag abhakst, sodass er immer ein volles Intervall nach der Erledigung zurückkehrt."
   summary: Zusammenfassung
   notSet: nicht gesetzt
   set: gesetzt

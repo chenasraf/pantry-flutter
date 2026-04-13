@@ -5,6 +5,7 @@ import 'package:pantry/services/background_notification_task.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/locale_service.dart';
 import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry/services/theming_service.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -17,6 +18,7 @@ class _SettingsViewState extends State<SettingsView> {
   late bool _notificationsEnabled;
   late int _pollIntervalMinutes;
   late String? _selectedLocale;
+  late String? _selectedTheme;
 
   static const _pollOptions = [15, 30, 60, 120, 360];
 
@@ -26,6 +28,7 @@ class _SettingsViewState extends State<SettingsView> {
     _notificationsEnabled = PrefsService.instance.notificationsEnabled;
     _pollIntervalMinutes = PrefsService.instance.pollIntervalMinutes;
     _selectedLocale = PrefsService.instance.locale;
+    _selectedTheme = PrefsService.instance.themeMode;
   }
 
   // -- Language --
@@ -43,6 +46,20 @@ class _SettingsViewState extends State<SettingsView> {
     'fr' => m.settings.languageNames.french,
     'he' => m.settings.languageNames.hebrew,
     _ => m.settings.languageNames.system,
+  };
+
+  // -- Theme --
+
+  Future<void> _setTheme(String? value) async {
+    await ThemingService.instance.setThemeMode(value);
+    if (!mounted) return;
+    setState(() => _selectedTheme = value);
+  }
+
+  String _themeLabel(String? code) => switch (code) {
+    'light' => m.settings.themeNames.light,
+    'dark' => m.settings.themeNames.dark,
+    _ => m.settings.themeNames.system,
   };
 
   // -- Notifications --
@@ -128,6 +145,29 @@ class _SettingsViewState extends State<SettingsView> {
                 DropdownMenuItem<String?>(
                   value: 'he',
                   child: Text(m.settings.languageNames.hebrew),
+                ),
+              ],
+            ),
+          ),
+
+          ListTile(
+            title: Text(m.settings.theme),
+            subtitle: Text(_themeLabel(_selectedTheme)),
+            trailing: DropdownButton<String?>(
+              value: _selectedTheme,
+              onChanged: (v) => _setTheme(v),
+              items: [
+                DropdownMenuItem<String?>(
+                  value: null,
+                  child: Text(m.settings.themeNames.system),
+                ),
+                DropdownMenuItem<String?>(
+                  value: 'light',
+                  child: Text(m.settings.themeNames.light),
+                ),
+                DropdownMenuItem<String?>(
+                  value: 'dark',
+                  child: Text(m.settings.themeNames.dark),
                 ),
               ],
             ),

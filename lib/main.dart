@@ -62,16 +62,18 @@ class PantryAppState extends State<PantryApp> {
   @override
   void initState() {
     super.initState();
-    LocaleService.instance.addListener(_onLocaleChange);
+    LocaleService.instance.addListener(_rebuild);
+    ThemingService.instance.addListener(_rebuild);
   }
 
   @override
   void dispose() {
-    LocaleService.instance.removeListener(_onLocaleChange);
+    LocaleService.instance.removeListener(_rebuild);
+    ThemingService.instance.removeListener(_rebuild);
     super.dispose();
   }
 
-  void _onLocaleChange() {
+  void _rebuild() {
     if (mounted) setState(() {});
   }
 
@@ -115,6 +117,7 @@ class PantryAppState extends State<PantryApp> {
       textDirection: LocaleService.instance.textDirection,
       child: MaterialApp(
         key: ValueKey(locale),
+        debugShowCheckedModeBanner: false,
         navigatorKey: rootNavigatorKey,
         locale: locale,
         supportedLocales: supportedLocales,
@@ -151,7 +154,7 @@ class PantryAppState extends State<PantryApp> {
             position: PopupMenuPosition.under,
           ),
         ),
-        themeMode: ThemeMode.system,
+        themeMode: ThemingService.instance.themeMode,
         onGenerateInitialRoutes: (initialRoute) => [
           MaterialPageRoute(
             builder: (_) => _isLoggedIn

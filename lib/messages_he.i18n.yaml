@@ -47,6 +47,15 @@ notificationsIntro:
   permissionDeniedBody: "תוכל להפעיל התראות מאוחר יותר בהגדרות האפליקציה. אם המכשיר חוסם אותן, תצטרך לאשר אותן קודם בהגדרות המערכת."
   ok: אישור
 
+about:
+  title: אודות
+  developer: מפתח
+  email: דוא"ל
+  repository: קוד מקור
+  nextcloudApp: אפליקציית Nextcloud
+  privacyPolicy: מדיניות פרטיות
+  feedback: משוב ובעיות
+
 settings:
   title: הגדרות האפליקציה
   generalSection: כללי
@@ -58,6 +67,11 @@ settings:
     german: Deutsch
     spanish: Español
     french: Français
+  theme: ערכת נושא
+  themeNames:
+    system: ברירת מחדל (המערכת)
+    light: בהיר
+    dark: כהה
   notificationsSection: התראות
   enableNotifications: הפעל התראות
   enableNotificationsBody: הצג התראות כשבני משק הבית מוסיפים או מעדכנים תוכן.
@@ -137,8 +151,8 @@ checklists:
   sort:
     newestFirst: החדש ביותר
     oldestFirst: הישן ביותר
-    nameAZ: "שם א\u2013ת"
-    nameZA: "שם ת\u2013א"
+    nameAZ: "שם א–ת"
+    nameZA: "שם ת–א"
     category: לפי קטגוריה
     custom: מותאם אישית
 
@@ -157,8 +171,8 @@ notesWall:
   sort:
     newestFirst: החדש ביותר
     oldestFirst: הישן ביותר
-    titleAZ: "כותרת א\u2013ת"
-    titleZA: "כותרת ת\u2013א"
+    titleAZ: "כותרת א–ת"
+    titleZA: "כותרת ת–א"
     custom: מותאם אישית
 
 photoBoard:
@@ -181,8 +195,8 @@ photoBoard:
     foldersFirst: תיקיות קודם
     newestFirst: החדש ביותר
     oldestFirst: הישן ביותר
-    captionAZ: "כיתוב א\u2013ת"
-    captionZA: "כיתוב ת\u2013א"
+    captionAZ: "כיתוב א–ת"
+    captionZA: "כיתוב ת–א"
     custom: מותאם אישית
 
 recurrence:

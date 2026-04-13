@@ -51,6 +51,7 @@ dependencies:
   workmanager: ^0.9.0+3
   i18n:
     git: https://github.com/chenasraf/i18n
+  package_info_plus: ^9.0.1
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +80,7 @@ flutter:
 
   assets:
     - assets/logo.svg
+    - assets/logo_icon.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -116,8 +118,9 @@ flutter_launcher_icons:
   ios: true
   remove_alpha_ios: true
   image_path: "assets/icon/icon.png"
+  image_path_ios: "assets/icon/icon_ios.png"
   adaptive_icon_background: "#0082C9"
-  adaptive_icon_foreground: "assets/icon/icon.png"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
   web:
     generate: true
     image_path: "assets/icon/icon.png"

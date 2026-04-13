@@ -72,6 +72,7 @@ build-clean:
 # i18n
 .PHONY: i18n
 i18n:
+	dart run tool/fix_i18n_escapes.dart
 	dart run build_runner build --delete-conflicting-outputs
 
 .PHONY: i18n-watch
@@ -134,6 +135,10 @@ android-build-aab:
 
 .PHONY: ios-build
 ios-build:
+	flutter build ios --release --no-codesign --obfuscate --split-debug-info=build/debug-info-ios --dart-define-from-file=.env
+
+.PHONY: ios-build-ipa
+ios-build-ipa:
 	flutter build ipa --release --obfuscate --split-debug-info=build/debug-info-ios --dart-define-from-file=.env --export-options-plist=ios/ExportOptions.plist
 
 .PHONY: web-build
@@ -191,7 +196,7 @@ ios-upload:
 	fi
 
 .PHONY: ios-deploy
-ios-deploy: ios-build ios-upload
+ios-deploy: ios-build-ipa ios-upload
 
 .PHONY: web-release
 web-release: web-build
@@ -237,10 +242,13 @@ endif
 icons:
 	mkdir -p assets/icon
 	rsvg-convert -h 1024 assets/logo_icon.svg > assets/icon/icon.png
+	rsvg-convert -w 1024 -h 1024 assets/logo_icon_square.svg > assets/icon/icon_ios.png
+	rsvg-convert -w 1024 -h 1024 assets/logo_icon_foreground.svg > assets/icon/icon_foreground.png
 	dart run flutter_launcher_icons
+	cp assets/icon/icon_ios.png fastlane/metadata/android/en-US/images/icon.png
 
 .PHONY: splash
 splash:
 	mkdir -p assets/icon
-	rsvg-convert -h 512 --page-width 1024 --page-height 1024 --top 256 --left 256 assets/logo_icon.svg > assets/icon/splash.png
+	rsvg-convert -h 1152 --page-width 1920 --page-height 1920 --top 384 --left 384 assets/logo_icon.svg > assets/icon/splash.png
 	dart run flutter_native_splash:create

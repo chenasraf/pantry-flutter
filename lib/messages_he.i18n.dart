@@ -69,6 +69,7 @@ class MessagesHe extends Messages {
   NavMessagesHe get nav => NavMessagesHe(this);
   NotificationsIntroMessagesHe get notificationsIntro =>
       NotificationsIntroMessagesHe(this);
+  AboutMessagesHe get about => AboutMessagesHe(this);
   SettingsMessagesHe get settings => SettingsMessagesHe(this);
   NotificationsMessagesHe get notifications => NotificationsMessagesHe(this);
   CategoriesMessagesHe get categories => CategoriesMessagesHe(this);
@@ -306,6 +307,46 @@ class NotificationsIntroMessagesHe extends NotificationsIntroMessages {
   String get ok => """אישור""";
 }
 
+class AboutMessagesHe extends AboutMessages {
+  final MessagesHe _parent;
+  const AboutMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "אודות"
+  /// ```
+  String get title => """אודות""";
+
+  /// ```dart
+  /// "מפתח"
+  /// ```
+  String get developer => """מפתח""";
+
+  /// ```dart
+  /// "דוא"ל"
+  /// ```
+  String get email => """דוא"ל""";
+
+  /// ```dart
+  /// "קוד מקור"
+  /// ```
+  String get repository => """קוד מקור""";
+
+  /// ```dart
+  /// "אפליקציית Nextcloud"
+  /// ```
+  String get nextcloudApp => """אפליקציית Nextcloud""";
+
+  /// ```dart
+  /// "מדיניות פרטיות"
+  /// ```
+  String get privacyPolicy => """מדיניות פרטיות""";
+
+  /// ```dart
+  /// "משוב ובעיות"
+  /// ```
+  String get feedback => """משוב ובעיות""";
+}
+
 class SettingsMessagesHe extends SettingsMessages {
   final MessagesHe _parent;
   const SettingsMessagesHe(this._parent) : super(_parent);
@@ -326,6 +367,13 @@ class SettingsMessagesHe extends SettingsMessages {
   String get language => """שפה""";
   LanguageNamesSettingsMessagesHe get languageNames =>
       LanguageNamesSettingsMessagesHe(this);
+
+  /// ```dart
+  /// "ערכת נושא"
+  /// ```
+  String get theme => """ערכת נושא""";
+  ThemeNamesSettingsMessagesHe get themeNames =>
+      ThemeNamesSettingsMessagesHe(this);
 
   /// ```dart
   /// "התראות"
@@ -413,6 +461,26 @@ class LanguageNamesSettingsMessagesHe extends LanguageNamesSettingsMessages {
   /// "Français"
   /// ```
   String get french => """Français""";
+}
+
+class ThemeNamesSettingsMessagesHe extends ThemeNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const ThemeNamesSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "ברירת מחדל (המערכת)"
+  /// ```
+  String get system => """ברירת מחדל (המערכת)""";
+
+  /// ```dart
+  /// "בהיר"
+  /// ```
+  String get light => """בהיר""";
+
+  /// ```dart
+  /// "כהה"
+  /// ```
+  String get dark => """כהה""";
 }
 
 class NotificationsMessagesHe extends NotificationsMessages {
@@ -1269,6 +1337,13 @@ Map<String, String> get messagesHeMap => {
   """notificationsIntro.permissionDeniedBody""":
       """תוכל להפעיל התראות מאוחר יותר בהגדרות האפליקציה. אם המכשיר חוסם אותן, תצטרך לאשר אותן קודם בהגדרות המערכת.""",
   """notificationsIntro.ok""": """אישור""",
+  """about.title""": """אודות""",
+  """about.developer""": """מפתח""",
+  """about.email""": """דוא"ל""",
+  """about.repository""": """קוד מקור""",
+  """about.nextcloudApp""": """אפליקציית Nextcloud""",
+  """about.privacyPolicy""": """מדיניות פרטיות""",
+  """about.feedback""": """משוב ובעיות""",
   """settings.title""": """הגדרות האפליקציה""",
   """settings.generalSection""": """כללי""",
   """settings.language""": """שפה""",
@@ -1278,6 +1353,10 @@ Map<String, String> get messagesHeMap => {
   """settings.languageNames.german""": """Deutsch""",
   """settings.languageNames.spanish""": """Español""",
   """settings.languageNames.french""": """Français""",
+  """settings.theme""": """ערכת נושא""",
+  """settings.themeNames.system""": """ברירת מחדל (המערכת)""",
+  """settings.themeNames.light""": """בהיר""",
+  """settings.themeNames.dark""": """כהה""",
   """settings.notificationsSection""": """התראות""",
   """settings.enableNotifications""": """הפעל התראות""",
   """settings.enableNotificationsBody""":

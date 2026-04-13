@@ -47,6 +47,15 @@ notificationsIntro:
   permissionDeniedBody: "You can enable notifications later in App Settings. If your device blocks them, you'll need to allow them in system settings first."
   ok: OK
 
+about:
+  title: About
+  developer: Developer
+  email: Email
+  repository: Source code
+  nextcloudApp: Nextcloud app
+  privacyPolicy: Privacy policy
+  feedback: Feedback & issues
+
 settings:
   title: App Settings
   generalSection: General
@@ -58,6 +67,11 @@ settings:
     german: Deutsch
     spanish: Español
     french: Français
+  theme: Theme
+  themeNames:
+    system: "System default"
+    light: Light
+    dark: Dark
   notificationsSection: Notifications
   enableNotifications: Enable notifications
   enableNotificationsBody: Show alerts when household members add or update content.
@@ -137,8 +151,8 @@ checklists:
   sort:
     newestFirst: Newest first
     oldestFirst: Oldest first
-    nameAZ: "Name A\u2013Z"
-    nameZA: "Name Z\u2013A"
+    nameAZ: "Name A–Z"
+    nameZA: "Name Z–A"
     category: By category
     custom: Custom
 
@@ -157,8 +171,8 @@ notesWall:
   sort:
     newestFirst: Newest first
     oldestFirst: Oldest first
-    titleAZ: "Title A\u2013Z"
-    titleZA: "Title Z\u2013A"
+    titleAZ: "Title A–Z"
+    titleZA: "Title Z–A"
     custom: Custom
 
 photoBoard:
@@ -181,8 +195,8 @@ photoBoard:
     foldersFirst: Folders first
     newestFirst: Newest first
     oldestFirst: Oldest first
-    captionAZ: "Caption A\u2013Z"
-    captionZA: "Caption Z\u2013A"
+    captionAZ: "Caption A–Z"
+    captionZA: "Caption Z–A"
     custom: Custom
 
 recurrence:

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/views/about/about_view.dart';
 
 class UserMenuButton extends StatelessWidget {
   final List<House> houses;
@@ -164,6 +165,16 @@ class UserMenuButton extends StatelessWidget {
           ),
         ),
         PopupMenuItem<String>(
+          value: 'about',
+          child: Row(
+            children: [
+              const Icon(Icons.info_outlined, size: 18),
+              const SizedBox(width: 8),
+              Text(m.about.title),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
           value: 'logout',
           child: Row(
             children: [
@@ -182,6 +193,12 @@ class UserMenuButton extends StatelessWidget {
       onCreateHouse();
     } else if (value == 'settings') {
       onOpenSettings();
+    } else if (value == 'about') {
+      if (context.mounted) {
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const AboutView()));
+      }
     } else if (value == 'logout') {
       onLogout();
     }

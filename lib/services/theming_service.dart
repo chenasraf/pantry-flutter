@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/services/prefs_service.dart';
 
-class ThemingService {
+class ThemingService extends ChangeNotifier {
   ThemingService._();
   static final ThemingService instance = ThemingService._();
 
@@ -14,6 +15,22 @@ class ThemingService {
   static const _defaultColor = Color(0xFF0082C9);
 
   Color get effectiveColor => _themeColor ?? _defaultColor;
+
+  ThemeMode get themeMode {
+    switch (PrefsService.instance.themeMode) {
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+        return ThemeMode.dark;
+      default:
+        return ThemeMode.system;
+    }
+  }
+
+  Future<void> setThemeMode(String? mode) async {
+    await PrefsService.instance.setThemeMode(mode);
+    notifyListeners();
+  }
 
   Future<void> fetchTheme() async {
     final creds = AuthService.instance.credentials;

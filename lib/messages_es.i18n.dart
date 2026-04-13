@@ -69,6 +69,7 @@ class MessagesEs extends Messages {
   NavMessagesEs get nav => NavMessagesEs(this);
   NotificationsIntroMessagesEs get notificationsIntro =>
       NotificationsIntroMessagesEs(this);
+  AboutMessagesEs get about => AboutMessagesEs(this);
   SettingsMessagesEs get settings => SettingsMessagesEs(this);
   NotificationsMessagesEs get notifications => NotificationsMessagesEs(this);
   CategoriesMessagesEs get categories => CategoriesMessagesEs(this);
@@ -308,6 +309,46 @@ class NotificationsIntroMessagesEs extends NotificationsIntroMessages {
   String get ok => """OK""";
 }
 
+class AboutMessagesEs extends AboutMessages {
+  final MessagesEs _parent;
+  const AboutMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Acerca de"
+  /// ```
+  String get title => """Acerca de""";
+
+  /// ```dart
+  /// "Desarrollador"
+  /// ```
+  String get developer => """Desarrollador""";
+
+  /// ```dart
+  /// "Correo"
+  /// ```
+  String get email => """Correo""";
+
+  /// ```dart
+  /// "Código fuente"
+  /// ```
+  String get repository => """Código fuente""";
+
+  /// ```dart
+  /// "App de Nextcloud"
+  /// ```
+  String get nextcloudApp => """App de Nextcloud""";
+
+  /// ```dart
+  /// "Política de privacidad"
+  /// ```
+  String get privacyPolicy => """Política de privacidad""";
+
+  /// ```dart
+  /// "Comentarios y problemas"
+  /// ```
+  String get feedback => """Comentarios y problemas""";
+}
+
 class SettingsMessagesEs extends SettingsMessages {
   final MessagesEs _parent;
   const SettingsMessagesEs(this._parent) : super(_parent);
@@ -328,6 +369,13 @@ class SettingsMessagesEs extends SettingsMessages {
   String get language => """Idioma""";
   LanguageNamesSettingsMessagesEs get languageNames =>
       LanguageNamesSettingsMessagesEs(this);
+
+  /// ```dart
+  /// "Tema"
+  /// ```
+  String get theme => """Tema""";
+  ThemeNamesSettingsMessagesEs get themeNames =>
+      ThemeNamesSettingsMessagesEs(this);
 
   /// ```dart
   /// "Notificaciones"
@@ -415,6 +463,26 @@ class LanguageNamesSettingsMessagesEs extends LanguageNamesSettingsMessages {
   /// "Français"
   /// ```
   String get french => """Français""";
+}
+
+class ThemeNamesSettingsMessagesEs extends ThemeNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const ThemeNamesSettingsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Predeterminado del sistema"
+  /// ```
+  String get system => """Predeterminado del sistema""";
+
+  /// ```dart
+  /// "Claro"
+  /// ```
+  String get light => """Claro""";
+
+  /// ```dart
+  /// "Oscuro"
+  /// ```
+  String get dark => """Oscuro""";
 }
 
 class NotificationsMessagesEs extends NotificationsMessages {
@@ -1275,6 +1343,13 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """notificationsIntro.permissionDeniedBody""":
       """Puedes activar las notificaciones más tarde en los ajustes de la app. Si tu dispositivo las bloquea, primero deberás permitirlas en los ajustes del sistema.""",
   """notificationsIntro.ok""": """OK""",
+  """about.title""": """Acerca de""",
+  """about.developer""": """Desarrollador""",
+  """about.email""": """Correo""",
+  """about.repository""": """Código fuente""",
+  """about.nextcloudApp""": """App de Nextcloud""",
+  """about.privacyPolicy""": """Política de privacidad""",
+  """about.feedback""": """Comentarios y problemas""",
   """settings.title""": """Ajustes de la app""",
   """settings.generalSection""": """General""",
   """settings.language""": """Idioma""",
@@ -1284,6 +1359,10 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """settings.languageNames.german""": """Deutsch""",
   """settings.languageNames.spanish""": """Español""",
   """settings.languageNames.french""": """Français""",
+  """settings.theme""": """Tema""",
+  """settings.themeNames.system""": """Predeterminado del sistema""",
+  """settings.themeNames.light""": """Claro""",
+  """settings.themeNames.dark""": """Oscuro""",
   """settings.notificationsSection""": """Notificaciones""",
   """settings.enableNotifications""": """Activar notificaciones""",
   """settings.enableNotificationsBody""":

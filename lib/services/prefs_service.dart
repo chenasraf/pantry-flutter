@@ -9,6 +9,7 @@ class PrefsService {
   static const _pollIntervalMinutesKey = 'poll_interval_minutes';
   static const _notificationsIntroSeenKey = 'notifications_intro_seen';
   static const _localeKey = 'locale';
+  static const _themeModeKey = 'theme_mode';
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -27,6 +28,10 @@ class PrefsService {
   String? _locale;
   String? get locale => _locale;
 
+  /// null = system default, "light", "dark"
+  String? _themeMode;
+  String? get themeMode => _themeMode;
+
   Future<void> load() async {
     final lastHouse = await _storage.read(key: _lastHouseKey);
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);
@@ -44,6 +49,7 @@ class PrefsService {
     if (intro != null) _notificationsIntroSeen = intro == 'true';
 
     _locale = await _storage.read(key: _localeKey);
+    _themeMode = await _storage.read(key: _themeModeKey);
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -76,6 +82,15 @@ class PrefsService {
     }
   }
 
+  Future<void> setThemeMode(String? mode) async {
+    _themeMode = mode;
+    if (mode == null) {
+      await _storage.delete(key: _themeModeKey);
+    } else {
+      await _storage.write(key: _themeModeKey, value: mode);
+    }
+  }
+
   Future<void> setNotificationsIntroSeen(bool value) async {
     _notificationsIntroSeen = value;
     await _storage.write(
@@ -90,10 +105,12 @@ class PrefsService {
     _pollIntervalMinutes = 15;
     _notificationsIntroSeen = false;
     _locale = null;
+    _themeMode = null;
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _notificationsEnabledKey);
     await _storage.delete(key: _pollIntervalMinutesKey);
     await _storage.delete(key: _notificationsIntroSeenKey);
     await _storage.delete(key: _localeKey);
+    await _storage.delete(key: _themeModeKey);
   }
 }

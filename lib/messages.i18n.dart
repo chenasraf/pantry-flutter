@@ -68,6 +68,7 @@ class Messages {
   NavMessages get nav => NavMessages(this);
   NotificationsIntroMessages get notificationsIntro =>
       NotificationsIntroMessages(this);
+  AboutMessages get about => AboutMessages(this);
   SettingsMessages get settings => SettingsMessages(this);
   NotificationsMessages get notifications => NotificationsMessages(this);
   CategoriesMessages get categories => CategoriesMessages(this);
@@ -306,6 +307,46 @@ class NotificationsIntroMessages {
   String get ok => """OK""";
 }
 
+class AboutMessages {
+  final Messages _parent;
+  const AboutMessages(this._parent);
+
+  /// ```dart
+  /// "About"
+  /// ```
+  String get title => """About""";
+
+  /// ```dart
+  /// "Developer"
+  /// ```
+  String get developer => """Developer""";
+
+  /// ```dart
+  /// "Email"
+  /// ```
+  String get email => """Email""";
+
+  /// ```dart
+  /// "Source code"
+  /// ```
+  String get repository => """Source code""";
+
+  /// ```dart
+  /// "Nextcloud app"
+  /// ```
+  String get nextcloudApp => """Nextcloud app""";
+
+  /// ```dart
+  /// "Privacy policy"
+  /// ```
+  String get privacyPolicy => """Privacy policy""";
+
+  /// ```dart
+  /// "Feedback & issues"
+  /// ```
+  String get feedback => """Feedback & issues""";
+}
+
 class SettingsMessages {
   final Messages _parent;
   const SettingsMessages(this._parent);
@@ -326,6 +367,12 @@ class SettingsMessages {
   String get language => """Language""";
   LanguageNamesSettingsMessages get languageNames =>
       LanguageNamesSettingsMessages(this);
+
+  /// ```dart
+  /// "Theme"
+  /// ```
+  String get theme => """Theme""";
+  ThemeNamesSettingsMessages get themeNames => ThemeNamesSettingsMessages(this);
 
   /// ```dart
   /// "Notifications"
@@ -413,6 +460,26 @@ class LanguageNamesSettingsMessages {
   /// "Français"
   /// ```
   String get french => """Français""";
+}
+
+class ThemeNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const ThemeNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "System default"
+  /// ```
+  String get system => """System default""";
+
+  /// ```dart
+  /// "Light"
+  /// ```
+  String get light => """Light""";
+
+  /// ```dart
+  /// "Dark"
+  /// ```
+  String get dark => """Dark""";
 }
 
 class NotificationsMessages {
@@ -1268,6 +1335,13 @@ Please complete login in your browser.""",
   """notificationsIntro.permissionDeniedBody""":
       """You can enable notifications later in App Settings. If your device blocks them, you'll need to allow them in system settings first.""",
   """notificationsIntro.ok""": """OK""",
+  """about.title""": """About""",
+  """about.developer""": """Developer""",
+  """about.email""": """Email""",
+  """about.repository""": """Source code""",
+  """about.nextcloudApp""": """Nextcloud app""",
+  """about.privacyPolicy""": """Privacy policy""",
+  """about.feedback""": """Feedback & issues""",
   """settings.title""": """App Settings""",
   """settings.generalSection""": """General""",
   """settings.language""": """Language""",
@@ -1277,6 +1351,10 @@ Please complete login in your browser.""",
   """settings.languageNames.german""": """Deutsch""",
   """settings.languageNames.spanish""": """Español""",
   """settings.languageNames.french""": """Français""",
+  """settings.theme""": """Theme""",
+  """settings.themeNames.system""": """System default""",
+  """settings.themeNames.light""": """Light""",
+  """settings.themeNames.dark""": """Dark""",
   """settings.notificationsSection""": """Notifications""",
   """settings.enableNotifications""": """Enable notifications""",
   """settings.enableNotificationsBody""":

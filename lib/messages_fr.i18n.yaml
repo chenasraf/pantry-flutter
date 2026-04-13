@@ -3,29 +3,29 @@ common:
   cancel: Annuler
   delete: Supprimer
   save: Enregistrer
-  retry: "R\xE9essayer"
-  logout: "D\xE9connexion"
+  retry: "Réessayer"
+  logout: "Déconnexion"
   loading: Chargement...
   error: Erreur
 
 login:
-  connectToNextcloud: "Connectez-vous \xE0 votre instance Nextcloud"
+  connectToNextcloud: "Connectez-vous à votre instance Nextcloud"
   serverUrl: URL du serveur
   serverUrlHint: cloud.example.com
   connect: Connexion
   waitingForAuth: "En attente d'authentification...\nVeuillez terminer la connexion dans votre navigateur."
-  couldNotConnect: "Impossible de se connecter au serveur. Veuillez v\xE9rifier l'URL."
-  loginFailed: "\xC9chec de la connexion. Veuillez r\xE9essayer."
+  couldNotConnect: "Impossible de se connecter au serveur. Veuillez vérifier l'URL."
+  loginFailed: "Échec de la connexion. Veuillez réessayer."
 
 home:
   noHouses: Aucune maison pour le moment.
-  noHousesBody: "Les maisons sont des espaces partag\xE9s pour votre foyer. Cr\xE9ez votre premi\xE8re maison pour commencer \xE0 ajouter des listes, des photos et des notes."
-  createHouse: "Cr\xE9er une maison"
+  noHousesBody: "Les maisons sont des espaces partagés pour votre foyer. Créez votre première maison pour commencer à ajouter des listes, des photos et des notes."
+  createHouse: "Créer une maison"
   houseName: Nom de la maison
   houseDescription: Description (facultatif)
-  createHouseFailed: "Impossible de cr\xE9er la maison."
+  createHouseFailed: "Impossible de créer la maison."
   failedToLoadHouses: Impossible de charger les maisons.
-  serverAppMissingTitle: "Pantry n'est pas install\xE9"
+  serverAppMissingTitle: "Pantry n'est pas installé"
   serverAppMissingBody: "Cette application est un client pour l'application Pantry sur Nextcloud. Il semble que Pantry ne soit pas encore installé sur votre serveur. Demandez à votre administrateur de l'installer depuis le magasin d'applications Nextcloud, ou installez-le vous-même si vous avez un accès administrateur."
   openAppStore: Ouvrir les apps Nextcloud
   learnMore: En savoir plus
@@ -36,78 +36,92 @@ nav:
   notesWall: Mur de notes
 
 notificationsIntro:
-  title: "Restez inform\xE9"
+  title: "Restez informé"
   body: "Pantry peut vous notifier lorsque les membres du foyer ajoutent des articles aux listes, téléchargent des photos ou laissent des notes. Les notifications sont récupérées depuis votre propre serveur Nextcloud — rien ne passe par Google ou des tiers."
-  bullet1: "Alertes d'activit\xE9 du foyer"
-  bullet2: "R\xE9cup\xE9r\xE9es directement depuis votre serveur"
-  bullet3: "Fonctionne m\xEAme lorsque l'app est ferm\xE9e"
+  bullet1: "Alertes d'activité du foyer"
+  bullet2: "Récupérées directement depuis votre serveur"
+  bullet3: "Fonctionne même lorsque l'app est fermée"
   enableButton: Activer les notifications
   skipButton: Pas maintenant
-  permissionDeniedTitle: "Permission refus\xE9e"
-  permissionDeniedBody: "Vous pourrez activer les notifications plus tard dans les r\xE9glages de l'app. Si votre appareil les bloque, vous devrez d'abord les autoriser dans les r\xE9glages syst\xE8me."
+  permissionDeniedTitle: "Permission refusée"
+  permissionDeniedBody: "Vous pourrez activer les notifications plus tard dans les réglages de l'app. Si votre appareil les bloque, vous devrez d'abord les autoriser dans les réglages système."
   ok: OK
 
+about:
+  title: "À propos"
+  developer: "Développeur"
+  email: E-mail
+  repository: Code source
+  nextcloudApp: App Nextcloud
+  privacyPolicy: "Politique de confidentialité"
+  feedback: "Commentaires & problèmes"
+
 settings:
-  title: "R\xE9glages de l'app"
-  generalSection: "G\xE9n\xE9ral"
+  title: "Réglages de l'app"
+  generalSection: "Général"
   language: Langue
   languageNames:
-    system: "Par d\xE9faut du syst\xE8me"
+    system: "Par défaut du système"
     english: English
-    hebrew: "\u05E2\u05D1\u05E8\u05D9\u05EA"
+    hebrew: "עברית"
     german: Deutsch
-    spanish: "Espa\xF1ol"
-    french: "Fran\xE7ais"
+    spanish: "Español"
+    french: "Français"
+  theme: "Thème"
+  themeNames:
+    system: "Par défaut du système"
+    light: Clair
+    dark: Sombre
   notificationsSection: Notifications
   enableNotifications: Activer les notifications
   enableNotificationsBody: Afficher des alertes lorsque les membres du foyer ajoutent ou modifient du contenu.
-  pollInterval: "V\xE9rifier les nouvelles activit\xE9s"
+  pollInterval: "Vérifier les nouvelles activités"
   pollInterval15m: Toutes les 15 minutes
   pollInterval30m: Toutes les 30 minutes
   pollInterval1h: Toutes les heures
   pollInterval2h: Toutes les 2 heures
   pollInterval6h: Toutes les 6 heures
-  permissionDenied: "La permission de notification a \xE9t\xE9 refus\xE9e. Activez-la dans les r\xE9glages syst\xE8me."
+  permissionDenied: "La permission de notification a été refusée. Activez-la dans les réglages système."
 
 notifications:
   title: Notifications
   empty: Aucune nouvelle notification.
   failedToLoad: Impossible de charger les notifications.
   dismissAll: Tout ignorer
-  justNow: "\xE0 l'instant"
+  justNow: "à l'instant"
   minutesAgo(int count): "il y a ${count} min"
   hoursAgo(int count): "il y a ${count} h"
   daysAgo(int count): "il y a ${count} j"
 
 categories:
-  manageTitle: "G\xE9rer les cat\xE9gories"
-  noCategories: "Aucune cat\xE9gorie pour le moment."
-  editTitle: "Modifier la cat\xE9gorie"
-  addTitle: "Nouvelle cat\xE9gorie"
+  manageTitle: "Gérer les catégories"
+  noCategories: "Aucune catégorie pour le moment."
+  editTitle: "Modifier la catégorie"
+  addTitle: "Nouvelle catégorie"
   name: Nom
-  icon: "Ic\xF4ne"
+  icon: "Icône"
   color: Couleur
-  saveFailed: "Impossible d'enregistrer la cat\xE9gorie."
-  deleteFailed: "Impossible de supprimer la cat\xE9gorie."
-  deleteConfirm: "Supprimer cette cat\xE9gorie ?"
-  deleteConfirmBody: "Les articles de cette cat\xE9gorie seront non cat\xE9goris\xE9s. Cette action est irr\xE9versible."
+  saveFailed: "Impossible d'enregistrer la catégorie."
+  deleteFailed: "Impossible de supprimer la catégorie."
+  deleteConfirm: "Supprimer cette catégorie ?"
+  deleteConfirmBody: "Les articles de cette catégorie seront non catégorisés. Cette action est irréversible."
 
 checklists:
-  categories: "Cat\xE9gories"
+  categories: "Catégories"
   noChecklists: Aucune liste pour le moment.
   noItems: Aucun article dans cette liste.
   failedToLoad: Impossible de charger les listes.
   failedToLoadItems: Impossible de charger les articles.
-  completedCount(int count): "Termin\xE9s ($count)"
+  completedCount(int count): "Terminés ($count)"
   editItem: Modifier l'article
   removeItem: Supprimer l'article
-  moveItem: "D\xE9placer vers une liste"
-  moveFailed: "Impossible de d\xE9placer l'article."
+  moveItem: "Déplacer vers une liste"
+  moveFailed: "Impossible de déplacer l'article."
   createList: Nouvelle liste
   listName: Nom de la liste
   listDescription: Description (facultatif)
-  listIcon: "Ic\xF4ne"
-  createListFailed: "Impossible de cr\xE9er la liste."
+  listIcon: "Icône"
+  createListFailed: "Impossible de créer la liste."
   viewItem:
     quantity: "Quantité :"
     category: "Catégorie :"
@@ -120,27 +134,27 @@ checklists:
     editTitle: Modifier l'article
     name: "Nom de l'article"
     description: Description
-    quantity: "Quantit\xE9"
-    category: "Cat\xE9gorie"
+    quantity: "Quantité"
+    category: "Catégorie"
     noCategory: Aucune
-    noCategories: "Aucune cat\xE9gorie disponible."
-    createCategory: "Nouvelle cat\xE9gorie"
+    noCategories: "Aucune catégorie disponible."
+    createCategory: "Nouvelle catégorie"
     categoryName: Nom
-    categoryIcon: "Ic\xF4ne"
+    categoryIcon: "Icône"
     categoryColor: Couleur
-    categoryCreated: "Cat\xE9gorie cr\xE9\xE9e."
-    categoryCreateFailed: "Impossible de cr\xE9er la cat\xE9gorie."
-    repeat: "R\xE9p\xE9ter"
+    categoryCreated: "Catégorie créée."
+    categoryCreateFailed: "Impossible de créer la catégorie."
+    repeat: "Répéter"
     saveFailed: "Impossible d'enregistrer l'article."
     deleteFailed: Impossible de supprimer l'article.
     deleteConfirm: Supprimer cet article ?
   sort:
-    newestFirst: "Plus r\xE9cents"
+    newestFirst: "Plus récents"
     oldestFirst: Plus anciens
-    nameAZ: "Nom A\u2013Z"
-    nameZA: "Nom Z\u2013A"
-    category: "Par cat\xE9gorie"
-    custom: Personnalis\xE9
+    nameAZ: "Nom A–Z"
+    nameZA: "Nom Z–A"
+    category: "Par catégorie"
+    custom: Personnalisé
 
 notesWall:
   noNotes: Aucune note pour le moment.
@@ -155,60 +169,60 @@ notesWall:
   content: Contenu
   color: Couleur
   sort:
-    newestFirst: "Plus r\xE9cents"
+    newestFirst: "Plus récents"
     oldestFirst: Plus anciens
-    titleAZ: "Titre A\u2013Z"
-    titleZA: "Titre Z\u2013A"
-    custom: "Personnalis\xE9"
+    titleAZ: "Titre A–Z"
+    titleZA: "Titre Z–A"
+    custom: "Personnalisé"
 
 photoBoard:
   noPhotos: Aucune photo pour le moment.
   failedToLoad: Impossible de charger les photos.
-  uploadFailed: "Impossible de t\xE9l\xE9charger la photo."
+  uploadFailed: "Impossible de télécharger la photo."
   deleteFailed: Impossible de supprimer la photo.
   deleteConfirm: Supprimer cette photo ?
   deleteSelectedConfirm(int count): "Supprimer ${_plural(count, one: 'cette photo', many: '$count photos')} ?"
   deleteFolder: Supprimer le dossier
   deleteFolderConfirm: Supprimer ce dossier ?
-  deleteFolderKeepPhotos: "D\xE9placer les photos \xE0 la racine"
+  deleteFolderKeepPhotos: "Déplacer les photos à la racine"
   deleteFolderDeleteAll: Supprimer le dossier et les photos
   newFolder: Nouveau dossier
   folderName: Nom du dossier
   renameFolder: Renommer le dossier
-  caption: "L\xE9gende"
+  caption: "Légende"
   photoCount(int count): "$count"
   sort:
     foldersFirst: Dossiers en premier
-    newestFirst: "Plus r\xE9cents"
+    newestFirst: "Plus récents"
     oldestFirst: Plus anciens
-    captionAZ: "L\xE9gende A\u2013Z"
-    captionZA: "L\xE9gende Z\u2013A"
-    custom: "Personnalis\xE9"
+    captionAZ: "Légende A–Z"
+    captionZA: "Légende Z–A"
+    custom: "Personnalisé"
 
 recurrence:
-  title: "R\xE9currence"
-  presets: "Pr\xE9r\xE9glages"
+  title: "Récurrence"
+  presets: "Préréglages"
   daily: Quotidien
   weekly: Hebdomadaire
   monthly: Mensuel
   everyLabel: Tous les
-  unit: "Unit\xE9"
+  unit: "Unité"
   unitDays: jours
   unitWeeks: semaines
   unitMonths: mois
-  unitYears: "ann\xE9es"
-  repeatOn: "R\xE9p\xE9ter le"
+  unitYears: "années"
+  repeatOn: "Répéter le"
   ends: Se termine
   never: Jamais
-  after: "Apr\xE8s"
-  occurrences: "r\xE9p\xE9titions"
-  onDate: "\xC0 la date"
-  countFromCompletion: "Compter l'intervalle \xE0 partir du moment o\xF9 l'article est coch\xE9"
+  after: "Après"
+  occurrences: "répétitions"
+  onDate: "À la date"
+  countFromCompletion: "Compter l'intervalle à partir du moment où l'article est coché"
   countFromCompletionHintOff: "Le calendrier est fixe : l'article réapparaît à sa prochaine occurrence prévue, peu importe quand vous le cochez."
   countFromCompletionHintOn: "La prochaine occurrence est comptée à partir du moment où vous cochez l'article, de sorte qu'il revient toujours un intervalle complet après son achèvement."
-  summary: "R\xE9sum\xE9"
-  notSet: "non d\xE9fini"
-  set: "d\xE9fini"
+  summary: "Résumé"
+  notSet: "non défini"
+  set: "défini"
   every(String unit): "tous les $unit"
   everyButton(String unit): "Tous les $unit"
   onDays(String days): "le $days"
