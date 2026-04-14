@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/chenasraf/pantry-flutter/compare/v0.7.0...v0.7.1) (2026-04-14)
+
+
+### Bug Fixes
+
+* about urls not opening ([64af382](https://github.com/chenasraf/pantry-flutter/commit/64af382f10bd696f05a23d31ee8e04d746fc4b46))
+
 ## [0.7.0](https://github.com/chenasraf/pantry-flutter/compare/v0.6.0...v0.7.0) (2026-04-14)
 
 
