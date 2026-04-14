@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/chenasraf/pantry-flutter/compare/v0.6.0...v0.7.0) (2026-04-14)
+
+
+### Features
+
+* add about page ([0cb6c06](https://github.com/chenasraf/pantry-flutter/commit/0cb6c06d9d418b61d5fd1c4852ec244366aa6af8))
+
 ## [0.6.0](https://github.com/chenasraf/pantry-flutter/compare/v0.5.0...v0.6.0) (2026-04-13)
 
 
