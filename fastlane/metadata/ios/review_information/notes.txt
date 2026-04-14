@@ -1,0 +1,3 @@
+1. In the login screen, for the server, use: spider.casraf.dev and click "Connect"
+2. Use the given username/password to sign in to the Nextcloud website loaded in the in-app browser
+3. Click "Grant Access" to grant access to the app inside the in-app browser
