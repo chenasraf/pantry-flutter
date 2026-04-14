@@ -184,10 +184,20 @@ platform :ios do
     deliver(
       api_key: api_key,
       ipa: find_ipa,
-      skip_metadata: true,
+      metadata_path: File.expand_path("metadata/ios", __dir__),
       skip_screenshots: true,
       submit_for_review: false,
-      release_notes: { "en-US" => changelog_notes },
+    )
+  end
+
+  desc "Sync iOS metadata only (no IPA upload)"
+  lane :metadata do
+    deliver(
+      api_key: api_key,
+      metadata_path: File.expand_path("metadata/ios", __dir__),
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      submit_for_review: false,
     )
   end
 end

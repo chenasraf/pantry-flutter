@@ -1,0 +1,1 @@
+nextcloud,household,checklist,shopping list,photos,notes,self-hosted

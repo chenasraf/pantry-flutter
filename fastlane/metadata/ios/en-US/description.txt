@@ -1,0 +1,25 @@
+Pantry is a companion app for the Nextcloud Pantry server app. It lets you and your household members collaborate on shared checklists, a photo board, and a notes wall — all stored on your own Nextcloud server.
+
+* Checklists
+Create shopping lists and to-do lists with categories, quantities, recurring items, and images. Drag to reorder, sort by name or date, and check items off as you go.
+
+* Photo Board
+Upload and organize photos into folders. Add captions, drag to reorder, and browse everything in a clean grid view.
+
+* Notes Wall
+Keep shared notes with your household. Color-code them, write in markdown, and pin the important stuff where everyone can see it.
+
+* Your data, your server
+Pantry connects directly to your self-hosted Nextcloud instance. No accounts to create, no cloud services in between. Your data never leaves your server.
+
+* Features
+  - Shared checklists with categories, quantities, and recurrence
+  - Photo board with folders, captions, and multi-upload
+  - Color-coded notes wall
+  - Drag-and-drop reordering everywhere
+  - Multi-select for bulk actions
+  - Offline caching for fast loading
+  - Material Design 3 with dark mode support
+  - Nextcloud Login Flow v2 authentication
+
+* Pantry requires a Nextcloud server with the Pantry app installed. Visit the project page for setup instructions.

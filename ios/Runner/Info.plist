@@ -73,6 +73,10 @@
 		</dict>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>BGTaskSchedulerPermittedIdentifiers</key>
+		<array>
+			<string>dev.casraf.pantry.notification-poll</string>
+		</array>
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>fetch</string>

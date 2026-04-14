@@ -60,6 +60,14 @@ Upload to TestFlight
 
 Upload to App Store
 
+### ios metadata
+
+```sh
+[bundle exec] fastlane ios metadata
+```
+
+Sync iOS metadata only (no IPA upload)
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
