@@ -1,1 +1,1 @@
-nextcloud, checklist, todo, shopping list, notes
+nextcloud, checklist, todo, shopping list, notes, self-hosted, household

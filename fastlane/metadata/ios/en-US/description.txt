@@ -10,7 +10,7 @@ Upload and organize photos into folders. Add captions, drag to reorder, and brow
 Keep shared notes with your household. Color-code them, write in markdown, and pin the important stuff where everyone can see it.
 
 * Your data, your server
-Pantry connects directly to your self-hosted Nextcloud instance. No accounts to create, no cloud services in between. Your data never leaves your server.
+Pantry connects directly to your Nextcloud instance. No accounts to create, no cloud services in between. Your data never leaves your server.
 
 * Features
   - Shared checklists with categories, quantities, and recurrence
@@ -20,6 +20,6 @@ Pantry connects directly to your self-hosted Nextcloud instance. No accounts to 
   - Multi-select for bulk actions
   - Offline caching for fast loading
   - Material Design 3 with dark mode support
-  - Nextcloud Login Flow v2 authentication
+  - Secure login flow authentication
 
-* Pantry requires a Nextcloud server with the Pantry app installed. Visit the project page for setup instructions.
+* Requires a Nextcloud server with the Pantry app installed. Visit the project page for setup instructions.

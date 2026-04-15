@@ -1,1 +1,1 @@
-Manage your household with your Nextcloud — lists, photos & notes.
+Manage your household on your Nextcloud — shared lists, photos & notes.
