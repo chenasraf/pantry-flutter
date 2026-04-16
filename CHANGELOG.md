@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.0](https://github.com/chenasraf/pantry-flutter/compare/v0.7.1...v0.8.0) (2026-04-16)
+
+
+### Features
+
+* add more icons to categories ([179c6d7](https://github.com/chenasraf/pantry-flutter/commit/179c6d781c1342434608b9af88daa807795c9a46))
+* allow adding one-off list items ([a447fe1](https://github.com/chenasraf/pantry-flutter/commit/a447fe1c8a1d9de655c081015f287afeba75bee1))
+
 ## [0.7.1](https://github.com/chenasraf/pantry-flutter/compare/v0.7.0...v0.7.1) (2026-04-14)
 
 

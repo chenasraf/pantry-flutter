@@ -1,0 +1,3 @@
+Features
+- add more icons to categories
+- allow adding one-off list items
