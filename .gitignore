@@ -47,6 +47,7 @@ app.*.map.json
 
 # Environment
 .env
+.envrc
 
 # Android signing
 android/key.properties
@@ -57,4 +58,4 @@ android/app/*.keystore
 fastlane/play-store-key.json
 fastlane/.image_hashes.json
 fastlane/report.xml
-/.envrc
+fastlane/Preview.html
