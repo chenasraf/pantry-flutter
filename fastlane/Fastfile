@@ -186,8 +186,10 @@ platform :ios do
       api_key: api_key,
       ipa: find_ipa,
       metadata_path: File.expand_path("metadata/ios", __dir__),
+      screenshots_path: File.expand_path("metadata/ios/en-US/screenshots", __dir__),
       skip_screenshots: true,
       submit_for_review: false,
+      precheck_include_in_app_purchases: false,
     )
   end
 
