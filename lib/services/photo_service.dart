@@ -91,7 +91,7 @@ class PhotoService {
     return ApiClient.instance.patch<Map<String, dynamic>, Photo>(
       '/houses/$houseId/photos/$photoId',
       body: {
-        if (caption != null) 'caption': caption,
+        'caption': ?caption,
         if (moveToRoot) 'folderId': 0,
         if (!moveToRoot && folderId != null) 'folderId': folderId,
       },
@@ -155,7 +155,7 @@ class PhotoService {
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, PhotoFolder>(
       '/houses/$houseId/photos/folders/$folderId',
-      body: {if (name != null) 'name': name},
+      body: {'name': ?name},
       fromJson: (data) => PhotoFolder.fromJson(data),
     );
   }
@@ -203,10 +203,7 @@ class PhotoService {
   }) async {
     await ApiClient.instance.put<Map<String, dynamic>, void>(
       '/houses/$houseId/prefs',
-      body: {
-        if (photoSort != null) 'photoSort': photoSort,
-        if (photoFoldersFirst != null) 'photoFoldersFirst': photoFoldersFirst,
-      },
+      body: {'photoSort': ?photoSort, 'photoFoldersFirst': ?photoFoldersFirst},
       fromJson: (_) {},
     );
   }

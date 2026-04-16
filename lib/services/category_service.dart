@@ -46,11 +46,7 @@ class CategoryService {
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, Category>(
       '/houses/$houseId/categories/$categoryId',
-      body: {
-        if (name != null) 'name': name,
-        if (icon != null) 'icon': icon,
-        if (color != null) 'color': color,
-      },
+      body: {'name': ?name, 'icon': ?icon, 'color': ?color},
       fromJson: (data) => Category.fromJson(data),
     );
   }

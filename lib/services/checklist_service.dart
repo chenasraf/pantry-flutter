@@ -143,9 +143,9 @@ class ChecklistService {
         if (description != null && description.isNotEmpty)
           'description': description,
         if (quantity != null && quantity.isNotEmpty) 'quantity': quantity,
-        if (categoryId != null) 'categoryId': categoryId,
+        'categoryId': ?categoryId,
         if (rrule != null && rrule.isNotEmpty) 'rrule': rrule,
-        if (deleteOnDone != null) 'deleteOnDone': deleteOnDone,
+        'deleteOnDone': ?deleteOnDone,
       },
       fromJson: (data) => ListItem.fromJson(data),
     );
@@ -167,15 +167,14 @@ class ChecklistService {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items/$itemId',
       body: {
-        if (name != null) 'name': name,
-        if (description != null) 'description': description,
-        if (quantity != null) 'quantity': quantity,
+        'name': ?name,
+        'description': ?description,
+        'quantity': ?quantity,
         if (clearCategory) 'categoryId': 0,
         if (!clearCategory && categoryId != null) 'categoryId': categoryId,
-        if (rrule != null) 'rrule': rrule,
-        if (repeatFromCompletion != null)
-          'repeatFromCompletion': repeatFromCompletion,
-        if (deleteOnDone != null) 'deleteOnDone': deleteOnDone,
+        'rrule': ?rrule,
+        'repeatFromCompletion': ?repeatFromCompletion,
+        'deleteOnDone': ?deleteOnDone,
       },
       fromJson: (data) => ListItem.fromJson(data),
     );

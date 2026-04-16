@@ -51,11 +51,7 @@ class NoteService {
   }) async {
     return ApiClient.instance.post<Map<String, dynamic>, Note>(
       '/houses/$houseId/notes',
-      body: {
-        'title': title,
-        if (content != null) 'content': content,
-        if (color != null) 'color': color,
-      },
+      body: {'title': title, 'content': ?content, 'color': ?color},
       fromJson: (data) => Note.fromJson(data),
     );
   }
@@ -69,11 +65,7 @@ class NoteService {
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, Note>(
       '/houses/$houseId/notes/$noteId',
-      body: {
-        if (title != null) 'title': title,
-        if (content != null) 'content': content,
-        if (color != null) 'color': color,
-      },
+      body: {'title': ?title, 'content': ?content, 'color': ?color},
       fromJson: (data) => Note.fromJson(data),
     );
   }

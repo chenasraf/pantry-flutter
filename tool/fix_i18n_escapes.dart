@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 /// Replaces YAML unicode escape sequences (\uXXXX, \xXX) with actual UTF-8
