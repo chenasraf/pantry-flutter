@@ -27,6 +27,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   int? _selectedCategoryId;
   String? _rrule;
   bool _repeatFromCompletion = false;
+  bool _deleteOnDone = false;
   bool _saving = false;
   TextDirection _nameDir = TextDirection.ltr;
   TextDirection _descriptionDir = TextDirection.ltr;
@@ -49,6 +50,7 @@ class _ItemFormViewState extends State<ItemFormView> {
     _selectedCategoryId = item?.categoryId;
     _rrule = item?.rrule;
     _repeatFromCompletion = item?.repeatFromCompletion ?? false;
+    _deleteOnDone = item?.deleteOnDone ?? false;
     _nameDir = detectTextDirection(item?.name);
     _nameController.addListener(() {
       final dir = detectTextDirection(_nameController.text);
@@ -75,6 +77,10 @@ class _ItemFormViewState extends State<ItemFormView> {
 
     setState(() => _saving = true);
     try {
+      final effectiveRrule = _deleteOnDone ? '' : (_rrule ?? '');
+      final effectiveRepeatFromCompletion = _deleteOnDone
+          ? false
+          : _repeatFromCompletion;
       if (_isEditing) {
         final item = widget.item!;
         await widget.controller.updateItem(
@@ -84,8 +90,9 @@ class _ItemFormViewState extends State<ItemFormView> {
           quantity: _quantityController.text.trim(),
           categoryId: _selectedCategoryId,
           clearCategory: _selectedCategoryId == null && item.categoryId != null,
-          rrule: _rrule ?? '',
-          repeatFromCompletion: _repeatFromCompletion,
+          rrule: effectiveRrule,
+          repeatFromCompletion: effectiveRepeatFromCompletion,
+          deleteOnDone: _deleteOnDone,
         );
       } else {
         await widget.controller.addItem(
@@ -93,7 +100,8 @@ class _ItemFormViewState extends State<ItemFormView> {
           description: _descriptionController.text.trim(),
           quantity: _quantityController.text.trim(),
           categoryId: _selectedCategoryId,
-          rrule: _rrule,
+          rrule: _deleteOnDone ? null : _rrule,
+          deleteOnDone: _deleteOnDone,
         );
       }
       if (mounted) Navigator.of(context).pop(true);
@@ -173,23 +181,34 @@ class _ItemFormViewState extends State<ItemFormView> {
               setState(() => _selectedCategoryId = cat.id);
             },
           ),
-          const SizedBox(height: 16),
-          RepeatButton(
-            rrule: _rrule,
-            onTap: () async {
-              final result = await showRecurrenceDialog(
-                context,
-                initialRrule: _rrule,
-                initialRepeatFromCompletion: _repeatFromCompletion,
-              );
-              if (result != null) {
-                setState(() {
-                  _rrule = result.rrule;
-                  _repeatFromCompletion = result.repeatFromCompletion;
-                });
-              }
-            },
+          const SizedBox(height: 8),
+          CheckboxListTile(
+            value: _deleteOnDone,
+            onChanged: (v) => setState(() => _deleteOnDone = v ?? false),
+            title: Text(f.once),
+            subtitle: Text(f.onceDescription),
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsetsDirectional.zero,
           ),
+          if (!_deleteOnDone) ...[
+            const SizedBox(height: 8),
+            RepeatButton(
+              rrule: _rrule,
+              onTap: () async {
+                final result = await showRecurrenceDialog(
+                  context,
+                  initialRrule: _rrule,
+                  initialRepeatFromCompletion: _repeatFromCompletion,
+                );
+                if (result != null) {
+                  setState(() {
+                    _rrule = result.rrule;
+                    _repeatFromCompletion = result.repeatFromCompletion;
+                  });
+                }
+              },
+            ),
+          ],
         ],
       ),
     );

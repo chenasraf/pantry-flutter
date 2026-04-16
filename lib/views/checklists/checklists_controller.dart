@@ -278,6 +278,7 @@ class ChecklistsController extends ChangeNotifier {
     String? quantity,
     int? categoryId,
     String? rrule,
+    bool? deleteOnDone,
   }) async {
     final item = await _checklistService.createItem(
       houseId,
@@ -287,6 +288,7 @@ class ChecklistsController extends ChangeNotifier {
       quantity: quantity,
       categoryId: categoryId,
       rrule: rrule,
+      deleteOnDone: deleteOnDone,
     );
     _items.insert(0, item);
     _checklistService.cacheItems(_currentList!.id, List.of(_items));
@@ -303,6 +305,7 @@ class ChecklistsController extends ChangeNotifier {
     bool clearCategory = false,
     String? rrule,
     bool? repeatFromCompletion,
+    bool? deleteOnDone,
   }) async {
     final updated = await _checklistService.updateItem(
       houseId,
@@ -315,6 +318,7 @@ class ChecklistsController extends ChangeNotifier {
       clearCategory: clearCategory,
       rrule: rrule,
       repeatFromCompletion: repeatFromCompletion,
+      deleteOnDone: deleteOnDone,
     );
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {

@@ -792,6 +792,17 @@ class ItemFormChecklistsMessagesEs extends ItemFormChecklistsMessages {
   String get repeat => """Repetir""";
 
   /// ```dart
+  /// "Una vez"
+  /// ```
+  String get once => """Una vez""";
+
+  /// ```dart
+  /// "Eliminar este artículo cuando se marque como hecho."
+  /// ```
+  String get onceDescription =>
+      """Eliminar este artículo cuando se marque como hecho.""";
+
+  /// ```dart
   /// "No se pudo guardar el artículo."
   /// ```
   String get saveFailed => """No se pudo guardar el artículo.""";
@@ -1431,6 +1442,9 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.itemForm.categoryCreateFailed""":
       """No se pudo crear la categoría.""",
   """checklists.itemForm.repeat""": """Repetir""",
+  """checklists.itemForm.once""": """Una vez""",
+  """checklists.itemForm.onceDescription""":
+      """Eliminar este artículo cuando se marque como hecho.""",
   """checklists.itemForm.saveFailed""": """No se pudo guardar el artículo.""",
   """checklists.itemForm.deleteFailed""":
       """No se pudo eliminar el artículo.""",

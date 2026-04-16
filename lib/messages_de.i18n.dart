@@ -794,6 +794,17 @@ class ItemFormChecklistsMessagesDe extends ItemFormChecklistsMessages {
   String get repeat => """Wiederholen""";
 
   /// ```dart
+  /// "Einmalig"
+  /// ```
+  String get once => """Einmalig""";
+
+  /// ```dart
+  /// "Diesen Eintrag löschen, sobald er als erledigt markiert ist."
+  /// ```
+  String get onceDescription =>
+      """Diesen Eintrag löschen, sobald er als erledigt markiert ist.""";
+
+  /// ```dart
   /// "Eintrag konnte nicht gespeichert werden."
   /// ```
   String get saveFailed => """Eintrag konnte nicht gespeichert werden.""";
@@ -1437,6 +1448,9 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.itemForm.categoryCreateFailed""":
       """Kategorie konnte nicht erstellt werden.""",
   """checklists.itemForm.repeat""": """Wiederholen""",
+  """checklists.itemForm.once""": """Einmalig""",
+  """checklists.itemForm.onceDescription""":
+      """Diesen Eintrag löschen, sobald er als erledigt markiert ist.""",
   """checklists.itemForm.saveFailed""":
       """Eintrag konnte nicht gespeichert werden.""",
   """checklists.itemForm.deleteFailed""":

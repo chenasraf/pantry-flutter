@@ -145,6 +145,8 @@ checklists:
     categoryCreated: Kategorie erstellt.
     categoryCreateFailed: Kategorie konnte nicht erstellt werden.
     repeat: Wiederholen
+    once: Einmalig
+    onceDescription: Diesen Eintrag löschen, sobald er als erledigt markiert ist.
     saveFailed: Eintrag konnte nicht gespeichert werden.
     deleteFailed: "Eintrag konnte nicht gelöscht werden."
     deleteConfirm: "Diesen Eintrag löschen?"

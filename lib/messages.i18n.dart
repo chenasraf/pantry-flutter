@@ -786,6 +786,17 @@ class ItemFormChecklistsMessages {
   String get repeat => """Repeat""";
 
   /// ```dart
+  /// "Once"
+  /// ```
+  String get once => """Once""";
+
+  /// ```dart
+  /// "Delete this item once it is marked as done."
+  /// ```
+  String get onceDescription =>
+      """Delete this item once it is marked as done.""";
+
+  /// ```dart
   /// "Failed to save item."
   /// ```
   String get saveFailed => """Failed to save item.""";
@@ -1421,6 +1432,9 @@ Please complete login in your browser.""",
   """checklists.itemForm.categoryCreateFailed""":
       """Failed to create category.""",
   """checklists.itemForm.repeat""": """Repeat""",
+  """checklists.itemForm.once""": """Once""",
+  """checklists.itemForm.onceDescription""":
+      """Delete this item once it is marked as done.""",
   """checklists.itemForm.saveFailed""": """Failed to save item.""",
   """checklists.itemForm.deleteFailed""": """Failed to delete item.""",
   """checklists.itemForm.deleteConfirm""": """Delete this item?""",

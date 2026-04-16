@@ -145,6 +145,8 @@ checklists:
     categoryCreated: הקטגוריה נוצרה.
     categoryCreateFailed: יצירת הקטגוריה נכשלה.
     repeat: חזרה
+    once: פעם אחת
+    onceDescription: מחק את הפריט ברגע שהוא מסומן כבוצע.
     saveFailed: שמירת הפריט נכשלה.
     deleteFailed: מחיקת הפריט נכשלה.
     deleteConfirm: למחוק את הפריט?

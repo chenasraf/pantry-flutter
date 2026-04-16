@@ -54,6 +54,7 @@ class ListItem {
   final String? doneBy;
   final String? rrule;
   final bool repeatFromCompletion;
+  final bool deleteOnDone;
   final int? nextDueAt;
   final int? imageFileId;
   final String? imageUploadedBy;
@@ -73,6 +74,7 @@ class ListItem {
     this.doneBy,
     this.rrule,
     required this.repeatFromCompletion,
+    required this.deleteOnDone,
     this.nextDueAt,
     this.imageFileId,
     this.imageUploadedBy,
@@ -93,6 +95,7 @@ class ListItem {
     doneBy: json['doneBy'] as String?,
     rrule: json['rrule'] as String?,
     repeatFromCompletion: json['repeatFromCompletion'] as bool,
+    deleteOnDone: json['deleteOnDone'] as bool? ?? false,
     nextDueAt: json['nextDueAt'] as int?,
     imageFileId: json['imageFileId'] as int?,
     imageUploadedBy: json['imageUploadedBy'] as String?,
@@ -113,6 +116,7 @@ class ListItem {
     'doneBy': doneBy,
     'rrule': rrule,
     'repeatFromCompletion': repeatFromCompletion,
+    'deleteOnDone': deleteOnDone,
     'nextDueAt': nextDueAt,
     'imageFileId': imageFileId,
     'imageUploadedBy': imageUploadedBy,
@@ -133,6 +137,7 @@ class ListItem {
     doneBy: doneBy ?? this.doneBy,
     rrule: rrule,
     repeatFromCompletion: repeatFromCompletion,
+    deleteOnDone: deleteOnDone,
     nextDueAt: nextDueAt,
     imageFileId: imageFileId,
     imageUploadedBy: imageUploadedBy,

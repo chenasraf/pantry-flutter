@@ -145,6 +145,8 @@ checklists:
     categoryCreated: Category created.
     categoryCreateFailed: Failed to create category.
     repeat: Repeat
+    once: Once
+    onceDescription: Delete this item once it is marked as done.
     saveFailed: Failed to save item.
     deleteFailed: Failed to delete item.
     deleteConfirm: Delete this item?

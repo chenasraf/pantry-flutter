@@ -145,6 +145,8 @@ checklists:
     categoryCreated: "Catégorie créée."
     categoryCreateFailed: "Impossible de créer la catégorie."
     repeat: "Répéter"
+    once: "Une fois"
+    onceDescription: "Supprimer cet article une fois qu'il est marqué comme fait."
     saveFailed: "Impossible d'enregistrer l'article."
     deleteFailed: Impossible de supprimer l'article.
     deleteConfirm: Supprimer cet article ?

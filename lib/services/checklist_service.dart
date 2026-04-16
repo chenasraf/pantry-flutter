@@ -134,6 +134,7 @@ class ChecklistService {
     String? quantity,
     int? categoryId,
     String? rrule,
+    bool? deleteOnDone,
   }) async {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items',
@@ -144,6 +145,7 @@ class ChecklistService {
         if (quantity != null && quantity.isNotEmpty) 'quantity': quantity,
         if (categoryId != null) 'categoryId': categoryId,
         if (rrule != null && rrule.isNotEmpty) 'rrule': rrule,
+        if (deleteOnDone != null) 'deleteOnDone': deleteOnDone,
       },
       fromJson: (data) => ListItem.fromJson(data),
     );
@@ -160,6 +162,7 @@ class ChecklistService {
     bool clearCategory = false,
     String? rrule,
     bool? repeatFromCompletion,
+    bool? deleteOnDone,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items/$itemId',
@@ -172,6 +175,7 @@ class ChecklistService {
         if (rrule != null) 'rrule': rrule,
         if (repeatFromCompletion != null)
           'repeatFromCompletion': repeatFromCompletion,
+        if (deleteOnDone != null) 'deleteOnDone': deleteOnDone,
       },
       fromJson: (data) => ListItem.fromJson(data),
     );

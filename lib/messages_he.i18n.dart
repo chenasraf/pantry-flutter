@@ -789,6 +789,16 @@ class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
   String get repeat => """חזרה""";
 
   /// ```dart
+  /// "פעם אחת"
+  /// ```
+  String get once => """פעם אחת""";
+
+  /// ```dart
+  /// "מחק את הפריט ברגע שהוא מסומן כבוצע."
+  /// ```
+  String get onceDescription => """מחק את הפריט ברגע שהוא מסומן כבוצע.""";
+
+  /// ```dart
   /// "שמירת הפריט נכשלה."
   /// ```
   String get saveFailed => """שמירת הפריט נכשלה.""";
@@ -1421,6 +1431,9 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemForm.categoryCreated""": """הקטגוריה נוצרה.""",
   """checklists.itemForm.categoryCreateFailed""": """יצירת הקטגוריה נכשלה.""",
   """checklists.itemForm.repeat""": """חזרה""",
+  """checklists.itemForm.once""": """פעם אחת""",
+  """checklists.itemForm.onceDescription""":
+      """מחק את הפריט ברגע שהוא מסומן כבוצע.""",
   """checklists.itemForm.saveFailed""": """שמירת הפריט נכשלה.""",
   """checklists.itemForm.deleteFailed""": """מחיקת הפריט נכשלה.""",
   """checklists.itemForm.deleteConfirm""": """למחוק את הפריט?""",
