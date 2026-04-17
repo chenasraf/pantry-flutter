@@ -59,3 +59,4 @@ fastlane/play-store-key.json
 fastlane/.image_hashes.json
 fastlane/report.xml
 fastlane/Preview.html
+/.flutter-flags.yml
