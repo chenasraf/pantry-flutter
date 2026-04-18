@@ -110,6 +110,9 @@ checklists:
   categories: "Categorías"
   noChecklists: "Aún no hay listas."
   noItems: No hay artículos en esta lista.
+  noSearchResults: Ningún artículo coincide con tu búsqueda.
+  searchHint: Escribe para filtrar...
+  allCategories: Todos
   failedToLoad: No se pudieron cargar las listas.
   failedToLoadItems: "No se pudieron cargar los artículos."
   completedCount(int count): "Completados ($count)"

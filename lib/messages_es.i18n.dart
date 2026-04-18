@@ -611,6 +611,21 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get noItems => """No hay artículos en esta lista.""";
 
   /// ```dart
+  /// "Ningún artículo coincide con tu búsqueda."
+  /// ```
+  String get noSearchResults => """Ningún artículo coincide con tu búsqueda.""";
+
+  /// ```dart
+  /// "Escribe para filtrar..."
+  /// ```
+  String get searchHint => """Escribe para filtrar...""";
+
+  /// ```dart
+  /// "Todos"
+  /// ```
+  String get allCategories => """Todos""";
+
+  /// ```dart
   /// "No se pudieron cargar las listas."
   /// ```
   String get failedToLoad => """No se pudieron cargar las listas.""";
@@ -1427,6 +1442,10 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.categories""": """Categorías""",
   """checklists.noChecklists""": """Aún no hay listas.""",
   """checklists.noItems""": """No hay artículos en esta lista.""",
+  """checklists.noSearchResults""":
+      """Ningún artículo coincide con tu búsqueda.""",
+  """checklists.searchHint""": """Escribe para filtrar...""",
+  """checklists.allCategories""": """Todos""",
   """checklists.failedToLoad""": """No se pudieron cargar las listas.""",
   """checklists.failedToLoadItems""":
       """No se pudieron cargar los artículos.""",

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
+import 'package:pantry/models/category.dart' as models;
 import 'package:provider/provider.dart';
 
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/widgets/checklist_selector.dart';
 import 'package:pantry/widgets/checklist_sort_button.dart';
@@ -45,8 +47,59 @@ class _ChecklistsViewState extends State<ChecklistsView> {
   }
 }
 
-class _ChecklistsBody extends StatelessWidget {
+class _ChecklistsBody extends StatefulWidget {
   const _ChecklistsBody();
+
+  @override
+  State<_ChecklistsBody> createState() => _ChecklistsBodyState();
+}
+
+class _ChecklistsBodyState extends State<_ChecklistsBody> {
+  bool _searchOpen = false;
+  final _searchController = TextEditingController();
+  final Set<int> _selectedCategoryIds = {};
+
+  String get _query => _searchController.text.trim().toLowerCase();
+
+  bool get _isFiltering =>
+      _searchOpen && (_query.isNotEmpty || _selectedCategoryIds.isNotEmpty);
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      _searchOpen = !_searchOpen;
+      if (!_searchOpen) {
+        _searchController.clear();
+        _selectedCategoryIds.clear();
+      }
+    });
+  }
+
+  List<ListItem> _filterItems(List<ListItem> items) {
+    if (!_isFiltering) return items;
+
+    return items.where((item) {
+      // Category filter
+      if (_selectedCategoryIds.isNotEmpty) {
+        if (!_selectedCategoryIds.contains(item.categoryId)) return false;
+      }
+
+      // Text filter
+      if (_query.isNotEmpty) {
+        final nameMatch = item.name.toLowerCase().contains(_query);
+        final descMatch =
+            item.description?.toLowerCase().contains(_query) ?? false;
+        if (!nameMatch && !descMatch) return false;
+      }
+
+      return true;
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +132,8 @@ class _ChecklistsBody extends StatelessWidget {
       return Center(child: Text(m.checklists.noChecklists));
     }
 
+    final filteredItems = _filterItems(controller.items);
+
     Widget itemsArea;
     if (controller.isLoading) {
       itemsArea = const Center(child: CircularProgressIndicator());
@@ -102,7 +157,11 @@ class _ChecklistsBody extends StatelessWidget {
     } else {
       itemsArea = RefreshIndicator(
         onRefresh: controller.refresh,
-        child: _ItemList(controller: controller),
+        child: _ItemList(
+          controller: controller,
+          items: filteredItems,
+          isFiltering: _isFiltering,
+        ),
       );
     }
 
@@ -119,11 +178,29 @@ class _ChecklistsBody extends StatelessWidget {
                     onSelected: controller.selectList,
                   ),
                 ),
+                IconButton(
+                  icon: Icon(_searchOpen ? Icons.search_off : Icons.search),
+                  onPressed: _toggleSearch,
+                ),
                 ChecklistSortButton(
                   currentSort: controller.sortBy,
                   onSelected: controller.setSortBy,
                 ),
               ],
+            ),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: _searchOpen
+                  ? _SearchPanel(
+                      searchController: _searchController,
+                      selectedCategoryIds: _selectedCategoryIds,
+                      items: controller.items,
+                      categories: controller.categories,
+                      onChanged: () => setState(() {}),
+                    )
+                  : const SizedBox.shrink(),
             ),
             Expanded(child: itemsArea),
           ],
@@ -151,21 +228,231 @@ class _ChecklistsBody extends StatelessWidget {
   }
 }
 
-class _ItemList extends StatelessWidget {
-  final ChecklistsController controller;
+class _SearchPanel extends StatelessWidget {
+  final TextEditingController searchController;
+  final Set<int> selectedCategoryIds;
+  final List<ListItem> items;
+  final Map<int, models.Category> categories;
+  final VoidCallback onChanged;
 
-  const _ItemList({required this.controller});
+  const _SearchPanel({
+    required this.searchController,
+    required this.selectedCategoryIds,
+    required this.items,
+    required this.categories,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final unchecked = controller.items.where((i) => !i.done).toList();
-    final checked = controller.items.where((i) => i.done).toList();
+    final theme = Theme.of(context);
 
-    if (controller.items.isEmpty) {
+    // Collect categories actually used in the current list, with counts
+    final categoryCounts = <int, int>{};
+    for (final item in items) {
+      if (item.categoryId != null) {
+        categoryCounts[item.categoryId!] =
+            (categoryCounts[item.categoryId!] ?? 0) + 1;
+      }
+    }
+
+    // Sort by category sortOrder
+    final usedCategories =
+        categoryCounts.keys.where((id) => categories.containsKey(id)).toList()
+          ..sort(
+            (a, b) =>
+                categories[a]!.sortOrder.compareTo(categories[b]!.sortOrder),
+          );
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: searchController,
+            decoration: InputDecoration(
+              hintText: m.checklists.searchHint,
+              prefixIcon: const Icon(Icons.search, size: 20),
+              border: const OutlineInputBorder(),
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
+              suffixIcon: ListenableBuilder(
+                listenable: searchController,
+                builder: (_, _) => searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 18),
+                        onPressed: () {
+                          searchController.clear();
+                          onChanged();
+                        },
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ),
+            onChanged: (_) => onChanged(),
+          ),
+          if (usedCategories.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 36,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _CategoryChip(
+                    label: m.checklists.allCategories,
+                    count: items.length,
+                    selected: selectedCategoryIds.isEmpty,
+                    color: theme.colorScheme.primary,
+                    onTap: () {
+                      selectedCategoryIds.clear();
+                      onChanged();
+                    },
+                  ),
+                  const SizedBox(width: 6),
+                  ...usedCategories.map((catId) {
+                    final cat = categories[catId]!;
+                    final count = categoryCounts[catId]!;
+                    final color = _parseColor(cat.color, theme);
+                    return Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 6),
+                      child: _CategoryChip(
+                        icon: categoryIcon(cat.icon),
+                        label: cat.name,
+                        count: count,
+                        selected: selectedCategoryIds.contains(catId),
+                        color: color,
+                        onTap: () {
+                          if (selectedCategoryIds.contains(catId)) {
+                            selectedCategoryIds.remove(catId);
+                          } else {
+                            selectedCategoryIds.add(catId);
+                          }
+                          onChanged();
+                        },
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  static Color _parseColor(String hex, ThemeData theme) {
+    try {
+      final value = int.parse(hex.replaceFirst('#', ''), radix: 16);
+      return Color(value | 0xFF000000);
+    } catch (_) {
+      return theme.colorScheme.primary;
+    }
+  }
+}
+
+class _CategoryChip extends StatelessWidget {
+  final IconData? icon;
+  final String label;
+  final int count;
+  final bool selected;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _CategoryChip({
+    this.icon,
+    required this.label,
+    required this.count,
+    required this.selected,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final fgColor = selected ? color : theme.colorScheme.onSurfaceVariant;
+
+    return FilterChip(
+      avatar: icon != null ? Icon(icon, size: 16, color: fgColor) : null,
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(child: Text(label)),
+          const SizedBox(width: 6),
+          _CountBadge(count: count, color: fgColor),
+        ],
+      ),
+      selected: selected,
+      onSelected: (_) => onTap(),
+      selectedColor: color.withValues(alpha: 0.2),
+      showCheckmark: false,
+      labelStyle: TextStyle(fontSize: 12, color: selected ? color : null),
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+    );
+  }
+}
+
+class _CountBadge extends StatelessWidget {
+  final int count;
+  final Color color;
+
+  const _CountBadge({required this.count, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        shape: count < 100 ? BoxShape.circle : BoxShape.rectangle,
+        borderRadius: count >= 100 ? BorderRadius.circular(10) : null,
+      ),
+      child: Text(
+        '$count',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+      ),
+    );
+  }
+}
+
+class _ItemList extends StatelessWidget {
+  final ChecklistsController controller;
+  final List<ListItem> items;
+  final bool isFiltering;
+
+  const _ItemList({
+    required this.controller,
+    required this.items,
+    required this.isFiltering,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final unchecked = items.where((i) => !i.done).toList();
+    final checked = items.where((i) => i.done).toList();
+
+    if (items.isEmpty) {
       return ListView(
         children: [
           const SizedBox(height: 100),
-          Center(child: Text(m.checklists.noItems)),
+          Center(
+            child: Text(
+              isFiltering ? m.checklists.noSearchResults : m.checklists.noItems,
+            ),
+          ),
         ],
       );
     }

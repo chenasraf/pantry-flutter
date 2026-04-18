@@ -110,6 +110,9 @@ checklists:
   categories: קטגוריות
   noChecklists: אין רשימות עדיין.
   noItems: אין פריטים ברשימה.
+  noSearchResults: אין פריטים תואמים לחיפוש.
+  searchHint: הקלד לסינון...
+  allCategories: הכל
   failedToLoad: טעינת הרשימות נכשלה.
   failedToLoadItems: טעינת הפריטים נכשלה.
   completedCount(int count): "הושלמו ($count)"

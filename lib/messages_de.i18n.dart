@@ -612,6 +612,21 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get noItems => """Keine Einträge in dieser Liste.""";
 
   /// ```dart
+  /// "Keine Einträge entsprechen Ihrer Suche."
+  /// ```
+  String get noSearchResults => """Keine Einträge entsprechen Ihrer Suche.""";
+
+  /// ```dart
+  /// "Zum Filtern tippen..."
+  /// ```
+  String get searchHint => """Zum Filtern tippen...""";
+
+  /// ```dart
+  /// "Alle"
+  /// ```
+  String get allCategories => """Alle""";
+
+  /// ```dart
   /// "Checklisten konnten nicht geladen werden."
   /// ```
   String get failedToLoad => """Checklisten konnten nicht geladen werden.""";
@@ -1432,6 +1447,10 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.categories""": """Kategorien""",
   """checklists.noChecklists""": """Noch keine Checklisten.""",
   """checklists.noItems""": """Keine Einträge in dieser Liste.""",
+  """checklists.noSearchResults""":
+      """Keine Einträge entsprechen Ihrer Suche.""",
+  """checklists.searchHint""": """Zum Filtern tippen...""",
+  """checklists.allCategories""": """Alle""",
   """checklists.failedToLoad""":
       """Checklisten konnten nicht geladen werden.""",
   """checklists.failedToLoadItems""":

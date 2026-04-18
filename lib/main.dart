@@ -117,7 +117,7 @@ class PantryAppState extends State<PantryApp> {
       textDirection: LocaleService.instance.textDirection,
       child: MaterialApp(
         key: ValueKey(locale),
-        debugShowCheckedModeBanner: false,
+        // debugShowCheckedModeBanner: false,
         navigatorKey: rootNavigatorKey,
         locale: locale,
         supportedLocales: supportedLocales,

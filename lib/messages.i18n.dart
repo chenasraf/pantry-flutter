@@ -608,6 +608,21 @@ class ChecklistsMessages {
   String get noItems => """No items in this list.""";
 
   /// ```dart
+  /// "No items match your search."
+  /// ```
+  String get noSearchResults => """No items match your search.""";
+
+  /// ```dart
+  /// "Type to filter..."
+  /// ```
+  String get searchHint => """Type to filter...""";
+
+  /// ```dart
+  /// "All"
+  /// ```
+  String get allCategories => """All""";
+
+  /// ```dart
   /// "Failed to load checklists."
   /// ```
   String get failedToLoad => """Failed to load checklists.""";
@@ -1418,6 +1433,9 @@ Please complete login in your browser.""",
   """checklists.categories""": """Categories""",
   """checklists.noChecklists""": """No checklists yet.""",
   """checklists.noItems""": """No items in this list.""",
+  """checklists.noSearchResults""": """No items match your search.""",
+  """checklists.searchHint""": """Type to filter...""",
+  """checklists.allCategories""": """All""",
   """checklists.failedToLoad""": """Failed to load checklists.""",
   """checklists.failedToLoadItems""": """Failed to load items.""",
   """checklists.editItem""": """Edit item""",

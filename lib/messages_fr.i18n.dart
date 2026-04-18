@@ -611,6 +611,22 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get noItems => """Aucun article dans cette liste.""";
 
   /// ```dart
+  /// "Aucun article ne correspond à votre recherche."
+  /// ```
+  String get noSearchResults =>
+      """Aucun article ne correspond à votre recherche.""";
+
+  /// ```dart
+  /// "Filtrer..."
+  /// ```
+  String get searchHint => """Filtrer...""";
+
+  /// ```dart
+  /// "Tout"
+  /// ```
+  String get allCategories => """Tout""";
+
+  /// ```dart
   /// "Impossible de charger les listes."
   /// ```
   String get failedToLoad => """Impossible de charger les listes.""";
@@ -1429,6 +1445,10 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.categories""": """Catégories""",
   """checklists.noChecklists""": """Aucune liste pour le moment.""",
   """checklists.noItems""": """Aucun article dans cette liste.""",
+  """checklists.noSearchResults""":
+      """Aucun article ne correspond à votre recherche.""",
+  """checklists.searchHint""": """Filtrer...""",
+  """checklists.allCategories""": """Tout""",
   """checklists.failedToLoad""": """Impossible de charger les listes.""",
   """checklists.failedToLoadItems""": """Impossible de charger les articles.""",
   """checklists.editItem""": """Modifier l'article""",
