@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0](https://github.com/chenasraf/pantry-flutter/compare/v0.8.0...v0.9.0) (2026-04-18)
+
+
+### Features
+
+* add search in lists ([eb797dd](https://github.com/chenasraf/pantry-flutter/commit/eb797dd0e87f7eb14576a3bdf7e77f9fe1c0cb09))
+* allow uploading list item image ([7243e43](https://github.com/chenasraf/pantry-flutter/commit/7243e43bbbfe8072327fc921ed2a4ffba228bd3f))
+
 ## [0.8.0](https://github.com/chenasraf/pantry-flutter/compare/v0.7.1...v0.8.0) (2026-04-16)
 
 
