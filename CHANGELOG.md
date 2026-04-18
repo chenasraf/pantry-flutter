@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/chenasraf/pantry-flutter/compare/v0.9.0...v0.9.1) (2026-04-18)
+
+
+### Build System
+
+* add abi split ([4464361](https://github.com/chenasraf/pantry-flutter/commit/4464361319f159fbcfcfff9e407f10124c72cffa))
+
 ## [0.9.0](https://github.com/chenasraf/pantry-flutter/compare/v0.8.0...v0.9.0) (2026-04-18)
 
 
