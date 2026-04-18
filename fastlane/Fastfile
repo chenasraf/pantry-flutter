@@ -170,18 +170,30 @@ platform :ios do
     ipa_path
   end
 
+  def sync_release_notes
+    version_code = version_info[:build]
+    changelog_file = File.expand_path("metadata/ios/en-US/changelogs/#{version_code}.txt", __dir__)
+    notes = File.exist?(changelog_file) ? File.read(changelog_file).strip : changelog_notes
+    release_notes_path = File.expand_path("metadata/ios/en-US/release_notes.txt", __dir__)
+    File.write(release_notes_path, notes)
+    UI.message("Synced release notes from build #{version_code} (#{notes.length} chars)")
+    notes
+  end
+
   desc "Upload to TestFlight"
   lane :beta do
+    notes = sync_release_notes
     upload_to_testflight(
       api_key: api_key,
       ipa: find_ipa,
-      changelog: changelog_notes,
+      changelog: notes,
       skip_waiting_for_build_processing: true,
     )
   end
 
   desc "Upload to App Store"
   lane :release do
+    sync_release_notes
     deliver(
       api_key: api_key,
       ipa: find_ipa,
