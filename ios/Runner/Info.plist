@@ -82,5 +82,7 @@
 			<string>fetch</string>
 			<string>processing</string>
 		</array>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 	</dict>
 </plist>

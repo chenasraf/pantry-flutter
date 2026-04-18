@@ -48,6 +48,7 @@ app.*.map.json
 # Environment
 .env
 .envrc
+/.flutter-flags.yml
 
 # Android signing
 android/key.properties
@@ -59,4 +60,4 @@ fastlane/play-store-key.json
 fastlane/.image_hashes.json
 fastlane/report.xml
 fastlane/Preview.html
-/.flutter-flags.yml
+fastlane/metadata/ios/en-US/release_notes.txt
