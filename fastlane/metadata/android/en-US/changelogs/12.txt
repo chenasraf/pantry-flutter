@@ -1,0 +1,3 @@
+Features
+- add search in lists
+- allow uploading list item image
