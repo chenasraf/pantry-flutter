@@ -52,6 +52,7 @@ dependencies:
   i18n:
     git: https://github.com/chenasraf/i18n
   package_info_plus: ^9.0.1
+  mime: ^2.0.0
 
 dev_dependencies:
   flutter_test:

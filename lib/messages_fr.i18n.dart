@@ -803,6 +803,26 @@ class ItemFormChecklistsMessagesFr extends ItemFormChecklistsMessages {
       """Supprimer cet article une fois qu'il est marqué comme fait.""";
 
   /// ```dart
+  /// "Image"
+  /// ```
+  String get image => """Image""";
+
+  /// ```dart
+  /// "Ajouter une image"
+  /// ```
+  String get addImage => """Ajouter une image""";
+
+  /// ```dart
+  /// "Remplacer"
+  /// ```
+  String get replaceImage => """Remplacer""";
+
+  /// ```dart
+  /// "Supprimer"
+  /// ```
+  String get removeImage => """Supprimer""";
+
+  /// ```dart
   /// "Impossible d'enregistrer l'article."
   /// ```
   String get saveFailed => """Impossible d'enregistrer l'article.""";
@@ -1446,6 +1466,10 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.itemForm.once""": """Une fois""",
   """checklists.itemForm.onceDescription""":
       """Supprimer cet article une fois qu'il est marqué comme fait.""",
+  """checklists.itemForm.image""": """Image""",
+  """checklists.itemForm.addImage""": """Ajouter une image""",
+  """checklists.itemForm.replaceImage""": """Remplacer""",
+  """checklists.itemForm.removeImage""": """Supprimer""",
   """checklists.itemForm.saveFailed""":
       """Impossible d'enregistrer l'article.""",
   """checklists.itemForm.deleteFailed""":

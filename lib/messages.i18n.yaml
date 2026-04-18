@@ -147,6 +147,10 @@ checklists:
     repeat: Repeat
     once: Once
     onceDescription: Delete this item once it is marked as done.
+    image: Image
+    addImage: Add image
+    replaceImage: Replace
+    removeImage: Remove
     saveFailed: Failed to save item.
     deleteFailed: Failed to delete item.
     deleteConfirm: Delete this item?

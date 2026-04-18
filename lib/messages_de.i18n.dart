@@ -805,6 +805,26 @@ class ItemFormChecklistsMessagesDe extends ItemFormChecklistsMessages {
       """Diesen Eintrag löschen, sobald er als erledigt markiert ist.""";
 
   /// ```dart
+  /// "Bild"
+  /// ```
+  String get image => """Bild""";
+
+  /// ```dart
+  /// "Bild hinzufügen"
+  /// ```
+  String get addImage => """Bild hinzufügen""";
+
+  /// ```dart
+  /// "Ersetzen"
+  /// ```
+  String get replaceImage => """Ersetzen""";
+
+  /// ```dart
+  /// "Entfernen"
+  /// ```
+  String get removeImage => """Entfernen""";
+
+  /// ```dart
   /// "Eintrag konnte nicht gespeichert werden."
   /// ```
   String get saveFailed => """Eintrag konnte nicht gespeichert werden.""";
@@ -1451,6 +1471,10 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.itemForm.once""": """Einmalig""",
   """checklists.itemForm.onceDescription""":
       """Diesen Eintrag löschen, sobald er als erledigt markiert ist.""",
+  """checklists.itemForm.image""": """Bild""",
+  """checklists.itemForm.addImage""": """Bild hinzufügen""",
+  """checklists.itemForm.replaceImage""": """Ersetzen""",
+  """checklists.itemForm.removeImage""": """Entfernen""",
   """checklists.itemForm.saveFailed""":
       """Eintrag konnte nicht gespeichert werden.""",
   """checklists.itemForm.deleteFailed""":

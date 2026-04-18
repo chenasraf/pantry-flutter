@@ -329,6 +329,59 @@ class ChecklistsController extends ChangeNotifier {
     return updated;
   }
 
+  Future<ListItem> uploadItemImage(
+    ListItem item, {
+    required List<int> bytes,
+    required String fileName,
+    required String mimeType,
+  }) async {
+    final updated = await _checklistService.uploadItemImage(
+      houseId,
+      item.listId,
+      item.id,
+      bytes: bytes,
+      fileName: fileName,
+      mimeType: mimeType,
+    );
+    final index = _items.indexWhere((i) => i.id == item.id);
+    if (index != -1) {
+      _items[index] = updated;
+      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+      notifyListeners();
+    }
+    return updated;
+  }
+
+  Future<void> deleteItemImage(ListItem item) async {
+    await _checklistService.deleteItemImage(houseId, item.listId, item.id);
+    final index = _items.indexWhere((i) => i.id == item.id);
+    if (index != -1) {
+      // Clear image fields locally
+      _items[index] = ListItem(
+        id: item.id,
+        listId: item.listId,
+        name: item.name,
+        description: item.description,
+        categoryId: item.categoryId,
+        quantity: item.quantity,
+        done: item.done,
+        doneAt: item.doneAt,
+        doneBy: item.doneBy,
+        rrule: item.rrule,
+        repeatFromCompletion: item.repeatFromCompletion,
+        deleteOnDone: item.deleteOnDone,
+        nextDueAt: item.nextDueAt,
+        imageFileId: null,
+        imageUploadedBy: null,
+        sortOrder: item.sortOrder,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      );
+      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+      notifyListeners();
+    }
+  }
+
   Future<void> deleteItem(ListItem item) async {
     await _checklistService.deleteItem(houseId, item.listId, item.id);
     _items.removeWhere((i) => i.id == item.id);

@@ -797,6 +797,26 @@ class ItemFormChecklistsMessages {
       """Delete this item once it is marked as done.""";
 
   /// ```dart
+  /// "Image"
+  /// ```
+  String get image => """Image""";
+
+  /// ```dart
+  /// "Add image"
+  /// ```
+  String get addImage => """Add image""";
+
+  /// ```dart
+  /// "Replace"
+  /// ```
+  String get replaceImage => """Replace""";
+
+  /// ```dart
+  /// "Remove"
+  /// ```
+  String get removeImage => """Remove""";
+
+  /// ```dart
   /// "Failed to save item."
   /// ```
   String get saveFailed => """Failed to save item.""";
@@ -1435,6 +1455,10 @@ Please complete login in your browser.""",
   """checklists.itemForm.once""": """Once""",
   """checklists.itemForm.onceDescription""":
       """Delete this item once it is marked as done.""",
+  """checklists.itemForm.image""": """Image""",
+  """checklists.itemForm.addImage""": """Add image""",
+  """checklists.itemForm.replaceImage""": """Replace""",
+  """checklists.itemForm.removeImage""": """Remove""",
   """checklists.itemForm.saveFailed""": """Failed to save item.""",
   """checklists.itemForm.deleteFailed""": """Failed to delete item.""",
   """checklists.itemForm.deleteConfirm""": """Delete this item?""",

@@ -147,6 +147,10 @@ checklists:
     repeat: חזרה
     once: פעם אחת
     onceDescription: מחק את הפריט ברגע שהוא מסומן כבוצע.
+    image: תמונה
+    addImage: הוסף תמונה
+    replaceImage: החלף
+    removeImage: הסר
     saveFailed: שמירת הפריט נכשלה.
     deleteFailed: מחיקת הפריט נכשלה.
     deleteConfirm: למחוק את הפריט?

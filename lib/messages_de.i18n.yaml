@@ -147,6 +147,10 @@ checklists:
     repeat: Wiederholen
     once: Einmalig
     onceDescription: Diesen Eintrag löschen, sobald er als erledigt markiert ist.
+    image: Bild
+    addImage: Bild hinzufügen
+    replaceImage: Ersetzen
+    removeImage: Entfernen
     saveFailed: Eintrag konnte nicht gespeichert werden.
     deleteFailed: "Eintrag konnte nicht gelöscht werden."
     deleteConfirm: "Diesen Eintrag löschen?"

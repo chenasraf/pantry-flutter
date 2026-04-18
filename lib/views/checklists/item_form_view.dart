@@ -1,7 +1,14 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/category_picker.dart';
 import 'package:pantry/widgets/recurrence_dialog.dart';
@@ -31,8 +38,12 @@ class _ItemFormViewState extends State<ItemFormView> {
   bool _saving = false;
   TextDirection _nameDir = TextDirection.ltr;
   TextDirection _descriptionDir = TextDirection.ltr;
+  XFile? _pickedImage;
+  bool _removeExistingImage = false;
 
   bool get _isEditing => widget.item != null;
+  bool get _hasExistingImage =>
+      widget.item?.imageFileId != null && !_removeExistingImage;
 
   List<models.Category> get _categories =>
       widget.controller.categories.values.toList()
@@ -81,9 +92,10 @@ class _ItemFormViewState extends State<ItemFormView> {
       final effectiveRepeatFromCompletion = _deleteOnDone
           ? false
           : _repeatFromCompletion;
+      ListItem savedItem;
       if (_isEditing) {
         final item = widget.item!;
-        await widget.controller.updateItem(
+        savedItem = await widget.controller.updateItem(
           item,
           name: name,
           description: _descriptionController.text.trim(),
@@ -95,7 +107,7 @@ class _ItemFormViewState extends State<ItemFormView> {
           deleteOnDone: _deleteOnDone,
         );
       } else {
-        await widget.controller.addItem(
+        savedItem = await widget.controller.addItem(
           name: name,
           description: _descriptionController.text.trim(),
           quantity: _quantityController.text.trim(),
@@ -104,6 +116,23 @@ class _ItemFormViewState extends State<ItemFormView> {
           deleteOnDone: _deleteOnDone,
         );
       }
+
+      // Handle image changes after the item is saved
+      if (_removeExistingImage && _pickedImage == null) {
+        await widget.controller.deleteItemImage(savedItem);
+      }
+      if (_pickedImage != null) {
+        final bytes = await _pickedImage!.readAsBytes();
+        final mime =
+            lookupMimeType(_pickedImage!.name) ?? 'application/octet-stream';
+        await widget.controller.uploadItemImage(
+          savedItem,
+          bytes: bytes,
+          fileName: _pickedImage!.name,
+          mimeType: mime,
+        );
+      }
+
       if (mounted) Navigator.of(context).pop(true);
     } catch (e) {
       if (mounted) {
@@ -209,7 +238,135 @@ class _ItemFormViewState extends State<ItemFormView> {
               },
             ),
           ],
+          const SizedBox(height: 16),
+          Text(f.image, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: 8),
+          _buildImageSection(theme),
         ],
+      ),
+    );
+  }
+
+  Widget _buildImageSection(ThemeData theme) {
+    if (_pickedImage != null) {
+      return _ImagePreviewTile(
+        image: FileImage(File(_pickedImage!.path)),
+        onRemove: () => setState(() {
+          _pickedImage = null;
+          if (!_isEditing) _removeExistingImage = false;
+        }),
+        onReplace: _pickImage,
+      );
+    }
+
+    if (_hasExistingImage) {
+      final uri = ChecklistService.instance.itemImagePreviewUri(
+        widget.controller.houseId,
+        widget.item!.imageFileId!,
+        widget.item!.imageUploadedBy ?? '',
+        size: 256,
+      );
+      final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
+      return _ImagePreviewTile(
+        image: CachedNetworkImageProvider(uri.toString(), headers: headers),
+        onRemove: () => setState(() {
+          _removeExistingImage = true;
+        }),
+        onReplace: _pickImage,
+      );
+    }
+
+    return OutlinedButton.icon(
+      onPressed: _pickImage,
+      icon: const Icon(Icons.add_photo_alternate_outlined),
+      label: Text(m.checklists.itemForm.addImage),
+    );
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      setState(() {
+        _pickedImage = file;
+        _removeExistingImage = true;
+      });
+    }
+  }
+}
+
+class _ImagePreviewTile extends StatelessWidget {
+  final ImageProvider image;
+  final VoidCallback onRemove;
+  final VoidCallback onReplace;
+
+  const _ImagePreviewTile({
+    required this.image,
+    required this.onRemove,
+    required this.onReplace,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final f = m.checklists.itemForm;
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image(
+            image: image,
+            width: double.infinity,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Positioned(
+          top: 8,
+          right: 8,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _ImageActionButton(
+                icon: Icons.swap_horiz,
+                tooltip: f.replaceImage,
+                onPressed: onReplace,
+              ),
+              const SizedBox(width: 4),
+              _ImageActionButton(
+                icon: Icons.close,
+                tooltip: f.removeImage,
+                onPressed: onRemove,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ImageActionButton extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onPressed;
+
+  const _ImageActionButton({
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black54,
+      shape: const CircleBorder(),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.white, size: 20),
+        tooltip: tooltip,
+        onPressed: onPressed,
+        constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+        padding: EdgeInsets.zero,
       ),
     );
   }

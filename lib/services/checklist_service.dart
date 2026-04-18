@@ -193,6 +193,30 @@ class ChecklistService {
     );
   }
 
+  Future<ListItem> uploadItemImage(
+    int houseId,
+    int listId,
+    int itemId, {
+    required List<int> bytes,
+    required String fileName,
+    required String mimeType,
+  }) async {
+    return ApiClient.instance.uploadMultipart<Map<String, dynamic>, ListItem>(
+      '/houses/$houseId/lists/$listId/items/$itemId/image',
+      bytes: bytes,
+      fileName: fileName,
+      mimeType: mimeType,
+      fieldName: 'image',
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
+  Future<void> deleteItemImage(int houseId, int listId, int itemId) async {
+    await ApiClient.instance.delete(
+      '/houses/$houseId/lists/$listId/items/$itemId/image',
+    );
+  }
+
   Future<void> reorderItems(
     int houseId,
     int listId,

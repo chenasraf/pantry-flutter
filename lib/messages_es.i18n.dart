@@ -803,6 +803,26 @@ class ItemFormChecklistsMessagesEs extends ItemFormChecklistsMessages {
       """Eliminar este artículo cuando se marque como hecho.""";
 
   /// ```dart
+  /// "Imagen"
+  /// ```
+  String get image => """Imagen""";
+
+  /// ```dart
+  /// "Agregar imagen"
+  /// ```
+  String get addImage => """Agregar imagen""";
+
+  /// ```dart
+  /// "Reemplazar"
+  /// ```
+  String get replaceImage => """Reemplazar""";
+
+  /// ```dart
+  /// "Eliminar"
+  /// ```
+  String get removeImage => """Eliminar""";
+
+  /// ```dart
   /// "No se pudo guardar el artículo."
   /// ```
   String get saveFailed => """No se pudo guardar el artículo.""";
@@ -1445,6 +1465,10 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.itemForm.once""": """Una vez""",
   """checklists.itemForm.onceDescription""":
       """Eliminar este artículo cuando se marque como hecho.""",
+  """checklists.itemForm.image""": """Imagen""",
+  """checklists.itemForm.addImage""": """Agregar imagen""",
+  """checklists.itemForm.replaceImage""": """Reemplazar""",
+  """checklists.itemForm.removeImage""": """Eliminar""",
   """checklists.itemForm.saveFailed""": """No se pudo guardar el artículo.""",
   """checklists.itemForm.deleteFailed""":
       """No se pudo eliminar el artículo.""",

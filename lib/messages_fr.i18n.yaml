@@ -147,6 +147,10 @@ checklists:
     repeat: "Répéter"
     once: "Une fois"
     onceDescription: "Supprimer cet article une fois qu'il est marqué comme fait."
+    image: Image
+    addImage: Ajouter une image
+    replaceImage: Remplacer
+    removeImage: Supprimer
     saveFailed: "Impossible d'enregistrer l'article."
     deleteFailed: Impossible de supprimer l'article.
     deleteConfirm: Supprimer cet article ?

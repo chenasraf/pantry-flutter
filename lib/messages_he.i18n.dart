@@ -799,6 +799,26 @@ class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
   String get onceDescription => """מחק את הפריט ברגע שהוא מסומן כבוצע.""";
 
   /// ```dart
+  /// "תמונה"
+  /// ```
+  String get image => """תמונה""";
+
+  /// ```dart
+  /// "הוסף תמונה"
+  /// ```
+  String get addImage => """הוסף תמונה""";
+
+  /// ```dart
+  /// "החלף"
+  /// ```
+  String get replaceImage => """החלף""";
+
+  /// ```dart
+  /// "הסר"
+  /// ```
+  String get removeImage => """הסר""";
+
+  /// ```dart
   /// "שמירת הפריט נכשלה."
   /// ```
   String get saveFailed => """שמירת הפריט נכשלה.""";
@@ -1434,6 +1454,10 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemForm.once""": """פעם אחת""",
   """checklists.itemForm.onceDescription""":
       """מחק את הפריט ברגע שהוא מסומן כבוצע.""",
+  """checklists.itemForm.image""": """תמונה""",
+  """checklists.itemForm.addImage""": """הוסף תמונה""",
+  """checklists.itemForm.replaceImage""": """החלף""",
+  """checklists.itemForm.removeImage""": """הסר""",
   """checklists.itemForm.saveFailed""": """שמירת הפריט נכשלה.""",
   """checklists.itemForm.deleteFailed""": """מחיקת הפריט נכשלה.""",
   """checklists.itemForm.deleteConfirm""": """למחוק את הפריט?""",
