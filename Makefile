@@ -37,6 +37,7 @@ help:
 	@echo "  Building:"
 	@echo "    android-install     Build APK and install on connected device"
 	@echo "    android-build-apk   Build Android APK"
+	@echo "    android-build-apk-split  Build Android split-per-ABI APKs"
 	@echo "    android-build-aab   Build Android App Bundle"
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
@@ -119,6 +120,10 @@ test-coverage:
 .PHONY: android-build-apk
 android-build-apk:
 	flutter build apk --release --obfuscate --split-debug-info=build/debug-info-apk --dart-define-from-file=.env
+
+.PHONY: android-build-apk-split
+android-build-apk-split:
+	flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/debug-info-apk --dart-define-from-file=.env
 
 .PHONY: android-install
 android-install: android-build-apk
