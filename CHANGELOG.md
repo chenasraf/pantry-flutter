@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.4](https://github.com/chenasraf/pantry-flutter/compare/v0.9.3...v0.9.4) (2026-04-19)
+
+
+### Build System
+
+* remove apk obfuscation ([d41d2b8](https://github.com/chenasraf/pantry-flutter/commit/d41d2b81beb512384cb3c2978bebd201c3bf53a0))
+
 ## [0.9.3](https://github.com/chenasraf/pantry-flutter/compare/v0.9.2...v0.9.3) (2026-04-19)
 
 
