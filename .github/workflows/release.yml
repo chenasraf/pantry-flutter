@@ -155,6 +155,14 @@ jobs:
       - name: Build split APKs
         run: flutter build apk --release --split-per-abi
 
+      - name: Strip dependency metadata from APKs
+        run: |
+          pip install apksigtool
+          APK_DIR=build/app/outputs/flutter-apk
+          for apk in $APK_DIR/app-*-release.apk; do
+            python3 -m apksigtool remove-signing-block --block-id 0x504b4453 "$apk"
+          done
+
       - name: Build App Bundle
         run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab
       - name: Rename artifacts
