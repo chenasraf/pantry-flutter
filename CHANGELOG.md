@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.10](https://github.com/chenasraf/pantry-flutter/compare/v0.9.9...v0.9.10) (2026-04-19)
+
+
+### Build System
+
+* fix signing ([9f45b23](https://github.com/chenasraf/pantry-flutter/commit/9f45b2344ef87708d55889e8fb80f465808fb0c7))
+
 ## [0.9.9](https://github.com/chenasraf/pantry-flutter/compare/v0.9.8...v0.9.9) (2026-04-19)
 
 
