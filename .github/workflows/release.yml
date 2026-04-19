@@ -126,6 +126,9 @@ jobs:
       - name: Create .env
         run: cp .env.example .env
 
+      - name: Remove JNI build-id for reproducible builds
+        run: sed -i -e 's/-Wl,/-Wl,--build-id=none,/' $PUB_CACHE/hosted/pub.dev/jni-*/src/CMakeLists.txt
+
       - name: Decode keystore
         run: echo ${{ secrets.ANDROID_KEYSTORE_BASE64 }} | base64 -d > android/app/upload-keystore.jks
 
