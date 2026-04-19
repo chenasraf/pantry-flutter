@@ -154,6 +154,16 @@ jobs:
 
       - name: Build split APKs
         run: flutter build apk --release --split-per-abi
+
+      - name: Zipalign APKs for reproducible builds
+        run: |
+          pip install repro-apk
+          APK_DIR=build/app/outputs/flutter-apk
+          for apk in $APK_DIR/app-*-release.apk; do
+            mv "$apk" unaligned.apk
+            python -m repro_apk.zipalign --page-size 16 --pad-like-apksigner --replace unaligned.apk "$apk"
+          done
+
       - name: Build App Bundle
         run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab
       - name: Rename artifacts
