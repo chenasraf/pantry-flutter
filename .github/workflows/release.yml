@@ -48,9 +48,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Stub .env
-        run: cp .env.example .env
-
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
 
@@ -82,12 +79,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Stub .env
-        run: cp .env.example .env
-
       - name: Run tests
-        run: flutter test --coverage --dart-define-from-file=.env
-
+        run: flutter test --coverage
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
@@ -137,9 +130,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Create .env
-        run: cp .env.example .env
-
       - name: Remove JNI build-id for reproducible builds
         run: sed -i -e 's/-Wl,/-Wl,--build-id=none,/' $PUB_CACHE/hosted/pub.dev/jni-*/src/CMakeLists.txt
 
@@ -163,11 +153,9 @@ jobs:
             2>/dev/null | grep "SHA256:" | awk '{print $2}'
 
       - name: Build split APKs
-        run: flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/debug-info-apk --dart-define-from-file=.env
-
+        run: flutter build apk --release --split-per-abi
       - name: Build App Bundle
-        run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab --dart-define-from-file=.env
-
+        run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab
       - name: Rename artifacts
         run: |
           VERSION=${{ needs.release-please.outputs.version }}
@@ -228,12 +216,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Create .env
-        run: cp .env.example .env
-
       - name: Build iOS (no codesign)
-        run: flutter build ios --release --no-codesign --obfuscate --split-debug-info=build/debug-info-ios --dart-define-from-file=.env
-
+        run: flutter build ios --release --no-codesign --obfuscate --split-debug-info=build/debug-info-ios
       - name: Create unsigned IPA
         run: |
           mkdir -p build/ios/ipa

@@ -83,12 +83,10 @@ i18n-watch:
 # Development
 .PHONY: run
 run:
-	flutter run --dart-define-from-file=.env
-
+	flutter run
 .PHONY: webapp-run
 webapp-run:
-	open http://localhost:5111 & flutter run -d web-server --web-port=5111 --dart-define-from-file=.env
-
+	open http://localhost:5111 & flutter run -d web-server --web-port=5111
 .PHONY: format
 format:
 	dart format .
@@ -106,25 +104,20 @@ check:
 .PHONY: test
 test:
 ifdef FILES
-	flutter test $(FILES) --dart-define-from-file=.env
-else
-	flutter test --dart-define-from-file=.env
-endif
+	flutter test $(FILES)else
+	flutter testendif
 
 .PHONY: test-coverage
 test-coverage:
-	flutter test --coverage --dart-define-from-file=.env
-	@echo "Coverage report generated at coverage/lcov.info"
+	flutter test --coverage	@echo "Coverage report generated at coverage/lcov.info"
 
 # Building
 .PHONY: android-build-apk
 android-build-apk:
-	flutter build apk --release --obfuscate --split-debug-info=build/debug-info-apk --dart-define-from-file=.env
-
+	flutter build apk --release --obfuscate --split-debug-info=build/debug-info-apk
 .PHONY: android-build-apk-split
 android-build-apk-split:
-	flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/debug-info-apk --dart-define-from-file=.env
-
+	flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/debug-info-apk
 .PHONY: android-install
 android-install: android-build-apk
 	flutter install
@@ -136,20 +129,17 @@ android-push: android-build-apk
 
 .PHONY: android-build-aab
 android-build-aab:
-	flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab --dart-define-from-file=.env
-
+	flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab
 .PHONY: ios-build
 ios-build:
-	flutter build ios --release --no-codesign --obfuscate --split-debug-info=build/debug-info-ios --dart-define-from-file=.env
-
+	flutter build ios --release --no-codesign --obfuscate --split-debug-info=build/debug-info-ios
 .PHONY: ios-build-ipa
 ios-build-ipa:
 	flutter build ipa --release --obfuscate --split-debug-info=build/debug-info-ios --dart-define-from-file=.env --export-options-plist=ios/ExportOptions.plist
 
 .PHONY: web-build
 web-build:
-	flutter build web --release --dart-define-from-file=.env
-
+	flutter build web --release
 .PHONY: build-all
 build-all: android-build-apk android-build-aab web-build
 
