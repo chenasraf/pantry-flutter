@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2](https://github.com/chenasraf/pantry-flutter/compare/v0.9.1...v0.9.2) (2026-04-19)
+
+
+### Build System
+
+* reproducible build ([9d4c832](https://github.com/chenasraf/pantry-flutter/commit/9d4c8327b035eb0433d6d0a571af406ffca84f83))
+
 ## [0.9.1](https://github.com/chenasraf/pantry-flutter/compare/v0.9.0...v0.9.1) (2026-04-18)
 
 
