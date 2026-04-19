@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.3](https://github.com/chenasraf/pantry-flutter/compare/v0.9.2...v0.9.3) (2026-04-19)
+
+
+### Build System
+
+* upgrade flutter version ([3e4051a](https://github.com/chenasraf/pantry-flutter/commit/3e4051a8462271543381496a9d60a22239b8d8da))
+
 ## [0.9.2](https://github.com/chenasraf/pantry-flutter/compare/v0.9.1...v0.9.2) (2026-04-19)
 
 
