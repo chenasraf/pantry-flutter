@@ -155,12 +155,16 @@ jobs:
       - name: Build split APKs
         run: flutter build apk --release --split-per-abi
 
-      - name: Strip dependency metadata from APKs
+      - name: Re-sign APKs to strip dependency metadata block
         run: |
-          pip install apksigtool
           APK_DIR=build/app/outputs/flutter-apk
           for apk in $APK_DIR/app-*-release.apk; do
-            python3 -m apksigtool remove-signing-block --block-id 0x504b4453 "$apk"
+            ${ANDROID_HOME}/build-tools/$(ls ${ANDROID_HOME}/build-tools/ | sort -V | tail -1)/apksigner sign \
+              --ks android/app/upload-keystore.jks \
+              --ks-key-alias ${{ secrets.ANDROID_KEY_ALIAS }} \
+              --ks-pass pass:${{ secrets.ANDROID_STORE_PASSWORD }} \
+              --key-pass pass:${{ secrets.ANDROID_KEY_PASSWORD }} \
+              "$apk"
           done
 
       - name: Build App Bundle
