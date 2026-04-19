@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.7](https://github.com/chenasraf/pantry-flutter/compare/v0.9.6...v0.9.7) (2026-04-19)
+
+
+### Build System
+
+* disable deps metadata in apk ([7ea2901](https://github.com/chenasraf/pantry-flutter/commit/7ea2901867b25e2c4bcd46cd744af7b12656b6dd))
+
 ## [0.9.6](https://github.com/chenasraf/pantry-flutter/compare/v0.9.5...v0.9.6) (2026-04-19)
 
 
