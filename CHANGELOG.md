@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.8](https://github.com/chenasraf/pantry-flutter/compare/v0.9.7...v0.9.8) (2026-04-19)
+
+
+### Build System
+
+* strip deps metadata from build ([132d9e3](https://github.com/chenasraf/pantry-flutter/commit/132d9e33a6662554149a7941053594c6c7ab9043))
+
 ## [0.9.7](https://github.com/chenasraf/pantry-flutter/compare/v0.9.6...v0.9.7) (2026-04-19)
 
 
