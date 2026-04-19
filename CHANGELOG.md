@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.5](https://github.com/chenasraf/pantry-flutter/compare/v0.9.4...v0.9.5) (2026-04-19)
+
+
+### Build System
+
+* zipalign ([6d2173f](https://github.com/chenasraf/pantry-flutter/commit/6d2173f08d72d8e188c9a4aabe044ff922d4b32f))
+
 ## [0.9.4](https://github.com/chenasraf/pantry-flutter/compare/v0.9.3...v0.9.4) (2026-04-19)
 
 
