@@ -43,9 +43,9 @@ It may take a few minutes for your tester status to propagate.
 Download the latest APK from the
 [releases page](https://github.com/chenasraf/pantry-flutter/releases) and sideload onto your device.
 
-### iOS
+### App Store (iOS)
 
-[Coming soon — TestFlight]
+[Install from the App Store](https://apps.apple.com/us/app/pantry-for-nextcloud/id6762161619)
 
 ## Development
 
