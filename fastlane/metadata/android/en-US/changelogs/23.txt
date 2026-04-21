@@ -1,0 +1,4 @@
+Features
+- update notes view & edit ui
+Bug Fixes
+- bug where note grid would not clip correctly

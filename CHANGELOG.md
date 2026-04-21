@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.10.0](https://github.com/chenasraf/pantry-flutter/compare/v0.9.10...v0.10.0) (2026-04-21)
+
+
+### Features
+
+* update notes view & edit ui ([36a74b3](https://github.com/chenasraf/pantry-flutter/commit/36a74b39e1beb37fc2f1446f8d45945a22289c6b))
+
+
+### Bug Fixes
+
+* bug where note grid would not clip correctly ([08159fa](https://github.com/chenasraf/pantry-flutter/commit/08159faec22422da983f23685c53b45088d74b2a))
+
 ## [0.9.10](https://github.com/chenasraf/pantry-flutter/compare/v0.9.9...v0.9.10) (2026-04-19)
 
 
