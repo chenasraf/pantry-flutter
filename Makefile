@@ -104,12 +104,15 @@ check:
 .PHONY: test
 test:
 ifdef FILES
-	flutter test $(FILES)else
-	flutter testendif
+	flutter test $(FILES)
+else
+	flutter test
+endif
 
 .PHONY: test-coverage
 test-coverage:
-	flutter test --coverage	@echo "Coverage report generated at coverage/lcov.info"
+	flutter test --coverage
+	@echo "Coverage report generated at coverage/lcov.info"
 
 # Building
 .PHONY: android-build-apk
