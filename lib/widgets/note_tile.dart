@@ -109,52 +109,62 @@ class NoteTile extends StatelessWidget {
           if (note.content != null && note.content!.isNotEmpty) ...[
             const SizedBox(height: 6),
             Expanded(
-              child: Directionality(
-                textDirection: contentDir,
-                child: MarkdownBody(
-                  data: note.content!,
-                  shrinkWrap: true,
-                  fitContent: false,
-                  styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                    p: theme.textTheme.bodySmall?.copyWith(
-                      color: textColor.withAlpha(200),
-                    ),
-                    h1: theme.textTheme.titleMedium?.copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    h2: theme.textTheme.titleSmall?.copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    h3: theme.textTheme.bodyMedium?.copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    listBullet: theme.textTheme.bodySmall?.copyWith(
-                      color: textColor.withAlpha(200),
-                    ),
-                    strong: TextStyle(
-                      color: textColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    em: TextStyle(
-                      color: textColor.withAlpha(200),
-                      fontStyle: FontStyle.italic,
-                    ),
-                    code: TextStyle(
-                      color: textColor,
-                      backgroundColor: textColor.withAlpha(30),
-                      fontFamily: 'monospace',
-                      fontSize: 12,
-                    ),
-                    blockquote: theme.textTheme.bodySmall?.copyWith(
-                      color: textColor.withAlpha(180),
-                      fontStyle: FontStyle.italic,
-                    ),
-                    a: TextStyle(
-                      color: textColor,
-                      decoration: TextDecoration.underline,
+              child: ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.white, Colors.white, Colors.transparent],
+                  stops: const [0.0, 0.7, 1.0],
+                ).createShader(bounds),
+                blendMode: BlendMode.dstIn,
+                child: Directionality(
+                  textDirection: contentDir,
+                  child: Markdown(
+                    data: note.content!,
+                    shrinkWrap: false,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                      p: theme.textTheme.bodySmall?.copyWith(
+                        color: textColor.withAlpha(200),
+                      ),
+                      h1: theme.textTheme.titleMedium?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      h2: theme.textTheme.titleSmall?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      h3: theme.textTheme.bodyMedium?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      listBullet: theme.textTheme.bodySmall?.copyWith(
+                        color: textColor.withAlpha(200),
+                      ),
+                      strong: TextStyle(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      em: TextStyle(
+                        color: textColor.withAlpha(200),
+                        fontStyle: FontStyle.italic,
+                      ),
+                      code: TextStyle(
+                        color: textColor,
+                        backgroundColor: textColor.withAlpha(30),
+                        fontFamily: 'monospace',
+                        fontSize: 12,
+                      ),
+                      blockquote: theme.textTheme.bodySmall?.copyWith(
+                        color: textColor.withAlpha(180),
+                        fontStyle: FontStyle.italic,
+                      ),
+                      a: TextStyle(
+                        color: textColor,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ),
