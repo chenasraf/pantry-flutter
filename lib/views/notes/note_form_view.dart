@@ -104,10 +104,25 @@ class _NoteFormViewState extends State<NoteFormView> {
     }
   }
 
+  Color get _bgColor {
+    if (_selectedColor != null && _selectedColor!.isNotEmpty) {
+      final hex = _selectedColor!.replaceFirst('#', '');
+      final value = int.tryParse('FF$hex', radix: 16);
+      if (value != null) return Color(value);
+    }
+    return Theme.of(context).colorScheme.surfaceContainerHighest;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bgColor = _bgColor;
+    final textColor = _contrastColor(bgColor);
+
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
+        backgroundColor: bgColor,
+        foregroundColor: textColor,
         title: Text(_isEditing ? m.notesWall.editNote : m.notesWall.newNote),
       ),
       floatingActionButton: FloatingActionButton(
@@ -120,76 +135,92 @@ class _NoteFormViewState extends State<NoteFormView> {
               )
             : const Icon(Icons.check),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: Column(
         children: [
-          TextField(
-            controller: _titleController,
-            decoration: InputDecoration(
-              labelText: m.notesWall.title,
-              border: const OutlineInputBorder(),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+            child: TextField(
+              controller: _titleController,
+              decoration: InputDecoration(
+                hintText: m.notesWall.title,
+                hintStyle: TextStyle(color: textColor.withAlpha(100)),
+                border: InputBorder.none,
+              ),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: textColor,
+                fontWeight: FontWeight.bold,
+              ),
+              autofocus: !_isEditing,
+              textCapitalization: TextCapitalization.sentences,
+              textInputAction: TextInputAction.next,
+              textDirection: _titleDir,
             ),
-            autofocus: !_isEditing,
-            textCapitalization: TextCapitalization.sentences,
-            textInputAction: TextInputAction.next,
-            textDirection: _titleDir,
           ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _contentController,
-            decoration: InputDecoration(
-              labelText: m.notesWall.content,
-              border: const OutlineInputBorder(),
-              alignLabelWithHint: true,
-            ),
-            textCapitalization: TextCapitalization.sentences,
-            maxLines: 10,
-            minLines: 4,
-            textDirection: _contentDir,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            m.notesWall.color,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _colorOptions.map((hex) {
-              final color = hex != null
-                  ? Color(
-                      int.parse('FF${hex.replaceFirst('#', '')}', radix: 16),
-                    )
-                  : Theme.of(context).colorScheme.surfaceContainerHighest;
-              final isSelected = _selectedColor == hex;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedColor = hex),
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                    border: isSelected
-                        ? Border.all(
-                            color: Theme.of(context).colorScheme.primary,
-                            width: 3,
-                          )
-                        : Border.all(
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                          ),
-                  ),
-                  child: isSelected
-                      ? Icon(
-                          Icons.check,
-                          size: 18,
-                          color: _contrastColor(color),
-                        )
-                      : null,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+              child: TextField(
+                controller: _contentController,
+                decoration: InputDecoration(
+                  hintText: m.notesWall.content,
+                  hintStyle: TextStyle(color: textColor.withAlpha(100)),
+                  border: InputBorder.none,
                 ),
-              );
-            }).toList(),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: textColor.withAlpha(230),
+                ),
+                textCapitalization: TextCapitalization.sentences,
+                maxLines: null,
+                expands: true,
+                textAlignVertical: TextAlignVertical.top,
+                textDirection: _contentDir,
+              ),
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 80, 48),
+            child: Row(
+              children: _colorOptions.map((hex) {
+                final color = hex != null
+                    ? Color(
+                        int.parse('FF${hex.replaceFirst('#', '')}', radix: 16),
+                      )
+                    : Theme.of(context).colorScheme.surfaceContainerHighest;
+                final isSelected = _selectedColor == hex;
+                return Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 8),
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedColor = hex),
+                    child: CustomPaint(
+                      foregroundPainter: hex == null
+                          ? _DiagonalLinePainter(
+                              color: textColor.withAlpha(120),
+                            )
+                          : null,
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: isSelected
+                              ? Border.all(color: textColor, width: 3)
+                              : Border.all(color: textColor.withAlpha(60)),
+                        ),
+                        child: isSelected
+                            ? Icon(
+                                Icons.check,
+                                size: 18,
+                                color: _contrastColor(color),
+                              )
+                            : null,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
@@ -199,4 +230,35 @@ class _NoteFormViewState extends State<NoteFormView> {
   static Color _contrastColor(Color bg) {
     return bg.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
   }
+}
+
+class _DiagonalLinePainter extends CustomPainter {
+  final Color color;
+
+  _DiagonalLinePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+    final center = size.center(Offset.zero);
+    final radius = size.width / 2;
+    canvas.clipRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCircle(center: center, radius: radius),
+        Radius.circular(radius),
+      ),
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.15, size.height * 0.85),
+      Offset(size.width * 0.85, size.height * 0.15),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_DiagonalLinePainter oldDelegate) =>
+      color != oldDelegate.color;
 }

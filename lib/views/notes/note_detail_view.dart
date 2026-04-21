@@ -42,6 +42,7 @@ class NoteDetailView extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: null,
         onPressed: () {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
@@ -51,70 +52,79 @@ class NoteDetailView extends StatelessWidget {
         },
         child: const Icon(Icons.edit),
       ),
-      body: note.content != null && note.content!.isNotEmpty
-          ? Directionality(
-              textDirection: contentDir,
-              child: Markdown(
-                data: note.content!,
-                padding: const EdgeInsets.all(16),
-                selectable: true,
-                styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                  p: theme.textTheme.bodyLarge?.copyWith(
-                    color: textColor.withAlpha(230),
-                  ),
-                  h1: theme.textTheme.headlineMedium?.copyWith(
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  h2: theme.textTheme.headlineSmall?.copyWith(
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  h3: theme.textTheme.titleLarge?.copyWith(
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  h4: theme.textTheme.titleMedium?.copyWith(
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  listBullet: theme.textTheme.bodyLarge?.copyWith(
-                    color: textColor.withAlpha(230),
-                  ),
-                  code: TextStyle(
-                    color: textColor,
-                    backgroundColor: textColor.withAlpha(30),
-                    fontFamily: 'monospace',
-                  ),
-                  codeblockDecoration: BoxDecoration(
-                    color: textColor.withAlpha(30),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  blockquote: theme.textTheme.bodyLarge?.copyWith(
-                    color: textColor.withAlpha(180),
-                    fontStyle: FontStyle.italic,
-                  ),
-                  blockquoteDecoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: textColor.withAlpha(100),
-                        width: 4,
+      body: Hero(
+        tag: 'note-${note.id}',
+        child: Material(
+          color: bgColor,
+          child: note.content != null && note.content!.isNotEmpty
+              ? Directionality(
+                  textDirection: contentDir,
+                  child: Markdown(
+                    data: note.content!,
+                    padding: const EdgeInsets.all(16),
+                    selectable: true,
+                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                      p: theme.textTheme.bodyLarge?.copyWith(
+                        color: textColor.withAlpha(230),
+                      ),
+                      h1: theme.textTheme.headlineMedium?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      h2: theme.textTheme.headlineSmall?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      h3: theme.textTheme.titleLarge?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      h4: theme.textTheme.titleMedium?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      listBullet: theme.textTheme.bodyLarge?.copyWith(
+                        color: textColor.withAlpha(230),
+                      ),
+                      code: TextStyle(
+                        color: textColor,
+                        backgroundColor: textColor.withAlpha(30),
+                        fontFamily: 'monospace',
+                      ),
+                      codeblockDecoration: BoxDecoration(
+                        color: textColor.withAlpha(30),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      blockquote: theme.textTheme.bodyLarge?.copyWith(
+                        color: textColor.withAlpha(180),
+                        fontStyle: FontStyle.italic,
+                      ),
+                      blockquoteDecoration: BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                            color: textColor.withAlpha(100),
+                            width: 4,
+                          ),
+                        ),
+                      ),
+                      a: TextStyle(
+                        color: textColor,
+                        decoration: TextDecoration.underline,
+                      ),
+                      strong: TextStyle(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      em: TextStyle(
+                        color: textColor,
+                        fontStyle: FontStyle.italic,
                       ),
                     ),
                   ),
-                  a: TextStyle(
-                    color: textColor,
-                    decoration: TextDecoration.underline,
-                  ),
-                  strong: TextStyle(
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  em: TextStyle(color: textColor, fontStyle: FontStyle.italic),
-                ),
-              ),
-            )
-          : null,
+                )
+              : null,
+        ),
+      ),
     );
   }
 }

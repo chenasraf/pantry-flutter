@@ -74,104 +74,107 @@ class NoteTile extends StatelessWidget {
     final titleDir = detectTextDirection(note.title);
     final contentDir = detectTextDirection(note.content);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Directionality(
-                  textDirection: titleDir,
-                  child: Text(
-                    note.title,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.bold,
+    return Hero(
+      tag: 'note-${note.id}',
+      child: Container(
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Directionality(
+                    textDirection: titleDir,
+                    child: Text(
+                      note.title,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              ),
-              _NoteMenuButton(
-                note: note,
-                controller: controller,
-                color: textColor,
+                _NoteMenuButton(
+                  note: note,
+                  controller: controller,
+                  color: textColor,
+                ),
+              ],
+            ),
+            if (note.content != null && note.content!.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Expanded(
+                child: ShaderMask(
+                  shaderCallback: (bounds) => LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.white, Colors.white, Colors.transparent],
+                    stops: const [0.0, 0.7, 1.0],
+                  ).createShader(bounds),
+                  blendMode: BlendMode.dstIn,
+                  child: Directionality(
+                    textDirection: contentDir,
+                    child: Markdown(
+                      data: note.content!,
+                      shrinkWrap: false,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                        p: theme.textTheme.bodySmall?.copyWith(
+                          color: textColor.withAlpha(200),
+                        ),
+                        h1: theme.textTheme.titleMedium?.copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        h2: theme.textTheme.titleSmall?.copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        h3: theme.textTheme.bodyMedium?.copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        listBullet: theme.textTheme.bodySmall?.copyWith(
+                          color: textColor.withAlpha(200),
+                        ),
+                        strong: TextStyle(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        em: TextStyle(
+                          color: textColor.withAlpha(200),
+                          fontStyle: FontStyle.italic,
+                        ),
+                        code: TextStyle(
+                          color: textColor,
+                          backgroundColor: textColor.withAlpha(30),
+                          fontFamily: 'monospace',
+                          fontSize: 12,
+                        ),
+                        blockquote: theme.textTheme.bodySmall?.copyWith(
+                          color: textColor.withAlpha(180),
+                          fontStyle: FontStyle.italic,
+                        ),
+                        a: TextStyle(
+                          color: textColor,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
-          ),
-          if (note.content != null && note.content!.isNotEmpty) ...[
-            const SizedBox(height: 6),
-            Expanded(
-              child: ShaderMask(
-                shaderCallback: (bounds) => LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.white, Colors.white, Colors.transparent],
-                  stops: const [0.0, 0.7, 1.0],
-                ).createShader(bounds),
-                blendMode: BlendMode.dstIn,
-                child: Directionality(
-                  textDirection: contentDir,
-                  child: Markdown(
-                    data: note.content!,
-                    shrinkWrap: false,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.zero,
-                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                      p: theme.textTheme.bodySmall?.copyWith(
-                        color: textColor.withAlpha(200),
-                      ),
-                      h1: theme.textTheme.titleMedium?.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      h2: theme.textTheme.titleSmall?.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      h3: theme.textTheme.bodyMedium?.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      listBullet: theme.textTheme.bodySmall?.copyWith(
-                        color: textColor.withAlpha(200),
-                      ),
-                      strong: TextStyle(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      em: TextStyle(
-                        color: textColor.withAlpha(200),
-                        fontStyle: FontStyle.italic,
-                      ),
-                      code: TextStyle(
-                        color: textColor,
-                        backgroundColor: textColor.withAlpha(30),
-                        fontFamily: 'monospace',
-                        fontSize: 12,
-                      ),
-                      blockquote: theme.textTheme.bodySmall?.copyWith(
-                        color: textColor.withAlpha(180),
-                        fontStyle: FontStyle.italic,
-                      ),
-                      a: TextStyle(
-                        color: textColor,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
           ],
-        ],
+        ),
       ),
     );
   }
