@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/chenasraf/pantry-flutter/compare/v0.10.0...v0.10.1) (2026-04-26)
+
+
+### Bug Fixes
+
+* make markdown links clickable ([7b5f9c1](https://github.com/chenasraf/pantry-flutter/commit/7b5f9c151845dde90275a8289b3114483d2b214d))
+
 ## [0.10.0](https://github.com/chenasraf/pantry-flutter/compare/v0.9.10...v0.10.0) (2026-04-21)
 
 
