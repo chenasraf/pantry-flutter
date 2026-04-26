@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
@@ -126,6 +127,11 @@ class NoteTile extends StatelessWidget {
                       shrinkWrap: false,
                       physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.zero,
+                      onTapLink: (text, href, title) {
+                        if (href != null) {
+                          launchUrl(Uri.parse(href));
+                        }
+                      },
                       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
                         p: theme.textTheme.bodySmall?.copyWith(
                           color: textColor.withAlpha(200),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry/models/note.dart';
 import 'package:pantry/utils/text_direction.dart';
@@ -63,6 +64,11 @@ class NoteDetailView extends StatelessWidget {
                     data: note.content!,
                     padding: const EdgeInsets.all(16),
                     selectable: true,
+                    onTapLink: (text, href, title) {
+                      if (href != null) {
+                        launchUrl(Uri.parse(href));
+                      }
+                    },
                     styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
                       p: theme.textTheme.bodyLarge?.copyWith(
                         color: textColor.withAlpha(230),
