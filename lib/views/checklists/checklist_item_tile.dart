@@ -5,6 +5,7 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/widgets/image_preview.dart';
@@ -35,13 +36,14 @@ class ChecklistItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final dimmed = item.done;
+    final tapRowToToggle = PrefsService.instance.checklistTapRowToToggle;
 
     return Material(
       type: MaterialType.transparency,
       child: Opacity(
         opacity: dimmed ? 0.5 : 1.0,
         child: InkWell(
-          onTap: () => onToggle(item),
+          onTap: tapRowToToggle ? () => onToggle(item) : null,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             child: Row(

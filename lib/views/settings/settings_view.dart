@@ -19,6 +19,7 @@ class _SettingsViewState extends State<SettingsView> {
   late int _pollIntervalMinutes;
   late String? _selectedLocale;
   late String? _selectedTheme;
+  late bool _tapRowToComplete;
 
   static const _pollOptions = [15, 30, 60, 120, 360];
 
@@ -29,6 +30,13 @@ class _SettingsViewState extends State<SettingsView> {
     _pollIntervalMinutes = PrefsService.instance.pollIntervalMinutes;
     _selectedLocale = PrefsService.instance.locale;
     _selectedTheme = PrefsService.instance.themeMode;
+    _tapRowToComplete = PrefsService.instance.checklistTapRowToToggle;
+  }
+
+  Future<void> _setTapRowToComplete(bool value) async {
+    await PrefsService.instance.setChecklistTapRowToToggle(value);
+    if (!mounted) return;
+    setState(() => _tapRowToComplete = value);
   }
 
   // -- Language --
@@ -171,6 +179,15 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
               ],
             ),
+          ),
+
+          // -- Interface --
+          _SectionHeader(m.settings.interfaceSection),
+          SwitchListTile(
+            title: Text(m.settings.tapRowToComplete),
+            subtitle: Text(m.settings.tapRowToCompleteBody),
+            value: _tapRowToComplete,
+            onChanged: _setTapRowToComplete,
           ),
 
           // -- Notifications --

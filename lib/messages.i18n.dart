@@ -362,6 +362,22 @@ class SettingsMessages {
   String get generalSection => """General""";
 
   /// ```dart
+  /// "Interface"
+  /// ```
+  String get interfaceSection => """Interface""";
+
+  /// ```dart
+  /// "Tap row to complete items"
+  /// ```
+  String get tapRowToComplete => """Tap row to complete items""";
+
+  /// ```dart
+  /// "When off, items are only marked complete by tapping the checkbox."
+  /// ```
+  String get tapRowToCompleteBody =>
+      """When off, items are only marked complete by tapping the checkbox.""";
+
+  /// ```dart
   /// "Language"
   /// ```
   String get language => """Language""";
@@ -1390,6 +1406,10 @@ Please complete login in your browser.""",
   """about.feedback""": """Feedback & issues""",
   """settings.title""": """App Settings""",
   """settings.generalSection""": """General""",
+  """settings.interfaceSection""": """Interface""",
+  """settings.tapRowToComplete""": """Tap row to complete items""",
+  """settings.tapRowToCompleteBody""":
+      """When off, items are only marked complete by tapping the checkbox.""",
   """settings.language""": """Language""",
   """settings.languageNames.system""": """System default""",
   """settings.languageNames.english""": """English""",

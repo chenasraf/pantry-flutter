@@ -59,6 +59,9 @@ about:
 settings:
   title: App-Einstellungen
   generalSection: Allgemein
+  interfaceSection: Oberfläche
+  tapRowToComplete: Eintrag durch Tippen der Zeile abhaken
+  tapRowToCompleteBody: "Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt."
   language: Sprache
   languageNames:
     system: Systemstandard

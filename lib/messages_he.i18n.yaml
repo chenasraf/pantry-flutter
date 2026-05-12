@@ -59,6 +59,9 @@ about:
 settings:
   title: הגדרות האפליקציה
   generalSection: כללי
+  interfaceSection: ממשק
+  tapRowToComplete: השלם פריטים בלחיצה על השורה
+  tapRowToCompleteBody: כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.
   language: שפה
   languageNames:
     system: ברירת מחדל (שפת המערכת)

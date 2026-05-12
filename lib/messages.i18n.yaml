@@ -59,6 +59,9 @@ about:
 settings:
   title: App Settings
   generalSection: General
+  interfaceSection: Interface
+  tapRowToComplete: Tap row to complete items
+  tapRowToCompleteBody: "When off, items are only marked complete by tapping the checkbox."
   language: Language
   languageNames:
     system: "System default"

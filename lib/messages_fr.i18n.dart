@@ -364,6 +364,23 @@ class SettingsMessagesFr extends SettingsMessages {
   String get generalSection => """Général""";
 
   /// ```dart
+  /// "Interface"
+  /// ```
+  String get interfaceSection => """Interface""";
+
+  /// ```dart
+  /// "Toucher la ligne pour cocher les éléments"
+  /// ```
+  String get tapRowToComplete =>
+      """Toucher la ligne pour cocher les éléments""";
+
+  /// ```dart
+  /// "Quand désactivé, les éléments ne sont cochés qu'en touchant la case."
+  /// ```
+  String get tapRowToCompleteBody =>
+      """Quand désactivé, les éléments ne sont cochés qu'en touchant la case.""";
+
+  /// ```dart
   /// "Langue"
   /// ```
   String get language => """Langue""";
@@ -1401,6 +1418,11 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """about.feedback""": """Commentaires & problèmes""",
   """settings.title""": """Réglages de l'app""",
   """settings.generalSection""": """Général""",
+  """settings.interfaceSection""": """Interface""",
+  """settings.tapRowToComplete""":
+      """Toucher la ligne pour cocher les éléments""",
+  """settings.tapRowToCompleteBody""":
+      """Quand désactivé, les éléments ne sont cochés qu'en touchant la case.""",
   """settings.language""": """Langue""",
   """settings.languageNames.system""": """Par défaut du système""",
   """settings.languageNames.english""": """English""",

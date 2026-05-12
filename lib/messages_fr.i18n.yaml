@@ -59,6 +59,9 @@ about:
 settings:
   title: "Réglages de l'app"
   generalSection: "Général"
+  interfaceSection: Interface
+  tapRowToComplete: Toucher la ligne pour cocher les éléments
+  tapRowToCompleteBody: "Quand désactivé, les éléments ne sont cochés qu'en touchant la case."
   language: Langue
   languageNames:
     system: "Par défaut du système"

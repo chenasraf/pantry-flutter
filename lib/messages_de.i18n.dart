@@ -364,6 +364,22 @@ class SettingsMessagesDe extends SettingsMessages {
   String get generalSection => """Allgemein""";
 
   /// ```dart
+  /// "Oberfläche"
+  /// ```
+  String get interfaceSection => """Oberfläche""";
+
+  /// ```dart
+  /// "Eintrag durch Tippen der Zeile abhaken"
+  /// ```
+  String get tapRowToComplete => """Eintrag durch Tippen der Zeile abhaken""";
+
+  /// ```dart
+  /// "Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt."
+  /// ```
+  String get tapRowToCompleteBody =>
+      """Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt.""";
+
+  /// ```dart
   /// "Sprache"
   /// ```
   String get language => """Sprache""";
@@ -1403,6 +1419,10 @@ Bitte melde dich in deinem Browser an.""",
   """about.feedback""": """Feedback & Probleme""",
   """settings.title""": """App-Einstellungen""",
   """settings.generalSection""": """Allgemein""",
+  """settings.interfaceSection""": """Oberfläche""",
+  """settings.tapRowToComplete""": """Eintrag durch Tippen der Zeile abhaken""",
+  """settings.tapRowToCompleteBody""":
+      """Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt.""",
   """settings.language""": """Sprache""",
   """settings.languageNames.system""": """Systemstandard""",
   """settings.languageNames.english""": """English""",

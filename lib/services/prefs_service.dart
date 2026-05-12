@@ -10,6 +10,7 @@ class PrefsService {
   static const _notificationsIntroSeenKey = 'notifications_intro_seen';
   static const _localeKey = 'locale';
   static const _themeModeKey = 'theme_mode';
+  static const _checklistTapRowToToggleKey = 'checklist_tap_row_to_toggle';
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -32,6 +33,9 @@ class PrefsService {
   String? _themeMode;
   String? get themeMode => _themeMode;
 
+  bool _checklistTapRowToToggle = false;
+  bool get checklistTapRowToToggle => _checklistTapRowToToggle;
+
   Future<void> load() async {
     final lastHouse = await _storage.read(key: _lastHouseKey);
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);
@@ -50,6 +54,9 @@ class PrefsService {
 
     _locale = await _storage.read(key: _localeKey);
     _themeMode = await _storage.read(key: _themeModeKey);
+
+    final tapRow = await _storage.read(key: _checklistTapRowToToggleKey);
+    if (tapRow != null) _checklistTapRowToToggle = tapRow == 'true';
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -91,6 +98,14 @@ class PrefsService {
     }
   }
 
+  Future<void> setChecklistTapRowToToggle(bool value) async {
+    _checklistTapRowToToggle = value;
+    await _storage.write(
+      key: _checklistTapRowToToggleKey,
+      value: value.toString(),
+    );
+  }
+
   Future<void> setNotificationsIntroSeen(bool value) async {
     _notificationsIntroSeen = value;
     await _storage.write(
@@ -106,11 +121,13 @@ class PrefsService {
     _notificationsIntroSeen = false;
     _locale = null;
     _themeMode = null;
+    _checklistTapRowToToggle = false;
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _notificationsEnabledKey);
     await _storage.delete(key: _pollIntervalMinutesKey);
     await _storage.delete(key: _notificationsIntroSeenKey);
     await _storage.delete(key: _localeKey);
     await _storage.delete(key: _themeModeKey);
+    await _storage.delete(key: _checklistTapRowToToggleKey);
   }
 }

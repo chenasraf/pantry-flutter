@@ -59,6 +59,9 @@ about:
 settings:
   title: Ajustes de la app
   generalSection: General
+  interfaceSection: Interfaz
+  tapRowToComplete: Tocar la fila para completar elementos
+  tapRowToCompleteBody: "Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla."
   language: Idioma
   languageNames:
     system: Predeterminado del sistema

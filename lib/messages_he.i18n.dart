@@ -362,6 +362,22 @@ class SettingsMessagesHe extends SettingsMessages {
   String get generalSection => """כללי""";
 
   /// ```dart
+  /// "ממשק"
+  /// ```
+  String get interfaceSection => """ממשק""";
+
+  /// ```dart
+  /// "השלם פריטים בלחיצה על השורה"
+  /// ```
+  String get tapRowToComplete => """השלם פריטים בלחיצה על השורה""";
+
+  /// ```dart
+  /// "כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון."
+  /// ```
+  String get tapRowToCompleteBody =>
+      """כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.""";
+
+  /// ```dart
   /// "שפה"
   /// ```
   String get language => """שפה""";
@@ -1391,6 +1407,10 @@ Map<String, String> get messagesHeMap => {
   """about.feedback""": """משוב ובעיות""",
   """settings.title""": """הגדרות האפליקציה""",
   """settings.generalSection""": """כללי""",
+  """settings.interfaceSection""": """ממשק""",
+  """settings.tapRowToComplete""": """השלם פריטים בלחיצה על השורה""",
+  """settings.tapRowToCompleteBody""":
+      """כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.""",
   """settings.language""": """שפה""",
   """settings.languageNames.system""": """ברירת מחדל (שפת המערכת)""",
   """settings.languageNames.english""": """English""",

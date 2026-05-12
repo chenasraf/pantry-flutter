@@ -364,6 +364,22 @@ class SettingsMessagesEs extends SettingsMessages {
   String get generalSection => """General""";
 
   /// ```dart
+  /// "Interfaz"
+  /// ```
+  String get interfaceSection => """Interfaz""";
+
+  /// ```dart
+  /// "Tocar la fila para completar elementos"
+  /// ```
+  String get tapRowToComplete => """Tocar la fila para completar elementos""";
+
+  /// ```dart
+  /// "Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla."
+  /// ```
+  String get tapRowToCompleteBody =>
+      """Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla.""";
+
+  /// ```dart
   /// "Idioma"
   /// ```
   String get language => """Idioma""";
@@ -1398,6 +1414,10 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """about.feedback""": """Comentarios y problemas""",
   """settings.title""": """Ajustes de la app""",
   """settings.generalSection""": """General""",
+  """settings.interfaceSection""": """Interfaz""",
+  """settings.tapRowToComplete""": """Tocar la fila para completar elementos""",
+  """settings.tapRowToCompleteBody""":
+      """Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla.""",
   """settings.language""": """Idioma""",
   """settings.languageNames.system""": """Predeterminado del sistema""",
   """settings.languageNames.english""": """English""",
