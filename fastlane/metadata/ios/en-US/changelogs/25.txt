@@ -1,0 +1,4 @@
+Features
+- add setting to require checkbox tap to complete checklist items
+Bug Fixes
+- preserve subpath for Nextcloud instances hosted on sub-paths
