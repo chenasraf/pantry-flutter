@@ -34,8 +34,11 @@ class ApiClient {
 
   Uri _uri(String path, [Map<String, String>? queryParameters]) {
     final base = Uri.parse(_credentials.serverUrl);
+    final prefix = base.path.endsWith('/')
+        ? base.path.substring(0, base.path.length - 1)
+        : base.path;
     return base.replace(
-      path: '$basePath$path',
+      path: '$prefix$basePath$path',
       queryParameters: queryParameters,
     );
   }
