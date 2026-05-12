@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.0](https://github.com/chenasraf/pantry-flutter/compare/v0.10.1...v0.11.0) (2026-05-12)
+
+
+### Features
+
+* add setting to require checkbox tap to complete checklist items ([ef2bc85](https://github.com/chenasraf/pantry-flutter/commit/ef2bc851deedc180dda51fbfb7378aef7145cf5f))
+
+
+### Bug Fixes
+
+* preserve subpath for Nextcloud instances hosted on sub-paths ([0c575ea](https://github.com/chenasraf/pantry-flutter/commit/0c575eaa2601dc8c83c6b874f2d81b54a0f6bf01))
+
 ## [0.10.1](https://github.com/chenasraf/pantry-flutter/compare/v0.10.0...v0.10.1) (2026-04-26)
 
 
