@@ -18,7 +18,6 @@ help:
 	@echo ""
 	@echo "  Development:"
 	@echo "    run                 Run the app in debug mode"
-	@echo "    webapp-run          Run the web app in default browser"
 	@echo "    format              Format all Dart files"
 	@echo "    analyze             Analyze all Dart files"
 	@echo "    check               Check all files (format + analyze, no changes)"
@@ -41,20 +40,20 @@ help:
 	@echo "    android-build-aab   Build Android App Bundle"
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
-	@echo "    web-build           Build web app"
 	@echo "    build-all           Build all platforms"
 	@echo ""
 	@echo "  Release:"
 	@echo "    android-release-apk Build APK and copy to build/release/"
 	@echo "    android-release-aab Build AAB and copy to build/release/"
 	@echo "    ios-release         Build iOS and create unsigned IPA in build/release/"
-	@echo "    web-release         Build web and create zip in build/release/"
 	@echo "    release-all         Build and release all platforms"
 	@echo ""
 	@echo "  Deploying:"
 	@echo "    android-deploy      Build AAB and upload to Google Play (TRACK=internal|beta|production, STATUS=draft|completed)"
 	@echo "    android-promote     Promote release between tracks (FROM=internal, TO=production, STATUS=draft|completed)"
 	@echo "    ios-deploy          Build IPA and upload (DEST=testflight|appstore, default: testflight)"
+	@echo "    release-production  Build and deploy to production (Google Play + App Store)"
+	@echo "    release-beta        Build and deploy to beta (Google Play beta + TestFlight)"
 
 # Setup
 .PHONY: get
@@ -84,9 +83,6 @@ i18n-watch:
 .PHONY: run
 run:
 	flutter run
-.PHONY: webapp-run
-webapp-run:
-	open http://localhost:5111 & flutter run -d web-server --web-port=5111
 .PHONY: format
 format:
 	dart format .
@@ -140,11 +136,8 @@ ios-build:
 ios-build-ipa:
 	flutter build ipa --release --obfuscate --split-debug-info=build/debug-info-ios --dart-define-from-file=.env --export-options-plist=ios/ExportOptions.plist
 
-.PHONY: web-build
-web-build:
-	flutter build web --release
 .PHONY: build-all
-build-all: android-build-apk android-build-aab web-build
+build-all: android-build-apk android-build-aab
 
 # Release (build + copy renamed artifacts to build/release/)
 .PHONY: android-release-apk
@@ -196,14 +189,18 @@ ios-upload:
 .PHONY: ios-deploy
 ios-deploy: ios-build-ipa ios-upload
 
-.PHONY: web-release
-web-release: web-build
-	mkdir -p build/release
-	cd build/web && zip -r ../release/pantry-$(VERSION)-web.zip .
-	@echo "-> build/release/pantry-$(VERSION)-web.zip"
-
 .PHONY: release-all
-release-all: build-clean android-release-apk android-release-aab web-release
+release-all: android-release-apk android-release-aab
+
+.PHONY: release-production
+release-production:
+	$(MAKE) android-deploy TRACK=production STATUS=completed
+	$(MAKE) ios-deploy DEST=appstore
+
+.PHONY: release-beta
+release-beta:
+	$(MAKE) android-deploy TRACK=beta STATUS=completed
+	$(MAKE) ios-deploy DEST=testflight
 
 # CocoaPods
 .PHONY: pods
