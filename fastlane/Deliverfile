@@ -1,2 +1,2 @@
 metadata_path("./fastlane/metadata/ios")
-screenshots_path("./fastlane/metadata/ios/screenshots")
+screenshots_path("./fastlane/metadata/ios/en-US/screenshots")

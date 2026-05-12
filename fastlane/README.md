@@ -68,6 +68,14 @@ Upload to App Store
 
 Sync iOS metadata only (no IPA upload)
 
+### ios submit
+
+```sh
+[bundle exec] fastlane ios submit
+```
+
+Submit existing App Store build for review (no IPA upload)
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

@@ -52,6 +52,7 @@ help:
 	@echo "    android-deploy      Build AAB and upload to Google Play (TRACK=internal|beta|production, STATUS=draft|completed)"
 	@echo "    android-promote     Promote release between tracks (FROM=internal, TO=production, STATUS=draft|completed)"
 	@echo "    ios-deploy          Build IPA and upload (DEST=testflight|appstore, default: testflight)"
+	@echo "    ios-submit          Submit the existing App Store build for review (no upload)"
 	@echo "    release-production  Build and deploy to production (Google Play + App Store)"
 	@echo "    release-beta        Build and deploy to beta (Google Play beta + TestFlight)"
 
@@ -188,6 +189,10 @@ ios-upload:
 
 .PHONY: ios-deploy
 ios-deploy: ios-build-ipa ios-upload
+
+.PHONY: ios-submit
+ios-submit:
+	bundle exec fastlane ios submit
 
 .PHONY: release-all
 release-all: android-release-apk android-release-aab
