@@ -80,7 +80,7 @@ class FakePhotoBoardController extends PhotoBoardController {
   Future<void> deletePhoto(Photo photo) async {}
 
   @override
-  Future<void> uploadPhotos(List<XFile> files) async {}
+  Future<void> uploadPhotos(List<XFile> files, {int? folderId}) async {}
 }
 
 /// A fake [NotesController] that does not touch any services.

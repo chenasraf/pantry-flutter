@@ -217,6 +217,17 @@ photoBoard:
     captionZA: "Descripción Z–A"
     custom: Personalizado
 
+share:
+  title: Compartir con Pantry
+  chooseHouse: Elegir casa
+  choosePhotoDestination: Subir a
+  photoBoardRoot: Tablón de fotos
+  newFolder: Nueva carpeta
+  newFolderName: Nombre de la carpeta
+  failedToCreateFolder: No se pudo crear la carpeta.
+  failedToOpenShare: No se pudo abrir el contenido compartido.
+  noHouses: No hay casas disponibles. Crea una casa primero.
+
 recurrence:
   title: Recurrencia
   presets: Preajustes

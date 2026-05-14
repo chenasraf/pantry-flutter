@@ -217,6 +217,17 @@ photoBoard:
     captionZA: "Caption Z–A"
     custom: Custom
 
+share:
+  title: Share to Pantry
+  chooseHouse: Choose house
+  choosePhotoDestination: Upload to
+  photoBoardRoot: Photo Board
+  newFolder: New folder
+  newFolderName: Folder name
+  failedToCreateFolder: Failed to create folder.
+  failedToOpenShare: Could not open the shared content.
+  noHouses: No houses available. Create a house first.
+
 recurrence:
   title: Recurrence
   presets: Presets

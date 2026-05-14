@@ -217,6 +217,17 @@ photoBoard:
     captionZA: "Beschriftung Z–A"
     custom: Benutzerdefiniert
 
+share:
+  title: An Pantry senden
+  chooseHouse: Haus auswählen
+  choosePhotoDestination: Hochladen nach
+  photoBoardRoot: Fotowand
+  newFolder: Neuer Ordner
+  newFolderName: Ordnername
+  failedToCreateFolder: Ordner konnte nicht erstellt werden.
+  failedToOpenShare: Der geteilte Inhalt konnte nicht geöffnet werden.
+  noHouses: Keine Häuser verfügbar. Erstelle zuerst ein Haus.
+
 recurrence:
   title: Wiederholung
   presets: Voreinstellungen

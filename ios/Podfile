@@ -1,5 +1,4 @@
-# Uncomment this line to define a global platform for your project
-# platform :ios, '13.0'
+platform :ios, '14.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -34,6 +33,17 @@ target 'Runner' do
   target 'RunnerTests' do
     inherit! :search_paths
   end
+end
+
+# Share Extension target has no pod dependencies — the
+# `RSIShareViewController` base class is vendored directly into the
+# extension's sources (ios/Share/RSIShareViewController.swift). This
+# avoids dragging in Flutter.framework and `addApplicationDelegate`
+# from the receive_sharing_intent plugin, which are banned in app
+# extensions. `use_frameworks!` is declared so CocoaPods doesn't flag
+# the host/embedded mismatch with Runner.
+target 'Share' do
+  use_frameworks!
 end
 
 post_install do |installer|

@@ -75,6 +75,7 @@ class Messages {
   ChecklistsMessages get checklists => ChecklistsMessages(this);
   NotesWallMessages get notesWall => NotesWallMessages(this);
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
+  ShareMessages get share => ShareMessages(this);
   RecurrenceMessages get recurrence => RecurrenceMessages(this);
 }
 
@@ -1140,6 +1141,56 @@ class SortPhotoBoardMessages {
   String get custom => """Custom""";
 }
 
+class ShareMessages {
+  final Messages _parent;
+  const ShareMessages(this._parent);
+
+  /// ```dart
+  /// "Share to Pantry"
+  /// ```
+  String get title => """Share to Pantry""";
+
+  /// ```dart
+  /// "Choose house"
+  /// ```
+  String get chooseHouse => """Choose house""";
+
+  /// ```dart
+  /// "Upload to"
+  /// ```
+  String get choosePhotoDestination => """Upload to""";
+
+  /// ```dart
+  /// "Photo Board"
+  /// ```
+  String get photoBoardRoot => """Photo Board""";
+
+  /// ```dart
+  /// "New folder"
+  /// ```
+  String get newFolder => """New folder""";
+
+  /// ```dart
+  /// "Folder name"
+  /// ```
+  String get newFolderName => """Folder name""";
+
+  /// ```dart
+  /// "Failed to create folder."
+  /// ```
+  String get failedToCreateFolder => """Failed to create folder.""";
+
+  /// ```dart
+  /// "Could not open the shared content."
+  /// ```
+  String get failedToOpenShare => """Could not open the shared content.""";
+
+  /// ```dart
+  /// "No houses available. Create a house first."
+  /// ```
+  String get noHouses => """No houses available. Create a house first.""";
+}
+
 class RecurrenceMessages {
   final Messages _parent;
   const RecurrenceMessages(this._parent);
@@ -1580,6 +1631,15 @@ Please complete login in your browser.""",
   """photoBoard.sort.captionAZ""": """Caption A–Z""",
   """photoBoard.sort.captionZA""": """Caption Z–A""",
   """photoBoard.sort.custom""": """Custom""",
+  """share.title""": """Share to Pantry""",
+  """share.chooseHouse""": """Choose house""",
+  """share.choosePhotoDestination""": """Upload to""",
+  """share.photoBoardRoot""": """Photo Board""",
+  """share.newFolder""": """New folder""",
+  """share.newFolderName""": """Folder name""",
+  """share.failedToCreateFolder""": """Failed to create folder.""",
+  """share.failedToOpenShare""": """Could not open the shared content.""",
+  """share.noHouses""": """No houses available. Create a house first.""",
   """recurrence.title""": """Recurrence""",
   """recurrence.presets""": """Presets""",
   """recurrence.daily""": """Daily""",

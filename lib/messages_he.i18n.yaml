@@ -217,6 +217,17 @@ photoBoard:
     captionZA: "כיתוב ת–א"
     custom: מותאם אישית
 
+share:
+  title: שיתוף ל-Pantry
+  chooseHouse: בחר בית
+  choosePhotoDestination: העלה אל
+  photoBoardRoot: לוח התמונות
+  newFolder: תיקייה חדשה
+  newFolderName: שם התיקייה
+  failedToCreateFolder: יצירת התיקייה נכשלה.
+  failedToOpenShare: לא ניתן לפתוח את התוכן ששותף.
+  noHouses: אין בתים זמינים. צור תחילה בית.
+
 recurrence:
   title: חזרה
   presets: הגדרות מוכנות

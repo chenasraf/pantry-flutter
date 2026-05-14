@@ -2,12 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/photo.dart';
+import 'package:pantry/services/pending_photo_share_service.dart';
 import 'package:pantry/services/photo_service.dart';
 
 class UploadTask {
   final String fileName;
   final Uint8List? thumbnailBytes;
   final String mimeType;
+  final int? folderId;
   double progress;
   bool done;
   String? error;
@@ -17,6 +19,7 @@ class UploadTask {
     required this.fileName,
     this.thumbnailBytes,
     this.mimeType = 'image/jpeg',
+    this.folderId,
   }) : progress = 0.0,
        done = false;
 
@@ -31,13 +34,18 @@ class UploadTask {
 class PhotoBoardController extends ChangeNotifier {
   final int houseId;
 
-  PhotoBoardController({required this.houseId});
+  PhotoBoardController({required this.houseId}) {
+    PendingPhotoShareService.instance.addListener(_consumePendingShares);
+    // Consume any shares that arrived while this controller didn't exist.
+    _consumePendingShares();
+  }
 
   bool _disposed = false;
 
   @override
   void dispose() {
     _disposed = true;
+    PendingPhotoShareService.instance.removeListener(_consumePendingShares);
     super.dispose();
   }
 
@@ -281,7 +289,8 @@ class PhotoBoardController extends ChangeNotifier {
 
   // -- Upload --
 
-  Future<void> uploadPhotos(List<XFile> files) async {
+  Future<void> uploadPhotos(List<XFile> files, {int? folderId}) async {
+    final target = folderId ?? _currentFolderId;
     // Create all tasks up front with thumbnail bytes
     final tasks = <(UploadTask, XFile)>[];
     for (final file in files) {
@@ -290,6 +299,7 @@ class PhotoBoardController extends ChangeNotifier {
         fileName: file.name,
         thumbnailBytes: bytes,
         mimeType: file.mimeType ?? 'image/jpeg',
+        folderId: target,
       );
       _uploads.add(task);
       tasks.add((task, file));
@@ -313,7 +323,7 @@ class PhotoBoardController extends ChangeNotifier {
         bytes: task.thumbnailBytes!,
         fileName: task.fileName,
         mimeType: task.mimeType,
-        folderId: _currentFolderId,
+        folderId: task.folderId,
       );
       _photos.insert(0, photo);
       _service.cachePhotos(houseId, _photos);
@@ -334,6 +344,15 @@ class PhotoBoardController extends ChangeNotifier {
     notifyListeners();
     await _runUpload(task);
     _cleanUpDoneUploads();
+  }
+
+  void _consumePendingShares() {
+    final shares = PendingPhotoShareService.instance.takeForHouse(houseId);
+    if (shares.isEmpty) return;
+    for (final share in shares) {
+      final files = share.paths.map((p) => XFile(p)).toList();
+      uploadPhotos(files, folderId: share.folderId);
+    }
   }
 
   void dismissUpload(UploadTask task) {

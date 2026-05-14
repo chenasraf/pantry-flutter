@@ -84,5 +84,20 @@
 		</array>
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false/>
+		<key>AppGroupId</key>
+		<string>group.dev.casraf.pantry</string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLName</key>
+				<string>dev.casraf.pantry.share</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>ShareMedia-dev.casraf.pantry</string>
+				</array>
+			</dict>
+		</array>
 	</dict>
 </plist>

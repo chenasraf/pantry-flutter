@@ -76,6 +76,7 @@ class MessagesDe extends Messages {
   ChecklistsMessagesDe get checklists => ChecklistsMessagesDe(this);
   NotesWallMessagesDe get notesWall => NotesWallMessagesDe(this);
   PhotoBoardMessagesDe get photoBoard => PhotoBoardMessagesDe(this);
+  ShareMessagesDe get share => ShareMessagesDe(this);
   RecurrenceMessagesDe get recurrence => RecurrenceMessagesDe(this);
 }
 
@@ -1151,6 +1152,58 @@ class SortPhotoBoardMessagesDe extends SortPhotoBoardMessages {
   String get custom => """Benutzerdefiniert""";
 }
 
+class ShareMessagesDe extends ShareMessages {
+  final MessagesDe _parent;
+  const ShareMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "An Pantry senden"
+  /// ```
+  String get title => """An Pantry senden""";
+
+  /// ```dart
+  /// "Haus auswählen"
+  /// ```
+  String get chooseHouse => """Haus auswählen""";
+
+  /// ```dart
+  /// "Hochladen nach"
+  /// ```
+  String get choosePhotoDestination => """Hochladen nach""";
+
+  /// ```dart
+  /// "Fotowand"
+  /// ```
+  String get photoBoardRoot => """Fotowand""";
+
+  /// ```dart
+  /// "Neuer Ordner"
+  /// ```
+  String get newFolder => """Neuer Ordner""";
+
+  /// ```dart
+  /// "Ordnername"
+  /// ```
+  String get newFolderName => """Ordnername""";
+
+  /// ```dart
+  /// "Ordner konnte nicht erstellt werden."
+  /// ```
+  String get failedToCreateFolder => """Ordner konnte nicht erstellt werden.""";
+
+  /// ```dart
+  /// "Der geteilte Inhalt konnte nicht geöffnet werden."
+  /// ```
+  String get failedToOpenShare =>
+      """Der geteilte Inhalt konnte nicht geöffnet werden.""";
+
+  /// ```dart
+  /// "Keine Häuser verfügbar. Erstelle zuerst ein Haus."
+  /// ```
+  String get noHouses =>
+      """Keine Häuser verfügbar. Erstelle zuerst ein Haus.""";
+}
+
 class RecurrenceMessagesDe extends RecurrenceMessages {
   final MessagesDe _parent;
   const RecurrenceMessagesDe(this._parent) : super(_parent);
@@ -1602,6 +1655,16 @@ Bitte melde dich in deinem Browser an.""",
   """photoBoard.sort.captionAZ""": """Beschriftung A–Z""",
   """photoBoard.sort.captionZA""": """Beschriftung Z–A""",
   """photoBoard.sort.custom""": """Benutzerdefiniert""",
+  """share.title""": """An Pantry senden""",
+  """share.chooseHouse""": """Haus auswählen""",
+  """share.choosePhotoDestination""": """Hochladen nach""",
+  """share.photoBoardRoot""": """Fotowand""",
+  """share.newFolder""": """Neuer Ordner""",
+  """share.newFolderName""": """Ordnername""",
+  """share.failedToCreateFolder""": """Ordner konnte nicht erstellt werden.""",
+  """share.failedToOpenShare""":
+      """Der geteilte Inhalt konnte nicht geöffnet werden.""",
+  """share.noHouses""": """Keine Häuser verfügbar. Erstelle zuerst ein Haus.""",
   """recurrence.title""": """Wiederholung""",
   """recurrence.presets""": """Voreinstellungen""",
   """recurrence.daily""": """Täglich""",

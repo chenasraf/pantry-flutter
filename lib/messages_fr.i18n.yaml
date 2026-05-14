@@ -217,6 +217,17 @@ photoBoard:
     captionZA: "Légende Z–A"
     custom: "Personnalisé"
 
+share:
+  title: Partager vers Pantry
+  chooseHouse: Choisir une maison
+  choosePhotoDestination: Téléverser vers
+  photoBoardRoot: Tableau photos
+  newFolder: Nouveau dossier
+  newFolderName: Nom du dossier
+  failedToCreateFolder: "Impossible de créer le dossier."
+  failedToOpenShare: "Impossible d'ouvrir le contenu partagé."
+  noHouses: "Aucune maison disponible. Créez d'abord une maison."
+
 recurrence:
   title: "Récurrence"
   presets: "Préréglages"

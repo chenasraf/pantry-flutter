@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
+import 'package:pantry/services/pending_note_share_service.dart';
 import 'package:pantry/widgets/note_selection_actions.dart';
 import 'package:pantry/widgets/note_sort_button.dart';
 import 'package:pantry/widgets/note_tile.dart';
@@ -23,12 +24,28 @@ class _NotesWallViewState extends State<NotesWallView> {
   void initState() {
     super.initState();
     _controller.load();
+    PendingNoteShareService.instance.addListener(_handlePendingShare);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _handlePendingShare());
   }
 
   @override
   void dispose() {
+    PendingNoteShareService.instance.removeListener(_handlePendingShare);
     _controller.dispose();
     super.dispose();
+  }
+
+  void _handlePendingShare() {
+    final share = PendingNoteShareService.instance.takeForHouse(widget.houseId);
+    if (share == null || !mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => NoteFormView(
+          controller: _controller,
+          prefillContent: share.content,
+        ),
+      ),
+    );
   }
 
   @override

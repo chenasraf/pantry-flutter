@@ -29,7 +29,16 @@ class NoteFormView extends StatefulWidget {
   final NotesController controller;
   final Note? note;
 
-  const NoteFormView({super.key, required this.controller, this.note});
+  /// When opening a new note seeded from an OS share intent, this holds
+  /// the shared text/URL to prefill into the content field.
+  final String? prefillContent;
+
+  const NoteFormView({
+    super.key,
+    required this.controller,
+    this.note,
+    this.prefillContent,
+  });
 
   @override
   State<NoteFormView> createState() => _NoteFormViewState();
@@ -50,11 +59,13 @@ class _NoteFormViewState extends State<NoteFormView> {
     super.initState();
     _titleController = TextEditingController(text: widget.note?.title ?? '');
     _contentController = TextEditingController(
-      text: widget.note?.content ?? '',
+      text: widget.note?.content ?? widget.prefillContent ?? '',
     );
     _selectedColor = widget.note?.color;
     _titleDir = detectTextDirection(widget.note?.title);
-    _contentDir = detectTextDirection(widget.note?.content);
+    _contentDir = detectTextDirection(
+      widget.note?.content ?? widget.prefillContent,
+    );
     _titleController.addListener(() {
       final dir = detectTextDirection(_titleController.text);
       if (dir != _titleDir) setState(() => _titleDir = dir);

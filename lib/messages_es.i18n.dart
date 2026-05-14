@@ -76,6 +76,7 @@ class MessagesEs extends Messages {
   ChecklistsMessagesEs get checklists => ChecklistsMessagesEs(this);
   NotesWallMessagesEs get notesWall => NotesWallMessagesEs(this);
   PhotoBoardMessagesEs get photoBoard => PhotoBoardMessagesEs(this);
+  ShareMessagesEs get share => ShareMessagesEs(this);
   RecurrenceMessagesEs get recurrence => RecurrenceMessagesEs(this);
 }
 
@@ -1147,6 +1148,57 @@ class SortPhotoBoardMessagesEs extends SortPhotoBoardMessages {
   String get custom => """Personalizado""";
 }
 
+class ShareMessagesEs extends ShareMessages {
+  final MessagesEs _parent;
+  const ShareMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Compartir con Pantry"
+  /// ```
+  String get title => """Compartir con Pantry""";
+
+  /// ```dart
+  /// "Elegir casa"
+  /// ```
+  String get chooseHouse => """Elegir casa""";
+
+  /// ```dart
+  /// "Subir a"
+  /// ```
+  String get choosePhotoDestination => """Subir a""";
+
+  /// ```dart
+  /// "Tablón de fotos"
+  /// ```
+  String get photoBoardRoot => """Tablón de fotos""";
+
+  /// ```dart
+  /// "Nueva carpeta"
+  /// ```
+  String get newFolder => """Nueva carpeta""";
+
+  /// ```dart
+  /// "Nombre de la carpeta"
+  /// ```
+  String get newFolderName => """Nombre de la carpeta""";
+
+  /// ```dart
+  /// "No se pudo crear la carpeta."
+  /// ```
+  String get failedToCreateFolder => """No se pudo crear la carpeta.""";
+
+  /// ```dart
+  /// "No se pudo abrir el contenido compartido."
+  /// ```
+  String get failedToOpenShare =>
+      """No se pudo abrir el contenido compartido.""";
+
+  /// ```dart
+  /// "No hay casas disponibles. Crea una casa primero."
+  /// ```
+  String get noHouses => """No hay casas disponibles. Crea una casa primero.""";
+}
+
 class RecurrenceMessagesEs extends RecurrenceMessages {
   final MessagesEs _parent;
   const RecurrenceMessagesEs(this._parent) : super(_parent);
@@ -1593,6 +1645,16 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """photoBoard.sort.captionAZ""": """Descripción A–Z""",
   """photoBoard.sort.captionZA""": """Descripción Z–A""",
   """photoBoard.sort.custom""": """Personalizado""",
+  """share.title""": """Compartir con Pantry""",
+  """share.chooseHouse""": """Elegir casa""",
+  """share.choosePhotoDestination""": """Subir a""",
+  """share.photoBoardRoot""": """Tablón de fotos""",
+  """share.newFolder""": """Nueva carpeta""",
+  """share.newFolderName""": """Nombre de la carpeta""",
+  """share.failedToCreateFolder""": """No se pudo crear la carpeta.""",
+  """share.failedToOpenShare""":
+      """No se pudo abrir el contenido compartido.""",
+  """share.noHouses""": """No hay casas disponibles. Crea una casa primero.""",
   """recurrence.title""": """Recurrencia""",
   """recurrence.presets""": """Preajustes""",
   """recurrence.daily""": """Diario""",

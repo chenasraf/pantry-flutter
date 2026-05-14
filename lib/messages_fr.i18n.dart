@@ -76,6 +76,7 @@ class MessagesFr extends Messages {
   ChecklistsMessagesFr get checklists => ChecklistsMessagesFr(this);
   NotesWallMessagesFr get notesWall => NotesWallMessagesFr(this);
   PhotoBoardMessagesFr get photoBoard => PhotoBoardMessagesFr(this);
+  ShareMessagesFr get share => ShareMessagesFr(this);
   RecurrenceMessagesFr get recurrence => RecurrenceMessagesFr(this);
 }
 
@@ -1150,6 +1151,57 @@ class SortPhotoBoardMessagesFr extends SortPhotoBoardMessages {
   String get custom => """Personnalisé""";
 }
 
+class ShareMessagesFr extends ShareMessages {
+  final MessagesFr _parent;
+  const ShareMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Partager vers Pantry"
+  /// ```
+  String get title => """Partager vers Pantry""";
+
+  /// ```dart
+  /// "Choisir une maison"
+  /// ```
+  String get chooseHouse => """Choisir une maison""";
+
+  /// ```dart
+  /// "Téléverser vers"
+  /// ```
+  String get choosePhotoDestination => """Téléverser vers""";
+
+  /// ```dart
+  /// "Tableau photos"
+  /// ```
+  String get photoBoardRoot => """Tableau photos""";
+
+  /// ```dart
+  /// "Nouveau dossier"
+  /// ```
+  String get newFolder => """Nouveau dossier""";
+
+  /// ```dart
+  /// "Nom du dossier"
+  /// ```
+  String get newFolderName => """Nom du dossier""";
+
+  /// ```dart
+  /// "Impossible de créer le dossier."
+  /// ```
+  String get failedToCreateFolder => """Impossible de créer le dossier.""";
+
+  /// ```dart
+  /// "Impossible d'ouvrir le contenu partagé."
+  /// ```
+  String get failedToOpenShare => """Impossible d'ouvrir le contenu partagé.""";
+
+  /// ```dart
+  /// "Aucune maison disponible. Créez d'abord une maison."
+  /// ```
+  String get noHouses =>
+      """Aucune maison disponible. Créez d'abord une maison.""";
+}
+
 class RecurrenceMessagesFr extends RecurrenceMessages {
   final MessagesFr _parent;
   const RecurrenceMessagesFr(this._parent) : super(_parent);
@@ -1601,6 +1653,16 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """photoBoard.sort.captionAZ""": """Légende A–Z""",
   """photoBoard.sort.captionZA""": """Légende Z–A""",
   """photoBoard.sort.custom""": """Personnalisé""",
+  """share.title""": """Partager vers Pantry""",
+  """share.chooseHouse""": """Choisir une maison""",
+  """share.choosePhotoDestination""": """Téléverser vers""",
+  """share.photoBoardRoot""": """Tableau photos""",
+  """share.newFolder""": """Nouveau dossier""",
+  """share.newFolderName""": """Nom du dossier""",
+  """share.failedToCreateFolder""": """Impossible de créer le dossier.""",
+  """share.failedToOpenShare""": """Impossible d'ouvrir le contenu partagé.""",
+  """share.noHouses""":
+      """Aucune maison disponible. Créez d'abord une maison.""",
   """recurrence.title""": """Récurrence""",
   """recurrence.presets""": """Préréglages""",
   """recurrence.daily""": """Quotidien""",

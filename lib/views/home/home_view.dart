@@ -9,8 +9,10 @@ import 'package:pantry/models/house.dart';
 import 'package:pantry/services/deep_link_service.dart';
 import 'package:pantry/views/notifications/notifications_controller.dart';
 import 'package:pantry/views/notifications/notifications_view.dart';
+import 'package:pantry/services/share_intent_service.dart';
 import 'package:pantry/views/photos/photo_board_view.dart';
 import 'package:pantry/views/settings/settings_view.dart';
+import 'package:pantry/views/share/share_router_view.dart';
 import 'package:pantry/widgets/create_house_dialog.dart';
 import 'package:pantry/widgets/no_houses_view.dart';
 import 'package:pantry/widgets/notifications_bell.dart';
@@ -72,20 +74,23 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     WidgetsBinding.instance.addObserver(this);
     _notificationsController.load();
 
-    // Consume any deep link that arrived before we mounted (e.g. from a
-    // cold-start notification tap).
+    // Consume any deep link or share intent that arrived before we
+    // mounted (e.g. from a cold-start notification tap or share sheet).
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _consumePendingDeepLink();
+      _consumePendingShare();
     });
 
-    // Listen for deep links that arrive while the home view is mounted
-    // (notification tapped while app is in foreground or background).
+    // Listen for deep links and share intents that arrive while the home
+    // view is mounted.
     DeepLinkService.instance.pending.addListener(_consumePendingDeepLink);
+    ShareIntentService.instance.pending.addListener(_consumePendingShare);
   }
 
   @override
   void dispose() {
     DeepLinkService.instance.pending.removeListener(_consumePendingDeepLink);
+    ShareIntentService.instance.pending.removeListener(_consumePendingShare);
     WidgetsBinding.instance.removeObserver(this);
     _pageController.dispose();
     _notificationsController.dispose();
@@ -97,7 +102,19 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     if (state == AppLifecycleState.resumed) {
       _notificationsController.refresh();
       _consumePendingDeepLink();
+      _consumePendingShare();
     }
+  }
+
+  void _consumePendingShare() {
+    final files = ShareIntentService.instance.consume();
+    if (files == null || files.isEmpty || !mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ShareRouterView(files: files),
+        fullscreenDialog: true,
+      ),
+    );
   }
 
   void _goToTab(int index) {

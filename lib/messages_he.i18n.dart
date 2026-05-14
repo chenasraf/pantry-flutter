@@ -76,6 +76,7 @@ class MessagesHe extends Messages {
   ChecklistsMessagesHe get checklists => ChecklistsMessagesHe(this);
   NotesWallMessagesHe get notesWall => NotesWallMessagesHe(this);
   PhotoBoardMessagesHe get photoBoard => PhotoBoardMessagesHe(this);
+  ShareMessagesHe get share => ShareMessagesHe(this);
   RecurrenceMessagesHe get recurrence => RecurrenceMessagesHe(this);
 }
 
@@ -1142,6 +1143,56 @@ class SortPhotoBoardMessagesHe extends SortPhotoBoardMessages {
   String get custom => """מותאם אישית""";
 }
 
+class ShareMessagesHe extends ShareMessages {
+  final MessagesHe _parent;
+  const ShareMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "שיתוף ל-Pantry"
+  /// ```
+  String get title => """שיתוף ל-Pantry""";
+
+  /// ```dart
+  /// "בחר בית"
+  /// ```
+  String get chooseHouse => """בחר בית""";
+
+  /// ```dart
+  /// "העלה אל"
+  /// ```
+  String get choosePhotoDestination => """העלה אל""";
+
+  /// ```dart
+  /// "לוח התמונות"
+  /// ```
+  String get photoBoardRoot => """לוח התמונות""";
+
+  /// ```dart
+  /// "תיקייה חדשה"
+  /// ```
+  String get newFolder => """תיקייה חדשה""";
+
+  /// ```dart
+  /// "שם התיקייה"
+  /// ```
+  String get newFolderName => """שם התיקייה""";
+
+  /// ```dart
+  /// "יצירת התיקייה נכשלה."
+  /// ```
+  String get failedToCreateFolder => """יצירת התיקייה נכשלה.""";
+
+  /// ```dart
+  /// "לא ניתן לפתוח את התוכן ששותף."
+  /// ```
+  String get failedToOpenShare => """לא ניתן לפתוח את התוכן ששותף.""";
+
+  /// ```dart
+  /// "אין בתים זמינים. צור תחילה בית."
+  /// ```
+  String get noHouses => """אין בתים זמינים. צור תחילה בית.""";
+}
+
 class RecurrenceMessagesHe extends RecurrenceMessages {
   final MessagesHe _parent;
   const RecurrenceMessagesHe(this._parent) : super(_parent);
@@ -1577,6 +1628,15 @@ Map<String, String> get messagesHeMap => {
   """photoBoard.sort.captionAZ""": """כיתוב א–ת""",
   """photoBoard.sort.captionZA""": """כיתוב ת–א""",
   """photoBoard.sort.custom""": """מותאם אישית""",
+  """share.title""": """שיתוף ל-Pantry""",
+  """share.chooseHouse""": """בחר בית""",
+  """share.choosePhotoDestination""": """העלה אל""",
+  """share.photoBoardRoot""": """לוח התמונות""",
+  """share.newFolder""": """תיקייה חדשה""",
+  """share.newFolderName""": """שם התיקייה""",
+  """share.failedToCreateFolder""": """יצירת התיקייה נכשלה.""",
+  """share.failedToOpenShare""": """לא ניתן לפתוח את התוכן ששותף.""",
+  """share.noHouses""": """אין בתים זמינים. צור תחילה בית.""",
   """recurrence.title""": """חזרה""",
   """recurrence.presets""": """הגדרות מוכנות""",
   """recurrence.daily""": """יומי""",
