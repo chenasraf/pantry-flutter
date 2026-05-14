@@ -45,7 +45,7 @@ help:
 	@echo "  Release:"
 	@echo "    android-release-apk Build APK and copy to build/release/"
 	@echo "    android-release-aab Build AAB and copy to build/release/"
-	@echo "    ios-release         Build iOS and create unsigned IPA in build/release/"
+	@echo "    ios-release         Build IPA and copy to build/release/"
 	@echo "    release-all         Build and release all platforms"
 	@echo ""
 	@echo "  Deploying:"
@@ -53,8 +53,8 @@ help:
 	@echo "    android-promote     Promote release between tracks (FROM=internal, TO=production, STATUS=draft|completed)"
 	@echo "    ios-deploy          Build IPA and upload (DEST=testflight|appstore, default: testflight)"
 	@echo "    ios-submit          Submit the existing App Store build for review (no upload)"
-	@echo "    release-production  Build and deploy to production (Google Play + App Store)"
-	@echo "    release-beta        Build and deploy to beta (Google Play beta + TestFlight)"
+	@echo "    deploy-production   Build and deploy to production (Google Play + App Store)"
+	@echo "    deploy-beta         Build and deploy to beta (Google Play beta + TestFlight)"
 
 # Setup
 .PHONY: get
@@ -154,7 +154,7 @@ android-release-aab: android-build-aab
 	@echo "-> build/release/pantry-$(VERSION).aab"
 
 .PHONY: ios-release
-ios-release: ios-build
+ios-release: ios-build-ipa
 	mkdir -p build/release
 	cp build/ios/ipa/*.ipa build/release/pantry-$(VERSION).ipa
 	@echo "-> build/release/pantry-$(VERSION).ipa"
@@ -197,13 +197,13 @@ ios-submit:
 .PHONY: release-all
 release-all: android-release-apk android-release-aab
 
-.PHONY: release-production
-release-production:
+.PHONY: deploy-production
+deploy-production:
 	$(MAKE) android-deploy TRACK=production STATUS=completed
 	$(MAKE) ios-deploy DEST=appstore
 
-.PHONY: release-beta
-release-beta:
+.PHONY: deploy-beta
+deploy-beta:
 	$(MAKE) android-deploy TRACK=beta STATUS=completed
 	$(MAKE) ios-deploy DEST=testflight
 
