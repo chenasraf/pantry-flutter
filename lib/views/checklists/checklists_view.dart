@@ -177,6 +177,7 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
                     lists: controller.lists,
                     currentList: controller.currentList,
                     onSelected: controller.selectList,
+                    onCreateNew: () => _createList(context, controller),
                   ),
                 ),
                 IconButton(
@@ -226,6 +227,16 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
           ),
       ],
     );
+  }
+
+  Future<void> _createList(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    final created = await showCreateListDialog(context, controller);
+    if (created != null) {
+      await controller.selectList(created);
+    }
   }
 }
 
