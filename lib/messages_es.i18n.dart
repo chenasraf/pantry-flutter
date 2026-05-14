@@ -1110,7 +1110,28 @@ class PhotoBoardMessagesEs extends PhotoBoardMessages {
   /// "$count"
   /// ```
   String photoCount(int count) => """$count""";
+  AddMenuPhotoBoardMessagesEs get addMenu => AddMenuPhotoBoardMessagesEs(this);
   SortPhotoBoardMessagesEs get sort => SortPhotoBoardMessagesEs(this);
+}
+
+class AddMenuPhotoBoardMessagesEs extends AddMenuPhotoBoardMessages {
+  final PhotoBoardMessagesEs _parent;
+  const AddMenuPhotoBoardMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Subir fotos"
+  /// ```
+  String get upload => """Subir fotos""";
+
+  /// ```dart
+  /// "Tomar foto"
+  /// ```
+  String get camera => """Tomar foto""";
+
+  /// ```dart
+  /// "Nueva carpeta"
+  /// ```
+  String get newFolder => """Nueva carpeta""";
 }
 
 class SortPhotoBoardMessagesEs extends SortPhotoBoardMessages {
@@ -1639,6 +1660,9 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """photoBoard.folderName""": """Nombre de la carpeta""",
   """photoBoard.renameFolder""": """Renombrar carpeta""",
   """photoBoard.caption""": """Descripción""",
+  """photoBoard.addMenu.upload""": """Subir fotos""",
+  """photoBoard.addMenu.camera""": """Tomar foto""",
+  """photoBoard.addMenu.newFolder""": """Nueva carpeta""",
   """photoBoard.sort.foldersFirst""": """Carpetas primero""",
   """photoBoard.sort.newestFirst""": """Más recientes""",
   """photoBoard.sort.oldestFirst""": """Más antiguos""",

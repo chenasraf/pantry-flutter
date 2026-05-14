@@ -1113,7 +1113,28 @@ class PhotoBoardMessagesFr extends PhotoBoardMessages {
   /// "$count"
   /// ```
   String photoCount(int count) => """$count""";
+  AddMenuPhotoBoardMessagesFr get addMenu => AddMenuPhotoBoardMessagesFr(this);
   SortPhotoBoardMessagesFr get sort => SortPhotoBoardMessagesFr(this);
+}
+
+class AddMenuPhotoBoardMessagesFr extends AddMenuPhotoBoardMessages {
+  final PhotoBoardMessagesFr _parent;
+  const AddMenuPhotoBoardMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Téléverser des photos"
+  /// ```
+  String get upload => """Téléverser des photos""";
+
+  /// ```dart
+  /// "Prendre une photo"
+  /// ```
+  String get camera => """Prendre une photo""";
+
+  /// ```dart
+  /// "Nouveau dossier"
+  /// ```
+  String get newFolder => """Nouveau dossier""";
 }
 
 class SortPhotoBoardMessagesFr extends SortPhotoBoardMessages {
@@ -1647,6 +1668,9 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """photoBoard.folderName""": """Nom du dossier""",
   """photoBoard.renameFolder""": """Renommer le dossier""",
   """photoBoard.caption""": """Légende""",
+  """photoBoard.addMenu.upload""": """Téléverser des photos""",
+  """photoBoard.addMenu.camera""": """Prendre une photo""",
+  """photoBoard.addMenu.newFolder""": """Nouveau dossier""",
   """photoBoard.sort.foldersFirst""": """Dossiers en premier""",
   """photoBoard.sort.newestFirst""": """Plus récents""",
   """photoBoard.sort.oldestFirst""": """Plus anciens""",

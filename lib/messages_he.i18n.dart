@@ -1105,7 +1105,28 @@ class PhotoBoardMessagesHe extends PhotoBoardMessages {
   /// "$count"
   /// ```
   String photoCount(int count) => """$count""";
+  AddMenuPhotoBoardMessagesHe get addMenu => AddMenuPhotoBoardMessagesHe(this);
   SortPhotoBoardMessagesHe get sort => SortPhotoBoardMessagesHe(this);
+}
+
+class AddMenuPhotoBoardMessagesHe extends AddMenuPhotoBoardMessages {
+  final PhotoBoardMessagesHe _parent;
+  const AddMenuPhotoBoardMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "העלאת תמונות"
+  /// ```
+  String get upload => """העלאת תמונות""";
+
+  /// ```dart
+  /// "צילום תמונה"
+  /// ```
+  String get camera => """צילום תמונה""";
+
+  /// ```dart
+  /// "תיקייה חדשה"
+  /// ```
+  String get newFolder => """תיקייה חדשה""";
 }
 
 class SortPhotoBoardMessagesHe extends SortPhotoBoardMessages {
@@ -1622,6 +1643,9 @@ Map<String, String> get messagesHeMap => {
   """photoBoard.folderName""": """שם התיקייה""",
   """photoBoard.renameFolder""": """שנה שם תיקייה""",
   """photoBoard.caption""": """כיתוב""",
+  """photoBoard.addMenu.upload""": """העלאת תמונות""",
+  """photoBoard.addMenu.camera""": """צילום תמונה""",
+  """photoBoard.addMenu.newFolder""": """תיקייה חדשה""",
   """photoBoard.sort.foldersFirst""": """תיקיות קודם""",
   """photoBoard.sort.newestFirst""": """החדש ביותר""",
   """photoBoard.sort.oldestFirst""": """הישן ביותר""",

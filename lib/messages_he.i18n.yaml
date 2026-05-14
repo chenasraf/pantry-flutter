@@ -209,6 +209,10 @@ photoBoard:
   renameFolder: שנה שם תיקייה
   caption: כיתוב
   photoCount(int count): "$count"
+  addMenu:
+    upload: העלאת תמונות
+    camera: צילום תמונה
+    newFolder: תיקייה חדשה
   sort:
     foldersFirst: תיקיות קודם
     newestFirst: החדש ביותר

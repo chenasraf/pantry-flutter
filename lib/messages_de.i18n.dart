@@ -1114,7 +1114,28 @@ class PhotoBoardMessagesDe extends PhotoBoardMessages {
   /// "$count"
   /// ```
   String photoCount(int count) => """$count""";
+  AddMenuPhotoBoardMessagesDe get addMenu => AddMenuPhotoBoardMessagesDe(this);
   SortPhotoBoardMessagesDe get sort => SortPhotoBoardMessagesDe(this);
+}
+
+class AddMenuPhotoBoardMessagesDe extends AddMenuPhotoBoardMessages {
+  final PhotoBoardMessagesDe _parent;
+  const AddMenuPhotoBoardMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Fotos hochladen"
+  /// ```
+  String get upload => """Fotos hochladen""";
+
+  /// ```dart
+  /// "Foto aufnehmen"
+  /// ```
+  String get camera => """Foto aufnehmen""";
+
+  /// ```dart
+  /// "Neuer Ordner"
+  /// ```
+  String get newFolder => """Neuer Ordner""";
 }
 
 class SortPhotoBoardMessagesDe extends SortPhotoBoardMessages {
@@ -1649,6 +1670,9 @@ Bitte melde dich in deinem Browser an.""",
   """photoBoard.folderName""": """Ordnername""",
   """photoBoard.renameFolder""": """Ordner umbenennen""",
   """photoBoard.caption""": """Beschriftung""",
+  """photoBoard.addMenu.upload""": """Fotos hochladen""",
+  """photoBoard.addMenu.camera""": """Foto aufnehmen""",
+  """photoBoard.addMenu.newFolder""": """Neuer Ordner""",
   """photoBoard.sort.foldersFirst""": """Ordner zuerst""",
   """photoBoard.sort.newestFirst""": """Neueste zuerst""",
   """photoBoard.sort.oldestFirst""": """Älteste zuerst""",

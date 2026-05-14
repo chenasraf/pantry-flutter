@@ -209,6 +209,10 @@ photoBoard:
   renameFolder: Renommer le dossier
   caption: "Légende"
   photoCount(int count): "$count"
+  addMenu:
+    upload: Téléverser des photos
+    camera: Prendre une photo
+    newFolder: Nouveau dossier
   sort:
     foldersFirst: Dossiers en premier
     newestFirst: "Plus récents"

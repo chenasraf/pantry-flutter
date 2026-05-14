@@ -84,6 +84,8 @@
 		</array>
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false/>
+		<key>NSCameraUsageDescription</key>
+		<string>Pantry needs access to the camera so you can take photos and upload them to your photo board.</string>
 		<key>AppGroupId</key>
 		<string>group.dev.casraf.pantry</string>
 		<key>CFBundleURLTypes</key>

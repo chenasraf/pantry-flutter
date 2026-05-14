@@ -1103,7 +1103,28 @@ class PhotoBoardMessages {
   /// "$count"
   /// ```
   String photoCount(int count) => """$count""";
+  AddMenuPhotoBoardMessages get addMenu => AddMenuPhotoBoardMessages(this);
   SortPhotoBoardMessages get sort => SortPhotoBoardMessages(this);
+}
+
+class AddMenuPhotoBoardMessages {
+  final PhotoBoardMessages _parent;
+  const AddMenuPhotoBoardMessages(this._parent);
+
+  /// ```dart
+  /// "Upload photos"
+  /// ```
+  String get upload => """Upload photos""";
+
+  /// ```dart
+  /// "Take photo"
+  /// ```
+  String get camera => """Take photo""";
+
+  /// ```dart
+  /// "New folder"
+  /// ```
+  String get newFolder => """New folder""";
 }
 
 class SortPhotoBoardMessages {
@@ -1625,6 +1646,9 @@ Please complete login in your browser.""",
   """photoBoard.folderName""": """Folder name""",
   """photoBoard.renameFolder""": """Rename folder""",
   """photoBoard.caption""": """Caption""",
+  """photoBoard.addMenu.upload""": """Upload photos""",
+  """photoBoard.addMenu.camera""": """Take photo""",
+  """photoBoard.addMenu.newFolder""": """New folder""",
   """photoBoard.sort.foldersFirst""": """Folders first""",
   """photoBoard.sort.newestFirst""": """Newest first""",
   """photoBoard.sort.oldestFirst""": """Oldest first""",

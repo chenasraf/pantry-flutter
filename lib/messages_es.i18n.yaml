@@ -209,6 +209,10 @@ photoBoard:
   renameFolder: Renombrar carpeta
   caption: "Descripción"
   photoCount(int count): "$count"
+  addMenu:
+    upload: Subir fotos
+    camera: Tomar foto
+    newFolder: Nueva carpeta
   sort:
     foldersFirst: Carpetas primero
     newestFirst: "Más recientes"

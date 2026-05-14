@@ -209,6 +209,10 @@ photoBoard:
   renameFolder: Ordner umbenennen
   caption: Beschriftung
   photoCount(int count): "$count"
+  addMenu:
+    upload: Fotos hochladen
+    camera: Foto aufnehmen
+    newFolder: Neuer Ordner
   sort:
     foldersFirst: Ordner zuerst
     newestFirst: Neueste zuerst
