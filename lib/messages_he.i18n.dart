@@ -378,6 +378,18 @@ class SettingsMessagesHe extends SettingsMessages {
       """כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.""";
 
   /// ```dart
+  /// "הצג רווח בין קטגוריות בפריטי הרשימה"
+  /// ```
+  String get categorySpacing => """הצג רווח בין קטגוריות בפריטי הרשימה""";
+
+  /// ```dart
+  /// "מוצג רק בעת מיון לפי קטגוריה"
+  /// ```
+  String get categorySpacingBody => """מוצג רק בעת מיון לפי קטגוריה""";
+  CategorySpacingNamesSettingsMessagesHe get categorySpacingNames =>
+      CategorySpacingNamesSettingsMessagesHe(this);
+
+  /// ```dart
   /// "שפה"
   /// ```
   String get language => """שפה""";
@@ -442,6 +454,27 @@ class SettingsMessagesHe extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.""";
+}
+
+class CategorySpacingNamesSettingsMessagesHe
+    extends CategorySpacingNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const CategorySpacingNamesSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "מושבת"
+  /// ```
+  String get disabled => """מושבת""";
+
+  /// ```dart
+  /// "רווח"
+  /// ```
+  String get space => """רווח""";
+
+  /// ```dart
+  /// "קו מפריד"
+  /// ```
+  String get divider => """קו מפריד""";
 }
 
 class LanguageNamesSettingsMessagesHe extends LanguageNamesSettingsMessages {
@@ -1411,6 +1444,11 @@ Map<String, String> get messagesHeMap => {
   """settings.tapRowToComplete""": """השלם פריטים בלחיצה על השורה""",
   """settings.tapRowToCompleteBody""":
       """כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.""",
+  """settings.categorySpacing""": """הצג רווח בין קטגוריות בפריטי הרשימה""",
+  """settings.categorySpacingBody""": """מוצג רק בעת מיון לפי קטגוריה""",
+  """settings.categorySpacingNames.disabled""": """מושבת""",
+  """settings.categorySpacingNames.space""": """רווח""",
+  """settings.categorySpacingNames.divider""": """קו מפריד""",
   """settings.language""": """שפה""",
   """settings.languageNames.system""": """ברירת מחדל (שפת המערכת)""",
   """settings.languageNames.english""": """English""",

@@ -380,6 +380,20 @@ class SettingsMessagesDe extends SettingsMessages {
       """Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt.""";
 
   /// ```dart
+  /// "Abstand zwischen Kategorien in Listeneinträgen anzeigen"
+  /// ```
+  String get categorySpacing =>
+      """Abstand zwischen Kategorien in Listeneinträgen anzeigen""";
+
+  /// ```dart
+  /// "Nur sichtbar bei Sortierung nach Kategorie"
+  /// ```
+  String get categorySpacingBody =>
+      """Nur sichtbar bei Sortierung nach Kategorie""";
+  CategorySpacingNamesSettingsMessagesDe get categorySpacingNames =>
+      CategorySpacingNamesSettingsMessagesDe(this);
+
+  /// ```dart
   /// "Sprache"
   /// ```
   String get language => """Sprache""";
@@ -444,6 +458,27 @@ class SettingsMessagesDe extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """Benachrichtigungsberechtigung wurde verweigert. Aktiviere sie in den Systemeinstellungen.""";
+}
+
+class CategorySpacingNamesSettingsMessagesDe
+    extends CategorySpacingNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const CategorySpacingNamesSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Deaktiviert"
+  /// ```
+  String get disabled => """Deaktiviert""";
+
+  /// ```dart
+  /// "Abstand"
+  /// ```
+  String get space => """Abstand""";
+
+  /// ```dart
+  /// "Trennlinie"
+  /// ```
+  String get divider => """Trennlinie""";
 }
 
 class LanguageNamesSettingsMessagesDe extends LanguageNamesSettingsMessages {
@@ -1423,6 +1458,13 @@ Bitte melde dich in deinem Browser an.""",
   """settings.tapRowToComplete""": """Eintrag durch Tippen der Zeile abhaken""",
   """settings.tapRowToCompleteBody""":
       """Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt.""",
+  """settings.categorySpacing""":
+      """Abstand zwischen Kategorien in Listeneinträgen anzeigen""",
+  """settings.categorySpacingBody""":
+      """Nur sichtbar bei Sortierung nach Kategorie""",
+  """settings.categorySpacingNames.disabled""": """Deaktiviert""",
+  """settings.categorySpacingNames.space""": """Abstand""",
+  """settings.categorySpacingNames.divider""": """Trennlinie""",
   """settings.language""": """Sprache""",
   """settings.languageNames.system""": """Systemstandard""",
   """settings.languageNames.english""": """English""",

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'i18n.dart';
@@ -113,74 +114,77 @@ class PantryAppState extends State<PantryApp> {
   Widget build(BuildContext context) {
     final color = ThemingService.instance.effectiveColor;
     final locale = LocaleService.instance.effectiveLocale;
-    return Directionality(
-      textDirection: LocaleService.instance.textDirection,
-      child: MaterialApp(
-        key: ValueKey(locale),
-        // debugShowCheckedModeBanner: false,
-        navigatorKey: rootNavigatorKey,
-        locale: locale,
-        supportedLocales: supportedLocales,
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        title: m.common.appTitle,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: color,
-          ).copyWith(primary: color),
-          useMaterial3: true,
-          popupMenuTheme: PopupMenuThemeData(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+    return ChangeNotifierProvider<PrefsService>.value(
+      value: PrefsService.instance,
+      child: Directionality(
+        textDirection: LocaleService.instance.textDirection,
+        child: MaterialApp(
+          key: ValueKey(locale),
+          // debugShowCheckedModeBanner: false,
+          navigatorKey: rootNavigatorKey,
+          locale: locale,
+          supportedLocales: supportedLocales,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          title: m.common.appTitle,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: color,
+            ).copyWith(primary: color),
+            useMaterial3: true,
+            popupMenuTheme: PopupMenuThemeData(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 8,
+              position: PopupMenuPosition.under,
             ),
-            elevation: 8,
-            position: PopupMenuPosition.under,
           ),
-        ),
-        darkTheme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: color,
-            brightness: Brightness.dark,
-          ).copyWith(primary: color),
-          useMaterial3: true,
-          popupMenuTheme: PopupMenuThemeData(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: color,
+              brightness: Brightness.dark,
+            ).copyWith(primary: color),
+            useMaterial3: true,
+            popupMenuTheme: PopupMenuThemeData(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 8,
+              position: PopupMenuPosition.under,
             ),
-            elevation: 8,
-            position: PopupMenuPosition.under,
           ),
+          themeMode: ThemingService.instance.themeMode,
+          onGenerateInitialRoutes: (initialRoute) => [
+            MaterialPageRoute(
+              builder: (_) => _isLoggedIn
+                  ? (PrefsService.instance.notificationsIntroSeen
+                        ? HomeView(onLogout: _onLogout)
+                        : NotificationsIntroView(onDone: _onIntroDone))
+                  : LoginView(onLoginSuccess: _onLoginSuccess),
+            ),
+          ],
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/home':
+                return MaterialPageRoute(
+                  builder: (_) => HomeView(onLogout: _onLogout),
+                );
+              case '/notifications-intro':
+                return MaterialPageRoute(
+                  builder: (_) => NotificationsIntroView(onDone: _onIntroDone),
+                );
+              case '/login':
+              default:
+                return MaterialPageRoute(
+                  builder: (_) => LoginView(onLoginSuccess: _onLoginSuccess),
+                );
+            }
+          },
         ),
-        themeMode: ThemingService.instance.themeMode,
-        onGenerateInitialRoutes: (initialRoute) => [
-          MaterialPageRoute(
-            builder: (_) => _isLoggedIn
-                ? (PrefsService.instance.notificationsIntroSeen
-                      ? HomeView(onLogout: _onLogout)
-                      : NotificationsIntroView(onDone: _onIntroDone))
-                : LoginView(onLoginSuccess: _onLoginSuccess),
-          ),
-        ],
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case '/home':
-              return MaterialPageRoute(
-                builder: (_) => HomeView(onLogout: _onLogout),
-              );
-            case '/notifications-intro':
-              return MaterialPageRoute(
-                builder: (_) => NotificationsIntroView(onDone: _onIntroDone),
-              );
-            case '/login':
-            default:
-              return MaterialPageRoute(
-                builder: (_) => LoginView(onLoginSuccess: _onLoginSuccess),
-              );
-          }
-        },
       ),
     );
   }

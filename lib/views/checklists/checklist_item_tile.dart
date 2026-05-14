@@ -9,6 +9,7 @@ import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/widgets/image_preview.dart';
+import 'package:provider/provider.dart';
 
 class ChecklistItemTile extends StatelessWidget {
   final ListItem item;
@@ -36,7 +37,9 @@ class ChecklistItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final dimmed = item.done;
-    final tapRowToToggle = PrefsService.instance.checklistTapRowToToggle;
+    final tapRowToToggle = context
+        .watch<PrefsService>()
+        .checklistTapRowToToggle;
 
     return Material(
       type: MaterialType.transparency,

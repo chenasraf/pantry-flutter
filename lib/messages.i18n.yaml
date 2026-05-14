@@ -62,6 +62,12 @@ settings:
   interfaceSection: Interface
   tapRowToComplete: Tap row to complete items
   tapRowToCompleteBody: "When off, items are only marked complete by tapping the checkbox."
+  categorySpacing: Show spacing between categories in list items
+  categorySpacingBody: Only visible when sorting by category
+  categorySpacingNames:
+    disabled: Disabled
+    space: Space
+    divider: Divider
   language: Language
   languageNames:
     system: "System default"

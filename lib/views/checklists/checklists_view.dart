@@ -4,6 +4,7 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:provider/provider.dart';
 
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/widgets/checklist_selector.dart';
@@ -457,9 +458,18 @@ class _ItemList extends StatelessWidget {
       );
     }
 
+    final spacingPref = context.watch<PrefsService>().checklistCategorySpacing;
+    final categorySpacing = controller.sortBy == 'category'
+        ? spacingPref
+        : 'disabled';
+
     return CustomScrollView(
       slivers: [
-        _ReorderablePartition(items: unchecked, controller: controller),
+        _ReorderablePartition(
+          items: unchecked,
+          controller: controller,
+          categorySpacing: categorySpacing,
+        ),
         if (checked.isNotEmpty) ...[
           SliverToBoxAdapter(
             child: Column(
@@ -481,7 +491,11 @@ class _ItemList extends StatelessWidget {
               ],
             ),
           ),
-          _ReorderablePartition(items: checked, controller: controller),
+          _ReorderablePartition(
+            items: checked,
+            controller: controller,
+            categorySpacing: categorySpacing,
+          ),
         ],
         const SliverToBoxAdapter(child: SizedBox(height: 88)),
       ],
@@ -492,8 +506,13 @@ class _ItemList extends StatelessWidget {
 class _ReorderablePartition extends StatelessWidget {
   final List<ListItem> items;
   final ChecklistsController controller;
+  final String categorySpacing;
 
-  const _ReorderablePartition({required this.items, required this.controller});
+  const _ReorderablePartition({
+    required this.items,
+    required this.controller,
+    this.categorySpacing = 'disabled',
+  });
 
   void _viewItem(
     BuildContext context,
@@ -644,21 +663,36 @@ class _ReorderablePartition extends StatelessWidget {
       },
       itemBuilder: (context, index) {
         final item = items[index];
+        final showSeparator =
+            categorySpacing != 'disabled' &&
+            index > 0 &&
+            items[index - 1].categoryId != item.categoryId;
+        final tile = ChecklistItemTile(
+          item: item,
+          category: item.categoryId != null
+              ? controller.categories[item.categoryId]
+              : null,
+          houseId: controller.houseId,
+          onToggle: controller.toggleItem,
+          onView: (item) => _viewItem(context, controller, item),
+          onEdit: (item) => _editItem(context, controller, item),
+          onMove: (item) => _moveItem(context, controller, item),
+          onDelete: (item) => _deleteItem(context, controller, item),
+        );
         return ReorderableDelayedDragStartListener(
           key: ValueKey(item.id),
           index: index,
-          child: ChecklistItemTile(
-            item: item,
-            category: item.categoryId != null
-                ? controller.categories[item.categoryId]
-                : null,
-            houseId: controller.houseId,
-            onToggle: controller.toggleItem,
-            onView: (item) => _viewItem(context, controller, item),
-            onEdit: (item) => _editItem(context, controller, item),
-            onMove: (item) => _moveItem(context, controller, item),
-            onDelete: (item) => _deleteItem(context, controller, item),
-          ),
+          child: showSeparator
+              ? Column(
+                  children: [
+                    if (categorySpacing == 'divider')
+                      const Divider(height: 25)
+                    else
+                      const SizedBox(height: 20),
+                    tile,
+                  ],
+                )
+              : tile,
         );
       },
     );

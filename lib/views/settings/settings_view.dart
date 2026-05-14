@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/background_notification_task.dart';
@@ -15,29 +16,35 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  late bool _notificationsEnabled;
-  late int _pollIntervalMinutes;
   late String? _selectedLocale;
   late String? _selectedTheme;
-  late bool _tapRowToComplete;
 
   static const _pollOptions = [15, 30, 60, 120, 360];
+  static const _categorySpacingOptions = ['disabled', 'space', 'divider'];
 
   @override
   void initState() {
     super.initState();
-    _notificationsEnabled = PrefsService.instance.notificationsEnabled;
-    _pollIntervalMinutes = PrefsService.instance.pollIntervalMinutes;
     _selectedLocale = PrefsService.instance.locale;
     _selectedTheme = PrefsService.instance.themeMode;
-    _tapRowToComplete = PrefsService.instance.checklistTapRowToToggle;
   }
 
   Future<void> _setTapRowToComplete(bool value) async {
-    await PrefsService.instance.setChecklistTapRowToToggle(value);
-    if (!mounted) return;
-    setState(() => _tapRowToComplete = value);
+    await context.read<PrefsService>().setChecklistTapRowToToggle(value);
   }
+
+  Future<void> _setCategorySpacing(String? value) async {
+    if (value == null) return;
+    final prefs = context.read<PrefsService>();
+    if (value == prefs.checklistCategorySpacing) return;
+    await prefs.setChecklistCategorySpacing(value);
+  }
+
+  String _categorySpacingLabel(String value) => switch (value) {
+    'space' => m.settings.categorySpacingNames.space,
+    'divider' => m.settings.categorySpacingNames.divider,
+    _ => m.settings.categorySpacingNames.disabled,
+  };
 
   // -- Language --
 
@@ -86,8 +93,8 @@ class _SettingsViewState extends State<SettingsView> {
       }
     }
 
-    await PrefsService.instance.setNotificationsEnabled(value);
-    setState(() => _notificationsEnabled = value);
+    if (!mounted) return;
+    await context.read<PrefsService>().setNotificationsEnabled(value);
 
     if (value) {
       await registerBackgroundNotificationPoll();
@@ -98,10 +105,11 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   Future<void> _setPollInterval(int? minutes) async {
-    if (minutes == null || minutes == _pollIntervalMinutes) return;
-    await PrefsService.instance.setPollIntervalMinutes(minutes);
-    setState(() => _pollIntervalMinutes = minutes);
-    if (_notificationsEnabled) {
+    if (minutes == null) return;
+    final prefs = context.read<PrefsService>();
+    if (minutes == prefs.pollIntervalMinutes) return;
+    await prefs.setPollIntervalMinutes(minutes);
+    if (prefs.notificationsEnabled) {
       await rescheduleBackgroundNotificationPoll();
     }
   }
@@ -117,6 +125,12 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    final prefs = context.watch<PrefsService>();
+    final notificationsEnabled = prefs.notificationsEnabled;
+    final pollIntervalMinutes = prefs.pollIntervalMinutes;
+    final tapRowToComplete = prefs.checklistTapRowToToggle;
+    final categorySpacing = prefs.checklistCategorySpacing;
+
     return Scaffold(
       appBar: AppBar(title: Text(m.settings.title)),
       body: ListView(
@@ -186,8 +200,23 @@ class _SettingsViewState extends State<SettingsView> {
           SwitchListTile(
             title: Text(m.settings.tapRowToComplete),
             subtitle: Text(m.settings.tapRowToCompleteBody),
-            value: _tapRowToComplete,
+            value: tapRowToComplete,
             onChanged: _setTapRowToComplete,
+          ),
+          ListTile(
+            title: Text(m.settings.categorySpacing),
+            subtitle: Text(m.settings.categorySpacingBody),
+            trailing: DropdownButton<String>(
+              value: categorySpacing,
+              onChanged: _setCategorySpacing,
+              items: [
+                for (final option in _categorySpacingOptions)
+                  DropdownMenuItem(
+                    value: option,
+                    child: Text(_categorySpacingLabel(option)),
+                  ),
+              ],
+            ),
           ),
 
           // -- Notifications --
@@ -195,16 +224,16 @@ class _SettingsViewState extends State<SettingsView> {
           SwitchListTile(
             title: Text(m.settings.enableNotifications),
             subtitle: Text(m.settings.enableNotificationsBody),
-            value: _notificationsEnabled,
+            value: notificationsEnabled,
             onChanged: _toggleNotifications,
           ),
           ListTile(
-            enabled: _notificationsEnabled,
+            enabled: notificationsEnabled,
             title: Text(m.settings.pollInterval),
-            subtitle: Text(_pollIntervalLabel(_pollIntervalMinutes)),
+            subtitle: Text(_pollIntervalLabel(pollIntervalMinutes)),
             trailing: DropdownButton<int>(
-              value: _pollIntervalMinutes,
-              onChanged: _notificationsEnabled ? _setPollInterval : null,
+              value: pollIntervalMinutes,
+              onChanged: notificationsEnabled ? _setPollInterval : null,
               items: [
                 for (final minutes in _pollOptions)
                   DropdownMenuItem(

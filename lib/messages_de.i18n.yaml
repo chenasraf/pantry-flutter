@@ -62,6 +62,12 @@ settings:
   interfaceSection: Oberfläche
   tapRowToComplete: Eintrag durch Tippen der Zeile abhaken
   tapRowToCompleteBody: "Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt."
+  categorySpacing: Abstand zwischen Kategorien in Listeneinträgen anzeigen
+  categorySpacingBody: Nur sichtbar bei Sortierung nach Kategorie
+  categorySpacingNames:
+    disabled: Deaktiviert
+    space: Abstand
+    divider: Trennlinie
   language: Sprache
   languageNames:
     system: Systemstandard

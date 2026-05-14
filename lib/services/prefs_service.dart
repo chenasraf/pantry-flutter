@@ -1,6 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class PrefsService {
+class PrefsService extends ChangeNotifier {
   PrefsService._();
   static final PrefsService instance = PrefsService._();
 
@@ -11,6 +12,7 @@ class PrefsService {
   static const _localeKey = 'locale';
   static const _themeModeKey = 'theme_mode';
   static const _checklistTapRowToToggleKey = 'checklist_tap_row_to_toggle';
+  static const _checklistCategorySpacingKey = 'checklist_category_spacing';
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -36,6 +38,10 @@ class PrefsService {
   bool _checklistTapRowToToggle = false;
   bool get checklistTapRowToToggle => _checklistTapRowToToggle;
 
+  /// "disabled", "space", "divider"
+  String _checklistCategorySpacing = 'disabled';
+  String get checklistCategorySpacing => _checklistCategorySpacing;
+
   Future<void> load() async {
     final lastHouse = await _storage.read(key: _lastHouseKey);
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);
@@ -57,11 +63,18 @@ class PrefsService {
 
     final tapRow = await _storage.read(key: _checklistTapRowToToggleKey);
     if (tapRow != null) _checklistTapRowToToggle = tapRow == 'true';
+
+    final spacing = await _storage.read(key: _checklistCategorySpacingKey);
+    if (spacing != null &&
+        (spacing == 'disabled' || spacing == 'space' || spacing == 'divider')) {
+      _checklistCategorySpacing = spacing;
+    }
   }
 
   Future<void> setLastHouseId(int id) async {
     _lastHouseId = id;
     await _storage.write(key: _lastHouseKey, value: id.toString());
+    notifyListeners();
   }
 
   Future<void> setNotificationsEnabled(bool value) async {
@@ -70,6 +83,7 @@ class PrefsService {
       key: _notificationsEnabledKey,
       value: value.toString(),
     );
+    notifyListeners();
   }
 
   Future<void> setPollIntervalMinutes(int minutes) async {
@@ -78,6 +92,7 @@ class PrefsService {
       key: _pollIntervalMinutesKey,
       value: minutes.toString(),
     );
+    notifyListeners();
   }
 
   Future<void> setLocale(String? locale) async {
@@ -87,6 +102,7 @@ class PrefsService {
     } else {
       await _storage.write(key: _localeKey, value: locale);
     }
+    notifyListeners();
   }
 
   Future<void> setThemeMode(String? mode) async {
@@ -96,6 +112,7 @@ class PrefsService {
     } else {
       await _storage.write(key: _themeModeKey, value: mode);
     }
+    notifyListeners();
   }
 
   Future<void> setChecklistTapRowToToggle(bool value) async {
@@ -104,6 +121,13 @@ class PrefsService {
       key: _checklistTapRowToToggleKey,
       value: value.toString(),
     );
+    notifyListeners();
+  }
+
+  Future<void> setChecklistCategorySpacing(String value) async {
+    _checklistCategorySpacing = value;
+    await _storage.write(key: _checklistCategorySpacingKey, value: value);
+    notifyListeners();
   }
 
   Future<void> setNotificationsIntroSeen(bool value) async {
@@ -112,6 +136,7 @@ class PrefsService {
       key: _notificationsIntroSeenKey,
       value: value.toString(),
     );
+    notifyListeners();
   }
 
   Future<void> clear() async {
@@ -122,6 +147,7 @@ class PrefsService {
     _locale = null;
     _themeMode = null;
     _checklistTapRowToToggle = false;
+    _checklistCategorySpacing = 'disabled';
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _notificationsEnabledKey);
     await _storage.delete(key: _pollIntervalMinutesKey);
@@ -129,5 +155,7 @@ class PrefsService {
     await _storage.delete(key: _localeKey);
     await _storage.delete(key: _themeModeKey);
     await _storage.delete(key: _checklistTapRowToToggleKey);
+    await _storage.delete(key: _checklistCategorySpacingKey);
+    notifyListeners();
   }
 }

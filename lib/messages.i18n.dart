@@ -378,6 +378,19 @@ class SettingsMessages {
       """When off, items are only marked complete by tapping the checkbox.""";
 
   /// ```dart
+  /// "Show spacing between categories in list items"
+  /// ```
+  String get categorySpacing =>
+      """Show spacing between categories in list items""";
+
+  /// ```dart
+  /// "Only visible when sorting by category"
+  /// ```
+  String get categorySpacingBody => """Only visible when sorting by category""";
+  CategorySpacingNamesSettingsMessages get categorySpacingNames =>
+      CategorySpacingNamesSettingsMessages(this);
+
+  /// ```dart
   /// "Language"
   /// ```
   String get language => """Language""";
@@ -441,6 +454,26 @@ class SettingsMessages {
   /// ```
   String get permissionDenied =>
       """Notification permission was denied. Enable it in system settings.""";
+}
+
+class CategorySpacingNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const CategorySpacingNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Disabled"
+  /// ```
+  String get disabled => """Disabled""";
+
+  /// ```dart
+  /// "Space"
+  /// ```
+  String get space => """Space""";
+
+  /// ```dart
+  /// "Divider"
+  /// ```
+  String get divider => """Divider""";
 }
 
 class LanguageNamesSettingsMessages {
@@ -1410,6 +1443,13 @@ Please complete login in your browser.""",
   """settings.tapRowToComplete""": """Tap row to complete items""",
   """settings.tapRowToCompleteBody""":
       """When off, items are only marked complete by tapping the checkbox.""",
+  """settings.categorySpacing""":
+      """Show spacing between categories in list items""",
+  """settings.categorySpacingBody""":
+      """Only visible when sorting by category""",
+  """settings.categorySpacingNames.disabled""": """Disabled""",
+  """settings.categorySpacingNames.space""": """Space""",
+  """settings.categorySpacingNames.divider""": """Divider""",
   """settings.language""": """Language""",
   """settings.languageNames.system""": """System default""",
   """settings.languageNames.english""": """English""",

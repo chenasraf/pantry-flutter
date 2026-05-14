@@ -380,6 +380,19 @@ class SettingsMessagesEs extends SettingsMessages {
       """Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla.""";
 
   /// ```dart
+  /// "Mostrar espacio entre categorías en los elementos de la lista"
+  /// ```
+  String get categorySpacing =>
+      """Mostrar espacio entre categorías en los elementos de la lista""";
+
+  /// ```dart
+  /// "Solo visible al ordenar por categoría"
+  /// ```
+  String get categorySpacingBody => """Solo visible al ordenar por categoría""";
+  CategorySpacingNamesSettingsMessagesEs get categorySpacingNames =>
+      CategorySpacingNamesSettingsMessagesEs(this);
+
+  /// ```dart
   /// "Idioma"
   /// ```
   String get language => """Idioma""";
@@ -444,6 +457,27 @@ class SettingsMessagesEs extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """El permiso de notificaciones fue denegado. Actívalo en los ajustes del sistema.""";
+}
+
+class CategorySpacingNamesSettingsMessagesEs
+    extends CategorySpacingNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const CategorySpacingNamesSettingsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Desactivado"
+  /// ```
+  String get disabled => """Desactivado""";
+
+  /// ```dart
+  /// "Espacio"
+  /// ```
+  String get space => """Espacio""";
+
+  /// ```dart
+  /// "Separador"
+  /// ```
+  String get divider => """Separador""";
 }
 
 class LanguageNamesSettingsMessagesEs extends LanguageNamesSettingsMessages {
@@ -1418,6 +1452,13 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """settings.tapRowToComplete""": """Tocar la fila para completar elementos""",
   """settings.tapRowToCompleteBody""":
       """Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla.""",
+  """settings.categorySpacing""":
+      """Mostrar espacio entre categorías en los elementos de la lista""",
+  """settings.categorySpacingBody""":
+      """Solo visible al ordenar por categoría""",
+  """settings.categorySpacingNames.disabled""": """Desactivado""",
+  """settings.categorySpacingNames.space""": """Espacio""",
+  """settings.categorySpacingNames.divider""": """Separador""",
   """settings.language""": """Idioma""",
   """settings.languageNames.system""": """Predeterminado del sistema""",
   """settings.languageNames.english""": """English""",
