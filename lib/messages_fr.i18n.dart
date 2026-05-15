@@ -725,6 +725,85 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get undo => """Annuler""";
 
   /// ```dart
+  /// "Afficher la corbeille"
+  /// ```
+  String get viewTrash => """Afficher la corbeille""";
+
+  /// ```dart
+  /// "Quitter la corbeille"
+  /// ```
+  String get exitTrash => """Quitter la corbeille""";
+
+  /// ```dart
+  /// "Corbeille"
+  /// ```
+  String get trashTitle => """Corbeille""";
+
+  /// ```dart
+  /// "La corbeille est vide."
+  /// ```
+  String get noTrashedItems => """La corbeille est vide.""";
+
+  /// ```dart
+  /// "Vider la corbeille"
+  /// ```
+  String get emptyTrash => """Vider la corbeille""";
+
+  /// ```dart
+  /// "Vider la corbeille ?"
+  /// ```
+  String get emptyTrashConfirm => """Vider la corbeille ?""";
+
+  /// ```dart
+  /// "Tous les articles de la corbeille seront supprimés définitivement. Cette action est irréversible."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """Tous les articles de la corbeille seront supprimés définitivement. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Impossible de vider la corbeille."
+  /// ```
+  String get emptyTrashFailed => """Impossible de vider la corbeille.""";
+
+  /// ```dart
+  /// "Restaurer"
+  /// ```
+  String get restoreItem => """Restaurer""";
+
+  /// ```dart
+  /// "Supprimer définitivement"
+  /// ```
+  String get permanentlyDeleteItem => """Supprimer définitivement""";
+
+  /// ```dart
+  /// "Supprimer définitivement cet article ?"
+  /// ```
+  String get permanentlyDeleteConfirm =>
+      """Supprimer définitivement cet article ?""";
+
+  /// ```dart
+  /// "Cette action est irréversible."
+  /// ```
+  String get permanentlyDeleteConfirmBody =>
+      """Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Impossible de restaurer l'article."
+  /// ```
+  String get restoreFailed => """Impossible de restaurer l'article.""";
+
+  /// ```dart
+  /// "Impossible de supprimer l'article."
+  /// ```
+  String get permanentlyDeleteFailed =>
+      """Impossible de supprimer l'article.""";
+
+  /// ```dart
+  /// "Article restauré"
+  /// ```
+  String get itemRestored => """Article restauré""";
+
+  /// ```dart
   /// "Nouvelle liste"
   /// ```
   String get createList => """Nouvelle liste""";
@@ -1604,6 +1683,25 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.moveFailed""": """Impossible de déplacer l'article.""",
   """checklists.itemMarkedDone""": """Article marqué comme fait""",
   """checklists.undo""": """Annuler""",
+  """checklists.viewTrash""": """Afficher la corbeille""",
+  """checklists.exitTrash""": """Quitter la corbeille""",
+  """checklists.trashTitle""": """Corbeille""",
+  """checklists.noTrashedItems""": """La corbeille est vide.""",
+  """checklists.emptyTrash""": """Vider la corbeille""",
+  """checklists.emptyTrashConfirm""": """Vider la corbeille ?""",
+  """checklists.emptyTrashConfirmBody""":
+      """Tous les articles de la corbeille seront supprimés définitivement. Cette action est irréversible.""",
+  """checklists.emptyTrashFailed""": """Impossible de vider la corbeille.""",
+  """checklists.restoreItem""": """Restaurer""",
+  """checklists.permanentlyDeleteItem""": """Supprimer définitivement""",
+  """checklists.permanentlyDeleteConfirm""":
+      """Supprimer définitivement cet article ?""",
+  """checklists.permanentlyDeleteConfirmBody""":
+      """Cette action est irréversible.""",
+  """checklists.restoreFailed""": """Impossible de restaurer l'article.""",
+  """checklists.permanentlyDeleteFailed""":
+      """Impossible de supprimer l'article.""",
+  """checklists.itemRestored""": """Article restauré""",
   """checklists.createList""": """Nouvelle liste""",
   """checklists.listName""": """Nom de la liste""",
   """checklists.listDescription""": """Description (facultatif)""",

@@ -131,6 +131,21 @@ checklists:
   moveFailed: העברת הפריט נכשלה.
   itemMarkedDone: הפריט סומן כהושלם
   undo: בטל
+  viewTrash: הצג אשפה
+  exitTrash: צא מהאשפה
+  trashTitle: אשפה
+  noTrashedItems: האשפה ריקה.
+  emptyTrash: רוקן אשפה
+  emptyTrashConfirm: לרוקן את האשפה?
+  emptyTrashConfirmBody: כל הפריטים באשפה יימחקו לצמיתות. לא ניתן לבטל פעולה זו.
+  emptyTrashFailed: ריקון האשפה נכשל.
+  restoreItem: שחזר
+  permanentlyDeleteItem: מחק לצמיתות
+  permanentlyDeleteConfirm: למחוק את הפריט לצמיתות?
+  permanentlyDeleteConfirmBody: לא ניתן לבטל פעולה זו.
+  restoreFailed: שחזור הפריט נכשל.
+  permanentlyDeleteFailed: מחיקת הפריט נכשלה.
+  itemRestored: הפריט שוחזר
   createList: רשימה חדשה
   listName: שם הרשימה
   listDescription: תיאור (אופציונלי)

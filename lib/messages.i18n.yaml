@@ -131,6 +131,21 @@ checklists:
   moveFailed: Failed to move item.
   itemMarkedDone: Item marked as done
   undo: Undo
+  viewTrash: View trash
+  exitTrash: Exit trash
+  trashTitle: Trash
+  noTrashedItems: Trash is empty.
+  emptyTrash: Empty trash
+  emptyTrashConfirm: Empty the trash?
+  emptyTrashConfirmBody: All items in the trash will be permanently deleted. This cannot be undone.
+  emptyTrashFailed: Failed to empty trash.
+  restoreItem: Restore
+  permanentlyDeleteItem: Delete permanently
+  permanentlyDeleteConfirm: Permanently delete this item?
+  permanentlyDeleteConfirmBody: This cannot be undone.
+  restoreFailed: Failed to restore item.
+  permanentlyDeleteFailed: Failed to delete item.
+  itemRestored: Item restored
   createList: New list
   listName: List name
   listDescription: Description (optional)

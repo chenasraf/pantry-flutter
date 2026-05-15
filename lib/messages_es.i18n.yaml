@@ -131,6 +131,21 @@ checklists:
   moveFailed: "No se pudo mover el artículo."
   itemMarkedDone: "Artículo marcado como hecho"
   undo: Deshacer
+  viewTrash: Ver papelera
+  exitTrash: Salir de la papelera
+  trashTitle: Papelera
+  noTrashedItems: La papelera está vacía.
+  emptyTrash: Vaciar papelera
+  emptyTrashConfirm: ¿Vaciar la papelera?
+  emptyTrashConfirmBody: "Todos los artículos de la papelera se eliminarán permanentemente. Esta acción no se puede deshacer."
+  emptyTrashFailed: No se pudo vaciar la papelera.
+  restoreItem: Restaurar
+  permanentlyDeleteItem: Eliminar permanentemente
+  permanentlyDeleteConfirm: "¿Eliminar este artículo permanentemente?"
+  permanentlyDeleteConfirmBody: Esta acción no se puede deshacer.
+  restoreFailed: No se pudo restaurar el artículo.
+  permanentlyDeleteFailed: No se pudo eliminar el artículo.
+  itemRestored: Artículo restaurado
   createList: Nueva lista
   listName: Nombre de la lista
   listDescription: "Descripción (opcional)"

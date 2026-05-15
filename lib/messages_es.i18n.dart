@@ -722,6 +722,84 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get undo => """Deshacer""";
 
   /// ```dart
+  /// "Ver papelera"
+  /// ```
+  String get viewTrash => """Ver papelera""";
+
+  /// ```dart
+  /// "Salir de la papelera"
+  /// ```
+  String get exitTrash => """Salir de la papelera""";
+
+  /// ```dart
+  /// "Papelera"
+  /// ```
+  String get trashTitle => """Papelera""";
+
+  /// ```dart
+  /// "La papelera está vacía."
+  /// ```
+  String get noTrashedItems => """La papelera está vacía.""";
+
+  /// ```dart
+  /// "Vaciar papelera"
+  /// ```
+  String get emptyTrash => """Vaciar papelera""";
+
+  /// ```dart
+  /// "¿Vaciar la papelera?"
+  /// ```
+  String get emptyTrashConfirm => """¿Vaciar la papelera?""";
+
+  /// ```dart
+  /// "Todos los artículos de la papelera se eliminarán permanentemente. Esta acción no se puede deshacer."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """Todos los artículos de la papelera se eliminarán permanentemente. Esta acción no se puede deshacer.""";
+
+  /// ```dart
+  /// "No se pudo vaciar la papelera."
+  /// ```
+  String get emptyTrashFailed => """No se pudo vaciar la papelera.""";
+
+  /// ```dart
+  /// "Restaurar"
+  /// ```
+  String get restoreItem => """Restaurar""";
+
+  /// ```dart
+  /// "Eliminar permanentemente"
+  /// ```
+  String get permanentlyDeleteItem => """Eliminar permanentemente""";
+
+  /// ```dart
+  /// "¿Eliminar este artículo permanentemente?"
+  /// ```
+  String get permanentlyDeleteConfirm =>
+      """¿Eliminar este artículo permanentemente?""";
+
+  /// ```dart
+  /// "Esta acción no se puede deshacer."
+  /// ```
+  String get permanentlyDeleteConfirmBody =>
+      """Esta acción no se puede deshacer.""";
+
+  /// ```dart
+  /// "No se pudo restaurar el artículo."
+  /// ```
+  String get restoreFailed => """No se pudo restaurar el artículo.""";
+
+  /// ```dart
+  /// "No se pudo eliminar el artículo."
+  /// ```
+  String get permanentlyDeleteFailed => """No se pudo eliminar el artículo.""";
+
+  /// ```dart
+  /// "Artículo restaurado"
+  /// ```
+  String get itemRestored => """Artículo restaurado""";
+
+  /// ```dart
   /// "Nueva lista"
   /// ```
   String get createList => """Nueva lista""";
@@ -1599,6 +1677,25 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.moveFailed""": """No se pudo mover el artículo.""",
   """checklists.itemMarkedDone""": """Artículo marcado como hecho""",
   """checklists.undo""": """Deshacer""",
+  """checklists.viewTrash""": """Ver papelera""",
+  """checklists.exitTrash""": """Salir de la papelera""",
+  """checklists.trashTitle""": """Papelera""",
+  """checklists.noTrashedItems""": """La papelera está vacía.""",
+  """checklists.emptyTrash""": """Vaciar papelera""",
+  """checklists.emptyTrashConfirm""": """¿Vaciar la papelera?""",
+  """checklists.emptyTrashConfirmBody""":
+      """Todos los artículos de la papelera se eliminarán permanentemente. Esta acción no se puede deshacer.""",
+  """checklists.emptyTrashFailed""": """No se pudo vaciar la papelera.""",
+  """checklists.restoreItem""": """Restaurar""",
+  """checklists.permanentlyDeleteItem""": """Eliminar permanentemente""",
+  """checklists.permanentlyDeleteConfirm""":
+      """¿Eliminar este artículo permanentemente?""",
+  """checklists.permanentlyDeleteConfirmBody""":
+      """Esta acción no se puede deshacer.""",
+  """checklists.restoreFailed""": """No se pudo restaurar el artículo.""",
+  """checklists.permanentlyDeleteFailed""":
+      """No se pudo eliminar el artículo.""",
+  """checklists.itemRestored""": """Artículo restaurado""",
   """checklists.createList""": """Nueva lista""",
   """checklists.listName""": """Nombre de la lista""",
   """checklists.listDescription""": """Descripción (opcional)""",

@@ -719,6 +719,82 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get undo => """בטל""";
 
   /// ```dart
+  /// "הצג אשפה"
+  /// ```
+  String get viewTrash => """הצג אשפה""";
+
+  /// ```dart
+  /// "צא מהאשפה"
+  /// ```
+  String get exitTrash => """צא מהאשפה""";
+
+  /// ```dart
+  /// "אשפה"
+  /// ```
+  String get trashTitle => """אשפה""";
+
+  /// ```dart
+  /// "האשפה ריקה."
+  /// ```
+  String get noTrashedItems => """האשפה ריקה.""";
+
+  /// ```dart
+  /// "רוקן אשפה"
+  /// ```
+  String get emptyTrash => """רוקן אשפה""";
+
+  /// ```dart
+  /// "לרוקן את האשפה?"
+  /// ```
+  String get emptyTrashConfirm => """לרוקן את האשפה?""";
+
+  /// ```dart
+  /// "כל הפריטים באשפה יימחקו לצמיתות. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """כל הפריטים באשפה יימחקו לצמיתות. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "ריקון האשפה נכשל."
+  /// ```
+  String get emptyTrashFailed => """ריקון האשפה נכשל.""";
+
+  /// ```dart
+  /// "שחזר"
+  /// ```
+  String get restoreItem => """שחזר""";
+
+  /// ```dart
+  /// "מחק לצמיתות"
+  /// ```
+  String get permanentlyDeleteItem => """מחק לצמיתות""";
+
+  /// ```dart
+  /// "למחוק את הפריט לצמיתות?"
+  /// ```
+  String get permanentlyDeleteConfirm => """למחוק את הפריט לצמיתות?""";
+
+  /// ```dart
+  /// "לא ניתן לבטל פעולה זו."
+  /// ```
+  String get permanentlyDeleteConfirmBody => """לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "שחזור הפריט נכשל."
+  /// ```
+  String get restoreFailed => """שחזור הפריט נכשל.""";
+
+  /// ```dart
+  /// "מחיקת הפריט נכשלה."
+  /// ```
+  String get permanentlyDeleteFailed => """מחיקת הפריט נכשלה.""";
+
+  /// ```dart
+  /// "הפריט שוחזר"
+  /// ```
+  String get itemRestored => """הפריט שוחזר""";
+
+  /// ```dart
   /// "רשימה חדשה"
   /// ```
   String get createList => """רשימה חדשה""";
@@ -1585,6 +1661,22 @@ Map<String, String> get messagesHeMap => {
   """checklists.moveFailed""": """העברת הפריט נכשלה.""",
   """checklists.itemMarkedDone""": """הפריט סומן כהושלם""",
   """checklists.undo""": """בטל""",
+  """checklists.viewTrash""": """הצג אשפה""",
+  """checklists.exitTrash""": """צא מהאשפה""",
+  """checklists.trashTitle""": """אשפה""",
+  """checklists.noTrashedItems""": """האשפה ריקה.""",
+  """checklists.emptyTrash""": """רוקן אשפה""",
+  """checklists.emptyTrashConfirm""": """לרוקן את האשפה?""",
+  """checklists.emptyTrashConfirmBody""":
+      """כל הפריטים באשפה יימחקו לצמיתות. לא ניתן לבטל פעולה זו.""",
+  """checklists.emptyTrashFailed""": """ריקון האשפה נכשל.""",
+  """checklists.restoreItem""": """שחזר""",
+  """checklists.permanentlyDeleteItem""": """מחק לצמיתות""",
+  """checklists.permanentlyDeleteConfirm""": """למחוק את הפריט לצמיתות?""",
+  """checklists.permanentlyDeleteConfirmBody""": """לא ניתן לבטל פעולה זו.""",
+  """checklists.restoreFailed""": """שחזור הפריט נכשל.""",
+  """checklists.permanentlyDeleteFailed""": """מחיקת הפריט נכשלה.""",
+  """checklists.itemRestored""": """הפריט שוחזר""",
   """checklists.createList""": """רשימה חדשה""",
   """checklists.listName""": """שם הרשימה""",
   """checklists.listDescription""": """תיאור (אופציונלי)""",

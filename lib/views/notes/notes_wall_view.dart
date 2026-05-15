@@ -125,6 +125,7 @@ class _NotesWallBody extends StatelessWidget {
           end: 16,
           bottom: 16,
           child: FloatingActionButton(
+            heroTag: 'notes-fab',
             onPressed: () => _createNote(context, controller),
             child: const Icon(Icons.add),
           ),

@@ -718,6 +718,82 @@ class ChecklistsMessages {
   String get undo => """Undo""";
 
   /// ```dart
+  /// "View trash"
+  /// ```
+  String get viewTrash => """View trash""";
+
+  /// ```dart
+  /// "Exit trash"
+  /// ```
+  String get exitTrash => """Exit trash""";
+
+  /// ```dart
+  /// "Trash"
+  /// ```
+  String get trashTitle => """Trash""";
+
+  /// ```dart
+  /// "Trash is empty."
+  /// ```
+  String get noTrashedItems => """Trash is empty.""";
+
+  /// ```dart
+  /// "Empty trash"
+  /// ```
+  String get emptyTrash => """Empty trash""";
+
+  /// ```dart
+  /// "Empty the trash?"
+  /// ```
+  String get emptyTrashConfirm => """Empty the trash?""";
+
+  /// ```dart
+  /// "All items in the trash will be permanently deleted. This cannot be undone."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """All items in the trash will be permanently deleted. This cannot be undone.""";
+
+  /// ```dart
+  /// "Failed to empty trash."
+  /// ```
+  String get emptyTrashFailed => """Failed to empty trash.""";
+
+  /// ```dart
+  /// "Restore"
+  /// ```
+  String get restoreItem => """Restore""";
+
+  /// ```dart
+  /// "Delete permanently"
+  /// ```
+  String get permanentlyDeleteItem => """Delete permanently""";
+
+  /// ```dart
+  /// "Permanently delete this item?"
+  /// ```
+  String get permanentlyDeleteConfirm => """Permanently delete this item?""";
+
+  /// ```dart
+  /// "This cannot be undone."
+  /// ```
+  String get permanentlyDeleteConfirmBody => """This cannot be undone.""";
+
+  /// ```dart
+  /// "Failed to restore item."
+  /// ```
+  String get restoreFailed => """Failed to restore item.""";
+
+  /// ```dart
+  /// "Failed to delete item."
+  /// ```
+  String get permanentlyDeleteFailed => """Failed to delete item.""";
+
+  /// ```dart
+  /// "Item restored"
+  /// ```
+  String get itemRestored => """Item restored""";
+
+  /// ```dart
   /// "New list"
   /// ```
   String get createList => """New list""";
@@ -1586,6 +1662,23 @@ Please complete login in your browser.""",
   """checklists.moveFailed""": """Failed to move item.""",
   """checklists.itemMarkedDone""": """Item marked as done""",
   """checklists.undo""": """Undo""",
+  """checklists.viewTrash""": """View trash""",
+  """checklists.exitTrash""": """Exit trash""",
+  """checklists.trashTitle""": """Trash""",
+  """checklists.noTrashedItems""": """Trash is empty.""",
+  """checklists.emptyTrash""": """Empty trash""",
+  """checklists.emptyTrashConfirm""": """Empty the trash?""",
+  """checklists.emptyTrashConfirmBody""":
+      """All items in the trash will be permanently deleted. This cannot be undone.""",
+  """checklists.emptyTrashFailed""": """Failed to empty trash.""",
+  """checklists.restoreItem""": """Restore""",
+  """checklists.permanentlyDeleteItem""": """Delete permanently""",
+  """checklists.permanentlyDeleteConfirm""":
+      """Permanently delete this item?""",
+  """checklists.permanentlyDeleteConfirmBody""": """This cannot be undone.""",
+  """checklists.restoreFailed""": """Failed to restore item.""",
+  """checklists.permanentlyDeleteFailed""": """Failed to delete item.""",
+  """checklists.itemRestored""": """Item restored""",
   """checklists.createList""": """New list""",
   """checklists.listName""": """List name""",
   """checklists.listDescription""": """Description (optional)""",

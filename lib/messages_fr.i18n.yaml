@@ -131,6 +131,21 @@ checklists:
   moveFailed: "Impossible de déplacer l'article."
   itemMarkedDone: "Article marqué comme fait"
   undo: Annuler
+  viewTrash: "Afficher la corbeille"
+  exitTrash: "Quitter la corbeille"
+  trashTitle: Corbeille
+  noTrashedItems: "La corbeille est vide."
+  emptyTrash: "Vider la corbeille"
+  emptyTrashConfirm: "Vider la corbeille ?"
+  emptyTrashConfirmBody: "Tous les articles de la corbeille seront supprimés définitivement. Cette action est irréversible."
+  emptyTrashFailed: "Impossible de vider la corbeille."
+  restoreItem: Restaurer
+  permanentlyDeleteItem: "Supprimer définitivement"
+  permanentlyDeleteConfirm: "Supprimer définitivement cet article ?"
+  permanentlyDeleteConfirmBody: "Cette action est irréversible."
+  restoreFailed: "Impossible de restaurer l'article."
+  permanentlyDeleteFailed: "Impossible de supprimer l'article."
+  itemRestored: "Article restauré"
   createList: Nouvelle liste
   listName: Nom de la liste
   listDescription: Description (facultatif)

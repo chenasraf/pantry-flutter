@@ -180,21 +180,36 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
                     onCreateNew: () => _createList(context, controller),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(_searchOpen ? Icons.search_off : Icons.search),
-                  onPressed: _toggleSearch,
-                ),
-                ChecklistSortButton(
-                  currentSort: controller.sortBy,
-                  onSelected: controller.setSortBy,
+                if (!controller.isTrashMode)
+                  IconButton(
+                    icon: Icon(_searchOpen ? Icons.search_off : Icons.search),
+                    onPressed: _toggleSearch,
+                  ),
+                if (!controller.isTrashMode)
+                  ChecklistSortButton(
+                    currentSort: controller.sortBy,
+                    onSelected: controller.setSortBy,
+                  ),
+                PopupMenuButton<String>(
+                  icon: Icon(
+                    controller.isTrashMode ? Icons.delete : Icons.more_vert,
+                  ),
+                  tooltip: controller.isTrashMode
+                      ? m.checklists.trashTitle
+                      : null,
+                  onSelected: (value) =>
+                      _onListMenuSelected(context, controller, value),
+                  itemBuilder: (_) => _listMenuItems(controller),
                 ),
               ],
             ),
+            if (controller.isTrashMode && controller.currentList != null)
+              _TrashBanner(onExit: () => controller.setTrashMode(false)),
             AnimatedSize(
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
               alignment: Alignment.topCenter,
-              child: _searchOpen
+              child: (_searchOpen && !controller.isTrashMode)
                   ? _SearchPanel(
                       searchController: _searchController,
                       selectedCategoryIds: _selectedCategoryIds,
@@ -207,11 +222,12 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
             Expanded(child: itemsArea),
           ],
         ),
-        if (controller.currentList != null)
+        if (controller.currentList != null && !controller.isTrashMode)
           PositionedDirectional(
             end: 16,
             bottom: 16,
             child: FloatingActionButton(
+              heroTag: 'checklists-fab',
               onPressed: () async {
                 final added = await Navigator.of(context).push<bool>(
                   MaterialPageRoute(
@@ -237,6 +253,139 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
     if (created != null) {
       await controller.selectList(created);
     }
+  }
+
+  List<PopupMenuEntry<String>> _listMenuItems(ChecklistsController controller) {
+    if (controller.isTrashMode) {
+      return [
+        PopupMenuItem(
+          value: 'exit_trash',
+          child: Row(
+            children: [
+              const Icon(Icons.arrow_back, size: 18),
+              const SizedBox(width: 8),
+              Text(m.checklists.exitTrash),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'empty_trash',
+          child: Row(
+            children: [
+              const Icon(Icons.delete_forever, size: 18),
+              const SizedBox(width: 8),
+              Text(m.checklists.emptyTrash),
+            ],
+          ),
+        ),
+      ];
+    }
+    return [
+      PopupMenuItem(
+        value: 'view_trash',
+        child: Row(
+          children: [
+            const Icon(Icons.delete_outline, size: 18),
+            const SizedBox(width: 8),
+            Text(m.checklists.viewTrash),
+          ],
+        ),
+      ),
+    ];
+  }
+
+  Future<void> _onListMenuSelected(
+    BuildContext context,
+    ChecklistsController controller,
+    String value,
+  ) async {
+    switch (value) {
+      case 'view_trash':
+        if (_searchOpen) {
+          setState(() {
+            _searchOpen = false;
+            _searchController.clear();
+            _selectedCategoryIds.clear();
+          });
+        }
+        await controller.setTrashMode(true);
+      case 'exit_trash':
+        await controller.setTrashMode(false);
+      case 'empty_trash':
+        await _confirmEmptyTrash(context, controller);
+    }
+  }
+
+  Future<void> _confirmEmptyTrash(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.emptyTrashConfirm),
+        content: Text(m.checklists.emptyTrashConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.checklists.emptyTrash),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await controller.emptyTrash();
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.emptyTrashFailed)));
+      }
+    }
+  }
+}
+
+class _TrashBanner extends StatelessWidget {
+  final VoidCallback onExit;
+
+  const _TrashBanner({required this.onExit});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      color: theme.colorScheme.surfaceContainerHighest,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
+      child: Row(
+        children: [
+          Icon(
+            Icons.delete_outline,
+            size: 18,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              m.checklists.trashTitle,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: onExit,
+            icon: const Icon(Icons.close, size: 16),
+            label: Text(m.checklists.exitTrash),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -453,21 +602,39 @@ class _ItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unchecked = items.where((i) => !i.done).toList();
-    final checked = items.where((i) => i.done).toList();
-
     if (items.isEmpty) {
       return ListView(
         children: [
           const SizedBox(height: 100),
           Center(
             child: Text(
-              isFiltering ? m.checklists.noSearchResults : m.checklists.noItems,
+              controller.isTrashMode
+                  ? m.checklists.noTrashedItems
+                  : (isFiltering
+                        ? m.checklists.noSearchResults
+                        : m.checklists.noItems),
             ),
           ),
         ],
       );
     }
+
+    if (controller.isTrashMode) {
+      return CustomScrollView(
+        slivers: [
+          _ReorderablePartition(
+            items: items,
+            controller: controller,
+            categorySpacing: 'disabled',
+            allowReorder: false,
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 88)),
+        ],
+      );
+    }
+
+    final unchecked = items.where((i) => !i.done).toList();
+    final checked = items.where((i) => i.done).toList();
 
     final spacingPref = context.watch<PrefsService>().checklistCategorySpacing;
     final categorySpacing = controller.sortBy == 'category'
@@ -518,11 +685,13 @@ class _ReorderablePartition extends StatelessWidget {
   final List<ListItem> items;
   final ChecklistsController controller;
   final String categorySpacing;
+  final bool allowReorder;
 
   const _ReorderablePartition({
     required this.items,
     required this.controller,
     this.categorySpacing = 'disabled',
+    this.allowReorder = true,
   });
 
   void _toggleItem(
@@ -531,6 +700,7 @@ class _ReorderablePartition extends StatelessWidget {
     ListItem item,
   ) {
     final wasDone = item.done;
+    final wasDeleteOnDone = item.deleteOnDone;
     controller.toggleItem(item);
     if (wasDone) return;
 
@@ -541,7 +711,19 @@ class _ReorderablePartition extends StatelessWidget {
         content: Text(m.checklists.itemMarkedDone),
         action: SnackBarAction(
           label: m.checklists.undo,
-          onPressed: () {
+          onPressed: () async {
+            if (wasDeleteOnDone) {
+              try {
+                await controller.restoreItem(item);
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(m.checklists.restoreFailed)),
+                  );
+                }
+              }
+              return;
+            }
             final current = controller.items.firstWhere(
               (i) => i.id == item.id,
               orElse: () => item.copyWith(done: true),
@@ -551,6 +733,62 @@ class _ReorderablePartition extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _restoreItem(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) async {
+    try {
+      await controller.restoreItem(item);
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.itemRestored)));
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.restoreFailed)));
+      }
+    }
+  }
+
+  void _permanentlyDelete(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) {
+    showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.permanentlyDeleteConfirm),
+        content: Text(m.checklists.permanentlyDeleteConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.common.delete),
+          ),
+        ],
+      ),
+    ).then((confirmed) async {
+      if (confirmed != true) return;
+      try {
+        await controller.permanentlyDeleteItem(item);
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(m.checklists.permanentlyDeleteFailed)),
+          );
+        }
+      }
+    });
   }
 
   void _viewItem(
@@ -692,8 +930,52 @@ class _ReorderablePartition extends StatelessWidget {
     });
   }
 
+  Widget _tileFor(BuildContext context, int index) {
+    final item = items[index];
+    final showSeparator =
+        categorySpacing != 'disabled' &&
+        index > 0 &&
+        items[index - 1].categoryId != item.categoryId;
+    final tile = ChecklistItemTile(
+      key: allowReorder ? null : ValueKey(item.id),
+      item: item,
+      category: item.categoryId != null
+          ? controller.categories[item.categoryId]
+          : null,
+      houseId: controller.houseId,
+      trashMode: controller.isTrashMode,
+      onToggle: (item) => _toggleItem(context, controller, item),
+      onView: (item) => _viewItem(context, controller, item),
+      onEdit: (item) => _editItem(context, controller, item),
+      onMove: (item) => _moveItem(context, controller, item),
+      onDelete: (item) => _deleteItem(context, controller, item),
+      onRestore: (item) => _restoreItem(context, controller, item),
+      onPermanentDelete: (item) =>
+          _permanentlyDelete(context, controller, item),
+    );
+    return showSeparator
+        ? Column(
+            children: [
+              if (categorySpacing == 'divider')
+                const Divider(height: 25)
+              else
+                const SizedBox(height: 20),
+              tile,
+            ],
+          )
+        : tile;
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!allowReorder) {
+      return SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => _tileFor(context, index),
+          childCount: items.length,
+        ),
+      );
+    }
     return SliverReorderableList(
       itemCount: items.length,
       onReorder: (oldIndex, newIndex) {
@@ -702,36 +984,10 @@ class _ReorderablePartition extends StatelessWidget {
       },
       itemBuilder: (context, index) {
         final item = items[index];
-        final showSeparator =
-            categorySpacing != 'disabled' &&
-            index > 0 &&
-            items[index - 1].categoryId != item.categoryId;
-        final tile = ChecklistItemTile(
-          item: item,
-          category: item.categoryId != null
-              ? controller.categories[item.categoryId]
-              : null,
-          houseId: controller.houseId,
-          onToggle: (item) => _toggleItem(context, controller, item),
-          onView: (item) => _viewItem(context, controller, item),
-          onEdit: (item) => _editItem(context, controller, item),
-          onMove: (item) => _moveItem(context, controller, item),
-          onDelete: (item) => _deleteItem(context, controller, item),
-        );
         return ReorderableDelayedDragStartListener(
           key: ValueKey(item.id),
           index: index,
-          child: showSeparator
-              ? Column(
-                  children: [
-                    if (categorySpacing == 'divider')
-                      const Divider(height: 25)
-                    else
-                      const SizedBox(height: 20),
-                    tile,
-                  ],
-                )
-              : tile,
+          child: _tileFor(context, index),
         );
       },
     );

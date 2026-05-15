@@ -186,6 +186,44 @@ class ChecklistService {
     );
   }
 
+  Future<List<ListItem>> getDeletedItems(
+    int houseId,
+    int listId, {
+    int limit = 200,
+    int offset = 0,
+  }) async {
+    return ApiClient.instance.get<List, List<ListItem>>(
+      '/houses/$houseId/lists/$listId/items/trash',
+      query: {'limit': limit.toString(), 'offset': offset.toString()},
+      fromJson: (data) => data
+          .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  Future<ListItem> restoreItem(int houseId, int listId, int itemId) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
+      '/houses/$houseId/lists/$listId/items/$itemId/restore',
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
+  Future<void> permanentlyDeleteItem(
+    int houseId,
+    int listId,
+    int itemId,
+  ) async {
+    await ApiClient.instance.delete(
+      '/houses/$houseId/lists/$listId/items/$itemId/permanent',
+    );
+  }
+
+  Future<void> emptyTrash(int houseId, int listId) async {
+    await ApiClient.instance.delete(
+      '/houses/$houseId/lists/$listId/items/trash',
+    );
+  }
+
   Future<ListItem> toggleItem(int houseId, int listId, int itemId) async {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items/$itemId/toggle',

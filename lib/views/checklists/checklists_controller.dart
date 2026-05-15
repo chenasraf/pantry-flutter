@@ -41,6 +41,9 @@ class ChecklistsController extends ChangeNotifier {
   String _sortBy = 'custom';
   String get sortBy => _sortBy;
 
+  bool _isTrashMode = false;
+  bool get isTrashMode => _isTrashMode;
+
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
@@ -142,6 +145,14 @@ class ChecklistsController extends ChangeNotifier {
     _currentList = list;
     _checklistService.selectedListId = list.id;
 
+    if (_isTrashMode) {
+      _items = [];
+      _isLoading = true;
+      notifyListeners();
+      await _loadTrashItems(list);
+      return;
+    }
+
     // Show cached items immediately, or spinner if no cache for this list
     final cached = _checklistService.getCachedItems(list.id);
     if (cached != null) {
@@ -162,7 +173,7 @@ class ChecklistsController extends ChangeNotifier {
         sortBy: _sortBy,
       );
       _checklistService.cacheItems(list.id, freshItems);
-      if (_currentList?.id == list.id) {
+      if (_currentList?.id == list.id && !_isTrashMode) {
         _items = freshItems;
         _isLoading = false;
         notifyListeners();
@@ -174,6 +185,38 @@ class ChecklistsController extends ChangeNotifier {
         _isLoading = false;
         notifyListeners();
       }
+    }
+  }
+
+  Future<void> _loadTrashItems(ChecklistList list) async {
+    try {
+      final trashItems = await _checklistService.getDeletedItems(
+        houseId,
+        list.id,
+      );
+      if (_currentList?.id == list.id && _isTrashMode) {
+        _items = trashItems;
+        _error = null;
+        _isLoading = false;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to load trash: $e');
+      if (_currentList?.id == list.id && _isTrashMode) {
+        _error = m.checklists.failedToLoadItems;
+        _isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> setTrashMode(bool enabled) async {
+    if (_isTrashMode == enabled) return;
+    _isTrashMode = enabled;
+    if (_currentList != null) {
+      await selectList(_currentList!);
+    } else {
+      notifyListeners();
     }
   }
 
@@ -389,6 +432,43 @@ class ChecklistsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<ListItem> restoreItem(ListItem item) async {
+    final restored = await _checklistService.restoreItem(
+      houseId,
+      item.listId,
+      item.id,
+    );
+    _items.removeWhere((i) => i.id == item.id);
+    if (!_isTrashMode) {
+      _items.add(restored);
+      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    }
+    notifyListeners();
+    return restored;
+  }
+
+  Future<void> permanentlyDeleteItem(ListItem item) async {
+    await _checklistService.permanentlyDeleteItem(
+      houseId,
+      item.listId,
+      item.id,
+    );
+    _items.removeWhere((i) => i.id == item.id);
+    if (!_isTrashMode) {
+      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    }
+    notifyListeners();
+  }
+
+  Future<void> emptyTrash() async {
+    if (_currentList == null) return;
+    await _checklistService.emptyTrash(houseId, _currentList!.id);
+    if (_isTrashMode) {
+      _items = [];
+      notifyListeners();
+    }
+  }
+
   Future<void> toggleItem(ListItem item) async {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index == -1) return;
@@ -404,12 +484,23 @@ class ChecklistsController extends ChangeNotifier {
         item.listId,
         item.id,
       );
-      _items[index] = updated;
+      // If toggling caused a soft-delete (deleteOnDone), drop it from active list.
+      if (updated.deletedAt != null) {
+        _items.removeWhere((i) => i.id == item.id);
+      } else {
+        final i = _items.indexWhere((x) => x.id == item.id);
+        if (i != -1) _items[i] = updated;
+      }
       _checklistService.cacheItems(item.listId, List.of(_items));
       notifyListeners();
     } catch (e) {
       // Revert on failure
-      _items[index] = item;
+      final i = _items.indexWhere((x) => x.id == item.id);
+      if (i != -1) {
+        _items[i] = item;
+      } else {
+        _items.insert(index.clamp(0, _items.length), item);
+      }
       _checklistService.cacheItems(item.listId, List.of(_items));
       notifyListeners();
     }

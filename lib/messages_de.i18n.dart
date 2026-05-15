@@ -724,6 +724,86 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get undo => """Rückgängig""";
 
   /// ```dart
+  /// "Papierkorb anzeigen"
+  /// ```
+  String get viewTrash => """Papierkorb anzeigen""";
+
+  /// ```dart
+  /// "Papierkorb verlassen"
+  /// ```
+  String get exitTrash => """Papierkorb verlassen""";
+
+  /// ```dart
+  /// "Papierkorb"
+  /// ```
+  String get trashTitle => """Papierkorb""";
+
+  /// ```dart
+  /// "Der Papierkorb ist leer."
+  /// ```
+  String get noTrashedItems => """Der Papierkorb ist leer.""";
+
+  /// ```dart
+  /// "Papierkorb leeren"
+  /// ```
+  String get emptyTrash => """Papierkorb leeren""";
+
+  /// ```dart
+  /// "Papierkorb leeren?"
+  /// ```
+  String get emptyTrashConfirm => """Papierkorb leeren?""";
+
+  /// ```dart
+  /// "Alle Einträge im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """Alle Einträge im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Papierkorb konnte nicht geleert werden."
+  /// ```
+  String get emptyTrashFailed => """Papierkorb konnte nicht geleert werden.""";
+
+  /// ```dart
+  /// "Wiederherstellen"
+  /// ```
+  String get restoreItem => """Wiederherstellen""";
+
+  /// ```dart
+  /// "Endgültig löschen"
+  /// ```
+  String get permanentlyDeleteItem => """Endgültig löschen""";
+
+  /// ```dart
+  /// "Diesen Eintrag endgültig löschen?"
+  /// ```
+  String get permanentlyDeleteConfirm =>
+      """Diesen Eintrag endgültig löschen?""";
+
+  /// ```dart
+  /// "Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get permanentlyDeleteConfirmBody =>
+      """Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Eintrag konnte nicht wiederhergestellt werden."
+  /// ```
+  String get restoreFailed =>
+      """Eintrag konnte nicht wiederhergestellt werden.""";
+
+  /// ```dart
+  /// "Eintrag konnte nicht gelöscht werden."
+  /// ```
+  String get permanentlyDeleteFailed =>
+      """Eintrag konnte nicht gelöscht werden.""";
+
+  /// ```dart
+  /// "Eintrag wiederhergestellt"
+  /// ```
+  String get itemRestored => """Eintrag wiederhergestellt""";
+
+  /// ```dart
   /// "Neue Liste"
   /// ```
   String get createList => """Neue Liste""";
@@ -1607,6 +1687,27 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.moveFailed""": """Eintrag konnte nicht verschoben werden.""",
   """checklists.itemMarkedDone""": """Eintrag als erledigt markiert""",
   """checklists.undo""": """Rückgängig""",
+  """checklists.viewTrash""": """Papierkorb anzeigen""",
+  """checklists.exitTrash""": """Papierkorb verlassen""",
+  """checklists.trashTitle""": """Papierkorb""",
+  """checklists.noTrashedItems""": """Der Papierkorb ist leer.""",
+  """checklists.emptyTrash""": """Papierkorb leeren""",
+  """checklists.emptyTrashConfirm""": """Papierkorb leeren?""",
+  """checklists.emptyTrashConfirmBody""":
+      """Alle Einträge im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""",
+  """checklists.emptyTrashFailed""":
+      """Papierkorb konnte nicht geleert werden.""",
+  """checklists.restoreItem""": """Wiederherstellen""",
+  """checklists.permanentlyDeleteItem""": """Endgültig löschen""",
+  """checklists.permanentlyDeleteConfirm""":
+      """Diesen Eintrag endgültig löschen?""",
+  """checklists.permanentlyDeleteConfirmBody""":
+      """Dies kann nicht rückgängig gemacht werden.""",
+  """checklists.restoreFailed""":
+      """Eintrag konnte nicht wiederhergestellt werden.""",
+  """checklists.permanentlyDeleteFailed""":
+      """Eintrag konnte nicht gelöscht werden.""",
+  """checklists.itemRestored""": """Eintrag wiederhergestellt""",
   """checklists.createList""": """Neue Liste""",
   """checklists.listName""": """Listenname""",
   """checklists.listDescription""": """Beschreibung (optional)""",

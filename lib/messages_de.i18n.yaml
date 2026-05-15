@@ -131,6 +131,21 @@ checklists:
   moveFailed: Eintrag konnte nicht verschoben werden.
   itemMarkedDone: Eintrag als erledigt markiert
   undo: "Rückgängig"
+  viewTrash: Papierkorb anzeigen
+  exitTrash: Papierkorb verlassen
+  trashTitle: Papierkorb
+  noTrashedItems: Der Papierkorb ist leer.
+  emptyTrash: Papierkorb leeren
+  emptyTrashConfirm: Papierkorb leeren?
+  emptyTrashConfirmBody: "Alle Einträge im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  emptyTrashFailed: Papierkorb konnte nicht geleert werden.
+  restoreItem: Wiederherstellen
+  permanentlyDeleteItem: Endgültig löschen
+  permanentlyDeleteConfirm: Diesen Eintrag endgültig löschen?
+  permanentlyDeleteConfirmBody: "Dies kann nicht rückgängig gemacht werden."
+  restoreFailed: Eintrag konnte nicht wiederhergestellt werden.
+  permanentlyDeleteFailed: Eintrag konnte nicht gelöscht werden.
+  itemRestored: Eintrag wiederhergestellt
   createList: Neue Liste
   listName: Listenname
   listDescription: Beschreibung (optional)

@@ -16,22 +16,28 @@ class ChecklistItemTile extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
   final int houseId;
+  final bool trashMode;
   final ValueChanged<ListItem> onToggle;
   final ValueChanged<ListItem> onView;
   final ValueChanged<ListItem> onEdit;
   final ValueChanged<ListItem> onMove;
   final ValueChanged<ListItem> onDelete;
+  final ValueChanged<ListItem>? onRestore;
+  final ValueChanged<ListItem>? onPermanentDelete;
 
   const ChecklistItemTile({
     super.key,
     required this.item,
     this.category,
     required this.houseId,
+    this.trashMode = false,
     required this.onToggle,
     required this.onView,
     required this.onEdit,
     required this.onMove,
     required this.onDelete,
+    this.onRestore,
+    this.onPermanentDelete,
   });
 
   @override
@@ -50,12 +56,29 @@ class ChecklistItemTile extends StatelessWidget {
           itemBuilder: _menuItems,
           onSelected: (value) => _onMenuSelected(value),
           child: InkWell(
-            onTap: tapRowToToggle ? () => onToggle(item) : null,
+            onTap: trashMode
+                ? () => onView(item)
+                : (tapRowToToggle ? () => onToggle(item) : null),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               child: Row(
                 children: [
-                  Checkbox(value: item.done, onChanged: (_) => onToggle(item)),
+                  if (trashMode)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                        start: 12,
+                        end: 12,
+                      ),
+                      child: Icon(
+                        Icons.delete_outline,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    )
+                  else
+                    Checkbox(
+                      value: item.done,
+                      onChanged: (_) => onToggle(item),
+                    ),
                   if (item.imageFileId != null) ...[
                     GestureDetector(
                       onTap: () => _showImagePreview(context),
@@ -124,38 +147,64 @@ class ChecklistItemTile extends StatelessWidget {
     );
   }
 
-  List<PopupMenuEntry<String>> _menuItems() => [
-    PopupMenuItem(
-      value: 'edit',
-      child: Row(
-        children: [
-          const Icon(Icons.edit, size: 18),
-          const SizedBox(width: 8),
-          Text(m.checklists.editItem),
-        ],
+  List<PopupMenuEntry<String>> _menuItems() {
+    if (trashMode) {
+      return [
+        PopupMenuItem(
+          value: 'restore',
+          child: Row(
+            children: [
+              const Icon(Icons.restore_from_trash, size: 18),
+              const SizedBox(width: 8),
+              Text(m.checklists.restoreItem),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'permanent',
+          child: Row(
+            children: [
+              const Icon(Icons.delete_forever, size: 18),
+              const SizedBox(width: 8),
+              Text(m.checklists.permanentlyDeleteItem),
+            ],
+          ),
+        ),
+      ];
+    }
+    return [
+      PopupMenuItem(
+        value: 'edit',
+        child: Row(
+          children: [
+            const Icon(Icons.edit, size: 18),
+            const SizedBox(width: 8),
+            Text(m.checklists.editItem),
+          ],
+        ),
       ),
-    ),
-    PopupMenuItem(
-      value: 'move',
-      child: Row(
-        children: [
-          const Icon(Icons.drive_file_move_outlined, size: 18),
-          const SizedBox(width: 8),
-          Text(m.checklists.moveItem),
-        ],
+      PopupMenuItem(
+        value: 'move',
+        child: Row(
+          children: [
+            const Icon(Icons.drive_file_move_outlined, size: 18),
+            const SizedBox(width: 8),
+            Text(m.checklists.moveItem),
+          ],
+        ),
       ),
-    ),
-    PopupMenuItem(
-      value: 'remove',
-      child: Row(
-        children: [
-          const Icon(Icons.delete, size: 18),
-          const SizedBox(width: 8),
-          Text(m.checklists.removeItem),
-        ],
+      PopupMenuItem(
+        value: 'remove',
+        child: Row(
+          children: [
+            const Icon(Icons.delete, size: 18),
+            const SizedBox(width: 8),
+            Text(m.checklists.removeItem),
+          ],
+        ),
       ),
-    ),
-  ];
+    ];
+  }
 
   void _onMenuSelected(String value) {
     switch (value) {
@@ -165,6 +214,10 @@ class ChecklistItemTile extends StatelessWidget {
         onMove(item);
       case 'remove':
         onDelete(item);
+      case 'restore':
+        onRestore?.call(item);
+      case 'permanent':
+        onPermanentDelete?.call(item);
     }
   }
 

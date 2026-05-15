@@ -61,6 +61,7 @@ class ListItem {
   final int sortOrder;
   final int createdAt;
   final int updatedAt;
+  final int? deletedAt;
 
   const ListItem({
     required this.id,
@@ -81,6 +82,7 @@ class ListItem {
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
+    this.deletedAt,
   });
 
   factory ListItem.fromJson(Map<String, dynamic> json) => ListItem(
@@ -102,6 +104,7 @@ class ListItem {
     sortOrder: json['sortOrder'] as int,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
+    deletedAt: json['deletedAt'] as int?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -123,6 +126,7 @@ class ListItem {
     'sortOrder': sortOrder,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
+    'deletedAt': deletedAt,
   };
 
   ListItem copyWith({bool? done, int? doneAt, String? doneBy}) => ListItem(
@@ -144,5 +148,6 @@ class ListItem {
     sortOrder: sortOrder,
     createdAt: createdAt,
     updatedAt: updatedAt,
+    deletedAt: deletedAt,
   );
 }
