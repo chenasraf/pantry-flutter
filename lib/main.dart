@@ -60,6 +60,14 @@ class PantryApp extends StatefulWidget {
   State<PantryApp> createState() => PantryAppState();
 }
 
+class _PopRouteOnEscapeAction extends Action<DismissIntent> {
+  @override
+  Object? invoke(covariant DismissIntent intent) {
+    rootNavigatorKey.currentState?.maybePop();
+    return null;
+  }
+}
+
 class PantryAppState extends State<PantryApp> {
   bool _isLoggedIn = AuthService.instance.isLoggedIn;
 
@@ -118,6 +126,10 @@ class PantryAppState extends State<PantryApp> {
     final color = ThemingService.instance.effectiveColor;
     final locale = LocaleService.instance.effectiveLocale;
     final isMacOS = !kIsWeb && Platform.isMacOS;
+    final isDesktopHost =
+        kIsWeb ||
+        (!kIsWeb &&
+            (Platform.isMacOS || Platform.isWindows || Platform.isLinux));
     final appBarTheme = isMacOS ? const AppBarTheme(toolbarHeight: 66) : null;
     return ChangeNotifierProvider<PrefsService>.value(
       value: PrefsService.instance,
@@ -165,6 +177,10 @@ class PantryAppState extends State<PantryApp> {
             ),
           ),
           themeMode: ThemingService.instance.themeMode,
+          actions: <Type, Action<Intent>>{
+            ...WidgetsApp.defaultActions,
+            if (isDesktopHost) DismissIntent: _PopRouteOnEscapeAction(),
+          },
           onGenerateInitialRoutes: (initialRoute) => [
             MaterialPageRoute(
               builder: (_) => _isLoggedIn
