@@ -95,6 +95,8 @@ jobs:
       release-type: dart
       scopes: |
         ios: fastlane/metadata/ios/en-US/changelogs
+        macos: fastlane/metadata/macos/en-US/changelogs
+        desktop: fastlane/metadata/macos/en-US/changelogs
         apple: |
           fastlane/metadata/ios/en-US/changelogs
           fastlane/metadata/macos/en-US/changelogs
