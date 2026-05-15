@@ -1,0 +1,5 @@
+Features
+- add trash view
+- add undo action for checking items
+- improve ui for larger devices
+- open full file picker when running on macOS
