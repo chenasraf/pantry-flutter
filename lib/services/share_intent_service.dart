@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -18,6 +19,8 @@ class ShareIntentService {
 
   /// Begin listening for share intents. Idempotent.
   Future<void> init() async {
+    if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) return;
+
     _sub ??= ReceiveSharingIntent.instance.getMediaStream().listen(
       (files) {
         if (files.isNotEmpty) pending.value = files;

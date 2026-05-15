@@ -126,6 +126,9 @@ flutter_launcher_icons:
   web:
     generate: true
     image_path: "assets/icon/icon.png"
+  macos:
+    generate: true
+    image_path: "assets/icon/icon_macos.png"
 
 flutter_native_splash:
   color: "#0082C9"

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <clipPath id="squircle">
+      <path transform="translate(100 100) scale(1.609375)" d="
+        M256,0 C353,0 406,0 443,18 C468,30 482,44 494,69
+        C512,106 512,159 512,256 C512,353 512,406 494,443
+        C482,468 468,482 443,494 C406,512 353,512 256,512
+        C159,512 106,512 69,494 C44,482 30,468 18,443
+        C0,406 0,353 0,256 C0,159 0,106 18,69
+        C30,44 44,30 69,18 C106,0 159,0 256,0 Z"/>
+    </clipPath>
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="14"/>
+      <feOffset dy="14"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.35"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="topLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.12"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#dropShadow)">
+    <g clip-path="url(#squircle)">
+      <rect width="1024" height="1024" fill="#0082C9"/>
+      <g transform="translate(100 100) scale(1.609375) translate(106 106) scale(12.5)">
+        <path fill="#FFFFFF" d="M12,3L2,12H5V20H19V12H22L12,3M12,8.75A2.25,2.25 0 0,1 14.25,11A2.25,2.25 0 0,1 12,13.25A2.25,2.25 0 0,1 9.75,11A2.25,2.25 0 0,1 12,8.75M12,15C13.5,15 16.5,15.75 16.5,17.25V18H7.5V17.25C7.5,15.75 10.5,15 12,15Z"/>
+      </g>
+      <rect width="1024" height="1024" fill="url(#topLight)"/>
+    </g>
+  </g>
+</svg>

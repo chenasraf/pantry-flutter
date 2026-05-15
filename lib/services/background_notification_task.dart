@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pantry/models/notification.dart';
@@ -80,9 +82,15 @@ Future<void> markCurrentNotificationsAsSeen(List<int> ids) async {
   await storage.write(key: _seenIdsKey, value: ids.join(','));
 }
 
+/// workmanager only supports Android and iOS; other platforms throw
+/// UnimplementedError. Gate every call so callers don't need to.
+bool get _workmanagerSupported =>
+    !kIsWeb && (Platform.isAndroid || Platform.isIOS);
+
 /// Schedule the periodic background poll using the user's configured
 /// interval from [PrefsService] (minimum 15 minutes on Android).
 Future<void> registerBackgroundNotificationPoll() async {
+  if (!_workmanagerSupported) return;
   await Workmanager().initialize(backgroundCallbackDispatcher);
   final minutes = PrefsService.instance.pollIntervalMinutes;
   // Android enforces a 15-minute minimum for periodic tasks.
@@ -97,6 +105,7 @@ Future<void> registerBackgroundNotificationPoll() async {
 }
 
 Future<void> cancelBackgroundNotificationPoll() async {
+  if (!_workmanagerSupported) return;
   await Workmanager().cancelByUniqueName(notificationPollTaskName);
 }
 

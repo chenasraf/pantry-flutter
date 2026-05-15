@@ -244,6 +244,7 @@ icons:
 	rsvg-convert -w 1024 -h 1024 assets/logo_icon_squircle.svg > assets/icon/icon.png
 	rsvg-convert -w 1024 -h 1024 assets/logo_icon_square.svg > assets/icon/icon_ios.png
 	rsvg-convert -w 1024 -h 1024 assets/logo_icon_foreground.svg > assets/icon/icon_foreground.png
+	rsvg-convert -w 1024 -h 1024 assets/logo_icon_macos.svg > assets/icon/icon_macos.png
 	dart run flutter_launcher_icons
 	rsvg-convert -w 512 -h 512 assets/logo_icon_squircle.svg > fastlane/metadata/android/en-US/images/icon.png
 
