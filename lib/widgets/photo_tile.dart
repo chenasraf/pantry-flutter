@@ -233,16 +233,11 @@ class PhotoTile extends StatelessWidget {
     Uri previewUri,
     Map<String, String> headers,
   ) {
-    final fullUri = PhotoService.instance.photoPreviewUri(
-      houseId,
-      photo.id,
-      size: 1024,
-    );
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => PhotoDetailView(
           photo: photo,
-          imageUri: fullUri,
+          houseId: houseId,
           headers: headers,
           controller: controller,
         ),
