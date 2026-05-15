@@ -1,0 +1,6 @@
+Features
+- add trash view
+- add undo action for checking items
+- improve ui for larger devices
+- go back by using Esc key
+- switch between photos in photo view

@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.13.0](https://github.com/chenasraf/pantry-flutter/compare/v0.12.0...v0.13.0) (2026-05-15)
+
+
+### Features
+
+* add trash view ([eb4d8d3](https://github.com/chenasraf/pantry-flutter/commit/eb4d8d3c509e6fe1c6ef998caaa58f6bd9a55a53))
+* add undo action for checking items ([ddf0c36](https://github.com/chenasraf/pantry-flutter/commit/ddf0c365a1ea4fb27f66fc19a7c5ffd7d72f6de7))
+* improve ui for larger devices ([eafc267](https://github.com/chenasraf/pantry-flutter/commit/eafc267e92b275796e1edb746c3c3b9dc75925e7))
+* **ios:** open full file picker when running on macOS ([00241b8](https://github.com/chenasraf/pantry-flutter/commit/00241b8aceeda5175e0989f017031a94b6c53581))
+* **macos:** go back by using Esc key ([88e153b](https://github.com/chenasraf/pantry-flutter/commit/88e153b96f249f4a8d8f19465a31cde7aa3ac8e0))
+* switch between photos in photo view ([cf9135e](https://github.com/chenasraf/pantry-flutter/commit/cf9135e0695f70b8c8c658421306f6cda610b6b4))
+
 ## [0.12.0](https://github.com/chenasraf/pantry-flutter/compare/v0.11.0...v0.12.0) (2026-05-15)
 
 
