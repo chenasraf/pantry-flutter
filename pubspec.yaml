@@ -54,6 +54,8 @@ dependencies:
   package_info_plus: ^9.0.1
   mime: ^2.0.0
   receive_sharing_intent: ^1.8.1
+  file_picker: ^11.0.2
+  device_info_plus: ^12.4.0
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,11 @@
 import 'dart:math' as math;
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 
 class PhotoAddButton extends StatefulWidget {
@@ -52,6 +54,22 @@ class _PhotoAddButtonState extends State<PhotoAddButton>
 
   Future<void> _pickPhotos() async {
     _close();
+    final useFilePicker = await isiOSAppOnMac();
+    if (useFilePicker) {
+      final result = await FilePicker.pickFiles(
+        allowMultiple: true,
+        type: FileType.image,
+      );
+      if (result == null) return;
+      final files = [
+        for (final f in result.files)
+          if (f.path != null) XFile(f.path!, name: f.name),
+      ];
+      if (files.isNotEmpty) {
+        widget.controller.uploadPhotos(files);
+      }
+      return;
+    }
     final picker = ImagePicker();
     final files = await picker.pickMultiImage();
     if (files.isNotEmpty) {
