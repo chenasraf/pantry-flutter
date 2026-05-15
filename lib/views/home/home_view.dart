@@ -1,3 +1,6 @@
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,6 +71,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   final _pageController = PageController();
   final _notificationsController = NotificationsController();
 
+  static bool get _isMacOS => !kIsWeb && Platform.isMacOS;
+
   @override
   void initState() {
     super.initState();
@@ -119,11 +124,15 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
   void _goToTab(int index) {
     if (index == _tabIndex) return;
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 280),
-      curve: Curves.easeInOut,
-    );
+    if (_pageController.hasClients) {
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      setState(() => _tabIndex = index);
+    }
   }
 
   void _consumePendingDeepLink() {
@@ -161,65 +170,118 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<HomeController>();
-
     final houseId = controller.currentHouse?.id;
+    final destinations = <_NavDestination>[
+      (icon: Icons.assignment_turned_in, label: m.nav.checklists),
+      (icon: Icons.photo, label: m.nav.photoBoard),
+      (icon: Icons.insert_drive_file, label: m.nav.notesWall),
+    ];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_tabTitle),
-        actions: [
-          if (_tabIndex == 0 && houseId != null)
-            IconButton(
-              icon: const Icon(Icons.sell_outlined),
-              tooltip: m.checklists.categories,
-              onPressed: () {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final useRail = constraints.maxWidth >= 720;
+        final extendedRail = constraints.maxWidth >= 1100;
+        final body = _buildBody(controller, useRail: useRail);
+
+        final appBar = AppBar(
+          title: Text(_tabTitle),
+          actions: [
+            if (_tabIndex == 0 && houseId != null)
+              IconButton(
+                icon: const Icon(Icons.sell_outlined),
+                tooltip: m.checklists.categories,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => CategoriesView(houseId: houseId),
+                    ),
+                  );
+                },
+              ),
+            NotificationsBell(
+              controller: _notificationsController,
+              onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => CategoriesView(houseId: houseId),
+                    builder: (_) =>
+                        NotificationsView(controller: _notificationsController),
                   ),
                 );
               },
             ),
-          NotificationsBell(
-            controller: _notificationsController,
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) =>
-                      NotificationsView(controller: _notificationsController),
-                ),
-              );
-            },
+            UserMenuButton(
+              houses: controller.houses,
+              currentHouse: controller.currentHouse,
+              onHouseSelected: controller.selectHouse,
+              onCreateHouse: () => showCreateHouseDialog(context, controller),
+              onOpenSettings: () {
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const SettingsView()));
+              },
+              onLogout: widget.onLogout,
+            ),
+          ],
+        );
+
+        if (useRail) {
+          return Scaffold(
+            body: SafeArea(
+              child: Row(
+                children: [
+                  NavigationRail(
+                    extended: extendedRail,
+                    selectedIndex: _tabIndex,
+                    onDestinationSelected: _goToTab,
+                    labelType: extendedRail
+                        ? NavigationRailLabelType.none
+                        : NavigationRailLabelType.all,
+                    leading: _isMacOS ? const SizedBox(height: 24) : null,
+                    destinations: [
+                      for (final d in destinations)
+                        NavigationRailDestination(
+                          icon: Icon(d.icon),
+                          label: Text(d.label),
+                        ),
+                    ],
+                  ),
+                  const VerticalDivider(width: 1, thickness: 1),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        appBar,
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.only(
+                              start: _tabIndex == 0 ? 0 : 16,
+                            ),
+                            child: body,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return Scaffold(
+          appBar: appBar,
+          body: body,
+          bottomNavigationBar: _AnimatedBottomNav(
+            pageController: _pageController,
+            currentIndex: _tabIndex,
+            onTap: _goToTab,
+            destinations: destinations,
           ),
-          UserMenuButton(
-            houses: controller.houses,
-            currentHouse: controller.currentHouse,
-            onHouseSelected: controller.selectHouse,
-            onCreateHouse: () => showCreateHouseDialog(context, controller),
-            onOpenSettings: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const SettingsView()));
-            },
-            onLogout: widget.onLogout,
-          ),
-        ],
-      ),
-      body: _buildBody(controller),
-      bottomNavigationBar: _AnimatedBottomNav(
-        pageController: _pageController,
-        currentIndex: _tabIndex,
-        onTap: _goToTab,
-        destinations: [
-          (icon: Icons.assignment_turned_in, label: m.nav.checklists),
-          (icon: Icons.photo, label: m.nav.photoBoard),
-          (icon: Icons.insert_drive_file, label: m.nav.notesWall),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildBody(HomeController controller) {
+  Widget _buildBody(HomeController controller, {required bool useRail}) {
     if (controller.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -252,15 +314,19 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     }
 
     final houseId = controller.currentHouse!.id;
+    final pages = [
+      ChecklistsView(key: ValueKey('checklists-$houseId'), houseId: houseId),
+      PhotoBoardView(key: ValueKey('photos-$houseId'), houseId: houseId),
+      NotesWallView(key: ValueKey('notes-$houseId'), houseId: houseId),
+    ];
+    if (useRail) {
+      return IndexedStack(index: _tabIndex, children: pages);
+    }
     return PageView(
       controller: _pageController,
       physics: const ClampingScrollPhysics(),
       onPageChanged: (i) => setState(() => _tabIndex = i),
-      children: [
-        ChecklistsView(key: ValueKey('checklists-$houseId'), houseId: houseId),
-        PhotoBoardView(key: ValueKey('photos-$houseId'), houseId: houseId),
-        NotesWallView(key: ValueKey('notes-$houseId'), houseId: houseId),
-      ],
+      children: pages,
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/rrule.dart';
+import 'package:pantry/widgets/context_menu_region.dart';
 import 'package:pantry/widgets/image_preview.dart';
 import 'package:provider/provider.dart';
 
@@ -45,73 +46,126 @@ class ChecklistItemTile extends StatelessWidget {
       type: MaterialType.transparency,
       child: Opacity(
         opacity: dimmed ? 0.5 : 1.0,
-        child: InkWell(
-          onTap: tapRowToToggle ? () => onToggle(item) : null,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            child: Row(
-              children: [
-                Checkbox(value: item.done, onChanged: (_) => onToggle(item)),
-                if (item.imageFileId != null) ...[
-                  GestureDetector(
-                    onTap: () => _showImagePreview(context),
-                    child: Hero(
-                      tag: 'item-image-${item.id}',
-                      child: _ItemImage(
-                        houseId: houseId,
-                        fileId: item.imageFileId!,
-                        owner: item.imageUploadedBy ?? '',
+        child: ContextMenuRegion<String>(
+          itemBuilder: _menuItems,
+          onSelected: (value) => _onMenuSelected(value),
+          child: InkWell(
+            onTap: tapRowToToggle ? () => onToggle(item) : null,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              child: Row(
+                children: [
+                  Checkbox(value: item.done, onChanged: (_) => onToggle(item)),
+                  if (item.imageFileId != null) ...[
+                    GestureDetector(
+                      onTap: () => _showImagePreview(context),
+                      child: Hero(
+                        tag: 'item-image-${item.id}',
+                        child: _ItemImage(
+                          houseId: houseId,
+                          fileId: item.imageFileId!,
+                          owner: item.imageUploadedBy ?? '',
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.name,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          decoration: dimmed
-                              ? TextDecoration.lineThrough
-                              : null,
-                        ),
-                      ),
-                      if (_hasBadges)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Wrap(
-                            spacing: 4,
-                            runSpacing: 4,
-                            children: _buildBadges(context),
+                    const SizedBox(width: 8),
+                  ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.name,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            decoration: dimmed
+                                ? TextDecoration.lineThrough
+                                : null,
                           ),
                         ),
-                    ],
+                        if (_hasBadges)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Wrap(
+                              spacing: 4,
+                              runSpacing: 4,
+                              children: _buildBadges(context),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.visibility_outlined,
-                    size: 20,
-                    color: theme.colorScheme.onSurfaceVariant,
+                  IconButton(
+                    icon: Icon(
+                      Icons.visibility_outlined,
+                      size: 20,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () => onView(item),
                   ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () => onView(item),
-                ),
-                _MoreMenuButton(
-                  item: item,
-                  onEdit: onEdit,
-                  onMove: onMove,
-                  onDelete: onDelete,
-                ),
-              ],
+                  PopupMenuButton<String>(
+                    icon: Icon(
+                      Icons.more_horiz,
+                      size: 20,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    itemBuilder: (_) => _menuItems(),
+                    onSelected: _onMenuSelected,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  List<PopupMenuEntry<String>> _menuItems() => [
+    PopupMenuItem(
+      value: 'edit',
+      child: Row(
+        children: [
+          const Icon(Icons.edit, size: 18),
+          const SizedBox(width: 8),
+          Text(m.checklists.editItem),
+        ],
+      ),
+    ),
+    PopupMenuItem(
+      value: 'move',
+      child: Row(
+        children: [
+          const Icon(Icons.drive_file_move_outlined, size: 18),
+          const SizedBox(width: 8),
+          Text(m.checklists.moveItem),
+        ],
+      ),
+    ),
+    PopupMenuItem(
+      value: 'remove',
+      child: Row(
+        children: [
+          const Icon(Icons.delete, size: 18),
+          const SizedBox(width: 8),
+          Text(m.checklists.removeItem),
+        ],
+      ),
+    ),
+  ];
+
+  void _onMenuSelected(String value) {
+    switch (value) {
+      case 'edit':
+        onEdit(item);
+      case 'move':
+        onMove(item);
+      case 'remove':
+        onDelete(item);
+    }
   }
 
   void _showImagePreview(BuildContext context) {
@@ -257,75 +311,6 @@ class _Badge extends StatelessWidget {
           Text(label, style: TextStyle(fontSize: 11, color: textColor)),
         ],
       ),
-    );
-  }
-}
-
-class _MoreMenuButton extends StatelessWidget {
-  final ListItem item;
-  final ValueChanged<ListItem> onEdit;
-  final ValueChanged<ListItem> onMove;
-  final ValueChanged<ListItem> onDelete;
-
-  const _MoreMenuButton({
-    required this.item,
-    required this.onEdit,
-    required this.onMove,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      icon: Icon(
-        Icons.more_horiz,
-        size: 20,
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-      ),
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(),
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          value: 'edit',
-          child: Row(
-            children: [
-              const Icon(Icons.edit, size: 18),
-              const SizedBox(width: 8),
-              Text(m.checklists.editItem),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 'move',
-          child: Row(
-            children: [
-              const Icon(Icons.drive_file_move_outlined, size: 18),
-              const SizedBox(width: 8),
-              Text(m.checklists.moveItem),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 'remove',
-          child: Row(
-            children: [
-              const Icon(Icons.delete, size: 18),
-              const SizedBox(width: 8),
-              Text(m.checklists.removeItem),
-            ],
-          ),
-        ),
-      ],
-      onSelected: (value) {
-        switch (value) {
-          case 'edit':
-            onEdit(item);
-          case 'move':
-            onMove(item);
-          case 'remove':
-            onDelete(item);
-        }
-      },
     );
   }
 }

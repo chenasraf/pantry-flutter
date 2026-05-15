@@ -7,6 +7,7 @@ import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/photo_service.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/views/photos/photo_detail_view.dart';
+import 'package:pantry/widgets/context_menu_region.dart';
 import 'package:pantry/widgets/tile_menu_button.dart';
 
 class PhotoTile extends StatelessWidget {
@@ -131,89 +132,100 @@ class PhotoTile extends StatelessWidget {
     Uri uri,
     Map<String, String> headers,
   ) {
-    return GestureDetector(
-      onTap: () => _showPhotoDetail(context, uri, headers),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            CachedNetworkImage(
-              imageUrl: uri.toString(),
-              httpHeaders: headers,
-              fit: BoxFit.cover,
-              errorWidget: (_, _, _) => Container(
-                color: theme.colorScheme.surfaceContainerHighest,
-                child: const Icon(Icons.broken_image_outlined, size: 32),
-              ),
-            ),
-            Positioned(
-              top: 2,
-              right: 2,
-              child: TileMenuButton(
-                items: [
-                  PopupMenuItem(
-                    value: 'caption',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.edit, size: 18),
-                        const SizedBox(width: 8),
-                        Text(m.photoBoard.caption),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.delete, size: 18),
-                        const SizedBox(width: 8),
-                        Text(m.common.delete),
-                      ],
-                    ),
-                  ),
-                ],
-                onSelected: (value) {
-                  switch (value) {
-                    case 'caption':
-                      _editCaption(context);
-                    case 'delete':
-                      _confirmDelete(context);
-                  }
-                },
-              ),
-            ),
-            if (photo.caption != null && photo.caption!.isNotEmpty)
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [Colors.black.withAlpha(180), Colors.transparent],
-                    ),
-                  ),
-                  child: Text(
-                    photo.caption!,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+    return ContextMenuRegion<String>(
+      itemBuilder: _menuItems,
+      onSelected: (value) => _onMenuSelected(context, value),
+      child: GestureDetector(
+        onTap: () => _showPhotoDetail(context, uri, headers),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CachedNetworkImage(
+                imageUrl: uri.toString(),
+                httpHeaders: headers,
+                fit: BoxFit.cover,
+                errorWidget: (_, _, _) => Container(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  child: const Icon(Icons.broken_image_outlined, size: 32),
                 ),
               ),
-          ],
+              Positioned(
+                top: 2,
+                right: 2,
+                child: TileMenuButton(
+                  items: _menuItems(),
+                  onSelected: (value) => _onMenuSelected(context, value),
+                ),
+              ),
+              if (photo.caption != null && photo.caption!.isNotEmpty)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withAlpha(180),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    child: Text(
+                      photo.caption!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.white,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  List<PopupMenuEntry<String>> _menuItems() => [
+    PopupMenuItem(
+      value: 'caption',
+      child: Row(
+        children: [
+          const Icon(Icons.edit, size: 18),
+          const SizedBox(width: 8),
+          Text(m.photoBoard.caption),
+        ],
+      ),
+    ),
+    PopupMenuItem(
+      value: 'delete',
+      child: Row(
+        children: [
+          const Icon(Icons.delete, size: 18),
+          const SizedBox(width: 8),
+          Text(m.common.delete),
+        ],
+      ),
+    ),
+  ];
+
+  void _onMenuSelected(BuildContext context, String value) {
+    switch (value) {
+      case 'caption':
+        _editCaption(context);
+      case 'delete':
+        _confirmDelete(context);
+    }
   }
 
   void _showPhotoDetail(

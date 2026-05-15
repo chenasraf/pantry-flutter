@@ -6,6 +6,7 @@ import 'package:pantry/models/photo.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/photo_service.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
+import 'package:pantry/widgets/context_menu_region.dart';
 import 'package:pantry/widgets/tile_menu_button.dart';
 
 class FolderTile extends StatelessWidget {
@@ -38,133 +39,141 @@ class FolderTile extends StatelessWidget {
       },
       builder: (context, candidateData, rejectedData) {
         final isHovering = candidateData.isNotEmpty;
-        return GestureDetector(
-          onTap: () => controller.enterFolder(folder.id),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: isHovering
-                  ? Border.all(color: theme.colorScheme.primary, width: 2)
-                  : null,
-            ),
-            child: Stack(
-              children: [
-                // Photo stack or folder icon — full bleed
-                Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: previewPhotos.isNotEmpty
-                        ? _buildPhotoStack(theme, headers)
-                        : Center(
-                            child: Icon(
-                              Icons.folder,
-                              size: 56,
-                              color: theme.colorScheme.onSurfaceVariant,
+        return ContextMenuRegion<String>(
+          itemBuilder: _menuItems,
+          onSelected: (value) => _onMenuSelected(context, value),
+          child: GestureDetector(
+            onTap: () => controller.enterFolder(folder.id),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: isHovering
+                    ? Border.all(color: theme.colorScheme.primary, width: 2)
+                    : null,
+              ),
+              child: Stack(
+                children: [
+                  // Photo stack or folder icon — full bleed
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: previewPhotos.isNotEmpty
+                          ? _buildPhotoStack(theme, headers)
+                          : Center(
+                              child: Icon(
+                                Icons.folder,
+                                size: 56,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
                             ),
-                          ),
+                    ),
                   ),
-                ),
-                // Count badge
-                if (photoCount > 0)
+                  // Count badge
+                  if (photoCount > 0)
+                    Positioned(
+                      top: 6,
+                      left: 6,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.inverseSurface,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          m.photoBoard.photoCount(photoCount),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: theme.colorScheme.onInverseSurface,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  // Folder name with gradient
                   Positioned(
-                    top: 6,
-                    left: 6,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
+                      padding: const EdgeInsets.only(
+                        left: 6,
+                        right: 6,
+                        bottom: 6,
+                        top: 20,
                       ),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.inverseSurface,
-                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Colors.black.withAlpha(180),
+                            Colors.transparent,
+                          ],
+                        ),
                       ),
                       child: Text(
-                        m.photoBoard.photoCount(photoCount),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: theme.colorScheme.onInverseSurface,
-                          fontWeight: FontWeight.bold,
+                        folder.name,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
                         ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
-                // Folder name with gradient
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      left: 6,
-                      right: 6,
-                      bottom: 6,
-                      top: 20,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          Colors.black.withAlpha(180),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                    child: Text(
-                      folder.name,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.white,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
+                  // Menu
+                  Positioned(
+                    top: 2,
+                    right: 2,
+                    child: TileMenuButton(
+                      items: _menuItems(),
+                      onSelected: (value) => _onMenuSelected(context, value),
                     ),
                   ),
-                ),
-                // Menu
-                Positioned(
-                  top: 2,
-                  right: 2,
-                  child: TileMenuButton(
-                    items: [
-                      PopupMenuItem(
-                        value: 'rename',
-                        child: Row(
-                          children: [
-                            const Icon(Icons.edit, size: 18),
-                            const SizedBox(width: 8),
-                            Text(m.photoBoard.renameFolder),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Row(
-                          children: [
-                            const Icon(Icons.delete, size: 18),
-                            const SizedBox(width: 8),
-                            Text(m.photoBoard.deleteFolder),
-                          ],
-                        ),
-                      ),
-                    ],
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'rename':
-                          _renameFolder(context);
-                        case 'delete':
-                          _deleteFolder(context);
-                      }
-                    },
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
       },
     );
+  }
+
+  List<PopupMenuEntry<String>> _menuItems() => [
+    PopupMenuItem(
+      value: 'rename',
+      child: Row(
+        children: [
+          const Icon(Icons.edit, size: 18),
+          const SizedBox(width: 8),
+          Text(m.photoBoard.renameFolder),
+        ],
+      ),
+    ),
+    PopupMenuItem(
+      value: 'delete',
+      child: Row(
+        children: [
+          const Icon(Icons.delete, size: 18),
+          const SizedBox(width: 8),
+          Text(m.photoBoard.deleteFolder),
+        ],
+      ),
+    ),
+  ];
+
+  void _onMenuSelected(BuildContext context, String value) {
+    switch (value) {
+      case 'rename':
+        _renameFolder(context);
+      case 'delete':
+        _deleteFolder(context);
+    }
   }
 
   Widget _buildPhotoStack(ThemeData theme, Map<String, String> headers) {

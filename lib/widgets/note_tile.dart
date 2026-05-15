@@ -8,6 +8,7 @@ import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
+import 'package:pantry/widgets/context_menu_region.dart';
 
 class NoteTile extends StatelessWidget {
   final Note note;
@@ -28,7 +29,7 @@ class NoteTile extends StatelessWidget {
         onTap: () => controller.toggleSelection(note.id),
         child: Stack(
           children: [
-            _buildCard(theme, bgColor, textColor),
+            _buildCard(context, bgColor, textColor),
             Positioned(
               top: 4,
               left: 4,
@@ -59,19 +60,24 @@ class NoteTile extends StatelessWidget {
             child: SizedBox(
               width: 160,
               height: 160,
-              child: _buildCard(theme, bgColor, textColor),
+              child: _buildCard(context, bgColor, textColor),
             ),
           ),
-          child: GestureDetector(
-            onTap: () => _viewNote(context, bgColor, textColor),
-            child: _buildCard(theme, bgColor, textColor),
+          child: ContextMenuRegion<String>(
+            itemBuilder: _menuItems,
+            onSelected: (value) => _onMenuSelected(context, value),
+            child: GestureDetector(
+              onTap: () => _viewNote(context, bgColor, textColor),
+              child: _buildCard(context, bgColor, textColor),
+            ),
           ),
         );
       },
     );
   }
 
-  Widget _buildCard(ThemeData theme, Color bgColor, Color textColor) {
+  Widget _buildCard(BuildContext context, Color bgColor, Color textColor) {
+    final theme = Theme.of(context);
     final titleDir = detectTextDirection(note.title);
     final contentDir = detectTextDirection(note.content);
 
@@ -102,10 +108,12 @@ class NoteTile extends StatelessWidget {
                     ),
                   ),
                 ),
-                _NoteMenuButton(
-                  note: note,
-                  controller: controller,
-                  color: textColor,
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert, size: 20, color: textColor),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  itemBuilder: (_) => _menuItems(),
+                  onSelected: (value) => _onMenuSelected(context, value),
                 ),
               ],
             ),
@@ -210,56 +218,37 @@ class NoteTile extends StatelessWidget {
     final luminance = bg.computeLuminance();
     return luminance > 0.5 ? Colors.black87 : Colors.white;
   }
-}
 
-class _NoteMenuButton extends StatelessWidget {
-  final Note note;
-  final NotesController controller;
-  final Color color;
+  List<PopupMenuEntry<String>> _menuItems() => [
+    PopupMenuItem(
+      value: 'edit',
+      child: Row(
+        children: [
+          const Icon(Icons.edit, size: 18),
+          const SizedBox(width: 8),
+          Text(m.notesWall.editNote),
+        ],
+      ),
+    ),
+    PopupMenuItem(
+      value: 'delete',
+      child: Row(
+        children: [
+          const Icon(Icons.delete, size: 18),
+          const SizedBox(width: 8),
+          Text(m.common.delete),
+        ],
+      ),
+    ),
+  ];
 
-  const _NoteMenuButton({
-    required this.note,
-    required this.controller,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      icon: Icon(Icons.more_vert, size: 20, color: color),
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(),
-      onSelected: (value) {
-        switch (value) {
-          case 'edit':
-            _editNote(context);
-          case 'delete':
-            _confirmDelete(context);
-        }
-      },
-      itemBuilder: (_) => [
-        PopupMenuItem(
-          value: 'edit',
-          child: Row(
-            children: [
-              const Icon(Icons.edit, size: 18),
-              const SizedBox(width: 8),
-              Text(m.notesWall.editNote),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 'delete',
-          child: Row(
-            children: [
-              const Icon(Icons.delete, size: 18),
-              const SizedBox(width: 8),
-              Text(m.common.delete),
-            ],
-          ),
-        ),
-      ],
-    );
+  void _onMenuSelected(BuildContext context, String value) {
+    switch (value) {
+      case 'edit':
+        _editNote(context);
+      case 'delete':
+        _confirmDelete(context);
+    }
   }
 
   void _editNote(BuildContext context) {
