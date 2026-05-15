@@ -93,9 +93,10 @@ jobs:
     uses: chenasraf/workflows/.github/workflows/release-please-fastlane-changelog.yml@master
     with:
       release-type: dart
-      fastlane-changelog-dirs: |
-        fastlane/metadata/android/en-US/changelogs
-        fastlane/metadata/ios/en-US/changelogs
+      scopes: |
+        ios: fastlane/metadata/ios/en-US/changelogs
+        apple: fastlane/metadata/ios/en-US/changelogs
+        android: fastlane/metadata/android/en-US/changelogs
 
   build-android:
     needs: [setup, release-please]
