@@ -129,6 +129,8 @@ checklists:
   removeItem: הסר פריט
   moveItem: העבר לרשימה
   moveFailed: העברת הפריט נכשלה.
+  itemMarkedDone: הפריט סומן כהושלם
+  undo: בטל
   createList: רשימה חדשה
   listName: שם הרשימה
   listDescription: תיאור (אופציונלי)

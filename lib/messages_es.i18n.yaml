@@ -129,6 +129,8 @@ checklists:
   removeItem: "Eliminar artículo"
   moveItem: Mover a lista
   moveFailed: "No se pudo mover el artículo."
+  itemMarkedDone: "Artículo marcado como hecho"
+  undo: Deshacer
   createList: Nueva lista
   listName: Nombre de la lista
   listDescription: "Descripción (opcional)"

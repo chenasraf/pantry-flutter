@@ -714,6 +714,16 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get moveFailed => """Eintrag konnte nicht verschoben werden.""";
 
   /// ```dart
+  /// "Eintrag als erledigt markiert"
+  /// ```
+  String get itemMarkedDone => """Eintrag als erledigt markiert""";
+
+  /// ```dart
+  /// "Rückgängig"
+  /// ```
+  String get undo => """Rückgängig""";
+
+  /// ```dart
   /// "Neue Liste"
   /// ```
   String get createList => """Neue Liste""";
@@ -1595,6 +1605,8 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.removeItem""": """Eintrag entfernen""",
   """checklists.moveItem""": """In Liste verschieben""",
   """checklists.moveFailed""": """Eintrag konnte nicht verschoben werden.""",
+  """checklists.itemMarkedDone""": """Eintrag als erledigt markiert""",
+  """checklists.undo""": """Rückgängig""",
   """checklists.createList""": """Neue Liste""",
   """checklists.listName""": """Listenname""",
   """checklists.listDescription""": """Beschreibung (optional)""",

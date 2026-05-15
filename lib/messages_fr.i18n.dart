@@ -715,6 +715,16 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get moveFailed => """Impossible de déplacer l'article.""";
 
   /// ```dart
+  /// "Article marqué comme fait"
+  /// ```
+  String get itemMarkedDone => """Article marqué comme fait""";
+
+  /// ```dart
+  /// "Annuler"
+  /// ```
+  String get undo => """Annuler""";
+
+  /// ```dart
   /// "Nouvelle liste"
   /// ```
   String get createList => """Nouvelle liste""";
@@ -1592,6 +1602,8 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.removeItem""": """Supprimer l'article""",
   """checklists.moveItem""": """Déplacer vers une liste""",
   """checklists.moveFailed""": """Impossible de déplacer l'article.""",
+  """checklists.itemMarkedDone""": """Article marqué comme fait""",
+  """checklists.undo""": """Annuler""",
   """checklists.createList""": """Nouvelle liste""",
   """checklists.listName""": """Nom de la liste""",
   """checklists.listDescription""": """Description (facultatif)""",

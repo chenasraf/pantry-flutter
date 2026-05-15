@@ -129,6 +129,8 @@ checklists:
   removeItem: Eintrag entfernen
   moveItem: In Liste verschieben
   moveFailed: Eintrag konnte nicht verschoben werden.
+  itemMarkedDone: Eintrag als erledigt markiert
+  undo: "Rückgängig"
   createList: Neue Liste
   listName: Listenname
   listDescription: Beschreibung (optional)

@@ -525,6 +525,34 @@ class _ReorderablePartition extends StatelessWidget {
     this.categorySpacing = 'disabled',
   });
 
+  void _toggleItem(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) {
+    final wasDone = item.done;
+    controller.toggleItem(item);
+    if (wasDone) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(m.checklists.itemMarkedDone),
+        action: SnackBarAction(
+          label: m.checklists.undo,
+          onPressed: () {
+            final current = controller.items.firstWhere(
+              (i) => i.id == item.id,
+              orElse: () => item.copyWith(done: true),
+            );
+            if (current.done) controller.toggleItem(current);
+          },
+        ),
+      ),
+    );
+  }
+
   void _viewItem(
     BuildContext context,
     ChecklistsController controller,
@@ -684,7 +712,7 @@ class _ReorderablePartition extends StatelessWidget {
               ? controller.categories[item.categoryId]
               : null,
           houseId: controller.houseId,
-          onToggle: controller.toggleItem,
+          onToggle: (item) => _toggleItem(context, controller, item),
           onView: (item) => _viewItem(context, controller, item),
           onEdit: (item) => _editItem(context, controller, item),
           onMove: (item) => _moveItem(context, controller, item),

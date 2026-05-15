@@ -129,6 +129,8 @@ checklists:
   removeItem: Remove item
   moveItem: Move to list
   moveFailed: Failed to move item.
+  itemMarkedDone: Item marked as done
+  undo: Undo
   createList: New list
   listName: List name
   listDescription: Description (optional)

@@ -709,6 +709,16 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get moveFailed => """העברת הפריט נכשלה.""";
 
   /// ```dart
+  /// "הפריט סומן כהושלם"
+  /// ```
+  String get itemMarkedDone => """הפריט סומן כהושלם""";
+
+  /// ```dart
+  /// "בטל"
+  /// ```
+  String get undo => """בטל""";
+
+  /// ```dart
   /// "רשימה חדשה"
   /// ```
   String get createList => """רשימה חדשה""";
@@ -1573,6 +1583,8 @@ Map<String, String> get messagesHeMap => {
   """checklists.removeItem""": """הסר פריט""",
   """checklists.moveItem""": """העבר לרשימה""",
   """checklists.moveFailed""": """העברת הפריט נכשלה.""",
+  """checklists.itemMarkedDone""": """הפריט סומן כהושלם""",
+  """checklists.undo""": """בטל""",
   """checklists.createList""": """רשימה חדשה""",
   """checklists.listName""": """שם הרשימה""",
   """checklists.listDescription""": """תיאור (אופציונלי)""",
