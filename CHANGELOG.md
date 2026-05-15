@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.12.0](https://github.com/chenasraf/pantry-flutter/compare/v0.11.0...v0.12.0) (2026-05-15)
+
+
+### Features
+
+* add setting to show spacing between categories in checklist items ([689e4d6](https://github.com/chenasraf/pantry-flutter/commit/689e4d6cad89a84621b77e300198d12ac43131ff))
+* create new lists from the list selector ([41e8ac1](https://github.com/chenasraf/pantry-flutter/commit/41e8ac13a0ab78436bc2674220ed282f8410862d))
+* share photos, links, and text to Pantry from other apps ([60b16aa](https://github.com/chenasraf/pantry-flutter/commit/60b16aad309ec0f02b542c53a7bfafb9f9652da3))
+* take photos directly from the photo board ([d880269](https://github.com/chenasraf/pantry-flutter/commit/d8802690c0a3ab80346f84ea1df4b3774ba6e4ee))
+
 ## [0.11.0](https://github.com/chenasraf/pantry-flutter/compare/v0.10.1...v0.11.0) (2026-05-12)
 
 
