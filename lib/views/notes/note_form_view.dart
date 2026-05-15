@@ -4,6 +4,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
+import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 const _colorOptions = <String?>[
   null, // default / no color
@@ -134,6 +135,7 @@ class _NoteFormViewState extends State<NoteFormView> {
       appBar: AppBar(
         backgroundColor: bgColor,
         foregroundColor: textColor,
+        leading: appBarBackLeading(context),
         title: Text(_isEditing ? m.notesWall.editNote : m.notesWall.newNote),
       ),
       floatingActionButton: FloatingActionButton(

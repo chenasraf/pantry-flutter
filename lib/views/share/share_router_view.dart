@@ -10,6 +10,7 @@ import 'package:pantry/services/pending_note_share_service.dart';
 import 'package:pantry/services/pending_photo_share_service.dart';
 import 'package:pantry/services/photo_service.dart';
 import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Entry screen for an incoming OS share intent. Classifies the payload,
 /// optionally asks the user to pick a house, and then routes:
@@ -174,7 +175,10 @@ class _ShareRouterViewState extends State<ShareRouterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(m.share.title)),
+      appBar: AppBar(
+        leading: appBarBackLeading(context),
+        title: Text(m.share.title),
+      ),
       body: Center(
         child: _busy
             ? const CircularProgressIndicator()

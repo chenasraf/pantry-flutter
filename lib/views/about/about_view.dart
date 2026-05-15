@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class AboutView extends StatefulWidget {
   const AboutView({super.key});
@@ -35,7 +36,7 @@ class _AboutViewState extends State<AboutView> {
     final a = m.about;
 
     return Scaffold(
-      appBar: AppBar(title: Text(a.title)),
+      appBar: AppBar(leading: appBarBackLeading(context), title: Text(a.title)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [

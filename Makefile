@@ -40,12 +40,15 @@ help:
 	@echo "    android-build-aab   Build Android App Bundle"
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
+	@echo "    macos-build         Build macOS app (.app bundle, no codesign)"
+	@echo "    macos-build-pkg     Build signed macOS .pkg for App Store"
 	@echo "    build-all           Build all platforms"
 	@echo ""
 	@echo "  Release:"
 	@echo "    android-release-apk Build APK and copy to build/release/"
 	@echo "    android-release-aab Build AAB and copy to build/release/"
 	@echo "    ios-release         Build IPA and copy to build/release/"
+	@echo "    macos-release       Build PKG and copy to build/release/"
 	@echo "    release-all         Build and release all platforms"
 	@echo ""
 	@echo "  Deploying:"
@@ -53,6 +56,8 @@ help:
 	@echo "    android-promote     Promote release between tracks (FROM=internal, TO=production, STATUS=draft|completed)"
 	@echo "    ios-deploy          Build IPA and upload (DEST=testflight|appstore, default: testflight)"
 	@echo "    ios-submit          Submit the existing App Store build for review (no upload)"
+	@echo "    macos-deploy        Build PKG and upload (DEST=testflight|appstore, default: testflight)"
+	@echo "    macos-submit        Submit the existing Mac App Store build for review (no upload)"
 	@echo "    deploy-production   Build and deploy to production (Google Play + App Store)"
 	@echo "    deploy-beta         Build and deploy to beta (Google Play beta + TestFlight)"
 
@@ -137,6 +142,26 @@ ios-build:
 ios-build-ipa:
 	flutter build ipa --release --obfuscate --split-debug-info=build/debug-info-ios --dart-define-from-file=.env --export-options-plist=ios/ExportOptions.plist
 
+.PHONY: macos-build
+macos-build:
+	flutter build macos --release --obfuscate --split-debug-info=build/debug-info-macos
+
+.PHONY: macos-build-pkg
+macos-build-pkg:
+	flutter build macos --config-only --obfuscate --split-debug-info=build/debug-info-macos
+	rm -rf build/macos/Runner.xcarchive build/macos/pkg
+	xcodebuild -workspace macos/Runner.xcworkspace \
+		-scheme Runner \
+		-configuration Release \
+		-archivePath build/macos/Runner.xcarchive \
+		-allowProvisioningUpdates \
+		archive
+	xcodebuild -exportArchive \
+		-archivePath build/macos/Runner.xcarchive \
+		-exportPath build/macos/pkg \
+		-exportOptionsPlist macos/ExportOptions.plist \
+		-allowProvisioningUpdates
+
 .PHONY: build-all
 build-all: android-build-apk android-build-aab
 
@@ -158,6 +183,12 @@ ios-release: ios-build-ipa
 	mkdir -p build/release
 	cp build/ios/ipa/*.ipa build/release/pantry-$(VERSION).ipa
 	@echo "-> build/release/pantry-$(VERSION).ipa"
+
+.PHONY: macos-release
+macos-release: macos-build-pkg
+	mkdir -p build/release
+	cp build/macos/pkg/*.pkg build/release/pantry-$(VERSION).pkg
+	@echo "-> build/release/pantry-$(VERSION).pkg"
 
 .PHONY: android-upload
 android-upload:
@@ -193,6 +224,23 @@ ios-deploy: ios-build-ipa ios-upload
 .PHONY: ios-submit
 ios-submit:
 	bundle exec fastlane ios submit
+
+.PHONY: macos-upload
+macos-upload:
+	@echo "$(or $(DEST),testflight)" | grep -qE '^(testflight|appstore)$$' || (echo "Error: Invalid DEST '$(DEST)'. Must be: testflight, appstore"; exit 1)
+	@echo "Destination: $(or $(DEST),testflight)"
+	@if [ "$(or $(DEST),testflight)" = "appstore" ]; then \
+		bundle exec fastlane mac release; \
+	else \
+		bundle exec fastlane mac beta; \
+	fi
+
+.PHONY: macos-deploy
+macos-deploy: macos-build-pkg macos-upload
+
+.PHONY: macos-submit
+macos-submit:
+	bundle exec fastlane mac submit
 
 .PHONY: release-all
 release-all: android-release-apk android-release-aab

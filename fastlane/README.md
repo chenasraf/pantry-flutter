@@ -78,6 +78,43 @@ Submit existing App Store build for review (no IPA upload)
 
 ----
 
+
+## Mac
+
+### mac beta
+
+```sh
+[bundle exec] fastlane mac beta
+```
+
+Upload to TestFlight (macOS)
+
+### mac release
+
+```sh
+[bundle exec] fastlane mac release
+```
+
+Upload to Mac App Store
+
+### mac metadata
+
+```sh
+[bundle exec] fastlane mac metadata
+```
+
+Sync macOS metadata only (no PKG upload)
+
+### mac submit
+
+```sh
+[bundle exec] fastlane mac submit
+```
+
+Submit existing Mac App Store build for review (no PKG upload)
+
+----
+
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 
 More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).

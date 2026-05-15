@@ -3,6 +3,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 
 class CategoriesView extends StatefulWidget {
@@ -125,7 +126,10 @@ class _CategoriesViewState extends State<CategoriesView> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(m.categories.manageTitle)),
+      appBar: AppBar(
+        leading: appBarBackLeading(context),
+        title: Text(m.categories.manageTitle),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _create,
         child: const Icon(Icons.add),

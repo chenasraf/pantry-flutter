@@ -11,6 +11,7 @@ import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/date_format.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'checklists_controller.dart';
 import 'item_form_view.dart';
 
@@ -53,6 +54,8 @@ class ItemDetailView extends StatelessWidget {
           SliverAppBar(
             expandedHeight: hasImage ? 280 : 0,
             pinned: true,
+            toolbarHeight: theme.appBarTheme.toolbarHeight ?? kToolbarHeight,
+            leading: appBarBackLeading(context),
             title: Directionality(
               textDirection: nameDir,
               child: Text(item.name),

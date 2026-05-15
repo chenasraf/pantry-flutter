@@ -95,7 +95,9 @@ jobs:
       release-type: dart
       scopes: |
         ios: fastlane/metadata/ios/en-US/changelogs
-        apple: fastlane/metadata/ios/en-US/changelogs
+        apple: |
+          fastlane/metadata/ios/en-US/changelogs
+          fastlane/metadata/macos/en-US/changelogs
         android: fastlane/metadata/android/en-US/changelogs
 
   build-android:
@@ -112,9 +114,9 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'gradle'
+          distribution: "temurin"
+          java-version: "17"
+          cache: "gradle"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2

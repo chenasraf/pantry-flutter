@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import 'package:pantry/widgets/app_bar_back_leading.dart';
+
 class ImagePreview extends StatelessWidget {
   final String imageUrl;
   final Map<String, String> headers;
@@ -45,6 +47,7 @@ class ImagePreview extends StatelessWidget {
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
           elevation: 0,
+          leading: appBarBackLeading(context),
         ),
         body: InteractiveViewer(
           minScale: 0.5,

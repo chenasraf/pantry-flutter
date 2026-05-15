@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'dart:math' as math;
 
 import 'package:file_picker/file_picker.dart';
@@ -21,6 +22,7 @@ class _PhotoAddButtonState extends State<PhotoAddButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animController;
   bool _open = false;
+  bool _cameraSupported = !Platform.isMacOS;
 
   @override
   void initState() {
@@ -29,6 +31,12 @@ class _PhotoAddButtonState extends State<PhotoAddButton>
       vsync: this,
       duration: const Duration(milliseconds: 380),
     );
+    if (_cameraSupported) {
+      isiOSAppOnMac().then((onMac) {
+        if (!mounted || !onMac) return;
+        setState(() => _cameraSupported = false);
+      });
+    }
   }
 
   @override
@@ -54,7 +62,7 @@ class _PhotoAddButtonState extends State<PhotoAddButton>
 
   Future<void> _pickPhotos() async {
     _close();
-    final useFilePicker = await isiOSAppOnMac();
+    final useFilePicker = Platform.isMacOS || await isiOSAppOnMac();
     if (useFilePicker) {
       final result = await FilePicker.pickFiles(
         allowMultiple: true,
@@ -135,11 +143,12 @@ class _PhotoAddButtonState extends State<PhotoAddButton>
         label: m.photoBoard.addMenu.upload,
         onTap: _pickPhotos,
       ),
-      _FabAction(
-        icon: Icons.camera_alt,
-        label: m.photoBoard.addMenu.camera,
-        onTap: _takePhoto,
-      ),
+      if (_cameraSupported)
+        _FabAction(
+          icon: Icons.camera_alt,
+          label: m.photoBoard.addMenu.camera,
+          onTap: _takePhoto,
+        ),
       _FabAction(
         icon: Icons.create_new_folder,
         label: m.photoBoard.addMenu.newFolder,

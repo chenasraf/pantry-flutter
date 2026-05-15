@@ -6,6 +6,7 @@ import 'package:pantry/models/note.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
+import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class NoteDetailView extends StatelessWidget {
   final Note note;
@@ -32,15 +33,8 @@ class NoteDetailView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: bgColor,
         foregroundColor: textColor,
-        title: Align(
-          alignment: titleDir == TextDirection.rtl
-              ? Alignment.centerRight
-              : Alignment.centerLeft,
-          child: Directionality(
-            textDirection: titleDir,
-            child: Text(note.title),
-          ),
-        ),
+        leading: appBarBackLeading(context),
+        title: Directionality(textDirection: titleDir, child: Text(note.title)),
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: null,

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -116,13 +117,15 @@ class PantryAppState extends State<PantryApp> {
   Widget build(BuildContext context) {
     final color = ThemingService.instance.effectiveColor;
     final locale = LocaleService.instance.effectiveLocale;
+    final isMacOS = !kIsWeb && Platform.isMacOS;
+    final appBarTheme = isMacOS ? const AppBarTheme(toolbarHeight: 66) : null;
     return ChangeNotifierProvider<PrefsService>.value(
       value: PrefsService.instance,
       child: Directionality(
         textDirection: LocaleService.instance.textDirection,
         child: MaterialApp(
           key: ValueKey(locale),
-          // debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: false,
           navigatorKey: rootNavigatorKey,
           locale: locale,
           supportedLocales: supportedLocales,
@@ -137,6 +140,7 @@ class PantryAppState extends State<PantryApp> {
               seedColor: color,
             ).copyWith(primary: color),
             useMaterial3: true,
+            appBarTheme: appBarTheme,
             popupMenuTheme: PopupMenuThemeData(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -151,6 +155,7 @@ class PantryAppState extends State<PantryApp> {
               brightness: Brightness.dark,
             ).copyWith(primary: color),
             useMaterial3: true,
+            appBarTheme: appBarTheme,
             popupMenuTheme: PopupMenuThemeData(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),

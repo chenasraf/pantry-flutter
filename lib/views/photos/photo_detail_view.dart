@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/models/photo.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
+import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class PhotoDetailView extends StatelessWidget {
   final Photo photo;
@@ -21,7 +22,10 @@ class PhotoDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(photo.caption ?? '')),
+      appBar: AppBar(
+        leading: appBarBackLeading(context),
+        title: Text(photo.caption ?? ''),
+      ),
       body: InteractiveViewer(
         child: Center(
           child: CachedNetworkImage(

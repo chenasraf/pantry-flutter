@@ -10,6 +10,7 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/category_picker.dart';
 import 'package:pantry/widgets/recurrence_dialog.dart';
 import 'package:pantry/widgets/repeat_button.dart';
@@ -151,7 +152,10 @@ class _ItemFormViewState extends State<ItemFormView> {
     final f = m.checklists.itemForm;
 
     return Scaffold(
-      appBar: AppBar(title: Text(_isEditing ? f.editTitle : f.addTitle)),
+      appBar: AppBar(
+        leading: appBarBackLeading(context),
+        title: Text(_isEditing ? f.editTitle : f.addTitle),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _saving ? null : _save,
         child: _saving

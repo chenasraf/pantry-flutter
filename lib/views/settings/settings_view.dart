@@ -7,6 +7,7 @@ import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/locale_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/theming_service.dart';
+import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -132,7 +133,10 @@ class _SettingsViewState extends State<SettingsView> {
     final categorySpacing = prefs.checklistCategorySpacing;
 
     return Scaffold(
-      appBar: AppBar(title: Text(m.settings.title)),
+      appBar: AppBar(
+        leading: appBarBackLeading(context),
+        title: Text(m.settings.title),
+      ),
       body: ListView(
         children: [
           // -- General --
