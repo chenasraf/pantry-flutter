@@ -249,11 +249,13 @@ release-all: android-release-apk android-release-aab
 deploy-production:
 	$(MAKE) android-deploy TRACK=production STATUS=completed
 	$(MAKE) ios-deploy DEST=appstore
+	$(MAKE) macos-deploy DEST=appstore
 
 .PHONY: deploy-beta
 deploy-beta:
 	$(MAKE) android-deploy TRACK=beta STATUS=completed
 	$(MAKE) ios-deploy DEST=testflight
+	$(MAKE) macos-deploy DEST=testflight
 
 # CocoaPods
 .PHONY: pods
