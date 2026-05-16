@@ -1,5 +1,6 @@
 Features
-- add setting to show spacing between categories in checklist items
-- create new lists from the list selector
-- share photos, links, and text to Pantry from other apps
-- take photos directly from the photo board
+- add trash view
+- add undo action for checking items
+- improve ui for larger devices
+- go back by using Esc key
+- switch between photos in photo view
