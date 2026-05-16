@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -60,10 +61,35 @@ class PantryApp extends StatefulWidget {
   State<PantryApp> createState() => PantryAppState();
 }
 
-class _PopRouteOnEscapeAction extends Action<DismissIntent> {
+class _EscapePopWrapper extends StatelessWidget {
+  final Widget child;
+  const _EscapePopWrapper({required this.child});
+
   @override
-  Object? invoke(covariant DismissIntent intent) {
-    rootNavigatorKey.currentState?.maybePop();
+  Widget build(BuildContext context) {
+    return Shortcuts(
+      shortcuts: const <ShortcutActivator, Intent>{
+        SingleActivator(LogicalKeyboardKey.escape): _PopRouteIntent(),
+      },
+      child: Actions(
+        actions: <Type, Action<Intent>>{_PopRouteIntent: _PopRouteAction()},
+        child: child,
+      ),
+    );
+  }
+}
+
+class _PopRouteIntent extends Intent {
+  const _PopRouteIntent();
+}
+
+class _PopRouteAction extends Action<_PopRouteIntent> {
+  @override
+  Object? invoke(covariant _PopRouteIntent intent) {
+    final nav = rootNavigatorKey.currentState;
+    if (nav?.canPop() == true) {
+      nav!.maybePop();
+    }
     return null;
   }
 }
@@ -177,9 +203,10 @@ class PantryAppState extends State<PantryApp> {
             ),
           ),
           themeMode: ThemingService.instance.themeMode,
-          actions: <Type, Action<Intent>>{
-            ...WidgetsApp.defaultActions,
-            if (isDesktopHost) DismissIntent: _PopRouteOnEscapeAction(),
+          builder: (context, child) {
+            if (child == null) return const SizedBox.shrink();
+            if (!isDesktopHost) return child;
+            return _EscapePopWrapper(child: child);
           },
           onGenerateInitialRoutes: (initialRoute) => [
             MaterialPageRoute(
