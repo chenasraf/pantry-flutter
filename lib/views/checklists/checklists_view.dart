@@ -709,6 +709,7 @@ class _ReorderablePartition extends StatelessWidget {
     messenger.showSnackBar(
       SnackBar(
         content: Text(m.checklists.itemMarkedDone),
+        duration: const Duration(seconds: 6),
         action: SnackBarAction(
           label: m.checklists.undo,
           onPressed: () async {
