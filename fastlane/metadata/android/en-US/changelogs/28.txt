@@ -1,0 +1,2 @@
+Bug Fixes
+- auto-dismiss item check snackbar after 6 seconds

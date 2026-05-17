@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.13.1](https://github.com/chenasraf/pantry-flutter/compare/v0.13.0...v0.13.1) (2026-05-17)
+
+
+### Bug Fixes
+
+* **checklists:** auto-dismiss item check snackbar after 6 seconds ([4e53481](https://github.com/chenasraf/pantry-flutter/commit/4e53481cdfcdba1d75cebadffb023b6a92b3df75))
+* **macos:** esc to dismiss would ring bell and not work ([116eb18](https://github.com/chenasraf/pantry-flutter/commit/116eb18693137a0d8733c903d0f66a4e67f3210a))
+
 ## [0.13.0](https://github.com/chenasraf/pantry-flutter/compare/v0.12.0...v0.13.0) (2026-05-15)
 
 

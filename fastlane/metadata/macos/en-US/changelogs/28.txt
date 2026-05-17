@@ -1,0 +1,3 @@
+Bug Fixes
+- auto-dismiss item check snackbar after 6 seconds
+- esc to dismiss would ring bell and not work
