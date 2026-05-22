@@ -1,5 +1,85 @@
 # Changelog
 
+## [0.9.10](https://github.com/chenasraf/pantry-flutter/compare/v0.13.1...v0.9.10) (2026-05-22)
+
+
+### Features
+
+* add about page ([0cb6c06](https://github.com/chenasraf/pantry-flutter/commit/0cb6c06d9d418b61d5fd1c4852ec244366aa6af8))
+* add category in category picker ([9e67f06](https://github.com/chenasraf/pantry-flutter/commit/9e67f06826007c31ac35e694b33648957bc39871))
+* add de, es, fr locales ([7ec9526](https://github.com/chenasraf/pantry-flutter/commit/7ec952620db2d957278d58c3798e5b03ab8c59fc))
+* add hebrew language translation ([7c572a6](https://github.com/chenasraf/pantry-flutter/commit/7c572a6e64eafcf3433a2e6599b698312ffa9cbe))
+* add more icons to categories ([179c6d7](https://github.com/chenasraf/pantry-flutter/commit/179c6d781c1342434608b9af88daa807795c9a46))
+* add search in lists ([eb797dd](https://github.com/chenasraf/pantry-flutter/commit/eb797dd0e87f7eb14576a3bdf7e77f9fe1c0cb09))
+* add setting to require checkbox tap to complete checklist items ([ef2bc85](https://github.com/chenasraf/pantry-flutter/commit/ef2bc851deedc180dda51fbfb7378aef7145cf5f))
+* add setting to show spacing between categories in checklist items ([689e4d6](https://github.com/chenasraf/pantry-flutter/commit/689e4d6cad89a84621b77e300198d12ac43131ff))
+* add sorting by category for checklist ([5ae3afc](https://github.com/chenasraf/pantry-flutter/commit/5ae3afcd41628db0d1a758602e1a6fae652788ae))
+* add trash view ([eb4d8d3](https://github.com/chenasraf/pantry-flutter/commit/eb4d8d3c509e6fe1c6ef998caaa58f6bd9a55a53))
+* add undo action for checking items ([ddf0c36](https://github.com/chenasraf/pantry-flutter/commit/ddf0c365a1ea4fb27f66fc19a7c5ffd7d72f6de7))
+* add/edit/delete items ([138f9a5](https://github.com/chenasraf/pantry-flutter/commit/138f9a58c410bb08c25e489b57abf8f10055d3bf))
+* allow adding one-off list items ([a447fe1](https://github.com/chenasraf/pantry-flutter/commit/a447fe1c8a1d9de655c081015f287afeba75bee1))
+* allow uploading list item image ([7243e43](https://github.com/chenasraf/pantry-flutter/commit/7243e43bbbfe8072327fc921ed2a4ffba228bd3f))
+* checklist sorting/reordering ([cc7ff96](https://github.com/chenasraf/pantry-flutter/commit/cc7ff963269514107775264d4bfbf47b1333d3c5))
+* checklist view ([5d54e1a](https://github.com/chenasraf/pantry-flutter/commit/5d54e1aa0328ade0902c3ea0de74079cf304447e))
+* create house ([0987eac](https://github.com/chenasraf/pantry-flutter/commit/0987eac1459e694e6bedf90346a49506ac430b7c))
+* create new lists from the list selector ([41e8ac1](https://github.com/chenasraf/pantry-flutter/commit/41e8ac13a0ab78436bc2674220ed282f8410862d))
+* handle server app not installed ([2c75a71](https://github.com/chenasraf/pantry-flutter/commit/2c75a715933fe6749d4486d279f95f207409279c))
+* improve main page navigations ([ea8ff9a](https://github.com/chenasraf/pantry-flutter/commit/ea8ff9aabd0924f8273927c907b800576c7cd697))
+* improve ui for larger devices ([eafc267](https://github.com/chenasraf/pantry-flutter/commit/eafc267e92b275796e1edb746c3c3b9dc75925e7))
+* initial commit ([0015ba0](https://github.com/chenasraf/pantry-flutter/commit/0015ba053b6854b1f6236c7daa7634a64556d2ab))
+* **ios:** open full file picker when running on macOS ([00241b8](https://github.com/chenasraf/pantry-flutter/commit/00241b8aceeda5175e0989f017031a94b6c53581))
+* launcher icon, splash, i18n ([4b1e876](https://github.com/chenasraf/pantry-flutter/commit/4b1e8765724b8e2f9d3f0639da375b14b7106f8a))
+* **macos:** go back by using Esc key ([88e153b](https://github.com/chenasraf/pantry-flutter/commit/88e153b96f249f4a8d8f19465a31cde7aa3ac8e0))
+* manage categories ([46dd3f2](https://github.com/chenasraf/pantry-flutter/commit/46dd3f21d6e289e1ed1c0dcc8ba084597b67973f))
+* move items between lists ([c5595c0](https://github.com/chenasraf/pantry-flutter/commit/c5595c0d1ae07c3c2dbf35fba5a70a957fc9af17))
+* note markdown+rtl support ([0688294](https://github.com/chenasraf/pantry-flutter/commit/068829460524cd2be4fb07ad42ebefb43c12b5fe))
+* notes wall ([755861a](https://github.com/chenasraf/pantry-flutter/commit/755861aa9134816a7f84eb0acf50579a945ebbe7))
+* notifications support ([4d0c28f](https://github.com/chenasraf/pantry-flutter/commit/4d0c28f2633c75647b41e765fa02935386798034))
+* photo board ([43cc0a3](https://github.com/chenasraf/pantry-flutter/commit/43cc0a3fcf47b890fbc47328934dc72db73a0125))
+* photos/notes multiselect ([0053f53](https://github.com/chenasraf/pantry-flutter/commit/0053f53cd7937445eca53b5d2c070b9b5a3eb82f))
+* share photos, links, and text to Pantry from other apps ([60b16aa](https://github.com/chenasraf/pantry-flutter/commit/60b16aad309ec0f02b542c53a7bfafb9f9652da3))
+* show next due date for list items ([e7ff39a](https://github.com/chenasraf/pantry-flutter/commit/e7ff39a2328ecd9967a3b162dc389bac8a645f38))
+* switch between photos in photo view ([cf9135e](https://github.com/chenasraf/pantry-flutter/commit/cf9135e0695f70b8c8c658421306f6cda610b6b4))
+* take photos directly from the photo board ([d880269](https://github.com/chenasraf/pantry-flutter/commit/d8802690c0a3ab80346f84ea1df4b3774ba6e4ee))
+* update notes view & edit ui ([36a74b3](https://github.com/chenasraf/pantry-flutter/commit/36a74b39e1beb37fc2f1446f8d45945a22289c6b))
+* update user menu ([639fb86](https://github.com/chenasraf/pantry-flutter/commit/639fb86a2075895676c8b73b6bfb3c7e89517f0e))
+
+
+### Bug Fixes
+
+* about urls not opening ([64af382](https://github.com/chenasraf/pantry-flutter/commit/64af382f10bd696f05a23d31ee8e04d746fc4b46))
+* add bottom padding to accomodate fab ([3b89798](https://github.com/chenasraf/pantry-flutter/commit/3b897982d60f71d0cadd5ac21386929aad10851e))
+* allow arbitrary text in quantity ([32326be](https://github.com/chenasraf/pantry-flutter/commit/32326beb8d39d4713c9f65d01dfb243c44a5dbda))
+* appbar icon spacings ([1197254](https://github.com/chenasraf/pantry-flutter/commit/11972542da777a5922aec564684b7f37b3330aa0))
+* bug where note grid would not clip correctly ([08159fa](https://github.com/chenasraf/pantry-flutter/commit/08159faec22422da983f23685c53b45088d74b2a))
+* **checklists:** auto-dismiss item check snackbar after 6 seconds ([4e53481](https://github.com/chenasraf/pantry-flutter/commit/4e53481cdfcdba1d75cebadffb023b6a92b3df75))
+* description field in items saving+displaying ([4d99694](https://github.com/chenasraf/pantry-flutter/commit/4d9969410935d0b8d64fcfbc3e11d317a17979a6))
+* improve i18n recurrence string rules ([1e85d0c](https://github.com/chenasraf/pantry-flutter/commit/1e85d0c2a6d46d7561105f02683bbed97c907792))
+* improve rtl layout spacings ([9d474a6](https://github.com/chenasraf/pantry-flutter/commit/9d474a62fe6ae19f3c08cdb634eac725ffb403c4))
+* **macos:** esc to dismiss would ring bell and not work ([116eb18](https://github.com/chenasraf/pantry-flutter/commit/116eb18693137a0d8733c903d0f66a4e67f3210a))
+* **macos:** use macos dedicated login browser for auth ([124c7dc](https://github.com/chenasraf/pantry-flutter/commit/124c7dce34197f9d53723151ca90e820f288b261))
+* make markdown links clickable ([7b5f9c1](https://github.com/chenasraf/pantry-flutter/commit/7b5f9c151845dde90275a8289b3114483d2b214d))
+* note color options ([02aeb9e](https://github.com/chenasraf/pantry-flutter/commit/02aeb9ef2df11925d980a1c0810a8849f9be98e4))
+* preserve subpath for Nextcloud instances hosted on sub-paths ([0c575ea](https://github.com/chenasraf/pantry-flutter/commit/0c575eaa2601dc8c83c6b874f2d81b54a0f6bf01))
+* rtl layout + switching ([b0fcd93](https://github.com/chenasraf/pantry-flutter/commit/b0fcd937922badb59467f1bf164e3668c658e531))
+* sorting prefs persistence & error wrapping ([a5c8e5b](https://github.com/chenasraf/pantry-flutter/commit/a5c8e5b479e92f87ea910b5af19ca24711ce7b16))
+* support back button when in photos foldeer ([e6284b9](https://github.com/chenasraf/pantry-flutter/commit/e6284b95774a5bd967af95626acb6ec3562ae9a5))
+* use dark avatar on dark mode ([0fca0d4](https://github.com/chenasraf/pantry-flutter/commit/0fca0d4d86187af0881f6f1eb976ec2c98d6a4d5))
+
+
+### Build System
+
+* add abi split ([7d0c793](https://github.com/chenasraf/pantry-flutter/commit/7d0c7932ea9bf18d5ff391351f0058889abba5d8))
+* disable deps metadata in apk ([7ea2901](https://github.com/chenasraf/pantry-flutter/commit/7ea2901867b25e2c4bcd46cd744af7b12656b6dd))
+* fix signing ([9f45b23](https://github.com/chenasraf/pantry-flutter/commit/9f45b2344ef87708d55889e8fb80f465808fb0c7))
+* re-sign with stripping ([852e9c4](https://github.com/chenasraf/pantry-flutter/commit/852e9c47f3cf11145a72ed78b6415ecd0da2b111))
+* remove apk obfuscation ([d41d2b8](https://github.com/chenasraf/pantry-flutter/commit/d41d2b81beb512384cb3c2978bebd201c3bf53a0))
+* remove zipalign ([b1d7ecc](https://github.com/chenasraf/pantry-flutter/commit/b1d7eccd822fcbac56683a4085a329784c71ca7f))
+* reproducible build ([9d4c832](https://github.com/chenasraf/pantry-flutter/commit/9d4c8327b035eb0433d6d0a571af406ffca84f83))
+* strip deps metadata from build ([132d9e3](https://github.com/chenasraf/pantry-flutter/commit/132d9e33a6662554149a7941053594c6c7ab9043))
+* upgrade flutter version ([3e4051a](https://github.com/chenasraf/pantry-flutter/commit/3e4051a8462271543381496a9d60a22239b8d8da))
+* zipalign ([6d2173f](https://github.com/chenasraf/pantry-flutter/commit/6d2173f08d72d8e188c9a4aabe044ff922d4b32f))
+
 ## [0.13.1](https://github.com/chenasraf/pantry-flutter/compare/v0.13.0...v0.13.1) (2026-05-22)
 
 

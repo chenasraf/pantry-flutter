@@ -1,0 +1,16 @@
+Features
+- add about page
+- add category in category picker
+- add de, es, fr locales
+- add hebrew language translation
+- add more icons to categories
+- add search in lists
+- add setting to require checkbox tap to complete checklist items
+- add setting to show spacing between categories in checklist items
+- add sorting by category for checklist
+- add trash view
+- add undo action for checking items
+- add/edit/delete items
+- allow adding one-off list items
+
+… see full notes on GitHub.
