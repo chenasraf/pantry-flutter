@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,10 +53,22 @@ class LoginController extends ChangeNotifier {
       final normalizedUrl = _normalizeUrl(_serverUrl);
       _loginFlow = await AuthService.instance.initiateLoginFlow(normalizedUrl);
 
-      await launchUrl(
-        Uri.parse(_loginFlow!.loginUrl),
-        mode: LaunchMode.inAppBrowserView,
-      );
+      if (!kIsWeb && Platform.isMacOS) {
+        // Nextcloud login flow v2 has no callback URL — the scheme below is a
+        // placeholder so ASWebAuthenticationSession is satisfied. Polling
+        // drives completion; the user dismisses the sheet manually.
+        unawaited(
+          FlutterWebAuth2.authenticate(
+            url: _loginFlow!.loginUrl,
+            callbackUrlScheme: 'pantry',
+          ).catchError((_) => ''),
+        );
+      } else {
+        await launchUrl(
+          Uri.parse(_loginFlow!.loginUrl),
+          mode: LaunchMode.inAppBrowserView,
+        );
+      }
 
       _isLoading = false;
       _isPolling = true;
