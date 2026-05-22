@@ -22,18 +22,29 @@ subprojects {
     // that defaults to a different Kotlin jvmTarget to match this app's
     // Java/Kotlin compatibility, avoiding "Inconsistent JVM Target
     // Compatibility Between Java and Kotlin Tasks" build failures.
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        }
-    }
-    plugins.withId("com.android.library") {
-        extensions.configure<com.android.build.gradle.LibraryExtension>("android") {
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
+    val applyJvm17: Project.() -> Unit = {
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEach {
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
             }
         }
+        tasks.withType<JavaCompile>().configureEach {
+            sourceCompatibility = JavaVersion.VERSION_17.toString()
+            targetCompatibility = JavaVersion.VERSION_17.toString()
+        }
+        plugins.withId("com.android.library") {
+            extensions.configure<com.android.build.gradle.LibraryExtension>("android") {
+                compileOptions {
+                    sourceCompatibility = JavaVersion.VERSION_17
+                    targetCompatibility = JavaVersion.VERSION_17
+                }
+            }
+        }
+    }
+    if (state.executed) {
+        applyJvm17()
+    } else {
+        afterEvaluate { applyJvm17() }
     }
 }
 
