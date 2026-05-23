@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/services/auth_session_macos.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginController extends ChangeNotifier {
@@ -54,14 +54,15 @@ class LoginController extends ChangeNotifier {
       _loginFlow = await AuthService.instance.initiateLoginFlow(normalizedUrl);
 
       if (!kIsWeb && Platform.isMacOS) {
-        // Nextcloud login flow v2 has no callback URL — the scheme below is a
-        // placeholder so ASWebAuthenticationSession is satisfied. Polling
-        // drives completion; the user dismisses the sheet manually.
+        // Nextcloud login flow v2 has no callback URL — the placeholder scheme
+        // below satisfies ASWebAuthenticationSession but is never reached.
+        // Polling drives completion; we dismiss the sheet ourselves once we
+        // have credentials.
         unawaited(
-          FlutterWebAuth2.authenticate(
+          AuthSessionMacOS.start(
             url: _loginFlow!.loginUrl,
-            callbackUrlScheme: 'pantry',
-          ).catchError((_) => ''),
+            callbackScheme: 'pantry',
+          ).catchError((_) => null),
         );
       } else {
         await launchUrl(
@@ -93,6 +94,9 @@ class LoginController extends ChangeNotifier {
           timer.cancel();
           _isPolling = false;
           notifyListeners();
+          if (!kIsWeb && Platform.isMacOS) {
+            unawaited(AuthSessionMacOS.cancel());
+          }
           _onLoginSuccess?.call();
         }
       } catch (e, st) {
@@ -108,6 +112,9 @@ class LoginController extends ChangeNotifier {
 
   void cancelLogin() {
     _pollTimer?.cancel();
+    if (!kIsWeb && Platform.isMacOS) {
+      unawaited(AuthSessionMacOS.cancel());
+    }
     _isPolling = false;
     _isLoading = false;
     _loginFlow = null;

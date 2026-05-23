@@ -56,7 +56,6 @@ dependencies:
   receive_sharing_intent: ^1.8.1
   file_picker: ^11.0.2
   device_info_plus: ^12.4.0
-  flutter_web_auth_2: ^5.0.2
 
 dev_dependencies:
   flutter_test:
