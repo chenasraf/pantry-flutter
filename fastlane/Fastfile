@@ -170,33 +170,30 @@ platform :ios do
     ipa_path
   end
 
-  def sync_release_notes
+  def release_notes
     version_code = version_info[:build]
     changelog_file = File.expand_path("metadata/ios/en-US/changelogs/#{version_code}.txt", __dir__)
     notes = File.exist?(changelog_file) ? File.read(changelog_file).strip : changelog_notes
-    release_notes_path = File.expand_path("metadata/ios/en-US/release_notes.txt", __dir__)
-    File.write(release_notes_path, notes)
-    UI.message("Synced release notes from build #{version_code} (#{notes.length} chars)")
+    UI.message("Loaded release notes for build #{version_code} (#{notes.length} chars)")
     notes
   end
 
   desc "Upload to TestFlight"
   lane :beta do
-    notes = sync_release_notes
     upload_to_testflight(
       api_key: api_key,
       ipa: find_ipa,
-      changelog: notes,
+      changelog: release_notes,
       skip_waiting_for_build_processing: true,
     )
   end
 
   desc "Upload to App Store"
   lane :release do
-    sync_release_notes
     deliver(
       api_key: api_key,
       ipa: find_ipa,
+      release_notes: { "en-US" => release_notes },
       metadata_path: File.expand_path("metadata/ios", __dir__),
       screenshots_path: File.expand_path("metadata/ios/en-US/screenshots", __dir__),
       skip_screenshots: true,
@@ -210,6 +207,7 @@ platform :ios do
   lane :metadata do
     deliver(
       api_key: api_key,
+      release_notes: { "en-US" => release_notes },
       metadata_path: File.expand_path("metadata/ios", __dir__),
       screenshots_path: File.expand_path("metadata/ios/en-US/screenshots", __dir__),
       skip_binary_upload: true,
@@ -224,6 +222,7 @@ platform :ios do
   lane :submit do
     deliver(
       api_key: api_key,
+      release_notes: { "en-US" => release_notes },
       metadata_path: File.expand_path("metadata/ios", __dir__),
       screenshots_path: File.expand_path("metadata/ios/en-US/screenshots", __dir__),
       skip_binary_upload: true,
@@ -253,35 +252,32 @@ platform :mac do
     pkg_path
   end
 
-  def sync_release_notes
+  def release_notes
     version_code = version_info[:build]
     changelog_file = File.expand_path("metadata/macos/en-US/changelogs/#{version_code}.txt", __dir__)
     notes = File.exist?(changelog_file) ? File.read(changelog_file).strip : changelog_notes
-    release_notes_path = File.expand_path("metadata/macos/en-US/release_notes.txt", __dir__)
-    File.write(release_notes_path, notes)
-    UI.message("Synced release notes from build #{version_code} (#{notes.length} chars)")
+    UI.message("Loaded release notes for build #{version_code} (#{notes.length} chars)")
     notes
   end
 
   desc "Upload to TestFlight (macOS)"
   lane :beta do
-    notes = sync_release_notes
     upload_to_testflight(
       api_key: api_key,
       pkg: find_pkg,
       app_platform: "osx",
-      changelog: notes,
+      changelog: release_notes,
       skip_waiting_for_build_processing: true,
     )
   end
 
   desc "Upload to Mac App Store"
   lane :release do
-    sync_release_notes
     deliver(
       api_key: api_key,
       pkg: find_pkg,
       platform: "osx",
+      release_notes: { "en-US" => release_notes },
       metadata_path: File.expand_path("metadata/macos", __dir__),
       screenshots_path: File.expand_path("metadata/macos/en-US/screenshots", __dir__),
       skip_screenshots: true,
@@ -296,6 +292,7 @@ platform :mac do
     deliver(
       api_key: api_key,
       platform: "osx",
+      release_notes: { "en-US" => release_notes },
       metadata_path: File.expand_path("metadata/macos", __dir__),
       screenshots_path: File.expand_path("metadata/macos/en-US/screenshots", __dir__),
       skip_binary_upload: true,
@@ -311,6 +308,7 @@ platform :mac do
     deliver(
       api_key: api_key,
       platform: "osx",
+      release_notes: { "en-US" => release_notes },
       metadata_path: File.expand_path("metadata/macos", __dir__),
       screenshots_path: File.expand_path("metadata/macos/en-US/screenshots", __dir__),
       skip_binary_upload: true,
