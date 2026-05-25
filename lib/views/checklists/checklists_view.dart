@@ -713,23 +713,29 @@ class _ReorderablePartition extends StatelessWidget {
         action: SnackBarAction(
           label: m.checklists.undo,
           onPressed: () async {
-            if (wasDeleteOnDone) {
-              try {
+            try {
+              // If the item was soft-deleted (deleteOnDone, or removed for any
+              // other reason), restore it first so toggleItem can operate on it.
+              final stillPresent = controller.items.any((i) => i.id == item.id);
+              if (wasDeleteOnDone || !stillPresent) {
                 await controller.restoreItem(item);
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(m.checklists.restoreFailed)),
-                  );
-                }
               }
-              return;
+              // Restore only clears deletedAt; the item comes back still
+              // marked done. Flip it back to undone to fully reverse the action.
+              final current = controller.items.firstWhere(
+                (i) => i.id == item.id,
+                orElse: () => item.copyWith(done: true),
+              );
+              if (current.done) {
+                await controller.toggleItem(current);
+              }
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(m.checklists.restoreFailed)),
+                );
+              }
             }
-            final current = controller.items.firstWhere(
-              (i) => i.id == item.id,
-              orElse: () => item.copyWith(done: true),
-            );
-            if (current.done) controller.toggleItem(current);
           },
         ),
       ),
