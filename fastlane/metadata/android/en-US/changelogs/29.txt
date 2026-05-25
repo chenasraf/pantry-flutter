@@ -1,0 +1,4 @@
+Bug Fixes
+- add monochrome launcher icon for themed icons
+- undo now properly unchecks items
+- honor dark mode on cold launch

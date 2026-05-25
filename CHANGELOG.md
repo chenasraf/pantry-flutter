@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.13.2](https://github.com/chenasraf/pantry-flutter/compare/v0.13.1...v0.13.2) (2026-05-25)
+
+
+### Bug Fixes
+
+* **android:** add monochrome launcher icon for themed icons ([97d5675](https://github.com/chenasraf/pantry-flutter/commit/97d5675f939c0a5ed094303f03dbc9f29e3f7909))
+* **checklists:** undo now properly unchecks items ([77c1097](https://github.com/chenasraf/pantry-flutter/commit/77c1097da2f6b05607f85a9bab8fadf59bdd75b2))
+* **macos:** sign-in now opens in-app and closes automatically ([4aafaca](https://github.com/chenasraf/pantry-flutter/commit/4aafacaff61f1e47a8d9ee630f5ba8bbd4ee84cd))
+* **splash:** honor dark mode on cold launch ([d4a1380](https://github.com/chenasraf/pantry-flutter/commit/d4a1380480beaf784d1e8621aaf2f3542fdcbcb5))
+
 ## [0.13.1](https://github.com/chenasraf/pantry-flutter/compare/v0.13.0...v0.13.1) (2026-05-22)
 
 
