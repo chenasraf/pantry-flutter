@@ -1,6 +1,13 @@
 # Version from pubspec.yaml (without build number)
 VERSION := $(shell grep '^version:' pubspec.yaml | sed 's/version: *//;s/+.*//')
 
+# Build number from pubspec.yaml (the integer after `+`)
+BUILD_NUMBER := $(shell grep '^version:' pubspec.yaml | sed 's/.*+//')
+
+# macOS uses an offset so its CFBundleVersion can never collide with iOS under
+# the shared bundle ID in App Store Connect.
+MACOS_BUILD_NUMBER := $(shell echo $$(($(BUILD_NUMBER) + 10000)))
+
 # Default target
 .PHONY: help
 help:
@@ -144,11 +151,11 @@ ios-build-ipa:
 
 .PHONY: macos-build
 macos-build:
-	flutter build macos --release --obfuscate --split-debug-info=build/debug-info-macos
+	flutter build macos --release --build-number=$(MACOS_BUILD_NUMBER) --obfuscate --split-debug-info=build/debug-info-macos
 
 .PHONY: macos-build-pkg
 macos-build-pkg:
-	flutter build macos --config-only --obfuscate --split-debug-info=build/debug-info-macos
+	flutter build macos --config-only --build-number=$(MACOS_BUILD_NUMBER) --obfuscate --split-debug-info=build/debug-info-macos
 	rm -rf build/macos/Runner.xcarchive build/macos/pkg
 	xcodebuild -workspace macos/Runner.xcworkspace \
 		-scheme Runner \
