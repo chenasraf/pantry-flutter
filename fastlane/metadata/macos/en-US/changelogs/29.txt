@@ -1,0 +1,4 @@
+Bug Fixes
+- undo now properly unchecks items
+- sign-in now opens in-app and closes automatically
+- honor dark mode on cold launch
