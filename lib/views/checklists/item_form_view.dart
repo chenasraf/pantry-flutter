@@ -62,7 +62,10 @@ class _ItemFormViewState extends State<ItemFormView> {
     _selectedCategoryId = item?.categoryId;
     _rrule = item?.rrule;
     _repeatFromCompletion = item?.repeatFromCompletion ?? false;
-    _deleteOnDone = item?.deleteOnDone ?? false;
+    _deleteOnDone =
+        item?.deleteOnDone ??
+        widget.controller.currentList?.deleteOnDoneDefault ??
+        false;
     _nameDir = detectTextDirection(item?.name);
     _nameController.addListener(() {
       final dir = detectTextDirection(_nameController.text);
@@ -217,7 +220,13 @@ class _ItemFormViewState extends State<ItemFormView> {
           const SizedBox(height: 8),
           CheckboxListTile(
             value: _deleteOnDone,
-            onChanged: (v) => setState(() => _deleteOnDone = v ?? false),
+            onChanged: (v) {
+              final next = v ?? false;
+              setState(() => _deleteOnDone = next);
+              if (!_isEditing) {
+                widget.controller.setListDeleteOnDoneDefault(next);
+              }
+            },
             title: Text(f.once),
             subtitle: Text(f.onceDescription),
             controlAffinity: ListTileControlAffinity.leading,

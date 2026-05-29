@@ -113,6 +113,28 @@ class ChecklistService {
     );
   }
 
+  Future<ChecklistList> updateList(
+    int houseId,
+    int listId, {
+    String? name,
+    String? description,
+    String? icon,
+    int? sortOrder,
+    bool? deleteOnDoneDefault,
+  }) async {
+    return ApiClient.instance.patch<Map<String, dynamic>, ChecklistList>(
+      '/houses/$houseId/lists/$listId',
+      body: {
+        'name': ?name,
+        'description': ?description,
+        'icon': ?icon,
+        'sortOrder': ?sortOrder,
+        'deleteOnDoneDefault': ?deleteOnDoneDefault,
+      },
+      fromJson: (data) => ChecklistList.fromJson(data),
+    );
+  }
+
   Future<ListItem> moveItem(
     int houseId,
     int listId,

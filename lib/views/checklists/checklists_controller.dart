@@ -303,6 +303,36 @@ class ChecklistsController extends ChangeNotifier {
     return list;
   }
 
+  Future<void> setListDeleteOnDoneDefault(bool value) async {
+    final list = _currentList;
+    if (list == null || list.deleteOnDoneDefault == value) return;
+
+    final previous = list;
+    final optimistic = list.copyWith(deleteOnDoneDefault: value);
+    _currentList = optimistic;
+    _lists = [for (final l in _lists) l.id == optimistic.id ? optimistic : l];
+    _checklistService.cacheLists(houseId, _lists);
+    notifyListeners();
+
+    try {
+      final updated = await _checklistService.updateList(
+        houseId,
+        list.id,
+        deleteOnDoneDefault: value,
+      );
+      _currentList = _currentList?.id == updated.id ? updated : _currentList;
+      _lists = [for (final l in _lists) l.id == updated.id ? updated : l];
+      _checklistService.cacheLists(houseId, _lists);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to update list default: $e');
+      _currentList = _currentList?.id == previous.id ? previous : _currentList;
+      _lists = [for (final l in _lists) l.id == previous.id ? previous : l];
+      _checklistService.cacheLists(houseId, _lists);
+      notifyListeners();
+    }
+  }
+
   Future<void> moveItem(ListItem item, int targetListId) async {
     await _checklistService.moveItem(
       houseId,
