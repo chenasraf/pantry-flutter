@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.14.0](https://github.com/chenasraf/pantry-flutter/compare/v0.13.2...v0.14.0) (2026-05-29)
+
+
+### Features
+
+* **checklist:** remember "once" toggle value per-list ([ebe549a](https://github.com/chenasraf/pantry-flutter/commit/ebe549ad84653967f6f044c34b4fe34dd6bd4d3f))
+* **desktop:** refresh button in app bar ([578c95f](https://github.com/chenasraf/pantry-flutter/commit/578c95f727c3a8df44da205ff30baa33247d0083))
+
 ## [0.13.2](https://github.com/chenasraf/pantry-flutter/compare/v0.13.1...v0.13.2) (2026-05-25)
 
 
