@@ -1,0 +1,3 @@
+Features
+- remember "once" toggle value per-list
+- refresh button in app bar
