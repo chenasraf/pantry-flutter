@@ -110,6 +110,11 @@ class CommonMessagesHe extends CommonMessages {
   String get retry => """נסה שוב""";
 
   /// ```dart
+  /// "רענון"
+  /// ```
+  String get refresh => """רענון""";
+
+  /// ```dart
   /// "התנתקות"
   /// ```
   String get logout => """התנתקות""";
@@ -1550,6 +1555,7 @@ Map<String, String> get messagesHeMap => {
   """common.delete""": """מחיקה""",
   """common.save""": """שמירה""",
   """common.retry""": """נסה שוב""",
+  """common.refresh""": """רענון""",
   """common.logout""": """התנתקות""",
   """common.loading""": """טוען...""",
   """common.error""": """שגיאה""",

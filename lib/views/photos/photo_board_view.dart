@@ -12,8 +12,9 @@ import 'photo_board_controller.dart';
 
 class PhotoBoardView extends StatefulWidget {
   final int houseId;
+  final ValueNotifier<Future<void> Function()?>? refreshHolder;
 
-  const PhotoBoardView({super.key, required this.houseId});
+  const PhotoBoardView({super.key, required this.houseId, this.refreshHolder});
 
   @override
   State<PhotoBoardView> createState() => _PhotoBoardViewState();
@@ -26,10 +27,20 @@ class _PhotoBoardViewState extends State<PhotoBoardView> {
   void initState() {
     super.initState();
     _controller.load();
+    final holder = widget.refreshHolder;
+    if (holder != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        holder.value = _controller.refresh;
+      });
+    }
   }
 
   @override
   void dispose() {
+    if (widget.refreshHolder?.value == _controller.refresh) {
+      widget.refreshHolder?.value = null;
+    }
     _controller.dispose();
     super.dispose();
   }

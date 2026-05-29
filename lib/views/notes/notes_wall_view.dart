@@ -10,8 +10,9 @@ import 'notes_controller.dart';
 
 class NotesWallView extends StatefulWidget {
   final int houseId;
+  final ValueNotifier<Future<void> Function()?>? refreshHolder;
 
-  const NotesWallView({super.key, required this.houseId});
+  const NotesWallView({super.key, required this.houseId, this.refreshHolder});
 
   @override
   State<NotesWallView> createState() => _NotesWallViewState();
@@ -24,12 +25,22 @@ class _NotesWallViewState extends State<NotesWallView> {
   void initState() {
     super.initState();
     _controller.load();
+    final holder = widget.refreshHolder;
+    if (holder != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        holder.value = _controller.refresh;
+      });
+    }
     PendingNoteShareService.instance.addListener(_handlePendingShare);
     WidgetsBinding.instance.addPostFrameCallback((_) => _handlePendingShare());
   }
 
   @override
   void dispose() {
+    if (widget.refreshHolder?.value == _controller.refresh) {
+      widget.refreshHolder?.value = null;
+    }
     PendingNoteShareService.instance.removeListener(_handlePendingShare);
     _controller.dispose();
     super.dispose();

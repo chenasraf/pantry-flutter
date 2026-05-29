@@ -3,6 +3,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 
@@ -129,6 +130,14 @@ class _CategoriesViewState extends State<CategoriesView> {
       appBar: AppBar(
         leading: appBarBackLeading(context),
         title: Text(m.categories.manageTitle),
+        actions: [
+          if (isDesktop)
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: m.common.refresh,
+              onPressed: _load,
+            ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _create,

@@ -13,6 +13,7 @@ import 'package:pantry/services/deep_link_service.dart';
 import 'package:pantry/views/notifications/notifications_controller.dart';
 import 'package:pantry/views/notifications/notifications_view.dart';
 import 'package:pantry/services/share_intent_service.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/photos/photo_board_view.dart';
 import 'package:pantry/views/settings/settings_view.dart';
 import 'package:pantry/views/share/share_router_view.dart';
@@ -70,6 +71,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   int _tabIndex = 0;
   final _pageController = PageController();
   final _notificationsController = NotificationsController();
+  final List<ValueNotifier<Future<void> Function()?>> _tabRefreshers =
+      List.generate(3, (_) => ValueNotifier(null));
 
   static bool get _isMacOS => !kIsWeb && Platform.isMacOS;
 
@@ -99,6 +102,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     WidgetsBinding.instance.removeObserver(this);
     _pageController.dispose();
     _notificationsController.dispose();
+    for (final n in _tabRefreshers) {
+      n.dispose();
+    }
     super.dispose();
   }
 
@@ -186,6 +192,15 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         final appBar = AppBar(
           title: Text(_tabTitle),
           actions: [
+            if (isDesktop)
+              ValueListenableBuilder<Future<void> Function()?>(
+                valueListenable: _tabRefreshers[_tabIndex],
+                builder: (_, refresh, _) => IconButton(
+                  icon: const Icon(Icons.refresh),
+                  tooltip: m.common.refresh,
+                  onPressed: refresh,
+                ),
+              ),
             if (_tabIndex == 0 && houseId != null)
               IconButton(
                 icon: const Icon(Icons.sell_outlined),
@@ -315,9 +330,21 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
     final houseId = controller.currentHouse!.id;
     final pages = [
-      ChecklistsView(key: ValueKey('checklists-$houseId'), houseId: houseId),
-      PhotoBoardView(key: ValueKey('photos-$houseId'), houseId: houseId),
-      NotesWallView(key: ValueKey('notes-$houseId'), houseId: houseId),
+      ChecklistsView(
+        key: ValueKey('checklists-$houseId'),
+        houseId: houseId,
+        refreshHolder: _tabRefreshers[0],
+      ),
+      PhotoBoardView(
+        key: ValueKey('photos-$houseId'),
+        houseId: houseId,
+        refreshHolder: _tabRefreshers[1],
+      ),
+      NotesWallView(
+        key: ValueKey('notes-$houseId'),
+        houseId: houseId,
+        refreshHolder: _tabRefreshers[2],
+      ),
     ];
     if (useRail) {
       return IndexedStack(index: _tabIndex, children: pages);

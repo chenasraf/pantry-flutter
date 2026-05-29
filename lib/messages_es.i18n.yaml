@@ -4,6 +4,7 @@ common:
   delete: Eliminar
   save: Guardar
   retry: Reintentar
+  refresh: Actualizar
   logout: Cerrar sesión
   loading: Cargando...
   error: Error

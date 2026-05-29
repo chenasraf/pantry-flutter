@@ -110,6 +110,11 @@ class CommonMessagesEs extends CommonMessages {
   String get retry => """Reintentar""";
 
   /// ```dart
+  /// "Actualizar"
+  /// ```
+  String get refresh => """Actualizar""";
+
+  /// ```dart
   /// "Cerrar sesión"
   /// ```
   String get logout => """Cerrar sesión""";
@@ -1559,6 +1564,7 @@ Map<String, String> get messagesEsMap => {
   """common.delete""": """Eliminar""",
   """common.save""": """Guardar""",
   """common.retry""": """Reintentar""",
+  """common.refresh""": """Actualizar""",
   """common.logout""": """Cerrar sesión""",
   """common.loading""": """Cargando...""",
   """common.error""": """Error""",

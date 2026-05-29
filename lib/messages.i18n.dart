@@ -109,6 +109,11 @@ class CommonMessages {
   String get retry => """Retry""";
 
   /// ```dart
+  /// "Refresh"
+  /// ```
+  String get refresh => """Refresh""";
+
+  /// ```dart
   /// "Logout"
   /// ```
   String get logout => """Logout""";
@@ -1548,6 +1553,7 @@ Map<String, String> get messagesMap => {
   """common.delete""": """Delete""",
   """common.save""": """Save""",
   """common.retry""": """Retry""",
+  """common.refresh""": """Refresh""",
   """common.logout""": """Logout""",
   """common.loading""": """Loading...""",
   """common.error""": """Error""",

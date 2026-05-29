@@ -4,6 +4,7 @@ common:
   delete: מחיקה
   save: שמירה
   retry: נסה שוב
+  refresh: רענון
   logout: התנתקות
   loading: טוען...
   error: שגיאה

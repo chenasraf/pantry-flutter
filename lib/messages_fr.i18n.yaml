@@ -4,6 +4,7 @@ common:
   delete: Supprimer
   save: Enregistrer
   retry: "Réessayer"
+  refresh: "Actualiser"
   logout: "Déconnexion"
   loading: Chargement...
   error: Erreur

@@ -110,6 +110,11 @@ class CommonMessagesFr extends CommonMessages {
   String get retry => """Réessayer""";
 
   /// ```dart
+  /// "Actualiser"
+  /// ```
+  String get refresh => """Actualiser""";
+
+  /// ```dart
   /// "Déconnexion"
   /// ```
   String get logout => """Déconnexion""";
@@ -1563,6 +1568,7 @@ Map<String, String> get messagesFrMap => {
   """common.delete""": """Supprimer""",
   """common.save""": """Enregistrer""",
   """common.retry""": """Réessayer""",
+  """common.refresh""": """Actualiser""",
   """common.logout""": """Déconnexion""",
   """common.loading""": """Chargement...""",
   """common.error""": """Erreur""",
