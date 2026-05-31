@@ -40,8 +40,14 @@ class ChecklistsController extends ChangeNotifier {
   Map<int, models.Category> _categories = {};
   Map<int, models.Category> get categories => _categories;
 
+  List<models.Category> get sortedCategories =>
+      CategoryService.sortCategories(_categories.values, _categorySort);
+
   String _sortBy = 'custom';
   String get sortBy => _sortBy;
+
+  String _categorySort = 'custom';
+  String get categorySort => _categorySort;
 
   bool _showAddedBy = false;
   bool get showAddedBy => _showAddedBy;
@@ -85,13 +91,15 @@ class ChecklistsController extends ChangeNotifier {
       final cats = results[1] as List<models.Category>;
       _categories = {for (final c in cats) c.id: c};
 
-      // House prefs (sort + showAddedBy) are non-fatal
+      // House prefs (sort + showAddedBy + categorySort) are non-fatal
       try {
         final prefs = await _checklistService.getHousePrefs(houseId);
         _sortBy = prefs['checklistItemSort'] as String? ?? 'custom';
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
+        _categorySort = prefs['categorySort'] as String? ?? 'custom';
         _checklistService.cache.set('sortBy', _sortBy);
         _checklistService.cache.set('showAddedBy', _showAddedBy);
+        _checklistService.cache.set('categorySort', _categorySort);
       } catch (e) {
         debugPrint('[ChecklistsController] Failed to load house prefs: $e');
       }
@@ -131,6 +139,8 @@ class ChecklistsController extends ChangeNotifier {
     // Sort preference
     _sortBy = _checklistService.cache.get<String>('sortBy') ?? 'custom';
     _showAddedBy = _checklistService.cache.get<bool>('showAddedBy') ?? false;
+    _categorySort =
+        _checklistService.cache.get<String>('categorySort') ?? 'custom';
 
     // Members
     final cachedMembers = _houseService.getCachedMembers(houseId);

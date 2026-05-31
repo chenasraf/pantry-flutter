@@ -647,6 +647,27 @@ class CategoriesMessagesFr extends CategoriesMessages {
   /// ```
   String get deleteConfirmBody =>
       """Les articles de cette catégorie seront non catégorisés. Cette action est irréversible.""";
+  SortCategoriesMessagesFr get sort => SortCategoriesMessagesFr(this);
+}
+
+class SortCategoriesMessagesFr extends SortCategoriesMessages {
+  final CategoriesMessagesFr _parent;
+  const SortCategoriesMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Nom A–Z"
+  /// ```
+  String get nameAZ => """Nom A–Z""";
+
+  /// ```dart
+  /// "Nom Z–A"
+  /// ```
+  String get nameZA => """Nom Z–A""";
+
+  /// ```dart
+  /// "Personnalisé"
+  /// ```
+  String get custom => """Personnalisé""";
 }
 
 class ChecklistsMessagesFr extends ChecklistsMessages {
@@ -1684,6 +1705,9 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """categories.deleteConfirm""": """Supprimer cette catégorie ?""",
   """categories.deleteConfirmBody""":
       """Les articles de cette catégorie seront non catégorisés. Cette action est irréversible.""",
+  """categories.sort.nameAZ""": """Nom A–Z""",
+  """categories.sort.nameZA""": """Nom Z–A""",
+  """categories.sort.custom""": """Personnalisé""",
   """checklists.categories""": """Catégories""",
   """checklists.noChecklists""": """Aucune liste pour le moment.""",
   """checklists.noItems""": """Aucun article dans cette liste.""",

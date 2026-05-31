@@ -115,6 +115,10 @@ categories:
   deleteFailed: "Impossible de supprimer la catégorie."
   deleteConfirm: "Supprimer cette catégorie ?"
   deleteConfirmBody: "Les articles de cette catégorie seront non catégorisés. Cette action est irréversible."
+  sort:
+    nameAZ: "Nom A–Z"
+    nameZA: "Nom Z–A"
+    custom: "Personnalisé"
 
 checklists:
   categories: "Catégories"

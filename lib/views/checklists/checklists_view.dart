@@ -4,6 +4,7 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:provider/provider.dart';
 
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
@@ -226,6 +227,7 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
                       selectedCategoryIds: _selectedCategoryIds,
                       items: controller.items,
                       categories: controller.categories,
+                      categorySort: controller.categorySort,
                       onChanged: () => setState(() {}),
                     )
                   : const SizedBox.shrink(),
@@ -413,6 +415,7 @@ class _SearchPanel extends StatelessWidget {
   final Set<int> selectedCategoryIds;
   final List<ListItem> items;
   final Map<int, models.Category> categories;
+  final String categorySort;
   final VoidCallback onChanged;
 
   const _SearchPanel({
@@ -420,6 +423,7 @@ class _SearchPanel extends StatelessWidget {
     required this.selectedCategoryIds,
     required this.items,
     required this.categories,
+    required this.categorySort,
     required this.onChanged,
   });
 
@@ -436,13 +440,13 @@ class _SearchPanel extends StatelessWidget {
       }
     }
 
-    // Sort by category sortOrder
-    final usedCategories =
-        categoryCounts.keys.where((id) => categories.containsKey(id)).toList()
-          ..sort(
-            (a, b) =>
-                categories[a]!.sortOrder.compareTo(categories[b]!.sortOrder),
-          );
+    final usedCategoryList = CategoryService.sortCategories(
+      categoryCounts.keys
+          .where((id) => categories.containsKey(id))
+          .map((id) => categories[id]!),
+      categorySort,
+    );
+    final usedCategories = usedCategoryList.map((c) => c.id).toList();
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),

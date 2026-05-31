@@ -205,12 +205,13 @@ class _HomeViewBodyState extends State<_HomeViewBody>
               IconButton(
                 icon: const Icon(Icons.sell_outlined),
                 tooltip: m.checklists.categories,
-                onPressed: () {
-                  Navigator.of(context).push(
+                onPressed: () async {
+                  await Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => CategoriesView(houseId: houseId),
                     ),
                   );
+                  await _tabRefreshers[0].value?.call();
                 },
               ),
             NotificationsBell(

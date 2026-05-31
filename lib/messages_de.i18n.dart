@@ -647,6 +647,27 @@ class CategoriesMessagesDe extends CategoriesMessages {
   /// ```
   String get deleteConfirmBody =>
       """Einträge in dieser Kategorie werden unkategorisiert. Dies kann nicht rückgängig gemacht werden.""";
+  SortCategoriesMessagesDe get sort => SortCategoriesMessagesDe(this);
+}
+
+class SortCategoriesMessagesDe extends SortCategoriesMessages {
+  final CategoriesMessagesDe _parent;
+  const SortCategoriesMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Name A–Z"
+  /// ```
+  String get nameAZ => """Name A–Z""";
+
+  /// ```dart
+  /// "Name Z–A"
+  /// ```
+  String get nameZA => """Name Z–A""";
+
+  /// ```dart
+  /// "Benutzerdefiniert"
+  /// ```
+  String get custom => """Benutzerdefiniert""";
 }
 
 class ChecklistsMessagesDe extends ChecklistsMessages {
@@ -1686,6 +1707,9 @@ Bitte melde dich in deinem Browser an.""",
   """categories.deleteConfirm""": """Diese Kategorie löschen?""",
   """categories.deleteConfirmBody""":
       """Einträge in dieser Kategorie werden unkategorisiert. Dies kann nicht rückgängig gemacht werden.""",
+  """categories.sort.nameAZ""": """Name A–Z""",
+  """categories.sort.nameZA""": """Name Z–A""",
+  """categories.sort.custom""": """Benutzerdefiniert""",
   """checklists.categories""": """Kategorien""",
   """checklists.noChecklists""": """Noch keine Checklisten.""",
   """checklists.noItems""": """Keine Einträge in dieser Liste.""",

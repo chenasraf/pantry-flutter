@@ -642,6 +642,27 @@ class CategoriesMessagesHe extends CategoriesMessages {
   /// ```
   String get deleteConfirmBody =>
       """פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו.""";
+  SortCategoriesMessagesHe get sort => SortCategoriesMessagesHe(this);
+}
+
+class SortCategoriesMessagesHe extends SortCategoriesMessages {
+  final CategoriesMessagesHe _parent;
+  const SortCategoriesMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "שם א'–ת'"
+  /// ```
+  String get nameAZ => """שם א'–ת'""";
+
+  /// ```dart
+  /// "שם ת'–א'"
+  /// ```
+  String get nameZA => """שם ת'–א'""";
+
+  /// ```dart
+  /// "מותאם אישית"
+  /// ```
+  String get custom => """מותאם אישית""";
 }
 
 class ChecklistsMessagesHe extends ChecklistsMessages {
@@ -1663,6 +1684,9 @@ Map<String, String> get messagesHeMap => {
   """categories.deleteConfirm""": """למחוק את הקטגוריה?""",
   """categories.deleteConfirmBody""":
       """פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו.""",
+  """categories.sort.nameAZ""": """שם א'–ת'""",
+  """categories.sort.nameZA""": """שם ת'–א'""",
+  """categories.sort.custom""": """מותאם אישית""",
   """checklists.categories""": """קטגוריות""",
   """checklists.noChecklists""": """אין רשימות עדיין.""",
   """checklists.noItems""": """אין פריטים ברשימה.""",

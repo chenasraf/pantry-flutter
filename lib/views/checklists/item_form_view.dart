@@ -46,9 +46,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   bool get _hasExistingImage =>
       widget.item?.imageFileId != null && !_removeExistingImage;
 
-  List<models.Category> get _categories =>
-      widget.controller.categories.values.toList()
-        ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+  List<models.Category> get _categories => widget.controller.sortedCategories;
 
   @override
   void initState() {

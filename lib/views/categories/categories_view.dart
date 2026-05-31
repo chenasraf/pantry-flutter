@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart';
 import 'package:pantry/services/category_service.dart';
+import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
@@ -17,7 +18,10 @@ class CategoriesView extends StatefulWidget {
 }
 
 class _CategoriesViewState extends State<CategoriesView> {
+  static const _sortKeys = ['custom', 'name_asc', 'name_desc'];
+
   List<Category> _categories = [];
+  String _sort = 'custom';
   bool _isLoading = true;
   String? _error;
 
@@ -33,10 +37,19 @@ class _CategoriesViewState extends State<CategoriesView> {
       _error = null;
     });
     try {
-      final list = await CategoryService.instance.getCategories(widget.houseId);
+      final prefsFuture = ChecklistService.instance.getHousePrefs(
+        widget.houseId,
+      );
+      final categoriesFuture = CategoryService.instance.getCategories(
+        widget.houseId,
+      );
+      final results = await Future.wait([prefsFuture, categoriesFuture]);
       if (!mounted) return;
+      final prefs = results[0] as Map<String, dynamic>;
+      final list = results[1] as List<Category>;
       setState(() {
-        _categories = list..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        _sort = prefs['categorySort'] as String? ?? 'custom';
+        _categories = CategoryService.sortCategories(list, _sort);
         _isLoading = false;
       });
     } catch (e) {
@@ -48,13 +61,51 @@ class _CategoriesViewState extends State<CategoriesView> {
     }
   }
 
+  Future<void> _setSort(String? value) async {
+    if (value == null || value == _sort) return;
+    setState(() {
+      _sort = value;
+      _categories = CategoryService.sortCategories(_categories, _sort);
+    });
+    try {
+      await CategoryService.instance.setCategorySortPref(widget.houseId, value);
+    } catch (e) {
+      debugPrint('[CategoriesView] Failed to persist sort: $e');
+    }
+  }
+
+  Future<void> _reorder(int oldIndex, int newIndex) async {
+    if (_sort != 'custom') return;
+    setState(() {
+      if (newIndex > oldIndex) newIndex--;
+      final item = _categories.removeAt(oldIndex);
+      _categories.insert(newIndex, item);
+    });
+
+    final order = <({int id, int sortOrder})>[];
+    for (var i = 0; i < _categories.length; i++) {
+      order.add((id: _categories[i].id, sortOrder: i));
+    }
+
+    try {
+      await CategoryService.instance.reorderCategories(widget.houseId, order);
+    } catch (e) {
+      debugPrint('[CategoriesView] Failed to reorder: $e');
+    }
+  }
+
   Future<void> _create() async {
     final created = await showDialog<Category>(
       context: context,
       builder: (_) => CreateCategoryDialog(houseId: widget.houseId),
     );
     if (created != null) {
-      setState(() => _categories = [..._categories, created]);
+      setState(() {
+        _categories = CategoryService.sortCategories([
+          ..._categories,
+          created,
+        ], _sort);
+      });
     }
   }
 
@@ -69,7 +120,7 @@ class _CategoriesViewState extends State<CategoriesView> {
         final index = _categories.indexWhere((c) => c.id == updated.id);
         if (index != -1) {
           _categories[index] = updated;
-          _categories = [..._categories];
+          _categories = CategoryService.sortCategories(_categories, _sort);
         }
       });
     }
@@ -122,6 +173,12 @@ class _CategoriesViewState extends State<CategoriesView> {
     return value != null ? Color(value) : null;
   }
 
+  String _sortLabel(String key) => switch (key) {
+    'name_asc' => m.categories.sort.nameAZ,
+    'name_desc' => m.categories.sort.nameZA,
+    _ => m.categories.sort.custom,
+  };
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -131,6 +188,30 @@ class _CategoriesViewState extends State<CategoriesView> {
         leading: appBarBackLeading(context),
         title: Text(m.categories.manageTitle),
         actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.sort),
+            tooltip: '',
+            onSelected: _setSort,
+            itemBuilder: (context) => [
+              for (final key in _sortKeys)
+                PopupMenuItem<String>(
+                  value: key,
+                  child: Row(
+                    children: [
+                      Icon(
+                        key == _sort
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        size: 20,
+                        color: key == _sort ? theme.colorScheme.primary : null,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(_sortLabel(key)),
+                    ],
+                  ),
+                ),
+            ],
+          ),
           if (isDesktop)
             IconButton(
               icon: const Icon(Icons.refresh),
@@ -163,37 +244,55 @@ class _CategoriesViewState extends State<CategoriesView> {
           ? Center(child: Text(m.categories.noCategories))
           : RefreshIndicator(
               onRefresh: _load,
-              child: ListView.builder(
-                padding: const EdgeInsets.only(bottom: 96),
-                itemCount: _categories.length,
-                itemBuilder: (context, index) {
-                  final cat = _categories[index];
-                  final color =
-                      _parseColor(cat.color) ?? theme.colorScheme.primary;
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: color.withAlpha(40),
-                      child: Icon(categoryIcon(cat.icon), color: color),
+              child: _sort == 'custom'
+                  ? ReorderableListView.builder(
+                      padding: const EdgeInsets.only(bottom: 96),
+                      itemCount: _categories.length,
+                      onReorder: _reorder,
+                      itemBuilder: (context, index) =>
+                          _buildTile(theme, _categories[index]),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 96),
+                      itemCount: _categories.length,
+                      itemBuilder: (context, index) =>
+                          _buildTile(theme, _categories[index]),
                     ),
-                    title: Text(cat.name),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, size: 20),
-                          onPressed: () => _edit(cat),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, size: 20),
-                          onPressed: () => _delete(cat),
-                        ),
-                      ],
-                    ),
-                    onTap: () => _edit(cat),
-                  );
-                },
+            ),
+    );
+  }
+
+  Widget _buildTile(ThemeData theme, Category cat) {
+    final color = _parseColor(cat.color) ?? theme.colorScheme.primary;
+    return ListTile(
+      key: ValueKey(cat.id),
+      leading: CircleAvatar(
+        backgroundColor: color.withAlpha(40),
+        child: Icon(categoryIcon(cat.icon), color: color),
+      ),
+      title: Text(cat.name),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.edit, size: 20),
+            onPressed: () => _edit(cat),
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete, size: 20),
+            onPressed: () => _delete(cat),
+          ),
+          if (_sort == 'custom')
+            ReorderableDragStartListener(
+              index: _categories.indexOf(cat),
+              child: Icon(
+                Icons.drag_handle,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
+        ],
+      ),
+      onTap: () => _edit(cat),
     );
   }
 }

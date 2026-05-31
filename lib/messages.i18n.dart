@@ -641,6 +641,27 @@ class CategoriesMessages {
   /// ```
   String get deleteConfirmBody =>
       """Items currently in this category will be uncategorized. This cannot be undone.""";
+  SortCategoriesMessages get sort => SortCategoriesMessages(this);
+}
+
+class SortCategoriesMessages {
+  final CategoriesMessages _parent;
+  const SortCategoriesMessages(this._parent);
+
+  /// ```dart
+  /// "Name A–Z"
+  /// ```
+  String get nameAZ => """Name A–Z""";
+
+  /// ```dart
+  /// "Name Z–A"
+  /// ```
+  String get nameZA => """Name Z–A""";
+
+  /// ```dart
+  /// "Custom"
+  /// ```
+  String get custom => """Custom""";
 }
 
 class ChecklistsMessages {
@@ -1664,6 +1685,9 @@ Please complete login in your browser.""",
   """categories.deleteConfirm""": """Delete this category?""",
   """categories.deleteConfirmBody""":
       """Items currently in this category will be uncategorized. This cannot be undone.""",
+  """categories.sort.nameAZ""": """Name A–Z""",
+  """categories.sort.nameZA""": """Name Z–A""",
+  """categories.sort.custom""": """Custom""",
   """checklists.categories""": """Categories""",
   """checklists.noChecklists""": """No checklists yet.""",
   """checklists.noItems""": """No items in this list.""",

@@ -115,6 +115,10 @@ categories:
   deleteFailed: מחיקת הקטגוריה נכשלה.
   deleteConfirm: למחוק את הקטגוריה?
   deleteConfirmBody: "פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו."
+  sort:
+    nameAZ: "שם א'–ת'"
+    nameZA: "שם ת'–א'"
+    custom: מותאם אישית
 
 checklists:
   categories: קטגוריות

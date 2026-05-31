@@ -115,6 +115,10 @@ categories:
   deleteFailed: "Kategorie konnte nicht gelöscht werden."
   deleteConfirm: "Diese Kategorie löschen?"
   deleteConfirmBody: "Einträge in dieser Kategorie werden unkategorisiert. Dies kann nicht rückgängig gemacht werden."
+  sort:
+    nameAZ: "Name A–Z"
+    nameZA: "Name Z–A"
+    custom: Benutzerdefiniert
 
 checklists:
   categories: Kategorien
