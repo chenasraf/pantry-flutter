@@ -743,6 +743,11 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get itemMarkedDone => """Artículo marcado como hecho""";
 
   /// ```dart
+  /// "Artículo eliminado"
+  /// ```
+  String get itemRemoved => """Artículo eliminado""";
+
+  /// ```dart
   /// "Deshacer"
   /// ```
   String get undo => """Deshacer""";
@@ -1716,6 +1721,7 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.moveItem""": """Mover a lista""",
   """checklists.moveFailed""": """No se pudo mover el artículo.""",
   """checklists.itemMarkedDone""": """Artículo marcado como hecho""",
+  """checklists.itemRemoved""": """Artículo eliminado""",
   """checklists.undo""": """Deshacer""",
   """checklists.viewTrash""": """Ver papelera""",
   """checklists.exitTrash""": """Salir de la papelera""",

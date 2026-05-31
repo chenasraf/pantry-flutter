@@ -135,6 +135,7 @@ checklists:
   moveItem: In Liste verschieben
   moveFailed: Eintrag konnte nicht verschoben werden.
   itemMarkedDone: Eintrag als erledigt markiert
+  itemRemoved: Eintrag entfernt
   undo: "Rückgängig"
   viewTrash: Papierkorb anzeigen
   exitTrash: Papierkorb verlassen

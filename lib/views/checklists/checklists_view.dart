@@ -926,38 +926,45 @@ class _ReorderablePartition extends StatelessWidget {
     );
   }
 
-  void _deleteItem(
+  Future<void> _deleteItem(
     BuildContext context,
     ChecklistsController controller,
     ListItem item,
-  ) {
-    showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(m.checklists.itemForm.deleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(m.common.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(m.common.delete),
-          ),
-        ],
-      ),
-    ).then((confirmed) async {
-      if (confirmed != true) return;
-      try {
-        await controller.deleteItem(item);
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(m.checklists.itemForm.deleteFailed)),
-          );
-        }
+  ) async {
+    try {
+      await controller.deleteItem(item);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(m.checklists.itemForm.deleteFailed)),
+        );
       }
-    });
+      return;
+    }
+
+    if (!context.mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(m.checklists.itemRemoved),
+        duration: const Duration(seconds: 6),
+        action: SnackBarAction(
+          label: m.checklists.undo,
+          onPressed: () async {
+            try {
+              await controller.restoreItem(item);
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(m.checklists.restoreFailed)),
+                );
+              }
+            }
+          },
+        ),
+      ),
+    );
   }
 
   Widget _tileFor(BuildContext context, int index) {

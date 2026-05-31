@@ -739,6 +739,11 @@ class ChecklistsMessages {
   String get itemMarkedDone => """Item marked as done""";
 
   /// ```dart
+  /// "Item removed"
+  /// ```
+  String get itemRemoved => """Item removed""";
+
+  /// ```dart
   /// "Undo"
   /// ```
   String get undo => """Undo""";
@@ -1701,6 +1706,7 @@ Please complete login in your browser.""",
   """checklists.moveItem""": """Move to list""",
   """checklists.moveFailed""": """Failed to move item.""",
   """checklists.itemMarkedDone""": """Item marked as done""",
+  """checklists.itemRemoved""": """Item removed""",
   """checklists.undo""": """Undo""",
   """checklists.viewTrash""": """View trash""",
   """checklists.exitTrash""": """Exit trash""",

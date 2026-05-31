@@ -135,6 +135,7 @@ checklists:
   moveItem: Mover a lista
   moveFailed: "No se pudo mover el artículo."
   itemMarkedDone: "Artículo marcado como hecho"
+  itemRemoved: "Artículo eliminado"
   undo: Deshacer
   viewTrash: Ver papelera
   exitTrash: Salir de la papelera

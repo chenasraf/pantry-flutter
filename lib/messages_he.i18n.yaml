@@ -135,6 +135,7 @@ checklists:
   moveItem: העבר לרשימה
   moveFailed: העברת הפריט נכשלה.
   itemMarkedDone: הפריט סומן כהושלם
+  itemRemoved: הפריט הוסר
   undo: בטל
   viewTrash: הצג אשפה
   exitTrash: צא מהאשפה

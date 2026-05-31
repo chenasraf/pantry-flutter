@@ -135,6 +135,7 @@ checklists:
   moveItem: Move to list
   moveFailed: Failed to move item.
   itemMarkedDone: Item marked as done
+  itemRemoved: Item removed
   undo: Undo
   viewTrash: View trash
   exitTrash: Exit trash

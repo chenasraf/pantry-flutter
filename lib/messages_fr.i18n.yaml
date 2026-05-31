@@ -135,6 +135,7 @@ checklists:
   moveItem: "Déplacer vers une liste"
   moveFailed: "Impossible de déplacer l'article."
   itemMarkedDone: "Article marqué comme fait"
+  itemRemoved: "Article supprimé"
   undo: Annuler
   viewTrash: "Afficher la corbeille"
   exitTrash: "Quitter la corbeille"
