@@ -1097,6 +1097,12 @@ class NotesWallMessagesHe extends NotesWallMessages {
       """למחוק ${_plural(count, one: 'הערה זו', many: '$count הערות')}?""";
 
   /// ```dart
+  /// "${_plural(count, one: 'הערה נמחקה', many: '$count הערות נמחקו')}"
+  /// ```
+  String noteRemoved(int count) =>
+      """${_plural(count, one: 'הערה נמחקה', many: '$count הערות נמחקו')}""";
+
+  /// ```dart
   /// "הערה חדשה"
   /// ```
   String get newNote => """הערה חדשה""";
@@ -1187,6 +1193,12 @@ class PhotoBoardMessagesHe extends PhotoBoardMessages {
   /// ```
   String deleteSelectedConfirm(int count) =>
       """למחוק ${_plural(count, one: 'תמונה זו', many: '$count תמונות')}?""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'תמונה נמחקה', many: '$count תמונות נמחקו')}"
+  /// ```
+  String photoRemoved(int count) =>
+      """${_plural(count, one: 'תמונה נמחקה', many: '$count תמונות נמחקו')}""";
 
   /// ```dart
   /// "מחק תיקייה"

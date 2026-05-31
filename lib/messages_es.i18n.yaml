@@ -206,6 +206,7 @@ notesWall:
   deleteFailed: No se pudo eliminar la nota.
   deleteConfirm: "¿Eliminar esta nota?"
   deleteSelectedConfirm(int count): "¿Eliminar ${_plural(count, one: 'esta nota', many: '$count notas')}?"
+  noteRemoved(int count): "${_plural(count, one: 'Nota eliminada', many: '$count notas eliminadas')}"
   newNote: Nueva nota
   editNote: Editar nota
   title: "Título"
@@ -225,6 +226,7 @@ photoBoard:
   deleteFailed: No se pudo eliminar la foto.
   deleteConfirm: "¿Eliminar esta foto?"
   deleteSelectedConfirm(int count): "¿Eliminar ${_plural(count, one: 'esta foto', many: '$count fotos')}?"
+  photoRemoved(int count): "${_plural(count, one: 'Foto eliminada', many: '$count fotos eliminadas')}"
   deleteFolder: Eliminar carpeta
   deleteFolderConfirm: "¿Eliminar esta carpeta?"
   deleteFolderKeepPhotos: "Mover fotos a la raíz"

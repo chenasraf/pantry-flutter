@@ -30,26 +30,40 @@ class NoteSelectionActions extends StatelessWidget {
   }
 
   void _confirmDelete(BuildContext context) {
-    showDialog(
+    final count = controller.selected.length;
+    showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(
-          m.notesWall.deleteSelectedConfirm(controller.selected.length),
-        ),
+        title: Text(m.notesWall.deleteSelectedConfirm(count)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.pop(ctx, false),
             child: Text(m.common.cancel),
           ),
           FilledButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              controller.deleteSelected();
-            },
+            onPressed: () => Navigator.pop(ctx, true),
             child: Text(m.common.delete),
           ),
         ],
       ),
-    );
+    ).then((confirmed) async {
+      if (confirmed != true) return;
+      try {
+        await controller.deleteSelected();
+        if (context.mounted) {
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          messenger.showSnackBar(
+            SnackBar(content: Text(m.notesWall.noteRemoved(count))),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(m.notesWall.deleteFailed)));
+        }
+      }
+    });
   }
 }

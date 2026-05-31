@@ -1095,6 +1095,12 @@ class NotesWallMessages {
       """Delete ${_plural(count, one: 'this note', many: '$count notes')}?""";
 
   /// ```dart
+  /// "${_plural(count, one: 'Note deleted', many: '$count notes deleted')}"
+  /// ```
+  String noteRemoved(int count) =>
+      """${_plural(count, one: 'Note deleted', many: '$count notes deleted')}""";
+
+  /// ```dart
   /// "New note"
   /// ```
   String get newNote => """New note""";
@@ -1185,6 +1191,12 @@ class PhotoBoardMessages {
   /// ```
   String deleteSelectedConfirm(int count) =>
       """Delete ${_plural(count, one: 'this photo', many: '$count photos')}?""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Photo deleted', many: '$count photos deleted')}"
+  /// ```
+  String photoRemoved(int count) =>
+      """${_plural(count, one: 'Photo deleted', many: '$count photos deleted')}""";
 
   /// ```dart
   /// "Delete folder"

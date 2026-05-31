@@ -206,6 +206,7 @@ notesWall:
   deleteFailed: מחיקת ההערה נכשלה.
   deleteConfirm: למחוק את ההערה?
   deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'הערה זו', many: '$count הערות')}?"
+  noteRemoved(int count): "${_plural(count, one: 'הערה נמחקה', many: '$count הערות נמחקו')}"
   newNote: הערה חדשה
   editNote: עריכת הערה
   title: כותרת
@@ -225,6 +226,7 @@ photoBoard:
   deleteFailed: מחיקת התמונה נכשלה.
   deleteConfirm: למחוק את התמונה?
   deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'תמונה זו', many: '$count תמונות')}?"
+  photoRemoved(int count): "${_plural(count, one: 'תמונה נמחקה', many: '$count תמונות נמחקו')}"
   deleteFolder: מחק תיקייה
   deleteFolderConfirm: למחוק את התיקייה?
   deleteFolderKeepPhotos: העבר תמונות לשורש

@@ -1109,6 +1109,12 @@ class NotesWallMessagesDe extends NotesWallMessages {
       """${_plural(count, one: 'Diese Notiz', many: '$count Notizen')} löschen?""";
 
   /// ```dart
+  /// "${_plural(count, one: 'Notiz gelöscht', many: '$count Notizen gelöscht')}"
+  /// ```
+  String noteRemoved(int count) =>
+      """${_plural(count, one: 'Notiz gelöscht', many: '$count Notizen gelöscht')}""";
+
+  /// ```dart
   /// "Neue Notiz"
   /// ```
   String get newNote => """Neue Notiz""";
@@ -1199,6 +1205,12 @@ class PhotoBoardMessagesDe extends PhotoBoardMessages {
   /// ```
   String deleteSelectedConfirm(int count) =>
       """${_plural(count, one: 'Dieses Foto', many: '$count Fotos')} löschen?""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Foto gelöscht', many: '$count Fotos gelöscht')}"
+  /// ```
+  String photoRemoved(int count) =>
+      """${_plural(count, one: 'Foto gelöscht', many: '$count Fotos gelöscht')}""";
 
   /// ```dart
   /// "Ordner löschen"

@@ -206,6 +206,7 @@ notesWall:
   deleteFailed: "Notiz konnte nicht gelöscht werden."
   deleteConfirm: "Diese Notiz löschen?"
   deleteSelectedConfirm(int count): "${_plural(count, one: 'Diese Notiz', many: '$count Notizen')} löschen?"
+  noteRemoved(int count): "${_plural(count, one: 'Notiz gelöscht', many: '$count Notizen gelöscht')}"
   newNote: Neue Notiz
   editNote: Notiz bearbeiten
   title: Titel
@@ -225,6 +226,7 @@ photoBoard:
   deleteFailed: "Foto konnte nicht gelöscht werden."
   deleteConfirm: "Dieses Foto löschen?"
   deleteSelectedConfirm(int count): "${_plural(count, one: 'Dieses Foto', many: '$count Fotos')} löschen?"
+  photoRemoved(int count): "${_plural(count, one: 'Foto gelöscht', many: '$count Fotos gelöscht')}"
   deleteFolder: "Ordner löschen"
   deleteFolderConfirm: "Diesen Ordner löschen?"
   deleteFolderKeepPhotos: Fotos ins Stammverzeichnis verschieben
