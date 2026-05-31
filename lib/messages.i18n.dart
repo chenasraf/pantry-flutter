@@ -733,6 +733,16 @@ class ChecklistsMessages {
   String get exitTrash => """Exit trash""";
 
   /// ```dart
+  /// "Show who added each item"
+  /// ```
+  String get showAddedBy => """Show who added each item""";
+
+  /// ```dart
+  /// "Added by $name"
+  /// ```
+  String addedBy(String name) => """Added by $name""";
+
+  /// ```dart
   /// "Trash"
   /// ```
   String get trashTitle => """Trash""";
@@ -1670,6 +1680,7 @@ Please complete login in your browser.""",
   """checklists.undo""": """Undo""",
   """checklists.viewTrash""": """View trash""",
   """checklists.exitTrash""": """Exit trash""",
+  """checklists.showAddedBy""": """Show who added each item""",
   """checklists.trashTitle""": """Trash""",
   """checklists.noTrashedItems""": """Trash is empty.""",
   """checklists.emptyTrash""": """Empty trash""",

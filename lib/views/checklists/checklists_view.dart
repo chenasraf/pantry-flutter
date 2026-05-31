@@ -292,6 +292,12 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
       ];
     }
     return [
+      CheckedPopupMenuItem<String>(
+        value: 'toggle_added_by',
+        checked: controller.showAddedBy,
+        child: Text(m.checklists.showAddedBy),
+      ),
+      const PopupMenuDivider(),
       PopupMenuItem(
         value: 'view_trash',
         child: Row(
@@ -324,6 +330,8 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
         await controller.setTrashMode(false);
       case 'empty_trash':
         await _confirmEmptyTrash(context, controller);
+      case 'toggle_added_by':
+        await controller.setShowAddedBy(!controller.showAddedBy);
     }
   }
 
@@ -962,6 +970,10 @@ class _ReorderablePartition extends StatelessWidget {
           : null,
       houseId: controller.houseId,
       trashMode: controller.isTrashMode,
+      showAddedBy: controller.showAddedBy,
+      addedByMember: item.addedBy != null
+          ? controller.members[item.addedBy]
+          : null,
       onToggle: (item) => _toggleItem(context, controller, item),
       onView: (item) => _viewItem(context, controller, item),
       onEdit: (item) => _editItem(context, controller, item),

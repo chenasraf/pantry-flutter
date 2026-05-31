@@ -737,6 +737,16 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get exitTrash => """Salir de la papelera""";
 
   /// ```dart
+  /// "Mostrar quién añadió cada artículo"
+  /// ```
+  String get showAddedBy => """Mostrar quién añadió cada artículo""";
+
+  /// ```dart
+  /// "Añadido por $name"
+  /// ```
+  String addedBy(String name) => """Añadido por $name""";
+
+  /// ```dart
   /// "Papelera"
   /// ```
   String get trashTitle => """Papelera""";
@@ -1685,6 +1695,7 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.undo""": """Deshacer""",
   """checklists.viewTrash""": """Ver papelera""",
   """checklists.exitTrash""": """Salir de la papelera""",
+  """checklists.showAddedBy""": """Mostrar quién añadió cada artículo""",
   """checklists.trashTitle""": """Papelera""",
   """checklists.noTrashedItems""": """La papelera está vacía.""",
   """checklists.emptyTrash""": """Vaciar papelera""",

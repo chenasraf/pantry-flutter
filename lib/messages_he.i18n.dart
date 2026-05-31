@@ -734,6 +734,16 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get exitTrash => """צא מהאשפה""";
 
   /// ```dart
+  /// "הצג מי הוסיף כל פריט"
+  /// ```
+  String get showAddedBy => """הצג מי הוסיף כל פריט""";
+
+  /// ```dart
+  /// "הוסף על ידי $name"
+  /// ```
+  String addedBy(String name) => """הוסף על ידי $name""";
+
+  /// ```dart
   /// "אשפה"
   /// ```
   String get trashTitle => """אשפה""";
@@ -1669,6 +1679,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.undo""": """בטל""",
   """checklists.viewTrash""": """הצג אשפה""",
   """checklists.exitTrash""": """צא מהאשפה""",
+  """checklists.showAddedBy""": """הצג מי הוסיף כל פריט""",
   """checklists.trashTitle""": """אשפה""",
   """checklists.noTrashedItems""": """האשפה ריקה.""",
   """checklists.emptyTrash""": """רוקן אשפה""",

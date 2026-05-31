@@ -1,5 +1,6 @@
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/api_client.dart';
+import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/cache_store.dart';
 
 class ChecklistService {
@@ -67,6 +68,13 @@ class ChecklistService {
     );
   }
 
+  Future<Map<String, dynamic>> getHousePrefs(int houseId) async {
+    return ApiClient.instance.get<Map<String, dynamic>, Map<String, dynamic>>(
+      '/houses/$houseId/prefs',
+      fromJson: (data) => data,
+    );
+  }
+
   Future<String> getItemSortPref(int houseId) async {
     return ApiClient.instance.get<Map<String, dynamic>, String>(
       '/houses/$houseId/prefs',
@@ -78,6 +86,14 @@ class ChecklistService {
     await ApiClient.instance.put<Map<String, dynamic>, void>(
       '/houses/$houseId/prefs',
       body: {'checklistItemSort': sort},
+      fromJson: (_) {},
+    );
+  }
+
+  Future<void> setShowAddedByPref(int houseId, bool value) async {
+    await ApiClient.instance.put<Map<String, dynamic>, void>(
+      '/houses/$houseId/prefs',
+      body: {'showAddedBy': value},
       fromJson: (_) {},
     );
   }
@@ -158,6 +174,7 @@ class ChecklistService {
     String? rrule,
     bool? deleteOnDone,
   }) async {
+    final loginName = AuthService.instance.credentials?.loginName;
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items',
       body: {
@@ -168,6 +185,7 @@ class ChecklistService {
         'categoryId': ?categoryId,
         if (rrule != null && rrule.isNotEmpty) 'rrule': rrule,
         'deleteOnDone': ?deleteOnDone,
+        'addedBy': ?loginName,
       },
       fromJson: (data) => ListItem.fromJson(data),
     );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/member.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/prefs_service.dart';
@@ -17,6 +18,8 @@ class ChecklistItemTile extends StatelessWidget {
   final models.Category? category;
   final int houseId;
   final bool trashMode;
+  final Member? addedByMember;
+  final bool showAddedBy;
   final ValueChanged<ListItem> onToggle;
   final ValueChanged<ListItem> onView;
   final ValueChanged<ListItem> onEdit;
@@ -31,6 +34,8 @@ class ChecklistItemTile extends StatelessWidget {
     this.category,
     required this.houseId,
     this.trashMode = false,
+    this.addedByMember,
+    this.showAddedBy = false,
     required this.onToggle,
     required this.onView,
     required this.onEdit,
@@ -117,6 +122,13 @@ class ChecklistItemTile extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (showAddedBy && item.addedBy != null) ...[
+                    _AddedByAvatar(
+                      userId: item.addedBy!,
+                      displayName: addedByMember?.displayName ?? item.addedBy!,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   IconButton(
                     icon: Icon(
                       Icons.visibility_outlined,
@@ -329,6 +341,46 @@ class _ItemImage extends StatelessWidget {
           child: Icon(Icons.broken_image_outlined, size: 20),
         ),
       ),
+    );
+  }
+}
+
+class _AddedByAvatar extends StatelessWidget {
+  final String userId;
+  final String displayName;
+
+  const _AddedByAvatar({required this.userId, required this.displayName});
+
+  @override
+  Widget build(BuildContext context) {
+    final creds = AuthService.instance.credentials;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final avatarPath = isDark
+        ? 'index.php/avatar/$userId/64/dark'
+        : 'index.php/avatar/$userId/64';
+
+    final fallback = CircleAvatar(
+      radius: 12,
+      child: Text(
+        displayName.isNotEmpty ? displayName.characters.first : '?',
+        style: const TextStyle(fontSize: 11),
+      ),
+    );
+
+    final avatar = creds != null
+        ? CachedNetworkImage(
+            imageUrl: '${creds.serverUrl}/$avatarPath',
+            httpHeaders: creds.basicAuthHeaders,
+            imageBuilder: (_, imageProvider) =>
+                CircleAvatar(radius: 12, backgroundImage: imageProvider),
+            errorWidget: (_, _, _) => fallback,
+            placeholder: (_, _) => fallback,
+          )
+        : fallback;
+
+    return Tooltip(
+      message: m.checklists.addedBy(displayName),
+      child: SizedBox(width: 24, height: 24, child: avatar),
     );
   }
 }

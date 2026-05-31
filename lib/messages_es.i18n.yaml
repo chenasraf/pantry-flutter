@@ -134,6 +134,8 @@ checklists:
   undo: Deshacer
   viewTrash: Ver papelera
   exitTrash: Salir de la papelera
+  showAddedBy: Mostrar quién añadió cada artículo
+  addedBy(String name): "Añadido por $name"
   trashTitle: Papelera
   noTrashedItems: La papelera está vacía.
   emptyTrash: Vaciar papelera

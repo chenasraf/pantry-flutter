@@ -134,6 +134,8 @@ checklists:
   undo: Annuler
   viewTrash: "Afficher la corbeille"
   exitTrash: "Quitter la corbeille"
+  showAddedBy: "Afficher qui a ajouté chaque article"
+  addedBy(String name): "Ajouté par $name"
   trashTitle: Corbeille
   noTrashedItems: "La corbeille est vide."
   emptyTrash: "Vider la corbeille"

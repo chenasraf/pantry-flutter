@@ -740,6 +740,16 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get exitTrash => """Quitter la corbeille""";
 
   /// ```dart
+  /// "Afficher qui a ajouté chaque article"
+  /// ```
+  String get showAddedBy => """Afficher qui a ajouté chaque article""";
+
+  /// ```dart
+  /// "Ajouté par $name"
+  /// ```
+  String addedBy(String name) => """Ajouté par $name""";
+
+  /// ```dart
   /// "Corbeille"
   /// ```
   String get trashTitle => """Corbeille""";
@@ -1691,6 +1701,7 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.undo""": """Annuler""",
   """checklists.viewTrash""": """Afficher la corbeille""",
   """checklists.exitTrash""": """Quitter la corbeille""",
+  """checklists.showAddedBy""": """Afficher qui a ajouté chaque article""",
   """checklists.trashTitle""": """Corbeille""",
   """checklists.noTrashedItems""": """La corbeille est vide.""",
   """checklists.emptyTrash""": """Vider la corbeille""",

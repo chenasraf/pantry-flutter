@@ -134,6 +134,8 @@ checklists:
   undo: "Rückgängig"
   viewTrash: Papierkorb anzeigen
   exitTrash: Papierkorb verlassen
+  showAddedBy: Anzeigen, wer Einträge hinzugefügt hat
+  addedBy(String name): "Hinzugefügt von $name"
   trashTitle: Papierkorb
   noTrashedItems: Der Papierkorb ist leer.
   emptyTrash: Papierkorb leeren

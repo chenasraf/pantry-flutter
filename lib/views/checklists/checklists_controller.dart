@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/member.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/house_service.dart';
 
 class ChecklistsController extends ChangeNotifier {
   final int houseId;
@@ -41,6 +43,12 @@ class ChecklistsController extends ChangeNotifier {
   String _sortBy = 'custom';
   String get sortBy => _sortBy;
 
+  bool _showAddedBy = false;
+  bool get showAddedBy => _showAddedBy;
+
+  Map<String, Member> _members = {};
+  Map<String, Member> get members => _members;
+
   bool _isTrashMode = false;
   bool get isTrashMode => _isTrashMode;
 
@@ -52,6 +60,7 @@ class ChecklistsController extends ChangeNotifier {
 
   ChecklistService get _checklistService => ChecklistService.instance;
   CategoryService get _categoryService => CategoryService.instance;
+  HouseService get _houseService => HouseService.instance;
 
   Future<void> load() async {
     _error = null;
@@ -76,12 +85,23 @@ class ChecklistsController extends ChangeNotifier {
       final cats = results[1] as List<models.Category>;
       _categories = {for (final c in cats) c.id: c};
 
-      // Sort pref is non-fatal
+      // House prefs (sort + showAddedBy) are non-fatal
       try {
-        _sortBy = await _checklistService.getItemSortPref(houseId);
+        final prefs = await _checklistService.getHousePrefs(houseId);
+        _sortBy = prefs['checklistItemSort'] as String? ?? 'custom';
+        _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _checklistService.cache.set('sortBy', _sortBy);
+        _checklistService.cache.set('showAddedBy', _showAddedBy);
       } catch (e) {
-        debugPrint('[ChecklistsController] Failed to load sort pref: $e');
+        debugPrint('[ChecklistsController] Failed to load house prefs: $e');
+      }
+
+      // Members lookup is non-fatal
+      try {
+        final list = await _houseService.getMembers(houseId);
+        _members = {for (final m in list) m.userId: m};
+      } catch (e) {
+        debugPrint('[ChecklistsController] Failed to load members: $e');
       }
 
       if (_lists.isNotEmpty) {
@@ -110,6 +130,13 @@ class ChecklistsController extends ChangeNotifier {
   void _restoreFromCache() {
     // Sort preference
     _sortBy = _checklistService.cache.get<String>('sortBy') ?? 'custom';
+    _showAddedBy = _checklistService.cache.get<bool>('showAddedBy') ?? false;
+
+    // Members
+    final cachedMembers = _houseService.getCachedMembers(houseId);
+    if (cachedMembers != null) {
+      _members = {for (final m in cachedMembers) m.userId: m};
+    }
 
     // Categories
     final cachedCats = _categoryService.getCached(houseId);
@@ -242,6 +269,19 @@ class ChecklistsController extends ChangeNotifier {
       await _checklistService.setItemSortPref(houseId, sort);
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to persist sort pref: $e');
+    }
+  }
+
+  Future<void> setShowAddedBy(bool value) async {
+    if (value == _showAddedBy) return;
+    _showAddedBy = value;
+    _checklistService.cache.set('showAddedBy', value);
+    notifyListeners();
+
+    try {
+      await _checklistService.setShowAddedByPref(houseId, value);
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to persist showAddedBy: $e');
     }
   }
 
@@ -446,6 +486,7 @@ class ChecklistsController extends ChangeNotifier {
         nextDueAt: item.nextDueAt,
         imageFileId: null,
         imageUploadedBy: null,
+        addedBy: item.addedBy,
         sortOrder: item.sortOrder,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,

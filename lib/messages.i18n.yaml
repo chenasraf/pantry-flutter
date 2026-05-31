@@ -134,6 +134,8 @@ checklists:
   undo: Undo
   viewTrash: View trash
   exitTrash: Exit trash
+  showAddedBy: Show who added each item
+  addedBy(String name): "Added by $name"
   trashTitle: Trash
   noTrashedItems: Trash is empty.
   emptyTrash: Empty trash

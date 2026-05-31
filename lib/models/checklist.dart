@@ -74,6 +74,7 @@ class ListItem {
   final int? nextDueAt;
   final int? imageFileId;
   final String? imageUploadedBy;
+  final String? addedBy;
   final int sortOrder;
   final int createdAt;
   final int updatedAt;
@@ -95,6 +96,7 @@ class ListItem {
     this.nextDueAt,
     this.imageFileId,
     this.imageUploadedBy,
+    this.addedBy,
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -117,6 +119,7 @@ class ListItem {
     nextDueAt: json['nextDueAt'] as int?,
     imageFileId: json['imageFileId'] as int?,
     imageUploadedBy: json['imageUploadedBy'] as String?,
+    addedBy: json['addedBy'] as String?,
     sortOrder: json['sortOrder'] as int,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
@@ -139,6 +142,7 @@ class ListItem {
     'nextDueAt': nextDueAt,
     'imageFileId': imageFileId,
     'imageUploadedBy': imageUploadedBy,
+    'addedBy': addedBy,
     'sortOrder': sortOrder,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
@@ -161,6 +165,7 @@ class ListItem {
     nextDueAt: nextDueAt,
     imageFileId: imageFileId,
     imageUploadedBy: imageUploadedBy,
+    addedBy: addedBy,
     sortOrder: sortOrder,
     createdAt: createdAt,
     updatedAt: updatedAt,

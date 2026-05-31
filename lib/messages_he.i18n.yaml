@@ -134,6 +134,8 @@ checklists:
   undo: בטל
   viewTrash: הצג אשפה
   exitTrash: צא מהאשפה
+  showAddedBy: הצג מי הוסיף כל פריט
+  addedBy(String name): "הוסף על ידי $name"
   trashTitle: אשפה
   noTrashedItems: האשפה ריקה.
   emptyTrash: רוקן אשפה

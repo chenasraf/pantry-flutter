@@ -739,6 +739,16 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get exitTrash => """Papierkorb verlassen""";
 
   /// ```dart
+  /// "Anzeigen, wer Einträge hinzugefügt hat"
+  /// ```
+  String get showAddedBy => """Anzeigen, wer Einträge hinzugefügt hat""";
+
+  /// ```dart
+  /// "Hinzugefügt von $name"
+  /// ```
+  String addedBy(String name) => """Hinzugefügt von $name""";
+
+  /// ```dart
   /// "Papierkorb"
   /// ```
   String get trashTitle => """Papierkorb""";
@@ -1695,6 +1705,7 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.undo""": """Rückgängig""",
   """checklists.viewTrash""": """Papierkorb anzeigen""",
   """checklists.exitTrash""": """Papierkorb verlassen""",
+  """checklists.showAddedBy""": """Anzeigen, wer Einträge hinzugefügt hat""",
   """checklists.trashTitle""": """Papierkorb""",
   """checklists.noTrashedItems""": """Der Papierkorb ist leer.""",
   """checklists.emptyTrash""": """Papierkorb leeren""",
