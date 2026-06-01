@@ -282,6 +282,64 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
+  /// Refetch categories + categorySort pref and resort items locally if the
+  /// active item sort is "category". Used after the manage-categories view
+  /// closes so we don't have to refetch the full item list just to reflect a
+  /// new category ordering.
+  Future<void> onCategoriesChanged() async {
+    try {
+      final results = await Future.wait([
+        _checklistService.getHousePrefs(houseId),
+        _categoryService.getCategories(houseId),
+      ]);
+      final prefs = results[0] as Map<String, dynamic>;
+      final cats = results[1] as List<models.Category>;
+      _categorySort = prefs['categorySort'] as String? ?? 'custom';
+      _categories = {for (final c in cats) c.id: c};
+      _checklistService.cache.set('categorySort', _categorySort);
+
+      if (_sortBy == 'category') _resortItemsByCategory();
+      notifyListeners();
+    } catch (e) {
+      debugPrint(
+        '[ChecklistsController] Failed to refresh after categories changed: $e',
+      );
+    }
+  }
+
+  void _resortItemsByCategory() {
+    final sorted = sortedCategories;
+    final rank = <int, int>{};
+    for (var i = 0; i < sorted.length; i++) {
+      rank[sorted[i].id] = i;
+    }
+    const uncategorizedRank = 1 << 30;
+    int rankOf(int? id) =>
+        id == null ? uncategorizedRank : (rank[id] ?? uncategorizedRank);
+
+    // Stable sort by category rank, preserving the existing order within each
+    // category. We sort the undone and done partitions independently so the
+    // checked/unchecked split in the UI keeps working. Dart's List.sort is
+    // not guaranteed stable, so we tie-break on the original index.
+    List<ListItem> stableByCategory(Iterable<ListItem> source) {
+      final indexed = source.toList().asMap().entries.toList();
+      indexed.sort((a, b) {
+        final r = rankOf(
+          a.value.categoryId,
+        ).compareTo(rankOf(b.value.categoryId));
+        return r != 0 ? r : a.key.compareTo(b.key);
+      });
+      return indexed.map((e) => e.value).toList();
+    }
+
+    final unchecked = stableByCategory(_items.where((i) => !i.done));
+    final checked = stableByCategory(_items.where((i) => i.done));
+    _items = [...unchecked, ...checked];
+    if (_currentList != null) {
+      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    }
+  }
+
   Future<void> setShowAddedBy(bool value) async {
     if (value == _showAddedBy) return;
     _showAddedBy = value;

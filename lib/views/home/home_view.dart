@@ -73,6 +73,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   final _notificationsController = NotificationsController();
   final List<ValueNotifier<Future<void> Function()?>> _tabRefreshers =
       List.generate(3, (_) => ValueNotifier(null));
+  final ValueNotifier<Future<void> Function()?> _checklistsCategoriesChanged =
+      ValueNotifier(null);
 
   static bool get _isMacOS => !kIsWeb && Platform.isMacOS;
 
@@ -105,6 +107,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     for (final n in _tabRefreshers) {
       n.dispose();
     }
+    _checklistsCategoriesChanged.dispose();
     super.dispose();
   }
 
@@ -211,7 +214,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                       builder: (_) => CategoriesView(houseId: houseId),
                     ),
                   );
-                  await _tabRefreshers[0].value?.call();
+                  await _checklistsCategoriesChanged.value?.call();
                 },
               ),
             NotificationsBell(
@@ -335,6 +338,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         key: ValueKey('checklists-$houseId'),
         houseId: houseId,
         refreshHolder: _tabRefreshers[0],
+        categoriesChangedHolder: _checklistsCategoriesChanged,
       ),
       PhotoBoardView(
         key: ValueKey('photos-$houseId'),

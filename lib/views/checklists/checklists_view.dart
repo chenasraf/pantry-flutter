@@ -19,8 +19,14 @@ import 'item_form_view.dart';
 class ChecklistsView extends StatefulWidget {
   final int houseId;
   final ValueNotifier<Future<void> Function()?>? refreshHolder;
+  final ValueNotifier<Future<void> Function()?>? categoriesChangedHolder;
 
-  const ChecklistsView({super.key, required this.houseId, this.refreshHolder});
+  const ChecklistsView({
+    super.key,
+    required this.houseId,
+    this.refreshHolder,
+    this.categoriesChangedHolder,
+  });
 
   @override
   State<ChecklistsView> createState() => _ChecklistsViewState();
@@ -40,12 +46,23 @@ class _ChecklistsViewState extends State<ChecklistsView> {
         holder.value = _controller.refresh;
       });
     }
+    final categoriesHolder = widget.categoriesChangedHolder;
+    if (categoriesHolder != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        categoriesHolder.value = _controller.onCategoriesChanged;
+      });
+    }
   }
 
   @override
   void dispose() {
     if (widget.refreshHolder?.value == _controller.refresh) {
       widget.refreshHolder?.value = null;
+    }
+    if (widget.categoriesChangedHolder?.value ==
+        _controller.onCategoriesChanged) {
+      widget.categoriesChangedHolder?.value = null;
     }
     _controller.dispose();
     super.dispose();
