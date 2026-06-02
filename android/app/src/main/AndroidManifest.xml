@@ -43,6 +43,24 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <!-- Widget: receives APPWIDGET_UPDATE broadcasts -->
+        <receiver
+            android:name=".PantryWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/pantry_widget_info" />
+        </receiver>
+
+        <!-- Widget: supplies RemoteViews data for the ListView -->
+        <service
+            android:name=".PantryWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

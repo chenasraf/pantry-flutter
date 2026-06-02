@@ -20,6 +20,7 @@ import 'services/note_service.dart';
 import 'services/photo_service.dart';
 import 'services/prefs_service.dart';
 import 'services/share_intent_service.dart';
+import 'services/widget_link_service.dart';
 import 'services/theming_service.dart';
 import 'views/home/home_view.dart';
 import 'views/login/login_view.dart';
@@ -51,6 +52,7 @@ void main() async {
   }
   LocaleService.instance.apply();
   unawaited(ShareIntentService.instance.init());
+  WidgetLinkService.instance.init();
   runApp(const PantryApp());
 }
 

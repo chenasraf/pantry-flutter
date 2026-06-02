@@ -4,7 +4,6 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:provider/provider.dart';
 
 import 'package:pantry/models/checklist.dart';
-import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
@@ -142,7 +141,20 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
     }
 
     if (controller.lists.isEmpty) {
-      return Center(child: Text(m.checklists.noChecklists));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(m.checklists.noChecklists),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: () => _createList(context, controller),
+              icon: const Icon(Icons.add),
+              label: Text(m.checklists.createList),
+            ),
+          ],
+        ),
+      );
     }
 
     final filteredItems = _filterItems(controller.items);
@@ -227,7 +239,6 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
                       selectedCategoryIds: _selectedCategoryIds,
                       items: controller.items,
                       categories: controller.categories,
-                      categorySort: controller.categorySort,
                       onChanged: () => setState(() {}),
                     )
                   : const SizedBox.shrink(),
@@ -293,13 +304,20 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
         ),
       ];
     }
+    final prefs = PrefsService.instance;
+    final isPinned = controller.currentList != null &&
+        prefs.isListPinned(controller.currentList!.id);
     return [
-      CheckedPopupMenuItem<String>(
-        value: 'toggle_added_by',
-        checked: controller.showAddedBy,
-        child: Text(m.checklists.showAddedBy),
+      PopupMenuItem(
+        value: 'toggle_pin',
+        child: Row(
+          children: [
+            Icon(isPinned ? Icons.push_pin : Icons.push_pin_outlined, size: 18),
+            const SizedBox(width: 8),
+            Text(isPinned ? 'Unpin list' : 'Pin list'),
+          ],
+        ),
       ),
-      const PopupMenuDivider(),
       PopupMenuItem(
         value: 'view_trash',
         child: Row(
@@ -319,6 +337,23 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
     String value,
   ) async {
     switch (value) {
+      case 'toggle_pin':
+        final list = controller.currentList;
+        if (list == null) return;
+        final prefs = PrefsService.instance;
+        // Compute what the pinned set looks like after toggle, then persist.
+        final willBePinned = !prefs.isListPinned(list.id);
+        final nextPinnedIds = Set<int>.from(prefs.pinnedListIds);
+        if (willBePinned) {
+          nextPinnedIds.add(list.id);
+        } else {
+          nextPinnedIds.remove(list.id);
+        }
+        final allPinnedData = controller.lists
+            .where((l) => nextPinnedIds.contains(l.id))
+            .map((l) => {'id': l.id, 'name': l.name, 'houseId': l.houseId})
+            .toList();
+        await prefs.togglePinnedList(list.id, allPinnedData);
       case 'view_trash':
         if (_searchOpen) {
           setState(() {
@@ -332,8 +367,6 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
         await controller.setTrashMode(false);
       case 'empty_trash':
         await _confirmEmptyTrash(context, controller);
-      case 'toggle_added_by':
-        await controller.setShowAddedBy(!controller.showAddedBy);
     }
   }
 
@@ -415,7 +448,6 @@ class _SearchPanel extends StatelessWidget {
   final Set<int> selectedCategoryIds;
   final List<ListItem> items;
   final Map<int, models.Category> categories;
-  final String categorySort;
   final VoidCallback onChanged;
 
   const _SearchPanel({
@@ -423,7 +455,6 @@ class _SearchPanel extends StatelessWidget {
     required this.selectedCategoryIds,
     required this.items,
     required this.categories,
-    required this.categorySort,
     required this.onChanged,
   });
 
@@ -440,13 +471,13 @@ class _SearchPanel extends StatelessWidget {
       }
     }
 
-    final usedCategoryList = CategoryService.sortCategories(
-      categoryCounts.keys
-          .where((id) => categories.containsKey(id))
-          .map((id) => categories[id]!),
-      categorySort,
-    );
-    final usedCategories = usedCategoryList.map((c) => c.id).toList();
+    // Sort by category sortOrder
+    final usedCategories =
+        categoryCounts.keys.where((id) => categories.containsKey(id)).toList()
+          ..sort(
+            (a, b) =>
+                categories[a]!.sortOrder.compareTo(categories[b]!.sortOrder),
+          );
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),
@@ -926,45 +957,38 @@ class _ReorderablePartition extends StatelessWidget {
     );
   }
 
-  Future<void> _deleteItem(
+  void _deleteItem(
     BuildContext context,
     ChecklistsController controller,
     ListItem item,
-  ) async {
-    try {
-      await controller.deleteItem(item);
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(m.checklists.itemForm.deleteFailed)),
-        );
-      }
-      return;
-    }
-
-    if (!context.mounted) return;
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.clearSnackBars();
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(m.checklists.itemRemoved),
-        duration: const Duration(seconds: 6),
-        action: SnackBarAction(
-          label: m.checklists.undo,
-          onPressed: () async {
-            try {
-              await controller.restoreItem(item);
-            } catch (e) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(m.checklists.restoreFailed)),
-                );
-              }
-            }
-          },
-        ),
+  ) {
+    showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.itemForm.deleteConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.common.delete),
+          ),
+        ],
       ),
-    );
+    ).then((confirmed) async {
+      if (confirmed != true) return;
+      try {
+        await controller.deleteItem(item);
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(m.checklists.itemForm.deleteFailed)),
+          );
+        }
+      }
+    });
   }
 
   Widget _tileFor(BuildContext context, int index) {
@@ -981,10 +1005,6 @@ class _ReorderablePartition extends StatelessWidget {
           : null,
       houseId: controller.houseId,
       trashMode: controller.isTrashMode,
-      showAddedBy: controller.showAddedBy,
-      addedByMember: item.addedBy != null
-          ? controller.members[item.addedBy]
-          : null,
       onToggle: (item) => _toggleItem(context, controller, item),
       onView: (item) => _viewItem(context, controller, item),
       onEdit: (item) => _editItem(context, controller, item),

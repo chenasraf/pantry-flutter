@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pantry</string>
+    <string name="widget_description">Shows your pinned Pantry lists</string>
+    <string name="widget_no_pinned">No pinned lists.\nPin a list from the app.</string>
+</resources>
