@@ -19,6 +19,9 @@ household management for your self-hosted Nextcloud.
 A Nextcloud server with the [Pantry server app](https://github.com/chenasraf/nextcloud-pantry)
 installed.
 
+If you have issues regarding the core app for Nextcloud, please open the issue on the repo linked above.
+This repository is specifically for the companion mobile/desktop apps.
+
 ## Installation
 
 ### Google Play
@@ -43,7 +46,7 @@ It may take a few minutes for your tester status to propagate.
 Download the latest APK from the
 [releases page](https://github.com/chenasraf/pantry-flutter/releases) and sideload onto your device.
 
-### App Store (iOS)
+### App Store (iOS/macOS)
 
 [Install from the App Store](https://apps.apple.com/us/app/pantry-for-nextcloud/id6762161619)
 
