@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.15.0](https://github.com/chenasraf/pantry-flutter/compare/v0.14.0...v0.15.0) (2026-06-11)
+
+
+### Features
+
+* **categories:** sort categories by name or custom order ([9a0f1e8](https://github.com/chenasraf/pantry-flutter/commit/9a0f1e809d28b748635c88c161a63fc2c7545e8d))
+* **checklist:** show who added each item ([1fea252](https://github.com/chenasraf/pantry-flutter/commit/1fea2527c5ffe5f9713582ea64311913fe21ee07))
+* **checklist:** undo snackbar when removing items ([4e4999e](https://github.com/chenasraf/pantry-flutter/commit/4e4999e3f0cc8a363ef5b2096d452c41bf9ace4e))
+* **notes,photos:** snackbar confirming deletion ([0847cc5](https://github.com/chenasraf/pantry-flutter/commit/0847cc54ebca9a498c31fd010fe1e5e168902322))
+
+
+### Performance Improvements
+
+* **checklist:** resort items in place when category sort changes ([1a24d13](https://github.com/chenasraf/pantry-flutter/commit/1a24d13eefa3a39d8e461cac17df2b0af5f65bd7))
+
 ## [0.14.0](https://github.com/chenasraf/pantry-flutter/compare/v0.13.2...v0.14.0) (2026-05-29)
 
 
