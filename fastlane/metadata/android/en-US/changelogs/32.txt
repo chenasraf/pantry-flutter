@@ -1,0 +1,7 @@
+Features
+- sort categories by name or custom order
+- show who added each item
+- undo snackbar when removing items
+- snackbar confirming deletion
+Performance Improvements
+- resort items in place when category sort changes
