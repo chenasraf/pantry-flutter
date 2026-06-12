@@ -38,6 +38,7 @@ help:
 	@echo ""
 	@echo "  Assets:"
 	@echo "    icons               Generate launcher icons, favicon & web logo from SVG"
+	@echo "    widget-icons        Generate Android widget icon drawables from Material Symbols"
 	@echo "    splash              Generate splash screen from SVG"
 	@echo ""
 	@echo "  Building:"
@@ -294,6 +295,10 @@ endif
 			done; \
 		done; \
 	done
+
+.PHONY: widget-icons
+widget-icons:
+	dart run tool/generate_widget_icons.dart
 
 .PHONY: icons
 icons:

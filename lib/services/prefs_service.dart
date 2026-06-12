@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:home_widget/home_widget.dart';
 
+import 'checklist_service.dart';
+
 class PrefsService extends ChangeNotifier {
   PrefsService._();
   static final PrefsService instance = PrefsService._();
@@ -156,6 +158,44 @@ class PrefsService extends ChangeNotifier {
     }
     await pushWidgetTheme();
     notifyListeners();
+  }
+
+  /// Rebuild the pinned-lists JSON the Android widget reads — from cached
+  /// lists + items for the current house. Call after caches load on app
+  /// start so the widget survives an `HomeWidgetPreferences` wipe (e.g. a
+  /// fresh install) without waiting for the next pin toggle.
+  Future<void> pushWidgetPinnedLists() async {
+    if (_pinnedListIds.isEmpty) {
+      await HomeWidget.saveWidgetData<String>('pinned_lists', '[]');
+      await HomeWidget.updateWidget(
+        qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
+      );
+      return;
+    }
+    final cs = ChecklistService.instance;
+    final houseId = _lastHouseId;
+    final lists = houseId == null ? null : cs.getCachedLists(houseId);
+    if (lists == null) return;
+    final entries = lists.where((l) => _pinnedListIds.contains(l.id)).map((l) {
+      final cached = cs.getCachedItems(l.id) ?? [];
+      final active = cached.where((i) => i.deletedAt == null).toList();
+      final unchecked = active.where((i) => !i.done).length;
+      return {
+        'id': l.id,
+        'name': l.name,
+        'houseId': l.houseId,
+        'icon': l.icon,
+        'unchecked': unchecked,
+        'total': active.length,
+      };
+    }).toList();
+    await HomeWidget.saveWidgetData<String>(
+      'pinned_lists',
+      jsonEncode(entries),
+    );
+    await HomeWidget.updateWidget(
+      qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
+    );
   }
 
   /// Push the effective theme (`light` or `dark`) to the Android home-screen

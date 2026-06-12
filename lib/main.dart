@@ -45,6 +45,11 @@ void main() async {
       PhotoService.instance.cache.load(),
       NoteService.instance.cache.load(),
     ]);
+    // Rebuild the home-screen widget's pinned-list payload from caches —
+    // a fresh install wipes HomeWidgetPreferences but secure-storage pins
+    // may survive, so the widget would otherwise stay empty until the
+    // next pin toggle.
+    unawaited(PrefsService.instance.pushWidgetPinnedLists());
     // Kick off the periodic background poll if notifications are enabled.
     if (PrefsService.instance.notificationsEnabled) {
       unawaited(registerBackgroundNotificationPoll());
@@ -105,6 +110,11 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     LocaleService.instance.addListener(_rebuild);
     ThemingService.instance.addListener(_rebuild);
+    // Re-push the widget theme after first frame — at startup the platform
+    // brightness can briefly report a stale value.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      PrefsService.instance.pushWidgetTheme();
+    });
   }
 
   @override
