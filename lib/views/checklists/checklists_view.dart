@@ -310,7 +310,25 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
         ),
       ];
     }
+    final prefs = PrefsService.instance;
+    final isPinned =
+        controller.currentList != null &&
+        prefs.isListPinned(controller.currentList!.id);
     return [
+      if (controller.currentList != null)
+        PopupMenuItem(
+          value: 'toggle_pin',
+          child: Row(
+            children: [
+              Icon(
+                isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Text(isPinned ? 'Unpin list' : 'Pin list'),
+            ],
+          ),
+        ),
       CheckedPopupMenuItem<String>(
         value: 'toggle_added_by',
         checked: controller.showAddedBy,
@@ -336,6 +354,22 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
     String value,
   ) async {
     switch (value) {
+      case 'toggle_pin':
+        final list = controller.currentList;
+        if (list == null) return;
+        final prefs = PrefsService.instance;
+        final willBePinned = !prefs.isListPinned(list.id);
+        final nextPinnedIds = Set<int>.from(prefs.pinnedListIds);
+        if (willBePinned) {
+          nextPinnedIds.add(list.id);
+        } else {
+          nextPinnedIds.remove(list.id);
+        }
+        final allPinnedData = controller.lists
+            .where((l) => nextPinnedIds.contains(l.id))
+            .map((l) => {'id': l.id, 'name': l.name, 'houseId': l.houseId})
+            .toList();
+        await prefs.togglePinnedList(list.id, allPinnedData);
       case 'view_trash':
         if (_searchOpen) {
           setState(() {

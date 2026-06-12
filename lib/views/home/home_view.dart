@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
@@ -12,7 +13,9 @@ import 'package:pantry/models/house.dart';
 import 'package:pantry/services/deep_link_service.dart';
 import 'package:pantry/views/notifications/notifications_controller.dart';
 import 'package:pantry/views/notifications/notifications_view.dart';
+import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/share_intent_service.dart';
+import 'package:pantry/services/widget_link_service.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/photos/photo_board_view.dart';
 import 'package:pantry/views/settings/settings_view.dart';
@@ -89,18 +92,21 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _consumePendingDeepLink();
       _consumePendingShare();
+      WidgetLinkService.instance.checkOnResume();
     });
 
     // Listen for deep links and share intents that arrive while the home
     // view is mounted.
     DeepLinkService.instance.pending.addListener(_consumePendingDeepLink);
     ShareIntentService.instance.pending.addListener(_consumePendingShare);
+    WidgetLinkService.instance.pending.addListener(_consumePendingWidgetTap);
   }
 
   @override
   void dispose() {
     DeepLinkService.instance.pending.removeListener(_consumePendingDeepLink);
     ShareIntentService.instance.pending.removeListener(_consumePendingShare);
+    WidgetLinkService.instance.pending.removeListener(_consumePendingWidgetTap);
     WidgetsBinding.instance.removeObserver(this);
     _pageController.dispose();
     _notificationsController.dispose();
@@ -117,6 +123,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
       _notificationsController.refresh();
       _consumePendingDeepLink();
       _consumePendingShare();
+      unawaited(WidgetLinkService.instance.checkOnResume());
     }
   }
 
@@ -167,6 +174,38 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     } else {
       setState(() => _tabIndex = link.tabIndex);
     }
+  }
+
+  void _consumePendingWidgetTap() {
+    final tap = WidgetLinkService.instance.pending.value;
+    if (tap == null) return;
+    WidgetLinkService.instance.pending.value = null;
+
+    final homeController = context.read<HomeController>();
+
+    // Switch to the right house if provided.
+    if (tap.houseId != null && tap.houseId != homeController.currentHouse?.id) {
+      final house = homeController.houses.cast<House?>().firstWhere(
+        (h) => h!.id == tap.houseId,
+        orElse: () => null,
+      );
+      if (house != null) homeController.selectHouse(house);
+    }
+
+    // Pre-select the list so ChecklistsController picks it up on load.
+    ChecklistService.instance.selectedListId = tap.listId;
+
+    if (!mounted) return;
+    // Navigate to the checklists tab (index 0).
+    if (_pageController.hasClients) {
+      _goToTab(0);
+    } else {
+      setState(() => _tabIndex = 0);
+    }
+
+    // Trigger a refresh on the checklists tab so the controller reloads
+    // and picks up the new selectedListId.
+    _tabRefreshers[0].value?.call();
   }
 
   String get _tabTitle => switch (_tabIndex) {
