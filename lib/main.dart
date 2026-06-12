@@ -96,21 +96,28 @@ class _PopRouteAction extends Action<_PopRouteIntent> {
   }
 }
 
-class PantryAppState extends State<PantryApp> {
+class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
   bool _isLoggedIn = AuthService.instance.isLoggedIn;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     LocaleService.instance.addListener(_rebuild);
     ThemingService.instance.addListener(_rebuild);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     LocaleService.instance.removeListener(_rebuild);
     ThemingService.instance.removeListener(_rebuild);
     super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    PrefsService.instance.pushWidgetTheme();
   }
 
   void _rebuild() {

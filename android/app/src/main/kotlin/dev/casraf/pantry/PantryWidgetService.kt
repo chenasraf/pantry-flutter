@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.content.ContextCompat
 import org.json.JSONArray
 
 class PantryWidgetService : RemoteViewsService() {
@@ -18,12 +19,18 @@ private class PantryWidgetFactory(
     data class ListEntry(val id: Int, val name: String, val houseId: Int)
 
     private var items: List<ListEntry> = emptyList()
+    private var itemColor: Int = 0
 
     override fun onCreate() = load()
     override fun onDataSetChanged() = load()
     override fun onDestroy() {}
 
     private fun load() {
+        itemColor = ContextCompat.getColor(
+            ctx,
+            if (WidgetTheme.isDark(ctx)) R.color.widget_fg_dark else R.color.widget_fg_light,
+        )
+
         // home_widget stores data in HomeWidgetPreferences SharedPreferences.
         val prefs = ctx.getSharedPreferences("HomeWidgetPreferences", Context.MODE_PRIVATE)
         val json = prefs.getString("pinned_lists", "[]") ?: "[]"
@@ -52,6 +59,7 @@ private class PantryWidgetFactory(
         val item = items[pos]
         val rv = RemoteViews(ctx.packageName, R.layout.widget_item)
         rv.setTextViewText(R.id.widget_item_name, item.name)
+        rv.setTextColor(R.id.widget_item_name, itemColor)
 
         // Fill-in intent merged with the template set in PantryWidgetProvider.
         val fillIn = Intent().apply {
