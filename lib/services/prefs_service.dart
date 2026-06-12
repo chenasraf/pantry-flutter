@@ -82,6 +82,8 @@ class PrefsService extends ChangeNotifier {
         (spacing == 'disabled' || spacing == 'space' || spacing == 'divider')) {
       _checklistCategorySpacing = spacing;
     }
+
+    await pushWidgetTheme();
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -111,7 +113,9 @@ class PrefsService extends ChangeNotifier {
       'pinned_lists',
       jsonEncode(allPinnedAfterToggle),
     );
-    await HomeWidget.updateWidget(androidName: 'PantryWidgetProvider');
+    await HomeWidget.updateWidget(
+      qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
+    );
     notifyListeners();
   }
 
@@ -150,7 +154,26 @@ class PrefsService extends ChangeNotifier {
     } else {
       await _storage.write(key: _themeModeKey, value: mode);
     }
+    await pushWidgetTheme();
     notifyListeners();
+  }
+
+  /// Push the effective theme (`light` or `dark`) to the Android home-screen
+  /// widget. Call after the user changes the in-app theme, and when the
+  /// platform brightness changes while in system mode.
+  Future<void> pushWidgetTheme() async {
+    final resolved = switch (_themeMode) {
+      'light' => 'light',
+      'dark' => 'dark',
+      _ =>
+        PlatformDispatcher.instance.platformBrightness == Brightness.dark
+            ? 'dark'
+            : 'light',
+    };
+    await HomeWidget.saveWidgetData<String>('widget_theme', resolved);
+    await HomeWidget.updateWidget(
+      qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
+    );
   }
 
   Future<void> setChecklistTapRowToToggle(bool value) async {
