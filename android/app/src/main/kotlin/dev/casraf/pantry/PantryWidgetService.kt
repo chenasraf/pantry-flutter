@@ -21,6 +21,7 @@ private class PantryWidgetFactory(
         val id: Int,
         val name: String,
         val houseId: Int,
+        val houseName: String?,
         val iconKey: String?,
         val unchecked: Int?,
         val total: Int?,
@@ -29,6 +30,7 @@ private class PantryWidgetFactory(
     private var items: List<ListEntry> = emptyList()
     private var itemColor: Int = 0
     private var pillRes: Int = R.drawable.widget_count_pill_light
+    private var showHouseSubtitle: Boolean = false
 
     override fun onCreate() = load()
     override fun onDataSetChanged() = load()
@@ -57,6 +59,7 @@ private class PantryWidgetFactory(
                     id = obj.getInt("id"),
                     name = obj.getString("name"),
                     houseId = obj.getInt("houseId"),
+                    houseName = obj.optStringOrNull("houseName"),
                     iconKey = obj.optStringOrNull("icon"),
                     unchecked = obj.optIntOrNull("unchecked"),
                     total = obj.optIntOrNull("total"),
@@ -65,6 +68,9 @@ private class PantryWidgetFactory(
         } catch (_: Exception) {
             emptyList()
         }
+        // Show the house subtitle on each row only if the pinned set spans
+        // more than one house — otherwise it's noise.
+        showHouseSubtitle = items.map { it.houseId }.distinct().size > 1
     }
 
     override fun getCount() = items.size
@@ -82,6 +88,14 @@ private class PantryWidgetFactory(
 
         rv.setImageViewResource(R.id.widget_item_icon, iconDrawableFor(item.iconKey))
         rv.setInt(R.id.widget_item_icon, "setColorFilter", itemColor)
+
+        if (showHouseSubtitle && !item.houseName.isNullOrEmpty()) {
+            rv.setTextViewText(R.id.widget_item_house, item.houseName)
+            rv.setTextColor(R.id.widget_item_house, itemColor)
+            rv.setViewVisibility(R.id.widget_item_house, android.view.View.VISIBLE)
+        } else {
+            rv.setViewVisibility(R.id.widget_item_house, android.view.View.GONE)
+        }
 
         if (item.total != null && item.unchecked != null) {
             rv.setTextViewText(

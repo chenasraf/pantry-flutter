@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
@@ -380,6 +381,9 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
           nextPinnedIds.remove(list.id);
         }
         final cs = ChecklistService.instance;
+        final housesById = {
+          for (final h in HouseService.instance.getCached() ?? []) h.id: h.name,
+        };
         final allPinnedData = controller.lists
             .where((l) => nextPinnedIds.contains(l.id))
             .map((l) {
@@ -390,6 +394,7 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
                 'id': l.id,
                 'name': l.name,
                 'houseId': l.houseId,
+                'houseName': housesById[l.houseId],
                 'icon': l.icon,
                 'unchecked': unchecked,
                 'total': active.length,

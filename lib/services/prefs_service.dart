@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:home_widget/home_widget.dart';
 
 import 'checklist_service.dart';
+import 'house_service.dart';
 
 class PrefsService extends ChangeNotifier {
   PrefsService._();
@@ -176,6 +177,9 @@ class PrefsService extends ChangeNotifier {
     final houseId = _lastHouseId;
     final lists = houseId == null ? null : cs.getCachedLists(houseId);
     if (lists == null) return;
+    final housesById = {
+      for (final h in HouseService.instance.getCached() ?? []) h.id: h.name,
+    };
     final entries = lists.where((l) => _pinnedListIds.contains(l.id)).map((l) {
       final cached = cs.getCachedItems(l.id) ?? [];
       final active = cached.where((i) => i.deletedAt == null).toList();
@@ -184,6 +188,7 @@ class PrefsService extends ChangeNotifier {
         'id': l.id,
         'name': l.name,
         'houseId': l.houseId,
+        'houseName': housesById[l.houseId],
         'icon': l.icon,
         'unchecked': unchecked,
         'total': active.length,
