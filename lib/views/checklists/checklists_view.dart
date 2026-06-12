@@ -159,7 +159,20 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
     }
 
     if (controller.lists.isEmpty) {
-      return Center(child: Text(m.checklists.noChecklists));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(m.checklists.noChecklists),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: () => _createList(context, controller),
+              icon: const Icon(Icons.add),
+              label: Text(m.checklists.createList),
+            ),
+          ],
+        ),
+      );
     }
 
     final filteredItems = _filterItems(controller.items);
