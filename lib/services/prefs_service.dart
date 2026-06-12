@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:home_widget/home_widget.dart';
 
 class PrefsService extends ChangeNotifier {
   PrefsService._();
   static final PrefsService instance = PrefsService._();
 
   static const _lastHouseKey = 'last_house_id';
+  static const _pinnedListIdsKey = 'pinned_list_ids';
   static const _notificationsEnabledKey = 'notifications_enabled';
   static const _pollIntervalMinutesKey = 'poll_interval_minutes';
   static const _notificationsIntroSeenKey = 'notifications_intro_seen';
@@ -17,6 +21,10 @@ class PrefsService extends ChangeNotifier {
 
   int? _lastHouseId;
   int? get lastHouseId => _lastHouseId;
+
+  Set<int> _pinnedListIds = {};
+  Set<int> get pinnedListIds => _pinnedListIds;
+  bool isListPinned(int id) => _pinnedListIds.contains(id);
 
   bool _notificationsEnabled = true;
   bool get notificationsEnabled => _notificationsEnabled;
@@ -46,6 +54,11 @@ class PrefsService extends ChangeNotifier {
     final lastHouse = await _storage.read(key: _lastHouseKey);
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);
 
+    final pins = await _storage.read(key: _pinnedListIdsKey);
+    if (pins != null && pins.isNotEmpty) {
+      _pinnedListIds = pins.split(',').map(int.parse).toSet();
+    }
+
     final notif = await _storage.read(key: _notificationsEnabledKey);
     if (notif != null) _notificationsEnabled = notif == 'true';
 
@@ -74,6 +87,31 @@ class PrefsService extends ChangeNotifier {
   Future<void> setLastHouseId(int id) async {
     _lastHouseId = id;
     await _storage.write(key: _lastHouseKey, value: id.toString());
+    notifyListeners();
+  }
+
+  /// Toggle pin for [listId]. Pass [pinnedListsJson] — a JSON-encoded list of
+  /// `{id, name, houseId}` objects for all currently pinned lists after the
+  /// toggle — so the Android widget SharedPrefs stay in sync.
+  Future<void> togglePinnedList(
+    int listId,
+    List<Map<String, dynamic>> allPinnedAfterToggle,
+  ) async {
+    if (_pinnedListIds.contains(listId)) {
+      _pinnedListIds.remove(listId);
+    } else {
+      _pinnedListIds.add(listId);
+    }
+    await _storage.write(
+      key: _pinnedListIdsKey,
+      value: _pinnedListIds.isEmpty ? '' : _pinnedListIds.join(','),
+    );
+    // Write to HomeWidget SharedPrefs so the Android widget can read it.
+    await HomeWidget.saveWidgetData<String>(
+      'pinned_lists',
+      jsonEncode(allPinnedAfterToggle),
+    );
+    await HomeWidget.updateWidget(androidName: 'PantryWidgetProvider');
     notifyListeners();
   }
 
@@ -141,6 +179,7 @@ class PrefsService extends ChangeNotifier {
 
   Future<void> clear() async {
     _lastHouseId = null;
+    _pinnedListIds = {};
     _notificationsEnabled = true;
     _pollIntervalMinutes = 15;
     _notificationsIntroSeen = false;
@@ -149,6 +188,7 @@ class PrefsService extends ChangeNotifier {
     _checklistTapRowToToggle = false;
     _checklistCategorySpacing = 'disabled';
     await _storage.delete(key: _lastHouseKey);
+    await _storage.delete(key: _pinnedListIdsKey);
     await _storage.delete(key: _notificationsEnabledKey);
     await _storage.delete(key: _pollIntervalMinutesKey);
     await _storage.delete(key: _notificationsIntroSeenKey);

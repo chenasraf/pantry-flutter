@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 
 const int _kCreateNewListSentinel = -1;
@@ -56,8 +57,9 @@ class _ChecklistSelectorState extends State<ChecklistSelector> {
           isDense: true,
         ),
         items: [
-          ...widget.lists.map(
-            (list) => DropdownMenuItem(
+          ...widget.lists.map((list) {
+            final isPinned = PrefsService.instance.isListPinned(list.id);
+            return DropdownMenuItem(
               value: list.id,
               child: Row(
                 children: [
@@ -66,10 +68,14 @@ class _ChecklistSelectorState extends State<ChecklistSelector> {
                   Flexible(
                     child: Text(list.name, overflow: TextOverflow.ellipsis),
                   ),
+                  if (isPinned) ...[
+                    const SizedBox(width: 4),
+                    const Icon(Icons.push_pin, size: 14),
+                  ],
                 ],
               ),
-            ),
-          ),
+            );
+          }),
           DropdownMenuItem(
             value: _kCreateNewListSentinel,
             child: Row(
