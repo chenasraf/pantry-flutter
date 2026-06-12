@@ -32,9 +32,13 @@ class PantryWidgetProvider : AppWidgetProvider() {
             views.setTextColor(R.id.widget_empty, fg)
 
             // Adapter intent — URI must be unique per widget ID so Android
-            // doesn't reuse a stale factory for a different widget instance.
+            // doesn't reuse a stale factory for a different widget instance,
+            // and must change between updates so Android recreates the
+            // factory (otherwise the cached RemoteViewsFactory keeps serving
+            // stale rows after the underlying SharedPrefs change).
             val serviceIntent = Intent(ctx, PantryWidgetService::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                putExtra("update_token", System.currentTimeMillis())
                 data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
             }
             views.setRemoteAdapter(R.id.widget_list, serviceIntent)
