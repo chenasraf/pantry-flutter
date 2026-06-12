@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/category_service.dart';
+import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
@@ -378,9 +379,22 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
         } else {
           nextPinnedIds.remove(list.id);
         }
+        final cs = ChecklistService.instance;
         final allPinnedData = controller.lists
             .where((l) => nextPinnedIds.contains(l.id))
-            .map((l) => {'id': l.id, 'name': l.name, 'houseId': l.houseId})
+            .map((l) {
+              final cached = cs.getCachedItems(l.id) ?? [];
+              final active = cached.where((i) => i.deletedAt == null).toList();
+              final unchecked = active.where((i) => !i.done).length;
+              return {
+                'id': l.id,
+                'name': l.name,
+                'houseId': l.houseId,
+                'icon': l.icon,
+                'unchecked': unchecked,
+                'total': active.length,
+              };
+            })
             .toList();
         await prefs.togglePinnedList(list.id, allPinnedData);
       case 'view_trash':

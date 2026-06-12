@@ -6,6 +6,7 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.content.ContextCompat
 import org.json.JSONArray
+import org.json.JSONObject
 
 class PantryWidgetService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory =
@@ -16,20 +17,34 @@ private class PantryWidgetFactory(
     private val ctx: Context,
 ) : RemoteViewsService.RemoteViewsFactory {
 
-    data class ListEntry(val id: Int, val name: String, val houseId: Int)
+    data class ListEntry(
+        val id: Int,
+        val name: String,
+        val houseId: Int,
+        val iconKey: String?,
+        val unchecked: Int?,
+        val total: Int?,
+    )
 
     private var items: List<ListEntry> = emptyList()
     private var itemColor: Int = 0
+    private var pillRes: Int = R.drawable.widget_count_pill_light
 
     override fun onCreate() = load()
     override fun onDataSetChanged() = load()
     override fun onDestroy() {}
 
     private fun load() {
+        val isDark = WidgetTheme.isDark(ctx)
         itemColor = ContextCompat.getColor(
             ctx,
-            if (WidgetTheme.isDark(ctx)) R.color.widget_fg_dark else R.color.widget_fg_light,
+            if (isDark) R.color.widget_fg_dark else R.color.widget_fg_light,
         )
+        pillRes = if (isDark) {
+            R.drawable.widget_count_pill_dark
+        } else {
+            R.drawable.widget_count_pill_light
+        }
 
         // home_widget stores data in HomeWidgetPreferences SharedPreferences.
         val prefs = ctx.getSharedPreferences("HomeWidgetPreferences", Context.MODE_PRIVATE)
@@ -42,6 +57,9 @@ private class PantryWidgetFactory(
                     id = obj.getInt("id"),
                     name = obj.getString("name"),
                     houseId = obj.getInt("houseId"),
+                    iconKey = obj.optStringOrNull("icon"),
+                    unchecked = obj.optIntOrNull("unchecked"),
+                    total = obj.optIntOrNull("total"),
                 )
             }
         } catch (_: Exception) {
@@ -58,8 +76,24 @@ private class PantryWidgetFactory(
     override fun getViewAt(pos: Int): RemoteViews {
         val item = items[pos]
         val rv = RemoteViews(ctx.packageName, R.layout.widget_item)
+
         rv.setTextViewText(R.id.widget_item_name, item.name)
         rv.setTextColor(R.id.widget_item_name, itemColor)
+
+        rv.setImageViewResource(R.id.widget_item_icon, iconDrawableFor(item.iconKey))
+        rv.setInt(R.id.widget_item_icon, "setColorFilter", itemColor)
+
+        if (item.total != null && item.unchecked != null) {
+            rv.setTextViewText(
+                R.id.widget_item_count,
+                "${item.unchecked}/${item.total}",
+            )
+            rv.setTextColor(R.id.widget_item_count, itemColor)
+            rv.setInt(R.id.widget_item_count, "setBackgroundResource", pillRes)
+            rv.setViewVisibility(R.id.widget_item_count, android.view.View.VISIBLE)
+        } else {
+            rv.setViewVisibility(R.id.widget_item_count, android.view.View.GONE)
+        }
 
         // Fill-in intent merged with the template set in PantryWidgetProvider.
         val fillIn = Intent().apply {
@@ -69,4 +103,18 @@ private class PantryWidgetFactory(
         rv.setOnClickFillInIntent(R.id.widget_item_root, fillIn)
         return rv
     }
+
+    private fun iconDrawableFor(key: String?): Int {
+        if (key == null) return R.drawable.widget_icon_default
+        // Resource names use underscores; checklist icon keys use hyphens.
+        val resName = "widget_icon_${key.replace('-', '_')}"
+        val id = ctx.resources.getIdentifier(resName, "drawable", ctx.packageName)
+        return if (id != 0) id else R.drawable.widget_icon_default
+    }
 }
+
+private fun JSONObject.optStringOrNull(key: String): String? =
+    if (isNull(key)) null else optString(key).takeIf { it.isNotEmpty() }
+
+private fun JSONObject.optIntOrNull(key: String): Int? =
+    if (isNull(key) || !has(key)) null else optInt(key)
