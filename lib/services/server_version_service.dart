@@ -65,6 +65,15 @@ class ServerVersionService {
   Version? _pantryVersion;
   Version? get pantryVersion => _pantryVersion;
 
+  Map<String, dynamic>? _themingCaps;
+
+  /// Raw `theming` sub-object from the OCS capabilities response. When
+  /// authenticated, the user-facing fields (`primaryColor`, `color`, ...)
+  /// reflect the user's effective theme — personal accent if set, server
+  /// default otherwise. Consumed by `ThemingService` on NC ≥ 34, where the
+  /// legacy `/apps/theming/manifest/core` endpoint 500s.
+  Map<String, dynamic>? get themingCaps => _themingCaps;
+
   final Map<String, bool> _features = {};
   bool _featuresAuthoritative = false;
 
@@ -105,6 +114,7 @@ class ServerVersionService {
       final caps = payload['capabilities'] as Map<String, dynamic>?;
       final pantryCaps = caps?['pantry'] as Map<String, dynamic>?;
       _parsePantryCapability(pantryCaps);
+      _themingCaps = caps?['theming'] as Map<String, dynamic>?;
     } catch (e) {
       debugPrint('[ServerVersionService] Failed to fetch capabilities: $e');
     }
@@ -185,6 +195,7 @@ class ServerVersionService {
   void clear() {
     _serverVersion = null;
     _pantryVersion = null;
+    _themingCaps = null;
     _features.clear();
     _featuresAuthoritative = false;
   }

@@ -38,9 +38,12 @@ void main() async {
   await PrefsService.instance.load();
   await LocalNotificationsService.instance.init();
   if (AuthService.instance.isLoggedIn) {
+    // ServerVersionService must land before ThemingService — on NC ≥ 34 the
+    // theme color comes from the cached capabilities `theming` block.
     await Future.wait([
-      ThemingService.instance.fetchTheme(),
-      ServerVersionService.instance.fetch(),
+      ServerVersionService.instance.fetch().then(
+        (_) => ThemingService.instance.fetchTheme(),
+      ),
       HouseService.instance.cache.load(),
       CategoryService.instance.cache.load(),
       ChecklistService.instance.cache.load(),
@@ -148,10 +151,8 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
   }
 
   Future<void> _onLoginSuccess() async {
-    await Future.wait([
-      ThemingService.instance.fetchTheme(),
-      ServerVersionService.instance.fetch(),
-    ]);
+    await ServerVersionService.instance.fetch();
+    await ThemingService.instance.fetchTheme();
     _isLoggedIn = true;
     final nextRoute = PrefsService.instance.notificationsIntroSeen
         ? '/home'
