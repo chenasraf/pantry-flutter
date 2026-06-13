@@ -66,6 +66,8 @@ settings:
   interfaceSection: ממשק
   tapRowToComplete: השלם פריטים בלחיצה על השורה
   tapRowToCompleteBody: כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.
+  showProgressHero: הצג כרטיס התקדמות בכל רשימה
+  showProgressHeroBody: הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו.
   categorySpacing: הצג רווח בין קטגוריות בפריטי הרשימה
   categorySpacingBody: מוצג רק בעת מיון לפי קטגוריה
   categorySpacingNames:
@@ -201,6 +203,54 @@ checklists:
     nameZA: "שם ת–א"
     category: לפי קטגוריה
     custom: מותאם אישית
+  itemsLeft(int count): "${_plural(count, one: 'פריט אחד נותר', many: '$count פריטים נותרו')}"
+  allDone: הכל בוצע 🎉
+  listProgress(int done, int total): "$done מתוך $total בוצעו"
+  doneCount(int count): "בוצעו · $count"
+  addToList(String name): "הוסף אל $name…"
+  addFirstItem: הוסף את הפריט הראשון…
+  noItemsTitle: אין פריטים ברשימה
+  noItemsBody: הוסף את הפריט הראשון בעזרת השורה למטה — קבע קטגוריה, כמות או לוח זמנים בעזרת הצ׳יפים.
+  noListsTitle: אין רשימות עדיין
+  noListsBody: צור את הרשימה הראשונה שלך כדי להתחיל לעקוב אחר מצרכים, סידורים, משימות או כל דבר שמשק הבית צריך לזכור.
+  createFirstList: צור את הרשימה הראשונה
+  yourChecklists: הרשימות שלך
+  listsCount(int count): "${_plural(count, one: 'רשימה אחת', many: '$count רשימות')}"
+  itemsSummary(int count): "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
+  allDoneSummary: "הכל בוצע · 0 נותרו"
+  newChecklist: רשימה חדשה
+  createListButton: צור רשימה
+  view: צפה
+  swipeView: צפייה
+  swipeEdit: עריכה
+  swipeMove: העברה
+  swipeDelete: מחיקה
+  viewList: תצוגת רשימה
+  viewCards: תצוגת כרטיסים
+  listColor: צבע
+  itemTypes:
+    label: סוג פריט
+    staple: קבוע
+    stapleBody: נשאר ברשימה אחרי שמסמנים אותו כבוצע
+    onceTime: חד-פעמי
+    onceTimeBody: מוסר מהרשימה ברגע שמסמנים אותו כבוצע
+    recurring: חוזר
+    recurringBody: חוזר ברשימה לפי לוח זמנים
+    weekly: שבועי
+    everyNWeeks(int n): "כל $n שבועות"
+  compose:
+    chipCategory: קטגוריה
+    chipQuantity: כמות
+    chipType: סוג פריט
+    chipImage: תמונה
+    chipDescription: תיאור
+    descHint: "הערות, הוראות, קישורים…"
+    qtyHint: "למשל 2 ליטר, 500 ג׳"
+    qtyStepperHelp: ＋ / − משנים את המספר ושומרים על היחידה.
+    none: ללא
+    every: כל
+    week: שבוע
+    weeks: שבועות
 
 notesWall:
   noNotes: אין הערות עדיין.

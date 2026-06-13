@@ -66,6 +66,16 @@ class _AboutViewState extends State<AboutView> {
           ),
           const SizedBox(height: 32),
           _AboutTile(
+            icon: Icons.dns_outlined,
+            label: a.serverVersion,
+            value: serverVersion?.toString() ?? a.versionUnknown,
+          ),
+          _AboutTile(
+            icon: Icons.extension_outlined,
+            label: a.pantryServerVersion,
+            value: pantryServerVersion?.toString() ?? a.versionUnknown,
+          ),
+          _AboutTile(
             icon: Icons.person_outlined,
             label: a.developer,
             value: 'Chen Asraf',
@@ -91,16 +101,6 @@ class _AboutViewState extends State<AboutView> {
             icon: Icons.cloud_outlined,
             label: a.nextcloudApp,
             onTap: () => _launch('https://apps.nextcloud.com/apps/pantry'),
-          ),
-          _AboutTile(
-            icon: Icons.dns_outlined,
-            label: a.serverVersion,
-            value: serverVersion?.toString() ?? a.versionUnknown,
-          ),
-          _AboutTile(
-            icon: Icons.extension_outlined,
-            label: a.pantryServerVersion,
-            value: pantryServerVersion?.toString() ?? a.versionUnknown,
           ),
           _AboutTile(
             icon: Icons.privacy_tip_outlined,

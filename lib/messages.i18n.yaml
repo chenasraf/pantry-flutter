@@ -66,6 +66,8 @@ settings:
   interfaceSection: Interface
   tapRowToComplete: Tap row to complete items
   tapRowToCompleteBody: "When off, items are only marked complete by tapping the checkbox."
+  showProgressHero: Show progress card on each checklist
+  showProgressHeroBody: "The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it."
   categorySpacing: Show spacing between categories in list items
   categorySpacingBody: Only visible when sorting by category
   categorySpacingNames:
@@ -201,6 +203,54 @@ checklists:
     nameZA: "Name Z–A"
     category: By category
     custom: Custom
+  itemsLeft(int count): "${_plural(count, one: '1 item left', many: '$count items left')}"
+  allDone: All done 🎉
+  listProgress(int done, int total): "$done of $total done"
+  doneCount(int count): "Done · $count"
+  addToList(String name): "Add to $name…"
+  addFirstItem: Add your first item…
+  noItemsTitle: Nothing on this list yet
+  noItemsBody: Add your first item with the bar below — set a category, quantity or schedule with the chips.
+  noListsTitle: No checklists yet
+  noListsBody: Create your first list to start tracking groceries, errands, tasks, or anything your household needs to keep on top of.
+  createFirstList: Create your first list
+  yourChecklists: Your checklists
+  listsCount(int count): "${_plural(count, one: '1 list', many: '$count lists')}"
+  itemsSummary(int count): "${_plural(count, one: '1 item', many: '$count items')}"
+  allDoneSummary: "All done · 0 left"
+  newChecklist: New checklist
+  createListButton: Create list
+  view: View
+  swipeView: View
+  swipeEdit: Edit
+  swipeMove: Move
+  swipeDelete: Delete
+  viewList: List view
+  viewCards: Cards view
+  listColor: Color
+  itemTypes:
+    label: Item type
+    staple: Staple
+    stapleBody: Stays on the list after you complete it
+    onceTime: One-time
+    onceTimeBody: Removed once you complete it
+    recurring: Recurring
+    recurringBody: Comes back on a schedule
+    weekly: Weekly
+    everyNWeeks(int n): "Every $n wks"
+  compose:
+    chipCategory: Category
+    chipQuantity: Quantity
+    chipType: Item type
+    chipImage: Image
+    chipDescription: Description
+    descHint: "Notes, instructions, links…"
+    qtyHint: "e.g. 2 L, 500 g"
+    qtyStepperHelp: ＋ / − change the number and keep the unit.
+    none: None
+    every: Every
+    week: week
+    weeks: weeks
 
 notesWall:
   noNotes: No notes yet.
@@ -286,7 +336,7 @@ recurrence:
   summary: Summary
   notSet: not set
   set: set
-  every(String unit): "every $unit"
+  every(String unit): "Every $unit"
   everyButton(String unit): "Every $unit"
   onDays(String days): "on $days"
   day(int count): "${_plural(count, one: 'day', many: '$count days')}"

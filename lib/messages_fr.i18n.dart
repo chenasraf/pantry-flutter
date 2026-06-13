@@ -402,6 +402,18 @@ class SettingsMessagesFr extends SettingsMessages {
       """Quand désactivé, les éléments ne sont cochés qu'en touchant la case.""";
 
   /// ```dart
+  /// "Afficher la carte de progression sur chaque liste"
+  /// ```
+  String get showProgressHero =>
+      """Afficher la carte de progression sur chaque liste""";
+
+  /// ```dart
+  /// "La carte avec l'anneau de progression circulaire et le résumé des éléments restants en haut de chaque liste. Faites glisser la carte pour la masquer."
+  /// ```
+  String get showProgressHeroBody =>
+      """La carte avec l'anneau de progression circulaire et le résumé des éléments restants en haut de chaque liste. Faites glisser la carte pour la masquer.""";
+
+  /// ```dart
   /// "Afficher un espacement entre les catégories dans les éléments de la liste"
   /// ```
   String get categorySpacing =>
@@ -888,6 +900,139 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   ItemFormChecklistsMessagesFr get itemForm =>
       ItemFormChecklistsMessagesFr(this);
   SortChecklistsMessagesFr get sort => SortChecklistsMessagesFr(this);
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article restant', many: '$count articles restants')}"
+  /// ```
+  String itemsLeft(int count) =>
+      """${_plural(count, one: '1 article restant', many: '$count articles restants')}""";
+
+  /// ```dart
+  /// "Tout est fait 🎉"
+  /// ```
+  String get allDone => """Tout est fait 🎉""";
+
+  /// ```dart
+  /// "$done sur $total faits"
+  /// ```
+  String listProgress(int done, int total) => """$done sur $total faits""";
+
+  /// ```dart
+  /// "Faits · $count"
+  /// ```
+  String doneCount(int count) => """Faits · $count""";
+
+  /// ```dart
+  /// "Ajouter à $name…"
+  /// ```
+  String addToList(String name) => """Ajouter à $name…""";
+
+  /// ```dart
+  /// "Ajoutez votre premier article…"
+  /// ```
+  String get addFirstItem => """Ajoutez votre premier article…""";
+
+  /// ```dart
+  /// "Rien dans cette liste pour le moment"
+  /// ```
+  String get noItemsTitle => """Rien dans cette liste pour le moment""";
+
+  /// ```dart
+  /// "Ajoutez votre premier article avec la barre en bas — définissez une catégorie, une quantité ou un horaire avec les chips."
+  /// ```
+  String get noItemsBody =>
+      """Ajoutez votre premier article avec la barre en bas — définissez une catégorie, une quantité ou un horaire avec les chips.""";
+
+  /// ```dart
+  /// "Aucune liste pour le moment"
+  /// ```
+  String get noListsTitle => """Aucune liste pour le moment""";
+
+  /// ```dart
+  /// "Créez votre première liste pour commencer à suivre courses, courses à faire, tâches ou tout ce que votre foyer doit garder à l'œil."
+  /// ```
+  String get noListsBody =>
+      """Créez votre première liste pour commencer à suivre courses, courses à faire, tâches ou tout ce que votre foyer doit garder à l'œil.""";
+
+  /// ```dart
+  /// "Créer votre première liste"
+  /// ```
+  String get createFirstList => """Créer votre première liste""";
+
+  /// ```dart
+  /// "Vos listes"
+  /// ```
+  String get yourChecklists => """Vos listes""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 liste', many: '$count listes')}"
+  /// ```
+  String listsCount(int count) =>
+      """${_plural(count, one: '1 liste', many: '$count listes')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article', many: '$count articles')}"
+  /// ```
+  String itemsSummary(int count) =>
+      """${_plural(count, one: '1 article', many: '$count articles')}""";
+
+  /// ```dart
+  /// "Tout est fait · 0 restant"
+  /// ```
+  String get allDoneSummary => """Tout est fait · 0 restant""";
+
+  /// ```dart
+  /// "Nouvelle liste"
+  /// ```
+  String get newChecklist => """Nouvelle liste""";
+
+  /// ```dart
+  /// "Créer la liste"
+  /// ```
+  String get createListButton => """Créer la liste""";
+
+  /// ```dart
+  /// "Voir"
+  /// ```
+  String get view => """Voir""";
+
+  /// ```dart
+  /// "Voir"
+  /// ```
+  String get swipeView => """Voir""";
+
+  /// ```dart
+  /// "Modifier"
+  /// ```
+  String get swipeEdit => """Modifier""";
+
+  /// ```dart
+  /// "Déplacer"
+  /// ```
+  String get swipeMove => """Déplacer""";
+
+  /// ```dart
+  /// "Supprimer"
+  /// ```
+  String get swipeDelete => """Supprimer""";
+
+  /// ```dart
+  /// "Vue liste"
+  /// ```
+  String get viewList => """Vue liste""";
+
+  /// ```dart
+  /// "Vue cartes"
+  /// ```
+  String get viewCards => """Vue cartes""";
+
+  /// ```dart
+  /// "Couleur"
+  /// ```
+  String get listColor => """Couleur""";
+  ItemTypesChecklistsMessagesFr get itemTypes =>
+      ItemTypesChecklistsMessagesFr(this);
+  ComposeChecklistsMessagesFr get compose => ComposeChecklistsMessagesFr(this);
 }
 
 class ViewItemChecklistsMessagesFr extends ViewItemChecklistsMessages {
@@ -1085,6 +1230,123 @@ class SortChecklistsMessagesFr extends SortChecklistsMessages {
   /// "Personnalisé"
   /// ```
   String get custom => """Personnalisé""";
+}
+
+class ItemTypesChecklistsMessagesFr extends ItemTypesChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const ItemTypesChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Type d'article"
+  /// ```
+  String get label => """Type d'article""";
+
+  /// ```dart
+  /// "Habituel"
+  /// ```
+  String get staple => """Habituel""";
+
+  /// ```dart
+  /// "Reste sur la liste après que vous l'avez complété"
+  /// ```
+  String get stapleBody =>
+      """Reste sur la liste après que vous l'avez complété""";
+
+  /// ```dart
+  /// "Unique"
+  /// ```
+  String get onceTime => """Unique""";
+
+  /// ```dart
+  /// "Supprimé lorsque vous le complétez"
+  /// ```
+  String get onceTimeBody => """Supprimé lorsque vous le complétez""";
+
+  /// ```dart
+  /// "Récurrent"
+  /// ```
+  String get recurring => """Récurrent""";
+
+  /// ```dart
+  /// "Revient selon un horaire"
+  /// ```
+  String get recurringBody => """Revient selon un horaire""";
+
+  /// ```dart
+  /// "Hebdomadaire"
+  /// ```
+  String get weekly => """Hebdomadaire""";
+
+  /// ```dart
+  /// "Toutes les $n sem"
+  /// ```
+  String everyNWeeks(int n) => """Toutes les $n sem""";
+}
+
+class ComposeChecklistsMessagesFr extends ComposeChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const ComposeChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Catégorie"
+  /// ```
+  String get chipCategory => """Catégorie""";
+
+  /// ```dart
+  /// "Quantité"
+  /// ```
+  String get chipQuantity => """Quantité""";
+
+  /// ```dart
+  /// "Type"
+  /// ```
+  String get chipType => """Type""";
+
+  /// ```dart
+  /// "Image"
+  /// ```
+  String get chipImage => """Image""";
+
+  /// ```dart
+  /// "Description"
+  /// ```
+  String get chipDescription => """Description""";
+
+  /// ```dart
+  /// "Notes, instructions, liens…"
+  /// ```
+  String get descHint => """Notes, instructions, liens…""";
+
+  /// ```dart
+  /// "ex. 2 L, 500 g"
+  /// ```
+  String get qtyHint => """ex. 2 L, 500 g""";
+
+  /// ```dart
+  /// "＋ / − changent le nombre et gardent l'unité."
+  /// ```
+  String get qtyStepperHelp =>
+      """＋ / − changent le nombre et gardent l'unité.""";
+
+  /// ```dart
+  /// "Aucune"
+  /// ```
+  String get none => """Aucune""";
+
+  /// ```dart
+  /// "Toutes les"
+  /// ```
+  String get every => """Toutes les""";
+
+  /// ```dart
+  /// "semaine"
+  /// ```
+  String get week => """semaine""";
+
+  /// ```dart
+  /// "semaines"
+  /// ```
+  String get weeks => """semaines""";
 }
 
 class NotesWallMessagesFr extends NotesWallMessages {
@@ -1692,6 +1954,10 @@ Veuillez terminer la connexion dans votre navigateur.""",
       """Toucher la ligne pour cocher les éléments""",
   """settings.tapRowToCompleteBody""":
       """Quand désactivé, les éléments ne sont cochés qu'en touchant la case.""",
+  """settings.showProgressHero""":
+      """Afficher la carte de progression sur chaque liste""",
+  """settings.showProgressHeroBody""":
+      """La carte avec l'anneau de progression circulaire et le résumé des éléments restants en haut de chaque liste. Faites glisser la carte pour la masquer.""",
   """settings.categorySpacing""":
       """Afficher un espacement entre les catégories dans les éléments de la liste""",
   """settings.categorySpacingBody""":
@@ -1825,6 +2091,50 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.sort.nameZA""": """Nom Z–A""",
   """checklists.sort.category""": """Par catégorie""",
   """checklists.sort.custom""": """Personnalisé""",
+  """checklists.allDone""": """Tout est fait 🎉""",
+  """checklists.addFirstItem""": """Ajoutez votre premier article…""",
+  """checklists.noItemsTitle""": """Rien dans cette liste pour le moment""",
+  """checklists.noItemsBody""":
+      """Ajoutez votre premier article avec la barre en bas — définissez une catégorie, une quantité ou un horaire avec les chips.""",
+  """checklists.noListsTitle""": """Aucune liste pour le moment""",
+  """checklists.noListsBody""":
+      """Créez votre première liste pour commencer à suivre courses, courses à faire, tâches ou tout ce que votre foyer doit garder à l'œil.""",
+  """checklists.createFirstList""": """Créer votre première liste""",
+  """checklists.yourChecklists""": """Vos listes""",
+  """checklists.allDoneSummary""": """Tout est fait · 0 restant""",
+  """checklists.newChecklist""": """Nouvelle liste""",
+  """checklists.createListButton""": """Créer la liste""",
+  """checklists.view""": """Voir""",
+  """checklists.swipeView""": """Voir""",
+  """checklists.swipeEdit""": """Modifier""",
+  """checklists.swipeMove""": """Déplacer""",
+  """checklists.swipeDelete""": """Supprimer""",
+  """checklists.viewList""": """Vue liste""",
+  """checklists.viewCards""": """Vue cartes""",
+  """checklists.listColor""": """Couleur""",
+  """checklists.itemTypes.label""": """Type d'article""",
+  """checklists.itemTypes.staple""": """Habituel""",
+  """checklists.itemTypes.stapleBody""":
+      """Reste sur la liste après que vous l'avez complété""",
+  """checklists.itemTypes.onceTime""": """Unique""",
+  """checklists.itemTypes.onceTimeBody""":
+      """Supprimé lorsque vous le complétez""",
+  """checklists.itemTypes.recurring""": """Récurrent""",
+  """checklists.itemTypes.recurringBody""": """Revient selon un horaire""",
+  """checklists.itemTypes.weekly""": """Hebdomadaire""",
+  """checklists.compose.chipCategory""": """Catégorie""",
+  """checklists.compose.chipQuantity""": """Quantité""",
+  """checklists.compose.chipType""": """Type""",
+  """checklists.compose.chipImage""": """Image""",
+  """checklists.compose.chipDescription""": """Description""",
+  """checklists.compose.descHint""": """Notes, instructions, liens…""",
+  """checklists.compose.qtyHint""": """ex. 2 L, 500 g""",
+  """checklists.compose.qtyStepperHelp""":
+      """＋ / − changent le nombre et gardent l'unité.""",
+  """checklists.compose.none""": """Aucune""",
+  """checklists.compose.every""": """Toutes les""",
+  """checklists.compose.week""": """semaine""",
+  """checklists.compose.weeks""": """semaines""",
   """notesWall.noNotes""": """Aucune note pour le moment.""",
   """notesWall.failedToLoad""": """Impossible de charger les notes.""",
   """notesWall.saveFailed""": """Impossible d'enregistrer la note.""",

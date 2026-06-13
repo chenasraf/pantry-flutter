@@ -35,6 +35,11 @@ class _SettingsViewState extends State<SettingsView> {
     await context.read<PrefsService>().setChecklistTapRowToToggle(value);
   }
 
+  Future<void> _setShowProgressHero(bool value) async {
+    // Settings switch reflects "show", pref stores "hidden" — invert.
+    await context.read<PrefsService>().setChecklistProgressHeroHidden(!value);
+  }
+
   Future<void> _setCategorySpacing(String? value) async {
     if (value == null) return;
     final prefs = context.read<PrefsService>();
@@ -132,6 +137,7 @@ class _SettingsViewState extends State<SettingsView> {
     final pollIntervalMinutes = prefs.pollIntervalMinutes;
     final tapRowToComplete = prefs.checklistTapRowToToggle;
     final categorySpacing = prefs.checklistCategorySpacing;
+    final showProgressHero = !prefs.checklistProgressHeroHidden;
 
     return Scaffold(
       appBar: AppBar(
@@ -201,9 +207,7 @@ class _SettingsViewState extends State<SettingsView> {
           ),
 
           // -- Interface --
-          if (supportsFeature('pref-tap-row-to-complete') ||
-              supportsFeature('pref-category-spacing'))
-            _SectionHeader(m.settings.interfaceSection),
+          _SectionHeader(m.settings.interfaceSection),
           if (supportsFeature('pref-tap-row-to-complete'))
             SwitchListTile(
               title: Text(m.settings.tapRowToComplete),
@@ -211,6 +215,12 @@ class _SettingsViewState extends State<SettingsView> {
               value: tapRowToComplete,
               onChanged: _setTapRowToComplete,
             ),
+          SwitchListTile(
+            title: Text(m.settings.showProgressHero),
+            subtitle: Text(m.settings.showProgressHeroBody),
+            value: showProgressHero,
+            onChanged: _setShowProgressHero,
+          ),
           if (supportsFeature('pref-category-spacing'))
             ListTile(
               title: Text(m.settings.categorySpacing),

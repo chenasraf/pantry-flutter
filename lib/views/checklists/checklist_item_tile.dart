@@ -1,301 +1,212 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/member.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/prefs_service.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/rrule.dart';
-import 'package:pantry/widgets/context_menu_region.dart';
-import 'package:pantry/widgets/image_preview.dart';
-import 'package:provider/provider.dart';
+import 'package:pantry/widgets/member_avatar.dart';
+import 'swipe_reveal_row.dart';
 
-class ChecklistItemTile extends StatelessWidget {
+/// Item lifecycle as expressed by the design's chip:
+/// - staple: stays on list after completion (no rrule, deleteOnDone=false)
+/// - once: removed once completed (no rrule, deleteOnDone=true)
+/// - recurring: returns on a schedule (rrule set; deleteOnDone preserved as-is)
+enum ItemLifecycle { staple, once, recurring }
+
+ItemLifecycle lifecycleOf(ListItem item) {
+  if (item.rrule != null && item.rrule!.isNotEmpty) {
+    return ItemLifecycle.recurring;
+  }
+  if (item.deleteOnDone) return ItemLifecycle.once;
+  return ItemLifecycle.staple;
+}
+
+class ChecklistItemTile extends StatefulWidget {
   final ListItem item;
   final models.Category? category;
   final int houseId;
+  final bool isCardsView;
   final bool trashMode;
-  final Member? addedByMember;
-  final bool showAddedBy;
   final ValueChanged<ListItem> onToggle;
   final ValueChanged<ListItem> onView;
   final ValueChanged<ListItem> onEdit;
-  final ValueChanged<ListItem> onMove;
+  final ValueChanged<ListItem>? onMove;
   final ValueChanged<ListItem> onDelete;
   final ValueChanged<ListItem>? onRestore;
   final ValueChanged<ListItem>? onPermanentDelete;
 
+  /// When non-null, render the author's avatar at the trailing end of the
+  /// row. Controlled by the user's "Show who added each item" preference and
+  /// gated on the item actually having an `addedBy` value.
+  final String? addedByUserId;
+  final String? addedByDisplayName;
+
   const ChecklistItemTile({
     super.key,
     required this.item,
-    this.category,
+    required this.category,
     required this.houseId,
-    this.trashMode = false,
-    this.addedByMember,
-    this.showAddedBy = false,
+    required this.isCardsView,
     required this.onToggle,
     required this.onView,
     required this.onEdit,
-    required this.onMove,
     required this.onDelete,
+    this.onMove,
+    this.trashMode = false,
     this.onRestore,
     this.onPermanentDelete,
+    this.addedByUserId,
+    this.addedByDisplayName,
   });
+
+  @override
+  State<ChecklistItemTile> createState() => _ChecklistItemTileState();
+}
+
+class _ChecklistItemTileState extends State<ChecklistItemTile> {
+  final _swipeKey = GlobalKey<SwipeRevealRowState>();
+
+  void _toggleAndCloseSwipe() {
+    _swipeKey.currentState?.close();
+    widget.onToggle(widget.item);
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dimmed = item.done;
+    final cs = theme.colorScheme;
+    final item = widget.item;
+    final cat = widget.category;
     final tapRowToToggle = context
         .watch<PrefsService>()
         .checklistTapRowToToggle;
 
-    return Material(
-      type: MaterialType.transparency,
-      child: Opacity(
-        opacity: dimmed ? 0.5 : 1.0,
-        child: ContextMenuRegion<String>(
-          itemBuilder: _menuItems,
-          onSelected: (value) => _onMenuSelected(value),
-          child: InkWell(
-            onTap: trashMode
-                ? () => onView(item)
-                : (tapRowToToggle ? () => onToggle(item) : null),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              child: Row(
-                children: [
-                  if (trashMode)
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        start: 12,
-                        end: 12,
-                      ),
-                      child: Icon(
-                        Icons.delete_outline,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    )
-                  else
-                    Checkbox(
-                      value: item.done,
-                      onChanged: (_) => onToggle(item),
-                    ),
-                  if (item.imageFileId != null) ...[
-                    GestureDetector(
-                      onTap: () => _showImagePreview(context),
-                      child: Hero(
-                        tag: 'item-image-${item.id}',
-                        child: _ItemImage(
-                          houseId: houseId,
-                          fileId: item.imageFileId!,
-                          owner: item.imageUploadedBy ?? '',
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.name,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            decoration: dimmed
-                                ? TextDecoration.lineThrough
-                                : null,
-                          ),
-                        ),
-                        if (_hasBadges)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 2),
-                            child: Wrap(
-                              spacing: 4,
-                              runSpacing: 4,
-                              children: _buildBadges(context),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  if (showAddedBy &&
-                      item.addedBy != null &&
-                      hasFeature('item-authors')) ...[
-                    _AddedByAvatar(
-                      userId: item.addedBy!,
-                      displayName: addedByMember?.displayName ?? item.addedBy!,
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                  IconButton(
-                    icon: Icon(
-                      Icons.visibility_outlined,
-                      size: 20,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    onPressed: () => onView(item),
-                  ),
-                  PopupMenuButton<String>(
-                    icon: Icon(
-                      Icons.more_horiz,
-                      size: 20,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    itemBuilder: (_) => _menuItems(),
-                    onSelected: _onMenuSelected,
-                  ),
-                ],
-              ),
-            ),
+    final catColor = cat != null
+        ? (_parseColor(cat.color) ?? cs.primary)
+        : cs.onSurfaceVariant;
+
+    // Action buttons overlay the row's foreground in SwipeRevealRow, so a
+    // translucent background lets chips and text bleed through. Pre-blend
+    // each tint onto cs.surface (the foreground row's Material color) to get
+    // the same visual tone with no transparency.
+    Color tintedSurface(Color tint, double alpha) =>
+        Color.alphaBlend(tint.withValues(alpha: alpha), cs.surface);
+
+    final actions = <SwipeAction>[];
+    if (widget.trashMode) {
+      if (widget.onRestore != null) {
+        actions.add(
+          SwipeAction(
+            icon: Icons.restore_from_trash,
+            label: m.checklists.restoreItem,
+            tint: const Color(0xFF5FBF8A),
+            background: tintedSurface(const Color(0xFF5FBF8A), 0.16),
+            onPressed: () => widget.onRestore!(item),
           ),
-        ),
-      ),
-    );
-  }
-
-  List<PopupMenuEntry<String>> _menuItems() {
-    if (trashMode) {
-      return [
-        PopupMenuItem(
-          value: 'restore',
-          child: Row(
-            children: [
-              const Icon(Icons.restore_from_trash, size: 18),
-              const SizedBox(width: 8),
-              Text(m.checklists.restoreItem),
-            ],
+        );
+      }
+      if (widget.onPermanentDelete != null) {
+        actions.add(
+          SwipeAction(
+            icon: Icons.delete_forever,
+            label: m.checklists.permanentlyDeleteItem,
+            tint: const Color(0xFFEF7878),
+            background: tintedSurface(const Color(0xFFEF7878), 0.2),
+            onPressed: () => widget.onPermanentDelete!(item),
           ),
-        ),
-        PopupMenuItem(
-          value: 'permanent',
-          child: Row(
-            children: [
-              const Icon(Icons.delete_forever, size: 18),
-              const SizedBox(width: 8),
-              Text(m.checklists.permanentlyDeleteItem),
-            ],
+        );
+      }
+    } else {
+      // In Check mode (tap-row toggles), include View action.
+      // In View mode (tap-row opens detail), omit View.
+      if (tapRowToToggle) {
+        actions.add(
+          SwipeAction(
+            icon: Icons.visibility_outlined,
+            label: m.checklists.swipeView,
+            tint: const Color(0xFF5CB3EC),
+            background: tintedSurface(const Color(0xFF5CB3EC), 0.16),
+            onPressed: () => widget.onView(item),
           ),
+        );
+      }
+      actions.add(
+        SwipeAction(
+          icon: Icons.edit_outlined,
+          label: m.checklists.swipeEdit,
+          tint: cs.onSurfaceVariant,
+          background: tintedSurface(cs.onSurface, 0.07),
+          onPressed: () => widget.onEdit(item),
         ),
-      ];
-    }
-    return [
-      PopupMenuItem(
-        value: 'edit',
-        child: Row(
-          children: [
-            const Icon(Icons.edit, size: 18),
-            const SizedBox(width: 8),
-            Text(m.checklists.editItem),
-          ],
-        ),
-      ),
-      PopupMenuItem(
-        value: 'move',
-        child: Row(
-          children: [
-            const Icon(Icons.drive_file_move_outlined, size: 18),
-            const SizedBox(width: 8),
-            Text(m.checklists.moveItem),
-          ],
-        ),
-      ),
-      PopupMenuItem(
-        value: 'remove',
-        child: Row(
-          children: [
-            const Icon(Icons.delete, size: 18),
-            const SizedBox(width: 8),
-            Text(m.checklists.removeItem),
-          ],
-        ),
-      ),
-    ];
-  }
-
-  void _onMenuSelected(String value) {
-    switch (value) {
-      case 'edit':
-        onEdit(item);
-      case 'move':
-        onMove(item);
-      case 'remove':
-        onDelete(item);
-      case 'restore':
-        onRestore?.call(item);
-      case 'permanent':
-        onPermanentDelete?.call(item);
-    }
-  }
-
-  void _showImagePreview(BuildContext context) {
-    final uri = ChecklistService.instance.itemImagePreviewUri(
-      houseId,
-      item.imageFileId!,
-      item.imageUploadedBy ?? '',
-      size: 1024,
-    );
-    ImagePreview.show(
-      context,
-      imageUrl: uri.toString(),
-      heroTag: 'item-image-${item.id}',
-      headers: AuthService.instance.credentials?.basicAuthHeaders ?? {},
-    );
-  }
-
-  bool get _hasBadges =>
-      (item.quantity != null && item.quantity!.isNotEmpty) ||
-      category != null ||
-      (item.rrule != null && item.rrule!.isNotEmpty);
-
-  List<Widget> _buildBadges(BuildContext context) {
-    final badges = <Widget>[];
-    final theme = Theme.of(context);
-
-    if (category != null) {
-      final catColor =
-          _parseColor(category!.color) ?? theme.colorScheme.primary;
-      badges.add(
-        _Badge(
-          icon: categoryIcon(category!.icon),
-          label: category!.name,
-          color: catColor.withAlpha(30),
-          textColor: catColor,
+      );
+      if (widget.onMove != null) {
+        actions.add(
+          SwipeAction(
+            icon: Icons.drive_file_move_outlined,
+            label: m.checklists.swipeMove,
+            tint: const Color(0xFFD9B441),
+            background: tintedSurface(const Color(0xFFD9B441), 0.18),
+            onPressed: () => widget.onMove!(item),
+          ),
+        );
+      }
+      actions.add(
+        SwipeAction(
+          icon: Icons.delete_outline,
+          label: m.checklists.swipeDelete,
+          tint: const Color(0xFFEF7878),
+          background: tintedSurface(const Color(0xFFEF7878), 0.2),
+          onPressed: () => widget.onDelete(item),
         ),
       );
     }
 
-    if (item.quantity != null && item.quantity!.isNotEmpty) {
-      badges.add(
-        _Badge(
-          icon: Icons.close,
-          label: item.quantity!,
-          color: theme.colorScheme.surfaceContainerHighest,
-          textColor: theme.colorScheme.onSurface,
+    final content = _RowContent(
+      item: item,
+      category: cat,
+      catColor: catColor,
+      houseId: widget.houseId,
+      isCardsView: widget.isCardsView,
+      trashMode: widget.trashMode,
+      addedByUserId: widget.addedByUserId,
+      addedByDisplayName: widget.addedByDisplayName,
+      onCheckboxTap: _toggleAndCloseSwipe,
+      onRowTap: widget.trashMode
+          ? () => widget.onView(item)
+          : (tapRowToToggle ? _toggleAndCloseSwipe : () => widget.onView(item)),
+    );
+
+    final swipe = SwipeRevealRow(
+      key: _swipeKey,
+      actions: actions,
+      child: content,
+    );
+
+    if (widget.isCardsView) {
+      // Foreground border paints on top of the (already-clipped) child so
+      // the rounded corners stay crisp. Painting the border under the
+      // child — the default for BoxDecoration — let the swipe row's
+      // Material surface antialias over it at the corners and erase them.
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+        decoration: BoxDecoration(
+          color: cs.surfaceContainer,
+          borderRadius: BorderRadius.circular(16),
         ),
+        foregroundDecoration: BoxDecoration(
+          border: Border.all(color: cs.outlineVariant),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: swipe,
       );
     }
-
-    if (item.rrule != null && item.rrule!.isNotEmpty) {
-      badges.add(
-        _Badge(
-          icon: Icons.event_repeat,
-          label: _formatRrule(item.rrule!),
-          color: theme.colorScheme.surfaceContainerHighest,
-          textColor: theme.colorScheme.onSurface,
-        ),
-      );
-    }
-
-    return badges;
+    return swipe;
   }
 
   static Color? _parseColor(String hex) {
@@ -305,16 +216,270 @@ class ChecklistItemTile extends StatelessWidget {
     final value = int.tryParse(hex, radix: 16);
     return value != null ? Color(value) : null;
   }
-
-  static String _formatRrule(String rrule) => formatRrule(rrule);
 }
 
-class _ItemImage extends StatelessWidget {
+class _RowContent extends StatelessWidget {
+  final ListItem item;
+  final models.Category? category;
+  final Color catColor;
+  final int houseId;
+  final bool isCardsView;
+  final bool trashMode;
+  final String? addedByUserId;
+  final String? addedByDisplayName;
+  final VoidCallback onCheckboxTap;
+  final VoidCallback onRowTap;
+
+  const _RowContent({
+    required this.item,
+    required this.category,
+    required this.catColor,
+    required this.houseId,
+    required this.isCardsView,
+    required this.trashMode,
+    required this.addedByUserId,
+    required this.addedByDisplayName,
+    required this.onCheckboxTap,
+    required this.onRowTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final checked = item.done;
+
+    final nameStyle = TextStyle(
+      fontSize: 16.5,
+      fontWeight: FontWeight.w600,
+      color: checked ? cs.onSurfaceVariant : cs.onSurface,
+      decoration: checked ? TextDecoration.lineThrough : null,
+    );
+
+    return Material(
+      color: cs.surface,
+      child: InkWell(
+        onTap: onRowTap,
+        child: Stack(
+          children: [
+            if (isCardsView)
+              PositionedDirectional(
+                start: 0,
+                top: 0,
+                bottom: 0,
+                width: 4,
+                child: Container(color: catColor),
+              ),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(18, 13, 16, 13),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _Checkbox(
+                    checked: checked,
+                    trashMode: trashMode,
+                    accent: cs.primary,
+                    onTap: onCheckboxTap,
+                  ),
+                  const SizedBox(width: 14),
+                  if (item.imageFileId != null) ...[
+                    _ItemThumb(
+                      houseId: houseId,
+                      fileId: item.imageFileId!,
+                      owner: item.imageUploadedBy ?? '',
+                    ),
+                    const SizedBox(width: 12),
+                  ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(item.name, style: nameStyle),
+                        if (_hasMeta) ...[
+                          const SizedBox(height: 5),
+                          _MetaRow(
+                            item: item,
+                            category: category,
+                            catColor: catColor,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  if (addedByUserId != null && addedByUserId!.isNotEmpty) ...[
+                    const SizedBox(width: 10),
+                    MemberAvatar(
+                      userId: addedByUserId,
+                      displayName: addedByDisplayName ?? addedByUserId!,
+                      size: 26,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool get _hasMeta {
+    final hasCat = category != null;
+    final hasQty = item.quantity != null && item.quantity!.trim().isNotEmpty;
+    final lc = lifecycleOf(item);
+    final hasType = lc != ItemLifecycle.staple;
+    return hasCat || hasQty || hasType;
+  }
+}
+
+class _Checkbox extends StatelessWidget {
+  final bool checked;
+  final bool trashMode;
+  final Color accent;
+  final VoidCallback onTap;
+
+  const _Checkbox({
+    required this.checked,
+    required this.trashMode,
+    required this.accent,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    if (trashMode) {
+      return Icon(Icons.delete_outline, color: cs.onSurfaceVariant, size: 22);
+    }
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          color: checked ? accent : Colors.transparent,
+          border: checked
+              ? Border.all(color: accent, width: 2)
+              : Border.all(color: cs.outlineVariant, width: 2),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: checked
+            ? const Icon(Icons.check, color: Colors.white, size: 16)
+            : null,
+      ),
+    );
+  }
+}
+
+class _MetaRow extends StatelessWidget {
+  final ListItem item;
+  final models.Category? category;
+  final Color catColor;
+
+  const _MetaRow({
+    required this.item,
+    required this.category,
+    required this.catColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final lc = lifecycleOf(item);
+
+    return Wrap(
+      spacing: 7,
+      runSpacing: 4,
+      children: [
+        if (category != null)
+          _Chip(
+            leading: Container(
+              width: 7,
+              height: 7,
+              decoration: BoxDecoration(
+                color: catColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+            label: category!.name,
+            textColor: catColor,
+            background: catColor.withValues(alpha: 0.13),
+          ),
+        if (item.quantity != null && item.quantity!.trim().isNotEmpty)
+          _Chip(
+            label: item.quantity!,
+            textColor: cs.onSurfaceVariant,
+            background: cs.onSurface.withValues(alpha: 0.06),
+          ),
+        if (lc == ItemLifecycle.once)
+          _Chip(
+            label: m.checklists.itemTypes.onceTime,
+            textColor: cs.onSurfaceVariant,
+            background: cs.onSurface.withValues(alpha: 0.06),
+          ),
+        if (lc == ItemLifecycle.recurring)
+          _Chip(
+            label: _recurringLabel(item),
+            textColor: cs.primary,
+            background: cs.primary.withValues(alpha: 0.13),
+          ),
+      ],
+    );
+  }
+
+  static String _recurringLabel(ListItem item) {
+    final rrule = item.rrule ?? '';
+    final summary = formatRrule(rrule);
+    return summary;
+  }
+}
+
+class _Chip extends StatelessWidget {
+  final Widget? leading;
+  final String label;
+  final Color textColor;
+  final Color background;
+
+  const _Chip({
+    this.leading,
+    required this.label,
+    required this.textColor,
+    required this.background,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(7),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (leading != null) ...[leading!, const SizedBox(width: 6)],
+          Text(
+            label,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ItemThumb extends StatelessWidget {
   final int houseId;
   final int fileId;
   final String owner;
 
-  const _ItemImage({
+  const _ItemThumb({
     required this.houseId,
     required this.fileId,
     required this.owner,
@@ -326,98 +491,23 @@ class _ItemImage extends StatelessWidget {
       houseId,
       fileId,
       owner,
-      size: 64,
+      size: 96,
     );
     final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
-
     return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: BorderRadius.circular(8),
       child: CachedNetworkImage(
         imageUrl: uri.toString(),
         httpHeaders: headers,
         width: 40,
         height: 40,
         fit: BoxFit.cover,
-        errorWidget: (_, _, _) => const SizedBox(
+        errorWidget: (_, _, _) => Container(
           width: 40,
           height: 40,
-          child: Icon(Icons.broken_image_outlined, size: 20),
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          child: const Icon(Icons.broken_image_outlined, size: 18),
         ),
-      ),
-    );
-  }
-}
-
-class _AddedByAvatar extends StatelessWidget {
-  final String userId;
-  final String displayName;
-
-  const _AddedByAvatar({required this.userId, required this.displayName});
-
-  @override
-  Widget build(BuildContext context) {
-    final creds = AuthService.instance.credentials;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final avatarPath = isDark
-        ? 'index.php/avatar/$userId/64/dark'
-        : 'index.php/avatar/$userId/64';
-
-    final fallback = CircleAvatar(
-      radius: 12,
-      child: Text(
-        displayName.isNotEmpty ? displayName.characters.first : '?',
-        style: const TextStyle(fontSize: 11),
-      ),
-    );
-
-    final avatar = creds != null
-        ? CachedNetworkImage(
-            imageUrl: '${creds.serverUrl}/$avatarPath',
-            httpHeaders: creds.basicAuthHeaders,
-            imageBuilder: (_, imageProvider) =>
-                CircleAvatar(radius: 12, backgroundImage: imageProvider),
-            errorWidget: (_, _, _) => fallback,
-            placeholder: (_, _) => fallback,
-          )
-        : fallback;
-
-    return Tooltip(
-      message: m.checklists.addedBy(displayName),
-      child: SizedBox(width: 24, height: 24, child: avatar),
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
-  final IconData? icon;
-  final String label;
-  final Color color;
-  final Color textColor;
-
-  const _Badge({
-    this.icon,
-    required this.label,
-    required this.color,
-    required this.textColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: 12, color: textColor),
-            const SizedBox(width: 3),
-          ],
-          Text(label, style: TextStyle(fontSize: 11, color: textColor)),
-        ],
       ),
     );
   }

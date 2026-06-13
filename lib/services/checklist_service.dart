@@ -116,6 +116,7 @@ class ChecklistService {
     required String name,
     String? description,
     String? icon,
+    String? color,
   }) async {
     return ApiClient.instance.post<Map<String, dynamic>, ChecklistList>(
       '/houses/$houseId/lists',
@@ -124,6 +125,7 @@ class ChecklistService {
         if (description != null && description.isNotEmpty)
           'description': description,
         if (icon != null && icon.isNotEmpty) 'icon': icon,
+        if (color != null && color.isNotEmpty) 'color': color,
       },
       fromJson: (data) => ChecklistList.fromJson(data),
     );
@@ -135,6 +137,7 @@ class ChecklistService {
     String? name,
     String? description,
     String? icon,
+    String? color,
     int? sortOrder,
     bool? deleteOnDoneDefault,
   }) async {
@@ -144,6 +147,7 @@ class ChecklistService {
         'name': ?name,
         'description': ?description,
         'icon': ?icon,
+        'color': ?color,
         'sortOrder': ?sortOrder,
         'deleteOnDoneDefault': ?deleteOnDoneDefault,
       },

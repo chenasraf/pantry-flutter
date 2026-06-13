@@ -66,6 +66,8 @@ settings:
   interfaceSection: Interfaz
   tapRowToComplete: Tocar la fila para completar elementos
   tapRowToCompleteBody: "Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla."
+  showProgressHero: Mostrar tarjeta de progreso en cada lista
+  showProgressHeroBody: "La tarjeta con el anillo de progreso circular y el resumen de elementos restantes en la parte superior de cada lista. Desliza la tarjeta para ocultarla."
   categorySpacing: Mostrar espacio entre categorías en los elementos de la lista
   categorySpacingBody: Solo visible al ordenar por categoría
   categorySpacingNames:
@@ -201,6 +203,54 @@ checklists:
     nameZA: "Nombre Z–A"
     category: "Por categoría"
     custom: Personalizado
+  itemsLeft(int count): "${_plural(count, one: '1 artículo restante', many: '$count artículos restantes')}"
+  allDone: Todo listo 🎉
+  listProgress(int done, int total): "$done de $total hechos"
+  doneCount(int count): "Hechos · $count"
+  addToList(String name): "Agregar a $name…"
+  addFirstItem: "Agrega tu primer artículo…"
+  noItemsTitle: Nada en esta lista todavía
+  noItemsBody: Agrega tu primer artículo con la barra de abajo — configura una categoría, cantidad o programación con los chips.
+  noListsTitle: "Aún no hay listas"
+  noListsBody: "Crea tu primera lista para empezar a rastrear compras, recados, tareas o cualquier cosa que tu hogar necesite tener al día."
+  createFirstList: Crear tu primera lista
+  yourChecklists: Tus listas
+  listsCount(int count): "${_plural(count, one: '1 lista', many: '$count listas')}"
+  itemsSummary(int count): "${_plural(count, one: '1 artículo', many: '$count artículos')}"
+  allDoneSummary: "Todo listo · 0 restantes"
+  newChecklist: Nueva lista
+  createListButton: Crear lista
+  view: Ver
+  swipeView: Ver
+  swipeEdit: Editar
+  swipeMove: Mover
+  swipeDelete: Eliminar
+  viewList: Vista de lista
+  viewCards: Vista de tarjetas
+  listColor: Color
+  itemTypes:
+    label: Tipo de artículo
+    staple: Habitual
+    stapleBody: Permanece en la lista después de completarlo
+    onceTime: Una vez
+    onceTimeBody: Se elimina al completarlo
+    recurring: Recurrente
+    recurringBody: Vuelve según un horario
+    weekly: Semanal
+    everyNWeeks(int n): "Cada $n sem"
+  compose:
+    chipCategory: Categoría
+    chipQuantity: Cantidad
+    chipType: Tipo
+    chipImage: Imagen
+    chipDescription: Descripción
+    descHint: "Notas, instrucciones, enlaces…"
+    qtyHint: "p. ej. 2 L, 500 g"
+    qtyStepperHelp: ＋ / − cambian el número y mantienen la unidad.
+    none: Ninguna
+    every: Cada
+    week: semana
+    weeks: semanas
 
 notesWall:
   noNotes: "Aún no hay notas."

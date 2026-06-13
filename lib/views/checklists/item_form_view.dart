@@ -12,8 +12,10 @@ import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/category_picker.dart';
+import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/widgets/recurrence_dialog.dart';
 import 'package:pantry/widgets/repeat_button.dart';
+import 'checklist_item_tile.dart' show ItemLifecycle, lifecycleOf;
 import 'checklists_controller.dart';
 
 class ItemFormView extends StatefulWidget {
@@ -35,7 +37,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   int? _selectedCategoryId;
   String? _rrule;
   bool _repeatFromCompletion = false;
-  bool _deleteOnDone = false;
+  late ItemLifecycle _lifecycle;
   bool _saving = false;
   TextDirection _nameDir = TextDirection.ltr;
   TextDirection _descriptionDir = TextDirection.ltr;
@@ -60,10 +62,13 @@ class _ItemFormViewState extends State<ItemFormView> {
     _selectedCategoryId = item?.categoryId;
     _rrule = item?.rrule;
     _repeatFromCompletion = item?.repeatFromCompletion ?? false;
-    _deleteOnDone =
-        item?.deleteOnDone ??
-        widget.controller.currentList?.deleteOnDoneDefault ??
-        false;
+    if (item != null) {
+      _lifecycle = lifecycleOf(item);
+    } else {
+      _lifecycle = (widget.controller.currentList?.deleteOnDoneDefault ?? false)
+          ? ItemLifecycle.once
+          : ItemLifecycle.staple;
+    }
     _nameDir = detectTextDirection(item?.name);
     _nameController.addListener(() {
       final dir = detectTextDirection(_nameController.text);
@@ -84,16 +89,39 @@ class _ItemFormViewState extends State<ItemFormView> {
     super.dispose();
   }
 
+  void _setLifecycle(ItemLifecycle next) {
+    if (next == _lifecycle) return;
+    setState(() {
+      _lifecycle = next;
+      // Seed a sensible default rrule when entering recurring with none set,
+      // so the user can submit immediately without opening the schedule
+      // dialog — same default the compose bar uses (weekly, every 1 week).
+      if (next == ItemLifecycle.recurring &&
+          (_rrule == null || _rrule!.isEmpty)) {
+        _rrule = buildRrule(freq: 'WEEKLY');
+      }
+    });
+    // Mirror the compose bar's behavior: on creation, choosing "one-time"
+    // updates the list's default so the next blank item starts there too.
+    if (!_isEditing) {
+      widget.controller.setListDeleteOnDoneDefault(next == ItemLifecycle.once);
+    }
+  }
+
   Future<void> _save() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) return;
 
     setState(() => _saving = true);
     try {
-      final effectiveRrule = _deleteOnDone ? '' : (_rrule ?? '');
-      final effectiveRepeatFromCompletion = _deleteOnDone
-          ? false
-          : _repeatFromCompletion;
+      // Lifecycle is the source of truth: only "recurring" carries an rrule
+      // and only "one-time" sets deleteOnDone. Switching out of recurring
+      // clears the schedule on save even if `_rrule` still held an old value.
+      final isRecurring = _lifecycle == ItemLifecycle.recurring;
+      final isOnce = _lifecycle == ItemLifecycle.once;
+      final effectiveRrule = isRecurring ? (_rrule ?? '') : '';
+      final effectiveRepeatFromCompletion =
+          isRecurring && _repeatFromCompletion;
       ListItem savedItem;
       if (_isEditing) {
         final item = widget.item!;
@@ -106,7 +134,7 @@ class _ItemFormViewState extends State<ItemFormView> {
           clearCategory: _selectedCategoryId == null && item.categoryId != null,
           rrule: effectiveRrule,
           repeatFromCompletion: effectiveRepeatFromCompletion,
-          deleteOnDone: _deleteOnDone,
+          deleteOnDone: isOnce,
         );
       } else {
         savedItem = await widget.controller.addItem(
@@ -114,8 +142,8 @@ class _ItemFormViewState extends State<ItemFormView> {
           description: _descriptionController.text.trim(),
           quantity: _quantityController.text.trim(),
           categoryId: _selectedCategoryId,
-          rrule: _deleteOnDone ? null : _rrule,
-          deleteOnDone: _deleteOnDone,
+          rrule: isRecurring ? _rrule : null,
+          deleteOnDone: isOnce,
         );
       }
 
@@ -215,23 +243,12 @@ class _ItemFormViewState extends State<ItemFormView> {
               setState(() => _selectedCategoryId = cat.id);
             },
           ),
+          const SizedBox(height: 16),
+          Text(m.checklists.itemTypes.label, style: theme.textTheme.bodyMedium),
           const SizedBox(height: 8),
-          CheckboxListTile(
-            value: _deleteOnDone,
-            onChanged: (v) {
-              final next = v ?? false;
-              setState(() => _deleteOnDone = next);
-              if (!_isEditing) {
-                widget.controller.setListDeleteOnDoneDefault(next);
-              }
-            },
-            title: Text(f.once),
-            subtitle: Text(f.onceDescription),
-            controlAffinity: ListTileControlAffinity.leading,
-            contentPadding: EdgeInsetsDirectional.zero,
-          ),
-          if (!_deleteOnDone) ...[
-            const SizedBox(height: 8),
+          _LifecyclePicker(value: _lifecycle, onChanged: _setLifecycle),
+          if (_lifecycle == ItemLifecycle.recurring) ...[
+            const SizedBox(height: 4),
             RepeatButton(
               rrule: _rrule,
               onTap: () async {
@@ -352,6 +369,121 @@ class _ImagePreviewTile extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Three mutually-exclusive item-type cards (staple / one-time / recurring),
+/// mirroring the compose bar's tray so the edit form speaks the same language.
+class _LifecyclePicker extends StatelessWidget {
+  final ItemLifecycle value;
+  final ValueChanged<ItemLifecycle> onChanged;
+
+  const _LifecyclePicker({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = m.checklists.itemTypes;
+    return Column(
+      children: [
+        _LifecycleRow(
+          label: t.staple,
+          body: t.stapleBody,
+          selected: value == ItemLifecycle.staple,
+          onTap: () => onChanged(ItemLifecycle.staple),
+        ),
+        const SizedBox(height: 7),
+        _LifecycleRow(
+          label: t.onceTime,
+          body: t.onceTimeBody,
+          selected: value == ItemLifecycle.once,
+          onTap: () => onChanged(ItemLifecycle.once),
+        ),
+        const SizedBox(height: 7),
+        _LifecycleRow(
+          label: t.recurring,
+          body: t.recurringBody,
+          selected: value == ItemLifecycle.recurring,
+          onTap: () => onChanged(ItemLifecycle.recurring),
+        ),
+      ],
+    );
+  }
+}
+
+class _LifecycleRow extends StatelessWidget {
+  final String label;
+  final String body;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _LifecycleRow({
+    required this.label,
+    required this.body,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(11),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected
+              ? cs.primary.withValues(alpha: 0.1)
+              : cs.surfaceContainer,
+          border: Border.all(
+            color: selected ? cs.primary : cs.outlineVariant,
+            width: selected ? 1.5 : 1,
+          ),
+          borderRadius: BorderRadius.circular(11),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 17,
+              height: 17,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: selected ? cs.primary : cs.outlineVariant,
+                  width: selected ? 5 : 2,
+                ),
+                color: selected ? cs.surface : Colors.transparent,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    body,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w500,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

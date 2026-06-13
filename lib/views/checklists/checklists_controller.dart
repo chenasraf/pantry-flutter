@@ -402,12 +402,14 @@ class ChecklistsController extends ChangeNotifier {
     required String name,
     String? description,
     String? icon,
+    String? color,
   }) async {
     final list = await _checklistService.createList(
       houseId,
       name: name,
       description: description,
       icon: icon,
+      color: color,
     );
     _lists = [..._lists, list];
     _checklistService.cacheLists(houseId, _lists);
