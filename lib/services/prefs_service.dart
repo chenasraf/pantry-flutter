@@ -20,6 +20,10 @@ class PrefsService extends ChangeNotifier {
   static const _themeModeKey = 'theme_mode';
   static const _checklistTapRowToToggleKey = 'checklist_tap_row_to_toggle';
   static const _checklistCategorySpacingKey = 'checklist_category_spacing';
+  static const _checklistViewKey = 'checklist_view';
+  static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
+  static const _checklistProgressHeroHiddenKey =
+      'checklist_progress_hero_hidden';
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -53,6 +57,19 @@ class PrefsService extends ChangeNotifier {
   String _checklistCategorySpacing = 'disabled';
   String get checklistCategorySpacing => _checklistCategorySpacing;
 
+  /// "list" or "cards"
+  String _checklistView = 'list';
+  String get checklistView => _checklistView;
+
+  bool _checklistDoneCollapsed = true;
+  bool get checklistDoneCollapsed => _checklistDoneCollapsed;
+
+  /// User has swiped away the top progress-ring card. When true, the card
+  /// (circular ring + "{N} items left" / "{done} of {total} done") is hidden
+  /// on every checklist. Re-enable from Settings → Interface.
+  bool _checklistProgressHeroHidden = false;
+  bool get checklistProgressHeroHidden => _checklistProgressHeroHidden;
+
   Future<void> load() async {
     final lastHouse = await _storage.read(key: _lastHouseKey);
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);
@@ -84,6 +101,23 @@ class PrefsService extends ChangeNotifier {
     if (spacing != null &&
         (spacing == 'disabled' || spacing == 'space' || spacing == 'divider')) {
       _checklistCategorySpacing = spacing;
+    }
+
+    final view = await _storage.read(key: _checklistViewKey);
+    if (view != null && (view == 'list' || view == 'cards')) {
+      _checklistView = view;
+    }
+
+    final doneCollapsed = await _storage.read(key: _checklistDoneCollapsedKey);
+    if (doneCollapsed != null) {
+      _checklistDoneCollapsed = doneCollapsed == 'true';
+    }
+
+    final progressHeroHidden = await _storage.read(
+      key: _checklistProgressHeroHiddenKey,
+    );
+    if (progressHeroHidden != null) {
+      _checklistProgressHeroHidden = progressHeroHidden == 'true';
     }
   }
 
@@ -234,6 +268,32 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setChecklistView(String value) async {
+    if (value != 'list' && value != 'cards') return;
+    _checklistView = value;
+    await _storage.write(key: _checklistViewKey, value: value);
+    notifyListeners();
+  }
+
+  Future<void> setChecklistDoneCollapsed(bool value) async {
+    _checklistDoneCollapsed = value;
+    await _storage.write(
+      key: _checklistDoneCollapsedKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
+  Future<void> setChecklistProgressHeroHidden(bool value) async {
+    if (_checklistProgressHeroHidden == value) return;
+    _checklistProgressHeroHidden = value;
+    await _storage.write(
+      key: _checklistProgressHeroHiddenKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
   Future<void> setNotificationsIntroSeen(bool value) async {
     _notificationsIntroSeen = value;
     await _storage.write(
@@ -253,6 +313,9 @@ class PrefsService extends ChangeNotifier {
     _themeMode = null;
     _checklistTapRowToToggle = false;
     _checklistCategorySpacing = 'disabled';
+    _checklistView = 'list';
+    _checklistDoneCollapsed = true;
+    _checklistProgressHeroHidden = false;
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _pinnedListIdsKey);
     await _storage.delete(key: _notificationsEnabledKey);
@@ -262,6 +325,9 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _themeModeKey);
     await _storage.delete(key: _checklistTapRowToToggleKey);
     await _storage.delete(key: _checklistCategorySpacingKey);
+    await _storage.delete(key: _checklistViewKey);
+    await _storage.delete(key: _checklistDoneCollapsedKey);
+    await _storage.delete(key: _checklistProgressHeroHiddenKey);
     notifyListeners();
   }
 }

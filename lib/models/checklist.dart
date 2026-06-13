@@ -4,6 +4,7 @@ class ChecklistList {
   final String name;
   final String? description;
   final String icon;
+  final String? color;
   final int sortOrder;
   final bool deleteOnDoneDefault;
   final int createdAt;
@@ -15,6 +16,7 @@ class ChecklistList {
     required this.name,
     this.description,
     required this.icon,
+    this.color,
     required this.sortOrder,
     this.deleteOnDoneDefault = false,
     required this.createdAt,
@@ -27,6 +29,7 @@ class ChecklistList {
     name: json['name'] as String,
     description: json['description'] as String?,
     icon: json['icon'] as String,
+    color: json['color'] as String?,
     sortOrder: json['sortOrder'] as int,
     deleteOnDoneDefault: json['deleteOnDoneDefault'] as bool? ?? false,
     createdAt: json['createdAt'] as int,
@@ -39,23 +42,26 @@ class ChecklistList {
     'name': name,
     'description': description,
     'icon': icon,
+    'color': color,
     'sortOrder': sortOrder,
     'deleteOnDoneDefault': deleteOnDoneDefault,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
 
-  ChecklistList copyWith({bool? deleteOnDoneDefault}) => ChecklistList(
-    id: id,
-    houseId: houseId,
-    name: name,
-    description: description,
-    icon: icon,
-    sortOrder: sortOrder,
-    deleteOnDoneDefault: deleteOnDoneDefault ?? this.deleteOnDoneDefault,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-  );
+  ChecklistList copyWith({bool? deleteOnDoneDefault, String? color}) =>
+      ChecklistList(
+        id: id,
+        houseId: houseId,
+        name: name,
+        description: description,
+        icon: icon,
+        color: color ?? this.color,
+        sortOrder: sortOrder,
+        deleteOnDoneDefault: deleteOnDoneDefault ?? this.deleteOnDoneDefault,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+      );
 }
 
 class ListItem {

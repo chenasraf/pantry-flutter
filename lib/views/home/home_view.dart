@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry/i18n.dart';
-import 'package:pantry/views/categories/categories_view.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
 import 'package:pantry/views/notes/notes_wall_view.dart';
 import 'package:pantry/models/house.dart';
@@ -76,7 +75,10 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   final _notificationsController = NotificationsController();
   final List<ValueNotifier<Future<void> Function()?>> _tabRefreshers =
       List.generate(3, (_) => ValueNotifier(null));
-  final ValueNotifier<Future<void> Function()?> _checklistsCategoriesChanged =
+  // Single shared AppBar; ChecklistsView writes its leading/title/actions into
+  // this slot so the AppBar stays the same widget instance across tab swipes
+  // and only its content swaps.
+  final ValueNotifier<ChecklistsAppBarSpec?> _checklistsAppBarSpec =
       ValueNotifier(null);
 
   static bool get _isMacOS => !kIsWeb && Platform.isMacOS;
@@ -113,7 +115,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     for (final n in _tabRefreshers) {
       n.dispose();
     }
-    _checklistsCategoriesChanged.dispose();
+    _checklistsAppBarSpec.dispose();
     super.dispose();
   }
 
@@ -218,7 +220,6 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<HomeController>();
-    final houseId = controller.currentHouse?.id;
     final destinations = <_NavDestination>[
       (icon: Icons.assignment_turned_in, label: m.nav.checklists),
       (icon: Icons.photo, label: m.nav.photoBoard),
@@ -231,55 +232,68 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         final extendedRail = constraints.maxWidth >= 1100;
         final body = _buildBody(controller, useRail: useRail);
 
-        final appBar = AppBar(
-          title: Text(_tabTitle),
-          actions: [
-            if (isDesktop)
-              ValueListenableBuilder<Future<void> Function()?>(
-                valueListenable: _tabRefreshers[_tabIndex],
-                builder: (_, refresh, _) => IconButton(
-                  icon: const Icon(Icons.refresh),
-                  tooltip: m.common.refresh,
-                  onPressed: refresh,
-                ),
+        // Single shared AppBar across all tabs. On the checklists tab,
+        // ChecklistsView populates `_checklistsAppBarSpec` with its leading /
+        // title / actions; the AppBar widget instance stays put across tab
+        // swipes so there's no jarring swap — only its content changes.
+        final isChecklistsTab = _tabIndex == 0;
+
+        final notificationsBell = NotificationsBell(
+          controller: _notificationsController,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) =>
+                    NotificationsView(controller: _notificationsController),
               ),
-            if (_tabIndex == 0 && houseId != null)
-              IconButton(
-                icon: const Icon(Icons.sell_outlined),
-                tooltip: m.checklists.categories,
-                onPressed: () async {
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => CategoriesView(houseId: houseId),
-                    ),
-                  );
-                  await _checklistsCategoriesChanged.value?.call();
-                },
-              ),
-            NotificationsBell(
-              controller: _notificationsController,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        NotificationsView(controller: _notificationsController),
-                  ),
+            );
+          },
+        );
+        final userMenuButton = UserMenuButton(
+          houses: controller.houses,
+          currentHouse: controller.currentHouse,
+          onHouseSelected: controller.selectHouse,
+          onCreateHouse: () => showCreateHouseDialog(context, controller),
+          onOpenSettings: () {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const SettingsView()));
+          },
+          onLogout: widget.onLogout,
+        );
+
+        final appBar = PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: ValueListenableBuilder<ChecklistsAppBarSpec?>(
+            valueListenable: _checklistsAppBarSpec,
+            builder: (context, spec, _) {
+              if (isChecklistsTab && spec != null) {
+                return AppBar(
+                  leading: spec.leading,
+                  leadingWidth: spec.leadingWidth,
+                  title: spec.title,
+                  titleSpacing: spec.titleSpacing,
+                  actions: [...spec.actions, notificationsBell, userMenuButton],
                 );
-              },
-            ),
-            UserMenuButton(
-              houses: controller.houses,
-              currentHouse: controller.currentHouse,
-              onHouseSelected: controller.selectHouse,
-              onCreateHouse: () => showCreateHouseDialog(context, controller),
-              onOpenSettings: () {
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (_) => const SettingsView()));
-              },
-              onLogout: widget.onLogout,
-            ),
-          ],
+              }
+              return AppBar(
+                title: Text(_tabTitle),
+                actions: [
+                  if (isDesktop)
+                    ValueListenableBuilder<Future<void> Function()?>(
+                      valueListenable: _tabRefreshers[_tabIndex],
+                      builder: (_, refresh, _) => IconButton(
+                        icon: const Icon(Icons.refresh),
+                        tooltip: m.common.refresh,
+                        onPressed: refresh,
+                      ),
+                    ),
+                  notificationsBell,
+                  userMenuButton,
+                ],
+              );
+            },
+          ),
         );
 
         if (useRail) {
@@ -377,7 +391,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         key: ValueKey('checklists-$houseId'),
         houseId: houseId,
         refreshHolder: _tabRefreshers[0],
-        categoriesChangedHolder: _checklistsCategoriesChanged,
+        appBarSpecHolder: _checklistsAppBarSpec,
       ),
       PhotoBoardView(
         key: ValueKey('photos-$houseId'),

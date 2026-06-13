@@ -401,6 +401,18 @@ class SettingsMessagesDe extends SettingsMessages {
       """Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt.""";
 
   /// ```dart
+  /// "Fortschrittskarte in jeder Liste anzeigen"
+  /// ```
+  String get showProgressHero =>
+      """Fortschrittskarte in jeder Liste anzeigen""";
+
+  /// ```dart
+  /// "Die Karte mit dem kreisförmigen Fortschrittsring und der Zusammenfassung der verbleibenden Einträge oben in jeder Liste. Wische die Karte weg, um sie auszublenden."
+  /// ```
+  String get showProgressHeroBody =>
+      """Die Karte mit dem kreisförmigen Fortschrittsring und der Zusammenfassung der verbleibenden Einträge oben in jeder Liste. Wische die Karte weg, um sie auszublenden.""";
+
+  /// ```dart
   /// "Abstand zwischen Kategorien in Listeneinträgen anzeigen"
   /// ```
   String get categorySpacing =>
@@ -888,6 +900,139 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   ItemFormChecklistsMessagesDe get itemForm =>
       ItemFormChecklistsMessagesDe(this);
   SortChecklistsMessagesDe get sort => SortChecklistsMessagesDe(this);
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag übrig', many: '$count Einträge übrig')}"
+  /// ```
+  String itemsLeft(int count) =>
+      """${_plural(count, one: '1 Eintrag übrig', many: '$count Einträge übrig')}""";
+
+  /// ```dart
+  /// "Alles erledigt 🎉"
+  /// ```
+  String get allDone => """Alles erledigt 🎉""";
+
+  /// ```dart
+  /// "$done von $total erledigt"
+  /// ```
+  String listProgress(int done, int total) => """$done von $total erledigt""";
+
+  /// ```dart
+  /// "Erledigt · $count"
+  /// ```
+  String doneCount(int count) => """Erledigt · $count""";
+
+  /// ```dart
+  /// "Zu $name hinzufügen…"
+  /// ```
+  String addToList(String name) => """Zu $name hinzufügen…""";
+
+  /// ```dart
+  /// "Füge deinen ersten Eintrag hinzu…"
+  /// ```
+  String get addFirstItem => """Füge deinen ersten Eintrag hinzu…""";
+
+  /// ```dart
+  /// "Noch nichts auf dieser Liste"
+  /// ```
+  String get noItemsTitle => """Noch nichts auf dieser Liste""";
+
+  /// ```dart
+  /// "Füge deinen ersten Eintrag über die Leiste unten hinzu — setze Kategorie, Menge oder Zeitplan über die Chips."
+  /// ```
+  String get noItemsBody =>
+      """Füge deinen ersten Eintrag über die Leiste unten hinzu — setze Kategorie, Menge oder Zeitplan über die Chips.""";
+
+  /// ```dart
+  /// "Noch keine Listen"
+  /// ```
+  String get noListsTitle => """Noch keine Listen""";
+
+  /// ```dart
+  /// "Erstelle deine erste Liste, um Einkäufe, Besorgungen, Aufgaben oder alles, was dein Haushalt im Blick behalten muss, zu verfolgen."
+  /// ```
+  String get noListsBody =>
+      """Erstelle deine erste Liste, um Einkäufe, Besorgungen, Aufgaben oder alles, was dein Haushalt im Blick behalten muss, zu verfolgen.""";
+
+  /// ```dart
+  /// "Erste Liste erstellen"
+  /// ```
+  String get createFirstList => """Erste Liste erstellen""";
+
+  /// ```dart
+  /// "Deine Listen"
+  /// ```
+  String get yourChecklists => """Deine Listen""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Liste', many: '$count Listen')}"
+  /// ```
+  String listsCount(int count) =>
+      """${_plural(count, one: '1 Liste', many: '$count Listen')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag', many: '$count Einträge')}"
+  /// ```
+  String itemsSummary(int count) =>
+      """${_plural(count, one: '1 Eintrag', many: '$count Einträge')}""";
+
+  /// ```dart
+  /// "Alles erledigt · 0 übrig"
+  /// ```
+  String get allDoneSummary => """Alles erledigt · 0 übrig""";
+
+  /// ```dart
+  /// "Neue Liste"
+  /// ```
+  String get newChecklist => """Neue Liste""";
+
+  /// ```dart
+  /// "Liste erstellen"
+  /// ```
+  String get createListButton => """Liste erstellen""";
+
+  /// ```dart
+  /// "Anzeigen"
+  /// ```
+  String get view => """Anzeigen""";
+
+  /// ```dart
+  /// "Anzeigen"
+  /// ```
+  String get swipeView => """Anzeigen""";
+
+  /// ```dart
+  /// "Bearbeiten"
+  /// ```
+  String get swipeEdit => """Bearbeiten""";
+
+  /// ```dart
+  /// "Verschieben"
+  /// ```
+  String get swipeMove => """Verschieben""";
+
+  /// ```dart
+  /// "Löschen"
+  /// ```
+  String get swipeDelete => """Löschen""";
+
+  /// ```dart
+  /// "Listenansicht"
+  /// ```
+  String get viewList => """Listenansicht""";
+
+  /// ```dart
+  /// "Kartenansicht"
+  /// ```
+  String get viewCards => """Kartenansicht""";
+
+  /// ```dart
+  /// "Farbe"
+  /// ```
+  String get listColor => """Farbe""";
+  ItemTypesChecklistsMessagesDe get itemTypes =>
+      ItemTypesChecklistsMessagesDe(this);
+  ComposeChecklistsMessagesDe get compose => ComposeChecklistsMessagesDe(this);
 }
 
 class ViewItemChecklistsMessagesDe extends ViewItemChecklistsMessages {
@@ -1086,6 +1231,123 @@ class SortChecklistsMessagesDe extends SortChecklistsMessages {
   /// "Benutzerdefiniert"
   /// ```
   String get custom => """Benutzerdefiniert""";
+}
+
+class ItemTypesChecklistsMessagesDe extends ItemTypesChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const ItemTypesChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Eintragstyp"
+  /// ```
+  String get label => """Eintragstyp""";
+
+  /// ```dart
+  /// "Standard"
+  /// ```
+  String get staple => """Standard""";
+
+  /// ```dart
+  /// "Bleibt auf der Liste, nachdem du ihn erledigt hast"
+  /// ```
+  String get stapleBody =>
+      """Bleibt auf der Liste, nachdem du ihn erledigt hast""";
+
+  /// ```dart
+  /// "Einmalig"
+  /// ```
+  String get onceTime => """Einmalig""";
+
+  /// ```dart
+  /// "Wird entfernt, sobald du ihn erledigt hast"
+  /// ```
+  String get onceTimeBody => """Wird entfernt, sobald du ihn erledigt hast""";
+
+  /// ```dart
+  /// "Wiederkehrend"
+  /// ```
+  String get recurring => """Wiederkehrend""";
+
+  /// ```dart
+  /// "Kommt nach Zeitplan zurück"
+  /// ```
+  String get recurringBody => """Kommt nach Zeitplan zurück""";
+
+  /// ```dart
+  /// "Wöchentlich"
+  /// ```
+  String get weekly => """Wöchentlich""";
+
+  /// ```dart
+  /// "Alle $n Wochen"
+  /// ```
+  String everyNWeeks(int n) => """Alle $n Wochen""";
+}
+
+class ComposeChecklistsMessagesDe extends ComposeChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const ComposeChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Kategorie"
+  /// ```
+  String get chipCategory => """Kategorie""";
+
+  /// ```dart
+  /// "Menge"
+  /// ```
+  String get chipQuantity => """Menge""";
+
+  /// ```dart
+  /// "Eintragstyp"
+  /// ```
+  String get chipType => """Eintragstyp""";
+
+  /// ```dart
+  /// "Bild"
+  /// ```
+  String get chipImage => """Bild""";
+
+  /// ```dart
+  /// "Beschreibung"
+  /// ```
+  String get chipDescription => """Beschreibung""";
+
+  /// ```dart
+  /// "Notizen, Hinweise, Links…"
+  /// ```
+  String get descHint => """Notizen, Hinweise, Links…""";
+
+  /// ```dart
+  /// "z. B. 2 L, 500 g"
+  /// ```
+  String get qtyHint => """z. B. 2 L, 500 g""";
+
+  /// ```dart
+  /// "＋ / − ändern die Zahl und behalten die Einheit."
+  /// ```
+  String get qtyStepperHelp =>
+      """＋ / − ändern die Zahl und behalten die Einheit.""";
+
+  /// ```dart
+  /// "Keine"
+  /// ```
+  String get none => """Keine""";
+
+  /// ```dart
+  /// "Alle"
+  /// ```
+  String get every => """Alle""";
+
+  /// ```dart
+  /// "Woche"
+  /// ```
+  String get week => """Woche""";
+
+  /// ```dart
+  /// "Wochen"
+  /// ```
+  String get weeks => """Wochen""";
 }
 
 class NotesWallMessagesDe extends NotesWallMessages {
@@ -1694,6 +1956,10 @@ Bitte melde dich in deinem Browser an.""",
   """settings.tapRowToComplete""": """Eintrag durch Tippen der Zeile abhaken""",
   """settings.tapRowToCompleteBody""":
       """Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt.""",
+  """settings.showProgressHero""":
+      """Fortschrittskarte in jeder Liste anzeigen""",
+  """settings.showProgressHeroBody""":
+      """Die Karte mit dem kreisförmigen Fortschrittsring und der Zusammenfassung der verbleibenden Einträge oben in jeder Liste. Wische die Karte weg, um sie auszublenden.""",
   """settings.categorySpacing""":
       """Abstand zwischen Kategorien in Listeneinträgen anzeigen""",
   """settings.categorySpacingBody""":
@@ -1831,6 +2097,50 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.sort.nameZA""": """Name Z–A""",
   """checklists.sort.category""": """Nach Kategorie""",
   """checklists.sort.custom""": """Benutzerdefiniert""",
+  """checklists.allDone""": """Alles erledigt 🎉""",
+  """checklists.addFirstItem""": """Füge deinen ersten Eintrag hinzu…""",
+  """checklists.noItemsTitle""": """Noch nichts auf dieser Liste""",
+  """checklists.noItemsBody""":
+      """Füge deinen ersten Eintrag über die Leiste unten hinzu — setze Kategorie, Menge oder Zeitplan über die Chips.""",
+  """checklists.noListsTitle""": """Noch keine Listen""",
+  """checklists.noListsBody""":
+      """Erstelle deine erste Liste, um Einkäufe, Besorgungen, Aufgaben oder alles, was dein Haushalt im Blick behalten muss, zu verfolgen.""",
+  """checklists.createFirstList""": """Erste Liste erstellen""",
+  """checklists.yourChecklists""": """Deine Listen""",
+  """checklists.allDoneSummary""": """Alles erledigt · 0 übrig""",
+  """checklists.newChecklist""": """Neue Liste""",
+  """checklists.createListButton""": """Liste erstellen""",
+  """checklists.view""": """Anzeigen""",
+  """checklists.swipeView""": """Anzeigen""",
+  """checklists.swipeEdit""": """Bearbeiten""",
+  """checklists.swipeMove""": """Verschieben""",
+  """checklists.swipeDelete""": """Löschen""",
+  """checklists.viewList""": """Listenansicht""",
+  """checklists.viewCards""": """Kartenansicht""",
+  """checklists.listColor""": """Farbe""",
+  """checklists.itemTypes.label""": """Eintragstyp""",
+  """checklists.itemTypes.staple""": """Standard""",
+  """checklists.itemTypes.stapleBody""":
+      """Bleibt auf der Liste, nachdem du ihn erledigt hast""",
+  """checklists.itemTypes.onceTime""": """Einmalig""",
+  """checklists.itemTypes.onceTimeBody""":
+      """Wird entfernt, sobald du ihn erledigt hast""",
+  """checklists.itemTypes.recurring""": """Wiederkehrend""",
+  """checklists.itemTypes.recurringBody""": """Kommt nach Zeitplan zurück""",
+  """checklists.itemTypes.weekly""": """Wöchentlich""",
+  """checklists.compose.chipCategory""": """Kategorie""",
+  """checklists.compose.chipQuantity""": """Menge""",
+  """checklists.compose.chipType""": """Eintragstyp""",
+  """checklists.compose.chipImage""": """Bild""",
+  """checklists.compose.chipDescription""": """Beschreibung""",
+  """checklists.compose.descHint""": """Notizen, Hinweise, Links…""",
+  """checklists.compose.qtyHint""": """z. B. 2 L, 500 g""",
+  """checklists.compose.qtyStepperHelp""":
+      """＋ / − ändern die Zahl und behalten die Einheit.""",
+  """checklists.compose.none""": """Keine""",
+  """checklists.compose.every""": """Alle""",
+  """checklists.compose.week""": """Woche""",
+  """checklists.compose.weeks""": """Wochen""",
   """notesWall.noNotes""": """Noch keine Notizen.""",
   """notesWall.failedToLoad""": """Notizen konnten nicht geladen werden.""",
   """notesWall.saveFailed""": """Notiz konnte nicht gespeichert werden.""",

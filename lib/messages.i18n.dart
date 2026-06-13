@@ -399,6 +399,17 @@ class SettingsMessages {
       """When off, items are only marked complete by tapping the checkbox.""";
 
   /// ```dart
+  /// "Show progress card on each checklist"
+  /// ```
+  String get showProgressHero => """Show progress card on each checklist""";
+
+  /// ```dart
+  /// "The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it."
+  /// ```
+  String get showProgressHeroBody =>
+      """The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it.""";
+
+  /// ```dart
   /// "Show spacing between categories in list items"
   /// ```
   String get categorySpacing =>
@@ -876,6 +887,139 @@ class ChecklistsMessages {
   ViewItemChecklistsMessages get viewItem => ViewItemChecklistsMessages(this);
   ItemFormChecklistsMessages get itemForm => ItemFormChecklistsMessages(this);
   SortChecklistsMessages get sort => SortChecklistsMessages(this);
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item left', many: '$count items left')}"
+  /// ```
+  String itemsLeft(int count) =>
+      """${_plural(count, one: '1 item left', many: '$count items left')}""";
+
+  /// ```dart
+  /// "All done 🎉"
+  /// ```
+  String get allDone => """All done 🎉""";
+
+  /// ```dart
+  /// "$done of $total done"
+  /// ```
+  String listProgress(int done, int total) => """$done of $total done""";
+
+  /// ```dart
+  /// "Done · $count"
+  /// ```
+  String doneCount(int count) => """Done · $count""";
+
+  /// ```dart
+  /// "Add to $name…"
+  /// ```
+  String addToList(String name) => """Add to $name…""";
+
+  /// ```dart
+  /// "Add your first item…"
+  /// ```
+  String get addFirstItem => """Add your first item…""";
+
+  /// ```dart
+  /// "Nothing on this list yet"
+  /// ```
+  String get noItemsTitle => """Nothing on this list yet""";
+
+  /// ```dart
+  /// "Add your first item with the bar below — set a category, quantity or schedule with the chips."
+  /// ```
+  String get noItemsBody =>
+      """Add your first item with the bar below — set a category, quantity or schedule with the chips.""";
+
+  /// ```dart
+  /// "No checklists yet"
+  /// ```
+  String get noListsTitle => """No checklists yet""";
+
+  /// ```dart
+  /// "Create your first list to start tracking groceries, errands, tasks, or anything your household needs to keep on top of."
+  /// ```
+  String get noListsBody =>
+      """Create your first list to start tracking groceries, errands, tasks, or anything your household needs to keep on top of.""";
+
+  /// ```dart
+  /// "Create your first list"
+  /// ```
+  String get createFirstList => """Create your first list""";
+
+  /// ```dart
+  /// "Your checklists"
+  /// ```
+  String get yourChecklists => """Your checklists""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 list', many: '$count lists')}"
+  /// ```
+  String listsCount(int count) =>
+      """${_plural(count, one: '1 list', many: '$count lists')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item', many: '$count items')}"
+  /// ```
+  String itemsSummary(int count) =>
+      """${_plural(count, one: '1 item', many: '$count items')}""";
+
+  /// ```dart
+  /// "All done · 0 left"
+  /// ```
+  String get allDoneSummary => """All done · 0 left""";
+
+  /// ```dart
+  /// "New checklist"
+  /// ```
+  String get newChecklist => """New checklist""";
+
+  /// ```dart
+  /// "Create list"
+  /// ```
+  String get createListButton => """Create list""";
+
+  /// ```dart
+  /// "View"
+  /// ```
+  String get view => """View""";
+
+  /// ```dart
+  /// "View"
+  /// ```
+  String get swipeView => """View""";
+
+  /// ```dart
+  /// "Edit"
+  /// ```
+  String get swipeEdit => """Edit""";
+
+  /// ```dart
+  /// "Move"
+  /// ```
+  String get swipeMove => """Move""";
+
+  /// ```dart
+  /// "Delete"
+  /// ```
+  String get swipeDelete => """Delete""";
+
+  /// ```dart
+  /// "List view"
+  /// ```
+  String get viewList => """List view""";
+
+  /// ```dart
+  /// "Cards view"
+  /// ```
+  String get viewCards => """Cards view""";
+
+  /// ```dart
+  /// "Color"
+  /// ```
+  String get listColor => """Color""";
+  ItemTypesChecklistsMessages get itemTypes =>
+      ItemTypesChecklistsMessages(this);
+  ComposeChecklistsMessages get compose => ComposeChecklistsMessages(this);
 }
 
 class ViewItemChecklistsMessages {
@@ -1072,6 +1216,121 @@ class SortChecklistsMessages {
   /// "Custom"
   /// ```
   String get custom => """Custom""";
+}
+
+class ItemTypesChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const ItemTypesChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Item type"
+  /// ```
+  String get label => """Item type""";
+
+  /// ```dart
+  /// "Staple"
+  /// ```
+  String get staple => """Staple""";
+
+  /// ```dart
+  /// "Stays on the list after you complete it"
+  /// ```
+  String get stapleBody => """Stays on the list after you complete it""";
+
+  /// ```dart
+  /// "One-time"
+  /// ```
+  String get onceTime => """One-time""";
+
+  /// ```dart
+  /// "Removed once you complete it"
+  /// ```
+  String get onceTimeBody => """Removed once you complete it""";
+
+  /// ```dart
+  /// "Recurring"
+  /// ```
+  String get recurring => """Recurring""";
+
+  /// ```dart
+  /// "Comes back on a schedule"
+  /// ```
+  String get recurringBody => """Comes back on a schedule""";
+
+  /// ```dart
+  /// "Weekly"
+  /// ```
+  String get weekly => """Weekly""";
+
+  /// ```dart
+  /// "Every $n wks"
+  /// ```
+  String everyNWeeks(int n) => """Every $n wks""";
+}
+
+class ComposeChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const ComposeChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Category"
+  /// ```
+  String get chipCategory => """Category""";
+
+  /// ```dart
+  /// "Quantity"
+  /// ```
+  String get chipQuantity => """Quantity""";
+
+  /// ```dart
+  /// "Item type"
+  /// ```
+  String get chipType => """Item type""";
+
+  /// ```dart
+  /// "Image"
+  /// ```
+  String get chipImage => """Image""";
+
+  /// ```dart
+  /// "Description"
+  /// ```
+  String get chipDescription => """Description""";
+
+  /// ```dart
+  /// "Notes, instructions, links…"
+  /// ```
+  String get descHint => """Notes, instructions, links…""";
+
+  /// ```dart
+  /// "e.g. 2 L, 500 g"
+  /// ```
+  String get qtyHint => """e.g. 2 L, 500 g""";
+
+  /// ```dart
+  /// "＋ / − change the number and keep the unit."
+  /// ```
+  String get qtyStepperHelp => """＋ / − change the number and keep the unit.""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get none => """None""";
+
+  /// ```dart
+  /// "Every"
+  /// ```
+  String get every => """Every""";
+
+  /// ```dart
+  /// "week"
+  /// ```
+  String get week => """week""";
+
+  /// ```dart
+  /// "weeks"
+  /// ```
+  String get weeks => """weeks""";
 }
 
 class NotesWallMessages {
@@ -1489,9 +1748,9 @@ class RecurrenceMessages {
   String get set => """set""";
 
   /// ```dart
-  /// "every $unit"
+  /// "Every $unit"
   /// ```
-  String every(String unit) => """every $unit""";
+  String every(String unit) => """Every $unit""";
 
   /// ```dart
   /// "Every $unit"
@@ -1673,6 +1932,9 @@ Please complete login in your browser.""",
   """settings.tapRowToComplete""": """Tap row to complete items""",
   """settings.tapRowToCompleteBody""":
       """When off, items are only marked complete by tapping the checkbox.""",
+  """settings.showProgressHero""": """Show progress card on each checklist""",
+  """settings.showProgressHeroBody""":
+      """The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it.""",
   """settings.categorySpacing""":
       """Show spacing between categories in list items""",
   """settings.categorySpacingBody""":
@@ -1800,6 +2062,49 @@ Please complete login in your browser.""",
   """checklists.sort.nameZA""": """Name Z–A""",
   """checklists.sort.category""": """By category""",
   """checklists.sort.custom""": """Custom""",
+  """checklists.allDone""": """All done 🎉""",
+  """checklists.addFirstItem""": """Add your first item…""",
+  """checklists.noItemsTitle""": """Nothing on this list yet""",
+  """checklists.noItemsBody""":
+      """Add your first item with the bar below — set a category, quantity or schedule with the chips.""",
+  """checklists.noListsTitle""": """No checklists yet""",
+  """checklists.noListsBody""":
+      """Create your first list to start tracking groceries, errands, tasks, or anything your household needs to keep on top of.""",
+  """checklists.createFirstList""": """Create your first list""",
+  """checklists.yourChecklists""": """Your checklists""",
+  """checklists.allDoneSummary""": """All done · 0 left""",
+  """checklists.newChecklist""": """New checklist""",
+  """checklists.createListButton""": """Create list""",
+  """checklists.view""": """View""",
+  """checklists.swipeView""": """View""",
+  """checklists.swipeEdit""": """Edit""",
+  """checklists.swipeMove""": """Move""",
+  """checklists.swipeDelete""": """Delete""",
+  """checklists.viewList""": """List view""",
+  """checklists.viewCards""": """Cards view""",
+  """checklists.listColor""": """Color""",
+  """checklists.itemTypes.label""": """Item type""",
+  """checklists.itemTypes.staple""": """Staple""",
+  """checklists.itemTypes.stapleBody""":
+      """Stays on the list after you complete it""",
+  """checklists.itemTypes.onceTime""": """One-time""",
+  """checklists.itemTypes.onceTimeBody""": """Removed once you complete it""",
+  """checklists.itemTypes.recurring""": """Recurring""",
+  """checklists.itemTypes.recurringBody""": """Comes back on a schedule""",
+  """checklists.itemTypes.weekly""": """Weekly""",
+  """checklists.compose.chipCategory""": """Category""",
+  """checklists.compose.chipQuantity""": """Quantity""",
+  """checklists.compose.chipType""": """Item type""",
+  """checklists.compose.chipImage""": """Image""",
+  """checklists.compose.chipDescription""": """Description""",
+  """checklists.compose.descHint""": """Notes, instructions, links…""",
+  """checklists.compose.qtyHint""": """e.g. 2 L, 500 g""",
+  """checklists.compose.qtyStepperHelp""":
+      """＋ / − change the number and keep the unit.""",
+  """checklists.compose.none""": """None""",
+  """checklists.compose.every""": """Every""",
+  """checklists.compose.week""": """week""",
+  """checklists.compose.weeks""": """weeks""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",
   """notesWall.saveFailed""": """Failed to save note.""",

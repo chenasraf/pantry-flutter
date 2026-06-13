@@ -399,6 +399,17 @@ class SettingsMessagesHe extends SettingsMessages {
       """כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.""";
 
   /// ```dart
+  /// "הצג כרטיס התקדמות בכל רשימה"
+  /// ```
+  String get showProgressHero => """הצג כרטיס התקדמות בכל רשימה""";
+
+  /// ```dart
+  /// "הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו."
+  /// ```
+  String get showProgressHeroBody =>
+      """הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו.""";
+
+  /// ```dart
   /// "הצג רווח בין קטגוריות בפריטי הרשימה"
   /// ```
   String get categorySpacing => """הצג רווח בין קטגוריות בפריטי הרשימה""";
@@ -879,6 +890,139 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   ItemFormChecklistsMessagesHe get itemForm =>
       ItemFormChecklistsMessagesHe(this);
   SortChecklistsMessagesHe get sort => SortChecklistsMessagesHe(this);
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד נותר', many: '$count פריטים נותרו')}"
+  /// ```
+  String itemsLeft(int count) =>
+      """${_plural(count, one: 'פריט אחד נותר', many: '$count פריטים נותרו')}""";
+
+  /// ```dart
+  /// "הכל בוצע 🎉"
+  /// ```
+  String get allDone => """הכל בוצע 🎉""";
+
+  /// ```dart
+  /// "$done מתוך $total בוצעו"
+  /// ```
+  String listProgress(int done, int total) => """$done מתוך $total בוצעו""";
+
+  /// ```dart
+  /// "בוצעו · $count"
+  /// ```
+  String doneCount(int count) => """בוצעו · $count""";
+
+  /// ```dart
+  /// "הוסף אל $name…"
+  /// ```
+  String addToList(String name) => """הוסף אל $name…""";
+
+  /// ```dart
+  /// "הוסף את הפריט הראשון…"
+  /// ```
+  String get addFirstItem => """הוסף את הפריט הראשון…""";
+
+  /// ```dart
+  /// "אין פריטים ברשימה"
+  /// ```
+  String get noItemsTitle => """אין פריטים ברשימה""";
+
+  /// ```dart
+  /// "הוסף את הפריט הראשון בעזרת השורה למטה — קבע קטגוריה, כמות או לוח זמנים בעזרת הצ׳יפים."
+  /// ```
+  String get noItemsBody =>
+      """הוסף את הפריט הראשון בעזרת השורה למטה — קבע קטגוריה, כמות או לוח זמנים בעזרת הצ׳יפים.""";
+
+  /// ```dart
+  /// "אין רשימות עדיין"
+  /// ```
+  String get noListsTitle => """אין רשימות עדיין""";
+
+  /// ```dart
+  /// "צור את הרשימה הראשונה שלך כדי להתחיל לעקוב אחר מצרכים, סידורים, משימות או כל דבר שמשק הבית צריך לזכור."
+  /// ```
+  String get noListsBody =>
+      """צור את הרשימה הראשונה שלך כדי להתחיל לעקוב אחר מצרכים, סידורים, משימות או כל דבר שמשק הבית צריך לזכור.""";
+
+  /// ```dart
+  /// "צור את הרשימה הראשונה"
+  /// ```
+  String get createFirstList => """צור את הרשימה הראשונה""";
+
+  /// ```dart
+  /// "הרשימות שלך"
+  /// ```
+  String get yourChecklists => """הרשימות שלך""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'רשימה אחת', many: '$count רשימות')}"
+  /// ```
+  String listsCount(int count) =>
+      """${_plural(count, one: 'רשימה אחת', many: '$count רשימות')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
+  /// ```
+  String itemsSummary(int count) =>
+      """${_plural(count, one: 'פריט אחד', many: '$count פריטים')}""";
+
+  /// ```dart
+  /// "הכל בוצע · 0 נותרו"
+  /// ```
+  String get allDoneSummary => """הכל בוצע · 0 נותרו""";
+
+  /// ```dart
+  /// "רשימה חדשה"
+  /// ```
+  String get newChecklist => """רשימה חדשה""";
+
+  /// ```dart
+  /// "צור רשימה"
+  /// ```
+  String get createListButton => """צור רשימה""";
+
+  /// ```dart
+  /// "צפה"
+  /// ```
+  String get view => """צפה""";
+
+  /// ```dart
+  /// "צפייה"
+  /// ```
+  String get swipeView => """צפייה""";
+
+  /// ```dart
+  /// "עריכה"
+  /// ```
+  String get swipeEdit => """עריכה""";
+
+  /// ```dart
+  /// "העברה"
+  /// ```
+  String get swipeMove => """העברה""";
+
+  /// ```dart
+  /// "מחיקה"
+  /// ```
+  String get swipeDelete => """מחיקה""";
+
+  /// ```dart
+  /// "תצוגת רשימה"
+  /// ```
+  String get viewList => """תצוגת רשימה""";
+
+  /// ```dart
+  /// "תצוגת כרטיסים"
+  /// ```
+  String get viewCards => """תצוגת כרטיסים""";
+
+  /// ```dart
+  /// "צבע"
+  /// ```
+  String get listColor => """צבע""";
+  ItemTypesChecklistsMessagesHe get itemTypes =>
+      ItemTypesChecklistsMessagesHe(this);
+  ComposeChecklistsMessagesHe get compose => ComposeChecklistsMessagesHe(this);
 }
 
 class ViewItemChecklistsMessagesHe extends ViewItemChecklistsMessages {
@@ -1074,6 +1218,121 @@ class SortChecklistsMessagesHe extends SortChecklistsMessages {
   /// "מותאם אישית"
   /// ```
   String get custom => """מותאם אישית""";
+}
+
+class ItemTypesChecklistsMessagesHe extends ItemTypesChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const ItemTypesChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "סוג פריט"
+  /// ```
+  String get label => """סוג פריט""";
+
+  /// ```dart
+  /// "קבוע"
+  /// ```
+  String get staple => """קבוע""";
+
+  /// ```dart
+  /// "נשאר ברשימה אחרי שמסמנים אותו כבוצע"
+  /// ```
+  String get stapleBody => """נשאר ברשימה אחרי שמסמנים אותו כבוצע""";
+
+  /// ```dart
+  /// "חד-פעמי"
+  /// ```
+  String get onceTime => """חד-פעמי""";
+
+  /// ```dart
+  /// "מוסר מהרשימה ברגע שמסמנים אותו כבוצע"
+  /// ```
+  String get onceTimeBody => """מוסר מהרשימה ברגע שמסמנים אותו כבוצע""";
+
+  /// ```dart
+  /// "חוזר"
+  /// ```
+  String get recurring => """חוזר""";
+
+  /// ```dart
+  /// "חוזר ברשימה לפי לוח זמנים"
+  /// ```
+  String get recurringBody => """חוזר ברשימה לפי לוח זמנים""";
+
+  /// ```dart
+  /// "שבועי"
+  /// ```
+  String get weekly => """שבועי""";
+
+  /// ```dart
+  /// "כל $n שבועות"
+  /// ```
+  String everyNWeeks(int n) => """כל $n שבועות""";
+}
+
+class ComposeChecklistsMessagesHe extends ComposeChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const ComposeChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "קטגוריה"
+  /// ```
+  String get chipCategory => """קטגוריה""";
+
+  /// ```dart
+  /// "כמות"
+  /// ```
+  String get chipQuantity => """כמות""";
+
+  /// ```dart
+  /// "סוג פריט"
+  /// ```
+  String get chipType => """סוג פריט""";
+
+  /// ```dart
+  /// "תמונה"
+  /// ```
+  String get chipImage => """תמונה""";
+
+  /// ```dart
+  /// "תיאור"
+  /// ```
+  String get chipDescription => """תיאור""";
+
+  /// ```dart
+  /// "הערות, הוראות, קישורים…"
+  /// ```
+  String get descHint => """הערות, הוראות, קישורים…""";
+
+  /// ```dart
+  /// "למשל 2 ליטר, 500 ג׳"
+  /// ```
+  String get qtyHint => """למשל 2 ליטר, 500 ג׳""";
+
+  /// ```dart
+  /// "＋ / − משנים את המספר ושומרים על היחידה."
+  /// ```
+  String get qtyStepperHelp => """＋ / − משנים את המספר ושומרים על היחידה.""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get none => """ללא""";
+
+  /// ```dart
+  /// "כל"
+  /// ```
+  String get every => """כל""";
+
+  /// ```dart
+  /// "שבוע"
+  /// ```
+  String get week => """שבוע""";
+
+  /// ```dart
+  /// "שבועות"
+  /// ```
+  String get weeks => """שבועות""";
 }
 
 class NotesWallMessagesHe extends NotesWallMessages {
@@ -1674,6 +1933,9 @@ Map<String, String> get messagesHeMap => {
   """settings.tapRowToComplete""": """השלם פריטים בלחיצה על השורה""",
   """settings.tapRowToCompleteBody""":
       """כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.""",
+  """settings.showProgressHero""": """הצג כרטיס התקדמות בכל רשימה""",
+  """settings.showProgressHeroBody""":
+      """הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו.""",
   """settings.categorySpacing""": """הצג רווח בין קטגוריות בפריטי הרשימה""",
   """settings.categorySpacingBody""": """מוצג רק בעת מיון לפי קטגוריה""",
   """settings.categorySpacingNames.disabled""": """מושבת""",
@@ -1796,6 +2058,50 @@ Map<String, String> get messagesHeMap => {
   """checklists.sort.nameZA""": """שם ת–א""",
   """checklists.sort.category""": """לפי קטגוריה""",
   """checklists.sort.custom""": """מותאם אישית""",
+  """checklists.allDone""": """הכל בוצע 🎉""",
+  """checklists.addFirstItem""": """הוסף את הפריט הראשון…""",
+  """checklists.noItemsTitle""": """אין פריטים ברשימה""",
+  """checklists.noItemsBody""":
+      """הוסף את הפריט הראשון בעזרת השורה למטה — קבע קטגוריה, כמות או לוח זמנים בעזרת הצ׳יפים.""",
+  """checklists.noListsTitle""": """אין רשימות עדיין""",
+  """checklists.noListsBody""":
+      """צור את הרשימה הראשונה שלך כדי להתחיל לעקוב אחר מצרכים, סידורים, משימות או כל דבר שמשק הבית צריך לזכור.""",
+  """checklists.createFirstList""": """צור את הרשימה הראשונה""",
+  """checklists.yourChecklists""": """הרשימות שלך""",
+  """checklists.allDoneSummary""": """הכל בוצע · 0 נותרו""",
+  """checklists.newChecklist""": """רשימה חדשה""",
+  """checklists.createListButton""": """צור רשימה""",
+  """checklists.view""": """צפה""",
+  """checklists.swipeView""": """צפייה""",
+  """checklists.swipeEdit""": """עריכה""",
+  """checklists.swipeMove""": """העברה""",
+  """checklists.swipeDelete""": """מחיקה""",
+  """checklists.viewList""": """תצוגת רשימה""",
+  """checklists.viewCards""": """תצוגת כרטיסים""",
+  """checklists.listColor""": """צבע""",
+  """checklists.itemTypes.label""": """סוג פריט""",
+  """checklists.itemTypes.staple""": """קבוע""",
+  """checklists.itemTypes.stapleBody""":
+      """נשאר ברשימה אחרי שמסמנים אותו כבוצע""",
+  """checklists.itemTypes.onceTime""": """חד-פעמי""",
+  """checklists.itemTypes.onceTimeBody""":
+      """מוסר מהרשימה ברגע שמסמנים אותו כבוצע""",
+  """checklists.itemTypes.recurring""": """חוזר""",
+  """checklists.itemTypes.recurringBody""": """חוזר ברשימה לפי לוח זמנים""",
+  """checklists.itemTypes.weekly""": """שבועי""",
+  """checklists.compose.chipCategory""": """קטגוריה""",
+  """checklists.compose.chipQuantity""": """כמות""",
+  """checklists.compose.chipType""": """סוג פריט""",
+  """checklists.compose.chipImage""": """תמונה""",
+  """checklists.compose.chipDescription""": """תיאור""",
+  """checklists.compose.descHint""": """הערות, הוראות, קישורים…""",
+  """checklists.compose.qtyHint""": """למשל 2 ליטר, 500 ג׳""",
+  """checklists.compose.qtyStepperHelp""":
+      """＋ / − משנים את המספר ושומרים על היחידה.""",
+  """checklists.compose.none""": """ללא""",
+  """checklists.compose.every""": """כל""",
+  """checklists.compose.week""": """שבוע""",
+  """checklists.compose.weeks""": """שבועות""",
   """notesWall.noNotes""": """אין הערות עדיין.""",
   """notesWall.failedToLoad""": """טעינת ההערות נכשלה.""",
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",
