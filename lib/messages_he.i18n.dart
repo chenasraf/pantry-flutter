@@ -351,6 +351,21 @@ class AboutMessagesHe extends AboutMessages {
   /// "משוב ובעיות"
   /// ```
   String get feedback => """משוב ובעיות""";
+
+  /// ```dart
+  /// "שרת Nextcloud"
+  /// ```
+  String get serverVersion => """שרת Nextcloud""";
+
+  /// ```dart
+  /// "Pantry בשרת"
+  /// ```
+  String get pantryServerVersion => """Pantry בשרת""";
+
+  /// ```dart
+  /// "לא ידוע"
+  /// ```
+  String get versionUnknown => """לא ידוע""";
 }
 
 class SettingsMessagesHe extends SettingsMessages {
@@ -1650,6 +1665,9 @@ Map<String, String> get messagesHeMap => {
   """about.nextcloudApp""": """אפליקציית Nextcloud""",
   """about.privacyPolicy""": """מדיניות פרטיות""",
   """about.feedback""": """משוב ובעיות""",
+  """about.serverVersion""": """שרת Nextcloud""",
+  """about.pantryServerVersion""": """Pantry בשרת""",
+  """about.versionUnknown""": """לא ידוע""",
   """settings.title""": """הגדרות האפליקציה""",
   """settings.generalSection""": """כללי""",
   """settings.interfaceSection""": """ממשק""",

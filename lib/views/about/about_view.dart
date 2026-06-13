@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class AboutView extends StatefulWidget {
@@ -34,6 +35,8 @@ class _AboutViewState extends State<AboutView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final a = m.about;
+    final serverVersion = ServerVersionService.instance.serverVersion;
+    final pantryServerVersion = ServerVersionService.instance.pantryVersion;
 
     return Scaffold(
       appBar: AppBar(leading: appBarBackLeading(context), title: Text(a.title)),
@@ -88,6 +91,16 @@ class _AboutViewState extends State<AboutView> {
             icon: Icons.cloud_outlined,
             label: a.nextcloudApp,
             onTap: () => _launch('https://apps.nextcloud.com/apps/pantry'),
+          ),
+          _AboutTile(
+            icon: Icons.dns_outlined,
+            label: a.serverVersion,
+            value: serverVersion?.toString() ?? a.versionUnknown,
+          ),
+          _AboutTile(
+            icon: Icons.extension_outlined,
+            label: a.pantryServerVersion,
+            value: pantryServerVersion?.toString() ?? a.versionUnknown,
           ),
           _AboutTile(
             icon: Icons.privacy_tip_outlined,

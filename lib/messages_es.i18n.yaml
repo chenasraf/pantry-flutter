@@ -56,6 +56,9 @@ about:
   nextcloudApp: App de Nextcloud
   privacyPolicy: "Política de privacidad"
   feedback: Comentarios y problemas
+  serverVersion: Servidor Nextcloud
+  pantryServerVersion: Pantry en el servidor
+  versionUnknown: Desconocido
 
 settings:
   title: Ajustes de la app

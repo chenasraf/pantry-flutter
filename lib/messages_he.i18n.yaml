@@ -56,6 +56,9 @@ about:
   nextcloudApp: אפליקציית Nextcloud
   privacyPolicy: מדיניות פרטיות
   feedback: משוב ובעיות
+  serverVersion: שרת Nextcloud
+  pantryServerVersion: Pantry בשרת
+  versionUnknown: לא ידוע
 
 settings:
   title: הגדרות האפליקציה

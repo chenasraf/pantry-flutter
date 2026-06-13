@@ -353,6 +353,21 @@ class AboutMessagesDe extends AboutMessages {
   /// "Feedback & Probleme"
   /// ```
   String get feedback => """Feedback & Probleme""";
+
+  /// ```dart
+  /// "Nextcloud-Server"
+  /// ```
+  String get serverVersion => """Nextcloud-Server""";
+
+  /// ```dart
+  /// "Pantry auf Server"
+  /// ```
+  String get pantryServerVersion => """Pantry auf Server""";
+
+  /// ```dart
+  /// "Unbekannt"
+  /// ```
+  String get versionUnknown => """Unbekannt""";
 }
 
 class SettingsMessagesDe extends SettingsMessages {
@@ -1670,6 +1685,9 @@ Bitte melde dich in deinem Browser an.""",
   """about.nextcloudApp""": """Nextcloud-App""",
   """about.privacyPolicy""": """Datenschutzerklärung""",
   """about.feedback""": """Feedback & Probleme""",
+  """about.serverVersion""": """Nextcloud-Server""",
+  """about.pantryServerVersion""": """Pantry auf Server""",
+  """about.versionUnknown""": """Unbekannt""",
   """settings.title""": """App-Einstellungen""",
   """settings.generalSection""": """Allgemein""",
   """settings.interfaceSection""": """Oberfläche""",

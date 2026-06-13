@@ -56,6 +56,9 @@ about:
   nextcloudApp: Nextcloud app
   privacyPolicy: Privacy policy
   feedback: Feedback & issues
+  serverVersion: Nextcloud server
+  pantryServerVersion: Pantry on server
+  versionUnknown: Unknown
 
 settings:
   title: App Settings

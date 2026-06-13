@@ -353,6 +353,21 @@ class AboutMessagesFr extends AboutMessages {
   /// "Commentaires & problèmes"
   /// ```
   String get feedback => """Commentaires & problèmes""";
+
+  /// ```dart
+  /// "Serveur Nextcloud"
+  /// ```
+  String get serverVersion => """Serveur Nextcloud""";
+
+  /// ```dart
+  /// "Pantry sur le serveur"
+  /// ```
+  String get pantryServerVersion => """Pantry sur le serveur""";
+
+  /// ```dart
+  /// "Inconnu"
+  /// ```
+  String get versionUnknown => """Inconnu""";
 }
 
 class SettingsMessagesFr extends SettingsMessages {
@@ -1667,6 +1682,9 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """about.nextcloudApp""": """App Nextcloud""",
   """about.privacyPolicy""": """Politique de confidentialité""",
   """about.feedback""": """Commentaires & problèmes""",
+  """about.serverVersion""": """Serveur Nextcloud""",
+  """about.pantryServerVersion""": """Pantry sur le serveur""",
+  """about.versionUnknown""": """Inconnu""",
   """settings.title""": """Réglages de l'app""",
   """settings.generalSection""": """Général""",
   """settings.interfaceSection""": """Interface""",

@@ -19,6 +19,7 @@ import 'services/local_notifications_service.dart';
 import 'services/note_service.dart';
 import 'services/photo_service.dart';
 import 'services/prefs_service.dart';
+import 'services/server_version_service.dart';
 import 'services/share_intent_service.dart';
 import 'services/widget_link_service.dart';
 import 'services/theming_service.dart';
@@ -39,6 +40,7 @@ void main() async {
   if (AuthService.instance.isLoggedIn) {
     await Future.wait([
       ThemingService.instance.fetchTheme(),
+      ServerVersionService.instance.fetch(),
       HouseService.instance.cache.load(),
       CategoryService.instance.cache.load(),
       ChecklistService.instance.cache.load(),
@@ -146,7 +148,10 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
   }
 
   Future<void> _onLoginSuccess() async {
-    await ThemingService.instance.fetchTheme();
+    await Future.wait([
+      ThemingService.instance.fetchTheme(),
+      ServerVersionService.instance.fetch(),
+    ]);
     _isLoggedIn = true;
     final nextRoute = PrefsService.instance.notificationsIntroSeen
         ? '/home'
@@ -164,6 +169,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     await LocalNotificationsService.instance.cancelAll();
     await AuthService.instance.logout();
     ThemingService.instance.clear();
+    ServerVersionService.instance.clear();
     await Future.wait([
       PrefsService.instance.clear(),
       HouseService.instance.cache.clear(),

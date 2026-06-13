@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/auth_session_macos.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginController extends ChangeNotifier {
@@ -51,6 +52,7 @@ class LoginController extends ChangeNotifier {
 
     try {
       final normalizedUrl = _normalizeUrl(_serverUrl);
+      unawaited(ServerVersionService.instance.fetch(serverUrl: normalizedUrl));
       _loginFlow = await AuthService.instance.initiateLoginFlow(normalizedUrl);
 
       if (!kIsWeb && Platform.isMacOS) {
