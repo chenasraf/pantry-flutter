@@ -8,6 +8,7 @@ import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/widgets/checklist_selector.dart';
@@ -344,22 +345,25 @@ class _ChecklistsBodyState extends State<_ChecklistsBody> {
             ],
           ),
         ),
-      CheckedPopupMenuItem<String>(
-        value: 'toggle_added_by',
-        checked: controller.showAddedBy,
-        child: Text(m.checklists.showAddedBy),
-      ),
-      const PopupMenuDivider(),
-      PopupMenuItem(
-        value: 'view_trash',
-        child: Row(
-          children: [
-            const Icon(Icons.delete_outline, size: 18),
-            const SizedBox(width: 8),
-            Text(m.checklists.viewTrash),
-          ],
+      if (hasFeature('item-authors'))
+        CheckedPopupMenuItem<String>(
+          value: 'toggle_added_by',
+          checked: controller.showAddedBy,
+          child: Text(m.checklists.showAddedBy),
         ),
-      ),
+      if (supportsFeature('soft-delete')) ...[
+        const PopupMenuDivider(),
+        PopupMenuItem(
+          value: 'view_trash',
+          child: Row(
+            children: [
+              const Icon(Icons.delete_outline, size: 18),
+              const SizedBox(width: 8),
+              Text(m.checklists.viewTrash),
+            ],
+          ),
+        ),
+      ],
     ];
   }
 

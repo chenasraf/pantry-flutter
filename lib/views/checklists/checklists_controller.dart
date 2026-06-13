@@ -8,6 +8,7 @@ import 'package:pantry/models/member.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/house_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 
 class ChecklistsController extends ChangeNotifier {
   final int houseId;
@@ -94,6 +95,9 @@ class ChecklistsController extends ChangeNotifier {
       // House prefs (sort + showAddedBy + categorySort) are non-fatal
       try {
         final prefs = await _checklistService.getHousePrefs(houseId);
+        // The presence of `showAddedBy` in the response is the discriminator
+        // for the `item-authors` feature on pre-capability servers.
+        ServerVersionService.instance.observeHousePrefs(prefs);
         _sortBy = prefs['checklistItemSort'] as String? ?? 'custom';
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _categorySort = prefs['categorySort'] as String? ?? 'custom';

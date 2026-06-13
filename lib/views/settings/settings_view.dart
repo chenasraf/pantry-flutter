@@ -6,6 +6,7 @@ import 'package:pantry/services/background_notification_task.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/locale_service.dart';
 import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/services/theming_service.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
@@ -200,53 +201,59 @@ class _SettingsViewState extends State<SettingsView> {
           ),
 
           // -- Interface --
-          _SectionHeader(m.settings.interfaceSection),
-          SwitchListTile(
-            title: Text(m.settings.tapRowToComplete),
-            subtitle: Text(m.settings.tapRowToCompleteBody),
-            value: tapRowToComplete,
-            onChanged: _setTapRowToComplete,
-          ),
-          ListTile(
-            title: Text(m.settings.categorySpacing),
-            subtitle: Text(m.settings.categorySpacingBody),
-            trailing: DropdownButton<String>(
-              value: categorySpacing,
-              onChanged: _setCategorySpacing,
-              items: [
-                for (final option in _categorySpacingOptions)
-                  DropdownMenuItem(
-                    value: option,
-                    child: Text(_categorySpacingLabel(option)),
-                  ),
-              ],
+          if (supportsFeature('pref-tap-row-to-complete') ||
+              supportsFeature('pref-category-spacing'))
+            _SectionHeader(m.settings.interfaceSection),
+          if (supportsFeature('pref-tap-row-to-complete'))
+            SwitchListTile(
+              title: Text(m.settings.tapRowToComplete),
+              subtitle: Text(m.settings.tapRowToCompleteBody),
+              value: tapRowToComplete,
+              onChanged: _setTapRowToComplete,
             ),
-          ),
+          if (supportsFeature('pref-category-spacing'))
+            ListTile(
+              title: Text(m.settings.categorySpacing),
+              subtitle: Text(m.settings.categorySpacingBody),
+              trailing: DropdownButton<String>(
+                value: categorySpacing,
+                onChanged: _setCategorySpacing,
+                items: [
+                  for (final option in _categorySpacingOptions)
+                    DropdownMenuItem(
+                      value: option,
+                      child: Text(_categorySpacingLabel(option)),
+                    ),
+                ],
+              ),
+            ),
 
           // -- Notifications --
-          _SectionHeader(m.settings.notificationsSection),
-          SwitchListTile(
-            title: Text(m.settings.enableNotifications),
-            subtitle: Text(m.settings.enableNotificationsBody),
-            value: notificationsEnabled,
-            onChanged: _toggleNotifications,
-          ),
-          ListTile(
-            enabled: notificationsEnabled,
-            title: Text(m.settings.pollInterval),
-            subtitle: Text(_pollIntervalLabel(pollIntervalMinutes)),
-            trailing: DropdownButton<int>(
-              value: pollIntervalMinutes,
-              onChanged: notificationsEnabled ? _setPollInterval : null,
-              items: [
-                for (final minutes in _pollOptions)
-                  DropdownMenuItem(
-                    value: minutes,
-                    child: Text(_pollIntervalLabel(minutes)),
-                  ),
-              ],
+          if (supportsFeature('notifications')) ...[
+            _SectionHeader(m.settings.notificationsSection),
+            SwitchListTile(
+              title: Text(m.settings.enableNotifications),
+              subtitle: Text(m.settings.enableNotificationsBody),
+              value: notificationsEnabled,
+              onChanged: _toggleNotifications,
             ),
-          ),
+            ListTile(
+              enabled: notificationsEnabled,
+              title: Text(m.settings.pollInterval),
+              subtitle: Text(_pollIntervalLabel(pollIntervalMinutes)),
+              trailing: DropdownButton<int>(
+                value: pollIntervalMinutes,
+                onChanged: notificationsEnabled ? _setPollInterval : null,
+                items: [
+                  for (final minutes in _pollOptions)
+                    DropdownMenuItem(
+                      value: minutes,
+                      child: Text(_pollIntervalLabel(minutes)),
+                    ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );

@@ -7,6 +7,7 @@ import 'package:pantry/models/member.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/widgets/context_menu_region.dart';
@@ -122,7 +123,9 @@ class ChecklistItemTile extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (showAddedBy && item.addedBy != null) ...[
+                  if (showAddedBy &&
+                      item.addedBy != null &&
+                      hasFeature('item-authors')) ...[
                     _AddedByAvatar(
                       userId: item.addedBy!,
                       displayName: addedByMember?.displayName ?? item.addedBy!,

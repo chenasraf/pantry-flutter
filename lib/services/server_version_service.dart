@@ -46,6 +46,7 @@ class ServerVersionService {
   /// `capabilities.pantry.features`.
   static const Map<String, String> _featureIntroduced = {
     'category-sort': '0.15.0',
+    'item-authors': '0.15.0',
   };
 
   /// Pantry feature → probe to run when capabilities don't cover it. The
@@ -65,6 +66,7 @@ class ServerVersionService {
   Version? get pantryVersion => _pantryVersion;
 
   final Map<String, bool> _features = {};
+  bool _featuresAuthoritative = false;
 
   /// Reads `/ocs/v2.php/cloud/capabilities` and refreshes the version + feature
   /// state. With [serverUrl], runs unauthenticated against a prospective
@@ -125,23 +127,38 @@ class ServerVersionService {
     final featuresField = pantryCaps['features'];
     if (featuresField is List) {
       // Capability features list is authoritative — anything the server
-      // doesn't list is definitively unsupported, so we don't fall back to
-      // probing for those.
+      // doesn't list is definitively unsupported. We skip probes for missing
+      // features and [supportsFeature] stops failing open.
+      _featuresAuthoritative = true;
       final listed = featuresField.whereType<String>().toSet();
-      for (final name in _featureIntroduced.keys) {
-        _features[name] = listed.contains(name);
+      for (final name in listed) {
+        _features[name] = true;
       }
-      for (final extra in listed) {
-        _features.putIfAbsent(extra, () => true);
+      for (final name in _featureIntroduced.keys) {
+        _features.putIfAbsent(name, () => listed.contains(name));
       }
     }
   }
 
   Future<void> _runMissingProbes() async {
+    if (_featuresAuthoritative) return;
     for (final entry in _featureProbes.entries) {
       if (_features.containsKey(entry.key)) continue;
       _features[entry.key] = await _probe(entry.value);
     }
+  }
+
+  /// Lazy probe surface: callers that already have a house pref response can
+  /// pass it in instead of forcing an extra request. The presence of the
+  /// `showAddedBy` key in the response is the discriminator for
+  /// `item-authors` (added in Pantry 0.15). Calls are no-ops once the feature
+  /// status is known, or when the capability list is authoritative.
+  void observeHousePrefs(Map<String, dynamic> prefs) {
+    if (_featuresAuthoritative) return;
+    _features.putIfAbsent(
+      'item-authors',
+      () => prefs.containsKey('showAddedBy'),
+    );
   }
 
   Future<bool> _probe(_FeatureProbe spec) async {
@@ -169,6 +186,7 @@ class ServerVersionService {
     _serverVersion = null;
     _pantryVersion = null;
     _features.clear();
+    _featuresAuthoritative = false;
   }
 
   /// Compare against the Nextcloud server version, e.g.
@@ -192,20 +210,37 @@ class ServerVersionService {
     );
   }
 
-  /// Whether the Pantry server supports the named feature, e.g.
-  /// `hasFeature('category-sort')`. Backed by the capability `features` array
-  /// when available, falling back to runtime probes.
+  /// Strict feature check, e.g. `hasFeature('category-sort')`. Returns `true`
+  /// only when the server has *positively* confirmed support — either listed
+  /// it in `capabilities.pantry.features`, or a probe succeeded. Unknown
+  /// servers (no capability, no probe coverage) return `false`. Use this for
+  /// genuinely new features that won't work on older servers.
   bool hasFeature(String name) => _features[name] ?? false;
+
+  /// Fail-open feature check, e.g. `supportsFeature('soft-delete')`. Returns
+  /// `false` only when the capability list is authoritative AND the feature
+  /// is absent from it. On pre-capability servers (where the capability
+  /// hasn't shipped yet) the answer defaults to `true`, so long-shipped
+  /// features stay visible without needing a per-feature probe. Use this for
+  /// features that have always existed but that the server might opt out of.
+  bool supportsFeature(String name) {
+    final known = _features[name];
+    if (known != null) return known;
+    if (_featuresAuthoritative) return false;
+    return true;
+  }
 
   @visibleForTesting
   void debugSeed({
     Version? pantryVersion,
     Map<String, bool> features = const {},
+    bool featuresAuthoritative = false,
   }) {
     _pantryVersion = pantryVersion;
     _features
       ..clear()
       ..addAll(features);
+    _featuresAuthoritative = featuresAuthoritative;
   }
 }
 
@@ -277,3 +312,6 @@ bool isServerPantryVersion(String op, String version) =>
     ServerVersionService.instance.isServerPantryVersion(op, version);
 
 bool hasFeature(String name) => ServerVersionService.instance.hasFeature(name);
+
+bool supportsFeature(String name) =>
+    ServerVersionService.instance.supportsFeature(name);

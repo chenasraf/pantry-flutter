@@ -3,6 +3,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
@@ -18,7 +19,10 @@ class CategoriesView extends StatefulWidget {
 }
 
 class _CategoriesViewState extends State<CategoriesView> {
-  static const _sortKeys = ['custom', 'name_asc', 'name_desc'];
+  static const _allSortKeys = ['custom', 'name_asc', 'name_desc'];
+  List<String> get _sortKeys => hasFeature('category-sort')
+      ? _allSortKeys
+      : _allSortKeys.where((k) => k != 'custom').toList();
 
   List<Category> _categories = [];
   String _sort = 'custom';
@@ -48,7 +52,11 @@ class _CategoriesViewState extends State<CategoriesView> {
       final prefs = results[0] as Map<String, dynamic>;
       final list = results[1] as List<Category>;
       setState(() {
-        _sort = prefs['categorySort'] as String? ?? 'custom';
+        var sort = prefs['categorySort'] as String? ?? 'custom';
+        if (sort == 'custom' && !hasFeature('category-sort')) {
+          sort = 'name_asc';
+        }
+        _sort = sort;
         _categories = CategoryService.sortCategories(list, _sort);
         _isLoading = false;
       });
