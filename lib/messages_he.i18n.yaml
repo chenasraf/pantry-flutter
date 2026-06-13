@@ -36,6 +36,46 @@ nav:
   photoBoard: לוח תמונות
   notesWall: קיר הערות
 
+onboarding:
+  next: הבא
+  back: חזור
+  skip: דלג
+  done: בואו נתחיל
+  stepLabel(int current, int total): "שלב ${current} מתוך ${total}"
+  welcomeNewTitle: "ברוכים הבאים ל-Pantry"
+  welcomeNewBody: "בוא נעבור סיור קצר על איך Pantry עובד כדי שתפיק ממנו את המקסימום."
+  welcomeUpdateTitle: "מה חדש"
+  welcomeUpdateBody: "מאז הפעם האחרונה שפתחת את Pantry נוספו כמה דברים חדשים. הנה סקירה קצרה של מה שהשתנה."
+  checklistsRedesignTitle: "הרשימות בעיצוב חדש"
+  checklistsRedesignBody: "עמוד הרשימות נבנה מחדש מהיסוד — מבנה נקי יותר, דרך מהירה להוסיף פריטים ופעולות מהירות על כל שורה. הדפים הבאים יסבירו מה חדש."
+  checklistSelectorTitle: "החלף רשימות מלמעלה"
+  checklistSelectorBody: "הקש על שם הרשימה או על הסמל למעלה כדי להחליף בין רשימות או ליצור רשימה חדשה."
+  checklistSelectorHint: "הקש כדי להחליף רשימות"
+  mockListGroceries: "מצרכים"
+  mockListHardware: "חומרי בניין"
+  mockListWeekend: "טיול סוף שבוע"
+  mockItemCountSummary(int count): "${count} פריטים"
+  newListLabel: "רשימה חדשה"
+  swipeActionsTitle: "החלק פריטים כדי לנהל אותם"
+  swipeActionsBody: "החלק פריט ברשימה משמאל לימין כדי לחשוף פעולות מהירות לעריכה, העברה או מחיקה."
+  swipeActionsHint: "החלק ימינה"
+  swipeActionsHintBack: "החלק שמאלה"
+  addItemsTitle: "דרך מהירה יותר להוסיף פריטים"
+  addItemsBody: "הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו."
+  mockComposeListName: "מצרכים"
+  progressHeroTitle: "הסתר את כרטיס ההתקדמות"
+  progressHeroBody: "לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה."
+  progressHeroBringBack(String settings, String interface, String toggle): "אפשר להחזיר אותה דרך ${settings} ← ${interface} ← ${toggle}."
+  progressHeroHint: "החלק כדי להסיר"
+  mockItemName: "עגבניות"
+  mockItemQuantity: "x2"
+  mockItemCategory: "ירקות"
+  dev:
+    showOnboarding: "הצג היכרות"
+    pickLastSeenTitle: "דמה גרסה אחרונה שנצפתה"
+    pickLastSeenBody: "בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם."
+    neverSeen: "מעולם לא נצפה (משתמש חדש)"
+
 notificationsIntro:
   title: הישאר מעודכן
   body: "Pantry יכול להודיע לך כשבני משק הבית מוסיפים פריטים לרשימות, מעלים תמונות או משאירים הערות. ההתראות נשלפות מהשרת שלך — שום דבר לא עובר דרך Google או צדדים שלישיים."

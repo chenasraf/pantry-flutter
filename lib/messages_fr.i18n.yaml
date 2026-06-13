@@ -36,6 +36,46 @@ nav:
   photoBoard: Tableau photos
   notesWall: Mur de notes
 
+onboarding:
+  next: Suivant
+  back: Retour
+  skip: Ignorer
+  done: C'est parti
+  stepLabel(int current, int total): "Étape ${current} sur ${total}"
+  welcomeNewTitle: "Bienvenue dans Pantry"
+  welcomeNewBody: "Faisons un tour rapide du fonctionnement de Pantry pour que tu en profites au maximum."
+  welcomeUpdateTitle: "Nouveautés"
+  welcomeUpdateBody: "Pantry a appris quelques nouveaux tours depuis ta dernière visite. Voici un aperçu rapide."
+  checklistsRedesignTitle: "Les listes ont une nouvelle allure"
+  checklistsRedesignBody: "La page des listes a été reconstruite de zéro : mise en page plus claire, ajout d'éléments plus rapide et actions rapides sur chaque ligne. Les prochaines pages te présentent les nouveautés."
+  checklistSelectorTitle: "Changer de liste depuis le haut"
+  checklistSelectorBody: "Touche le nom de la liste ou son icône en haut pour passer d'une liste à l'autre ou en créer une nouvelle."
+  checklistSelectorHint: "Touche pour changer de liste"
+  mockListGroceries: "Courses"
+  mockListHardware: "Bricolage"
+  mockListWeekend: "Week-end"
+  mockItemCountSummary(int count): "${count} éléments"
+  newListLabel: "Nouvelle liste"
+  swipeActionsTitle: "Balaie les éléments pour les gérer"
+  swipeActionsBody: "Balaie un élément de droite à gauche pour faire apparaître des actions rapides : éditer, déplacer ou supprimer."
+  swipeActionsHint: "Balaie vers la gauche"
+  swipeActionsHintBack: "Balaie vers la droite"
+  addItemsTitle: "Une façon plus rapide d'ajouter"
+  addItemsBody: "Touche le champ en bas pour saisir un nouvel élément, puis associe-lui une catégorie, une quantité, un type ou une photo via les chips au-dessus."
+  mockComposeListName: "Courses"
+  progressHeroTitle: "Masquer la carte de progression"
+  progressHeroBody: "Pas besoin de l'anneau de progression en haut ? Balaie-le pour le retirer."
+  progressHeroBringBack(String settings, String interface, String toggle): "Tu peux la réafficher plus tard depuis ${settings} → ${interface} → ${toggle}."
+  progressHeroHint: "Balaie pour masquer"
+  mockItemName: "Tomates"
+  mockItemQuantity: "x2"
+  mockItemCategory: "Légumes"
+  dev:
+    showOnboarding: "Afficher l'intro"
+    pickLastSeenTitle: "Simuler la dernière version vue"
+    pickLastSeenBody: "Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là."
+    neverSeen: "Jamais vue (nouvel utilisateur)"
+
 notificationsIntro:
   title: "Restez informé"
   body: "Pantry peut vous notifier lorsque les membres du foyer ajoutent des articles aux listes, téléchargent des photos ou laissent des notes. Les notifications sont récupérées depuis votre propre serveur Nextcloud — rien ne passe par Google ou des tiers."

@@ -24,6 +24,7 @@ class PrefsService extends ChangeNotifier {
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
   static const _checklistProgressHeroHiddenKey =
       'checklist_progress_hero_hidden';
+  static const _lastSeenOnboardingVersionKey = 'last_seen_onboarding_version';
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -69,6 +70,13 @@ class PrefsService extends ChangeNotifier {
   /// on every checklist. Re-enable from Settings → Interface.
   bool _checklistProgressHeroHidden = false;
   bool get checklistProgressHeroHidden => _checklistProgressHeroHidden;
+
+  /// The app version of the most recent onboarding the user finished or
+  /// skipped. `null` means the user has never seen any onboarding (treat as
+  /// brand new). Compared against [appOnboardingPages] keys to decide which
+  /// pages still need to be shown.
+  String? _lastSeenOnboardingVersion;
+  String? get lastSeenOnboardingVersion => _lastSeenOnboardingVersion;
 
   Future<void> load() async {
     final lastHouse = await _storage.read(key: _lastHouseKey);
@@ -119,6 +127,10 @@ class PrefsService extends ChangeNotifier {
     if (progressHeroHidden != null) {
       _checklistProgressHeroHidden = progressHeroHidden == 'true';
     }
+
+    _lastSeenOnboardingVersion = await _storage.read(
+      key: _lastSeenOnboardingVersionKey,
+    );
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -294,6 +306,16 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setLastSeenOnboardingVersion(String? version) async {
+    _lastSeenOnboardingVersion = version;
+    if (version == null) {
+      await _storage.delete(key: _lastSeenOnboardingVersionKey);
+    } else {
+      await _storage.write(key: _lastSeenOnboardingVersionKey, value: version);
+    }
+    notifyListeners();
+  }
+
   Future<void> setNotificationsIntroSeen(bool value) async {
     _notificationsIntroSeen = value;
     await _storage.write(
@@ -316,6 +338,7 @@ class PrefsService extends ChangeNotifier {
     _checklistView = 'list';
     _checklistDoneCollapsed = true;
     _checklistProgressHeroHidden = false;
+    _lastSeenOnboardingVersion = null;
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _pinnedListIdsKey);
     await _storage.delete(key: _notificationsEnabledKey);
@@ -328,6 +351,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _checklistViewKey);
     await _storage.delete(key: _checklistDoneCollapsedKey);
     await _storage.delete(key: _checklistProgressHeroHiddenKey);
+    await _storage.delete(key: _lastSeenOnboardingVersionKey);
     notifyListeners();
   }
 }

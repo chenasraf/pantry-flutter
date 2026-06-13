@@ -67,6 +67,7 @@ class MessagesDe extends Messages {
   LoginMessagesDe get login => LoginMessagesDe(this);
   HomeMessagesDe get home => HomeMessagesDe(this);
   NavMessagesDe get nav => NavMessagesDe(this);
+  OnboardingMessagesDe get onboarding => OnboardingMessagesDe(this);
   NotificationsIntroMessagesDe get notificationsIntro =>
       NotificationsIntroMessagesDe(this);
   AboutMessagesDe get about => AboutMessagesDe(this);
@@ -256,6 +257,216 @@ class NavMessagesDe extends NavMessages {
   /// "Notizwand"
   /// ```
   String get notesWall => """Notizwand""";
+}
+
+class OnboardingMessagesDe extends OnboardingMessages {
+  final MessagesDe _parent;
+  const OnboardingMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Weiter"
+  /// ```
+  String get next => """Weiter""";
+
+  /// ```dart
+  /// "Zurück"
+  /// ```
+  String get back => """Zurück""";
+
+  /// ```dart
+  /// "Überspringen"
+  /// ```
+  String get skip => """Überspringen""";
+
+  /// ```dart
+  /// "Loslegen"
+  /// ```
+  String get done => """Loslegen""";
+
+  /// ```dart
+  /// "Schritt ${current} von ${total}"
+  /// ```
+  String stepLabel(int current, int total) =>
+      """Schritt ${current} von ${total}""";
+
+  /// ```dart
+  /// "Willkommen bei Pantry"
+  /// ```
+  String get welcomeNewTitle => """Willkommen bei Pantry""";
+
+  /// ```dart
+  /// "Lass uns kurz durchgehen, wie Pantry funktioniert, damit du das Beste herausholst."
+  /// ```
+  String get welcomeNewBody =>
+      """Lass uns kurz durchgehen, wie Pantry funktioniert, damit du das Beste herausholst.""";
+
+  /// ```dart
+  /// "Was ist neu"
+  /// ```
+  String get welcomeUpdateTitle => """Was ist neu""";
+
+  /// ```dart
+  /// "Seit deinem letzten Besuch hat Pantry ein paar neue Tricks gelernt. Hier ein kurzer Überblick."
+  /// ```
+  String get welcomeUpdateBody =>
+      """Seit deinem letzten Besuch hat Pantry ein paar neue Tricks gelernt. Hier ein kurzer Überblick.""";
+
+  /// ```dart
+  /// "Checklisten im neuen Look"
+  /// ```
+  String get checklistsRedesignTitle => """Checklisten im neuen Look""";
+
+  /// ```dart
+  /// "Die Checklisten-Seite wurde von Grund auf neu gebaut — übersichtlicheres Layout, schnelleres Hinzufügen und Schnellaktionen für jede Zeile. Die nächsten Seiten zeigen dir, was neu ist."
+  /// ```
+  String get checklistsRedesignBody =>
+      """Die Checklisten-Seite wurde von Grund auf neu gebaut — übersichtlicheres Layout, schnelleres Hinzufügen und Schnellaktionen für jede Zeile. Die nächsten Seiten zeigen dir, was neu ist.""";
+
+  /// ```dart
+  /// "Listen oben wechseln"
+  /// ```
+  String get checklistSelectorTitle => """Listen oben wechseln""";
+
+  /// ```dart
+  /// "Tippe auf den Listennamen oder das Symbol oben, um zwischen Listen zu wechseln oder eine neue zu erstellen."
+  /// ```
+  String get checklistSelectorBody =>
+      """Tippe auf den Listennamen oder das Symbol oben, um zwischen Listen zu wechseln oder eine neue zu erstellen.""";
+
+  /// ```dart
+  /// "Tippen zum Wechseln"
+  /// ```
+  String get checklistSelectorHint => """Tippen zum Wechseln""";
+
+  /// ```dart
+  /// "Lebensmittel"
+  /// ```
+  String get mockListGroceries => """Lebensmittel""";
+
+  /// ```dart
+  /// "Baumarkt"
+  /// ```
+  String get mockListHardware => """Baumarkt""";
+
+  /// ```dart
+  /// "Wochenendtrip"
+  /// ```
+  String get mockListWeekend => """Wochenendtrip""";
+
+  /// ```dart
+  /// "${count} Einträge"
+  /// ```
+  String mockItemCountSummary(int count) => """${count} Einträge""";
+
+  /// ```dart
+  /// "Neue Liste"
+  /// ```
+  String get newListLabel => """Neue Liste""";
+
+  /// ```dart
+  /// "Einträge durch Wischen verwalten"
+  /// ```
+  String get swipeActionsTitle => """Einträge durch Wischen verwalten""";
+
+  /// ```dart
+  /// "Wische einen Listeneintrag von rechts nach links, um schnelle Aktionen zum Bearbeiten, Verschieben oder Löschen einzublenden."
+  /// ```
+  String get swipeActionsBody =>
+      """Wische einen Listeneintrag von rechts nach links, um schnelle Aktionen zum Bearbeiten, Verschieben oder Löschen einzublenden.""";
+
+  /// ```dart
+  /// "Nach links wischen"
+  /// ```
+  String get swipeActionsHint => """Nach links wischen""";
+
+  /// ```dart
+  /// "Nach rechts wischen"
+  /// ```
+  String get swipeActionsHintBack => """Nach rechts wischen""";
+
+  /// ```dart
+  /// "Einträge schneller hinzufügen"
+  /// ```
+  String get addItemsTitle => """Einträge schneller hinzufügen""";
+
+  /// ```dart
+  /// "Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto."
+  /// ```
+  String get addItemsBody =>
+      """Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto.""";
+
+  /// ```dart
+  /// "Lebensmittel"
+  /// ```
+  String get mockComposeListName => """Lebensmittel""";
+
+  /// ```dart
+  /// "Fortschrittskarte ausblenden"
+  /// ```
+  String get progressHeroTitle => """Fortschrittskarte ausblenden""";
+
+  /// ```dart
+  /// "Brauchst du den Fortschrittsring oben nicht? Wisch ihn einfach weg."
+  /// ```
+  String get progressHeroBody =>
+      """Brauchst du den Fortschrittsring oben nicht? Wisch ihn einfach weg.""";
+
+  /// ```dart
+  /// "Du holst ihn später unter ${settings} → ${interface} → ${toggle} zurück."
+  /// ```
+  String progressHeroBringBack(
+    String settings,
+    String interface,
+    String toggle,
+  ) =>
+      """Du holst ihn später unter ${settings} → ${interface} → ${toggle} zurück.""";
+
+  /// ```dart
+  /// "Zum Ausblenden wischen"
+  /// ```
+  String get progressHeroHint => """Zum Ausblenden wischen""";
+
+  /// ```dart
+  /// "Tomaten"
+  /// ```
+  String get mockItemName => """Tomaten""";
+
+  /// ```dart
+  /// "x2"
+  /// ```
+  String get mockItemQuantity => """x2""";
+
+  /// ```dart
+  /// "Gemüse"
+  /// ```
+  String get mockItemCategory => """Gemüse""";
+  DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
+}
+
+class DevOnboardingMessagesDe extends DevOnboardingMessages {
+  final OnboardingMessagesDe _parent;
+  const DevOnboardingMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Onboarding anzeigen"
+  /// ```
+  String get showOnboarding => """Onboarding anzeigen""";
+
+  /// ```dart
+  /// "Zuletzt gesehene Version simulieren"
+  /// ```
+  String get pickLastSeenTitle => """Zuletzt gesehene Version simulieren""";
+
+  /// ```dart
+  /// "Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet."
+  /// ```
+  String get pickLastSeenBody =>
+      """Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet.""";
+
+  /// ```dart
+  /// "Noch nie gesehen (neuer Benutzer)"
+  /// ```
+  String get neverSeen => """Noch nie gesehen (neuer Benutzer)""";
 }
 
 class NotificationsIntroMessagesDe extends NotificationsIntroMessages {
@@ -1926,6 +2137,49 @@ Bitte melde dich in deinem Browser an.""",
   """nav.checklists""": """Checklisten""",
   """nav.photoBoard""": """Fotowand""",
   """nav.notesWall""": """Notizwand""",
+  """onboarding.next""": """Weiter""",
+  """onboarding.back""": """Zurück""",
+  """onboarding.skip""": """Überspringen""",
+  """onboarding.done""": """Loslegen""",
+  """onboarding.welcomeNewTitle""": """Willkommen bei Pantry""",
+  """onboarding.welcomeNewBody""":
+      """Lass uns kurz durchgehen, wie Pantry funktioniert, damit du das Beste herausholst.""",
+  """onboarding.welcomeUpdateTitle""": """Was ist neu""",
+  """onboarding.welcomeUpdateBody""":
+      """Seit deinem letzten Besuch hat Pantry ein paar neue Tricks gelernt. Hier ein kurzer Überblick.""",
+  """onboarding.checklistsRedesignTitle""": """Checklisten im neuen Look""",
+  """onboarding.checklistsRedesignBody""":
+      """Die Checklisten-Seite wurde von Grund auf neu gebaut — übersichtlicheres Layout, schnelleres Hinzufügen und Schnellaktionen für jede Zeile. Die nächsten Seiten zeigen dir, was neu ist.""",
+  """onboarding.checklistSelectorTitle""": """Listen oben wechseln""",
+  """onboarding.checklistSelectorBody""":
+      """Tippe auf den Listennamen oder das Symbol oben, um zwischen Listen zu wechseln oder eine neue zu erstellen.""",
+  """onboarding.checklistSelectorHint""": """Tippen zum Wechseln""",
+  """onboarding.mockListGroceries""": """Lebensmittel""",
+  """onboarding.mockListHardware""": """Baumarkt""",
+  """onboarding.mockListWeekend""": """Wochenendtrip""",
+  """onboarding.newListLabel""": """Neue Liste""",
+  """onboarding.swipeActionsTitle""": """Einträge durch Wischen verwalten""",
+  """onboarding.swipeActionsBody""":
+      """Wische einen Listeneintrag von rechts nach links, um schnelle Aktionen zum Bearbeiten, Verschieben oder Löschen einzublenden.""",
+  """onboarding.swipeActionsHint""": """Nach links wischen""",
+  """onboarding.swipeActionsHintBack""": """Nach rechts wischen""",
+  """onboarding.addItemsTitle""": """Einträge schneller hinzufügen""",
+  """onboarding.addItemsBody""":
+      """Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto.""",
+  """onboarding.mockComposeListName""": """Lebensmittel""",
+  """onboarding.progressHeroTitle""": """Fortschrittskarte ausblenden""",
+  """onboarding.progressHeroBody""":
+      """Brauchst du den Fortschrittsring oben nicht? Wisch ihn einfach weg.""",
+  """onboarding.progressHeroHint""": """Zum Ausblenden wischen""",
+  """onboarding.mockItemName""": """Tomaten""",
+  """onboarding.mockItemQuantity""": """x2""",
+  """onboarding.mockItemCategory""": """Gemüse""",
+  """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
+  """onboarding.dev.pickLastSeenTitle""":
+      """Zuletzt gesehene Version simulieren""",
+  """onboarding.dev.pickLastSeenBody""":
+      """Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet.""",
+  """onboarding.dev.neverSeen""": """Noch nie gesehen (neuer Benutzer)""",
   """notificationsIntro.title""": """Bleib auf dem Laufenden""",
   """notificationsIntro.body""":
       """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""",
