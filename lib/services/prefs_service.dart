@@ -85,8 +85,6 @@ class PrefsService extends ChangeNotifier {
         (spacing == 'disabled' || spacing == 'space' || spacing == 'divider')) {
       _checklistCategorySpacing = spacing;
     }
-
-    await pushWidgetTheme();
   }
 
   Future<void> setLastHouseId(int id) async {

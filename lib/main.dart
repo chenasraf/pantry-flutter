@@ -130,6 +130,17 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     PrefsService.instance.pushWidgetTheme();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Re-sync widget data from the foreground isolate — background
+      // workers can't reliably resolve platform brightness, and the
+      // pinned-list payload can drift if HomeWidgetPreferences is wiped.
+      PrefsService.instance.pushWidgetTheme();
+      PrefsService.instance.pushWidgetPinnedLists();
+    }
+  }
+
   void _rebuild() {
     if (mounted) setState(() {});
   }
