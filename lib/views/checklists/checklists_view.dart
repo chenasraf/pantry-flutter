@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/main.dart' show appVersion;
+import 'package:pantry/views/onboarding/onboarding_pages.dart';
+import 'package:pantry/views/onboarding/onboarding_view.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/checklist_service.dart';
@@ -569,6 +573,14 @@ class _BodyState extends State<_Body> {
           label: m.checklists.viewTrash,
         ),
       ],
+      if (kDebugMode) ...[
+        const PopupMenuDivider(),
+        _menuRow(
+          value: 'dev_show_onboarding',
+          leading: const Icon(Icons.bug_report_outlined, size: 18),
+          label: m.onboarding.dev.showOnboarding,
+        ),
+      ],
     ];
   }
 
@@ -647,7 +659,30 @@ class _BodyState extends State<_Body> {
         await _openManageCategories(context, controller);
       case 'refresh':
         await controller.refresh();
+      case 'dev_show_onboarding':
+        await _devShowOnboarding(context);
     }
+  }
+
+  /// Dev-only flow: pick a "last seen" version to seed prefs with, then push
+  /// the onboarding view. Lets us preview what users with various upgrade
+  /// histories will see without uninstalling the app.
+  Future<void> _devShowOnboarding(BuildContext context) async {
+    final picked = await showDialog<_DevLastSeenChoice>(
+      context: context,
+      builder: (ctx) => _DevLastSeenPickerDialog(),
+    );
+    if (picked == null || !context.mounted) return;
+    await PrefsService.instance.setLastSeenOnboardingVersion(picked.value);
+    if (!context.mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => OnboardingView(
+          appVersion: appVersion,
+          onDone: () => Navigator.of(context).pop(),
+        ),
+      ),
+    );
   }
 
   Future<void> _openManageCategories(
@@ -1693,6 +1728,44 @@ class _CheckboxIndicator extends StatelessWidget {
       child: selected
           ? const Icon(Icons.check, size: 12, color: Colors.white)
           : null,
+    );
+  }
+}
+
+/// Result type for [_DevLastSeenPickerDialog]. Carrying a wrapper instead of a
+/// raw `String?` lets the dialog return "never seen" (null) distinctly from
+/// dismissal.
+class _DevLastSeenChoice {
+  /// `null` means simulate a brand-new user (no version seen yet).
+  final String? value;
+
+  const _DevLastSeenChoice(this.value);
+}
+
+class _DevLastSeenPickerDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final dev = m.onboarding.dev;
+    final options = <_DevLastSeenChoice>[
+      const _DevLastSeenChoice(null),
+      for (final v in kDevOnboardingPickableVersions) _DevLastSeenChoice(v),
+    ];
+    return SimpleDialog(
+      title: Text(dev.pickLastSeenTitle),
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+          child: Text(
+            dev.pickLastSeenBody,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ),
+        for (final opt in options)
+          SimpleDialogOption(
+            onPressed: () => Navigator.of(context).pop(opt),
+            child: Text(opt.value ?? dev.neverSeen),
+          ),
+      ],
     );
   }
 }

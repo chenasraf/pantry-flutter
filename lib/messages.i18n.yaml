@@ -36,6 +36,46 @@ nav:
   photoBoard: Photo Board
   notesWall: Notes Wall
 
+onboarding:
+  next: Next
+  back: Back
+  skip: Skip
+  done: Get started
+  stepLabel(int current, int total): "Step ${current} of ${total}"
+  welcomeNewTitle: "Welcome to Pantry"
+  welcomeNewBody: "Let's take a quick tour of how Pantry works so you can get the most out of it."
+  welcomeUpdateTitle: "What's new"
+  welcomeUpdateBody: "Pantry has picked up a few new tricks since you last opened it. Here's a quick look at what changed."
+  checklistsRedesignTitle: "Checklists got a fresh look"
+  checklistsRedesignBody: "The checklist page has been rebuilt from the ground up — a cleaner layout, faster way to add items, and quick actions on every row. The next few pages walk through what's new."
+  checklistSelectorTitle: "Switch lists from the top"
+  checklistSelectorBody: "Tap the list name or its icon at the top of the screen to switch between lists or create a new one."
+  checklistSelectorHint: "Tap to switch lists"
+  mockListGroceries: "Groceries"
+  mockListHardware: "Hardware store"
+  mockListWeekend: "Weekend trip"
+  mockItemCountSummary(int count): "${count} items"
+  newListLabel: "New list"
+  swipeActionsTitle: "Swipe items to manage them"
+  swipeActionsBody: "Swipe a list item from right to left to reveal quick actions for editing, moving, or deleting it."
+  swipeActionsHint: "Swipe left"
+  swipeActionsHintBack: "Swipe right"
+  addItemsTitle: "A faster way to add items"
+  addItemsBody: "Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above."
+  mockComposeListName: "Groceries"
+  progressHeroTitle: "Hide the progress card"
+  progressHeroBody: "Don't need the progress ring at the top? Swipe it away."
+  progressHeroBringBack(String settings, String interface, String toggle): "Bring it back later from ${settings} → ${interface} → ${toggle}."
+  progressHeroHint: "Swipe to dismiss"
+  mockItemName: "Tomatoes"
+  mockItemQuantity: "x2"
+  mockItemCategory: "Produce"
+  dev:
+    showOnboarding: "Show onboarding"
+    pickLastSeenTitle: "Simulate last-seen version"
+    pickLastSeenBody: "Choose which version the device should pretend it last saw, then the onboarding will run from there."
+    neverSeen: "Never seen (new user)"
+
 notificationsIntro:
   title: Stay in the loop
   body: "Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."

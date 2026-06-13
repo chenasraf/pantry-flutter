@@ -36,6 +36,46 @@ nav:
   photoBoard: Fotowand
   notesWall: Notizwand
 
+onboarding:
+  next: Weiter
+  back: Zurück
+  skip: Überspringen
+  done: Loslegen
+  stepLabel(int current, int total): "Schritt ${current} von ${total}"
+  welcomeNewTitle: "Willkommen bei Pantry"
+  welcomeNewBody: "Lass uns kurz durchgehen, wie Pantry funktioniert, damit du das Beste herausholst."
+  welcomeUpdateTitle: "Was ist neu"
+  welcomeUpdateBody: "Seit deinem letzten Besuch hat Pantry ein paar neue Tricks gelernt. Hier ein kurzer Überblick."
+  checklistsRedesignTitle: "Checklisten im neuen Look"
+  checklistsRedesignBody: "Die Checklisten-Seite wurde von Grund auf neu gebaut — übersichtlicheres Layout, schnelleres Hinzufügen und Schnellaktionen für jede Zeile. Die nächsten Seiten zeigen dir, was neu ist."
+  checklistSelectorTitle: "Listen oben wechseln"
+  checklistSelectorBody: "Tippe auf den Listennamen oder das Symbol oben, um zwischen Listen zu wechseln oder eine neue zu erstellen."
+  checklistSelectorHint: "Tippen zum Wechseln"
+  mockListGroceries: "Lebensmittel"
+  mockListHardware: "Baumarkt"
+  mockListWeekend: "Wochenendtrip"
+  mockItemCountSummary(int count): "${count} Einträge"
+  newListLabel: "Neue Liste"
+  swipeActionsTitle: "Einträge durch Wischen verwalten"
+  swipeActionsBody: "Wische einen Listeneintrag von rechts nach links, um schnelle Aktionen zum Bearbeiten, Verschieben oder Löschen einzublenden."
+  swipeActionsHint: "Nach links wischen"
+  swipeActionsHintBack: "Nach rechts wischen"
+  addItemsTitle: "Einträge schneller hinzufügen"
+  addItemsBody: "Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto."
+  mockComposeListName: "Lebensmittel"
+  progressHeroTitle: "Fortschrittskarte ausblenden"
+  progressHeroBody: "Brauchst du den Fortschrittsring oben nicht? Wisch ihn einfach weg."
+  progressHeroBringBack(String settings, String interface, String toggle): "Du holst ihn später unter ${settings} → ${interface} → ${toggle} zurück."
+  progressHeroHint: "Zum Ausblenden wischen"
+  mockItemName: "Tomaten"
+  mockItemQuantity: "x2"
+  mockItemCategory: "Gemüse"
+  dev:
+    showOnboarding: "Onboarding anzeigen"
+    pickLastSeenTitle: "Zuletzt gesehene Version simulieren"
+    pickLastSeenBody: "Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet."
+    neverSeen: "Noch nie gesehen (neuer Benutzer)"
+
 notificationsIntro:
   title: Bleib auf dem Laufenden
   body: "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."

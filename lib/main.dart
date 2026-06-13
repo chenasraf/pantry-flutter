@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -26,8 +27,15 @@ import 'services/theming_service.dart';
 import 'views/home/home_view.dart';
 import 'views/login/login_view.dart';
 import 'views/notifications_intro/notifications_intro_view.dart';
+import 'views/onboarding/onboarding_pages.dart';
+import 'views/onboarding/onboarding_view.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
+
+/// Resolved at startup from `package_info_plus`. Defaulted to the bundled
+/// onboarding baseline so anything that reads it before main() finishes still
+/// has a sane value to compare against.
+String appVersion = kAppOnboardingFirstVersion;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +45,7 @@ void main() async {
   await AuthService.instance.loadCredentials();
   await PrefsService.instance.load();
   await LocalNotificationsService.instance.init();
+  appVersion = (await PackageInfo.fromPlatform()).version;
   if (AuthService.instance.isLoggedIn) {
     // ServerVersionService must land before ThemingService — on NC ≥ 34 the
     // theme color comes from the cached capabilities `theming` block.
@@ -150,19 +159,59 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     if (mounted) setState(() {});
   }
 
+  /// Pick the next route for a logged-in user. Onboarding takes priority over
+  /// the notifications intro — both run only once, but onboarding is more
+  /// likely to recur (a returning user upgrading the app), so we sequence
+  /// onboarding → notifications intro → home.
+  String _nextPostLoginRoute() {
+    final hasUnseenOnboarding = resolveOnboardingPages(
+      PrefsService.instance.lastSeenOnboardingVersion,
+    ).isNotEmpty;
+    if (hasUnseenOnboarding) return '/onboarding';
+    if (!PrefsService.instance.notificationsIntroSeen) {
+      return '/notifications-intro';
+    }
+    return '/home';
+  }
+
   Future<void> _onLoginSuccess() async {
     await ServerVersionService.instance.fetch();
     await ThemingService.instance.fetchTheme();
     _isLoggedIn = true;
-    final nextRoute = PrefsService.instance.notificationsIntroSeen
-        ? '/home'
-        : '/notifications-intro';
-    rootNavigatorKey.currentState?.pushReplacementNamed(nextRoute);
+    rootNavigatorKey.currentState?.pushReplacementNamed(_nextPostLoginRoute());
     if (mounted) setState(() {});
+  }
+
+  void _onOnboardingDone() {
+    if (!PrefsService.instance.notificationsIntroSeen) {
+      rootNavigatorKey.currentState?.pushReplacementNamed(
+        '/notifications-intro',
+      );
+    } else {
+      rootNavigatorKey.currentState?.pushReplacementNamed('/home');
+    }
   }
 
   void _onIntroDone() {
     rootNavigatorKey.currentState?.pushReplacementNamed('/home');
+  }
+
+  /// Cold-start widget for a logged-in user. Mirrors [_nextPostLoginRoute] but
+  /// returns a widget instead of a route name so it can plug directly into
+  /// `onGenerateInitialRoutes`.
+  Widget _resolveLoggedInInitial() {
+    final route = _nextPostLoginRoute();
+    switch (route) {
+      case '/onboarding':
+        return OnboardingView(
+          appVersion: appVersion,
+          onDone: _onOnboardingDone,
+        );
+      case '/notifications-intro':
+        return NotificationsIntroView(onDone: _onIntroDone);
+      default:
+        return HomeView(onLogout: _onLogout);
+    }
   }
 
   Future<void> _onLogout() async {
@@ -248,9 +297,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
           onGenerateInitialRoutes: (initialRoute) => [
             MaterialPageRoute(
               builder: (_) => _isLoggedIn
-                  ? (PrefsService.instance.notificationsIntroSeen
-                        ? HomeView(onLogout: _onLogout)
-                        : NotificationsIntroView(onDone: _onIntroDone))
+                  ? _resolveLoggedInInitial()
                   : LoginView(onLoginSuccess: _onLoginSuccess),
             ),
           ],
@@ -259,6 +306,13 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
               case '/home':
                 return MaterialPageRoute(
                   builder: (_) => HomeView(onLogout: _onLogout),
+                );
+              case '/onboarding':
+                return MaterialPageRoute(
+                  builder: (_) => OnboardingView(
+                    appVersion: appVersion,
+                    onDone: _onOnboardingDone,
+                  ),
                 );
               case '/notifications-intro':
                 return MaterialPageRoute(

@@ -67,6 +67,7 @@ class MessagesHe extends Messages {
   LoginMessagesHe get login => LoginMessagesHe(this);
   HomeMessagesHe get home => HomeMessagesHe(this);
   NavMessagesHe get nav => NavMessagesHe(this);
+  OnboardingMessagesHe get onboarding => OnboardingMessagesHe(this);
   NotificationsIntroMessagesHe get notificationsIntro =>
       NotificationsIntroMessagesHe(this);
   AboutMessagesHe get about => AboutMessagesHe(this);
@@ -254,6 +255,215 @@ class NavMessagesHe extends NavMessages {
   /// "קיר הערות"
   /// ```
   String get notesWall => """קיר הערות""";
+}
+
+class OnboardingMessagesHe extends OnboardingMessages {
+  final MessagesHe _parent;
+  const OnboardingMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "הבא"
+  /// ```
+  String get next => """הבא""";
+
+  /// ```dart
+  /// "חזור"
+  /// ```
+  String get back => """חזור""";
+
+  /// ```dart
+  /// "דלג"
+  /// ```
+  String get skip => """דלג""";
+
+  /// ```dart
+  /// "בואו נתחיל"
+  /// ```
+  String get done => """בואו נתחיל""";
+
+  /// ```dart
+  /// "שלב ${current} מתוך ${total}"
+  /// ```
+  String stepLabel(int current, int total) =>
+      """שלב ${current} מתוך ${total}""";
+
+  /// ```dart
+  /// "ברוכים הבאים ל-Pantry"
+  /// ```
+  String get welcomeNewTitle => """ברוכים הבאים ל-Pantry""";
+
+  /// ```dart
+  /// "בוא נעבור סיור קצר על איך Pantry עובד כדי שתפיק ממנו את המקסימום."
+  /// ```
+  String get welcomeNewBody =>
+      """בוא נעבור סיור קצר על איך Pantry עובד כדי שתפיק ממנו את המקסימום.""";
+
+  /// ```dart
+  /// "מה חדש"
+  /// ```
+  String get welcomeUpdateTitle => """מה חדש""";
+
+  /// ```dart
+  /// "מאז הפעם האחרונה שפתחת את Pantry נוספו כמה דברים חדשים. הנה סקירה קצרה של מה שהשתנה."
+  /// ```
+  String get welcomeUpdateBody =>
+      """מאז הפעם האחרונה שפתחת את Pantry נוספו כמה דברים חדשים. הנה סקירה קצרה של מה שהשתנה.""";
+
+  /// ```dart
+  /// "הרשימות בעיצוב חדש"
+  /// ```
+  String get checklistsRedesignTitle => """הרשימות בעיצוב חדש""";
+
+  /// ```dart
+  /// "עמוד הרשימות נבנה מחדש מהיסוד — מבנה נקי יותר, דרך מהירה להוסיף פריטים ופעולות מהירות על כל שורה. הדפים הבאים יסבירו מה חדש."
+  /// ```
+  String get checklistsRedesignBody =>
+      """עמוד הרשימות נבנה מחדש מהיסוד — מבנה נקי יותר, דרך מהירה להוסיף פריטים ופעולות מהירות על כל שורה. הדפים הבאים יסבירו מה חדש.""";
+
+  /// ```dart
+  /// "החלף רשימות מלמעלה"
+  /// ```
+  String get checklistSelectorTitle => """החלף רשימות מלמעלה""";
+
+  /// ```dart
+  /// "הקש על שם הרשימה או על הסמל למעלה כדי להחליף בין רשימות או ליצור רשימה חדשה."
+  /// ```
+  String get checklistSelectorBody =>
+      """הקש על שם הרשימה או על הסמל למעלה כדי להחליף בין רשימות או ליצור רשימה חדשה.""";
+
+  /// ```dart
+  /// "הקש כדי להחליף רשימות"
+  /// ```
+  String get checklistSelectorHint => """הקש כדי להחליף רשימות""";
+
+  /// ```dart
+  /// "מצרכים"
+  /// ```
+  String get mockListGroceries => """מצרכים""";
+
+  /// ```dart
+  /// "חומרי בניין"
+  /// ```
+  String get mockListHardware => """חומרי בניין""";
+
+  /// ```dart
+  /// "טיול סוף שבוע"
+  /// ```
+  String get mockListWeekend => """טיול סוף שבוע""";
+
+  /// ```dart
+  /// "${count} פריטים"
+  /// ```
+  String mockItemCountSummary(int count) => """${count} פריטים""";
+
+  /// ```dart
+  /// "רשימה חדשה"
+  /// ```
+  String get newListLabel => """רשימה חדשה""";
+
+  /// ```dart
+  /// "החלק פריטים כדי לנהל אותם"
+  /// ```
+  String get swipeActionsTitle => """החלק פריטים כדי לנהל אותם""";
+
+  /// ```dart
+  /// "החלק פריט ברשימה משמאל לימין כדי לחשוף פעולות מהירות לעריכה, העברה או מחיקה."
+  /// ```
+  String get swipeActionsBody =>
+      """החלק פריט ברשימה משמאל לימין כדי לחשוף פעולות מהירות לעריכה, העברה או מחיקה.""";
+
+  /// ```dart
+  /// "החלק ימינה"
+  /// ```
+  String get swipeActionsHint => """החלק ימינה""";
+
+  /// ```dart
+  /// "החלק שמאלה"
+  /// ```
+  String get swipeActionsHintBack => """החלק שמאלה""";
+
+  /// ```dart
+  /// "דרך מהירה יותר להוסיף פריטים"
+  /// ```
+  String get addItemsTitle => """דרך מהירה יותר להוסיף פריטים""";
+
+  /// ```dart
+  /// "הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו."
+  /// ```
+  String get addItemsBody =>
+      """הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו.""";
+
+  /// ```dart
+  /// "מצרכים"
+  /// ```
+  String get mockComposeListName => """מצרכים""";
+
+  /// ```dart
+  /// "הסתר את כרטיס ההתקדמות"
+  /// ```
+  String get progressHeroTitle => """הסתר את כרטיס ההתקדמות""";
+
+  /// ```dart
+  /// "לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה."
+  /// ```
+  String get progressHeroBody =>
+      """לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה.""";
+
+  /// ```dart
+  /// "אפשר להחזיר אותה דרך ${settings} ← ${interface} ← ${toggle}."
+  /// ```
+  String progressHeroBringBack(
+    String settings,
+    String interface,
+    String toggle,
+  ) => """אפשר להחזיר אותה דרך ${settings} ← ${interface} ← ${toggle}.""";
+
+  /// ```dart
+  /// "החלק כדי להסיר"
+  /// ```
+  String get progressHeroHint => """החלק כדי להסיר""";
+
+  /// ```dart
+  /// "עגבניות"
+  /// ```
+  String get mockItemName => """עגבניות""";
+
+  /// ```dart
+  /// "x2"
+  /// ```
+  String get mockItemQuantity => """x2""";
+
+  /// ```dart
+  /// "ירקות"
+  /// ```
+  String get mockItemCategory => """ירקות""";
+  DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
+}
+
+class DevOnboardingMessagesHe extends DevOnboardingMessages {
+  final OnboardingMessagesHe _parent;
+  const DevOnboardingMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "הצג היכרות"
+  /// ```
+  String get showOnboarding => """הצג היכרות""";
+
+  /// ```dart
+  /// "דמה גרסה אחרונה שנצפתה"
+  /// ```
+  String get pickLastSeenTitle => """דמה גרסה אחרונה שנצפתה""";
+
+  /// ```dart
+  /// "בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם."
+  /// ```
+  String get pickLastSeenBody =>
+      """בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם.""";
+
+  /// ```dart
+  /// "מעולם לא נצפה (משתמש חדש)"
+  /// ```
+  String get neverSeen => """מעולם לא נצפה (משתמש חדש)""";
 }
 
 class NotificationsIntroMessagesHe extends NotificationsIntroMessages {
@@ -1905,6 +2115,48 @@ Map<String, String> get messagesHeMap => {
   """nav.checklists""": """רשימות""",
   """nav.photoBoard""": """לוח תמונות""",
   """nav.notesWall""": """קיר הערות""",
+  """onboarding.next""": """הבא""",
+  """onboarding.back""": """חזור""",
+  """onboarding.skip""": """דלג""",
+  """onboarding.done""": """בואו נתחיל""",
+  """onboarding.welcomeNewTitle""": """ברוכים הבאים ל-Pantry""",
+  """onboarding.welcomeNewBody""":
+      """בוא נעבור סיור קצר על איך Pantry עובד כדי שתפיק ממנו את המקסימום.""",
+  """onboarding.welcomeUpdateTitle""": """מה חדש""",
+  """onboarding.welcomeUpdateBody""":
+      """מאז הפעם האחרונה שפתחת את Pantry נוספו כמה דברים חדשים. הנה סקירה קצרה של מה שהשתנה.""",
+  """onboarding.checklistsRedesignTitle""": """הרשימות בעיצוב חדש""",
+  """onboarding.checklistsRedesignBody""":
+      """עמוד הרשימות נבנה מחדש מהיסוד — מבנה נקי יותר, דרך מהירה להוסיף פריטים ופעולות מהירות על כל שורה. הדפים הבאים יסבירו מה חדש.""",
+  """onboarding.checklistSelectorTitle""": """החלף רשימות מלמעלה""",
+  """onboarding.checklistSelectorBody""":
+      """הקש על שם הרשימה או על הסמל למעלה כדי להחליף בין רשימות או ליצור רשימה חדשה.""",
+  """onboarding.checklistSelectorHint""": """הקש כדי להחליף רשימות""",
+  """onboarding.mockListGroceries""": """מצרכים""",
+  """onboarding.mockListHardware""": """חומרי בניין""",
+  """onboarding.mockListWeekend""": """טיול סוף שבוע""",
+  """onboarding.newListLabel""": """רשימה חדשה""",
+  """onboarding.swipeActionsTitle""": """החלק פריטים כדי לנהל אותם""",
+  """onboarding.swipeActionsBody""":
+      """החלק פריט ברשימה משמאל לימין כדי לחשוף פעולות מהירות לעריכה, העברה או מחיקה.""",
+  """onboarding.swipeActionsHint""": """החלק ימינה""",
+  """onboarding.swipeActionsHintBack""": """החלק שמאלה""",
+  """onboarding.addItemsTitle""": """דרך מהירה יותר להוסיף פריטים""",
+  """onboarding.addItemsBody""":
+      """הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו.""",
+  """onboarding.mockComposeListName""": """מצרכים""",
+  """onboarding.progressHeroTitle""": """הסתר את כרטיס ההתקדמות""",
+  """onboarding.progressHeroBody""":
+      """לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה.""",
+  """onboarding.progressHeroHint""": """החלק כדי להסיר""",
+  """onboarding.mockItemName""": """עגבניות""",
+  """onboarding.mockItemQuantity""": """x2""",
+  """onboarding.mockItemCategory""": """ירקות""",
+  """onboarding.dev.showOnboarding""": """הצג היכרות""",
+  """onboarding.dev.pickLastSeenTitle""": """דמה גרסה אחרונה שנצפתה""",
+  """onboarding.dev.pickLastSeenBody""":
+      """בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם.""",
+  """onboarding.dev.neverSeen""": """מעולם לא נצפה (משתמש חדש)""",
   """notificationsIntro.title""": """הישאר מעודכן""",
   """notificationsIntro.body""":
       """Pantry יכול להודיע לך כשבני משק הבית מוסיפים פריטים לרשימות, מעלים תמונות או משאירים הערות. ההתראות נשלפות מהשרת שלך — שום דבר לא עובר דרך Google או צדדים שלישיים.""",

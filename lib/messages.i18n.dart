@@ -66,6 +66,7 @@ class Messages {
   LoginMessages get login => LoginMessages(this);
   HomeMessages get home => HomeMessages(this);
   NavMessages get nav => NavMessages(this);
+  OnboardingMessages get onboarding => OnboardingMessages(this);
   NotificationsIntroMessages get notificationsIntro =>
       NotificationsIntroMessages(this);
   AboutMessages get about => AboutMessages(this);
@@ -254,6 +255,214 @@ class NavMessages {
   /// "Notes Wall"
   /// ```
   String get notesWall => """Notes Wall""";
+}
+
+class OnboardingMessages {
+  final Messages _parent;
+  const OnboardingMessages(this._parent);
+
+  /// ```dart
+  /// "Next"
+  /// ```
+  String get next => """Next""";
+
+  /// ```dart
+  /// "Back"
+  /// ```
+  String get back => """Back""";
+
+  /// ```dart
+  /// "Skip"
+  /// ```
+  String get skip => """Skip""";
+
+  /// ```dart
+  /// "Get started"
+  /// ```
+  String get done => """Get started""";
+
+  /// ```dart
+  /// "Step ${current} of ${total}"
+  /// ```
+  String stepLabel(int current, int total) => """Step ${current} of ${total}""";
+
+  /// ```dart
+  /// "Welcome to Pantry"
+  /// ```
+  String get welcomeNewTitle => """Welcome to Pantry""";
+
+  /// ```dart
+  /// "Let's take a quick tour of how Pantry works so you can get the most out of it."
+  /// ```
+  String get welcomeNewBody =>
+      """Let's take a quick tour of how Pantry works so you can get the most out of it.""";
+
+  /// ```dart
+  /// "What's new"
+  /// ```
+  String get welcomeUpdateTitle => """What's new""";
+
+  /// ```dart
+  /// "Pantry has picked up a few new tricks since you last opened it. Here's a quick look at what changed."
+  /// ```
+  String get welcomeUpdateBody =>
+      """Pantry has picked up a few new tricks since you last opened it. Here's a quick look at what changed.""";
+
+  /// ```dart
+  /// "Checklists got a fresh look"
+  /// ```
+  String get checklistsRedesignTitle => """Checklists got a fresh look""";
+
+  /// ```dart
+  /// "The checklist page has been rebuilt from the ground up — a cleaner layout, faster way to add items, and quick actions on every row. The next few pages walk through what's new."
+  /// ```
+  String get checklistsRedesignBody =>
+      """The checklist page has been rebuilt from the ground up — a cleaner layout, faster way to add items, and quick actions on every row. The next few pages walk through what's new.""";
+
+  /// ```dart
+  /// "Switch lists from the top"
+  /// ```
+  String get checklistSelectorTitle => """Switch lists from the top""";
+
+  /// ```dart
+  /// "Tap the list name or its icon at the top of the screen to switch between lists or create a new one."
+  /// ```
+  String get checklistSelectorBody =>
+      """Tap the list name or its icon at the top of the screen to switch between lists or create a new one.""";
+
+  /// ```dart
+  /// "Tap to switch lists"
+  /// ```
+  String get checklistSelectorHint => """Tap to switch lists""";
+
+  /// ```dart
+  /// "Groceries"
+  /// ```
+  String get mockListGroceries => """Groceries""";
+
+  /// ```dart
+  /// "Hardware store"
+  /// ```
+  String get mockListHardware => """Hardware store""";
+
+  /// ```dart
+  /// "Weekend trip"
+  /// ```
+  String get mockListWeekend => """Weekend trip""";
+
+  /// ```dart
+  /// "${count} items"
+  /// ```
+  String mockItemCountSummary(int count) => """${count} items""";
+
+  /// ```dart
+  /// "New list"
+  /// ```
+  String get newListLabel => """New list""";
+
+  /// ```dart
+  /// "Swipe items to manage them"
+  /// ```
+  String get swipeActionsTitle => """Swipe items to manage them""";
+
+  /// ```dart
+  /// "Swipe a list item from right to left to reveal quick actions for editing, moving, or deleting it."
+  /// ```
+  String get swipeActionsBody =>
+      """Swipe a list item from right to left to reveal quick actions for editing, moving, or deleting it.""";
+
+  /// ```dart
+  /// "Swipe left"
+  /// ```
+  String get swipeActionsHint => """Swipe left""";
+
+  /// ```dart
+  /// "Swipe right"
+  /// ```
+  String get swipeActionsHintBack => """Swipe right""";
+
+  /// ```dart
+  /// "A faster way to add items"
+  /// ```
+  String get addItemsTitle => """A faster way to add items""";
+
+  /// ```dart
+  /// "Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above."
+  /// ```
+  String get addItemsBody =>
+      """Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above.""";
+
+  /// ```dart
+  /// "Groceries"
+  /// ```
+  String get mockComposeListName => """Groceries""";
+
+  /// ```dart
+  /// "Hide the progress card"
+  /// ```
+  String get progressHeroTitle => """Hide the progress card""";
+
+  /// ```dart
+  /// "Don't need the progress ring at the top? Swipe it away."
+  /// ```
+  String get progressHeroBody =>
+      """Don't need the progress ring at the top? Swipe it away.""";
+
+  /// ```dart
+  /// "Bring it back later from ${settings} → ${interface} → ${toggle}."
+  /// ```
+  String progressHeroBringBack(
+    String settings,
+    String interface,
+    String toggle,
+  ) => """Bring it back later from ${settings} → ${interface} → ${toggle}.""";
+
+  /// ```dart
+  /// "Swipe to dismiss"
+  /// ```
+  String get progressHeroHint => """Swipe to dismiss""";
+
+  /// ```dart
+  /// "Tomatoes"
+  /// ```
+  String get mockItemName => """Tomatoes""";
+
+  /// ```dart
+  /// "x2"
+  /// ```
+  String get mockItemQuantity => """x2""";
+
+  /// ```dart
+  /// "Produce"
+  /// ```
+  String get mockItemCategory => """Produce""";
+  DevOnboardingMessages get dev => DevOnboardingMessages(this);
+}
+
+class DevOnboardingMessages {
+  final OnboardingMessages _parent;
+  const DevOnboardingMessages(this._parent);
+
+  /// ```dart
+  /// "Show onboarding"
+  /// ```
+  String get showOnboarding => """Show onboarding""";
+
+  /// ```dart
+  /// "Simulate last-seen version"
+  /// ```
+  String get pickLastSeenTitle => """Simulate last-seen version""";
+
+  /// ```dart
+  /// "Choose which version the device should pretend it last saw, then the onboarding will run from there."
+  /// ```
+  String get pickLastSeenBody =>
+      """Choose which version the device should pretend it last saw, then the onboarding will run from there.""";
+
+  /// ```dart
+  /// "Never seen (new user)"
+  /// ```
+  String get neverSeen => """Never seen (new user)""";
 }
 
 class NotificationsIntroMessages {
@@ -1904,6 +2113,48 @@ Please complete login in your browser.""",
   """nav.checklists""": """Checklists""",
   """nav.photoBoard""": """Photo Board""",
   """nav.notesWall""": """Notes Wall""",
+  """onboarding.next""": """Next""",
+  """onboarding.back""": """Back""",
+  """onboarding.skip""": """Skip""",
+  """onboarding.done""": """Get started""",
+  """onboarding.welcomeNewTitle""": """Welcome to Pantry""",
+  """onboarding.welcomeNewBody""":
+      """Let's take a quick tour of how Pantry works so you can get the most out of it.""",
+  """onboarding.welcomeUpdateTitle""": """What's new""",
+  """onboarding.welcomeUpdateBody""":
+      """Pantry has picked up a few new tricks since you last opened it. Here's a quick look at what changed.""",
+  """onboarding.checklistsRedesignTitle""": """Checklists got a fresh look""",
+  """onboarding.checklistsRedesignBody""":
+      """The checklist page has been rebuilt from the ground up — a cleaner layout, faster way to add items, and quick actions on every row. The next few pages walk through what's new.""",
+  """onboarding.checklistSelectorTitle""": """Switch lists from the top""",
+  """onboarding.checklistSelectorBody""":
+      """Tap the list name or its icon at the top of the screen to switch between lists or create a new one.""",
+  """onboarding.checklistSelectorHint""": """Tap to switch lists""",
+  """onboarding.mockListGroceries""": """Groceries""",
+  """onboarding.mockListHardware""": """Hardware store""",
+  """onboarding.mockListWeekend""": """Weekend trip""",
+  """onboarding.newListLabel""": """New list""",
+  """onboarding.swipeActionsTitle""": """Swipe items to manage them""",
+  """onboarding.swipeActionsBody""":
+      """Swipe a list item from right to left to reveal quick actions for editing, moving, or deleting it.""",
+  """onboarding.swipeActionsHint""": """Swipe left""",
+  """onboarding.swipeActionsHintBack""": """Swipe right""",
+  """onboarding.addItemsTitle""": """A faster way to add items""",
+  """onboarding.addItemsBody""":
+      """Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above.""",
+  """onboarding.mockComposeListName""": """Groceries""",
+  """onboarding.progressHeroTitle""": """Hide the progress card""",
+  """onboarding.progressHeroBody""":
+      """Don't need the progress ring at the top? Swipe it away.""",
+  """onboarding.progressHeroHint""": """Swipe to dismiss""",
+  """onboarding.mockItemName""": """Tomatoes""",
+  """onboarding.mockItemQuantity""": """x2""",
+  """onboarding.mockItemCategory""": """Produce""",
+  """onboarding.dev.showOnboarding""": """Show onboarding""",
+  """onboarding.dev.pickLastSeenTitle""": """Simulate last-seen version""",
+  """onboarding.dev.pickLastSeenBody""":
+      """Choose which version the device should pretend it last saw, then the onboarding will run from there.""",
+  """onboarding.dev.neverSeen""": """Never seen (new user)""",
   """notificationsIntro.title""": """Stay in the loop""",
   """notificationsIntro.body""":
       """Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""",

@@ -67,6 +67,7 @@ class MessagesEs extends Messages {
   LoginMessagesEs get login => LoginMessagesEs(this);
   HomeMessagesEs get home => HomeMessagesEs(this);
   NavMessagesEs get nav => NavMessagesEs(this);
+  OnboardingMessagesEs get onboarding => OnboardingMessagesEs(this);
   NotificationsIntroMessagesEs get notificationsIntro =>
       NotificationsIntroMessagesEs(this);
   AboutMessagesEs get about => AboutMessagesEs(this);
@@ -256,6 +257,216 @@ class NavMessagesEs extends NavMessages {
   /// "Muro de notas"
   /// ```
   String get notesWall => """Muro de notas""";
+}
+
+class OnboardingMessagesEs extends OnboardingMessages {
+  final MessagesEs _parent;
+  const OnboardingMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Siguiente"
+  /// ```
+  String get next => """Siguiente""";
+
+  /// ```dart
+  /// "Atrás"
+  /// ```
+  String get back => """Atrás""";
+
+  /// ```dart
+  /// "Omitir"
+  /// ```
+  String get skip => """Omitir""";
+
+  /// ```dart
+  /// "Empezar"
+  /// ```
+  String get done => """Empezar""";
+
+  /// ```dart
+  /// "Paso ${current} de ${total}"
+  /// ```
+  String stepLabel(int current, int total) => """Paso ${current} de ${total}""";
+
+  /// ```dart
+  /// "Bienvenido a Pantry"
+  /// ```
+  String get welcomeNewTitle => """Bienvenido a Pantry""";
+
+  /// ```dart
+  /// "Vamos a hacer un recorrido rápido por cómo funciona Pantry para que le saques el máximo provecho."
+  /// ```
+  String get welcomeNewBody =>
+      """Vamos a hacer un recorrido rápido por cómo funciona Pantry para que le saques el máximo provecho.""";
+
+  /// ```dart
+  /// "Novedades"
+  /// ```
+  String get welcomeUpdateTitle => """Novedades""";
+
+  /// ```dart
+  /// "Pantry ha aprendido algunos trucos nuevos desde la última vez que lo abriste. Aquí tienes un repaso rápido."
+  /// ```
+  String get welcomeUpdateBody =>
+      """Pantry ha aprendido algunos trucos nuevos desde la última vez que lo abriste. Aquí tienes un repaso rápido.""";
+
+  /// ```dart
+  /// "Las listas tienen un nuevo aspecto"
+  /// ```
+  String get checklistsRedesignTitle =>
+      """Las listas tienen un nuevo aspecto""";
+
+  /// ```dart
+  /// "La página de listas se ha rehecho desde cero: un diseño más limpio, una forma más rápida de añadir elementos y acciones rápidas en cada fila. Las próximas páginas te muestran las novedades."
+  /// ```
+  String get checklistsRedesignBody =>
+      """La página de listas se ha rehecho desde cero: un diseño más limpio, una forma más rápida de añadir elementos y acciones rápidas en cada fila. Las próximas páginas te muestran las novedades.""";
+
+  /// ```dart
+  /// "Cambia de lista desde arriba"
+  /// ```
+  String get checklistSelectorTitle => """Cambia de lista desde arriba""";
+
+  /// ```dart
+  /// "Toca el nombre de la lista o su icono en la parte superior para cambiar entre listas o crear una nueva."
+  /// ```
+  String get checklistSelectorBody =>
+      """Toca el nombre de la lista o su icono en la parte superior para cambiar entre listas o crear una nueva.""";
+
+  /// ```dart
+  /// "Toca para cambiar de lista"
+  /// ```
+  String get checklistSelectorHint => """Toca para cambiar de lista""";
+
+  /// ```dart
+  /// "Compras"
+  /// ```
+  String get mockListGroceries => """Compras""";
+
+  /// ```dart
+  /// "Ferretería"
+  /// ```
+  String get mockListHardware => """Ferretería""";
+
+  /// ```dart
+  /// "Viaje de fin de semana"
+  /// ```
+  String get mockListWeekend => """Viaje de fin de semana""";
+
+  /// ```dart
+  /// "${count} artículos"
+  /// ```
+  String mockItemCountSummary(int count) => """${count} artículos""";
+
+  /// ```dart
+  /// "Nueva lista"
+  /// ```
+  String get newListLabel => """Nueva lista""";
+
+  /// ```dart
+  /// "Desliza los artículos para gestionarlos"
+  /// ```
+  String get swipeActionsTitle => """Desliza los artículos para gestionarlos""";
+
+  /// ```dart
+  /// "Desliza un artículo de derecha a izquierda para ver acciones rápidas: editar, mover o eliminar."
+  /// ```
+  String get swipeActionsBody =>
+      """Desliza un artículo de derecha a izquierda para ver acciones rápidas: editar, mover o eliminar.""";
+
+  /// ```dart
+  /// "Desliza a la izquierda"
+  /// ```
+  String get swipeActionsHint => """Desliza a la izquierda""";
+
+  /// ```dart
+  /// "Desliza a la derecha"
+  /// ```
+  String get swipeActionsHintBack => """Desliza a la derecha""";
+
+  /// ```dart
+  /// "Una forma más rápida de añadir"
+  /// ```
+  String get addItemsTitle => """Una forma más rápida de añadir""";
+
+  /// ```dart
+  /// "Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba."
+  /// ```
+  String get addItemsBody =>
+      """Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba.""";
+
+  /// ```dart
+  /// "Compras"
+  /// ```
+  String get mockComposeListName => """Compras""";
+
+  /// ```dart
+  /// "Oculta la tarjeta de progreso"
+  /// ```
+  String get progressHeroTitle => """Oculta la tarjeta de progreso""";
+
+  /// ```dart
+  /// "¿No necesitas el anillo de progreso arriba? Deslízalo para descartarlo."
+  /// ```
+  String get progressHeroBody =>
+      """¿No necesitas el anillo de progreso arriba? Deslízalo para descartarlo.""";
+
+  /// ```dart
+  /// "Puedes volver a mostrarla desde ${settings} → ${interface} → ${toggle}."
+  /// ```
+  String progressHeroBringBack(
+    String settings,
+    String interface,
+    String toggle,
+  ) =>
+      """Puedes volver a mostrarla desde ${settings} → ${interface} → ${toggle}.""";
+
+  /// ```dart
+  /// "Desliza para descartar"
+  /// ```
+  String get progressHeroHint => """Desliza para descartar""";
+
+  /// ```dart
+  /// "Tomates"
+  /// ```
+  String get mockItemName => """Tomates""";
+
+  /// ```dart
+  /// "x2"
+  /// ```
+  String get mockItemQuantity => """x2""";
+
+  /// ```dart
+  /// "Verduras"
+  /// ```
+  String get mockItemCategory => """Verduras""";
+  DevOnboardingMessagesEs get dev => DevOnboardingMessagesEs(this);
+}
+
+class DevOnboardingMessagesEs extends DevOnboardingMessages {
+  final OnboardingMessagesEs _parent;
+  const DevOnboardingMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Mostrar introducción"
+  /// ```
+  String get showOnboarding => """Mostrar introducción""";
+
+  /// ```dart
+  /// "Simular última versión vista"
+  /// ```
+  String get pickLastSeenTitle => """Simular última versión vista""";
+
+  /// ```dart
+  /// "Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí."
+  /// ```
+  String get pickLastSeenBody =>
+      """Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí.""";
+
+  /// ```dart
+  /// "Nunca vista (usuario nuevo)"
+  /// ```
+  String get neverSeen => """Nunca vista (usuario nuevo)""";
 }
 
 class NotificationsIntroMessagesEs extends NotificationsIntroMessages {
@@ -1918,6 +2129,50 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """nav.checklists""": """Listas""",
   """nav.photoBoard""": """Tablero de fotos""",
   """nav.notesWall""": """Muro de notas""",
+  """onboarding.next""": """Siguiente""",
+  """onboarding.back""": """Atrás""",
+  """onboarding.skip""": """Omitir""",
+  """onboarding.done""": """Empezar""",
+  """onboarding.welcomeNewTitle""": """Bienvenido a Pantry""",
+  """onboarding.welcomeNewBody""":
+      """Vamos a hacer un recorrido rápido por cómo funciona Pantry para que le saques el máximo provecho.""",
+  """onboarding.welcomeUpdateTitle""": """Novedades""",
+  """onboarding.welcomeUpdateBody""":
+      """Pantry ha aprendido algunos trucos nuevos desde la última vez que lo abriste. Aquí tienes un repaso rápido.""",
+  """onboarding.checklistsRedesignTitle""":
+      """Las listas tienen un nuevo aspecto""",
+  """onboarding.checklistsRedesignBody""":
+      """La página de listas se ha rehecho desde cero: un diseño más limpio, una forma más rápida de añadir elementos y acciones rápidas en cada fila. Las próximas páginas te muestran las novedades.""",
+  """onboarding.checklistSelectorTitle""": """Cambia de lista desde arriba""",
+  """onboarding.checklistSelectorBody""":
+      """Toca el nombre de la lista o su icono en la parte superior para cambiar entre listas o crear una nueva.""",
+  """onboarding.checklistSelectorHint""": """Toca para cambiar de lista""",
+  """onboarding.mockListGroceries""": """Compras""",
+  """onboarding.mockListHardware""": """Ferretería""",
+  """onboarding.mockListWeekend""": """Viaje de fin de semana""",
+  """onboarding.newListLabel""": """Nueva lista""",
+  """onboarding.swipeActionsTitle""":
+      """Desliza los artículos para gestionarlos""",
+  """onboarding.swipeActionsBody""":
+      """Desliza un artículo de derecha a izquierda para ver acciones rápidas: editar, mover o eliminar.""",
+  """onboarding.swipeActionsHint""": """Desliza a la izquierda""",
+  """onboarding.swipeActionsHintBack""": """Desliza a la derecha""",
+  """onboarding.addItemsTitle""": """Una forma más rápida de añadir""",
+  """onboarding.addItemsBody""":
+      """Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba.""",
+  """onboarding.mockComposeListName""": """Compras""",
+  """onboarding.progressHeroTitle""": """Oculta la tarjeta de progreso""",
+  """onboarding.progressHeroBody""":
+      """¿No necesitas el anillo de progreso arriba? Deslízalo para descartarlo.""",
+  """onboarding.progressHeroHint""": """Desliza para descartar""",
+  """onboarding.mockItemName""": """Tomates""",
+  """onboarding.mockItemQuantity""": """x2""",
+  """onboarding.mockItemCategory""": """Verduras""",
+  """onboarding.dev.showOnboarding""": """Mostrar introducción""",
+  """onboarding.dev.pickLastSeenTitle""": """Simular última versión vista""",
+  """onboarding.dev.pickLastSeenBody""":
+      """Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí.""",
+  """onboarding.dev.neverSeen""": """Nunca vista (usuario nuevo)""",
   """notificationsIntro.title""": """Mantente al día""",
   """notificationsIntro.body""":
       """Pantry puede notificarte cuando los miembros del hogar agreguen artículos a las listas, suban fotos o dejen notas. Las notificaciones se obtienen de tu propio servidor Nextcloud — nada pasa por Google ni terceros.""",

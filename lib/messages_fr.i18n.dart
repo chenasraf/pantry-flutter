@@ -67,6 +67,7 @@ class MessagesFr extends Messages {
   LoginMessagesFr get login => LoginMessagesFr(this);
   HomeMessagesFr get home => HomeMessagesFr(this);
   NavMessagesFr get nav => NavMessagesFr(this);
+  OnboardingMessagesFr get onboarding => OnboardingMessagesFr(this);
   NotificationsIntroMessagesFr get notificationsIntro =>
       NotificationsIntroMessagesFr(this);
   AboutMessagesFr get about => AboutMessagesFr(this);
@@ -256,6 +257,217 @@ class NavMessagesFr extends NavMessages {
   /// "Mur de notes"
   /// ```
   String get notesWall => """Mur de notes""";
+}
+
+class OnboardingMessagesFr extends OnboardingMessages {
+  final MessagesFr _parent;
+  const OnboardingMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Suivant"
+  /// ```
+  String get next => """Suivant""";
+
+  /// ```dart
+  /// "Retour"
+  /// ```
+  String get back => """Retour""";
+
+  /// ```dart
+  /// "Ignorer"
+  /// ```
+  String get skip => """Ignorer""";
+
+  /// ```dart
+  /// "C'est parti"
+  /// ```
+  String get done => """C'est parti""";
+
+  /// ```dart
+  /// "Étape ${current} sur ${total}"
+  /// ```
+  String stepLabel(int current, int total) =>
+      """Étape ${current} sur ${total}""";
+
+  /// ```dart
+  /// "Bienvenue dans Pantry"
+  /// ```
+  String get welcomeNewTitle => """Bienvenue dans Pantry""";
+
+  /// ```dart
+  /// "Faisons un tour rapide du fonctionnement de Pantry pour que tu en profites au maximum."
+  /// ```
+  String get welcomeNewBody =>
+      """Faisons un tour rapide du fonctionnement de Pantry pour que tu en profites au maximum.""";
+
+  /// ```dart
+  /// "Nouveautés"
+  /// ```
+  String get welcomeUpdateTitle => """Nouveautés""";
+
+  /// ```dart
+  /// "Pantry a appris quelques nouveaux tours depuis ta dernière visite. Voici un aperçu rapide."
+  /// ```
+  String get welcomeUpdateBody =>
+      """Pantry a appris quelques nouveaux tours depuis ta dernière visite. Voici un aperçu rapide.""";
+
+  /// ```dart
+  /// "Les listes ont une nouvelle allure"
+  /// ```
+  String get checklistsRedesignTitle =>
+      """Les listes ont une nouvelle allure""";
+
+  /// ```dart
+  /// "La page des listes a été reconstruite de zéro : mise en page plus claire, ajout d'éléments plus rapide et actions rapides sur chaque ligne. Les prochaines pages te présentent les nouveautés."
+  /// ```
+  String get checklistsRedesignBody =>
+      """La page des listes a été reconstruite de zéro : mise en page plus claire, ajout d'éléments plus rapide et actions rapides sur chaque ligne. Les prochaines pages te présentent les nouveautés.""";
+
+  /// ```dart
+  /// "Changer de liste depuis le haut"
+  /// ```
+  String get checklistSelectorTitle => """Changer de liste depuis le haut""";
+
+  /// ```dart
+  /// "Touche le nom de la liste ou son icône en haut pour passer d'une liste à l'autre ou en créer une nouvelle."
+  /// ```
+  String get checklistSelectorBody =>
+      """Touche le nom de la liste ou son icône en haut pour passer d'une liste à l'autre ou en créer une nouvelle.""";
+
+  /// ```dart
+  /// "Touche pour changer de liste"
+  /// ```
+  String get checklistSelectorHint => """Touche pour changer de liste""";
+
+  /// ```dart
+  /// "Courses"
+  /// ```
+  String get mockListGroceries => """Courses""";
+
+  /// ```dart
+  /// "Bricolage"
+  /// ```
+  String get mockListHardware => """Bricolage""";
+
+  /// ```dart
+  /// "Week-end"
+  /// ```
+  String get mockListWeekend => """Week-end""";
+
+  /// ```dart
+  /// "${count} éléments"
+  /// ```
+  String mockItemCountSummary(int count) => """${count} éléments""";
+
+  /// ```dart
+  /// "Nouvelle liste"
+  /// ```
+  String get newListLabel => """Nouvelle liste""";
+
+  /// ```dart
+  /// "Balaie les éléments pour les gérer"
+  /// ```
+  String get swipeActionsTitle => """Balaie les éléments pour les gérer""";
+
+  /// ```dart
+  /// "Balaie un élément de droite à gauche pour faire apparaître des actions rapides : éditer, déplacer ou supprimer."
+  /// ```
+  String get swipeActionsBody =>
+      """Balaie un élément de droite à gauche pour faire apparaître des actions rapides : éditer, déplacer ou supprimer.""";
+
+  /// ```dart
+  /// "Balaie vers la gauche"
+  /// ```
+  String get swipeActionsHint => """Balaie vers la gauche""";
+
+  /// ```dart
+  /// "Balaie vers la droite"
+  /// ```
+  String get swipeActionsHintBack => """Balaie vers la droite""";
+
+  /// ```dart
+  /// "Une façon plus rapide d'ajouter"
+  /// ```
+  String get addItemsTitle => """Une façon plus rapide d'ajouter""";
+
+  /// ```dart
+  /// "Touche le champ en bas pour saisir un nouvel élément, puis associe-lui une catégorie, une quantité, un type ou une photo via les chips au-dessus."
+  /// ```
+  String get addItemsBody =>
+      """Touche le champ en bas pour saisir un nouvel élément, puis associe-lui une catégorie, une quantité, un type ou une photo via les chips au-dessus.""";
+
+  /// ```dart
+  /// "Courses"
+  /// ```
+  String get mockComposeListName => """Courses""";
+
+  /// ```dart
+  /// "Masquer la carte de progression"
+  /// ```
+  String get progressHeroTitle => """Masquer la carte de progression""";
+
+  /// ```dart
+  /// "Pas besoin de l'anneau de progression en haut ? Balaie-le pour le retirer."
+  /// ```
+  String get progressHeroBody =>
+      """Pas besoin de l'anneau de progression en haut ? Balaie-le pour le retirer.""";
+
+  /// ```dart
+  /// "Tu peux la réafficher plus tard depuis ${settings} → ${interface} → ${toggle}."
+  /// ```
+  String progressHeroBringBack(
+    String settings,
+    String interface,
+    String toggle,
+  ) =>
+      """Tu peux la réafficher plus tard depuis ${settings} → ${interface} → ${toggle}.""";
+
+  /// ```dart
+  /// "Balaie pour masquer"
+  /// ```
+  String get progressHeroHint => """Balaie pour masquer""";
+
+  /// ```dart
+  /// "Tomates"
+  /// ```
+  String get mockItemName => """Tomates""";
+
+  /// ```dart
+  /// "x2"
+  /// ```
+  String get mockItemQuantity => """x2""";
+
+  /// ```dart
+  /// "Légumes"
+  /// ```
+  String get mockItemCategory => """Légumes""";
+  DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
+}
+
+class DevOnboardingMessagesFr extends DevOnboardingMessages {
+  final OnboardingMessagesFr _parent;
+  const DevOnboardingMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Afficher l'intro"
+  /// ```
+  String get showOnboarding => """Afficher l'intro""";
+
+  /// ```dart
+  /// "Simuler la dernière version vue"
+  /// ```
+  String get pickLastSeenTitle => """Simuler la dernière version vue""";
+
+  /// ```dart
+  /// "Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là."
+  /// ```
+  String get pickLastSeenBody =>
+      """Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là.""";
+
+  /// ```dart
+  /// "Jamais vue (nouvel utilisateur)"
+  /// ```
+  String get neverSeen => """Jamais vue (nouvel utilisateur)""";
 }
 
 class NotificationsIntroMessagesFr extends NotificationsIntroMessages {
@@ -1923,6 +2135,50 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """nav.checklists""": """Listes""",
   """nav.photoBoard""": """Tableau photos""",
   """nav.notesWall""": """Mur de notes""",
+  """onboarding.next""": """Suivant""",
+  """onboarding.back""": """Retour""",
+  """onboarding.skip""": """Ignorer""",
+  """onboarding.done""": """C'est parti""",
+  """onboarding.welcomeNewTitle""": """Bienvenue dans Pantry""",
+  """onboarding.welcomeNewBody""":
+      """Faisons un tour rapide du fonctionnement de Pantry pour que tu en profites au maximum.""",
+  """onboarding.welcomeUpdateTitle""": """Nouveautés""",
+  """onboarding.welcomeUpdateBody""":
+      """Pantry a appris quelques nouveaux tours depuis ta dernière visite. Voici un aperçu rapide.""",
+  """onboarding.checklistsRedesignTitle""":
+      """Les listes ont une nouvelle allure""",
+  """onboarding.checklistsRedesignBody""":
+      """La page des listes a été reconstruite de zéro : mise en page plus claire, ajout d'éléments plus rapide et actions rapides sur chaque ligne. Les prochaines pages te présentent les nouveautés.""",
+  """onboarding.checklistSelectorTitle""":
+      """Changer de liste depuis le haut""",
+  """onboarding.checklistSelectorBody""":
+      """Touche le nom de la liste ou son icône en haut pour passer d'une liste à l'autre ou en créer une nouvelle.""",
+  """onboarding.checklistSelectorHint""": """Touche pour changer de liste""",
+  """onboarding.mockListGroceries""": """Courses""",
+  """onboarding.mockListHardware""": """Bricolage""",
+  """onboarding.mockListWeekend""": """Week-end""",
+  """onboarding.newListLabel""": """Nouvelle liste""",
+  """onboarding.swipeActionsTitle""": """Balaie les éléments pour les gérer""",
+  """onboarding.swipeActionsBody""":
+      """Balaie un élément de droite à gauche pour faire apparaître des actions rapides : éditer, déplacer ou supprimer.""",
+  """onboarding.swipeActionsHint""": """Balaie vers la gauche""",
+  """onboarding.swipeActionsHintBack""": """Balaie vers la droite""",
+  """onboarding.addItemsTitle""": """Une façon plus rapide d'ajouter""",
+  """onboarding.addItemsBody""":
+      """Touche le champ en bas pour saisir un nouvel élément, puis associe-lui une catégorie, une quantité, un type ou une photo via les chips au-dessus.""",
+  """onboarding.mockComposeListName""": """Courses""",
+  """onboarding.progressHeroTitle""": """Masquer la carte de progression""",
+  """onboarding.progressHeroBody""":
+      """Pas besoin de l'anneau de progression en haut ? Balaie-le pour le retirer.""",
+  """onboarding.progressHeroHint""": """Balaie pour masquer""",
+  """onboarding.mockItemName""": """Tomates""",
+  """onboarding.mockItemQuantity""": """x2""",
+  """onboarding.mockItemCategory""": """Légumes""",
+  """onboarding.dev.showOnboarding""": """Afficher l'intro""",
+  """onboarding.dev.pickLastSeenTitle""": """Simuler la dernière version vue""",
+  """onboarding.dev.pickLastSeenBody""":
+      """Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là.""",
+  """onboarding.dev.neverSeen""": """Jamais vue (nouvel utilisateur)""",
   """notificationsIntro.title""": """Restez informé""",
   """notificationsIntro.body""":
       """Pantry peut vous notifier lorsque les membres du foyer ajoutent des articles aux listes, téléchargent des photos ou laissent des notes. Les notifications sont récupérées depuis votre propre serveur Nextcloud — rien ne passe par Google ou des tiers.""",
