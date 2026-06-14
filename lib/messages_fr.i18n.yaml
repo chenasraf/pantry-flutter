@@ -236,6 +236,14 @@ checklists:
     saveFailed: "Impossible d'enregistrer l'article."
     deleteFailed: Impossible de supprimer l'article.
     deleteConfirm: Supprimer cet article ?
+    save: Enregistrer
+    descHint: Ajouter une description (facultatif)
+    categoryChange: Changer
+    categoryPick: Choisissez
+    untitledItem: Article sans titre
+    typeStaple: Article récurrent
+    typeOnce: Article unique
+    typeRecurring: Récurrent
   sort:
     newestFirst: "Plus récents"
     oldestFirst: Plus anciens

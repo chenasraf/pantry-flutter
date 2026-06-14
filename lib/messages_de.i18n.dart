@@ -1407,6 +1407,46 @@ class ItemFormChecklistsMessagesDe extends ItemFormChecklistsMessages {
   /// "Diesen Eintrag löschen?"
   /// ```
   String get deleteConfirm => """Diesen Eintrag löschen?""";
+
+  /// ```dart
+  /// "Änderungen speichern"
+  /// ```
+  String get save => """Änderungen speichern""";
+
+  /// ```dart
+  /// "Beschreibung hinzufügen (optional)"
+  /// ```
+  String get descHint => """Beschreibung hinzufügen (optional)""";
+
+  /// ```dart
+  /// "Ändern"
+  /// ```
+  String get categoryChange => """Ändern""";
+
+  /// ```dart
+  /// "Auswählen"
+  /// ```
+  String get categoryPick => """Auswählen""";
+
+  /// ```dart
+  /// "Unbenannter Eintrag"
+  /// ```
+  String get untitledItem => """Unbenannter Eintrag""";
+
+  /// ```dart
+  /// "Standardeintrag"
+  /// ```
+  String get typeStaple => """Standardeintrag""";
+
+  /// ```dart
+  /// "Einmaliger Eintrag"
+  /// ```
+  String get typeOnce => """Einmaliger Eintrag""";
+
+  /// ```dart
+  /// "Wiederkehrend"
+  /// ```
+  String get typeRecurring => """Wiederkehrend""";
 }
 
 class SortChecklistsMessagesDe extends SortChecklistsMessages {
@@ -2345,6 +2385,14 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.itemForm.deleteFailed""":
       """Eintrag konnte nicht gelöscht werden.""",
   """checklists.itemForm.deleteConfirm""": """Diesen Eintrag löschen?""",
+  """checklists.itemForm.save""": """Änderungen speichern""",
+  """checklists.itemForm.descHint""": """Beschreibung hinzufügen (optional)""",
+  """checklists.itemForm.categoryChange""": """Ändern""",
+  """checklists.itemForm.categoryPick""": """Auswählen""",
+  """checklists.itemForm.untitledItem""": """Unbenannter Eintrag""",
+  """checklists.itemForm.typeStaple""": """Standardeintrag""",
+  """checklists.itemForm.typeOnce""": """Einmaliger Eintrag""",
+  """checklists.itemForm.typeRecurring""": """Wiederkehrend""",
   """checklists.sort.newestFirst""": """Neueste zuerst""",
   """checklists.sort.oldestFirst""": """Älteste zuerst""",
   """checklists.sort.nameAZ""": """Name A–Z""",

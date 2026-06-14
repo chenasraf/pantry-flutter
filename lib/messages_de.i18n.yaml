@@ -236,6 +236,14 @@ checklists:
     saveFailed: Eintrag konnte nicht gespeichert werden.
     deleteFailed: "Eintrag konnte nicht gelöscht werden."
     deleteConfirm: "Diesen Eintrag löschen?"
+    save: Änderungen speichern
+    descHint: Beschreibung hinzufügen (optional)
+    categoryChange: Ändern
+    categoryPick: Auswählen
+    untitledItem: Unbenannter Eintrag
+    typeStaple: Standardeintrag
+    typeOnce: Einmaliger Eintrag
+    typeRecurring: Wiederkehrend
   sort:
     newestFirst: Neueste zuerst
     oldestFirst: "Älteste zuerst"
