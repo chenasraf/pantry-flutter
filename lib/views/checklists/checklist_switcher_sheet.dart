@@ -4,6 +4,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 /// Per-list color swatches the user can pick from in the create form. Values
@@ -28,13 +29,28 @@ Color? parseHexColor(String? hex) {
   return v != null ? Color(v) : null;
 }
 
-/// Show the bottom-sheet checklist switcher. Returns the user's choice:
-/// a list to switch to (the controller is already notified), or null on dismiss.
+/// Show the checklist switcher. On mobile/web it slides up as a bottom sheet;
+/// on desktop, when [anchorContext] is provided, it opens as a positioned
+/// dropdown panel directly under the anchor (typically the AppBar's title
+/// row) so the interaction reads as a desktop popup menu.
 Future<void> showChecklistSwitcher(
   BuildContext context, {
   required ChecklistsController controller,
   required Future<int> Function(int listId) itemCountForList,
+  BuildContext? anchorContext,
 }) {
+  if (isDesktop && anchorContext != null) {
+    final anchor = anchorContext.findRenderObject() as RenderBox?;
+    if (anchor != null && anchor.attached) {
+      return Navigator.of(context).push(
+        _SwitcherDropdownRoute(
+          anchor: anchor,
+          controller: controller,
+          itemCountForList: itemCountForList,
+        ),
+      );
+    }
+  }
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -44,11 +60,128 @@ Future<void> showChecklistSwitcher(
   );
 }
 
+/// Custom popup route that positions the switcher panel beneath the AppBar
+/// title row. Mirrors the bottom-sheet panel design but drops the grabber
+/// bar and rounds all four corners so it reads as a dropdown menu.
+class _SwitcherDropdownRoute extends PopupRoute<void> {
+  final RenderBox anchor;
+  final ChecklistsController checklistsController;
+  final Future<int> Function(int listId) itemCountForList;
+
+  _SwitcherDropdownRoute({
+    required this.anchor,
+    required ChecklistsController controller,
+    required this.itemCountForList,
+  }) : checklistsController = controller;
+
+  @override
+  Color? get barrierColor => Colors.black.withValues(alpha: 0.18);
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  String? get barrierLabel => 'dismiss';
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 160);
+
+  @override
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> a,
+    Animation<double> b,
+  ) {
+    final overlay =
+        Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+    if (!anchor.attached) return const SizedBox.shrink();
+    final anchorTopLeft = anchor.localToGlobal(Offset.zero, ancestor: overlay);
+    final anchorSize = anchor.size;
+    return _DropdownPositioner(
+      anchorTopLeft: anchorTopLeft,
+      anchorSize: anchorSize,
+      child: _SheetHost(
+        controller: checklistsController,
+        itemCountForList: itemCountForList,
+        desktop: true,
+      ),
+    );
+  }
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondary,
+    Widget child,
+  ) {
+    // Soft fade + tiny downward slide so the panel reads as "dropping" from
+    // under the title.
+    final slide = Tween<Offset>(
+      begin: const Offset(0, -0.02),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+    return FadeTransition(
+      opacity: animation,
+      child: SlideTransition(position: slide, child: child),
+    );
+  }
+}
+
+/// Pins the dropdown panel to a fixed width directly below the anchor, with
+/// the start edge aligned to the anchor's start. Clamps to the screen so the
+/// panel never falls off the right edge.
+class _DropdownPositioner extends StatelessWidget {
+  final Offset anchorTopLeft;
+  final Size anchorSize;
+  final Widget child;
+
+  static const double _panelWidth = 360;
+  static const double _gap = 8;
+  static const double _screenPad = 12;
+
+  const _DropdownPositioner({
+    required this.anchorTopLeft,
+    required this.anchorSize,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final screen = MediaQuery.of(context).size;
+    final top = anchorTopLeft.dy + anchorSize.height + _gap;
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    // Anchor by the directional start edge so the dropdown's leading edge
+    // lines up with the title's leading edge in both LTR and RTL.
+    final desiredStart = isRtl
+        ? anchorTopLeft.dx + anchorSize.width - _panelWidth
+        : anchorTopLeft.dx;
+    final left = desiredStart.clamp(
+      _screenPad,
+      screen.width - _panelWidth - _screenPad,
+    );
+    return Stack(
+      children: [
+        Positioned(left: left, top: top, width: _panelWidth, child: child),
+      ],
+    );
+  }
+}
+
 class _SheetHost extends StatefulWidget {
   final ChecklistsController controller;
   final Future<int> Function(int listId) itemCountForList;
 
-  const _SheetHost({required this.controller, required this.itemCountForList});
+  /// When true, render as a desktop dropdown panel: no grabber bar, all
+  /// corners rounded, drop shadow instead of a top border. Mobile bottom
+  /// sheets keep the grabber + top-only rounding.
+  final bool desktop;
+
+  const _SheetHost({
+    required this.controller,
+    required this.itemCountForList,
+    this.desktop = false,
+  });
 
   @override
   State<_SheetHost> createState() => _SheetHostState();
@@ -62,21 +195,34 @@ class _SheetHostState extends State<_SheetHost> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return SafeArea(
-      top: false,
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeOutCubic,
-        child: Container(
-          decoration: BoxDecoration(
-            color: cs.surface,
-            border: Border(top: BorderSide(color: cs.outlineVariant)),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 22),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+    final desktop = widget.desktop;
+    final panel = Material(
+      color: cs.surface,
+      borderRadius: desktop
+          ? BorderRadius.circular(16)
+          : const BorderRadius.vertical(top: Radius.circular(24)),
+      clipBehavior: Clip.antiAlias,
+      elevation: desktop ? 8 : 0,
+      shadowColor: Colors.black.withValues(alpha: 0.25),
+      child: Container(
+        decoration: BoxDecoration(
+          border: desktop
+              ? Border.all(color: cs.outlineVariant)
+              : Border(top: BorderSide(color: cs.outlineVariant)),
+          borderRadius: desktop
+              ? BorderRadius.circular(16)
+              : const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          desktop ? 16 : 10,
+          16,
+          desktop ? 16 : 22,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!desktop)
               Container(
                 width: 38,
                 height: 5,
@@ -86,23 +232,36 @@ class _SheetHostState extends State<_SheetHost> {
                   borderRadius: BorderRadius.circular(3),
                 ),
               ),
-              if (_stage == _Stage.list)
-                _ListStage(
-                  controller: widget.controller,
-                  itemCountForList: widget.itemCountForList,
-                  onCreateNew: () => setState(() => _stage = _Stage.create),
-                )
-              else
-                _CreateStage(
-                  controller: widget.controller,
-                  onBack: () => setState(() => _stage = _Stage.list),
-                  onCreated: () => Navigator.pop(context),
-                ),
-            ],
-          ),
+            if (_stage == _Stage.list)
+              _ListStage(
+                controller: widget.controller,
+                itemCountForList: widget.itemCountForList,
+                onCreateNew: () => setState(() => _stage = _Stage.create),
+              )
+            else
+              _CreateStage(
+                controller: widget.controller,
+                onBack: () => setState(() => _stage = _Stage.list),
+                onCreated: () => Navigator.pop(context),
+              ),
+          ],
         ),
       ),
     );
+    return desktop
+        ? AnimatedSize(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+            child: panel,
+          )
+        : SafeArea(
+            top: false,
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              child: panel,
+            ),
+          );
   }
 }
 

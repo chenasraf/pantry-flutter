@@ -60,6 +60,8 @@ onboarding:
   swipeActionsBody: "Balaie un élément de droite à gauche pour faire apparaître des actions rapides : éditer, déplacer ou supprimer."
   swipeActionsHint: "Balaie vers la gauche"
   swipeActionsHintBack: "Balaie vers la droite"
+  quickActionsTitle: "Actions rapides sur chaque élément"
+  quickActionsBody: "Chaque élément affiche des boutons d'action à son extrémité — clique dessus pour modifier, déplacer ou supprimer l'élément sans l'ouvrir."
   addItemsTitle: "Une façon plus rapide d'ajouter"
   addItemsBody: "Touche le champ en bas pour saisir un nouvel élément, puis associe-lui une catégorie, une quantité, un type ou une photo via les chips au-dessus."
   mockComposeListName: "Courses"
@@ -67,6 +69,16 @@ onboarding:
   progressHeroBody: "Pas besoin de l'anneau de progression en haut ? Balaie-le pour le retirer."
   progressHeroBringBack(String settings, String interface, String toggle): "Tu peux la réafficher plus tard depuis ${settings} → ${interface} → ${toggle}."
   progressHeroHint: "Balaie pour masquer"
+  progressHeroDismissTitle: "Masque la carte de progression"
+  progressHeroDismissBody: "Tu n'as pas besoin de l'anneau de progression en haut ? Clique sur le X de la carte pour la masquer."
+  pinnedListsTitle: "Épingle des listes à ton écran d'accueil"
+  pinnedListsBody: "Ajoute le widget Pantry à ton écran d'accueil pour voir d'un coup d'œil combien d'articles restent sur tes listes préférées — sans ouvrir l'app."
+  pinnedListsHow(String menu, String action): "Ouvre une liste, touche ${menu} en haut à droite, puis choisis ${action}. Les listes épinglées apparaissent dans le widget ; désépingle-les pour les masquer."
+  pinnedListsMenuLabel: "le menu"
+  pinnedListsActionLabel: "Épingler la liste"
+  pinnedListsWidgetTitle: "Pantry"
+  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 restant', many: '${count} restants')}"
+  pinnedListsWidgetEmpty: "Tout est fait"
   mockItemName: "Tomates"
   mockItemQuantity: "x2"
   mockItemCategory: "Légumes"
@@ -193,7 +205,7 @@ checklists:
   emptyTrashConfirmBody: "Tous les articles de la corbeille seront supprimés définitivement. Cette action est irréversible."
   emptyTrashFailed: "Impossible de vider la corbeille."
   restoreItem: Restaurer
-  permanentlyDeleteItem: "Supprimer définitivement"
+  permanentlyDeleteItem: Supprimer
   permanentlyDeleteConfirm: "Supprimer définitivement cet article ?"
   permanentlyDeleteConfirmBody: "Cette action est irréversible."
   restoreFailed: "Impossible de restaurer l'article."
@@ -268,6 +280,8 @@ checklists:
   itemsLeft(int count): "${_plural(count, one: '1 article restant', many: '$count articles restants')}"
   allDone: Tout est fait 🎉
   listProgress(int done, int total): "$done sur $total faits"
+  hideProgressHero: "Masquer la carte de progression"
+  sortTooltip: "Trier"
   doneCount(int count): "Faits · $count"
   addToList(String name): "Ajouter à $name…"
   addFirstItem: "Ajoutez votre premier article…"
@@ -286,7 +300,7 @@ checklists:
   swipeView: Voir
   swipeEdit: Modifier
   swipeMove: Déplacer
-  swipeDelete: Supprimer
+  swipeDelete: Retirer
   viewList: Vue liste
   viewCards: Vue cartes
   listColor: Couleur

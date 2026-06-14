@@ -60,6 +60,8 @@ onboarding:
   swipeActionsBody: "החלק פריט ברשימה משמאל לימין כדי לחשוף פעולות מהירות לעריכה, העברה או מחיקה."
   swipeActionsHint: "החלק ימינה"
   swipeActionsHintBack: "החלק שמאלה"
+  quickActionsTitle: "פעולות מהירות לכל פריט"
+  quickActionsBody: "לכל פריט יש כפתורי פעולה בקצה — לחץ עליהם כדי לערוך, להעביר או למחוק את הפריט בלי לפתוח אותו."
   addItemsTitle: "דרך מהירה יותר להוסיף פריטים"
   addItemsBody: "הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו."
   mockComposeListName: "מצרכים"
@@ -67,6 +69,16 @@ onboarding:
   progressHeroBody: "לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה."
   progressHeroBringBack(String settings, String interface, String toggle): "אפשר להחזיר אותה דרך ${settings} ← ${interface} ← ${toggle}."
   progressHeroHint: "החלק כדי להסיר"
+  progressHeroDismissTitle: "הסתר את כרטיס ההתקדמות"
+  progressHeroDismissBody: "לא צריך את טבעת ההתקדמות למעלה? לחץ על ה-X בכרטיס כדי להסתיר אותו."
+  pinnedListsTitle: "הצמד רשימות למסך הבית"
+  pinnedListsBody: "הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו ברשימות המועדפות עליך — בלי לפתוח את האפליקציה."
+  pinnedListsHow(String menu, String action): "פתח רשימה, הקש על ${menu} בפינה העליונה, ובחר ${action}. רשימות מוצמדות מופיעות בווידג'ט; בטל הצמדה כדי להסתיר אותן."
+  pinnedListsMenuLabel: "התפריט"
+  pinnedListsActionLabel: "הצמד רשימה"
+  pinnedListsWidgetTitle: "Pantry"
+  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: 'פריט אחד נותר', many: '${count} נותרו')}"
+  pinnedListsWidgetEmpty: "הכל בוצע"
   mockItemName: "עגבניות"
   mockItemQuantity: "x2"
   mockItemCategory: "ירקות"
@@ -193,7 +205,7 @@ checklists:
   emptyTrashConfirmBody: כל הפריטים באשפה יימחקו לצמיתות. לא ניתן לבטל פעולה זו.
   emptyTrashFailed: ריקון האשפה נכשל.
   restoreItem: שחזר
-  permanentlyDeleteItem: מחק לצמיתות
+  permanentlyDeleteItem: מחק
   permanentlyDeleteConfirm: למחוק את הפריט לצמיתות?
   permanentlyDeleteConfirmBody: לא ניתן לבטל פעולה זו.
   restoreFailed: שחזור הפריט נכשל.
@@ -268,6 +280,8 @@ checklists:
   itemsLeft(int count): "${_plural(count, one: 'פריט אחד נותר', many: '$count פריטים נותרו')}"
   allDone: הכל בוצע 🎉
   listProgress(int done, int total): "$done מתוך $total בוצעו"
+  hideProgressHero: "הסתר כרטיס התקדמות"
+  sortTooltip: "מיון"
   doneCount(int count): "בוצעו · $count"
   addToList(String name): "הוסף אל $name…"
   addFirstItem: הוסף את הפריט הראשון…
@@ -286,7 +300,7 @@ checklists:
   swipeView: צפייה
   swipeEdit: עריכה
   swipeMove: העברה
-  swipeDelete: מחיקה
+  swipeDelete: הסר
   viewList: תצוגת רשימה
   viewCards: תצוגת כרטיסים
   listColor: צבע

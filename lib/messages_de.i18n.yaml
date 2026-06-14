@@ -60,6 +60,8 @@ onboarding:
   swipeActionsBody: "Wische einen Listeneintrag von rechts nach links, um schnelle Aktionen zum Bearbeiten, Verschieben oder Löschen einzublenden."
   swipeActionsHint: "Nach links wischen"
   swipeActionsHintBack: "Nach rechts wischen"
+  quickActionsTitle: "Schnellaktionen für jeden Eintrag"
+  quickActionsBody: "Jeder Eintrag zeigt am Ende Aktions-Buttons – klicke darauf, um den Eintrag zu bearbeiten, zu verschieben oder zu löschen, ohne ihn zu öffnen."
   addItemsTitle: "Einträge schneller hinzufügen"
   addItemsBody: "Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto."
   mockComposeListName: "Lebensmittel"
@@ -67,6 +69,16 @@ onboarding:
   progressHeroBody: "Brauchst du den Fortschrittsring oben nicht? Wisch ihn einfach weg."
   progressHeroBringBack(String settings, String interface, String toggle): "Du holst ihn später unter ${settings} → ${interface} → ${toggle} zurück."
   progressHeroHint: "Zum Ausblenden wischen"
+  progressHeroDismissTitle: "Fortschrittskarte ausblenden"
+  progressHeroDismissBody: "Brauchst du den Fortschrittsring oben nicht? Klicke auf das X auf der Karte, um sie auszublenden."
+  pinnedListsTitle: "Listen auf dem Startbildschirm anheften"
+  pinnedListsBody: "Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf deinen Lieblingslisten noch offen sind — ohne die App zu öffnen."
+  pinnedListsHow(String menu, String action): "Öffne eine Liste, tippe oben rechts auf ${menu} und wähle ${action}. Angeheftete Listen erscheinen im Widget; löse die Anheftung, um sie auszublenden."
+  pinnedListsMenuLabel: "das Menü"
+  pinnedListsActionLabel: "Liste anheften"
+  pinnedListsWidgetTitle: "Pantry"
+  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 offen', many: '${count} offen')}"
+  pinnedListsWidgetEmpty: "Alles erledigt"
   mockItemName: "Tomaten"
   mockItemQuantity: "x2"
   mockItemCategory: "Gemüse"
@@ -193,7 +205,7 @@ checklists:
   emptyTrashConfirmBody: "Alle Einträge im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
   emptyTrashFailed: Papierkorb konnte nicht geleert werden.
   restoreItem: Wiederherstellen
-  permanentlyDeleteItem: Endgültig löschen
+  permanentlyDeleteItem: Löschen
   permanentlyDeleteConfirm: Diesen Eintrag endgültig löschen?
   permanentlyDeleteConfirmBody: "Dies kann nicht rückgängig gemacht werden."
   restoreFailed: Eintrag konnte nicht wiederhergestellt werden.
@@ -268,6 +280,8 @@ checklists:
   itemsLeft(int count): "${_plural(count, one: '1 Eintrag übrig', many: '$count Einträge übrig')}"
   allDone: Alles erledigt 🎉
   listProgress(int done, int total): "$done von $total erledigt"
+  hideProgressHero: "Fortschrittskarte ausblenden"
+  sortTooltip: "Sortieren"
   doneCount(int count): "Erledigt · $count"
   addToList(String name): "Zu $name hinzufügen…"
   addFirstItem: "Füge deinen ersten Eintrag hinzu…"
@@ -286,7 +300,7 @@ checklists:
   swipeView: Anzeigen
   swipeEdit: Bearbeiten
   swipeMove: Verschieben
-  swipeDelete: Löschen
+  swipeDelete: Entfernen
   viewList: Listenansicht
   viewCards: Kartenansicht
   listColor: Farbe

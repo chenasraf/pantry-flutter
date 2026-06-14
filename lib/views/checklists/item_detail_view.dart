@@ -9,7 +9,10 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/date_format.dart';
+import 'package:pantry/utils/item_modal_route.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/image_preview.dart';
@@ -53,13 +56,15 @@ class ItemDetailView extends StatelessWidget {
                           houseId: houseId,
                           category: category,
                           onBack: () => Navigator.of(context).maybePop(),
-                          onMore: () => _showOverflow(context),
+                          onMore: (ctx) =>
+                              _showOverflow(context, anchorContext: ctx),
                         )
                       : _FallbackHeader(
                           item: item,
                           category: category,
                           onBack: () => Navigator.of(context).maybePop(),
-                          onMore: () => _showOverflow(context),
+                          onMore: (ctx) =>
+                              _showOverflow(context, anchorContext: ctx),
                         ),
                 ),
                 SliverPadding(
@@ -85,31 +90,128 @@ class ItemDetailView extends StatelessWidget {
 
   void _openEdit(BuildContext context) {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => ItemFormView(controller: controller, item: item),
-      ),
+      itemModalRoute(ItemFormView(controller: controller, item: item)),
     );
   }
 
-  Future<void> _showOverflow(BuildContext context) async {
-    final selected = await showModalBottomSheet<String>(
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.delete_outline),
-              title: Text(m.checklists.removeItem),
-              onTap: () => Navigator.pop(ctx, 'delete'),
-            ),
-          ],
+  Future<void> _showOverflow(
+    BuildContext context, {
+    BuildContext? anchorContext,
+  }) async {
+    final canMove = controller.lists
+        .where((l) => l.id != controller.currentList?.id)
+        .isNotEmpty;
+    final actions = <_OverflowAction>[
+      if (canMove)
+        _OverflowAction(
+          value: 'move',
+          icon: Icons.drive_file_move_outlined,
+          label: m.checklists.moveItem,
         ),
+      _OverflowAction(
+        value: 'delete',
+        icon: Icons.delete_outline,
+        label: m.checklists.removeItem,
+      ),
+    ];
+    String? selected;
+    if (isDesktop && anchorContext != null) {
+      // Desktop: anchor a regular PopupMenu under the more button. Reads as
+      // a native menu instead of an out-of-place bottom sheet.
+      final box = anchorContext.findRenderObject() as RenderBox?;
+      final overlay =
+          Navigator.of(context).overlay?.context.findRenderObject()
+              as RenderBox?;
+      if (box == null || overlay == null || !box.attached) return;
+      final btnTopLeft = box.localToGlobal(Offset.zero, ancestor: overlay);
+      final btnSize = box.size;
+      final position = RelativeRect.fromLTRB(
+        btnTopLeft.dx,
+        btnTopLeft.dy + btnSize.height,
+        overlay.size.width - (btnTopLeft.dx + btnSize.width),
+        0,
+      );
+      selected = await showMenu<String>(
+        context: context,
+        position: position,
+        items: [
+          for (final a in actions)
+            PopupMenuItem<String>(
+              value: a.value,
+              child: Row(
+                children: [
+                  Icon(a.icon, size: 18),
+                  const SizedBox(width: 12),
+                  Text(a.label),
+                ],
+              ),
+            ),
+        ],
+      );
+    } else {
+      selected = await showModalBottomSheet<String>(
+        context: context,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+        builder: (ctx) => SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final a in actions)
+                ListTile(
+                  leading: Icon(a.icon),
+                  title: Text(a.label),
+                  onTap: () => Navigator.pop(ctx, a.value),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
+    if (!context.mounted) return;
+    switch (selected) {
+      case 'move':
+        await _onMove(context);
+      case 'delete':
+        await _confirmDelete(context);
+    }
+  }
+
+  Future<void> _onMove(BuildContext context) async {
+    final others = controller.lists
+        .where((l) => l.id != controller.currentList?.id)
+        .toList();
+    if (others.isEmpty) return;
+    final targetId = await showDialog<int>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(m.checklists.moveItem),
+        children: [
+          for (final list in others)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, list.id),
+              child: Row(
+                children: [
+                  Icon(checklistIcon(list.icon), size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(list.name)),
+                ],
+              ),
+            ),
+        ],
       ),
     );
-    if (selected == 'delete' && context.mounted) {
-      await _confirmDelete(context);
+    if (targetId == null || !context.mounted) return;
+    try {
+      await controller.moveItem(item, targetId);
+      // The item is no longer on the current list; close the detail view so
+      // the user lands back on the checklist they came from.
+      if (context.mounted) Navigator.of(context).pop(true);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.moveFailed)));
+      }
     }
   }
 
@@ -157,6 +259,18 @@ Color? _parseColor(String hex) {
   return value != null ? Color(value) : null;
 }
 
+class _OverflowAction {
+  final String value;
+  final IconData icon;
+  final String label;
+
+  const _OverflowAction({
+    required this.value,
+    required this.icon,
+    required this.label,
+  });
+}
+
 /// Header used when the item has a photo. The image fills a 300px slab; a
 /// bottom-up scrim keeps the title legible while the photo bleeds to the
 /// status bar. Back + overflow render as translucent blurred circles.
@@ -165,7 +279,10 @@ class _PhotoHeader extends StatelessWidget {
   final int houseId;
   final models.Category? category;
   final VoidCallback onBack;
-  final VoidCallback onMore;
+
+  /// Receives the BuildContext of the more button so callers can anchor a
+  /// popup to it (desktop dropdown menu).
+  final ValueChanged<BuildContext> onMore;
 
   const _PhotoHeader({
     required this.item,
@@ -243,14 +360,16 @@ class _PhotoHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _SquareIconButton(
-                      icon: Icons.arrow_back,
+                      icon: isDesktop ? Icons.close : Icons.arrow_back,
                       onTap: onBack,
                       onPhoto: true,
                     ),
-                    _SquareIconButton(
-                      icon: Icons.more_vert,
-                      onTap: onMore,
-                      onPhoto: true,
+                    Builder(
+                      builder: (ctx) => _SquareIconButton(
+                        icon: Icons.more_vert,
+                        onTap: () => onMore(ctx),
+                        onPhoto: true,
+                      ),
                     ),
                   ],
                 ),
@@ -279,7 +398,7 @@ class _FallbackHeader extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
   final VoidCallback onBack;
-  final VoidCallback onMore;
+  final ValueChanged<BuildContext> onMore;
 
   const _FallbackHeader({
     required this.item,
@@ -328,8 +447,16 @@ class _FallbackHeader extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _SquareIconButton(icon: Icons.arrow_back, onTap: onBack),
-                    _SquareIconButton(icon: Icons.more_vert, onTap: onMore),
+                    _SquareIconButton(
+                      icon: isDesktop ? Icons.close : Icons.arrow_back,
+                      onTap: onBack,
+                    ),
+                    Builder(
+                      builder: (ctx) => _SquareIconButton(
+                        icon: Icons.more_vert,
+                        onTap: () => onMore(ctx),
+                      ),
+                    ),
                   ],
                 ),
               ),

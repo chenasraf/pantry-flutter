@@ -60,6 +60,8 @@ onboarding:
   swipeActionsBody: "Swipe a list item from right to left to reveal quick actions for editing, moving, or deleting it."
   swipeActionsHint: "Swipe left"
   swipeActionsHintBack: "Swipe right"
+  quickActionsTitle: "Quick actions on every item"
+  quickActionsBody: "Each item shows action buttons at its trailing edge — click one to edit, move, or delete the item without opening it."
   addItemsTitle: "A faster way to add items"
   addItemsBody: "Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above."
   mockComposeListName: "Groceries"
@@ -67,6 +69,16 @@ onboarding:
   progressHeroBody: "Don't need the progress ring at the top? Swipe it away."
   progressHeroBringBack(String settings, String interface, String toggle): "Bring it back later from ${settings} → ${interface} → ${toggle}."
   progressHeroHint: "Swipe to dismiss"
+  progressHeroDismissTitle: "Hide the progress card"
+  progressHeroDismissBody: "Don't need the progress ring at the top? Click the X on the card to hide it."
+  pinnedListsTitle: "Pin lists to your home screen"
+  pinnedListsBody: "Add the Pantry widget to your home screen to see how many items are left on your favorite lists at a glance — no need to open the app."
+  pinnedListsHow(String menu, String action): "Open a list, tap ${menu} in the top-right, then choose ${action}. Pinned lists show up on the widget; unpin to hide them."
+  pinnedListsMenuLabel: "the kebab menu"
+  pinnedListsActionLabel: "Pin list"
+  pinnedListsWidgetTitle: "Pantry"
+  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 left', many: '${count} left')}"
+  pinnedListsWidgetEmpty: "All done"
   mockItemName: "Tomatoes"
   mockItemQuantity: "x2"
   mockItemCategory: "Produce"
@@ -193,7 +205,7 @@ checklists:
   emptyTrashConfirmBody: All items in the trash will be permanently deleted. This cannot be undone.
   emptyTrashFailed: Failed to empty trash.
   restoreItem: Restore
-  permanentlyDeleteItem: Delete permanently
+  permanentlyDeleteItem: Delete
   permanentlyDeleteConfirm: Permanently delete this item?
   permanentlyDeleteConfirmBody: This cannot be undone.
   restoreFailed: Failed to restore item.
@@ -268,6 +280,8 @@ checklists:
   itemsLeft(int count): "${_plural(count, one: '1 item left', many: '$count items left')}"
   allDone: All done 🎉
   listProgress(int done, int total): "$done of $total done"
+  hideProgressHero: "Hide progress card"
+  sortTooltip: "Sort"
   doneCount(int count): "Done · $count"
   addToList(String name): "Add to $name…"
   addFirstItem: Add your first item…
@@ -286,7 +300,7 @@ checklists:
   swipeView: View
   swipeEdit: Edit
   swipeMove: Move
-  swipeDelete: Delete
+  swipeDelete: Remove
   viewList: List view
   viewCards: Cards view
   listColor: Color

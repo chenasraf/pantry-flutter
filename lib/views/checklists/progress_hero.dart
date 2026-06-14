@@ -5,11 +5,22 @@ import 'package:pantry/i18n.dart';
 
 /// A card with a circular progress ring and "{N} items left / {done} of
 /// {total} done" labels. Animates the ring on state changes.
+///
+/// When [onDismiss] is non-null, a small X button is rendered at the trailing
+/// top corner so the card can be dismissed without a swipe gesture. The
+/// caller decides when to provide it (typically on desktop, where horizontal
+/// swipes aren't reliably available).
 class ProgressHero extends StatelessWidget {
   final int total;
   final int done;
+  final VoidCallback? onDismiss;
 
-  const ProgressHero({super.key, required this.total, required this.done});
+  const ProgressHero({
+    super.key,
+    required this.total,
+    required this.done,
+    this.onDismiss,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,39 +43,81 @@ class ProgressHero extends StatelessWidget {
         border: Border.all(color: cs.primary.withValues(alpha: 0.18)),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
+      child: Stack(
         children: [
-          _Ring(percent: pct, color: cs.primary),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  left == 0
-                      ? m.checklists.allDone
-                      : m.checklists.itemsLeft(left),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: cs.onSurface,
+          Row(
+            children: [
+              _Ring(percent: pct, color: cs.primary),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Padding(
+                  // Keep the labels clear of the X button so a long
+                  // "Items left" string doesn't underflow it.
+                  padding: EdgeInsetsDirectional.only(
+                    end: onDismiss != null ? 24 : 0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        left == 0
+                            ? m.checklists.allDone
+                            : m.checklists.itemsLeft(left),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: cs.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        m.checklists.listProgress(done, total),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: cs.onSurfaceVariant,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  m.checklists.listProgress(done, total),
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: cs.onSurfaceVariant,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
+          if (onDismiss != null)
+            PositionedDirectional(
+              top: -6,
+              end: -6,
+              child: _DismissButton(
+                onPressed: onDismiss!,
+                tooltip: m.checklists.hideProgressHero,
+              ),
+            ),
         ],
       ),
+    );
+  }
+}
+
+class _DismissButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String tooltip;
+
+  const _DismissButton({required this.onPressed, required this.tooltip});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return IconButton(
+      onPressed: onPressed,
+      tooltip: tooltip,
+      iconSize: 16,
+      visualDensity: VisualDensity.compact,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+      style: IconButton.styleFrom(foregroundColor: cs.onSurfaceVariant),
+      icon: const Icon(Icons.close),
     );
   }
 }

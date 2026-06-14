@@ -382,6 +382,17 @@ class OnboardingMessages {
   String get swipeActionsHintBack => """Swipe right""";
 
   /// ```dart
+  /// "Quick actions on every item"
+  /// ```
+  String get quickActionsTitle => """Quick actions on every item""";
+
+  /// ```dart
+  /// "Each item shows action buttons at its trailing edge — click one to edit, move, or delete the item without opening it."
+  /// ```
+  String get quickActionsBody =>
+      """Each item shows action buttons at its trailing edge — click one to edit, move, or delete the item without opening it.""";
+
+  /// ```dart
   /// "A faster way to add items"
   /// ```
   String get addItemsTitle => """A faster way to add items""";
@@ -421,6 +432,60 @@ class OnboardingMessages {
   /// "Swipe to dismiss"
   /// ```
   String get progressHeroHint => """Swipe to dismiss""";
+
+  /// ```dart
+  /// "Hide the progress card"
+  /// ```
+  String get progressHeroDismissTitle => """Hide the progress card""";
+
+  /// ```dart
+  /// "Don't need the progress ring at the top? Click the X on the card to hide it."
+  /// ```
+  String get progressHeroDismissBody =>
+      """Don't need the progress ring at the top? Click the X on the card to hide it.""";
+
+  /// ```dart
+  /// "Pin lists to your home screen"
+  /// ```
+  String get pinnedListsTitle => """Pin lists to your home screen""";
+
+  /// ```dart
+  /// "Add the Pantry widget to your home screen to see how many items are left on your favorite lists at a glance — no need to open the app."
+  /// ```
+  String get pinnedListsBody =>
+      """Add the Pantry widget to your home screen to see how many items are left on your favorite lists at a glance — no need to open the app.""";
+
+  /// ```dart
+  /// "Open a list, tap ${menu} in the top-right, then choose ${action}. Pinned lists show up on the widget; unpin to hide them."
+  /// ```
+  String pinnedListsHow(String menu, String action) =>
+      """Open a list, tap ${menu} in the top-right, then choose ${action}. Pinned lists show up on the widget; unpin to hide them.""";
+
+  /// ```dart
+  /// "the kebab menu"
+  /// ```
+  String get pinnedListsMenuLabel => """the kebab menu""";
+
+  /// ```dart
+  /// "Pin list"
+  /// ```
+  String get pinnedListsActionLabel => """Pin list""";
+
+  /// ```dart
+  /// "Pantry"
+  /// ```
+  String get pinnedListsWidgetTitle => """Pantry""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 left', many: '${count} left')}"
+  /// ```
+  String pinnedListsWidgetItemsLeft(int count) =>
+      """${_plural(count, one: '1 left', many: '${count} left')}""";
+
+  /// ```dart
+  /// "All done"
+  /// ```
+  String get pinnedListsWidgetEmpty => """All done""";
 
   /// ```dart
   /// "Tomatoes"
@@ -1040,9 +1105,9 @@ class ChecklistsMessages {
   String get restoreItem => """Restore""";
 
   /// ```dart
-  /// "Delete permanently"
+  /// "Delete"
   /// ```
-  String get permanentlyDeleteItem => """Delete permanently""";
+  String get permanentlyDeleteItem => """Delete""";
 
   /// ```dart
   /// "Permanently delete this item?"
@@ -1112,6 +1177,16 @@ class ChecklistsMessages {
   /// "$done of $total done"
   /// ```
   String listProgress(int done, int total) => """$done of $total done""";
+
+  /// ```dart
+  /// "Hide progress card"
+  /// ```
+  String get hideProgressHero => """Hide progress card""";
+
+  /// ```dart
+  /// "Sort"
+  /// ```
+  String get sortTooltip => """Sort""";
 
   /// ```dart
   /// "Done · $count"
@@ -1208,9 +1283,9 @@ class ChecklistsMessages {
   String get swipeMove => """Move""";
 
   /// ```dart
-  /// "Delete"
+  /// "Remove"
   /// ```
-  String get swipeDelete => """Delete""";
+  String get swipeDelete => """Remove""";
 
   /// ```dart
   /// "List view"
@@ -2252,6 +2327,9 @@ Please complete login in your browser.""",
       """Swipe a list item from right to left to reveal quick actions for editing, moving, or deleting it.""",
   """onboarding.swipeActionsHint""": """Swipe left""",
   """onboarding.swipeActionsHintBack""": """Swipe right""",
+  """onboarding.quickActionsTitle""": """Quick actions on every item""",
+  """onboarding.quickActionsBody""":
+      """Each item shows action buttons at its trailing edge — click one to edit, move, or delete the item without opening it.""",
   """onboarding.addItemsTitle""": """A faster way to add items""",
   """onboarding.addItemsBody""":
       """Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above.""",
@@ -2260,6 +2338,16 @@ Please complete login in your browser.""",
   """onboarding.progressHeroBody""":
       """Don't need the progress ring at the top? Swipe it away.""",
   """onboarding.progressHeroHint""": """Swipe to dismiss""",
+  """onboarding.progressHeroDismissTitle""": """Hide the progress card""",
+  """onboarding.progressHeroDismissBody""":
+      """Don't need the progress ring at the top? Click the X on the card to hide it.""",
+  """onboarding.pinnedListsTitle""": """Pin lists to your home screen""",
+  """onboarding.pinnedListsBody""":
+      """Add the Pantry widget to your home screen to see how many items are left on your favorite lists at a glance — no need to open the app.""",
+  """onboarding.pinnedListsMenuLabel""": """the kebab menu""",
+  """onboarding.pinnedListsActionLabel""": """Pin list""",
+  """onboarding.pinnedListsWidgetTitle""": """Pantry""",
+  """onboarding.pinnedListsWidgetEmpty""": """All done""",
   """onboarding.mockItemName""": """Tomatoes""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Produce""",
@@ -2375,7 +2463,7 @@ Please complete login in your browser.""",
       """All items in the trash will be permanently deleted. This cannot be undone.""",
   """checklists.emptyTrashFailed""": """Failed to empty trash.""",
   """checklists.restoreItem""": """Restore""",
-  """checklists.permanentlyDeleteItem""": """Delete permanently""",
+  """checklists.permanentlyDeleteItem""": """Delete""",
   """checklists.permanentlyDeleteConfirm""":
       """Permanently delete this item?""",
   """checklists.permanentlyDeleteConfirmBody""": """This cannot be undone.""",
@@ -2442,6 +2530,8 @@ Please complete login in your browser.""",
   """checklists.sort.category""": """By category""",
   """checklists.sort.custom""": """Custom""",
   """checklists.allDone""": """All done 🎉""",
+  """checklists.hideProgressHero""": """Hide progress card""",
+  """checklists.sortTooltip""": """Sort""",
   """checklists.addFirstItem""": """Add your first item…""",
   """checklists.noItemsTitle""": """Nothing on this list yet""",
   """checklists.noItemsBody""":
@@ -2458,7 +2548,7 @@ Please complete login in your browser.""",
   """checklists.swipeView""": """View""",
   """checklists.swipeEdit""": """Edit""",
   """checklists.swipeMove""": """Move""",
-  """checklists.swipeDelete""": """Delete""",
+  """checklists.swipeDelete""": """Remove""",
   """checklists.viewList""": """List view""",
   """checklists.viewCards""": """Cards view""",
   """checklists.listColor""": """Color""",

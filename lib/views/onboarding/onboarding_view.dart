@@ -85,73 +85,89 @@ class _OnboardingViewState extends State<OnboardingView> {
       },
       child: Scaffold(
         body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 8, 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        ob.stepLabel(_index + 1, total),
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: cs.onSurfaceVariant,
-                          fontWeight: FontWeight.w600,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: kOnboardingChromeMaxWidth,
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 8, 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            ob.stepLabel(_index + 1, total),
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: cs.onSurfaceVariant,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
-                      ),
+                        TextButton(onPressed: _finish, child: Text(ob.skip)),
+                      ],
                     ),
-                    TextButton(onPressed: _finish, child: Text(ob.skip)),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: _StepProgress(current: _index + 1, total: total),
-              ),
-              Expanded(
-                child: PageView.builder(
-                  controller: _pageCtrl,
-                  onPageChanged: (i) => setState(() => _index = i),
-                  itemCount: _pages.length,
-                  itemBuilder: (ctx, i) => _CenteredPage(child: _pages[i](ctx)),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-                child: Row(
-                  children: [
-                    if (_index > 0)
-                      TextButton(
-                        onPressed: () => _pageCtrl.previousPage(
-                          duration: const Duration(milliseconds: 240),
-                          curve: Curves.easeOutCubic,
-                        ),
-                        style: TextButton.styleFrom(
-                          minimumSize: const Size(0, 52),
-                        ),
-                        child: Text(ob.back),
-                      ),
-                    const Spacer(),
-                    FilledButton(
-                      onPressed: _next,
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(140, 52),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      child: Text(_isLast ? ob.done : ob.next),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _StepProgress(current: _index + 1, total: total),
+                  ),
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageCtrl,
+                      onPageChanged: (i) => setState(() => _index = i),
+                      itemCount: _pages.length,
+                      itemBuilder: (ctx, i) =>
+                          _CenteredPage(child: _pages[i](ctx)),
                     ),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                    child: Row(
+                      children: [
+                        if (_index > 0)
+                          TextButton(
+                            onPressed: () => _pageCtrl.previousPage(
+                              duration: const Duration(milliseconds: 240),
+                              curve: Curves.easeOutCubic,
+                            ),
+                            style: TextButton.styleFrom(
+                              minimumSize: const Size(0, 52),
+                            ),
+                            child: Text(ob.back),
+                          ),
+                        const Spacer(),
+                        FilledButton(
+                          onPressed: _next,
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size(140, 52),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: Text(_isLast ? ob.done : ob.next),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+/// Caps the stepper chrome (header row, progress bar, footer buttons) so it
+/// doesn't stretch edge-to-edge on tablet / desktop windows.
+const double kOnboardingChromeMaxWidth = 640;
+
+/// Caps a single onboarding page's content narrower than the chrome — keeps
+/// body copy at a comfortable reading width on large screens.
+const double kOnboardingPageMaxWidth = 460;
 
 /// Vertically-centers a page's content inside the PageView slot, while still
 /// allowing it to scroll if the content is taller than the viewport. Pages
@@ -167,10 +183,17 @@ class _CenteredPage extends StatelessWidget {
       builder: (ctx, c) => SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: c.maxHeight),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [child],
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: kOnboardingPageMaxWidth,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [child],
+              ),
+            ),
           ),
         ),
       ),

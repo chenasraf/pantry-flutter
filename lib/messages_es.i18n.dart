@@ -385,6 +385,17 @@ class OnboardingMessagesEs extends OnboardingMessages {
   String get swipeActionsHintBack => """Desliza a la derecha""";
 
   /// ```dart
+  /// "Acciones rápidas en cada artículo"
+  /// ```
+  String get quickActionsTitle => """Acciones rápidas en cada artículo""";
+
+  /// ```dart
+  /// "Cada artículo muestra botones de acción al final — pulsa uno para editar, mover o eliminar el artículo sin abrirlo."
+  /// ```
+  String get quickActionsBody =>
+      """Cada artículo muestra botones de acción al final — pulsa uno para editar, mover o eliminar el artículo sin abrirlo.""";
+
+  /// ```dart
   /// "Una forma más rápida de añadir"
   /// ```
   String get addItemsTitle => """Una forma más rápida de añadir""";
@@ -425,6 +436,60 @@ class OnboardingMessagesEs extends OnboardingMessages {
   /// "Desliza para descartar"
   /// ```
   String get progressHeroHint => """Desliza para descartar""";
+
+  /// ```dart
+  /// "Oculta la tarjeta de progreso"
+  /// ```
+  String get progressHeroDismissTitle => """Oculta la tarjeta de progreso""";
+
+  /// ```dart
+  /// "¿No necesitas el anillo de progreso arriba? Pulsa la X en la tarjeta para ocultarla."
+  /// ```
+  String get progressHeroDismissBody =>
+      """¿No necesitas el anillo de progreso arriba? Pulsa la X en la tarjeta para ocultarla.""";
+
+  /// ```dart
+  /// "Fija listas en tu pantalla de inicio"
+  /// ```
+  String get pinnedListsTitle => """Fija listas en tu pantalla de inicio""";
+
+  /// ```dart
+  /// "Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en tus listas favoritas, sin abrir la app."
+  /// ```
+  String get pinnedListsBody =>
+      """Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en tus listas favoritas, sin abrir la app.""";
+
+  /// ```dart
+  /// "Abre una lista, toca ${menu} en la esquina superior y elige ${action}. Las listas fijadas aparecen en el widget; quita la fijación para ocultarlas."
+  /// ```
+  String pinnedListsHow(String menu, String action) =>
+      """Abre una lista, toca ${menu} en la esquina superior y elige ${action}. Las listas fijadas aparecen en el widget; quita la fijación para ocultarlas.""";
+
+  /// ```dart
+  /// "el menú"
+  /// ```
+  String get pinnedListsMenuLabel => """el menú""";
+
+  /// ```dart
+  /// "Fijar lista"
+  /// ```
+  String get pinnedListsActionLabel => """Fijar lista""";
+
+  /// ```dart
+  /// "Pantry"
+  /// ```
+  String get pinnedListsWidgetTitle => """Pantry""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 pendiente', many: '${count} pendientes')}"
+  /// ```
+  String pinnedListsWidgetItemsLeft(int count) =>
+      """${_plural(count, one: '1 pendiente', many: '${count} pendientes')}""";
+
+  /// ```dart
+  /// "Todo hecho"
+  /// ```
+  String get pinnedListsWidgetEmpty => """Todo hecho""";
 
   /// ```dart
   /// "Tomates"
@@ -1047,9 +1112,9 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get restoreItem => """Restaurar""";
 
   /// ```dart
-  /// "Eliminar permanentemente"
+  /// "Eliminar"
   /// ```
-  String get permanentlyDeleteItem => """Eliminar permanentemente""";
+  String get permanentlyDeleteItem => """Eliminar""";
 
   /// ```dart
   /// "¿Eliminar este artículo permanentemente?"
@@ -1123,6 +1188,16 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "$done de $total hechos"
   /// ```
   String listProgress(int done, int total) => """$done de $total hechos""";
+
+  /// ```dart
+  /// "Ocultar tarjeta de progreso"
+  /// ```
+  String get hideProgressHero => """Ocultar tarjeta de progreso""";
+
+  /// ```dart
+  /// "Ordenar"
+  /// ```
+  String get sortTooltip => """Ordenar""";
 
   /// ```dart
   /// "Hechos · $count"
@@ -1219,9 +1294,9 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get swipeMove => """Mover""";
 
   /// ```dart
-  /// "Eliminar"
+  /// "Quitar"
   /// ```
-  String get swipeDelete => """Eliminar""";
+  String get swipeDelete => """Quitar""";
 
   /// ```dart
   /// "Vista de lista"
@@ -2271,6 +2346,9 @@ Por favor, completa el inicio de sesión en tu navegador.""",
       """Desliza un artículo de derecha a izquierda para ver acciones rápidas: editar, mover o eliminar.""",
   """onboarding.swipeActionsHint""": """Desliza a la izquierda""",
   """onboarding.swipeActionsHintBack""": """Desliza a la derecha""",
+  """onboarding.quickActionsTitle""": """Acciones rápidas en cada artículo""",
+  """onboarding.quickActionsBody""":
+      """Cada artículo muestra botones de acción al final — pulsa uno para editar, mover o eliminar el artículo sin abrirlo.""",
   """onboarding.addItemsTitle""": """Una forma más rápida de añadir""",
   """onboarding.addItemsBody""":
       """Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba.""",
@@ -2279,6 +2357,17 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """onboarding.progressHeroBody""":
       """¿No necesitas el anillo de progreso arriba? Deslízalo para descartarlo.""",
   """onboarding.progressHeroHint""": """Desliza para descartar""",
+  """onboarding.progressHeroDismissTitle""":
+      """Oculta la tarjeta de progreso""",
+  """onboarding.progressHeroDismissBody""":
+      """¿No necesitas el anillo de progreso arriba? Pulsa la X en la tarjeta para ocultarla.""",
+  """onboarding.pinnedListsTitle""": """Fija listas en tu pantalla de inicio""",
+  """onboarding.pinnedListsBody""":
+      """Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en tus listas favoritas, sin abrir la app.""",
+  """onboarding.pinnedListsMenuLabel""": """el menú""",
+  """onboarding.pinnedListsActionLabel""": """Fijar lista""",
+  """onboarding.pinnedListsWidgetTitle""": """Pantry""",
+  """onboarding.pinnedListsWidgetEmpty""": """Todo hecho""",
   """onboarding.mockItemName""": """Tomates""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Verduras""",
@@ -2398,7 +2487,7 @@ Por favor, completa el inicio de sesión en tu navegador.""",
       """Todos los artículos de la papelera se eliminarán permanentemente. Esta acción no se puede deshacer.""",
   """checklists.emptyTrashFailed""": """No se pudo vaciar la papelera.""",
   """checklists.restoreItem""": """Restaurar""",
-  """checklists.permanentlyDeleteItem""": """Eliminar permanentemente""",
+  """checklists.permanentlyDeleteItem""": """Eliminar""",
   """checklists.permanentlyDeleteConfirm""":
       """¿Eliminar este artículo permanentemente?""",
   """checklists.permanentlyDeleteConfirmBody""":
@@ -2468,6 +2557,8 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.sort.category""": """Por categoría""",
   """checklists.sort.custom""": """Personalizado""",
   """checklists.allDone""": """Todo listo 🎉""",
+  """checklists.hideProgressHero""": """Ocultar tarjeta de progreso""",
+  """checklists.sortTooltip""": """Ordenar""",
   """checklists.addFirstItem""": """Agrega tu primer artículo…""",
   """checklists.noItemsTitle""": """Nada en esta lista todavía""",
   """checklists.noItemsBody""":
@@ -2484,7 +2575,7 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.swipeView""": """Ver""",
   """checklists.swipeEdit""": """Editar""",
   """checklists.swipeMove""": """Mover""",
-  """checklists.swipeDelete""": """Eliminar""",
+  """checklists.swipeDelete""": """Quitar""",
   """checklists.viewList""": """Vista de lista""",
   """checklists.viewCards""": """Vista de tarjetas""",
   """checklists.listColor""": """Color""",

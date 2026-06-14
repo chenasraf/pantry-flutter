@@ -11,6 +11,7 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
@@ -289,7 +290,16 @@ class _ItemFormViewState extends State<ItemFormView> {
     return Scaffold(
       backgroundColor: cs.surface,
       appBar: AppBar(
-        leading: appBarBackLeading(context),
+        // Desktop opens the form as a modal — give it a close affordance
+        // instead of the platform-default Back chevron, which would read as
+        // navigating away from a page that doesn't exist on the stack.
+        leading: isDesktop
+            ? IconButton(
+                icon: const Icon(Icons.close),
+                tooltip: m.common.cancel,
+                onPressed: () => Navigator.of(context).maybePop(),
+              )
+            : appBarBackLeading(context),
         title: Text(_isEditing ? f.editTitle : f.addTitle),
         actions: [
           if (_isEditing)

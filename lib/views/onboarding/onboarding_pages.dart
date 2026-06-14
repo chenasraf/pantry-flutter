@@ -1,10 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:pantry/utils/platform_info.dart' as platform_info;
 import 'package:pantry/utils/version.dart';
 import 'pages/add_items_page.dart';
 import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
+import 'pages/pinned_lists_page.dart';
+import 'pages/progress_hero_dismiss_page.dart';
 import 'pages/progress_hero_page.dart';
+import 'pages/quick_actions_page.dart';
 import 'pages/swipe_actions_page.dart';
 
 /// The first app version that ships an onboarding flow. New users that haven't
@@ -12,19 +17,63 @@ import 'pages/swipe_actions_page.dart';
 /// the full sequence (welcome + every feature page in [kAppOnboardingPages]).
 const String kAppOnboardingFirstVersion = '0.16.0';
 
-/// One entry in [kAppOnboardingPages]. Carries a builder plus flags that
-/// control which audience the page is relevant to — e.g. a "what's new"
-/// section header is only meaningful for upgraders, not first-time users.
+/// Context passed to an [OnboardingPageEntry.showWhen] predicate so it can
+/// decide whether the page is relevant to *this* viewer. Bundles every
+/// audience signal we currently filter on (and is the place to add more —
+/// locale, paid tier, feature flag, …).
+class OnboardingAudience {
+  /// `true` when the user has never finished any onboarding before — i.e.
+  /// their `lastSeenOnboardingVersion` is null. Inverse of "upgrader".
+  final bool isNewUser;
+
+  /// `true` when the running platform is Android (and not web). Use to gate
+  /// features that only exist on Android, e.g. the home-screen widget.
+  final bool isAndroid;
+
+  /// `true` when the running platform is a desktop OS (macOS / Windows /
+  /// Linux), where horizontal-swipe gestures aren't universally available.
+  /// Use to swap interaction explanations (e.g. "swipe to reveal" → "tap
+  /// the action").
+  final bool isDesktop;
+
+  const OnboardingAudience({
+    required this.isNewUser,
+    required this.isAndroid,
+    required this.isDesktop,
+  });
+}
+
+/// Predicate that returns `true` when the page should appear for [audience].
+typedef OnboardingShowWhen = bool Function(OnboardingAudience audience);
+
+/// Shows the page only to returning users — those upgrading from an older
+/// version. "What's new" recaps live behind this.
+bool onboardingUpgradersOnly(OnboardingAudience a) => !a.isNewUser;
+
+/// Shows the page only on Android. The home-screen widget is Android-only,
+/// so any page that advertises it should gate on this.
+bool onboardingAndroidOnly(OnboardingAudience a) => a.isAndroid;
+
+/// Shows the page only on desktop platforms. Use for explanations that only
+/// make sense to a mouse/keyboard user (e.g. always-visible action buttons).
+bool onboardingDesktopOnly(OnboardingAudience a) => a.isDesktop;
+
+/// Shows the page only on non-desktop platforms (mobile + web). Use for
+/// explanations of touch gestures (swipe, long-press) that don't translate.
+bool onboardingMobileOnly(OnboardingAudience a) => !a.isDesktop;
+
+/// One entry in [kAppOnboardingPages]. Carries the page builder plus an
+/// optional [showWhen] predicate that decides whether *this* viewer sees it.
+/// Compose multiple conditions inline with `&&` — e.g.
+/// `showWhen: (a) => onboardingAndroidOnly(a) && onboardingUpgradersOnly(a)`.
 class OnboardingPageEntry {
   final WidgetBuilder builder;
 
-  /// When `true`, the page is skipped for brand-new users (those whose
-  /// `lastSeenOnboardingVersion` is null) and only shown to returning users
-  /// upgrading from a previous version. Use this for "what's new" recap
-  /// pages that don't make sense to someone who has never used the app.
-  final bool updateOnly;
+  /// When non-null, the page only appears if the predicate returns `true`
+  /// for the current audience. A null predicate means "always show".
+  final OnboardingShowWhen? showWhen;
 
-  const OnboardingPageEntry({required this.builder, this.updateOnly = false});
+  const OnboardingPageEntry({required this.builder, this.showWhen});
 }
 
 /// Map of app version → ordered list of page entries introduced in that
@@ -37,14 +86,32 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   '0.16.0': [
     OnboardingPageEntry(
       builder: (_) => const ChecklistsRedesignIntroPage(),
-      updateOnly: true,
+      showWhen: onboardingUpgradersOnly,
     ),
     OnboardingPageEntry(
       builder: (_) => const ChecklistSelectorOnboardingPage(),
     ),
-    OnboardingPageEntry(builder: (_) => const SwipeActionsOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const SwipeActionsOnboardingPage(),
+      showWhen: onboardingMobileOnly,
+    ),
+    OnboardingPageEntry(
+      builder: (_) => const QuickActionsOnboardingPage(),
+      showWhen: onboardingDesktopOnly,
+    ),
     OnboardingPageEntry(builder: (_) => const AddItemsOnboardingPage()),
-    OnboardingPageEntry(builder: (_) => const ProgressHeroOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const ProgressHeroOnboardingPage(),
+      showWhen: onboardingMobileOnly,
+    ),
+    OnboardingPageEntry(
+      builder: (_) => const ProgressHeroDismissOnboardingPage(),
+      showWhen: onboardingDesktopOnly,
+    ),
+    OnboardingPageEntry(
+      builder: (_) => const PinnedListsOnboardingPage(),
+      showWhen: onboardingAndroidOnly,
+    ),
   ],
 };
 
@@ -79,11 +146,15 @@ String onboardingMarkSeenVersion(String appVersion) {
 /// whose last-seen onboarding version is [lastSeen]. Returns pages from every
 /// version newer than [lastSeen] (or all of them when [lastSeen] is null),
 /// preserving each version's internal order, sorted oldest → newest. Entries
-/// marked [OnboardingPageEntry.updateOnly] are excluded when [lastSeen] is
-/// null (brand-new user).
+/// whose [OnboardingPageEntry.showWhen] predicate returns `false` for the
+/// current audience are filtered out.
 List<WidgetBuilder> resolveOnboardingPages(String? lastSeen) {
   final lastSeenVersion = Version.tryParse(lastSeen);
-  final isNewUser = lastSeen == null;
+  final audience = OnboardingAudience(
+    isNewUser: lastSeen == null,
+    isAndroid: !kIsWeb && defaultTargetPlatform == TargetPlatform.android,
+    isDesktop: platform_info.isDesktop,
+  );
   final entries = kAppOnboardingPages.entries.toList();
   entries.sort((a, b) {
     final va = Version.parse(a.key);
@@ -95,6 +166,6 @@ List<WidgetBuilder> resolveOnboardingPages(String? lastSeen) {
       if (lastSeenVersion == null ||
           Version.parse(entry.key).compareTo(lastSeenVersion) > 0)
         for (final page in entry.value)
-          if (!(isNewUser && page.updateOnly)) page.builder,
+          if (page.showWhen == null || page.showWhen!(audience)) page.builder,
   ];
 }

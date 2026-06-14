@@ -139,6 +139,12 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The home-screen widget exists only on Android. Other platforms ship no
+  /// widget host, so invoking `home_widget` channels there throws
+  /// MissingPluginException. Gate every widget side-effect on this.
+  static bool get _supportsWidget =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+
   /// Toggle pin for [listId]. Pass [pinnedListsJson] — a JSON-encoded list of
   /// `{id, name, houseId}` objects for all currently pinned lists after the
   /// toggle — so the Android widget SharedPrefs stay in sync.
@@ -155,14 +161,15 @@ class PrefsService extends ChangeNotifier {
       key: _pinnedListIdsKey,
       value: _pinnedListIds.isEmpty ? '' : _pinnedListIds.join(','),
     );
-    // Write to HomeWidget SharedPrefs so the Android widget can read it.
-    await HomeWidget.saveWidgetData<String>(
-      'pinned_lists',
-      jsonEncode(allPinnedAfterToggle),
-    );
-    await HomeWidget.updateWidget(
-      qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
-    );
+    if (_supportsWidget) {
+      await HomeWidget.saveWidgetData<String>(
+        'pinned_lists',
+        jsonEncode(allPinnedAfterToggle),
+      );
+      await HomeWidget.updateWidget(
+        qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
+      );
+    }
     notifyListeners();
   }
 
@@ -210,6 +217,7 @@ class PrefsService extends ChangeNotifier {
   /// start so the widget survives an `HomeWidgetPreferences` wipe (e.g. a
   /// fresh install) without waiting for the next pin toggle.
   Future<void> pushWidgetPinnedLists() async {
+    if (!_supportsWidget) return;
     if (_pinnedListIds.isEmpty) {
       await HomeWidget.saveWidgetData<String>('pinned_lists', '[]');
       await HomeWidget.updateWidget(
@@ -251,6 +259,7 @@ class PrefsService extends ChangeNotifier {
   /// widget. Call after the user changes the in-app theme, and when the
   /// platform brightness changes while in system mode.
   Future<void> pushWidgetTheme() async {
+    if (!_supportsWidget) return;
     final resolved = switch (_themeMode) {
       'light' => 'light',
       'dark' => 'dark',

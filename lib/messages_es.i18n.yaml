@@ -60,6 +60,8 @@ onboarding:
   swipeActionsBody: "Desliza un artículo de derecha a izquierda para ver acciones rápidas: editar, mover o eliminar."
   swipeActionsHint: "Desliza a la izquierda"
   swipeActionsHintBack: "Desliza a la derecha"
+  quickActionsTitle: "Acciones rápidas en cada artículo"
+  quickActionsBody: "Cada artículo muestra botones de acción al final — pulsa uno para editar, mover o eliminar el artículo sin abrirlo."
   addItemsTitle: "Una forma más rápida de añadir"
   addItemsBody: "Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba."
   mockComposeListName: "Compras"
@@ -67,6 +69,16 @@ onboarding:
   progressHeroBody: "¿No necesitas el anillo de progreso arriba? Deslízalo para descartarlo."
   progressHeroBringBack(String settings, String interface, String toggle): "Puedes volver a mostrarla desde ${settings} → ${interface} → ${toggle}."
   progressHeroHint: "Desliza para descartar"
+  progressHeroDismissTitle: "Oculta la tarjeta de progreso"
+  progressHeroDismissBody: "¿No necesitas el anillo de progreso arriba? Pulsa la X en la tarjeta para ocultarla."
+  pinnedListsTitle: "Fija listas en tu pantalla de inicio"
+  pinnedListsBody: "Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en tus listas favoritas, sin abrir la app."
+  pinnedListsHow(String menu, String action): "Abre una lista, toca ${menu} en la esquina superior y elige ${action}. Las listas fijadas aparecen en el widget; quita la fijación para ocultarlas."
+  pinnedListsMenuLabel: "el menú"
+  pinnedListsActionLabel: "Fijar lista"
+  pinnedListsWidgetTitle: "Pantry"
+  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 pendiente', many: '${count} pendientes')}"
+  pinnedListsWidgetEmpty: "Todo hecho"
   mockItemName: "Tomates"
   mockItemQuantity: "x2"
   mockItemCategory: "Verduras"
@@ -193,7 +205,7 @@ checklists:
   emptyTrashConfirmBody: "Todos los artículos de la papelera se eliminarán permanentemente. Esta acción no se puede deshacer."
   emptyTrashFailed: No se pudo vaciar la papelera.
   restoreItem: Restaurar
-  permanentlyDeleteItem: Eliminar permanentemente
+  permanentlyDeleteItem: Eliminar
   permanentlyDeleteConfirm: "¿Eliminar este artículo permanentemente?"
   permanentlyDeleteConfirmBody: Esta acción no se puede deshacer.
   restoreFailed: No se pudo restaurar el artículo.
@@ -268,6 +280,8 @@ checklists:
   itemsLeft(int count): "${_plural(count, one: '1 artículo restante', many: '$count artículos restantes')}"
   allDone: Todo listo 🎉
   listProgress(int done, int total): "$done de $total hechos"
+  hideProgressHero: "Ocultar tarjeta de progreso"
+  sortTooltip: "Ordenar"
   doneCount(int count): "Hechos · $count"
   addToList(String name): "Agregar a $name…"
   addFirstItem: "Agrega tu primer artículo…"
@@ -286,7 +300,7 @@ checklists:
   swipeView: Ver
   swipeEdit: Editar
   swipeMove: Mover
-  swipeDelete: Eliminar
+  swipeDelete: Quitar
   viewList: Vista de lista
   viewCards: Vista de tarjetas
   listColor: Color
