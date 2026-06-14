@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
+import 'package:pantry/utils/platform_info.dart';
+
 /// A row whose action buttons slide IN from the trailing edge on swipe, on
 /// top of a stationary foreground. The list item content (checkbox, name,
 /// chips) stays fully visible while the action buttons overlay the trailing
 /// portion of the row. Snap-open past ~1/3 threshold, snap-closed otherwise,
 /// transform animation disabled while actively dragging.
+///
+/// On desktop platforms (macOS / Windows / Linux) the swipe gesture isn't
+/// reliably available — many users are on mice without touchpads — so the
+/// actions render permanently pinned at the trailing edge instead, with the
+/// content shrinking to make room. Gated on [isDesktop].
 class SwipeRevealRow extends StatefulWidget {
   final Widget child;
   final List<SwipeAction> actions;
@@ -64,6 +71,24 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
 
   @override
   Widget build(BuildContext context) {
+    if (isDesktop) {
+      // Desktop layout: lay content + actions out in a Row. The foreground
+      // keeps its full hit area for taps, but loses the trailing space to
+      // the always-visible action buttons. No clip, no slide, no gesture.
+      // `stretch` so the action tiles span the row's full height — without
+      // it the Row sizes to its tallest child and the action backgrounds
+      // sit centered, leaving visible gaps above and below.
+      return IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: widget.child),
+            for (final a in widget.actions)
+              _ActionButton(action: a, width: _actionWidth, onTap: a.onPressed),
+          ],
+        ),
+      );
+    }
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     // Translate the action row in from off-screen. `_offset` ranges from 0
     // (closed) to -_maxSwipe (fully open). When closed the actions are

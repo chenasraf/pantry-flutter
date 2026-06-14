@@ -385,6 +385,17 @@ class OnboardingMessagesDe extends OnboardingMessages {
   String get swipeActionsHintBack => """Nach rechts wischen""";
 
   /// ```dart
+  /// "Schnellaktionen für jeden Eintrag"
+  /// ```
+  String get quickActionsTitle => """Schnellaktionen für jeden Eintrag""";
+
+  /// ```dart
+  /// "Jeder Eintrag zeigt am Ende Aktions-Buttons – klicke darauf, um den Eintrag zu bearbeiten, zu verschieben oder zu löschen, ohne ihn zu öffnen."
+  /// ```
+  String get quickActionsBody =>
+      """Jeder Eintrag zeigt am Ende Aktions-Buttons – klicke darauf, um den Eintrag zu bearbeiten, zu verschieben oder zu löschen, ohne ihn zu öffnen.""";
+
+  /// ```dart
   /// "Einträge schneller hinzufügen"
   /// ```
   String get addItemsTitle => """Einträge schneller hinzufügen""";
@@ -425,6 +436,60 @@ class OnboardingMessagesDe extends OnboardingMessages {
   /// "Zum Ausblenden wischen"
   /// ```
   String get progressHeroHint => """Zum Ausblenden wischen""";
+
+  /// ```dart
+  /// "Fortschrittskarte ausblenden"
+  /// ```
+  String get progressHeroDismissTitle => """Fortschrittskarte ausblenden""";
+
+  /// ```dart
+  /// "Brauchst du den Fortschrittsring oben nicht? Klicke auf das X auf der Karte, um sie auszublenden."
+  /// ```
+  String get progressHeroDismissBody =>
+      """Brauchst du den Fortschrittsring oben nicht? Klicke auf das X auf der Karte, um sie auszublenden.""";
+
+  /// ```dart
+  /// "Listen auf dem Startbildschirm anheften"
+  /// ```
+  String get pinnedListsTitle => """Listen auf dem Startbildschirm anheften""";
+
+  /// ```dart
+  /// "Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf deinen Lieblingslisten noch offen sind — ohne die App zu öffnen."
+  /// ```
+  String get pinnedListsBody =>
+      """Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf deinen Lieblingslisten noch offen sind — ohne die App zu öffnen.""";
+
+  /// ```dart
+  /// "Öffne eine Liste, tippe oben rechts auf ${menu} und wähle ${action}. Angeheftete Listen erscheinen im Widget; löse die Anheftung, um sie auszublenden."
+  /// ```
+  String pinnedListsHow(String menu, String action) =>
+      """Öffne eine Liste, tippe oben rechts auf ${menu} und wähle ${action}. Angeheftete Listen erscheinen im Widget; löse die Anheftung, um sie auszublenden.""";
+
+  /// ```dart
+  /// "das Menü"
+  /// ```
+  String get pinnedListsMenuLabel => """das Menü""";
+
+  /// ```dart
+  /// "Liste anheften"
+  /// ```
+  String get pinnedListsActionLabel => """Liste anheften""";
+
+  /// ```dart
+  /// "Pantry"
+  /// ```
+  String get pinnedListsWidgetTitle => """Pantry""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 offen', many: '${count} offen')}"
+  /// ```
+  String pinnedListsWidgetItemsLeft(int count) =>
+      """${_plural(count, one: '1 offen', many: '${count} offen')}""";
+
+  /// ```dart
+  /// "Alles erledigt"
+  /// ```
+  String get pinnedListsWidgetEmpty => """Alles erledigt""";
 
   /// ```dart
   /// "Tomaten"
@@ -1049,9 +1114,9 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get restoreItem => """Wiederherstellen""";
 
   /// ```dart
-  /// "Endgültig löschen"
+  /// "Löschen"
   /// ```
-  String get permanentlyDeleteItem => """Endgültig löschen""";
+  String get permanentlyDeleteItem => """Löschen""";
 
   /// ```dart
   /// "Diesen Eintrag endgültig löschen?"
@@ -1127,6 +1192,16 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "$done von $total erledigt"
   /// ```
   String listProgress(int done, int total) => """$done von $total erledigt""";
+
+  /// ```dart
+  /// "Fortschrittskarte ausblenden"
+  /// ```
+  String get hideProgressHero => """Fortschrittskarte ausblenden""";
+
+  /// ```dart
+  /// "Sortieren"
+  /// ```
+  String get sortTooltip => """Sortieren""";
 
   /// ```dart
   /// "Erledigt · $count"
@@ -1223,9 +1298,9 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get swipeMove => """Verschieben""";
 
   /// ```dart
-  /// "Löschen"
+  /// "Entfernen"
   /// ```
-  String get swipeDelete => """Löschen""";
+  String get swipeDelete => """Entfernen""";
 
   /// ```dart
   /// "Listenansicht"
@@ -2277,6 +2352,9 @@ Bitte melde dich in deinem Browser an.""",
       """Wische einen Listeneintrag von rechts nach links, um schnelle Aktionen zum Bearbeiten, Verschieben oder Löschen einzublenden.""",
   """onboarding.swipeActionsHint""": """Nach links wischen""",
   """onboarding.swipeActionsHintBack""": """Nach rechts wischen""",
+  """onboarding.quickActionsTitle""": """Schnellaktionen für jeden Eintrag""",
+  """onboarding.quickActionsBody""":
+      """Jeder Eintrag zeigt am Ende Aktions-Buttons – klicke darauf, um den Eintrag zu bearbeiten, zu verschieben oder zu löschen, ohne ihn zu öffnen.""",
   """onboarding.addItemsTitle""": """Einträge schneller hinzufügen""",
   """onboarding.addItemsBody""":
       """Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto.""",
@@ -2285,6 +2363,17 @@ Bitte melde dich in deinem Browser an.""",
   """onboarding.progressHeroBody""":
       """Brauchst du den Fortschrittsring oben nicht? Wisch ihn einfach weg.""",
   """onboarding.progressHeroHint""": """Zum Ausblenden wischen""",
+  """onboarding.progressHeroDismissTitle""": """Fortschrittskarte ausblenden""",
+  """onboarding.progressHeroDismissBody""":
+      """Brauchst du den Fortschrittsring oben nicht? Klicke auf das X auf der Karte, um sie auszublenden.""",
+  """onboarding.pinnedListsTitle""":
+      """Listen auf dem Startbildschirm anheften""",
+  """onboarding.pinnedListsBody""":
+      """Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf deinen Lieblingslisten noch offen sind — ohne die App zu öffnen.""",
+  """onboarding.pinnedListsMenuLabel""": """das Menü""",
+  """onboarding.pinnedListsActionLabel""": """Liste anheften""",
+  """onboarding.pinnedListsWidgetTitle""": """Pantry""",
+  """onboarding.pinnedListsWidgetEmpty""": """Alles erledigt""",
   """onboarding.mockItemName""": """Tomaten""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Gemüse""",
@@ -2409,7 +2498,7 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.emptyTrashFailed""":
       """Papierkorb konnte nicht geleert werden.""",
   """checklists.restoreItem""": """Wiederherstellen""",
-  """checklists.permanentlyDeleteItem""": """Endgültig löschen""",
+  """checklists.permanentlyDeleteItem""": """Löschen""",
   """checklists.permanentlyDeleteConfirm""":
       """Diesen Eintrag endgültig löschen?""",
   """checklists.permanentlyDeleteConfirmBody""":
@@ -2482,6 +2571,8 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.sort.category""": """Nach Kategorie""",
   """checklists.sort.custom""": """Benutzerdefiniert""",
   """checklists.allDone""": """Alles erledigt 🎉""",
+  """checklists.hideProgressHero""": """Fortschrittskarte ausblenden""",
+  """checklists.sortTooltip""": """Sortieren""",
   """checklists.addFirstItem""": """Füge deinen ersten Eintrag hinzu…""",
   """checklists.noItemsTitle""": """Noch nichts auf dieser Liste""",
   """checklists.noItemsBody""":
@@ -2498,7 +2589,7 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.swipeView""": """Anzeigen""",
   """checklists.swipeEdit""": """Bearbeiten""",
   """checklists.swipeMove""": """Verschieben""",
-  """checklists.swipeDelete""": """Löschen""",
+  """checklists.swipeDelete""": """Entfernen""",
   """checklists.viewList""": """Listenansicht""",
   """checklists.viewCards""": """Kartenansicht""",
   """checklists.listColor""": """Farbe""",

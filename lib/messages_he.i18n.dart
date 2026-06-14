@@ -383,6 +383,17 @@ class OnboardingMessagesHe extends OnboardingMessages {
   String get swipeActionsHintBack => """החלק שמאלה""";
 
   /// ```dart
+  /// "פעולות מהירות לכל פריט"
+  /// ```
+  String get quickActionsTitle => """פעולות מהירות לכל פריט""";
+
+  /// ```dart
+  /// "לכל פריט יש כפתורי פעולה בקצה — לחץ עליהם כדי לערוך, להעביר או למחוק את הפריט בלי לפתוח אותו."
+  /// ```
+  String get quickActionsBody =>
+      """לכל פריט יש כפתורי פעולה בקצה — לחץ עליהם כדי לערוך, להעביר או למחוק את הפריט בלי לפתוח אותו.""";
+
+  /// ```dart
   /// "דרך מהירה יותר להוסיף פריטים"
   /// ```
   String get addItemsTitle => """דרך מהירה יותר להוסיף פריטים""";
@@ -422,6 +433,60 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// "החלק כדי להסיר"
   /// ```
   String get progressHeroHint => """החלק כדי להסיר""";
+
+  /// ```dart
+  /// "הסתר את כרטיס ההתקדמות"
+  /// ```
+  String get progressHeroDismissTitle => """הסתר את כרטיס ההתקדמות""";
+
+  /// ```dart
+  /// "לא צריך את טבעת ההתקדמות למעלה? לחץ על ה-X בכרטיס כדי להסתיר אותו."
+  /// ```
+  String get progressHeroDismissBody =>
+      """לא צריך את טבעת ההתקדמות למעלה? לחץ על ה-X בכרטיס כדי להסתיר אותו.""";
+
+  /// ```dart
+  /// "הצמד רשימות למסך הבית"
+  /// ```
+  String get pinnedListsTitle => """הצמד רשימות למסך הבית""";
+
+  /// ```dart
+  /// "הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו ברשימות המועדפות עליך — בלי לפתוח את האפליקציה."
+  /// ```
+  String get pinnedListsBody =>
+      """הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו ברשימות המועדפות עליך — בלי לפתוח את האפליקציה.""";
+
+  /// ```dart
+  /// "פתח רשימה, הקש על ${menu} בפינה העליונה, ובחר ${action}. רשימות מוצמדות מופיעות בווידג'ט; בטל הצמדה כדי להסתיר אותן."
+  /// ```
+  String pinnedListsHow(String menu, String action) =>
+      """פתח רשימה, הקש על ${menu} בפינה העליונה, ובחר ${action}. רשימות מוצמדות מופיעות בווידג'ט; בטל הצמדה כדי להסתיר אותן.""";
+
+  /// ```dart
+  /// "התפריט"
+  /// ```
+  String get pinnedListsMenuLabel => """התפריט""";
+
+  /// ```dart
+  /// "הצמד רשימה"
+  /// ```
+  String get pinnedListsActionLabel => """הצמד רשימה""";
+
+  /// ```dart
+  /// "Pantry"
+  /// ```
+  String get pinnedListsWidgetTitle => """Pantry""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד נותר', many: '${count} נותרו')}"
+  /// ```
+  String pinnedListsWidgetItemsLeft(int count) =>
+      """${_plural(count, one: 'פריט אחד נותר', many: '${count} נותרו')}""";
+
+  /// ```dart
+  /// "הכל בוצע"
+  /// ```
+  String get pinnedListsWidgetEmpty => """הכל בוצע""";
 
   /// ```dart
   /// "עגבניות"
@@ -1042,9 +1107,9 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get restoreItem => """שחזר""";
 
   /// ```dart
-  /// "מחק לצמיתות"
+  /// "מחק"
   /// ```
-  String get permanentlyDeleteItem => """מחק לצמיתות""";
+  String get permanentlyDeleteItem => """מחק""";
 
   /// ```dart
   /// "למחוק את הפריט לצמיתות?"
@@ -1116,6 +1181,16 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "$done מתוך $total בוצעו"
   /// ```
   String listProgress(int done, int total) => """$done מתוך $total בוצעו""";
+
+  /// ```dart
+  /// "הסתר כרטיס התקדמות"
+  /// ```
+  String get hideProgressHero => """הסתר כרטיס התקדמות""";
+
+  /// ```dart
+  /// "מיון"
+  /// ```
+  String get sortTooltip => """מיון""";
 
   /// ```dart
   /// "בוצעו · $count"
@@ -1212,9 +1287,9 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get swipeMove => """העברה""";
 
   /// ```dart
-  /// "מחיקה"
+  /// "הסר"
   /// ```
-  String get swipeDelete => """מחיקה""";
+  String get swipeDelete => """הסר""";
 
   /// ```dart
   /// "תצוגת רשימה"
@@ -2255,6 +2330,9 @@ Map<String, String> get messagesHeMap => {
       """החלק פריט ברשימה משמאל לימין כדי לחשוף פעולות מהירות לעריכה, העברה או מחיקה.""",
   """onboarding.swipeActionsHint""": """החלק ימינה""",
   """onboarding.swipeActionsHintBack""": """החלק שמאלה""",
+  """onboarding.quickActionsTitle""": """פעולות מהירות לכל פריט""",
+  """onboarding.quickActionsBody""":
+      """לכל פריט יש כפתורי פעולה בקצה — לחץ עליהם כדי לערוך, להעביר או למחוק את הפריט בלי לפתוח אותו.""",
   """onboarding.addItemsTitle""": """דרך מהירה יותר להוסיף פריטים""",
   """onboarding.addItemsBody""":
       """הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו.""",
@@ -2263,6 +2341,16 @@ Map<String, String> get messagesHeMap => {
   """onboarding.progressHeroBody""":
       """לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה.""",
   """onboarding.progressHeroHint""": """החלק כדי להסיר""",
+  """onboarding.progressHeroDismissTitle""": """הסתר את כרטיס ההתקדמות""",
+  """onboarding.progressHeroDismissBody""":
+      """לא צריך את טבעת ההתקדמות למעלה? לחץ על ה-X בכרטיס כדי להסתיר אותו.""",
+  """onboarding.pinnedListsTitle""": """הצמד רשימות למסך הבית""",
+  """onboarding.pinnedListsBody""":
+      """הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו ברשימות המועדפות עליך — בלי לפתוח את האפליקציה.""",
+  """onboarding.pinnedListsMenuLabel""": """התפריט""",
+  """onboarding.pinnedListsActionLabel""": """הצמד רשימה""",
+  """onboarding.pinnedListsWidgetTitle""": """Pantry""",
+  """onboarding.pinnedListsWidgetEmpty""": """הכל בוצע""",
   """onboarding.mockItemName""": """עגבניות""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """ירקות""",
@@ -2376,7 +2464,7 @@ Map<String, String> get messagesHeMap => {
       """כל הפריטים באשפה יימחקו לצמיתות. לא ניתן לבטל פעולה זו.""",
   """checklists.emptyTrashFailed""": """ריקון האשפה נכשל.""",
   """checklists.restoreItem""": """שחזר""",
-  """checklists.permanentlyDeleteItem""": """מחק לצמיתות""",
+  """checklists.permanentlyDeleteItem""": """מחק""",
   """checklists.permanentlyDeleteConfirm""": """למחוק את הפריט לצמיתות?""",
   """checklists.permanentlyDeleteConfirmBody""": """לא ניתן לבטל פעולה זו.""",
   """checklists.restoreFailed""": """שחזור הפריט נכשל.""",
@@ -2440,6 +2528,8 @@ Map<String, String> get messagesHeMap => {
   """checklists.sort.category""": """לפי קטגוריה""",
   """checklists.sort.custom""": """מותאם אישית""",
   """checklists.allDone""": """הכל בוצע 🎉""",
+  """checklists.hideProgressHero""": """הסתר כרטיס התקדמות""",
+  """checklists.sortTooltip""": """מיון""",
   """checklists.addFirstItem""": """הוסף את הפריט הראשון…""",
   """checklists.noItemsTitle""": """אין פריטים ברשימה""",
   """checklists.noItemsBody""":
@@ -2456,7 +2546,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.swipeView""": """צפייה""",
   """checklists.swipeEdit""": """עריכה""",
   """checklists.swipeMove""": """העברה""",
-  """checklists.swipeDelete""": """מחיקה""",
+  """checklists.swipeDelete""": """הסר""",
   """checklists.viewList""": """תצוגת רשימה""",
   """checklists.viewCards""": """תצוגת כרטיסים""",
   """checklists.listColor""": """צבע""",

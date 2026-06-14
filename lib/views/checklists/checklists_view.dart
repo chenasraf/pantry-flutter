@@ -13,6 +13,8 @@ import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/item_modal_route.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/categories/categories_view.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 import 'checklist_item_tile.dart';
@@ -121,6 +123,9 @@ class _BodyState extends State<_Body> {
   bool _composeActive = false;
   final _searchCtrl = TextEditingController();
   final _composeKey = GlobalKey<ItemComposeBarState>();
+  // Anchors the desktop switcher popup under the AppBar title row so it
+  // reads as a dropdown rather than a centered modal.
+  final _switcherAnchorKey = GlobalKey();
   final Set<int> _selectedCategoryIds = {};
 
   String get _query => _searchCtrl.text.trim().toLowerCase();
@@ -150,6 +155,7 @@ class _BodyState extends State<_Body> {
     await showChecklistSwitcher(
       context,
       controller: c,
+      anchorContext: _switcherAnchorKey.currentContext,
       itemCountForList: (id) async {
         final cached = ChecklistService.instance.getCachedItems(id);
         if (cached != null) {
@@ -255,7 +261,16 @@ class _BodyState extends State<_Body> {
                     onDismissed: (_) =>
                         prefs.setChecklistProgressHeroHidden(true),
                     background: const SizedBox.shrink(),
-                    child: ProgressHero(total: total, done: done),
+                    child: ProgressHero(
+                      total: total,
+                      done: done,
+                      // Desktop mice can't reliably swipe. Surface a tap
+                      // affordance there; the Dismissible above still works
+                      // for anyone who can swipe.
+                      onDismiss: isDesktop
+                          ? () => prefs.setChecklistProgressHeroHidden(true)
+                          : null,
+                    ),
                   ),
                 if (!isEmptyList && !controller.isTrashMode)
                   _FilterRow(
@@ -431,6 +446,7 @@ class _BodyState extends State<_Body> {
       title: list == null
           ? const SizedBox.shrink()
           : InkWell(
+              key: _switcherAnchorKey,
               onTap: () => _openSwitcher(controller),
               borderRadius: BorderRadius.circular(8),
               child: Padding(
@@ -474,6 +490,34 @@ class _BodyState extends State<_Body> {
             });
           },
         ),
+        // Desktop has plenty of room — promote the top four actions out of
+        // the overflow menu so they're a single click away. Pin is not
+        // surfaced anywhere on desktop because the widget it feeds is
+        // Android-only.
+        if (isDesktop && !controller.isTrashMode) ...[
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.sort),
+            tooltip: m.checklists.sortTooltip,
+            onSelected: (v) => _onOverflow(context, controller, v),
+            itemBuilder: (_) => _sortMenuItems(controller),
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: m.common.refresh,
+            onPressed: () => controller.refresh(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.sell_outlined),
+            tooltip: m.categories.manageTitle,
+            onPressed: () => _openManageCategories(context, controller),
+          ),
+          if (supportsFeature('soft-delete'))
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              tooltip: m.checklists.viewTrash,
+              onPressed: () => controller.setTrashMode(true),
+            ),
+        ],
         PopupMenuButton<String>(
           icon: const Icon(Icons.more_vert),
           onSelected: (v) => _onOverflow(context, controller, v),
@@ -484,26 +528,10 @@ class _BodyState extends State<_Body> {
     );
   }
 
-  List<PopupMenuEntry<String>> _overflowItems(
-    ChecklistsController controller,
-    PrefsService prefs, {
-    required bool isPinned,
-  }) {
-    if (controller.isTrashMode) {
-      return [
-        _menuRow(
-          value: 'exit_trash',
-          leading: const Icon(Icons.arrow_back, size: 18),
-          label: m.checklists.exitTrash,
-        ),
-        _menuRow(
-          value: 'empty_trash',
-          leading: const Icon(Icons.delete_forever, size: 18),
-          label: m.checklists.emptyTrash,
-        ),
-      ];
-    }
-    return <PopupMenuEntry<String>>[
+  /// Sort radio rows lifted out of `_overflowItems` so the desktop toolbar's
+  /// Sort menu can show only the sort choices, not the rest of the overflow.
+  List<PopupMenuEntry<String>> _sortMenuItems(ChecklistsController controller) {
+    return [
       _radioRow(
         value: 'sort_newest',
         label: m.checklists.sort.newestFirst,
@@ -534,16 +562,76 @@ class _BodyState extends State<_Body> {
         label: m.checklists.sort.custom,
         selected: controller.sortBy == 'custom',
       ),
-      const PopupMenuDivider(),
-      if (controller.currentList != null)
+    ];
+  }
+
+  List<PopupMenuEntry<String>> _overflowItems(
+    ChecklistsController controller,
+    PrefsService prefs, {
+    required bool isPinned,
+  }) {
+    if (controller.isTrashMode) {
+      return [
         _menuRow(
-          value: 'toggle_pin',
-          leading: Icon(
-            isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-            size: 18,
-          ),
-          label: isPinned ? 'Unpin list' : 'Pin list',
+          value: 'exit_trash',
+          leading: const Icon(Icons.arrow_back, size: 18),
+          label: m.checklists.exitTrash,
         ),
+        _menuRow(
+          value: 'empty_trash',
+          leading: const Icon(Icons.delete_forever, size: 18),
+          label: m.checklists.emptyTrash,
+        ),
+      ];
+    }
+    // Desktop has promoted refresh / sort / categories / trash to dedicated
+    // toolbar buttons, and pinning lists feeds an Android-only widget, so
+    // none of those need to live in the overflow menu here. Everything left
+    // — the view toggles and the dev tools — stays in overflow on every
+    // platform.
+    return <PopupMenuEntry<String>>[
+      if (!isDesktop) ...[
+        _radioRow(
+          value: 'sort_newest',
+          label: m.checklists.sort.newestFirst,
+          selected: controller.sortBy == 'newest',
+        ),
+        _radioRow(
+          value: 'sort_oldest',
+          label: m.checklists.sort.oldestFirst,
+          selected: controller.sortBy == 'oldest',
+        ),
+        _radioRow(
+          value: 'sort_name_asc',
+          label: m.checklists.sort.nameAZ,
+          selected: controller.sortBy == 'name_asc',
+        ),
+        _radioRow(
+          value: 'sort_name_desc',
+          label: m.checklists.sort.nameZA,
+          selected: controller.sortBy == 'name_desc',
+        ),
+        _radioRow(
+          value: 'sort_category',
+          label: m.checklists.sort.category,
+          selected: controller.sortBy == 'category',
+        ),
+        _radioRow(
+          value: 'sort_custom',
+          label: m.checklists.sort.custom,
+          selected: controller.sortBy == 'custom',
+        ),
+        const PopupMenuDivider(),
+        if (controller.currentList != null)
+          _menuRow(
+            value: 'toggle_pin',
+            leading: Icon(
+              isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+              size: 18,
+            ),
+            label: isPinned ? 'Unpin list' : 'Pin list',
+          ),
+      ],
       _checkboxRow(
         value: 'toggle_tap_row',
         label: m.settings.tapRowToComplete,
@@ -555,23 +643,25 @@ class _BodyState extends State<_Body> {
           label: m.checklists.showAddedBy,
           selected: controller.showAddedBy,
         ),
-      _menuRow(
-        value: 'manage_categories',
-        leading: const Icon(Icons.sell_outlined, size: 18),
-        label: m.categories.manageTitle,
-      ),
-      _menuRow(
-        value: 'refresh',
-        leading: const Icon(Icons.refresh, size: 18),
-        label: m.common.refresh,
-      ),
-      if (supportsFeature('soft-delete')) ...[
-        const PopupMenuDivider(),
+      if (!isDesktop) ...[
         _menuRow(
-          value: 'view_trash',
-          leading: const Icon(Icons.delete_outline, size: 18),
-          label: m.checklists.viewTrash,
+          value: 'manage_categories',
+          leading: const Icon(Icons.sell_outlined, size: 18),
+          label: m.categories.manageTitle,
         ),
+        _menuRow(
+          value: 'refresh',
+          leading: const Icon(Icons.refresh, size: 18),
+          label: m.common.refresh,
+        ),
+        if (supportsFeature('soft-delete')) ...[
+          const PopupMenuDivider(),
+          _menuRow(
+            value: 'view_trash',
+            leading: const Icon(Icons.delete_outline, size: 18),
+            label: m.checklists.viewTrash,
+          ),
+        ],
       ],
       if (kDebugMode) ...[
         const PopupMenuDivider(),
@@ -1314,8 +1404,8 @@ class _ItemList extends StatelessWidget {
     ListItem item,
   ) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ItemDetailView(
+      itemModalRoute(
+        ItemDetailView(
           item: item,
           category: item.categoryId != null
               ? controller.categories[item.categoryId]
@@ -1332,11 +1422,9 @@ class _ItemList extends StatelessWidget {
     ChecklistsController controller,
     ListItem item,
   ) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ItemFormView(controller: controller, item: item),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(itemModalRoute(ItemFormView(controller: controller, item: item)));
   }
 
   Future<void> _onDelete(
