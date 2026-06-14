@@ -28,6 +28,9 @@ class PrefsService extends ChangeNotifier {
   static const _lastSeenOnboardingVersionKey = 'last_seen_onboarding_version';
   static const _navOrderKey = 'nav_order';
   static const _themeColorKey = 'theme_color';
+  static const _displayNameKey = 'display_name';
+  static const _serverLanguageKey = 'server_language';
+  static const _firstDayOfWeekKey = 'first_day_of_week';
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -94,63 +97,83 @@ class PrefsService extends ChangeNotifier {
   String? _themeColorHex;
   String? get themeColorHex => _themeColorHex;
 
+  /// Cached snapshot of values fetched from the Nextcloud user profile. These
+  /// change rarely (user has to change them in Nextcloud), so we seed
+  /// [AuthService] from them on cold start and refresh in the background.
+  String? _displayName;
+  String? get displayName => _displayName;
+
+  String? _serverLanguage;
+  String? get serverLanguage => _serverLanguage;
+
+  /// Cached first-day-of-week from the Pantry per-user prefs endpoint.
+  /// `null` means we've never fetched it; callers should fall back to a
+  /// locale-derived default.
+  int? _firstDayOfWeek;
+  int? get firstDayOfWeek => _firstDayOfWeek;
+
   Future<void> load() async {
-    final lastHouse = await _storage.read(key: _lastHouseKey);
+    // One platform-channel round trip instead of ~17 sequential reads —
+    // measurably shaves cold-start time on iOS Keychain / Android Keystore.
+    final all = await _storage.readAll();
+
+    final lastHouse = all[_lastHouseKey];
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);
 
-    final pins = await _storage.read(key: _pinnedListIdsKey);
+    final pins = all[_pinnedListIdsKey];
     if (pins != null && pins.isNotEmpty) {
       _pinnedListIds = pins.split(',').map(int.parse).toSet();
     }
 
-    final notif = await _storage.read(key: _notificationsEnabledKey);
+    final notif = all[_notificationsEnabledKey];
     if (notif != null) _notificationsEnabled = notif == 'true';
 
-    final poll = await _storage.read(key: _pollIntervalMinutesKey);
+    final poll = all[_pollIntervalMinutesKey];
     if (poll != null) {
       final parsed = int.tryParse(poll);
       if (parsed != null && parsed > 0) _pollIntervalMinutes = parsed;
     }
 
-    final intro = await _storage.read(key: _notificationsIntroSeenKey);
+    final intro = all[_notificationsIntroSeenKey];
     if (intro != null) _notificationsIntroSeen = intro == 'true';
 
-    _locale = await _storage.read(key: _localeKey);
-    _themeMode = await _storage.read(key: _themeModeKey);
+    _locale = all[_localeKey];
+    _themeMode = all[_themeModeKey];
 
-    final tapRow = await _storage.read(key: _checklistTapRowToToggleKey);
+    final tapRow = all[_checklistTapRowToToggleKey];
     if (tapRow != null) _checklistTapRowToToggle = tapRow == 'true';
 
-    final spacing = await _storage.read(key: _checklistCategorySpacingKey);
+    final spacing = all[_checklistCategorySpacingKey];
     if (spacing != null &&
         (spacing == 'disabled' || spacing == 'space' || spacing == 'divider')) {
       _checklistCategorySpacing = spacing;
     }
 
-    final view = await _storage.read(key: _checklistViewKey);
+    final view = all[_checklistViewKey];
     if (view != null && (view == 'list' || view == 'cards')) {
       _checklistView = view;
     }
 
-    final doneCollapsed = await _storage.read(key: _checklistDoneCollapsedKey);
+    final doneCollapsed = all[_checklistDoneCollapsedKey];
     if (doneCollapsed != null) {
       _checklistDoneCollapsed = doneCollapsed == 'true';
     }
 
-    final progressHeroHidden = await _storage.read(
-      key: _checklistProgressHeroHiddenKey,
-    );
+    final progressHeroHidden = all[_checklistProgressHeroHiddenKey];
     if (progressHeroHidden != null) {
       _checklistProgressHeroHidden = progressHeroHidden == 'true';
     }
 
-    _lastSeenOnboardingVersion = await _storage.read(
-      key: _lastSeenOnboardingVersionKey,
-    );
+    _lastSeenOnboardingVersion = all[_lastSeenOnboardingVersionKey];
 
-    _navOrder = decodeNavOrder(await _storage.read(key: _navOrderKey));
+    _navOrder = decodeNavOrder(all[_navOrderKey]);
 
-    _themeColorHex = await _storage.read(key: _themeColorKey);
+    _themeColorHex = all[_themeColorKey];
+
+    _displayName = all[_displayNameKey];
+    _serverLanguage = all[_serverLanguageKey];
+    final firstDay = all[_firstDayOfWeekKey];
+    if (firstDay != null) _firstDayOfWeek = int.tryParse(firstDay);
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -356,6 +379,43 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setUserProfileCache({
+    required String? displayName,
+    required String? serverLanguage,
+  }) async {
+    var changed = false;
+    if (_displayName != displayName) {
+      _displayName = displayName;
+      if (displayName == null) {
+        await _storage.delete(key: _displayNameKey);
+      } else {
+        await _storage.write(key: _displayNameKey, value: displayName);
+      }
+      changed = true;
+    }
+    if (_serverLanguage != serverLanguage) {
+      _serverLanguage = serverLanguage;
+      if (serverLanguage == null) {
+        await _storage.delete(key: _serverLanguageKey);
+      } else {
+        await _storage.write(key: _serverLanguageKey, value: serverLanguage);
+      }
+      changed = true;
+    }
+    if (changed) notifyListeners();
+  }
+
+  Future<void> setFirstDayOfWeekCache(int? value) async {
+    if (_firstDayOfWeek == value) return;
+    _firstDayOfWeek = value;
+    if (value == null) {
+      await _storage.delete(key: _firstDayOfWeekKey);
+    } else {
+      await _storage.write(key: _firstDayOfWeekKey, value: value.toString());
+    }
+    notifyListeners();
+  }
+
   Future<void> setNavOrder(List<NavSection> order) async {
     final normalized = decodeNavOrder(encodeNavOrder(order));
     _navOrder = normalized;
@@ -388,6 +448,9 @@ class PrefsService extends ChangeNotifier {
     _lastSeenOnboardingVersion = null;
     _navOrder = List.of(kDefaultNavOrder);
     _themeColorHex = null;
+    _displayName = null;
+    _serverLanguage = null;
+    _firstDayOfWeek = null;
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _pinnedListIdsKey);
     await _storage.delete(key: _notificationsEnabledKey);
@@ -403,6 +466,9 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _lastSeenOnboardingVersionKey);
     await _storage.delete(key: _navOrderKey);
     await _storage.delete(key: _themeColorKey);
+    await _storage.delete(key: _displayNameKey);
+    await _storage.delete(key: _serverLanguageKey);
+    await _storage.delete(key: _firstDayOfWeekKey);
     notifyListeners();
   }
 }

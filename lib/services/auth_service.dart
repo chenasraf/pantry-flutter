@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
+import 'prefs_service.dart';
+
 class NextcloudCredentials {
   final String serverUrl;
   final String loginName;
@@ -72,12 +74,43 @@ class AuthService {
   String? _serverLanguage;
   String? get serverLanguage => _serverLanguage;
 
+  /// Loads cached credentials only — no network. Callers that need fresh
+  /// [firstDayOfWeek] or [serverLanguage] should call [refreshUserState]
+  /// (typically in the background) once the app has started. The cached
+  /// values themselves are seeded by [hydrateFromCache].
   Future<void> loadCredentials() async {
     final json = await _storage.read(key: _credentialsKey);
     if (json != null) {
       _credentials = NextcloudCredentials.fromJson(jsonDecode(json));
-      await Future.wait([fetchFirstDayOfWeek(), fetchUserProfile()]);
     }
+  }
+
+  /// Seed in-memory user-profile state from [PrefsService]'s cache. Call
+  /// once [PrefsService.load] has completed — gives the app correct
+  /// `displayName`, `serverLanguage`, and `firstDayOfWeek` immediately,
+  /// without waiting for [refreshUserState] to finish.
+  void hydrateFromCache() {
+    final prefs = PrefsService.instance;
+    _displayName = prefs.displayName;
+    _serverLanguage = prefs.serverLanguage;
+    final cachedFirstDay = prefs.firstDayOfWeek;
+    if (cachedFirstDay != null) _firstDayOfWeek = cachedFirstDay;
+  }
+
+  /// Background refresh of values derived from the Nextcloud user profile
+  /// and per-app prefs. Safe to fire-and-forget after [loadCredentials].
+  /// Fresh values are written back to [PrefsService] so the next cold start
+  /// can paint with them immediately.
+  Future<void> refreshUserState() async {
+    if (_credentials == null) return;
+    await Future.wait([fetchFirstDayOfWeek(), fetchUserProfile()]);
+    await Future.wait([
+      PrefsService.instance.setUserProfileCache(
+        displayName: _displayName,
+        serverLanguage: _serverLanguage,
+      ),
+      PrefsService.instance.setFirstDayOfWeekCache(_firstDayOfWeek),
+    ]);
   }
 
   Future<void> fetchUserProfile() async {

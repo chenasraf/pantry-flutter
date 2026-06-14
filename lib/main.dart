@@ -42,24 +42,52 @@ void main() async {
   if (kDebugMode) {
     WakelockPlus.enable();
   }
-  await AuthService.instance.loadCredentials();
-  await PrefsService.instance.load();
+
+  // Parallelize independent platform-channel work. AuthService.loadCredentials
+  // and PrefsService.load are independent reads from secure storage;
+  // PackageInfo and LocalNotificationsService.init touch other channels.
+  // Doing them concurrently roughly halves cold-start wall-clock on the
+  // pre-frame critical path.
+  await Future.wait([
+    AuthService.instance.loadCredentials(),
+    PrefsService.instance.load(),
+    LocalNotificationsService.instance.init(),
+    PackageInfo.fromPlatform().then((info) => appVersion = info.version),
+  ]);
+  // Both services are loaded; seed the auth profile from PrefsService's
+  // cache so display name, server language, and first day of week are
+  // available on first frame without waiting for the network refresh.
+  AuthService.instance.hydrateFromCache();
   ThemingService.instance.loadCached();
-  await LocalNotificationsService.instance.init();
-  appVersion = (await PackageInfo.fromPlatform()).version;
+
   if (AuthService.instance.isLoggedIn) {
-    // ServerVersionService must land before ThemingService — on NC ≥ 34 the
-    // theme color comes from the cached capabilities `theming` block.
+    // Disk caches are still awaited — the home view needs them on first
+    // frame to avoid an empty flash.
     await Future.wait([
-      ServerVersionService.instance.fetch().then(
-        (_) => ThemingService.instance.fetchTheme(),
-      ),
       HouseService.instance.cache.load(),
       CategoryService.instance.cache.load(),
       ChecklistService.instance.cache.load(),
       PhotoService.instance.cache.load(),
       NoteService.instance.cache.load(),
     ]);
+    // Network-bound refreshes — kept off the critical path. The cached
+    // theme color already drives the initial paint; capabilities/version
+    // and the profile fetch update listeners when they land.
+    // ServerVersionService must land before ThemingService — on NC ≥ 34
+    // the theme color comes from the cached capabilities `theming` block.
+    unawaited(
+      ServerVersionService.instance.fetch().then(
+        (_) => ThemingService.instance.fetchTheme(),
+      ),
+    );
+    // Re-apply the locale once the user profile lands — if there's no saved
+    // locale pref, the effective locale falls back to the Nextcloud user
+    // language, which isn't known until [refreshUserState] completes.
+    unawaited(
+      AuthService.instance.refreshUserState().then(
+        (_) => LocaleService.instance.apply(),
+      ),
+    );
     // Rebuild the home-screen widget's pinned-list payload from caches —
     // a fresh install wipes HomeWidgetPreferences but secure-storage pins
     // may survive, so the widget would otherwise stay empty until the
