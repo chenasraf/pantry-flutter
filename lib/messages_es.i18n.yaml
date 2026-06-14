@@ -236,6 +236,14 @@ checklists:
     saveFailed: "No se pudo guardar el artículo."
     deleteFailed: "No se pudo eliminar el artículo."
     deleteConfirm: "¿Eliminar este artículo?"
+    save: Guardar cambios
+    descHint: Añadir una descripción (opcional)
+    categoryChange: Cambiar
+    categoryPick: Elige una
+    untitledItem: Artículo sin título
+    typeStaple: Artículo recurrente
+    typeOnce: Artículo único
+    typeRecurring: Recurrente
   sort:
     newestFirst: "Más recientes"
     oldestFirst: "Más antiguos"

@@ -236,6 +236,14 @@ checklists:
     saveFailed: Failed to save item.
     deleteFailed: Failed to delete item.
     deleteConfirm: Delete this item?
+    save: Save changes
+    descHint: Add a description (optional)
+    categoryChange: Change
+    categoryPick: Pick one
+    untitledItem: Untitled item
+    typeStaple: Staple item
+    typeOnce: One-time item
+    typeRecurring: Recurring
   sort:
     newestFirst: Newest first
     oldestFirst: Oldest first

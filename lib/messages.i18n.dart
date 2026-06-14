@@ -1390,6 +1390,46 @@ class ItemFormChecklistsMessages {
   /// "Delete this item?"
   /// ```
   String get deleteConfirm => """Delete this item?""";
+
+  /// ```dart
+  /// "Save changes"
+  /// ```
+  String get save => """Save changes""";
+
+  /// ```dart
+  /// "Add a description (optional)"
+  /// ```
+  String get descHint => """Add a description (optional)""";
+
+  /// ```dart
+  /// "Change"
+  /// ```
+  String get categoryChange => """Change""";
+
+  /// ```dart
+  /// "Pick one"
+  /// ```
+  String get categoryPick => """Pick one""";
+
+  /// ```dart
+  /// "Untitled item"
+  /// ```
+  String get untitledItem => """Untitled item""";
+
+  /// ```dart
+  /// "Staple item"
+  /// ```
+  String get typeStaple => """Staple item""";
+
+  /// ```dart
+  /// "One-time item"
+  /// ```
+  String get typeOnce => """One-time item""";
+
+  /// ```dart
+  /// "Recurring"
+  /// ```
+  String get typeRecurring => """Recurring""";
 }
 
 class SortChecklistsMessages {
@@ -2307,6 +2347,14 @@ Please complete login in your browser.""",
   """checklists.itemForm.saveFailed""": """Failed to save item.""",
   """checklists.itemForm.deleteFailed""": """Failed to delete item.""",
   """checklists.itemForm.deleteConfirm""": """Delete this item?""",
+  """checklists.itemForm.save""": """Save changes""",
+  """checklists.itemForm.descHint""": """Add a description (optional)""",
+  """checklists.itemForm.categoryChange""": """Change""",
+  """checklists.itemForm.categoryPick""": """Pick one""",
+  """checklists.itemForm.untitledItem""": """Untitled item""",
+  """checklists.itemForm.typeStaple""": """Staple item""",
+  """checklists.itemForm.typeOnce""": """One-time item""",
+  """checklists.itemForm.typeRecurring""": """Recurring""",
   """checklists.sort.newestFirst""": """Newest first""",
   """checklists.sort.oldestFirst""": """Oldest first""",
   """checklists.sort.nameAZ""": """Name A–Z""",

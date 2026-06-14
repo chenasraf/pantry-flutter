@@ -1402,6 +1402,46 @@ class ItemFormChecklistsMessagesEs extends ItemFormChecklistsMessages {
   /// "¿Eliminar este artículo?"
   /// ```
   String get deleteConfirm => """¿Eliminar este artículo?""";
+
+  /// ```dart
+  /// "Guardar cambios"
+  /// ```
+  String get save => """Guardar cambios""";
+
+  /// ```dart
+  /// "Añadir una descripción (opcional)"
+  /// ```
+  String get descHint => """Añadir una descripción (opcional)""";
+
+  /// ```dart
+  /// "Cambiar"
+  /// ```
+  String get categoryChange => """Cambiar""";
+
+  /// ```dart
+  /// "Elige una"
+  /// ```
+  String get categoryPick => """Elige una""";
+
+  /// ```dart
+  /// "Artículo sin título"
+  /// ```
+  String get untitledItem => """Artículo sin título""";
+
+  /// ```dart
+  /// "Artículo recurrente"
+  /// ```
+  String get typeStaple => """Artículo recurrente""";
+
+  /// ```dart
+  /// "Artículo único"
+  /// ```
+  String get typeOnce => """Artículo único""";
+
+  /// ```dart
+  /// "Recurrente"
+  /// ```
+  String get typeRecurring => """Recurrente""";
 }
 
 class SortChecklistsMessagesEs extends SortChecklistsMessages {
@@ -2332,6 +2372,14 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.itemForm.deleteFailed""":
       """No se pudo eliminar el artículo.""",
   """checklists.itemForm.deleteConfirm""": """¿Eliminar este artículo?""",
+  """checklists.itemForm.save""": """Guardar cambios""",
+  """checklists.itemForm.descHint""": """Añadir una descripción (opcional)""",
+  """checklists.itemForm.categoryChange""": """Cambiar""",
+  """checklists.itemForm.categoryPick""": """Elige una""",
+  """checklists.itemForm.untitledItem""": """Artículo sin título""",
+  """checklists.itemForm.typeStaple""": """Artículo recurrente""",
+  """checklists.itemForm.typeOnce""": """Artículo único""",
+  """checklists.itemForm.typeRecurring""": """Recurrente""",
   """checklists.sort.newestFirst""": """Más recientes""",
   """checklists.sort.oldestFirst""": """Más antiguos""",
   """checklists.sort.nameAZ""": """Nombre A–Z""",

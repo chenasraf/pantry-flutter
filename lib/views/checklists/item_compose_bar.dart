@@ -9,6 +9,7 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'checklist_item_tile.dart' show ItemLifecycle;
+import 'form_components.dart';
 
 /// Draft state for an item being composed in the quick-add bar.
 class ItemDraft {
@@ -18,10 +19,7 @@ class ItemDraft {
   int? categoryId;
   ItemLifecycle lifecycle = ItemLifecycle.staple;
   // RRULE state when lifecycle == recurring. Default = weekly every 1 week.
-  String freq = 'WEEKLY';
-  int interval = 1;
-  Set<String> byDay = {};
-  bool repeatFromCompletion = false;
+  RecurrenceState recurrence = RecurrenceState();
   XFile? imageFile;
   Uint8List? imageBytes;
 
@@ -31,21 +29,16 @@ class ItemDraft {
     quantity = '';
     categoryId = null;
     lifecycle = defaultLifecycle;
-    freq = 'WEEKLY';
-    interval = 1;
-    byDay = {};
-    repeatFromCompletion = false;
+    recurrence = RecurrenceState();
     imageFile = null;
     imageBytes = null;
   }
 
+  bool get repeatFromCompletion => recurrence.repeatFromCompletion;
+
   String? get rrule {
     if (lifecycle != ItemLifecycle.recurring) return null;
-    return buildRrule(
-      freq: freq,
-      interval: interval,
-      byDay: freq == 'WEEKLY' && byDay.isNotEmpty ? byDay.toList() : null,
-    );
+    return recurrence.toRrule();
   }
 
   bool get deleteOnDoneForCreate => lifecycle == ItemLifecycle.once;
@@ -724,14 +717,14 @@ class _CategoryTray extends StatelessWidget {
         spacing: 8,
         runSpacing: 8,
         children: [
-          _CatSwatch(
+          CategorySwatch(
             label: m.checklists.compose.none,
             color: cs.onSurfaceVariant,
             selected: selectedId == null,
             onTap: () => onSelected(null),
           ),
           for (final c in categories)
-            _CatSwatch(
+            CategorySwatch(
               icon: categoryIcon(c.icon),
               label: c.name,
               color: _parseColor(c.color) ?? cs.primary,
@@ -739,7 +732,7 @@ class _CategoryTray extends StatelessWidget {
               onTap: () => onSelected(c.id),
             ),
           if (onRequestCreate != null)
-            _NewCategoryChip(
+            NewCategoryChipButton(
               color: cs.primary,
               label: m.checklists.itemForm.createCategory,
               onTap: () => onRequestCreate!(),
@@ -755,111 +748,6 @@ class _CategoryTray extends StatelessWidget {
     if (hex.length == 6) hex = 'FF$hex';
     final value = int.tryParse(hex, radix: 16);
     return value != null ? Color(value) : null;
-  }
-}
-
-class _CatSwatch extends StatelessWidget {
-  final IconData? icon;
-  final String label;
-  final Color color;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _CatSwatch({
-    this.icon,
-    required this.label,
-    required this.color,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(9),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: selected ? color.withValues(alpha: 0.14) : cs.surfaceContainer,
-          border: Border.all(
-            color: selected ? color : cs.outlineVariant,
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(9),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            ),
-            const SizedBox(width: 6),
-            if (icon != null) ...[
-              Icon(icon, size: 14, color: color),
-              const SizedBox(width: 6),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Distinct from _CatSwatch — uses a "+" icon instead of a color dot and an
-/// accent-tinted dashed-feeling border so it reads as an action rather than a
-/// selectable category.
-class _NewCategoryChip extends StatelessWidget {
-  final Color color;
-  final String label;
-  final VoidCallback onTap;
-
-  const _NewCategoryChip({
-    required this.color,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(9),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          border: Border.all(color: color.withValues(alpha: 0.5)),
-          borderRadius: BorderRadius.circular(9),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.add, size: 14, color: color),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -886,7 +774,7 @@ class _QuantityTray extends StatelessWidget {
         children: [
           Row(
             children: [
-              _StepperButton(icon: Icons.remove, onTap: onMinus),
+              FormStepperButton(icon: Icons.remove, onTap: onMinus),
               const SizedBox(width: 10),
               Expanded(
                 child: TextField(
@@ -949,7 +837,7 @@ class _QuantityTray extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              _StepperButton(icon: Icons.add, accent: true, onTap: onPlus),
+              FormStepperButton(icon: Icons.add, accent: true, onTap: onPlus),
             ],
           ),
           const SizedBox(height: 10),
@@ -1010,47 +898,6 @@ class _DescriptionTray extends StatelessWidget {
   }
 }
 
-class _StepperButton extends StatelessWidget {
-  final IconData icon;
-  final bool accent;
-  final VoidCallback onTap;
-
-  const _StepperButton({
-    required this.icon,
-    this.accent = false,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(11),
-      child: Container(
-        width: 42,
-        height: 42,
-        decoration: BoxDecoration(
-          color: accent
-              ? cs.primary.withValues(alpha: 0.14)
-              : cs.surfaceContainer,
-          border: Border.all(
-            color: accent
-                ? cs.primary.withValues(alpha: 0.4)
-                : cs.outlineVariant,
-          ),
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: Icon(
-          icon,
-          color: accent ? cs.primary : cs.onSurfaceVariant,
-          size: 20,
-        ),
-      ),
-    );
-  }
-}
-
 class _TypeTray extends StatelessWidget {
   final ItemDraft draft;
   final VoidCallback onChanged;
@@ -1069,21 +916,21 @@ class _TypeTray extends StatelessWidget {
       label: t.label,
       child: Column(
         children: [
-          _TypeRow(
+          LifecycleRow(
             label: t.staple,
             body: t.stapleBody,
             selected: draft.lifecycle == ItemLifecycle.staple,
             onTap: () => _set(ItemLifecycle.staple),
           ),
           const SizedBox(height: 7),
-          _TypeRow(
+          LifecycleRow(
             label: t.onceTime,
             body: t.onceTimeBody,
             selected: draft.lifecycle == ItemLifecycle.once,
             onTap: () => _set(ItemLifecycle.once),
           ),
           const SizedBox(height: 7),
-          _TypeRow(
+          LifecycleRow(
             label: t.recurring,
             body: t.recurringBody,
             selected: draft.lifecycle == ItemLifecycle.recurring,
@@ -1091,231 +938,8 @@ class _TypeTray extends StatelessWidget {
           ),
           if (draft.lifecycle == ItemLifecycle.recurring) ...[
             const SizedBox(height: 12),
-            _RecurrenceInline(draft: draft, onChanged: onChanged),
+            RecurrenceInline(state: draft.recurrence, onChanged: onChanged),
           ],
-        ],
-      ),
-    );
-  }
-}
-
-class _TypeRow extends StatelessWidget {
-  final String label;
-  final String body;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _TypeRow({
-    required this.label,
-    required this.body,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(11),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: selected
-              ? cs.primary.withValues(alpha: 0.1)
-              : cs.surfaceContainer,
-          border: Border.all(
-            color: selected ? cs.primary : cs.outlineVariant,
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 17,
-              height: 17,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: selected ? cs.primary : cs.outlineVariant,
-                  width: selected ? 5 : 2,
-                ),
-                color: selected ? cs.surface : Colors.transparent,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: cs.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    body,
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w500,
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _RecurrenceInline extends StatelessWidget {
-  final ItemDraft draft;
-  final VoidCallback onChanged;
-
-  const _RecurrenceInline({required this.draft, required this.onChanged});
-
-  static const _weekdays = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-
-  @override
-  Widget build(BuildContext context) {
-    final r = m.recurrence;
-    final cs = Theme.of(context).colorScheme;
-    final dayAbbr = {
-      'MO': r.dayAbbr.mo,
-      'TU': r.dayAbbr.tu,
-      'WE': r.dayAbbr.we,
-      'TH': r.dayAbbr.th,
-      'FR': r.dayAbbr.fr,
-      'SA': r.dayAbbr.sa,
-      'SU': r.dayAbbr.su,
-    };
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(11),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Every N <unit>
-          Row(
-            children: [
-              Text(
-                r.everyLabel,
-                style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
-              ),
-              const SizedBox(width: 10),
-              _StepperButton(
-                icon: Icons.remove,
-                onTap: () {
-                  if (draft.interval > 1) {
-                    draft.interval--;
-                    onChanged();
-                  }
-                },
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: cs.surface,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '${draft.interval}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              _StepperButton(
-                icon: Icons.add,
-                accent: true,
-                onTap: () {
-                  draft.interval++;
-                  onChanged();
-                },
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: DropdownButton<String>(
-                  value: draft.freq,
-                  isExpanded: true,
-                  underline: const SizedBox.shrink(),
-                  items: [
-                    DropdownMenuItem(value: 'DAILY', child: Text(r.unitDays)),
-                    DropdownMenuItem(value: 'WEEKLY', child: Text(r.unitWeeks)),
-                    DropdownMenuItem(
-                      value: 'MONTHLY',
-                      child: Text(r.unitMonths),
-                    ),
-                    DropdownMenuItem(value: 'YEARLY', child: Text(r.unitYears)),
-                  ],
-                  onChanged: (v) {
-                    if (v == null) return;
-                    draft.freq = v;
-                    if (v != 'WEEKLY') draft.byDay.clear();
-                    onChanged();
-                  },
-                ),
-              ),
-            ],
-          ),
-          if (draft.freq == 'WEEKLY') ...[
-            const SizedBox(height: 10),
-            Text(
-              r.repeatOn,
-              style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
-            ),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final d in _weekdays)
-                  FilterChip(
-                    label: Text(dayAbbr[d] ?? d),
-                    selected: draft.byDay.contains(d),
-                    onSelected: (sel) {
-                      if (sel) {
-                        draft.byDay.add(d);
-                      } else {
-                        draft.byDay.remove(d);
-                      }
-                      onChanged();
-                    },
-                  ),
-              ],
-            ),
-          ],
-          const SizedBox(height: 8),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            value: draft.repeatFromCompletion,
-            onChanged: (v) {
-              draft.repeatFromCompletion = v;
-              onChanged();
-            },
-            title: Text(
-              r.countFromCompletion,
-              style: TextStyle(fontSize: 13, color: cs.onSurface),
-            ),
-          ),
         ],
       ),
     );

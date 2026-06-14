@@ -1393,6 +1393,46 @@ class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
   /// "למחוק את הפריט?"
   /// ```
   String get deleteConfirm => """למחוק את הפריט?""";
+
+  /// ```dart
+  /// "שמור שינויים"
+  /// ```
+  String get save => """שמור שינויים""";
+
+  /// ```dart
+  /// "הוסף תיאור (אופציונלי)"
+  /// ```
+  String get descHint => """הוסף תיאור (אופציונלי)""";
+
+  /// ```dart
+  /// "שנה"
+  /// ```
+  String get categoryChange => """שנה""";
+
+  /// ```dart
+  /// "בחר אחת"
+  /// ```
+  String get categoryPick => """בחר אחת""";
+
+  /// ```dart
+  /// "פריט ללא שם"
+  /// ```
+  String get untitledItem => """פריט ללא שם""";
+
+  /// ```dart
+  /// "פריט קבוע"
+  /// ```
+  String get typeStaple => """פריט קבוע""";
+
+  /// ```dart
+  /// "פריט חד-פעמי"
+  /// ```
+  String get typeOnce => """פריט חד-פעמי""";
+
+  /// ```dart
+  /// "חוזר"
+  /// ```
+  String get typeRecurring => """חוזר""";
 }
 
 class SortChecklistsMessagesHe extends SortChecklistsMessages {
@@ -2304,6 +2344,14 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemForm.saveFailed""": """שמירת הפריט נכשלה.""",
   """checklists.itemForm.deleteFailed""": """מחיקת הפריט נכשלה.""",
   """checklists.itemForm.deleteConfirm""": """למחוק את הפריט?""",
+  """checklists.itemForm.save""": """שמור שינויים""",
+  """checklists.itemForm.descHint""": """הוסף תיאור (אופציונלי)""",
+  """checklists.itemForm.categoryChange""": """שנה""",
+  """checklists.itemForm.categoryPick""": """בחר אחת""",
+  """checklists.itemForm.untitledItem""": """פריט ללא שם""",
+  """checklists.itemForm.typeStaple""": """פריט קבוע""",
+  """checklists.itemForm.typeOnce""": """פריט חד-פעמי""",
+  """checklists.itemForm.typeRecurring""": """חוזר""",
   """checklists.sort.newestFirst""": """החדש ביותר""",
   """checklists.sort.oldestFirst""": """הישן ביותר""",
   """checklists.sort.nameAZ""": """שם א–ת""",

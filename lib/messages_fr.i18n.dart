@@ -1407,6 +1407,46 @@ class ItemFormChecklistsMessagesFr extends ItemFormChecklistsMessages {
   /// "Supprimer cet article ?"
   /// ```
   String get deleteConfirm => """Supprimer cet article ?""";
+
+  /// ```dart
+  /// "Enregistrer"
+  /// ```
+  String get save => """Enregistrer""";
+
+  /// ```dart
+  /// "Ajouter une description (facultatif)"
+  /// ```
+  String get descHint => """Ajouter une description (facultatif)""";
+
+  /// ```dart
+  /// "Changer"
+  /// ```
+  String get categoryChange => """Changer""";
+
+  /// ```dart
+  /// "Choisissez"
+  /// ```
+  String get categoryPick => """Choisissez""";
+
+  /// ```dart
+  /// "Article sans titre"
+  /// ```
+  String get untitledItem => """Article sans titre""";
+
+  /// ```dart
+  /// "Article récurrent"
+  /// ```
+  String get typeStaple => """Article récurrent""";
+
+  /// ```dart
+  /// "Article unique"
+  /// ```
+  String get typeOnce => """Article unique""";
+
+  /// ```dart
+  /// "Récurrent"
+  /// ```
+  String get typeRecurring => """Récurrent""";
 }
 
 class SortChecklistsMessagesFr extends SortChecklistsMessages {
@@ -2341,6 +2381,15 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.itemForm.deleteFailed""":
       """Impossible de supprimer l'article.""",
   """checklists.itemForm.deleteConfirm""": """Supprimer cet article ?""",
+  """checklists.itemForm.save""": """Enregistrer""",
+  """checklists.itemForm.descHint""":
+      """Ajouter une description (facultatif)""",
+  """checklists.itemForm.categoryChange""": """Changer""",
+  """checklists.itemForm.categoryPick""": """Choisissez""",
+  """checklists.itemForm.untitledItem""": """Article sans titre""",
+  """checklists.itemForm.typeStaple""": """Article récurrent""",
+  """checklists.itemForm.typeOnce""": """Article unique""",
+  """checklists.itemForm.typeRecurring""": """Récurrent""",
   """checklists.sort.newestFirst""": """Plus récents""",
   """checklists.sort.oldestFirst""": """Plus anciens""",
   """checklists.sort.nameAZ""": """Nom A–Z""",

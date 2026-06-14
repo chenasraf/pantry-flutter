@@ -236,6 +236,14 @@ checklists:
     saveFailed: שמירת הפריט נכשלה.
     deleteFailed: מחיקת הפריט נכשלה.
     deleteConfirm: למחוק את הפריט?
+    save: שמור שינויים
+    descHint: הוסף תיאור (אופציונלי)
+    categoryChange: שנה
+    categoryPick: בחר אחת
+    untitledItem: פריט ללא שם
+    typeStaple: פריט קבוע
+    typeOnce: פריט חד-פעמי
+    typeRecurring: חוזר
   sort:
     newestFirst: החדש ביותר
     oldestFirst: הישן ביותר
