@@ -1243,7 +1243,7 @@ class _ViewToggleBtn extends StatelessWidget {
   }
 }
 
-class _ItemList extends StatelessWidget {
+class _ItemList extends StatefulWidget {
   final ChecklistsController controller;
   final List<ListItem> activeItems;
   final List<ListItem> doneItems;
@@ -1261,67 +1261,110 @@ class _ItemList extends StatelessWidget {
   });
 
   @override
+  State<_ItemList> createState() => _ItemListState();
+}
+
+class _ItemListState extends State<_ItemList> {
+  final ScrollController _scrollController = ScrollController();
+  final Map<int, GlobalKey> _tileKeys = {};
+
+  GlobalKey _keyFor(int id) => _tileKeys.putIfAbsent(id, () => GlobalKey());
+
+  @override
+  void didUpdateWidget(_ItemList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final live = <int>{
+      for (final i in widget.activeItems) i.id,
+      for (final i in widget.doneItems) i.id,
+    };
+    _tileKeys.removeWhere((id, _) => !live.contains(id));
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final showDone = widget.doneItems.isNotEmpty;
+    final showDoneItems = showDone && !widget.doneCollapsed;
     return RefreshIndicator(
-      onRefresh: controller.refresh,
-      child: ListView(
+      onRefresh: widget.controller.refresh,
+      child: CustomScrollView(
+        controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.only(top: 4, bottom: 12),
-        children: [
-          for (final item in activeItems) _buildTile(context, item),
-          if (doneItems.isNotEmpty) ...[
-            InkWell(
-              onTap: onToggleDoneCollapsed,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 15,
-                ),
-                margin: const EdgeInsets.only(top: 6),
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      color: cs.outlineVariant.withValues(alpha: 0.6),
+        slivers: [
+          const SliverPadding(padding: EdgeInsets.only(top: 4)),
+          SliverList.builder(
+            itemCount: widget.activeItems.length,
+            itemBuilder: (context, i) =>
+                _buildTile(context, widget.activeItems[i]),
+          ),
+          if (showDone)
+            SliverToBoxAdapter(
+              child: InkWell(
+                onTap: widget.onToggleDoneCollapsed,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 15,
+                  ),
+                  margin: const EdgeInsets.only(top: 6),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: cs.outlineVariant.withValues(alpha: 0.6),
+                      ),
                     ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.check, color: const Color(0xFF5FBF8A), size: 18),
-                    const SizedBox(width: 11),
-                    Text(
-                      m.checklists.doneCount(doneItems.length),
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: cs.onSurfaceVariant,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color: const Color(0xFF5FBF8A),
+                        size: 18,
                       ),
-                    ),
-                    const Spacer(),
-                    AnimatedRotation(
-                      duration: const Duration(milliseconds: 200),
-                      turns: doneCollapsed ? 0 : 0.5,
-                      child: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: cs.onSurfaceVariant,
-                        size: 22,
+                      const SizedBox(width: 11),
+                      Text(
+                        m.checklists.doneCount(widget.doneItems.length),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: cs.onSurfaceVariant,
+                        ),
                       ),
-                    ),
-                  ],
+                      const Spacer(),
+                      AnimatedRotation(
+                        duration: const Duration(milliseconds: 200),
+                        turns: widget.doneCollapsed ? 0 : 0.5,
+                        child: Icon(
+                          Icons.keyboard_arrow_down,
+                          color: cs.onSurfaceVariant,
+                          size: 22,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            if (!doneCollapsed)
-              for (final item in doneItems) _buildTile(context, item),
-          ],
-          const SizedBox(height: 24),
+          if (showDoneItems)
+            SliverList.builder(
+              itemCount: widget.doneItems.length,
+              itemBuilder: (context, i) =>
+                  _buildTile(context, widget.doneItems[i]),
+            ),
+          const SliverPadding(padding: EdgeInsets.only(bottom: 36)),
         ],
       ),
     );
   }
 
   Widget _buildTile(BuildContext context, ListItem item) {
+    final controller = widget.controller;
     final addedByUserId =
         controller.showAddedBy &&
             item.addedBy != null &&
@@ -1332,13 +1375,13 @@ class _ItemList extends StatelessWidget {
         ? controller.members[addedByUserId]?.displayName
         : null;
     return ChecklistItemTile(
-      key: ValueKey(item.id),
+      key: _keyFor(item.id),
       item: item,
       category: item.categoryId != null
           ? controller.categories[item.categoryId]
           : null,
       houseId: controller.houseId,
-      isCardsView: isCards,
+      isCardsView: widget.isCards,
       trashMode: controller.isTrashMode,
       addedByUserId: addedByUserId,
       addedByDisplayName: addedByDisplayName,
@@ -1405,7 +1448,35 @@ class _ItemList extends StatelessWidget {
   ) {
     final wasDone = item.done;
     final wasDeleteOnDone = item.deleteOnDone;
+
+    // Unchecking promotes the tile to the active section, which sits above the
+    // done section. That growth pushes everything below it — including the
+    // viewport content the user is looking at — down by the tile's height.
+    // Capture that height pre-toggle so we can cancel the shift post-frame.
+    double? shiftCompensation;
+    if (wasDone) {
+      final ctx = _tileKeys[item.id]?.currentContext;
+      final box = ctx?.findRenderObject();
+      if (box is RenderBox && box.hasSize) {
+        shiftCompensation = box.size.height;
+      }
+    }
+
     controller.toggleItem(item);
+
+    if (shiftCompensation != null) {
+      final delta = shiftCompensation;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_scrollController.hasClients) return;
+        final pos = _scrollController.position;
+        final target = (pos.pixels + delta).clamp(
+          pos.minScrollExtent,
+          pos.maxScrollExtent,
+        );
+        if (target != pos.pixels) pos.jumpTo(target);
+      });
+    }
+
     if (wasDone) return;
     final messenger = ScaffoldMessenger.of(context);
     messenger.clearSnackBars();
