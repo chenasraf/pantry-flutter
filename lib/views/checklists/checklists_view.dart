@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -69,13 +71,24 @@ class ChecklistsView extends StatefulWidget {
   State<ChecklistsView> createState() => _ChecklistsViewState();
 }
 
-class _ChecklistsViewState extends State<ChecklistsView> {
+class _ChecklistsViewState extends State<ChecklistsView>
+    with WidgetsBindingObserver {
   late final _controller = ChecklistsController(houseId: widget.houseId);
+
+  /// Polls the server every 30s so the list stays current without the
+  /// user pulling-to-refresh. `refresh()` shows cached items immediately and
+  /// updates silently in the background once the lists cache is populated.
+  /// Paused while the app is hidden/backgrounded so we don't waste a request
+  /// the user can't see — and a fresh refresh fires on resume regardless.
+  static const _backgroundRefreshInterval = Duration(seconds: 30);
+  Timer? _backgroundRefreshTimer;
 
   @override
   void initState() {
     super.initState();
     _controller.load();
+    WidgetsBinding.instance.addObserver(this);
+    _startBackgroundRefreshTimer();
     final holder = widget.refreshHolder;
     if (holder != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -85,8 +98,38 @@ class _ChecklistsViewState extends State<ChecklistsView> {
     }
   }
 
+  void _startBackgroundRefreshTimer() {
+    _backgroundRefreshTimer?.cancel();
+    _backgroundRefreshTimer = Timer.periodic(
+      _backgroundRefreshInterval,
+      (_) => _controller.refresh(),
+    );
+  }
+
+  void _stopBackgroundRefreshTimer() {
+    _backgroundRefreshTimer?.cancel();
+    _backgroundRefreshTimer = null;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _controller.refresh();
+        _startBackgroundRefreshTimer();
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        _stopBackgroundRefreshTimer();
+      case AppLifecycleState.inactive:
+        break;
+    }
+  }
+
   @override
   void dispose() {
+    _stopBackgroundRefreshTimer();
+    WidgetsBinding.instance.removeObserver(this);
     if (widget.refreshHolder?.value == _controller.refresh) {
       widget.refreshHolder?.value = null;
     }
