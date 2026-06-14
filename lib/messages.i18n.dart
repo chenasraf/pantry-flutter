@@ -1782,6 +1782,16 @@ class NotesWallMessages {
   String get editNote => """Edit note""";
 
   /// ```dart
+  /// "Pin note"
+  /// ```
+  String get pinNote => """Pin note""";
+
+  /// ```dart
+  /// "Unpin note"
+  /// ```
+  String get unpinNote => """Unpin note""";
+
+  /// ```dart
   /// "Title"
   /// ```
   String get title => """Title""";
@@ -2581,6 +2591,8 @@ Please complete login in your browser.""",
   """notesWall.deleteConfirm""": """Delete this note?""",
   """notesWall.newNote""": """New note""",
   """notesWall.editNote""": """Edit note""",
+  """notesWall.pinNote""": """Pin note""",
+  """notesWall.unpinNote""": """Unpin note""",
   """notesWall.title""": """Title""",
   """notesWall.content""": """Content""",
   """notesWall.color""": """Color""",

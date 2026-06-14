@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
@@ -45,7 +46,8 @@ class NoteTile extends StatelessWidget {
     }
 
     return DragTarget<int>(
-      onWillAcceptWithDetails: (details) => details.data != note.id,
+      onWillAcceptWithDetails: (details) =>
+          details.data != note.id && controller.canDropOn(note.id),
       onAcceptWithDetails: (_) {},
       onMove: (_) => controller.hoverReorder(note.id),
       builder: (context, _, _) {
@@ -94,6 +96,10 @@ class NoteTile extends StatelessWidget {
           children: [
             Row(
               children: [
+                if (note.isPinned) ...[
+                  Icon(Icons.push_pin, size: 14, color: textColor),
+                  const SizedBox(width: 4),
+                ],
                 Expanded(
                   child: Directionality(
                     textDirection: titleDir,
@@ -230,6 +236,20 @@ class NoteTile extends StatelessWidget {
         ],
       ),
     ),
+    if (hasFeature('note-pinning'))
+      PopupMenuItem(
+        value: 'pin',
+        child: Row(
+          children: [
+            Icon(
+              note.isPinned ? Icons.push_pin_outlined : Icons.push_pin,
+              size: 18,
+            ),
+            const SizedBox(width: 8),
+            Text(note.isPinned ? m.notesWall.unpinNote : m.notesWall.pinNote),
+          ],
+        ),
+      ),
     PopupMenuItem(
       value: 'delete',
       child: Row(
@@ -246,6 +266,8 @@ class NoteTile extends StatelessWidget {
     switch (value) {
       case 'edit':
         _editNote(context);
+      case 'pin':
+        controller.togglePin(note);
       case 'delete':
         _confirmDelete(context);
     }

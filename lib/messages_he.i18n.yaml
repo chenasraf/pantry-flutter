@@ -338,6 +338,8 @@ notesWall:
   noteRemoved(int count): "${_plural(count, one: 'הערה נמחקה', many: '$count הערות נמחקו')}"
   newNote: הערה חדשה
   editNote: עריכת הערה
+  pinNote: הצמדת הערה
+  unpinNote: ביטול הצמדה
   title: כותרת
   content: תוכן
   color: צבע

@@ -1802,6 +1802,16 @@ class NotesWallMessagesFr extends NotesWallMessages {
   String get editNote => """Modifier la note""";
 
   /// ```dart
+  /// "Épingler la note"
+  /// ```
+  String get pinNote => """Épingler la note""";
+
+  /// ```dart
+  /// "Désépingler la note"
+  /// ```
+  String get unpinNote => """Désépingler la note""";
+
+  /// ```dart
   /// "Titre"
   /// ```
   String get title => """Titre""";
@@ -2620,6 +2630,8 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """notesWall.deleteConfirm""": """Supprimer cette note ?""",
   """notesWall.newNote""": """Nouvelle note""",
   """notesWall.editNote""": """Modifier la note""",
+  """notesWall.pinNote""": """Épingler la note""",
+  """notesWall.unpinNote""": """Désépingler la note""",
   """notesWall.title""": """Titre""",
   """notesWall.content""": """Contenu""",
   """notesWall.color""": """Couleur""",

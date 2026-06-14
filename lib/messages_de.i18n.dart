@@ -1802,6 +1802,16 @@ class NotesWallMessagesDe extends NotesWallMessages {
   String get editNote => """Notiz bearbeiten""";
 
   /// ```dart
+  /// "Notiz anheften"
+  /// ```
+  String get pinNote => """Notiz anheften""";
+
+  /// ```dart
+  /// "Notiz lösen"
+  /// ```
+  String get unpinNote => """Notiz lösen""";
+
+  /// ```dart
   /// "Titel"
   /// ```
   String get title => """Titel""";
@@ -2623,6 +2633,8 @@ Bitte melde dich in deinem Browser an.""",
   """notesWall.deleteConfirm""": """Diese Notiz löschen?""",
   """notesWall.newNote""": """Neue Notiz""",
   """notesWall.editNote""": """Notiz bearbeiten""",
+  """notesWall.pinNote""": """Notiz anheften""",
+  """notesWall.unpinNote""": """Notiz lösen""",
   """notesWall.title""": """Titel""",
   """notesWall.content""": """Inhalt""",
   """notesWall.color""": """Farbe""",

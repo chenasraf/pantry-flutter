@@ -6,6 +6,7 @@ class Note {
   final String? color;
   final String createdBy;
   final int sortOrder;
+  final bool isPinned;
   final int createdAt;
   final int updatedAt;
 
@@ -17,6 +18,7 @@ class Note {
     this.color,
     required this.createdBy,
     required this.sortOrder,
+    this.isPinned = false,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -29,6 +31,7 @@ class Note {
     color: json['color'] as String?,
     createdBy: json['createdBy'] as String,
     sortOrder: json['sortOrder'] as int,
+    isPinned: json['isPinned'] as bool? ?? false,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
   );
@@ -41,6 +44,7 @@ class Note {
     'color': color,
     'createdBy': createdBy,
     'sortOrder': sortOrder,
+    'isPinned': isPinned,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };

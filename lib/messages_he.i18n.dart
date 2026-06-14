@@ -1786,6 +1786,16 @@ class NotesWallMessagesHe extends NotesWallMessages {
   String get editNote => """עריכת הערה""";
 
   /// ```dart
+  /// "הצמדת הערה"
+  /// ```
+  String get pinNote => """הצמדת הערה""";
+
+  /// ```dart
+  /// "ביטול הצמדה"
+  /// ```
+  String get unpinNote => """ביטול הצמדה""";
+
+  /// ```dart
   /// "כותרת"
   /// ```
   String get title => """כותרת""";
@@ -2580,6 +2590,8 @@ Map<String, String> get messagesHeMap => {
   """notesWall.deleteConfirm""": """למחוק את ההערה?""",
   """notesWall.newNote""": """הערה חדשה""",
   """notesWall.editNote""": """עריכת הערה""",
+  """notesWall.pinNote""": """הצמדת הערה""",
+  """notesWall.unpinNote""": """ביטול הצמדה""",
   """notesWall.title""": """כותרת""",
   """notesWall.content""": """תוכן""",
   """notesWall.color""": """צבע""",

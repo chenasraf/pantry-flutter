@@ -158,7 +158,9 @@ class NotesController extends ChangeNotifier {
       content: content,
       color: color,
     );
-    _notes.insert(0, note);
+    // Insert after the last pinned note (new notes start unpinned).
+    final firstUnpinned = _notes.indexWhere((n) => !n.isPinned);
+    _notes.insert(firstUnpinned == -1 ? _notes.length : firstUnpinned, note);
     _service.cacheNotes(houseId, _notes);
     notifyListeners();
     return note;
@@ -169,6 +171,7 @@ class NotesController extends ChangeNotifier {
     String? title,
     String? content,
     String? color,
+    bool? isPinned,
   }) async {
     final updated = await _service.updateNote(
       houseId,
@@ -176,14 +179,30 @@ class NotesController extends ChangeNotifier {
       title: title,
       content: content,
       color: color,
+      isPinned: isPinned,
     );
     final index = _notes.indexWhere((n) => n.id == note.id);
     if (index != -1) {
       _notes[index] = updated;
+      if (isPinned != null) {
+        _notes = _sortPinnedFirst(_notes);
+      }
       _service.cacheNotes(houseId, _notes);
       notifyListeners();
     }
     return updated;
+  }
+
+  Future<Note> togglePin(Note note) =>
+      updateNote(note, isPinned: !note.isPinned);
+
+  List<Note> _sortPinnedFirst(List<Note> notes) {
+    final pinned = <Note>[];
+    final unpinned = <Note>[];
+    for (final n in notes) {
+      (n.isPinned ? pinned : unpinned).add(n);
+    }
+    return [...pinned, ...unpinned];
   }
 
   Future<void> deleteNote(Note note) async {
@@ -205,10 +224,24 @@ class NotesController extends ChangeNotifier {
     final fromIndex = _notes.indexWhere((n) => n.id == _draggingId);
     final toIndex = _notes.indexWhere((n) => n.id == targetId);
     if (fromIndex == -1 || toIndex == -1) return;
+    if (_notes[fromIndex].isPinned != _notes[toIndex].isPinned) return;
 
     final item = _notes.removeAt(fromIndex);
     _notes.insert(toIndex, item);
     notifyListeners();
+  }
+
+  bool canDropOn(int targetId) {
+    if (_draggingId == null || _draggingId == targetId) return false;
+    final from = _notes.firstWhere(
+      (n) => n.id == _draggingId,
+      orElse: () => _notes.first,
+    );
+    final to = _notes.firstWhere(
+      (n) => n.id == targetId,
+      orElse: () => _notes.first,
+    );
+    return from.isPinned == to.isPinned;
   }
 
   void endDrag() {

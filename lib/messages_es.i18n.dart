@@ -1796,6 +1796,16 @@ class NotesWallMessagesEs extends NotesWallMessages {
   String get editNote => """Editar nota""";
 
   /// ```dart
+  /// "Fijar nota"
+  /// ```
+  String get pinNote => """Fijar nota""";
+
+  /// ```dart
+  /// "Quitar fijación"
+  /// ```
+  String get unpinNote => """Quitar fijación""";
+
+  /// ```dart
   /// "Título"
   /// ```
   String get title => """Título""";
@@ -2608,6 +2618,8 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """notesWall.deleteConfirm""": """¿Eliminar esta nota?""",
   """notesWall.newNote""": """Nueva nota""",
   """notesWall.editNote""": """Editar nota""",
+  """notesWall.pinNote""": """Fijar nota""",
+  """notesWall.unpinNote""": """Quitar fijación""",
   """notesWall.title""": """Título""",
   """notesWall.content""": """Contenido""",
   """notesWall.color""": """Color""",

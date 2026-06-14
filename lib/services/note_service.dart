@@ -62,10 +62,16 @@ class NoteService {
     String? title,
     String? content,
     String? color,
+    bool? isPinned,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, Note>(
       '/houses/$houseId/notes/$noteId',
-      body: {'title': ?title, 'content': ?content, 'color': ?color},
+      body: {
+        'title': ?title,
+        'content': ?content,
+        'color': ?color,
+        'isPinned': ?isPinned,
+      },
       fromJson: (data) => Note.fromJson(data),
     );
   }

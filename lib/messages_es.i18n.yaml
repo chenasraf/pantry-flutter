@@ -338,6 +338,8 @@ notesWall:
   noteRemoved(int count): "${_plural(count, one: 'Nota eliminada', many: '$count notas eliminadas')}"
   newNote: Nueva nota
   editNote: Editar nota
+  pinNote: Fijar nota
+  unpinNote: Quitar fijación
   title: "Título"
   content: Contenido
   color: Color
