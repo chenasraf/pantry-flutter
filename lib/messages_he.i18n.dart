@@ -697,6 +697,33 @@ class SettingsMessagesHe extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesHe(this);
 
   /// ```dart
+  /// "סדר ניווט"
+  /// ```
+  String get navOrderTitle => """סדר ניווט""";
+
+  /// ```dart
+  /// "שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה."
+  /// ```
+  String get navOrderSubtitle =>
+      """שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה.""";
+
+  /// ```dart
+  /// "גרור כדי לשנות את הסדר. הפריט הראשון הוא הקטע שנפתח עם הפעלת האפליקציה."
+  /// ```
+  String get navOrderBody =>
+      """גרור כדי לשנות את הסדר. הפריט הראשון הוא הקטע שנפתח עם הפעלת האפליקציה.""";
+
+  /// ```dart
+  /// "נפתח עם הפעלת האפליקציה"
+  /// ```
+  String get navOrderDefaultHint => """נפתח עם הפעלת האפליקציה""";
+
+  /// ```dart
+  /// "איפוס"
+  /// ```
+  String get navOrderReset => """איפוס""";
+
+  /// ```dart
   /// "שפה"
   /// ```
   String get language => """שפה""";
@@ -2405,6 +2432,13 @@ Map<String, String> get messagesHeMap => {
   """settings.categorySpacingNames.disabled""": """מושבת""",
   """settings.categorySpacingNames.space""": """רווח""",
   """settings.categorySpacingNames.divider""": """קו מפריד""",
+  """settings.navOrderTitle""": """סדר ניווט""",
+  """settings.navOrderSubtitle""":
+      """שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה.""",
+  """settings.navOrderBody""":
+      """גרור כדי לשנות את הסדר. הפריט הראשון הוא הקטע שנפתח עם הפעלת האפליקציה.""",
+  """settings.navOrderDefaultHint""": """נפתח עם הפעלת האפליקציה""",
+  """settings.navOrderReset""": """איפוס""",
   """settings.language""": """שפה""",
   """settings.languageNames.system""": """ברירת מחדל (שפת המערכת)""",
   """settings.languageNames.english""": """English""",

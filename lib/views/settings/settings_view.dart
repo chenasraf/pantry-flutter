@@ -8,6 +8,7 @@ import 'package:pantry/services/locale_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/services/theming_service.dart';
+import 'package:pantry/views/settings/nav_order_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class SettingsView extends StatefulWidget {
@@ -208,6 +209,17 @@ class _SettingsViewState extends State<SettingsView> {
 
           // -- Interface --
           _SectionHeader(m.settings.interfaceSection),
+          ListTile(
+            leading: const Icon(Icons.reorder),
+            title: Text(m.settings.navOrderTitle),
+            subtitle: Text(m.settings.navOrderSubtitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const NavOrderView()));
+            },
+          ),
           if (supportsFeature('pref-tap-row-to-complete'))
             SwitchListTile(
               title: Text(m.settings.tapRowToComplete),

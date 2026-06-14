@@ -126,6 +126,11 @@ settings:
     disabled: מושבת
     space: רווח
     divider: קו מפריד
+  navOrderTitle: סדר ניווט
+  navOrderSubtitle: שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה.
+  navOrderBody: גרור כדי לשנות את הסדר. הפריט הראשון הוא הקטע שנפתח עם הפעלת האפליקציה.
+  navOrderDefaultHint: נפתח עם הפעלת האפליקציה
+  navOrderReset: איפוס
   language: שפה
   languageNames:
     system: ברירת מחדל (שפת המערכת)

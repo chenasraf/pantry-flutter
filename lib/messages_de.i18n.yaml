@@ -126,6 +126,11 @@ settings:
     disabled: Deaktiviert
     space: Abstand
     divider: Trennlinie
+  navOrderTitle: Navigationsreihenfolge
+  navOrderSubtitle: Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.
+  navOrderBody: Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet.
+  navOrderDefaultHint: Öffnet sich beim Start
+  navOrderReset: Zurücksetzen
   language: Sprache
   languageNames:
     system: Systemstandard

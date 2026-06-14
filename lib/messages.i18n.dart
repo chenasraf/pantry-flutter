@@ -697,6 +697,33 @@ class SettingsMessages {
       CategorySpacingNamesSettingsMessages(this);
 
   /// ```dart
+  /// "Navigation order"
+  /// ```
+  String get navOrderTitle => """Navigation order""";
+
+  /// ```dart
+  /// "Reorder the bottom navigation tabs. The first item is opened on app start."
+  /// ```
+  String get navOrderSubtitle =>
+      """Reorder the bottom navigation tabs. The first item is opened on app start.""";
+
+  /// ```dart
+  /// "Drag to reorder. The first item is the section opened when the app starts."
+  /// ```
+  String get navOrderBody =>
+      """Drag to reorder. The first item is the section opened when the app starts.""";
+
+  /// ```dart
+  /// "Opens on app start"
+  /// ```
+  String get navOrderDefaultHint => """Opens on app start""";
+
+  /// ```dart
+  /// "Reset"
+  /// ```
+  String get navOrderReset => """Reset""";
+
+  /// ```dart
   /// "Language"
   /// ```
   String get language => """Language""";
@@ -2404,6 +2431,13 @@ Please complete login in your browser.""",
   """settings.categorySpacingNames.disabled""": """Disabled""",
   """settings.categorySpacingNames.space""": """Space""",
   """settings.categorySpacingNames.divider""": """Divider""",
+  """settings.navOrderTitle""": """Navigation order""",
+  """settings.navOrderSubtitle""":
+      """Reorder the bottom navigation tabs. The first item is opened on app start.""",
+  """settings.navOrderBody""":
+      """Drag to reorder. The first item is the section opened when the app starts.""",
+  """settings.navOrderDefaultHint""": """Opens on app start""",
+  """settings.navOrderReset""": """Reset""",
   """settings.language""": """Language""",
   """settings.languageNames.system""": """System default""",
   """settings.languageNames.english""": """English""",

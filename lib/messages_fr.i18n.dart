@@ -705,6 +705,33 @@ class SettingsMessagesFr extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesFr(this);
 
   /// ```dart
+  /// "Ordre de navigation"
+  /// ```
+  String get navOrderTitle => """Ordre de navigation""";
+
+  /// ```dart
+  /// "Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage."
+  /// ```
+  String get navOrderSubtitle =>
+      """Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage.""";
+
+  /// ```dart
+  /// "Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application."
+  /// ```
+  String get navOrderBody =>
+      """Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application.""";
+
+  /// ```dart
+  /// "S'ouvre au démarrage"
+  /// ```
+  String get navOrderDefaultHint => """S'ouvre au démarrage""";
+
+  /// ```dart
+  /// "Réinitialiser"
+  /// ```
+  String get navOrderReset => """Réinitialiser""";
+
+  /// ```dart
   /// "Langue"
   /// ```
   String get language => """Langue""";
@@ -2435,6 +2462,13 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """settings.categorySpacingNames.disabled""": """Désactivé""",
   """settings.categorySpacingNames.space""": """Espace""",
   """settings.categorySpacingNames.divider""": """Séparateur""",
+  """settings.navOrderTitle""": """Ordre de navigation""",
+  """settings.navOrderSubtitle""":
+      """Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage.""",
+  """settings.navOrderBody""":
+      """Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application.""",
+  """settings.navOrderDefaultHint""": """S'ouvre au démarrage""",
+  """settings.navOrderReset""": """Réinitialiser""",
   """settings.language""": """Langue""",
   """settings.languageNames.system""": """Par défaut du système""",
   """settings.languageNames.english""": """English""",

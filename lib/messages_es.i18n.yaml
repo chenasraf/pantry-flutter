@@ -126,6 +126,11 @@ settings:
     disabled: Desactivado
     space: Espacio
     divider: Separador
+  navOrderTitle: Orden de navegación
+  navOrderSubtitle: Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.
+  navOrderBody: Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app.
+  navOrderDefaultHint: Se abre al iniciar
+  navOrderReset: Restablecer
   language: Idioma
   languageNames:
     system: Predeterminado del sistema

@@ -6,16 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry/i18n.dart';
-import 'package:pantry/views/checklists/checklists_view.dart';
-import 'package:pantry/views/notes/notes_wall_view.dart';
 import 'package:pantry/models/house.dart';
-import 'package:pantry/services/deep_link_service.dart';
-import 'package:pantry/views/notifications/notifications_controller.dart';
-import 'package:pantry/views/notifications/notifications_view.dart';
+import 'package:pantry/models/nav_section.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/deep_link_service.dart';
+import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/share_intent_service.dart';
 import 'package:pantry/services/widget_link_service.dart';
 import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry/views/checklists/checklists_view.dart';
+import 'package:pantry/views/notes/notes_wall_view.dart';
+import 'package:pantry/views/notifications/notifications_controller.dart';
+import 'package:pantry/views/notifications/notifications_view.dart';
 import 'package:pantry/views/photos/photo_board_view.dart';
 import 'package:pantry/views/settings/settings_view.dart';
 import 'package:pantry/views/share/share_router_view.dart';
@@ -71,10 +73,17 @@ class _HomeViewBody extends StatefulWidget {
 class _HomeViewBodyState extends State<_HomeViewBody>
     with WidgetsBindingObserver {
   int _tabIndex = 0;
+  // Tracks the order seen at the last build/listener pass so we can remap
+  // _tabIndex when the user reorders sections in settings — the active
+  // section should follow its new display position, not snap to whatever
+  // index it used to be.
+  late List<NavSection> _lastOrder = PrefsService.instance.navOrder;
   final _pageController = PageController();
   final _notificationsController = NotificationsController();
-  final List<ValueNotifier<Future<void> Function()?>> _tabRefreshers =
-      List.generate(3, (_) => ValueNotifier(null));
+  // Per-section refresh holders. Keyed by NavSection so that reordering
+  // the bottom bar doesn't rewire which tab pulls which refresher.
+  final Map<NavSection, ValueNotifier<Future<void> Function()?>>
+  _tabRefreshers = {for (final s in NavSection.values) s: ValueNotifier(null)};
   // Single shared AppBar; ChecklistsView writes its leading/title/actions into
   // this slot so the AppBar stays the same widget instance across tab swipes
   // and only its content swaps.
@@ -88,6 +97,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _notificationsController.load();
+    PrefsService.instance.addListener(_onPrefsChanged);
 
     // Consume any deep link or share intent that arrived before we
     // mounted (e.g. from a cold-start notification tap or share sheet).
@@ -109,10 +119,11 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     DeepLinkService.instance.pending.removeListener(_consumePendingDeepLink);
     ShareIntentService.instance.pending.removeListener(_consumePendingShare);
     WidgetLinkService.instance.pending.removeListener(_consumePendingWidgetTap);
+    PrefsService.instance.removeListener(_onPrefsChanged);
     WidgetsBinding.instance.removeObserver(this);
     _pageController.dispose();
     _notificationsController.dispose();
-    for (final n in _tabRefreshers) {
+    for (final n in _tabRefreshers.values) {
       n.dispose();
     }
     _checklistsAppBarSpec.dispose();
@@ -138,6 +149,32 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         fullscreenDialog: true,
       ),
     );
+  }
+
+  List<NavSection> get _navOrder => PrefsService.instance.navOrder;
+
+  /// Keep the active section pinned when the user reorders nav items in
+  /// settings: find where the active section moved to and follow it.
+  void _onPrefsChanged() {
+    final newOrder = PrefsService.instance.navOrder;
+    if (_listEqual(_lastOrder, newOrder)) return;
+    final activeIndex = _tabIndex.clamp(0, _lastOrder.length - 1);
+    final activeSection = _lastOrder[activeIndex];
+    final newIndex = newOrder.indexOf(activeSection);
+    _lastOrder = newOrder;
+    if (newIndex < 0 || newIndex == _tabIndex) return;
+    if (_pageController.hasClients) {
+      _pageController.jumpToPage(newIndex);
+    }
+    if (mounted) setState(() => _tabIndex = newIndex);
+  }
+
+  static bool _listEqual(List<NavSection> a, List<NavSection> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   void _goToTab(int index) {
@@ -171,10 +208,16 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     }
 
     if (!mounted) return;
+    // DeepLink tab indices are semantic (0=checklists, 1=photos, 2=notes) —
+    // translate to the current display order before navigating.
+    final section = NavSection.fromDeepLinkIndex(link.tabIndex);
+    if (section == null) return;
+    final displayIndex = _navOrder.indexOf(section);
+    if (displayIndex < 0) return;
     if (_pageController.hasClients) {
-      _goToTab(link.tabIndex);
+      _goToTab(displayIndex);
     } else {
-      setState(() => _tabIndex = link.tabIndex);
+      setState(() => _tabIndex = displayIndex);
     }
   }
 
@@ -198,45 +241,57 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     ChecklistService.instance.selectedListId = tap.listId;
 
     if (!mounted) return;
-    // Navigate to the checklists tab (index 0).
+    // Navigate to the checklists tab regardless of its current position.
+    final checklistsIndex = _navOrder.indexOf(NavSection.checklists);
     if (_pageController.hasClients) {
-      _goToTab(0);
+      _goToTab(checklistsIndex);
     } else {
-      setState(() => _tabIndex = 0);
+      setState(() => _tabIndex = checklistsIndex);
     }
 
     // Trigger a refresh on the checklists tab so the controller reloads
     // and picks up the new selectedListId.
-    _tabRefreshers[0].value?.call();
+    _tabRefreshers[NavSection.checklists]?.value?.call();
   }
 
-  String get _tabTitle => switch (_tabIndex) {
-    0 => m.nav.checklists,
-    1 => m.nav.photoBoard,
-    2 => m.nav.notesWall,
-    _ => m.common.appTitle,
+  String _sectionTitle(NavSection s) => switch (s) {
+    NavSection.checklists => m.nav.checklists,
+    NavSection.photoBoard => m.nav.photoBoard,
+    NavSection.notesWall => m.nav.notesWall,
+  };
+
+  IconData _sectionIcon(NavSection s) => switch (s) {
+    NavSection.checklists => Icons.assignment_turned_in,
+    NavSection.photoBoard => Icons.photo,
+    NavSection.notesWall => Icons.insert_drive_file,
   };
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<HomeController>();
-    final destinations = <_NavDestination>[
-      (icon: Icons.assignment_turned_in, label: m.nav.checklists),
-      (icon: Icons.photo, label: m.nav.photoBoard),
-      (icon: Icons.insert_drive_file, label: m.nav.notesWall),
+    // Rebuild when the nav order changes so a setting tweak applies live.
+    context.watch<PrefsService>();
+    final order = _navOrder;
+    // Clamp so a reorder that shifted the active section still lands on a
+    // real tab. The current section is preserved by adjusting `_tabIndex`
+    // once a reorder happens via the settings screen.
+    final tabIndex = _tabIndex.clamp(0, order.length - 1);
+    final destinations = [
+      for (final s in order) (icon: _sectionIcon(s), label: _sectionTitle(s)),
     ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final useRail = constraints.maxWidth >= 720;
         final extendedRail = constraints.maxWidth >= 1100;
-        final body = _buildBody(controller, useRail: useRail);
+        final body = _buildBody(controller, useRail: useRail, order: order);
 
         // Single shared AppBar across all tabs. On the checklists tab,
         // ChecklistsView populates `_checklistsAppBarSpec` with its leading /
         // title / actions; the AppBar widget instance stays put across tab
         // swipes so there's no jarring swap — only its content changes.
-        final isChecklistsTab = _tabIndex == 0;
+        final currentSection = order[tabIndex];
+        final isChecklistsTab = currentSection == NavSection.checklists;
 
         final notificationsBell = NotificationsBell(
           controller: _notificationsController,
@@ -277,11 +332,11 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                 );
               }
               return AppBar(
-                title: Text(_tabTitle),
+                title: Text(_sectionTitle(currentSection)),
                 actions: [
                   if (isDesktop)
                     ValueListenableBuilder<Future<void> Function()?>(
-                      valueListenable: _tabRefreshers[_tabIndex],
+                      valueListenable: _tabRefreshers[currentSection]!,
                       builder: (_, refresh, _) => IconButton(
                         icon: const Icon(Icons.refresh),
                         tooltip: m.common.refresh,
@@ -303,7 +358,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                 children: [
                   NavigationRail(
                     extended: extendedRail,
-                    selectedIndex: _tabIndex,
+                    selectedIndex: tabIndex,
                     onDestinationSelected: _goToTab,
                     labelType: extendedRail
                         ? NavigationRailLabelType.none
@@ -325,7 +380,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                         Expanded(
                           child: Padding(
                             padding: EdgeInsetsDirectional.only(
-                              start: _tabIndex == 0 ? 0 : 16,
+                              start: isChecklistsTab ? 0 : 16,
                             ),
                             child: body,
                           ),
@@ -344,7 +399,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
           body: body,
           bottomNavigationBar: _AnimatedBottomNav(
             pageController: _pageController,
-            currentIndex: _tabIndex,
+            currentIndex: tabIndex,
             onTap: _goToTab,
             destinations: destinations,
           ),
@@ -353,7 +408,11 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     );
   }
 
-  Widget _buildBody(HomeController controller, {required bool useRail}) {
+  Widget _buildBody(
+    HomeController controller, {
+    required bool useRail,
+    required List<NavSection> order,
+  }) {
     if (controller.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -386,26 +445,28 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     }
 
     final houseId = controller.currentHouse!.id;
-    final pages = [
-      ChecklistsView(
+    Widget pageFor(NavSection s) => switch (s) {
+      NavSection.checklists => ChecklistsView(
         key: ValueKey('checklists-$houseId'),
         houseId: houseId,
-        refreshHolder: _tabRefreshers[0],
+        refreshHolder: _tabRefreshers[NavSection.checklists]!,
         appBarSpecHolder: _checklistsAppBarSpec,
       ),
-      PhotoBoardView(
+      NavSection.photoBoard => PhotoBoardView(
         key: ValueKey('photos-$houseId'),
         houseId: houseId,
-        refreshHolder: _tabRefreshers[1],
+        refreshHolder: _tabRefreshers[NavSection.photoBoard]!,
       ),
-      NotesWallView(
+      NavSection.notesWall => NotesWallView(
         key: ValueKey('notes-$houseId'),
         houseId: houseId,
-        refreshHolder: _tabRefreshers[2],
+        refreshHolder: _tabRefreshers[NavSection.notesWall]!,
       ),
-    ];
+    };
+    final pages = [for (final s in order) pageFor(s)];
+    final tabIndex = _tabIndex.clamp(0, pages.length - 1);
     if (useRail) {
-      return IndexedStack(index: _tabIndex, children: pages);
+      return IndexedStack(index: tabIndex, children: pages);
     }
     return PageView(
       controller: _pageController,

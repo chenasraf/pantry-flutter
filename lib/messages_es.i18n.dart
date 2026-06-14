@@ -702,6 +702,33 @@ class SettingsMessagesEs extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesEs(this);
 
   /// ```dart
+  /// "Orden de navegación"
+  /// ```
+  String get navOrderTitle => """Orden de navegación""";
+
+  /// ```dart
+  /// "Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app."
+  /// ```
+  String get navOrderSubtitle =>
+      """Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.""";
+
+  /// ```dart
+  /// "Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app."
+  /// ```
+  String get navOrderBody =>
+      """Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app.""";
+
+  /// ```dart
+  /// "Se abre al iniciar"
+  /// ```
+  String get navOrderDefaultHint => """Se abre al iniciar""";
+
+  /// ```dart
+  /// "Restablecer"
+  /// ```
+  String get navOrderReset => """Restablecer""";
+
+  /// ```dart
   /// "Idioma"
   /// ```
   String get language => """Idioma""";
@@ -2425,6 +2452,13 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """settings.categorySpacingNames.disabled""": """Desactivado""",
   """settings.categorySpacingNames.space""": """Espacio""",
   """settings.categorySpacingNames.divider""": """Separador""",
+  """settings.navOrderTitle""": """Orden de navegación""",
+  """settings.navOrderSubtitle""":
+      """Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.""",
+  """settings.navOrderBody""":
+      """Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app.""",
+  """settings.navOrderDefaultHint""": """Se abre al iniciar""",
+  """settings.navOrderReset""": """Restablecer""",
   """settings.language""": """Idioma""",
   """settings.languageNames.system""": """Predeterminado del sistema""",
   """settings.languageNames.english""": """English""",

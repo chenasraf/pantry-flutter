@@ -126,6 +126,11 @@ settings:
     disabled: "Désactivé"
     space: Espace
     divider: "Séparateur"
+  navOrderTitle: Ordre de navigation
+  navOrderSubtitle: "Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage."
+  navOrderBody: "Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application."
+  navOrderDefaultHint: "S'ouvre au démarrage"
+  navOrderReset: "Réinitialiser"
   language: Langue
   languageNames:
     system: "Par défaut du système"

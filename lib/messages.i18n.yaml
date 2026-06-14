@@ -126,6 +126,11 @@ settings:
     disabled: Disabled
     space: Space
     divider: Divider
+  navOrderTitle: Navigation order
+  navOrderSubtitle: Reorder the bottom navigation tabs. The first item is opened on app start.
+  navOrderBody: Drag to reorder. The first item is the section opened when the app starts.
+  navOrderDefaultHint: Opens on app start
+  navOrderReset: Reset
   language: Language
   languageNames:
     system: "System default"

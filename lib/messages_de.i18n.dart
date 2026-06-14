@@ -703,6 +703,33 @@ class SettingsMessagesDe extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesDe(this);
 
   /// ```dart
+  /// "Navigationsreihenfolge"
+  /// ```
+  String get navOrderTitle => """Navigationsreihenfolge""";
+
+  /// ```dart
+  /// "Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet."
+  /// ```
+  String get navOrderSubtitle =>
+      """Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.""";
+
+  /// ```dart
+  /// "Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet."
+  /// ```
+  String get navOrderBody =>
+      """Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet.""";
+
+  /// ```dart
+  /// "Öffnet sich beim Start"
+  /// ```
+  String get navOrderDefaultHint => """Öffnet sich beim Start""";
+
+  /// ```dart
+  /// "Zurücksetzen"
+  /// ```
+  String get navOrderReset => """Zurücksetzen""";
+
+  /// ```dart
   /// "Sprache"
   /// ```
   String get language => """Sprache""";
@@ -2434,6 +2461,13 @@ Bitte melde dich in deinem Browser an.""",
   """settings.categorySpacingNames.disabled""": """Deaktiviert""",
   """settings.categorySpacingNames.space""": """Abstand""",
   """settings.categorySpacingNames.divider""": """Trennlinie""",
+  """settings.navOrderTitle""": """Navigationsreihenfolge""",
+  """settings.navOrderSubtitle""":
+      """Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.""",
+  """settings.navOrderBody""":
+      """Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet.""",
+  """settings.navOrderDefaultHint""": """Öffnet sich beim Start""",
+  """settings.navOrderReset""": """Zurücksetzen""",
   """settings.language""": """Sprache""",
   """settings.languageNames.system""": """Systemstandard""",
   """settings.languageNames.english""": """English""",

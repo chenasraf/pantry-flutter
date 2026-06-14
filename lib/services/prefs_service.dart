@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:home_widget/home_widget.dart';
 
+import '../models/nav_section.dart';
 import 'checklist_service.dart';
 import 'house_service.dart';
 
@@ -25,6 +26,7 @@ class PrefsService extends ChangeNotifier {
   static const _checklistProgressHeroHiddenKey =
       'checklist_progress_hero_hidden';
   static const _lastSeenOnboardingVersionKey = 'last_seen_onboarding_version';
+  static const _navOrderKey = 'nav_order';
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -77,6 +79,12 @@ class PrefsService extends ChangeNotifier {
   /// pages still need to be shown.
   String? _lastSeenOnboardingVersion;
   String? get lastSeenOnboardingVersion => _lastSeenOnboardingVersion;
+
+  /// Order of primary navigation destinations (bottom bar on mobile, rail on
+  /// desktop). The first entry is also the section opened by default at
+  /// cold start. Always contains every [NavSection] exactly once.
+  List<NavSection> _navOrder = List.of(kDefaultNavOrder);
+  List<NavSection> get navOrder => List.unmodifiable(_navOrder);
 
   Future<void> load() async {
     final lastHouse = await _storage.read(key: _lastHouseKey);
@@ -131,6 +139,8 @@ class PrefsService extends ChangeNotifier {
     _lastSeenOnboardingVersion = await _storage.read(
       key: _lastSeenOnboardingVersionKey,
     );
+
+    _navOrder = decodeNavOrder(await _storage.read(key: _navOrderKey));
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -325,6 +335,13 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setNavOrder(List<NavSection> order) async {
+    final normalized = decodeNavOrder(encodeNavOrder(order));
+    _navOrder = normalized;
+    await _storage.write(key: _navOrderKey, value: encodeNavOrder(normalized));
+    notifyListeners();
+  }
+
   Future<void> setNotificationsIntroSeen(bool value) async {
     _notificationsIntroSeen = value;
     await _storage.write(
@@ -348,6 +365,7 @@ class PrefsService extends ChangeNotifier {
     _checklistDoneCollapsed = true;
     _checklistProgressHeroHidden = false;
     _lastSeenOnboardingVersion = null;
+    _navOrder = List.of(kDefaultNavOrder);
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _pinnedListIdsKey);
     await _storage.delete(key: _notificationsEnabledKey);
@@ -361,6 +379,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _checklistDoneCollapsedKey);
     await _storage.delete(key: _checklistProgressHeroHiddenKey);
     await _storage.delete(key: _lastSeenOnboardingVersionKey);
+    await _storage.delete(key: _navOrderKey);
     notifyListeners();
   }
 }
