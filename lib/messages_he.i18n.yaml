@@ -211,6 +211,20 @@ checklists:
     nextDue: "מועד הבא:"
     nextDueFromCompletion: "מועד הבא (מהשלמה):"
     overdue: באיחור
+    quantityLabel: כמות
+    typeLabel: סוג
+    descriptionLabel: תיאור
+    noDescription: לא נוסף תיאור.
+    addedByMeta(String name, String time): "נוסף על-ידי $name · $time"
+    addedByYouMeta(String time): "נוסף על-ידך · $time"
+    addedMeta(String time): "נוסף $time"
+    relJustNow: ממש עכשיו
+    relToday: היום
+    relYesterday: אתמול
+    relDaysAgo(int n): "לפני $n ימים"
+    relWeeksAgo(int n): "${_plural(n, one: 'לפני שבוע', many: 'לפני $n שבועות')}"
+    relMonthsAgo(int n): "${_plural(n, one: 'לפני חודש', many: 'לפני $n חודשים')}"
+    relYearsAgo(int n): "${_plural(n, one: 'לפני שנה', many: 'לפני $n שנים')}"
   itemForm:
     addTitle: הוסף פריט
     editTitle: ערוך פריט

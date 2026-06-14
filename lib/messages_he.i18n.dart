@@ -1268,6 +1268,80 @@ class ViewItemChecklistsMessagesHe extends ViewItemChecklistsMessages {
   /// "באיחור"
   /// ```
   String get overdue => """באיחור""";
+
+  /// ```dart
+  /// "כמות"
+  /// ```
+  String get quantityLabel => """כמות""";
+
+  /// ```dart
+  /// "סוג"
+  /// ```
+  String get typeLabel => """סוג""";
+
+  /// ```dart
+  /// "תיאור"
+  /// ```
+  String get descriptionLabel => """תיאור""";
+
+  /// ```dart
+  /// "לא נוסף תיאור."
+  /// ```
+  String get noDescription => """לא נוסף תיאור.""";
+
+  /// ```dart
+  /// "נוסף על-ידי $name · $time"
+  /// ```
+  String addedByMeta(String name, String time) =>
+      """נוסף על-ידי $name · $time""";
+
+  /// ```dart
+  /// "נוסף על-ידך · $time"
+  /// ```
+  String addedByYouMeta(String time) => """נוסף על-ידך · $time""";
+
+  /// ```dart
+  /// "נוסף $time"
+  /// ```
+  String addedMeta(String time) => """נוסף $time""";
+
+  /// ```dart
+  /// "ממש עכשיו"
+  /// ```
+  String get relJustNow => """ממש עכשיו""";
+
+  /// ```dart
+  /// "היום"
+  /// ```
+  String get relToday => """היום""";
+
+  /// ```dart
+  /// "אתמול"
+  /// ```
+  String get relYesterday => """אתמול""";
+
+  /// ```dart
+  /// "לפני $n ימים"
+  /// ```
+  String relDaysAgo(int n) => """לפני $n ימים""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'לפני שבוע', many: 'לפני $n שבועות')}"
+  /// ```
+  String relWeeksAgo(int n) =>
+      """${_plural(n, one: 'לפני שבוע', many: 'לפני $n שבועות')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'לפני חודש', many: 'לפני $n חודשים')}"
+  /// ```
+  String relMonthsAgo(int n) =>
+      """${_plural(n, one: 'לפני חודש', many: 'לפני $n חודשים')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'לפני שנה', many: 'לפני $n שנים')}"
+  /// ```
+  String relYearsAgo(int n) =>
+      """${_plural(n, one: 'לפני שנה', many: 'לפני $n שנים')}""";
 }
 
 class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
@@ -2319,6 +2393,13 @@ Map<String, String> get messagesHeMap => {
   """checklists.viewItem.nextDue""": """מועד הבא:""",
   """checklists.viewItem.nextDueFromCompletion""": """מועד הבא (מהשלמה):""",
   """checklists.viewItem.overdue""": """באיחור""",
+  """checklists.viewItem.quantityLabel""": """כמות""",
+  """checklists.viewItem.typeLabel""": """סוג""",
+  """checklists.viewItem.descriptionLabel""": """תיאור""",
+  """checklists.viewItem.noDescription""": """לא נוסף תיאור.""",
+  """checklists.viewItem.relJustNow""": """ממש עכשיו""",
+  """checklists.viewItem.relToday""": """היום""",
+  """checklists.viewItem.relYesterday""": """אתמול""",
   """checklists.itemForm.addTitle""": """הוסף פריט""",
   """checklists.itemForm.editTitle""": """ערוך פריט""",
   """checklists.itemForm.name""": """שם הפריט""",

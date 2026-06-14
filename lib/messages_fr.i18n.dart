@@ -1281,6 +1281,80 @@ class ViewItemChecklistsMessagesFr extends ViewItemChecklistsMessages {
   /// "En retard"
   /// ```
   String get overdue => """En retard""";
+
+  /// ```dart
+  /// "Quantité"
+  /// ```
+  String get quantityLabel => """Quantité""";
+
+  /// ```dart
+  /// "Type"
+  /// ```
+  String get typeLabel => """Type""";
+
+  /// ```dart
+  /// "Description"
+  /// ```
+  String get descriptionLabel => """Description""";
+
+  /// ```dart
+  /// "Aucune description ajoutée."
+  /// ```
+  String get noDescription => """Aucune description ajoutée.""";
+
+  /// ```dart
+  /// "Ajouté par $name · $time"
+  /// ```
+  String addedByMeta(String name, String time) =>
+      """Ajouté par $name · $time""";
+
+  /// ```dart
+  /// "Ajouté par vous · $time"
+  /// ```
+  String addedByYouMeta(String time) => """Ajouté par vous · $time""";
+
+  /// ```dart
+  /// "Ajouté $time"
+  /// ```
+  String addedMeta(String time) => """Ajouté $time""";
+
+  /// ```dart
+  /// "à l'instant"
+  /// ```
+  String get relJustNow => """à l'instant""";
+
+  /// ```dart
+  /// "aujourd'hui"
+  /// ```
+  String get relToday => """aujourd'hui""";
+
+  /// ```dart
+  /// "hier"
+  /// ```
+  String get relYesterday => """hier""";
+
+  /// ```dart
+  /// "il y a $n jours"
+  /// ```
+  String relDaysAgo(int n) => """il y a $n jours""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'il y a 1 semaine', many: 'il y a $n semaines')}"
+  /// ```
+  String relWeeksAgo(int n) =>
+      """${_plural(n, one: 'il y a 1 semaine', many: 'il y a $n semaines')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'il y a 1 mois', many: 'il y a $n mois')}"
+  /// ```
+  String relMonthsAgo(int n) =>
+      """${_plural(n, one: 'il y a 1 mois', many: 'il y a $n mois')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'il y a 1 an', many: 'il y a $n ans')}"
+  /// ```
+  String relYearsAgo(int n) =>
+      """${_plural(n, one: 'il y a 1 an', many: 'il y a $n ans')}""";
 }
 
 class ItemFormChecklistsMessagesFr extends ItemFormChecklistsMessages {
@@ -2353,6 +2427,13 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.viewItem.nextDueFromCompletion""":
       """Prochaine échéance (à partir de la complétion) :""",
   """checklists.viewItem.overdue""": """En retard""",
+  """checklists.viewItem.quantityLabel""": """Quantité""",
+  """checklists.viewItem.typeLabel""": """Type""",
+  """checklists.viewItem.descriptionLabel""": """Description""",
+  """checklists.viewItem.noDescription""": """Aucune description ajoutée.""",
+  """checklists.viewItem.relJustNow""": """à l'instant""",
+  """checklists.viewItem.relToday""": """aujourd'hui""",
+  """checklists.viewItem.relYesterday""": """hier""",
   """checklists.itemForm.addTitle""": """Ajouter un article""",
   """checklists.itemForm.editTitle""": """Modifier l'article""",
   """checklists.itemForm.name""": """Nom de l'article""",

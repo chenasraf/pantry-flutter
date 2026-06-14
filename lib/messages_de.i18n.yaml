@@ -211,6 +211,20 @@ checklists:
     nextDue: "Nächstes Fälligkeitsdatum:"
     nextDueFromCompletion: "Nächstes Fälligkeitsdatum (ab Erledigung):"
     overdue: Überfällig
+    quantityLabel: Menge
+    typeLabel: Typ
+    descriptionLabel: Beschreibung
+    noDescription: Keine Beschreibung hinzugefügt.
+    addedByMeta(String name, String time): "Hinzugefügt von $name · $time"
+    addedByYouMeta(String time): "Hinzugefügt von dir · $time"
+    addedMeta(String time): "Hinzugefügt $time"
+    relJustNow: gerade eben
+    relToday: heute
+    relYesterday: gestern
+    relDaysAgo(int n): "vor $n Tagen"
+    relWeeksAgo(int n): "${_plural(n, one: 'vor 1 Woche', many: 'vor $n Wochen')}"
+    relMonthsAgo(int n): "${_plural(n, one: 'vor 1 Monat', many: 'vor $n Monaten')}"
+    relYearsAgo(int n): "${_plural(n, one: 'vor 1 Jahr', many: 'vor $n Jahren')}"
   itemForm:
     addTitle: "Eintrag hinzufügen"
     editTitle: Eintrag bearbeiten

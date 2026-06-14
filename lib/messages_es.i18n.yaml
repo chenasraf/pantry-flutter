@@ -211,6 +211,20 @@ checklists:
     nextDue: "Próximo vencimiento:"
     nextDueFromCompletion: "Próximo vencimiento (desde finalización):"
     overdue: Vencido
+    quantityLabel: Cantidad
+    typeLabel: Tipo
+    descriptionLabel: Descripción
+    noDescription: Sin descripción.
+    addedByMeta(String name, String time): "Añadido por $name · $time"
+    addedByYouMeta(String time): "Añadido por ti · $time"
+    addedMeta(String time): "Añadido $time"
+    relJustNow: ahora mismo
+    relToday: hoy
+    relYesterday: ayer
+    relDaysAgo(int n): "hace $n días"
+    relWeeksAgo(int n): "${_plural(n, one: 'hace 1 semana', many: 'hace $n semanas')}"
+    relMonthsAgo(int n): "${_plural(n, one: 'hace 1 mes', many: 'hace $n meses')}"
+    relYearsAgo(int n): "${_plural(n, one: 'hace 1 año', many: 'hace $n años')}"
   itemForm:
     addTitle: "Agregar artículo"
     editTitle: "Editar artículo"

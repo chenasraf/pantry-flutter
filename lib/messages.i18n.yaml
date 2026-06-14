@@ -211,6 +211,20 @@ checklists:
     nextDue: "Next due:"
     nextDueFromCompletion: "Next due (from completion):"
     overdue: Overdue
+    quantityLabel: Quantity
+    typeLabel: Type
+    descriptionLabel: Description
+    noDescription: No description added.
+    addedByMeta(String name, String time): "Added by $name · $time"
+    addedByYouMeta(String time): "Added by you · $time"
+    addedMeta(String time): "Added $time"
+    relJustNow: just now
+    relToday: today
+    relYesterday: yesterday
+    relDaysAgo(int n): "$n days ago"
+    relWeeksAgo(int n): "${_plural(n, one: '1 week ago', many: '$n weeks ago')}"
+    relMonthsAgo(int n): "${_plural(n, one: '1 month ago', many: '$n months ago')}"
+    relYearsAgo(int n): "${_plural(n, one: '1 year ago', many: '$n years ago')}"
   itemForm:
     addTitle: Add item
     editTitle: Edit item

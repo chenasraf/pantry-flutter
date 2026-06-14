@@ -1280,6 +1280,80 @@ class ViewItemChecklistsMessagesDe extends ViewItemChecklistsMessages {
   /// "Überfällig"
   /// ```
   String get overdue => """Überfällig""";
+
+  /// ```dart
+  /// "Menge"
+  /// ```
+  String get quantityLabel => """Menge""";
+
+  /// ```dart
+  /// "Typ"
+  /// ```
+  String get typeLabel => """Typ""";
+
+  /// ```dart
+  /// "Beschreibung"
+  /// ```
+  String get descriptionLabel => """Beschreibung""";
+
+  /// ```dart
+  /// "Keine Beschreibung hinzugefügt."
+  /// ```
+  String get noDescription => """Keine Beschreibung hinzugefügt.""";
+
+  /// ```dart
+  /// "Hinzugefügt von $name · $time"
+  /// ```
+  String addedByMeta(String name, String time) =>
+      """Hinzugefügt von $name · $time""";
+
+  /// ```dart
+  /// "Hinzugefügt von dir · $time"
+  /// ```
+  String addedByYouMeta(String time) => """Hinzugefügt von dir · $time""";
+
+  /// ```dart
+  /// "Hinzugefügt $time"
+  /// ```
+  String addedMeta(String time) => """Hinzugefügt $time""";
+
+  /// ```dart
+  /// "gerade eben"
+  /// ```
+  String get relJustNow => """gerade eben""";
+
+  /// ```dart
+  /// "heute"
+  /// ```
+  String get relToday => """heute""";
+
+  /// ```dart
+  /// "gestern"
+  /// ```
+  String get relYesterday => """gestern""";
+
+  /// ```dart
+  /// "vor $n Tagen"
+  /// ```
+  String relDaysAgo(int n) => """vor $n Tagen""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'vor 1 Woche', many: 'vor $n Wochen')}"
+  /// ```
+  String relWeeksAgo(int n) =>
+      """${_plural(n, one: 'vor 1 Woche', many: 'vor $n Wochen')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'vor 1 Monat', many: 'vor $n Monaten')}"
+  /// ```
+  String relMonthsAgo(int n) =>
+      """${_plural(n, one: 'vor 1 Monat', many: 'vor $n Monaten')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'vor 1 Jahr', many: 'vor $n Jahren')}"
+  /// ```
+  String relYearsAgo(int n) =>
+      """${_plural(n, one: 'vor 1 Jahr', many: 'vor $n Jahren')}""";
 }
 
 class ItemFormChecklistsMessagesDe extends ItemFormChecklistsMessages {
@@ -2357,6 +2431,14 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.viewItem.nextDueFromCompletion""":
       """Nächstes Fälligkeitsdatum (ab Erledigung):""",
   """checklists.viewItem.overdue""": """Überfällig""",
+  """checklists.viewItem.quantityLabel""": """Menge""",
+  """checklists.viewItem.typeLabel""": """Typ""",
+  """checklists.viewItem.descriptionLabel""": """Beschreibung""",
+  """checklists.viewItem.noDescription""":
+      """Keine Beschreibung hinzugefügt.""",
+  """checklists.viewItem.relJustNow""": """gerade eben""",
+  """checklists.viewItem.relToday""": """heute""",
+  """checklists.viewItem.relYesterday""": """gestern""",
   """checklists.itemForm.addTitle""": """Eintrag hinzufügen""",
   """checklists.itemForm.editTitle""": """Eintrag bearbeiten""",
   """checklists.itemForm.name""": """Eintragsname""",
