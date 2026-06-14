@@ -1,0 +1,15 @@
+Features
+- pinned lists home-screen widget
+- widget follows app dark mode setting
+- widget icons, count badges, larger items
+- widget shows house name when pins span multiple houses
+- auto-refresh list every 30s while open
+- redesigned checklist page
+- redesigned edit item page
+- redesigned item view page
+- hide UI for features your server doesn't support
+- reorder navigation tabs from settings
+- pin notes to top of wall
+- onboarding screen for new/updating users
+
+… see full notes on GitHub.

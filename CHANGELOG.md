@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.16.0](https://github.com/chenasraf/pantry-flutter/compare/v0.15.0...v0.16.0) (2026-06-14)
+
+
+### Features
+
+* **android:** pinned lists home-screen widget ([77951ca](https://github.com/chenasraf/pantry-flutter/commit/77951ca3b024d5fb3fc16fc6ffb245e5ce8130cb))
+* **android:** widget follows app dark mode setting ([dcc68bd](https://github.com/chenasraf/pantry-flutter/commit/dcc68bde236ce8b281d2c39a4c0066115883b2ae))
+* **android:** widget icons, count badges, larger items ([d68698d](https://github.com/chenasraf/pantry-flutter/commit/d68698d116be8fd52e16c553dfd40d50377c728a))
+* **android:** widget shows house name when pins span multiple houses ([d564b5e](https://github.com/chenasraf/pantry-flutter/commit/d564b5e7960d936f901b4efff296ae77b2f4f2d4))
+* **checklists:** auto-refresh list every 30s while open ([51e5498](https://github.com/chenasraf/pantry-flutter/commit/51e549824e11195612f8dbcd6e86de8ce772c076))
+* **checklists:** redesigned checklist page ([211c8a8](https://github.com/chenasraf/pantry-flutter/commit/211c8a8abe31388fc0ea87917c31671d6a3af36c))
+* **checklists:** redesigned edit item page ([35b1e73](https://github.com/chenasraf/pantry-flutter/commit/35b1e735e0f3440d4b72e81728481fcc4dabfa61))
+* **checklists:** redesigned item view page ([12aa482](https://github.com/chenasraf/pantry-flutter/commit/12aa482c85eab350409da625a6e8099b860db188))
+* hide UI for features your server doesn't support ([5f9380d](https://github.com/chenasraf/pantry-flutter/commit/5f9380d47e896c406d52a67a4e5a19744a3e29e8))
+* **nav:** reorder navigation tabs from settings ([0d2c0ee](https://github.com/chenasraf/pantry-flutter/commit/0d2c0ee308f1e99166ca562722edb8af4fdfeac2))
+* **notes:** pin notes to top of wall ([676f116](https://github.com/chenasraf/pantry-flutter/commit/676f116bea46641a5e1b8fe05443ac9ffbd02158))
+* onboarding screen for new/updating users ([096bac6](https://github.com/chenasraf/pantry-flutter/commit/096bac6df672077c67cd0c8fe90f6752cdc90bfd))
+* show create-list button in empty checklists state ([65ca582](https://github.com/chenasraf/pantry-flutter/commit/65ca5829aca9c92b50528031b3ab3452b826f958))
+
+
+### Bug Fixes
+
+* **android:** keep widget theme + pins in sync after background polls ([b4b2400](https://github.com/chenasraf/pantry-flutter/commit/b4b2400a654fb2d80e1d6336c30e4641f221ff42))
+* **android:** refresh widget list when pins change ([fd9d90f](https://github.com/chenasraf/pantry-flutter/commit/fd9d90f9ddb09b15226c857532f1e20d20137894))
+* **checklists:** auto-dismiss check snackbar after 6 seconds ([e2d439c](https://github.com/chenasraf/pantry-flutter/commit/e2d439cecdf3ac6557c6bee814b4ddc58c937db7))
+* **checklists:** stabilize scroll position when toggling items ([4bf62e8](https://github.com/chenasraf/pantry-flutter/commit/4bf62e80d58fde8f97117f1d3fa7a93f51960dbc))
+* theme accent color on Nextcloud 34+ ([41cf51a](https://github.com/chenasraf/pantry-flutter/commit/41cf51a312f69c11cf0d2eaf5958ea9c3e7eb68e))
+* **theme:** cache Nextcloud accent color in local prefs ([13f0c23](https://github.com/chenasraf/pantry-flutter/commit/13f0c23f97bccfefc082e567ced10ac71fd5a3ca))
+
+
+### Performance Improvements
+
+* **checklists:** improve list performance ([4bf62e8](https://github.com/chenasraf/pantry-flutter/commit/4bf62e80d58fde8f97117f1d3fa7a93f51960dbc))
+* faster app startup ([799576e](https://github.com/chenasraf/pantry-flutter/commit/799576ec956692011e6c6049949d5640ff67caba))
+
 ## [0.15.0](https://github.com/chenasraf/pantry-flutter/compare/v0.14.0...v0.15.0) (2026-06-11)
 
 

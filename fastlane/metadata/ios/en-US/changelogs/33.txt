@@ -1,0 +1,15 @@
+Features
+- auto-refresh list every 30s while open
+- redesigned checklist page
+- redesigned edit item page
+- redesigned item view page
+- hide UI for features your server doesn't support
+- reorder navigation tabs from settings
+- pin notes to top of wall
+- onboarding screen for new/updating users
+- show create-list button in empty checklists state
+Bug Fixes
+- auto-dismiss check snackbar after 6 seconds
+- stabilize scroll position when toggling items
+
+… see full notes on GitHub.
