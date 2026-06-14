@@ -1,3 +1,6 @@
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -31,6 +34,11 @@ class _AboutViewState extends State<AboutView> {
     await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 
+  bool get _showDonation {
+    if (kIsWeb) return true;
+    return !Platform.isIOS && !Platform.isMacOS;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -40,8 +48,15 @@ class _AboutViewState extends State<AboutView> {
 
     return Scaffold(
       appBar: AppBar(leading: appBarBackLeading(context), title: Text(a.title)),
+      floatingActionButton: _showDonation
+          ? FloatingActionButton.extended(
+              onPressed: () => _launch('https://ko-fi.com/casraf'),
+              icon: const Icon(Icons.coffee_outlined),
+              label: Text(a.buyMeACoffee),
+            )
+          : null,
       body: ListView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 96),
         children: [
           Center(
             child: Column(

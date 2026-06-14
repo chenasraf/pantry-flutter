@@ -111,6 +111,7 @@ about:
   serverVersion: Serveur Nextcloud
   pantryServerVersion: Pantry sur le serveur
   versionUnknown: Inconnu
+  buyMeACoffee: "Offrez-moi un café"
 
 settings:
   title: "Réglages de l'app"

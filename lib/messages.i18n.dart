@@ -640,6 +640,11 @@ class AboutMessages {
   /// "Unknown"
   /// ```
   String get versionUnknown => """Unknown""";
+
+  /// ```dart
+  /// "Buy me a Coffee"
+  /// ```
+  String get buyMeACoffee => """Buy me a Coffee""";
 }
 
 class SettingsMessages {
@@ -2415,6 +2420,7 @@ Please complete login in your browser.""",
   """about.serverVersion""": """Nextcloud server""",
   """about.pantryServerVersion""": """Pantry on server""",
   """about.versionUnknown""": """Unknown""",
+  """about.buyMeACoffee""": """Buy me a Coffee""",
   """settings.title""": """App Settings""",
   """settings.generalSection""": """General""",
   """settings.interfaceSection""": """Interface""",

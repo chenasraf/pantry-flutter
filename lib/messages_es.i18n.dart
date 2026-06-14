@@ -644,6 +644,11 @@ class AboutMessagesEs extends AboutMessages {
   /// "Desconocido"
   /// ```
   String get versionUnknown => """Desconocido""";
+
+  /// ```dart
+  /// "Invítame a un café"
+  /// ```
+  String get buyMeACoffee => """Invítame a un café""";
 }
 
 class SettingsMessagesEs extends SettingsMessages {
@@ -2435,6 +2440,7 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """about.serverVersion""": """Servidor Nextcloud""",
   """about.pantryServerVersion""": """Pantry en el servidor""",
   """about.versionUnknown""": """Desconocido""",
+  """about.buyMeACoffee""": """Invítame a un café""",
   """settings.title""": """Ajustes de la app""",
   """settings.generalSection""": """General""",
   """settings.interfaceSection""": """Interfaz""",

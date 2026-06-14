@@ -641,6 +641,11 @@ class AboutMessagesHe extends AboutMessages {
   /// "לא ידוע"
   /// ```
   String get versionUnknown => """לא ידוע""";
+
+  /// ```dart
+  /// "קנו לי קפה"
+  /// ```
+  String get buyMeACoffee => """קנו לי קפה""";
 }
 
 class SettingsMessagesHe extends SettingsMessages {
@@ -2418,6 +2423,7 @@ Map<String, String> get messagesHeMap => {
   """about.serverVersion""": """שרת Nextcloud""",
   """about.pantryServerVersion""": """Pantry בשרת""",
   """about.versionUnknown""": """לא ידוע""",
+  """about.buyMeACoffee""": """קנו לי קפה""",
   """settings.title""": """הגדרות האפליקציה""",
   """settings.generalSection""": """כללי""",
   """settings.interfaceSection""": """ממשק""",

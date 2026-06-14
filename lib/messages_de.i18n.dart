@@ -644,6 +644,11 @@ class AboutMessagesDe extends AboutMessages {
   /// "Unbekannt"
   /// ```
   String get versionUnknown => """Unbekannt""";
+
+  /// ```dart
+  /// "Spendier mir einen Kaffee"
+  /// ```
+  String get buyMeACoffee => """Spendier mir einen Kaffee""";
 }
 
 class SettingsMessagesDe extends SettingsMessages {
@@ -2444,6 +2449,7 @@ Bitte melde dich in deinem Browser an.""",
   """about.serverVersion""": """Nextcloud-Server""",
   """about.pantryServerVersion""": """Pantry auf Server""",
   """about.versionUnknown""": """Unbekannt""",
+  """about.buyMeACoffee""": """Spendier mir einen Kaffee""",
   """settings.title""": """App-Einstellungen""",
   """settings.generalSection""": """Allgemein""",
   """settings.interfaceSection""": """Oberfläche""",
