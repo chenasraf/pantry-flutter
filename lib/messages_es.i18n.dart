@@ -1276,6 +1276,80 @@ class ViewItemChecklistsMessagesEs extends ViewItemChecklistsMessages {
   /// "Vencido"
   /// ```
   String get overdue => """Vencido""";
+
+  /// ```dart
+  /// "Cantidad"
+  /// ```
+  String get quantityLabel => """Cantidad""";
+
+  /// ```dart
+  /// "Tipo"
+  /// ```
+  String get typeLabel => """Tipo""";
+
+  /// ```dart
+  /// "Descripción"
+  /// ```
+  String get descriptionLabel => """Descripción""";
+
+  /// ```dart
+  /// "Sin descripción."
+  /// ```
+  String get noDescription => """Sin descripción.""";
+
+  /// ```dart
+  /// "Añadido por $name · $time"
+  /// ```
+  String addedByMeta(String name, String time) =>
+      """Añadido por $name · $time""";
+
+  /// ```dart
+  /// "Añadido por ti · $time"
+  /// ```
+  String addedByYouMeta(String time) => """Añadido por ti · $time""";
+
+  /// ```dart
+  /// "Añadido $time"
+  /// ```
+  String addedMeta(String time) => """Añadido $time""";
+
+  /// ```dart
+  /// "ahora mismo"
+  /// ```
+  String get relJustNow => """ahora mismo""";
+
+  /// ```dart
+  /// "hoy"
+  /// ```
+  String get relToday => """hoy""";
+
+  /// ```dart
+  /// "ayer"
+  /// ```
+  String get relYesterday => """ayer""";
+
+  /// ```dart
+  /// "hace $n días"
+  /// ```
+  String relDaysAgo(int n) => """hace $n días""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'hace 1 semana', many: 'hace $n semanas')}"
+  /// ```
+  String relWeeksAgo(int n) =>
+      """${_plural(n, one: 'hace 1 semana', many: 'hace $n semanas')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'hace 1 mes', many: 'hace $n meses')}"
+  /// ```
+  String relMonthsAgo(int n) =>
+      """${_plural(n, one: 'hace 1 mes', many: 'hace $n meses')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: 'hace 1 año', many: 'hace $n años')}"
+  /// ```
+  String relYearsAgo(int n) =>
+      """${_plural(n, one: 'hace 1 año', many: 'hace $n años')}""";
 }
 
 class ItemFormChecklistsMessagesEs extends ItemFormChecklistsMessages {
@@ -2345,6 +2419,13 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.viewItem.nextDueFromCompletion""":
       """Próximo vencimiento (desde finalización):""",
   """checklists.viewItem.overdue""": """Vencido""",
+  """checklists.viewItem.quantityLabel""": """Cantidad""",
+  """checklists.viewItem.typeLabel""": """Tipo""",
+  """checklists.viewItem.descriptionLabel""": """Descripción""",
+  """checklists.viewItem.noDescription""": """Sin descripción.""",
+  """checklists.viewItem.relJustNow""": """ahora mismo""",
+  """checklists.viewItem.relToday""": """hoy""",
+  """checklists.viewItem.relYesterday""": """ayer""",
   """checklists.itemForm.addTitle""": """Agregar artículo""",
   """checklists.itemForm.editTitle""": """Editar artículo""",
   """checklists.itemForm.name""": """Nombre del artículo""",

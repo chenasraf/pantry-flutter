@@ -1264,6 +1264,79 @@ class ViewItemChecklistsMessages {
   /// "Overdue"
   /// ```
   String get overdue => """Overdue""";
+
+  /// ```dart
+  /// "Quantity"
+  /// ```
+  String get quantityLabel => """Quantity""";
+
+  /// ```dart
+  /// "Type"
+  /// ```
+  String get typeLabel => """Type""";
+
+  /// ```dart
+  /// "Description"
+  /// ```
+  String get descriptionLabel => """Description""";
+
+  /// ```dart
+  /// "No description added."
+  /// ```
+  String get noDescription => """No description added.""";
+
+  /// ```dart
+  /// "Added by $name · $time"
+  /// ```
+  String addedByMeta(String name, String time) => """Added by $name · $time""";
+
+  /// ```dart
+  /// "Added by you · $time"
+  /// ```
+  String addedByYouMeta(String time) => """Added by you · $time""";
+
+  /// ```dart
+  /// "Added $time"
+  /// ```
+  String addedMeta(String time) => """Added $time""";
+
+  /// ```dart
+  /// "just now"
+  /// ```
+  String get relJustNow => """just now""";
+
+  /// ```dart
+  /// "today"
+  /// ```
+  String get relToday => """today""";
+
+  /// ```dart
+  /// "yesterday"
+  /// ```
+  String get relYesterday => """yesterday""";
+
+  /// ```dart
+  /// "$n days ago"
+  /// ```
+  String relDaysAgo(int n) => """$n days ago""";
+
+  /// ```dart
+  /// "${_plural(n, one: '1 week ago', many: '$n weeks ago')}"
+  /// ```
+  String relWeeksAgo(int n) =>
+      """${_plural(n, one: '1 week ago', many: '$n weeks ago')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: '1 month ago', many: '$n months ago')}"
+  /// ```
+  String relMonthsAgo(int n) =>
+      """${_plural(n, one: '1 month ago', many: '$n months ago')}""";
+
+  /// ```dart
+  /// "${_plural(n, one: '1 year ago', many: '$n years ago')}"
+  /// ```
+  String relYearsAgo(int n) =>
+      """${_plural(n, one: '1 year ago', many: '$n years ago')}""";
 }
 
 class ItemFormChecklistsMessages {
@@ -2321,6 +2394,13 @@ Please complete login in your browser.""",
   """checklists.viewItem.nextDueFromCompletion""":
       """Next due (from completion):""",
   """checklists.viewItem.overdue""": """Overdue""",
+  """checklists.viewItem.quantityLabel""": """Quantity""",
+  """checklists.viewItem.typeLabel""": """Type""",
+  """checklists.viewItem.descriptionLabel""": """Description""",
+  """checklists.viewItem.noDescription""": """No description added.""",
+  """checklists.viewItem.relJustNow""": """just now""",
+  """checklists.viewItem.relToday""": """today""",
+  """checklists.viewItem.relYesterday""": """yesterday""",
   """checklists.itemForm.addTitle""": """Add item""",
   """checklists.itemForm.editTitle""": """Edit item""",
   """checklists.itemForm.name""": """Item name""",
