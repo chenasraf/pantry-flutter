@@ -1267,6 +1267,7 @@ class _ItemList extends StatefulWidget {
 class _ItemListState extends State<_ItemList> {
   final ScrollController _scrollController = ScrollController();
   final Map<int, GlobalKey> _tileKeys = {};
+  Timer? _markedDoneSnackBarTimer;
 
   GlobalKey _keyFor(int id) => _tileKeys.putIfAbsent(id, () => GlobalKey());
 
@@ -1282,6 +1283,7 @@ class _ItemListState extends State<_ItemList> {
 
   @override
   void dispose() {
+    _markedDoneSnackBarTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -1479,8 +1481,20 @@ class _ItemListState extends State<_ItemList> {
 
     if (wasDone) return;
     final messenger = ScaffoldMessenger.of(context);
-    messenger.clearSnackBars();
-    messenger.showSnackBar(
+    // Drop any prior snackbar instantly so the new one isn't delayed by the
+    // ~250ms exit animation `clearSnackBars()` would run.
+    messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
+    // Drive dismissal ourselves: SnackBar's internal timer gets reset
+    // whenever the snackbar's MediaQuery dependency rebuilds, and this view
+    // triggers a lot of those — toggleItem fires two notifyListeners (the
+    // optimistic update + the server-confirmed update), the 30s background
+    // refresh fires more, and the appBarSpecHolder post-frame ripples up to
+    // home_view's AppBar. Net effect: relying on `duration:` alone leaves
+    // the snackbar pinned until the user dismisses it. The explicit timer
+    // here closes it 6s after it's shown, regardless of how many rebuilds
+    // happen in the meantime.
+    _markedDoneSnackBarTimer?.cancel();
+    final entry = messenger.showSnackBar(
       SnackBar(
         content: Text(m.checklists.itemMarkedDone),
         duration: const Duration(seconds: 6),
@@ -1510,6 +1524,13 @@ class _ItemListState extends State<_ItemList> {
         ),
       ),
     );
+    // Start the 6s clock once the snackbar's enter animation has finished,
+    // so the user actually sees it for the full 6s rather than 6s minus
+    // the ~250ms slide-in.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _markedDoneSnackBarTimer = Timer(const Duration(seconds: 6), entry.close);
+    });
   }
 
   void _openView(
