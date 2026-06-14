@@ -44,6 +44,7 @@ void main() async {
   }
   await AuthService.instance.loadCredentials();
   await PrefsService.instance.load();
+  ThemingService.instance.loadCached();
   await LocalNotificationsService.instance.init();
   appVersion = (await PackageInfo.fromPlatform()).version;
   if (AuthService.instance.isLoggedIn) {

@@ -27,6 +27,7 @@ class PrefsService extends ChangeNotifier {
       'checklist_progress_hero_hidden';
   static const _lastSeenOnboardingVersionKey = 'last_seen_onboarding_version';
   static const _navOrderKey = 'nav_order';
+  static const _themeColorKey = 'theme_color';
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -86,6 +87,13 @@ class PrefsService extends ChangeNotifier {
   List<NavSection> _navOrder = List.of(kDefaultNavOrder);
   List<NavSection> get navOrder => List.unmodifiable(_navOrder);
 
+  /// Last Nextcloud theme color fetched from the server, persisted as
+  /// "#RRGGBB". Cached so the app can render with the right accent on a
+  /// cold start before (or even without) a successful capabilities call —
+  /// covers transient empty `theming` blocks and offline launches.
+  String? _themeColorHex;
+  String? get themeColorHex => _themeColorHex;
+
   Future<void> load() async {
     final lastHouse = await _storage.read(key: _lastHouseKey);
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);
@@ -141,6 +149,8 @@ class PrefsService extends ChangeNotifier {
     );
 
     _navOrder = decodeNavOrder(await _storage.read(key: _navOrderKey));
+
+    _themeColorHex = await _storage.read(key: _themeColorKey);
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -335,6 +345,17 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setThemeColorHex(String? hex) async {
+    if (_themeColorHex == hex) return;
+    _themeColorHex = hex;
+    if (hex == null) {
+      await _storage.delete(key: _themeColorKey);
+    } else {
+      await _storage.write(key: _themeColorKey, value: hex);
+    }
+    notifyListeners();
+  }
+
   Future<void> setNavOrder(List<NavSection> order) async {
     final normalized = decodeNavOrder(encodeNavOrder(order));
     _navOrder = normalized;
@@ -366,6 +387,7 @@ class PrefsService extends ChangeNotifier {
     _checklistProgressHeroHidden = false;
     _lastSeenOnboardingVersion = null;
     _navOrder = List.of(kDefaultNavOrder);
+    _themeColorHex = null;
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _pinnedListIdsKey);
     await _storage.delete(key: _notificationsEnabledKey);
@@ -380,6 +402,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _checklistProgressHeroHiddenKey);
     await _storage.delete(key: _lastSeenOnboardingVersionKey);
     await _storage.delete(key: _navOrderKey);
+    await _storage.delete(key: _themeColorKey);
     notifyListeners();
   }
 }

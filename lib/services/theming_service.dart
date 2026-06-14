@@ -17,6 +17,15 @@ class ThemingService extends ChangeNotifier {
 
   Color get effectiveColor => _themeColor ?? _defaultColor;
 
+  /// Seed [_themeColor] from the last value persisted by [fetchTheme]. Lets
+  /// the app paint the correct accent immediately on cold start, even if the
+  /// capabilities call later fails or returns an empty `theming` block.
+  void loadCached() {
+    final hex = PrefsService.instance.themeColorHex;
+    final cached = _parseHex(hex);
+    if (cached != null) _themeColor = cached;
+  }
+
   ThemeMode get themeMode {
     switch (PrefsService.instance.themeMode) {
       case 'light':
@@ -37,30 +46,39 @@ class ThemingService extends ChangeNotifier {
     final creds = AuthService.instance.credentials;
     if (creds == null) return;
 
+    Color? fetched;
+
     // NC 34 dropped the legacy `/apps/theming/manifest/core` endpoint (now
     // 500s). Read the user's effective accent from the OCS capabilities
     // `theming` block instead — `ServerVersionService.fetch()` already
     // captures it for us.
     if (ServerVersionService.instance.isServerVersion('>=', '34.0.0')) {
-      _themeColor = _readColorFromCaps(
-        ServerVersionService.instance.themingCaps,
-      );
-      return;
-    }
+      fetched = _readColorFromCaps(ServerVersionService.instance.themingCaps);
+    } else {
+      try {
+        final uri = Uri.parse(
+          '${creds.serverUrl}/index.php/apps/theming/manifest/core',
+        );
+        final response = await http.get(uri);
 
-    try {
-      final uri = Uri.parse(
-        '${creds.serverUrl}/index.php/apps/theming/manifest/core',
-      );
-      final response = await http.get(uri);
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        _themeColor = _parseHex(data['theme_color'] as String?);
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body) as Map<String, dynamic>;
+          fetched = _parseHex(data['theme_color'] as String?);
+        }
+      } catch (e) {
+        debugPrint('[ThemingService] Failed to fetch theme: $e');
       }
-    } catch (e) {
-      debugPrint('[ThemingService] Failed to fetch theme: $e');
     }
+
+    // Preserve the cached color when the live fetch came up empty — a
+    // transient capabilities response without a `theming` block shouldn't
+    // demote the user back to the default accent until they fix things on
+    // their server.
+    if (fetched == null) return;
+    if (fetched == _themeColor) return;
+    _themeColor = fetched;
+    await PrefsService.instance.setThemeColorHex(_hexOf(fetched));
+    notifyListeners();
   }
 
   static Color? _readColorFromCaps(Map<String, dynamic>? caps) {
@@ -74,6 +92,11 @@ class ThemingService extends ChangeNotifier {
   static Color? _parseHex(String? hex) {
     if (hex == null || !hex.startsWith('#') || hex.length != 7) return null;
     return Color(int.parse('FF${hex.substring(1)}', radix: 16));
+  }
+
+  static String _hexOf(Color color) {
+    final argb = color.toARGB32();
+    return '#${(argb & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}';
   }
 
   void clear() {
