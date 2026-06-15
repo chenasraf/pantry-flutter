@@ -93,6 +93,7 @@ onboarding:
     pickLastSeenTitle: "Zuletzt gesehene Version simulieren"
     pickLastSeenBody: "Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet."
     neverSeen: "Noch nie gesehen (neuer Benutzer)"
+    forceAllFeatures: "Alle Funktionen erzwingen"
 
 notificationsIntro:
   title: Bleib auf dem Laufenden

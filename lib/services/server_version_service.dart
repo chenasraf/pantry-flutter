@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/version.dart';
 
 /// Owns the Nextcloud and Pantry version state, plus the feature-support map.
@@ -226,7 +227,10 @@ class ServerVersionService {
   /// it in `capabilities.pantry.features`, or a probe succeeded. Unknown
   /// servers (no capability, no probe coverage) return `false`. Use this for
   /// genuinely new features that won't work on older servers.
-  bool hasFeature(String name) => _features[name] ?? false;
+  bool hasFeature(String name) {
+    if (PrefsService.instance.devForceAllFeatures) return true;
+    return _features[name] ?? false;
+  }
 
   /// Fail-open feature check, e.g. `supportsFeature('soft-delete')`. Returns
   /// `false` only when the capability list is authoritative AND the feature
@@ -235,6 +239,7 @@ class ServerVersionService {
   /// features stay visible without needing a per-feature probe. Use this for
   /// features that have always existed but that the server might opt out of.
   bool supportsFeature(String name) {
+    if (PrefsService.instance.devForceAllFeatures) return true;
     final known = _features[name];
     if (known != null) return known;
     if (_featuresAuthoritative) return false;

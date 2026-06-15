@@ -713,6 +713,11 @@ class _BodyState extends State<_Body> {
           leading: const Icon(Icons.bug_report_outlined, size: 18),
           label: m.onboarding.dev.showOnboarding,
         ),
+        _checkboxRow(
+          value: 'dev_force_all_features',
+          label: m.onboarding.dev.forceAllFeatures,
+          selected: prefs.devForceAllFeatures,
+        ),
       ],
     ];
   }
@@ -794,6 +799,8 @@ class _BodyState extends State<_Body> {
         await controller.refresh();
       case 'dev_show_onboarding':
         await _devShowOnboarding(context);
+      case 'dev_force_all_features':
+        await prefs.setDevForceAllFeatures(!prefs.devForceAllFeatures);
     }
   }
 

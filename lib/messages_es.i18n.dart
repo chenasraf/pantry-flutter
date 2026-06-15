@@ -562,6 +562,11 @@ class DevOnboardingMessagesEs extends DevOnboardingMessages {
   /// "Nunca vista (usuario nuevo)"
   /// ```
   String get neverSeen => """Nunca vista (usuario nuevo)""";
+
+  /// ```dart
+  /// "Forzar todas las funciones"
+  /// ```
+  String get forceAllFeatures => """Forzar todas las funciones""";
 }
 
 class NotificationsIntroMessagesEs extends NotificationsIntroMessages {
@@ -2656,6 +2661,7 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """onboarding.dev.pickLastSeenBody""":
       """Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí.""",
   """onboarding.dev.neverSeen""": """Nunca vista (usuario nuevo)""",
+  """onboarding.dev.forceAllFeatures""": """Forzar todas las funciones""",
   """notificationsIntro.title""": """Mantente al día""",
   """notificationsIntro.body""":
       """Pantry puede notificarte cuando los miembros del hogar agreguen artículos a las listas, suban fotos o dejen notas. Las notificaciones se obtienen de tu propio servidor Nextcloud — nada pasa por Google ni terceros.""",

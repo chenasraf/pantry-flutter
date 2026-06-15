@@ -93,6 +93,7 @@ onboarding:
     pickLastSeenTitle: "Simular última versión vista"
     pickLastSeenBody: "Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí."
     neverSeen: "Nunca vista (usuario nuevo)"
+    forceAllFeatures: "Forzar todas las funciones"
 
 notificationsIntro:
   title: "Mantente al día"

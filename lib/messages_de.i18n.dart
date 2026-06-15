@@ -562,6 +562,11 @@ class DevOnboardingMessagesDe extends DevOnboardingMessages {
   /// "Noch nie gesehen (neuer Benutzer)"
   /// ```
   String get neverSeen => """Noch nie gesehen (neuer Benutzer)""";
+
+  /// ```dart
+  /// "Alle Funktionen erzwingen"
+  /// ```
+  String get forceAllFeatures => """Alle Funktionen erzwingen""";
 }
 
 class NotificationsIntroMessagesDe extends NotificationsIntroMessages {
@@ -2662,6 +2667,7 @@ Bitte melde dich in deinem Browser an.""",
   """onboarding.dev.pickLastSeenBody""":
       """Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet.""",
   """onboarding.dev.neverSeen""": """Noch nie gesehen (neuer Benutzer)""",
+  """onboarding.dev.forceAllFeatures""": """Alle Funktionen erzwingen""",
   """notificationsIntro.title""": """Bleib auf dem Laufenden""",
   """notificationsIntro.body""":
       """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""",

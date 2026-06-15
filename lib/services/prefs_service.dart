@@ -32,6 +32,7 @@ class PrefsService extends ChangeNotifier {
   static const _displayNameKey = 'display_name';
   static const _serverLanguageKey = 'server_language';
   static const _firstDayOfWeekKey = 'first_day_of_week';
+  static const _devForceAllFeaturesKey = 'dev_force_all_features';
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -113,6 +114,13 @@ class PrefsService extends ChangeNotifier {
   int? _firstDayOfWeek;
   int? get firstDayOfWeek => _firstDayOfWeek;
 
+  /// Debug-only override: when true, [ServerVersionService.hasFeature] and
+  /// [ServerVersionService.supportsFeature] return true for every feature,
+  /// regardless of what the server reports. Lets us drive every gated UI
+  /// against a backend that doesn't (yet) advertise the feature.
+  bool _devForceAllFeatures = false;
+  bool get devForceAllFeatures => _devForceAllFeatures;
+
   Future<void> load() async {
     // One platform-channel round trip instead of ~17 sequential reads —
     // measurably shaves cold-start time on iOS Keychain / Android Keystore.
@@ -175,6 +183,9 @@ class PrefsService extends ChangeNotifier {
     _serverLanguage = all[_serverLanguageKey];
     final firstDay = all[_firstDayOfWeekKey];
     if (firstDay != null) _firstDayOfWeek = int.tryParse(firstDay);
+
+    final devForce = all[_devForceAllFeaturesKey];
+    if (devForce != null) _devForceAllFeatures = devForce == 'true';
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -423,6 +434,13 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setDevForceAllFeatures(bool value) async {
+    if (_devForceAllFeatures == value) return;
+    _devForceAllFeatures = value;
+    await _storage.write(key: _devForceAllFeaturesKey, value: value.toString());
+    notifyListeners();
+  }
+
   Future<void> setNotificationsIntroSeen(bool value) async {
     _notificationsIntroSeen = value;
     await _storage.write(
@@ -451,6 +469,7 @@ class PrefsService extends ChangeNotifier {
     _displayName = null;
     _serverLanguage = null;
     _firstDayOfWeek = null;
+    _devForceAllFeatures = false;
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _pinnedListIdsKey);
     await _storage.delete(key: _notificationsEnabledKey);
@@ -469,6 +488,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _displayNameKey);
     await _storage.delete(key: _serverLanguageKey);
     await _storage.delete(key: _firstDayOfWeekKey);
+    await _storage.delete(key: _devForceAllFeaturesKey);
     notifyListeners();
   }
 }

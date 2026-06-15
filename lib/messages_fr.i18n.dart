@@ -563,6 +563,11 @@ class DevOnboardingMessagesFr extends DevOnboardingMessages {
   /// "Jamais vue (nouvel utilisateur)"
   /// ```
   String get neverSeen => """Jamais vue (nouvel utilisateur)""";
+
+  /// ```dart
+  /// "Forcer toutes les fonctionnalités"
+  /// ```
+  String get forceAllFeatures => """Forcer toutes les fonctionnalités""";
 }
 
 class NotificationsIntroMessagesFr extends NotificationsIntroMessages {
@@ -2663,6 +2668,8 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """onboarding.dev.pickLastSeenBody""":
       """Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là.""",
   """onboarding.dev.neverSeen""": """Jamais vue (nouvel utilisateur)""",
+  """onboarding.dev.forceAllFeatures""":
+      """Forcer toutes les fonctionnalités""",
   """notificationsIntro.title""": """Restez informé""",
   """notificationsIntro.body""":
       """Pantry peut vous notifier lorsque les membres du foyer ajoutent des articles aux listes, téléchargent des photos ou laissent des notes. Les notifications sont récupérées depuis votre propre serveur Nextcloud — rien ne passe par Google ou des tiers.""",

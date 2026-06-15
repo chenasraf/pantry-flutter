@@ -559,6 +559,11 @@ class DevOnboardingMessagesHe extends DevOnboardingMessages {
   /// "מעולם לא נצפה (משתמש חדש)"
   /// ```
   String get neverSeen => """מעולם לא נצפה (משתמש חדש)""";
+
+  /// ```dart
+  /// "הפעל את כל התכונות"
+  /// ```
+  String get forceAllFeatures => """הפעל את כל התכונות""";
 }
 
 class NotificationsIntroMessagesHe extends NotificationsIntroMessages {
@@ -2635,6 +2640,7 @@ Map<String, String> get messagesHeMap => {
   """onboarding.dev.pickLastSeenBody""":
       """בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם.""",
   """onboarding.dev.neverSeen""": """מעולם לא נצפה (משתמש חדש)""",
+  """onboarding.dev.forceAllFeatures""": """הפעל את כל התכונות""",
   """notificationsIntro.title""": """הישאר מעודכן""",
   """notificationsIntro.body""":
       """Pantry יכול להודיע לך כשבני משק הבית מוסיפים פריטים לרשימות, מעלים תמונות או משאירים הערות. ההתראות נשלפות מהשרת שלך — שום דבר לא עובר דרך Google או צדדים שלישיים.""",

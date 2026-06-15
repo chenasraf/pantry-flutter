@@ -558,6 +558,11 @@ class DevOnboardingMessages {
   /// "Never seen (new user)"
   /// ```
   String get neverSeen => """Never seen (new user)""";
+
+  /// ```dart
+  /// "Force-enable all features"
+  /// ```
+  String get forceAllFeatures => """Force-enable all features""";
 }
 
 class NotificationsIntroMessages {
@@ -2632,6 +2637,7 @@ Please complete login in your browser.""",
   """onboarding.dev.pickLastSeenBody""":
       """Choose which version the device should pretend it last saw, then the onboarding will run from there.""",
   """onboarding.dev.neverSeen""": """Never seen (new user)""",
+  """onboarding.dev.forceAllFeatures""": """Force-enable all features""",
   """notificationsIntro.title""": """Stay in the loop""",
   """notificationsIntro.body""":
       """Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""",
