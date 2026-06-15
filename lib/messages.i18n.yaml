@@ -11,6 +11,7 @@ common:
   copy: Copy
   copied: Copied
   closeDialog: Done
+  remove: Remove
 
 login:
   connectToNextcloud: Connect to your Nextcloud instance
@@ -222,6 +223,17 @@ checklists:
   restoreFailed: Failed to restore item.
   permanentlyDeleteFailed: Failed to delete item.
   itemRestored: Item restored
+  viewListsTrash: Deleted lists
+  listsTrashTitle: Deleted lists
+  failedToLoadTrash: Failed to load trash.
+  listTrashEmpty: No deleted lists.
+  removeList: Remove list
+  removeListConfirm: Remove list?
+  removeListConfirmBody(String name): "Remove the list \"$name\"? You can restore it from the trash."
+  removeListFailed: Failed to remove list.
+  restoreList: Restore list
+  permanentlyDeleteList: Delete forever
+  listRemoved: List removed
   createList: New list
   listName: List name
   listDescription: Description (optional)
@@ -347,6 +359,20 @@ notesWall:
   deleteConfirm: Delete this note?
   deleteSelectedConfirm(int count): "Delete ${_plural(count, one: 'this note', many: '$count notes')}?"
   noteRemoved(int count): "${_plural(count, one: 'Note deleted', many: '$count notes deleted')}"
+  viewTrash: View trash
+  exitTrash: Exit trash
+  trashTitle: Trash
+  trashEmpty: Trash is empty.
+  emptyTrash: Empty trash
+  emptyTrashConfirm: Empty the trash?
+  emptyTrashConfirmBody: All notes in the trash will be permanently deleted. This cannot be undone.
+  emptyTrashFailed: Failed to empty trash.
+  failedToLoadTrash: Failed to load trash.
+  restore: Restore
+  restoreFailed: Failed to restore note.
+  permanentlyDelete: Delete forever
+  permanentlyDeleteConfirm: Permanently delete this note?
+  permanentlyDeleteConfirmBody: This cannot be undone.
   newNote: New note
   editNote: Edit note
   pinNote: Pin note
@@ -369,6 +395,20 @@ photoBoard:
   deleteConfirm: Delete this photo?
   deleteSelectedConfirm(int count): "Delete ${_plural(count, one: 'this photo', many: '$count photos')}?"
   photoRemoved(int count): "${_plural(count, one: 'Photo deleted', many: '$count photos deleted')}"
+  viewTrash: View trash
+  exitTrash: Exit trash
+  trashTitle: Trash
+  trashEmpty: Trash is empty.
+  emptyTrash: Empty trash
+  emptyTrashConfirm: Empty the trash?
+  emptyTrashConfirmBody: All photos in the trash will be permanently deleted. This cannot be undone.
+  emptyTrashFailed: Failed to empty trash.
+  failedToLoadTrash: Failed to load trash.
+  restore: Restore
+  restoreFailed: Failed to restore photo.
+  permanentlyDelete: Delete forever
+  permanentlyDeleteConfirm: Permanently delete this photo?
+  permanentlyDeleteConfirmBody: This cannot be undone.
   deleteFolder: Delete folder
   deleteFolderConfirm: Delete this folder?
   deleteFolderKeepPhotos: Move photos to root

@@ -11,6 +11,7 @@ common:
   copy: Kopieren
   copied: Kopiert
   closeDialog: Fertig
+  remove: "Entfernen"
 
 login:
   connectToNextcloud: Mit deiner Nextcloud-Instanz verbinden
@@ -222,6 +223,17 @@ checklists:
   restoreFailed: Eintrag konnte nicht wiederhergestellt werden.
   permanentlyDeleteFailed: Eintrag konnte nicht gelöscht werden.
   itemRestored: Eintrag wiederhergestellt
+  viewListsTrash: "Gelöschte Listen"
+  listsTrashTitle: "Gelöschte Listen"
+  failedToLoadTrash: "Papierkorb konnte nicht geladen werden."
+  listTrashEmpty: "Keine gelöschten Listen."
+  removeList: "Liste entfernen"
+  removeListConfirm: "Liste entfernen?"
+  removeListConfirmBody(String name): "Liste \"$name\" entfernen? Du kannst sie aus dem Papierkorb wiederherstellen."
+  removeListFailed: "Liste konnte nicht entfernt werden."
+  restoreList: "Liste wiederherstellen"
+  permanentlyDeleteList: "Endgültig löschen"
+  listRemoved: "Liste entfernt"
   createList: Neue Liste
   listName: Listenname
   listDescription: Beschreibung (optional)
@@ -347,6 +359,20 @@ notesWall:
   deleteConfirm: "Diese Notiz löschen?"
   deleteSelectedConfirm(int count): "${_plural(count, one: 'Diese Notiz', many: '$count Notizen')} löschen?"
   noteRemoved(int count): "${_plural(count, one: 'Notiz gelöscht', many: '$count Notizen gelöscht')}"
+  viewTrash: "Papierkorb anzeigen"
+  exitTrash: "Papierkorb verlassen"
+  trashTitle: Papierkorb
+  trashEmpty: "Der Papierkorb ist leer."
+  emptyTrash: "Papierkorb leeren"
+  emptyTrashConfirm: "Papierkorb leeren?"
+  emptyTrashConfirmBody: "Alle Notizen im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  emptyTrashFailed: "Papierkorb konnte nicht geleert werden."
+  failedToLoadTrash: "Papierkorb konnte nicht geladen werden."
+  restore: Wiederherstellen
+  restoreFailed: "Notiz konnte nicht wiederhergestellt werden."
+  permanentlyDelete: "Endgültig löschen"
+  permanentlyDeleteConfirm: "Diese Notiz endgültig löschen?"
+  permanentlyDeleteConfirmBody: "Dies kann nicht rückgängig gemacht werden."
   newNote: Neue Notiz
   editNote: Notiz bearbeiten
   pinNote: Notiz anheften
@@ -369,6 +395,20 @@ photoBoard:
   deleteConfirm: "Dieses Foto löschen?"
   deleteSelectedConfirm(int count): "${_plural(count, one: 'Dieses Foto', many: '$count Fotos')} löschen?"
   photoRemoved(int count): "${_plural(count, one: 'Foto gelöscht', many: '$count Fotos gelöscht')}"
+  viewTrash: "Papierkorb anzeigen"
+  exitTrash: "Papierkorb verlassen"
+  trashTitle: Papierkorb
+  trashEmpty: "Der Papierkorb ist leer."
+  emptyTrash: "Papierkorb leeren"
+  emptyTrashConfirm: "Papierkorb leeren?"
+  emptyTrashConfirmBody: "Alle Fotos im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  emptyTrashFailed: "Papierkorb konnte nicht geleert werden."
+  failedToLoadTrash: "Papierkorb konnte nicht geladen werden."
+  restore: Wiederherstellen
+  restoreFailed: "Foto konnte nicht wiederhergestellt werden."
+  permanentlyDelete: "Endgültig löschen"
+  permanentlyDeleteConfirm: "Dieses Foto endgültig löschen?"
+  permanentlyDeleteConfirmBody: "Dies kann nicht rückgängig gemacht werden."
   deleteFolder: "Ordner löschen"
   deleteFolderConfirm: "Diesen Ordner löschen?"
   deleteFolderKeepPhotos: Fotos ins Stammverzeichnis verschieben

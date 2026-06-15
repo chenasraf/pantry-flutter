@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
+import 'package:pantry/models/note.dart';
 import 'package:pantry/services/pending_note_share_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/widgets/note_selection_actions.dart';
 import 'package:pantry/widgets/note_sort_button.dart';
 import 'package:pantry/widgets/note_tile.dart';
@@ -98,50 +100,73 @@ class _NotesWallBody extends StatelessWidget {
       );
     }
 
-    return Stack(
-      children: [
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsetsDirectional.only(
-                end: 4,
-                top: 8,
-                bottom: 8,
+    final inTrash = controller.isTrashMode;
+
+    return PopScope(
+      canPop: !inTrash,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (controller.isTrashMode) controller.setTrashMode(false);
+      },
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              if (inTrash)
+                _TrashBanner(controller: controller)
+              else
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(
+                    end: 4,
+                    top: 8,
+                    bottom: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      const Spacer(),
+                      if (controller.selectMode)
+                        NoteSelectionActions(controller: controller)
+                      else ...[
+                        IconButton(
+                          icon: const Icon(Icons.checklist),
+                          tooltip: '',
+                          onPressed: controller.toggleSelectMode,
+                        ),
+                        NoteSortButton(controller: controller),
+                        if (hasFeature('note-trash'))
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline),
+                            tooltip: m.notesWall.viewTrash,
+                            onPressed: () => controller.setTrashMode(true),
+                          ),
+                      ],
+                    ],
+                  ),
+                ),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: inTrash
+                      ? controller.refreshTrash
+                      : controller.refresh,
+                  child: inTrash
+                      ? _TrashGrid(controller: controller)
+                      : _NotesGrid(controller: controller),
+                ),
               ),
-              child: Row(
-                children: [
-                  const Spacer(),
-                  if (controller.selectMode)
-                    NoteSelectionActions(controller: controller)
-                  else ...[
-                    IconButton(
-                      icon: const Icon(Icons.checklist),
-                      tooltip: '',
-                      onPressed: controller.toggleSelectMode,
-                    ),
-                    NoteSortButton(controller: controller),
-                  ],
-                ],
-              ),
-            ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: controller.refresh,
-                child: _NotesGrid(controller: controller),
-              ),
-            ),
-          ],
-        ),
-        PositionedDirectional(
-          end: 16,
-          bottom: 16,
-          child: FloatingActionButton(
-            heroTag: 'notes-fab',
-            onPressed: () => _createNote(context, controller),
-            child: const Icon(Icons.add),
+            ],
           ),
-        ),
-      ],
+          if (!inTrash)
+            PositionedDirectional(
+              end: 16,
+              bottom: 16,
+              child: FloatingActionButton(
+                heroTag: 'notes-fab',
+                onPressed: () => _createNote(context, controller),
+                child: const Icon(Icons.add),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -197,5 +222,250 @@ class _NotesGrid extends StatelessWidget {
         return NoteTile(note: note, controller: controller);
       },
     );
+  }
+}
+
+class _TrashBanner extends StatelessWidget {
+  final NotesController controller;
+
+  const _TrashBanner({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      color: cs.surfaceContainerHighest,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
+      child: Row(
+        children: [
+          Icon(Icons.delete_outline, size: 18, color: cs.onSurfaceVariant),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              m.notesWall.trashTitle,
+              style: TextStyle(color: cs.onSurfaceVariant),
+            ),
+          ),
+          if (controller.trashed.isNotEmpty)
+            TextButton.icon(
+              onPressed: () => _confirmEmptyTrash(context, controller),
+              icon: const Icon(Icons.delete_forever, size: 16),
+              label: Text(m.notesWall.emptyTrash),
+            ),
+          TextButton.icon(
+            onPressed: () => controller.setTrashMode(false),
+            icon: const Icon(Icons.close, size: 16),
+            label: Text(m.notesWall.exitTrash),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _confirmEmptyTrash(
+    BuildContext context,
+    NotesController controller,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.notesWall.emptyTrashConfirm),
+        content: Text(m.notesWall.emptyTrashConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.notesWall.emptyTrash),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await controller.emptyTrash();
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.notesWall.emptyTrashFailed)));
+      }
+    }
+  }
+}
+
+class _TrashGrid extends StatelessWidget {
+  final NotesController controller;
+
+  const _TrashGrid({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final notes = controller.trashed;
+    if (notes.isEmpty) {
+      return ListView(
+        children: [
+          const SizedBox(height: 100),
+          Center(
+            child: Text(
+              m.notesWall.trashEmpty,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 220,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 1.0,
+      ),
+      itemCount: notes.length,
+      itemBuilder: (context, index) {
+        final note = notes[index];
+        return _TrashedNoteTile(note: note, controller: controller);
+      },
+    );
+  }
+}
+
+class _TrashedNoteTile extends StatelessWidget {
+  final Note note;
+  final NotesController controller;
+
+  const _TrashedNoteTile({required this.note, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final bgColor = _parseColor(note.color) ?? cs.surfaceContainerHighest;
+    final textColor = bgColor.computeLuminance() > 0.5
+        ? Colors.black87
+        : Colors.white;
+
+    return GestureDetector(
+      onTap: () => _showTrashActions(context),
+      child: Opacity(
+        opacity: 0.65,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.delete_outline, color: textColor, size: 16),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      note.title,
+                      style: TextStyle(
+                        color: textColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              if (note.content != null && note.content!.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Expanded(
+                  child: Text(
+                    note.content!,
+                    style: TextStyle(color: textColor, fontSize: 12),
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color? _parseColor(String? hex) {
+    if (hex == null || hex.isEmpty) return null;
+    var h = hex.replaceFirst('#', '');
+    if (h.length == 6) h = 'FF$h';
+    final v = int.tryParse(h, radix: 16);
+    return v != null ? Color(v) : null;
+  }
+
+  Future<void> _showTrashActions(BuildContext context) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.restore_from_trash),
+              title: Text(m.notesWall.restore),
+              onTap: () => Navigator.pop(ctx, 'restore'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_forever),
+              title: Text(m.notesWall.permanentlyDelete),
+              onTap: () => Navigator.pop(ctx, 'permanent'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (action == null || !context.mounted) return;
+    if (action == 'restore') {
+      try {
+        await controller.restoreNote(note);
+      } catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(m.notesWall.restoreFailed)));
+        }
+      }
+    } else if (action == 'permanent') {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(m.notesWall.permanentlyDeleteConfirm),
+          content: Text(m.notesWall.permanentlyDeleteConfirmBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(m.common.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(m.notesWall.permanentlyDelete),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+      try {
+        await controller.permanentlyDeleteNote(note);
+      } catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(m.notesWall.deleteFailed)));
+        }
+      }
+    }
   }
 }

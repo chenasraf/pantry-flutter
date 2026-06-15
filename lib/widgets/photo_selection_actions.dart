@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 
 class PhotoSelectionActions extends StatelessWidget {
@@ -47,15 +49,36 @@ class PhotoSelectionActions extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(m.common.delete),
+            child: Text(
+              hasFeature('photo-trash') ? m.common.remove : m.common.delete,
+            ),
           ),
         ],
       ),
     ).then((confirmed) async {
       if (confirmed != true) return;
       try {
-        await controller.deleteSelected();
-        if (context.mounted) {
+        final snapshot = controller.photos
+            .where((p) => controller.selected.contains(p.id))
+            .toList();
+        final deletedIds = await controller.deleteSelected();
+        final deleted = snapshot
+            .where((p) => deletedIds.contains(p.id))
+            .toList();
+        if (!context.mounted) return;
+        if (hasFeature('photo-trash') && deleted.isNotEmpty) {
+          showUndoSnackBar(
+            context,
+            message: m.photoBoard.photoRemoved(deleted.length),
+            undoLabel: m.checklists.undo,
+            onUndo: () async {
+              for (final p in deleted) {
+                await controller.restorePhoto(p);
+              }
+            },
+            undoFailedMessage: m.photoBoard.restoreFailed,
+          );
+        } else {
           final messenger = ScaffoldMessenger.of(context);
           messenger.clearSnackBars();
           messenger.showSnackBar(

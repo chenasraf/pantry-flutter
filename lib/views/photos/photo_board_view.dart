@@ -1,6 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/photo.dart';
+import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/services/photo_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/widgets/folder_tile.dart';
 import 'package:pantry/widgets/photo_add_button.dart';
 import 'package:pantry/widgets/photo_selection_actions.dart';
@@ -85,11 +89,16 @@ class _PhotoBoardBody extends StatelessWidget {
     }
 
     final inFolder = controller.currentFolderId != null;
+    final inTrash = controller.isTrashMode;
 
     return PopScope(
-      canPop: !inFolder,
+      canPop: !inFolder && !inTrash,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
+        if (controller.isTrashMode) {
+          controller.setTrashMode(false);
+          return;
+        }
         if (controller.currentFolderId != null) {
           controller.exitFolder();
         }
@@ -98,16 +107,24 @@ class _PhotoBoardBody extends StatelessWidget {
         children: [
           Column(
             children: [
-              _TopBar(controller: controller),
+              if (inTrash)
+                _TrashBanner(controller: controller)
+              else
+                _TopBar(controller: controller),
               Expanded(
                 child: RefreshIndicator(
-                  onRefresh: controller.refresh,
-                  child: _PhotoGrid(controller: controller),
+                  onRefresh: inTrash
+                      ? controller.refreshTrash
+                      : controller.refresh,
+                  child: inTrash
+                      ? _TrashGrid(controller: controller)
+                      : _PhotoGrid(controller: controller),
                 ),
               ),
             ],
           ),
-          Positioned.fill(child: PhotoAddButton(controller: controller)),
+          if (!inTrash)
+            Positioned.fill(child: PhotoAddButton(controller: controller)),
         ],
       ),
     );
@@ -154,10 +171,241 @@ class _TopBar extends StatelessWidget {
               onPressed: controller.toggleSelectMode,
             ),
             PhotoSortButton(controller: controller),
+            if (hasFeature('photo-trash'))
+              IconButton(
+                icon: const Icon(Icons.delete_outline),
+                tooltip: m.photoBoard.viewTrash,
+                onPressed: () => controller.setTrashMode(true),
+              ),
           ],
         ],
       ),
     );
+  }
+}
+
+class _TrashBanner extends StatelessWidget {
+  final PhotoBoardController controller;
+
+  const _TrashBanner({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      color: cs.surfaceContainerHighest,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
+      child: Row(
+        children: [
+          Icon(Icons.delete_outline, size: 18, color: cs.onSurfaceVariant),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              m.photoBoard.trashTitle,
+              style: TextStyle(color: cs.onSurfaceVariant),
+            ),
+          ),
+          if (controller.trashed.isNotEmpty)
+            TextButton.icon(
+              onPressed: () => _confirmEmptyTrash(context, controller),
+              icon: const Icon(Icons.delete_forever, size: 16),
+              label: Text(m.photoBoard.emptyTrash),
+            ),
+          TextButton.icon(
+            onPressed: () => controller.setTrashMode(false),
+            icon: const Icon(Icons.close, size: 16),
+            label: Text(m.photoBoard.exitTrash),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _confirmEmptyTrash(
+    BuildContext context,
+    PhotoBoardController controller,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.photoBoard.emptyTrashConfirm),
+        content: Text(m.photoBoard.emptyTrashConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.photoBoard.emptyTrash),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await controller.emptyTrash();
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.photoBoard.emptyTrashFailed)));
+      }
+    }
+  }
+}
+
+class _TrashGrid extends StatelessWidget {
+  final PhotoBoardController controller;
+
+  const _TrashGrid({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final photos = controller.trashed;
+    if (photos.isEmpty) {
+      return ListView(
+        children: [
+          const SizedBox(height: 100),
+          Center(
+            child: Text(
+              m.photoBoard.trashEmpty,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 180,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+      ),
+      itemCount: photos.length,
+      itemBuilder: (context, index) {
+        final photo = photos[index];
+        return _TrashedPhotoTile(photo: photo, controller: controller);
+      },
+    );
+  }
+}
+
+class _TrashedPhotoTile extends StatelessWidget {
+  final Photo photo;
+  final PhotoBoardController controller;
+
+  const _TrashedPhotoTile({required this.photo, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final uri = PhotoService.instance.photoPreviewUri(
+      controller.houseId,
+      photo.id,
+    );
+    final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
+
+    return GestureDetector(
+      onTap: () => _showTrashActions(context),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Opacity(
+              opacity: 0.7,
+              child: CachedNetworkImage(
+                imageUrl: uri.toString(),
+                httpHeaders: headers,
+                fit: BoxFit.cover,
+                errorWidget: (_, _, _) => Container(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  child: const Icon(Icons.broken_image_outlined, size: 32),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 4,
+              left: 4,
+              child: Icon(
+                Icons.delete_outline,
+                color: Colors.white,
+                size: 20,
+                shadows: const [Shadow(blurRadius: 4)],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showTrashActions(BuildContext context) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.restore_from_trash),
+              title: Text(m.photoBoard.restore),
+              onTap: () => Navigator.pop(ctx, 'restore'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_forever),
+              title: Text(m.photoBoard.permanentlyDelete),
+              onTap: () => Navigator.pop(ctx, 'permanent'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (action == null || !context.mounted) return;
+    if (action == 'restore') {
+      try {
+        await controller.restorePhoto(photo);
+      } catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(m.photoBoard.restoreFailed)));
+        }
+      }
+    } else if (action == 'permanent') {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(m.photoBoard.permanentlyDeleteConfirm),
+          content: Text(m.photoBoard.permanentlyDeleteConfirmBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(m.common.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(m.photoBoard.permanentlyDelete),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+      try {
+        await controller.permanentlyDeletePhoto(photo);
+      } catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(m.photoBoard.deleteFailed)));
+        }
+      }
+    }
   }
 }
 

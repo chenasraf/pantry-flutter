@@ -143,6 +143,11 @@ class CommonMessages {
   /// "Done"
   /// ```
   String get closeDialog => """Done""";
+
+  /// ```dart
+  /// "Remove"
+  /// ```
+  String get remove => """Remove""";
 }
 
 class LoginMessages {
@@ -1192,6 +1197,62 @@ class ChecklistsMessages {
   String get itemRestored => """Item restored""";
 
   /// ```dart
+  /// "Deleted lists"
+  /// ```
+  String get viewListsTrash => """Deleted lists""";
+
+  /// ```dart
+  /// "Deleted lists"
+  /// ```
+  String get listsTrashTitle => """Deleted lists""";
+
+  /// ```dart
+  /// "Failed to load trash."
+  /// ```
+  String get failedToLoadTrash => """Failed to load trash.""";
+
+  /// ```dart
+  /// "No deleted lists."
+  /// ```
+  String get listTrashEmpty => """No deleted lists.""";
+
+  /// ```dart
+  /// "Remove list"
+  /// ```
+  String get removeList => """Remove list""";
+
+  /// ```dart
+  /// "Remove list?"
+  /// ```
+  String get removeListConfirm => """Remove list?""";
+
+  /// ```dart
+  /// "Remove the list "$name"? You can restore it from the trash."
+  /// ```
+  String removeListConfirmBody(String name) =>
+      """Remove the list "$name"? You can restore it from the trash.""";
+
+  /// ```dart
+  /// "Failed to remove list."
+  /// ```
+  String get removeListFailed => """Failed to remove list.""";
+
+  /// ```dart
+  /// "Restore list"
+  /// ```
+  String get restoreList => """Restore list""";
+
+  /// ```dart
+  /// "Delete forever"
+  /// ```
+  String get permanentlyDeleteList => """Delete forever""";
+
+  /// ```dart
+  /// "List removed"
+  /// ```
+  String get listRemoved => """List removed""";
+
+  /// ```dart
   /// "New list"
   /// ```
   String get createList => """New list""";
@@ -1829,6 +1890,77 @@ class NotesWallMessages {
       """${_plural(count, one: 'Note deleted', many: '$count notes deleted')}""";
 
   /// ```dart
+  /// "View trash"
+  /// ```
+  String get viewTrash => """View trash""";
+
+  /// ```dart
+  /// "Exit trash"
+  /// ```
+  String get exitTrash => """Exit trash""";
+
+  /// ```dart
+  /// "Trash"
+  /// ```
+  String get trashTitle => """Trash""";
+
+  /// ```dart
+  /// "Trash is empty."
+  /// ```
+  String get trashEmpty => """Trash is empty.""";
+
+  /// ```dart
+  /// "Empty trash"
+  /// ```
+  String get emptyTrash => """Empty trash""";
+
+  /// ```dart
+  /// "Empty the trash?"
+  /// ```
+  String get emptyTrashConfirm => """Empty the trash?""";
+
+  /// ```dart
+  /// "All notes in the trash will be permanently deleted. This cannot be undone."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """All notes in the trash will be permanently deleted. This cannot be undone.""";
+
+  /// ```dart
+  /// "Failed to empty trash."
+  /// ```
+  String get emptyTrashFailed => """Failed to empty trash.""";
+
+  /// ```dart
+  /// "Failed to load trash."
+  /// ```
+  String get failedToLoadTrash => """Failed to load trash.""";
+
+  /// ```dart
+  /// "Restore"
+  /// ```
+  String get restore => """Restore""";
+
+  /// ```dart
+  /// "Failed to restore note."
+  /// ```
+  String get restoreFailed => """Failed to restore note.""";
+
+  /// ```dart
+  /// "Delete forever"
+  /// ```
+  String get permanentlyDelete => """Delete forever""";
+
+  /// ```dart
+  /// "Permanently delete this note?"
+  /// ```
+  String get permanentlyDeleteConfirm => """Permanently delete this note?""";
+
+  /// ```dart
+  /// "This cannot be undone."
+  /// ```
+  String get permanentlyDeleteConfirmBody => """This cannot be undone.""";
+
+  /// ```dart
   /// "New note"
   /// ```
   String get newNote => """New note""";
@@ -1935,6 +2067,77 @@ class PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'Photo deleted', many: '$count photos deleted')}""";
+
+  /// ```dart
+  /// "View trash"
+  /// ```
+  String get viewTrash => """View trash""";
+
+  /// ```dart
+  /// "Exit trash"
+  /// ```
+  String get exitTrash => """Exit trash""";
+
+  /// ```dart
+  /// "Trash"
+  /// ```
+  String get trashTitle => """Trash""";
+
+  /// ```dart
+  /// "Trash is empty."
+  /// ```
+  String get trashEmpty => """Trash is empty.""";
+
+  /// ```dart
+  /// "Empty trash"
+  /// ```
+  String get emptyTrash => """Empty trash""";
+
+  /// ```dart
+  /// "Empty the trash?"
+  /// ```
+  String get emptyTrashConfirm => """Empty the trash?""";
+
+  /// ```dart
+  /// "All photos in the trash will be permanently deleted. This cannot be undone."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """All photos in the trash will be permanently deleted. This cannot be undone.""";
+
+  /// ```dart
+  /// "Failed to empty trash."
+  /// ```
+  String get emptyTrashFailed => """Failed to empty trash.""";
+
+  /// ```dart
+  /// "Failed to load trash."
+  /// ```
+  String get failedToLoadTrash => """Failed to load trash.""";
+
+  /// ```dart
+  /// "Restore"
+  /// ```
+  String get restore => """Restore""";
+
+  /// ```dart
+  /// "Failed to restore photo."
+  /// ```
+  String get restoreFailed => """Failed to restore photo.""";
+
+  /// ```dart
+  /// "Delete forever"
+  /// ```
+  String get permanentlyDelete => """Delete forever""";
+
+  /// ```dart
+  /// "Permanently delete this photo?"
+  /// ```
+  String get permanentlyDeleteConfirm => """Permanently delete this photo?""";
+
+  /// ```dart
+  /// "This cannot be undone."
+  /// ```
+  String get permanentlyDeleteConfirmBody => """This cannot be undone.""";
 
   /// ```dart
   /// "Delete folder"
@@ -2346,6 +2549,7 @@ Map<String, String> get messagesMap => {
   """common.copy""": """Copy""",
   """common.copied""": """Copied""",
   """common.closeDialog""": """Done""",
+  """common.remove""": """Remove""",
   """login.connectToNextcloud""": """Connect to your Nextcloud instance""",
   """login.serverUrl""": """Server URL""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -2550,6 +2754,16 @@ Please complete login in your browser.""",
   """checklists.restoreFailed""": """Failed to restore item.""",
   """checklists.permanentlyDeleteFailed""": """Failed to delete item.""",
   """checklists.itemRestored""": """Item restored""",
+  """checklists.viewListsTrash""": """Deleted lists""",
+  """checklists.listsTrashTitle""": """Deleted lists""",
+  """checklists.failedToLoadTrash""": """Failed to load trash.""",
+  """checklists.listTrashEmpty""": """No deleted lists.""",
+  """checklists.removeList""": """Remove list""",
+  """checklists.removeListConfirm""": """Remove list?""",
+  """checklists.removeListFailed""": """Failed to remove list.""",
+  """checklists.restoreList""": """Restore list""",
+  """checklists.permanentlyDeleteList""": """Delete forever""",
+  """checklists.listRemoved""": """List removed""",
   """checklists.createList""": """New list""",
   """checklists.listName""": """List name""",
   """checklists.listDescription""": """Description (optional)""",
@@ -2659,6 +2873,21 @@ Please complete login in your browser.""",
   """notesWall.saveFailed""": """Failed to save note.""",
   """notesWall.deleteFailed""": """Failed to delete note.""",
   """notesWall.deleteConfirm""": """Delete this note?""",
+  """notesWall.viewTrash""": """View trash""",
+  """notesWall.exitTrash""": """Exit trash""",
+  """notesWall.trashTitle""": """Trash""",
+  """notesWall.trashEmpty""": """Trash is empty.""",
+  """notesWall.emptyTrash""": """Empty trash""",
+  """notesWall.emptyTrashConfirm""": """Empty the trash?""",
+  """notesWall.emptyTrashConfirmBody""":
+      """All notes in the trash will be permanently deleted. This cannot be undone.""",
+  """notesWall.emptyTrashFailed""": """Failed to empty trash.""",
+  """notesWall.failedToLoadTrash""": """Failed to load trash.""",
+  """notesWall.restore""": """Restore""",
+  """notesWall.restoreFailed""": """Failed to restore note.""",
+  """notesWall.permanentlyDelete""": """Delete forever""",
+  """notesWall.permanentlyDeleteConfirm""": """Permanently delete this note?""",
+  """notesWall.permanentlyDeleteConfirmBody""": """This cannot be undone.""",
   """notesWall.newNote""": """New note""",
   """notesWall.editNote""": """Edit note""",
   """notesWall.pinNote""": """Pin note""",
@@ -2676,6 +2905,22 @@ Please complete login in your browser.""",
   """photoBoard.uploadFailed""": """Failed to upload photo.""",
   """photoBoard.deleteFailed""": """Failed to delete photo.""",
   """photoBoard.deleteConfirm""": """Delete this photo?""",
+  """photoBoard.viewTrash""": """View trash""",
+  """photoBoard.exitTrash""": """Exit trash""",
+  """photoBoard.trashTitle""": """Trash""",
+  """photoBoard.trashEmpty""": """Trash is empty.""",
+  """photoBoard.emptyTrash""": """Empty trash""",
+  """photoBoard.emptyTrashConfirm""": """Empty the trash?""",
+  """photoBoard.emptyTrashConfirmBody""":
+      """All photos in the trash will be permanently deleted. This cannot be undone.""",
+  """photoBoard.emptyTrashFailed""": """Failed to empty trash.""",
+  """photoBoard.failedToLoadTrash""": """Failed to load trash.""",
+  """photoBoard.restore""": """Restore""",
+  """photoBoard.restoreFailed""": """Failed to restore photo.""",
+  """photoBoard.permanentlyDelete""": """Delete forever""",
+  """photoBoard.permanentlyDeleteConfirm""":
+      """Permanently delete this photo?""",
+  """photoBoard.permanentlyDeleteConfirmBody""": """This cannot be undone.""",
   """photoBoard.deleteFolder""": """Delete folder""",
   """photoBoard.deleteFolderConfirm""": """Delete this folder?""",
   """photoBoard.deleteFolderKeepPhotos""": """Move photos to root""",

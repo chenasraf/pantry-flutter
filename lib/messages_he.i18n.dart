@@ -144,6 +144,11 @@ class CommonMessagesHe extends CommonMessages {
   /// "סיום"
   /// ```
   String get closeDialog => """סיום""";
+
+  /// ```dart
+  /// "הסר"
+  /// ```
+  String get remove => """הסר""";
 }
 
 class LoginMessagesHe extends LoginMessages {
@@ -1194,6 +1199,62 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get itemRestored => """הפריט שוחזר""";
 
   /// ```dart
+  /// "רשימות שנמחקו"
+  /// ```
+  String get viewListsTrash => """רשימות שנמחקו""";
+
+  /// ```dart
+  /// "רשימות שנמחקו"
+  /// ```
+  String get listsTrashTitle => """רשימות שנמחקו""";
+
+  /// ```dart
+  /// "טעינת סל המיחזור נכשלה."
+  /// ```
+  String get failedToLoadTrash => """טעינת סל המיחזור נכשלה.""";
+
+  /// ```dart
+  /// "אין רשימות שנמחקו."
+  /// ```
+  String get listTrashEmpty => """אין רשימות שנמחקו.""";
+
+  /// ```dart
+  /// "הסר רשימה"
+  /// ```
+  String get removeList => """הסר רשימה""";
+
+  /// ```dart
+  /// "להסיר את הרשימה?"
+  /// ```
+  String get removeListConfirm => """להסיר את הרשימה?""";
+
+  /// ```dart
+  /// "להסיר את הרשימה "$name"? ניתן לשחזר אותה מסל המיחזור."
+  /// ```
+  String removeListConfirmBody(String name) =>
+      """להסיר את הרשימה "$name"? ניתן לשחזר אותה מסל המיחזור.""";
+
+  /// ```dart
+  /// "הסרת הרשימה נכשלה."
+  /// ```
+  String get removeListFailed => """הסרת הרשימה נכשלה.""";
+
+  /// ```dart
+  /// "שחזר רשימה"
+  /// ```
+  String get restoreList => """שחזר רשימה""";
+
+  /// ```dart
+  /// "מחק לצמיתות"
+  /// ```
+  String get permanentlyDeleteList => """מחק לצמיתות""";
+
+  /// ```dart
+  /// "הרשימה הוסרה"
+  /// ```
+  String get listRemoved => """הרשימה הוסרה""";
+
+  /// ```dart
   /// "רשימה חדשה"
   /// ```
   String get createList => """רשימה חדשה""";
@@ -1833,6 +1894,77 @@ class NotesWallMessagesHe extends NotesWallMessages {
       """${_plural(count, one: 'הערה נמחקה', many: '$count הערות נמחקו')}""";
 
   /// ```dart
+  /// "הצג סל מיחזור"
+  /// ```
+  String get viewTrash => """הצג סל מיחזור""";
+
+  /// ```dart
+  /// "צא מסל המיחזור"
+  /// ```
+  String get exitTrash => """צא מסל המיחזור""";
+
+  /// ```dart
+  /// "סל מיחזור"
+  /// ```
+  String get trashTitle => """סל מיחזור""";
+
+  /// ```dart
+  /// "סל המיחזור ריק."
+  /// ```
+  String get trashEmpty => """סל המיחזור ריק.""";
+
+  /// ```dart
+  /// "רוקן סל מיחזור"
+  /// ```
+  String get emptyTrash => """רוקן סל מיחזור""";
+
+  /// ```dart
+  /// "לרוקן את סל המיחזור?"
+  /// ```
+  String get emptyTrashConfirm => """לרוקן את סל המיחזור?""";
+
+  /// ```dart
+  /// "כל ההערות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """כל ההערות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "ריקון סל המיחזור נכשל."
+  /// ```
+  String get emptyTrashFailed => """ריקון סל המיחזור נכשל.""";
+
+  /// ```dart
+  /// "טעינת סל המיחזור נכשלה."
+  /// ```
+  String get failedToLoadTrash => """טעינת סל המיחזור נכשלה.""";
+
+  /// ```dart
+  /// "שחזר"
+  /// ```
+  String get restore => """שחזר""";
+
+  /// ```dart
+  /// "שחזור ההערה נכשל."
+  /// ```
+  String get restoreFailed => """שחזור ההערה נכשל.""";
+
+  /// ```dart
+  /// "מחק לצמיתות"
+  /// ```
+  String get permanentlyDelete => """מחק לצמיתות""";
+
+  /// ```dart
+  /// "למחוק את ההערה לצמיתות?"
+  /// ```
+  String get permanentlyDeleteConfirm => """למחוק את ההערה לצמיתות?""";
+
+  /// ```dart
+  /// "לא ניתן לבטל פעולה זו."
+  /// ```
+  String get permanentlyDeleteConfirmBody => """לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
   /// "הערה חדשה"
   /// ```
   String get newNote => """הערה חדשה""";
@@ -1939,6 +2071,77 @@ class PhotoBoardMessagesHe extends PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'תמונה נמחקה', many: '$count תמונות נמחקו')}""";
+
+  /// ```dart
+  /// "הצג סל מיחזור"
+  /// ```
+  String get viewTrash => """הצג סל מיחזור""";
+
+  /// ```dart
+  /// "צא מסל המיחזור"
+  /// ```
+  String get exitTrash => """צא מסל המיחזור""";
+
+  /// ```dart
+  /// "סל מיחזור"
+  /// ```
+  String get trashTitle => """סל מיחזור""";
+
+  /// ```dart
+  /// "סל המיחזור ריק."
+  /// ```
+  String get trashEmpty => """סל המיחזור ריק.""";
+
+  /// ```dart
+  /// "רוקן סל מיחזור"
+  /// ```
+  String get emptyTrash => """רוקן סל מיחזור""";
+
+  /// ```dart
+  /// "לרוקן את סל המיחזור?"
+  /// ```
+  String get emptyTrashConfirm => """לרוקן את סל המיחזור?""";
+
+  /// ```dart
+  /// "כל התמונות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """כל התמונות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "ריקון סל המיחזור נכשל."
+  /// ```
+  String get emptyTrashFailed => """ריקון סל המיחזור נכשל.""";
+
+  /// ```dart
+  /// "טעינת סל המיחזור נכשלה."
+  /// ```
+  String get failedToLoadTrash => """טעינת סל המיחזור נכשלה.""";
+
+  /// ```dart
+  /// "שחזר"
+  /// ```
+  String get restore => """שחזר""";
+
+  /// ```dart
+  /// "שחזור התמונה נכשל."
+  /// ```
+  String get restoreFailed => """שחזור התמונה נכשל.""";
+
+  /// ```dart
+  /// "מחק לצמיתות"
+  /// ```
+  String get permanentlyDelete => """מחק לצמיתות""";
+
+  /// ```dart
+  /// "למחוק את התמונה לצמיתות?"
+  /// ```
+  String get permanentlyDeleteConfirm => """למחוק את התמונה לצמיתות?""";
+
+  /// ```dart
+  /// "לא ניתן לבטל פעולה זו."
+  /// ```
+  String get permanentlyDeleteConfirmBody => """לא ניתן לבטל פעולה זו.""";
 
   /// ```dart
   /// "מחק תיקייה"
@@ -2350,6 +2553,7 @@ Map<String, String> get messagesHeMap => {
   """common.copy""": """העתק""",
   """common.copied""": """הועתק""",
   """common.closeDialog""": """סיום""",
+  """common.remove""": """הסר""",
   """login.connectToNextcloud""": """התחבר לשרת ה-Nextcloud שלך""",
   """login.serverUrl""": """כתובת השרת""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -2550,6 +2754,16 @@ Map<String, String> get messagesHeMap => {
   """checklists.restoreFailed""": """שחזור הפריט נכשל.""",
   """checklists.permanentlyDeleteFailed""": """מחיקת הפריט נכשלה.""",
   """checklists.itemRestored""": """הפריט שוחזר""",
+  """checklists.viewListsTrash""": """רשימות שנמחקו""",
+  """checklists.listsTrashTitle""": """רשימות שנמחקו""",
+  """checklists.failedToLoadTrash""": """טעינת סל המיחזור נכשלה.""",
+  """checklists.listTrashEmpty""": """אין רשימות שנמחקו.""",
+  """checklists.removeList""": """הסר רשימה""",
+  """checklists.removeListConfirm""": """להסיר את הרשימה?""",
+  """checklists.removeListFailed""": """הסרת הרשימה נכשלה.""",
+  """checklists.restoreList""": """שחזר רשימה""",
+  """checklists.permanentlyDeleteList""": """מחק לצמיתות""",
+  """checklists.listRemoved""": """הרשימה הוסרה""",
   """checklists.createList""": """רשימה חדשה""",
   """checklists.listName""": """שם הרשימה""",
   """checklists.listDescription""": """תיאור (אופציונלי)""",
@@ -2658,6 +2872,21 @@ Map<String, String> get messagesHeMap => {
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",
   """notesWall.deleteFailed""": """מחיקת ההערה נכשלה.""",
   """notesWall.deleteConfirm""": """למחוק את ההערה?""",
+  """notesWall.viewTrash""": """הצג סל מיחזור""",
+  """notesWall.exitTrash""": """צא מסל המיחזור""",
+  """notesWall.trashTitle""": """סל מיחזור""",
+  """notesWall.trashEmpty""": """סל המיחזור ריק.""",
+  """notesWall.emptyTrash""": """רוקן סל מיחזור""",
+  """notesWall.emptyTrashConfirm""": """לרוקן את סל המיחזור?""",
+  """notesWall.emptyTrashConfirmBody""":
+      """כל ההערות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו.""",
+  """notesWall.emptyTrashFailed""": """ריקון סל המיחזור נכשל.""",
+  """notesWall.failedToLoadTrash""": """טעינת סל המיחזור נכשלה.""",
+  """notesWall.restore""": """שחזר""",
+  """notesWall.restoreFailed""": """שחזור ההערה נכשל.""",
+  """notesWall.permanentlyDelete""": """מחק לצמיתות""",
+  """notesWall.permanentlyDeleteConfirm""": """למחוק את ההערה לצמיתות?""",
+  """notesWall.permanentlyDeleteConfirmBody""": """לא ניתן לבטל פעולה זו.""",
   """notesWall.newNote""": """הערה חדשה""",
   """notesWall.editNote""": """עריכת הערה""",
   """notesWall.pinNote""": """הצמדת הערה""",
@@ -2675,6 +2904,21 @@ Map<String, String> get messagesHeMap => {
   """photoBoard.uploadFailed""": """העלאת התמונה נכשלה.""",
   """photoBoard.deleteFailed""": """מחיקת התמונה נכשלה.""",
   """photoBoard.deleteConfirm""": """למחוק את התמונה?""",
+  """photoBoard.viewTrash""": """הצג סל מיחזור""",
+  """photoBoard.exitTrash""": """צא מסל המיחזור""",
+  """photoBoard.trashTitle""": """סל מיחזור""",
+  """photoBoard.trashEmpty""": """סל המיחזור ריק.""",
+  """photoBoard.emptyTrash""": """רוקן סל מיחזור""",
+  """photoBoard.emptyTrashConfirm""": """לרוקן את סל המיחזור?""",
+  """photoBoard.emptyTrashConfirmBody""":
+      """כל התמונות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו.""",
+  """photoBoard.emptyTrashFailed""": """ריקון סל המיחזור נכשל.""",
+  """photoBoard.failedToLoadTrash""": """טעינת סל המיחזור נכשלה.""",
+  """photoBoard.restore""": """שחזר""",
+  """photoBoard.restoreFailed""": """שחזור התמונה נכשל.""",
+  """photoBoard.permanentlyDelete""": """מחק לצמיתות""",
+  """photoBoard.permanentlyDeleteConfirm""": """למחוק את התמונה לצמיתות?""",
+  """photoBoard.permanentlyDeleteConfirmBody""": """לא ניתן לבטל פעולה זו.""",
   """photoBoard.deleteFolder""": """מחק תיקייה""",
   """photoBoard.deleteFolderConfirm""": """למחוק את התיקייה?""",
   """photoBoard.deleteFolderKeepPhotos""": """העבר תמונות לשורש""",

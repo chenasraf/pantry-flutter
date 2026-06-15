@@ -6,6 +6,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
@@ -256,11 +257,14 @@ class NoteTile extends StatelessWidget {
         children: [
           const Icon(Icons.delete, size: 18),
           const SizedBox(width: 8),
-          Text(m.common.delete),
+          Text(_softDeleteLabel),
         ],
       ),
     ),
   ];
+
+  String get _softDeleteLabel =>
+      hasFeature('note-trash') ? m.common.remove : m.common.delete;
 
   void _onMenuSelected(BuildContext context, String value) {
     switch (value) {
@@ -293,7 +297,7 @@ class NoteTile extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(m.common.delete),
+            child: Text(_softDeleteLabel),
           ),
         ],
       ),
@@ -301,7 +305,16 @@ class NoteTile extends StatelessWidget {
       if (confirmed != true) return;
       try {
         await controller.deleteNote(note);
-        if (context.mounted) {
+        if (!context.mounted) return;
+        if (hasFeature('note-trash')) {
+          showUndoSnackBar(
+            context,
+            message: m.notesWall.noteRemoved(1),
+            undoLabel: m.checklists.undo,
+            onUndo: () => controller.restoreNote(note),
+            undoFailedMessage: m.notesWall.restoreFailed,
+          );
+        } else {
           final messenger = ScaffoldMessenger.of(context);
           messenger.clearSnackBars();
           messenger.showSnackBar(

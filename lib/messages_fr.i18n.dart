@@ -144,6 +144,11 @@ class CommonMessagesFr extends CommonMessages {
   /// "Terminé"
   /// ```
   String get closeDialog => """Terminé""";
+
+  /// ```dart
+  /// "Retirer"
+  /// ```
+  String get remove => """Retirer""";
 }
 
 class LoginMessagesFr extends LoginMessages {
@@ -1206,6 +1211,62 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get itemRestored => """Article restauré""";
 
   /// ```dart
+  /// "Listes supprimées"
+  /// ```
+  String get viewListsTrash => """Listes supprimées""";
+
+  /// ```dart
+  /// "Listes supprimées"
+  /// ```
+  String get listsTrashTitle => """Listes supprimées""";
+
+  /// ```dart
+  /// "Impossible de charger la corbeille."
+  /// ```
+  String get failedToLoadTrash => """Impossible de charger la corbeille.""";
+
+  /// ```dart
+  /// "Aucune liste supprimée."
+  /// ```
+  String get listTrashEmpty => """Aucune liste supprimée.""";
+
+  /// ```dart
+  /// "Retirer la liste"
+  /// ```
+  String get removeList => """Retirer la liste""";
+
+  /// ```dart
+  /// "Retirer la liste ?"
+  /// ```
+  String get removeListConfirm => """Retirer la liste ?""";
+
+  /// ```dart
+  /// "Retirer la liste "$name" ? Vous pouvez la restaurer depuis la corbeille."
+  /// ```
+  String removeListConfirmBody(String name) =>
+      """Retirer la liste "$name" ? Vous pouvez la restaurer depuis la corbeille.""";
+
+  /// ```dart
+  /// "Impossible de retirer la liste."
+  /// ```
+  String get removeListFailed => """Impossible de retirer la liste.""";
+
+  /// ```dart
+  /// "Restaurer la liste"
+  /// ```
+  String get restoreList => """Restaurer la liste""";
+
+  /// ```dart
+  /// "Supprimer définitivement"
+  /// ```
+  String get permanentlyDeleteList => """Supprimer définitivement""";
+
+  /// ```dart
+  /// "Liste retirée"
+  /// ```
+  String get listRemoved => """Liste retirée""";
+
+  /// ```dart
   /// "Nouvelle liste"
   /// ```
   String get createList => """Nouvelle liste""";
@@ -1849,6 +1910,79 @@ class NotesWallMessagesFr extends NotesWallMessages {
       """${_plural(count, one: 'Note supprimée', many: '$count notes supprimées')}""";
 
   /// ```dart
+  /// "Voir la corbeille"
+  /// ```
+  String get viewTrash => """Voir la corbeille""";
+
+  /// ```dart
+  /// "Quitter la corbeille"
+  /// ```
+  String get exitTrash => """Quitter la corbeille""";
+
+  /// ```dart
+  /// "Corbeille"
+  /// ```
+  String get trashTitle => """Corbeille""";
+
+  /// ```dart
+  /// "La corbeille est vide."
+  /// ```
+  String get trashEmpty => """La corbeille est vide.""";
+
+  /// ```dart
+  /// "Vider la corbeille"
+  /// ```
+  String get emptyTrash => """Vider la corbeille""";
+
+  /// ```dart
+  /// "Vider la corbeille ?"
+  /// ```
+  String get emptyTrashConfirm => """Vider la corbeille ?""";
+
+  /// ```dart
+  /// "Toutes les notes dans la corbeille seront supprimées définitivement. Cette action est irréversible."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """Toutes les notes dans la corbeille seront supprimées définitivement. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Impossible de vider la corbeille."
+  /// ```
+  String get emptyTrashFailed => """Impossible de vider la corbeille.""";
+
+  /// ```dart
+  /// "Impossible de charger la corbeille."
+  /// ```
+  String get failedToLoadTrash => """Impossible de charger la corbeille.""";
+
+  /// ```dart
+  /// "Restaurer"
+  /// ```
+  String get restore => """Restaurer""";
+
+  /// ```dart
+  /// "Impossible de restaurer la note."
+  /// ```
+  String get restoreFailed => """Impossible de restaurer la note.""";
+
+  /// ```dart
+  /// "Supprimer définitivement"
+  /// ```
+  String get permanentlyDelete => """Supprimer définitivement""";
+
+  /// ```dart
+  /// "Supprimer cette note définitivement ?"
+  /// ```
+  String get permanentlyDeleteConfirm =>
+      """Supprimer cette note définitivement ?""";
+
+  /// ```dart
+  /// "Cette action est irréversible."
+  /// ```
+  String get permanentlyDeleteConfirmBody =>
+      """Cette action est irréversible.""";
+
+  /// ```dart
   /// "Nouvelle note"
   /// ```
   String get newNote => """Nouvelle note""";
@@ -1955,6 +2089,79 @@ class PhotoBoardMessagesFr extends PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'Photo supprimée', many: '$count photos supprimées')}""";
+
+  /// ```dart
+  /// "Voir la corbeille"
+  /// ```
+  String get viewTrash => """Voir la corbeille""";
+
+  /// ```dart
+  /// "Quitter la corbeille"
+  /// ```
+  String get exitTrash => """Quitter la corbeille""";
+
+  /// ```dart
+  /// "Corbeille"
+  /// ```
+  String get trashTitle => """Corbeille""";
+
+  /// ```dart
+  /// "La corbeille est vide."
+  /// ```
+  String get trashEmpty => """La corbeille est vide.""";
+
+  /// ```dart
+  /// "Vider la corbeille"
+  /// ```
+  String get emptyTrash => """Vider la corbeille""";
+
+  /// ```dart
+  /// "Vider la corbeille ?"
+  /// ```
+  String get emptyTrashConfirm => """Vider la corbeille ?""";
+
+  /// ```dart
+  /// "Toutes les photos dans la corbeille seront supprimées définitivement. Cette action est irréversible."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """Toutes les photos dans la corbeille seront supprimées définitivement. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Impossible de vider la corbeille."
+  /// ```
+  String get emptyTrashFailed => """Impossible de vider la corbeille.""";
+
+  /// ```dart
+  /// "Impossible de charger la corbeille."
+  /// ```
+  String get failedToLoadTrash => """Impossible de charger la corbeille.""";
+
+  /// ```dart
+  /// "Restaurer"
+  /// ```
+  String get restore => """Restaurer""";
+
+  /// ```dart
+  /// "Impossible de restaurer la photo."
+  /// ```
+  String get restoreFailed => """Impossible de restaurer la photo.""";
+
+  /// ```dart
+  /// "Supprimer définitivement"
+  /// ```
+  String get permanentlyDelete => """Supprimer définitivement""";
+
+  /// ```dart
+  /// "Supprimer cette photo définitivement ?"
+  /// ```
+  String get permanentlyDeleteConfirm =>
+      """Supprimer cette photo définitivement ?""";
+
+  /// ```dart
+  /// "Cette action est irréversible."
+  /// ```
+  String get permanentlyDeleteConfirmBody =>
+      """Cette action est irréversible.""";
 
   /// ```dart
   /// "Supprimer le dossier"
@@ -2368,6 +2575,7 @@ Map<String, String> get messagesFrMap => {
   """common.copy""": """Copier""",
   """common.copied""": """Copié""",
   """common.closeDialog""": """Terminé""",
+  """common.remove""": """Retirer""",
   """login.connectToNextcloud""":
       """Connectez-vous à votre instance Nextcloud""",
   """login.serverUrl""": """URL du serveur""",
@@ -2585,6 +2793,16 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.permanentlyDeleteFailed""":
       """Impossible de supprimer l'article.""",
   """checklists.itemRestored""": """Article restauré""",
+  """checklists.viewListsTrash""": """Listes supprimées""",
+  """checklists.listsTrashTitle""": """Listes supprimées""",
+  """checklists.failedToLoadTrash""": """Impossible de charger la corbeille.""",
+  """checklists.listTrashEmpty""": """Aucune liste supprimée.""",
+  """checklists.removeList""": """Retirer la liste""",
+  """checklists.removeListConfirm""": """Retirer la liste ?""",
+  """checklists.removeListFailed""": """Impossible de retirer la liste.""",
+  """checklists.restoreList""": """Restaurer la liste""",
+  """checklists.permanentlyDeleteList""": """Supprimer définitivement""",
+  """checklists.listRemoved""": """Liste retirée""",
   """checklists.createList""": """Nouvelle liste""",
   """checklists.listName""": """Nom de la liste""",
   """checklists.listDescription""": """Description (facultatif)""",
@@ -2698,6 +2916,23 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """notesWall.saveFailed""": """Impossible d'enregistrer la note.""",
   """notesWall.deleteFailed""": """Impossible de supprimer la note.""",
   """notesWall.deleteConfirm""": """Supprimer cette note ?""",
+  """notesWall.viewTrash""": """Voir la corbeille""",
+  """notesWall.exitTrash""": """Quitter la corbeille""",
+  """notesWall.trashTitle""": """Corbeille""",
+  """notesWall.trashEmpty""": """La corbeille est vide.""",
+  """notesWall.emptyTrash""": """Vider la corbeille""",
+  """notesWall.emptyTrashConfirm""": """Vider la corbeille ?""",
+  """notesWall.emptyTrashConfirmBody""":
+      """Toutes les notes dans la corbeille seront supprimées définitivement. Cette action est irréversible.""",
+  """notesWall.emptyTrashFailed""": """Impossible de vider la corbeille.""",
+  """notesWall.failedToLoadTrash""": """Impossible de charger la corbeille.""",
+  """notesWall.restore""": """Restaurer""",
+  """notesWall.restoreFailed""": """Impossible de restaurer la note.""",
+  """notesWall.permanentlyDelete""": """Supprimer définitivement""",
+  """notesWall.permanentlyDeleteConfirm""":
+      """Supprimer cette note définitivement ?""",
+  """notesWall.permanentlyDeleteConfirmBody""":
+      """Cette action est irréversible.""",
   """notesWall.newNote""": """Nouvelle note""",
   """notesWall.editNote""": """Modifier la note""",
   """notesWall.pinNote""": """Épingler la note""",
@@ -2715,6 +2950,23 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """photoBoard.uploadFailed""": """Impossible de télécharger la photo.""",
   """photoBoard.deleteFailed""": """Impossible de supprimer la photo.""",
   """photoBoard.deleteConfirm""": """Supprimer cette photo ?""",
+  """photoBoard.viewTrash""": """Voir la corbeille""",
+  """photoBoard.exitTrash""": """Quitter la corbeille""",
+  """photoBoard.trashTitle""": """Corbeille""",
+  """photoBoard.trashEmpty""": """La corbeille est vide.""",
+  """photoBoard.emptyTrash""": """Vider la corbeille""",
+  """photoBoard.emptyTrashConfirm""": """Vider la corbeille ?""",
+  """photoBoard.emptyTrashConfirmBody""":
+      """Toutes les photos dans la corbeille seront supprimées définitivement. Cette action est irréversible.""",
+  """photoBoard.emptyTrashFailed""": """Impossible de vider la corbeille.""",
+  """photoBoard.failedToLoadTrash""": """Impossible de charger la corbeille.""",
+  """photoBoard.restore""": """Restaurer""",
+  """photoBoard.restoreFailed""": """Impossible de restaurer la photo.""",
+  """photoBoard.permanentlyDelete""": """Supprimer définitivement""",
+  """photoBoard.permanentlyDeleteConfirm""":
+      """Supprimer cette photo définitivement ?""",
+  """photoBoard.permanentlyDeleteConfirmBody""":
+      """Cette action est irréversible.""",
   """photoBoard.deleteFolder""": """Supprimer le dossier""",
   """photoBoard.deleteFolderConfirm""": """Supprimer ce dossier ?""",
   """photoBoard.deleteFolderKeepPhotos""":

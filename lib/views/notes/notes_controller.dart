@@ -37,6 +37,12 @@ class NotesController extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  bool _isTrashMode = false;
+  bool get isTrashMode => _isTrashMode;
+
+  List<Note> _trashed = [];
+  List<Note> get trashed => _trashed;
+
   // -- Selection --
 
   bool _selectMode = false;
@@ -66,12 +72,14 @@ class NotesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteSelected() async {
+  Future<List<int>> deleteSelected() async {
     final ids = Set<int>.from(_selected);
+    final deleted = <int>[];
     for (final id in ids) {
       try {
         await _service.deleteNote(houseId, id);
         _notes.removeWhere((n) => n.id == id);
+        deleted.add(id);
       } catch (e) {
         debugPrint('[NotesController] Failed to delete note $id: $e');
       }
@@ -80,6 +88,7 @@ class NotesController extends ChangeNotifier {
     _selectMode = false;
     _service.cacheNotes(houseId, _notes);
     notifyListeners();
+    return deleted;
   }
 
   // -- Drag reorder state --
@@ -210,6 +219,65 @@ class NotesController extends ChangeNotifier {
     _notes.removeWhere((n) => n.id == note.id);
     _service.cacheNotes(houseId, _notes);
     notifyListeners();
+  }
+
+  // -- Trash --
+
+  Future<void> setTrashMode(bool enabled) async {
+    if (_isTrashMode == enabled) return;
+    _isTrashMode = enabled;
+    if (enabled) {
+      _trashed = [];
+      _isLoading = true;
+      notifyListeners();
+      await _loadTrash();
+    } else {
+      _trashed = [];
+      notifyListeners();
+    }
+  }
+
+  Future<void> _loadTrash() async {
+    try {
+      final list = await _service.getDeletedNotes(houseId);
+      if (!_isTrashMode) return;
+      _trashed = list;
+      _error = null;
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[NotesController] Failed to load trash: $e');
+      if (!_isTrashMode) return;
+      _error = m.notesWall.failedToLoadTrash;
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> refreshTrash() => _loadTrash();
+
+  Future<void> restoreNote(Note note) async {
+    final restored = await _service.restoreNote(houseId, note.id);
+    _trashed.removeWhere((n) => n.id == note.id);
+    if (!_isTrashMode) {
+      _notes = _sortPinnedFirst([..._notes, restored]);
+      _service.cacheNotes(houseId, _notes);
+    }
+    notifyListeners();
+  }
+
+  Future<void> permanentlyDeleteNote(Note note) async {
+    await _service.permanentlyDeleteNote(houseId, note.id);
+    _trashed.removeWhere((n) => n.id == note.id);
+    notifyListeners();
+  }
+
+  Future<void> emptyTrash() async {
+    await _service.emptyNotesTrash(houseId);
+    if (_isTrashMode) {
+      _trashed = [];
+      notifyListeners();
+    }
   }
 
   // -- Drag reorder --

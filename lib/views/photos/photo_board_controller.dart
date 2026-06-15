@@ -86,6 +86,12 @@ class PhotoBoardController extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  bool _isTrashMode = false;
+  bool get isTrashMode => _isTrashMode;
+
+  List<Photo> _trashed = [];
+  List<Photo> get trashed => _trashed;
+
   final List<UploadTask> _uploads = [];
   List<UploadTask> get uploads => _uploads;
 
@@ -118,12 +124,14 @@ class PhotoBoardController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteSelected() async {
+  Future<List<int>> deleteSelected() async {
     final ids = Set<int>.from(_selected);
+    final deleted = <int>[];
     for (final id in ids) {
       try {
         await _service.deletePhoto(houseId, id);
         _photos.removeWhere((p) => p.id == id);
+        deleted.add(id);
       } catch (e) {
         debugPrint('[PhotoBoardController] Failed to delete photo $id: $e');
       }
@@ -132,6 +140,7 @@ class PhotoBoardController extends ChangeNotifier {
     _selectMode = false;
     _service.cachePhotos(houseId, _photos);
     notifyListeners();
+    return deleted;
   }
 
   Future<void> moveSelectedToFolder(int? folderId) async {
@@ -367,13 +376,70 @@ class PhotoBoardController extends ChangeNotifier {
     });
   }
 
-  // -- Delete --
+  // -- Delete / Trash --
 
   Future<void> deletePhoto(Photo photo) async {
     await _service.deletePhoto(houseId, photo.id);
     _photos.removeWhere((p) => p.id == photo.id);
     _service.cachePhotos(houseId, _photos);
     notifyListeners();
+  }
+
+  Future<void> setTrashMode(bool enabled) async {
+    if (_isTrashMode == enabled) return;
+    _isTrashMode = enabled;
+    if (enabled) {
+      _trashed = [];
+      _isLoading = true;
+      notifyListeners();
+      await _loadTrash();
+    } else {
+      _trashed = [];
+      notifyListeners();
+    }
+  }
+
+  Future<void> _loadTrash() async {
+    try {
+      final list = await _service.getDeletedPhotos(houseId);
+      if (!_isTrashMode) return;
+      _trashed = list;
+      _error = null;
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[PhotoBoardController] Failed to load trash: $e');
+      if (!_isTrashMode) return;
+      _error = m.photoBoard.failedToLoadTrash;
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> refreshTrash() => _loadTrash();
+
+  Future<void> restorePhoto(Photo photo) async {
+    final restored = await _service.restorePhoto(houseId, photo.id);
+    _trashed.removeWhere((p) => p.id == photo.id);
+    if (!_isTrashMode) {
+      _photos.insert(0, restored);
+      _service.cachePhotos(houseId, _photos);
+    }
+    notifyListeners();
+  }
+
+  Future<void> permanentlyDeletePhoto(Photo photo) async {
+    await _service.permanentlyDeletePhoto(houseId, photo.id);
+    _trashed.removeWhere((p) => p.id == photo.id);
+    notifyListeners();
+  }
+
+  Future<void> emptyTrash() async {
+    await _service.emptyPhotosTrash(houseId);
+    if (_isTrashMode) {
+      _trashed = [];
+      notifyListeners();
+    }
   }
 
   // -- Move to folder --

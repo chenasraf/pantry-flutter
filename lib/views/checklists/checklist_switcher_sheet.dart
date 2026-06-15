@@ -5,6 +5,7 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 /// Per-list color swatches the user can pick from in the create form. Values
@@ -187,7 +188,7 @@ class _SheetHost extends StatefulWidget {
   State<_SheetHost> createState() => _SheetHostState();
 }
 
-enum _Stage { list, create }
+enum _Stage { list, create, trash }
 
 class _SheetHostState extends State<_SheetHost> {
   _Stage _stage = _Stage.list;
@@ -237,12 +238,18 @@ class _SheetHostState extends State<_SheetHost> {
                 controller: widget.controller,
                 itemCountForList: widget.itemCountForList,
                 onCreateNew: () => setState(() => _stage = _Stage.create),
+                onOpenTrash: () => setState(() => _stage = _Stage.trash),
               )
-            else
+            else if (_stage == _Stage.create)
               _CreateStage(
                 controller: widget.controller,
                 onBack: () => setState(() => _stage = _Stage.list),
                 onCreated: () => Navigator.pop(context),
+              )
+            else
+              _TrashStage(
+                controller: widget.controller,
+                onBack: () => setState(() => _stage = _Stage.list),
               ),
           ],
         ),
@@ -269,11 +276,13 @@ class _ListStage extends StatelessWidget {
   final ChecklistsController controller;
   final Future<int> Function(int listId) itemCountForList;
   final VoidCallback onCreateNew;
+  final VoidCallback onOpenTrash;
 
   const _ListStage({
     required this.controller,
     required this.itemCountForList,
     required this.onCreateNew,
+    required this.onOpenTrash,
   });
 
   @override
@@ -332,6 +341,9 @@ class _ListStage extends StatelessWidget {
                   Navigator.pop(context);
                   if (!selected) await controller.selectList(list);
                 },
+                onLongPress: hasFeature('checklist-trash')
+                    ? () => _onTileLongPress(context, list)
+                    : null,
               );
             },
           ),
@@ -373,8 +385,95 @@ class _ListStage extends StatelessWidget {
             ),
           ),
         ),
+        if (hasFeature('checklist-trash')) ...[
+          const SizedBox(height: 8),
+          InkWell(
+            onTap: onOpenTrash,
+            borderRadius: BorderRadius.circular(14),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.delete_outline,
+                    size: 18,
+                    color: cs.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    m.checklists.viewListsTrash,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ],
     );
+  }
+
+  Future<void> _onTileLongPress(
+    BuildContext context,
+    ChecklistList list,
+  ) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.delete_outline),
+              title: Text(m.checklists.removeList),
+              onTap: () => Navigator.pop(ctx, 'remove'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (action != 'remove' || !context.mounted) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.removeListConfirm),
+        content: Text(m.checklists.removeListConfirmBody(list.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.common.remove),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    try {
+      await controller.deleteList(list);
+      if (!context.mounted) return;
+      Navigator.pop(context); // close the switcher sheet
+      // Snackbar runs against the host scaffold, not the dismissed sheet.
+      showUndoSnackBar(
+        context,
+        message: m.checklists.listRemoved,
+        undoLabel: m.checklists.undo,
+        onUndo: () => controller.restoreList(list),
+        undoFailedMessage: m.checklists.restoreFailed,
+      );
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.removeListFailed)));
+      }
+    }
   }
 }
 
@@ -383,12 +482,14 @@ class _ListTile extends StatelessWidget {
   final bool selected;
   final Future<int> itemCountFuture;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
   const _ListTile({
     required this.list,
     required this.selected,
     required this.itemCountFuture,
     required this.onTap,
+    this.onLongPress,
   });
 
   @override
@@ -397,6 +498,7 @@ class _ListTile extends StatelessWidget {
     final tint = parseHexColor(list.color) ?? cs.primary;
     return InkWell(
       onTap: onTap,
+      onLongPress: onLongPress,
       borderRadius: BorderRadius.circular(14),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
@@ -679,6 +781,274 @@ class _CreateStageState extends State<_CreateStage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TrashStage extends StatefulWidget {
+  final ChecklistsController controller;
+  final VoidCallback onBack;
+
+  const _TrashStage({required this.controller, required this.onBack});
+
+  @override
+  State<_TrashStage> createState() => _TrashStageState();
+}
+
+class _TrashStageState extends State<_TrashStage> {
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      await widget.controller.loadTrashedLists();
+    } catch (_) {
+      if (!mounted) return;
+      _error = m.checklists.failedToLoadTrash;
+    }
+    if (!mounted) return;
+    setState(() => _loading = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final trashed = widget.controller.trashedLists;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsetsDirectional.only(bottom: 14),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: widget.onBack,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                m.checklists.listsTrashTitle,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: cs.onSurface,
+                ),
+              ),
+              const Spacer(),
+              if (trashed.isNotEmpty)
+                TextButton.icon(
+                  onPressed: _confirmEmpty,
+                  icon: const Icon(Icons.delete_forever, size: 16),
+                  label: Text(m.checklists.emptyTrash),
+                ),
+            ],
+          ),
+        ),
+        if (_loading)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(child: CircularProgressIndicator()),
+          )
+        else if (_error != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Column(
+              children: [
+                Text(_error!, textAlign: TextAlign.center),
+                const SizedBox(height: 12),
+                FilledButton(onPressed: _load, child: Text(m.common.retry)),
+              ],
+            ),
+          )
+        else if (trashed.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: Text(
+                m.checklists.listTrashEmpty,
+                style: TextStyle(color: cs.onSurfaceVariant),
+              ),
+            ),
+          )
+        else
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.5,
+            ),
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: trashed.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 8),
+              itemBuilder: (_, i) {
+                final list = trashed[i];
+                return _TrashedListTile(
+                  list: list,
+                  onTap: () => _showActions(list),
+                );
+              },
+            ),
+          ),
+      ],
+    );
+  }
+
+  Future<void> _showActions(ChecklistList list) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.restore_from_trash),
+              title: Text(m.checklists.restoreList),
+              onTap: () => Navigator.pop(ctx, 'restore'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_forever),
+              title: Text(m.checklists.permanentlyDeleteList),
+              onTap: () => Navigator.pop(ctx, 'permanent'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (action == null || !mounted) return;
+    if (action == 'restore') {
+      try {
+        await widget.controller.restoreList(list);
+        if (!mounted) return;
+        setState(() {});
+      } catch (_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.restoreFailed)));
+      }
+    } else if (action == 'permanent') {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(m.checklists.permanentlyDeleteConfirm),
+          content: Text(m.checklists.permanentlyDeleteConfirmBody),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(m.common.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(m.checklists.permanentlyDeleteList),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true || !mounted) return;
+      try {
+        await widget.controller.permanentlyDeleteList(list);
+        if (mounted) setState(() {});
+      } catch (_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.removeListFailed)));
+      }
+    }
+  }
+
+  Future<void> _confirmEmpty() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.emptyTrashConfirm),
+        content: Text(m.checklists.emptyTrashConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.checklists.emptyTrash),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    try {
+      await widget.controller.emptyListsTrash();
+      if (mounted) setState(() {});
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(m.checklists.emptyTrashFailed)));
+    }
+  }
+}
+
+class _TrashedListTile extends StatelessWidget {
+  final ChecklistList list;
+  final VoidCallback onTap;
+
+  const _TrashedListTile({required this.list, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final tint = parseHexColor(list.color) ?? cs.onSurfaceVariant;
+    return Opacity(
+      opacity: 0.75,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+          decoration: BoxDecoration(
+            color: cs.surfaceContainer,
+            border: Border.all(color: cs.outlineVariant),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: tint.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(checklistIcon(list.icon), color: tint, size: 21),
+              ),
+              const SizedBox(width: 13),
+              Expanded(
+                child: Text(
+                  list.name,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Icon(Icons.delete_outline, color: cs.onSurfaceVariant, size: 18),
+            ],
+          ),
+        ),
       ),
     );
   }

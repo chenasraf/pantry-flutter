@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 
 class NoteSelectionActions extends StatelessWidget {
@@ -42,15 +44,36 @@ class NoteSelectionActions extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(m.common.delete),
+            child: Text(
+              hasFeature('note-trash') ? m.common.remove : m.common.delete,
+            ),
           ),
         ],
       ),
     ).then((confirmed) async {
       if (confirmed != true) return;
       try {
-        await controller.deleteSelected();
-        if (context.mounted) {
+        final snapshot = controller.notes
+            .where((n) => controller.selected.contains(n.id))
+            .toList();
+        final deletedIds = await controller.deleteSelected();
+        final deleted = snapshot
+            .where((n) => deletedIds.contains(n.id))
+            .toList();
+        if (!context.mounted) return;
+        if (hasFeature('note-trash') && deleted.isNotEmpty) {
+          showUndoSnackBar(
+            context,
+            message: m.notesWall.noteRemoved(deleted.length),
+            undoLabel: m.checklists.undo,
+            onUndo: () async {
+              for (final n in deleted) {
+                await controller.restoreNote(n);
+              }
+            },
+            undoFailedMessage: m.notesWall.restoreFailed,
+          );
+        } else {
           final messenger = ScaffoldMessenger.of(context);
           messenger.clearSnackBars();
           messenger.showSnackBar(

@@ -80,6 +80,34 @@ class NoteService {
     await ApiClient.instance.delete('/houses/$houseId/notes/$noteId');
   }
 
+  Future<List<Note>> getDeletedNotes(
+    int houseId, {
+    int limit = 200,
+    int offset = 0,
+  }) async {
+    return ApiClient.instance.get<List, List<Note>>(
+      '/houses/$houseId/notes/trash',
+      query: {'limit': '$limit', 'offset': '$offset'},
+      fromJson: (data) =>
+          data.map((e) => Note.fromJson(e as Map<String, dynamic>)).toList(),
+    );
+  }
+
+  Future<Note> restoreNote(int houseId, int noteId) async {
+    return ApiClient.instance.post<Map<String, dynamic>, Note>(
+      '/houses/$houseId/notes/$noteId/restore',
+      fromJson: (data) => Note.fromJson(data),
+    );
+  }
+
+  Future<void> permanentlyDeleteNote(int houseId, int noteId) async {
+    await ApiClient.instance.delete('/houses/$houseId/notes/$noteId/permanent');
+  }
+
+  Future<void> emptyNotesTrash(int houseId) async {
+    await ApiClient.instance.delete('/houses/$houseId/notes/trash');
+  }
+
   Future<void> reorderNotes(
     int houseId,
     List<({int id, int sortOrder})> order,

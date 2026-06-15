@@ -59,6 +59,9 @@ class ChecklistsController extends ChangeNotifier {
   bool _isTrashMode = false;
   bool get isTrashMode => _isTrashMode;
 
+  List<ChecklistList> _trashedLists = [];
+  List<ChecklistList> get trashedLists => _trashedLists;
+
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
@@ -612,6 +615,59 @@ class ChecklistsController extends ChangeNotifier {
       _items = [];
       notifyListeners();
     }
+  }
+
+  // -- Lists trash (the lists themselves) --
+
+  Future<void> loadTrashedLists() async {
+    try {
+      _trashedLists = await _checklistService.getDeletedLists(houseId);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to load trashed lists: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> deleteList(ChecklistList list) async {
+    await _checklistService.deleteList(houseId, list.id);
+    _lists.removeWhere((l) => l.id == list.id);
+    _checklistService.cacheLists(houseId, _lists);
+    if (_currentList?.id == list.id) {
+      final next = _lists.isNotEmpty ? _lists.first : null;
+      if (next != null) {
+        await selectList(next);
+      } else {
+        _currentList = null;
+        _items = [];
+        notifyListeners();
+      }
+    } else {
+      notifyListeners();
+    }
+  }
+
+  Future<void> restoreList(ChecklistList list) async {
+    final restored = await _checklistService.restoreList(houseId, list.id);
+    _trashedLists.removeWhere((l) => l.id == list.id);
+    final exists = _lists.any((l) => l.id == restored.id);
+    if (!exists) {
+      _lists = [..._lists, restored];
+      _checklistService.cacheLists(houseId, _lists);
+    }
+    notifyListeners();
+  }
+
+  Future<void> permanentlyDeleteList(ChecklistList list) async {
+    await _checklistService.permanentlyDeleteList(houseId, list.id);
+    _trashedLists.removeWhere((l) => l.id == list.id);
+    notifyListeners();
+  }
+
+  Future<void> emptyListsTrash() async {
+    await _checklistService.emptyListsTrash(houseId);
+    _trashedLists = [];
+    notifyListeners();
   }
 
   Future<void> toggleItem(ListItem item) async {

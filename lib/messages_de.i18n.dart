@@ -144,6 +144,11 @@ class CommonMessagesDe extends CommonMessages {
   /// "Fertig"
   /// ```
   String get closeDialog => """Fertig""";
+
+  /// ```dart
+  /// "Entfernen"
+  /// ```
+  String get remove => """Entfernen""";
 }
 
 class LoginMessagesDe extends LoginMessages {
@@ -1205,6 +1210,62 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get itemRestored => """Eintrag wiederhergestellt""";
 
   /// ```dart
+  /// "Gelöschte Listen"
+  /// ```
+  String get viewListsTrash => """Gelöschte Listen""";
+
+  /// ```dart
+  /// "Gelöschte Listen"
+  /// ```
+  String get listsTrashTitle => """Gelöschte Listen""";
+
+  /// ```dart
+  /// "Papierkorb konnte nicht geladen werden."
+  /// ```
+  String get failedToLoadTrash => """Papierkorb konnte nicht geladen werden.""";
+
+  /// ```dart
+  /// "Keine gelöschten Listen."
+  /// ```
+  String get listTrashEmpty => """Keine gelöschten Listen.""";
+
+  /// ```dart
+  /// "Liste entfernen"
+  /// ```
+  String get removeList => """Liste entfernen""";
+
+  /// ```dart
+  /// "Liste entfernen?"
+  /// ```
+  String get removeListConfirm => """Liste entfernen?""";
+
+  /// ```dart
+  /// "Liste "$name" entfernen? Du kannst sie aus dem Papierkorb wiederherstellen."
+  /// ```
+  String removeListConfirmBody(String name) =>
+      """Liste "$name" entfernen? Du kannst sie aus dem Papierkorb wiederherstellen.""";
+
+  /// ```dart
+  /// "Liste konnte nicht entfernt werden."
+  /// ```
+  String get removeListFailed => """Liste konnte nicht entfernt werden.""";
+
+  /// ```dart
+  /// "Liste wiederherstellen"
+  /// ```
+  String get restoreList => """Liste wiederherstellen""";
+
+  /// ```dart
+  /// "Endgültig löschen"
+  /// ```
+  String get permanentlyDeleteList => """Endgültig löschen""";
+
+  /// ```dart
+  /// "Liste entfernt"
+  /// ```
+  String get listRemoved => """Liste entfernt""";
+
+  /// ```dart
   /// "Neue Liste"
   /// ```
   String get createList => """Neue Liste""";
@@ -1849,6 +1910,79 @@ class NotesWallMessagesDe extends NotesWallMessages {
       """${_plural(count, one: 'Notiz gelöscht', many: '$count Notizen gelöscht')}""";
 
   /// ```dart
+  /// "Papierkorb anzeigen"
+  /// ```
+  String get viewTrash => """Papierkorb anzeigen""";
+
+  /// ```dart
+  /// "Papierkorb verlassen"
+  /// ```
+  String get exitTrash => """Papierkorb verlassen""";
+
+  /// ```dart
+  /// "Papierkorb"
+  /// ```
+  String get trashTitle => """Papierkorb""";
+
+  /// ```dart
+  /// "Der Papierkorb ist leer."
+  /// ```
+  String get trashEmpty => """Der Papierkorb ist leer.""";
+
+  /// ```dart
+  /// "Papierkorb leeren"
+  /// ```
+  String get emptyTrash => """Papierkorb leeren""";
+
+  /// ```dart
+  /// "Papierkorb leeren?"
+  /// ```
+  String get emptyTrashConfirm => """Papierkorb leeren?""";
+
+  /// ```dart
+  /// "Alle Notizen im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """Alle Notizen im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Papierkorb konnte nicht geleert werden."
+  /// ```
+  String get emptyTrashFailed => """Papierkorb konnte nicht geleert werden.""";
+
+  /// ```dart
+  /// "Papierkorb konnte nicht geladen werden."
+  /// ```
+  String get failedToLoadTrash => """Papierkorb konnte nicht geladen werden.""";
+
+  /// ```dart
+  /// "Wiederherstellen"
+  /// ```
+  String get restore => """Wiederherstellen""";
+
+  /// ```dart
+  /// "Notiz konnte nicht wiederhergestellt werden."
+  /// ```
+  String get restoreFailed =>
+      """Notiz konnte nicht wiederhergestellt werden.""";
+
+  /// ```dart
+  /// "Endgültig löschen"
+  /// ```
+  String get permanentlyDelete => """Endgültig löschen""";
+
+  /// ```dart
+  /// "Diese Notiz endgültig löschen?"
+  /// ```
+  String get permanentlyDeleteConfirm => """Diese Notiz endgültig löschen?""";
+
+  /// ```dart
+  /// "Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get permanentlyDeleteConfirmBody =>
+      """Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
   /// "Neue Notiz"
   /// ```
   String get newNote => """Neue Notiz""";
@@ -1955,6 +2089,78 @@ class PhotoBoardMessagesDe extends PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'Foto gelöscht', many: '$count Fotos gelöscht')}""";
+
+  /// ```dart
+  /// "Papierkorb anzeigen"
+  /// ```
+  String get viewTrash => """Papierkorb anzeigen""";
+
+  /// ```dart
+  /// "Papierkorb verlassen"
+  /// ```
+  String get exitTrash => """Papierkorb verlassen""";
+
+  /// ```dart
+  /// "Papierkorb"
+  /// ```
+  String get trashTitle => """Papierkorb""";
+
+  /// ```dart
+  /// "Der Papierkorb ist leer."
+  /// ```
+  String get trashEmpty => """Der Papierkorb ist leer.""";
+
+  /// ```dart
+  /// "Papierkorb leeren"
+  /// ```
+  String get emptyTrash => """Papierkorb leeren""";
+
+  /// ```dart
+  /// "Papierkorb leeren?"
+  /// ```
+  String get emptyTrashConfirm => """Papierkorb leeren?""";
+
+  /// ```dart
+  /// "Alle Fotos im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """Alle Fotos im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Papierkorb konnte nicht geleert werden."
+  /// ```
+  String get emptyTrashFailed => """Papierkorb konnte nicht geleert werden.""";
+
+  /// ```dart
+  /// "Papierkorb konnte nicht geladen werden."
+  /// ```
+  String get failedToLoadTrash => """Papierkorb konnte nicht geladen werden.""";
+
+  /// ```dart
+  /// "Wiederherstellen"
+  /// ```
+  String get restore => """Wiederherstellen""";
+
+  /// ```dart
+  /// "Foto konnte nicht wiederhergestellt werden."
+  /// ```
+  String get restoreFailed => """Foto konnte nicht wiederhergestellt werden.""";
+
+  /// ```dart
+  /// "Endgültig löschen"
+  /// ```
+  String get permanentlyDelete => """Endgültig löschen""";
+
+  /// ```dart
+  /// "Dieses Foto endgültig löschen?"
+  /// ```
+  String get permanentlyDeleteConfirm => """Dieses Foto endgültig löschen?""";
+
+  /// ```dart
+  /// "Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get permanentlyDeleteConfirmBody =>
+      """Dies kann nicht rückgängig gemacht werden.""";
 
   /// ```dart
   /// "Ordner löschen"
@@ -2370,6 +2576,7 @@ Map<String, String> get messagesDeMap => {
   """common.copy""": """Kopieren""",
   """common.copied""": """Kopiert""",
   """common.closeDialog""": """Fertig""",
+  """common.remove""": """Entfernen""",
   """login.connectToNextcloud""": """Mit deiner Nextcloud-Instanz verbinden""",
   """login.serverUrl""": """Server-URL""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -2588,6 +2795,17 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.permanentlyDeleteFailed""":
       """Eintrag konnte nicht gelöscht werden.""",
   """checklists.itemRestored""": """Eintrag wiederhergestellt""",
+  """checklists.viewListsTrash""": """Gelöschte Listen""",
+  """checklists.listsTrashTitle""": """Gelöschte Listen""",
+  """checklists.failedToLoadTrash""":
+      """Papierkorb konnte nicht geladen werden.""",
+  """checklists.listTrashEmpty""": """Keine gelöschten Listen.""",
+  """checklists.removeList""": """Liste entfernen""",
+  """checklists.removeListConfirm""": """Liste entfernen?""",
+  """checklists.removeListFailed""": """Liste konnte nicht entfernt werden.""",
+  """checklists.restoreList""": """Liste wiederherstellen""",
+  """checklists.permanentlyDeleteList""": """Endgültig löschen""",
+  """checklists.listRemoved""": """Liste entfernt""",
   """checklists.createList""": """Neue Liste""",
   """checklists.listName""": """Listenname""",
   """checklists.listDescription""": """Beschreibung (optional)""",
@@ -2701,6 +2919,26 @@ Bitte melde dich in deinem Browser an.""",
   """notesWall.saveFailed""": """Notiz konnte nicht gespeichert werden.""",
   """notesWall.deleteFailed""": """Notiz konnte nicht gelöscht werden.""",
   """notesWall.deleteConfirm""": """Diese Notiz löschen?""",
+  """notesWall.viewTrash""": """Papierkorb anzeigen""",
+  """notesWall.exitTrash""": """Papierkorb verlassen""",
+  """notesWall.trashTitle""": """Papierkorb""",
+  """notesWall.trashEmpty""": """Der Papierkorb ist leer.""",
+  """notesWall.emptyTrash""": """Papierkorb leeren""",
+  """notesWall.emptyTrashConfirm""": """Papierkorb leeren?""",
+  """notesWall.emptyTrashConfirmBody""":
+      """Alle Notizen im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""",
+  """notesWall.emptyTrashFailed""":
+      """Papierkorb konnte nicht geleert werden.""",
+  """notesWall.failedToLoadTrash""":
+      """Papierkorb konnte nicht geladen werden.""",
+  """notesWall.restore""": """Wiederherstellen""",
+  """notesWall.restoreFailed""":
+      """Notiz konnte nicht wiederhergestellt werden.""",
+  """notesWall.permanentlyDelete""": """Endgültig löschen""",
+  """notesWall.permanentlyDeleteConfirm""":
+      """Diese Notiz endgültig löschen?""",
+  """notesWall.permanentlyDeleteConfirmBody""":
+      """Dies kann nicht rückgängig gemacht werden.""",
   """notesWall.newNote""": """Neue Notiz""",
   """notesWall.editNote""": """Notiz bearbeiten""",
   """notesWall.pinNote""": """Notiz anheften""",
@@ -2718,6 +2956,26 @@ Bitte melde dich in deinem Browser an.""",
   """photoBoard.uploadFailed""": """Foto konnte nicht hochgeladen werden.""",
   """photoBoard.deleteFailed""": """Foto konnte nicht gelöscht werden.""",
   """photoBoard.deleteConfirm""": """Dieses Foto löschen?""",
+  """photoBoard.viewTrash""": """Papierkorb anzeigen""",
+  """photoBoard.exitTrash""": """Papierkorb verlassen""",
+  """photoBoard.trashTitle""": """Papierkorb""",
+  """photoBoard.trashEmpty""": """Der Papierkorb ist leer.""",
+  """photoBoard.emptyTrash""": """Papierkorb leeren""",
+  """photoBoard.emptyTrashConfirm""": """Papierkorb leeren?""",
+  """photoBoard.emptyTrashConfirmBody""":
+      """Alle Fotos im Papierkorb werden endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""",
+  """photoBoard.emptyTrashFailed""":
+      """Papierkorb konnte nicht geleert werden.""",
+  """photoBoard.failedToLoadTrash""":
+      """Papierkorb konnte nicht geladen werden.""",
+  """photoBoard.restore""": """Wiederherstellen""",
+  """photoBoard.restoreFailed""":
+      """Foto konnte nicht wiederhergestellt werden.""",
+  """photoBoard.permanentlyDelete""": """Endgültig löschen""",
+  """photoBoard.permanentlyDeleteConfirm""":
+      """Dieses Foto endgültig löschen?""",
+  """photoBoard.permanentlyDeleteConfirmBody""":
+      """Dies kann nicht rückgängig gemacht werden.""",
   """photoBoard.deleteFolder""": """Ordner löschen""",
   """photoBoard.deleteFolderConfirm""": """Diesen Ordner löschen?""",
   """photoBoard.deleteFolderKeepPhotos""":

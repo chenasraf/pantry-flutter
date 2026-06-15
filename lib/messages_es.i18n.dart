@@ -144,6 +144,11 @@ class CommonMessagesEs extends CommonMessages {
   /// "Listo"
   /// ```
   String get closeDialog => """Listo""";
+
+  /// ```dart
+  /// "Quitar"
+  /// ```
+  String get remove => """Quitar""";
 }
 
 class LoginMessagesEs extends LoginMessages {
@@ -1201,6 +1206,62 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get itemRestored => """Artículo restaurado""";
 
   /// ```dart
+  /// "Listas eliminadas"
+  /// ```
+  String get viewListsTrash => """Listas eliminadas""";
+
+  /// ```dart
+  /// "Listas eliminadas"
+  /// ```
+  String get listsTrashTitle => """Listas eliminadas""";
+
+  /// ```dart
+  /// "No se pudo cargar la papelera."
+  /// ```
+  String get failedToLoadTrash => """No se pudo cargar la papelera.""";
+
+  /// ```dart
+  /// "No hay listas eliminadas."
+  /// ```
+  String get listTrashEmpty => """No hay listas eliminadas.""";
+
+  /// ```dart
+  /// "Quitar lista"
+  /// ```
+  String get removeList => """Quitar lista""";
+
+  /// ```dart
+  /// "¿Quitar la lista?"
+  /// ```
+  String get removeListConfirm => """¿Quitar la lista?""";
+
+  /// ```dart
+  /// "¿Quitar la lista "$name"? Puedes restaurarla desde la papelera."
+  /// ```
+  String removeListConfirmBody(String name) =>
+      """¿Quitar la lista "$name"? Puedes restaurarla desde la papelera.""";
+
+  /// ```dart
+  /// "No se pudo quitar la lista."
+  /// ```
+  String get removeListFailed => """No se pudo quitar la lista.""";
+
+  /// ```dart
+  /// "Restaurar lista"
+  /// ```
+  String get restoreList => """Restaurar lista""";
+
+  /// ```dart
+  /// "Eliminar para siempre"
+  /// ```
+  String get permanentlyDeleteList => """Eliminar para siempre""";
+
+  /// ```dart
+  /// "Lista eliminada"
+  /// ```
+  String get listRemoved => """Lista eliminada""";
+
+  /// ```dart
   /// "Nueva lista"
   /// ```
   String get createList => """Nueva lista""";
@@ -1843,6 +1904,79 @@ class NotesWallMessagesEs extends NotesWallMessages {
       """${_plural(count, one: 'Nota eliminada', many: '$count notas eliminadas')}""";
 
   /// ```dart
+  /// "Ver papelera"
+  /// ```
+  String get viewTrash => """Ver papelera""";
+
+  /// ```dart
+  /// "Salir de la papelera"
+  /// ```
+  String get exitTrash => """Salir de la papelera""";
+
+  /// ```dart
+  /// "Papelera"
+  /// ```
+  String get trashTitle => """Papelera""";
+
+  /// ```dart
+  /// "La papelera está vacía."
+  /// ```
+  String get trashEmpty => """La papelera está vacía.""";
+
+  /// ```dart
+  /// "Vaciar papelera"
+  /// ```
+  String get emptyTrash => """Vaciar papelera""";
+
+  /// ```dart
+  /// "¿Vaciar la papelera?"
+  /// ```
+  String get emptyTrashConfirm => """¿Vaciar la papelera?""";
+
+  /// ```dart
+  /// "Todas las notas en la papelera se eliminarán permanentemente. Esta acción no se puede deshacer."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """Todas las notas en la papelera se eliminarán permanentemente. Esta acción no se puede deshacer.""";
+
+  /// ```dart
+  /// "No se pudo vaciar la papelera."
+  /// ```
+  String get emptyTrashFailed => """No se pudo vaciar la papelera.""";
+
+  /// ```dart
+  /// "No se pudo cargar la papelera."
+  /// ```
+  String get failedToLoadTrash => """No se pudo cargar la papelera.""";
+
+  /// ```dart
+  /// "Restaurar"
+  /// ```
+  String get restore => """Restaurar""";
+
+  /// ```dart
+  /// "No se pudo restaurar la nota."
+  /// ```
+  String get restoreFailed => """No se pudo restaurar la nota.""";
+
+  /// ```dart
+  /// "Eliminar para siempre"
+  /// ```
+  String get permanentlyDelete => """Eliminar para siempre""";
+
+  /// ```dart
+  /// "¿Eliminar esta nota permanentemente?"
+  /// ```
+  String get permanentlyDeleteConfirm =>
+      """¿Eliminar esta nota permanentemente?""";
+
+  /// ```dart
+  /// "Esta acción no se puede deshacer."
+  /// ```
+  String get permanentlyDeleteConfirmBody =>
+      """Esta acción no se puede deshacer.""";
+
+  /// ```dart
   /// "Nueva nota"
   /// ```
   String get newNote => """Nueva nota""";
@@ -1949,6 +2083,79 @@ class PhotoBoardMessagesEs extends PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'Foto eliminada', many: '$count fotos eliminadas')}""";
+
+  /// ```dart
+  /// "Ver papelera"
+  /// ```
+  String get viewTrash => """Ver papelera""";
+
+  /// ```dart
+  /// "Salir de la papelera"
+  /// ```
+  String get exitTrash => """Salir de la papelera""";
+
+  /// ```dart
+  /// "Papelera"
+  /// ```
+  String get trashTitle => """Papelera""";
+
+  /// ```dart
+  /// "La papelera está vacía."
+  /// ```
+  String get trashEmpty => """La papelera está vacía.""";
+
+  /// ```dart
+  /// "Vaciar papelera"
+  /// ```
+  String get emptyTrash => """Vaciar papelera""";
+
+  /// ```dart
+  /// "¿Vaciar la papelera?"
+  /// ```
+  String get emptyTrashConfirm => """¿Vaciar la papelera?""";
+
+  /// ```dart
+  /// "Todas las fotos en la papelera se eliminarán permanentemente. Esta acción no se puede deshacer."
+  /// ```
+  String get emptyTrashConfirmBody =>
+      """Todas las fotos en la papelera se eliminarán permanentemente. Esta acción no se puede deshacer.""";
+
+  /// ```dart
+  /// "No se pudo vaciar la papelera."
+  /// ```
+  String get emptyTrashFailed => """No se pudo vaciar la papelera.""";
+
+  /// ```dart
+  /// "No se pudo cargar la papelera."
+  /// ```
+  String get failedToLoadTrash => """No se pudo cargar la papelera.""";
+
+  /// ```dart
+  /// "Restaurar"
+  /// ```
+  String get restore => """Restaurar""";
+
+  /// ```dart
+  /// "No se pudo restaurar la foto."
+  /// ```
+  String get restoreFailed => """No se pudo restaurar la foto.""";
+
+  /// ```dart
+  /// "Eliminar para siempre"
+  /// ```
+  String get permanentlyDelete => """Eliminar para siempre""";
+
+  /// ```dart
+  /// "¿Eliminar esta foto permanentemente?"
+  /// ```
+  String get permanentlyDeleteConfirm =>
+      """¿Eliminar esta foto permanentemente?""";
+
+  /// ```dart
+  /// "Esta acción no se puede deshacer."
+  /// ```
+  String get permanentlyDeleteConfirmBody =>
+      """Esta acción no se puede deshacer.""";
 
   /// ```dart
   /// "Eliminar carpeta"
@@ -2362,6 +2569,7 @@ Map<String, String> get messagesEsMap => {
   """common.copy""": """Copiar""",
   """common.copied""": """Copiado""",
   """common.closeDialog""": """Listo""",
+  """common.remove""": """Quitar""",
   """login.connectToNextcloud""": """Conéctate a tu instancia de Nextcloud""",
   """login.serverUrl""": """URL del servidor""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -2576,6 +2784,16 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.permanentlyDeleteFailed""":
       """No se pudo eliminar el artículo.""",
   """checklists.itemRestored""": """Artículo restaurado""",
+  """checklists.viewListsTrash""": """Listas eliminadas""",
+  """checklists.listsTrashTitle""": """Listas eliminadas""",
+  """checklists.failedToLoadTrash""": """No se pudo cargar la papelera.""",
+  """checklists.listTrashEmpty""": """No hay listas eliminadas.""",
+  """checklists.removeList""": """Quitar lista""",
+  """checklists.removeListConfirm""": """¿Quitar la lista?""",
+  """checklists.removeListFailed""": """No se pudo quitar la lista.""",
+  """checklists.restoreList""": """Restaurar lista""",
+  """checklists.permanentlyDeleteList""": """Eliminar para siempre""",
+  """checklists.listRemoved""": """Lista eliminada""",
   """checklists.createList""": """Nueva lista""",
   """checklists.listName""": """Nombre de la lista""",
   """checklists.listDescription""": """Descripción (opcional)""",
@@ -2686,6 +2904,23 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """notesWall.saveFailed""": """No se pudo guardar la nota.""",
   """notesWall.deleteFailed""": """No se pudo eliminar la nota.""",
   """notesWall.deleteConfirm""": """¿Eliminar esta nota?""",
+  """notesWall.viewTrash""": """Ver papelera""",
+  """notesWall.exitTrash""": """Salir de la papelera""",
+  """notesWall.trashTitle""": """Papelera""",
+  """notesWall.trashEmpty""": """La papelera está vacía.""",
+  """notesWall.emptyTrash""": """Vaciar papelera""",
+  """notesWall.emptyTrashConfirm""": """¿Vaciar la papelera?""",
+  """notesWall.emptyTrashConfirmBody""":
+      """Todas las notas en la papelera se eliminarán permanentemente. Esta acción no se puede deshacer.""",
+  """notesWall.emptyTrashFailed""": """No se pudo vaciar la papelera.""",
+  """notesWall.failedToLoadTrash""": """No se pudo cargar la papelera.""",
+  """notesWall.restore""": """Restaurar""",
+  """notesWall.restoreFailed""": """No se pudo restaurar la nota.""",
+  """notesWall.permanentlyDelete""": """Eliminar para siempre""",
+  """notesWall.permanentlyDeleteConfirm""":
+      """¿Eliminar esta nota permanentemente?""",
+  """notesWall.permanentlyDeleteConfirmBody""":
+      """Esta acción no se puede deshacer.""",
   """notesWall.newNote""": """Nueva nota""",
   """notesWall.editNote""": """Editar nota""",
   """notesWall.pinNote""": """Fijar nota""",
@@ -2703,6 +2938,23 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """photoBoard.uploadFailed""": """No se pudo subir la foto.""",
   """photoBoard.deleteFailed""": """No se pudo eliminar la foto.""",
   """photoBoard.deleteConfirm""": """¿Eliminar esta foto?""",
+  """photoBoard.viewTrash""": """Ver papelera""",
+  """photoBoard.exitTrash""": """Salir de la papelera""",
+  """photoBoard.trashTitle""": """Papelera""",
+  """photoBoard.trashEmpty""": """La papelera está vacía.""",
+  """photoBoard.emptyTrash""": """Vaciar papelera""",
+  """photoBoard.emptyTrashConfirm""": """¿Vaciar la papelera?""",
+  """photoBoard.emptyTrashConfirmBody""":
+      """Todas las fotos en la papelera se eliminarán permanentemente. Esta acción no se puede deshacer.""",
+  """photoBoard.emptyTrashFailed""": """No se pudo vaciar la papelera.""",
+  """photoBoard.failedToLoadTrash""": """No se pudo cargar la papelera.""",
+  """photoBoard.restore""": """Restaurar""",
+  """photoBoard.restoreFailed""": """No se pudo restaurar la foto.""",
+  """photoBoard.permanentlyDelete""": """Eliminar para siempre""",
+  """photoBoard.permanentlyDeleteConfirm""":
+      """¿Eliminar esta foto permanentemente?""",
+  """photoBoard.permanentlyDeleteConfirmBody""":
+      """Esta acción no se puede deshacer.""",
   """photoBoard.deleteFolder""": """Eliminar carpeta""",
   """photoBoard.deleteFolderConfirm""": """¿Eliminar esta carpeta?""",
   """photoBoard.deleteFolderKeepPhotos""": """Mover fotos a la raíz""",

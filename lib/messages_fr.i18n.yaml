@@ -11,6 +11,7 @@ common:
   copy: Copier
   copied: "Copié"
   closeDialog: "Terminé"
+  remove: Retirer
 
 login:
   connectToNextcloud: "Connectez-vous à votre instance Nextcloud"
@@ -222,6 +223,17 @@ checklists:
   restoreFailed: "Impossible de restaurer l'article."
   permanentlyDeleteFailed: "Impossible de supprimer l'article."
   itemRestored: "Article restauré"
+  viewListsTrash: "Listes supprimées"
+  listsTrashTitle: "Listes supprimées"
+  failedToLoadTrash: "Impossible de charger la corbeille."
+  listTrashEmpty: "Aucune liste supprimée."
+  removeList: "Retirer la liste"
+  removeListConfirm: "Retirer la liste ?"
+  removeListConfirmBody(String name): "Retirer la liste \"$name\" ? Vous pouvez la restaurer depuis la corbeille."
+  removeListFailed: "Impossible de retirer la liste."
+  restoreList: "Restaurer la liste"
+  permanentlyDeleteList: "Supprimer définitivement"
+  listRemoved: "Liste retirée"
   createList: Nouvelle liste
   listName: Nom de la liste
   listDescription: Description (facultatif)
@@ -347,6 +359,20 @@ notesWall:
   deleteConfirm: Supprimer cette note ?
   deleteSelectedConfirm(int count): "Supprimer ${_plural(count, one: 'cette note', many: '$count notes')} ?"
   noteRemoved(int count): "${_plural(count, one: 'Note supprimée', many: '$count notes supprimées')}"
+  viewTrash: "Voir la corbeille"
+  exitTrash: "Quitter la corbeille"
+  trashTitle: Corbeille
+  trashEmpty: "La corbeille est vide."
+  emptyTrash: "Vider la corbeille"
+  emptyTrashConfirm: "Vider la corbeille ?"
+  emptyTrashConfirmBody: "Toutes les notes dans la corbeille seront supprimées définitivement. Cette action est irréversible."
+  emptyTrashFailed: "Impossible de vider la corbeille."
+  failedToLoadTrash: "Impossible de charger la corbeille."
+  restore: Restaurer
+  restoreFailed: "Impossible de restaurer la note."
+  permanentlyDelete: "Supprimer définitivement"
+  permanentlyDeleteConfirm: "Supprimer cette note définitivement ?"
+  permanentlyDeleteConfirmBody: "Cette action est irréversible."
   newNote: Nouvelle note
   editNote: Modifier la note
   pinNote: Épingler la note
@@ -369,6 +395,20 @@ photoBoard:
   deleteConfirm: Supprimer cette photo ?
   deleteSelectedConfirm(int count): "Supprimer ${_plural(count, one: 'cette photo', many: '$count photos')} ?"
   photoRemoved(int count): "${_plural(count, one: 'Photo supprimée', many: '$count photos supprimées')}"
+  viewTrash: "Voir la corbeille"
+  exitTrash: "Quitter la corbeille"
+  trashTitle: Corbeille
+  trashEmpty: "La corbeille est vide."
+  emptyTrash: "Vider la corbeille"
+  emptyTrashConfirm: "Vider la corbeille ?"
+  emptyTrashConfirmBody: "Toutes les photos dans la corbeille seront supprimées définitivement. Cette action est irréversible."
+  emptyTrashFailed: "Impossible de vider la corbeille."
+  failedToLoadTrash: "Impossible de charger la corbeille."
+  restore: Restaurer
+  restoreFailed: "Impossible de restaurer la photo."
+  permanentlyDelete: "Supprimer définitivement"
+  permanentlyDeleteConfirm: "Supprimer cette photo définitivement ?"
+  permanentlyDeleteConfirmBody: "Cette action est irréversible."
   deleteFolder: Supprimer le dossier
   deleteFolderConfirm: Supprimer ce dossier ?
   deleteFolderKeepPhotos: "Déplacer les photos à la racine"

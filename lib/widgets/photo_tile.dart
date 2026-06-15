@@ -5,6 +5,8 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/photo.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/photo_service.dart';
+import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/views/photos/photo_detail_view.dart';
 import 'package:pantry/widgets/context_menu_region.dart';
@@ -213,11 +215,14 @@ class PhotoTile extends StatelessWidget {
         children: [
           const Icon(Icons.delete, size: 18),
           const SizedBox(width: 8),
-          Text(m.common.delete),
+          Text(_softDeleteLabel),
         ],
       ),
     ),
   ];
+
+  String get _softDeleteLabel =>
+      hasFeature('photo-trash') ? m.common.remove : m.common.delete;
 
   void _onMenuSelected(BuildContext context, String value) {
     switch (value) {
@@ -289,7 +294,7 @@ class PhotoTile extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(m.common.delete),
+            child: Text(_softDeleteLabel),
           ),
         ],
       ),
@@ -297,7 +302,16 @@ class PhotoTile extends StatelessWidget {
       if (confirmed != true) return;
       try {
         await controller.deletePhoto(photo);
-        if (context.mounted) {
+        if (!context.mounted) return;
+        if (hasFeature('photo-trash')) {
+          showUndoSnackBar(
+            context,
+            message: m.photoBoard.photoRemoved(1),
+            undoLabel: m.checklists.undo,
+            onUndo: () => controller.restorePhoto(photo),
+            undoFailedMessage: m.photoBoard.restoreFailed,
+          );
+        } else {
           final messenger = ScaffoldMessenger.of(context);
           messenger.clearSnackBars();
           messenger.showSnackBar(

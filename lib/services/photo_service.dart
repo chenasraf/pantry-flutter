@@ -103,6 +103,36 @@ class PhotoService {
     await ApiClient.instance.delete('/houses/$houseId/photos/$photoId');
   }
 
+  Future<List<Photo>> getDeletedPhotos(
+    int houseId, {
+    int limit = 200,
+    int offset = 0,
+  }) async {
+    return ApiClient.instance.get<List, List<Photo>>(
+      '/houses/$houseId/photos/trash',
+      query: {'limit': '$limit', 'offset': '$offset'},
+      fromJson: (data) =>
+          data.map((e) => Photo.fromJson(e as Map<String, dynamic>)).toList(),
+    );
+  }
+
+  Future<Photo> restorePhoto(int houseId, int photoId) async {
+    return ApiClient.instance.post<Map<String, dynamic>, Photo>(
+      '/houses/$houseId/photos/$photoId/restore',
+      fromJson: (data) => Photo.fromJson(data),
+    );
+  }
+
+  Future<void> permanentlyDeletePhoto(int houseId, int photoId) async {
+    await ApiClient.instance.delete(
+      '/houses/$houseId/photos/$photoId/permanent',
+    );
+  }
+
+  Future<void> emptyPhotosTrash(int houseId) async {
+    await ApiClient.instance.delete('/houses/$houseId/photos/trash');
+  }
+
   Future<void> reorderPhotos(
     int houseId,
     List<({int id, int sortOrder})> order,

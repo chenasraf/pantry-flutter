@@ -11,6 +11,7 @@ common:
   copy: העתק
   copied: הועתק
   closeDialog: סיום
+  remove: הסר
 
 login:
   connectToNextcloud: התחבר לשרת ה-Nextcloud שלך
@@ -222,6 +223,17 @@ checklists:
   restoreFailed: שחזור הפריט נכשל.
   permanentlyDeleteFailed: מחיקת הפריט נכשלה.
   itemRestored: הפריט שוחזר
+  viewListsTrash: רשימות שנמחקו
+  listsTrashTitle: רשימות שנמחקו
+  failedToLoadTrash: טעינת סל המיחזור נכשלה.
+  listTrashEmpty: אין רשימות שנמחקו.
+  removeList: הסר רשימה
+  removeListConfirm: להסיר את הרשימה?
+  removeListConfirmBody(String name): "להסיר את הרשימה \"$name\"? ניתן לשחזר אותה מסל המיחזור."
+  removeListFailed: הסרת הרשימה נכשלה.
+  restoreList: שחזר רשימה
+  permanentlyDeleteList: מחק לצמיתות
+  listRemoved: הרשימה הוסרה
   createList: רשימה חדשה
   listName: שם הרשימה
   listDescription: תיאור (אופציונלי)
@@ -347,6 +359,20 @@ notesWall:
   deleteConfirm: למחוק את ההערה?
   deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'הערה זו', many: '$count הערות')}?"
   noteRemoved(int count): "${_plural(count, one: 'הערה נמחקה', many: '$count הערות נמחקו')}"
+  viewTrash: הצג סל מיחזור
+  exitTrash: צא מסל המיחזור
+  trashTitle: סל מיחזור
+  trashEmpty: סל המיחזור ריק.
+  emptyTrash: רוקן סל מיחזור
+  emptyTrashConfirm: לרוקן את סל המיחזור?
+  emptyTrashConfirmBody: כל ההערות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו.
+  emptyTrashFailed: ריקון סל המיחזור נכשל.
+  failedToLoadTrash: טעינת סל המיחזור נכשלה.
+  restore: שחזר
+  restoreFailed: שחזור ההערה נכשל.
+  permanentlyDelete: מחק לצמיתות
+  permanentlyDeleteConfirm: למחוק את ההערה לצמיתות?
+  permanentlyDeleteConfirmBody: לא ניתן לבטל פעולה זו.
   newNote: הערה חדשה
   editNote: עריכת הערה
   pinNote: הצמדת הערה
@@ -369,6 +395,20 @@ photoBoard:
   deleteConfirm: למחוק את התמונה?
   deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'תמונה זו', many: '$count תמונות')}?"
   photoRemoved(int count): "${_plural(count, one: 'תמונה נמחקה', many: '$count תמונות נמחקו')}"
+  viewTrash: הצג סל מיחזור
+  exitTrash: צא מסל המיחזור
+  trashTitle: סל מיחזור
+  trashEmpty: סל המיחזור ריק.
+  emptyTrash: רוקן סל מיחזור
+  emptyTrashConfirm: לרוקן את סל המיחזור?
+  emptyTrashConfirmBody: כל התמונות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו.
+  emptyTrashFailed: ריקון סל המיחזור נכשל.
+  failedToLoadTrash: טעינת סל המיחזור נכשלה.
+  restore: שחזר
+  restoreFailed: שחזור התמונה נכשל.
+  permanentlyDelete: מחק לצמיתות
+  permanentlyDeleteConfirm: למחוק את התמונה לצמיתות?
+  permanentlyDeleteConfirmBody: לא ניתן לבטל פעולה זו.
   deleteFolder: מחק תיקייה
   deleteFolderConfirm: למחוק את התיקייה?
   deleteFolderKeepPhotos: העבר תמונות לשורש
