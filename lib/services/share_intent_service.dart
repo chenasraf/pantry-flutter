@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+
+import 'package:pantry/utils/platform_info.dart';
 
 /// Listens for incoming OS-level share intents (photos shared from Photos
 /// app, plain text/URL shared from any app, etc.) and exposes the most
@@ -19,7 +20,7 @@ class ShareIntentService {
 
   /// Begin listening for share intents. Idempotent.
   Future<void> init() async {
-    if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) return;
+    if (!PlatformInfo.isMobile) return;
 
     _sub ??= ReceiveSharingIntent.instance.getMediaStream().listen(
       (files) {

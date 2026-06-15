@@ -58,7 +58,7 @@ class _NotificationsBody extends StatelessWidget {
         leading: appBarBackLeading(context),
         title: Text(m.notifications.title),
         actions: [
-          if (isDesktop)
+          if (PlatformInfo.isDesktop)
             IconButton(
               icon: const Icon(Icons.refresh),
               tooltip: m.common.refresh,

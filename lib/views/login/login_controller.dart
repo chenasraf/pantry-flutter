@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/auth_session_macos.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginController extends ChangeNotifier {
@@ -55,7 +55,7 @@ class LoginController extends ChangeNotifier {
       unawaited(ServerVersionService.instance.fetch(serverUrl: normalizedUrl));
       _loginFlow = await AuthService.instance.initiateLoginFlow(normalizedUrl);
 
-      if (!kIsWeb && Platform.isMacOS) {
+      if (PlatformInfo.isMacOS) {
         // Nextcloud login flow v2 has no callback URL — the placeholder scheme
         // below satisfies ASWebAuthenticationSession but is never reached.
         // Polling drives completion; we dismiss the sheet ourselves once we
@@ -96,7 +96,7 @@ class LoginController extends ChangeNotifier {
           timer.cancel();
           _isPolling = false;
           notifyListeners();
-          if (!kIsWeb && Platform.isMacOS) {
+          if (PlatformInfo.isMacOS) {
             unawaited(AuthSessionMacOS.cancel());
           }
           _onLoginSuccess?.call();
@@ -114,7 +114,7 @@ class LoginController extends ChangeNotifier {
 
   void cancelLogin() {
     _pollTimer?.cancel();
-    if (!kIsWeb && Platform.isMacOS) {
+    if (PlatformInfo.isMacOS) {
       unawaited(AuthSessionMacOS.cancel());
     }
     _isPolling = false;

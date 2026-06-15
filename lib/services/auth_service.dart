@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
+import '../utils/platform_info.dart';
 import 'prefs_service.dart';
 
 class NextcloudCredentials {
@@ -142,22 +142,7 @@ class AuthService {
     }
   }
 
-  static String get _userAgent {
-    final platform = kIsWeb
-        ? 'Web'
-        : Platform.isAndroid
-        ? 'Android'
-        : Platform.isIOS
-        ? 'iOS'
-        : Platform.isMacOS
-        ? 'macOS'
-        : Platform.isLinux
-        ? 'Linux'
-        : Platform.isWindows
-        ? 'Windows'
-        : 'Unknown';
-    return 'Pantry ($platform)';
-  }
+  static String get _userAgent => 'Pantry (${PlatformInfo.displayName})';
 
   Future<void> fetchFirstDayOfWeek() async {
     if (_credentials == null) return;

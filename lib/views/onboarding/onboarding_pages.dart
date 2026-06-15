@@ -1,7 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pantry/utils/platform_info.dart' as platform_info;
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/version.dart';
 import 'pages/add_items_page.dart';
 import 'pages/checklist_selector_page.dart';
@@ -152,8 +151,8 @@ List<WidgetBuilder> resolveOnboardingPages(String? lastSeen) {
   final lastSeenVersion = Version.tryParse(lastSeen);
   final audience = OnboardingAudience(
     isNewUser: lastSeen == null,
-    isAndroid: !kIsWeb && defaultTargetPlatform == TargetPlatform.android,
-    isDesktop: platform_info.isDesktop,
+    isAndroid: PlatformInfo.isAndroid,
+    isDesktop: PlatformInfo.isDesktop,
   );
   final entries = kAppOnboardingPages.entries.toList();
   entries.sort((a, b) {

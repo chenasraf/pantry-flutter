@@ -39,7 +39,7 @@ Future<void> showChecklistSwitcher(
   required Future<int> Function(int listId) itemCountForList,
   BuildContext? anchorContext,
 }) {
-  if (isDesktop && anchorContext != null) {
+  if (PlatformInfo.isDesktop && anchorContext != null) {
     final anchor = anchorContext.findRenderObject() as RenderBox?;
     if (anchor != null && anchor.attached) {
       return Navigator.of(context).push(

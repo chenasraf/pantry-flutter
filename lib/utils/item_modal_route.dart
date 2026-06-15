@@ -19,7 +19,7 @@ const double _kItemModalMaxHeight = 720;
 /// to fill the entire window. Use with `Navigator.push` /
 /// `Navigator.pushReplacement` exactly like a MaterialPageRoute.
 Route<T> itemModalRoute<T>(Widget child) {
-  if (!isDesktop) {
+  if (!PlatformInfo.isDesktop) {
     return MaterialPageRoute<T>(builder: (_) => child);
   }
   return PageRouteBuilder<T>(

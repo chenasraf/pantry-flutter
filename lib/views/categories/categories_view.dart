@@ -220,7 +220,7 @@ class _CategoriesViewState extends State<CategoriesView> {
                 ),
             ],
           ),
-          if (isDesktop)
+          if (PlatformInfo.isDesktop)
             IconButton(
               icon: const Icon(Icons.refresh),
               tooltip: m.common.refresh,

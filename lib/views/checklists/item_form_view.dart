@@ -293,7 +293,7 @@ class _ItemFormViewState extends State<ItemFormView> {
         // Desktop opens the form as a modal — give it a close affordance
         // instead of the platform-default Back chevron, which would read as
         // navigating away from a page that doesn't exist on the stack.
-        leading: isDesktop
+        leading: PlatformInfo.isDesktop
             ? IconButton(
                 icon: const Icon(Icons.close),
                 tooltip: m.common.cancel,

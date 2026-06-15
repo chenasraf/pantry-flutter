@@ -1,6 +1,3 @@
-import 'dart:io' show Platform;
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -8,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class AboutView extends StatefulWidget {
@@ -34,10 +32,10 @@ class _AboutViewState extends State<AboutView> {
     await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 
-  bool get _showDonation {
-    if (kIsWeb) return true;
-    return !Platform.isIOS && !Platform.isMacOS;
-  }
+  // Donations are blocked on Apple platforms by App Store policy — hide
+  // the affordance there. Everywhere else (Android, web, native desktop)
+  // gets the button.
+  bool get _showDonation => !PlatformInfo.isIOS && !PlatformInfo.isMacOS;
 
   @override
   Widget build(BuildContext context) {

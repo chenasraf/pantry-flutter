@@ -310,7 +310,7 @@ class _BodyState extends State<_Body> {
                       // Desktop mice can't reliably swipe. Surface a tap
                       // affordance there; the Dismissible above still works
                       // for anyone who can swipe.
-                      onDismiss: isDesktop
+                      onDismiss: PlatformInfo.isDesktop
                           ? () => prefs.setChecklistProgressHeroHidden(true)
                           : null,
                     ),
@@ -537,7 +537,7 @@ class _BodyState extends State<_Body> {
         // the overflow menu so they're a single click away. Pin is not
         // surfaced anywhere on desktop because the widget it feeds is
         // Android-only.
-        if (isDesktop && !controller.isTrashMode) ...[
+        if (PlatformInfo.isDesktop && !controller.isTrashMode) ...[
           PopupMenuButton<String>(
             icon: const Icon(Icons.sort),
             tooltip: m.checklists.sortTooltip,
@@ -633,7 +633,7 @@ class _BodyState extends State<_Body> {
     // — the view toggles and the dev tools — stays in overflow on every
     // platform.
     return <PopupMenuEntry<String>>[
-      if (!isDesktop) ...[
+      if (!PlatformInfo.isDesktop) ...[
         _radioRow(
           value: 'sort_newest',
           label: m.checklists.sort.newestFirst,
@@ -686,7 +686,7 @@ class _BodyState extends State<_Body> {
           label: m.checklists.showAddedBy,
           selected: controller.showAddedBy,
         ),
-      if (!isDesktop) ...[
+      if (!PlatformInfo.isDesktop) ...[
         _menuRow(
           value: 'manage_categories',
           leading: const Icon(Icons.sell_outlined, size: 18),

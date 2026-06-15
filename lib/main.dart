@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,6 +23,7 @@ import 'services/server_version_service.dart';
 import 'services/share_intent_service.dart';
 import 'services/widget_link_service.dart';
 import 'services/theming_service.dart';
+import 'utils/platform_info.dart';
 import 'views/home/home_view.dart';
 import 'views/login/login_view.dart';
 import 'views/notifications_intro/notifications_intro_view.dart';
@@ -266,12 +266,9 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final color = ThemingService.instance.effectiveColor;
     final locale = LocaleService.instance.effectiveLocale;
-    final isMacOS = !kIsWeb && Platform.isMacOS;
-    final isDesktopHost =
-        kIsWeb ||
-        (!kIsWeb &&
-            (Platform.isMacOS || Platform.isWindows || Platform.isLinux));
-    final appBarTheme = isMacOS ? const AppBarTheme(toolbarHeight: 66) : null;
+    final appBarTheme = PlatformInfo.isMacOS
+        ? const AppBarTheme(toolbarHeight: 66)
+        : null;
     return ChangeNotifierProvider<PrefsService>.value(
       value: PrefsService.instance,
       child: Directionality(
@@ -320,7 +317,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
           themeMode: ThemingService.instance.themeMode,
           builder: (context, child) {
             if (child == null) return const SizedBox.shrink();
-            if (!isDesktopHost) return child;
+            if (!PlatformInfo.isDesktopHost) return child;
             return _EscapePopWrapper(child: child);
           },
           onGenerateInitialRoutes: (initialRoute) => [

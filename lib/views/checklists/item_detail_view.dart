@@ -115,7 +115,7 @@ class ItemDetailView extends StatelessWidget {
       ),
     ];
     String? selected;
-    if (isDesktop && anchorContext != null) {
+    if (PlatformInfo.isDesktop && anchorContext != null) {
       // Desktop: anchor a regular PopupMenu under the more button. Reads as
       // a native menu instead of an out-of-place bottom sheet.
       final box = anchorContext.findRenderObject() as RenderBox?;
@@ -360,7 +360,9 @@ class _PhotoHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _SquareIconButton(
-                      icon: isDesktop ? Icons.close : Icons.arrow_back,
+                      icon: PlatformInfo.isDesktop
+                          ? Icons.close
+                          : Icons.arrow_back,
                       onTap: onBack,
                       onPhoto: true,
                     ),
@@ -448,7 +450,9 @@ class _FallbackHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _SquareIconButton(
-                      icon: isDesktop ? Icons.close : Icons.arrow_back,
+                      icon: PlatformInfo.isDesktop
+                          ? Icons.close
+                          : Icons.arrow_back,
                       onTap: onBack,
                     ),
                     Builder(

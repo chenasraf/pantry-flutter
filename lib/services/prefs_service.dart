@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:home_widget/home_widget.dart';
 
 import '../models/nav_section.dart';
+import '../utils/platform_info.dart';
 import 'checklist_service.dart';
 import 'house_service.dart';
 
@@ -185,8 +186,7 @@ class PrefsService extends ChangeNotifier {
   /// The home-screen widget exists only on Android. Other platforms ship no
   /// widget host, so invoking `home_widget` channels there throws
   /// MissingPluginException. Gate every widget side-effect on this.
-  static bool get _supportsWidget =>
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  static bool get _supportsWidget => PlatformInfo.isAndroid;
 
   /// Toggle pin for [listId]. Pass [pinnedListsJson] — a JSON-encoded list of
   /// `{id, name, houseId}` objects for all currently pinned lists after the

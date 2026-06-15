@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -89,8 +87,6 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   // and only its content swaps.
   final ValueNotifier<ChecklistsAppBarSpec?> _checklistsAppBarSpec =
       ValueNotifier(null);
-
-  static bool get _isMacOS => !kIsWeb && Platform.isMacOS;
 
   @override
   void initState() {
@@ -334,7 +330,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
               return AppBar(
                 title: Text(_sectionTitle(currentSection)),
                 actions: [
-                  if (isDesktop)
+                  if (PlatformInfo.isDesktop)
                     ValueListenableBuilder<Future<void> Function()?>(
                       valueListenable: _tabRefreshers[currentSection]!,
                       builder: (_, refresh, _) => IconButton(
@@ -363,7 +359,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                     labelType: extendedRail
                         ? NavigationRailLabelType.none
                         : NavigationRailLabelType.all,
-                    leading: _isMacOS ? const SizedBox(height: 24) : null,
+                    leading: PlatformInfo.isMacOS
+                        ? const SizedBox(height: 24)
+                        : null,
                     destinations: [
                       for (final d in destinations)
                         NavigationRailDestination(

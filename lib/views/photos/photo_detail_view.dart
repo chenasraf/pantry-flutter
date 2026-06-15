@@ -1,12 +1,10 @@
-import 'dart:io' show Platform;
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:pantry/models/photo.dart';
 import 'package:pantry/services/photo_service.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
@@ -29,9 +27,6 @@ class PhotoDetailView extends StatefulWidget {
 }
 
 class _PhotoDetailViewState extends State<PhotoDetailView> {
-  static bool get _isDesktop =>
-      kIsWeb || Platform.isMacOS || Platform.isWindows || Platform.isLinux;
-
   late PageController _pageController;
   late final FocusNode _focusNode;
   final Map<int, TransformationController> _transformControllers = {};
@@ -179,13 +174,13 @@ class _PhotoDetailViewState extends State<PhotoDetailView> {
                 );
               },
             ),
-            if (_isDesktop && canSwipe && hasPrev)
+            if (PlatformInfo.isDesktopHost && canSwipe && hasPrev)
               _NavButton(
                 alignment: AlignmentDirectional.centerStart,
                 icon: Icons.chevron_left,
                 onPressed: () => _goTo(_currentIndex - 1),
               ),
-            if (_isDesktop && canSwipe && hasNext)
+            if (PlatformInfo.isDesktopHost && canSwipe && hasNext)
               _NavButton(
                 alignment: AlignmentDirectional.centerEnd,
                 icon: Icons.chevron_right,

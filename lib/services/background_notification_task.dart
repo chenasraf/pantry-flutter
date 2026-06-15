@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pantry/models/notification.dart';
@@ -8,6 +6,7 @@ import 'package:pantry/services/deep_link_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/notification_service.dart';
 import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:workmanager/workmanager.dart';
 
 /// Unique name for the periodic notification poll task.
@@ -84,8 +83,7 @@ Future<void> markCurrentNotificationsAsSeen(List<int> ids) async {
 
 /// workmanager only supports Android and iOS; other platforms throw
 /// UnimplementedError. Gate every call so callers don't need to.
-bool get _workmanagerSupported =>
-    !kIsWeb && (Platform.isAndroid || Platform.isIOS);
+bool get _workmanagerSupported => PlatformInfo.isMobile;
 
 /// Schedule the periodic background poll using the user's configured
 /// interval from [PrefsService] (minimum 15 minutes on Android).

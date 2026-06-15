@@ -11,7 +11,7 @@ import 'package:pantry/utils/platform_info.dart';
 /// On desktop platforms (macOS / Windows / Linux) the swipe gesture isn't
 /// reliably available — many users are on mice without touchpads — so the
 /// actions render permanently pinned at the trailing edge instead, with the
-/// content shrinking to make room. Gated on [isDesktop].
+/// content shrinking to make room. Gated on [PlatformInfo.isDesktop].
 class SwipeRevealRow extends StatefulWidget {
   final Widget child;
   final List<SwipeAction> actions;
@@ -71,7 +71,7 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
 
   @override
   Widget build(BuildContext context) {
-    if (isDesktop) {
+    if (PlatformInfo.isDesktop) {
       // Desktop layout: lay content + actions out in a Row. The foreground
       // keeps its full hit area for taps, but loses the trailing space to
       // the always-visible action buttons. No clip, no slide, no gesture.
