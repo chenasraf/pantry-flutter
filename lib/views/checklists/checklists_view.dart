@@ -350,6 +350,10 @@ class _BodyState extends State<_Body> {
                                   doneItems: doneItems,
                                   isCards: isCards,
                                   doneCollapsed: doneCollapsed,
+                                  categorySpacing:
+                                      controller.sortBy == 'category'
+                                      ? prefs.checklistCategorySpacing
+                                      : 'disabled',
                                   onToggleDoneCollapsed: () =>
                                       prefs.setChecklistDoneCollapsed(
                                         !doneCollapsed,
@@ -1256,6 +1260,7 @@ class _ItemList extends StatefulWidget {
   final List<ListItem> doneItems;
   final bool isCards;
   final bool doneCollapsed;
+  final String categorySpacing;
   final VoidCallback onToggleDoneCollapsed;
 
   const _ItemList({
@@ -1264,6 +1269,7 @@ class _ItemList extends StatefulWidget {
     required this.doneItems,
     required this.isCards,
     required this.doneCollapsed,
+    required this.categorySpacing,
     required this.onToggleDoneCollapsed,
   });
 
@@ -1310,7 +1316,7 @@ class _ItemListState extends State<_ItemList> {
           SliverList.builder(
             itemCount: widget.activeItems.length,
             itemBuilder: (context, i) =>
-                _buildTile(context, widget.activeItems[i]),
+                _buildTileWithSeparator(context, widget.activeItems, i),
           ),
           if (showDone)
             SliverToBoxAdapter(
@@ -1364,11 +1370,34 @@ class _ItemListState extends State<_ItemList> {
             SliverList.builder(
               itemCount: widget.doneItems.length,
               itemBuilder: (context, i) =>
-                  _buildTile(context, widget.doneItems[i]),
+                  _buildTileWithSeparator(context, widget.doneItems, i),
             ),
           const SliverPadding(padding: EdgeInsets.only(bottom: 36)),
         ],
       ),
+    );
+  }
+
+  Widget _buildTileWithSeparator(
+    BuildContext context,
+    List<ListItem> items,
+    int index,
+  ) {
+    final item = items[index];
+    final tile = _buildTile(context, item);
+    final showSeparator =
+        widget.categorySpacing != 'disabled' &&
+        index > 0 &&
+        items[index - 1].categoryId != item.categoryId;
+    if (!showSeparator) return tile;
+    return Column(
+      children: [
+        if (widget.categorySpacing == 'divider')
+          const Divider(height: 25)
+        else
+          const SizedBox(height: 20),
+        tile,
+      ],
     );
   }
 
