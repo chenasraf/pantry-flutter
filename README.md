@@ -14,13 +14,17 @@ household management for your self-hosted Nextcloud.
 - **Material Design 3** with dark mode.
 - **Self-hosted** — connects directly to your own Nextcloud server via Login Flow v2.
 
+|                                                                                    |                                                                                     |                                                                                    |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ![Checklists](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png) | ![Photo board](fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png) | ![Notes wall](fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png) |
+
 ## Requirements
 
 A Nextcloud server with the [Pantry server app](https://github.com/chenasraf/nextcloud-pantry)
 installed.
 
-If you have issues regarding the core app for Nextcloud, please open the issue on the repo linked above.
-This repository is specifically for the companion mobile/desktop apps.
+If you have issues regarding the core app for Nextcloud, please open the issue on the repo linked
+above. This repository is specifically for the companion mobile/desktop apps.
 
 ## Installation
 
