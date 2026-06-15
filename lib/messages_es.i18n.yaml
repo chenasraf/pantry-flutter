@@ -8,6 +8,9 @@ common:
   logout: Cerrar sesión
   loading: Cargando...
   error: Error
+  copy: Copiar
+  copied: Copiado
+  closeDialog: Listo
 
 login:
   connectToNextcloud: "Conéctate a tu instancia de Nextcloud"
@@ -17,6 +20,8 @@ login:
   waitingForAuth: "Esperando autenticación...\nPor favor, completa el inicio de sesión en tu navegador."
   couldNotConnect: No se pudo conectar al servidor. Por favor, verifica la URL.
   loginFailed: "Inicio de sesión fallido. Por favor, inténtalo de nuevo."
+  seeDetails: Ver detalles
+  errorDetailsTitle: Detalles del error
 
 home:
   noHouses: "Aún no hay casas."

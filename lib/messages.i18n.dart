@@ -128,6 +128,21 @@ class CommonMessages {
   /// "Error"
   /// ```
   String get error => """Error""";
+
+  /// ```dart
+  /// "Copy"
+  /// ```
+  String get copy => """Copy""";
+
+  /// ```dart
+  /// "Copied"
+  /// ```
+  String get copied => """Copied""";
+
+  /// ```dart
+  /// "Done"
+  /// ```
+  String get closeDialog => """Done""";
 }
 
 class LoginMessages {
@@ -173,6 +188,16 @@ Please complete login in your browser.""";
   /// "Login failed. Please try again."
   /// ```
   String get loginFailed => """Login failed. Please try again.""";
+
+  /// ```dart
+  /// "See details"
+  /// ```
+  String get seeDetails => """See details""";
+
+  /// ```dart
+  /// "Error details"
+  /// ```
+  String get errorDetailsTitle => """Error details""";
 }
 
 class HomeMessages {
@@ -2318,6 +2343,9 @@ Map<String, String> get messagesMap => {
   """common.logout""": """Logout""",
   """common.loading""": """Loading...""",
   """common.error""": """Error""",
+  """common.copy""": """Copy""",
+  """common.copied""": """Copied""",
+  """common.closeDialog""": """Done""",
   """login.connectToNextcloud""": """Connect to your Nextcloud instance""",
   """login.serverUrl""": """Server URL""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -2327,6 +2355,8 @@ Please complete login in your browser.""",
   """login.couldNotConnect""":
       """Could not connect to server. Please check the URL.""",
   """login.loginFailed""": """Login failed. Please try again.""",
+  """login.seeDetails""": """See details""",
+  """login.errorDetailsTitle""": """Error details""",
   """home.noHouses""": """No houses yet.""",
   """home.noHousesBody""":
       """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""",

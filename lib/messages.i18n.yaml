@@ -8,6 +8,9 @@ common:
   logout: Logout
   loading: Loading...
   error: Error
+  copy: Copy
+  copied: Copied
+  closeDialog: Done
 
 login:
   connectToNextcloud: Connect to your Nextcloud instance
@@ -17,6 +20,8 @@ login:
   waitingForAuth: "Waiting for authentication...\nPlease complete login in your browser."
   couldNotConnect: Could not connect to server. Please check the URL.
   loginFailed: Login failed. Please try again.
+  seeDetails: See details
+  errorDetailsTitle: Error details
 
 home:
   noHouses: No houses yet.

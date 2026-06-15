@@ -129,6 +129,21 @@ class CommonMessagesHe extends CommonMessages {
   /// "שגיאה"
   /// ```
   String get error => """שגיאה""";
+
+  /// ```dart
+  /// "העתק"
+  /// ```
+  String get copy => """העתק""";
+
+  /// ```dart
+  /// "הועתק"
+  /// ```
+  String get copied => """הועתק""";
+
+  /// ```dart
+  /// "סיום"
+  /// ```
+  String get closeDialog => """סיום""";
 }
 
 class LoginMessagesHe extends LoginMessages {
@@ -173,6 +188,16 @@ class LoginMessagesHe extends LoginMessages {
   /// "ההתחברות נכשלה. אנא נסה שוב."
   /// ```
   String get loginFailed => """ההתחברות נכשלה. אנא נסה שוב.""";
+
+  /// ```dart
+  /// "הצג פרטים"
+  /// ```
+  String get seeDetails => """הצג פרטים""";
+
+  /// ```dart
+  /// "פרטי השגיאה"
+  /// ```
+  String get errorDetailsTitle => """פרטי השגיאה""";
 }
 
 class HomeMessagesHe extends HomeMessages {
@@ -2322,6 +2347,9 @@ Map<String, String> get messagesHeMap => {
   """common.logout""": """התנתקות""",
   """common.loading""": """טוען...""",
   """common.error""": """שגיאה""",
+  """common.copy""": """העתק""",
+  """common.copied""": """הועתק""",
+  """common.closeDialog""": """סיום""",
   """login.connectToNextcloud""": """התחבר לשרת ה-Nextcloud שלך""",
   """login.serverUrl""": """כתובת השרת""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -2330,6 +2358,8 @@ Map<String, String> get messagesHeMap => {
 אנא השלם את ההתחברות בדפדפן.""",
   """login.couldNotConnect""": """לא ניתן להתחבר לשרת. אנא בדוק את הכתובת.""",
   """login.loginFailed""": """ההתחברות נכשלה. אנא נסה שוב.""",
+  """login.seeDetails""": """הצג פרטים""",
+  """login.errorDetailsTitle""": """פרטי השגיאה""",
   """home.noHouses""": """אין בתים עדיין.""",
   """home.noHousesBody""":
       """בתים הם מרחבים משותפים למשק הבית שלך. צור את הבית הראשון שלך כדי להתחיל להוסיף רשימות, תמונות והערות.""",

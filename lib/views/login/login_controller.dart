@@ -21,12 +21,16 @@ class LoginController extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  String? _errorDetails;
+  String? get errorDetails => _errorDetails;
+
   Timer? _pollTimer;
   LoginFlowResult? _loginFlow;
 
   void setServerUrl(String url) {
     _serverUrl = url;
     _error = null;
+    _errorDetails = null;
     notifyListeners();
   }
 
@@ -48,6 +52,7 @@ class LoginController extends ChangeNotifier {
 
     _isLoading = true;
     _error = null;
+    _errorDetails = null;
     notifyListeners();
 
     try {
@@ -78,9 +83,10 @@ class LoginController extends ChangeNotifier {
       notifyListeners();
 
       _startPolling(normalizedUrl);
-    } catch (e) {
+    } catch (e, st) {
       _isLoading = false;
       _error = m.login.couldNotConnect;
+      _errorDetails = '${e.runtimeType}: $e\n\n$st';
       notifyListeners();
     }
   }
@@ -121,6 +127,7 @@ class LoginController extends ChangeNotifier {
     _isLoading = false;
     _loginFlow = null;
     _error = null;
+    _errorDetails = null;
     notifyListeners();
   }
 

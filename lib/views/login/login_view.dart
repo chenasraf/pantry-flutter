@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pantry/i18n.dart';
 import 'package:provider/provider.dart';
@@ -103,6 +104,20 @@ class _LoginViewBody extends StatelessWidget {
                     textInputAction: TextInputAction.go,
                     onSubmitted: (_) => controller.startLogin(),
                   ),
+                  if (controller.errorDetails != null) ...[
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: TextButton.icon(
+                        icon: const Icon(Icons.bug_report_outlined, size: 18),
+                        label: Text(m.login.seeDetails),
+                        onPressed: () => _showErrorDetails(
+                          context,
+                          controller.errorDetails!,
+                        ),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   if (controller.isPolling) ...[
                     const LinearProgressIndicator(),
@@ -138,4 +153,55 @@ class _LoginViewBody extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _showErrorDetails(BuildContext context, String details) {
+  return showDialog<void>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(m.login.errorDetailsTitle),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Theme.of(ctx).colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: SingleChildScrollView(
+            child: SelectableText(
+              details,
+              textDirection: TextDirection.ltr,
+              style: const TextStyle(
+                fontFamily: 'monospace',
+                fontFamilyFallback: ['Menlo', 'Courier New', 'monospace'],
+                fontSize: 12,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ),
+      ),
+      actions: [
+        TextButton.icon(
+          icon: const Icon(Icons.copy, size: 18),
+          label: Text(m.common.copy),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: details));
+            if (!ctx.mounted) return;
+            ScaffoldMessenger.of(ctx).showSnackBar(
+              SnackBar(
+                content: Text(m.common.copied),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          },
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(ctx).pop(),
+          child: Text(m.common.closeDialog),
+        ),
+      ],
+    ),
+  );
 }

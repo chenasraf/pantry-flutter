@@ -129,6 +129,21 @@ class CommonMessagesFr extends CommonMessages {
   /// "Erreur"
   /// ```
   String get error => """Erreur""";
+
+  /// ```dart
+  /// "Copier"
+  /// ```
+  String get copy => """Copier""";
+
+  /// ```dart
+  /// "Copié"
+  /// ```
+  String get copied => """Copié""";
+
+  /// ```dart
+  /// "Terminé"
+  /// ```
+  String get closeDialog => """Terminé""";
 }
 
 class LoginMessagesFr extends LoginMessages {
@@ -175,6 +190,16 @@ Veuillez terminer la connexion dans votre navigateur.""";
   /// "Échec de la connexion. Veuillez réessayer."
   /// ```
   String get loginFailed => """Échec de la connexion. Veuillez réessayer.""";
+
+  /// ```dart
+  /// "Voir les détails"
+  /// ```
+  String get seeDetails => """Voir les détails""";
+
+  /// ```dart
+  /// "Détails de l'erreur"
+  /// ```
+  String get errorDetailsTitle => """Détails de l'erreur""";
 }
 
 class HomeMessagesFr extends HomeMessages {
@@ -2340,6 +2365,9 @@ Map<String, String> get messagesFrMap => {
   """common.logout""": """Déconnexion""",
   """common.loading""": """Chargement...""",
   """common.error""": """Erreur""",
+  """common.copy""": """Copier""",
+  """common.copied""": """Copié""",
+  """common.closeDialog""": """Terminé""",
   """login.connectToNextcloud""":
       """Connectez-vous à votre instance Nextcloud""",
   """login.serverUrl""": """URL du serveur""",
@@ -2350,6 +2378,8 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """login.couldNotConnect""":
       """Impossible de se connecter au serveur. Veuillez vérifier l'URL.""",
   """login.loginFailed""": """Échec de la connexion. Veuillez réessayer.""",
+  """login.seeDetails""": """Voir les détails""",
+  """login.errorDetailsTitle""": """Détails de l'erreur""",
   """home.noHouses""": """Aucune maison pour le moment.""",
   """home.noHousesBody""":
       """Les maisons sont des espaces partagés pour votre foyer. Créez votre première maison pour commencer à ajouter des listes, des photos et des notes.""",

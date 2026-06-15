@@ -129,6 +129,21 @@ class CommonMessagesDe extends CommonMessages {
   /// "Fehler"
   /// ```
   String get error => """Fehler""";
+
+  /// ```dart
+  /// "Kopieren"
+  /// ```
+  String get copy => """Kopieren""";
+
+  /// ```dart
+  /// "Kopiert"
+  /// ```
+  String get copied => """Kopiert""";
+
+  /// ```dart
+  /// "Fertig"
+  /// ```
+  String get closeDialog => """Fertig""";
 }
 
 class LoginMessagesDe extends LoginMessages {
@@ -175,6 +190,16 @@ Bitte melde dich in deinem Browser an.""";
   /// ```
   String get loginFailed =>
       """Anmeldung fehlgeschlagen. Bitte versuche es erneut.""";
+
+  /// ```dart
+  /// "Details anzeigen"
+  /// ```
+  String get seeDetails => """Details anzeigen""";
+
+  /// ```dart
+  /// "Fehlerdetails"
+  /// ```
+  String get errorDetailsTitle => """Fehlerdetails""";
 }
 
 class HomeMessagesDe extends HomeMessages {
@@ -2342,6 +2367,9 @@ Map<String, String> get messagesDeMap => {
   """common.logout""": """Abmelden""",
   """common.loading""": """Laden...""",
   """common.error""": """Fehler""",
+  """common.copy""": """Kopieren""",
+  """common.copied""": """Kopiert""",
+  """common.closeDialog""": """Fertig""",
   """login.connectToNextcloud""": """Mit deiner Nextcloud-Instanz verbinden""",
   """login.serverUrl""": """Server-URL""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -2352,6 +2380,8 @@ Bitte melde dich in deinem Browser an.""",
       """Verbindung zum Server fehlgeschlagen. Bitte überprüfe die URL.""",
   """login.loginFailed""":
       """Anmeldung fehlgeschlagen. Bitte versuche es erneut.""",
+  """login.seeDetails""": """Details anzeigen""",
+  """login.errorDetailsTitle""": """Fehlerdetails""",
   """home.noHouses""": """Noch keine Häuser.""",
   """home.noHousesBody""":
       """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen.""",
