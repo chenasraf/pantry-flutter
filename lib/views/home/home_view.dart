@@ -136,6 +136,24 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     }
   }
 
+  @override
+  void didChangeMetrics() {
+    // Rotating between portrait (PageView) and landscape (IndexedStack +
+    // NavigationRail) detaches the PageController; on re-attach it defaults
+    // to initialPage 0, which leaves the body on the first tab while the
+    // AppBar title still reflects _tabIndex. Re-sync after the rebuild.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (!_pageController.hasClients) return;
+      final page =
+          (_pageController.page ?? _pageController.initialPage.toDouble())
+              .round();
+      if (page != _tabIndex) {
+        _pageController.jumpToPage(_tabIndex);
+      }
+    });
+  }
+
   void _consumePendingShare() {
     final files = ShareIntentService.instance.consume();
     if (files == null || files.isEmpty || !mounted) return;
