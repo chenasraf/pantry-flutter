@@ -60,11 +60,17 @@ class ChecklistsView extends StatefulWidget {
   /// etc.).
   final ValueNotifier<ChecklistsAppBarSpec?>? appBarSpecHolder;
 
+  /// Vertical scroll controller for the items list. Owned by the host so iOS
+  /// status-bar-tap can scroll this tab to the top via the host's
+  /// [WidgetsBindingObserver.handleStatusBarTap].
+  final ScrollController? scrollController;
+
   const ChecklistsView({
     super.key,
     required this.houseId,
     this.refreshHolder,
     this.appBarSpecHolder,
+    this.scrollController,
   });
 
   @override
@@ -147,15 +153,19 @@ class _ChecklistsViewState extends State<ChecklistsView>
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _controller,
-      child: _Body(appBarSpecHolder: widget.appBarSpecHolder),
+      child: _Body(
+        appBarSpecHolder: widget.appBarSpecHolder,
+        scrollController: widget.scrollController,
+      ),
     );
   }
 }
 
 class _Body extends StatefulWidget {
   final ValueNotifier<ChecklistsAppBarSpec?>? appBarSpecHolder;
+  final ScrollController? scrollController;
 
-  const _Body({this.appBarSpecHolder});
+  const _Body({this.appBarSpecHolder, this.scrollController});
 
   @override
   State<_Body> createState() => _BodyState();
@@ -358,6 +368,7 @@ class _BodyState extends State<_Body> {
                                       prefs.setChecklistDoneCollapsed(
                                         !doneCollapsed,
                                       ),
+                                  scrollController: widget.scrollController,
                                 ),
                               )),
                 ),
@@ -1262,6 +1273,7 @@ class _ItemList extends StatefulWidget {
   final bool doneCollapsed;
   final String categorySpacing;
   final VoidCallback onToggleDoneCollapsed;
+  final ScrollController? scrollController;
 
   const _ItemList({
     required this.controller,
@@ -1271,6 +1283,7 @@ class _ItemList extends StatefulWidget {
     required this.doneCollapsed,
     required this.categorySpacing,
     required this.onToggleDoneCollapsed,
+    this.scrollController,
   });
 
   @override
@@ -1278,7 +1291,13 @@ class _ItemList extends StatefulWidget {
 }
 
 class _ItemListState extends State<_ItemList> {
-  final ScrollController _scrollController = ScrollController();
+  // Fallback when no external controller is supplied (e.g. in tests). When
+  // the host provides one (the normal path from home_view) we use that so
+  // iOS status-bar-tap can scroll this list to the top.
+  ScrollController? _ownedScrollController;
+  ScrollController get _scrollController =>
+      widget.scrollController ??
+      (_ownedScrollController ??= ScrollController());
   final Map<int, GlobalKey> _tileKeys = {};
   Timer? _markedDoneSnackBarTimer;
 
@@ -1297,7 +1316,7 @@ class _ItemListState extends State<_ItemList> {
   @override
   void dispose() {
     _markedDoneSnackBarTimer?.cancel();
-    _scrollController.dispose();
+    _ownedScrollController?.dispose();
     super.dispose();
   }
 

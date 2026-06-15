@@ -82,6 +82,13 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   // the bottom bar doesn't rewire which tab pulls which refresher.
   final Map<NavSection, ValueNotifier<Future<void> Function()?>>
   _tabRefreshers = {for (final s in NavSection.values) s: ValueNotifier(null)};
+  // Per-section scroll controllers, owned here so iOS status-bar-tap can
+  // scroll the active tab to the top regardless of which view is hosting it.
+  // Each tab's view receives its controller via [scrollController:] and uses
+  // it as the controller of its primary vertical scrollable.
+  final Map<NavSection, ScrollController> _tabScrollers = {
+    for (final s in NavSection.values) s: ScrollController(),
+  };
   // Single shared AppBar; ChecklistsView writes its leading/title/actions into
   // this slot so the AppBar stays the same widget instance across tab swipes
   // and only its content swaps.
@@ -122,6 +129,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     for (final n in _tabRefreshers.values) {
       n.dispose();
     }
+    for (final c in _tabScrollers.values) {
+      c.dispose();
+    }
     _checklistsAppBarSpec.dispose();
     super.dispose();
   }
@@ -134,6 +144,24 @@ class _HomeViewBodyState extends State<_HomeViewBody>
       _consumePendingShare();
       unawaited(WidgetLinkService.instance.checkOnResume());
     }
+  }
+
+  @override
+  void handleStatusBarTap() {
+    // iOS scroll-to-top: animate whichever scrollable is active in the
+    // current tab. Scaffold's default handler looks for a PrimaryScrollController
+    // above itself and finds none, so we drive this ourselves against the
+    // per-section controller the active view is using.
+    final order = _navOrder;
+    if (order.isEmpty) return;
+    final section = order[_tabIndex.clamp(0, order.length - 1)];
+    final ctrl = _tabScrollers[section];
+    if (ctrl == null || !ctrl.hasClients) return;
+    ctrl.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   @override
@@ -467,16 +495,19 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         houseId: houseId,
         refreshHolder: _tabRefreshers[NavSection.checklists]!,
         appBarSpecHolder: _checklistsAppBarSpec,
+        scrollController: _tabScrollers[NavSection.checklists]!,
       ),
       NavSection.photoBoard => PhotoBoardView(
         key: ValueKey('photos-$houseId'),
         houseId: houseId,
         refreshHolder: _tabRefreshers[NavSection.photoBoard]!,
+        scrollController: _tabScrollers[NavSection.photoBoard]!,
       ),
       NavSection.notesWall => NotesWallView(
         key: ValueKey('notes-$houseId'),
         houseId: houseId,
         refreshHolder: _tabRefreshers[NavSection.notesWall]!,
+        scrollController: _tabScrollers[NavSection.notesWall]!,
       ),
     };
     final pages = [for (final s in order) pageFor(s)];

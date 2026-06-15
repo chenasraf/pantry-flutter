@@ -14,7 +14,16 @@ class NotesWallView extends StatefulWidget {
   final int houseId;
   final ValueNotifier<Future<void> Function()?>? refreshHolder;
 
-  const NotesWallView({super.key, required this.houseId, this.refreshHolder});
+  /// Vertical scroll controller for the notes grid. Owned by the host so iOS
+  /// status-bar-tap can scroll this tab to the top.
+  final ScrollController? scrollController;
+
+  const NotesWallView({
+    super.key,
+    required this.houseId,
+    this.refreshHolder,
+    this.scrollController,
+  });
 
   @override
   State<NotesWallView> createState() => _NotesWallViewState();
@@ -65,13 +74,15 @@ class _NotesWallViewState extends State<NotesWallView> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _controller,
-      child: const _NotesWallBody(),
+      child: _NotesWallBody(scrollController: widget.scrollController),
     );
   }
 }
 
 class _NotesWallBody extends StatelessWidget {
-  const _NotesWallBody();
+  final ScrollController? scrollController;
+
+  const _NotesWallBody({this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -149,8 +160,14 @@ class _NotesWallBody extends StatelessWidget {
                       ? controller.refreshTrash
                       : controller.refresh,
                   child: inTrash
-                      ? _TrashGrid(controller: controller)
-                      : _NotesGrid(controller: controller),
+                      ? _TrashGrid(
+                          controller: controller,
+                          scrollController: scrollController,
+                        )
+                      : _NotesGrid(
+                          controller: controller,
+                          scrollController: scrollController,
+                        ),
                 ),
               ),
             ],
@@ -179,8 +196,9 @@ class _NotesWallBody extends StatelessWidget {
 
 class _NotesGrid extends StatelessWidget {
   final NotesController controller;
+  final ScrollController? scrollController;
 
-  const _NotesGrid({required this.controller});
+  const _NotesGrid({required this.controller, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -188,6 +206,7 @@ class _NotesGrid extends StatelessWidget {
 
     if (notes.isEmpty) {
       return ListView(
+        controller: scrollController,
         children: [
           const SizedBox(height: 100),
           Center(child: Text(m.notesWall.noNotes)),
@@ -196,6 +215,7 @@ class _NotesGrid extends StatelessWidget {
     }
 
     return GridView.builder(
+      controller: scrollController,
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 96),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 220,
@@ -299,14 +319,16 @@ class _TrashBanner extends StatelessWidget {
 
 class _TrashGrid extends StatelessWidget {
   final NotesController controller;
+  final ScrollController? scrollController;
 
-  const _TrashGrid({required this.controller});
+  const _TrashGrid({required this.controller, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
     final notes = controller.trashed;
     if (notes.isEmpty) {
       return ListView(
+        controller: scrollController,
         children: [
           const SizedBox(height: 100),
           Center(
@@ -321,6 +343,7 @@ class _TrashGrid extends StatelessWidget {
       );
     }
     return GridView.builder(
+      controller: scrollController,
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 220,

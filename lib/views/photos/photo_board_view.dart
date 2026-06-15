@@ -18,7 +18,16 @@ class PhotoBoardView extends StatefulWidget {
   final int houseId;
   final ValueNotifier<Future<void> Function()?>? refreshHolder;
 
-  const PhotoBoardView({super.key, required this.houseId, this.refreshHolder});
+  /// Vertical scroll controller for the photo grid. Owned by the host so iOS
+  /// status-bar-tap can scroll this tab to the top.
+  final ScrollController? scrollController;
+
+  const PhotoBoardView({
+    super.key,
+    required this.houseId,
+    this.refreshHolder,
+    this.scrollController,
+  });
 
   @override
   State<PhotoBoardView> createState() => _PhotoBoardViewState();
@@ -53,13 +62,15 @@ class _PhotoBoardViewState extends State<PhotoBoardView> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _controller,
-      child: const _PhotoBoardBody(),
+      child: _PhotoBoardBody(scrollController: widget.scrollController),
     );
   }
 }
 
 class _PhotoBoardBody extends StatelessWidget {
-  const _PhotoBoardBody();
+  final ScrollController? scrollController;
+
+  const _PhotoBoardBody({this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +128,14 @@ class _PhotoBoardBody extends StatelessWidget {
                       ? controller.refreshTrash
                       : controller.refresh,
                   child: inTrash
-                      ? _TrashGrid(controller: controller)
-                      : _PhotoGrid(controller: controller),
+                      ? _TrashGrid(
+                          controller: controller,
+                          scrollController: scrollController,
+                        )
+                      : _PhotoGrid(
+                          controller: controller,
+                          scrollController: scrollController,
+                        ),
                 ),
               ),
             ],
@@ -258,14 +275,16 @@ class _TrashBanner extends StatelessWidget {
 
 class _TrashGrid extends StatelessWidget {
   final PhotoBoardController controller;
+  final ScrollController? scrollController;
 
-  const _TrashGrid({required this.controller});
+  const _TrashGrid({required this.controller, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
     final photos = controller.trashed;
     if (photos.isEmpty) {
       return ListView(
+        controller: scrollController,
         children: [
           const SizedBox(height: 100),
           Center(
@@ -280,6 +299,7 @@ class _TrashGrid extends StatelessWidget {
       );
     }
     return GridView.builder(
+      controller: scrollController,
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 180,
@@ -411,8 +431,9 @@ class _TrashedPhotoTile extends StatelessWidget {
 
 class _PhotoGrid extends StatelessWidget {
   final PhotoBoardController controller;
+  final ScrollController? scrollController;
 
-  const _PhotoGrid({required this.controller});
+  const _PhotoGrid({required this.controller, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -421,6 +442,7 @@ class _PhotoGrid extends StatelessWidget {
 
     if (folders.isEmpty && photos.isEmpty) {
       return ListView(
+        controller: scrollController,
         children: [
           const SizedBox(height: 100),
           Center(child: Text(m.photoBoard.noPhotos)),
@@ -459,6 +481,7 @@ class _PhotoGrid extends StatelessWidget {
     }
 
     return GridView.builder(
+      controller: scrollController,
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 96),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 180,
