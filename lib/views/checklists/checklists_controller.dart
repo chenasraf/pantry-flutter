@@ -50,6 +50,12 @@ class ChecklistsController extends ChangeNotifier {
   String _categorySort = 'custom';
   String get categorySort => _categorySort;
 
+  String _listSort = 'custom';
+  String get listSort => _listSort;
+
+  List<ChecklistList> get sortedLists =>
+      ChecklistService.sortLists(_lists, _listSort);
+
   bool _showAddedBy = false;
   bool get showAddedBy => _showAddedBy;
 
@@ -104,9 +110,11 @@ class ChecklistsController extends ChangeNotifier {
         _sortBy = prefs['checklistItemSort'] as String? ?? 'custom';
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _categorySort = prefs['categorySort'] as String? ?? 'custom';
+        _listSort = prefs['checklistListSort'] as String? ?? 'custom';
         _checklistService.cache.set('sortBy', _sortBy);
         _checklistService.cache.set('showAddedBy', _showAddedBy);
         _checklistService.cache.set('categorySort', _categorySort);
+        _checklistService.cache.set('listSort', _listSort);
       } catch (e) {
         debugPrint('[ChecklistsController] Failed to load house prefs: $e');
       }
@@ -148,6 +156,7 @@ class ChecklistsController extends ChangeNotifier {
     _showAddedBy = _checklistService.cache.get<bool>('showAddedBy') ?? false;
     _categorySort =
         _checklistService.cache.get<String>('categorySort') ?? 'custom';
+    _listSort = _checklistService.cache.get<String>('listSort') ?? 'custom';
 
     // Members
     final cachedMembers = _houseService.getCachedMembers(houseId);
@@ -359,6 +368,66 @@ class ChecklistsController extends ChangeNotifier {
       debugPrint('[ChecklistsController] Failed to persist showAddedBy: $e');
     }
   }
+
+  Future<void> setListSort(String sort) async {
+    if (sort == _listSort) return;
+    _listSort = sort;
+    _checklistService.cache.set('listSort', sort);
+    notifyListeners();
+
+    unawaited(_persistListSortPref(sort));
+  }
+
+  Future<void> _persistListSortPref(String sort) async {
+    try {
+      await _checklistService.setListSortPref(houseId, sort);
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to persist list sort pref: $e');
+    }
+  }
+
+  Future<void> reorderLists(int oldIndex, int newIndex) async {
+    if (_listSort != 'custom') return;
+    if (newIndex > oldIndex) newIndex--;
+    if (oldIndex == newIndex) return;
+
+    final ordered = sortedLists;
+    final moved = ordered.removeAt(oldIndex);
+    ordered.insert(newIndex, moved);
+
+    final order = <({int id, int sortOrder})>[];
+    for (var i = 0; i < ordered.length; i++) {
+      order.add((id: ordered[i].id, sortOrder: i));
+    }
+
+    final byId = {for (final l in _lists) l.id: l};
+    _lists = [
+      for (var i = 0; i < ordered.length; i++)
+        _withSortOrder(byId[ordered[i].id]!, i),
+    ];
+    _checklistService.cacheLists(houseId, _lists);
+    notifyListeners();
+
+    try {
+      await _checklistService.reorderLists(houseId, order);
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to reorder lists: $e');
+    }
+  }
+
+  ChecklistList _withSortOrder(ChecklistList list, int sortOrder) =>
+      ChecklistList(
+        id: list.id,
+        houseId: list.houseId,
+        name: list.name,
+        description: list.description,
+        icon: list.icon,
+        color: list.color,
+        sortOrder: sortOrder,
+        deleteOnDoneDefault: list.deleteOnDoneDefault,
+        createdAt: list.createdAt,
+        updatedAt: list.updatedAt,
+      );
 
   Future<void> reorderItems(
     List<ListItem> partition,

@@ -234,11 +234,14 @@ class _SheetHostState extends State<_SheetHost> {
                 ),
               ),
             if (_stage == _Stage.list)
-              _ListStage(
-                controller: widget.controller,
-                itemCountForList: widget.itemCountForList,
-                onCreateNew: () => setState(() => _stage = _Stage.create),
-                onOpenTrash: () => setState(() => _stage = _Stage.trash),
+              AnimatedBuilder(
+                animation: widget.controller,
+                builder: (_, _) => _ListStage(
+                  controller: widget.controller,
+                  itemCountForList: widget.itemCountForList,
+                  onCreateNew: () => setState(() => _stage = _Stage.create),
+                  onOpenTrash: () => setState(() => _stage = _Stage.trash),
+                ),
               )
             else if (_stage == _Stage.create)
               _CreateStage(
@@ -288,8 +291,13 @@ class _ListStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final lists = controller.lists;
+    final lists = hasFeature('checklist-sort')
+        ? controller.sortedLists
+        : controller.lists;
     final current = controller.currentList;
+    final canReorder =
+        hasFeature('checklist-sort') && controller.listSort == 'custom';
+    final showMenu = hasFeature('checklist-trash');
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -297,7 +305,7 @@ class _ListStage extends StatelessWidget {
         Padding(
           padding: const EdgeInsetsDirectional.only(
             start: 4,
-            end: 4,
+            end: 0,
             bottom: 14,
           ),
           child: Row(
@@ -311,13 +319,19 @@ class _ListStage extends StatelessWidget {
                   color: cs.onSurface,
                 ),
               ),
-              Text(
-                m.checklists.listsCount(lists.length),
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: cs.onSurfaceVariant,
-                ),
+              Row(
+                children: [
+                  Text(
+                    m.checklists.listsCount(lists.length),
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                  if (hasFeature('checklist-sort'))
+                    _SortMenuButton(controller: controller),
+                ],
               ),
             ],
           ),
@@ -326,27 +340,59 @@ class _ListStage extends StatelessWidget {
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.5,
           ),
-          child: ListView.separated(
-            shrinkWrap: true,
-            itemCount: lists.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 8),
-            itemBuilder: (_, i) {
-              final list = lists[i];
-              final selected = list.id == current?.id;
-              return _ListTile(
-                list: list,
-                selected: selected,
-                itemCountFuture: itemCountForList(list.id),
-                onTap: () async {
-                  Navigator.pop(context);
-                  if (!selected) await controller.selectList(list);
-                },
-                onLongPress: hasFeature('checklist-trash')
-                    ? () => _onTileLongPress(context, list)
-                    : null,
-              );
-            },
-          ),
+          child: canReorder
+              ? ReorderableListView.builder(
+                  shrinkWrap: true,
+                  buildDefaultDragHandles: false,
+                  itemCount: lists.length,
+                  onReorder: controller.reorderLists,
+                  proxyDecorator: (child, _, _) =>
+                      Material(color: Colors.transparent, child: child),
+                  itemBuilder: (_, i) {
+                    final list = lists[i];
+                    final selected = list.id == current?.id;
+                    return Padding(
+                      key: ValueKey(list.id),
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: _ListTile(
+                        list: list,
+                        selected: selected,
+                        itemCountFuture: itemCountForList(list.id),
+                        dragIndex: i,
+                        showOverflow: showMenu,
+                        onTap: () async {
+                          Navigator.pop(context);
+                          if (!selected) await controller.selectList(list);
+                        },
+                        onRemove: showMenu
+                            ? () => _confirmRemove(context, list)
+                            : null,
+                      ),
+                    );
+                  },
+                )
+              : ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: lists.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
+                  itemBuilder: (_, i) {
+                    final list = lists[i];
+                    final selected = list.id == current?.id;
+                    return _ListTile(
+                      list: list,
+                      selected: selected,
+                      itemCountFuture: itemCountForList(list.id),
+                      showOverflow: showMenu,
+                      onTap: () async {
+                        Navigator.pop(context);
+                        if (!selected) await controller.selectList(list);
+                      },
+                      onRemove: showMenu
+                          ? () => _confirmRemove(context, list)
+                          : null,
+                    );
+                  },
+                ),
         ),
         const SizedBox(height: 12),
         InkWell(
@@ -417,26 +463,7 @@ class _ListStage extends StatelessWidget {
     );
   }
 
-  Future<void> _onTileLongPress(
-    BuildContext context,
-    ChecklistList list,
-  ) async {
-    final action = await showModalBottomSheet<String>(
-      context: context,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.delete_outline),
-              title: Text(m.checklists.removeList),
-              onTap: () => Navigator.pop(ctx, 'remove'),
-            ),
-          ],
-        ),
-      ),
-    );
-    if (action != 'remove' || !context.mounted) return;
+  Future<void> _confirmRemove(BuildContext context, ChecklistList list) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -482,97 +509,252 @@ class _ListTile extends StatelessWidget {
   final bool selected;
   final Future<int> itemCountFuture;
   final VoidCallback onTap;
-  final VoidCallback? onLongPress;
+  final VoidCallback? onRemove;
+  final int? dragIndex;
+  final bool showOverflow;
 
   const _ListTile({
     required this.list,
     required this.selected,
     required this.itemCountFuture,
     required this.onTap,
-    this.onLongPress,
+    this.onRemove,
+    this.dragIndex,
+    this.showOverflow = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tint = parseHexColor(list.color) ?? cs.primary;
-    return InkWell(
-      onTap: onTap,
-      onLongPress: onLongPress,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
-        decoration: BoxDecoration(
-          color: selected
-              ? cs.primary.withValues(alpha: 0.1)
-              : cs.surfaceContainer,
-          border: Border.all(
-            color: selected ? cs.primary : cs.outlineVariant,
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(14),
+    final tile = Container(
+      padding: EdgeInsetsDirectional.only(
+        start: 13,
+        end: dragIndex != null ? 4 : 8,
+        top: 12,
+        bottom: 12,
+      ),
+      decoration: BoxDecoration(
+        color: selected
+            ? cs.primary.withValues(alpha: 0.1)
+            : cs.surfaceContainer,
+        border: Border.all(
+          color: selected ? cs.primary : cs.outlineVariant,
+          width: selected ? 1.5 : 1,
         ),
-        child: Row(
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: tint.withValues(alpha: 0.16),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(checklistIcon(list.icon), color: tint, size: 21),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: tint.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(width: 13),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    list.name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: cs.onSurface,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+            child: Icon(checklistIcon(list.icon), color: tint, size: 21),
+          ),
+          const SizedBox(width: 13),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  list.name,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface,
                   ),
-                  const SizedBox(height: 2),
-                  FutureBuilder<int>(
-                    future: itemCountFuture,
-                    builder: (_, snap) {
-                      final count = snap.data ?? -1;
-                      final label = count < 0
-                          ? ''
-                          : (count == 0
-                                ? m.checklists.allDoneSummary
-                                : m.checklists.itemsSummary(count));
-                      return Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w500,
-                          color: cs.onSurfaceVariant,
-                        ),
-                      );
-                    },
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                FutureBuilder<int>(
+                  future: itemCountFuture,
+                  builder: (_, snap) {
+                    final count = snap.data ?? -1;
+                    final label = count < 0
+                        ? ''
+                        : (count == 0
+                              ? m.checklists.allDoneSummary
+                              : m.checklists.itemsSummary(count));
+                    return Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w500,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          if (selected)
+            Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                color: cs.primary,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.check, color: Colors.white, size: 16),
+            ),
+          if (showOverflow && onRemove != null)
+            SizedBox(
+              width: 36,
+              height: 36,
+              child: PopupMenuButton<String>(
+                tooltip: '',
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  Icons.more_vert,
+                  size: 20,
+                  color: cs.onSurfaceVariant,
+                ),
+                onSelected: (v) {
+                  if (v == 'remove') onRemove!();
+                },
+                itemBuilder: (_) => [
+                  PopupMenuItem<String>(
+                    value: 'remove',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.delete_outline, size: 18),
+                        const SizedBox(width: 10),
+                        Text(m.checklists.removeList),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            if (selected)
-              Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: cs.primary,
-                  shape: BoxShape.circle,
+          if (dragIndex != null)
+            ReorderableDragStartListener(
+              index: dragIndex!,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(start: 2, end: 6),
+                child: Icon(
+                  Icons.drag_handle,
+                  size: 20,
+                  color: cs.onSurfaceVariant,
                 ),
-                child: const Icon(Icons.check, color: Colors.white, size: 16),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
+    );
+
+    final interactive = InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: tile,
+    );
+
+    if (!PlatformInfo.isDesktop || onRemove == null) return interactive;
+
+    return _ContextMenuRegion(
+      onRemove: onRemove!,
+      removeLabel: m.checklists.removeList,
+      child: interactive,
+    );
+  }
+}
+
+/// Wraps a child with a desktop right-click menu offering the "remove" action.
+class _ContextMenuRegion extends StatefulWidget {
+  final Widget child;
+  final VoidCallback onRemove;
+  final String removeLabel;
+
+  const _ContextMenuRegion({
+    required this.child,
+    required this.onRemove,
+    required this.removeLabel,
+  });
+
+  @override
+  State<_ContextMenuRegion> createState() => _ContextMenuRegionState();
+}
+
+class _ContextMenuRegionState extends State<_ContextMenuRegion> {
+  Future<void> _openAt(BuildContext context, Offset globalPosition) async {
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final result = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromRect(
+        Rect.fromPoints(globalPosition, globalPosition),
+        Offset.zero & overlay.size,
+      ),
+      items: [
+        PopupMenuItem<String>(
+          value: 'remove',
+          child: Row(
+            children: [
+              const Icon(Icons.delete_outline, size: 18),
+              const SizedBox(width: 10),
+              Text(widget.removeLabel),
+            ],
+          ),
+        ),
+      ],
+    );
+    if (result == 'remove') widget.onRemove();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onSecondaryTapDown: (d) => _openAt(context, d.globalPosition),
+      child: widget.child,
+    );
+  }
+}
+
+class _SortMenuButton extends StatelessWidget {
+  final ChecklistsController controller;
+
+  const _SortMenuButton({required this.controller});
+
+  String _label(String key) => switch (key) {
+    'newest' => m.checklists.sort.newestFirst,
+    'oldest' => m.checklists.sort.oldestFirst,
+    'name_asc' => m.checklists.sort.nameAZ,
+    'name_desc' => m.checklists.sort.nameZA,
+    _ => m.checklists.sort.custom,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    const keys = ['custom', 'name_asc', 'name_desc', 'newest', 'oldest'];
+    return PopupMenuButton<String>(
+      tooltip: m.checklists.sortTooltip,
+      icon: Icon(Icons.sort, size: 20, color: cs.onSurfaceVariant),
+      padding: EdgeInsets.zero,
+      onSelected: controller.setListSort,
+      itemBuilder: (_) => [
+        for (final k in keys)
+          PopupMenuItem<String>(
+            value: k,
+            child: Row(
+              children: [
+                Icon(
+                  k == controller.listSort
+                      ? Icons.radio_button_checked
+                      : Icons.radio_button_unchecked,
+                  size: 18,
+                  color: k == controller.listSort ? cs.primary : null,
+                ),
+                const SizedBox(width: 10),
+                Text(_label(k)),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

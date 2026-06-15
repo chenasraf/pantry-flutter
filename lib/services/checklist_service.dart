@@ -98,6 +98,56 @@ class ChecklistService {
     );
   }
 
+  Future<void> setListSortPref(int houseId, String sort) async {
+    await ApiClient.instance.put<Map<String, dynamic>, void>(
+      '/houses/$houseId/prefs',
+      body: {'checklistListSort': sort},
+      fromJson: (_) {},
+    );
+  }
+
+  Future<void> reorderLists(
+    int houseId,
+    List<({int id, int sortOrder})> order,
+  ) async {
+    await ApiClient.instance.post<Map<String, dynamic>, void>(
+      '/houses/$houseId/lists/reorder',
+      body: {
+        'items': order
+            .map((e) => {'id': e.id, 'sortOrder': e.sortOrder})
+            .toList(),
+      },
+      fromJson: (_) {},
+    );
+  }
+
+  /// Sort lists according to a sort mode (custom, newest, oldest, name_asc,
+  /// name_desc). Returns a new list; the input is not mutated.
+  static List<ChecklistList> sortLists(
+    Iterable<ChecklistList> lists,
+    String sort,
+  ) {
+    final out = lists.toList();
+    switch (sort) {
+      case 'newest':
+        out.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      case 'oldest':
+        out.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      case 'name_asc':
+        out.sort(
+          (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+        );
+      case 'name_desc':
+        out.sort(
+          (a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()),
+        );
+      case 'custom':
+      default:
+        out.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+    }
+    return out;
+  }
+
   Uri itemImagePreviewUri(
     int houseId,
     int fileId,

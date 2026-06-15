@@ -58,6 +58,10 @@ class ServerVersionService {
       path: '/houses/0/categories/reorder',
       body: {'order': []},
     ),
+    'checklist-sort': const _FeatureProbe(
+      path: '/houses/0/lists/reorder',
+      body: {'items': []},
+    ),
   };
 
   Version? _serverVersion;
