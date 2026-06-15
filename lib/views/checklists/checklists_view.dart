@@ -554,7 +554,7 @@ class _BodyState extends State<_Body> {
             tooltip: m.categories.manageTitle,
             onPressed: () => _openManageCategories(context, controller),
           ),
-          if (supportsFeature('soft-delete'))
+          if (supportsFeature('soft-delete') || hasFeature('item-trash'))
             IconButton(
               icon: const Icon(Icons.delete_outline),
               tooltip: m.checklists.viewTrash,
@@ -697,7 +697,7 @@ class _BodyState extends State<_Body> {
           leading: const Icon(Icons.refresh, size: 18),
           label: m.common.refresh,
         ),
-        if (supportsFeature('soft-delete')) ...[
+        if (supportsFeature('soft-delete') || hasFeature('item-trash')) ...[
           const PopupMenuDivider(),
           _menuRow(
             value: 'view_trash',
