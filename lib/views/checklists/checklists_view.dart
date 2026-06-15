@@ -672,7 +672,7 @@ class _BodyState extends State<_Body> {
               isPinned ? Icons.push_pin : Icons.push_pin_outlined,
               size: 18,
             ),
-            label: isPinned ? 'Unpin list' : 'Pin list',
+            label: isPinned ? m.checklists.unpinList : m.checklists.pinList,
           ),
       ],
       _checkboxRow(

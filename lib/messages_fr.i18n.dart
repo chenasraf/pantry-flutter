@@ -1236,6 +1236,16 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get listTrashEmpty => """Aucune liste supprimée.""";
 
   /// ```dart
+  /// "Épingler la liste"
+  /// ```
+  String get pinList => """Épingler la liste""";
+
+  /// ```dart
+  /// "Détacher la liste"
+  /// ```
+  String get unpinList => """Détacher la liste""";
+
+  /// ```dart
   /// "Retirer la liste"
   /// ```
   String get removeList => """Retirer la liste""";
@@ -2804,6 +2814,8 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """checklists.listsTrashTitle""": """Listes supprimées""",
   """checklists.failedToLoadTrash""": """Impossible de charger la corbeille.""",
   """checklists.listTrashEmpty""": """Aucune liste supprimée.""",
+  """checklists.pinList""": """Épingler la liste""",
+  """checklists.unpinList""": """Détacher la liste""",
   """checklists.removeList""": """Retirer la liste""",
   """checklists.removeListConfirm""": """Retirer la liste ?""",
   """checklists.removeListFailed""": """Impossible de retirer la liste.""",

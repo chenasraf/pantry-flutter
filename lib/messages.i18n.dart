@@ -1222,6 +1222,16 @@ class ChecklistsMessages {
   String get listTrashEmpty => """No deleted lists.""";
 
   /// ```dart
+  /// "Pin list"
+  /// ```
+  String get pinList => """Pin list""";
+
+  /// ```dart
+  /// "Unpin list"
+  /// ```
+  String get unpinList => """Unpin list""";
+
+  /// ```dart
   /// "Remove list"
   /// ```
   String get removeList => """Remove list""";
@@ -2764,6 +2774,8 @@ Please complete login in your browser.""",
   """checklists.listsTrashTitle""": """Deleted lists""",
   """checklists.failedToLoadTrash""": """Failed to load trash.""",
   """checklists.listTrashEmpty""": """No deleted lists.""",
+  """checklists.pinList""": """Pin list""",
+  """checklists.unpinList""": """Unpin list""",
   """checklists.removeList""": """Remove list""",
   """checklists.removeListConfirm""": """Remove list?""",
   """checklists.removeListFailed""": """Failed to remove list.""",

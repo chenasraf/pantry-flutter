@@ -228,6 +228,8 @@ checklists:
   listsTrashTitle: "Listas eliminadas"
   failedToLoadTrash: "No se pudo cargar la papelera."
   listTrashEmpty: "No hay listas eliminadas."
+  pinList: "Fijar lista"
+  unpinList: "Desfijar lista"
   removeList: "Quitar lista"
   removeListConfirm: "¿Quitar la lista?"
   removeListConfirmBody(String name): "¿Quitar la lista \"$name\"? Puedes restaurarla desde la papelera."

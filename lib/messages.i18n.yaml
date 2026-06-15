@@ -228,6 +228,8 @@ checklists:
   listsTrashTitle: Deleted lists
   failedToLoadTrash: Failed to load trash.
   listTrashEmpty: No deleted lists.
+  pinList: Pin list
+  unpinList: Unpin list
   removeList: Remove list
   removeListConfirm: Remove list?
   removeListConfirmBody(String name): "Remove the list \"$name\"? You can restore it from the trash."

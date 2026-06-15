@@ -228,6 +228,8 @@ checklists:
   listsTrashTitle: "Gelöschte Listen"
   failedToLoadTrash: "Papierkorb konnte nicht geladen werden."
   listTrashEmpty: "Keine gelöschten Listen."
+  pinList: "Liste anheften"
+  unpinList: "Liste lösen"
   removeList: "Liste entfernen"
   removeListConfirm: "Liste entfernen?"
   removeListConfirmBody(String name): "Liste \"$name\" entfernen? Du kannst sie aus dem Papierkorb wiederherstellen."

@@ -1235,6 +1235,16 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get listTrashEmpty => """Keine gelöschten Listen.""";
 
   /// ```dart
+  /// "Liste anheften"
+  /// ```
+  String get pinList => """Liste anheften""";
+
+  /// ```dart
+  /// "Liste lösen"
+  /// ```
+  String get unpinList => """Liste lösen""";
+
+  /// ```dart
   /// "Liste entfernen"
   /// ```
   String get removeList => """Liste entfernen""";
@@ -2806,6 +2816,8 @@ Bitte melde dich in deinem Browser an.""",
   """checklists.failedToLoadTrash""":
       """Papierkorb konnte nicht geladen werden.""",
   """checklists.listTrashEmpty""": """Keine gelöschten Listen.""",
+  """checklists.pinList""": """Liste anheften""",
+  """checklists.unpinList""": """Liste lösen""",
   """checklists.removeList""": """Liste entfernen""",
   """checklists.removeListConfirm""": """Liste entfernen?""",
   """checklists.removeListFailed""": """Liste konnte nicht entfernt werden.""",

@@ -1231,6 +1231,16 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get listTrashEmpty => """No hay listas eliminadas.""";
 
   /// ```dart
+  /// "Fijar lista"
+  /// ```
+  String get pinList => """Fijar lista""";
+
+  /// ```dart
+  /// "Desfijar lista"
+  /// ```
+  String get unpinList => """Desfijar lista""";
+
+  /// ```dart
   /// "Quitar lista"
   /// ```
   String get removeList => """Quitar lista""";
@@ -2794,6 +2804,8 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """checklists.listsTrashTitle""": """Listas eliminadas""",
   """checklists.failedToLoadTrash""": """No se pudo cargar la papelera.""",
   """checklists.listTrashEmpty""": """No hay listas eliminadas.""",
+  """checklists.pinList""": """Fijar lista""",
+  """checklists.unpinList""": """Desfijar lista""",
   """checklists.removeList""": """Quitar lista""",
   """checklists.removeListConfirm""": """¿Quitar la lista?""",
   """checklists.removeListFailed""": """No se pudo quitar la lista.""",

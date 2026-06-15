@@ -228,6 +228,8 @@ checklists:
   listsTrashTitle: רשימות שנמחקו
   failedToLoadTrash: טעינת סל המיחזור נכשלה.
   listTrashEmpty: אין רשימות שנמחקו.
+  pinList: הצמד רשימה
+  unpinList: בטל הצמדה
   removeList: הסר רשימה
   removeListConfirm: להסיר את הרשימה?
   removeListConfirmBody(String name): "להסיר את הרשימה \"$name\"? ניתן לשחזר אותה מסל המיחזור."

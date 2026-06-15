@@ -1224,6 +1224,16 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get listTrashEmpty => """אין רשימות שנמחקו.""";
 
   /// ```dart
+  /// "הצמד רשימה"
+  /// ```
+  String get pinList => """הצמד רשימה""";
+
+  /// ```dart
+  /// "בטל הצמדה"
+  /// ```
+  String get unpinList => """בטל הצמדה""";
+
+  /// ```dart
   /// "הסר רשימה"
   /// ```
   String get removeList => """הסר רשימה""";
@@ -2764,6 +2774,8 @@ Map<String, String> get messagesHeMap => {
   """checklists.listsTrashTitle""": """רשימות שנמחקו""",
   """checklists.failedToLoadTrash""": """טעינת סל המיחזור נכשלה.""",
   """checklists.listTrashEmpty""": """אין רשימות שנמחקו.""",
+  """checklists.pinList""": """הצמד רשימה""",
+  """checklists.unpinList""": """בטל הצמדה""",
   """checklists.removeList""": """הסר רשימה""",
   """checklists.removeListConfirm""": """להסיר את הרשימה?""",
   """checklists.removeListFailed""": """הסרת הרשימה נכשלה.""",

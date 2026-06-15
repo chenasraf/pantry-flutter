@@ -228,6 +228,8 @@ checklists:
   listsTrashTitle: "Listes supprimées"
   failedToLoadTrash: "Impossible de charger la corbeille."
   listTrashEmpty: "Aucune liste supprimée."
+  pinList: "Épingler la liste"
+  unpinList: "Détacher la liste"
   removeList: "Retirer la liste"
   removeListConfirm: "Retirer la liste ?"
   removeListConfirmBody(String name): "Retirer la liste \"$name\" ? Vous pouvez la restaurer depuis la corbeille."
