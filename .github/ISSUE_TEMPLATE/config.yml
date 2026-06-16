@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Issue or Feature Request related to Pantry on Nextcloud web
+    url: https://github.com/chenasraf/pantry-flutter/issues/new/choose
+    about: If your issue or feature request is related to the web app on your Nextcloud instance, please raise it here
+  - name: Nextcloud Community Forum
+    url: https://help.nextcloud.com
+    about: Ask questions and get help from the Nextcloud community
+  - name: Security Issue
+    url: https://github.com/chenasraf/pantry-flutter/security/advisories/new
+    about: Report a security vulnerability privately
