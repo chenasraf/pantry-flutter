@@ -348,6 +348,46 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
+  int _insertIndexFor(ListItem item) {
+    final firstDone = _items.indexWhere((i) => i.done);
+    final lastUnchecked = firstDone == -1 ? _items.length : firstDone;
+
+    switch (_sortBy) {
+      case 'category':
+        final sorted = sortedCategories;
+        final rank = <int, int>{};
+        for (var i = 0; i < sorted.length; i++) {
+          rank[sorted[i].id] = i;
+        }
+        const uncategorizedRank = 1 << 30;
+        int rankOf(int? id) =>
+            id == null ? uncategorizedRank : (rank[id] ?? uncategorizedRank);
+        final myRank = rankOf(item.categoryId);
+        for (var i = 0; i < lastUnchecked; i++) {
+          if (rankOf(_items[i].categoryId) > myRank) return i;
+        }
+        return lastUnchecked;
+      case 'name_asc':
+        final key = item.name.toLowerCase();
+        for (var i = 0; i < lastUnchecked; i++) {
+          if (_items[i].name.toLowerCase().compareTo(key) > 0) return i;
+        }
+        return lastUnchecked;
+      case 'name_desc':
+        final key = item.name.toLowerCase();
+        for (var i = 0; i < lastUnchecked; i++) {
+          if (_items[i].name.toLowerCase().compareTo(key) < 0) return i;
+        }
+        return lastUnchecked;
+      case 'oldest':
+        return lastUnchecked;
+      case 'newest':
+      case 'custom':
+      default:
+        return 0;
+    }
+  }
+
   Future<void> setShowAddedBy(bool value) async {
     if (value == _showAddedBy) return;
     _showAddedBy = value;
@@ -570,7 +610,7 @@ class ChecklistsController extends ChangeNotifier {
       createdAt: _now(),
       updatedAt: _now(),
     );
-    _items.insert(0, synthetic);
+    _items.insert(_insertIndexFor(synthetic), synthetic);
     _checklistService.cacheItems(listId, List.of(_items));
     notifyListeners();
     _sync.enqueue(
