@@ -28,9 +28,10 @@ above. This repository is specifically for the companion mobile/desktop apps.
 
 ## Installation
 
-### Google Play
+### Google Play & F-Droid
 
-[Install from Google Play](https://play.google.com/store/apps/details?id=dev.casraf.pantry)
+- [Install from Google Play](https://play.google.com/store/apps/details?id=dev.casraf.pantry)
+- [Install from F-Droid](https://f-droid.org/en/packages/dev.casraf.pantry/)
 
 ### Beta testing
 
