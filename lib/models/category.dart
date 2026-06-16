@@ -40,4 +40,22 @@ class Category {
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
+
+  Category copyWith({
+    int? id,
+    String? name,
+    String? icon,
+    String? color,
+    int? sortOrder,
+    int? updatedAt,
+  }) => Category(
+    id: id ?? this.id,
+    houseId: houseId,
+    name: name ?? this.name,
+    icon: icon ?? this.icon,
+    color: color ?? this.color,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
 }

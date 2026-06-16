@@ -23,6 +23,7 @@ import 'package:pantry/widgets/create_house_dialog.dart';
 import 'package:pantry/widgets/no_houses_view.dart';
 import 'package:pantry/widgets/notifications_bell.dart';
 import 'package:pantry/widgets/server_app_missing_view.dart';
+import 'package:pantry/widgets/sync_status_banner.dart';
 import 'package:pantry/widgets/user_menu_button.dart';
 import 'home_controller.dart';
 
@@ -421,6 +422,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                     child: Column(
                       children: [
                         appBar,
+                        const SyncStatusBanner(),
                         Expanded(
                           child: Padding(
                             padding: EdgeInsetsDirectional.only(
@@ -440,7 +442,12 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
         return Scaffold(
           appBar: appBar,
-          body: body,
+          body: Column(
+            children: [
+              const SyncStatusBanner(),
+              Expanded(child: body),
+            ],
+          ),
           bottomNavigationBar: _AnimatedBottomNav(
             pageController: _pageController,
             currentIndex: tabIndex,

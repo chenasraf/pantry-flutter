@@ -49,19 +49,27 @@ class ChecklistList {
     'updatedAt': updatedAt,
   };
 
-  ChecklistList copyWith({bool? deleteOnDoneDefault, String? color}) =>
-      ChecklistList(
-        id: id,
-        houseId: houseId,
-        name: name,
-        description: description,
-        icon: icon,
-        color: color ?? this.color,
-        sortOrder: sortOrder,
-        deleteOnDoneDefault: deleteOnDoneDefault ?? this.deleteOnDoneDefault,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-      );
+  ChecklistList copyWith({
+    int? id,
+    String? name,
+    String? description,
+    String? icon,
+    String? color,
+    int? sortOrder,
+    bool? deleteOnDoneDefault,
+    int? updatedAt,
+  }) => ChecklistList(
+    id: id ?? this.id,
+    houseId: houseId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    icon: icon ?? this.icon,
+    color: color ?? this.color,
+    sortOrder: sortOrder ?? this.sortOrder,
+    deleteOnDoneDefault: deleteOnDoneDefault ?? this.deleteOnDoneDefault,
+    createdAt: createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
 }
 
 class ListItem {
@@ -155,26 +163,49 @@ class ListItem {
     'deletedAt': deletedAt,
   };
 
-  ListItem copyWith({bool? done, int? doneAt, String? doneBy}) => ListItem(
-    id: id,
+  ListItem copyWith({
+    int? id,
+    String? name,
+    String? description,
+    int? categoryId,
+    bool clearCategory = false,
+    String? quantity,
+    bool? done,
+    int? doneAt,
+    String? doneBy,
+    String? rrule,
+    bool? repeatFromCompletion,
+    bool? deleteOnDone,
+    int? nextDueAt,
+    int? imageFileId,
+    bool clearImage = false,
+    String? imageUploadedBy,
+    int? sortOrder,
+    int? updatedAt,
+    int? deletedAt,
+    bool clearDeletedAt = false,
+  }) => ListItem(
+    id: id ?? this.id,
     listId: listId,
-    name: name,
-    description: description,
-    categoryId: categoryId,
-    quantity: quantity,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    categoryId: clearCategory ? null : (categoryId ?? this.categoryId),
+    quantity: quantity ?? this.quantity,
     done: done ?? this.done,
     doneAt: doneAt ?? this.doneAt,
     doneBy: doneBy ?? this.doneBy,
-    rrule: rrule,
-    repeatFromCompletion: repeatFromCompletion,
-    deleteOnDone: deleteOnDone,
-    nextDueAt: nextDueAt,
-    imageFileId: imageFileId,
-    imageUploadedBy: imageUploadedBy,
+    rrule: rrule ?? this.rrule,
+    repeatFromCompletion: repeatFromCompletion ?? this.repeatFromCompletion,
+    deleteOnDone: deleteOnDone ?? this.deleteOnDone,
+    nextDueAt: nextDueAt ?? this.nextDueAt,
+    imageFileId: clearImage ? null : (imageFileId ?? this.imageFileId),
+    imageUploadedBy: clearImage
+        ? null
+        : (imageUploadedBy ?? this.imageUploadedBy),
     addedBy: addedBy,
-    sortOrder: sortOrder,
+    sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt,
-    updatedAt: updatedAt,
-    deletedAt: deletedAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
   );
 }

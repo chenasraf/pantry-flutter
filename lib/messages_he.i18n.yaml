@@ -491,3 +491,10 @@ recurrence:
     fr: ו׳
     sa: ש׳
     su: א׳
+
+sync:
+  offline: לא מקוון
+  syncing: מסנכרן שינויים…
+  pendingChanges(int count): "${_plural(count, one: 'שינוי אחד ממתין לסנכרון', two: '2 שינויים ממתינים לסנכרון', many: '${count} שינויים ממתינים לסנכרון')}"
+  syncError: לא ניתן היה לסנכרן את השינויים
+  retry: נסה שוב

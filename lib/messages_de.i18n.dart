@@ -79,6 +79,7 @@ class MessagesDe extends Messages {
   PhotoBoardMessagesDe get photoBoard => PhotoBoardMessagesDe(this);
   ShareMessagesDe get share => ShareMessagesDe(this);
   RecurrenceMessagesDe get recurrence => RecurrenceMessagesDe(this);
+  SyncMessagesDe get sync => SyncMessagesDe(this);
 }
 
 class CommonMessagesDe extends CommonMessages {
@@ -2578,6 +2579,37 @@ class DayAbbrRecurrenceMessagesDe extends DayAbbrRecurrenceMessages {
   String get su => """So""";
 }
 
+class SyncMessagesDe extends SyncMessages {
+  final MessagesDe _parent;
+  const SyncMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Offline"
+  /// ```
+  String get offline => """Offline""";
+
+  /// ```dart
+  /// "Änderungen werden synchronisiert…"
+  /// ```
+  String get syncing => """Änderungen werden synchronisiert…""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Änderung wartet auf Synchronisierung', many: '${count} Änderungen warten auf Synchronisierung')}"
+  /// ```
+  String pendingChanges(int count) =>
+      """${_plural(count, one: '1 Änderung wartet auf Synchronisierung', many: '${count} Änderungen warten auf Synchronisierung')}""";
+
+  /// ```dart
+  /// "Synchronisierung fehlgeschlagen"
+  /// ```
+  String get syncError => """Synchronisierung fehlgeschlagen""";
+
+  /// ```dart
+  /// "Erneut versuchen"
+  /// ```
+  String get retry => """Erneut versuchen""";
+}
+
 Map<String, String> get messagesDeMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Abbrechen""",
@@ -3062,4 +3094,8 @@ Bitte melde dich in deinem Browser an.""",
   """recurrence.dayAbbr.fr""": """Fr""",
   """recurrence.dayAbbr.sa""": """Sa""",
   """recurrence.dayAbbr.su""": """So""",
+  """sync.offline""": """Offline""",
+  """sync.syncing""": """Änderungen werden synchronisiert…""",
+  """sync.syncError""": """Synchronisierung fehlgeschlagen""",
+  """sync.retry""": """Erneut versuchen""",
 };

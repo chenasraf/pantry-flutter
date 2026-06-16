@@ -491,3 +491,10 @@ recurrence:
     fr: Vi
     sa: "Sá"
     su: Do
+
+sync:
+  offline: Sin conexión
+  syncing: Sincronizando cambios…
+  pendingChanges(int count): "${_plural(count, one: '1 cambio esperando a sincronizar', many: '${count} cambios esperando a sincronizar')}"
+  syncError: "No se pudieron sincronizar los cambios"
+  retry: Reintentar

@@ -79,6 +79,7 @@ class MessagesHe extends Messages {
   PhotoBoardMessagesHe get photoBoard => PhotoBoardMessagesHe(this);
   ShareMessagesHe get share => ShareMessagesHe(this);
   RecurrenceMessagesHe get recurrence => RecurrenceMessagesHe(this);
+  SyncMessagesHe get sync => SyncMessagesHe(this);
 }
 
 class CommonMessagesHe extends CommonMessages {
@@ -2555,6 +2556,37 @@ class DayAbbrRecurrenceMessagesHe extends DayAbbrRecurrenceMessages {
   String get su => """א׳""";
 }
 
+class SyncMessagesHe extends SyncMessages {
+  final MessagesHe _parent;
+  const SyncMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "לא מקוון"
+  /// ```
+  String get offline => """לא מקוון""";
+
+  /// ```dart
+  /// "מסנכרן שינויים…"
+  /// ```
+  String get syncing => """מסנכרן שינויים…""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'שינוי אחד ממתין לסנכרון', two: '2 שינויים ממתינים לסנכרון', many: '${count} שינויים ממתינים לסנכרון')}"
+  /// ```
+  String pendingChanges(int count) =>
+      """${_plural(count, one: 'שינוי אחד ממתין לסנכרון', two: '2 שינויים ממתינים לסנכרון', many: '${count} שינויים ממתינים לסנכרון')}""";
+
+  /// ```dart
+  /// "לא ניתן היה לסנכרן את השינויים"
+  /// ```
+  String get syncError => """לא ניתן היה לסנכרן את השינויים""";
+
+  /// ```dart
+  /// "נסה שוב"
+  /// ```
+  String get retry => """נסה שוב""";
+}
+
 Map<String, String> get messagesHeMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """ביטול""",
@@ -3002,4 +3034,8 @@ Map<String, String> get messagesHeMap => {
   """recurrence.dayAbbr.fr""": """ו׳""",
   """recurrence.dayAbbr.sa""": """ש׳""",
   """recurrence.dayAbbr.su""": """א׳""",
+  """sync.offline""": """לא מקוון""",
+  """sync.syncing""": """מסנכרן שינויים…""",
+  """sync.syncError""": """לא ניתן היה לסנכרן את השינויים""",
+  """sync.retry""": """נסה שוב""",
 };

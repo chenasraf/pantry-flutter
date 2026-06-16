@@ -23,6 +23,7 @@ import 'services/server_version_service.dart';
 import 'services/share_intent_service.dart';
 import 'services/widget_link_service.dart';
 import 'services/theming_service.dart';
+import 'sync/sync_manager.dart';
 import 'utils/platform_info.dart';
 import 'views/home/home_view.dart';
 import 'views/login/login_view.dart';
@@ -69,6 +70,7 @@ void main() async {
       ChecklistService.instance.cache.load(),
       PhotoService.instance.cache.load(),
       NoteService.instance.cache.load(),
+      SyncManager.instance.init(),
     ]);
     // Network-bound refreshes — kept off the critical path. The cached
     // theme color already drives the initial paint; capabilities/version
@@ -256,6 +258,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
       ChecklistService.instance.cache.clear(),
       PhotoService.instance.cache.clear(),
       NoteService.instance.cache.clear(),
+      SyncManager.instance.reset(),
     ]);
     _isLoggedIn = false;
     rootNavigatorKey.currentState?.pushReplacementNamed('/login');

@@ -491,3 +491,10 @@ recurrence:
     fr: Fr
     sa: Sa
     su: So
+
+sync:
+  offline: Offline
+  syncing: Änderungen werden synchronisiert…
+  pendingChanges(int count): "${_plural(count, one: '1 Änderung wartet auf Synchronisierung', many: '${count} Änderungen warten auf Synchronisierung')}"
+  syncError: Synchronisierung fehlgeschlagen
+  retry: Erneut versuchen

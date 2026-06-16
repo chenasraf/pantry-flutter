@@ -79,6 +79,7 @@ class MessagesFr extends Messages {
   PhotoBoardMessagesFr get photoBoard => PhotoBoardMessagesFr(this);
   ShareMessagesFr get share => ShareMessagesFr(this);
   RecurrenceMessagesFr get recurrence => RecurrenceMessagesFr(this);
+  SyncMessagesFr get sync => SyncMessagesFr(this);
 }
 
 class CommonMessagesFr extends CommonMessages {
@@ -2577,6 +2578,37 @@ class DayAbbrRecurrenceMessagesFr extends DayAbbrRecurrenceMessages {
   String get su => """Di""";
 }
 
+class SyncMessagesFr extends SyncMessages {
+  final MessagesFr _parent;
+  const SyncMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Hors ligne"
+  /// ```
+  String get offline => """Hors ligne""";
+
+  /// ```dart
+  /// "Synchronisation des modifications…"
+  /// ```
+  String get syncing => """Synchronisation des modifications…""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 modification en attente de synchronisation', many: '${count} modifications en attente de synchronisation')}"
+  /// ```
+  String pendingChanges(int count) =>
+      """${_plural(count, one: '1 modification en attente de synchronisation', many: '${count} modifications en attente de synchronisation')}""";
+
+  /// ```dart
+  /// "Impossible de synchroniser les modifications"
+  /// ```
+  String get syncError => """Impossible de synchroniser les modifications""";
+
+  /// ```dart
+  /// "Réessayer"
+  /// ```
+  String get retry => """Réessayer""";
+}
+
 Map<String, String> get messagesFrMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Annuler""",
@@ -3055,4 +3087,8 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """recurrence.dayAbbr.fr""": """Ve""",
   """recurrence.dayAbbr.sa""": """Sa""",
   """recurrence.dayAbbr.su""": """Di""",
+  """sync.offline""": """Hors ligne""",
+  """sync.syncing""": """Synchronisation des modifications…""",
+  """sync.syncError""": """Impossible de synchroniser les modifications""",
+  """sync.retry""": """Réessayer""",
 };

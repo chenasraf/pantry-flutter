@@ -79,6 +79,7 @@ class MessagesEs extends Messages {
   PhotoBoardMessagesEs get photoBoard => PhotoBoardMessagesEs(this);
   ShareMessagesEs get share => ShareMessagesEs(this);
   RecurrenceMessagesEs get recurrence => RecurrenceMessagesEs(this);
+  SyncMessagesEs get sync => SyncMessagesEs(this);
 }
 
 class CommonMessagesEs extends CommonMessages {
@@ -2571,6 +2572,37 @@ class DayAbbrRecurrenceMessagesEs extends DayAbbrRecurrenceMessages {
   String get su => """Do""";
 }
 
+class SyncMessagesEs extends SyncMessages {
+  final MessagesEs _parent;
+  const SyncMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Sin conexión"
+  /// ```
+  String get offline => """Sin conexión""";
+
+  /// ```dart
+  /// "Sincronizando cambios…"
+  /// ```
+  String get syncing => """Sincronizando cambios…""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 cambio esperando a sincronizar', many: '${count} cambios esperando a sincronizar')}"
+  /// ```
+  String pendingChanges(int count) =>
+      """${_plural(count, one: '1 cambio esperando a sincronizar', many: '${count} cambios esperando a sincronizar')}""";
+
+  /// ```dart
+  /// "No se pudieron sincronizar los cambios"
+  /// ```
+  String get syncError => """No se pudieron sincronizar los cambios""";
+
+  /// ```dart
+  /// "Reintentar"
+  /// ```
+  String get retry => """Reintentar""";
+}
+
 Map<String, String> get messagesEsMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Cancelar""",
@@ -3040,4 +3072,8 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """recurrence.dayAbbr.fr""": """Vi""",
   """recurrence.dayAbbr.sa""": """Sá""",
   """recurrence.dayAbbr.su""": """Do""",
+  """sync.offline""": """Sin conexión""",
+  """sync.syncing""": """Sincronizando cambios…""",
+  """sync.syncError""": """No se pudieron sincronizar los cambios""",
+  """sync.retry""": """Reintentar""",
 };

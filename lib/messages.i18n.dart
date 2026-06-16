@@ -78,6 +78,7 @@ class Messages {
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
   ShareMessages get share => ShareMessages(this);
   RecurrenceMessages get recurrence => RecurrenceMessages(this);
+  SyncMessages get sync => SyncMessages(this);
 }
 
 class CommonMessages {
@@ -2551,6 +2552,37 @@ class DayAbbrRecurrenceMessages {
   String get su => """Su""";
 }
 
+class SyncMessages {
+  final Messages _parent;
+  const SyncMessages(this._parent);
+
+  /// ```dart
+  /// "Offline"
+  /// ```
+  String get offline => """Offline""";
+
+  /// ```dart
+  /// "Syncing changes…"
+  /// ```
+  String get syncing => """Syncing changes…""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 change waiting to sync', many: '${count} changes waiting to sync')}"
+  /// ```
+  String pendingChanges(int count) =>
+      """${_plural(count, one: '1 change waiting to sync', many: '${count} changes waiting to sync')}""";
+
+  /// ```dart
+  /// "Couldn't sync changes"
+  /// ```
+  String get syncError => """Couldn't sync changes""";
+
+  /// ```dart
+  /// "Retry now"
+  /// ```
+  String get retry => """Retry now""";
+}
+
 Map<String, String> get messagesMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Cancel""",
@@ -3005,4 +3037,8 @@ Please complete login in your browser.""",
   """recurrence.dayAbbr.fr""": """Fr""",
   """recurrence.dayAbbr.sa""": """Sa""",
   """recurrence.dayAbbr.su""": """Su""",
+  """sync.offline""": """Offline""",
+  """sync.syncing""": """Syncing changes…""",
+  """sync.syncError""": """Couldn't sync changes""",
+  """sync.retry""": """Retry now""",
 };

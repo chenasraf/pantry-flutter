@@ -4,6 +4,9 @@ import 'package:pantry/models/category.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/sync/sync_ids.dart';
+import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry/sync/sync_op.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
@@ -90,16 +93,21 @@ class _CategoriesViewState extends State<CategoriesView> {
       _categories.insert(newIndex, item);
     });
 
-    final order = <({int id, int sortOrder})>[];
+    final order = <Map<String, int>>[];
     for (var i = 0; i < _categories.length; i++) {
-      order.add((id: _categories[i].id, sortOrder: i));
+      order.add({'id': _categories[i].id, 'sortOrder': i});
     }
 
-    try {
-      await CategoryService.instance.reorderCategories(widget.houseId, order);
-    } catch (e) {
-      debugPrint('[CategoriesView] Failed to reorder: $e');
-    }
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.category,
+        op: SyncOpKind.reorder,
+        houseId: widget.houseId,
+        body: {'order': order},
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
   }
 
   Future<void> _create() async {
@@ -157,20 +165,20 @@ class _CategoriesViewState extends State<CategoriesView> {
     );
     if (confirmed != true) return;
 
-    try {
-      await CategoryService.instance.deleteCategory(
-        widget.houseId,
-        category.id,
-      );
-      setState(() {
-        _categories = _categories.where((c) => c.id != category.id).toList();
-      });
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.categories.deleteFailed)));
-    }
+    setState(() {
+      _categories = _categories.where((c) => c.id != category.id).toList();
+    });
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.category,
+        op: SyncOpKind.delete,
+        houseId: widget.houseId,
+        entityId: category.id < 0 ? null : category.id,
+        tempEntityId: category.id < 0 ? category.id : null,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
   }
 
   Color? _parseColor(String hex) {

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart';
-import 'package:pantry/services/category_service.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/sync/sync_ids.dart';
+import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry/sync/sync_op.dart';
 
 const categoryColors = [
   '#ef4444',
@@ -57,31 +59,54 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
     if (name.isEmpty) return;
 
     setState(() => _saving = true);
-    try {
-      final category = _isEditing
-          ? await CategoryService.instance.updateCategory(
-              widget.houseId,
-              widget.existing!.id,
-              name: name,
-              icon: _selectedIcon,
-              color: _selectedColor,
-            )
-          : await CategoryService.instance.createCategory(
-              widget.houseId,
-              name: name,
-              icon: _selectedIcon,
-              color: _selectedColor,
-            );
-      if (mounted) Navigator.of(context).pop(category);
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.categories.saveFailed)));
-      }
-    } finally {
-      if (mounted) setState(() => _saving = false);
+    final sync = SyncManager.instance;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final Category result;
+    if (_isEditing) {
+      final existing = widget.existing!;
+      result = existing.copyWith(
+        name: name,
+        icon: _selectedIcon,
+        color: _selectedColor,
+        updatedAt: now,
+      );
+      sync.enqueue(
+        SyncOp(
+          uuid: SyncIds.newOpUuid(),
+          entity: SyncEntity.category,
+          op: SyncOpKind.update,
+          houseId: widget.houseId,
+          entityId: existing.id < 0 ? null : existing.id,
+          tempEntityId: existing.id < 0 ? existing.id : null,
+          body: {'name': name, 'icon': _selectedIcon, 'color': _selectedColor},
+          createdAt: now,
+        ),
+      );
+    } else {
+      final tempId = sync.newTempId();
+      result = Category(
+        id: tempId,
+        houseId: widget.houseId,
+        name: name,
+        icon: _selectedIcon,
+        color: _selectedColor,
+        sortOrder: 1 << 20,
+        createdAt: now,
+        updatedAt: now,
+      );
+      sync.enqueue(
+        SyncOp(
+          uuid: SyncIds.newOpUuid(),
+          entity: SyncEntity.category,
+          op: SyncOpKind.create,
+          houseId: widget.houseId,
+          tempEntityId: tempId,
+          body: {'name': name, 'icon': _selectedIcon, 'color': _selectedColor},
+          createdAt: now,
+        ),
+      );
     }
+    if (mounted) Navigator.of(context).pop(result);
   }
 
   Color _parseHex(String hex) {

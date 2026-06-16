@@ -48,4 +48,25 @@ class Note {
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
+
+  Note copyWith({
+    int? id,
+    String? title,
+    String? content,
+    String? color,
+    int? sortOrder,
+    bool? isPinned,
+    int? updatedAt,
+  }) => Note(
+    id: id ?? this.id,
+    houseId: houseId,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    color: color ?? this.color,
+    createdBy: createdBy,
+    sortOrder: sortOrder ?? this.sortOrder,
+    isPinned: isPinned ?? this.isPinned,
+    createdAt: createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
 }

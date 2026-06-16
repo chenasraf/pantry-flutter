@@ -1,19 +1,29 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
+import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/note_service.dart';
 import 'package:pantry/services/photo_service.dart';
+import 'package:pantry/sync/sync_ids.dart';
+import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry/sync/sync_op.dart';
 
 class NotesController extends ChangeNotifier {
   final int houseId;
 
-  NotesController({required this.houseId});
+  NotesController({required this.houseId}) {
+    _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
+  }
 
   bool _disposed = false;
+  StreamSubscription<SyncOpApplied>? _appliedSub;
 
   @override
   void dispose() {
     _disposed = true;
+    _appliedSub?.cancel();
     super.dispose();
   }
 
@@ -24,6 +34,7 @@ class NotesController extends ChangeNotifier {
   }
 
   NoteService get _service => NoteService.instance;
+  SyncManager get _sync => SyncManager.instance;
 
   List<Note> _notes = [];
   List<Note> get notes => _notes;
@@ -74,21 +85,15 @@ class NotesController extends ChangeNotifier {
 
   Future<List<int>> deleteSelected() async {
     final ids = Set<int>.from(_selected);
-    final deleted = <int>[];
     for (final id in ids) {
-      try {
-        await _service.deleteNote(houseId, id);
-        _notes.removeWhere((n) => n.id == id);
-        deleted.add(id);
-      } catch (e) {
-        debugPrint('[NotesController] Failed to delete note $id: $e');
-      }
+      _enqueueDelete(id);
     }
+    _notes.removeWhere((n) => ids.contains(n.id));
+    _service.cacheNotes(houseId, _notes);
     _selected.clear();
     _selectMode = false;
-    _service.cacheNotes(houseId, _notes);
     notifyListeners();
-    return deleted;
+    return ids.toList();
   }
 
   // -- Drag reorder state --
@@ -144,7 +149,7 @@ class NotesController extends ChangeNotifier {
     _sortBy = sort;
     _service.cachedSortBy = sort;
     notifyListeners();
-    _service.setNoteSort(houseId, sort);
+    unawaited(_service.setNoteSort(houseId, sort).catchError((_) {}));
     try {
       _notes = await _service.getNotes(houseId, sortBy: _sortBy);
       _service.cacheNotes(houseId, _notes);
@@ -156,23 +161,45 @@ class NotesController extends ChangeNotifier {
 
   // -- CRUD --
 
+  int _now() => DateTime.now().millisecondsSinceEpoch;
+
   Future<Note> addNote({
     required String title,
     String? content,
     String? color,
   }) async {
-    final note = await _service.createNote(
-      houseId,
+    final tempId = _sync.newTempId();
+    final synthetic = Note(
+      id: tempId,
+      houseId: houseId,
       title: title,
       content: content,
       color: color,
+      createdBy: AuthService.instance.credentials?.loginName ?? '',
+      sortOrder: _notes.length,
+      isPinned: false,
+      createdAt: _now(),
+      updatedAt: _now(),
     );
-    // Insert after the last pinned note (new notes start unpinned).
     final firstUnpinned = _notes.indexWhere((n) => !n.isPinned);
-    _notes.insert(firstUnpinned == -1 ? _notes.length : firstUnpinned, note);
+    _notes.insert(
+      firstUnpinned == -1 ? _notes.length : firstUnpinned,
+      synthetic,
+    );
     _service.cacheNotes(houseId, _notes);
     notifyListeners();
-    return note;
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.note,
+        op: SyncOpKind.create,
+        houseId: houseId,
+        tempEntityId: tempId,
+        body: {'title': title, 'content': ?content, 'color': ?color},
+        createdAt: _now(),
+      ),
+    );
+    return synthetic;
   }
 
   Future<Note> updateNote(
@@ -182,13 +209,12 @@ class NotesController extends ChangeNotifier {
     String? color,
     bool? isPinned,
   }) async {
-    final updated = await _service.updateNote(
-      houseId,
-      note.id,
+    final updated = note.copyWith(
       title: title,
       content: content,
       color: color,
       isPinned: isPinned,
+      updatedAt: _now(),
     );
     final index = _notes.indexWhere((n) => n.id == note.id);
     if (index != -1) {
@@ -199,7 +225,33 @@ class NotesController extends ChangeNotifier {
       _service.cacheNotes(houseId, _notes);
       notifyListeners();
     }
+    _sync.enqueue(_buildUpdate(note, title, content, color, isPinned));
     return updated;
+  }
+
+  SyncOp _buildUpdate(
+    Note note,
+    String? title,
+    String? content,
+    String? color,
+    bool? isPinned,
+  ) {
+    final isTemp = note.id < 0;
+    return SyncOp(
+      uuid: SyncIds.newOpUuid(),
+      entity: SyncEntity.note,
+      op: SyncOpKind.update,
+      houseId: houseId,
+      entityId: isTemp ? null : note.id,
+      tempEntityId: isTemp ? note.id : null,
+      body: {
+        'title': ?title,
+        'content': ?content,
+        'color': ?color,
+        'isPinned': ?isPinned,
+      },
+      createdAt: _now(),
+    );
   }
 
   Future<Note> togglePin(Note note) =>
@@ -215,10 +267,25 @@ class NotesController extends ChangeNotifier {
   }
 
   Future<void> deleteNote(Note note) async {
-    await _service.deleteNote(houseId, note.id);
     _notes.removeWhere((n) => n.id == note.id);
     _service.cacheNotes(houseId, _notes);
     notifyListeners();
+    _enqueueDelete(note.id);
+  }
+
+  void _enqueueDelete(int id) {
+    final isTemp = id < 0;
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.note,
+        op: SyncOpKind.delete,
+        houseId: houseId,
+        entityId: isTemp ? null : id,
+        tempEntityId: isTemp ? id : null,
+        createdAt: _now(),
+      ),
+    );
   }
 
   // -- Trash --
@@ -257,27 +324,53 @@ class NotesController extends ChangeNotifier {
   Future<void> refreshTrash() => _loadTrash();
 
   Future<void> restoreNote(Note note) async {
-    final restored = await _service.restoreNote(houseId, note.id);
     _trashed.removeWhere((n) => n.id == note.id);
     if (!_isTrashMode) {
-      _notes = _sortPinnedFirst([..._notes, restored]);
+      _notes = _sortPinnedFirst([..._notes, note]);
       _service.cacheNotes(houseId, _notes);
     }
     notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.note,
+        op: SyncOpKind.restore,
+        houseId: houseId,
+        entityId: note.id,
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> permanentlyDeleteNote(Note note) async {
-    await _service.permanentlyDeleteNote(houseId, note.id);
     _trashed.removeWhere((n) => n.id == note.id);
     notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.note,
+        op: SyncOpKind.permanentDelete,
+        houseId: houseId,
+        entityId: note.id,
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> emptyTrash() async {
-    await _service.emptyNotesTrash(houseId);
     if (_isTrashMode) {
       _trashed = [];
       notifyListeners();
     }
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.note,
+        op: SyncOpKind.emptyTrash,
+        houseId: houseId,
+        createdAt: _now(),
+      ),
+    );
   }
 
   // -- Drag reorder --
@@ -316,17 +409,51 @@ class NotesController extends ChangeNotifier {
     if (_draggingId == null) return;
     _draggingId = null;
 
-    final order = <({int id, int sortOrder})>[];
+    final order = <Map<String, int>>[];
     for (var i = 0; i < _notes.length; i++) {
-      order.add((id: _notes[i].id, sortOrder: i));
+      order.add({'id': _notes[i].id, 'sortOrder': i});
     }
     _service.cacheNotes(houseId, _notes);
     notifyListeners();
-    _service.reorderNotes(houseId, order);
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.note,
+        op: SyncOpKind.reorder,
+        houseId: houseId,
+        body: {'order': order},
+        createdAt: _now(),
+      ),
+    );
   }
 
   void cancelDrag() {
     _draggingId = null;
     notifyListeners();
+  }
+
+  // -- Sync callback --
+
+  void _onSyncApplied(SyncOpApplied applied) {
+    if (applied.op.entity != SyncEntity.note) return;
+    final entity = applied.entity;
+    if (entity is Note) {
+      final tempId = applied.op.tempEntityId;
+      if (tempId != null) {
+        final i = _notes.indexWhere((n) => n.id == tempId);
+        if (i != -1) {
+          _notes[i] = entity;
+          _service.cacheNotes(houseId, _notes);
+          notifyListeners();
+          return;
+        }
+      }
+      final j = _notes.indexWhere((n) => n.id == entity.id);
+      if (j != -1) {
+        _notes[j] = entity;
+        _service.cacheNotes(houseId, _notes);
+        notifyListeners();
+      }
+    }
   }
 }

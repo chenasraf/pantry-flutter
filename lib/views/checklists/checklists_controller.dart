@@ -5,21 +5,29 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/member.dart';
+import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/sync/sync_ids.dart';
+import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry/sync/sync_op.dart';
 
 class ChecklistsController extends ChangeNotifier {
   final int houseId;
 
-  ChecklistsController({required this.houseId});
+  ChecklistsController({required this.houseId}) {
+    _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
+  }
 
   bool _disposed = false;
+  StreamSubscription<SyncOpApplied>? _appliedSub;
 
   @override
   void dispose() {
     _disposed = true;
+    _appliedSub?.cancel();
     super.dispose();
   }
 
@@ -77,6 +85,9 @@ class ChecklistsController extends ChangeNotifier {
   ChecklistService get _checklistService => ChecklistService.instance;
   CategoryService get _categoryService => CategoryService.instance;
   HouseService get _houseService => HouseService.instance;
+  SyncManager get _sync => SyncManager.instance;
+
+  int _now() => DateTime.now().millisecondsSinceEpoch;
 
   Future<void> load() async {
     _error = null;
@@ -104,8 +115,6 @@ class ChecklistsController extends ChangeNotifier {
       // House prefs (sort + showAddedBy + categorySort) are non-fatal
       try {
         final prefs = await _checklistService.getHousePrefs(houseId);
-        // The presence of `showAddedBy` in the response is the discriminator
-        // for the `item-authors` feature on pre-capability servers.
         ServerVersionService.instance.observeHousePrefs(prefs);
         _sortBy = prefs['checklistItemSort'] as String? ?? 'custom';
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
@@ -151,26 +160,22 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   void _restoreFromCache() {
-    // Sort preference
     _sortBy = _checklistService.cache.get<String>('sortBy') ?? 'custom';
     _showAddedBy = _checklistService.cache.get<bool>('showAddedBy') ?? false;
     _categorySort =
         _checklistService.cache.get<String>('categorySort') ?? 'custom';
     _listSort = _checklistService.cache.get<String>('listSort') ?? 'custom';
 
-    // Members
     final cachedMembers = _houseService.getCachedMembers(houseId);
     if (cachedMembers != null) {
       _members = {for (final m in cachedMembers) m.userId: m};
     }
 
-    // Categories
     final cachedCats = _categoryService.getCached(houseId);
     if (cachedCats != null && _categories.isEmpty) {
       _categories = {for (final c in cachedCats) c.id: c};
     }
 
-    // Lists + items
     final cachedLists = _checklistService.getCachedLists(houseId);
     if (cachedLists != null && _lists.isEmpty) {
       _lists = cachedLists;
@@ -206,7 +211,6 @@ class ChecklistsController extends ChangeNotifier {
       return;
     }
 
-    // Show cached items immediately, or spinner if no cache for this list
     final cached = _checklistService.getCachedItems(list.id);
     if (cached != null) {
       _items = cached;
@@ -218,7 +222,6 @@ class ChecklistsController extends ChangeNotifier {
       notifyListeners();
     }
 
-    // Fetch fresh data in background
     try {
       final freshItems = await _checklistService.getItems(
         houseId,
@@ -279,11 +282,8 @@ class ChecklistsController extends ChangeNotifier {
     _checklistService.cache.set('sortBy', sort);
     notifyListeners();
 
-    // Fire-and-forget the server persist so a slow or failing pref write
-    // never blocks the item reload.
     unawaited(_persistSortPref(sort));
 
-    // Reload items with new sort
     if (_currentList != null) {
       _checklistService.invalidateItems();
       await selectList(_currentList!);
@@ -298,10 +298,6 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
-  /// Refetch categories + categorySort pref and resort items locally if the
-  /// active item sort is "category". Used after the manage-categories view
-  /// closes so we don't have to refetch the full item list just to reflect a
-  /// new category ordering.
   Future<void> onCategoriesChanged() async {
     try {
       final results = await Future.wait([
@@ -333,10 +329,6 @@ class ChecklistsController extends ChangeNotifier {
     int rankOf(int? id) =>
         id == null ? uncategorizedRank : (rank[id] ?? uncategorizedRank);
 
-    // Stable sort by category rank, preserving the existing order within each
-    // category. We sort the undone and done partitions independently so the
-    // checked/unchecked split in the UI keeps working. Dart's List.sort is
-    // not guaranteed stable, so we tie-break on the original index.
     List<ListItem> stableByCategory(Iterable<ListItem> source) {
       final indexed = source.toList().asMap().entries.toList();
       indexed.sort((a, b) {
@@ -395,39 +387,30 @@ class ChecklistsController extends ChangeNotifier {
     final moved = ordered.removeAt(oldIndex);
     ordered.insert(newIndex, moved);
 
-    final order = <({int id, int sortOrder})>[];
+    final order = <Map<String, int>>[];
     for (var i = 0; i < ordered.length; i++) {
-      order.add((id: ordered[i].id, sortOrder: i));
+      order.add({'id': ordered[i].id, 'sortOrder': i});
     }
 
     final byId = {for (final l in _lists) l.id: l};
     _lists = [
       for (var i = 0; i < ordered.length; i++)
-        _withSortOrder(byId[ordered[i].id]!, i),
+        byId[ordered[i].id]!.copyWith(sortOrder: i),
     ];
     _checklistService.cacheLists(houseId, _lists);
     notifyListeners();
 
-    try {
-      await _checklistService.reorderLists(houseId, order);
-    } catch (e) {
-      debugPrint('[ChecklistsController] Failed to reorder lists: $e');
-    }
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.reorder,
+        houseId: houseId,
+        body: {'order': order},
+        createdAt: _now(),
+      ),
+    );
   }
-
-  ChecklistList _withSortOrder(ChecklistList list, int sortOrder) =>
-      ChecklistList(
-        id: list.id,
-        houseId: list.houseId,
-        name: list.name,
-        description: list.description,
-        icon: list.icon,
-        color: list.color,
-        sortOrder: sortOrder,
-        deleteOnDoneDefault: list.deleteOnDoneDefault,
-        createdAt: list.createdAt,
-        updatedAt: list.updatedAt,
-      );
 
   Future<void> reorderItems(
     List<ListItem> partition,
@@ -435,17 +418,16 @@ class ChecklistsController extends ChangeNotifier {
     int newIndex,
   ) async {
     if (oldIndex == newIndex) return;
+    if (_currentList == null) return;
 
     final item = partition.removeAt(oldIndex);
     partition.insert(newIndex, item);
 
-    // Reassign sortOrder within the partition
-    final order = <({int id, int sortOrder})>[];
+    final order = <Map<String, int>>[];
     for (var i = 0; i < partition.length; i++) {
-      order.add((id: partition[i].id, sortOrder: i));
+      order.add({'id': partition[i].id, 'sortOrder': i});
     }
 
-    // Rebuild full items list preserving partition order
     final unchecked = _items.where((i) => !i.done).toList();
     final checked = _items.where((i) => i.done).toList();
     final isUncheckedPartition = partition.isNotEmpty && !partition.first.done;
@@ -458,11 +440,17 @@ class ChecklistsController extends ChangeNotifier {
     _checklistService.cacheItems(_currentList!.id, List.of(_items));
     notifyListeners();
 
-    try {
-      await _checklistService.reorderItems(houseId, _currentList!.id, order);
-    } catch (e) {
-      debugPrint('[ChecklistsController] Failed to reorder: $e');
-    }
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.reorder,
+        houseId: houseId,
+        parentId: _currentList!.id,
+        body: {'order': order},
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> refresh() async {
@@ -476,50 +464,71 @@ class ChecklistsController extends ChangeNotifier {
     String? icon,
     String? color,
   }) async {
-    final list = await _checklistService.createList(
-      houseId,
+    final tempId = _sync.newTempId();
+    final synthetic = ChecklistList(
+      id: tempId,
+      houseId: houseId,
       name: name,
       description: description,
-      icon: icon,
+      icon: icon ?? 'list',
       color: color,
+      sortOrder: _lists.length,
+      createdAt: _now(),
+      updatedAt: _now(),
     );
-    _lists = [..._lists, list];
+    _lists = [..._lists, synthetic];
     _checklistService.cacheLists(houseId, _lists);
     notifyListeners();
-    return list;
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.create,
+        houseId: houseId,
+        tempEntityId: tempId,
+        body: {
+          'name': name,
+          'description': ?description,
+          'icon': ?icon,
+          'color': ?color,
+        },
+        createdAt: _now(),
+      ),
+    );
+    return synthetic;
   }
 
   Future<void> setListDeleteOnDoneDefault(bool value) async {
     final list = _currentList;
     if (list == null || list.deleteOnDoneDefault == value) return;
 
-    final previous = list;
-    final optimistic = list.copyWith(deleteOnDoneDefault: value);
+    final optimistic = list.copyWith(
+      deleteOnDoneDefault: value,
+      updatedAt: _now(),
+    );
     _currentList = optimistic;
     _lists = [for (final l in _lists) l.id == optimistic.id ? optimistic : l];
     _checklistService.cacheLists(houseId, _lists);
     notifyListeners();
 
-    try {
-      final updated = await _checklistService.updateList(
-        houseId,
-        list.id,
-        deleteOnDoneDefault: value,
-      );
-      _currentList = _currentList?.id == updated.id ? updated : _currentList;
-      _lists = [for (final l in _lists) l.id == updated.id ? updated : l];
-      _checklistService.cacheLists(houseId, _lists);
-      notifyListeners();
-    } catch (e) {
-      debugPrint('[ChecklistsController] Failed to update list default: $e');
-      _currentList = _currentList?.id == previous.id ? previous : _currentList;
-      _lists = [for (final l in _lists) l.id == previous.id ? previous : l];
-      _checklistService.cacheLists(houseId, _lists);
-      notifyListeners();
-    }
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.update,
+        houseId: houseId,
+        entityId: list.id < 0 ? null : list.id,
+        tempEntityId: list.id < 0 ? list.id : null,
+        body: {'deleteOnDoneDefault': value},
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> moveItem(ListItem item, int targetListId) async {
+    // Cross-list move is online-only for v1 — its semantics interact with
+    // both source and target list caches in ways that don't simplify well
+    // through the basic SyncOp shapes. Falls back to a direct API call.
     await _checklistService.moveItem(
       houseId,
       item.listId,
@@ -539,20 +548,51 @@ class ChecklistsController extends ChangeNotifier {
     String? rrule,
     bool? deleteOnDone,
   }) async {
-    final item = await _checklistService.createItem(
-      houseId,
-      _currentList!.id,
+    if (_currentList == null) {
+      throw StateError('No list selected');
+    }
+    final listId = _currentList!.id;
+    final tempId = _sync.newTempId();
+    final loginName = AuthService.instance.credentials?.loginName;
+    final synthetic = ListItem(
+      id: tempId,
+      listId: listId,
       name: name,
       description: description,
-      quantity: quantity,
       categoryId: categoryId,
+      quantity: quantity,
+      done: false,
       rrule: rrule,
-      deleteOnDone: deleteOnDone,
+      repeatFromCompletion: false,
+      deleteOnDone: deleteOnDone ?? false,
+      addedBy: loginName,
+      sortOrder: 0,
+      createdAt: _now(),
+      updatedAt: _now(),
     );
-    _items.insert(0, item);
-    _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    _items.insert(0, synthetic);
+    _checklistService.cacheItems(listId, List.of(_items));
     notifyListeners();
-    return item;
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.create,
+        houseId: houseId,
+        parentId: listId,
+        tempEntityId: tempId,
+        body: {
+          'name': name,
+          'description': ?description,
+          'quantity': ?quantity,
+          'categoryId': ?categoryId,
+          'rrule': ?rrule,
+          'deleteOnDone': ?deleteOnDone,
+        },
+        createdAt: _now(),
+      ),
+    );
+    return synthetic;
   }
 
   Future<ListItem> updateItem(
@@ -566,10 +606,7 @@ class ChecklistsController extends ChangeNotifier {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
   }) async {
-    final updated = await _checklistService.updateItem(
-      houseId,
-      item.listId,
-      item.id,
+    final updated = item.copyWith(
       name: name,
       description: description,
       quantity: quantity,
@@ -578,6 +615,7 @@ class ChecklistsController extends ChangeNotifier {
       rrule: rrule,
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
+      updatedAt: _now(),
     );
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
@@ -585,6 +623,28 @@ class ChecklistsController extends ChangeNotifier {
       _checklistService.cacheItems(_currentList!.id, List.of(_items));
       notifyListeners();
     }
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.update,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id < 0 ? null : item.id,
+        tempEntityId: item.id < 0 ? item.id : null,
+        body: {
+          'name': ?name,
+          'description': ?description,
+          'quantity': ?quantity,
+          if (clearCategory) 'clearCategory': true,
+          'categoryId': ?categoryId,
+          'rrule': ?rrule,
+          'repeatFromCompletion': ?repeatFromCompletion,
+          'deleteOnDone': ?deleteOnDone,
+        },
+        createdAt: _now(),
+      ),
+    );
     return updated;
   }
 
@@ -594,6 +654,11 @@ class ChecklistsController extends ChangeNotifier {
     required String fileName,
     required String mimeType,
   }) async {
+    if (item.id < 0) {
+      // Photo uploads are online-only and need a real server id — bail
+      // until the optimistic create has resolved.
+      throw StateError('Cannot upload image before item create syncs');
+    }
     final updated = await _checklistService.uploadItemImage(
       houseId,
       item.listId,
@@ -612,78 +677,89 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   Future<void> deleteItemImage(ListItem item) async {
+    if (item.id < 0) return;
     await _checklistService.deleteItemImage(houseId, item.listId, item.id);
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
-      // Clear image fields locally
-      _items[index] = ListItem(
-        id: item.id,
-        listId: item.listId,
-        name: item.name,
-        description: item.description,
-        categoryId: item.categoryId,
-        quantity: item.quantity,
-        done: item.done,
-        doneAt: item.doneAt,
-        doneBy: item.doneBy,
-        rrule: item.rrule,
-        repeatFromCompletion: item.repeatFromCompletion,
-        deleteOnDone: item.deleteOnDone,
-        nextDueAt: item.nextDueAt,
-        imageFileId: null,
-        imageUploadedBy: null,
-        addedBy: item.addedBy,
-        sortOrder: item.sortOrder,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-      );
+      _items[index] = item.copyWith(clearImage: true, updatedAt: _now());
       _checklistService.cacheItems(_currentList!.id, List.of(_items));
       notifyListeners();
     }
   }
 
   Future<void> deleteItem(ListItem item) async {
-    await _checklistService.deleteItem(houseId, item.listId, item.id);
     _items.removeWhere((i) => i.id == item.id);
     _checklistService.cacheItems(_currentList!.id, List.of(_items));
     notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.delete,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id < 0 ? null : item.id,
+        tempEntityId: item.id < 0 ? item.id : null,
+        createdAt: _now(),
+      ),
+    );
   }
 
-  Future<ListItem> restoreItem(ListItem item) async {
-    final restored = await _checklistService.restoreItem(
-      houseId,
-      item.listId,
-      item.id,
-    );
+  Future<void> restoreItem(ListItem item) async {
     _items.removeWhere((i) => i.id == item.id);
     if (!_isTrashMode) {
-      _items.add(restored);
+      _items.add(item.copyWith(clearDeletedAt: true, updatedAt: _now()));
       _checklistService.cacheItems(_currentList!.id, List.of(_items));
     }
     notifyListeners();
-    return restored;
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.restore,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id,
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> permanentlyDeleteItem(ListItem item) async {
-    await _checklistService.permanentlyDeleteItem(
-      houseId,
-      item.listId,
-      item.id,
-    );
     _items.removeWhere((i) => i.id == item.id);
     if (!_isTrashMode) {
       _checklistService.cacheItems(_currentList!.id, List.of(_items));
     }
     notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.permanentDelete,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id,
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> emptyTrash() async {
     if (_currentList == null) return;
-    await _checklistService.emptyTrash(houseId, _currentList!.id);
     if (_isTrashMode) {
       _items = [];
       notifyListeners();
     }
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.emptyTrash,
+        houseId: houseId,
+        parentId: _currentList!.id,
+        createdAt: _now(),
+      ),
+    );
   }
 
   // -- Lists trash (the lists themselves) --
@@ -699,7 +775,6 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   Future<void> deleteList(ChecklistList list) async {
-    await _checklistService.deleteList(houseId, list.id);
     _lists.removeWhere((l) => l.id == list.id);
     _checklistService.cacheLists(houseId, _lists);
     if (_currentList?.id == list.id) {
@@ -714,65 +789,155 @@ class ChecklistsController extends ChangeNotifier {
     } else {
       notifyListeners();
     }
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.delete,
+        houseId: houseId,
+        entityId: list.id < 0 ? null : list.id,
+        tempEntityId: list.id < 0 ? list.id : null,
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> restoreList(ChecklistList list) async {
-    final restored = await _checklistService.restoreList(houseId, list.id);
     _trashedLists.removeWhere((l) => l.id == list.id);
-    final exists = _lists.any((l) => l.id == restored.id);
+    final exists = _lists.any((l) => l.id == list.id);
     if (!exists) {
-      _lists = [..._lists, restored];
+      _lists = [..._lists, list];
       _checklistService.cacheLists(houseId, _lists);
     }
     notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.restore,
+        houseId: houseId,
+        entityId: list.id,
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> permanentlyDeleteList(ChecklistList list) async {
-    await _checklistService.permanentlyDeleteList(houseId, list.id);
     _trashedLists.removeWhere((l) => l.id == list.id);
     notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.permanentDelete,
+        houseId: houseId,
+        entityId: list.id,
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> emptyListsTrash() async {
-    await _checklistService.emptyListsTrash(houseId);
     _trashedLists = [];
     notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.emptyTrash,
+        houseId: houseId,
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> toggleItem(ListItem item) async {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index == -1) return;
 
-    // Optimistic update
-    _items[index] = item.copyWith(done: !item.done);
+    _items[index] = item.copyWith(done: !item.done, updatedAt: _now());
     _checklistService.cacheItems(item.listId, List.of(_items));
     notifyListeners();
 
-    try {
-      final updated = await _checklistService.toggleItem(
-        houseId,
-        item.listId,
-        item.id,
-      );
-      // If toggling caused a soft-delete (deleteOnDone), drop it from active list.
-      if (updated.deletedAt != null) {
-        _items.removeWhere((i) => i.id == item.id);
-      } else {
-        final i = _items.indexWhere((x) => x.id == item.id);
-        if (i != -1) _items[i] = updated;
-      }
-      _checklistService.cacheItems(item.listId, List.of(_items));
-      notifyListeners();
-    } catch (e) {
-      // Revert on failure
-      final i = _items.indexWhere((x) => x.id == item.id);
-      if (i != -1) {
-        _items[i] = item;
-      } else {
-        _items.insert(index.clamp(0, _items.length), item);
-      }
-      _checklistService.cacheItems(item.listId, List.of(_items));
-      notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.toggle,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id < 0 ? null : item.id,
+        tempEntityId: item.id < 0 ? item.id : null,
+        createdAt: _now(),
+      ),
+    );
+  }
+
+  // -- Sync callback --
+
+  void _onSyncApplied(SyncOpApplied applied) {
+    final tempId = applied.op.tempEntityId;
+    switch (applied.op.entity) {
+      case SyncEntity.checklistList:
+        final entity = applied.entity;
+        if (entity is ChecklistList) {
+          if (tempId != null) {
+            final i = _lists.indexWhere((l) => l.id == tempId);
+            if (i != -1) {
+              _lists[i] = entity;
+              if (_currentList?.id == tempId) _currentList = entity;
+              _checklistService.cacheLists(houseId, _lists);
+              notifyListeners();
+              return;
+            }
+          }
+          final j = _lists.indexWhere((l) => l.id == entity.id);
+          if (j != -1) {
+            _lists[j] = entity;
+            if (_currentList?.id == entity.id) _currentList = entity;
+            _checklistService.cacheLists(houseId, _lists);
+            notifyListeners();
+          }
+        }
+      case SyncEntity.checklistItem:
+        final entity = applied.entity;
+        if (entity is ListItem) {
+          // If toggle caused soft-delete (deleteOnDone), drop it.
+          if (entity.deletedAt != null) {
+            _items.removeWhere((i) => i.id == entity.id || i.id == tempId);
+            if (_currentList?.id == entity.listId) {
+              _checklistService.cacheItems(entity.listId, List.of(_items));
+            }
+            notifyListeners();
+            return;
+          }
+          if (tempId != null) {
+            final i = _items.indexWhere((it) => it.id == tempId);
+            if (i != -1) {
+              _items[i] = entity;
+              _checklistService.cacheItems(entity.listId, List.of(_items));
+              notifyListeners();
+              return;
+            }
+          }
+          final j = _items.indexWhere((it) => it.id == entity.id);
+          if (j != -1) {
+            _items[j] = entity;
+            _checklistService.cacheItems(entity.listId, List.of(_items));
+            notifyListeners();
+          }
+        }
+      case SyncEntity.category:
+        final entity = applied.entity;
+        if (entity is models.Category) {
+          if (tempId != null) {
+            _categories.remove(tempId);
+          }
+          _categories[entity.id] = entity;
+          notifyListeners();
+        }
+      case SyncEntity.note:
+        break;
     }
   }
 }
