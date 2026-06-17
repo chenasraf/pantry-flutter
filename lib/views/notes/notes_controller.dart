@@ -105,7 +105,7 @@ class NotesController extends ChangeNotifier {
     _error = null;
 
     // Restore from cache
-    _sortBy = _service.cachedSortBy;
+    _sortBy = _service.cachedSortBy(houseId);
     final cached = _service.getCachedNotes(houseId);
     if (cached != null && _notes.isEmpty) {
       _notes = cached;
@@ -123,7 +123,7 @@ class NotesController extends ChangeNotifier {
       try {
         final prefs = await PhotoService.instance.getHousePrefs(houseId);
         _sortBy = prefs['noteSort'] as String? ?? 'custom';
-        _service.cachedSortBy = _sortBy;
+        _service.setCachedSortBy(houseId, _sortBy);
       } catch (e) {
         debugPrint('[NotesController] Failed to load prefs: $e');
       }
@@ -147,7 +147,7 @@ class NotesController extends ChangeNotifier {
   Future<void> setSortBy(String sort) async {
     if (sort == _sortBy) return;
     _sortBy = sort;
-    _service.cachedSortBy = sort;
+    _service.setCachedSortBy(houseId, sort);
     notifyListeners();
     unawaited(_service.setNoteSort(houseId, sort).catchError((_) {}));
     try {

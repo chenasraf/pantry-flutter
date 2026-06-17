@@ -120,10 +120,10 @@ class ChecklistsController extends ChangeNotifier {
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _categorySort = prefs['categorySort'] as String? ?? 'custom';
         _listSort = prefs['checklistListSort'] as String? ?? 'custom';
-        _checklistService.cache.set('sortBy', _sortBy);
-        _checklistService.cache.set('showAddedBy', _showAddedBy);
-        _checklistService.cache.set('categorySort', _categorySort);
-        _checklistService.cache.set('listSort', _listSort);
+        _checklistService.cache.set('sortBy:$houseId', _sortBy);
+        _checklistService.cache.set('showAddedBy:$houseId', _showAddedBy);
+        _checklistService.cache.set('categorySort:$houseId', _categorySort);
+        _checklistService.cache.set('listSort:$houseId', _listSort);
       } catch (e) {
         debugPrint('[ChecklistsController] Failed to load house prefs: $e');
       }
@@ -160,11 +160,25 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   void _restoreFromCache() {
-    _sortBy = _checklistService.cache.get<String>('sortBy') ?? 'custom';
-    _showAddedBy = _checklistService.cache.get<bool>('showAddedBy') ?? false;
+    final cache = _checklistService.cache;
+    // Fall back to the legacy global key for installs that cached prefs
+    // before they were scoped per-house. First scoped write overwrites it.
+    _sortBy =
+        cache.get<String>('sortBy:$houseId') ??
+        cache.get<String>('sortBy') ??
+        'custom';
+    _showAddedBy =
+        cache.get<bool>('showAddedBy:$houseId') ??
+        cache.get<bool>('showAddedBy') ??
+        false;
     _categorySort =
-        _checklistService.cache.get<String>('categorySort') ?? 'custom';
-    _listSort = _checklistService.cache.get<String>('listSort') ?? 'custom';
+        cache.get<String>('categorySort:$houseId') ??
+        cache.get<String>('categorySort') ??
+        'custom';
+    _listSort =
+        cache.get<String>('listSort:$houseId') ??
+        cache.get<String>('listSort') ??
+        'custom';
 
     final cachedMembers = _houseService.getCachedMembers(houseId);
     if (cachedMembers != null) {
@@ -279,7 +293,7 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> setSortBy(String sort) async {
     if (sort == _sortBy) return;
     _sortBy = sort;
-    _checklistService.cache.set('sortBy', sort);
+    _checklistService.cache.set('sortBy:$houseId', sort);
     notifyListeners();
 
     unawaited(_persistSortPref(sort));
@@ -308,7 +322,7 @@ class ChecklistsController extends ChangeNotifier {
       final cats = results[1] as List<models.Category>;
       _categorySort = prefs['categorySort'] as String? ?? 'custom';
       _categories = {for (final c in cats) c.id: c};
-      _checklistService.cache.set('categorySort', _categorySort);
+      _checklistService.cache.set('categorySort:$houseId', _categorySort);
 
       if (_sortBy == 'category') _resortItemsByCategory();
       notifyListeners();
@@ -391,7 +405,7 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> setShowAddedBy(bool value) async {
     if (value == _showAddedBy) return;
     _showAddedBy = value;
-    _checklistService.cache.set('showAddedBy', value);
+    _checklistService.cache.set('showAddedBy:$houseId', value);
     notifyListeners();
 
     try {
@@ -404,7 +418,7 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> setListSort(String sort) async {
     if (sort == _listSort) return;
     _listSort = sort;
-    _checklistService.cache.set('listSort', sort);
+    _checklistService.cache.set('listSort:$houseId', sort);
     notifyListeners();
 
     unawaited(_persistListSortPref(sort));

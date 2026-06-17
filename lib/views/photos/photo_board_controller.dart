@@ -203,8 +203,8 @@ class PhotoBoardController extends ChangeNotifier {
         final prefs = await _service.getHousePrefs(houseId);
         _sortBy = prefs['photoSort'] as String? ?? 'custom';
         _foldersFirst = prefs['photoFoldersFirst'] as bool? ?? true;
-        _service.cachedSortBy = _sortBy;
-        _service.cachedFoldersFirst = _foldersFirst;
+        _service.setCachedSortBy(houseId, _sortBy);
+        _service.setCachedFoldersFirst(houseId, _foldersFirst);
       } catch (e) {
         debugPrint('[PhotoBoardController] Failed to load prefs: $e');
       }
@@ -232,8 +232,8 @@ class PhotoBoardController extends ChangeNotifier {
   }
 
   void _restoreFromCache() {
-    _sortBy = _service.cachedSortBy;
-    _foldersFirst = _service.cachedFoldersFirst;
+    _sortBy = _service.cachedSortBy(houseId);
+    _foldersFirst = _service.cachedFoldersFirst(houseId);
 
     final cachedPhotos = _service.getCachedPhotos(houseId);
     if (cachedPhotos != null && _photos.isEmpty) {

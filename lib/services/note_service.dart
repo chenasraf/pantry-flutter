@@ -24,8 +24,12 @@ class NoteService {
     cache.setList(_notesKey, notes, (n) => n.toJson());
   }
 
-  String get cachedSortBy => cache.get<String>(_sortByKey) ?? 'custom';
-  set cachedSortBy(String value) => cache.set(_sortByKey, value);
+  String cachedSortBy(int houseId) =>
+      cache.get<String>('$_sortByKey:$houseId') ??
+      cache.get<String>(_sortByKey) ??
+      'custom';
+  void setCachedSortBy(int houseId, String value) =>
+      cache.set('$_sortByKey:$houseId', value);
 
   // -- API --
 

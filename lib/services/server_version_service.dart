@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/services/cache_store.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/version.dart';
 
@@ -82,6 +84,42 @@ class ServerVersionService {
   final Map<String, bool> _features = {};
   bool _featuresAuthoritative = false;
 
+  /// On-disk snapshot of the last successful capabilities fetch. Rehydrated by
+  /// [loadCached] before the first frame so cold offline launches gate UI on
+  /// the last-known features instead of having every [hasFeature] return
+  /// false until the network call lands.
+  final CacheStore _cache = CacheStore('capabilities_cache.json');
+
+  /// Rehydrate version + feature + theming state from the on-disk snapshot of
+  /// the previous successful [fetch]. Safe to call before login (no-op if the
+  /// cache file is absent). Callers should still invoke [fetch] afterwards in
+  /// the background to refresh against the live server.
+  Future<void> loadCached() async {
+    await _cache.load();
+    _serverVersion = Version.tryParse(_cache.get<String>('serverVersion'));
+    _pantryVersion = Version.tryParse(_cache.get<String>('pantryVersion'));
+    final feats = _cache.getObject('features');
+    if (feats != null) {
+      for (final entry in feats.entries) {
+        final v = entry.value;
+        if (v is bool) _features[entry.key] = v;
+      }
+    }
+    _featuresAuthoritative = _cache.get<bool>('featuresAuthoritative') ?? false;
+    _themingCaps = _cache.getObject('themingCaps');
+  }
+
+  void _persist() {
+    _cache.set<String?>('serverVersion', _serverVersion?.toString());
+    _cache.set<String?>('pantryVersion', _pantryVersion?.toString());
+    _cache.set<Map<String, dynamic>>(
+      'features',
+      Map<String, dynamic>.from(_features),
+    );
+    _cache.set<bool>('featuresAuthoritative', _featuresAuthoritative);
+    _cache.set<Map<String, dynamic>?>('themingCaps', _themingCaps);
+  }
+
   /// Reads `/ocs/v2.php/cloud/capabilities` and refreshes the version + feature
   /// state. With [serverUrl], runs unauthenticated against a prospective
   /// server (onboarding); without it, uses the logged-in session.
@@ -126,6 +164,7 @@ class ServerVersionService {
 
     if (creds != null) {
       await _runMissingProbes();
+      _persist();
     }
   }
 
@@ -203,6 +242,7 @@ class ServerVersionService {
     _themingCaps = null;
     _features.clear();
     _featuresAuthoritative = false;
+    unawaited(_cache.clear());
   }
 
   /// Compare against the Nextcloud server version, e.g.

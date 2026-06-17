@@ -70,6 +70,7 @@ void main() async {
       ChecklistService.instance.cache.load(),
       PhotoService.instance.cache.load(),
       NoteService.instance.cache.load(),
+      ServerVersionService.instance.loadCached(),
       SyncManager.instance.init(),
     ]);
     // Network-bound refreshes — kept off the critical path. The cached

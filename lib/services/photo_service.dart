@@ -36,11 +36,19 @@ class PhotoService {
     cache.setList(_foldersKey, folders, (f) => f.toJson());
   }
 
-  String get cachedSortBy => cache.get<String>(_sortByKey) ?? 'custom';
-  set cachedSortBy(String value) => cache.set(_sortByKey, value);
+  String cachedSortBy(int houseId) =>
+      cache.get<String>('$_sortByKey:$houseId') ??
+      cache.get<String>(_sortByKey) ??
+      'custom';
+  void setCachedSortBy(int houseId, String value) =>
+      cache.set('$_sortByKey:$houseId', value);
 
-  bool get cachedFoldersFirst => cache.get<bool>(_foldersFirstKey) ?? true;
-  set cachedFoldersFirst(bool value) => cache.set(_foldersFirstKey, value);
+  bool cachedFoldersFirst(int houseId) =>
+      cache.get<bool>('$_foldersFirstKey:$houseId') ??
+      cache.get<bool>(_foldersFirstKey) ??
+      true;
+  void setCachedFoldersFirst(int houseId, bool value) =>
+      cache.set('$_foldersFirstKey:$houseId', value);
 
   // -- Photos --
 
