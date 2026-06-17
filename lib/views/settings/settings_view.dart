@@ -24,6 +24,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   static const _pollOptions = [15, 30, 60, 120, 360];
   static const _categorySpacingOptions = ['disabled', 'space', 'divider'];
+  static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
 
   @override
   void initState() {
@@ -32,9 +33,19 @@ class _SettingsViewState extends State<SettingsView> {
     _selectedTheme = PrefsService.instance.themeMode;
   }
 
-  Future<void> _setTapRowToComplete(bool value) async {
-    await context.read<PrefsService>().setChecklistTapRowToToggle(value);
+  Future<void> _setItemTapAction(String? value) async {
+    if (value == null) return;
+    final prefs = context.read<PrefsService>();
+    if (value == prefs.defaultItemTapAction) return;
+    await prefs.setDefaultItemTapAction(value);
   }
+
+  String _itemTapActionLabel(String value) => switch (value) {
+    'done' => m.settings.itemTapActionNames.done,
+    'edit' => m.settings.itemTapActionNames.edit,
+    'none' => m.settings.itemTapActionNames.none,
+    _ => m.settings.itemTapActionNames.view,
+  };
 
   Future<void> _setShowProgressHero(bool value) async {
     // Settings switch reflects "show", pref stores "hidden" — invert.
@@ -136,7 +147,7 @@ class _SettingsViewState extends State<SettingsView> {
     final prefs = context.watch<PrefsService>();
     final notificationsEnabled = prefs.notificationsEnabled;
     final pollIntervalMinutes = prefs.pollIntervalMinutes;
-    final tapRowToComplete = prefs.checklistTapRowToToggle;
+    final itemTapAction = prefs.defaultItemTapAction;
     final categorySpacing = prefs.checklistCategorySpacing;
     final showProgressHero = !prefs.checklistProgressHeroHidden;
 
@@ -221,11 +232,20 @@ class _SettingsViewState extends State<SettingsView> {
             },
           ),
           if (supportsFeature('pref-tap-row-to-complete'))
-            SwitchListTile(
-              title: Text(m.settings.tapRowToComplete),
-              subtitle: Text(m.settings.tapRowToCompleteBody),
-              value: tapRowToComplete,
-              onChanged: _setTapRowToComplete,
+            ListTile(
+              title: Text(m.settings.defaultItemTapAction),
+              subtitle: Text(m.settings.defaultItemTapActionBody),
+              trailing: DropdownButton<String>(
+                value: itemTapAction,
+                onChanged: _setItemTapAction,
+                items: [
+                  for (final option in _itemTapActionOptions)
+                    DropdownMenuItem(
+                      value: option,
+                      child: Text(_itemTapActionLabel(option)),
+                    ),
+                ],
+              ),
             ),
           SwitchListTile(
             title: Text(m.settings.showProgressHero),

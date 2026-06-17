@@ -708,16 +708,17 @@ class SettingsMessagesFr extends SettingsMessages {
   String get interfaceSection => """Interface""";
 
   /// ```dart
-  /// "Toucher la ligne pour cocher les éléments"
+  /// "Action par défaut au toucher"
   /// ```
-  String get tapRowToComplete =>
-      """Toucher la ligne pour cocher les éléments""";
+  String get defaultItemTapAction => """Action par défaut au toucher""";
 
   /// ```dart
-  /// "Quand désactivé, les éléments ne sont cochés qu'en touchant la case."
+  /// "Ce qui se passe quand vous touchez la ligne d'un élément."
   /// ```
-  String get tapRowToCompleteBody =>
-      """Quand désactivé, les éléments ne sont cochés qu'en touchant la case.""";
+  String get defaultItemTapActionBody =>
+      """Ce qui se passe quand vous touchez la ligne d'un élément.""";
+  ItemTapActionNamesSettingsMessagesFr get itemTapActionNames =>
+      ItemTapActionNamesSettingsMessagesFr(this);
 
   /// ```dart
   /// "Afficher la carte de progression sur chaque liste"
@@ -837,6 +838,32 @@ class SettingsMessagesFr extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """La permission de notification a été refusée. Activez-la dans les réglages système.""";
+}
+
+class ItemTapActionNamesSettingsMessagesFr
+    extends ItemTapActionNamesSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const ItemTapActionNamesSettingsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Marquer comme fait"
+  /// ```
+  String get done => """Marquer comme fait""";
+
+  /// ```dart
+  /// "Voir"
+  /// ```
+  String get view => """Voir""";
+
+  /// ```dart
+  /// "Modifier"
+  /// ```
+  String get edit => """Modifier""";
+
+  /// ```dart
+  /// "Aucune"
+  /// ```
+  String get none => """Aucune""";
 }
 
 class CategorySpacingNamesSettingsMessagesFr
@@ -2740,10 +2767,13 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """settings.title""": """Réglages de l'app""",
   """settings.generalSection""": """Général""",
   """settings.interfaceSection""": """Interface""",
-  """settings.tapRowToComplete""":
-      """Toucher la ligne pour cocher les éléments""",
-  """settings.tapRowToCompleteBody""":
-      """Quand désactivé, les éléments ne sont cochés qu'en touchant la case.""",
+  """settings.defaultItemTapAction""": """Action par défaut au toucher""",
+  """settings.defaultItemTapActionBody""":
+      """Ce qui se passe quand vous touchez la ligne d'un élément.""",
+  """settings.itemTapActionNames.done""": """Marquer comme fait""",
+  """settings.itemTapActionNames.view""": """Voir""",
+  """settings.itemTapActionNames.edit""": """Modifier""",
+  """settings.itemTapActionNames.none""": """Aucune""",
   """settings.showProgressHero""":
       """Afficher la carte de progression sur chaque liste""",
   """settings.showProgressHeroBody""":

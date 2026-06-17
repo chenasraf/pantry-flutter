@@ -124,8 +124,13 @@ settings:
   title: App Settings
   generalSection: General
   interfaceSection: Interface
-  tapRowToComplete: Tap row to complete items
-  tapRowToCompleteBody: "When off, items are only marked complete by tapping the checkbox."
+  defaultItemTapAction: Default item tap action
+  defaultItemTapActionBody: "What happens when you tap an item row."
+  itemTapActionNames:
+    done: Mark as done
+    view: View
+    edit: Edit
+    none: None
   showProgressHero: Show progress card on each checklist
   showProgressHeroBody: "The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it."
   categorySpacing: Show spacing between categories in list items

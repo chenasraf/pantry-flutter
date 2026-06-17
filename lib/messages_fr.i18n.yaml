@@ -124,8 +124,13 @@ settings:
   title: "Réglages de l'app"
   generalSection: "Général"
   interfaceSection: Interface
-  tapRowToComplete: Toucher la ligne pour cocher les éléments
-  tapRowToCompleteBody: "Quand désactivé, les éléments ne sont cochés qu'en touchant la case."
+  defaultItemTapAction: Action par défaut au toucher
+  defaultItemTapActionBody: "Ce qui se passe quand vous touchez la ligne d'un élément."
+  itemTapActionNames:
+    done: Marquer comme fait
+    view: Voir
+    edit: Modifier
+    none: Aucune
   showProgressHero: Afficher la carte de progression sur chaque liste
   showProgressHeroBody: "La carte avec l'anneau de progression circulaire et le résumé des éléments restants en haut de chaque liste. Faites glisser la carte pour la masquer."
   categorySpacing: Afficher un espacement entre les catégories dans les éléments de la liste

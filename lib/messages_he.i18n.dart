@@ -704,15 +704,17 @@ class SettingsMessagesHe extends SettingsMessages {
   String get interfaceSection => """ממשק""";
 
   /// ```dart
-  /// "השלם פריטים בלחיצה על השורה"
+  /// "פעולת ברירת מחדל בלחיצה"
   /// ```
-  String get tapRowToComplete => """השלם פריטים בלחיצה על השורה""";
+  String get defaultItemTapAction => """פעולת ברירת מחדל בלחיצה""";
 
   /// ```dart
-  /// "כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון."
+  /// "מה קורה כאשר לוחצים על שורת פריט."
   /// ```
-  String get tapRowToCompleteBody =>
-      """כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.""";
+  String get defaultItemTapActionBody =>
+      """מה קורה כאשר לוחצים על שורת פריט.""";
+  ItemTapActionNamesSettingsMessagesHe get itemTapActionNames =>
+      ItemTapActionNamesSettingsMessagesHe(this);
 
   /// ```dart
   /// "הצג כרטיס התקדמות בכל רשימה"
@@ -829,6 +831,32 @@ class SettingsMessagesHe extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.""";
+}
+
+class ItemTapActionNamesSettingsMessagesHe
+    extends ItemTapActionNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const ItemTapActionNamesSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "סמן כהושלם"
+  /// ```
+  String get done => """סמן כהושלם""";
+
+  /// ```dart
+  /// "צפייה"
+  /// ```
+  String get view => """צפייה""";
+
+  /// ```dart
+  /// "עריכה"
+  /// ```
+  String get edit => """עריכה""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get none => """ללא""";
 }
 
 class CategorySpacingNamesSettingsMessagesHe
@@ -2709,9 +2737,13 @@ Map<String, String> get messagesHeMap => {
   """settings.title""": """הגדרות האפליקציה""",
   """settings.generalSection""": """כללי""",
   """settings.interfaceSection""": """ממשק""",
-  """settings.tapRowToComplete""": """השלם פריטים בלחיצה על השורה""",
-  """settings.tapRowToCompleteBody""":
-      """כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.""",
+  """settings.defaultItemTapAction""": """פעולת ברירת מחדל בלחיצה""",
+  """settings.defaultItemTapActionBody""":
+      """מה קורה כאשר לוחצים על שורת פריט.""",
+  """settings.itemTapActionNames.done""": """סמן כהושלם""",
+  """settings.itemTapActionNames.view""": """צפייה""",
+  """settings.itemTapActionNames.edit""": """עריכה""",
+  """settings.itemTapActionNames.none""": """ללא""",
   """settings.showProgressHero""": """הצג כרטיס התקדמות בכל רשימה""",
   """settings.showProgressHeroBody""":
       """הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו.""",

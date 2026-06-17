@@ -82,9 +82,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final cs = theme.colorScheme;
     final item = widget.item;
     final cat = widget.category;
-    final tapRowToToggle = context
-        .watch<PrefsService>()
-        .checklistTapRowToToggle;
+    final tapAction = context.watch<PrefsService>().defaultItemTapAction;
 
     final catColor = cat != null
         ? (_parseColor(cat.color) ?? cs.primary)
@@ -122,9 +120,9 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
         );
       }
     } else {
-      // In Check mode (tap-row toggles), include View action.
-      // In View mode (tap-row opens detail), omit View.
-      if (tapRowToToggle) {
+      // Drop any swipe action the row tap already performs, so swipe never
+      // duplicates the tap. When tap does nothing, both View and Edit show.
+      if (tapAction != 'view') {
         actions.add(
           SwipeAction(
             icon: Icons.visibility_outlined,
@@ -135,15 +133,17 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
           ),
         );
       }
-      actions.add(
-        SwipeAction(
-          icon: Icons.edit_outlined,
-          label: m.checklists.swipeEdit,
-          tint: cs.onSurfaceVariant,
-          background: tintedSurface(cs.onSurface, 0.07),
-          onPressed: () => widget.onEdit(item),
-        ),
-      );
+      if (tapAction != 'edit') {
+        actions.add(
+          SwipeAction(
+            icon: Icons.edit_outlined,
+            label: m.checklists.swipeEdit,
+            tint: cs.onSurfaceVariant,
+            background: tintedSurface(cs.onSurface, 0.07),
+            onPressed: () => widget.onEdit(item),
+          ),
+        );
+      }
       if (widget.onMove != null) {
         actions.add(
           SwipeAction(
@@ -166,6 +166,18 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       );
     }
 
+    final VoidCallback? rowTap;
+    if (widget.trashMode) {
+      rowTap = () => widget.onView(item);
+    } else {
+      rowTap = switch (tapAction) {
+        'done' => _toggleAndCloseSwipe,
+        'edit' => () => widget.onEdit(item),
+        'none' => null,
+        _ => () => widget.onView(item),
+      };
+    }
+
     final content = _RowContent(
       item: item,
       category: cat,
@@ -176,9 +188,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       addedByUserId: widget.addedByUserId,
       addedByDisplayName: widget.addedByDisplayName,
       onCheckboxTap: _toggleAndCloseSwipe,
-      onRowTap: widget.trashMode
-          ? () => widget.onView(item)
-          : (tapRowToToggle ? _toggleAndCloseSwipe : () => widget.onView(item)),
+      onRowTap: rowTap,
     );
 
     final swipe = SwipeRevealRow(
@@ -228,7 +238,7 @@ class _RowContent extends StatelessWidget {
   final String? addedByUserId;
   final String? addedByDisplayName;
   final VoidCallback onCheckboxTap;
-  final VoidCallback onRowTap;
+  final VoidCallback? onRowTap;
 
   const _RowContent({
     required this.item,

@@ -21,6 +21,7 @@ class PrefsService extends ChangeNotifier {
   static const _localeKey = 'locale';
   static const _themeModeKey = 'theme_mode';
   static const _checklistTapRowToToggleKey = 'checklist_tap_row_to_toggle';
+  static const _defaultItemTapActionKey = 'default_item_tap_action';
   static const _checklistCategorySpacingKey = 'checklist_category_spacing';
   static const _checklistViewKey = 'checklist_view';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
@@ -59,8 +60,10 @@ class PrefsService extends ChangeNotifier {
   String? _themeMode;
   String? get themeMode => _themeMode;
 
-  bool _checklistTapRowToToggle = false;
-  bool get checklistTapRowToToggle => _checklistTapRowToToggle;
+  /// Action performed when the user taps an item row. One of:
+  /// `done`, `view`, `edit`, `none`. Default is `view`.
+  String _defaultItemTapAction = 'view';
+  String get defaultItemTapAction => _defaultItemTapAction;
 
   /// "disabled", "space", "divider"
   String _checklistCategorySpacing = 'disabled';
@@ -149,8 +152,21 @@ class PrefsService extends ChangeNotifier {
     _locale = all[_localeKey];
     _themeMode = all[_themeModeKey];
 
-    final tapRow = all[_checklistTapRowToToggleKey];
-    if (tapRow != null) _checklistTapRowToToggle = tapRow == 'true';
+    final tapAction = all[_defaultItemTapActionKey];
+    if (tapAction != null && _isValidTapAction(tapAction)) {
+      _defaultItemTapAction = tapAction;
+    } else {
+      // Migrate the legacy boolean: true → done, false → view.
+      final legacyTapRow = all[_checklistTapRowToToggleKey];
+      if (legacyTapRow != null) {
+        _defaultItemTapAction = legacyTapRow == 'true' ? 'done' : 'view';
+        await _storage.write(
+          key: _defaultItemTapActionKey,
+          value: _defaultItemTapAction,
+        );
+        await _storage.delete(key: _checklistTapRowToToggleKey);
+      }
+    }
 
     final spacing = all[_checklistCategorySpacingKey];
     if (spacing != null &&
@@ -328,12 +344,14 @@ class PrefsService extends ChangeNotifier {
     );
   }
 
-  Future<void> setChecklistTapRowToToggle(bool value) async {
-    _checklistTapRowToToggle = value;
-    await _storage.write(
-      key: _checklistTapRowToToggleKey,
-      value: value.toString(),
-    );
+  static bool _isValidTapAction(String value) =>
+      value == 'done' || value == 'view' || value == 'edit' || value == 'none';
+
+  Future<void> setDefaultItemTapAction(String value) async {
+    if (!_isValidTapAction(value)) return;
+    if (_defaultItemTapAction == value) return;
+    _defaultItemTapAction = value;
+    await _storage.write(key: _defaultItemTapActionKey, value: value);
     notifyListeners();
   }
 
@@ -458,7 +476,7 @@ class PrefsService extends ChangeNotifier {
     _notificationsIntroSeen = false;
     _locale = null;
     _themeMode = null;
-    _checklistTapRowToToggle = false;
+    _defaultItemTapAction = 'view';
     _checklistCategorySpacing = 'disabled';
     _checklistView = 'list';
     _checklistDoneCollapsed = true;
@@ -478,6 +496,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _localeKey);
     await _storage.delete(key: _themeModeKey);
     await _storage.delete(key: _checklistTapRowToToggleKey);
+    await _storage.delete(key: _defaultItemTapActionKey);
     await _storage.delete(key: _checklistCategorySpacingKey);
     await _storage.delete(key: _checklistViewKey);
     await _storage.delete(key: _checklistDoneCollapsedKey);

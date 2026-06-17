@@ -124,8 +124,13 @@ settings:
   title: App-Einstellungen
   generalSection: Allgemein
   interfaceSection: Oberfläche
-  tapRowToComplete: Eintrag durch Tippen der Zeile abhaken
-  tapRowToCompleteBody: "Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt."
+  defaultItemTapAction: Standardaktion beim Tippen
+  defaultItemTapActionBody: "Was passiert, wenn du eine Eintragszeile antippst."
+  itemTapActionNames:
+    done: Als erledigt markieren
+    view: Anzeigen
+    edit: Bearbeiten
+    none: Keine
   showProgressHero: Fortschrittskarte in jeder Liste anzeigen
   showProgressHeroBody: "Die Karte mit dem kreisförmigen Fortschrittsring und der Zusammenfassung der verbleibenden Einträge oben in jeder Liste. Wische die Karte weg, um sie auszublenden."
   categorySpacing: Abstand zwischen Kategorien in Listeneinträgen anzeigen

@@ -707,15 +707,17 @@ class SettingsMessagesDe extends SettingsMessages {
   String get interfaceSection => """Oberfläche""";
 
   /// ```dart
-  /// "Eintrag durch Tippen der Zeile abhaken"
+  /// "Standardaktion beim Tippen"
   /// ```
-  String get tapRowToComplete => """Eintrag durch Tippen der Zeile abhaken""";
+  String get defaultItemTapAction => """Standardaktion beim Tippen""";
 
   /// ```dart
-  /// "Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt."
+  /// "Was passiert, wenn du eine Eintragszeile antippst."
   /// ```
-  String get tapRowToCompleteBody =>
-      """Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt.""";
+  String get defaultItemTapActionBody =>
+      """Was passiert, wenn du eine Eintragszeile antippst.""";
+  ItemTapActionNamesSettingsMessagesDe get itemTapActionNames =>
+      ItemTapActionNamesSettingsMessagesDe(this);
 
   /// ```dart
   /// "Fortschrittskarte in jeder Liste anzeigen"
@@ -835,6 +837,32 @@ class SettingsMessagesDe extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """Benachrichtigungsberechtigung wurde verweigert. Aktiviere sie in den Systemeinstellungen.""";
+}
+
+class ItemTapActionNamesSettingsMessagesDe
+    extends ItemTapActionNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const ItemTapActionNamesSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Als erledigt markieren"
+  /// ```
+  String get done => """Als erledigt markieren""";
+
+  /// ```dart
+  /// "Anzeigen"
+  /// ```
+  String get view => """Anzeigen""";
+
+  /// ```dart
+  /// "Bearbeiten"
+  /// ```
+  String get edit => """Bearbeiten""";
+
+  /// ```dart
+  /// "Keine"
+  /// ```
+  String get none => """Keine""";
 }
 
 class CategorySpacingNamesSettingsMessagesDe
@@ -2738,9 +2766,13 @@ Bitte melde dich in deinem Browser an.""",
   """settings.title""": """App-Einstellungen""",
   """settings.generalSection""": """Allgemein""",
   """settings.interfaceSection""": """Oberfläche""",
-  """settings.tapRowToComplete""": """Eintrag durch Tippen der Zeile abhaken""",
-  """settings.tapRowToCompleteBody""":
-      """Wenn aus, werden Einträge nur durch Tippen auf das Kontrollkästchen abgehakt.""",
+  """settings.defaultItemTapAction""": """Standardaktion beim Tippen""",
+  """settings.defaultItemTapActionBody""":
+      """Was passiert, wenn du eine Eintragszeile antippst.""",
+  """settings.itemTapActionNames.done""": """Als erledigt markieren""",
+  """settings.itemTapActionNames.view""": """Anzeigen""",
+  """settings.itemTapActionNames.edit""": """Bearbeiten""",
+  """settings.itemTapActionNames.none""": """Keine""",
   """settings.showProgressHero""":
       """Fortschrittskarte in jeder Liste anzeigen""",
   """settings.showProgressHeroBody""":

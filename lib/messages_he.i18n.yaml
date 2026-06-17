@@ -124,8 +124,13 @@ settings:
   title: הגדרות האפליקציה
   generalSection: כללי
   interfaceSection: ממשק
-  tapRowToComplete: השלם פריטים בלחיצה על השורה
-  tapRowToCompleteBody: כאשר כבוי, פריטים מסומנים כהושלמו רק בלחיצה על תיבת הסימון.
+  defaultItemTapAction: פעולת ברירת מחדל בלחיצה
+  defaultItemTapActionBody: מה קורה כאשר לוחצים על שורת פריט.
+  itemTapActionNames:
+    done: סמן כהושלם
+    view: צפייה
+    edit: עריכה
+    none: ללא
   showProgressHero: הצג כרטיס התקדמות בכל רשימה
   showProgressHeroBody: הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו.
   categorySpacing: הצג רווח בין קטגוריות בפריטי הרשימה

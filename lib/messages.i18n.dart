@@ -703,15 +703,17 @@ class SettingsMessages {
   String get interfaceSection => """Interface""";
 
   /// ```dart
-  /// "Tap row to complete items"
+  /// "Default item tap action"
   /// ```
-  String get tapRowToComplete => """Tap row to complete items""";
+  String get defaultItemTapAction => """Default item tap action""";
 
   /// ```dart
-  /// "When off, items are only marked complete by tapping the checkbox."
+  /// "What happens when you tap an item row."
   /// ```
-  String get tapRowToCompleteBody =>
-      """When off, items are only marked complete by tapping the checkbox.""";
+  String get defaultItemTapActionBody =>
+      """What happens when you tap an item row.""";
+  ItemTapActionNamesSettingsMessages get itemTapActionNames =>
+      ItemTapActionNamesSettingsMessages(this);
 
   /// ```dart
   /// "Show progress card on each checklist"
@@ -828,6 +830,31 @@ class SettingsMessages {
   /// ```
   String get permissionDenied =>
       """Notification permission was denied. Enable it in system settings.""";
+}
+
+class ItemTapActionNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const ItemTapActionNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Mark as done"
+  /// ```
+  String get done => """Mark as done""";
+
+  /// ```dart
+  /// "View"
+  /// ```
+  String get view => """View""";
+
+  /// ```dart
+  /// "Edit"
+  /// ```
+  String get edit => """Edit""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get none => """None""";
 }
 
 class CategorySpacingNamesSettingsMessages {
@@ -2706,9 +2733,13 @@ Please complete login in your browser.""",
   """settings.title""": """App Settings""",
   """settings.generalSection""": """General""",
   """settings.interfaceSection""": """Interface""",
-  """settings.tapRowToComplete""": """Tap row to complete items""",
-  """settings.tapRowToCompleteBody""":
-      """When off, items are only marked complete by tapping the checkbox.""",
+  """settings.defaultItemTapAction""": """Default item tap action""",
+  """settings.defaultItemTapActionBody""":
+      """What happens when you tap an item row.""",
+  """settings.itemTapActionNames.done""": """Mark as done""",
+  """settings.itemTapActionNames.view""": """View""",
+  """settings.itemTapActionNames.edit""": """Edit""",
+  """settings.itemTapActionNames.none""": """None""",
   """settings.showProgressHero""": """Show progress card on each checklist""",
   """settings.showProgressHeroBody""":
       """The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it.""",

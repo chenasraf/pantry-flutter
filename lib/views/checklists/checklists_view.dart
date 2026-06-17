@@ -690,11 +690,6 @@ class _BodyState extends State<_Body> {
             label: isPinned ? m.checklists.unpinList : m.checklists.pinList,
           ),
       ],
-      _checkboxRow(
-        value: 'toggle_tap_row',
-        label: m.settings.tapRowToComplete,
-        selected: prefs.checklistTapRowToToggle,
-      ),
       if (hasFeature('item-authors'))
         _checkboxRow(
           value: 'toggle_added_by',
@@ -796,8 +791,6 @@ class _BodyState extends State<_Body> {
         await controller.setSortBy('category');
       case 'sort_custom':
         await controller.setSortBy('custom');
-      case 'toggle_tap_row':
-        await prefs.setChecklistTapRowToToggle(!prefs.checklistTapRowToToggle);
       case 'toggle_added_by':
         await controller.setShowAddedBy(!controller.showAddedBy);
       case 'view_trash':

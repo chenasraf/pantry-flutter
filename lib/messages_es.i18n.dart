@@ -707,15 +707,17 @@ class SettingsMessagesEs extends SettingsMessages {
   String get interfaceSection => """Interfaz""";
 
   /// ```dart
-  /// "Tocar la fila para completar elementos"
+  /// "Acción al tocar un elemento"
   /// ```
-  String get tapRowToComplete => """Tocar la fila para completar elementos""";
+  String get defaultItemTapAction => """Acción al tocar un elemento""";
 
   /// ```dart
-  /// "Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla."
+  /// "Qué ocurre al tocar la fila de un elemento."
   /// ```
-  String get tapRowToCompleteBody =>
-      """Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla.""";
+  String get defaultItemTapActionBody =>
+      """Qué ocurre al tocar la fila de un elemento.""";
+  ItemTapActionNamesSettingsMessagesEs get itemTapActionNames =>
+      ItemTapActionNamesSettingsMessagesEs(this);
 
   /// ```dart
   /// "Mostrar tarjeta de progreso en cada lista"
@@ -834,6 +836,32 @@ class SettingsMessagesEs extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """El permiso de notificaciones fue denegado. Actívalo en los ajustes del sistema.""";
+}
+
+class ItemTapActionNamesSettingsMessagesEs
+    extends ItemTapActionNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const ItemTapActionNamesSettingsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Marcar como completado"
+  /// ```
+  String get done => """Marcar como completado""";
+
+  /// ```dart
+  /// "Ver"
+  /// ```
+  String get view => """Ver""";
+
+  /// ```dart
+  /// "Editar"
+  /// ```
+  String get edit => """Editar""";
+
+  /// ```dart
+  /// "Ninguna"
+  /// ```
+  String get none => """Ninguna""";
 }
 
 class CategorySpacingNamesSettingsMessagesEs
@@ -2730,9 +2758,13 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """settings.title""": """Ajustes de la app""",
   """settings.generalSection""": """General""",
   """settings.interfaceSection""": """Interfaz""",
-  """settings.tapRowToComplete""": """Tocar la fila para completar elementos""",
-  """settings.tapRowToCompleteBody""":
-      """Cuando está desactivado, los elementos solo se marcan como completados al tocar la casilla.""",
+  """settings.defaultItemTapAction""": """Acción al tocar un elemento""",
+  """settings.defaultItemTapActionBody""":
+      """Qué ocurre al tocar la fila de un elemento.""",
+  """settings.itemTapActionNames.done""": """Marcar como completado""",
+  """settings.itemTapActionNames.view""": """Ver""",
+  """settings.itemTapActionNames.edit""": """Editar""",
+  """settings.itemTapActionNames.none""": """Ninguna""",
   """settings.showProgressHero""":
       """Mostrar tarjeta de progreso en cada lista""",
   """settings.showProgressHeroBody""":
