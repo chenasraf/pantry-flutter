@@ -1,0 +1,12 @@
+Features
+- sort and reorder lists
+- show error details on connection failure
+- default item tap action — done, view, edit, or none
+- trash views for photos, notes, and checklists
+- work offline — queue changes and sync when back online
+Bug Fixes
+- keep new items sorted when adding
+- restore category divider/spacing preference
+- preserve active tab when rotating device
+- keep server features and per-house sort preferences after offline launch
+- add missing pin list translation
