@@ -40,10 +40,18 @@ class _StatusListener extends StatelessWidget {
         return ValueListenableBuilder<int>(
           valueListenable: manager.pendingCount,
           builder: (context, pending, _) {
-            if (status == SyncStatus.idle && pending == 0) {
-              return const SizedBox.shrink();
-            }
-            return _Bar(status: status, pending: pending);
+            return ValueListenableBuilder<bool>(
+              valueListenable: manager.hasBacklog,
+              builder: (context, hasBacklog, _) {
+                // Only surface the banner when there's something the user
+                // should care about: an unsynced backlog from an offline
+                // period, or a sync error. A single online op-flush keeps
+                // the banner hidden so checking a box stays silent.
+                final shouldShow = hasBacklog || status == SyncStatus.error;
+                if (!shouldShow) return const SizedBox.shrink();
+                return _Bar(status: status, pending: pending);
+              },
+            );
           },
         );
       },

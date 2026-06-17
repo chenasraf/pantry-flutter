@@ -45,6 +45,13 @@ class SyncManager {
   final ValueNotifier<SyncStatus> status = ValueNotifier(SyncStatus.idle);
   final ValueNotifier<int> pendingCount = ValueNotifier(0);
 
+  /// True when the current queue contents originated from an offline period —
+  /// either an op enqueued while disconnected, or a queue persisted from a
+  /// previous session. Drives whether the [SyncStatusBanner] surfaces the
+  /// sync activity; a single-op flush while online does not flip this.
+  /// Cleared once the queue fully drains.
+  final ValueNotifier<bool> hasBacklog = ValueNotifier(false);
+
   final _appliedController = StreamController<SyncOpApplied>.broadcast();
   Stream<SyncOpApplied> get onApplied => _appliedController.stream;
 
@@ -66,6 +73,7 @@ class SyncManager {
       _queue.all().map((o) => o.tempEntityId).whereType<int>(),
     );
     pendingCount.value = _queue.length;
+    if (!_queue.isEmpty) hasBacklog.value = true;
     status.value = _queue.isEmpty
         ? (_online ? SyncStatus.idle : SyncStatus.offline)
         : (_online ? SyncStatus.syncing : SyncStatus.offline);
@@ -80,10 +88,13 @@ class SyncManager {
   void setOnline(bool online) {
     final wasOnline = _online;
     _online = online;
-    if (!wasOnline && online) {
-      unawaited(flushNow());
-    } else if (!online) {
+    if (!online) {
+      // Any unsynced work now becomes a backlog once we reconnect.
+      if (!_queue.isEmpty) hasBacklog.value = true;
       status.value = SyncStatus.offline;
+    } else if (!wasOnline) {
+      if (!_queue.isEmpty) hasBacklog.value = true;
+      unawaited(flushNow());
     } else if (_queue.isEmpty) {
       status.value = SyncStatus.idle;
     }
@@ -96,6 +107,7 @@ class SyncManager {
     await _queue.clear();
     await _remap.clear();
     pendingCount.value = 0;
+    hasBacklog.value = false;
     status.value = SyncStatus.idle;
   }
 
@@ -118,6 +130,7 @@ class SyncManager {
     if (_online) {
       unawaited(flushNow());
     } else {
+      hasBacklog.value = true;
       status.value = SyncStatus.offline;
     }
   }
@@ -205,6 +218,7 @@ class SyncManager {
         }
       }
       status.value = _online ? SyncStatus.idle : SyncStatus.offline;
+      hasBacklog.value = false;
     } finally {
       _flushing = false;
     }
