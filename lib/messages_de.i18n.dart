@@ -523,6 +523,31 @@ class OnboardingMessagesDe extends OnboardingMessages {
   String get pinnedListsWidgetEmpty => """Alles erledigt""";
 
   /// ```dart
+  /// "Wichtige Notizen oben halten"
+  /// ```
+  String get pinnedNotesTitle => """Wichtige Notizen oben halten""";
+
+  /// ```dart
+  /// "Hefte eine Notiz über das Überlaufmenü an, damit sie oben an deiner Notizwand bleibt — über neueren Notizen sichtbar."
+  /// ```
+  String get pinnedNotesBody =>
+      """Hefte eine Notiz über das Überlaufmenü an, damit sie oben an deiner Notizwand bleibt — über neueren Notizen sichtbar.""";
+
+  /// ```dart
+  /// "WLAN-Passwort"
+  /// ```
+  String get mockPinnedNoteTitle => """WLAN-Passwort""";
+
+  /// ```dart
+  /// """
+  /// Netzwerk: Zuhause
+  /// Passwort: pantry-rocks
+  /// """
+  /// ```
+  String get mockPinnedNoteContent => """Netzwerk: Zuhause
+Passwort: pantry-rocks""";
+
+  /// ```dart
   /// "Tomaten"
   /// ```
   String get mockItemName => """Tomaten""";
@@ -2728,6 +2753,12 @@ Bitte melde dich in deinem Browser an.""",
   """onboarding.pinnedListsActionLabel""": """Liste anheften""",
   """onboarding.pinnedListsWidgetTitle""": """Pantry""",
   """onboarding.pinnedListsWidgetEmpty""": """Alles erledigt""",
+  """onboarding.pinnedNotesTitle""": """Wichtige Notizen oben halten""",
+  """onboarding.pinnedNotesBody""":
+      """Hefte eine Notiz über das Überlaufmenü an, damit sie oben an deiner Notizwand bleibt — über neueren Notizen sichtbar.""",
+  """onboarding.mockPinnedNoteTitle""": """WLAN-Passwort""",
+  """onboarding.mockPinnedNoteContent""": """Netzwerk: Zuhause
+Passwort: pantry-rocks""",
   """onboarding.mockItemName""": """Tomaten""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Gemüse""",

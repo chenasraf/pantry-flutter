@@ -6,6 +6,7 @@ import 'pages/add_items_page.dart';
 import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
 import 'pages/pinned_lists_page.dart';
+import 'pages/pinned_notes_page.dart';
 import 'pages/progress_hero_dismiss_page.dart';
 import 'pages/progress_hero_page.dart';
 import 'pages/quick_actions_page.dart';
@@ -111,6 +112,7 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
       builder: (_) => const PinnedListsOnboardingPage(),
       showWhen: onboardingAndroidOnly,
     ),
+    OnboardingPageEntry(builder: (_) => const PinnedNotesOnboardingPage()),
   ],
 };
 

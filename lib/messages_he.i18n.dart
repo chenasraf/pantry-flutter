@@ -520,6 +520,31 @@ class OnboardingMessagesHe extends OnboardingMessages {
   String get pinnedListsWidgetEmpty => """הכל בוצע""";
 
   /// ```dart
+  /// "השאר הערות חשובות בראש הקיר"
+  /// ```
+  String get pinnedNotesTitle => """השאר הערות חשובות בראש הקיר""";
+
+  /// ```dart
+  /// "הצמד הערה מתפריט שלוש הנקודות שלה כדי שתישאר בראש קיר ההערות, מעל הערות חדשות יותר."
+  /// ```
+  String get pinnedNotesBody =>
+      """הצמד הערה מתפריט שלוש הנקודות שלה כדי שתישאר בראש קיר ההערות, מעל הערות חדשות יותר.""";
+
+  /// ```dart
+  /// "סיסמת Wi-Fi"
+  /// ```
+  String get mockPinnedNoteTitle => """סיסמת Wi-Fi""";
+
+  /// ```dart
+  /// """
+  /// רשת: בית
+  /// סיסמה: pantry-rocks
+  /// """
+  /// ```
+  String get mockPinnedNoteContent => """רשת: בית
+סיסמה: pantry-rocks""";
+
+  /// ```dart
   /// "עגבניות"
   /// ```
   String get mockItemName => """עגבניות""";
@@ -2702,6 +2727,12 @@ Map<String, String> get messagesHeMap => {
   """onboarding.pinnedListsActionLabel""": """הצמד רשימה""",
   """onboarding.pinnedListsWidgetTitle""": """Pantry""",
   """onboarding.pinnedListsWidgetEmpty""": """הכל בוצע""",
+  """onboarding.pinnedNotesTitle""": """השאר הערות חשובות בראש הקיר""",
+  """onboarding.pinnedNotesBody""":
+      """הצמד הערה מתפריט שלוש הנקודות שלה כדי שתישאר בראש קיר ההערות, מעל הערות חדשות יותר.""",
+  """onboarding.mockPinnedNoteTitle""": """סיסמת Wi-Fi""",
+  """onboarding.mockPinnedNoteContent""": """רשת: בית
+סיסמה: pantry-rocks""",
   """onboarding.mockItemName""": """עגבניות""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """ירקות""",

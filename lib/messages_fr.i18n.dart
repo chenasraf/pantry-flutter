@@ -524,6 +524,31 @@ class OnboardingMessagesFr extends OnboardingMessages {
   String get pinnedListsWidgetEmpty => """Tout est fait""";
 
   /// ```dart
+  /// "Garde les notes importantes en haut"
+  /// ```
+  String get pinnedNotesTitle => """Garde les notes importantes en haut""";
+
+  /// ```dart
+  /// "Épingle une note depuis son menu de débordement pour la fixer en haut de ton mur de notes, au-dessus des notes plus récentes."
+  /// ```
+  String get pinnedNotesBody =>
+      """Épingle une note depuis son menu de débordement pour la fixer en haut de ton mur de notes, au-dessus des notes plus récentes.""";
+
+  /// ```dart
+  /// "Mot de passe Wi-Fi"
+  /// ```
+  String get mockPinnedNoteTitle => """Mot de passe Wi-Fi""";
+
+  /// ```dart
+  /// """
+  /// Réseau : Maison
+  /// Mot de passe : pantry-rocks
+  /// """
+  /// ```
+  String get mockPinnedNoteContent => """Réseau : Maison
+Mot de passe : pantry-rocks""";
+
+  /// ```dart
   /// "Tomates"
   /// ```
   String get mockItemName => """Tomates""";
@@ -2729,6 +2754,12 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """onboarding.pinnedListsActionLabel""": """Épingler la liste""",
   """onboarding.pinnedListsWidgetTitle""": """Pantry""",
   """onboarding.pinnedListsWidgetEmpty""": """Tout est fait""",
+  """onboarding.pinnedNotesTitle""": """Garde les notes importantes en haut""",
+  """onboarding.pinnedNotesBody""":
+      """Épingle une note depuis son menu de débordement pour la fixer en haut de ton mur de notes, au-dessus des notes plus récentes.""",
+  """onboarding.mockPinnedNoteTitle""": """Mot de passe Wi-Fi""",
+  """onboarding.mockPinnedNoteContent""": """Réseau : Maison
+Mot de passe : pantry-rocks""",
   """onboarding.mockItemName""": """Tomates""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Légumes""",

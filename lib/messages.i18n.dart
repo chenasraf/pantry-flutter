@@ -519,6 +519,31 @@ class OnboardingMessages {
   String get pinnedListsWidgetEmpty => """All done""";
 
   /// ```dart
+  /// "Keep important notes on top"
+  /// ```
+  String get pinnedNotesTitle => """Keep important notes on top""";
+
+  /// ```dart
+  /// "Pin a note from its overflow menu to lock it to the top of your Notes Wall, so it stays visible above newer notes."
+  /// ```
+  String get pinnedNotesBody =>
+      """Pin a note from its overflow menu to lock it to the top of your Notes Wall, so it stays visible above newer notes.""";
+
+  /// ```dart
+  /// "Wi-Fi password"
+  /// ```
+  String get mockPinnedNoteTitle => """Wi-Fi password""";
+
+  /// ```dart
+  /// """
+  /// Network: Home
+  /// Password: pantry-rocks
+  /// """
+  /// ```
+  String get mockPinnedNoteContent => """Network: Home
+Password: pantry-rocks""";
+
+  /// ```dart
   /// "Tomatoes"
   /// ```
   String get mockItemName => """Tomatoes""";
@@ -2698,6 +2723,12 @@ Please complete login in your browser.""",
   """onboarding.pinnedListsActionLabel""": """Pin list""",
   """onboarding.pinnedListsWidgetTitle""": """Pantry""",
   """onboarding.pinnedListsWidgetEmpty""": """All done""",
+  """onboarding.pinnedNotesTitle""": """Keep important notes on top""",
+  """onboarding.pinnedNotesBody""":
+      """Pin a note from its overflow menu to lock it to the top of your Notes Wall, so it stays visible above newer notes.""",
+  """onboarding.mockPinnedNoteTitle""": """Wi-Fi password""",
+  """onboarding.mockPinnedNoteContent""": """Network: Home
+Password: pantry-rocks""",
   """onboarding.mockItemName""": """Tomatoes""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Produce""",
