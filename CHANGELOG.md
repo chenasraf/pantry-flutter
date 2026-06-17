@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.17.0](https://github.com/chenasraf/pantry-flutter/compare/v0.16.0...v0.17.0) (2026-06-17)
+
+
+### Features
+
+* **checklists:** sort and reorder lists ([3673229](https://github.com/chenasraf/pantry-flutter/commit/3673229749dbbb677e4d2d803c3f18f9229d497f))
+* **login:** show error details on connection failure ([d0f2971](https://github.com/chenasraf/pantry-flutter/commit/d0f29712b57b954880771e7d4f222b22f07782f7))
+* **settings:** default item tap action — done, view, edit, or none ([ea85df2](https://github.com/chenasraf/pantry-flutter/commit/ea85df2d28c399997ab6a5ba9a1a1994792affa7))
+* trash views for photos, notes, and checklists ([4b588b9](https://github.com/chenasraf/pantry-flutter/commit/4b588b9d809fe84616c2704fa65a6c1b2ee9accf))
+* work offline — queue changes and sync when back online ([2004a69](https://github.com/chenasraf/pantry-flutter/commit/2004a69eeaad1762953f64a95a53289a30d90d58))
+
+
+### Bug Fixes
+
+* **android:** disable baseline profiles for reproducible builds ([c8c945f](https://github.com/chenasraf/pantry-flutter/commit/c8c945f6d4ad0e21630279fecc5e228e15a4d590))
+* **android:** trust user-installed CAs for self-signed certs ([0539edc](https://github.com/chenasraf/pantry-flutter/commit/0539edc402744d93076a6d98e9c60626863971cd))
+* **checklists:** keep new items sorted when adding ([646177f](https://github.com/chenasraf/pantry-flutter/commit/646177f1511689e5ee7cbacab9e130e6b0b2e48c))
+* **checklists:** restore category divider/spacing preference ([c41af8a](https://github.com/chenasraf/pantry-flutter/commit/c41af8a470a541cacf71b2f32e2b4e55749b9992))
+* **home:** preserve active tab when rotating device ([bbccdc5](https://github.com/chenasraf/pantry-flutter/commit/bbccdc5dd1053d3aa0fbe284022c301f0c81db2d))
+* **ios:** tap status bar to scroll active tab to top ([e14a02e](https://github.com/chenasraf/pantry-flutter/commit/e14a02eba173cf1818460d286eeb9abab88376c4))
+* keep server features and per-house sort preferences after offline launch ([3c29b3e](https://github.com/chenasraf/pantry-flutter/commit/3c29b3ed1fcec911ef1091673a555631922447d1))
+* **l10n:** add missing pin list translation ([015ab8c](https://github.com/chenasraf/pantry-flutter/commit/015ab8c1b96e7f919aed6dac7859b0e1c94f80b2))
+
 ## [0.16.0](https://github.com/chenasraf/pantry-flutter/compare/v0.15.0...v0.16.0) (2026-06-14)
 
 

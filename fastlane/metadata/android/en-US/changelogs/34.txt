@@ -1,0 +1,13 @@
+Features
+- sort and reorder lists
+- show error details on connection failure
+- default item tap action — done, view, edit, or none
+- trash views for photos, notes, and checklists
+- work offline — queue changes and sync when back online
+Bug Fixes
+- disable baseline profiles for reproducible builds
+- trust user-installed CAs for self-signed certs
+- keep new items sorted when adding
+- restore category divider/spacing preference
+
+… see full notes on GitHub.
