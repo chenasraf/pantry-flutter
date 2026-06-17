@@ -79,6 +79,14 @@ android.applicationVariants.configureEach {
     }
 }
 
+// Disable AGP baseline profile compilation so assets/dexopt/baseline.prof(m)
+// are not produced. The merged .profm is non-deterministic across build hosts,
+// which breaks F-Droid reproducible builds. Remove once AGP fixes
+// https://issuetracker.google.com/issues/231837768.
+tasks.withType<com.android.build.gradle.internal.tasks.CompileArtProfileTask>().configureEach {
+    enabled = false
+}
+
 flutter {
     source = "../.."
 }
