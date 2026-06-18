@@ -23,6 +23,14 @@ login:
   loginFailed: "Échec de la connexion. Veuillez réessayer."
   seeDetails: "Voir les détails"
   errorDetailsTitle: "Détails de l'erreur"
+  untrustedCertTitle: "Certificat non approuvé"
+  untrustedCertBody(String host): "${host} utilise un certificat que votre appareil ne reconnaît pas — généralement parce qu'il est auto-signé. Vérifiez que l'empreinte correspond à celle fournie par votre administrateur avant de l'approuver."
+  untrustedCertWarning: "N'approuvez ce certificat que si vous reconnaissez l'empreinte. Approuver un certificat inattendu peut permettre à un attaquant de lire votre trafic."
+  trustCertificate: Approuver le certificat
+  certFingerprint: "Empreinte SHA-256"
+  certSubject: Sujet
+  certIssuer: Émetteur
+  certValidity: Validité
 
 home:
   noHouses: Aucune maison pour le moment.

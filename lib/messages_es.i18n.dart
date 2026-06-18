@@ -206,6 +206,48 @@ Por favor, completa el inicio de sesión en tu navegador.""";
   /// "Detalles del error"
   /// ```
   String get errorDetailsTitle => """Detalles del error""";
+
+  /// ```dart
+  /// "Certificado no confiable"
+  /// ```
+  String get untrustedCertTitle => """Certificado no confiable""";
+
+  /// ```dart
+  /// "${host} está usando un certificado que tu dispositivo no reconoce — normalmente porque es autofirmado. Comprueba que la huella digital coincida con la que te dio el administrador del servidor antes de confiar en él."
+  /// ```
+  String untrustedCertBody(String host) =>
+      """${host} está usando un certificado que tu dispositivo no reconoce — normalmente porque es autofirmado. Comprueba que la huella digital coincida con la que te dio el administrador del servidor antes de confiar en él.""";
+
+  /// ```dart
+  /// "Confía en este certificado solo si reconoces la huella digital. Confiar en un certificado inesperado puede permitir que un atacante lea tu tráfico."
+  /// ```
+  String get untrustedCertWarning =>
+      """Confía en este certificado solo si reconoces la huella digital. Confiar en un certificado inesperado puede permitir que un atacante lea tu tráfico.""";
+
+  /// ```dart
+  /// "Confiar en el certificado"
+  /// ```
+  String get trustCertificate => """Confiar en el certificado""";
+
+  /// ```dart
+  /// "Huella SHA-256"
+  /// ```
+  String get certFingerprint => """Huella SHA-256""";
+
+  /// ```dart
+  /// "Sujeto"
+  /// ```
+  String get certSubject => """Sujeto""";
+
+  /// ```dart
+  /// "Emisor"
+  /// ```
+  String get certIssuer => """Emisor""";
+
+  /// ```dart
+  /// "Válido"
+  /// ```
+  String get certValidity => """Válido""";
 }
 
 class HomeMessagesEs extends HomeMessages {
@@ -2682,6 +2724,14 @@ Por favor, completa el inicio de sesión en tu navegador.""",
       """Inicio de sesión fallido. Por favor, inténtalo de nuevo.""",
   """login.seeDetails""": """Ver detalles""",
   """login.errorDetailsTitle""": """Detalles del error""",
+  """login.untrustedCertTitle""": """Certificado no confiable""",
+  """login.untrustedCertWarning""":
+      """Confía en este certificado solo si reconoces la huella digital. Confiar en un certificado inesperado puede permitir que un atacante lea tu tráfico.""",
+  """login.trustCertificate""": """Confiar en el certificado""",
+  """login.certFingerprint""": """Huella SHA-256""",
+  """login.certSubject""": """Sujeto""",
+  """login.certIssuer""": """Emisor""",
+  """login.certValidity""": """Válido""",
   """home.noHouses""": """Aún no hay casas.""",
   """home.noHousesBody""":
       """Las casas son espacios compartidos para tu hogar. Crea tu primera casa para comenzar a agregar listas, fotos y notas.""",

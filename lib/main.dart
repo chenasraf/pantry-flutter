@@ -11,6 +11,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import 'i18n.dart';
 import 'services/auth_service.dart';
 import 'services/background_notification_task.dart';
+import 'services/cert_trust_service.dart';
 import 'services/locale_service.dart';
 import 'services/category_service.dart';
 import 'services/checklist_service.dart';
@@ -52,9 +53,14 @@ void main() async {
   await Future.wait([
     AuthService.instance.loadCredentials(),
     PrefsService.instance.load(),
+    CertTrustService.instance.load(),
     LocalNotificationsService.instance.init(),
     PackageInfo.fromPlatform().then((info) => appVersion = info.version),
   ]);
+  // Install pinned-cert HttpOverrides before any HTTP call fires so
+  // user-trusted self-signed certs are accepted from the very first
+  // request (capabilities/theme/profile fetches start right below).
+  CertTrustService.instance.install();
   // Both services are loaded; seed the auth profile from PrefsService's
   // cache so display name, server language, and first day of week are
   // available on first frame without waiting for the network refresh.

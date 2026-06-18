@@ -204,6 +204,48 @@ Please complete login in your browser.""";
   /// "Error details"
   /// ```
   String get errorDetailsTitle => """Error details""";
+
+  /// ```dart
+  /// "Untrusted certificate"
+  /// ```
+  String get untrustedCertTitle => """Untrusted certificate""";
+
+  /// ```dart
+  /// "${host} is using a certificate that isn't trusted by your device — usually because it's self-signed. Confirm the fingerprint matches the one your server admin gave you before trusting it."
+  /// ```
+  String untrustedCertBody(String host) =>
+      """${host} is using a certificate that isn't trusted by your device — usually because it's self-signed. Confirm the fingerprint matches the one your server admin gave you before trusting it.""";
+
+  /// ```dart
+  /// "Only trust this certificate if you recognize the fingerprint. Trusting a certificate from someone you don't expect can let an attacker read your traffic."
+  /// ```
+  String get untrustedCertWarning =>
+      """Only trust this certificate if you recognize the fingerprint. Trusting a certificate from someone you don't expect can let an attacker read your traffic.""";
+
+  /// ```dart
+  /// "Trust certificate"
+  /// ```
+  String get trustCertificate => """Trust certificate""";
+
+  /// ```dart
+  /// "SHA-256 fingerprint"
+  /// ```
+  String get certFingerprint => """SHA-256 fingerprint""";
+
+  /// ```dart
+  /// "Subject"
+  /// ```
+  String get certSubject => """Subject""";
+
+  /// ```dart
+  /// "Issuer"
+  /// ```
+  String get certIssuer => """Issuer""";
+
+  /// ```dart
+  /// "Valid"
+  /// ```
+  String get certValidity => """Valid""";
 }
 
 class HomeMessages {
@@ -2660,6 +2702,14 @@ Please complete login in your browser.""",
   """login.loginFailed""": """Login failed. Please try again.""",
   """login.seeDetails""": """See details""",
   """login.errorDetailsTitle""": """Error details""",
+  """login.untrustedCertTitle""": """Untrusted certificate""",
+  """login.untrustedCertWarning""":
+      """Only trust this certificate if you recognize the fingerprint. Trusting a certificate from someone you don't expect can let an attacker read your traffic.""",
+  """login.trustCertificate""": """Trust certificate""",
+  """login.certFingerprint""": """SHA-256 fingerprint""",
+  """login.certSubject""": """Subject""",
+  """login.certIssuer""": """Issuer""",
+  """login.certValidity""": """Valid""",
   """home.noHouses""": """No houses yet.""",
   """home.noHousesBody""":
       """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""",

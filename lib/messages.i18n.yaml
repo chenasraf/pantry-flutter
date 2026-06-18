@@ -23,6 +23,14 @@ login:
   loginFailed: Login failed. Please try again.
   seeDetails: See details
   errorDetailsTitle: Error details
+  untrustedCertTitle: Untrusted certificate
+  untrustedCertBody(String host): "${host} is using a certificate that isn't trusted by your device — usually because it's self-signed. Confirm the fingerprint matches the one your server admin gave you before trusting it."
+  untrustedCertWarning: Only trust this certificate if you recognize the fingerprint. Trusting a certificate from someone you don't expect can let an attacker read your traffic.
+  trustCertificate: Trust certificate
+  certFingerprint: "SHA-256 fingerprint"
+  certSubject: Subject
+  certIssuer: Issuer
+  certValidity: Valid
 
 home:
   noHouses: No houses yet.

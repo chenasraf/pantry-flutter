@@ -23,6 +23,14 @@ login:
   loginFailed: ההתחברות נכשלה. אנא נסה שוב.
   seeDetails: הצג פרטים
   errorDetailsTitle: פרטי השגיאה
+  untrustedCertTitle: "תעודה לא מהימנה"
+  untrustedCertBody(String host): "${host} משתמש בתעודה שהמכשיר שלך לא סומך עליה — בדרך כלל מפני שהיא חתומה עצמית. ודא שהטביעה הדיגיטלית תואמת לזו שמנהל השרת שלך נתן לך לפני שתאשר אותה."
+  untrustedCertWarning: "סמוך על התעודה הזו רק אם אתה מזהה את הטביעה הדיגיטלית. סמיכה על תעודה לא צפויה עלולה לאפשר לתוקף לקרוא את התעבורה שלך."
+  trustCertificate: סמוך על התעודה
+  certFingerprint: "טביעה דיגיטלית SHA-256"
+  certSubject: נושא
+  certIssuer: מנפיק
+  certValidity: בתוקף
 
 home:
   noHouses: אין בתים עדיין.

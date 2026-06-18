@@ -206,6 +206,48 @@ Veuillez terminer la connexion dans votre navigateur.""";
   /// "Détails de l'erreur"
   /// ```
   String get errorDetailsTitle => """Détails de l'erreur""";
+
+  /// ```dart
+  /// "Certificat non approuvé"
+  /// ```
+  String get untrustedCertTitle => """Certificat non approuvé""";
+
+  /// ```dart
+  /// "${host} utilise un certificat que votre appareil ne reconnaît pas — généralement parce qu'il est auto-signé. Vérifiez que l'empreinte correspond à celle fournie par votre administrateur avant de l'approuver."
+  /// ```
+  String untrustedCertBody(String host) =>
+      """${host} utilise un certificat que votre appareil ne reconnaît pas — généralement parce qu'il est auto-signé. Vérifiez que l'empreinte correspond à celle fournie par votre administrateur avant de l'approuver.""";
+
+  /// ```dart
+  /// "N'approuvez ce certificat que si vous reconnaissez l'empreinte. Approuver un certificat inattendu peut permettre à un attaquant de lire votre trafic."
+  /// ```
+  String get untrustedCertWarning =>
+      """N'approuvez ce certificat que si vous reconnaissez l'empreinte. Approuver un certificat inattendu peut permettre à un attaquant de lire votre trafic.""";
+
+  /// ```dart
+  /// "Approuver le certificat"
+  /// ```
+  String get trustCertificate => """Approuver le certificat""";
+
+  /// ```dart
+  /// "Empreinte SHA-256"
+  /// ```
+  String get certFingerprint => """Empreinte SHA-256""";
+
+  /// ```dart
+  /// "Sujet"
+  /// ```
+  String get certSubject => """Sujet""";
+
+  /// ```dart
+  /// "Émetteur"
+  /// ```
+  String get certIssuer => """Émetteur""";
+
+  /// ```dart
+  /// "Validité"
+  /// ```
+  String get certValidity => """Validité""";
 }
 
 class HomeMessagesFr extends HomeMessages {
@@ -2687,6 +2729,14 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """login.loginFailed""": """Échec de la connexion. Veuillez réessayer.""",
   """login.seeDetails""": """Voir les détails""",
   """login.errorDetailsTitle""": """Détails de l'erreur""",
+  """login.untrustedCertTitle""": """Certificat non approuvé""",
+  """login.untrustedCertWarning""":
+      """N'approuvez ce certificat que si vous reconnaissez l'empreinte. Approuver un certificat inattendu peut permettre à un attaquant de lire votre trafic.""",
+  """login.trustCertificate""": """Approuver le certificat""",
+  """login.certFingerprint""": """Empreinte SHA-256""",
+  """login.certSubject""": """Sujet""",
+  """login.certIssuer""": """Émetteur""",
+  """login.certValidity""": """Validité""",
   """home.noHouses""": """Aucune maison pour le moment.""",
   """home.noHousesBody""":
       """Les maisons sont des espaces partagés pour votre foyer. Créez votre première maison pour commencer à ajouter des listes, des photos et des notes.""",

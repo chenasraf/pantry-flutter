@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pantry/models/notification.dart';
 import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/services/cert_trust_service.dart';
 import 'package:pantry/services/deep_link_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/notification_service.dart';
@@ -34,6 +35,11 @@ void backgroundCallbackDispatcher() {
 Future<void> _pollAndNotify() async {
   // In a background isolate, AuthService and PrefsService are fresh
   // instances — load credentials + user prefs.
+  // HttpOverrides is per-isolate, so the pinned-cert override installed
+  // in main() isn't present here — load and install before any HTTP
+  // call or self-signed-cert servers fail to poll.
+  await CertTrustService.instance.load();
+  CertTrustService.instance.install();
   await AuthService.instance.loadCredentials();
   if (!AuthService.instance.isLoggedIn) return;
 

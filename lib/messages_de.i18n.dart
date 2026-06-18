@@ -206,6 +206,48 @@ Bitte melde dich in deinem Browser an.""";
   /// "Fehlerdetails"
   /// ```
   String get errorDetailsTitle => """Fehlerdetails""";
+
+  /// ```dart
+  /// "Nicht vertrauenswürdiges Zertifikat"
+  /// ```
+  String get untrustedCertTitle => """Nicht vertrauenswürdiges Zertifikat""";
+
+  /// ```dart
+  /// "${host} verwendet ein Zertifikat, dem dein Gerät nicht vertraut — meist weil es selbst signiert ist. Vergleiche den Fingerabdruck mit dem, den dir dein Server-Admin gegeben hat, bevor du ihm vertraust."
+  /// ```
+  String untrustedCertBody(String host) =>
+      """${host} verwendet ein Zertifikat, dem dein Gerät nicht vertraut — meist weil es selbst signiert ist. Vergleiche den Fingerabdruck mit dem, den dir dein Server-Admin gegeben hat, bevor du ihm vertraust.""";
+
+  /// ```dart
+  /// "Vertraue diesem Zertifikat nur, wenn du den Fingerabdruck wiedererkennst. Einem unerwarteten Zertifikat zu vertrauen kann es einem Angreifer ermöglichen, deinen Datenverkehr mitzulesen."
+  /// ```
+  String get untrustedCertWarning =>
+      """Vertraue diesem Zertifikat nur, wenn du den Fingerabdruck wiedererkennst. Einem unerwarteten Zertifikat zu vertrauen kann es einem Angreifer ermöglichen, deinen Datenverkehr mitzulesen.""";
+
+  /// ```dart
+  /// "Zertifikat vertrauen"
+  /// ```
+  String get trustCertificate => """Zertifikat vertrauen""";
+
+  /// ```dart
+  /// "SHA-256-Fingerabdruck"
+  /// ```
+  String get certFingerprint => """SHA-256-Fingerabdruck""";
+
+  /// ```dart
+  /// "Inhaber"
+  /// ```
+  String get certSubject => """Inhaber""";
+
+  /// ```dart
+  /// "Aussteller"
+  /// ```
+  String get certIssuer => """Aussteller""";
+
+  /// ```dart
+  /// "Gültig"
+  /// ```
+  String get certValidity => """Gültig""";
 }
 
 class HomeMessagesDe extends HomeMessages {
@@ -2689,6 +2731,14 @@ Bitte melde dich in deinem Browser an.""",
       """Anmeldung fehlgeschlagen. Bitte versuche es erneut.""",
   """login.seeDetails""": """Details anzeigen""",
   """login.errorDetailsTitle""": """Fehlerdetails""",
+  """login.untrustedCertTitle""": """Nicht vertrauenswürdiges Zertifikat""",
+  """login.untrustedCertWarning""":
+      """Vertraue diesem Zertifikat nur, wenn du den Fingerabdruck wiedererkennst. Einem unerwarteten Zertifikat zu vertrauen kann es einem Angreifer ermöglichen, deinen Datenverkehr mitzulesen.""",
+  """login.trustCertificate""": """Zertifikat vertrauen""",
+  """login.certFingerprint""": """SHA-256-Fingerabdruck""",
+  """login.certSubject""": """Inhaber""",
+  """login.certIssuer""": """Aussteller""",
+  """login.certValidity""": """Gültig""",
   """home.noHouses""": """Noch keine Häuser.""",
   """home.noHousesBody""":
       """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen.""",

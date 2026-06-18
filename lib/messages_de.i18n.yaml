@@ -23,6 +23,14 @@ login:
   loginFailed: Anmeldung fehlgeschlagen. Bitte versuche es erneut.
   seeDetails: Details anzeigen
   errorDetailsTitle: Fehlerdetails
+  untrustedCertTitle: Nicht vertrauenswürdiges Zertifikat
+  untrustedCertBody(String host): "${host} verwendet ein Zertifikat, dem dein Gerät nicht vertraut — meist weil es selbst signiert ist. Vergleiche den Fingerabdruck mit dem, den dir dein Server-Admin gegeben hat, bevor du ihm vertraust."
+  untrustedCertWarning: Vertraue diesem Zertifikat nur, wenn du den Fingerabdruck wiedererkennst. Einem unerwarteten Zertifikat zu vertrauen kann es einem Angreifer ermöglichen, deinen Datenverkehr mitzulesen.
+  trustCertificate: Zertifikat vertrauen
+  certFingerprint: "SHA-256-Fingerabdruck"
+  certSubject: Inhaber
+  certIssuer: Aussteller
+  certValidity: "Gültig"
 
 home:
   noHouses: "Noch keine Häuser."

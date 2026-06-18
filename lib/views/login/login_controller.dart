@@ -1,12 +1,32 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/auth_session_macos.dart';
+import 'package:pantry/services/cert_trust_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+class PendingCertPrompt {
+  final String host;
+  final String fingerprint;
+  final String subject;
+  final String issuer;
+  final DateTime validFrom;
+  final DateTime validTo;
+
+  const PendingCertPrompt({
+    required this.host,
+    required this.fingerprint,
+    required this.subject,
+    required this.issuer,
+    required this.validFrom,
+    required this.validTo,
+  });
+}
 
 class LoginController extends ChangeNotifier {
   String _serverUrl = '';
@@ -24,8 +44,20 @@ class LoginController extends ChangeNotifier {
   String? _errorDetails;
   String? get errorDetails => _errorDetails;
 
+  /// Set when the most recent connection attempt failed because the
+  /// server presented an untrusted certificate. Drives the trust-cert
+  /// dialog in [LoginView].
+  PendingCertPrompt? _pendingCert;
+  PendingCertPrompt? get pendingCert => _pendingCert;
+
   Timer? _pollTimer;
   LoginFlowResult? _loginFlow;
+
+  /// The full certificate captured during the failed handshake. Kept
+  /// alongside [_pendingCert] so [acceptPendingCert] can pin the exact
+  /// cert the user saw without re-probing.
+  X509Certificate? _pendingCertObject;
+  String? _pendingCertHostKey;
 
   void setServerUrl(String url) {
     _serverUrl = url;
@@ -53,10 +85,13 @@ class LoginController extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     _errorDetails = null;
+    _pendingCert = null;
+    _pendingCertObject = null;
+    _pendingCertHostKey = null;
     notifyListeners();
 
+    final normalizedUrl = _normalizeUrl(_serverUrl);
     try {
-      final normalizedUrl = _normalizeUrl(_serverUrl);
       unawaited(ServerVersionService.instance.fetch(serverUrl: normalizedUrl));
       _loginFlow = await AuthService.instance.initiateLoginFlow(normalizedUrl);
 
@@ -84,11 +119,85 @@ class LoginController extends ChangeNotifier {
 
       _startPolling(normalizedUrl);
     } catch (e, st) {
+      if (_isHandshakeFailure(e)) {
+        await _probeCertificate(normalizedUrl, e, st);
+        return;
+      }
       _isLoading = false;
       _error = m.login.couldNotConnect;
       _errorDetails = '${e.runtimeType}: $e\n\n$st';
       notifyListeners();
     }
+  }
+
+  bool _isHandshakeFailure(Object e) {
+    if (e is HandshakeException) return true;
+    final msg = e.toString();
+    return msg.contains('CERTIFICATE_VERIFY_FAILED') ||
+        msg.contains('HandshakeException');
+  }
+
+  Future<void> _probeCertificate(
+    String normalizedUrl,
+    Object originalError,
+    StackTrace originalStack,
+  ) async {
+    final uri = Uri.tryParse(normalizedUrl);
+    if (uri == null) {
+      _failWithOriginalError(originalError, originalStack);
+      return;
+    }
+    final cert = await CertTrustService.instance.probe(uri);
+    if (cert == null) {
+      _failWithOriginalError(originalError, originalStack);
+      return;
+    }
+    final port = uri.hasPort ? uri.port : (uri.scheme == 'https' ? 443 : 80);
+    final hostKey = CertTrustService.hostKey(
+      uri.host,
+      port,
+      isHttps: uri.scheme == 'https',
+    );
+    _pendingCertObject = cert;
+    _pendingCertHostKey = hostKey;
+    _pendingCert = PendingCertPrompt(
+      host: hostKey,
+      fingerprint: CertTrustService.fingerprintOf(cert),
+      subject: cert.subject,
+      issuer: cert.issuer,
+      validFrom: cert.startValidity,
+      validTo: cert.endValidity,
+    );
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  void _failWithOriginalError(Object e, StackTrace st) {
+    _isLoading = false;
+    _error = m.login.couldNotConnect;
+    _errorDetails = '${e.runtimeType}: $e\n\n$st';
+    notifyListeners();
+  }
+
+  /// User confirmed the cert fingerprint — pin it and retry the login.
+  Future<void> acceptPendingCert() async {
+    final cert = _pendingCertObject;
+    final hostKey = _pendingCertHostKey;
+    if (cert == null || hostKey == null) return;
+    await CertTrustService.instance.pin(hostKey, cert);
+    _pendingCert = null;
+    _pendingCertObject = null;
+    _pendingCertHostKey = null;
+    notifyListeners();
+    await startLogin();
+  }
+
+  void dismissPendingCert() {
+    if (_pendingCert == null) return;
+    _pendingCert = null;
+    _pendingCertObject = null;
+    _pendingCertHostKey = null;
+    notifyListeners();
   }
 
   void _startPolling(String serverUrl) {
@@ -128,6 +237,9 @@ class LoginController extends ChangeNotifier {
     _loginFlow = null;
     _error = null;
     _errorDetails = null;
+    _pendingCert = null;
+    _pendingCertObject = null;
+    _pendingCertHostKey = null;
     notifyListeners();
   }
 

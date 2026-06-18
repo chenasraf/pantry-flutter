@@ -204,6 +204,48 @@ class LoginMessagesHe extends LoginMessages {
   /// "פרטי השגיאה"
   /// ```
   String get errorDetailsTitle => """פרטי השגיאה""";
+
+  /// ```dart
+  /// "תעודה לא מהימנה"
+  /// ```
+  String get untrustedCertTitle => """תעודה לא מהימנה""";
+
+  /// ```dart
+  /// "${host} משתמש בתעודה שהמכשיר שלך לא סומך עליה — בדרך כלל מפני שהיא חתומה עצמית. ודא שהטביעה הדיגיטלית תואמת לזו שמנהל השרת שלך נתן לך לפני שתאשר אותה."
+  /// ```
+  String untrustedCertBody(String host) =>
+      """${host} משתמש בתעודה שהמכשיר שלך לא סומך עליה — בדרך כלל מפני שהיא חתומה עצמית. ודא שהטביעה הדיגיטלית תואמת לזו שמנהל השרת שלך נתן לך לפני שתאשר אותה.""";
+
+  /// ```dart
+  /// "סמוך על התעודה הזו רק אם אתה מזהה את הטביעה הדיגיטלית. סמיכה על תעודה לא צפויה עלולה לאפשר לתוקף לקרוא את התעבורה שלך."
+  /// ```
+  String get untrustedCertWarning =>
+      """סמוך על התעודה הזו רק אם אתה מזהה את הטביעה הדיגיטלית. סמיכה על תעודה לא צפויה עלולה לאפשר לתוקף לקרוא את התעבורה שלך.""";
+
+  /// ```dart
+  /// "סמוך על התעודה"
+  /// ```
+  String get trustCertificate => """סמוך על התעודה""";
+
+  /// ```dart
+  /// "טביעה דיגיטלית SHA-256"
+  /// ```
+  String get certFingerprint => """טביעה דיגיטלית SHA-256""";
+
+  /// ```dart
+  /// "נושא"
+  /// ```
+  String get certSubject => """נושא""";
+
+  /// ```dart
+  /// "מנפיק"
+  /// ```
+  String get certIssuer => """מנפיק""";
+
+  /// ```dart
+  /// "בתוקף"
+  /// ```
+  String get certValidity => """בתוקף""";
 }
 
 class HomeMessagesHe extends HomeMessages {
@@ -2664,6 +2706,14 @@ Map<String, String> get messagesHeMap => {
   """login.loginFailed""": """ההתחברות נכשלה. אנא נסה שוב.""",
   """login.seeDetails""": """הצג פרטים""",
   """login.errorDetailsTitle""": """פרטי השגיאה""",
+  """login.untrustedCertTitle""": """תעודה לא מהימנה""",
+  """login.untrustedCertWarning""":
+      """סמוך על התעודה הזו רק אם אתה מזהה את הטביעה הדיגיטלית. סמיכה על תעודה לא צפויה עלולה לאפשר לתוקף לקרוא את התעבורה שלך.""",
+  """login.trustCertificate""": """סמוך על התעודה""",
+  """login.certFingerprint""": """טביעה דיגיטלית SHA-256""",
+  """login.certSubject""": """נושא""",
+  """login.certIssuer""": """מנפיק""",
+  """login.certValidity""": """בתוקף""",
   """home.noHouses""": """אין בתים עדיין.""",
   """home.noHousesBody""":
       """בתים הם מרחבים משותפים למשק הבית שלך. צור את הבית הראשון שלך כדי להתחיל להוסיף רשימות, תמונות והערות.""",

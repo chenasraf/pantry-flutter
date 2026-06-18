@@ -23,6 +23,14 @@ login:
   loginFailed: "Inicio de sesión fallido. Por favor, inténtalo de nuevo."
   seeDetails: Ver detalles
   errorDetailsTitle: Detalles del error
+  untrustedCertTitle: Certificado no confiable
+  untrustedCertBody(String host): "${host} está usando un certificado que tu dispositivo no reconoce — normalmente porque es autofirmado. Comprueba que la huella digital coincida con la que te dio el administrador del servidor antes de confiar en él."
+  untrustedCertWarning: Confía en este certificado solo si reconoces la huella digital. Confiar en un certificado inesperado puede permitir que un atacante lea tu tráfico.
+  trustCertificate: Confiar en el certificado
+  certFingerprint: "Huella SHA-256"
+  certSubject: Sujeto
+  certIssuer: Emisor
+  certValidity: "Válido"
 
 home:
   noHouses: "Aún no hay casas."

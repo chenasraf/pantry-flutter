@@ -44,14 +44,34 @@ class _LoginViewState extends State<LoginView> {
   }
 }
 
-class _LoginViewBody extends StatelessWidget {
+class _LoginViewBody extends StatefulWidget {
   final TextEditingController urlController;
 
   const _LoginViewBody({required this.urlController});
 
   @override
+  State<_LoginViewBody> createState() => _LoginViewBodyState();
+}
+
+class _LoginViewBodyState extends State<_LoginViewBody> {
+  bool _dialogOpen = false;
+
+  @override
   Widget build(BuildContext context) {
     final controller = context.watch<LoginController>();
+
+    // Surface a pending cert prompt as a modal dialog — kept inside the
+    // build via a post-frame callback so we only push it once per state
+    // transition and never during a layout pass.
+    final pending = controller.pendingCert;
+    if (pending != null && !_dialogOpen) {
+      _dialogOpen = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        await _showTrustCertDialog(context, controller);
+        if (mounted) _dialogOpen = false;
+      });
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -91,7 +111,7 @@ class _LoginViewBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 48),
                   TextField(
-                    controller: urlController,
+                    controller: widget.urlController,
                     enabled: !controller.isLoading && !controller.isPolling,
                     decoration: InputDecoration(
                       labelText: m.login.serverUrl,
@@ -150,6 +170,125 @@ class _LoginViewBody extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+Future<void> _showTrustCertDialog(
+  BuildContext context,
+  LoginController controller,
+) async {
+  final pending = controller.pendingCert;
+  if (pending == null) return;
+  final theme = Theme.of(context);
+  await showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (ctx) => AlertDialog(
+      icon: Icon(
+        Icons.lock_outline,
+        color: theme.colorScheme.tertiary,
+        size: 32,
+      ),
+      title: Text(m.login.untrustedCertTitle),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(m.login.untrustedCertBody(pending.host)),
+              const SizedBox(height: 16),
+              _CertField(
+                label: m.login.certFingerprint,
+                value: pending.fingerprint,
+                mono: true,
+              ),
+              _CertField(label: m.login.certSubject, value: pending.subject),
+              _CertField(label: m.login.certIssuer, value: pending.issuer),
+              _CertField(
+                label: m.login.certValidity,
+                value:
+                    '${_fmtDate(pending.validFrom)} → ${_fmtDate(pending.validTo)}',
+              ),
+              const SizedBox(height: 12),
+              Text(
+                m.login.untrustedCertWarning,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(ctx).pop();
+            controller.dismissPendingCert();
+          },
+          child: Text(m.common.cancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            Navigator.of(ctx).pop();
+            controller.acceptPendingCert();
+          },
+          child: Text(m.login.trustCertificate),
+        ),
+      ],
+    ),
+  );
+}
+
+String _fmtDate(DateTime d) {
+  final local = d.toLocal();
+  String two(int v) => v.toString().padLeft(2, '0');
+  return '${local.year}-${two(local.month)}-${two(local.day)}';
+}
+
+class _CertField extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool mono;
+
+  const _CertField({
+    required this.label,
+    required this.value,
+    this.mono = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 2),
+          SelectableText(
+            value,
+            textDirection: TextDirection.ltr,
+            style: mono
+                ? const TextStyle(
+                    fontFamily: 'monospace',
+                    fontFamilyFallback: ['Menlo', 'Courier New', 'monospace'],
+                    fontSize: 11,
+                    height: 1.4,
+                  )
+                : theme.textTheme.bodySmall,
+          ),
+        ],
       ),
     );
   }
