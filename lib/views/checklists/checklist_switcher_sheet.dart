@@ -312,7 +312,8 @@ class _ListStage extends StatelessWidget {
     // The synthetic "All lists" entry only earns its spot when there's more
     // than one real list to aggregate. With zero lists the index renders the
     // empty state; with one list, "All lists" would just duplicate that list.
-    final showAllLists = realLists.length >= 2;
+    final showAllLists =
+        hasFeature('checklist-all-view') && realLists.length >= 2;
     final canReorder =
         hasFeature('checklist-sort') && controller.listSort == 'custom';
     final showMenu = hasFeature('checklist-trash');

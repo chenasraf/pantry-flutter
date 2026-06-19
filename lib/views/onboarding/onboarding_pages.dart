@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/version.dart';
 import 'pages/add_items_page.dart';
@@ -117,7 +118,10 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
     OnboardingPageEntry(builder: (_) => const PinnedNotesOnboardingPage()),
   ],
   '0.18.0': [
-    OnboardingPageEntry(builder: (_) => const AllListsOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const AllListsOnboardingPage(),
+      showWhen: (_) => hasFeature('checklist-all-view'),
+    ),
     OnboardingPageEntry(builder: (_) => const BulkAddOnboardingPage()),
   ],
 };

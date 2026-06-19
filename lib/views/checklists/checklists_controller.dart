@@ -162,7 +162,8 @@ class ChecklistsController extends ChangeNotifier {
       }
 
       if (_lists.isNotEmpty) {
-        if (_currentList?.id == kAllListsId) {
+        if (_currentList?.id == kAllListsId &&
+            hasFeature('checklist-all-view')) {
           // Stay on the meta view — falling back to `_lists.first` would
           // flicker the per-list view in between refreshes.
           await selectList(allListsSentinel(houseId));
@@ -226,7 +227,7 @@ class ChecklistsController extends ChangeNotifier {
       _lists = cachedLists;
       if (_lists.isNotEmpty) {
         final savedId = _checklistService.selectedListId;
-        if (savedId == kAllListsId) {
+        if (savedId == kAllListsId && hasFeature('checklist-all-view')) {
           _currentList = allListsSentinel(houseId);
         } else {
           _currentList =
