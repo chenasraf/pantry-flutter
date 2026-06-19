@@ -6,8 +6,12 @@ import 'package:mime/mime.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
+import 'package:pantry/models/checklist.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/rrule.dart';
+import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
+    show parseHexColor;
 import 'checklist_item_tile.dart' show ItemLifecycle;
 import 'form_components.dart';
 
@@ -91,6 +95,23 @@ class ItemComposeBar extends StatefulWidget {
   /// bar then auto-selects on the current draft.
   final Future<models.Category?> Function()? onRequestCreateCategory;
 
+  /// When non-null, switches the bar into All-lists mode: the user must pick
+  /// which list the new item lands in before submit. The selected target
+  /// survives between submissions so rapid same-list adds are one-tap.
+  ///
+  /// Pass the real (non-meta) lists; the picker filters out the synthetic
+  /// "All lists" entry automatically.
+  final List<ChecklistList>? targetLists;
+
+  /// Pre-selected target list id in All-lists mode. The host owns this so the
+  /// last-used target persists across rebuilds. Required when [targetLists]
+  /// is provided.
+  final int? selectedTargetListId;
+
+  /// Notifies the host when the user picks a different target list, so the
+  /// host can persist it and feed it back via [selectedTargetListId].
+  final ValueChanged<int>? onTargetListChanged;
+
   const ItemComposeBar({
     super.key,
     required this.listName,
@@ -101,13 +122,18 @@ class ItemComposeBar extends StatefulWidget {
     this.dimmedListBackground = false,
     this.onActiveChanged,
     this.onRequestCreateCategory,
+    this.targetLists,
+    this.selectedTargetListId,
+    this.onTargetListChanged,
   });
+
+  bool get _allListsMode => targetLists != null;
 
   @override
   State<ItemComposeBar> createState() => ItemComposeBarState();
 }
 
-enum _Tray { category, quantity, description, type, image }
+enum _Tray { targetList, category, quantity, description, type, image }
 
 class ItemComposeBarState extends State<ItemComposeBar> {
   late final ItemDraft _draft = ItemDraft()..lifecycle = _defaultLifecycle();
@@ -229,9 +255,12 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     });
   }
 
+  bool get _hasTarget =>
+      !widget._allListsMode || widget.selectedTargetListId != null;
+
   Future<void> _submit() async {
     final name = _nameCtrl.text.trim();
-    if (name.isEmpty || _submitting) return;
+    if (name.isEmpty || _submitting || !_hasTarget) return;
     setState(() => _submitting = true);
     final submission = ComposeSubmission(
       name: name,
@@ -271,6 +300,17 @@ class ItemComposeBarState extends State<ItemComposeBar> {
 
     Widget? trayChild;
     switch (_openTray) {
+      case _Tray.targetList:
+        trayChild = widget._allListsMode
+            ? _TargetListTray(
+                lists: widget.targetLists!,
+                selectedId: widget.selectedTargetListId,
+                onSelected: (id) {
+                  widget.onTargetListChanged?.call(id);
+                  setState(() => _openTray = null);
+                },
+              )
+            : null;
       case _Tray.category:
         trayChild = _CategoryTray(
           categories: widget.categories,
@@ -355,11 +395,29 @@ class ItemComposeBarState extends State<ItemComposeBar> {
               focusNode: _focusNode,
               nameController: _nameCtrl,
               active: _active,
-              placeholder: m.checklists.addToList(widget.listName),
+              placeholder: widget._allListsMode
+                  ? m.checklists.addToAnyList
+                  : m.checklists.addToList(widget.listName),
               onCancel: _cancel,
               onSubmit: _submit,
               submitting: _submitting,
+              submitEnabled: _hasTarget,
               onActivate: _activate,
+              targetListLeading: widget._allListsMode
+                  ? _BarTargetChip(
+                      list: widget.targetLists
+                          ?.cast<ChecklistList?>()
+                          .firstWhere(
+                            (l) => l!.id == widget.selectedTargetListId,
+                            orElse: () => null,
+                          ),
+                      highlighted: _openTray == _Tray.targetList,
+                      onTap: () {
+                        if (!_active) _activate();
+                        _toggleTray(_Tray.targetList);
+                      },
+                    )
+                  : null,
             ),
           ],
         ),
@@ -377,6 +435,13 @@ class _Bar extends StatelessWidget {
   final VoidCallback onSubmit;
   final VoidCallback onActivate;
   final bool submitting;
+  final bool submitEnabled;
+
+  /// In All-lists mode the host passes a target-list chip here that replaces
+  /// the resting "+" icon on the leading edge of the input. Tapping it opens
+  /// the target-list picker tray. Outside All-lists mode this is null and
+  /// the default "+" tile renders.
+  final Widget? targetListLeading;
 
   const _Bar({
     required this.focusNode,
@@ -387,6 +452,8 @@ class _Bar extends StatelessWidget {
     required this.onSubmit,
     required this.onActivate,
     required this.submitting,
+    this.submitEnabled = true,
+    this.targetListLeading,
   });
 
   @override
@@ -405,15 +472,16 @@ class _Bar extends StatelessWidget {
       padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 6, 6),
       child: Row(
         children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: cs.primary.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(9),
-            ),
-            child: Icon(Icons.add, color: cs.primary, size: 18),
-          ),
+          targetListLeading ??
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: cs.primary.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Icon(Icons.add, color: cs.primary, size: 18),
+              ),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
@@ -444,31 +512,34 @@ class _Bar extends StatelessWidget {
             ),
           const SizedBox(width: 4),
           GestureDetector(
-            onTap: submitting ? null : onSubmit,
-            child: Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [cs.primary, cs.primary.withValues(alpha: 0.8)],
+            onTap: (submitting || !submitEnabled) ? null : onSubmit,
+            child: Opacity(
+              opacity: submitEnabled ? 1.0 : 0.45,
+              child: Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [cs.primary, cs.primary.withValues(alpha: 0.8)],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: submitting
-                  ? const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
+                child: submitting
+                    ? const Padding(
+                        padding: EdgeInsets.all(8),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.arrow_forward,
                         color: Colors.white,
+                        size: 18,
                       ),
-                    )
-                  : const Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                      size: 18,
-                    ),
+              ),
             ),
           ),
         ],
@@ -659,6 +730,84 @@ class _ComposeChip extends StatelessWidget {
   }
 }
 
+/// Leading chip in the input bar (All-lists mode only) that opens the
+/// target-list picker. When no list is selected yet it reads as an outlined
+/// "Pick a list" affordance; once a list is chosen it switches to the list's
+/// color + icon. Tap surface matches the size of the resting "+" tile so the
+/// input field's baseline doesn't shift between modes.
+class _BarTargetChip extends StatelessWidget {
+  final ChecklistList? list;
+  final bool highlighted;
+  final VoidCallback onTap;
+
+  const _BarTargetChip({
+    required this.list,
+    required this.highlighted,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final hasList = list != null;
+    final accent = hasList
+        ? (parseHexColor(list!.color) ?? cs.primary)
+        : cs.onSurfaceVariant;
+    final tooltip = hasList ? list!.name : m.checklists.compose.pickTargetList;
+    return Tooltip(
+      message: tooltip,
+      waitDuration: const Duration(milliseconds: 600),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(9),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          curve: Curves.easeOut,
+          height: 30,
+          padding: EdgeInsetsDirectional.symmetric(horizontal: hasList ? 9 : 8),
+          decoration: BoxDecoration(
+            color: hasList
+                ? accent.withValues(alpha: 0.14)
+                : Colors.transparent,
+            border: Border.all(
+              color: hasList
+                  ? accent.withValues(alpha: 0.4)
+                  : (highlighted ? cs.primary : cs.outlineVariant),
+              width: highlighted ? 1.5 : 1,
+            ),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                hasList
+                    ? checklistIcon(list!.icon)
+                    : Icons.playlist_add_outlined,
+                size: 16,
+                color: accent,
+              ),
+              const SizedBox(width: 6),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 96),
+                child: Text(
+                  hasList ? list!.name : m.checklists.compose.pickTargetList,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: hasList ? FontWeight.w700 : FontWeight.w600,
+                    color: accent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _TrayShell extends StatelessWidget {
   final String label;
   final Widget child;
@@ -690,6 +839,90 @@ class _TrayShell extends StatelessWidget {
           const SizedBox(height: 10),
           child,
         ],
+      ),
+    );
+  }
+}
+
+class _TargetListTray extends StatelessWidget {
+  final List<ChecklistList> lists;
+  final int? selectedId;
+  final ValueChanged<int> onSelected;
+
+  const _TargetListTray({
+    required this.lists,
+    required this.selectedId,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return _TrayShell(
+      label: m.checklists.pickListTitle,
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final list in lists)
+            _TargetListChip(
+              list: list,
+              selected: list.id == selectedId,
+              accent: parseHexColor(list.color) ?? cs.primary,
+              onTap: () => onSelected(list.id),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TargetListChip extends StatelessWidget {
+  final ChecklistList list;
+  final bool selected;
+  final Color accent;
+  final VoidCallback onTap;
+
+  const _TargetListChip({
+    required this.list,
+    required this.selected,
+    required this.accent,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(11),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected
+              ? accent.withValues(alpha: 0.16)
+              : cs.surfaceContainerHighest,
+          border: Border.all(
+            color: selected ? accent : cs.outlineVariant,
+            width: selected ? 1.5 : 1,
+          ),
+          borderRadius: BorderRadius.circular(11),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(checklistIcon(list.icon), size: 16, color: accent),
+            const SizedBox(width: 8),
+            Text(
+              list.name,
+              style: TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w700,
+                color: selected ? accent : cs.onSurface,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

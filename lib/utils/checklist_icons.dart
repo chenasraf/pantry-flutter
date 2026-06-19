@@ -43,6 +43,11 @@ const checklistIconMap = <String, IconData>{
 
 const defaultChecklistIcon = Icons.assignment_turned_in;
 
+/// Icon for the synthetic "All lists" entry. Lives outside [checklistIconMap]
+/// so it doesn't pollute the icon picker shown when creating a real list.
+const allListsIcon = Icons.dashboard_outlined;
+
 IconData checklistIcon(String? key) {
+  if (key == 'all-lists') return allListsIcon;
   return checklistIconMap[key ?? ''] ?? defaultChecklistIcon;
 }

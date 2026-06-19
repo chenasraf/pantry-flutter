@@ -1548,6 +1548,26 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   ItemTypesChecklistsMessagesFr get itemTypes =>
       ItemTypesChecklistsMessagesFr(this);
   ComposeChecklistsMessagesFr get compose => ComposeChecklistsMessagesFr(this);
+
+  /// ```dart
+  /// "Toutes les listes"
+  /// ```
+  String get allLists => """Toutes les listes""";
+
+  /// ```dart
+  /// "Éléments de toutes les listes"
+  /// ```
+  String get allListsSubtitle => """Éléments de toutes les listes""";
+
+  /// ```dart
+  /// "Ajouter un élément…"
+  /// ```
+  String get addToAnyList => """Ajouter un élément…""";
+
+  /// ```dart
+  /// "Ajouter à quelle liste ?"
+  /// ```
+  String get pickListTitle => """Ajouter à quelle liste ?""";
 }
 
 class ViewItemChecklistsMessagesFr extends ViewItemChecklistsMessages {
@@ -1976,6 +1996,16 @@ class ComposeChecklistsMessagesFr extends ComposeChecklistsMessages {
   /// "semaines"
   /// ```
   String get weeks => """semaines""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get chipTargetList => """Liste""";
+
+  /// ```dart
+  /// "Choisir une liste"
+  /// ```
+  String get pickTargetList => """Choisir une liste""";
 }
 
 class NotesWallMessagesFr extends NotesWallMessages {
@@ -3073,6 +3103,12 @@ Mot de passe : pantry-rocks""",
   """checklists.compose.every""": """Toutes les""",
   """checklists.compose.week""": """semaine""",
   """checklists.compose.weeks""": """semaines""",
+  """checklists.compose.chipTargetList""": """Liste""",
+  """checklists.compose.pickTargetList""": """Choisir une liste""",
+  """checklists.allLists""": """Toutes les listes""",
+  """checklists.allListsSubtitle""": """Éléments de toutes les listes""",
+  """checklists.addToAnyList""": """Ajouter un élément…""",
+  """checklists.pickListTitle""": """Ajouter à quelle liste ?""",
   """notesWall.noNotes""": """Aucune note pour le moment.""",
   """notesWall.failedToLoad""": """Impossible de charger les notes.""",
   """notesWall.saveFailed""": """Impossible d'enregistrer la note.""",

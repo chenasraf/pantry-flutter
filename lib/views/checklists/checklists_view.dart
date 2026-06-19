@@ -181,6 +181,12 @@ class _BodyState extends State<_Body> {
   final _switcherAnchorKey = GlobalKey();
   final Set<int> _selectedCategoryIds = {};
 
+  /// In All-lists mode, the most recently chosen target list. Pre-selected on
+  /// the next add so the user can rapidly file several items into the same
+  /// list. Kept on the body state (not in the controller) so it survives
+  /// re-renders without leaking into other per-list views.
+  int? _composeTargetListId;
+
   String get _query => _searchCtrl.text.trim().toLowerCase();
 
   @override
@@ -400,47 +406,92 @@ class _BodyState extends State<_Body> {
                 bottom: 0,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: constraints.maxHeight),
-                  child: ItemComposeBar(
-                    key: _composeKey,
-                    listName: list.name,
-                    deleteOnDoneDefault: list.deleteOnDoneDefault,
-                    categories: controller.sortedCategories,
-                    initiallyFocused: false,
-                    onActiveChanged: (active) {
-                      if (active != _composeActive) {
-                        setState(() => _composeActive = active);
+                  child: Builder(
+                    builder: (context) {
+                      final meta = controller.isMetaMode;
+                      // In meta mode, drop the synthetic from the picker —
+                      // it's not a real target.
+                      final realLists = meta
+                          ? controller.lists
+                                .where((l) => l.id != kAllListsId)
+                                .toList()
+                          : null;
+                      // Heal an orphaned selection (target list was deleted
+                      // since last add) by clearing it silently.
+                      if (meta &&
+                          _composeTargetListId != null &&
+                          !realLists!.any(
+                            (l) => l.id == _composeTargetListId,
+                          )) {
+                        _composeTargetListId = null;
                       }
-                    },
-                    onRequestCreateCategory: () =>
-                        _createCategory(context, controller),
-                    onSubmit: (s) async {
-                      try {
-                        final created = await controller.addItem(
-                          name: s.name,
-                          description: s.description,
-                          quantity: s.quantity,
-                          categoryId: s.categoryId,
-                          rrule: s.rrule,
-                          deleteOnDone: s.deleteOnDone,
-                        );
-                        if (s.imageBytes != null) {
-                          await controller.uploadItemImage(
-                            created,
-                            bytes: s.imageBytes!,
-                            fileName: s.imageName ?? 'image.jpg',
-                            mimeType: s.imageMime ?? 'image/jpeg',
-                          );
-                        }
-                        return true;
-                      } catch (_) {
-                        if (!context.mounted) return false;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(m.checklists.itemForm.saveFailed),
-                          ),
-                        );
-                        return false;
-                      }
+                      return ItemComposeBar(
+                        key: _composeKey,
+                        listName: list.name,
+                        deleteOnDoneDefault: meta
+                            ? false
+                            : list.deleteOnDoneDefault,
+                        categories: controller.sortedCategories,
+                        initiallyFocused: false,
+                        targetLists: realLists,
+                        selectedTargetListId: meta
+                            ? _composeTargetListId
+                            : null,
+                        onTargetListChanged: (id) {
+                          setState(() => _composeTargetListId = id);
+                        },
+                        onActiveChanged: (active) {
+                          if (active != _composeActive) {
+                            setState(() => _composeActive = active);
+                          }
+                        },
+                        onRequestCreateCategory: () =>
+                            _createCategory(context, controller),
+                        onSubmit: (s) async {
+                          try {
+                            final ListItem created;
+                            if (meta) {
+                              final target = _composeTargetListId;
+                              if (target == null) return false;
+                              created = await controller.addItemTo(
+                                targetListId: target,
+                                name: s.name,
+                                description: s.description,
+                                quantity: s.quantity,
+                                categoryId: s.categoryId,
+                                rrule: s.rrule,
+                                deleteOnDone: s.deleteOnDone,
+                              );
+                            } else {
+                              created = await controller.addItem(
+                                name: s.name,
+                                description: s.description,
+                                quantity: s.quantity,
+                                categoryId: s.categoryId,
+                                rrule: s.rrule,
+                                deleteOnDone: s.deleteOnDone,
+                              );
+                            }
+                            if (s.imageBytes != null) {
+                              await controller.uploadItemImage(
+                                created,
+                                bytes: s.imageBytes!,
+                                fileName: s.imageName ?? 'image.jpg',
+                                mimeType: s.imageMime ?? 'image/jpeg',
+                              );
+                            }
+                            return true;
+                          } catch (_) {
+                            if (!context.mounted) return false;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(m.checklists.itemForm.saveFailed),
+                              ),
+                            );
+                            return false;
+                          }
+                        },
+                      );
                     },
                   ),
                 ),
@@ -458,9 +509,15 @@ class _BodyState extends State<_Body> {
     PrefsService prefs,
   ) {
     final cs = Theme.of(context).colorScheme;
-    final tint = parseHexColor(list?.color) ?? cs.primary;
+    final isMeta = list?.id == kAllListsId;
+    // Meta uses the theme accent, not list.color (which is null on the
+    // sentinel) — gives it a distinct neutral feel from any specific list.
+    final tint = isMeta
+        ? cs.primary
+        : (parseHexColor(list?.color) ?? cs.primary);
+    final iconData = isMeta ? allListsIcon : checklistIcon(list?.icon);
     final isPinned =
-        list != null && PrefsService.instance.isListPinned(list.id);
+        list != null && !isMeta && PrefsService.instance.isListPinned(list.id);
 
     return ChecklistsAppBarSpec(
       // titleSpacing is the gap between the leading slot and the title — set
@@ -491,11 +548,7 @@ class _BodyState extends State<_Body> {
                         color: tint.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(
-                        checklistIcon(list.icon),
-                        color: tint,
-                        size: 20,
-                      ),
+                      child: Icon(iconData, color: tint, size: 20),
                     ),
                   ),
                 ),
@@ -569,7 +622,9 @@ class _BodyState extends State<_Body> {
             tooltip: m.categories.manageTitle,
             onPressed: () => _openManageCategories(context, controller),
           ),
-          if (supportsFeature('soft-delete') || hasFeature('item-trash'))
+          // Meta view has no trash of its own; trash stays per-list.
+          if (!controller.isMetaMode &&
+              (supportsFeature('soft-delete') || hasFeature('item-trash')))
             IconButton(
               icon: const Icon(Icons.delete_outline),
               tooltip: m.checklists.viewTrash,
@@ -588,38 +643,45 @@ class _BodyState extends State<_Body> {
 
   /// Sort radio rows lifted out of `_overflowItems` so the desktop toolbar's
   /// Sort menu can show only the sort choices, not the rest of the overflow.
+  ///
+  /// In the meta (All-lists) view, "custom" is suppressed: the underlying
+  /// sort order is per-list, so there's no coherent custom order across
+  /// lists. The effective sort falls back to "newest".
   List<PopupMenuEntry<String>> _sortMenuItems(ChecklistsController controller) {
+    final showCustom = !controller.isMetaMode;
+    final effective = controller.effectiveSortBy;
     return [
       _radioRow(
         value: 'sort_newest',
         label: m.checklists.sort.newestFirst,
-        selected: controller.sortBy == 'newest',
+        selected: effective == 'newest',
       ),
       _radioRow(
         value: 'sort_oldest',
         label: m.checklists.sort.oldestFirst,
-        selected: controller.sortBy == 'oldest',
+        selected: effective == 'oldest',
       ),
       _radioRow(
         value: 'sort_name_asc',
         label: m.checklists.sort.nameAZ,
-        selected: controller.sortBy == 'name_asc',
+        selected: effective == 'name_asc',
       ),
       _radioRow(
         value: 'sort_name_desc',
         label: m.checklists.sort.nameZA,
-        selected: controller.sortBy == 'name_desc',
+        selected: effective == 'name_desc',
       ),
       _radioRow(
         value: 'sort_category',
         label: m.checklists.sort.category,
-        selected: controller.sortBy == 'category',
+        selected: effective == 'category',
       ),
-      _radioRow(
-        value: 'sort_custom',
-        label: m.checklists.sort.custom,
-        selected: controller.sortBy == 'custom',
-      ),
+      if (showCustom)
+        _radioRow(
+          value: 'sort_custom',
+          label: m.checklists.sort.custom,
+          selected: effective == 'custom',
+        ),
     ];
   }
 
@@ -647,40 +709,43 @@ class _BodyState extends State<_Body> {
     // none of those need to live in the overflow menu here. Everything left
     // — the view toggles and the dev tools — stays in overflow on every
     // platform.
+    final isMeta = controller.isMetaMode;
+    final effective = controller.effectiveSortBy;
     return <PopupMenuEntry<String>>[
       if (!PlatformInfo.isDesktop) ...[
         _radioRow(
           value: 'sort_newest',
           label: m.checklists.sort.newestFirst,
-          selected: controller.sortBy == 'newest',
+          selected: effective == 'newest',
         ),
         _radioRow(
           value: 'sort_oldest',
           label: m.checklists.sort.oldestFirst,
-          selected: controller.sortBy == 'oldest',
+          selected: effective == 'oldest',
         ),
         _radioRow(
           value: 'sort_name_asc',
           label: m.checklists.sort.nameAZ,
-          selected: controller.sortBy == 'name_asc',
+          selected: effective == 'name_asc',
         ),
         _radioRow(
           value: 'sort_name_desc',
           label: m.checklists.sort.nameZA,
-          selected: controller.sortBy == 'name_desc',
+          selected: effective == 'name_desc',
         ),
         _radioRow(
           value: 'sort_category',
           label: m.checklists.sort.category,
-          selected: controller.sortBy == 'category',
+          selected: effective == 'category',
         ),
-        _radioRow(
-          value: 'sort_custom',
-          label: m.checklists.sort.custom,
-          selected: controller.sortBy == 'custom',
-        ),
+        if (!isMeta)
+          _radioRow(
+            value: 'sort_custom',
+            label: m.checklists.sort.custom,
+            selected: effective == 'custom',
+          ),
         const PopupMenuDivider(),
-        if (controller.currentList != null)
+        if (controller.currentList != null && !isMeta)
           _menuRow(
             value: 'toggle_pin',
             leading: Icon(
@@ -707,7 +772,8 @@ class _BodyState extends State<_Body> {
           leading: const Icon(Icons.refresh, size: 18),
           label: m.common.refresh,
         ),
-        if (supportsFeature('soft-delete') || hasFeature('item-trash')) ...[
+        if (!isMeta &&
+            (supportsFeature('soft-delete') || hasFeature('item-trash'))) ...[
           const PopupMenuDivider(),
           _menuRow(
             value: 'view_trash',
@@ -1424,6 +1490,23 @@ class _ItemListState extends State<_ItemList> {
     final addedByDisplayName = addedByUserId != null
         ? controller.members[addedByUserId]?.displayName
         : null;
+    // The list-name chip only appears in the All-lists view, where each item
+    // belongs to a different underlying list. In per-list views the badge
+    // would be noise.
+    ItemListBadge? listBadge;
+    if (controller.isMetaMode) {
+      final owner = controller.lists.cast<ChecklistList?>().firstWhere(
+        (l) => l!.id == item.listId,
+        orElse: () => null,
+      );
+      if (owner != null) {
+        listBadge = ItemListBadge(
+          name: owner.name,
+          icon: owner.icon,
+          color: owner.color,
+        );
+      }
+    }
     return ChecklistItemTile(
       key: _keyFor(item.id),
       item: item,
@@ -1435,6 +1518,7 @@ class _ItemListState extends State<_ItemList> {
       trashMode: controller.isTrashMode,
       addedByUserId: addedByUserId,
       addedByDisplayName: addedByDisplayName,
+      listBadge: listBadge,
       onToggle: (i) => _onToggle(context, controller, i),
       onView: (i) => _openView(context, controller, i),
       onEdit: (i) => _openEdit(context, controller, i),
@@ -1456,8 +1540,13 @@ class _ItemListState extends State<_ItemList> {
     ChecklistsController controller,
     ListItem item,
   ) async {
+    // In meta mode the "current list" is the synthetic sentinel — exclude the
+    // item's actual home list instead so we don't offer a no-op move.
+    final excludeId = controller.isMetaMode
+        ? item.listId
+        : controller.currentList?.id;
     final others = controller.lists
-        .where((l) => l.id != controller.currentList?.id)
+        .where((l) => l.id != excludeId && l.id != kAllListsId)
         .toList();
     if (others.isEmpty) return;
     final targetId = await showDialog<int>(

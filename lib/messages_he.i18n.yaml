@@ -370,6 +370,12 @@ checklists:
     every: כל
     week: שבוע
     weeks: שבועות
+    chipTargetList: רשימה
+    pickTargetList: בחר רשימה
+  allLists: כל הרשימות
+  allListsSubtitle: פריטים מכל הרשימות
+  addToAnyList: "הוסף פריט…"
+  pickListTitle: להוסיף לאיזו רשימה?
 
 notesWall:
   noNotes: אין הערות עדיין.

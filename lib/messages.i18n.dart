@@ -1532,6 +1532,26 @@ class ChecklistsMessages {
   ItemTypesChecklistsMessages get itemTypes =>
       ItemTypesChecklistsMessages(this);
   ComposeChecklistsMessages get compose => ComposeChecklistsMessages(this);
+
+  /// ```dart
+  /// "All lists"
+  /// ```
+  String get allLists => """All lists""";
+
+  /// ```dart
+  /// "Items from every list"
+  /// ```
+  String get allListsSubtitle => """Items from every list""";
+
+  /// ```dart
+  /// "Add an item…"
+  /// ```
+  String get addToAnyList => """Add an item…""";
+
+  /// ```dart
+  /// "Add to which list?"
+  /// ```
+  String get pickListTitle => """Add to which list?""";
 }
 
 class ViewItemChecklistsMessages {
@@ -1956,6 +1976,16 @@ class ComposeChecklistsMessages {
   /// "weeks"
   /// ```
   String get weeks => """weeks""";
+
+  /// ```dart
+  /// "List"
+  /// ```
+  String get chipTargetList => """List""";
+
+  /// ```dart
+  /// "Pick a list"
+  /// ```
+  String get pickTargetList => """Pick a list""";
 }
 
 class NotesWallMessages {
@@ -3030,6 +3060,12 @@ Password: pantry-rocks""",
   """checklists.compose.every""": """Every""",
   """checklists.compose.week""": """week""",
   """checklists.compose.weeks""": """weeks""",
+  """checklists.compose.chipTargetList""": """List""",
+  """checklists.compose.pickTargetList""": """Pick a list""",
+  """checklists.allLists""": """All lists""",
+  """checklists.allListsSubtitle""": """Items from every list""",
+  """checklists.addToAnyList""": """Add an item…""",
+  """checklists.pickListTitle""": """Add to which list?""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",
   """notesWall.saveFailed""": """Failed to save note.""",

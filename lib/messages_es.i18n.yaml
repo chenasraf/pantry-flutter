@@ -370,6 +370,12 @@ checklists:
     every: Cada
     week: semana
     weeks: semanas
+    chipTargetList: Lista
+    pickTargetList: Elige una lista
+  allLists: Todas las listas
+  allListsSubtitle: Elementos de todas las listas
+  addToAnyList: "Añadir un elemento…"
+  pickListTitle: "¿A qué lista añadir?"
 
 notesWall:
   noNotes: "Aún no hay notas."

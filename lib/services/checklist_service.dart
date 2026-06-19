@@ -68,6 +68,28 @@ class ChecklistService {
     );
   }
 
+  /// Aggregate items across every (non-deleted) list in the house. Backs the
+  /// synthetic "All lists" meta view. Items carry their real `listId` so all
+  /// per-item operations resolve correctly against the underlying list.
+  Future<List<ListItem>> getHouseItems(
+    int houseId, {
+    String sortBy = 'newest',
+    int? limit,
+    int? offset,
+  }) async {
+    return ApiClient.instance.get<List, List<ListItem>>(
+      '/houses/$houseId/items',
+      query: {
+        'sortBy': sortBy,
+        if (limit != null) 'limit': limit.toString(),
+        if (offset != null) 'offset': offset.toString(),
+      },
+      fromJson: (data) => data
+          .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
   Future<Map<String, dynamic>> getHousePrefs(int houseId) async {
     return ApiClient.instance.get<Map<String, dynamic>, Map<String, dynamic>>(
       '/houses/$houseId/prefs',

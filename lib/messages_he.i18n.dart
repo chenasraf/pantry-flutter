@@ -1537,6 +1537,26 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   ItemTypesChecklistsMessagesHe get itemTypes =>
       ItemTypesChecklistsMessagesHe(this);
   ComposeChecklistsMessagesHe get compose => ComposeChecklistsMessagesHe(this);
+
+  /// ```dart
+  /// "כל הרשימות"
+  /// ```
+  String get allLists => """כל הרשימות""";
+
+  /// ```dart
+  /// "פריטים מכל הרשימות"
+  /// ```
+  String get allListsSubtitle => """פריטים מכל הרשימות""";
+
+  /// ```dart
+  /// "הוסף פריט…"
+  /// ```
+  String get addToAnyList => """הוסף פריט…""";
+
+  /// ```dart
+  /// "להוסיף לאיזו רשימה?"
+  /// ```
+  String get pickListTitle => """להוסיף לאיזו רשימה?""";
 }
 
 class ViewItemChecklistsMessagesHe extends ViewItemChecklistsMessages {
@@ -1961,6 +1981,16 @@ class ComposeChecklistsMessagesHe extends ComposeChecklistsMessages {
   /// "שבועות"
   /// ```
   String get weeks => """שבועות""";
+
+  /// ```dart
+  /// "רשימה"
+  /// ```
+  String get chipTargetList => """רשימה""";
+
+  /// ```dart
+  /// "בחר רשימה"
+  /// ```
+  String get pickTargetList => """בחר רשימה""";
 }
 
 class NotesWallMessagesHe extends NotesWallMessages {
@@ -3030,6 +3060,12 @@ Map<String, String> get messagesHeMap => {
   """checklists.compose.every""": """כל""",
   """checklists.compose.week""": """שבוע""",
   """checklists.compose.weeks""": """שבועות""",
+  """checklists.compose.chipTargetList""": """רשימה""",
+  """checklists.compose.pickTargetList""": """בחר רשימה""",
+  """checklists.allLists""": """כל הרשימות""",
+  """checklists.allListsSubtitle""": """פריטים מכל הרשימות""",
+  """checklists.addToAnyList""": """הוסף פריט…""",
+  """checklists.pickListTitle""": """להוסיף לאיזו רשימה?""",
   """notesWall.noNotes""": """אין הערות עדיין.""",
   """notesWall.failedToLoad""": """טעינת ההערות נכשלה.""",
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",

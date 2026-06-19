@@ -14,12 +14,37 @@ import 'package:pantry/sync/sync_ids.dart';
 import 'package:pantry/sync/sync_manager.dart';
 import 'package:pantry/sync/sync_op.dart';
 
+/// Sentinel id used by the synthetic "All lists" meta view. Real list ids on
+/// the backend are always positive; temp ids minted by SyncManager are
+/// negative. `0` is unused by both, which keeps the sentinel disjoint.
+const int kAllListsId = 0;
+
+/// Builds the synthetic "All lists" entry. Never persisted, never reordered;
+/// the switcher surfaces it manually at position 0.
+ChecklistList allListsSentinel(int houseId) => ChecklistList(
+  id: kAllListsId,
+  houseId: houseId,
+  name: m.checklists.allLists,
+  icon: 'all-lists',
+  sortOrder: -1 << 30,
+  createdAt: 0,
+  updatedAt: 0,
+);
+
 class ChecklistsController extends ChangeNotifier {
   final int houseId;
 
   ChecklistsController({required this.houseId}) {
     _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
   }
+
+  /// True when the synthetic "All lists" entry is selected.
+  bool get isMetaMode => _currentList?.id == kAllListsId;
+
+  /// Effective sort for the current view. The meta view can't honor the
+  /// per-list custom order, so it falls back to newest without persisting.
+  String get effectiveSortBy =>
+      isMetaMode && _sortBy == 'custom' ? 'newest' : _sortBy;
 
   bool _disposed = false;
   StreamSubscription<SyncOpApplied>? _appliedSub;
@@ -137,14 +162,20 @@ class ChecklistsController extends ChangeNotifier {
       }
 
       if (_lists.isNotEmpty) {
-        final target = _currentList != null
-            ? _lists.cast<ChecklistList?>().firstWhere(
-                    (l) => l!.id == _currentList!.id,
-                    orElse: () => null,
-                  ) ??
-                  _lists.first
-            : _lists.first;
-        await selectList(target);
+        if (_currentList?.id == kAllListsId) {
+          // Stay on the meta view — falling back to `_lists.first` would
+          // flicker the per-list view in between refreshes.
+          await selectList(allListsSentinel(houseId));
+        } else {
+          final target = _currentList != null
+              ? _lists.cast<ChecklistList?>().firstWhere(
+                      (l) => l!.id == _currentList!.id,
+                      orElse: () => null,
+                    ) ??
+                    _lists.first
+              : _lists.first;
+          await selectList(target);
+        }
       } else {
         _isLoading = false;
         notifyListeners();
@@ -195,19 +226,25 @@ class ChecklistsController extends ChangeNotifier {
       _lists = cachedLists;
       if (_lists.isNotEmpty) {
         final savedId = _checklistService.selectedListId;
-        _currentList =
-            (savedId != null
-                ? _lists.cast<ChecklistList?>().firstWhere(
-                    (l) => l!.id == savedId,
-                    orElse: () => null,
-                  )
-                : null) ??
-            _lists.first;
-        final cachedItems = _checklistService.getCachedItems(_currentList!.id);
-        if (cachedItems != null) {
-          _items = cachedItems;
-          _isLoading = false;
-          notifyListeners();
+        if (savedId == kAllListsId) {
+          _currentList = allListsSentinel(houseId);
+        } else {
+          _currentList =
+              (savedId != null
+                  ? _lists.cast<ChecklistList?>().firstWhere(
+                      (l) => l!.id == savedId,
+                      orElse: () => null,
+                    )
+                  : null) ??
+              _lists.first;
+          final cachedItems = _checklistService.getCachedItems(
+            _currentList!.id,
+          );
+          if (cachedItems != null) {
+            _items = cachedItems;
+            _isLoading = false;
+            notifyListeners();
+          }
         }
       }
     }
@@ -221,7 +258,43 @@ class ChecklistsController extends ChangeNotifier {
       _items = [];
       _isLoading = true;
       notifyListeners();
-      await _loadTrashItems(list);
+      // Meta view has no trash of its own — exit trash mode silently.
+      if (list.id == kAllListsId) {
+        _isTrashMode = false;
+        _isLoading = false;
+        notifyListeners();
+      } else {
+        await _loadTrashItems(list);
+        return;
+      }
+    }
+
+    if (list.id == kAllListsId) {
+      // On the first entry we have no prior items; subsequent refreshes keep
+      // the previous list visible so the user sees an in-place swap rather
+      // than an empty-state flash.
+      if (_items.isEmpty) {
+        _isLoading = true;
+        notifyListeners();
+      }
+      try {
+        final fresh = await _checklistService.getHouseItems(
+          houseId,
+          sortBy: effectiveSortBy,
+        );
+        if (_currentList?.id == kAllListsId && !_isTrashMode) {
+          _items = fresh;
+          _isLoading = false;
+          notifyListeners();
+        }
+      } catch (e) {
+        debugPrint('[ChecklistsController] Failed to load house items: $e');
+        if (_currentList?.id == kAllListsId) {
+          _error = m.checklists.failedToLoadItems;
+          _isLoading = false;
+          notifyListeners();
+        }
+      }
       return;
     }
 
@@ -282,6 +355,8 @@ class ChecklistsController extends ChangeNotifier {
 
   Future<void> setTrashMode(bool enabled) async {
     if (_isTrashMode == enabled) return;
+    // Meta view has no trash of its own — ignore.
+    if (enabled && isMetaMode) return;
     _isTrashMode = enabled;
     if (_currentList != null) {
       await selectList(_currentList!);
@@ -299,7 +374,7 @@ class ChecklistsController extends ChangeNotifier {
     unawaited(_persistSortPref(sort));
 
     if (_currentList != null) {
-      _checklistService.invalidateItems();
+      if (!isMetaMode) _checklistService.invalidateItems();
       await selectList(_currentList!);
     }
   }
@@ -473,6 +548,9 @@ class ChecklistsController extends ChangeNotifier {
   ) async {
     if (oldIndex == newIndex) return;
     if (_currentList == null) return;
+    // Meta view aggregates across lists; per-list sort_order is meaningless
+    // here.
+    if (isMetaMode) return;
 
     final item = partition.removeAt(oldIndex);
     partition.insert(newIndex, item);
@@ -554,7 +632,8 @@ class ChecklistsController extends ChangeNotifier {
 
   Future<void> setListDeleteOnDoneDefault(bool value) async {
     final list = _currentList;
-    if (list == null || list.deleteOnDoneDefault == value) return;
+    if (list == null || list.id == kAllListsId) return;
+    if (list.deleteOnDoneDefault == value) return;
 
     final optimistic = list.copyWith(
       deleteOnDoneDefault: value,
@@ -583,14 +662,21 @@ class ChecklistsController extends ChangeNotifier {
     // Cross-list move is online-only for v1 — its semantics interact with
     // both source and target list caches in ways that don't simplify well
     // through the basic SyncOp shapes. Falls back to a direct API call.
-    await _checklistService.moveItem(
+    final updated = await _checklistService.moveItem(
       houseId,
       item.listId,
       item.id,
       targetListId: targetListId,
     );
-    _items.removeWhere((i) => i.id == item.id);
-    _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    if (isMetaMode) {
+      // Meta view aggregates across lists — the item didn't leave the view,
+      // it just changed listId.
+      final idx = _items.indexWhere((i) => i.id == item.id);
+      if (idx != -1) _items[idx] = updated;
+    } else {
+      _items.removeWhere((i) => i.id == item.id);
+      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    }
     notifyListeners();
   }
 
@@ -602,10 +688,39 @@ class ChecklistsController extends ChangeNotifier {
     String? rrule,
     bool? deleteOnDone,
   }) async {
-    if (_currentList == null) {
-      throw StateError('No list selected');
+    final list = _currentList;
+    if (list == null || list.id == kAllListsId) {
+      throw StateError(
+        list == null
+            ? 'No list selected'
+            : 'Use addItemTo() when no real list is selected',
+      );
     }
-    final listId = _currentList!.id;
+    return addItemTo(
+      targetListId: list.id,
+      name: name,
+      description: description,
+      quantity: quantity,
+      categoryId: categoryId,
+      rrule: rrule,
+      deleteOnDone: deleteOnDone,
+    );
+  }
+
+  /// Adds an item to a specific list. Used by the All-lists view (where there
+  /// is no implicit target) and as the underlying implementation of
+  /// [addItem]. When the meta view is active, the per-list cache is not
+  /// touched — the next time that list is opened it'll refetch.
+  Future<ListItem> addItemTo({
+    required int targetListId,
+    required String name,
+    String? description,
+    String? quantity,
+    int? categoryId,
+    String? rrule,
+    bool? deleteOnDone,
+  }) async {
+    final listId = targetListId;
     final tempId = _sync.newTempId();
     final loginName = AuthService.instance.credentials?.loginName;
     final synthetic = ListItem(
@@ -625,7 +740,12 @@ class ChecklistsController extends ChangeNotifier {
       updatedAt: _now(),
     );
     _items.insert(_insertIndexFor(synthetic), synthetic);
-    _checklistService.cacheItems(listId, List.of(_items));
+    // In meta mode `_items` is the aggregate across every list — caching it
+    // under a single listId would clobber that list's per-list cache. Skip
+    // the cache write; the target list will refetch when next opened.
+    if (!isMetaMode) {
+      _checklistService.cacheItems(listId, List.of(_items));
+    }
     notifyListeners();
     _sync.enqueue(
       SyncOp(
@@ -674,7 +794,9 @@ class ChecklistsController extends ChangeNotifier {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = updated;
-      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+      if (!isMetaMode) {
+        _checklistService.cacheItems(item.listId, List.of(_items));
+      }
       notifyListeners();
     }
     _sync.enqueue(
@@ -724,7 +846,9 @@ class ChecklistsController extends ChangeNotifier {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = updated;
-      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+      if (!isMetaMode) {
+        _checklistService.cacheItems(item.listId, List.of(_items));
+      }
       notifyListeners();
     }
     return updated;
@@ -736,14 +860,18 @@ class ChecklistsController extends ChangeNotifier {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = item.copyWith(clearImage: true, updatedAt: _now());
-      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+      if (!isMetaMode) {
+        _checklistService.cacheItems(item.listId, List.of(_items));
+      }
       notifyListeners();
     }
   }
 
   Future<void> deleteItem(ListItem item) async {
     _items.removeWhere((i) => i.id == item.id);
-    _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    if (!isMetaMode) {
+      _checklistService.cacheItems(item.listId, List.of(_items));
+    }
     notifyListeners();
     _sync.enqueue(
       SyncOp(
@@ -763,7 +891,9 @@ class ChecklistsController extends ChangeNotifier {
     _items.removeWhere((i) => i.id == item.id);
     if (!_isTrashMode) {
       _items.add(item.copyWith(clearDeletedAt: true, updatedAt: _now()));
-      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+      if (!isMetaMode) {
+        _checklistService.cacheItems(item.listId, List.of(_items));
+      }
     }
     notifyListeners();
     _sync.enqueue(
@@ -781,8 +911,8 @@ class ChecklistsController extends ChangeNotifier {
 
   Future<void> permanentlyDeleteItem(ListItem item) async {
     _items.removeWhere((i) => i.id == item.id);
-    if (!_isTrashMode) {
-      _checklistService.cacheItems(_currentList!.id, List.of(_items));
+    if (!_isTrashMode && !isMetaMode) {
+      _checklistService.cacheItems(item.listId, List.of(_items));
     }
     notifyListeners();
     _sync.enqueue(
@@ -799,7 +929,7 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   Future<void> emptyTrash() async {
-    if (_currentList == null) return;
+    if (_currentList == null || _currentList!.id == kAllListsId) return;
     if (_isTrashMode) {
       _items = [];
       notifyListeners();
@@ -910,7 +1040,9 @@ class ChecklistsController extends ChangeNotifier {
     if (index == -1) return;
 
     _items[index] = item.copyWith(done: !item.done, updatedAt: _now());
-    _checklistService.cacheItems(item.listId, List.of(_items));
+    if (!isMetaMode) {
+      _checklistService.cacheItems(item.listId, List.of(_items));
+    }
     notifyListeners();
 
     _sync.enqueue(
@@ -956,10 +1088,11 @@ class ChecklistsController extends ChangeNotifier {
       case SyncEntity.checklistItem:
         final entity = applied.entity;
         if (entity is ListItem) {
+          final meta = isMetaMode;
           // If toggle caused soft-delete (deleteOnDone), drop it.
           if (entity.deletedAt != null) {
             _items.removeWhere((i) => i.id == entity.id || i.id == tempId);
-            if (_currentList?.id == entity.listId) {
+            if (!meta && _currentList?.id == entity.listId) {
               _checklistService.cacheItems(entity.listId, List.of(_items));
             }
             notifyListeners();
@@ -969,7 +1102,9 @@ class ChecklistsController extends ChangeNotifier {
             final i = _items.indexWhere((it) => it.id == tempId);
             if (i != -1) {
               _items[i] = entity;
-              _checklistService.cacheItems(entity.listId, List.of(_items));
+              if (!meta) {
+                _checklistService.cacheItems(entity.listId, List.of(_items));
+              }
               notifyListeners();
               return;
             }
@@ -977,7 +1112,9 @@ class ChecklistsController extends ChangeNotifier {
           final j = _items.indexWhere((it) => it.id == entity.id);
           if (j != -1) {
             _items[j] = entity;
-            _checklistService.cacheItems(entity.listId, List.of(_items));
+            if (!meta) {
+              _checklistService.cacheItems(entity.listId, List.of(_items));
+            }
             notifyListeners();
           }
         }

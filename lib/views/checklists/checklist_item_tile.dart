@@ -8,9 +8,21 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/rrule.dart';
+import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
+    show parseHexColor;
 import 'package:pantry/widgets/member_avatar.dart';
 import 'swipe_reveal_row.dart';
+
+/// Lightweight pointer to the list an item belongs to, used by the All-lists
+/// view to render a per-item chip identifying its parent list.
+class ItemListBadge {
+  final String name;
+  final String icon;
+  final String? color;
+  const ItemListBadge({required this.name, required this.icon, this.color});
+}
 
 /// Item lifecycle as expressed by the design's chip:
 /// - staple: stays on list after completion (no rrule, deleteOnDone=false)
@@ -46,6 +58,11 @@ class ChecklistItemTile extends StatefulWidget {
   final String? addedByUserId;
   final String? addedByDisplayName;
 
+  /// When non-null (the All-lists view), render a chip identifying the list
+  /// this item belongs to. Suppressed in per-list views where it would be
+  /// redundant.
+  final ItemListBadge? listBadge;
+
   const ChecklistItemTile({
     super.key,
     required this.item,
@@ -62,6 +79,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.onPermanentDelete,
     this.addedByUserId,
     this.addedByDisplayName,
+    this.listBadge,
   });
 
   @override
@@ -187,6 +205,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       trashMode: widget.trashMode,
       addedByUserId: widget.addedByUserId,
       addedByDisplayName: widget.addedByDisplayName,
+      listBadge: widget.listBadge,
       onCheckboxTap: _toggleAndCloseSwipe,
       onRowTap: rowTap,
     );
@@ -237,6 +256,7 @@ class _RowContent extends StatelessWidget {
   final bool trashMode;
   final String? addedByUserId;
   final String? addedByDisplayName;
+  final ItemListBadge? listBadge;
   final VoidCallback onCheckboxTap;
   final VoidCallback? onRowTap;
 
@@ -249,6 +269,7 @@ class _RowContent extends StatelessWidget {
     required this.trashMode,
     required this.addedByUserId,
     required this.addedByDisplayName,
+    required this.listBadge,
     required this.onCheckboxTap,
     required this.onRowTap,
   });
@@ -312,6 +333,7 @@ class _RowContent extends StatelessWidget {
                             item: item,
                             category: category,
                             catColor: catColor,
+                            listBadge: listBadge,
                           ),
                         ],
                       ],
@@ -339,7 +361,7 @@ class _RowContent extends StatelessWidget {
     final hasQty = item.quantity != null && item.quantity!.trim().isNotEmpty;
     final lc = lifecycleOf(item);
     final hasType = lc != ItemLifecycle.staple;
-    return hasCat || hasQty || hasType;
+    return hasCat || hasQty || hasType || listBadge != null;
   }
 }
 
@@ -386,22 +408,40 @@ class _MetaRow extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
   final Color catColor;
+  final ItemListBadge? listBadge;
 
   const _MetaRow({
     required this.item,
     required this.category,
     required this.catColor,
+    required this.listBadge,
   });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final lc = lifecycleOf(item);
+    // List chip is rendered first — it answers "where does this live?" before
+    // the user reads any other metadata.
+    final listColor = listBadge != null
+        ? (parseHexColor(listBadge!.color) ?? cs.primary)
+        : cs.primary;
 
     return Wrap(
       spacing: 7,
       runSpacing: 4,
       children: [
+        if (listBadge != null)
+          _Chip(
+            leading: Icon(
+              checklistIcon(listBadge!.icon),
+              size: 12,
+              color: listColor,
+            ),
+            label: listBadge!.name,
+            textColor: listColor,
+            background: listColor.withValues(alpha: 0.13),
+          ),
         if (category != null)
           _Chip(
             leading: Container(

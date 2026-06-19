@@ -291,13 +291,30 @@ class _ListStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final lists = hasFeature('checklist-sort')
+    final realLists = hasFeature('checklist-sort')
         ? controller.sortedLists
         : controller.lists;
     final current = controller.currentList;
+    // The synthetic "All lists" entry only earns its spot when there's more
+    // than one real list to aggregate. With zero lists the index renders the
+    // empty state; with one list, "All lists" would just duplicate that list.
+    final showAllLists = realLists.length >= 2;
     final canReorder =
         hasFeature('checklist-sort') && controller.listSort == 'custom';
     final showMenu = hasFeature('checklist-trash');
+    final allListsTile = showAllLists
+        ? _AllListsTile(
+            selected: current?.id == kAllListsId,
+            onTap: () async {
+              Navigator.pop(context);
+              if (current?.id != kAllListsId) {
+                await controller.selectList(
+                  allListsSentinel(controller.houseId),
+                );
+              }
+            },
+          )
+        : null;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -322,7 +339,7 @@ class _ListStage extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    m.checklists.listsCount(lists.length),
+                    m.checklists.listsCount(realLists.length),
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -336,6 +353,11 @@ class _ListStage extends StatelessWidget {
             ],
           ),
         ),
+        if (allListsTile != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: allListsTile,
+          ),
         ConstrainedBox(
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.5,
@@ -344,12 +366,12 @@ class _ListStage extends StatelessWidget {
               ? ReorderableListView.builder(
                   shrinkWrap: true,
                   buildDefaultDragHandles: false,
-                  itemCount: lists.length,
+                  itemCount: realLists.length,
                   onReorder: controller.reorderLists,
                   proxyDecorator: (child, _, _) =>
                       Material(color: Colors.transparent, child: child),
                   itemBuilder: (_, i) {
-                    final list = lists[i];
+                    final list = realLists[i];
                     final selected = list.id == current?.id;
                     return Padding(
                       key: ValueKey(list.id),
@@ -373,10 +395,10 @@ class _ListStage extends StatelessWidget {
                 )
               : ListView.separated(
                   shrinkWrap: true,
-                  itemCount: lists.length,
+                  itemCount: realLists.length,
                   separatorBuilder: (_, _) => const SizedBox(height: 8),
                   itemBuilder: (_, i) {
-                    final list = lists[i];
+                    final list = realLists[i];
                     final selected = list.id == current?.id;
                     return _ListTile(
                       list: list,
@@ -1267,6 +1289,91 @@ class _ColorSwatch extends StatelessWidget {
                   ),
                 ]
               : null,
+        ),
+      ),
+    );
+  }
+}
+
+/// The synthetic "All lists" entry rendered at the top of the switcher. It's
+/// not draggable, not editable, has no overflow menu, and doesn't show an
+/// item count (the count would require fetching across every list).
+class _AllListsTile extends StatelessWidget {
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _AllListsTile({required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsetsDirectional.only(
+          start: 13,
+          end: 8,
+          top: 12,
+          bottom: 12,
+        ),
+        decoration: BoxDecoration(
+          color: selected
+              ? cs.primary.withValues(alpha: 0.1)
+              : cs.surfaceContainer,
+          border: Border.all(
+            color: selected ? cs.primary : cs.outlineVariant,
+            width: selected ? 1.5 : 1,
+          ),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: cs.primary.withValues(alpha: 0.16),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(allListsIcon, color: cs.primary, size: 21),
+            ),
+            const SizedBox(width: 13),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    m.checklists.allLists,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    m.checklists.allListsSubtitle,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w500,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (selected)
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: cs.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.check, color: Colors.white, size: 16),
+              ),
+          ],
         ),
       ),
     );
