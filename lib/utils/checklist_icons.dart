@@ -39,6 +39,22 @@ const checklistIconMap = <String, IconData>{
   'bike': Icons.directions_bike,
   'beach': Icons.beach_access,
   'tag': Icons.label,
+  'fridge': Icons.kitchen,
+  'freezer': Icons.ac_unit,
+  'cupboard': Icons.shelves,
+  'pantry': Icons.food_bank,
+  'cellar': Icons.wine_bar,
+  'garage': Icons.garage,
+  'bookshelf': Icons.local_library,
+  'locker': Icons.lock,
+  'safe': Icons.security,
+  'file-cabinet': Icons.folder_copy,
+  'microwave': Icons.microwave,
+  'stove': Icons.local_fire_department,
+  'toaster-oven': Icons.bakery_dining,
+  'coffee-maker': Icons.coffee_maker,
+  'kettle': Icons.emoji_food_beverage,
+  'pot': Icons.soup_kitchen,
 };
 
 const defaultChecklistIcon = Icons.assignment_turned_in;
