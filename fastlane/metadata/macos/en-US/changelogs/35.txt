@@ -1,0 +1,13 @@
+Features
+- add All lists view aggregating items across lists
+- add bulk item add via Multiple toggle
+- copy item to another list
+- edit list label, color, and icon
+- take photo from camera when adding item image
+- add pantry location and appliance icons
+Bug Fixes
+- show all list icons in add list dialog
+- support self-signed certificates
+- only show sync banner for offline backlog or errors
+Miscellaneous Chores
+- regenerate release pr

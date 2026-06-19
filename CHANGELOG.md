@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.18.0](https://github.com/chenasraf/pantry-flutter/compare/v0.17.0...v0.18.0) (2026-06-19)
+
+
+### Features
+
+* **checklists:** add All lists view aggregating items across lists ([ff31598](https://github.com/chenasraf/pantry-flutter/commit/ff31598d45e10e61133178199020e357a1512884))
+* **checklists:** add bulk item add via Multiple toggle ([d26ad10](https://github.com/chenasraf/pantry-flutter/commit/d26ad10dd765bc1078d2e4385876cc5232cb16b6))
+* **checklists:** copy item to another list ([08c985f](https://github.com/chenasraf/pantry-flutter/commit/08c985f1104bbde766f7282cc25e447e0cf7d694))
+* **checklists:** edit list label, color, and icon ([5cce8e0](https://github.com/chenasraf/pantry-flutter/commit/5cce8e0b63e27c934d45e11882f828c5cf4a130a))
+* **checklists:** take photo from camera when adding item image ([c8a4967](https://github.com/chenasraf/pantry-flutter/commit/c8a49670fa918dc5ed2122da9959ec6bbe8d654e)), closes [#75](https://github.com/chenasraf/pantry-flutter/issues/75)
+* **icons:** add pantry location and appliance icons ([5010da1](https://github.com/chenasraf/pantry-flutter/commit/5010da16ca1d8b59e9fe6357e929dd211b8d5095))
+
+
+### Bug Fixes
+
+* **desktop:** show all list icons in add list dialog ([b92977f](https://github.com/chenasraf/pantry-flutter/commit/b92977f186866eda69797256a77c5d2612206efb))
+* **login:** support self-signed certificates ([9a2a398](https://github.com/chenasraf/pantry-flutter/commit/9a2a398926a74d35abd05cbb7f1652829d9a1bf2))
+* **sync:** only show sync banner for offline backlog or errors ([12810e2](https://github.com/chenasraf/pantry-flutter/commit/12810e26905dc5b0dff248208003896bb3233a72))
+
+
+### Miscellaneous Chores
+
+* regenerate release pr ([d9e19d8](https://github.com/chenasraf/pantry-flutter/commit/d9e19d8b1e6d00f0fa5927cd7685c3e7e2657631))
+
 ## [0.17.0](https://github.com/chenasraf/pantry-flutter/compare/v0.16.0...v0.17.0) (2026-06-17)
 
 
