@@ -603,6 +603,43 @@ Passwort: pantry-rocks""";
   /// "Gemüse"
   /// ```
   String get mockItemCategory => """Gemüse""";
+
+  /// ```dart
+  /// "Glühbirnen"
+  /// ```
+  String get mockHardwareItemName => """Glühbirnen""";
+
+  /// ```dart
+  /// "Milch"
+  /// ```
+  String get mockBulkItemThird => """Milch""";
+
+  /// ```dart
+  /// "Brot"
+  /// ```
+  String get mockBulkItemFourth => """Brot""";
+
+  /// ```dart
+  /// "Alles in einer Ansicht"
+  /// ```
+  String get allListsTitle => """Alles in einer Ansicht""";
+
+  /// ```dart
+  /// "Öffne die Ansicht Alle Listen über den Listenwechsler, um Einträge aus allen Listen gemeinsam zu sehen. Wenn du dort einen Eintrag hinzufügst, fragt das Formular über den Listen-Chip, in welche Liste er gehören soll."
+  /// ```
+  String get allListsBody =>
+      """Öffne die Ansicht Alle Listen über den Listenwechsler, um Einträge aus allen Listen gemeinsam zu sehen. Wenn du dort einen Eintrag hinzufügst, fragt das Formular über den Listen-Chip, in welche Liste er gehören soll.""";
+
+  /// ```dart
+  /// "Viele Einträge auf einmal hinzufügen"
+  /// ```
+  String get bulkAddTitle => """Viele Einträge auf einmal hinzufügen""";
+
+  /// ```dart
+  /// "Aktiviere den Mehrfach-Schalter, und das Eingabefeld wird zu einem mehrzeiligen Feld — jede Zeile wird zu einem eigenen Eintrag. Praktisch, wenn du eine Liste einfügst oder einen ganzen Einkauf auf einmal notierst."
+  /// ```
+  String get bulkAddBody =>
+      """Aktiviere den Mehrfach-Schalter, und das Eingabefeld wird zu einem mehrzeiligen Feld — jede Zeile wird zu einem eigenen Eintrag. Praktisch, wenn du eine Liste einfügst oder einen ganzen Einkauf auf einmal notierst.""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 
@@ -2872,6 +2909,15 @@ Passwort: pantry-rocks""",
   """onboarding.mockItemName""": """Tomaten""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Gemüse""",
+  """onboarding.mockHardwareItemName""": """Glühbirnen""",
+  """onboarding.mockBulkItemThird""": """Milch""",
+  """onboarding.mockBulkItemFourth""": """Brot""",
+  """onboarding.allListsTitle""": """Alles in einer Ansicht""",
+  """onboarding.allListsBody""":
+      """Öffne die Ansicht Alle Listen über den Listenwechsler, um Einträge aus allen Listen gemeinsam zu sehen. Wenn du dort einen Eintrag hinzufügst, fragt das Formular über den Listen-Chip, in welche Liste er gehören soll.""",
+  """onboarding.bulkAddTitle""": """Viele Einträge auf einmal hinzufügen""",
+  """onboarding.bulkAddBody""":
+      """Aktiviere den Mehrfach-Schalter, und das Eingabefeld wird zu einem mehrzeiligen Feld — jede Zeile wird zu einem eigenen Eintrag. Praktisch, wenn du eine Liste einfügst oder einen ganzen Einkauf auf einmal notierst.""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""":
       """Zuletzt gesehene Version simulieren""",

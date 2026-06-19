@@ -600,6 +600,43 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// "ירקות"
   /// ```
   String get mockItemCategory => """ירקות""";
+
+  /// ```dart
+  /// "נורות"
+  /// ```
+  String get mockHardwareItemName => """נורות""";
+
+  /// ```dart
+  /// "חלב"
+  /// ```
+  String get mockBulkItemThird => """חלב""";
+
+  /// ```dart
+  /// "לחם"
+  /// ```
+  String get mockBulkItemFourth => """לחם""";
+
+  /// ```dart
+  /// "הכל בתצוגה אחת"
+  /// ```
+  String get allListsTitle => """הכל בתצוגה אחת""";
+
+  /// ```dart
+  /// "פתח את התצוגה כל הרשימות ממחליף הרשימות כדי לראות פריטים מכל הרשימות ביחד. כשמוסיפים פריט מכאן, הטופס שואל לאיזו רשימה להוסיף אותו — בוחרים אותה מצ'יפ הרשימה."
+  /// ```
+  String get allListsBody =>
+      """פתח את התצוגה כל הרשימות ממחליף הרשימות כדי לראות פריטים מכל הרשימות ביחד. כשמוסיפים פריט מכאן, הטופס שואל לאיזו רשימה להוסיף אותו — בוחרים אותה מצ'יפ הרשימה.""";
+
+  /// ```dart
+  /// "הוספת פריטים רבים בבת אחת"
+  /// ```
+  String get bulkAddTitle => """הוספת פריטים רבים בבת אחת""";
+
+  /// ```dart
+  /// "הפעל את מתג מרובה והשדה הופך לתיבת קלט רב-שורתית — כל שורה הופכת לפריט נפרד. נוח כשמדביקים רשימה או רושמים קנייה שלמה בבת אחת."
+  /// ```
+  String get bulkAddBody =>
+      """הפעל את מתג מרובה והשדה הופך לתיבת קלט רב-שורתית — כל שורה הופכת לפריט נפרד. נוח כשמדביקים רשימה או רושמים קנייה שלמה בבת אחת.""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 
@@ -2846,6 +2883,15 @@ Map<String, String> get messagesHeMap => {
   """onboarding.mockItemName""": """עגבניות""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """ירקות""",
+  """onboarding.mockHardwareItemName""": """נורות""",
+  """onboarding.mockBulkItemThird""": """חלב""",
+  """onboarding.mockBulkItemFourth""": """לחם""",
+  """onboarding.allListsTitle""": """הכל בתצוגה אחת""",
+  """onboarding.allListsBody""":
+      """פתח את התצוגה כל הרשימות ממחליף הרשימות כדי לראות פריטים מכל הרשימות ביחד. כשמוסיפים פריט מכאן, הטופס שואל לאיזו רשימה להוסיף אותו — בוחרים אותה מצ'יפ הרשימה.""",
+  """onboarding.bulkAddTitle""": """הוספת פריטים רבים בבת אחת""",
+  """onboarding.bulkAddBody""":
+      """הפעל את מתג מרובה והשדה הופך לתיבת קלט רב-שורתית — כל שורה הופכת לפריט נפרד. נוח כשמדביקים רשימה או רושמים קנייה שלמה בבת אחת.""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """דמה גרסה אחרונה שנצפתה""",
   """onboarding.dev.pickLastSeenBody""":

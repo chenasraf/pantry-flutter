@@ -603,6 +603,43 @@ Contraseña: pantry-rocks""";
   /// "Verduras"
   /// ```
   String get mockItemCategory => """Verduras""";
+
+  /// ```dart
+  /// "Bombillas"
+  /// ```
+  String get mockHardwareItemName => """Bombillas""";
+
+  /// ```dart
+  /// "Leche"
+  /// ```
+  String get mockBulkItemThird => """Leche""";
+
+  /// ```dart
+  /// "Pan"
+  /// ```
+  String get mockBulkItemFourth => """Pan""";
+
+  /// ```dart
+  /// "Todo en una sola vista"
+  /// ```
+  String get allListsTitle => """Todo en una sola vista""";
+
+  /// ```dart
+  /// "Abre la vista Todas las listas desde el selector para ver los elementos de todas tus listas juntos. Cuando añades un elemento desde aquí, el formulario te pide a qué lista enviarlo — elígela en el chip de lista."
+  /// ```
+  String get allListsBody =>
+      """Abre la vista Todas las listas desde el selector para ver los elementos de todas tus listas juntos. Cuando añades un elemento desde aquí, el formulario te pide a qué lista enviarlo — elígela en el chip de lista.""";
+
+  /// ```dart
+  /// "Añade varios artículos a la vez"
+  /// ```
+  String get bulkAddTitle => """Añade varios artículos a la vez""";
+
+  /// ```dart
+  /// "Activa el interruptor Múltiple y el campo se convierte en un cuadro de varias líneas — cada línea se convierte en un artículo. Práctico cuando pegas una lista o anotas toda la compra de golpe."
+  /// ```
+  String get bulkAddBody =>
+      """Activa el interruptor Múltiple y el campo se convierte en un cuadro de varias líneas — cada línea se convierte en un artículo. Práctico cuando pegas una lista o anotas toda la compra de golpe.""";
   DevOnboardingMessagesEs get dev => DevOnboardingMessagesEs(this);
 }
 
@@ -2867,6 +2904,15 @@ Contraseña: pantry-rocks""",
   """onboarding.mockItemName""": """Tomates""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Verduras""",
+  """onboarding.mockHardwareItemName""": """Bombillas""",
+  """onboarding.mockBulkItemThird""": """Leche""",
+  """onboarding.mockBulkItemFourth""": """Pan""",
+  """onboarding.allListsTitle""": """Todo en una sola vista""",
+  """onboarding.allListsBody""":
+      """Abre la vista Todas las listas desde el selector para ver los elementos de todas tus listas juntos. Cuando añades un elemento desde aquí, el formulario te pide a qué lista enviarlo — elígela en el chip de lista.""",
+  """onboarding.bulkAddTitle""": """Añade varios artículos a la vez""",
+  """onboarding.bulkAddBody""":
+      """Activa el interruptor Múltiple y el campo se convierte en un cuadro de varias líneas — cada línea se convierte en un artículo. Práctico cuando pegas una lista o anotas toda la compra de golpe.""",
   """onboarding.dev.showOnboarding""": """Mostrar introducción""",
   """onboarding.dev.pickLastSeenTitle""": """Simular última versión vista""",
   """onboarding.dev.pickLastSeenBody""":

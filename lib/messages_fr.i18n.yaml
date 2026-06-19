@@ -100,6 +100,13 @@ onboarding:
   mockItemName: "Tomates"
   mockItemQuantity: "x2"
   mockItemCategory: "Légumes"
+  mockHardwareItemName: "Ampoules"
+  mockBulkItemThird: "Lait"
+  mockBulkItemFourth: "Pain"
+  allListsTitle: "Tout dans une seule vue"
+  allListsBody: "Ouvre la vue Toutes les listes depuis le sélecteur pour voir les éléments de toutes tes listes ensemble. Quand tu ajoutes un élément depuis ici, le formulaire te demande dans quelle liste le placer — choisis-la dans le chip Liste."
+  bulkAddTitle: "Ajoute plusieurs éléments d'un coup"
+  bulkAddBody: "Active le bouton Multiple et le champ devient une zone multi-ligne — chaque ligne devient un élément distinct. Pratique quand tu colles une liste ou que tu notes toutes tes courses d'un seul coup."
   dev:
     showOnboarding: "Afficher l'intro"
     pickLastSeenTitle: "Simuler la dernière version vue"

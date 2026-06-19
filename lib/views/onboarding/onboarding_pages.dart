@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/version.dart';
 import 'pages/add_items_page.dart';
+import 'pages/all_lists_page.dart';
+import 'pages/bulk_add_page.dart';
 import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
 import 'pages/pinned_lists_page.dart';
@@ -114,13 +116,21 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
     ),
     OnboardingPageEntry(builder: (_) => const PinnedNotesOnboardingPage()),
   ],
+  '0.18.0': [
+    OnboardingPageEntry(builder: (_) => const AllListsOnboardingPage()),
+    OnboardingPageEntry(builder: (_) => const BulkAddOnboardingPage()),
+  ],
 };
 
 /// Versions available for the dev-only "Show onboarding" picker — must be
 /// historical (i.e. strictly older than [kAppOnboardingFirstVersion] OR a
 /// known prior key in [kAppOnboardingPages]). The list is in descending order
 /// so the newest option appears first.
-const List<String> kDevOnboardingPickableVersions = ['0.15.0'];
+const List<String> kDevOnboardingPickableVersions = [
+  '0.17.0',
+  '0.16.0',
+  '0.15.0',
+];
 
 /// The version string to persist when the user finishes/skips onboarding for
 /// build [appVersion]. Returns whichever is higher between [appVersion] and

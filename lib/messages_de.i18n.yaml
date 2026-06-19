@@ -100,6 +100,13 @@ onboarding:
   mockItemName: "Tomaten"
   mockItemQuantity: "x2"
   mockItemCategory: "Gemüse"
+  mockHardwareItemName: "Glühbirnen"
+  mockBulkItemThird: "Milch"
+  mockBulkItemFourth: "Brot"
+  allListsTitle: "Alles in einer Ansicht"
+  allListsBody: "Öffne die Ansicht Alle Listen über den Listenwechsler, um Einträge aus allen Listen gemeinsam zu sehen. Wenn du dort einen Eintrag hinzufügst, fragt das Formular über den Listen-Chip, in welche Liste er gehören soll."
+  bulkAddTitle: "Viele Einträge auf einmal hinzufügen"
+  bulkAddBody: "Aktiviere den Mehrfach-Schalter, und das Eingabefeld wird zu einem mehrzeiligen Feld — jede Zeile wird zu einem eigenen Eintrag. Praktisch, wenn du eine Liste einfügst oder einen ganzen Einkauf auf einmal notierst."
   dev:
     showOnboarding: "Onboarding anzeigen"
     pickLastSeenTitle: "Zuletzt gesehene Version simulieren"

@@ -100,6 +100,13 @@ onboarding:
   mockItemName: "Tomatoes"
   mockItemQuantity: "x2"
   mockItemCategory: "Produce"
+  mockHardwareItemName: "Light bulbs"
+  mockBulkItemThird: "Milk"
+  mockBulkItemFourth: "Bread"
+  allListsTitle: "Everything in one view"
+  allListsBody: "Open the All lists view from the list switcher to see items from every list together. When you add an item from here, the form asks which list to put it in — pick it from the List chip."
+  bulkAddTitle: "Add many items at once"
+  bulkAddBody: "Flip on the Multiple toggle and the input grows into a multi-line box — every line becomes its own item. Handy when you're pasting a list or jotting down a whole grocery run."
   dev:
     showOnboarding: "Show onboarding"
     pickLastSeenTitle: "Simulate last-seen version"

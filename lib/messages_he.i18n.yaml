@@ -100,6 +100,13 @@ onboarding:
   mockItemName: "עגבניות"
   mockItemQuantity: "x2"
   mockItemCategory: "ירקות"
+  mockHardwareItemName: "נורות"
+  mockBulkItemThird: "חלב"
+  mockBulkItemFourth: "לחם"
+  allListsTitle: "הכל בתצוגה אחת"
+  allListsBody: "פתח את התצוגה כל הרשימות ממחליף הרשימות כדי לראות פריטים מכל הרשימות ביחד. כשמוסיפים פריט מכאן, הטופס שואל לאיזו רשימה להוסיף אותו — בוחרים אותה מצ'יפ הרשימה."
+  bulkAddTitle: "הוספת פריטים רבים בבת אחת"
+  bulkAddBody: "הפעל את מתג מרובה והשדה הופך לתיבת קלט רב-שורתית — כל שורה הופכת לפריט נפרד. נוח כשמדביקים רשימה או רושמים קנייה שלמה בבת אחת."
   dev:
     showOnboarding: "הצג היכרות"
     pickLastSeenTitle: "דמה גרסה אחרונה שנצפתה"

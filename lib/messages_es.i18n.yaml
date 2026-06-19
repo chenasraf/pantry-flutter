@@ -100,6 +100,13 @@ onboarding:
   mockItemName: "Tomates"
   mockItemQuantity: "x2"
   mockItemCategory: "Verduras"
+  mockHardwareItemName: "Bombillas"
+  mockBulkItemThird: "Leche"
+  mockBulkItemFourth: "Pan"
+  allListsTitle: "Todo en una sola vista"
+  allListsBody: "Abre la vista Todas las listas desde el selector para ver los elementos de todas tus listas juntos. Cuando añades un elemento desde aquí, el formulario te pide a qué lista enviarlo — elígela en el chip de lista."
+  bulkAddTitle: "Añade varios artículos a la vez"
+  bulkAddBody: "Activa el interruptor Múltiple y el campo se convierte en un cuadro de varias líneas — cada línea se convierte en un artículo. Práctico cuando pegas una lista o anotas toda la compra de golpe."
   dev:
     showOnboarding: "Mostrar introducción"
     pickLastSeenTitle: "Simular última versión vista"

@@ -604,6 +604,43 @@ Mot de passe : pantry-rocks""";
   /// "Légumes"
   /// ```
   String get mockItemCategory => """Légumes""";
+
+  /// ```dart
+  /// "Ampoules"
+  /// ```
+  String get mockHardwareItemName => """Ampoules""";
+
+  /// ```dart
+  /// "Lait"
+  /// ```
+  String get mockBulkItemThird => """Lait""";
+
+  /// ```dart
+  /// "Pain"
+  /// ```
+  String get mockBulkItemFourth => """Pain""";
+
+  /// ```dart
+  /// "Tout dans une seule vue"
+  /// ```
+  String get allListsTitle => """Tout dans une seule vue""";
+
+  /// ```dart
+  /// "Ouvre la vue Toutes les listes depuis le sélecteur pour voir les éléments de toutes tes listes ensemble. Quand tu ajoutes un élément depuis ici, le formulaire te demande dans quelle liste le placer — choisis-la dans le chip Liste."
+  /// ```
+  String get allListsBody =>
+      """Ouvre la vue Toutes les listes depuis le sélecteur pour voir les éléments de toutes tes listes ensemble. Quand tu ajoutes un élément depuis ici, le formulaire te demande dans quelle liste le placer — choisis-la dans le chip Liste.""";
+
+  /// ```dart
+  /// "Ajoute plusieurs éléments d'un coup"
+  /// ```
+  String get bulkAddTitle => """Ajoute plusieurs éléments d'un coup""";
+
+  /// ```dart
+  /// "Active le bouton Multiple et le champ devient une zone multi-ligne — chaque ligne devient un élément distinct. Pratique quand tu colles une liste ou que tu notes toutes tes courses d'un seul coup."
+  /// ```
+  String get bulkAddBody =>
+      """Active le bouton Multiple et le champ devient une zone multi-ligne — chaque ligne devient un élément distinct. Pratique quand tu colles une liste ou que tu notes toutes tes courses d'un seul coup.""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
@@ -2874,6 +2911,15 @@ Mot de passe : pantry-rocks""",
   """onboarding.mockItemName""": """Tomates""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Légumes""",
+  """onboarding.mockHardwareItemName""": """Ampoules""",
+  """onboarding.mockBulkItemThird""": """Lait""",
+  """onboarding.mockBulkItemFourth""": """Pain""",
+  """onboarding.allListsTitle""": """Tout dans une seule vue""",
+  """onboarding.allListsBody""":
+      """Ouvre la vue Toutes les listes depuis le sélecteur pour voir les éléments de toutes tes listes ensemble. Quand tu ajoutes un élément depuis ici, le formulaire te demande dans quelle liste le placer — choisis-la dans le chip Liste.""",
+  """onboarding.bulkAddTitle""": """Ajoute plusieurs éléments d'un coup""",
+  """onboarding.bulkAddBody""":
+      """Active le bouton Multiple et le champ devient une zone multi-ligne — chaque ligne devient un élément distinct. Pratique quand tu colles une liste ou que tu notes toutes tes courses d'un seul coup.""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Simuler la dernière version vue""",
   """onboarding.dev.pickLastSeenBody""":

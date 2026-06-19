@@ -599,6 +599,43 @@ Password: pantry-rocks""";
   /// "Produce"
   /// ```
   String get mockItemCategory => """Produce""";
+
+  /// ```dart
+  /// "Light bulbs"
+  /// ```
+  String get mockHardwareItemName => """Light bulbs""";
+
+  /// ```dart
+  /// "Milk"
+  /// ```
+  String get mockBulkItemThird => """Milk""";
+
+  /// ```dart
+  /// "Bread"
+  /// ```
+  String get mockBulkItemFourth => """Bread""";
+
+  /// ```dart
+  /// "Everything in one view"
+  /// ```
+  String get allListsTitle => """Everything in one view""";
+
+  /// ```dart
+  /// "Open the All lists view from the list switcher to see items from every list together. When you add an item from here, the form asks which list to put it in — pick it from the List chip."
+  /// ```
+  String get allListsBody =>
+      """Open the All lists view from the list switcher to see items from every list together. When you add an item from here, the form asks which list to put it in — pick it from the List chip.""";
+
+  /// ```dart
+  /// "Add many items at once"
+  /// ```
+  String get bulkAddTitle => """Add many items at once""";
+
+  /// ```dart
+  /// "Flip on the Multiple toggle and the input grows into a multi-line box — every line becomes its own item. Handy when you're pasting a list or jotting down a whole grocery run."
+  /// ```
+  String get bulkAddBody =>
+      """Flip on the Multiple toggle and the input grows into a multi-line box — every line becomes its own item. Handy when you're pasting a list or jotting down a whole grocery run.""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 
@@ -2842,6 +2879,15 @@ Password: pantry-rocks""",
   """onboarding.mockItemName""": """Tomatoes""",
   """onboarding.mockItemQuantity""": """x2""",
   """onboarding.mockItemCategory""": """Produce""",
+  """onboarding.mockHardwareItemName""": """Light bulbs""",
+  """onboarding.mockBulkItemThird""": """Milk""",
+  """onboarding.mockBulkItemFourth""": """Bread""",
+  """onboarding.allListsTitle""": """Everything in one view""",
+  """onboarding.allListsBody""":
+      """Open the All lists view from the list switcher to see items from every list together. When you add an item from here, the form asks which list to put it in — pick it from the List chip.""",
+  """onboarding.bulkAddTitle""": """Add many items at once""",
+  """onboarding.bulkAddBody""":
+      """Flip on the Multiple toggle and the input grows into a multi-line box — every line becomes its own item. Handy when you're pasting a list or jotting down a whole grocery run.""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Simulate last-seen version""",
   """onboarding.dev.pickLastSeenBody""":
