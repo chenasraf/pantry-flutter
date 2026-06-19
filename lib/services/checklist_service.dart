@@ -273,6 +273,19 @@ class ChecklistService {
     );
   }
 
+  Future<ListItem> copyItem(
+    int houseId,
+    int listId,
+    int itemId, {
+    required int targetListId,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
+      '/houses/$houseId/lists/$listId/items/$itemId/copy',
+      body: {'targetListId': targetListId},
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
   Future<ListItem> createItem(
     int houseId,
     int listId, {

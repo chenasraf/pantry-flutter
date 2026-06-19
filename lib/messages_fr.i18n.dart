@@ -1244,6 +1244,21 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get moveFailed => """Impossible de déplacer l'article.""";
 
   /// ```dart
+  /// "Copier vers une liste"
+  /// ```
+  String get copyItem => """Copier vers une liste""";
+
+  /// ```dart
+  /// "Impossible de copier l'article."
+  /// ```
+  String get copyFailed => """Impossible de copier l'article.""";
+
+  /// ```dart
+  /// "Article copié"
+  /// ```
+  String get itemCopied => """Article copié""";
+
+  /// ```dart
   /// "Article marqué comme fait"
   /// ```
   String get itemMarkedDone => """Article marqué comme fait""";
@@ -1582,6 +1597,11 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Déplacer"
   /// ```
   String get swipeMove => """Déplacer""";
+
+  /// ```dart
+  /// "Copier"
+  /// ```
+  String get swipeCopy => """Copier""";
 
   /// ```dart
   /// "Retirer"
@@ -3037,6 +3057,9 @@ Mot de passe : pantry-rocks""",
   """checklists.removeItem""": """Supprimer l'article""",
   """checklists.moveItem""": """Déplacer vers une liste""",
   """checklists.moveFailed""": """Impossible de déplacer l'article.""",
+  """checklists.copyItem""": """Copier vers une liste""",
+  """checklists.copyFailed""": """Impossible de copier l'article.""",
+  """checklists.itemCopied""": """Article copié""",
   """checklists.itemMarkedDone""": """Article marqué comme fait""",
   """checklists.itemRemoved""": """Article supprimé""",
   """checklists.undo""": """Annuler""",
@@ -3158,6 +3181,7 @@ Mot de passe : pantry-rocks""",
   """checklists.swipeView""": """Voir""",
   """checklists.swipeEdit""": """Modifier""",
   """checklists.swipeMove""": """Déplacer""",
+  """checklists.swipeCopy""": """Copier""",
   """checklists.swipeDelete""": """Retirer""",
   """checklists.viewList""": """Vue liste""",
   """checklists.viewCards""": """Vue cartes""",

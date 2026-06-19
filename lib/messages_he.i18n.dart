@@ -1236,6 +1236,21 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get moveFailed => """העברת הפריט נכשלה.""";
 
   /// ```dart
+  /// "העתק לרשימה"
+  /// ```
+  String get copyItem => """העתק לרשימה""";
+
+  /// ```dart
+  /// "העתקת הפריט נכשלה."
+  /// ```
+  String get copyFailed => """העתקת הפריט נכשלה.""";
+
+  /// ```dart
+  /// "הפריט הועתק"
+  /// ```
+  String get itemCopied => """הפריט הועתק""";
+
+  /// ```dart
   /// "הפריט סומן כהושלם"
   /// ```
   String get itemMarkedDone => """הפריט סומן כהושלם""";
@@ -1571,6 +1586,11 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "העברה"
   /// ```
   String get swipeMove => """העברה""";
+
+  /// ```dart
+  /// "העתקה"
+  /// ```
+  String get swipeCopy => """העתקה""";
 
   /// ```dart
   /// "הסר"
@@ -3001,6 +3021,9 @@ Map<String, String> get messagesHeMap => {
   """checklists.removeItem""": """הסר פריט""",
   """checklists.moveItem""": """העבר לרשימה""",
   """checklists.moveFailed""": """העברת הפריט נכשלה.""",
+  """checklists.copyItem""": """העתק לרשימה""",
+  """checklists.copyFailed""": """העתקת הפריט נכשלה.""",
+  """checklists.itemCopied""": """הפריט הועתק""",
   """checklists.itemMarkedDone""": """הפריט סומן כהושלם""",
   """checklists.itemRemoved""": """הפריט הוסר""",
   """checklists.undo""": """בטל""",
@@ -3113,6 +3136,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.swipeView""": """צפייה""",
   """checklists.swipeEdit""": """עריכה""",
   """checklists.swipeMove""": """העברה""",
+  """checklists.swipeCopy""": """העתקה""",
   """checklists.swipeDelete""": """הסר""",
   """checklists.viewList""": """תצוגת רשימה""",
   """checklists.viewCards""": """תצוגת כרטיסים""",

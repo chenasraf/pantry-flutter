@@ -719,6 +719,24 @@ class ChecklistsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> copyItem(ListItem item, int targetListId) async {
+    // Online-only for the same reason as [moveItem] — the new item lives on
+    // a list the user isn't currently viewing, so cache reconciliation
+    // doesn't fit the per-list SyncOp shapes.
+    final created = await _checklistService.copyItem(
+      houseId,
+      item.listId,
+      item.id,
+      targetListId: targetListId,
+    );
+    if (isMetaMode) {
+      // Meta view aggregates across lists — surface the new copy alongside
+      // the original.
+      _items = [created, ..._items];
+    }
+    notifyListeners();
+  }
+
   Future<ListItem> addItem({
     required String name,
     String? description,

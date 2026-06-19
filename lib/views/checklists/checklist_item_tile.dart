@@ -48,6 +48,7 @@ class ChecklistItemTile extends StatefulWidget {
   final ValueChanged<ListItem> onView;
   final ValueChanged<ListItem> onEdit;
   final ValueChanged<ListItem>? onMove;
+  final ValueChanged<ListItem>? onCopy;
   final ValueChanged<ListItem> onDelete;
   final ValueChanged<ListItem>? onRestore;
   final ValueChanged<ListItem>? onPermanentDelete;
@@ -74,6 +75,7 @@ class ChecklistItemTile extends StatefulWidget {
     required this.onEdit,
     required this.onDelete,
     this.onMove,
+    this.onCopy,
     this.trashMode = false,
     this.onRestore,
     this.onPermanentDelete,
@@ -170,6 +172,17 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             tint: const Color(0xFFD9B441),
             background: tintedSurface(const Color(0xFFD9B441), 0.18),
             onPressed: () => widget.onMove!(item),
+          ),
+        );
+      }
+      if (widget.onCopy != null) {
+        actions.add(
+          SwipeAction(
+            icon: Icons.copy_outlined,
+            label: m.checklists.swipeCopy,
+            tint: const Color(0xFF7AAE8E),
+            background: tintedSurface(const Color(0xFF7AAE8E), 0.18),
+            onPressed: () => widget.onCopy!(item),
           ),
         );
       }

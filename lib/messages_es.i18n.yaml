@@ -228,6 +228,9 @@ checklists:
   removeItem: "Eliminar artículo"
   moveItem: Mover a lista
   moveFailed: "No se pudo mover el artículo."
+  copyItem: Copiar a lista
+  copyFailed: "No se pudo copiar el artículo."
+  itemCopied: "Artículo copiado"
   itemMarkedDone: "Artículo marcado como hecho"
   itemRemoved: "Artículo eliminado"
   undo: Deshacer
@@ -354,6 +357,7 @@ checklists:
   swipeView: Ver
   swipeEdit: Editar
   swipeMove: Mover
+  swipeCopy: Copiar
   swipeDelete: Quitar
   viewList: Vista de lista
   viewCards: Vista de tarjetas

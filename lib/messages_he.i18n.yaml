@@ -228,6 +228,9 @@ checklists:
   removeItem: הסר פריט
   moveItem: העבר לרשימה
   moveFailed: העברת הפריט נכשלה.
+  copyItem: העתק לרשימה
+  copyFailed: העתקת הפריט נכשלה.
+  itemCopied: הפריט הועתק
   itemMarkedDone: הפריט סומן כהושלם
   itemRemoved: הפריט הוסר
   undo: בטל
@@ -354,6 +357,7 @@ checklists:
   swipeView: צפייה
   swipeEdit: עריכה
   swipeMove: העברה
+  swipeCopy: העתקה
   swipeDelete: הסר
   viewList: תצוגת רשימה
   viewCards: תצוגת כרטיסים

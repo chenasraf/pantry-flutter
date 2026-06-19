@@ -8,6 +8,7 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/date_format.dart';
@@ -101,12 +102,19 @@ class ItemDetailView extends StatelessWidget {
     final canMove = controller.lists
         .where((l) => l.id != controller.currentList?.id)
         .isNotEmpty;
+    final canCopy = canMove && hasFeature('copy-items');
     final actions = <_OverflowAction>[
       if (canMove)
         _OverflowAction(
           value: 'move',
           icon: Icons.drive_file_move_outlined,
           label: m.checklists.moveItem,
+        ),
+      if (canCopy)
+        _OverflowAction(
+          value: 'copy',
+          icon: Icons.copy_outlined,
+          label: m.checklists.copyItem,
         ),
       _OverflowAction(
         value: 'delete',
@@ -171,6 +179,8 @@ class ItemDetailView extends StatelessWidget {
     switch (selected) {
       case 'move':
         await _onMove(context);
+      case 'copy':
+        await _onCopy(context);
       case 'delete':
         await _confirmDelete(context);
     }
@@ -211,6 +221,47 @@ class ItemDetailView extends StatelessWidget {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(m.checklists.moveFailed)));
+      }
+    }
+  }
+
+  Future<void> _onCopy(BuildContext context) async {
+    final others = controller.lists
+        .where((l) => l.id != controller.currentList?.id)
+        .toList();
+    if (others.isEmpty) return;
+    final targetId = await showDialog<int>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(m.checklists.copyItem),
+        children: [
+          for (final list in others)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, list.id),
+              child: Row(
+                children: [
+                  Icon(checklistIcon(list.icon), size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(list.name)),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+    if (targetId == null || !context.mounted) return;
+    try {
+      await controller.copyItem(item, targetId);
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.itemCopied)));
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.copyFailed)));
       }
     }
   }

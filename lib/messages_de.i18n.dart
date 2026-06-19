@@ -1243,6 +1243,21 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get moveFailed => """Eintrag konnte nicht verschoben werden.""";
 
   /// ```dart
+  /// "In Liste kopieren"
+  /// ```
+  String get copyItem => """In Liste kopieren""";
+
+  /// ```dart
+  /// "Eintrag konnte nicht kopiert werden."
+  /// ```
+  String get copyFailed => """Eintrag konnte nicht kopiert werden.""";
+
+  /// ```dart
+  /// "Eintrag kopiert"
+  /// ```
+  String get itemCopied => """Eintrag kopiert""";
+
+  /// ```dart
   /// "Eintrag als erledigt markiert"
   /// ```
   String get itemMarkedDone => """Eintrag als erledigt markiert""";
@@ -1582,6 +1597,11 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Verschieben"
   /// ```
   String get swipeMove => """Verschieben""";
+
+  /// ```dart
+  /// "Kopieren"
+  /// ```
+  String get swipeCopy => """Kopieren""";
 
   /// ```dart
   /// "Entfernen"
@@ -3037,6 +3057,9 @@ Passwort: pantry-rocks""",
   """checklists.removeItem""": """Eintrag entfernen""",
   """checklists.moveItem""": """In Liste verschieben""",
   """checklists.moveFailed""": """Eintrag konnte nicht verschoben werden.""",
+  """checklists.copyItem""": """In Liste kopieren""",
+  """checklists.copyFailed""": """Eintrag konnte nicht kopiert werden.""",
+  """checklists.itemCopied""": """Eintrag kopiert""",
   """checklists.itemMarkedDone""": """Eintrag als erledigt markiert""",
   """checklists.itemRemoved""": """Eintrag entfernt""",
   """checklists.undo""": """Rückgängig""",
@@ -3161,6 +3184,7 @@ Passwort: pantry-rocks""",
   """checklists.swipeView""": """Anzeigen""",
   """checklists.swipeEdit""": """Bearbeiten""",
   """checklists.swipeMove""": """Verschieben""",
+  """checklists.swipeCopy""": """Kopieren""",
   """checklists.swipeDelete""": """Entfernen""",
   """checklists.viewList""": """Listenansicht""",
   """checklists.viewCards""": """Kartenansicht""",

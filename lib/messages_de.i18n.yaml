@@ -228,6 +228,9 @@ checklists:
   removeItem: Eintrag entfernen
   moveItem: In Liste verschieben
   moveFailed: Eintrag konnte nicht verschoben werden.
+  copyItem: In Liste kopieren
+  copyFailed: Eintrag konnte nicht kopiert werden.
+  itemCopied: Eintrag kopiert
   itemMarkedDone: Eintrag als erledigt markiert
   itemRemoved: Eintrag entfernt
   undo: "Rückgängig"
@@ -354,6 +357,7 @@ checklists:
   swipeView: Anzeigen
   swipeEdit: Bearbeiten
   swipeMove: Verschieben
+  swipeCopy: Kopieren
   swipeDelete: Entfernen
   viewList: Listenansicht
   viewCards: Kartenansicht

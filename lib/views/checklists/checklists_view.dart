@@ -1525,6 +1525,12 @@ class _ItemListState extends State<_ItemList> {
       onMove: controller.lists.length > 1 && !controller.isTrashMode
           ? (i) => _onMove(context, controller, i)
           : null,
+      onCopy:
+          controller.lists.length > 1 &&
+              !controller.isTrashMode &&
+              hasFeature('copy-items')
+          ? (i) => _onCopy(context, controller, i)
+          : null,
       onDelete: (i) => _onDelete(context, controller, i),
       onRestore: controller.isTrashMode
           ? (i) => _onRestore(context, controller, i)
@@ -1576,6 +1582,51 @@ class _ItemListState extends State<_ItemList> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(m.checklists.moveFailed)));
+      }
+    }
+  }
+
+  Future<void> _onCopy(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) async {
+    // In meta mode the "current list" is the synthetic sentinel — exclude the
+    // item's actual home list instead so we don't offer a no-op copy.
+    final excludeId = controller.isMetaMode
+        ? item.listId
+        : controller.currentList?.id;
+    final others = controller.lists
+        .where((l) => l.id != excludeId && l.id != kAllListsId)
+        .toList();
+    if (others.isEmpty) return;
+    final targetId = await showDialog<int>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(m.checklists.copyItem),
+        children: [
+          for (final list in others)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, list.id),
+              child: Row(
+                children: [
+                  Icon(checklistIcon(list.icon), size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(list.name)),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+    if (targetId == null) return;
+    try {
+      await controller.copyItem(item, targetId);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.copyFailed)));
       }
     }
   }

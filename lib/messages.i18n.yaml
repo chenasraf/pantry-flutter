@@ -228,6 +228,9 @@ checklists:
   removeItem: Remove item
   moveItem: Move to list
   moveFailed: Failed to move item.
+  copyItem: Copy to list
+  copyFailed: Failed to copy item.
+  itemCopied: Item copied
   itemMarkedDone: Item marked as done
   itemRemoved: Item removed
   undo: Undo
@@ -354,6 +357,7 @@ checklists:
   swipeView: View
   swipeEdit: Edit
   swipeMove: Move
+  swipeCopy: Copy
   swipeDelete: Remove
   viewList: List view
   viewCards: Cards view

@@ -1233,6 +1233,21 @@ class ChecklistsMessages {
   String get moveFailed => """Failed to move item.""";
 
   /// ```dart
+  /// "Copy to list"
+  /// ```
+  String get copyItem => """Copy to list""";
+
+  /// ```dart
+  /// "Failed to copy item."
+  /// ```
+  String get copyFailed => """Failed to copy item.""";
+
+  /// ```dart
+  /// "Item copied"
+  /// ```
+  String get itemCopied => """Item copied""";
+
+  /// ```dart
   /// "Item marked as done"
   /// ```
   String get itemMarkedDone => """Item marked as done""";
@@ -1566,6 +1581,11 @@ class ChecklistsMessages {
   /// "Move"
   /// ```
   String get swipeMove => """Move""";
+
+  /// ```dart
+  /// "Copy"
+  /// ```
+  String get swipeCopy => """Copy""";
 
   /// ```dart
   /// "Remove"
@@ -2999,6 +3019,9 @@ Password: pantry-rocks""",
   """checklists.removeItem""": """Remove item""",
   """checklists.moveItem""": """Move to list""",
   """checklists.moveFailed""": """Failed to move item.""",
+  """checklists.copyItem""": """Copy to list""",
+  """checklists.copyFailed""": """Failed to copy item.""",
+  """checklists.itemCopied""": """Item copied""",
   """checklists.itemMarkedDone""": """Item marked as done""",
   """checklists.itemRemoved""": """Item removed""",
   """checklists.undo""": """Undo""",
@@ -3114,6 +3137,7 @@ Password: pantry-rocks""",
   """checklists.swipeView""": """View""",
   """checklists.swipeEdit""": """Edit""",
   """checklists.swipeMove""": """Move""",
+  """checklists.swipeCopy""": """Copy""",
   """checklists.swipeDelete""": """Remove""",
   """checklists.viewList""": """List view""",
   """checklists.viewCards""": """Cards view""",
