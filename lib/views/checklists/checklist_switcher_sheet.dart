@@ -927,23 +927,38 @@ class _CreateStageState extends State<_CreateStage> {
             ),
           ),
           const SizedBox(height: 10),
-          SizedBox(
-            height: 48,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
+          if (PlatformInfo.isDesktopHost)
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
-                for (final entry in checklistIconMap.entries) ...[
+                for (final entry in checklistIconMap.entries)
                   _IconChip(
                     icon: entry.value,
                     selected: entry.key == _icon,
                     color: selectedColor,
                     onTap: () => setState(() => _icon = entry.key),
                   ),
-                  const SizedBox(width: 8),
-                ],
               ],
+            )
+          else
+            SizedBox(
+              height: 48,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  for (final entry in checklistIconMap.entries) ...[
+                    _IconChip(
+                      icon: entry.value,
+                      selected: entry.key == _icon,
+                      color: selectedColor,
+                      onTap: () => setState(() => _icon = entry.key),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ],
+              ),
             ),
-          ),
           const SizedBox(height: 22),
           GestureDetector(
             onTap: _saving ? null : _create,
