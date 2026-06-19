@@ -314,6 +314,8 @@ checklists:
     onceDescription: Delete this item once it is marked as done.
     image: Image
     addImage: Add image
+    takePhoto: Take photo
+    chooseImage: Choose image
     replaceImage: Replace
     removeImage: Remove
     saveFailed: Failed to save item.

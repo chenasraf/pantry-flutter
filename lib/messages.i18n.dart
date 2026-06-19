@@ -1840,6 +1840,16 @@ class ItemFormChecklistsMessages {
   String get addImage => """Add image""";
 
   /// ```dart
+  /// "Take photo"
+  /// ```
+  String get takePhoto => """Take photo""";
+
+  /// ```dart
+  /// "Choose image"
+  /// ```
+  String get chooseImage => """Choose image""";
+
+  /// ```dart
   /// "Replace"
   /// ```
   String get replaceImage => """Replace""";
@@ -3099,6 +3109,8 @@ Password: pantry-rocks""",
       """Delete this item once it is marked as done.""",
   """checklists.itemForm.image""": """Image""",
   """checklists.itemForm.addImage""": """Add image""",
+  """checklists.itemForm.takePhoto""": """Take photo""",
+  """checklists.itemForm.chooseImage""": """Choose image""",
   """checklists.itemForm.replaceImage""": """Replace""",
   """checklists.itemForm.removeImage""": """Remove""",
   """checklists.itemForm.saveFailed""": """Failed to save item.""",

@@ -8,10 +8,11 @@ import '../helpers/fakes.dart';
 import '../helpers/test_app.dart';
 
 void main() {
-  // On macOS the camera action is suppressed, so the "Take photo" label is
+  // On desktop the camera action is suppressed, so the "Take photo" label is
   // never rendered. The label we reach for to confirm the menu is open varies
   // by platform.
-  final menuOpenLabel = Platform.isMacOS ? 'Upload photos' : 'Take photo';
+  final isDesktop = Platform.isMacOS || Platform.isWindows || Platform.isLinux;
+  final menuOpenLabel = isDesktop ? 'Upload photos' : 'Take photo';
 
   testWidgets('renders a single main FAB closed by default', (tester) async {
     final controller = FakePhotoBoardController();
@@ -42,7 +43,7 @@ void main() {
     expect(find.text('New folder'), findsOneWidget);
     expect(find.byIcon(Icons.add_photo_alternate), findsOneWidget);
     expect(find.byIcon(Icons.create_new_folder), findsOneWidget);
-    if (!Platform.isMacOS) {
+    if (!isDesktop) {
       expect(find.text('Take photo'), findsOneWidget);
       expect(find.byIcon(Icons.camera_alt), findsOneWidget);
     }

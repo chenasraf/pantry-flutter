@@ -1859,6 +1859,16 @@ class ItemFormChecklistsMessagesDe extends ItemFormChecklistsMessages {
   String get addImage => """Bild hinzufügen""";
 
   /// ```dart
+  /// "Foto aufnehmen"
+  /// ```
+  String get takePhoto => """Foto aufnehmen""";
+
+  /// ```dart
+  /// "Bild auswählen"
+  /// ```
+  String get chooseImage => """Bild auswählen""";
+
+  /// ```dart
   /// "Ersetzen"
   /// ```
   String get replaceImage => """Ersetzen""";
@@ -3144,6 +3154,8 @@ Passwort: pantry-rocks""",
       """Diesen Eintrag löschen, sobald er als erledigt markiert ist.""",
   """checklists.itemForm.image""": """Bild""",
   """checklists.itemForm.addImage""": """Bild hinzufügen""",
+  """checklists.itemForm.takePhoto""": """Foto aufnehmen""",
+  """checklists.itemForm.chooseImage""": """Bild auswählen""",
   """checklists.itemForm.replaceImage""": """Ersetzen""",
   """checklists.itemForm.removeImage""": """Entfernen""",
   """checklists.itemForm.saveFailed""":

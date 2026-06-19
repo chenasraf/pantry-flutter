@@ -314,6 +314,8 @@ checklists:
     onceDescription: "Eliminar este artículo cuando se marque como hecho."
     image: Imagen
     addImage: Agregar imagen
+    takePhoto: Tomar foto
+    chooseImage: Elegir imagen
     replaceImage: Reemplazar
     removeImage: Eliminar
     saveFailed: "No se pudo guardar el artículo."

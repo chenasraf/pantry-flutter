@@ -314,6 +314,8 @@ checklists:
     onceDescription: Diesen Eintrag löschen, sobald er als erledigt markiert ist.
     image: Bild
     addImage: Bild hinzufügen
+    takePhoto: Foto aufnehmen
+    chooseImage: Bild auswählen
     replaceImage: Ersetzen
     removeImage: Entfernen
     saveFailed: Eintrag konnte nicht gespeichert werden.

@@ -1845,6 +1845,16 @@ class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
   String get addImage => """הוסף תמונה""";
 
   /// ```dart
+  /// "צלם תמונה"
+  /// ```
+  String get takePhoto => """צלם תמונה""";
+
+  /// ```dart
+  /// "בחר תמונה"
+  /// ```
+  String get chooseImage => """בחר תמונה""";
+
+  /// ```dart
   /// "החלף"
   /// ```
   String get replaceImage => """החלף""";
@@ -3098,6 +3108,8 @@ Map<String, String> get messagesHeMap => {
       """מחק את הפריט ברגע שהוא מסומן כבוצע.""",
   """checklists.itemForm.image""": """תמונה""",
   """checklists.itemForm.addImage""": """הוסף תמונה""",
+  """checklists.itemForm.takePhoto""": """צלם תמונה""",
+  """checklists.itemForm.chooseImage""": """בחר תמונה""",
   """checklists.itemForm.replaceImage""": """החלף""",
   """checklists.itemForm.removeImage""": """הסר""",
   """checklists.itemForm.saveFailed""": """שמירת הפריט נכשלה.""",

@@ -21,7 +21,7 @@ class _PhotoAddButtonState extends State<PhotoAddButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animController;
   bool _open = false;
-  bool _cameraSupported = !PlatformInfo.isMacOS;
+  bool _cameraSupported = !PlatformInfo.isDesktop;
 
   @override
   void initState() {

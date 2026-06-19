@@ -47,6 +47,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   XFile? _pickedImage;
   bool _removeExistingImage = false;
   String? _focusedField;
+  bool _cameraSupported = !PlatformInfo.isDesktop;
   final _nameFocus = FocusNode();
   final _descFocus = FocusNode();
   final _qtyFocus = FocusNode();
@@ -88,6 +89,12 @@ class _ItemFormViewState extends State<ItemFormView> {
       final dir = detectTextDirection(_descriptionController.text);
       if (dir != _descriptionDir) setState(() => _descriptionDir = dir);
     });
+    if (_cameraSupported) {
+      PlatformInfo.isiOSAppOnMac.then((onMac) {
+        if (!mounted || !onMac) return;
+        setState(() => _cameraSupported = false);
+      });
+    }
     for (final entry in {
       _nameFocus: 'name',
       _descFocus: 'desc',
@@ -459,7 +466,7 @@ class _ItemFormViewState extends State<ItemFormView> {
           _pickedImage = null;
           if (!_isEditing) _removeExistingImage = false;
         }),
-        onReplace: _pickImage,
+        onReplace: _replaceImage,
       );
     }
 
@@ -476,16 +483,34 @@ class _ItemFormViewState extends State<ItemFormView> {
         onRemove: () => setState(() {
           _removeExistingImage = true;
         }),
-        onReplace: _pickImage,
+        onReplace: _replaceImage,
       );
     }
 
-    return _AddImageButton(onTap: _pickImage);
+    return _AddImageButtons(
+      onChooseImage: () => _pickImage(ImageSource.gallery),
+      onTakePhoto: _cameraSupported
+          ? () => _pickImage(ImageSource.camera)
+          : null,
+    );
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _replaceImage() async {
+    if (!_cameraSupported) {
+      await _pickImage(ImageSource.gallery);
+      return;
+    }
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => _ImageSourceSheet(),
+    );
+    if (source != null) await _pickImage(source);
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
-    final file = await picker.pickImage(source: ImageSource.gallery);
+    final file = await picker.pickImage(source: source);
     if (file != null) {
       setState(() {
         _pickedImage = file;
@@ -943,10 +968,54 @@ class _LifecyclePicker extends StatelessWidget {
   }
 }
 
-class _AddImageButton extends StatelessWidget {
+class _AddImageButtons extends StatelessWidget {
+  final VoidCallback onChooseImage;
+  final VoidCallback? onTakePhoto;
+
+  const _AddImageButtons({required this.onChooseImage, this.onTakePhoto});
+
+  @override
+  Widget build(BuildContext context) {
+    final f = m.checklists.itemForm;
+    if (onTakePhoto == null) {
+      return _AddImageTile(
+        icon: Icons.add_photo_alternate_outlined,
+        label: f.addImage,
+        onTap: onChooseImage,
+      );
+    }
+    return Row(
+      children: [
+        Expanded(
+          child: _AddImageTile(
+            icon: Icons.photo_camera_outlined,
+            label: f.takePhoto,
+            onTap: onTakePhoto!,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _AddImageTile(
+            icon: Icons.add_photo_alternate_outlined,
+            label: f.chooseImage,
+            onTap: onChooseImage,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AddImageTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
   final VoidCallback onTap;
 
-  const _AddImageButton({required this.onTap});
+  const _AddImageTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -963,23 +1032,49 @@ class _AddImageButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.add_photo_alternate_outlined,
-                color: cs.primary,
-                size: 20,
-              ),
+              Icon(icon, color: cs.primary, size: 20),
               const SizedBox(width: 9),
-              Text(
-                m.checklists.itemForm.addImage,
-                style: TextStyle(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
-                  color: cs.primary,
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w700,
+                    color: cs.primary,
+                  ),
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ImageSourceSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final f = m.checklists.itemForm;
+    return SafeArea(
+      top: false,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.photo_camera_outlined),
+            title: Text(f.takePhoto),
+            onTap: () => Navigator.pop(context, ImageSource.camera),
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_photo_alternate_outlined),
+            title: Text(f.chooseImage),
+            onTap: () => Navigator.pop(context, ImageSource.gallery),
+          ),
+          const SizedBox(height: 8),
+        ],
       ),
     );
   }

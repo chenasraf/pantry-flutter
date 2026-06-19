@@ -1854,6 +1854,16 @@ class ItemFormChecklistsMessagesEs extends ItemFormChecklistsMessages {
   String get addImage => """Agregar imagen""";
 
   /// ```dart
+  /// "Tomar foto"
+  /// ```
+  String get takePhoto => """Tomar foto""";
+
+  /// ```dart
+  /// "Elegir imagen"
+  /// ```
+  String get chooseImage => """Elegir imagen""";
+
+  /// ```dart
   /// "Reemplazar"
   /// ```
   String get replaceImage => """Reemplazar""";
@@ -3130,6 +3140,8 @@ Contraseña: pantry-rocks""",
       """Eliminar este artículo cuando se marque como hecho.""",
   """checklists.itemForm.image""": """Imagen""",
   """checklists.itemForm.addImage""": """Agregar imagen""",
+  """checklists.itemForm.takePhoto""": """Tomar foto""",
+  """checklists.itemForm.chooseImage""": """Elegir imagen""",
   """checklists.itemForm.replaceImage""": """Reemplazar""",
   """checklists.itemForm.removeImage""": """Eliminar""",
   """checklists.itemForm.saveFailed""": """No se pudo guardar el artículo.""",
