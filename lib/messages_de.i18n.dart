@@ -1346,6 +1346,26 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get removeList => """Liste entfernen""";
 
   /// ```dart
+  /// "Liste bearbeiten"
+  /// ```
+  String get editList => """Liste bearbeiten""";
+
+  /// ```dart
+  /// "Liste bearbeiten"
+  /// ```
+  String get editListTitle => """Liste bearbeiten""";
+
+  /// ```dart
+  /// "Änderungen speichern"
+  /// ```
+  String get saveListButton => """Änderungen speichern""";
+
+  /// ```dart
+  /// "Liste konnte nicht aktualisiert werden."
+  /// ```
+  String get updateListFailed => """Liste konnte nicht aktualisiert werden.""";
+
+  /// ```dart
   /// "Liste entfernen?"
   /// ```
   String get removeListConfirm => """Liste entfernen?""";
@@ -3004,6 +3024,11 @@ Passwort: pantry-rocks""",
   """checklists.pinList""": """Liste anheften""",
   """checklists.unpinList""": """Liste lösen""",
   """checklists.removeList""": """Liste entfernen""",
+  """checklists.editList""": """Liste bearbeiten""",
+  """checklists.editListTitle""": """Liste bearbeiten""",
+  """checklists.saveListButton""": """Änderungen speichern""",
+  """checklists.updateListFailed""":
+      """Liste konnte nicht aktualisiert werden.""",
   """checklists.removeListConfirm""": """Liste entfernen?""",
   """checklists.removeListFailed""": """Liste konnte nicht entfernt werden.""",
   """checklists.restoreList""": """Liste wiederherstellen""",

@@ -1332,6 +1332,26 @@ class ChecklistsMessages {
   String get removeList => """Remove list""";
 
   /// ```dart
+  /// "Edit list"
+  /// ```
+  String get editList => """Edit list""";
+
+  /// ```dart
+  /// "Edit list"
+  /// ```
+  String get editListTitle => """Edit list""";
+
+  /// ```dart
+  /// "Save changes"
+  /// ```
+  String get saveListButton => """Save changes""";
+
+  /// ```dart
+  /// "Failed to update list."
+  /// ```
+  String get updateListFailed => """Failed to update list.""";
+
+  /// ```dart
   /// "Remove list?"
   /// ```
   String get removeListConfirm => """Remove list?""";
@@ -2961,6 +2981,10 @@ Password: pantry-rocks""",
   """checklists.pinList""": """Pin list""",
   """checklists.unpinList""": """Unpin list""",
   """checklists.removeList""": """Remove list""",
+  """checklists.editList""": """Edit list""",
+  """checklists.editListTitle""": """Edit list""",
+  """checklists.saveListButton""": """Save changes""",
+  """checklists.updateListFailed""": """Failed to update list.""",
   """checklists.removeListConfirm""": """Remove list?""",
   """checklists.removeListFailed""": """Failed to remove list.""",
   """checklists.restoreList""": """Restore list""",

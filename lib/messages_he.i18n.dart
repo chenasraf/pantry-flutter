@@ -1335,6 +1335,26 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get removeList => """הסר רשימה""";
 
   /// ```dart
+  /// "ערוך רשימה"
+  /// ```
+  String get editList => """ערוך רשימה""";
+
+  /// ```dart
+  /// "ערוך רשימה"
+  /// ```
+  String get editListTitle => """ערוך רשימה""";
+
+  /// ```dart
+  /// "שמור שינויים"
+  /// ```
+  String get saveListButton => """שמור שינויים""";
+
+  /// ```dart
+  /// "עדכון הרשימה נכשל."
+  /// ```
+  String get updateListFailed => """עדכון הרשימה נכשל.""";
+
+  /// ```dart
   /// "להסיר את הרשימה?"
   /// ```
   String get removeListConfirm => """להסיר את הרשימה?""";
@@ -2962,6 +2982,10 @@ Map<String, String> get messagesHeMap => {
   """checklists.pinList""": """הצמד רשימה""",
   """checklists.unpinList""": """בטל הצמדה""",
   """checklists.removeList""": """הסר רשימה""",
+  """checklists.editList""": """ערוך רשימה""",
+  """checklists.editListTitle""": """ערוך רשימה""",
+  """checklists.saveListButton""": """שמור שינויים""",
+  """checklists.updateListFailed""": """עדכון הרשימה נכשל.""",
   """checklists.removeListConfirm""": """להסיר את הרשימה?""",
   """checklists.removeListFailed""": """הסרת הרשימה נכשלה.""",
   """checklists.restoreList""": """שחזר רשימה""",

@@ -248,6 +248,10 @@ checklists:
   pinList: Pin list
   unpinList: Unpin list
   removeList: Remove list
+  editList: Edit list
+  editListTitle: Edit list
+  saveListButton: Save changes
+  updateListFailed: Failed to update list.
   removeListConfirm: Remove list?
   removeListConfirmBody(String name): "Remove the list \"$name\"? You can restore it from the trash."
   removeListFailed: Failed to remove list.

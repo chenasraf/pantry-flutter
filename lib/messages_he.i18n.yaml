@@ -248,6 +248,10 @@ checklists:
   pinList: הצמד רשימה
   unpinList: בטל הצמדה
   removeList: הסר רשימה
+  editList: ערוך רשימה
+  editListTitle: ערוך רשימה
+  saveListButton: שמור שינויים
+  updateListFailed: עדכון הרשימה נכשל.
   removeListConfirm: להסיר את הרשימה?
   removeListConfirmBody(String name): "להסיר את הרשימה \"$name\"? ניתן לשחזר אותה מסל המיחזור."
   removeListFailed: הסרת הרשימה נכשלה.

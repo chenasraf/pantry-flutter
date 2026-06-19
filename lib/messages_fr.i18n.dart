@@ -1346,6 +1346,26 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get removeList => """Retirer la liste""";
 
   /// ```dart
+  /// "Modifier la liste"
+  /// ```
+  String get editList => """Modifier la liste""";
+
+  /// ```dart
+  /// "Modifier la liste"
+  /// ```
+  String get editListTitle => """Modifier la liste""";
+
+  /// ```dart
+  /// "Enregistrer les modifications"
+  /// ```
+  String get saveListButton => """Enregistrer les modifications""";
+
+  /// ```dart
+  /// "Impossible de mettre à jour la liste."
+  /// ```
+  String get updateListFailed => """Impossible de mettre à jour la liste.""";
+
+  /// ```dart
   /// "Retirer la liste ?"
   /// ```
   String get removeListConfirm => """Retirer la liste ?""";
@@ -3001,6 +3021,11 @@ Mot de passe : pantry-rocks""",
   """checklists.pinList""": """Épingler la liste""",
   """checklists.unpinList""": """Détacher la liste""",
   """checklists.removeList""": """Retirer la liste""",
+  """checklists.editList""": """Modifier la liste""",
+  """checklists.editListTitle""": """Modifier la liste""",
+  """checklists.saveListButton""": """Enregistrer les modifications""",
+  """checklists.updateListFailed""":
+      """Impossible de mettre à jour la liste.""",
   """checklists.removeListConfirm""": """Retirer la liste ?""",
   """checklists.removeListFailed""": """Impossible de retirer la liste.""",
   """checklists.restoreList""": """Restaurer la liste""",

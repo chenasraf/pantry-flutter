@@ -630,6 +630,44 @@ class ChecklistsController extends ChangeNotifier {
     return synthetic;
   }
 
+  Future<void> updateList(
+    ChecklistList list, {
+    required String name,
+    required String icon,
+    String? color,
+  }) async {
+    if (list.id == kAllListsId) return;
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    final unchanged =
+        trimmed == list.name && icon == list.icon && color == list.color;
+    if (unchanged) return;
+
+    final optimistic = list.copyWith(
+      name: trimmed,
+      icon: icon,
+      color: color,
+      updatedAt: _now(),
+    );
+    _lists = [for (final l in _lists) l.id == list.id ? optimistic : l];
+    if (_currentList?.id == list.id) _currentList = optimistic;
+    _checklistService.cacheLists(houseId, _lists);
+    notifyListeners();
+
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.update,
+        houseId: houseId,
+        entityId: list.id < 0 ? null : list.id,
+        tempEntityId: list.id < 0 ? list.id : null,
+        body: {'name': trimmed, 'icon': icon, 'color': ?color},
+        createdAt: _now(),
+      ),
+    );
+  }
+
   Future<void> setListDeleteOnDoneDefault(bool value) async {
     final list = _currentList;
     if (list == null || list.id == kAllListsId) return;

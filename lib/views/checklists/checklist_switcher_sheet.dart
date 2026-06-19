@@ -188,10 +188,11 @@ class _SheetHost extends StatefulWidget {
   State<_SheetHost> createState() => _SheetHostState();
 }
 
-enum _Stage { list, create, trash }
+enum _Stage { list, create, edit, trash }
 
 class _SheetHostState extends State<_SheetHost> {
   _Stage _stage = _Stage.list;
+  ChecklistList? _editing;
 
   @override
   Widget build(BuildContext context) {
@@ -240,14 +241,25 @@ class _SheetHostState extends State<_SheetHost> {
                   controller: widget.controller,
                   itemCountForList: widget.itemCountForList,
                   onCreateNew: () => setState(() => _stage = _Stage.create),
+                  onEdit: (list) => setState(() {
+                    _editing = list;
+                    _stage = _Stage.edit;
+                  }),
                   onOpenTrash: () => setState(() => _stage = _Stage.trash),
                 ),
               )
             else if (_stage == _Stage.create)
-              _CreateStage(
+              _ListFormStage(
                 controller: widget.controller,
                 onBack: () => setState(() => _stage = _Stage.list),
-                onCreated: () => Navigator.pop(context),
+                onSaved: () => Navigator.pop(context),
+              )
+            else if (_stage == _Stage.edit)
+              _ListFormStage(
+                controller: widget.controller,
+                existing: _editing,
+                onBack: () => setState(() => _stage = _Stage.list),
+                onSaved: () => setState(() => _stage = _Stage.list),
               )
             else
               _TrashStage(
@@ -279,12 +291,14 @@ class _ListStage extends StatelessWidget {
   final ChecklistsController controller;
   final Future<int> Function(int listId) itemCountForList;
   final VoidCallback onCreateNew;
+  final ValueChanged<ChecklistList> onEdit;
   final VoidCallback onOpenTrash;
 
   const _ListStage({
     required this.controller,
     required this.itemCountForList,
     required this.onCreateNew,
+    required this.onEdit,
     required this.onOpenTrash,
   });
 
@@ -381,11 +395,12 @@ class _ListStage extends StatelessWidget {
                         selected: selected,
                         itemCountFuture: itemCountForList(list.id),
                         dragIndex: i,
-                        showOverflow: showMenu,
+                        showOverflow: true,
                         onTap: () async {
                           Navigator.pop(context);
                           if (!selected) await controller.selectList(list);
                         },
+                        onEdit: () => onEdit(list),
                         onRemove: showMenu
                             ? () => _confirmRemove(context, list)
                             : null,
@@ -404,11 +419,12 @@ class _ListStage extends StatelessWidget {
                       list: list,
                       selected: selected,
                       itemCountFuture: itemCountForList(list.id),
-                      showOverflow: showMenu,
+                      showOverflow: true,
                       onTap: () async {
                         Navigator.pop(context);
                         if (!selected) await controller.selectList(list);
                       },
+                      onEdit: () => onEdit(list),
                       onRemove: showMenu
                           ? () => _confirmRemove(context, list)
                           : null,
@@ -531,6 +547,7 @@ class _ListTile extends StatelessWidget {
   final bool selected;
   final Future<int> itemCountFuture;
   final VoidCallback onTap;
+  final VoidCallback? onEdit;
   final VoidCallback? onRemove;
   final int? dragIndex;
   final bool showOverflow;
@@ -540,6 +557,7 @@ class _ListTile extends StatelessWidget {
     required this.selected,
     required this.itemCountFuture,
     required this.onTap,
+    this.onEdit,
     this.onRemove,
     this.dragIndex,
     this.showOverflow = false,
@@ -624,7 +642,7 @@ class _ListTile extends StatelessWidget {
               ),
               child: const Icon(Icons.check, color: Colors.white, size: 16),
             ),
-          if (showOverflow && onRemove != null)
+          if (showOverflow && (onEdit != null || onRemove != null))
             SizedBox(
               width: 36,
               height: 36,
@@ -637,19 +655,32 @@ class _ListTile extends StatelessWidget {
                   color: cs.onSurfaceVariant,
                 ),
                 onSelected: (v) {
-                  if (v == 'remove') onRemove!();
+                  if (v == 'edit') onEdit?.call();
+                  if (v == 'remove') onRemove?.call();
                 },
                 itemBuilder: (_) => [
-                  PopupMenuItem<String>(
-                    value: 'remove',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.delete_outline, size: 18),
-                        const SizedBox(width: 10),
-                        Text(m.checklists.removeList),
-                      ],
+                  if (onEdit != null)
+                    PopupMenuItem<String>(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.edit_outlined, size: 18),
+                          const SizedBox(width: 10),
+                          Text(m.checklists.editList),
+                        ],
+                      ),
                     ),
-                  ),
+                  if (onRemove != null)
+                    PopupMenuItem<String>(
+                      value: 'remove',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.delete_outline, size: 18),
+                          const SizedBox(width: 10),
+                          Text(m.checklists.removeList),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -675,25 +706,33 @@ class _ListTile extends StatelessWidget {
       child: tile,
     );
 
-    if (!PlatformInfo.isDesktop || onRemove == null) return interactive;
+    if (!PlatformInfo.isDesktop || (onEdit == null && onRemove == null)) {
+      return interactive;
+    }
 
     return _ContextMenuRegion(
-      onRemove: onRemove!,
+      onEdit: onEdit,
+      onRemove: onRemove,
+      editLabel: m.checklists.editList,
       removeLabel: m.checklists.removeList,
       child: interactive,
     );
   }
 }
 
-/// Wraps a child with a desktop right-click menu offering the "remove" action.
+/// Wraps a child with a desktop right-click menu offering edit and remove actions.
 class _ContextMenuRegion extends StatefulWidget {
   final Widget child;
-  final VoidCallback onRemove;
+  final VoidCallback? onEdit;
+  final VoidCallback? onRemove;
+  final String editLabel;
   final String removeLabel;
 
   const _ContextMenuRegion({
     required this.child,
+    required this.onEdit,
     required this.onRemove,
+    required this.editLabel,
     required this.removeLabel,
   });
 
@@ -711,19 +750,32 @@ class _ContextMenuRegionState extends State<_ContextMenuRegion> {
         Offset.zero & overlay.size,
       ),
       items: [
-        PopupMenuItem<String>(
-          value: 'remove',
-          child: Row(
-            children: [
-              const Icon(Icons.delete_outline, size: 18),
-              const SizedBox(width: 10),
-              Text(widget.removeLabel),
-            ],
+        if (widget.onEdit != null)
+          PopupMenuItem<String>(
+            value: 'edit',
+            child: Row(
+              children: [
+                const Icon(Icons.edit_outlined, size: 18),
+                const SizedBox(width: 10),
+                Text(widget.editLabel),
+              ],
+            ),
           ),
-        ),
+        if (widget.onRemove != null)
+          PopupMenuItem<String>(
+            value: 'remove',
+            child: Row(
+              children: [
+                const Icon(Icons.delete_outline, size: 18),
+                const SizedBox(width: 10),
+                Text(widget.removeLabel),
+              ],
+            ),
+          ),
       ],
     );
-    if (result == 'remove') widget.onRemove();
+    if (result == 'edit') widget.onEdit?.call();
+    if (result == 'remove') widget.onRemove?.call();
   }
 
   @override
@@ -781,26 +833,30 @@ class _SortMenuButton extends StatelessWidget {
   }
 }
 
-class _CreateStage extends StatefulWidget {
+class _ListFormStage extends StatefulWidget {
   final ChecklistsController controller;
+  final ChecklistList? existing;
   final VoidCallback onBack;
-  final VoidCallback onCreated;
+  final VoidCallback onSaved;
 
-  const _CreateStage({
+  const _ListFormStage({
     required this.controller,
+    this.existing,
     required this.onBack,
-    required this.onCreated,
+    required this.onSaved,
   });
 
   @override
-  State<_CreateStage> createState() => _CreateStageState();
+  State<_ListFormStage> createState() => _ListFormStageState();
 }
 
-class _CreateStageState extends State<_CreateStage> {
-  final _nameCtrl = TextEditingController();
-  String _color = kListColorSwatches.first;
-  String _icon = 'cart';
+class _ListFormStageState extends State<_ListFormStage> {
+  late final TextEditingController _nameCtrl;
+  late String _color;
+  late String _icon;
   bool _saving = false;
+
+  bool get _isEdit => widget.existing != null;
 
   // Per-list color is only meaningful on servers that ship the
   // `checklist-color` feature. On older servers, sending a color is rejected
@@ -809,31 +865,59 @@ class _CreateStageState extends State<_CreateStage> {
   bool get _supportsListColor => hasFeature('checklist-color');
 
   @override
+  void initState() {
+    super.initState();
+    final existing = widget.existing;
+    _nameCtrl = TextEditingController(text: existing?.name ?? '');
+    _icon = existing?.icon ?? 'cart';
+    final fromExisting = existing?.color;
+    _color = (fromExisting != null && kListColorSwatches.contains(fromExisting))
+        ? fromExisting
+        : kListColorSwatches.first;
+  }
+
+  @override
   void dispose() {
     _nameCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _create() async {
+  Future<void> _submit() async {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty || _saving) return;
     setState(() => _saving = true);
     try {
-      await widget.controller.createList(
-        name: name,
-        icon: _icon,
-        color: _supportsListColor ? _color : null,
-      );
+      final existing = widget.existing;
+      if (existing != null) {
+        await widget.controller.updateList(
+          existing,
+          name: name,
+          icon: _icon,
+          color: _supportsListColor ? _color : existing.color,
+        );
+      } else {
+        await widget.controller.createList(
+          name: name,
+          icon: _icon,
+          color: _supportsListColor ? _color : null,
+        );
+        if (!mounted) return;
+        final fresh = widget.controller.lists.firstWhere((l) => l.name == name);
+        await widget.controller.selectList(fresh);
+      }
       if (!mounted) return;
-      // Auto-select the newly created list.
-      final fresh = widget.controller.lists.firstWhere((l) => l.name == name);
-      await widget.controller.selectList(fresh);
-      widget.onCreated();
+      widget.onSaved();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.createListFailed)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _isEdit
+                  ? m.checklists.updateListFailed
+                  : m.checklists.createListFailed,
+            ),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -862,7 +946,9 @@ class _CreateStageState extends State<_CreateStage> {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  m.checklists.newChecklist,
+                  _isEdit
+                      ? m.checklists.editListTitle
+                      : m.checklists.newChecklist,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
@@ -961,7 +1047,7 @@ class _CreateStageState extends State<_CreateStage> {
             ),
           const SizedBox(height: 22),
           GestureDetector(
-            onTap: _saving ? null : _create,
+            onTap: _saving ? null : _submit,
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 15),
               decoration: BoxDecoration(
@@ -985,10 +1071,16 @@ class _CreateStageState extends State<_CreateStage> {
                       ),
                     )
                   else
-                    const Icon(Icons.add, color: Colors.white, size: 20),
+                    Icon(
+                      _isEdit ? Icons.check : Icons.add,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   const SizedBox(width: 8),
                   Text(
-                    m.checklists.createListButton,
+                    _isEdit
+                        ? m.checklists.saveListButton
+                        : m.checklists.createListButton,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,

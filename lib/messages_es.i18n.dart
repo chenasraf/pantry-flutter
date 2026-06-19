@@ -1342,6 +1342,26 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get removeList => """Quitar lista""";
 
   /// ```dart
+  /// "Editar lista"
+  /// ```
+  String get editList => """Editar lista""";
+
+  /// ```dart
+  /// "Editar lista"
+  /// ```
+  String get editListTitle => """Editar lista""";
+
+  /// ```dart
+  /// "Guardar cambios"
+  /// ```
+  String get saveListButton => """Guardar cambios""";
+
+  /// ```dart
+  /// "No se pudo actualizar la lista."
+  /// ```
+  String get updateListFailed => """No se pudo actualizar la lista.""";
+
+  /// ```dart
   /// "¿Quitar la lista?"
   /// ```
   String get removeListConfirm => """¿Quitar la lista?""";
@@ -2992,6 +3012,10 @@ Contraseña: pantry-rocks""",
   """checklists.pinList""": """Fijar lista""",
   """checklists.unpinList""": """Desfijar lista""",
   """checklists.removeList""": """Quitar lista""",
+  """checklists.editList""": """Editar lista""",
+  """checklists.editListTitle""": """Editar lista""",
+  """checklists.saveListButton""": """Guardar cambios""",
+  """checklists.updateListFailed""": """No se pudo actualizar la lista.""",
   """checklists.removeListConfirm""": """¿Quitar la lista?""",
   """checklists.removeListFailed""": """No se pudo quitar la lista.""",
   """checklists.restoreList""": """Restaurar lista""",
