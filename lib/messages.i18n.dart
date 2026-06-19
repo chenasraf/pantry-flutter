@@ -1986,6 +1986,16 @@ class ComposeChecklistsMessages {
   /// "Pick a list"
   /// ```
   String get pickTargetList => """Pick a list""";
+
+  /// ```dart
+  /// "Multiple"
+  /// ```
+  String get multiple => """Multiple""";
+
+  /// ```dart
+  /// "Separate items by new lines"
+  /// ```
+  String get multipleHint => """Separate items by new lines""";
 }
 
 class NotesWallMessages {
@@ -3062,6 +3072,8 @@ Password: pantry-rocks""",
   """checklists.compose.weeks""": """weeks""",
   """checklists.compose.chipTargetList""": """List""",
   """checklists.compose.pickTargetList""": """Pick a list""",
+  """checklists.compose.multiple""": """Multiple""",
+  """checklists.compose.multipleHint""": """Separate items by new lines""",
   """checklists.allLists""": """All lists""",
   """checklists.allListsSubtitle""": """Items from every list""",
   """checklists.addToAnyList""": """Add an item…""",

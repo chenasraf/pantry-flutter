@@ -144,6 +144,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   bool _active = false;
   _Tray? _openTray;
   bool _submitting = false;
+  bool _multiple = false;
 
   @override
   void initState() {
@@ -160,6 +161,30 @@ class ItemComposeBarState extends State<ItemComposeBar> {
         _activate();
       }
     });
+    _nameCtrl.addListener(_onNameChanged);
+  }
+
+  void _onNameChanged() {
+    if (_multiple) setState(() {});
+  }
+
+  List<String> _bulkNames() {
+    return _nameCtrl.text
+        .split('\n')
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
+
+  void _toggleMultiple() {
+    setState(() {
+      _multiple = !_multiple;
+      if (_multiple) {
+        _draft.imageFile = null;
+        _draft.imageBytes = null;
+        if (_openTray == _Tray.image) _openTray = null;
+      }
+    });
   }
 
   void _activate() {
@@ -170,6 +195,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
 
   @override
   void dispose() {
+    _nameCtrl.removeListener(_onNameChanged);
     _nameCtrl.dispose();
     _qtyCtrl.dispose();
     _descCtrl.dispose();
@@ -258,11 +284,11 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   bool get _hasTarget =>
       !widget._allListsMode || widget.selectedTargetListId != null;
 
-  Future<void> _submit() async {
-    final name = _nameCtrl.text.trim();
-    if (name.isEmpty || _submitting || !_hasTarget) return;
-    setState(() => _submitting = true);
-    final submission = ComposeSubmission(
+  bool get _hasContent =>
+      _multiple ? _bulkNames().isNotEmpty : _nameCtrl.text.trim().isNotEmpty;
+
+  ComposeSubmission _buildSubmission(String name) {
+    return ComposeSubmission(
       name: name,
       description: _draft.description.trim().isEmpty
           ? null
@@ -272,15 +298,31 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       rrule: _draft.rrule,
       deleteOnDone: _draft.deleteOnDoneForCreate,
       repeatFromCompletion: _draft.repeatFromCompletion,
-      imageBytes: _draft.imageBytes,
-      imageName: _draft.imageFile?.name,
-      imageMime: _draft.imageFile != null
+      imageBytes: _multiple ? null : _draft.imageBytes,
+      imageName: _multiple ? null : _draft.imageFile?.name,
+      imageMime: (!_multiple && _draft.imageFile != null)
           ? (lookupMimeType(_draft.imageFile!.name) ?? 'image/jpeg')
           : null,
     );
-    final ok = await widget.onSubmit(submission);
-    if (!mounted) return;
-    if (ok) {
+  }
+
+  Future<void> _submit() async {
+    if (_submitting || !_hasTarget) return;
+    final names = _multiple
+        ? _bulkNames()
+        : [_nameCtrl.text.trim()].where((s) => s.isNotEmpty).toList();
+    if (names.isEmpty) return;
+    setState(() => _submitting = true);
+    bool allOk = true;
+    for (final n in names) {
+      final ok = await widget.onSubmit(_buildSubmission(n));
+      if (!mounted) return;
+      if (!ok) {
+        allOk = false;
+        break;
+      }
+    }
+    if (allOk) {
       setState(() {
         _draft.reset(_defaultLifecycle());
         _nameCtrl.clear();
@@ -378,6 +420,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                 categories: widget.categories,
                 openTray: _openTray,
                 onOpen: _toggleTray,
+                showImageChip: !_multiple,
               ),
               const SizedBox(height: 10),
               if (trayChild != null) ...[
@@ -401,8 +444,10 @@ class ItemComposeBarState extends State<ItemComposeBar> {
               onCancel: _cancel,
               onSubmit: _submit,
               submitting: _submitting,
-              submitEnabled: _hasTarget,
+              submitEnabled: _hasTarget && (!_multiple || _hasContent),
               onActivate: _activate,
+              multiple: _multiple,
+              onToggleMultiple: _toggleMultiple,
               targetListLeading: widget._allListsMode
                   ? _BarTargetChip(
                       list: widget.targetLists
@@ -419,6 +464,20 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                     )
                   : null,
             ),
+            if (_active && _multiple) ...[
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(start: 4),
+                child: Text(
+                  m.checklists.compose.multipleHint,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: cs.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -436,6 +495,8 @@ class _Bar extends StatelessWidget {
   final VoidCallback onActivate;
   final bool submitting;
   final bool submitEnabled;
+  final bool multiple;
+  final VoidCallback onToggleMultiple;
 
   /// In All-lists mode the host passes a target-list chip here that replaces
   /// the resting "+" icon on the leading edge of the input. Tapping it opens
@@ -452,6 +513,8 @@ class _Bar extends StatelessWidget {
     required this.onSubmit,
     required this.onActivate,
     required this.submitting,
+    required this.multiple,
+    required this.onToggleMultiple,
     this.submitEnabled = true,
     this.targetListLeading,
   });
@@ -471,78 +534,154 @@ class _Bar extends StatelessWidget {
       ),
       padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 6, 6),
       child: Row(
+        crossAxisAlignment: multiple
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
         children: [
-          targetListLeading ??
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: cs.primary.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(9),
+          Padding(
+            padding: EdgeInsetsDirectional.only(top: multiple ? 4 : 0),
+            child:
+                targetListLeading ??
+                Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: cs.primary.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Icon(Icons.add, color: cs.primary, size: 18),
                 ),
-                child: Icon(Icons.add, color: cs.primary, size: 18),
-              ),
+          ),
           const SizedBox(width: 10),
           Expanded(
-            child: TextField(
-              controller: nameController,
-              focusNode: focusNode,
-              textCapitalization: TextCapitalization.sentences,
-              textInputAction: TextInputAction.send,
-              onSubmitted: (_) => onSubmit(),
-              onTap: onActivate,
-              decoration: InputDecoration.collapsed(
-                hintText: placeholder,
-                hintStyle: TextStyle(color: cs.onSurfaceVariant),
-              ),
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: cs.onSurface,
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(top: multiple ? 8 : 0),
+              child: TextField(
+                controller: nameController,
+                focusNode: focusNode,
+                textCapitalization: TextCapitalization.sentences,
+                textInputAction: multiple
+                    ? TextInputAction.newline
+                    : TextInputAction.send,
+                onSubmitted: multiple ? null : (_) => onSubmit(),
+                onTap: onActivate,
+                keyboardType: multiple
+                    ? TextInputType.multiline
+                    : TextInputType.text,
+                minLines: multiple ? 3 : 1,
+                maxLines: multiple ? 6 : 1,
+                decoration: InputDecoration.collapsed(
+                  hintText: placeholder,
+                  hintStyle: TextStyle(color: cs.onSurfaceVariant),
+                ),
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: cs.onSurface,
+                ),
               ),
             ),
           ),
-          if (active)
-            IconButton(
-              icon: const Icon(Icons.close),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-              iconSize: 20,
-              onPressed: onCancel,
+          if (active) ...[
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: multiple ? 4 : 0),
+              child: _MultipleToggle(active: multiple, onTap: onToggleMultiple),
             ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: multiple ? 4 : 0),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                iconSize: 20,
+                onPressed: onCancel,
+              ),
+            ),
+          ],
           const SizedBox(width: 4),
-          GestureDetector(
-            onTap: (submitting || !submitEnabled) ? null : onSubmit,
-            child: Opacity(
-              opacity: submitEnabled ? 1.0 : 0.45,
-              child: Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [cs.primary, cs.primary.withValues(alpha: 0.8)],
+          Padding(
+            padding: EdgeInsetsDirectional.only(top: multiple ? 4 : 0),
+            child: GestureDetector(
+              onTap: (submitting || !submitEnabled) ? null : onSubmit,
+              child: Opacity(
+                opacity: submitEnabled ? 1.0 : 0.45,
+                child: Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [cs.primary, cs.primary.withValues(alpha: 0.8)],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: submitting
-                    ? const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
+                  child: submitting
+                      ? const Padding(
+                          padding: EdgeInsets.all(8),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(
+                          Icons.arrow_forward,
                           color: Colors.white,
+                          size: 18,
                         ),
-                      )
-                    : const Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                        size: 18,
-                      ),
+                ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _MultipleToggle extends StatelessWidget {
+  final bool active;
+  final VoidCallback onTap;
+
+  const _MultipleToggle({required this.active, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final accent = active ? cs.primary : cs.onSurfaceVariant;
+    return Tooltip(
+      message: m.checklists.compose.multiple,
+      waitDuration: const Duration(milliseconds: 600),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(9),
+        child: Container(
+          height: 30,
+          padding: const EdgeInsetsDirectional.symmetric(horizontal: 8),
+          decoration: BoxDecoration(
+            color: active ? accent.withValues(alpha: 0.14) : Colors.transparent,
+            border: Border.all(
+              color: active ? accent.withValues(alpha: 0.4) : cs.outlineVariant,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.format_list_bulleted, size: 14, color: accent),
+              const SizedBox(width: 5),
+              Text(
+                m.checklists.compose.multiple,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+                  color: accent,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -553,12 +692,14 @@ class _ChipRow extends StatelessWidget {
   final List<models.Category> categories;
   final _Tray? openTray;
   final ValueChanged<_Tray> onOpen;
+  final bool showImageChip;
 
   const _ChipRow({
     required this.draft,
     required this.categories,
     required this.openTray,
     required this.onOpen,
+    this.showImageChip = true,
   });
 
   @override
@@ -629,16 +770,18 @@ class _ChipRow extends StatelessWidget {
             selected: openTray == _Tray.type,
             onTap: () => onOpen(_Tray.type),
           ),
-          const SizedBox(width: 8),
-          _ComposeChip(
-            label: draft.imageBytes != null
-                ? '✓'
-                : m.checklists.compose.chipImage,
-            color: draft.imageBytes != null ? cs.primary : null,
-            icon: Icons.image_outlined,
-            selected: openTray == _Tray.image,
-            onTap: () => onOpen(_Tray.image),
-          ),
+          if (showImageChip) ...[
+            const SizedBox(width: 8),
+            _ComposeChip(
+              label: draft.imageBytes != null
+                  ? '✓'
+                  : m.checklists.compose.chipImage,
+              color: draft.imageBytes != null ? cs.primary : null,
+              icon: Icons.image_outlined,
+              selected: openTray == _Tray.image,
+              onTap: () => onOpen(_Tray.image),
+            ),
+          ],
         ],
       ),
     );

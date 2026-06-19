@@ -372,6 +372,8 @@ checklists:
     weeks: Wochen
     chipTargetList: Liste
     pickTargetList: Liste wählen
+    multiple: Mehrere
+    multipleHint: Einträge durch Zeilenumbrüche trennen
   allLists: Alle Listen
   allListsSubtitle: Einträge aus allen Listen
   addToAnyList: "Eintrag hinzufügen…"

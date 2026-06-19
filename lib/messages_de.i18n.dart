@@ -2007,6 +2007,16 @@ class ComposeChecklistsMessagesDe extends ComposeChecklistsMessages {
   /// "Liste wählen"
   /// ```
   String get pickTargetList => """Liste wählen""";
+
+  /// ```dart
+  /// "Mehrere"
+  /// ```
+  String get multiple => """Mehrere""";
+
+  /// ```dart
+  /// "Einträge durch Zeilenumbrüche trennen"
+  /// ```
+  String get multipleHint => """Einträge durch Zeilenumbrüche trennen""";
 }
 
 class NotesWallMessagesDe extends NotesWallMessages {
@@ -3109,6 +3119,9 @@ Passwort: pantry-rocks""",
   """checklists.compose.weeks""": """Wochen""",
   """checklists.compose.chipTargetList""": """Liste""",
   """checklists.compose.pickTargetList""": """Liste wählen""",
+  """checklists.compose.multiple""": """Mehrere""",
+  """checklists.compose.multipleHint""":
+      """Einträge durch Zeilenumbrüche trennen""",
   """checklists.allLists""": """Alle Listen""",
   """checklists.allListsSubtitle""": """Einträge aus allen Listen""",
   """checklists.addToAnyList""": """Eintrag hinzufügen…""",

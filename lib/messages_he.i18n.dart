@@ -1991,6 +1991,16 @@ class ComposeChecklistsMessagesHe extends ComposeChecklistsMessages {
   /// "בחר רשימה"
   /// ```
   String get pickTargetList => """בחר רשימה""";
+
+  /// ```dart
+  /// "מרובה"
+  /// ```
+  String get multiple => """מרובה""";
+
+  /// ```dart
+  /// "הפרד פריטים בשורות חדשות"
+  /// ```
+  String get multipleHint => """הפרד פריטים בשורות חדשות""";
 }
 
 class NotesWallMessagesHe extends NotesWallMessages {
@@ -3062,6 +3072,8 @@ Map<String, String> get messagesHeMap => {
   """checklists.compose.weeks""": """שבועות""",
   """checklists.compose.chipTargetList""": """רשימה""",
   """checklists.compose.pickTargetList""": """בחר רשימה""",
+  """checklists.compose.multiple""": """מרובה""",
+  """checklists.compose.multipleHint""": """הפרד פריטים בשורות חדשות""",
   """checklists.allLists""": """כל הרשימות""",
   """checklists.allListsSubtitle""": """פריטים מכל הרשימות""",
   """checklists.addToAnyList""": """הוסף פריט…""",

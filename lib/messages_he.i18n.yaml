@@ -372,6 +372,8 @@ checklists:
     weeks: שבועות
     chipTargetList: רשימה
     pickTargetList: בחר רשימה
+    multiple: מרובה
+    multipleHint: הפרד פריטים בשורות חדשות
   allLists: כל הרשימות
   allListsSubtitle: פריטים מכל הרשימות
   addToAnyList: "הוסף פריט…"

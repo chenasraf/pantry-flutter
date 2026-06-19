@@ -372,6 +372,8 @@ checklists:
     weeks: semaines
     chipTargetList: Liste
     pickTargetList: Choisir une liste
+    multiple: Plusieurs
+    multipleHint: Séparer les éléments par des retours à la ligne
   allLists: Toutes les listes
   allListsSubtitle: Éléments de toutes les listes
   addToAnyList: "Ajouter un élément…"

@@ -2001,6 +2001,16 @@ class ComposeChecklistsMessagesEs extends ComposeChecklistsMessages {
   /// "Elige una lista"
   /// ```
   String get pickTargetList => """Elige una lista""";
+
+  /// ```dart
+  /// "Varios"
+  /// ```
+  String get multiple => """Varios""";
+
+  /// ```dart
+  /// "Separa los elementos con saltos de línea"
+  /// ```
+  String get multipleHint => """Separa los elementos con saltos de línea""";
 }
 
 class NotesWallMessagesEs extends NotesWallMessages {
@@ -3094,6 +3104,9 @@ Contraseña: pantry-rocks""",
   """checklists.compose.weeks""": """semanas""",
   """checklists.compose.chipTargetList""": """Lista""",
   """checklists.compose.pickTargetList""": """Elige una lista""",
+  """checklists.compose.multiple""": """Varios""",
+  """checklists.compose.multipleHint""":
+      """Separa los elementos con saltos de línea""",
   """checklists.allLists""": """Todas las listas""",
   """checklists.allListsSubtitle""": """Elementos de todas las listas""",
   """checklists.addToAnyList""": """Añadir un elemento…""",
