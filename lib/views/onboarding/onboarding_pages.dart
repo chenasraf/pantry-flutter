@@ -157,6 +157,25 @@ String onboardingMarkSeenVersion(String appVersion) {
   return appV.compareTo(maxKeyV) >= 0 ? appV.toString() : maxKeyV.toString();
 }
 
+/// Returns `true` when [kAppOnboardingPages] has at least one version entry
+/// strictly newer than [lastSeen] (or any entry at all when [lastSeen] is
+/// null). Cheap, feature-independent check used at cold start to decide
+/// whether the first capabilities fetch needs to block the initial route —
+/// without it, feature-gated pages (e.g. `checklist-all-view`) can be filtered
+/// out using stale cached capabilities and skipped permanently once the user
+/// completes the rest of the flow.
+bool hasPendingOnboardingCandidates(String? lastSeen) {
+  final lastSeenVersion = Version.tryParse(lastSeen);
+  for (final key in kAppOnboardingPages.keys) {
+    final v = Version.tryParse(key);
+    if (v == null) continue;
+    if (lastSeenVersion == null || v.compareTo(lastSeenVersion) > 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /// Resolve which feature-page builders should appear in onboarding for a user
 /// whose last-seen onboarding version is [lastSeen]. Returns pages from every
 /// version newer than [lastSeen] (or all of them when [lastSeen] is null),

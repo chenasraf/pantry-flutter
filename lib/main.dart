@@ -84,11 +84,28 @@ void main() async {
     // and the profile fetch update listeners when they land.
     // ServerVersionService must land before ThemingService — on NC ≥ 34
     // the theme color comes from the cached capabilities `theming` block.
-    unawaited(
-      ServerVersionService.instance.fetch().then(
-        (_) => ThemingService.instance.fetchTheme(),
-      ),
-    );
+    //
+    // Exception: when the user has unseen onboarding pending, await the
+    // capabilities fetch (with a short timeout so offline launches still
+    // proceed). Feature-gated pages like `AllListsOnboardingPage` consult
+    // `hasFeature(...)` at route-decision time — using stale cached caps
+    // there can silently drop a page, and once the rest of the flow
+    // completes the missed page is gone for good.
+    if (hasPendingOnboardingCandidates(
+      PrefsService.instance.lastSeenOnboardingVersion,
+    )) {
+      await ServerVersionService.instance.fetch().timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {},
+      );
+      unawaited(ThemingService.instance.fetchTheme());
+    } else {
+      unawaited(
+        ServerVersionService.instance.fetch().then(
+          (_) => ThemingService.instance.fetchTheme(),
+        ),
+      );
+    }
     // Re-apply the locale once the user profile lands — if there's no saved
     // locale pref, the effective locale falls back to the Nextcloud user
     // language, which isn't known until [refreshUserState] completes.
