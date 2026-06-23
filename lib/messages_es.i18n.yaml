@@ -31,6 +31,13 @@ login:
   certSubject: Sujeto
   certIssuer: Emisor
   certValidity: "Válido"
+  useAppPassword: Iniciar sesión con una contraseña de aplicación
+  useBrowserLogin: Iniciar sesión con el navegador
+  username: Nombre de usuario
+  appPassword: Contraseña de aplicación
+  appPasswordHelp: "Crea una contraseña de aplicación en Nextcloud en Ajustes → Seguridad → Dispositivos y sesiones. Úsala si el inicio de sesión del navegador no se abre o tu servidor usa un certificado autofirmado."
+  appPasswordMissing: Introduce tu nombre de usuario y tu contraseña de aplicación.
+  signIn: Iniciar sesión
 
 home:
   noHouses: "Aún no hay casas."

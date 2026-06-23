@@ -31,6 +31,13 @@ login:
   certSubject: Subject
   certIssuer: Issuer
   certValidity: Valid
+  useAppPassword: Sign in with an app password instead
+  useBrowserLogin: Sign in with your browser instead
+  username: Username
+  appPassword: App password
+  appPasswordHelp: "Create an app password in Nextcloud under Settings → Security → Devices & sessions. Use this if the browser login won't open or your server uses a self-signed certificate."
+  appPasswordMissing: Please enter your username and app password.
+  signIn: Sign in
 
 home:
   noHouses: No houses yet.

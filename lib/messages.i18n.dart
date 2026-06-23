@@ -246,6 +246,43 @@ Please complete login in your browser.""";
   /// "Valid"
   /// ```
   String get certValidity => """Valid""";
+
+  /// ```dart
+  /// "Sign in with an app password instead"
+  /// ```
+  String get useAppPassword => """Sign in with an app password instead""";
+
+  /// ```dart
+  /// "Sign in with your browser instead"
+  /// ```
+  String get useBrowserLogin => """Sign in with your browser instead""";
+
+  /// ```dart
+  /// "Username"
+  /// ```
+  String get username => """Username""";
+
+  /// ```dart
+  /// "App password"
+  /// ```
+  String get appPassword => """App password""";
+
+  /// ```dart
+  /// "Create an app password in Nextcloud under Settings → Security → Devices & sessions. Use this if the browser login won't open or your server uses a self-signed certificate."
+  /// ```
+  String get appPasswordHelp =>
+      """Create an app password in Nextcloud under Settings → Security → Devices & sessions. Use this if the browser login won't open or your server uses a self-signed certificate.""";
+
+  /// ```dart
+  /// "Please enter your username and app password."
+  /// ```
+  String get appPasswordMissing =>
+      """Please enter your username and app password.""";
+
+  /// ```dart
+  /// "Sign in"
+  /// ```
+  String get signIn => """Sign in""";
 }
 
 class HomeMessages {
@@ -2837,6 +2874,15 @@ Please complete login in your browser.""",
   """login.certSubject""": """Subject""",
   """login.certIssuer""": """Issuer""",
   """login.certValidity""": """Valid""",
+  """login.useAppPassword""": """Sign in with an app password instead""",
+  """login.useBrowserLogin""": """Sign in with your browser instead""",
+  """login.username""": """Username""",
+  """login.appPassword""": """App password""",
+  """login.appPasswordHelp""":
+      """Create an app password in Nextcloud under Settings → Security → Devices & sessions. Use this if the browser login won't open or your server uses a self-signed certificate.""",
+  """login.appPasswordMissing""":
+      """Please enter your username and app password.""",
+  """login.signIn""": """Sign in""",
   """home.noHouses""": """No houses yet.""",
   """home.noHousesBody""":
       """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""",

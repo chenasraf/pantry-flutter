@@ -55,10 +55,20 @@ class _LoginViewBody extends StatefulWidget {
 
 class _LoginViewBodyState extends State<_LoginViewBody> {
   bool _dialogOpen = false;
+  final _usernameController = TextEditingController();
+  final _appPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _appPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<LoginController>();
+    final busy = controller.isLoading || controller.isPolling;
 
     // Surface a pending cert prompt as a modal dialog — kept inside the
     // build via a post-frame callback so we only push it once per state
@@ -139,6 +149,42 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                     ),
                   ],
                   const SizedBox(height: 24),
+                  if (controller.appPasswordMode && !controller.isPolling) ...[
+                    TextField(
+                      controller: _usernameController,
+                      enabled: !busy,
+                      decoration: InputDecoration(
+                        labelText: m.login.username,
+                        prefixIcon: const Icon(Icons.person_outline),
+                        border: const OutlineInputBorder(),
+                      ),
+                      textInputAction: TextInputAction.next,
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _appPasswordController,
+                      enabled: !busy,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: m.login.appPassword,
+                        prefixIcon: const Icon(Icons.key_outlined),
+                        border: const OutlineInputBorder(),
+                      ),
+                      textInputAction: TextInputAction.go,
+                      onSubmitted: (_) => controller.startAppPasswordLogin(
+                        _usernameController.text,
+                        _appPasswordController.text,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      m.login.appPasswordHelp,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                   if (controller.isPolling) ...[
                     const LinearProgressIndicator(),
                     const SizedBox(height: 16),
@@ -152,7 +198,23 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                       onPressed: controller.cancelLogin,
                       child: Text(m.common.cancel),
                     ),
-                  ] else
+                  ] else if (controller.appPasswordMode)
+                    FilledButton(
+                      onPressed: controller.isLoading
+                          ? null
+                          : () => controller.startAppPasswordLogin(
+                              _usernameController.text,
+                              _appPasswordController.text,
+                            ),
+                      child: controller.isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(m.login.signIn),
+                    )
+                  else
                     FilledButton(
                       onPressed: controller.isLoading
                           ? null
@@ -165,6 +227,19 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                             )
                           : Text(m.login.connect),
                     ),
+                  if (!controller.isPolling) ...[
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: controller.isLoading
+                          ? null
+                          : controller.toggleAppPasswordMode,
+                      child: Text(
+                        controller.appPasswordMode
+                            ? m.login.useBrowserLogin
+                            : m.login.useAppPassword,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

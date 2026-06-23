@@ -50,6 +50,15 @@ class LoginController extends ChangeNotifier {
   PendingCertPrompt? _pendingCert;
   PendingCertPrompt? get pendingCert => _pendingCert;
 
+  /// Whether the manual app-password fallback is revealed. The browser-based
+  /// login flow stays the default; this only flips when the user opts in.
+  bool _appPasswordMode = false;
+  bool get appPasswordMode => _appPasswordMode;
+
+  /// Retries the login attempt that triggered the current cert prompt, so
+  /// accepting the certificate resumes whichever flow the user started.
+  Future<void> Function()? _pendingRetry;
+
   Timer? _pollTimer;
   LoginFlowResult? _loginFlow;
 
@@ -61,6 +70,13 @@ class LoginController extends ChangeNotifier {
 
   void setServerUrl(String url) {
     _serverUrl = url;
+    _error = null;
+    _errorDetails = null;
+    notifyListeners();
+  }
+
+  void toggleAppPasswordMode() {
+    _appPasswordMode = !_appPasswordMode;
     _error = null;
     _errorDetails = null;
     notifyListeners();
@@ -91,6 +107,7 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
 
     final normalizedUrl = _normalizeUrl(_serverUrl);
+    _pendingRetry = startLogin;
     try {
       unawaited(ServerVersionService.instance.fetch(serverUrl: normalizedUrl));
       _loginFlow = await AuthService.instance.initiateLoginFlow(normalizedUrl);
@@ -118,6 +135,61 @@ class LoginController extends ChangeNotifier {
       notifyListeners();
 
       _startPolling(normalizedUrl);
+    } catch (e, st) {
+      if (_isHandshakeFailure(e)) {
+        await _probeCertificate(normalizedUrl, e, st);
+        return;
+      }
+      _isLoading = false;
+      _error = m.login.couldNotConnect;
+      _errorDetails = '${e.runtimeType}: $e\n\n$st';
+      notifyListeners();
+    }
+  }
+
+  /// Manual fallback: sign in with a Nextcloud app password instead of the
+  /// browser flow. Shares the cert-trust handling so it also works against
+  /// self-signed servers.
+  Future<void> startAppPasswordLogin(
+    String username,
+    String appPassword,
+  ) async {
+    if (_serverUrl.isEmpty) {
+      _error = 'Please enter a server URL';
+      notifyListeners();
+      return;
+    }
+    if (username.isEmpty || appPassword.isEmpty) {
+      _error = m.login.appPasswordMissing;
+      notifyListeners();
+      return;
+    }
+
+    _isLoading = true;
+    _error = null;
+    _errorDetails = null;
+    _pendingCert = null;
+    _pendingCertObject = null;
+    _pendingCertHostKey = null;
+    notifyListeners();
+
+    final normalizedUrl = _normalizeUrl(_serverUrl);
+    _pendingRetry = () => startAppPasswordLogin(username, appPassword);
+    try {
+      unawaited(ServerVersionService.instance.fetch(serverUrl: normalizedUrl));
+      final creds = await AuthService.instance.loginWithAppPassword(
+        normalizedUrl,
+        username,
+        appPassword,
+      );
+      _isLoading = false;
+      if (creds == null) {
+        _error = m.login.loginFailed;
+        notifyListeners();
+        return;
+      }
+      notifyListeners();
+      _onLoginSuccess?.call();
     } catch (e, st) {
       if (_isHandshakeFailure(e)) {
         await _probeCertificate(normalizedUrl, e, st);
@@ -189,7 +261,7 @@ class LoginController extends ChangeNotifier {
     _pendingCertObject = null;
     _pendingCertHostKey = null;
     notifyListeners();
-    await startLogin();
+    await (_pendingRetry ?? startLogin)();
   }
 
   void dismissPendingCert() {
@@ -240,6 +312,7 @@ class LoginController extends ChangeNotifier {
     _pendingCert = null;
     _pendingCertObject = null;
     _pendingCertHostKey = null;
+    _pendingRetry = null;
     notifyListeners();
   }
 

@@ -248,6 +248,44 @@ Veuillez terminer la connexion dans votre navigateur.""";
   /// "Validité"
   /// ```
   String get certValidity => """Validité""";
+
+  /// ```dart
+  /// "Se connecter avec un mot de passe d'application"
+  /// ```
+  String get useAppPassword =>
+      """Se connecter avec un mot de passe d'application""";
+
+  /// ```dart
+  /// "Se connecter avec le navigateur"
+  /// ```
+  String get useBrowserLogin => """Se connecter avec le navigateur""";
+
+  /// ```dart
+  /// "Nom d'utilisateur"
+  /// ```
+  String get username => """Nom d'utilisateur""";
+
+  /// ```dart
+  /// "Mot de passe d'application"
+  /// ```
+  String get appPassword => """Mot de passe d'application""";
+
+  /// ```dart
+  /// "Créez un mot de passe d'application dans Nextcloud sous Paramètres → Sécurité → Appareils et sessions. Utilisez-le si la connexion par navigateur ne s'ouvre pas ou si votre serveur utilise un certificat auto-signé."
+  /// ```
+  String get appPasswordHelp =>
+      """Créez un mot de passe d'application dans Nextcloud sous Paramètres → Sécurité → Appareils et sessions. Utilisez-le si la connexion par navigateur ne s'ouvre pas ou si votre serveur utilise un certificat auto-signé.""";
+
+  /// ```dart
+  /// "Veuillez saisir votre nom d'utilisateur et votre mot de passe d'application."
+  /// ```
+  String get appPasswordMissing =>
+      """Veuillez saisir votre nom d'utilisateur et votre mot de passe d'application.""";
+
+  /// ```dart
+  /// "Se connecter"
+  /// ```
+  String get signIn => """Se connecter""";
 }
 
 class HomeMessagesFr extends HomeMessages {
@@ -2865,6 +2903,16 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """login.certSubject""": """Sujet""",
   """login.certIssuer""": """Émetteur""",
   """login.certValidity""": """Validité""",
+  """login.useAppPassword""":
+      """Se connecter avec un mot de passe d'application""",
+  """login.useBrowserLogin""": """Se connecter avec le navigateur""",
+  """login.username""": """Nom d'utilisateur""",
+  """login.appPassword""": """Mot de passe d'application""",
+  """login.appPasswordHelp""":
+      """Créez un mot de passe d'application dans Nextcloud sous Paramètres → Sécurité → Appareils et sessions. Utilisez-le si la connexion par navigateur ne s'ouvre pas ou si votre serveur utilise un certificat auto-signé.""",
+  """login.appPasswordMissing""":
+      """Veuillez saisir votre nom d'utilisateur et votre mot de passe d'application.""",
+  """login.signIn""": """Se connecter""",
   """home.noHouses""": """Aucune maison pour le moment.""",
   """home.noHousesBody""":
       """Les maisons sont des espaces partagés pour votre foyer. Créez votre première maison pour commencer à ajouter des listes, des photos et des notes.""",

@@ -246,6 +246,42 @@ class LoginMessagesHe extends LoginMessages {
   /// "בתוקף"
   /// ```
   String get certValidity => """בתוקף""";
+
+  /// ```dart
+  /// "התחברות באמצעות סיסמת יישום"
+  /// ```
+  String get useAppPassword => """התחברות באמצעות סיסמת יישום""";
+
+  /// ```dart
+  /// "התחברות באמצעות הדפדפן"
+  /// ```
+  String get useBrowserLogin => """התחברות באמצעות הדפדפן""";
+
+  /// ```dart
+  /// "שם משתמש"
+  /// ```
+  String get username => """שם משתמש""";
+
+  /// ```dart
+  /// "סיסמת יישום"
+  /// ```
+  String get appPassword => """סיסמת יישום""";
+
+  /// ```dart
+  /// "צרו סיסמת יישום ב‑Nextcloud תחת הגדרות → אבטחה → מכשירים והפעלות. השתמשו בזה אם התחברות הדפדפן לא נפתחת או שהשרת שלכם משתמש באישור בחתימה עצמית."
+  /// ```
+  String get appPasswordHelp =>
+      """צרו סיסמת יישום ב‑Nextcloud תחת הגדרות → אבטחה → מכשירים והפעלות. השתמשו בזה אם התחברות הדפדפן לא נפתחת או שהשרת שלכם משתמש באישור בחתימה עצמית.""";
+
+  /// ```dart
+  /// "אנא הזינו שם משתמש וסיסמת יישום."
+  /// ```
+  String get appPasswordMissing => """אנא הזינו שם משתמש וסיסמת יישום.""";
+
+  /// ```dart
+  /// "התחברות"
+  /// ```
+  String get signIn => """התחברות""";
 }
 
 class HomeMessagesHe extends HomeMessages {
@@ -2841,6 +2877,14 @@ Map<String, String> get messagesHeMap => {
   """login.certSubject""": """נושא""",
   """login.certIssuer""": """מנפיק""",
   """login.certValidity""": """בתוקף""",
+  """login.useAppPassword""": """התחברות באמצעות סיסמת יישום""",
+  """login.useBrowserLogin""": """התחברות באמצעות הדפדפן""",
+  """login.username""": """שם משתמש""",
+  """login.appPassword""": """סיסמת יישום""",
+  """login.appPasswordHelp""":
+      """צרו סיסמת יישום ב‑Nextcloud תחת הגדרות → אבטחה → מכשירים והפעלות. השתמשו בזה אם התחברות הדפדפן לא נפתחת או שהשרת שלכם משתמש באישור בחתימה עצמית.""",
+  """login.appPasswordMissing""": """אנא הזינו שם משתמש וסיסמת יישום.""",
+  """login.signIn""": """התחברות""",
   """home.noHouses""": """אין בתים עדיין.""",
   """home.noHousesBody""":
       """בתים הם מרחבים משותפים למשק הבית שלך. צור את הבית הראשון שלך כדי להתחיל להוסיף רשימות, תמונות והערות.""",

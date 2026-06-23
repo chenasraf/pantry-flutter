@@ -31,6 +31,13 @@ login:
   certSubject: Inhaber
   certIssuer: Aussteller
   certValidity: "Gültig"
+  useAppPassword: Stattdessen mit App-Passwort anmelden
+  useBrowserLogin: Stattdessen im Browser anmelden
+  username: Benutzername
+  appPassword: App-Passwort
+  appPasswordHelp: "Erstelle ein App-Passwort in Nextcloud unter Einstellungen → Sicherheit → Geräte & Sitzungen. Nutze dies, wenn die Browser-Anmeldung nicht startet oder dein Server ein selbstsigniertes Zertifikat verwendet."
+  appPasswordMissing: Bitte gib deinen Benutzernamen und dein App-Passwort ein.
+  signIn: Anmelden
 
 home:
   noHouses: "Noch keine Häuser."

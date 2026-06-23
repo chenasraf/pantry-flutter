@@ -248,6 +248,44 @@ Por favor, completa el inicio de sesión en tu navegador.""";
   /// "Válido"
   /// ```
   String get certValidity => """Válido""";
+
+  /// ```dart
+  /// "Iniciar sesión con una contraseña de aplicación"
+  /// ```
+  String get useAppPassword =>
+      """Iniciar sesión con una contraseña de aplicación""";
+
+  /// ```dart
+  /// "Iniciar sesión con el navegador"
+  /// ```
+  String get useBrowserLogin => """Iniciar sesión con el navegador""";
+
+  /// ```dart
+  /// "Nombre de usuario"
+  /// ```
+  String get username => """Nombre de usuario""";
+
+  /// ```dart
+  /// "Contraseña de aplicación"
+  /// ```
+  String get appPassword => """Contraseña de aplicación""";
+
+  /// ```dart
+  /// "Crea una contraseña de aplicación en Nextcloud en Ajustes → Seguridad → Dispositivos y sesiones. Úsala si el inicio de sesión del navegador no se abre o tu servidor usa un certificado autofirmado."
+  /// ```
+  String get appPasswordHelp =>
+      """Crea una contraseña de aplicación en Nextcloud en Ajustes → Seguridad → Dispositivos y sesiones. Úsala si el inicio de sesión del navegador no se abre o tu servidor usa un certificado autofirmado.""";
+
+  /// ```dart
+  /// "Introduce tu nombre de usuario y tu contraseña de aplicación."
+  /// ```
+  String get appPasswordMissing =>
+      """Introduce tu nombre de usuario y tu contraseña de aplicación.""";
+
+  /// ```dart
+  /// "Iniciar sesión"
+  /// ```
+  String get signIn => """Iniciar sesión""";
 }
 
 class HomeMessagesEs extends HomeMessages {
@@ -2859,6 +2897,16 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """login.certSubject""": """Sujeto""",
   """login.certIssuer""": """Emisor""",
   """login.certValidity""": """Válido""",
+  """login.useAppPassword""":
+      """Iniciar sesión con una contraseña de aplicación""",
+  """login.useBrowserLogin""": """Iniciar sesión con el navegador""",
+  """login.username""": """Nombre de usuario""",
+  """login.appPassword""": """Contraseña de aplicación""",
+  """login.appPasswordHelp""":
+      """Crea una contraseña de aplicación en Nextcloud en Ajustes → Seguridad → Dispositivos y sesiones. Úsala si el inicio de sesión del navegador no se abre o tu servidor usa un certificado autofirmado.""",
+  """login.appPasswordMissing""":
+      """Introduce tu nombre de usuario y tu contraseña de aplicación.""",
+  """login.signIn""": """Iniciar sesión""",
   """home.noHouses""": """Aún no hay casas.""",
   """home.noHousesBody""":
       """Las casas son espacios compartidos para tu hogar. Crea tu primera casa para comenzar a agregar listas, fotos y notas.""",

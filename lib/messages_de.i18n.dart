@@ -248,6 +248,43 @@ Bitte melde dich in deinem Browser an.""";
   /// "Gültig"
   /// ```
   String get certValidity => """Gültig""";
+
+  /// ```dart
+  /// "Stattdessen mit App-Passwort anmelden"
+  /// ```
+  String get useAppPassword => """Stattdessen mit App-Passwort anmelden""";
+
+  /// ```dart
+  /// "Stattdessen im Browser anmelden"
+  /// ```
+  String get useBrowserLogin => """Stattdessen im Browser anmelden""";
+
+  /// ```dart
+  /// "Benutzername"
+  /// ```
+  String get username => """Benutzername""";
+
+  /// ```dart
+  /// "App-Passwort"
+  /// ```
+  String get appPassword => """App-Passwort""";
+
+  /// ```dart
+  /// "Erstelle ein App-Passwort in Nextcloud unter Einstellungen → Sicherheit → Geräte & Sitzungen. Nutze dies, wenn die Browser-Anmeldung nicht startet oder dein Server ein selbstsigniertes Zertifikat verwendet."
+  /// ```
+  String get appPasswordHelp =>
+      """Erstelle ein App-Passwort in Nextcloud unter Einstellungen → Sicherheit → Geräte & Sitzungen. Nutze dies, wenn die Browser-Anmeldung nicht startet oder dein Server ein selbstsigniertes Zertifikat verwendet.""";
+
+  /// ```dart
+  /// "Bitte gib deinen Benutzernamen und dein App-Passwort ein."
+  /// ```
+  String get appPasswordMissing =>
+      """Bitte gib deinen Benutzernamen und dein App-Passwort ein.""";
+
+  /// ```dart
+  /// "Anmelden"
+  /// ```
+  String get signIn => """Anmelden""";
 }
 
 class HomeMessagesDe extends HomeMessages {
@@ -2866,6 +2903,15 @@ Bitte melde dich in deinem Browser an.""",
   """login.certSubject""": """Inhaber""",
   """login.certIssuer""": """Aussteller""",
   """login.certValidity""": """Gültig""",
+  """login.useAppPassword""": """Stattdessen mit App-Passwort anmelden""",
+  """login.useBrowserLogin""": """Stattdessen im Browser anmelden""",
+  """login.username""": """Benutzername""",
+  """login.appPassword""": """App-Passwort""",
+  """login.appPasswordHelp""":
+      """Erstelle ein App-Passwort in Nextcloud unter Einstellungen → Sicherheit → Geräte & Sitzungen. Nutze dies, wenn die Browser-Anmeldung nicht startet oder dein Server ein selbstsigniertes Zertifikat verwendet.""",
+  """login.appPasswordMissing""":
+      """Bitte gib deinen Benutzernamen und dein App-Passwort ein.""",
+  """login.signIn""": """Anmelden""",
   """home.noHouses""": """Noch keine Häuser.""",
   """home.noHousesBody""":
       """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen.""",

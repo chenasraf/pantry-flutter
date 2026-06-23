@@ -292,6 +292,36 @@ class AuthService {
     );
   }
 
+  /// Manual login fallback: verify a user-supplied app password against the
+  /// server and persist it. Unlike [initiateLoginFlow], every request here
+  /// goes through the app's own [http] client, so it honors any pinned
+  /// self-signed certificate and never opens a browser — the only way in for
+  /// servers whose login page the system browser refuses (self-signed cert,
+  /// awkward VPN routing, etc.). Returns null if the credentials are rejected.
+  Future<NextcloudCredentials?> loginWithAppPassword(
+    String serverUrl,
+    String loginName,
+    String appPassword,
+  ) async {
+    final creds = NextcloudCredentials(
+      serverUrl: serverUrl,
+      loginName: loginName,
+      appPassword: appPassword,
+    );
+    final uri = Uri.parse('$serverUrl/ocs/v2.php/cloud/user');
+    final response = await http.get(
+      uri,
+      headers: {
+        ...creds.basicAuthHeaders,
+        'Accept': 'application/json',
+        'User-Agent': _userAgent,
+      },
+    );
+    if (response.statusCode != 200) return null;
+    await _saveCredentials(creds);
+    return creds;
+  }
+
   Future<NextcloudCredentials?> pollLoginFlow(
     String serverUrl,
     LoginFlowResult flow,
