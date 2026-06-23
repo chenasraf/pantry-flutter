@@ -1333,6 +1333,11 @@ class ChecklistsMessages {
   String get showAddedBy => """Show who added each item""";
 
   /// ```dart
+  /// "Show progress card on this list"
+  /// ```
+  String get showProgressHero => """Show progress card on this list""";
+
+  /// ```dart
   /// "Added by $name"
   /// ```
   String addedBy(String name) => """Added by $name""";
@@ -3108,6 +3113,7 @@ Password: pantry-rocks""",
   """checklists.viewTrash""": """View trash""",
   """checklists.exitTrash""": """Exit trash""",
   """checklists.showAddedBy""": """Show who added each item""",
+  """checklists.showProgressHero""": """Show progress card on this list""",
   """checklists.trashTitle""": """Trash""",
   """checklists.noTrashedItems""": """Trash is empty.""",
   """checklists.emptyTrash""": """Empty trash""",

@@ -247,6 +247,7 @@ checklists:
   viewTrash: Ver papelera
   exitTrash: Salir de la papelera
   showAddedBy: Mostrar quién añadió cada artículo
+  showProgressHero: Mostrar tarjeta de progreso en esta lista
   addedBy(String name): "Añadido por $name"
   trashTitle: Papelera
   noTrashedItems: La papelera está vacía.

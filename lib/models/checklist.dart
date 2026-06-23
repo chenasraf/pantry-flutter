@@ -7,6 +7,7 @@ class ChecklistList {
   final String? color;
   final int sortOrder;
   final bool deleteOnDoneDefault;
+  final bool hideProgressHero;
   final int createdAt;
   final int updatedAt;
 
@@ -19,6 +20,7 @@ class ChecklistList {
     this.color,
     required this.sortOrder,
     this.deleteOnDoneDefault = false,
+    this.hideProgressHero = false,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -32,6 +34,7 @@ class ChecklistList {
     color: json['color'] as String?,
     sortOrder: json['sortOrder'] as int,
     deleteOnDoneDefault: json['deleteOnDoneDefault'] as bool? ?? false,
+    hideProgressHero: json['hideProgressHero'] as bool? ?? false,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
   );
@@ -45,6 +48,7 @@ class ChecklistList {
     'color': color,
     'sortOrder': sortOrder,
     'deleteOnDoneDefault': deleteOnDoneDefault,
+    'hideProgressHero': hideProgressHero,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
@@ -57,6 +61,7 @@ class ChecklistList {
     String? color,
     int? sortOrder,
     bool? deleteOnDoneDefault,
+    bool? hideProgressHero,
     int? updatedAt,
   }) => ChecklistList(
     id: id ?? this.id,
@@ -67,6 +72,7 @@ class ChecklistList {
     color: color ?? this.color,
     sortOrder: sortOrder ?? this.sortOrder,
     deleteOnDoneDefault: deleteOnDoneDefault ?? this.deleteOnDoneDefault,
+    hideProgressHero: hideProgressHero ?? this.hideProgressHero,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );

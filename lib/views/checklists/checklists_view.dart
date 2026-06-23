@@ -313,7 +313,8 @@ class _BodyState extends State<_Body> {
                 ),
                 if (!isEmptyList &&
                     !controller.isTrashMode &&
-                    !prefs.checklistProgressHeroHidden)
+                    !prefs.checklistProgressHeroHidden &&
+                    !(list?.hideProgressHero ?? false))
                   Dismissible(
                     key: const ValueKey('progress-hero'),
                     direction: DismissDirection.horizontal,
@@ -761,6 +762,12 @@ class _BodyState extends State<_Body> {
           label: m.checklists.showAddedBy,
           selected: controller.showAddedBy,
         ),
+      if (controller.currentList != null && !isMeta)
+        _checkboxRow(
+          value: 'toggle_progress_hero',
+          label: m.checklists.showProgressHero,
+          selected: !(controller.currentList!.hideProgressHero),
+        ),
       if (!PlatformInfo.isDesktop) ...[
         _menuRow(
           value: 'manage_categories',
@@ -859,6 +866,11 @@ class _BodyState extends State<_Body> {
         await controller.setSortBy('custom');
       case 'toggle_added_by':
         await controller.setShowAddedBy(!controller.showAddedBy);
+      case 'toggle_progress_hero':
+        final current = controller.currentList;
+        if (current != null) {
+          await controller.setListHideProgressHero(!current.hideProgressHero);
+        }
       case 'view_trash':
         await controller.setTrashMode(true);
       case 'exit_trash':

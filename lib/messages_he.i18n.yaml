@@ -247,6 +247,7 @@ checklists:
   viewTrash: הצג אשפה
   exitTrash: צא מהאשפה
   showAddedBy: הצג מי הוסיף כל פריט
+  showProgressHero: הצג כרטיס התקדמות ברשימה הזו
   addedBy(String name): "הוסף על ידי $name"
   trashTitle: אשפה
   noTrashedItems: האשפה ריקה.

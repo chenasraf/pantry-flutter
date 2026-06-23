@@ -247,6 +247,7 @@ checklists:
   viewTrash: View trash
   exitTrash: Exit trash
   showAddedBy: Show who added each item
+  showProgressHero: Show progress card on this list
   addedBy(String name): "Added by $name"
   trashTitle: Trash
   noTrashedItems: Trash is empty.

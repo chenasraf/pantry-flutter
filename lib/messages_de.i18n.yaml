@@ -247,6 +247,7 @@ checklists:
   viewTrash: Papierkorb anzeigen
   exitTrash: Papierkorb verlassen
   showAddedBy: Anzeigen, wer Einträge hinzugefügt hat
+  showProgressHero: Fortschrittskarte in dieser Liste anzeigen
   addedBy(String name): "Hinzugefügt von $name"
   trashTitle: Papierkorb
   noTrashedItems: Der Papierkorb ist leer.

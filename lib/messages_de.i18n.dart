@@ -1343,6 +1343,12 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get showAddedBy => """Anzeigen, wer Einträge hinzugefügt hat""";
 
   /// ```dart
+  /// "Fortschrittskarte in dieser Liste anzeigen"
+  /// ```
+  String get showProgressHero =>
+      """Fortschrittskarte in dieser Liste anzeigen""";
+
+  /// ```dart
   /// "Hinzugefügt von $name"
   /// ```
   String addedBy(String name) => """Hinzugefügt von $name""";
@@ -3146,6 +3152,8 @@ Passwort: pantry-rocks""",
   """checklists.viewTrash""": """Papierkorb anzeigen""",
   """checklists.exitTrash""": """Papierkorb verlassen""",
   """checklists.showAddedBy""": """Anzeigen, wer Einträge hinzugefügt hat""",
+  """checklists.showProgressHero""":
+      """Fortschrittskarte in dieser Liste anzeigen""",
   """checklists.trashTitle""": """Papierkorb""",
   """checklists.noTrashedItems""": """Der Papierkorb ist leer.""",
   """checklists.emptyTrash""": """Papierkorb leeren""",

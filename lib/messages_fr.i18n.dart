@@ -1345,6 +1345,12 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get showAddedBy => """Afficher qui a ajouté chaque article""";
 
   /// ```dart
+  /// "Afficher la carte de progression sur cette liste"
+  /// ```
+  String get showProgressHero =>
+      """Afficher la carte de progression sur cette liste""";
+
+  /// ```dart
   /// "Ajouté par $name"
   /// ```
   String addedBy(String name) => """Ajouté par $name""";
@@ -3148,6 +3154,8 @@ Mot de passe : pantry-rocks""",
   """checklists.viewTrash""": """Afficher la corbeille""",
   """checklists.exitTrash""": """Quitter la corbeille""",
   """checklists.showAddedBy""": """Afficher qui a ajouté chaque article""",
+  """checklists.showProgressHero""":
+      """Afficher la carte de progression sur cette liste""",
   """checklists.trashTitle""": """Corbeille""",
   """checklists.noTrashedItems""": """La corbeille est vide.""",
   """checklists.emptyTrash""": """Vider la corbeille""",

@@ -247,6 +247,7 @@ checklists:
   viewTrash: "Afficher la corbeille"
   exitTrash: "Quitter la corbeille"
   showAddedBy: "Afficher qui a ajouté chaque article"
+  showProgressHero: "Afficher la carte de progression sur cette liste"
   addedBy(String name): "Ajouté par $name"
   trashTitle: Corbeille
   noTrashedItems: "La corbeille est vide."

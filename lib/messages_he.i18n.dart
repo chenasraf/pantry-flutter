@@ -1335,6 +1335,11 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get showAddedBy => """הצג מי הוסיף כל פריט""";
 
   /// ```dart
+  /// "הצג כרטיס התקדמות ברשימה הזו"
+  /// ```
+  String get showProgressHero => """הצג כרטיס התקדמות ברשימה הזו""";
+
+  /// ```dart
   /// "הוסף על ידי $name"
   /// ```
   String addedBy(String name) => """הוסף על ידי $name""";
@@ -3108,6 +3113,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.viewTrash""": """הצג אשפה""",
   """checklists.exitTrash""": """צא מהאשפה""",
   """checklists.showAddedBy""": """הצג מי הוסיף כל פריט""",
+  """checklists.showProgressHero""": """הצג כרטיס התקדמות ברשימה הזו""",
   """checklists.trashTitle""": """אשפה""",
   """checklists.noTrashedItems""": """האשפה ריקה.""",
   """checklists.emptyTrash""": """רוקן אשפה""",

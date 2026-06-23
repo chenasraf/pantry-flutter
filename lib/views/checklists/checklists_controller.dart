@@ -697,6 +697,34 @@ class ChecklistsController extends ChangeNotifier {
     );
   }
 
+  Future<void> setListHideProgressHero(bool value) async {
+    final list = _currentList;
+    if (list == null || list.id == kAllListsId) return;
+    if (list.hideProgressHero == value) return;
+
+    final optimistic = list.copyWith(
+      hideProgressHero: value,
+      updatedAt: _now(),
+    );
+    _currentList = optimistic;
+    _lists = [for (final l in _lists) l.id == optimistic.id ? optimistic : l];
+    _checklistService.cacheLists(houseId, _lists);
+    notifyListeners();
+
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.update,
+        houseId: houseId,
+        entityId: list.id < 0 ? null : list.id,
+        tempEntityId: list.id < 0 ? list.id : null,
+        body: {'hideProgressHero': value},
+        createdAt: _now(),
+      ),
+    );
+  }
+
   Future<void> moveItem(ListItem item, int targetListId) async {
     // Cross-list move is online-only for v1 — its semantics interact with
     // both source and target list caches in ways that don't simplify well

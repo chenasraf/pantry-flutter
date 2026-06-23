@@ -1342,6 +1342,12 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get showAddedBy => """Mostrar quién añadió cada artículo""";
 
   /// ```dart
+  /// "Mostrar tarjeta de progreso en esta lista"
+  /// ```
+  String get showProgressHero =>
+      """Mostrar tarjeta de progreso en esta lista""";
+
+  /// ```dart
   /// "Añadido por $name"
   /// ```
   String addedBy(String name) => """Añadido por $name""";
@@ -3139,6 +3145,8 @@ Contraseña: pantry-rocks""",
   """checklists.viewTrash""": """Ver papelera""",
   """checklists.exitTrash""": """Salir de la papelera""",
   """checklists.showAddedBy""": """Mostrar quién añadió cada artículo""",
+  """checklists.showProgressHero""":
+      """Mostrar tarjeta de progreso en esta lista""",
   """checklists.trashTitle""": """Papelera""",
   """checklists.noTrashedItems""": """La papelera está vacía.""",
   """checklists.emptyTrash""": """Vaciar papelera""",
