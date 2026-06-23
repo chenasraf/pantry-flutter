@@ -271,12 +271,15 @@ class AuthService {
     return null;
   }
 
+  /// Bounds every login-path request so an unreachable or silent server
+  /// surfaces a timeout error instead of leaving the UI spinning forever.
+  static const _requestTimeout = Duration(seconds: 20);
+
   Future<LoginFlowResult> initiateLoginFlow(String serverUrl) async {
     final url = '$serverUrl/index.php/login/v2';
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {'User-Agent': _userAgent},
-    );
+    final response = await http
+        .post(Uri.parse(url), headers: {'User-Agent': _userAgent})
+        .timeout(_requestTimeout);
 
     if (response.statusCode != 200) {
       throw Exception('Failed to initiate login flow: ${response.statusCode}');
@@ -309,14 +312,16 @@ class AuthService {
       appPassword: appPassword,
     );
     final uri = Uri.parse('$serverUrl/ocs/v2.php/cloud/user');
-    final response = await http.get(
-      uri,
-      headers: {
-        ...creds.basicAuthHeaders,
-        'Accept': 'application/json',
-        'User-Agent': _userAgent,
-      },
-    );
+    final response = await http
+        .get(
+          uri,
+          headers: {
+            ...creds.basicAuthHeaders,
+            'Accept': 'application/json',
+            'User-Agent': _userAgent,
+          },
+        )
+        .timeout(_requestTimeout);
     if (response.statusCode != 200) return null;
     await _saveCredentials(creds);
     return creds;

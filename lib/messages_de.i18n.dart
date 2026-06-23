@@ -285,6 +285,24 @@ Bitte melde dich in deinem Browser an.""";
   /// "Anmelden"
   /// ```
   String get signIn => """Anmelden""";
+
+  /// ```dart
+  /// "Server nicht erreichbar. Prüfe die Adresse sowie deine Netzwerk- oder VPN-Verbindung."
+  /// ```
+  String get couldNotReachServer =>
+      """Server nicht erreichbar. Prüfe die Adresse sowie deine Netzwerk- oder VPN-Verbindung.""";
+
+  /// ```dart
+  /// "Der Server hat zu lange nicht geantwortet. Prüfe deine Netzwerk- oder VPN-Verbindung und versuche es erneut."
+  /// ```
+  String get connectionTimeout =>
+      """Der Server hat zu lange nicht geantwortet. Prüfe deine Netzwerk- oder VPN-Verbindung und versuche es erneut.""";
+
+  /// ```dart
+  /// "Das Zertifikat des Servers konnte nicht zur Überprüfung gelesen werden. Die Verbindung ist möglicherweise instabil oder der Server nicht erreichbar."
+  /// ```
+  String get certProbeFailed =>
+      """Das Zertifikat des Servers konnte nicht zur Überprüfung gelesen werden. Die Verbindung ist möglicherweise instabil oder der Server nicht erreichbar.""";
 }
 
 class HomeMessagesDe extends HomeMessages {
@@ -2912,6 +2930,12 @@ Bitte melde dich in deinem Browser an.""",
   """login.appPasswordMissing""":
       """Bitte gib deinen Benutzernamen und dein App-Passwort ein.""",
   """login.signIn""": """Anmelden""",
+  """login.couldNotReachServer""":
+      """Server nicht erreichbar. Prüfe die Adresse sowie deine Netzwerk- oder VPN-Verbindung.""",
+  """login.connectionTimeout""":
+      """Der Server hat zu lange nicht geantwortet. Prüfe deine Netzwerk- oder VPN-Verbindung und versuche es erneut.""",
+  """login.certProbeFailed""":
+      """Das Zertifikat des Servers konnte nicht zur Überprüfung gelesen werden. Die Verbindung ist möglicherweise instabil oder der Server nicht erreichbar.""",
   """home.noHouses""": """Noch keine Häuser.""",
   """home.noHousesBody""":
       """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen.""",

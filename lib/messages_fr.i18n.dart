@@ -286,6 +286,24 @@ Veuillez terminer la connexion dans votre navigateur.""";
   /// "Se connecter"
   /// ```
   String get signIn => """Se connecter""";
+
+  /// ```dart
+  /// "Impossible de joindre le serveur. Vérifiez l'adresse ainsi que votre connexion réseau ou VPN."
+  /// ```
+  String get couldNotReachServer =>
+      """Impossible de joindre le serveur. Vérifiez l'adresse ainsi que votre connexion réseau ou VPN.""";
+
+  /// ```dart
+  /// "Le serveur a mis trop de temps à répondre. Vérifiez votre connexion réseau ou VPN et réessayez."
+  /// ```
+  String get connectionTimeout =>
+      """Le serveur a mis trop de temps à répondre. Vérifiez votre connexion réseau ou VPN et réessayez.""";
+
+  /// ```dart
+  /// "Impossible de lire le certificat du serveur pour le vérifier. La connexion est peut-être instable ou le serveur injoignable."
+  /// ```
+  String get certProbeFailed =>
+      """Impossible de lire le certificat du serveur pour le vérifier. La connexion est peut-être instable ou le serveur injoignable.""";
 }
 
 class HomeMessagesFr extends HomeMessages {
@@ -2913,6 +2931,12 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """login.appPasswordMissing""":
       """Veuillez saisir votre nom d'utilisateur et votre mot de passe d'application.""",
   """login.signIn""": """Se connecter""",
+  """login.couldNotReachServer""":
+      """Impossible de joindre le serveur. Vérifiez l'adresse ainsi que votre connexion réseau ou VPN.""",
+  """login.connectionTimeout""":
+      """Le serveur a mis trop de temps à répondre. Vérifiez votre connexion réseau ou VPN et réessayez.""",
+  """login.certProbeFailed""":
+      """Impossible de lire le certificat du serveur pour le vérifier. La connexion est peut-être instable ou le serveur injoignable.""",
   """home.noHouses""": """Aucune maison pour le moment.""",
   """home.noHousesBody""":
       """Les maisons sont des espaces partagés pour votre foyer. Créez votre première maison pour commencer à ajouter des listes, des photos et des notes.""",

@@ -283,6 +283,24 @@ Please complete login in your browser.""";
   /// "Sign in"
   /// ```
   String get signIn => """Sign in""";
+
+  /// ```dart
+  /// "Couldn't reach the server. Check the address, and your network or VPN connection."
+  /// ```
+  String get couldNotReachServer =>
+      """Couldn't reach the server. Check the address, and your network or VPN connection.""";
+
+  /// ```dart
+  /// "The server took too long to respond. Check your network or VPN connection and try again."
+  /// ```
+  String get connectionTimeout =>
+      """The server took too long to respond. Check your network or VPN connection and try again.""";
+
+  /// ```dart
+  /// "Couldn't read the server's certificate to verify it. The connection may be unstable, or the server may be unreachable."
+  /// ```
+  String get certProbeFailed =>
+      """Couldn't read the server's certificate to verify it. The connection may be unstable, or the server may be unreachable.""";
 }
 
 class HomeMessages {
@@ -2883,6 +2901,12 @@ Please complete login in your browser.""",
   """login.appPasswordMissing""":
       """Please enter your username and app password.""",
   """login.signIn""": """Sign in""",
+  """login.couldNotReachServer""":
+      """Couldn't reach the server. Check the address, and your network or VPN connection.""",
+  """login.connectionTimeout""":
+      """The server took too long to respond. Check your network or VPN connection and try again.""",
+  """login.certProbeFailed""":
+      """Couldn't read the server's certificate to verify it. The connection may be unstable, or the server may be unreachable.""",
   """home.noHouses""": """No houses yet.""",
   """home.noHousesBody""":
       """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""",

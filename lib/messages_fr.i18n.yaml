@@ -38,6 +38,9 @@ login:
   appPasswordHelp: "Créez un mot de passe d'application dans Nextcloud sous Paramètres → Sécurité → Appareils et sessions. Utilisez-le si la connexion par navigateur ne s'ouvre pas ou si votre serveur utilise un certificat auto-signé."
   appPasswordMissing: Veuillez saisir votre nom d'utilisateur et votre mot de passe d'application.
   signIn: Se connecter
+  couldNotReachServer: Impossible de joindre le serveur. Vérifiez l'adresse ainsi que votre connexion réseau ou VPN.
+  connectionTimeout: Le serveur a mis trop de temps à répondre. Vérifiez votre connexion réseau ou VPN et réessayez.
+  certProbeFailed: Impossible de lire le certificat du serveur pour le vérifier. La connexion est peut-être instable ou le serveur injoignable.
 
 home:
   noHouses: Aucune maison pour le moment.

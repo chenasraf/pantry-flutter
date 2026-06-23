@@ -140,10 +140,7 @@ class LoginController extends ChangeNotifier {
         await _probeCertificate(normalizedUrl, e, st);
         return;
       }
-      _isLoading = false;
-      _error = m.login.couldNotConnect;
-      _errorDetails = '${e.runtimeType}: $e\n\n$st';
-      notifyListeners();
+      _failWith(e, st);
     }
   }
 
@@ -195,10 +192,7 @@ class LoginController extends ChangeNotifier {
         await _probeCertificate(normalizedUrl, e, st);
         return;
       }
-      _isLoading = false;
-      _error = m.login.couldNotConnect;
-      _errorDetails = '${e.runtimeType}: $e\n\n$st';
-      notifyListeners();
+      _failWith(e, st);
     }
   }
 
@@ -244,9 +238,36 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Reached only from [_probeCertificate], i.e. the original failure was a
+  /// TLS handshake but we couldn't read the cert back to offer trusting it
+  /// (connection dropped, server silent, probe timed out). Report it as a
+  /// certificate problem rather than the misleading "check the URL".
   void _failWithOriginalError(Object e, StackTrace st) {
     _isLoading = false;
-    _error = m.login.couldNotConnect;
+    _isPolling = false;
+    _error = m.login.certProbeFailed;
+    _errorDetails = '${e.runtimeType}: $e\n\n$st';
+    notifyListeners();
+  }
+
+  /// Maps a thrown error to a user-facing message. The exact exception is
+  /// always preserved in [errorDetails] behind "See details"; this only
+  /// picks a headline that points the user at the real class of problem
+  /// (name resolution / VPN, timeout, or something else) instead of always
+  /// blaming the URL.
+  void _failWith(Object e, StackTrace st) {
+    _isLoading = false;
+    _isPolling = false;
+    final text = e.toString();
+    if (e is TimeoutException || text.contains('TimeoutException')) {
+      _error = m.login.connectionTimeout;
+    } else if (e is SocketException ||
+        text.contains('SocketException') ||
+        text.contains('Failed host lookup')) {
+      _error = m.login.couldNotReachServer;
+    } else {
+      _error = m.login.couldNotConnect;
+    }
     _errorDetails = '${e.runtimeType}: $e\n\n$st';
     notifyListeners();
   }

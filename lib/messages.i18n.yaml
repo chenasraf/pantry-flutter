@@ -38,6 +38,9 @@ login:
   appPasswordHelp: "Create an app password in Nextcloud under Settings → Security → Devices & sessions. Use this if the browser login won't open or your server uses a self-signed certificate."
   appPasswordMissing: Please enter your username and app password.
   signIn: Sign in
+  couldNotReachServer: Couldn't reach the server. Check the address, and your network or VPN connection.
+  connectionTimeout: The server took too long to respond. Check your network or VPN connection and try again.
+  certProbeFailed: Couldn't read the server's certificate to verify it. The connection may be unstable, or the server may be unreachable.
 
 home:
   noHouses: No houses yet.

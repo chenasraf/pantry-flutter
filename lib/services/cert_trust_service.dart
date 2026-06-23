@@ -78,13 +78,18 @@ class CertTrustService {
   }
 
   /// Connect to [uri] and return the server's certificate even if it
-  /// fails validation. Returns null if the TCP/TLS handshake couldn't
-  /// be opened at all (DNS failure, connection refused, etc.).
+  /// fails validation. Returns null if the TLS handshake couldn't be
+  /// reached at all (DNS failure, connection refused, timeout, etc.).
+  ///
+  /// Every step is individually bounded so a server that accepts the
+  /// connection but never answers can't wedge the caller in an infinite
+  /// spinner — the cert is captured during the handshake, so even if the
+  /// later request/drain times out we still return what we saw.
   Future<X509Certificate?> probe(Uri uri) async {
     return HttpOverrides.runZoned<Future<X509Certificate?>>(() async {
       X509Certificate? captured;
       final client = HttpClient()
-        ..connectionTimeout = const Duration(seconds: 15)
+        ..connectionTimeout = const Duration(seconds: 10)
         ..badCertificateCallback = (cert, host, port) {
           captured = cert;
           // Accept once so the request completes and the socket can
@@ -92,9 +97,11 @@ class CertTrustService {
           return true;
         };
       try {
-        final req = await client.headUrl(uri);
-        final resp = await req.close();
-        await resp.drain<void>();
+        final req = await client
+            .headUrl(uri)
+            .timeout(const Duration(seconds: 10));
+        final resp = await req.close().timeout(const Duration(seconds: 10));
+        await resp.drain<void>().timeout(const Duration(seconds: 5));
       } catch (e) {
         debugPrint('[CertTrustService] probe failed: $e');
       } finally {

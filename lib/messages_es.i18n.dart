@@ -286,6 +286,24 @@ Por favor, completa el inicio de sesión en tu navegador.""";
   /// "Iniciar sesión"
   /// ```
   String get signIn => """Iniciar sesión""";
+
+  /// ```dart
+  /// "No se pudo conectar con el servidor. Comprueba la dirección y tu conexión de red o VPN."
+  /// ```
+  String get couldNotReachServer =>
+      """No se pudo conectar con el servidor. Comprueba la dirección y tu conexión de red o VPN.""";
+
+  /// ```dart
+  /// "El servidor tardó demasiado en responder. Comprueba tu conexión de red o VPN e inténtalo de nuevo."
+  /// ```
+  String get connectionTimeout =>
+      """El servidor tardó demasiado en responder. Comprueba tu conexión de red o VPN e inténtalo de nuevo.""";
+
+  /// ```dart
+  /// "No se pudo leer el certificado del servidor para verificarlo. La conexión puede ser inestable o el servidor no estar disponible."
+  /// ```
+  String get certProbeFailed =>
+      """No se pudo leer el certificado del servidor para verificarlo. La conexión puede ser inestable o el servidor no estar disponible.""";
 }
 
 class HomeMessagesEs extends HomeMessages {
@@ -2907,6 +2925,12 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """login.appPasswordMissing""":
       """Introduce tu nombre de usuario y tu contraseña de aplicación.""",
   """login.signIn""": """Iniciar sesión""",
+  """login.couldNotReachServer""":
+      """No se pudo conectar con el servidor. Comprueba la dirección y tu conexión de red o VPN.""",
+  """login.connectionTimeout""":
+      """El servidor tardó demasiado en responder. Comprueba tu conexión de red o VPN e inténtalo de nuevo.""",
+  """login.certProbeFailed""":
+      """No se pudo leer el certificado del servidor para verificarlo. La conexión puede ser inestable o el servidor no estar disponible.""",
   """home.noHouses""": """Aún no hay casas.""",
   """home.noHousesBody""":
       """Las casas son espacios compartidos para tu hogar. Crea tu primera casa para comenzar a agregar listas, fotos y notas.""",

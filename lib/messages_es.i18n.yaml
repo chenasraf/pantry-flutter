@@ -38,6 +38,9 @@ login:
   appPasswordHelp: "Crea una contraseña de aplicación en Nextcloud en Ajustes → Seguridad → Dispositivos y sesiones. Úsala si el inicio de sesión del navegador no se abre o tu servidor usa un certificado autofirmado."
   appPasswordMissing: Introduce tu nombre de usuario y tu contraseña de aplicación.
   signIn: Iniciar sesión
+  couldNotReachServer: No se pudo conectar con el servidor. Comprueba la dirección y tu conexión de red o VPN.
+  connectionTimeout: El servidor tardó demasiado en responder. Comprueba tu conexión de red o VPN e inténtalo de nuevo.
+  certProbeFailed: No se pudo leer el certificado del servidor para verificarlo. La conexión puede ser inestable o el servidor no estar disponible.
 
 home:
   noHouses: "Aún no hay casas."
