@@ -231,6 +231,9 @@ checklists:
   noSearchResults: Aucun article ne correspond à votre recherche.
   searchHint: Filtrer...
   allCategories: Tout
+  allListsChip: Tout
+  filterByList: Filtrer par liste
+  filterByCategory: Filtrer par catégorie
   failedToLoad: Impossible de charger les listes.
   failedToLoadItems: Impossible de charger les articles.
   completedCount(int count): "Terminés ($count)"

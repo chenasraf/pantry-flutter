@@ -231,6 +231,9 @@ checklists:
   noSearchResults: No items match your search.
   searchHint: Type to filter...
   allCategories: All
+  allListsChip: All
+  filterByList: Filter by list
+  filterByCategory: Filter by category
   failedToLoad: Failed to load checklists.
   failedToLoadItems: Failed to load items.
   completedCount(int count): "Completed ($count)"

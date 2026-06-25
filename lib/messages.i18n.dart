@@ -1253,6 +1253,21 @@ class ChecklistsMessages {
   String get allCategories => """All""";
 
   /// ```dart
+  /// "All"
+  /// ```
+  String get allListsChip => """All""";
+
+  /// ```dart
+  /// "Filter by list"
+  /// ```
+  String get filterByList => """Filter by list""";
+
+  /// ```dart
+  /// "Filter by category"
+  /// ```
+  String get filterByCategory => """Filter by category""";
+
+  /// ```dart
   /// "Failed to load checklists."
   /// ```
   String get failedToLoad => """Failed to load checklists.""";
@@ -3098,6 +3113,9 @@ Password: pantry-rocks""",
   """checklists.noSearchResults""": """No items match your search.""",
   """checklists.searchHint""": """Type to filter...""",
   """checklists.allCategories""": """All""",
+  """checklists.allListsChip""": """All""",
+  """checklists.filterByList""": """Filter by list""",
+  """checklists.filterByCategory""": """Filter by category""",
   """checklists.failedToLoad""": """Failed to load checklists.""",
   """checklists.failedToLoadItems""": """Failed to load items.""",
   """checklists.editItem""": """Edit item""",

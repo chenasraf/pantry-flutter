@@ -1263,6 +1263,21 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get allCategories => """Alle""";
 
   /// ```dart
+  /// "Alle"
+  /// ```
+  String get allListsChip => """Alle""";
+
+  /// ```dart
+  /// "Nach Liste filtern"
+  /// ```
+  String get filterByList => """Nach Liste filtern""";
+
+  /// ```dart
+  /// "Nach Kategorie filtern"
+  /// ```
+  String get filterByCategory => """Nach Kategorie filtern""";
+
+  /// ```dart
   /// "Checklisten konnten nicht geladen werden."
   /// ```
   String get failedToLoad => """Checklisten konnten nicht geladen werden.""";
@@ -3135,6 +3150,9 @@ Passwort: pantry-rocks""",
       """Keine Einträge entsprechen Ihrer Suche.""",
   """checklists.searchHint""": """Zum Filtern tippen...""",
   """checklists.allCategories""": """Alle""",
+  """checklists.allListsChip""": """Alle""",
+  """checklists.filterByList""": """Nach Liste filtern""",
+  """checklists.filterByCategory""": """Nach Kategorie filtern""",
   """checklists.failedToLoad""":
       """Checklisten konnten nicht geladen werden.""",
   """checklists.failedToLoadItems""":

@@ -195,11 +195,18 @@ class _BodyState extends State<_Body> {
     super.dispose();
   }
 
-  List<ListItem> _applyFilters(List<ListItem> items) {
-    if (_selectedCategoryIds.isEmpty && _query.isEmpty) return items;
+  List<ListItem> _applyFilters(List<ListItem> items, Set<int> selectedListIds) {
+    if (_selectedCategoryIds.isEmpty &&
+        selectedListIds.isEmpty &&
+        _query.isEmpty) {
+      return items;
+    }
     return items.where((item) {
       if (_selectedCategoryIds.isNotEmpty) {
         if (!_selectedCategoryIds.contains(item.categoryId)) return false;
+      }
+      if (selectedListIds.isNotEmpty) {
+        if (!selectedListIds.contains(item.listId)) return false;
       }
       if (_query.isNotEmpty) {
         final n = item.name.toLowerCase().contains(_query);
@@ -240,7 +247,13 @@ class _BodyState extends State<_Body> {
     }
 
     final list = controller.currentList;
-    final filteredItems = _applyFilters(controller.items);
+    final isMeta = controller.isMetaMode;
+    // The per-list filter only exists in the All-lists view. Outside it, an
+    // empty set means it never narrows anything.
+    final selectedListIds = isMeta
+        ? PrefsService.instance.checklistListFilter
+        : const <int>{};
+    final filteredItems = _applyFilters(controller.items, selectedListIds);
     final activeItems = filteredItems.where((i) => !i.done).toList();
     final doneItems = filteredItems.where((i) => i.done).toList();
     final total = controller.items.where((i) => i.deletedAt == null).length;
@@ -262,6 +275,22 @@ class _BodyState extends State<_Body> {
     final filterCategories = controller.sortedCategories
         .where((c) => activeCategoryIds.contains(c.id))
         .toList();
+
+    // Same rule for the per-list filter (All-lists view only): only offer
+    // lists that actually contribute a non-trashed item to the current view.
+    final filterLists = isMeta
+        ? () {
+            final activeListIds = <int>{
+              for (final i in controller.items)
+                if (i.deletedAt == null) i.listId,
+            };
+            return controller.sortedLists
+                .where(
+                  (l) => l.id != kAllListsId && activeListIds.contains(l.id),
+                )
+                .toList();
+          }()
+        : const <ChecklistList>[];
 
     // Push the current AppBar contents up to the shared home AppBar slot.
     // Done in a post-frame callback so we don't mutate a listenable during
@@ -333,10 +362,10 @@ class _BodyState extends State<_Body> {
                     ),
                   ),
                 if (!isEmptyList && !controller.isTrashMode)
-                  _FilterRow(
+                  _FiltersSection(
                     categories: filterCategories,
-                    selectedIds: _selectedCategoryIds,
-                    onToggle: (id) {
+                    selectedCategoryIds: _selectedCategoryIds,
+                    onToggleCategory: (id) {
                       setState(() {
                         if (_selectedCategoryIds.contains(id)) {
                           _selectedCategoryIds.remove(id);
@@ -345,7 +374,17 @@ class _BodyState extends State<_Body> {
                         }
                       });
                     },
-                    onClear: () => setState(() => _selectedCategoryIds.clear()),
+                    onClearCategories: () =>
+                        setState(() => _selectedCategoryIds.clear()),
+                    showListFilter: isMeta,
+                    lists: filterLists,
+                    selectedListIds: selectedListIds,
+                    onToggleList: (id) {
+                      final next = {...prefs.checklistListFilter};
+                      if (!next.remove(id)) next.add(id);
+                      prefs.setChecklistListFilter(next);
+                    },
+                    onClearLists: () => prefs.setChecklistListFilter({}),
                     view: prefs.checklistView,
                     onViewChanged: (v) => prefs.setChecklistView(v),
                   ),
@@ -1046,28 +1085,254 @@ class _SearchField extends StatelessWidget {
   }
 }
 
-class _FilterRow extends StatefulWidget {
+/// The filter header above the item list: a category filter, plus — in the
+/// All-lists view — a parallel per-list filter. Desktop stacks both filters
+/// in their own rows; mobile shows one at a time and lets the user swap which
+/// fills the row via a pair of icon buttons, keeping the header compact.
+class _FiltersSection extends StatefulWidget {
   final List<models.Category> categories;
-  final Set<int> selectedIds;
-  final ValueChanged<int> onToggle;
-  final VoidCallback onClear;
+  final Set<int> selectedCategoryIds;
+  final ValueChanged<int> onToggleCategory;
+  final VoidCallback onClearCategories;
+
+  /// All-lists view only — when false, no list filter is shown at all.
+  final bool showListFilter;
+  final List<ChecklistList> lists;
+  final Set<int> selectedListIds;
+  final ValueChanged<int> onToggleList;
+  final VoidCallback onClearLists;
+
   final String view;
   final ValueChanged<String> onViewChanged;
 
-  const _FilterRow({
+  const _FiltersSection({
     required this.categories,
-    required this.selectedIds,
-    required this.onToggle,
-    required this.onClear,
+    required this.selectedCategoryIds,
+    required this.onToggleCategory,
+    required this.onClearCategories,
+    required this.showListFilter,
+    required this.lists,
+    required this.selectedListIds,
+    required this.onToggleList,
+    required this.onClearLists,
     required this.view,
     required this.onViewChanged,
   });
 
   @override
-  State<_FilterRow> createState() => _FilterRowState();
+  State<_FiltersSection> createState() => _FiltersSectionState();
 }
 
-class _FilterRowState extends State<_FilterRow> {
+class _FiltersSectionState extends State<_FiltersSection> {
+  /// Which filter fills the expanded strip in the mobile All-lists layout —
+  /// `'list'` or `'category'`. Ephemeral (resets when leaving the view); the
+  /// selections themselves persist via prefs / state, not this toggle.
+  String _mobileActive = 'list';
+
+  List<Widget> _categoryChips(ColorScheme cs) {
+    return [
+      _Chip(
+        label: m.checklists.allCategories,
+        selected: widget.selectedCategoryIds.isEmpty,
+        color: cs.primary,
+        onTap: widget.onClearCategories,
+      ),
+      for (final c in widget.categories) ...[
+        const SizedBox(width: 8),
+        _Chip(
+          label: c.name,
+          selected: widget.selectedCategoryIds.contains(c.id),
+          color: parseHexColor(c.color) ?? cs.primary,
+          onTap: () => widget.onToggleCategory(c.id),
+        ),
+      ],
+    ];
+  }
+
+  List<Widget> _listChips(ColorScheme cs) {
+    return [
+      _Chip(
+        label: m.checklists.allListsChip,
+        selected: widget.selectedListIds.isEmpty,
+        color: cs.primary,
+        icon: allListsIcon,
+        onTap: widget.onClearLists,
+      ),
+      for (final l in widget.lists) ...[
+        const SizedBox(width: 8),
+        _Chip(
+          label: l.name,
+          selected: widget.selectedListIds.contains(l.id),
+          color: parseHexColor(l.color) ?? cs.primary,
+          icon: checklistIcon(l.icon),
+          onTap: () => widget.onToggleList(l.id),
+        ),
+      ],
+    ];
+  }
+
+  /// Transition for the mobile chip-strip swap: the list filter lives at the
+  /// leading edge and the category filter at the trailing edge, so each strip
+  /// slides in from (and out toward) its own side while cross-fading. The
+  /// incoming and outgoing strips travel opposite directions, reading as the
+  /// two filters trading places.
+  Widget _swapTransition(Widget child, Animation<double> animation) {
+    final key = child.key;
+    final fromLeading = key is ValueKey<String> && key.value.endsWith('list');
+    final begin = fromLeading ? const Offset(-1, 0) : const Offset(1, 0);
+    return ClipRect(
+      child: FadeTransition(
+        opacity: animation,
+        child: SlideTransition(
+          textDirection: Directionality.of(context),
+          position: Tween<Offset>(
+            begin: begin,
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final toggle = _ViewToggle(
+      view: widget.view,
+      onChanged: widget.onViewChanged,
+    );
+
+    // No list filter (single list), or desktop where there's room to stack
+    // both filters: render the strip(s) at full width with the view toggle
+    // pinned to the trailing edge.
+    if (!widget.showListFilter || PlatformInfo.isDesktop) {
+      final Widget strips;
+      if (widget.showListFilter) {
+        strips = Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _ChipStrip(children: _listChips(cs)),
+            const SizedBox(height: 8),
+            _ChipStrip(children: _categoryChips(cs)),
+          ],
+        );
+      } else {
+        strips = _ChipStrip(children: _categoryChips(cs));
+      }
+      return Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(20, 15, 20, 4),
+        child: Row(
+          children: [
+            Expanded(child: strips),
+            const SizedBox(width: 10),
+            toggle,
+          ],
+        ),
+      );
+    }
+
+    // Mobile All-lists: one filter fills the row; the other parks as an icon
+    // button next to the view toggle. The two buttons keep their identity and
+    // physically slide between the leading and trailing slots when swapped —
+    // tapping the parked button glides it into the leading slot as its filter
+    // expands, and the previously-active button slides out to park.
+    final isList = _mobileActive == 'list';
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(20, 15, 20, 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, c) {
+                const btn = 40.0;
+                const gap = 8.0;
+                final rtl = Directionality.of(context) == TextDirection.rtl;
+                // Positioned.left is always measured from the physical left
+                // edge, so flip the slots by hand for RTL.
+                final leadingX = rtl ? c.maxWidth - btn : 0.0;
+                final trailingX = rtl ? 0.0 : c.maxWidth - btn;
+                const dur = Duration(milliseconds: 280);
+                const curve = Curves.easeInOutCubic;
+                return SizedBox(
+                  height: 36,
+                  child: Stack(
+                    children: [
+                      // Strip sits in the fixed gap between the two button
+                      // slots; only its chips swap as the active filter
+                      // changes.
+                      PositionedDirectional(
+                        start: btn + gap,
+                        end: btn + gap,
+                        top: 0,
+                        bottom: 0,
+                        child: AnimatedSwitcher(
+                          duration: dur,
+                          transitionBuilder: _swapTransition,
+                          child: _ChipStrip(
+                            key: ValueKey('strip-$_mobileActive'),
+                            children: isList
+                                ? _listChips(cs)
+                                : _categoryChips(cs),
+                          ),
+                        ),
+                      ),
+                      AnimatedPositioned(
+                        duration: dur,
+                        curve: curve,
+                        left: isList ? leadingX : trailingX,
+                        width: btn,
+                        top: 0,
+                        bottom: 0,
+                        child: _FilterModeIcon(
+                          icon: allListsIcon,
+                          active: isList,
+                          tooltip: m.checklists.filterByList,
+                          onTap: () => setState(() => _mobileActive = 'list'),
+                        ),
+                      ),
+                      AnimatedPositioned(
+                        duration: dur,
+                        curve: curve,
+                        left: isList ? trailingX : leadingX,
+                        width: btn,
+                        top: 0,
+                        bottom: 0,
+                        child: _FilterModeIcon(
+                          icon: Icons.label_outline,
+                          active: !isList,
+                          tooltip: m.checklists.filterByCategory,
+                          onTap: () =>
+                              setState(() => _mobileActive = 'category'),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(width: 10),
+          toggle,
+        ],
+      ),
+    );
+  }
+}
+
+/// A single horizontally-scrollable strip of filter chips with a trailing
+/// fade that signals "more content past the edge". Used for both the category
+/// and the list filters.
+class _ChipStrip extends StatefulWidget {
+  final List<Widget> children;
+
+  const _ChipStrip({required this.children, super.key});
+
+  @override
+  State<_ChipStrip> createState() => _ChipStripState();
+}
+
+class _ChipStripState extends State<_ChipStrip> {
   final _scrollCtrl = ScrollController();
 
   /// 0 = no trailing fade (content fits, or scrolled to the end); 1 = full
@@ -1090,12 +1355,12 @@ class _FilterRowState extends State<_FilterRow> {
   }
 
   @override
-  void didUpdateWidget(_FilterRow oldWidget) {
+  void didUpdateWidget(_ChipStrip oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Category list size can change (new category added/removed), which
-    // shifts maxScrollExtent without firing a scroll event. Re-check after
-    // the post-layout pass.
-    if (oldWidget.categories.length != widget.categories.length) {
+    // Chip count can change (filter set grows/shrinks), which shifts
+    // maxScrollExtent without firing a scroll event. Re-check after the
+    // post-layout pass.
+    if (oldWidget.children.length != widget.children.length) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _recompute());
     }
   }
@@ -1124,86 +1389,90 @@ class _FilterRowState extends State<_FilterRow> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(20, 15, 20, 4),
-      child: Row(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: 36,
-              // ShaderMask fades the trailing edge of the chip row to signal
-              // more content exists past the cutoff. The mask uses dstIn so
-              // the gradient's alpha becomes the row's alpha; the gradient
-              // direction flips for RTL so the fade always sits at the
-              // visual trailing edge. The trailing color's alpha tracks
-              // `_trailingFade` so it eases off to zero (i.e. opaque, no
-              // fade) as the user reaches the end or when the chips fit.
-              child: NotificationListener<ScrollMetricsNotification>(
-                // Fires when maxScrollExtent changes (e.g. content reflow)
-                // without a scroll event — needed to catch "now everything
-                // fits" transitions.
-                onNotification: (_) {
-                  _recompute();
-                  return false;
-                },
-                child: ShaderMask(
-                  blendMode: BlendMode.dstIn,
-                  shaderCallback: (bounds) {
-                    final isRtl =
-                        Directionality.of(context) == TextDirection.rtl;
-                    return LinearGradient(
-                      begin: isRtl
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      end: isRtl ? Alignment.centerLeft : Alignment.centerRight,
-                      stops: const [0.0, 0.88, 1.0],
-                      colors: [
-                        Colors.black,
-                        Colors.black,
-                        Colors.black.withValues(alpha: 1 - _trailingFade),
-                      ],
-                    ).createShader(bounds);
-                  },
-                  child: ListView(
-                    controller: _scrollCtrl,
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      _Chip(
-                        label: m.checklists.allCategories,
-                        selected: widget.selectedIds.isEmpty,
-                        color: cs.primary,
-                        onTap: widget.onClear,
-                      ),
-                      const SizedBox(width: 8),
-                      for (final c in widget.categories) ...[
-                        _Chip(
-                          label: c.name,
-                          selected: widget.selectedIds.contains(c.id),
-                          color: _parseColor(c.color) ?? cs.primary,
-                          onTap: () => widget.onToggle(c.id),
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            ),
+    return SizedBox(
+      height: 36,
+      // ShaderMask fades the trailing edge of the chip row to signal more
+      // content exists past the cutoff. The mask uses dstIn so the gradient's
+      // alpha becomes the row's alpha; the gradient direction flips for RTL so
+      // the fade always sits at the visual trailing edge. The trailing color's
+      // alpha tracks `_trailingFade` so it eases off to zero (i.e. opaque, no
+      // fade) as the user reaches the end or when the chips fit.
+      child: NotificationListener<ScrollMetricsNotification>(
+        // Fires when maxScrollExtent changes (e.g. content reflow) without a
+        // scroll event — needed to catch "now everything fits" transitions.
+        onNotification: (_) {
+          _recompute();
+          return false;
+        },
+        child: ShaderMask(
+          blendMode: BlendMode.dstIn,
+          shaderCallback: (bounds) {
+            final isRtl = Directionality.of(context) == TextDirection.rtl;
+            return LinearGradient(
+              begin: isRtl ? Alignment.centerRight : Alignment.centerLeft,
+              end: isRtl ? Alignment.centerLeft : Alignment.centerRight,
+              stops: const [0.0, 0.88, 1.0],
+              colors: [
+                Colors.black,
+                Colors.black,
+                Colors.black.withValues(alpha: 1 - _trailingFade),
+              ],
+            ).createShader(bounds);
+          },
+          child: ListView(
+            controller: _scrollCtrl,
+            scrollDirection: Axis.horizontal,
+            children: widget.children,
           ),
-          const SizedBox(width: 10),
-          _ViewToggle(view: widget.view, onChanged: widget.onViewChanged),
-        ],
+        ),
       ),
     );
   }
+}
 
-  static Color? _parseColor(String hex) {
-    if (hex.isEmpty) return null;
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    final v = int.tryParse(hex, radix: 16);
-    return v != null ? Color(v) : null;
+/// Square icon button that toggles which filter fills the mobile All-lists
+/// strip. Mirrors the chip styling — filled with the accent when its filter
+/// is the active (expanded) one.
+class _FilterModeIcon extends StatelessWidget {
+  final IconData icon;
+  final bool active;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  const _FilterModeIcon({
+    required this.icon,
+    required this.active,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(9),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 280),
+          curve: Curves.easeInOutCubic,
+          width: 40,
+          height: 36,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: active ? cs.primary : cs.surfaceContainerHighest,
+            border: Border.all(color: active ? cs.primary : cs.outlineVariant),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Icon(
+            icon,
+            size: 18,
+            color: active ? cs.onPrimary : cs.onSurfaceVariant,
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -1213,11 +1482,17 @@ class _Chip extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
 
+  /// When set, the chip leads with this icon (tinted by [color]) instead of
+  /// the plain color dot — used by the list filter to surface each list's
+  /// icon, mirroring how lists read elsewhere in the app.
+  final IconData? icon;
+
   const _Chip({
     required this.label,
     required this.selected,
     required this.color,
     required this.onTap,
+    this.icon,
   });
 
   @override
@@ -1236,14 +1511,17 @@ class _Chip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: selected ? cs.surface : color,
-                shape: BoxShape.circle,
+            if (icon != null)
+              Icon(icon, size: 15, color: selected ? cs.surface : color)
+            else
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: selected ? cs.surface : color,
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
             const SizedBox(width: 6),
             Text(
               label,

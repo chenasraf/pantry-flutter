@@ -231,6 +231,9 @@ checklists:
   noSearchResults: אין פריטים תואמים לחיפוש.
   searchHint: הקלד לסינון...
   allCategories: הכל
+  allListsChip: הכל
+  filterByList: סינון לפי רשימה
+  filterByCategory: סינון לפי קטגוריה
   failedToLoad: טעינת הרשימות נכשלה.
   failedToLoadItems: טעינת הפריטים נכשלה.
   completedCount(int count): "הושלמו ($count)"

@@ -24,6 +24,7 @@ class PrefsService extends ChangeNotifier {
   static const _defaultItemTapActionKey = 'default_item_tap_action';
   static const _checklistCategorySpacingKey = 'checklist_category_spacing';
   static const _checklistViewKey = 'checklist_view';
+  static const _checklistListFilterKey = 'checklist_list_filter';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
   static const _checklistProgressHeroHiddenKey =
       'checklist_progress_hero_hidden';
@@ -72,6 +73,11 @@ class PrefsService extends ChangeNotifier {
   /// "list" or "cards"
   String _checklistView = 'list';
   String get checklistView => _checklistView;
+
+  /// Selected list IDs for the All-lists view's per-list filter. Empty means
+  /// "all lists". Local-only (not synced) so each device keeps its own focus.
+  Set<int> _checklistListFilter = {};
+  Set<int> get checklistListFilter => _checklistListFilter;
 
   bool _checklistDoneCollapsed = true;
   bool get checklistDoneCollapsed => _checklistDoneCollapsed;
@@ -177,6 +183,15 @@ class PrefsService extends ChangeNotifier {
     final view = all[_checklistViewKey];
     if (view != null && (view == 'list' || view == 'cards')) {
       _checklistView = view;
+    }
+
+    final listFilter = all[_checklistListFilterKey];
+    if (listFilter != null && listFilter.isNotEmpty) {
+      _checklistListFilter = listFilter
+          .split(',')
+          .map(int.tryParse)
+          .whereType<int>()
+          .toSet();
     }
 
     final doneCollapsed = all[_checklistDoneCollapsedKey];
@@ -368,6 +383,15 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setChecklistListFilter(Set<int> ids) async {
+    _checklistListFilter = {...ids};
+    await _storage.write(
+      key: _checklistListFilterKey,
+      value: _checklistListFilter.isEmpty ? '' : _checklistListFilter.join(','),
+    );
+    notifyListeners();
+  }
+
   Future<void> setChecklistDoneCollapsed(bool value) async {
     _checklistDoneCollapsed = value;
     await _storage.write(
@@ -479,6 +503,7 @@ class PrefsService extends ChangeNotifier {
     _defaultItemTapAction = 'view';
     _checklistCategorySpacing = 'disabled';
     _checklistView = 'list';
+    _checklistListFilter = {};
     _checklistDoneCollapsed = true;
     _checklistProgressHeroHidden = false;
     _lastSeenOnboardingVersion = null;
@@ -499,6 +524,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _defaultItemTapActionKey);
     await _storage.delete(key: _checklistCategorySpacingKey);
     await _storage.delete(key: _checklistViewKey);
+    await _storage.delete(key: _checklistListFilterKey);
     await _storage.delete(key: _checklistDoneCollapsedKey);
     await _storage.delete(key: _checklistProgressHeroHiddenKey);
     await _storage.delete(key: _lastSeenOnboardingVersionKey);

@@ -1262,6 +1262,21 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get allCategories => """Todos""";
 
   /// ```dart
+  /// "Todos"
+  /// ```
+  String get allListsChip => """Todos""";
+
+  /// ```dart
+  /// "Filtrar por lista"
+  /// ```
+  String get filterByList => """Filtrar por lista""";
+
+  /// ```dart
+  /// "Filtrar por categoría"
+  /// ```
+  String get filterByCategory => """Filtrar por categoría""";
+
+  /// ```dart
   /// "No se pudieron cargar las listas."
   /// ```
   String get failedToLoad => """No se pudieron cargar las listas.""";
@@ -3129,6 +3144,9 @@ Contraseña: pantry-rocks""",
       """Ningún artículo coincide con tu búsqueda.""",
   """checklists.searchHint""": """Escribe para filtrar...""",
   """checklists.allCategories""": """Todos""",
+  """checklists.allListsChip""": """Todos""",
+  """checklists.filterByList""": """Filtrar por lista""",
+  """checklists.filterByCategory""": """Filtrar por categoría""",
   """checklists.failedToLoad""": """No se pudieron cargar las listas.""",
   """checklists.failedToLoadItems""":
       """No se pudieron cargar los artículos.""",

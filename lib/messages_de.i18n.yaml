@@ -231,6 +231,9 @@ checklists:
   noSearchResults: Keine Einträge entsprechen Ihrer Suche.
   searchHint: Zum Filtern tippen...
   allCategories: Alle
+  allListsChip: Alle
+  filterByList: Nach Liste filtern
+  filterByCategory: Nach Kategorie filtern
   failedToLoad: Checklisten konnten nicht geladen werden.
   failedToLoadItems: "Einträge konnten nicht geladen werden."
   completedCount(int count): "Erledigt ($count)"

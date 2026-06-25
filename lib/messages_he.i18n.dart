@@ -1255,6 +1255,21 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get allCategories => """הכל""";
 
   /// ```dart
+  /// "הכל"
+  /// ```
+  String get allListsChip => """הכל""";
+
+  /// ```dart
+  /// "סינון לפי רשימה"
+  /// ```
+  String get filterByList => """סינון לפי רשימה""";
+
+  /// ```dart
+  /// "סינון לפי קטגוריה"
+  /// ```
+  String get filterByCategory => """סינון לפי קטגוריה""";
+
+  /// ```dart
   /// "טעינת הרשימות נכשלה."
   /// ```
   String get failedToLoad => """טעינת הרשימות נכשלה.""";
@@ -3098,6 +3113,9 @@ Map<String, String> get messagesHeMap => {
   """checklists.noSearchResults""": """אין פריטים תואמים לחיפוש.""",
   """checklists.searchHint""": """הקלד לסינון...""",
   """checklists.allCategories""": """הכל""",
+  """checklists.allListsChip""": """הכל""",
+  """checklists.filterByList""": """סינון לפי רשימה""",
+  """checklists.filterByCategory""": """סינון לפי קטגוריה""",
   """checklists.failedToLoad""": """טעינת הרשימות נכשלה.""",
   """checklists.failedToLoadItems""": """טעינת הפריטים נכשלה.""",
   """checklists.editItem""": """ערוך פריט""",

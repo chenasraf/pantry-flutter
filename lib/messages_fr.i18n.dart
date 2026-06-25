@@ -1265,6 +1265,21 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get allCategories => """Tout""";
 
   /// ```dart
+  /// "Tout"
+  /// ```
+  String get allListsChip => """Tout""";
+
+  /// ```dart
+  /// "Filtrer par liste"
+  /// ```
+  String get filterByList => """Filtrer par liste""";
+
+  /// ```dart
+  /// "Filtrer par catégorie"
+  /// ```
+  String get filterByCategory => """Filtrer par catégorie""";
+
+  /// ```dart
   /// "Impossible de charger les listes."
   /// ```
   String get failedToLoad => """Impossible de charger les listes.""";
@@ -3139,6 +3154,9 @@ Mot de passe : pantry-rocks""",
       """Aucun article ne correspond à votre recherche.""",
   """checklists.searchHint""": """Filtrer...""",
   """checklists.allCategories""": """Tout""",
+  """checklists.allListsChip""": """Tout""",
+  """checklists.filterByList""": """Filtrer par liste""",
+  """checklists.filterByCategory""": """Filtrer par catégorie""",
   """checklists.failedToLoad""": """Impossible de charger les listes.""",
   """checklists.failedToLoadItems""": """Impossible de charger les articles.""",
   """checklists.editItem""": """Modifier l'article""",
