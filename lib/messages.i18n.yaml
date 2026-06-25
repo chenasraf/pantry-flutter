@@ -91,7 +91,7 @@ onboarding:
   mockComposeListName: "Groceries"
   progressHeroTitle: "Hide the progress card"
   progressHeroBody: "Don't need the progress ring at the top? Swipe it away."
-  progressHeroBringBack(String settings, String interface, String toggle): "Bring it back later from ${settings} → ${interface} → ${toggle}."
+  progressHeroBringBack(String toggle): "Bring it back anytime from the list menu → ${toggle}."
   progressHeroHint: "Swipe to dismiss"
   progressHeroDismissTitle: "Hide the progress card"
   progressHeroDismissBody: "Don't need the progress ring at the top? Click the X on the card to hide it."
@@ -160,8 +160,6 @@ settings:
     view: View
     edit: Edit
     none: None
-  showProgressHero: Show progress card on each checklist
-  showProgressHeroBody: "The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it."
   categorySpacing: Show spacing between categories in list items
   categorySpacingBody: Only visible when sorting by category
   categorySpacingNames:

@@ -553,14 +553,10 @@ class OnboardingMessagesFr extends OnboardingMessages {
       """Pas besoin de l'anneau de progression en haut ? Balaie-le pour le retirer.""";
 
   /// ```dart
-  /// "Tu peux la réafficher plus tard depuis ${settings} → ${interface} → ${toggle}."
+  /// "Tu peux la réafficher à tout moment depuis le menu de la liste → ${toggle}."
   /// ```
-  String progressHeroBringBack(
-    String settings,
-    String interface,
-    String toggle,
-  ) =>
-      """Tu peux la réafficher plus tard depuis ${settings} → ${interface} → ${toggle}.""";
+  String progressHeroBringBack(String toggle) =>
+      """Tu peux la réafficher à tout moment depuis le menu de la liste → ${toggle}.""";
 
   /// ```dart
   /// "Balaie pour masquer"
@@ -879,18 +875,6 @@ class SettingsMessagesFr extends SettingsMessages {
       """Ce qui se passe quand vous touchez la ligne d'un élément.""";
   ItemTapActionNamesSettingsMessagesFr get itemTapActionNames =>
       ItemTapActionNamesSettingsMessagesFr(this);
-
-  /// ```dart
-  /// "Afficher la carte de progression sur chaque liste"
-  /// ```
-  String get showProgressHero =>
-      """Afficher la carte de progression sur chaque liste""";
-
-  /// ```dart
-  /// "La carte avec l'anneau de progression circulaire et le résumé des éléments restants en haut de chaque liste. Faites glisser la carte pour la masquer."
-  /// ```
-  String get showProgressHeroBody =>
-      """La carte avec l'anneau de progression circulaire et le résumé des éléments restants en haut de chaque liste. Faites glisser la carte pour la masquer.""";
 
   /// ```dart
   /// "Afficher un espacement entre les catégories dans les éléments de la liste"
@@ -3085,10 +3069,6 @@ Mot de passe : pantry-rocks""",
   """settings.itemTapActionNames.view""": """Voir""",
   """settings.itemTapActionNames.edit""": """Modifier""",
   """settings.itemTapActionNames.none""": """Aucune""",
-  """settings.showProgressHero""":
-      """Afficher la carte de progression sur chaque liste""",
-  """settings.showProgressHeroBody""":
-      """La carte avec l'anneau de progression circulaire et le résumé des éléments restants en haut de chaque liste. Faites glisser la carte pour la masquer.""",
   """settings.categorySpacing""":
       """Afficher un espacement entre les catégories dans les éléments de la liste""",
   """settings.categorySpacingBody""":

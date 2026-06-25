@@ -548,13 +548,10 @@ class OnboardingMessages {
       """Don't need the progress ring at the top? Swipe it away.""";
 
   /// ```dart
-  /// "Bring it back later from ${settings} → ${interface} → ${toggle}."
+  /// "Bring it back anytime from the list menu → ${toggle}."
   /// ```
-  String progressHeroBringBack(
-    String settings,
-    String interface,
-    String toggle,
-  ) => """Bring it back later from ${settings} → ${interface} → ${toggle}.""";
+  String progressHeroBringBack(String toggle) =>
+      """Bring it back anytime from the list menu → ${toggle}.""";
 
   /// ```dart
   /// "Swipe to dismiss"
@@ -873,17 +870,6 @@ class SettingsMessages {
       """What happens when you tap an item row.""";
   ItemTapActionNamesSettingsMessages get itemTapActionNames =>
       ItemTapActionNamesSettingsMessages(this);
-
-  /// ```dart
-  /// "Show progress card on each checklist"
-  /// ```
-  String get showProgressHero => """Show progress card on each checklist""";
-
-  /// ```dart
-  /// "The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it."
-  /// ```
-  String get showProgressHeroBody =>
-      """The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it.""";
 
   /// ```dart
   /// "Show spacing between categories in list items"
@@ -3047,9 +3033,6 @@ Password: pantry-rocks""",
   """settings.itemTapActionNames.view""": """View""",
   """settings.itemTapActionNames.edit""": """Edit""",
   """settings.itemTapActionNames.none""": """None""",
-  """settings.showProgressHero""": """Show progress card on each checklist""",
-  """settings.showProgressHeroBody""":
-      """The card with the circular progress ring and items-left summary at the top of each checklist. Swipe the card to dismiss it.""",
   """settings.categorySpacing""":
       """Show spacing between categories in list items""",
   """settings.categorySpacingBody""":

@@ -552,14 +552,10 @@ class OnboardingMessagesEs extends OnboardingMessages {
       """¿No necesitas el anillo de progreso arriba? Deslízalo para descartarlo.""";
 
   /// ```dart
-  /// "Puedes volver a mostrarla desde ${settings} → ${interface} → ${toggle}."
+  /// "Puedes volver a mostrarla en cualquier momento desde el menú de la lista → ${toggle}."
   /// ```
-  String progressHeroBringBack(
-    String settings,
-    String interface,
-    String toggle,
-  ) =>
-      """Puedes volver a mostrarla desde ${settings} → ${interface} → ${toggle}.""";
+  String progressHeroBringBack(String toggle) =>
+      """Puedes volver a mostrarla en cualquier momento desde el menú de la lista → ${toggle}.""";
 
   /// ```dart
   /// "Desliza para descartar"
@@ -878,18 +874,6 @@ class SettingsMessagesEs extends SettingsMessages {
       """Qué ocurre al tocar la fila de un elemento.""";
   ItemTapActionNamesSettingsMessagesEs get itemTapActionNames =>
       ItemTapActionNamesSettingsMessagesEs(this);
-
-  /// ```dart
-  /// "Mostrar tarjeta de progreso en cada lista"
-  /// ```
-  String get showProgressHero =>
-      """Mostrar tarjeta de progreso en cada lista""";
-
-  /// ```dart
-  /// "La tarjeta con el anillo de progreso circular y el resumen de elementos restantes en la parte superior de cada lista. Desliza la tarjeta para ocultarla."
-  /// ```
-  String get showProgressHeroBody =>
-      """La tarjeta con el anillo de progreso circular y el resumen de elementos restantes en la parte superior de cada lista. Desliza la tarjeta para ocultarla.""";
 
   /// ```dart
   /// "Mostrar espacio entre categorías en los elementos de la lista"
@@ -3075,10 +3059,6 @@ Contraseña: pantry-rocks""",
   """settings.itemTapActionNames.view""": """Ver""",
   """settings.itemTapActionNames.edit""": """Editar""",
   """settings.itemTapActionNames.none""": """Ninguna""",
-  """settings.showProgressHero""":
-      """Mostrar tarjeta de progreso en cada lista""",
-  """settings.showProgressHeroBody""":
-      """La tarjeta con el anillo de progreso circular y el resumen de elementos restantes en la parte superior de cada lista. Desliza la tarjeta para ocultarla.""",
   """settings.categorySpacing""":
       """Mostrar espacio entre categorías en los elementos de la lista""",
   """settings.categorySpacingBody""":

@@ -9,6 +9,7 @@ import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/house_service.dart';
+import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/sync/sync_ids.dart';
 import 'package:pantry/sync/sync_manager.dart';
@@ -29,6 +30,9 @@ ChecklistList allListsSentinel(int houseId) => ChecklistList(
   sortOrder: -1 << 30,
   createdAt: 0,
   updatedAt: 0,
+  // The sentinel isn't a server entity, so its progress-card visibility is
+  // persisted locally (under id 0) rather than synced like real lists.
+  hideProgressHero: PrefsService.instance.allListsProgressHeroHidden,
 );
 
 class ChecklistsController extends ChangeNotifier {
@@ -699,8 +703,18 @@ class ChecklistsController extends ChangeNotifier {
 
   Future<void> setListHideProgressHero(bool value) async {
     final list = _currentList;
-    if (list == null || list.id == kAllListsId) return;
+    if (list == null) return;
     if (list.hideProgressHero == value) return;
+
+    // The All-lists view is synthetic — there's no server list to sync, so its
+    // toggle lives in local prefs (keyed by id 0). Reflect it on the in-memory
+    // sentinel so the card hides/shows immediately.
+    if (list.id == kAllListsId) {
+      _currentList = list.copyWith(hideProgressHero: value, updatedAt: _now());
+      await PrefsService.instance.setAllListsProgressHeroHidden(value);
+      notifyListeners();
+      return;
+    }
 
     final optimistic = list.copyWith(
       hideProgressHero: value,

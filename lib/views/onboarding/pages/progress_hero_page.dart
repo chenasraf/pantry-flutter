@@ -60,7 +60,6 @@ class _ProgressHeroOnboardingPageState extends State<ProgressHeroOnboardingPage>
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final ob = m.onboarding;
-    final settings = m.settings;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
@@ -99,11 +98,7 @@ class _ProgressHeroOnboardingPageState extends State<ProgressHeroOnboardingPage>
           ),
           const SizedBox(height: 24),
           _BringBackHint(
-            text: ob.progressHeroBringBack(
-              settings.title,
-              settings.interfaceSection,
-              settings.showProgressHero,
-            ),
+            text: ob.progressHeroBringBack(m.checklists.showProgressHero),
           ),
         ],
       ),
@@ -348,7 +343,7 @@ class _SwipeHintPill extends StatelessWidget {
   }
 }
 
-/// Small explanatory footer with the settings path for re-enabling the card.
+/// Small explanatory footer with the list-menu path for re-enabling the card.
 class _BringBackHint extends StatelessWidget {
   final String text;
 
@@ -366,7 +361,7 @@ class _BringBackHint extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.settings_outlined, size: 18, color: cs.onSurfaceVariant),
+          Icon(Icons.more_vert, size: 18, color: cs.onSurfaceVariant),
           const SizedBox(width: 10),
           Expanded(
             child: Text(

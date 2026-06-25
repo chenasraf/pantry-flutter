@@ -91,7 +91,7 @@ onboarding:
   mockComposeListName: "Lebensmittel"
   progressHeroTitle: "Fortschrittskarte ausblenden"
   progressHeroBody: "Brauchst du den Fortschrittsring oben nicht? Wisch ihn einfach weg."
-  progressHeroBringBack(String settings, String interface, String toggle): "Du holst ihn später unter ${settings} → ${interface} → ${toggle} zurück."
+  progressHeroBringBack(String toggle): "Du holst sie jederzeit über das Listenmenü → ${toggle} zurück."
   progressHeroHint: "Zum Ausblenden wischen"
   progressHeroDismissTitle: "Fortschrittskarte ausblenden"
   progressHeroDismissBody: "Brauchst du den Fortschrittsring oben nicht? Klicke auf das X auf der Karte, um sie auszublenden."
@@ -160,8 +160,6 @@ settings:
     view: Anzeigen
     edit: Bearbeiten
     none: Keine
-  showProgressHero: Fortschrittskarte in jeder Liste anzeigen
-  showProgressHeroBody: "Die Karte mit dem kreisförmigen Fortschrittsring und der Zusammenfassung der verbleibenden Einträge oben in jeder Liste. Wische die Karte weg, um sie auszublenden."
   categorySpacing: Abstand zwischen Kategorien in Listeneinträgen anzeigen
   categorySpacingBody: Nur sichtbar bei Sortierung nach Kategorie
   categorySpacingNames:

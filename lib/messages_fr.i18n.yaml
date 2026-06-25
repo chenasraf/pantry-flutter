@@ -91,7 +91,7 @@ onboarding:
   mockComposeListName: "Courses"
   progressHeroTitle: "Masquer la carte de progression"
   progressHeroBody: "Pas besoin de l'anneau de progression en haut ? Balaie-le pour le retirer."
-  progressHeroBringBack(String settings, String interface, String toggle): "Tu peux la réafficher plus tard depuis ${settings} → ${interface} → ${toggle}."
+  progressHeroBringBack(String toggle): "Tu peux la réafficher à tout moment depuis le menu de la liste → ${toggle}."
   progressHeroHint: "Balaie pour masquer"
   progressHeroDismissTitle: "Masque la carte de progression"
   progressHeroDismissBody: "Tu n'as pas besoin de l'anneau de progression en haut ? Clique sur le X de la carte pour la masquer."
@@ -160,8 +160,6 @@ settings:
     view: Voir
     edit: Modifier
     none: Aucune
-  showProgressHero: Afficher la carte de progression sur chaque liste
-  showProgressHeroBody: "La carte avec l'anneau de progression circulaire et le résumé des éléments restants en haut de chaque liste. Faites glisser la carte pour la masquer."
   categorySpacing: Afficher un espacement entre les catégories dans les éléments de la liste
   categorySpacingBody: Visible uniquement lors du tri par catégorie
   categorySpacingNames:

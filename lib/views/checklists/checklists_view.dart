@@ -333,13 +333,15 @@ class _BodyState extends State<_Body> {
                 ),
                 if (!isEmptyList &&
                     !controller.isTrashMode &&
-                    !prefs.checklistProgressHeroHidden &&
                     !(list?.hideProgressHero ?? false))
                   Dismissible(
                     key: const ValueKey('progress-hero'),
                     direction: DismissDirection.horizontal,
+                    // Hides the card for the current list (the All-lists view
+                    // persists this locally under id 0). Bring it back from the
+                    // list's overflow menu.
                     onDismissed: (_) =>
-                        prefs.setChecklistProgressHeroHidden(true),
+                        controller.setListHideProgressHero(true),
                     background: const SizedBox.shrink(),
                     child: ProgressHero(
                       total: total,
@@ -348,7 +350,7 @@ class _BodyState extends State<_Body> {
                       // affordance there; the Dismissible above still works
                       // for anyone who can swipe.
                       onDismiss: PlatformInfo.isDesktop
-                          ? () => prefs.setChecklistProgressHeroHidden(true)
+                          ? () => controller.setListHideProgressHero(true)
                           : null,
                     ),
                   ),
@@ -792,7 +794,7 @@ class _BodyState extends State<_Body> {
           label: m.checklists.showAddedBy,
           selected: controller.showAddedBy,
         ),
-      if (controller.currentList != null && !isMeta)
+      if (controller.currentList != null)
         _checkboxRow(
           value: 'toggle_progress_hero',
           label: m.checklists.showProgressHero,

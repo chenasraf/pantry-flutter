@@ -548,13 +548,10 @@ class OnboardingMessagesHe extends OnboardingMessages {
       """לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה.""";
 
   /// ```dart
-  /// "אפשר להחזיר אותה דרך ${settings} ← ${interface} ← ${toggle}."
+  /// "אפשר להחזיר אותה בכל עת דרך תפריט הרשימה ← ${toggle}."
   /// ```
-  String progressHeroBringBack(
-    String settings,
-    String interface,
-    String toggle,
-  ) => """אפשר להחזיר אותה דרך ${settings} ← ${interface} ← ${toggle}.""";
+  String progressHeroBringBack(String toggle) =>
+      """אפשר להחזיר אותה בכל עת דרך תפריט הרשימה ← ${toggle}.""";
 
   /// ```dart
   /// "החלק כדי להסיר"
@@ -873,17 +870,6 @@ class SettingsMessagesHe extends SettingsMessages {
       """מה קורה כאשר לוחצים על שורת פריט.""";
   ItemTapActionNamesSettingsMessagesHe get itemTapActionNames =>
       ItemTapActionNamesSettingsMessagesHe(this);
-
-  /// ```dart
-  /// "הצג כרטיס התקדמות בכל רשימה"
-  /// ```
-  String get showProgressHero => """הצג כרטיס התקדמות בכל רשימה""";
-
-  /// ```dart
-  /// "הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו."
-  /// ```
-  String get showProgressHeroBody =>
-      """הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו.""";
 
   /// ```dart
   /// "הצג רווח בין קטגוריות בפריטי הרשימה"
@@ -3049,9 +3035,6 @@ Map<String, String> get messagesHeMap => {
   """settings.itemTapActionNames.view""": """צפייה""",
   """settings.itemTapActionNames.edit""": """עריכה""",
   """settings.itemTapActionNames.none""": """ללא""",
-  """settings.showProgressHero""": """הצג כרטיס התקדמות בכל רשימה""",
-  """settings.showProgressHeroBody""":
-      """הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו.""",
   """settings.categorySpacing""": """הצג רווח בין קטגוריות בפריטי הרשימה""",
   """settings.categorySpacingBody""": """מוצג רק בעת מיון לפי קטגוריה""",
   """settings.categorySpacingNames.disabled""": """מושבת""",

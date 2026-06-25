@@ -91,7 +91,7 @@ onboarding:
   mockComposeListName: "Compras"
   progressHeroTitle: "Oculta la tarjeta de progreso"
   progressHeroBody: "¿No necesitas el anillo de progreso arriba? Deslízalo para descartarlo."
-  progressHeroBringBack(String settings, String interface, String toggle): "Puedes volver a mostrarla desde ${settings} → ${interface} → ${toggle}."
+  progressHeroBringBack(String toggle): "Puedes volver a mostrarla en cualquier momento desde el menú de la lista → ${toggle}."
   progressHeroHint: "Desliza para descartar"
   progressHeroDismissTitle: "Oculta la tarjeta de progreso"
   progressHeroDismissBody: "¿No necesitas el anillo de progreso arriba? Pulsa la X en la tarjeta para ocultarla."
@@ -160,8 +160,6 @@ settings:
     view: Ver
     edit: Editar
     none: Ninguna
-  showProgressHero: Mostrar tarjeta de progreso en cada lista
-  showProgressHeroBody: "La tarjeta con el anillo de progreso circular y el resumen de elementos restantes en la parte superior de cada lista. Desliza la tarjeta para ocultarla."
   categorySpacing: Mostrar espacio entre categorías en los elementos de la lista
   categorySpacingBody: Solo visible al ordenar por categoría
   categorySpacingNames:

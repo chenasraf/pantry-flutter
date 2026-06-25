@@ -551,14 +551,10 @@ class OnboardingMessagesDe extends OnboardingMessages {
       """Brauchst du den Fortschrittsring oben nicht? Wisch ihn einfach weg.""";
 
   /// ```dart
-  /// "Du holst ihn später unter ${settings} → ${interface} → ${toggle} zurück."
+  /// "Du holst sie jederzeit über das Listenmenü → ${toggle} zurück."
   /// ```
-  String progressHeroBringBack(
-    String settings,
-    String interface,
-    String toggle,
-  ) =>
-      """Du holst ihn später unter ${settings} → ${interface} → ${toggle} zurück.""";
+  String progressHeroBringBack(String toggle) =>
+      """Du holst sie jederzeit über das Listenmenü → ${toggle} zurück.""";
 
   /// ```dart
   /// "Zum Ausblenden wischen"
@@ -877,18 +873,6 @@ class SettingsMessagesDe extends SettingsMessages {
       """Was passiert, wenn du eine Eintragszeile antippst.""";
   ItemTapActionNamesSettingsMessagesDe get itemTapActionNames =>
       ItemTapActionNamesSettingsMessagesDe(this);
-
-  /// ```dart
-  /// "Fortschrittskarte in jeder Liste anzeigen"
-  /// ```
-  String get showProgressHero =>
-      """Fortschrittskarte in jeder Liste anzeigen""";
-
-  /// ```dart
-  /// "Die Karte mit dem kreisförmigen Fortschrittsring und der Zusammenfassung der verbleibenden Einträge oben in jeder Liste. Wische die Karte weg, um sie auszublenden."
-  /// ```
-  String get showProgressHeroBody =>
-      """Die Karte mit dem kreisförmigen Fortschrittsring und der Zusammenfassung der verbleibenden Einträge oben in jeder Liste. Wische die Karte weg, um sie auszublenden.""";
 
   /// ```dart
   /// "Abstand zwischen Kategorien in Listeneinträgen anzeigen"
@@ -3081,10 +3065,6 @@ Passwort: pantry-rocks""",
   """settings.itemTapActionNames.view""": """Anzeigen""",
   """settings.itemTapActionNames.edit""": """Bearbeiten""",
   """settings.itemTapActionNames.none""": """Keine""",
-  """settings.showProgressHero""":
-      """Fortschrittskarte in jeder Liste anzeigen""",
-  """settings.showProgressHeroBody""":
-      """Die Karte mit dem kreisförmigen Fortschrittsring und der Zusammenfassung der verbleibenden Einträge oben in jeder Liste. Wische die Karte weg, um sie auszublenden.""",
   """settings.categorySpacing""":
       """Abstand zwischen Kategorien in Listeneinträgen anzeigen""",
   """settings.categorySpacingBody""":

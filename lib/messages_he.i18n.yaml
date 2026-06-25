@@ -91,7 +91,7 @@ onboarding:
   mockComposeListName: "מצרכים"
   progressHeroTitle: "הסתר את כרטיס ההתקדמות"
   progressHeroBody: "לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה."
-  progressHeroBringBack(String settings, String interface, String toggle): "אפשר להחזיר אותה דרך ${settings} ← ${interface} ← ${toggle}."
+  progressHeroBringBack(String toggle): "אפשר להחזיר אותה בכל עת דרך תפריט הרשימה ← ${toggle}."
   progressHeroHint: "החלק כדי להסיר"
   progressHeroDismissTitle: "הסתר את כרטיס ההתקדמות"
   progressHeroDismissBody: "לא צריך את טבעת ההתקדמות למעלה? לחץ על ה-X בכרטיס כדי להסתיר אותו."
@@ -160,8 +160,6 @@ settings:
     view: צפייה
     edit: עריכה
     none: ללא
-  showProgressHero: הצג כרטיס התקדמות בכל רשימה
-  showProgressHeroBody: הכרטיס עם טבעת ההתקדמות וסיכום פריטים שנותרו בראש כל רשימה. החלק את הכרטיס כדי להסיר אותו.
   categorySpacing: הצג רווח בין קטגוריות בפריטי הרשימה
   categorySpacingBody: מוצג רק בעת מיון לפי קטגוריה
   categorySpacingNames:
