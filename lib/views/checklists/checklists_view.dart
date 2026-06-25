@@ -276,20 +276,11 @@ class _BodyState extends State<_Body> {
         .where((c) => activeCategoryIds.contains(c.id))
         .toList();
 
-    // Same rule for the per-list filter (All-lists view only): only offer
-    // lists that actually contribute a non-trashed item to the current view.
+    // The per-list filter (All-lists view only) offers every list, even ones
+    // with no items in the current view — unlike categories, an empty list is
+    // still a meaningful thing to focus on.
     final filterLists = isMeta
-        ? () {
-            final activeListIds = <int>{
-              for (final i in controller.items)
-                if (i.deletedAt == null) i.listId,
-            };
-            return controller.sortedLists
-                .where(
-                  (l) => l.id != kAllListsId && activeListIds.contains(l.id),
-                )
-                .toList();
-          }()
+        ? controller.sortedLists.where((l) => l.id != kAllListsId).toList()
         : const <ChecklistList>[];
 
     // Push the current AppBar contents up to the shared home AppBar slot.
