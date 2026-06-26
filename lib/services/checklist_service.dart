@@ -59,12 +59,9 @@ class ChecklistService {
     int listId, {
     String sortBy = 'custom',
   }) async {
-    return ApiClient.instance.get<List, List<ListItem>>(
+    return _fetchAllItems(
       '/houses/$houseId/lists/$listId/items',
-      query: {'sortBy': sortBy},
-      fromJson: (data) => data
-          .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      sortBy: sortBy,
     );
   }
 
@@ -74,20 +71,38 @@ class ChecklistService {
   Future<List<ListItem>> getHouseItems(
     int houseId, {
     String sortBy = 'newest',
-    int? limit,
-    int? offset,
   }) async {
-    return ApiClient.instance.get<List, List<ListItem>>(
-      '/houses/$houseId/items',
-      query: {
-        'sortBy': sortBy,
-        if (limit != null) 'limit': limit.toString(),
-        if (offset != null) 'offset': offset.toString(),
-      },
-      fromJson: (data) => data
-          .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+    return _fetchAllItems('/houses/$houseId/items', sortBy: sortBy);
+  }
+
+  /// Page through an items endpoint until every item is retrieved. The server
+  /// caps the number of items returned per request, so a single call silently
+  /// drops the trailing items of long lists — when sorted by category that
+  /// looks like the last categories disappearing entirely (issue #80).
+  Future<List<ListItem>> _fetchAllItems(
+    String path, {
+    required String sortBy,
+  }) async {
+    const pageSize = 500;
+    final all = <ListItem>[];
+    var offset = 0;
+    while (true) {
+      final page = await ApiClient.instance.get<List, List<ListItem>>(
+        path,
+        query: {
+          'sortBy': sortBy,
+          'limit': pageSize.toString(),
+          'offset': offset.toString(),
+        },
+        fromJson: (data) => data
+            .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+      all.addAll(page);
+      if (page.length < pageSize) break;
+      offset += pageSize;
+    }
+    return all;
   }
 
   Future<Map<String, dynamic>> getHousePrefs(int houseId) async {
