@@ -123,6 +123,24 @@ class SyncManager {
   /// Mint a fresh temp id for an optimistic create.
   int newTempId() => SyncIds.newTempEntityId();
 
+  /// Ids of every checklist item in [houseId] that still has an un-acked op
+  /// in the queue — both the real id (once known, via id-remap) and the
+  /// original temp id, so an item matches whether or not its optimistic
+  /// create has resolved yet. Controllers use this to keep optimistic state
+  /// authoritative when a background fetch returns a snapshot that predates a
+  /// pending op (the check-then-flicker-back race).
+  Set<int> pendingItemIds(int houseId) {
+    final out = <int>{};
+    for (final raw in _queue.all()) {
+      if (raw.entity != SyncEntity.checklistItem) continue;
+      if (raw.houseId != houseId) continue;
+      final id = _remap.rewrite(raw).effectiveEntityId;
+      if (id != null) out.add(id);
+      if (raw.tempEntityId != null) out.add(raw.tempEntityId!);
+    }
+    return out;
+  }
+
   /// Enqueue an op. Returns immediately. If online, kicks the flush loop.
   void enqueue(SyncOp op) {
     _queue.enqueue(op);

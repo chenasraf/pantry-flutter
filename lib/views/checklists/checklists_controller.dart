@@ -288,7 +288,7 @@ class ChecklistsController extends ChangeNotifier {
           sortBy: effectiveSortBy,
         );
         if (_currentList?.id == kAllListsId && !_isTrashMode) {
-          _items = fresh;
+          _items = _overlayPending(fresh);
           _isLoading = false;
           notifyListeners();
         }
@@ -320,11 +320,16 @@ class ChecklistsController extends ChangeNotifier {
         list.id,
         sortBy: _sortBy,
       );
-      _checklistService.cacheItems(list.id, freshItems);
       if (_currentList?.id == list.id && !_isTrashMode) {
-        _items = freshItems;
+        // Reconcile against pending ops only while this list is still current;
+        // `_items` belongs to a different list otherwise.
+        final reconciled = _overlayPending(freshItems);
+        _items = reconciled;
+        _checklistService.cacheItems(list.id, reconciled);
         _isLoading = false;
         notifyListeners();
+      } else {
+        _checklistService.cacheItems(list.id, freshItems);
       }
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load items: $e');
@@ -334,6 +339,45 @@ class ChecklistsController extends ChangeNotifier {
         notifyListeners();
       }
     }
+  }
+
+  /// Overlays un-acked local mutations onto a freshly fetched server
+  /// snapshot. The pending sync queue is exactly the set of records the
+  /// server may not yet reflect, so for those ids the local optimistic state
+  /// wins and every other record takes the server's version. Without this a
+  /// background refresh that lands while a toggle/edit/create is still in
+  /// flight momentarily reverts the item, then the op's response flips it
+  /// back — a visible flicker.
+  ///
+  /// [server] holds only the records for the view being refreshed (one list,
+  /// or the whole house in meta mode); intersecting the house-wide pending
+  /// set with the current `_items`/`server` keeps it correctly scoped.
+  List<ListItem> _overlayPending(List<ListItem> server) {
+    final pending = _sync.pendingItemIds(houseId);
+    if (pending.isEmpty) return server;
+
+    final localById = {for (final i in _items) i.id: i};
+    final out = <ListItem>[];
+    for (final s in server) {
+      if (pending.contains(s.id)) {
+        // Un-acked toggle/edit: trust local. If it's gone locally (pending
+        // delete) drop it rather than letting the stale snapshot revive it.
+        final local = localById[s.id];
+        if (local != null) out.add(local);
+      } else {
+        out.add(s);
+      }
+    }
+
+    // Optimistic creates the server hasn't returned yet (temp ids). Keep them
+    // ahead of the synced rows in their current relative order; they settle
+    // into place once the create acks.
+    final present = out.map((i) => i.id).toSet();
+    final localOnly = [
+      for (final l in _items)
+        if (pending.contains(l.id) && !present.contains(l.id)) l,
+    ];
+    return [...localOnly, ...out];
   }
 
   Future<void> _loadTrashItems(ChecklistList list) async {
