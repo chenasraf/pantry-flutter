@@ -58,6 +58,7 @@ class NoteDetailView extends StatelessWidget {
                     data: note.content!,
                     padding: const EdgeInsets.all(16),
                     selectable: true,
+                    softLineBreak: true,
                     onTapLink: (text, href, title) {
                       if (href != null) {
                         launchUrl(Uri.parse(href));

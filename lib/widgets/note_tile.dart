@@ -140,6 +140,7 @@ class NoteTile extends StatelessWidget {
                     child: Markdown(
                       data: note.content!,
                       shrinkWrap: false,
+                      softLineBreak: true,
                       physics: const NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.zero,
                       onTapLink: (text, href, title) {

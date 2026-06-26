@@ -912,6 +912,7 @@ class _DescriptionCard extends StatelessWidget {
             child: MarkdownBody(
               data: description!,
               shrinkWrap: true,
+              softLineBreak: true,
               onTapLink: (text, href, title) {
                 if (href != null) launchUrl(Uri.parse(href));
               },
