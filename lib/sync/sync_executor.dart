@@ -105,6 +105,7 @@ class SyncExecutor {
           quantity: op.body['quantity'] as String?,
           categoryId: op.body['categoryId'] as int?,
           rrule: op.body['rrule'] as String?,
+          repeatFromCompletion: op.body['repeatFromCompletion'] as bool?,
           deleteOnDone: op.body['deleteOnDone'] as bool?,
         );
         return SyncResult(item);

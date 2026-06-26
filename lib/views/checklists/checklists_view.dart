@@ -599,6 +599,7 @@ class _BodyState extends State<_Body> {
           quantity: s.quantity,
           categoryId: s.categoryId,
           rrule: s.rrule,
+          repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
         );
       } else {
@@ -608,6 +609,7 @@ class _BodyState extends State<_Body> {
           quantity: s.quantity,
           categoryId: s.categoryId,
           rrule: s.rrule,
+          repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
         );
       }

@@ -785,6 +785,7 @@ class ChecklistsController extends ChangeNotifier {
     String? quantity,
     int? categoryId,
     String? rrule,
+    bool? repeatFromCompletion,
     bool? deleteOnDone,
   }) async {
     final list = _currentList;
@@ -802,6 +803,7 @@ class ChecklistsController extends ChangeNotifier {
       quantity: quantity,
       categoryId: categoryId,
       rrule: rrule,
+      repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
     );
   }
@@ -817,6 +819,7 @@ class ChecklistsController extends ChangeNotifier {
     String? quantity,
     int? categoryId,
     String? rrule,
+    bool? repeatFromCompletion,
     bool? deleteOnDone,
   }) async {
     final listId = targetListId;
@@ -831,7 +834,7 @@ class ChecklistsController extends ChangeNotifier {
       quantity: quantity,
       done: false,
       rrule: rrule,
-      repeatFromCompletion: false,
+      repeatFromCompletion: repeatFromCompletion ?? false,
       deleteOnDone: deleteOnDone ?? false,
       addedBy: loginName,
       sortOrder: 0,
@@ -860,6 +863,7 @@ class ChecklistsController extends ChangeNotifier {
           'quantity': ?quantity,
           'categoryId': ?categoryId,
           'rrule': ?rrule,
+          'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
         },
         createdAt: _now(),

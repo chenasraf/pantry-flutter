@@ -309,6 +309,7 @@ class ChecklistService {
     String? quantity,
     int? categoryId,
     String? rrule,
+    bool? repeatFromCompletion,
     bool? deleteOnDone,
   }) async {
     final loginName = AuthService.instance.credentials?.loginName;
@@ -321,6 +322,7 @@ class ChecklistService {
         if (quantity != null && quantity.isNotEmpty) 'quantity': quantity,
         'categoryId': ?categoryId,
         if (rrule != null && rrule.isNotEmpty) 'rrule': rrule,
+        'repeatFromCompletion': ?repeatFromCompletion,
         'deleteOnDone': ?deleteOnDone,
         'addedBy': ?loginName,
       },
