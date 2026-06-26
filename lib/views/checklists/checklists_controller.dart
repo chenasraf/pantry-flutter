@@ -369,15 +369,24 @@ class ChecklistsController extends ChangeNotifier {
       }
     }
 
-    // Optimistic creates the server hasn't returned yet (temp ids). Keep them
-    // ahead of the synced rows in their current relative order; they settle
-    // into place once the create acks.
+    // Optimistic creates the server hasn't returned yet (temp ids). Slot each
+    // into the freshly fetched snapshot at the position the active sort
+    // dictates instead of blindly prepending — otherwise a refresh that lands
+    // before the create acks yanks the new item to the top regardless of sort.
     final present = out.map((i) => i.id).toSet();
     final localOnly = [
       for (final l in _items)
         if (pending.contains(l.id) && !present.contains(l.id)) l,
     ];
-    return [...localOnly, ...out];
+    // Resolve each create's slot against the untouched snapshot first, then
+    // splice from the back. `localOnly` follows `_items` (display) order, so
+    // those indices are non-decreasing; inserting highest-first keeps earlier
+    // indices valid and preserves the relative order of ties.
+    final slots = [for (final l in localOnly) (l, _insertIndexFor(l, out))];
+    for (final (l, at) in slots.reversed) {
+      out.insert(at, l);
+    }
+    return out;
   }
 
   Future<void> _loadTrashItems(ChecklistList list) async {
@@ -486,11 +495,15 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
-  int _insertIndexFor(ListItem item) {
-    final firstDone = _items.indexWhere((i) => i.done);
-    final lastUnchecked = firstDone == -1 ? _items.length : firstDone;
+  /// Position at which [item] should be inserted into [target] (defaulting to
+  /// the live `_items`) to keep the active sort intact. Uses [effectiveSortBy]
+  /// so it agrees with the order the server returns for the current view.
+  int _insertIndexFor(ListItem item, [List<ListItem>? target]) {
+    final items = target ?? _items;
+    final firstDone = items.indexWhere((i) => i.done);
+    final lastUnchecked = firstDone == -1 ? items.length : firstDone;
 
-    switch (_sortBy) {
+    switch (effectiveSortBy) {
       case 'category':
         final sorted = sortedCategories;
         final rank = <int, int>{};
@@ -502,19 +515,19 @@ class ChecklistsController extends ChangeNotifier {
             id == null ? uncategorizedRank : (rank[id] ?? uncategorizedRank);
         final myRank = rankOf(item.categoryId);
         for (var i = 0; i < lastUnchecked; i++) {
-          if (rankOf(_items[i].categoryId) > myRank) return i;
+          if (rankOf(items[i].categoryId) > myRank) return i;
         }
         return lastUnchecked;
       case 'name_asc':
         final key = item.name.toLowerCase();
         for (var i = 0; i < lastUnchecked; i++) {
-          if (_items[i].name.toLowerCase().compareTo(key) > 0) return i;
+          if (items[i].name.toLowerCase().compareTo(key) > 0) return i;
         }
         return lastUnchecked;
       case 'name_desc':
         final key = item.name.toLowerCase();
         for (var i = 0; i < lastUnchecked; i++) {
-          if (_items[i].name.toLowerCase().compareTo(key) < 0) return i;
+          if (items[i].name.toLowerCase().compareTo(key) < 0) return i;
         }
         return lastUnchecked;
       case 'oldest':
