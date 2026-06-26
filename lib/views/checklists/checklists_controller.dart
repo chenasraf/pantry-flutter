@@ -108,6 +108,12 @@ class ChecklistsController extends ChangeNotifier {
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
+  /// True while items are being re-fetched in place (e.g. a sort change) with
+  /// the previous items still on screen. Drives a non-blocking refresh
+  /// indicator instead of clearing the list to a loading/empty state.
+  bool _isRefreshing = false;
+  bool get isRefreshing => _isRefreshing;
+
   String? _error;
   String? get error => _error;
 
@@ -255,13 +261,23 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
-  Future<void> selectList(ChecklistList list) async {
+  /// [refreshInPlace] keeps the current items on screen and surfaces a
+  /// background refresh indicator while the new data loads, instead of clearing
+  /// to an empty/loading state. Used by user-initiated reloads (e.g. a sort
+  /// change) so the list doesn't flash empty mid-flight; background polling
+  /// leaves it false so its refreshes stay silent.
+  Future<void> selectList(
+    ChecklistList list, {
+    bool refreshInPlace = false,
+  }) async {
+    final previousListId = _currentList?.id;
     _currentList = list;
     _checklistService.selectedListId = list.id;
 
     if (_isTrashMode) {
       _items = [];
       _isLoading = true;
+      _isRefreshing = false;
       notifyListeners();
       // Meta view has no trash of its own — exit trash mode silently.
       if (list.id == kAllListsId) {
@@ -280,6 +296,10 @@ class ChecklistsController extends ChangeNotifier {
       // than an empty-state flash.
       if (_items.isEmpty) {
         _isLoading = true;
+        _isRefreshing = false;
+        notifyListeners();
+      } else {
+        _isRefreshing = refreshInPlace;
         notifyListeners();
       }
       try {
@@ -290,13 +310,15 @@ class ChecklistsController extends ChangeNotifier {
         if (_currentList?.id == kAllListsId && !_isTrashMode) {
           _items = _overlayPending(fresh);
           _isLoading = false;
+          _isRefreshing = false;
           notifyListeners();
         }
       } catch (e) {
         debugPrint('[ChecklistsController] Failed to load house items: $e');
         if (_currentList?.id == kAllListsId) {
-          _error = m.checklists.failedToLoadItems;
+          if (_items.isEmpty) _error = m.checklists.failedToLoadItems;
           _isLoading = false;
+          _isRefreshing = false;
           notifyListeners();
         }
       }
@@ -307,10 +329,20 @@ class ChecklistsController extends ChangeNotifier {
     if (cached != null) {
       _items = cached;
       _isLoading = false;
+      _isRefreshing = false;
+      notifyListeners();
+    } else if (previousListId == list.id && _items.isNotEmpty) {
+      // Re-selecting the list we're already showing (e.g. a sort change that
+      // invalidated the cache): keep the current items on screen and, when
+      // requested, surface a background refresh indicator instead of flashing
+      // the empty state.
+      _isLoading = false;
+      _isRefreshing = refreshInPlace;
       notifyListeners();
     } else {
       _items = [];
       _isLoading = true;
+      _isRefreshing = false;
       notifyListeners();
     }
 
@@ -327,17 +359,20 @@ class ChecklistsController extends ChangeNotifier {
         _items = reconciled;
         _checklistService.cacheItems(list.id, reconciled);
         _isLoading = false;
+        _isRefreshing = false;
         notifyListeners();
       } else {
         _checklistService.cacheItems(list.id, freshItems);
       }
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load items: $e');
-      if (cached == null) {
-        _error = m.checklists.failedToLoadItems;
-        _isLoading = false;
-        notifyListeners();
-      }
+      // Only surface a blocking error when there's nothing to show; if items
+      // are still on screen (cached or kept for an in-place refresh), leave
+      // them and just drop the refresh indicator.
+      if (_items.isEmpty) _error = m.checklists.failedToLoadItems;
+      _isLoading = false;
+      _isRefreshing = false;
+      notifyListeners();
     }
   }
 
@@ -433,7 +468,7 @@ class ChecklistsController extends ChangeNotifier {
 
     if (_currentList != null) {
       if (!isMetaMode) _checklistService.invalidateItems();
-      await selectList(_currentList!);
+      await selectList(_currentList!, refreshInPlace: true);
     }
   }
 

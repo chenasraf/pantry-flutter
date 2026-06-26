@@ -400,32 +400,52 @@ class _BodyState extends State<_Body> {
                 if (controller.isTrashMode)
                   _TrashBanner(onExit: () => controller.setTrashMode(false)),
                 Expanded(
-                  child: isEmptyList
+                  // While a fresh list (no cached items yet) is loading, show a
+                  // spinner rather than the empty state — the list isn't empty,
+                  // it just hasn't arrived. Once items are on screen, in-place
+                  // reloads (e.g. a sort change) keep them visible and overlay
+                  // a thin refresh bar instead of flashing empty.
+                  child: controller.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : isEmptyList
                       ? _NoItemsEmptyState()
                       : (filteredItems.isEmpty
                             ? _NoMatchesEmptyState()
-                            : Padding(
-                                // Reserve enough room for the resting compose
-                                // bar so the last item is always reachable
-                                // without the bar overlapping it.
-                                padding: const EdgeInsets.only(bottom: 76),
-                                child: _ItemList(
-                                  controller: controller,
-                                  activeItems: activeItems,
-                                  doneItems: doneItems,
-                                  canReorder: canReorder,
-                                  isCards: isCards,
-                                  doneCollapsed: doneCollapsed,
-                                  categorySpacing:
-                                      controller.sortBy == 'category'
-                                      ? prefs.checklistCategorySpacing
-                                      : 'disabled',
-                                  onToggleDoneCollapsed: () =>
-                                      prefs.setChecklistDoneCollapsed(
-                                        !doneCollapsed,
+                            : Stack(
+                                children: [
+                                  Padding(
+                                    // Reserve enough room for the resting
+                                    // compose bar so the last item is always
+                                    // reachable without the bar overlapping it.
+                                    padding: const EdgeInsets.only(bottom: 76),
+                                    child: _ItemList(
+                                      controller: controller,
+                                      activeItems: activeItems,
+                                      doneItems: doneItems,
+                                      canReorder: canReorder,
+                                      isCards: isCards,
+                                      doneCollapsed: doneCollapsed,
+                                      categorySpacing:
+                                          controller.sortBy == 'category'
+                                          ? prefs.checklistCategorySpacing
+                                          : 'disabled',
+                                      onToggleDoneCollapsed: () =>
+                                          prefs.setChecklistDoneCollapsed(
+                                            !doneCollapsed,
+                                          ),
+                                      scrollController: widget.scrollController,
+                                    ),
+                                  ),
+                                  if (controller.isRefreshing)
+                                    const PositionedDirectional(
+                                      top: 0,
+                                      start: 0,
+                                      end: 0,
+                                      child: LinearProgressIndicator(
+                                        minHeight: 2,
                                       ),
-                                  scrollController: widget.scrollController,
-                                ),
+                                    ),
+                                ],
                               )),
                 ),
               ],
