@@ -166,6 +166,12 @@ settings:
     disabled: מושבת
     space: רווח
     divider: קו מפריד
+  reuseExistingItems: שימוש חוזר בפריטים קיימים בעת הוספה
+  reuseExistingItemsBody: "כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים."
+  reuseExistingItemsNames:
+    ask: תמיד לשאול
+    reuse: תמיד להשתמש מחדש
+    never: לעולם לא להשתמש מחדש
   navOrderTitle: סדר ניווט
   navOrderSubtitle: שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה.
   navOrderBody: גרור כדי לשנות את הסדר. הפריט הראשון הוא הקטע שנפתח עם הפעלת האפליקציה.
@@ -403,6 +409,12 @@ checklists:
     pickTargetList: בחר רשימה
     multiple: מרובה
     multipleHint: הפרד פריטים בשורות חדשות
+  reuse:
+    dialogTitle: הפריט כבר קיים
+    dialogBody(String name): "פריט בשם \"$name\" כבר קיים ברשימה. להשתמש בו במקום להוסיף פריט חדש?"
+    reuseExisting: השתמש בקיים
+    addAnyway: הוסף בכל זאת
+    reusedSnack(String name): "נעשה שימוש חוזר בפריט “$name”"
   allLists: כל הרשימות
   allListsSubtitle: פריטים מכל הרשימות
   addToAnyList: "הוסף פריט…"

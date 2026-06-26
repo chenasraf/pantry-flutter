@@ -164,10 +164,39 @@ class AuthService {
         _firstDayOfWeek = (firstDay != null && firstDay >= 0)
             ? firstDay
             : _firstDayFromLocale();
+        // The `reuseExistingItems` key is only present when the server
+        // advertises the `reuse-existing-items` capability; cache it locally
+        // so the add-item path can read it synchronously.
+        final reuse = prefs?['reuseExistingItems'] as String?;
+        if (reuse != null) {
+          unawaited(PrefsService.instance.setReuseExistingItemsCache(reuse));
+        }
       }
     } catch (e) {
       debugPrint('[AuthService] Failed to fetch first day of week: $e');
       _firstDayOfWeek = _firstDayFromLocale();
+    }
+  }
+
+  /// Persist the account-scoped `reuseExistingItems` pref to the Pantry
+  /// user-prefs endpoint. Throws on a non-2xx response so callers can revert
+  /// an optimistic update. Caller is responsible for updating the local cache.
+  Future<void> setReuseExistingItems(String value) async {
+    if (_credentials == null) return;
+    final uri = Uri.parse(
+      '${_credentials!.serverUrl}/ocs/v2.php/apps/pantry/api/prefs',
+    );
+    final response = await http.put(
+      uri,
+      headers: {
+        ..._credentials!.basicAuthHeaders,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'reuseExistingItems': value}),
+    );
+    if (response.statusCode >= 400) {
+      throw Exception('Failed to update prefs: ${response.statusCode}');
     }
   }
 

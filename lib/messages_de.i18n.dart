@@ -889,6 +889,20 @@ class SettingsMessagesDe extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesDe(this);
 
   /// ```dart
+  /// "Vorhandene Einträge beim Hinzufügen wiederverwenden"
+  /// ```
+  String get reuseExistingItems =>
+      """Vorhandene Einträge beim Hinzufügen wiederverwenden""";
+
+  /// ```dart
+  /// "Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet."
+  /// ```
+  String get reuseExistingItemsBody =>
+      """Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet.""";
+  ReuseExistingItemsNamesSettingsMessagesDe get reuseExistingItemsNames =>
+      ReuseExistingItemsNamesSettingsMessagesDe(this);
+
+  /// ```dart
   /// "Navigationsreihenfolge"
   /// ```
   String get navOrderTitle => """Navigationsreihenfolge""";
@@ -1027,6 +1041,28 @@ class CategorySpacingNamesSettingsMessagesDe
   /// "Trennlinie"
   /// ```
   String get divider => """Trennlinie""";
+}
+
+class ReuseExistingItemsNamesSettingsMessagesDe
+    extends ReuseExistingItemsNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const ReuseExistingItemsNamesSettingsMessagesDe(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "Immer fragen"
+  /// ```
+  String get ask => """Immer fragen""";
+
+  /// ```dart
+  /// "Immer wiederverwenden"
+  /// ```
+  String get reuse => """Immer wiederverwenden""";
+
+  /// ```dart
+  /// "Nie wiederverwenden"
+  /// ```
+  String get never => """Nie wiederverwenden""";
 }
 
 class LanguageNamesSettingsMessagesDe extends LanguageNamesSettingsMessages {
@@ -1685,6 +1721,7 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   ItemTypesChecklistsMessagesDe get itemTypes =>
       ItemTypesChecklistsMessagesDe(this);
   ComposeChecklistsMessagesDe get compose => ComposeChecklistsMessagesDe(this);
+  ReuseChecklistsMessagesDe get reuse => ReuseChecklistsMessagesDe(this);
 
   /// ```dart
   /// "Alle Listen"
@@ -2164,6 +2201,38 @@ class ComposeChecklistsMessagesDe extends ComposeChecklistsMessages {
   /// "Einträge durch Zeilenumbrüche trennen"
   /// ```
   String get multipleHint => """Einträge durch Zeilenumbrüche trennen""";
+}
+
+class ReuseChecklistsMessagesDe extends ReuseChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const ReuseChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Eintrag existiert bereits"
+  /// ```
+  String get dialogTitle => """Eintrag existiert bereits""";
+
+  /// ```dart
+  /// "Ein Eintrag namens "$name" existiert bereits in dieser Liste. Wiederverwenden, statt einen neuen hinzuzufügen?"
+  /// ```
+  String dialogBody(String name) =>
+      """Ein Eintrag namens "$name" existiert bereits in dieser Liste. Wiederverwenden, statt einen neuen hinzuzufügen?""";
+
+  /// ```dart
+  /// "Vorhandenen wiederverwenden"
+  /// ```
+  String get reuseExisting => """Vorhandenen wiederverwenden""";
+
+  /// ```dart
+  /// "Trotzdem hinzufügen"
+  /// ```
+  String get addAnyway => """Trotzdem hinzufügen""";
+
+  /// ```dart
+  /// "Vorhandener Eintrag "$name" wiederverwendet"
+  /// ```
+  String reusedSnack(String name) =>
+      """Vorhandener Eintrag "$name" wiederverwendet""";
 }
 
 class NotesWallMessagesDe extends NotesWallMessages {
@@ -3072,6 +3141,13 @@ Passwort: pantry-rocks""",
   """settings.categorySpacingNames.disabled""": """Deaktiviert""",
   """settings.categorySpacingNames.space""": """Abstand""",
   """settings.categorySpacingNames.divider""": """Trennlinie""",
+  """settings.reuseExistingItems""":
+      """Vorhandene Einträge beim Hinzufügen wiederverwenden""",
+  """settings.reuseExistingItemsBody""":
+      """Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet.""",
+  """settings.reuseExistingItemsNames.ask""": """Immer fragen""",
+  """settings.reuseExistingItemsNames.reuse""": """Immer wiederverwenden""",
+  """settings.reuseExistingItemsNames.never""": """Nie wiederverwenden""",
   """settings.navOrderTitle""": """Navigationsreihenfolge""",
   """settings.navOrderSubtitle""":
       """Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.""",
@@ -3305,6 +3381,9 @@ Passwort: pantry-rocks""",
   """checklists.compose.multiple""": """Mehrere""",
   """checklists.compose.multipleHint""":
       """Einträge durch Zeilenumbrüche trennen""",
+  """checklists.reuse.dialogTitle""": """Eintrag existiert bereits""",
+  """checklists.reuse.reuseExisting""": """Vorhandenen wiederverwenden""",
+  """checklists.reuse.addAnyway""": """Trotzdem hinzufügen""",
   """checklists.allLists""": """Alle Listen""",
   """checklists.allListsSubtitle""": """Einträge aus allen Listen""",
   """checklists.addToAnyList""": """Eintrag hinzufügen…""",

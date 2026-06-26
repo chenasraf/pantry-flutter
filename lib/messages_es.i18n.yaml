@@ -166,6 +166,12 @@ settings:
     disabled: Desactivado
     space: Espacio
     divider: Separador
+  reuseExistingItems: Reutilizar artículos existentes al añadir
+  reuseExistingItemsBody: "Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo."
+  reuseExistingItemsNames:
+    ask: Preguntar siempre
+    reuse: Reutilizar siempre
+    never: Nunca reutilizar
   navOrderTitle: Orden de navegación
   navOrderSubtitle: Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.
   navOrderBody: Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app.
@@ -403,6 +409,12 @@ checklists:
     pickTargetList: Elige una lista
     multiple: Varios
     multipleHint: Separa los elementos con saltos de línea
+  reuse:
+    dialogTitle: El artículo ya existe
+    dialogBody(String name): "Ya existe un artículo llamado \"$name\" en esta lista. ¿Reutilizarlo en lugar de añadir uno nuevo?"
+    reuseExisting: Reutilizar existente
+    addAnyway: Añadir de todos modos
+    reusedSnack(String name): "Se reutilizó el artículo existente “$name”"
   allLists: Todas las listas
   allListsSubtitle: Elementos de todas las listas
   addToAnyList: "Añadir un elemento…"

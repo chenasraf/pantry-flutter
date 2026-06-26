@@ -884,6 +884,19 @@ class SettingsMessagesHe extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesHe(this);
 
   /// ```dart
+  /// "שימוש חוזר בפריטים קיימים בעת הוספה"
+  /// ```
+  String get reuseExistingItems => """שימוש חוזר בפריטים קיימים בעת הוספה""";
+
+  /// ```dart
+  /// "כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים."
+  /// ```
+  String get reuseExistingItemsBody =>
+      """כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים.""";
+  ReuseExistingItemsNamesSettingsMessagesHe get reuseExistingItemsNames =>
+      ReuseExistingItemsNamesSettingsMessagesHe(this);
+
+  /// ```dart
   /// "סדר ניווט"
   /// ```
   String get navOrderTitle => """סדר ניווט""";
@@ -1022,6 +1035,28 @@ class CategorySpacingNamesSettingsMessagesHe
   /// "קו מפריד"
   /// ```
   String get divider => """קו מפריד""";
+}
+
+class ReuseExistingItemsNamesSettingsMessagesHe
+    extends ReuseExistingItemsNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const ReuseExistingItemsNamesSettingsMessagesHe(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "תמיד לשאול"
+  /// ```
+  String get ask => """תמיד לשאול""";
+
+  /// ```dart
+  /// "תמיד להשתמש מחדש"
+  /// ```
+  String get reuse => """תמיד להשתמש מחדש""";
+
+  /// ```dart
+  /// "לעולם לא להשתמש מחדש"
+  /// ```
+  String get never => """לעולם לא להשתמש מחדש""";
 }
 
 class LanguageNamesSettingsMessagesHe extends LanguageNamesSettingsMessages {
@@ -1674,6 +1709,7 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   ItemTypesChecklistsMessagesHe get itemTypes =>
       ItemTypesChecklistsMessagesHe(this);
   ComposeChecklistsMessagesHe get compose => ComposeChecklistsMessagesHe(this);
+  ReuseChecklistsMessagesHe get reuse => ReuseChecklistsMessagesHe(this);
 
   /// ```dart
   /// "כל הרשימות"
@@ -2148,6 +2184,37 @@ class ComposeChecklistsMessagesHe extends ComposeChecklistsMessages {
   /// "הפרד פריטים בשורות חדשות"
   /// ```
   String get multipleHint => """הפרד פריטים בשורות חדשות""";
+}
+
+class ReuseChecklistsMessagesHe extends ReuseChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const ReuseChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "הפריט כבר קיים"
+  /// ```
+  String get dialogTitle => """הפריט כבר קיים""";
+
+  /// ```dart
+  /// "פריט בשם "$name" כבר קיים ברשימה. להשתמש בו במקום להוסיף פריט חדש?"
+  /// ```
+  String dialogBody(String name) =>
+      """פריט בשם "$name" כבר קיים ברשימה. להשתמש בו במקום להוסיף פריט חדש?""";
+
+  /// ```dart
+  /// "השתמש בקיים"
+  /// ```
+  String get reuseExisting => """השתמש בקיים""";
+
+  /// ```dart
+  /// "הוסף בכל זאת"
+  /// ```
+  String get addAnyway => """הוסף בכל זאת""";
+
+  /// ```dart
+  /// "נעשה שימוש חוזר בפריט “$name”"
+  /// ```
+  String reusedSnack(String name) => """נעשה שימוש חוזר בפריט “$name”""";
 }
 
 class NotesWallMessagesHe extends NotesWallMessages {
@@ -3040,6 +3107,12 @@ Map<String, String> get messagesHeMap => {
   """settings.categorySpacingNames.disabled""": """מושבת""",
   """settings.categorySpacingNames.space""": """רווח""",
   """settings.categorySpacingNames.divider""": """קו מפריד""",
+  """settings.reuseExistingItems""": """שימוש חוזר בפריטים קיימים בעת הוספה""",
+  """settings.reuseExistingItemsBody""":
+      """כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים.""",
+  """settings.reuseExistingItemsNames.ask""": """תמיד לשאול""",
+  """settings.reuseExistingItemsNames.reuse""": """תמיד להשתמש מחדש""",
+  """settings.reuseExistingItemsNames.never""": """לעולם לא להשתמש מחדש""",
   """settings.navOrderTitle""": """סדר ניווט""",
   """settings.navOrderSubtitle""":
       """שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה.""",
@@ -3255,6 +3328,9 @@ Map<String, String> get messagesHeMap => {
   """checklists.compose.pickTargetList""": """בחר רשימה""",
   """checklists.compose.multiple""": """מרובה""",
   """checklists.compose.multipleHint""": """הפרד פריטים בשורות חדשות""",
+  """checklists.reuse.dialogTitle""": """הפריט כבר קיים""",
+  """checklists.reuse.reuseExisting""": """השתמש בקיים""",
+  """checklists.reuse.addAnyway""": """הוסף בכל זאת""",
   """checklists.allLists""": """כל הרשימות""",
   """checklists.allListsSubtitle""": """פריטים מכל הרשימות""",
   """checklists.addToAnyList""": """הוסף פריט…""",

@@ -166,6 +166,12 @@ settings:
     disabled: Deaktiviert
     space: Abstand
     divider: Trennlinie
+  reuseExistingItems: Vorhandene Einträge beim Hinzufügen wiederverwenden
+  reuseExistingItemsBody: "Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet."
+  reuseExistingItemsNames:
+    ask: Immer fragen
+    reuse: Immer wiederverwenden
+    never: Nie wiederverwenden
   navOrderTitle: Navigationsreihenfolge
   navOrderSubtitle: Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.
   navOrderBody: Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet.
@@ -403,6 +409,12 @@ checklists:
     pickTargetList: Liste wählen
     multiple: Mehrere
     multipleHint: Einträge durch Zeilenumbrüche trennen
+  reuse:
+    dialogTitle: Eintrag existiert bereits
+    dialogBody(String name): "Ein Eintrag namens \"$name\" existiert bereits in dieser Liste. Wiederverwenden, statt einen neuen hinzuzufügen?"
+    reuseExisting: Vorhandenen wiederverwenden
+    addAnyway: Trotzdem hinzufügen
+    reusedSnack(String name): "Vorhandener Eintrag \"$name\" wiederverwendet"
   allLists: Alle Listen
   allListsSubtitle: Einträge aus allen Listen
   addToAnyList: "Eintrag hinzufügen…"

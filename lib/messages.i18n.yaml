@@ -166,6 +166,12 @@ settings:
     disabled: Disabled
     space: Space
     divider: Divider
+  reuseExistingItems: Reuse existing items when adding
+  reuseExistingItemsBody: "When you try to add an item that already exists in the list, reuse that item."
+  reuseExistingItemsNames:
+    ask: Always ask
+    reuse: Always reuse
+    never: Never reuse
   navOrderTitle: Navigation order
   navOrderSubtitle: Reorder the bottom navigation tabs. The first item is opened on app start.
   navOrderBody: Drag to reorder. The first item is the section opened when the app starts.
@@ -403,6 +409,12 @@ checklists:
     pickTargetList: Pick a list
     multiple: Multiple
     multipleHint: Separate items by new lines
+  reuse:
+    dialogTitle: Item already exists
+    dialogBody(String name): "An item named \"$name\" already exists in this list. Reuse it instead of adding a new one?"
+    reuseExisting: Reuse existing
+    addAnyway: Add anyway
+    reusedSnack(String name): "Reused existing item “$name”"
   allLists: All lists
   allListsSubtitle: Items from every list
   addToAnyList: "Add an item…"

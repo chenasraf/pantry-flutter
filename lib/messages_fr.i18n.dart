@@ -891,6 +891,20 @@ class SettingsMessagesFr extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesFr(this);
 
   /// ```dart
+  /// "Réutiliser les articles existants lors de l'ajout"
+  /// ```
+  String get reuseExistingItems =>
+      """Réutiliser les articles existants lors de l'ajout""";
+
+  /// ```dart
+  /// "Lorsque vous ajoutez un article qui existe déjà dans la liste, réutiliser cet article."
+  /// ```
+  String get reuseExistingItemsBody =>
+      """Lorsque vous ajoutez un article qui existe déjà dans la liste, réutiliser cet article.""";
+  ReuseExistingItemsNamesSettingsMessagesFr get reuseExistingItemsNames =>
+      ReuseExistingItemsNamesSettingsMessagesFr(this);
+
+  /// ```dart
   /// "Ordre de navigation"
   /// ```
   String get navOrderTitle => """Ordre de navigation""";
@@ -1029,6 +1043,28 @@ class CategorySpacingNamesSettingsMessagesFr
   /// "Séparateur"
   /// ```
   String get divider => """Séparateur""";
+}
+
+class ReuseExistingItemsNamesSettingsMessagesFr
+    extends ReuseExistingItemsNamesSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const ReuseExistingItemsNamesSettingsMessagesFr(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "Toujours demander"
+  /// ```
+  String get ask => """Toujours demander""";
+
+  /// ```dart
+  /// "Toujours réutiliser"
+  /// ```
+  String get reuse => """Toujours réutiliser""";
+
+  /// ```dart
+  /// "Ne jamais réutiliser"
+  /// ```
+  String get never => """Ne jamais réutiliser""";
 }
 
 class LanguageNamesSettingsMessagesFr extends LanguageNamesSettingsMessages {
@@ -1686,6 +1722,7 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   ItemTypesChecklistsMessagesFr get itemTypes =>
       ItemTypesChecklistsMessagesFr(this);
   ComposeChecklistsMessagesFr get compose => ComposeChecklistsMessagesFr(this);
+  ReuseChecklistsMessagesFr get reuse => ReuseChecklistsMessagesFr(this);
 
   /// ```dart
   /// "Toutes les listes"
@@ -2165,6 +2202,37 @@ class ComposeChecklistsMessagesFr extends ComposeChecklistsMessages {
   /// ```
   String get multipleHint =>
       """Séparer les éléments par des retours à la ligne""";
+}
+
+class ReuseChecklistsMessagesFr extends ReuseChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const ReuseChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "L'article existe déjà"
+  /// ```
+  String get dialogTitle => """L'article existe déjà""";
+
+  /// ```dart
+  /// "Un article nommé "$name" existe déjà dans cette liste. Le réutiliser au lieu d'en ajouter un nouveau ?"
+  /// ```
+  String dialogBody(String name) =>
+      """Un article nommé "$name" existe déjà dans cette liste. Le réutiliser au lieu d'en ajouter un nouveau ?""";
+
+  /// ```dart
+  /// "Réutiliser l'existant"
+  /// ```
+  String get reuseExisting => """Réutiliser l'existant""";
+
+  /// ```dart
+  /// "Ajouter quand même"
+  /// ```
+  String get addAnyway => """Ajouter quand même""";
+
+  /// ```dart
+  /// "Article existant "$name" réutilisé"
+  /// ```
+  String reusedSnack(String name) => """Article existant "$name" réutilisé""";
 }
 
 class NotesWallMessagesFr extends NotesWallMessages {
@@ -3076,6 +3144,13 @@ Mot de passe : pantry-rocks""",
   """settings.categorySpacingNames.disabled""": """Désactivé""",
   """settings.categorySpacingNames.space""": """Espace""",
   """settings.categorySpacingNames.divider""": """Séparateur""",
+  """settings.reuseExistingItems""":
+      """Réutiliser les articles existants lors de l'ajout""",
+  """settings.reuseExistingItemsBody""":
+      """Lorsque vous ajoutez un article qui existe déjà dans la liste, réutiliser cet article.""",
+  """settings.reuseExistingItemsNames.ask""": """Toujours demander""",
+  """settings.reuseExistingItemsNames.reuse""": """Toujours réutiliser""",
+  """settings.reuseExistingItemsNames.never""": """Ne jamais réutiliser""",
   """settings.navOrderTitle""": """Ordre de navigation""",
   """settings.navOrderSubtitle""":
       """Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage.""",
@@ -3304,6 +3379,9 @@ Mot de passe : pantry-rocks""",
   """checklists.compose.multiple""": """Plusieurs""",
   """checklists.compose.multipleHint""":
       """Séparer les éléments par des retours à la ligne""",
+  """checklists.reuse.dialogTitle""": """L'article existe déjà""",
+  """checklists.reuse.reuseExisting""": """Réutiliser l'existant""",
+  """checklists.reuse.addAnyway""": """Ajouter quand même""",
   """checklists.allLists""": """Toutes les listes""",
   """checklists.allListsSubtitle""": """Éléments de toutes les listes""",
   """checklists.addToAnyList""": """Ajouter un élément…""",

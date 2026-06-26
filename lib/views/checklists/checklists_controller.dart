@@ -868,6 +868,28 @@ class ChecklistsController extends ChangeNotifier {
     return synthetic;
   }
 
+  /// Finds an active (non-deleted) item in [targetListId] whose name matches
+  /// [name] case-insensitively after trimming. Backs the "reuse existing
+  /// items" flow. Works in both per-list and All-lists (meta) mode — in meta
+  /// mode `_items` aggregates across lists, so the listId filter scopes the
+  /// match to the chosen target list. Returns null if there's no match.
+  ListItem? findExistingItem(int targetListId, String name) {
+    final normalized = name.trim().toLowerCase();
+    if (normalized.isEmpty) return null;
+    for (final item in _items) {
+      if (item.listId != targetListId) continue;
+      if (item.deletedAt != null) continue;
+      if (item.name.trim().toLowerCase() == normalized) return item;
+    }
+    return null;
+  }
+
+  /// Reuse an existing item instead of creating a duplicate: if it's currently
+  /// done, toggle it back to active; if already active, do nothing.
+  Future<void> reuseItem(ListItem item) async {
+    if (item.done) await toggleItem(item);
+  }
+
   Future<ListItem> updateItem(
     ListItem item, {
     String? name,

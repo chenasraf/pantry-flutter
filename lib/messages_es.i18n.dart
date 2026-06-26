@@ -889,6 +889,20 @@ class SettingsMessagesEs extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesEs(this);
 
   /// ```dart
+  /// "Reutilizar artículos existentes al añadir"
+  /// ```
+  String get reuseExistingItems =>
+      """Reutilizar artículos existentes al añadir""";
+
+  /// ```dart
+  /// "Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo."
+  /// ```
+  String get reuseExistingItemsBody =>
+      """Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo.""";
+  ReuseExistingItemsNamesSettingsMessagesEs get reuseExistingItemsNames =>
+      ReuseExistingItemsNamesSettingsMessagesEs(this);
+
+  /// ```dart
   /// "Orden de navegación"
   /// ```
   String get navOrderTitle => """Orden de navegación""";
@@ -1027,6 +1041,28 @@ class CategorySpacingNamesSettingsMessagesEs
   /// "Separador"
   /// ```
   String get divider => """Separador""";
+}
+
+class ReuseExistingItemsNamesSettingsMessagesEs
+    extends ReuseExistingItemsNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const ReuseExistingItemsNamesSettingsMessagesEs(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "Preguntar siempre"
+  /// ```
+  String get ask => """Preguntar siempre""";
+
+  /// ```dart
+  /// "Reutilizar siempre"
+  /// ```
+  String get reuse => """Reutilizar siempre""";
+
+  /// ```dart
+  /// "Nunca reutilizar"
+  /// ```
+  String get never => """Nunca reutilizar""";
 }
 
 class LanguageNamesSettingsMessagesEs extends LanguageNamesSettingsMessages {
@@ -1682,6 +1718,7 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   ItemTypesChecklistsMessagesEs get itemTypes =>
       ItemTypesChecklistsMessagesEs(this);
   ComposeChecklistsMessagesEs get compose => ComposeChecklistsMessagesEs(this);
+  ReuseChecklistsMessagesEs get reuse => ReuseChecklistsMessagesEs(this);
 
   /// ```dart
   /// "Todas las listas"
@@ -2159,6 +2196,38 @@ class ComposeChecklistsMessagesEs extends ComposeChecklistsMessages {
   /// "Separa los elementos con saltos de línea"
   /// ```
   String get multipleHint => """Separa los elementos con saltos de línea""";
+}
+
+class ReuseChecklistsMessagesEs extends ReuseChecklistsMessages {
+  final ChecklistsMessagesEs _parent;
+  const ReuseChecklistsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "El artículo ya existe"
+  /// ```
+  String get dialogTitle => """El artículo ya existe""";
+
+  /// ```dart
+  /// "Ya existe un artículo llamado "$name" en esta lista. ¿Reutilizarlo en lugar de añadir uno nuevo?"
+  /// ```
+  String dialogBody(String name) =>
+      """Ya existe un artículo llamado "$name" en esta lista. ¿Reutilizarlo en lugar de añadir uno nuevo?""";
+
+  /// ```dart
+  /// "Reutilizar existente"
+  /// ```
+  String get reuseExisting => """Reutilizar existente""";
+
+  /// ```dart
+  /// "Añadir de todos modos"
+  /// ```
+  String get addAnyway => """Añadir de todos modos""";
+
+  /// ```dart
+  /// "Se reutilizó el artículo existente “$name”"
+  /// ```
+  String reusedSnack(String name) =>
+      """Se reutilizó el artículo existente “$name”""";
 }
 
 class NotesWallMessagesEs extends NotesWallMessages {
@@ -3066,6 +3135,13 @@ Contraseña: pantry-rocks""",
   """settings.categorySpacingNames.disabled""": """Desactivado""",
   """settings.categorySpacingNames.space""": """Espacio""",
   """settings.categorySpacingNames.divider""": """Separador""",
+  """settings.reuseExistingItems""":
+      """Reutilizar artículos existentes al añadir""",
+  """settings.reuseExistingItemsBody""":
+      """Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo.""",
+  """settings.reuseExistingItemsNames.ask""": """Preguntar siempre""",
+  """settings.reuseExistingItemsNames.reuse""": """Reutilizar siempre""",
+  """settings.reuseExistingItemsNames.never""": """Nunca reutilizar""",
   """settings.navOrderTitle""": """Orden de navegación""",
   """settings.navOrderSubtitle""":
       """Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.""",
@@ -3291,6 +3367,9 @@ Contraseña: pantry-rocks""",
   """checklists.compose.multiple""": """Varios""",
   """checklists.compose.multipleHint""":
       """Separa los elementos con saltos de línea""",
+  """checklists.reuse.dialogTitle""": """El artículo ya existe""",
+  """checklists.reuse.reuseExisting""": """Reutilizar existente""",
+  """checklists.reuse.addAnyway""": """Añadir de todos modos""",
   """checklists.allLists""": """Todas las listas""",
   """checklists.allListsSubtitle""": """Elementos de todas las listas""",
   """checklists.addToAnyList""": """Añadir un elemento…""",

@@ -23,6 +23,7 @@ class PrefsService extends ChangeNotifier {
   static const _checklistTapRowToToggleKey = 'checklist_tap_row_to_toggle';
   static const _defaultItemTapActionKey = 'default_item_tap_action';
   static const _checklistCategorySpacingKey = 'checklist_category_spacing';
+  static const _reuseExistingItemsKey = 'reuse_existing_items';
   static const _checklistViewKey = 'checklist_view';
   static const _checklistListFilterKey = 'checklist_list_filter';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
@@ -69,6 +70,13 @@ class PrefsService extends ChangeNotifier {
   /// "disabled", "space", "divider"
   String _checklistCategorySpacing = 'disabled';
   String get checklistCategorySpacing => _checklistCategorySpacing;
+
+  /// Account-scoped pref synced from the Pantry user-prefs endpoint, cached
+  /// locally so the add-item path can read it synchronously. One of `ask`
+  /// (default), `reuse`, `never`. Only meaningful when the server advertises
+  /// the `reuse-existing-items` capability.
+  String _reuseExistingItems = 'ask';
+  String get reuseExistingItems => _reuseExistingItems;
 
   /// "list" or "cards"
   String _checklistView = 'list';
@@ -179,6 +187,11 @@ class PrefsService extends ChangeNotifier {
     if (spacing != null &&
         (spacing == 'disabled' || spacing == 'space' || spacing == 'divider')) {
       _checklistCategorySpacing = spacing;
+    }
+
+    final reuse = all[_reuseExistingItemsKey];
+    if (reuse != null && _isValidReuseExistingItems(reuse)) {
+      _reuseExistingItems = reuse;
     }
 
     final view = all[_checklistViewKey];
@@ -377,6 +390,17 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  static bool _isValidReuseExistingItems(String value) =>
+      value == 'ask' || value == 'reuse' || value == 'never';
+
+  Future<void> setReuseExistingItemsCache(String value) async {
+    if (!_isValidReuseExistingItems(value)) return;
+    if (_reuseExistingItems == value) return;
+    _reuseExistingItems = value;
+    await _storage.write(key: _reuseExistingItemsKey, value: value);
+    notifyListeners();
+  }
+
   Future<void> setChecklistView(String value) async {
     if (value != 'list' && value != 'cards') return;
     _checklistView = value;
@@ -503,6 +527,7 @@ class PrefsService extends ChangeNotifier {
     _themeMode = null;
     _defaultItemTapAction = 'view';
     _checklistCategorySpacing = 'disabled';
+    _reuseExistingItems = 'ask';
     _checklistView = 'list';
     _checklistListFilter = {};
     _checklistDoneCollapsed = true;
@@ -524,6 +549,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _checklistTapRowToToggleKey);
     await _storage.delete(key: _defaultItemTapActionKey);
     await _storage.delete(key: _checklistCategorySpacingKey);
+    await _storage.delete(key: _reuseExistingItemsKey);
     await _storage.delete(key: _checklistViewKey);
     await _storage.delete(key: _checklistListFilterKey);
     await _storage.delete(key: _checklistDoneCollapsedKey);

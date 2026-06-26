@@ -885,6 +885,19 @@ class SettingsMessages {
       CategorySpacingNamesSettingsMessages(this);
 
   /// ```dart
+  /// "Reuse existing items when adding"
+  /// ```
+  String get reuseExistingItems => """Reuse existing items when adding""";
+
+  /// ```dart
+  /// "When you try to add an item that already exists in the list, reuse that item."
+  /// ```
+  String get reuseExistingItemsBody =>
+      """When you try to add an item that already exists in the list, reuse that item.""";
+  ReuseExistingItemsNamesSettingsMessages get reuseExistingItemsNames =>
+      ReuseExistingItemsNamesSettingsMessages(this);
+
+  /// ```dart
   /// "Navigation order"
   /// ```
   String get navOrderTitle => """Navigation order""";
@@ -1020,6 +1033,26 @@ class CategorySpacingNamesSettingsMessages {
   /// "Divider"
   /// ```
   String get divider => """Divider""";
+}
+
+class ReuseExistingItemsNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const ReuseExistingItemsNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Always ask"
+  /// ```
+  String get ask => """Always ask""";
+
+  /// ```dart
+  /// "Always reuse"
+  /// ```
+  String get reuse => """Always reuse""";
+
+  /// ```dart
+  /// "Never reuse"
+  /// ```
+  String get never => """Never reuse""";
 }
 
 class LanguageNamesSettingsMessages {
@@ -1670,6 +1703,7 @@ class ChecklistsMessages {
   ItemTypesChecklistsMessages get itemTypes =>
       ItemTypesChecklistsMessages(this);
   ComposeChecklistsMessages get compose => ComposeChecklistsMessages(this);
+  ReuseChecklistsMessages get reuse => ReuseChecklistsMessages(this);
 
   /// ```dart
   /// "All lists"
@@ -2144,6 +2178,37 @@ class ComposeChecklistsMessages {
   /// "Separate items by new lines"
   /// ```
   String get multipleHint => """Separate items by new lines""";
+}
+
+class ReuseChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const ReuseChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Item already exists"
+  /// ```
+  String get dialogTitle => """Item already exists""";
+
+  /// ```dart
+  /// "An item named "$name" already exists in this list. Reuse it instead of adding a new one?"
+  /// ```
+  String dialogBody(String name) =>
+      """An item named "$name" already exists in this list. Reuse it instead of adding a new one?""";
+
+  /// ```dart
+  /// "Reuse existing"
+  /// ```
+  String get reuseExisting => """Reuse existing""";
+
+  /// ```dart
+  /// "Add anyway"
+  /// ```
+  String get addAnyway => """Add anyway""";
+
+  /// ```dart
+  /// "Reused existing item “$name”"
+  /// ```
+  String reusedSnack(String name) => """Reused existing item “$name”""";
 }
 
 class NotesWallMessages {
@@ -3040,6 +3105,12 @@ Password: pantry-rocks""",
   """settings.categorySpacingNames.disabled""": """Disabled""",
   """settings.categorySpacingNames.space""": """Space""",
   """settings.categorySpacingNames.divider""": """Divider""",
+  """settings.reuseExistingItems""": """Reuse existing items when adding""",
+  """settings.reuseExistingItemsBody""":
+      """When you try to add an item that already exists in the list, reuse that item.""",
+  """settings.reuseExistingItemsNames.ask""": """Always ask""",
+  """settings.reuseExistingItemsNames.reuse""": """Always reuse""",
+  """settings.reuseExistingItemsNames.never""": """Never reuse""",
   """settings.navOrderTitle""": """Navigation order""",
   """settings.navOrderSubtitle""":
       """Reorder the bottom navigation tabs. The first item is opened on app start.""",
@@ -3257,6 +3328,9 @@ Password: pantry-rocks""",
   """checklists.compose.pickTargetList""": """Pick a list""",
   """checklists.compose.multiple""": """Multiple""",
   """checklists.compose.multipleHint""": """Separate items by new lines""",
+  """checklists.reuse.dialogTitle""": """Item already exists""",
+  """checklists.reuse.reuseExisting""": """Reuse existing""",
+  """checklists.reuse.addAnyway""": """Add anyway""",
   """checklists.allLists""": """All lists""",
   """checklists.allListsSubtitle""": """Items from every list""",
   """checklists.addToAnyList""": """Add an item…""",

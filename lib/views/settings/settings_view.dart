@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/background_notification_task.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/locale_service.dart';
@@ -25,6 +26,7 @@ class _SettingsViewState extends State<SettingsView> {
   static const _pollOptions = [15, 30, 60, 120, 360];
   static const _categorySpacingOptions = ['disabled', 'space', 'divider'];
   static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
+  static const _reuseExistingItemsOptions = ['ask', 'reuse', 'never'];
 
   @override
   void initState() {
@@ -58,6 +60,30 @@ class _SettingsViewState extends State<SettingsView> {
     'space' => m.settings.categorySpacingNames.space,
     'divider' => m.settings.categorySpacingNames.divider,
     _ => m.settings.categorySpacingNames.disabled,
+  };
+
+  // -- Reuse existing items (account-scoped, persisted server-side) --
+
+  Future<void> _setReuseExistingItems(String? value) async {
+    if (value == null) return;
+    final prefs = context.read<PrefsService>();
+    final previous = prefs.reuseExistingItems;
+    if (value == previous) return;
+    // Optimistic: update the local cache (rebuilds the dropdown), then push to
+    // the server. Revert the cache if the server rejects it.
+    await prefs.setReuseExistingItemsCache(value);
+    try {
+      await AuthService.instance.setReuseExistingItems(value);
+    } catch (e) {
+      debugPrint('[SettingsView] Failed to persist reuseExistingItems: $e');
+      await prefs.setReuseExistingItemsCache(previous);
+    }
+  }
+
+  String _reuseExistingItemsLabel(String value) => switch (value) {
+    'reuse' => m.settings.reuseExistingItemsNames.reuse,
+    'never' => m.settings.reuseExistingItemsNames.never,
+    _ => m.settings.reuseExistingItemsNames.ask,
   };
 
   // -- Language --
@@ -144,6 +170,7 @@ class _SettingsViewState extends State<SettingsView> {
     final pollIntervalMinutes = prefs.pollIntervalMinutes;
     final itemTapAction = prefs.defaultItemTapAction;
     final categorySpacing = prefs.checklistCategorySpacing;
+    final reuseExistingItems = prefs.reuseExistingItems;
 
     return Scaffold(
       appBar: AppBar(
@@ -253,6 +280,22 @@ class _SettingsViewState extends State<SettingsView> {
                     DropdownMenuItem(
                       value: option,
                       child: Text(_categorySpacingLabel(option)),
+                    ),
+                ],
+              ),
+            ),
+          if (hasFeature('reuse-existing-items'))
+            ListTile(
+              title: Text(m.settings.reuseExistingItems),
+              subtitle: Text(m.settings.reuseExistingItemsBody),
+              trailing: DropdownButton<String>(
+                value: reuseExistingItems,
+                onChanged: _setReuseExistingItems,
+                items: [
+                  for (final option in _reuseExistingItemsOptions)
+                    DropdownMenuItem(
+                      value: option,
+                      child: Text(_reuseExistingItemsLabel(option)),
                     ),
                 ],
               ),

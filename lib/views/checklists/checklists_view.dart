@@ -161,6 +161,10 @@ class _ChecklistsViewState extends State<ChecklistsView>
   }
 }
 
+/// User's choice from the "item already exists" prompt shown when adding an
+/// item whose name collides with one already on the target list.
+enum _ReuseChoice { reuse, addAnyway, cancel }
+
 class _Body extends StatefulWidget {
   final ValueNotifier<ChecklistsAppBarSpec?>? appBarSpecHolder;
   final ScrollController? scrollController;
@@ -481,13 +485,67 @@ class _BodyState extends State<_Body> {
                         onRequestCreateCategory: () =>
                             _createCategory(context, controller),
                         onSubmit: (s) async {
+                          final targetListId = meta
+                              ? _composeTargetListId
+                              : list.id;
+                          if (targetListId == null) return false;
+
+                          // Reuse existing items: only when the server
+                          // advertises the capability and the pref isn't
+                          // "never". On a name collision in the target list,
+                          // reuse (un-check) the existing item instead of
+                          // adding a duplicate — silently for "reuse", or after
+                          // confirming for "ask". Bulk adds call onSubmit once
+                          // per name sequentially, so "ask" prompts resolve one
+                          // at a time without overlapping.
+                          if (hasFeature('reuse-existing-items') &&
+                              prefs.reuseExistingItems != 'never') {
+                            final existing = controller.findExistingItem(
+                              targetListId,
+                              s.name,
+                            );
+                            if (existing != null) {
+                              var reuse = prefs.reuseExistingItems == 'reuse';
+                              if (prefs.reuseExistingItems == 'ask') {
+                                final choice = await _askReuseExisting(
+                                  context,
+                                  existing.name,
+                                );
+                                if (!context.mounted) return false;
+                                switch (choice) {
+                                  case _ReuseChoice.reuse:
+                                    reuse = true;
+                                  case _ReuseChoice.addAnyway:
+                                    reuse = false;
+                                  case _ReuseChoice.cancel:
+                                  case null:
+                                    return false;
+                                }
+                              }
+                              if (reuse) {
+                                await controller.reuseItem(existing);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        m.checklists.reuse.reusedSnack(
+                                          existing.name,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return true;
+                              }
+                              // "Add anyway" falls through to a normal add.
+                            }
+                          }
+
                           try {
                             final ListItem created;
                             if (meta) {
-                              final target = _composeTargetListId;
-                              if (target == null) return false;
                               created = await controller.addItemTo(
-                                targetListId: target,
+                                targetListId: targetListId,
                                 name: s.name,
                                 description: s.description,
                                 quantity: s.quantity,
@@ -532,6 +590,32 @@ class _BodyState extends State<_Body> {
           ],
         );
       },
+    );
+  }
+
+  /// Prompts the user when an item with the same name already exists in the
+  /// target list (the "ask" reuse mode). Returns null if dismissed.
+  Future<_ReuseChoice?> _askReuseExisting(BuildContext context, String name) {
+    return showDialog<_ReuseChoice>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(m.checklists.reuse.dialogTitle),
+        content: Text(m.checklists.reuse.dialogBody(name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(_ReuseChoice.cancel),
+            child: Text(m.common.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(_ReuseChoice.addAnyway),
+            child: Text(m.checklists.reuse.addAnyway),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(_ReuseChoice.reuse),
+            child: Text(m.checklists.reuse.reuseExisting),
+          ),
+        ],
+      ),
     );
   }
 
