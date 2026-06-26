@@ -1739,6 +1739,8 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "¿A qué lista añadir?"
   /// ```
   String get pickListTitle => """¿A qué lista añadir?""";
+  MarkdownChecklistsMessagesEs get markdown =>
+      MarkdownChecklistsMessagesEs(this);
 }
 
 class ViewItemChecklistsMessagesEs extends ViewItemChecklistsMessages {
@@ -2228,6 +2230,132 @@ class ReuseChecklistsMessagesEs extends ReuseChecklistsMessages {
   /// ```
   String reusedSnack(String name) =>
       """Se reutilizó el artículo existente “$name”""";
+}
+
+class MarkdownChecklistsMessagesEs extends MarkdownChecklistsMessages {
+  final ChecklistsMessagesEs _parent;
+  const MarkdownChecklistsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Exportado el $date"
+  /// ```
+  String exported(String date) => """Exportado el $date""";
+
+  /// ```dart
+  /// "Sin categoría"
+  /// ```
+  String get uncategorized => """Sin categoría""";
+
+  /// ```dart
+  /// "Exportar a Markdown"
+  /// ```
+  String get exportTitle => """Exportar a Markdown""";
+
+  /// ```dart
+  /// "Importar desde Markdown"
+  /// ```
+  String get importTitle => """Importar desde Markdown""";
+
+  /// ```dart
+  /// "Incluir elementos completados"
+  /// ```
+  String get includeCompleted => """Incluir elementos completados""";
+
+  /// ```dart
+  /// "Edita el texto de abajo para modificar la lista exportada"
+  /// ```
+  String get editHint =>
+      """Edita el texto de abajo para modificar la lista exportada""";
+
+  /// ```dart
+  /// "Copiar"
+  /// ```
+  String get copy => """Copiar""";
+
+  /// ```dart
+  /// "Descargar .md"
+  /// ```
+  String get download => """Descargar .md""";
+
+  /// ```dart
+  /// "Copiado al portapapeles"
+  /// ```
+  String get copied => """Copiado al portapapeles""";
+
+  /// ```dart
+  /// "No se pudo copiar al portapapeles"
+  /// ```
+  String get copyFailed => """No se pudo copiar al portapapeles""";
+
+  /// ```dart
+  /// "Cerrar"
+  /// ```
+  String get close => """Cerrar""";
+
+  /// ```dart
+  /// "No se pudo exportar el archivo"
+  /// ```
+  String get shareFailed => """No se pudo exportar el archivo""";
+
+  /// ```dart
+  /// "Subir archivo .md"
+  /// ```
+  String get uploadFile => """Subir archivo .md""";
+
+  /// ```dart
+  /// "Pegar Markdown"
+  /// ```
+  String get pasteLabel => """Pegar Markdown""";
+
+  /// ```dart
+  /// "Pega aquí una lista en Markdown…"
+  /// ```
+  String get pastePlaceholder => """Pega aquí una lista en Markdown…""";
+
+  /// ```dart
+  /// "No se encontraron elementos de lista en el texto."
+  /// ```
+  String get noneFound =>
+      """No se encontraron elementos de lista en el texto.""";
+
+  /// ```dart
+  /// "Seleccionar todo"
+  /// ```
+  String get selectAll => """Seleccionar todo""";
+
+  /// ```dart
+  /// "Deseleccionar todo"
+  /// ```
+  String get deselectAll => """Deseleccionar todo""";
+
+  /// ```dart
+  /// "Reutilizar elementos existentes en lugar de añadir duplicados"
+  /// ```
+  String get reuseExisting =>
+      """Reutilizar elementos existentes en lugar de añadir duplicados""";
+
+  /// ```dart
+  /// "Valores aplicados a cada elemento importado"
+  /// ```
+  String get defaultFields => """Valores aplicados a cada elemento importado""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 elemento encontrado', many: '$count elementos encontrados')}"
+  /// ```
+  String itemsFound(int count) =>
+      """${_plural(count, one: '1 elemento encontrado', many: '$count elementos encontrados')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Añadir 1 elemento', many: 'Añadir $count elementos')}"
+  /// ```
+  String addItems(int count) =>
+      """${_plural(count, one: 'Añadir 1 elemento', many: 'Añadir $count elementos')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 elemento importado', many: '$count elementos importados')}"
+  /// ```
+  String imported(int count) =>
+      """${_plural(count, one: '1 elemento importado', many: '$count elementos importados')}""";
 }
 
 class NotesWallMessagesEs extends NotesWallMessages {
@@ -3374,6 +3502,31 @@ Contraseña: pantry-rocks""",
   """checklists.allListsSubtitle""": """Elementos de todas las listas""",
   """checklists.addToAnyList""": """Añadir un elemento…""",
   """checklists.pickListTitle""": """¿A qué lista añadir?""",
+  """checklists.markdown.uncategorized""": """Sin categoría""",
+  """checklists.markdown.exportTitle""": """Exportar a Markdown""",
+  """checklists.markdown.importTitle""": """Importar desde Markdown""",
+  """checklists.markdown.includeCompleted""":
+      """Incluir elementos completados""",
+  """checklists.markdown.editHint""":
+      """Edita el texto de abajo para modificar la lista exportada""",
+  """checklists.markdown.copy""": """Copiar""",
+  """checklists.markdown.download""": """Descargar .md""",
+  """checklists.markdown.copied""": """Copiado al portapapeles""",
+  """checklists.markdown.copyFailed""": """No se pudo copiar al portapapeles""",
+  """checklists.markdown.close""": """Cerrar""",
+  """checklists.markdown.shareFailed""": """No se pudo exportar el archivo""",
+  """checklists.markdown.uploadFile""": """Subir archivo .md""",
+  """checklists.markdown.pasteLabel""": """Pegar Markdown""",
+  """checklists.markdown.pastePlaceholder""":
+      """Pega aquí una lista en Markdown…""",
+  """checklists.markdown.noneFound""":
+      """No se encontraron elementos de lista en el texto.""",
+  """checklists.markdown.selectAll""": """Seleccionar todo""",
+  """checklists.markdown.deselectAll""": """Deseleccionar todo""",
+  """checklists.markdown.reuseExisting""":
+      """Reutilizar elementos existentes en lugar de añadir duplicados""",
+  """checklists.markdown.defaultFields""":
+      """Valores aplicados a cada elemento importado""",
   """notesWall.noNotes""": """Aún no hay notas.""",
   """notesWall.failedToLoad""": """No se pudieron cargar las notas.""",
   """notesWall.saveFailed""": """No se pudo guardar la nota.""",

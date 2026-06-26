@@ -1743,6 +1743,8 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Ajouter à quelle liste ?"
   /// ```
   String get pickListTitle => """Ajouter à quelle liste ?""";
+  MarkdownChecklistsMessagesFr get markdown =>
+      MarkdownChecklistsMessagesFr(this);
 }
 
 class ViewItemChecklistsMessagesFr extends ViewItemChecklistsMessages {
@@ -2233,6 +2235,131 @@ class ReuseChecklistsMessagesFr extends ReuseChecklistsMessages {
   /// "Article existant "$name" réutilisé"
   /// ```
   String reusedSnack(String name) => """Article existant "$name" réutilisé""";
+}
+
+class MarkdownChecklistsMessagesFr extends MarkdownChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const MarkdownChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Exporté le $date"
+  /// ```
+  String exported(String date) => """Exporté le $date""";
+
+  /// ```dart
+  /// "Sans catégorie"
+  /// ```
+  String get uncategorized => """Sans catégorie""";
+
+  /// ```dart
+  /// "Exporter en Markdown"
+  /// ```
+  String get exportTitle => """Exporter en Markdown""";
+
+  /// ```dart
+  /// "Importer depuis Markdown"
+  /// ```
+  String get importTitle => """Importer depuis Markdown""";
+
+  /// ```dart
+  /// "Inclure les éléments terminés"
+  /// ```
+  String get includeCompleted => """Inclure les éléments terminés""";
+
+  /// ```dart
+  /// "Modifiez le texte ci-dessous pour ajuster la liste exportée"
+  /// ```
+  String get editHint =>
+      """Modifiez le texte ci-dessous pour ajuster la liste exportée""";
+
+  /// ```dart
+  /// "Copier"
+  /// ```
+  String get copy => """Copier""";
+
+  /// ```dart
+  /// "Télécharger le .md"
+  /// ```
+  String get download => """Télécharger le .md""";
+
+  /// ```dart
+  /// "Copié dans le presse-papiers"
+  /// ```
+  String get copied => """Copié dans le presse-papiers""";
+
+  /// ```dart
+  /// "Impossible de copier dans le presse-papiers"
+  /// ```
+  String get copyFailed => """Impossible de copier dans le presse-papiers""";
+
+  /// ```dart
+  /// "Fermer"
+  /// ```
+  String get close => """Fermer""";
+
+  /// ```dart
+  /// "Impossible d'exporter le fichier"
+  /// ```
+  String get shareFailed => """Impossible d'exporter le fichier""";
+
+  /// ```dart
+  /// "Téléverser un fichier .md"
+  /// ```
+  String get uploadFile => """Téléverser un fichier .md""";
+
+  /// ```dart
+  /// "Coller du Markdown"
+  /// ```
+  String get pasteLabel => """Coller du Markdown""";
+
+  /// ```dart
+  /// "Collez une liste Markdown ici…"
+  /// ```
+  String get pastePlaceholder => """Collez une liste Markdown ici…""";
+
+  /// ```dart
+  /// "Aucun élément de liste trouvé dans le texte."
+  /// ```
+  String get noneFound => """Aucun élément de liste trouvé dans le texte.""";
+
+  /// ```dart
+  /// "Tout sélectionner"
+  /// ```
+  String get selectAll => """Tout sélectionner""";
+
+  /// ```dart
+  /// "Tout désélectionner"
+  /// ```
+  String get deselectAll => """Tout désélectionner""";
+
+  /// ```dart
+  /// "Réutiliser les éléments existants au lieu d'ajouter des doublons"
+  /// ```
+  String get reuseExisting =>
+      """Réutiliser les éléments existants au lieu d'ajouter des doublons""";
+
+  /// ```dart
+  /// "Valeurs appliquées à chaque élément importé"
+  /// ```
+  String get defaultFields => """Valeurs appliquées à chaque élément importé""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 élément trouvé', many: '$count éléments trouvés')}"
+  /// ```
+  String itemsFound(int count) =>
+      """${_plural(count, one: '1 élément trouvé', many: '$count éléments trouvés')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Ajouter 1 élément', many: 'Ajouter $count éléments')}"
+  /// ```
+  String addItems(int count) =>
+      """${_plural(count, one: 'Ajouter 1 élément', many: 'Ajouter $count éléments')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 élément importé', many: '$count éléments importés')}"
+  /// ```
+  String imported(int count) =>
+      """${_plural(count, one: '1 élément importé', many: '$count éléments importés')}""";
 }
 
 class NotesWallMessagesFr extends NotesWallMessages {
@@ -3386,6 +3513,32 @@ Mot de passe : pantry-rocks""",
   """checklists.allListsSubtitle""": """Éléments de toutes les listes""",
   """checklists.addToAnyList""": """Ajouter un élément…""",
   """checklists.pickListTitle""": """Ajouter à quelle liste ?""",
+  """checklists.markdown.uncategorized""": """Sans catégorie""",
+  """checklists.markdown.exportTitle""": """Exporter en Markdown""",
+  """checklists.markdown.importTitle""": """Importer depuis Markdown""",
+  """checklists.markdown.includeCompleted""":
+      """Inclure les éléments terminés""",
+  """checklists.markdown.editHint""":
+      """Modifiez le texte ci-dessous pour ajuster la liste exportée""",
+  """checklists.markdown.copy""": """Copier""",
+  """checklists.markdown.download""": """Télécharger le .md""",
+  """checklists.markdown.copied""": """Copié dans le presse-papiers""",
+  """checklists.markdown.copyFailed""":
+      """Impossible de copier dans le presse-papiers""",
+  """checklists.markdown.close""": """Fermer""",
+  """checklists.markdown.shareFailed""": """Impossible d'exporter le fichier""",
+  """checklists.markdown.uploadFile""": """Téléverser un fichier .md""",
+  """checklists.markdown.pasteLabel""": """Coller du Markdown""",
+  """checklists.markdown.pastePlaceholder""":
+      """Collez une liste Markdown ici…""",
+  """checklists.markdown.noneFound""":
+      """Aucun élément de liste trouvé dans le texte.""",
+  """checklists.markdown.selectAll""": """Tout sélectionner""",
+  """checklists.markdown.deselectAll""": """Tout désélectionner""",
+  """checklists.markdown.reuseExisting""":
+      """Réutiliser les éléments existants au lieu d'ajouter des doublons""",
+  """checklists.markdown.defaultFields""":
+      """Valeurs appliquées à chaque élément importé""",
   """notesWall.noNotes""": """Aucune note pour le moment.""",
   """notesWall.failedToLoad""": """Impossible de charger les notes.""",
   """notesWall.saveFailed""": """Impossible d'enregistrer la note.""",

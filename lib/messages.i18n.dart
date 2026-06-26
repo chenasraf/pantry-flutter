@@ -1724,6 +1724,7 @@ class ChecklistsMessages {
   /// "Add to which list?"
   /// ```
   String get pickListTitle => """Add to which list?""";
+  MarkdownChecklistsMessages get markdown => MarkdownChecklistsMessages(this);
 }
 
 class ViewItemChecklistsMessages {
@@ -2209,6 +2210,130 @@ class ReuseChecklistsMessages {
   /// "Reused existing item “$name”"
   /// ```
   String reusedSnack(String name) => """Reused existing item “$name”""";
+}
+
+class MarkdownChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const MarkdownChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Exported $date"
+  /// ```
+  String exported(String date) => """Exported $date""";
+
+  /// ```dart
+  /// "Uncategorized"
+  /// ```
+  String get uncategorized => """Uncategorized""";
+
+  /// ```dart
+  /// "Export to Markdown"
+  /// ```
+  String get exportTitle => """Export to Markdown""";
+
+  /// ```dart
+  /// "Import from Markdown"
+  /// ```
+  String get importTitle => """Import from Markdown""";
+
+  /// ```dart
+  /// "Include completed items"
+  /// ```
+  String get includeCompleted => """Include completed items""";
+
+  /// ```dart
+  /// "Edit the text below to modify the exported list"
+  /// ```
+  String get editHint => """Edit the text below to modify the exported list""";
+
+  /// ```dart
+  /// "Copy"
+  /// ```
+  String get copy => """Copy""";
+
+  /// ```dart
+  /// "Download .md"
+  /// ```
+  String get download => """Download .md""";
+
+  /// ```dart
+  /// "Copied to clipboard"
+  /// ```
+  String get copied => """Copied to clipboard""";
+
+  /// ```dart
+  /// "Could not copy to clipboard"
+  /// ```
+  String get copyFailed => """Could not copy to clipboard""";
+
+  /// ```dart
+  /// "Close"
+  /// ```
+  String get close => """Close""";
+
+  /// ```dart
+  /// "Could not export the file"
+  /// ```
+  String get shareFailed => """Could not export the file""";
+
+  /// ```dart
+  /// "Upload .md file"
+  /// ```
+  String get uploadFile => """Upload .md file""";
+
+  /// ```dart
+  /// "Paste Markdown"
+  /// ```
+  String get pasteLabel => """Paste Markdown""";
+
+  /// ```dart
+  /// "Paste a Markdown list here…"
+  /// ```
+  String get pastePlaceholder => """Paste a Markdown list here…""";
+
+  /// ```dart
+  /// "No list items found in the text."
+  /// ```
+  String get noneFound => """No list items found in the text.""";
+
+  /// ```dart
+  /// "Select all"
+  /// ```
+  String get selectAll => """Select all""";
+
+  /// ```dart
+  /// "Deselect all"
+  /// ```
+  String get deselectAll => """Deselect all""";
+
+  /// ```dart
+  /// "Reuse existing items instead of adding duplicates"
+  /// ```
+  String get reuseExisting =>
+      """Reuse existing items instead of adding duplicates""";
+
+  /// ```dart
+  /// "Defaults applied to every imported item"
+  /// ```
+  String get defaultFields => """Defaults applied to every imported item""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item found', many: '$count items found')}"
+  /// ```
+  String itemsFound(int count) =>
+      """${_plural(count, one: '1 item found', many: '$count items found')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Add 1 item', many: 'Add $count items')}"
+  /// ```
+  String addItems(int count) =>
+      """${_plural(count, one: 'Add 1 item', many: 'Add $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Imported 1 item', many: 'Imported $count items')}"
+  /// ```
+  String imported(int count) =>
+      """${_plural(count, one: 'Imported 1 item', many: 'Imported $count items')}""";
 }
 
 class NotesWallMessages {
@@ -3335,6 +3460,28 @@ Password: pantry-rocks""",
   """checklists.allListsSubtitle""": """Items from every list""",
   """checklists.addToAnyList""": """Add an item…""",
   """checklists.pickListTitle""": """Add to which list?""",
+  """checklists.markdown.uncategorized""": """Uncategorized""",
+  """checklists.markdown.exportTitle""": """Export to Markdown""",
+  """checklists.markdown.importTitle""": """Import from Markdown""",
+  """checklists.markdown.includeCompleted""": """Include completed items""",
+  """checklists.markdown.editHint""":
+      """Edit the text below to modify the exported list""",
+  """checklists.markdown.copy""": """Copy""",
+  """checklists.markdown.download""": """Download .md""",
+  """checklists.markdown.copied""": """Copied to clipboard""",
+  """checklists.markdown.copyFailed""": """Could not copy to clipboard""",
+  """checklists.markdown.close""": """Close""",
+  """checklists.markdown.shareFailed""": """Could not export the file""",
+  """checklists.markdown.uploadFile""": """Upload .md file""",
+  """checklists.markdown.pasteLabel""": """Paste Markdown""",
+  """checklists.markdown.pastePlaceholder""": """Paste a Markdown list here…""",
+  """checklists.markdown.noneFound""": """No list items found in the text.""",
+  """checklists.markdown.selectAll""": """Select all""",
+  """checklists.markdown.deselectAll""": """Deselect all""",
+  """checklists.markdown.reuseExisting""":
+      """Reuse existing items instead of adding duplicates""",
+  """checklists.markdown.defaultFields""":
+      """Defaults applied to every imported item""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",
   """notesWall.saveFailed""": """Failed to save note.""",

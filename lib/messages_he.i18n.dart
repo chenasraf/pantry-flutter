@@ -1730,6 +1730,8 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "להוסיף לאיזו רשימה?"
   /// ```
   String get pickListTitle => """להוסיף לאיזו רשימה?""";
+  MarkdownChecklistsMessagesHe get markdown =>
+      MarkdownChecklistsMessagesHe(this);
 }
 
 class ViewItemChecklistsMessagesHe extends ViewItemChecklistsMessages {
@@ -2215,6 +2217,130 @@ class ReuseChecklistsMessagesHe extends ReuseChecklistsMessages {
   /// "נעשה שימוש חוזר בפריט “$name”"
   /// ```
   String reusedSnack(String name) => """נעשה שימוש חוזר בפריט “$name”""";
+}
+
+class MarkdownChecklistsMessagesHe extends MarkdownChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const MarkdownChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "יוצא בתאריך $date"
+  /// ```
+  String exported(String date) => """יוצא בתאריך $date""";
+
+  /// ```dart
+  /// "ללא קטגוריה"
+  /// ```
+  String get uncategorized => """ללא קטגוריה""";
+
+  /// ```dart
+  /// "ייצוא ל-Markdown"
+  /// ```
+  String get exportTitle => """ייצוא ל-Markdown""";
+
+  /// ```dart
+  /// "ייבוא מ-Markdown"
+  /// ```
+  String get importTitle => """ייבוא מ-Markdown""";
+
+  /// ```dart
+  /// "לכלול פריטים שהושלמו"
+  /// ```
+  String get includeCompleted => """לכלול פריטים שהושלמו""";
+
+  /// ```dart
+  /// "ערכו את הטקסט למטה כדי לשנות את הרשימה המיוצאת"
+  /// ```
+  String get editHint => """ערכו את הטקסט למטה כדי לשנות את הרשימה המיוצאת""";
+
+  /// ```dart
+  /// "העתקה"
+  /// ```
+  String get copy => """העתקה""";
+
+  /// ```dart
+  /// "הורדת .md"
+  /// ```
+  String get download => """הורדת .md""";
+
+  /// ```dart
+  /// "הועתק ללוח"
+  /// ```
+  String get copied => """הועתק ללוח""";
+
+  /// ```dart
+  /// "לא ניתן להעתיק ללוח"
+  /// ```
+  String get copyFailed => """לא ניתן להעתיק ללוח""";
+
+  /// ```dart
+  /// "סגירה"
+  /// ```
+  String get close => """סגירה""";
+
+  /// ```dart
+  /// "לא ניתן לייצא את הקובץ"
+  /// ```
+  String get shareFailed => """לא ניתן לייצא את הקובץ""";
+
+  /// ```dart
+  /// "העלאת קובץ .md"
+  /// ```
+  String get uploadFile => """העלאת קובץ .md""";
+
+  /// ```dart
+  /// "הדבקת Markdown"
+  /// ```
+  String get pasteLabel => """הדבקת Markdown""";
+
+  /// ```dart
+  /// "הדביקו כאן רשימת Markdown…"
+  /// ```
+  String get pastePlaceholder => """הדביקו כאן רשימת Markdown…""";
+
+  /// ```dart
+  /// "לא נמצאו פריטי רשימה בטקסט."
+  /// ```
+  String get noneFound => """לא נמצאו פריטי רשימה בטקסט.""";
+
+  /// ```dart
+  /// "בחירת הכול"
+  /// ```
+  String get selectAll => """בחירת הכול""";
+
+  /// ```dart
+  /// "ביטול בחירת הכול"
+  /// ```
+  String get deselectAll => """ביטול בחירת הכול""";
+
+  /// ```dart
+  /// "שימוש חוזר בפריטים קיימים במקום הוספת כפילויות"
+  /// ```
+  String get reuseExisting =>
+      """שימוש חוזר בפריטים קיימים במקום הוספת כפילויות""";
+
+  /// ```dart
+  /// "ערכים שיחולו על כל פריט מיובא"
+  /// ```
+  String get defaultFields => """ערכים שיחולו על כל פריט מיובא""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'נמצא פריט אחד', many: 'נמצאו $count פריטים')}"
+  /// ```
+  String itemsFound(int count) =>
+      """${_plural(count, one: 'נמצא פריט אחד', many: 'נמצאו $count פריטים')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'הוספת פריט אחד', many: 'הוספת $count פריטים')}"
+  /// ```
+  String addItems(int count) =>
+      """${_plural(count, one: 'הוספת פריט אחד', many: 'הוספת $count פריטים')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'יובא פריט אחד', many: 'יובאו $count פריטים')}"
+  /// ```
+  String imported(int count) =>
+      """${_plural(count, one: 'יובא פריט אחד', many: 'יובאו $count פריטים')}""";
 }
 
 class NotesWallMessagesHe extends NotesWallMessages {
@@ -3335,6 +3461,27 @@ Map<String, String> get messagesHeMap => {
   """checklists.allListsSubtitle""": """פריטים מכל הרשימות""",
   """checklists.addToAnyList""": """הוסף פריט…""",
   """checklists.pickListTitle""": """להוסיף לאיזו רשימה?""",
+  """checklists.markdown.uncategorized""": """ללא קטגוריה""",
+  """checklists.markdown.exportTitle""": """ייצוא ל-Markdown""",
+  """checklists.markdown.importTitle""": """ייבוא מ-Markdown""",
+  """checklists.markdown.includeCompleted""": """לכלול פריטים שהושלמו""",
+  """checklists.markdown.editHint""":
+      """ערכו את הטקסט למטה כדי לשנות את הרשימה המיוצאת""",
+  """checklists.markdown.copy""": """העתקה""",
+  """checklists.markdown.download""": """הורדת .md""",
+  """checklists.markdown.copied""": """הועתק ללוח""",
+  """checklists.markdown.copyFailed""": """לא ניתן להעתיק ללוח""",
+  """checklists.markdown.close""": """סגירה""",
+  """checklists.markdown.shareFailed""": """לא ניתן לייצא את הקובץ""",
+  """checklists.markdown.uploadFile""": """העלאת קובץ .md""",
+  """checklists.markdown.pasteLabel""": """הדבקת Markdown""",
+  """checklists.markdown.pastePlaceholder""": """הדביקו כאן רשימת Markdown…""",
+  """checklists.markdown.noneFound""": """לא נמצאו פריטי רשימה בטקסט.""",
+  """checklists.markdown.selectAll""": """בחירת הכול""",
+  """checklists.markdown.deselectAll""": """ביטול בחירת הכול""",
+  """checklists.markdown.reuseExisting""":
+      """שימוש חוזר בפריטים קיימים במקום הוספת כפילויות""",
+  """checklists.markdown.defaultFields""": """ערכים שיחולו על כל פריט מיובא""",
   """notesWall.noNotes""": """אין הערות עדיין.""",
   """notesWall.failedToLoad""": """טעינת ההערות נכשלה.""",
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",

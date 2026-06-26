@@ -25,6 +25,8 @@ import 'checklists_controller.dart';
 import 'item_compose_bar.dart';
 import 'item_detail_view.dart';
 import 'item_form_view.dart';
+import 'markdown_export_dialog.dart';
+import 'markdown_import_dialog.dart';
 import 'progress_hero.dart';
 
 /// What ChecklistsView wants the shared home AppBar to show while the
@@ -489,98 +491,14 @@ class _BodyState extends State<_Body> {
                               ? _composeTargetListId
                               : list.id;
                           if (targetListId == null) return false;
-
-                          // Reuse existing items: only when the server
-                          // advertises the capability and the pref isn't
-                          // "never". On a name collision in the target list,
-                          // reuse (un-check) the existing item instead of
-                          // adding a duplicate — silently for "reuse", or after
-                          // confirming for "ask". Bulk adds call onSubmit once
-                          // per name sequentially, so "ask" prompts resolve one
-                          // at a time without overlapping.
-                          if (hasFeature('reuse-existing-items') &&
-                              prefs.reuseExistingItems != 'never') {
-                            final existing = controller.findExistingItem(
-                              targetListId,
-                              s.name,
-                            );
-                            if (existing != null) {
-                              var reuse = prefs.reuseExistingItems == 'reuse';
-                              if (prefs.reuseExistingItems == 'ask') {
-                                final choice = await _askReuseExisting(
-                                  context,
-                                  existing.name,
-                                );
-                                if (!context.mounted) return false;
-                                switch (choice) {
-                                  case _ReuseChoice.reuse:
-                                    reuse = true;
-                                  case _ReuseChoice.addAnyway:
-                                    reuse = false;
-                                  case _ReuseChoice.cancel:
-                                  case null:
-                                    return false;
-                                }
-                              }
-                              if (reuse) {
-                                await controller.reuseItem(existing);
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        m.checklists.reuse.reusedSnack(
-                                          existing.name,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-                                return true;
-                              }
-                              // "Add anyway" falls through to a normal add.
-                            }
-                          }
-
-                          try {
-                            final ListItem created;
-                            if (meta) {
-                              created = await controller.addItemTo(
-                                targetListId: targetListId,
-                                name: s.name,
-                                description: s.description,
-                                quantity: s.quantity,
-                                categoryId: s.categoryId,
-                                rrule: s.rrule,
-                                deleteOnDone: s.deleteOnDone,
-                              );
-                            } else {
-                              created = await controller.addItem(
-                                name: s.name,
-                                description: s.description,
-                                quantity: s.quantity,
-                                categoryId: s.categoryId,
-                                rrule: s.rrule,
-                                deleteOnDone: s.deleteOnDone,
-                              );
-                            }
-                            if (s.imageBytes != null) {
-                              await controller.uploadItemImage(
-                                created,
-                                bytes: s.imageBytes!,
-                                fileName: s.imageName ?? 'image.jpg',
-                                mimeType: s.imageMime ?? 'image/jpeg',
-                              );
-                            }
-                            return true;
-                          } catch (_) {
-                            if (!context.mounted) return false;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(m.checklists.itemForm.saveFailed),
-                              ),
-                            );
-                            return false;
-                          }
+                          return _addItemHonoringReuse(
+                            context,
+                            controller,
+                            prefs,
+                            targetListId: targetListId,
+                            meta: meta,
+                            s: s,
+                          );
                         },
                       );
                     },
@@ -617,6 +535,161 @@ class _BodyState extends State<_Body> {
         ],
       ),
     );
+  }
+
+  /// Adds a single item to [targetListId], honoring the reuse-existing-items
+  /// pref (reuse silently / ask per duplicate / add). [forceReuse] forces the
+  /// "reuse" behavior for this add regardless of the global pref — used by the
+  /// Markdown import flow. Returns true on a successful add or graceful reuse,
+  /// false on cancel or error. Shared by the compose bar and the importer so a
+  /// single add path honors the pref consistently.
+  Future<bool> _addItemHonoringReuse(
+    BuildContext context,
+    ChecklistsController controller,
+    PrefsService prefs, {
+    required int targetListId,
+    required bool meta,
+    required ComposeSubmission s,
+    bool forceReuse = false,
+  }) async {
+    // Reuse existing items: only when the server advertises the capability and
+    // the effective mode isn't "never". On a name collision in the target
+    // list, reuse (un-check) the existing item instead of adding a duplicate —
+    // silently for "reuse", or after confirming for "ask".
+    final mode = forceReuse ? 'reuse' : prefs.reuseExistingItems;
+    if (hasFeature('reuse-existing-items') && mode != 'never') {
+      final existing = controller.findExistingItem(targetListId, s.name);
+      if (existing != null) {
+        var reuse = mode == 'reuse';
+        if (mode == 'ask') {
+          final choice = await _askReuseExisting(context, existing.name);
+          if (!context.mounted) return false;
+          switch (choice) {
+            case _ReuseChoice.reuse:
+              reuse = true;
+            case _ReuseChoice.addAnyway:
+              reuse = false;
+            case _ReuseChoice.cancel:
+            case null:
+              return false;
+          }
+        }
+        if (reuse) {
+          await controller.reuseItem(existing);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(m.checklists.reuse.reusedSnack(existing.name)),
+              ),
+            );
+          }
+          return true;
+        }
+        // "Add anyway" falls through to a normal add.
+      }
+    }
+
+    try {
+      final ListItem created;
+      if (meta) {
+        created = await controller.addItemTo(
+          targetListId: targetListId,
+          name: s.name,
+          description: s.description,
+          quantity: s.quantity,
+          categoryId: s.categoryId,
+          rrule: s.rrule,
+          deleteOnDone: s.deleteOnDone,
+        );
+      } else {
+        created = await controller.addItem(
+          name: s.name,
+          description: s.description,
+          quantity: s.quantity,
+          categoryId: s.categoryId,
+          rrule: s.rrule,
+          deleteOnDone: s.deleteOnDone,
+        );
+      }
+      if (s.imageBytes != null) {
+        await controller.uploadItemImage(
+          created,
+          bytes: s.imageBytes!,
+          fileName: s.imageName ?? 'image.jpg',
+          mimeType: s.imageMime ?? 'image/jpeg',
+        );
+      }
+      return true;
+    } catch (_) {
+      if (!context.mounted) return false;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(m.checklists.itemForm.saveFailed)));
+      return false;
+    }
+  }
+
+  /// Opens the Markdown export dialog for the current concrete list.
+  Future<void> _openExport(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    final list = controller.currentList;
+    if (list == null || list.id == kAllListsId) return;
+    final items = controller.items.where((i) => i.deletedAt == null).toList();
+    await showDialog<void>(
+      context: context,
+      builder: (_) => MarkdownExportDialog(
+        listName: list.name,
+        items: items,
+        categoryFor: (id) => id == null ? null : controller.categories[id],
+      ),
+    );
+  }
+
+  /// Opens the Markdown import dialog, then adds each selected item through the
+  /// shared reuse-aware add path. Processed sequentially so any "ask" prompts
+  /// resolve one at a time and names repeated within the batch dedupe against
+  /// the items added earlier in the same import.
+  Future<void> _openImport(
+    BuildContext context,
+    ChecklistsController controller,
+    PrefsService prefs,
+  ) async {
+    final list = controller.currentList;
+    if (list == null || list.id == kAllListsId) return;
+    final targetListId = list.id;
+    // Close the dialog (it pops itself with the result) before processing so
+    // any "ask" reuse prompts render over the list, not stacked on the dialog.
+    final result = await showDialog<MarkdownImportResult>(
+      context: context,
+      builder: (_) => MarkdownImportDialog(
+        categories: controller.sortedCategories,
+        reusePref: prefs.reuseExistingItems,
+        reuseFeatureAvailable: hasFeature('reuse-existing-items'),
+        onRequestCreateCategory: () => _createCategory(context, controller),
+      ),
+    );
+    if (result == null || !context.mounted) return;
+    var added = 0;
+    for (final s in result.submissions) {
+      final ok = await _addItemHonoringReuse(
+        context,
+        controller,
+        prefs,
+        targetListId: targetListId,
+        meta: false,
+        s: s,
+        forceReuse: result.forceReuse,
+      );
+      if (!context.mounted) return;
+      if (ok) added++;
+    }
+    if (context.mounted && added > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(m.checklists.markdown.imported(added))),
+      );
+    }
   }
 
   ChecklistsAppBarSpec _buildAppBarSpec(
@@ -884,6 +957,21 @@ class _BodyState extends State<_Body> {
           label: m.checklists.showProgressHero,
           selected: !(controller.currentList!.hideProgressHero),
         ),
+      // Markdown import/export are per-list only — not offered in the meta
+      // "All lists" view, which has no single target.
+      if (controller.currentList != null && !isMeta) ...[
+        const PopupMenuDivider(),
+        _menuRow(
+          value: 'export_markdown',
+          leading: const Icon(Icons.file_download_outlined, size: 18),
+          label: m.checklists.markdown.exportTitle,
+        ),
+        _menuRow(
+          value: 'import_markdown',
+          leading: const Icon(Icons.file_upload_outlined, size: 18),
+          label: m.checklists.markdown.importTitle,
+        ),
+      ],
       if (!PlatformInfo.isDesktop) ...[
         _menuRow(
           value: 'manage_categories',
@@ -997,6 +1085,10 @@ class _BodyState extends State<_Body> {
         await _togglePin(context, controller);
       case 'manage_categories':
         await _openManageCategories(context, controller);
+      case 'export_markdown':
+        await _openExport(context, controller);
+      case 'import_markdown':
+        await _openImport(context, controller, prefs);
       case 'refresh':
         await controller.refresh();
       case 'dev_show_onboarding':

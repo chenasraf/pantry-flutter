@@ -419,6 +419,30 @@ checklists:
   allListsSubtitle: Éléments de toutes les listes
   addToAnyList: "Ajouter un élément…"
   pickListTitle: "Ajouter à quelle liste ?"
+  markdown:
+    exported(String date): "Exporté le $date"
+    uncategorized: Sans catégorie
+    exportTitle: Exporter en Markdown
+    importTitle: Importer depuis Markdown
+    includeCompleted: Inclure les éléments terminés
+    editHint: Modifiez le texte ci-dessous pour ajuster la liste exportée
+    copy: Copier
+    download: Télécharger le .md
+    copied: Copié dans le presse-papiers
+    copyFailed: Impossible de copier dans le presse-papiers
+    close: Fermer
+    shareFailed: Impossible d'exporter le fichier
+    uploadFile: Téléverser un fichier .md
+    pasteLabel: Coller du Markdown
+    pastePlaceholder: "Collez une liste Markdown ici…"
+    noneFound: Aucun élément de liste trouvé dans le texte.
+    selectAll: Tout sélectionner
+    deselectAll: Tout désélectionner
+    reuseExisting: Réutiliser les éléments existants au lieu d'ajouter des doublons
+    defaultFields: Valeurs appliquées à chaque élément importé
+    itemsFound(int count): "${_plural(count, one: '1 élément trouvé', many: '$count éléments trouvés')}"
+    addItems(int count): "${_plural(count, one: 'Ajouter 1 élément', many: 'Ajouter $count éléments')}"
+    imported(int count): "${_plural(count, one: '1 élément importé', many: '$count éléments importés')}"
 
 notesWall:
   noNotes: Aucune note pour le moment.

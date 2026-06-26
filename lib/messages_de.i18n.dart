@@ -1742,6 +1742,8 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Zu welcher Liste hinzufügen?"
   /// ```
   String get pickListTitle => """Zu welcher Liste hinzufügen?""";
+  MarkdownChecklistsMessagesDe get markdown =>
+      MarkdownChecklistsMessagesDe(this);
 }
 
 class ViewItemChecklistsMessagesDe extends ViewItemChecklistsMessages {
@@ -2233,6 +2235,132 @@ class ReuseChecklistsMessagesDe extends ReuseChecklistsMessages {
   /// ```
   String reusedSnack(String name) =>
       """Vorhandener Eintrag "$name" wiederverwendet""";
+}
+
+class MarkdownChecklistsMessagesDe extends MarkdownChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const MarkdownChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Exportiert am $date"
+  /// ```
+  String exported(String date) => """Exportiert am $date""";
+
+  /// ```dart
+  /// "Ohne Kategorie"
+  /// ```
+  String get uncategorized => """Ohne Kategorie""";
+
+  /// ```dart
+  /// "Als Markdown exportieren"
+  /// ```
+  String get exportTitle => """Als Markdown exportieren""";
+
+  /// ```dart
+  /// "Aus Markdown importieren"
+  /// ```
+  String get importTitle => """Aus Markdown importieren""";
+
+  /// ```dart
+  /// "Erledigte Einträge einschließen"
+  /// ```
+  String get includeCompleted => """Erledigte Einträge einschließen""";
+
+  /// ```dart
+  /// "Bearbeite den Text unten, um die exportierte Liste anzupassen"
+  /// ```
+  String get editHint =>
+      """Bearbeite den Text unten, um die exportierte Liste anzupassen""";
+
+  /// ```dart
+  /// "Kopieren"
+  /// ```
+  String get copy => """Kopieren""";
+
+  /// ```dart
+  /// ".md herunterladen"
+  /// ```
+  String get download => """.md herunterladen""";
+
+  /// ```dart
+  /// "In die Zwischenablage kopiert"
+  /// ```
+  String get copied => """In die Zwischenablage kopiert""";
+
+  /// ```dart
+  /// "Konnte nicht in die Zwischenablage kopieren"
+  /// ```
+  String get copyFailed => """Konnte nicht in die Zwischenablage kopieren""";
+
+  /// ```dart
+  /// "Schließen"
+  /// ```
+  String get close => """Schließen""";
+
+  /// ```dart
+  /// "Datei konnte nicht exportiert werden"
+  /// ```
+  String get shareFailed => """Datei konnte nicht exportiert werden""";
+
+  /// ```dart
+  /// ".md-Datei hochladen"
+  /// ```
+  String get uploadFile => """.md-Datei hochladen""";
+
+  /// ```dart
+  /// "Markdown einfügen"
+  /// ```
+  String get pasteLabel => """Markdown einfügen""";
+
+  /// ```dart
+  /// "Füge hier eine Markdown-Liste ein…"
+  /// ```
+  String get pastePlaceholder => """Füge hier eine Markdown-Liste ein…""";
+
+  /// ```dart
+  /// "Keine Listeneinträge im Text gefunden."
+  /// ```
+  String get noneFound => """Keine Listeneinträge im Text gefunden.""";
+
+  /// ```dart
+  /// "Alle auswählen"
+  /// ```
+  String get selectAll => """Alle auswählen""";
+
+  /// ```dart
+  /// "Alle abwählen"
+  /// ```
+  String get deselectAll => """Alle abwählen""";
+
+  /// ```dart
+  /// "Vorhandene Einträge wiederverwenden statt Duplikate hinzuzufügen"
+  /// ```
+  String get reuseExisting =>
+      """Vorhandene Einträge wiederverwenden statt Duplikate hinzuzufügen""";
+
+  /// ```dart
+  /// "Standardwerte für jeden importierten Eintrag"
+  /// ```
+  String get defaultFields =>
+      """Standardwerte für jeden importierten Eintrag""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag gefunden', many: '$count Einträge gefunden')}"
+  /// ```
+  String itemsFound(int count) =>
+      """${_plural(count, one: '1 Eintrag gefunden', many: '$count Einträge gefunden')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag hinzufügen', many: '$count Einträge hinzufügen')}"
+  /// ```
+  String addItems(int count) =>
+      """${_plural(count, one: '1 Eintrag hinzufügen', many: '$count Einträge hinzufügen')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag importiert', many: '$count Einträge importiert')}"
+  /// ```
+  String imported(int count) =>
+      """${_plural(count, one: '1 Eintrag importiert', many: '$count Einträge importiert')}""";
 }
 
 class NotesWallMessagesDe extends NotesWallMessages {
@@ -3388,6 +3516,33 @@ Passwort: pantry-rocks""",
   """checklists.allListsSubtitle""": """Einträge aus allen Listen""",
   """checklists.addToAnyList""": """Eintrag hinzufügen…""",
   """checklists.pickListTitle""": """Zu welcher Liste hinzufügen?""",
+  """checklists.markdown.uncategorized""": """Ohne Kategorie""",
+  """checklists.markdown.exportTitle""": """Als Markdown exportieren""",
+  """checklists.markdown.importTitle""": """Aus Markdown importieren""",
+  """checklists.markdown.includeCompleted""":
+      """Erledigte Einträge einschließen""",
+  """checklists.markdown.editHint""":
+      """Bearbeite den Text unten, um die exportierte Liste anzupassen""",
+  """checklists.markdown.copy""": """Kopieren""",
+  """checklists.markdown.download""": """.md herunterladen""",
+  """checklists.markdown.copied""": """In die Zwischenablage kopiert""",
+  """checklists.markdown.copyFailed""":
+      """Konnte nicht in die Zwischenablage kopieren""",
+  """checklists.markdown.close""": """Schließen""",
+  """checklists.markdown.shareFailed""":
+      """Datei konnte nicht exportiert werden""",
+  """checklists.markdown.uploadFile""": """.md-Datei hochladen""",
+  """checklists.markdown.pasteLabel""": """Markdown einfügen""",
+  """checklists.markdown.pastePlaceholder""":
+      """Füge hier eine Markdown-Liste ein…""",
+  """checklists.markdown.noneFound""":
+      """Keine Listeneinträge im Text gefunden.""",
+  """checklists.markdown.selectAll""": """Alle auswählen""",
+  """checklists.markdown.deselectAll""": """Alle abwählen""",
+  """checklists.markdown.reuseExisting""":
+      """Vorhandene Einträge wiederverwenden statt Duplikate hinzuzufügen""",
+  """checklists.markdown.defaultFields""":
+      """Standardwerte für jeden importierten Eintrag""",
   """notesWall.noNotes""": """Noch keine Notizen.""",
   """notesWall.failedToLoad""": """Notizen konnten nicht geladen werden.""",
   """notesWall.saveFailed""": """Notiz konnte nicht gespeichert werden.""",

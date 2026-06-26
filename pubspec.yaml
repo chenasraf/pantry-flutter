@@ -59,6 +59,7 @@ dependencies:
   device_info_plus: ^12.4.0
   flutter_offline: ^6.0.0
   crypto: ^3.0.7
+  share_plus: ^12.0.2
 
 dev_dependencies:
   flutter_test:

@@ -419,6 +419,30 @@ checklists:
   allListsSubtitle: פריטים מכל הרשימות
   addToAnyList: "הוסף פריט…"
   pickListTitle: להוסיף לאיזו רשימה?
+  markdown:
+    exported(String date): "יוצא בתאריך $date"
+    uncategorized: ללא קטגוריה
+    exportTitle: ייצוא ל-Markdown
+    importTitle: ייבוא מ-Markdown
+    includeCompleted: לכלול פריטים שהושלמו
+    editHint: ערכו את הטקסט למטה כדי לשנות את הרשימה המיוצאת
+    copy: העתקה
+    download: הורדת .md
+    copied: הועתק ללוח
+    copyFailed: לא ניתן להעתיק ללוח
+    close: סגירה
+    shareFailed: לא ניתן לייצא את הקובץ
+    uploadFile: העלאת קובץ .md
+    pasteLabel: הדבקת Markdown
+    pastePlaceholder: "הדביקו כאן רשימת Markdown…"
+    noneFound: לא נמצאו פריטי רשימה בטקסט.
+    selectAll: בחירת הכול
+    deselectAll: ביטול בחירת הכול
+    reuseExisting: שימוש חוזר בפריטים קיימים במקום הוספת כפילויות
+    defaultFields: ערכים שיחולו על כל פריט מיובא
+    itemsFound(int count): "${_plural(count, one: 'נמצא פריט אחד', many: 'נמצאו $count פריטים')}"
+    addItems(int count): "${_plural(count, one: 'הוספת פריט אחד', many: 'הוספת $count פריטים')}"
+    imported(int count): "${_plural(count, one: 'יובא פריט אחד', many: 'יובאו $count פריטים')}"
 
 notesWall:
   noNotes: אין הערות עדיין.
