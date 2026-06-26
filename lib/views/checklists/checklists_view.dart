@@ -262,6 +262,16 @@ class _BodyState extends State<_Body> {
     final filteredItems = _applyFilters(controller.items, selectedListIds);
     final activeItems = filteredItems.where((i) => !i.done).toList();
     final doneItems = filteredItems.where((i) => i.done).toList();
+    // Drag-to-reorder is only meaningful under custom sort, and only when the
+    // active partition is the full set: reordering writes sort_order across the
+    // partition, so a category/search filter (or the cross-list meta view)
+    // would persist a partial, wrong order. Gate it to the unfiltered case.
+    final canReorder =
+        controller.effectiveSortBy == 'custom' &&
+        !isMeta &&
+        !controller.isTrashMode &&
+        _selectedCategoryIds.isEmpty &&
+        _query.isEmpty;
     final total = controller.items.where((i) => i.deletedAt == null).length;
     final done = controller.items.where((i) => i.done).length;
 
@@ -403,6 +413,7 @@ class _BodyState extends State<_Body> {
                                   controller: controller,
                                   activeItems: activeItems,
                                   doneItems: doneItems,
+                                  canReorder: canReorder,
                                   isCards: isCards,
                                   doneCollapsed: doneCollapsed,
                                   categorySpacing:
@@ -1789,6 +1800,7 @@ class _ItemList extends StatefulWidget {
   final ChecklistsController controller;
   final List<ListItem> activeItems;
   final List<ListItem> doneItems;
+  final bool canReorder;
   final bool isCards;
   final bool doneCollapsed;
   final String categorySpacing;
@@ -1799,6 +1811,7 @@ class _ItemList extends StatefulWidget {
     required this.controller,
     required this.activeItems,
     required this.doneItems,
+    required this.canReorder,
     required this.isCards,
     required this.doneCollapsed,
     required this.categorySpacing,
@@ -1852,11 +1865,34 @@ class _ItemListState extends State<_ItemList> {
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           const SliverPadding(padding: EdgeInsets.only(top: 4)),
-          SliverList.builder(
-            itemCount: widget.activeItems.length,
-            itemBuilder: (context, i) =>
-                _buildTileWithSeparator(context, widget.activeItems, i),
-          ),
+          if (widget.canReorder)
+            SliverReorderableList(
+              itemCount: widget.activeItems.length,
+              onReorder: (oldIndex, newIndex) {
+                if (newIndex > oldIndex) newIndex--;
+                widget.controller.reorderItems(
+                  widget.activeItems,
+                  oldIndex,
+                  newIndex,
+                );
+              },
+              itemBuilder: (context, i) {
+                final item = widget.activeItems[i];
+                // Long-press to drag: an immediate listener would fight the
+                // horizontal swipe-reveal gesture and vertical scrolling.
+                return ReorderableDelayedDragStartListener(
+                  key: ValueKey(item.id),
+                  index: i,
+                  child: _buildTile(context, item),
+                );
+              },
+            )
+          else
+            SliverList.builder(
+              itemCount: widget.activeItems.length,
+              itemBuilder: (context, i) =>
+                  _buildTileWithSeparator(context, widget.activeItems, i),
+            ),
           if (showDone)
             SliverToBoxAdapter(
               child: InkWell(
