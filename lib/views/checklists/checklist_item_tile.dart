@@ -302,11 +302,18 @@ class _RowContent extends StatelessWidget {
       decoration: checked ? TextDecoration.lineThrough : null,
     );
 
+    // Spacing around the checkbox is folded into its own tap target so the
+    // whole padded area toggles the item — taps just above, below, or beside
+    // the box no longer fall through to the row's Edit action. The box keeps
+    // its 24px look but sits in a 48px-tall (Material minimum) hit area.
     final checkbox = _Checkbox(
       checked: checked,
       trashMode: trashMode,
       accent: cs.primary,
       onTap: onCheckboxTap,
+      padding: checkboxAtEnd
+          ? const EdgeInsetsDirectional.only(start: 14, end: 16)
+          : const EdgeInsetsDirectional.only(start: 18, end: 14),
     );
 
     return Material(
@@ -324,11 +331,15 @@ class _RowContent extends StatelessWidget {
                 child: Container(color: catColor),
               ),
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(18, 13, 16, 13),
+              padding: EdgeInsetsDirectional.fromSTEB(
+                checkboxAtEnd ? 18 : 0,
+                13,
+                checkboxAtEnd ? 0 : 16,
+                13,
+              ),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (!checkboxAtEnd) ...[checkbox, const SizedBox(width: 14)],
+                  if (!checkboxAtEnd) checkbox,
                   if (item.imageFileId != null) ...[
                     _ItemThumb(
                       houseId: houseId,
@@ -363,7 +374,7 @@ class _RowContent extends StatelessWidget {
                       size: 26,
                     ),
                   ],
-                  if (checkboxAtEnd) ...[const SizedBox(width: 14), checkbox],
+                  if (checkboxAtEnd) checkbox,
                 ],
               ),
             ),
@@ -388,34 +399,53 @@ class _Checkbox extends StatelessWidget {
   final Color accent;
   final VoidCallback onTap;
 
+  /// Padding folded into the tap target. The opaque hit area covers the box,
+  /// this padding, and the full 48px height, so taps around the box still
+  /// toggle the item.
+  final EdgeInsetsDirectional padding;
+
+  /// Material's minimum touch target. The 24px box is centered within it.
+  static const double _hitHeight = 48;
+
   const _Checkbox({
     required this.checked,
     required this.trashMode,
     required this.accent,
     required this.onTap,
+    required this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    if (trashMode) {
-      return Icon(Icons.delete_outline, color: cs.onSurfaceVariant, size: 22);
-    }
+    final Widget visual = trashMode
+        ? Icon(Icons.delete_outline, color: cs.onSurfaceVariant, size: 22)
+        : Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: checked ? accent : Colors.transparent,
+              border: checked
+                  ? Border.all(color: accent, width: 2)
+                  : Border.all(color: cs.outlineVariant, width: 2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: checked
+                ? const Icon(Icons.check, color: Colors.white, size: 16)
+                : null,
+          );
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 24,
-        height: 24,
-        decoration: BoxDecoration(
-          color: checked ? accent : Colors.transparent,
-          border: checked
-              ? Border.all(color: accent, width: 2)
-              : Border.all(color: cs.outlineVariant, width: 2),
-          borderRadius: BorderRadius.circular(8),
+      onTap: trashMode ? null : onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: padding,
+        // Fixed height (not a flex/stretch fill) so the tap target stays
+        // valid even where the row's own height is unbounded (e.g. cards
+        // view). widthFactor keeps the cell only as wide as the box.
+        child: SizedBox(
+          height: _hitHeight,
+          child: Center(widthFactor: 1, child: visual),
         ),
-        child: checked
-            ? const Icon(Icons.check, color: Colors.white, size: 16)
-            : null,
       ),
     );
   }
