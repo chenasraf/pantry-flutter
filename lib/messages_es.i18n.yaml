@@ -166,6 +166,11 @@ settings:
     disabled: Desactivado
     space: Espacio
     divider: Separador
+  checkboxPosition: Posición de la casilla
+  checkboxPositionBody: En qué lado de la fila aparece la casilla.
+  checkboxPositionNames:
+    start: Inicio
+    end: Fin
   reuseExistingItems: Reutilizar artículos existentes al añadir
   reuseExistingItemsBody: "Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo."
   reuseExistingItemsNames:

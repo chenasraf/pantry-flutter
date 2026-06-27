@@ -166,6 +166,11 @@ settings:
     disabled: מושבת
     space: רווח
     divider: קו מפריד
+  checkboxPosition: מיקום תיבת הסימון
+  checkboxPositionBody: באיזה צד של השורה תופיע תיבת הסימון.
+  checkboxPositionNames:
+    start: התחלה
+    end: סוף
   reuseExistingItems: שימוש חוזר בפריטים קיימים בעת הוספה
   reuseExistingItemsBody: "כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים."
   reuseExistingItemsNames:

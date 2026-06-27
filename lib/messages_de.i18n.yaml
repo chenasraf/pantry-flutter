@@ -166,6 +166,11 @@ settings:
     disabled: Deaktiviert
     space: Abstand
     divider: Trennlinie
+  checkboxPosition: Position des Kontrollkästchens
+  checkboxPositionBody: Auf welcher Seite der Zeile das Kontrollkästchen erscheint.
+  checkboxPositionNames:
+    start: Anfang
+    end: Ende
   reuseExistingItems: Vorhandene Einträge beim Hinzufügen wiederverwenden
   reuseExistingItemsBody: "Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet."
   reuseExistingItemsNames:

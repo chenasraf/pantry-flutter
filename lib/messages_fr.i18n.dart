@@ -891,6 +891,19 @@ class SettingsMessagesFr extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesFr(this);
 
   /// ```dart
+  /// "Position de la case à cocher"
+  /// ```
+  String get checkboxPosition => """Position de la case à cocher""";
+
+  /// ```dart
+  /// "De quel côté de la ligne la case à cocher apparaît."
+  /// ```
+  String get checkboxPositionBody =>
+      """De quel côté de la ligne la case à cocher apparaît.""";
+  CheckboxPositionNamesSettingsMessagesFr get checkboxPositionNames =>
+      CheckboxPositionNamesSettingsMessagesFr(this);
+
+  /// ```dart
   /// "Réutiliser les articles existants lors de l'ajout"
   /// ```
   String get reuseExistingItems =>
@@ -1043,6 +1056,22 @@ class CategorySpacingNamesSettingsMessagesFr
   /// "Séparateur"
   /// ```
   String get divider => """Séparateur""";
+}
+
+class CheckboxPositionNamesSettingsMessagesFr
+    extends CheckboxPositionNamesSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const CheckboxPositionNamesSettingsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Début"
+  /// ```
+  String get start => """Début""";
+
+  /// ```dart
+  /// "Fin"
+  /// ```
+  String get end => """Fin""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesFr
@@ -3271,6 +3300,11 @@ Mot de passe : pantry-rocks""",
   """settings.categorySpacingNames.disabled""": """Désactivé""",
   """settings.categorySpacingNames.space""": """Espace""",
   """settings.categorySpacingNames.divider""": """Séparateur""",
+  """settings.checkboxPosition""": """Position de la case à cocher""",
+  """settings.checkboxPositionBody""":
+      """De quel côté de la ligne la case à cocher apparaît.""",
+  """settings.checkboxPositionNames.start""": """Début""",
+  """settings.checkboxPositionNames.end""": """Fin""",
   """settings.reuseExistingItems""":
       """Réutiliser les articles existants lors de l'ajout""",
   """settings.reuseExistingItemsBody""":

@@ -166,6 +166,11 @@ settings:
     disabled: "Désactivé"
     space: Espace
     divider: "Séparateur"
+  checkboxPosition: "Position de la case à cocher"
+  checkboxPositionBody: "De quel côté de la ligne la case à cocher apparaît."
+  checkboxPositionNames:
+    start: "Début"
+    end: Fin
   reuseExistingItems: "Réutiliser les articles existants lors de l'ajout"
   reuseExistingItemsBody: "Lorsque vous ajoutez un article qui existe déjà dans la liste, réutiliser cet article."
   reuseExistingItemsNames:

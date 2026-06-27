@@ -166,6 +166,11 @@ settings:
     disabled: Disabled
     space: Space
     divider: Divider
+  checkboxPosition: Checkbox position
+  checkboxPositionBody: Which side of the row the checkbox appears on.
+  checkboxPositionNames:
+    start: Start
+    end: End
   reuseExistingItems: Reuse existing items when adding
   reuseExistingItemsBody: "When you try to add an item that already exists in the list, reuse that item."
   reuseExistingItemsNames:

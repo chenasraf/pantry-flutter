@@ -889,6 +889,19 @@ class SettingsMessagesDe extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesDe(this);
 
   /// ```dart
+  /// "Position des Kontrollkästchens"
+  /// ```
+  String get checkboxPosition => """Position des Kontrollkästchens""";
+
+  /// ```dart
+  /// "Auf welcher Seite der Zeile das Kontrollkästchen erscheint."
+  /// ```
+  String get checkboxPositionBody =>
+      """Auf welcher Seite der Zeile das Kontrollkästchen erscheint.""";
+  CheckboxPositionNamesSettingsMessagesDe get checkboxPositionNames =>
+      CheckboxPositionNamesSettingsMessagesDe(this);
+
+  /// ```dart
   /// "Vorhandene Einträge beim Hinzufügen wiederverwenden"
   /// ```
   String get reuseExistingItems =>
@@ -1041,6 +1054,22 @@ class CategorySpacingNamesSettingsMessagesDe
   /// "Trennlinie"
   /// ```
   String get divider => """Trennlinie""";
+}
+
+class CheckboxPositionNamesSettingsMessagesDe
+    extends CheckboxPositionNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const CheckboxPositionNamesSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Anfang"
+  /// ```
+  String get start => """Anfang""";
+
+  /// ```dart
+  /// "Ende"
+  /// ```
+  String get end => """Ende""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesDe
@@ -3269,6 +3298,11 @@ Passwort: pantry-rocks""",
   """settings.categorySpacingNames.disabled""": """Deaktiviert""",
   """settings.categorySpacingNames.space""": """Abstand""",
   """settings.categorySpacingNames.divider""": """Trennlinie""",
+  """settings.checkboxPosition""": """Position des Kontrollkästchens""",
+  """settings.checkboxPositionBody""":
+      """Auf welcher Seite der Zeile das Kontrollkästchen erscheint.""",
+  """settings.checkboxPositionNames.start""": """Anfang""",
+  """settings.checkboxPositionNames.end""": """Ende""",
   """settings.reuseExistingItems""":
       """Vorhandene Einträge beim Hinzufügen wiederverwenden""",
   """settings.reuseExistingItemsBody""":

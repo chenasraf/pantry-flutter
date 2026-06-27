@@ -292,12 +292,21 @@ class _RowContent extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final checked = item.done;
+    final checkboxAtEnd =
+        context.watch<PrefsService>().checklistCheckboxPosition == 'end';
 
     final nameStyle = TextStyle(
       fontSize: 16.5,
       fontWeight: FontWeight.w600,
       color: checked ? cs.onSurfaceVariant : cs.onSurface,
       decoration: checked ? TextDecoration.lineThrough : null,
+    );
+
+    final checkbox = _Checkbox(
+      checked: checked,
+      trashMode: trashMode,
+      accent: cs.primary,
+      onTap: onCheckboxTap,
     );
 
     return Material(
@@ -319,13 +328,7 @@ class _RowContent extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _Checkbox(
-                    checked: checked,
-                    trashMode: trashMode,
-                    accent: cs.primary,
-                    onTap: onCheckboxTap,
-                  ),
-                  const SizedBox(width: 14),
+                  if (!checkboxAtEnd) ...[checkbox, const SizedBox(width: 14)],
                   if (item.imageFileId != null) ...[
                     _ItemThumb(
                       houseId: houseId,
@@ -360,6 +363,7 @@ class _RowContent extends StatelessWidget {
                       size: 26,
                     ),
                   ],
+                  if (checkboxAtEnd) ...[const SizedBox(width: 14), checkbox],
                 ],
               ),
             ),

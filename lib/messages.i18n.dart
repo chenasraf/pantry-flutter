@@ -885,6 +885,19 @@ class SettingsMessages {
       CategorySpacingNamesSettingsMessages(this);
 
   /// ```dart
+  /// "Checkbox position"
+  /// ```
+  String get checkboxPosition => """Checkbox position""";
+
+  /// ```dart
+  /// "Which side of the row the checkbox appears on."
+  /// ```
+  String get checkboxPositionBody =>
+      """Which side of the row the checkbox appears on.""";
+  CheckboxPositionNamesSettingsMessages get checkboxPositionNames =>
+      CheckboxPositionNamesSettingsMessages(this);
+
+  /// ```dart
   /// "Reuse existing items when adding"
   /// ```
   String get reuseExistingItems => """Reuse existing items when adding""";
@@ -1033,6 +1046,21 @@ class CategorySpacingNamesSettingsMessages {
   /// "Divider"
   /// ```
   String get divider => """Divider""";
+}
+
+class CheckboxPositionNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const CheckboxPositionNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Start"
+  /// ```
+  String get start => """Start""";
+
+  /// ```dart
+  /// "End"
+  /// ```
+  String get end => """End""";
 }
 
 class ReuseExistingItemsNamesSettingsMessages {
@@ -3230,6 +3258,11 @@ Password: pantry-rocks""",
   """settings.categorySpacingNames.disabled""": """Disabled""",
   """settings.categorySpacingNames.space""": """Space""",
   """settings.categorySpacingNames.divider""": """Divider""",
+  """settings.checkboxPosition""": """Checkbox position""",
+  """settings.checkboxPositionBody""":
+      """Which side of the row the checkbox appears on.""",
+  """settings.checkboxPositionNames.start""": """Start""",
+  """settings.checkboxPositionNames.end""": """End""",
   """settings.reuseExistingItems""": """Reuse existing items when adding""",
   """settings.reuseExistingItemsBody""":
       """When you try to add an item that already exists in the list, reuse that item.""",

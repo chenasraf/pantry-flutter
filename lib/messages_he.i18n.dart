@@ -884,6 +884,18 @@ class SettingsMessagesHe extends SettingsMessages {
       CategorySpacingNamesSettingsMessagesHe(this);
 
   /// ```dart
+  /// "מיקום תיבת הסימון"
+  /// ```
+  String get checkboxPosition => """מיקום תיבת הסימון""";
+
+  /// ```dart
+  /// "באיזה צד של השורה תופיע תיבת הסימון."
+  /// ```
+  String get checkboxPositionBody => """באיזה צד של השורה תופיע תיבת הסימון.""";
+  CheckboxPositionNamesSettingsMessagesHe get checkboxPositionNames =>
+      CheckboxPositionNamesSettingsMessagesHe(this);
+
+  /// ```dart
   /// "שימוש חוזר בפריטים קיימים בעת הוספה"
   /// ```
   String get reuseExistingItems => """שימוש חוזר בפריטים קיימים בעת הוספה""";
@@ -1035,6 +1047,22 @@ class CategorySpacingNamesSettingsMessagesHe
   /// "קו מפריד"
   /// ```
   String get divider => """קו מפריד""";
+}
+
+class CheckboxPositionNamesSettingsMessagesHe
+    extends CheckboxPositionNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const CheckboxPositionNamesSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "התחלה"
+  /// ```
+  String get start => """התחלה""";
+
+  /// ```dart
+  /// "סוף"
+  /// ```
+  String get end => """סוף""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesHe
@@ -3233,6 +3261,11 @@ Map<String, String> get messagesHeMap => {
   """settings.categorySpacingNames.disabled""": """מושבת""",
   """settings.categorySpacingNames.space""": """רווח""",
   """settings.categorySpacingNames.divider""": """קו מפריד""",
+  """settings.checkboxPosition""": """מיקום תיבת הסימון""",
+  """settings.checkboxPositionBody""":
+      """באיזה צד של השורה תופיע תיבת הסימון.""",
+  """settings.checkboxPositionNames.start""": """התחלה""",
+  """settings.checkboxPositionNames.end""": """סוף""",
   """settings.reuseExistingItems""": """שימוש חוזר בפריטים קיימים בעת הוספה""",
   """settings.reuseExistingItemsBody""":
       """כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים.""",

@@ -25,6 +25,7 @@ class PrefsService extends ChangeNotifier {
   static const _checklistCategorySpacingKey = 'checklist_category_spacing';
   static const _reuseExistingItemsKey = 'reuse_existing_items';
   static const _checklistViewKey = 'checklist_view';
+  static const _checklistCheckboxPositionKey = 'checklist_checkbox_position';
   static const _checklistListFilterKey = 'checklist_list_filter';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
   static const _allListsProgressHeroHiddenKey =
@@ -81,6 +82,12 @@ class PrefsService extends ChangeNotifier {
   /// "list" or "cards"
   String _checklistView = 'list';
   String get checklistView => _checklistView;
+
+  /// Which side of a checklist row the checkbox sits on. Directional so it
+  /// follows text direction: "start" (default) is the leading edge, "end" the
+  /// trailing edge.
+  String _checklistCheckboxPosition = 'start';
+  String get checklistCheckboxPosition => _checklistCheckboxPosition;
 
   /// Selected list IDs for the All-lists view's per-list filter. Empty means
   /// "all lists". Local-only (not synced) so each device keeps its own focus.
@@ -197,6 +204,12 @@ class PrefsService extends ChangeNotifier {
     final view = all[_checklistViewKey];
     if (view != null && (view == 'list' || view == 'cards')) {
       _checklistView = view;
+    }
+
+    final checkboxPosition = all[_checklistCheckboxPositionKey];
+    if (checkboxPosition != null &&
+        (checkboxPosition == 'start' || checkboxPosition == 'end')) {
+      _checklistCheckboxPosition = checkboxPosition;
     }
 
     final listFilter = all[_checklistListFilterKey];
@@ -408,6 +421,14 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setChecklistCheckboxPosition(String value) async {
+    if (value != 'start' && value != 'end') return;
+    if (_checklistCheckboxPosition == value) return;
+    _checklistCheckboxPosition = value;
+    await _storage.write(key: _checklistCheckboxPositionKey, value: value);
+    notifyListeners();
+  }
+
   Future<void> setChecklistListFilter(Set<int> ids) async {
     _checklistListFilter = {...ids};
     await _storage.write(
@@ -529,6 +550,7 @@ class PrefsService extends ChangeNotifier {
     _checklistCategorySpacing = 'disabled';
     _reuseExistingItems = 'ask';
     _checklistView = 'list';
+    _checklistCheckboxPosition = 'start';
     _checklistListFilter = {};
     _checklistDoneCollapsed = true;
     _allListsProgressHeroHidden = false;
@@ -551,6 +573,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _checklistCategorySpacingKey);
     await _storage.delete(key: _reuseExistingItemsKey);
     await _storage.delete(key: _checklistViewKey);
+    await _storage.delete(key: _checklistCheckboxPositionKey);
     await _storage.delete(key: _checklistListFilterKey);
     await _storage.delete(key: _checklistDoneCollapsedKey);
     await _storage.delete(key: _allListsProgressHeroHiddenKey);

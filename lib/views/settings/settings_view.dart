@@ -25,6 +25,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   static const _pollOptions = [15, 30, 60, 120, 360];
   static const _categorySpacingOptions = ['disabled', 'space', 'divider'];
+  static const _checkboxPositionOptions = ['start', 'end'];
   static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
   static const _reuseExistingItemsOptions = ['ask', 'reuse', 'never'];
 
@@ -60,6 +61,18 @@ class _SettingsViewState extends State<SettingsView> {
     'space' => m.settings.categorySpacingNames.space,
     'divider' => m.settings.categorySpacingNames.divider,
     _ => m.settings.categorySpacingNames.disabled,
+  };
+
+  Future<void> _setCheckboxPosition(String? value) async {
+    if (value == null) return;
+    final prefs = context.read<PrefsService>();
+    if (value == prefs.checklistCheckboxPosition) return;
+    await prefs.setChecklistCheckboxPosition(value);
+  }
+
+  String _checkboxPositionLabel(String value) => switch (value) {
+    'end' => m.settings.checkboxPositionNames.end,
+    _ => m.settings.checkboxPositionNames.start,
   };
 
   // -- Reuse existing items (account-scoped, persisted server-side) --
@@ -170,6 +183,7 @@ class _SettingsViewState extends State<SettingsView> {
     final pollIntervalMinutes = prefs.pollIntervalMinutes;
     final itemTapAction = prefs.defaultItemTapAction;
     final categorySpacing = prefs.checklistCategorySpacing;
+    final checkboxPosition = prefs.checklistCheckboxPosition;
     final reuseExistingItems = prefs.reuseExistingItems;
 
     return Scaffold(
@@ -284,6 +298,21 @@ class _SettingsViewState extends State<SettingsView> {
                 ],
               ),
             ),
+          ListTile(
+            title: Text(m.settings.checkboxPosition),
+            subtitle: Text(m.settings.checkboxPositionBody),
+            trailing: DropdownButton<String>(
+              value: checkboxPosition,
+              onChanged: _setCheckboxPosition,
+              items: [
+                for (final option in _checkboxPositionOptions)
+                  DropdownMenuItem(
+                    value: option,
+                    child: Text(_checkboxPositionLabel(option)),
+                  ),
+              ],
+            ),
+          ),
           if (hasFeature('reuse-existing-items'))
             ListTile(
               title: Text(m.settings.reuseExistingItems),
