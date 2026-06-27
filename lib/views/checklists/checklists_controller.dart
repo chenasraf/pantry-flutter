@@ -124,6 +124,21 @@ class ChecklistsController extends ChangeNotifier {
 
   int _now() => DateTime.now().millisecondsSinceEpoch;
 
+  /// The progress card is a client-only feature — the server never stores or
+  /// returns its hidden state — so re-apply the locally-persisted per-list
+  /// dismissals onto freshly loaded lists. Without this, every refresh would
+  /// reset `hideProgressHero` to false and the dismissed card would reappear.
+  List<ChecklistList> _applyLocalListPrefs(List<ChecklistList> lists) => [
+    for (final l in lists) _withLocalListPrefs(l),
+  ];
+
+  ChecklistList _withLocalListPrefs(ChecklistList list) {
+    final hidden = PrefsService.instance.isListProgressHeroHidden(list.id);
+    return list.hideProgressHero == hidden
+        ? list
+        : list.copyWith(hideProgressHero: hidden);
+  }
+
   Future<void> load() async {
     _error = null;
 
@@ -141,7 +156,7 @@ class ChecklistsController extends ChangeNotifier {
         _categoryService.getCategories(houseId),
       ]);
 
-      _lists = results[0] as List<ChecklistList>;
+      _lists = _applyLocalListPrefs(results[0] as List<ChecklistList>);
       _checklistService.cacheLists(houseId, _lists);
 
       final cats = results[1] as List<models.Category>;
@@ -234,7 +249,7 @@ class ChecklistsController extends ChangeNotifier {
 
     final cachedLists = _checklistService.getCachedLists(houseId);
     if (cachedLists != null && _lists.isEmpty) {
-      _lists = cachedLists;
+      _lists = _applyLocalListPrefs(cachedLists);
       if (_lists.isNotEmpty) {
         final savedId = _checklistService.selectedListId;
         if (savedId == kAllListsId && hasFeature('checklist-all-view')) {
@@ -808,27 +823,16 @@ class ChecklistsController extends ChangeNotifier {
       return;
     }
 
-    final optimistic = list.copyWith(
-      hideProgressHero: value,
-      updatedAt: _now(),
-    );
-    _currentList = optimistic;
-    _lists = [for (final l in _lists) l.id == optimistic.id ? optimistic : l];
+    // Client-only: the server has no progress card, so persist the dismissal
+    // in local prefs instead of syncing it. [_applyLocalListPrefs] re-applies
+    // it after every refresh so the card stays hidden.
+    await PrefsService.instance.setListProgressHeroHidden(list.id, value);
+
+    final updated = list.copyWith(hideProgressHero: value);
+    _currentList = updated;
+    _lists = [for (final l in _lists) l.id == updated.id ? updated : l];
     _checklistService.cacheLists(houseId, _lists);
     notifyListeners();
-
-    _sync.enqueue(
-      SyncOp(
-        uuid: SyncIds.newOpUuid(),
-        entity: SyncEntity.checklistList,
-        op: SyncOpKind.update,
-        houseId: houseId,
-        entityId: list.id < 0 ? null : list.id,
-        tempEntityId: list.id < 0 ? list.id : null,
-        body: {'hideProgressHero': value},
-        createdAt: _now(),
-      ),
-    );
   }
 
   Future<void> moveItem(ListItem item, int targetListId) async {
@@ -1284,11 +1288,14 @@ class ChecklistsController extends ChangeNotifier {
       case SyncEntity.checklistList:
         final entity = applied.entity;
         if (entity is ChecklistList) {
+          // Server entities never carry the client-only progress-card state,
+          // so overlay the local dismissal before adopting them.
+          final reconciled = _withLocalListPrefs(entity);
           if (tempId != null) {
             final i = _lists.indexWhere((l) => l.id == tempId);
             if (i != -1) {
-              _lists[i] = entity;
-              if (_currentList?.id == tempId) _currentList = entity;
+              _lists[i] = reconciled;
+              if (_currentList?.id == tempId) _currentList = reconciled;
               _checklistService.cacheLists(houseId, _lists);
               notifyListeners();
               return;
@@ -1296,8 +1303,8 @@ class ChecklistsController extends ChangeNotifier {
           }
           final j = _lists.indexWhere((l) => l.id == entity.id);
           if (j != -1) {
-            _lists[j] = entity;
-            if (_currentList?.id == entity.id) _currentList = entity;
+            _lists[j] = reconciled;
+            if (_currentList?.id == entity.id) _currentList = reconciled;
             _checklistService.cacheLists(houseId, _lists);
             notifyListeners();
           }

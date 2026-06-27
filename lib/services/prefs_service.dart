@@ -30,6 +30,7 @@ class PrefsService extends ChangeNotifier {
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
   static const _allListsProgressHeroHiddenKey =
       'all_lists_progress_hero_hidden';
+  static const _progressHeroHiddenListIdsKey = 'progress_hero_hidden_list_ids';
   static const _lastSeenOnboardingVersionKey = 'last_seen_onboarding_version';
   static const _navOrderKey = 'nav_order';
   static const _themeColorKey = 'theme_color';
@@ -97,12 +98,19 @@ class PrefsService extends ChangeNotifier {
   bool _checklistDoneCollapsed = true;
   bool get checklistDoneCollapsed => _checklistDoneCollapsed;
 
-  /// Progress-card visibility for the synthetic All-lists view. Real lists
-  /// persist this per-list (synced) on the list model; the All-lists view has
-  /// no server entity, so its toggle lives here, keyed by sentinel id 0.
-  /// Re-enable by re-checking the card toggle in the list's overflow menu.
+  /// Progress-card visibility for the synthetic All-lists view. The All-lists
+  /// view has no server entity, so its toggle lives here, keyed by sentinel
+  /// id 0. Re-enable from the list's overflow menu.
   bool _allListsProgressHeroHidden = false;
   bool get allListsProgressHeroHidden => _allListsProgressHeroHidden;
+
+  /// IDs of real lists whose progress card the user dismissed. The card is a
+  /// client-only feature — the server doesn't store its visibility — so the
+  /// hidden state is persisted locally and re-applied after each list refresh.
+  Set<int> _progressHeroHiddenListIds = {};
+  Set<int> get progressHeroHiddenListIds => _progressHeroHiddenListIds;
+  bool isListProgressHeroHidden(int id) =>
+      _progressHeroHiddenListIds.contains(id);
 
   /// The app version of the most recent onboarding the user finished or
   /// skipped. `null` means the user has never seen any onboarding (treat as
@@ -229,6 +237,15 @@ class PrefsService extends ChangeNotifier {
     final progressHeroHidden = all[_allListsProgressHeroHiddenKey];
     if (progressHeroHidden != null) {
       _allListsProgressHeroHidden = progressHeroHidden == 'true';
+    }
+
+    final hiddenHeroIds = all[_progressHeroHiddenListIdsKey];
+    if (hiddenHeroIds != null && hiddenHeroIds.isNotEmpty) {
+      _progressHeroHiddenListIds = hiddenHeroIds
+          .split(',')
+          .map(int.tryParse)
+          .whereType<int>()
+          .toSet();
     }
 
     _lastSeenOnboardingVersion = all[_lastSeenOnboardingVersionKey];
@@ -457,6 +474,20 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setListProgressHeroHidden(int id, bool hidden) async {
+    final changed = hidden
+        ? _progressHeroHiddenListIds.add(id)
+        : _progressHeroHiddenListIds.remove(id);
+    if (!changed) return;
+    await _storage.write(
+      key: _progressHeroHiddenListIdsKey,
+      value: _progressHeroHiddenListIds.isEmpty
+          ? ''
+          : _progressHeroHiddenListIds.join(','),
+    );
+    notifyListeners();
+  }
+
   Future<void> setLastSeenOnboardingVersion(String? version) async {
     _lastSeenOnboardingVersion = version;
     if (version == null) {
@@ -554,6 +585,7 @@ class PrefsService extends ChangeNotifier {
     _checklistListFilter = {};
     _checklistDoneCollapsed = true;
     _allListsProgressHeroHidden = false;
+    _progressHeroHiddenListIds = {};
     _lastSeenOnboardingVersion = null;
     _navOrder = List.of(kDefaultNavOrder);
     _themeColorHex = null;
@@ -577,6 +609,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _checklistListFilterKey);
     await _storage.delete(key: _checklistDoneCollapsedKey);
     await _storage.delete(key: _allListsProgressHeroHiddenKey);
+    await _storage.delete(key: _progressHeroHiddenListIdsKey);
     await _storage.delete(key: _lastSeenOnboardingVersionKey);
     await _storage.delete(key: _navOrderKey);
     await _storage.delete(key: _themeColorKey);
