@@ -188,11 +188,34 @@ platform :ios do
     )
   end
 
+  # True if this exact iOS build is already on App Store Connect, so a re-run
+  # of the deploy can skip the (duplicate, rejected) binary upload.
+  def ios_binary_already_uploaded?(key)
+    latest = app_store_build_number(
+      api_key: key,
+      app_identifier: "dev.casraf.pantry",
+      platform: "ios",
+      version: version_info[:name],
+      live: false,
+    )
+    latest.to_i >= version_info[:build].to_i
+  rescue => e
+    UI.message("Could not look up latest iOS build (#{e.message}); proceeding with upload.")
+    false
+  end
+
   desc "Upload to App Store"
   lane :release do
+    key = api_key
+    skip_binary = ios_binary_already_uploaded?(key)
+    if skip_binary
+      UI.important("Build #{version_info[:build]} already uploaded — skipping binary, syncing metadata and submitting.")
+    end
+
     deliver(
-      api_key: api_key,
-      ipa: find_ipa,
+      api_key: key,
+      ipa: skip_binary ? nil : find_ipa,
+      skip_binary_upload: skip_binary,
       release_notes: { "en-US" => release_notes },
       metadata_path: File.expand_path("metadata/ios", __dir__),
       screenshots_path: File.expand_path("metadata/ios/en-US/screenshots", __dir__),
@@ -271,11 +294,40 @@ platform :mac do
     )
   end
 
+  # macOS CFBundleVersion is offset by 10000 (see Makefile) so it never
+  # collides with iOS under the shared bundle ID.
+  def macos_build_number
+    version_info[:build].to_i + 10_000
+  end
+
+  # True if this exact macOS build is already on App Store Connect, so a
+  # re-run of the deploy can skip the (duplicate, rejected) binary upload.
+  def macos_binary_already_uploaded?(key)
+    latest = app_store_build_number(
+      api_key: key,
+      app_identifier: "dev.casraf.pantry",
+      platform: "osx",
+      version: version_info[:name],
+      live: false,
+    )
+    latest.to_i >= macos_build_number
+  rescue => e
+    UI.message("Could not look up latest macOS build (#{e.message}); proceeding with upload.")
+    false
+  end
+
   desc "Upload to Mac App Store"
   lane :release do
+    key = api_key
+    skip_binary = macos_binary_already_uploaded?(key)
+    if skip_binary
+      UI.important("Build #{macos_build_number} already uploaded — skipping binary, syncing metadata and submitting.")
+    end
+
     deliver(
-      api_key: api_key,
-      pkg: find_pkg,
+      api_key: key,
+      pkg: skip_binary ? nil : find_pkg,
+      skip_binary_upload: skip_binary,
       platform: "osx",
       release_notes: { "en-US" => release_notes },
       metadata_path: File.expand_path("metadata/macos", __dir__),
