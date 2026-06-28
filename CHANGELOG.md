@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.19.0](https://github.com/chenasraf/pantry-flutter/compare/v0.18.0...v0.19.0) (2026-06-28)
+
+
+### Features
+
+* **checklists:** filter the All lists view by list ([f8cca3f](https://github.com/chenasraf/pantry-flutter/commit/f8cca3fbc2950b9e609352d2a22d9be04c5027b1))
+* **checklists:** hide the progress card per list, including All lists ([0ed0d82](https://github.com/chenasraf/pantry-flutter/commit/0ed0d82f34a1944815a0bce79ce7adf591592cbc))
+* **checklists:** import and export lists as Markdown ([e905412](https://github.com/chenasraf/pantry-flutter/commit/e90541231a14670eea43603b1020d1d5cb0d4f36))
+* **checklists:** reuse existing items when adding ([31a3b73](https://github.com/chenasraf/pantry-flutter/commit/31a3b73fb31328f8c034d1975d38d16a64f94a17))
+* **checklists:** show or hide the progress card per list ([10e1827](https://github.com/chenasraf/pantry-flutter/commit/10e18276fb870f3397456cbf77f457a4dcadd4bb)), closes [#76](https://github.com/chenasraf/pantry-flutter/issues/76)
+* choose which side of the row the checkbox appears on ([a77dc19](https://github.com/chenasraf/pantry-flutter/commit/a77dc1994920b88a0869f5bc56cd7af7d9afa76e)), closes [#78](https://github.com/chenasraf/pantry-flutter/issues/78)
+* **login:** sign in with an app password ([bf8d218](https://github.com/chenasraf/pantry-flutter/commit/bf8d218ddcf1d8f89477a23fd48178b5ed1de617))
+
+
+### Bug Fixes
+
+* **checklists:** insert new items in the correct sort position ([a0ad014](https://github.com/chenasraf/pantry-flutter/commit/a0ad0143228e8a190913386ae86e93e6fc83b8cd)), closes [#81](https://github.com/chenasraf/pantry-flutter/issues/81)
+* **checklists:** keep list visible while loading or re-sorting ([921e029](https://github.com/chenasraf/pantry-flutter/commit/921e0295c8204df7db40a5b73463eb86dfa76081))
+* **checklists:** persist repeat-from-completion when creating items ([22097e1](https://github.com/chenasraf/pantry-flutter/commit/22097e1372f0987a236d2eac47ad40b270c274dd))
+* **checklists:** restore drag-to-reorder under custom sort ([85600f3](https://github.com/chenasraf/pantry-flutter/commit/85600f313463ecd12ab52629082145b2dc2cf8e3))
+* **checklists:** show all items in long lists ([a9aaf86](https://github.com/chenasraf/pantry-flutter/commit/a9aaf86255cf4fc1086fcff766dfbeef7a684c10)), closes [#80](https://github.com/chenasraf/pantry-flutter/issues/80)
+* **checklists:** show every list in the All lists filter ([1fd8eab](https://github.com/chenasraf/pantry-flutter/commit/1fd8eab56d75b98e87097524942783acc49102f3))
+* **checklists:** stop checked items flickering back during background refresh ([d4e982a](https://github.com/chenasraf/pantry-flutter/commit/d4e982ae168e45f83355e0f81fe84b389ae456b7))
+* don't close the open screen when the language refreshes in the background ([5b15f76](https://github.com/chenasraf/pantry-flutter/commit/5b15f76f8d9cafe0de5abcdb911401068fe5039c))
+* **ios:** allow local network access for .local servers ([4bf0e8d](https://github.com/chenasraf/pantry-flutter/commit/4bf0e8d08599e629570d51160f3e2383e198a41a))
+* keep the progress card hidden after you dismiss it ([3ed75b2](https://github.com/chenasraf/pantry-flutter/commit/3ed75b21e4dabaff6f157713ec92ba7b145a0641))
+* **login:** bound connection attempts and report the real failure ([b11357d](https://github.com/chenasraf/pantry-flutter/commit/b11357d4bd31ccde32e71dccd5133ab903007648))
+* make checklist checkbox easier to tap ([9c47f0e](https://github.com/chenasraf/pantry-flutter/commit/9c47f0e799107f75c444c6d853a03a40df928b26)), closes [#82](https://github.com/chenasraf/pantry-flutter/issues/82)
+* **notes:** render single newlines as line breaks ([a20bea8](https://github.com/chenasraf/pantry-flutter/commit/a20bea837f81393a3fdd9149a491211a55cf48f9)), closes [#79](https://github.com/chenasraf/pantry-flutter/issues/79)
+* **onboarding:** wait for server capabilities before showing new feature pages ([157e02f](https://github.com/chenasraf/pantry-flutter/commit/157e02f1a30e2f919af9bed77dda3be3247a5e5a))
+
 ## [0.18.0](https://github.com/chenasraf/pantry-flutter/compare/v0.17.0...v0.18.0) (2026-06-19)
 
 

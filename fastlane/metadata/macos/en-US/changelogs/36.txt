@@ -1,0 +1,14 @@
+Features
+- filter the All lists view by list
+- hide the progress card per list, including All lists
+- import and export lists as Markdown
+- reuse existing items when adding
+- show or hide the progress card per list
+- choose which side of the row the checkbox appears on
+- sign in with an app password
+Bug Fixes
+- insert new items in the correct sort position
+- keep list visible while loading or re-sorting
+- persist repeat-from-completion when creating items
+
+… see full notes on GitHub.
