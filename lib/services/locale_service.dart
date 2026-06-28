@@ -23,6 +23,15 @@ class LocaleService extends ChangeNotifier {
   LocaleService._();
   static final LocaleService instance = LocaleService._();
 
+  /// Bumped only when the user explicitly changes the language. The root keys
+  /// [MaterialApp] on this so a deliberate switch forces a full rebuild (every
+  /// cached string re-reads [m]). Automatic re-resolution (e.g. the background
+  /// user-profile fetch landing a server language) must NOT bump it — keying on
+  /// the locale value there would tear down the whole navigator and drop any
+  /// open route, like a half-written note in the editor.
+  int _revision = 0;
+  int get revision => _revision;
+
   /// Resolve the effective locale from the user preference, or auto-detect
   /// from the Nextcloud server language, then the system locale.
   Locale get effectiveLocale {
@@ -61,9 +70,11 @@ class LocaleService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Change locale, persist, and rebuild.
+  /// Change locale, persist, and rebuild. This is the only path that bumps
+  /// [revision] — a user-initiated switch is allowed to hard-reset the tree.
   Future<void> setLocale(String? localeCode) async {
     await PrefsService.instance.setLocale(localeCode);
+    _revision++;
     apply();
   }
 

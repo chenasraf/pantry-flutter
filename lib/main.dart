@@ -301,7 +301,10 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
       child: Directionality(
         textDirection: LocaleService.instance.textDirection,
         child: MaterialApp(
-          key: ValueKey(locale),
+          // Key on an explicit-change counter, not the locale value: a
+          // background locale re-resolution must update translations in place,
+          // not rebuild the navigator and close whatever route is open.
+          key: ValueKey(LocaleService.instance.revision),
           debugShowCheckedModeBanner: false,
           navigatorKey: rootNavigatorKey,
           locale: locale,
