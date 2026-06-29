@@ -187,15 +187,19 @@ class ChecklistsController extends ChangeNotifier {
       }
 
       if (_lists.isNotEmpty) {
-        if (_currentList?.id == kAllListsId &&
-            hasFeature('checklist-all-view')) {
+        // Honor the persisted selection (e.g. a home-screen widget tap that
+        // wrote `selectedListId` out-of-band) over the list currently shown;
+        // during normal use the two are identical since `selectList` keeps
+        // `selectedListId` in sync.
+        final targetId = _checklistService.selectedListId ?? _currentList?.id;
+        if (targetId == kAllListsId && hasFeature('checklist-all-view')) {
           // Stay on the meta view — falling back to `_lists.first` would
           // flicker the per-list view in between refreshes.
           await selectList(allListsSentinel(houseId));
         } else {
-          final target = _currentList != null
+          final target = targetId != null
               ? _lists.cast<ChecklistList?>().firstWhere(
-                      (l) => l!.id == _currentList!.id,
+                      (l) => l!.id == targetId,
                       orElse: () => null,
                     ) ??
                     _lists.first
