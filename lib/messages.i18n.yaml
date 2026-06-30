@@ -12,6 +12,9 @@ common:
   copied: Copied
   closeDialog: Done
   remove: Remove
+  permissionDenied: You don't have permission to do that
+  noAccessTitle: No access
+  noAccessBody: You don't have access to anything in this house yet. An admin can grant you permissions in the Pantry web app.
 
 login:
   connectToNextcloud: Connect to your Nextcloud instance

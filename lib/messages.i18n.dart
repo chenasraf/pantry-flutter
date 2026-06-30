@@ -149,6 +149,22 @@ class CommonMessages {
   /// "Remove"
   /// ```
   String get remove => """Remove""";
+
+  /// ```dart
+  /// "You don't have permission to do that"
+  /// ```
+  String get permissionDenied => """You don't have permission to do that""";
+
+  /// ```dart
+  /// "No access"
+  /// ```
+  String get noAccessTitle => """No access""";
+
+  /// ```dart
+  /// "You don't have access to anything in this house yet. An admin can grant you permissions in the Pantry web app."
+  /// ```
+  String get noAccessBody =>
+      """You don't have access to anything in this house yet. An admin can grant you permissions in the Pantry web app.""";
 }
 
 class LoginMessages {
@@ -3097,6 +3113,10 @@ Map<String, String> get messagesMap => {
   """common.copied""": """Copied""",
   """common.closeDialog""": """Done""",
   """common.remove""": """Remove""",
+  """common.permissionDenied""": """You don't have permission to do that""",
+  """common.noAccessTitle""": """No access""",
+  """common.noAccessBody""":
+      """You don't have access to anything in this house yet. An admin can grant you permissions in the Pantry web app.""",
   """login.connectToNextcloud""": """Connect to your Nextcloud instance""",
   """login.serverUrl""": """Server URL""",
   """login.serverUrlHint""": """cloud.example.com""",

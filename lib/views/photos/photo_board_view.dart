@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
+import 'package:pantry/models/house.dart';
 import 'package:pantry/models/photo.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/photo_service.dart';
@@ -60,6 +61,9 @@ class _PhotoBoardViewState extends State<PhotoBoardView> {
 
   @override
   Widget build(BuildContext context) {
+    // Keep the controller's view of house capabilities fresh; descendants gate
+    // off `controller.permissions`.
+    _controller.permissions = context.watch<HousePermissions>();
     return ChangeNotifierProvider.value(
       value: _controller,
       child: _PhotoBoardBody(scrollController: widget.scrollController),
@@ -182,13 +186,18 @@ class _TopBar extends StatelessWidget {
           if (controller.selectMode)
             PhotoSelectionActions(controller: controller)
           else ...[
-            IconButton(
-              icon: const Icon(Icons.checklist),
-              tooltip: '',
-              onPressed: controller.toggleSelectMode,
-            ),
+            // Selection mode only enables bulk move/delete — hide it when the
+            // user can do neither.
+            if (controller.permissions.canMovePhotos ||
+                controller.permissions.canDeletePhotos)
+              IconButton(
+                icon: const Icon(Icons.checklist),
+                tooltip: '',
+                onPressed: controller.toggleSelectMode,
+              ),
             PhotoSortButton(controller: controller),
-            if (hasFeature('photo-trash'))
+            if (hasFeature('photo-trash') &&
+                controller.permissions.canDeletePhotos)
               IconButton(
                 icon: const Icon(Icons.delete_outline),
                 tooltip: m.photoBoard.viewTrash,

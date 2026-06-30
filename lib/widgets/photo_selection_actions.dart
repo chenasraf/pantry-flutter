@@ -13,20 +13,23 @@ class PhotoSelectionActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final count = controller.selected.length;
+    final perms = controller.permissions;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text('$count', style: Theme.of(context).textTheme.titleSmall),
-        IconButton(
-          icon: const Icon(Icons.drive_file_move_outlined),
-          tooltip: '',
-          onPressed: count > 0 ? () => _showMoveDialog(context) : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.delete_outlined),
-          tooltip: '',
-          onPressed: count > 0 ? () => _confirmDelete(context) : null,
-        ),
+        if (perms.canMovePhotos)
+          IconButton(
+            icon: const Icon(Icons.drive_file_move_outlined),
+            tooltip: '',
+            onPressed: count > 0 ? () => _showMoveDialog(context) : null,
+          ),
+        if (perms.canDeletePhotos)
+          IconButton(
+            icon: const Icon(Icons.delete_outlined),
+            tooltip: '',
+            onPressed: count > 0 ? () => _confirmDelete(context) : null,
+          ),
         IconButton(
           icon: const Icon(Icons.close),
           tooltip: '',

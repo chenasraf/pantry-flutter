@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/house.dart';
 import 'package:pantry/models/member.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/category_service.dart';
@@ -37,6 +38,12 @@ ChecklistList allListsSentinel(int houseId) => ChecklistList(
 
 class ChecklistsController extends ChangeNotifier {
   final int houseId;
+
+  /// Effective capabilities for the house this controller serves. The view
+  /// keeps this fresh from the current house; gating is UX only (the server
+  /// enforces and a 403 surfaces a snackbar). Defaults to all-allowed so the
+  /// controller behaves normally before the view assigns real permissions.
+  HousePermissions permissions = HousePermissions.unrestricted;
 
   ChecklistsController({required this.houseId}) {
     _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);

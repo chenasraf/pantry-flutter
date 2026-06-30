@@ -150,6 +150,22 @@ class CommonMessagesEs extends CommonMessages {
   /// "Quitar"
   /// ```
   String get remove => """Quitar""";
+
+  /// ```dart
+  /// "No tienes permiso para hacer eso"
+  /// ```
+  String get permissionDenied => """No tienes permiso para hacer eso""";
+
+  /// ```dart
+  /// "Sin acceso"
+  /// ```
+  String get noAccessTitle => """Sin acceso""";
+
+  /// ```dart
+  /// "Todavía no tienes acceso a nada en este hogar. Un administrador puede concederte permisos en la aplicación web de Pantry."
+  /// ```
+  String get noAccessBody =>
+      """Todavía no tienes acceso a nada en este hogar. Un administrador puede concederte permisos en la aplicación web de Pantry.""";
 }
 
 class LoginMessagesEs extends LoginMessages {
@@ -3126,6 +3142,10 @@ Map<String, String> get messagesEsMap => {
   """common.copied""": """Copiado""",
   """common.closeDialog""": """Listo""",
   """common.remove""": """Quitar""",
+  """common.permissionDenied""": """No tienes permiso para hacer eso""",
+  """common.noAccessTitle""": """Sin acceso""",
+  """common.noAccessBody""":
+      """Todavía no tienes acceso a nada en este hogar. Un administrador puede concederte permisos en la aplicación web de Pantry.""",
   """login.connectToNextcloud""": """Conéctate a tu instancia de Nextcloud""",
   """login.serverUrl""": """URL del servidor""",
   """login.serverUrlHint""": """cloud.example.com""",

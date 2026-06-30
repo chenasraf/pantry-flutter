@@ -10,6 +10,7 @@ import 'package:pantry/views/onboarding/onboarding_pages.dart';
 import 'package:pantry/views/onboarding/onboarding_view.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/house.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/prefs_service.dart';
@@ -153,6 +154,9 @@ class _ChecklistsViewState extends State<ChecklistsView>
 
   @override
   Widget build(BuildContext context) {
+    // Keep the controller's view of house capabilities fresh; descendants
+    // (sheets, item tiles, the compose bar) gate off `controller.permissions`.
+    _controller.permissions = context.watch<HousePermissions>();
     return ChangeNotifierProvider.value(
       value: _controller,
       child: _Body(
@@ -469,7 +473,9 @@ class _BodyState extends State<_Body> {
                 ),
               ),
             ),
-            if (!controller.isTrashMode && list != null)
+            if (!controller.isTrashMode &&
+                list != null &&
+                controller.permissions.canAddItems)
               Positioned(
                 left: 0,
                 right: 0,
@@ -515,8 +521,10 @@ class _BodyState extends State<_Body> {
                             setState(() => _composeActive = active);
                           }
                         },
-                        onRequestCreateCategory: () =>
-                            _createCategory(context, controller),
+                        onRequestCreateCategory:
+                            controller.permissions.canEditLists
+                            ? () => _createCategory(context, controller)
+                            : null,
                         onSubmit: (s) async {
                           final targetListId = meta
                               ? _composeTargetListId
@@ -840,13 +848,15 @@ class _BodyState extends State<_Body> {
             tooltip: m.common.refresh,
             onPressed: () => controller.refresh(),
           ),
-          IconButton(
-            icon: const Icon(Icons.sell_outlined),
-            tooltip: m.categories.manageTitle,
-            onPressed: () => _openManageCategories(context, controller),
-          ),
+          if (controller.permissions.canEditLists)
+            IconButton(
+              icon: const Icon(Icons.sell_outlined),
+              tooltip: m.categories.manageTitle,
+              onPressed: () => _openManageCategories(context, controller),
+            ),
           // Meta view has no trash of its own; trash stays per-list.
           if (!controller.isMetaMode &&
+              controller.permissions.canDeleteItems &&
               (supportsFeature('soft-delete') || hasFeature('item-trash')))
             IconButton(
               icon: const Icon(Icons.delete_outline),
@@ -999,24 +1009,27 @@ class _BodyState extends State<_Body> {
           leading: const Icon(Icons.file_download_outlined, size: 18),
           label: m.checklists.markdown.exportTitle,
         ),
-        _menuRow(
-          value: 'import_markdown',
-          leading: const Icon(Icons.file_upload_outlined, size: 18),
-          label: m.checklists.markdown.importTitle,
-        ),
+        if (controller.permissions.canAddItems)
+          _menuRow(
+            value: 'import_markdown',
+            leading: const Icon(Icons.file_upload_outlined, size: 18),
+            label: m.checklists.markdown.importTitle,
+          ),
       ],
       if (!PlatformInfo.isDesktop) ...[
-        _menuRow(
-          value: 'manage_categories',
-          leading: const Icon(Icons.sell_outlined, size: 18),
-          label: m.categories.manageTitle,
-        ),
+        if (controller.permissions.canEditLists)
+          _menuRow(
+            value: 'manage_categories',
+            leading: const Icon(Icons.sell_outlined, size: 18),
+            label: m.categories.manageTitle,
+          ),
         _menuRow(
           value: 'refresh',
           leading: const Icon(Icons.refresh, size: 18),
           label: m.common.refresh,
         ),
         if (!isMeta &&
+            controller.permissions.canDeleteItems &&
             (supportsFeature('soft-delete') || hasFeature('item-trash'))) ...[
           const PopupMenuDivider(),
           _menuRow(
@@ -2037,22 +2050,32 @@ class _ItemListState extends State<_ItemList> {
       addedByDisplayName: addedByDisplayName,
       listBadge: listBadge,
       onToggle: (i) => _onToggle(context, controller, i),
+      canCheck: controller.permissions.canCheckItems,
       onView: (i) => _openView(context, controller, i),
-      onEdit: (i) => _openEdit(context, controller, i),
-      onMove: controller.lists.length > 1 && !controller.isTrashMode
+      onEdit: controller.permissions.canEditLists
+          ? (i) => _openEdit(context, controller, i)
+          : null,
+      onMove:
+          controller.lists.length > 1 &&
+              !controller.isTrashMode &&
+              controller.permissions.canMoveItems
           ? (i) => _onMove(context, controller, i)
           : null,
       onCopy:
           controller.lists.length > 1 &&
               !controller.isTrashMode &&
-              hasFeature('copy-items')
+              hasFeature('copy-items') &&
+              controller.permissions.canCopyItems
           ? (i) => _onCopy(context, controller, i)
           : null,
-      onDelete: (i) => _onDelete(context, controller, i),
-      onRestore: controller.isTrashMode
+      onDelete: controller.permissions.canDeleteItems
+          ? (i) => _onDelete(context, controller, i)
+          : null,
+      onRestore: controller.isTrashMode && controller.permissions.canDeleteItems
           ? (i) => _onRestore(context, controller, i)
           : null,
-      onPermanentDelete: controller.isTrashMode
+      onPermanentDelete:
+          controller.isTrashMode && controller.permissions.canDeleteItems
           ? (i) => _onPermanentDelete(context, controller, i)
           : null,
     );

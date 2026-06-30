@@ -150,6 +150,22 @@ class CommonMessagesDe extends CommonMessages {
   /// "Entfernen"
   /// ```
   String get remove => """Entfernen""";
+
+  /// ```dart
+  /// "Dazu hast du keine Berechtigung"
+  /// ```
+  String get permissionDenied => """Dazu hast du keine Berechtigung""";
+
+  /// ```dart
+  /// "Kein Zugriff"
+  /// ```
+  String get noAccessTitle => """Kein Zugriff""";
+
+  /// ```dart
+  /// "Du hast noch keinen Zugriff auf Inhalte in diesem Haushalt. Eine Administratorin oder ein Administrator kann dir in der Pantry-Web-App Berechtigungen erteilen."
+  /// ```
+  String get noAccessBody =>
+      """Du hast noch keinen Zugriff auf Inhalte in diesem Haushalt. Eine Administratorin oder ein Administrator kann dir in der Pantry-Web-App Berechtigungen erteilen.""";
 }
 
 class LoginMessagesDe extends LoginMessages {
@@ -3132,6 +3148,10 @@ Map<String, String> get messagesDeMap => {
   """common.copied""": """Kopiert""",
   """common.closeDialog""": """Fertig""",
   """common.remove""": """Entfernen""",
+  """common.permissionDenied""": """Dazu hast du keine Berechtigung""",
+  """common.noAccessTitle""": """Kein Zugriff""",
+  """common.noAccessBody""":
+      """Du hast noch keinen Zugriff auf Inhalte in diesem Haushalt. Eine Administratorin oder ein Administrator kann dir in der Pantry-Web-App Berechtigungen erteilen.""",
   """login.connectToNextcloud""": """Mit deiner Nextcloud-Instanz verbinden""",
   """login.serverUrl""": """Server-URL""",
   """login.serverUrlHint""": """cloud.example.com""",

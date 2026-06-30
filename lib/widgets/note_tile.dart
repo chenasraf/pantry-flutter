@@ -25,6 +25,8 @@ class NoteTile extends StatelessWidget {
         _parseColor(note.color) ?? theme.colorScheme.surfaceContainerHighest;
     final textColor = _contrastColor(bgColor);
 
+    final hasMenu = _menuItems().isNotEmpty;
+
     if (controller.selectMode) {
       final isSelected = controller.selected.contains(note.id);
       return GestureDetector(
@@ -44,6 +46,24 @@ class NoteTile extends StatelessWidget {
           ],
         ),
       );
+    }
+
+    Widget tappableCard = GestureDetector(
+      onTap: () => _viewNote(context, bgColor, textColor),
+      child: _buildCard(context, bgColor, textColor, showMenu: hasMenu),
+    );
+    if (hasMenu) {
+      tappableCard = ContextMenuRegion<String>(
+        itemBuilder: _menuItems,
+        onSelected: (value) => _onMenuSelected(context, value),
+        child: tappableCard,
+      );
+    }
+
+    // Reordering notes is governed by canUpdateNotes; without it the card is
+    // not draggable.
+    if (!controller.permissions.canUpdateNotes) {
+      return tappableCard;
     }
 
     return DragTarget<int>(
@@ -66,20 +86,18 @@ class NoteTile extends StatelessWidget {
               child: _buildCard(context, bgColor, textColor),
             ),
           ),
-          child: ContextMenuRegion<String>(
-            itemBuilder: _menuItems,
-            onSelected: (value) => _onMenuSelected(context, value),
-            child: GestureDetector(
-              onTap: () => _viewNote(context, bgColor, textColor),
-              child: _buildCard(context, bgColor, textColor),
-            ),
-          ),
+          child: tappableCard,
         );
       },
     );
   }
 
-  Widget _buildCard(BuildContext context, Color bgColor, Color textColor) {
+  Widget _buildCard(
+    BuildContext context,
+    Color bgColor,
+    Color textColor, {
+    bool showMenu = false,
+  }) {
     final theme = Theme.of(context);
     final titleDir = detectTextDirection(note.title);
     final contentDir = detectTextDirection(note.content);
@@ -115,13 +133,14 @@ class NoteTile extends StatelessWidget {
                     ),
                   ),
                 ),
-                PopupMenuButton<String>(
-                  icon: Icon(Icons.more_vert, size: 20, color: textColor),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  itemBuilder: (_) => _menuItems(),
-                  onSelected: (value) => _onMenuSelected(context, value),
-                ),
+                if (showMenu)
+                  PopupMenuButton<String>(
+                    icon: Icon(Icons.more_vert, size: 20, color: textColor),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    itemBuilder: (_) => _menuItems(),
+                    onSelected: (value) => _onMenuSelected(context, value),
+                  ),
               ],
             ),
             if (note.content != null && note.content!.isNotEmpty) ...[
@@ -228,17 +247,18 @@ class NoteTile extends StatelessWidget {
   }
 
   List<PopupMenuEntry<String>> _menuItems() => [
-    PopupMenuItem(
-      value: 'edit',
-      child: Row(
-        children: [
-          const Icon(Icons.edit, size: 18),
-          const SizedBox(width: 8),
-          Text(m.notesWall.editNote),
-        ],
+    if (controller.permissions.canUpdateNotes)
+      PopupMenuItem(
+        value: 'edit',
+        child: Row(
+          children: [
+            const Icon(Icons.edit, size: 18),
+            const SizedBox(width: 8),
+            Text(m.notesWall.editNote),
+          ],
+        ),
       ),
-    ),
-    if (hasFeature('note-pinning'))
+    if (hasFeature('note-pinning') && controller.permissions.canUpdateNotes)
       PopupMenuItem(
         value: 'pin',
         child: Row(
@@ -252,16 +272,17 @@ class NoteTile extends StatelessWidget {
           ],
         ),
       ),
-    PopupMenuItem(
-      value: 'delete',
-      child: Row(
-        children: [
-          const Icon(Icons.delete, size: 18),
-          const SizedBox(width: 8),
-          Text(_softDeleteLabel),
-        ],
+    if (controller.permissions.canDeleteNotes)
+      PopupMenuItem(
+        value: 'delete',
+        child: Row(
+          children: [
+            const Icon(Icons.delete, size: 18),
+            const SizedBox(width: 8),
+            Text(_softDeleteLabel),
+          ],
+        ),
       ),
-    ),
   ];
 
   String get _softDeleteLabel =>

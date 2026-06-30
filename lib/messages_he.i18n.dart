@@ -150,6 +150,22 @@ class CommonMessagesHe extends CommonMessages {
   /// "הסר"
   /// ```
   String get remove => """הסר""";
+
+  /// ```dart
+  /// "אין לך הרשאה לבצע פעולה זו"
+  /// ```
+  String get permissionDenied => """אין לך הרשאה לבצע פעולה זו""";
+
+  /// ```dart
+  /// "אין גישה"
+  /// ```
+  String get noAccessTitle => """אין גישה""";
+
+  /// ```dart
+  /// "עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry."
+  /// ```
+  String get noAccessBody =>
+      """עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.""";
 }
 
 class LoginMessagesHe extends LoginMessages {
@@ -3104,6 +3120,10 @@ Map<String, String> get messagesHeMap => {
   """common.copied""": """הועתק""",
   """common.closeDialog""": """סיום""",
   """common.remove""": """הסר""",
+  """common.permissionDenied""": """אין לך הרשאה לבצע פעולה זו""",
+  """common.noAccessTitle""": """אין גישה""",
+  """common.noAccessBody""":
+      """עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.""",
   """login.connectToNextcloud""": """התחבר לשרת ה-Nextcloud שלך""",
   """login.serverUrl""": """כתובת השרת""",
   """login.serverUrlHint""": """cloud.example.com""",
