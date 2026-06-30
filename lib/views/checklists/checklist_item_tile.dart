@@ -46,10 +46,17 @@ class ChecklistItemTile extends StatefulWidget {
   final bool trashMode;
   final ValueChanged<ListItem> onToggle;
   final ValueChanged<ListItem> onView;
-  final ValueChanged<ListItem> onEdit;
+
+  /// Edit the item's fields. Null when the user lacks the edit-lists
+  /// capability — the edit swipe action and tap-to-edit fall back to view.
+  final ValueChanged<ListItem>? onEdit;
+
+  /// When false, the done/undone checkbox is shown but disabled (greyed).
+  /// Mirrors `canCheckItems`: viewing is allowed, toggling completion is not.
+  final bool canCheck;
   final ValueChanged<ListItem>? onMove;
   final ValueChanged<ListItem>? onCopy;
-  final ValueChanged<ListItem> onDelete;
+  final ValueChanged<ListItem>? onDelete;
   final ValueChanged<ListItem>? onRestore;
   final ValueChanged<ListItem>? onPermanentDelete;
 
@@ -72,8 +79,9 @@ class ChecklistItemTile extends StatefulWidget {
     required this.isCardsView,
     required this.onToggle,
     required this.onView,
-    required this.onEdit,
-    required this.onDelete,
+    this.onDelete,
+    this.onEdit,
+    this.canCheck = true,
     this.onMove,
     this.onCopy,
     this.trashMode = false,
@@ -153,14 +161,14 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
           ),
         );
       }
-      if (tapAction != 'edit') {
+      if (tapAction != 'edit' && widget.onEdit != null) {
         actions.add(
           SwipeAction(
             icon: Icons.edit_outlined,
             label: m.checklists.swipeEdit,
             tint: cs.onSurfaceVariant,
             background: tintedSurface(cs.onSurface, 0.07),
-            onPressed: () => widget.onEdit(item),
+            onPressed: () => widget.onEdit!(item),
           ),
         );
       }
@@ -186,15 +194,17 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
           ),
         );
       }
-      actions.add(
-        SwipeAction(
-          icon: Icons.delete_outline,
-          label: m.checklists.swipeDelete,
-          tint: const Color(0xFFEF7878),
-          background: tintedSurface(const Color(0xFFEF7878), 0.2),
-          onPressed: () => widget.onDelete(item),
-        ),
-      );
+      if (widget.onDelete != null) {
+        actions.add(
+          SwipeAction(
+            icon: Icons.delete_outline,
+            label: m.checklists.swipeDelete,
+            tint: const Color(0xFFEF7878),
+            background: tintedSurface(const Color(0xFFEF7878), 0.2),
+            onPressed: () => widget.onDelete!(item),
+          ),
+        );
+      }
     }
 
     final VoidCallback? rowTap;
@@ -202,8 +212,12 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       rowTap = () => widget.onView(item);
     } else {
       rowTap = switch (tapAction) {
-        'done' => _toggleAndCloseSwipe,
-        'edit' => () => widget.onEdit(item),
+        'done' =>
+          widget.canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
+        'edit' =>
+          widget.onEdit != null
+              ? () => widget.onEdit!(item)
+              : () => widget.onView(item),
         'none' => null,
         _ => () => widget.onView(item),
       };
@@ -219,7 +233,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       addedByUserId: widget.addedByUserId,
       addedByDisplayName: widget.addedByDisplayName,
       listBadge: widget.listBadge,
-      onCheckboxTap: _toggleAndCloseSwipe,
+      onCheckboxTap: widget.canCheck ? _toggleAndCloseSwipe : null,
       onRowTap: rowTap,
     );
 
@@ -270,7 +284,7 @@ class _RowContent extends StatelessWidget {
   final String? addedByUserId;
   final String? addedByDisplayName;
   final ItemListBadge? listBadge;
-  final VoidCallback onCheckboxTap;
+  final VoidCallback? onCheckboxTap;
   final VoidCallback? onRowTap;
 
   const _RowContent({
@@ -311,6 +325,7 @@ class _RowContent extends StatelessWidget {
       trashMode: trashMode,
       accent: cs.primary,
       onTap: onCheckboxTap,
+      disabled: onCheckboxTap == null && !trashMode,
       padding: checkboxAtEnd
           ? const EdgeInsetsDirectional.only(start: 14, end: 16)
           : const EdgeInsetsDirectional.only(start: 18, end: 14),
@@ -397,7 +412,10 @@ class _Checkbox extends StatelessWidget {
   final bool checked;
   final bool trashMode;
   final Color accent;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+
+  /// Greys the box and ignores taps — the user lacks `canCheckItems`.
+  final bool disabled;
 
   /// Padding folded into the tap target. The opaque hit area covers the box,
   /// this padding, and the full 48px height, so taps around the box still
@@ -413,21 +431,26 @@ class _Checkbox extends StatelessWidget {
     required this.accent,
     required this.onTap,
     required this.padding,
+    this.disabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final boxAccent = disabled ? cs.onSurface.withValues(alpha: 0.38) : accent;
+    final boxBorder = disabled
+        ? cs.outlineVariant.withValues(alpha: 0.5)
+        : null;
     final Widget visual = trashMode
         ? Icon(Icons.delete_outline, color: cs.onSurfaceVariant, size: 22)
         : Container(
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: checked ? accent : Colors.transparent,
+              color: checked ? boxAccent : Colors.transparent,
               border: checked
-                  ? Border.all(color: accent, width: 2)
-                  : Border.all(color: cs.outlineVariant, width: 2),
+                  ? Border.all(color: boxAccent, width: 2)
+                  : Border.all(color: boxBorder ?? cs.outlineVariant, width: 2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: checked

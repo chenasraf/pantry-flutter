@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
+import 'package:pantry/models/house.dart';
 import 'package:pantry/models/note.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/note_service.dart';
@@ -12,6 +13,10 @@ import 'package:pantry/sync/sync_op.dart';
 
 class NotesController extends ChangeNotifier {
   final int houseId;
+
+  /// Effective capabilities for this house. Kept fresh by the view; gating is
+  /// UX only (the server enforces, a 403 surfaces a snackbar).
+  HousePermissions permissions = HousePermissions.unrestricted;
 
   NotesController({required this.houseId}) {
     _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);

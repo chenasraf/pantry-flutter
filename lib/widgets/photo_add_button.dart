@@ -137,24 +137,30 @@ class _PhotoAddButtonState extends State<PhotoAddButton>
 
   @override
   Widget build(BuildContext context) {
+    final perms = widget.controller.permissions;
     final actions = <_FabAction>[
-      _FabAction(
-        icon: Icons.add_photo_alternate,
-        label: m.photoBoard.addMenu.upload,
-        onTap: _pickPhotos,
-      ),
-      if (_cameraSupported)
+      if (perms.canUploadPhotos)
+        _FabAction(
+          icon: Icons.add_photo_alternate,
+          label: m.photoBoard.addMenu.upload,
+          onTap: _pickPhotos,
+        ),
+      if (perms.canUploadPhotos && _cameraSupported)
         _FabAction(
           icon: Icons.camera_alt,
           label: m.photoBoard.addMenu.camera,
           onTap: _takePhoto,
         ),
-      _FabAction(
-        icon: Icons.create_new_folder,
-        label: m.photoBoard.addMenu.newFolder,
-        onTap: _createFolderDialog,
-      ),
+      if (perms.canMovePhotos)
+        _FabAction(
+          icon: Icons.create_new_folder,
+          label: m.photoBoard.addMenu.newFolder,
+          onTap: _createFolderDialog,
+        ),
     ];
+
+    // Nothing the user may do here — drop the FAB entirely.
+    if (actions.isEmpty) return const SizedBox.shrink();
 
     return PopScope(
       canPop: !_open,

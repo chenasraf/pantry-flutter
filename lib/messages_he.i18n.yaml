@@ -12,6 +12,9 @@ common:
   copied: הועתק
   closeDialog: סיום
   remove: הסר
+  permissionDenied: אין לך הרשאה לבצע פעולה זו
+  noAccessTitle: אין גישה
+  noAccessBody: עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.
 
 login:
   connectToNextcloud: התחבר לשרת ה-Nextcloud שלך

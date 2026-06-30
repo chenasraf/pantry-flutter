@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pantry/i18n.dart';
+import 'package:pantry/models/house.dart';
 import 'package:pantry/models/photo.dart';
 import 'package:pantry/services/pending_photo_share_service.dart';
 import 'package:pantry/services/photo_service.dart';
@@ -33,6 +34,10 @@ class UploadTask {
 
 class PhotoBoardController extends ChangeNotifier {
   final int houseId;
+
+  /// Effective capabilities for this house. Kept fresh by the view; gating is
+  /// UX only (the server enforces, a 403 surfaces a snackbar).
+  HousePermissions permissions = HousePermissions.unrestricted;
 
   PhotoBoardController({required this.houseId}) {
     PendingPhotoShareService.instance.addListener(_consumePendingShares);

@@ -46,6 +46,18 @@ class ApiClient {
   /// an unreachable server instead of hanging forever.
   static const _uploadTimeout = Duration(seconds: 60);
 
+  /// Invoked whenever any request comes back `403 Forbidden`, regardless of
+  /// verb or call site (direct awaits and SyncManager-queued ops alike funnel
+  /// through here). Registered once at app startup to surface a single
+  /// "you don't have permission" snackbar. The server is the source of truth
+  /// for roles; this is the safety net for permissions that changed
+  /// mid-session after the UI was already gated.
+  static void Function()? onForbidden;
+
+  static void _notify(int statusCode) {
+    if (statusCode == 403) onForbidden?.call();
+  }
+
   NextcloudCredentials get _credentials {
     final creds = AuthService.instance.credentials;
     if (creds == null) throw StateError('Not authenticated');
@@ -143,6 +155,7 @@ class ApiClient {
         .delete(_uri(path), headers: _headers)
         .timeout(_timeout);
     if (response.statusCode >= 400) {
+      _notify(response.statusCode);
       throw ApiException(response.statusCode, response.body);
     }
   }
@@ -202,6 +215,7 @@ class ApiClient {
 
   T _handleResponse<D, T>(http.Response response, T Function(D) fromJson) {
     if (response.statusCode >= 400) {
+      _notify(response.statusCode);
       throw ApiException(response.statusCode, response.body);
     }
     final json = jsonDecode(response.body);

@@ -20,6 +20,7 @@ import 'package:pantry/views/photos/photo_board_view.dart';
 import 'package:pantry/views/settings/settings_view.dart';
 import 'package:pantry/views/share/share_router_view.dart';
 import 'package:pantry/widgets/create_house_dialog.dart';
+import 'package:pantry/widgets/no_access_view.dart';
 import 'package:pantry/widgets/no_houses_view.dart';
 import 'package:pantry/widgets/notifications_bell.dart';
 import 'package:pantry/widgets/server_app_missing_view.dart';
@@ -309,153 +310,187 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     NavSection.notesWall => Icons.insert_drive_file,
   };
 
+  bool _sectionVisible(NavSection s, HousePermissions perms) => switch (s) {
+    NavSection.checklists => perms.canViewLists,
+    NavSection.photoBoard => perms.canViewPhotos,
+    NavSection.notesWall => perms.canViewNotes,
+  };
+
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<HomeController>();
     // Rebuild when the nav order changes so a setting tweak applies live.
     context.watch<PrefsService>();
-    final order = _navOrder;
+    final permissions =
+        controller.currentHouse?.effectivePermissions ??
+        HousePermissions.unrestricted;
+    // Drop sections the current house can't view. The same filtered list feeds
+    // both the nav destinations and the page bodies so indices stay aligned.
+    final order = [
+      for (final s in _navOrder)
+        if (_sectionVisible(s, permissions)) s,
+    ];
     // Clamp so a reorder that shifted the active section still lands on a
     // real tab. The current section is preserved by adjusting `_tabIndex`
     // once a reorder happens via the settings screen.
-    final tabIndex = _tabIndex.clamp(0, order.length - 1);
     final destinations = [
       for (final s in order) (icon: _sectionIcon(s), label: _sectionTitle(s)),
     ];
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final useRail = constraints.maxWidth >= 720;
-        final extendedRail = constraints.maxWidth >= 1100;
-        final body = _buildBody(controller, useRail: useRail, order: order);
-
-        // Single shared AppBar across all tabs. On the checklists tab,
-        // ChecklistsView populates `_checklistsAppBarSpec` with its leading /
-        // title / actions; the AppBar widget instance stays put across tab
-        // swipes so there's no jarring swap — only its content changes.
-        final currentSection = order[tabIndex];
-        final isChecklistsTab = currentSection == NavSection.checklists;
-
-        final notificationsBell = NotificationsBell(
-          controller: _notificationsController,
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) =>
-                    NotificationsView(controller: _notificationsController),
-              ),
-            );
-          },
-        );
-        final userMenuButton = UserMenuButton(
-          houses: controller.houses,
-          currentHouse: controller.currentHouse,
-          onHouseSelected: controller.selectHouse,
-          onCreateHouse: () => showCreateHouseDialog(context, controller),
-          onOpenSettings: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const SettingsView()));
-          },
-          onLogout: widget.onLogout,
-        );
-
-        final appBar = PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: ValueListenableBuilder<ChecklistsAppBarSpec?>(
-            valueListenable: _checklistsAppBarSpec,
-            builder: (context, spec, _) {
-              if (isChecklistsTab && spec != null) {
-                return AppBar(
-                  leading: spec.leading,
-                  leadingWidth: spec.leadingWidth,
-                  title: spec.title,
-                  titleSpacing: spec.titleSpacing,
-                  actions: [...spec.actions, notificationsBell, userMenuButton],
-                );
-              }
-              return AppBar(
-                title: Text(_sectionTitle(currentSection)),
-                actions: [
-                  if (PlatformInfo.isDesktop)
-                    ValueListenableBuilder<Future<void> Function()?>(
-                      valueListenable: _tabRefreshers[currentSection]!,
-                      builder: (_, refresh, _) => IconButton(
-                        icon: const Icon(Icons.refresh),
-                        tooltip: m.common.refresh,
-                        onPressed: refresh,
-                      ),
-                    ),
-                  notificationsBell,
-                  userMenuButton,
-                ],
+    return Provider<HousePermissions>.value(
+      value: permissions,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final notificationsBell = NotificationsBell(
+            controller: _notificationsController,
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) =>
+                      NotificationsView(controller: _notificationsController),
+                ),
               );
             },
-          ),
-        );
+          );
+          final userMenuButton = UserMenuButton(
+            houses: controller.houses,
+            currentHouse: controller.currentHouse,
+            onHouseSelected: controller.selectHouse,
+            onCreateHouse: () => showCreateHouseDialog(context, controller),
+            onOpenSettings: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const SettingsView()));
+            },
+            onLogout: widget.onLogout,
+          );
 
-        if (useRail) {
-          return Scaffold(
-            body: SafeArea(
-              child: Row(
-                children: [
-                  NavigationRail(
-                    extended: extendedRail,
-                    selectedIndex: tabIndex,
-                    onDestinationSelected: _goToTab,
-                    labelType: extendedRail
-                        ? NavigationRailLabelType.none
-                        : NavigationRailLabelType.all,
-                    leading: PlatformInfo.isMacOS
-                        ? const SizedBox(height: 24)
-                        : null,
-                    destinations: [
-                      for (final d in destinations)
-                        NavigationRailDestination(
-                          icon: Icon(d.icon),
-                          label: Text(d.label),
-                        ),
-                    ],
-                  ),
-                  const VerticalDivider(width: 1, thickness: 1),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        appBar,
-                        const SyncStatusBanner(),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsetsDirectional.only(
-                              start: isChecklistsTab ? 0 : 16,
-                            ),
-                            child: body,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+          // The current house grants no viewable sections at all: show an
+          // explanatory state but keep the house switcher / user menu reachable
+          // so the user can switch to a house they can access or change account.
+          if (order.isEmpty) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(controller.currentHouse?.name ?? m.common.appTitle),
+                actions: [notificationsBell, userMenuButton],
               ),
+              body: const NoAccessView(),
+            );
+          }
+
+          final useRail = constraints.maxWidth >= 720;
+          final extendedRail = constraints.maxWidth >= 1100;
+          final tabIndex = _tabIndex.clamp(0, order.length - 1);
+          final body = _buildBody(controller, useRail: useRail, order: order);
+
+          // Single shared AppBar across all tabs. On the checklists tab,
+          // ChecklistsView populates `_checklistsAppBarSpec` with its leading /
+          // title / actions; the AppBar widget instance stays put across tab
+          // swipes so there's no jarring swap — only its content changes.
+          final currentSection = order[tabIndex];
+          final isChecklistsTab = currentSection == NavSection.checklists;
+
+          final appBar = PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: ValueListenableBuilder<ChecklistsAppBarSpec?>(
+              valueListenable: _checklistsAppBarSpec,
+              builder: (context, spec, _) {
+                if (isChecklistsTab && spec != null) {
+                  return AppBar(
+                    leading: spec.leading,
+                    leadingWidth: spec.leadingWidth,
+                    title: spec.title,
+                    titleSpacing: spec.titleSpacing,
+                    actions: [
+                      ...spec.actions,
+                      notificationsBell,
+                      userMenuButton,
+                    ],
+                  );
+                }
+                return AppBar(
+                  title: Text(_sectionTitle(currentSection)),
+                  actions: [
+                    if (PlatformInfo.isDesktop)
+                      ValueListenableBuilder<Future<void> Function()?>(
+                        valueListenable: _tabRefreshers[currentSection]!,
+                        builder: (_, refresh, _) => IconButton(
+                          icon: const Icon(Icons.refresh),
+                          tooltip: m.common.refresh,
+                          onPressed: refresh,
+                        ),
+                      ),
+                    notificationsBell,
+                    userMenuButton,
+                  ],
+                );
+              },
             ),
           );
-        }
 
-        return Scaffold(
-          appBar: appBar,
-          body: Column(
-            children: [
-              const SyncStatusBanner(),
-              Expanded(child: body),
-            ],
-          ),
-          bottomNavigationBar: _AnimatedBottomNav(
-            pageController: _pageController,
-            currentIndex: tabIndex,
-            onTap: _goToTab,
-            destinations: destinations,
-          ),
-        );
-      },
+          if (useRail) {
+            return Scaffold(
+              body: SafeArea(
+                child: Row(
+                  children: [
+                    NavigationRail(
+                      extended: extendedRail,
+                      selectedIndex: tabIndex,
+                      onDestinationSelected: _goToTab,
+                      labelType: extendedRail
+                          ? NavigationRailLabelType.none
+                          : NavigationRailLabelType.all,
+                      leading: PlatformInfo.isMacOS
+                          ? const SizedBox(height: 24)
+                          : null,
+                      destinations: [
+                        for (final d in destinations)
+                          NavigationRailDestination(
+                            icon: Icon(d.icon),
+                            label: Text(d.label),
+                          ),
+                      ],
+                    ),
+                    const VerticalDivider(width: 1, thickness: 1),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          appBar,
+                          const SyncStatusBanner(),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                start: isChecklistsTab ? 0 : 16,
+                              ),
+                              child: body,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return Scaffold(
+            appBar: appBar,
+            body: Column(
+              children: [
+                const SyncStatusBanner(),
+                Expanded(child: body),
+              ],
+            ),
+            bottomNavigationBar: _AnimatedBottomNav(
+              pageController: _pageController,
+              currentIndex: tabIndex,
+              onTap: _goToTab,
+              destinations: destinations,
+            ),
+          );
+        },
+      ),
     );
   }
 

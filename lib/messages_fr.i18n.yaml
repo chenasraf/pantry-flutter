@@ -12,6 +12,9 @@ common:
   copied: "Copié"
   closeDialog: "Terminé"
   remove: Retirer
+  permissionDenied: Vous n'avez pas la permission de faire cela
+  noAccessTitle: Aucun accès
+  noAccessBody: Vous n'avez encore accès à rien dans ce foyer. Un administrateur peut vous accorder des autorisations dans l'application web Pantry.
 
 login:
   connectToNextcloud: "Connectez-vous à votre instance Nextcloud"

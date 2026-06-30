@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
+import 'package:pantry/models/house.dart';
 import 'package:pantry/models/note.dart';
 import 'package:pantry/services/pending_note_share_service.dart';
 import 'package:pantry/services/server_version_service.dart';
@@ -72,6 +73,9 @@ class _NotesWallViewState extends State<NotesWallView> {
 
   @override
   Widget build(BuildContext context) {
+    // Keep the controller's view of house capabilities fresh; descendants gate
+    // off `controller.permissions`.
+    _controller.permissions = context.watch<HousePermissions>();
     return ChangeNotifierProvider.value(
       value: _controller,
       child: _NotesWallBody(scrollController: widget.scrollController),
@@ -138,13 +142,16 @@ class _NotesWallBody extends StatelessWidget {
                       if (controller.selectMode)
                         NoteSelectionActions(controller: controller)
                       else ...[
-                        IconButton(
-                          icon: const Icon(Icons.checklist),
-                          tooltip: '',
-                          onPressed: controller.toggleSelectMode,
-                        ),
+                        // Selection mode only enables bulk delete.
+                        if (controller.permissions.canDeleteNotes)
+                          IconButton(
+                            icon: const Icon(Icons.checklist),
+                            tooltip: '',
+                            onPressed: controller.toggleSelectMode,
+                          ),
                         NoteSortButton(controller: controller),
-                        if (hasFeature('note-trash'))
+                        if (hasFeature('note-trash') &&
+                            controller.permissions.canDeleteNotes)
                           IconButton(
                             icon: const Icon(Icons.delete_outline),
                             tooltip: m.notesWall.viewTrash,
@@ -172,7 +179,7 @@ class _NotesWallBody extends StatelessWidget {
               ),
             ],
           ),
-          if (!inTrash)
+          if (!inTrash && controller.permissions.canCreateNotes)
             PositionedDirectional(
               end: 16,
               bottom: 16,

@@ -36,17 +36,20 @@ class NoteDetailView extends StatelessWidget {
         leading: appBarBackLeading(context),
         title: Directionality(textDirection: titleDir, child: Text(note.title)),
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: null,
-        onPressed: () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => NoteFormView(controller: controller, note: note),
-            ),
-          );
-        },
-        child: const Icon(Icons.edit),
-      ),
+      floatingActionButton: controller.permissions.canUpdateNotes
+          ? FloatingActionButton(
+              heroTag: null,
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        NoteFormView(controller: controller, note: note),
+                  ),
+                );
+              },
+              child: const Icon(Icons.edit),
+            )
+          : null,
       body: Hero(
         tag: 'note-${note.id}',
         child: Material(

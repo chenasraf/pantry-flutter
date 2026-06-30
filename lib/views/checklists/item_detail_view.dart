@@ -42,6 +42,13 @@ class ItemDetailView extends StatelessWidget {
     final cs = theme.colorScheme;
     final hasImage = item.imageFileId != null;
     final lifecycle = lifecycleOf(item);
+    final perms = controller.permissions;
+    final canEdit = perms.canEditLists;
+    // The overflow menu only exists if at least one of its actions is allowed.
+    final hasOverflow = _hasOverflowActions();
+    final onMore = hasOverflow
+        ? (BuildContext ctx) => _showOverflow(context, anchorContext: ctx)
+        : null;
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -57,15 +64,13 @@ class ItemDetailView extends StatelessWidget {
                           houseId: houseId,
                           category: category,
                           onBack: () => Navigator.of(context).maybePop(),
-                          onMore: (ctx) =>
-                              _showOverflow(context, anchorContext: ctx),
+                          onMore: onMore,
                         )
                       : _FallbackHeader(
                           item: item,
                           category: category,
                           onBack: () => Navigator.of(context).maybePop(),
-                          onMore: (ctx) =>
-                              _showOverflow(context, anchorContext: ctx),
+                          onMore: onMore,
                         ),
                 ),
                 SliverPadding(
@@ -83,10 +88,23 @@ class ItemDetailView extends StatelessWidget {
               ],
             ),
           ),
-          _DockedEditBar(onTap: () => _openEdit(context)),
+          if (canEdit) _DockedEditBar(onTap: () => _openEdit(context)),
         ],
       ),
     );
+  }
+
+  /// Whether the current user may use any of the move/copy/delete overflow
+  /// actions — drives whether the ⋮ button is shown at all.
+  bool _hasOverflowActions() {
+    final hasOtherLists = controller.lists
+        .where((l) => l.id != controller.currentList?.id)
+        .isNotEmpty;
+    final perms = controller.permissions;
+    final canMove = hasOtherLists && perms.canMoveItems;
+    final canCopy =
+        hasOtherLists && hasFeature('copy-items') && perms.canCopyItems;
+    return canMove || canCopy || perms.canDeleteItems;
   }
 
   void _openEdit(BuildContext context) {
@@ -99,10 +117,13 @@ class ItemDetailView extends StatelessWidget {
     BuildContext context, {
     BuildContext? anchorContext,
   }) async {
-    final canMove = controller.lists
+    final perms = controller.permissions;
+    final hasOtherLists = controller.lists
         .where((l) => l.id != controller.currentList?.id)
         .isNotEmpty;
-    final canCopy = canMove && hasFeature('copy-items');
+    final canMove = hasOtherLists && perms.canMoveItems;
+    final canCopy =
+        hasOtherLists && hasFeature('copy-items') && perms.canCopyItems;
     final actions = <_OverflowAction>[
       if (canMove)
         _OverflowAction(
@@ -116,12 +137,14 @@ class ItemDetailView extends StatelessWidget {
           icon: Icons.copy_outlined,
           label: m.checklists.copyItem,
         ),
-      _OverflowAction(
-        value: 'delete',
-        icon: Icons.delete_outline,
-        label: m.checklists.removeItem,
-      ),
+      if (perms.canDeleteItems)
+        _OverflowAction(
+          value: 'delete',
+          icon: Icons.delete_outline,
+          label: m.checklists.removeItem,
+        ),
     ];
+    if (actions.isEmpty) return;
     String? selected;
     if (PlatformInfo.isDesktop && anchorContext != null) {
       // Desktop: anchor a regular PopupMenu under the more button. Reads as
@@ -332,8 +355,9 @@ class _PhotoHeader extends StatelessWidget {
   final VoidCallback onBack;
 
   /// Receives the BuildContext of the more button so callers can anchor a
-  /// popup to it (desktop dropdown menu).
-  final ValueChanged<BuildContext> onMore;
+  /// popup to it (desktop dropdown menu). Null hides the button entirely when
+  /// the user has no overflow actions available.
+  final ValueChanged<BuildContext>? onMore;
 
   const _PhotoHeader({
     required this.item,
@@ -417,13 +441,16 @@ class _PhotoHeader extends StatelessWidget {
                       onTap: onBack,
                       onPhoto: true,
                     ),
-                    Builder(
-                      builder: (ctx) => _SquareIconButton(
-                        icon: Icons.more_vert,
-                        onTap: () => onMore(ctx),
-                        onPhoto: true,
-                      ),
-                    ),
+                    if (onMore != null)
+                      Builder(
+                        builder: (ctx) => _SquareIconButton(
+                          icon: Icons.more_vert,
+                          onTap: () => onMore!(ctx),
+                          onPhoto: true,
+                        ),
+                      )
+                    else
+                      const SizedBox(width: 38),
                   ],
                 ),
               ),
@@ -451,7 +478,7 @@ class _FallbackHeader extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
   final VoidCallback onBack;
-  final ValueChanged<BuildContext> onMore;
+  final ValueChanged<BuildContext>? onMore;
 
   const _FallbackHeader({
     required this.item,
@@ -506,12 +533,15 @@ class _FallbackHeader extends StatelessWidget {
                           : Icons.arrow_back,
                       onTap: onBack,
                     ),
-                    Builder(
-                      builder: (ctx) => _SquareIconButton(
-                        icon: Icons.more_vert,
-                        onTap: () => onMore(ctx),
-                      ),
-                    ),
+                    if (onMore != null)
+                      Builder(
+                        builder: (ctx) => _SquareIconButton(
+                          icon: Icons.more_vert,
+                          onTap: () => onMore!(ctx),
+                        ),
+                      )
+                    else
+                      const SizedBox(width: 38),
                   ],
                 ),
               ),

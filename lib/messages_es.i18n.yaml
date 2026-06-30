@@ -12,6 +12,9 @@ common:
   copied: Copiado
   closeDialog: Listo
   remove: Quitar
+  permissionDenied: No tienes permiso para hacer eso
+  noAccessTitle: Sin acceso
+  noAccessBody: Todavía no tienes acceso a nada en este hogar. Un administrador puede concederte permisos en la aplicación web de Pantry.
 
 login:
   connectToNextcloud: "Conéctate a tu instancia de Nextcloud"

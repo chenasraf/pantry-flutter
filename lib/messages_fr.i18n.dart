@@ -150,6 +150,23 @@ class CommonMessagesFr extends CommonMessages {
   /// "Retirer"
   /// ```
   String get remove => """Retirer""";
+
+  /// ```dart
+  /// "Vous n'avez pas la permission de faire cela"
+  /// ```
+  String get permissionDenied =>
+      """Vous n'avez pas la permission de faire cela""";
+
+  /// ```dart
+  /// "Aucun accès"
+  /// ```
+  String get noAccessTitle => """Aucun accès""";
+
+  /// ```dart
+  /// "Vous n'avez encore accès à rien dans ce foyer. Un administrateur peut vous accorder des autorisations dans l'application web Pantry."
+  /// ```
+  String get noAccessBody =>
+      """Vous n'avez encore accès à rien dans ce foyer. Un administrateur peut vous accorder des autorisations dans l'application web Pantry.""";
 }
 
 class LoginMessagesFr extends LoginMessages {
@@ -3130,6 +3147,11 @@ Map<String, String> get messagesFrMap => {
   """common.copied""": """Copié""",
   """common.closeDialog""": """Terminé""",
   """common.remove""": """Retirer""",
+  """common.permissionDenied""":
+      """Vous n'avez pas la permission de faire cela""",
+  """common.noAccessTitle""": """Aucun accès""",
+  """common.noAccessBody""":
+      """Vous n'avez encore accès à rien dans ce foyer. Un administrateur peut vous accorder des autorisations dans l'application web Pantry.""",
   """login.connectToNextcloud""":
       """Connectez-vous à votre instance Nextcloud""",
   """login.serverUrl""": """URL du serveur""",

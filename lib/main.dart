@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'i18n.dart';
+import 'services/api_client.dart';
 import 'services/auth_service.dart';
 import 'services/background_notification_task.dart';
 import 'services/cert_trust_service.dart';
@@ -33,6 +34,23 @@ import 'views/onboarding/onboarding_pages.dart';
 import 'views/onboarding/onboarding_view.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
+final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+/// Suppress a burst of 403 snackbars (e.g. SyncManager flushing several queued
+/// ops that all violate the same revoked permission) down to one.
+DateTime? _lastForbiddenSnackbar;
+
+void _showPermissionDeniedSnackbar() {
+  final now = DateTime.now();
+  if (_lastForbiddenSnackbar != null &&
+      now.difference(_lastForbiddenSnackbar!) < const Duration(seconds: 3)) {
+    return;
+  }
+  _lastForbiddenSnackbar = now;
+  rootScaffoldMessengerKey.currentState
+    ?..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(m.common.permissionDenied)));
+}
 
 /// Resolved at startup from `package_info_plus`. Defaulted to the bundled
 /// onboarding baseline so anything that reads it before main() finishes still
@@ -125,6 +143,7 @@ void main() async {
     }
   }
   LocaleService.instance.apply();
+  ApiClient.onForbidden = _showPermissionDeniedSnackbar;
   unawaited(ShareIntentService.instance.init());
   WidgetLinkService.instance.init();
   runApp(const PantryApp());
@@ -307,6 +326,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
           key: ValueKey(LocaleService.instance.revision),
           debugShowCheckedModeBanner: false,
           navigatorKey: rootNavigatorKey,
+          scaffoldMessengerKey: rootScaffoldMessengerKey,
           locale: locale,
           supportedLocales: supportedLocales,
           localizationsDelegates: const [

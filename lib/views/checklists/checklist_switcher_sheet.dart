@@ -314,8 +314,13 @@ class _ListStage extends StatelessWidget {
     // empty state; with one list, "All lists" would just duplicate that list.
     final showAllLists =
         hasFeature('checklist-all-view') && realLists.length >= 2;
+    final perms = controller.permissions;
+    final canEditLists = perms.canEditLists;
+    final canDeleteLists = perms.canDeleteLists;
     final canReorder =
-        hasFeature('checklist-sort') && controller.listSort == 'custom';
+        hasFeature('checklist-sort') &&
+        controller.listSort == 'custom' &&
+        canEditLists;
     final showMenu = hasFeature('checklist-trash');
     final allListsTile = showAllLists
         ? _AllListsTile(
@@ -401,8 +406,8 @@ class _ListStage extends StatelessWidget {
                           Navigator.pop(context);
                           if (!selected) await controller.selectList(list);
                         },
-                        onEdit: () => onEdit(list),
-                        onRemove: showMenu
+                        onEdit: canEditLists ? () => onEdit(list) : null,
+                        onRemove: showMenu && canDeleteLists
                             ? () => _confirmRemove(context, list)
                             : null,
                       ),
@@ -425,52 +430,54 @@ class _ListStage extends StatelessWidget {
                         Navigator.pop(context);
                         if (!selected) await controller.selectList(list);
                       },
-                      onEdit: () => onEdit(list),
-                      onRemove: showMenu
+                      onEdit: canEditLists ? () => onEdit(list) : null,
+                      onRemove: showMenu && canDeleteLists
                           ? () => _confirmRemove(context, list)
                           : null,
                     );
                   },
                 ),
         ),
-        const SizedBox(height: 12),
-        InkWell(
-          onTap: onCreateNew,
-          borderRadius: BorderRadius.circular(14),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 13),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: cs.primary.withValues(alpha: 0.6),
-                style: BorderStyle.solid,
+        if (perms.canCreateLists) ...[
+          const SizedBox(height: 12),
+          InkWell(
+            onTap: onCreateNew,
+            borderRadius: BorderRadius.circular(14),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 13),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: cs.primary.withValues(alpha: 0.6),
+                  style: BorderStyle.solid,
+                ),
+                borderRadius: BorderRadius.circular(14),
               ),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: cs.primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12),
+              child: Row(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: cs.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(Icons.add, color: cs.primary, size: 22),
                   ),
-                  child: Icon(Icons.add, color: cs.primary, size: 22),
-                ),
-                const SizedBox(width: 13),
-                Text(
-                  m.checklists.newChecklist,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: cs.primary,
+                  const SizedBox(width: 13),
+                  Text(
+                    m.checklists.newChecklist,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: cs.primary,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        if (hasFeature('checklist-trash')) ...[
+        ],
+        if (hasFeature('checklist-trash') && canDeleteLists) ...[
           const SizedBox(height: 8),
           InkWell(
             onTap: onOpenTrash,
