@@ -210,12 +210,45 @@ class ChecklistsController extends ChangeNotifier {
         _isLoading = false;
         notifyListeners();
       }
+
+      // Warm the on-disk cache for the lists we're not currently viewing so
+      // opening them later while offline shows cached data instead of an
+      // infinite spinner (issue #87). Fire-and-forget; never blocks the UI.
+      unawaited(_precacheListItems());
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load: $e');
       if (_lists.isEmpty) {
         _error = m.checklists.failedToLoad;
         _isLoading = false;
         notifyListeners();
+      }
+    }
+  }
+
+  /// Best-effort fetch + cache of items for every list the user isn't
+  /// currently viewing, so they're available offline. Runs only while the
+  /// sync queue is settled, so it can't clobber a background list's optimistic
+  /// state, skips optimistic (temp-id) lists, and stops at the first failure
+  /// (most likely going offline mid-pass).
+  Future<void> _precacheListItems() async {
+    if (!_sync.isOnline) return;
+    if (_sync.pendingCount.value != 0) return;
+    final currentId = _currentList?.id;
+    for (final list in _lists) {
+      if (list.id == currentId || list.id < 0) continue;
+      try {
+        final items = await _checklistService.getItems(
+          houseId,
+          list.id,
+          sortBy: _sortBy,
+        );
+        // A mutation may have landed mid-fetch — don't overwrite a now-pending
+        // list's cache with a snapshot that predates the optimistic change.
+        if (_sync.pendingCount.value != 0) return;
+        _checklistService.cacheItems(list.id, items);
+      } catch (e) {
+        debugPrint('[ChecklistsController] Pre-cache failed (${list.id}): $e');
+        return;
       }
     }
   }
