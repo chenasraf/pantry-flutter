@@ -86,29 +86,36 @@ class CertTrustService {
   /// spinner — the cert is captured during the handshake, so even if the
   /// later request/drain times out we still return what we saw.
   Future<X509Certificate?> probe(Uri uri) async {
-    return HttpOverrides.runZoned<Future<X509Certificate?>>(() async {
-      X509Certificate? captured;
-      final client = HttpClient()
-        ..connectionTimeout = const Duration(seconds: 10)
-        ..badCertificateCallback = (cert, host, port) {
-          captured = cert;
-          // Accept once so the request completes and the socket can
-          // close cleanly. We never reuse this client for real work.
-          return true;
-        };
-      try {
-        final req = await client
-            .headUrl(uri)
-            .timeout(const Duration(seconds: 10));
-        final resp = await req.close().timeout(const Duration(seconds: 10));
-        await resp.drain<void>().timeout(const Duration(seconds: 5));
-      } catch (e) {
-        debugPrint('[CertTrustService] probe failed: $e');
-      } finally {
-        client.close(force: true);
-      }
-      return captured;
-    }, createHttpClient: (ctx) => HttpClient(context: ctx));
+    X509Certificate? captured;
+    // Use a plain HttpClient and override its badCertificateCallback directly.
+    // The cascade below replaces whatever callback the global pinned override
+    // installs, so the cert is captured even for an untrusted server.
+    //
+    // Do NOT wrap this in `HttpOverrides.runZoned(createHttpClient: ...)`:
+    // constructing an HttpClient inside that override re-enters the same
+    // override (we're still in its zone) and recurses until the stack
+    // overflows. That overflow propagated out as an unhandled async error,
+    // leaving the login flow spinning forever with no cert dialog.
+    final client = HttpClient()
+      ..connectionTimeout = const Duration(seconds: 10)
+      ..badCertificateCallback = (cert, host, port) {
+        captured = cert;
+        // Accept once so the request completes and the socket can
+        // close cleanly. We never reuse this client for real work.
+        return true;
+      };
+    try {
+      final req = await client
+          .headUrl(uri)
+          .timeout(const Duration(seconds: 10));
+      final resp = await req.close().timeout(const Duration(seconds: 10));
+      await resp.drain<void>().timeout(const Duration(seconds: 5));
+    } catch (e) {
+      debugPrint('[CertTrustService] probe failed: $e');
+    } finally {
+      client.close(force: true);
+    }
+    return captured;
   }
 }
 

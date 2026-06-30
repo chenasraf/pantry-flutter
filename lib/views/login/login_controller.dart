@@ -213,7 +213,16 @@ class LoginController extends ChangeNotifier {
       _failWithOriginalError(originalError, originalStack);
       return;
     }
-    final cert = await CertTrustService.instance.probe(uri);
+    X509Certificate? cert;
+    try {
+      cert = await CertTrustService.instance.probe(uri);
+    } catch (e, st) {
+      // The probe must never wedge the UI — surface the failure instead of
+      // leaving the spinner running forever if it throws unexpectedly.
+      debugPrint('[LoginController] probe threw: $e\n$st');
+      _failWithOriginalError(originalError, originalStack);
+      return;
+    }
     if (cert == null) {
       _failWithOriginalError(originalError, originalStack);
       return;
