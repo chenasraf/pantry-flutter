@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.20.0](https://github.com/chenasraf/pantry-flutter/compare/v0.19.0...v0.20.0) (2026-07-01)
+
+
+### Features
+
+* hide actions you don't have permission for in shared houses ([f7b4765](https://github.com/chenasraf/pantry-flutter/commit/f7b47654684aaaaf09c5b39061e1b056a8569dbd))
+
+
+### Bug Fixes
+
+* lists no longer hang on a spinner when your server is unreachable ([e6391f9](https://github.com/chenasraf/pantry-flutter/commit/e6391f9a9faa94790a37fcac06359475c6c73700)), closes [#87](https://github.com/chenasraf/pantry-flutter/issues/87)
+* **login:** connecting to a self-signed server no longer hangs forever ([61731a1](https://github.com/chenasraf/pantry-flutter/commit/61731a1035bce086fae9489be87734f6fd934ec0))
+* tapping a list in the home-screen widget now opens that list ([9ec1292](https://github.com/chenasraf/pantry-flutter/commit/9ec1292f5404f9368b516d210481550fb1e7d9ab))
+
 ## [0.19.0](https://github.com/chenasraf/pantry-flutter/compare/v0.18.0...v0.19.0) (2026-06-28)
 
 

@@ -1,0 +1,6 @@
+Features
+- hide actions you don't have permission for in shared houses
+Bug Fixes
+- lists no longer hang on a spinner when your server is unreachable
+- connecting to a self-signed server no longer hangs forever
+- tapping a list in the home-screen widget now opens that list
