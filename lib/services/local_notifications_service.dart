@@ -17,7 +17,7 @@ class LocalNotificationsService {
     if (_initialized) return;
 
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/ic_stat_notification',
     );
     const darwinSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
@@ -111,6 +111,7 @@ class LocalNotificationsService {
           _channelId,
           _channelName,
           channelDescription: _channelDescription,
+          icon: '@drawable/ic_stat_notification',
           importance: Importance.defaultImportance,
           priority: Priority.defaultPriority,
         ),
