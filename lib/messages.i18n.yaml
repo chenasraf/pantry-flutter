@@ -126,6 +126,7 @@ onboarding:
     pickLastSeenBody: "Choose which version the device should pretend it last saw, then the onboarding will run from there."
     neverSeen: "Never seen (new user)"
     forceAllFeatures: "Force-enable all features"
+    sendTestNotification: "Send test notification"
 
 notificationsIntro:
   title: Stay in the loop

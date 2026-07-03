@@ -126,6 +126,7 @@ onboarding:
     pickLastSeenBody: "Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là."
     neverSeen: "Jamais vue (nouvel utilisateur)"
     forceAllFeatures: "Forcer toutes les fonctionnalités"
+    sendTestNotification: "Envoyer une notification de test"
 
 notificationsIntro:
   title: "Restez informé"

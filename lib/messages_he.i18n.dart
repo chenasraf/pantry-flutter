@@ -736,6 +736,11 @@ class DevOnboardingMessagesHe extends DevOnboardingMessages {
   /// "הפעל את כל התכונות"
   /// ```
   String get forceAllFeatures => """הפעל את כל התכונות""";
+
+  /// ```dart
+  /// "שלח התראת בדיקה"
+  /// ```
+  String get sendTestNotification => """שלח התראת בדיקה""";
 }
 
 class NotificationsIntroMessagesHe extends NotificationsIntroMessages {
@@ -3243,6 +3248,7 @@ Map<String, String> get messagesHeMap => {
       """בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם.""",
   """onboarding.dev.neverSeen""": """מעולם לא נצפה (משתמש חדש)""",
   """onboarding.dev.forceAllFeatures""": """הפעל את כל התכונות""",
+  """onboarding.dev.sendTestNotification""": """שלח התראת בדיקה""",
   """notificationsIntro.title""": """הישאר מעודכן""",
   """notificationsIntro.body""":
       """Pantry יכול להודיע לך כשבני משק הבית מוסיפים פריטים לרשימות, מעלים תמונות או משאירים הערות. ההתראות נשלפות מהשרת שלך — שום דבר לא עובר דרך Google או צדדים שלישיים.""",

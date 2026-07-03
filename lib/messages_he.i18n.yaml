@@ -126,6 +126,7 @@ onboarding:
     pickLastSeenBody: "בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם."
     neverSeen: "מעולם לא נצפה (משתמש חדש)"
     forceAllFeatures: "הפעל את כל התכונות"
+    sendTestNotification: "שלח התראת בדיקה"
 
 notificationsIntro:
   title: הישאר מעודכן

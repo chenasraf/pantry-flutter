@@ -739,6 +739,11 @@ class DevOnboardingMessagesDe extends DevOnboardingMessages {
   /// "Alle Funktionen erzwingen"
   /// ```
   String get forceAllFeatures => """Alle Funktionen erzwingen""";
+
+  /// ```dart
+  /// "Testbenachrichtigung senden"
+  /// ```
+  String get sendTestNotification => """Testbenachrichtigung senden""";
 }
 
 class NotificationsIntroMessagesDe extends NotificationsIntroMessages {
@@ -3276,6 +3281,7 @@ Passwort: pantry-rocks""",
       """Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet.""",
   """onboarding.dev.neverSeen""": """Noch nie gesehen (neuer Benutzer)""",
   """onboarding.dev.forceAllFeatures""": """Alle Funktionen erzwingen""",
+  """onboarding.dev.sendTestNotification""": """Testbenachrichtigung senden""",
   """notificationsIntro.title""": """Bleib auf dem Laufenden""",
   """notificationsIntro.body""":
       """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""",

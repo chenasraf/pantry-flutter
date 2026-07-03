@@ -126,6 +126,7 @@ onboarding:
     pickLastSeenBody: "Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet."
     neverSeen: "Noch nie gesehen (neuer Benutzer)"
     forceAllFeatures: "Alle Funktionen erzwingen"
+    sendTestNotification: "Testbenachrichtigung senden"
 
 notificationsIntro:
   title: Bleib auf dem Laufenden

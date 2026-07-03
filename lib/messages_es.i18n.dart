@@ -740,6 +740,11 @@ class DevOnboardingMessagesEs extends DevOnboardingMessages {
   /// "Forzar todas las funciones"
   /// ```
   String get forceAllFeatures => """Forzar todas las funciones""";
+
+  /// ```dart
+  /// "Enviar notificación de prueba"
+  /// ```
+  String get sendTestNotification => """Enviar notificación de prueba""";
 }
 
 class NotificationsIntroMessagesEs extends NotificationsIntroMessages {
@@ -3272,6 +3277,8 @@ Contraseña: pantry-rocks""",
       """Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí.""",
   """onboarding.dev.neverSeen""": """Nunca vista (usuario nuevo)""",
   """onboarding.dev.forceAllFeatures""": """Forzar todas las funciones""",
+  """onboarding.dev.sendTestNotification""":
+      """Enviar notificación de prueba""",
   """notificationsIntro.title""": """Mantente al día""",
   """notificationsIntro.body""":
       """Pantry puede notificarte cuando los miembros del hogar agreguen artículos a las listas, suban fotos o dejen notas. Las notificaciones se obtienen de tu propio servidor Nextcloud — nada pasa por Google ni terceros.""",

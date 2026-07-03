@@ -13,6 +13,7 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/house_service.dart';
+import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
@@ -1051,6 +1052,11 @@ class _BodyState extends State<_Body> {
           label: m.onboarding.dev.forceAllFeatures,
           selected: prefs.devForceAllFeatures,
         ),
+        _menuRow(
+          value: 'dev_test_notification',
+          leading: const Icon(Icons.notifications_active_outlined, size: 18),
+          label: m.onboarding.dev.sendTestNotification,
+        ),
       ],
     ];
   }
@@ -1141,6 +1147,12 @@ class _BodyState extends State<_Body> {
         await _devShowOnboarding(context);
       case 'dev_force_all_features':
         await prefs.setDevForceAllFeatures(!prefs.devForceAllFeatures);
+      case 'dev_test_notification':
+        await LocalNotificationsService.instance.show(
+          id: 999999,
+          title: 'Pantry',
+          body: 'This is a test notification.',
+        );
     }
   }
 
