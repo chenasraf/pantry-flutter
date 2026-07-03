@@ -926,6 +926,19 @@ class SettingsMessagesFr extends SettingsMessages {
       CheckboxPositionNamesSettingsMessagesFr(this);
 
   /// ```dart
+  /// "Densité de la liste"
+  /// ```
+  String get density => """Densité de la liste""";
+
+  /// ```dart
+  /// "L'espace occupé par chaque article dans vos listes."
+  /// ```
+  String get densityBody =>
+      """L'espace occupé par chaque article dans vos listes.""";
+  DensityNamesSettingsMessagesFr get densityNames =>
+      DensityNamesSettingsMessagesFr(this);
+
+  /// ```dart
   /// "Réutiliser les articles existants lors de l'ajout"
   /// ```
   String get reuseExistingItems =>
@@ -1094,6 +1107,21 @@ class CheckboxPositionNamesSettingsMessagesFr
   /// "Fin"
   /// ```
   String get end => """Fin""";
+}
+
+class DensityNamesSettingsMessagesFr extends DensityNamesSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const DensityNamesSettingsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Normale"
+  /// ```
+  String get normal => """Normale""";
+
+  /// ```dart
+  /// "Compacte"
+  /// ```
+  String get dense => """Compacte""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesFr
@@ -3334,6 +3362,11 @@ Mot de passe : pantry-rocks""",
       """De quel côté de la ligne la case à cocher apparaît.""",
   """settings.checkboxPositionNames.start""": """Début""",
   """settings.checkboxPositionNames.end""": """Fin""",
+  """settings.density""": """Densité de la liste""",
+  """settings.densityBody""":
+      """L'espace occupé par chaque article dans vos listes.""",
+  """settings.densityNames.normal""": """Normale""",
+  """settings.densityNames.dense""": """Compacte""",
   """settings.reuseExistingItems""":
       """Réutiliser les articles existants lors de l'ajout""",
   """settings.reuseExistingItemsBody""":

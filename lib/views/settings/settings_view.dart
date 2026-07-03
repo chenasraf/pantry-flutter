@@ -26,6 +26,7 @@ class _SettingsViewState extends State<SettingsView> {
   static const _pollOptions = [15, 30, 60, 120, 360];
   static const _categorySpacingOptions = ['disabled', 'space', 'divider'];
   static const _checkboxPositionOptions = ['start', 'end'];
+  static const _densityOptions = ['normal', 'dense'];
   static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
   static const _reuseExistingItemsOptions = ['ask', 'reuse', 'never'];
 
@@ -73,6 +74,18 @@ class _SettingsViewState extends State<SettingsView> {
   String _checkboxPositionLabel(String value) => switch (value) {
     'end' => m.settings.checkboxPositionNames.end,
     _ => m.settings.checkboxPositionNames.start,
+  };
+
+  Future<void> _setDensity(String? value) async {
+    if (value == null) return;
+    final prefs = context.read<PrefsService>();
+    if (value == prefs.checklistDensity) return;
+    await prefs.setChecklistDensity(value);
+  }
+
+  String _densityLabel(String value) => switch (value) {
+    'dense' => m.settings.densityNames.dense,
+    _ => m.settings.densityNames.normal,
   };
 
   // -- Reuse existing items (account-scoped, persisted server-side) --
@@ -184,6 +197,7 @@ class _SettingsViewState extends State<SettingsView> {
     final itemTapAction = prefs.defaultItemTapAction;
     final categorySpacing = prefs.checklistCategorySpacing;
     final checkboxPosition = prefs.checklistCheckboxPosition;
+    final density = prefs.checklistDensity;
     final reuseExistingItems = prefs.reuseExistingItems;
 
     return Scaffold(
@@ -309,6 +323,21 @@ class _SettingsViewState extends State<SettingsView> {
                   DropdownMenuItem(
                     value: option,
                     child: Text(_checkboxPositionLabel(option)),
+                  ),
+              ],
+            ),
+          ),
+          ListTile(
+            title: Text(m.settings.density),
+            subtitle: Text(m.settings.densityBody),
+            trailing: DropdownButton<String>(
+              value: density,
+              onChanged: _setDensity,
+              items: [
+                for (final option in _densityOptions)
+                  DropdownMenuItem(
+                    value: option,
+                    child: Text(_densityLabel(option)),
                   ),
               ],
             ),

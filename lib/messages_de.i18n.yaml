@@ -175,6 +175,11 @@ settings:
   checkboxPositionNames:
     start: Anfang
     end: Ende
+  density: Listendichte
+  densityBody: Wie viel Platz jeder Eintrag in deinen Listen einnimmt.
+  densityNames:
+    normal: Normal
+    dense: Kompakt
   reuseExistingItems: Vorhandene Einträge beim Hinzufügen wiederverwenden
   reuseExistingItemsBody: "Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet."
   reuseExistingItemsNames:

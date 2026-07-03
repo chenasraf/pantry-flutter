@@ -919,6 +919,19 @@ class SettingsMessages {
       CheckboxPositionNamesSettingsMessages(this);
 
   /// ```dart
+  /// "List density"
+  /// ```
+  String get density => """List density""";
+
+  /// ```dart
+  /// "How much space each item takes up in your lists."
+  /// ```
+  String get densityBody =>
+      """How much space each item takes up in your lists.""";
+  DensityNamesSettingsMessages get densityNames =>
+      DensityNamesSettingsMessages(this);
+
+  /// ```dart
   /// "Reuse existing items when adding"
   /// ```
   String get reuseExistingItems => """Reuse existing items when adding""";
@@ -1082,6 +1095,21 @@ class CheckboxPositionNamesSettingsMessages {
   /// "End"
   /// ```
   String get end => """End""";
+}
+
+class DensityNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const DensityNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Normal"
+  /// ```
+  String get normal => """Normal""";
+
+  /// ```dart
+  /// "Dense"
+  /// ```
+  String get dense => """Dense""";
 }
 
 class ReuseExistingItemsNamesSettingsMessages {
@@ -3289,6 +3317,11 @@ Password: pantry-rocks""",
       """Which side of the row the checkbox appears on.""",
   """settings.checkboxPositionNames.start""": """Start""",
   """settings.checkboxPositionNames.end""": """End""",
+  """settings.density""": """List density""",
+  """settings.densityBody""":
+      """How much space each item takes up in your lists.""",
+  """settings.densityNames.normal""": """Normal""",
+  """settings.densityNames.dense""": """Dense""",
   """settings.reuseExistingItems""": """Reuse existing items when adding""",
   """settings.reuseExistingItemsBody""":
       """When you try to add an item that already exists in the list, reuse that item.""",

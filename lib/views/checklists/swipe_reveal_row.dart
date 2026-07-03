@@ -16,6 +16,10 @@ class SwipeRevealRow extends StatefulWidget {
   final Widget child;
   final List<SwipeAction> actions;
   final bool enabled;
+
+  /// Trims action-button width, icon size and label spacing so the swipe
+  /// actions match the checklist's dense visual density.
+  final bool dense;
   final VoidCallback? onOpened;
 
   const SwipeRevealRow({
@@ -23,6 +27,7 @@ class SwipeRevealRow extends StatefulWidget {
     required this.child,
     required this.actions,
     this.enabled = true,
+    this.dense = false,
     this.onOpened,
   });
 
@@ -31,10 +36,10 @@ class SwipeRevealRow extends StatefulWidget {
 }
 
 class SwipeRevealRowState extends State<SwipeRevealRow> {
-  static const double _actionWidth = 62.0;
-
   double _offset = 0;
   bool _dragging = false;
+
+  double get _actionWidth => widget.dense ? 52.0 : 62.0;
 
   double get _maxSwipe => widget.actions.length * _actionWidth;
 
@@ -84,7 +89,12 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
           children: [
             Expanded(child: widget.child),
             for (final a in widget.actions)
-              _ActionButton(action: a, width: _actionWidth, onTap: a.onPressed),
+              _ActionButton(
+                action: a,
+                width: _actionWidth,
+                dense: widget.dense,
+                onTap: a.onPressed,
+              ),
           ],
         ),
       );
@@ -127,6 +137,7 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
                     _ActionButton(
                       action: a,
                       width: _actionWidth,
+                      dense: widget.dense,
                       onTap: () {
                         close();
                         a.onPressed();
@@ -161,11 +172,13 @@ class SwipeAction {
 class _ActionButton extends StatelessWidget {
   final SwipeAction action;
   final double width;
+  final bool dense;
   final VoidCallback onTap;
 
   const _ActionButton({
     required this.action,
     required this.width,
+    required this.dense,
     required this.onTap,
   });
 
@@ -180,13 +193,13 @@ class _ActionButton extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(action.icon, color: action.tint, size: 20),
-              const SizedBox(height: 4),
+              Icon(action.icon, color: action.tint, size: dense ? 17 : 20),
+              SizedBox(height: dense ? 2 : 4),
               Text(
                 action.label,
                 style: TextStyle(
                   color: action.tint,
-                  fontSize: 10,
+                  fontSize: dense ? 9 : 10,
                   fontWeight: FontWeight.w700,
                 ),
               ),

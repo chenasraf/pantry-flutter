@@ -923,6 +923,19 @@ class SettingsMessagesDe extends SettingsMessages {
       CheckboxPositionNamesSettingsMessagesDe(this);
 
   /// ```dart
+  /// "Listendichte"
+  /// ```
+  String get density => """Listendichte""";
+
+  /// ```dart
+  /// "Wie viel Platz jeder Eintrag in deinen Listen einnimmt."
+  /// ```
+  String get densityBody =>
+      """Wie viel Platz jeder Eintrag in deinen Listen einnimmt.""";
+  DensityNamesSettingsMessagesDe get densityNames =>
+      DensityNamesSettingsMessagesDe(this);
+
+  /// ```dart
   /// "Vorhandene Einträge beim Hinzufügen wiederverwenden"
   /// ```
   String get reuseExistingItems =>
@@ -1091,6 +1104,21 @@ class CheckboxPositionNamesSettingsMessagesDe
   /// "Ende"
   /// ```
   String get end => """Ende""";
+}
+
+class DensityNamesSettingsMessagesDe extends DensityNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const DensityNamesSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Normal"
+  /// ```
+  String get normal => """Normal""";
+
+  /// ```dart
+  /// "Kompakt"
+  /// ```
+  String get dense => """Kompakt""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesDe
@@ -3329,6 +3357,11 @@ Passwort: pantry-rocks""",
       """Auf welcher Seite der Zeile das Kontrollkästchen erscheint.""",
   """settings.checkboxPositionNames.start""": """Anfang""",
   """settings.checkboxPositionNames.end""": """Ende""",
+  """settings.density""": """Listendichte""",
+  """settings.densityBody""":
+      """Wie viel Platz jeder Eintrag in deinen Listen einnimmt.""",
+  """settings.densityNames.normal""": """Normal""",
+  """settings.densityNames.dense""": """Kompakt""",
   """settings.reuseExistingItems""":
       """Vorhandene Einträge beim Hinzufügen wiederverwenden""",
   """settings.reuseExistingItemsBody""":

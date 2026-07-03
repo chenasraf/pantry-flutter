@@ -26,6 +26,7 @@ class PrefsService extends ChangeNotifier {
   static const _reuseExistingItemsKey = 'reuse_existing_items';
   static const _checklistViewKey = 'checklist_view';
   static const _checklistCheckboxPositionKey = 'checklist_checkbox_position';
+  static const _checklistDensityKey = 'checklist_density';
   static const _checklistListFilterKey = 'checklist_list_filter';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
   static const _allListsProgressHeroHiddenKey =
@@ -89,6 +90,12 @@ class PrefsService extends ChangeNotifier {
   /// trailing edge.
   String _checklistCheckboxPosition = 'start';
   String get checklistCheckboxPosition => _checklistCheckboxPosition;
+
+  /// Visual density of checklist rows. "normal" (default) keeps generous
+  /// vertical padding; "dense" trims padding, checkbox tap height and swipe
+  /// action sizing so more items fit on screen.
+  String _checklistDensity = 'normal';
+  String get checklistDensity => _checklistDensity;
 
   /// Selected list IDs for the All-lists view's per-list filter. Empty means
   /// "all lists". Local-only (not synced) so each device keeps its own focus.
@@ -218,6 +225,11 @@ class PrefsService extends ChangeNotifier {
     if (checkboxPosition != null &&
         (checkboxPosition == 'start' || checkboxPosition == 'end')) {
       _checklistCheckboxPosition = checkboxPosition;
+    }
+
+    final density = all[_checklistDensityKey];
+    if (density != null && (density == 'normal' || density == 'dense')) {
+      _checklistDensity = density;
     }
 
     final listFilter = all[_checklistListFilterKey];
@@ -446,6 +458,14 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setChecklistDensity(String value) async {
+    if (value != 'normal' && value != 'dense') return;
+    if (_checklistDensity == value) return;
+    _checklistDensity = value;
+    await _storage.write(key: _checklistDensityKey, value: value);
+    notifyListeners();
+  }
+
   Future<void> setChecklistListFilter(Set<int> ids) async {
     _checklistListFilter = {...ids};
     await _storage.write(
@@ -582,6 +602,7 @@ class PrefsService extends ChangeNotifier {
     _reuseExistingItems = 'ask';
     _checklistView = 'list';
     _checklistCheckboxPosition = 'start';
+    _checklistDensity = 'normal';
     _checklistListFilter = {};
     _checklistDoneCollapsed = true;
     _allListsProgressHeroHidden = false;
@@ -606,6 +627,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _reuseExistingItemsKey);
     await _storage.delete(key: _checklistViewKey);
     await _storage.delete(key: _checklistCheckboxPositionKey);
+    await _storage.delete(key: _checklistDensityKey);
     await _storage.delete(key: _checklistListFilterKey);
     await _storage.delete(key: _checklistDoneCollapsedKey);
     await _storage.delete(key: _allListsProgressHeroHiddenKey);

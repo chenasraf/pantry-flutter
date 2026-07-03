@@ -175,6 +175,11 @@ settings:
   checkboxPositionNames:
     start: התחלה
     end: סוף
+  density: צפיפות הרשימה
+  densityBody: כמה מקום כל פריט תופס ברשימות שלך.
+  densityNames:
+    normal: רגילה
+    dense: צפופה
   reuseExistingItems: שימוש חוזר בפריטים קיימים בעת הוספה
   reuseExistingItemsBody: "כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים."
   reuseExistingItemsNames:

@@ -923,6 +923,19 @@ class SettingsMessagesEs extends SettingsMessages {
       CheckboxPositionNamesSettingsMessagesEs(this);
 
   /// ```dart
+  /// "Densidad de la lista"
+  /// ```
+  String get density => """Densidad de la lista""";
+
+  /// ```dart
+  /// "Cuánto espacio ocupa cada artículo en tus listas."
+  /// ```
+  String get densityBody =>
+      """Cuánto espacio ocupa cada artículo en tus listas.""";
+  DensityNamesSettingsMessagesEs get densityNames =>
+      DensityNamesSettingsMessagesEs(this);
+
+  /// ```dart
   /// "Reutilizar artículos existentes al añadir"
   /// ```
   String get reuseExistingItems =>
@@ -1091,6 +1104,21 @@ class CheckboxPositionNamesSettingsMessagesEs
   /// "Fin"
   /// ```
   String get end => """Fin""";
+}
+
+class DensityNamesSettingsMessagesEs extends DensityNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const DensityNamesSettingsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Normal"
+  /// ```
+  String get normal => """Normal""";
+
+  /// ```dart
+  /// "Compacta"
+  /// ```
+  String get dense => """Compacta""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesEs
@@ -3324,6 +3352,11 @@ Contraseña: pantry-rocks""",
       """En qué lado de la fila aparece la casilla.""",
   """settings.checkboxPositionNames.start""": """Inicio""",
   """settings.checkboxPositionNames.end""": """Fin""",
+  """settings.density""": """Densidad de la lista""",
+  """settings.densityBody""":
+      """Cuánto espacio ocupa cada artículo en tus listas.""",
+  """settings.densityNames.normal""": """Normal""",
+  """settings.densityNames.dense""": """Compacta""",
   """settings.reuseExistingItems""":
       """Reutilizar artículos existentes al añadir""",
   """settings.reuseExistingItemsBody""":

@@ -917,6 +917,18 @@ class SettingsMessagesHe extends SettingsMessages {
       CheckboxPositionNamesSettingsMessagesHe(this);
 
   /// ```dart
+  /// "צפיפות הרשימה"
+  /// ```
+  String get density => """צפיפות הרשימה""";
+
+  /// ```dart
+  /// "כמה מקום כל פריט תופס ברשימות שלך."
+  /// ```
+  String get densityBody => """כמה מקום כל פריט תופס ברשימות שלך.""";
+  DensityNamesSettingsMessagesHe get densityNames =>
+      DensityNamesSettingsMessagesHe(this);
+
+  /// ```dart
   /// "שימוש חוזר בפריטים קיימים בעת הוספה"
   /// ```
   String get reuseExistingItems => """שימוש חוזר בפריטים קיימים בעת הוספה""";
@@ -1084,6 +1096,21 @@ class CheckboxPositionNamesSettingsMessagesHe
   /// "סוף"
   /// ```
   String get end => """סוף""";
+}
+
+class DensityNamesSettingsMessagesHe extends DensityNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const DensityNamesSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "רגילה"
+  /// ```
+  String get normal => """רגילה""";
+
+  /// ```dart
+  /// "צפופה"
+  /// ```
+  String get dense => """צפופה""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesHe
@@ -3292,6 +3319,10 @@ Map<String, String> get messagesHeMap => {
       """באיזה צד של השורה תופיע תיבת הסימון.""",
   """settings.checkboxPositionNames.start""": """התחלה""",
   """settings.checkboxPositionNames.end""": """סוף""",
+  """settings.density""": """צפיפות הרשימה""",
+  """settings.densityBody""": """כמה מקום כל פריט תופס ברשימות שלך.""",
+  """settings.densityNames.normal""": """רגילה""",
+  """settings.densityNames.dense""": """צפופה""",
   """settings.reuseExistingItems""": """שימוש חוזר בפריטים קיימים בעת הוספה""",
   """settings.reuseExistingItemsBody""":
       """כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים.""",

@@ -175,6 +175,11 @@ settings:
   checkboxPositionNames:
     start: Inicio
     end: Fin
+  density: Densidad de la lista
+  densityBody: Cuánto espacio ocupa cada artículo en tus listas.
+  densityNames:
+    normal: Normal
+    dense: Compacta
   reuseExistingItems: Reutilizar artículos existentes al añadir
   reuseExistingItemsBody: "Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo."
   reuseExistingItemsNames:

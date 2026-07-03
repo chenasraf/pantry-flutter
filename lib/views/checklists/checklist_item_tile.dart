@@ -110,7 +110,9 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final cs = theme.colorScheme;
     final item = widget.item;
     final cat = widget.category;
-    final tapAction = context.watch<PrefsService>().defaultItemTapAction;
+    final prefs = context.watch<PrefsService>();
+    final tapAction = prefs.defaultItemTapAction;
+    final dense = prefs.checklistDensity == 'dense';
 
     final catColor = cat != null
         ? (_parseColor(cat.color) ?? cs.primary)
@@ -230,6 +232,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       houseId: widget.houseId,
       isCardsView: widget.isCardsView,
       trashMode: widget.trashMode,
+      dense: dense,
       addedByUserId: widget.addedByUserId,
       addedByDisplayName: widget.addedByDisplayName,
       listBadge: widget.listBadge,
@@ -240,6 +243,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final swipe = SwipeRevealRow(
       key: _swipeKey,
       actions: actions,
+      dense: dense,
       child: content,
     );
 
@@ -281,6 +285,7 @@ class _RowContent extends StatelessWidget {
   final int houseId;
   final bool isCardsView;
   final bool trashMode;
+  final bool dense;
   final String? addedByUserId;
   final String? addedByDisplayName;
   final ItemListBadge? listBadge;
@@ -294,6 +299,7 @@ class _RowContent extends StatelessWidget {
     required this.houseId,
     required this.isCardsView,
     required this.trashMode,
+    required this.dense,
     required this.addedByUserId,
     required this.addedByDisplayName,
     required this.listBadge,
@@ -326,6 +332,9 @@ class _RowContent extends StatelessWidget {
       accent: cs.primary,
       onTap: onCheckboxTap,
       disabled: onCheckboxTap == null && !trashMode,
+      // Shorter tap target in dense mode so single-line rows don't reserve
+      // the full 48px Material height.
+      hitHeight: dense ? 40 : 48,
       padding: checkboxAtEnd
           ? const EdgeInsetsDirectional.only(start: 14, end: 16)
           : const EdgeInsetsDirectional.only(start: 18, end: 14),
@@ -348,9 +357,9 @@ class _RowContent extends StatelessWidget {
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(
                 checkboxAtEnd ? 18 : 0,
-                13,
+                dense ? 6 : 13,
                 checkboxAtEnd ? 0 : 16,
-                13,
+                dense ? 6 : 13,
               ),
               child: Row(
                 children: [
@@ -370,7 +379,7 @@ class _RowContent extends StatelessWidget {
                       children: [
                         Text(item.name, style: nameStyle),
                         if (_hasMeta) ...[
-                          const SizedBox(height: 5),
+                          SizedBox(height: dense ? 3 : 5),
                           _MetaRow(
                             item: item,
                             category: category,
@@ -422,8 +431,9 @@ class _Checkbox extends StatelessWidget {
   /// toggle the item.
   final EdgeInsetsDirectional padding;
 
-  /// Material's minimum touch target. The 24px box is centered within it.
-  static const double _hitHeight = 48;
+  /// Height of the tap target. The 24px box is centered within it. Normally
+  /// Material's 48px minimum; dense mode trims it to fit more rows.
+  final double hitHeight;
 
   const _Checkbox({
     required this.checked,
@@ -431,6 +441,7 @@ class _Checkbox extends StatelessWidget {
     required this.accent,
     required this.onTap,
     required this.padding,
+    required this.hitHeight,
     this.disabled = false,
   });
 
@@ -466,7 +477,7 @@ class _Checkbox extends StatelessWidget {
         // valid even where the row's own height is unbounded (e.g. cards
         // view). widthFactor keeps the cell only as wide as the box.
         child: SizedBox(
-          height: _hitHeight,
+          height: hitHeight,
           child: Center(widthFactor: 1, child: visual),
         ),
       ),

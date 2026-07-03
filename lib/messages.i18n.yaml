@@ -175,6 +175,11 @@ settings:
   checkboxPositionNames:
     start: Start
     end: End
+  density: List density
+  densityBody: How much space each item takes up in your lists.
+  densityNames:
+    normal: Normal
+    dense: Dense
   reuseExistingItems: Reuse existing items when adding
   reuseExistingItemsBody: "When you try to add an item that already exists in the list, reuse that item."
   reuseExistingItemsNames:
