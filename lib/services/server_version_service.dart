@@ -22,7 +22,8 @@ import 'package:pantry/utils/version.dart';
 ///     "houses", "checklists", "categories", "category-sort",
 ///     "photos", "notes", "notifications", "item-images",
 ///     "recurring-items", "move-items", "one-off-items", "activity",
-///     "soft-delete", "pref-tap-row-to-complete", "pref-category-spacing"
+///     "soft-delete", "pref-tap-row-to-complete", "pref-category-spacing",
+///     "roles", "share-users"
 ///   ]
 /// }
 /// ```

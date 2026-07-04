@@ -148,32 +148,40 @@ class FolderTile extends StatelessWidget {
     );
   }
 
-  // Creating/renaming/deleting folders and moving photos between them are all
-  // governed by canMovePhotos.
-  List<PopupMenuEntry<String>> _menuItems() => [
-    if (controller.permissions.canMovePhotos) ...[
-      PopupMenuItem(
-        value: 'rename',
-        child: Row(
-          children: [
-            const Icon(Icons.edit, size: 18),
-            const SizedBox(width: 8),
-            Text(m.photoBoard.renameFolder),
-          ],
+  // Renaming a folder is governed by its per-folder edit permission (an editor
+  // share on a roles-aware server, else the house-level canMovePhotos).
+  // Deleting a folder is never granted by a share, so it stays on the
+  // house-level canMovePhotos.
+  List<PopupMenuEntry<String>> _menuItems() {
+    final canEditFolder = folder.canEditWith(
+      controller.permissions.canMovePhotos,
+    );
+    final canDeleteFolder = controller.permissions.canMovePhotos;
+    return [
+      if (canEditFolder)
+        PopupMenuItem(
+          value: 'rename',
+          child: Row(
+            children: [
+              const Icon(Icons.edit, size: 18),
+              const SizedBox(width: 8),
+              Text(m.photoBoard.renameFolder),
+            ],
+          ),
         ),
-      ),
-      PopupMenuItem(
-        value: 'delete',
-        child: Row(
-          children: [
-            const Icon(Icons.delete, size: 18),
-            const SizedBox(width: 8),
-            Text(m.photoBoard.deleteFolder),
-          ],
+      if (canDeleteFolder)
+        PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              const Icon(Icons.delete, size: 18),
+              const SizedBox(width: 8),
+              Text(m.photoBoard.deleteFolder),
+            ],
+          ),
         ),
-      ),
-    ],
-  ];
+    ];
+  }
 
   void _onMenuSelected(BuildContext context, String value) {
     switch (value) {

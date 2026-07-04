@@ -247,7 +247,7 @@ class NoteTile extends StatelessWidget {
   }
 
   List<PopupMenuEntry<String>> _menuItems() => [
-    if (controller.permissions.canUpdateNotes)
+    if (note.canEditWith(controller.permissions.canUpdateNotes))
       PopupMenuItem(
         value: 'edit',
         child: Row(
@@ -258,7 +258,8 @@ class NoteTile extends StatelessWidget {
           ],
         ),
       ),
-    if (hasFeature('note-pinning') && controller.permissions.canUpdateNotes)
+    if (hasFeature('note-pinning') &&
+        note.canEditWith(controller.permissions.canUpdateNotes))
       PopupMenuItem(
         value: 'pin',
         child: Row(

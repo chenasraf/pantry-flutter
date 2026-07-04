@@ -36,7 +36,8 @@ class NoteDetailView extends StatelessWidget {
         leading: appBarBackLeading(context),
         title: Directionality(textDirection: titleDir, child: Text(note.title)),
       ),
-      floatingActionButton: controller.permissions.canUpdateNotes
+      floatingActionButton:
+          note.canEditWith(controller.permissions.canUpdateNotes)
           ? FloatingActionButton(
               heroTag: null,
               onPressed: () {

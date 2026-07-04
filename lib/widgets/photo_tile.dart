@@ -206,7 +206,7 @@ class PhotoTile extends StatelessWidget {
   }
 
   List<PopupMenuEntry<String>> _menuItems() => [
-    if (controller.permissions.canUpdatePhotos)
+    if (photo.canEditWith(controller.permissions.canUpdatePhotos))
       PopupMenuItem(
         value: 'caption',
         child: Row(

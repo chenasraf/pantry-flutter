@@ -276,7 +276,8 @@ class _BodyState extends State<_Body> {
         !isMeta &&
         !controller.isTrashMode &&
         _selectedCategoryIds.isEmpty &&
-        _query.isEmpty;
+        _query.isEmpty &&
+        controller.isCurrentListWritable;
     final total = controller.items.where((i) => i.deletedAt == null).length;
     final done = controller.items.where((i) => i.done).length;
 
@@ -476,7 +477,7 @@ class _BodyState extends State<_Body> {
             ),
             if (!controller.isTrashMode &&
                 list != null &&
-                controller.permissions.canAddItems)
+                controller.canAddItemsHere)
               Positioned(
                 left: 0,
                 right: 0,
@@ -857,6 +858,7 @@ class _BodyState extends State<_Body> {
             ),
           // Meta view has no trash of its own; trash stays per-list.
           if (!controller.isMetaMode &&
+              controller.isCurrentListWritable &&
               controller.permissions.canDeleteItems &&
               (supportsFeature('soft-delete') || hasFeature('item-trash')))
             IconButton(
@@ -1010,7 +1012,7 @@ class _BodyState extends State<_Body> {
           leading: const Icon(Icons.file_download_outlined, size: 18),
           label: m.checklists.markdown.exportTitle,
         ),
-        if (controller.permissions.canAddItems)
+        if (controller.canAddItemsHere)
           _menuRow(
             value: 'import_markdown',
             leading: const Icon(Icons.file_upload_outlined, size: 18),
@@ -1030,6 +1032,7 @@ class _BodyState extends State<_Body> {
           label: m.common.refresh,
         ),
         if (!isMeta &&
+            controller.isCurrentListWritable &&
             controller.permissions.canDeleteItems &&
             (supportsFeature('soft-delete') || hasFeature('item-trash'))) ...[
           const PopupMenuDivider(),
@@ -2023,6 +2026,10 @@ class _ItemListState extends State<_ItemList> {
 
   Widget _buildTile(BuildContext context, ListItem item) {
     final controller = widget.controller;
+    // A view-only shared list disables every item write; the granular house
+    // caps still apply on top. Resolved per-item so the All-lists view (whose
+    // items span lists with different share levels) gates each item correctly.
+    final writable = controller.isItemWritable(item);
     final addedByUserId =
         controller.showAddedBy &&
             item.addedBy != null &&
@@ -2062,32 +2069,39 @@ class _ItemListState extends State<_ItemList> {
       addedByDisplayName: addedByDisplayName,
       listBadge: listBadge,
       onToggle: (i) => _onToggle(context, controller, i),
-      canCheck: controller.permissions.canCheckItems,
+      canCheck: writable && controller.permissions.canCheckItems,
       onView: (i) => _openView(context, controller, i),
-      onEdit: controller.permissions.canEditLists
+      onEdit: writable && controller.permissions.canEditLists
           ? (i) => _openEdit(context, controller, i)
           : null,
       onMove:
-          controller.lists.length > 1 &&
+          writable &&
+              controller.lists.length > 1 &&
               !controller.isTrashMode &&
               controller.permissions.canMoveItems
           ? (i) => _onMove(context, controller, i)
           : null,
       onCopy:
-          controller.lists.length > 1 &&
+          writable &&
+              controller.lists.length > 1 &&
               !controller.isTrashMode &&
               hasFeature('copy-items') &&
               controller.permissions.canCopyItems
           ? (i) => _onCopy(context, controller, i)
           : null,
-      onDelete: controller.permissions.canDeleteItems
+      onDelete: writable && controller.permissions.canDeleteItems
           ? (i) => _onDelete(context, controller, i)
           : null,
-      onRestore: controller.isTrashMode && controller.permissions.canDeleteItems
+      onRestore:
+          writable &&
+              controller.isTrashMode &&
+              controller.permissions.canDeleteItems
           ? (i) => _onRestore(context, controller, i)
           : null,
       onPermanentDelete:
-          controller.isTrashMode && controller.permissions.canDeleteItems
+          writable &&
+              controller.isTrashMode &&
+              controller.permissions.canDeleteItems
           ? (i) => _onPermanentDelete(context, controller, i)
           : null,
     );

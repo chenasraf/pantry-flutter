@@ -52,6 +52,41 @@ class ChecklistsController extends ChangeNotifier {
   /// True when the synthetic "All lists" entry is selected.
   bool get isMetaMode => _currentList?.id == kAllListsId;
 
+  /// Whether the current concrete list permits item writes. A view-only shared
+  /// list is read-only; everything else is writable (and the granular house
+  /// caps still apply on top). The synthetic "All lists" sentinel carries no
+  /// share fields, so it reports writable — per-item gating there goes through
+  /// [isItemWritable]. Only meaningful when the server advertises `share-users`.
+  bool get isCurrentListWritable => _currentList?.isWritable ?? true;
+
+  /// Whether [item]'s own list permits writes. Used by the All-lists view,
+  /// where each item belongs to a different underlying list with its own share
+  /// level. Falls back to writable when the list isn't loaded.
+  bool isItemWritable(ListItem item) {
+    final list = _lists.cast<ChecklistList?>().firstWhere(
+      (l) => l?.id == item.listId,
+      orElse: () => null,
+    );
+    return list?.isWritable ?? true;
+  }
+
+  /// Whether the add-item affordance should be offered for the current view.
+  /// Requires the house `canAddItems` cap and — outside the All-lists view — a
+  /// writable current list. In All-lists mode the target list varies per add,
+  /// so writability is enforced per-target server-side (a 403 surfaces the
+  /// permission snackbar).
+  bool get canAddItemsHere {
+    if (!permissions.canAddItems) return false;
+    if (isMetaMode) return true;
+    return isCurrentListWritable;
+  }
+
+  /// Whether the current concrete list's settings (name/icon/color) may be
+  /// edited, folding the per-list share permission into the house cap.
+  bool get canEditCurrentListSettings => _currentList == null
+      ? permissions.canEditLists
+      : _currentList!.canEditSettingsWith(permissions.canEditLists);
+
   /// Effective sort for the current view. The meta view can't honor the
   /// per-list custom order, so it falls back to newest without persisting.
   String get effectiveSortBy =>

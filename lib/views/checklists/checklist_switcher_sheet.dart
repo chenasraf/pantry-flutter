@@ -406,7 +406,9 @@ class _ListStage extends StatelessWidget {
                           Navigator.pop(context);
                           if (!selected) await controller.selectList(list);
                         },
-                        onEdit: canEditLists ? () => onEdit(list) : null,
+                        onEdit: list.canEditSettingsWith(canEditLists)
+                            ? () => onEdit(list)
+                            : null,
                         onRemove: showMenu && canDeleteLists
                             ? () => _confirmRemove(context, list)
                             : null,
@@ -430,7 +432,9 @@ class _ListStage extends StatelessWidget {
                         Navigator.pop(context);
                         if (!selected) await controller.selectList(list);
                       },
-                      onEdit: canEditLists ? () => onEdit(list) : null,
+                      onEdit: list.canEditSettingsWith(canEditLists)
+                          ? () => onEdit(list)
+                          : null,
                       onRemove: showMenu && canDeleteLists
                           ? () => _confirmRemove(context, list)
                           : null,

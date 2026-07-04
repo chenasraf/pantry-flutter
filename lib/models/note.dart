@@ -1,3 +1,5 @@
+import 'package:pantry/services/server_version_service.dart';
+
 class Note {
   final int id;
   final int houseId;
@@ -10,6 +12,12 @@ class Note {
   final int createdAt;
   final int updatedAt;
 
+  /// Whether the current user may edit this note. Populated by roles-aware
+  /// servers that advertise the `share-users` capability (via a role cap or an
+  /// editor share); `null` on older servers, where gating falls back to the
+  /// house-level `canUpdateNotes`. See [NoteSharing.canEditWith].
+  final bool? canEdit;
+
   const Note({
     required this.id,
     required this.houseId,
@@ -21,6 +29,7 @@ class Note {
     this.isPinned = false,
     required this.createdAt,
     required this.updatedAt,
+    this.canEdit,
   });
 
   factory Note.fromJson(Map<String, dynamic> json) => Note(
@@ -34,6 +43,7 @@ class Note {
     isPinned: json['isPinned'] as bool? ?? false,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
+    canEdit: json['canEdit'] as bool?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -47,6 +57,7 @@ class Note {
     'isPinned': isPinned,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
+    'canEdit': canEdit,
   };
 
   Note copyWith({
@@ -68,5 +79,15 @@ class Note {
     isPinned: isPinned ?? this.isPinned,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    canEdit: canEdit,
   );
+}
+
+extension NoteSharing on Note {
+  /// Whether the current user may edit this note. When the server advertises
+  /// the `share-users` capability the per-note [Note.canEdit] governs (falling
+  /// back to [houseCanUpdate] when the server didn't send it); on older servers
+  /// the per-note field is ignored entirely and gating is purely house-level.
+  bool canEditWith(bool houseCanUpdate) =>
+      hasFeature('share-users') ? (canEdit ?? houseCanUpdate) : houseCanUpdate;
 }

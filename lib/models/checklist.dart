@@ -1,3 +1,5 @@
+import 'package:pantry/services/server_version_service.dart';
+
 class ChecklistList {
   final int id;
   final int houseId;
@@ -11,6 +13,17 @@ class ChecklistList {
   final int createdAt;
   final int updatedAt;
 
+  /// Whether the current user may edit this list's settings (name/icon/color).
+  /// `null` on servers without the `share-users` capability, where gating falls
+  /// back to house-level `canEditLists`. See [ChecklistSharing].
+  final bool? canEdit;
+
+  /// Whether the user reaches this list *only* via a share (rather than through
+  /// house membership). Combined with [canEdit] this decides whether the whole
+  /// list is read-only: a `sharedOnly` list without edit access disables every
+  /// item write. `null` on servers without the `share-users` capability.
+  final bool? sharedOnly;
+
   const ChecklistList({
     required this.id,
     required this.houseId,
@@ -23,6 +36,8 @@ class ChecklistList {
     this.hideProgressHero = false,
     required this.createdAt,
     required this.updatedAt,
+    this.canEdit,
+    this.sharedOnly,
   });
 
   factory ChecklistList.fromJson(Map<String, dynamic> json) => ChecklistList(
@@ -37,6 +52,8 @@ class ChecklistList {
     hideProgressHero: json['hideProgressHero'] as bool? ?? false,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
+    canEdit: json['canEdit'] as bool?,
+    sharedOnly: json['sharedOnly'] as bool?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -51,6 +68,8 @@ class ChecklistList {
     'hideProgressHero': hideProgressHero,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
+    'canEdit': canEdit,
+    'sharedOnly': sharedOnly,
   };
 
   ChecklistList copyWith({
@@ -75,7 +94,27 @@ class ChecklistList {
     hideProgressHero: hideProgressHero ?? this.hideProgressHero,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    canEdit: canEdit,
+    sharedOnly: sharedOnly,
   );
+}
+
+extension ChecklistSharing on ChecklistList {
+  /// Whether item-level writes (add / check-off / edit / move / copy / delete
+  /// item, reorder) are permitted on this list based on its share level. A
+  /// view-only shared list (`sharedOnly && !canEdit`) is fully read-only;
+  /// everything else keeps the normal granular capabilities. Only consulted
+  /// when the server advertises `share-users`; otherwise always writable.
+  bool get isWritable {
+    if (!hasFeature('share-users')) return true;
+    return !((sharedOnly ?? false) && !(canEdit ?? true));
+  }
+
+  /// Whether this list's own settings (name/icon/color) may be edited. Honors
+  /// the per-list [ChecklistList.canEdit] when the server advertises
+  /// `share-users`; otherwise falls back to the house-level [houseCanEdit].
+  bool canEditSettingsWith(bool houseCanEdit) =>
+      hasFeature('share-users') ? (canEdit ?? houseCanEdit) : houseCanEdit;
 }
 
 class ListItem {

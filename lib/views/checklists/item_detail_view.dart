@@ -43,7 +43,9 @@ class ItemDetailView extends StatelessWidget {
     final hasImage = item.imageFileId != null;
     final lifecycle = lifecycleOf(item);
     final perms = controller.permissions;
-    final canEdit = perms.canEditLists;
+    // A view-only shared list makes the whole item read-only.
+    final writable = controller.isItemWritable(item);
+    final canEdit = writable && perms.canEditLists;
     // The overflow menu only exists if at least one of its actions is allowed.
     final hasOverflow = _hasOverflowActions();
     final onMore = hasOverflow
@@ -97,6 +99,8 @@ class ItemDetailView extends StatelessWidget {
   /// Whether the current user may use any of the move/copy/delete overflow
   /// actions — drives whether the ⋮ button is shown at all.
   bool _hasOverflowActions() {
+    final writable = controller.isItemWritable(item);
+    if (!writable) return false;
     final hasOtherLists = controller.lists
         .where((l) => l.id != controller.currentList?.id)
         .isNotEmpty;
