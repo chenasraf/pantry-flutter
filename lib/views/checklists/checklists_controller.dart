@@ -36,6 +36,61 @@ ChecklistList allListsSentinel(int houseId) => ChecklistList(
   hideProgressHero: PrefsService.instance.allListsProgressHeroHidden,
 );
 
+/// Index at which a newly added [item] should slot into [items] so the
+/// optimistic insert matches the order the server returns for [sortBy].
+///
+/// The server orders these views purely by their sort key (created_at, name,
+/// category rank) and does *not* group done items at the end — done rows are
+/// interleaved by the same key. So we scan the whole list rather than stopping
+/// at the first done row (the old boundary that yanked new items to the top
+/// whenever a done item sorted early); the view re-partitions active/done for
+/// display, and a freshly added item has the newest created_at, so ties
+/// resolve to the end of their group exactly as the server would.
+///
+/// [categoryRankOf] maps a categoryId (null = uncategorized) to its display
+/// rank; only consulted for the 'category' sort. Pure, so it can be unit
+/// tested without the controller's singleton dependencies.
+int checklistInsertIndex(
+  List<ListItem> items,
+  String sortBy,
+  ListItem item,
+  int Function(int? categoryId) categoryRankOf,
+) {
+  switch (sortBy) {
+    case 'category':
+      final myRank = categoryRankOf(item.categoryId);
+      for (var i = 0; i < items.length; i++) {
+        if (categoryRankOf(items[i].categoryId) > myRank) return i;
+      }
+      return items.length;
+    case 'name_asc':
+      final key = item.name.toLowerCase();
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].name.toLowerCase().compareTo(key) > 0) return i;
+      }
+      return items.length;
+    case 'name_desc':
+      final key = item.name.toLowerCase();
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].name.toLowerCase().compareTo(key) < 0) return i;
+      }
+      return items.length;
+    case 'oldest':
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].createdAt > item.createdAt) return i;
+      }
+      return items.length;
+    case 'newest':
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].createdAt < item.createdAt) return i;
+      }
+      return items.length;
+    case 'custom':
+    default:
+      return 0;
+  }
+}
+
 class ChecklistsController extends ChangeNotifier {
   final int houseId;
 
@@ -628,44 +683,21 @@ class ChecklistsController extends ChangeNotifier {
   /// the live `_items`) to keep the active sort intact. Uses [effectiveSortBy]
   /// so it agrees with the order the server returns for the current view.
   int _insertIndexFor(ListItem item, [List<ListItem>? target]) {
-    final items = target ?? _items;
-    final firstDone = items.indexWhere((i) => i.done);
-    final lastUnchecked = firstDone == -1 ? items.length : firstDone;
-
-    switch (effectiveSortBy) {
-      case 'category':
-        final sorted = sortedCategories;
-        final rank = <int, int>{};
-        for (var i = 0; i < sorted.length; i++) {
-          rank[sorted[i].id] = i;
-        }
-        const uncategorizedRank = 1 << 30;
-        int rankOf(int? id) =>
-            id == null ? uncategorizedRank : (rank[id] ?? uncategorizedRank);
-        final myRank = rankOf(item.categoryId);
-        for (var i = 0; i < lastUnchecked; i++) {
-          if (rankOf(items[i].categoryId) > myRank) return i;
-        }
-        return lastUnchecked;
-      case 'name_asc':
-        final key = item.name.toLowerCase();
-        for (var i = 0; i < lastUnchecked; i++) {
-          if (items[i].name.toLowerCase().compareTo(key) > 0) return i;
-        }
-        return lastUnchecked;
-      case 'name_desc':
-        final key = item.name.toLowerCase();
-        for (var i = 0; i < lastUnchecked; i++) {
-          if (items[i].name.toLowerCase().compareTo(key) < 0) return i;
-        }
-        return lastUnchecked;
-      case 'oldest':
-        return lastUnchecked;
-      case 'newest':
-      case 'custom':
-      default:
-        return 0;
+    final sorted = sortedCategories;
+    final rank = <int, int>{};
+    for (var i = 0; i < sorted.length; i++) {
+      rank[sorted[i].id] = i;
     }
+    const uncategorizedRank = 1 << 30;
+    int rankOf(int? id) =>
+        id == null ? uncategorizedRank : (rank[id] ?? uncategorizedRank);
+
+    return checklistInsertIndex(
+      target ?? _items,
+      effectiveSortBy,
+      item,
+      rankOf,
+    );
   }
 
   Future<void> setShowAddedBy(bool value) async {
