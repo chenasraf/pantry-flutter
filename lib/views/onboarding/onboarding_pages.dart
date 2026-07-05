@@ -6,6 +6,7 @@ import 'package:pantry/utils/version.dart';
 import 'pages/add_items_page.dart';
 import 'pages/all_lists_page.dart';
 import 'pages/bulk_add_page.dart';
+import 'pages/bulk_select_page.dart';
 import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
 import 'pages/pinned_lists_page.dart';
@@ -65,6 +66,11 @@ bool onboardingDesktopOnly(OnboardingAudience a) => a.isDesktop;
 /// explanations of touch gestures (swipe, long-press) that don't translate.
 bool onboardingMobileOnly(OnboardingAudience a) => !a.isDesktop;
 
+/// Shows the page only when the user has a specific feature flag enabled. Use
+/// for gating pages that advertise a feature that isn't universally available.
+OnboardingShowWhen onboardingFeatureOnly(String feature) =>
+    (_) => hasFeature(feature);
+
 /// One entry in [kAppOnboardingPages]. Carries the page builder plus an
 /// optional [showWhen] predicate that decides whether *this* viewer sees it.
 /// Compose multiple conditions inline with `&&` — e.g.
@@ -120,21 +126,45 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   '0.18.0': [
     OnboardingPageEntry(
       builder: (_) => const AllListsOnboardingPage(),
-      showWhen: (_) => hasFeature('checklist-all-view'),
+      showWhen: onboardingFeatureOnly('checklist-all-view'),
     ),
     OnboardingPageEntry(builder: (_) => const BulkAddOnboardingPage()),
   ],
+  '0.20.0': [
+    OnboardingPageEntry(
+      builder: (_) => const BulkSelectOnboardingPage(),
+      showWhen: onboardingFeatureOnly('batch-operations'),
+    ),
+  ],
 };
 
-/// Versions available for the dev-only "Show onboarding" picker — must be
-/// historical (i.e. strictly older than [kAppOnboardingFirstVersion] OR a
-/// known prior key in [kAppOnboardingPages]). The list is in descending order
-/// so the newest option appears first.
-const List<String> kDevOnboardingPickableVersions = [
-  '0.17.0',
-  '0.16.0',
-  '0.15.0',
-];
+/// Versions offered by the dev-only "Show onboarding" picker — the actual page
+/// versions in [kAppOnboardingPages], newest first. Picking one previews *that*
+/// version's what's-new (see [onboardingPreviewLastSeen]), so the option you
+/// tap is the version you want to check — e.g. tap `0.20.0` to see what's new
+/// in 0.20.0.
+List<String> get kDevOnboardingPickableVersions {
+  final keys = kAppOnboardingPages.keys.toList()
+    ..sort((a, b) => Version.parse(b).compareTo(Version.parse(a)));
+  return keys;
+}
+
+/// Dev-only: the `lastSeenOnboardingVersion` to persist so an onboarding
+/// preview starts at [targetVersion]'s what's-new — the greatest page version
+/// strictly below [targetVersion], or a below-everything sentinel when it's the
+/// earliest. Because [resolveOnboardingPages] shows every version newer than
+/// last-seen, seeding just below [targetVersion] surfaces that version's pages
+/// (and any newer), exactly as an upgrader to it would see them.
+String onboardingPreviewLastSeen(String targetVersion) {
+  final target = Version.parse(targetVersion);
+  Version? predecessor;
+  for (final key in kAppOnboardingPages.keys) {
+    final v = Version.tryParse(key);
+    if (v == null || v.compareTo(target) >= 0) continue;
+    if (predecessor == null || v.compareTo(predecessor) > 0) predecessor = v;
+  }
+  return (predecessor ?? Version.parse('0.0.0')).toString();
+}
 
 /// The version string to persist when the user finishes/skips onboarding for
 /// build [appVersion]. Returns whichever is higher between [appVersion] and

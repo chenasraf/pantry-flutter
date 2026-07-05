@@ -707,6 +707,17 @@ Passwort: pantry-rocks""";
   /// ```
   String get bulkAddBody =>
       """Aktiviere den Mehrfach-Schalter, und das Eingabefeld wird zu einem mehrzeiligen Feld — jede Zeile wird zu einem eigenen Eintrag. Praktisch, wenn du eine Liste einfügst oder einen ganzen Einkauf auf einmal notierst.""";
+
+  /// ```dart
+  /// "Mehrere Einträge auf einmal bearbeiten"
+  /// ```
+  String get bulkSelectTitle => """Mehrere Einträge auf einmal bearbeiten""";
+
+  /// ```dart
+  /// "Halte einen Eintrag gedrückt – oder tippe im Menü auf „Auswählen“ – um mehrere zu markieren, und verschiebe, kopiere, kategorisiere oder lösche sie dann alle auf einmal."
+  /// ```
+  String get bulkSelectBody =>
+      """Halte einen Eintrag gedrückt – oder tippe im Menü auf „Auswählen“ – um mehrere zu markieren, und verschiebe, kopiere, kategorisiere oder lösche sie dann alle auf einmal.""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 
@@ -720,15 +731,15 @@ class DevOnboardingMessagesDe extends DevOnboardingMessages {
   String get showOnboarding => """Onboarding anzeigen""";
 
   /// ```dart
-  /// "Zuletzt gesehene Version simulieren"
+  /// "Neuigkeiten ansehen"
   /// ```
-  String get pickLastSeenTitle => """Zuletzt gesehene Version simulieren""";
+  String get pickLastSeenTitle => """Neuigkeiten ansehen""";
 
   /// ```dart
-  /// "Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet."
+  /// "Wähle die Version, deren Neuigkeiten du sehen möchtest – so, wie sie ein Nutzer beim Upgrade auf diese Version sähe."
   /// ```
   String get pickLastSeenBody =>
-      """Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet.""";
+      """Wähle die Version, deren Neuigkeiten du sehen möchtest – so, wie sie ein Nutzer beim Upgrade auf diese Version sähe.""";
 
   /// ```dart
   /// "Noch nie gesehen (neuer Benutzer)"
@@ -1441,6 +1452,12 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get undo => """Rückgängig""";
 
   /// ```dart
+  /// "Auswählen"
+  /// ```
+  String get selectItems => """Auswählen""";
+  BatchChecklistsMessagesDe get batch => BatchChecklistsMessagesDe(this);
+
+  /// ```dart
   /// "Papierkorb anzeigen"
   /// ```
   String get viewTrash => """Papierkorb anzeigen""";
@@ -1822,6 +1839,104 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get pickListTitle => """Zu welcher Liste hinzufügen?""";
   MarkdownChecklistsMessagesDe get markdown =>
       MarkdownChecklistsMessagesDe(this);
+}
+
+class BatchChecklistsMessagesDe extends BatchChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const BatchChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}""";
+
+  /// ```dart
+  /// "Einträge verschieben nach"
+  /// ```
+  String get moveTitle => """Einträge verschieben nach""";
+
+  /// ```dart
+  /// "Einträge kopieren nach"
+  /// ```
+  String get copyTitle => """Einträge kopieren nach""";
+
+  /// ```dart
+  /// "Kategorie festlegen"
+  /// ```
+  String get categoryTitle => """Kategorie festlegen""";
+
+  /// ```dart
+  /// "Keine Kategorie"
+  /// ```
+  String get clearCategory => """Keine Kategorie""";
+
+  /// ```dart
+  /// "Verschieben"
+  /// ```
+  String get move => """Verschieben""";
+
+  /// ```dart
+  /// "Kopieren"
+  /// ```
+  String get copy => """Kopieren""";
+
+  /// ```dart
+  /// "Kategorie"
+  /// ```
+  String get category => """Kategorie""";
+
+  /// ```dart
+  /// "Löschen"
+  /// ```
+  String get delete => """Löschen""";
+
+  /// ```dart
+  /// "Einträge löschen?"
+  /// ```
+  String get deleteConfirmTitle => """Einträge löschen?""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 ausgewählten Eintrag löschen? Du kannst ihn aus dem Papierkorb wiederherstellen.', many: '$count ausgewählte Einträge löschen? Du kannst sie aus dem Papierkorb wiederherstellen.')}"
+  /// ```
+  String deleteConfirmBody(int count) =>
+      """${_plural(count, one: '1 ausgewählten Eintrag löschen? Du kannst ihn aus dem Papierkorb wiederherstellen.', many: '$count ausgewählte Einträge löschen? Du kannst sie aus dem Papierkorb wiederherstellen.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag verschoben', many: '$count Einträge verschoben')}"
+  /// ```
+  String moved(int count) =>
+      """${_plural(count, one: '1 Eintrag verschoben', many: '$count Einträge verschoben')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag kopiert', many: '$count Einträge kopiert')}"
+  /// ```
+  String copied(int count) =>
+      """${_plural(count, one: '1 Eintrag kopiert', many: '$count Einträge kopiert')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag gelöscht', many: '$count Einträge gelöscht')}"
+  /// ```
+  String deleted(int count) =>
+      """${_plural(count, one: '1 Eintrag gelöscht', many: '$count Einträge gelöscht')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
+  /// ```
+  String categorySet(int count) =>
+      """${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 übersprungen', many: '$count übersprungen')}"
+  /// ```
+  String skipped(int count) =>
+      """${_plural(count, one: '1 übersprungen', many: '$count übersprungen')}""";
+
+  /// ```dart
+  /// "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+  /// ```
+  String get failed =>
+      """Etwas ist schiefgelaufen. Bitte versuche es erneut.""";
 }
 
 class ViewItemChecklistsMessagesDe extends ViewItemChecklistsMessages {
@@ -3302,11 +3417,14 @@ Passwort: pantry-rocks""",
   """onboarding.bulkAddTitle""": """Viele Einträge auf einmal hinzufügen""",
   """onboarding.bulkAddBody""":
       """Aktiviere den Mehrfach-Schalter, und das Eingabefeld wird zu einem mehrzeiligen Feld — jede Zeile wird zu einem eigenen Eintrag. Praktisch, wenn du eine Liste einfügst oder einen ganzen Einkauf auf einmal notierst.""",
+  """onboarding.bulkSelectTitle""":
+      """Mehrere Einträge auf einmal bearbeiten""",
+  """onboarding.bulkSelectBody""":
+      """Halte einen Eintrag gedrückt – oder tippe im Menü auf „Auswählen“ – um mehrere zu markieren, und verschiebe, kopiere, kategorisiere oder lösche sie dann alle auf einmal.""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
-  """onboarding.dev.pickLastSeenTitle""":
-      """Zuletzt gesehene Version simulieren""",
+  """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":
-      """Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet.""",
+      """Wähle die Version, deren Neuigkeiten du sehen möchtest – so, wie sie ein Nutzer beim Upgrade auf diese Version sähe.""",
   """onboarding.dev.neverSeen""": """Noch nie gesehen (neuer Benutzer)""",
   """onboarding.dev.forceAllFeatures""": """Alle Funktionen erzwingen""",
   """onboarding.dev.sendTestNotification""": """Testbenachrichtigung senden""",
@@ -3444,6 +3562,18 @@ Passwort: pantry-rocks""",
   """checklists.itemMarkedDone""": """Eintrag als erledigt markiert""",
   """checklists.itemRemoved""": """Eintrag entfernt""",
   """checklists.undo""": """Rückgängig""",
+  """checklists.selectItems""": """Auswählen""",
+  """checklists.batch.moveTitle""": """Einträge verschieben nach""",
+  """checklists.batch.copyTitle""": """Einträge kopieren nach""",
+  """checklists.batch.categoryTitle""": """Kategorie festlegen""",
+  """checklists.batch.clearCategory""": """Keine Kategorie""",
+  """checklists.batch.move""": """Verschieben""",
+  """checklists.batch.copy""": """Kopieren""",
+  """checklists.batch.category""": """Kategorie""",
+  """checklists.batch.delete""": """Löschen""",
+  """checklists.batch.deleteConfirmTitle""": """Einträge löschen?""",
+  """checklists.batch.failed""":
+      """Etwas ist schiefgelaufen. Bitte versuche es erneut.""",
   """checklists.viewTrash""": """Papierkorb anzeigen""",
   """checklists.exitTrash""": """Papierkorb verlassen""",
   """checklists.showAddedBy""": """Anzeigen, wer Einträge hinzugefügt hat""",

@@ -61,4 +61,78 @@ void main() {
       expect(remap.rewrite(op).entityId, isNull);
     });
   });
+
+  group('IdRemap.rewrite — batch bodies', () {
+    SyncOp batch(Map<String, dynamic> body) => SyncOp(
+      uuid: 'b',
+      entity: SyncEntity.checklistItem,
+      op: SyncOpKind.batch,
+      houseId: 1,
+      body: body,
+      createdAt: 0,
+    );
+
+    test('remaps temp item ids and leaves real ids untouched', () {
+      final remap = IdRemap(CacheStore('test_remap.json'));
+      remap.bind(SyncEntity.checklistItem, -1, 101);
+      remap.bind(SyncEntity.checklistItem, -2, 102);
+      final op = batch({
+        'batchAction': 'delete',
+        'itemIds': [-1, 5, -2],
+      });
+      final out = remap.rewrite(op);
+      expect(out.body['itemIds'], [101, 5, 102]);
+    });
+
+    test('leaves unresolved temp item ids in place', () {
+      final remap = IdRemap(CacheStore('test_remap.json'));
+      remap.bind(SyncEntity.checklistItem, -1, 101);
+      final op = batch({
+        'batchAction': 'move',
+        'itemIds': [-1, -9],
+        'targetListId': 7,
+      });
+      final out = remap.rewrite(op);
+      // -9 is still unbound, so it survives for the dependency check to catch.
+      expect(out.body['itemIds'], [101, -9]);
+    });
+
+    test('remaps a temp target list id (move to an offline-created list)', () {
+      final remap = IdRemap(CacheStore('test_remap.json'));
+      remap.bind(SyncEntity.checklistList, -4, 44);
+      final op = batch({
+        'batchAction': 'move',
+        'itemIds': [1, 2],
+        'targetListId': -4,
+      });
+      expect(remap.rewrite(op).body['targetListId'], 44);
+    });
+
+    test('remaps a temp category id, and null clears stay null', () {
+      final remap = IdRemap(CacheStore('test_remap.json'));
+      remap.bind(SyncEntity.category, -3, 33);
+      final assign = batch({
+        'batchAction': 'category',
+        'itemIds': [1],
+        'categoryId': -3,
+      });
+      expect(remap.rewrite(assign).body['categoryId'], 33);
+
+      final clear = batch({
+        'batchAction': 'category',
+        'itemIds': [1],
+        'categoryId': null,
+      });
+      expect(remap.rewrite(clear).body['categoryId'], isNull);
+    });
+
+    test('returns the same instance when nothing needs rewriting', () {
+      final remap = IdRemap(CacheStore('test_remap.json'));
+      final op = batch({
+        'batchAction': 'delete',
+        'itemIds': [1, 2, 3],
+      });
+      expect(identical(remap.rewrite(op), op), isTrue);
+    });
+  });
 }

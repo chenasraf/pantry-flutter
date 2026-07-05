@@ -710,6 +710,17 @@ Mot de passe : pantry-rocks""";
   /// ```
   String get bulkAddBody =>
       """Active le bouton Multiple et le champ devient une zone multi-ligne — chaque ligne devient un élément distinct. Pratique quand tu colles une liste ou que tu notes toutes tes courses d'un seul coup.""";
+
+  /// ```dart
+  /// "Agissez sur plusieurs articles à la fois"
+  /// ```
+  String get bulkSelectTitle => """Agissez sur plusieurs articles à la fois""";
+
+  /// ```dart
+  /// "Appuyez longuement sur un article — ou touchez Sélectionner dans le menu — pour commencer la sélection, puis déplacez, copiez, catégorisez ou supprimez tout ce que vous avez choisi en une seule fois."
+  /// ```
+  String get bulkSelectBody =>
+      """Appuyez longuement sur un article — ou touchez Sélectionner dans le menu — pour commencer la sélection, puis déplacez, copiez, catégorisez ou supprimez tout ce que vous avez choisi en une seule fois.""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
@@ -723,15 +734,15 @@ class DevOnboardingMessagesFr extends DevOnboardingMessages {
   String get showOnboarding => """Afficher l'intro""";
 
   /// ```dart
-  /// "Simuler la dernière version vue"
+  /// "Aperçu des nouveautés"
   /// ```
-  String get pickLastSeenTitle => """Simuler la dernière version vue""";
+  String get pickLastSeenTitle => """Aperçu des nouveautés""";
 
   /// ```dart
-  /// "Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là."
+  /// "Choisis la version dont tu veux voir les nouveautés, telles qu'un utilisateur les verrait en passant à cette version."
   /// ```
   String get pickLastSeenBody =>
-      """Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là.""";
+      """Choisis la version dont tu veux voir les nouveautés, telles qu'un utilisateur les verrait en passant à cette version.""";
 
   /// ```dart
   /// "Jamais vue (nouvel utilisateur)"
@@ -1444,6 +1455,12 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get undo => """Annuler""";
 
   /// ```dart
+  /// "Sélectionner"
+  /// ```
+  String get selectItems => """Sélectionner""";
+  BatchChecklistsMessagesFr get batch => BatchChecklistsMessagesFr(this);
+
+  /// ```dart
   /// "Afficher la corbeille"
   /// ```
   String get viewTrash => """Afficher la corbeille""";
@@ -1824,6 +1841,103 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get pickListTitle => """Ajouter à quelle liste ?""";
   MarkdownChecklistsMessagesFr get markdown =>
       MarkdownChecklistsMessagesFr(this);
+}
+
+class BatchChecklistsMessagesFr extends BatchChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const BatchChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "${_plural(count, one: '1 sélectionné', many: '$count sélectionnés')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 sélectionné', many: '$count sélectionnés')}""";
+
+  /// ```dart
+  /// "Déplacer les articles vers"
+  /// ```
+  String get moveTitle => """Déplacer les articles vers""";
+
+  /// ```dart
+  /// "Copier les articles vers"
+  /// ```
+  String get copyTitle => """Copier les articles vers""";
+
+  /// ```dart
+  /// "Définir la catégorie"
+  /// ```
+  String get categoryTitle => """Définir la catégorie""";
+
+  /// ```dart
+  /// "Aucune catégorie"
+  /// ```
+  String get clearCategory => """Aucune catégorie""";
+
+  /// ```dart
+  /// "Déplacer"
+  /// ```
+  String get move => """Déplacer""";
+
+  /// ```dart
+  /// "Copier"
+  /// ```
+  String get copy => """Copier""";
+
+  /// ```dart
+  /// "Catégorie"
+  /// ```
+  String get category => """Catégorie""";
+
+  /// ```dart
+  /// "Supprimer"
+  /// ```
+  String get delete => """Supprimer""";
+
+  /// ```dart
+  /// "Supprimer les articles ?"
+  /// ```
+  String get deleteConfirmTitle => """Supprimer les articles ?""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Supprimer 1 article sélectionné ? Vous pouvez le restaurer depuis la corbeille.', many: 'Supprimer $count articles sélectionnés ? Vous pouvez les restaurer depuis la corbeille.')}"
+  /// ```
+  String deleteConfirmBody(int count) =>
+      """${_plural(count, one: 'Supprimer 1 article sélectionné ? Vous pouvez le restaurer depuis la corbeille.', many: 'Supprimer $count articles sélectionnés ? Vous pouvez les restaurer depuis la corbeille.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article déplacé', many: '$count articles déplacés')}"
+  /// ```
+  String moved(int count) =>
+      """${_plural(count, one: '1 article déplacé', many: '$count articles déplacés')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article copié', many: '$count articles copiés')}"
+  /// ```
+  String copied(int count) =>
+      """${_plural(count, one: '1 article copié', many: '$count articles copiés')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article supprimé', many: '$count articles supprimés')}"
+  /// ```
+  String deleted(int count) =>
+      """${_plural(count, one: '1 article supprimé', many: '$count articles supprimés')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
+  /// ```
+  String categorySet(int count) =>
+      """${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 ignoré', many: '$count ignorés')}"
+  /// ```
+  String skipped(int count) =>
+      """${_plural(count, one: '1 ignoré', many: '$count ignorés')}""";
+
+  /// ```dart
+  /// "Une erreur s'est produite. Veuillez réessayer."
+  /// ```
+  String get failed => """Une erreur s'est produite. Veuillez réessayer.""";
 }
 
 class ViewItemChecklistsMessagesFr extends ViewItemChecklistsMessages {
@@ -3306,10 +3420,14 @@ Mot de passe : pantry-rocks""",
   """onboarding.bulkAddTitle""": """Ajoute plusieurs éléments d'un coup""",
   """onboarding.bulkAddBody""":
       """Active le bouton Multiple et le champ devient une zone multi-ligne — chaque ligne devient un élément distinct. Pratique quand tu colles une liste ou que tu notes toutes tes courses d'un seul coup.""",
+  """onboarding.bulkSelectTitle""":
+      """Agissez sur plusieurs articles à la fois""",
+  """onboarding.bulkSelectBody""":
+      """Appuyez longuement sur un article — ou touchez Sélectionner dans le menu — pour commencer la sélection, puis déplacez, copiez, catégorisez ou supprimez tout ce que vous avez choisi en une seule fois.""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
-  """onboarding.dev.pickLastSeenTitle""": """Simuler la dernière version vue""",
+  """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":
-      """Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là.""",
+      """Choisis la version dont tu veux voir les nouveautés, telles qu'un utilisateur les verrait en passant à cette version.""",
   """onboarding.dev.neverSeen""": """Jamais vue (nouvel utilisateur)""",
   """onboarding.dev.forceAllFeatures""":
       """Forcer toutes les fonctionnalités""",
@@ -3447,6 +3565,18 @@ Mot de passe : pantry-rocks""",
   """checklists.itemMarkedDone""": """Article marqué comme fait""",
   """checklists.itemRemoved""": """Article supprimé""",
   """checklists.undo""": """Annuler""",
+  """checklists.selectItems""": """Sélectionner""",
+  """checklists.batch.moveTitle""": """Déplacer les articles vers""",
+  """checklists.batch.copyTitle""": """Copier les articles vers""",
+  """checklists.batch.categoryTitle""": """Définir la catégorie""",
+  """checklists.batch.clearCategory""": """Aucune catégorie""",
+  """checklists.batch.move""": """Déplacer""",
+  """checklists.batch.copy""": """Copier""",
+  """checklists.batch.category""": """Catégorie""",
+  """checklists.batch.delete""": """Supprimer""",
+  """checklists.batch.deleteConfirmTitle""": """Supprimer les articles ?""",
+  """checklists.batch.failed""":
+      """Une erreur s'est produite. Veuillez réessayer.""",
   """checklists.viewTrash""": """Afficher la corbeille""",
   """checklists.exitTrash""": """Quitter la corbeille""",
   """checklists.showAddedBy""": """Afficher qui a ajouté chaque article""",

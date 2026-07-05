@@ -134,6 +134,17 @@ class SyncManager {
     for (final raw in _queue.all()) {
       if (raw.entity != SyncEntity.checklistItem) continue;
       if (raw.houseId != houseId) continue;
+      if (raw.op == SyncOpKind.batch) {
+        // Batch ops address many items via the body — count both the temp and
+        // (once bound) real ids so a mid-flight batch keeps its items pinned.
+        for (final ids in [
+          (raw.body['itemIds'] as List?)?.cast<int>(),
+          (_remap.rewrite(raw).body['itemIds'] as List?)?.cast<int>(),
+        ]) {
+          if (ids != null) out.addAll(ids);
+        }
+        continue;
+      }
       final id = _remap.rewrite(raw).effectiveEntityId;
       if (id != null) out.add(id);
       if (raw.tempEntityId != null) out.add(raw.tempEntityId!);
@@ -174,6 +185,11 @@ class SyncManager {
             op.entityId == null) {
           // References a temp id whose create hasn't resolved yet — retry
           // after the preceding create completes.
+          break;
+        }
+        if (op.op == SyncOpKind.batch && _batchHasUnresolvedRefs(op)) {
+          // A batch op still points at a temp item / list / category whose
+          // create is ahead of it in the queue — wait for that to flush.
           break;
         }
         try {
@@ -240,6 +256,18 @@ class SyncManager {
     } finally {
       _flushing = false;
     }
+  }
+
+  /// A rewritten batch op is dispatchable only once every id it references
+  /// resolves to a real (non-negative) server id.
+  bool _batchHasUnresolvedRefs(SyncOp op) {
+    final ids = (op.body['itemIds'] as List?)?.cast<int>() ?? const [];
+    if (ids.any((id) => id < 0)) return true;
+    final target = op.body['targetListId'];
+    if (target is int && target < 0) return true;
+    final cat = op.body['categoryId'];
+    if (cat is int && cat < 0) return true;
+    return false;
   }
 
   void _scheduleRetry(SyncOp op, String error) {

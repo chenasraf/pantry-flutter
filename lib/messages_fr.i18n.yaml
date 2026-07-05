@@ -120,10 +120,12 @@ onboarding:
   allListsBody: "Ouvre la vue Toutes les listes depuis le sélecteur pour voir les éléments de toutes tes listes ensemble. Quand tu ajoutes un élément depuis ici, le formulaire te demande dans quelle liste le placer — choisis-la dans le chip Liste."
   bulkAddTitle: "Ajoute plusieurs éléments d'un coup"
   bulkAddBody: "Active le bouton Multiple et le champ devient une zone multi-ligne — chaque ligne devient un élément distinct. Pratique quand tu colles une liste ou que tu notes toutes tes courses d'un seul coup."
+  bulkSelectTitle: "Agissez sur plusieurs articles à la fois"
+  bulkSelectBody: "Appuyez longuement sur un article — ou touchez Sélectionner dans le menu — pour commencer la sélection, puis déplacez, copiez, catégorisez ou supprimez tout ce que vous avez choisi en une seule fois."
   dev:
     showOnboarding: "Afficher l'intro"
-    pickLastSeenTitle: "Simuler la dernière version vue"
-    pickLastSeenBody: "Choisis la version que l'appareil doit faire semblant d'avoir vue en dernier, puis l'intro démarrera à partir de là."
+    pickLastSeenTitle: "Aperçu des nouveautés"
+    pickLastSeenBody: "Choisis la version dont tu veux voir les nouveautés, telles qu'un utilisateur les verrait en passant à cette version."
     neverSeen: "Jamais vue (nouvel utilisateur)"
     forceAllFeatures: "Forcer toutes les fonctionnalités"
     sendTestNotification: "Envoyer une notification de test"
@@ -265,6 +267,25 @@ checklists:
   itemMarkedDone: "Article marqué comme fait"
   itemRemoved: "Article supprimé"
   undo: Annuler
+  selectItems: Sélectionner
+  batch:
+    selected(int count): "${_plural(count, one: '1 sélectionné', many: '$count sélectionnés')}"
+    moveTitle: Déplacer les articles vers
+    copyTitle: Copier les articles vers
+    categoryTitle: Définir la catégorie
+    clearCategory: Aucune catégorie
+    move: Déplacer
+    copy: Copier
+    category: Catégorie
+    delete: Supprimer
+    deleteConfirmTitle: Supprimer les articles ?
+    deleteConfirmBody(int count): "${_plural(count, one: 'Supprimer 1 article sélectionné ? Vous pouvez le restaurer depuis la corbeille.', many: 'Supprimer $count articles sélectionnés ? Vous pouvez les restaurer depuis la corbeille.')}"
+    moved(int count): "${_plural(count, one: '1 article déplacé', many: '$count articles déplacés')}"
+    copied(int count): "${_plural(count, one: '1 article copié', many: '$count articles copiés')}"
+    deleted(int count): "${_plural(count, one: '1 article supprimé', many: '$count articles supprimés')}"
+    categorySet(int count): "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
+    skipped(int count): "${_plural(count, one: '1 ignoré', many: '$count ignorés')}"
+    failed: "Une erreur s'est produite. Veuillez réessayer."
   viewTrash: "Afficher la corbeille"
   exitTrash: "Quitter la corbeille"
   showAddedBy: "Afficher qui a ajouté chaque article"

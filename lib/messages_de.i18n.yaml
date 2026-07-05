@@ -120,10 +120,12 @@ onboarding:
   allListsBody: "Öffne die Ansicht Alle Listen über den Listenwechsler, um Einträge aus allen Listen gemeinsam zu sehen. Wenn du dort einen Eintrag hinzufügst, fragt das Formular über den Listen-Chip, in welche Liste er gehören soll."
   bulkAddTitle: "Viele Einträge auf einmal hinzufügen"
   bulkAddBody: "Aktiviere den Mehrfach-Schalter, und das Eingabefeld wird zu einem mehrzeiligen Feld — jede Zeile wird zu einem eigenen Eintrag. Praktisch, wenn du eine Liste einfügst oder einen ganzen Einkauf auf einmal notierst."
+  bulkSelectTitle: "Mehrere Einträge auf einmal bearbeiten"
+  bulkSelectBody: "Halte einen Eintrag gedrückt – oder tippe im Menü auf „Auswählen“ – um mehrere zu markieren, und verschiebe, kopiere, kategorisiere oder lösche sie dann alle auf einmal."
   dev:
     showOnboarding: "Onboarding anzeigen"
-    pickLastSeenTitle: "Zuletzt gesehene Version simulieren"
-    pickLastSeenBody: "Wähle, welche Version das Gerät zuletzt gesehen haben soll, dann wird das Onboarding von dort gestartet."
+    pickLastSeenTitle: "Neuigkeiten ansehen"
+    pickLastSeenBody: "Wähle die Version, deren Neuigkeiten du sehen möchtest – so, wie sie ein Nutzer beim Upgrade auf diese Version sähe."
     neverSeen: "Noch nie gesehen (neuer Benutzer)"
     forceAllFeatures: "Alle Funktionen erzwingen"
     sendTestNotification: "Testbenachrichtigung senden"
@@ -265,6 +267,25 @@ checklists:
   itemMarkedDone: Eintrag als erledigt markiert
   itemRemoved: Eintrag entfernt
   undo: "Rückgängig"
+  selectItems: Auswählen
+  batch:
+    selected(int count): "${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}"
+    moveTitle: Einträge verschieben nach
+    copyTitle: Einträge kopieren nach
+    categoryTitle: Kategorie festlegen
+    clearCategory: Keine Kategorie
+    move: Verschieben
+    copy: Kopieren
+    category: Kategorie
+    delete: "Löschen"
+    deleteConfirmTitle: "Einträge löschen?"
+    deleteConfirmBody(int count): "${_plural(count, one: '1 ausgewählten Eintrag löschen? Du kannst ihn aus dem Papierkorb wiederherstellen.', many: '$count ausgewählte Einträge löschen? Du kannst sie aus dem Papierkorb wiederherstellen.')}"
+    moved(int count): "${_plural(count, one: '1 Eintrag verschoben', many: '$count Einträge verschoben')}"
+    copied(int count): "${_plural(count, one: '1 Eintrag kopiert', many: '$count Einträge kopiert')}"
+    deleted(int count): "${_plural(count, one: '1 Eintrag gelöscht', many: '$count Einträge gelöscht')}"
+    categorySet(int count): "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
+    skipped(int count): "${_plural(count, one: '1 übersprungen', many: '$count übersprungen')}"
+    failed: Etwas ist schiefgelaufen. Bitte versuche es erneut.
   viewTrash: Papierkorb anzeigen
   exitTrash: Papierkorb verlassen
   showAddedBy: Anzeigen, wer Einträge hinzugefügt hat

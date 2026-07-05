@@ -10,7 +10,9 @@ import 'package:pantry/sync/sync_op.dart';
 ///
 /// [entity] is the canonical server record (the response of the create/
 /// update/restore/toggle call). Null for ops that don't return an entity
-/// (delete, permanentDelete, emptyTrash, reorder).
+/// (delete, permanentDelete, emptyTrash, reorder). For a [SyncOpKind.batch]
+/// op it holds the [PantryBatchResult] envelope so the controller can
+/// reconcile the affected items.
 class SyncResult {
   final Object? entity;
   const SyncResult(this.entity);
@@ -85,6 +87,7 @@ class SyncExecutor {
         await svc.reorderLists(houseId, order);
         return SyncResult.empty;
       case SyncOpKind.toggle:
+      case SyncOpKind.batch:
         return SyncResult.empty;
     }
   }
@@ -153,6 +156,56 @@ class SyncExecutor {
             .toList();
         await svc.reorderItems(houseId, listId, order);
         return SyncResult.empty;
+      case SyncOpKind.batch:
+        return _executeItemBatch(svc, houseId, op);
+    }
+  }
+
+  /// House-scoped group action. `body['batchAction']` selects the operation;
+  /// `body['itemIds']` are the (already id-remapped) target items.
+  Future<SyncResult> _executeItemBatch(
+    ChecklistService svc,
+    int houseId,
+    SyncOp op,
+  ) async {
+    final action = op.body['batchAction'] as String?;
+    final itemIds = (op.body['itemIds'] as List?)?.cast<int>() ?? const [];
+    if (itemIds.isEmpty) return SyncResult.empty;
+    switch (action) {
+      case 'move':
+        return SyncResult(
+          await svc.batchMoveItems(
+            houseId,
+            itemIds: itemIds,
+            targetListId: op.body['targetListId'] as int,
+          ),
+        );
+      case 'copy':
+        return SyncResult(
+          await svc.batchCopyItems(
+            houseId,
+            itemIds: itemIds,
+            targetListId: op.body['targetListId'] as int,
+          ),
+        );
+      case 'delete':
+        return SyncResult(
+          await svc.batchDeleteItems(
+            houseId,
+            itemIds: itemIds,
+            permanent: op.body['permanent'] as bool? ?? false,
+          ),
+        );
+      case 'category':
+        return SyncResult(
+          await svc.batchSetCategory(
+            houseId,
+            itemIds: itemIds,
+            categoryId: op.body['categoryId'] as int?,
+          ),
+        );
+      default:
+        return SyncResult.empty;
     }
   }
 
@@ -194,6 +247,7 @@ class SyncExecutor {
       case SyncOpKind.restore:
       case SyncOpKind.permanentDelete:
       case SyncOpKind.emptyTrash:
+      case SyncOpKind.batch:
         return SyncResult.empty;
     }
   }
@@ -245,6 +299,7 @@ class SyncExecutor {
         await svc.reorderNotes(houseId, order);
         return SyncResult.empty;
       case SyncOpKind.toggle:
+      case SyncOpKind.batch:
         return SyncResult.empty;
     }
   }

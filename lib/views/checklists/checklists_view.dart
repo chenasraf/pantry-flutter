@@ -16,6 +16,7 @@ import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/platform_info.dart';
@@ -275,6 +276,7 @@ class _BodyState extends State<_Body> {
         controller.effectiveSortBy == 'custom' &&
         !isMeta &&
         !controller.isTrashMode &&
+        !controller.selectionMode &&
         _selectedCategoryIds.isEmpty &&
         _query.isEmpty &&
         controller.isCurrentListWritable;
@@ -476,6 +478,7 @@ class _BodyState extends State<_Body> {
               ),
             ),
             if (!controller.isTrashMode &&
+                !controller.selectionMode &&
                 list != null &&
                 controller.canAddItemsHere)
               Positioned(
@@ -545,6 +548,13 @@ class _BodyState extends State<_Body> {
                     },
                   ),
                 ),
+              ),
+            if (controller.selectionMode)
+              PositionedDirectional(
+                start: 0,
+                end: 0,
+                bottom: 0,
+                child: _SelectionActionBar(controller: controller),
               ),
           ],
         );
@@ -742,6 +752,30 @@ class _BodyState extends State<_Body> {
     PrefsService prefs,
   ) {
     final cs = Theme.of(context).colorScheme;
+
+    // While selecting, the shared AppBar becomes a contextual bar: close to
+    // exit, and a live count. The group actions live in the bottom bar.
+    if (controller.selectionMode) {
+      return ChecklistsAppBarSpec(
+        titleSpacing: 4,
+        leadingWidth: 56,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          tooltip: m.common.cancel,
+          onPressed: controller.exitSelection,
+        ),
+        title: Text(
+          m.checklists.batch.selected(controller.selectedCount),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.3,
+            color: cs.onSurface,
+          ),
+        ),
+      );
+    }
+
     final isMeta = list?.id == kAllListsId;
     // Meta uses the theme accent, not list.color (which is null on the
     // sentinel) — gives it a distinct neutral feel from any specific list.
@@ -948,6 +982,14 @@ class _BodyState extends State<_Body> {
     final isMeta = controller.isMetaMode;
     final effective = controller.effectiveSortBy;
     return <PopupMenuEntry<String>>[
+      if (controller.canSelectItems && controller.items.isNotEmpty) ...[
+        _menuRow(
+          value: 'select_items',
+          leading: const Icon(Icons.checklist, size: 18),
+          label: m.checklists.selectItems,
+        ),
+        const PopupMenuDivider(),
+      ],
       if (!PlatformInfo.isDesktop) ...[
         _radioRow(
           value: 'sort_newest',
@@ -1111,6 +1153,8 @@ class _BodyState extends State<_Body> {
   ) async {
     final prefs = PrefsService.instance;
     switch (value) {
+      case 'select_items':
+        controller.enterSelection();
       case 'sort_newest':
         await controller.setSortBy('newest');
       case 'sort_oldest':
@@ -1168,7 +1212,13 @@ class _BodyState extends State<_Body> {
       builder: (ctx) => _DevLastSeenPickerDialog(),
     );
     if (picked == null || !context.mounted) return;
-    await PrefsService.instance.setLastSeenOnboardingVersion(picked.value);
+    // The picked value is the version whose what's-new to preview; seed
+    // last-seen just below it so exactly that version's pages surface. Null is
+    // the "new user" option — preview the full first-run flow.
+    final lastSeen = picked.value == null
+        ? null
+        : onboardingPreviewLastSeen(picked.value!);
+    await PrefsService.instance.setLastSeenOnboardingVersion(lastSeen);
     if (!context.mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute(
@@ -2104,6 +2154,15 @@ class _ItemListState extends State<_ItemList> {
               controller.permissions.canDeleteItems
           ? (i) => _onPermanentDelete(context, controller, i)
           : null,
+      selectionMode: controller.selectionMode,
+      selected: controller.isSelected(item.id),
+      onSelectToggle: (i) => controller.toggleSelected(i.id),
+      // Long-press enters selection only where it won't fight the reorder
+      // drag (custom sort uses ReorderableDelayedDragStartListener). The
+      // overflow "Select items" action covers the reorderable case.
+      onLongPressSelect: controller.canSelectItems && !widget.canReorder
+          ? (i) => controller.enterSelection(i.id)
+          : null,
     );
   }
 
@@ -2743,6 +2802,268 @@ class _DevLastSeenPickerDialog extends StatelessWidget {
             child: Text(opt.value ?? dev.neverSeen),
           ),
       ],
+    );
+  }
+}
+
+/// Sentinel returned by the category picker to mean "clear the category"
+/// (distinct from a null dismissal and from a real positive category id).
+const int _kBatchClearCategory = -1;
+
+/// Bottom bar shown while items are multi-selected. Surfaces the four group
+/// actions, each enabled per the controller's permission/writability gating,
+/// and drives the batch endpoints with a target/category picker + result
+/// snackbar (including the skipped count).
+class _SelectionActionBar extends StatelessWidget {
+  final ChecklistsController controller;
+
+  const _SelectionActionBar({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Material(
+      elevation: 8,
+      color: cs.surfaceContainerHigh,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: 4,
+            vertical: 4,
+          ),
+          child: Row(
+            children: [
+              _action(
+                context,
+                icon: Icons.drive_file_move_outlined,
+                label: m.checklists.batch.move,
+                enabled: controller.canBatchMove,
+                onTap: () => _move(context),
+              ),
+              _action(
+                context,
+                icon: Icons.copy_outlined,
+                label: m.checklists.batch.copy,
+                enabled: controller.canBatchCopy,
+                onTap: () => _copy(context),
+              ),
+              _action(
+                context,
+                icon: Icons.sell_outlined,
+                label: m.checklists.batch.category,
+                enabled: controller.canBatchCategory,
+                onTap: () => _category(context),
+              ),
+              _action(
+                context,
+                icon: Icons.delete_outline,
+                label: m.checklists.batch.delete,
+                enabled: controller.canBatchDelete,
+                onTap: () => _delete(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _action(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required bool enabled,
+    required VoidCallback onTap,
+  }) {
+    final cs = Theme.of(context).colorScheme;
+    final color = enabled ? cs.onSurface : cs.onSurface.withValues(alpha: 0.38);
+    return Expanded(
+      child: InkWell(
+        onTap: enabled ? onTap : null,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: color, size: 22),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(fontSize: 12, color: color),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // The batch actions are optimistic and go through the offline sync queue, so
+  // the outcome is reconciled later rather than awaited here. Each shows an
+  // immediate snackbar; move / delete / set-category also offer Undo, driven
+  // from the pre-action item snapshots captured before the selection clears.
+
+  Future<void> _move(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final affected = List.of(controller.selectedItems);
+    final targetId = await _pickTargetList(
+      context,
+      title: m.checklists.batch.moveTitle,
+    );
+    if (targetId == null) return;
+    controller.batchMove(targetId);
+    _showUndo(
+      messenger,
+      m.checklists.batch.moved(affected.length),
+      () => controller.undoBatchMove(affected),
+    );
+  }
+
+  Future<void> _copy(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final count = controller.selectedCount;
+    final targetId = await _pickTargetList(
+      context,
+      title: m.checklists.batch.copyTitle,
+    );
+    if (targetId == null) return;
+    controller.batchCopy(targetId);
+    // Copy is additive and non-destructive — no undo, just a confirmation.
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(SnackBar(content: Text(m.checklists.batch.copied(count))));
+  }
+
+  Future<void> _category(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final affected = List.of(controller.selectedItems);
+    final choice = await _pickCategory(context);
+    if (choice == null) return;
+    final categoryId = choice == _kBatchClearCategory ? null : choice;
+    controller.batchSetCategory(categoryId);
+    _showUndo(
+      messenger,
+      m.checklists.batch.categorySet(affected.length),
+      () => controller.undoBatchSetCategory(affected),
+    );
+  }
+
+  Future<void> _delete(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final affected = List.of(controller.selectedItems);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.batch.deleteConfirmTitle),
+        content: Text(m.checklists.batch.deleteConfirmBody(affected.length)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.common.delete),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    controller.batchDelete();
+    _showUndo(
+      messenger,
+      m.checklists.batch.deleted(affected.length),
+      () => controller.undoBatchDelete(affected),
+    );
+  }
+
+  /// Shows a confirmation snackbar with an Undo action for a batch operation.
+  void _showUndo(
+    ScaffoldMessengerState messenger,
+    String message,
+    VoidCallback onUndo,
+  ) {
+    messenger
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(seconds: 6),
+          action: SnackBarAction(label: m.checklists.undo, onPressed: onUndo),
+        ),
+      );
+  }
+
+  /// Target-list picker for move/copy. Excludes the synthetic All-lists entry
+  /// and, in a per-list view, the current list (a no-op target).
+  Future<int?> _pickTargetList(BuildContext context, {required String title}) {
+    final currentId = controller.isMetaMode ? null : controller.currentList?.id;
+    final others = controller.lists
+        .where((l) => l.id != kAllListsId && l.id != currentId)
+        .toList();
+    if (others.isEmpty) return Future.value(null);
+    return showDialog<int>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(title),
+        children: [
+          for (final list in others)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, list.id),
+              child: Row(
+                children: [
+                  Icon(checklistIcon(list.icon), size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(list.name)),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Category picker for set-category. Returns null on dismiss,
+  /// [_kBatchClearCategory] for "No category", or a positive category id.
+  Future<int?> _pickCategory(BuildContext context) {
+    final cats = controller.sortedCategories;
+    final cs = Theme.of(context).colorScheme;
+    return showDialog<int>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(m.checklists.batch.categoryTitle),
+        children: [
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(ctx, _kBatchClearCategory),
+            child: Row(
+              children: [
+                const Icon(Icons.block, size: 20),
+                const SizedBox(width: 12),
+                Expanded(child: Text(m.checklists.batch.clearCategory)),
+              ],
+            ),
+          ),
+          for (final cat in cats)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, cat.id),
+              child: Row(
+                children: [
+                  Icon(
+                    categoryIcon(cat.icon),
+                    size: 20,
+                    color: parseHexColor(cat.color) ?? cs.primary,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(cat.name)),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
