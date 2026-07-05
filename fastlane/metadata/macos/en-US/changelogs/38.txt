@@ -1,0 +1,11 @@
+Features
+- add a dense list layout option to fit more items on screen
+- multi-select items for group actions
+- hide actions you don't have permission for in shared houses
+- respect per-item sharing permissions from the server
+Bug Fixes
+- lists no longer hang on a spinner when your server is unreachable
+- connecting to a self-signed server no longer hangs forever
+- new list items now follow your sort order instead of jumping to the top
+
+… see full notes on GitHub.
