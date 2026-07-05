@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.20.0](https://github.com/chenasraf/pantry-flutter/compare/v0.19.0...v0.20.0) (2026-07-05)
+
+
+### Features
+
+* add a dense list layout option to fit more items on screen ([0533f43](https://github.com/chenasraf/pantry-flutter/commit/0533f438ef24dda7a278f6de5fb04e1ec3ddefa4)), closes [#86](https://github.com/chenasraf/pantry-flutter/issues/86)
+* **checklists:** multi-select items for group actions ([611c987](https://github.com/chenasraf/pantry-flutter/commit/611c9879a6f128b3ea4bbbb17f8acc920354c582))
+* hide actions you don't have permission for in shared houses ([f7b4765](https://github.com/chenasraf/pantry-flutter/commit/f7b47654684aaaaf09c5b39061e1b056a8569dbd))
+* respect per-item sharing permissions from the server ([7745c9f](https://github.com/chenasraf/pantry-flutter/commit/7745c9ffff1d7ac1ff9c7ab413d43b0b5e50f0f3))
+
+
+### Bug Fixes
+
+* lists no longer hang on a spinner when your server is unreachable ([e6391f9](https://github.com/chenasraf/pantry-flutter/commit/e6391f9a9faa94790a37fcac06359475c6c73700)), closes [#87](https://github.com/chenasraf/pantry-flutter/issues/87)
+* **login:** connecting to a self-signed server no longer hangs forever ([61731a1](https://github.com/chenasraf/pantry-flutter/commit/61731a1035bce086fae9489be87734f6fd934ec0))
+* new list items now follow your sort order instead of jumping to the top ([11ef2e4](https://github.com/chenasraf/pantry-flutter/commit/11ef2e4ccbef3934aa9c27715b202769adaecf82))
+* notification status bar icon is no longer tiny ([efb691c](https://github.com/chenasraf/pantry-flutter/commit/efb691c5cfd56d5e4509b904ad27c07937d92074))
+* tapping a list in the home-screen widget now opens that list ([9ec1292](https://github.com/chenasraf/pantry-flutter/commit/9ec1292f5404f9368b516d210481550fb1e7d9ab))
+
 ## [0.19.0](https://github.com/chenasraf/pantry-flutter/compare/v0.18.0...v0.19.0) (2026-06-28)
 
 
