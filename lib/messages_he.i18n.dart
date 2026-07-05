@@ -704,6 +704,17 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// ```
   String get bulkAddBody =>
       """הפעל את מתג מרובה והשדה הופך לתיבת קלט רב-שורתית — כל שורה הופכת לפריט נפרד. נוח כשמדביקים רשימה או רושמים קנייה שלמה בבת אחת.""";
+
+  /// ```dart
+  /// "בצע פעולה על כמה פריטים בבת אחת"
+  /// ```
+  String get bulkSelectTitle => """בצע פעולה על כמה פריטים בבת אחת""";
+
+  /// ```dart
+  /// "לחיצה ארוכה על פריט — או הקשה על ״בחירה״ בתפריט — כדי להתחיל לבחור, ואז להעביר, להעתיק, להגדיר קטגוריה או למחוק את כל מה שבחרת בבת אחת."
+  /// ```
+  String get bulkSelectBody =>
+      """לחיצה ארוכה על פריט — או הקשה על ״בחירה״ בתפריט — כדי להתחיל לבחור, ואז להעביר, להעתיק, להגדיר קטגוריה או למחוק את כל מה שבחרת בבת אחת.""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 
@@ -717,15 +728,15 @@ class DevOnboardingMessagesHe extends DevOnboardingMessages {
   String get showOnboarding => """הצג היכרות""";
 
   /// ```dart
-  /// "דמה גרסה אחרונה שנצפתה"
+  /// "תצוגה מקדימה של החדש"
   /// ```
-  String get pickLastSeenTitle => """דמה גרסה אחרונה שנצפתה""";
+  String get pickLastSeenTitle => """תצוגה מקדימה של החדש""";
 
   /// ```dart
-  /// "בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם."
+  /// "בחר את הגרסה שברצונך לראות מה חדש בה, כפי שמשתמש שמשדרג לגרסה הזו היה רואה."
   /// ```
   String get pickLastSeenBody =>
-      """בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם.""";
+      """בחר את הגרסה שברצונך לראות מה חדש בה, כפי שמשתמש שמשדרג לגרסה הזו היה רואה.""";
 
   /// ```dart
   /// "מעולם לא נצפה (משתמש חדש)"
@@ -1432,6 +1443,12 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get undo => """בטל""";
 
   /// ```dart
+  /// "בחירה"
+  /// ```
+  String get selectItems => """בחירה""";
+  BatchChecklistsMessagesHe get batch => BatchChecklistsMessagesHe(this);
+
+  /// ```dart
   /// "הצג אשפה"
   /// ```
   String get viewTrash => """הצג אשפה""";
@@ -1808,6 +1825,103 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get pickListTitle => """להוסיף לאיזו רשימה?""";
   MarkdownChecklistsMessagesHe get markdown =>
       MarkdownChecklistsMessagesHe(this);
+}
+
+class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const BatchChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד נבחר', many: '$count נבחרו')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: 'פריט אחד נבחר', many: '$count נבחרו')}""";
+
+  /// ```dart
+  /// "העברת פריטים אל"
+  /// ```
+  String get moveTitle => """העברת פריטים אל""";
+
+  /// ```dart
+  /// "העתקת פריטים אל"
+  /// ```
+  String get copyTitle => """העתקת פריטים אל""";
+
+  /// ```dart
+  /// "הגדרת קטגוריה"
+  /// ```
+  String get categoryTitle => """הגדרת קטגוריה""";
+
+  /// ```dart
+  /// "ללא קטגוריה"
+  /// ```
+  String get clearCategory => """ללא קטגוריה""";
+
+  /// ```dart
+  /// "העבר"
+  /// ```
+  String get move => """העבר""";
+
+  /// ```dart
+  /// "העתק"
+  /// ```
+  String get copy => """העתק""";
+
+  /// ```dart
+  /// "קטגוריה"
+  /// ```
+  String get category => """קטגוריה""";
+
+  /// ```dart
+  /// "מחק"
+  /// ```
+  String get delete => """מחק""";
+
+  /// ```dart
+  /// "למחוק פריטים?"
+  /// ```
+  String get deleteConfirmTitle => """למחוק פריטים?""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'למחוק פריט אחד שנבחר? ניתן לשחזר אותו מהאשפה.', many: 'למחוק $count פריטים שנבחרו? ניתן לשחזר אותם מהאשפה.')}"
+  /// ```
+  String deleteConfirmBody(int count) =>
+      """${_plural(count, one: 'למחוק פריט אחד שנבחר? ניתן לשחזר אותו מהאשפה.', many: 'למחוק $count פריטים שנבחרו? ניתן לשחזר אותם מהאשפה.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד הועבר', many: '$count פריטים הועברו')}"
+  /// ```
+  String moved(int count) =>
+      """${_plural(count, one: 'פריט אחד הועבר', many: '$count פריטים הועברו')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד הועתק', many: '$count פריטים הועתקו')}"
+  /// ```
+  String copied(int count) =>
+      """${_plural(count, one: 'פריט אחד הועתק', many: '$count פריטים הועתקו')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד נמחק', many: '$count פריטים נמחקו')}"
+  /// ```
+  String deleted(int count) =>
+      """${_plural(count, one: 'פריט אחד נמחק', many: '$count פריטים נמחקו')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
+  /// ```
+  String categorySet(int count) =>
+      """${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד דולג', many: '$count דולגו')}"
+  /// ```
+  String skipped(int count) =>
+      """${_plural(count, one: 'פריט אחד דולג', many: '$count דולגו')}""";
+
+  /// ```dart
+  /// "משהו השתבש. נסה שוב."
+  /// ```
+  String get failed => """משהו השתבש. נסה שוב.""";
 }
 
 class ViewItemChecklistsMessagesHe extends ViewItemChecklistsMessages {
@@ -3269,10 +3383,13 @@ Map<String, String> get messagesHeMap => {
   """onboarding.bulkAddTitle""": """הוספת פריטים רבים בבת אחת""",
   """onboarding.bulkAddBody""":
       """הפעל את מתג מרובה והשדה הופך לתיבת קלט רב-שורתית — כל שורה הופכת לפריט נפרד. נוח כשמדביקים רשימה או רושמים קנייה שלמה בבת אחת.""",
+  """onboarding.bulkSelectTitle""": """בצע פעולה על כמה פריטים בבת אחת""",
+  """onboarding.bulkSelectBody""":
+      """לחיצה ארוכה על פריט — או הקשה על ״בחירה״ בתפריט — כדי להתחיל לבחור, ואז להעביר, להעתיק, להגדיר קטגוריה או למחוק את כל מה שבחרת בבת אחת.""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
-  """onboarding.dev.pickLastSeenTitle""": """דמה גרסה אחרונה שנצפתה""",
+  """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":
-      """בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם.""",
+      """בחר את הגרסה שברצונך לראות מה חדש בה, כפי שמשתמש שמשדרג לגרסה הזו היה רואה.""",
   """onboarding.dev.neverSeen""": """מעולם לא נצפה (משתמש חדש)""",
   """onboarding.dev.forceAllFeatures""": """הפעל את כל התכונות""",
   """onboarding.dev.sendTestNotification""": """שלח התראת בדיקה""",
@@ -3400,6 +3517,17 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemMarkedDone""": """הפריט סומן כהושלם""",
   """checklists.itemRemoved""": """הפריט הוסר""",
   """checklists.undo""": """בטל""",
+  """checklists.selectItems""": """בחירה""",
+  """checklists.batch.moveTitle""": """העברת פריטים אל""",
+  """checklists.batch.copyTitle""": """העתקת פריטים אל""",
+  """checklists.batch.categoryTitle""": """הגדרת קטגוריה""",
+  """checklists.batch.clearCategory""": """ללא קטגוריה""",
+  """checklists.batch.move""": """העבר""",
+  """checklists.batch.copy""": """העתק""",
+  """checklists.batch.category""": """קטגוריה""",
+  """checklists.batch.delete""": """מחק""",
+  """checklists.batch.deleteConfirmTitle""": """למחוק פריטים?""",
+  """checklists.batch.failed""": """משהו השתבש. נסה שוב.""",
   """checklists.viewTrash""": """הצג אשפה""",
   """checklists.exitTrash""": """צא מהאשפה""",
   """checklists.showAddedBy""": """הצג מי הוסיף כל פריט""",

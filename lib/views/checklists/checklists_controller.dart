@@ -36,6 +36,27 @@ ChecklistList allListsSentinel(int houseId) => ChecklistList(
   hideProgressHero: PrefsService.instance.allListsProgressHeroHidden,
 );
 
+/// Replaces items in [current] with their same-id counterpart from [updated],
+/// leaving order and any non-matching items untouched. Backs the move (meta
+/// view) and set-category reconciliation, where the server returns the affected
+/// items to overlay. Pure, so it can be unit tested without the controller.
+List<ListItem> reconcileReplaceById(
+  List<ListItem> current,
+  List<ListItem> updated,
+) {
+  final byId = {for (final i in updated) i.id: i};
+  return [for (final i in current) byId[i.id] ?? i];
+}
+
+/// Drops every item in [current] whose id is in [removeIds]. Backs the delete
+/// reconciliation and the per-list move (moved items leave the source view).
+/// Pure, so it can be unit tested without the controller.
+List<ListItem> reconcileRemoveIds(List<ListItem> current, Set<int> removeIds) =>
+    [
+      for (final i in current)
+        if (!removeIds.contains(i.id)) i,
+    ];
+
 /// Index at which a newly added [item] should slot into [items] so the
 /// optimistic insert matches the order the server returns for [sortBy].
 ///
@@ -213,6 +234,72 @@ class ChecklistsController extends ChangeNotifier {
 
   String? _error;
   String? get error => _error;
+
+  // -- Multi-select (group actions) --
+  //
+  // Selection is UI-only local state layered over `_items`. Gated on the
+  // `batch-operations` feature; the batch endpoints are house-scoped and
+  // online-only, mirroring the single-item cross-list move/copy.
+
+  bool _selectionMode = false;
+  bool get selectionMode => _selectionMode;
+
+  final Set<int> _selectedItemIds = {};
+  Set<int> get selectedItemIds => _selectedItemIds;
+  int get selectedCount => _selectedItemIds.length;
+
+  /// Whether group actions are available at all in this view.
+  bool get canSelectItems => hasFeature('batch-operations') && !_isTrashMode;
+
+  /// The currently-selected items, resolved against the live item list. Ids
+  /// whose item has since left the view are silently dropped.
+  List<ListItem> get selectedItems {
+    final byId = {for (final i in _items) i.id: i};
+    return [
+      for (final id in _selectedItemIds)
+        if (byId[id] != null) byId[id]!,
+    ];
+  }
+
+  void enterSelection([int? seedId]) {
+    if (!canSelectItems) return;
+    _selectionMode = true;
+    if (seedId != null) _selectedItemIds.add(seedId);
+    notifyListeners();
+  }
+
+  void exitSelection() {
+    if (!_selectionMode && _selectedItemIds.isEmpty) return;
+    _selectionMode = false;
+    _selectedItemIds.clear();
+    notifyListeners();
+  }
+
+  void toggleSelected(int id) {
+    if (!_selectedItemIds.remove(id)) _selectedItemIds.add(id);
+    // Leaving selection mode when the last item is deselected keeps the UI
+    // from stranding an empty selection bar.
+    if (_selectedItemIds.isEmpty) _selectionMode = false;
+    notifyListeners();
+  }
+
+  void selectAllVisible(Iterable<int> ids) {
+    _selectedItemIds.addAll(ids);
+    if (_selectedItemIds.isNotEmpty) _selectionMode = true;
+    notifyListeners();
+  }
+
+  bool isSelected(int id) => _selectedItemIds.contains(id);
+
+  /// Move / delete / set-category require every selected item's source list to
+  /// be writable; copy only needs read access, so it allows read-only sources.
+  bool get _allSelectedWritable =>
+      selectedItems.isNotEmpty && selectedItems.every(isItemWritable);
+
+  bool get canBatchMove => _allSelectedWritable && permissions.canMoveItems;
+  bool get canBatchDelete => _allSelectedWritable && permissions.canDeleteItems;
+  bool get canBatchCategory => _allSelectedWritable && permissions.canEditLists;
+  bool get canBatchCopy => selectedItems.isNotEmpty && permissions.canCopyItems;
 
   ChecklistService get _checklistService => ChecklistService.instance;
   CategoryService get _categoryService => CategoryService.instance;
@@ -986,6 +1073,220 @@ class ChecklistsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // -- Batch (group) actions --
+  //
+  // House-scoped and offline-capable: each applies a best-effort optimistic
+  // mutation, enqueues a single `batch` SyncOp, and clears the selection. The
+  // authoritative server envelope is reconciled later in [_onSyncApplied].
+  // Client-side gating only lets writable items into move/delete/category, so
+  // in practice `skipped` covers just items that vanished server-side — which
+  // optimistic removal already matches.
+
+  void _cacheCurrentItems() {
+    final list = _currentList;
+    if (list != null && !isMetaMode) {
+      _checklistService.cacheItems(list.id, List.of(_items));
+    }
+  }
+
+  void _enqueueBatch(
+    String action,
+    List<int> itemIds, {
+    Map<String, dynamic> extra = const {},
+  }) {
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.batch,
+        houseId: houseId,
+        body: {'batchAction': action, 'itemIds': itemIds, ...extra},
+        createdAt: _now(),
+      ),
+    );
+  }
+
+  void batchMove(int targetListId) {
+    final ids = _selectedItemIds.toList();
+    if (ids.isEmpty) return;
+    // Per-list view: the moved items leave immediately. Meta view keeps them
+    // (their listId only changes once the server confirms via _onSyncApplied).
+    if (!isMetaMode) {
+      _items = reconcileRemoveIds(_items, ids.toSet());
+      _cacheCurrentItems();
+    }
+    _enqueueBatch('move', ids, extra: {'targetListId': targetListId});
+    exitSelection();
+  }
+
+  void batchCopy(int targetListId) {
+    final ids = _selectedItemIds.toList();
+    if (ids.isEmpty) return;
+    // Copies live on another list (or arrive in the meta view only once the
+    // server returns them), so there's nothing to show optimistically.
+    _enqueueBatch('copy', ids, extra: {'targetListId': targetListId});
+    exitSelection();
+  }
+
+  void batchDelete({bool permanent = false}) {
+    final ids = _selectedItemIds.toList();
+    if (ids.isEmpty) return;
+    _items = reconcileRemoveIds(_items, ids.toSet());
+    _cacheCurrentItems();
+    _enqueueBatch('delete', ids, extra: {if (permanent) 'permanent': true});
+    exitSelection();
+  }
+
+  void batchSetCategory(int? categoryId) {
+    final ids = _selectedItemIds.toList();
+    if (ids.isEmpty) return;
+    final idSet = ids.toSet();
+    _items = [
+      for (final i in _items)
+        idSet.contains(i.id)
+            ? i.copyWith(
+                categoryId: categoryId,
+                clearCategory: categoryId == null,
+                updatedAt: _now(),
+              )
+            : i,
+    ];
+    _cacheCurrentItems();
+    _enqueueBatch('category', ids, extra: {'categoryId': categoryId});
+    exitSelection();
+  }
+
+  /// Reconciles the authoritative envelope from a flushed `batch` op back into
+  /// the view — see [_onSyncApplied].
+  void _reconcileBatchApplied(SyncOp op, PantryBatchResult result) {
+    switch (op.body['batchAction'] as String?) {
+      case 'move':
+        if (isMetaMode) {
+          // Adopt the returned items (now carrying their new listId).
+          _items = reconcileReplaceById(_items, result.items);
+        } else {
+          // Direction-aware: a returned item now living on the current list
+          // moved *in* (keep/insert it — this is how an undo-move-back lands);
+          // one living elsewhere moved *out* (remove it).
+          final currentId = _currentList?.id;
+          final movedOut = {
+            for (final i in result.items)
+              if (i.listId != currentId) i.id,
+          };
+          var next = reconcileRemoveIds(_items, movedOut);
+          final present = {for (final i in next) i.id};
+          final incoming = [
+            for (final i in result.items)
+              if (i.listId == currentId) i,
+          ];
+          next = reconcileReplaceById(next, incoming);
+          for (final i in incoming) {
+            if (!present.contains(i.id)) next.insert(_insertIndexFor(i), i);
+          }
+          _items = next;
+          _cacheCurrentItems();
+        }
+      case 'copy':
+        if (isMetaMode && result.items.isNotEmpty) {
+          final existing = {for (final i in _items) i.id};
+          final fresh = [
+            for (final i in result.items)
+              if (!existing.contains(i.id)) i,
+          ];
+          if (fresh.isNotEmpty) _items = [...fresh, ..._items];
+        }
+      case 'category':
+        _items = reconcileReplaceById(_items, result.items);
+        _cacheCurrentItems();
+      case 'delete':
+        // Optimistic removal already applied; nothing to overlay.
+        break;
+    }
+    notifyListeners();
+  }
+
+  // -- Batch undo --
+  //
+  // Each reverses a group action from the pre-action item snapshots the view
+  // captured, reusing the same batch ops (or per-id restore for delete).
+
+  /// Return every item to the list it came from. Items may have originated on
+  /// different lists, so the reverse move is grouped per source list.
+  void undoBatchMove(List<ListItem> items) {
+    if (items.isEmpty) return;
+    if (isMetaMode) {
+      _items = reconcileReplaceById(_items, items);
+    } else {
+      final existing = {for (final i in _items) i.id};
+      for (final it in items) {
+        if (it.listId == _currentList?.id && !existing.contains(it.id)) {
+          _items.insert(_insertIndexFor(it), it);
+        }
+      }
+      _cacheCurrentItems();
+    }
+    final bySource = <int, List<int>>{};
+    for (final it in items) {
+      bySource.putIfAbsent(it.listId, () => []).add(it.id);
+    }
+    for (final entry in bySource.entries) {
+      _enqueueBatch('move', entry.value, extra: {'targetListId': entry.key});
+    }
+    notifyListeners();
+  }
+
+  /// Restore every soft-deleted item. There's no batch-restore endpoint, so
+  /// this enqueues a per-id restore (the same op the single-item undo uses).
+  void undoBatchDelete(List<ListItem> items) {
+    if (items.isEmpty || _isTrashMode) return;
+    final existing = {for (final i in _items) i.id};
+    for (final item in items) {
+      if (existing.contains(item.id)) continue;
+      final restored = item.copyWith(clearDeletedAt: true, updatedAt: _now());
+      _items.insert(_insertIndexFor(restored), restored);
+      _sync.enqueue(
+        SyncOp(
+          uuid: SyncIds.newOpUuid(),
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.restore,
+          houseId: houseId,
+          parentId: item.listId,
+          entityId: item.id,
+          createdAt: _now(),
+        ),
+      );
+    }
+    _cacheCurrentItems();
+    notifyListeners();
+  }
+
+  /// Return every item to its original category. Items may have had different
+  /// categories, so the reverse is grouped per original category.
+  void undoBatchSetCategory(List<ListItem> items) {
+    if (items.isEmpty) return;
+    final byId = {for (final it in items) it.id: it};
+    _items = [
+      for (final i in _items)
+        if (byId[i.id] case final original?)
+          i.copyWith(
+            categoryId: original.categoryId,
+            clearCategory: original.categoryId == null,
+            updatedAt: _now(),
+          )
+        else
+          i,
+    ];
+    _cacheCurrentItems();
+    final byCategory = <int?, List<int>>{};
+    for (final it in items) {
+      byCategory.putIfAbsent(it.categoryId, () => []).add(it.id);
+    }
+    for (final entry in byCategory.entries) {
+      _enqueueBatch('category', entry.value, extra: {'categoryId': entry.key});
+    }
+    notifyListeners();
+  }
+
   Future<ListItem> addItem({
     required String name,
     String? description,
@@ -1422,6 +1723,10 @@ class ChecklistsController extends ChangeNotifier {
         }
       case SyncEntity.checklistItem:
         final entity = applied.entity;
+        if (entity is PantryBatchResult) {
+          _reconcileBatchApplied(applied.op, entity);
+          return;
+        }
         if (entity is ListItem) {
           final meta = isMetaMode;
           // If toggle caused soft-delete (deleteOnDone), drop it.

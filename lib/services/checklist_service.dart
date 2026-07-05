@@ -301,6 +301,60 @@ class ChecklistService {
     );
   }
 
+  // -- Batch (group) item operations --
+  //
+  // House-scoped: a selection can span multiple source lists, so the server
+  // resolves each item's own source list. All return a [PantryBatchResult]
+  // envelope; `skipped` carries ids the server refused for access reasons.
+
+  Future<PantryBatchResult> batchMoveItems(
+    int houseId, {
+    required List<int> itemIds,
+    required int targetListId,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, PantryBatchResult>(
+      '/houses/$houseId/items/batch/move',
+      body: {'itemIds': itemIds, 'targetListId': targetListId},
+      fromJson: (data) => PantryBatchResult.fromJson(data),
+    );
+  }
+
+  Future<PantryBatchResult> batchCopyItems(
+    int houseId, {
+    required List<int> itemIds,
+    required int targetListId,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, PantryBatchResult>(
+      '/houses/$houseId/items/batch/copy',
+      body: {'itemIds': itemIds, 'targetListId': targetListId},
+      fromJson: (data) => PantryBatchResult.fromJson(data),
+    );
+  }
+
+  Future<PantryBatchResult> batchDeleteItems(
+    int houseId, {
+    required List<int> itemIds,
+    bool permanent = false,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, PantryBatchResult>(
+      '/houses/$houseId/items/batch/delete',
+      body: {'itemIds': itemIds, if (permanent) 'permanent': true},
+      fromJson: (data) => PantryBatchResult.fromJson(data),
+    );
+  }
+
+  Future<PantryBatchResult> batchSetCategory(
+    int houseId, {
+    required List<int> itemIds,
+    required int? categoryId,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, PantryBatchResult>(
+      '/houses/$houseId/items/batch/category',
+      body: {'itemIds': itemIds, 'categoryId': categoryId},
+      fromJson: (data) => PantryBatchResult.fromJson(data),
+    );
+  }
+
   Future<ListItem> createItem(
     int houseId,
     int listId, {

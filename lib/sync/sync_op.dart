@@ -9,6 +9,12 @@ enum SyncOpKind {
   restore,
   permanentDelete,
   emptyTrash,
+
+  /// House-scoped group action over many items (move / copy / delete /
+  /// set-category). Unlike every other kind this targets a *list* of items
+  /// carried in `body['itemIds']` rather than a single [SyncOp.entityId]; the
+  /// specific action is `body['batchAction']`.
+  batch,
 }
 
 class SyncOp {

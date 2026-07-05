@@ -254,3 +254,30 @@ class ListItem {
     deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
   );
 }
+
+/// Envelope returned by the house-scoped batch item endpoints (move / copy /
+/// delete / category). [items] are the affected items to reconcile against
+/// local state (empty for delete); [skipped] are ids the server refused for
+/// access reasons — not errors, the rest of the batch still succeeded.
+class PantryBatchResult {
+  final bool success;
+  final List<ListItem> items;
+  final List<int> skipped;
+
+  const PantryBatchResult({
+    required this.success,
+    required this.items,
+    required this.skipped,
+  });
+
+  factory PantryBatchResult.fromJson(Map<String, dynamic> json) =>
+      PantryBatchResult(
+        success: json['success'] as bool? ?? true,
+        items: ((json['items'] as List?) ?? const [])
+            .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        skipped: ((json['skipped'] as List?) ?? const [])
+            .map((e) => e as int)
+            .toList(),
+      );
+}

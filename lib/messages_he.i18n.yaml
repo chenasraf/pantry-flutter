@@ -120,10 +120,12 @@ onboarding:
   allListsBody: "פתח את התצוגה כל הרשימות ממחליף הרשימות כדי לראות פריטים מכל הרשימות ביחד. כשמוסיפים פריט מכאן, הטופס שואל לאיזו רשימה להוסיף אותו — בוחרים אותה מצ'יפ הרשימה."
   bulkAddTitle: "הוספת פריטים רבים בבת אחת"
   bulkAddBody: "הפעל את מתג מרובה והשדה הופך לתיבת קלט רב-שורתית — כל שורה הופכת לפריט נפרד. נוח כשמדביקים רשימה או רושמים קנייה שלמה בבת אחת."
+  bulkSelectTitle: "בצע פעולה על כמה פריטים בבת אחת"
+  bulkSelectBody: "לחיצה ארוכה על פריט — או הקשה על ״בחירה״ בתפריט — כדי להתחיל לבחור, ואז להעביר, להעתיק, להגדיר קטגוריה או למחוק את כל מה שבחרת בבת אחת."
   dev:
     showOnboarding: "הצג היכרות"
-    pickLastSeenTitle: "דמה גרסה אחרונה שנצפתה"
-    pickLastSeenBody: "בחר באיזו גרסה המכשיר יעמיד פנים שהוא ראה לאחרונה, וההיכרות תרוץ משם."
+    pickLastSeenTitle: "תצוגה מקדימה של החדש"
+    pickLastSeenBody: "בחר את הגרסה שברצונך לראות מה חדש בה, כפי שמשתמש שמשדרג לגרסה הזו היה רואה."
     neverSeen: "מעולם לא נצפה (משתמש חדש)"
     forceAllFeatures: "הפעל את כל התכונות"
     sendTestNotification: "שלח התראת בדיקה"
@@ -265,6 +267,25 @@ checklists:
   itemMarkedDone: הפריט סומן כהושלם
   itemRemoved: הפריט הוסר
   undo: בטל
+  selectItems: בחירה
+  batch:
+    selected(int count): "${_plural(count, one: 'פריט אחד נבחר', many: '$count נבחרו')}"
+    moveTitle: העברת פריטים אל
+    copyTitle: העתקת פריטים אל
+    categoryTitle: הגדרת קטגוריה
+    clearCategory: ללא קטגוריה
+    move: העבר
+    copy: העתק
+    category: קטגוריה
+    delete: מחק
+    deleteConfirmTitle: למחוק פריטים?
+    deleteConfirmBody(int count): "${_plural(count, one: 'למחוק פריט אחד שנבחר? ניתן לשחזר אותו מהאשפה.', many: 'למחוק $count פריטים שנבחרו? ניתן לשחזר אותם מהאשפה.')}"
+    moved(int count): "${_plural(count, one: 'פריט אחד הועבר', many: '$count פריטים הועברו')}"
+    copied(int count): "${_plural(count, one: 'פריט אחד הועתק', many: '$count פריטים הועתקו')}"
+    deleted(int count): "${_plural(count, one: 'פריט אחד נמחק', many: '$count פריטים נמחקו')}"
+    categorySet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
+    skipped(int count): "${_plural(count, one: 'פריט אחד דולג', many: '$count דולגו')}"
+    failed: משהו השתבש. נסה שוב.
   viewTrash: הצג אשפה
   exitTrash: צא מהאשפה
   showAddedBy: הצג מי הוסיף כל פריט

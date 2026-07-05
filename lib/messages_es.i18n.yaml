@@ -120,10 +120,12 @@ onboarding:
   allListsBody: "Abre la vista Todas las listas desde el selector para ver los elementos de todas tus listas juntos. Cuando añades un elemento desde aquí, el formulario te pide a qué lista enviarlo — elígela en el chip de lista."
   bulkAddTitle: "Añade varios artículos a la vez"
   bulkAddBody: "Activa el interruptor Múltiple y el campo se convierte en un cuadro de varias líneas — cada línea se convierte en un artículo. Práctico cuando pegas una lista o anotas toda la compra de golpe."
+  bulkSelectTitle: "Actúa sobre varios artículos a la vez"
+  bulkSelectBody: "Mantén pulsado un artículo —o toca Seleccionar en el menú— para empezar a seleccionar y luego mover, copiar, asignar una categoría o eliminar todo lo elegido de una vez."
   dev:
     showOnboarding: "Mostrar introducción"
-    pickLastSeenTitle: "Simular última versión vista"
-    pickLastSeenBody: "Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí."
+    pickLastSeenTitle: "Ver novedades"
+    pickLastSeenBody: "Elige la versión cuyas novedades quieres ver, tal como las vería quien actualiza a esa versión."
     neverSeen: "Nunca vista (usuario nuevo)"
     forceAllFeatures: "Forzar todas las funciones"
     sendTestNotification: "Enviar notificación de prueba"
@@ -265,6 +267,25 @@ checklists:
   itemMarkedDone: "Artículo marcado como hecho"
   itemRemoved: "Artículo eliminado"
   undo: Deshacer
+  selectItems: Seleccionar
+  batch:
+    selected(int count): "${_plural(count, one: '1 seleccionado', many: '$count seleccionados')}"
+    moveTitle: Mover artículos a
+    copyTitle: Copiar artículos a
+    categoryTitle: Establecer categoría
+    clearCategory: Sin categoría
+    move: Mover
+    copy: Copiar
+    category: Categoría
+    delete: Eliminar
+    deleteConfirmTitle: "¿Eliminar artículos?"
+    deleteConfirmBody(int count): "${_plural(count, one: '¿Eliminar 1 artículo seleccionado? Puedes restaurarlo desde la papelera.', many: '¿Eliminar $count artículos seleccionados? Puedes restaurarlos desde la papelera.')}"
+    moved(int count): "${_plural(count, one: '1 artículo movido', many: '$count artículos movidos')}"
+    copied(int count): "${_plural(count, one: '1 artículo copiado', many: '$count artículos copiados')}"
+    deleted(int count): "${_plural(count, one: '1 artículo eliminado', many: '$count artículos eliminados')}"
+    categorySet(int count): "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
+    skipped(int count): "${_plural(count, one: '1 omitido', many: '$count omitidos')}"
+    failed: "Algo salió mal. Inténtalo de nuevo."
   viewTrash: Ver papelera
   exitTrash: Salir de la papelera
   showAddedBy: Mostrar quién añadió cada artículo

@@ -704,6 +704,17 @@ Password: pantry-rocks""";
   /// ```
   String get bulkAddBody =>
       """Flip on the Multiple toggle and the input grows into a multi-line box — every line becomes its own item. Handy when you're pasting a list or jotting down a whole grocery run.""";
+
+  /// ```dart
+  /// "Act on many items at once"
+  /// ```
+  String get bulkSelectTitle => """Act on many items at once""";
+
+  /// ```dart
+  /// "Long-press an item — or tap Select items in the menu — to start selecting, then move, copy, set a category, or delete everything you picked in one go."
+  /// ```
+  String get bulkSelectBody =>
+      """Long-press an item — or tap Select items in the menu — to start selecting, then move, copy, set a category, or delete everything you picked in one go.""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 
@@ -717,15 +728,15 @@ class DevOnboardingMessages {
   String get showOnboarding => """Show onboarding""";
 
   /// ```dart
-  /// "Simulate last-seen version"
+  /// "Preview what's new"
   /// ```
-  String get pickLastSeenTitle => """Simulate last-seen version""";
+  String get pickLastSeenTitle => """Preview what's new""";
 
   /// ```dart
-  /// "Choose which version the device should pretend it last saw, then the onboarding will run from there."
+  /// "Pick the version whose what's-new you want to see, as an upgrader to that version would."
   /// ```
   String get pickLastSeenBody =>
-      """Choose which version the device should pretend it last saw, then the onboarding will run from there.""";
+      """Pick the version whose what's-new you want to see, as an upgrader to that version would.""";
 
   /// ```dart
   /// "Never seen (new user)"
@@ -1429,6 +1440,12 @@ class ChecklistsMessages {
   String get undo => """Undo""";
 
   /// ```dart
+  /// "Select items"
+  /// ```
+  String get selectItems => """Select items""";
+  BatchChecklistsMessages get batch => BatchChecklistsMessages(this);
+
+  /// ```dart
   /// "View trash"
   /// ```
   String get viewTrash => """View trash""";
@@ -1802,6 +1819,103 @@ class ChecklistsMessages {
   /// ```
   String get pickListTitle => """Add to which list?""";
   MarkdownChecklistsMessages get markdown => MarkdownChecklistsMessages(this);
+}
+
+class BatchChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const BatchChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "${_plural(count, one: '1 selected', many: '$count selected')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 selected', many: '$count selected')}""";
+
+  /// ```dart
+  /// "Move items to"
+  /// ```
+  String get moveTitle => """Move items to""";
+
+  /// ```dart
+  /// "Copy items to"
+  /// ```
+  String get copyTitle => """Copy items to""";
+
+  /// ```dart
+  /// "Set category"
+  /// ```
+  String get categoryTitle => """Set category""";
+
+  /// ```dart
+  /// "No category"
+  /// ```
+  String get clearCategory => """No category""";
+
+  /// ```dart
+  /// "Move"
+  /// ```
+  String get move => """Move""";
+
+  /// ```dart
+  /// "Copy"
+  /// ```
+  String get copy => """Copy""";
+
+  /// ```dart
+  /// "Category"
+  /// ```
+  String get category => """Category""";
+
+  /// ```dart
+  /// "Delete"
+  /// ```
+  String get delete => """Delete""";
+
+  /// ```dart
+  /// "Delete items?"
+  /// ```
+  String get deleteConfirmTitle => """Delete items?""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Delete 1 selected item? You can restore it from the trash.', many: 'Delete $count selected items? You can restore them from the trash.')}"
+  /// ```
+  String deleteConfirmBody(int count) =>
+      """${_plural(count, one: 'Delete 1 selected item? You can restore it from the trash.', many: 'Delete $count selected items? You can restore them from the trash.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Moved 1 item', many: 'Moved $count items')}"
+  /// ```
+  String moved(int count) =>
+      """${_plural(count, one: 'Moved 1 item', many: 'Moved $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Copied 1 item', many: 'Copied $count items')}"
+  /// ```
+  String copied(int count) =>
+      """${_plural(count, one: 'Copied 1 item', many: 'Copied $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Deleted 1 item', many: 'Deleted $count items')}"
+  /// ```
+  String deleted(int count) =>
+      """${_plural(count, one: 'Deleted 1 item', many: 'Deleted $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
+  /// ```
+  String categorySet(int count) =>
+      """${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 skipped', many: '$count skipped')}"
+  /// ```
+  String skipped(int count) =>
+      """${_plural(count, one: '1 skipped', many: '$count skipped')}""";
+
+  /// ```dart
+  /// "Something went wrong. Please try again."
+  /// ```
+  String get failed => """Something went wrong. Please try again.""";
 }
 
 class ViewItemChecklistsMessages {
@@ -3265,10 +3379,13 @@ Password: pantry-rocks""",
   """onboarding.bulkAddTitle""": """Add many items at once""",
   """onboarding.bulkAddBody""":
       """Flip on the Multiple toggle and the input grows into a multi-line box — every line becomes its own item. Handy when you're pasting a list or jotting down a whole grocery run.""",
+  """onboarding.bulkSelectTitle""": """Act on many items at once""",
+  """onboarding.bulkSelectBody""":
+      """Long-press an item — or tap Select items in the menu — to start selecting, then move, copy, set a category, or delete everything you picked in one go.""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
-  """onboarding.dev.pickLastSeenTitle""": """Simulate last-seen version""",
+  """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":
-      """Choose which version the device should pretend it last saw, then the onboarding will run from there.""",
+      """Pick the version whose what's-new you want to see, as an upgrader to that version would.""",
   """onboarding.dev.neverSeen""": """Never seen (new user)""",
   """onboarding.dev.forceAllFeatures""": """Force-enable all features""",
   """onboarding.dev.sendTestNotification""": """Send test notification""",
@@ -3399,6 +3516,17 @@ Password: pantry-rocks""",
   """checklists.itemMarkedDone""": """Item marked as done""",
   """checklists.itemRemoved""": """Item removed""",
   """checklists.undo""": """Undo""",
+  """checklists.selectItems""": """Select items""",
+  """checklists.batch.moveTitle""": """Move items to""",
+  """checklists.batch.copyTitle""": """Copy items to""",
+  """checklists.batch.categoryTitle""": """Set category""",
+  """checklists.batch.clearCategory""": """No category""",
+  """checklists.batch.move""": """Move""",
+  """checklists.batch.copy""": """Copy""",
+  """checklists.batch.category""": """Category""",
+  """checklists.batch.delete""": """Delete""",
+  """checklists.batch.deleteConfirmTitle""": """Delete items?""",
+  """checklists.batch.failed""": """Something went wrong. Please try again.""",
   """checklists.viewTrash""": """View trash""",
   """checklists.exitTrash""": """Exit trash""",
   """checklists.showAddedBy""": """Show who added each item""",

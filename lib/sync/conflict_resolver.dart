@@ -31,6 +31,10 @@ class ConflictResolver {
         case SyncOpKind.permanentDelete:
         case SyncOpKind.emptyTrash:
         case SyncOpKind.create:
+        // Batch ops are house-scoped over many items; a single record's
+        // tombstone doesn't invalidate the group action (the server skips
+        // any gone member itself).
+        case SyncOpKind.batch:
           return true;
       }
     }

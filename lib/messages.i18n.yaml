@@ -120,10 +120,12 @@ onboarding:
   allListsBody: "Open the All lists view from the list switcher to see items from every list together. When you add an item from here, the form asks which list to put it in — pick it from the List chip."
   bulkAddTitle: "Add many items at once"
   bulkAddBody: "Flip on the Multiple toggle and the input grows into a multi-line box — every line becomes its own item. Handy when you're pasting a list or jotting down a whole grocery run."
+  bulkSelectTitle: "Act on many items at once"
+  bulkSelectBody: "Long-press an item — or tap Select items in the menu — to start selecting, then move, copy, set a category, or delete everything you picked in one go."
   dev:
     showOnboarding: "Show onboarding"
-    pickLastSeenTitle: "Simulate last-seen version"
-    pickLastSeenBody: "Choose which version the device should pretend it last saw, then the onboarding will run from there."
+    pickLastSeenTitle: "Preview what's new"
+    pickLastSeenBody: "Pick the version whose what's-new you want to see, as an upgrader to that version would."
     neverSeen: "Never seen (new user)"
     forceAllFeatures: "Force-enable all features"
     sendTestNotification: "Send test notification"
@@ -265,6 +267,25 @@ checklists:
   itemMarkedDone: Item marked as done
   itemRemoved: Item removed
   undo: Undo
+  selectItems: Select items
+  batch:
+    selected(int count): "${_plural(count, one: '1 selected', many: '$count selected')}"
+    moveTitle: Move items to
+    copyTitle: Copy items to
+    categoryTitle: Set category
+    clearCategory: No category
+    move: Move
+    copy: Copy
+    category: Category
+    delete: Delete
+    deleteConfirmTitle: Delete items?
+    deleteConfirmBody(int count): "${_plural(count, one: 'Delete 1 selected item? You can restore it from the trash.', many: 'Delete $count selected items? You can restore them from the trash.')}"
+    moved(int count): "${_plural(count, one: 'Moved 1 item', many: 'Moved $count items')}"
+    copied(int count): "${_plural(count, one: 'Copied 1 item', many: 'Copied $count items')}"
+    deleted(int count): "${_plural(count, one: 'Deleted 1 item', many: 'Deleted $count items')}"
+    categorySet(int count): "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
+    skipped(int count): "${_plural(count, one: '1 skipped', many: '$count skipped')}"
+    failed: Something went wrong. Please try again.
   viewTrash: View trash
   exitTrash: Exit trash
   showAddedBy: Show who added each item

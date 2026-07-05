@@ -708,6 +708,17 @@ Contraseña: pantry-rocks""";
   /// ```
   String get bulkAddBody =>
       """Activa el interruptor Múltiple y el campo se convierte en un cuadro de varias líneas — cada línea se convierte en un artículo. Práctico cuando pegas una lista o anotas toda la compra de golpe.""";
+
+  /// ```dart
+  /// "Actúa sobre varios artículos a la vez"
+  /// ```
+  String get bulkSelectTitle => """Actúa sobre varios artículos a la vez""";
+
+  /// ```dart
+  /// "Mantén pulsado un artículo —o toca Seleccionar en el menú— para empezar a seleccionar y luego mover, copiar, asignar una categoría o eliminar todo lo elegido de una vez."
+  /// ```
+  String get bulkSelectBody =>
+      """Mantén pulsado un artículo —o toca Seleccionar en el menú— para empezar a seleccionar y luego mover, copiar, asignar una categoría o eliminar todo lo elegido de una vez.""";
   DevOnboardingMessagesEs get dev => DevOnboardingMessagesEs(this);
 }
 
@@ -721,15 +732,15 @@ class DevOnboardingMessagesEs extends DevOnboardingMessages {
   String get showOnboarding => """Mostrar introducción""";
 
   /// ```dart
-  /// "Simular última versión vista"
+  /// "Ver novedades"
   /// ```
-  String get pickLastSeenTitle => """Simular última versión vista""";
+  String get pickLastSeenTitle => """Ver novedades""";
 
   /// ```dart
-  /// "Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí."
+  /// "Elige la versión cuyas novedades quieres ver, tal como las vería quien actualiza a esa versión."
   /// ```
   String get pickLastSeenBody =>
-      """Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí.""";
+      """Elige la versión cuyas novedades quieres ver, tal como las vería quien actualiza a esa versión.""";
 
   /// ```dart
   /// "Nunca vista (usuario nuevo)"
@@ -1440,6 +1451,12 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get undo => """Deshacer""";
 
   /// ```dart
+  /// "Seleccionar"
+  /// ```
+  String get selectItems => """Seleccionar""";
+  BatchChecklistsMessagesEs get batch => BatchChecklistsMessagesEs(this);
+
+  /// ```dart
   /// "Ver papelera"
   /// ```
   String get viewTrash => """Ver papelera""";
@@ -1819,6 +1836,103 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get pickListTitle => """¿A qué lista añadir?""";
   MarkdownChecklistsMessagesEs get markdown =>
       MarkdownChecklistsMessagesEs(this);
+}
+
+class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
+  final ChecklistsMessagesEs _parent;
+  const BatchChecklistsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "${_plural(count, one: '1 seleccionado', many: '$count seleccionados')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 seleccionado', many: '$count seleccionados')}""";
+
+  /// ```dart
+  /// "Mover artículos a"
+  /// ```
+  String get moveTitle => """Mover artículos a""";
+
+  /// ```dart
+  /// "Copiar artículos a"
+  /// ```
+  String get copyTitle => """Copiar artículos a""";
+
+  /// ```dart
+  /// "Establecer categoría"
+  /// ```
+  String get categoryTitle => """Establecer categoría""";
+
+  /// ```dart
+  /// "Sin categoría"
+  /// ```
+  String get clearCategory => """Sin categoría""";
+
+  /// ```dart
+  /// "Mover"
+  /// ```
+  String get move => """Mover""";
+
+  /// ```dart
+  /// "Copiar"
+  /// ```
+  String get copy => """Copiar""";
+
+  /// ```dart
+  /// "Categoría"
+  /// ```
+  String get category => """Categoría""";
+
+  /// ```dart
+  /// "Eliminar"
+  /// ```
+  String get delete => """Eliminar""";
+
+  /// ```dart
+  /// "¿Eliminar artículos?"
+  /// ```
+  String get deleteConfirmTitle => """¿Eliminar artículos?""";
+
+  /// ```dart
+  /// "${_plural(count, one: '¿Eliminar 1 artículo seleccionado? Puedes restaurarlo desde la papelera.', many: '¿Eliminar $count artículos seleccionados? Puedes restaurarlos desde la papelera.')}"
+  /// ```
+  String deleteConfirmBody(int count) =>
+      """${_plural(count, one: '¿Eliminar 1 artículo seleccionado? Puedes restaurarlo desde la papelera.', many: '¿Eliminar $count artículos seleccionados? Puedes restaurarlos desde la papelera.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo movido', many: '$count artículos movidos')}"
+  /// ```
+  String moved(int count) =>
+      """${_plural(count, one: '1 artículo movido', many: '$count artículos movidos')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo copiado', many: '$count artículos copiados')}"
+  /// ```
+  String copied(int count) =>
+      """${_plural(count, one: '1 artículo copiado', many: '$count artículos copiados')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo eliminado', many: '$count artículos eliminados')}"
+  /// ```
+  String deleted(int count) =>
+      """${_plural(count, one: '1 artículo eliminado', many: '$count artículos eliminados')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
+  /// ```
+  String categorySet(int count) =>
+      """${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 omitido', many: '$count omitidos')}"
+  /// ```
+  String skipped(int count) =>
+      """${_plural(count, one: '1 omitido', many: '$count omitidos')}""";
+
+  /// ```dart
+  /// "Algo salió mal. Inténtalo de nuevo."
+  /// ```
+  String get failed => """Algo salió mal. Inténtalo de nuevo.""";
 }
 
 class ViewItemChecklistsMessagesEs extends ViewItemChecklistsMessages {
@@ -3299,10 +3413,13 @@ Contraseña: pantry-rocks""",
   """onboarding.bulkAddTitle""": """Añade varios artículos a la vez""",
   """onboarding.bulkAddBody""":
       """Activa el interruptor Múltiple y el campo se convierte en un cuadro de varias líneas — cada línea se convierte en un artículo. Práctico cuando pegas una lista o anotas toda la compra de golpe.""",
+  """onboarding.bulkSelectTitle""": """Actúa sobre varios artículos a la vez""",
+  """onboarding.bulkSelectBody""":
+      """Mantén pulsado un artículo —o toca Seleccionar en el menú— para empezar a seleccionar y luego mover, copiar, asignar una categoría o eliminar todo lo elegido de una vez.""",
   """onboarding.dev.showOnboarding""": """Mostrar introducción""",
-  """onboarding.dev.pickLastSeenTitle""": """Simular última versión vista""",
+  """onboarding.dev.pickLastSeenTitle""": """Ver novedades""",
   """onboarding.dev.pickLastSeenBody""":
-      """Elige qué versión debe fingir el dispositivo que vio por última vez, y la introducción comenzará desde ahí.""",
+      """Elige la versión cuyas novedades quieres ver, tal como las vería quien actualiza a esa versión.""",
   """onboarding.dev.neverSeen""": """Nunca vista (usuario nuevo)""",
   """onboarding.dev.forceAllFeatures""": """Forzar todas las funciones""",
   """onboarding.dev.sendTestNotification""":
@@ -3438,6 +3555,17 @@ Contraseña: pantry-rocks""",
   """checklists.itemMarkedDone""": """Artículo marcado como hecho""",
   """checklists.itemRemoved""": """Artículo eliminado""",
   """checklists.undo""": """Deshacer""",
+  """checklists.selectItems""": """Seleccionar""",
+  """checklists.batch.moveTitle""": """Mover artículos a""",
+  """checklists.batch.copyTitle""": """Copiar artículos a""",
+  """checklists.batch.categoryTitle""": """Establecer categoría""",
+  """checklists.batch.clearCategory""": """Sin categoría""",
+  """checklists.batch.move""": """Mover""",
+  """checklists.batch.copy""": """Copiar""",
+  """checklists.batch.category""": """Categoría""",
+  """checklists.batch.delete""": """Eliminar""",
+  """checklists.batch.deleteConfirmTitle""": """¿Eliminar artículos?""",
+  """checklists.batch.failed""": """Algo salió mal. Inténtalo de nuevo.""",
   """checklists.viewTrash""": """Ver papelera""",
   """checklists.exitTrash""": """Salir de la papelera""",
   """checklists.showAddedBy""": """Mostrar quién añadió cada artículo""",

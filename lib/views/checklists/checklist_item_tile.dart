@@ -71,6 +71,16 @@ class ChecklistItemTile extends StatefulWidget {
   /// redundant.
   final ItemListBadge? listBadge;
 
+  /// Multi-select (group actions) state. When [selectionMode] is true, tapping
+  /// the row toggles [selected] via [onSelectToggle] instead of running the
+  /// normal tap action, swipe actions are suppressed, and the leading control
+  /// becomes a selection circle. When [selectionMode] is false and
+  /// [onLongPressSelect] is non-null, long-pressing the row enters selection.
+  final bool selectionMode;
+  final bool selected;
+  final ValueChanged<ListItem>? onSelectToggle;
+  final ValueChanged<ListItem>? onLongPressSelect;
+
   const ChecklistItemTile({
     super.key,
     required this.item,
@@ -90,6 +100,10 @@ class ChecklistItemTile extends StatefulWidget {
     this.addedByUserId,
     this.addedByDisplayName,
     this.listBadge,
+    this.selectionMode = false,
+    this.selected = false,
+    this.onSelectToggle,
+    this.onLongPressSelect,
   });
 
   @override
@@ -125,92 +139,100 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     Color tintedSurface(Color tint, double alpha) =>
         Color.alphaBlend(tint.withValues(alpha: alpha), cs.surface);
 
+    final selecting = widget.selectionMode;
+
     final actions = <SwipeAction>[];
-    if (widget.trashMode) {
-      if (widget.onRestore != null) {
-        actions.add(
-          SwipeAction(
-            icon: Icons.restore_from_trash,
-            label: m.checklists.restoreItem,
-            tint: const Color(0xFF5FBF8A),
-            background: tintedSurface(const Color(0xFF5FBF8A), 0.16),
-            onPressed: () => widget.onRestore!(item),
-          ),
-        );
-      }
-      if (widget.onPermanentDelete != null) {
-        actions.add(
-          SwipeAction(
-            icon: Icons.delete_forever,
-            label: m.checklists.permanentlyDeleteItem,
-            tint: const Color(0xFFEF7878),
-            background: tintedSurface(const Color(0xFFEF7878), 0.2),
-            onPressed: () => widget.onPermanentDelete!(item),
-          ),
-        );
-      }
-    } else {
-      // Drop any swipe action the row tap already performs, so swipe never
-      // duplicates the tap. When tap does nothing, both View and Edit show.
-      if (tapAction != 'view') {
-        actions.add(
-          SwipeAction(
-            icon: Icons.visibility_outlined,
-            label: m.checklists.swipeView,
-            tint: const Color(0xFF5CB3EC),
-            background: tintedSurface(const Color(0xFF5CB3EC), 0.16),
-            onPressed: () => widget.onView(item),
-          ),
-        );
-      }
-      if (tapAction != 'edit' && widget.onEdit != null) {
-        actions.add(
-          SwipeAction(
-            icon: Icons.edit_outlined,
-            label: m.checklists.swipeEdit,
-            tint: cs.onSurfaceVariant,
-            background: tintedSurface(cs.onSurface, 0.07),
-            onPressed: () => widget.onEdit!(item),
-          ),
-        );
-      }
-      if (widget.onMove != null) {
-        actions.add(
-          SwipeAction(
-            icon: Icons.drive_file_move_outlined,
-            label: m.checklists.swipeMove,
-            tint: const Color(0xFFD9B441),
-            background: tintedSurface(const Color(0xFFD9B441), 0.18),
-            onPressed: () => widget.onMove!(item),
-          ),
-        );
-      }
-      if (widget.onCopy != null) {
-        actions.add(
-          SwipeAction(
-            icon: Icons.copy_outlined,
-            label: m.checklists.swipeCopy,
-            tint: const Color(0xFF7AAE8E),
-            background: tintedSurface(const Color(0xFF7AAE8E), 0.18),
-            onPressed: () => widget.onCopy!(item),
-          ),
-        );
-      }
-      if (widget.onDelete != null) {
-        actions.add(
-          SwipeAction(
-            icon: Icons.delete_outline,
-            label: m.checklists.swipeDelete,
-            tint: const Color(0xFFEF7878),
-            background: tintedSurface(const Color(0xFFEF7878), 0.2),
-            onPressed: () => widget.onDelete!(item),
-          ),
-        );
+    // Swipe actions are suppressed while selecting — the row tap toggles
+    // selection and there's no foreground gesture to reveal them.
+    if (!selecting) {
+      if (widget.trashMode) {
+        if (widget.onRestore != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.restore_from_trash,
+              label: m.checklists.restoreItem,
+              tint: const Color(0xFF5FBF8A),
+              background: tintedSurface(const Color(0xFF5FBF8A), 0.16),
+              onPressed: () => widget.onRestore!(item),
+            ),
+          );
+        }
+        if (widget.onPermanentDelete != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.delete_forever,
+              label: m.checklists.permanentlyDeleteItem,
+              tint: const Color(0xFFEF7878),
+              background: tintedSurface(const Color(0xFFEF7878), 0.2),
+              onPressed: () => widget.onPermanentDelete!(item),
+            ),
+          );
+        }
+      } else {
+        // Drop any swipe action the row tap already performs, so swipe never
+        // duplicates the tap. When tap does nothing, both View and Edit show.
+        if (tapAction != 'view') {
+          actions.add(
+            SwipeAction(
+              icon: Icons.visibility_outlined,
+              label: m.checklists.swipeView,
+              tint: const Color(0xFF5CB3EC),
+              background: tintedSurface(const Color(0xFF5CB3EC), 0.16),
+              onPressed: () => widget.onView(item),
+            ),
+          );
+        }
+        if (tapAction != 'edit' && widget.onEdit != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.edit_outlined,
+              label: m.checklists.swipeEdit,
+              tint: cs.onSurfaceVariant,
+              background: tintedSurface(cs.onSurface, 0.07),
+              onPressed: () => widget.onEdit!(item),
+            ),
+          );
+        }
+        if (widget.onMove != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.drive_file_move_outlined,
+              label: m.checklists.swipeMove,
+              tint: const Color(0xFFD9B441),
+              background: tintedSurface(const Color(0xFFD9B441), 0.18),
+              onPressed: () => widget.onMove!(item),
+            ),
+          );
+        }
+        if (widget.onCopy != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.copy_outlined,
+              label: m.checklists.swipeCopy,
+              tint: const Color(0xFF7AAE8E),
+              background: tintedSurface(const Color(0xFF7AAE8E), 0.18),
+              onPressed: () => widget.onCopy!(item),
+            ),
+          );
+        }
+        if (widget.onDelete != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.delete_outline,
+              label: m.checklists.swipeDelete,
+              tint: const Color(0xFFEF7878),
+              background: tintedSurface(const Color(0xFFEF7878), 0.2),
+              onPressed: () => widget.onDelete!(item),
+            ),
+          );
+        }
       }
     }
 
     final VoidCallback? rowTap;
-    if (widget.trashMode) {
+    if (selecting) {
+      rowTap = () => widget.onSelectToggle?.call(item);
+    } else if (widget.trashMode) {
       rowTap = () => widget.onView(item);
     } else {
       rowTap = switch (tapAction) {
@@ -225,6 +247,14 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       };
     }
 
+    // Long-press enters selection, but only when the row isn't already in
+    // selection mode and the caller opted in (reorder contexts pass null so
+    // the drag-start listener keeps long-press).
+    final VoidCallback? rowLongPress =
+        !selecting && widget.onLongPressSelect != null
+        ? () => widget.onLongPressSelect!(item)
+        : null;
+
     final content = _RowContent(
       item: item,
       category: cat,
@@ -238,14 +268,21 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       listBadge: widget.listBadge,
       onCheckboxTap: widget.canCheck ? _toggleAndCloseSwipe : null,
       onRowTap: rowTap,
+      onRowLongPress: rowLongPress,
+      selectionMode: selecting,
+      selected: widget.selected,
     );
 
-    final swipe = SwipeRevealRow(
-      key: _swipeKey,
-      actions: actions,
-      dense: dense,
-      child: content,
-    );
+    // In selection mode the row toggles selection and shows no swipe actions,
+    // so skip the SwipeRevealRow wrapper entirely.
+    final Widget body = selecting
+        ? content
+        : SwipeRevealRow(
+            key: _swipeKey,
+            actions: actions,
+            dense: dense,
+            child: content,
+          );
 
     if (widget.isCardsView) {
       // Foreground border paints on top of the (already-clipped) child so
@@ -263,10 +300,10 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
           borderRadius: BorderRadius.circular(16),
         ),
         clipBehavior: Clip.antiAlias,
-        child: swipe,
+        child: body,
       );
     }
-    return swipe;
+    return body;
   }
 
   static Color? _parseColor(String hex) {
@@ -291,6 +328,9 @@ class _RowContent extends StatelessWidget {
   final ItemListBadge? listBadge;
   final VoidCallback? onCheckboxTap;
   final VoidCallback? onRowTap;
+  final VoidCallback? onRowLongPress;
+  final bool selectionMode;
+  final bool selected;
 
   const _RowContent({
     required this.item,
@@ -305,6 +345,9 @@ class _RowContent extends StatelessWidget {
     required this.listBadge,
     required this.onCheckboxTap,
     required this.onRowTap,
+    required this.onRowLongPress,
+    required this.selectionMode,
+    required this.selected,
   });
 
   @override
@@ -326,24 +369,40 @@ class _RowContent extends StatelessWidget {
     // whole padded area toggles the item — taps just above, below, or beside
     // the box no longer fall through to the row's Edit action. The box keeps
     // its 24px look but sits in a 48px-tall (Material minimum) hit area.
-    final checkbox = _Checkbox(
-      checked: checked,
-      trashMode: trashMode,
-      accent: cs.primary,
-      onTap: onCheckboxTap,
-      disabled: onCheckboxTap == null && !trashMode,
-      // Shorter tap target in dense mode so single-line rows don't reserve
-      // the full 48px Material height.
-      hitHeight: dense ? 40 : 48,
-      padding: checkboxAtEnd
-          ? const EdgeInsetsDirectional.only(start: 14, end: 16)
-          : const EdgeInsetsDirectional.only(start: 18, end: 14),
-    );
+    final checkboxPadding = checkboxAtEnd
+        ? const EdgeInsetsDirectional.only(start: 14, end: 16)
+        : const EdgeInsetsDirectional.only(start: 18, end: 14);
+
+    // In selection mode the done-checkbox is replaced by a selection circle;
+    // the whole row toggles selection, so the circle itself needs no tap.
+    final Widget leadingControl = selectionMode
+        ? Padding(
+            padding: checkboxPadding,
+            child: Icon(
+              selected ? Icons.check_circle : Icons.radio_button_unchecked,
+              size: 24,
+              color: selected ? cs.primary : cs.onSurfaceVariant,
+            ),
+          )
+        : _Checkbox(
+            checked: checked,
+            trashMode: trashMode,
+            accent: cs.primary,
+            onTap: onCheckboxTap,
+            disabled: onCheckboxTap == null && !trashMode,
+            // Shorter tap target in dense mode so single-line rows don't
+            // reserve the full 48px Material height.
+            hitHeight: dense ? 40 : 48,
+            padding: checkboxPadding,
+          );
 
     return Material(
-      color: cs.surface,
+      color: selectionMode && selected
+          ? Color.alphaBlend(cs.primary.withValues(alpha: 0.12), cs.surface)
+          : cs.surface,
       child: InkWell(
         onTap: onRowTap,
+        onLongPress: onRowLongPress,
         child: Stack(
           children: [
             if (isCardsView)
@@ -363,7 +422,7 @@ class _RowContent extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  if (!checkboxAtEnd) checkbox,
+                  if (!checkboxAtEnd) leadingControl,
                   if (item.imageFileId != null) ...[
                     _ItemThumb(
                       houseId: houseId,
@@ -398,7 +457,7 @@ class _RowContent extends StatelessWidget {
                       size: 26,
                     ),
                   ],
-                  if (checkboxAtEnd) checkbox,
+                  if (checkboxAtEnd) leadingControl,
                 ],
               ),
             ),
