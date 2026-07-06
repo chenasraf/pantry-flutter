@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.1](https://github.com/chenasraf/pantry-flutter/compare/v0.20.0...v0.20.1) (2026-07-06)
+
+
+### Bug Fixes
+
+* no longer freezes on startup ([3b61983](https://github.com/chenasraf/pantry-flutter/commit/3b619831a16e85f1373acafdc35173c1a3102438))
+
 ## [0.20.0](https://github.com/chenasraf/pantry-flutter/compare/v0.19.0...v0.20.0) (2026-07-05)
 
 
