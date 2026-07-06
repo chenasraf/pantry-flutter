@@ -415,6 +415,17 @@ class _BodyState extends State<_Body> {
                   // a thin refresh bar instead of flashing empty.
                   child: controller.isLoading
                       ? const Center(child: CircularProgressIndicator())
+                      : controller.itemsUnavailable
+                      // Fetch failed with nothing cached (typically offline) —
+                      // show a retry affordance rather than the empty state,
+                      // which otherwise reads as "my data is gone" (issue #92).
+                      ? _ErrorView(
+                          message: m.checklists.failedToLoadItems,
+                          onRetry: () {
+                            final cur = controller.currentList;
+                            if (cur != null) controller.selectList(cur);
+                          },
+                        )
                       : isEmptyList
                       ? _NoItemsEmptyState()
                       : (filteredItems.isEmpty

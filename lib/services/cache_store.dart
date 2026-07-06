@@ -12,6 +12,14 @@ class CacheStore {
   final String fileName;
   Map<String, dynamic> _data = {};
 
+  /// The write currently draining to disk, or null when idle. All mutations
+  /// funnel through it so writes never overlap.
+  Future<void>? _writing;
+
+  /// Set whenever [_data] changes while a write is already in flight, so the
+  /// drain loop knows to encode-and-write one more time with the latest state.
+  bool _dirty = false;
+
   CacheStore(this.fileName);
 
   // -- Disk I/O --
@@ -31,12 +39,38 @@ class CacheStore {
     }
   }
 
-  Future<void> _save() async {
+  /// Persist [_data] to disk, serializing concurrent callers.
+  ///
+  /// Mutations fire many un-awaited [_save] calls in bursts (e.g. warming
+  /// every list's item cache on load). Writing them concurrently to the same
+  /// file raced: each call encodes a snapshot at its own start, and whichever
+  /// `writeAsString` *finished last* won — so an earlier, smaller snapshot
+  /// could clobber a newer one and silently drop just-cached keys (issue #92).
+  /// Funnelling every write through a single drain loop guarantees writes never
+  /// overlap and the final on-disk copy always reflects the latest [_data].
+  Future<void> _save() {
+    _dirty = true;
+    return _writing ??= _drain();
+  }
+
+  /// Completes once every pending mutation has been written to disk. Useful to
+  /// guarantee durability at a checkpoint (e.g. app pause) and to await the
+  /// serialized drain in tests.
+  Future<void> flush() => _writing ?? Future<void>.value();
+
+  Future<void> _drain() async {
     try {
-      final file = await _file;
-      await file.writeAsString(jsonEncode(_data));
-    } catch (e) {
-      debugPrint('[CacheStore:$fileName] Failed to save: $e');
+      while (_dirty) {
+        _dirty = false;
+        try {
+          final file = await _file;
+          await file.writeAsString(jsonEncode(_data));
+        } catch (e) {
+          debugPrint('[CacheStore:$fileName] Failed to save: $e');
+        }
+      }
+    } finally {
+      _writing = null;
     }
   }
 

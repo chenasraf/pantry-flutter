@@ -6,6 +6,7 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/models/member.dart';
+import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
@@ -235,6 +236,14 @@ class ChecklistsController extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  /// True when the current view is showing nothing because the item fetch
+  /// failed and there was no cached snapshot to fall back on — as opposed to a
+  /// genuinely empty list. Lets the view surface an offline/retry state instead
+  /// of the "Nothing on this list yet" empty state, which otherwise reads as
+  /// "my data is gone" while offline (issue #92).
+  bool get itemsUnavailable =>
+      _error != null && _items.isEmpty && !_isLoading && !_isTrashMode;
+
   // -- Multi-select (group actions) --
   //
   // Selection is UI-only local state layered over `_items`. Gated on the
@@ -410,16 +419,23 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   /// Best-effort fetch + cache of items for every list the user isn't
-  /// currently viewing, so they're available offline. Runs only while the
-  /// sync queue is settled, so it can't clobber a background list's optimistic
-  /// state, skips optimistic (temp-id) lists, and stops at the first failure
-  /// (most likely going offline mid-pass).
+  /// currently viewing, so they're available offline (issue #87, #92). Skips
+  /// optimistic (temp-id) lists and any list with a pending op — caching a
+  /// server snapshot there would clobber the un-acked optimistic change. A
+  /// per-list fetch failure is skipped (a transient error on one list must not
+  /// starve the rest), but going offline stops the pass immediately since every
+  /// remaining fetch would just wait out the request timeout.
   Future<void> _precacheListItems() async {
     if (!_sync.isOnline) return;
-    if (_sync.pendingCount.value != 0) return;
+    // `null` means a house-scoped batch op is queued whose affected lists we
+    // can't resolve — stay conservative and skip the warm-up entirely.
+    final pendingLists = _sync.pendingListIds(houseId);
+    if (pendingLists == null) return;
     final currentId = _currentList?.id;
     for (final list in _lists) {
       if (list.id == currentId || list.id < 0) continue;
+      if (pendingLists.contains(list.id)) continue;
+      if (!_sync.isOnline) return;
       try {
         final items = await _checklistService.getItems(
           houseId,
@@ -428,12 +444,39 @@ class ChecklistsController extends ChangeNotifier {
         );
         // A mutation may have landed mid-fetch — don't overwrite a now-pending
         // list's cache with a snapshot that predates the optimistic change.
-        if (_sync.pendingCount.value != 0) return;
+        if (_sync.pendingListIds(houseId)?.contains(list.id) ?? true) continue;
         _checklistService.cacheItems(list.id, items);
+      } on OfflineException {
+        // Lost connectivity mid-pass — the rest would only time out.
+        return;
       } catch (e) {
         debugPrint('[ChecklistsController] Pre-cache failed (${list.id}): $e');
-        return;
       }
+    }
+
+    // Warm the All-lists aggregate too, so it opens offline like any list. The
+    // snapshot spans every list, so only cache it when nothing is pending —
+    // otherwise it would predate an un-acked optimistic change. Skipped when
+    // the aggregate is the current view (already fetched above) or the server
+    // doesn't offer it.
+    if (currentId == kAllListsId ||
+        !hasFeature('checklist-all-view') ||
+        !_sync.isOnline ||
+        pendingLists.isNotEmpty) {
+      return;
+    }
+    try {
+      final all = await _checklistService.getHouseItems(
+        houseId,
+        sortBy: _sortBy == 'custom' ? 'newest' : _sortBy,
+      );
+      if (_sync.pendingListIds(houseId)?.isEmpty ?? false) {
+        _checklistService.cacheItems(kAllListsId, all);
+      }
+    } on OfflineException {
+      return;
+    } catch (e) {
+      debugPrint('[ChecklistsController] Pre-cache (all-lists) failed: $e');
     }
   }
 
@@ -475,6 +518,14 @@ class ChecklistsController extends ChangeNotifier {
         final savedId = _checklistService.selectedListId;
         if (savedId == kAllListsId && hasFeature('checklist-all-view')) {
           _currentList = allListsSentinel(houseId);
+          // The aggregate has its own cache slot (kAllListsId), so the
+          // All-lists view restores offline just like a concrete list.
+          final cachedItems = _checklistService.getCachedItems(kAllListsId);
+          if (cachedItems != null) {
+            _items = cachedItems;
+            _isLoading = false;
+            notifyListeners();
+          }
         } else {
           _currentList =
               (savedId != null
@@ -527,10 +578,20 @@ class ChecklistsController extends ChangeNotifier {
     }
 
     if (list.id == kAllListsId) {
-      // On the first entry we have no prior items; subsequent refreshes keep
-      // the previous list visible so the user sees an in-place swap rather
-      // than an empty-state flash.
-      if (_items.isEmpty) {
+      // The aggregate is cached under the sentinel id so the All-lists view
+      // opens with data while offline instead of an infinite spinner or an
+      // empty state (issue #92). Show it first, then refresh in place.
+      final cachedAll = _checklistService.getCachedItems(kAllListsId);
+      if (cachedAll != null) {
+        _items = cachedAll;
+        _error = null;
+        _isLoading = false;
+        _isRefreshing = refreshInPlace;
+        notifyListeners();
+      } else if (_items.isEmpty) {
+        // On the first entry we have no prior items; subsequent refreshes keep
+        // the previous list visible so the user sees an in-place swap rather
+        // than an empty-state flash.
         _isLoading = true;
         _isRefreshing = false;
         notifyListeners();
@@ -545,6 +606,8 @@ class ChecklistsController extends ChangeNotifier {
         );
         if (_currentList?.id == kAllListsId && !_isTrashMode) {
           _items = _overlayPending(fresh);
+          _error = null;
+          _cacheVisibleItems();
           _isLoading = false;
           _isRefreshing = false;
           notifyListeners();
@@ -564,6 +627,7 @@ class ChecklistsController extends ChangeNotifier {
     final cached = _checklistService.getCachedItems(list.id);
     if (cached != null) {
       _items = cached;
+      _error = null;
       _isLoading = false;
       _isRefreshing = false;
       notifyListeners();
@@ -593,6 +657,7 @@ class ChecklistsController extends ChangeNotifier {
         // `_items` belongs to a different list otherwise.
         final reconciled = _overlayPending(freshItems);
         _items = reconciled;
+        _error = null;
         _checklistService.cacheItems(list.id, reconciled);
         _isLoading = false;
         _isRefreshing = false;
@@ -703,8 +768,12 @@ class ChecklistsController extends ChangeNotifier {
     unawaited(_persistSortPref(sort));
 
     if (_currentList != null) {
-      if (!isMetaMode) _checklistService.invalidateItems();
+      // Only the current list's cached snapshot is now stale-ordered; drop just
+      // that one so the other lists keep their offline caches (issue #92). The
+      // re-warm below refreshes them in the new order while online.
+      if (!isMetaMode) _checklistService.invalidateItemsFor(_currentList!.id);
       await selectList(_currentList!, refreshInPlace: true);
+      unawaited(_precacheListItems());
     }
   }
 
@@ -896,8 +965,11 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    // `load()` re-fetches the current list and re-warms every other list's
+    // offline cache via `_precacheListItems`. Wiping the non-current caches
+    // here (the old behavior) raced that warm-up and, if the user went offline
+    // before it finished, left those lists showing nothing (issue #92).
     await load();
-    _checklistService.invalidateItems(keepListId: _currentList?.id);
   }
 
   Future<ChecklistList> createList({
@@ -1048,6 +1120,7 @@ class ChecklistsController extends ChangeNotifier {
       // it just changed listId.
       final idx = _items.indexWhere((i) => i.id == item.id);
       if (idx != -1) _items[idx] = updated;
+      _cacheVisibleItems();
     } else {
       _items.removeWhere((i) => i.id == item.id);
       _checklistService.cacheItems(_currentList!.id, List.of(_items));
@@ -1069,6 +1142,7 @@ class ChecklistsController extends ChangeNotifier {
       // Meta view aggregates across lists — surface the new copy alongside
       // the original.
       _items = [created, ..._items];
+      _cacheVisibleItems();
     }
     notifyListeners();
   }
@@ -1082,12 +1156,18 @@ class ChecklistsController extends ChangeNotifier {
   // in practice `skipped` covers just items that vanished server-side — which
   // optimistic removal already matches.
 
-  void _cacheCurrentItems() {
-    final list = _currentList;
-    if (list != null && !isMetaMode) {
-      _checklistService.cacheItems(list.id, List.of(_items));
-    }
+  /// Persist the current `_items` snapshot to the cache slot backing the
+  /// active view: the concrete list's slot, or the shared All-lists aggregate
+  /// slot ([kAllListsId]) in meta mode. Routing every item-cache write through
+  /// here keeps the All-lists view — and optimistic edits made from it —
+  /// available offline alongside the per-list caches (issue #92).
+  void _cacheVisibleItems([int? listId]) {
+    final key = isMetaMode ? kAllListsId : (listId ?? _currentList?.id);
+    if (key == null) return;
+    _checklistService.cacheItems(key, List.of(_items));
   }
+
+  void _cacheCurrentItems() => _cacheVisibleItems();
 
   void _enqueueBatch(
     String action,
@@ -1350,12 +1430,10 @@ class ChecklistsController extends ChangeNotifier {
       updatedAt: _now(),
     );
     _items.insert(_insertIndexFor(synthetic), synthetic);
-    // In meta mode `_items` is the aggregate across every list — caching it
-    // under a single listId would clobber that list's per-list cache. Skip
-    // the cache write; the target list will refetch when next opened.
-    if (!isMetaMode) {
-      _checklistService.cacheItems(listId, List.of(_items));
-    }
+    // In meta mode `_items` is the aggregate across every list, so it's cached
+    // under the All-lists slot rather than the target list's — the target list
+    // refetches (and re-caches its own slot) when next opened.
+    _cacheVisibleItems(listId);
     notifyListeners();
     _sync.enqueue(
       SyncOp(
@@ -1427,9 +1505,7 @@ class ChecklistsController extends ChangeNotifier {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = updated;
-      if (!isMetaMode) {
-        _checklistService.cacheItems(item.listId, List.of(_items));
-      }
+      _cacheVisibleItems(item.listId);
       notifyListeners();
     }
     _sync.enqueue(
@@ -1479,9 +1555,7 @@ class ChecklistsController extends ChangeNotifier {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = updated;
-      if (!isMetaMode) {
-        _checklistService.cacheItems(item.listId, List.of(_items));
-      }
+      _cacheVisibleItems(item.listId);
       notifyListeners();
     }
     return updated;
@@ -1493,18 +1567,14 @@ class ChecklistsController extends ChangeNotifier {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = item.copyWith(clearImage: true, updatedAt: _now());
-      if (!isMetaMode) {
-        _checklistService.cacheItems(item.listId, List.of(_items));
-      }
+      _cacheVisibleItems(item.listId);
       notifyListeners();
     }
   }
 
   Future<void> deleteItem(ListItem item) async {
     _items.removeWhere((i) => i.id == item.id);
-    if (!isMetaMode) {
-      _checklistService.cacheItems(item.listId, List.of(_items));
-    }
+    _cacheVisibleItems(item.listId);
     notifyListeners();
     _sync.enqueue(
       SyncOp(
@@ -1524,9 +1594,7 @@ class ChecklistsController extends ChangeNotifier {
     _items.removeWhere((i) => i.id == item.id);
     if (!_isTrashMode) {
       _items.add(item.copyWith(clearDeletedAt: true, updatedAt: _now()));
-      if (!isMetaMode) {
-        _checklistService.cacheItems(item.listId, List.of(_items));
-      }
+      _cacheVisibleItems(item.listId);
     }
     notifyListeners();
     _sync.enqueue(
@@ -1544,8 +1612,8 @@ class ChecklistsController extends ChangeNotifier {
 
   Future<void> permanentlyDeleteItem(ListItem item) async {
     _items.removeWhere((i) => i.id == item.id);
-    if (!_isTrashMode && !isMetaMode) {
-      _checklistService.cacheItems(item.listId, List.of(_items));
+    if (!_isTrashMode) {
+      _cacheVisibleItems(item.listId);
     }
     notifyListeners();
     _sync.enqueue(
@@ -1673,9 +1741,7 @@ class ChecklistsController extends ChangeNotifier {
     if (index == -1) return;
 
     _items[index] = item.copyWith(done: !item.done, updatedAt: _now());
-    if (!isMetaMode) {
-      _checklistService.cacheItems(item.listId, List.of(_items));
-    }
+    _cacheVisibleItems(item.listId);
     notifyListeners();
 
     _sync.enqueue(
@@ -1728,13 +1794,10 @@ class ChecklistsController extends ChangeNotifier {
           return;
         }
         if (entity is ListItem) {
-          final meta = isMetaMode;
           // If toggle caused soft-delete (deleteOnDone), drop it.
           if (entity.deletedAt != null) {
             _items.removeWhere((i) => i.id == entity.id || i.id == tempId);
-            if (!meta && _currentList?.id == entity.listId) {
-              _checklistService.cacheItems(entity.listId, List.of(_items));
-            }
+            _cacheVisibleItems();
             notifyListeners();
             return;
           }
@@ -1742,9 +1805,7 @@ class ChecklistsController extends ChangeNotifier {
             final i = _items.indexWhere((it) => it.id == tempId);
             if (i != -1) {
               _items[i] = entity;
-              if (!meta) {
-                _checklistService.cacheItems(entity.listId, List.of(_items));
-              }
+              _cacheVisibleItems();
               notifyListeners();
               return;
             }
@@ -1752,9 +1813,7 @@ class ChecklistsController extends ChangeNotifier {
           final j = _items.indexWhere((it) => it.id == entity.id);
           if (j != -1) {
             _items[j] = entity;
-            if (!meta) {
-              _checklistService.cacheItems(entity.listId, List.of(_items));
-            }
+            _cacheVisibleItems();
             notifyListeners();
           }
         }

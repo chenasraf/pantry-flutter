@@ -43,6 +43,13 @@ class ChecklistService {
     );
   }
 
+  /// Drop only the cached items for [listId], leaving every other list's
+  /// offline cache intact. Used when a change affects a single list (e.g. an
+  /// item-sort change re-orders just the current list) so we don't wipe the
+  /// offline snapshots the other lists rely on (issue #92).
+  void invalidateItemsFor(int listId) =>
+      cache.removeKey('$_itemsPrefix:$listId');
+
   // -- API --
 
   Future<List<ChecklistList>> getLists(int houseId) async {

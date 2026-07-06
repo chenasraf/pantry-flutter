@@ -163,6 +163,37 @@ class SyncManager {
     return out;
   }
 
+  /// List ids in [houseId] that still have an un-acked op in the queue —
+  /// either a list-level op (create/update/…) or an item op whose `parentId`
+  /// names the list. Pre-caching uses this to skip only the lists whose cached
+  /// snapshot would clobber a pending optimistic change, instead of bailing the
+  /// whole warm-up when any op is queued (issue #92).
+  ///
+  /// Returns `null` when the queue holds a house-scoped batch op: those address
+  /// items across lists via the body, so the affected lists can't be resolved
+  /// cheaply and callers should treat every list as potentially pending.
+  Set<int>? pendingListIds(int houseId) {
+    final out = <int>{};
+    for (final raw in _queue.all()) {
+      if (raw.houseId != houseId) continue;
+      final op = _remap.rewrite(raw);
+      if (op.op == SyncOpKind.batch) return null;
+      switch (op.entity) {
+        case SyncEntity.checklistItem:
+          final pid = op.parentId;
+          if (pid != null) out.add(pid);
+        case SyncEntity.checklistList:
+          final id = op.effectiveEntityId;
+          if (id != null) out.add(id);
+          if (raw.tempEntityId != null) out.add(raw.tempEntityId!);
+        case SyncEntity.category:
+        case SyncEntity.note:
+          break;
+      }
+    }
+    return out;
+  }
+
   /// Enqueue an op. Returns immediately. If online, kicks the flush loop.
   void enqueue(SyncOp op) {
     _queue.enqueue(op);
