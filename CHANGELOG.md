@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.2](https://github.com/chenasraf/pantry-flutter/compare/v0.20.1...v0.20.2) (2026-07-06)
+
+
+### Bug Fixes
+
+* correctly package icons to prevent startup freeze ([68eaf0f](https://github.com/chenasraf/pantry-flutter/commit/68eaf0fa60c91cb92dd86218509232fb851ab7b4))
+
 ## [0.20.1](https://github.com/chenasraf/pantry-flutter/compare/v0.20.0...v0.20.1) (2026-07-06)
 
 
