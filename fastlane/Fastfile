@@ -197,6 +197,7 @@ platform :ios do
       platform: "ios",
       version: version_info[:name],
       live: false,
+      initial_build_number: 0,
     )
     latest.to_i >= version_info[:build].to_i
   rescue => e
@@ -309,6 +310,7 @@ platform :mac do
       platform: "osx",
       version: version_info[:name],
       live: false,
+      initial_build_number: 0,
     )
     latest.to_i >= macos_build_number
   rescue => e
