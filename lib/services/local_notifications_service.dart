@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pantry/services/deep_link_service.dart';
 
@@ -15,6 +16,12 @@ class LocalNotificationsService {
 
   Future<void> init() async {
     if (_initialized) return;
+    // Mark initialized up-front and never let a failure escape: init() runs on
+    // the pre-first-frame startup path (main() awaits it), so an unhandled
+    // error here aborts main() before runApp() and freezes the splash. A
+    // broken notification setup must degrade to "notifications don't work",
+    // never to "the app won't start".
+    _initialized = true;
 
     const androidSettings = AndroidInitializationSettings(
       '@drawable/ic_stat_notification',
@@ -30,35 +37,37 @@ class LocalNotificationsService {
       macOS: darwinSettings,
     );
 
-    await _plugin.initialize(
-      settings,
-      onDidReceiveNotificationResponse: _onTap,
-    );
+    try {
+      await _plugin.initialize(
+        settings,
+        onDidReceiveNotificationResponse: _onTap,
+      );
 
-    // If the app was launched by tapping a notification (cold start),
-    // capture that payload so the home view can consume it after startup.
-    final launchDetails = await _plugin.getNotificationAppLaunchDetails();
-    if (launchDetails?.didNotificationLaunchApp ?? false) {
-      final payload = launchDetails?.notificationResponse?.payload;
-      final link = DeepLink.decode(payload);
-      if (link != null) DeepLinkService.instance.push(link);
+      // If the app was launched by tapping a notification (cold start),
+      // capture that payload so the home view can consume it after startup.
+      final launchDetails = await _plugin.getNotificationAppLaunchDetails();
+      if (launchDetails?.didNotificationLaunchApp ?? false) {
+        final payload = launchDetails?.notificationResponse?.payload;
+        final link = DeepLink.decode(payload);
+        if (link != null) DeepLinkService.instance.push(link);
+      }
+
+      // Create the Android channel (no-op on iOS).
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      await androidPlugin?.createNotificationChannel(
+        const AndroidNotificationChannel(
+          _channelId,
+          _channelName,
+          description: _channelDescription,
+          importance: Importance.defaultImportance,
+        ),
+      );
+    } catch (e) {
+      debugPrint('[LocalNotificationsService] init failed: $e');
     }
-
-    // Create the Android channel (no-op on iOS).
-    final androidPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    await androidPlugin?.createNotificationChannel(
-      const AndroidNotificationChannel(
-        _channelId,
-        _channelName,
-        description: _channelDescription,
-        importance: Importance.defaultImportance,
-      ),
-    );
-
-    _initialized = true;
   }
 
   /// Request runtime notification permission (Android 13+ and iOS).

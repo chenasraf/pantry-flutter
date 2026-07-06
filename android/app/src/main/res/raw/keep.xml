@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The notification status-bar icon is referenced only by name from Dart
+  (flutter_local_notifications resolves it via Resources.getIdentifier at
+  runtime), so the release resource shrinker treats it as unused and strips
+  it. Without the icon, plugin.initialize() throws invalid_icon on startup.
+  Keep it explicitly.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_notification" />
