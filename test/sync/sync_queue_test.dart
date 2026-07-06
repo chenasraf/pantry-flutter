@@ -290,6 +290,49 @@ void main() {
       expect(q.length, 1);
       expect(q.peek()!.uuid, 'p');
     });
+
+    test('emptyTrash with nothing to collapse terminates', () {
+      final q = _newQueue();
+      // A second, unrelated op so the queue clears merge()'s `length < 2`
+      // early-return and actually enters the fixed-point loop. Before the fix
+      // the emptyTrash op — which _applyEmptyTrash never removes — made that
+      // loop report progress forever, hanging the isolate on the startup flush.
+      q.enqueue(
+        _op(
+          uuid: 'c',
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.create,
+          tempEntityId: 1,
+        ),
+      );
+      q.enqueue(
+        _op(uuid: 'e', entity: SyncEntity.note, op: SyncOpKind.emptyTrash),
+      );
+      q.merge();
+      expect(q.length, 2);
+      expect(q.all().map((o) => o.uuid), containsAll(['c', 'e']));
+    });
+
+    test(
+      'emptyTrash collapses queued restore/permanentDelete, then settles',
+      () {
+        final q = _newQueue();
+        q.enqueue(
+          _op(
+            uuid: 'r',
+            entity: SyncEntity.note,
+            op: SyncOpKind.restore,
+            entityId: 1,
+          ),
+        );
+        q.enqueue(
+          _op(uuid: 'e', entity: SyncEntity.note, op: SyncOpKind.emptyTrash),
+        );
+        q.merge();
+        expect(q.length, 1);
+        expect(q.peek()!.uuid, 'e');
+      },
+    );
   });
 
   group('merge — preserves order across distinct records', () {

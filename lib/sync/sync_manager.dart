@@ -68,7 +68,18 @@ class SyncManager {
   Future<void> init() async {
     if (_initialized) return;
     _initialized = true;
-    await Future.wait([_queue.load(), _remap.load()]);
+    // Loading persisted sync state runs on the pre-first-frame startup path
+    // (main() awaits this). A corrupt or version-incompatible on-disk queue
+    // must degrade to an empty queue rather than throw — an unhandled error
+    // here aborts main() before runApp() and freezes the splash. Drop the
+    // bad state and let the app start clean.
+    try {
+      await Future.wait([_queue.load(), _remap.load()]);
+    } catch (e) {
+      debugPrint('[SyncManager] Failed to load persisted sync state: $e');
+      await _queue.clear();
+      await _remap.clear();
+    }
     SyncIds.seedTempIds(
       _queue.all().map((o) => o.tempEntityId).whereType<int>(),
     );

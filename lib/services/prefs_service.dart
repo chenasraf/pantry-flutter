@@ -171,7 +171,14 @@ class PrefsService extends ChangeNotifier {
 
     final pins = all[_pinnedListIdsKey];
     if (pins != null && pins.isNotEmpty) {
-      _pinnedListIds = pins.split(',').map(int.parse).toSet();
+      // tryParse (not parse): a single corrupt id here runs on the
+      // pre-first-frame startup path and would otherwise throw, freezing the
+      // splash. Skip unparseable ids instead.
+      _pinnedListIds = pins
+          .split(',')
+          .map(int.tryParse)
+          .whereType<int>()
+          .toSet();
     }
 
     final notif = all[_notificationsEnabledKey];

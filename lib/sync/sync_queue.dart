@@ -112,6 +112,7 @@ class SyncQueue {
       final op = ops[i];
       if (op.op != SyncOpKind.emptyTrash) continue;
       final parent = op.parentId ?? op.houseId;
+      final before = ops.length;
       ops.removeWhere(
         (o) =>
             o.uuid != op.uuid &&
@@ -121,7 +122,12 @@ class SyncQueue {
             ((op.parentId == null && o.houseId == op.houseId) ||
                 o.parentId == parent),
       );
-      changed = true;
+      // Only report progress when something was actually collapsed. The
+      // emptyTrash op itself is never removed here, so signalling `changed`
+      // unconditionally kept merge()'s fixed-point loop spinning forever
+      // whenever a lone emptyTrash op sat in the queue — freezing startup
+      // when SyncManager flushed it.
+      if (ops.length != before) changed = true;
     }
     return changed;
   }

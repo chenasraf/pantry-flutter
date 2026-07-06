@@ -80,8 +80,15 @@ class AuthService {
   /// values themselves are seeded by [hydrateFromCache].
   Future<void> loadCredentials() async {
     final json = await _storage.read(key: _credentialsKey);
-    if (json != null) {
+    if (json == null) return;
+    // Runs on the pre-first-frame startup path (main() awaits it). A corrupt
+    // or version-incompatible stored credential must degrade to logged-out
+    // rather than throw — an unhandled error here aborts main() before
+    // runApp() and freezes the splash.
+    try {
       _credentials = NextcloudCredentials.fromJson(jsonDecode(json));
+    } catch (e) {
+      debugPrint('[AuthService] Failed to decode stored credentials: $e');
     }
   }
 

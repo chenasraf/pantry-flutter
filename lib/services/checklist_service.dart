@@ -85,6 +85,7 @@ class ChecklistService {
   }) async {
     const pageSize = 500;
     final all = <ListItem>[];
+    final seenIds = <int>{};
     var offset = 0;
     while (true) {
       final page = await ApiClient.instance.get<List, List<ListItem>>(
@@ -98,8 +99,18 @@ class ChecklistService {
             .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
-      all.addAll(page);
-      if (page.length < pageSize) break;
+      var added = 0;
+      for (final item in page) {
+        if (seenIds.add(item.id)) {
+          all.add(item);
+          added++;
+        }
+      }
+      // A short page is the last page. `added == 0` guards against a server
+      // that ignores `offset` and returns the same page every request — left
+      // unchecked that loops forever, appending until the app runs out of
+      // memory.
+      if (page.length < pageSize || added == 0) break;
       offset += pageSize;
     }
     return all;
