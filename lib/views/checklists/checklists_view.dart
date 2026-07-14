@@ -2018,128 +2018,142 @@ class _ItemListState extends State<_ItemList> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final showDone = widget.doneItems.isNotEmpty;
     final showDoneItems = showDone && !widget.doneCollapsed;
+
+    final slivers = <Widget>[
+      const SliverPadding(padding: EdgeInsets.only(top: 4)),
+    ];
+
+    if (widget.canReorder) {
+      // Reordering is custom-sort only, which never groups by category.
+      slivers.add(
+        SliverReorderableList(
+          itemCount: widget.activeItems.length,
+          onReorder: (oldIndex, newIndex) {
+            if (newIndex > oldIndex) newIndex--;
+            widget.controller.reorderItems(
+              widget.activeItems,
+              oldIndex,
+              newIndex,
+            );
+          },
+          itemBuilder: (context, i) {
+            final item = widget.activeItems[i];
+            // Long-press to drag: an immediate listener would fight the
+            // horizontal swipe-reveal gesture and vertical scrolling.
+            return ReorderableDelayedDragStartListener(
+              key: ValueKey(item.id),
+              index: i,
+              child: _buildTile(context, item),
+            );
+          },
+        ),
+      );
+    } else if (widget.groupByCategory) {
+      slivers.addAll(_groupedSlivers(widget.activeItems));
+    } else {
+      slivers.add(
+        SliverList.builder(
+          itemCount: widget.activeItems.length,
+          itemBuilder: (context, i) =>
+              _buildTile(context, widget.activeItems[i]),
+        ),
+      );
+    }
+
+    if (showDone) slivers.add(_doneHeader(context));
+
+    if (showDoneItems) {
+      if (widget.groupByCategory) {
+        slivers.addAll(_groupedSlivers(widget.doneItems));
+      } else {
+        slivers.add(
+          SliverList.builder(
+            itemCount: widget.doneItems.length,
+            itemBuilder: (context, i) =>
+                _buildTile(context, widget.doneItems[i]),
+          ),
+        );
+      }
+    }
+
+    slivers.add(const SliverPadding(padding: EdgeInsets.only(bottom: 36)));
+
     return RefreshIndicator(
       onRefresh: widget.controller.refresh,
       child: CustomScrollView(
         controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          const SliverPadding(padding: EdgeInsets.only(top: 4)),
-          if (widget.canReorder)
-            SliverReorderableList(
-              itemCount: widget.activeItems.length,
-              onReorder: (oldIndex, newIndex) {
-                if (newIndex > oldIndex) newIndex--;
-                widget.controller.reorderItems(
-                  widget.activeItems,
-                  oldIndex,
-                  newIndex,
-                );
-              },
-              itemBuilder: (context, i) {
-                final item = widget.activeItems[i];
-                // Long-press to drag: an immediate listener would fight the
-                // horizontal swipe-reveal gesture and vertical scrolling.
-                return ReorderableDelayedDragStartListener(
-                  key: ValueKey(item.id),
-                  index: i,
-                  child: _buildTile(context, item),
-                );
-              },
-            )
-          else
-            SliverList.builder(
-              itemCount: widget.activeItems.length,
-              itemBuilder: (context, i) =>
-                  _buildTileWithHeader(context, widget.activeItems, i),
-            ),
-          if (showDone)
-            SliverToBoxAdapter(
-              child: InkWell(
-                onTap: widget.onToggleDoneCollapsed,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 15,
-                  ),
-                  margin: const EdgeInsets.only(top: 6),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        color: cs.outlineVariant.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.check,
-                        color: const Color(0xFF5FBF8A),
-                        size: 18,
-                      ),
-                      const SizedBox(width: 11),
-                      Text(
-                        m.checklists.doneCount(widget.doneItems.length),
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: cs.onSurfaceVariant,
-                        ),
-                      ),
-                      const Spacer(),
-                      AnimatedRotation(
-                        duration: const Duration(milliseconds: 200),
-                        turns: widget.doneCollapsed ? 0 : 0.5,
-                        child: Icon(
-                          Icons.keyboard_arrow_down,
-                          color: cs.onSurfaceVariant,
-                          size: 22,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          if (showDoneItems)
-            SliverList.builder(
-              itemCount: widget.doneItems.length,
-              itemBuilder: (context, i) =>
-                  _buildTileWithHeader(context, widget.doneItems, i),
-            ),
-          const SliverPadding(padding: EdgeInsets.only(bottom: 36)),
-        ],
+        slivers: slivers,
       ),
     );
   }
 
-  Widget _buildTileWithHeader(
-    BuildContext context,
-    List<ListItem> items,
-    int index,
-  ) {
-    final item = items[index];
-    final tile = _buildTile(context, item);
-    if (!widget.groupByCategory) return tile;
-    // A header leads every category group — before the first item and again
-    // whenever the category changes from the row above.
-    final startsGroup =
-        index == 0 || items[index - 1].categoryId != item.categoryId;
-    if (!startsGroup) return tile;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _CategoryHeader(
-          category: item.categoryId != null
-              ? widget.controller.categories[item.categoryId]
-              : null,
+  Widget _doneHeader(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return SliverToBoxAdapter(
+      child: InkWell(
+        onTap: widget.onToggleDoneCollapsed,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          margin: const EdgeInsets.only(top: 6),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.6)),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.check, color: const Color(0xFF5FBF8A), size: 18),
+              const SizedBox(width: 11),
+              Text(
+                m.checklists.doneCount(widget.doneItems.length),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurfaceVariant,
+                ),
+              ),
+              const Spacer(),
+              AnimatedRotation(
+                duration: const Duration(milliseconds: 200),
+                turns: widget.doneCollapsed ? 0 : 0.5,
+                child: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: cs.onSurfaceVariant,
+                  size: 22,
+                ),
+              ),
+            ],
+          ),
         ),
-        tile,
-      ],
+      ),
     );
+  }
+
+  /// One [SliverMainAxisGroup] per category run: a pinned category header
+  /// followed by that group's tiles. Grouping each header with its own items
+  /// makes the header stick to the top while its group is on screen and
+  /// release as the next group scrolls up to take its place.
+  Iterable<Widget> _groupedSlivers(List<ListItem> items) {
+    return groupItemsByCategory(items).map((group) {
+      final category = group.categoryId != null
+          ? widget.controller.categories[group.categoryId]
+          : null;
+      return SliverMainAxisGroup(
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _CategoryHeaderDelegate(category: category),
+          ),
+          SliverList.builder(
+            itemCount: group.items.length,
+            itemBuilder: (context, i) => _buildTile(context, group.items[i]),
+          ),
+        ],
+      );
+    });
   }
 
   Widget _buildTile(BuildContext context, ListItem item) {
@@ -2705,9 +2719,58 @@ class _ArchiveBanner extends StatelessWidget {
   }
 }
 
+/// Partition category-sorted items into consecutive same-category runs, each
+/// carrying its shared `categoryId` (null = uncategorised). Items are assumed
+/// already sorted by category, so a run captures a whole category group.
+List<({int? categoryId, List<ListItem> items})> groupItemsByCategory(
+  List<ListItem> items,
+) {
+  final groups = <({int? categoryId, List<ListItem> items})>[];
+  for (final item in items) {
+    if (groups.isEmpty || groups.last.categoryId != item.categoryId) {
+      groups.add((categoryId: item.categoryId, items: [item]));
+    } else {
+      groups.last.items.add(item);
+    }
+  }
+  return groups;
+}
+
+/// Sticky-header delegate for a category group. Fixed extent so the pinned
+/// header keeps a stable height as it sticks and releases.
+class _CategoryHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final models.Category? category;
+
+  const _CategoryHeaderDelegate({required this.category});
+
+  static const double _extent = 40;
+
+  @override
+  double get minExtent => _extent;
+
+  @override
+  double get maxExtent => _extent;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) => _CategoryHeader(category: category);
+
+  @override
+  bool shouldRebuild(_CategoryHeaderDelegate oldDelegate) =>
+      oldDelegate.category?.id != category?.id ||
+      oldDelegate.category?.color != category?.color ||
+      oldDelegate.category?.name != category?.name ||
+      oldDelegate.category?.icon != category?.icon;
+}
+
 /// Grouped-list header shown above each category run when sorting by category.
 /// Real categories render their icon + name in the category color; the
-/// uncategorised group falls back to muted default text and label.
+/// uncategorised group falls back to muted default text and label. Fills the
+/// fixed height its pinned-header delegate reserves, with an opaque background
+/// so item rows don't show through while it's stuck to the top.
 class _CategoryHeader extends StatelessWidget {
   final models.Category? category;
 
@@ -2725,7 +2788,8 @@ class _CategoryHeader extends StatelessWidget {
         color: cs.surface,
         border: Border(bottom: BorderSide(color: cs.outlineVariant)),
       ),
-      padding: const EdgeInsetsDirectional.fromSTEB(20, 14, 20, 8),
+      padding: const EdgeInsetsDirectional.only(start: 20, end: 20),
+      alignment: AlignmentDirectional.centerStart,
       child: Row(
         children: [
           Icon(categoryIcon(category?.icon), size: 16, color: color),
