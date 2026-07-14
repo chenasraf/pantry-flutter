@@ -44,6 +44,7 @@ class ChecklistItemTile extends StatefulWidget {
   final int houseId;
   final bool isCardsView;
   final bool trashMode;
+  final bool archiveMode;
   final ValueChanged<ListItem> onToggle;
   final ValueChanged<ListItem> onView;
 
@@ -59,6 +60,11 @@ class ChecklistItemTile extends StatefulWidget {
   final ValueChanged<ListItem>? onDelete;
   final ValueChanged<ListItem>? onRestore;
   final ValueChanged<ListItem>? onPermanentDelete;
+
+  /// Archive an active item / return an archived one. [onArchive] appears as a
+  /// swipe action in the active view; [onUnarchive] in the archive view.
+  final ValueChanged<ListItem>? onArchive;
+  final ValueChanged<ListItem>? onUnarchive;
 
   /// When non-null, render the author's avatar at the trailing end of the
   /// row. Controlled by the user's "Show who added each item" preference and
@@ -95,8 +101,11 @@ class ChecklistItemTile extends StatefulWidget {
     this.onMove,
     this.onCopy,
     this.trashMode = false,
+    this.archiveMode = false,
     this.onRestore,
     this.onPermanentDelete,
+    this.onArchive,
+    this.onUnarchive,
     this.addedByUserId,
     this.addedByDisplayName,
     this.listBadge,
@@ -145,8 +154,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     // Swipe actions are suppressed while selecting — the row tap toggles
     // selection and there's no foreground gesture to reveal them.
     if (!selecting) {
-      if (widget.trashMode) {
-        if (widget.onRestore != null) {
+      if (widget.trashMode || widget.archiveMode) {
+        if (widget.trashMode && widget.onRestore != null) {
           actions.add(
             SwipeAction(
               icon: Icons.restore_from_trash,
@@ -154,6 +163,17 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
               tint: const Color(0xFF5FBF8A),
               background: tintedSurface(const Color(0xFF5FBF8A), 0.16),
               onPressed: () => widget.onRestore!(item),
+            ),
+          );
+        }
+        if (widget.archiveMode && widget.onUnarchive != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.unarchive_outlined,
+              label: m.checklists.unarchiveItem,
+              tint: const Color(0xFF5FBF8A),
+              background: tintedSurface(const Color(0xFF5FBF8A), 0.16),
+              onPressed: () => widget.onUnarchive!(item),
             ),
           );
         }
@@ -215,6 +235,17 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             ),
           );
         }
+        if (widget.onArchive != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.archive_outlined,
+              label: m.checklists.swipeArchive,
+              tint: const Color(0xFF9B8AD9),
+              background: tintedSurface(const Color(0xFF9B8AD9), 0.18),
+              onPressed: () => widget.onArchive!(item),
+            ),
+          );
+        }
         if (widget.onDelete != null) {
           actions.add(
             SwipeAction(
@@ -232,7 +263,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final VoidCallback? rowTap;
     if (selecting) {
       rowTap = () => widget.onSelectToggle?.call(item);
-    } else if (widget.trashMode) {
+    } else if (widget.trashMode || widget.archiveMode) {
       rowTap = () => widget.onView(item);
     } else {
       rowTap = switch (tapAction) {
@@ -262,6 +293,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       houseId: widget.houseId,
       isCardsView: widget.isCardsView,
       trashMode: widget.trashMode,
+      archiveMode: widget.archiveMode,
       dense: dense,
       addedByUserId: widget.addedByUserId,
       addedByDisplayName: widget.addedByDisplayName,
@@ -322,6 +354,7 @@ class _RowContent extends StatelessWidget {
   final int houseId;
   final bool isCardsView;
   final bool trashMode;
+  final bool archiveMode;
   final bool dense;
   final String? addedByUserId;
   final String? addedByDisplayName;
@@ -339,6 +372,7 @@ class _RowContent extends StatelessWidget {
     required this.houseId,
     required this.isCardsView,
     required this.trashMode,
+    required this.archiveMode,
     required this.dense,
     required this.addedByUserId,
     required this.addedByDisplayName,
@@ -387,9 +421,10 @@ class _RowContent extends StatelessWidget {
         : _Checkbox(
             checked: checked,
             trashMode: trashMode,
+            archiveMode: archiveMode,
             accent: cs.primary,
             onTap: onCheckboxTap,
-            disabled: onCheckboxTap == null && !trashMode,
+            disabled: onCheckboxTap == null && !trashMode && !archiveMode,
             // Shorter tap target in dense mode so single-line rows don't
             // reserve the full 48px Material height.
             hitHeight: dense ? 40 : 48,
@@ -479,6 +514,7 @@ class _RowContent extends StatelessWidget {
 class _Checkbox extends StatelessWidget {
   final bool checked;
   final bool trashMode;
+  final bool archiveMode;
   final Color accent;
   final VoidCallback? onTap;
 
@@ -497,6 +533,7 @@ class _Checkbox extends StatelessWidget {
   const _Checkbox({
     required this.checked,
     required this.trashMode,
+    required this.archiveMode,
     required this.accent,
     required this.onTap,
     required this.padding,
@@ -513,6 +550,8 @@ class _Checkbox extends StatelessWidget {
         : null;
     final Widget visual = trashMode
         ? Icon(Icons.delete_outline, color: cs.onSurfaceVariant, size: 22)
+        : archiveMode
+        ? Icon(Icons.archive_outlined, color: cs.onSurfaceVariant, size: 22)
         : Container(
             width: 24,
             height: 24,
@@ -528,7 +567,7 @@ class _Checkbox extends StatelessWidget {
                 : null,
           );
     return GestureDetector(
-      onTap: trashMode ? null : onTap,
+      onTap: trashMode || archiveMode ? null : onTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: padding,

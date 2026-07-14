@@ -278,11 +278,15 @@ checklists:
     copy: Copy
     category: Category
     delete: Delete
+    archive: Archive
+    unarchive: Unarchive
     deleteConfirmTitle: Delete items?
     deleteConfirmBody(int count): "${_plural(count, one: 'Delete 1 selected item? You can restore it from the trash.', many: 'Delete $count selected items? You can restore them from the trash.')}"
     moved(int count): "${_plural(count, one: 'Moved 1 item', many: 'Moved $count items')}"
     copied(int count): "${_plural(count, one: 'Copied 1 item', many: 'Copied $count items')}"
     deleted(int count): "${_plural(count, one: 'Deleted 1 item', many: 'Deleted $count items')}"
+    archived(int count): "${_plural(count, one: 'Archived 1 item', many: 'Archived $count items')}"
+    unarchived(int count): "${_plural(count, one: 'Unarchived 1 item', many: 'Unarchived $count items')}"
     categorySet(int count): "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
     skipped(int count): "${_plural(count, one: '1 skipped', many: '$count skipped')}"
     failed: Something went wrong. Please try again.
@@ -304,6 +308,17 @@ checklists:
   restoreFailed: Failed to restore item.
   permanentlyDeleteFailed: Failed to delete item.
   itemRestored: Item restored
+  viewArchive: View archive
+  exitArchive: Exit archive
+  archiveTitle: Archive
+  noArchivedItems: Archive is empty.
+  archiveItem: Archive
+  unarchiveItem: Unarchive
+  archiveFailed: Failed to archive item.
+  unarchiveFailed: Failed to unarchive item.
+  itemArchived: Item archived
+  itemUnarchived: Item unarchived
+  failedToLoadArchive: Failed to load archive.
   viewListsTrash: Deleted lists
   listsTrashTitle: Deleted lists
   failedToLoadTrash: Failed to load trash.
@@ -414,6 +429,7 @@ checklists:
   swipeMove: Move
   swipeCopy: Copy
   swipeDelete: Remove
+  swipeArchive: Archive
   viewList: List view
   viewCards: Cards view
   listColor: Color

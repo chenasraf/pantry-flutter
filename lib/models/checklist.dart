@@ -138,6 +138,7 @@ class ListItem {
   final int createdAt;
   final int updatedAt;
   final int? deletedAt;
+  final int? archivedAt;
 
   const ListItem({
     required this.id,
@@ -160,6 +161,7 @@ class ListItem {
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
+    this.archivedAt,
   });
 
   factory ListItem.fromJson(Map<String, dynamic> json) => ListItem(
@@ -183,6 +185,7 @@ class ListItem {
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
     deletedAt: json['deletedAt'] as int?,
+    archivedAt: json['archivedAt'] as int?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -206,6 +209,7 @@ class ListItem {
     'createdAt': createdAt,
     'updatedAt': updatedAt,
     'deletedAt': deletedAt,
+    'archivedAt': archivedAt,
   };
 
   ListItem copyWith({
@@ -229,6 +233,8 @@ class ListItem {
     int? updatedAt,
     int? deletedAt,
     bool clearDeletedAt = false,
+    int? archivedAt,
+    bool clearArchivedAt = false,
   }) => ListItem(
     id: id ?? this.id,
     listId: listId,
@@ -252,6 +258,7 @@ class ListItem {
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
+    archivedAt: clearArchivedAt ? null : (archivedAt ?? this.archivedAt),
   );
 }
 

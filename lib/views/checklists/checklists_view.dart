@@ -275,7 +275,7 @@ class _BodyState extends State<_Body> {
     final canReorder =
         controller.effectiveSortBy == 'custom' &&
         !isMeta &&
-        !controller.isTrashMode &&
+        !controller.isSoftView &&
         !controller.selectionMode &&
         _selectedCategoryIds.isEmpty &&
         _query.isEmpty &&
@@ -286,7 +286,7 @@ class _BodyState extends State<_Body> {
     final prefs = context.watch<PrefsService>();
     final isCards = prefs.checklistView == 'cards';
     final doneCollapsed = prefs.checklistDoneCollapsed;
-    final isEmptyList = controller.items.isEmpty && !controller.isTrashMode;
+    final isEmptyList = controller.items.isEmpty && !controller.isSoftView;
 
     // Only categories that have at least one item on this list (excluding
     // trashed items) belong in the filter row — there's no value in
@@ -356,7 +356,7 @@ class _BodyState extends State<_Body> {
                   ),
                 ),
                 if (!isEmptyList &&
-                    !controller.isTrashMode &&
+                    !controller.isSoftView &&
                     !(list?.hideProgressHero ?? false))
                   Dismissible(
                     key: const ValueKey('progress-hero'),
@@ -378,7 +378,7 @@ class _BodyState extends State<_Body> {
                           : null,
                     ),
                   ),
-                if (!isEmptyList && !controller.isTrashMode)
+                if (!isEmptyList && !controller.isSoftView)
                   _FiltersSection(
                     categories: filterCategories,
                     selectedCategoryIds: _selectedCategoryIds,
@@ -407,6 +407,10 @@ class _BodyState extends State<_Body> {
                   ),
                 if (controller.isTrashMode)
                   _TrashBanner(onExit: () => controller.setTrashMode(false)),
+                if (controller.isArchiveMode)
+                  _ArchiveBanner(
+                    onExit: () => controller.setArchiveMode(false),
+                  ),
                 Expanded(
                   // While a fresh list (no cached items yet) is loading, show a
                   // spinner rather than the empty state — the list isn't empty,
@@ -488,7 +492,7 @@ class _BodyState extends State<_Body> {
                 ),
               ),
             ),
-            if (!controller.isTrashMode &&
+            if (!controller.isSoftView &&
                 !controller.selectionMode &&
                 list != null &&
                 controller.canAddItemsHere)
@@ -883,7 +887,7 @@ class _BodyState extends State<_Body> {
         // the overflow menu so they're a single click away. Pin is not
         // surfaced anywhere on desktop because the widget it feeds is
         // Android-only.
-        if (PlatformInfo.isDesktop && !controller.isTrashMode) ...[
+        if (PlatformInfo.isDesktop && !controller.isSoftView) ...[
           PopupMenuButton<String>(
             icon: const Icon(Icons.sort),
             tooltip: m.checklists.sortTooltip,
@@ -910,6 +914,17 @@ class _BodyState extends State<_Body> {
               icon: const Icon(Icons.delete_outline),
               tooltip: m.checklists.viewTrash,
               onPressed: () => controller.setTrashMode(true),
+            ),
+          // Archive is per-list too, gated on canEditLists and the
+          // item-archive capability.
+          if (!controller.isMetaMode &&
+              controller.isCurrentListWritable &&
+              controller.permissions.canEditLists &&
+              hasFeature('item-archive'))
+            IconButton(
+              icon: const Icon(Icons.archive_outlined),
+              tooltip: m.checklists.viewArchive,
+              onPressed: () => controller.setArchiveMode(true),
             ),
         ],
         PopupMenuButton<String>(
@@ -983,6 +998,24 @@ class _BodyState extends State<_Body> {
           leading: const Icon(Icons.delete_forever, size: 18),
           label: m.checklists.emptyTrash,
         ),
+      ];
+    }
+    // Archive has no "empty" action — archived items are kept indefinitely.
+    if (controller.isArchiveMode) {
+      return [
+        _menuRow(
+          value: 'exit_archive',
+          leading: const Icon(Icons.arrow_back, size: 18),
+          label: m.checklists.exitArchive,
+        ),
+        // Bulk unarchive / permanent-delete need a selection; surface the
+        // entry point here so it's reachable without a long-press (desktop).
+        if (controller.canSelectItems && controller.items.isNotEmpty)
+          _menuRow(
+            value: 'select_items',
+            leading: const Icon(Icons.checklist, size: 18),
+            label: m.checklists.selectItems,
+          ),
       ];
     }
     // Desktop has promoted refresh / sort / categories / trash to dedicated
@@ -1095,6 +1128,15 @@ class _BodyState extends State<_Body> {
             label: m.checklists.viewTrash,
           ),
         ],
+        if (!isMeta &&
+            controller.isCurrentListWritable &&
+            controller.permissions.canEditLists &&
+            hasFeature('item-archive'))
+          _menuRow(
+            value: 'view_archive',
+            leading: const Icon(Icons.archive_outlined, size: 18),
+            label: m.checklists.viewArchive,
+          ),
       ],
       if (kDebugMode) ...[
         const PopupMenuDivider(),
@@ -1191,6 +1233,10 @@ class _BodyState extends State<_Body> {
         await controller.setTrashMode(false);
       case 'empty_trash':
         await _confirmEmptyTrash(context, controller);
+      case 'view_archive':
+        await controller.setArchiveMode(true);
+      case 'exit_archive':
+        await controller.setArchiveMode(false);
       case 'toggle_pin':
         await _togglePin(context, controller);
       case 'manage_categories':
@@ -2126,6 +2172,7 @@ class _ItemListState extends State<_ItemList> {
       houseId: controller.houseId,
       isCardsView: widget.isCards,
       trashMode: controller.isTrashMode,
+      archiveMode: controller.isArchiveMode,
       addedByUserId: addedByUserId,
       addedByDisplayName: addedByDisplayName,
       listBadge: listBadge,
@@ -2138,14 +2185,14 @@ class _ItemListState extends State<_ItemList> {
       onMove:
           writable &&
               controller.lists.length > 1 &&
-              !controller.isTrashMode &&
+              !controller.isSoftView &&
               controller.permissions.canMoveItems
           ? (i) => _onMove(context, controller, i)
           : null,
       onCopy:
           writable &&
               controller.lists.length > 1 &&
-              !controller.isTrashMode &&
+              !controller.isSoftView &&
               hasFeature('copy-items') &&
               controller.permissions.canCopyItems
           ? (i) => _onCopy(context, controller, i)
@@ -2153,15 +2200,28 @@ class _ItemListState extends State<_ItemList> {
       onDelete: writable && controller.permissions.canDeleteItems
           ? (i) => _onDelete(context, controller, i)
           : null,
+      onArchive:
+          writable &&
+              !controller.isSoftView &&
+              controller.permissions.canEditLists &&
+              hasFeature('item-archive')
+          ? (i) => _onArchive(context, controller, i)
+          : null,
       onRestore:
           writable &&
               controller.isTrashMode &&
               controller.permissions.canDeleteItems
           ? (i) => _onRestore(context, controller, i)
           : null,
+      onUnarchive:
+          writable &&
+              controller.isArchiveMode &&
+              controller.permissions.canEditLists
+          ? (i) => _onUnarchive(context, controller, i)
+          : null,
       onPermanentDelete:
           writable &&
-              controller.isTrashMode &&
+              controller.isSoftView &&
               controller.permissions.canDeleteItems
           ? (i) => _onPermanentDelete(context, controller, i)
           : null,
@@ -2447,6 +2507,67 @@ class _ItemListState extends State<_ItemList> {
     }
   }
 
+  Future<void> _onArchive(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) async {
+    try {
+      await controller.archiveItem(item);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.archiveFailed)));
+      }
+      return;
+    }
+    if (!context.mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(m.checklists.itemArchived),
+        duration: const Duration(seconds: 6),
+        action: SnackBarAction(
+          label: m.checklists.undo,
+          onPressed: () async {
+            try {
+              await controller.unarchiveItem(item);
+            } catch (_) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(m.checklists.unarchiveFailed)),
+                );
+              }
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onUnarchive(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) async {
+    try {
+      await controller.unarchiveItem(item);
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.itemUnarchived)));
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.unarchiveFailed)));
+      }
+    }
+  }
+
   Future<void> _onPermanentDelete(
     BuildContext context,
     ChecklistsController controller,
@@ -2532,6 +2653,39 @@ class _TrashBanner extends StatelessWidget {
             onPressed: onExit,
             icon: const Icon(Icons.close, size: 16),
             label: Text(m.checklists.exitTrash),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ArchiveBanner extends StatelessWidget {
+  final VoidCallback onExit;
+
+  const _ArchiveBanner({required this.onExit});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      color: cs.surfaceContainerHighest,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
+      child: Row(
+        children: [
+          Icon(Icons.archive_outlined, size: 18, color: cs.onSurfaceVariant),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              m.checklists.archiveTitle,
+              style: TextStyle(color: cs.onSurfaceVariant),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: onExit,
+            icon: const Icon(Icons.close, size: 16),
+            label: Text(m.checklists.exitArchive),
           ),
         ],
       ),
@@ -2843,38 +2997,66 @@ class _SelectionActionBar extends StatelessWidget {
             horizontal: 4,
             vertical: 4,
           ),
-          child: Row(
-            children: [
-              _action(
-                context,
-                icon: Icons.drive_file_move_outlined,
-                label: m.checklists.batch.move,
-                enabled: controller.canBatchMove,
-                onTap: () => _move(context),
-              ),
-              _action(
-                context,
-                icon: Icons.copy_outlined,
-                label: m.checklists.batch.copy,
-                enabled: controller.canBatchCopy,
-                onTap: () => _copy(context),
-              ),
-              _action(
-                context,
-                icon: Icons.sell_outlined,
-                label: m.checklists.batch.category,
-                enabled: controller.canBatchCategory,
-                onTap: () => _category(context),
-              ),
-              _action(
-                context,
-                icon: Icons.delete_outline,
-                label: m.checklists.batch.delete,
-                enabled: controller.canBatchDelete,
-                onTap: () => _delete(context),
-              ),
-            ],
-          ),
+          // The archive view offers only unarchive + permanent delete; the
+          // active view offers the full move/copy/category/archive/delete set.
+          child: controller.isArchiveMode
+              ? Row(
+                  children: [
+                    _action(
+                      context,
+                      icon: Icons.unarchive_outlined,
+                      label: m.checklists.batch.unarchive,
+                      enabled: controller.canBatchArchive,
+                      onTap: () => _unarchive(context),
+                    ),
+                    _action(
+                      context,
+                      icon: Icons.delete_forever,
+                      label: m.checklists.batch.delete,
+                      enabled: controller.canBatchDelete,
+                      onTap: () => _delete(context, permanent: true),
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    _action(
+                      context,
+                      icon: Icons.drive_file_move_outlined,
+                      label: m.checklists.batch.move,
+                      enabled: controller.canBatchMove,
+                      onTap: () => _move(context),
+                    ),
+                    _action(
+                      context,
+                      icon: Icons.copy_outlined,
+                      label: m.checklists.batch.copy,
+                      enabled: controller.canBatchCopy,
+                      onTap: () => _copy(context),
+                    ),
+                    _action(
+                      context,
+                      icon: Icons.sell_outlined,
+                      label: m.checklists.batch.category,
+                      enabled: controller.canBatchCategory,
+                      onTap: () => _category(context),
+                    ),
+                    _action(
+                      context,
+                      icon: Icons.archive_outlined,
+                      label: m.checklists.batch.archive,
+                      enabled: controller.canBatchArchive,
+                      onTap: () => _archive(context),
+                    ),
+                    _action(
+                      context,
+                      icon: Icons.delete_outline,
+                      label: m.checklists.batch.delete,
+                      enabled: controller.canBatchDelete,
+                      onTap: () => _delete(context),
+                    ),
+                  ],
+                ),
         ),
       ),
     );
@@ -2963,14 +3145,21 @@ class _SelectionActionBar extends StatelessWidget {
     );
   }
 
-  Future<void> _delete(BuildContext context) async {
+  Future<void> _delete(BuildContext context, {bool permanent = false}) async {
     final messenger = ScaffoldMessenger.of(context);
     final affected = List.of(controller.selectedItems);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(m.checklists.batch.deleteConfirmTitle),
-        content: Text(m.checklists.batch.deleteConfirmBody(affected.length)),
+        // A permanent delete (from trash/archive) can't be undone, so its
+        // confirmation says so instead of offering the "restore from trash"
+        // reassurance the soft delete gives.
+        content: Text(
+          permanent
+              ? m.checklists.permanentlyDeleteConfirmBody
+              : m.checklists.batch.deleteConfirmBody(affected.length),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -2984,11 +3173,42 @@ class _SelectionActionBar extends StatelessWidget {
       ),
     );
     if (ok != true) return;
-    controller.batchDelete();
+    controller.batchDelete(permanent: permanent);
+    // A permanent delete has no undo path.
+    if (permanent) {
+      messenger
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(content: Text(m.checklists.batch.deleted(affected.length))),
+        );
+      return;
+    }
     _showUndo(
       messenger,
       m.checklists.batch.deleted(affected.length),
       () => controller.undoBatchDelete(affected),
+    );
+  }
+
+  Future<void> _archive(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final affected = List.of(controller.selectedItems);
+    controller.batchArchive();
+    _showUndo(
+      messenger,
+      m.checklists.batch.archived(affected.length),
+      () => controller.undoBatchArchive(affected),
+    );
+  }
+
+  Future<void> _unarchive(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final affected = List.of(controller.selectedItems);
+    controller.batchUnarchive();
+    _showUndo(
+      messenger,
+      m.checklists.batch.unarchived(affected.length),
+      () => controller.undoBatchUnarchive(affected),
     );
   }
 

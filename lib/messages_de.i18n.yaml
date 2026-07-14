@@ -278,11 +278,15 @@ checklists:
     copy: Kopieren
     category: Kategorie
     delete: "Löschen"
+    archive: Archivieren
+    unarchive: Dearchivieren
     deleteConfirmTitle: "Einträge löschen?"
     deleteConfirmBody(int count): "${_plural(count, one: '1 ausgewählten Eintrag löschen? Du kannst ihn aus dem Papierkorb wiederherstellen.', many: '$count ausgewählte Einträge löschen? Du kannst sie aus dem Papierkorb wiederherstellen.')}"
     moved(int count): "${_plural(count, one: '1 Eintrag verschoben', many: '$count Einträge verschoben')}"
     copied(int count): "${_plural(count, one: '1 Eintrag kopiert', many: '$count Einträge kopiert')}"
     deleted(int count): "${_plural(count, one: '1 Eintrag gelöscht', many: '$count Einträge gelöscht')}"
+    archived(int count): "${_plural(count, one: '1 Eintrag archiviert', many: '$count Einträge archiviert')}"
+    unarchived(int count): "${_plural(count, one: '1 Eintrag dearchiviert', many: '$count Einträge dearchiviert')}"
     categorySet(int count): "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
     skipped(int count): "${_plural(count, one: '1 übersprungen', many: '$count übersprungen')}"
     failed: Etwas ist schiefgelaufen. Bitte versuche es erneut.
@@ -304,6 +308,17 @@ checklists:
   restoreFailed: Eintrag konnte nicht wiederhergestellt werden.
   permanentlyDeleteFailed: Eintrag konnte nicht gelöscht werden.
   itemRestored: Eintrag wiederhergestellt
+  viewArchive: Archiv anzeigen
+  exitArchive: Archiv verlassen
+  archiveTitle: Archiv
+  noArchivedItems: Das Archiv ist leer.
+  archiveItem: Archivieren
+  unarchiveItem: Dearchivieren
+  archiveFailed: Eintrag konnte nicht archiviert werden.
+  unarchiveFailed: Eintrag konnte nicht dearchiviert werden.
+  itemArchived: Eintrag archiviert
+  itemUnarchived: Eintrag dearchiviert
+  failedToLoadArchive: Archiv konnte nicht geladen werden.
   viewListsTrash: "Gelöschte Listen"
   listsTrashTitle: "Gelöschte Listen"
   failedToLoadTrash: "Papierkorb konnte nicht geladen werden."
@@ -414,6 +429,7 @@ checklists:
   swipeMove: Verschieben
   swipeCopy: Kopieren
   swipeDelete: Entfernen
+  swipeArchive: Archivieren
   viewList: Listenansicht
   viewCards: Kartenansicht
   listColor: Farbe

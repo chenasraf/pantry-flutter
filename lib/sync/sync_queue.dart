@@ -93,6 +93,7 @@ class SyncQueue {
       changed = false;
       changed = _applyEmptyTrash(result) || changed;
       changed = _applyDeletePairs(result) || changed;
+      changed = _applyArchivePairs(result) || changed;
       changed = _applyTogglePairs(result) || changed;
       changed = _applyUpdateCollapse(result) || changed;
       changed = _applyReorderCollapse(result) || changed;
@@ -200,6 +201,62 @@ class SyncQueue {
     for (var i = 0; i < ops.length; i++) {
       final a = ops[i];
       if (a.op != SyncOpKind.restore) continue;
+      final permIdx = ops.indexWhere(
+        (b) =>
+            b != a &&
+            b.entity == a.entity &&
+            b.effectiveEntityId == a.effectiveEntityId &&
+            b.op == SyncOpKind.permanentDelete,
+        i + 1,
+      );
+      if (permIdx != -1) {
+        ops.remove(a);
+        changed = true;
+        return true;
+      }
+    }
+    return changed;
+  }
+
+  bool _applyArchivePairs(List<SyncOp> ops) {
+    bool changed = false;
+    for (var i = 0; i < ops.length; i++) {
+      final a = ops[i];
+      if (a.op != SyncOpKind.archive) continue;
+      // archive + unarchive on same record → drop both
+      final unarchiveIdx = ops.indexWhere(
+        (b) =>
+            b != a &&
+            b.entity == a.entity &&
+            b.effectiveEntityId == a.effectiveEntityId &&
+            b.op == SyncOpKind.unarchive,
+        i + 1,
+      );
+      if (unarchiveIdx != -1) {
+        ops.removeAt(unarchiveIdx);
+        ops.remove(a);
+        changed = true;
+        return true;
+      }
+      // archive + permanentDelete → keep only permanentDelete
+      final permIdx = ops.indexWhere(
+        (b) =>
+            b != a &&
+            b.entity == a.entity &&
+            b.effectiveEntityId == a.effectiveEntityId &&
+            b.op == SyncOpKind.permanentDelete,
+        i + 1,
+      );
+      if (permIdx != -1) {
+        ops.remove(a);
+        changed = true;
+        return true;
+      }
+    }
+    // unarchive + permanentDelete → keep only permanentDelete
+    for (var i = 0; i < ops.length; i++) {
+      final a = ops[i];
+      if (a.op != SyncOpKind.unarchive) continue;
       final permIdx = ops.indexWhere(
         (b) =>
             b != a &&

@@ -24,9 +24,12 @@ class ConflictResolver {
         case SyncOpKind.reorder:
           return false;
         case SyncOpKind.restore:
+        case SyncOpKind.unarchive:
           return op.createdAt > serverDeletedAt;
         case SyncOpKind.delete:
-          // Already deleted server-side; nothing to do.
+        // Already deleted server-side; nothing to do. Archiving a tombstoned
+        // record is likewise moot — archive acts only on active items.
+        case SyncOpKind.archive:
           return false;
         case SyncOpKind.permanentDelete:
         case SyncOpKind.emptyTrash:

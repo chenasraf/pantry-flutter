@@ -1551,6 +1551,61 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get itemRestored => """Artículo restaurado""";
 
   /// ```dart
+  /// "Ver archivo"
+  /// ```
+  String get viewArchive => """Ver archivo""";
+
+  /// ```dart
+  /// "Salir del archivo"
+  /// ```
+  String get exitArchive => """Salir del archivo""";
+
+  /// ```dart
+  /// "Archivo"
+  /// ```
+  String get archiveTitle => """Archivo""";
+
+  /// ```dart
+  /// "El archivo está vacío."
+  /// ```
+  String get noArchivedItems => """El archivo está vacío.""";
+
+  /// ```dart
+  /// "Archivar"
+  /// ```
+  String get archiveItem => """Archivar""";
+
+  /// ```dart
+  /// "Desarchivar"
+  /// ```
+  String get unarchiveItem => """Desarchivar""";
+
+  /// ```dart
+  /// "No se pudo archivar el artículo."
+  /// ```
+  String get archiveFailed => """No se pudo archivar el artículo.""";
+
+  /// ```dart
+  /// "No se pudo desarchivar el artículo."
+  /// ```
+  String get unarchiveFailed => """No se pudo desarchivar el artículo.""";
+
+  /// ```dart
+  /// "Artículo archivado"
+  /// ```
+  String get itemArchived => """Artículo archivado""";
+
+  /// ```dart
+  /// "Artículo desarchivado"
+  /// ```
+  String get itemUnarchived => """Artículo desarchivado""";
+
+  /// ```dart
+  /// "No se pudo cargar el archivo."
+  /// ```
+  String get failedToLoadArchive => """No se pudo cargar el archivo.""";
+
+  /// ```dart
   /// "Listas eliminadas"
   /// ```
   String get viewListsTrash => """Listas eliminadas""";
@@ -1797,6 +1852,11 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get swipeDelete => """Quitar""";
 
   /// ```dart
+  /// "Archivar"
+  /// ```
+  String get swipeArchive => """Archivar""";
+
+  /// ```dart
   /// "Vista de lista"
   /// ```
   String get viewList => """Vista de lista""";
@@ -1889,6 +1949,16 @@ class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   String get delete => """Eliminar""";
 
   /// ```dart
+  /// "Archivar"
+  /// ```
+  String get archive => """Archivar""";
+
+  /// ```dart
+  /// "Desarchivar"
+  /// ```
+  String get unarchive => """Desarchivar""";
+
+  /// ```dart
   /// "¿Eliminar artículos?"
   /// ```
   String get deleteConfirmTitle => """¿Eliminar artículos?""";
@@ -1916,6 +1986,18 @@ class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   /// ```
   String deleted(int count) =>
       """${_plural(count, one: '1 artículo eliminado', many: '$count artículos eliminados')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo archivado', many: '$count artículos archivados')}"
+  /// ```
+  String archived(int count) =>
+      """${_plural(count, one: '1 artículo archivado', many: '$count artículos archivados')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo desarchivado', many: '$count artículos desarchivados')}"
+  /// ```
+  String unarchived(int count) =>
+      """${_plural(count, one: '1 artículo desarchivado', many: '$count artículos desarchivados')}""";
 
   /// ```dart
   /// "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
@@ -3564,6 +3646,8 @@ Contraseña: pantry-rocks""",
   """checklists.batch.copy""": """Copiar""",
   """checklists.batch.category""": """Categoría""",
   """checklists.batch.delete""": """Eliminar""",
+  """checklists.batch.archive""": """Archivar""",
+  """checklists.batch.unarchive""": """Desarchivar""",
   """checklists.batch.deleteConfirmTitle""": """¿Eliminar artículos?""",
   """checklists.batch.failed""": """Algo salió mal. Inténtalo de nuevo.""",
   """checklists.viewTrash""": """Ver papelera""",
@@ -3588,6 +3672,17 @@ Contraseña: pantry-rocks""",
   """checklists.permanentlyDeleteFailed""":
       """No se pudo eliminar el artículo.""",
   """checklists.itemRestored""": """Artículo restaurado""",
+  """checklists.viewArchive""": """Ver archivo""",
+  """checklists.exitArchive""": """Salir del archivo""",
+  """checklists.archiveTitle""": """Archivo""",
+  """checklists.noArchivedItems""": """El archivo está vacío.""",
+  """checklists.archiveItem""": """Archivar""",
+  """checklists.unarchiveItem""": """Desarchivar""",
+  """checklists.archiveFailed""": """No se pudo archivar el artículo.""",
+  """checklists.unarchiveFailed""": """No se pudo desarchivar el artículo.""",
+  """checklists.itemArchived""": """Artículo archivado""",
+  """checklists.itemUnarchived""": """Artículo desarchivado""",
+  """checklists.failedToLoadArchive""": """No se pudo cargar el archivo.""",
   """checklists.viewListsTrash""": """Listas eliminadas""",
   """checklists.listsTrashTitle""": """Listas eliminadas""",
   """checklists.failedToLoadTrash""": """No se pudo cargar la papelera.""",
@@ -3687,6 +3782,7 @@ Contraseña: pantry-rocks""",
   """checklists.swipeMove""": """Mover""",
   """checklists.swipeCopy""": """Copiar""",
   """checklists.swipeDelete""": """Quitar""",
+  """checklists.swipeArchive""": """Archivar""",
   """checklists.viewList""": """Vista de lista""",
   """checklists.viewCards""": """Vista de tarjetas""",
   """checklists.listColor""": """Color""",

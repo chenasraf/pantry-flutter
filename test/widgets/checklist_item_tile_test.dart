@@ -83,6 +83,69 @@ void main() {
     expect(recorder.toggled, 1);
     expect(recorder.viewed, 0);
   });
+
+  testWidgets('archive mode shows the archive glyph, not a checkbox', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      wrapForTest(
+        ChangeNotifierProvider<PrefsService>.value(
+          value: PrefsService.instance,
+          child: ListView(
+            children: [
+              ChecklistItemTile(
+                item: makeListItem(name: 'Milk', archivedAt: 1000),
+                category: null,
+                houseId: 1,
+                isCardsView: false,
+                archiveMode: true,
+                onToggle: (_) {},
+                onView: (_) {},
+                onUnarchive: (_) {},
+                onPermanentDelete: (_) {},
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    // The archive view is read-only: the leading control is an archive glyph
+    // rather than the completion checkbox.
+    expect(find.byIcon(Icons.archive_outlined), findsOneWidget);
+  });
+
+  testWidgets('archive-mode row tap opens the read-only view', (tester) async {
+    ListItemTapRecorder recorder = ListItemTapRecorder();
+    await tester.pumpWidget(
+      wrapForTest(
+        ChangeNotifierProvider<PrefsService>.value(
+          value: PrefsService.instance,
+          child: ListView(
+            children: [
+              ChecklistItemTile(
+                item: makeListItem(name: 'Milk', archivedAt: 1000),
+                category: null,
+                houseId: 1,
+                isCardsView: false,
+                archiveMode: true,
+                onToggle: recorder.onToggle,
+                onView: recorder.onView,
+                onUnarchive: (_) {},
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Milk'));
+    await tester.pump();
+
+    expect(recorder.viewed, 1);
+    expect(recorder.toggled, 0);
+  });
 }
 
 class ListItemTapRecorder {

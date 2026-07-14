@@ -9,6 +9,8 @@ enum SyncOpKind {
   restore,
   permanentDelete,
   emptyTrash,
+  archive,
+  unarchive,
 
   /// House-scoped group action over many items (move / copy / delete /
   /// set-category). Unlike every other kind this targets a *list* of items

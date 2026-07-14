@@ -94,6 +94,36 @@ void main() {
       );
     });
 
+    test('drops pending archive when tombstoned', () {
+      expect(
+        resolver.shouldApply(
+          _op(SyncOpKind.archive),
+          serverUpdatedAt: 0,
+          serverDeletedAt: 50,
+        ),
+        isFalse,
+      );
+    });
+
+    test('unarchive allowed only if newer than tombstone', () {
+      expect(
+        resolver.shouldApply(
+          _op(SyncOpKind.unarchive, createdAt: 100),
+          serverUpdatedAt: null,
+          serverDeletedAt: 50,
+        ),
+        isTrue,
+      );
+      expect(
+        resolver.shouldApply(
+          _op(SyncOpKind.unarchive, createdAt: 10),
+          serverUpdatedAt: null,
+          serverDeletedAt: 50,
+        ),
+        isFalse,
+      );
+    });
+
     test('permanentDelete and emptyTrash always apply over a tombstone', () {
       expect(
         resolver.shouldApply(

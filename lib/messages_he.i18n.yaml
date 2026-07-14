@@ -278,11 +278,15 @@ checklists:
     copy: העתק
     category: קטגוריה
     delete: מחק
+    archive: העבר לארכיון
+    unarchive: הוצא מהארכיון
     deleteConfirmTitle: למחוק פריטים?
     deleteConfirmBody(int count): "${_plural(count, one: 'למחוק פריט אחד שנבחר? ניתן לשחזר אותו מהאשפה.', many: 'למחוק $count פריטים שנבחרו? ניתן לשחזר אותם מהאשפה.')}"
     moved(int count): "${_plural(count, one: 'פריט אחד הועבר', many: '$count פריטים הועברו')}"
     copied(int count): "${_plural(count, one: 'פריט אחד הועתק', many: '$count פריטים הועתקו')}"
     deleted(int count): "${_plural(count, one: 'פריט אחד נמחק', many: '$count פריטים נמחקו')}"
+    archived(int count): "${_plural(count, one: 'פריט אחד הועבר לארכיון', many: '$count פריטים הועברו לארכיון')}"
+    unarchived(int count): "${_plural(count, one: 'פריט אחד הוצא מהארכיון', many: '$count פריטים הוצאו מהארכיון')}"
     categorySet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
     skipped(int count): "${_plural(count, one: 'פריט אחד דולג', many: '$count דולגו')}"
     failed: משהו השתבש. נסה שוב.
@@ -304,6 +308,17 @@ checklists:
   restoreFailed: שחזור הפריט נכשל.
   permanentlyDeleteFailed: מחיקת הפריט נכשלה.
   itemRestored: הפריט שוחזר
+  viewArchive: הצג ארכיון
+  exitArchive: צא מהארכיון
+  archiveTitle: ארכיון
+  noArchivedItems: הארכיון ריק.
+  archiveItem: העבר לארכיון
+  unarchiveItem: הוצא מהארכיון
+  archiveFailed: העברת הפריט לארכיון נכשלה.
+  unarchiveFailed: הוצאת הפריט מהארכיון נכשלה.
+  itemArchived: הפריט הועבר לארכיון
+  itemUnarchived: הפריט הוצא מהארכיון
+  failedToLoadArchive: טעינת הארכיון נכשלה.
   viewListsTrash: רשימות שנמחקו
   listsTrashTitle: רשימות שנמחקו
   failedToLoadTrash: טעינת סל המיחזור נכשלה.
@@ -414,6 +429,7 @@ checklists:
   swipeMove: העברה
   swipeCopy: העתקה
   swipeDelete: הסר
+  swipeArchive: העבר לארכיון
   viewList: תצוגת רשימה
   viewCards: תצוגת כרטיסים
   listColor: צבע

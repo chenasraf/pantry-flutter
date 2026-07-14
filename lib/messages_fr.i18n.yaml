@@ -278,11 +278,15 @@ checklists:
     copy: Copier
     category: Catégorie
     delete: Supprimer
+    archive: Archiver
+    unarchive: Désarchiver
     deleteConfirmTitle: Supprimer les articles ?
     deleteConfirmBody(int count): "${_plural(count, one: 'Supprimer 1 article sélectionné ? Vous pouvez le restaurer depuis la corbeille.', many: 'Supprimer $count articles sélectionnés ? Vous pouvez les restaurer depuis la corbeille.')}"
     moved(int count): "${_plural(count, one: '1 article déplacé', many: '$count articles déplacés')}"
     copied(int count): "${_plural(count, one: '1 article copié', many: '$count articles copiés')}"
     deleted(int count): "${_plural(count, one: '1 article supprimé', many: '$count articles supprimés')}"
+    archived(int count): "${_plural(count, one: '1 article archivé', many: '$count articles archivés')}"
+    unarchived(int count): "${_plural(count, one: '1 article désarchivé', many: '$count articles désarchivés')}"
     categorySet(int count): "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
     skipped(int count): "${_plural(count, one: '1 ignoré', many: '$count ignorés')}"
     failed: "Une erreur s'est produite. Veuillez réessayer."
@@ -304,6 +308,17 @@ checklists:
   restoreFailed: "Impossible de restaurer l'article."
   permanentlyDeleteFailed: "Impossible de supprimer l'article."
   itemRestored: "Article restauré"
+  viewArchive: Voir les archives
+  exitArchive: Quitter les archives
+  archiveTitle: Archives
+  noArchivedItems: Les archives sont vides.
+  archiveItem: Archiver
+  unarchiveItem: Désarchiver
+  archiveFailed: "Échec de l'archivage de l'article."
+  unarchiveFailed: "Échec du désarchivage de l'article."
+  itemArchived: Article archivé
+  itemUnarchived: Article désarchivé
+  failedToLoadArchive: Échec du chargement des archives.
   viewListsTrash: "Listes supprimées"
   listsTrashTitle: "Listes supprimées"
   failedToLoadTrash: "Impossible de charger la corbeille."
@@ -414,6 +429,7 @@ checklists:
   swipeMove: Déplacer
   swipeCopy: Copier
   swipeDelete: Retirer
+  swipeArchive: Archiver
   viewList: Vue liste
   viewCards: Vue cartes
   listColor: Couleur

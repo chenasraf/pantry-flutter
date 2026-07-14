@@ -266,7 +266,9 @@ class SyncManager {
                   op.op == SyncOpKind.delete ||
                   op.op == SyncOpKind.toggle ||
                   op.op == SyncOpKind.restore ||
-                  op.op == SyncOpKind.permanentDelete)) {
+                  op.op == SyncOpKind.permanentDelete ||
+                  op.op == SyncOpKind.archive ||
+                  op.op == SyncOpKind.unarchive)) {
             _queue.pop(op.uuid);
             pendingCount.value = _queue.length;
             _skippedController.add(SyncOpSkipped(op, 'gone'));

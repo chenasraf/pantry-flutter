@@ -291,6 +291,74 @@ void main() {
       expect(q.peek()!.uuid, 'p');
     });
 
+    test('archive + unarchive cancel out', () {
+      final q = _newQueue();
+      q.enqueue(
+        _op(
+          uuid: 'a',
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.archive,
+          entityId: 1,
+        ),
+      );
+      q.enqueue(
+        _op(
+          uuid: 'u',
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.unarchive,
+          entityId: 1,
+        ),
+      );
+      q.merge();
+      expect(q.isEmpty, isTrue);
+    });
+
+    test('archive + permanentDelete keeps only the permanent', () {
+      final q = _newQueue();
+      q.enqueue(
+        _op(
+          uuid: 'a',
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.archive,
+          entityId: 1,
+        ),
+      );
+      q.enqueue(
+        _op(
+          uuid: 'p',
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.permanentDelete,
+          entityId: 1,
+        ),
+      );
+      q.merge();
+      expect(q.length, 1);
+      expect(q.peek()!.uuid, 'p');
+    });
+
+    test('unarchive + permanentDelete keeps only the permanent', () {
+      final q = _newQueue();
+      q.enqueue(
+        _op(
+          uuid: 'u',
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.unarchive,
+          entityId: 1,
+        ),
+      );
+      q.enqueue(
+        _op(
+          uuid: 'p',
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.permanentDelete,
+          entityId: 1,
+        ),
+      );
+      q.merge();
+      expect(q.length, 1);
+      expect(q.peek()!.uuid, 'p');
+    });
+
     test('emptyTrash with nothing to collapse terminates', () {
       final q = _newQueue();
       // A second, unrelated op so the queue clears merge()'s `length < 2`

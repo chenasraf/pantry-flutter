@@ -168,6 +168,8 @@ ListItem makeListItem({
   int sortOrder = 0,
   int? createdAt,
   int? updatedAt,
+  int? deletedAt,
+  int? archivedAt,
 }) => ListItem(
   id: id,
   listId: listId,
@@ -187,4 +189,6 @@ ListItem makeListItem({
   sortOrder: sortOrder,
   createdAt: createdAt ?? _now,
   updatedAt: updatedAt ?? _now,
+  deletedAt: deletedAt,
+  archivedAt: archivedAt,
 );

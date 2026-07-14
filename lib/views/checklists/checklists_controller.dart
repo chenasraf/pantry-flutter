@@ -221,6 +221,14 @@ class ChecklistsController extends ChangeNotifier {
   bool _isTrashMode = false;
   bool get isTrashMode => _isTrashMode;
 
+  bool _isArchiveMode = false;
+  bool get isArchiveMode => _isArchiveMode;
+
+  /// True in either read-only lifecycle view (trash or archive). These views
+  /// load online-only and suppress the compose bar, progress hero, filters,
+  /// reordering and move/copy affordances.
+  bool get isSoftView => _isTrashMode || _isArchiveMode;
+
   List<ChecklistList> _trashedLists = [];
   List<ChecklistList> get trashedLists => _trashedLists;
 
@@ -242,7 +250,7 @@ class ChecklistsController extends ChangeNotifier {
   /// of the "Nothing on this list yet" empty state, which otherwise reads as
   /// "my data is gone" while offline (issue #92).
   bool get itemsUnavailable =>
-      _error != null && _items.isEmpty && !_isLoading && !_isTrashMode;
+      _error != null && _items.isEmpty && !_isLoading && !isSoftView;
 
   // -- Multi-select (group actions) --
   //
@@ -309,6 +317,8 @@ class ChecklistsController extends ChangeNotifier {
   bool get canBatchDelete => _allSelectedWritable && permissions.canDeleteItems;
   bool get canBatchCategory => _allSelectedWritable && permissions.canEditLists;
   bool get canBatchCopy => selectedItems.isNotEmpty && permissions.canCopyItems;
+  // Archive/unarchive are gated on canEditLists, not canDeleteItems.
+  bool get canBatchArchive => _allSelectedWritable && permissions.canEditLists;
 
   ChecklistService get _checklistService => ChecklistService.instance;
   CategoryService get _categoryService => CategoryService.instance;
@@ -561,16 +571,20 @@ class ChecklistsController extends ChangeNotifier {
     _currentList = list;
     _checklistService.selectedListId = list.id;
 
-    if (_isTrashMode) {
+    if (isSoftView) {
       _items = [];
       _isLoading = true;
       _isRefreshing = false;
       notifyListeners();
-      // Meta view has no trash of its own — exit trash mode silently.
+      // Meta view has no trash/archive of its own — exit the soft view silently.
       if (list.id == kAllListsId) {
         _isTrashMode = false;
+        _isArchiveMode = false;
         _isLoading = false;
         notifyListeners();
+      } else if (_isArchiveMode) {
+        await _loadArchiveItems(list);
+        return;
       } else {
         await _loadTrashItems(list);
         return;
@@ -604,7 +618,7 @@ class ChecklistsController extends ChangeNotifier {
           houseId,
           sortBy: effectiveSortBy,
         );
-        if (_currentList?.id == kAllListsId && !_isTrashMode) {
+        if (_currentList?.id == kAllListsId && !isSoftView) {
           _items = _overlayPending(fresh);
           _error = null;
           _cacheVisibleItems();
@@ -652,7 +666,7 @@ class ChecklistsController extends ChangeNotifier {
         list.id,
         sortBy: _sortBy,
       );
-      if (_currentList?.id == list.id && !_isTrashMode) {
+      if (_currentList?.id == list.id && !isSoftView) {
         // Reconcile against pending ops only while this list is still current;
         // `_items` belongs to a different list otherwise.
         final reconciled = _overlayPending(freshItems);
@@ -747,11 +761,49 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
+  Future<void> _loadArchiveItems(ChecklistList list) async {
+    try {
+      final archivedItems = await _checklistService.getArchivedItems(
+        houseId,
+        list.id,
+      );
+      if (_currentList?.id == list.id && _isArchiveMode) {
+        _items = archivedItems;
+        _error = null;
+        _isLoading = false;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to load archive: $e');
+      if (_currentList?.id == list.id && _isArchiveMode) {
+        _error = m.checklists.failedToLoadItems;
+        _isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
+
   Future<void> setTrashMode(bool enabled) async {
     if (_isTrashMode == enabled) return;
     // Meta view has no trash of its own — ignore.
     if (enabled && isMetaMode) return;
     _isTrashMode = enabled;
+    // Trash and archive are mutually exclusive views.
+    if (enabled) _isArchiveMode = false;
+    if (_currentList != null) {
+      await selectList(_currentList!);
+    } else {
+      notifyListeners();
+    }
+  }
+
+  Future<void> setArchiveMode(bool enabled) async {
+    if (_isArchiveMode == enabled) return;
+    // Meta view has no archive of its own — ignore.
+    if (enabled && isMetaMode) return;
+    _isArchiveMode = enabled;
+    // Trash and archive are mutually exclusive views.
+    if (enabled) _isTrashMode = false;
     if (_currentList != null) {
       await selectList(_currentList!);
     } else {
@@ -1217,6 +1269,26 @@ class ChecklistsController extends ChangeNotifier {
     exitSelection();
   }
 
+  void batchArchive() {
+    final ids = _selectedItemIds.toList();
+    if (ids.isEmpty) return;
+    // Archived items leave the active view immediately.
+    _items = reconcileRemoveIds(_items, ids.toSet());
+    if (!isSoftView) _cacheCurrentItems();
+    _enqueueBatch('archive', ids, extra: {'archive': true});
+    exitSelection();
+  }
+
+  void batchUnarchive() {
+    final ids = _selectedItemIds.toList();
+    if (ids.isEmpty) return;
+    // Unarchived items leave the archive view and return to the active list.
+    _items = reconcileRemoveIds(_items, ids.toSet());
+    if (!isSoftView) _cacheCurrentItems();
+    _enqueueBatch('archive', ids, extra: {'archive': false});
+    exitSelection();
+  }
+
   void batchSetCategory(int? categoryId) {
     final ids = _selectedItemIds.toList();
     if (ids.isEmpty) return;
@@ -1279,6 +1351,7 @@ class ChecklistsController extends ChangeNotifier {
         _items = reconcileReplaceById(_items, result.items);
         _cacheCurrentItems();
       case 'delete':
+      case 'archive':
         // Optimistic removal already applied; nothing to overlay.
         break;
     }
@@ -1337,6 +1410,55 @@ class ChecklistsController extends ChangeNotifier {
       );
     }
     _cacheCurrentItems();
+    notifyListeners();
+  }
+
+  /// Reverse a bulk archive done from the active view: unarchive each snapshot
+  /// back into the active list (no batch-unarchive coalescing needed here — a
+  /// per-id unarchive is the same op the single-item undo uses).
+  void undoBatchArchive(List<ListItem> items) {
+    if (items.isEmpty || isSoftView) return;
+    final existing = {for (final i in _items) i.id};
+    for (final item in items) {
+      if (existing.contains(item.id)) continue;
+      final restored = item.copyWith(clearArchivedAt: true, updatedAt: _now());
+      _items.insert(_insertIndexFor(restored), restored);
+      _sync.enqueue(
+        SyncOp(
+          uuid: SyncIds.newOpUuid(),
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.unarchive,
+          houseId: houseId,
+          parentId: item.listId,
+          entityId: item.id,
+          createdAt: _now(),
+        ),
+      );
+    }
+    _cacheCurrentItems();
+    notifyListeners();
+  }
+
+  /// Reverse a bulk unarchive done from the archive view: re-archive each
+  /// snapshot so it returns to the archive list it left.
+  void undoBatchUnarchive(List<ListItem> items) {
+    if (items.isEmpty || !_isArchiveMode) return;
+    final existing = {for (final i in _items) i.id};
+    for (final item in items) {
+      if (existing.contains(item.id)) continue;
+      _items.insert(_insertIndexFor(item), item);
+      _sync.enqueue(
+        SyncOp(
+          uuid: SyncIds.newOpUuid(),
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.archive,
+          houseId: houseId,
+          parentId: item.listId,
+          entityId: item.id,
+          createdAt: _now(),
+        ),
+      );
+    }
     notifyListeners();
   }
 
@@ -1612,7 +1734,7 @@ class ChecklistsController extends ChangeNotifier {
 
   Future<void> permanentlyDeleteItem(ListItem item) async {
     _items.removeWhere((i) => i.id == item.id);
-    if (!_isTrashMode) {
+    if (!isSoftView) {
       _cacheVisibleItems(item.listId);
     }
     notifyListeners();
@@ -1621,6 +1743,49 @@ class ChecklistsController extends ChangeNotifier {
         uuid: SyncIds.newOpUuid(),
         entity: SyncEntity.checklistItem,
         op: SyncOpKind.permanentDelete,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id,
+        createdAt: _now(),
+      ),
+    );
+  }
+
+  /// Archive an active item. Mirrors [deleteItem] but sets `archivedAt` instead
+  /// of `deletedAt`; the item leaves the active list for the archive view.
+  Future<void> archiveItem(ListItem item) async {
+    _items.removeWhere((i) => i.id == item.id);
+    _cacheVisibleItems(item.listId);
+    notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.archive,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id < 0 ? null : item.id,
+        tempEntityId: item.id < 0 ? item.id : null,
+        createdAt: _now(),
+      ),
+    );
+  }
+
+  /// Return an archived item to the active list. Mirrors [restoreItem]: from
+  /// the archive view the item just leaves; from the active list (undo of a
+  /// just-archived item) it reappears with `archivedAt` cleared.
+  Future<void> unarchiveItem(ListItem item) async {
+    _items.removeWhere((i) => i.id == item.id);
+    if (!_isArchiveMode) {
+      _items.add(item.copyWith(clearArchivedAt: true, updatedAt: _now()));
+      _cacheVisibleItems(item.listId);
+    }
+    notifyListeners();
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.unarchive,
         houseId: houseId,
         parentId: item.listId,
         entityId: item.id,
@@ -1794,8 +1959,11 @@ class ChecklistsController extends ChangeNotifier {
           return;
         }
         if (entity is ListItem) {
-          // If toggle caused soft-delete (deleteOnDone), drop it.
-          if (entity.deletedAt != null) {
+          // If toggle caused soft-delete (deleteOnDone), drop it. Likewise a
+          // synced item that came back archived doesn't belong in the active
+          // view (the archive view keeps its own separately-loaded list).
+          if (entity.deletedAt != null ||
+              (entity.archivedAt != null && !_isArchiveMode)) {
             _items.removeWhere((i) => i.id == entity.id || i.id == tempId);
             _cacheVisibleItems();
             notifyListeners();

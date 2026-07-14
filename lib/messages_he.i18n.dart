@@ -1540,6 +1540,61 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get itemRestored => """הפריט שוחזר""";
 
   /// ```dart
+  /// "הצג ארכיון"
+  /// ```
+  String get viewArchive => """הצג ארכיון""";
+
+  /// ```dart
+  /// "צא מהארכיון"
+  /// ```
+  String get exitArchive => """צא מהארכיון""";
+
+  /// ```dart
+  /// "ארכיון"
+  /// ```
+  String get archiveTitle => """ארכיון""";
+
+  /// ```dart
+  /// "הארכיון ריק."
+  /// ```
+  String get noArchivedItems => """הארכיון ריק.""";
+
+  /// ```dart
+  /// "העבר לארכיון"
+  /// ```
+  String get archiveItem => """העבר לארכיון""";
+
+  /// ```dart
+  /// "הוצא מהארכיון"
+  /// ```
+  String get unarchiveItem => """הוצא מהארכיון""";
+
+  /// ```dart
+  /// "העברת הפריט לארכיון נכשלה."
+  /// ```
+  String get archiveFailed => """העברת הפריט לארכיון נכשלה.""";
+
+  /// ```dart
+  /// "הוצאת הפריט מהארכיון נכשלה."
+  /// ```
+  String get unarchiveFailed => """הוצאת הפריט מהארכיון נכשלה.""";
+
+  /// ```dart
+  /// "הפריט הועבר לארכיון"
+  /// ```
+  String get itemArchived => """הפריט הועבר לארכיון""";
+
+  /// ```dart
+  /// "הפריט הוצא מהארכיון"
+  /// ```
+  String get itemUnarchived => """הפריט הוצא מהארכיון""";
+
+  /// ```dart
+  /// "טעינת הארכיון נכשלה."
+  /// ```
+  String get failedToLoadArchive => """טעינת הארכיון נכשלה.""";
+
+  /// ```dart
   /// "רשימות שנמחקו"
   /// ```
   String get viewListsTrash => """רשימות שנמחקו""";
@@ -1786,6 +1841,11 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get swipeDelete => """הסר""";
 
   /// ```dart
+  /// "העבר לארכיון"
+  /// ```
+  String get swipeArchive => """העבר לארכיון""";
+
+  /// ```dart
   /// "תצוגת רשימה"
   /// ```
   String get viewList => """תצוגת רשימה""";
@@ -1878,6 +1938,16 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   String get delete => """מחק""";
 
   /// ```dart
+  /// "העבר לארכיון"
+  /// ```
+  String get archive => """העבר לארכיון""";
+
+  /// ```dart
+  /// "הוצא מהארכיון"
+  /// ```
+  String get unarchive => """הוצא מהארכיון""";
+
+  /// ```dart
   /// "למחוק פריטים?"
   /// ```
   String get deleteConfirmTitle => """למחוק פריטים?""";
@@ -1905,6 +1975,18 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   /// ```
   String deleted(int count) =>
       """${_plural(count, one: 'פריט אחד נמחק', many: '$count פריטים נמחקו')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד הועבר לארכיון', many: '$count פריטים הועברו לארכיון')}"
+  /// ```
+  String archived(int count) =>
+      """${_plural(count, one: 'פריט אחד הועבר לארכיון', many: '$count פריטים הועברו לארכיון')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד הוצא מהארכיון', many: '$count פריטים הוצאו מהארכיון')}"
+  /// ```
+  String unarchived(int count) =>
+      """${_plural(count, one: 'פריט אחד הוצא מהארכיון', many: '$count פריטים הוצאו מהארכיון')}""";
 
   /// ```dart
   /// "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
@@ -3526,6 +3608,8 @@ Map<String, String> get messagesHeMap => {
   """checklists.batch.copy""": """העתק""",
   """checklists.batch.category""": """קטגוריה""",
   """checklists.batch.delete""": """מחק""",
+  """checklists.batch.archive""": """העבר לארכיון""",
+  """checklists.batch.unarchive""": """הוצא מהארכיון""",
   """checklists.batch.deleteConfirmTitle""": """למחוק פריטים?""",
   """checklists.batch.failed""": """משהו השתבש. נסה שוב.""",
   """checklists.viewTrash""": """הצג אשפה""",
@@ -3546,6 +3630,17 @@ Map<String, String> get messagesHeMap => {
   """checklists.restoreFailed""": """שחזור הפריט נכשל.""",
   """checklists.permanentlyDeleteFailed""": """מחיקת הפריט נכשלה.""",
   """checklists.itemRestored""": """הפריט שוחזר""",
+  """checklists.viewArchive""": """הצג ארכיון""",
+  """checklists.exitArchive""": """צא מהארכיון""",
+  """checklists.archiveTitle""": """ארכיון""",
+  """checklists.noArchivedItems""": """הארכיון ריק.""",
+  """checklists.archiveItem""": """העבר לארכיון""",
+  """checklists.unarchiveItem""": """הוצא מהארכיון""",
+  """checklists.archiveFailed""": """העברת הפריט לארכיון נכשלה.""",
+  """checklists.unarchiveFailed""": """הוצאת הפריט מהארכיון נכשלה.""",
+  """checklists.itemArchived""": """הפריט הועבר לארכיון""",
+  """checklists.itemUnarchived""": """הפריט הוצא מהארכיון""",
+  """checklists.failedToLoadArchive""": """טעינת הארכיון נכשלה.""",
   """checklists.viewListsTrash""": """רשימות שנמחקו""",
   """checklists.listsTrashTitle""": """רשימות שנמחקו""",
   """checklists.failedToLoadTrash""": """טעינת סל המיחזור נכשלה.""",
@@ -3642,6 +3737,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.swipeMove""": """העברה""",
   """checklists.swipeCopy""": """העתקה""",
   """checklists.swipeDelete""": """הסר""",
+  """checklists.swipeArchive""": """העבר לארכיון""",
   """checklists.viewList""": """תצוגת רשימה""",
   """checklists.viewCards""": """תצוגת כרטיסים""",
   """checklists.listColor""": """צבע""",

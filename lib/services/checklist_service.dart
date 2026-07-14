@@ -361,6 +361,18 @@ class ChecklistService {
     );
   }
 
+  Future<PantryBatchResult> batchArchiveItems(
+    int houseId, {
+    required List<int> itemIds,
+    bool archive = true,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, PantryBatchResult>(
+      '/houses/$houseId/items/batch/archive',
+      body: {'itemIds': itemIds, 'archive': archive},
+      fromJson: (data) => PantryBatchResult.fromJson(data),
+    );
+  }
+
   Future<PantryBatchResult> batchSetCategory(
     int houseId, {
     required List<int> itemIds,
@@ -472,6 +484,35 @@ class ChecklistService {
   Future<void> emptyTrash(int houseId, int listId) async {
     await ApiClient.instance.delete(
       '/houses/$houseId/lists/$listId/items/trash',
+    );
+  }
+
+  Future<List<ListItem>> getArchivedItems(
+    int houseId,
+    int listId, {
+    int limit = 200,
+    int offset = 0,
+  }) async {
+    return ApiClient.instance.get<List, List<ListItem>>(
+      '/houses/$houseId/lists/$listId/items/archive',
+      query: {'limit': limit.toString(), 'offset': offset.toString()},
+      fromJson: (data) => data
+          .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  Future<ListItem> archiveItem(int houseId, int listId, int itemId) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
+      '/houses/$houseId/lists/$listId/items/$itemId/archive',
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
+  Future<ListItem> unarchiveItem(int houseId, int listId, int itemId) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
+      '/houses/$houseId/lists/$listId/items/$itemId/unarchive',
+      fromJson: (data) => ListItem.fromJson(data),
     );
   }
 

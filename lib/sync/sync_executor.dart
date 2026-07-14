@@ -87,6 +87,8 @@ class SyncExecutor {
         await svc.reorderLists(houseId, order);
         return SyncResult.empty;
       case SyncOpKind.toggle:
+      case SyncOpKind.archive:
+      case SyncOpKind.unarchive:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -148,6 +150,14 @@ class SyncExecutor {
         if (listId == null) return SyncResult.empty;
         await svc.emptyTrash(houseId, listId);
         return SyncResult.empty;
+      case SyncOpKind.archive:
+        if (listId == null || id == null) return SyncResult.empty;
+        final item = await svc.archiveItem(houseId, listId, id);
+        return SyncResult(item);
+      case SyncOpKind.unarchive:
+        if (listId == null || id == null) return SyncResult.empty;
+        final item = await svc.unarchiveItem(houseId, listId, id);
+        return SyncResult(item);
       case SyncOpKind.reorder:
         if (listId == null) return SyncResult.empty;
         final raw = (op.body['order'] as List).cast<Map>();
@@ -204,6 +214,14 @@ class SyncExecutor {
             categoryId: op.body['categoryId'] as int?,
           ),
         );
+      case 'archive':
+        return SyncResult(
+          await svc.batchArchiveItems(
+            houseId,
+            itemIds: itemIds,
+            archive: op.body['archive'] as bool? ?? true,
+          ),
+        );
       default:
         return SyncResult.empty;
     }
@@ -247,6 +265,8 @@ class SyncExecutor {
       case SyncOpKind.restore:
       case SyncOpKind.permanentDelete:
       case SyncOpKind.emptyTrash:
+      case SyncOpKind.archive:
+      case SyncOpKind.unarchive:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -299,6 +319,8 @@ class SyncExecutor {
         await svc.reorderNotes(houseId, order);
         return SyncResult.empty;
       case SyncOpKind.toggle:
+      case SyncOpKind.archive:
+      case SyncOpKind.unarchive:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }

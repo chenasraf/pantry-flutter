@@ -108,7 +108,11 @@ class ItemDetailView extends StatelessWidget {
     final canMove = hasOtherLists && perms.canMoveItems;
     final canCopy =
         hasOtherLists && hasFeature('copy-items') && perms.canCopyItems;
-    return canMove || canCopy || perms.canDeleteItems;
+    final canArchive =
+        !controller.isSoftView &&
+        perms.canEditLists &&
+        hasFeature('item-archive');
+    return canMove || canCopy || canArchive || perms.canDeleteItems;
   }
 
   void _openEdit(BuildContext context) {
@@ -128,6 +132,10 @@ class ItemDetailView extends StatelessWidget {
     final canMove = hasOtherLists && perms.canMoveItems;
     final canCopy =
         hasOtherLists && hasFeature('copy-items') && perms.canCopyItems;
+    final canArchive =
+        !controller.isSoftView &&
+        perms.canEditLists &&
+        hasFeature('item-archive');
     final actions = <_OverflowAction>[
       if (canMove)
         _OverflowAction(
@@ -140,6 +148,12 @@ class ItemDetailView extends StatelessWidget {
           value: 'copy',
           icon: Icons.copy_outlined,
           label: m.checklists.copyItem,
+        ),
+      if (canArchive)
+        _OverflowAction(
+          value: 'archive',
+          icon: Icons.archive_outlined,
+          label: m.checklists.archiveItem,
         ),
       if (perms.canDeleteItems)
         _OverflowAction(
@@ -208,8 +222,24 @@ class ItemDetailView extends StatelessWidget {
         await _onMove(context);
       case 'copy':
         await _onCopy(context);
+      case 'archive':
+        await _onArchive(context);
       case 'delete':
         await _confirmDelete(context);
+    }
+  }
+
+  Future<void> _onArchive(BuildContext context) async {
+    try {
+      await controller.archiveItem(item);
+      // The item left the active list for the archive; close the detail view.
+      if (context.mounted) Navigator.of(context).pop(true);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.archiveFailed)));
+      }
     }
   }
 

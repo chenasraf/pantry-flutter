@@ -1537,6 +1537,61 @@ class ChecklistsMessages {
   String get itemRestored => """Item restored""";
 
   /// ```dart
+  /// "View archive"
+  /// ```
+  String get viewArchive => """View archive""";
+
+  /// ```dart
+  /// "Exit archive"
+  /// ```
+  String get exitArchive => """Exit archive""";
+
+  /// ```dart
+  /// "Archive"
+  /// ```
+  String get archiveTitle => """Archive""";
+
+  /// ```dart
+  /// "Archive is empty."
+  /// ```
+  String get noArchivedItems => """Archive is empty.""";
+
+  /// ```dart
+  /// "Archive"
+  /// ```
+  String get archiveItem => """Archive""";
+
+  /// ```dart
+  /// "Unarchive"
+  /// ```
+  String get unarchiveItem => """Unarchive""";
+
+  /// ```dart
+  /// "Failed to archive item."
+  /// ```
+  String get archiveFailed => """Failed to archive item.""";
+
+  /// ```dart
+  /// "Failed to unarchive item."
+  /// ```
+  String get unarchiveFailed => """Failed to unarchive item.""";
+
+  /// ```dart
+  /// "Item archived"
+  /// ```
+  String get itemArchived => """Item archived""";
+
+  /// ```dart
+  /// "Item unarchived"
+  /// ```
+  String get itemUnarchived => """Item unarchived""";
+
+  /// ```dart
+  /// "Failed to load archive."
+  /// ```
+  String get failedToLoadArchive => """Failed to load archive.""";
+
+  /// ```dart
   /// "Deleted lists"
   /// ```
   String get viewListsTrash => """Deleted lists""";
@@ -1781,6 +1836,11 @@ class ChecklistsMessages {
   String get swipeDelete => """Remove""";
 
   /// ```dart
+  /// "Archive"
+  /// ```
+  String get swipeArchive => """Archive""";
+
+  /// ```dart
   /// "List view"
   /// ```
   String get viewList => """List view""";
@@ -1872,6 +1932,16 @@ class BatchChecklistsMessages {
   String get delete => """Delete""";
 
   /// ```dart
+  /// "Archive"
+  /// ```
+  String get archive => """Archive""";
+
+  /// ```dart
+  /// "Unarchive"
+  /// ```
+  String get unarchive => """Unarchive""";
+
+  /// ```dart
   /// "Delete items?"
   /// ```
   String get deleteConfirmTitle => """Delete items?""";
@@ -1899,6 +1969,18 @@ class BatchChecklistsMessages {
   /// ```
   String deleted(int count) =>
       """${_plural(count, one: 'Deleted 1 item', many: 'Deleted $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Archived 1 item', many: 'Archived $count items')}"
+  /// ```
+  String archived(int count) =>
+      """${_plural(count, one: 'Archived 1 item', many: 'Archived $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Unarchived 1 item', many: 'Unarchived $count items')}"
+  /// ```
+  String unarchived(int count) =>
+      """${_plural(count, one: 'Unarchived 1 item', many: 'Unarchived $count items')}""";
 
   /// ```dart
   /// "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
@@ -3525,6 +3607,8 @@ Password: pantry-rocks""",
   """checklists.batch.copy""": """Copy""",
   """checklists.batch.category""": """Category""",
   """checklists.batch.delete""": """Delete""",
+  """checklists.batch.archive""": """Archive""",
+  """checklists.batch.unarchive""": """Unarchive""",
   """checklists.batch.deleteConfirmTitle""": """Delete items?""",
   """checklists.batch.failed""": """Something went wrong. Please try again.""",
   """checklists.viewTrash""": """View trash""",
@@ -3546,6 +3630,17 @@ Password: pantry-rocks""",
   """checklists.restoreFailed""": """Failed to restore item.""",
   """checklists.permanentlyDeleteFailed""": """Failed to delete item.""",
   """checklists.itemRestored""": """Item restored""",
+  """checklists.viewArchive""": """View archive""",
+  """checklists.exitArchive""": """Exit archive""",
+  """checklists.archiveTitle""": """Archive""",
+  """checklists.noArchivedItems""": """Archive is empty.""",
+  """checklists.archiveItem""": """Archive""",
+  """checklists.unarchiveItem""": """Unarchive""",
+  """checklists.archiveFailed""": """Failed to archive item.""",
+  """checklists.unarchiveFailed""": """Failed to unarchive item.""",
+  """checklists.itemArchived""": """Item archived""",
+  """checklists.itemUnarchived""": """Item unarchived""",
+  """checklists.failedToLoadArchive""": """Failed to load archive.""",
   """checklists.viewListsTrash""": """Deleted lists""",
   """checklists.listsTrashTitle""": """Deleted lists""",
   """checklists.failedToLoadTrash""": """Failed to load trash.""",
@@ -3644,6 +3739,7 @@ Password: pantry-rocks""",
   """checklists.swipeMove""": """Move""",
   """checklists.swipeCopy""": """Copy""",
   """checklists.swipeDelete""": """Remove""",
+  """checklists.swipeArchive""": """Archive""",
   """checklists.viewList""": """List view""",
   """checklists.viewCards""": """Cards view""",
   """checklists.listColor""": """Color""",
