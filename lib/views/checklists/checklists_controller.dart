@@ -265,8 +265,10 @@ class ChecklistsController extends ChangeNotifier {
   Set<int> get selectedItemIds => _selectedItemIds;
   int get selectedCount => _selectedItemIds.length;
 
-  /// Whether group actions are available at all in this view.
-  bool get canSelectItems => hasFeature('batch-operations') && !_isTrashMode;
+  /// Whether group actions are available at all in this view. Available in the
+  /// active list and in both soft views (trash → bulk restore / permanent
+  /// delete; archive → bulk unarchive / permanent delete).
+  bool get canSelectItems => hasFeature('batch-operations');
 
   /// The currently-selected items, resolved against the live item list. Ids
   /// whose item has since left the view are silently dropped.
@@ -319,6 +321,9 @@ class ChecklistsController extends ChangeNotifier {
   bool get canBatchCopy => selectedItems.isNotEmpty && permissions.canCopyItems;
   // Archive/unarchive are gated on canEditLists, not canDeleteItems.
   bool get canBatchArchive => _allSelectedWritable && permissions.canEditLists;
+  // Trash restore is gated on canDeleteItems (the same permission trash uses).
+  bool get canBatchRestore =>
+      _allSelectedWritable && permissions.canDeleteItems;
 
   ChecklistService get _checklistService => ChecklistService.instance;
   CategoryService get _categoryService => CategoryService.instance;
@@ -1289,6 +1294,30 @@ class ChecklistsController extends ChangeNotifier {
     exitSelection();
   }
 
+  /// Bulk-restore trashed items. There's no batch-restore endpoint, so this
+  /// enqueues a per-id restore (the same op the single-item restore uses).
+  void batchRestore() {
+    final items = List.of(selectedItems);
+    if (items.isEmpty) return;
+    // Restored items leave the trash view and return to the active list.
+    _items = reconcileRemoveIds(_items, {for (final i in items) i.id});
+    if (!isSoftView) _cacheCurrentItems();
+    for (final item in items) {
+      _sync.enqueue(
+        SyncOp(
+          uuid: SyncIds.newOpUuid(),
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.restore,
+          houseId: houseId,
+          parentId: item.listId,
+          entityId: item.id,
+          createdAt: _now(),
+        ),
+      );
+    }
+    exitSelection();
+  }
+
   void batchSetCategory(int? categoryId) {
     final ids = _selectedItemIds.toList();
     if (ids.isEmpty) return;
@@ -1452,6 +1481,29 @@ class ChecklistsController extends ChangeNotifier {
           uuid: SyncIds.newOpUuid(),
           entity: SyncEntity.checklistItem,
           op: SyncOpKind.archive,
+          houseId: houseId,
+          parentId: item.listId,
+          entityId: item.id,
+          createdAt: _now(),
+        ),
+      );
+    }
+    notifyListeners();
+  }
+
+  /// Reverse a bulk restore done from the trash view: re-trash each snapshot so
+  /// it returns to the trash list it left.
+  void undoBatchRestore(List<ListItem> items) {
+    if (items.isEmpty || !_isTrashMode) return;
+    final existing = {for (final i in _items) i.id};
+    for (final item in items) {
+      if (existing.contains(item.id)) continue;
+      _items.insert(_insertIndexFor(item), item);
+      _sync.enqueue(
+        SyncOp(
+          uuid: SyncIds.newOpUuid(),
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.delete,
           houseId: houseId,
           parentId: item.listId,
           entityId: item.id,

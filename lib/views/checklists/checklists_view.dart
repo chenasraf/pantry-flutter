@@ -993,6 +993,14 @@ class _BodyState extends State<_Body> {
           leading: const Icon(Icons.arrow_back, size: 18),
           label: m.checklists.exitTrash,
         ),
+        // Bulk restore / permanent-delete need a selection; surface the entry
+        // point here so it's reachable without a long-press (desktop).
+        if (controller.canSelectItems && controller.items.isNotEmpty)
+          _menuRow(
+            value: 'select_items',
+            leading: const Icon(Icons.checklist, size: 18),
+            label: m.checklists.selectItems,
+          ),
         _menuRow(
           value: 'empty_trash',
           leading: const Icon(Icons.delete_forever, size: 18),
@@ -2997,9 +3005,29 @@ class _SelectionActionBar extends StatelessWidget {
             horizontal: 4,
             vertical: 4,
           ),
-          // The archive view offers only unarchive + permanent delete; the
-          // active view offers the full move/copy/category/archive/delete set.
-          child: controller.isArchiveMode
+          // Trash offers restore + permanent delete; archive offers unarchive +
+          // permanent delete; the active view offers the full
+          // move/copy/category/archive/delete set.
+          child: controller.isTrashMode
+              ? Row(
+                  children: [
+                    _action(
+                      context,
+                      icon: Icons.restore_from_trash,
+                      label: m.checklists.restoreItem,
+                      enabled: controller.canBatchRestore,
+                      onTap: () => _restore(context),
+                    ),
+                    _action(
+                      context,
+                      icon: Icons.delete_forever,
+                      label: m.checklists.batch.delete,
+                      enabled: controller.canBatchDelete,
+                      onTap: () => _delete(context, permanent: true),
+                    ),
+                  ],
+                )
+              : controller.isArchiveMode
               ? Row(
                   children: [
                     _action(
@@ -3209,6 +3237,17 @@ class _SelectionActionBar extends StatelessWidget {
       messenger,
       m.checklists.batch.unarchived(affected.length),
       () => controller.undoBatchUnarchive(affected),
+    );
+  }
+
+  Future<void> _restore(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final affected = List.of(controller.selectedItems);
+    controller.batchRestore();
+    _showUndo(
+      messenger,
+      m.checklists.batch.restored(affected.length),
+      () => controller.undoBatchRestore(affected),
     );
   }
 

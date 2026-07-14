@@ -285,6 +285,7 @@ checklists:
     moved(int count): "${_plural(count, one: 'פריט אחד הועבר', many: '$count פריטים הועברו')}"
     copied(int count): "${_plural(count, one: 'פריט אחד הועתק', many: '$count פריטים הועתקו')}"
     deleted(int count): "${_plural(count, one: 'פריט אחד נמחק', many: '$count פריטים נמחקו')}"
+    restored(int count): "${_plural(count, one: 'פריט אחד שוחזר', many: '$count פריטים שוחזרו')}"
     archived(int count): "${_plural(count, one: 'פריט אחד הועבר לארכיון', many: '$count פריטים הועברו לארכיון')}"
     unarchived(int count): "${_plural(count, one: 'פריט אחד הוצא מהארכיון', many: '$count פריטים הוצאו מהארכיון')}"
     categorySet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"

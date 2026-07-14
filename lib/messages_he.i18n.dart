@@ -1977,6 +1977,12 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
       """${_plural(count, one: 'פריט אחד נמחק', many: '$count פריטים נמחקו')}""";
 
   /// ```dart
+  /// "${_plural(count, one: 'פריט אחד שוחזר', many: '$count פריטים שוחזרו')}"
+  /// ```
+  String restored(int count) =>
+      """${_plural(count, one: 'פריט אחד שוחזר', many: '$count פריטים שוחזרו')}""";
+
+  /// ```dart
   /// "${_plural(count, one: 'פריט אחד הועבר לארכיון', many: '$count פריטים הועברו לארכיון')}"
   /// ```
   String archived(int count) =>

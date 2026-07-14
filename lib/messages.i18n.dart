@@ -1971,6 +1971,12 @@ class BatchChecklistsMessages {
       """${_plural(count, one: 'Deleted 1 item', many: 'Deleted $count items')}""";
 
   /// ```dart
+  /// "${_plural(count, one: 'Restored 1 item', many: 'Restored $count items')}"
+  /// ```
+  String restored(int count) =>
+      """${_plural(count, one: 'Restored 1 item', many: 'Restored $count items')}""";
+
+  /// ```dart
   /// "${_plural(count, one: 'Archived 1 item', many: 'Archived $count items')}"
   /// ```
   String archived(int count) =>

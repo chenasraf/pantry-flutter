@@ -1991,6 +1991,12 @@ class BatchChecklistsMessagesDe extends BatchChecklistsMessages {
       """${_plural(count, one: '1 Eintrag gelöscht', many: '$count Einträge gelöscht')}""";
 
   /// ```dart
+  /// "${_plural(count, one: '1 Eintrag wiederhergestellt', many: '$count Einträge wiederhergestellt')}"
+  /// ```
+  String restored(int count) =>
+      """${_plural(count, one: '1 Eintrag wiederhergestellt', many: '$count Einträge wiederhergestellt')}""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 Eintrag archiviert', many: '$count Einträge archiviert')}"
   /// ```
   String archived(int count) =>

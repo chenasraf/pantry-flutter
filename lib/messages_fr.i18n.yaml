@@ -285,6 +285,7 @@ checklists:
     moved(int count): "${_plural(count, one: '1 article déplacé', many: '$count articles déplacés')}"
     copied(int count): "${_plural(count, one: '1 article copié', many: '$count articles copiés')}"
     deleted(int count): "${_plural(count, one: '1 article supprimé', many: '$count articles supprimés')}"
+    restored(int count): "${_plural(count, one: '1 article restauré', many: '$count articles restaurés')}"
     archived(int count): "${_plural(count, one: '1 article archivé', many: '$count articles archivés')}"
     unarchived(int count): "${_plural(count, one: '1 article désarchivé', many: '$count articles désarchivés')}"
     categorySet(int count): "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
