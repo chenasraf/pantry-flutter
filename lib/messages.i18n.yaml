@@ -166,12 +166,6 @@ settings:
     view: View
     edit: Edit
     none: None
-  categorySpacing: Show spacing between categories in list items
-  categorySpacingBody: Only visible when sorting by category
-  categorySpacingNames:
-    disabled: Disabled
-    space: Space
-    divider: Divider
   checkboxPosition: Checkbox position
   checkboxPositionBody: Which side of the row the checkbox appears on.
   checkboxPositionNames:
@@ -312,6 +306,7 @@ checklists:
   viewArchive: View archive
   exitArchive: Exit archive
   archiveTitle: Archive
+  noCategory: No category
   noArchivedItems: Archive is empty.
   archiveItem: Archive
   unarchiveItem: Unarchive

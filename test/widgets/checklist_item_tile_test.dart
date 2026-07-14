@@ -146,6 +146,38 @@ void main() {
     expect(recorder.viewed, 1);
     expect(recorder.toggled, 0);
   });
+
+  testWidgets('category chip shows by default, hidden when hideCategory', (
+    tester,
+  ) async {
+    Widget tileWith({required bool hideCategory}) => wrapForTest(
+      ChangeNotifierProvider<PrefsService>.value(
+        value: PrefsService.instance,
+        child: ListView(
+          children: [
+            ChecklistItemTile(
+              item: makeListItem(name: 'Milk', categoryId: 1),
+              category: makeCategory(id: 1, name: 'Dairy'),
+              houseId: 1,
+              isCardsView: false,
+              hideCategory: hideCategory,
+              onToggle: (_) {},
+              onView: (_) {},
+              onDelete: (_) {},
+            ),
+          ],
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(tileWith(hideCategory: false));
+    expect(find.text('Dairy'), findsOneWidget);
+
+    await tester.pumpWidget(tileWith(hideCategory: true));
+    // Under grouped category headers the per-row chip is redundant, so the
+    // category name no longer renders on the row itself.
+    expect(find.text('Dairy'), findsNothing);
+  });
 }
 
 class ListItemTapRecorder {

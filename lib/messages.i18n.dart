@@ -904,19 +904,6 @@ class SettingsMessages {
       ItemTapActionNamesSettingsMessages(this);
 
   /// ```dart
-  /// "Show spacing between categories in list items"
-  /// ```
-  String get categorySpacing =>
-      """Show spacing between categories in list items""";
-
-  /// ```dart
-  /// "Only visible when sorting by category"
-  /// ```
-  String get categorySpacingBody => """Only visible when sorting by category""";
-  CategorySpacingNamesSettingsMessages get categorySpacingNames =>
-      CategorySpacingNamesSettingsMessages(this);
-
-  /// ```dart
   /// "Checkbox position"
   /// ```
   String get checkboxPosition => """Checkbox position""";
@@ -1071,26 +1058,6 @@ class ItemTapActionNamesSettingsMessages {
   /// "None"
   /// ```
   String get none => """None""";
-}
-
-class CategorySpacingNamesSettingsMessages {
-  final SettingsMessages _parent;
-  const CategorySpacingNamesSettingsMessages(this._parent);
-
-  /// ```dart
-  /// "Disabled"
-  /// ```
-  String get disabled => """Disabled""";
-
-  /// ```dart
-  /// "Space"
-  /// ```
-  String get space => """Space""";
-
-  /// ```dart
-  /// "Divider"
-  /// ```
-  String get divider => """Divider""";
 }
 
 class CheckboxPositionNamesSettingsMessages {
@@ -1550,6 +1517,11 @@ class ChecklistsMessages {
   /// "Archive"
   /// ```
   String get archiveTitle => """Archive""";
+
+  /// ```dart
+  /// "No category"
+  /// ```
+  String get noCategory => """No category""";
 
   /// ```dart
   /// "Archive is empty."
@@ -3510,13 +3482,6 @@ Password: pantry-rocks""",
   """settings.itemTapActionNames.view""": """View""",
   """settings.itemTapActionNames.edit""": """Edit""",
   """settings.itemTapActionNames.none""": """None""",
-  """settings.categorySpacing""":
-      """Show spacing between categories in list items""",
-  """settings.categorySpacingBody""":
-      """Only visible when sorting by category""",
-  """settings.categorySpacingNames.disabled""": """Disabled""",
-  """settings.categorySpacingNames.space""": """Space""",
-  """settings.categorySpacingNames.divider""": """Divider""",
   """settings.checkboxPosition""": """Checkbox position""",
   """settings.checkboxPositionBody""":
       """Which side of the row the checkbox appears on.""",
@@ -3639,6 +3604,7 @@ Password: pantry-rocks""",
   """checklists.viewArchive""": """View archive""",
   """checklists.exitArchive""": """Exit archive""",
   """checklists.archiveTitle""": """Archive""",
+  """checklists.noCategory""": """No category""",
   """checklists.noArchivedItems""": """Archive is empty.""",
   """checklists.archiveItem""": """Archive""",
   """checklists.unarchiveItem""": """Unarchive""",

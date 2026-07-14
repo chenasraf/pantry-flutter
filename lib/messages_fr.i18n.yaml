@@ -166,12 +166,6 @@ settings:
     view: Voir
     edit: Modifier
     none: Aucune
-  categorySpacing: Afficher un espacement entre les catégories dans les éléments de la liste
-  categorySpacingBody: Visible uniquement lors du tri par catégorie
-  categorySpacingNames:
-    disabled: "Désactivé"
-    space: Espace
-    divider: "Séparateur"
   checkboxPosition: "Position de la case à cocher"
   checkboxPositionBody: "De quel côté de la ligne la case à cocher apparaît."
   checkboxPositionNames:
@@ -312,6 +306,7 @@ checklists:
   viewArchive: Voir les archives
   exitArchive: Quitter les archives
   archiveTitle: Archives
+  noCategory: Sans catégorie
   noArchivedItems: Les archives sont vides.
   archiveItem: Archiver
   unarchiveItem: Désarchiver

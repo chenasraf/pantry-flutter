@@ -77,6 +77,11 @@ class ChecklistItemTile extends StatefulWidget {
   /// redundant.
   final ItemListBadge? listBadge;
 
+  /// Suppress the per-row category chip. Set while the list is grouped under
+  /// sticky category headers (category sort), where the chip would just repeat
+  /// the header above it.
+  final bool hideCategory;
+
   /// Multi-select (group actions) state. When [selectionMode] is true, tapping
   /// the row toggles [selected] via [onSelectToggle] instead of running the
   /// normal tap action, swipe actions are suppressed, and the leading control
@@ -109,6 +114,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.addedByUserId,
     this.addedByDisplayName,
     this.listBadge,
+    this.hideCategory = false,
     this.selectionMode = false,
     this.selected = false,
     this.onSelectToggle,
@@ -298,6 +304,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       addedByUserId: widget.addedByUserId,
       addedByDisplayName: widget.addedByDisplayName,
       listBadge: widget.listBadge,
+      hideCategory: widget.hideCategory,
       onCheckboxTap: widget.canCheck ? _toggleAndCloseSwipe : null,
       onRowTap: rowTap,
       onRowLongPress: rowLongPress,
@@ -359,6 +366,7 @@ class _RowContent extends StatelessWidget {
   final String? addedByUserId;
   final String? addedByDisplayName;
   final ItemListBadge? listBadge;
+  final bool hideCategory;
   final VoidCallback? onCheckboxTap;
   final VoidCallback? onRowTap;
   final VoidCallback? onRowLongPress;
@@ -377,6 +385,7 @@ class _RowContent extends StatelessWidget {
     required this.addedByUserId,
     required this.addedByDisplayName,
     required this.listBadge,
+    required this.hideCategory,
     required this.onCheckboxTap,
     required this.onRowTap,
     required this.onRowLongPress,
@@ -476,7 +485,7 @@ class _RowContent extends StatelessWidget {
                           SizedBox(height: dense ? 3 : 5),
                           _MetaRow(
                             item: item,
-                            category: category,
+                            category: hideCategory ? null : category,
                             catColor: catColor,
                             listBadge: listBadge,
                           ),
@@ -503,7 +512,7 @@ class _RowContent extends StatelessWidget {
   }
 
   bool get _hasMeta {
-    final hasCat = category != null;
+    final hasCat = category != null && !hideCategory;
     final hasQty = item.quantity != null && item.quantity!.trim().isNotEmpty;
     final lc = lifecycleOf(item);
     final hasType = lc != ItemLifecycle.staple;

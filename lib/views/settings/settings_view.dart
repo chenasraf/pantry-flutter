@@ -24,7 +24,6 @@ class _SettingsViewState extends State<SettingsView> {
   late String? _selectedTheme;
 
   static const _pollOptions = [15, 30, 60, 120, 360];
-  static const _categorySpacingOptions = ['disabled', 'space', 'divider'];
   static const _checkboxPositionOptions = ['start', 'end'];
   static const _densityOptions = ['normal', 'dense'];
   static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
@@ -49,19 +48,6 @@ class _SettingsViewState extends State<SettingsView> {
     'edit' => m.settings.itemTapActionNames.edit,
     'none' => m.settings.itemTapActionNames.none,
     _ => m.settings.itemTapActionNames.view,
-  };
-
-  Future<void> _setCategorySpacing(String? value) async {
-    if (value == null) return;
-    final prefs = context.read<PrefsService>();
-    if (value == prefs.checklistCategorySpacing) return;
-    await prefs.setChecklistCategorySpacing(value);
-  }
-
-  String _categorySpacingLabel(String value) => switch (value) {
-    'space' => m.settings.categorySpacingNames.space,
-    'divider' => m.settings.categorySpacingNames.divider,
-    _ => m.settings.categorySpacingNames.disabled,
   };
 
   Future<void> _setCheckboxPosition(String? value) async {
@@ -195,7 +181,6 @@ class _SettingsViewState extends State<SettingsView> {
     final notificationsEnabled = prefs.notificationsEnabled;
     final pollIntervalMinutes = prefs.pollIntervalMinutes;
     final itemTapAction = prefs.defaultItemTapAction;
-    final categorySpacing = prefs.checklistCategorySpacing;
     final checkboxPosition = prefs.checklistCheckboxPosition;
     final density = prefs.checklistDensity;
     final reuseExistingItems = prefs.reuseExistingItems;
@@ -292,22 +277,6 @@ class _SettingsViewState extends State<SettingsView> {
                     DropdownMenuItem(
                       value: option,
                       child: Text(_itemTapActionLabel(option)),
-                    ),
-                ],
-              ),
-            ),
-          if (supportsFeature('pref-category-spacing'))
-            ListTile(
-              title: Text(m.settings.categorySpacing),
-              subtitle: Text(m.settings.categorySpacingBody),
-              trailing: DropdownButton<String>(
-                value: categorySpacing,
-                onChanged: _setCategorySpacing,
-                items: [
-                  for (final option in _categorySpacingOptions)
-                    DropdownMenuItem(
-                      value: option,
-                      child: Text(_categorySpacingLabel(option)),
                     ),
                 ],
               ),

@@ -166,12 +166,6 @@ settings:
     view: Anzeigen
     edit: Bearbeiten
     none: Keine
-  categorySpacing: Abstand zwischen Kategorien in Listeneinträgen anzeigen
-  categorySpacingBody: Nur sichtbar bei Sortierung nach Kategorie
-  categorySpacingNames:
-    disabled: Deaktiviert
-    space: Abstand
-    divider: Trennlinie
   checkboxPosition: Position des Kontrollkästchens
   checkboxPositionBody: Auf welcher Seite der Zeile das Kontrollkästchen erscheint.
   checkboxPositionNames:
@@ -312,6 +306,7 @@ checklists:
   viewArchive: Archiv anzeigen
   exitArchive: Archiv verlassen
   archiveTitle: Archiv
+  noCategory: Keine Kategorie
   noArchivedItems: Das Archiv ist leer.
   archiveItem: Archivieren
   unarchiveItem: Dearchivieren

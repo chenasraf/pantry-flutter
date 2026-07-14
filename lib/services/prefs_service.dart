@@ -70,10 +70,6 @@ class PrefsService extends ChangeNotifier {
   String _defaultItemTapAction = 'view';
   String get defaultItemTapAction => _defaultItemTapAction;
 
-  /// "disabled", "space", "divider"
-  String _checklistCategorySpacing = 'disabled';
-  String get checklistCategorySpacing => _checklistCategorySpacing;
-
   /// Account-scoped pref synced from the Pantry user-prefs endpoint, cached
   /// locally so the add-item path can read it synchronously. One of `ask`
   /// (default), `reuse`, `never`. Only meaningful when the server advertises
@@ -212,10 +208,10 @@ class PrefsService extends ChangeNotifier {
       }
     }
 
-    final spacing = all[_checklistCategorySpacingKey];
-    if (spacing != null &&
-        (spacing == 'disabled' || spacing == 'space' || spacing == 'divider')) {
-      _checklistCategorySpacing = spacing;
+    // The category-spacing setting was replaced by grouped category headers;
+    // drop any stored value as a one-time cleanup.
+    if (all.containsKey(_checklistCategorySpacingKey)) {
+      await _storage.delete(key: _checklistCategorySpacingKey);
     }
 
     final reuse = all[_reuseExistingItemsKey];
@@ -433,12 +429,6 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setChecklistCategorySpacing(String value) async {
-    _checklistCategorySpacing = value;
-    await _storage.write(key: _checklistCategorySpacingKey, value: value);
-    notifyListeners();
-  }
-
   static bool _isValidReuseExistingItems(String value) =>
       value == 'ask' || value == 'reuse' || value == 'never';
 
@@ -605,7 +595,6 @@ class PrefsService extends ChangeNotifier {
     _locale = null;
     _themeMode = null;
     _defaultItemTapAction = 'view';
-    _checklistCategorySpacing = 'disabled';
     _reuseExistingItems = 'ask';
     _checklistView = 'list';
     _checklistCheckboxPosition = 'start';

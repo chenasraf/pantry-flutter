@@ -448,10 +448,8 @@ class _BodyState extends State<_Body> {
                                       canReorder: canReorder,
                                       isCards: isCards,
                                       doneCollapsed: doneCollapsed,
-                                      categorySpacing:
-                                          controller.sortBy == 'category'
-                                          ? prefs.checklistCategorySpacing
-                                          : 'disabled',
+                                      groupByCategory:
+                                          controller.sortBy == 'category',
                                       onToggleDoneCollapsed: () =>
                                           prefs.setChecklistDoneCollapsed(
                                             !doneCollapsed,
@@ -1966,7 +1964,9 @@ class _ItemList extends StatefulWidget {
   final bool canReorder;
   final bool isCards;
   final bool doneCollapsed;
-  final String categorySpacing;
+
+  /// When true (category sort), items render grouped under category headers.
+  final bool groupByCategory;
   final VoidCallback onToggleDoneCollapsed;
   final ScrollController? scrollController;
 
@@ -1977,7 +1977,7 @@ class _ItemList extends StatefulWidget {
     required this.canReorder,
     required this.isCards,
     required this.doneCollapsed,
-    required this.categorySpacing,
+    required this.groupByCategory,
     required this.onToggleDoneCollapsed,
     this.scrollController,
   });
@@ -2054,7 +2054,7 @@ class _ItemListState extends State<_ItemList> {
             SliverList.builder(
               itemCount: widget.activeItems.length,
               itemBuilder: (context, i) =>
-                  _buildTileWithSeparator(context, widget.activeItems, i),
+                  _buildTileWithHeader(context, widget.activeItems, i),
             ),
           if (showDone)
             SliverToBoxAdapter(
@@ -2108,7 +2108,7 @@ class _ItemListState extends State<_ItemList> {
             SliverList.builder(
               itemCount: widget.doneItems.length,
               itemBuilder: (context, i) =>
-                  _buildTileWithSeparator(context, widget.doneItems, i),
+                  _buildTileWithHeader(context, widget.doneItems, i),
             ),
           const SliverPadding(padding: EdgeInsets.only(bottom: 36)),
         ],
@@ -2116,24 +2116,27 @@ class _ItemListState extends State<_ItemList> {
     );
   }
 
-  Widget _buildTileWithSeparator(
+  Widget _buildTileWithHeader(
     BuildContext context,
     List<ListItem> items,
     int index,
   ) {
     final item = items[index];
     final tile = _buildTile(context, item);
-    final showSeparator =
-        widget.categorySpacing != 'disabled' &&
-        index > 0 &&
-        items[index - 1].categoryId != item.categoryId;
-    if (!showSeparator) return tile;
+    if (!widget.groupByCategory) return tile;
+    // A header leads every category group — before the first item and again
+    // whenever the category changes from the row above.
+    final startsGroup =
+        index == 0 || items[index - 1].categoryId != item.categoryId;
+    if (!startsGroup) return tile;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (widget.categorySpacing == 'divider')
-          const Divider(height: 25)
-        else
-          const SizedBox(height: 20),
+        _CategoryHeader(
+          category: item.categoryId != null
+              ? widget.controller.categories[item.categoryId]
+              : null,
+        ),
         tile,
       ],
     );
@@ -2184,6 +2187,7 @@ class _ItemListState extends State<_ItemList> {
       addedByUserId: addedByUserId,
       addedByDisplayName: addedByDisplayName,
       listBadge: listBadge,
+      hideCategory: widget.groupByCategory,
       onToggle: (i) => _onToggle(context, controller, i),
       canCheck: writable && controller.permissions.canCheckItems,
       onView: (i) => _openView(context, controller, i),
@@ -2694,6 +2698,50 @@ class _ArchiveBanner extends StatelessWidget {
             onPressed: onExit,
             icon: const Icon(Icons.close, size: 16),
             label: Text(m.checklists.exitArchive),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Grouped-list header shown above each category run when sorting by category.
+/// Real categories render their icon + name in the category color; the
+/// uncategorised group falls back to muted default text and label.
+class _CategoryHeader extends StatelessWidget {
+  final models.Category? category;
+
+  const _CategoryHeader({required this.category});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final color = category != null
+        ? (parseHexColor(category!.color) ?? cs.onSurfaceVariant)
+        : cs.onSurfaceVariant;
+    final name = category?.name ?? m.checklists.noCategory;
+    return Container(
+      decoration: BoxDecoration(
+        color: cs.surface,
+        border: Border(bottom: BorderSide(color: cs.outlineVariant)),
+      ),
+      padding: const EdgeInsetsDirectional.fromSTEB(20, 14, 20, 8),
+      child: Row(
+        children: [
+          Icon(categoryIcon(category?.icon), size: 16, color: color),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
+                color: color,
+              ),
+            ),
           ),
         ],
       ),

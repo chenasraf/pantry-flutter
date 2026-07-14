@@ -166,12 +166,6 @@ settings:
     view: Ver
     edit: Editar
     none: Ninguna
-  categorySpacing: Mostrar espacio entre categorías en los elementos de la lista
-  categorySpacingBody: Solo visible al ordenar por categoría
-  categorySpacingNames:
-    disabled: Desactivado
-    space: Espacio
-    divider: Separador
   checkboxPosition: Posición de la casilla
   checkboxPositionBody: En qué lado de la fila aparece la casilla.
   checkboxPositionNames:
@@ -312,6 +306,7 @@ checklists:
   viewArchive: Ver archivo
   exitArchive: Salir del archivo
   archiveTitle: Archivo
+  noCategory: Sin categoría
   noArchivedItems: El archivo está vacío.
   archiveItem: Archivar
   unarchiveItem: Desarchivar

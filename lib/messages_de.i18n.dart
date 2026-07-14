@@ -907,20 +907,6 @@ class SettingsMessagesDe extends SettingsMessages {
       ItemTapActionNamesSettingsMessagesDe(this);
 
   /// ```dart
-  /// "Abstand zwischen Kategorien in Listeneinträgen anzeigen"
-  /// ```
-  String get categorySpacing =>
-      """Abstand zwischen Kategorien in Listeneinträgen anzeigen""";
-
-  /// ```dart
-  /// "Nur sichtbar bei Sortierung nach Kategorie"
-  /// ```
-  String get categorySpacingBody =>
-      """Nur sichtbar bei Sortierung nach Kategorie""";
-  CategorySpacingNamesSettingsMessagesDe get categorySpacingNames =>
-      CategorySpacingNamesSettingsMessagesDe(this);
-
-  /// ```dart
   /// "Position des Kontrollkästchens"
   /// ```
   String get checkboxPosition => """Position des Kontrollkästchens""";
@@ -1078,27 +1064,6 @@ class ItemTapActionNamesSettingsMessagesDe
   /// "Keine"
   /// ```
   String get none => """Keine""";
-}
-
-class CategorySpacingNamesSettingsMessagesDe
-    extends CategorySpacingNamesSettingsMessages {
-  final SettingsMessagesDe _parent;
-  const CategorySpacingNamesSettingsMessagesDe(this._parent) : super(_parent);
-
-  /// ```dart
-  /// "Deaktiviert"
-  /// ```
-  String get disabled => """Deaktiviert""";
-
-  /// ```dart
-  /// "Abstand"
-  /// ```
-  String get space => """Abstand""";
-
-  /// ```dart
-  /// "Trennlinie"
-  /// ```
-  String get divider => """Trennlinie""";
 }
 
 class CheckboxPositionNamesSettingsMessagesDe
@@ -1567,6 +1532,11 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Archiv"
   /// ```
   String get archiveTitle => """Archiv""";
+
+  /// ```dart
+  /// "Keine Kategorie"
+  /// ```
+  String get noCategory => """Keine Kategorie""";
 
   /// ```dart
   /// "Das Archiv ist leer."
@@ -3551,13 +3521,6 @@ Passwort: pantry-rocks""",
   """settings.itemTapActionNames.view""": """Anzeigen""",
   """settings.itemTapActionNames.edit""": """Bearbeiten""",
   """settings.itemTapActionNames.none""": """Keine""",
-  """settings.categorySpacing""":
-      """Abstand zwischen Kategorien in Listeneinträgen anzeigen""",
-  """settings.categorySpacingBody""":
-      """Nur sichtbar bei Sortierung nach Kategorie""",
-  """settings.categorySpacingNames.disabled""": """Deaktiviert""",
-  """settings.categorySpacingNames.space""": """Abstand""",
-  """settings.categorySpacingNames.divider""": """Trennlinie""",
   """settings.checkboxPosition""": """Position des Kontrollkästchens""",
   """settings.checkboxPositionBody""":
       """Auf welcher Seite der Zeile das Kontrollkästchen erscheint.""",
@@ -3691,6 +3654,7 @@ Passwort: pantry-rocks""",
   """checklists.viewArchive""": """Archiv anzeigen""",
   """checklists.exitArchive""": """Archiv verlassen""",
   """checklists.archiveTitle""": """Archiv""",
+  """checklists.noCategory""": """Keine Kategorie""",
   """checklists.noArchivedItems""": """Das Archiv ist leer.""",
   """checklists.archiveItem""": """Archivieren""",
   """checklists.unarchiveItem""": """Dearchivieren""",

@@ -904,18 +904,6 @@ class SettingsMessagesHe extends SettingsMessages {
       ItemTapActionNamesSettingsMessagesHe(this);
 
   /// ```dart
-  /// "הצג רווח בין קטגוריות בפריטי הרשימה"
-  /// ```
-  String get categorySpacing => """הצג רווח בין קטגוריות בפריטי הרשימה""";
-
-  /// ```dart
-  /// "מוצג רק בעת מיון לפי קטגוריה"
-  /// ```
-  String get categorySpacingBody => """מוצג רק בעת מיון לפי קטגוריה""";
-  CategorySpacingNamesSettingsMessagesHe get categorySpacingNames =>
-      CategorySpacingNamesSettingsMessagesHe(this);
-
-  /// ```dart
   /// "מיקום תיבת הסימון"
   /// ```
   String get checkboxPosition => """מיקום תיבת הסימון""";
@@ -1070,27 +1058,6 @@ class ItemTapActionNamesSettingsMessagesHe
   /// "ללא"
   /// ```
   String get none => """ללא""";
-}
-
-class CategorySpacingNamesSettingsMessagesHe
-    extends CategorySpacingNamesSettingsMessages {
-  final SettingsMessagesHe _parent;
-  const CategorySpacingNamesSettingsMessagesHe(this._parent) : super(_parent);
-
-  /// ```dart
-  /// "מושבת"
-  /// ```
-  String get disabled => """מושבת""";
-
-  /// ```dart
-  /// "רווח"
-  /// ```
-  String get space => """רווח""";
-
-  /// ```dart
-  /// "קו מפריד"
-  /// ```
-  String get divider => """קו מפריד""";
 }
 
 class CheckboxPositionNamesSettingsMessagesHe
@@ -1553,6 +1520,11 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "ארכיון"
   /// ```
   String get archiveTitle => """ארכיון""";
+
+  /// ```dart
+  /// "ללא קטגוריה"
+  /// ```
+  String get noCategory => """ללא קטגוריה""";
 
   /// ```dart
   /// "הארכיון ריק."
@@ -3514,11 +3486,6 @@ Map<String, String> get messagesHeMap => {
   """settings.itemTapActionNames.view""": """צפייה""",
   """settings.itemTapActionNames.edit""": """עריכה""",
   """settings.itemTapActionNames.none""": """ללא""",
-  """settings.categorySpacing""": """הצג רווח בין קטגוריות בפריטי הרשימה""",
-  """settings.categorySpacingBody""": """מוצג רק בעת מיון לפי קטגוריה""",
-  """settings.categorySpacingNames.disabled""": """מושבת""",
-  """settings.categorySpacingNames.space""": """רווח""",
-  """settings.categorySpacingNames.divider""": """קו מפריד""",
   """settings.checkboxPosition""": """מיקום תיבת הסימון""",
   """settings.checkboxPositionBody""":
       """באיזה צד של השורה תופיע תיבת הסימון.""",
@@ -3639,6 +3606,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.viewArchive""": """הצג ארכיון""",
   """checklists.exitArchive""": """צא מהארכיון""",
   """checklists.archiveTitle""": """ארכיון""",
+  """checklists.noCategory""": """ללא קטגוריה""",
   """checklists.noArchivedItems""": """הארכיון ריק.""",
   """checklists.archiveItem""": """העבר לארכיון""",
   """checklists.unarchiveItem""": """הוצא מהארכיון""",

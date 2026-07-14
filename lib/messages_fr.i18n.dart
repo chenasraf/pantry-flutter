@@ -910,20 +910,6 @@ class SettingsMessagesFr extends SettingsMessages {
       ItemTapActionNamesSettingsMessagesFr(this);
 
   /// ```dart
-  /// "Afficher un espacement entre les catégories dans les éléments de la liste"
-  /// ```
-  String get categorySpacing =>
-      """Afficher un espacement entre les catégories dans les éléments de la liste""";
-
-  /// ```dart
-  /// "Visible uniquement lors du tri par catégorie"
-  /// ```
-  String get categorySpacingBody =>
-      """Visible uniquement lors du tri par catégorie""";
-  CategorySpacingNamesSettingsMessagesFr get categorySpacingNames =>
-      CategorySpacingNamesSettingsMessagesFr(this);
-
-  /// ```dart
   /// "Position de la case à cocher"
   /// ```
   String get checkboxPosition => """Position de la case à cocher""";
@@ -1081,27 +1067,6 @@ class ItemTapActionNamesSettingsMessagesFr
   /// "Aucune"
   /// ```
   String get none => """Aucune""";
-}
-
-class CategorySpacingNamesSettingsMessagesFr
-    extends CategorySpacingNamesSettingsMessages {
-  final SettingsMessagesFr _parent;
-  const CategorySpacingNamesSettingsMessagesFr(this._parent) : super(_parent);
-
-  /// ```dart
-  /// "Désactivé"
-  /// ```
-  String get disabled => """Désactivé""";
-
-  /// ```dart
-  /// "Espace"
-  /// ```
-  String get space => """Espace""";
-
-  /// ```dart
-  /// "Séparateur"
-  /// ```
-  String get divider => """Séparateur""";
 }
 
 class CheckboxPositionNamesSettingsMessagesFr
@@ -1569,6 +1534,11 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Archives"
   /// ```
   String get archiveTitle => """Archives""";
+
+  /// ```dart
+  /// "Sans catégorie"
+  /// ```
+  String get noCategory => """Sans catégorie""";
 
   /// ```dart
   /// "Les archives sont vides."
@@ -3556,13 +3526,6 @@ Mot de passe : pantry-rocks""",
   """settings.itemTapActionNames.view""": """Voir""",
   """settings.itemTapActionNames.edit""": """Modifier""",
   """settings.itemTapActionNames.none""": """Aucune""",
-  """settings.categorySpacing""":
-      """Afficher un espacement entre les catégories dans les éléments de la liste""",
-  """settings.categorySpacingBody""":
-      """Visible uniquement lors du tri par catégorie""",
-  """settings.categorySpacingNames.disabled""": """Désactivé""",
-  """settings.categorySpacingNames.space""": """Espace""",
-  """settings.categorySpacingNames.divider""": """Séparateur""",
   """settings.checkboxPosition""": """Position de la case à cocher""",
   """settings.checkboxPositionBody""":
       """De quel côté de la ligne la case à cocher apparaît.""",
@@ -3692,6 +3655,7 @@ Mot de passe : pantry-rocks""",
   """checklists.viewArchive""": """Voir les archives""",
   """checklists.exitArchive""": """Quitter les archives""",
   """checklists.archiveTitle""": """Archives""",
+  """checklists.noCategory""": """Sans catégorie""",
   """checklists.noArchivedItems""": """Les archives sont vides.""",
   """checklists.archiveItem""": """Archiver""",
   """checklists.unarchiveItem""": """Désarchiver""",

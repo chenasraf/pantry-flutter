@@ -908,19 +908,6 @@ class SettingsMessagesEs extends SettingsMessages {
       ItemTapActionNamesSettingsMessagesEs(this);
 
   /// ```dart
-  /// "Mostrar espacio entre categorías en los elementos de la lista"
-  /// ```
-  String get categorySpacing =>
-      """Mostrar espacio entre categorías en los elementos de la lista""";
-
-  /// ```dart
-  /// "Solo visible al ordenar por categoría"
-  /// ```
-  String get categorySpacingBody => """Solo visible al ordenar por categoría""";
-  CategorySpacingNamesSettingsMessagesEs get categorySpacingNames =>
-      CategorySpacingNamesSettingsMessagesEs(this);
-
-  /// ```dart
   /// "Posición de la casilla"
   /// ```
   String get checkboxPosition => """Posición de la casilla""";
@@ -1078,27 +1065,6 @@ class ItemTapActionNamesSettingsMessagesEs
   /// "Ninguna"
   /// ```
   String get none => """Ninguna""";
-}
-
-class CategorySpacingNamesSettingsMessagesEs
-    extends CategorySpacingNamesSettingsMessages {
-  final SettingsMessagesEs _parent;
-  const CategorySpacingNamesSettingsMessagesEs(this._parent) : super(_parent);
-
-  /// ```dart
-  /// "Desactivado"
-  /// ```
-  String get disabled => """Desactivado""";
-
-  /// ```dart
-  /// "Espacio"
-  /// ```
-  String get space => """Espacio""";
-
-  /// ```dart
-  /// "Separador"
-  /// ```
-  String get divider => """Separador""";
 }
 
 class CheckboxPositionNamesSettingsMessagesEs
@@ -1564,6 +1530,11 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "Archivo"
   /// ```
   String get archiveTitle => """Archivo""";
+
+  /// ```dart
+  /// "Sin categoría"
+  /// ```
+  String get noCategory => """Sin categoría""";
 
   /// ```dart
   /// "El archivo está vacío."
@@ -3545,13 +3516,6 @@ Contraseña: pantry-rocks""",
   """settings.itemTapActionNames.view""": """Ver""",
   """settings.itemTapActionNames.edit""": """Editar""",
   """settings.itemTapActionNames.none""": """Ninguna""",
-  """settings.categorySpacing""":
-      """Mostrar espacio entre categorías en los elementos de la lista""",
-  """settings.categorySpacingBody""":
-      """Solo visible al ordenar por categoría""",
-  """settings.categorySpacingNames.disabled""": """Desactivado""",
-  """settings.categorySpacingNames.space""": """Espacio""",
-  """settings.categorySpacingNames.divider""": """Separador""",
   """settings.checkboxPosition""": """Posición de la casilla""",
   """settings.checkboxPositionBody""":
       """En qué lado de la fila aparece la casilla.""",
@@ -3681,6 +3645,7 @@ Contraseña: pantry-rocks""",
   """checklists.viewArchive""": """Ver archivo""",
   """checklists.exitArchive""": """Salir del archivo""",
   """checklists.archiveTitle""": """Archivo""",
+  """checklists.noCategory""": """Sin categoría""",
   """checklists.noArchivedItems""": """El archivo está vacío.""",
   """checklists.archiveItem""": """Archivar""",
   """checklists.unarchiveItem""": """Desarchivar""",

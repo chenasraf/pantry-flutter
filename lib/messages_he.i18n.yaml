@@ -166,12 +166,6 @@ settings:
     view: צפייה
     edit: עריכה
     none: ללא
-  categorySpacing: הצג רווח בין קטגוריות בפריטי הרשימה
-  categorySpacingBody: מוצג רק בעת מיון לפי קטגוריה
-  categorySpacingNames:
-    disabled: מושבת
-    space: רווח
-    divider: קו מפריד
   checkboxPosition: מיקום תיבת הסימון
   checkboxPositionBody: באיזה צד של השורה תופיע תיבת הסימון.
   checkboxPositionNames:
@@ -312,6 +306,7 @@ checklists:
   viewArchive: הצג ארכיון
   exitArchive: צא מהארכיון
   archiveTitle: ארכיון
+  noCategory: ללא קטגוריה
   noArchivedItems: הארכיון ריק.
   archiveItem: העבר לארכיון
   unarchiveItem: הוצא מהארכיון
