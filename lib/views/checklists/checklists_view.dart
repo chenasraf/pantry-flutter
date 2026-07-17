@@ -192,6 +192,7 @@ class _BodyState extends State<_Body> {
   // reads as a dropdown rather than a centered modal.
   final _switcherAnchorKey = GlobalKey();
   final Set<int> _selectedCategoryIds = {};
+  bool _noCategorySelected = false;
 
   /// In All-lists mode, the most recently chosen target list. Pre-selected on
   /// the next add so the user can rapidly file several items into the same
@@ -208,14 +209,16 @@ class _BodyState extends State<_Body> {
   }
 
   List<ListItem> _applyFilters(List<ListItem> items, Set<int> selectedListIds) {
-    if (_selectedCategoryIds.isEmpty &&
-        selectedListIds.isEmpty &&
-        _query.isEmpty) {
+    final categoryFilterActive =
+        _selectedCategoryIds.isNotEmpty || _noCategorySelected;
+    if (!categoryFilterActive && selectedListIds.isEmpty && _query.isEmpty) {
       return items;
     }
     return items.where((item) {
-      if (_selectedCategoryIds.isNotEmpty) {
-        if (!_selectedCategoryIds.contains(item.categoryId)) return false;
+      if (categoryFilterActive) {
+        final matchesId = _selectedCategoryIds.contains(item.categoryId);
+        final matchesNone = _noCategorySelected && item.categoryId == null;
+        if (!matchesId && !matchesNone) return false;
       }
       if (selectedListIds.isNotEmpty) {
         if (!selectedListIds.contains(item.listId)) return false;
@@ -278,6 +281,7 @@ class _BodyState extends State<_Body> {
         !controller.isSoftView &&
         !controller.selectionMode &&
         _selectedCategoryIds.isEmpty &&
+        !_noCategorySelected &&
         _query.isEmpty &&
         controller.isCurrentListWritable;
     final total = controller.items.where((i) => i.deletedAt == null).length;
@@ -299,6 +303,11 @@ class _BodyState extends State<_Body> {
     final filterCategories = controller.sortedCategories
         .where((c) => activeCategoryIds.contains(c.id))
         .toList();
+    // The "No category" chip only earns a spot when there's actually an
+    // uncategorized item to filter down to.
+    final hasUncategorized = controller.items.any(
+      (i) => i.deletedAt == null && i.categoryId == null,
+    );
 
     // The per-list filter (All-lists view only) offers every list, even ones
     // with no items in the current view — unlike categories, an empty list is
@@ -391,8 +400,15 @@ class _BodyState extends State<_Body> {
                         }
                       });
                     },
-                    onClearCategories: () =>
-                        setState(() => _selectedCategoryIds.clear()),
+                    onClearCategories: () => setState(() {
+                      _selectedCategoryIds.clear();
+                      _noCategorySelected = false;
+                    }),
+                    showNoCategory: hasUncategorized,
+                    noCategorySelected: _noCategorySelected,
+                    onToggleNoCategory: () => setState(
+                      () => _noCategorySelected = !_noCategorySelected,
+                    ),
                     showListFilter: isMeta,
                     lists: filterLists,
                     selectedListIds: selectedListIds,
@@ -877,6 +893,7 @@ class _BodyState extends State<_Body> {
               if (!_searchOpen) {
                 _searchCtrl.clear();
                 _selectedCategoryIds.clear();
+                _noCategorySelected = false;
               }
             });
           },
@@ -1438,6 +1455,11 @@ class _FiltersSection extends StatefulWidget {
   final ValueChanged<int> onToggleCategory;
   final VoidCallback onClearCategories;
 
+  /// Whether the "No category" chip (items with no category) is offered.
+  final bool showNoCategory;
+  final bool noCategorySelected;
+  final VoidCallback onToggleNoCategory;
+
   /// All-lists view only — when false, no list filter is shown at all.
   final bool showListFilter;
   final List<ChecklistList> lists;
@@ -1453,6 +1475,9 @@ class _FiltersSection extends StatefulWidget {
     required this.selectedCategoryIds,
     required this.onToggleCategory,
     required this.onClearCategories,
+    required this.showNoCategory,
+    required this.noCategorySelected,
+    required this.onToggleNoCategory,
     required this.showListFilter,
     required this.lists,
     required this.selectedListIds,
@@ -1476,7 +1501,8 @@ class _FiltersSectionState extends State<_FiltersSection> {
     return [
       _Chip(
         label: m.checklists.allCategories,
-        selected: widget.selectedCategoryIds.isEmpty,
+        selected:
+            widget.selectedCategoryIds.isEmpty && !widget.noCategorySelected,
         color: cs.primary,
         onTap: widget.onClearCategories,
       ),
@@ -1487,6 +1513,16 @@ class _FiltersSectionState extends State<_FiltersSection> {
           selected: widget.selectedCategoryIds.contains(c.id),
           color: parseHexColor(c.color) ?? cs.primary,
           onTap: () => widget.onToggleCategory(c.id),
+        ),
+      ],
+      if (widget.showNoCategory) ...[
+        const SizedBox(width: 8),
+        _Chip(
+          label: m.checklists.noCategory,
+          selected: widget.noCategorySelected,
+          color: cs.outline,
+          icon: Icons.label_off_outlined,
+          onTap: widget.onToggleNoCategory,
         ),
       ],
     ];
