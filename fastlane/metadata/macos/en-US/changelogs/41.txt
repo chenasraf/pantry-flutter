@@ -1,0 +1,11 @@
+Features
+- archive checklist items
+- collapse the sort options into a dialog to shorten the menu
+- filter to items without a category
+- group items under category headers when sorting by category
+- keep category headers pinned while scrolling their group
+- select multiple trashed items to restore or delete
+- show a note icon on items that have a description
+Bug Fixes
+- improve offline caching
+- hide the refresh menu item
