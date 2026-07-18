@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.21.0](https://github.com/chenasraf/pantry-flutter/compare/v0.20.2...v0.21.0) (2026-07-18)
+
+
+### Features
+
+* archive checklist items ([fd9e8a2](https://github.com/chenasraf/pantry-flutter/commit/fd9e8a267fde224843c72c5be94b8f9b6278cd08))
+* collapse the sort options into a dialog to shorten the menu ([678d101](https://github.com/chenasraf/pantry-flutter/commit/678d101621986734f1455d706c09bd066ed9d73f))
+* filter to items without a category ([573bd48](https://github.com/chenasraf/pantry-flutter/commit/573bd48859cc92f842d6ac4f0913ae95e0a5c69b))
+* group items under category headers when sorting by category ([0a9131a](https://github.com/chenasraf/pantry-flutter/commit/0a9131a9f4564d57090c71e86a93645598bc59ba))
+* keep category headers pinned while scrolling their group ([dca0b91](https://github.com/chenasraf/pantry-flutter/commit/dca0b91a8e113a2f44f5bce142f40b34a9e941fc))
+* select multiple trashed items to restore or delete ([2b4da35](https://github.com/chenasraf/pantry-flutter/commit/2b4da35b00b5feff21aefa6294d20eeb2c85c631))
+* show a note icon on items that have a description ([174015a](https://github.com/chenasraf/pantry-flutter/commit/174015aae8f94cb11e7fa0c2d39d45a6b05f030a))
+
+
+### Bug Fixes
+
+* improve offline caching ([89c9ab4](https://github.com/chenasraf/pantry-flutter/commit/89c9ab43d0b4c4ba5651833622e705f40480ba88)), closes [#92](https://github.com/chenasraf/pantry-flutter/issues/92)
+* **mobile:** hide the refresh menu item ([72c395b](https://github.com/chenasraf/pantry-flutter/commit/72c395b89cca3a0f304f6f3bc45532847095a119))
+
 ## [0.20.2](https://github.com/chenasraf/pantry-flutter/compare/v0.20.1...v0.20.2) (2026-07-06)
 
 
