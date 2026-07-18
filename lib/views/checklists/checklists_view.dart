@@ -1106,11 +1106,14 @@ class _BodyState extends State<_Body> {
             leading: const Icon(Icons.sell_outlined, size: 18),
             label: m.categories.manageTitle,
           ),
-        _menuRow(
-          value: 'refresh',
-          leading: const Icon(Icons.refresh, size: 18),
-          label: m.common.refresh,
-        ),
+        // Mobile has reliable pull-to-refresh, so it doesn't need a menu row.
+        // Web (the other non-desktop host here) doesn't, so keep it there.
+        if (PlatformInfo.isWeb)
+          _menuRow(
+            value: 'refresh',
+            leading: const Icon(Icons.refresh, size: 18),
+            label: m.common.refresh,
+          ),
         if (!isMeta &&
             controller.isCurrentListWritable &&
             controller.permissions.canDeleteItems &&
