@@ -959,41 +959,38 @@ class _BodyState extends State<_Body> {
   /// sort order is per-list, so there's no coherent custom order across
   /// lists. The effective sort falls back to "newest".
   List<PopupMenuEntry<String>> _sortMenuItems(ChecklistsController controller) {
-    final showCustom = !controller.isMetaMode;
     final effective = controller.effectiveSortBy;
     return [
-      _radioRow(
-        value: 'sort_newest',
-        label: m.checklists.sort.newestFirst,
-        selected: effective == 'newest',
-      ),
-      _radioRow(
-        value: 'sort_oldest',
-        label: m.checklists.sort.oldestFirst,
-        selected: effective == 'oldest',
-      ),
-      _radioRow(
-        value: 'sort_name_asc',
-        label: m.checklists.sort.nameAZ,
-        selected: effective == 'name_asc',
-      ),
-      _radioRow(
-        value: 'sort_name_desc',
-        label: m.checklists.sort.nameZA,
-        selected: effective == 'name_desc',
-      ),
-      _radioRow(
-        value: 'sort_category',
-        label: m.checklists.sort.category,
-        selected: effective == 'category',
-      ),
-      if (showCustom)
+      for (final o in _sortOptions(showCustom: !controller.isMetaMode))
         _radioRow(
-          value: 'sort_custom',
-          label: m.checklists.sort.custom,
-          selected: effective == 'custom',
+          value: 'sort_${o.key}',
+          label: o.label,
+          selected: effective == o.key,
         ),
     ];
+  }
+
+  /// The sort choices, in display order. `custom` is suppressed in the meta
+  /// (All-lists) view — there's no coherent custom order across lists, so the
+  /// effective sort falls back to "newest".
+  List<({String key, String label})> _sortOptions({required bool showCustom}) {
+    return [
+      (key: 'newest', label: m.checklists.sort.newestFirst),
+      (key: 'oldest', label: m.checklists.sort.oldestFirst),
+      (key: 'name_asc', label: m.checklists.sort.nameAZ),
+      (key: 'name_desc', label: m.checklists.sort.nameZA),
+      (key: 'category', label: m.checklists.sort.category),
+      if (showCustom) (key: 'custom', label: m.checklists.sort.custom),
+    ];
+  }
+
+  /// Human label for the currently effective sort — shown on the collapsed
+  /// "Sort" overflow row so the active choice is visible without opening it.
+  String _sortLabel(String effective) {
+    for (final o in _sortOptions(showCustom: true)) {
+      if (o.key == effective) return o.label;
+    }
+    return m.checklists.sort.newestFirst;
   }
 
   List<PopupMenuEntry<String>> _overflowItems(
@@ -1058,37 +1055,11 @@ class _BodyState extends State<_Body> {
         const PopupMenuDivider(),
       ],
       if (!PlatformInfo.isDesktop) ...[
-        _radioRow(
-          value: 'sort_newest',
-          label: m.checklists.sort.newestFirst,
-          selected: effective == 'newest',
+        _menuRow(
+          value: 'sort',
+          leading: const Icon(Icons.sort, size: 18),
+          label: '${m.checklists.sortTooltip}: ${_sortLabel(effective)}',
         ),
-        _radioRow(
-          value: 'sort_oldest',
-          label: m.checklists.sort.oldestFirst,
-          selected: effective == 'oldest',
-        ),
-        _radioRow(
-          value: 'sort_name_asc',
-          label: m.checklists.sort.nameAZ,
-          selected: effective == 'name_asc',
-        ),
-        _radioRow(
-          value: 'sort_name_desc',
-          label: m.checklists.sort.nameZA,
-          selected: effective == 'name_desc',
-        ),
-        _radioRow(
-          value: 'sort_category',
-          label: m.checklists.sort.category,
-          selected: effective == 'category',
-        ),
-        if (!isMeta)
-          _radioRow(
-            value: 'sort_custom',
-            label: m.checklists.sort.custom,
-            selected: effective == 'custom',
-          ),
         const PopupMenuDivider(),
         if (controller.currentList != null && !isMeta)
           _menuRow(
@@ -1231,6 +1202,8 @@ class _BodyState extends State<_Body> {
     switch (value) {
       case 'select_items':
         controller.enterSelection();
+      case 'sort':
+        await _showSortDialog(context, controller);
       case 'sort_newest':
         await controller.setSortBy('newest');
       case 'sort_oldest':
@@ -1280,6 +1253,38 @@ class _BodyState extends State<_Body> {
           title: 'Pantry',
           body: 'This is a test notification.',
         );
+    }
+  }
+
+  /// Presents the sort choices in a dialog — the mobile overflow menu is too
+  /// long to inline all of them, so it shows a single "Sort: current" row
+  /// that opens this dialog. Applies the choice immediately on selection.
+  Future<void> _showSortDialog(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    final effective = controller.effectiveSortBy;
+    final picked = await showDialog<String>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(m.checklists.sortTooltip),
+        children: [
+          for (final o in _sortOptions(showCustom: !controller.isMetaMode))
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, o.key),
+              child: Row(
+                children: [
+                  _RadioIndicator(selected: effective == o.key),
+                  const SizedBox(width: 14),
+                  Expanded(child: Text(o.label)),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+    if (picked != null) {
+      await controller.setSortBy(picked);
     }
   }
 
