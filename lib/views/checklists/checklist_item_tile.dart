@@ -514,9 +514,11 @@ class _RowContent extends StatelessWidget {
   bool get _hasMeta {
     final hasCat = category != null && !hideCategory;
     final hasQty = item.quantity != null && item.quantity!.trim().isNotEmpty;
+    final hasDesc =
+        item.description != null && item.description!.trim().isNotEmpty;
     final lc = lifecycleOf(item);
     final hasType = lc != ItemLifecycle.staple;
-    return hasCat || hasQty || hasType || listBadge != null;
+    return hasCat || hasQty || hasDesc || hasType || listBadge != null;
   }
 }
 
@@ -650,6 +652,12 @@ class _MetaRow extends StatelessWidget {
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
           ),
+        if (item.description != null && item.description!.trim().isNotEmpty)
+          _Chip(
+            leading: Icon(Icons.notes, size: 16, color: cs.onSurfaceVariant),
+            textColor: cs.onSurfaceVariant,
+            background: cs.onSurface.withValues(alpha: 0.06),
+          ),
         if (lc == ItemLifecycle.once)
           _Chip(
             label: m.checklists.itemTypes.onceTime,
@@ -675,21 +683,25 @@ class _MetaRow extends StatelessWidget {
 
 class _Chip extends StatelessWidget {
   final Widget? leading;
-  final String label;
+
+  /// Chip caption. When null the chip renders as an icon-only badge (used by
+  /// the description chip), so the leading icon carries the whole meaning.
+  final String? label;
   final Color textColor;
   final Color background;
 
   const _Chip({
     this.leading,
-    required this.label,
+    this.label,
     required this.textColor,
     required this.background,
   });
 
   @override
   Widget build(BuildContext context) {
+    final hasLabel = label != null;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      padding: EdgeInsets.symmetric(horizontal: hasLabel ? 9 : 6, vertical: 3),
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(7),
@@ -697,15 +709,19 @@ class _Chip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (leading != null) ...[leading!, const SizedBox(width: 6)],
-          Text(
-            label,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+          if (leading != null) ...[
+            leading!,
+            if (hasLabel) const SizedBox(width: 6),
+          ],
+          if (hasLabel)
+            Text(
+              label!,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
         ],
       ),
     );
