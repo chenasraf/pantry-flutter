@@ -27,6 +27,16 @@ class NoteDetailView extends StatelessWidget {
     final theme = Theme.of(context);
     final titleDir = detectTextDirection(note.title);
     final contentDir = detectTextDirection(note.content);
+    final hasEditButton = note.canEditWith(
+      controller.permissions.canUpdateNotes,
+    );
+
+    // The scaffold renders edge-to-edge, so the content scrolls behind the
+    // system navigation bar and the floating edit button. Pad the bottom of the
+    // markdown by the safe-area inset plus clearance for the FAB so the last
+    // lines stay readable.
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    final bottomPadding = 16 + bottomInset + (hasEditButton ? 72.0 : 0.0);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -36,8 +46,7 @@ class NoteDetailView extends StatelessWidget {
         leading: appBarBackLeading(context),
         title: Directionality(textDirection: titleDir, child: Text(note.title)),
       ),
-      floatingActionButton:
-          note.canEditWith(controller.permissions.canUpdateNotes)
+      floatingActionButton: hasEditButton
           ? FloatingActionButton(
               heroTag: null,
               onPressed: () {
@@ -60,7 +69,7 @@ class NoteDetailView extends StatelessWidget {
                   textDirection: contentDir,
                   child: Markdown(
                     data: note.content!,
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPadding),
                     selectable: true,
                     softLineBreak: true,
                     onTapLink: (text, href, title) {
