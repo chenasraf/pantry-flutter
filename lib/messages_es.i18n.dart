@@ -934,6 +934,28 @@ class SettingsMessagesEs extends SettingsMessages {
       DensityNamesSettingsMessagesEs(this);
 
   /// ```dart
+  /// "Acciones al deslizar"
+  /// ```
+  String get swipeActions => """Acciones al deslizar""";
+
+  /// ```dart
+  /// "Desliza los elementos hacia la izquierda para ver acciones rápidas. Si se desactiva, las acciones pasan a un botón de menú en cada elemento."
+  /// ```
+  String get swipeActionsBody =>
+      """Desliza los elementos hacia la izquierda para ver acciones rápidas. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.""";
+
+  /// ```dart
+  /// "Acciones de elementos"
+  /// ```
+  String get itemActions => """Acciones de elementos""";
+
+  /// ```dart
+  /// "Muestra acciones rápidas en cada elemento. Si se desactiva, las acciones pasan a un botón de menú en cada elemento."
+  /// ```
+  String get itemActionsBody =>
+      """Muestra acciones rápidas en cada elemento. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.""";
+
+  /// ```dart
   /// "Reutilizar artículos existentes al añadir"
   /// ```
   String get reuseExistingItems =>
@@ -1826,6 +1848,11 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "Archivar"
   /// ```
   String get swipeArchive => """Archivar""";
+
+  /// ```dart
+  /// "Más acciones"
+  /// ```
+  String get moreActions => """Más acciones""";
 
   /// ```dart
   /// "Vista de lista"
@@ -3547,6 +3574,12 @@ Contraseña: pantry-rocks""",
       """Cuánto espacio ocupa cada artículo en tus listas.""",
   """settings.densityNames.normal""": """Normal""",
   """settings.densityNames.dense""": """Compacta""",
+  """settings.swipeActions""": """Acciones al deslizar""",
+  """settings.swipeActionsBody""":
+      """Desliza los elementos hacia la izquierda para ver acciones rápidas. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.""",
+  """settings.itemActions""": """Acciones de elementos""",
+  """settings.itemActionsBody""":
+      """Muestra acciones rápidas en cada elemento. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.""",
   """settings.reuseExistingItems""":
       """Reutilizar artículos existentes al añadir""",
   """settings.reuseExistingItemsBody""":
@@ -3775,6 +3808,7 @@ Contraseña: pantry-rocks""",
   """checklists.swipeCopy""": """Copiar""",
   """checklists.swipeDelete""": """Quitar""",
   """checklists.swipeArchive""": """Archivar""",
+  """checklists.moreActions""": """Más acciones""",
   """checklists.viewList""": """Vista de lista""",
   """checklists.viewCards""": """Vista de tarjetas""",
   """checklists.listColor""": """Color""",

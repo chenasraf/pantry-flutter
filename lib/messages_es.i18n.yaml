@@ -176,6 +176,10 @@ settings:
   densityNames:
     normal: Normal
     dense: Compacta
+  swipeActions: Acciones al deslizar
+  swipeActionsBody: Desliza los elementos hacia la izquierda para ver acciones rápidas. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.
+  itemActions: Acciones de elementos
+  itemActionsBody: Muestra acciones rápidas en cada elemento. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.
   reuseExistingItems: Reutilizar artículos existentes al añadir
   reuseExistingItemsBody: "Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo."
   reuseExistingItemsNames:
@@ -426,6 +430,7 @@ checklists:
   swipeCopy: Copiar
   swipeDelete: Quitar
   swipeArchive: Archivar
+  moreActions: Más acciones
   viewList: Vista de lista
   viewCards: Vista de tarjetas
   listColor: Color

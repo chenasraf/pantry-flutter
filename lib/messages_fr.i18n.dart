@@ -936,6 +936,28 @@ class SettingsMessagesFr extends SettingsMessages {
       DensityNamesSettingsMessagesFr(this);
 
   /// ```dart
+  /// "Actions par balayage"
+  /// ```
+  String get swipeActions => """Actions par balayage""";
+
+  /// ```dart
+  /// "Balayez les éléments vers la gauche pour afficher des actions rapides. Désactivé, les actions passent dans un menu sur chaque élément."
+  /// ```
+  String get swipeActionsBody =>
+      """Balayez les éléments vers la gauche pour afficher des actions rapides. Désactivé, les actions passent dans un menu sur chaque élément.""";
+
+  /// ```dart
+  /// "Actions des éléments"
+  /// ```
+  String get itemActions => """Actions des éléments""";
+
+  /// ```dart
+  /// "Affiche des actions rapides sur chaque élément. Désactivé, les actions passent dans un menu sur chaque élément."
+  /// ```
+  String get itemActionsBody =>
+      """Affiche des actions rapides sur chaque élément. Désactivé, les actions passent dans un menu sur chaque élément.""";
+
+  /// ```dart
   /// "Réutiliser les articles existants lors de l'ajout"
   /// ```
   String get reuseExistingItems =>
@@ -1830,6 +1852,11 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Archiver"
   /// ```
   String get swipeArchive => """Archiver""";
+
+  /// ```dart
+  /// "Plus d'actions"
+  /// ```
+  String get moreActions => """Plus d'actions""";
 
   /// ```dart
   /// "Vue liste"
@@ -3557,6 +3584,12 @@ Mot de passe : pantry-rocks""",
       """L'espace occupé par chaque article dans vos listes.""",
   """settings.densityNames.normal""": """Normale""",
   """settings.densityNames.dense""": """Compacte""",
+  """settings.swipeActions""": """Actions par balayage""",
+  """settings.swipeActionsBody""":
+      """Balayez les éléments vers la gauche pour afficher des actions rapides. Désactivé, les actions passent dans un menu sur chaque élément.""",
+  """settings.itemActions""": """Actions des éléments""",
+  """settings.itemActionsBody""":
+      """Affiche des actions rapides sur chaque élément. Désactivé, les actions passent dans un menu sur chaque élément.""",
   """settings.reuseExistingItems""":
       """Réutiliser les articles existants lors de l'ajout""",
   """settings.reuseExistingItemsBody""":
@@ -3788,6 +3821,7 @@ Mot de passe : pantry-rocks""",
   """checklists.swipeCopy""": """Copier""",
   """checklists.swipeDelete""": """Retirer""",
   """checklists.swipeArchive""": """Archiver""",
+  """checklists.moreActions""": """Plus d'actions""",
   """checklists.viewList""": """Vue liste""",
   """checklists.viewCards""": """Vue cartes""",
   """checklists.listColor""": """Couleur""",

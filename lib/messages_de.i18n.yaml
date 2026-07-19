@@ -176,6 +176,10 @@ settings:
   densityNames:
     normal: Normal
     dense: Kompakt
+  swipeActions: Wischgesten
+  swipeActionsBody: Wische Einträge nach links, um Schnellaktionen anzuzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.
+  itemActions: Eintragsaktionen
+  itemActionsBody: Schnellaktionen an jedem Eintrag anzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.
   reuseExistingItems: Vorhandene Einträge beim Hinzufügen wiederverwenden
   reuseExistingItemsBody: "Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet."
   reuseExistingItemsNames:
@@ -426,6 +430,7 @@ checklists:
   swipeCopy: Kopieren
   swipeDelete: Entfernen
   swipeArchive: Archivieren
+  moreActions: Weitere Aktionen
   viewList: Listenansicht
   viewCards: Kartenansicht
   listColor: Farbe

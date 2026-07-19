@@ -176,6 +176,10 @@ settings:
   densityNames:
     normal: Normal
     dense: Dense
+  swipeActions: Swipe actions
+  swipeActionsBody: Swipe items left to reveal quick actions. When off, actions move to a menu button on each item.
+  itemActions: Item actions
+  itemActionsBody: Show quick actions on each item. When off, actions move to a menu button on each item.
   reuseExistingItems: Reuse existing items when adding
   reuseExistingItemsBody: "When you try to add an item that already exists in the list, reuse that item."
   reuseExistingItemsNames:
@@ -426,6 +430,7 @@ checklists:
   swipeCopy: Copy
   swipeDelete: Remove
   swipeArchive: Archive
+  moreActions: More actions
   viewList: List view
   viewCards: Cards view
   listColor: Color

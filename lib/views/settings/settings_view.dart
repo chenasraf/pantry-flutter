@@ -9,6 +9,7 @@ import 'package:pantry/services/locale_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/services/theming_service.dart';
+import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/settings/nav_order_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
@@ -73,6 +74,10 @@ class _SettingsViewState extends State<SettingsView> {
     'dense' => m.settings.densityNames.dense,
     _ => m.settings.densityNames.normal,
   };
+
+  Future<void> _toggleSwipeActions(bool value) async {
+    await context.read<PrefsService>().setSwipeActionsEnabled(value);
+  }
 
   // -- Reuse existing items (account-scoped, persisted server-side) --
 
@@ -183,6 +188,7 @@ class _SettingsViewState extends State<SettingsView> {
     final itemTapAction = prefs.defaultItemTapAction;
     final checkboxPosition = prefs.checklistCheckboxPosition;
     final density = prefs.checklistDensity;
+    final swipeActionsEnabled = prefs.swipeActionsEnabled;
     final reuseExistingItems = prefs.reuseExistingItems;
 
     return Scaffold(
@@ -310,6 +316,22 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
               ],
             ),
+          ),
+          SwitchListTile(
+            // On desktop the actions are pinned in view rather than revealed
+            // by a swipe, so the swipe-specific wording doesn't apply.
+            title: Text(
+              PlatformInfo.isDesktop
+                  ? m.settings.itemActions
+                  : m.settings.swipeActions,
+            ),
+            subtitle: Text(
+              PlatformInfo.isDesktop
+                  ? m.settings.itemActionsBody
+                  : m.settings.swipeActionsBody,
+            ),
+            value: swipeActionsEnabled,
+            onChanged: _toggleSwipeActions,
           ),
           if (hasFeature('reuse-existing-items'))
             ListTile(

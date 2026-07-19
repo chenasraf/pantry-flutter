@@ -933,6 +933,28 @@ class SettingsMessagesDe extends SettingsMessages {
       DensityNamesSettingsMessagesDe(this);
 
   /// ```dart
+  /// "Wischgesten"
+  /// ```
+  String get swipeActions => """Wischgesten""";
+
+  /// ```dart
+  /// "Wische Einträge nach links, um Schnellaktionen anzuzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag."
+  /// ```
+  String get swipeActionsBody =>
+      """Wische Einträge nach links, um Schnellaktionen anzuzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.""";
+
+  /// ```dart
+  /// "Eintragsaktionen"
+  /// ```
+  String get itemActions => """Eintragsaktionen""";
+
+  /// ```dart
+  /// "Schnellaktionen an jedem Eintrag anzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag."
+  /// ```
+  String get itemActionsBody =>
+      """Schnellaktionen an jedem Eintrag anzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.""";
+
+  /// ```dart
   /// "Vorhandene Einträge beim Hinzufügen wiederverwenden"
   /// ```
   String get reuseExistingItems =>
@@ -1828,6 +1850,11 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Archivieren"
   /// ```
   String get swipeArchive => """Archivieren""";
+
+  /// ```dart
+  /// "Weitere Aktionen"
+  /// ```
+  String get moreActions => """Weitere Aktionen""";
 
   /// ```dart
   /// "Listenansicht"
@@ -3552,6 +3579,12 @@ Passwort: pantry-rocks""",
       """Wie viel Platz jeder Eintrag in deinen Listen einnimmt.""",
   """settings.densityNames.normal""": """Normal""",
   """settings.densityNames.dense""": """Kompakt""",
+  """settings.swipeActions""": """Wischgesten""",
+  """settings.swipeActionsBody""":
+      """Wische Einträge nach links, um Schnellaktionen anzuzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.""",
+  """settings.itemActions""": """Eintragsaktionen""",
+  """settings.itemActionsBody""":
+      """Schnellaktionen an jedem Eintrag anzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.""",
   """settings.reuseExistingItems""":
       """Vorhandene Einträge beim Hinzufügen wiederverwenden""",
   """settings.reuseExistingItemsBody""":
@@ -3790,6 +3823,7 @@ Passwort: pantry-rocks""",
   """checklists.swipeCopy""": """Kopieren""",
   """checklists.swipeDelete""": """Entfernen""",
   """checklists.swipeArchive""": """Archivieren""",
+  """checklists.moreActions""": """Weitere Aktionen""",
   """checklists.viewList""": """Listenansicht""",
   """checklists.viewCards""": """Kartenansicht""",
   """checklists.listColor""": """Farbe""",

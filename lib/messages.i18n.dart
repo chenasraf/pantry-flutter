@@ -930,6 +930,28 @@ class SettingsMessages {
       DensityNamesSettingsMessages(this);
 
   /// ```dart
+  /// "Swipe actions"
+  /// ```
+  String get swipeActions => """Swipe actions""";
+
+  /// ```dart
+  /// "Swipe items left to reveal quick actions. When off, actions move to a menu button on each item."
+  /// ```
+  String get swipeActionsBody =>
+      """Swipe items left to reveal quick actions. When off, actions move to a menu button on each item.""";
+
+  /// ```dart
+  /// "Item actions"
+  /// ```
+  String get itemActions => """Item actions""";
+
+  /// ```dart
+  /// "Show quick actions on each item. When off, actions move to a menu button on each item."
+  /// ```
+  String get itemActionsBody =>
+      """Show quick actions on each item. When off, actions move to a menu button on each item.""";
+
+  /// ```dart
   /// "Reuse existing items when adding"
   /// ```
   String get reuseExistingItems => """Reuse existing items when adding""";
@@ -1811,6 +1833,11 @@ class ChecklistsMessages {
   /// "Archive"
   /// ```
   String get swipeArchive => """Archive""";
+
+  /// ```dart
+  /// "More actions"
+  /// ```
+  String get moreActions => """More actions""";
 
   /// ```dart
   /// "List view"
@@ -3513,6 +3540,12 @@ Password: pantry-rocks""",
       """How much space each item takes up in your lists.""",
   """settings.densityNames.normal""": """Normal""",
   """settings.densityNames.dense""": """Dense""",
+  """settings.swipeActions""": """Swipe actions""",
+  """settings.swipeActionsBody""":
+      """Swipe items left to reveal quick actions. When off, actions move to a menu button on each item.""",
+  """settings.itemActions""": """Item actions""",
+  """settings.itemActionsBody""":
+      """Show quick actions on each item. When off, actions move to a menu button on each item.""",
   """settings.reuseExistingItems""": """Reuse existing items when adding""",
   """settings.reuseExistingItemsBody""":
       """When you try to add an item that already exists in the list, reuse that item.""",
@@ -3733,6 +3766,7 @@ Password: pantry-rocks""",
   """checklists.swipeCopy""": """Copy""",
   """checklists.swipeDelete""": """Remove""",
   """checklists.swipeArchive""": """Archive""",
+  """checklists.moreActions""": """More actions""",
   """checklists.viewList""": """List view""",
   """checklists.viewCards""": """Cards view""",
   """checklists.listColor""": """Color""",

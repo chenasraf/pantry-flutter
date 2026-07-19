@@ -176,6 +176,10 @@ settings:
   densityNames:
     normal: רגילה
     dense: צפופה
+  swipeActions: פעולות החלקה
+  swipeActionsBody: החליקו פריטים כדי לחשוף פעולות מהירות. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.
+  itemActions: פעולות פריט
+  itemActionsBody: הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.
   reuseExistingItems: שימוש חוזר בפריטים קיימים בעת הוספה
   reuseExistingItemsBody: "כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים."
   reuseExistingItemsNames:
@@ -426,6 +430,7 @@ checklists:
   swipeCopy: העתקה
   swipeDelete: הסר
   swipeArchive: העבר לארכיון
+  moreActions: פעולות נוספות
   viewList: תצוגת רשימה
   viewCards: תצוגת כרטיסים
   listColor: צבע

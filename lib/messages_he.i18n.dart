@@ -928,6 +928,28 @@ class SettingsMessagesHe extends SettingsMessages {
       DensityNamesSettingsMessagesHe(this);
 
   /// ```dart
+  /// "פעולות החלקה"
+  /// ```
+  String get swipeActions => """פעולות החלקה""";
+
+  /// ```dart
+  /// "החליקו פריטים כדי לחשוף פעולות מהירות. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט."
+  /// ```
+  String get swipeActionsBody =>
+      """החליקו פריטים כדי לחשוף פעולות מהירות. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.""";
+
+  /// ```dart
+  /// "פעולות פריט"
+  /// ```
+  String get itemActions => """פעולות פריט""";
+
+  /// ```dart
+  /// "הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט."
+  /// ```
+  String get itemActionsBody =>
+      """הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.""";
+
+  /// ```dart
   /// "שימוש חוזר בפריטים קיימים בעת הוספה"
   /// ```
   String get reuseExistingItems => """שימוש חוזר בפריטים קיימים בעת הוספה""";
@@ -1816,6 +1838,11 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "העבר לארכיון"
   /// ```
   String get swipeArchive => """העבר לארכיון""";
+
+  /// ```dart
+  /// "פעולות נוספות"
+  /// ```
+  String get moreActions => """פעולות נוספות""";
 
   /// ```dart
   /// "תצוגת רשימה"
@@ -3515,6 +3542,12 @@ Map<String, String> get messagesHeMap => {
   """settings.densityBody""": """כמה מקום כל פריט תופס ברשימות שלך.""",
   """settings.densityNames.normal""": """רגילה""",
   """settings.densityNames.dense""": """צפופה""",
+  """settings.swipeActions""": """פעולות החלקה""",
+  """settings.swipeActionsBody""":
+      """החליקו פריטים כדי לחשוף פעולות מהירות. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.""",
+  """settings.itemActions""": """פעולות פריט""",
+  """settings.itemActionsBody""":
+      """הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.""",
   """settings.reuseExistingItems""": """שימוש חוזר בפריטים קיימים בעת הוספה""",
   """settings.reuseExistingItemsBody""":
       """כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים.""",
@@ -3732,6 +3765,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.swipeCopy""": """העתקה""",
   """checklists.swipeDelete""": """הסר""",
   """checklists.swipeArchive""": """העבר לארכיון""",
+  """checklists.moreActions""": """פעולות נוספות""",
   """checklists.viewList""": """תצוגת רשימה""",
   """checklists.viewCards""": """תצוגת כרטיסים""",
   """checklists.listColor""": """צבע""",

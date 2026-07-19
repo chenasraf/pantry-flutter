@@ -27,6 +27,7 @@ class PrefsService extends ChangeNotifier {
   static const _checklistViewKey = 'checklist_view';
   static const _checklistCheckboxPositionKey = 'checklist_checkbox_position';
   static const _checklistDensityKey = 'checklist_density';
+  static const _swipeActionsEnabledKey = 'swipe_actions_enabled';
   static const _checklistListFilterKey = 'checklist_list_filter';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
   static const _allListsProgressHeroHiddenKey =
@@ -92,6 +93,13 @@ class PrefsService extends ChangeNotifier {
   /// action sizing so more items fit on screen.
   String _checklistDensity = 'normal';
   String get checklistDensity => _checklistDensity;
+
+  /// When true (default), checklist rows reveal their actions on a horizontal
+  /// swipe (pinned buttons on desktop). When false, the actions move into a
+  /// trailing overflow menu instead — for users who trigger the swipe
+  /// gesture accidentally while scrolling.
+  bool _swipeActionsEnabled = true;
+  bool get swipeActionsEnabled => _swipeActionsEnabled;
 
   /// Selected list IDs for the All-lists view's per-list filter. Empty means
   /// "all lists". Local-only (not synced) so each device keeps its own focus.
@@ -234,6 +242,9 @@ class PrefsService extends ChangeNotifier {
     if (density != null && (density == 'normal' || density == 'dense')) {
       _checklistDensity = density;
     }
+
+    final swipeActions = all[_swipeActionsEnabledKey];
+    if (swipeActions != null) _swipeActionsEnabled = swipeActions == 'true';
 
     final listFilter = all[_checklistListFilterKey];
     if (listFilter != null && listFilter.isNotEmpty) {
@@ -463,6 +474,13 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setSwipeActionsEnabled(bool value) async {
+    if (_swipeActionsEnabled == value) return;
+    _swipeActionsEnabled = value;
+    await _storage.write(key: _swipeActionsEnabledKey, value: value.toString());
+    notifyListeners();
+  }
+
   Future<void> setChecklistListFilter(Set<int> ids) async {
     _checklistListFilter = {...ids};
     await _storage.write(
@@ -599,6 +617,7 @@ class PrefsService extends ChangeNotifier {
     _checklistView = 'list';
     _checklistCheckboxPosition = 'start';
     _checklistDensity = 'normal';
+    _swipeActionsEnabled = true;
     _checklistListFilter = {};
     _checklistDoneCollapsed = true;
     _allListsProgressHeroHidden = false;
@@ -624,6 +643,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _checklistViewKey);
     await _storage.delete(key: _checklistCheckboxPositionKey);
     await _storage.delete(key: _checklistDensityKey);
+    await _storage.delete(key: _swipeActionsEnabledKey);
     await _storage.delete(key: _checklistListFilterKey);
     await _storage.delete(key: _checklistDoneCollapsedKey);
     await _storage.delete(key: _allListsProgressHeroHiddenKey);

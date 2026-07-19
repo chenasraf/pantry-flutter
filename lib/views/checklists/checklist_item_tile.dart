@@ -142,6 +142,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final prefs = context.watch<PrefsService>();
     final tapAction = prefs.defaultItemTapAction;
     final dense = prefs.checklistDensity == 'dense';
+    final swipeEnabled = prefs.swipeActionsEnabled;
 
     final catColor = cat != null
         ? (_parseColor(cat.color) ?? cs.primary)
@@ -197,7 +198,9 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       } else {
         // Drop any swipe action the row tap already performs, so swipe never
         // duplicates the tap. When tap does nothing, both View and Edit show.
-        if (tapAction != 'view') {
+        // In overflow-menu mode there's no tap-gesture overlap, so the menu
+        // keeps the default action's entry too (e.g. View while tap = view).
+        if (!swipeEnabled || tapAction != 'view') {
           actions.add(
             SwipeAction(
               icon: Icons.visibility_outlined,
@@ -208,7 +211,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             ),
           );
         }
-        if (tapAction != 'edit' && widget.onEdit != null) {
+        if ((!swipeEnabled || tapAction != 'edit') && widget.onEdit != null) {
           actions.add(
             SwipeAction(
               icon: Icons.edit_outlined,
@@ -313,15 +316,21 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     );
 
     // In selection mode the row toggles selection and shows no swipe actions,
-    // so skip the SwipeRevealRow wrapper entirely.
-    final Widget body = selecting
-        ? content
-        : SwipeRevealRow(
-            key: _swipeKey,
-            actions: actions,
-            dense: dense,
-            child: content,
-          );
+    // so skip the action wrapper entirely. When the user has turned swipe
+    // actions off, the same actions move into a trailing overflow menu.
+    final Widget body;
+    if (selecting) {
+      body = content;
+    } else if (!swipeEnabled) {
+      body = _OverflowMenuRow(actions: actions, dense: dense, child: content);
+    } else {
+      body = SwipeRevealRow(
+        key: _swipeKey,
+        actions: actions,
+        dense: dense,
+        child: content,
+      );
+    }
 
     if (widget.isCardsView) {
       // Foreground border paints on top of the (already-clipped) child so
@@ -351,6 +360,54 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     if (hex.length == 6) hex = 'FF$hex';
     final value = int.tryParse(hex, radix: 16);
     return value != null ? Color(value) : null;
+  }
+}
+
+/// Row layout used when swipe actions are turned off: the item content fills
+/// the row and a trailing overflow menu button exposes the same actions the
+/// swipe gesture would have revealed, with the same icons and colors.
+class _OverflowMenuRow extends StatelessWidget {
+  final Widget child;
+  final List<SwipeAction> actions;
+  final bool dense;
+
+  const _OverflowMenuRow({
+    required this.child,
+    required this.actions,
+    required this.dense,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (actions.isEmpty) return child;
+    final cs = Theme.of(context).colorScheme;
+    return Material(
+      color: cs.surface,
+      child: Row(
+        children: [
+          Expanded(child: child),
+          PopupMenuButton<VoidCallback>(
+            tooltip: m.checklists.moreActions,
+            icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant),
+            iconSize: dense ? 20 : 24,
+            onSelected: (onPressed) => onPressed(),
+            itemBuilder: (context) => [
+              for (final a in actions)
+                PopupMenuItem<VoidCallback>(
+                  value: a.onPressed,
+                  child: Row(
+                    children: [
+                      Icon(a.icon, size: 20, color: a.tint),
+                      const SizedBox(width: 12),
+                      Text(a.label),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 

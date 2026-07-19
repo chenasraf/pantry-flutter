@@ -176,6 +176,10 @@ settings:
   densityNames:
     normal: Normale
     dense: Compacte
+  swipeActions: Actions par balayage
+  swipeActionsBody: Balayez les éléments vers la gauche pour afficher des actions rapides. Désactivé, les actions passent dans un menu sur chaque élément.
+  itemActions: Actions des éléments
+  itemActionsBody: Affiche des actions rapides sur chaque élément. Désactivé, les actions passent dans un menu sur chaque élément.
   reuseExistingItems: "Réutiliser les articles existants lors de l'ajout"
   reuseExistingItemsBody: "Lorsque vous ajoutez un article qui existe déjà dans la liste, réutiliser cet article."
   reuseExistingItemsNames:
@@ -426,6 +430,7 @@ checklists:
   swipeCopy: Copier
   swipeDelete: Retirer
   swipeArchive: Archiver
+  moreActions: Plus d'actions
   viewList: Vue liste
   viewCards: Vue cartes
   listColor: Couleur
