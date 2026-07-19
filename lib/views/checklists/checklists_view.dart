@@ -91,6 +91,9 @@ class _ChecklistsViewState extends State<ChecklistsView>
   /// updates silently in the background once the lists cache is populated.
   /// Paused while the app is hidden/backgrounded so we don't waste a request
   /// the user can't see — and a fresh refresh fires on resume regardless.
+  /// In a soft view (trash/archive) the poll is routed through a silent
+  /// in-place refresh so the list stays current without flashing to a spinner
+  /// mid-read (issue #106).
   static const _backgroundRefreshInterval = Duration(seconds: 30);
   Timer? _backgroundRefreshTimer;
 
@@ -111,10 +114,13 @@ class _ChecklistsViewState extends State<ChecklistsView>
 
   void _startBackgroundRefreshTimer() {
     _backgroundRefreshTimer?.cancel();
-    _backgroundRefreshTimer = Timer.periodic(
-      _backgroundRefreshInterval,
-      (_) => _controller.refresh(),
-    );
+    _backgroundRefreshTimer = Timer.periodic(_backgroundRefreshInterval, (_) {
+      if (_controller.isSoftView) {
+        _controller.refreshSoftView();
+      } else {
+        _controller.refresh();
+      }
+    });
   }
 
   void _stopBackgroundRefreshTimer() {

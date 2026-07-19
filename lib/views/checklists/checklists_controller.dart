@@ -759,7 +759,10 @@ class ChecklistsController extends ChangeNotifier {
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load trash: $e');
       if (_currentList?.id == list.id && _isTrashMode) {
-        _error = m.checklists.failedToLoadItems;
+        // Keep any rows already on screen (a silent background refresh that
+        // failed) rather than replacing them with an error state; only surface
+        // the error when there's nothing to show (the initial load).
+        if (_items.isEmpty) _error = m.checklists.failedToLoadItems;
         _isLoading = false;
         notifyListeners();
       }
@@ -781,7 +784,10 @@ class ChecklistsController extends ChangeNotifier {
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load archive: $e');
       if (_currentList?.id == list.id && _isArchiveMode) {
-        _error = m.checklists.failedToLoadItems;
+        // Keep any rows already on screen (a silent background refresh that
+        // failed) rather than replacing them with an error state; only surface
+        // the error when there's nothing to show (the initial load).
+        if (_items.isEmpty) _error = m.checklists.failedToLoadItems;
         _isLoading = false;
         notifyListeners();
       }
@@ -1027,6 +1033,22 @@ class ChecklistsController extends ChangeNotifier {
     // here (the old behavior) raced that warm-up and, if the user went offline
     // before it finished, left those lists showing nothing (issue #92).
     await load();
+  }
+
+  /// Silently re-fetches the current soft view's items in place. Unlike
+  /// [selectList]'s soft-view path, it leaves the existing rows on screen while
+  /// the new snapshot loads (no empty flash, no spinner), so background polling
+  /// keeps trash/archive current without disturbing a read (issue #106). No-op
+  /// outside a soft view or on the meta view (which has no soft view of its own).
+  Future<void> refreshSoftView() async {
+    if (!isSoftView) return;
+    final list = _currentList;
+    if (list == null || list.id == kAllListsId) return;
+    if (_isArchiveMode) {
+      await _loadArchiveItems(list);
+    } else {
+      await _loadTrashItems(list);
+    }
   }
 
   Future<ChecklistList> createList({
