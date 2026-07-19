@@ -2734,6 +2734,27 @@ class NotesWallMessagesEs extends NotesWallMessages {
   String get editNote => """Editar nota""";
 
   /// ```dart
+  /// "Cambios sin guardar"
+  /// ```
+  String get unsavedChanges => """Cambios sin guardar""";
+
+  /// ```dart
+  /// "Tienes cambios sin guardar. ¿Quieres guardarlos?"
+  /// ```
+  String get unsavedChangesBody =>
+      """Tienes cambios sin guardar. ¿Quieres guardarlos?""";
+
+  /// ```dart
+  /// "Descartar"
+  /// ```
+  String get discard => """Descartar""";
+
+  /// ```dart
+  /// "Seguir editando"
+  /// ```
+  String get keepEditing => """Seguir editando""";
+
+  /// ```dart
   /// "Fijar nota"
   /// ```
   String get pinNote => """Fijar nota""";
@@ -3840,6 +3861,11 @@ Contraseña: pantry-rocks""",
       """Esta acción no se puede deshacer.""",
   """notesWall.newNote""": """Nueva nota""",
   """notesWall.editNote""": """Editar nota""",
+  """notesWall.unsavedChanges""": """Cambios sin guardar""",
+  """notesWall.unsavedChangesBody""":
+      """Tienes cambios sin guardar. ¿Quieres guardarlos?""",
+  """notesWall.discard""": """Descartar""",
+  """notesWall.keepEditing""": """Seguir editando""",
   """notesWall.pinNote""": """Fijar nota""",
   """notesWall.unpinNote""": """Quitar fijación""",
   """notesWall.title""": """Título""",

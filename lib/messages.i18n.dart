@@ -2710,6 +2710,27 @@ class NotesWallMessages {
   String get editNote => """Edit note""";
 
   /// ```dart
+  /// "Unsaved changes"
+  /// ```
+  String get unsavedChanges => """Unsaved changes""";
+
+  /// ```dart
+  /// "You have unsaved changes. Do you want to save them?"
+  /// ```
+  String get unsavedChangesBody =>
+      """You have unsaved changes. Do you want to save them?""";
+
+  /// ```dart
+  /// "Discard"
+  /// ```
+  String get discard => """Discard""";
+
+  /// ```dart
+  /// "Keep editing"
+  /// ```
+  String get keepEditing => """Keep editing""";
+
+  /// ```dart
   /// "Pin note"
   /// ```
   String get pinNote => """Pin note""";
@@ -3792,6 +3813,11 @@ Password: pantry-rocks""",
   """notesWall.permanentlyDeleteConfirmBody""": """This cannot be undone.""",
   """notesWall.newNote""": """New note""",
   """notesWall.editNote""": """Edit note""",
+  """notesWall.unsavedChanges""": """Unsaved changes""",
+  """notesWall.unsavedChangesBody""":
+      """You have unsaved changes. Do you want to save them?""",
+  """notesWall.discard""": """Discard""",
+  """notesWall.keepEditing""": """Keep editing""",
   """notesWall.pinNote""": """Pin note""",
   """notesWall.unpinNote""": """Unpin note""",
   """notesWall.title""": """Title""",

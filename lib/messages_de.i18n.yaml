@@ -515,6 +515,10 @@ notesWall:
   permanentlyDeleteConfirmBody: "Dies kann nicht rückgängig gemacht werden."
   newNote: Neue Notiz
   editNote: Notiz bearbeiten
+  unsavedChanges: Nicht gespeicherte Änderungen
+  unsavedChangesBody: Du hast nicht gespeicherte Änderungen. Möchtest du sie speichern?
+  discard: Verwerfen
+  keepEditing: Weiter bearbeiten
   pinNote: Notiz anheften
   unpinNote: Notiz lösen
   title: Titel

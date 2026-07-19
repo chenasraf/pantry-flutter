@@ -2739,6 +2739,27 @@ class NotesWallMessagesDe extends NotesWallMessages {
   String get editNote => """Notiz bearbeiten""";
 
   /// ```dart
+  /// "Nicht gespeicherte Änderungen"
+  /// ```
+  String get unsavedChanges => """Nicht gespeicherte Änderungen""";
+
+  /// ```dart
+  /// "Du hast nicht gespeicherte Änderungen. Möchtest du sie speichern?"
+  /// ```
+  String get unsavedChangesBody =>
+      """Du hast nicht gespeicherte Änderungen. Möchtest du sie speichern?""";
+
+  /// ```dart
+  /// "Verwerfen"
+  /// ```
+  String get discard => """Verwerfen""";
+
+  /// ```dart
+  /// "Weiter bearbeiten"
+  /// ```
+  String get keepEditing => """Weiter bearbeiten""";
+
+  /// ```dart
   /// "Notiz anheften"
   /// ```
   String get pinNote => """Notiz anheften""";
@@ -3861,6 +3882,11 @@ Passwort: pantry-rocks""",
       """Dies kann nicht rückgängig gemacht werden.""",
   """notesWall.newNote""": """Neue Notiz""",
   """notesWall.editNote""": """Notiz bearbeiten""",
+  """notesWall.unsavedChanges""": """Nicht gespeicherte Änderungen""",
+  """notesWall.unsavedChangesBody""":
+      """Du hast nicht gespeicherte Änderungen. Möchtest du sie speichern?""",
+  """notesWall.discard""": """Verwerfen""",
+  """notesWall.keepEditing""": """Weiter bearbeiten""",
   """notesWall.pinNote""": """Notiz anheften""",
   """notesWall.unpinNote""": """Notiz lösen""",
   """notesWall.title""": """Titel""",

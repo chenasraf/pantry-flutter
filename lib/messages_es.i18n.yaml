@@ -515,6 +515,10 @@ notesWall:
   permanentlyDeleteConfirmBody: "Esta acción no se puede deshacer."
   newNote: Nueva nota
   editNote: Editar nota
+  unsavedChanges: Cambios sin guardar
+  unsavedChangesBody: Tienes cambios sin guardar. ¿Quieres guardarlos?
+  discard: Descartar
+  keepEditing: Seguir editando
   pinNote: Fijar nota
   unpinNote: Quitar fijación
   title: "Título"

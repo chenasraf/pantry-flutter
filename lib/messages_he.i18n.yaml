@@ -515,6 +515,10 @@ notesWall:
   permanentlyDeleteConfirmBody: לא ניתן לבטל פעולה זו.
   newNote: הערה חדשה
   editNote: עריכת הערה
+  unsavedChanges: שינויים שלא נשמרו
+  unsavedChangesBody: יש לך שינויים שלא נשמרו. לשמור אותם?
+  discard: התעלם
+  keepEditing: המשך עריכה
   pinNote: הצמדת הערה
   unpinNote: ביטול הצמדה
   title: כותרת

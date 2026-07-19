@@ -55,6 +55,15 @@ class _NoteFormViewState extends State<NoteFormView> {
 
   bool get _isEditing => widget.note != null;
 
+  bool get _hasUnsavedChanges {
+    final baseTitle = widget.note?.title ?? '';
+    final baseContent = widget.note?.content ?? widget.prefillContent ?? '';
+    final baseColor = widget.note?.color;
+    return _titleController.text != baseTitle ||
+        _contentController.text != baseContent ||
+        _selectedColor != baseColor;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -116,6 +125,40 @@ class _NoteFormViewState extends State<NoteFormView> {
     }
   }
 
+  Future<void> _confirmLeave() async {
+    final action = await showDialog<_LeaveAction>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.notesWall.unsavedChanges),
+        content: Text(m.notesWall.unsavedChangesBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, _LeaveAction.keepEditing),
+            child: Text(m.notesWall.keepEditing),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, _LeaveAction.discard),
+            child: Text(m.notesWall.discard),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, _LeaveAction.save),
+            child: Text(m.common.save),
+          ),
+        ],
+      ),
+    );
+    if (!mounted) return;
+    switch (action) {
+      case _LeaveAction.save:
+        await _save();
+      case _LeaveAction.discard:
+        if (mounted) Navigator.of(context).pop();
+      case _LeaveAction.keepEditing:
+      case null:
+        break;
+    }
+  }
+
   Color get _bgColor {
     if (_selectedColor != null && _selectedColor!.isNotEmpty) {
       final hex = _selectedColor!.replaceFirst('#', '');
@@ -130,112 +173,122 @@ class _NoteFormViewState extends State<NoteFormView> {
     final bgColor = _bgColor;
     final textColor = _contrastColor(bgColor);
 
-    return Scaffold(
-      backgroundColor: bgColor,
-      appBar: AppBar(
+    return PopScope(
+      canPop: !_hasUnsavedChanges,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _confirmLeave();
+      },
+      child: Scaffold(
         backgroundColor: bgColor,
-        foregroundColor: textColor,
-        leading: appBarBackLeading(context),
-        title: Text(_isEditing ? m.notesWall.editNote : m.notesWall.newNote),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _saving ? null : _save,
-        child: _saving
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const Icon(Icons.check),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-            child: TextField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                hintText: m.notesWall.title,
-                hintStyle: TextStyle(color: textColor.withAlpha(100)),
-                border: InputBorder.none,
-              ),
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: textColor,
-                fontWeight: FontWeight.bold,
-              ),
-              autofocus: !_isEditing,
-              textCapitalization: TextCapitalization.sentences,
-              textInputAction: TextInputAction.next,
-              textDirection: _titleDir,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+        appBar: AppBar(
+          backgroundColor: bgColor,
+          foregroundColor: textColor,
+          leading: appBarBackLeading(context),
+          title: Text(_isEditing ? m.notesWall.editNote : m.notesWall.newNote),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _saving ? null : _save,
+          child: _saving
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.check),
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
               child: TextField(
-                controller: _contentController,
+                controller: _titleController,
                 decoration: InputDecoration(
-                  hintText: m.notesWall.content,
+                  hintText: m.notesWall.title,
                   hintStyle: TextStyle(color: textColor.withAlpha(100)),
                   border: InputBorder.none,
                 ),
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: textColor.withAlpha(230),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: textColor,
+                  fontWeight: FontWeight.bold,
                 ),
+                autofocus: !_isEditing,
                 textCapitalization: TextCapitalization.sentences,
-                maxLines: null,
-                expands: true,
-                textAlignVertical: TextAlignVertical.top,
-                textDirection: _contentDir,
+                textInputAction: TextInputAction.next,
+                textDirection: _titleDir,
               ),
             ),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 80, 48),
-            child: Row(
-              children: _colorOptions.map((hex) {
-                final color = hex != null
-                    ? Color(
-                        int.parse('FF${hex.replaceFirst('#', '')}', radix: 16),
-                      )
-                    : Theme.of(context).colorScheme.surfaceContainerHighest;
-                final isSelected = _selectedColor == hex;
-                return Padding(
-                  padding: const EdgeInsetsDirectional.only(end: 8),
-                  child: GestureDetector(
-                    onTap: () => setState(() => _selectedColor = hex),
-                    child: CustomPaint(
-                      foregroundPainter: hex == null
-                          ? _DiagonalLinePainter(
-                              color: textColor.withAlpha(120),
-                            )
-                          : null,
-                      child: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                          border: isSelected
-                              ? Border.all(color: textColor, width: 3)
-                              : Border.all(color: textColor.withAlpha(60)),
-                        ),
-                        child: isSelected
-                            ? Icon(
-                                Icons.check,
-                                size: 18,
-                                color: _contrastColor(color),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                child: TextField(
+                  controller: _contentController,
+                  decoration: InputDecoration(
+                    hintText: m.notesWall.content,
+                    hintStyle: TextStyle(color: textColor.withAlpha(100)),
+                    border: InputBorder.none,
+                  ),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: textColor.withAlpha(230),
+                  ),
+                  textCapitalization: TextCapitalization.sentences,
+                  maxLines: null,
+                  expands: true,
+                  textAlignVertical: TextAlignVertical.top,
+                  textDirection: _contentDir,
+                ),
+              ),
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 80, 48),
+              child: Row(
+                children: _colorOptions.map((hex) {
+                  final color = hex != null
+                      ? Color(
+                          int.parse(
+                            'FF${hex.replaceFirst('#', '')}',
+                            radix: 16,
+                          ),
+                        )
+                      : Theme.of(context).colorScheme.surfaceContainerHighest;
+                  final isSelected = _selectedColor == hex;
+                  return Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 8),
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedColor = hex),
+                      child: CustomPaint(
+                        foregroundPainter: hex == null
+                            ? _DiagonalLinePainter(
+                                color: textColor.withAlpha(120),
                               )
                             : null,
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: isSelected
+                                ? Border.all(color: textColor, width: 3)
+                                : Border.all(color: textColor.withAlpha(60)),
+                          ),
+                          child: isSelected
+                              ? Icon(
+                                  Icons.check,
+                                  size: 18,
+                                  color: _contrastColor(color),
+                                )
+                              : null,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -244,6 +297,8 @@ class _NoteFormViewState extends State<NoteFormView> {
     return bg.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
   }
 }
+
+enum _LeaveAction { save, discard, keepEditing }
 
 class _DiagonalLinePainter extends CustomPainter {
   final Color color;

@@ -2738,6 +2738,27 @@ class NotesWallMessagesFr extends NotesWallMessages {
   String get editNote => """Modifier la note""";
 
   /// ```dart
+  /// "Modifications non enregistrées"
+  /// ```
+  String get unsavedChanges => """Modifications non enregistrées""";
+
+  /// ```dart
+  /// "Vous avez des modifications non enregistrées. Voulez-vous les enregistrer ?"
+  /// ```
+  String get unsavedChangesBody =>
+      """Vous avez des modifications non enregistrées. Voulez-vous les enregistrer ?""";
+
+  /// ```dart
+  /// "Abandonner"
+  /// ```
+  String get discard => """Abandonner""";
+
+  /// ```dart
+  /// "Continuer la modification"
+  /// ```
+  String get keepEditing => """Continuer la modification""";
+
+  /// ```dart
   /// "Épingler la note"
   /// ```
   String get pinNote => """Épingler la note""";
@@ -3855,6 +3876,11 @@ Mot de passe : pantry-rocks""",
       """Cette action est irréversible.""",
   """notesWall.newNote""": """Nouvelle note""",
   """notesWall.editNote""": """Modifier la note""",
+  """notesWall.unsavedChanges""": """Modifications non enregistrées""",
+  """notesWall.unsavedChangesBody""":
+      """Vous avez des modifications non enregistrées. Voulez-vous les enregistrer ?""",
+  """notesWall.discard""": """Abandonner""",
+  """notesWall.keepEditing""": """Continuer la modification""",
   """notesWall.pinNote""": """Épingler la note""",
   """notesWall.unpinNote""": """Désépingler la note""",
   """notesWall.title""": """Titre""",

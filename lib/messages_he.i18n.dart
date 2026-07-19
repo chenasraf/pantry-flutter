@@ -2716,6 +2716,26 @@ class NotesWallMessagesHe extends NotesWallMessages {
   String get editNote => """עריכת הערה""";
 
   /// ```dart
+  /// "שינויים שלא נשמרו"
+  /// ```
+  String get unsavedChanges => """שינויים שלא נשמרו""";
+
+  /// ```dart
+  /// "יש לך שינויים שלא נשמרו. לשמור אותם?"
+  /// ```
+  String get unsavedChangesBody => """יש לך שינויים שלא נשמרו. לשמור אותם?""";
+
+  /// ```dart
+  /// "התעלם"
+  /// ```
+  String get discard => """התעלם""";
+
+  /// ```dart
+  /// "המשך עריכה"
+  /// ```
+  String get keepEditing => """המשך עריכה""";
+
+  /// ```dart
   /// "הצמדת הערה"
   /// ```
   String get pinNote => """הצמדת הערה""";
@@ -3792,6 +3812,11 @@ Map<String, String> get messagesHeMap => {
   """notesWall.permanentlyDeleteConfirmBody""": """לא ניתן לבטל פעולה זו.""",
   """notesWall.newNote""": """הערה חדשה""",
   """notesWall.editNote""": """עריכת הערה""",
+  """notesWall.unsavedChanges""": """שינויים שלא נשמרו""",
+  """notesWall.unsavedChangesBody""":
+      """יש לך שינויים שלא נשמרו. לשמור אותם?""",
+  """notesWall.discard""": """התעלם""",
+  """notesWall.keepEditing""": """המשך עריכה""",
   """notesWall.pinNote""": """הצמדת הערה""",
   """notesWall.unpinNote""": """ביטול הצמדה""",
   """notesWall.title""": """כותרת""",
