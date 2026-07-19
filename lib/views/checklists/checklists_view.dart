@@ -462,7 +462,12 @@ class _BodyState extends State<_Body> {
                                     // Reserve enough room for the resting
                                     // compose bar so the last item is always
                                     // reachable without the bar overlapping it.
-                                    padding: const EdgeInsets.only(bottom: 76),
+                                    // Soft views (trash/archive) have no compose
+                                    // bar, so the reservation would just leave a
+                                    // blank bar at the bottom (issue #105).
+                                    padding: EdgeInsets.only(
+                                      bottom: controller.isSoftView ? 0 : 76,
+                                    ),
                                     child: _ItemList(
                                       controller: controller,
                                       activeItems: activeItems,
