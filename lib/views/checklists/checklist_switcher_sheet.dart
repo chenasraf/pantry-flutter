@@ -538,7 +538,6 @@ class _ListStage extends StatelessWidget {
       Navigator.pop(context); // close the switcher sheet
       // Snackbar runs against the host scaffold, not the dismissed sheet.
       showUndoSnackBar(
-        context,
         message: m.checklists.listRemoved,
         undoLabel: m.checklists.undo,
         onUndo: () => controller.restoreList(list),

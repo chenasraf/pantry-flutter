@@ -71,7 +71,6 @@ class PhotoSelectionActions extends StatelessWidget {
         if (!context.mounted) return;
         if (hasFeature('photo-trash') && deleted.isNotEmpty) {
           showUndoSnackBar(
-            context,
             message: m.photoBoard.photoRemoved(deleted.length),
             undoLabel: m.checklists.undo,
             onUndo: () async {

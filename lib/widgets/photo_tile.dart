@@ -314,7 +314,6 @@ class PhotoTile extends StatelessWidget {
         if (!context.mounted) return;
         if (hasFeature('photo-trash')) {
           showUndoSnackBar(
-            context,
             message: m.photoBoard.photoRemoved(1),
             undoLabel: m.checklists.undo,
             onUndo: () => controller.restorePhoto(photo),

@@ -64,7 +64,6 @@ class NoteSelectionActions extends StatelessWidget {
         if (!context.mounted) return;
         if (hasFeature('note-trash') && deleted.isNotEmpty) {
           showUndoSnackBar(
-            context,
             message: m.notesWall.noteRemoved(deleted.length),
             undoLabel: m.checklists.undo,
             onUndo: () async {

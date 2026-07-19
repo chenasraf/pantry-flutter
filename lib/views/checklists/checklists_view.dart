@@ -20,6 +20,7 @@ import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/categories/categories_view.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 import 'checklist_item_tile.dart';
@@ -2050,7 +2051,6 @@ class _ItemListState extends State<_ItemList> {
       widget.scrollController ??
       (_ownedScrollController ??= ScrollController());
   final Map<int, GlobalKey> _tileKeys = {};
-  Timer? _markedDoneSnackBarTimer;
 
   GlobalKey _keyFor(int id) => _tileKeys.putIfAbsent(id, () => GlobalKey());
 
@@ -2066,7 +2066,6 @@ class _ItemListState extends State<_ItemList> {
 
   @override
   void dispose() {
-    _markedDoneSnackBarTimer?.cancel();
     _ownedScrollController?.dispose();
     super.dispose();
   }
@@ -2445,57 +2444,24 @@ class _ItemListState extends State<_ItemList> {
     }
 
     if (wasDone) return;
-    final messenger = ScaffoldMessenger.of(context);
-    // Drop any prior snackbar instantly so the new one isn't delayed by the
-    // ~250ms exit animation `clearSnackBars()` would run.
-    messenger.removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
-    // Drive dismissal ourselves: SnackBar's internal timer gets reset
-    // whenever the snackbar's MediaQuery dependency rebuilds, and this view
-    // triggers a lot of those — toggleItem fires two notifyListeners (the
-    // optimistic update + the server-confirmed update), the 30s background
-    // refresh fires more, and the appBarSpecHolder post-frame ripples up to
-    // home_view's AppBar. Net effect: relying on `duration:` alone leaves
-    // the snackbar pinned until the user dismisses it. The explicit timer
-    // here closes it 6s after it's shown, regardless of how many rebuilds
-    // happen in the meantime.
-    _markedDoneSnackBarTimer?.cancel();
-    final entry = messenger.showSnackBar(
-      SnackBar(
-        content: Text(m.checklists.itemMarkedDone),
-        duration: const Duration(seconds: 6),
-        action: SnackBarAction(
-          label: m.checklists.undo,
-          onPressed: () async {
-            try {
-              final stillPresent = controller.items.any((i) => i.id == item.id);
-              if (wasDeleteOnDone || !stillPresent) {
-                await controller.restoreItem(item);
-              }
-              final current = controller.items.firstWhere(
-                (i) => i.id == item.id,
-                orElse: () => item.copyWith(done: true),
-              );
-              if (current.done) {
-                await controller.toggleItem(current);
-              }
-            } catch (_) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(m.checklists.restoreFailed)),
-                );
-              }
-            }
-          },
-        ),
-      ),
+    showUndoSnackBar(
+      message: m.checklists.itemMarkedDone,
+      undoLabel: m.checklists.undo,
+      onUndo: () async {
+        final stillPresent = controller.items.any((i) => i.id == item.id);
+        if (wasDeleteOnDone || !stillPresent) {
+          await controller.restoreItem(item);
+        }
+        final current = controller.items.firstWhere(
+          (i) => i.id == item.id,
+          orElse: () => item.copyWith(done: true),
+        );
+        if (current.done) {
+          await controller.toggleItem(current);
+        }
+      },
+      undoFailedMessage: m.checklists.restoreFailed,
     );
-    // Start the 6s clock once the snackbar's enter animation has finished,
-    // so the user actually sees it for the full 6s rather than 6s minus
-    // the ~250ms slide-in.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _markedDoneSnackBarTimer = Timer(const Duration(seconds: 6), entry.close);
-    });
   }
 
   void _openView(
@@ -2535,35 +2501,14 @@ class _ItemListState extends State<_ItemList> {
     try {
       await controller.deleteItem(item);
     } catch (_) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(m.checklists.itemForm.deleteFailed)),
-        );
-      }
+      showAppSnackBar(message: m.checklists.itemForm.deleteFailed);
       return;
     }
-    if (!context.mounted) return;
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.clearSnackBars();
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(m.checklists.itemRemoved),
-        duration: const Duration(seconds: 6),
-        action: SnackBarAction(
-          label: m.checklists.undo,
-          onPressed: () async {
-            try {
-              await controller.restoreItem(item);
-            } catch (_) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(m.checklists.restoreFailed)),
-                );
-              }
-            }
-          },
-        ),
-      ),
+    showUndoSnackBar(
+      message: m.checklists.itemRemoved,
+      undoLabel: m.checklists.undo,
+      onUndo: () => controller.restoreItem(item),
+      undoFailedMessage: m.checklists.restoreFailed,
     );
   }
 
@@ -2574,17 +2519,9 @@ class _ItemListState extends State<_ItemList> {
   ) async {
     try {
       await controller.restoreItem(item);
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.itemRestored)));
-      }
+      showAppSnackBar(message: m.checklists.itemRestored);
     } catch (_) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.restoreFailed)));
-      }
+      showAppSnackBar(message: m.checklists.restoreFailed);
     }
   }
 
@@ -2596,35 +2533,14 @@ class _ItemListState extends State<_ItemList> {
     try {
       await controller.archiveItem(item);
     } catch (_) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.archiveFailed)));
-      }
+      showAppSnackBar(message: m.checklists.archiveFailed);
       return;
     }
-    if (!context.mounted) return;
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.clearSnackBars();
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(m.checklists.itemArchived),
-        duration: const Duration(seconds: 6),
-        action: SnackBarAction(
-          label: m.checklists.undo,
-          onPressed: () async {
-            try {
-              await controller.unarchiveItem(item);
-            } catch (_) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(m.checklists.unarchiveFailed)),
-                );
-              }
-            }
-          },
-        ),
-      ),
+    showUndoSnackBar(
+      message: m.checklists.itemArchived,
+      undoLabel: m.checklists.undo,
+      onUndo: () => controller.unarchiveItem(item),
+      undoFailedMessage: m.checklists.unarchiveFailed,
     );
   }
 
@@ -2635,17 +2551,9 @@ class _ItemListState extends State<_ItemList> {
   ) async {
     try {
       await controller.unarchiveItem(item);
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.itemUnarchived)));
-      }
+      showAppSnackBar(message: m.checklists.itemUnarchived);
     } catch (_) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.unarchiveFailed)));
-      }
+      showAppSnackBar(message: m.checklists.unarchiveFailed);
     }
   }
 
@@ -3296,7 +3204,6 @@ class _SelectionActionBar extends StatelessWidget {
   // from the pre-action item snapshots captured before the selection clears.
 
   Future<void> _move(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
     final affected = List.of(controller.selectedItems);
     final targetId = await _pickTargetList(
       context,
@@ -3305,14 +3212,12 @@ class _SelectionActionBar extends StatelessWidget {
     if (targetId == null) return;
     controller.batchMove(targetId);
     _showUndo(
-      messenger,
       m.checklists.batch.moved(affected.length),
       () => controller.undoBatchMove(affected),
     );
   }
 
   Future<void> _copy(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
     final count = controller.selectedCount;
     final targetId = await _pickTargetList(
       context,
@@ -3321,27 +3226,22 @@ class _SelectionActionBar extends StatelessWidget {
     if (targetId == null) return;
     controller.batchCopy(targetId);
     // Copy is additive and non-destructive — no undo, just a confirmation.
-    messenger
-      ..clearSnackBars()
-      ..showSnackBar(SnackBar(content: Text(m.checklists.batch.copied(count))));
+    showAppSnackBar(message: m.checklists.batch.copied(count));
   }
 
   Future<void> _category(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
     final affected = List.of(controller.selectedItems);
     final choice = await _pickCategory(context);
     if (choice == null) return;
     final categoryId = choice == _kBatchClearCategory ? null : choice;
     controller.batchSetCategory(categoryId);
     _showUndo(
-      messenger,
       m.checklists.batch.categorySet(affected.length),
       () => controller.undoBatchSetCategory(affected),
     );
   }
 
   Future<void> _delete(BuildContext context, {bool permanent = false}) async {
-    final messenger = ScaffoldMessenger.of(context);
     final affected = List.of(controller.selectedItems);
     final ok = await showDialog<bool>(
       context: context,
@@ -3371,68 +3271,49 @@ class _SelectionActionBar extends StatelessWidget {
     controller.batchDelete(permanent: permanent);
     // A permanent delete has no undo path.
     if (permanent) {
-      messenger
-        ..clearSnackBars()
-        ..showSnackBar(
-          SnackBar(content: Text(m.checklists.batch.deleted(affected.length))),
-        );
+      showAppSnackBar(message: m.checklists.batch.deleted(affected.length));
       return;
     }
     _showUndo(
-      messenger,
       m.checklists.batch.deleted(affected.length),
       () => controller.undoBatchDelete(affected),
     );
   }
 
   Future<void> _archive(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
     final affected = List.of(controller.selectedItems);
     controller.batchArchive();
     _showUndo(
-      messenger,
       m.checklists.batch.archived(affected.length),
       () => controller.undoBatchArchive(affected),
     );
   }
 
   Future<void> _unarchive(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
     final affected = List.of(controller.selectedItems);
     controller.batchUnarchive();
     _showUndo(
-      messenger,
       m.checklists.batch.unarchived(affected.length),
       () => controller.undoBatchUnarchive(affected),
     );
   }
 
   Future<void> _restore(BuildContext context) async {
-    final messenger = ScaffoldMessenger.of(context);
     final affected = List.of(controller.selectedItems);
     controller.batchRestore();
     _showUndo(
-      messenger,
       m.checklists.batch.restored(affected.length),
       () => controller.undoBatchRestore(affected),
     );
   }
 
   /// Shows a confirmation snackbar with an Undo action for a batch operation.
-  void _showUndo(
-    ScaffoldMessengerState messenger,
-    String message,
-    VoidCallback onUndo,
-  ) {
-    messenger
-      ..clearSnackBars()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          duration: const Duration(seconds: 6),
-          action: SnackBarAction(label: m.checklists.undo, onPressed: onUndo),
-        ),
-      );
+  void _showUndo(String message, VoidCallback onUndo) {
+    showUndoSnackBar(
+      message: message,
+      undoLabel: m.checklists.undo,
+      onUndo: () async => onUndo(),
+    );
   }
 
   /// Target-list picker for move/copy. Excludes the synthetic All-lists entry

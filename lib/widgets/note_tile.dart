@@ -331,7 +331,6 @@ class NoteTile extends StatelessWidget {
         if (!context.mounted) return;
         if (hasFeature('note-trash')) {
           showUndoSnackBar(
-            context,
             message: m.notesWall.noteRemoved(1),
             undoLabel: m.checklists.undo,
             onUndo: () => controller.restoreNote(note),
