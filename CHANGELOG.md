@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.1](https://github.com/chenasraf/pantry-flutter/compare/v0.22.0...v0.22.1) (2026-07-21)
+
+
+### Bug Fixes
+
+* assign stores to multiple items at once ([96cdecc](https://github.com/chenasraf/pantry-flutter/commit/96cdecc41c052c0c94ce5df112a04d35c839e0e6))
+
 ## [0.22.0](https://github.com/chenasraf/pantry-flutter/compare/v0.21.0...v0.22.0) (2026-07-21)
 
 
