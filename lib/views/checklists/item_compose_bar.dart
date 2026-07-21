@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
@@ -127,6 +128,22 @@ class ItemComposeBar extends StatefulWidget {
   /// host can persist it and feed it back via [selectedTargetListId].
   final ValueChanged<int>? onTargetListChanged;
 
+  /// Existing items on the current target list. While composing a single item,
+  /// the bar fuzzy-matches the typed name against these and offers matches so
+  /// the user can reuse one instead of creating a duplicate (issue #104).
+  /// Empty disables the suggestions UI.
+  final List<ListItem> reuseCandidates;
+
+  /// Builds a read-only suggestion tile for [item]. Provided by the host so the
+  /// tile resolves categories/stores through the controller; tapping the tile
+  /// runs [onTap].
+  final Widget Function(ListItem item, VoidCallback onTap)?
+  buildReuseSuggestion;
+
+  /// Runs the host's confirm-then-reuse flow for a tapped suggestion. Returns
+  /// true when the item was reused, so the bar clears its input afterwards.
+  final Future<bool> Function(ListItem item)? onReuseExisting;
+
   const ItemComposeBar({
     super.key,
     required this.listName,
@@ -142,6 +159,9 @@ class ItemComposeBar extends StatefulWidget {
     this.targetLists,
     this.selectedTargetListId,
     this.onTargetListChanged,
+    this.reuseCandidates = const [],
+    this.buildReuseSuggestion,
+    this.onReuseExisting,
   });
 
   bool get _allListsMode => targetLists != null;
@@ -182,7 +202,58 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   }
 
   void _onNameChanged() {
-    if (_multiple) setState(() {});
+    // Rebuild so the bulk-add hint tracks input in multiple mode, and the
+    // single-mode reuse suggestions re-filter as the user types.
+    if (_multiple || widget.reuseCandidates.isNotEmpty) setState(() {});
+  }
+
+  /// Max reuse suggestions surfaced at once — enough to catch the near matches
+  /// without turning the compose bar into a full second list.
+  static const _maxReuseSuggestions = 6;
+
+  /// Minimum fuzzy score (0–100) a candidate must clear to be offered. Set so
+  /// per-word matches ("Organic milk" → "Milk", ~90 via partial ratio) and
+  /// light typos survive, while unrelated names are filtered out.
+  static const _reuseMatchCutoff = 60;
+
+  /// Single-mode fuzzy matches of the typed name against [reuseCandidates],
+  /// best-ranked first. Uses fuzzywuzzy's weighted ratio, which blends token
+  /// and partial matching — so extra words in the query ("Organic milk") still
+  /// match a shorter item name ("Milk"). Empty in multiple mode, with no query,
+  /// or when the feature is unwired.
+  List<ListItem> _reuseMatches() {
+    if (_multiple ||
+        widget.buildReuseSuggestion == null ||
+        widget.reuseCandidates.isEmpty) {
+      return const [];
+    }
+    final query = _nameCtrl.text.trim();
+    if (query.isEmpty) return const [];
+    final results = extractTop<ListItem>(
+      query: query,
+      choices: widget.reuseCandidates,
+      getter: (item) => item.name,
+      limit: _maxReuseSuggestions,
+      cutoff: _reuseMatchCutoff,
+    );
+    return [for (final r in results) r.choice];
+  }
+
+  Future<void> _onSuggestionTap(ListItem item) async {
+    final handler = widget.onReuseExisting;
+    if (handler == null || _submitting) return;
+    final reused = await handler(item);
+    if (!mounted || !reused) return;
+    // Reuse means we're not creating a new item — clear the draft and keep the
+    // bar active/focused so the user can carry on adding.
+    setState(() {
+      _draft.reset(_defaultLifecycle());
+      _nameCtrl.clear();
+      _qtyCtrl.clear();
+      _descCtrl.clear();
+      _openTray = null;
+    });
+    _focusNode.requestFocus();
   }
 
   List<String> _bulkNames() {
@@ -358,6 +429,12 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
 
+    // Reuse suggestions share the Flexible slot with the trays, so they only
+    // surface while no tray is open (i.e. while the user is typing the name).
+    final reuseMatches = _openTray == null
+        ? _reuseMatches()
+        : const <ListItem>[];
+
     Widget? trayChild;
     switch (_openTray) {
       case _Tray.targetList:
@@ -469,6 +546,18 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                 Flexible(
                   fit: FlexFit.loose,
                   child: SingleChildScrollView(child: trayChild),
+                ),
+                const SizedBox(height: 10),
+              ] else if (reuseMatches.isNotEmpty) ...[
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: SingleChildScrollView(
+                    child: _ReuseSuggestions(
+                      items: reuseMatches,
+                      buildTile: widget.buildReuseSuggestion!,
+                      onTap: _onSuggestionTap,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
               ],
@@ -1020,6 +1109,61 @@ class _BarTargetChip extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Panel of fuzzy-matched existing items shown above the input while composing
+/// a single item. Each row is a read-only [ChecklistItemTile.suggestion] built
+/// by the host; tapping one runs the reuse-confirm flow.
+class _ReuseSuggestions extends StatelessWidget {
+  final List<ListItem> items;
+  final Widget Function(ListItem item, VoidCallback onTap) buildTile;
+  final ValueChanged<ListItem> onTap;
+
+  const _ReuseSuggestions({
+    required this.items,
+    required this.buildTile,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerHigh,
+        border: Border.all(color: cs.outlineVariant),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(14, 11, 14, 9),
+            child: Text(
+              m.checklists.reuse.suggestionsHeader.toUpperCase(),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.6,
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+          ),
+          for (var i = 0; i < items.length; i++) ...[
+            if (i > 0)
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: cs.outlineVariant.withValues(alpha: 0.5),
+              ),
+            buildTile(items[i], () => onTap(items[i])),
+          ],
+        ],
       ),
     );
   }

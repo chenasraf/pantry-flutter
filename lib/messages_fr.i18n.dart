@@ -2651,6 +2651,11 @@ class ReuseChecklistsMessagesFr extends ReuseChecklistsMessages {
   /// "Article existant "$name" réutilisé"
   /// ```
   String reusedSnack(String name) => """Article existant "$name" réutilisé""";
+
+  /// ```dart
+  /// "Déjà dans cette liste"
+  /// ```
+  String get suggestionsHeader => """Déjà dans cette liste""";
 }
 
 class MarkdownChecklistsMessagesFr extends MarkdownChecklistsMessages {
@@ -4020,6 +4025,7 @@ Mot de passe : pantry-rocks""",
   """checklists.reuse.dialogTitle""": """L'article existe déjà""",
   """checklists.reuse.reuseExisting""": """Réutiliser l'existant""",
   """checklists.reuse.addAnyway""": """Ajouter quand même""",
+  """checklists.reuse.suggestionsHeader""": """Déjà dans cette liste""",
   """checklists.allLists""": """Toutes les listes""",
   """checklists.allListsSubtitle""": """Éléments de toutes les listes""",
   """checklists.addToAnyList""": """Ajouter un élément…""",

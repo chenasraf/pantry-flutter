@@ -602,6 +602,24 @@ class _BodyState extends State<_Body> {
                           )) {
                         _composeTargetListId = null;
                       }
+                      // Existing items on the target list, surfaced as fuzzy
+                      // "reuse instead of duplicate" suggestions while typing
+                      // (issue #104). Gated on the reuse capability and the
+                      // check permission — reuse un-checks a done item.
+                      final reuseTargetId = meta
+                          ? _composeTargetListId
+                          : list.id;
+                      final reuseCandidates =
+                          hasFeature('reuse-existing-items') &&
+                              controller.permissions.canCheckItems &&
+                              reuseTargetId != null
+                          ? [
+                              for (final i in controller.items)
+                                if (i.deletedAt == null &&
+                                    i.listId == reuseTargetId)
+                                  i,
+                            ]
+                          : const <ListItem>[];
                       return ItemComposeBar(
                         key: _composeKey,
                         listName: list.name,
@@ -620,6 +638,19 @@ class _BodyState extends State<_Body> {
                         onTargetListChanged: (id) {
                           setState(() => _composeTargetListId = id);
                         },
+                        reuseCandidates: reuseCandidates,
+                        buildReuseSuggestion: (item, onTap) =>
+                            ChecklistItemTile.suggestion(
+                              item: item,
+                              category: item.categoryId != null
+                                  ? controller.categories[item.categoryId]
+                                  : null,
+                              stores: controller.storesFor(item),
+                              houseId: controller.houseId,
+                              onTap: onTap,
+                            ),
+                        onReuseExisting: (item) =>
+                            _reuseFromSuggestion(context, controller, item),
                         onActiveChanged: (active) {
                           if (active != _composeActive) {
                             setState(() => _composeActive = active);
@@ -690,6 +721,42 @@ class _BodyState extends State<_Body> {
         ],
       ),
     );
+  }
+
+  /// Handles a tap on a live reuse suggestion (issue #104): confirms the user
+  /// wants the tapped item instead of adding a new one, then reuses it —
+  /// un-checking it if it was already done. Returns true when reused so the
+  /// compose bar clears its input.
+  Future<bool> _reuseFromSuggestion(
+    BuildContext context,
+    ChecklistsController controller,
+    ListItem item,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.reuse.dialogTitle),
+        content: Text(m.checklists.reuse.dialogBody(item.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(m.checklists.reuse.reuseExisting),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return false;
+    await controller.reuseItem(item);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(m.checklists.reuse.reusedSnack(item.name))),
+      );
+    }
+    return true;
   }
 
   /// Adds a single item to [targetListId], honoring the reuse-existing-items

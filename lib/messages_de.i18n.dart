@@ -2651,6 +2651,11 @@ class ReuseChecklistsMessagesDe extends ReuseChecklistsMessages {
   /// ```
   String reusedSnack(String name) =>
       """Vorhandener Eintrag "$name" wiederverwendet""";
+
+  /// ```dart
+  /// "Bereits auf dieser Liste"
+  /// ```
+  String get suggestionsHeader => """Bereits auf dieser Liste""";
 }
 
 class MarkdownChecklistsMessagesDe extends MarkdownChecklistsMessages {
@@ -4022,6 +4027,7 @@ Passwort: pantry-rocks""",
   """checklists.reuse.dialogTitle""": """Eintrag existiert bereits""",
   """checklists.reuse.reuseExisting""": """Vorhandenen wiederverwenden""",
   """checklists.reuse.addAnyway""": """Trotzdem hinzufügen""",
+  """checklists.reuse.suggestionsHeader""": """Bereits auf dieser Liste""",
   """checklists.allLists""": """Alle Listen""",
   """checklists.allListsSubtitle""": """Einträge aus allen Listen""",
   """checklists.addToAnyList""": """Eintrag hinzufügen…""",

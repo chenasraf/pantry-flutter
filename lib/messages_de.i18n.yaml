@@ -495,6 +495,7 @@ checklists:
     reuseExisting: Vorhandenen wiederverwenden
     addAnyway: Trotzdem hinzufügen
     reusedSnack(String name): "Vorhandener Eintrag \"$name\" wiederverwendet"
+    suggestionsHeader: Bereits auf dieser Liste
   allLists: Alle Listen
   allListsSubtitle: Einträge aus allen Listen
   addToAnyList: "Eintrag hinzufügen…"

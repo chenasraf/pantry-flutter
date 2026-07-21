@@ -495,6 +495,7 @@ checklists:
     reuseExisting: Reutilizar existente
     addAnyway: Añadir de todos modos
     reusedSnack(String name): "Se reutilizó el artículo existente “$name”"
+    suggestionsHeader: Ya en esta lista
   allLists: Todas las listas
   allListsSubtitle: Elementos de todas las listas
   addToAnyList: "Añadir un elemento…"

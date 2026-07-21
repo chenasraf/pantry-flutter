@@ -2626,6 +2626,11 @@ class ReuseChecklistsMessages {
   /// "Reused existing item “$name”"
   /// ```
   String reusedSnack(String name) => """Reused existing item “$name”""";
+
+  /// ```dart
+  /// "Already on this list"
+  /// ```
+  String get suggestionsHeader => """Already on this list""";
 }
 
 class MarkdownChecklistsMessages {
@@ -3963,6 +3968,7 @@ Password: pantry-rocks""",
   """checklists.reuse.dialogTitle""": """Item already exists""",
   """checklists.reuse.reuseExisting""": """Reuse existing""",
   """checklists.reuse.addAnyway""": """Add anyway""",
+  """checklists.reuse.suggestionsHeader""": """Already on this list""",
   """checklists.allLists""": """All lists""",
   """checklists.allListsSubtitle""": """Items from every list""",
   """checklists.addToAnyList""": """Add an item…""",

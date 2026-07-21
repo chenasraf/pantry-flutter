@@ -2632,6 +2632,11 @@ class ReuseChecklistsMessagesHe extends ReuseChecklistsMessages {
   /// "נעשה שימוש חוזר בפריט “$name”"
   /// ```
   String reusedSnack(String name) => """נעשה שימוש חוזר בפריט “$name”""";
+
+  /// ```dart
+  /// "כבר ברשימה הזו"
+  /// ```
+  String get suggestionsHeader => """כבר ברשימה הזו""";
 }
 
 class MarkdownChecklistsMessagesHe extends MarkdownChecklistsMessages {
@@ -3963,6 +3968,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.reuse.dialogTitle""": """הפריט כבר קיים""",
   """checklists.reuse.reuseExisting""": """השתמש בקיים""",
   """checklists.reuse.addAnyway""": """הוסף בכל זאת""",
+  """checklists.reuse.suggestionsHeader""": """כבר ברשימה הזו""",
   """checklists.allLists""": """כל הרשימות""",
   """checklists.allListsSubtitle""": """פריטים מכל הרשימות""",
   """checklists.addToAnyList""": """הוסף פריט…""",

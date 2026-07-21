@@ -98,6 +98,12 @@ class ChecklistItemTile extends StatefulWidget {
   final ValueChanged<ListItem>? onSelectToggle;
   final ValueChanged<ListItem>? onLongPressSelect;
 
+  /// Suggestion flavor: the row is rendered without a checkbox, swipe actions,
+  /// or selection affordance — just the name + meta chips as a single tap
+  /// target. Backs the compose bar's "reuse an existing item" suggestions.
+  final bool suggestion;
+  final VoidCallback? onSuggestionTap;
+
   const ChecklistItemTile({
     super.key,
     required this.item,
@@ -126,7 +132,45 @@ class ChecklistItemTile extends StatefulWidget {
     this.selected = false,
     this.onSelectToggle,
     this.onLongPressSelect,
+    this.suggestion = false,
+    this.onSuggestionTap,
   });
+
+  /// A read-only tile used as a reuse suggestion in the compose bar: name and
+  /// meta chips only, no checkbox/swipe/selection. Tapping it runs [onTap].
+  const ChecklistItemTile.suggestion({
+    super.key,
+    required this.item,
+    required this.category,
+    this.stores = const [],
+    required this.houseId,
+    required VoidCallback onTap,
+  }) : isCardsView = false,
+       onToggle = _noop,
+       onView = _noop,
+       onDelete = null,
+       onEdit = null,
+       canCheck = false,
+       onMove = null,
+       onCopy = null,
+       trashMode = false,
+       archiveMode = false,
+       onRestore = null,
+       onPermanentDelete = null,
+       onArchive = null,
+       onUnarchive = null,
+       addedByUserId = null,
+       addedByDisplayName = null,
+       listBadge = null,
+       hideCategory = false,
+       selectionMode = false,
+       selected = false,
+       onSelectToggle = null,
+       onLongPressSelect = null,
+       suggestion = true,
+       onSuggestionTap = onTap;
+
+  static void _noop(ListItem _) {}
 
   @override
   State<ChecklistItemTile> createState() => _ChecklistItemTileState();
@@ -154,6 +198,33 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final catColor = cat != null
         ? (_parseColor(cat.color) ?? cs.primary)
         : cs.onSurfaceVariant;
+
+    // Suggestion flavor short-circuits the whole swipe/selection machinery —
+    // it's a plain, tappable row that mirrors the normal layout minus the
+    // checkbox.
+    if (widget.suggestion) {
+      return _RowContent(
+        item: item,
+        category: cat,
+        stores: widget.stores,
+        catColor: catColor,
+        houseId: widget.houseId,
+        isCardsView: false,
+        trashMode: false,
+        archiveMode: false,
+        dense: dense,
+        addedByUserId: null,
+        addedByDisplayName: null,
+        listBadge: null,
+        hideCategory: false,
+        onCheckboxTap: null,
+        onRowTap: widget.onSuggestionTap,
+        onRowLongPress: null,
+        selectionMode: false,
+        selected: false,
+        suggestion: true,
+      );
+    }
 
     // Action buttons overlay the row's foreground in SwipeRevealRow, so a
     // translucent background lets chips and text bleed through. Pre-blend
@@ -439,6 +510,10 @@ class _RowContent extends StatelessWidget {
   final bool selectionMode;
   final bool selected;
 
+  /// Read-only reuse suggestion: omit the leading checkbox entirely and let the
+  /// row's background stay transparent so it blends into the suggestions panel.
+  final bool suggestion;
+
   const _RowContent({
     required this.item,
     required this.category,
@@ -458,6 +533,7 @@ class _RowContent extends StatelessWidget {
     required this.onRowLongPress,
     required this.selectionMode,
     required this.selected,
+    this.suggestion = false,
   });
 
   @override
@@ -508,7 +584,9 @@ class _RowContent extends StatelessWidget {
           );
 
     return Material(
-      color: selectionMode && selected
+      color: suggestion
+          ? Colors.transparent
+          : selectionMode && selected
           ? Color.alphaBlend(cs.primary.withValues(alpha: 0.12), cs.surface)
           : cs.surface,
       child: InkWell(
@@ -526,14 +604,14 @@ class _RowContent extends StatelessWidget {
               ),
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(
-                checkboxAtEnd ? 18 : 0,
+                (suggestion || checkboxAtEnd) ? 18 : 0,
                 dense ? 6 : 13,
-                checkboxAtEnd ? 0 : 16,
+                (suggestion || !checkboxAtEnd) ? 16 : 0,
                 dense ? 6 : 13,
               ),
               child: Row(
                 children: [
-                  if (!checkboxAtEnd) leadingControl,
+                  if (!checkboxAtEnd && !suggestion) leadingControl,
                   if (item.imageFileId != null) ...[
                     _ItemThumb(
                       houseId: houseId,
@@ -569,7 +647,7 @@ class _RowContent extends StatelessWidget {
                       size: 26,
                     ),
                   ],
-                  if (checkboxAtEnd) leadingControl,
+                  if (checkboxAtEnd && !suggestion) leadingControl,
                 ],
               ),
             ),

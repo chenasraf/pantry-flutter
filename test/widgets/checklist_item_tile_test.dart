@@ -147,6 +147,45 @@ void main() {
     expect(recorder.toggled, 0);
   });
 
+  testWidgets('suggestion variant renders name + meta, no checkbox, and taps', (
+    tester,
+  ) async {
+    var taps = 0;
+    await tester.pumpWidget(
+      wrapForTest(
+        ChangeNotifierProvider<PrefsService>.value(
+          value: PrefsService.instance,
+          child: ListView(
+            children: [
+              ChecklistItemTile.suggestion(
+                item: makeListItem(
+                  name: 'Milk',
+                  categoryId: 1,
+                  quantity: '2 L',
+                ),
+                category: makeCategory(id: 1, name: 'Dairy'),
+                houseId: 1,
+                onTap: () => taps++,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Milk'), findsOneWidget);
+    // Meta chips still render so the suggestion reads like a real row.
+    expect(find.text('Dairy'), findsOneWidget);
+    expect(find.text('2 L'), findsOneWidget);
+    // No checkbox: tapping anywhere on the row (including the leading edge)
+    // runs the reuse tap, never a toggle.
+    final tile = tester.getRect(find.byType(ChecklistItemTile));
+    await tester.tapAt(Offset(tile.left + 6, tile.center.dy));
+    await tester.pump();
+    expect(taps, 1);
+  });
+
   testWidgets('category chip shows by default, hidden when hideCategory', (
     tester,
   ) async {

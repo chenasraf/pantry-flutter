@@ -495,6 +495,7 @@ checklists:
     reuseExisting: השתמש בקיים
     addAnyway: הוסף בכל זאת
     reusedSnack(String name): "נעשה שימוש חוזר בפריט “$name”"
+    suggestionsHeader: כבר ברשימה הזו
   allLists: כל הרשימות
   allListsSubtitle: פריטים מכל הרשימות
   addToAnyList: "הוסף פריט…"
