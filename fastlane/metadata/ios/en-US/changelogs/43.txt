@@ -1,0 +1,2 @@
+Bug Fixes
+- assign stores to multiple items at once
