@@ -242,6 +242,19 @@ categories:
     nameZA: "Nom Z–A"
     custom: "Personnalisé"
 
+stores:
+  manageTitle: Gérer les magasins
+  noStores: Aucun magasin pour le moment.
+  editTitle: Modifier le magasin
+  addTitle: Nouveau magasin
+  name: Nom
+  icon: Icône
+  color: Couleur
+  saveFailed: "Impossible d'enregistrer le magasin."
+  deleteFailed: "Impossible de supprimer le magasin."
+  deleteConfirm: Supprimer ce magasin ?
+  deleteConfirmBody: "Ce magasin sera retiré de tous les articles. Cette action est irréversible."
+
 checklists:
   categories: "Catégories"
   noChecklists: Aucune liste pour le moment.
@@ -252,6 +265,15 @@ checklists:
   allListsChip: Tout
   filterByList: Filtrer par liste
   filterByCategory: Filtrer par catégorie
+  filters:
+    lists: Listes
+    categories: Catégories
+    stores: Magasins
+    allLists: Toutes les listes
+    allCategories: Toutes les catégories
+    allStores: Tous les magasins
+    noCategory: Sans catégorie
+    noStores: Sans magasin
   failedToLoad: Impossible de charger les listes.
   failedToLoadItems: Impossible de charger les articles.
   completedCount(int count): "Terminés ($count)"
@@ -377,6 +399,11 @@ checklists:
     categoryColor: Couleur
     categoryCreated: "Catégorie créée."
     categoryCreateFailed: "Impossible de créer la catégorie."
+    stores: Magasins
+    noStores: Aucun
+    createStore: Nouveau magasin
+    storesChange: Modifier
+    storesPick: Choisir
     repeat: "Répéter"
     once: "Une fois"
     onceDescription: "Supprimer cet article une fois qu'il est marqué comme fait."
@@ -446,6 +473,7 @@ checklists:
     everyNWeeks(int n): "Toutes les $n sem"
   compose:
     chipCategory: Catégorie
+    chipStore: Magasins
     chipQuantity: Quantité
     chipType: Type
     chipImage: Image

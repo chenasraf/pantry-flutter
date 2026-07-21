@@ -4,12 +4,14 @@ import 'package:provider/provider.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
+import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/rrule.dart';
+import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
     show parseHexColor;
 import 'package:pantry/widgets/member_avatar.dart';
@@ -41,6 +43,10 @@ ItemLifecycle lifecycleOf(ListItem item) {
 class ChecklistItemTile extends StatefulWidget {
   final ListItem item;
   final models.Category? category;
+
+  /// Stores attached to this item, resolved and name-ordered by the caller.
+  /// Rendered as one chip each in the meta row.
+  final List<models.Store> stores;
   final int houseId;
   final bool isCardsView;
   final bool trashMode;
@@ -96,6 +102,7 @@ class ChecklistItemTile extends StatefulWidget {
     super.key,
     required this.item,
     required this.category,
+    this.stores = const [],
     required this.houseId,
     required this.isCardsView,
     required this.onToggle,
@@ -298,6 +305,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final content = _RowContent(
       item: item,
       category: cat,
+      stores: widget.stores,
       catColor: catColor,
       houseId: widget.houseId,
       isCardsView: widget.isCardsView,
@@ -414,6 +422,7 @@ class _OverflowMenuRow extends StatelessWidget {
 class _RowContent extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
+  final List<models.Store> stores;
   final Color catColor;
   final int houseId;
   final bool isCardsView;
@@ -433,6 +442,7 @@ class _RowContent extends StatelessWidget {
   const _RowContent({
     required this.item,
     required this.category,
+    required this.stores,
     required this.catColor,
     required this.houseId,
     required this.isCardsView,
@@ -543,6 +553,7 @@ class _RowContent extends StatelessWidget {
                           _MetaRow(
                             item: item,
                             category: hideCategory ? null : category,
+                            stores: stores,
                             catColor: catColor,
                             listBadge: listBadge,
                           ),
@@ -570,12 +581,18 @@ class _RowContent extends StatelessWidget {
 
   bool get _hasMeta {
     final hasCat = category != null && !hideCategory;
+    final hasStores = stores.isNotEmpty;
     final hasQty = item.quantity != null && item.quantity!.trim().isNotEmpty;
     final hasDesc =
         item.description != null && item.description!.trim().isNotEmpty;
     final lc = lifecycleOf(item);
     final hasType = lc != ItemLifecycle.staple;
-    return hasCat || hasQty || hasDesc || hasType || listBadge != null;
+    return hasCat ||
+        hasStores ||
+        hasQty ||
+        hasDesc ||
+        hasType ||
+        listBadge != null;
   }
 }
 
@@ -654,12 +671,14 @@ class _Checkbox extends StatelessWidget {
 class _MetaRow extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
+  final List<models.Store> stores;
   final Color catColor;
   final ItemListBadge? listBadge;
 
   const _MetaRow({
     required this.item,
     required this.category,
+    required this.stores,
     required this.catColor,
     required this.listBadge,
   });
@@ -702,6 +721,19 @@ class _MetaRow extends StatelessWidget {
             label: category!.name,
             textColor: catColor,
             background: catColor.withValues(alpha: 0.13),
+          ),
+        for (final s in stores)
+          _Chip(
+            leading: Icon(
+              storeIcon(s.icon),
+              size: 12,
+              color: parseHexColor(s.color) ?? cs.primary,
+            ),
+            label: s.name,
+            textColor: parseHexColor(s.color) ?? cs.primary,
+            background: (parseHexColor(s.color) ?? cs.primary).withValues(
+              alpha: 0.13,
+            ),
           ),
         if (item.quantity != null && item.quantity!.trim().isNotEmpty)
           _Chip(

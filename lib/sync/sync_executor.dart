@@ -1,9 +1,11 @@
 import 'package:pantry/models/category.dart';
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/note.dart';
+import 'package:pantry/models/store.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/note_service.dart';
+import 'package:pantry/services/store_service.dart';
 import 'package:pantry/sync/sync_op.dart';
 
 /// Result of executing a single op.
@@ -32,6 +34,8 @@ class SyncExecutor {
         return _executeChecklistItem(op);
       case SyncEntity.category:
         return _executeCategory(op);
+      case SyncEntity.store:
+        return _executeStore(op);
       case SyncEntity.note:
         return _executeNote(op);
     }
@@ -109,6 +113,7 @@ class SyncExecutor {
           description: op.body['description'] as String?,
           quantity: op.body['quantity'] as String?,
           categoryId: op.body['categoryId'] as int?,
+          storeIds: (op.body['storeIds'] as List?)?.cast<int>(),
           rrule: op.body['rrule'] as String?,
           repeatFromCompletion: op.body['repeatFromCompletion'] as bool?,
           deleteOnDone: op.body['deleteOnDone'] as bool?,
@@ -125,6 +130,7 @@ class SyncExecutor {
           quantity: op.body['quantity'] as String?,
           categoryId: op.body['categoryId'] as int?,
           clearCategory: op.body['clearCategory'] as bool? ?? false,
+          storeIds: (op.body['storeIds'] as List?)?.cast<int>(),
           rrule: op.body['rrule'] as String?,
           repeatFromCompletion: op.body['repeatFromCompletion'] as bool?,
           deleteOnDone: op.body['deleteOnDone'] as bool?,
@@ -272,6 +278,45 @@ class SyncExecutor {
     }
   }
 
+  Future<SyncResult> _executeStore(SyncOp op) async {
+    final svc = StoreService.instance;
+    final houseId = op.houseId;
+    final id = op.entityId;
+    switch (op.op) {
+      case SyncOpKind.create:
+        final store = await svc.createStore(
+          houseId,
+          name: op.body['name'] as String,
+          icon: op.body['icon'] as String,
+          color: op.body['color'] as String,
+        );
+        return SyncResult(store);
+      case SyncOpKind.update:
+        if (id == null) return SyncResult.empty;
+        final store = await svc.updateStore(
+          houseId,
+          id,
+          name: op.body['name'] as String?,
+          icon: op.body['icon'] as String?,
+          color: op.body['color'] as String?,
+        );
+        return SyncResult(store);
+      case SyncOpKind.delete:
+        if (id == null) return SyncResult.empty;
+        await svc.deleteStore(houseId, id);
+        return SyncResult.empty;
+      case SyncOpKind.reorder:
+      case SyncOpKind.toggle:
+      case SyncOpKind.restore:
+      case SyncOpKind.permanentDelete:
+      case SyncOpKind.emptyTrash:
+      case SyncOpKind.archive:
+      case SyncOpKind.unarchive:
+      case SyncOpKind.batch:
+        return SyncResult.empty;
+    }
+  }
+
   Future<SyncResult> _executeNote(SyncOp op) async {
     final svc = NoteService.instance;
     final houseId = op.houseId;
@@ -333,6 +378,7 @@ int? serverIdOf(Object? entity) {
   if (entity is ChecklistList) return entity.id;
   if (entity is ListItem) return entity.id;
   if (entity is Category) return entity.id;
+  if (entity is Store) return entity.id;
   if (entity is Note) return entity.id;
   return null;
 }

@@ -1,4 +1,4 @@
-enum SyncEntity { checklistList, checklistItem, category, note }
+enum SyncEntity { checklistList, checklistItem, category, store, note }
 
 enum SyncOpKind {
   create,

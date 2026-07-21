@@ -7,15 +7,19 @@ import 'package:mime/mime.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
+import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/rrule.dart';
+import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
+import 'package:pantry/widgets/create_store_dialog.dart';
 import 'checklist_item_tile.dart' show ItemLifecycle, lifecycleOf;
 import 'checklists_controller.dart';
 import 'form_components.dart';
@@ -37,11 +41,13 @@ class _ItemFormViewState extends State<ItemFormView> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _quantityController;
   int? _selectedCategoryId;
+  final Set<int> _selectedStoreIds = {};
   late ItemLifecycle _lifecycle;
   late RecurrenceState _recurrence;
   bool _saving = false;
   bool _deleting = false;
   bool _catPickerOpen = false;
+  bool _storePickerOpen = false;
   TextDirection _nameDir = TextDirection.ltr;
   TextDirection _descriptionDir = TextDirection.ltr;
   XFile? _pickedImage;
@@ -57,6 +63,12 @@ class _ItemFormViewState extends State<ItemFormView> {
       widget.item?.imageFileId != null && !_removeExistingImage;
 
   List<models.Category> get _categories => widget.controller.sortedCategories;
+  List<models.Store> get _stores => widget.controller.sortedStores;
+  bool get _storesEnabled => hasFeature('stores');
+  List<models.Store> get _selectedStores => [
+    for (final s in _stores)
+      if (_selectedStoreIds.contains(s.id)) s,
+  ];
 
   @override
   void initState() {
@@ -68,6 +80,7 @@ class _ItemFormViewState extends State<ItemFormView> {
     );
     _quantityController = TextEditingController(text: item?.quantity ?? '');
     _selectedCategoryId = item?.categoryId;
+    _selectedStoreIds.addAll(item?.storeIds ?? const []);
     _recurrence = RecurrenceState.fromRrule(
       item?.rrule,
       repeatFromCompletion: item?.repeatFromCompletion ?? false,
@@ -174,6 +187,9 @@ class _ItemFormViewState extends State<ItemFormView> {
           quantity: _quantityController.text.trim(),
           categoryId: _selectedCategoryId,
           clearCategory: _selectedCategoryId == null && item.categoryId != null,
+          // null leaves stores unchanged; [] clears them. Only send when the
+          // feature exists and the set actually differs from the item's.
+          storeIds: _storesEnabled ? _selectedStoreIds.toList() : null,
           rrule: effectiveRrule,
           repeatFromCompletion: effectiveRepeatFromCompletion,
           deleteOnDone: isOnce,
@@ -184,6 +200,9 @@ class _ItemFormViewState extends State<ItemFormView> {
           description: _descriptionController.text.trim(),
           quantity: _quantityController.text.trim(),
           categoryId: _selectedCategoryId,
+          storeIds: _storesEnabled && _selectedStoreIds.isNotEmpty
+              ? _selectedStoreIds.toList()
+              : null,
           rrule: isRecurring ? effectiveRrule : null,
           deleteOnDone: isOnce,
         );
@@ -413,6 +432,32 @@ class _ItemFormViewState extends State<ItemFormView> {
                     parseColor: _parseColor,
                   ),
                 ],
+                if (_storesEnabled) ...[
+                  const SizedBox(height: 16),
+                  _SectionLabel(text: f.stores),
+                  const SizedBox(height: 8),
+                  _StoreDropdownRow(
+                    stores: _selectedStores,
+                    parseColor: _parseColor,
+                    open: _storePickerOpen,
+                    onTap: () =>
+                        setState(() => _storePickerOpen = !_storePickerOpen),
+                  ),
+                  if (_storePickerOpen) ...[
+                    const SizedBox(height: 11),
+                    _StorePickerPanel(
+                      stores: _stores,
+                      selectedIds: _selectedStoreIds,
+                      onToggle: (id) => setState(() {
+                        if (!_selectedStoreIds.remove(id)) {
+                          _selectedStoreIds.add(id);
+                        }
+                      }),
+                      onCreateRequest: _openCreateStore,
+                      parseColor: _parseColor,
+                    ),
+                  ],
+                ],
                 const SizedBox(height: 16),
                 _SectionLabel(text: m.checklists.itemTypes.label),
                 const SizedBox(height: 10),
@@ -456,6 +501,16 @@ class _ItemFormViewState extends State<ItemFormView> {
       _selectedCategoryId = created.id;
       _catPickerOpen = false;
     });
+  }
+
+  Future<void> _openCreateStore() async {
+    final created = await showDialog<models.Store>(
+      context: context,
+      builder: (_) => CreateStoreDialog(houseId: widget.controller.houseId),
+    );
+    if (created == null || !mounted) return;
+    widget.controller.stores[created.id] = created;
+    setState(() => _selectedStoreIds.add(created.id));
   }
 
   Widget _buildImageSection(ThemeData theme) {
@@ -924,6 +979,143 @@ class _CategoryPickerPanel extends StatelessWidget {
           NewCategoryChipButton(
             color: cs.primary,
             label: m.checklists.itemForm.createCategory,
+            onTap: () => onCreateRequest(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Collapsed row for the multi-select store picker. Shows a summary of the
+/// currently-selected stores (or "None") and toggles the panel open.
+class _StoreDropdownRow extends StatelessWidget {
+  final List<models.Store> stores;
+  final Color? Function(String hex) parseColor;
+  final bool open;
+  final VoidCallback onTap;
+
+  const _StoreDropdownRow({
+    required this.stores,
+    required this.parseColor,
+    required this.open,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final f = m.checklists.itemForm;
+    final label = stores.isEmpty
+        ? f.noStores
+        : stores.map((s) => s.name).join(', ');
+    final actionColor = open ? cs.primary : cs.onSurfaceVariant;
+    final actionLabel = open ? f.storesPick : f.storesChange;
+    final leadColor = stores.isNotEmpty
+        ? (parseColor(stores.first.color) ?? cs.primary)
+        : cs.onSurfaceVariant;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+        decoration: BoxDecoration(
+          color: cs.surfaceContainer,
+          border: Border.all(
+            color: open ? cs.primary : cs.outlineVariant,
+            width: open ? 1.5 : 1,
+          ),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              stores.isNotEmpty ? storeIcon(stores.first.icon) : Icons.store,
+              size: 18,
+              color: leadColor,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
+                ),
+              ),
+            ),
+            Text(
+              actionLabel,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: actionColor,
+              ),
+            ),
+            const SizedBox(width: 4),
+            AnimatedRotation(
+              duration: const Duration(milliseconds: 200),
+              turns: open ? 0.5 : 0,
+              child: Icon(
+                Icons.keyboard_arrow_down,
+                color: actionColor,
+                size: 20,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Multi-select swatch grid for stores. Tapping a swatch toggles membership
+/// and keeps the panel open (unlike the single-select category picker); there
+/// is no "None" swatch — an empty selection means no stores.
+class _StorePickerPanel extends StatelessWidget {
+  final List<models.Store> stores;
+  final Set<int> selectedIds;
+  final ValueChanged<int> onToggle;
+  final Future<void> Function() onCreateRequest;
+  final Color? Function(String hex) parseColor;
+
+  const _StorePickerPanel({
+    required this.stores,
+    required this.selectedIds,
+    required this.onToggle,
+    required this.onCreateRequest,
+    required this.parseColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(13, 13, 13, 14),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainer,
+        border: Border.all(color: cs.outlineVariant),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final s in stores)
+            CategorySwatch(
+              icon: storeIcon(s.icon),
+              label: s.name,
+              color: parseColor(s.color) ?? cs.primary,
+              selected: selectedIds.contains(s.id),
+              onTap: () => onToggle(s.id),
+            ),
+          NewCategoryChipButton(
+            color: cs.primary,
+            label: m.checklists.itemForm.createStore,
             onTap: () => onCreateRequest(),
           ),
         ],

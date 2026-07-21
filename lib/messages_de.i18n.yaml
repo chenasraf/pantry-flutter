@@ -242,6 +242,19 @@ categories:
     nameZA: "Name Z–A"
     custom: Benutzerdefiniert
 
+stores:
+  manageTitle: Geschäfte verwalten
+  noStores: Noch keine Geschäfte.
+  editTitle: Geschäft bearbeiten
+  addTitle: Neues Geschäft
+  name: Name
+  icon: Symbol
+  color: Farbe
+  saveFailed: Geschäft konnte nicht gespeichert werden.
+  deleteFailed: Geschäft konnte nicht gelöscht werden.
+  deleteConfirm: Dieses Geschäft löschen?
+  deleteConfirmBody: "Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden."
+
 checklists:
   categories: Kategorien
   noChecklists: Noch keine Checklisten.
@@ -252,6 +265,15 @@ checklists:
   allListsChip: Alle
   filterByList: Nach Liste filtern
   filterByCategory: Nach Kategorie filtern
+  filters:
+    lists: Listen
+    categories: Kategorien
+    stores: Geschäfte
+    allLists: Alle Listen
+    allCategories: Alle Kategorien
+    allStores: Alle Geschäfte
+    noCategory: Keine Kategorie
+    noStores: Keine Geschäfte
   failedToLoad: Checklisten konnten nicht geladen werden.
   failedToLoadItems: "Einträge konnten nicht geladen werden."
   completedCount(int count): "Erledigt ($count)"
@@ -377,6 +399,11 @@ checklists:
     categoryColor: Farbe
     categoryCreated: Kategorie erstellt.
     categoryCreateFailed: Kategorie konnte nicht erstellt werden.
+    stores: Geschäfte
+    noStores: Keine
+    createStore: Neues Geschäft
+    storesChange: Ändern
+    storesPick: Auswählen
     repeat: Wiederholen
     once: Einmalig
     onceDescription: Diesen Eintrag löschen, sobald er als erledigt markiert ist.
@@ -446,6 +473,7 @@ checklists:
     everyNWeeks(int n): "Alle $n Wochen"
   compose:
     chipCategory: Kategorie
+    chipStore: Geschäfte
     chipQuantity: Menge
     chipType: Eintragstyp
     chipImage: Bild

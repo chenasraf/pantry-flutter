@@ -242,6 +242,19 @@ categories:
     nameZA: "שם ת'–א'"
     custom: מותאם אישית
 
+stores:
+  manageTitle: ניהול חנויות
+  noStores: אין חנויות עדיין.
+  editTitle: עריכת חנות
+  addTitle: חנות חדשה
+  name: שם
+  icon: סמל
+  color: צבע
+  saveFailed: שמירת החנות נכשלה.
+  deleteFailed: מחיקת החנות נכשלה.
+  deleteConfirm: למחוק את החנות הזו?
+  deleteConfirmBody: "החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו."
+
 checklists:
   categories: קטגוריות
   noChecklists: אין רשימות עדיין.
@@ -252,6 +265,15 @@ checklists:
   allListsChip: הכל
   filterByList: סינון לפי רשימה
   filterByCategory: סינון לפי קטגוריה
+  filters:
+    lists: רשימות
+    categories: קטגוריות
+    stores: חנויות
+    allLists: כל הרשימות
+    allCategories: כל הקטגוריות
+    allStores: כל החנויות
+    noCategory: ללא קטגוריה
+    noStores: ללא חנות
   failedToLoad: טעינת הרשימות נכשלה.
   failedToLoadItems: טעינת הפריטים נכשלה.
   completedCount(int count): "הושלמו ($count)"
@@ -377,6 +399,11 @@ checklists:
     categoryColor: צבע
     categoryCreated: הקטגוריה נוצרה.
     categoryCreateFailed: יצירת הקטגוריה נכשלה.
+    stores: חנויות
+    noStores: ללא
+    createStore: חנות חדשה
+    storesChange: שינוי
+    storesPick: בחירה
     repeat: חזרה
     once: פעם אחת
     onceDescription: מחק את הפריט ברגע שהוא מסומן כבוצע.
@@ -446,6 +473,7 @@ checklists:
     everyNWeeks(int n): "כל $n שבועות"
   compose:
     chipCategory: קטגוריה
+    chipStore: חנויות
     chipQuantity: כמות
     chipType: סוג פריט
     chipImage: תמונה

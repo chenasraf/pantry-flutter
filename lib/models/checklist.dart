@@ -123,6 +123,7 @@ class ListItem {
   final String name;
   final String? description;
   final int? categoryId;
+  final List<int> storeIds;
   final String? quantity;
   final bool done;
   final int? doneAt;
@@ -146,6 +147,7 @@ class ListItem {
     required this.name,
     this.description,
     this.categoryId,
+    this.storeIds = const [],
     this.quantity,
     required this.done,
     this.doneAt,
@@ -170,6 +172,9 @@ class ListItem {
     name: json['name'] as String,
     description: json['description'] as String?,
     categoryId: json['categoryId'] as int?,
+    storeIds: ((json['storeIds'] as List?) ?? const [])
+        .map((e) => e as int)
+        .toList(),
     quantity: json['quantity'] as String?,
     done: json['done'] as bool,
     doneAt: json['doneAt'] as int?,
@@ -194,6 +199,7 @@ class ListItem {
     'name': name,
     'description': description,
     'categoryId': categoryId,
+    'storeIds': storeIds,
     'quantity': quantity,
     'done': done,
     'doneAt': doneAt,
@@ -218,6 +224,7 @@ class ListItem {
     String? description,
     int? categoryId,
     bool clearCategory = false,
+    List<int>? storeIds,
     String? quantity,
     bool? done,
     int? doneAt,
@@ -241,6 +248,7 @@ class ListItem {
     name: name ?? this.name,
     description: description ?? this.description,
     categoryId: clearCategory ? null : (categoryId ?? this.categoryId),
+    storeIds: storeIds ?? this.storeIds,
     quantity: quantity ?? this.quantity,
     done: done ?? this.done,
     doneAt: doneAt ?? this.doneAt,

@@ -6,10 +6,12 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/models/member.dart';
+import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/store_service.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
@@ -200,6 +202,19 @@ class ChecklistsController extends ChangeNotifier {
   List<models.Category> get sortedCategories =>
       CategoryService.sortCategories(_categories.values, _categorySort);
 
+  Map<int, models.Store> _stores = {};
+  Map<int, models.Store> get stores => _stores;
+
+  List<models.Store> get sortedStores =>
+      StoreService.sortStores(_stores.values);
+
+  /// Resolve an item's `storeIds` to the stores that still exist, in name
+  /// order. Ids whose store was deleted are silently dropped.
+  List<models.Store> storesFor(ListItem item) => [
+    for (final s in sortedStores)
+      if (item.storeIds.contains(s.id)) s,
+  ];
+
   String _sortBy = 'custom';
   String get sortBy => _sortBy;
 
@@ -327,6 +342,7 @@ class ChecklistsController extends ChangeNotifier {
 
   ChecklistService get _checklistService => ChecklistService.instance;
   CategoryService get _categoryService => CategoryService.instance;
+  StoreService get _storeService => StoreService.instance;
   HouseService get _houseService => HouseService.instance;
   SyncManager get _sync => SyncManager.instance;
 
@@ -369,6 +385,17 @@ class ChecklistsController extends ChangeNotifier {
 
       final cats = results[1] as List<models.Category>;
       _categories = {for (final c in cats) c.id: c};
+
+      // Stores are gated on the `stores` capability and fetched non-fatally so
+      // a server without the feature (404) doesn't break the whole load.
+      if (hasFeature('stores')) {
+        try {
+          final stores = await _storeService.getStores(houseId);
+          _stores = {for (final s in stores) s.id: s};
+        } catch (e) {
+          debugPrint('[ChecklistsController] Failed to load stores: $e');
+        }
+      }
 
       // House prefs (sort + showAddedBy + categorySort) are non-fatal
       try {
@@ -524,6 +551,11 @@ class ChecklistsController extends ChangeNotifier {
     final cachedCats = _categoryService.getCached(houseId);
     if (cachedCats != null && _categories.isEmpty) {
       _categories = {for (final c in cachedCats) c.id: c};
+    }
+
+    final cachedStores = _storeService.getCached(houseId);
+    if (cachedStores != null && _stores.isEmpty) {
+      _stores = {for (final s in cachedStores) s.id: s};
     }
 
     final cachedLists = _checklistService.getCachedLists(houseId);
@@ -865,6 +897,19 @@ class ChecklistsController extends ChangeNotifier {
     } catch (e) {
       debugPrint(
         '[ChecklistsController] Failed to refresh after categories changed: $e',
+      );
+    }
+  }
+
+  Future<void> onStoresChanged() async {
+    if (!hasFeature('stores')) return;
+    try {
+      final stores = await _storeService.getStores(houseId);
+      _stores = {for (final s in stores) s.id: s};
+      notifyListeners();
+    } catch (e) {
+      debugPrint(
+        '[ChecklistsController] Failed to refresh after stores changed: $e',
       );
     }
   }
@@ -1568,6 +1613,7 @@ class ChecklistsController extends ChangeNotifier {
     String? description,
     String? quantity,
     int? categoryId,
+    List<int>? storeIds,
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
@@ -1586,6 +1632,7 @@ class ChecklistsController extends ChangeNotifier {
       description: description,
       quantity: quantity,
       categoryId: categoryId,
+      storeIds: storeIds,
       rrule: rrule,
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
@@ -1602,6 +1649,7 @@ class ChecklistsController extends ChangeNotifier {
     String? description,
     String? quantity,
     int? categoryId,
+    List<int>? storeIds,
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
@@ -1615,6 +1663,7 @@ class ChecklistsController extends ChangeNotifier {
       name: name,
       description: description,
       categoryId: categoryId,
+      storeIds: storeIds ?? const [],
       quantity: quantity,
       done: false,
       rrule: rrule,
@@ -1644,6 +1693,7 @@ class ChecklistsController extends ChangeNotifier {
           'description': ?description,
           'quantity': ?quantity,
           'categoryId': ?categoryId,
+          'storeIds': ?storeIds,
           'rrule': ?rrule,
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
@@ -1683,6 +1733,7 @@ class ChecklistsController extends ChangeNotifier {
     String? quantity,
     int? categoryId,
     bool clearCategory = false,
+    List<int>? storeIds,
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
@@ -1693,6 +1744,7 @@ class ChecklistsController extends ChangeNotifier {
       quantity: quantity,
       categoryId: categoryId,
       clearCategory: clearCategory,
+      storeIds: storeIds,
       rrule: rrule,
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
@@ -1719,6 +1771,7 @@ class ChecklistsController extends ChangeNotifier {
           'quantity': ?quantity,
           if (clearCategory) 'clearCategory': true,
           'categoryId': ?categoryId,
+          'storeIds': ?storeIds,
           'rrule': ?rrule,
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
@@ -2066,6 +2119,15 @@ class ChecklistsController extends ChangeNotifier {
             _categories.remove(tempId);
           }
           _categories[entity.id] = entity;
+          notifyListeners();
+        }
+      case SyncEntity.store:
+        final entity = applied.entity;
+        if (entity is models.Store) {
+          if (tempId != null) {
+            _stores.remove(tempId);
+          }
+          _stores[entity.id] = entity;
           notifyListeners();
         }
       case SyncEntity.note:

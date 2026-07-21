@@ -242,6 +242,19 @@ categories:
     nameZA: "Name Z–A"
     custom: Custom
 
+stores:
+  manageTitle: Manage stores
+  noStores: No stores yet.
+  editTitle: Edit store
+  addTitle: New store
+  name: Name
+  icon: Icon
+  color: Color
+  saveFailed: Failed to save store.
+  deleteFailed: Failed to delete store.
+  deleteConfirm: Delete this store?
+  deleteConfirmBody: "This store will be removed from all items. This cannot be undone."
+
 checklists:
   categories: Categories
   noChecklists: No checklists yet.
@@ -252,6 +265,15 @@ checklists:
   allListsChip: All
   filterByList: Filter by list
   filterByCategory: Filter by category
+  filters:
+    lists: Lists
+    categories: Categories
+    stores: Stores
+    allLists: All lists
+    allCategories: All categories
+    allStores: All stores
+    noCategory: No category
+    noStores: No stores
   failedToLoad: Failed to load checklists.
   failedToLoadItems: Failed to load items.
   completedCount(int count): "Completed ($count)"
@@ -377,6 +399,11 @@ checklists:
     categoryColor: Color
     categoryCreated: Category created.
     categoryCreateFailed: Failed to create category.
+    stores: Stores
+    noStores: None
+    createStore: New store
+    storesChange: Change
+    storesPick: Pick some
     repeat: Repeat
     once: Once
     onceDescription: Delete this item once it is marked as done.
@@ -446,6 +473,7 @@ checklists:
     everyNWeeks(int n): "Every $n wks"
   compose:
     chipCategory: Category
+    chipStore: Stores
     chipQuantity: Quantity
     chipType: Item type
     chipImage: Image
