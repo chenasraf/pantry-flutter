@@ -74,6 +74,7 @@ class MessagesHe extends Messages {
   SettingsMessagesHe get settings => SettingsMessagesHe(this);
   NotificationsMessagesHe get notifications => NotificationsMessagesHe(this);
   CategoriesMessagesHe get categories => CategoriesMessagesHe(this);
+  StoresMessagesHe get stores => StoresMessagesHe(this);
   ChecklistsMessagesHe get checklists => ChecklistsMessagesHe(this);
   NotesWallMessagesHe get notesWall => NotesWallMessagesHe(this);
   PhotoBoardMessagesHe get photoBoard => PhotoBoardMessagesHe(this);
@@ -1317,6 +1318,67 @@ class SortCategoriesMessagesHe extends SortCategoriesMessages {
   String get custom => """מותאם אישית""";
 }
 
+class StoresMessagesHe extends StoresMessages {
+  final MessagesHe _parent;
+  const StoresMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "ניהול חנויות"
+  /// ```
+  String get manageTitle => """ניהול חנויות""";
+
+  /// ```dart
+  /// "אין חנויות עדיין."
+  /// ```
+  String get noStores => """אין חנויות עדיין.""";
+
+  /// ```dart
+  /// "עריכת חנות"
+  /// ```
+  String get editTitle => """עריכת חנות""";
+
+  /// ```dart
+  /// "חנות חדשה"
+  /// ```
+  String get addTitle => """חנות חדשה""";
+
+  /// ```dart
+  /// "שם"
+  /// ```
+  String get name => """שם""";
+
+  /// ```dart
+  /// "סמל"
+  /// ```
+  String get icon => """סמל""";
+
+  /// ```dart
+  /// "צבע"
+  /// ```
+  String get color => """צבע""";
+
+  /// ```dart
+  /// "שמירת החנות נכשלה."
+  /// ```
+  String get saveFailed => """שמירת החנות נכשלה.""";
+
+  /// ```dart
+  /// "מחיקת החנות נכשלה."
+  /// ```
+  String get deleteFailed => """מחיקת החנות נכשלה.""";
+
+  /// ```dart
+  /// "למחוק את החנות הזו?"
+  /// ```
+  String get deleteConfirm => """למחוק את החנות הזו?""";
+
+  /// ```dart
+  /// "החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get deleteConfirmBody =>
+      """החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו.""";
+}
+
 class ChecklistsMessagesHe extends ChecklistsMessages {
   final MessagesHe _parent;
   const ChecklistsMessagesHe(this._parent) : super(_parent);
@@ -1365,6 +1427,7 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "סינון לפי קטגוריה"
   /// ```
   String get filterByCategory => """סינון לפי קטגוריה""";
+  FiltersChecklistsMessagesHe get filters => FiltersChecklistsMessagesHe(this);
 
   /// ```dart
   /// "טעינת הרשימות נכשלה."
@@ -1886,6 +1949,51 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
       MarkdownChecklistsMessagesHe(this);
 }
 
+class FiltersChecklistsMessagesHe extends FiltersChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const FiltersChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "רשימות"
+  /// ```
+  String get lists => """רשימות""";
+
+  /// ```dart
+  /// "קטגוריות"
+  /// ```
+  String get categories => """קטגוריות""";
+
+  /// ```dart
+  /// "חנויות"
+  /// ```
+  String get stores => """חנויות""";
+
+  /// ```dart
+  /// "כל הרשימות"
+  /// ```
+  String get allLists => """כל הרשימות""";
+
+  /// ```dart
+  /// "כל הקטגוריות"
+  /// ```
+  String get allCategories => """כל הקטגוריות""";
+
+  /// ```dart
+  /// "כל החנויות"
+  /// ```
+  String get allStores => """כל החנויות""";
+
+  /// ```dart
+  /// "ללא קטגוריה"
+  /// ```
+  String get noCategory => """ללא קטגוריה""";
+
+  /// ```dart
+  /// "ללא חנות"
+  /// ```
+  String get noStores => """ללא חנות""";
+}
+
 class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   final ChecklistsMessagesHe _parent;
   const BatchChecklistsMessagesHe(this._parent) : super(_parent);
@@ -2195,6 +2303,31 @@ class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
   String get categoryCreateFailed => """יצירת הקטגוריה נכשלה.""";
 
   /// ```dart
+  /// "חנויות"
+  /// ```
+  String get stores => """חנויות""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get noStores => """ללא""";
+
+  /// ```dart
+  /// "חנות חדשה"
+  /// ```
+  String get createStore => """חנות חדשה""";
+
+  /// ```dart
+  /// "שינוי"
+  /// ```
+  String get storesChange => """שינוי""";
+
+  /// ```dart
+  /// "בחירה"
+  /// ```
+  String get storesPick => """בחירה""";
+
+  /// ```dart
   /// "חזרה"
   /// ```
   String get repeat => """חזרה""";
@@ -2388,6 +2521,11 @@ class ComposeChecklistsMessagesHe extends ComposeChecklistsMessages {
   /// "קטגוריה"
   /// ```
   String get chipCategory => """קטגוריה""";
+
+  /// ```dart
+  /// "חנויות"
+  /// ```
+  String get chipStore => """חנויות""";
 
   /// ```dart
   /// "כמות"
@@ -3604,6 +3742,18 @@ Map<String, String> get messagesHeMap => {
   """categories.sort.nameAZ""": """שם א'–ת'""",
   """categories.sort.nameZA""": """שם ת'–א'""",
   """categories.sort.custom""": """מותאם אישית""",
+  """stores.manageTitle""": """ניהול חנויות""",
+  """stores.noStores""": """אין חנויות עדיין.""",
+  """stores.editTitle""": """עריכת חנות""",
+  """stores.addTitle""": """חנות חדשה""",
+  """stores.name""": """שם""",
+  """stores.icon""": """סמל""",
+  """stores.color""": """צבע""",
+  """stores.saveFailed""": """שמירת החנות נכשלה.""",
+  """stores.deleteFailed""": """מחיקת החנות נכשלה.""",
+  """stores.deleteConfirm""": """למחוק את החנות הזו?""",
+  """stores.deleteConfirmBody""":
+      """החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו.""",
   """checklists.categories""": """קטגוריות""",
   """checklists.noChecklists""": """אין רשימות עדיין.""",
   """checklists.noItems""": """אין פריטים ברשימה.""",
@@ -3613,6 +3763,14 @@ Map<String, String> get messagesHeMap => {
   """checklists.allListsChip""": """הכל""",
   """checklists.filterByList""": """סינון לפי רשימה""",
   """checklists.filterByCategory""": """סינון לפי קטגוריה""",
+  """checklists.filters.lists""": """רשימות""",
+  """checklists.filters.categories""": """קטגוריות""",
+  """checklists.filters.stores""": """חנויות""",
+  """checklists.filters.allLists""": """כל הרשימות""",
+  """checklists.filters.allCategories""": """כל הקטגוריות""",
+  """checklists.filters.allStores""": """כל החנויות""",
+  """checklists.filters.noCategory""": """ללא קטגוריה""",
+  """checklists.filters.noStores""": """ללא חנות""",
   """checklists.failedToLoad""": """טעינת הרשימות נכשלה.""",
   """checklists.failedToLoadItems""": """טעינת הפריטים נכשלה.""",
   """checklists.editItem""": """ערוך פריט""",
@@ -3716,6 +3874,11 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemForm.categoryColor""": """צבע""",
   """checklists.itemForm.categoryCreated""": """הקטגוריה נוצרה.""",
   """checklists.itemForm.categoryCreateFailed""": """יצירת הקטגוריה נכשלה.""",
+  """checklists.itemForm.stores""": """חנויות""",
+  """checklists.itemForm.noStores""": """ללא""",
+  """checklists.itemForm.createStore""": """חנות חדשה""",
+  """checklists.itemForm.storesChange""": """שינוי""",
+  """checklists.itemForm.storesPick""": """בחירה""",
   """checklists.itemForm.repeat""": """חזרה""",
   """checklists.itemForm.once""": """פעם אחת""",
   """checklists.itemForm.onceDescription""":
@@ -3780,6 +3943,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemTypes.recurringBody""": """חוזר ברשימה לפי לוח זמנים""",
   """checklists.itemTypes.weekly""": """שבועי""",
   """checklists.compose.chipCategory""": """קטגוריה""",
+  """checklists.compose.chipStore""": """חנויות""",
   """checklists.compose.chipQuantity""": """כמות""",
   """checklists.compose.chipType""": """סוג פריט""",
   """checklists.compose.chipImage""": """תמונה""",

@@ -187,6 +187,7 @@ class SyncManager {
           if (id != null) out.add(id);
           if (raw.tempEntityId != null) out.add(raw.tempEntityId!);
         case SyncEntity.category:
+        case SyncEntity.store:
         case SyncEntity.note:
           break;
       }
@@ -232,6 +233,12 @@ class SyncManager {
         if (op.op == SyncOpKind.batch && _batchHasUnresolvedRefs(op)) {
           // A batch op still points at a temp item / list / category whose
           // create is ahead of it in the queue — wait for that to flush.
+          break;
+        }
+        if (op.entity == SyncEntity.checklistItem &&
+            _itemHasUnresolvedStores(op)) {
+          // A checklist-item create/update attaches a store whose create is
+          // still ahead in the queue — hold it so we never send a temp store id.
           break;
         }
         try {
@@ -300,6 +307,14 @@ class SyncManager {
     } finally {
       _flushing = false;
     }
+  }
+
+  /// A checklist-item op that attaches stores is dispatchable only once every
+  /// store id in its body has resolved to a real (non-negative) server id.
+  bool _itemHasUnresolvedStores(SyncOp op) {
+    final storeIds = (op.body['storeIds'] as List?)?.cast<int>();
+    if (storeIds == null) return false;
+    return storeIds.any((id) => id < 0);
   }
 
   /// A rewritten batch op is dispatchable only once every id it references

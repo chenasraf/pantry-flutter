@@ -74,6 +74,7 @@ class MessagesFr extends Messages {
   SettingsMessagesFr get settings => SettingsMessagesFr(this);
   NotificationsMessagesFr get notifications => NotificationsMessagesFr(this);
   CategoriesMessagesFr get categories => CategoriesMessagesFr(this);
+  StoresMessagesFr get stores => StoresMessagesFr(this);
   ChecklistsMessagesFr get checklists => ChecklistsMessagesFr(this);
   NotesWallMessagesFr get notesWall => NotesWallMessagesFr(this);
   PhotoBoardMessagesFr get photoBoard => PhotoBoardMessagesFr(this);
@@ -1326,6 +1327,67 @@ class SortCategoriesMessagesFr extends SortCategoriesMessages {
   String get custom => """Personnalisé""";
 }
 
+class StoresMessagesFr extends StoresMessages {
+  final MessagesFr _parent;
+  const StoresMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Gérer les magasins"
+  /// ```
+  String get manageTitle => """Gérer les magasins""";
+
+  /// ```dart
+  /// "Aucun magasin pour le moment."
+  /// ```
+  String get noStores => """Aucun magasin pour le moment.""";
+
+  /// ```dart
+  /// "Modifier le magasin"
+  /// ```
+  String get editTitle => """Modifier le magasin""";
+
+  /// ```dart
+  /// "Nouveau magasin"
+  /// ```
+  String get addTitle => """Nouveau magasin""";
+
+  /// ```dart
+  /// "Nom"
+  /// ```
+  String get name => """Nom""";
+
+  /// ```dart
+  /// "Icône"
+  /// ```
+  String get icon => """Icône""";
+
+  /// ```dart
+  /// "Couleur"
+  /// ```
+  String get color => """Couleur""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer le magasin."
+  /// ```
+  String get saveFailed => """Impossible d'enregistrer le magasin.""";
+
+  /// ```dart
+  /// "Impossible de supprimer le magasin."
+  /// ```
+  String get deleteFailed => """Impossible de supprimer le magasin.""";
+
+  /// ```dart
+  /// "Supprimer ce magasin ?"
+  /// ```
+  String get deleteConfirm => """Supprimer ce magasin ?""";
+
+  /// ```dart
+  /// "Ce magasin sera retiré de tous les articles. Cette action est irréversible."
+  /// ```
+  String get deleteConfirmBody =>
+      """Ce magasin sera retiré de tous les articles. Cette action est irréversible.""";
+}
+
 class ChecklistsMessagesFr extends ChecklistsMessages {
   final MessagesFr _parent;
   const ChecklistsMessagesFr(this._parent) : super(_parent);
@@ -1375,6 +1437,7 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Filtrer par catégorie"
   /// ```
   String get filterByCategory => """Filtrer par catégorie""";
+  FiltersChecklistsMessagesFr get filters => FiltersChecklistsMessagesFr(this);
 
   /// ```dart
   /// "Impossible de charger les listes."
@@ -1900,6 +1963,51 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
       MarkdownChecklistsMessagesFr(this);
 }
 
+class FiltersChecklistsMessagesFr extends FiltersChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const FiltersChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Listes"
+  /// ```
+  String get lists => """Listes""";
+
+  /// ```dart
+  /// "Catégories"
+  /// ```
+  String get categories => """Catégories""";
+
+  /// ```dart
+  /// "Magasins"
+  /// ```
+  String get stores => """Magasins""";
+
+  /// ```dart
+  /// "Toutes les listes"
+  /// ```
+  String get allLists => """Toutes les listes""";
+
+  /// ```dart
+  /// "Toutes les catégories"
+  /// ```
+  String get allCategories => """Toutes les catégories""";
+
+  /// ```dart
+  /// "Tous les magasins"
+  /// ```
+  String get allStores => """Tous les magasins""";
+
+  /// ```dart
+  /// "Sans catégorie"
+  /// ```
+  String get noCategory => """Sans catégorie""";
+
+  /// ```dart
+  /// "Sans magasin"
+  /// ```
+  String get noStores => """Sans magasin""";
+}
+
 class BatchChecklistsMessagesFr extends BatchChecklistsMessages {
   final ChecklistsMessagesFr _parent;
   const BatchChecklistsMessagesFr(this._parent) : super(_parent);
@@ -2210,6 +2318,31 @@ class ItemFormChecklistsMessagesFr extends ItemFormChecklistsMessages {
   String get categoryCreateFailed => """Impossible de créer la catégorie.""";
 
   /// ```dart
+  /// "Magasins"
+  /// ```
+  String get stores => """Magasins""";
+
+  /// ```dart
+  /// "Aucun"
+  /// ```
+  String get noStores => """Aucun""";
+
+  /// ```dart
+  /// "Nouveau magasin"
+  /// ```
+  String get createStore => """Nouveau magasin""";
+
+  /// ```dart
+  /// "Modifier"
+  /// ```
+  String get storesChange => """Modifier""";
+
+  /// ```dart
+  /// "Choisir"
+  /// ```
+  String get storesPick => """Choisir""";
+
+  /// ```dart
   /// "Répéter"
   /// ```
   String get repeat => """Répéter""";
@@ -2405,6 +2538,11 @@ class ComposeChecklistsMessagesFr extends ComposeChecklistsMessages {
   /// "Catégorie"
   /// ```
   String get chipCategory => """Catégorie""";
+
+  /// ```dart
+  /// "Magasins"
+  /// ```
+  String get chipStore => """Magasins""";
 
   /// ```dart
   /// "Quantité"
@@ -3648,6 +3786,18 @@ Mot de passe : pantry-rocks""",
   """categories.sort.nameAZ""": """Nom A–Z""",
   """categories.sort.nameZA""": """Nom Z–A""",
   """categories.sort.custom""": """Personnalisé""",
+  """stores.manageTitle""": """Gérer les magasins""",
+  """stores.noStores""": """Aucun magasin pour le moment.""",
+  """stores.editTitle""": """Modifier le magasin""",
+  """stores.addTitle""": """Nouveau magasin""",
+  """stores.name""": """Nom""",
+  """stores.icon""": """Icône""",
+  """stores.color""": """Couleur""",
+  """stores.saveFailed""": """Impossible d'enregistrer le magasin.""",
+  """stores.deleteFailed""": """Impossible de supprimer le magasin.""",
+  """stores.deleteConfirm""": """Supprimer ce magasin ?""",
+  """stores.deleteConfirmBody""":
+      """Ce magasin sera retiré de tous les articles. Cette action est irréversible.""",
   """checklists.categories""": """Catégories""",
   """checklists.noChecklists""": """Aucune liste pour le moment.""",
   """checklists.noItems""": """Aucun article dans cette liste.""",
@@ -3658,6 +3808,14 @@ Mot de passe : pantry-rocks""",
   """checklists.allListsChip""": """Tout""",
   """checklists.filterByList""": """Filtrer par liste""",
   """checklists.filterByCategory""": """Filtrer par catégorie""",
+  """checklists.filters.lists""": """Listes""",
+  """checklists.filters.categories""": """Catégories""",
+  """checklists.filters.stores""": """Magasins""",
+  """checklists.filters.allLists""": """Toutes les listes""",
+  """checklists.filters.allCategories""": """Toutes les catégories""",
+  """checklists.filters.allStores""": """Tous les magasins""",
+  """checklists.filters.noCategory""": """Sans catégorie""",
+  """checklists.filters.noStores""": """Sans magasin""",
   """checklists.failedToLoad""": """Impossible de charger les listes.""",
   """checklists.failedToLoadItems""": """Impossible de charger les articles.""",
   """checklists.editItem""": """Modifier l'article""",
@@ -3769,6 +3927,11 @@ Mot de passe : pantry-rocks""",
   """checklists.itemForm.categoryCreated""": """Catégorie créée.""",
   """checklists.itemForm.categoryCreateFailed""":
       """Impossible de créer la catégorie.""",
+  """checklists.itemForm.stores""": """Magasins""",
+  """checklists.itemForm.noStores""": """Aucun""",
+  """checklists.itemForm.createStore""": """Nouveau magasin""",
+  """checklists.itemForm.storesChange""": """Modifier""",
+  """checklists.itemForm.storesPick""": """Choisir""",
   """checklists.itemForm.repeat""": """Répéter""",
   """checklists.itemForm.once""": """Une fois""",
   """checklists.itemForm.onceDescription""":
@@ -3836,6 +3999,7 @@ Mot de passe : pantry-rocks""",
   """checklists.itemTypes.recurringBody""": """Revient selon un horaire""",
   """checklists.itemTypes.weekly""": """Hebdomadaire""",
   """checklists.compose.chipCategory""": """Catégorie""",
+  """checklists.compose.chipStore""": """Magasins""",
   """checklists.compose.chipQuantity""": """Quantité""",
   """checklists.compose.chipType""": """Type""",
   """checklists.compose.chipImage""": """Image""",

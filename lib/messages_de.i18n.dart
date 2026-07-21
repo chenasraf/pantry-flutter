@@ -74,6 +74,7 @@ class MessagesDe extends Messages {
   SettingsMessagesDe get settings => SettingsMessagesDe(this);
   NotificationsMessagesDe get notifications => NotificationsMessagesDe(this);
   CategoriesMessagesDe get categories => CategoriesMessagesDe(this);
+  StoresMessagesDe get stores => StoresMessagesDe(this);
   ChecklistsMessagesDe get checklists => ChecklistsMessagesDe(this);
   NotesWallMessagesDe get notesWall => NotesWallMessagesDe(this);
   PhotoBoardMessagesDe get photoBoard => PhotoBoardMessagesDe(this);
@@ -1324,6 +1325,67 @@ class SortCategoriesMessagesDe extends SortCategoriesMessages {
   String get custom => """Benutzerdefiniert""";
 }
 
+class StoresMessagesDe extends StoresMessages {
+  final MessagesDe _parent;
+  const StoresMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Geschäfte verwalten"
+  /// ```
+  String get manageTitle => """Geschäfte verwalten""";
+
+  /// ```dart
+  /// "Noch keine Geschäfte."
+  /// ```
+  String get noStores => """Noch keine Geschäfte.""";
+
+  /// ```dart
+  /// "Geschäft bearbeiten"
+  /// ```
+  String get editTitle => """Geschäft bearbeiten""";
+
+  /// ```dart
+  /// "Neues Geschäft"
+  /// ```
+  String get addTitle => """Neues Geschäft""";
+
+  /// ```dart
+  /// "Name"
+  /// ```
+  String get name => """Name""";
+
+  /// ```dart
+  /// "Symbol"
+  /// ```
+  String get icon => """Symbol""";
+
+  /// ```dart
+  /// "Farbe"
+  /// ```
+  String get color => """Farbe""";
+
+  /// ```dart
+  /// "Geschäft konnte nicht gespeichert werden."
+  /// ```
+  String get saveFailed => """Geschäft konnte nicht gespeichert werden.""";
+
+  /// ```dart
+  /// "Geschäft konnte nicht gelöscht werden."
+  /// ```
+  String get deleteFailed => """Geschäft konnte nicht gelöscht werden.""";
+
+  /// ```dart
+  /// "Dieses Geschäft löschen?"
+  /// ```
+  String get deleteConfirm => """Dieses Geschäft löschen?""";
+
+  /// ```dart
+  /// "Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get deleteConfirmBody =>
+      """Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden.""";
+}
+
 class ChecklistsMessagesDe extends ChecklistsMessages {
   final MessagesDe _parent;
   const ChecklistsMessagesDe(this._parent) : super(_parent);
@@ -1372,6 +1434,7 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Nach Kategorie filtern"
   /// ```
   String get filterByCategory => """Nach Kategorie filtern""";
+  FiltersChecklistsMessagesDe get filters => FiltersChecklistsMessagesDe(this);
 
   /// ```dart
   /// "Checklisten konnten nicht geladen werden."
@@ -1898,6 +1961,51 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
       MarkdownChecklistsMessagesDe(this);
 }
 
+class FiltersChecklistsMessagesDe extends FiltersChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const FiltersChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Listen"
+  /// ```
+  String get lists => """Listen""";
+
+  /// ```dart
+  /// "Kategorien"
+  /// ```
+  String get categories => """Kategorien""";
+
+  /// ```dart
+  /// "Geschäfte"
+  /// ```
+  String get stores => """Geschäfte""";
+
+  /// ```dart
+  /// "Alle Listen"
+  /// ```
+  String get allLists => """Alle Listen""";
+
+  /// ```dart
+  /// "Alle Kategorien"
+  /// ```
+  String get allCategories => """Alle Kategorien""";
+
+  /// ```dart
+  /// "Alle Geschäfte"
+  /// ```
+  String get allStores => """Alle Geschäfte""";
+
+  /// ```dart
+  /// "Keine Kategorie"
+  /// ```
+  String get noCategory => """Keine Kategorie""";
+
+  /// ```dart
+  /// "Keine Geschäfte"
+  /// ```
+  String get noStores => """Keine Geschäfte""";
+}
+
 class BatchChecklistsMessagesDe extends BatchChecklistsMessages {
   final ChecklistsMessagesDe _parent;
   const BatchChecklistsMessagesDe(this._parent) : super(_parent);
@@ -2210,6 +2318,31 @@ class ItemFormChecklistsMessagesDe extends ItemFormChecklistsMessages {
       """Kategorie konnte nicht erstellt werden.""";
 
   /// ```dart
+  /// "Geschäfte"
+  /// ```
+  String get stores => """Geschäfte""";
+
+  /// ```dart
+  /// "Keine"
+  /// ```
+  String get noStores => """Keine""";
+
+  /// ```dart
+  /// "Neues Geschäft"
+  /// ```
+  String get createStore => """Neues Geschäft""";
+
+  /// ```dart
+  /// "Ändern"
+  /// ```
+  String get storesChange => """Ändern""";
+
+  /// ```dart
+  /// "Auswählen"
+  /// ```
+  String get storesPick => """Auswählen""";
+
+  /// ```dart
   /// "Wiederholen"
   /// ```
   String get repeat => """Wiederholen""";
@@ -2405,6 +2538,11 @@ class ComposeChecklistsMessagesDe extends ComposeChecklistsMessages {
   /// "Kategorie"
   /// ```
   String get chipCategory => """Kategorie""";
+
+  /// ```dart
+  /// "Geschäfte"
+  /// ```
+  String get chipStore => """Geschäfte""";
 
   /// ```dart
   /// "Menge"
@@ -3643,6 +3781,18 @@ Passwort: pantry-rocks""",
   """categories.sort.nameAZ""": """Name A–Z""",
   """categories.sort.nameZA""": """Name Z–A""",
   """categories.sort.custom""": """Benutzerdefiniert""",
+  """stores.manageTitle""": """Geschäfte verwalten""",
+  """stores.noStores""": """Noch keine Geschäfte.""",
+  """stores.editTitle""": """Geschäft bearbeiten""",
+  """stores.addTitle""": """Neues Geschäft""",
+  """stores.name""": """Name""",
+  """stores.icon""": """Symbol""",
+  """stores.color""": """Farbe""",
+  """stores.saveFailed""": """Geschäft konnte nicht gespeichert werden.""",
+  """stores.deleteFailed""": """Geschäft konnte nicht gelöscht werden.""",
+  """stores.deleteConfirm""": """Dieses Geschäft löschen?""",
+  """stores.deleteConfirmBody""":
+      """Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden.""",
   """checklists.categories""": """Kategorien""",
   """checklists.noChecklists""": """Noch keine Checklisten.""",
   """checklists.noItems""": """Keine Einträge in dieser Liste.""",
@@ -3653,6 +3803,14 @@ Passwort: pantry-rocks""",
   """checklists.allListsChip""": """Alle""",
   """checklists.filterByList""": """Nach Liste filtern""",
   """checklists.filterByCategory""": """Nach Kategorie filtern""",
+  """checklists.filters.lists""": """Listen""",
+  """checklists.filters.categories""": """Kategorien""",
+  """checklists.filters.stores""": """Geschäfte""",
+  """checklists.filters.allLists""": """Alle Listen""",
+  """checklists.filters.allCategories""": """Alle Kategorien""",
+  """checklists.filters.allStores""": """Alle Geschäfte""",
+  """checklists.filters.noCategory""": """Keine Kategorie""",
+  """checklists.filters.noStores""": """Keine Geschäfte""",
   """checklists.failedToLoad""":
       """Checklisten konnten nicht geladen werden.""",
   """checklists.failedToLoadItems""":
@@ -3772,6 +3930,11 @@ Passwort: pantry-rocks""",
   """checklists.itemForm.categoryCreated""": """Kategorie erstellt.""",
   """checklists.itemForm.categoryCreateFailed""":
       """Kategorie konnte nicht erstellt werden.""",
+  """checklists.itemForm.stores""": """Geschäfte""",
+  """checklists.itemForm.noStores""": """Keine""",
+  """checklists.itemForm.createStore""": """Neues Geschäft""",
+  """checklists.itemForm.storesChange""": """Ändern""",
+  """checklists.itemForm.storesPick""": """Auswählen""",
   """checklists.itemForm.repeat""": """Wiederholen""",
   """checklists.itemForm.once""": """Einmalig""",
   """checklists.itemForm.onceDescription""":
@@ -3838,6 +4001,7 @@ Passwort: pantry-rocks""",
   """checklists.itemTypes.recurringBody""": """Kommt nach Zeitplan zurück""",
   """checklists.itemTypes.weekly""": """Wöchentlich""",
   """checklists.compose.chipCategory""": """Kategorie""",
+  """checklists.compose.chipStore""": """Geschäfte""",
   """checklists.compose.chipQuantity""": """Menge""",
   """checklists.compose.chipType""": """Eintragstyp""",
   """checklists.compose.chipImage""": """Bild""",

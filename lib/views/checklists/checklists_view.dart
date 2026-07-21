@@ -9,6 +9,7 @@ import 'package:pantry/main.dart' show appVersion;
 import 'package:pantry/views/onboarding/onboarding_pages.dart';
 import 'package:pantry/views/onboarding/onboarding_view.dart';
 import 'package:pantry/models/category.dart' as models;
+import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/checklist_service.dart';
@@ -19,10 +20,13 @@ import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/item_modal_route.dart';
+import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/categories/categories_view.dart';
+import 'package:pantry/views/stores/stores_view.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
+import 'package:pantry/widgets/create_store_dialog.dart';
 import 'checklist_item_tile.dart';
 import 'checklist_switcher_sheet.dart';
 import 'checklists_controller.dart';
@@ -200,6 +204,8 @@ class _BodyState extends State<_Body> {
   final _switcherAnchorKey = GlobalKey();
   final Set<int> _selectedCategoryIds = {};
   bool _noCategorySelected = false;
+  final Set<int> _selectedStoreIds = {};
+  bool _noStoreSelected = false;
 
   /// In All-lists mode, the most recently chosen target list. Pre-selected on
   /// the next add so the user can rapidly file several items into the same
@@ -218,13 +224,22 @@ class _BodyState extends State<_Body> {
   List<ListItem> _applyFilters(List<ListItem> items, Set<int> selectedListIds) {
     final categoryFilterActive =
         _selectedCategoryIds.isNotEmpty || _noCategorySelected;
-    if (!categoryFilterActive && selectedListIds.isEmpty && _query.isEmpty) {
+    final storeFilterActive = _selectedStoreIds.isNotEmpty || _noStoreSelected;
+    if (!categoryFilterActive &&
+        !storeFilterActive &&
+        selectedListIds.isEmpty &&
+        _query.isEmpty) {
       return items;
     }
     return items.where((item) {
       if (categoryFilterActive) {
         final matchesId = _selectedCategoryIds.contains(item.categoryId);
         final matchesNone = _noCategorySelected && item.categoryId == null;
+        if (!matchesId && !matchesNone) return false;
+      }
+      if (storeFilterActive) {
+        final matchesId = item.storeIds.any(_selectedStoreIds.contains);
+        final matchesNone = _noStoreSelected && item.storeIds.isEmpty;
         if (!matchesId && !matchesNone) return false;
       }
       if (selectedListIds.isNotEmpty) {
@@ -289,6 +304,8 @@ class _BodyState extends State<_Body> {
         !controller.selectionMode &&
         _selectedCategoryIds.isEmpty &&
         !_noCategorySelected &&
+        _selectedStoreIds.isEmpty &&
+        !_noStoreSelected &&
         _query.isEmpty &&
         controller.isCurrentListWritable;
     final total = controller.items.where((i) => i.deletedAt == null).length;
@@ -315,6 +332,26 @@ class _BodyState extends State<_Body> {
     final hasUncategorized = controller.items.any(
       (i) => i.deletedAt == null && i.categoryId == null,
     );
+
+    // Store filter mirrors categories, gated on the capability. Only stores
+    // with at least one (non-trashed) item on this list are offered.
+    final storesEnabled = hasFeature('stores');
+    final activeStoreIds = <int>{
+      if (storesEnabled)
+        for (final i in controller.items)
+          if (i.deletedAt == null) ...i.storeIds,
+    };
+    final filterStores = storesEnabled
+        ? controller.sortedStores
+              .where((s) => activeStoreIds.contains(s.id))
+              .toList()
+        : const <models.Store>[];
+    final hasNoStoreItems =
+        storesEnabled &&
+        controller.items.any((i) => i.deletedAt == null && i.storeIds.isEmpty);
+    // Offer the store filter only when there's something to filter by.
+    final showStoreFilter =
+        storesEnabled && (filterStores.isNotEmpty || hasNoStoreItems);
 
     // The per-list filter (All-lists view only) offers every list, even ones
     // with no items in the current view — unlike categories, an empty list is
@@ -425,6 +462,24 @@ class _BodyState extends State<_Body> {
                       prefs.setChecklistListFilter(next);
                     },
                     onClearLists: () => prefs.setChecklistListFilter({}),
+                    showStoreFilter: showStoreFilter,
+                    stores: filterStores,
+                    selectedStoreIds: _selectedStoreIds,
+                    onToggleStore: (id) {
+                      setState(() {
+                        if (!_selectedStoreIds.remove(id)) {
+                          _selectedStoreIds.add(id);
+                        }
+                      });
+                    },
+                    onClearStores: () => setState(() {
+                      _selectedStoreIds.clear();
+                      _noStoreSelected = false;
+                    }),
+                    showNoStore: hasNoStoreItems,
+                    noStoreSelected: _noStoreSelected,
+                    onToggleNoStore: () =>
+                        setState(() => _noStoreSelected = !_noStoreSelected),
                     view: prefs.checklistView,
                     onViewChanged: (v) => prefs.setChecklistView(v),
                   ),
@@ -554,6 +609,9 @@ class _BodyState extends State<_Body> {
                             ? false
                             : list.deleteOnDoneDefault,
                         categories: controller.sortedCategories,
+                        stores: hasFeature('stores')
+                            ? controller.sortedStores
+                            : const [],
                         initiallyFocused: false,
                         targetLists: realLists,
                         selectedTargetListId: meta
@@ -570,6 +628,11 @@ class _BodyState extends State<_Body> {
                         onRequestCreateCategory:
                             controller.permissions.canEditLists
                             ? () => _createCategory(context, controller)
+                            : null,
+                        onRequestCreateStore:
+                            hasFeature('stores') &&
+                                controller.permissions.canEditLists
+                            ? () => _createStore(context, controller)
                             : null,
                         onSubmit: (s) async {
                           final targetListId = meta
@@ -690,6 +753,7 @@ class _BodyState extends State<_Body> {
           description: s.description,
           quantity: s.quantity,
           categoryId: s.categoryId,
+          storeIds: s.storeIds.isEmpty ? null : s.storeIds,
           rrule: s.rrule,
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
@@ -700,6 +764,7 @@ class _BodyState extends State<_Body> {
           description: s.description,
           quantity: s.quantity,
           categoryId: s.categoryId,
+          storeIds: s.storeIds.isEmpty ? null : s.storeIds,
           rrule: s.rrule,
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
@@ -906,6 +971,8 @@ class _BodyState extends State<_Body> {
                 _searchCtrl.clear();
                 _selectedCategoryIds.clear();
                 _noCategorySelected = false;
+                _selectedStoreIds.clear();
+                _noStoreSelected = false;
               }
             });
           },
@@ -931,6 +998,12 @@ class _BodyState extends State<_Body> {
               icon: const Icon(Icons.sell_outlined),
               tooltip: m.categories.manageTitle,
               onPressed: () => _openManageCategories(context, controller),
+            ),
+          if (controller.permissions.canEditLists && hasFeature('stores'))
+            IconButton(
+              icon: const Icon(Icons.storefront_outlined),
+              tooltip: m.stores.manageTitle,
+              onPressed: () => _openManageStores(context, controller),
             ),
           // Meta view has no trash of its own; trash stays per-list.
           if (!controller.isMetaMode &&
@@ -1118,6 +1191,12 @@ class _BodyState extends State<_Body> {
             leading: const Icon(Icons.sell_outlined, size: 18),
             label: m.categories.manageTitle,
           ),
+        if (controller.permissions.canEditLists && hasFeature('stores'))
+          _menuRow(
+            value: 'manage_stores',
+            leading: const Icon(Icons.storefront_outlined, size: 18),
+            label: m.stores.manageTitle,
+          ),
         // Mobile has reliable pull-to-refresh, so it doesn't need a menu row.
         // Web (the other non-desktop host here) doesn't, so keep it there.
         if (PlatformInfo.isWeb)
@@ -1252,6 +1331,8 @@ class _BodyState extends State<_Body> {
         await _togglePin(context, controller);
       case 'manage_categories':
         await _openManageCategories(context, controller);
+      case 'manage_stores':
+        await _openManageStores(context, controller);
       case 'export_markdown':
         await _openExport(context, controller);
       case 'import_markdown':
@@ -1356,6 +1437,35 @@ class _BodyState extends State<_Body> {
     );
     if (created != null) {
       await controller.onCategoriesChanged();
+    }
+    return created;
+  }
+
+  Future<void> _openManageStores(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => StoresView(houseId: controller.houseId),
+      ),
+    );
+    await controller.onStoresChanged();
+  }
+
+  /// Opens the create-store dialog inline from the compose bar's store tray. On
+  /// success, refreshes the controller's store list (so the new option shows up
+  /// in the tray) and returns the new Store so compose bar can auto-select it.
+  Future<models.Store?> _createStore(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    final created = await showDialog<models.Store>(
+      context: context,
+      builder: (_) => CreateStoreDialog(houseId: controller.houseId),
+    );
+    if (created != null) {
+      await controller.onStoresChanged();
     }
     return created;
   }
@@ -1487,6 +1597,17 @@ class _FiltersSection extends StatefulWidget {
   final ValueChanged<int> onToggleList;
   final VoidCallback onClearLists;
 
+  /// Store filter — gated on the `stores` capability and only shown when at
+  /// least one item on the list carries (or lacks) a store.
+  final bool showStoreFilter;
+  final List<models.Store> stores;
+  final Set<int> selectedStoreIds;
+  final ValueChanged<int> onToggleStore;
+  final VoidCallback onClearStores;
+  final bool showNoStore;
+  final bool noStoreSelected;
+  final VoidCallback onToggleNoStore;
+
   final String view;
   final ValueChanged<String> onViewChanged;
 
@@ -1503,6 +1624,14 @@ class _FiltersSection extends StatefulWidget {
     required this.selectedListIds,
     required this.onToggleList,
     required this.onClearLists,
+    required this.showStoreFilter,
+    required this.stores,
+    required this.selectedStoreIds,
+    required this.onToggleStore,
+    required this.onClearStores,
+    required this.showNoStore,
+    required this.noStoreSelected,
+    required this.onToggleNoStore,
     required this.view,
     required this.onViewChanged,
   });
@@ -1512,423 +1641,315 @@ class _FiltersSection extends StatefulWidget {
 }
 
 class _FiltersSectionState extends State<_FiltersSection> {
-  /// Which filter fills the expanded strip in the mobile All-lists layout —
-  /// `'list'` or `'category'`. Ephemeral (resets when leaving the view); the
-  /// selections themselves persist via prefs / state, not this toggle.
-  String _mobileActive = 'list';
-
-  List<Widget> _categoryChips(ColorScheme cs) {
-    return [
-      _Chip(
-        label: m.checklists.allCategories,
-        selected:
-            widget.selectedCategoryIds.isEmpty && !widget.noCategorySelected,
-        color: cs.primary,
-        onTap: widget.onClearCategories,
-      ),
-      for (final c in widget.categories) ...[
-        const SizedBox(width: 8),
-        _Chip(
-          label: c.name,
-          selected: widget.selectedCategoryIds.contains(c.id),
-          color: parseHexColor(c.color) ?? cs.primary,
-          onTap: () => widget.onToggleCategory(c.id),
+  _FilterDropdown _listDropdown(ColorScheme cs) {
+    return _FilterDropdown(
+      label: m.checklists.filters.lists,
+      icon: allListsIcon,
+      selectedCount: widget.selectedListIds.length,
+      entries: [
+        _FilterMenuEntry(
+          label: m.checklists.filters.allLists,
+          color: cs.primary,
+          icon: Icons.done_all,
+          selected: widget.selectedListIds.isEmpty,
+          onTap: widget.onClearLists,
         ),
+        for (final l in widget.lists)
+          _FilterMenuEntry(
+            label: l.name,
+            color: parseHexColor(l.color) ?? cs.primary,
+            icon: checklistIcon(l.icon),
+            selected: widget.selectedListIds.contains(l.id),
+            onTap: () => widget.onToggleList(l.id),
+          ),
       ],
-      if (widget.showNoCategory) ...[
-        const SizedBox(width: 8),
-        _Chip(
-          label: m.checklists.noCategory,
-          selected: widget.noCategorySelected,
-          color: cs.outline,
-          icon: Icons.label_off_outlined,
-          onTap: widget.onToggleNoCategory,
-        ),
-      ],
-    ];
+    );
   }
 
-  List<Widget> _listChips(ColorScheme cs) {
-    return [
-      _Chip(
-        label: m.checklists.allListsChip,
-        selected: widget.selectedListIds.isEmpty,
-        color: cs.primary,
-        icon: allListsIcon,
-        onTap: widget.onClearLists,
-      ),
-      for (final l in widget.lists) ...[
-        const SizedBox(width: 8),
-        _Chip(
-          label: l.name,
-          selected: widget.selectedListIds.contains(l.id),
-          color: parseHexColor(l.color) ?? cs.primary,
-          icon: checklistIcon(l.icon),
-          onTap: () => widget.onToggleList(l.id),
+  _FilterDropdown _categoryDropdown(ColorScheme cs) {
+    final count =
+        widget.selectedCategoryIds.length + (widget.noCategorySelected ? 1 : 0);
+    return _FilterDropdown(
+      label: m.checklists.filters.categories,
+      icon: Icons.label_outline,
+      selectedCount: count,
+      entries: [
+        _FilterMenuEntry(
+          label: m.checklists.filters.allCategories,
+          color: cs.primary,
+          icon: Icons.done_all,
+          selected: count == 0,
+          onTap: widget.onClearCategories,
         ),
+        for (final c in widget.categories)
+          _FilterMenuEntry(
+            label: c.name,
+            color: parseHexColor(c.color) ?? cs.primary,
+            icon: categoryIcon(c.icon),
+            selected: widget.selectedCategoryIds.contains(c.id),
+            onTap: () => widget.onToggleCategory(c.id),
+          ),
+        if (widget.showNoCategory)
+          _FilterMenuEntry(
+            label: m.checklists.filters.noCategory,
+            color: cs.outline,
+            icon: Icons.label_off_outlined,
+            selected: widget.noCategorySelected,
+            onTap: widget.onToggleNoCategory,
+          ),
       ],
-    ];
+    );
   }
 
-  /// Transition for the mobile chip-strip swap: the list filter lives at the
-  /// leading edge and the category filter at the trailing edge, so each strip
-  /// slides in from (and out toward) its own side while cross-fading. The
-  /// incoming and outgoing strips travel opposite directions, reading as the
-  /// two filters trading places.
-  Widget _swapTransition(Widget child, Animation<double> animation) {
-    final key = child.key;
-    final fromLeading = key is ValueKey<String> && key.value.endsWith('list');
-    final begin = fromLeading ? const Offset(-1, 0) : const Offset(1, 0);
-    return ClipRect(
-      child: FadeTransition(
-        opacity: animation,
-        child: SlideTransition(
-          textDirection: Directionality.of(context),
-          position: Tween<Offset>(
-            begin: begin,
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
+  _FilterDropdown _storeDropdown(ColorScheme cs) {
+    final count =
+        widget.selectedStoreIds.length + (widget.noStoreSelected ? 1 : 0);
+    return _FilterDropdown(
+      label: m.checklists.filters.stores,
+      icon: Icons.storefront_outlined,
+      selectedCount: count,
+      entries: [
+        _FilterMenuEntry(
+          label: m.checklists.filters.allStores,
+          color: cs.primary,
+          icon: Icons.done_all,
+          selected: count == 0,
+          onTap: widget.onClearStores,
         ),
-      ),
+        for (final s in widget.stores)
+          _FilterMenuEntry(
+            label: s.name,
+            color: parseHexColor(s.color) ?? cs.primary,
+            icon: storeIcon(s.icon),
+            selected: widget.selectedStoreIds.contains(s.id),
+            onTap: () => widget.onToggleStore(s.id),
+          ),
+        if (widget.showNoStore)
+          _FilterMenuEntry(
+            label: m.checklists.filters.noStores,
+            color: cs.outline,
+            icon: Icons.label_off_outlined,
+            selected: widget.noStoreSelected,
+            onTap: widget.onToggleNoStore,
+          ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final toggle = _ViewToggle(
-      view: widget.view,
-      onChanged: widget.onViewChanged,
-    );
 
-    // No list filter (single list), or desktop where there's room to stack
-    // both filters: render the strip(s) at full width with the view toggle
-    // pinned to the trailing edge.
-    if (!widget.showListFilter || PlatformInfo.isDesktop) {
-      final Widget strips;
-      if (widget.showListFilter) {
-        strips = Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _ChipStrip(children: _listChips(cs)),
-            const SizedBox(height: 8),
-            _ChipStrip(children: _categoryChips(cs)),
-          ],
-        );
-      } else {
-        strips = _ChipStrip(children: _categoryChips(cs));
-      }
-      return Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(20, 15, 20, 4),
-        child: Row(
-          children: [
-            Expanded(child: strips),
-            const SizedBox(width: 10),
-            toggle,
-          ],
-        ),
-      );
-    }
+    // One multi-select dropdown per active filter dimension, laid out in a
+    // horizontally-scrollable row so the same layout serves mobile and desktop
+    // no matter how many dimensions are present.
+    final buttons = <Widget>[
+      if (widget.showListFilter) _listDropdown(cs),
+      _categoryDropdown(cs),
+      if (widget.showStoreFilter) _storeDropdown(cs),
+    ];
 
-    // Mobile All-lists: one filter fills the row; the other parks as an icon
-    // button next to the view toggle. The two buttons keep their identity and
-    // physically slide between the leading and trailing slots when swapped —
-    // tapping the parked button glides it into the leading slot as its filter
-    // expands, and the previously-active button slides out to park.
-    final isList = _mobileActive == 'list';
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(20, 15, 20, 4),
       child: Row(
         children: [
           Expanded(
-            child: LayoutBuilder(
-              builder: (context, c) {
-                const btn = 40.0;
-                const gap = 8.0;
-                final rtl = Directionality.of(context) == TextDirection.rtl;
-                // Positioned.left is always measured from the physical left
-                // edge, so flip the slots by hand for RTL.
-                final leadingX = rtl ? c.maxWidth - btn : 0.0;
-                final trailingX = rtl ? 0.0 : c.maxWidth - btn;
-                const dur = Duration(milliseconds: 280);
-                const curve = Curves.easeInOutCubic;
-                return SizedBox(
-                  height: 36,
-                  child: Stack(
-                    children: [
-                      // Strip sits in the fixed gap between the two button
-                      // slots; only its chips swap as the active filter
-                      // changes.
-                      PositionedDirectional(
-                        start: btn + gap,
-                        end: btn + gap,
-                        top: 0,
-                        bottom: 0,
-                        child: AnimatedSwitcher(
-                          duration: dur,
-                          transitionBuilder: _swapTransition,
-                          child: _ChipStrip(
-                            key: ValueKey('strip-$_mobileActive'),
-                            children: isList
-                                ? _listChips(cs)
-                                : _categoryChips(cs),
-                          ),
-                        ),
-                      ),
-                      AnimatedPositioned(
-                        duration: dur,
-                        curve: curve,
-                        left: isList ? leadingX : trailingX,
-                        width: btn,
-                        top: 0,
-                        bottom: 0,
-                        child: _FilterModeIcon(
-                          icon: allListsIcon,
-                          active: isList,
-                          tooltip: m.checklists.filterByList,
-                          onTap: () => setState(() => _mobileActive = 'list'),
-                        ),
-                      ),
-                      AnimatedPositioned(
-                        duration: dur,
-                        curve: curve,
-                        left: isList ? trailingX : leadingX,
-                        width: btn,
-                        top: 0,
-                        bottom: 0,
-                        child: _FilterModeIcon(
-                          icon: Icons.label_outline,
-                          active: !isList,
-                          tooltip: m.checklists.filterByCategory,
-                          onTap: () =>
-                              setState(() => _mobileActive = 'category'),
-                        ),
-                      ),
+            child: SizedBox(
+              height: 36,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (var i = 0; i < buttons.length; i++) ...[
+                      if (i > 0) const SizedBox(width: 8),
+                      buttons[i],
                     ],
-                  ),
-                );
-              },
+                  ],
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 10),
-          toggle,
+          _ViewToggle(view: widget.view, onChanged: widget.onViewChanged),
         ],
       ),
     );
   }
 }
 
-/// A single horizontally-scrollable strip of filter chips with a trailing
-/// fade that signals "more content past the edge". Used for both the category
-/// and the list filters.
-class _ChipStrip extends StatefulWidget {
-  final List<Widget> children;
-
-  const _ChipStrip({required this.children, super.key});
-
-  @override
-  State<_ChipStrip> createState() => _ChipStripState();
-}
-
-class _ChipStripState extends State<_ChipStrip> {
-  final _scrollCtrl = ScrollController();
-
-  /// 0 = no trailing fade (content fits, or scrolled to the end); 1 = full
-  /// fade (more content beyond the visible trailing edge). Tweens through
-  /// intermediate values as the user scrolls past the last [_fadeWidth] px so
-  /// the fade eases off into "you're at the end".
-  double _trailingFade = 0;
-
-  /// Width over which the trailing fade transitions from full to none as the
-  /// user scrolls toward the end. Roughly matches the visual fade band.
-  static const double _fadeWidth = 36;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollCtrl.addListener(_recompute);
-    // First-frame recompute — the controller isn't attached to a viewport
-    // until after the first layout pass.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _recompute());
-  }
-
-  @override
-  void didUpdateWidget(_ChipStrip oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Chip count can change (filter set grows/shrinks), which shifts
-    // maxScrollExtent without firing a scroll event. Re-check after the
-    // post-layout pass.
-    if (oldWidget.children.length != widget.children.length) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _recompute());
-    }
-  }
-
-  @override
-  void dispose() {
-    _scrollCtrl.removeListener(_recompute);
-    _scrollCtrl.dispose();
-    super.dispose();
-  }
-
-  void _recompute() {
-    if (!mounted || !_scrollCtrl.hasClients) return;
-    final pos = _scrollCtrl.position;
-    double fade;
-    if (pos.maxScrollExtent <= 0) {
-      fade = 0;
-    } else {
-      final remaining = pos.maxScrollExtent - pos.pixels;
-      fade = (remaining / _fadeWidth).clamp(0.0, 1.0);
-    }
-    if (fade != _trailingFade) {
-      setState(() => _trailingFade = fade);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 36,
-      // ShaderMask fades the trailing edge of the chip row to signal more
-      // content exists past the cutoff. The mask uses dstIn so the gradient's
-      // alpha becomes the row's alpha; the gradient direction flips for RTL so
-      // the fade always sits at the visual trailing edge. The trailing color's
-      // alpha tracks `_trailingFade` so it eases off to zero (i.e. opaque, no
-      // fade) as the user reaches the end or when the chips fit.
-      child: NotificationListener<ScrollMetricsNotification>(
-        // Fires when maxScrollExtent changes (e.g. content reflow) without a
-        // scroll event — needed to catch "now everything fits" transitions.
-        onNotification: (_) {
-          _recompute();
-          return false;
-        },
-        child: ShaderMask(
-          blendMode: BlendMode.dstIn,
-          shaderCallback: (bounds) {
-            final isRtl = Directionality.of(context) == TextDirection.rtl;
-            return LinearGradient(
-              begin: isRtl ? Alignment.centerRight : Alignment.centerLeft,
-              end: isRtl ? Alignment.centerLeft : Alignment.centerRight,
-              stops: const [0.0, 0.88, 1.0],
-              colors: [
-                Colors.black,
-                Colors.black,
-                Colors.black.withValues(alpha: 1 - _trailingFade),
-              ],
-            ).createShader(bounds);
-          },
-          child: ListView(
-            controller: _scrollCtrl,
-            scrollDirection: Axis.horizontal,
-            children: widget.children,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Square icon button that toggles which filter fills the mobile All-lists
-/// strip. Mirrors the chip styling — filled with the accent when its filter
-/// is the active (expanded) one.
-class _FilterModeIcon extends StatelessWidget {
+/// A single option row inside a [_FilterDropdown] menu. [onTap] toggles the
+/// value and — by design — does NOT close the menu, so several values can be
+/// picked in one pass.
+class _FilterMenuEntry {
+  final String label;
+  final Color color;
   final IconData icon;
-  final bool active;
-  final String tooltip;
+  final bool selected;
   final VoidCallback onTap;
 
-  const _FilterModeIcon({
+  const _FilterMenuEntry({
+    required this.label,
+    required this.color,
     required this.icon,
-    required this.active,
-    required this.tooltip,
+    required this.selected,
     required this.onTap,
+  });
+}
+
+/// A filter dimension rendered as a dropdown button that opens a multi-select
+/// menu. Selecting an option toggles it in place without dismissing the menu
+/// (see [_FilterMenuEntry]); the menu closes on an outside tap. The button
+/// summarises the current selection as "Label · N" when anything is chosen.
+class _FilterDropdown extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final int selectedCount;
+  final List<_FilterMenuEntry> entries;
+
+  const _FilterDropdown({
+    required this.label,
+    required this.icon,
+    required this.selectedCount,
+    required this.entries,
   });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return Tooltip(
-      message: tooltip,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(9),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 280),
-          curve: Curves.easeInOutCubic,
-          width: 40,
-          height: 36,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: active ? cs.primary : cs.surfaceContainerHighest,
-            border: Border.all(color: active ? cs.primary : cs.outlineVariant),
-            borderRadius: BorderRadius.circular(9),
+    final active = selectedCount > 0;
+    return MenuAnchor(
+      alignmentOffset: const Offset(0, 4),
+      style: MenuStyle(
+        backgroundColor: WidgetStatePropertyAll(cs.surfaceContainerHigh),
+        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+        elevation: const WidgetStatePropertyAll(3),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(vertical: 6),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+      ),
+      menuChildren: [
+        ConstrainedBox(
+          constraints: const BoxConstraints(
+            minWidth: 210,
+            maxWidth: 300,
+            maxHeight: 340,
           ),
-          child: Icon(
-            icon,
-            size: 18,
-            color: active ? cs.onPrimary : cs.onSurfaceVariant,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [for (final e in entries) _FilterMenuRow(entry: e)],
+            ),
           ),
         ),
+      ],
+      builder: (context, controller, _) => _FilterButton(
+        label: active ? '$label · $selectedCount' : label,
+        icon: icon,
+        active: active,
+        open: controller.isOpen,
+        onTap: () => controller.isOpen ? controller.close() : controller.open(),
       ),
     );
   }
 }
 
-class _Chip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final Color color;
-  final VoidCallback onTap;
+class _FilterMenuRow extends StatelessWidget {
+  final _FilterMenuEntry entry;
 
-  /// When set, the chip leads with this icon (tinted by [color]) instead of
-  /// the plain color dot — used by the list filter to surface each list's
-  /// icon, mirroring how lists read elsewhere in the app.
-  final IconData? icon;
-
-  const _Chip({
-    required this.label,
-    required this.selected,
-    required this.color,
-    required this.onTap,
-    this.icon,
-  });
+  const _FilterMenuRow({required this.entry});
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return InkWell(
+      onTap: entry.onTap,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(14, 11, 14, 11),
+        child: Row(
+          children: [
+            Icon(entry.icon, size: 17, color: entry.color),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                entry.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: cs.onSurface,
+                ),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Icon(
+              entry.selected
+                  ? Icons.check_circle
+                  : Icons.radio_button_unchecked,
+              size: 18,
+              color: entry.selected ? cs.primary : cs.outlineVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The tappable pill that opens a [_FilterDropdown]. Tinted with the accent
+/// when a selection is applied.
+class _FilterButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool active;
+  final bool open;
+  final VoidCallback onTap;
+
+  const _FilterButton({
+    required this.label,
+    required this.icon,
+    required this.active,
+    required this.open,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final fg = active ? cs.onPrimary : cs.onSurfaceVariant;
+    return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(9),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        height: 36,
+        padding: const EdgeInsetsDirectional.only(start: 12, end: 8),
         decoration: BoxDecoration(
-          color: selected ? color : cs.surfaceContainerHighest,
-          border: Border.all(color: selected ? color : cs.outlineVariant),
+          color: active ? cs.primary : cs.surfaceContainerHighest,
+          border: Border.all(color: active ? cs.primary : cs.outlineVariant),
           borderRadius: BorderRadius.circular(9),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null)
-              Icon(icon, size: 15, color: selected ? cs.surface : color)
-            else
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: selected ? cs.surface : color,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            const SizedBox(width: 6),
+            Icon(icon, size: 16, color: fg),
+            const SizedBox(width: 7),
             Text(
               label,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: selected ? cs.surface : cs.onSurfaceVariant,
+                color: fg,
               ),
+            ),
+            const SizedBox(width: 1),
+            AnimatedRotation(
+              turns: open ? 0.5 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: Icon(Icons.keyboard_arrow_down, size: 18, color: fg),
             ),
           ],
         ),
@@ -2248,6 +2269,7 @@ class _ItemListState extends State<_ItemList> {
       category: item.categoryId != null
           ? controller.categories[item.categoryId]
           : null,
+      stores: controller.storesFor(item),
       houseId: controller.houseId,
       isCardsView: widget.isCards,
       trashMode: controller.isTrashMode,
@@ -2476,6 +2498,7 @@ class _ItemListState extends State<_ItemList> {
           category: item.categoryId != null
               ? controller.categories[item.categoryId]
               : null,
+          stores: controller.storesFor(item),
           houseId: controller.houseId,
           controller: controller,
         ),

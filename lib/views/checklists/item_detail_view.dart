@@ -5,12 +5,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
+import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/date_format.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/platform_info.dart';
@@ -25,6 +27,7 @@ import 'item_form_view.dart';
 class ItemDetailView extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
+  final List<models.Store> stores;
   final int houseId;
   final ChecklistsController controller;
 
@@ -32,6 +35,7 @@ class ItemDetailView extends StatelessWidget {
     super.key,
     required this.item,
     this.category,
+    this.stores = const [],
     required this.houseId,
     required this.controller,
   });
@@ -65,12 +69,14 @@ class ItemDetailView extends StatelessWidget {
                           item: item,
                           houseId: houseId,
                           category: category,
+                          stores: stores,
                           onBack: () => Navigator.of(context).maybePop(),
                           onMore: onMore,
                         )
                       : _FallbackHeader(
                           item: item,
                           category: category,
+                          stores: stores,
                           onBack: () => Navigator.of(context).maybePop(),
                           onMore: onMore,
                         ),
@@ -386,6 +392,7 @@ class _PhotoHeader extends StatelessWidget {
   final ListItem item;
   final int houseId;
   final models.Category? category;
+  final List<models.Store> stores;
   final VoidCallback onBack;
 
   /// Receives the BuildContext of the more button so callers can anchor a
@@ -397,6 +404,7 @@ class _PhotoHeader extends StatelessWidget {
     required this.item,
     required this.houseId,
     required this.category,
+    required this.stores,
     required this.onBack,
     required this.onMore,
   });
@@ -497,6 +505,7 @@ class _PhotoHeader extends StatelessWidget {
             child: _HeaderTitleBlock(
               name: item.name,
               category: category,
+              stores: stores,
               onPhoto: true,
             ),
           ),
@@ -511,12 +520,14 @@ class _PhotoHeader extends StatelessWidget {
 class _FallbackHeader extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
+  final List<models.Store> stores;
   final VoidCallback onBack;
   final ValueChanged<BuildContext>? onMore;
 
   const _FallbackHeader({
     required this.item,
     required this.category,
+    required this.stores,
     required this.onBack,
     required this.onMore,
   });
@@ -605,6 +616,7 @@ class _FallbackHeader extends StatelessWidget {
                     child: _HeaderTitleBlock(
                       name: item.name,
                       category: category,
+                      stores: stores,
                       onPhoto: false,
                     ),
                   ),
@@ -621,11 +633,13 @@ class _FallbackHeader extends StatelessWidget {
 class _HeaderTitleBlock extends StatelessWidget {
   final String name;
   final models.Category? category;
+  final List<models.Store> stores;
   final bool onPhoto;
 
   const _HeaderTitleBlock({
     required this.name,
     required this.category,
+    required this.stores,
     required this.onPhoto,
   });
 
@@ -637,17 +651,32 @@ class _HeaderTitleBlock extends StatelessWidget {
         : cs.primary;
     final nameDir = detectTextDirection(name);
     final nameColor = onPhoto ? Colors.white : cs.onSurface;
+    final hasChips = category != null || stores.isNotEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (category != null)
-          _CategoryChip(
-            color: catColor,
-            label: category!.name,
-            onPhoto: onPhoto,
+        if (hasChips)
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              if (category != null)
+                _CategoryChip(
+                  color: catColor,
+                  label: category!.name,
+                  onPhoto: onPhoto,
+                ),
+              for (final s in stores)
+                _CategoryChip(
+                  color: _parseColor(s.color) ?? cs.primary,
+                  label: s.name,
+                  icon: storeIcon(s.icon),
+                  onPhoto: onPhoto,
+                ),
+            ],
           ),
-        if (category != null) const SizedBox(height: 10),
+        if (hasChips) const SizedBox(height: 10),
         Directionality(
           textDirection: nameDir,
           child: Text(
@@ -681,10 +710,15 @@ class _CategoryChip extends StatelessWidget {
   final String label;
   final bool onPhoto;
 
+  /// When set, the chip shows this glyph instead of the plain color dot —
+  /// used to distinguish store chips from the category chip.
+  final IconData? icon;
+
   const _CategoryChip({
     required this.color,
     required this.label,
     required this.onPhoto,
+    this.icon,
   });
 
   @override
@@ -702,14 +736,17 @@ class _CategoryChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 7,
-            height: 7,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: onPhoto ? Colors.white : color,
+          if (icon != null)
+            Icon(icon, size: 12, color: onPhoto ? Colors.white : color)
+          else
+            Container(
+              width: 7,
+              height: 7,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: onPhoto ? Colors.white : color,
+              ),
             ),
-          ),
           const SizedBox(width: 6),
           Text(
             label,

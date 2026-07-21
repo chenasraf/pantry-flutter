@@ -74,6 +74,7 @@ class MessagesEs extends Messages {
   SettingsMessagesEs get settings => SettingsMessagesEs(this);
   NotificationsMessagesEs get notifications => NotificationsMessagesEs(this);
   CategoriesMessagesEs get categories => CategoriesMessagesEs(this);
+  StoresMessagesEs get stores => StoresMessagesEs(this);
   ChecklistsMessagesEs get checklists => ChecklistsMessagesEs(this);
   NotesWallMessagesEs get notesWall => NotesWallMessagesEs(this);
   PhotoBoardMessagesEs get photoBoard => PhotoBoardMessagesEs(this);
@@ -1324,6 +1325,67 @@ class SortCategoriesMessagesEs extends SortCategoriesMessages {
   String get custom => """Personalizado""";
 }
 
+class StoresMessagesEs extends StoresMessages {
+  final MessagesEs _parent;
+  const StoresMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Gestionar tiendas"
+  /// ```
+  String get manageTitle => """Gestionar tiendas""";
+
+  /// ```dart
+  /// "Aún no hay tiendas."
+  /// ```
+  String get noStores => """Aún no hay tiendas.""";
+
+  /// ```dart
+  /// "Editar tienda"
+  /// ```
+  String get editTitle => """Editar tienda""";
+
+  /// ```dart
+  /// "Nueva tienda"
+  /// ```
+  String get addTitle => """Nueva tienda""";
+
+  /// ```dart
+  /// "Nombre"
+  /// ```
+  String get name => """Nombre""";
+
+  /// ```dart
+  /// "Icono"
+  /// ```
+  String get icon => """Icono""";
+
+  /// ```dart
+  /// "Color"
+  /// ```
+  String get color => """Color""";
+
+  /// ```dart
+  /// "No se pudo guardar la tienda."
+  /// ```
+  String get saveFailed => """No se pudo guardar la tienda.""";
+
+  /// ```dart
+  /// "No se pudo eliminar la tienda."
+  /// ```
+  String get deleteFailed => """No se pudo eliminar la tienda.""";
+
+  /// ```dart
+  /// "¿Eliminar esta tienda?"
+  /// ```
+  String get deleteConfirm => """¿Eliminar esta tienda?""";
+
+  /// ```dart
+  /// "Esta tienda se eliminará de todos los artículos. Esto no se puede deshacer."
+  /// ```
+  String get deleteConfirmBody =>
+      """Esta tienda se eliminará de todos los artículos. Esto no se puede deshacer.""";
+}
+
 class ChecklistsMessagesEs extends ChecklistsMessages {
   final MessagesEs _parent;
   const ChecklistsMessagesEs(this._parent) : super(_parent);
@@ -1372,6 +1434,7 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "Filtrar por categoría"
   /// ```
   String get filterByCategory => """Filtrar por categoría""";
+  FiltersChecklistsMessagesEs get filters => FiltersChecklistsMessagesEs(this);
 
   /// ```dart
   /// "No se pudieron cargar las listas."
@@ -1896,6 +1959,51 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
       MarkdownChecklistsMessagesEs(this);
 }
 
+class FiltersChecklistsMessagesEs extends FiltersChecklistsMessages {
+  final ChecklistsMessagesEs _parent;
+  const FiltersChecklistsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Listas"
+  /// ```
+  String get lists => """Listas""";
+
+  /// ```dart
+  /// "Categorías"
+  /// ```
+  String get categories => """Categorías""";
+
+  /// ```dart
+  /// "Tiendas"
+  /// ```
+  String get stores => """Tiendas""";
+
+  /// ```dart
+  /// "Todas las listas"
+  /// ```
+  String get allLists => """Todas las listas""";
+
+  /// ```dart
+  /// "Todas las categorías"
+  /// ```
+  String get allCategories => """Todas las categorías""";
+
+  /// ```dart
+  /// "Todas las tiendas"
+  /// ```
+  String get allStores => """Todas las tiendas""";
+
+  /// ```dart
+  /// "Sin categoría"
+  /// ```
+  String get noCategory => """Sin categoría""";
+
+  /// ```dart
+  /// "Sin tienda"
+  /// ```
+  String get noStores => """Sin tienda""";
+}
+
 class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   final ChecklistsMessagesEs _parent;
   const BatchChecklistsMessagesEs(this._parent) : super(_parent);
@@ -2206,6 +2314,31 @@ class ItemFormChecklistsMessagesEs extends ItemFormChecklistsMessages {
   String get categoryCreateFailed => """No se pudo crear la categoría.""";
 
   /// ```dart
+  /// "Tiendas"
+  /// ```
+  String get stores => """Tiendas""";
+
+  /// ```dart
+  /// "Ninguna"
+  /// ```
+  String get noStores => """Ninguna""";
+
+  /// ```dart
+  /// "Nueva tienda"
+  /// ```
+  String get createStore => """Nueva tienda""";
+
+  /// ```dart
+  /// "Cambiar"
+  /// ```
+  String get storesChange => """Cambiar""";
+
+  /// ```dart
+  /// "Elegir"
+  /// ```
+  String get storesPick => """Elegir""";
+
+  /// ```dart
   /// "Repetir"
   /// ```
   String get repeat => """Repetir""";
@@ -2400,6 +2533,11 @@ class ComposeChecklistsMessagesEs extends ComposeChecklistsMessages {
   /// "Categoría"
   /// ```
   String get chipCategory => """Categoría""";
+
+  /// ```dart
+  /// "Tiendas"
+  /// ```
+  String get chipStore => """Tiendas""";
 
   /// ```dart
   /// "Cantidad"
@@ -3638,6 +3776,18 @@ Contraseña: pantry-rocks""",
   """categories.sort.nameAZ""": """Nombre A–Z""",
   """categories.sort.nameZA""": """Nombre Z–A""",
   """categories.sort.custom""": """Personalizado""",
+  """stores.manageTitle""": """Gestionar tiendas""",
+  """stores.noStores""": """Aún no hay tiendas.""",
+  """stores.editTitle""": """Editar tienda""",
+  """stores.addTitle""": """Nueva tienda""",
+  """stores.name""": """Nombre""",
+  """stores.icon""": """Icono""",
+  """stores.color""": """Color""",
+  """stores.saveFailed""": """No se pudo guardar la tienda.""",
+  """stores.deleteFailed""": """No se pudo eliminar la tienda.""",
+  """stores.deleteConfirm""": """¿Eliminar esta tienda?""",
+  """stores.deleteConfirmBody""":
+      """Esta tienda se eliminará de todos los artículos. Esto no se puede deshacer.""",
   """checklists.categories""": """Categorías""",
   """checklists.noChecklists""": """Aún no hay listas.""",
   """checklists.noItems""": """No hay artículos en esta lista.""",
@@ -3648,6 +3798,14 @@ Contraseña: pantry-rocks""",
   """checklists.allListsChip""": """Todos""",
   """checklists.filterByList""": """Filtrar por lista""",
   """checklists.filterByCategory""": """Filtrar por categoría""",
+  """checklists.filters.lists""": """Listas""",
+  """checklists.filters.categories""": """Categorías""",
+  """checklists.filters.stores""": """Tiendas""",
+  """checklists.filters.allLists""": """Todas las listas""",
+  """checklists.filters.allCategories""": """Todas las categorías""",
+  """checklists.filters.allStores""": """Todas las tiendas""",
+  """checklists.filters.noCategory""": """Sin categoría""",
+  """checklists.filters.noStores""": """Sin tienda""",
   """checklists.failedToLoad""": """No se pudieron cargar las listas.""",
   """checklists.failedToLoadItems""":
       """No se pudieron cargar los artículos.""",
@@ -3758,6 +3916,11 @@ Contraseña: pantry-rocks""",
   """checklists.itemForm.categoryCreated""": """Categoría creada.""",
   """checklists.itemForm.categoryCreateFailed""":
       """No se pudo crear la categoría.""",
+  """checklists.itemForm.stores""": """Tiendas""",
+  """checklists.itemForm.noStores""": """Ninguna""",
+  """checklists.itemForm.createStore""": """Nueva tienda""",
+  """checklists.itemForm.storesChange""": """Cambiar""",
+  """checklists.itemForm.storesPick""": """Elegir""",
   """checklists.itemForm.repeat""": """Repetir""",
   """checklists.itemForm.once""": """Una vez""",
   """checklists.itemForm.onceDescription""":
@@ -3822,6 +3985,7 @@ Contraseña: pantry-rocks""",
   """checklists.itemTypes.recurringBody""": """Vuelve según un horario""",
   """checklists.itemTypes.weekly""": """Semanal""",
   """checklists.compose.chipCategory""": """Categoría""",
+  """checklists.compose.chipStore""": """Tiendas""",
   """checklists.compose.chipQuantity""": """Cantidad""",
   """checklists.compose.chipType""": """Tipo""",
   """checklists.compose.chipImage""": """Imagen""",

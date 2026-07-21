@@ -46,11 +46,33 @@ class IdRemap {
   /// once known. Returns the rewritten op (or the same op if nothing changed).
   SyncOp rewrite(SyncOp op) {
     if (op.op == SyncOpKind.batch) return _rewriteBatch(op);
+    var result = op;
     final tempId = op.tempEntityId;
-    if (tempId == null) return op;
-    final real = resolve(op.entity, tempId);
-    if (real == null) return op;
-    return op.copyWith(entityId: real);
+    if (tempId != null) {
+      final real = resolve(op.entity, tempId);
+      if (real != null) result = result.copyWith(entityId: real);
+    }
+    // A checklist-item create/update carries its store attachments in
+    // body['storeIds']; any of those may be a temp id when the store was
+    // created in the same offline session. Remap each to its real id where
+    // resolved (unlike the scalar categoryId, which has this same latent gap).
+    if (result.entity == SyncEntity.checklistItem) {
+      result = _rewriteItemStoreIds(result);
+    }
+    return result;
+  }
+
+  SyncOp _rewriteItemStoreIds(SyncOp op) {
+    final storeIds = (op.body['storeIds'] as List?)?.cast<int>();
+    if (storeIds == null) return op;
+    final mapped = [
+      for (final id in storeIds)
+        id < 0 ? (resolve(SyncEntity.store, id) ?? id) : id,
+    ];
+    if (_sameInts(mapped, storeIds)) return op;
+    final body = Map<String, dynamic>.from(op.body);
+    body['storeIds'] = mapped;
+    return op.copyWith(body: body);
   }
 
   /// Batch ops carry their references in the body, not [SyncOp.entityId]:

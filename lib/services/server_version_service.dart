@@ -65,6 +65,7 @@ class ServerVersionService {
       path: '/houses/0/lists/reorder',
       body: {'items': []},
     ),
+    'stores': const _FeatureProbe(path: '/houses/0/stores', body: {}),
   };
 
   Version? _serverVersion;
