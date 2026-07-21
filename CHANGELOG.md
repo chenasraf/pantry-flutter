@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.22.0](https://github.com/chenasraf/pantry-flutter/compare/v0.21.0...v0.22.0) (2026-07-21)
+
+
+### Features
+
+* add a setting to move item actions into a menu instead of swiping ([d39c42b](https://github.com/chenasraf/pantry-flutter/commit/d39c42bf21fd8b7627c224fcec4754ea0afd0e6e)), closes [#101](https://github.com/chenasraf/pantry-flutter/issues/101)
+* add stores field ([9640d69](https://github.com/chenasraf/pantry-flutter/commit/9640d69c1d83bff17e278f6ef5dec8c3b55f5ce3))
+* **notes:** confirm before exit with unsaved changes ([64609d2](https://github.com/chenasraf/pantry-flutter/commit/64609d22c84f8f55ec910755361d35f14703d652)), closes [#95](https://github.com/chenasraf/pantry-flutter/issues/95)
+* **settings:** add setting icons ([e7d2f6a](https://github.com/chenasraf/pantry-flutter/commit/e7d2f6a030472ef0797b7318e91e5a8adc10c733))
+* suggest existing items while adding so you can reuse them ([200657e](https://github.com/chenasraf/pantry-flutter/commit/200657ef79c54cd8d4fdbb0ce62218c7b8d48e59)), closes [#104](https://github.com/chenasraf/pantry-flutter/issues/104)
+* update filters UI ([9640d69](https://github.com/chenasraf/pantry-flutter/commit/9640d69c1d83bff17e278f6ef5dec8c3b55f5ce3))
+
+
+### Bug Fixes
+
+* dismiss toasts automatically after duration ([1aa0f42](https://github.com/chenasraf/pantry-flutter/commit/1aa0f42d34802852b1d1e5ca2fa490a53947250f)), closes [#100](https://github.com/chenasraf/pantry-flutter/issues/100)
+* keep note content clear of the bottom controls in view mode ([a8526b1](https://github.com/chenasraf/pantry-flutter/commit/a8526b174b0d281305016752218ce9e486eab5aa)), closes [#96](https://github.com/chenasraf/pantry-flutter/issues/96)
+* remove blank space at the bottom of the archive and trash lists ([dfd381f](https://github.com/chenasraf/pantry-flutter/commit/dfd381f07f3ba6c0ddf0c6ab9ca9164e91e49026)), closes [#105](https://github.com/chenasraf/pantry-flutter/issues/105)
+* stop the archive and trash views from flashing on background refresh ([8a0d48f](https://github.com/chenasraf/pantry-flutter/commit/8a0d48f7b81d954177a405f472e217da89630804)), closes [#106](https://github.com/chenasraf/pantry-flutter/issues/106)
+
 ## [0.21.0](https://github.com/chenasraf/pantry-flutter/compare/v0.20.2...v0.21.0) (2026-07-18)
 
 

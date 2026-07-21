@@ -1,0 +1,12 @@
+Features
+- add a setting to move item actions into a menu instead of swiping
+- add stores field
+- confirm before exit with unsaved changes
+- add setting icons
+- suggest existing items while adding so you can reuse them
+- update filters UI
+Bug Fixes
+- dismiss toasts automatically after duration
+- keep note content clear of the bottom controls in view mode
+- remove blank space at the bottom of the archive and trash lists
+- stop the archive and trash views from flashing on background refresh
