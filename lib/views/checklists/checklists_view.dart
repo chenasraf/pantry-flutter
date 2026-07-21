@@ -3234,6 +3234,14 @@ class _SelectionActionBar extends StatelessWidget {
                       enabled: controller.canBatchCategory,
                       onTap: () => _category(context),
                     ),
+                    if (controller.hasStoresFeature)
+                      _action(
+                        context,
+                        icon: Icons.storefront_outlined,
+                        label: m.checklists.batch.stores,
+                        enabled: controller.canBatchStores,
+                        onTap: () => _stores(context),
+                      ),
                     _action(
                       context,
                       icon: Icons.archive_outlined,
@@ -3328,6 +3336,17 @@ class _SelectionActionBar extends StatelessWidget {
     _showUndo(
       m.checklists.batch.categorySet(affected.length),
       () => controller.undoBatchSetCategory(affected),
+    );
+  }
+
+  Future<void> _stores(BuildContext context) async {
+    final affected = List.of(controller.selectedItems);
+    final choice = await _pickStores(context);
+    if (choice == null) return;
+    controller.batchSetStores(choice);
+    _showUndo(
+      m.checklists.batch.storesSet(affected.length),
+      () => controller.undoBatchSetStores(affected),
     );
   }
 
@@ -3471,6 +3490,59 @@ class _SelectionActionBar extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  /// Multi-select store picker for set-stores. Returns null on dismiss, or the
+  /// chosen store ids (an empty list clears the stores on every item). The set
+  /// replaces whatever the items currently carry, so it starts empty.
+  Future<List<int>?> _pickStores(BuildContext context) {
+    final stores = controller.sortedStores;
+    final cs = Theme.of(context).colorScheme;
+    final selected = <int>{};
+    return showDialog<List<int>>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setState) => AlertDialog(
+          title: Text(m.checklists.batch.storesTitle),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: stores.isEmpty
+                ? Text(m.stores.noStores)
+                : ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final s in stores)
+                        CheckboxListTile(
+                          value: selected.contains(s.id),
+                          onChanged: (v) => setState(() {
+                            if (v ?? false) {
+                              selected.add(s.id);
+                            } else {
+                              selected.remove(s.id);
+                            }
+                          }),
+                          secondary: Icon(
+                            storeIcon(s.icon),
+                            color: parseHexColor(s.color) ?? cs.primary,
+                          ),
+                          title: Text(s.name),
+                        ),
+                    ],
+                  ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(m.common.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, selected.toList()),
+              child: Text(m.common.save),
+            ),
+          ],
+        ),
       ),
     );
   }

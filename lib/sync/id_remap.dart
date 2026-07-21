@@ -76,9 +76,10 @@ class IdRemap {
   }
 
   /// Batch ops carry their references in the body, not [SyncOp.entityId]:
-  /// the item ids being acted on, plus an optional target list (move/copy) or
-  /// category (set-category), any of which may be a temp id when the item /
-  /// list / category was created in the same offline session. Rewrites each to
+  /// the item ids being acted on, plus an optional target list (move/copy),
+  /// category (set-category), or store ids (set-stores), any of which may be a
+  /// temp id when the item / list / category / store was created in the same
+  /// offline session. Rewrites each to
   /// its real id where resolved; unresolved temp ids are left in place (the
   /// manager holds the op until the create flushes).
   SyncOp _rewriteBatch(SyncOp op) {
@@ -111,6 +112,20 @@ class IdRemap {
       final real = resolve(SyncEntity.category, cat);
       if (real != null) {
         body['categoryId'] = real;
+        changed = true;
+      }
+    }
+
+    // A set-stores batch carries the target store ids, any of which may be a
+    // temp id when the store was created in the same offline session.
+    final storeIds = (body['storeIds'] as List?)?.cast<int>();
+    if (storeIds != null) {
+      final mapped = [
+        for (final id in storeIds)
+          id < 0 ? (resolve(SyncEntity.store, id) ?? id) : id,
+      ];
+      if (!_sameInts(mapped, storeIds)) {
+        body['storeIds'] = mapped;
         changed = true;
       }
     }

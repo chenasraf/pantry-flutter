@@ -333,6 +333,11 @@ class ChecklistsController extends ChangeNotifier {
   bool get canBatchMove => _allSelectedWritable && permissions.canMoveItems;
   bool get canBatchDelete => _allSelectedWritable && permissions.canDeleteItems;
   bool get canBatchCategory => _allSelectedWritable && permissions.canEditLists;
+  // Batch store-assignment is gated on the same permission as category, plus the
+  // `stores` feature (the action bar hides the button entirely without it).
+  bool get hasStoresFeature => hasFeature('stores');
+  bool get canBatchStores =>
+      hasStoresFeature && _allSelectedWritable && permissions.canEditLists;
   bool get canBatchCopy => selectedItems.isNotEmpty && permissions.canCopyItems;
   // Archive/unarchive are gated on canEditLists, not canDeleteItems.
   bool get canBatchArchive => _allSelectedWritable && permissions.canEditLists;
@@ -1404,6 +1409,23 @@ class ChecklistsController extends ChangeNotifier {
     exitSelection();
   }
 
+  /// Replace the store set on every selected item (an empty list clears them),
+  /// mirroring the server's `batch/stores` replace semantics.
+  void batchSetStores(List<int> storeIds) {
+    final ids = _selectedItemIds.toList();
+    if (ids.isEmpty) return;
+    final idSet = ids.toSet();
+    _items = [
+      for (final i in _items)
+        idSet.contains(i.id)
+            ? i.copyWith(storeIds: List.of(storeIds), updatedAt: _now())
+            : i,
+    ];
+    _cacheCurrentItems();
+    _enqueueBatch('stores', ids, extra: {'storeIds': storeIds});
+    exitSelection();
+  }
+
   /// Reconciles the authoritative envelope from a flushed `batch` op back into
   /// the view — see [_onSyncApplied].
   void _reconcileBatchApplied(SyncOp op, PantryBatchResult result) {
@@ -1444,6 +1466,7 @@ class ChecklistsController extends ChangeNotifier {
           if (fresh.isNotEmpty) _items = [...fresh, ..._items];
         }
       case 'category':
+      case 'stores':
         _items = reconcileReplaceById(_items, result.items);
         _cacheCurrentItems();
       case 'delete':
@@ -1604,6 +1627,37 @@ class ChecklistsController extends ChangeNotifier {
     }
     for (final entry in byCategory.entries) {
       _enqueueBatch('category', entry.value, extra: {'categoryId': entry.key});
+    }
+    notifyListeners();
+  }
+
+  /// Return every item to its original store set. Items may have had different
+  /// sets, so the reverse is grouped per original set (keyed by its sorted ids)
+  /// into one batch op each.
+  void undoBatchSetStores(List<ListItem> items) {
+    if (items.isEmpty) return;
+    final byId = {for (final it in items) it.id: it};
+    _items = [
+      for (final i in _items)
+        if (byId[i.id] case final original?)
+          i.copyWith(storeIds: List.of(original.storeIds), updatedAt: _now())
+        else
+          i,
+    ];
+    _cacheCurrentItems();
+    final groups = <String, List<int>>{};
+    final storeSets = <String, List<int>>{};
+    for (final it in items) {
+      final key = (List.of(it.storeIds)..sort()).join(',');
+      groups.putIfAbsent(key, () => []).add(it.id);
+      storeSets[key] = it.storeIds;
+    }
+    for (final entry in groups.entries) {
+      _enqueueBatch(
+        'stores',
+        entry.value,
+        extra: {'storeIds': storeSets[entry.key]!},
+      );
     }
     notifyListeners();
   }

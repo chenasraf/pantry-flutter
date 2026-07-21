@@ -2014,6 +2014,11 @@ class BatchChecklistsMessages {
   String get categoryTitle => """Set category""";
 
   /// ```dart
+  /// "Set stores"
+  /// ```
+  String get storesTitle => """Set stores""";
+
+  /// ```dart
   /// "No category"
   /// ```
   String get clearCategory => """No category""";
@@ -2032,6 +2037,11 @@ class BatchChecklistsMessages {
   /// "Category"
   /// ```
   String get category => """Category""";
+
+  /// ```dart
+  /// "Stores"
+  /// ```
+  String get stores => """Stores""";
 
   /// ```dart
   /// "Delete"
@@ -2099,6 +2109,12 @@ class BatchChecklistsMessages {
   /// "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
   /// ```
   String categorySet(int count) =>
+      """${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
+  /// ```
+  String storesSet(int count) =>
       """${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}""";
 
   /// ```dart
@@ -3790,10 +3806,12 @@ Password: pantry-rocks""",
   """checklists.batch.moveTitle""": """Move items to""",
   """checklists.batch.copyTitle""": """Copy items to""",
   """checklists.batch.categoryTitle""": """Set category""",
+  """checklists.batch.storesTitle""": """Set stores""",
   """checklists.batch.clearCategory""": """No category""",
   """checklists.batch.move""": """Move""",
   """checklists.batch.copy""": """Copy""",
   """checklists.batch.category""": """Category""",
+  """checklists.batch.stores""": """Stores""",
   """checklists.batch.delete""": """Delete""",
   """checklists.batch.archive""": """Archive""",
   """checklists.batch.unarchive""": """Unarchive""",

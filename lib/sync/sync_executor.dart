@@ -220,6 +220,14 @@ class SyncExecutor {
             categoryId: op.body['categoryId'] as int?,
           ),
         );
+      case 'stores':
+        return SyncResult(
+          await svc.batchSetStores(
+            houseId,
+            itemIds: itemIds,
+            storeIds: (op.body['storeIds'] as List?)?.cast<int>() ?? const [],
+          ),
+        );
       case 'archive':
         return SyncResult(
           await svc.batchArchiveItems(

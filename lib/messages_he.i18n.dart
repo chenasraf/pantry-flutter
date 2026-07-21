@@ -2020,6 +2020,11 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   String get categoryTitle => """הגדרת קטגוריה""";
 
   /// ```dart
+  /// "הגדרת חנויות"
+  /// ```
+  String get storesTitle => """הגדרת חנויות""";
+
+  /// ```dart
   /// "ללא קטגוריה"
   /// ```
   String get clearCategory => """ללא קטגוריה""";
@@ -2038,6 +2043,11 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   /// "קטגוריה"
   /// ```
   String get category => """קטגוריה""";
+
+  /// ```dart
+  /// "חנויות"
+  /// ```
+  String get stores => """חנויות""";
 
   /// ```dart
   /// "מחק"
@@ -2105,6 +2115,12 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   /// "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
   /// ```
   String categorySet(int count) =>
+      """${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
+  /// ```
+  String storesSet(int count) =>
       """${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}""";
 
   /// ```dart
@@ -3792,10 +3808,12 @@ Map<String, String> get messagesHeMap => {
   """checklists.batch.moveTitle""": """העברת פריטים אל""",
   """checklists.batch.copyTitle""": """העתקת פריטים אל""",
   """checklists.batch.categoryTitle""": """הגדרת קטגוריה""",
+  """checklists.batch.storesTitle""": """הגדרת חנויות""",
   """checklists.batch.clearCategory""": """ללא קטגוריה""",
   """checklists.batch.move""": """העבר""",
   """checklists.batch.copy""": """העתק""",
   """checklists.batch.category""": """קטגוריה""",
+  """checklists.batch.stores""": """חנויות""",
   """checklists.batch.delete""": """מחק""",
   """checklists.batch.archive""": """העבר לארכיון""",
   """checklists.batch.unarchive""": """הוצא מהארכיון""",

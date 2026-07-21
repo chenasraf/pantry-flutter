@@ -2034,6 +2034,11 @@ class BatchChecklistsMessagesFr extends BatchChecklistsMessages {
   String get categoryTitle => """Définir la catégorie""";
 
   /// ```dart
+  /// "Définir les magasins"
+  /// ```
+  String get storesTitle => """Définir les magasins""";
+
+  /// ```dart
   /// "Aucune catégorie"
   /// ```
   String get clearCategory => """Aucune catégorie""";
@@ -2052,6 +2057,11 @@ class BatchChecklistsMessagesFr extends BatchChecklistsMessages {
   /// "Catégorie"
   /// ```
   String get category => """Catégorie""";
+
+  /// ```dart
+  /// "Magasins"
+  /// ```
+  String get stores => """Magasins""";
 
   /// ```dart
   /// "Supprimer"
@@ -2119,6 +2129,12 @@ class BatchChecklistsMessagesFr extends BatchChecklistsMessages {
   /// "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
   /// ```
   String categorySet(int count) =>
+      """${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
+  /// ```
+  String storesSet(int count) =>
       """${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}""";
 
   /// ```dart
@@ -3837,10 +3853,12 @@ Mot de passe : pantry-rocks""",
   """checklists.batch.moveTitle""": """Déplacer les articles vers""",
   """checklists.batch.copyTitle""": """Copier les articles vers""",
   """checklists.batch.categoryTitle""": """Définir la catégorie""",
+  """checklists.batch.storesTitle""": """Définir les magasins""",
   """checklists.batch.clearCategory""": """Aucune catégorie""",
   """checklists.batch.move""": """Déplacer""",
   """checklists.batch.copy""": """Copier""",
   """checklists.batch.category""": """Catégorie""",
+  """checklists.batch.stores""": """Magasins""",
   """checklists.batch.delete""": """Supprimer""",
   """checklists.batch.archive""": """Archiver""",
   """checklists.batch.unarchive""": """Désarchiver""",

@@ -126,6 +126,26 @@ void main() {
       expect(remap.rewrite(clear).body['categoryId'], isNull);
     });
 
+    test('remaps temp store ids in a set-stores batch', () {
+      final remap = IdRemap(CacheStore('test_remap.json'));
+      remap.bind(SyncEntity.store, -5, 55);
+      final op = batch({
+        'batchAction': 'stores',
+        'itemIds': [1, 2],
+        'storeIds': [-5, 7, -8],
+      });
+      final out = remap.rewrite(op);
+      // -8 is still unbound, so it survives for the dependency check to catch.
+      expect(out.body['storeIds'], [55, 7, -8]);
+
+      final clear = batch({
+        'batchAction': 'stores',
+        'itemIds': [1],
+        'storeIds': <int>[],
+      });
+      expect(remap.rewrite(clear).body['storeIds'], isEmpty);
+    });
+
     test('returns the same instance when nothing needs rewriting', () {
       final remap = IdRemap(CacheStore('test_remap.json'));
       final op = batch({

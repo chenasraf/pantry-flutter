@@ -385,6 +385,18 @@ class ChecklistService {
     );
   }
 
+  Future<PantryBatchResult> batchSetStores(
+    int houseId, {
+    required List<int> itemIds,
+    required List<int> storeIds,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, PantryBatchResult>(
+      '/houses/$houseId/items/batch/stores',
+      body: {'itemIds': itemIds, 'storeIds': storeIds},
+      fromJson: (data) => PantryBatchResult.fromJson(data),
+    );
+  }
+
   Future<ListItem> createItem(
     int houseId,
     int listId, {

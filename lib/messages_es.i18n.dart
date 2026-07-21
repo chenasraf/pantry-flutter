@@ -2030,6 +2030,11 @@ class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   String get categoryTitle => """Establecer categoría""";
 
   /// ```dart
+  /// "Establecer tiendas"
+  /// ```
+  String get storesTitle => """Establecer tiendas""";
+
+  /// ```dart
   /// "Sin categoría"
   /// ```
   String get clearCategory => """Sin categoría""";
@@ -2048,6 +2053,11 @@ class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   /// "Categoría"
   /// ```
   String get category => """Categoría""";
+
+  /// ```dart
+  /// "Tiendas"
+  /// ```
+  String get stores => """Tiendas""";
 
   /// ```dart
   /// "Eliminar"
@@ -2115,6 +2125,12 @@ class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   /// "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
   /// ```
   String categorySet(int count) =>
+      """${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
+  /// ```
+  String storesSet(int count) =>
       """${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}""";
 
   /// ```dart
@@ -3828,10 +3844,12 @@ Contraseña: pantry-rocks""",
   """checklists.batch.moveTitle""": """Mover artículos a""",
   """checklists.batch.copyTitle""": """Copiar artículos a""",
   """checklists.batch.categoryTitle""": """Establecer categoría""",
+  """checklists.batch.storesTitle""": """Establecer tiendas""",
   """checklists.batch.clearCategory""": """Sin categoría""",
   """checklists.batch.move""": """Mover""",
   """checklists.batch.copy""": """Copiar""",
   """checklists.batch.category""": """Categoría""",
+  """checklists.batch.stores""": """Tiendas""",
   """checklists.batch.delete""": """Eliminar""",
   """checklists.batch.archive""": """Archivar""",
   """checklists.batch.unarchive""": """Desarchivar""",

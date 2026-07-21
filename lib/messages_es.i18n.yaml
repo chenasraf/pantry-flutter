@@ -293,10 +293,12 @@ checklists:
     moveTitle: Mover artículos a
     copyTitle: Copiar artículos a
     categoryTitle: Establecer categoría
+    storesTitle: Establecer tiendas
     clearCategory: Sin categoría
     move: Mover
     copy: Copiar
     category: Categoría
+    stores: Tiendas
     delete: Eliminar
     archive: Archivar
     unarchive: Desarchivar
@@ -309,6 +311,7 @@ checklists:
     archived(int count): "${_plural(count, one: '1 artículo archivado', many: '$count artículos archivados')}"
     unarchived(int count): "${_plural(count, one: '1 artículo desarchivado', many: '$count artículos desarchivados')}"
     categorySet(int count): "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
+    storesSet(int count): "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
     skipped(int count): "${_plural(count, one: '1 omitido', many: '$count omitidos')}"
     failed: "Algo salió mal. Inténtalo de nuevo."
   viewTrash: Ver papelera

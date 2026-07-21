@@ -2032,6 +2032,11 @@ class BatchChecklistsMessagesDe extends BatchChecklistsMessages {
   String get categoryTitle => """Kategorie festlegen""";
 
   /// ```dart
+  /// "Geschäfte festlegen"
+  /// ```
+  String get storesTitle => """Geschäfte festlegen""";
+
+  /// ```dart
   /// "Keine Kategorie"
   /// ```
   String get clearCategory => """Keine Kategorie""";
@@ -2050,6 +2055,11 @@ class BatchChecklistsMessagesDe extends BatchChecklistsMessages {
   /// "Kategorie"
   /// ```
   String get category => """Kategorie""";
+
+  /// ```dart
+  /// "Geschäfte"
+  /// ```
+  String get stores => """Geschäfte""";
 
   /// ```dart
   /// "Löschen"
@@ -2117,6 +2127,12 @@ class BatchChecklistsMessagesDe extends BatchChecklistsMessages {
   /// "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
   /// ```
   String categorySet(int count) =>
+      """${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
+  /// ```
+  String storesSet(int count) =>
       """${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}""";
 
   /// ```dart
@@ -3834,10 +3850,12 @@ Passwort: pantry-rocks""",
   """checklists.batch.moveTitle""": """Einträge verschieben nach""",
   """checklists.batch.copyTitle""": """Einträge kopieren nach""",
   """checklists.batch.categoryTitle""": """Kategorie festlegen""",
+  """checklists.batch.storesTitle""": """Geschäfte festlegen""",
   """checklists.batch.clearCategory""": """Keine Kategorie""",
   """checklists.batch.move""": """Verschieben""",
   """checklists.batch.copy""": """Kopieren""",
   """checklists.batch.category""": """Kategorie""",
+  """checklists.batch.stores""": """Geschäfte""",
   """checklists.batch.delete""": """Löschen""",
   """checklists.batch.archive""": """Archivieren""",
   """checklists.batch.unarchive""": """Dearchivieren""",

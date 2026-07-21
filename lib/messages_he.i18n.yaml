@@ -293,10 +293,12 @@ checklists:
     moveTitle: העברת פריטים אל
     copyTitle: העתקת פריטים אל
     categoryTitle: הגדרת קטגוריה
+    storesTitle: הגדרת חנויות
     clearCategory: ללא קטגוריה
     move: העבר
     copy: העתק
     category: קטגוריה
+    stores: חנויות
     delete: מחק
     archive: העבר לארכיון
     unarchive: הוצא מהארכיון
@@ -309,6 +311,7 @@ checklists:
     archived(int count): "${_plural(count, one: 'פריט אחד הועבר לארכיון', many: '$count פריטים הועברו לארכיון')}"
     unarchived(int count): "${_plural(count, one: 'פריט אחד הוצא מהארכיון', many: '$count פריטים הוצאו מהארכיון')}"
     categorySet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
+    storesSet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
     skipped(int count): "${_plural(count, one: 'פריט אחד דולג', many: '$count דולגו')}"
     failed: משהו השתבש. נסה שוב.
   viewTrash: הצג אשפה

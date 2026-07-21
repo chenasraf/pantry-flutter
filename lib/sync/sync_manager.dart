@@ -326,6 +326,8 @@ class SyncManager {
     if (target is int && target < 0) return true;
     final cat = op.body['categoryId'];
     if (cat is int && cat < 0) return true;
+    final storeIds = (op.body['storeIds'] as List?)?.cast<int>();
+    if (storeIds != null && storeIds.any((id) => id < 0)) return true;
     return false;
   }
 

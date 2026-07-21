@@ -293,10 +293,12 @@ checklists:
     moveTitle: Déplacer les articles vers
     copyTitle: Copier les articles vers
     categoryTitle: Définir la catégorie
+    storesTitle: Définir les magasins
     clearCategory: Aucune catégorie
     move: Déplacer
     copy: Copier
     category: Catégorie
+    stores: Magasins
     delete: Supprimer
     archive: Archiver
     unarchive: Désarchiver
@@ -309,6 +311,7 @@ checklists:
     archived(int count): "${_plural(count, one: '1 article archivé', many: '$count articles archivés')}"
     unarchived(int count): "${_plural(count, one: '1 article désarchivé', many: '$count articles désarchivés')}"
     categorySet(int count): "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
+    storesSet(int count): "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
     skipped(int count): "${_plural(count, one: '1 ignoré', many: '$count ignorés')}"
     failed: "Une erreur s'est produite. Veuillez réessayer."
   viewTrash: "Afficher la corbeille"

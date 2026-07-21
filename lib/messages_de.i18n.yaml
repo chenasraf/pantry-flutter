@@ -293,10 +293,12 @@ checklists:
     moveTitle: Einträge verschieben nach
     copyTitle: Einträge kopieren nach
     categoryTitle: Kategorie festlegen
+    storesTitle: Geschäfte festlegen
     clearCategory: Keine Kategorie
     move: Verschieben
     copy: Kopieren
     category: Kategorie
+    stores: Geschäfte
     delete: "Löschen"
     archive: Archivieren
     unarchive: Dearchivieren
@@ -309,6 +311,7 @@ checklists:
     archived(int count): "${_plural(count, one: '1 Eintrag archiviert', many: '$count Einträge archiviert')}"
     unarchived(int count): "${_plural(count, one: '1 Eintrag dearchiviert', many: '$count Einträge dearchiviert')}"
     categorySet(int count): "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
+    storesSet(int count): "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
     skipped(int count): "${_plural(count, one: '1 übersprungen', many: '$count übersprungen')}"
     failed: Etwas ist schiefgelaufen. Bitte versuche es erneut.
   viewTrash: Papierkorb anzeigen
