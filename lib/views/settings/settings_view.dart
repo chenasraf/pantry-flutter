@@ -182,6 +182,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final prefs = context.watch<PrefsService>();
     final notificationsEnabled = prefs.notificationsEnabled;
     final pollIntervalMinutes = prefs.pollIntervalMinutes;
@@ -196,187 +197,203 @@ class _SettingsViewState extends State<SettingsView> {
         leading: appBarBackLeading(context),
         title: Text(m.settings.title),
       ),
-      body: ListView(
-        children: [
-          // -- General --
-          _SectionHeader(m.settings.generalSection),
-          ListTile(
-            title: Text(m.settings.language),
-            subtitle: Text(_localeLabel(_selectedLocale)),
-            trailing: DropdownButton<String?>(
-              value: _selectedLocale,
-              onChanged: (v) => _setLocale(v),
-              items: [
-                DropdownMenuItem<String?>(
-                  value: null,
-                  child: Text(m.settings.languageNames.system),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'en',
-                  child: Text(m.settings.languageNames.english),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'de',
-                  child: Text(m.settings.languageNames.german),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'es',
-                  child: Text(m.settings.languageNames.spanish),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'fr',
-                  child: Text(m.settings.languageNames.french),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'he',
-                  child: Text(m.settings.languageNames.hebrew),
-                ),
-              ],
-            ),
+      body: ListTileTheme(
+        data: theme.listTileTheme.copyWith(
+          subtitleTextStyle: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
           ),
-
-          ListTile(
-            title: Text(m.settings.theme),
-            subtitle: Text(_themeLabel(_selectedTheme)),
-            trailing: DropdownButton<String?>(
-              value: _selectedTheme,
-              onChanged: (v) => _setTheme(v),
-              items: [
-                DropdownMenuItem<String?>(
-                  value: null,
-                  child: Text(m.settings.themeNames.system),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'light',
-                  child: Text(m.settings.themeNames.light),
-                ),
-                DropdownMenuItem<String?>(
-                  value: 'dark',
-                  child: Text(m.settings.themeNames.dark),
-                ),
-              ],
-            ),
-          ),
-
-          // -- Interface --
-          _SectionHeader(m.settings.interfaceSection),
-          ListTile(
-            leading: const Icon(Icons.reorder),
-            title: Text(m.settings.navOrderTitle),
-            subtitle: Text(m.settings.navOrderSubtitle),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const NavOrderView()));
-            },
-          ),
-          if (supportsFeature('pref-tap-row-to-complete'))
+        ),
+        child: ListView(
+          children: [
+            // -- General --
+            _SectionHeader(m.settings.generalSection),
             ListTile(
-              title: Text(m.settings.defaultItemTapAction),
-              subtitle: Text(m.settings.defaultItemTapActionBody),
-              trailing: DropdownButton<String>(
-                value: itemTapAction,
-                onChanged: _setItemTapAction,
+              leading: const Icon(Icons.language),
+              title: Text(m.settings.language),
+              subtitle: Text(_localeLabel(_selectedLocale)),
+              trailing: DropdownButton<String?>(
+                value: _selectedLocale,
+                onChanged: (v) => _setLocale(v),
                 items: [
-                  for (final option in _itemTapActionOptions)
-                    DropdownMenuItem(
-                      value: option,
-                      child: Text(_itemTapActionLabel(option)),
-                    ),
-                ],
-              ),
-            ),
-          ListTile(
-            title: Text(m.settings.checkboxPosition),
-            subtitle: Text(m.settings.checkboxPositionBody),
-            trailing: DropdownButton<String>(
-              value: checkboxPosition,
-              onChanged: _setCheckboxPosition,
-              items: [
-                for (final option in _checkboxPositionOptions)
-                  DropdownMenuItem(
-                    value: option,
-                    child: Text(_checkboxPositionLabel(option)),
+                  DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text(m.settings.languageNames.system),
                   ),
-              ],
-            ),
-          ),
-          ListTile(
-            title: Text(m.settings.density),
-            subtitle: Text(m.settings.densityBody),
-            trailing: DropdownButton<String>(
-              value: density,
-              onChanged: _setDensity,
-              items: [
-                for (final option in _densityOptions)
-                  DropdownMenuItem(
-                    value: option,
-                    child: Text(_densityLabel(option)),
+                  DropdownMenuItem<String?>(
+                    value: 'en',
+                    child: Text(m.settings.languageNames.english),
                   ),
-              ],
-            ),
-          ),
-          SwitchListTile(
-            // On desktop the actions are pinned in view rather than revealed
-            // by a swipe, so the swipe-specific wording doesn't apply.
-            title: Text(
-              PlatformInfo.isDesktop
-                  ? m.settings.itemActions
-                  : m.settings.swipeActions,
-            ),
-            subtitle: Text(
-              PlatformInfo.isDesktop
-                  ? m.settings.itemActionsBody
-                  : m.settings.swipeActionsBody,
-            ),
-            value: swipeActionsEnabled,
-            onChanged: _toggleSwipeActions,
-          ),
-          if (hasFeature('reuse-existing-items'))
-            ListTile(
-              title: Text(m.settings.reuseExistingItems),
-              subtitle: Text(m.settings.reuseExistingItemsBody),
-              trailing: DropdownButton<String>(
-                value: reuseExistingItems,
-                onChanged: _setReuseExistingItems,
-                items: [
-                  for (final option in _reuseExistingItemsOptions)
-                    DropdownMenuItem(
-                      value: option,
-                      child: Text(_reuseExistingItemsLabel(option)),
-                    ),
+                  DropdownMenuItem<String?>(
+                    value: 'de',
+                    child: Text(m.settings.languageNames.german),
+                  ),
+                  DropdownMenuItem<String?>(
+                    value: 'es',
+                    child: Text(m.settings.languageNames.spanish),
+                  ),
+                  DropdownMenuItem<String?>(
+                    value: 'fr',
+                    child: Text(m.settings.languageNames.french),
+                  ),
+                  DropdownMenuItem<String?>(
+                    value: 'he',
+                    child: Text(m.settings.languageNames.hebrew),
+                  ),
                 ],
               ),
             ),
 
-          // -- Notifications --
-          if (supportsFeature('notifications')) ...[
-            _SectionHeader(m.settings.notificationsSection),
+            ListTile(
+              leading: const Icon(Icons.palette_outlined),
+              title: Text(m.settings.theme),
+              subtitle: Text(_themeLabel(_selectedTheme)),
+              trailing: DropdownButton<String?>(
+                value: _selectedTheme,
+                onChanged: (v) => _setTheme(v),
+                items: [
+                  DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text(m.settings.themeNames.system),
+                  ),
+                  DropdownMenuItem<String?>(
+                    value: 'light',
+                    child: Text(m.settings.themeNames.light),
+                  ),
+                  DropdownMenuItem<String?>(
+                    value: 'dark',
+                    child: Text(m.settings.themeNames.dark),
+                  ),
+                ],
+              ),
+            ),
+
+            // -- Interface --
+            _SectionHeader(m.settings.interfaceSection),
+            ListTile(
+              leading: const Icon(Icons.reorder),
+              title: Text(m.settings.navOrderTitle),
+              subtitle: Text(m.settings.navOrderSubtitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const NavOrderView()));
+              },
+            ),
+            if (supportsFeature('pref-tap-row-to-complete'))
+              ListTile(
+                leading: const Icon(Icons.touch_app_outlined),
+                title: Text(m.settings.defaultItemTapAction),
+                subtitle: Text(m.settings.defaultItemTapActionBody),
+                trailing: DropdownButton<String>(
+                  value: itemTapAction,
+                  onChanged: _setItemTapAction,
+                  items: [
+                    for (final option in _itemTapActionOptions)
+                      DropdownMenuItem(
+                        value: option,
+                        child: Text(_itemTapActionLabel(option)),
+                      ),
+                  ],
+                ),
+              ),
+            ListTile(
+              leading: const Icon(Icons.check_box_outlined),
+              title: Text(m.settings.checkboxPosition),
+              subtitle: Text(m.settings.checkboxPositionBody),
+              trailing: DropdownButton<String>(
+                value: checkboxPosition,
+                onChanged: _setCheckboxPosition,
+                items: [
+                  for (final option in _checkboxPositionOptions)
+                    DropdownMenuItem(
+                      value: option,
+                      child: Text(_checkboxPositionLabel(option)),
+                    ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.density_medium),
+              title: Text(m.settings.density),
+              subtitle: Text(m.settings.densityBody),
+              trailing: DropdownButton<String>(
+                value: density,
+                onChanged: _setDensity,
+                items: [
+                  for (final option in _densityOptions)
+                    DropdownMenuItem(
+                      value: option,
+                      child: Text(_densityLabel(option)),
+                    ),
+                ],
+              ),
+            ),
             SwitchListTile(
-              title: Text(m.settings.enableNotifications),
-              subtitle: Text(m.settings.enableNotificationsBody),
-              value: notificationsEnabled,
-              onChanged: _toggleNotifications,
-            ),
-            ListTile(
-              enabled: notificationsEnabled,
-              title: Text(m.settings.pollInterval),
-              subtitle: Text(_pollIntervalLabel(pollIntervalMinutes)),
-              trailing: DropdownButton<int>(
-                value: pollIntervalMinutes,
-                onChanged: notificationsEnabled ? _setPollInterval : null,
-                items: [
-                  for (final minutes in _pollOptions)
-                    DropdownMenuItem(
-                      value: minutes,
-                      child: Text(_pollIntervalLabel(minutes)),
-                    ),
-                ],
+              secondary: const Icon(Icons.swipe_outlined),
+              // On desktop the actions are pinned in view rather than revealed
+              // by a swipe, so the swipe-specific wording doesn't apply.
+              title: Text(
+                PlatformInfo.isDesktop
+                    ? m.settings.itemActions
+                    : m.settings.swipeActions,
               ),
+              subtitle: Text(
+                PlatformInfo.isDesktop
+                    ? m.settings.itemActionsBody
+                    : m.settings.swipeActionsBody,
+              ),
+              value: swipeActionsEnabled,
+              onChanged: _toggleSwipeActions,
             ),
+            if (hasFeature('reuse-existing-items'))
+              ListTile(
+                leading: const Icon(Icons.autorenew),
+                title: Text(m.settings.reuseExistingItems),
+                subtitle: Text(m.settings.reuseExistingItemsBody),
+                trailing: DropdownButton<String>(
+                  value: reuseExistingItems,
+                  onChanged: _setReuseExistingItems,
+                  items: [
+                    for (final option in _reuseExistingItemsOptions)
+                      DropdownMenuItem(
+                        value: option,
+                        child: Text(_reuseExistingItemsLabel(option)),
+                      ),
+                  ],
+                ),
+              ),
+
+            // -- Notifications --
+            if (supportsFeature('notifications')) ...[
+              _SectionHeader(m.settings.notificationsSection),
+              SwitchListTile(
+                secondary: const Icon(Icons.notifications_outlined),
+                title: Text(m.settings.enableNotifications),
+                subtitle: Text(m.settings.enableNotificationsBody),
+                value: notificationsEnabled,
+                onChanged: _toggleNotifications,
+              ),
+              ListTile(
+                enabled: notificationsEnabled,
+                leading: const Icon(Icons.timer_outlined),
+                title: Text(m.settings.pollInterval),
+                subtitle: Text(_pollIntervalLabel(pollIntervalMinutes)),
+                trailing: DropdownButton<int>(
+                  value: pollIntervalMinutes,
+                  onChanged: notificationsEnabled ? _setPollInterval : null,
+                  items: [
+                    for (final minutes in _pollOptions)
+                      DropdownMenuItem(
+                        value: minutes,
+                        child: Text(_pollIntervalLabel(minutes)),
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
