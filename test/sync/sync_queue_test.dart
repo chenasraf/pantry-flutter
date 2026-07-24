@@ -440,4 +440,44 @@ void main() {
       expect(byId[2]!.body['title'], 'X');
     });
   });
+
+  group('resetAttempts', () {
+    test('zeroes retry counters on every queued op', () {
+      final q = _newQueue();
+      q.enqueue(
+        _op(
+          uuid: 'a',
+          entity: SyncEntity.note,
+          op: SyncOpKind.create,
+        ).copyWith(attemptCount: 5),
+      );
+      q.enqueue(
+        _op(
+          uuid: 'b',
+          entity: SyncEntity.note,
+          op: SyncOpKind.create,
+        ).copyWith(attemptCount: 2),
+      );
+
+      q.resetAttempts();
+
+      expect(q.all().map((o) => o.attemptCount), everyElement(0));
+    });
+
+    test('preserves order and op identity', () {
+      final q = _newQueue();
+      q.enqueue(
+        _op(
+          uuid: 'a',
+          entity: SyncEntity.note,
+          op: SyncOpKind.create,
+        ).copyWith(attemptCount: 3),
+      );
+      q.enqueue(_op(uuid: 'b', entity: SyncEntity.note, op: SyncOpKind.create));
+
+      q.resetAttempts();
+
+      expect(q.all().map((o) => o.uuid), ['a', 'b']);
+    });
+  });
 }

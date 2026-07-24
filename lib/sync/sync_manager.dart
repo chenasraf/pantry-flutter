@@ -58,6 +58,12 @@ class SyncManager {
   final _skippedController = StreamController<SyncOpSkipped>.broadcast();
   Stream<SyncOpSkipped> get onSkipped => _skippedController.stream;
 
+  /// Ceiling on delivery attempts for a single op. Past this we treat the op
+  /// as poison and dead-letter it (drop + emit skipped) rather than retry it
+  /// forever — an endlessly-failing head op would otherwise block every op
+  /// queued behind it, so changes made after it never sync (issue #113).
+  static const _maxAttempts = 8;
+
   bool _online = true;
   bool _flushing = false;
   Timer? _retryTimer;
@@ -105,6 +111,10 @@ class SyncManager {
       status.value = SyncStatus.offline;
     } else if (!wasOnline) {
       if (!_queue.isEmpty) hasBacklog.value = true;
+      // A fresh online session gets a full retry budget: only *consecutive*
+      // online failures should count toward dead-lettering, so attempts spent
+      // before we dropped offline don't erode a still-syncable op (issue #113).
+      _queue.resetAttempts();
       unawaited(flushNow());
     } else if (_queue.isEmpty) {
       status.value = SyncStatus.idle;
@@ -295,10 +305,17 @@ class SyncManager {
             _skippedController.add(SyncOpSkipped(op, 'http_${e.statusCode}'));
             continue;
           }
-          _scheduleRetry(op, e.toString());
+          if (e.statusCode == 0) {
+            // Offline fast-fail from the pre-flight connectivity guard. Don't
+            // spend the op's retry budget on it — the flush resumes from this
+            // same head op once connectivity returns.
+            status.value = _online ? SyncStatus.syncing : SyncStatus.offline;
+            return;
+          }
+          if (_onRetryableFailure(op, e.toString())) continue;
           return;
         } catch (e) {
-          _scheduleRetry(op, e.toString());
+          if (_onRetryableFailure(op, e.toString())) continue;
           return;
         }
       }
@@ -331,8 +348,22 @@ class SyncManager {
     return false;
   }
 
-  void _scheduleRetry(SyncOp op, String error) {
+  /// React to a transient/server-side failure on the head op. Retries with
+  /// backoff until [_maxAttempts], then dead-letters the op so the queue can
+  /// keep draining instead of wedging behind it forever.
+  ///
+  /// Returns true when the op was dead-lettered (the caller should `continue`
+  /// the flush loop onto the next op) and false when a retry was scheduled
+  /// (the caller should stop the loop and wait for the backoff timer).
+  bool _onRetryableFailure(SyncOp op, String error) {
     final attempt = op.attemptCount + 1;
+    if (attempt >= _maxAttempts) {
+      debugPrint(
+        '[SyncManager] dead-lettering op ${op.uuid} after $attempt attempts: $error',
+      );
+      _deadLetter(op, 'exhausted');
+      return true;
+    }
     _queue.update(op.copyWith(attemptCount: attempt, lastError: error));
     status.value = SyncStatus.error;
     final delay = _backoff(attempt);
@@ -340,6 +371,100 @@ class SyncManager {
     _retryTimer = Timer(delay, () {
       if (_online) unawaited(flushNow());
     });
+    return false;
+  }
+
+  /// Drop [op] from the queue and, when it was an optimistic create, reconcile
+  /// the ops queued behind it that leaned on it. Same-record follow-ups
+  /// (update/delete on a row that now never existed) are dropped; cross-entity
+  /// references to the dead temp id are stripped so the dependent op can still
+  /// flush — an item keeps syncing, just without the category/store that
+  /// failed to create. Leaving a dangling temp reference would re-wedge the
+  /// queue, since the flush loop holds any op that still points at an
+  /// unresolved temp id.
+  void _deadLetter(SyncOp op, String reason) {
+    _queue.pop(op.uuid);
+    if (op.op == SyncOpKind.create && op.tempEntityId != null) {
+      _cascadeDeadCreate(op.entity, op.tempEntityId!);
+    }
+    pendingCount.value = _queue.length;
+    _skippedController.add(SyncOpSkipped(op, reason));
+  }
+
+  void _cascadeDeadCreate(SyncEntity entity, int tempId) {
+    final rebuilt = <SyncOp>[];
+    for (final o in _queue.all()) {
+      // A follow-up addressing the never-created row itself can never land.
+      // (Reorder ops are house-scoped and carry the id in their body instead,
+      // so they fall through to reference-stripping below.)
+      if (o.entity == entity &&
+          o.op != SyncOpKind.reorder &&
+          (o.tempEntityId == tempId || o.effectiveEntityId == tempId)) {
+        continue;
+      }
+      final kept = _stripDeadReference(o, entity, tempId);
+      if (kept != null) rebuilt.add(kept);
+    }
+    _queue.replaceAll(rebuilt);
+  }
+
+  /// Returns [o] with any reference to the dead ([entity], [tempId]) removed,
+  /// or null when the op cannot survive without it and must be dropped.
+  SyncOp? _stripDeadReference(SyncOp o, SyncEntity entity, int tempId) {
+    if (o.op == SyncOpKind.reorder && o.entity == entity) {
+      return _pruneReorder(o, tempId);
+    }
+    switch (entity) {
+      case SyncEntity.category:
+        if (o.body['categoryId'] == tempId) {
+          final body = Map<String, dynamic>.of(o.body);
+          // A batch set-category keeps a null target (clears the category on
+          // its items); a create/update simply drops the field.
+          if (o.op == SyncOpKind.batch) {
+            body['categoryId'] = null;
+          } else {
+            body.remove('categoryId');
+          }
+          return o.copyWith(body: body);
+        }
+      case SyncEntity.store:
+        final storeIds = (o.body['storeIds'] as List?)?.cast<int>();
+        if (storeIds != null && storeIds.contains(tempId)) {
+          final body = Map<String, dynamic>.of(o.body)
+            ..['storeIds'] = storeIds.where((s) => s != tempId).toList();
+          return o.copyWith(body: body);
+        }
+      case SyncEntity.checklistList:
+        // An item whose parent list was never created cannot exist.
+        if (o.entity == SyncEntity.checklistItem && o.parentId == tempId) {
+          return null;
+        }
+        if (o.op == SyncOpKind.batch && o.body['targetListId'] == tempId) {
+          return null;
+        }
+      case SyncEntity.checklistItem:
+        final itemIds = (o.body['itemIds'] as List?)?.cast<int>();
+        if (itemIds != null && itemIds.contains(tempId)) {
+          final remaining = itemIds.where((i) => i != tempId).toList();
+          if (remaining.isEmpty) return null;
+          return o.copyWith(
+            body: Map<String, dynamic>.of(o.body)..['itemIds'] = remaining,
+          );
+        }
+      case SyncEntity.note:
+        break;
+    }
+    return o;
+  }
+
+  /// Drops the dead id from a reorder op's `order` list, returning null when
+  /// nothing remains to reorder.
+  SyncOp? _pruneReorder(SyncOp o, int deadId) {
+    final order = (o.body['order'] as List?)?.cast<Map>();
+    if (order == null) return o;
+    final kept = order.where((e) => e['id'] != deadId).toList();
+    if (kept.isEmpty) return null;
+    return o.copyWith(body: Map<String, dynamic>.of(o.body)..['order'] = kept);
   }
 
   Duration _backoff(int attempt) {
@@ -356,4 +481,9 @@ class SyncManager {
   SyncQueue get queueForTest => _queue;
   @visibleForTesting
   IdRemap get remapForTest => _remap;
+
+  /// Drives the poison-op path directly (the real trigger is exhausting
+  /// retries mid-flush, which needs a live server to fail against).
+  @visibleForTesting
+  void deadLetterForTest(SyncOp op) => _deadLetter(op, 'exhausted');
 }

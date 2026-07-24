@@ -49,6 +49,20 @@ class SyncQueue {
     _persist();
   }
 
+  /// Clears the retry counter on every queued op. Called when connectivity is
+  /// restored so a new online session starts with a full retry budget instead
+  /// of inheriting attempts spent during earlier flaky periods.
+  void resetAttempts() {
+    var changed = false;
+    for (var i = 0; i < _ops.length; i++) {
+      if (_ops[i].attemptCount != 0) {
+        _ops[i] = _ops[i].copyWith(attemptCount: 0);
+        changed = true;
+      }
+    }
+    if (changed) _persist();
+  }
+
   Future<void> clear() async {
     _ops.clear();
     await _store.clear();

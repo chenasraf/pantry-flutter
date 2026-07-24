@@ -54,18 +54,28 @@ class CategoryService {
     String sort,
   ) {
     final list = categories.toList();
+    // Every comparison falls back to id (creation order) as a final
+    // tiebreaker so ties never render in arbitrary order. Custom sort in
+    // particular relies on this: fresh categories all share the same
+    // sortOrder until reordered, so without the tiebreaker the list would
+    // reshuffle unpredictably as categories are added (issue #113).
     switch (sort) {
       case 'name_asc':
-        list.sort(
-          (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-        );
+        list.sort((a, b) {
+          final c = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+          return c != 0 ? c : a.id.compareTo(b.id);
+        });
       case 'name_desc':
-        list.sort(
-          (a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()),
-        );
+        list.sort((a, b) {
+          final c = b.name.toLowerCase().compareTo(a.name.toLowerCase());
+          return c != 0 ? c : a.id.compareTo(b.id);
+        });
       case 'custom':
       default:
-        list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+        list.sort((a, b) {
+          final c = a.sortOrder.compareTo(b.sortOrder);
+          return c != 0 ? c : a.id.compareTo(b.id);
+        });
     }
     return list;
   }
