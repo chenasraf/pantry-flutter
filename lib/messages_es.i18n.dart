@@ -909,6 +909,20 @@ class SettingsMessagesEs extends SettingsMessages {
       ItemTapActionNamesSettingsMessagesEs(this);
 
   /// ```dart
+  /// "Acción al mantener pulsado un elemento"
+  /// ```
+  String get defaultItemLongPressAction =>
+      """Acción al mantener pulsado un elemento""";
+
+  /// ```dart
+  /// "Qué ocurre al mantener pulsada la fila de un elemento."
+  /// ```
+  String get defaultItemLongPressActionBody =>
+      """Qué ocurre al mantener pulsada la fila de un elemento.""";
+  ItemLongPressActionNamesSettingsMessagesEs get itemLongPressActionNames =>
+      ItemLongPressActionNamesSettingsMessagesEs(this);
+
+  /// ```dart
   /// "Posición de la casilla"
   /// ```
   String get checkboxPosition => """Posición de la casilla""";
@@ -1068,6 +1082,38 @@ class ItemTapActionNamesSettingsMessagesEs
     extends ItemTapActionNamesSettingsMessages {
   final SettingsMessagesEs _parent;
   const ItemTapActionNamesSettingsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Marcar como completado"
+  /// ```
+  String get done => """Marcar como completado""";
+
+  /// ```dart
+  /// "Ver"
+  /// ```
+  String get view => """Ver""";
+
+  /// ```dart
+  /// "Editar"
+  /// ```
+  String get edit => """Editar""";
+
+  /// ```dart
+  /// "Ninguna"
+  /// ```
+  String get none => """Ninguna""";
+}
+
+class ItemLongPressActionNamesSettingsMessagesEs
+    extends ItemLongPressActionNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const ItemLongPressActionNamesSettingsMessagesEs(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "Selección múltiple/Reordenar"
+  /// ```
+  String get multiselect => """Selección múltiple/Reordenar""";
 
   /// ```dart
   /// "Marcar como completado"
@@ -3723,6 +3769,16 @@ Contraseña: pantry-rocks""",
   """settings.itemTapActionNames.view""": """Ver""",
   """settings.itemTapActionNames.edit""": """Editar""",
   """settings.itemTapActionNames.none""": """Ninguna""",
+  """settings.defaultItemLongPressAction""":
+      """Acción al mantener pulsado un elemento""",
+  """settings.defaultItemLongPressActionBody""":
+      """Qué ocurre al mantener pulsada la fila de un elemento.""",
+  """settings.itemLongPressActionNames.multiselect""":
+      """Selección múltiple/Reordenar""",
+  """settings.itemLongPressActionNames.done""": """Marcar como completado""",
+  """settings.itemLongPressActionNames.view""": """Ver""",
+  """settings.itemLongPressActionNames.edit""": """Editar""",
+  """settings.itemLongPressActionNames.none""": """Ninguna""",
   """settings.checkboxPosition""": """Posición de la casilla""",
   """settings.checkboxPositionBody""":
       """En qué lado de la fila aparece la casilla.""",

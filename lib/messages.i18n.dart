@@ -905,6 +905,19 @@ class SettingsMessages {
       ItemTapActionNamesSettingsMessages(this);
 
   /// ```dart
+  /// "Default item long-press action"
+  /// ```
+  String get defaultItemLongPressAction => """Default item long-press action""";
+
+  /// ```dart
+  /// "What happens when you long-press an item row."
+  /// ```
+  String get defaultItemLongPressActionBody =>
+      """What happens when you long-press an item row.""";
+  ItemLongPressActionNamesSettingsMessages get itemLongPressActionNames =>
+      ItemLongPressActionNamesSettingsMessages(this);
+
+  /// ```dart
   /// "Checkbox position"
   /// ```
   String get checkboxPosition => """Checkbox position""";
@@ -1061,6 +1074,36 @@ class SettingsMessages {
 class ItemTapActionNamesSettingsMessages {
   final SettingsMessages _parent;
   const ItemTapActionNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Mark as done"
+  /// ```
+  String get done => """Mark as done""";
+
+  /// ```dart
+  /// "View"
+  /// ```
+  String get view => """View""";
+
+  /// ```dart
+  /// "Edit"
+  /// ```
+  String get edit => """Edit""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get none => """None""";
+}
+
+class ItemLongPressActionNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const ItemLongPressActionNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Multi-select/Reorder"
+  /// ```
+  String get multiselect => """Multi-select/Reorder""";
 
   /// ```dart
   /// "Mark as done"
@@ -3689,6 +3732,16 @@ Password: pantry-rocks""",
   """settings.itemTapActionNames.view""": """View""",
   """settings.itemTapActionNames.edit""": """Edit""",
   """settings.itemTapActionNames.none""": """None""",
+  """settings.defaultItemLongPressAction""":
+      """Default item long-press action""",
+  """settings.defaultItemLongPressActionBody""":
+      """What happens when you long-press an item row.""",
+  """settings.itemLongPressActionNames.multiselect""":
+      """Multi-select/Reorder""",
+  """settings.itemLongPressActionNames.done""": """Mark as done""",
+  """settings.itemLongPressActionNames.view""": """View""",
+  """settings.itemLongPressActionNames.edit""": """Edit""",
+  """settings.itemLongPressActionNames.none""": """None""",
   """settings.checkboxPosition""": """Checkbox position""",
   """settings.checkboxPositionBody""":
       """Which side of the row the checkbox appears on.""",

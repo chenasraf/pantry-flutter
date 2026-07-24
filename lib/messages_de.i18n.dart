@@ -908,6 +908,20 @@ class SettingsMessagesDe extends SettingsMessages {
       ItemTapActionNamesSettingsMessagesDe(this);
 
   /// ```dart
+  /// "Standardaktion beim langen Drücken"
+  /// ```
+  String get defaultItemLongPressAction =>
+      """Standardaktion beim langen Drücken""";
+
+  /// ```dart
+  /// "Was passiert, wenn du eine Eintragszeile lange gedrückt hältst."
+  /// ```
+  String get defaultItemLongPressActionBody =>
+      """Was passiert, wenn du eine Eintragszeile lange gedrückt hältst.""";
+  ItemLongPressActionNamesSettingsMessagesDe get itemLongPressActionNames =>
+      ItemLongPressActionNamesSettingsMessagesDe(this);
+
+  /// ```dart
   /// "Position des Kontrollkästchens"
   /// ```
   String get checkboxPosition => """Position des Kontrollkästchens""";
@@ -1067,6 +1081,38 @@ class ItemTapActionNamesSettingsMessagesDe
     extends ItemTapActionNamesSettingsMessages {
   final SettingsMessagesDe _parent;
   const ItemTapActionNamesSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Als erledigt markieren"
+  /// ```
+  String get done => """Als erledigt markieren""";
+
+  /// ```dart
+  /// "Anzeigen"
+  /// ```
+  String get view => """Anzeigen""";
+
+  /// ```dart
+  /// "Bearbeiten"
+  /// ```
+  String get edit => """Bearbeiten""";
+
+  /// ```dart
+  /// "Keine"
+  /// ```
+  String get none => """Keine""";
+}
+
+class ItemLongPressActionNamesSettingsMessagesDe
+    extends ItemLongPressActionNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const ItemLongPressActionNamesSettingsMessagesDe(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "Mehrfachauswahl/Neu anordnen"
+  /// ```
+  String get multiselect => """Mehrfachauswahl/Neu anordnen""";
 
   /// ```dart
   /// "Als erledigt markieren"
@@ -3728,6 +3774,16 @@ Passwort: pantry-rocks""",
   """settings.itemTapActionNames.view""": """Anzeigen""",
   """settings.itemTapActionNames.edit""": """Bearbeiten""",
   """settings.itemTapActionNames.none""": """Keine""",
+  """settings.defaultItemLongPressAction""":
+      """Standardaktion beim langen Drücken""",
+  """settings.defaultItemLongPressActionBody""":
+      """Was passiert, wenn du eine Eintragszeile lange gedrückt hältst.""",
+  """settings.itemLongPressActionNames.multiselect""":
+      """Mehrfachauswahl/Neu anordnen""",
+  """settings.itemLongPressActionNames.done""": """Als erledigt markieren""",
+  """settings.itemLongPressActionNames.view""": """Anzeigen""",
+  """settings.itemLongPressActionNames.edit""": """Bearbeiten""",
+  """settings.itemLongPressActionNames.none""": """Keine""",
   """settings.checkboxPosition""": """Position des Kontrollkästchens""",
   """settings.checkboxPositionBody""":
       """Auf welcher Seite der Zeile das Kontrollkästchen erscheint.""",

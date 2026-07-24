@@ -293,12 +293,16 @@ class _BodyState extends State<_Body> {
     final filteredItems = _applyFilters(controller.items, selectedListIds);
     final activeItems = filteredItems.where((i) => !i.done).toList();
     final doneItems = filteredItems.where((i) => i.done).toList();
+    final prefs = context.watch<PrefsService>();
     // Drag-to-reorder is only meaningful under custom sort, and only when the
     // active partition is the full set: reordering writes sort_order across the
     // partition, so a category/search filter (or the cross-list meta view)
     // would persist a partial, wrong order. Gate it to the unfiltered case.
+    // It also requires the long-press action to be the built-in
+    // multi-select/reorder behavior; any other choice frees long-press for it.
     final canReorder =
         controller.effectiveSortBy == 'custom' &&
+        prefs.defaultItemLongPressAction == 'multiselect' &&
         !isMeta &&
         !controller.isSoftView &&
         !controller.selectionMode &&
@@ -311,7 +315,6 @@ class _BodyState extends State<_Body> {
     final total = controller.items.where((i) => i.deletedAt == null).length;
     final done = controller.items.where((i) => i.done).length;
 
-    final prefs = context.watch<PrefsService>();
     final isCards = prefs.checklistView == 'cards';
     final doneCollapsed = prefs.checklistDoneCollapsed;
     final isEmptyList = controller.items.isEmpty && !controller.isSoftView;

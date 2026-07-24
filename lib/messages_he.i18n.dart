@@ -905,6 +905,19 @@ class SettingsMessagesHe extends SettingsMessages {
       ItemTapActionNamesSettingsMessagesHe(this);
 
   /// ```dart
+  /// "פעולת ברירת מחדל בלחיצה ארוכה"
+  /// ```
+  String get defaultItemLongPressAction => """פעולת ברירת מחדל בלחיצה ארוכה""";
+
+  /// ```dart
+  /// "מה קורה כאשר לוחצים לחיצה ארוכה על שורת פריט."
+  /// ```
+  String get defaultItemLongPressActionBody =>
+      """מה קורה כאשר לוחצים לחיצה ארוכה על שורת פריט.""";
+  ItemLongPressActionNamesSettingsMessagesHe get itemLongPressActionNames =>
+      ItemLongPressActionNamesSettingsMessagesHe(this);
+
+  /// ```dart
   /// "מיקום תיבת הסימון"
   /// ```
   String get checkboxPosition => """מיקום תיבת הסימון""";
@@ -1061,6 +1074,38 @@ class ItemTapActionNamesSettingsMessagesHe
     extends ItemTapActionNamesSettingsMessages {
   final SettingsMessagesHe _parent;
   const ItemTapActionNamesSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "סמן כהושלם"
+  /// ```
+  String get done => """סמן כהושלם""";
+
+  /// ```dart
+  /// "צפייה"
+  /// ```
+  String get view => """צפייה""";
+
+  /// ```dart
+  /// "עריכה"
+  /// ```
+  String get edit => """עריכה""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get none => """ללא""";
+}
+
+class ItemLongPressActionNamesSettingsMessagesHe
+    extends ItemLongPressActionNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const ItemLongPressActionNamesSettingsMessagesHe(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "בחירה מרובה/סידור מחדש"
+  /// ```
+  String get multiselect => """בחירה מרובה/סידור מחדש""";
 
   /// ```dart
   /// "סמן כהושלם"
@@ -3692,6 +3737,16 @@ Map<String, String> get messagesHeMap => {
   """settings.itemTapActionNames.view""": """צפייה""",
   """settings.itemTapActionNames.edit""": """עריכה""",
   """settings.itemTapActionNames.none""": """ללא""",
+  """settings.defaultItemLongPressAction""":
+      """פעולת ברירת מחדל בלחיצה ארוכה""",
+  """settings.defaultItemLongPressActionBody""":
+      """מה קורה כאשר לוחצים לחיצה ארוכה על שורת פריט.""",
+  """settings.itemLongPressActionNames.multiselect""":
+      """בחירה מרובה/סידור מחדש""",
+  """settings.itemLongPressActionNames.done""": """סמן כהושלם""",
+  """settings.itemLongPressActionNames.view""": """צפייה""",
+  """settings.itemLongPressActionNames.edit""": """עריכה""",
+  """settings.itemLongPressActionNames.none""": """ללא""",
   """settings.checkboxPosition""": """מיקום תיבת הסימון""",
   """settings.checkboxPositionBody""":
       """באיזה צד של השורה תופיע תיבת הסימון.""",

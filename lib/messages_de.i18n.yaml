@@ -166,6 +166,14 @@ settings:
     view: Anzeigen
     edit: Bearbeiten
     none: Keine
+  defaultItemLongPressAction: Standardaktion beim langen Drücken
+  defaultItemLongPressActionBody: "Was passiert, wenn du eine Eintragszeile lange gedrückt hältst."
+  itemLongPressActionNames:
+    multiselect: Mehrfachauswahl/Neu anordnen
+    done: Als erledigt markieren
+    view: Anzeigen
+    edit: Bearbeiten
+    none: Keine
   checkboxPosition: Position des Kontrollkästchens
   checkboxPositionBody: Auf welcher Seite der Zeile das Kontrollkästchen erscheint.
   checkboxPositionNames:

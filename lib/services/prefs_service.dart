@@ -22,6 +22,8 @@ class PrefsService extends ChangeNotifier {
   static const _themeModeKey = 'theme_mode';
   static const _checklistTapRowToToggleKey = 'checklist_tap_row_to_toggle';
   static const _defaultItemTapActionKey = 'default_item_tap_action';
+  static const _defaultItemLongPressActionKey =
+      'default_item_long_press_action';
   static const _checklistCategorySpacingKey = 'checklist_category_spacing';
   static const _reuseExistingItemsKey = 'reuse_existing_items';
   static const _checklistViewKey = 'checklist_view';
@@ -70,6 +72,13 @@ class PrefsService extends ChangeNotifier {
   /// `done`, `view`, `edit`, `none`. Default is `view`.
   String _defaultItemTapAction = 'view';
   String get defaultItemTapAction => _defaultItemTapAction;
+
+  /// Action performed when the user long-presses an item row. One of:
+  /// `multiselect`, `done`, `view`, `edit`, `none`. Default is `multiselect`,
+  /// which keeps the built-in behavior: enter multi-select under any
+  /// non-custom sort, or drag-to-reorder under custom sort.
+  String _defaultItemLongPressAction = 'multiselect';
+  String get defaultItemLongPressAction => _defaultItemLongPressAction;
 
   /// Account-scoped pref synced from the Pantry user-prefs endpoint, cached
   /// locally so the add-item path can read it synchronously. One of `ask`
@@ -214,6 +223,11 @@ class PrefsService extends ChangeNotifier {
         );
         await _storage.delete(key: _checklistTapRowToToggleKey);
       }
+    }
+
+    final longPressAction = all[_defaultItemLongPressActionKey];
+    if (longPressAction != null && _isValidLongPressAction(longPressAction)) {
+      _defaultItemLongPressAction = longPressAction;
     }
 
     // The category-spacing setting was replaced by grouped category headers;
@@ -440,6 +454,21 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  static bool _isValidLongPressAction(String value) =>
+      value == 'multiselect' ||
+      value == 'done' ||
+      value == 'view' ||
+      value == 'edit' ||
+      value == 'none';
+
+  Future<void> setDefaultItemLongPressAction(String value) async {
+    if (!_isValidLongPressAction(value)) return;
+    if (_defaultItemLongPressAction == value) return;
+    _defaultItemLongPressAction = value;
+    await _storage.write(key: _defaultItemLongPressActionKey, value: value);
+    notifyListeners();
+  }
+
   static bool _isValidReuseExistingItems(String value) =>
       value == 'ask' || value == 'reuse' || value == 'never';
 
@@ -613,6 +642,7 @@ class PrefsService extends ChangeNotifier {
     _locale = null;
     _themeMode = null;
     _defaultItemTapAction = 'view';
+    _defaultItemLongPressAction = 'multiselect';
     _reuseExistingItems = 'ask';
     _checklistView = 'list';
     _checklistCheckboxPosition = 'start';
@@ -638,6 +668,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _themeModeKey);
     await _storage.delete(key: _checklistTapRowToToggleKey);
     await _storage.delete(key: _defaultItemTapActionKey);
+    await _storage.delete(key: _defaultItemLongPressActionKey);
     await _storage.delete(key: _checklistCategorySpacingKey);
     await _storage.delete(key: _reuseExistingItemsKey);
     await _storage.delete(key: _checklistViewKey);

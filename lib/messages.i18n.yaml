@@ -166,6 +166,14 @@ settings:
     view: View
     edit: Edit
     none: None
+  defaultItemLongPressAction: Default item long-press action
+  defaultItemLongPressActionBody: "What happens when you long-press an item row."
+  itemLongPressActionNames:
+    multiselect: Multi-select/Reorder
+    done: Mark as done
+    view: View
+    edit: Edit
+    none: None
   checkboxPosition: Checkbox position
   checkboxPositionBody: Which side of the row the checkbox appears on.
   checkboxPositionNames:

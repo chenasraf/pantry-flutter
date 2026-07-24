@@ -911,6 +911,20 @@ class SettingsMessagesFr extends SettingsMessages {
       ItemTapActionNamesSettingsMessagesFr(this);
 
   /// ```dart
+  /// "Action par défaut à l'appui long"
+  /// ```
+  String get defaultItemLongPressAction =>
+      """Action par défaut à l'appui long""";
+
+  /// ```dart
+  /// "Ce qui se passe quand vous appuyez longuement sur la ligne d'un élément."
+  /// ```
+  String get defaultItemLongPressActionBody =>
+      """Ce qui se passe quand vous appuyez longuement sur la ligne d'un élément.""";
+  ItemLongPressActionNamesSettingsMessagesFr get itemLongPressActionNames =>
+      ItemLongPressActionNamesSettingsMessagesFr(this);
+
+  /// ```dart
   /// "Position de la case à cocher"
   /// ```
   String get checkboxPosition => """Position de la case à cocher""";
@@ -1070,6 +1084,38 @@ class ItemTapActionNamesSettingsMessagesFr
     extends ItemTapActionNamesSettingsMessages {
   final SettingsMessagesFr _parent;
   const ItemTapActionNamesSettingsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Marquer comme fait"
+  /// ```
+  String get done => """Marquer comme fait""";
+
+  /// ```dart
+  /// "Voir"
+  /// ```
+  String get view => """Voir""";
+
+  /// ```dart
+  /// "Modifier"
+  /// ```
+  String get edit => """Modifier""";
+
+  /// ```dart
+  /// "Aucune"
+  /// ```
+  String get none => """Aucune""";
+}
+
+class ItemLongPressActionNamesSettingsMessagesFr
+    extends ItemLongPressActionNamesSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const ItemLongPressActionNamesSettingsMessagesFr(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "Sélection multiple/Réorganiser"
+  /// ```
+  String get multiselect => """Sélection multiple/Réorganiser""";
 
   /// ```dart
   /// "Marquer comme fait"
@@ -3733,6 +3779,16 @@ Mot de passe : pantry-rocks""",
   """settings.itemTapActionNames.view""": """Voir""",
   """settings.itemTapActionNames.edit""": """Modifier""",
   """settings.itemTapActionNames.none""": """Aucune""",
+  """settings.defaultItemLongPressAction""":
+      """Action par défaut à l'appui long""",
+  """settings.defaultItemLongPressActionBody""":
+      """Ce qui se passe quand vous appuyez longuement sur la ligne d'un élément.""",
+  """settings.itemLongPressActionNames.multiselect""":
+      """Sélection multiple/Réorganiser""",
+  """settings.itemLongPressActionNames.done""": """Marquer comme fait""",
+  """settings.itemLongPressActionNames.view""": """Voir""",
+  """settings.itemLongPressActionNames.edit""": """Modifier""",
+  """settings.itemLongPressActionNames.none""": """Aucune""",
   """settings.checkboxPosition""": """Position de la case à cocher""",
   """settings.checkboxPositionBody""":
       """De quel côté de la ligne la case à cocher apparaît.""",

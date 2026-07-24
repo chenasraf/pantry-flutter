@@ -166,6 +166,14 @@ settings:
     view: Voir
     edit: Modifier
     none: Aucune
+  defaultItemLongPressAction: Action par défaut à l'appui long
+  defaultItemLongPressActionBody: "Ce qui se passe quand vous appuyez longuement sur la ligne d'un élément."
+  itemLongPressActionNames:
+    multiselect: Sélection multiple/Réorganiser
+    done: Marquer comme fait
+    view: Voir
+    edit: Modifier
+    none: Aucune
   checkboxPosition: "Position de la case à cocher"
   checkboxPositionBody: "De quel côté de la ligne la case à cocher apparaît."
   checkboxPositionNames:

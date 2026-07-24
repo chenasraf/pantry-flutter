@@ -192,6 +192,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final cat = widget.category;
     final prefs = context.watch<PrefsService>();
     final tapAction = prefs.defaultItemTapAction;
+    final longPressAction = prefs.defaultItemLongPressAction;
     final dense = prefs.checklistDensity == 'dense';
     final swipeEnabled = prefs.swipeActionsEnabled;
 
@@ -365,13 +366,31 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       };
     }
 
-    // Long-press enters selection, but only when the row isn't already in
-    // selection mode and the caller opted in (reorder contexts pass null so
-    // the drag-start listener keeps long-press).
-    final VoidCallback? rowLongPress =
-        !selecting && widget.onLongPressSelect != null
-        ? () => widget.onLongPressSelect!(item)
-        : null;
+    // Long-press honors the user's chosen action. The default `multiselect`
+    // preserves the built-in behavior: enter selection here, or (under custom
+    // sort) let the view's drag-start listener own long-press by passing a null
+    // `onLongPressSelect`. Any other action mirrors the tap-action switch.
+    final VoidCallback? rowLongPress;
+    if (selecting) {
+      rowLongPress = null;
+    } else if (longPressAction == 'multiselect') {
+      rowLongPress = widget.onLongPressSelect != null
+          ? () => widget.onLongPressSelect!(item)
+          : null;
+    } else if (widget.trashMode || widget.archiveMode) {
+      rowLongPress = () => widget.onView(item);
+    } else {
+      rowLongPress = switch (longPressAction) {
+        'done' =>
+          widget.canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
+        'edit' =>
+          widget.onEdit != null
+              ? () => widget.onEdit!(item)
+              : () => widget.onView(item),
+        'none' => null,
+        _ => () => widget.onView(item),
+      };
+    }
 
     final content = _RowContent(
       item: item,

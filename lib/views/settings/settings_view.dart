@@ -28,6 +28,13 @@ class _SettingsViewState extends State<SettingsView> {
   static const _checkboxPositionOptions = ['start', 'end'];
   static const _densityOptions = ['normal', 'dense'];
   static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
+  static const _itemLongPressActionOptions = [
+    'multiselect',
+    'done',
+    'view',
+    'edit',
+    'none',
+  ];
   static const _reuseExistingItemsOptions = ['ask', 'reuse', 'never'];
 
   @override
@@ -49,6 +56,21 @@ class _SettingsViewState extends State<SettingsView> {
     'edit' => m.settings.itemTapActionNames.edit,
     'none' => m.settings.itemTapActionNames.none,
     _ => m.settings.itemTapActionNames.view,
+  };
+
+  Future<void> _setItemLongPressAction(String? value) async {
+    if (value == null) return;
+    final prefs = context.read<PrefsService>();
+    if (value == prefs.defaultItemLongPressAction) return;
+    await prefs.setDefaultItemLongPressAction(value);
+  }
+
+  String _itemLongPressActionLabel(String value) => switch (value) {
+    'multiselect' => m.settings.itemLongPressActionNames.multiselect,
+    'done' => m.settings.itemLongPressActionNames.done,
+    'edit' => m.settings.itemLongPressActionNames.edit,
+    'none' => m.settings.itemLongPressActionNames.none,
+    _ => m.settings.itemLongPressActionNames.view,
   };
 
   Future<void> _setCheckboxPosition(String? value) async {
@@ -187,6 +209,7 @@ class _SettingsViewState extends State<SettingsView> {
     final notificationsEnabled = prefs.notificationsEnabled;
     final pollIntervalMinutes = prefs.pollIntervalMinutes;
     final itemTapAction = prefs.defaultItemTapAction;
+    final itemLongPressAction = prefs.defaultItemLongPressAction;
     final checkboxPosition = prefs.checklistCheckboxPosition;
     final density = prefs.checklistDensity;
     final swipeActionsEnabled = prefs.swipeActionsEnabled;
@@ -293,6 +316,23 @@ class _SettingsViewState extends State<SettingsView> {
                       DropdownMenuItem(
                         value: option,
                         child: Text(_itemTapActionLabel(option)),
+                      ),
+                  ],
+                ),
+              ),
+            if (supportsFeature('pref-tap-row-to-complete'))
+              ListTile(
+                leading: const Icon(Icons.touch_app),
+                title: Text(m.settings.defaultItemLongPressAction),
+                subtitle: Text(m.settings.defaultItemLongPressActionBody),
+                trailing: DropdownButton<String>(
+                  value: itemLongPressAction,
+                  onChanged: _setItemLongPressAction,
+                  items: [
+                    for (final option in _itemLongPressActionOptions)
+                      DropdownMenuItem(
+                        value: option,
+                        child: Text(_itemLongPressActionLabel(option)),
                       ),
                   ],
                 ),

@@ -166,6 +166,14 @@ settings:
     view: Ver
     edit: Editar
     none: Ninguna
+  defaultItemLongPressAction: Acción al mantener pulsado un elemento
+  defaultItemLongPressActionBody: "Qué ocurre al mantener pulsada la fila de un elemento."
+  itemLongPressActionNames:
+    multiselect: Selección múltiple/Reordenar
+    done: Marcar como completado
+    view: Ver
+    edit: Editar
+    none: Ninguna
   checkboxPosition: Posición de la casilla
   checkboxPositionBody: En qué lado de la fila aparece la casilla.
   checkboxPositionNames:

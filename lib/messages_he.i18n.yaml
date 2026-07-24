@@ -166,6 +166,14 @@ settings:
     view: צפייה
     edit: עריכה
     none: ללא
+  defaultItemLongPressAction: פעולת ברירת מחדל בלחיצה ארוכה
+  defaultItemLongPressActionBody: מה קורה כאשר לוחצים לחיצה ארוכה על שורת פריט.
+  itemLongPressActionNames:
+    multiselect: בחירה מרובה/סידור מחדש
+    done: סמן כהושלם
+    view: צפייה
+    edit: עריכה
+    none: ללא
   checkboxPosition: מיקום תיבת הסימון
   checkboxPositionBody: באיזה צד של השורה תופיע תיבת הסימון.
   checkboxPositionNames:
