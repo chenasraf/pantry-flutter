@@ -1432,6 +1432,81 @@ class StoresMessagesFr extends StoresMessages {
   /// ```
   String get deleteConfirmBody =>
       """Ce magasin sera retiré de tous les articles. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Emplacement"
+  /// ```
+  String get location => """Emplacement""";
+
+  /// ```dart
+  /// "p. ex. 12 rue Principale"
+  /// ```
+  String get locationHint => """p. ex. 12 rue Principale""";
+
+  /// ```dart
+  /// "Horaires d'ouverture"
+  /// ```
+  String get openingHours => """Horaires d'ouverture""";
+
+  /// ```dart
+  /// "Ajouter des horaires"
+  /// ```
+  String get addOpeningHours => """Ajouter des horaires""";
+
+  /// ```dart
+  /// "Début"
+  /// ```
+  String get openingHoursStart => """Début""";
+
+  /// ```dart
+  /// "Fin"
+  /// ```
+  String get openingHoursEnd => """Fin""";
+
+  /// ```dart
+  /// "Ajouter"
+  /// ```
+  String get openingHoursAdd => """Ajouter""";
+
+  /// ```dart
+  /// "Contact"
+  /// ```
+  String get contact => """Contact""";
+
+  /// ```dart
+  /// "p. ex. téléphone, site web, réseaux sociaux"
+  /// ```
+  String get contactHint => """p. ex. téléphone, site web, réseaux sociaux""";
+
+  /// ```dart
+  /// "Responsable"
+  /// ```
+  String get responsible => """Responsable""";
+
+  /// ```dart
+  /// "p. ex. gérant du magasin"
+  /// ```
+  String get responsibleHint => """p. ex. gérant du magasin""";
+
+  /// ```dart
+  /// "Notes"
+  /// ```
+  String get notes => """Notes""";
+
+  /// ```dart
+  /// "Toute autre chose à retenir"
+  /// ```
+  String get notesHint => """Toute autre chose à retenir""";
+
+  /// ```dart
+  /// "Aucun détail ajouté pour le moment."
+  /// ```
+  String get noDetails => """Aucun détail ajouté pour le moment.""";
+
+  /// ```dart
+  /// "Modifier"
+  /// ```
+  String get editAction => """Modifier""";
 }
 
 class ChecklistsMessagesFr extends ChecklistsMessages {
@@ -3875,6 +3950,21 @@ Mot de passe : pantry-rocks""",
   """stores.deleteConfirm""": """Supprimer ce magasin ?""",
   """stores.deleteConfirmBody""":
       """Ce magasin sera retiré de tous les articles. Cette action est irréversible.""",
+  """stores.location""": """Emplacement""",
+  """stores.locationHint""": """p. ex. 12 rue Principale""",
+  """stores.openingHours""": """Horaires d'ouverture""",
+  """stores.addOpeningHours""": """Ajouter des horaires""",
+  """stores.openingHoursStart""": """Début""",
+  """stores.openingHoursEnd""": """Fin""",
+  """stores.openingHoursAdd""": """Ajouter""",
+  """stores.contact""": """Contact""",
+  """stores.contactHint""": """p. ex. téléphone, site web, réseaux sociaux""",
+  """stores.responsible""": """Responsable""",
+  """stores.responsibleHint""": """p. ex. gérant du magasin""",
+  """stores.notes""": """Notes""",
+  """stores.notesHint""": """Toute autre chose à retenir""",
+  """stores.noDetails""": """Aucun détail ajouté pour le moment.""",
+  """stores.editAction""": """Modifier""",
   """checklists.categories""": """Catégories""",
   """checklists.noChecklists""": """Aucune liste pour le moment.""",
   """checklists.noItems""": """Aucun article dans cette liste.""",

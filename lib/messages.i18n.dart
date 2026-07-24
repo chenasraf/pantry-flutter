@@ -1417,6 +1417,81 @@ class StoresMessages {
   /// ```
   String get deleteConfirmBody =>
       """This store will be removed from all items. This cannot be undone.""";
+
+  /// ```dart
+  /// "Location"
+  /// ```
+  String get location => """Location""";
+
+  /// ```dart
+  /// "e.g. 12 Main Street"
+  /// ```
+  String get locationHint => """e.g. 12 Main Street""";
+
+  /// ```dart
+  /// "Opening hours"
+  /// ```
+  String get openingHours => """Opening hours""";
+
+  /// ```dart
+  /// "Add opening hours"
+  /// ```
+  String get addOpeningHours => """Add opening hours""";
+
+  /// ```dart
+  /// "Start"
+  /// ```
+  String get openingHoursStart => """Start""";
+
+  /// ```dart
+  /// "End"
+  /// ```
+  String get openingHoursEnd => """End""";
+
+  /// ```dart
+  /// "Add"
+  /// ```
+  String get openingHoursAdd => """Add""";
+
+  /// ```dart
+  /// "Contact"
+  /// ```
+  String get contact => """Contact""";
+
+  /// ```dart
+  /// "e.g. phone, website, social media"
+  /// ```
+  String get contactHint => """e.g. phone, website, social media""";
+
+  /// ```dart
+  /// "Responsible"
+  /// ```
+  String get responsible => """Responsible""";
+
+  /// ```dart
+  /// "e.g. store manager"
+  /// ```
+  String get responsibleHint => """e.g. store manager""";
+
+  /// ```dart
+  /// "Notes"
+  /// ```
+  String get notes => """Notes""";
+
+  /// ```dart
+  /// "Anything else worth remembering"
+  /// ```
+  String get notesHint => """Anything else worth remembering""";
+
+  /// ```dart
+  /// "No details added yet."
+  /// ```
+  String get noDetails => """No details added yet.""";
+
+  /// ```dart
+  /// "Edit"
+  /// ```
+  String get editAction => """Edit""";
 }
 
 class ChecklistsMessages {
@@ -3826,6 +3901,21 @@ Password: pantry-rocks""",
   """stores.deleteConfirm""": """Delete this store?""",
   """stores.deleteConfirmBody""":
       """This store will be removed from all items. This cannot be undone.""",
+  """stores.location""": """Location""",
+  """stores.locationHint""": """e.g. 12 Main Street""",
+  """stores.openingHours""": """Opening hours""",
+  """stores.addOpeningHours""": """Add opening hours""",
+  """stores.openingHoursStart""": """Start""",
+  """stores.openingHoursEnd""": """End""",
+  """stores.openingHoursAdd""": """Add""",
+  """stores.contact""": """Contact""",
+  """stores.contactHint""": """e.g. phone, website, social media""",
+  """stores.responsible""": """Responsible""",
+  """stores.responsibleHint""": """e.g. store manager""",
+  """stores.notes""": """Notes""",
+  """stores.notesHint""": """Anything else worth remembering""",
+  """stores.noDetails""": """No details added yet.""",
+  """stores.editAction""": """Edit""",
   """checklists.categories""": """Categories""",
   """checklists.noChecklists""": """No checklists yet.""",
   """checklists.noItems""": """No items in this list.""",

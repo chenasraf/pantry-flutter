@@ -262,6 +262,21 @@ stores:
   deleteFailed: Geschäft konnte nicht gelöscht werden.
   deleteConfirm: Dieses Geschäft löschen?
   deleteConfirmBody: "Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden."
+  location: Standort
+  locationHint: "z. B. Hauptstraße 12"
+  openingHours: Öffnungszeiten
+  addOpeningHours: Öffnungszeiten hinzufügen
+  openingHoursStart: Von
+  openingHoursEnd: Bis
+  openingHoursAdd: Hinzufügen
+  contact: Kontakt
+  contactHint: "z. B. Telefon, Website, soziale Medien"
+  responsible: Verantwortlich
+  responsibleHint: "z. B. Filialleitung"
+  notes: Notizen
+  notesHint: Alles Weitere, was man sich merken sollte
+  noDetails: Noch keine Angaben hinzugefügt.
+  editAction: Bearbeiten
 
 checklists:
   categories: Kategorien

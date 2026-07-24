@@ -262,6 +262,21 @@ stores:
   deleteFailed: "No se pudo eliminar la tienda."
   deleteConfirm: "¿Eliminar esta tienda?"
   deleteConfirmBody: "Esta tienda se eliminará de todos los artículos. Esto no se puede deshacer."
+  location: Ubicación
+  locationHint: "p. ej. Calle Mayor 12"
+  openingHours: Horario de apertura
+  addOpeningHours: Añadir horario
+  openingHoursStart: Desde
+  openingHoursEnd: Hasta
+  openingHoursAdd: Añadir
+  contact: Contacto
+  contactHint: "p. ej. teléfono, sitio web, redes sociales"
+  responsible: Responsable
+  responsibleHint: "p. ej. encargado de la tienda"
+  notes: Notas
+  notesHint: Cualquier otra cosa que convenga recordar
+  noDetails: Aún no se han añadido detalles.
+  editAction: Editar
 
 checklists:
   categories: "Categorías"

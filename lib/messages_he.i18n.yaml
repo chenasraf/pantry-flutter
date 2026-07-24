@@ -262,6 +262,21 @@ stores:
   deleteFailed: מחיקת החנות נכשלה.
   deleteConfirm: למחוק את החנות הזו?
   deleteConfirmBody: "החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו."
+  location: מיקום
+  locationHint: "לדוגמה: רחוב הרצל 12"
+  openingHours: שעות פתיחה
+  addOpeningHours: הוספת שעות פתיחה
+  openingHoursStart: התחלה
+  openingHoursEnd: סיום
+  openingHoursAdd: הוספה
+  contact: איש קשר
+  contactHint: "לדוגמה: טלפון, אתר, רשתות חברתיות"
+  responsible: אחראי
+  responsibleHint: "לדוגמה: מנהל החנות"
+  notes: הערות
+  notesHint: כל דבר נוסף שכדאי לזכור
+  noDetails: עדיין לא נוספו פרטים.
+  editAction: עריכה
 
 checklists:
   categories: קטגוריות

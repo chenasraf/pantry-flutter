@@ -1430,6 +1430,81 @@ class StoresMessagesDe extends StoresMessages {
   /// ```
   String get deleteConfirmBody =>
       """Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Standort"
+  /// ```
+  String get location => """Standort""";
+
+  /// ```dart
+  /// "z. B. Hauptstraße 12"
+  /// ```
+  String get locationHint => """z. B. Hauptstraße 12""";
+
+  /// ```dart
+  /// "Öffnungszeiten"
+  /// ```
+  String get openingHours => """Öffnungszeiten""";
+
+  /// ```dart
+  /// "Öffnungszeiten hinzufügen"
+  /// ```
+  String get addOpeningHours => """Öffnungszeiten hinzufügen""";
+
+  /// ```dart
+  /// "Von"
+  /// ```
+  String get openingHoursStart => """Von""";
+
+  /// ```dart
+  /// "Bis"
+  /// ```
+  String get openingHoursEnd => """Bis""";
+
+  /// ```dart
+  /// "Hinzufügen"
+  /// ```
+  String get openingHoursAdd => """Hinzufügen""";
+
+  /// ```dart
+  /// "Kontakt"
+  /// ```
+  String get contact => """Kontakt""";
+
+  /// ```dart
+  /// "z. B. Telefon, Website, soziale Medien"
+  /// ```
+  String get contactHint => """z. B. Telefon, Website, soziale Medien""";
+
+  /// ```dart
+  /// "Verantwortlich"
+  /// ```
+  String get responsible => """Verantwortlich""";
+
+  /// ```dart
+  /// "z. B. Filialleitung"
+  /// ```
+  String get responsibleHint => """z. B. Filialleitung""";
+
+  /// ```dart
+  /// "Notizen"
+  /// ```
+  String get notes => """Notizen""";
+
+  /// ```dart
+  /// "Alles Weitere, was man sich merken sollte"
+  /// ```
+  String get notesHint => """Alles Weitere, was man sich merken sollte""";
+
+  /// ```dart
+  /// "Noch keine Angaben hinzugefügt."
+  /// ```
+  String get noDetails => """Noch keine Angaben hinzugefügt.""";
+
+  /// ```dart
+  /// "Bearbeiten"
+  /// ```
+  String get editAction => """Bearbeiten""";
 }
 
 class ChecklistsMessagesDe extends ChecklistsMessages {
@@ -3870,6 +3945,21 @@ Passwort: pantry-rocks""",
   """stores.deleteConfirm""": """Dieses Geschäft löschen?""",
   """stores.deleteConfirmBody""":
       """Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden.""",
+  """stores.location""": """Standort""",
+  """stores.locationHint""": """z. B. Hauptstraße 12""",
+  """stores.openingHours""": """Öffnungszeiten""",
+  """stores.addOpeningHours""": """Öffnungszeiten hinzufügen""",
+  """stores.openingHoursStart""": """Von""",
+  """stores.openingHoursEnd""": """Bis""",
+  """stores.openingHoursAdd""": """Hinzufügen""",
+  """stores.contact""": """Kontakt""",
+  """stores.contactHint""": """z. B. Telefon, Website, soziale Medien""",
+  """stores.responsible""": """Verantwortlich""",
+  """stores.responsibleHint""": """z. B. Filialleitung""",
+  """stores.notes""": """Notizen""",
+  """stores.notesHint""": """Alles Weitere, was man sich merken sollte""",
+  """stores.noDetails""": """Noch keine Angaben hinzugefügt.""",
+  """stores.editAction""": """Bearbeiten""",
   """checklists.categories""": """Kategorien""",
   """checklists.noChecklists""": """Noch keine Checklisten.""",
   """checklists.noItems""": """Keine Einträge in dieser Liste.""",

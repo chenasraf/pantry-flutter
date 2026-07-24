@@ -15,6 +15,7 @@ import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
     show parseHexColor;
 import 'package:pantry/widgets/member_avatar.dart';
+import 'package:pantry/widgets/store_detail_dialog.dart';
 import 'swipe_reveal_row.dart';
 
 /// Lightweight pointer to the list an item belongs to, used by the All-lists
@@ -831,6 +832,7 @@ class _MetaRow extends StatelessWidget {
             background: (parseHexColor(s.color) ?? cs.primary).withValues(
               alpha: 0.13,
             ),
+            onTap: () => showStoreDetails(context, s),
           ),
         if (item.quantity != null && item.quantity!.trim().isNotEmpty)
           _Chip(
@@ -876,22 +878,25 @@ class _Chip extends StatelessWidget {
   final Color textColor;
   final Color background;
 
+  /// When set, the chip becomes tappable (used by the store chip to open the
+  /// store details view). Other chips stay inert.
+  final VoidCallback? onTap;
+
   const _Chip({
     this.leading,
     this.label,
     required this.textColor,
     required this.background,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final hasLabel = label != null;
-    return Container(
+    final radius = BorderRadius.circular(7);
+    final content = Container(
       padding: EdgeInsets.symmetric(horizontal: hasLabel ? 9 : 6, vertical: 3),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(7),
-      ),
+      decoration: BoxDecoration(color: background, borderRadius: radius),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -910,6 +915,13 @@ class _Chip extends StatelessWidget {
             ),
         ],
       ),
+    );
+
+    if (onTap == null) return content;
+    return Material(
+      color: Colors.transparent,
+      borderRadius: radius,
+      child: InkWell(onTap: onTap, borderRadius: radius, child: content),
     );
   }
 }
