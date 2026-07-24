@@ -1,0 +1,3 @@
+Features
+- add store details with location, hours, contact and notes
+- choose what long-pressing an item does
