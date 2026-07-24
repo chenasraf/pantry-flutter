@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/auth_service.dart';
+import 'package:pantry/sync/sync_manager.dart';
 import 'package:pantry/views/about/about_view.dart';
+import 'package:pantry/widgets/sync_status.dart';
 
 class UserMenuButton extends StatelessWidget {
   final List<House> houses;
@@ -52,9 +54,15 @@ class UserMenuButton extends StatelessWidget {
           )
         : const CircleAvatar(radius: 18, child: Icon(Icons.person, size: 22));
 
+    final theme = Theme.of(context);
+    final badgedAvatar = SyncStatusAvatarBadge(
+      ringColor: theme.appBarTheme.backgroundColor ?? theme.colorScheme.surface,
+      child: avatar,
+    );
+
     return IconButton(
       onPressed: () => _showMenu(context, displayName, loginName, avatar),
-      icon: avatar,
+      icon: badgedAvatar,
     );
   }
 
@@ -90,32 +98,39 @@ class UserMenuButton extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Row(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(width: 40, height: 40, child: avatar),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        displayName,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                Row(
+                  children: [
+                    SizedBox(width: 40, height: 40, child: avatar),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayName,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            loginName,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                      Text(
-                        loginName,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                _SyncStatusMenuRow(onRetry: () => Navigator.of(context).pop()),
               ],
             ),
           ),
@@ -202,5 +217,64 @@ class UserMenuButton extends StatelessWidget {
     } else if (value == 'logout') {
       onLogout();
     }
+  }
+}
+
+/// Sync status shown under the user details in the menu. Renders nothing when
+/// there's no backlog or error to report, so the header stays compact in the
+/// common case. Reactive while the menu is open, and offers a retry on error.
+class _SyncStatusMenuRow extends StatelessWidget {
+  /// Called after a retry is triggered, to dismiss the menu.
+  final VoidCallback onRetry;
+
+  const _SyncStatusMenuRow({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SyncStatusBuilder(
+      builder: (context, status, pending, hasBacklog) {
+        final info = syncStatusPresentation(
+          context,
+          status: status,
+          pending: pending,
+          hasBacklog: hasBacklog,
+        );
+        if (info == null) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(top: 10),
+          child: Row(
+            children: [
+              Icon(info.icon, size: 16, color: info.color),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  info.label,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              if (status == SyncStatus.error)
+                TextButton(
+                  onPressed: () {
+                    SyncManager.instance.flushNow();
+                    onRetry();
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: info.color,
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 8,
+                    ),
+                    minimumSize: const Size(0, 32),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(m.sync.retry),
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

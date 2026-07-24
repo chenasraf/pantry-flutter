@@ -47,8 +47,8 @@ class SyncManager {
 
   /// True when the current queue contents originated from an offline period —
   /// either an op enqueued while disconnected, or a queue persisted from a
-  /// previous session. Drives whether the [SyncStatusBanner] surfaces the
-  /// sync activity; a single-op flush while online does not flip this.
+  /// previous session. Drives whether the user-avatar sync indicator surfaces
+  /// the sync activity; a single-op flush while online does not flip this.
   /// Cleared once the queue fully drains.
   final ValueNotifier<bool> hasBacklog = ValueNotifier(false);
 
