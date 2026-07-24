@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.23.0](https://github.com/chenasraf/pantry-flutter/compare/v0.22.1...v0.23.0) (2026-07-24)
+
+
+### Features
+
+* add store details with location, hours, contact and notes ([034768a](https://github.com/chenasraf/pantry-flutter/commit/034768ac69669962318704d39796f0775692a339))
+* choose what long-pressing an item does ([d5aa30d](https://github.com/chenasraf/pantry-flutter/commit/d5aa30d88997736af298476d526e58c5883b4bbf))
+
 ## [0.22.1](https://github.com/chenasraf/pantry-flutter/compare/v0.22.0...v0.22.1) (2026-07-21)
 
 
