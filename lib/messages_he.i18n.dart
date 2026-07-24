@@ -1422,6 +1422,81 @@ class StoresMessagesHe extends StoresMessages {
   /// ```
   String get deleteConfirmBody =>
       """החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "מיקום"
+  /// ```
+  String get location => """מיקום""";
+
+  /// ```dart
+  /// "לדוגמה: רחוב הרצל 12"
+  /// ```
+  String get locationHint => """לדוגמה: רחוב הרצל 12""";
+
+  /// ```dart
+  /// "שעות פתיחה"
+  /// ```
+  String get openingHours => """שעות פתיחה""";
+
+  /// ```dart
+  /// "הוספת שעות פתיחה"
+  /// ```
+  String get addOpeningHours => """הוספת שעות פתיחה""";
+
+  /// ```dart
+  /// "התחלה"
+  /// ```
+  String get openingHoursStart => """התחלה""";
+
+  /// ```dart
+  /// "סיום"
+  /// ```
+  String get openingHoursEnd => """סיום""";
+
+  /// ```dart
+  /// "הוספה"
+  /// ```
+  String get openingHoursAdd => """הוספה""";
+
+  /// ```dart
+  /// "איש קשר"
+  /// ```
+  String get contact => """איש קשר""";
+
+  /// ```dart
+  /// "לדוגמה: טלפון, אתר, רשתות חברתיות"
+  /// ```
+  String get contactHint => """לדוגמה: טלפון, אתר, רשתות חברתיות""";
+
+  /// ```dart
+  /// "אחראי"
+  /// ```
+  String get responsible => """אחראי""";
+
+  /// ```dart
+  /// "לדוגמה: מנהל החנות"
+  /// ```
+  String get responsibleHint => """לדוגמה: מנהל החנות""";
+
+  /// ```dart
+  /// "הערות"
+  /// ```
+  String get notes => """הערות""";
+
+  /// ```dart
+  /// "כל דבר נוסף שכדאי לזכור"
+  /// ```
+  String get notesHint => """כל דבר נוסף שכדאי לזכור""";
+
+  /// ```dart
+  /// "עדיין לא נוספו פרטים."
+  /// ```
+  String get noDetails => """עדיין לא נוספו פרטים.""";
+
+  /// ```dart
+  /// "עריכה"
+  /// ```
+  String get editAction => """עריכה""";
 }
 
 class ChecklistsMessagesHe extends ChecklistsMessages {
@@ -3830,6 +3905,21 @@ Map<String, String> get messagesHeMap => {
   """stores.deleteConfirm""": """למחוק את החנות הזו?""",
   """stores.deleteConfirmBody""":
       """החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו.""",
+  """stores.location""": """מיקום""",
+  """stores.locationHint""": """לדוגמה: רחוב הרצל 12""",
+  """stores.openingHours""": """שעות פתיחה""",
+  """stores.addOpeningHours""": """הוספת שעות פתיחה""",
+  """stores.openingHoursStart""": """התחלה""",
+  """stores.openingHoursEnd""": """סיום""",
+  """stores.openingHoursAdd""": """הוספה""",
+  """stores.contact""": """איש קשר""",
+  """stores.contactHint""": """לדוגמה: טלפון, אתר, רשתות חברתיות""",
+  """stores.responsible""": """אחראי""",
+  """stores.responsibleHint""": """לדוגמה: מנהל החנות""",
+  """stores.notes""": """הערות""",
+  """stores.notesHint""": """כל דבר נוסף שכדאי לזכור""",
+  """stores.noDetails""": """עדיין לא נוספו פרטים.""",
+  """stores.editAction""": """עריכה""",
   """checklists.categories""": """קטגוריות""",
   """checklists.noChecklists""": """אין רשימות עדיין.""",
   """checklists.noItems""": """אין פריטים ברשימה.""",

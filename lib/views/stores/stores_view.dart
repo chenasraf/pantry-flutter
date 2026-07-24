@@ -9,6 +9,7 @@ import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
+import 'package:pantry/widgets/store_detail_dialog.dart';
 
 class StoresView extends StatefulWidget {
   final int houseId;
@@ -69,15 +70,23 @@ class _StoresViewState extends State<StoresView> {
       builder: (_) =>
           CreateStoreDialog(houseId: widget.houseId, existing: store),
     );
-    if (updated != null) {
-      setState(() {
-        final index = _stores.indexWhere((s) => s.id == updated.id);
-        if (index != -1) {
-          _stores[index] = updated;
-          _stores = StoreService.sortStores(_stores);
-        }
-      });
-    }
+    _applyUpdated(updated);
+  }
+
+  Future<void> _view(Store store) async {
+    final updated = await showStoreDetails(context, store);
+    _applyUpdated(updated);
+  }
+
+  void _applyUpdated(Store? updated) {
+    if (updated == null) return;
+    setState(() {
+      final index = _stores.indexWhere((s) => s.id == updated.id);
+      if (index != -1) {
+        _stores[index] = updated;
+        _stores = StoreService.sortStores(_stores);
+      }
+    });
   }
 
   Future<void> _delete(Store store) async {
@@ -200,7 +209,7 @@ class _StoresViewState extends State<StoresView> {
           ),
         ],
       ),
-      onTap: () => _edit(store),
+      onTap: () => _view(store),
     );
   }
 }

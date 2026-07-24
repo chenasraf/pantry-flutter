@@ -262,6 +262,21 @@ stores:
   deleteFailed: "Impossible de supprimer le magasin."
   deleteConfirm: Supprimer ce magasin ?
   deleteConfirmBody: "Ce magasin sera retiré de tous les articles. Cette action est irréversible."
+  location: Emplacement
+  locationHint: "p. ex. 12 rue Principale"
+  openingHours: Horaires d'ouverture
+  addOpeningHours: Ajouter des horaires
+  openingHoursStart: Début
+  openingHoursEnd: Fin
+  openingHoursAdd: Ajouter
+  contact: Contact
+  contactHint: "p. ex. téléphone, site web, réseaux sociaux"
+  responsible: Responsable
+  responsibleHint: "p. ex. gérant du magasin"
+  notes: Notes
+  notesHint: Toute autre chose à retenir
+  noDetails: Aucun détail ajouté pour le moment.
+  editAction: Modifier
 
 checklists:
   categories: "Catégories"

@@ -262,6 +262,21 @@ stores:
   deleteFailed: Failed to delete store.
   deleteConfirm: Delete this store?
   deleteConfirmBody: "This store will be removed from all items. This cannot be undone."
+  location: Location
+  locationHint: "e.g. 12 Main Street"
+  openingHours: Opening hours
+  addOpeningHours: Add opening hours
+  openingHoursStart: Start
+  openingHoursEnd: End
+  openingHoursAdd: Add
+  contact: Contact
+  contactHint: "e.g. phone, website, social media"
+  responsible: Responsible
+  responsibleHint: "e.g. store manager"
+  notes: Notes
+  notesHint: Anything else worth remembering
+  noDetails: No details added yet.
+  editAction: Edit
 
 checklists:
   categories: Categories

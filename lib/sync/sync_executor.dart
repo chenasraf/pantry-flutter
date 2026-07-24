@@ -297,6 +297,15 @@ class SyncExecutor {
           name: op.body['name'] as String,
           icon: op.body['icon'] as String,
           color: op.body['color'] as String,
+          location: op.body['location'] as String?,
+          openingHours: (op.body['openingHours'] as List?)
+              ?.map(
+                (e) => OpeningHoursInterval.fromJson(e as Map<String, dynamic>),
+              )
+              .toList(),
+          contact: op.body['contact'] as String?,
+          responsible: op.body['responsible'] as String?,
+          notes: op.body['notes'] as String?,
         );
         return SyncResult(store);
       case SyncOpKind.update:
@@ -307,6 +316,15 @@ class SyncExecutor {
           name: op.body['name'] as String?,
           icon: op.body['icon'] as String?,
           color: op.body['color'] as String?,
+          location: op.body['location'] as String?,
+          openingHours: (op.body['openingHours'] as List?)
+              ?.map(
+                (e) => OpeningHoursInterval.fromJson(e as Map<String, dynamic>),
+              )
+              .toList(),
+          contact: op.body['contact'] as String?,
+          responsible: op.body['responsible'] as String?,
+          notes: op.body['notes'] as String?,
         );
         return SyncResult(store);
       case SyncOpKind.delete:

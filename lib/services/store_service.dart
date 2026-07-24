@@ -37,10 +37,24 @@ class StoreService {
     required String name,
     required String icon,
     required String color,
+    String? location,
+    List<OpeningHoursInterval>? openingHours,
+    String? contact,
+    String? responsible,
+    String? notes,
   }) async {
     return ApiClient.instance.post<Map<String, dynamic>, Store>(
       '/houses/$houseId/stores',
-      body: {'name': name, 'icon': icon, 'color': color},
+      body: {
+        'name': name,
+        'icon': icon,
+        'color': color,
+        'location': ?location,
+        'openingHours': ?openingHours?.map((e) => e.toJson()).toList(),
+        'contact': ?contact,
+        'responsible': ?responsible,
+        'notes': ?notes,
+      },
       fromJson: (data) => Store.fromJson(data),
     );
   }
@@ -51,10 +65,24 @@ class StoreService {
     String? name,
     String? icon,
     String? color,
+    String? location,
+    List<OpeningHoursInterval>? openingHours,
+    String? contact,
+    String? responsible,
+    String? notes,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, Store>(
       '/houses/$houseId/stores/$storeId',
-      body: {'name': ?name, 'icon': ?icon, 'color': ?color},
+      body: {
+        'name': ?name,
+        'icon': ?icon,
+        'color': ?color,
+        'location': ?location,
+        'openingHours': ?openingHours?.map((e) => e.toJson()).toList(),
+        'contact': ?contact,
+        'responsible': ?responsible,
+        'notes': ?notes,
+      },
       fromJson: (data) => Store.fromJson(data),
     );
   }
