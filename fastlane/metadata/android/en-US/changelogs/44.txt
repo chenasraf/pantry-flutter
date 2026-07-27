@@ -1,0 +1,10 @@
+Features
+- add a brand or chain name to your stores
+- add store details with location, hours, contact and notes
+- choose what long-pressing an item does
+- show sync status on your avatar instead of a banner
+- tap an item's description to read it in full
+Bug Fixes
+- keep your lists visible offline after switching houses
+- open lists offline even if you never opened them online first
+- stop a failed change from blocking the sync queue
