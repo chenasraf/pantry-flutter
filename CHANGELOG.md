@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.23.0](https://github.com/chenasraf/pantry-flutter/compare/v0.22.1...v0.23.0) (2026-07-27)
+
+
+### Features
+
+* add a brand or chain name to your stores ([4065bc7](https://github.com/chenasraf/pantry-flutter/commit/4065bc7ded267c461c77b1636ee6d34ed964ebdc))
+* add store details with location, hours, contact and notes ([034768a](https://github.com/chenasraf/pantry-flutter/commit/034768ac69669962318704d39796f0775692a339))
+* choose what long-pressing an item does ([d5aa30d](https://github.com/chenasraf/pantry-flutter/commit/d5aa30d88997736af298476d526e58c5883b4bbf))
+* show sync status on your avatar instead of a banner ([3f05920](https://github.com/chenasraf/pantry-flutter/commit/3f05920ec40ff46cb0a71a57c8bbba0dbf9f1d39))
+* tap an item's description to read it in full ([386cb7b](https://github.com/chenasraf/pantry-flutter/commit/386cb7b817bad0cac2869973bdab57780bcb0756))
+
+
+### Bug Fixes
+
+* keep your lists visible offline after switching houses ([5b316f2](https://github.com/chenasraf/pantry-flutter/commit/5b316f22657a25ddc888ca439b5d810868b1cc9c)), closes [#118](https://github.com/chenasraf/pantry-flutter/issues/118)
+* open lists offline even if you never opened them online first ([3251a87](https://github.com/chenasraf/pantry-flutter/commit/3251a877e717969bbf24ae8d41ef7b0bdf2773a1)), closes [#117](https://github.com/chenasraf/pantry-flutter/issues/117)
+* stop a failed change from blocking the sync queue ([71d3734](https://github.com/chenasraf/pantry-flutter/commit/71d373463cc6da4399780ad1e65cf7374b7bf9ff))
+
 ## [0.22.1](https://github.com/chenasraf/pantry-flutter/compare/v0.22.0...v0.22.1) (2026-07-21)
 
 
