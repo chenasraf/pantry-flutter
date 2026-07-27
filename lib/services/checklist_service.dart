@@ -9,10 +9,17 @@ class ChecklistService {
 
   final cache = CacheStore('checklist_cache.json');
 
-  static const _listsKey = 'lists';
+  static const _listsPrefix = 'lists';
   static const _itemsPrefix = 'items';
-  static const _houseIdKey = 'houseId';
   static const _selectedListKey = 'selectedListId';
+
+  // Legacy single-house lists cache (before the snapshot was keyed per house).
+  // A single `houseId` marker meant switching houses offline wiped the previous
+  // house's snapshot (issue #118). Kept as a read-only fallback so the first
+  // offline session after upgrading still finds the most-recently-used house's
+  // lists; the first per-house write supersedes it.
+  static const _legacyListsKey = 'lists';
+  static const _legacyHouseIdKey = 'houseId';
 
   // -- Cache accessors --
 
@@ -20,13 +27,22 @@ class ChecklistService {
   set selectedListId(int? id) => cache.set(_selectedListKey, id);
 
   List<ChecklistList>? getCachedLists(int houseId) {
-    if (cache.get<int>(_houseIdKey) != houseId) return null;
-    return cache.getList(_listsKey, ChecklistList.fromJson);
+    final scoped = cache.getKeyedList(
+      _listsPrefix,
+      '$houseId',
+      ChecklistList.fromJson,
+    );
+    if (scoped != null) return scoped;
+    // Legacy fallback: the old global slot only holds the most-recently-used
+    // house, so honor it until this house gets its first per-house write.
+    if (cache.get<int>(_legacyHouseIdKey) == houseId) {
+      return cache.getList(_legacyListsKey, ChecklistList.fromJson);
+    }
+    return null;
   }
 
   void cacheLists(int houseId, List<ChecklistList> lists) {
-    cache.set(_houseIdKey, houseId);
-    cache.setList(_listsKey, lists, (l) => l.toJson());
+    cache.setKeyedList(_listsPrefix, '$houseId', lists, (l) => l.toJson());
   }
 
   List<ListItem>? getCachedItems(int listId) =>
