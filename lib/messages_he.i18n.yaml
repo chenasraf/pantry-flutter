@@ -262,6 +262,8 @@ stores:
   deleteFailed: מחיקת החנות נכשלה.
   deleteConfirm: למחוק את החנות הזו?
   deleteConfirmBody: "החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו."
+  brand: מותג/רשת
+  brandHint: "לדוגמה: שופרסל, IKEA"
   location: מיקום
   locationHint: "לדוגמה: רחוב הרצל 12"
   openingHours: שעות פתיחה
@@ -379,7 +381,7 @@ checklists:
   saveListButton: שמור שינויים
   updateListFailed: עדכון הרשימה נכשל.
   removeListConfirm: להסיר את הרשימה?
-  removeListConfirmBody(String name): "להסיר את הרשימה \"$name\"? ניתן לשחזר אותה מסל המיחזור."
+  removeListConfirmBody(String name): 'להסיר את הרשימה "$name"? ניתן לשחזר אותה מסל המיחזור.'
   removeListFailed: הסרת הרשימה נכשלה.
   restoreList: שחזר רשימה
   permanentlyDeleteList: מחק לצמיתות
@@ -517,7 +519,7 @@ checklists:
     multipleHint: הפרד פריטים בשורות חדשות
   reuse:
     dialogTitle: הפריט כבר קיים
-    dialogBody(String name): "פריט בשם \"$name\" כבר קיים ברשימה. להשתמש בו במקום להוסיף פריט חדש?"
+    dialogBody(String name): 'פריט בשם "$name" כבר קיים ברשימה. להשתמש בו במקום להוסיף פריט חדש?'
     reuseExisting: השתמש בקיים
     addAnyway: הוסף בכל זאת
     reusedSnack(String name): "נעשה שימוש חוזר בפריט “$name”"

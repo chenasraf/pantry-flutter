@@ -35,6 +35,7 @@ class CreateStoreDialog extends StatefulWidget {
 
 class _CreateStoreDialogState extends State<CreateStoreDialog> {
   late final TextEditingController _nameController;
+  late final TextEditingController _brandController;
   late final TextEditingController _locationController;
   late final TextEditingController _contactController;
   late final TextEditingController _responsibleController;
@@ -60,6 +61,7 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
     super.initState();
     final e = widget.existing;
     _nameController = TextEditingController(text: e?.name ?? '');
+    _brandController = TextEditingController(text: e?.brand ?? '');
     _locationController = TextEditingController(text: e?.location ?? '');
     _contactController = TextEditingController(text: e?.contact ?? '');
     _responsibleController = TextEditingController(text: e?.responsible ?? '');
@@ -72,6 +74,7 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
   @override
   void dispose() {
     _nameController.dispose();
+    _brandController.dispose();
     _locationController.dispose();
     _contactController.dispose();
     _responsibleController.dispose();
@@ -139,6 +142,7 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
         return byDay != 0 ? byDay : a.start.compareTo(b.start);
       });
 
+    final brand = _brandController.text.trim();
     final location = _locationController.text.trim();
     final contact = _contactController.text.trim();
     final responsible = _responsibleController.text.trim();
@@ -150,6 +154,7 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
       'name': name,
       'icon': _selectedIcon,
       'color': _selectedColor,
+      'brand': brand,
       'location': location,
       'openingHours': hours.map((e) => e.toJson()).toList(),
       'contact': contact,
@@ -175,6 +180,7 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
         name: name,
         icon: _selectedIcon,
         color: _selectedColor,
+        brand: orNull(brand),
         location: orNull(location),
         openingHours: localHours,
         contact: orNull(contact),
@@ -203,6 +209,7 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
         name: name,
         icon: _selectedIcon,
         color: _selectedColor,
+        brand: orNull(brand),
         location: orNull(location),
         openingHours: localHours,
         contact: orNull(contact),
@@ -318,6 +325,12 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
                   ),
                 );
               }).toList(),
+            ),
+            const SizedBox(height: 16),
+            _infoField(
+              controller: _brandController,
+              label: m.stores.brand,
+              hint: m.stores.brandHint,
             ),
             const SizedBox(height: 16),
             _infoField(

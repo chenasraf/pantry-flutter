@@ -262,6 +262,8 @@ stores:
   deleteFailed: "No se pudo eliminar la tienda."
   deleteConfirm: "¿Eliminar esta tienda?"
   deleteConfirmBody: "Esta tienda se eliminará de todos los artículos. Esto no se puede deshacer."
+  brand: Marca/cadena
+  brandHint: "p. ej. Walmart, IKEA"
   location: Ubicación
   locationHint: "p. ej. Calle Mayor 12"
   openingHours: Horario de apertura

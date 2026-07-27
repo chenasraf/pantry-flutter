@@ -262,6 +262,8 @@ stores:
   deleteFailed: Failed to delete store.
   deleteConfirm: Delete this store?
   deleteConfirmBody: "This store will be removed from all items. This cannot be undone."
+  brand: Brand/chain
+  brandHint: "e.g. Walmart, IKEA"
   location: Location
   locationHint: "e.g. 12 Main Street"
   openingHours: Opening hours

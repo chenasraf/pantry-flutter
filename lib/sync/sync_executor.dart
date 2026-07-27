@@ -297,6 +297,7 @@ class SyncExecutor {
           name: op.body['name'] as String,
           icon: op.body['icon'] as String,
           color: op.body['color'] as String,
+          brand: op.body['brand'] as String?,
           location: op.body['location'] as String?,
           openingHours: (op.body['openingHours'] as List?)
               ?.map(
@@ -316,6 +317,7 @@ class SyncExecutor {
           name: op.body['name'] as String?,
           icon: op.body['icon'] as String?,
           color: op.body['color'] as String?,
+          brand: op.body['brand'] as String?,
           location: op.body['location'] as String?,
           openingHours: (op.body['openingHours'] as List?)
               ?.map(

@@ -1432,6 +1432,16 @@ class StoresMessagesEs extends StoresMessages {
       """Esta tienda se eliminará de todos los artículos. Esto no se puede deshacer.""";
 
   /// ```dart
+  /// "Marca/cadena"
+  /// ```
+  String get brand => """Marca/cadena""";
+
+  /// ```dart
+  /// "p. ej. Walmart, IKEA"
+  /// ```
+  String get brandHint => """p. ej. Walmart, IKEA""";
+
+  /// ```dart
   /// "Ubicación"
   /// ```
   String get location => """Ubicación""";
@@ -3940,6 +3950,8 @@ Contraseña: pantry-rocks""",
   """stores.deleteConfirm""": """¿Eliminar esta tienda?""",
   """stores.deleteConfirmBody""":
       """Esta tienda se eliminará de todos los artículos. Esto no se puede deshacer.""",
+  """stores.brand""": """Marca/cadena""",
+  """stores.brandHint""": """p. ej. Walmart, IKEA""",
   """stores.location""": """Ubicación""",
   """stores.locationHint""": """p. ej. Calle Mayor 12""",
   """stores.openingHours""": """Horario de apertura""",

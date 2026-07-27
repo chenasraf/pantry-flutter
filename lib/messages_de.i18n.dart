@@ -1432,6 +1432,16 @@ class StoresMessagesDe extends StoresMessages {
       """Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden.""";
 
   /// ```dart
+  /// "Marke/Kette"
+  /// ```
+  String get brand => """Marke/Kette""";
+
+  /// ```dart
+  /// "z. B. Walmart, IKEA"
+  /// ```
+  String get brandHint => """z. B. Walmart, IKEA""";
+
+  /// ```dart
   /// "Standort"
   /// ```
   String get location => """Standort""";
@@ -3945,6 +3955,8 @@ Passwort: pantry-rocks""",
   """stores.deleteConfirm""": """Dieses Geschäft löschen?""",
   """stores.deleteConfirmBody""":
       """Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden.""",
+  """stores.brand""": """Marke/Kette""",
+  """stores.brandHint""": """z. B. Walmart, IKEA""",
   """stores.location""": """Standort""",
   """stores.locationHint""": """z. B. Hauptstraße 12""",
   """stores.openingHours""": """Öffnungszeiten""",

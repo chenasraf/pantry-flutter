@@ -262,6 +262,8 @@ stores:
   deleteFailed: Geschäft konnte nicht gelöscht werden.
   deleteConfirm: Dieses Geschäft löschen?
   deleteConfirmBody: "Dieses Geschäft wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden."
+  brand: Marke/Kette
+  brandHint: "z. B. Walmart, IKEA"
   location: Standort
   locationHint: "z. B. Hauptstraße 12"
   openingHours: Öffnungszeiten

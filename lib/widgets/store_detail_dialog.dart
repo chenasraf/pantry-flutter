@@ -61,6 +61,7 @@ class StoreDetailDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  _textRow(context, m.stores.brand, store.brand),
                   _textRow(context, m.stores.location, store.location),
                   _hoursRow(context),
                   _textRow(context, m.stores.contact, store.contact),

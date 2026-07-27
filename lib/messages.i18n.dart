@@ -1419,6 +1419,16 @@ class StoresMessages {
       """This store will be removed from all items. This cannot be undone.""";
 
   /// ```dart
+  /// "Brand/chain"
+  /// ```
+  String get brand => """Brand/chain""";
+
+  /// ```dart
+  /// "e.g. Walmart, IKEA"
+  /// ```
+  String get brandHint => """e.g. Walmart, IKEA""";
+
+  /// ```dart
   /// "Location"
   /// ```
   String get location => """Location""";
@@ -3901,6 +3911,8 @@ Password: pantry-rocks""",
   """stores.deleteConfirm""": """Delete this store?""",
   """stores.deleteConfirmBody""":
       """This store will be removed from all items. This cannot be undone.""",
+  """stores.brand""": """Brand/chain""",
+  """stores.brandHint""": """e.g. Walmart, IKEA""",
   """stores.location""": """Location""",
   """stores.locationHint""": """e.g. 12 Main Street""",
   """stores.openingHours""": """Opening hours""",

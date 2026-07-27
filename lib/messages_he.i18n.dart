@@ -1424,6 +1424,16 @@ class StoresMessagesHe extends StoresMessages {
       """החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו.""";
 
   /// ```dart
+  /// "מותג/רשת"
+  /// ```
+  String get brand => """מותג/רשת""";
+
+  /// ```dart
+  /// "לדוגמה: שופרסל, IKEA"
+  /// ```
+  String get brandHint => """לדוגמה: שופרסל, IKEA""";
+
+  /// ```dart
   /// "מיקום"
   /// ```
   String get location => """מיקום""";
@@ -3905,6 +3915,8 @@ Map<String, String> get messagesHeMap => {
   """stores.deleteConfirm""": """למחוק את החנות הזו?""",
   """stores.deleteConfirmBody""":
       """החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו.""",
+  """stores.brand""": """מותג/רשת""",
+  """stores.brandHint""": """לדוגמה: שופרסל, IKEA""",
   """stores.location""": """מיקום""",
   """stores.locationHint""": """לדוגמה: רחוב הרצל 12""",
   """stores.openingHours""": """שעות פתיחה""",

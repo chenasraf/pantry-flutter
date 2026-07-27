@@ -1434,6 +1434,16 @@ class StoresMessagesFr extends StoresMessages {
       """Ce magasin sera retiré de tous les articles. Cette action est irréversible.""";
 
   /// ```dart
+  /// "Marque/chaîne"
+  /// ```
+  String get brand => """Marque/chaîne""";
+
+  /// ```dart
+  /// "p. ex. Walmart, IKEA"
+  /// ```
+  String get brandHint => """p. ex. Walmart, IKEA""";
+
+  /// ```dart
   /// "Emplacement"
   /// ```
   String get location => """Emplacement""";
@@ -3950,6 +3960,8 @@ Mot de passe : pantry-rocks""",
   """stores.deleteConfirm""": """Supprimer ce magasin ?""",
   """stores.deleteConfirmBody""":
       """Ce magasin sera retiré de tous les articles. Cette action est irréversible.""",
+  """stores.brand""": """Marque/chaîne""",
+  """stores.brandHint""": """p. ex. Walmart, IKEA""",
   """stores.location""": """Emplacement""",
   """stores.locationHint""": """p. ex. 12 rue Principale""",
   """stores.openingHours""": """Horaires d'ouverture""",

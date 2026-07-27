@@ -32,6 +32,7 @@ class Store {
   final String name;
   final String icon;
   final String color;
+  final String? brand;
   final String? location;
   final List<OpeningHoursInterval>? openingHours;
   final String? contact;
@@ -46,6 +47,7 @@ class Store {
     required this.name,
     required this.icon,
     required this.color,
+    this.brand,
     this.location,
     this.openingHours,
     this.contact,
@@ -61,6 +63,7 @@ class Store {
     name: json['name'] as String,
     icon: json['icon'] as String,
     color: json['color'] as String,
+    brand: json['brand'] as String?,
     location: json['location'] as String?,
     openingHours: (json['openingHours'] as List?)
         ?.map((e) => OpeningHoursInterval.fromJson(e as Map<String, dynamic>))
@@ -78,6 +81,7 @@ class Store {
     'name': name,
     'icon': icon,
     'color': color,
+    'brand': brand,
     'location': location,
     'openingHours': openingHours?.map((e) => e.toJson()).toList(),
     'contact': contact,
@@ -99,6 +103,7 @@ class Store {
     name: name ?? this.name,
     icon: icon ?? this.icon,
     color: color ?? this.color,
+    brand: brand,
     location: location,
     openingHours: openingHours,
     contact: contact,
@@ -111,6 +116,7 @@ class Store {
   /// True when none of the optional info fields carry any content — used by the
   /// details view to show a placeholder instead of empty rows.
   bool get hasNoDetails =>
+      (brand == null || brand!.trim().isEmpty) &&
       (location == null || location!.trim().isEmpty) &&
       (openingHours == null || openingHours!.isEmpty) &&
       (contact == null || contact!.trim().isEmpty) &&
