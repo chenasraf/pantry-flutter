@@ -126,6 +126,7 @@ class ChecklistsController extends ChangeNotifier {
 
   ChecklistsController({required this.houseId}) {
     _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
+    _reconnectSub = SyncManager.instance.onReconnect.listen(_onReconnect);
   }
 
   /// True when the synthetic "All lists" entry is selected.
@@ -173,12 +174,26 @@ class ChecklistsController extends ChangeNotifier {
 
   bool _disposed = false;
   StreamSubscription<SyncOpApplied>? _appliedSub;
+  StreamSubscription<void>? _reconnectSub;
 
   @override
   void dispose() {
     _disposed = true;
     _appliedSub?.cancel();
+    _reconnectSub?.cancel();
     super.dispose();
+  }
+
+  /// Re-run the cache-first load when connectivity returns. The background
+  /// pre-cache pass is online-only, so a list never opened while online — or
+  /// any list on a fresh install used offline — has no cached items and falls
+  /// to the offline/retry view. Reloading on reconnect re-fetches the lists,
+  /// re-selects the current one and re-warms every other list's offline cache,
+  /// so those retry views resolve on their own and later offline switches show
+  /// cached data (issue #117).
+  void _onReconnect(void _) {
+    if (_disposed) return;
+    unawaited(load());
   }
 
   @override

@@ -58,6 +58,14 @@ class SyncManager {
   final _skippedController = StreamController<SyncOpSkipped>.broadcast();
   Stream<SyncOpSkipped> get onSkipped => _skippedController.stream;
 
+  final _reconnectController = StreamController<void>.broadcast();
+
+  /// Fires when connectivity transitions from offline back to online. Lets
+  /// cache-first controllers re-warm the offline snapshots they couldn't fetch
+  /// while disconnected — e.g. lists whose items were never pre-cached because
+  /// the app was used offline from a fresh install (issue #117).
+  Stream<void> get onReconnect => _reconnectController.stream;
+
   /// Ceiling on delivery attempts for a single op. Past this we treat the op
   /// as poison and dead-letter it (drop + emit skipped) rather than retry it
   /// forever — an endlessly-failing head op would otherwise block every op
@@ -116,6 +124,7 @@ class SyncManager {
       // before we dropped offline don't erode a still-syncable op (issue #113).
       _queue.resetAttempts();
       unawaited(flushNow());
+      if (_reconnectController.hasListener) _reconnectController.add(null);
     } else if (_queue.isEmpty) {
       status.value = SyncStatus.idle;
     }
@@ -137,6 +146,7 @@ class SyncManager {
     _retryTimer = null;
     await _appliedController.close();
     await _skippedController.close();
+    await _reconnectController.close();
   }
 
   // -- Public op helpers --
