@@ -133,14 +133,8 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() => _selectedLocale = value);
   }
 
-  String _localeLabel(String? code) => switch (code) {
-    'en' => m.settings.languageNames.english,
-    'de' => m.settings.languageNames.german,
-    'es' => m.settings.languageNames.spanish,
-    'fr' => m.settings.languageNames.french,
-    'he' => m.settings.languageNames.hebrew,
-    _ => m.settings.languageNames.system,
-  };
+  String _localeLabel(String? code) =>
+      languageNativeNames[code] ?? m.settings.systemLanguage;
 
   // -- Theme --
 
@@ -240,28 +234,16 @@ class _SettingsViewState extends State<SettingsView> {
                 items: [
                   DropdownMenuItem<String?>(
                     value: null,
-                    child: Text(m.settings.languageNames.system),
+                    child: Text(m.settings.systemLanguage),
                   ),
-                  DropdownMenuItem<String?>(
-                    value: 'en',
-                    child: Text(m.settings.languageNames.english),
-                  ),
-                  DropdownMenuItem<String?>(
-                    value: 'de',
-                    child: Text(m.settings.languageNames.german),
-                  ),
-                  DropdownMenuItem<String?>(
-                    value: 'es',
-                    child: Text(m.settings.languageNames.spanish),
-                  ),
-                  DropdownMenuItem<String?>(
-                    value: 'fr',
-                    child: Text(m.settings.languageNames.french),
-                  ),
-                  DropdownMenuItem<String?>(
-                    value: 'he',
-                    child: Text(m.settings.languageNames.hebrew),
-                  ),
+                  for (final locale in supportedLocales)
+                    DropdownMenuItem<String?>(
+                      value: locale.languageCode,
+                      child: Text(
+                        languageNativeNames[locale.languageCode] ??
+                            locale.languageCode,
+                      ),
+                    ),
                 ],
               ),
             ),

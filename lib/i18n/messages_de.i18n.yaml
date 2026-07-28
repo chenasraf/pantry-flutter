@@ -200,13 +200,7 @@ settings:
   navOrderDefaultHint: Öffnet sich beim Start
   navOrderReset: Zurücksetzen
   language: Sprache
-  languageNames:
-    system: Systemstandard
-    english: English
-    hebrew: "עברית"
-    german: Deutsch
-    spanish: "Español"
-    french: "Français"
+  systemLanguage: Systemstandard
   theme: Design
   themeNames:
     system: Systemstandard

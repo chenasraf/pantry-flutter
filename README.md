@@ -109,7 +109,7 @@ make fetch-openapi
 
 ### Translations
 
-Translations live in `lib/`, one YAML file per language:
+Translations live in `lib/i18n/`, one YAML file per language:
 
 - `messages.i18n.yaml` — the base file (English), the source of truth for all keys.
 - `messages_<langCode>.i18n.yaml` — one per language (e.g. `messages_de.i18n.yaml`,
@@ -120,8 +120,10 @@ identical** to the base file — translate only the values.
 
 **To add a new language:**
 
-1. Copy `messages.i18n.yaml` to `messages_<langCode>.i18n.yaml` and translate the values.
-2. Add the locale to `supportedLocales` in `lib/services/locale_service.dart`.
+1. Copy `lib/i18n/messages.i18n.yaml` to `lib/i18n/messages_<langCode>.i18n.yaml` and translate the
+   values.
+2. Add the locale to `supportedLocales` and its native name to `languageNativeNames` (the endonym
+   shown in the language picker) in `lib/services/locale_service.dart`.
 3. Run `make i18n` to regenerate the Dart code.
 
 A few rules to keep translations working:

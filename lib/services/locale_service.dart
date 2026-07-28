@@ -2,11 +2,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
-import 'package:pantry/messages.i18n.dart';
-import 'package:pantry/messages_de.i18n.dart' as de;
-import 'package:pantry/messages_es.i18n.dart' as es;
-import 'package:pantry/messages_fr.i18n.dart' as fr;
-import 'package:pantry/messages_he.i18n.dart' as he;
+import 'package:pantry/i18n/messages.i18n.dart';
+import 'package:pantry/i18n/messages_de.i18n.dart' as de;
+import 'package:pantry/i18n/messages_es.i18n.dart' as es;
+import 'package:pantry/i18n/messages_fr.i18n.dart' as fr;
+import 'package:pantry/i18n/messages_he.i18n.dart' as he;
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 
@@ -18,6 +18,18 @@ const supportedLocales = [
   Locale('fr'),
   Locale('he'),
 ];
+
+/// Native display name (endonym) for each supported language, shown in the
+/// language picker. These read the same regardless of the active locale, so
+/// they live here as static data instead of being duplicated across every
+/// translation file.
+const languageNativeNames = <String, String>{
+  'en': 'English',
+  'de': 'Deutsch',
+  'es': 'Español',
+  'fr': 'Français',
+  'he': 'עברית',
+};
 
 class LocaleService extends ChangeNotifier {
   LocaleService._();

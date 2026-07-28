@@ -5,7 +5,7 @@ import 'dart:io';
 /// Replaces YAML unicode escape sequences (\uXXXX, \xXX) with actual UTF-8
 /// characters in all messages*.i18n.yaml files.
 void main() {
-  final yamlFiles = Directory('lib').listSync().whereType<File>().where(
+  final yamlFiles = Directory('lib/i18n').listSync().whereType<File>().where(
     (f) => RegExp(r'messages.*\.i18n\.yaml$').hasMatch(f.path),
   );
 

@@ -1015,8 +1015,11 @@ class SettingsMessagesEs extends SettingsMessages {
   /// "Idioma"
   /// ```
   String get language => """Idioma""";
-  LanguageNamesSettingsMessagesEs get languageNames =>
-      LanguageNamesSettingsMessagesEs(this);
+
+  /// ```dart
+  /// "Predeterminado del sistema"
+  /// ```
+  String get systemLanguage => """Predeterminado del sistema""";
 
   /// ```dart
   /// "Tema"
@@ -1187,41 +1190,6 @@ class ReuseExistingItemsNamesSettingsMessagesEs
   /// "Nunca reutilizar"
   /// ```
   String get never => """Nunca reutilizar""";
-}
-
-class LanguageNamesSettingsMessagesEs extends LanguageNamesSettingsMessages {
-  final SettingsMessagesEs _parent;
-  const LanguageNamesSettingsMessagesEs(this._parent) : super(_parent);
-
-  /// ```dart
-  /// "Predeterminado del sistema"
-  /// ```
-  String get system => """Predeterminado del sistema""";
-
-  /// ```dart
-  /// "English"
-  /// ```
-  String get english => """English""";
-
-  /// ```dart
-  /// "עברית"
-  /// ```
-  String get hebrew => """עברית""";
-
-  /// ```dart
-  /// "Deutsch"
-  /// ```
-  String get german => """Deutsch""";
-
-  /// ```dart
-  /// "Español"
-  /// ```
-  String get spanish => """Español""";
-
-  /// ```dart
-  /// "Français"
-  /// ```
-  String get french => """Français""";
 }
 
 class ThemeNamesSettingsMessagesEs extends ThemeNamesSettingsMessages {
@@ -3895,12 +3863,7 @@ Contraseña: pantry-rocks""",
   """settings.navOrderDefaultHint""": """Se abre al iniciar""",
   """settings.navOrderReset""": """Restablecer""",
   """settings.language""": """Idioma""",
-  """settings.languageNames.system""": """Predeterminado del sistema""",
-  """settings.languageNames.english""": """English""",
-  """settings.languageNames.hebrew""": """עברית""",
-  """settings.languageNames.german""": """Deutsch""",
-  """settings.languageNames.spanish""": """Español""",
-  """settings.languageNames.french""": """Français""",
+  """settings.systemLanguage""": """Predeterminado del sistema""",
   """settings.theme""": """Tema""",
   """settings.themeNames.system""": """Predeterminado del sistema""",
   """settings.themeNames.light""": """Claro""",

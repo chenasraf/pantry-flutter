@@ -1009,8 +1009,11 @@ class SettingsMessages {
   /// "Language"
   /// ```
   String get language => """Language""";
-  LanguageNamesSettingsMessages get languageNames =>
-      LanguageNamesSettingsMessages(this);
+
+  /// ```dart
+  /// "System default"
+  /// ```
+  String get systemLanguage => """System default""";
 
   /// ```dart
   /// "Theme"
@@ -1174,41 +1177,6 @@ class ReuseExistingItemsNamesSettingsMessages {
   /// "Never reuse"
   /// ```
   String get never => """Never reuse""";
-}
-
-class LanguageNamesSettingsMessages {
-  final SettingsMessages _parent;
-  const LanguageNamesSettingsMessages(this._parent);
-
-  /// ```dart
-  /// "System default"
-  /// ```
-  String get system => """System default""";
-
-  /// ```dart
-  /// "English"
-  /// ```
-  String get english => """English""";
-
-  /// ```dart
-  /// "עברית"
-  /// ```
-  String get hebrew => """עברית""";
-
-  /// ```dart
-  /// "Deutsch"
-  /// ```
-  String get german => """Deutsch""";
-
-  /// ```dart
-  /// "Español"
-  /// ```
-  String get spanish => """Español""";
-
-  /// ```dart
-  /// "Français"
-  /// ```
-  String get french => """Français""";
 }
 
 class ThemeNamesSettingsMessages {
@@ -3857,12 +3825,7 @@ Password: pantry-rocks""",
   """settings.navOrderDefaultHint""": """Opens on app start""",
   """settings.navOrderReset""": """Reset""",
   """settings.language""": """Language""",
-  """settings.languageNames.system""": """System default""",
-  """settings.languageNames.english""": """English""",
-  """settings.languageNames.hebrew""": """עברית""",
-  """settings.languageNames.german""": """Deutsch""",
-  """settings.languageNames.spanish""": """Español""",
-  """settings.languageNames.french""": """Français""",
+  """settings.systemLanguage""": """System default""",
   """settings.theme""": """Theme""",
   """settings.themeNames.system""": """System default""",
   """settings.themeNames.light""": """Light""",

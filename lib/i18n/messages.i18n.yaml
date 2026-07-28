@@ -200,13 +200,7 @@ settings:
   navOrderDefaultHint: Opens on app start
   navOrderReset: Reset
   language: Language
-  languageNames:
-    system: "System default"
-    english: English
-    hebrew: עברית
-    german: Deutsch
-    spanish: Español
-    french: Français
+  systemLanguage: "System default"
   theme: Theme
   themeNames:
     system: "System default"

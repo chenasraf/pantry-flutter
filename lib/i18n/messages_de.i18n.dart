@@ -1014,8 +1014,11 @@ class SettingsMessagesDe extends SettingsMessages {
   /// "Sprache"
   /// ```
   String get language => """Sprache""";
-  LanguageNamesSettingsMessagesDe get languageNames =>
-      LanguageNamesSettingsMessagesDe(this);
+
+  /// ```dart
+  /// "Systemstandard"
+  /// ```
+  String get systemLanguage => """Systemstandard""";
 
   /// ```dart
   /// "Design"
@@ -1186,41 +1189,6 @@ class ReuseExistingItemsNamesSettingsMessagesDe
   /// "Nie wiederverwenden"
   /// ```
   String get never => """Nie wiederverwenden""";
-}
-
-class LanguageNamesSettingsMessagesDe extends LanguageNamesSettingsMessages {
-  final SettingsMessagesDe _parent;
-  const LanguageNamesSettingsMessagesDe(this._parent) : super(_parent);
-
-  /// ```dart
-  /// "Systemstandard"
-  /// ```
-  String get system => """Systemstandard""";
-
-  /// ```dart
-  /// "English"
-  /// ```
-  String get english => """English""";
-
-  /// ```dart
-  /// "עברית"
-  /// ```
-  String get hebrew => """עברית""";
-
-  /// ```dart
-  /// "Deutsch"
-  /// ```
-  String get german => """Deutsch""";
-
-  /// ```dart
-  /// "Español"
-  /// ```
-  String get spanish => """Español""";
-
-  /// ```dart
-  /// "Français"
-  /// ```
-  String get french => """Français""";
 }
 
 class ThemeNamesSettingsMessagesDe extends ThemeNamesSettingsMessages {
@@ -3900,12 +3868,7 @@ Passwort: pantry-rocks""",
   """settings.navOrderDefaultHint""": """Öffnet sich beim Start""",
   """settings.navOrderReset""": """Zurücksetzen""",
   """settings.language""": """Sprache""",
-  """settings.languageNames.system""": """Systemstandard""",
-  """settings.languageNames.english""": """English""",
-  """settings.languageNames.hebrew""": """עברית""",
-  """settings.languageNames.german""": """Deutsch""",
-  """settings.languageNames.spanish""": """Español""",
-  """settings.languageNames.french""": """Français""",
+  """settings.systemLanguage""": """Systemstandard""",
   """settings.theme""": """Design""",
   """settings.themeNames.system""": """Systemstandard""",
   """settings.themeNames.light""": """Hell""",

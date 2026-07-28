@@ -1007,8 +1007,11 @@ class SettingsMessagesHe extends SettingsMessages {
   /// "שפה"
   /// ```
   String get language => """שפה""";
-  LanguageNamesSettingsMessagesHe get languageNames =>
-      LanguageNamesSettingsMessagesHe(this);
+
+  /// ```dart
+  /// "ברירת מחדל (שפת המערכת)"
+  /// ```
+  String get systemLanguage => """ברירת מחדל (שפת המערכת)""";
 
   /// ```dart
   /// "ערכת נושא"
@@ -1179,41 +1182,6 @@ class ReuseExistingItemsNamesSettingsMessagesHe
   /// "לעולם לא להשתמש מחדש"
   /// ```
   String get never => """לעולם לא להשתמש מחדש""";
-}
-
-class LanguageNamesSettingsMessagesHe extends LanguageNamesSettingsMessages {
-  final SettingsMessagesHe _parent;
-  const LanguageNamesSettingsMessagesHe(this._parent) : super(_parent);
-
-  /// ```dart
-  /// "ברירת מחדל (שפת המערכת)"
-  /// ```
-  String get system => """ברירת מחדל (שפת המערכת)""";
-
-  /// ```dart
-  /// "English"
-  /// ```
-  String get english => """English""";
-
-  /// ```dart
-  /// "עברית"
-  /// ```
-  String get hebrew => """עברית""";
-
-  /// ```dart
-  /// "Deutsch"
-  /// ```
-  String get german => """Deutsch""";
-
-  /// ```dart
-  /// "Español"
-  /// ```
-  String get spanish => """Español""";
-
-  /// ```dart
-  /// "Français"
-  /// ```
-  String get french => """Français""";
 }
 
 class ThemeNamesSettingsMessagesHe extends ThemeNamesSettingsMessages {
@@ -3861,12 +3829,7 @@ Map<String, String> get messagesHeMap => {
   """settings.navOrderDefaultHint""": """נפתח עם הפעלת האפליקציה""",
   """settings.navOrderReset""": """איפוס""",
   """settings.language""": """שפה""",
-  """settings.languageNames.system""": """ברירת מחדל (שפת המערכת)""",
-  """settings.languageNames.english""": """English""",
-  """settings.languageNames.hebrew""": """עברית""",
-  """settings.languageNames.german""": """Deutsch""",
-  """settings.languageNames.spanish""": """Español""",
-  """settings.languageNames.french""": """Français""",
+  """settings.systemLanguage""": """ברירת מחדל (שפת המערכת)""",
   """settings.theme""": """ערכת נושא""",
   """settings.themeNames.system""": """ברירת מחדל (המערכת)""",
   """settings.themeNames.light""": """בהיר""",

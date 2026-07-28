@@ -1017,8 +1017,11 @@ class SettingsMessagesFr extends SettingsMessages {
   /// "Langue"
   /// ```
   String get language => """Langue""";
-  LanguageNamesSettingsMessagesFr get languageNames =>
-      LanguageNamesSettingsMessagesFr(this);
+
+  /// ```dart
+  /// "Par défaut du système"
+  /// ```
+  String get systemLanguage => """Par défaut du système""";
 
   /// ```dart
   /// "Thème"
@@ -1189,41 +1192,6 @@ class ReuseExistingItemsNamesSettingsMessagesFr
   /// "Ne jamais réutiliser"
   /// ```
   String get never => """Ne jamais réutiliser""";
-}
-
-class LanguageNamesSettingsMessagesFr extends LanguageNamesSettingsMessages {
-  final SettingsMessagesFr _parent;
-  const LanguageNamesSettingsMessagesFr(this._parent) : super(_parent);
-
-  /// ```dart
-  /// "Par défaut du système"
-  /// ```
-  String get system => """Par défaut du système""";
-
-  /// ```dart
-  /// "English"
-  /// ```
-  String get english => """English""";
-
-  /// ```dart
-  /// "עברית"
-  /// ```
-  String get hebrew => """עברית""";
-
-  /// ```dart
-  /// "Deutsch"
-  /// ```
-  String get german => """Deutsch""";
-
-  /// ```dart
-  /// "Español"
-  /// ```
-  String get spanish => """Español""";
-
-  /// ```dart
-  /// "Français"
-  /// ```
-  String get french => """Français""";
 }
 
 class ThemeNamesSettingsMessagesFr extends ThemeNamesSettingsMessages {
@@ -3905,12 +3873,7 @@ Mot de passe : pantry-rocks""",
   """settings.navOrderDefaultHint""": """S'ouvre au démarrage""",
   """settings.navOrderReset""": """Réinitialiser""",
   """settings.language""": """Langue""",
-  """settings.languageNames.system""": """Par défaut du système""",
-  """settings.languageNames.english""": """English""",
-  """settings.languageNames.hebrew""": """עברית""",
-  """settings.languageNames.german""": """Deutsch""",
-  """settings.languageNames.spanish""": """Español""",
-  """settings.languageNames.french""": """Français""",
+  """settings.systemLanguage""": """Par défaut du système""",
   """settings.theme""": """Thème""",
   """settings.themeNames.system""": """Par défaut du système""",
   """settings.themeNames.light""": """Clair""",

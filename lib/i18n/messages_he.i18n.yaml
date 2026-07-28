@@ -200,13 +200,7 @@ settings:
   navOrderDefaultHint: נפתח עם הפעלת האפליקציה
   navOrderReset: איפוס
   language: שפה
-  languageNames:
-    system: ברירת מחדל (שפת המערכת)
-    english: English
-    hebrew: עברית
-    german: Deutsch
-    spanish: Español
-    french: Français
+  systemLanguage: ברירת מחדל (שפת המערכת)
   theme: ערכת נושא
   themeNames:
     system: ברירת מחדל (המערכת)
