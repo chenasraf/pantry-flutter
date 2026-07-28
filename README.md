@@ -107,6 +107,41 @@ The app consumes the Nextcloud Pantry OCS API. The OpenAPI spec is kept in sync 
 make fetch-openapi
 ```
 
+### Translations
+
+Translations live in `lib/`, one YAML file per language:
+
+- `messages.i18n.yaml` — the base file (English), the source of truth for all keys.
+- `messages_<langCode>.i18n.yaml` — one per language (e.g. `messages_de.i18n.yaml`,
+  `messages_fr.i18n.yaml`, `messages_he.i18n.yaml`).
+
+**To improve an existing translation**, edit the values in that language's file. Keep the **keys
+identical** to the base file — translate only the values.
+
+**To add a new language:**
+
+1. Copy `messages.i18n.yaml` to `messages_<langCode>.i18n.yaml` and translate the values.
+2. Add the locale to `supportedLocales` in `lib/services/locale_service.dart`.
+3. Run `make i18n` to regenerate the Dart code.
+
+A few rules to keep translations working:
+
+- **Don't rename keys** — they must match the base file exactly. Any key you don't translate falls
+  back to English.
+- **Preserve placeholders and parameters.** If a string is defined as
+  `stepLabel(int current, int total): "Step ${current} of ${total}"`, keep the `(...)` signature and
+  the `${current}` / `${total}` placeholders intact — only translate the surrounding words.
+- **RTL languages** (like Hebrew) are supported automatically; the app mirrors its layout based on
+  the active locale.
+
+After editing any translation file, run `make i18n` to regenerate the generated Dart:
+
+```bash
+make i18n
+```
+
+Contributions of new or improved translations are very welcome — open a pull request.
+
 ## Privacy
 
 Pantry is a self-hosted client. Your data never leaves your Nextcloud server. See the
