@@ -1,3 +1,15 @@
+# Use bash with pipefail so a failing command in a pipe (e.g. a labeled
+# sub-make below) still fails the recipe instead of being masked by awk.
+SHELL := bash
+.SHELLFLAGS := -o pipefail -c
+
+# Run a sub-make target with every stdout/stderr line prefixed by [<target>],
+# so the back-to-back per-platform logs in deploy-* are easy to scan. The job
+# runs under a pseudo-TTY (script) so fastlane/flutter keep their colors, and
+# perl adds the prefix while stripping the pty's trailing CR and the "^D" EOF
+# marker script prints on its first line. Usage: $(call labeled,<target>,<args>)
+labeled = script -q /dev/null $(MAKE) $(1) $(2) </dev/null 2>&1 | perl -pe 'BEGIN{$$|=1} s/\r$$//; s/^\^D\x08*// if $$.==1; s/^/[$(1)] /'
+
 # Version from pubspec.yaml (without build number)
 VERSION := $(shell grep '^version:' pubspec.yaml | sed 's/version: *//;s/+.*//')
 
@@ -255,15 +267,15 @@ release-all: android-release-apk android-release-aab
 
 .PHONY: deploy-production
 deploy-production:
-	$(MAKE) android-deploy TRACK=production STATUS=completed
-	$(MAKE) ios-deploy DEST=appstore
-	$(MAKE) macos-deploy DEST=appstore
+	$(call labeled,android-deploy,TRACK=production STATUS=completed)
+	$(call labeled,ios-deploy,DEST=appstore)
+	$(call labeled,macos-deploy,DEST=appstore)
 
 .PHONY: deploy-beta
 deploy-beta:
-	$(MAKE) android-deploy TRACK=beta STATUS=completed
-	$(MAKE) ios-deploy DEST=testflight
-	$(MAKE) macos-deploy DEST=testflight
+	$(call labeled,android-deploy,TRACK=beta STATUS=completed)
+	$(call labeled,ios-deploy,DEST=testflight)
+	$(call labeled,macos-deploy,DEST=testflight)
 
 # CocoaPods
 .PHONY: pods
