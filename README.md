@@ -126,6 +126,21 @@ identical** to the base file — translate only the values.
    shown in the language picker) in `lib/services/locale_service.dart`.
 3. Run `make i18n` to regenerate the Dart code.
 
+**Reuse translations from the Nextcloud app.** Many strings already exist in the
+[Pantry Nextcloud app](https://github.com/chenasraf/nextcloud-pantry). You can auto-populate a
+language file from the Nextcloud app's translations instead of translating those strings by hand:
+
+```bash
+make i18n-from-nextcloud \
+  NC_JSON=~/Dev/nextcloud-pantry/l10n/nn_NO.json \
+  TARGET=lib/i18n/messages_nn.i18n.yaml
+```
+
+`NC_JSON` is the path to the language's JSON file in the Nextcloud app's `l10n/` directory, and
+`TARGET` is the Flutter language file to fill in. It only replaces values that still match the
+English base (case-insensitively), so already-translated strings are left untouched. Run `make i18n`
+afterwards to regenerate the Dart code.
+
 A few rules to keep translations working:
 
 - **Don't rename keys** — they must match the base file exactly. Any key you don't translate falls

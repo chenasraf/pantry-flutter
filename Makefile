@@ -34,6 +34,7 @@ help:
 	@echo "  i18n:"
 	@echo "    i18n                Build i18n generated Dart code"
 	@echo "    i18n-watch          Watch and rebuild i18n on changes"
+	@echo "    i18n-from-nextcloud Populate a translation file from a Nextcloud l10n JSON (NC_JSON=, TARGET=)"
 	@echo ""
 	@echo "  Development:"
 	@echo "    run                 Run the app in debug mode"
@@ -104,6 +105,16 @@ i18n:
 .PHONY: i18n-watch
 i18n-watch:
 	dart run build_runner watch --delete-conflicting-outputs
+
+.PHONY: i18n-from-nextcloud
+i18n-from-nextcloud:
+ifndef NC_JSON
+	$(error NC_JSON is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=lib/i18n/messages_nn.i18n.yaml)
+endif
+ifndef TARGET
+	$(error TARGET is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=lib/i18n/messages_nn.i18n.yaml)
+endif
+	dart run tool/i18n_generate_from_nextcloud.dart $(NC_JSON) $(TARGET)
 
 # Development
 .PHONY: run
