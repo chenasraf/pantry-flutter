@@ -15,7 +15,8 @@ common:
   remove: Fjern
   permissionDenied: Du har ikkje tilgang til å gjere det
   noAccessTitle: Ingen tilgang
-  noAccessBody: Du har ikkje tilgang til noko i dette huset enno. Ein administrator
+  noAccessBody:
+    Du har ikkje tilgang til noko i dette huset enno. Ein administrator
     kan gi deg tilgang gjennom Pantry-nettappen.
 login:
   connectToNextcloud: Koble til Nextcloud-instansen din
@@ -28,11 +29,13 @@ login:
   seeDetails: Sjå detaljar
   errorDetailsTitle: Feildetaljar
   untrustedCertTitle: Sertifikat ikkje godkjent
-  untrustedCertBody(String host): "${host} brukar eit sertifikat som ikkje er godkjent
+  untrustedCertBody(String host):
+    "${host} brukar eit sertifikat som ikkje er godkjent
     av eininga di - som oftast er dette fordi det ikkje er sjølvsignert. Bekreft at
     fingeravtrykket stemmar med det administratoren av tenaren ga til deg før du vel
     å stole på det."
-  untrustedCertWarning: Berre stol på sertifikatet viss du kjennar att fingeravtrykket.
+  untrustedCertWarning:
+    Berre stol på sertifikatet viss du kjennar att fingeravtrykket.
     Å stole på eit sertifikat frå nokon uvedkommande kan la ein angripar lese trafikken
     din.
   trustCertificate: Stol på sertifikat
@@ -44,20 +47,25 @@ login:
   useBrowserLogin: Logg inn med nettlesaren i stadenfor
   username: Brukarnamn
   appPassword: App passord
-  appPasswordHelp: "Lag eit app passord i Nextcloud under Innstillingar → Sikkerheit
+  appPasswordHelp:
+    "Lag eit app passord i Nextcloud under Innstillingar → Sikkerheit
     → Einingar & sesjonar. Bruk dette viss nettlesaren ikkje vil opne eller tenaren
     brukar eit sjølvsignert sertifikat."
   appPasswordMissing: Skriv inn brukarnamn og app passord.
   signIn: Logg inn
-  couldNotReachServer: Kunne ikkje kople til tenaren. Sjekk adressa og nettverk- eller
+  couldNotReachServer:
+    Kunne ikkje kople til tenaren. Sjekk adressa og nettverk- eller
     VPN-tilkoblinga di.
-  connectionTimeout: Tenaren tok for lang tid til å svare. Sjekk adressa og nettverk-
+  connectionTimeout:
+    Tenaren tok for lang tid til å svare. Sjekk adressa og nettverk-
     eller VPN-tilkoblinga di.
-  certProbeFailed: Klarte ikkje å lese sertifikatet til tenaren for å bekrefte det.
+  certProbeFailed:
+    Klarte ikkje å lese sertifikatet til tenaren for å bekrefte det.
     Tilkoblinga kan vere ustabil, eller tenaren kan vere utilgjengeleg.
 home:
   noHouses: Ingen hus enno.
-  noHousesBody: "Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for
+  noHousesBody:
+    "Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for
     å kunne leggje til sjekklister, bilete og notat."
   createHouse: Opprett hus
   houseName: Namn på hus
@@ -65,7 +73,8 @@ home:
   createHouseFailed: Klarte ikkje opprette hus
   failedToLoadHouses: Klarte ikkje laste hus
   serverAppMissingTitle: Pantry er ikkje installert
-  serverAppMissingBody: "Denne appen er ein klient for Pantry-appen i Nextcloud. Det
+  serverAppMissingBody:
+    "Denne appen er ein klient for Pantry-appen i Nextcloud. Det
     ser ut til at Pantry ikkje er installert på tenaren din enno. Spør administratoren
     om dei kan installere den frå Nextcloud app-butikken, eller installer den sjølv
     viss du har administratortilgang."
@@ -82,17 +91,21 @@ onboarding:
   done: Kom i gang
   stepLabel(int current, int total): "Steg ${current} av ${total}"
   welcomeNewTitle: "Velkomen til Pantry"
-  welcomeNewBody: "Få ein kort introduksjon til korleis Pantry fungerer og korleis
+  welcomeNewBody:
+    "Få ein kort introduksjon til korleis Pantry fungerer og korleis
     du kan få mest mogleg ut av den."
   welcomeUpdateTitle: "Kva er nytt"
-  welcomeUpdateBody: "Pantry har fått nokre nye funksjonar sidan du opna den sist.
+  welcomeUpdateBody:
+    "Pantry har fått nokre nye funksjonar sidan du opna den sist.
     Her er ein kort gjennomgang av kva som er endra."
   checklistsRedesignTitle: "Sjekklister har fått ein ny utsjånad"
-  checklistsRedesignBody: Sjekklistesida har blit bygga opp på nytt med eit reinare
+  checklistsRedesignBody:
+    Sjekklistesida har blit bygga opp på nytt med eit reinare
     oppsett, raskare måtar å leggje til oppføringar og hurtighandlingar på kvar rad.
     Dei neste sidene tek deg gjennom kva som er nytt.
   checklistSelectorTitle: Byt lister på toppen
-  checklistSelectorBody: Trykk på eit namnet eller ikonet til ei liste på toppen av
+  checklistSelectorBody:
+    Trykk på eit namnet eller ikonet til ei liste på toppen av
     skjermen for å byte mellom lister eller opprette ei ny liste.
   checklistSelectorHint: Trykk for å byte lister
   mockListGroceries: Daglegvarer
@@ -101,44 +114,52 @@ onboarding:
   mockItemCountSummary(int count): ${count} oppføringar
   newListLabel: "Ny liste"
   swipeActionsTitle: Svei på oppføringar for å handsame dei
-  swipeActionsBody: Sveip frå høgre til venstre på ei oppføring for å vise hurtighandlingar
+  swipeActionsBody:
+    Sveip frå høgre til venstre på ei oppføring for å vise hurtighandlingar
     for redigering, flytting og sletting.
   swipeActionsHint: Sveip mot venstre
   swipeActionsHintBack: Sveip mot høgre
   quickActionsTitle: Hurtighandlingar på kvar oppføring
-  quickActionsBody: Kvar oppføring viser handlingsknappar, trykk på ein av dei for
+  quickActionsBody:
+    Kvar oppføring viser handlingsknappar, trykk på ein av dei for
     å redigere, flytte eller slette ein oppføring utan å opne den.
   addItemsTitle: Ein raskare måte å leggje til oppføringar
-  addItemsBody: Trykk på feltet ved bunnen for å skrive inn ei ny oppføring, merk
+  addItemsBody:
+    Trykk på feltet ved bunnen for å skrive inn ei ny oppføring, merk
     det med ein kategori, mengd, type eller bilete ved å bruke brikkene over.
   mockComposeListName: Daglegvarer
   progressHeroTitle: Skjul framgangskortet
   progressHeroBody: Treng du ikkje framdriftsringen på toppen? Sveip den bort.
-  progressHeroBringBack(String toggle): Hent det tilbake når som helst frå listemenyen
+  progressHeroBringBack(String toggle):
+    Hent det tilbake når som helst frå listemenyen
     → ${toggle}.
   progressHeroHint: Sveip for å avvise
   progressHeroDismissTitle: Skjul framgangskortet
-  progressHeroDismissBody: Treng du ikkje framdriftsringen på toppen? Trykk på X-en
+  progressHeroDismissBody:
+    Treng du ikkje framdriftsringen på toppen? Trykk på X-en
     på kortet for å skjule det.
   pinnedListsTitle: Fest lister til heimskjermen
-  pinnedListsBody: Legg skjermelementet til Pantry på heimskjermen for å sjå kor mange
+  pinnedListsBody:
+    Legg skjermelementet til Pantry på heimskjermen for å sjå kor mange
     oppføringar som er igjen på favorittlistene dine utan å opne appen.
-  pinnedListsHow(String menu, String action): Opne ei liste, trykk på ${menu} øvst
+  pinnedListsHow(String menu, String action):
+    Opne ei liste, trykk på ${menu} øvst
     til høgre og vel ${action}. Festa lister blir vist på skjermelementet på heimskjermen.
     Fjern festinga for å skjule dei.
   pinnedListsMenuLabel: kebab-menyen
   pinnedListsActionLabel: Fest liste
   pinnedListsWidgetTitle: "Pantry"
-  pinnedListsWidgetItemsLeft(int count): '${_plural(count, one: ''1 igjen'', many:
-    ''${count} igjen'')}'
+  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 igjen', many:
+    '${count} igjen')}"
   pinnedListsWidgetEmpty: Ferdig
   pinnedNotesTitle: Hald viktige notat på toppen
-  pinnedNotesBody: Fest eit notat frå overflytsmenyen for å låse det til toppen av
+  pinnedNotesBody:
+    Fest eit notat frå overflytsmenyen for å låse det til toppen av
     notatveggen, sånn at det alltid er synleg.
   mockPinnedNoteTitle: Wi-Fi passord
-  mockPinnedNoteContent: 'Nettverk: Heime
+  mockPinnedNoteContent: "Nettverk: Heime
 
-    Passord: pantry'
+    Passord: pantry"
   mockItemName: Tomat
   mockItemQuantity: "x2"
   mockItemCategory: Meieriprodukt
@@ -146,15 +167,18 @@ onboarding:
   mockBulkItemThird: Mjølk
   mockBulkItemFourth: Brød
   allListsTitle: Alt i ei visning
-  allListsBody: Opne «Alle lister»-visninga frå listebytaren for å sjå oppføringar
+  allListsBody:
+    Opne «Alle lister»-visninga frå listebytaren for å sjå oppføringar
     frå alle listene dine samla. Når du legg til ein oppføring her vil du bli spurd
     om kva liste du vil putte det i, det kan du velje frå «Liste»-brikka.
   bulkAddTitle: Legg til mange oppføringar på ein gang
-  bulkAddBody: Slå på «fleire» og tekstfeltet blir til eit felt med fleire linjer,
+  bulkAddBody:
+    Slå på «fleire» og tekstfeltet blir til eit felt med fleire linjer,
     og kvar linje blir sin eigen oppføring. Nyttig når du limar inn eller skriv ned
     ei heil handleliste.
   bulkSelectTitle: Utfør handlingar på fleire oppføringar om gangen
-  bulkSelectBody: Trykk og hald nede på ei oppføring eller trykk på «Vel oppføringar»
+  bulkSelectBody:
+    Trykk og hald nede på ei oppføring eller trykk på «Vel oppføringar»
     i menyen for å flytte, kopiere, endre kategori eller slette alle dei valde på
     ein gang.
   dev:
@@ -166,7 +190,8 @@ onboarding:
     sendTestNotification: Send ein testvarsling
 notificationsIntro:
   title: Hald deg oppdatert
-  body: Pantry kan varsle deg når nokon legg oppføringar til på lister, lastar opp
+  body:
+    Pantry kan varsle deg når nokon legg oppføringar til på lister, lastar opp
     bilete eller legg igjen notat. Varslingar vert henta frå din Nextcloud-tenar -
     ingenting blir sendt via Google eller andre tredjepartar.
   bullet1: Varslingar for hushaldningsaktivitet
@@ -175,7 +200,8 @@ notificationsIntro:
   enableButton: Slå på varslingar
   skipButton: Ikkje no
   permissionDeniedTitle: Tilgang nekta
-  permissionDeniedBody: Du kan slå på varslingar seinare i innstillingane til appen.
+  permissionDeniedBody:
+    Du kan slå på varslingar seinare i innstillingane til appen.
     Om eininga di blokkerer varslingane må du endre det i innstillingane til eininga
     di.
   ok: Ok
@@ -203,7 +229,8 @@ settings:
     edit: Rediger
     none: Ingen
   defaultItemLongPressAction: Standardhandling for trykk-og-hald
-  defaultItemLongPressActionBody: "Kva som skjer når du trykkar og hald nede på ei
+  defaultItemLongPressActionBody:
+    "Kva som skjer når du trykkar og hald nede på ei
     rad"
   itemLongPressActionNames:
     multiselect: Fleirval/Endre rekkefylgje
@@ -222,22 +249,27 @@ settings:
     normal: Normal
     dense: Tett
   swipeActions: Sveiphandlingar
-  swipeActionsBody: Sveip på oppføringar for å vise hurtighandlingar. Når slått av
+  swipeActionsBody:
+    Sveip på oppføringar for å vise hurtighandlingar. Når slått av
     vil desse handlingane bli flytta til ein menyknapp på kvar oppføring.
   itemActions: Handlingar
-  itemActionsBody: Vis hurtighandlingar på kvar oppføring. Når slått av vil handlingane
+  itemActionsBody:
+    Vis hurtighandlingar på kvar oppføring. Når slått av vil handlingane
     bli flytta til ein menyknapp på kvar oppføring.
   reuseExistingItems: Bruk eksisterande oppføringar på nytt når du leggjer til nye
-  reuseExistingItemsBody: "Når du prøver å leggje til ei oppføring som allereie finst,
+  reuseExistingItemsBody:
+    "Når du prøver å leggje til ei oppføring som allereie finst,
     bruk den eksisterande oppføringa på nytt i staden for å lage ei ny oppføring."
   reuseExistingItemsNames:
     ask: Alltid spør
     reuse: Alltid bruk igjen
     never: Aldri bruk igjen
   navOrderTitle: Navigasjonsrekkefylgje
-  navOrderSubtitle: Endre rekkefylgja på navigasjonsfanene. Den fyrste oppføringa
+  navOrderSubtitle:
+    Endre rekkefylgja på navigasjonsfanene. Den fyrste oppføringa
     er den som blir vist når du opnar appen.
-  navOrderBody: Dra for å endre rekkefylgje. Den fyrste oppføringa er den som blir
+  navOrderBody:
+    Dra for å endre rekkefylgje. Den fyrste oppføringa er den som blir
     vist når du opnar appen.
   navOrderDefaultHint: Blir vist når du opnar appen
   navOrderReset: Nullstill
@@ -278,7 +310,8 @@ categories:
   saveFailed: Klarte ikkje lagre kategori.
   deleteFailed: Klarte ikkje slette kategori.
   deleteConfirm: Slett denne kategorien?
-  deleteConfirmBody: "Oppføringar i denne kategorien vil verta ukategoriserte. Dette
+  deleteConfirmBody:
+    "Oppføringar i denne kategorien vil verta ukategoriserte. Dette
     kan ikkje angrast."
   sort:
     nameAZ: "Namn A-Z"
@@ -295,7 +328,8 @@ stores:
   saveFailed: Klarte ikkje lagre butikk.
   deleteFailed: Klarte ikkje slette butikk.
   deleteConfirm: Slett butikk?
-  deleteConfirmBody: "Butikken vil bli fjerna frå alle oppføringar. Dette kan ikkje
+  deleteConfirmBody:
+    "Butikken vil bli fjerna frå alle oppføringar. Dette kan ikkje
     angrast."
   brand: Merke/kjede
   brandHint: "t.d. Meny, IKEA"
@@ -362,24 +396,33 @@ checklists:
     archive: Arkiver
     unarchive: Angre arkivering
     deleteConfirmTitle: Slett oppføringar?
-    deleteConfirmBody(int count): "${_plural(count, one: 'Slett 1 vald oppføring?
+    deleteConfirmBody(int count):
+      "${_plural(count, one: 'Slett 1 vald oppføring?
       Du kan gjenopprette det frå papirkorga.', many: 'Slett $count valde oppføringar?
       Du kan gjenopprette dei frå papirkorga.')}"
-    moved(int count): "${_plural(count, one: 'Flytta 1 oppføring', many: 'Flytta $count
+    moved(int count):
+      "${_plural(count, one: 'Flytta 1 oppføring', many: 'Flytta $count
       oppføringar')}"
-    copied(int count): "${_plural(count, one: 'Kopiert 1 oppføring', many: 'Kopiert
+    copied(int count):
+      "${_plural(count, one: 'Kopiert 1 oppføring', many: 'Kopiert
       $count oppføringar')}"
-    deleted(int count): "${_plural(count, one: 'Sletta 1 oppføring', many: 'Sletta
+    deleted(int count):
+      "${_plural(count, one: 'Sletta 1 oppføring', many: 'Sletta
       $count oppføringar')}"
-    restored(int count): "${_plural(count, one: 'Gjenoppretta 1 oppføring', many:
+    restored(int count):
+      "${_plural(count, one: 'Gjenoppretta 1 oppføring', many:
       'Gjenoppretta $count oppføringar')}"
-    archived(int count): "${_plural(count, one: 'Arkiverte 1 oppføring', many: 'Arkiverte
+    archived(int count):
+      "${_plural(count, one: 'Arkiverte 1 oppføring', many: 'Arkiverte
       $count oppføringar')}"
-    unarchived(int count): "${_plural(count, one: 'Flytta 1 oppføring frå arkivet',
+    unarchived(int count):
+      "${_plural(count, one: 'Flytta 1 oppføring frå arkivet',
       many: 'Flytta $count oppføringar frå arkivet')}"
-    categorySet(int count): "${_plural(count, one: 'Oppdaterte 1 oppføring', many:
+    categorySet(int count):
+      "${_plural(count, one: 'Oppdaterte 1 oppføring', many:
       'Oppdaterte $count oppføringar')}"
-    storesSet(int count): "${_plural(count, one: 'Oppdaterte 1 oppføring', many: 'Oppdaterte
+    storesSet(int count):
+      "${_plural(count, one: 'Oppdaterte 1 oppføring', many: 'Oppdaterte
       $count oppføringar')}"
     skipped(int count): "${_plural(count, one: 'Hoppa over 1', many: 'Hoppa over $count')}"
     failed: Noko er feil. Prøv igjen.
@@ -392,7 +435,8 @@ checklists:
   noTrashedItems: Papirkorga er tom.
   emptyTrash: Tøm papirkorga
   emptyTrashConfirm: Tøm papirkorga?
-  emptyTrashConfirmBody: Alle oppføringar i papirkorga vil bli sletta permanent. Dette
+  emptyTrashConfirmBody:
+    Alle oppføringar i papirkorga vil bli sletta permanent. Dette
     kan ikkje angrast.
   emptyTrashFailed: Klarte ikkje tømme papirkorga.
   restoreItem: Gjenopprett
@@ -426,7 +470,8 @@ checklists:
   saveListButton: Lagre endringar
   updateListFailed: Kunne ikkje oppdatere liste.
   removeListConfirm: Fjern liste?
-  removeListConfirmBody(String name): Fjern lista «$name»? Du kan gjenopprette den
+  removeListConfirmBody(String name):
+    Fjern lista «$name»? Du kan gjenopprette den
     frå papirkorga.
   removeListFailed: Kunne ikkje fjerne liste.
   restoreList: Gjenopprett liste
@@ -438,11 +483,11 @@ checklists:
   listIcon: Ikon
   createListFailed: Kunne ikkje opprette liste.
   viewItem:
-    quantity: 'Mengd:'
-    category: 'Kategori:'
-    recurrence: 'Tidsplan:'
-    nextDue: 'Neste gjentaking:'
-    nextDueFromCompletion: 'Neste gjentaking (frå sist fullført):'
+    quantity: "Mengd:"
+    category: "Kategori:"
+    recurrence: "Tidsplan:"
+    nextDue: "Neste gjentaking:"
+    nextDueFromCompletion: "Neste gjentaking (frå sist fullført):"
     overdue: Forfalt
     quantityLabel: Tal
     typeLabel: Type
@@ -455,10 +500,10 @@ checklists:
     relToday: i dag
     relYesterday: i går
     relDaysAgo(int n): $n dagar sidan
-    relWeeksAgo(int n): '${_plural(n, one: ''1 veke sidan'', many: ''$n veker sidan'')}'
-    relMonthsAgo(int n): '${_plural(n, one: ''1 månad sidan'', many: ''$n månadar
-      sidan'')}'
-    relYearsAgo(int n): '${_plural(n, one: ''1 år sidan'', many: ''$n år sidan'')}'
+    relWeeksAgo(int n): "${_plural(n, one: '1 veke sidan', many: '$n veker sidan')}"
+    relMonthsAgo(int n): "${_plural(n, one: '1 månad sidan', many: '$n månadar
+      sidan')}"
+    relYearsAgo(int n): "${_plural(n, one: '1 år sidan', many: '$n år sidan')}"
   itemForm:
     addTitle: Legg til oppføring
     editTitle: Rediger oppføring
@@ -506,8 +551,9 @@ checklists:
     nameZA: "Namn Z-A"
     category: Etter kategori
     custom: Sjølvvald
-  itemsLeft(int count): '${_plural(count, one: ''1 oppføring igjen'', many: ''$count
-    oppføringar igjen'')}'
+  itemsLeft(int count):
+    "${_plural(count, one: '1 oppføring igjen', many: '$count
+    oppføringar igjen')}"
   allDone: "Ferdig \U0001F389"
   listProgress(int done, int total): $done av $total fullført
   hideProgressHero: Sjul framgangskort
@@ -516,16 +562,18 @@ checklists:
   addToList(String name): Legg til $name…
   addFirstItem: Legg til di fyrste oppføring…
   noItemsTitle: Ingenting på denne lista enno
-  noItemsBody: Legg til di fyrste oppføring under, vel ein kategori, mengdm eller
+  noItemsBody:
+    Legg til di fyrste oppføring under, vel ein kategori, mengdm eller
     tidsplan ved å bruke brikkene.
   noListsTitle: Ingen sjekklister enno
-  noListsBody: Opprett di fyrste liste for å handtere daglegvarer, oppgåver og andre
+  noListsBody:
+    Opprett di fyrste liste for å handtere daglegvarer, oppgåver og andre
     ting som hushaldninga treng å halde styr på.
   createFirstList: Opprett di fyrste liste
   yourChecklists: Dine sjekklister
-  listsCount(int count): '${_plural(count, one: ''1 liste'', many: ''$count lister'')}'
-  itemsSummary(int count): '${_plural(count, one: ''1 oppføring'', many: ''$count
-    oppføringar'')}'
+  listsCount(int count): "${_plural(count, one: '1 liste', many: '$count lister')}"
+  itemsSummary(int count): "${_plural(count, one: '1 oppføring', many: '$count
+    oppføringar')}"
   allDoneSummary: Ferdig · 0 igjen
   newChecklist: Ny sjekkliste
   createListButton: Opprett liste
@@ -570,7 +618,8 @@ checklists:
     multipleHint: Skil ulike oppføringar ved å lage ei ny linje
   reuse:
     dialogTitle: Oppføringa finst allereie
-    dialogBody(String name): Ein oppføring som heiter «$name» finst allereie på denne
+    dialogBody(String name):
+      Ein oppføring som heiter «$name» finst allereie på denne
       lista. Vil du bruke denne på nytt i staden for å opprette ein ny?
     reuseExisting: Gjenbruk
     addAnyway: Legg til likevel
@@ -601,29 +650,34 @@ checklists:
     deselectAll: Fjern markeringa av alt
     reuseExisting: Bruk eksisterande oppføringar i staden for å opprette duplikatar
     defaultFields: Standardinnstillingar som blir brukt på kvar oppføring
-    itemsFound(int count): '${_plural(count, one: ''fant 1 oppføring '', many: ''fant
-      $count oppføringar'')}'
-    addItems(int count): '${_plural(count, one: ''Legg til 1 oppføring'', many: ''Legg
-      til $count oppføringar'')}'
-    imported(int count): '${_plural(count, one: ''Importert 1 oppføring'', many: ''Importert
-      $count oppføringar'')}'
+    itemsFound(int count):
+      "${_plural(count, one: 'fant 1 oppføring ', many: 'fant
+      $count oppføringar')}"
+    addItems(int count):
+      "${_plural(count, one: 'Legg til 1 oppføring', many: 'Legg
+      til $count oppføringar')}"
+    imported(int count):
+      "${_plural(count, one: 'Importert 1 oppføring', many: 'Importert
+      $count oppføringar')}"
 notesWall:
   noNotes: Ingen notat enno
   failedToLoad: Klarte ikkje laste notat
   saveFailed: Klarte ikkje lagre notat.
   deleteFailed: Klarte ikkje slette notatet.
   deleteConfirm: Slett dette notatet?
-  deleteSelectedConfirm(int count): 'Slett ${_plural(count, one: ''dette notatet'',
-    many: ''$count notat'')}?'
-  noteRemoved(int count): '${_plural(count, one: ''Notat sletta'', many: ''$count
-    notat sletta'')}'
+  deleteSelectedConfirm(int count):
+    "Slett ${_plural(count, one: 'dette notatet',
+    many: '$count notat')}?"
+  noteRemoved(int count): "${_plural(count, one: 'Notat sletta', many: '$count
+    notat sletta')}"
   viewTrash: Vis papirkorga
   exitTrash: Gå ut av papirkorga
   trashTitle: Papirkorg
   trashEmpty: Papirkorga er tom.
   emptyTrash: Tøm papirkorga
   emptyTrashConfirm: Tøm papirkorga?
-  emptyTrashConfirmBody: Alle notata i papirkorga vil bli sletta permanent. Dette
+  emptyTrashConfirmBody:
+    Alle notata i papirkorga vil bli sletta permanent. Dette
     kan ikkje angrast.
   emptyTrashFailed: Klarte ikkje tømme papirkorga.
   failedToLoadTrash: Klarte ikkje laste papirkorga.
@@ -655,17 +709,18 @@ photoBoard:
   uploadFailed: Klarte ikkje laste opp bilete.
   deleteFailed: Klarte ikkje slette bilete
   deleteConfirm: Slett dette biletet?
-  deleteSelectedConfirm(int count): 'Slett ${_plural(count, one: ''dette bilete'',
-    many: ''$count bilete'')}?'
-  photoRemoved(int count): '${_plural(count, one: ''Bilete sletta'', many: ''$count
-    bilete sletta'')}'
+  deleteSelectedConfirm(int count): "Slett ${_plural(count, one: 'dette bilete',
+    many: '$count bilete')}?"
+  photoRemoved(int count): "${_plural(count, one: 'Bilete sletta', many: '$count
+    bilete sletta')}"
   viewTrash: Vis papirkorga
   exitTrash: Gå ut av papirkorga
   trashTitle: Papirkorg
   trashEmpty: Papirkorga er tom.
   emptyTrash: Tøm papirkorga
   emptyTrashConfirm: Tøm papirkorga?
-  emptyTrashConfirmBody: Alle bielta i papirkorga vil bli sletta permanent. Dette
+  emptyTrashConfirmBody:
+    Alle bielta i papirkorga vil bli sletta permanent. Dette
     kan ikkje angrast.
   emptyTrashFailed: Klarte ikkje tømme papirkorga.
   failedToLoadTrash: Klarte ikkje laste papirkorga.
@@ -723,9 +778,11 @@ recurrence:
   occurrences: gjentakingar
   onDate: På dato
   countFromCompletion: Baser intervallet på når oppføringa var markert som fullført
-  countFromCompletionHintOff: "Tidsplanen er førehandsdefinert: oppføringa kjem tilbake
+  countFromCompletionHintOff:
+    "Tidsplanen er førehandsdefinert: oppføringa kjem tilbake
     uavhengig av når det var markert som fullført."
-  countFromCompletionHintOn: "Den neste gjentakinga er basert frå når du markerar
+  countFromCompletionHintOn:
+    "Den neste gjentakinga er basert frå når du markerar
     oppføringa som fullført, så det kjem alltid tilbake eit fullt intervall etter
     att det var fullført."
   summary: Oppsumering
@@ -734,10 +791,10 @@ recurrence:
   every(String unit): Kvar $unit
   everyButton(String unit): Kvar $unit
   onDays(String days): på $days
-  day(int count): '${_plural(count, one: ''dag'', many: ''$count dagar'')}'
-  week(int count): '${_plural(count, one: ''veke'', many: ''$count veker'')}'
-  month(int count): '${_plural(count, one: ''månad'', many: ''$count månadar'')}'
-  year(int count): '${_plural(count, one: ''år'', many: ''$count år'')}'
+  day(int count): "${_plural(count, one: 'dag', many: '$count dagar')}"
+  week(int count): "${_plural(count, one: 'veke', many: '$count veker')}"
+  month(int count): "${_plural(count, one: 'månad', many: '$count månadar')}"
+  year(int count): "${_plural(count, one: 'år', many: '$count år')}"
   dayNames:
     monday: Måndag
     tuesday: Tysdag
@@ -757,7 +814,8 @@ recurrence:
 sync:
   offline: Fråkobla
   syncing: Synkroniserer endringar…
-  pendingChanges(int count): '${_plural(count, one: ''1 endring ventar på synkronisering'',
-    many: ''${count} endringar venter på synkronisering'')}'
+  pendingChanges(int count):
+    "${_plural(count, one: '1 endring ventar på synkronisering',
+    many: '${count} endringar venter på synkronisering')}"
   syncError: Kunne ikkje synkronisere endringar
   retry: Prøv igjen no
