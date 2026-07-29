@@ -1190,6 +1190,11 @@ class DensityNamesSettingsMessagesEs extends DensityNamesSettingsMessages {
   /// "Compacta"
   /// ```
   String get dense => """Compacta""";
+
+  /// ```dart
+  /// "Muy compacta"
+  /// ```
+  String get compact => """Muy compacta""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesEs
@@ -3929,6 +3934,7 @@ Contraseña: pantry-rocks""",
       """Cuánto espacio ocupa cada artículo en tus listas.""",
   """settings.densityNames.normal""": """Normal""",
   """settings.densityNames.dense""": """Compacta""",
+  """settings.densityNames.compact""": """Muy compacta""",
   """settings.swipeActions""": """Acciones al deslizar""",
   """settings.swipeActionsBody""":
       """Desliza los elementos hacia la izquierda para ver acciones rápidas. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.""",

@@ -256,6 +256,7 @@ settings:
   densityNames:
     normal: Normal
     dense: Tett
+    compact: Ekstra tett
   swipeActions: Sveiphandlingar
   swipeActionsBody:
     Sveip på oppføringar for å vise hurtighandlingar. Når slått av

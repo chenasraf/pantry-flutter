@@ -188,6 +188,7 @@ settings:
   densityNames:
     normal: Normal
     dense: Dense
+    compact: Extra dense
   swipeActions: Swipe actions
   swipeActionsBody: Swipe items left to reveal quick actions. When off, actions move to a menu button on each item.
   itemActions: Item actions

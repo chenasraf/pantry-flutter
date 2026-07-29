@@ -12,6 +12,7 @@ import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
+import 'package:pantry/views/checklists/checklist_density.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
     show parseHexColor;
 import 'package:pantry/widgets/description_detail_dialog.dart';
@@ -195,7 +196,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final prefs = context.watch<PrefsService>();
     final tapAction = prefs.defaultItemTapAction;
     final longPressAction = prefs.defaultItemLongPressAction;
-    final dense = prefs.checklistDensity == 'dense';
+    final density = ChecklistDensity.fromPref(prefs.checklistDensity);
     final swipeEnabled = prefs.swipeActionsEnabled;
 
     final catColor = cat != null
@@ -215,7 +216,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
         isCardsView: false,
         trashMode: false,
         archiveMode: false,
-        dense: dense,
+        density: density,
         addedByUserId: null,
         addedByDisplayName: null,
         listBadge: null,
@@ -403,7 +404,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       isCardsView: widget.isCardsView,
       trashMode: widget.trashMode,
       archiveMode: widget.archiveMode,
-      dense: dense,
+      density: density,
       addedByUserId: widget.addedByUserId,
       addedByDisplayName: widget.addedByDisplayName,
       listBadge: widget.listBadge,
@@ -422,12 +423,16 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     if (selecting) {
       body = content;
     } else if (!swipeEnabled) {
-      body = _OverflowMenuRow(actions: actions, dense: dense, child: content);
+      body = _OverflowMenuRow(
+        actions: actions,
+        density: density,
+        child: content,
+      );
     } else {
       body = SwipeRevealRow(
         key: _swipeKey,
         actions: actions,
-        dense: dense,
+        density: density,
         child: content,
       );
     }
@@ -469,12 +474,12 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
 class _OverflowMenuRow extends StatelessWidget {
   final Widget child;
   final List<SwipeAction> actions;
-  final bool dense;
+  final ChecklistDensity density;
 
   const _OverflowMenuRow({
     required this.child,
     required this.actions,
-    required this.dense,
+    required this.density,
   });
 
   @override
@@ -489,7 +494,7 @@ class _OverflowMenuRow extends StatelessWidget {
           PopupMenuButton<VoidCallback>(
             tooltip: m.checklists.moreActions,
             icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant),
-            iconSize: dense ? 20 : 24,
+            iconSize: density.overflowIconSize,
             onSelected: (onPressed) => onPressed(),
             itemBuilder: (context) => [
               for (final a in actions)
@@ -520,7 +525,7 @@ class _RowContent extends StatelessWidget {
   final bool isCardsView;
   final bool trashMode;
   final bool archiveMode;
-  final bool dense;
+  final ChecklistDensity density;
   final String? addedByUserId;
   final String? addedByDisplayName;
   final ItemListBadge? listBadge;
@@ -544,7 +549,7 @@ class _RowContent extends StatelessWidget {
     required this.isCardsView,
     required this.trashMode,
     required this.archiveMode,
-    required this.dense,
+    required this.density,
     required this.addedByUserId,
     required this.addedByDisplayName,
     required this.listBadge,
@@ -598,9 +603,9 @@ class _RowContent extends StatelessWidget {
             accent: cs.primary,
             onTap: onCheckboxTap,
             disabled: onCheckboxTap == null && !trashMode && !archiveMode,
-            // Shorter tap target in dense mode so single-line rows don't
+            // Shorter tap target in denser modes so single-line rows don't
             // reserve the full 48px Material height.
-            hitHeight: dense ? 40 : 48,
+            hitHeight: density.checkboxHitHeight,
             padding: checkboxPadding,
           );
 
@@ -626,9 +631,9 @@ class _RowContent extends StatelessWidget {
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(
                 (suggestion || checkboxAtEnd) ? 18 : 0,
-                dense ? 6 : 13,
+                density.rowPadV,
                 (suggestion || !checkboxAtEnd) ? 16 : 0,
-                dense ? 6 : 13,
+                density.rowPadV,
               ),
               child: Row(
                 children: [
@@ -648,7 +653,7 @@ class _RowContent extends StatelessWidget {
                       children: [
                         Text(item.name, style: nameStyle),
                         if (_hasMeta) ...[
-                          SizedBox(height: dense ? 3 : 5),
+                          SizedBox(height: density.metaGap),
                           _MetaRow(
                             item: item,
                             category: hideCategory ? null : category,

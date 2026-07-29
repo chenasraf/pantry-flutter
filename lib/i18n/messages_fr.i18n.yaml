@@ -188,6 +188,7 @@ settings:
   densityNames:
     normal: Normale
     dense: Compacte
+    compact: Très compacte
   swipeActions: Actions par balayage
   swipeActionsBody: Balayez les éléments vers la gauche pour afficher des actions rapides. Désactivé, les actions passent dans un menu sur chaque élément.
   itemActions: Actions des éléments

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry/views/checklists/checklist_density.dart';
 
 /// A row whose action buttons slide IN from the trailing edge on swipe, on
 /// top of a stationary foreground. The list item content (checkbox, name,
@@ -18,8 +19,8 @@ class SwipeRevealRow extends StatefulWidget {
   final bool enabled;
 
   /// Trims action-button width, icon size and label spacing so the swipe
-  /// actions match the checklist's dense visual density.
-  final bool dense;
+  /// actions match the checklist's chosen visual density.
+  final ChecklistDensity density;
   final VoidCallback? onOpened;
 
   const SwipeRevealRow({
@@ -27,7 +28,7 @@ class SwipeRevealRow extends StatefulWidget {
     required this.child,
     required this.actions,
     this.enabled = true,
-    this.dense = false,
+    this.density = ChecklistDensity.normal,
     this.onOpened,
   });
 
@@ -39,7 +40,7 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
   double _offset = 0;
   bool _dragging = false;
 
-  double get _actionWidth => widget.dense ? 52.0 : 62.0;
+  double get _actionWidth => widget.density.swipeActionWidth;
 
   double get _maxSwipe => widget.actions.length * _actionWidth;
 
@@ -92,7 +93,7 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
               _ActionButton(
                 action: a,
                 width: _actionWidth,
-                dense: widget.dense,
+                density: widget.density,
                 onTap: a.onPressed,
               ),
           ],
@@ -137,7 +138,7 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
                     _ActionButton(
                       action: a,
                       width: _actionWidth,
-                      dense: widget.dense,
+                      density: widget.density,
                       onTap: () {
                         close();
                         a.onPressed();
@@ -172,13 +173,13 @@ class SwipeAction {
 class _ActionButton extends StatelessWidget {
   final SwipeAction action;
   final double width;
-  final bool dense;
+  final ChecklistDensity density;
   final VoidCallback onTap;
 
   const _ActionButton({
     required this.action,
     required this.width,
-    required this.dense,
+    required this.density,
     required this.onTap,
   });
 
@@ -193,13 +194,17 @@ class _ActionButton extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(action.icon, color: action.tint, size: dense ? 17 : 20),
-              SizedBox(height: dense ? 2 : 4),
+              Icon(
+                action.icon,
+                color: action.tint,
+                size: density.swipeIconSize,
+              ),
+              SizedBox(height: density.swipeLabelGap),
               Text(
                 action.label,
                 style: TextStyle(
                   color: action.tint,
-                  fontSize: dense ? 9 : 10,
+                  fontSize: density.swipeFontSize,
                   fontWeight: FontWeight.w700,
                 ),
               ),

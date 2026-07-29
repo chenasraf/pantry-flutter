@@ -1192,6 +1192,11 @@ class DensityNamesSettingsMessagesFr extends DensityNamesSettingsMessages {
   /// "Compacte"
   /// ```
   String get dense => """Compacte""";
+
+  /// ```dart
+  /// "Très compacte"
+  /// ```
+  String get compact => """Très compacte""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesFr
@@ -3939,6 +3944,7 @@ Mot de passe : pantry-rocks""",
       """L'espace occupé par chaque article dans vos listes.""",
   """settings.densityNames.normal""": """Normale""",
   """settings.densityNames.dense""": """Compacte""",
+  """settings.densityNames.compact""": """Très compacte""",
   """settings.swipeActions""": """Actions par balayage""",
   """settings.swipeActionsBody""":
       """Balayez les éléments vers la gauche pour afficher des actions rapides. Désactivé, les actions passent dans un menu sur chaque élément.""",

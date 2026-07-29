@@ -1187,6 +1187,11 @@ class DensityNamesSettingsMessagesNn extends DensityNamesSettingsMessages {
   /// "Tett"
   /// ```
   String get dense => """Tett""";
+
+  /// ```dart
+  /// "Ekstra tett"
+  /// ```
+  String get compact => """Ekstra tett""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesNn
@@ -3916,6 +3921,7 @@ Passord: pantry""",
       """Kor mykje plass kvar oppføring får i listene.""",
   """settings.densityNames.normal""": """Normal""",
   """settings.densityNames.dense""": """Tett""",
+  """settings.densityNames.compact""": """Ekstra tett""",
   """settings.swipeActions""": """Sveiphandlingar""",
   """settings.swipeActionsBody""":
       """Sveip på oppføringar for å vise hurtighandlingar. Når slått av vil desse handlingane bli flytta til ein menyknapp på kvar oppføring.""",

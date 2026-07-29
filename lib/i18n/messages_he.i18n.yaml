@@ -188,6 +188,7 @@ settings:
   densityNames:
     normal: רגילה
     dense: צפופה
+    compact: צפופה מאוד
   swipeActions: פעולות החלקה
   swipeActionsBody: החליקו פריטים כדי לחשוף פעולות מהירות. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.
   itemActions: פעולות פריט

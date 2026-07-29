@@ -29,6 +29,7 @@ class PrefsService extends ChangeNotifier {
   static const _checklistViewKey = 'checklist_view';
   static const _checklistCheckboxPositionKey = 'checklist_checkbox_position';
   static const _checklistDensityKey = 'checklist_density';
+  static const _validDensities = {'normal', 'dense', 'compact'};
   static const _swipeActionsEnabledKey = 'swipe_actions_enabled';
   static const _checklistListFilterKey = 'checklist_list_filter';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
@@ -99,7 +100,9 @@ class PrefsService extends ChangeNotifier {
 
   /// Visual density of checklist rows. "normal" (default) keeps generous
   /// vertical padding; "dense" trims padding, checkbox tap height and swipe
-  /// action sizing so more items fit on screen.
+  /// action sizing so more items fit on screen; "compact" squeezes them
+  /// further still. Legacy prefs only ever stored "normal"/"dense", both of
+  /// which remain valid, so no migration is needed.
   String _checklistDensity = 'normal';
   String get checklistDensity => _checklistDensity;
 
@@ -253,7 +256,7 @@ class PrefsService extends ChangeNotifier {
     }
 
     final density = all[_checklistDensityKey];
-    if (density != null && (density == 'normal' || density == 'dense')) {
+    if (density != null && _validDensities.contains(density)) {
       _checklistDensity = density;
     }
 
@@ -496,7 +499,7 @@ class PrefsService extends ChangeNotifier {
   }
 
   Future<void> setChecklistDensity(String value) async {
-    if (value != 'normal' && value != 'dense') return;
+    if (!_validDensities.contains(value)) return;
     if (_checklistDensity == value) return;
     _checklistDensity = value;
     await _storage.write(key: _checklistDensityKey, value: value);

@@ -1178,6 +1178,11 @@ class DensityNamesSettingsMessages {
   /// "Dense"
   /// ```
   String get dense => """Dense""";
+
+  /// ```dart
+  /// "Extra dense"
+  /// ```
+  String get compact => """Extra dense""";
 }
 
 class ReuseExistingItemsNamesSettingsMessages {
@@ -3888,6 +3893,7 @@ Password: pantry-rocks""",
       """How much space each item takes up in your lists.""",
   """settings.densityNames.normal""": """Normal""",
   """settings.densityNames.dense""": """Dense""",
+  """settings.densityNames.compact""": """Extra dense""",
   """settings.swipeActions""": """Swipe actions""",
   """settings.swipeActionsBody""":
       """Swipe items left to reveal quick actions. When off, actions move to a menu button on each item.""",

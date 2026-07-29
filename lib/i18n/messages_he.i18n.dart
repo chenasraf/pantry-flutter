@@ -1181,6 +1181,11 @@ class DensityNamesSettingsMessagesHe extends DensityNamesSettingsMessages {
   /// "צפופה"
   /// ```
   String get dense => """צפופה""";
+
+  /// ```dart
+  /// "צפופה מאוד"
+  /// ```
+  String get compact => """צפופה מאוד""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesHe
@@ -3892,6 +3897,7 @@ Map<String, String> get messagesHeMap => {
   """settings.densityBody""": """כמה מקום כל פריט תופס ברשימות שלך.""",
   """settings.densityNames.normal""": """רגילה""",
   """settings.densityNames.dense""": """צפופה""",
+  """settings.densityNames.compact""": """צפופה מאוד""",
   """settings.swipeActions""": """פעולות החלקה""",
   """settings.swipeActionsBody""":
       """החליקו פריטים כדי לחשוף פעולות מהירות. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.""",

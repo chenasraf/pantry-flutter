@@ -26,7 +26,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   static const _pollOptions = [15, 30, 60, 120, 360];
   static const _checkboxPositionOptions = ['start', 'end'];
-  static const _densityOptions = ['normal', 'dense'];
+  static const _densityOptions = ['normal', 'dense', 'compact'];
   static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
   static const _itemLongPressActionOptions = [
     'multiselect',
@@ -94,6 +94,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   String _densityLabel(String value) => switch (value) {
     'dense' => m.settings.densityNames.dense,
+    'compact' => m.settings.densityNames.compact,
     _ => m.settings.densityNames.normal,
   };
 

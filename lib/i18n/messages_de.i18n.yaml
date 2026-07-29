@@ -188,6 +188,7 @@ settings:
   densityNames:
     normal: Normal
     dense: Kompakt
+    compact: Sehr kompakt
   swipeActions: Wischgesten
   swipeActionsBody: Wische Einträge nach links, um Schnellaktionen anzuzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.
   itemActions: Eintragsaktionen
