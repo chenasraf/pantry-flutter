@@ -7,6 +7,7 @@ import 'package:pantry/i18n/messages_de.i18n.dart' as de;
 import 'package:pantry/i18n/messages_es.i18n.dart' as es;
 import 'package:pantry/i18n/messages_fr.i18n.dart' as fr;
 import 'package:pantry/i18n/messages_he.i18n.dart' as he;
+import 'package:pantry/i18n/messages_nn.i18n.dart' as nn;
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 
@@ -17,6 +18,7 @@ const supportedLocales = [
   Locale('es'),
   Locale('fr'),
   Locale('he'),
+  Locale('nn'),
 ];
 
 /// Native display name (endonym) for each supported language, shown in the
@@ -29,6 +31,7 @@ const languageNativeNames = <String, String>{
   'es': 'Español',
   'fr': 'Français',
   'he': 'עברית',
+  'nn': 'Norsk (nynorsk)',
 };
 
 class LocaleService extends ChangeNotifier {
@@ -100,6 +103,8 @@ class LocaleService extends ChangeNotifier {
         return fr.MessagesFr();
       case 'he':
         return he.MessagesHe();
+      case 'nn':
+        return nn.MessagesNn();
       default:
         return Messages();
     }
