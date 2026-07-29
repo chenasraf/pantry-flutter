@@ -424,6 +424,7 @@ class ChecklistService {
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
+    String? barcode,
   }) async {
     final loginName = AuthService.instance.credentials?.loginName;
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
@@ -439,6 +440,7 @@ class ChecklistService {
         'repeatFromCompletion': ?repeatFromCompletion,
         'deleteOnDone': ?deleteOnDone,
         'addedBy': ?loginName,
+        'barcode': ?barcode,
       },
       fromJson: (data) => ListItem.fromJson(data),
     );
@@ -457,6 +459,7 @@ class ChecklistService {
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
+    String? barcode,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items/$itemId',
@@ -471,6 +474,7 @@ class ChecklistService {
         'rrule': ?rrule,
         'repeatFromCompletion': ?repeatFromCompletion,
         'deleteOnDone': ?deleteOnDone,
+        'barcode': ?barcode,
       },
       fromJson: (data) => ListItem.fromJson(data),
     );

@@ -57,4 +57,55 @@ void main() {
       expect(archived.copyWith(name: 'Bread').archivedAt, 999);
     });
   });
+
+  group('ListItem barcode serialization', () {
+    test('round-trips barcode through toJson/fromJson', () {
+      final item = ListItem(
+        id: 1,
+        listId: 2,
+        name: 'Coca-Cola Zero',
+        done: false,
+        repeatFromCompletion: false,
+        deleteOnDone: false,
+        sortOrder: 0,
+        createdAt: 100,
+        updatedAt: 200,
+        barcode: '4001724819103',
+      );
+
+      expect(ListItem.fromJson(item.toJson()).barcode, '4001724819103');
+    });
+
+    test('treats a missing barcode key as null', () {
+      final decoded = ListItem.fromJson({
+        'id': 1,
+        'listId': 2,
+        'name': 'Milk',
+        'done': false,
+        'repeatFromCompletion': false,
+        'sortOrder': 0,
+        'createdAt': 100,
+        'updatedAt': 200,
+      });
+
+      expect(decoded.barcode, isNull);
+    });
+
+    test('copyWith preserves an existing barcode', () {
+      final item = ListItem(
+        id: 1,
+        listId: 2,
+        name: 'Milk',
+        done: false,
+        repeatFromCompletion: false,
+        deleteOnDone: false,
+        sortOrder: 0,
+        createdAt: 100,
+        updatedAt: 200,
+        barcode: '4001724819103',
+      );
+
+      expect(item.copyWith(name: 'Milk 2').barcode, '4001724819103');
+    });
+  });
 }

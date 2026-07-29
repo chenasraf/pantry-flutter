@@ -122,6 +122,10 @@ onboarding:
   bulkAddBody: "Active le bouton Multiple et le champ devient une zone multi-ligne — chaque ligne devient un élément distinct. Pratique quand tu colles une liste ou que tu notes toutes tes courses d'un seul coup."
   bulkSelectTitle: "Agissez sur plusieurs articles à la fois"
   bulkSelectBody: "Appuyez longuement sur un article — ou touchez Sélectionner dans le menu — pour commencer la sélection, puis déplacez, copiez, catégorisez ou supprimez tout ce que vous avez choisi en une seule fois."
+  barcodeScanTitle: "Scannez un code-barres pour ajouter des articles"
+  barcodeScanBody: "Touchez le bouton de scan dans la barre d'ajout et dirigez la caméra vers le code-barres d'un produit. Pantry en trouve le nom, la catégorie et la photo et les remplit pour vous — ou saisissez le numéro à la main. Le premier scan d'un produit lance la recherche ; ensuite, c'est instantané pour toute votre maison."
+  barcodeScanMockName: "Coca-Cola Zero"
+  barcodeScanMockCategory: "Boissons"
   dev:
     showOnboarding: "Afficher l'intro"
     pickLastSeenTitle: "Aperçu des nouveautés"
@@ -280,6 +284,17 @@ checklists:
   noItems: Aucun article dans cette liste.
   noSearchResults: Aucun article ne correspond à votre recherche.
   searchHint: Filtrer...
+  barcode:
+    scan: Scanner le code-barres
+    scanTitle: Scanner le code-barres
+    scanInstructions: Dirigez la caméra vers un code-barres de produit
+    torch: Activer le flash
+    enterManually: Saisir manuellement
+    manualTitle: Saisir le code-barres
+    manualHint: Numéro de code-barres
+    invalidBarcode: Cela ne ressemble pas à un code-barres valide
+    notFound: Aucune info produit trouvée pour ce code-barres
+    disclaimer(String linkStart, String linkEnd): "Produits fournis par ${linkStart}Open Food Facts${linkEnd}, une base de données communautaire externe que Pantry ne possède ni ne contrôle."
   allCategories: Tout
   allListsChip: Tout
   filterByList: Filtrer par liste

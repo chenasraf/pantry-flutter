@@ -122,6 +122,10 @@ onboarding:
   bulkAddBody: "הפעל את מתג מרובה והשדה הופך לתיבת קלט רב-שורתית — כל שורה הופכת לפריט נפרד. נוח כשמדביקים רשימה או רושמים קנייה שלמה בבת אחת."
   bulkSelectTitle: "בצע פעולה על כמה פריטים בבת אחת"
   bulkSelectBody: "לחיצה ארוכה על פריט — או הקשה על ״בחירה״ בתפריט — כדי להתחיל לבחור, ואז להעביר, להעתיק, להגדיר קטגוריה או למחוק את כל מה שבחרת בבת אחת."
+  barcodeScanTitle: "סרוק ברקוד כדי להוסיף פריטים"
+  barcodeScanBody: "הקש על כפתור הסריקה בשורת ההוספה וכוון את המצלמה אל הברקוד של מוצר. Pantry מאתר את השם, הקטגוריה והתמונה וממלא אותם עבורך — או הקלד את המספר ידנית. הסריקה הראשונה של מוצר מבצעת את החיפוש; לאחר מכן זה מיידי עבור כל בני הבית."
+  barcodeScanMockName: "Coca-Cola Zero"
+  barcodeScanMockCategory: "משקאות"
   dev:
     showOnboarding: "הצג היכרות"
     pickLastSeenTitle: "תצוגה מקדימה של החדש"
@@ -280,6 +284,17 @@ checklists:
   noItems: אין פריטים ברשימה.
   noSearchResults: אין פריטים תואמים לחיפוש.
   searchHint: הקלד לסינון...
+  barcode:
+    scan: סרוק ברקוד
+    scanTitle: סריקת ברקוד
+    scanInstructions: כוון את המצלמה אל ברקוד של מוצר
+    torch: הפעלת פנס
+    enterManually: הזנה ידנית
+    manualTitle: הזנת ברקוד
+    manualHint: מספר ברקוד
+    invalidBarcode: זה לא נראה כמו ברקוד תקין
+    notFound: לא נמצא מידע על מוצר עבור ברקוד זה
+    disclaimer(String linkStart, String linkEnd): "המוצרים מסופקים על ידי ${linkStart}Open Food Facts${linkEnd}, מסד נתונים קהילתי חיצוני ש-Pantry אינה הבעלים שלו ואינה שולטת בו."
   allCategories: הכל
   allListsChip: הכל
   filterByList: סינון לפי רשימה

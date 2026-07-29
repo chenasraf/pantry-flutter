@@ -122,6 +122,10 @@ onboarding:
   bulkAddBody: "Flip on the Multiple toggle and the input grows into a multi-line box — every line becomes its own item. Handy when you're pasting a list or jotting down a whole grocery run."
   bulkSelectTitle: "Act on many items at once"
   bulkSelectBody: "Long-press an item — or tap Select items in the menu — to start selecting, then move, copy, set a category, or delete everything you picked in one go."
+  barcodeScanTitle: "Scan a barcode to add items"
+  barcodeScanBody: "Tap the scan button in the add bar and point your camera at a product's barcode. Pantry looks up the name, category and photo and fills them in for you — or type the number by hand. The first scan of a product does the lookup; after that it's instant for everyone in your house."
+  barcodeScanMockName: "Coca-Cola Zero"
+  barcodeScanMockCategory: "Beverages"
   dev:
     showOnboarding: "Show onboarding"
     pickLastSeenTitle: "Preview what's new"
@@ -280,6 +284,17 @@ checklists:
   noItems: No items in this list.
   noSearchResults: No items match your search.
   searchHint: Type to filter...
+  barcode:
+    scan: Scan barcode
+    scanTitle: Scan barcode
+    scanInstructions: Point your camera at a product barcode
+    torch: Toggle flash
+    enterManually: Enter manually
+    manualTitle: Enter barcode
+    manualHint: Barcode number
+    invalidBarcode: That doesn't look like a valid barcode
+    notFound: Couldn't find product info for that barcode
+    disclaimer(String linkStart, String linkEnd): "Products provided by ${linkStart}Open Food Facts${linkEnd}, an external community database that Pantry does not own or control."
   allCategories: All
   allListsChip: All
   filterByList: Filter by list

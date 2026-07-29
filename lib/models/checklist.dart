@@ -135,6 +135,7 @@ class ListItem {
   final int? imageFileId;
   final String? imageUploadedBy;
   final String? addedBy;
+  final String? barcode;
   final int sortOrder;
   final int createdAt;
   final int updatedAt;
@@ -159,6 +160,7 @@ class ListItem {
     this.imageFileId,
     this.imageUploadedBy,
     this.addedBy,
+    this.barcode,
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -186,6 +188,7 @@ class ListItem {
     imageFileId: json['imageFileId'] as int?,
     imageUploadedBy: json['imageUploadedBy'] as String?,
     addedBy: json['addedBy'] as String?,
+    barcode: json['barcode'] as String?,
     sortOrder: json['sortOrder'] as int,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
@@ -211,6 +214,7 @@ class ListItem {
     'imageFileId': imageFileId,
     'imageUploadedBy': imageUploadedBy,
     'addedBy': addedBy,
+    'barcode': barcode,
     'sortOrder': sortOrder,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
@@ -236,6 +240,7 @@ class ListItem {
     int? imageFileId,
     bool clearImage = false,
     String? imageUploadedBy,
+    String? barcode,
     int? sortOrder,
     int? updatedAt,
     int? deletedAt,
@@ -262,6 +267,7 @@ class ListItem {
         ? null
         : (imageUploadedBy ?? this.imageUploadedBy),
     addedBy: addedBy,
+    barcode: barcode ?? this.barcode,
     sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
