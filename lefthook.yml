@@ -7,3 +7,7 @@ pre-commit:
     analyze:
       glob: "*.dart"
       run: dart analyze {staged_files}
+    format-yaml:
+      glob: "*.{yml,yaml}"
+      run: pnpm exec prettier --write {staged_files}
+      stage_fixed: true

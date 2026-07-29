@@ -391,7 +391,7 @@ checklists:
   saveListButton: "Enregistrer les modifications"
   updateListFailed: "Impossible de mettre à jour la liste."
   removeListConfirm: "Retirer la liste ?"
-  removeListConfirmBody(String name): "Retirer la liste \"$name\" ? Vous pouvez la restaurer depuis la corbeille."
+  removeListConfirmBody(String name): 'Retirer la liste "$name" ? Vous pouvez la restaurer depuis la corbeille.'
   removeListFailed: "Impossible de retirer la liste."
   restoreList: "Restaurer la liste"
   permanentlyDeleteList: "Supprimer définitivement"
@@ -529,10 +529,10 @@ checklists:
     multipleHint: Séparer les éléments par des retours à la ligne
   reuse:
     dialogTitle: "L'article existe déjà"
-    dialogBody(String name): "Un article nommé \"$name\" existe déjà dans cette liste. Le réutiliser au lieu d'en ajouter un nouveau ?"
+    dialogBody(String name): 'Un article nommé "$name" existe déjà dans cette liste. Le réutiliser au lieu d''en ajouter un nouveau ?'
     reuseExisting: "Réutiliser l'existant"
     addAnyway: Ajouter quand même
-    reusedSnack(String name): "Article existant \"$name\" réutilisé"
+    reusedSnack(String name): 'Article existant "$name" réutilisé'
     suggestionsHeader: Déjà dans cette liste
   allLists: Toutes les listes
   allListsSubtitle: Éléments de toutes les listes

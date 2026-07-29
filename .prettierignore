@@ -1,0 +1,15 @@
+# Dependency + build output
+node_modules/
+build/
+.dart_tool/
+.flutter-flags.yml
+
+# Platform build dirs
+ios/Pods/
+macos/Pods/
+android/.gradle/
+
+# Lockfiles (managed by their own tools)
+pnpm-lock.yaml
+package-lock.json
+yarn.lock

@@ -61,3 +61,6 @@ fastlane/.image_hashes.json
 fastlane/report.xml
 fastlane/Preview.html
 /android/build/reports/problems
+
+# Node tooling (Prettier)
+node_modules/

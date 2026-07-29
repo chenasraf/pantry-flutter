@@ -86,6 +86,7 @@ help:
 .PHONY: get
 get:
 	flutter pub get
+	pnpm install
 
 .PHONY: clean
 clean:
@@ -123,6 +124,7 @@ run:
 .PHONY: format
 format:
 	dart format .
+	pnpm exec prettier --write "**/*.{yml,yaml}"
 
 .PHONY: analyze
 analyze:

@@ -391,7 +391,7 @@ checklists:
   saveListButton: Save changes
   updateListFailed: Failed to update list.
   removeListConfirm: Remove list?
-  removeListConfirmBody(String name): "Remove the list \"$name\"? You can restore it from the trash."
+  removeListConfirmBody(String name): 'Remove the list "$name"? You can restore it from the trash.'
   removeListFailed: Failed to remove list.
   restoreList: Restore list
   permanentlyDeleteList: Delete forever
@@ -529,7 +529,7 @@ checklists:
     multipleHint: Separate items by new lines
   reuse:
     dialogTitle: Item already exists
-    dialogBody(String name): "An item named \"$name\" already exists in this list. Reuse it instead of adding a new one?"
+    dialogBody(String name): 'An item named "$name" already exists in this list. Reuse it instead of adding a new one?'
     reuseExisting: Reuse existing
     addAnyway: Add anyway
     reusedSnack(String name): "Reused existing item “$name”"

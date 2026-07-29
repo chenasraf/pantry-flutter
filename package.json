@@ -1,0 +1,12 @@
+{
+  "name": "pantry-flutter-tooling",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dev tooling for the Pantry Flutter app (Prettier for YAML/Markdown formatting).",
+  "scripts": {
+    "format": "prettier --write \"**/*.{yml,yaml}\""
+  },
+  "devDependencies": {
+    "prettier": "3.8.4"
+  }
+}
