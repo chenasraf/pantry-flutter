@@ -718,6 +718,28 @@ Passord: pantry""";
   /// ```
   String get bulkSelectBody =>
       """Trykk og hald nede på ei oppføring eller trykk på «Vel oppføringar» i menyen for å flytte, kopiere, endre kategori eller slette alle dei valde på ein gang.""";
+
+  /// ```dart
+  /// "Skann ein strekkode for å legge til oppføringar"
+  /// ```
+  String get barcodeScanTitle =>
+      """Skann ein strekkode for å legge til oppføringar""";
+
+  /// ```dart
+  /// "Trykk på skanneknappen i tilleggsfeltet og rett kameraet mot strekkoden på eit produkt. Pantry slår opp namn, kategori og bilete og fyller dei inn for deg - eller skriv nummeret inn for hand. Den første skanninga av eit produkt gjer oppslaget, etter det er det momentant for alle i huset ditt."
+  /// ```
+  String get barcodeScanBody =>
+      """Trykk på skanneknappen i tilleggsfeltet og rett kameraet mot strekkoden på eit produkt. Pantry slår opp namn, kategori og bilete og fyller dei inn for deg - eller skriv nummeret inn for hand. Den første skanninga av eit produkt gjer oppslaget, etter det er det momentant for alle i huset ditt.""";
+
+  /// ```dart
+  /// "Coca-Cola Zero"
+  /// ```
+  String get barcodeScanMockName => """Coca-Cola Zero""";
+
+  /// ```dart
+  /// "Drikke"
+  /// ```
+  String get barcodeScanMockCategory => """Drikke""";
   DevOnboardingMessagesNn get dev => DevOnboardingMessagesNn(this);
 }
 
@@ -1510,6 +1532,7 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   /// "Skriv for å filtrere…"
   /// ```
   String get searchHint => """Skriv for å filtrere…""";
+  BarcodeChecklistsMessagesNn get barcode => BarcodeChecklistsMessagesNn(this);
 
   /// ```dart
   /// "Alle"
@@ -2052,6 +2075,62 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   String get pickListTitle => """Kva liste vil du leggje den til?""";
   MarkdownChecklistsMessagesNn get markdown =>
       MarkdownChecklistsMessagesNn(this);
+}
+
+class BarcodeChecklistsMessagesNn extends BarcodeChecklistsMessages {
+  final ChecklistsMessagesNn _parent;
+  const BarcodeChecklistsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Skann strekkode"
+  /// ```
+  String get scan => """Skann strekkode""";
+
+  /// ```dart
+  /// "Skann strekkode"
+  /// ```
+  String get scanTitle => """Skann strekkode""";
+
+  /// ```dart
+  /// "Rett kameraet mot ein produktstrekkode"
+  /// ```
+  String get scanInstructions => """Rett kameraet mot ein produktstrekkode""";
+
+  /// ```dart
+  /// "Slå lommelykt av/på"
+  /// ```
+  String get torch => """Slå lommelykt av/på""";
+
+  /// ```dart
+  /// "Skriv inn manuelt"
+  /// ```
+  String get enterManually => """Skriv inn manuelt""";
+
+  /// ```dart
+  /// "Skriv inn strekkode"
+  /// ```
+  String get manualTitle => """Skriv inn strekkode""";
+
+  /// ```dart
+  /// "Strekkodenummer"
+  /// ```
+  String get manualHint => """Strekkodenummer""";
+
+  /// ```dart
+  /// "Det ser ikkje ut som ein gyldig strekkode"
+  /// ```
+  String get invalidBarcode => """Det ser ikkje ut som ein gyldig strekkode""";
+
+  /// ```dart
+  /// "Fann ikkje produktinfo for den strekkoden"
+  /// ```
+  String get notFound => """Fann ikkje produktinfo for den strekkoden""";
+
+  /// ```dart
+  /// "Produkt levert av ${linkStart}Open Food Facts${linkEnd}, ein ekstern fellesskapsdatabase som Pantry ikkje eig eller kontrollerer."
+  /// ```
+  String disclaimer(String linkStart, String linkEnd) =>
+      """Produkt levert av ${linkStart}Open Food Facts${linkEnd}, ein ekstern fellesskapsdatabase som Pantry ikkje eig eller kontrollerer.""";
 }
 
 class FiltersChecklistsMessagesNn extends FiltersChecklistsMessages {
@@ -3771,6 +3850,12 @@ Passord: pantry""",
       """Utfør handlingar på fleire oppføringar om gangen""",
   """onboarding.bulkSelectBody""":
       """Trykk og hald nede på ei oppføring eller trykk på «Vel oppføringar» i menyen for å flytte, kopiere, endre kategori eller slette alle dei valde på ein gang.""",
+  """onboarding.barcodeScanTitle""":
+      """Skann ein strekkode for å legge til oppføringar""",
+  """onboarding.barcodeScanBody""":
+      """Trykk på skanneknappen i tilleggsfeltet og rett kameraet mot strekkoden på eit produkt. Pantry slår opp namn, kategori og bilete og fyller dei inn for deg - eller skriv nummeret inn for hand. Den første skanninga av eit produkt gjer oppslaget, etter det er det momentant for alle i huset ditt.""",
+  """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
+  """onboarding.barcodeScanMockCategory""": """Drikke""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":
@@ -3924,6 +4009,18 @@ Passord: pantry""",
   """checklists.noSearchResults""":
       """Ingen oppføringar samsvarer med søket.""",
   """checklists.searchHint""": """Skriv for å filtrere…""",
+  """checklists.barcode.scan""": """Skann strekkode""",
+  """checklists.barcode.scanTitle""": """Skann strekkode""",
+  """checklists.barcode.scanInstructions""":
+      """Rett kameraet mot ein produktstrekkode""",
+  """checklists.barcode.torch""": """Slå lommelykt av/på""",
+  """checklists.barcode.enterManually""": """Skriv inn manuelt""",
+  """checklists.barcode.manualTitle""": """Skriv inn strekkode""",
+  """checklists.barcode.manualHint""": """Strekkodenummer""",
+  """checklists.barcode.invalidBarcode""":
+      """Det ser ikkje ut som ein gyldig strekkode""",
+  """checklists.barcode.notFound""":
+      """Fann ikkje produktinfo for den strekkoden""",
   """checklists.allCategories""": """Alle""",
   """checklists.allListsChip""": """Alle""",
   """checklists.filterByList""": """Filter etter liste""",

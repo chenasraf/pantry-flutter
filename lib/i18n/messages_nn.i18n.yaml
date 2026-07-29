@@ -181,6 +181,14 @@ onboarding:
     Trykk og hald nede på ei oppføring eller trykk på «Vel oppføringar»
     i menyen for å flytte, kopiere, endre kategori eller slette alle dei valde på
     ein gang.
+  barcodeScanTitle: Skann ein strekkode for å legge til oppføringar
+  barcodeScanBody:
+    Trykk på skanneknappen i tilleggsfeltet og rett kameraet mot strekkoden på
+    eit produkt. Pantry slår opp namn, kategori og bilete og fyller dei inn for
+    deg - eller skriv nummeret inn for hand. Den første skanninga av eit produkt
+    gjer oppslaget, etter det er det momentant for alle i huset ditt.
+  barcodeScanMockName: "Coca-Cola Zero"
+  barcodeScanMockCategory: Drikke
   dev:
     showOnboarding: Vis oppstartshjelp
     pickLastSeenTitle: Førehandsvis kva som er nytt
@@ -354,6 +362,17 @@ checklists:
   noItems: Ingen oppføringar i denne lista.
   noSearchResults: Ingen oppføringar samsvarer med søket.
   searchHint: Skriv for å filtrere…
+  barcode:
+    scan: Skann strekkode
+    scanTitle: Skann strekkode
+    scanInstructions: Rett kameraet mot ein produktstrekkode
+    torch: Slå lommelykt av/på
+    enterManually: Skriv inn manuelt
+    manualTitle: Skriv inn strekkode
+    manualHint: Strekkodenummer
+    invalidBarcode: Det ser ikkje ut som ein gyldig strekkode
+    notFound: Fann ikkje produktinfo for den strekkoden
+    disclaimer(String linkStart, String linkEnd): "Produkt levert av ${linkStart}Open Food Facts${linkEnd}, ein ekstern fellesskapsdatabase som Pantry ikkje eig eller kontrollerer."
   allCategories: Alle
   allListsChip: Alle
   filterByList: Filter etter liste
