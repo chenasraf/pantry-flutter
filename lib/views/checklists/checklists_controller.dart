@@ -1686,6 +1686,7 @@ class ChecklistsController extends ChangeNotifier {
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
+    String? barcode,
   }) async {
     final list = _currentList;
     if (list == null || list.id == kAllListsId) {
@@ -1705,6 +1706,7 @@ class ChecklistsController extends ChangeNotifier {
       rrule: rrule,
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
+      barcode: barcode,
     );
   }
 
@@ -1722,6 +1724,7 @@ class ChecklistsController extends ChangeNotifier {
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
+    String? barcode,
   }) async {
     final listId = targetListId;
     final tempId = _sync.newTempId();
@@ -1739,6 +1742,7 @@ class ChecklistsController extends ChangeNotifier {
       repeatFromCompletion: repeatFromCompletion ?? false,
       deleteOnDone: deleteOnDone ?? false,
       addedBy: loginName,
+      barcode: barcode,
       sortOrder: 0,
       createdAt: _now(),
       updatedAt: _now(),
@@ -1766,6 +1770,7 @@ class ChecklistsController extends ChangeNotifier {
           'rrule': ?rrule,
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
+          'barcode': ?barcode,
         },
         createdAt: _now(),
       ),
@@ -1806,6 +1811,7 @@ class ChecklistsController extends ChangeNotifier {
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
+    String? barcode,
   }) async {
     final updated = item.copyWith(
       name: name,
@@ -1817,6 +1823,7 @@ class ChecklistsController extends ChangeNotifier {
       rrule: rrule,
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
+      barcode: barcode,
       updatedAt: _now(),
     );
     final index = _items.indexWhere((i) => i.id == item.id);
@@ -1844,6 +1851,7 @@ class ChecklistsController extends ChangeNotifier {
           'rrule': ?rrule,
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
+          'barcode': ?barcode,
         },
         createdAt: _now(),
       ),

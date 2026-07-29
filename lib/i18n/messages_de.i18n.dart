@@ -719,6 +719,28 @@ Passwort: pantry-rocks""";
   /// ```
   String get bulkSelectBody =>
       """Halte einen Eintrag gedrückt – oder tippe im Menü auf „Auswählen“ – um mehrere zu markieren, und verschiebe, kopiere, kategorisiere oder lösche sie dann alle auf einmal.""";
+
+  /// ```dart
+  /// "Barcode scannen, um Einträge hinzuzufügen"
+  /// ```
+  String get barcodeScanTitle =>
+      """Barcode scannen, um Einträge hinzuzufügen""";
+
+  /// ```dart
+  /// "Tippe in der Eingabeleiste auf die Scan-Schaltfläche und richte die Kamera auf den Barcode eines Produkts. Pantry sucht Name, Kategorie und Foto heraus und füllt sie für dich aus – oder gib die Nummer von Hand ein. Der erste Scan eines Produkts führt die Suche durch; danach ist es für alle in deinem Haushalt sofort da."
+  /// ```
+  String get barcodeScanBody =>
+      """Tippe in der Eingabeleiste auf die Scan-Schaltfläche und richte die Kamera auf den Barcode eines Produkts. Pantry sucht Name, Kategorie und Foto heraus und füllt sie für dich aus – oder gib die Nummer von Hand ein. Der erste Scan eines Produkts führt die Suche durch; danach ist es für alle in deinem Haushalt sofort da.""";
+
+  /// ```dart
+  /// "Coca-Cola Zero"
+  /// ```
+  String get barcodeScanMockName => """Coca-Cola Zero""";
+
+  /// ```dart
+  /// "Getränke"
+  /// ```
+  String get barcodeScanMockCategory => """Getränke""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 
@@ -1513,6 +1535,7 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Zum Filtern tippen..."
   /// ```
   String get searchHint => """Zum Filtern tippen...""";
+  BarcodeChecklistsMessagesDe get barcode => BarcodeChecklistsMessagesDe(this);
 
   /// ```dart
   /// "Alle"
@@ -2058,6 +2081,65 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get pickListTitle => """Zu welcher Liste hinzufügen?""";
   MarkdownChecklistsMessagesDe get markdown =>
       MarkdownChecklistsMessagesDe(this);
+}
+
+class BarcodeChecklistsMessagesDe extends BarcodeChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const BarcodeChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Barcode scannen"
+  /// ```
+  String get scan => """Barcode scannen""";
+
+  /// ```dart
+  /// "Barcode scannen"
+  /// ```
+  String get scanTitle => """Barcode scannen""";
+
+  /// ```dart
+  /// "Richte die Kamera auf einen Produkt-Barcode"
+  /// ```
+  String get scanInstructions =>
+      """Richte die Kamera auf einen Produkt-Barcode""";
+
+  /// ```dart
+  /// "Blitz umschalten"
+  /// ```
+  String get torch => """Blitz umschalten""";
+
+  /// ```dart
+  /// "Manuell eingeben"
+  /// ```
+  String get enterManually => """Manuell eingeben""";
+
+  /// ```dart
+  /// "Barcode eingeben"
+  /// ```
+  String get manualTitle => """Barcode eingeben""";
+
+  /// ```dart
+  /// "Barcode-Nummer"
+  /// ```
+  String get manualHint => """Barcode-Nummer""";
+
+  /// ```dart
+  /// "Das sieht nicht nach einem gültigen Barcode aus"
+  /// ```
+  String get invalidBarcode =>
+      """Das sieht nicht nach einem gültigen Barcode aus""";
+
+  /// ```dart
+  /// "Für diesen Barcode wurden keine Produktinfos gefunden"
+  /// ```
+  String get notFound =>
+      """Für diesen Barcode wurden keine Produktinfos gefunden""";
+
+  /// ```dart
+  /// "Produkte bereitgestellt von ${linkStart}Open Food Facts${linkEnd}, einer externen Community-Datenbank, die Pantry nicht besitzt oder kontrolliert."
+  /// ```
+  String disclaimer(String linkStart, String linkEnd) =>
+      """Produkte bereitgestellt von ${linkStart}Open Food Facts${linkEnd}, einer externen Community-Datenbank, die Pantry nicht besitzt oder kontrolliert.""";
 }
 
 class FiltersChecklistsMessagesDe extends FiltersChecklistsMessages {
@@ -3785,6 +3867,12 @@ Passwort: pantry-rocks""",
       """Mehrere Einträge auf einmal bearbeiten""",
   """onboarding.bulkSelectBody""":
       """Halte einen Eintrag gedrückt – oder tippe im Menü auf „Auswählen“ – um mehrere zu markieren, und verschiebe, kopiere, kategorisiere oder lösche sie dann alle auf einmal.""",
+  """onboarding.barcodeScanTitle""":
+      """Barcode scannen, um Einträge hinzuzufügen""",
+  """onboarding.barcodeScanBody""":
+      """Tippe in der Eingabeleiste auf die Scan-Schaltfläche und richte die Kamera auf den Barcode eines Produkts. Pantry sucht Name, Kategorie und Foto heraus und füllt sie für dich aus – oder gib die Nummer von Hand ein. Der erste Scan eines Produkts führt die Suche durch; danach ist es für alle in deinem Haushalt sofort da.""",
+  """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
+  """onboarding.barcodeScanMockCategory""": """Getränke""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":
@@ -3941,6 +4029,18 @@ Passwort: pantry-rocks""",
   """checklists.noSearchResults""":
       """Keine Einträge entsprechen Ihrer Suche.""",
   """checklists.searchHint""": """Zum Filtern tippen...""",
+  """checklists.barcode.scan""": """Barcode scannen""",
+  """checklists.barcode.scanTitle""": """Barcode scannen""",
+  """checklists.barcode.scanInstructions""":
+      """Richte die Kamera auf einen Produkt-Barcode""",
+  """checklists.barcode.torch""": """Blitz umschalten""",
+  """checklists.barcode.enterManually""": """Manuell eingeben""",
+  """checklists.barcode.manualTitle""": """Barcode eingeben""",
+  """checklists.barcode.manualHint""": """Barcode-Nummer""",
+  """checklists.barcode.invalidBarcode""":
+      """Das sieht nicht nach einem gültigen Barcode aus""",
+  """checklists.barcode.notFound""":
+      """Für diesen Barcode wurden keine Produktinfos gefunden""",
   """checklists.allCategories""": """Alle""",
   """checklists.allListsChip""": """Alle""",
   """checklists.filterByList""": """Nach Liste filtern""",

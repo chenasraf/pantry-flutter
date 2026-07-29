@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,9 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/services/barcode_service.dart';
+import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry/views/checklists/barcode_scan_view.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/rrule.dart';
@@ -31,6 +35,10 @@ class ItemDraft {
   XFile? imageFile;
   Uint8List? imageBytes;
 
+  /// Scanned barcode (EAN/UPC) carried through to the created item. Set by the
+  /// scan flow; null for hand-typed items.
+  String? barcode;
+
   void reset(ItemLifecycle defaultLifecycle) {
     name = '';
     description = '';
@@ -41,6 +49,7 @@ class ItemDraft {
     recurrence = RecurrenceState();
     imageFile = null;
     imageBytes = null;
+    barcode = null;
   }
 
   bool get repeatFromCompletion => recurrence.repeatFromCompletion;
@@ -66,6 +75,7 @@ class ComposeSubmission {
   final Uint8List? imageBytes;
   final String? imageName;
   final String? imageMime;
+  final String? barcode;
 
   const ComposeSubmission({
     required this.name,
@@ -79,6 +89,7 @@ class ComposeSubmission {
     this.imageBytes,
     this.imageName,
     this.imageMime,
+    this.barcode,
   });
 }
 
@@ -216,6 +227,12 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   /// light typos survive, while unrelated names are filtered out.
   static const _reuseMatchCutoff = 60;
 
+  /// Minimum fuzzy score (0–100) for a barcode provider's category hint to
+  /// prefill one of the house's categories. Higher than [_reuseMatchCutoff] —
+  /// a wrong auto-category is more annoying than none, so only match when it's
+  /// clearly the same category.
+  static const _categoryMatchCutoff = 65;
+
   /// Single-mode fuzzy matches of the typed name against [reuseCandidates],
   /// best-ranked first. Uses fuzzywuzzy's weighted ratio, which blends token
   /// and partial matching — so extra words in the query ("Organic milk") still
@@ -350,6 +367,87 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     });
   }
 
+  /// Camera-scan (or manually enter) a barcode, then prepopulate the current
+  /// draft. A scan is not an API call — only a cache miss is: check the shared
+  /// server cache first, and only resolve against Open Food Facts (writing the
+  /// result back for the whole house) on a miss. On a hit we prefill without
+  /// clobbering anything the user has already typed; on a total miss the draft
+  /// is left untouched (never a raw EAN dumped into the name) and a toast says
+  /// so.
+  Future<void> _scanBarcode() async {
+    if (_multiple) return;
+    if (!_active) _activate();
+    final ean = await BarcodeScanView.scan(context);
+    if (ean == null || !mounted) return;
+
+    final svc = BarcodeService.instance;
+    BarcodeResult? result;
+    try {
+      result = await svc.lookup(ean);
+    } catch (_) {
+      // Cache lookup failed (offline / server error). Fall through to an
+      // external resolve.
+    }
+    if (result == null) {
+      result = await svc.resolveExternally(ean);
+      // Write a freshly-resolved product back into the shared cache so repeat
+      // scans across the house are free. Best-effort — don't block on it.
+      if (result != null) {
+        unawaited(svc.save(result).catchError((_) => result!));
+      }
+    }
+    if (!mounted) return;
+
+    // Not found anywhere: leave the form as it was and just tell the user, so
+    // an unrecognized code never lands in the name field.
+    if (result == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(m.checklists.barcode.notFound)));
+      return;
+    }
+
+    // Prefill from the resolved product, never overwriting input the user has
+    // already made.
+    final matchedCategory = _matchCategory(result.category);
+    setState(() {
+      _draft.barcode = ean;
+      if (_nameCtrl.text.trim().isEmpty) {
+        _nameCtrl.text = result!.name;
+        _draft.name = result.name;
+      }
+      if (_draft.categoryId == null && matchedCategory != null) {
+        _draft.categoryId = matchedCategory.id;
+      }
+    });
+
+    // Download the product image and stage it on the draft so the existing
+    // create → uploadItemImage path attaches it after the item is created.
+    final imageUrl = result.imageUrl;
+    if (imageUrl != null && _draft.imageBytes == null) {
+      final bytes = await svc.downloadImage(imageUrl);
+      if (bytes != null && mounted) {
+        setState(() => _draft.imageBytes = Uint8List.fromList(bytes));
+      }
+    }
+  }
+
+  /// Fuzzy-match a provider category hint against the house's categories,
+  /// returning the best match above a confidence cutoff (or null). Mirrors the
+  /// reuse-suggestion matcher's use of fuzzywuzzy's weighted ratio.
+  models.Category? _matchCategory(String? hint) {
+    final query = hint?.trim() ?? '';
+    if (query.isEmpty || widget.categories.isEmpty) return null;
+    final results = extractTop<models.Category>(
+      query: query,
+      choices: widget.categories,
+      getter: (c) => c.name,
+      limit: 1,
+      cutoff: _categoryMatchCutoff,
+    );
+    return results.isEmpty ? null : results.first.choice;
+  }
+
   void _stepQty(int dir) {
     final str = _draft.quantity;
     final match = RegExp(r'\d+').firstMatch(str);
@@ -392,6 +490,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       imageMime: (!_multiple && _draft.imageFile != null)
           ? (lookupMimeType(_draft.imageFile!.name) ?? 'image/jpeg')
           : null,
+      barcode: _multiple ? null : _draft.barcode,
     );
   }
 
@@ -537,6 +636,8 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                 openTray: _openTray,
                 onOpen: _toggleTray,
                 showImageChip: !_multiple,
+                multiple: _multiple,
+                onToggleMultiple: _toggleMultiple,
               ),
               const SizedBox(height: 10),
               if (trayChild != null) ...[
@@ -575,7 +676,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
               submitEnabled: _hasTarget && (!_multiple || _hasContent),
               onActivate: _activate,
               multiple: _multiple,
-              onToggleMultiple: _toggleMultiple,
+              onScan: _multiple ? null : _scanBarcode,
               targetListLeading: widget._allListsMode
                   ? _BarTargetChip(
                       list: widget.targetLists
@@ -624,7 +725,10 @@ class _Bar extends StatelessWidget {
   final bool submitting;
   final bool submitEnabled;
   final bool multiple;
-  final VoidCallback onToggleMultiple;
+
+  /// Opens the barcode scanner to prefill the draft. Null hides the scan
+  /// button (e.g. in multi-add mode, where a scan can't map to one item).
+  final VoidCallback? onScan;
 
   /// In All-lists mode the host passes a target-list chip here that replaces
   /// the resting "+" icon on the leading edge of the input. Tapping it opens
@@ -642,7 +746,7 @@ class _Bar extends StatelessWidget {
     required this.onActivate,
     required this.submitting,
     required this.multiple,
-    required this.onToggleMultiple,
+    this.onScan,
     this.submitEnabled = true,
     this.targetListLeading,
   });
@@ -710,22 +814,37 @@ class _Bar extends StatelessWidget {
               ),
             ),
           ),
-          if (active) ...[
+          // Scan first, clear last: the clear (✕) always sits closest to the
+          // submit button so its position is predictable. Plain tappables
+          // rather than IconButtons — the latter reserve a 48px tap target that
+          // leaves a big visual gap between two adjacent icons.
+          //
+          // Desktop/web have no camera scanning path, so the button opens
+          // manual barcode entry — labelled and iconned to match.
+          if (onScan != null)
             Padding(
               padding: EdgeInsetsDirectional.only(top: multiple ? 4 : 0),
-              child: _MultipleToggle(active: multiple, onTap: onToggleMultiple),
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.only(top: multiple ? 4 : 0),
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                iconSize: 20,
-                onPressed: onCancel,
+              child: _BarIconAction(
+                icon: PlatformInfo.isMobile
+                    ? Icons.qr_code_scanner
+                    : Icons.keyboard,
+                tooltip: PlatformInfo.isMobile
+                    ? m.checklists.barcode.scan
+                    : m.checklists.barcode.manualTitle,
+                color: cs.primary,
+                onTap: onScan!,
               ),
             ),
-          ],
+          if (active)
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: multiple ? 4 : 0),
+              child: _BarIconAction(
+                icon: Icons.close,
+                tooltip: m.common.cancel,
+                color: cs.onSurfaceVariant,
+                onTap: onCancel,
+              ),
+            ),
           const SizedBox(width: 4),
           Padding(
             padding: EdgeInsetsDirectional.only(top: multiple ? 4 : 0),
@@ -762,6 +881,40 @@ class _Bar extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Compact 32×32 icon action for the input bar's trailing row. Unlike
+/// [IconButton] it reserves no oversized tap target, so adjacent actions
+/// (scan, clear) sit snugly together.
+class _BarIconAction extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _BarIconAction({
+    required this.icon,
+    required this.tooltip,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      waitDuration: const Duration(milliseconds: 600),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(9),
+        child: SizedBox(
+          width: 32,
+          height: 32,
+          child: Icon(icon, size: 20, color: color),
+        ),
       ),
     );
   }
@@ -823,6 +976,8 @@ class _ChipRow extends StatelessWidget {
   final _Tray? openTray;
   final ValueChanged<_Tray> onOpen;
   final bool showImageChip;
+  final bool multiple;
+  final VoidCallback onToggleMultiple;
 
   const _ChipRow({
     required this.draft,
@@ -831,6 +986,8 @@ class _ChipRow extends StatelessWidget {
     required this.showStoreChip,
     required this.openTray,
     required this.onOpen,
+    required this.multiple,
+    required this.onToggleMultiple,
     this.showImageChip = true,
   });
 
@@ -870,6 +1027,10 @@ class _ChipRow extends StatelessWidget {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
+          Center(
+            child: _MultipleToggle(active: multiple, onTap: onToggleMultiple),
+          ),
+          const SizedBox(width: 8),
           _ComposeChip(
             label: cat?.name ?? m.checklists.compose.chipCategory,
             color: cat != null ? catColor : null,

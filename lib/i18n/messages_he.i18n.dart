@@ -716,6 +716,27 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// ```
   String get bulkSelectBody =>
       """לחיצה ארוכה על פריט — או הקשה על ״בחירה״ בתפריט — כדי להתחיל לבחור, ואז להעביר, להעתיק, להגדיר קטגוריה או למחוק את כל מה שבחרת בבת אחת.""";
+
+  /// ```dart
+  /// "סרוק ברקוד כדי להוסיף פריטים"
+  /// ```
+  String get barcodeScanTitle => """סרוק ברקוד כדי להוסיף פריטים""";
+
+  /// ```dart
+  /// "הקש על כפתור הסריקה בשורת ההוספה וכוון את המצלמה אל הברקוד של מוצר. Pantry מאתר את השם, הקטגוריה והתמונה וממלא אותם עבורך — או הקלד את המספר ידנית. הסריקה הראשונה של מוצר מבצעת את החיפוש; לאחר מכן זה מיידי עבור כל בני הבית."
+  /// ```
+  String get barcodeScanBody =>
+      """הקש על כפתור הסריקה בשורת ההוספה וכוון את המצלמה אל הברקוד של מוצר. Pantry מאתר את השם, הקטגוריה והתמונה וממלא אותם עבורך — או הקלד את המספר ידנית. הסריקה הראשונה של מוצר מבצעת את החיפוש; לאחר מכן זה מיידי עבור כל בני הבית.""";
+
+  /// ```dart
+  /// "Coca-Cola Zero"
+  /// ```
+  String get barcodeScanMockName => """Coca-Cola Zero""";
+
+  /// ```dart
+  /// "משקאות"
+  /// ```
+  String get barcodeScanMockCategory => """משקאות""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 
@@ -1505,6 +1526,7 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "הקלד לסינון..."
   /// ```
   String get searchHint => """הקלד לסינון...""";
+  BarcodeChecklistsMessagesHe get barcode => BarcodeChecklistsMessagesHe(this);
 
   /// ```dart
   /// "הכל"
@@ -2045,6 +2067,62 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get pickListTitle => """להוסיף לאיזו רשימה?""";
   MarkdownChecklistsMessagesHe get markdown =>
       MarkdownChecklistsMessagesHe(this);
+}
+
+class BarcodeChecklistsMessagesHe extends BarcodeChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const BarcodeChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "סרוק ברקוד"
+  /// ```
+  String get scan => """סרוק ברקוד""";
+
+  /// ```dart
+  /// "סריקת ברקוד"
+  /// ```
+  String get scanTitle => """סריקת ברקוד""";
+
+  /// ```dart
+  /// "כוון את המצלמה אל ברקוד של מוצר"
+  /// ```
+  String get scanInstructions => """כוון את המצלמה אל ברקוד של מוצר""";
+
+  /// ```dart
+  /// "הפעלת פנס"
+  /// ```
+  String get torch => """הפעלת פנס""";
+
+  /// ```dart
+  /// "הזנה ידנית"
+  /// ```
+  String get enterManually => """הזנה ידנית""";
+
+  /// ```dart
+  /// "הזנת ברקוד"
+  /// ```
+  String get manualTitle => """הזנת ברקוד""";
+
+  /// ```dart
+  /// "מספר ברקוד"
+  /// ```
+  String get manualHint => """מספר ברקוד""";
+
+  /// ```dart
+  /// "זה לא נראה כמו ברקוד תקין"
+  /// ```
+  String get invalidBarcode => """זה לא נראה כמו ברקוד תקין""";
+
+  /// ```dart
+  /// "לא נמצא מידע על מוצר עבור ברקוד זה"
+  /// ```
+  String get notFound => """לא נמצא מידע על מוצר עבור ברקוד זה""";
+
+  /// ```dart
+  /// "המוצרים מסופקים על ידי ${linkStart}Open Food Facts${linkEnd}, מסד נתונים קהילתי חיצוני ש-Pantry אינה הבעלים שלו ואינה שולטת בו."
+  /// ```
+  String disclaimer(String linkStart, String linkEnd) =>
+      """המוצרים מסופקים על ידי ${linkStart}Open Food Facts${linkEnd}, מסד נתונים קהילתי חיצוני ש-Pantry אינה הבעלים שלו ואינה שולטת בו.""";
 }
 
 class FiltersChecklistsMessagesHe extends FiltersChecklistsMessages {
@@ -3750,6 +3828,11 @@ Map<String, String> get messagesHeMap => {
   """onboarding.bulkSelectTitle""": """בצע פעולה על כמה פריטים בבת אחת""",
   """onboarding.bulkSelectBody""":
       """לחיצה ארוכה על פריט — או הקשה על ״בחירה״ בתפריט — כדי להתחיל לבחור, ואז להעביר, להעתיק, להגדיר קטגוריה או למחוק את כל מה שבחרת בבת אחת.""",
+  """onboarding.barcodeScanTitle""": """סרוק ברקוד כדי להוסיף פריטים""",
+  """onboarding.barcodeScanBody""":
+      """הקש על כפתור הסריקה בשורת ההוספה וכוון את המצלמה אל הברקוד של מוצר. Pantry מאתר את השם, הקטגוריה והתמונה וממלא אותם עבורך — או הקלד את המספר ידנית. הסריקה הראשונה של מוצר מבצעת את החיפוש; לאחר מכן זה מיידי עבור כל בני הבית.""",
+  """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
+  """onboarding.barcodeScanMockCategory""": """משקאות""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":
@@ -3900,6 +3983,16 @@ Map<String, String> get messagesHeMap => {
   """checklists.noItems""": """אין פריטים ברשימה.""",
   """checklists.noSearchResults""": """אין פריטים תואמים לחיפוש.""",
   """checklists.searchHint""": """הקלד לסינון...""",
+  """checklists.barcode.scan""": """סרוק ברקוד""",
+  """checklists.barcode.scanTitle""": """סריקת ברקוד""",
+  """checklists.barcode.scanInstructions""":
+      """כוון את המצלמה אל ברקוד של מוצר""",
+  """checklists.barcode.torch""": """הפעלת פנס""",
+  """checklists.barcode.enterManually""": """הזנה ידנית""",
+  """checklists.barcode.manualTitle""": """הזנת ברקוד""",
+  """checklists.barcode.manualHint""": """מספר ברקוד""",
+  """checklists.barcode.invalidBarcode""": """זה לא נראה כמו ברקוד תקין""",
+  """checklists.barcode.notFound""": """לא נמצא מידע על מוצר עבור ברקוד זה""",
   """checklists.allCategories""": """הכל""",
   """checklists.allListsChip""": """הכל""",
   """checklists.filterByList""": """סינון לפי רשימה""",

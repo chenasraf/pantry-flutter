@@ -722,6 +722,28 @@ Mot de passe : pantry-rocks""";
   /// ```
   String get bulkSelectBody =>
       """Appuyez longuement sur un article — ou touchez Sélectionner dans le menu — pour commencer la sélection, puis déplacez, copiez, catégorisez ou supprimez tout ce que vous avez choisi en une seule fois.""";
+
+  /// ```dart
+  /// "Scannez un code-barres pour ajouter des articles"
+  /// ```
+  String get barcodeScanTitle =>
+      """Scannez un code-barres pour ajouter des articles""";
+
+  /// ```dart
+  /// "Touchez le bouton de scan dans la barre d'ajout et dirigez la caméra vers le code-barres d'un produit. Pantry en trouve le nom, la catégorie et la photo et les remplit pour vous — ou saisissez le numéro à la main. Le premier scan d'un produit lance la recherche ; ensuite, c'est instantané pour toute votre maison."
+  /// ```
+  String get barcodeScanBody =>
+      """Touchez le bouton de scan dans la barre d'ajout et dirigez la caméra vers le code-barres d'un produit. Pantry en trouve le nom, la catégorie et la photo et les remplit pour vous — ou saisissez le numéro à la main. Le premier scan d'un produit lance la recherche ; ensuite, c'est instantané pour toute votre maison.""";
+
+  /// ```dart
+  /// "Coca-Cola Zero"
+  /// ```
+  String get barcodeScanMockName => """Coca-Cola Zero""";
+
+  /// ```dart
+  /// "Boissons"
+  /// ```
+  String get barcodeScanMockCategory => """Boissons""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
@@ -1516,6 +1538,7 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Filtrer..."
   /// ```
   String get searchHint => """Filtrer...""";
+  BarcodeChecklistsMessagesFr get barcode => BarcodeChecklistsMessagesFr(this);
 
   /// ```dart
   /// "Tout"
@@ -2060,6 +2083,64 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get pickListTitle => """Ajouter à quelle liste ?""";
   MarkdownChecklistsMessagesFr get markdown =>
       MarkdownChecklistsMessagesFr(this);
+}
+
+class BarcodeChecklistsMessagesFr extends BarcodeChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const BarcodeChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Scanner le code-barres"
+  /// ```
+  String get scan => """Scanner le code-barres""";
+
+  /// ```dart
+  /// "Scanner le code-barres"
+  /// ```
+  String get scanTitle => """Scanner le code-barres""";
+
+  /// ```dart
+  /// "Dirigez la caméra vers un code-barres de produit"
+  /// ```
+  String get scanInstructions =>
+      """Dirigez la caméra vers un code-barres de produit""";
+
+  /// ```dart
+  /// "Activer le flash"
+  /// ```
+  String get torch => """Activer le flash""";
+
+  /// ```dart
+  /// "Saisir manuellement"
+  /// ```
+  String get enterManually => """Saisir manuellement""";
+
+  /// ```dart
+  /// "Saisir le code-barres"
+  /// ```
+  String get manualTitle => """Saisir le code-barres""";
+
+  /// ```dart
+  /// "Numéro de code-barres"
+  /// ```
+  String get manualHint => """Numéro de code-barres""";
+
+  /// ```dart
+  /// "Cela ne ressemble pas à un code-barres valide"
+  /// ```
+  String get invalidBarcode =>
+      """Cela ne ressemble pas à un code-barres valide""";
+
+  /// ```dart
+  /// "Aucune info produit trouvée pour ce code-barres"
+  /// ```
+  String get notFound => """Aucune info produit trouvée pour ce code-barres""";
+
+  /// ```dart
+  /// "Produits fournis par ${linkStart}Open Food Facts${linkEnd}, une base de données communautaire externe que Pantry ne possède ni ne contrôle."
+  /// ```
+  String disclaimer(String linkStart, String linkEnd) =>
+      """Produits fournis par ${linkStart}Open Food Facts${linkEnd}, une base de données communautaire externe que Pantry ne possède ni ne contrôle.""";
 }
 
 class FiltersChecklistsMessagesFr extends FiltersChecklistsMessages {
@@ -3788,6 +3869,12 @@ Mot de passe : pantry-rocks""",
       """Agissez sur plusieurs articles à la fois""",
   """onboarding.bulkSelectBody""":
       """Appuyez longuement sur un article — ou touchez Sélectionner dans le menu — pour commencer la sélection, puis déplacez, copiez, catégorisez ou supprimez tout ce que vous avez choisi en une seule fois.""",
+  """onboarding.barcodeScanTitle""":
+      """Scannez un code-barres pour ajouter des articles""",
+  """onboarding.barcodeScanBody""":
+      """Touchez le bouton de scan dans la barre d'ajout et dirigez la caméra vers le code-barres d'un produit. Pantry en trouve le nom, la catégorie et la photo et les remplit pour vous — ou saisissez le numéro à la main. Le premier scan d'un produit lance la recherche ; ensuite, c'est instantané pour toute votre maison.""",
+  """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
+  """onboarding.barcodeScanMockCategory""": """Boissons""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":
@@ -3946,6 +4033,18 @@ Mot de passe : pantry-rocks""",
   """checklists.noSearchResults""":
       """Aucun article ne correspond à votre recherche.""",
   """checklists.searchHint""": """Filtrer...""",
+  """checklists.barcode.scan""": """Scanner le code-barres""",
+  """checklists.barcode.scanTitle""": """Scanner le code-barres""",
+  """checklists.barcode.scanInstructions""":
+      """Dirigez la caméra vers un code-barres de produit""",
+  """checklists.barcode.torch""": """Activer le flash""",
+  """checklists.barcode.enterManually""": """Saisir manuellement""",
+  """checklists.barcode.manualTitle""": """Saisir le code-barres""",
+  """checklists.barcode.manualHint""": """Numéro de code-barres""",
+  """checklists.barcode.invalidBarcode""":
+      """Cela ne ressemble pas à un code-barres valide""",
+  """checklists.barcode.notFound""":
+      """Aucune info produit trouvée pour ce code-barres""",
   """checklists.allCategories""": """Tout""",
   """checklists.allListsChip""": """Tout""",
   """checklists.filterByList""": """Filtrer par liste""",

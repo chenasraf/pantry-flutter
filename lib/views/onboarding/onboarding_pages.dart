@@ -5,6 +5,7 @@ import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/version.dart';
 import 'pages/add_items_page.dart';
 import 'pages/all_lists_page.dart';
+import 'pages/barcode_scan_page.dart';
 import 'pages/bulk_add_page.dart';
 import 'pages/bulk_select_page.dart';
 import 'pages/checklist_selector_page.dart';
@@ -134,6 +135,14 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
     OnboardingPageEntry(
       builder: (_) => const BulkSelectOnboardingPage(),
       showWhen: onboardingFeatureOnly('batch-operations'),
+    ),
+  ],
+  '0.24.0': [
+    OnboardingPageEntry(
+      // Camera scanning is the flagship surface — pitch it only where a camera
+      // is the point. Manual entry works everywhere, but that's not the story.
+      builder: (_) => const BarcodeScanOnboardingPage(),
+      showWhen: onboardingMobileOnly,
     ),
   ],
 };

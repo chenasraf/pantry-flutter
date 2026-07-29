@@ -122,6 +122,10 @@ onboarding:
   bulkAddBody: "Aktiviere den Mehrfach-Schalter, und das Eingabefeld wird zu einem mehrzeiligen Feld — jede Zeile wird zu einem eigenen Eintrag. Praktisch, wenn du eine Liste einfügst oder einen ganzen Einkauf auf einmal notierst."
   bulkSelectTitle: "Mehrere Einträge auf einmal bearbeiten"
   bulkSelectBody: "Halte einen Eintrag gedrückt – oder tippe im Menü auf „Auswählen“ – um mehrere zu markieren, und verschiebe, kopiere, kategorisiere oder lösche sie dann alle auf einmal."
+  barcodeScanTitle: "Barcode scannen, um Einträge hinzuzufügen"
+  barcodeScanBody: "Tippe in der Eingabeleiste auf die Scan-Schaltfläche und richte die Kamera auf den Barcode eines Produkts. Pantry sucht Name, Kategorie und Foto heraus und füllt sie für dich aus – oder gib die Nummer von Hand ein. Der erste Scan eines Produkts führt die Suche durch; danach ist es für alle in deinem Haushalt sofort da."
+  barcodeScanMockName: "Coca-Cola Zero"
+  barcodeScanMockCategory: "Getränke"
   dev:
     showOnboarding: "Onboarding anzeigen"
     pickLastSeenTitle: "Neuigkeiten ansehen"
@@ -280,6 +284,17 @@ checklists:
   noItems: Keine Einträge in dieser Liste.
   noSearchResults: Keine Einträge entsprechen Ihrer Suche.
   searchHint: Zum Filtern tippen...
+  barcode:
+    scan: Barcode scannen
+    scanTitle: Barcode scannen
+    scanInstructions: Richte die Kamera auf einen Produkt-Barcode
+    torch: Blitz umschalten
+    enterManually: Manuell eingeben
+    manualTitle: Barcode eingeben
+    manualHint: Barcode-Nummer
+    invalidBarcode: Das sieht nicht nach einem gültigen Barcode aus
+    notFound: Für diesen Barcode wurden keine Produktinfos gefunden
+    disclaimer(String linkStart, String linkEnd): "Produkte bereitgestellt von ${linkStart}Open Food Facts${linkEnd}, einer externen Community-Datenbank, die Pantry nicht besitzt oder kontrolliert."
   allCategories: Alle
   allListsChip: Alle
   filterByList: Nach Liste filtern

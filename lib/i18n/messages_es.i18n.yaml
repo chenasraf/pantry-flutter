@@ -122,6 +122,10 @@ onboarding:
   bulkAddBody: "Activa el interruptor Múltiple y el campo se convierte en un cuadro de varias líneas — cada línea se convierte en un artículo. Práctico cuando pegas una lista o anotas toda la compra de golpe."
   bulkSelectTitle: "Actúa sobre varios artículos a la vez"
   bulkSelectBody: "Mantén pulsado un artículo —o toca Seleccionar en el menú— para empezar a seleccionar y luego mover, copiar, asignar una categoría o eliminar todo lo elegido de una vez."
+  barcodeScanTitle: "Escanea un código de barras para añadir artículos"
+  barcodeScanBody: "Toca el botón de escaneo en la barra de añadir y apunta la cámara al código de barras de un producto. Pantry busca el nombre, la categoría y la foto y los rellena por ti, o escribe el número a mano. El primer escaneo de un producto hace la búsqueda; después es instantáneo para toda tu casa."
+  barcodeScanMockName: "Coca-Cola Zero"
+  barcodeScanMockCategory: "Bebidas"
   dev:
     showOnboarding: "Mostrar introducción"
     pickLastSeenTitle: "Ver novedades"
@@ -280,6 +284,17 @@ checklists:
   noItems: No hay artículos en esta lista.
   noSearchResults: Ningún artículo coincide con tu búsqueda.
   searchHint: Escribe para filtrar...
+  barcode:
+    scan: Escanear código de barras
+    scanTitle: Escanear código de barras
+    scanInstructions: Apunta la cámara a un código de barras de producto
+    torch: Alternar flash
+    enterManually: Introducir manualmente
+    manualTitle: Introducir código de barras
+    manualHint: Número de código de barras
+    invalidBarcode: Eso no parece un código de barras válido
+    notFound: No se encontró información de producto para ese código de barras
+    disclaimer(String linkStart, String linkEnd): "Productos proporcionados por ${linkStart}Open Food Facts${linkEnd}, una base de datos comunitaria externa que Pantry no posee ni controla."
   allCategories: Todos
   allListsChip: Todos
   filterByList: Filtrar por lista

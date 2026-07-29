@@ -827,6 +827,7 @@ class _BodyState extends State<_Body> {
           rrule: s.rrule,
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
+          barcode: s.barcode,
         );
       } else {
         created = await controller.addItem(
@@ -838,6 +839,7 @@ class _BodyState extends State<_Body> {
           rrule: s.rrule,
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
+          barcode: s.barcode,
         );
       }
       if (s.imageBytes != null) {

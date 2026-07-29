@@ -716,6 +716,27 @@ Password: pantry-rocks""";
   /// ```
   String get bulkSelectBody =>
       """Long-press an item — or tap Select items in the menu — to start selecting, then move, copy, set a category, or delete everything you picked in one go.""";
+
+  /// ```dart
+  /// "Scan a barcode to add items"
+  /// ```
+  String get barcodeScanTitle => """Scan a barcode to add items""";
+
+  /// ```dart
+  /// "Tap the scan button in the add bar and point your camera at a product's barcode. Pantry looks up the name, category and photo and fills them in for you — or type the number by hand. The first scan of a product does the lookup; after that it's instant for everyone in your house."
+  /// ```
+  String get barcodeScanBody =>
+      """Tap the scan button in the add bar and point your camera at a product's barcode. Pantry looks up the name, category and photo and fills them in for you — or type the number by hand. The first scan of a product does the lookup; after that it's instant for everyone in your house.""";
+
+  /// ```dart
+  /// "Coca-Cola Zero"
+  /// ```
+  String get barcodeScanMockName => """Coca-Cola Zero""";
+
+  /// ```dart
+  /// "Beverages"
+  /// ```
+  String get barcodeScanMockCategory => """Beverages""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 
@@ -1500,6 +1521,7 @@ class ChecklistsMessages {
   /// "Type to filter..."
   /// ```
   String get searchHint => """Type to filter...""";
+  BarcodeChecklistsMessages get barcode => BarcodeChecklistsMessages(this);
 
   /// ```dart
   /// "All"
@@ -2037,6 +2059,62 @@ class ChecklistsMessages {
   /// ```
   String get pickListTitle => """Add to which list?""";
   MarkdownChecklistsMessages get markdown => MarkdownChecklistsMessages(this);
+}
+
+class BarcodeChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const BarcodeChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Scan barcode"
+  /// ```
+  String get scan => """Scan barcode""";
+
+  /// ```dart
+  /// "Scan barcode"
+  /// ```
+  String get scanTitle => """Scan barcode""";
+
+  /// ```dart
+  /// "Point your camera at a product barcode"
+  /// ```
+  String get scanInstructions => """Point your camera at a product barcode""";
+
+  /// ```dart
+  /// "Toggle flash"
+  /// ```
+  String get torch => """Toggle flash""";
+
+  /// ```dart
+  /// "Enter manually"
+  /// ```
+  String get enterManually => """Enter manually""";
+
+  /// ```dart
+  /// "Enter barcode"
+  /// ```
+  String get manualTitle => """Enter barcode""";
+
+  /// ```dart
+  /// "Barcode number"
+  /// ```
+  String get manualHint => """Barcode number""";
+
+  /// ```dart
+  /// "That doesn't look like a valid barcode"
+  /// ```
+  String get invalidBarcode => """That doesn't look like a valid barcode""";
+
+  /// ```dart
+  /// "Couldn't find product info for that barcode"
+  /// ```
+  String get notFound => """Couldn't find product info for that barcode""";
+
+  /// ```dart
+  /// "Products provided by ${linkStart}Open Food Facts${linkEnd}, an external community database that Pantry does not own or control."
+  /// ```
+  String disclaimer(String linkStart, String linkEnd) =>
+      """Products provided by ${linkStart}Open Food Facts${linkEnd}, an external community database that Pantry does not own or control.""";
 }
 
 class FiltersChecklistsMessages {
@@ -3745,6 +3823,11 @@ Password: pantry-rocks""",
   """onboarding.bulkSelectTitle""": """Act on many items at once""",
   """onboarding.bulkSelectBody""":
       """Long-press an item — or tap Select items in the menu — to start selecting, then move, copy, set a category, or delete everything you picked in one go.""",
+  """onboarding.barcodeScanTitle""": """Scan a barcode to add items""",
+  """onboarding.barcodeScanBody""":
+      """Tap the scan button in the add bar and point your camera at a product's barcode. Pantry looks up the name, category and photo and fills them in for you — or type the number by hand. The first scan of a product does the lookup; after that it's instant for everyone in your house.""",
+  """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
+  """onboarding.barcodeScanMockCategory""": """Beverages""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":
@@ -3896,6 +3979,18 @@ Password: pantry-rocks""",
   """checklists.noItems""": """No items in this list.""",
   """checklists.noSearchResults""": """No items match your search.""",
   """checklists.searchHint""": """Type to filter...""",
+  """checklists.barcode.scan""": """Scan barcode""",
+  """checklists.barcode.scanTitle""": """Scan barcode""",
+  """checklists.barcode.scanInstructions""":
+      """Point your camera at a product barcode""",
+  """checklists.barcode.torch""": """Toggle flash""",
+  """checklists.barcode.enterManually""": """Enter manually""",
+  """checklists.barcode.manualTitle""": """Enter barcode""",
+  """checklists.barcode.manualHint""": """Barcode number""",
+  """checklists.barcode.invalidBarcode""":
+      """That doesn't look like a valid barcode""",
+  """checklists.barcode.notFound""":
+      """Couldn't find product info for that barcode""",
   """checklists.allCategories""": """All""",
   """checklists.allListsChip""": """All""",
   """checklists.filterByList""": """Filter by list""",

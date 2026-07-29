@@ -117,6 +117,7 @@ class SyncExecutor {
           rrule: op.body['rrule'] as String?,
           repeatFromCompletion: op.body['repeatFromCompletion'] as bool?,
           deleteOnDone: op.body['deleteOnDone'] as bool?,
+          barcode: op.body['barcode'] as String?,
         );
         return SyncResult(item);
       case SyncOpKind.update:
@@ -134,6 +135,7 @@ class SyncExecutor {
           rrule: op.body['rrule'] as String?,
           repeatFromCompletion: op.body['repeatFromCompletion'] as bool?,
           deleteOnDone: op.body['deleteOnDone'] as bool?,
+          barcode: op.body['barcode'] as String?,
         );
         return SyncResult(item);
       case SyncOpKind.delete:
