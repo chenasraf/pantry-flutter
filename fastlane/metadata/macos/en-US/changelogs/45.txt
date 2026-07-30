@@ -1,0 +1,6 @@
+Features
+- add extra dense list density option
+- add Norwegian (nynorsk) translation ([#121](https://github.com/chenasraf/pantry-flutter/issues/121))
+- add price to checklist items
+- choose which detail chips show on list items
+- scan product barcodes to quickly add items
