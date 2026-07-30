@@ -204,6 +204,18 @@ settings:
   navOrderBody: Drag to reorder. The first item is the section opened when the app starts.
   navOrderDefaultHint: Opens on app start
   navOrderReset: Reset
+  visibleChipsTitle: Item details
+  visibleChipsSubtitle: Choose which details show on each item.
+  visibleChipsBody: Turn off any detail you don't want shown as a chip on item rows.
+  visibleChipsReset: Reset
+  chipNames:
+    category: Category
+    store: Store
+    quantity: Quantity
+    note: Note
+    oneTime: One-time
+    recurring: Recurring
+    list: List
   language: Language
   systemLanguage: "System default"
   theme: Theme

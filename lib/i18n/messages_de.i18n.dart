@@ -1033,6 +1033,30 @@ class SettingsMessagesDe extends SettingsMessages {
   String get navOrderReset => """Zurücksetzen""";
 
   /// ```dart
+  /// "Artikeldetails"
+  /// ```
+  String get visibleChipsTitle => """Artikeldetails""";
+
+  /// ```dart
+  /// "Wählen Sie, welche Details bei jedem Artikel angezeigt werden."
+  /// ```
+  String get visibleChipsSubtitle =>
+      """Wählen Sie, welche Details bei jedem Artikel angezeigt werden.""";
+
+  /// ```dart
+  /// "Deaktivieren Sie alle Details, die nicht als Chip in den Artikelzeilen erscheinen sollen."
+  /// ```
+  String get visibleChipsBody =>
+      """Deaktivieren Sie alle Details, die nicht als Chip in den Artikelzeilen erscheinen sollen.""";
+
+  /// ```dart
+  /// "Zurücksetzen"
+  /// ```
+  String get visibleChipsReset => """Zurücksetzen""";
+  ChipNamesSettingsMessagesDe get chipNames =>
+      ChipNamesSettingsMessagesDe(this);
+
+  /// ```dart
   /// "Sprache"
   /// ```
   String get language => """Sprache""";
@@ -1216,6 +1240,46 @@ class ReuseExistingItemsNamesSettingsMessagesDe
   /// "Nie wiederverwenden"
   /// ```
   String get never => """Nie wiederverwenden""";
+}
+
+class ChipNamesSettingsMessagesDe extends ChipNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const ChipNamesSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Kategorie"
+  /// ```
+  String get category => """Kategorie""";
+
+  /// ```dart
+  /// "Geschäft"
+  /// ```
+  String get store => """Geschäft""";
+
+  /// ```dart
+  /// "Menge"
+  /// ```
+  String get quantity => """Menge""";
+
+  /// ```dart
+  /// "Notiz"
+  /// ```
+  String get note => """Notiz""";
+
+  /// ```dart
+  /// "Einmalig"
+  /// ```
+  String get oneTime => """Einmalig""";
+
+  /// ```dart
+  /// "Wiederkehrend"
+  /// ```
+  String get recurring => """Wiederkehrend""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 }
 
 class ThemeNamesSettingsMessagesDe extends ThemeNamesSettingsMessages {
@@ -3961,6 +4025,19 @@ Passwort: pantry-rocks""",
       """Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet.""",
   """settings.navOrderDefaultHint""": """Öffnet sich beim Start""",
   """settings.navOrderReset""": """Zurücksetzen""",
+  """settings.visibleChipsTitle""": """Artikeldetails""",
+  """settings.visibleChipsSubtitle""":
+      """Wählen Sie, welche Details bei jedem Artikel angezeigt werden.""",
+  """settings.visibleChipsBody""":
+      """Deaktivieren Sie alle Details, die nicht als Chip in den Artikelzeilen erscheinen sollen.""",
+  """settings.visibleChipsReset""": """Zurücksetzen""",
+  """settings.chipNames.category""": """Kategorie""",
+  """settings.chipNames.store""": """Geschäft""",
+  """settings.chipNames.quantity""": """Menge""",
+  """settings.chipNames.note""": """Notiz""",
+  """settings.chipNames.oneTime""": """Einmalig""",
+  """settings.chipNames.recurring""": """Wiederkehrend""",
+  """settings.chipNames.list""": """Liste""",
   """settings.language""": """Sprache""",
   """settings.systemLanguage""": """Systemstandard""",
   """settings.theme""": """Design""",

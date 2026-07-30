@@ -204,6 +204,18 @@ settings:
   navOrderBody: "Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application."
   navOrderDefaultHint: "S'ouvre au démarrage"
   navOrderReset: "Réinitialiser"
+  visibleChipsTitle: "Détails de l'article"
+  visibleChipsSubtitle: "Choisissez les détails affichés sur chaque article."
+  visibleChipsBody: "Désactivez les détails que vous ne voulez pas voir affichés sur les lignes d'articles."
+  visibleChipsReset: "Réinitialiser"
+  chipNames:
+    category: "Catégorie"
+    store: "Magasin"
+    quantity: "Quantité"
+    note: "Note"
+    oneTime: "Unique"
+    recurring: "Récurrent"
+    list: "Liste"
   language: Langue
   systemLanguage: "Par défaut du système"
   theme: "Thème"

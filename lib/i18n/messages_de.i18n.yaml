@@ -204,6 +204,18 @@ settings:
   navOrderBody: Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet.
   navOrderDefaultHint: Öffnet sich beim Start
   navOrderReset: Zurücksetzen
+  visibleChipsTitle: Artikeldetails
+  visibleChipsSubtitle: Wählen Sie, welche Details bei jedem Artikel angezeigt werden.
+  visibleChipsBody: Deaktivieren Sie alle Details, die nicht als Chip in den Artikelzeilen erscheinen sollen.
+  visibleChipsReset: Zurücksetzen
+  chipNames:
+    category: Kategorie
+    store: Geschäft
+    quantity: Menge
+    note: Notiz
+    oneTime: Einmalig
+    recurring: Wiederkehrend
+    list: Liste
   language: Sprache
   systemLanguage: Systemstandard
   theme: Design

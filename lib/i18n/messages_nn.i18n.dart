@@ -1031,6 +1031,30 @@ class SettingsMessagesNn extends SettingsMessages {
   String get navOrderReset => """Nullstill""";
 
   /// ```dart
+  /// "Varedetaljar"
+  /// ```
+  String get visibleChipsTitle => """Varedetaljar""";
+
+  /// ```dart
+  /// "Vel kva detaljar som blir viste på kvar vare."
+  /// ```
+  String get visibleChipsSubtitle =>
+      """Vel kva detaljar som blir viste på kvar vare.""";
+
+  /// ```dart
+  /// "Slå av detaljar du ikkje vil ha viste som merkelapp på varelinjene."
+  /// ```
+  String get visibleChipsBody =>
+      """Slå av detaljar du ikkje vil ha viste som merkelapp på varelinjene.""";
+
+  /// ```dart
+  /// "Nullstill"
+  /// ```
+  String get visibleChipsReset => """Nullstill""";
+  ChipNamesSettingsMessagesNn get chipNames =>
+      ChipNamesSettingsMessagesNn(this);
+
+  /// ```dart
   /// "Språk"
   /// ```
   String get language => """Språk""";
@@ -1214,6 +1238,46 @@ class ReuseExistingItemsNamesSettingsMessagesNn
   /// "Aldri bruk igjen"
   /// ```
   String get never => """Aldri bruk igjen""";
+}
+
+class ChipNamesSettingsMessagesNn extends ChipNamesSettingsMessages {
+  final SettingsMessagesNn _parent;
+  const ChipNamesSettingsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Kategori"
+  /// ```
+  String get category => """Kategori""";
+
+  /// ```dart
+  /// "Butikk"
+  /// ```
+  String get store => """Butikk""";
+
+  /// ```dart
+  /// "Mengd"
+  /// ```
+  String get quantity => """Mengd""";
+
+  /// ```dart
+  /// "Notat"
+  /// ```
+  String get note => """Notat""";
+
+  /// ```dart
+  /// "Eingongs"
+  /// ```
+  String get oneTime => """Eingongs""";
+
+  /// ```dart
+  /// "Gjentakande"
+  /// ```
+  String get recurring => """Gjentakande""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 }
 
 class ThemeNamesSettingsMessagesNn extends ThemeNamesSettingsMessages {
@@ -3942,6 +4006,19 @@ Passord: pantry""",
       """Dra for å endre rekkefylgje. Den fyrste oppføringa er den som blir vist når du opnar appen.""",
   """settings.navOrderDefaultHint""": """Blir vist når du opnar appen""",
   """settings.navOrderReset""": """Nullstill""",
+  """settings.visibleChipsTitle""": """Varedetaljar""",
+  """settings.visibleChipsSubtitle""":
+      """Vel kva detaljar som blir viste på kvar vare.""",
+  """settings.visibleChipsBody""":
+      """Slå av detaljar du ikkje vil ha viste som merkelapp på varelinjene.""",
+  """settings.visibleChipsReset""": """Nullstill""",
+  """settings.chipNames.category""": """Kategori""",
+  """settings.chipNames.store""": """Butikk""",
+  """settings.chipNames.quantity""": """Mengd""",
+  """settings.chipNames.note""": """Notat""",
+  """settings.chipNames.oneTime""": """Eingongs""",
+  """settings.chipNames.recurring""": """Gjentakande""",
+  """settings.chipNames.list""": """Liste""",
   """settings.language""": """Språk""",
   """settings.systemLanguage""": """Systemstandard""",
   """settings.theme""": """Drakt""",

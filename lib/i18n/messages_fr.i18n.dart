@@ -1036,6 +1036,30 @@ class SettingsMessagesFr extends SettingsMessages {
   String get navOrderReset => """Réinitialiser""";
 
   /// ```dart
+  /// "Détails de l'article"
+  /// ```
+  String get visibleChipsTitle => """Détails de l'article""";
+
+  /// ```dart
+  /// "Choisissez les détails affichés sur chaque article."
+  /// ```
+  String get visibleChipsSubtitle =>
+      """Choisissez les détails affichés sur chaque article.""";
+
+  /// ```dart
+  /// "Désactivez les détails que vous ne voulez pas voir affichés sur les lignes d'articles."
+  /// ```
+  String get visibleChipsBody =>
+      """Désactivez les détails que vous ne voulez pas voir affichés sur les lignes d'articles.""";
+
+  /// ```dart
+  /// "Réinitialiser"
+  /// ```
+  String get visibleChipsReset => """Réinitialiser""";
+  ChipNamesSettingsMessagesFr get chipNames =>
+      ChipNamesSettingsMessagesFr(this);
+
+  /// ```dart
   /// "Langue"
   /// ```
   String get language => """Langue""";
@@ -1219,6 +1243,46 @@ class ReuseExistingItemsNamesSettingsMessagesFr
   /// "Ne jamais réutiliser"
   /// ```
   String get never => """Ne jamais réutiliser""";
+}
+
+class ChipNamesSettingsMessagesFr extends ChipNamesSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const ChipNamesSettingsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Catégorie"
+  /// ```
+  String get category => """Catégorie""";
+
+  /// ```dart
+  /// "Magasin"
+  /// ```
+  String get store => """Magasin""";
+
+  /// ```dart
+  /// "Quantité"
+  /// ```
+  String get quantity => """Quantité""";
+
+  /// ```dart
+  /// "Note"
+  /// ```
+  String get note => """Note""";
+
+  /// ```dart
+  /// "Unique"
+  /// ```
+  String get oneTime => """Unique""";
+
+  /// ```dart
+  /// "Récurrent"
+  /// ```
+  String get recurring => """Récurrent""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 }
 
 class ThemeNamesSettingsMessagesFr extends ThemeNamesSettingsMessages {
@@ -3965,6 +4029,19 @@ Mot de passe : pantry-rocks""",
       """Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application.""",
   """settings.navOrderDefaultHint""": """S'ouvre au démarrage""",
   """settings.navOrderReset""": """Réinitialiser""",
+  """settings.visibleChipsTitle""": """Détails de l'article""",
+  """settings.visibleChipsSubtitle""":
+      """Choisissez les détails affichés sur chaque article.""",
+  """settings.visibleChipsBody""":
+      """Désactivez les détails que vous ne voulez pas voir affichés sur les lignes d'articles.""",
+  """settings.visibleChipsReset""": """Réinitialiser""",
+  """settings.chipNames.category""": """Catégorie""",
+  """settings.chipNames.store""": """Magasin""",
+  """settings.chipNames.quantity""": """Quantité""",
+  """settings.chipNames.note""": """Note""",
+  """settings.chipNames.oneTime""": """Unique""",
+  """settings.chipNames.recurring""": """Récurrent""",
+  """settings.chipNames.list""": """Liste""",
   """settings.language""": """Langue""",
   """settings.systemLanguage""": """Par défaut du système""",
   """settings.theme""": """Thème""",

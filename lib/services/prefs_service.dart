@@ -32,6 +32,7 @@ class PrefsService extends ChangeNotifier {
   static const _validDensities = {'normal', 'dense', 'compact'};
   static const _swipeActionsEnabledKey = 'swipe_actions_enabled';
   static const _checklistListFilterKey = 'checklist_list_filter';
+  static const _hiddenItemChipsKey = 'hidden_item_chips';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
   static const _allListsProgressHeroHiddenKey =
       'all_lists_progress_hero_hidden';
@@ -117,6 +118,14 @@ class PrefsService extends ChangeNotifier {
   /// "all lists". Local-only (not synced) so each device keeps its own focus.
   Set<int> _checklistListFilter = {};
   Set<int> get checklistListFilter => _checklistListFilter;
+
+  /// Keys of the item-row chips the user has hidden (see [ItemChipKind]). Empty
+  /// by default, so every chip is visible until the user turns one off. Stored
+  /// as a hidden-set — rather than a visible-set — so the default of "show
+  /// everything" needs no seeding and survives new chip kinds being added.
+  Set<String> _hiddenItemChips = {};
+  Set<String> get hiddenItemChips => _hiddenItemChips;
+  bool isItemChipVisible(String key) => !_hiddenItemChips.contains(key);
 
   bool _checklistDoneCollapsed = true;
   bool get checklistDoneCollapsed => _checklistDoneCollapsed;
@@ -269,6 +278,14 @@ class PrefsService extends ChangeNotifier {
           .split(',')
           .map(int.tryParse)
           .whereType<int>()
+          .toSet();
+    }
+
+    final hiddenChips = all[_hiddenItemChipsKey];
+    if (hiddenChips != null && hiddenChips.isNotEmpty) {
+      _hiddenItemChips = hiddenChips
+          .split(',')
+          .where((s) => s.isNotEmpty)
           .toSet();
     }
 
@@ -522,6 +539,18 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setItemChipVisible(String key, bool visible) async {
+    final changed = visible
+        ? _hiddenItemChips.remove(key)
+        : _hiddenItemChips.add(key);
+    if (!changed) return;
+    await _storage.write(
+      key: _hiddenItemChipsKey,
+      value: _hiddenItemChips.isEmpty ? '' : _hiddenItemChips.join(','),
+    );
+    notifyListeners();
+  }
+
   Future<void> setChecklistDoneCollapsed(bool value) async {
     _checklistDoneCollapsed = value;
     await _storage.write(
@@ -652,6 +681,7 @@ class PrefsService extends ChangeNotifier {
     _checklistDensity = 'normal';
     _swipeActionsEnabled = true;
     _checklistListFilter = {};
+    _hiddenItemChips = {};
     _checklistDoneCollapsed = true;
     _allListsProgressHeroHidden = false;
     _progressHeroHiddenListIds = {};
@@ -679,6 +709,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _checklistDensityKey);
     await _storage.delete(key: _swipeActionsEnabledKey);
     await _storage.delete(key: _checklistListFilterKey);
+    await _storage.delete(key: _hiddenItemChipsKey);
     await _storage.delete(key: _checklistDoneCollapsedKey);
     await _storage.delete(key: _allListsProgressHeroHiddenKey);
     await _storage.delete(key: _progressHeroHiddenListIdsKey);

@@ -1025,6 +1025,29 @@ class SettingsMessagesHe extends SettingsMessages {
   String get navOrderReset => """איפוס""";
 
   /// ```dart
+  /// "פרטי פריט"
+  /// ```
+  String get visibleChipsTitle => """פרטי פריט""";
+
+  /// ```dart
+  /// "בחירת הפרטים שיוצגו בכל פריט."
+  /// ```
+  String get visibleChipsSubtitle => """בחירת הפרטים שיוצגו בכל פריט.""";
+
+  /// ```dart
+  /// "כבה כל פרט שאינך רוצה שיוצג כתגית בשורות הפריטים."
+  /// ```
+  String get visibleChipsBody =>
+      """כבה כל פרט שאינך רוצה שיוצג כתגית בשורות הפריטים.""";
+
+  /// ```dart
+  /// "איפוס"
+  /// ```
+  String get visibleChipsReset => """איפוס""";
+  ChipNamesSettingsMessagesHe get chipNames =>
+      ChipNamesSettingsMessagesHe(this);
+
+  /// ```dart
   /// "שפה"
   /// ```
   String get language => """שפה""";
@@ -1208,6 +1231,46 @@ class ReuseExistingItemsNamesSettingsMessagesHe
   /// "לעולם לא להשתמש מחדש"
   /// ```
   String get never => """לעולם לא להשתמש מחדש""";
+}
+
+class ChipNamesSettingsMessagesHe extends ChipNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const ChipNamesSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "קטגוריה"
+  /// ```
+  String get category => """קטגוריה""";
+
+  /// ```dart
+  /// "חנות"
+  /// ```
+  String get store => """חנות""";
+
+  /// ```dart
+  /// "כמות"
+  /// ```
+  String get quantity => """כמות""";
+
+  /// ```dart
+  /// "הערה"
+  /// ```
+  String get note => """הערה""";
+
+  /// ```dart
+  /// "חד-פעמי"
+  /// ```
+  String get oneTime => """חד-פעמי""";
+
+  /// ```dart
+  /// "חוזר"
+  /// ```
+  String get recurring => """חוזר""";
+
+  /// ```dart
+  /// "רשימה"
+  /// ```
+  String get list => """רשימה""";
 }
 
 class ThemeNamesSettingsMessagesHe extends ThemeNamesSettingsMessages {
@@ -3917,6 +3980,18 @@ Map<String, String> get messagesHeMap => {
       """גרור כדי לשנות את הסדר. הפריט הראשון הוא הקטע שנפתח עם הפעלת האפליקציה.""",
   """settings.navOrderDefaultHint""": """נפתח עם הפעלת האפליקציה""",
   """settings.navOrderReset""": """איפוס""",
+  """settings.visibleChipsTitle""": """פרטי פריט""",
+  """settings.visibleChipsSubtitle""": """בחירת הפרטים שיוצגו בכל פריט.""",
+  """settings.visibleChipsBody""":
+      """כבה כל פרט שאינך רוצה שיוצג כתגית בשורות הפריטים.""",
+  """settings.visibleChipsReset""": """איפוס""",
+  """settings.chipNames.category""": """קטגוריה""",
+  """settings.chipNames.store""": """חנות""",
+  """settings.chipNames.quantity""": """כמות""",
+  """settings.chipNames.note""": """הערה""",
+  """settings.chipNames.oneTime""": """חד-פעמי""",
+  """settings.chipNames.recurring""": """חוזר""",
+  """settings.chipNames.list""": """רשימה""",
   """settings.language""": """שפה""",
   """settings.systemLanguage""": """ברירת מחדל (שפת המערכת)""",
   """settings.theme""": """ערכת נושא""",

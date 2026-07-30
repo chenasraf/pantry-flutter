@@ -1034,6 +1034,30 @@ class SettingsMessagesEs extends SettingsMessages {
   String get navOrderReset => """Restablecer""";
 
   /// ```dart
+  /// "Detalles del artículo"
+  /// ```
+  String get visibleChipsTitle => """Detalles del artículo""";
+
+  /// ```dart
+  /// "Elige qué detalles se muestran en cada artículo."
+  /// ```
+  String get visibleChipsSubtitle =>
+      """Elige qué detalles se muestran en cada artículo.""";
+
+  /// ```dart
+  /// "Desactiva cualquier detalle que no quieras mostrar como etiqueta en las filas de artículos."
+  /// ```
+  String get visibleChipsBody =>
+      """Desactiva cualquier detalle que no quieras mostrar como etiqueta en las filas de artículos.""";
+
+  /// ```dart
+  /// "Restablecer"
+  /// ```
+  String get visibleChipsReset => """Restablecer""";
+  ChipNamesSettingsMessagesEs get chipNames =>
+      ChipNamesSettingsMessagesEs(this);
+
+  /// ```dart
   /// "Idioma"
   /// ```
   String get language => """Idioma""";
@@ -1217,6 +1241,46 @@ class ReuseExistingItemsNamesSettingsMessagesEs
   /// "Nunca reutilizar"
   /// ```
   String get never => """Nunca reutilizar""";
+}
+
+class ChipNamesSettingsMessagesEs extends ChipNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const ChipNamesSettingsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Categoría"
+  /// ```
+  String get category => """Categoría""";
+
+  /// ```dart
+  /// "Tienda"
+  /// ```
+  String get store => """Tienda""";
+
+  /// ```dart
+  /// "Cantidad"
+  /// ```
+  String get quantity => """Cantidad""";
+
+  /// ```dart
+  /// "Nota"
+  /// ```
+  String get note => """Nota""";
+
+  /// ```dart
+  /// "Único"
+  /// ```
+  String get oneTime => """Único""";
+
+  /// ```dart
+  /// "Recurrente"
+  /// ```
+  String get recurring => """Recurrente""";
+
+  /// ```dart
+  /// "Lista"
+  /// ```
+  String get list => """Lista""";
 }
 
 class ThemeNamesSettingsMessagesEs extends ThemeNamesSettingsMessages {
@@ -3955,6 +4019,19 @@ Contraseña: pantry-rocks""",
       """Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app.""",
   """settings.navOrderDefaultHint""": """Se abre al iniciar""",
   """settings.navOrderReset""": """Restablecer""",
+  """settings.visibleChipsTitle""": """Detalles del artículo""",
+  """settings.visibleChipsSubtitle""":
+      """Elige qué detalles se muestran en cada artículo.""",
+  """settings.visibleChipsBody""":
+      """Desactiva cualquier detalle que no quieras mostrar como etiqueta en las filas de artículos.""",
+  """settings.visibleChipsReset""": """Restablecer""",
+  """settings.chipNames.category""": """Categoría""",
+  """settings.chipNames.store""": """Tienda""",
+  """settings.chipNames.quantity""": """Cantidad""",
+  """settings.chipNames.note""": """Nota""",
+  """settings.chipNames.oneTime""": """Único""",
+  """settings.chipNames.recurring""": """Recurrente""",
+  """settings.chipNames.list""": """Lista""",
   """settings.language""": """Idioma""",
   """settings.systemLanguage""": """Predeterminado del sistema""",
   """settings.theme""": """Tema""",

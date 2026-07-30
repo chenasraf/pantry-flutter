@@ -282,6 +282,18 @@ settings:
     vist når du opnar appen.
   navOrderDefaultHint: Blir vist når du opnar appen
   navOrderReset: Nullstill
+  visibleChipsTitle: Varedetaljar
+  visibleChipsSubtitle: Vel kva detaljar som blir viste på kvar vare.
+  visibleChipsBody: Slå av detaljar du ikkje vil ha viste som merkelapp på varelinjene.
+  visibleChipsReset: Nullstill
+  chipNames:
+    category: Kategori
+    store: Butikk
+    quantity: Mengd
+    note: Notat
+    oneTime: Eingongs
+    recurring: Gjentakande
+    list: Liste
   language: Språk
   systemLanguage: "Systemstandard"
   theme: Drakt

@@ -10,6 +10,7 @@ import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/services/theming_service.dart';
 import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry/views/settings/chip_visibility_view.dart';
 import 'package:pantry/views/settings/nav_order_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
@@ -284,6 +285,17 @@ class _SettingsViewState extends State<SettingsView> {
                 Navigator.of(
                   context,
                 ).push(MaterialPageRoute(builder: (_) => const NavOrderView()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.label_outline),
+              title: Text(m.settings.visibleChipsTitle),
+              subtitle: Text(m.settings.visibleChipsSubtitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ChipVisibilityView()),
+                );
               },
             ),
             if (supportsFeature('pref-tap-row-to-complete'))

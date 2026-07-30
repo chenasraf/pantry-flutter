@@ -6,6 +6,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/item_chip.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/prefs_service.dart';
@@ -567,8 +568,8 @@ class _RowContent extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final checked = item.done;
-    final checkboxAtEnd =
-        context.watch<PrefsService>().checklistCheckboxPosition == 'end';
+    final prefs = context.watch<PrefsService>();
+    final checkboxAtEnd = prefs.checklistCheckboxPosition == 'end';
 
     final nameStyle = TextStyle(
       fontSize: 16.5,
@@ -652,7 +653,7 @@ class _RowContent extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(item.name, style: nameStyle),
-                        if (_hasMeta) ...[
+                        if (_hasMeta(prefs)) ...[
                           SizedBox(height: density.metaGap),
                           _MetaRow(
                             item: item,
@@ -683,20 +684,30 @@ class _RowContent extends StatelessWidget {
     );
   }
 
-  bool get _hasMeta {
-    final hasCat = category != null && !hideCategory;
-    final hasStores = stores.isNotEmpty;
-    final hasQty = item.quantity != null && item.quantity!.trim().isNotEmpty;
+  bool _hasMeta(PrefsService prefs) {
+    final hasCat =
+        category != null &&
+        !hideCategory &&
+        prefs.isItemChipVisible(ItemChipKind.category.key);
+    final hasStores =
+        stores.isNotEmpty && prefs.isItemChipVisible(ItemChipKind.store.key);
+    final hasQty =
+        item.quantity != null &&
+        item.quantity!.trim().isNotEmpty &&
+        prefs.isItemChipVisible(ItemChipKind.quantity.key);
     final hasDesc =
-        item.description != null && item.description!.trim().isNotEmpty;
+        item.description != null &&
+        item.description!.trim().isNotEmpty &&
+        prefs.isItemChipVisible(ItemChipKind.note.key);
     final lc = lifecycleOf(item);
-    final hasType = lc != ItemLifecycle.staple;
-    return hasCat ||
-        hasStores ||
-        hasQty ||
-        hasDesc ||
-        hasType ||
-        listBadge != null;
+    final hasType =
+        (lc == ItemLifecycle.once &&
+            prefs.isItemChipVisible(ItemChipKind.oneTime.key)) ||
+        (lc == ItemLifecycle.recurring &&
+            prefs.isItemChipVisible(ItemChipKind.recurring.key));
+    final hasList =
+        listBadge != null && prefs.isItemChipVisible(ItemChipKind.list.key);
+    return hasCat || hasStores || hasQty || hasDesc || hasType || hasList;
   }
 }
 
@@ -790,6 +801,7 @@ class _MetaRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final prefs = context.watch<PrefsService>();
     final lc = lifecycleOf(item);
     // List chip is rendered first — it answers "where does this live?" before
     // the user reads any other metadata.
@@ -801,7 +813,7 @@ class _MetaRow extends StatelessWidget {
       spacing: 7,
       runSpacing: 4,
       children: [
-        if (listBadge != null)
+        if (listBadge != null && prefs.isItemChipVisible(ItemChipKind.list.key))
           _Chip(
             leading: Icon(
               checklistIcon(listBadge!.icon),
@@ -812,7 +824,8 @@ class _MetaRow extends StatelessWidget {
             textColor: listColor,
             background: listColor.withValues(alpha: 0.13),
           ),
-        if (category != null)
+        if (category != null &&
+            prefs.isItemChipVisible(ItemChipKind.category.key))
           _Chip(
             leading: Container(
               width: 7,
@@ -826,40 +839,47 @@ class _MetaRow extends StatelessWidget {
             textColor: catColor,
             background: catColor.withValues(alpha: 0.13),
           ),
-        for (final s in stores)
-          _Chip(
-            leading: Icon(
-              storeIcon(s.icon),
-              size: 12,
-              color: parseHexColor(s.color) ?? cs.primary,
+        if (prefs.isItemChipVisible(ItemChipKind.store.key))
+          for (final s in stores)
+            _Chip(
+              leading: Icon(
+                storeIcon(s.icon),
+                size: 12,
+                color: parseHexColor(s.color) ?? cs.primary,
+              ),
+              label: s.name,
+              textColor: parseHexColor(s.color) ?? cs.primary,
+              background: (parseHexColor(s.color) ?? cs.primary).withValues(
+                alpha: 0.13,
+              ),
+              onTap: () => showStoreDetails(context, s),
             ),
-            label: s.name,
-            textColor: parseHexColor(s.color) ?? cs.primary,
-            background: (parseHexColor(s.color) ?? cs.primary).withValues(
-              alpha: 0.13,
-            ),
-            onTap: () => showStoreDetails(context, s),
-          ),
-        if (item.quantity != null && item.quantity!.trim().isNotEmpty)
+        if (item.quantity != null &&
+            item.quantity!.trim().isNotEmpty &&
+            prefs.isItemChipVisible(ItemChipKind.quantity.key))
           _Chip(
             label: item.quantity!,
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
           ),
-        if (item.description != null && item.description!.trim().isNotEmpty)
+        if (item.description != null &&
+            item.description!.trim().isNotEmpty &&
+            prefs.isItemChipVisible(ItemChipKind.note.key))
           _Chip(
             leading: Icon(Icons.notes, size: 16, color: cs.onSurfaceVariant),
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
             onTap: () => showItemDescription(context, item.description!.trim()),
           ),
-        if (lc == ItemLifecycle.once)
+        if (lc == ItemLifecycle.once &&
+            prefs.isItemChipVisible(ItemChipKind.oneTime.key))
           _Chip(
             label: m.checklists.itemTypes.onceTime,
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
           ),
-        if (lc == ItemLifecycle.recurring)
+        if (lc == ItemLifecycle.recurring &&
+            prefs.isItemChipVisible(ItemChipKind.recurring.key))
           _Chip(
             label: _recurringLabel(item),
             textColor: cs.primary,

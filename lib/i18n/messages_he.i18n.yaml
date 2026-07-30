@@ -204,6 +204,18 @@ settings:
   navOrderBody: גרור כדי לשנות את הסדר. הפריט הראשון הוא הקטע שנפתח עם הפעלת האפליקציה.
   navOrderDefaultHint: נפתח עם הפעלת האפליקציה
   navOrderReset: איפוס
+  visibleChipsTitle: פרטי פריט
+  visibleChipsSubtitle: בחירת הפרטים שיוצגו בכל פריט.
+  visibleChipsBody: כבה כל פרט שאינך רוצה שיוצג כתגית בשורות הפריטים.
+  visibleChipsReset: איפוס
+  chipNames:
+    category: קטגוריה
+    store: חנות
+    quantity: כמות
+    note: הערה
+    oneTime: חד-פעמי
+    recurring: חוזר
+    list: רשימה
   language: שפה
   systemLanguage: ברירת מחדל (שפת המערכת)
   theme: ערכת נושא

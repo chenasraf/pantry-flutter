@@ -1027,6 +1027,29 @@ class SettingsMessages {
   String get navOrderReset => """Reset""";
 
   /// ```dart
+  /// "Item details"
+  /// ```
+  String get visibleChipsTitle => """Item details""";
+
+  /// ```dart
+  /// "Choose which details show on each item."
+  /// ```
+  String get visibleChipsSubtitle =>
+      """Choose which details show on each item.""";
+
+  /// ```dart
+  /// "Turn off any detail you don't want shown as a chip on item rows."
+  /// ```
+  String get visibleChipsBody =>
+      """Turn off any detail you don't want shown as a chip on item rows.""";
+
+  /// ```dart
+  /// "Reset"
+  /// ```
+  String get visibleChipsReset => """Reset""";
+  ChipNamesSettingsMessages get chipNames => ChipNamesSettingsMessages(this);
+
+  /// ```dart
   /// "Language"
   /// ```
   String get language => """Language""";
@@ -1203,6 +1226,46 @@ class ReuseExistingItemsNamesSettingsMessages {
   /// "Never reuse"
   /// ```
   String get never => """Never reuse""";
+}
+
+class ChipNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const ChipNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Category"
+  /// ```
+  String get category => """Category""";
+
+  /// ```dart
+  /// "Store"
+  /// ```
+  String get store => """Store""";
+
+  /// ```dart
+  /// "Quantity"
+  /// ```
+  String get quantity => """Quantity""";
+
+  /// ```dart
+  /// "Note"
+  /// ```
+  String get note => """Note""";
+
+  /// ```dart
+  /// "One-time"
+  /// ```
+  String get oneTime => """One-time""";
+
+  /// ```dart
+  /// "Recurring"
+  /// ```
+  String get recurring => """Recurring""";
+
+  /// ```dart
+  /// "List"
+  /// ```
+  String get list => """List""";
 }
 
 class ThemeNamesSettingsMessages {
@@ -3913,6 +3976,19 @@ Password: pantry-rocks""",
       """Drag to reorder. The first item is the section opened when the app starts.""",
   """settings.navOrderDefaultHint""": """Opens on app start""",
   """settings.navOrderReset""": """Reset""",
+  """settings.visibleChipsTitle""": """Item details""",
+  """settings.visibleChipsSubtitle""":
+      """Choose which details show on each item.""",
+  """settings.visibleChipsBody""":
+      """Turn off any detail you don't want shown as a chip on item rows.""",
+  """settings.visibleChipsReset""": """Reset""",
+  """settings.chipNames.category""": """Category""",
+  """settings.chipNames.store""": """Store""",
+  """settings.chipNames.quantity""": """Quantity""",
+  """settings.chipNames.note""": """Note""",
+  """settings.chipNames.oneTime""": """One-time""",
+  """settings.chipNames.recurring""": """Recurring""",
+  """settings.chipNames.list""": """List""",
   """settings.language""": """Language""",
   """settings.systemLanguage""": """System default""",
   """settings.theme""": """Theme""",
