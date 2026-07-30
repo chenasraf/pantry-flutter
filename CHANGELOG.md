@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.24.0](https://github.com/chenasraf/pantry-flutter/compare/v0.23.0...v0.24.0) (2026-07-30)
+
+
+### Features
+
+* add extra dense list density option ([f55131d](https://github.com/chenasraf/pantry-flutter/commit/f55131d2f9c1eb2d5c1c213f49bbbfdfa01cfc3a)), closes [#102](https://github.com/chenasraf/pantry-flutter/issues/102)
+* add Norwegian (nynorsk) translation ([#121](https://github.com/chenasraf/pantry-flutter/issues/121)) ([22b38d3](https://github.com/chenasraf/pantry-flutter/commit/22b38d3fd8f2629bf860755d7bdad2ddbe8b64ae))
+* **checklist:** add price to checklist items ([93bcb12](https://github.com/chenasraf/pantry-flutter/commit/93bcb129964a941dd85606b01a25e4c3b438609a))
+* choose which detail chips show on list items ([1fa5e45](https://github.com/chenasraf/pantry-flutter/commit/1fa5e45a61a47e1ec1003b91b16c451bf5a390ca)), closes [#98](https://github.com/chenasraf/pantry-flutter/issues/98)
+* scan product barcodes to quickly add items ([cdc2fce](https://github.com/chenasraf/pantry-flutter/commit/cdc2fce57c35fb7d2479d290c53a7e2fb23c71cb))
+
 ## [0.23.0](https://github.com/chenasraf/pantry-flutter/compare/v0.22.1...v0.23.0) (2026-07-27)
 
 
