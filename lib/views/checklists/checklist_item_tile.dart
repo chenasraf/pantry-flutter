@@ -10,7 +10,9 @@ import 'package:pantry/models/item_chip.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
@@ -695,6 +697,10 @@ class _RowContent extends StatelessWidget {
         item.quantity != null &&
         item.quantity!.trim().isNotEmpty &&
         prefs.isItemChipVisible(ItemChipKind.quantity.key);
+    final hasPrice =
+        item.hasPrice &&
+        hasFeature('item-price') &&
+        prefs.isItemChipVisible(ItemChipKind.price.key);
     final hasDesc =
         item.description != null &&
         item.description!.trim().isNotEmpty &&
@@ -707,7 +713,13 @@ class _RowContent extends StatelessWidget {
             prefs.isItemChipVisible(ItemChipKind.recurring.key));
     final hasList =
         listBadge != null && prefs.isItemChipVisible(ItemChipKind.list.key);
-    return hasCat || hasStores || hasQty || hasDesc || hasType || hasList;
+    return hasCat ||
+        hasStores ||
+        hasQty ||
+        hasPrice ||
+        hasDesc ||
+        hasType ||
+        hasList;
   }
 }
 
@@ -859,6 +871,14 @@ class _MetaRow extends StatelessWidget {
             prefs.isItemChipVisible(ItemChipKind.quantity.key))
           _Chip(
             label: item.quantity!,
+            textColor: cs.onSurfaceVariant,
+            background: cs.onSurface.withValues(alpha: 0.06),
+          ),
+        if (item.hasPrice &&
+            hasFeature('item-price') &&
+            prefs.isItemChipVisible(ItemChipKind.price.key))
+          _Chip(
+            label: item.formattedPrice!,
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
           ),

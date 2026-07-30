@@ -5,6 +5,7 @@ enum ItemChipKind {
   category('category'),
   store('store'),
   quantity('quantity'),
+  price('price'),
   note('note'),
   oneTime('one_time'),
   recurring('recurring'),

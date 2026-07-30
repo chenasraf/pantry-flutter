@@ -245,6 +245,11 @@ class ChecklistsController extends ChangeNotifier {
   bool _showAddedBy = false;
   bool get showAddedBy => _showAddedBy;
 
+  /// Last currency the user picked for an item price in this house. Preselected
+  /// when opening the price input on a new item. Defaults to `USD`.
+  String _lastCurrency = 'USD';
+  String get lastCurrency => _lastCurrency;
+
   Map<String, Member> _members = {};
   Map<String, Member> get members => _members;
 
@@ -425,10 +430,12 @@ class ChecklistsController extends ChangeNotifier {
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _categorySort = prefs['categorySort'] as String? ?? 'custom';
         _listSort = prefs['checklistListSort'] as String? ?? 'custom';
+        _lastCurrency = prefs['lastCurrency'] as String? ?? 'USD';
         _checklistService.cache.set('sortBy:$houseId', _sortBy);
         _checklistService.cache.set('showAddedBy:$houseId', _showAddedBy);
         _checklistService.cache.set('categorySort:$houseId', _categorySort);
         _checklistService.cache.set('listSort:$houseId', _listSort);
+        _checklistService.cache.set('lastCurrency:$houseId', _lastCurrency);
       } catch (e) {
         debugPrint('[ChecklistsController] Failed to load house prefs: $e');
       }
@@ -562,6 +569,10 @@ class ChecklistsController extends ChangeNotifier {
         cache.get<String>('listSort:$houseId') ??
         cache.get<String>('listSort') ??
         'custom';
+    _lastCurrency =
+        cache.get<String>('lastCurrency:$houseId') ??
+        cache.get<String>('lastCurrency') ??
+        'USD';
 
     final cachedMembers = _houseService.getCachedMembers(houseId);
     if (cachedMembers != null) {
@@ -994,6 +1005,19 @@ class ChecklistsController extends ChangeNotifier {
       await _checklistService.setShowAddedByPref(houseId, value);
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to persist showAddedBy: $e');
+    }
+  }
+
+  /// Remember the currency the user last picked for a real price. Persisted
+  /// per house; preselected next time the price input opens on a new item.
+  Future<void> setLastCurrency(String code) async {
+    if (code == _lastCurrency) return;
+    _lastCurrency = code;
+    _checklistService.cache.set('lastCurrency:$houseId', code);
+    try {
+      await _checklistService.setLastCurrencyPref(houseId, code);
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to persist lastCurrency: $e');
     }
   }
 
@@ -1687,6 +1711,10 @@ class ChecklistsController extends ChangeNotifier {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
+    String? priceType,
+    double? priceMin,
+    double? priceMax,
+    String? priceCurrency,
   }) async {
     final list = _currentList;
     if (list == null || list.id == kAllListsId) {
@@ -1707,6 +1735,10 @@ class ChecklistsController extends ChangeNotifier {
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
       barcode: barcode,
+      priceType: priceType,
+      priceMin: priceMin,
+      priceMax: priceMax,
+      priceCurrency: priceCurrency,
     );
   }
 
@@ -1725,6 +1757,10 @@ class ChecklistsController extends ChangeNotifier {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
+    String? priceType,
+    double? priceMin,
+    double? priceMax,
+    String? priceCurrency,
   }) async {
     final listId = targetListId;
     final tempId = _sync.newTempId();
@@ -1743,6 +1779,10 @@ class ChecklistsController extends ChangeNotifier {
       deleteOnDone: deleteOnDone ?? false,
       addedBy: loginName,
       barcode: barcode,
+      priceType: priceType,
+      priceMin: priceMin,
+      priceMax: priceMax,
+      priceCurrency: priceCurrency,
       sortOrder: 0,
       createdAt: _now(),
       updatedAt: _now(),
@@ -1771,6 +1811,10 @@ class ChecklistsController extends ChangeNotifier {
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
           'barcode': ?barcode,
+          'priceType': ?priceType,
+          'priceMin': ?priceMin,
+          'priceMax': ?priceMax,
+          'priceCurrency': ?priceCurrency,
         },
         createdAt: _now(),
       ),
@@ -1812,7 +1856,14 @@ class ChecklistsController extends ChangeNotifier {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
+    String? priceType,
+    double? priceMin,
+    double? priceMax,
+    String? priceCurrency,
   }) async {
+    // An empty-string priceType is the "clear the price" sentinel on PATCH;
+    // reflect that optimistically by nulling the whole group locally.
+    final clearingPrice = priceType == '';
     final updated = item.copyWith(
       name: name,
       description: description,
@@ -1824,6 +1875,11 @@ class ChecklistsController extends ChangeNotifier {
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
       barcode: barcode,
+      clearPrice: clearingPrice,
+      priceType: clearingPrice ? null : priceType,
+      priceMin: priceMin,
+      priceMax: priceMax,
+      priceCurrency: priceCurrency,
       updatedAt: _now(),
     );
     final index = _items.indexWhere((i) => i.id == item.id);
@@ -1852,6 +1908,10 @@ class ChecklistsController extends ChangeNotifier {
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
           'barcode': ?barcode,
+          'priceType': ?priceType,
+          'priceMin': ?priceMin,
+          'priceMax': ?priceMax,
+          'priceCurrency': ?priceCurrency,
         },
         createdAt: _now(),
       ),

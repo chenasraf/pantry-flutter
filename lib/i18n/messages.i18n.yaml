@@ -12,6 +12,7 @@ common:
   copied: Copied
   closeDialog: Done
   remove: Remove
+  clear: Clear
   permissionDenied: You don't have permission to do that
   noAccessTitle: No access
   noAccessBody: You don't have access to anything in this house yet. An admin can grant you permissions in the Pantry web app.
@@ -126,6 +127,9 @@ onboarding:
   barcodeScanBody: "Tap the scan button in the add bar and point your camera at a product's barcode. Pantry looks up the name, category and photo and fills them in for you — or type the number by hand. The first scan of a product does the lookup; after that it's instant for everyone in your house."
   barcodeScanMockName: "Coca-Cola Zero"
   barcodeScanMockCategory: "Beverages"
+  priceTitle: "Add prices to your items"
+  priceBody: "Give any item a price — a single amount or a range — in your currency of choice. It shows as a chip on the item, and you can filter your list by price to keep a shop on budget."
+  priceMockName: "Olive oil"
   dev:
     showOnboarding: "Show onboarding"
     pickLastSeenTitle: "Preview what's new"
@@ -212,6 +216,7 @@ settings:
     category: Category
     store: Store
     quantity: Quantity
+    price: Price
     note: Note
     oneTime: One-time
     recurring: Recurring
@@ -321,6 +326,8 @@ checklists:
     allStores: All stores
     noCategory: No category
     noStores: No stores
+    price: Price
+    anyCurrency: Any currency
   failedToLoad: Failed to load checklists.
   failedToLoadItems: Failed to load items.
   completedCount(int count): "Completed ($count)"
@@ -422,6 +429,7 @@ checklists:
     overdue: Overdue
     quantityLabel: Quantity
     typeLabel: Type
+    priceLabel: Price
     descriptionLabel: Description
     noDescription: No description added.
     addedByMeta(String name, String time): "Added by $name · $time"
@@ -539,6 +547,15 @@ checklists:
     pickTargetList: Pick a list
     multiple: Multiple
     multipleHint: Separate items by new lines
+  price:
+    label: Price
+    set: Set
+    range: Range
+    amount: Amount
+    min: Min
+    max: Max
+    currency: Currency
+    clear: Clear price
   reuse:
     dialogTitle: Item already exists
     dialogBody(String name): 'An item named "$name" already exists in this list. Reuse it instead of adding a new one?'

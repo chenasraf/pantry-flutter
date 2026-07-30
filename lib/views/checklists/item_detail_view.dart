@@ -16,6 +16,7 @@ import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/date_format.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/image_preview.dart';
@@ -86,6 +87,10 @@ class ItemDetailView extends StatelessWidget {
                   sliver: SliverList.list(
                     children: [
                       _FactTiles(item: item, lifecycle: lifecycle),
+                      if (hasFeature('item-price') && item.hasPrice) ...[
+                        const SizedBox(height: 12),
+                        _PriceTile(item: item),
+                      ],
                       const SizedBox(height: 12),
                       _DescriptionCard(description: item.description),
                       const SizedBox(height: 12),
@@ -880,6 +885,34 @@ class _FactTile extends StatelessWidget {
           ),
           const SizedBox(height: 7),
           child,
+        ],
+      ),
+    );
+  }
+}
+
+class _PriceTile extends StatelessWidget {
+  final ListItem item;
+
+  const _PriceTile({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return _FactTile(
+      label: m.checklists.viewItem.priceLabel,
+      child: Row(
+        children: [
+          Icon(Icons.sell_outlined, size: 18, color: cs.primary),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              item.formattedPrice ?? '—',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+            ),
+          ),
         ],
       ),
     );

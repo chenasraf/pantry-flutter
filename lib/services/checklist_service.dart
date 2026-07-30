@@ -169,6 +169,21 @@ class ChecklistService {
     );
   }
 
+  Future<String> getLastCurrencyPref(int houseId) async {
+    return ApiClient.instance.get<Map<String, dynamic>, String>(
+      '/houses/$houseId/prefs',
+      fromJson: (data) => data['lastCurrency'] as String? ?? 'USD',
+    );
+  }
+
+  Future<void> setLastCurrencyPref(int houseId, String code) async {
+    await ApiClient.instance.put<Map<String, dynamic>, void>(
+      '/houses/$houseId/prefs',
+      body: {'lastCurrency': code},
+      fromJson: (_) {},
+    );
+  }
+
   Future<void> setListSortPref(int houseId, String sort) async {
     await ApiClient.instance.put<Map<String, dynamic>, void>(
       '/houses/$houseId/prefs',
@@ -425,6 +440,10 @@ class ChecklistService {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
+    String? priceType,
+    double? priceMin,
+    double? priceMax,
+    String? priceCurrency,
   }) async {
     final loginName = AuthService.instance.credentials?.loginName;
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
@@ -441,6 +460,10 @@ class ChecklistService {
         'deleteOnDone': ?deleteOnDone,
         'addedBy': ?loginName,
         'barcode': ?barcode,
+        'priceType': ?priceType,
+        'priceMin': ?priceMin,
+        'priceMax': ?priceMax,
+        'priceCurrency': ?priceCurrency,
       },
       fromJson: (data) => ListItem.fromJson(data),
     );
@@ -460,6 +483,10 @@ class ChecklistService {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
+    String? priceType,
+    double? priceMin,
+    double? priceMax,
+    String? priceCurrency,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items/$itemId',
@@ -475,6 +502,13 @@ class ChecklistService {
         'repeatFromCompletion': ?repeatFromCompletion,
         'deleteOnDone': ?deleteOnDone,
         'barcode': ?barcode,
+        // priceType '' clears the price; 'set'/'range' sets it; null omits
+        // (unchanged). The `?` drops the key only on null, so a '' clear still
+        // reaches the server.
+        'priceType': ?priceType,
+        'priceMin': ?priceMin,
+        'priceMax': ?priceMax,
+        'priceCurrency': ?priceCurrency,
       },
       fromJson: (data) => ListItem.fromJson(data),
     );

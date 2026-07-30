@@ -153,6 +153,11 @@ class CommonMessagesNn extends CommonMessages {
   String get remove => """Fjern""";
 
   /// ```dart
+  /// "Tøm"
+  /// ```
+  String get clear => """Tøm""";
+
+  /// ```dart
   /// "Du har ikkje tilgang til å gjere det"
   /// ```
   String get permissionDenied => """Du har ikkje tilgang til å gjere det""";
@@ -740,6 +745,22 @@ Passord: pantry""";
   /// "Drikke"
   /// ```
   String get barcodeScanMockCategory => """Drikke""";
+
+  /// ```dart
+  /// "Legg til prisar på oppføringane dine"
+  /// ```
+  String get priceTitle => """Legg til prisar på oppføringane dine""";
+
+  /// ```dart
+  /// "Gje ei kvar oppføring ein pris – eit enkelt beløp eller eit område – i valutaen du vil. Han vert vist som ein brikke på oppføringa, og du kan filtrere lista etter pris for å halde deg innanfor budsjettet."
+  /// ```
+  String get priceBody =>
+      """Gje ei kvar oppføring ein pris – eit enkelt beløp eller eit område – i valutaen du vil. Han vert vist som ein brikke på oppføringa, og du kan filtrere lista etter pris for å halde deg innanfor budsjettet.""";
+
+  /// ```dart
+  /// "Olivenolje"
+  /// ```
+  String get priceMockName => """Olivenolje""";
   DevOnboardingMessagesNn get dev => DevOnboardingMessagesNn(this);
 }
 
@@ -1258,6 +1279,11 @@ class ChipNamesSettingsMessagesNn extends ChipNamesSettingsMessages {
   /// "Mengd"
   /// ```
   String get quantity => """Mengd""";
+
+  /// ```dart
+  /// "Pris"
+  /// ```
+  String get price => """Pris""";
 
   /// ```dart
   /// "Notat"
@@ -2121,6 +2147,7 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   ItemTypesChecklistsMessagesNn get itemTypes =>
       ItemTypesChecklistsMessagesNn(this);
   ComposeChecklistsMessagesNn get compose => ComposeChecklistsMessagesNn(this);
+  PriceChecklistsMessagesNn get price => PriceChecklistsMessagesNn(this);
   ReuseChecklistsMessagesNn get reuse => ReuseChecklistsMessagesNn(this);
 
   /// ```dart
@@ -2245,6 +2272,16 @@ class FiltersChecklistsMessagesNn extends FiltersChecklistsMessages {
   /// "Ingen butikkar"
   /// ```
   String get noStores => """Ingen butikkar""";
+
+  /// ```dart
+  /// "Pris"
+  /// ```
+  String get price => """Pris""";
+
+  /// ```dart
+  /// "Kva som helst valuta"
+  /// ```
+  String get anyCurrency => """Kva som helst valuta""";
 }
 
 class BatchChecklistsMessagesNn extends BatchChecklistsMessages {
@@ -2432,6 +2469,11 @@ class ViewItemChecklistsMessagesNn extends ViewItemChecklistsMessages {
   /// "Type"
   /// ```
   String get typeLabel => """Type""";
+
+  /// ```dart
+  /// "Pris"
+  /// ```
+  String get priceLabel => """Pris""";
 
   /// ```dart
   /// "Skildring"
@@ -2874,6 +2916,51 @@ class ComposeChecklistsMessagesNn extends ComposeChecklistsMessages {
   /// ```
   String get multipleHint =>
       """Skil ulike oppføringar ved å lage ei ny linje""";
+}
+
+class PriceChecklistsMessagesNn extends PriceChecklistsMessages {
+  final ChecklistsMessagesNn _parent;
+  const PriceChecklistsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Pris"
+  /// ```
+  String get label => """Pris""";
+
+  /// ```dart
+  /// "Fast"
+  /// ```
+  String get set => """Fast""";
+
+  /// ```dart
+  /// "Område"
+  /// ```
+  String get range => """Område""";
+
+  /// ```dart
+  /// "Beløp"
+  /// ```
+  String get amount => """Beløp""";
+
+  /// ```dart
+  /// "Min"
+  /// ```
+  String get min => """Min""";
+
+  /// ```dart
+  /// "Maks"
+  /// ```
+  String get max => """Maks""";
+
+  /// ```dart
+  /// "Valuta"
+  /// ```
+  String get currency => """Valuta""";
+
+  /// ```dart
+  /// "Fjern pris"
+  /// ```
+  String get clear => """Fjern pris""";
 }
 
 class ReuseChecklistsMessagesNn extends ReuseChecklistsMessages {
@@ -3794,6 +3881,7 @@ Map<String, String> get messagesNnMap => {
   """common.copied""": """Kopiert""",
   """common.closeDialog""": """Ferdig""",
   """common.remove""": """Fjern""",
+  """common.clear""": """Tøm""",
   """common.permissionDenied""": """Du har ikkje tilgang til å gjere det""",
   """common.noAccessTitle""": """Ingen tilgang""",
   """common.noAccessBody""":
@@ -3925,6 +4013,10 @@ Passord: pantry""",
       """Trykk på skanneknappen i tilleggsfeltet og rett kameraet mot strekkoden på eit produkt. Pantry slår opp namn, kategori og bilete og fyller dei inn for deg - eller skriv nummeret inn for hand. Den første skanninga av eit produkt gjer oppslaget, etter det er det momentant for alle i huset ditt.""",
   """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
   """onboarding.barcodeScanMockCategory""": """Drikke""",
+  """onboarding.priceTitle""": """Legg til prisar på oppføringane dine""",
+  """onboarding.priceBody""":
+      """Gje ei kvar oppføring ein pris – eit enkelt beløp eller eit område – i valutaen du vil. Han vert vist som ein brikke på oppføringa, og du kan filtrere lista etter pris for å halde deg innanfor budsjettet.""",
+  """onboarding.priceMockName""": """Olivenolje""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4015,6 +4107,7 @@ Passord: pantry""",
   """settings.chipNames.category""": """Kategori""",
   """settings.chipNames.store""": """Butikk""",
   """settings.chipNames.quantity""": """Mengd""",
+  """settings.chipNames.price""": """Pris""",
   """settings.chipNames.note""": """Notat""",
   """settings.chipNames.oneTime""": """Eingongs""",
   """settings.chipNames.recurring""": """Gjentakande""",
@@ -4116,6 +4209,8 @@ Passord: pantry""",
   """checklists.filters.allStores""": """Alle butikkar""",
   """checklists.filters.noCategory""": """Ingen kategori""",
   """checklists.filters.noStores""": """Ingen butikkar""",
+  """checklists.filters.price""": """Pris""",
+  """checklists.filters.anyCurrency""": """Kva som helst valuta""",
   """checklists.failedToLoad""": """Kunne ikkje laste sjekklister.""",
   """checklists.failedToLoadItems""": """Kunne ikkje laste oppføringar.""",
   """checklists.editItem""": """Rediger oppføring""",
@@ -4206,6 +4301,7 @@ Passord: pantry""",
   """checklists.viewItem.overdue""": """Forfalt""",
   """checklists.viewItem.quantityLabel""": """Tal""",
   """checklists.viewItem.typeLabel""": """Type""",
+  """checklists.viewItem.priceLabel""": """Pris""",
   """checklists.viewItem.descriptionLabel""": """Skildring""",
   """checklists.viewItem.noDescription""": """Inga skildring lagt til.""",
   """checklists.viewItem.relJustNow""": """nett no""",
@@ -4313,6 +4409,14 @@ Passord: pantry""",
   """checklists.compose.multiple""": """Fleire""",
   """checklists.compose.multipleHint""":
       """Skil ulike oppføringar ved å lage ei ny linje""",
+  """checklists.price.label""": """Pris""",
+  """checklists.price.set""": """Fast""",
+  """checklists.price.range""": """Område""",
+  """checklists.price.amount""": """Beløp""",
+  """checklists.price.min""": """Min""",
+  """checklists.price.max""": """Maks""",
+  """checklists.price.currency""": """Valuta""",
+  """checklists.price.clear""": """Fjern pris""",
   """checklists.reuse.dialogTitle""": """Oppføringa finst allereie""",
   """checklists.reuse.reuseExisting""": """Gjenbruk""",
   """checklists.reuse.addAnyway""": """Legg til likevel""",

@@ -108,4 +108,81 @@ void main() {
       expect(item.copyWith(name: 'Milk 2').barcode, '4001724819103');
     });
   });
+
+  group('ListItem price serialization', () {
+    ListItem base({
+      String? priceType,
+      double? priceMin,
+      double? priceMax,
+      String? priceCurrency,
+    }) => ListItem(
+      id: 1,
+      listId: 2,
+      name: 'Milk',
+      done: false,
+      repeatFromCompletion: false,
+      deleteOnDone: false,
+      sortOrder: 0,
+      createdAt: 100,
+      updatedAt: 200,
+      priceType: priceType,
+      priceMin: priceMin,
+      priceMax: priceMax,
+      priceCurrency: priceCurrency,
+    );
+
+    test('round-trips a set price through toJson/fromJson', () {
+      final decoded = ListItem.fromJson(
+        base(priceType: 'set', priceMin: 9.99, priceCurrency: 'USD').toJson(),
+      );
+      expect(decoded.priceType, 'set');
+      expect(decoded.priceMin, 9.99);
+      expect(decoded.priceMax, isNull);
+      expect(decoded.priceCurrency, 'USD');
+    });
+
+    test('coerces integer JSON amounts to double', () {
+      final decoded = ListItem.fromJson({
+        'id': 1,
+        'listId': 2,
+        'name': 'Milk',
+        'done': false,
+        'repeatFromCompletion': false,
+        'sortOrder': 0,
+        'createdAt': 100,
+        'updatedAt': 200,
+        'priceType': 'range',
+        'priceMin': 1,
+        'priceMax': 10,
+        'priceCurrency': 'ILS',
+      });
+      expect(decoded.priceMin, 1.0);
+      expect(decoded.priceMax, 10.0);
+    });
+
+    test('treats missing price keys as no price', () {
+      final decoded = ListItem.fromJson({
+        'id': 1,
+        'listId': 2,
+        'name': 'Milk',
+        'done': false,
+        'repeatFromCompletion': false,
+        'sortOrder': 0,
+        'createdAt': 100,
+        'updatedAt': 200,
+      });
+      expect(decoded.priceType, isNull);
+      expect(decoded.priceMin, isNull);
+    });
+
+    test('clearPrice nulls the whole group', () {
+      final priced = base(priceType: 'set', priceMin: 5, priceCurrency: 'USD');
+      final cleared = priced.copyWith(clearPrice: true);
+      expect(cleared.priceType, isNull);
+      expect(cleared.priceMin, isNull);
+      expect(cleared.priceCurrency, isNull);
+      // A plain copyWith preserves the price.
+      expect(priced.copyWith(name: 'Bread').priceMin, 5);
+    });
+  });
 }

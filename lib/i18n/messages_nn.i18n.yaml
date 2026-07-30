@@ -13,6 +13,7 @@ common:
   copied: Kopiert
   closeDialog: Ferdig
   remove: Fjern
+  clear: Tøm
   permissionDenied: Du har ikkje tilgang til å gjere det
   noAccessTitle: Ingen tilgang
   noAccessBody:
@@ -189,6 +190,9 @@ onboarding:
     gjer oppslaget, etter det er det momentant for alle i huset ditt.
   barcodeScanMockName: "Coca-Cola Zero"
   barcodeScanMockCategory: Drikke
+  priceTitle: "Legg til prisar på oppføringane dine"
+  priceBody: "Gje ei kvar oppføring ein pris – eit enkelt beløp eller eit område – i valutaen du vil. Han vert vist som ein brikke på oppføringa, og du kan filtrere lista etter pris for å halde deg innanfor budsjettet."
+  priceMockName: Olivenolje
   dev:
     showOnboarding: Vis oppstartshjelp
     pickLastSeenTitle: Førehandsvis kva som er nytt
@@ -290,6 +294,7 @@ settings:
     category: Kategori
     store: Butikk
     quantity: Mengd
+    price: Pris
     note: Notat
     oneTime: Eingongs
     recurring: Gjentakande
@@ -399,6 +404,8 @@ checklists:
     allStores: Alle butikkar
     noCategory: Ingen kategori
     noStores: Ingen butikkar
+    price: Pris
+    anyCurrency: Kva som helst valuta
   failedToLoad: Kunne ikkje laste sjekklister.
   failedToLoadItems: Kunne ikkje laste oppføringar.
   completedCount(int count): "Fullført ($count)"
@@ -523,6 +530,7 @@ checklists:
     overdue: Forfalt
     quantityLabel: Tal
     typeLabel: Type
+    priceLabel: Pris
     descriptionLabel: Skildring
     noDescription: Inga skildring lagt til.
     addedByMeta(String name, String time): Lagt til av $name · $time
@@ -648,6 +656,15 @@ checklists:
     pickTargetList: Vel ei liste
     multiple: Fleire
     multipleHint: Skil ulike oppføringar ved å lage ei ny linje
+  price:
+    label: Pris
+    set: Fast
+    range: Område
+    amount: Beløp
+    min: Min
+    max: Maks
+    currency: Valuta
+    clear: Fjern pris
   reuse:
     dialogTitle: Oppføringa finst allereie
     dialogBody(String name):

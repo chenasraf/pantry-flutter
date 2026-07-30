@@ -15,12 +15,14 @@ import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
     show parseHexColor;
 import 'checklist_item_tile.dart' show ItemLifecycle;
 import 'form_components.dart';
+import 'price_input.dart';
 
 /// Draft state for an item being composed in the quick-add bar.
 class ItemDraft {
@@ -39,6 +41,10 @@ class ItemDraft {
   /// scan flow; null for hand-typed items.
   String? barcode;
 
+  /// Optional price for the composed item. Currency is preserved across
+  /// [reset] so the last-picked currency sticks for rapid same-currency adds.
+  PriceDraft price = PriceDraft();
+
   void reset(ItemLifecycle defaultLifecycle) {
     name = '';
     description = '';
@@ -50,6 +56,7 @@ class ItemDraft {
     imageFile = null;
     imageBytes = null;
     barcode = null;
+    price = PriceDraft(currency: price.currency);
   }
 
   bool get repeatFromCompletion => recurrence.repeatFromCompletion;
@@ -77,6 +84,13 @@ class ComposeSubmission {
   final String? imageMime;
   final String? barcode;
 
+  /// Price group for the created item. [priceType] is null when there's no
+  /// price (create semantics — omit the group).
+  final String? priceType;
+  final double? priceMin;
+  final double? priceMax;
+  final String? priceCurrency;
+
   const ComposeSubmission({
     required this.name,
     this.description,
@@ -90,6 +104,10 @@ class ComposeSubmission {
     this.imageName,
     this.imageMime,
     this.barcode,
+    this.priceType,
+    this.priceMin,
+    this.priceMax,
+    this.priceCurrency,
   });
 }
 
@@ -104,6 +122,13 @@ class ItemComposeBar extends StatefulWidget {
   final Future<bool> Function(ComposeSubmission submission) onSubmit;
   final bool initiallyFocused;
   final bool dimmedListBackground;
+
+  /// Whether the server advertises `item-price`. Hides the price chip + tray
+  /// entirely when false.
+  final bool priceEnabled;
+
+  /// House's last-used currency, preselected when the price tray first opens.
+  final String lastCurrency;
 
   /// Fires whenever the bar becomes active (chip row + trays visible) or
   /// returns to its resting state. Lets the parent reclaim vertical space —
@@ -164,6 +189,8 @@ class ItemComposeBar extends StatefulWidget {
     required this.onSubmit,
     this.initiallyFocused = false,
     this.dimmedListBackground = false,
+    this.priceEnabled = false,
+    this.lastCurrency = 'USD',
     this.onActiveChanged,
     this.onRequestCreateCategory,
     this.onRequestCreateStore,
@@ -181,10 +208,21 @@ class ItemComposeBar extends StatefulWidget {
   State<ItemComposeBar> createState() => ItemComposeBarState();
 }
 
-enum _Tray { targetList, category, store, quantity, description, type, image }
+enum _Tray {
+  targetList,
+  category,
+  store,
+  quantity,
+  price,
+  description,
+  type,
+  image,
+}
 
 class ItemComposeBarState extends State<ItemComposeBar> {
-  late final ItemDraft _draft = ItemDraft()..lifecycle = _defaultLifecycle();
+  late final ItemDraft _draft = ItemDraft()
+    ..lifecycle = _defaultLifecycle()
+    ..price.currency = widget.lastCurrency;
   final _nameCtrl = TextEditingController();
   final _qtyCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
@@ -287,7 +325,11 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       if (_multiple) {
         _draft.imageFile = null;
         _draft.imageBytes = null;
-        if (_openTray == _Tray.image) _openTray = null;
+        // Image + price are single-item concerns; close their trays when
+        // switching to bulk entry.
+        if (_openTray == _Tray.image || _openTray == _Tray.price) {
+          _openTray = null;
+        }
       }
     });
   }
@@ -491,6 +533,20 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           ? (lookupMimeType(_draft.imageFile!.name) ?? 'image/jpeg')
           : null,
       barcode: _multiple ? null : _draft.barcode,
+      // Price is a single-item concern — omitted entirely in bulk mode or when
+      // the server lacks the capability.
+      priceType: (!_multiple && widget.priceEnabled)
+          ? _draft.price.createPriceType
+          : null,
+      priceMin: (!_multiple && widget.priceEnabled)
+          ? _draft.price.priceMin
+          : null,
+      priceMax: (!_multiple && widget.priceEnabled)
+          ? _draft.price.priceMax
+          : null,
+      priceCurrency: (!_multiple && widget.priceEnabled)
+          ? _draft.price.priceCurrency
+          : null,
     );
   }
 
@@ -595,6 +651,11 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           onMinus: () => _stepQty(-1),
           onPlus: () => _stepQty(1),
         );
+      case _Tray.price:
+        trayChild = _PriceTray(
+          draft: _draft.price,
+          onChanged: () => setState(() {}),
+        );
       case _Tray.description:
         trayChild = _DescriptionTray(
           controller: _descCtrl,
@@ -633,6 +694,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                 showStoreChip:
                     widget.stores.isNotEmpty ||
                     widget.onRequestCreateStore != null,
+                showPriceChip: widget.priceEnabled && !_multiple,
                 openTray: _openTray,
                 onOpen: _toggleTray,
                 showImageChip: !_multiple,
@@ -973,6 +1035,7 @@ class _ChipRow extends StatelessWidget {
   final List<models.Category> categories;
   final List<models.Store> stores;
   final bool showStoreChip;
+  final bool showPriceChip;
   final _Tray? openTray;
   final ValueChanged<_Tray> onOpen;
   final bool showImageChip;
@@ -984,6 +1047,7 @@ class _ChipRow extends StatelessWidget {
     required this.categories,
     required this.stores,
     required this.showStoreChip,
+    required this.showPriceChip,
     required this.openTray,
     required this.onOpen,
     required this.multiple,
@@ -1021,6 +1085,16 @@ class _ChipRow extends StatelessWidget {
     final hasQty = draft.quantity.trim().isNotEmpty;
     final hasDesc = draft.description.trim().isNotEmpty;
     final hasType = draft.lifecycle != ItemLifecycle.staple;
+    final hasPrice = draft.price.hasPrice;
+    final priceLabel = hasPrice
+        ? (formatPrice(
+                priceType: draft.price.createPriceType,
+                priceMin: draft.price.priceMin,
+                priceMax: draft.price.priceMax,
+                priceCurrency: draft.price.priceCurrency,
+              ) ??
+              m.checklists.price.label)
+        : m.checklists.price.label;
 
     return SizedBox(
       height: 36,
@@ -1073,6 +1147,16 @@ class _ChipRow extends StatelessWidget {
             selected: openTray == _Tray.quantity,
             onTap: () => onOpen(_Tray.quantity),
           ),
+          if (showPriceChip) ...[
+            const SizedBox(width: 8),
+            _ComposeChip(
+              label: priceLabel,
+              color: hasPrice ? cs.primary : null,
+              icon: Icons.sell_outlined,
+              selected: openTray == _Tray.price,
+              onTap: () => onOpen(_Tray.price),
+            ),
+          ],
           const SizedBox(width: 8),
           // Description label is intentionally static even when set —
           // descriptions are typically long, so the chip only flips its
@@ -1650,6 +1734,21 @@ class _QuantityTray extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _PriceTray extends StatelessWidget {
+  final PriceDraft draft;
+  final VoidCallback onChanged;
+
+  const _PriceTray({required this.draft, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return _TrayShell(
+      label: m.checklists.price.label,
+      child: PriceInput(draft: draft, onChanged: onChanged),
     );
   }
 }

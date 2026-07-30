@@ -153,6 +153,11 @@ class CommonMessagesFr extends CommonMessages {
   String get remove => """Retirer""";
 
   /// ```dart
+  /// "Effacer"
+  /// ```
+  String get clear => """Effacer""";
+
+  /// ```dart
   /// "Vous n'avez pas la permission de faire cela"
   /// ```
   String get permissionDenied =>
@@ -744,6 +749,22 @@ Mot de passe : pantry-rocks""";
   /// "Boissons"
   /// ```
   String get barcodeScanMockCategory => """Boissons""";
+
+  /// ```dart
+  /// "Ajoutez des prix à vos articles"
+  /// ```
+  String get priceTitle => """Ajoutez des prix à vos articles""";
+
+  /// ```dart
+  /// "Donnez à un article un prix — un montant unique ou une fourchette — dans la devise de votre choix. Il apparaît sous forme d'étiquette sur l'article, et vous pouvez filtrer votre liste par prix pour respecter votre budget."
+  /// ```
+  String get priceBody =>
+      """Donnez à un article un prix — un montant unique ou une fourchette — dans la devise de votre choix. Il apparaît sous forme d'étiquette sur l'article, et vous pouvez filtrer votre liste par prix pour respecter votre budget.""";
+
+  /// ```dart
+  /// "Huile d'olive"
+  /// ```
+  String get priceMockName => """Huile d'olive""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
@@ -1263,6 +1284,11 @@ class ChipNamesSettingsMessagesFr extends ChipNamesSettingsMessages {
   /// "Quantité"
   /// ```
   String get quantity => """Quantité""";
+
+  /// ```dart
+  /// "Prix"
+  /// ```
+  String get price => """Prix""";
 
   /// ```dart
   /// "Note"
@@ -2129,6 +2155,7 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   ItemTypesChecklistsMessagesFr get itemTypes =>
       ItemTypesChecklistsMessagesFr(this);
   ComposeChecklistsMessagesFr get compose => ComposeChecklistsMessagesFr(this);
+  PriceChecklistsMessagesFr get price => PriceChecklistsMessagesFr(this);
   ReuseChecklistsMessagesFr get reuse => ReuseChecklistsMessagesFr(this);
 
   /// ```dart
@@ -2255,6 +2282,16 @@ class FiltersChecklistsMessagesFr extends FiltersChecklistsMessages {
   /// "Sans magasin"
   /// ```
   String get noStores => """Sans magasin""";
+
+  /// ```dart
+  /// "Prix"
+  /// ```
+  String get price => """Prix""";
+
+  /// ```dart
+  /// "N'importe quelle devise"
+  /// ```
+  String get anyCurrency => """N'importe quelle devise""";
 }
 
 class BatchChecklistsMessagesFr extends BatchChecklistsMessages {
@@ -2442,6 +2479,11 @@ class ViewItemChecklistsMessagesFr extends ViewItemChecklistsMessages {
   /// "Type"
   /// ```
   String get typeLabel => """Type""";
+
+  /// ```dart
+  /// "Prix"
+  /// ```
+  String get priceLabel => """Prix""";
 
   /// ```dart
   /// "Description"
@@ -2885,6 +2927,51 @@ class ComposeChecklistsMessagesFr extends ComposeChecklistsMessages {
   /// ```
   String get multipleHint =>
       """Séparer les éléments par des retours à la ligne""";
+}
+
+class PriceChecklistsMessagesFr extends PriceChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const PriceChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Prix"
+  /// ```
+  String get label => """Prix""";
+
+  /// ```dart
+  /// "Fixe"
+  /// ```
+  String get set => """Fixe""";
+
+  /// ```dart
+  /// "Plage"
+  /// ```
+  String get range => """Plage""";
+
+  /// ```dart
+  /// "Montant"
+  /// ```
+  String get amount => """Montant""";
+
+  /// ```dart
+  /// "Min"
+  /// ```
+  String get min => """Min""";
+
+  /// ```dart
+  /// "Max"
+  /// ```
+  String get max => """Max""";
+
+  /// ```dart
+  /// "Devise"
+  /// ```
+  String get currency => """Devise""";
+
+  /// ```dart
+  /// "Effacer le prix"
+  /// ```
+  String get clear => """Effacer le prix""";
 }
 
 class ReuseChecklistsMessagesFr extends ReuseChecklistsMessages {
@@ -3808,6 +3895,7 @@ Map<String, String> get messagesFrMap => {
   """common.copied""": """Copié""",
   """common.closeDialog""": """Terminé""",
   """common.remove""": """Retirer""",
+  """common.clear""": """Effacer""",
   """common.permissionDenied""":
       """Vous n'avez pas la permission de faire cela""",
   """common.noAccessTitle""": """Aucun accès""",
@@ -3944,6 +4032,10 @@ Mot de passe : pantry-rocks""",
       """Touchez le bouton de scan dans la barre d'ajout et dirigez la caméra vers le code-barres d'un produit. Pantry en trouve le nom, la catégorie et la photo et les remplit pour vous — ou saisissez le numéro à la main. Le premier scan d'un produit lance la recherche ; ensuite, c'est instantané pour toute votre maison.""",
   """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
   """onboarding.barcodeScanMockCategory""": """Boissons""",
+  """onboarding.priceTitle""": """Ajoutez des prix à vos articles""",
+  """onboarding.priceBody""":
+      """Donnez à un article un prix — un montant unique ou une fourchette — dans la devise de votre choix. Il apparaît sous forme d'étiquette sur l'article, et vous pouvez filtrer votre liste par prix pour respecter votre budget.""",
+  """onboarding.priceMockName""": """Huile d'olive""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4038,6 +4130,7 @@ Mot de passe : pantry-rocks""",
   """settings.chipNames.category""": """Catégorie""",
   """settings.chipNames.store""": """Magasin""",
   """settings.chipNames.quantity""": """Quantité""",
+  """settings.chipNames.price""": """Prix""",
   """settings.chipNames.note""": """Note""",
   """settings.chipNames.oneTime""": """Unique""",
   """settings.chipNames.recurring""": """Récurrent""",
@@ -4140,6 +4233,8 @@ Mot de passe : pantry-rocks""",
   """checklists.filters.allStores""": """Tous les magasins""",
   """checklists.filters.noCategory""": """Sans catégorie""",
   """checklists.filters.noStores""": """Sans magasin""",
+  """checklists.filters.price""": """Prix""",
+  """checklists.filters.anyCurrency""": """N'importe quelle devise""",
   """checklists.failedToLoad""": """Impossible de charger les listes.""",
   """checklists.failedToLoadItems""": """Impossible de charger les articles.""",
   """checklists.editItem""": """Modifier l'article""",
@@ -4233,6 +4328,7 @@ Mot de passe : pantry-rocks""",
   """checklists.viewItem.overdue""": """En retard""",
   """checklists.viewItem.quantityLabel""": """Quantité""",
   """checklists.viewItem.typeLabel""": """Type""",
+  """checklists.viewItem.priceLabel""": """Prix""",
   """checklists.viewItem.descriptionLabel""": """Description""",
   """checklists.viewItem.noDescription""": """Aucune description ajoutée.""",
   """checklists.viewItem.relJustNow""": """à l'instant""",
@@ -4343,6 +4439,14 @@ Mot de passe : pantry-rocks""",
   """checklists.compose.multiple""": """Plusieurs""",
   """checklists.compose.multipleHint""":
       """Séparer les éléments par des retours à la ligne""",
+  """checklists.price.label""": """Prix""",
+  """checklists.price.set""": """Fixe""",
+  """checklists.price.range""": """Plage""",
+  """checklists.price.amount""": """Montant""",
+  """checklists.price.min""": """Min""",
+  """checklists.price.max""": """Max""",
+  """checklists.price.currency""": """Devise""",
+  """checklists.price.clear""": """Effacer le prix""",
   """checklists.reuse.dialogTitle""": """L'article existe déjà""",
   """checklists.reuse.reuseExisting""": """Réutiliser l'existant""",
   """checklists.reuse.addAnyway""": """Ajouter quand même""",

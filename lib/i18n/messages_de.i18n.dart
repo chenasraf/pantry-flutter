@@ -153,6 +153,11 @@ class CommonMessagesDe extends CommonMessages {
   String get remove => """Entfernen""";
 
   /// ```dart
+  /// "Leeren"
+  /// ```
+  String get clear => """Leeren""";
+
+  /// ```dart
   /// "Dazu hast du keine Berechtigung"
   /// ```
   String get permissionDenied => """Dazu hast du keine Berechtigung""";
@@ -741,6 +746,22 @@ Passwort: pantry-rocks""";
   /// "Getränke"
   /// ```
   String get barcodeScanMockCategory => """Getränke""";
+
+  /// ```dart
+  /// "Preise zu Artikeln hinzufügen"
+  /// ```
+  String get priceTitle => """Preise zu Artikeln hinzufügen""";
+
+  /// ```dart
+  /// "Geben Sie einem Artikel einen Preis – einen einzelnen Betrag oder eine Spanne – in der Währung Ihrer Wahl. Er erscheint als Chip am Artikel, und Sie können Ihre Liste nach Preis filtern, um im Budget zu bleiben."
+  /// ```
+  String get priceBody =>
+      """Geben Sie einem Artikel einen Preis – einen einzelnen Betrag oder eine Spanne – in der Währung Ihrer Wahl. Er erscheint als Chip am Artikel, und Sie können Ihre Liste nach Preis filtern, um im Budget zu bleiben.""";
+
+  /// ```dart
+  /// "Olivenöl"
+  /// ```
+  String get priceMockName => """Olivenöl""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 
@@ -1260,6 +1281,11 @@ class ChipNamesSettingsMessagesDe extends ChipNamesSettingsMessages {
   /// "Menge"
   /// ```
   String get quantity => """Menge""";
+
+  /// ```dart
+  /// "Preis"
+  /// ```
+  String get price => """Preis""";
 
   /// ```dart
   /// "Notiz"
@@ -2127,6 +2153,7 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   ItemTypesChecklistsMessagesDe get itemTypes =>
       ItemTypesChecklistsMessagesDe(this);
   ComposeChecklistsMessagesDe get compose => ComposeChecklistsMessagesDe(this);
+  PriceChecklistsMessagesDe get price => PriceChecklistsMessagesDe(this);
   ReuseChecklistsMessagesDe get reuse => ReuseChecklistsMessagesDe(this);
 
   /// ```dart
@@ -2254,6 +2281,16 @@ class FiltersChecklistsMessagesDe extends FiltersChecklistsMessages {
   /// "Keine Geschäfte"
   /// ```
   String get noStores => """Keine Geschäfte""";
+
+  /// ```dart
+  /// "Preis"
+  /// ```
+  String get price => """Preis""";
+
+  /// ```dart
+  /// "Beliebige Währung"
+  /// ```
+  String get anyCurrency => """Beliebige Währung""";
 }
 
 class BatchChecklistsMessagesDe extends BatchChecklistsMessages {
@@ -2442,6 +2479,11 @@ class ViewItemChecklistsMessagesDe extends ViewItemChecklistsMessages {
   /// "Typ"
   /// ```
   String get typeLabel => """Typ""";
+
+  /// ```dart
+  /// "Preis"
+  /// ```
+  String get priceLabel => """Preis""";
 
   /// ```dart
   /// "Beschreibung"
@@ -2885,6 +2927,51 @@ class ComposeChecklistsMessagesDe extends ComposeChecklistsMessages {
   /// "Einträge durch Zeilenumbrüche trennen"
   /// ```
   String get multipleHint => """Einträge durch Zeilenumbrüche trennen""";
+}
+
+class PriceChecklistsMessagesDe extends PriceChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const PriceChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Preis"
+  /// ```
+  String get label => """Preis""";
+
+  /// ```dart
+  /// "Fest"
+  /// ```
+  String get set => """Fest""";
+
+  /// ```dart
+  /// "Bereich"
+  /// ```
+  String get range => """Bereich""";
+
+  /// ```dart
+  /// "Betrag"
+  /// ```
+  String get amount => """Betrag""";
+
+  /// ```dart
+  /// "Min"
+  /// ```
+  String get min => """Min""";
+
+  /// ```dart
+  /// "Max"
+  /// ```
+  String get max => """Max""";
+
+  /// ```dart
+  /// "Währung"
+  /// ```
+  String get currency => """Währung""";
+
+  /// ```dart
+  /// "Preis entfernen"
+  /// ```
+  String get clear => """Preis entfernen""";
 }
 
 class ReuseChecklistsMessagesDe extends ReuseChecklistsMessages {
@@ -3811,6 +3898,7 @@ Map<String, String> get messagesDeMap => {
   """common.copied""": """Kopiert""",
   """common.closeDialog""": """Fertig""",
   """common.remove""": """Entfernen""",
+  """common.clear""": """Leeren""",
   """common.permissionDenied""": """Dazu hast du keine Berechtigung""",
   """common.noAccessTitle""": """Kein Zugriff""",
   """common.noAccessBody""":
@@ -3942,6 +4030,10 @@ Passwort: pantry-rocks""",
       """Tippe in der Eingabeleiste auf die Scan-Schaltfläche und richte die Kamera auf den Barcode eines Produkts. Pantry sucht Name, Kategorie und Foto heraus und füllt sie für dich aus – oder gib die Nummer von Hand ein. Der erste Scan eines Produkts führt die Suche durch; danach ist es für alle in deinem Haushalt sofort da.""",
   """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
   """onboarding.barcodeScanMockCategory""": """Getränke""",
+  """onboarding.priceTitle""": """Preise zu Artikeln hinzufügen""",
+  """onboarding.priceBody""":
+      """Geben Sie einem Artikel einen Preis – einen einzelnen Betrag oder eine Spanne – in der Währung Ihrer Wahl. Er erscheint als Chip am Artikel, und Sie können Ihre Liste nach Preis filtern, um im Budget zu bleiben.""",
+  """onboarding.priceMockName""": """Olivenöl""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4034,6 +4126,7 @@ Passwort: pantry-rocks""",
   """settings.chipNames.category""": """Kategorie""",
   """settings.chipNames.store""": """Geschäft""",
   """settings.chipNames.quantity""": """Menge""",
+  """settings.chipNames.price""": """Preis""",
   """settings.chipNames.note""": """Notiz""",
   """settings.chipNames.oneTime""": """Einmalig""",
   """settings.chipNames.recurring""": """Wiederkehrend""",
@@ -4136,6 +4229,8 @@ Passwort: pantry-rocks""",
   """checklists.filters.allStores""": """Alle Geschäfte""",
   """checklists.filters.noCategory""": """Keine Kategorie""",
   """checklists.filters.noStores""": """Keine Geschäfte""",
+  """checklists.filters.price""": """Preis""",
+  """checklists.filters.anyCurrency""": """Beliebige Währung""",
   """checklists.failedToLoad""":
       """Checklisten konnten nicht geladen werden.""",
   """checklists.failedToLoadItems""":
@@ -4236,6 +4331,7 @@ Passwort: pantry-rocks""",
   """checklists.viewItem.overdue""": """Überfällig""",
   """checklists.viewItem.quantityLabel""": """Menge""",
   """checklists.viewItem.typeLabel""": """Typ""",
+  """checklists.viewItem.priceLabel""": """Preis""",
   """checklists.viewItem.descriptionLabel""": """Beschreibung""",
   """checklists.viewItem.noDescription""":
       """Keine Beschreibung hinzugefügt.""",
@@ -4346,6 +4442,14 @@ Passwort: pantry-rocks""",
   """checklists.compose.multiple""": """Mehrere""",
   """checklists.compose.multipleHint""":
       """Einträge durch Zeilenumbrüche trennen""",
+  """checklists.price.label""": """Preis""",
+  """checklists.price.set""": """Fest""",
+  """checklists.price.range""": """Bereich""",
+  """checklists.price.amount""": """Betrag""",
+  """checklists.price.min""": """Min""",
+  """checklists.price.max""": """Max""",
+  """checklists.price.currency""": """Währung""",
+  """checklists.price.clear""": """Preis entfernen""",
   """checklists.reuse.dialogTitle""": """Eintrag existiert bereits""",
   """checklists.reuse.reuseExisting""": """Vorhandenen wiederverwenden""",
   """checklists.reuse.addAnyway""": """Trotzdem hinzufügen""",

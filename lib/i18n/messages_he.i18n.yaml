@@ -12,6 +12,7 @@ common:
   copied: הועתק
   closeDialog: סיום
   remove: הסר
+  clear: נקה
   permissionDenied: אין לך הרשאה לבצע פעולה זו
   noAccessTitle: אין גישה
   noAccessBody: עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.
@@ -126,6 +127,9 @@ onboarding:
   barcodeScanBody: "הקש על כפתור הסריקה בשורת ההוספה וכוון את המצלמה אל הברקוד של מוצר. Pantry מאתר את השם, הקטגוריה והתמונה וממלא אותם עבורך — או הקלד את המספר ידנית. הסריקה הראשונה של מוצר מבצעת את החיפוש; לאחר מכן זה מיידי עבור כל בני הבית."
   barcodeScanMockName: "Coca-Cola Zero"
   barcodeScanMockCategory: "משקאות"
+  priceTitle: "הוסף מחירים לפריטים שלך"
+  priceBody: "תנו לכל פריט מחיר — סכום יחיד או טווח — במטבע שתבחרו. הוא מוצג כתגית על הפריט, ותוכלו לסנן את הרשימה לפי מחיר כדי לעמוד בתקציב."
+  priceMockName: "שמן זית"
   dev:
     showOnboarding: "הצג היכרות"
     pickLastSeenTitle: "תצוגה מקדימה של החדש"
@@ -212,6 +216,7 @@ settings:
     category: קטגוריה
     store: חנות
     quantity: כמות
+    price: מחיר
     note: הערה
     oneTime: חד-פעמי
     recurring: חוזר
@@ -321,6 +326,8 @@ checklists:
     allStores: כל החנויות
     noCategory: ללא קטגוריה
     noStores: ללא חנות
+    price: מחיר
+    anyCurrency: כל מטבע
   failedToLoad: טעינת הרשימות נכשלה.
   failedToLoadItems: טעינת הפריטים נכשלה.
   completedCount(int count): "הושלמו ($count)"
@@ -422,6 +429,7 @@ checklists:
     overdue: באיחור
     quantityLabel: כמות
     typeLabel: סוג
+    priceLabel: מחיר
     descriptionLabel: תיאור
     noDescription: לא נוסף תיאור.
     addedByMeta(String name, String time): "נוסף על-ידי $name · $time"
@@ -539,6 +547,15 @@ checklists:
     pickTargetList: בחר רשימה
     multiple: מרובה
     multipleHint: הפרד פריטים בשורות חדשות
+  price:
+    label: מחיר
+    set: קבוע
+    range: טווח
+    amount: סכום
+    min: מינ׳
+    max: מקס׳
+    currency: מטבע
+    clear: נקה מחיר
   reuse:
     dialogTitle: הפריט כבר קיים
     dialogBody(String name): 'פריט בשם "$name" כבר קיים ברשימה. להשתמש בו במקום להוסיף פריט חדש?'

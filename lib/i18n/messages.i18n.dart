@@ -152,6 +152,11 @@ class CommonMessages {
   String get remove => """Remove""";
 
   /// ```dart
+  /// "Clear"
+  /// ```
+  String get clear => """Clear""";
+
+  /// ```dart
   /// "You don't have permission to do that"
   /// ```
   String get permissionDenied => """You don't have permission to do that""";
@@ -737,6 +742,22 @@ Password: pantry-rocks""";
   /// "Beverages"
   /// ```
   String get barcodeScanMockCategory => """Beverages""";
+
+  /// ```dart
+  /// "Add prices to your items"
+  /// ```
+  String get priceTitle => """Add prices to your items""";
+
+  /// ```dart
+  /// "Give any item a price — a single amount or a range — in your currency of choice. It shows as a chip on the item, and you can filter your list by price to keep a shop on budget."
+  /// ```
+  String get priceBody =>
+      """Give any item a price — a single amount or a range — in your currency of choice. It shows as a chip on the item, and you can filter your list by price to keep a shop on budget.""";
+
+  /// ```dart
+  /// "Olive oil"
+  /// ```
+  String get priceMockName => """Olive oil""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 
@@ -1246,6 +1267,11 @@ class ChipNamesSettingsMessages {
   /// "Quantity"
   /// ```
   String get quantity => """Quantity""";
+
+  /// ```dart
+  /// "Price"
+  /// ```
+  String get price => """Price""";
 
   /// ```dart
   /// "Note"
@@ -2105,6 +2131,7 @@ class ChecklistsMessages {
   ItemTypesChecklistsMessages get itemTypes =>
       ItemTypesChecklistsMessages(this);
   ComposeChecklistsMessages get compose => ComposeChecklistsMessages(this);
+  PriceChecklistsMessages get price => PriceChecklistsMessages(this);
   ReuseChecklistsMessages get reuse => ReuseChecklistsMessages(this);
 
   /// ```dart
@@ -2228,6 +2255,16 @@ class FiltersChecklistsMessages {
   /// "No stores"
   /// ```
   String get noStores => """No stores""";
+
+  /// ```dart
+  /// "Price"
+  /// ```
+  String get price => """Price""";
+
+  /// ```dart
+  /// "Any currency"
+  /// ```
+  String get anyCurrency => """Any currency""";
 }
 
 class BatchChecklistsMessages {
@@ -2414,6 +2451,11 @@ class ViewItemChecklistsMessages {
   /// "Type"
   /// ```
   String get typeLabel => """Type""";
+
+  /// ```dart
+  /// "Price"
+  /// ```
+  String get priceLabel => """Price""";
 
   /// ```dart
   /// "Description"
@@ -2853,6 +2895,51 @@ class ComposeChecklistsMessages {
   /// "Separate items by new lines"
   /// ```
   String get multipleHint => """Separate items by new lines""";
+}
+
+class PriceChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const PriceChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Price"
+  /// ```
+  String get label => """Price""";
+
+  /// ```dart
+  /// "Set"
+  /// ```
+  String get set => """Set""";
+
+  /// ```dart
+  /// "Range"
+  /// ```
+  String get range => """Range""";
+
+  /// ```dart
+  /// "Amount"
+  /// ```
+  String get amount => """Amount""";
+
+  /// ```dart
+  /// "Min"
+  /// ```
+  String get min => """Min""";
+
+  /// ```dart
+  /// "Max"
+  /// ```
+  String get max => """Max""";
+
+  /// ```dart
+  /// "Currency"
+  /// ```
+  String get currency => """Currency""";
+
+  /// ```dart
+  /// "Clear price"
+  /// ```
+  String get clear => """Clear price""";
 }
 
 class ReuseChecklistsMessages {
@@ -3769,6 +3856,7 @@ Map<String, String> get messagesMap => {
   """common.copied""": """Copied""",
   """common.closeDialog""": """Done""",
   """common.remove""": """Remove""",
+  """common.clear""": """Clear""",
   """common.permissionDenied""": """You don't have permission to do that""",
   """common.noAccessTitle""": """No access""",
   """common.noAccessBody""":
@@ -3896,6 +3984,10 @@ Password: pantry-rocks""",
       """Tap the scan button in the add bar and point your camera at a product's barcode. Pantry looks up the name, category and photo and fills them in for you — or type the number by hand. The first scan of a product does the lookup; after that it's instant for everyone in your house.""",
   """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
   """onboarding.barcodeScanMockCategory""": """Beverages""",
+  """onboarding.priceTitle""": """Add prices to your items""",
+  """onboarding.priceBody""":
+      """Give any item a price — a single amount or a range — in your currency of choice. It shows as a chip on the item, and you can filter your list by price to keep a shop on budget.""",
+  """onboarding.priceMockName""": """Olive oil""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":
@@ -3985,6 +4077,7 @@ Password: pantry-rocks""",
   """settings.chipNames.category""": """Category""",
   """settings.chipNames.store""": """Store""",
   """settings.chipNames.quantity""": """Quantity""",
+  """settings.chipNames.price""": """Price""",
   """settings.chipNames.note""": """Note""",
   """settings.chipNames.oneTime""": """One-time""",
   """settings.chipNames.recurring""": """Recurring""",
@@ -4085,6 +4178,8 @@ Password: pantry-rocks""",
   """checklists.filters.allStores""": """All stores""",
   """checklists.filters.noCategory""": """No category""",
   """checklists.filters.noStores""": """No stores""",
+  """checklists.filters.price""": """Price""",
+  """checklists.filters.anyCurrency""": """Any currency""",
   """checklists.failedToLoad""": """Failed to load checklists.""",
   """checklists.failedToLoadItems""": """Failed to load items.""",
   """checklists.editItem""": """Edit item""",
@@ -4173,6 +4268,7 @@ Password: pantry-rocks""",
   """checklists.viewItem.overdue""": """Overdue""",
   """checklists.viewItem.quantityLabel""": """Quantity""",
   """checklists.viewItem.typeLabel""": """Type""",
+  """checklists.viewItem.priceLabel""": """Price""",
   """checklists.viewItem.descriptionLabel""": """Description""",
   """checklists.viewItem.noDescription""": """No description added.""",
   """checklists.viewItem.relJustNow""": """just now""",
@@ -4278,6 +4374,14 @@ Password: pantry-rocks""",
   """checklists.compose.pickTargetList""": """Pick a list""",
   """checklists.compose.multiple""": """Multiple""",
   """checklists.compose.multipleHint""": """Separate items by new lines""",
+  """checklists.price.label""": """Price""",
+  """checklists.price.set""": """Set""",
+  """checklists.price.range""": """Range""",
+  """checklists.price.amount""": """Amount""",
+  """checklists.price.min""": """Min""",
+  """checklists.price.max""": """Max""",
+  """checklists.price.currency""": """Currency""",
+  """checklists.price.clear""": """Clear price""",
   """checklists.reuse.dialogTitle""": """Item already exists""",
   """checklists.reuse.reuseExisting""": """Reuse existing""",
   """checklists.reuse.addAnyway""": """Add anyway""",

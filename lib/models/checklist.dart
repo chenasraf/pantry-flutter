@@ -136,6 +136,14 @@ class ListItem {
   final String? imageUploadedBy;
   final String? addedBy;
   final String? barcode;
+
+  /// Optional price. [priceType] is `'set'` (single amount in [priceMin]),
+  /// `'range'` ([priceMin]–[priceMax]), or null for no price. [priceCurrency]
+  /// is an ISO 4217 code. Gated behind the `item-price` capability.
+  final String? priceType;
+  final double? priceMin;
+  final double? priceMax;
+  final String? priceCurrency;
   final int sortOrder;
   final int createdAt;
   final int updatedAt;
@@ -161,6 +169,10 @@ class ListItem {
     this.imageUploadedBy,
     this.addedBy,
     this.barcode,
+    this.priceType,
+    this.priceMin,
+    this.priceMax,
+    this.priceCurrency,
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -189,6 +201,10 @@ class ListItem {
     imageUploadedBy: json['imageUploadedBy'] as String?,
     addedBy: json['addedBy'] as String?,
     barcode: json['barcode'] as String?,
+    priceType: json['priceType'] as String?,
+    priceMin: (json['priceMin'] as num?)?.toDouble(),
+    priceMax: (json['priceMax'] as num?)?.toDouble(),
+    priceCurrency: json['priceCurrency'] as String?,
     sortOrder: json['sortOrder'] as int,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
@@ -215,6 +231,10 @@ class ListItem {
     'imageUploadedBy': imageUploadedBy,
     'addedBy': addedBy,
     'barcode': barcode,
+    'priceType': priceType,
+    'priceMin': priceMin,
+    'priceMax': priceMax,
+    'priceCurrency': priceCurrency,
     'sortOrder': sortOrder,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
@@ -241,6 +261,11 @@ class ListItem {
     bool clearImage = false,
     String? imageUploadedBy,
     String? barcode,
+    String? priceType,
+    double? priceMin,
+    double? priceMax,
+    String? priceCurrency,
+    bool clearPrice = false,
     int? sortOrder,
     int? updatedAt,
     int? deletedAt,
@@ -268,6 +293,10 @@ class ListItem {
         : (imageUploadedBy ?? this.imageUploadedBy),
     addedBy: addedBy,
     barcode: barcode ?? this.barcode,
+    priceType: clearPrice ? null : (priceType ?? this.priceType),
+    priceMin: clearPrice ? null : (priceMin ?? this.priceMin),
+    priceMax: clearPrice ? null : (priceMax ?? this.priceMax),
+    priceCurrency: clearPrice ? null : (priceCurrency ?? this.priceCurrency),
     sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,

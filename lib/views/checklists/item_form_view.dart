@@ -23,6 +23,7 @@ import 'package:pantry/widgets/create_store_dialog.dart';
 import 'checklist_item_tile.dart' show ItemLifecycle, lifecycleOf;
 import 'checklists_controller.dart';
 import 'form_components.dart';
+import 'price_input.dart';
 
 class ItemFormView extends StatefulWidget {
   final ChecklistsController controller;
@@ -44,6 +45,8 @@ class _ItemFormViewState extends State<ItemFormView> {
   final Set<int> _selectedStoreIds = {};
   late ItemLifecycle _lifecycle;
   late RecurrenceState _recurrence;
+  late final bool _priceEnabled;
+  late final PriceDraft _price;
   bool _saving = false;
   bool _deleting = false;
   bool _catPickerOpen = false;
@@ -92,6 +95,13 @@ class _ItemFormViewState extends State<ItemFormView> {
           ? ItemLifecycle.once
           : ItemLifecycle.staple;
     }
+    _priceEnabled = hasFeature('item-price');
+    _price = item != null
+        ? PriceDraft.fromItem(
+            item,
+            fallbackCurrency: widget.controller.lastCurrency,
+          )
+        : PriceDraft(currency: widget.controller.lastCurrency);
     _nameDir = detectTextDirection(item?.name);
     _nameController.addListener(() {
       final dir = detectTextDirection(_nameController.text);
@@ -193,6 +203,12 @@ class _ItemFormViewState extends State<ItemFormView> {
           rrule: effectiveRrule,
           repeatFromCompletion: effectiveRepeatFromCompletion,
           deleteOnDone: isOnce,
+          // Always send the full price group on edit ('' clears). Omitted
+          // entirely when the server lacks the capability.
+          priceType: _priceEnabled ? _price.updatePriceType : null,
+          priceMin: _priceEnabled ? _price.priceMin : null,
+          priceMax: _priceEnabled ? _price.priceMax : null,
+          priceCurrency: _priceEnabled ? _price.priceCurrency : null,
         );
       } else {
         savedItem = await widget.controller.addItem(
@@ -205,7 +221,15 @@ class _ItemFormViewState extends State<ItemFormView> {
               : null,
           rrule: isRecurring ? effectiveRrule : null,
           deleteOnDone: isOnce,
+          priceType: _priceEnabled ? _price.createPriceType : null,
+          priceMin: _priceEnabled ? _price.priceMin : null,
+          priceMax: _priceEnabled ? _price.priceMax : null,
+          priceCurrency: _priceEnabled ? _price.priceCurrency : null,
         );
+      }
+      // Remember the currency only when the saved item actually has a price.
+      if (_priceEnabled && _price.hasPrice) {
+        await widget.controller.setLastCurrency(_price.currency);
       }
 
       if (_removeExistingImage && _pickedImage == null) {
@@ -409,6 +433,12 @@ class _ItemFormViewState extends State<ItemFormView> {
                   onPlus: () => _stepQty(1),
                 ),
                 const SizedBox(height: 16),
+                if (_priceEnabled) ...[
+                  _SectionLabel(text: m.checklists.price.label),
+                  const SizedBox(height: 10),
+                  PriceInput(draft: _price, onChanged: () => setState(() {})),
+                  const SizedBox(height: 16),
+                ],
                 _SectionLabel(text: f.category),
                 const SizedBox(height: 8),
                 _CategoryDropdownRow(

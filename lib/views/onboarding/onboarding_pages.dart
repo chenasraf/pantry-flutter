@@ -10,6 +10,7 @@ import 'pages/bulk_add_page.dart';
 import 'pages/bulk_select_page.dart';
 import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
+import 'pages/item_price_page.dart';
 import 'pages/pinned_lists_page.dart';
 import 'pages/pinned_notes_page.dart';
 import 'pages/progress_hero_dismiss_page.dart';
@@ -143,6 +144,10 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
       // is the point. Manual entry works everywhere, but that's not the story.
       builder: (_) => const BarcodeScanOnboardingPage(),
       showWhen: onboardingMobileOnly,
+    ),
+    OnboardingPageEntry(
+      builder: (_) => const ItemPriceOnboardingPage(),
+      showWhen: onboardingFeatureOnly('item-price'),
     ),
   ],
 };

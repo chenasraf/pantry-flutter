@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry/i18n.dart';
@@ -19,7 +20,9 @@ import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/currencies.dart';
 import 'package:pantry/utils/item_modal_route.dart';
+import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
@@ -206,6 +209,7 @@ class _BodyState extends State<_Body> {
   bool _noCategorySelected = false;
   final Set<int> _selectedStoreIds = {};
   bool _noStoreSelected = false;
+  PriceFilter _priceFilter = PriceFilter.empty;
 
   /// In All-lists mode, the most recently chosen target list. Pre-selected on
   /// the next add so the user can rapidly file several items into the same
@@ -225,8 +229,10 @@ class _BodyState extends State<_Body> {
     final categoryFilterActive =
         _selectedCategoryIds.isNotEmpty || _noCategorySelected;
     final storeFilterActive = _selectedStoreIds.isNotEmpty || _noStoreSelected;
+    final priceFilterActive = _priceFilter.isActive;
     if (!categoryFilterActive &&
         !storeFilterActive &&
+        !priceFilterActive &&
         selectedListIds.isEmpty &&
         _query.isEmpty) {
       return items;
@@ -241,6 +247,9 @@ class _BodyState extends State<_Body> {
         final matchesId = item.storeIds.any(_selectedStoreIds.contains);
         final matchesNone = _noStoreSelected && item.storeIds.isEmpty;
         if (!matchesId && !matchesNone) return false;
+      }
+      if (priceFilterActive && !matchesPriceFilter(item, _priceFilter)) {
+        return false;
       }
       if (selectedListIds.isNotEmpty) {
         if (!selectedListIds.contains(item.listId)) return false;
@@ -310,6 +319,7 @@ class _BodyState extends State<_Body> {
         !_noCategorySelected &&
         _selectedStoreIds.isEmpty &&
         !_noStoreSelected &&
+        !_priceFilter.isActive &&
         _query.isEmpty &&
         controller.isCurrentListWritable;
     final total = controller.items.where((i) => i.deletedAt == null).length;
@@ -355,6 +365,13 @@ class _BodyState extends State<_Body> {
     // Offer the store filter only when there's something to filter by.
     final showStoreFilter =
         storesEnabled && (filterStores.isNotEmpty || hasNoStoreItems);
+
+    // Price filter mirrors the store gate (and the web app): shown only when
+    // the server supports prices and at least one (non-trashed) item actually
+    // carries one.
+    final showPriceFilter =
+        hasFeature('item-price') &&
+        controller.items.any((i) => i.deletedAt == null && i.hasPrice);
 
     // The per-list filter (All-lists view only) offers every list, even ones
     // with no items in the current view — unlike categories, an empty list is
@@ -483,6 +500,10 @@ class _BodyState extends State<_Body> {
                     noStoreSelected: _noStoreSelected,
                     onToggleNoStore: () =>
                         setState(() => _noStoreSelected = !_noStoreSelected),
+                    showPriceFilter: showPriceFilter,
+                    priceFilter: _priceFilter,
+                    onPriceFilterChanged: (f) =>
+                        setState(() => _priceFilter = f),
                     view: prefs.checklistView,
                     onViewChanged: (v) => prefs.setChecklistView(v),
                   ),
@@ -633,6 +654,8 @@ class _BodyState extends State<_Body> {
                         stores: hasFeature('stores')
                             ? controller.sortedStores
                             : const [],
+                        priceEnabled: hasFeature('item-price'),
+                        lastCurrency: controller.lastCurrency,
                         initiallyFocused: false,
                         targetLists: realLists,
                         selectedTargetListId: meta
@@ -828,6 +851,10 @@ class _BodyState extends State<_Body> {
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
           barcode: s.barcode,
+          priceType: s.priceType,
+          priceMin: s.priceMin,
+          priceMax: s.priceMax,
+          priceCurrency: s.priceCurrency,
         );
       } else {
         created = await controller.addItem(
@@ -840,7 +867,15 @@ class _BodyState extends State<_Body> {
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
           barcode: s.barcode,
+          priceType: s.priceType,
+          priceMin: s.priceMin,
+          priceMax: s.priceMax,
+          priceCurrency: s.priceCurrency,
         );
+      }
+      // Remember the chosen currency when the new item actually has a price.
+      if (s.priceType != null && s.priceCurrency != null) {
+        await controller.setLastCurrency(s.priceCurrency!);
       }
       if (s.imageBytes != null) {
         await controller.uploadItemImage(
@@ -1680,6 +1715,12 @@ class _FiltersSection extends StatefulWidget {
   final bool noStoreSelected;
   final VoidCallback onToggleNoStore;
 
+  /// Price filter — gated on the `item-price` capability and only shown when at
+  /// least one item on the list carries a price.
+  final bool showPriceFilter;
+  final PriceFilter priceFilter;
+  final ValueChanged<PriceFilter> onPriceFilterChanged;
+
   final String view;
   final ValueChanged<String> onViewChanged;
 
@@ -1704,6 +1745,9 @@ class _FiltersSection extends StatefulWidget {
     required this.showNoStore,
     required this.noStoreSelected,
     required this.onToggleNoStore,
+    required this.showPriceFilter,
+    required this.priceFilter,
+    required this.onPriceFilterChanged,
     required this.view,
     required this.onViewChanged,
   });
@@ -1819,6 +1863,11 @@ class _FiltersSectionState extends State<_FiltersSection> {
       if (widget.showListFilter) _listDropdown(cs),
       _categoryDropdown(cs),
       if (widget.showStoreFilter) _storeDropdown(cs),
+      if (widget.showPriceFilter)
+        _PriceFilterDropdown(
+          value: widget.priceFilter,
+          onChanged: widget.onPriceFilterChanged,
+        ),
     ];
 
     return Padding(
@@ -2026,6 +2075,274 @@ class _FilterButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The price filter: a dropdown whose panel holds a min/max amount range and a
+/// currency selector ("Any currency" compares amounts verbatim across
+/// currencies). The trigger summarises the active range, e.g. "$1-10", "≥1".
+class _PriceFilterDropdown extends StatefulWidget {
+  final PriceFilter value;
+  final ValueChanged<PriceFilter> onChanged;
+
+  const _PriceFilterDropdown({required this.value, required this.onChanged});
+
+  @override
+  State<_PriceFilterDropdown> createState() => _PriceFilterDropdownState();
+}
+
+class _PriceFilterDropdownState extends State<_PriceFilterDropdown> {
+  static const _anyCurrency = '__any__';
+  late final TextEditingController _minCtrl;
+  late final TextEditingController _maxCtrl;
+  // Guards against re-seeding the fields when the parent echoes our own emit
+  // back (which would drop a trailing "." mid-decimal).
+  PriceFilter? _lastEmitted;
+
+  @override
+  void initState() {
+    super.initState();
+    _minCtrl = TextEditingController(text: _fmt(widget.value.min));
+    _maxCtrl = TextEditingController(text: _fmt(widget.value.max));
+  }
+
+  @override
+  void didUpdateWidget(_PriceFilterDropdown old) {
+    super.didUpdateWidget(old);
+    final v = widget.value;
+    if (_lastEmitted != null &&
+        v.min == _lastEmitted!.min &&
+        v.max == _lastEmitted!.max &&
+        v.currency == _lastEmitted!.currency) {
+      return;
+    }
+    _minCtrl.text = _fmt(v.min);
+    _maxCtrl.text = _fmt(v.max);
+  }
+
+  @override
+  void dispose() {
+    _minCtrl.dispose();
+    _maxCtrl.dispose();
+    super.dispose();
+  }
+
+  static String _fmt(double? v) {
+    if (v == null) return '';
+    if (v == v.truncateToDouble()) return v.toInt().toString();
+    return v.toString();
+  }
+
+  static double? _parse(String text) {
+    final cleaned = text.trim().replaceAll(',', '.');
+    if (cleaned.isEmpty) return null;
+    final n = double.tryParse(cleaned);
+    if (n == null || n < 0) return null;
+    return n;
+  }
+
+  void _emit({String? currency, bool clearCurrency = false}) {
+    final next = PriceFilter(
+      min: _parse(_minCtrl.text),
+      max: _parse(_maxCtrl.text),
+      currency: clearCurrency ? null : (currency ?? widget.value.currency),
+    );
+    _lastEmitted = next;
+    widget.onChanged(next);
+  }
+
+  void _clear() {
+    _minCtrl.clear();
+    _maxCtrl.clear();
+    _emit(clearCurrency: true);
+  }
+
+  String _triggerLabel() {
+    final f = widget.value;
+    if (!f.isActive) return m.checklists.filters.price;
+    final sym = f.currency != null ? resolveCurrency(f.currency).symbol : '';
+    final lo = _fmt(f.min);
+    final hi = _fmt(f.max);
+    final String range;
+    if (lo.isNotEmpty && hi.isNotEmpty) {
+      range = '$lo-$hi';
+    } else if (lo.isNotEmpty) {
+      range = '≥$lo';
+    } else if (hi.isNotEmpty) {
+      range = '≤$hi';
+    } else {
+      // Currency-only: the symbol alone carries the filter.
+      return sym.isNotEmpty ? sym : (f.currency ?? m.checklists.filters.price);
+    }
+    return sym.isNotEmpty ? '$sym$range' : range;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final p = m.checklists.price;
+    final active = widget.value.isActive;
+    final currency = widget.value.currency;
+    return MenuAnchor(
+      alignmentOffset: const Offset(0, 4),
+      style: MenuStyle(
+        backgroundColor: WidgetStatePropertyAll(cs.surfaceContainerHigh),
+        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+        elevation: const WidgetStatePropertyAll(3),
+        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+      ),
+      menuChildren: [
+        SizedBox(
+          width: 268,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _PriceFilterField(
+                        controller: _minCtrl,
+                        label: p.min,
+                        onChanged: (_) => _emit(),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _PriceFilterField(
+                        controller: _maxCtrl,
+                        label: p.max,
+                        onChanged: (_) => _emit(),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: p.currency,
+                    isDense: true,
+                    contentPadding: const EdgeInsetsDirectional.fromSTEB(
+                      12,
+                      12,
+                      8,
+                      12,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(11),
+                      borderSide: BorderSide(color: cs.outlineVariant),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(11),
+                      borderSide: BorderSide(color: cs.outlineVariant),
+                    ),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: currency == null
+                          ? _anyCurrency
+                          : (currencyByCode(currency) != null
+                                ? currency.toUpperCase()
+                                : _anyCurrency),
+                      isExpanded: true,
+                      isDense: true,
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: _anyCurrency,
+                          child: Text(
+                            m.checklists.filters.anyCurrency,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        for (final c in currencies)
+                          DropdownMenuItem<String>(
+                            value: c.code,
+                            child: Text(
+                              '${c.code} (${c.symbol})',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                      ],
+                      onChanged: (code) {
+                        if (code == null || code == _anyCurrency) {
+                          _emit(clearCurrency: true);
+                        } else {
+                          _emit(currency: code);
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: TextButton(
+                    onPressed: active ? _clear : null,
+                    child: Text(m.common.clear),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+      builder: (context, controller, _) => _FilterButton(
+        label: _triggerLabel(),
+        icon: Icons.sell_outlined,
+        active: active,
+        open: controller.isOpen,
+        onTap: () => controller.isOpen ? controller.close() : controller.open(),
+      ),
+    );
+  }
+}
+
+class _PriceFilterField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final ValueChanged<String> onChanged;
+
+  const _PriceFilterField({
+    required this.controller,
+    required this.label,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))],
+      decoration: InputDecoration(
+        labelText: label,
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: BorderSide(color: cs.outlineVariant),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: BorderSide(color: cs.outlineVariant),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: BorderSide(color: cs.primary, width: 1.5),
+        ),
+      ),
+      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
     );
   }
 }

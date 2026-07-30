@@ -118,6 +118,10 @@ class SyncExecutor {
           repeatFromCompletion: op.body['repeatFromCompletion'] as bool?,
           deleteOnDone: op.body['deleteOnDone'] as bool?,
           barcode: op.body['barcode'] as String?,
+          priceType: op.body['priceType'] as String?,
+          priceMin: (op.body['priceMin'] as num?)?.toDouble(),
+          priceMax: (op.body['priceMax'] as num?)?.toDouble(),
+          priceCurrency: op.body['priceCurrency'] as String?,
         );
         return SyncResult(item);
       case SyncOpKind.update:
@@ -136,6 +140,10 @@ class SyncExecutor {
           repeatFromCompletion: op.body['repeatFromCompletion'] as bool?,
           deleteOnDone: op.body['deleteOnDone'] as bool?,
           barcode: op.body['barcode'] as String?,
+          priceType: op.body['priceType'] as String?,
+          priceMin: (op.body['priceMin'] as num?)?.toDouble(),
+          priceMax: (op.body['priceMax'] as num?)?.toDouble(),
+          priceCurrency: op.body['priceCurrency'] as String?,
         );
         return SyncResult(item);
       case SyncOpKind.delete:

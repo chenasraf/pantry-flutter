@@ -12,6 +12,7 @@ common:
   copied: Kopiert
   closeDialog: Fertig
   remove: "Entfernen"
+  clear: Leeren
   permissionDenied: "Dazu hast du keine Berechtigung"
   noAccessTitle: "Kein Zugriff"
   noAccessBody: "Du hast noch keinen Zugriff auf Inhalte in diesem Haushalt. Eine Administratorin oder ein Administrator kann dir in der Pantry-Web-App Berechtigungen erteilen."
@@ -126,6 +127,9 @@ onboarding:
   barcodeScanBody: "Tippe in der Eingabeleiste auf die Scan-Schaltfläche und richte die Kamera auf den Barcode eines Produkts. Pantry sucht Name, Kategorie und Foto heraus und füllt sie für dich aus – oder gib die Nummer von Hand ein. Der erste Scan eines Produkts führt die Suche durch; danach ist es für alle in deinem Haushalt sofort da."
   barcodeScanMockName: "Coca-Cola Zero"
   barcodeScanMockCategory: "Getränke"
+  priceTitle: "Preise zu Artikeln hinzufügen"
+  priceBody: "Geben Sie einem Artikel einen Preis – einen einzelnen Betrag oder eine Spanne – in der Währung Ihrer Wahl. Er erscheint als Chip am Artikel, und Sie können Ihre Liste nach Preis filtern, um im Budget zu bleiben."
+  priceMockName: "Olivenöl"
   dev:
     showOnboarding: "Onboarding anzeigen"
     pickLastSeenTitle: "Neuigkeiten ansehen"
@@ -212,6 +216,7 @@ settings:
     category: Kategorie
     store: Geschäft
     quantity: Menge
+    price: Preis
     note: Notiz
     oneTime: Einmalig
     recurring: Wiederkehrend
@@ -321,6 +326,8 @@ checklists:
     allStores: Alle Geschäfte
     noCategory: Keine Kategorie
     noStores: Keine Geschäfte
+    price: Preis
+    anyCurrency: Beliebige Währung
   failedToLoad: Checklisten konnten nicht geladen werden.
   failedToLoadItems: "Einträge konnten nicht geladen werden."
   completedCount(int count): "Erledigt ($count)"
@@ -422,6 +429,7 @@ checklists:
     overdue: Überfällig
     quantityLabel: Menge
     typeLabel: Typ
+    priceLabel: Preis
     descriptionLabel: Beschreibung
     noDescription: Keine Beschreibung hinzugefügt.
     addedByMeta(String name, String time): "Hinzugefügt von $name · $time"
@@ -539,6 +547,15 @@ checklists:
     pickTargetList: Liste wählen
     multiple: Mehrere
     multipleHint: Einträge durch Zeilenumbrüche trennen
+  price:
+    label: Preis
+    set: Fest
+    range: Bereich
+    amount: Betrag
+    min: Min
+    max: Max
+    currency: Währung
+    clear: Preis entfernen
   reuse:
     dialogTitle: Eintrag existiert bereits
     dialogBody(String name): 'Ein Eintrag namens "$name" existiert bereits in dieser Liste. Wiederverwenden, statt einen neuen hinzuzufügen?'

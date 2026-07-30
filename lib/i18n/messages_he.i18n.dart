@@ -153,6 +153,11 @@ class CommonMessagesHe extends CommonMessages {
   String get remove => """הסר""";
 
   /// ```dart
+  /// "נקה"
+  /// ```
+  String get clear => """נקה""";
+
+  /// ```dart
   /// "אין לך הרשאה לבצע פעולה זו"
   /// ```
   String get permissionDenied => """אין לך הרשאה לבצע פעולה זו""";
@@ -737,6 +742,22 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// "משקאות"
   /// ```
   String get barcodeScanMockCategory => """משקאות""";
+
+  /// ```dart
+  /// "הוסף מחירים לפריטים שלך"
+  /// ```
+  String get priceTitle => """הוסף מחירים לפריטים שלך""";
+
+  /// ```dart
+  /// "תנו לכל פריט מחיר — סכום יחיד או טווח — במטבע שתבחרו. הוא מוצג כתגית על הפריט, ותוכלו לסנן את הרשימה לפי מחיר כדי לעמוד בתקציב."
+  /// ```
+  String get priceBody =>
+      """תנו לכל פריט מחיר — סכום יחיד או טווח — במטבע שתבחרו. הוא מוצג כתגית על הפריט, ותוכלו לסנן את הרשימה לפי מחיר כדי לעמוד בתקציב.""";
+
+  /// ```dart
+  /// "שמן זית"
+  /// ```
+  String get priceMockName => """שמן זית""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 
@@ -1251,6 +1272,11 @@ class ChipNamesSettingsMessagesHe extends ChipNamesSettingsMessages {
   /// "כמות"
   /// ```
   String get quantity => """כמות""";
+
+  /// ```dart
+  /// "מחיר"
+  /// ```
+  String get price => """מחיר""";
 
   /// ```dart
   /// "הערה"
@@ -2112,6 +2138,7 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   ItemTypesChecklistsMessagesHe get itemTypes =>
       ItemTypesChecklistsMessagesHe(this);
   ComposeChecklistsMessagesHe get compose => ComposeChecklistsMessagesHe(this);
+  PriceChecklistsMessagesHe get price => PriceChecklistsMessagesHe(this);
   ReuseChecklistsMessagesHe get reuse => ReuseChecklistsMessagesHe(this);
 
   /// ```dart
@@ -2236,6 +2263,16 @@ class FiltersChecklistsMessagesHe extends FiltersChecklistsMessages {
   /// "ללא חנות"
   /// ```
   String get noStores => """ללא חנות""";
+
+  /// ```dart
+  /// "מחיר"
+  /// ```
+  String get price => """מחיר""";
+
+  /// ```dart
+  /// "כל מטבע"
+  /// ```
+  String get anyCurrency => """כל מטבע""";
 }
 
 class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
@@ -2422,6 +2459,11 @@ class ViewItemChecklistsMessagesHe extends ViewItemChecklistsMessages {
   /// "סוג"
   /// ```
   String get typeLabel => """סוג""";
+
+  /// ```dart
+  /// "מחיר"
+  /// ```
+  String get priceLabel => """מחיר""";
 
   /// ```dart
   /// "תיאור"
@@ -2861,6 +2903,51 @@ class ComposeChecklistsMessagesHe extends ComposeChecklistsMessages {
   /// "הפרד פריטים בשורות חדשות"
   /// ```
   String get multipleHint => """הפרד פריטים בשורות חדשות""";
+}
+
+class PriceChecklistsMessagesHe extends PriceChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const PriceChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "מחיר"
+  /// ```
+  String get label => """מחיר""";
+
+  /// ```dart
+  /// "קבוע"
+  /// ```
+  String get set => """קבוע""";
+
+  /// ```dart
+  /// "טווח"
+  /// ```
+  String get range => """טווח""";
+
+  /// ```dart
+  /// "סכום"
+  /// ```
+  String get amount => """סכום""";
+
+  /// ```dart
+  /// "מינ׳"
+  /// ```
+  String get min => """מינ׳""";
+
+  /// ```dart
+  /// "מקס׳"
+  /// ```
+  String get max => """מקס׳""";
+
+  /// ```dart
+  /// "מטבע"
+  /// ```
+  String get currency => """מטבע""";
+
+  /// ```dart
+  /// "נקה מחיר"
+  /// ```
+  String get clear => """נקה מחיר""";
 }
 
 class ReuseChecklistsMessagesHe extends ReuseChecklistsMessages {
@@ -3776,6 +3863,7 @@ Map<String, String> get messagesHeMap => {
   """common.copied""": """הועתק""",
   """common.closeDialog""": """סיום""",
   """common.remove""": """הסר""",
+  """common.clear""": """נקה""",
   """common.permissionDenied""": """אין לך הרשאה לבצע פעולה זו""",
   """common.noAccessTitle""": """אין גישה""",
   """common.noAccessBody""":
@@ -3901,6 +3989,10 @@ Map<String, String> get messagesHeMap => {
       """הקש על כפתור הסריקה בשורת ההוספה וכוון את המצלמה אל הברקוד של מוצר. Pantry מאתר את השם, הקטגוריה והתמונה וממלא אותם עבורך — או הקלד את המספר ידנית. הסריקה הראשונה של מוצר מבצעת את החיפוש; לאחר מכן זה מיידי עבור כל בני הבית.""",
   """onboarding.barcodeScanMockName""": """Coca-Cola Zero""",
   """onboarding.barcodeScanMockCategory""": """משקאות""",
+  """onboarding.priceTitle""": """הוסף מחירים לפריטים שלך""",
+  """onboarding.priceBody""":
+      """תנו לכל פריט מחיר — סכום יחיד או טווח — במטבע שתבחרו. הוא מוצג כתגית על הפריט, ותוכלו לסנן את הרשימה לפי מחיר כדי לעמוד בתקציב.""",
+  """onboarding.priceMockName""": """שמן זית""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":
@@ -3988,6 +4080,7 @@ Map<String, String> get messagesHeMap => {
   """settings.chipNames.category""": """קטגוריה""",
   """settings.chipNames.store""": """חנות""",
   """settings.chipNames.quantity""": """כמות""",
+  """settings.chipNames.price""": """מחיר""",
   """settings.chipNames.note""": """הערה""",
   """settings.chipNames.oneTime""": """חד-פעמי""",
   """settings.chipNames.recurring""": """חוזר""",
@@ -4086,6 +4179,8 @@ Map<String, String> get messagesHeMap => {
   """checklists.filters.allStores""": """כל החנויות""",
   """checklists.filters.noCategory""": """ללא קטגוריה""",
   """checklists.filters.noStores""": """ללא חנות""",
+  """checklists.filters.price""": """מחיר""",
+  """checklists.filters.anyCurrency""": """כל מטבע""",
   """checklists.failedToLoad""": """טעינת הרשימות נכשלה.""",
   """checklists.failedToLoadItems""": """טעינת הפריטים נכשלה.""",
   """checklists.editItem""": """ערוך פריט""",
@@ -4172,6 +4267,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.viewItem.overdue""": """באיחור""",
   """checklists.viewItem.quantityLabel""": """כמות""",
   """checklists.viewItem.typeLabel""": """סוג""",
+  """checklists.viewItem.priceLabel""": """מחיר""",
   """checklists.viewItem.descriptionLabel""": """תיאור""",
   """checklists.viewItem.noDescription""": """לא נוסף תיאור.""",
   """checklists.viewItem.relJustNow""": """ממש עכשיו""",
@@ -4277,6 +4373,14 @@ Map<String, String> get messagesHeMap => {
   """checklists.compose.pickTargetList""": """בחר רשימה""",
   """checklists.compose.multiple""": """מרובה""",
   """checklists.compose.multipleHint""": """הפרד פריטים בשורות חדשות""",
+  """checklists.price.label""": """מחיר""",
+  """checklists.price.set""": """קבוע""",
+  """checklists.price.range""": """טווח""",
+  """checklists.price.amount""": """סכום""",
+  """checklists.price.min""": """מינ׳""",
+  """checklists.price.max""": """מקס׳""",
+  """checklists.price.currency""": """מטבע""",
+  """checklists.price.clear""": """נקה מחיר""",
   """checklists.reuse.dialogTitle""": """הפריט כבר קיים""",
   """checklists.reuse.reuseExisting""": """השתמש בקיים""",
   """checklists.reuse.addAnyway""": """הוסף בכל זאת""",
