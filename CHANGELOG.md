@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.24.1](https://github.com/chenasraf/pantry-flutter/compare/v0.24.0...v0.24.1) (2026-07-30)
+
+
+### Bug Fixes
+
+* **i18n:** nynorsk custom delegate ([#125](https://github.com/chenasraf/pantry-flutter/issues/125)) ([a0b4b2e](https://github.com/chenasraf/pantry-flutter/commit/a0b4b2e5320615d1fc9219c364104ce7a76fa96d)), closes [#124](https://github.com/chenasraf/pantry-flutter/issues/124)
+* **onboarding:** show all feature intros with version requirement note ([32d436d](https://github.com/chenasraf/pantry-flutter/commit/32d436db24debe0c368ed4cb750dffa02e74924f))
+
 ## [0.24.0](https://github.com/chenasraf/pantry-flutter/compare/v0.23.0...v0.24.0) (2026-07-30)
 
 
