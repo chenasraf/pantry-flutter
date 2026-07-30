@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -18,6 +17,7 @@ import 'services/category_service.dart';
 import 'services/checklist_service.dart';
 import 'services/house_service.dart';
 import 'services/local_notifications_service.dart';
+import 'services/nn_localizations.dart';
 import 'services/note_service.dart';
 import 'services/photo_service.dart';
 import 'services/prefs_service.dart';
@@ -62,6 +62,11 @@ void main() async {
   if (kDebugMode) {
     WakelockPlus.enable();
   }
+
+  // Register Nynorsk (nn) date-formatting data with intl before the first
+  // frame; intl ships no nn data, so the nn localization delegates would throw
+  // when building their DateFormats otherwise.
+  registerNnLocaleData();
 
   // Parallelize independent platform-channel work. AuthService.loadCredentials
   // and PrefsService.load are independent reads from secure storage;
@@ -329,11 +334,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
           scaffoldMessengerKey: rootScaffoldMessengerKey,
           locale: locale,
           supportedLocales: supportedLocales,
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
+          localizationsDelegates: localizationsDelegates,
           title: m.common.appTitle,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
