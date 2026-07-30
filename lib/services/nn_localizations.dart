@@ -19,11 +19,6 @@ import 'package:intl/intl.dart' as intl;
 ///     [registerNnLocaleData], so `DateFormat.localeExists('nn')` becomes true.
 ///  2. Provide [NnMaterialLocalizations] / [NnCupertinoLocalizations] with the
 ///     UI strings translated into Nynorsk.
-///
-/// The Nynorsk strings and date symbols below were machine-translated from the
-/// official Bokmål bundle and need a native-speaker review pass before they can
-/// be considered final (weekday names, s-passive hints like `Skjulast`/`Visast`,
-/// and the `Oppgi …` time announcements are the most likely to need tweaks).
 
 const _nnMaterialDelegate = _NnMaterialLocalizationsDelegate();
 const _nnCupertinoDelegate = _NnCupertinoLocalizationsDelegate();
@@ -118,8 +113,6 @@ class _NnCupertinoLocalizationsDelegate
   bool shouldReload(_NnCupertinoLocalizationsDelegate old) => false;
 }
 
-/// Nynorsk date/time symbols. Months, eras and quarters match Bokmål; the
-/// weekday names carry the Nynorsk-specific forms (måndag/tysdag/laurdag …).
 const Map<String, dynamic> _nnDateSymbols = <String, dynamic>{
   'NAME': 'nn',
   'ERAS': <dynamic>['f.Kr.', 'e.Kr.'],
@@ -187,7 +180,7 @@ const Map<String, dynamic> _nnDateSymbols = <String, dynamic>{
     'des',
   ],
   'WEEKDAYS': <dynamic>[
-    'søndag',
+    'sundag',
     'måndag',
     'tysdag',
     'onsdag',
@@ -196,7 +189,7 @@ const Map<String, dynamic> _nnDateSymbols = <String, dynamic>{
     'laurdag',
   ],
   'STANDALONEWEEKDAYS': <dynamic>[
-    'søndag',
+    'sundag',
     'måndag',
     'tysdag',
     'onsdag',
@@ -205,22 +198,22 @@ const Map<String, dynamic> _nnDateSymbols = <String, dynamic>{
     'laurdag',
   ],
   'SHORTWEEKDAYS': <dynamic>[
-    'søn.',
+    'sun.',
     'mån.',
     'tys.',
     'ons.',
     'tor.',
     'fre.',
-    'laur.',
+    'lau.',
   ],
   'STANDALONESHORTWEEKDAYS': <dynamic>[
-    'søn.',
+    'sun.',
     'mån.',
     'tys.',
     'ons.',
     'tor.',
     'fre.',
-    'laur.',
+    'lau.',
   ],
   'NARROWWEEKDAYS': <dynamic>['S', 'M', 'T', 'O', 'T', 'F', 'L'],
   'STANDALONENARROWWEEKDAYS': <dynamic>['S', 'M', 'T', 'O', 'T', 'F', 'L'],
@@ -241,8 +234,7 @@ const Map<String, dynamic> _nnDateSymbols = <String, dynamic>{
   'DATETIMEFORMATS': <dynamic>['{1}, {0}', '{1}, {0}', '{1}, {0}', '{1}, {0}'],
 };
 
-/// Skeleton → pattern map. These are language-neutral formatting skeletons
-/// (identical to Bokmål); the localized month/weekday text comes from the
+/// Date-format skeletons; the localized month/weekday text comes from the
 /// symbols above.
 const Map<String, String> _nnDatePatterns = <String, String>{
   'd': 'd.',
@@ -291,8 +283,7 @@ const Map<String, String> _nnDatePatterns = <String, String>{
   'ZZZZ': 'ZZZZ',
 };
 
-/// Nynorsk Material localizations. Translated from the official Bokmål bundle
-/// (`MaterialLocalizationNb`); pending native review.
+/// Nynorsk Material localizations.
 class NnMaterialLocalizations extends GlobalMaterialLocalizations {
   const NnMaterialLocalizations({
     super.localeName = 'nn',
@@ -338,7 +329,7 @@ class NnMaterialLocalizations extends GlobalMaterialLocalizations {
   String get closeButtonTooltip => 'Lukk';
 
   @override
-  String get collapsedHint => 'Visast';
+  String get collapsedHint => 'Vist';
 
   @override
   String get collapsedIconTapHint => 'Vis';
@@ -398,7 +389,7 @@ class NnMaterialLocalizations extends GlobalMaterialLocalizations {
   String get drawerLabel => 'Navigasjonsmeny';
 
   @override
-  String get expandedHint => 'Skjulast';
+  String get expandedHint => 'Skjul';
 
   @override
   String get expandedIconTapHint => 'Skjul';
@@ -407,7 +398,8 @@ class NnMaterialLocalizations extends GlobalMaterialLocalizations {
   String get expansionTileCollapsedHint => 'dobbelttrykk for å vise';
 
   @override
-  String get expansionTileCollapsedTapHint => 'Vis for å sjå meir informasjon';
+  String get expansionTileCollapsedTapHint =>
+      'Utvid for å sjå meir informasjon';
 
   @override
   String get expansionTileExpandedHint => 'dobbelttrykk for å skjule';
@@ -416,7 +408,7 @@ class NnMaterialLocalizations extends GlobalMaterialLocalizations {
   String get expansionTileExpandedTapHint => 'Skjul';
 
   @override
-  String get firstPageTooltip => 'Første side';
+  String get firstPageTooltip => 'Fyrste side';
 
   @override
   String get hideAccountsLabel => 'Skjul kontoar';
@@ -434,7 +426,7 @@ class NnMaterialLocalizations extends GlobalMaterialLocalizations {
   String get invalidDateRangeLabel => 'Ugyldig periode.';
 
   @override
-  String get invalidTimeLabel => 'Oppgi eit gyldig klokkeslett';
+  String get invalidTimeLabel => 'Oppgje eit gyldig klokkeslett';
 
   @override
   String get keyboardKeyAlt => 'Alt';
@@ -767,16 +759,16 @@ class NnMaterialLocalizations extends GlobalMaterialLocalizations {
   String get timePickerHourLabel => 'Time';
 
   @override
-  String get timePickerHourModeAnnouncement => 'Oppgi timar';
+  String get timePickerHourModeAnnouncement => 'Oppgje timar';
 
   @override
-  String get timePickerInputHelpText => 'Oppgi eit tidspunkt';
+  String get timePickerInputHelpText => 'Oppgje eit tidspunkt';
 
   @override
   String get timePickerMinuteLabel => 'Minutt';
 
   @override
-  String get timePickerMinuteModeAnnouncement => 'Oppgi minutt';
+  String get timePickerMinuteModeAnnouncement => 'Oppgje minutt';
 
   @override
   String get unspecifiedDate => 'Dato';
@@ -788,8 +780,7 @@ class NnMaterialLocalizations extends GlobalMaterialLocalizations {
   String get viewLicensesButtonLabel => 'Sjå lisensar';
 }
 
-/// Nynorsk Cupertino localizations. Translated from the official Bokmål bundle
-/// (`CupertinoLocalizationNb`); pending native review.
+/// Nynorsk Cupertino localizations.
 class NnCupertinoLocalizations extends GlobalCupertinoLocalizations {
   const NnCupertinoLocalizations({
     super.localeName = 'nn',
@@ -820,7 +811,7 @@ class NnCupertinoLocalizations extends GlobalCupertinoLocalizations {
   String get clearButtonLabel => 'Slett';
 
   @override
-  String get collapsedHint => 'Visast';
+  String get collapsedHint => 'Vist';
 
   @override
   String get copyButtonLabel => 'Kopier';
@@ -871,13 +862,14 @@ class NnCupertinoLocalizations extends GlobalCupertinoLocalizations {
   String? get datePickerMinuteSemanticsLabelZero => null;
 
   @override
-  String get expandedHint => 'Skjulast';
+  String get expandedHint => 'Skjul';
 
   @override
   String get expansionTileCollapsedHint => 'dobbelttrykk for å vise';
 
   @override
-  String get expansionTileCollapsedTapHint => 'Vis for å sjå meir informasjon';
+  String get expansionTileCollapsedTapHint =>
+      'Utvid for å sjå meir informasjon';
 
   @override
   String get expansionTileExpandedHint => 'dobbelttrykk for å skjule';
