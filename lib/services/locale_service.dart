@@ -1,7 +1,9 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pantry/i18n.dart';
+import 'package:pantry/services/nn_localizations.dart';
 import 'package:pantry/i18n/messages.i18n.dart';
 import 'package:pantry/i18n/messages_de.i18n.dart' as de;
 import 'package:pantry/i18n/messages_es.i18n.dart' as es;
@@ -33,6 +35,21 @@ const languageNativeNames = <String, String>{
   'he': 'עברית',
   'nn': 'Norsk (nynorsk)',
 };
+
+/// Framework (Material/Cupertino) localizations delegates for the app.
+///
+/// `flutter_localizations` ships Norwegian only as Bokmål (`nb`); there is no
+/// `nn` (Nynorsk) delegate. Since `nn` is one of our supported app locales, the
+/// framework strings (date pickers, dialog buttons, etc.) would otherwise fall
+/// back to English and Flutter would log a "locale not supported by all of its
+/// localization delegates" warning. [nnLocalizationsDelegates] supplies proper
+/// Nynorsk bundles and is listed first so those win for `nn` only.
+const localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+  ...nnLocalizationsDelegates,
+  GlobalMaterialLocalizations.delegate,
+  GlobalWidgetsLocalizations.delegate,
+  GlobalCupertinoLocalizations.delegate,
+];
 
 class LocaleService extends ChangeNotifier {
   LocaleService._();
