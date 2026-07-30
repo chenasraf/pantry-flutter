@@ -763,6 +763,12 @@ Contraseña: pantry-rocks""";
   /// "Aceite de oliva"
   /// ```
   String get priceMockName => """Aceite de oliva""";
+
+  /// ```dart
+  /// "* Requiere Pantry para Nextcloud v${version}+"
+  /// ```
+  String serverRequirementNote(String version) =>
+      """* Requiere Pantry para Nextcloud v${version}+""";
   DevOnboardingMessagesEs get dev => DevOnboardingMessagesEs(this);
 }
 

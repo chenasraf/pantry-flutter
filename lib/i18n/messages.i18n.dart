@@ -758,6 +758,12 @@ Password: pantry-rocks""";
   /// "Olive oil"
   /// ```
   String get priceMockName => """Olive oil""";
+
+  /// ```dart
+  /// "* Requires Pantry for Nextcloud v${version}+"
+  /// ```
+  String serverRequirementNote(String version) =>
+      """* Requires Pantry for Nextcloud v${version}+""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 

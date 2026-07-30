@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Teaches multi-select (group actions). Runs a continuous demo that selects a
 /// few mocked rows one after another, brings up the group-action bar, holds so
@@ -148,6 +149,10 @@ class _BulkSelectOnboardingPageState extends State<BulkSelectOnboardingPage>
                 ],
               );
             },
+          ),
+          const ServerRequirementNote(
+            feature: 'batch-operations',
+            requiredVersion: '0.20.0',
           ),
         ],
       ),

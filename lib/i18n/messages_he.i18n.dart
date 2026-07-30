@@ -758,6 +758,12 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// "שמן זית"
   /// ```
   String get priceMockName => """שמן זית""";
+
+  /// ```dart
+  /// "* דורש את Pantry ל-Nextcloud בגרסה ${version}+"
+  /// ```
+  String serverRequirementNote(String version) =>
+      """* דורש את Pantry ל-Nextcloud בגרסה ${version}+""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 

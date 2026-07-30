@@ -105,10 +105,10 @@ void main() async {
     //
     // Exception: when the user has unseen onboarding pending, await the
     // capabilities fetch (with a short timeout so offline launches still
-    // proceed). Feature-gated pages like `AllListsOnboardingPage` consult
-    // `hasFeature(...)` at route-decision time — using stale cached caps
-    // there can silently drop a page, and once the rest of the flow
-    // completes the missed page is gone for good.
+    // proceed). Pages like `AllListsOnboardingPage` always show, but consult
+    // `hasFeature(...)` to decide whether to append a "requires Pantry vX"
+    // note — blocking on fresh caps keeps that note from firing off stale
+    // cached capabilities on a server that already supports the feature.
     if (hasPendingOnboardingCandidates(
       PrefsService.instance.lastSeenOnboardingVersion,
     )) {

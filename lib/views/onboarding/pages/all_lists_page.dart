@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Introduces the All-lists meta view added in 0.17.0. Shows a mocked
 /// AppBar with the dashboard icon, a couple of item rows tagged with their
@@ -56,6 +57,10 @@ class AllListsOnboardingPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           const _MockComposeWithListChip(),
+          const ServerRequirementNote(
+            feature: 'checklist-all-view',
+            requiredVersion: '0.18.0',
+          ),
         ],
       ),
     );

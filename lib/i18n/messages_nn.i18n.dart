@@ -761,6 +761,12 @@ Passord: pantry""";
   /// "Olivenolje"
   /// ```
   String get priceMockName => """Olivenolje""";
+
+  /// ```dart
+  /// "* Krev Pantry for Nextcloud v${version}+"
+  /// ```
+  String serverRequirementNote(String version) =>
+      """* Krev Pantry for Nextcloud v${version}+""";
   DevOnboardingMessagesNn get dev => DevOnboardingMessagesNn(this);
 }
 

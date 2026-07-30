@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/version.dart';
 import 'pages/add_items_page.dart';
@@ -68,11 +67,6 @@ bool onboardingDesktopOnly(OnboardingAudience a) => a.isDesktop;
 /// explanations of touch gestures (swipe, long-press) that don't translate.
 bool onboardingMobileOnly(OnboardingAudience a) => !a.isDesktop;
 
-/// Shows the page only when the user has a specific feature flag enabled. Use
-/// for gating pages that advertise a feature that isn't universally available.
-OnboardingShowWhen onboardingFeatureOnly(String feature) =>
-    (_) => hasFeature(feature);
-
 /// One entry in [kAppOnboardingPages]. Carries the page builder plus an
 /// optional [showWhen] predicate that decides whether *this* viewer sees it.
 /// Compose multiple conditions inline with `&&` — e.g.
@@ -126,17 +120,11 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
     OnboardingPageEntry(builder: (_) => const PinnedNotesOnboardingPage()),
   ],
   '0.18.0': [
-    OnboardingPageEntry(
-      builder: (_) => const AllListsOnboardingPage(),
-      showWhen: onboardingFeatureOnly('checklist-all-view'),
-    ),
+    OnboardingPageEntry(builder: (_) => const AllListsOnboardingPage()),
     OnboardingPageEntry(builder: (_) => const BulkAddOnboardingPage()),
   ],
   '0.20.0': [
-    OnboardingPageEntry(
-      builder: (_) => const BulkSelectOnboardingPage(),
-      showWhen: onboardingFeatureOnly('batch-operations'),
-    ),
+    OnboardingPageEntry(builder: (_) => const BulkSelectOnboardingPage()),
   ],
   '0.24.0': [
     OnboardingPageEntry(
@@ -145,10 +133,7 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
       builder: (_) => const BarcodeScanOnboardingPage(),
       showWhen: onboardingMobileOnly,
     ),
-    OnboardingPageEntry(
-      builder: (_) => const ItemPriceOnboardingPage(),
-      showWhen: onboardingFeatureOnly('item-price'),
-    ),
+    OnboardingPageEntry(builder: (_) => const ItemPriceOnboardingPage()),
   ],
 };
 
@@ -205,9 +190,10 @@ String onboardingMarkSeenVersion(String appVersion) {
 /// strictly newer than [lastSeen] (or any entry at all when [lastSeen] is
 /// null). Cheap, feature-independent check used at cold start to decide
 /// whether the first capabilities fetch needs to block the initial route —
-/// without it, feature-gated pages (e.g. `checklist-all-view`) can be filtered
-/// out using stale cached capabilities and skipped permanently once the user
-/// completes the rest of the flow.
+/// pages that advertise a server-backed feature (e.g. `checklist-all-view`)
+/// always show, but consult `hasFeature(...)` to decide whether to append a
+/// "requires Pantry vX" note; blocking on fresh caps keeps that note accurate
+/// instead of derived from stale cached capabilities.
 bool hasPendingOnboardingCandidates(String? lastSeen) {
   final lastSeenVersion = Version.tryParse(lastSeen);
   for (final key in kAppOnboardingPages.keys) {

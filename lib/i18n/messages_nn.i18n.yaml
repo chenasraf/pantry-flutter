@@ -193,6 +193,7 @@ onboarding:
   priceTitle: "Legg til prisar på oppføringane dine"
   priceBody: "Gje ei kvar oppføring ein pris – eit enkelt beløp eller eit område – i valutaen du vil. Han vert vist som ein brikke på oppføringa, og du kan filtrere lista etter pris for å halde deg innanfor budsjettet."
   priceMockName: Olivenolje
+  serverRequirementNote(String version): "* Krev Pantry for Nextcloud v${version}+"
   dev:
     showOnboarding: Vis oppstartshjelp
     pickLastSeenTitle: Førehandsvis kva som er nytt

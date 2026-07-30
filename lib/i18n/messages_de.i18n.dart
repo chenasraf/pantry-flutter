@@ -762,6 +762,12 @@ Passwort: pantry-rocks""";
   /// "Olivenöl"
   /// ```
   String get priceMockName => """Olivenöl""";
+
+  /// ```dart
+  /// "* Erfordert Pantry für Nextcloud v${version}+"
+  /// ```
+  String serverRequirementNote(String version) =>
+      """* Erfordert Pantry für Nextcloud v${version}+""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 

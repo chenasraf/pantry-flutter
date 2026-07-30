@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Tells users that notes can be pinned from the overflow menu to keep them
 /// at the top of the Notes Wall. Renders a stylised pinned-note card that
@@ -41,6 +42,10 @@ class PinnedNotesOnboardingPage extends StatelessWidget {
           const SizedBox(height: 32),
           Center(
             child: SizedBox(width: 200, height: 180, child: _PinnedNoteMock()),
+          ),
+          const ServerRequirementNote(
+            feature: 'note-pinning',
+            requiredVersion: '0.16.0',
           ),
         ],
       ),

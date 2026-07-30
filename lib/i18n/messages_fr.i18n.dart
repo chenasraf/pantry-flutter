@@ -765,6 +765,12 @@ Mot de passe : pantry-rocks""";
   /// "Huile d'olive"
   /// ```
   String get priceMockName => """Huile d'olive""";
+
+  /// ```dart
+  /// "* Nécessite Pantry pour Nextcloud v${version}+"
+  /// ```
+  String serverRequirementNote(String version) =>
+      """* Nécessite Pantry pour Nextcloud v${version}+""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
