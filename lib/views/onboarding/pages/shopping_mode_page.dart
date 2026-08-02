@@ -40,11 +40,73 @@ class ShoppingModeOnboardingPage extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 28),
+          // The Start-shopping FAB, with an arrow leading down into the screen
+          // it opens.
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const _MockFab(),
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 24),
+                  child: Icon(
+                    Icons.arrow_downward_rounded,
+                    size: 30,
+                    color: cs.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
           const _MockShoppingCard(),
           const ServerRequirementNote(
             feature: 'shopping',
             requiredVersion: '0.25.0',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A static facsimile of the extended "Start shopping" FAB that lives on the
+/// checklists screen.
+class _MockFab extends StatelessWidget {
+  const _MockFab();
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+        color: cs.primaryContainer,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.shopping_cart, size: 20, color: cs.onPrimaryContainer),
+          const SizedBox(width: 12),
+          Text(
+            m.shopping.startShopping,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: cs.onPrimaryContainer,
+            ),
           ),
         ],
       ),
