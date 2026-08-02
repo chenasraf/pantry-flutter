@@ -78,6 +78,7 @@ class MessagesEs extends Messages {
   ChecklistsMessagesEs get checklists => ChecklistsMessagesEs(this);
   NotesWallMessagesEs get notesWall => NotesWallMessagesEs(this);
   PhotoBoardMessagesEs get photoBoard => PhotoBoardMessagesEs(this);
+  ShoppingMessagesEs get shopping => ShoppingMessagesEs(this);
   ShareMessagesEs get share => ShareMessagesEs(this);
   RecurrenceMessagesEs get recurrence => RecurrenceMessagesEs(this);
   SyncMessagesEs get sync => SyncMessagesEs(this);
@@ -3556,6 +3557,368 @@ class SortPhotoBoardMessagesEs extends SortPhotoBoardMessages {
   String get custom => """Personalizado""";
 }
 
+class ShoppingMessagesEs extends ShoppingMessages {
+  final MessagesEs _parent;
+  const ShoppingMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Empezar a comprar"
+  /// ```
+  String get startShopping => """Empezar a comprar""";
+
+  /// ```dart
+  /// "Reanudar compra"
+  /// ```
+  String get resumeShopping => """Reanudar compra""";
+
+  /// ```dart
+  /// "Historial de compras"
+  /// ```
+  String get shoppingHistory => """Historial de compras""";
+
+  /// ```dart
+  /// "Reanudar"
+  /// ```
+  String get resume => """Reanudar""";
+
+  /// ```dart
+  /// "Comprando en ${store}"
+  /// ```
+  String bannerShoppingAt(String store) => """Comprando en ${store}""";
+
+  /// ```dart
+  /// "Tienda $index/$total"
+  /// ```
+  String bannerStoreProgress(int index, int total) =>
+      """Tienda $index/$total""";
+
+  /// ```dart
+  /// "Comprando ahora"
+  /// ```
+  String get bannerShoppingNow => """Comprando ahora""";
+
+  /// ```dart
+  /// "Empezar a comprar"
+  /// ```
+  String get startTitle => """Empezar a comprar""";
+
+  /// ```dart
+  /// "Listas para comprar"
+  /// ```
+  String get listsToShop => """Listas para comprar""";
+
+  /// ```dart
+  /// "Seleccionar todo"
+  /// ```
+  String get selectAll => """Seleccionar todo""";
+
+  /// ```dart
+  /// "No seleccionar nada"
+  /// ```
+  String get selectNone => """No seleccionar nada""";
+
+  /// ```dart
+  /// "Aún no hay listas para comprar."
+  /// ```
+  String get noListsToShop => """Aún no hay listas para comprar.""";
+
+  /// ```dart
+  /// "Tiendas"
+  /// ```
+  String get storesTitle => """Tiendas""";
+
+  /// ```dart
+  /// "Activa o desactiva las tiendas que visitarás y arrástralas para ordenarlas."
+  /// ```
+  String get storesHint =>
+      """Activa o desactiva las tiendas que visitarás y arrástralas para ordenarlas.""";
+
+  /// ```dart
+  /// "Ninguna de las listas seleccionadas tiene artículos asignados a una tienda."
+  /// ```
+  String get noStoresWithItems =>
+      """Ninguna de las listas seleccionadas tiene artículos asignados a una tienda.""";
+
+  /// ```dart
+  /// "Incluir artículos sin tienda asignada"
+  /// ```
+  String get includeUnassigned => """Incluir artículos sin tienda asignada""";
+
+  /// ```dart
+  /// "Empezar"
+  /// ```
+  String get start => """Empezar""";
+
+  /// ```dart
+  /// "No se pudo empezar a comprar."
+  /// ```
+  String get startFailed => """No se pudo empezar a comprar.""";
+
+  /// ```dart
+  /// "Ya tienes una compra en curso."
+  /// ```
+  String get tripInProgress => """Ya tienes una compra en curso.""";
+
+  /// ```dart
+  /// "Tienes una compra en curso en ${house}."
+  /// ```
+  String tripInProgressElsewhere(String house) =>
+      """Tienes una compra en curso en ${house}.""";
+
+  /// ```dart
+  /// "Terminar compra anterior"
+  /// ```
+  String get endPreviousTrip => """Terminar compra anterior""";
+
+  /// ```dart
+  /// "No se pudo terminar la compra anterior."
+  /// ```
+  String get endPreviousFailed => """No se pudo terminar la compra anterior.""";
+
+  /// ```dart
+  /// "$count en el carrito"
+  /// ```
+  String inCart(int count) => """$count en el carrito""";
+
+  /// ```dart
+  /// "Ocultar compra a los convivientes"
+  /// ```
+  String get makePrivate => """Ocultar compra a los convivientes""";
+
+  /// ```dart
+  /// "Mostrar compra a los convivientes"
+  /// ```
+  String get makePublic => """Mostrar compra a los convivientes""";
+
+  /// ```dart
+  /// "Privada"
+  /// ```
+  String get privateBadge => """Privada""";
+
+  /// ```dart
+  /// "Siguiente tienda"
+  /// ```
+  String get nextStore => """Siguiente tienda""";
+
+  /// ```dart
+  /// "Terminar"
+  /// ```
+  String get finish => """Terminar""";
+
+  /// ```dart
+  /// "Terminar compra"
+  /// ```
+  String get finishTrip => """Terminar compra""";
+
+  /// ```dart
+  /// "Todo marcado aquí"
+  /// ```
+  String get allCheckedHere => """Todo marcado aquí""";
+
+  /// ```dart
+  /// "Pasa a la siguiente tienda."
+  /// ```
+  String get moveOnToNext => """Pasa a la siguiente tienda.""";
+
+  /// ```dart
+  /// "Todo listo"
+  /// ```
+  String get allDone => """Todo listo""";
+
+  /// ```dart
+  /// "Todo está en el carrito."
+  /// ```
+  String get everythingInCart => """Todo está en el carrito.""";
+
+  /// ```dart
+  /// "Hecho ($count)"
+  /// ```
+  String doneToday(int count) => """Hecho ($count)""";
+
+  /// ```dart
+  /// "Nada que comprar aquí."
+  /// ```
+  String get nothingToBuyHere => """Nada que comprar aquí.""";
+
+  /// ```dart
+  /// "No se pudo actualizar el artículo."
+  /// ```
+  String get checkFailed => """No se pudo actualizar el artículo.""";
+
+  /// ```dart
+  /// "No se pudieron cargar los artículos."
+  /// ```
+  String get loadItemsFailed => """No se pudieron cargar los artículos.""";
+
+  /// ```dart
+  /// "Resumen"
+  /// ```
+  String get reviewTitle => """Resumen""";
+
+  /// ```dart
+  /// "Siguiente tienda"
+  /// ```
+  String get advanceTitle => """Siguiente tienda""";
+
+  /// ```dart
+  /// "Pagado real"
+  /// ```
+  String get actualPaid => """Pagado real""";
+
+  /// ```dart
+  /// "Total"
+  /// ```
+  String get grandTotal => """Total""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo sin precio', many: '$count artículos sin precio')}"
+  /// ```
+  String itemsWithoutPrice(int count) =>
+      """${_plural(count, one: '1 artículo sin precio', many: '$count artículos sin precio')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo sin marcar', many: '$count artículos sin marcar')}"
+  /// ```
+  String itemsStillUnchecked(int count) =>
+      """${_plural(count, one: '1 artículo sin marcar', many: '$count artículos sin marcar')}""";
+
+  /// ```dart
+  /// "Cualquier tienda"
+  /// ```
+  String get anyStore => """Cualquier tienda""";
+
+  /// ```dart
+  /// "No se pudo guardar el total."
+  /// ```
+  String get saveTotalFailed => """No se pudo guardar el total.""";
+
+  /// ```dart
+  /// "Recordatorios"
+  /// ```
+  String get remindersTitle => """Recordatorios""";
+
+  /// ```dart
+  /// "Gestionar recordatorios"
+  /// ```
+  String get manageReminders => """Gestionar recordatorios""";
+
+  /// ```dart
+  /// "Al empezar"
+  /// ```
+  String get reminderGroupStart => """Al empezar""";
+
+  /// ```dart
+  /// "Entre tiendas"
+  /// ```
+  String get reminderGroupAdvance => """Entre tiendas""";
+
+  /// ```dart
+  /// "Al terminar"
+  /// ```
+  String get reminderGroupEnd => """Al terminar""";
+
+  /// ```dart
+  /// "Aún no hay recordatorios aquí."
+  /// ```
+  String get noRemindersHere => """Aún no hay recordatorios aquí.""";
+
+  /// ```dart
+  /// "Añadir un recordatorio"
+  /// ```
+  String get addReminderHint => """Añadir un recordatorio""";
+
+  /// ```dart
+  /// "Cuándo mostrar"
+  /// ```
+  String get reminderWhen => """Cuándo mostrar""";
+
+  /// ```dart
+  /// "Al empezar"
+  /// ```
+  String get whenOnStart => """Al empezar""";
+
+  /// ```dart
+  /// "Entre tiendas"
+  /// ```
+  String get whenOnStoreAdvance => """Entre tiendas""";
+
+  /// ```dart
+  /// "Al terminar"
+  /// ```
+  String get whenOnClose => """Al terminar""";
+
+  /// ```dart
+  /// "Añadir"
+  /// ```
+  String get add => """Añadir""";
+
+  /// ```dart
+  /// "No se pudo guardar el recordatorio."
+  /// ```
+  String get reminderSaveFailed => """No se pudo guardar el recordatorio.""";
+
+  /// ```dart
+  /// "No se pudo eliminar el recordatorio."
+  /// ```
+  String get reminderDeleteFailed => """No se pudo eliminar el recordatorio.""";
+
+  /// ```dart
+  /// "Historial de compras"
+  /// ```
+  String get historyTitle => """Historial de compras""";
+
+  /// ```dart
+  /// "Mías"
+  /// ```
+  String get scopeMine => """Mías""";
+
+  /// ```dart
+  /// "Casa"
+  /// ```
+  String get scopeHouse => """Casa""";
+
+  /// ```dart
+  /// "Sin tienda"
+  /// ```
+  String get noStorePath => """Sin tienda""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo', many: '$count artículos')}"
+  /// ```
+  String itemsCount(int count) =>
+      """${_plural(count, one: '1 artículo', many: '$count artículos')}""";
+
+  /// ```dart
+  /// "Cargar más"
+  /// ```
+  String get loadMore => """Cargar más""";
+
+  /// ```dart
+  /// "Aún no hay compras."
+  /// ```
+  String get noTripsYet => """Aún no hay compras.""";
+
+  /// ```dart
+  /// "Aún no hay compras en esta casa."
+  /// ```
+  String get noHouseTripsYet => """Aún no hay compras en esta casa.""";
+
+  /// ```dart
+  /// "No se pudo cargar el historial."
+  /// ```
+  String get loadHistoryFailed => """No se pudo cargar el historial.""";
+
+  /// ```dart
+  /// "Algo salió mal. Inténtalo de nuevo."
+  /// ```
+  String get loadFailed => """Algo salió mal. Inténtalo de nuevo.""";
+
+  /// ```dart
+  /// "Sin categoría"
+  /// ```
+  String get uncategorized => """Sin categoría""";
+}
+
 class ShareMessagesEs extends ShareMessages {
   final MessagesEs _parent;
   const ShareMessagesEs(this._parent) : super(_parent);
@@ -4550,6 +4913,72 @@ Contraseña: pantry-rocks""",
   """photoBoard.sort.captionAZ""": """Descripción A–Z""",
   """photoBoard.sort.captionZA""": """Descripción Z–A""",
   """photoBoard.sort.custom""": """Personalizado""",
+  """shopping.startShopping""": """Empezar a comprar""",
+  """shopping.resumeShopping""": """Reanudar compra""",
+  """shopping.shoppingHistory""": """Historial de compras""",
+  """shopping.resume""": """Reanudar""",
+  """shopping.bannerShoppingNow""": """Comprando ahora""",
+  """shopping.startTitle""": """Empezar a comprar""",
+  """shopping.listsToShop""": """Listas para comprar""",
+  """shopping.selectAll""": """Seleccionar todo""",
+  """shopping.selectNone""": """No seleccionar nada""",
+  """shopping.noListsToShop""": """Aún no hay listas para comprar.""",
+  """shopping.storesTitle""": """Tiendas""",
+  """shopping.storesHint""":
+      """Activa o desactiva las tiendas que visitarás y arrástralas para ordenarlas.""",
+  """shopping.noStoresWithItems""":
+      """Ninguna de las listas seleccionadas tiene artículos asignados a una tienda.""",
+  """shopping.includeUnassigned""": """Incluir artículos sin tienda asignada""",
+  """shopping.start""": """Empezar""",
+  """shopping.startFailed""": """No se pudo empezar a comprar.""",
+  """shopping.tripInProgress""": """Ya tienes una compra en curso.""",
+  """shopping.endPreviousTrip""": """Terminar compra anterior""",
+  """shopping.endPreviousFailed""":
+      """No se pudo terminar la compra anterior.""",
+  """shopping.makePrivate""": """Ocultar compra a los convivientes""",
+  """shopping.makePublic""": """Mostrar compra a los convivientes""",
+  """shopping.privateBadge""": """Privada""",
+  """shopping.nextStore""": """Siguiente tienda""",
+  """shopping.finish""": """Terminar""",
+  """shopping.finishTrip""": """Terminar compra""",
+  """shopping.allCheckedHere""": """Todo marcado aquí""",
+  """shopping.moveOnToNext""": """Pasa a la siguiente tienda.""",
+  """shopping.allDone""": """Todo listo""",
+  """shopping.everythingInCart""": """Todo está en el carrito.""",
+  """shopping.nothingToBuyHere""": """Nada que comprar aquí.""",
+  """shopping.checkFailed""": """No se pudo actualizar el artículo.""",
+  """shopping.loadItemsFailed""": """No se pudieron cargar los artículos.""",
+  """shopping.reviewTitle""": """Resumen""",
+  """shopping.advanceTitle""": """Siguiente tienda""",
+  """shopping.actualPaid""": """Pagado real""",
+  """shopping.grandTotal""": """Total""",
+  """shopping.anyStore""": """Cualquier tienda""",
+  """shopping.saveTotalFailed""": """No se pudo guardar el total.""",
+  """shopping.remindersTitle""": """Recordatorios""",
+  """shopping.manageReminders""": """Gestionar recordatorios""",
+  """shopping.reminderGroupStart""": """Al empezar""",
+  """shopping.reminderGroupAdvance""": """Entre tiendas""",
+  """shopping.reminderGroupEnd""": """Al terminar""",
+  """shopping.noRemindersHere""": """Aún no hay recordatorios aquí.""",
+  """shopping.addReminderHint""": """Añadir un recordatorio""",
+  """shopping.reminderWhen""": """Cuándo mostrar""",
+  """shopping.whenOnStart""": """Al empezar""",
+  """shopping.whenOnStoreAdvance""": """Entre tiendas""",
+  """shopping.whenOnClose""": """Al terminar""",
+  """shopping.add""": """Añadir""",
+  """shopping.reminderSaveFailed""": """No se pudo guardar el recordatorio.""",
+  """shopping.reminderDeleteFailed""":
+      """No se pudo eliminar el recordatorio.""",
+  """shopping.historyTitle""": """Historial de compras""",
+  """shopping.scopeMine""": """Mías""",
+  """shopping.scopeHouse""": """Casa""",
+  """shopping.noStorePath""": """Sin tienda""",
+  """shopping.loadMore""": """Cargar más""",
+  """shopping.noTripsYet""": """Aún no hay compras.""",
+  """shopping.noHouseTripsYet""": """Aún no hay compras en esta casa.""",
+  """shopping.loadHistoryFailed""": """No se pudo cargar el historial.""",
+  """shopping.loadFailed""": """Algo salió mal. Inténtalo de nuevo.""",
+  """shopping.uncategorized""": """Sin categoría""",
   """share.title""": """Compartir con Pantry""",
   """share.chooseHouse""": """Elegir casa""",
   """share.choosePhotoDestination""": """Subir a""",

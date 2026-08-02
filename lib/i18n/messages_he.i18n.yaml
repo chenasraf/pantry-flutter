@@ -676,6 +676,78 @@ photoBoard:
     captionZA: "כיתוב ת–א"
     custom: מותאם אישית
 
+shopping:
+  startShopping: התחלת קניות
+  resumeShopping: המשך קניות
+  shoppingHistory: היסטוריית קניות
+  resume: המשך
+  bannerShoppingAt(String store): "קונים ב-${store}"
+  bannerStoreProgress(int index, int total): "חנות $index/$total"
+  bannerShoppingNow: קונים עכשיו
+  startTitle: התחלת קניות
+  listsToShop: רשימות לקנייה
+  selectAll: בחירת הכול
+  selectNone: ביטול הבחירה
+  noListsToShop: אין עדיין רשימות לקנייה.
+  storesTitle: חנויות
+  storesHint: "הפעילו או כבו את החנויות שתבקרו בהן, וגררו כדי לקבוע את הסדר."
+  noStoresWithItems: לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות.
+  includeUnassigned: לכלול פריטים שאינם משויכים לחנות
+  start: התחלה
+  startFailed: התחלת הקנייה נכשלה.
+  tripInProgress: כבר יש לך קנייה פעילה.
+  tripInProgressElsewhere(String house): "יש לך קנייה פעילה ב-${house}."
+  endPreviousTrip: סיום הקנייה הקודמת
+  endPreviousFailed: סיום הקנייה הקודמת נכשל.
+  inCart(int count): "$count בעגלה"
+  makePrivate: הסתרת הקנייה משותפי הבית
+  makePublic: הצגת הקנייה לשותפי הבית
+  privateBadge: פרטי
+  nextStore: החנות הבאה
+  finish: סיום
+  finishTrip: סיום הקנייה
+  allCheckedHere: הכול סומן כאן
+  moveOnToNext: אפשר לעבור לחנות הבאה.
+  allDone: הכול הושלם
+  everythingInCart: הכול בעגלה.
+  doneToday(int count): "הושלם ($count)"
+  nothingToBuyHere: אין מה לקנות כאן.
+  checkFailed: עדכון הפריט נכשל.
+  loadItemsFailed: טעינת הפריטים נכשלה.
+  reviewTitle: סיכום
+  advanceTitle: החנות הבאה
+  actualPaid: שולם בפועל
+  grandTotal: סך הכול
+  itemsWithoutPrice(int count): "${_plural(count, one: 'פריט אחד ללא מחיר', many: '$count פריטים ללא מחיר')}"
+  itemsStillUnchecked(int count): "${_plural(count, one: 'פריט אחד עדיין לא סומן', many: '$count פריטים עדיין לא סומנו')}"
+  anyStore: כל חנות
+  saveTotalFailed: שמירת הסכום נכשלה.
+  remindersTitle: תזכורות
+  manageReminders: ניהול תזכורות
+  reminderGroupStart: בהתחלה
+  reminderGroupAdvance: בין חנויות
+  reminderGroupEnd: בסיום
+  noRemindersHere: אין עדיין תזכורות כאן.
+  addReminderHint: הוספת תזכורת
+  reminderWhen: מתי להציג
+  whenOnStart: בהתחלה
+  whenOnStoreAdvance: בין חנויות
+  whenOnClose: בסיום
+  add: הוספה
+  reminderSaveFailed: שמירת התזכורת נכשלה.
+  reminderDeleteFailed: מחיקת התזכורת נכשלה.
+  historyTitle: היסטוריית קניות
+  scopeMine: שלי
+  scopeHouse: הבית
+  noStorePath: ללא חנות
+  itemsCount(int count): "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
+  loadMore: טעינת עוד
+  noTripsYet: אין עדיין קניות.
+  noHouseTripsYet: אין עדיין קניות בבית הזה.
+  loadHistoryFailed: טעינת ההיסטוריה נכשלה.
+  loadFailed: משהו השתבש. נסו שוב.
+  uncategorized: ללא קטגוריה
+
 share:
   title: שיתוף ל-Pantry
   chooseHouse: בחר בית

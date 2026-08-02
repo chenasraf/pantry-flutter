@@ -676,6 +676,78 @@ photoBoard:
     captionZA: "Légende Z–A"
     custom: "Personnalisé"
 
+shopping:
+  startShopping: Commencer les courses
+  resumeShopping: Reprendre les courses
+  shoppingHistory: Historique des courses
+  resume: Reprendre
+  bannerShoppingAt(String store): "Courses chez ${store}"
+  bannerStoreProgress(int index, int total): "Magasin $index/$total"
+  bannerShoppingNow: Courses en cours
+  startTitle: Commencer les courses
+  listsToShop: Listes à faire
+  selectAll: Tout sélectionner
+  selectNone: Ne rien sélectionner
+  noListsToShop: Aucune liste à faire pour l'instant.
+  storesTitle: Magasins
+  storesHint: "Activez ou désactivez les magasins que vous visiterez, et glissez pour définir l'ordre."
+  noStoresWithItems: Aucune des listes sélectionnées n'a d'articles assignés à un magasin.
+  includeUnassigned: Inclure les articles sans magasin
+  start: Commencer
+  startFailed: Impossible de commencer les courses.
+  tripInProgress: Vous avez déjà des courses en cours.
+  tripInProgressElsewhere(String house): "Vous avez des courses en cours dans ${house}."
+  endPreviousTrip: Terminer les courses précédentes
+  endPreviousFailed: Impossible de terminer les courses précédentes.
+  inCart(int count): "$count dans le panier"
+  makePrivate: Masquer les courses aux colocataires
+  makePublic: Montrer les courses aux colocataires
+  privateBadge: Privé
+  nextStore: Magasin suivant
+  finish: Terminer
+  finishTrip: Terminer les courses
+  allCheckedHere: Tout est coché ici
+  moveOnToNext: Passez au magasin suivant.
+  allDone: Tout est fait
+  everythingInCart: Tout est dans le panier.
+  doneToday(int count): "Fait ($count)"
+  nothingToBuyHere: Rien à acheter ici.
+  checkFailed: Impossible de mettre à jour l'article.
+  loadItemsFailed: Impossible de charger les articles.
+  reviewTitle: Récapitulatif
+  advanceTitle: Magasin suivant
+  actualPaid: Payé réel
+  grandTotal: Total général
+  itemsWithoutPrice(int count): "${_plural(count, one: '1 article sans prix', many: '$count articles sans prix')}"
+  itemsStillUnchecked(int count): "${_plural(count, one: '1 article non coché', many: '$count articles non cochés')}"
+  anyStore: N'importe quel magasin
+  saveTotalFailed: Impossible d'enregistrer le total.
+  remindersTitle: Rappels
+  manageReminders: Gérer les rappels
+  reminderGroupStart: Au début
+  reminderGroupAdvance: Entre les magasins
+  reminderGroupEnd: À la fin
+  noRemindersHere: Aucun rappel ici pour l'instant.
+  addReminderHint: Ajouter un rappel
+  reminderWhen: Quand l'afficher
+  whenOnStart: Au début
+  whenOnStoreAdvance: Entre les magasins
+  whenOnClose: À la fin
+  add: Ajouter
+  reminderSaveFailed: Impossible d'enregistrer le rappel.
+  reminderDeleteFailed: Impossible de supprimer le rappel.
+  historyTitle: Historique des courses
+  scopeMine: Les miennes
+  scopeHouse: Maison
+  noStorePath: Aucun magasin
+  itemsCount(int count): "${_plural(count, one: '1 article', many: '$count articles')}"
+  loadMore: Charger plus
+  noTripsYet: Aucune course pour l'instant.
+  noHouseTripsYet: Aucune course dans cette maison pour l'instant.
+  loadHistoryFailed: Impossible de charger l'historique.
+  loadFailed: Une erreur s'est produite. Veuillez réessayer.
+  uncategorized: Sans catégorie
+
 share:
   title: Partager vers Pantry
   chooseHouse: Choisir une maison
