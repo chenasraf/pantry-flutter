@@ -6,6 +6,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/member.dart';
+import 'package:pantry/models/shopping_estimate.dart';
 import 'package:pantry/models/shopping_presence_entry.dart';
 import 'package:pantry/models/shopping_reminder.dart';
 import 'package:pantry/models/shopping_review.dart';
@@ -30,8 +31,8 @@ class ShoppingItemGroup {
   const ShoppingItemGroup({required this.category, required this.items});
 }
 
-/// Drives the live dense shopping screen: the store-narrowed to-buy list, the
-/// done-today tally, and house presence. Polls items + heartbeat + done-today
+/// Drives the live dense shopping screen: the store-narrowed to-buy list, this
+/// session's checked log, and house presence. Polls items + review + heartbeat
 /// together; checking an item is optimistic and reconciled on the next poll.
 class ShoppingSessionController extends ChangeNotifier {
   ShoppingSessionController({required ShoppingSession session})
@@ -48,9 +49,22 @@ class ShoppingSessionController extends ChangeNotifier {
   List<ListItem> _items = [];
   List<ListItem> get items => _items;
 
-  ShoppingDoneToday? _doneToday;
-  ShoppingDoneToday? get doneToday => _doneToday;
-  int get inCartCount => _doneToday?.count ?? 0;
+  /// This session's checked log (server-computed, grouped by store). Drives the
+  /// Done drawer and the in-cart count. Deliberately session-scoped via
+  /// [ShoppingService.getReview] rather than the house/day `done-today` tally,
+  /// which would fold in items checked on earlier trips today.
+  ShoppingReview? _review;
+
+  /// Flat list of everything checked off on this trip, for the Done drawer.
+  List<ListItem> get doneItems => [
+    for (final s in _review?.stores ?? const <ShoppingReviewStore>[])
+      ...s.items,
+  ];
+
+  /// Per-currency estimate of this trip's checked items — the Done drawer total.
+  ShoppingEstimate get doneEstimate => _review?.grandTotal ?? const [];
+
+  int get inCartCount => doneItems.length;
 
   List<ShoppingPresenceEntry> _presence = [];
   List<ShoppingPresenceEntry> get presence => _presence;
@@ -98,9 +112,9 @@ class ShoppingSessionController extends ChangeNotifier {
   /// this view promptly instead of waiting for the next ~1-min poll.
   void _bindSync() {
     _appliedSub ??= SyncManager.instance.onApplied.listen((e) {
-      // A check landed on the server — refresh the done-today tally so the
-      // in-cart count / drawer catch up. The item list is already optimistic.
-      if (_isOwnCheckOp(e.op)) unawaited(_refreshDoneToday());
+      // A check landed on the server — refresh the session review so the Done
+      // drawer / in-cart count catch up. The item list is already optimistic.
+      if (_isOwnCheckOp(e.op)) unawaited(_refreshReview());
     });
     _skippedSub ??= SyncManager.instance.onSkipped.listen((e) {
       // A check was dropped (e.g. the session closed, or a 4xx) — un-hide the
@@ -120,8 +134,8 @@ class ShoppingSessionController extends ChangeNotifier {
   }
 
   /// Progress across the trip: checked (in cart) vs the sum of checked plus
-  /// what's still to buy at the active store. Approximated from done-today
-  /// (single-trip-per-day is the common case) to avoid a heavy review poll.
+  /// what's still to buy at the active store. Both come from this session only
+  /// (the review), so a second trip on the same day starts back at zero.
   double get progress {
     final total = inCartCount + _items.length;
     if (total == 0) return 0;
@@ -268,7 +282,7 @@ class ShoppingSessionController extends ChangeNotifier {
   Future<void> _refreshLiveData({required bool includeHeartbeat}) async {
     final results = await Future.wait([
       _service.getItems(houseId, sessionId),
-      _service.getDoneToday(houseId),
+      _service.getReview(houseId, sessionId),
       if (includeHeartbeat)
         _service.heartbeat(houseId)
       else
@@ -288,17 +302,19 @@ class ShoppingSessionController extends ChangeNotifier {
     );
     _checkedPending.addAll(queuePending);
     _items = fetched.where((i) => !_checkedPending.contains(i.id)).toList();
-    _doneToday = results[1] as ShoppingDoneToday;
+    _review = results[1] as ShoppingReview;
     _presence = results[2] as List<ShoppingPresenceEntry>;
     notifyListeners();
   }
 
-  Future<void> _refreshDoneToday() async {
+  /// Refresh just this session's checked log (the Done drawer / in-cart count)
+  /// — used after a check lands so the tally catches up without a full poll.
+  Future<void> _refreshReview() async {
     try {
-      _doneToday = await _service.getDoneToday(houseId);
+      _review = await _service.getReview(houseId, sessionId);
       notifyListeners();
     } catch (e) {
-      debugPrint('[ShoppingSessionController] done-today refresh failed: $e');
+      debugPrint('[ShoppingSessionController] review refresh failed: $e');
     }
   }
 

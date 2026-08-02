@@ -626,11 +626,9 @@ class _BottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final done = controller.doneToday;
-    final doneCount = done?.count ?? 0;
-    final estimate = done != null
-        ? formatShoppingEstimate(done.estimate)
-        : null;
+    final doneItems = controller.doneItems;
+    final doneCount = doneItems.length;
+    final estimate = formatShoppingEstimate(controller.doneEstimate);
 
     return SafeArea(
       top: false,
@@ -671,13 +669,13 @@ class _BottomBar extends StatelessWidget {
                 ),
               ),
             ),
-            if (doneExpanded && done != null)
+            if (doneExpanded)
               ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 220),
                 child: ListView(
                   shrinkWrap: true,
                   children: [
-                    for (final item in done.items)
+                    for (final item in doneItems)
                       ListTile(
                         dense: true,
                         leading: Icon(
