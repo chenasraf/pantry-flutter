@@ -761,6 +761,27 @@ class OnboardingMessagesHe extends OnboardingMessages {
   String get priceMockName => """שמן זית""";
 
   /// ```dart
+  /// "קונים חנות אחר חנות"
+  /// ```
+  String get shoppingIntroTitle => """קונים חנות אחר חנות""";
+
+  /// ```dart
+  /// "התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן."
+  /// ```
+  String get shoppingIntroBody =>
+      """התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן.""";
+
+  /// ```dart
+  /// "סופרמרקט"
+  /// ```
+  String get shoppingMockStoreActive => """סופרמרקט""";
+
+  /// ```dart
+  /// "בית מרקחת"
+  /// ```
+  String get shoppingMockStoreNext => """בית מרקחת""";
+
+  /// ```dart
   /// "* דורש את Pantry ל-Nextcloud בגרסה ${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -4361,6 +4382,11 @@ Map<String, String> get messagesHeMap => {
   """onboarding.priceBody""":
       """תנו לכל פריט מחיר — סכום יחיד או טווח — במטבע שתבחרו. הוא מוצג כתגית על הפריט, ותוכלו לסנן את הרשימה לפי מחיר כדי לעמוד בתקציב.""",
   """onboarding.priceMockName""": """שמן זית""",
+  """onboarding.shoppingIntroTitle""": """קונים חנות אחר חנות""",
+  """onboarding.shoppingIntroBody""":
+      """התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן.""",
+  """onboarding.shoppingMockStoreActive""": """סופרמרקט""",
+  """onboarding.shoppingMockStoreNext""": """בית מרקחת""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":

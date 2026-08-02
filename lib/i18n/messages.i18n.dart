@@ -761,6 +761,27 @@ Password: pantry-rocks""";
   String get priceMockName => """Olive oil""";
 
   /// ```dart
+  /// "Shop store by store"
+  /// ```
+  String get shoppingIntroTitle => """Shop store by store""";
+
+  /// ```dart
+  /// "Start a shopping trip over your lists, walk each store in order, and check items off as you go — with a running price total."
+  /// ```
+  String get shoppingIntroBody =>
+      """Start a shopping trip over your lists, walk each store in order, and check items off as you go — with a running price total.""";
+
+  /// ```dart
+  /// "Supermarket"
+  /// ```
+  String get shoppingMockStoreActive => """Supermarket""";
+
+  /// ```dart
+  /// "Pharmacy"
+  /// ```
+  String get shoppingMockStoreNext => """Pharmacy""";
+
+  /// ```dart
   /// "* Requires Pantry for Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -4357,6 +4378,11 @@ Password: pantry-rocks""",
   """onboarding.priceBody""":
       """Give any item a price — a single amount or a range — in your currency of choice. It shows as a chip on the item, and you can filter your list by price to keep a shop on budget.""",
   """onboarding.priceMockName""": """Olive oil""",
+  """onboarding.shoppingIntroTitle""": """Shop store by store""",
+  """onboarding.shoppingIntroBody""":
+      """Start a shopping trip over your lists, walk each store in order, and check items off as you go — with a running price total.""",
+  """onboarding.shoppingMockStoreActive""": """Supermarket""",
+  """onboarding.shoppingMockStoreNext""": """Pharmacy""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":

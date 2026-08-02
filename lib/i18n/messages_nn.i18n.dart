@@ -764,6 +764,27 @@ Passord: pantry""";
   String get priceMockName => """Olivenolje""";
 
   /// ```dart
+  /// "Handle butikk for butikk"
+  /// ```
+  String get shoppingIntroTitle => """Handle butikk for butikk""";
+
+  /// ```dart
+  /// "Start ein handletur over listene dine, gå gjennom kvar butikk i rekkjefølgje og kryss av varer undervegs — med ei løpande prissum."
+  /// ```
+  String get shoppingIntroBody =>
+      """Start ein handletur over listene dine, gå gjennom kvar butikk i rekkjefølgje og kryss av varer undervegs — med ei løpande prissum.""";
+
+  /// ```dart
+  /// "Supermarknad"
+  /// ```
+  String get shoppingMockStoreActive => """Supermarknad""";
+
+  /// ```dart
+  /// "Apotek"
+  /// ```
+  String get shoppingMockStoreNext => """Apotek""";
+
+  /// ```dart
   /// "* Krev Pantry for Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -4386,6 +4407,11 @@ Passord: pantry""",
   """onboarding.priceBody""":
       """Gje ei kvar oppføring ein pris – eit enkelt beløp eller eit område – i valutaen du vil. Han vert vist som ein brikke på oppføringa, og du kan filtrere lista etter pris for å halde deg innanfor budsjettet.""",
   """onboarding.priceMockName""": """Olivenolje""",
+  """onboarding.shoppingIntroTitle""": """Handle butikk for butikk""",
+  """onboarding.shoppingIntroBody""":
+      """Start ein handletur over listene dine, gå gjennom kvar butikk i rekkjefølgje og kryss av varer undervegs — med ei løpande prissum.""",
+  """onboarding.shoppingMockStoreActive""": """Supermarknad""",
+  """onboarding.shoppingMockStoreNext""": """Apotek""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":

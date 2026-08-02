@@ -766,6 +766,27 @@ Contraseña: pantry-rocks""";
   String get priceMockName => """Aceite de oliva""";
 
   /// ```dart
+  /// "Compra tienda por tienda"
+  /// ```
+  String get shoppingIntroTitle => """Compra tienda por tienda""";
+
+  /// ```dart
+  /// "Inicia una compra con tus listas, recorre cada tienda en orden y marca los artículos sobre la marcha, con un total de precio en tiempo real."
+  /// ```
+  String get shoppingIntroBody =>
+      """Inicia una compra con tus listas, recorre cada tienda en orden y marca los artículos sobre la marcha, con un total de precio en tiempo real.""";
+
+  /// ```dart
+  /// "Supermercado"
+  /// ```
+  String get shoppingMockStoreActive => """Supermercado""";
+
+  /// ```dart
+  /// "Farmacia"
+  /// ```
+  String get shoppingMockStoreNext => """Farmacia""";
+
+  /// ```dart
   /// "* Requiere Pantry para Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -4398,6 +4419,11 @@ Contraseña: pantry-rocks""",
   """onboarding.priceBody""":
       """Dale a cualquier artículo un precio, un importe único o un rango, en la moneda que prefieras. Aparece como una etiqueta en el artículo y puedes filtrar la lista por precio para ajustarte al presupuesto.""",
   """onboarding.priceMockName""": """Aceite de oliva""",
+  """onboarding.shoppingIntroTitle""": """Compra tienda por tienda""",
+  """onboarding.shoppingIntroBody""":
+      """Inicia una compra con tus listas, recorre cada tienda en orden y marca los artículos sobre la marcha, con un total de precio en tiempo real.""",
+  """onboarding.shoppingMockStoreActive""": """Supermercado""",
+  """onboarding.shoppingMockStoreNext""": """Farmacia""",
   """onboarding.dev.showOnboarding""": """Mostrar introducción""",
   """onboarding.dev.pickLastSeenTitle""": """Ver novedades""",
   """onboarding.dev.pickLastSeenBody""":

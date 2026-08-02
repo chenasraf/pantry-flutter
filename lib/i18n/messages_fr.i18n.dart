@@ -768,6 +768,27 @@ Mot de passe : pantry-rocks""";
   String get priceMockName => """Huile d'olive""";
 
   /// ```dart
+  /// "Fais tes courses magasin par magasin"
+  /// ```
+  String get shoppingIntroTitle => """Fais tes courses magasin par magasin""";
+
+  /// ```dart
+  /// "Lance une virée à partir de tes listes, parcours chaque magasin dans l'ordre et coche les articles au fur et à mesure — avec un total des prix en direct."
+  /// ```
+  String get shoppingIntroBody =>
+      """Lance une virée à partir de tes listes, parcours chaque magasin dans l'ordre et coche les articles au fur et à mesure — avec un total des prix en direct.""";
+
+  /// ```dart
+  /// "Supermarché"
+  /// ```
+  String get shoppingMockStoreActive => """Supermarché""";
+
+  /// ```dart
+  /// "Pharmacie"
+  /// ```
+  String get shoppingMockStoreNext => """Pharmacie""";
+
+  /// ```dart
   /// "* Nécessite Pantry pour Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -4407,6 +4428,12 @@ Mot de passe : pantry-rocks""",
   """onboarding.priceBody""":
       """Donnez à un article un prix — un montant unique ou une fourchette — dans la devise de votre choix. Il apparaît sous forme d'étiquette sur l'article, et vous pouvez filtrer votre liste par prix pour respecter votre budget.""",
   """onboarding.priceMockName""": """Huile d'olive""",
+  """onboarding.shoppingIntroTitle""":
+      """Fais tes courses magasin par magasin""",
+  """onboarding.shoppingIntroBody""":
+      """Lance une virée à partir de tes listes, parcours chaque magasin dans l'ordre et coche les articles au fur et à mesure — avec un total des prix en direct.""",
+  """onboarding.shoppingMockStoreActive""": """Supermarché""",
+  """onboarding.shoppingMockStoreNext""": """Pharmacie""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":

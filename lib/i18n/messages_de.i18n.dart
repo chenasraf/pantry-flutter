@@ -765,6 +765,27 @@ Passwort: pantry-rocks""";
   String get priceMockName => """Olivenöl""";
 
   /// ```dart
+  /// "Geschäft für Geschäft einkaufen"
+  /// ```
+  String get shoppingIntroTitle => """Geschäft für Geschäft einkaufen""";
+
+  /// ```dart
+  /// "Starte einen Einkauf über deine Listen, gehe die Geschäfte der Reihe nach ab und hake Artikel unterwegs ab — mit laufender Preissumme."
+  /// ```
+  String get shoppingIntroBody =>
+      """Starte einen Einkauf über deine Listen, gehe die Geschäfte der Reihe nach ab und hake Artikel unterwegs ab — mit laufender Preissumme.""";
+
+  /// ```dart
+  /// "Supermarkt"
+  /// ```
+  String get shoppingMockStoreActive => """Supermarkt""";
+
+  /// ```dart
+  /// "Apotheke"
+  /// ```
+  String get shoppingMockStoreNext => """Apotheke""";
+
+  /// ```dart
   /// "* Erfordert Pantry für Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -4407,6 +4428,11 @@ Passwort: pantry-rocks""",
   """onboarding.priceBody""":
       """Geben Sie einem Artikel einen Preis – einen einzelnen Betrag oder eine Spanne – in der Währung Ihrer Wahl. Er erscheint als Chip am Artikel, und Sie können Ihre Liste nach Preis filtern, um im Budget zu bleiben.""",
   """onboarding.priceMockName""": """Olivenöl""",
+  """onboarding.shoppingIntroTitle""": """Geschäft für Geschäft einkaufen""",
+  """onboarding.shoppingIntroBody""":
+      """Starte einen Einkauf über deine Listen, gehe die Geschäfte der Reihe nach ab und hake Artikel unterwegs ab — mit laufender Preissumme.""",
+  """onboarding.shoppingMockStoreActive""": """Supermarkt""",
+  """onboarding.shoppingMockStoreNext""": """Apotheke""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":

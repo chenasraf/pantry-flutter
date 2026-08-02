@@ -130,6 +130,10 @@ onboarding:
   priceTitle: "Add prices to your items"
   priceBody: "Give any item a price — a single amount or a range — in your currency of choice. It shows as a chip on the item, and you can filter your list by price to keep a shop on budget."
   priceMockName: "Olive oil"
+  shoppingIntroTitle: "Shop store by store"
+  shoppingIntroBody: "Start a shopping trip over your lists, walk each store in order, and check items off as you go — with a running price total."
+  shoppingMockStoreActive: "Supermarket"
+  shoppingMockStoreNext: "Pharmacy"
   serverRequirementNote(String version): "* Requires Pantry for Nextcloud v${version}+"
   dev:
     showOnboarding: "Show onboarding"

@@ -130,6 +130,10 @@ onboarding:
   priceTitle: "הוסף מחירים לפריטים שלך"
   priceBody: "תנו לכל פריט מחיר — סכום יחיד או טווח — במטבע שתבחרו. הוא מוצג כתגית על הפריט, ותוכלו לסנן את הרשימה לפי מחיר כדי לעמוד בתקציב."
   priceMockName: "שמן זית"
+  shoppingIntroTitle: "קונים חנות אחר חנות"
+  shoppingIntroBody: "התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן."
+  shoppingMockStoreActive: "סופרמרקט"
+  shoppingMockStoreNext: "בית מרקחת"
   serverRequirementNote(String version): "* דורש את Pantry ל-Nextcloud בגרסה ${version}+"
   dev:
     showOnboarding: "הצג היכרות"

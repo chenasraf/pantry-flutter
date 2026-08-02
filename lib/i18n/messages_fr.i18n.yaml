@@ -130,6 +130,10 @@ onboarding:
   priceTitle: "Ajoutez des prix à vos articles"
   priceBody: "Donnez à un article un prix — un montant unique ou une fourchette — dans la devise de votre choix. Il apparaît sous forme d'étiquette sur l'article, et vous pouvez filtrer votre liste par prix pour respecter votre budget."
   priceMockName: "Huile d'olive"
+  shoppingIntroTitle: "Fais tes courses magasin par magasin"
+  shoppingIntroBody: "Lance une virée à partir de tes listes, parcours chaque magasin dans l'ordre et coche les articles au fur et à mesure — avec un total des prix en direct."
+  shoppingMockStoreActive: "Supermarché"
+  shoppingMockStoreNext: "Pharmacie"
   serverRequirementNote(String version): "* Nécessite Pantry pour Nextcloud v${version}+"
   dev:
     showOnboarding: "Afficher l'intro"
