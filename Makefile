@@ -47,7 +47,7 @@ help:
 	@echo "    test-coverage       Run tests with coverage report"
 	@echo ""
 	@echo "  API:"
-	@echo "    fetch-openapi       Fetch openapi.json from chenasraf/nextcloud-pantry"
+	@echo "    fetch-openapi       Fetch openapi.json from chenasraf/nextcloud-pantry (optional: REF=<ref>)"
 	@echo ""
 	@echo "  Assets:"
 	@echo "    icons               Generate launcher icons, favicon & web logo from SVG"
@@ -304,8 +304,8 @@ install-hooks:
 # API
 .PHONY: fetch-openapi
 fetch-openapi:
-	gh api repos/chenasraf/nextcloud-pantry/contents/openapi.json --jq '.content' | base64 -d > openapi.json
-	@echo "-> openapi.json updated"
+	gh api repos/chenasraf/nextcloud-pantry/contents/openapi.json$(if $(REF),?ref=$(REF)) --jq '.content' | base64 -d > openapi.json
+	@echo "-> openapi.json updated$(if $(REF), (ref: $(REF)))"
 
 # Assets
 .PHONY: copy-graphics
