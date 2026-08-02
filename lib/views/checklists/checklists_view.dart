@@ -307,18 +307,17 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     ChecklistsController controller,
     ChecklistList? list,
   ) {
-    final composeReserve = controller.isSoftView ? 0.0 : 76.0;
-    final fabShown =
-        hasFeature('shopping') &&
-        !controller.isSoftView &&
-        !controller.selectionMode;
+    if (controller.isSoftView) return 36;
+    // Clears the resting compose bar plus a little breathing room.
+    const composeReserve = 112.0;
+    final fabShown = hasFeature('shopping') && !controller.selectionMode;
     if (!fabShown) return composeReserve;
-    // Mirror the FAB's own bottom offset (88 above a compose bar, else 16),
-    // plus the extended FAB's height and a gap.
+    // The FAB's own bottom offset (88 above a compose bar, else 16) plus the
+    // extended FAB's height and a small gap.
     final fabBottom = (list != null && controller.canAddItemsHere)
         ? 88.0
         : 16.0;
-    final fabReserve = fabBottom + 64;
+    final fabReserve = fabBottom + 56 + 8;
     return fabReserve > composeReserve ? fabReserve : composeReserve;
   }
 
@@ -709,33 +708,29 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                             ? _NoMatchesEmptyState()
                             : Stack(
                                 children: [
-                                  Padding(
-                                    // Reserve enough room for the resting
-                                    // compose bar so the last item is always
-                                    // reachable without the bar overlapping it.
-                                    // Soft views (trash/archive) have no compose
-                                    // bar, so the reservation would just leave a
-                                    // blank bar at the bottom (issue #105).
-                                    padding: EdgeInsets.only(
-                                      bottom: _listBottomInset(
-                                        controller,
-                                        list,
-                                      ),
-                                    ),
-                                    child: _ItemList(
-                                      controller: controller,
-                                      activeItems: activeItems,
-                                      doneItems: doneItems,
-                                      canReorder: canReorder,
-                                      isCards: isCards,
-                                      doneCollapsed: doneCollapsed,
-                                      groupByCategory:
-                                          controller.sortBy == 'category',
-                                      onToggleDoneCollapsed: () =>
-                                          prefs.setChecklistDoneCollapsed(
-                                            !doneCollapsed,
-                                          ),
-                                      scrollController: widget.scrollController,
+                                  // The room for the resting compose bar and the
+                                  // floating shopping FAB is reserved as trailing
+                                  // scroll padding *inside* the list (not an outer
+                                  // gap), so items use the full viewport and are
+                                  // never clipped mid-list — the extra space only
+                                  // appears once scrolled to the bottom.
+                                  _ItemList(
+                                    controller: controller,
+                                    activeItems: activeItems,
+                                    doneItems: doneItems,
+                                    canReorder: canReorder,
+                                    isCards: isCards,
+                                    doneCollapsed: doneCollapsed,
+                                    groupByCategory:
+                                        controller.sortBy == 'category',
+                                    onToggleDoneCollapsed: () =>
+                                        prefs.setChecklistDoneCollapsed(
+                                          !doneCollapsed,
+                                        ),
+                                    scrollController: widget.scrollController,
+                                    bottomInset: _listBottomInset(
+                                      controller,
+                                      list,
                                     ),
                                   ),
                                   if (controller.isRefreshing)
@@ -2645,6 +2640,12 @@ class _ItemList extends StatefulWidget {
   final VoidCallback onToggleDoneCollapsed;
   final ScrollController? scrollController;
 
+  /// Extra scrollable space appended below the last item so the resting
+  /// compose bar / floating shopping FAB don't cover it once scrolled to the
+  /// bottom. Applied as trailing scroll padding (not an outer gap), so items
+  /// use the full viewport and are never clipped mid-list.
+  final double bottomInset;
+
   const _ItemList({
     required this.controller,
     required this.activeItems,
@@ -2655,6 +2656,7 @@ class _ItemList extends StatefulWidget {
     required this.groupByCategory,
     required this.onToggleDoneCollapsed,
     this.scrollController,
+    this.bottomInset = 0,
   });
 
   @override
@@ -2751,7 +2753,13 @@ class _ItemListState extends State<_ItemList> {
       }
     }
 
-    slivers.add(const SliverPadding(padding: EdgeInsets.only(bottom: 36)));
+    slivers.add(
+      SliverPadding(
+        padding: EdgeInsets.only(
+          bottom: widget.bottomInset > 36 ? widget.bottomInset : 36,
+        ),
+      ),
+    );
 
     return RefreshIndicator(
       onRefresh: widget.controller.refresh,
