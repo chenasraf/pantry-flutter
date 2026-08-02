@@ -16,6 +16,9 @@ import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/shopping_service.dart';
 import 'package:pantry/services/store_service.dart';
+import 'package:pantry/sync/sync_ids.dart';
+import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry/sync/sync_op.dart';
 
 /// A contiguous run of items under one category, for the grouped dense view.
 /// [category] is null for the Uncategorized run (always rendered last, matching
@@ -75,11 +78,39 @@ class ShoppingSessionController extends ChangeNotifier {
   String? get error => _error;
 
   bool _disposed = false;
+  StreamSubscription<SyncOpApplied>? _appliedSub;
+  StreamSubscription<SyncOpSkipped>? _skippedSub;
 
   @override
   void dispose() {
     _disposed = true;
+    _appliedSub?.cancel();
+    _skippedSub?.cancel();
     super.dispose();
+  }
+
+  bool _isOwnCheckOp(SyncOp op) =>
+      op.entity == SyncEntity.shoppingCheck &&
+      op.houseId == houseId &&
+      op.parentId == sessionId;
+
+  /// Watch the sync queue so a check that flushes (or gets dropped) reconciles
+  /// this view promptly instead of waiting for the next ~1-min poll.
+  void _bindSync() {
+    _appliedSub ??= SyncManager.instance.onApplied.listen((e) {
+      // A check landed on the server — refresh the done-today tally so the
+      // in-cart count / drawer catch up. The item list is already optimistic.
+      if (_isOwnCheckOp(e.op)) unawaited(_refreshDoneToday());
+    });
+    _skippedSub ??= SyncManager.instance.onSkipped.listen((e) {
+      // A check was dropped (e.g. the session closed, or a 4xx) — un-hide the
+      // item so it returns to the list on the next fetch.
+      if (_isOwnCheckOp(e.op) && e.op.op == SyncOpKind.create) {
+        final id = e.op.entityId;
+        if (id != null) _checkedPending.remove(id);
+        unawaited(_refreshLiveData(includeHeartbeat: false).catchError((_) {}));
+      }
+    });
   }
 
   @override
@@ -151,6 +182,7 @@ class ShoppingSessionController extends ChangeNotifier {
   }
 
   Future<void> load() async {
+    _bindSync();
     _loading = _items.isEmpty;
     notifyListeners();
 
@@ -226,6 +258,13 @@ class ShoppingSessionController extends ChangeNotifier {
     }
   }
 
+  /// Items checked locally whose removal the server hasn't caught up to yet.
+  /// The check endpoint and the item query are eventually consistent, so an
+  /// immediate re-fetch can still return a just-checked item as unchecked —
+  /// which would make it flicker back onto the list. We hide these ids from any
+  /// fetch result until a fetch stops returning them (server confirmed).
+  final Set<int> _checkedPending = {};
+
   Future<void> _refreshLiveData({required bool includeHeartbeat}) async {
     final results = await Future.wait([
       _service.getItems(houseId, sessionId),
@@ -235,25 +274,54 @@ class ShoppingSessionController extends ChangeNotifier {
       else
         _service.getPresence(houseId),
     ]);
-    _items = results[0] as List<ListItem>;
+    final fetched = results[0] as List<ListItem>;
+    // Hide any item with a pending check op (offline / still flushing) plus any
+    // we optimistically checked that the server still returns (eventual
+    // consistency). Drop an id from the hidden set only once it is neither
+    // queue-pending nor still listed by the server — i.e. fully confirmed gone.
+    final queuePending = SyncManager.instance.pendingShoppingCheckedIds(
+      houseId,
+      sessionId,
+    );
+    _checkedPending.removeWhere(
+      (id) => !queuePending.contains(id) && !fetched.any((i) => i.id == id),
+    );
+    _checkedPending.addAll(queuePending);
+    _items = fetched.where((i) => !_checkedPending.contains(i.id)).toList();
     _doneToday = results[1] as ShoppingDoneToday;
     _presence = results[2] as List<ShoppingPresenceEntry>;
     notifyListeners();
   }
 
-  /// Optimistically remove [item] and record the check; reconcile on the next
-  /// fetch. On failure, re-fetch to restore.
+  Future<void> _refreshDoneToday() async {
+    try {
+      _doneToday = await _service.getDoneToday(houseId);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[ShoppingSessionController] done-today refresh failed: $e');
+    }
+  }
+
+  /// Optimistically remove [item] and enqueue the check on the sync queue, so
+  /// it survives offline / spotty in-store connectivity and flushes when
+  /// possible. The id is held in [_checkedPending] (and reflected in the queue)
+  /// so an eventually-consistent re-fetch can't flicker it back; the sync
+  /// subscriptions reconcile once the op lands or is dropped.
   Future<void> checkItem(ListItem item) async {
+    _checkedPending.add(item.id);
     _items = _items.where((i) => i.id != item.id).toList();
     notifyListeners();
-    try {
-      await _service.checkItem(houseId, sessionId, item.id);
-      await _refreshLiveData(includeHeartbeat: false);
-    } catch (e) {
-      debugPrint('[ShoppingSessionController] check failed: $e');
-      await _refreshLiveData(includeHeartbeat: false).catchError((_) {});
-      rethrow;
-    }
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.shoppingCheck,
+        op: SyncOpKind.create,
+        houseId: houseId,
+        entityId: item.id,
+        parentId: sessionId,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
   }
 
   /// Move to [storeId] and adopt the returned session (new active store, so the

@@ -209,8 +209,26 @@ class SyncManager {
         case SyncEntity.category:
         case SyncEntity.store:
         case SyncEntity.note:
+        case SyncEntity.shoppingCheck:
           break;
       }
+    }
+    return out;
+  }
+
+  /// Item ids in [sessionId] that still have a pending Shopping Mode *check*
+  /// (create) op queued for [houseId]. The dense shopping view hides these from
+  /// its to-buy list so an un-synced offline check — or a still-flushing one —
+  /// isn't resurrected by a poll. Uncheck (delete) ops are excluded: they must
+  /// bring the item back, not hide it.
+  Set<int> pendingShoppingCheckedIds(int houseId, int sessionId) {
+    final out = <int>{};
+    for (final raw in _queue.all()) {
+      if (raw.entity != SyncEntity.shoppingCheck) continue;
+      if (raw.houseId != houseId || raw.parentId != sessionId) continue;
+      if (raw.op != SyncOpKind.create) continue;
+      final id = raw.entityId;
+      if (id != null) out.add(id);
     }
     return out;
   }
@@ -462,6 +480,10 @@ class SyncManager {
           );
         }
       case SyncEntity.note:
+        break;
+      case SyncEntity.shoppingCheck:
+        // Shopping checks reference real item/session ids, never a temp create,
+        // so they can't hold a dead reference.
         break;
     }
     return o;

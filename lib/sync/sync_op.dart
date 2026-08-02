@@ -1,4 +1,16 @@
-enum SyncEntity { checklistList, checklistItem, category, store, note }
+enum SyncEntity {
+  checklistList,
+  checklistItem,
+  category,
+  store,
+  note,
+
+  /// A Shopping Mode item check-log write. [SyncOp.op] is [SyncOpKind.create]
+  /// for a check and [SyncOpKind.delete] for an uncheck; [SyncOp.entityId] is
+  /// the item id and [SyncOp.parentId] is the session id. Queued (not sent
+  /// direct) so checking items off survives spotty in-store connectivity.
+  shoppingCheck,
+}
 
 enum SyncOpKind {
   create,
