@@ -723,6 +723,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                                     doneCollapsed: doneCollapsed,
                                     groupByCategory:
                                         controller.sortBy == 'category',
+                                    groupByStore: controller.sortBy == 'store',
                                     onToggleDoneCollapsed: () =>
                                         prefs.setChecklistDoneCollapsed(
                                           !doneCollapsed,
@@ -1366,6 +1367,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
       (key: 'name_asc', label: m.checklists.sort.nameAZ),
       (key: 'name_desc', label: m.checklists.sort.nameZA),
       (key: 'category', label: m.checklists.sort.category),
+      if (hasFeature('store-sort'))
+        (key: 'store', label: m.checklists.sort.store),
       if (showCustom) (key: 'custom', label: m.checklists.sort.custom),
     ];
   }
@@ -1617,6 +1620,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         await controller.setSortBy('name_desc');
       case 'sort_category':
         await controller.setSortBy('category');
+      case 'sort_store':
+        await controller.setSortBy('store');
       case 'sort_custom':
         await controller.setSortBy('custom');
       case 'toggle_added_by':
@@ -2637,6 +2642,11 @@ class _ItemList extends StatefulWidget {
 
   /// When true (category sort), items render grouped under category headers.
   final bool groupByCategory;
+
+  /// When true (store sort), items render grouped under store headers. An item
+  /// linked to multiple stores appears once under each; items with no store
+  /// fall under a trailing "No store" group.
+  final bool groupByStore;
   final VoidCallback onToggleDoneCollapsed;
   final ScrollController? scrollController;
 
@@ -2654,6 +2664,7 @@ class _ItemList extends StatefulWidget {
     required this.isCards,
     required this.doneCollapsed,
     required this.groupByCategory,
+    required this.groupByStore,
     required this.onToggleDoneCollapsed,
     this.scrollController,
     this.bottomInset = 0,
@@ -2727,6 +2738,8 @@ class _ItemListState extends State<_ItemList> {
       );
     } else if (widget.groupByCategory) {
       slivers.addAll(_groupedSlivers(widget.activeItems));
+    } else if (widget.groupByStore) {
+      slivers.addAll(_groupedByStoreSlivers(widget.activeItems));
     } else {
       slivers.add(
         SliverList.builder(
@@ -2742,6 +2755,8 @@ class _ItemListState extends State<_ItemList> {
     if (showDoneItems) {
       if (widget.groupByCategory) {
         slivers.addAll(_groupedSlivers(widget.doneItems));
+      } else if (widget.groupByStore) {
+        slivers.addAll(_groupedByStoreSlivers(widget.doneItems));
       } else {
         slivers.add(
           SliverList.builder(
@@ -2837,7 +2852,44 @@ class _ItemListState extends State<_ItemList> {
     });
   }
 
-  Widget _buildTile(BuildContext context, ListItem item) {
+  /// Store-sorted counterpart to [_groupedSlivers]: one pinned header per store
+  /// (in `sortedStores` order) plus a trailing "No store" group. An item linked
+  /// to several stores is emitted under each, so each rendered copy needs a key
+  /// unique to its (store, item) pair — the item's own id alone would collide.
+  Iterable<Widget> _groupedByStoreSlivers(List<ListItem> items) {
+    final sortedStores = widget.controller.sortedStores;
+    return groupItemsByStore(items, sortedStores).map((group) {
+      final store = group.storeId != null
+          ? widget.controller.stores[group.storeId]
+          : null;
+      return SliverMainAxisGroup(
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _StoreHeaderDelegate(store: store),
+          ),
+          SliverList.builder(
+            itemCount: group.items.length,
+            itemBuilder: (context, i) {
+              final item = group.items[i];
+              return _buildTile(
+                context,
+                item,
+                keyOverride: ValueKey('store-${group.storeId}-${item.id}'),
+              );
+            },
+          ),
+        ],
+      );
+    });
+  }
+
+  /// [keyOverride] is supplied by the store-grouped path, where one item can
+  /// appear under several store headers: the per-item [GlobalKey] would then be
+  /// mounted twice (a duplicate-key crash), so those rows key off a unique
+  /// (store, item) [ValueKey] instead. Toggles/edits still target `item.id`, so
+  /// checking one copy updates every copy on the next rebuild.
+  Widget _buildTile(BuildContext context, ListItem item, {Key? keyOverride}) {
     final controller = widget.controller;
     // A view-only shared list disables every item write; the granular house
     // caps still apply on top. Resolved per-item so the All-lists view (whose
@@ -2870,7 +2922,7 @@ class _ItemListState extends State<_ItemList> {
       }
     }
     return ChecklistItemTile(
-      key: _keyFor(item.id),
+      key: keyOverride ?? _keyFor(item.id),
       item: item,
       category: item.categoryId != null
           ? controller.categories[item.categoryId]
@@ -3326,6 +3378,120 @@ List<({int? categoryId, List<ListItem> items})> groupItemsByCategory(
     }
   }
   return groups;
+}
+
+/// Group store-sorted items under one entry per store, in [sortedStores] order,
+/// with a trailing `storeId: null` "No store" group. Unlike category grouping,
+/// an item's store link is many-valued, so an item is emitted once under *each*
+/// store it belongs to (duplicated across headers). An item with no store — or
+/// only ids whose store was deleted — lands in the "No store" group. Items
+/// within every group are sorted by name (A→Z). Only non-empty groups are
+/// returned.
+List<({int? storeId, List<ListItem> items})> groupItemsByStore(
+  List<ListItem> items,
+  List<models.Store> sortedStores,
+) {
+  int byName(ListItem a, ListItem b) =>
+      a.name.toLowerCase().compareTo(b.name.toLowerCase());
+
+  final validIds = {for (final s in sortedStores) s.id};
+  final groups = <({int? storeId, List<ListItem> items})>[];
+
+  for (final store in sortedStores) {
+    final inStore = [
+      for (final item in items)
+        if (item.storeIds.contains(store.id)) item,
+    ]..sort(byName);
+    if (inStore.isNotEmpty) {
+      groups.add((storeId: store.id, items: inStore));
+    }
+  }
+
+  final noStore = [
+    for (final item in items)
+      if (!item.storeIds.any(validIds.contains)) item,
+  ]..sort(byName);
+  if (noStore.isNotEmpty) {
+    groups.add((storeId: null, items: noStore));
+  }
+
+  return groups;
+}
+
+/// Sticky-header delegate for a store group. Fixed extent so the pinned header
+/// keeps a stable height as it sticks and releases. Mirrors
+/// [_CategoryHeaderDelegate].
+class _StoreHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final models.Store? store;
+
+  const _StoreHeaderDelegate({required this.store});
+
+  static const double _extent = 40;
+
+  @override
+  double get minExtent => _extent;
+
+  @override
+  double get maxExtent => _extent;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) => _StoreHeader(store: store);
+
+  @override
+  bool shouldRebuild(_StoreHeaderDelegate oldDelegate) =>
+      oldDelegate.store?.id != store?.id ||
+      oldDelegate.store?.color != store?.color ||
+      oldDelegate.store?.name != store?.name ||
+      oldDelegate.store?.icon != store?.icon;
+}
+
+/// Grouped-list header shown above each store run when sorting by store. Mirrors
+/// [_CategoryHeader]: real stores render their icon + name in the store color;
+/// the "No store" group falls back to muted default text.
+class _StoreHeader extends StatelessWidget {
+  final models.Store? store;
+
+  const _StoreHeader({required this.store});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final color = store != null
+        ? (parseHexColor(store!.color) ?? cs.onSurfaceVariant)
+        : cs.onSurfaceVariant;
+    final name = store?.name ?? m.checklists.noStore;
+    return Container(
+      decoration: BoxDecoration(
+        color: cs.surface,
+        border: Border(bottom: BorderSide(color: cs.outlineVariant)),
+      ),
+      padding: const EdgeInsetsDirectional.only(start: 20, end: 20),
+      alignment: AlignmentDirectional.centerStart,
+      child: Row(
+        children: [
+          Icon(storeIcon(store?.icon), size: 16, color: color),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
+                color: color,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// Sticky-header delegate for a category group. Fixed extent so the pinned

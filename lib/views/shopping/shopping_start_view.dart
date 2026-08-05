@@ -54,6 +54,11 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
   final Map<int, List<ListItem>> _itemsByList = {};
   Map<int, Store> _stores = {};
 
+  /// House store-order preference (`name_asc` | `name_desc` | `custom`). Seeds
+  /// the trip's default store order; the shopper still drags to reorder for the
+  /// trip only.
+  String _storeSort = 'name_asc';
+
   /// Available stores in display/drag order (those referenced by un-done items
   /// on the selected lists). Enabled ones, in this order, are sent on start.
   List<int> _orderedStoreIds = [];
@@ -94,12 +99,18 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
         _shopping
             .getReminders(widget.houseId)
             .catchError((_) => <ShoppingReminder>[]),
+        ChecklistService.instance
+            .getHousePrefs(widget.houseId)
+            .catchError((_) => <String, dynamic>{}),
       ]);
       if (!mounted) return;
       final lists = (results[0] as List<ChecklistList>)
           .where((l) => l.id > 0)
           .toList();
       _stores = {for (final s in results[1] as List<Store>) s.id: s};
+      _storeSort =
+          (results[3] as Map<String, dynamic>)['storeSort'] as String? ??
+          'name_asc';
       _startReminders =
           (results[2] as List<ShoppingReminder>)
               .where(
@@ -165,15 +176,18 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
       for (final id in _orderedStoreIds)
         if (available.contains(id)) id,
     ];
-    final added =
-        [
-          for (final id in available)
-            if (!kept.contains(id)) id,
-        ]..sort(
-          (a, b) => (_stores[a]?.name ?? '').toLowerCase().compareTo(
-            (_stores[b]?.name ?? '').toLowerCase(),
-          ),
-        );
+    // Seed newly-available stores in the house's store order (name or custom,
+    // per the storeSort pref) rather than a hardcoded name sort. The shopper
+    // still drags to reorder for the trip only.
+    final rank = <int, int>{};
+    final houseOrder = StoreService.sortStores(_stores.values, _storeSort);
+    for (var i = 0; i < houseOrder.length; i++) {
+      rank[houseOrder[i].id] = i;
+    }
+    final added = [
+      for (final id in available)
+        if (!kept.contains(id)) id,
+    ]..sort((a, b) => (rank[a] ?? 1 << 30).compareTo(rank[b] ?? 1 << 30));
     _orderedStoreIds = [...kept, ...added];
     _enabledStoreIds
       ..removeWhere((id) => !available.contains(id))

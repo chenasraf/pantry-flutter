@@ -1628,6 +1628,27 @@ class StoresMessagesDe extends StoresMessages {
   /// "Bearbeiten"
   /// ```
   String get editAction => """Bearbeiten""";
+  SortStoresMessagesDe get sort => SortStoresMessagesDe(this);
+}
+
+class SortStoresMessagesDe extends SortStoresMessages {
+  final StoresMessagesDe _parent;
+  const SortStoresMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Name A–Z"
+  /// ```
+  String get nameAZ => """Name A–Z""";
+
+  /// ```dart
+  /// "Name Z–A"
+  /// ```
+  String get nameZA => """Name Z–A""";
+
+  /// ```dart
+  /// "Benutzerdefiniert"
+  /// ```
+  String get custom => """Benutzerdefiniert""";
 }
 
 class ChecklistsMessagesDe extends ChecklistsMessages {
@@ -1867,6 +1888,11 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Keine Kategorie"
   /// ```
   String get noCategory => """Keine Kategorie""";
+
+  /// ```dart
+  /// "Kein Geschäft"
+  /// ```
+  String get noStore => """Kein Geschäft""";
 
   /// ```dart
   /// "Das Archiv ist leer."
@@ -2808,6 +2834,11 @@ class SortChecklistsMessagesDe extends SortChecklistsMessages {
   /// "Nach Kategorie"
   /// ```
   String get category => """Nach Kategorie""";
+
+  /// ```dart
+  /// "Nach Geschäft"
+  /// ```
+  String get store => """Nach Geschäft""";
 
   /// ```dart
   /// "Benutzerdefiniert"
@@ -4598,6 +4629,9 @@ Passwort: pantry-rocks""",
   """stores.notesHint""": """Alles Weitere, was man sich merken sollte""",
   """stores.noDetails""": """Noch keine Angaben hinzugefügt.""",
   """stores.editAction""": """Bearbeiten""",
+  """stores.sort.nameAZ""": """Name A–Z""",
+  """stores.sort.nameZA""": """Name Z–A""",
+  """stores.sort.custom""": """Benutzerdefiniert""",
   """checklists.categories""": """Kategorien""",
   """checklists.noChecklists""": """Noch keine Checklisten.""",
   """checklists.noItems""": """Keine Einträge in dieser Liste.""",
@@ -4688,6 +4722,7 @@ Passwort: pantry-rocks""",
   """checklists.exitArchive""": """Archiv verlassen""",
   """checklists.archiveTitle""": """Archiv""",
   """checklists.noCategory""": """Keine Kategorie""",
+  """checklists.noStore""": """Kein Geschäft""",
   """checklists.noArchivedItems""": """Das Archiv ist leer.""",
   """checklists.archiveItem""": """Archivieren""",
   """checklists.unarchiveItem""": """Dearchivieren""",
@@ -4785,6 +4820,7 @@ Passwort: pantry-rocks""",
   """checklists.sort.nameAZ""": """Name A–Z""",
   """checklists.sort.nameZA""": """Name Z–A""",
   """checklists.sort.category""": """Nach Kategorie""",
+  """checklists.sort.store""": """Nach Geschäft""",
   """checklists.sort.custom""": """Benutzerdefiniert""",
   """checklists.allDone""": """Alles erledigt 🎉""",
   """checklists.hideProgressHero""": """Fortschrittskarte ausblenden""",

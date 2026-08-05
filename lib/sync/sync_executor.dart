@@ -367,6 +367,12 @@ class SyncExecutor {
         await svc.deleteStore(houseId, id);
         return SyncResult.empty;
       case SyncOpKind.reorder:
+        final raw = (op.body['order'] as List).cast<Map>();
+        final order = raw
+            .map((e) => (id: e['id'] as int, sortOrder: e['sortOrder'] as int))
+            .toList();
+        await svc.reorderStores(houseId, order);
+        return SyncResult.empty;
       case SyncOpKind.toggle:
       case SyncOpKind.restore:
       case SyncOpKind.permanentDelete:

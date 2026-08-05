@@ -221,7 +221,7 @@ class ChecklistsController extends ChangeNotifier {
   Map<int, models.Store> get stores => _stores;
 
   List<models.Store> get sortedStores =>
-      StoreService.sortStores(_stores.values);
+      StoreService.sortStores(_stores.values, _storeSort);
 
   /// Resolve an item's `storeIds` to the stores that still exist, in name
   /// order. Ids whose store was deleted are silently dropped.
@@ -235,6 +235,9 @@ class ChecklistsController extends ChangeNotifier {
 
   String _categorySort = 'custom';
   String get categorySort => _categorySort;
+
+  String _storeSort = 'name_asc';
+  String get storeSort => _storeSort;
 
   String _listSort = 'custom';
   String get listSort => _listSort;
@@ -429,11 +432,13 @@ class ChecklistsController extends ChangeNotifier {
         _sortBy = prefs['checklistItemSort'] as String? ?? 'custom';
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _categorySort = prefs['categorySort'] as String? ?? 'custom';
+        _storeSort = prefs['storeSort'] as String? ?? 'name_asc';
         _listSort = prefs['checklistListSort'] as String? ?? 'custom';
         _lastCurrency = prefs['lastCurrency'] as String? ?? 'USD';
         _checklistService.cache.set('sortBy:$houseId', _sortBy);
         _checklistService.cache.set('showAddedBy:$houseId', _showAddedBy);
         _checklistService.cache.set('categorySort:$houseId', _categorySort);
+        _checklistService.cache.set('storeSort:$houseId', _storeSort);
         _checklistService.cache.set('listSort:$houseId', _listSort);
         _checklistService.cache.set('lastCurrency:$houseId', _lastCurrency);
       } catch (e) {
@@ -565,6 +570,10 @@ class ChecklistsController extends ChangeNotifier {
         cache.get<String>('categorySort:$houseId') ??
         cache.get<String>('categorySort') ??
         'custom';
+    _storeSort =
+        cache.get<String>('storeSort:$houseId') ??
+        cache.get<String>('storeSort') ??
+        'name_asc';
     _listSort =
         cache.get<String>('listSort:$houseId') ??
         cache.get<String>('listSort') ??
@@ -935,8 +944,15 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> onStoresChanged() async {
     if (!hasFeature('stores')) return;
     try {
-      final stores = await _storeService.getStores(houseId);
+      final results = await Future.wait([
+        _checklistService.getHousePrefs(houseId),
+        _storeService.getStores(houseId),
+      ]);
+      final prefs = results[0] as Map<String, dynamic>;
+      final stores = results[1] as List<models.Store>;
+      _storeSort = prefs['storeSort'] as String? ?? 'name_asc';
       _stores = {for (final s in stores) s.id: s};
+      _checklistService.cache.set('storeSort:$houseId', _storeSort);
       notifyListeners();
     } catch (e) {
       debugPrint(

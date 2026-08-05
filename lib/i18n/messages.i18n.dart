@@ -1613,6 +1613,27 @@ class StoresMessages {
   /// "Edit"
   /// ```
   String get editAction => """Edit""";
+  SortStoresMessages get sort => SortStoresMessages(this);
+}
+
+class SortStoresMessages {
+  final StoresMessages _parent;
+  const SortStoresMessages(this._parent);
+
+  /// ```dart
+  /// "Name A–Z"
+  /// ```
+  String get nameAZ => """Name A–Z""";
+
+  /// ```dart
+  /// "Name Z–A"
+  /// ```
+  String get nameZA => """Name Z–A""";
+
+  /// ```dart
+  /// "Custom"
+  /// ```
+  String get custom => """Custom""";
 }
 
 class ChecklistsMessages {
@@ -1847,6 +1868,11 @@ class ChecklistsMessages {
   /// "No category"
   /// ```
   String get noCategory => """No category""";
+
+  /// ```dart
+  /// "No store"
+  /// ```
+  String get noStore => """No store""";
 
   /// ```dart
   /// "Archive is empty."
@@ -2778,6 +2804,11 @@ class SortChecklistsMessages {
   /// "By category"
   /// ```
   String get category => """By category""";
+
+  /// ```dart
+  /// "By store"
+  /// ```
+  String get store => """By store""";
 
   /// ```dart
   /// "Custom"
@@ -4544,6 +4575,9 @@ Password: pantry-rocks""",
   """stores.notesHint""": """Anything else worth remembering""",
   """stores.noDetails""": """No details added yet.""",
   """stores.editAction""": """Edit""",
+  """stores.sort.nameAZ""": """Name A–Z""",
+  """stores.sort.nameZA""": """Name Z–A""",
+  """stores.sort.custom""": """Custom""",
   """checklists.categories""": """Categories""",
   """checklists.noChecklists""": """No checklists yet.""",
   """checklists.noItems""": """No items in this list.""",
@@ -4625,6 +4659,7 @@ Password: pantry-rocks""",
   """checklists.exitArchive""": """Exit archive""",
   """checklists.archiveTitle""": """Archive""",
   """checklists.noCategory""": """No category""",
+  """checklists.noStore""": """No store""",
   """checklists.noArchivedItems""": """Archive is empty.""",
   """checklists.archiveItem""": """Archive""",
   """checklists.unarchiveItem""": """Unarchive""",
@@ -4715,6 +4750,7 @@ Password: pantry-rocks""",
   """checklists.sort.nameAZ""": """Name A–Z""",
   """checklists.sort.nameZA""": """Name Z–A""",
   """checklists.sort.category""": """By category""",
+  """checklists.sort.store""": """By store""",
   """checklists.sort.custom""": """Custom""",
   """checklists.allDone""": """All done 🎉""",
   """checklists.hideProgressHero""": """Hide progress card""",

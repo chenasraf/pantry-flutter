@@ -1618,6 +1618,27 @@ class StoresMessagesHe extends StoresMessages {
   /// "עריכה"
   /// ```
   String get editAction => """עריכה""";
+  SortStoresMessagesHe get sort => SortStoresMessagesHe(this);
+}
+
+class SortStoresMessagesHe extends SortStoresMessages {
+  final StoresMessagesHe _parent;
+  const SortStoresMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "שם א׳–ת׳"
+  /// ```
+  String get nameAZ => """שם א׳–ת׳""";
+
+  /// ```dart
+  /// "שם ת׳–א׳"
+  /// ```
+  String get nameZA => """שם ת׳–א׳""";
+
+  /// ```dart
+  /// "מותאם אישית"
+  /// ```
+  String get custom => """מותאם אישית""";
 }
 
 class ChecklistsMessagesHe extends ChecklistsMessages {
@@ -1852,6 +1873,11 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "ללא קטגוריה"
   /// ```
   String get noCategory => """ללא קטגוריה""";
+
+  /// ```dart
+  /// "ללא חנות"
+  /// ```
+  String get noStore => """ללא חנות""";
 
   /// ```dart
   /// "הארכיון ריק."
@@ -2786,6 +2812,11 @@ class SortChecklistsMessagesHe extends SortChecklistsMessages {
   /// "לפי קטגוריה"
   /// ```
   String get category => """לפי קטגוריה""";
+
+  /// ```dart
+  /// "לפי חנות"
+  /// ```
+  String get store => """לפי חנות""";
 
   /// ```dart
   /// "מותאם אישית"
@@ -4546,6 +4577,9 @@ Map<String, String> get messagesHeMap => {
   """stores.notesHint""": """כל דבר נוסף שכדאי לזכור""",
   """stores.noDetails""": """עדיין לא נוספו פרטים.""",
   """stores.editAction""": """עריכה""",
+  """stores.sort.nameAZ""": """שם א׳–ת׳""",
+  """stores.sort.nameZA""": """שם ת׳–א׳""",
+  """stores.sort.custom""": """מותאם אישית""",
   """checklists.categories""": """קטגוריות""",
   """checklists.noChecklists""": """אין רשימות עדיין.""",
   """checklists.noItems""": """אין פריטים ברשימה.""",
@@ -4624,6 +4658,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.exitArchive""": """צא מהארכיון""",
   """checklists.archiveTitle""": """ארכיון""",
   """checklists.noCategory""": """ללא קטגוריה""",
+  """checklists.noStore""": """ללא חנות""",
   """checklists.noArchivedItems""": """הארכיון ריק.""",
   """checklists.archiveItem""": """העבר לארכיון""",
   """checklists.unarchiveItem""": """הוצא מהארכיון""",
@@ -4712,6 +4747,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.sort.nameAZ""": """שם א–ת""",
   """checklists.sort.nameZA""": """שם ת–א""",
   """checklists.sort.category""": """לפי קטגוריה""",
+  """checklists.sort.store""": """לפי חנות""",
   """checklists.sort.custom""": """מותאם אישית""",
   """checklists.allDone""": """הכל בוצע 🎉""",
   """checklists.hideProgressHero""": """הסתר כרטיס התקדמות""",

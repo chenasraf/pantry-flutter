@@ -379,6 +379,10 @@ stores:
   notesHint: Andre ting som er verdt å hugse
   noDetails: Ingen detaljar er lagt til enno.
   editAction: Rediger
+  sort:
+    nameAZ: "Namn A–Å"
+    nameZA: "Namn Å–A"
+    custom: Tilpassa
 checklists:
   categories: Kategoriar
   noChecklists: Ingen sjekklister enno.
@@ -494,6 +498,7 @@ checklists:
   exitArchive: Gå ut av arkiv
   archiveTitle: Arkiver
   noCategory: Ingen kategori
+  noStore: Ingen butikk
   noArchivedItems: Arkivet er tomt.
   archiveItem: Arkiver
   unarchiveItem: Angre arkivering
@@ -595,6 +600,7 @@ checklists:
     nameAZ: "Namn A-Z"
     nameZA: "Namn Z-A"
     category: Etter kategori
+    store: Etter butikk
     custom: Sjølvvald
   itemsLeft(int count):
     "${_plural(count, one: '1 oppføring igjen', many: '$count

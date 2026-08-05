@@ -300,6 +300,10 @@ stores:
   notesHint: Cualquier otra cosa que convenga recordar
   noDetails: Aún no se han añadido detalles.
   editAction: Editar
+  sort:
+    nameAZ: "Nombre A–Z"
+    nameZA: "Nombre Z–A"
+    custom: Personalizado
 
 checklists:
   categories: "Categorías"
@@ -395,6 +399,7 @@ checklists:
   exitArchive: Salir del archivo
   archiveTitle: Archivo
   noCategory: Sin categoría
+  noStore: Sin tienda
   noArchivedItems: El archivo está vacío.
   archiveItem: Archivar
   unarchiveItem: Desarchivar
@@ -493,6 +498,7 @@ checklists:
     nameAZ: "Nombre A–Z"
     nameZA: "Nombre Z–A"
     category: "Por categoría"
+    store: "Por tienda"
     custom: Personalizado
   itemsLeft(int count): "${_plural(count, one: '1 artículo restante', many: '$count artículos restantes')}"
   allDone: Todo listo 🎉
