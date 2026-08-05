@@ -5,6 +5,7 @@ import 'package:pantry/models/store.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/note_service.dart';
+import 'package:pantry/services/shopping_service.dart';
 import 'package:pantry/services/store_service.dart';
 import 'package:pantry/sync/sync_op.dart';
 
@@ -38,6 +39,28 @@ class SyncExecutor {
         return _executeStore(op);
       case SyncEntity.note:
         return _executeNote(op);
+      case SyncEntity.shoppingCheck:
+        return _executeShoppingCheck(op);
+    }
+  }
+
+  /// A Shopping Mode check-log write: `create` checks the item off, `delete`
+  /// reverses it. `parentId` is the session id, `entityId` the item id. Both
+  /// endpoints return only `{success:true}`, so there's no entity to bind.
+  Future<SyncResult> _executeShoppingCheck(SyncOp op) async {
+    final svc = ShoppingService.instance;
+    final sessionId = op.parentId;
+    final itemId = op.entityId;
+    if (sessionId == null || itemId == null) return SyncResult.empty;
+    switch (op.op) {
+      case SyncOpKind.create:
+        await svc.checkItem(op.houseId, sessionId, itemId);
+        return SyncResult.empty;
+      case SyncOpKind.delete:
+        await svc.uncheckItem(op.houseId, sessionId, itemId);
+        return SyncResult.empty;
+      default:
+        return SyncResult.empty;
     }
   }
 

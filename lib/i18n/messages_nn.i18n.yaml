@@ -193,6 +193,10 @@ onboarding:
   priceTitle: "Legg til prisar på oppføringane dine"
   priceBody: "Gje ei kvar oppføring ein pris – eit enkelt beløp eller eit område – i valutaen du vil. Han vert vist som ein brikke på oppføringa, og du kan filtrere lista etter pris for å halde deg innanfor budsjettet."
   priceMockName: Olivenolje
+  shoppingIntroTitle: "Handle butikk for butikk"
+  shoppingIntroBody: "Start ein handletur over listene dine, gå gjennom kvar butikk i rekkjefølgje og kryss av varer undervegs — med ei løpande prissum."
+  shoppingMockStoreActive: "Supermarknad"
+  shoppingMockStoreNext: "Apotek"
   serverRequirementNote(String version): "* Krev Pantry for Nextcloud v${version}+"
   dev:
     showOnboarding: Vis oppstartshjelp
@@ -799,6 +803,78 @@ photoBoard:
     captionAZ: Bilettekst A-Z
     captionZA: Bilettekst Z-a
     custom: Sjølvvald
+shopping:
+  startShopping: Start handel
+  resumeShopping: Hald fram handelen
+  shoppingHistory: Handelshistorikk
+  resume: Hald fram
+  bannerShoppingAt(String store): "Handlar på ${store}"
+  bannerStoreProgress(int index, int total): "Butikk $index/$total"
+  bannerShoppingNow: Handlar no
+  startTitle: Start handel
+  listsToShop: Lister å handle
+  selectAll: Vel alle
+  selectNone: Vel ingen
+  noListsToShop: Ingen lister å handle enno.
+  storesTitle: Butikkar
+  storesHint: "Slå på eller av butikkane du skal innom, og dra for å setje rekkjefølgja."
+  noStoresWithItems: Ingen av dei valde listene har varer knytte til ein butikk.
+  includeUnassigned: Ta med varer utan butikk
+  start: Start
+  startFailed: Klarte ikkje å starte handelen.
+  tripInProgress: Du har allereie ein handel i gang.
+  tripInProgressElsewhere(String house): "Du har ein handel i gang i ${house}."
+  endPreviousTrip: Avslutt førre handel
+  endPreviousFailed: Klarte ikkje å avslutte førre handel.
+  inCart(int count): "$count i korga"
+  makePrivate: Skjul handelen for husfellane
+  makePublic: Vis handelen for husfellane
+  privateBadge: Privat
+  nextStore: Neste butikk
+  finish: Fullfør
+  finishTrip: Fullfør handelen
+  allCheckedHere: Alt kryssa av her
+  moveOnToNext: Gå vidare til neste butikk.
+  allDone: Alt ferdig
+  everythingInCart: Alt er i korga.
+  doneToday(int count): "Ferdig ($count)"
+  nothingToBuyHere: Ingenting å kjøpe her.
+  checkFailed: Klarte ikkje å oppdatere vara.
+  loadItemsFailed: Klarte ikkje å laste varene.
+  reviewTitle: Oppsummering
+  advanceTitle: Neste butikk
+  actualPaid: Faktisk betalt
+  grandTotal: Totalsum
+  itemsWithoutPrice(int count): "${_plural(count, one: '1 vare utan pris', many: '$count varer utan pris')}"
+  itemsStillUnchecked(int count): "${_plural(count, one: '1 vare enno ikkje kryssa av', many: '$count varer enno ikkje kryssa av')}"
+  anyStore: Kva som helst butikk
+  saveTotalFailed: Klarte ikkje å lagre summen.
+  remindersTitle: Påminningar
+  manageReminders: Handter påminningar
+  reminderGroupStart: Ved start
+  reminderGroupAdvance: Mellom butikkar
+  reminderGroupEnd: Ved slutt
+  noRemindersHere: Ingen påminningar her enno.
+  addReminderHint: Legg til ei påminning
+  reminderWhen: Når skal ho visast
+  whenOnStart: Ved start
+  whenOnStoreAdvance: Mellom butikkar
+  whenOnClose: Ved slutt
+  add: Legg til
+  reminderSaveFailed: Klarte ikkje å lagre påminninga.
+  reminderDeleteFailed: Klarte ikkje å slette påminninga.
+  historyTitle: Handelshistorikk
+  scopeMine: Mine
+  scopeHouse: Hus
+  noStorePath: Ingen butikk
+  itemsCount(int count): "${_plural(count, one: '1 vare', many: '$count varer')}"
+  loadMore: Last inn meir
+  noTripsYet: Ingen handlar enno.
+  noHouseTripsYet: Ingen handlar i dette huset enno.
+  loadHistoryFailed: Klarte ikkje å laste historikken.
+  loadFailed: Noko gjekk gale. Prøv igjen.
+  uncategorized: Utan kategori
+
 share:
   title: Del til Pantry
   chooseHouse: Vel hus

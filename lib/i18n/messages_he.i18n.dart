@@ -78,6 +78,7 @@ class MessagesHe extends Messages {
   ChecklistsMessagesHe get checklists => ChecklistsMessagesHe(this);
   NotesWallMessagesHe get notesWall => NotesWallMessagesHe(this);
   PhotoBoardMessagesHe get photoBoard => PhotoBoardMessagesHe(this);
+  ShoppingMessagesHe get shopping => ShoppingMessagesHe(this);
   ShareMessagesHe get share => ShareMessagesHe(this);
   RecurrenceMessagesHe get recurrence => RecurrenceMessagesHe(this);
   SyncMessagesHe get sync => SyncMessagesHe(this);
@@ -758,6 +759,27 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// "שמן זית"
   /// ```
   String get priceMockName => """שמן זית""";
+
+  /// ```dart
+  /// "קונים חנות אחר חנות"
+  /// ```
+  String get shoppingIntroTitle => """קונים חנות אחר חנות""";
+
+  /// ```dart
+  /// "התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן."
+  /// ```
+  String get shoppingIntroBody =>
+      """התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן.""";
+
+  /// ```dart
+  /// "סופרמרקט"
+  /// ```
+  String get shoppingMockStoreActive => """סופרמרקט""";
+
+  /// ```dart
+  /// "בית מרקחת"
+  /// ```
+  String get shoppingMockStoreNext => """בית מרקחת""";
 
   /// ```dart
   /// "* דורש את Pantry ל-Nextcloud בגרסה ${version}+"
@@ -3530,6 +3552,367 @@ class SortPhotoBoardMessagesHe extends SortPhotoBoardMessages {
   String get custom => """מותאם אישית""";
 }
 
+class ShoppingMessagesHe extends ShoppingMessages {
+  final MessagesHe _parent;
+  const ShoppingMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "התחלת קניות"
+  /// ```
+  String get startShopping => """התחלת קניות""";
+
+  /// ```dart
+  /// "המשך קניות"
+  /// ```
+  String get resumeShopping => """המשך קניות""";
+
+  /// ```dart
+  /// "היסטוריית קניות"
+  /// ```
+  String get shoppingHistory => """היסטוריית קניות""";
+
+  /// ```dart
+  /// "המשך"
+  /// ```
+  String get resume => """המשך""";
+
+  /// ```dart
+  /// "קונים ב-${store}"
+  /// ```
+  String bannerShoppingAt(String store) => """קונים ב-${store}""";
+
+  /// ```dart
+  /// "חנות $index/$total"
+  /// ```
+  String bannerStoreProgress(int index, int total) => """חנות $index/$total""";
+
+  /// ```dart
+  /// "קונים עכשיו"
+  /// ```
+  String get bannerShoppingNow => """קונים עכשיו""";
+
+  /// ```dart
+  /// "התחלת קניות"
+  /// ```
+  String get startTitle => """התחלת קניות""";
+
+  /// ```dart
+  /// "רשימות לקנייה"
+  /// ```
+  String get listsToShop => """רשימות לקנייה""";
+
+  /// ```dart
+  /// "בחירת הכול"
+  /// ```
+  String get selectAll => """בחירת הכול""";
+
+  /// ```dart
+  /// "ביטול הבחירה"
+  /// ```
+  String get selectNone => """ביטול הבחירה""";
+
+  /// ```dart
+  /// "אין עדיין רשימות לקנייה."
+  /// ```
+  String get noListsToShop => """אין עדיין רשימות לקנייה.""";
+
+  /// ```dart
+  /// "חנויות"
+  /// ```
+  String get storesTitle => """חנויות""";
+
+  /// ```dart
+  /// "הפעילו או כבו את החנויות שתבקרו בהן, וגררו כדי לקבוע את הסדר."
+  /// ```
+  String get storesHint =>
+      """הפעילו או כבו את החנויות שתבקרו בהן, וגררו כדי לקבוע את הסדר.""";
+
+  /// ```dart
+  /// "לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות."
+  /// ```
+  String get noStoresWithItems =>
+      """לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות.""";
+
+  /// ```dart
+  /// "לכלול פריטים שאינם משויכים לחנות"
+  /// ```
+  String get includeUnassigned => """לכלול פריטים שאינם משויכים לחנות""";
+
+  /// ```dart
+  /// "התחלה"
+  /// ```
+  String get start => """התחלה""";
+
+  /// ```dart
+  /// "התחלת הקנייה נכשלה."
+  /// ```
+  String get startFailed => """התחלת הקנייה נכשלה.""";
+
+  /// ```dart
+  /// "כבר יש לך קנייה פעילה."
+  /// ```
+  String get tripInProgress => """כבר יש לך קנייה פעילה.""";
+
+  /// ```dart
+  /// "יש לך קנייה פעילה ב-${house}."
+  /// ```
+  String tripInProgressElsewhere(String house) =>
+      """יש לך קנייה פעילה ב-${house}.""";
+
+  /// ```dart
+  /// "סיום הקנייה הקודמת"
+  /// ```
+  String get endPreviousTrip => """סיום הקנייה הקודמת""";
+
+  /// ```dart
+  /// "סיום הקנייה הקודמת נכשל."
+  /// ```
+  String get endPreviousFailed => """סיום הקנייה הקודמת נכשל.""";
+
+  /// ```dart
+  /// "$count בעגלה"
+  /// ```
+  String inCart(int count) => """$count בעגלה""";
+
+  /// ```dart
+  /// "הסתרת הקנייה משותפי הבית"
+  /// ```
+  String get makePrivate => """הסתרת הקנייה משותפי הבית""";
+
+  /// ```dart
+  /// "הצגת הקנייה לשותפי הבית"
+  /// ```
+  String get makePublic => """הצגת הקנייה לשותפי הבית""";
+
+  /// ```dart
+  /// "פרטי"
+  /// ```
+  String get privateBadge => """פרטי""";
+
+  /// ```dart
+  /// "החנות הבאה"
+  /// ```
+  String get nextStore => """החנות הבאה""";
+
+  /// ```dart
+  /// "סיום"
+  /// ```
+  String get finish => """סיום""";
+
+  /// ```dart
+  /// "סיום הקנייה"
+  /// ```
+  String get finishTrip => """סיום הקנייה""";
+
+  /// ```dart
+  /// "הכול סומן כאן"
+  /// ```
+  String get allCheckedHere => """הכול סומן כאן""";
+
+  /// ```dart
+  /// "אפשר לעבור לחנות הבאה."
+  /// ```
+  String get moveOnToNext => """אפשר לעבור לחנות הבאה.""";
+
+  /// ```dart
+  /// "הכול הושלם"
+  /// ```
+  String get allDone => """הכול הושלם""";
+
+  /// ```dart
+  /// "הכול בעגלה."
+  /// ```
+  String get everythingInCart => """הכול בעגלה.""";
+
+  /// ```dart
+  /// "הושלם ($count)"
+  /// ```
+  String doneToday(int count) => """הושלם ($count)""";
+
+  /// ```dart
+  /// "אין מה לקנות כאן."
+  /// ```
+  String get nothingToBuyHere => """אין מה לקנות כאן.""";
+
+  /// ```dart
+  /// "עדכון הפריט נכשל."
+  /// ```
+  String get checkFailed => """עדכון הפריט נכשל.""";
+
+  /// ```dart
+  /// "טעינת הפריטים נכשלה."
+  /// ```
+  String get loadItemsFailed => """טעינת הפריטים נכשלה.""";
+
+  /// ```dart
+  /// "סיכום"
+  /// ```
+  String get reviewTitle => """סיכום""";
+
+  /// ```dart
+  /// "החנות הבאה"
+  /// ```
+  String get advanceTitle => """החנות הבאה""";
+
+  /// ```dart
+  /// "שולם בפועל"
+  /// ```
+  String get actualPaid => """שולם בפועל""";
+
+  /// ```dart
+  /// "סך הכול"
+  /// ```
+  String get grandTotal => """סך הכול""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד ללא מחיר', many: '$count פריטים ללא מחיר')}"
+  /// ```
+  String itemsWithoutPrice(int count) =>
+      """${_plural(count, one: 'פריט אחד ללא מחיר', many: '$count פריטים ללא מחיר')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד עדיין לא סומן', many: '$count פריטים עדיין לא סומנו')}"
+  /// ```
+  String itemsStillUnchecked(int count) =>
+      """${_plural(count, one: 'פריט אחד עדיין לא סומן', many: '$count פריטים עדיין לא סומנו')}""";
+
+  /// ```dart
+  /// "כל חנות"
+  /// ```
+  String get anyStore => """כל חנות""";
+
+  /// ```dart
+  /// "שמירת הסכום נכשלה."
+  /// ```
+  String get saveTotalFailed => """שמירת הסכום נכשלה.""";
+
+  /// ```dart
+  /// "תזכורות"
+  /// ```
+  String get remindersTitle => """תזכורות""";
+
+  /// ```dart
+  /// "ניהול תזכורות"
+  /// ```
+  String get manageReminders => """ניהול תזכורות""";
+
+  /// ```dart
+  /// "בהתחלה"
+  /// ```
+  String get reminderGroupStart => """בהתחלה""";
+
+  /// ```dart
+  /// "בין חנויות"
+  /// ```
+  String get reminderGroupAdvance => """בין חנויות""";
+
+  /// ```dart
+  /// "בסיום"
+  /// ```
+  String get reminderGroupEnd => """בסיום""";
+
+  /// ```dart
+  /// "אין עדיין תזכורות כאן."
+  /// ```
+  String get noRemindersHere => """אין עדיין תזכורות כאן.""";
+
+  /// ```dart
+  /// "הוספת תזכורת"
+  /// ```
+  String get addReminderHint => """הוספת תזכורת""";
+
+  /// ```dart
+  /// "מתי להציג"
+  /// ```
+  String get reminderWhen => """מתי להציג""";
+
+  /// ```dart
+  /// "בהתחלה"
+  /// ```
+  String get whenOnStart => """בהתחלה""";
+
+  /// ```dart
+  /// "בין חנויות"
+  /// ```
+  String get whenOnStoreAdvance => """בין חנויות""";
+
+  /// ```dart
+  /// "בסיום"
+  /// ```
+  String get whenOnClose => """בסיום""";
+
+  /// ```dart
+  /// "הוספה"
+  /// ```
+  String get add => """הוספה""";
+
+  /// ```dart
+  /// "שמירת התזכורת נכשלה."
+  /// ```
+  String get reminderSaveFailed => """שמירת התזכורת נכשלה.""";
+
+  /// ```dart
+  /// "מחיקת התזכורת נכשלה."
+  /// ```
+  String get reminderDeleteFailed => """מחיקת התזכורת נכשלה.""";
+
+  /// ```dart
+  /// "היסטוריית קניות"
+  /// ```
+  String get historyTitle => """היסטוריית קניות""";
+
+  /// ```dart
+  /// "שלי"
+  /// ```
+  String get scopeMine => """שלי""";
+
+  /// ```dart
+  /// "הבית"
+  /// ```
+  String get scopeHouse => """הבית""";
+
+  /// ```dart
+  /// "ללא חנות"
+  /// ```
+  String get noStorePath => """ללא חנות""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
+  /// ```
+  String itemsCount(int count) =>
+      """${_plural(count, one: 'פריט אחד', many: '$count פריטים')}""";
+
+  /// ```dart
+  /// "טעינת עוד"
+  /// ```
+  String get loadMore => """טעינת עוד""";
+
+  /// ```dart
+  /// "אין עדיין קניות."
+  /// ```
+  String get noTripsYet => """אין עדיין קניות.""";
+
+  /// ```dart
+  /// "אין עדיין קניות בבית הזה."
+  /// ```
+  String get noHouseTripsYet => """אין עדיין קניות בבית הזה.""";
+
+  /// ```dart
+  /// "טעינת ההיסטוריה נכשלה."
+  /// ```
+  String get loadHistoryFailed => """טעינת ההיסטוריה נכשלה.""";
+
+  /// ```dart
+  /// "משהו השתבש. נסו שוב."
+  /// ```
+  String get loadFailed => """משהו השתבש. נסו שוב.""";
+
+  /// ```dart
+  /// "ללא קטגוריה"
+  /// ```
+  String get uncategorized => """ללא קטגוריה""";
+}
+
 class ShareMessagesHe extends ShareMessages {
   final MessagesHe _parent;
   const ShareMessagesHe(this._parent) : super(_parent);
@@ -3999,6 +4382,11 @@ Map<String, String> get messagesHeMap => {
   """onboarding.priceBody""":
       """תנו לכל פריט מחיר — סכום יחיד או טווח — במטבע שתבחרו. הוא מוצג כתגית על הפריט, ותוכלו לסנן את הרשימה לפי מחיר כדי לעמוד בתקציב.""",
   """onboarding.priceMockName""": """שמן זית""",
+  """onboarding.shoppingIntroTitle""": """קונים חנות אחר חנות""",
+  """onboarding.shoppingIntroBody""":
+      """התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן.""",
+  """onboarding.shoppingMockStoreActive""": """סופרמרקט""",
+  """onboarding.shoppingMockStoreNext""": """בית מרקחת""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4490,6 +4878,70 @@ Map<String, String> get messagesHeMap => {
   """photoBoard.sort.captionAZ""": """כיתוב א–ת""",
   """photoBoard.sort.captionZA""": """כיתוב ת–א""",
   """photoBoard.sort.custom""": """מותאם אישית""",
+  """shopping.startShopping""": """התחלת קניות""",
+  """shopping.resumeShopping""": """המשך קניות""",
+  """shopping.shoppingHistory""": """היסטוריית קניות""",
+  """shopping.resume""": """המשך""",
+  """shopping.bannerShoppingNow""": """קונים עכשיו""",
+  """shopping.startTitle""": """התחלת קניות""",
+  """shopping.listsToShop""": """רשימות לקנייה""",
+  """shopping.selectAll""": """בחירת הכול""",
+  """shopping.selectNone""": """ביטול הבחירה""",
+  """shopping.noListsToShop""": """אין עדיין רשימות לקנייה.""",
+  """shopping.storesTitle""": """חנויות""",
+  """shopping.storesHint""":
+      """הפעילו או כבו את החנויות שתבקרו בהן, וגררו כדי לקבוע את הסדר.""",
+  """shopping.noStoresWithItems""":
+      """לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות.""",
+  """shopping.includeUnassigned""": """לכלול פריטים שאינם משויכים לחנות""",
+  """shopping.start""": """התחלה""",
+  """shopping.startFailed""": """התחלת הקנייה נכשלה.""",
+  """shopping.tripInProgress""": """כבר יש לך קנייה פעילה.""",
+  """shopping.endPreviousTrip""": """סיום הקנייה הקודמת""",
+  """shopping.endPreviousFailed""": """סיום הקנייה הקודמת נכשל.""",
+  """shopping.makePrivate""": """הסתרת הקנייה משותפי הבית""",
+  """shopping.makePublic""": """הצגת הקנייה לשותפי הבית""",
+  """shopping.privateBadge""": """פרטי""",
+  """shopping.nextStore""": """החנות הבאה""",
+  """shopping.finish""": """סיום""",
+  """shopping.finishTrip""": """סיום הקנייה""",
+  """shopping.allCheckedHere""": """הכול סומן כאן""",
+  """shopping.moveOnToNext""": """אפשר לעבור לחנות הבאה.""",
+  """shopping.allDone""": """הכול הושלם""",
+  """shopping.everythingInCart""": """הכול בעגלה.""",
+  """shopping.nothingToBuyHere""": """אין מה לקנות כאן.""",
+  """shopping.checkFailed""": """עדכון הפריט נכשל.""",
+  """shopping.loadItemsFailed""": """טעינת הפריטים נכשלה.""",
+  """shopping.reviewTitle""": """סיכום""",
+  """shopping.advanceTitle""": """החנות הבאה""",
+  """shopping.actualPaid""": """שולם בפועל""",
+  """shopping.grandTotal""": """סך הכול""",
+  """shopping.anyStore""": """כל חנות""",
+  """shopping.saveTotalFailed""": """שמירת הסכום נכשלה.""",
+  """shopping.remindersTitle""": """תזכורות""",
+  """shopping.manageReminders""": """ניהול תזכורות""",
+  """shopping.reminderGroupStart""": """בהתחלה""",
+  """shopping.reminderGroupAdvance""": """בין חנויות""",
+  """shopping.reminderGroupEnd""": """בסיום""",
+  """shopping.noRemindersHere""": """אין עדיין תזכורות כאן.""",
+  """shopping.addReminderHint""": """הוספת תזכורת""",
+  """shopping.reminderWhen""": """מתי להציג""",
+  """shopping.whenOnStart""": """בהתחלה""",
+  """shopping.whenOnStoreAdvance""": """בין חנויות""",
+  """shopping.whenOnClose""": """בסיום""",
+  """shopping.add""": """הוספה""",
+  """shopping.reminderSaveFailed""": """שמירת התזכורת נכשלה.""",
+  """shopping.reminderDeleteFailed""": """מחיקת התזכורת נכשלה.""",
+  """shopping.historyTitle""": """היסטוריית קניות""",
+  """shopping.scopeMine""": """שלי""",
+  """shopping.scopeHouse""": """הבית""",
+  """shopping.noStorePath""": """ללא חנות""",
+  """shopping.loadMore""": """טעינת עוד""",
+  """shopping.noTripsYet""": """אין עדיין קניות.""",
+  """shopping.noHouseTripsYet""": """אין עדיין קניות בבית הזה.""",
+  """shopping.loadHistoryFailed""": """טעינת ההיסטוריה נכשלה.""",
+  """shopping.loadFailed""": """משהו השתבש. נסו שוב.""",
+  """shopping.uncategorized""": """ללא קטגוריה""",
   """share.title""": """שיתוף ל-Pantry""",
   """share.chooseHouse""": """בחר בית""",
   """share.choosePhotoDestination""": """העלה אל""",

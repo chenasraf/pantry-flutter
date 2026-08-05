@@ -77,6 +77,7 @@ class Messages {
   ChecklistsMessages get checklists => ChecklistsMessages(this);
   NotesWallMessages get notesWall => NotesWallMessages(this);
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
+  ShoppingMessages get shopping => ShoppingMessages(this);
   ShareMessages get share => ShareMessages(this);
   RecurrenceMessages get recurrence => RecurrenceMessages(this);
   SyncMessages get sync => SyncMessages(this);
@@ -758,6 +759,27 @@ Password: pantry-rocks""";
   /// "Olive oil"
   /// ```
   String get priceMockName => """Olive oil""";
+
+  /// ```dart
+  /// "Shop store by store"
+  /// ```
+  String get shoppingIntroTitle => """Shop store by store""";
+
+  /// ```dart
+  /// "Start a shopping trip over your lists, walk each store in order, and check items off as you go — with a running price total."
+  /// ```
+  String get shoppingIntroBody =>
+      """Start a shopping trip over your lists, walk each store in order, and check items off as you go — with a running price total.""";
+
+  /// ```dart
+  /// "Supermarket"
+  /// ```
+  String get shoppingMockStoreActive => """Supermarket""";
+
+  /// ```dart
+  /// "Pharmacy"
+  /// ```
+  String get shoppingMockStoreNext => """Pharmacy""";
 
   /// ```dart
   /// "* Requires Pantry for Nextcloud v${version}+"
@@ -3523,6 +3545,368 @@ class SortPhotoBoardMessages {
   String get custom => """Custom""";
 }
 
+class ShoppingMessages {
+  final Messages _parent;
+  const ShoppingMessages(this._parent);
+
+  /// ```dart
+  /// "Start shopping"
+  /// ```
+  String get startShopping => """Start shopping""";
+
+  /// ```dart
+  /// "Resume shopping"
+  /// ```
+  String get resumeShopping => """Resume shopping""";
+
+  /// ```dart
+  /// "Shopping history"
+  /// ```
+  String get shoppingHistory => """Shopping history""";
+
+  /// ```dart
+  /// "Resume"
+  /// ```
+  String get resume => """Resume""";
+
+  /// ```dart
+  /// "Shopping at ${store}"
+  /// ```
+  String bannerShoppingAt(String store) => """Shopping at ${store}""";
+
+  /// ```dart
+  /// "Store $index/$total"
+  /// ```
+  String bannerStoreProgress(int index, int total) => """Store $index/$total""";
+
+  /// ```dart
+  /// "Shopping now"
+  /// ```
+  String get bannerShoppingNow => """Shopping now""";
+
+  /// ```dart
+  /// "Start shopping"
+  /// ```
+  String get startTitle => """Start shopping""";
+
+  /// ```dart
+  /// "Lists to shop"
+  /// ```
+  String get listsToShop => """Lists to shop""";
+
+  /// ```dart
+  /// "Select all"
+  /// ```
+  String get selectAll => """Select all""";
+
+  /// ```dart
+  /// "Select none"
+  /// ```
+  String get selectNone => """Select none""";
+
+  /// ```dart
+  /// "No lists to shop yet."
+  /// ```
+  String get noListsToShop => """No lists to shop yet.""";
+
+  /// ```dart
+  /// "Stores"
+  /// ```
+  String get storesTitle => """Stores""";
+
+  /// ```dart
+  /// "Turn the stores you'll visit on or off, and drag to set the order."
+  /// ```
+  String get storesHint =>
+      """Turn the stores you'll visit on or off, and drag to set the order.""";
+
+  /// ```dart
+  /// "None of the selected lists have items assigned to a store."
+  /// ```
+  String get noStoresWithItems =>
+      """None of the selected lists have items assigned to a store.""";
+
+  /// ```dart
+  /// "Include items not assigned to any store"
+  /// ```
+  String get includeUnassigned => """Include items not assigned to any store""";
+
+  /// ```dart
+  /// "Start"
+  /// ```
+  String get start => """Start""";
+
+  /// ```dart
+  /// "Failed to start shopping."
+  /// ```
+  String get startFailed => """Failed to start shopping.""";
+
+  /// ```dart
+  /// "You already have a shopping trip in progress."
+  /// ```
+  String get tripInProgress =>
+      """You already have a shopping trip in progress.""";
+
+  /// ```dart
+  /// "You have a shopping trip in progress in ${house}."
+  /// ```
+  String tripInProgressElsewhere(String house) =>
+      """You have a shopping trip in progress in ${house}.""";
+
+  /// ```dart
+  /// "End previous trip"
+  /// ```
+  String get endPreviousTrip => """End previous trip""";
+
+  /// ```dart
+  /// "Failed to end the previous trip."
+  /// ```
+  String get endPreviousFailed => """Failed to end the previous trip.""";
+
+  /// ```dart
+  /// "$count in cart"
+  /// ```
+  String inCart(int count) => """$count in cart""";
+
+  /// ```dart
+  /// "Hide trip from housemates"
+  /// ```
+  String get makePrivate => """Hide trip from housemates""";
+
+  /// ```dart
+  /// "Show trip to housemates"
+  /// ```
+  String get makePublic => """Show trip to housemates""";
+
+  /// ```dart
+  /// "Private"
+  /// ```
+  String get privateBadge => """Private""";
+
+  /// ```dart
+  /// "Next store"
+  /// ```
+  String get nextStore => """Next store""";
+
+  /// ```dart
+  /// "Finish"
+  /// ```
+  String get finish => """Finish""";
+
+  /// ```dart
+  /// "Finish trip"
+  /// ```
+  String get finishTrip => """Finish trip""";
+
+  /// ```dart
+  /// "All checked off here"
+  /// ```
+  String get allCheckedHere => """All checked off here""";
+
+  /// ```dart
+  /// "Move on to the next store."
+  /// ```
+  String get moveOnToNext => """Move on to the next store.""";
+
+  /// ```dart
+  /// "All done"
+  /// ```
+  String get allDone => """All done""";
+
+  /// ```dart
+  /// "Everything's in the cart."
+  /// ```
+  String get everythingInCart => """Everything's in the cart.""";
+
+  /// ```dart
+  /// "Done ($count)"
+  /// ```
+  String doneToday(int count) => """Done ($count)""";
+
+  /// ```dart
+  /// "Nothing to buy here."
+  /// ```
+  String get nothingToBuyHere => """Nothing to buy here.""";
+
+  /// ```dart
+  /// "Couldn't update the item."
+  /// ```
+  String get checkFailed => """Couldn't update the item.""";
+
+  /// ```dart
+  /// "Failed to load items."
+  /// ```
+  String get loadItemsFailed => """Failed to load items.""";
+
+  /// ```dart
+  /// "Review"
+  /// ```
+  String get reviewTitle => """Review""";
+
+  /// ```dart
+  /// "Next store"
+  /// ```
+  String get advanceTitle => """Next store""";
+
+  /// ```dart
+  /// "Actual paid"
+  /// ```
+  String get actualPaid => """Actual paid""";
+
+  /// ```dart
+  /// "Grand total"
+  /// ```
+  String get grandTotal => """Grand total""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item without a price', many: '$count items without a price')}"
+  /// ```
+  String itemsWithoutPrice(int count) =>
+      """${_plural(count, one: '1 item without a price', many: '$count items without a price')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item still unchecked', many: '$count items still unchecked')}"
+  /// ```
+  String itemsStillUnchecked(int count) =>
+      """${_plural(count, one: '1 item still unchecked', many: '$count items still unchecked')}""";
+
+  /// ```dart
+  /// "Any store"
+  /// ```
+  String get anyStore => """Any store""";
+
+  /// ```dart
+  /// "Failed to save the total."
+  /// ```
+  String get saveTotalFailed => """Failed to save the total.""";
+
+  /// ```dart
+  /// "Reminders"
+  /// ```
+  String get remindersTitle => """Reminders""";
+
+  /// ```dart
+  /// "Manage reminders"
+  /// ```
+  String get manageReminders => """Manage reminders""";
+
+  /// ```dart
+  /// "At start"
+  /// ```
+  String get reminderGroupStart => """At start""";
+
+  /// ```dart
+  /// "Between shops"
+  /// ```
+  String get reminderGroupAdvance => """Between shops""";
+
+  /// ```dart
+  /// "At end"
+  /// ```
+  String get reminderGroupEnd => """At end""";
+
+  /// ```dart
+  /// "No reminders here yet."
+  /// ```
+  String get noRemindersHere => """No reminders here yet.""";
+
+  /// ```dart
+  /// "Add a reminder"
+  /// ```
+  String get addReminderHint => """Add a reminder""";
+
+  /// ```dart
+  /// "When to show"
+  /// ```
+  String get reminderWhen => """When to show""";
+
+  /// ```dart
+  /// "At start"
+  /// ```
+  String get whenOnStart => """At start""";
+
+  /// ```dart
+  /// "Between shops"
+  /// ```
+  String get whenOnStoreAdvance => """Between shops""";
+
+  /// ```dart
+  /// "At end"
+  /// ```
+  String get whenOnClose => """At end""";
+
+  /// ```dart
+  /// "Add"
+  /// ```
+  String get add => """Add""";
+
+  /// ```dart
+  /// "Failed to save the reminder."
+  /// ```
+  String get reminderSaveFailed => """Failed to save the reminder.""";
+
+  /// ```dart
+  /// "Failed to delete the reminder."
+  /// ```
+  String get reminderDeleteFailed => """Failed to delete the reminder.""";
+
+  /// ```dart
+  /// "Shopping history"
+  /// ```
+  String get historyTitle => """Shopping history""";
+
+  /// ```dart
+  /// "Mine"
+  /// ```
+  String get scopeMine => """Mine""";
+
+  /// ```dart
+  /// "House"
+  /// ```
+  String get scopeHouse => """House""";
+
+  /// ```dart
+  /// "No store"
+  /// ```
+  String get noStorePath => """No store""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item', many: '$count items')}"
+  /// ```
+  String itemsCount(int count) =>
+      """${_plural(count, one: '1 item', many: '$count items')}""";
+
+  /// ```dart
+  /// "Load more"
+  /// ```
+  String get loadMore => """Load more""";
+
+  /// ```dart
+  /// "No shopping trips yet."
+  /// ```
+  String get noTripsYet => """No shopping trips yet.""";
+
+  /// ```dart
+  /// "No shopping trips in this house yet."
+  /// ```
+  String get noHouseTripsYet => """No shopping trips in this house yet.""";
+
+  /// ```dart
+  /// "Failed to load history."
+  /// ```
+  String get loadHistoryFailed => """Failed to load history.""";
+
+  /// ```dart
+  /// "Something went wrong. Please try again."
+  /// ```
+  String get loadFailed => """Something went wrong. Please try again.""";
+
+  /// ```dart
+  /// "Uncategorized"
+  /// ```
+  String get uncategorized => """Uncategorized""";
+}
+
 class ShareMessages {
   final Messages _parent;
   const ShareMessages(this._parent);
@@ -3994,6 +4378,11 @@ Password: pantry-rocks""",
   """onboarding.priceBody""":
       """Give any item a price — a single amount or a range — in your currency of choice. It shows as a chip on the item, and you can filter your list by price to keep a shop on budget.""",
   """onboarding.priceMockName""": """Olive oil""",
+  """onboarding.shoppingIntroTitle""": """Shop store by store""",
+  """onboarding.shoppingIntroBody""":
+      """Start a shopping trip over your lists, walk each store in order, and check items off as you go — with a running price total.""",
+  """onboarding.shoppingMockStoreActive""": """Supermarket""",
+  """onboarding.shoppingMockStoreNext""": """Pharmacy""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4493,6 +4882,72 @@ Password: pantry-rocks""",
   """photoBoard.sort.captionAZ""": """Caption A–Z""",
   """photoBoard.sort.captionZA""": """Caption Z–A""",
   """photoBoard.sort.custom""": """Custom""",
+  """shopping.startShopping""": """Start shopping""",
+  """shopping.resumeShopping""": """Resume shopping""",
+  """shopping.shoppingHistory""": """Shopping history""",
+  """shopping.resume""": """Resume""",
+  """shopping.bannerShoppingNow""": """Shopping now""",
+  """shopping.startTitle""": """Start shopping""",
+  """shopping.listsToShop""": """Lists to shop""",
+  """shopping.selectAll""": """Select all""",
+  """shopping.selectNone""": """Select none""",
+  """shopping.noListsToShop""": """No lists to shop yet.""",
+  """shopping.storesTitle""": """Stores""",
+  """shopping.storesHint""":
+      """Turn the stores you'll visit on or off, and drag to set the order.""",
+  """shopping.noStoresWithItems""":
+      """None of the selected lists have items assigned to a store.""",
+  """shopping.includeUnassigned""":
+      """Include items not assigned to any store""",
+  """shopping.start""": """Start""",
+  """shopping.startFailed""": """Failed to start shopping.""",
+  """shopping.tripInProgress""":
+      """You already have a shopping trip in progress.""",
+  """shopping.endPreviousTrip""": """End previous trip""",
+  """shopping.endPreviousFailed""": """Failed to end the previous trip.""",
+  """shopping.makePrivate""": """Hide trip from housemates""",
+  """shopping.makePublic""": """Show trip to housemates""",
+  """shopping.privateBadge""": """Private""",
+  """shopping.nextStore""": """Next store""",
+  """shopping.finish""": """Finish""",
+  """shopping.finishTrip""": """Finish trip""",
+  """shopping.allCheckedHere""": """All checked off here""",
+  """shopping.moveOnToNext""": """Move on to the next store.""",
+  """shopping.allDone""": """All done""",
+  """shopping.everythingInCart""": """Everything's in the cart.""",
+  """shopping.nothingToBuyHere""": """Nothing to buy here.""",
+  """shopping.checkFailed""": """Couldn't update the item.""",
+  """shopping.loadItemsFailed""": """Failed to load items.""",
+  """shopping.reviewTitle""": """Review""",
+  """shopping.advanceTitle""": """Next store""",
+  """shopping.actualPaid""": """Actual paid""",
+  """shopping.grandTotal""": """Grand total""",
+  """shopping.anyStore""": """Any store""",
+  """shopping.saveTotalFailed""": """Failed to save the total.""",
+  """shopping.remindersTitle""": """Reminders""",
+  """shopping.manageReminders""": """Manage reminders""",
+  """shopping.reminderGroupStart""": """At start""",
+  """shopping.reminderGroupAdvance""": """Between shops""",
+  """shopping.reminderGroupEnd""": """At end""",
+  """shopping.noRemindersHere""": """No reminders here yet.""",
+  """shopping.addReminderHint""": """Add a reminder""",
+  """shopping.reminderWhen""": """When to show""",
+  """shopping.whenOnStart""": """At start""",
+  """shopping.whenOnStoreAdvance""": """Between shops""",
+  """shopping.whenOnClose""": """At end""",
+  """shopping.add""": """Add""",
+  """shopping.reminderSaveFailed""": """Failed to save the reminder.""",
+  """shopping.reminderDeleteFailed""": """Failed to delete the reminder.""",
+  """shopping.historyTitle""": """Shopping history""",
+  """shopping.scopeMine""": """Mine""",
+  """shopping.scopeHouse""": """House""",
+  """shopping.noStorePath""": """No store""",
+  """shopping.loadMore""": """Load more""",
+  """shopping.noTripsYet""": """No shopping trips yet.""",
+  """shopping.noHouseTripsYet""": """No shopping trips in this house yet.""",
+  """shopping.loadHistoryFailed""": """Failed to load history.""",
+  """shopping.loadFailed""": """Something went wrong. Please try again.""",
+  """shopping.uncategorized""": """Uncategorized""",
   """share.title""": """Share to Pantry""",
   """share.chooseHouse""": """Choose house""",
   """share.choosePhotoDestination""": """Upload to""",

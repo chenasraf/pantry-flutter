@@ -2268,6 +2268,9 @@ class ChecklistsController extends ChangeNotifier {
           notifyListeners();
         }
       case SyncEntity.note:
+      case SyncEntity.shoppingCheck:
+        // Not surfaced in the checklists view — the shopping session controller
+        // reconciles its own check ops.
         break;
     }
   }

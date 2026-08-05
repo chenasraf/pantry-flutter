@@ -130,6 +130,10 @@ onboarding:
   priceTitle: "Añade precios a tus artículos"
   priceBody: "Dale a cualquier artículo un precio, un importe único o un rango, en la moneda que prefieras. Aparece como una etiqueta en el artículo y puedes filtrar la lista por precio para ajustarte al presupuesto."
   priceMockName: "Aceite de oliva"
+  shoppingIntroTitle: "Compra tienda por tienda"
+  shoppingIntroBody: "Inicia una compra con tus listas, recorre cada tienda en orden y marca los artículos sobre la marcha, con un total de precio en tiempo real."
+  shoppingMockStoreActive: "Supermercado"
+  shoppingMockStoreNext: "Farmacia"
   serverRequirementNote(String version): "* Requiere Pantry para Nextcloud v${version}+"
   dev:
     showOnboarding: "Mostrar introducción"
@@ -675,6 +679,78 @@ photoBoard:
     captionAZ: "Descripción A–Z"
     captionZA: "Descripción Z–A"
     custom: Personalizado
+
+shopping:
+  startShopping: Empezar a comprar
+  resumeShopping: Reanudar compra
+  shoppingHistory: Historial de compras
+  resume: Reanudar
+  bannerShoppingAt(String store): "Comprando en ${store}"
+  bannerStoreProgress(int index, int total): "Tienda $index/$total"
+  bannerShoppingNow: Comprando ahora
+  startTitle: Empezar a comprar
+  listsToShop: Listas para comprar
+  selectAll: Seleccionar todo
+  selectNone: No seleccionar nada
+  noListsToShop: Aún no hay listas para comprar.
+  storesTitle: Tiendas
+  storesHint: "Activa o desactiva las tiendas que visitarás y arrástralas para ordenarlas."
+  noStoresWithItems: Ninguna de las listas seleccionadas tiene artículos asignados a una tienda.
+  includeUnassigned: Incluir artículos sin tienda asignada
+  start: Empezar
+  startFailed: No se pudo empezar a comprar.
+  tripInProgress: Ya tienes una compra en curso.
+  tripInProgressElsewhere(String house): "Tienes una compra en curso en ${house}."
+  endPreviousTrip: Terminar compra anterior
+  endPreviousFailed: No se pudo terminar la compra anterior.
+  inCart(int count): "$count en el carrito"
+  makePrivate: Ocultar compra a los convivientes
+  makePublic: Mostrar compra a los convivientes
+  privateBadge: Privada
+  nextStore: Siguiente tienda
+  finish: Terminar
+  finishTrip: Terminar compra
+  allCheckedHere: Todo marcado aquí
+  moveOnToNext: Pasa a la siguiente tienda.
+  allDone: Todo listo
+  everythingInCart: Todo está en el carrito.
+  doneToday(int count): "Hecho ($count)"
+  nothingToBuyHere: Nada que comprar aquí.
+  checkFailed: No se pudo actualizar el artículo.
+  loadItemsFailed: No se pudieron cargar los artículos.
+  reviewTitle: Resumen
+  advanceTitle: Siguiente tienda
+  actualPaid: Pagado real
+  grandTotal: Total
+  itemsWithoutPrice(int count): "${_plural(count, one: '1 artículo sin precio', many: '$count artículos sin precio')}"
+  itemsStillUnchecked(int count): "${_plural(count, one: '1 artículo sin marcar', many: '$count artículos sin marcar')}"
+  anyStore: Cualquier tienda
+  saveTotalFailed: No se pudo guardar el total.
+  remindersTitle: Recordatorios
+  manageReminders: Gestionar recordatorios
+  reminderGroupStart: Al empezar
+  reminderGroupAdvance: Entre tiendas
+  reminderGroupEnd: Al terminar
+  noRemindersHere: Aún no hay recordatorios aquí.
+  addReminderHint: Añadir un recordatorio
+  reminderWhen: Cuándo mostrar
+  whenOnStart: Al empezar
+  whenOnStoreAdvance: Entre tiendas
+  whenOnClose: Al terminar
+  add: Añadir
+  reminderSaveFailed: No se pudo guardar el recordatorio.
+  reminderDeleteFailed: No se pudo eliminar el recordatorio.
+  historyTitle: Historial de compras
+  scopeMine: Mías
+  scopeHouse: Casa
+  noStorePath: Sin tienda
+  itemsCount(int count): "${_plural(count, one: '1 artículo', many: '$count artículos')}"
+  loadMore: Cargar más
+  noTripsYet: Aún no hay compras.
+  noHouseTripsYet: Aún no hay compras en esta casa.
+  loadHistoryFailed: No se pudo cargar el historial.
+  loadFailed: Algo salió mal. Inténtalo de nuevo.
+  uncategorized: Sin categoría
 
 share:
   title: Compartir con Pantry

@@ -13,11 +13,13 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
+import 'package:pantry/models/shopping_session.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/services/shopping_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/currencies.dart';
@@ -25,8 +27,12 @@ import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/categories/categories_view.dart';
+import 'package:pantry/views/shopping/shopping_history_view.dart';
+import 'package:pantry/views/shopping/shopping_session_view.dart';
+import 'package:pantry/views/shopping/shopping_start_view.dart';
 import 'package:pantry/views/stores/stores_view.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
@@ -197,7 +203,7 @@ class _Body extends StatefulWidget {
   State<_Body> createState() => _BodyState();
 }
 
-class _BodyState extends State<_Body> {
+class _BodyState extends State<_Body> with WidgetsBindingObserver {
   bool _searchOpen = false;
   bool _composeActive = false;
   final _searchCtrl = TextEditingController();
@@ -217,12 +223,173 @@ class _BodyState extends State<_Body> {
   /// re-renders without leaking into other per-list views.
   int? _composeTargetListId;
 
+  /// The caller's live shopping session (any house), polled to drive the
+  /// resume banner and the Start/Resume FAB. Null when there's no live trip or
+  /// the server lacks the `shopping` capability.
+  ShoppingSession? _shoppingSession;
+
   String get _query => _searchCtrl.text.trim().toLowerCase();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _refreshShoppingSession(),
+    );
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _searchCtrl.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _refreshShoppingSession();
+  }
+
+  /// Re-fetch the caller's live session so the banner / FAB stay current.
+  /// Cheap and side-effect-free (`GET /current`); gated on the capability.
+  Future<void> _refreshShoppingSession() async {
+    if (!hasFeature('shopping')) return;
+    try {
+      final session = await ShoppingService.instance.getCurrentSession();
+      if (!mounted) return;
+      setState(
+        () => _shoppingSession = (session?.live ?? false) ? session : null,
+      );
+    } catch (_) {
+      /* keep the last-known state */
+    }
+  }
+
+  /// Open the shopping flow: resume the live session, or run the start screen
+  /// (which returns a freshly created session to navigate into). Refreshes the
+  /// banner / FAB on return.
+  Future<void> _openShopping(ChecklistsController controller) async {
+    final existing = _shoppingSession;
+    if (existing != null) {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ShoppingSessionView(session: existing),
+        ),
+      );
+    } else {
+      final currentId = controller.currentList?.id;
+      final created = await Navigator.of(context).push<ShoppingSession?>(
+        MaterialPageRoute(
+          builder: (_) => ShoppingStartView(
+            houseId: controller.houseId,
+            preselectListId: (currentId != null && currentId > 0)
+                ? currentId
+                : null,
+          ),
+        ),
+      );
+      if (created != null && mounted) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ShoppingSessionView(session: created),
+          ),
+        );
+      }
+    }
+    await _refreshShoppingSession();
+  }
+
+  /// Bottom inset reserved under the item list so neither the resting compose
+  /// bar nor the floating Start/Resume-shopping FAB overlaps the last row. Takes
+  /// the larger of the two reservations that apply.
+  double _listBottomInset(
+    ChecklistsController controller,
+    ChecklistList? list,
+  ) {
+    if (controller.isSoftView) return 36;
+    // Clears the resting compose bar plus a little breathing room.
+    const composeReserve = 112.0;
+    final fabShown = hasFeature('shopping') && !controller.selectionMode;
+    if (!fabShown) return composeReserve;
+    // The FAB's own bottom offset (88 above a compose bar, else 16) plus the
+    // extended FAB's height and a small gap.
+    final fabBottom = (list != null && controller.canAddItemsHere)
+        ? 88.0
+        : 16.0;
+    final fabReserve = fabBottom + 56 + 8;
+    return fabReserve > composeReserve ? fabReserve : composeReserve;
+  }
+
+  Future<void> _openShoppingHistory(ChecklistsController controller) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ShoppingHistoryView(houseId: controller.houseId),
+      ),
+    );
+    await _refreshShoppingSession();
+  }
+
+  /// The "you're shopping at {store} · [Resume]" banner shown atop the list
+  /// while a trip is live. Resolves the active store's name from the
+  /// controller's already-loaded store map.
+  Widget _buildResumeBanner(ChecklistsController controller) {
+    final session = _shoppingSession!;
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final activeId = session.activeStoreId;
+    final store = activeId != null ? controller.stores[activeId] : null;
+    final ordered = session.orderedStoreIds;
+    final idx = activeId != null ? ordered.indexOf(activeId) : -1;
+    final label = store != null
+        ? m.shopping.bannerShoppingAt(store.name)
+        : m.shopping.bannerShoppingNow;
+
+    return Material(
+      color: cs.primaryContainer,
+      child: InkWell(
+        onTap: () => _openShopping(controller),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: 16,
+            vertical: 10,
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.shopping_cart, color: cs.onPrimaryContainer, size: 20),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      textDirection: detectTextDirection(store?.name),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: cs.onPrimaryContainer,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (idx >= 0 && ordered.length > 1)
+                      Text(
+                        m.shopping.bannerStoreProgress(idx + 1, ordered.length),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: cs.onPrimaryContainer,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(
+                onPressed: () => _openShopping(controller),
+                child: Text(m.shopping.resume),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   List<ListItem> _applyFilters(List<ListItem> items, Set<int> selectedListIds) {
@@ -406,6 +573,9 @@ class _BodyState extends State<_Body> {
           children: [
             Column(
               children: [
+                // Live shopping trip in progress — offer a one-tap resume.
+                if (_shoppingSession != null && hasFeature('shopping'))
+                  _buildResumeBanner(controller),
                 // Animate the search row sliding/fading in and out below
                 // the AppBar instead of popping in instantly.
                 AnimatedSize(
@@ -538,30 +708,29 @@ class _BodyState extends State<_Body> {
                             ? _NoMatchesEmptyState()
                             : Stack(
                                 children: [
-                                  Padding(
-                                    // Reserve enough room for the resting
-                                    // compose bar so the last item is always
-                                    // reachable without the bar overlapping it.
-                                    // Soft views (trash/archive) have no compose
-                                    // bar, so the reservation would just leave a
-                                    // blank bar at the bottom (issue #105).
-                                    padding: EdgeInsets.only(
-                                      bottom: controller.isSoftView ? 0 : 76,
-                                    ),
-                                    child: _ItemList(
-                                      controller: controller,
-                                      activeItems: activeItems,
-                                      doneItems: doneItems,
-                                      canReorder: canReorder,
-                                      isCards: isCards,
-                                      doneCollapsed: doneCollapsed,
-                                      groupByCategory:
-                                          controller.sortBy == 'category',
-                                      onToggleDoneCollapsed: () =>
-                                          prefs.setChecklistDoneCollapsed(
-                                            !doneCollapsed,
-                                          ),
-                                      scrollController: widget.scrollController,
+                                  // The room for the resting compose bar and the
+                                  // floating shopping FAB is reserved as trailing
+                                  // scroll padding *inside* the list (not an outer
+                                  // gap), so items use the full viewport and are
+                                  // never clipped mid-list — the extra space only
+                                  // appears once scrolled to the bottom.
+                                  _ItemList(
+                                    controller: controller,
+                                    activeItems: activeItems,
+                                    doneItems: doneItems,
+                                    canReorder: canReorder,
+                                    isCards: isCards,
+                                    doneCollapsed: doneCollapsed,
+                                    groupByCategory:
+                                        controller.sortBy == 'category',
+                                    onToggleDoneCollapsed: () =>
+                                        prefs.setChecklistDoneCollapsed(
+                                          !doneCollapsed,
+                                        ),
+                                    scrollController: widget.scrollController,
+                                    bottomInset: _listBottomInset(
+                                      controller,
+                                      list,
                                     ),
                                   ),
                                   if (controller.isRefreshing)
@@ -716,6 +885,31 @@ class _BodyState extends State<_Body> {
                 end: 0,
                 bottom: 0,
                 child: _SelectionActionBar(controller: controller),
+              ),
+            // Start / resume shopping. Hidden in soft (trash/archive) and
+            // selection modes, and while the add-item sheet is active (it would
+            // float over the sheet); lifted above the resting compose bar.
+            if (hasFeature('shopping') &&
+                !controller.isSoftView &&
+                !controller.selectionMode &&
+                !_composeActive)
+              PositionedDirectional(
+                end: 16,
+                bottom: (list != null && controller.canAddItemsHere) ? 88 : 16,
+                child: FloatingActionButton.extended(
+                  heroTag: 'shopping-fab',
+                  onPressed: () => _openShopping(controller),
+                  icon: Icon(
+                    _shoppingSession != null
+                        ? Icons.play_arrow
+                        : Icons.shopping_cart,
+                  ),
+                  label: Text(
+                    _shoppingSession != null
+                        ? m.shopping.resumeShopping
+                        : m.shopping.startShopping,
+                  ),
+                ),
               ),
           ],
         );
@@ -1291,6 +1485,14 @@ class _BodyState extends State<_Body> {
             label: m.checklists.markdown.importTitle,
           ),
       ],
+      if (hasFeature('shopping')) ...[
+        const PopupMenuDivider(),
+        _menuRow(
+          value: 'shopping_history',
+          leading: const Icon(Icons.history, size: 18),
+          label: m.shopping.shoppingHistory,
+        ),
+      ],
       if (!PlatformInfo.isDesktop) ...[
         if (controller.permissions.canEditLists)
           _menuRow(
@@ -1440,6 +1642,8 @@ class _BodyState extends State<_Body> {
         await _openManageCategories(context, controller);
       case 'manage_stores':
         await _openManageStores(context, controller);
+      case 'shopping_history':
+        await _openShoppingHistory(controller);
       case 'export_markdown':
         await _openExport(context, controller);
       case 'import_markdown':
@@ -2436,6 +2640,12 @@ class _ItemList extends StatefulWidget {
   final VoidCallback onToggleDoneCollapsed;
   final ScrollController? scrollController;
 
+  /// Extra scrollable space appended below the last item so the resting
+  /// compose bar / floating shopping FAB don't cover it once scrolled to the
+  /// bottom. Applied as trailing scroll padding (not an outer gap), so items
+  /// use the full viewport and are never clipped mid-list.
+  final double bottomInset;
+
   const _ItemList({
     required this.controller,
     required this.activeItems,
@@ -2446,6 +2656,7 @@ class _ItemList extends StatefulWidget {
     required this.groupByCategory,
     required this.onToggleDoneCollapsed,
     this.scrollController,
+    this.bottomInset = 0,
   });
 
   @override
@@ -2542,7 +2753,13 @@ class _ItemListState extends State<_ItemList> {
       }
     }
 
-    slivers.add(const SliverPadding(padding: EdgeInsets.only(bottom: 36)));
+    slivers.add(
+      SliverPadding(
+        padding: EdgeInsets.only(
+          bottom: widget.bottomInset > 36 ? widget.bottomInset : 36,
+        ),
+      ),
+    );
 
     return RefreshIndicator(
       onRefresh: widget.controller.refresh,

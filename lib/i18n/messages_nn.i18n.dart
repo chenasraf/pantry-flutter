@@ -78,6 +78,7 @@ class MessagesNn extends Messages {
   ChecklistsMessagesNn get checklists => ChecklistsMessagesNn(this);
   NotesWallMessagesNn get notesWall => NotesWallMessagesNn(this);
   PhotoBoardMessagesNn get photoBoard => PhotoBoardMessagesNn(this);
+  ShoppingMessagesNn get shopping => ShoppingMessagesNn(this);
   ShareMessagesNn get share => ShareMessagesNn(this);
   RecurrenceMessagesNn get recurrence => RecurrenceMessagesNn(this);
   SyncMessagesNn get sync => SyncMessagesNn(this);
@@ -761,6 +762,27 @@ Passord: pantry""";
   /// "Olivenolje"
   /// ```
   String get priceMockName => """Olivenolje""";
+
+  /// ```dart
+  /// "Handle butikk for butikk"
+  /// ```
+  String get shoppingIntroTitle => """Handle butikk for butikk""";
+
+  /// ```dart
+  /// "Start ein handletur over listene dine, gå gjennom kvar butikk i rekkjefølgje og kryss av varer undervegs — med ei løpande prissum."
+  /// ```
+  String get shoppingIntroBody =>
+      """Start ein handletur over listene dine, gå gjennom kvar butikk i rekkjefølgje og kryss av varer undervegs — med ei løpande prissum.""";
+
+  /// ```dart
+  /// "Supermarknad"
+  /// ```
+  String get shoppingMockStoreActive => """Supermarknad""";
+
+  /// ```dart
+  /// "Apotek"
+  /// ```
+  String get shoppingMockStoreNext => """Apotek""";
 
   /// ```dart
   /// "* Krev Pantry for Nextcloud v${version}+"
@@ -3547,6 +3569,368 @@ class SortPhotoBoardMessagesNn extends SortPhotoBoardMessages {
   String get custom => """Sjølvvald""";
 }
 
+class ShoppingMessagesNn extends ShoppingMessages {
+  final MessagesNn _parent;
+  const ShoppingMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Start handel"
+  /// ```
+  String get startShopping => """Start handel""";
+
+  /// ```dart
+  /// "Hald fram handelen"
+  /// ```
+  String get resumeShopping => """Hald fram handelen""";
+
+  /// ```dart
+  /// "Handelshistorikk"
+  /// ```
+  String get shoppingHistory => """Handelshistorikk""";
+
+  /// ```dart
+  /// "Hald fram"
+  /// ```
+  String get resume => """Hald fram""";
+
+  /// ```dart
+  /// "Handlar på ${store}"
+  /// ```
+  String bannerShoppingAt(String store) => """Handlar på ${store}""";
+
+  /// ```dart
+  /// "Butikk $index/$total"
+  /// ```
+  String bannerStoreProgress(int index, int total) =>
+      """Butikk $index/$total""";
+
+  /// ```dart
+  /// "Handlar no"
+  /// ```
+  String get bannerShoppingNow => """Handlar no""";
+
+  /// ```dart
+  /// "Start handel"
+  /// ```
+  String get startTitle => """Start handel""";
+
+  /// ```dart
+  /// "Lister å handle"
+  /// ```
+  String get listsToShop => """Lister å handle""";
+
+  /// ```dart
+  /// "Vel alle"
+  /// ```
+  String get selectAll => """Vel alle""";
+
+  /// ```dart
+  /// "Vel ingen"
+  /// ```
+  String get selectNone => """Vel ingen""";
+
+  /// ```dart
+  /// "Ingen lister å handle enno."
+  /// ```
+  String get noListsToShop => """Ingen lister å handle enno.""";
+
+  /// ```dart
+  /// "Butikkar"
+  /// ```
+  String get storesTitle => """Butikkar""";
+
+  /// ```dart
+  /// "Slå på eller av butikkane du skal innom, og dra for å setje rekkjefølgja."
+  /// ```
+  String get storesHint =>
+      """Slå på eller av butikkane du skal innom, og dra for å setje rekkjefølgja.""";
+
+  /// ```dart
+  /// "Ingen av dei valde listene har varer knytte til ein butikk."
+  /// ```
+  String get noStoresWithItems =>
+      """Ingen av dei valde listene har varer knytte til ein butikk.""";
+
+  /// ```dart
+  /// "Ta med varer utan butikk"
+  /// ```
+  String get includeUnassigned => """Ta med varer utan butikk""";
+
+  /// ```dart
+  /// "Start"
+  /// ```
+  String get start => """Start""";
+
+  /// ```dart
+  /// "Klarte ikkje å starte handelen."
+  /// ```
+  String get startFailed => """Klarte ikkje å starte handelen.""";
+
+  /// ```dart
+  /// "Du har allereie ein handel i gang."
+  /// ```
+  String get tripInProgress => """Du har allereie ein handel i gang.""";
+
+  /// ```dart
+  /// "Du har ein handel i gang i ${house}."
+  /// ```
+  String tripInProgressElsewhere(String house) =>
+      """Du har ein handel i gang i ${house}.""";
+
+  /// ```dart
+  /// "Avslutt førre handel"
+  /// ```
+  String get endPreviousTrip => """Avslutt førre handel""";
+
+  /// ```dart
+  /// "Klarte ikkje å avslutte førre handel."
+  /// ```
+  String get endPreviousFailed => """Klarte ikkje å avslutte førre handel.""";
+
+  /// ```dart
+  /// "$count i korga"
+  /// ```
+  String inCart(int count) => """$count i korga""";
+
+  /// ```dart
+  /// "Skjul handelen for husfellane"
+  /// ```
+  String get makePrivate => """Skjul handelen for husfellane""";
+
+  /// ```dart
+  /// "Vis handelen for husfellane"
+  /// ```
+  String get makePublic => """Vis handelen for husfellane""";
+
+  /// ```dart
+  /// "Privat"
+  /// ```
+  String get privateBadge => """Privat""";
+
+  /// ```dart
+  /// "Neste butikk"
+  /// ```
+  String get nextStore => """Neste butikk""";
+
+  /// ```dart
+  /// "Fullfør"
+  /// ```
+  String get finish => """Fullfør""";
+
+  /// ```dart
+  /// "Fullfør handelen"
+  /// ```
+  String get finishTrip => """Fullfør handelen""";
+
+  /// ```dart
+  /// "Alt kryssa av her"
+  /// ```
+  String get allCheckedHere => """Alt kryssa av her""";
+
+  /// ```dart
+  /// "Gå vidare til neste butikk."
+  /// ```
+  String get moveOnToNext => """Gå vidare til neste butikk.""";
+
+  /// ```dart
+  /// "Alt ferdig"
+  /// ```
+  String get allDone => """Alt ferdig""";
+
+  /// ```dart
+  /// "Alt er i korga."
+  /// ```
+  String get everythingInCart => """Alt er i korga.""";
+
+  /// ```dart
+  /// "Ferdig ($count)"
+  /// ```
+  String doneToday(int count) => """Ferdig ($count)""";
+
+  /// ```dart
+  /// "Ingenting å kjøpe her."
+  /// ```
+  String get nothingToBuyHere => """Ingenting å kjøpe her.""";
+
+  /// ```dart
+  /// "Klarte ikkje å oppdatere vara."
+  /// ```
+  String get checkFailed => """Klarte ikkje å oppdatere vara.""";
+
+  /// ```dart
+  /// "Klarte ikkje å laste varene."
+  /// ```
+  String get loadItemsFailed => """Klarte ikkje å laste varene.""";
+
+  /// ```dart
+  /// "Oppsummering"
+  /// ```
+  String get reviewTitle => """Oppsummering""";
+
+  /// ```dart
+  /// "Neste butikk"
+  /// ```
+  String get advanceTitle => """Neste butikk""";
+
+  /// ```dart
+  /// "Faktisk betalt"
+  /// ```
+  String get actualPaid => """Faktisk betalt""";
+
+  /// ```dart
+  /// "Totalsum"
+  /// ```
+  String get grandTotal => """Totalsum""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 vare utan pris', many: '$count varer utan pris')}"
+  /// ```
+  String itemsWithoutPrice(int count) =>
+      """${_plural(count, one: '1 vare utan pris', many: '$count varer utan pris')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 vare enno ikkje kryssa av', many: '$count varer enno ikkje kryssa av')}"
+  /// ```
+  String itemsStillUnchecked(int count) =>
+      """${_plural(count, one: '1 vare enno ikkje kryssa av', many: '$count varer enno ikkje kryssa av')}""";
+
+  /// ```dart
+  /// "Kva som helst butikk"
+  /// ```
+  String get anyStore => """Kva som helst butikk""";
+
+  /// ```dart
+  /// "Klarte ikkje å lagre summen."
+  /// ```
+  String get saveTotalFailed => """Klarte ikkje å lagre summen.""";
+
+  /// ```dart
+  /// "Påminningar"
+  /// ```
+  String get remindersTitle => """Påminningar""";
+
+  /// ```dart
+  /// "Handter påminningar"
+  /// ```
+  String get manageReminders => """Handter påminningar""";
+
+  /// ```dart
+  /// "Ved start"
+  /// ```
+  String get reminderGroupStart => """Ved start""";
+
+  /// ```dart
+  /// "Mellom butikkar"
+  /// ```
+  String get reminderGroupAdvance => """Mellom butikkar""";
+
+  /// ```dart
+  /// "Ved slutt"
+  /// ```
+  String get reminderGroupEnd => """Ved slutt""";
+
+  /// ```dart
+  /// "Ingen påminningar her enno."
+  /// ```
+  String get noRemindersHere => """Ingen påminningar her enno.""";
+
+  /// ```dart
+  /// "Legg til ei påminning"
+  /// ```
+  String get addReminderHint => """Legg til ei påminning""";
+
+  /// ```dart
+  /// "Når skal ho visast"
+  /// ```
+  String get reminderWhen => """Når skal ho visast""";
+
+  /// ```dart
+  /// "Ved start"
+  /// ```
+  String get whenOnStart => """Ved start""";
+
+  /// ```dart
+  /// "Mellom butikkar"
+  /// ```
+  String get whenOnStoreAdvance => """Mellom butikkar""";
+
+  /// ```dart
+  /// "Ved slutt"
+  /// ```
+  String get whenOnClose => """Ved slutt""";
+
+  /// ```dart
+  /// "Legg til"
+  /// ```
+  String get add => """Legg til""";
+
+  /// ```dart
+  /// "Klarte ikkje å lagre påminninga."
+  /// ```
+  String get reminderSaveFailed => """Klarte ikkje å lagre påminninga.""";
+
+  /// ```dart
+  /// "Klarte ikkje å slette påminninga."
+  /// ```
+  String get reminderDeleteFailed => """Klarte ikkje å slette påminninga.""";
+
+  /// ```dart
+  /// "Handelshistorikk"
+  /// ```
+  String get historyTitle => """Handelshistorikk""";
+
+  /// ```dart
+  /// "Mine"
+  /// ```
+  String get scopeMine => """Mine""";
+
+  /// ```dart
+  /// "Hus"
+  /// ```
+  String get scopeHouse => """Hus""";
+
+  /// ```dart
+  /// "Ingen butikk"
+  /// ```
+  String get noStorePath => """Ingen butikk""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 vare', many: '$count varer')}"
+  /// ```
+  String itemsCount(int count) =>
+      """${_plural(count, one: '1 vare', many: '$count varer')}""";
+
+  /// ```dart
+  /// "Last inn meir"
+  /// ```
+  String get loadMore => """Last inn meir""";
+
+  /// ```dart
+  /// "Ingen handlar enno."
+  /// ```
+  String get noTripsYet => """Ingen handlar enno.""";
+
+  /// ```dart
+  /// "Ingen handlar i dette huset enno."
+  /// ```
+  String get noHouseTripsYet => """Ingen handlar i dette huset enno.""";
+
+  /// ```dart
+  /// "Klarte ikkje å laste historikken."
+  /// ```
+  String get loadHistoryFailed => """Klarte ikkje å laste historikken.""";
+
+  /// ```dart
+  /// "Noko gjekk gale. Prøv igjen."
+  /// ```
+  String get loadFailed => """Noko gjekk gale. Prøv igjen.""";
+
+  /// ```dart
+  /// "Utan kategori"
+  /// ```
+  String get uncategorized => """Utan kategori""";
+}
+
 class ShareMessagesNn extends ShareMessages {
   final MessagesNn _parent;
   const ShareMessagesNn(this._parent) : super(_parent);
@@ -4023,6 +4407,11 @@ Passord: pantry""",
   """onboarding.priceBody""":
       """Gje ei kvar oppføring ein pris – eit enkelt beløp eller eit område – i valutaen du vil. Han vert vist som ein brikke på oppføringa, og du kan filtrere lista etter pris for å halde deg innanfor budsjettet.""",
   """onboarding.priceMockName""": """Olivenolje""",
+  """onboarding.shoppingIntroTitle""": """Handle butikk for butikk""",
+  """onboarding.shoppingIntroBody""":
+      """Start ein handletur over listene dine, gå gjennom kvar butikk i rekkjefølgje og kryss av varer undervegs — med ei løpande prissum.""",
+  """onboarding.shoppingMockStoreActive""": """Supermarknad""",
+  """onboarding.shoppingMockStoreNext""": """Apotek""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4533,6 +4922,70 @@ Passord: pantry""",
   """photoBoard.sort.captionAZ""": """Bilettekst A-Z""",
   """photoBoard.sort.captionZA""": """Bilettekst Z-a""",
   """photoBoard.sort.custom""": """Sjølvvald""",
+  """shopping.startShopping""": """Start handel""",
+  """shopping.resumeShopping""": """Hald fram handelen""",
+  """shopping.shoppingHistory""": """Handelshistorikk""",
+  """shopping.resume""": """Hald fram""",
+  """shopping.bannerShoppingNow""": """Handlar no""",
+  """shopping.startTitle""": """Start handel""",
+  """shopping.listsToShop""": """Lister å handle""",
+  """shopping.selectAll""": """Vel alle""",
+  """shopping.selectNone""": """Vel ingen""",
+  """shopping.noListsToShop""": """Ingen lister å handle enno.""",
+  """shopping.storesTitle""": """Butikkar""",
+  """shopping.storesHint""":
+      """Slå på eller av butikkane du skal innom, og dra for å setje rekkjefølgja.""",
+  """shopping.noStoresWithItems""":
+      """Ingen av dei valde listene har varer knytte til ein butikk.""",
+  """shopping.includeUnassigned""": """Ta med varer utan butikk""",
+  """shopping.start""": """Start""",
+  """shopping.startFailed""": """Klarte ikkje å starte handelen.""",
+  """shopping.tripInProgress""": """Du har allereie ein handel i gang.""",
+  """shopping.endPreviousTrip""": """Avslutt førre handel""",
+  """shopping.endPreviousFailed""": """Klarte ikkje å avslutte førre handel.""",
+  """shopping.makePrivate""": """Skjul handelen for husfellane""",
+  """shopping.makePublic""": """Vis handelen for husfellane""",
+  """shopping.privateBadge""": """Privat""",
+  """shopping.nextStore""": """Neste butikk""",
+  """shopping.finish""": """Fullfør""",
+  """shopping.finishTrip""": """Fullfør handelen""",
+  """shopping.allCheckedHere""": """Alt kryssa av her""",
+  """shopping.moveOnToNext""": """Gå vidare til neste butikk.""",
+  """shopping.allDone""": """Alt ferdig""",
+  """shopping.everythingInCart""": """Alt er i korga.""",
+  """shopping.nothingToBuyHere""": """Ingenting å kjøpe her.""",
+  """shopping.checkFailed""": """Klarte ikkje å oppdatere vara.""",
+  """shopping.loadItemsFailed""": """Klarte ikkje å laste varene.""",
+  """shopping.reviewTitle""": """Oppsummering""",
+  """shopping.advanceTitle""": """Neste butikk""",
+  """shopping.actualPaid""": """Faktisk betalt""",
+  """shopping.grandTotal""": """Totalsum""",
+  """shopping.anyStore""": """Kva som helst butikk""",
+  """shopping.saveTotalFailed""": """Klarte ikkje å lagre summen.""",
+  """shopping.remindersTitle""": """Påminningar""",
+  """shopping.manageReminders""": """Handter påminningar""",
+  """shopping.reminderGroupStart""": """Ved start""",
+  """shopping.reminderGroupAdvance""": """Mellom butikkar""",
+  """shopping.reminderGroupEnd""": """Ved slutt""",
+  """shopping.noRemindersHere""": """Ingen påminningar her enno.""",
+  """shopping.addReminderHint""": """Legg til ei påminning""",
+  """shopping.reminderWhen""": """Når skal ho visast""",
+  """shopping.whenOnStart""": """Ved start""",
+  """shopping.whenOnStoreAdvance""": """Mellom butikkar""",
+  """shopping.whenOnClose""": """Ved slutt""",
+  """shopping.add""": """Legg til""",
+  """shopping.reminderSaveFailed""": """Klarte ikkje å lagre påminninga.""",
+  """shopping.reminderDeleteFailed""": """Klarte ikkje å slette påminninga.""",
+  """shopping.historyTitle""": """Handelshistorikk""",
+  """shopping.scopeMine""": """Mine""",
+  """shopping.scopeHouse""": """Hus""",
+  """shopping.noStorePath""": """Ingen butikk""",
+  """shopping.loadMore""": """Last inn meir""",
+  """shopping.noTripsYet""": """Ingen handlar enno.""",
+  """shopping.noHouseTripsYet""": """Ingen handlar i dette huset enno.""",
+  """shopping.loadHistoryFailed""": """Klarte ikkje å laste historikken.""",
+  """shopping.loadFailed""": """Noko gjekk gale. Prøv igjen.""",
+  """shopping.uncategorized""": """Utan kategori""",
   """share.title""": """Del til Pantry""",
   """share.chooseHouse""": """Vel hus""",
   """share.choosePhotoDestination""": """Last opp til""",

@@ -15,6 +15,7 @@ import 'pages/pinned_notes_page.dart';
 import 'pages/progress_hero_dismiss_page.dart';
 import 'pages/progress_hero_page.dart';
 import 'pages/quick_actions_page.dart';
+import 'pages/shopping_mode_page.dart';
 import 'pages/swipe_actions_page.dart';
 
 /// The first app version that ships an onboarding flow. New users that haven't
@@ -134,6 +135,9 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
       showWhen: onboardingMobileOnly,
     ),
     OnboardingPageEntry(builder: (_) => const ItemPriceOnboardingPage()),
+  ],
+  '0.25.0': [
+    OnboardingPageEntry(builder: (_) => const ShoppingModeOnboardingPage()),
   ],
 };
 
