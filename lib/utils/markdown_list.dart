@@ -98,6 +98,32 @@ final _itemRe = RegExp(r'^\s*(?:[-*+]|\d+[.)])\s+(.+)$');
 // A leading `[ ]` / `[x]` checkbox on the captured text.
 final _checkboxRe = RegExp(r'^\[(.)\]\s*(.*)$');
 
+// A whole task-list line: leading marker, then the `[ ]` / `[x]` checkbox.
+// Group 1 is everything up to and including the marker whitespace; group 2 is
+// the single state character between the brackets.
+final _taskLineRe = RegExp(r'^(\s*(?:[-*+]|\d+[.)])\s+)\[([ xX])\]');
+
+/// Toggle the `[ ]` / `[x]` state of the checkbox at position [ordinal] (0-based,
+/// counting only task-list lines in document order) within a Markdown document.
+///
+/// Indentation, list marker and the rest of the line are preserved. If [ordinal]
+/// doesn't correspond to a checkbox line, [content] is returned unchanged.
+String toggleChecklistItem(String content, int ordinal) {
+  final lines = content.split(RegExp(r'\r?\n'));
+  var seen = 0;
+  for (var i = 0; i < lines.length; i++) {
+    final match = _taskLineRe.firstMatch(lines[i]);
+    if (match == null) continue;
+    if (seen == ordinal) {
+      final checked = match.group(2)! == ' ' ? 'x' : ' ';
+      lines[i] = '${match.group(1)!}[$checked]${lines[i].substring(match.end)}';
+      return lines.join('\n');
+    }
+    seen++;
+  }
+  return content;
+}
+
 /// Parse list items out of a Markdown document. Headings, the export-date line
 /// and any other prose are ignored. The quantity/description suffix produced by
 /// [buildListMarkdown] is stripped so only the item name is returned.
