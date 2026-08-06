@@ -118,4 +118,55 @@ void main() {
       expect(parseMarkdownItems('- [ ] \n-   '), isEmpty);
     });
   });
+
+  group('toggleChecklistItem', () {
+    test('toggles unchecked to checked at the given ordinal', () {
+      expect(
+        toggleChecklistItem('- [ ] Milk\n- [ ] Bread', 1),
+        '- [ ] Milk\n- [x] Bread',
+      );
+    });
+
+    test('toggles checked to unchecked', () {
+      expect(toggleChecklistItem('- [x] Milk', 0), '- [ ] Milk');
+    });
+
+    test('preserves upper-case X when unchecking', () {
+      expect(toggleChecklistItem('- [X] Milk', 0), '- [ ] Milk');
+    });
+
+    test('preserves indentation and marker of nested items', () {
+      const text = '- [ ] Top\n  - [ ] Nested\n  * [ ] Star\n  1. [ ] Ordered';
+      expect(
+        toggleChecklistItem(text, 2),
+        '- [ ] Top\n  - [ ] Nested\n  * [x] Star\n  1. [ ] Ordered',
+      );
+    });
+
+    test('preserves inline text after the checkbox', () {
+      expect(
+        toggleChecklistItem('- [ ] **Milk** — 2 L', 0),
+        '- [x] **Milk** — 2 L',
+      );
+    });
+
+    test('counts only checkbox lines, ignoring prose and plain bullets', () {
+      const text =
+          '# Title\n\n- Plain bullet\n- [ ] First\nsome note\n- [ ] Second';
+      expect(
+        toggleChecklistItem(text, 1),
+        '# Title\n\n- Plain bullet\n- [ ] First\nsome note\n- [x] Second',
+      );
+    });
+
+    test('returns content unchanged for out-of-range ordinal', () {
+      const text = '- [ ] Milk';
+      expect(toggleChecklistItem(text, 5), text);
+    });
+
+    test('returns content unchanged when there are no checkboxes', () {
+      const text = '# Just a note\n- plain bullet';
+      expect(toggleChecklistItem(text, 0), text);
+    });
+  });
 }
