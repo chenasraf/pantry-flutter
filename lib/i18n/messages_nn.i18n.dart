@@ -1625,6 +1625,27 @@ class StoresMessagesNn extends StoresMessages {
   /// "Rediger"
   /// ```
   String get editAction => """Rediger""";
+  SortStoresMessagesNn get sort => SortStoresMessagesNn(this);
+}
+
+class SortStoresMessagesNn extends SortStoresMessages {
+  final StoresMessagesNn _parent;
+  const SortStoresMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Namn A–Å"
+  /// ```
+  String get nameAZ => """Namn A–Å""";
+
+  /// ```dart
+  /// "Namn Å–A"
+  /// ```
+  String get nameZA => """Namn Å–A""";
+
+  /// ```dart
+  /// "Tilpassa"
+  /// ```
+  String get custom => """Tilpassa""";
 }
 
 class ChecklistsMessagesNn extends ChecklistsMessages {
@@ -1860,6 +1881,11 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   /// "Ingen kategori"
   /// ```
   String get noCategory => """Ingen kategori""";
+
+  /// ```dart
+  /// "Ingen butikk"
+  /// ```
+  String get noStore => """Ingen butikk""";
 
   /// ```dart
   /// "Arkivet er tomt."
@@ -2797,6 +2823,11 @@ class SortChecklistsMessagesNn extends SortChecklistsMessages {
   /// "Etter kategori"
   /// ```
   String get category => """Etter kategori""";
+
+  /// ```dart
+  /// "Etter butikk"
+  /// ```
+  String get store => """Etter butikk""";
 
   /// ```dart
   /// "Sjølvvald"
@@ -4574,6 +4605,9 @@ Passord: pantry""",
   """stores.notesHint""": """Andre ting som er verdt å hugse""",
   """stores.noDetails""": """Ingen detaljar er lagt til enno.""",
   """stores.editAction""": """Rediger""",
+  """stores.sort.nameAZ""": """Namn A–Å""",
+  """stores.sort.nameZA""": """Namn Å–A""",
+  """stores.sort.custom""": """Tilpassa""",
   """checklists.categories""": """Kategoriar""",
   """checklists.noChecklists""": """Ingen sjekklister enno.""",
   """checklists.noItems""": """Ingen oppføringar i denne lista.""",
@@ -4657,6 +4691,7 @@ Passord: pantry""",
   """checklists.exitArchive""": """Gå ut av arkiv""",
   """checklists.archiveTitle""": """Arkiver""",
   """checklists.noCategory""": """Ingen kategori""",
+  """checklists.noStore""": """Ingen butikk""",
   """checklists.noArchivedItems""": """Arkivet er tomt.""",
   """checklists.archiveItem""": """Arkiver""",
   """checklists.unarchiveItem""": """Angre arkivering""",
@@ -4748,6 +4783,7 @@ Passord: pantry""",
   """checklists.sort.nameAZ""": """Namn A-Z""",
   """checklists.sort.nameZA""": """Namn Z-A""",
   """checklists.sort.category""": """Etter kategori""",
+  """checklists.sort.store""": """Etter butikk""",
   """checklists.sort.custom""": """Sjølvvald""",
   """checklists.allDone""": """Ferdig 🎉""",
   """checklists.hideProgressHero""": """Sjul framgangskort""",

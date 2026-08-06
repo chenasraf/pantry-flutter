@@ -23,12 +23,56 @@ class StoreService {
     return stores;
   }
 
-  /// Sort stores by name A→Z. Stores have no custom sort; the server always
-  /// returns them name-ordered, but re-sorting after an optimistic create keeps
-  /// the local list consistent. Returns a new list; the input is not mutated.
-  static List<Store> sortStores(Iterable<Store> stores) {
+  Future<void> setStoreSortPref(int houseId, String sort) async {
+    await ApiClient.instance.put<Map<String, dynamic>, void>(
+      '/houses/$houseId/prefs',
+      body: {'storeSort': sort},
+      fromJson: (_) {},
+    );
+  }
+
+  Future<void> reorderStores(
+    int houseId,
+    List<({int id, int sortOrder})> order,
+  ) async {
+    await ApiClient.instance.post<Map<String, dynamic>, void>(
+      '/houses/$houseId/stores/reorder',
+      body: {
+        'items': order
+            .map((e) => {'id': e.id, 'sortOrder': e.sortOrder})
+            .toList(),
+      },
+      fromJson: (_) {},
+    );
+  }
+
+  /// Sort stores according to a sort mode (name_asc, name_desc, custom).
+  /// Returns a new list; the input is not mutated.
+  static List<Store> sortStores(Iterable<Store> stores, String sort) {
     final list = stores.toList();
-    list.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    // Every comparison falls back to id (creation order) as a final tiebreaker
+    // so ties never render in arbitrary order — mirrors CategoryService: fresh
+    // stores all share the same sortOrder until reordered, so without the
+    // tiebreaker the custom list would reshuffle unpredictably as stores are
+    // added.
+    switch (sort) {
+      case 'name_desc':
+        list.sort((a, b) {
+          final c = b.name.toLowerCase().compareTo(a.name.toLowerCase());
+          return c != 0 ? c : a.id.compareTo(b.id);
+        });
+      case 'custom':
+        list.sort((a, b) {
+          final c = a.sortOrder.compareTo(b.sortOrder);
+          return c != 0 ? c : a.id.compareTo(b.id);
+        });
+      case 'name_asc':
+      default:
+        list.sort((a, b) {
+          final c = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+          return c != 0 ? c : a.id.compareTo(b.id);
+        });
+    }
     return list;
   }
 
@@ -73,6 +117,7 @@ class StoreService {
     String? contact,
     String? responsible,
     String? notes,
+    int? sortOrder,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, Store>(
       '/houses/$houseId/stores/$storeId',
@@ -86,6 +131,7 @@ class StoreService {
         'contact': ?contact,
         'responsible': ?responsible,
         'notes': ?notes,
+        'sortOrder': ?sortOrder,
       },
       fromJson: (data) => Store.fromJson(data),
     );

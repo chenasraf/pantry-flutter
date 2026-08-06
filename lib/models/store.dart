@@ -38,6 +38,7 @@ class Store {
   final String? contact;
   final String? responsible;
   final String? notes;
+  final int sortOrder;
   final int createdAt;
   final int updatedAt;
 
@@ -53,6 +54,7 @@ class Store {
     this.contact,
     this.responsible,
     this.notes,
+    this.sortOrder = 0,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -71,6 +73,9 @@ class Store {
     contact: json['contact'] as String?,
     responsible: json['responsible'] as String?,
     notes: json['notes'] as String?,
+    // Defaulted for resilience: stores cached before this field existed (or by
+    // a pre-migration server) carry no `sortOrder`.
+    sortOrder: json['sortOrder'] as int? ?? 0,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
   );
@@ -87,6 +92,7 @@ class Store {
     'contact': contact,
     'responsible': responsible,
     'notes': notes,
+    'sortOrder': sortOrder,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
@@ -96,6 +102,7 @@ class Store {
     String? name,
     String? icon,
     String? color,
+    int? sortOrder,
     int? updatedAt,
   }) => Store(
     id: id ?? this.id,
@@ -109,6 +116,7 @@ class Store {
     contact: contact,
     responsible: responsible,
     notes: notes,
+    sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );

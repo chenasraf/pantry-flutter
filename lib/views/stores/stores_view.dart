@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/store.dart';
+import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/services/store_service.dart';
 import 'package:pantry/sync/sync_ids.dart';
 import 'package:pantry/sync/sync_manager.dart';
@@ -21,7 +23,13 @@ class StoresView extends StatefulWidget {
 }
 
 class _StoresViewState extends State<StoresView> {
+  static const _allSortKeys = ['custom', 'name_asc', 'name_desc'];
+  List<String> get _sortKeys => hasFeature('store-sort')
+      ? _allSortKeys
+      : _allSortKeys.where((k) => k != 'custom').toList();
+
   List<Store> _stores = [];
+  String _sort = 'name_asc';
   bool _isLoading = true;
   String? _error;
 
@@ -37,10 +45,21 @@ class _StoresViewState extends State<StoresView> {
       _error = null;
     });
     try {
-      final stores = await StoreService.instance.getStores(widget.houseId);
+      final prefsFuture = ChecklistService.instance.getHousePrefs(
+        widget.houseId,
+      );
+      final storesFuture = StoreService.instance.getStores(widget.houseId);
+      final results = await Future.wait([prefsFuture, storesFuture]);
       if (!mounted) return;
+      final prefs = results[0] as Map<String, dynamic>;
+      final list = results[1] as List<Store>;
       setState(() {
-        _stores = StoreService.sortStores(stores);
+        var sort = prefs['storeSort'] as String? ?? 'name_asc';
+        if (sort == 'custom' && !hasFeature('store-sort')) {
+          sort = 'name_asc';
+        }
+        _sort = sort;
+        _stores = StoreService.sortStores(list, _sort);
         _isLoading = false;
       });
     } catch (e) {
@@ -52,6 +71,44 @@ class _StoresViewState extends State<StoresView> {
     }
   }
 
+  Future<void> _setSort(String? value) async {
+    if (value == null || value == _sort) return;
+    setState(() {
+      _sort = value;
+      _stores = StoreService.sortStores(_stores, _sort);
+    });
+    try {
+      await StoreService.instance.setStoreSortPref(widget.houseId, value);
+    } catch (e) {
+      debugPrint('[StoresView] Failed to persist sort: $e');
+    }
+  }
+
+  Future<void> _reorder(int oldIndex, int newIndex) async {
+    if (_sort != 'custom') return;
+    setState(() {
+      if (newIndex > oldIndex) newIndex--;
+      final item = _stores.removeAt(oldIndex);
+      _stores.insert(newIndex, item);
+    });
+
+    final order = <Map<String, int>>[];
+    for (var i = 0; i < _stores.length; i++) {
+      order.add({'id': _stores[i].id, 'sortOrder': i});
+    }
+
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.store,
+        op: SyncOpKind.reorder,
+        houseId: widget.houseId,
+        body: {'order': order},
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+  }
+
   Future<void> _create() async {
     final created = await showDialog<Store>(
       context: context,
@@ -59,7 +116,7 @@ class _StoresViewState extends State<StoresView> {
     );
     if (created != null) {
       setState(() {
-        _stores = StoreService.sortStores([..._stores, created]);
+        _stores = StoreService.sortStores([..._stores, created], _sort);
       });
     }
   }
@@ -84,7 +141,7 @@ class _StoresViewState extends State<StoresView> {
       final index = _stores.indexWhere((s) => s.id == updated.id);
       if (index != -1) {
         _stores[index] = updated;
-        _stores = StoreService.sortStores(_stores);
+        _stores = StoreService.sortStores(_stores, _sort);
       }
     });
   }
@@ -136,6 +193,12 @@ class _StoresViewState extends State<StoresView> {
     return value != null ? Color(value) : null;
   }
 
+  String _sortLabel(String key) => switch (key) {
+    'name_asc' => m.stores.sort.nameAZ,
+    'name_desc' => m.stores.sort.nameZA,
+    _ => m.stores.sort.custom,
+  };
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -145,6 +208,30 @@ class _StoresViewState extends State<StoresView> {
         leading: appBarBackLeading(context),
         title: Text(m.stores.manageTitle),
         actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.sort),
+            tooltip: '',
+            onSelected: _setSort,
+            itemBuilder: (context) => [
+              for (final key in _sortKeys)
+                PopupMenuItem<String>(
+                  value: key,
+                  child: Row(
+                    children: [
+                      Icon(
+                        key == _sort
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        size: 20,
+                        color: key == _sort ? theme.colorScheme.primary : null,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(_sortLabel(key)),
+                    ],
+                  ),
+                ),
+            ],
+          ),
           if (PlatformInfo.isDesktop)
             IconButton(
               icon: const Icon(Icons.refresh),
@@ -177,12 +264,20 @@ class _StoresViewState extends State<StoresView> {
           ? Center(child: Text(m.stores.noStores))
           : RefreshIndicator(
               onRefresh: _load,
-              child: ListView.builder(
-                padding: const EdgeInsets.only(bottom: 96),
-                itemCount: _stores.length,
-                itemBuilder: (context, index) =>
-                    _buildTile(theme, _stores[index]),
-              ),
+              child: _sort == 'custom'
+                  ? ReorderableListView.builder(
+                      padding: const EdgeInsets.only(bottom: 96),
+                      itemCount: _stores.length,
+                      onReorder: _reorder,
+                      itemBuilder: (context, index) =>
+                          _buildTile(theme, _stores[index]),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 96),
+                      itemCount: _stores.length,
+                      itemBuilder: (context, index) =>
+                          _buildTile(theme, _stores[index]),
+                    ),
             ),
     );
   }
@@ -207,6 +302,14 @@ class _StoresViewState extends State<StoresView> {
             icon: const Icon(Icons.delete, size: 20),
             onPressed: () => _delete(store),
           ),
+          if (_sort == 'custom')
+            ReorderableDragStartListener(
+              index: _stores.indexOf(store),
+              child: Icon(
+                Icons.drag_handle,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
         ],
       ),
       onTap: () => _view(store),

@@ -300,6 +300,10 @@ stores:
   notesHint: Alles Weitere, was man sich merken sollte
   noDetails: Noch keine Angaben hinzugefügt.
   editAction: Bearbeiten
+  sort:
+    nameAZ: "Name A–Z"
+    nameZA: "Name Z–A"
+    custom: Benutzerdefiniert
 
 checklists:
   categories: Kategorien
@@ -395,6 +399,7 @@ checklists:
   exitArchive: Archiv verlassen
   archiveTitle: Archiv
   noCategory: Keine Kategorie
+  noStore: Kein Geschäft
   noArchivedItems: Das Archiv ist leer.
   archiveItem: Archivieren
   unarchiveItem: Dearchivieren
@@ -493,6 +498,7 @@ checklists:
     nameAZ: "Name A–Z"
     nameZA: "Name Z–A"
     category: Nach Kategorie
+    store: Nach Geschäft
     custom: Benutzerdefiniert
   itemsLeft(int count): "${_plural(count, one: '1 Eintrag übrig', many: '$count Einträge übrig')}"
   allDone: Alles erledigt 🎉

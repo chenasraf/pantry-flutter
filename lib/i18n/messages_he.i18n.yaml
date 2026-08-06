@@ -300,6 +300,10 @@ stores:
   notesHint: כל דבר נוסף שכדאי לזכור
   noDetails: עדיין לא נוספו פרטים.
   editAction: עריכה
+  sort:
+    nameAZ: "שם א׳–ת׳"
+    nameZA: "שם ת׳–א׳"
+    custom: מותאם אישית
 
 checklists:
   categories: קטגוריות
@@ -395,6 +399,7 @@ checklists:
   exitArchive: צא מהארכיון
   archiveTitle: ארכיון
   noCategory: ללא קטגוריה
+  noStore: ללא חנות
   noArchivedItems: הארכיון ריק.
   archiveItem: העבר לארכיון
   unarchiveItem: הוצא מהארכיון
@@ -493,6 +498,7 @@ checklists:
     nameAZ: "שם א–ת"
     nameZA: "שם ת–א"
     category: לפי קטגוריה
+    store: לפי חנות
     custom: מותאם אישית
   itemsLeft(int count): "${_plural(count, one: 'פריט אחד נותר', many: '$count פריטים נותרו')}"
   allDone: הכל בוצע 🎉

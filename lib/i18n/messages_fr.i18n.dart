@@ -1630,6 +1630,27 @@ class StoresMessagesFr extends StoresMessages {
   /// "Modifier"
   /// ```
   String get editAction => """Modifier""";
+  SortStoresMessagesFr get sort => SortStoresMessagesFr(this);
+}
+
+class SortStoresMessagesFr extends SortStoresMessages {
+  final StoresMessagesFr _parent;
+  const SortStoresMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Nom A–Z"
+  /// ```
+  String get nameAZ => """Nom A–Z""";
+
+  /// ```dart
+  /// "Nom Z–A"
+  /// ```
+  String get nameZA => """Nom Z–A""";
+
+  /// ```dart
+  /// "Personnalisé"
+  /// ```
+  String get custom => """Personnalisé""";
 }
 
 class ChecklistsMessagesFr extends ChecklistsMessages {
@@ -1869,6 +1890,11 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Sans catégorie"
   /// ```
   String get noCategory => """Sans catégorie""";
+
+  /// ```dart
+  /// "Sans magasin"
+  /// ```
+  String get noStore => """Sans magasin""";
 
   /// ```dart
   /// "Les archives sont vides."
@@ -2807,6 +2833,11 @@ class SortChecklistsMessagesFr extends SortChecklistsMessages {
   /// "Par catégorie"
   /// ```
   String get category => """Par catégorie""";
+
+  /// ```dart
+  /// "Par magasin"
+  /// ```
+  String get store => """Par magasin""";
 
   /// ```dart
   /// "Personnalisé"
@@ -4601,6 +4632,9 @@ Mot de passe : pantry-rocks""",
   """stores.notesHint""": """Toute autre chose à retenir""",
   """stores.noDetails""": """Aucun détail ajouté pour le moment.""",
   """stores.editAction""": """Modifier""",
+  """stores.sort.nameAZ""": """Nom A–Z""",
+  """stores.sort.nameZA""": """Nom Z–A""",
+  """stores.sort.custom""": """Personnalisé""",
   """checklists.categories""": """Catégories""",
   """checklists.noChecklists""": """Aucune liste pour le moment.""",
   """checklists.noItems""": """Aucun article dans cette liste.""",
@@ -4687,6 +4721,7 @@ Mot de passe : pantry-rocks""",
   """checklists.exitArchive""": """Quitter les archives""",
   """checklists.archiveTitle""": """Archives""",
   """checklists.noCategory""": """Sans catégorie""",
+  """checklists.noStore""": """Sans magasin""",
   """checklists.noArchivedItems""": """Les archives sont vides.""",
   """checklists.archiveItem""": """Archiver""",
   """checklists.unarchiveItem""": """Désarchiver""",
@@ -4781,6 +4816,7 @@ Mot de passe : pantry-rocks""",
   """checklists.sort.nameAZ""": """Nom A–Z""",
   """checklists.sort.nameZA""": """Nom Z–A""",
   """checklists.sort.category""": """Par catégorie""",
+  """checklists.sort.store""": """Par magasin""",
   """checklists.sort.custom""": """Personnalisé""",
   """checklists.allDone""": """Tout est fait 🎉""",
   """checklists.hideProgressHero""": """Masquer la carte de progression""",
