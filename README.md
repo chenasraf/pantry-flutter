@@ -105,6 +105,7 @@ The app consumes the Nextcloud Pantry OCS API. The OpenAPI spec is kept in sync 
 
 ```bash
 make fetch-openapi
+make fetch-openapi REF=<branch/sha>
 ```
 
 ### Translations
