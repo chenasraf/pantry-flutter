@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.25.0](https://github.com/chenasraf/pantry-flutter/compare/v0.24.1...v0.25.0) (2026-08-06)
+
+
+### Features
+
+* **notes:** tap to toggle task-list checkboxes in view mode ([b894658](https://github.com/chenasraf/pantry-flutter/commit/b894658b68f706b884ca98c7dfeaf5082ea0061a)), closes [#97](https://github.com/chenasraf/pantry-flutter/issues/97)
+* **shopping:** add Shopping Mode ([#127](https://github.com/chenasraf/pantry-flutter/issues/127)) ([8544b03](https://github.com/chenasraf/pantry-flutter/commit/8544b0363f7a1a0034d95f725efbc552bc85d023))
+* **stores:** sort and group checklist by store with manual reorder ([#129](https://github.com/chenasraf/pantry-flutter/issues/129)) ([fef1a95](https://github.com/chenasraf/pantry-flutter/commit/fef1a95bfd0f0dc6a9293272e71d0414644e1b58))
+
 ## [0.24.1](https://github.com/chenasraf/pantry-flutter/compare/v0.24.0...v0.24.1) (2026-07-30)
 
 

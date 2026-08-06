@@ -1,0 +1,4 @@
+Features
+- tap to toggle task-list checkboxes in view mode
+- add Shopping Mode ([#127](https://github.com/chenasraf/pantry-flutter/issues/127))
+- sort and group checklist by store with manual reorder ([#129](https://github.com/chenasraf/pantry-flutter/issues/129))
