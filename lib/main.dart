@@ -18,6 +18,7 @@ import 'services/checklist_service.dart';
 import 'services/house_service.dart';
 import 'services/local_notifications_service.dart';
 import 'services/nn_localizations.dart';
+import 'services/store_service.dart';
 import 'services/note_service.dart';
 import 'services/photo_service.dart';
 import 'services/prefs_service.dart';
@@ -96,6 +97,7 @@ void main() async {
     await Future.wait([
       HouseService.instance.cache.load(),
       CategoryService.instance.cache.load(),
+      StoreService.instance.cache.load(),
       ChecklistService.instance.cache.load(),
       PhotoService.instance.cache.load(),
       NoteService.instance.cache.load(),
@@ -303,6 +305,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
       PrefsService.instance.clear(),
       HouseService.instance.cache.clear(),
       CategoryService.instance.cache.clear(),
+      StoreService.instance.cache.clear(),
       ChecklistService.instance.cache.clear(),
       PhotoService.instance.cache.clear(),
       NoteService.instance.cache.clear(),
