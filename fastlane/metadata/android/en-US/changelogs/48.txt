@@ -1,0 +1,6 @@
+Features
+- swipe to remove an item from the current trip
+Bug Fixes
+- switch scanner to FLOSS flutter_zxing so F-Droid can build
+- show empty state when a step has no reminders
+- show cached store chips immediately on startup
