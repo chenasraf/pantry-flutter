@@ -2230,11 +2230,6 @@ class BarcodeChecklistsMessages {
   String get scanInstructions => """Point your camera at a product barcode""";
 
   /// ```dart
-  /// "Toggle flash"
-  /// ```
-  String get torch => """Toggle flash""";
-
-  /// ```dart
   /// "Enter manually"
   /// ```
   String get enterManually => """Enter manually""";
@@ -4617,7 +4612,6 @@ Password: pantry-rocks""",
   """checklists.barcode.scanTitle""": """Scan barcode""",
   """checklists.barcode.scanInstructions""":
       """Point your camera at a product barcode""",
-  """checklists.barcode.torch""": """Toggle flash""",
   """checklists.barcode.enterManually""": """Enter manually""",
   """checklists.barcode.manualTitle""": """Enter barcode""",
   """checklists.barcode.manualHint""": """Barcode number""",

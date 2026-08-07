@@ -315,7 +315,6 @@ checklists:
     scan: סרוק ברקוד
     scanTitle: סריקת ברקוד
     scanInstructions: כוון את המצלמה אל ברקוד של מוצר
-    torch: הפעלת פנס
     enterManually: הזנה ידנית
     manualTitle: הזנת ברקוד
     manualHint: מספר ברקוד

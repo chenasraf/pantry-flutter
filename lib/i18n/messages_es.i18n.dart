@@ -2252,11 +2252,6 @@ class BarcodeChecklistsMessagesEs extends BarcodeChecklistsMessages {
       """Apunta la cámara a un código de barras de producto""";
 
   /// ```dart
-  /// "Alternar flash"
-  /// ```
-  String get torch => """Alternar flash""";
-
-  /// ```dart
   /// "Introducir manualmente"
   /// ```
   String get enterManually => """Introducir manualmente""";
@@ -4662,7 +4657,6 @@ Contraseña: pantry-rocks""",
   """checklists.barcode.scanTitle""": """Escanear código de barras""",
   """checklists.barcode.scanInstructions""":
       """Apunta la cámara a un código de barras de producto""",
-  """checklists.barcode.torch""": """Alternar flash""",
   """checklists.barcode.enterManually""": """Introducir manualmente""",
   """checklists.barcode.manualTitle""": """Introducir código de barras""",
   """checklists.barcode.manualHint""": """Número de código de barras""",
