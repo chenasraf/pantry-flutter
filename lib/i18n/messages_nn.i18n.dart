@@ -3866,6 +3866,16 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get noRemindersHere => """Ingen påminningar her enno.""";
 
   /// ```dart
+  /// "Ingen påminningar for dette steget enno."
+  /// ```
+  String get noRemindersStep => """Ingen påminningar for dette steget enno.""";
+
+  /// ```dart
+  /// "Legg til påminningar"
+  /// ```
+  String get addReminders => """Legg til påminningar""";
+
+  /// ```dart
   /// "Legg til ei påminning"
   /// ```
   String get addReminderHint => """Legg til ei påminning""";
@@ -5004,6 +5014,9 @@ Passord: pantry""",
   """shopping.reminderGroupAdvance""": """Mellom butikkar""",
   """shopping.reminderGroupEnd""": """Ved slutt""",
   """shopping.noRemindersHere""": """Ingen påminningar her enno.""",
+  """shopping.noRemindersStep""":
+      """Ingen påminningar for dette steget enno.""",
+  """shopping.addReminders""": """Legg til påminningar""",
   """shopping.addReminderHint""": """Legg til ei påminning""",
   """shopping.reminderWhen""": """Når skal ho visast""",
   """shopping.whenOnStart""": """Ved start""",

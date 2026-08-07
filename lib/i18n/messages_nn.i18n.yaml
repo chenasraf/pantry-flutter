@@ -861,6 +861,8 @@ shopping:
   reminderGroupAdvance: Mellom butikkar
   reminderGroupEnd: Ved slutt
   noRemindersHere: Ingen påminningar her enno.
+  noRemindersStep: Ingen påminningar for dette steget enno.
+  addReminders: Legg til påminningar
   addReminderHint: Legg til ei påminning
   reminderWhen: Når skal ho visast
   whenOnStart: Ved start

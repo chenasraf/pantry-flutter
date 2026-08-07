@@ -738,6 +738,8 @@ shopping:
   reminderGroupAdvance: Entre tiendas
   reminderGroupEnd: Al terminar
   noRemindersHere: Aún no hay recordatorios aquí.
+  noRemindersStep: Aún no hay recordatorios para este paso.
+  addReminders: Añadir recordatorios
   addReminderHint: Añadir un recordatorio
   reminderWhen: Cuándo mostrar
   whenOnStart: Al empezar

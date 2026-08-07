@@ -144,13 +144,11 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                if (widget.reminders.isNotEmpty) ...[
-                  ShoppingReminderBlock(
-                    reminders: widget.reminders,
-                    onManage: widget.onManageReminders,
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                ShoppingReminderBlock(
+                  reminders: widget.reminders,
+                  onManage: widget.onManageReminders,
+                ),
+                const SizedBox(height: 16),
                 for (final store in _visibleStores) ...[
                   _StoreSection(
                     store: store,

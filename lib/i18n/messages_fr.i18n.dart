@@ -3880,6 +3880,17 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get noRemindersHere => """Aucun rappel ici pour l'instant.""";
 
   /// ```dart
+  /// "Aucun rappel pour cette étape pour l'instant."
+  /// ```
+  String get noRemindersStep =>
+      """Aucun rappel pour cette étape pour l'instant.""";
+
+  /// ```dart
+  /// "Ajouter des rappels"
+  /// ```
+  String get addReminders => """Ajouter des rappels""";
+
+  /// ```dart
   /// "Ajouter un rappel"
   /// ```
   String get addReminderHint => """Ajouter un rappel""";
@@ -5042,6 +5053,9 @@ Mot de passe : pantry-rocks""",
   """shopping.reminderGroupAdvance""": """Entre les magasins""",
   """shopping.reminderGroupEnd""": """À la fin""",
   """shopping.noRemindersHere""": """Aucun rappel ici pour l'instant.""",
+  """shopping.noRemindersStep""":
+      """Aucun rappel pour cette étape pour l'instant.""",
+  """shopping.addReminders""": """Ajouter des rappels""",
   """shopping.addReminderHint""": """Ajouter un rappel""",
   """shopping.reminderWhen""": """Quand l'afficher""",
   """shopping.whenOnStart""": """Au début""",

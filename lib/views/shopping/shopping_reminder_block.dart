@@ -29,9 +29,56 @@ class _ShoppingReminderBlockState extends State<ShoppingReminderBlock> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.reminders.isEmpty) return const SizedBox.shrink();
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+
+    if (widget.reminders.isEmpty) {
+      return Card(
+        margin: EdgeInsets.zero,
+        color: cs.surfaceContainerHighest.withValues(alpha: 0.4),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: cs.outlineVariant),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.notifications_none, size: 20, color: cs.primary),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      m.shopping.remindersTitle,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                m.shopping.noRemindersStep,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
+              ),
+              if (widget.onManage != null)
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: TextButton.icon(
+                    onPressed: widget.onManage,
+                    icon: const Icon(Icons.add, size: 18),
+                    label: Text(m.shopping.addReminders),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Card(
       margin: EdgeInsets.zero,

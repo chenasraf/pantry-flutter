@@ -3848,6 +3848,16 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get noRemindersHere => """אין עדיין תזכורות כאן.""";
 
   /// ```dart
+  /// "אין עדיין תזכורות לשלב הזה."
+  /// ```
+  String get noRemindersStep => """אין עדיין תזכורות לשלב הזה.""";
+
+  /// ```dart
+  /// "הוספת תזכורות"
+  /// ```
+  String get addReminders => """הוספת תזכורות""";
+
+  /// ```dart
   /// "הוספת תזכורת"
   /// ```
   String get addReminderHint => """הוספת תזכורת""";
@@ -4960,6 +4970,8 @@ Map<String, String> get messagesHeMap => {
   """shopping.reminderGroupAdvance""": """בין חנויות""",
   """shopping.reminderGroupEnd""": """בסיום""",
   """shopping.noRemindersHere""": """אין עדיין תזכורות כאן.""",
+  """shopping.noRemindersStep""": """אין עדיין תזכורות לשלב הזה.""",
+  """shopping.addReminders""": """הוספת תזכורות""",
   """shopping.addReminderHint""": """הוספת תזכורת""",
   """shopping.reminderWhen""": """מתי להציג""",
   """shopping.whenOnStart""": """בהתחלה""",

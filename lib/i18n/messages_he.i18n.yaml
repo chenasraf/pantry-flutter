@@ -738,6 +738,8 @@ shopping:
   reminderGroupAdvance: בין חנויות
   reminderGroupEnd: בסיום
   noRemindersHere: אין עדיין תזכורות כאן.
+  noRemindersStep: אין עדיין תזכורות לשלב הזה.
+  addReminders: הוספת תזכורות
   addReminderHint: הוספת תזכורת
   reminderWhen: מתי להציג
   whenOnStart: בהתחלה

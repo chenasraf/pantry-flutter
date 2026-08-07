@@ -3875,6 +3875,16 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get noRemindersHere => """Aún no hay recordatorios aquí.""";
 
   /// ```dart
+  /// "Aún no hay recordatorios para este paso."
+  /// ```
+  String get noRemindersStep => """Aún no hay recordatorios para este paso.""";
+
+  /// ```dart
+  /// "Añadir recordatorios"
+  /// ```
+  String get addReminders => """Añadir recordatorios""";
+
+  /// ```dart
   /// "Añadir un recordatorio"
   /// ```
   String get addReminderHint => """Añadir un recordatorio""";
@@ -5022,6 +5032,9 @@ Contraseña: pantry-rocks""",
   """shopping.reminderGroupAdvance""": """Entre tiendas""",
   """shopping.reminderGroupEnd""": """Al terminar""",
   """shopping.noRemindersHere""": """Aún no hay recordatorios aquí.""",
+  """shopping.noRemindersStep""":
+      """Aún no hay recordatorios para este paso.""",
+  """shopping.addReminders""": """Añadir recordatorios""",
   """shopping.addReminderHint""": """Añadir un recordatorio""",
   """shopping.reminderWhen""": """Cuándo mostrar""",
   """shopping.whenOnStart""": """Al empezar""",

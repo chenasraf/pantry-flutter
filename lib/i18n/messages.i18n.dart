@@ -3842,6 +3842,16 @@ class ShoppingMessages {
   String get noRemindersHere => """No reminders here yet.""";
 
   /// ```dart
+  /// "No reminders for this step yet."
+  /// ```
+  String get noRemindersStep => """No reminders for this step yet.""";
+
+  /// ```dart
+  /// "Add reminders"
+  /// ```
+  String get addReminders => """Add reminders""";
+
+  /// ```dart
   /// "Add a reminder"
   /// ```
   String get addReminderHint => """Add a reminder""";
@@ -4966,6 +4976,8 @@ Password: pantry-rocks""",
   """shopping.reminderGroupAdvance""": """Between shops""",
   """shopping.reminderGroupEnd""": """At end""",
   """shopping.noRemindersHere""": """No reminders here yet.""",
+  """shopping.noRemindersStep""": """No reminders for this step yet.""",
+  """shopping.addReminders""": """Add reminders""",
   """shopping.addReminderHint""": """Add a reminder""",
   """shopping.reminderWhen""": """When to show""",
   """shopping.whenOnStart""": """At start""",

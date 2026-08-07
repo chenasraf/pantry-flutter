@@ -3882,6 +3882,17 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get noRemindersHere => """Noch keine Erinnerungen hier.""";
 
   /// ```dart
+  /// "Noch keine Erinnerungen für diesen Schritt."
+  /// ```
+  String get noRemindersStep =>
+      """Noch keine Erinnerungen für diesen Schritt.""";
+
+  /// ```dart
+  /// "Erinnerungen hinzufügen"
+  /// ```
+  String get addReminders => """Erinnerungen hinzufügen""";
+
+  /// ```dart
   /// "Erinnerung hinzufügen"
   /// ```
   String get addReminderHint => """Erinnerung hinzufügen""";
@@ -5052,6 +5063,9 @@ Passwort: pantry-rocks""",
   """shopping.reminderGroupAdvance""": """Zwischen Geschäften""",
   """shopping.reminderGroupEnd""": """Am Ende""",
   """shopping.noRemindersHere""": """Noch keine Erinnerungen hier.""",
+  """shopping.noRemindersStep""":
+      """Noch keine Erinnerungen für diesen Schritt.""",
+  """shopping.addReminders""": """Erinnerungen hinzufügen""",
   """shopping.addReminderHint""": """Erinnerung hinzufügen""",
   """shopping.reminderWhen""": """Wann anzeigen""",
   """shopping.whenOnStart""": """Zu Beginn""",

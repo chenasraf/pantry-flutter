@@ -744,6 +744,8 @@ shopping:
   reminderGroupAdvance: Between shops
   reminderGroupEnd: At end
   noRemindersHere: No reminders here yet.
+  noRemindersStep: No reminders for this step yet.
+  addReminders: Add reminders
   addReminderHint: Add a reminder
   reminderWhen: When to show
   whenOnStart: At start

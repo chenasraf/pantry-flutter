@@ -385,13 +385,11 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              if (_startReminders.isNotEmpty) ...[
-                ShoppingReminderBlock(
-                  reminders: _startReminders,
-                  onManage: _openReminders,
-                ),
-                const SizedBox(height: 16),
-              ],
+              ShoppingReminderBlock(
+                reminders: _startReminders,
+                onManage: _openReminders,
+              ),
+              const SizedBox(height: 16),
               // Lists section.
               Row(
                 children: [
