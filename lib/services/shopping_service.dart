@@ -176,6 +176,26 @@ class ShoppingService {
     );
   }
 
+  /// (10a) Remove an item from this trip only — it drops off the shopping list
+  /// but stays on the checklist (not deleted, not checked). Reversible via
+  /// [unskipItem]. Idempotent; returns only success. [getItems] already
+  /// excludes skipped items server-side.
+  Future<void> skipItem(int houseId, int sessionId, int itemId) async {
+    await _api.post<Map<String, dynamic>, void>(
+      '${_base(houseId)}/sessions/$sessionId/items/$itemId/skip',
+      fromJson: (_) {},
+    );
+  }
+
+  /// (10b) Undo a skip — the item returns to the trip's list in its sorted
+  /// position. Idempotent; returns only success, so re-fetch [getItems].
+  Future<void> unskipItem(int houseId, int sessionId, int itemId) async {
+    await _api.post<Map<String, dynamic>, void>(
+      '${_base(houseId)}/sessions/$sessionId/items/$itemId/unskip',
+      fromJson: (_) {},
+    );
+  }
+
   // -- Review / done-today ---------------------------------------------------
 
   /// (11) The bought log grouped by store (server-computed, authoritative).

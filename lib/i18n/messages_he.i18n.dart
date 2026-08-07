@@ -3776,6 +3776,26 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get loadItemsFailed => """טעינת הפריטים נכשלה.""";
 
   /// ```dart
+  /// "הסרה מהקנייה"
+  /// ```
+  String get removeFromTrip => """הסרה מהקנייה""";
+
+  /// ```dart
+  /// "הוסר מהקנייה הזו"
+  /// ```
+  String get removedFromTrip => """הוסר מהקנייה הזו""";
+
+  /// ```dart
+  /// "בטל"
+  /// ```
+  String get undo => """בטל""";
+
+  /// ```dart
+  /// "הביטול נכשל."
+  /// ```
+  String get undoRemoveFailed => """הביטול נכשל.""";
+
+  /// ```dart
   /// "סיכום"
   /// ```
   String get reviewTitle => """סיכום""";
@@ -4958,6 +4978,10 @@ Map<String, String> get messagesHeMap => {
   """shopping.nothingToBuyHere""": """אין מה לקנות כאן.""",
   """shopping.checkFailed""": """עדכון הפריט נכשל.""",
   """shopping.loadItemsFailed""": """טעינת הפריטים נכשלה.""",
+  """shopping.removeFromTrip""": """הסרה מהקנייה""",
+  """shopping.removedFromTrip""": """הוסר מהקנייה הזו""",
+  """shopping.undo""": """בטל""",
+  """shopping.undoRemoveFailed""": """הביטול נכשל.""",
   """shopping.reviewTitle""": """סיכום""",
   """shopping.advanceTitle""": """החנות הבאה""",
   """shopping.actualPaid""": """שולם בפועל""",

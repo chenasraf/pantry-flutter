@@ -724,6 +724,10 @@ shopping:
   nothingToBuyHere: Nada que comprar aquí.
   checkFailed: No se pudo actualizar el artículo.
   loadItemsFailed: No se pudieron cargar los artículos.
+  removeFromTrip: Quitar de la compra
+  removedFromTrip: Quitado de esta compra
+  undo: Deshacer
+  undoRemoveFailed: No se pudo deshacer.
   reviewTitle: Resumen
   advanceTitle: Siguiente tienda
   actualPaid: Pagado real

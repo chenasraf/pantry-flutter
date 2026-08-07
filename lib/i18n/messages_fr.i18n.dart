@@ -3808,6 +3808,26 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get loadItemsFailed => """Impossible de charger les articles.""";
 
   /// ```dart
+  /// "Retirer de la sortie"
+  /// ```
+  String get removeFromTrip => """Retirer de la sortie""";
+
+  /// ```dart
+  /// "Retiré de cette sortie"
+  /// ```
+  String get removedFromTrip => """Retiré de cette sortie""";
+
+  /// ```dart
+  /// "Annuler"
+  /// ```
+  String get undo => """Annuler""";
+
+  /// ```dart
+  /// "Impossible d'annuler."
+  /// ```
+  String get undoRemoveFailed => """Impossible d'annuler.""";
+
+  /// ```dart
   /// "Récapitulatif"
   /// ```
   String get reviewTitle => """Récapitulatif""";
@@ -5041,6 +5061,10 @@ Mot de passe : pantry-rocks""",
   """shopping.nothingToBuyHere""": """Rien à acheter ici.""",
   """shopping.checkFailed""": """Impossible de mettre à jour l'article.""",
   """shopping.loadItemsFailed""": """Impossible de charger les articles.""",
+  """shopping.removeFromTrip""": """Retirer de la sortie""",
+  """shopping.removedFromTrip""": """Retiré de cette sortie""",
+  """shopping.undo""": """Annuler""",
+  """shopping.undoRemoveFailed""": """Impossible d'annuler.""",
   """shopping.reviewTitle""": """Récapitulatif""",
   """shopping.advanceTitle""": """Magasin suivant""",
   """shopping.actualPaid""": """Payé réel""",

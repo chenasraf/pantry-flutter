@@ -724,6 +724,10 @@ shopping:
   nothingToBuyHere: אין מה לקנות כאן.
   checkFailed: עדכון הפריט נכשל.
   loadItemsFailed: טעינת הפריטים נכשלה.
+  removeFromTrip: הסרה מהקנייה
+  removedFromTrip: הוסר מהקנייה הזו
+  undo: בטל
+  undoRemoveFailed: הביטול נכשל.
   reviewTitle: סיכום
   advanceTitle: החנות הבאה
   actualPaid: שולם בפועל

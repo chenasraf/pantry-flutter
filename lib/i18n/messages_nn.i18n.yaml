@@ -847,6 +847,10 @@ shopping:
   nothingToBuyHere: Ingenting å kjøpe her.
   checkFailed: Klarte ikkje å oppdatere vara.
   loadItemsFailed: Klarte ikkje å laste varene.
+  removeFromTrip: Fjern frå handleturen
+  removedFromTrip: Fjerna frå denne handleturen
+  undo: Angre
+  undoRemoveFailed: Klarte ikkje å angre.
   reviewTitle: Oppsummering
   advanceTitle: Neste butikk
   actualPaid: Faktisk betalt

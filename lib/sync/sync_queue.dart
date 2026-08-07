@@ -106,6 +106,7 @@ class SyncQueue {
     while (changed) {
       changed = false;
       changed = _applyEmptyTrash(result) || changed;
+      changed = _applyShoppingSkipCancels(result) || changed;
       changed = _applyDeletePairs(result) || changed;
       changed = _applyArchivePairs(result) || changed;
       changed = _applyTogglePairs(result) || changed;
@@ -145,6 +146,41 @@ class SyncQueue {
       if (ops.length != before) changed = true;
     }
     return changed;
+  }
+
+  /// A queued "remove from trip" (skip = create) that's later undone (unskip =
+  /// delete) — on the same item + session — is a round trip to nowhere: drop
+  /// both. Unlike checklist rows these carry no temp id, so [_applyDeletePairs]'
+  /// create/delete rule never catches them. Cancelling here means an
+  /// offline skip-then-undo never reaches the server, and — crucially — leaves
+  /// nothing in [SyncManager.pendingShoppingSkippedIds] to re-hide the item
+  /// once connectivity returns. The endpoints are idempotent, so cancelling
+  /// lands the same server state as flushing both in order.
+  bool _applyShoppingSkipCancels(List<SyncOp> ops) {
+    for (var i = 0; i < ops.length; i++) {
+      final a = ops[i];
+      if (a.entity != SyncEntity.shoppingSkip) continue;
+      if (a.op != SyncOpKind.create) continue;
+      final deleteIdx = ops.indexWhere(
+        (b) =>
+            !identical(b, a) &&
+            b.entity == SyncEntity.shoppingSkip &&
+            b.op == SyncOpKind.delete &&
+            b.houseId == a.houseId &&
+            b.parentId == a.parentId &&
+            b.entityId == a.entityId,
+      );
+      if (deleteIdx != -1) {
+        // Remove the higher index first so the lower one stays valid.
+        final aIdx = i;
+        final hi = deleteIdx > aIdx ? deleteIdx : aIdx;
+        final lo = deleteIdx > aIdx ? aIdx : deleteIdx;
+        ops.removeAt(hi);
+        ops.removeAt(lo);
+        return true;
+      }
+    }
+    return false;
   }
 
   bool _applyDeletePairs(List<SyncOp> ops) {

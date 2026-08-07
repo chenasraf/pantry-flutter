@@ -10,6 +10,13 @@ enum SyncEntity {
   /// the item id and [SyncOp.parentId] is the session id. Queued (not sent
   /// direct) so checking items off survives spotty in-store connectivity.
   shoppingCheck,
+
+  /// A Shopping Mode "remove from this trip" (skip) write. [SyncOp.op] is
+  /// [SyncOpKind.create] for a skip and [SyncOpKind.delete] for an unskip;
+  /// [SyncOp.entityId] is the item id and [SyncOp.parentId] is the session id.
+  /// Queued (not sent direct) so removing an item from a trip — and undoing it
+  /// — survives spotty in-store connectivity, mirroring [shoppingCheck].
+  shoppingSkip,
 }
 
 enum SyncOpKind {

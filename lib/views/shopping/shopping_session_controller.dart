@@ -108,13 +108,29 @@ class ShoppingSessionController extends ChangeNotifier {
       op.houseId == houseId &&
       op.parentId == sessionId;
 
-  /// Watch the sync queue so a check that flushes (or gets dropped) reconciles
-  /// this view promptly instead of waiting for the next ~1-min poll.
+  bool _isOwnSkipOp(SyncOp op) =>
+      op.entity == SyncEntity.shoppingSkip &&
+      op.houseId == houseId &&
+      op.parentId == sessionId;
+
+  /// Watch the sync queue so a check/skip that flushes (or gets dropped)
+  /// reconciles this view promptly instead of waiting for the next ~1-min poll.
   void _bindSync() {
     _appliedSub ??= SyncManager.instance.onApplied.listen((e) {
       // A check landed on the server — refresh the session review so the Done
       // drawer / in-cart count catch up. The item list is already optimistic.
-      if (_isOwnCheckOp(e.op)) unawaited(_refreshReview());
+      if (_isOwnCheckOp(e.op)) {
+        unawaited(_refreshReview());
+        return;
+      }
+      // An unskip (delete) landed — the item is back in the trip, so pull the
+      // fresh list to slot it into its server-sorted position. A skip (create)
+      // landing needs nothing: the item is already hidden optimistically and
+      // the server now excludes it too, so refreshing mid-flush would only risk
+      // hiding it again when a skip+unskip pair flushes back to back.
+      if (_isOwnSkipOp(e.op) && e.op.op == SyncOpKind.delete) {
+        unawaited(_refreshLiveData(includeHeartbeat: false).catchError((_) {}));
+      }
     });
     _skippedSub ??= SyncManager.instance.onSkipped.listen((e) {
       // A check was dropped (e.g. the session closed, or a 4xx) — un-hide the
@@ -122,6 +138,15 @@ class ShoppingSessionController extends ChangeNotifier {
       if (_isOwnCheckOp(e.op) && e.op.op == SyncOpKind.create) {
         final id = e.op.entityId;
         if (id != null) _checkedPending.remove(id);
+        unawaited(_refreshLiveData(includeHeartbeat: false).catchError((_) {}));
+      }
+      // A skip/unskip was dropped — un-hide any skip and reconcile from the
+      // server so the item lands wherever the server says it belongs.
+      if (_isOwnSkipOp(e.op)) {
+        if (e.op.op == SyncOpKind.create) {
+          final id = e.op.entityId;
+          if (id != null) _skippedPending.remove(id);
+        }
         unawaited(_refreshLiveData(includeHeartbeat: false).catchError((_) {}));
       }
     });
@@ -279,6 +304,17 @@ class ShoppingSessionController extends ChangeNotifier {
   /// fetch result until a fetch stops returning them (server confirmed).
   final Set<int> _checkedPending = {};
 
+  /// Items removed from this trip locally whose skip the server hasn't caught
+  /// up to yet — the skip mirror of [_checkedPending]. Hidden from any fetch
+  /// result until a skip is confirmed (queue-drained and no longer listed), so
+  /// an offline / still-flushing removal can't flicker back onto the list.
+  final Set<int> _skippedPending = {};
+
+  /// The last item removed from the trip per id, kept only long enough for its
+  /// Undo to restore it instantly at its original position without waiting on a
+  /// server re-fetch (which, offline, can't reach the server anyway).
+  final Map<int, ({ListItem item, int index})> _skipUndo = {};
+
   Future<void> _refreshLiveData({required bool includeHeartbeat}) async {
     final results = await Future.wait([
       _service.getItems(houseId, sessionId),
@@ -301,7 +337,24 @@ class ShoppingSessionController extends ChangeNotifier {
       (id) => !queuePending.contains(id) && !fetched.any((i) => i.id == id),
     );
     _checkedPending.addAll(queuePending);
-    _items = fetched.where((i) => !_checkedPending.contains(i.id)).toList();
+    // Same guard for trip removals (skips). The server already excludes skipped
+    // items, so a synced skip simply stops appearing; the hidden set only
+    // covers the window before the skip op flushes.
+    final queueSkipPending = SyncManager.instance.pendingShoppingSkippedIds(
+      houseId,
+      sessionId,
+    );
+    _skippedPending.removeWhere(
+      (id) => !queueSkipPending.contains(id) && !fetched.any((i) => i.id == id),
+    );
+    _skippedPending.addAll(queueSkipPending);
+    _items = fetched
+        .where(
+          (i) =>
+              !_checkedPending.contains(i.id) &&
+              !_skippedPending.contains(i.id),
+        )
+        .toList();
     _review = results[1] as ShoppingReview;
     _presence = results[2] as List<ShoppingPresenceEntry>;
     notifyListeners();
@@ -334,6 +387,56 @@ class ShoppingSessionController extends ChangeNotifier {
         op: SyncOpKind.create,
         houseId: houseId,
         entityId: item.id,
+        parentId: sessionId,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+  }
+
+  /// Remove [item] from this trip only — it drops off the to-buy list but stays
+  /// on the checklist (not checked, not deleted). Optimistic and queued, like
+  /// [checkItem], so it survives spotty connectivity. Reversible via
+  /// [unskipItem]; [_skipUndo] remembers the item so an Undo can restore it in
+  /// place instantly.
+  Future<void> skipItem(ListItem item) async {
+    final index = _items.indexWhere((i) => i.id == item.id);
+    _skipUndo[item.id] = (item: item, index: index < 0 ? 0 : index);
+    _skippedPending.add(item.id);
+    _items = _items.where((i) => i.id != item.id).toList();
+    notifyListeners();
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.shoppingSkip,
+        op: SyncOpKind.create,
+        houseId: houseId,
+        entityId: item.id,
+        parentId: sessionId,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+  }
+
+  /// Undo a trip removal: bring [itemId] back to the to-buy list and queue the
+  /// unskip. Restores the item at its pre-removal position optimistically (so
+  /// it reappears immediately even offline); the unskip landing later triggers
+  /// a refresh that reconciles it to the server's sorted order.
+  Future<void> unskipItem(int itemId) async {
+    final undo = _skipUndo.remove(itemId);
+    _skippedPending.remove(itemId);
+    if (undo != null && !_items.any((i) => i.id == itemId)) {
+      final list = [..._items];
+      list.insert(undo.index.clamp(0, list.length), undo.item);
+      _items = list;
+    }
+    notifyListeners();
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.shoppingSkip,
+        op: SyncOpKind.delete,
+        houseId: houseId,
+        entityId: itemId,
         parentId: sessionId,
         createdAt: DateTime.now().millisecondsSinceEpoch,
       ),

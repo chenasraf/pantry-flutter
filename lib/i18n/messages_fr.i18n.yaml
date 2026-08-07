@@ -724,6 +724,10 @@ shopping:
   nothingToBuyHere: Rien à acheter ici.
   checkFailed: Impossible de mettre à jour l'article.
   loadItemsFailed: Impossible de charger les articles.
+  removeFromTrip: Retirer de la sortie
+  removedFromTrip: Retiré de cette sortie
+  undo: Annuler
+  undoRemoveFailed: "Impossible d'annuler."
   reviewTitle: Récapitulatif
   advanceTitle: Magasin suivant
   actualPaid: Payé réel

@@ -401,6 +401,79 @@ void main() {
         expect(q.peek()!.uuid, 'e');
       },
     );
+
+    test('shopping skip + unskip on the same item cancel out', () {
+      final q = _newQueue();
+      q.enqueue(
+        _op(
+          uuid: 's',
+          entity: SyncEntity.shoppingSkip,
+          op: SyncOpKind.create,
+          entityId: 42,
+          parentId: 5,
+        ),
+      );
+      q.enqueue(
+        _op(
+          uuid: 'u',
+          entity: SyncEntity.shoppingSkip,
+          op: SyncOpKind.delete,
+          entityId: 42,
+          parentId: 5,
+        ),
+      );
+      q.merge();
+      expect(q.isEmpty, isTrue);
+    });
+
+    test('a skip with no matching unskip is kept', () {
+      final q = _newQueue();
+      q.enqueue(
+        _op(
+          uuid: 's',
+          entity: SyncEntity.shoppingSkip,
+          op: SyncOpKind.create,
+          entityId: 42,
+          parentId: 5,
+        ),
+      );
+      // Different item in the same session — must not cancel the first.
+      q.enqueue(
+        _op(
+          uuid: 'u',
+          entity: SyncEntity.shoppingSkip,
+          op: SyncOpKind.delete,
+          entityId: 99,
+          parentId: 5,
+        ),
+      );
+      q.merge();
+      expect(q.all().map((o) => o.uuid), ['s', 'u']);
+    });
+
+    test('skip/unskip in different sessions do not cancel', () {
+      final q = _newQueue();
+      q.enqueue(
+        _op(
+          uuid: 's',
+          entity: SyncEntity.shoppingSkip,
+          op: SyncOpKind.create,
+          entityId: 42,
+          parentId: 5,
+        ),
+      );
+      q.enqueue(
+        _op(
+          uuid: 'u',
+          entity: SyncEntity.shoppingSkip,
+          op: SyncOpKind.delete,
+          entityId: 42,
+          parentId: 6,
+        ),
+      );
+      q.merge();
+      expect(q.all().map((o) => o.uuid), ['s', 'u']);
+    });
   });
 
   group('merge — preserves order across distinct records', () {

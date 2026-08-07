@@ -210,6 +210,7 @@ class SyncManager {
         case SyncEntity.store:
         case SyncEntity.note:
         case SyncEntity.shoppingCheck:
+        case SyncEntity.shoppingSkip:
           break;
       }
     }
@@ -225,6 +226,24 @@ class SyncManager {
     final out = <int>{};
     for (final raw in _queue.all()) {
       if (raw.entity != SyncEntity.shoppingCheck) continue;
+      if (raw.houseId != houseId || raw.parentId != sessionId) continue;
+      if (raw.op != SyncOpKind.create) continue;
+      final id = raw.entityId;
+      if (id != null) out.add(id);
+    }
+    return out;
+  }
+
+  /// Item ids in [sessionId] that still have a pending Shopping Mode *skip*
+  /// (create) op queued for [houseId] — items removed from this trip whose
+  /// removal hasn't synced yet. The dense shopping view hides these from its
+  /// to-buy list so an un-synced offline removal isn't resurrected by a poll.
+  /// Unskip (delete) ops are excluded: undoing a removal must bring the item
+  /// back, not hide it — the mirror of [pendingShoppingCheckedIds].
+  Set<int> pendingShoppingSkippedIds(int houseId, int sessionId) {
+    final out = <int>{};
+    for (final raw in _queue.all()) {
+      if (raw.entity != SyncEntity.shoppingSkip) continue;
       if (raw.houseId != houseId || raw.parentId != sessionId) continue;
       if (raw.op != SyncOpKind.create) continue;
       final id = raw.entityId;
@@ -482,8 +501,9 @@ class SyncManager {
       case SyncEntity.note:
         break;
       case SyncEntity.shoppingCheck:
-        // Shopping checks reference real item/session ids, never a temp create,
-        // so they can't hold a dead reference.
+      case SyncEntity.shoppingSkip:
+        // Shopping checks/skips reference real item/session ids, never a temp
+        // create, so they can't hold a dead reference.
         break;
     }
     return o;

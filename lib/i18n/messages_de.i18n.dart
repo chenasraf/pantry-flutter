@@ -3810,6 +3810,26 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get loadItemsFailed => """Artikel konnten nicht geladen werden.""";
 
   /// ```dart
+  /// "Aus Einkauf entfernen"
+  /// ```
+  String get removeFromTrip => """Aus Einkauf entfernen""";
+
+  /// ```dart
+  /// "Aus diesem Einkauf entfernt"
+  /// ```
+  String get removedFromTrip => """Aus diesem Einkauf entfernt""";
+
+  /// ```dart
+  /// "Rückgängig"
+  /// ```
+  String get undo => """Rückgängig""";
+
+  /// ```dart
+  /// "Rückgängig machen fehlgeschlagen."
+  /// ```
+  String get undoRemoveFailed => """Rückgängig machen fehlgeschlagen.""";
+
+  /// ```dart
   /// "Überblick"
   /// ```
   String get reviewTitle => """Überblick""";
@@ -5051,6 +5071,10 @@ Passwort: pantry-rocks""",
   """shopping.nothingToBuyHere""": """Hier gibt es nichts zu kaufen.""",
   """shopping.checkFailed""": """Artikel konnte nicht aktualisiert werden.""",
   """shopping.loadItemsFailed""": """Artikel konnten nicht geladen werden.""",
+  """shopping.removeFromTrip""": """Aus Einkauf entfernen""",
+  """shopping.removedFromTrip""": """Aus diesem Einkauf entfernt""",
+  """shopping.undo""": """Rückgängig""",
+  """shopping.undoRemoveFailed""": """Rückgängig machen fehlgeschlagen.""",
   """shopping.reviewTitle""": """Überblick""",
   """shopping.advanceTitle""": """Nächstes Geschäft""",
   """shopping.actualPaid""": """Tatsächlich bezahlt""",

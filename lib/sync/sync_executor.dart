@@ -41,6 +41,8 @@ class SyncExecutor {
         return _executeNote(op);
       case SyncEntity.shoppingCheck:
         return _executeShoppingCheck(op);
+      case SyncEntity.shoppingSkip:
+        return _executeShoppingSkip(op);
     }
   }
 
@@ -58,6 +60,27 @@ class SyncExecutor {
         return SyncResult.empty;
       case SyncOpKind.delete:
         await svc.uncheckItem(op.houseId, sessionId, itemId);
+        return SyncResult.empty;
+      default:
+        return SyncResult.empty;
+    }
+  }
+
+  /// A Shopping Mode "remove from this trip" write: `create` skips the item off
+  /// the trip, `delete` unskips it. `parentId` is the session id, `entityId`
+  /// the item id. Both endpoints return only `{success:true}`, so there's no
+  /// entity to bind.
+  Future<SyncResult> _executeShoppingSkip(SyncOp op) async {
+    final svc = ShoppingService.instance;
+    final sessionId = op.parentId;
+    final itemId = op.entityId;
+    if (sessionId == null || itemId == null) return SyncResult.empty;
+    switch (op.op) {
+      case SyncOpKind.create:
+        await svc.skipItem(op.houseId, sessionId, itemId);
+        return SyncResult.empty;
+      case SyncOpKind.delete:
+        await svc.unskipItem(op.houseId, sessionId, itemId);
         return SyncResult.empty;
       default:
         return SyncResult.empty;

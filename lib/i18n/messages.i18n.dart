@@ -3770,6 +3770,26 @@ class ShoppingMessages {
   String get loadItemsFailed => """Failed to load items.""";
 
   /// ```dart
+  /// "Remove from trip"
+  /// ```
+  String get removeFromTrip => """Remove from trip""";
+
+  /// ```dart
+  /// "Removed from this trip"
+  /// ```
+  String get removedFromTrip => """Removed from this trip""";
+
+  /// ```dart
+  /// "Undo"
+  /// ```
+  String get undo => """Undo""";
+
+  /// ```dart
+  /// "Couldn't undo."
+  /// ```
+  String get undoRemoveFailed => """Couldn't undo.""";
+
+  /// ```dart
   /// "Review"
   /// ```
   String get reviewTitle => """Review""";
@@ -4964,6 +4984,10 @@ Password: pantry-rocks""",
   """shopping.nothingToBuyHere""": """Nothing to buy here.""",
   """shopping.checkFailed""": """Couldn't update the item.""",
   """shopping.loadItemsFailed""": """Failed to load items.""",
+  """shopping.removeFromTrip""": """Remove from trip""",
+  """shopping.removedFromTrip""": """Removed from this trip""",
+  """shopping.undo""": """Undo""",
+  """shopping.undoRemoveFailed""": """Couldn't undo.""",
   """shopping.reviewTitle""": """Review""",
   """shopping.advanceTitle""": """Next store""",
   """shopping.actualPaid""": """Actual paid""",

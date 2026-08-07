@@ -3794,6 +3794,26 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get loadItemsFailed => """Klarte ikkje å laste varene.""";
 
   /// ```dart
+  /// "Fjern frå handleturen"
+  /// ```
+  String get removeFromTrip => """Fjern frå handleturen""";
+
+  /// ```dart
+  /// "Fjerna frå denne handleturen"
+  /// ```
+  String get removedFromTrip => """Fjerna frå denne handleturen""";
+
+  /// ```dart
+  /// "Angre"
+  /// ```
+  String get undo => """Angre""";
+
+  /// ```dart
+  /// "Klarte ikkje å angre."
+  /// ```
+  String get undoRemoveFailed => """Klarte ikkje å angre.""";
+
+  /// ```dart
   /// "Oppsummering"
   /// ```
   String get reviewTitle => """Oppsummering""";
@@ -5002,6 +5022,10 @@ Passord: pantry""",
   """shopping.nothingToBuyHere""": """Ingenting å kjøpe her.""",
   """shopping.checkFailed""": """Klarte ikkje å oppdatere vara.""",
   """shopping.loadItemsFailed""": """Klarte ikkje å laste varene.""",
+  """shopping.removeFromTrip""": """Fjern frå handleturen""",
+  """shopping.removedFromTrip""": """Fjerna frå denne handleturen""",
+  """shopping.undo""": """Angre""",
+  """shopping.undoRemoveFailed""": """Klarte ikkje å angre.""",
   """shopping.reviewTitle""": """Oppsummering""",
   """shopping.advanceTitle""": """Neste butikk""",
   """shopping.actualPaid""": """Faktisk betalt""",

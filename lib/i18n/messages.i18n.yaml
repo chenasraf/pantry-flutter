@@ -728,6 +728,10 @@ shopping:
   nothingToBuyHere: Nothing to buy here.
   checkFailed: Couldn't update the item.
   loadItemsFailed: Failed to load items.
+  removeFromTrip: Remove from trip
+  removedFromTrip: Removed from this trip
+  undo: Undo
+  undoRemoveFailed: Couldn't undo.
   # Review / close
   reviewTitle: Review
   advanceTitle: Next store

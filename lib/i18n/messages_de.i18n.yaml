@@ -724,6 +724,10 @@ shopping:
   nothingToBuyHere: Hier gibt es nichts zu kaufen.
   checkFailed: Artikel konnte nicht aktualisiert werden.
   loadItemsFailed: Artikel konnten nicht geladen werden.
+  removeFromTrip: Aus Einkauf entfernen
+  removedFromTrip: Aus diesem Einkauf entfernt
+  undo: "Rückgängig"
+  undoRemoveFailed: Rückgängig machen fehlgeschlagen.
   reviewTitle: Überblick
   advanceTitle: Nächstes Geschäft
   actualPaid: Tatsächlich bezahlt

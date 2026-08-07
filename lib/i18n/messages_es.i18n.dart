@@ -3803,6 +3803,26 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get loadItemsFailed => """No se pudieron cargar los artículos.""";
 
   /// ```dart
+  /// "Quitar de la compra"
+  /// ```
+  String get removeFromTrip => """Quitar de la compra""";
+
+  /// ```dart
+  /// "Quitado de esta compra"
+  /// ```
+  String get removedFromTrip => """Quitado de esta compra""";
+
+  /// ```dart
+  /// "Deshacer"
+  /// ```
+  String get undo => """Deshacer""";
+
+  /// ```dart
+  /// "No se pudo deshacer."
+  /// ```
+  String get undoRemoveFailed => """No se pudo deshacer.""";
+
+  /// ```dart
   /// "Resumen"
   /// ```
   String get reviewTitle => """Resumen""";
@@ -5020,6 +5040,10 @@ Contraseña: pantry-rocks""",
   """shopping.nothingToBuyHere""": """Nada que comprar aquí.""",
   """shopping.checkFailed""": """No se pudo actualizar el artículo.""",
   """shopping.loadItemsFailed""": """No se pudieron cargar los artículos.""",
+  """shopping.removeFromTrip""": """Quitar de la compra""",
+  """shopping.removedFromTrip""": """Quitado de esta compra""",
+  """shopping.undo""": """Deshacer""",
+  """shopping.undoRemoveFailed""": """No se pudo deshacer.""",
   """shopping.reviewTitle""": """Resumen""",
   """shopping.advanceTitle""": """Siguiente tienda""",
   """shopping.actualPaid""": """Pagado real""",
