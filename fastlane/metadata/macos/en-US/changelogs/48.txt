@@ -1,0 +1,8 @@
+Features
+- let you hide unused tabs from settings
+- swipe to remove an item from the current trip
+Bug Fixes
+- switch scanner to FLOSS flutter_zxing so F-Droid can build
+- upload scanned product image after item create syncs
+- show empty state when a step has no reminders
+- show cached store chips immediately on startup
