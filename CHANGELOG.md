@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.26.0](https://github.com/chenasraf/pantry-flutter/compare/v0.25.0...v0.26.0) (2026-08-09)
+
+
+### Features
+
+* **navigation:** let you hide unused tabs from settings ([cd5c4b3](https://github.com/chenasraf/pantry-flutter/commit/cd5c4b335cbb07d86673f6b85ef0d60cbba17344)), closes [#133](https://github.com/chenasraf/pantry-flutter/issues/133)
+* **shopping:** swipe to remove an item from the current trip ([7139496](https://github.com/chenasraf/pantry-flutter/commit/713949622c139151d6a67fd9699eac1fc7bb5291))
+
+
+### Bug Fixes
+
+* **barcode:** switch scanner to FLOSS flutter_zxing so F-Droid can build ([03a02c6](https://github.com/chenasraf/pantry-flutter/commit/03a02c62dbc769f9fe57bd3100cb506ea3a82c1b))
+* **barcode:** upload scanned product image after item create syncs ([067cfed](https://github.com/chenasraf/pantry-flutter/commit/067cfed609bc582645f86736ce044ea5f6c06751))
+* **shopping:** show empty state when a step has no reminders ([8adb275](https://github.com/chenasraf/pantry-flutter/commit/8adb275d45d7fb3f69e4e3613a9403ca05491306))
+* **stores:** show cached store chips immediately on startup ([cfbb794](https://github.com/chenasraf/pantry-flutter/commit/cfbb79499cb3de89a3946d378b559690653486c9))
+
 ## [0.25.0](https://github.com/chenasraf/pantry-flutter/compare/v0.24.1...v0.25.0) (2026-08-06)
 
 
