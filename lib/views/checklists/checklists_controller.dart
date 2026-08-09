@@ -176,6 +176,11 @@ class ChecklistsController extends ChangeNotifier {
   StreamSubscription<SyncOpApplied>? _appliedSub;
   StreamSubscription<void>? _reconnectSub;
 
+  /// Image uploads staged against items whose optimistic create hasn't synced
+  /// yet, keyed by the item's negative temp id. Drained in `_onSyncApplied`
+  /// once the create resolves to a real server id (issue #132).
+  final Map<int, _PendingImageUpload> _pendingImageUploads = {};
+
   @override
   void dispose() {
     _disposed = true;
@@ -1942,9 +1947,17 @@ class ChecklistsController extends ChangeNotifier {
     required String mimeType,
   }) async {
     if (item.id < 0) {
-      // Photo uploads are online-only and need a real server id — bail
-      // until the optimistic create has resolved.
-      throw StateError('Cannot upload image before item create syncs');
+      // Photo uploads need a real server id, but this item's optimistic create
+      // hasn't synced yet (its id is still the negative temp id). Stash the
+      // upload keyed by that temp id; `_onSyncApplied` fires it once the create
+      // resolves to a real id (issue #132). Returning the item unchanged keeps
+      // the save flow succeeding — the image lands a moment later.
+      _pendingImageUploads[item.id] = _PendingImageUpload(
+        bytes: bytes,
+        fileName: fileName,
+        mimeType: mimeType,
+      );
+      return item;
     }
     final updated = await _checklistService.uploadItemImage(
       houseId,
@@ -2244,11 +2257,15 @@ class ChecklistsController extends ChangeNotifier {
           // view (the archive view keeps its own separately-loaded list).
           if (entity.deletedAt != null ||
               (entity.archivedAt != null && !_isArchiveMode)) {
+            if (tempId != null) _pendingImageUploads.remove(tempId);
             _items.removeWhere((i) => i.id == entity.id || i.id == tempId);
             _cacheVisibleItems();
             notifyListeners();
             return;
           }
+          // A create just bound to a real id — fire any image upload that was
+          // staged against the temp id while the create was in flight (#132).
+          if (tempId != null) _flushPendingImageUpload(tempId, entity);
           if (tempId != null) {
             final i = _items.indexWhere((it) => it.id == tempId);
             if (i != -1) {
@@ -2291,4 +2308,39 @@ class ChecklistsController extends ChangeNotifier {
         break;
     }
   }
+
+  /// Uploads an image that was staged against [tempId] before the item's
+  /// optimistic create had a real server id, now that the create resolved to
+  /// [item] (issue #132). Fire-and-forget: the originating save call already
+  /// returned, so failures are logged rather than surfaced.
+  void _flushPendingImageUpload(int tempId, ListItem item) {
+    final pending = _pendingImageUploads.remove(tempId);
+    if (pending == null) return;
+    unawaited(
+      uploadItemImage(
+        item,
+        bytes: pending.bytes,
+        fileName: pending.fileName,
+        mimeType: pending.mimeType,
+      ).catchError((Object e) {
+        debugPrint('[Checklists] deferred image upload failed: $e');
+        return item;
+      }),
+    );
+  }
+}
+
+/// An image upload staged against an item whose optimistic create hasn't synced
+/// yet. Held in [ChecklistsController._pendingImageUploads] until the create
+/// resolves to a real server id (issue #132).
+class _PendingImageUpload {
+  final List<int> bytes;
+  final String fileName;
+  final String mimeType;
+
+  const _PendingImageUpload({
+    required this.bytes,
+    required this.fileName,
+    required this.mimeType,
+  });
 }

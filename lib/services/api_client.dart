@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/sync/sync_manager.dart';
 
@@ -197,7 +198,12 @@ class ApiClient {
         'Accept': 'application/json',
       })
       ..files.add(
-        http.MultipartFile.fromBytes(fieldName, bytes, filename: fileName),
+        http.MultipartFile.fromBytes(
+          fieldName,
+          bytes,
+          filename: fileName,
+          contentType: MediaType.parse(mimeType),
+        ),
       );
     if (fields != null) {
       request.fields.addAll(fields);
