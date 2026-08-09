@@ -210,7 +210,7 @@ settings:
     never: Nie wiederverwenden
   navOrderTitle: Navigationsreihenfolge
   navOrderSubtitle: Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.
-  navOrderBody: Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet.
+  navOrderBody: Zum Neuanordnen ziehen. Der erste sichtbare Bereich wird beim Start der App geöffnet. Schalte nicht genutzte Bereiche aus, um ihren Tab auszublenden – mindestens einer muss aktiviert bleiben.
   navOrderDefaultHint: Öffnet sich beim Start
   navOrderReset: Zurücksetzen
   visibleChipsTitle: Artikeldetails

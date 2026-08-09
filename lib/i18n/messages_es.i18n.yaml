@@ -210,7 +210,7 @@ settings:
     never: Nunca reutilizar
   navOrderTitle: Orden de navegación
   navOrderSubtitle: Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.
-  navOrderBody: Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app.
+  navOrderBody: Arrastra para reordenar las pestañas. La primera sección visible se abre al iniciar la app. Desactiva las secciones que no uses para ocultar su pestaña; al menos una debe permanecer activada.
   navOrderDefaultHint: Se abre al iniciar
   navOrderReset: Restablecer
   visibleChipsTitle: Detalles del artículo

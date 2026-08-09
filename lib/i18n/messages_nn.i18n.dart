@@ -1064,10 +1064,10 @@ class SettingsMessagesNn extends SettingsMessages {
       """Endre rekkefylgja på navigasjonsfanene. Den fyrste oppføringa er den som blir vist når du opnar appen.""";
 
   /// ```dart
-  /// "Dra for å endre rekkefylgje. Den fyrste oppføringa er den som blir vist når du opnar appen."
+  /// "Dra for å endre rekkefylgja på fanene. Den fyrste synlege oppføringa blir vist når du opnar appen. Slå av delar du ikkje brukar for å skjula fana deira – minst éi må vera på."
   /// ```
   String get navOrderBody =>
-      """Dra for å endre rekkefylgje. Den fyrste oppføringa er den som blir vist når du opnar appen.""";
+      """Dra for å endre rekkefylgja på fanene. Den fyrste synlege oppføringa blir vist når du opnar appen. Slå av delar du ikkje brukar for å skjula fana deira – minst éi må vera på.""";
 
   /// ```dart
   /// "Blir vist når du opnar appen"
@@ -4546,7 +4546,7 @@ Passord: pantry""",
   """settings.navOrderSubtitle""":
       """Endre rekkefylgja på navigasjonsfanene. Den fyrste oppføringa er den som blir vist når du opnar appen.""",
   """settings.navOrderBody""":
-      """Dra for å endre rekkefylgje. Den fyrste oppføringa er den som blir vist når du opnar appen.""",
+      """Dra for å endre rekkefylgja på fanene. Den fyrste synlege oppføringa blir vist når du opnar appen. Slå av delar du ikkje brukar for å skjula fana deira – minst éi må vera på.""",
   """settings.navOrderDefaultHint""": """Blir vist når du opnar appen""",
   """settings.navOrderReset""": """Nullstill""",
   """settings.visibleChipsTitle""": """Varedetaljar""",

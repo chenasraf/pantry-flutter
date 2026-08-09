@@ -1060,10 +1060,10 @@ class SettingsMessages {
       """Reorder the bottom navigation tabs. The first item is opened on app start.""";
 
   /// ```dart
-  /// "Drag to reorder. The first item is the section opened when the app starts."
+  /// "Drag to reorder the tabs. The first visible section opens when the app starts. Turn off any section you don't use to hide its tab — at least one must stay on."
   /// ```
   String get navOrderBody =>
-      """Drag to reorder. The first item is the section opened when the app starts.""";
+      """Drag to reorder the tabs. The first visible section opens when the app starts. Turn off any section you don't use to hide its tab — at least one must stay on.""";
 
   /// ```dart
   /// "Opens on app start"
@@ -4516,7 +4516,7 @@ Password: pantry-rocks""",
   """settings.navOrderSubtitle""":
       """Reorder the bottom navigation tabs. The first item is opened on app start.""",
   """settings.navOrderBody""":
-      """Drag to reorder. The first item is the section opened when the app starts.""",
+      """Drag to reorder the tabs. The first visible section opens when the app starts. Turn off any section you don't use to hide its tab — at least one must stay on.""",
   """settings.navOrderDefaultHint""": """Opens on app start""",
   """settings.navOrderReset""": """Reset""",
   """settings.visibleChipsTitle""": """Item details""",

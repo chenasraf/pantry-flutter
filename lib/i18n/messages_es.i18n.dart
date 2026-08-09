@@ -1067,10 +1067,10 @@ class SettingsMessagesEs extends SettingsMessages {
       """Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.""";
 
   /// ```dart
-  /// "Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app."
+  /// "Arrastra para reordenar las pestañas. La primera sección visible se abre al iniciar la app. Desactiva las secciones que no uses para ocultar su pestaña; al menos una debe permanecer activada."
   /// ```
   String get navOrderBody =>
-      """Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app.""";
+      """Arrastra para reordenar las pestañas. La primera sección visible se abre al iniciar la app. Desactiva las secciones que no uses para ocultar su pestaña; al menos una debe permanecer activada.""";
 
   /// ```dart
   /// "Se abre al iniciar"
@@ -4559,7 +4559,7 @@ Contraseña: pantry-rocks""",
   """settings.navOrderSubtitle""":
       """Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.""",
   """settings.navOrderBody""":
-      """Arrastra para reordenar. El primer elemento es la sección que se abre al iniciar la app.""",
+      """Arrastra para reordenar las pestañas. La primera sección visible se abre al iniciar la app. Desactiva las secciones que no uses para ocultar su pestaña; al menos una debe permanecer activada.""",
   """settings.navOrderDefaultHint""": """Se abre al iniciar""",
   """settings.navOrderReset""": """Restablecer""",
   """settings.visibleChipsTitle""": """Detalles del artículo""",

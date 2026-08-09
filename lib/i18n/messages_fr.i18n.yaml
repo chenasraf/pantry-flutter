@@ -210,7 +210,7 @@ settings:
     never: "Ne jamais réutiliser"
   navOrderTitle: Ordre de navigation
   navOrderSubtitle: "Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage."
-  navOrderBody: "Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application."
+  navOrderBody: "Faites glisser pour réorganiser les onglets. La première section visible s'ouvre au démarrage de l'application. Désactivez les sections que vous n'utilisez pas pour masquer leur onglet ; au moins une doit rester activée."
   navOrderDefaultHint: "S'ouvre au démarrage"
   navOrderReset: "Réinitialiser"
   visibleChipsTitle: "Détails de l'article"

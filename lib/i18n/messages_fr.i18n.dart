@@ -1069,10 +1069,10 @@ class SettingsMessagesFr extends SettingsMessages {
       """Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage.""";
 
   /// ```dart
-  /// "Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application."
+  /// "Faites glisser pour réorganiser les onglets. La première section visible s'ouvre au démarrage de l'application. Désactivez les sections que vous n'utilisez pas pour masquer leur onglet ; au moins une doit rester activée."
   /// ```
   String get navOrderBody =>
-      """Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application.""";
+      """Faites glisser pour réorganiser les onglets. La première section visible s'ouvre au démarrage de l'application. Désactivez les sections que vous n'utilisez pas pour masquer leur onglet ; au moins une doit rester activée.""";
 
   /// ```dart
   /// "S'ouvre au démarrage"
@@ -4573,7 +4573,7 @@ Mot de passe : pantry-rocks""",
   """settings.navOrderSubtitle""":
       """Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage.""",
   """settings.navOrderBody""":
-      """Faites glisser pour réorganiser. Le premier élément est la section ouverte au démarrage de l'application.""",
+      """Faites glisser pour réorganiser les onglets. La première section visible s'ouvre au démarrage de l'application. Désactivez les sections que vous n'utilisez pas pour masquer leur onglet ; au moins une doit rester activée.""",
   """settings.navOrderDefaultHint""": """S'ouvre au démarrage""",
   """settings.navOrderReset""": """Réinitialiser""",
   """settings.visibleChipsTitle""": """Détails de l'article""",

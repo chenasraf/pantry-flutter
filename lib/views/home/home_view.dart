@@ -77,7 +77,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   // _tabIndex when the user reorders sections in settings — the active
   // section should follow its new display position, not snap to whatever
   // index it used to be.
-  late List<NavSection> _lastOrder = PrefsService.instance.navOrder;
+  late List<NavSection> _lastOrder = PrefsService.instance.enabledNavOrder;
   final _pageController = PageController();
   final _notificationsController = NotificationsController();
   // Per-section refresh holders. Keyed by NavSection so that reordering
@@ -195,12 +195,12 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     );
   }
 
-  List<NavSection> get _navOrder => PrefsService.instance.navOrder;
+  List<NavSection> get _navOrder => PrefsService.instance.enabledNavOrder;
 
-  /// Keep the active section pinned when the user reorders nav items in
-  /// settings: find where the active section moved to and follow it.
+  /// Keep the active section pinned when the user reorders or hides nav items
+  /// in settings: find where the active section moved to and follow it.
   void _onPrefsChanged() {
-    final newOrder = PrefsService.instance.navOrder;
+    final newOrder = PrefsService.instance.enabledNavOrder;
     if (_listEqual(_lastOrder, newOrder)) return;
     final activeIndex = _tabIndex.clamp(0, _lastOrder.length - 1);
     final activeSection = _lastOrder[activeIndex];

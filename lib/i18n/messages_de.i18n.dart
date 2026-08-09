@@ -1066,10 +1066,10 @@ class SettingsMessagesDe extends SettingsMessages {
       """Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.""";
 
   /// ```dart
-  /// "Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet."
+  /// "Zum Neuanordnen ziehen. Der erste sichtbare Bereich wird beim Start der App geöffnet. Schalte nicht genutzte Bereiche aus, um ihren Tab auszublenden – mindestens einer muss aktiviert bleiben."
   /// ```
   String get navOrderBody =>
-      """Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet.""";
+      """Zum Neuanordnen ziehen. Der erste sichtbare Bereich wird beim Start der App geöffnet. Schalte nicht genutzte Bereiche aus, um ihren Tab auszublenden – mindestens einer muss aktiviert bleiben.""";
 
   /// ```dart
   /// "Öffnet sich beim Start"
@@ -4570,7 +4570,7 @@ Passwort: pantry-rocks""",
   """settings.navOrderSubtitle""":
       """Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.""",
   """settings.navOrderBody""":
-      """Zum Neuanordnen ziehen. Der erste Eintrag wird beim Start der App geöffnet.""",
+      """Zum Neuanordnen ziehen. Der erste sichtbare Bereich wird beim Start der App geöffnet. Schalte nicht genutzte Bereiche aus, um ihren Tab auszublenden – mindestens einer muss aktiviert bleiben.""",
   """settings.navOrderDefaultHint""": """Öffnet sich beim Start""",
   """settings.navOrderReset""": """Zurücksetzen""",
   """settings.visibleChipsTitle""": """Artikeldetails""",

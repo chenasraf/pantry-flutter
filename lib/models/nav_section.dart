@@ -59,3 +59,18 @@ List<NavSection> decodeNavOrder(String? raw) {
 
 String encodeNavOrder(List<NavSection> order) =>
     order.map((s) => s.id).join(',');
+
+/// Parse a comma-separated list of section ids into the set of sections the
+/// user has hidden. Unknown ids are dropped.
+Set<NavSection> decodeNavDisabled(String? raw) {
+  if (raw == null || raw.isEmpty) return {};
+  final disabled = <NavSection>{};
+  for (final part in raw.split(',')) {
+    final s = NavSection.fromId(part.trim());
+    if (s != null) disabled.add(s);
+  }
+  return disabled;
+}
+
+String encodeNavDisabled(Set<NavSection> disabled) =>
+    disabled.map((s) => s.id).join(',');

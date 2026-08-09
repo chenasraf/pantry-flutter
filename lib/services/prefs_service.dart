@@ -39,6 +39,7 @@ class PrefsService extends ChangeNotifier {
   static const _progressHeroHiddenListIdsKey = 'progress_hero_hidden_list_ids';
   static const _lastSeenOnboardingVersionKey = 'last_seen_onboarding_version';
   static const _navOrderKey = 'nav_order';
+  static const _navDisabledKey = 'nav_disabled';
   static const _themeColorKey = 'theme_color';
   static const _displayNameKey = 'display_name';
   static const _serverLanguageKey = 'server_language';
@@ -156,6 +157,18 @@ class PrefsService extends ChangeNotifier {
   /// cold start. Always contains every [NavSection] exactly once.
   List<NavSection> _navOrder = List.of(kDefaultNavOrder);
   List<NavSection> get navOrder => List.unmodifiable(_navOrder);
+
+  /// Sections the user has hidden from the primary navigation. Never contains
+  /// every section — [setNavSectionEnabled] refuses to hide the last visible
+  /// one, so [enabledNavOrder] always yields at least one section.
+  Set<NavSection> _navDisabled = {};
+  Set<NavSection> get navDisabled => Set.unmodifiable(_navDisabled);
+  bool isNavSectionEnabled(NavSection s) => !_navDisabled.contains(s);
+
+  /// [navOrder] with hidden sections removed. This is the order actually shown
+  /// in the bottom bar / rail; its first entry is opened at cold start.
+  List<NavSection> get enabledNavOrder =>
+      List.unmodifiable(_navOrder.where((s) => !_navDisabled.contains(s)));
 
   /// Last Nextcloud theme color fetched from the server, persisted as
   /// "#RRGGBB". Cached so the app can render with the right accent on a
@@ -311,6 +324,10 @@ class PrefsService extends ChangeNotifier {
     _lastSeenOnboardingVersion = all[_lastSeenOnboardingVersionKey];
 
     _navOrder = decodeNavOrder(all[_navOrderKey]);
+    _navDisabled = decodeNavDisabled(all[_navDisabledKey]);
+    // Never leave zero visible sections — guard against a corrupt or stale
+    // value that hides everything.
+    if (_navOrder.every(_navDisabled.contains)) _navDisabled = {};
 
     _themeColorHex = all[_themeColorKey];
 
@@ -649,6 +666,23 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Show or hide [section] in the primary navigation. Hiding is rejected when
+  /// [section] is the last visible one, so at least one tab always remains.
+  Future<void> setNavSectionEnabled(NavSection section, bool enabled) async {
+    final bool changed;
+    if (enabled) {
+      changed = _navDisabled.remove(section);
+    } else {
+      changed = enabledNavOrder.length > 1 && _navDisabled.add(section);
+    }
+    if (!changed) return;
+    await _storage.write(
+      key: _navDisabledKey,
+      value: encodeNavDisabled(_navDisabled),
+    );
+    notifyListeners();
+  }
+
   Future<void> setDevForceAllFeatures(bool value) async {
     if (_devForceAllFeatures == value) return;
     _devForceAllFeatures = value;
@@ -687,6 +721,7 @@ class PrefsService extends ChangeNotifier {
     _progressHeroHiddenListIds = {};
     _lastSeenOnboardingVersion = null;
     _navOrder = List.of(kDefaultNavOrder);
+    _navDisabled = {};
     _themeColorHex = null;
     _displayName = null;
     _serverLanguage = null;
@@ -715,6 +750,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _progressHeroHiddenListIdsKey);
     await _storage.delete(key: _lastSeenOnboardingVersionKey);
     await _storage.delete(key: _navOrderKey);
+    await _storage.delete(key: _navDisabledKey);
     await _storage.delete(key: _themeColorKey);
     await _storage.delete(key: _displayNameKey);
     await _storage.delete(key: _serverLanguageKey);

@@ -44,13 +44,30 @@ class _NavOrderViewState extends State<NavOrderView> {
   }
 
   Future<void> _resetToDefault() async {
+    final prefs = context.read<PrefsService>();
     setState(() => _order = List.of(kDefaultNavOrder));
-    await context.read<PrefsService>().setNavOrder(_order);
+    await prefs.setNavOrder(_order);
+    for (final s in NavSection.values) {
+      await prefs.setNavSectionEnabled(s, true);
+    }
+  }
+
+  Future<void> _setEnabled(NavSection s, bool enabled) async {
+    await context.read<PrefsService>().setNavSectionEnabled(s, enabled);
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final prefs = context.watch<PrefsService>();
+    // The section whose "opens on app start" hint should show: the first one
+    // in the current order that isn't hidden.
+    final firstEnabled = _order.cast<NavSection?>().firstWhere(
+      (s) => prefs.isNavSectionEnabled(s!),
+      orElse: () => null,
+    );
+    final enabledCount = _order.where(prefs.isNavSectionEnabled).length;
     return Scaffold(
       appBar: AppBar(
         leading: appBarBackLeading(context),
@@ -80,20 +97,42 @@ class _NavOrderViewState extends State<NavOrderView> {
               onReorder: _onReorder,
               itemBuilder: (context, i) {
                 final s = _order[i];
-                final isFirst = i == 0;
+                final enabled = prefs.isNavSectionEnabled(s);
+                final isDefault = s == firstEnabled;
+                // Keep at least one section visible: block turning off the
+                // last enabled one.
+                final canDisable = !enabled || enabledCount > 1;
                 return ListTile(
                   key: ValueKey(s.id),
-                  leading: Icon(_icon(s)),
-                  title: Text(_label(s)),
-                  subtitle: isFirst
+                  leading: Icon(
+                    _icon(s),
+                    color: enabled ? null : theme.disabledColor,
+                  ),
+                  title: Text(
+                    _label(s),
+                    style: enabled
+                        ? null
+                        : TextStyle(color: theme.disabledColor),
+                  ),
+                  subtitle: isDefault
                       ? Text(
                           m.settings.navOrderDefaultHint,
                           style: TextStyle(color: theme.colorScheme.primary),
                         )
                       : null,
-                  trailing: ReorderableDragStartListener(
-                    index: i,
-                    child: const Icon(Icons.drag_handle),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Switch(
+                        value: enabled,
+                        onChanged: canDisable ? (v) => _setEnabled(s, v) : null,
+                      ),
+                      const SizedBox(width: 8),
+                      ReorderableDragStartListener(
+                        index: i,
+                        child: const Icon(Icons.drag_handle),
+                      ),
+                    ],
                   ),
                 );
               },
