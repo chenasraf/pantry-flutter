@@ -92,7 +92,11 @@ class ItemDetailView extends StatelessWidget {
                         _PriceTile(item: item),
                       ],
                       const SizedBox(height: 12),
-                      _DescriptionCard(description: item.description),
+                      _DescriptionCard(
+                        item: item,
+                        controller: controller,
+                        canToggle: canEdit,
+                      ),
                       const SizedBox(height: 12),
                       _MetaRow(item: item, controller: controller),
                     ],
@@ -982,17 +986,71 @@ class _TypeValue extends StatelessWidget {
   }
 }
 
-class _DescriptionCard extends StatelessWidget {
-  final String? description;
+/// Matches a GitHub-style task-list checkbox at the start of a list item
+/// (`- [ ]`, `* [x]`, `1. [ ]`, …). Group 1 is the bullet marker plus spacing,
+/// group 2 the check state — used to toggle the Nth checkbox in place.
+final _taskCheckboxRegex = RegExp(
+  r'^([ \t]*(?:[-*+]|\d+[.)])[ \t]+)\[([ xX])\]',
+  multiLine: true,
+);
 
-  const _DescriptionCard({required this.description});
+/// Return [source] with the [index]-th task-list checkbox flipped. Checkboxes
+/// are counted in document order, which matches the order the markdown renderer
+/// builds them — so the tapped checkbox and the toggled token line up.
+String _toggleTaskCheckbox(String source, int index) {
+  var i = 0;
+  return source.replaceAllMapped(_taskCheckboxRegex, (match) {
+    if (i++ != index) return match[0]!;
+    final checked = match[2]!.toLowerCase() == 'x';
+    return '${match[1]}[${checked ? ' ' : 'x'}]';
+  });
+}
+
+class _DescriptionCard extends StatefulWidget {
+  final ListItem item;
+  final ChecklistsController controller;
+
+  /// Whether the user may flip checkboxes. When false the checkboxes still
+  /// render but are inert (read-only shared lists).
+  final bool canToggle;
+
+  const _DescriptionCard({
+    required this.item,
+    required this.controller,
+    required this.canToggle,
+  });
+
+  @override
+  State<_DescriptionCard> createState() => _DescriptionCardState();
+}
+
+class _DescriptionCardState extends State<_DescriptionCard> {
+  late String? _description = widget.item.description;
+
+  @override
+  void didUpdateWidget(_DescriptionCard old) {
+    super.didUpdateWidget(old);
+    // Follow external edits (e.g. the edit sheet) unless we're mid-toggle.
+    if (widget.item.description != old.item.description) {
+      _description = widget.item.description;
+    }
+  }
+
+  void _onToggle(int index) {
+    final current = _description ?? '';
+    final updated = _toggleTaskCheckbox(current, index);
+    if (updated == current) return;
+    setState(() => _description = updated);
+    widget.controller.updateItem(widget.item, description: updated);
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final v = m.checklists.viewItem;
-    final hasDesc = description != null && description!.trim().isNotEmpty;
+    final description = _description;
+    final hasDesc = description != null && description.trim().isNotEmpty;
     final dir = detectTextDirection(description);
 
     final label = Text(
@@ -1043,24 +1101,67 @@ class _DescriptionCard extends StatelessWidget {
           const SizedBox(height: 8),
           Directionality(
             textDirection: dir,
-            child: MarkdownBody(
-              data: description!,
-              shrinkWrap: true,
-              softLineBreak: true,
-              onTapLink: (text, href, title) {
-                if (href != null) launchUrl(Uri.parse(href));
+            child: Builder(
+              builder: (context) {
+                // Reset per build: the markdown renderer invokes the checkbox
+                // builder once per checkbox in document order, so this counter
+                // hands each one its source-order index.
+                var checkboxIndex = 0;
+                return MarkdownBody(
+                  data: description,
+                  shrinkWrap: true,
+                  softLineBreak: true,
+                  onTapLink: (text, href, title) {
+                    if (href != null) launchUrl(Uri.parse(href));
+                  },
+                  checkboxBuilder: (checked) {
+                    final index = checkboxIndex++;
+                    return _DescriptionCheckbox(
+                      checked: checked,
+                      onTap: widget.canToggle ? () => _onToggle(index) : null,
+                    );
+                  },
+                  styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                    p: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 15,
+                      height: 1.5,
+                      color: cs.onSurface,
+                    ),
+                  ),
+                );
               },
-              styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                p: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 15,
-                  height: 1.5,
-                  color: cs.onSurface,
-                ),
-              ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// A tappable checkbox rendered inline in a description's markdown task list.
+/// When [onTap] is null it stays inert (read-only lists) but keeps the same
+/// footprint so the text lines up either way.
+class _DescriptionCheckbox extends StatelessWidget {
+  final bool checked;
+  final VoidCallback? onTap;
+
+  const _DescriptionCheckbox({required this.checked, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final icon = Icon(
+      checked ? Icons.check_box : Icons.check_box_outline_blank,
+      size: 20,
+      color: onTap == null
+          ? cs.onSurfaceVariant
+          : (checked ? cs.primary : cs.onSurfaceVariant),
+    );
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: 6),
+      child: onTap == null
+          ? icon
+          : InkResponse(onTap: onTap, radius: 20, child: icon),
     );
   }
 }
