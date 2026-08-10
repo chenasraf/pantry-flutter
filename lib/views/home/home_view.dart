@@ -380,6 +380,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
           final useRail = constraints.maxWidth >= 720;
           final extendedRail = constraints.maxWidth >= 1100;
+          // With a single visible section there's nothing to switch between,
+          // so drop the rail / bottom bar and give the tab the full space.
+          final showNav = order.length > 1;
           final tabIndex = _tabIndex.clamp(0, order.length - 1);
           final body = _buildBody(controller, useRail: useRail, order: order);
 
@@ -433,25 +436,27 @@ class _HomeViewBodyState extends State<_HomeViewBody>
               body: SafeArea(
                 child: Row(
                   children: [
-                    NavigationRail(
-                      extended: extendedRail,
-                      selectedIndex: tabIndex,
-                      onDestinationSelected: _goToTab,
-                      labelType: extendedRail
-                          ? NavigationRailLabelType.none
-                          : NavigationRailLabelType.all,
-                      leading: PlatformInfo.isMacOS
-                          ? const SizedBox(height: 24)
-                          : null,
-                      destinations: [
-                        for (final d in destinations)
-                          NavigationRailDestination(
-                            icon: Icon(d.icon),
-                            label: Text(d.label),
-                          ),
-                      ],
-                    ),
-                    const VerticalDivider(width: 1, thickness: 1),
+                    if (showNav) ...[
+                      NavigationRail(
+                        extended: extendedRail,
+                        selectedIndex: tabIndex,
+                        onDestinationSelected: _goToTab,
+                        labelType: extendedRail
+                            ? NavigationRailLabelType.none
+                            : NavigationRailLabelType.all,
+                        leading: PlatformInfo.isMacOS
+                            ? const SizedBox(height: 24)
+                            : null,
+                        destinations: [
+                          for (final d in destinations)
+                            NavigationRailDestination(
+                              icon: Icon(d.icon),
+                              label: Text(d.label),
+                            ),
+                        ],
+                      ),
+                      const VerticalDivider(width: 1, thickness: 1),
+                    ],
                     Expanded(
                       child: Column(
                         children: [
@@ -482,12 +487,14 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                 Expanded(child: body),
               ],
             ),
-            bottomNavigationBar: _AnimatedBottomNav(
-              pageController: _pageController,
-              currentIndex: tabIndex,
-              onTap: _goToTab,
-              destinations: destinations,
-            ),
+            bottomNavigationBar: showNav
+                ? _AnimatedBottomNav(
+                    pageController: _pageController,
+                    currentIndex: tabIndex,
+                    onTap: _goToTab,
+                    destinations: destinations,
+                  )
+                : null,
           );
         },
       ),
