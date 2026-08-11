@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
@@ -20,6 +19,7 @@ import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/image_preview.dart';
+import 'package:pantry/widgets/markdown_description.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 import 'checklist_item_tile.dart' show ItemLifecycle, lifecycleOf;
 import 'checklists_controller.dart';
@@ -986,26 +986,6 @@ class _TypeValue extends StatelessWidget {
   }
 }
 
-/// Matches a GitHub-style task-list checkbox at the start of a list item
-/// (`- [ ]`, `* [x]`, `1. [ ]`, …). Group 1 is the bullet marker plus spacing,
-/// group 2 the check state — used to toggle the Nth checkbox in place.
-final _taskCheckboxRegex = RegExp(
-  r'^([ \t]*(?:[-*+]|\d+[.)])[ \t]+)\[([ xX])\]',
-  multiLine: true,
-);
-
-/// Return [source] with the [index]-th task-list checkbox flipped. Checkboxes
-/// are counted in document order, which matches the order the markdown renderer
-/// builds them — so the tapped checkbox and the toggled token line up.
-String _toggleTaskCheckbox(String source, int index) {
-  var i = 0;
-  return source.replaceAllMapped(_taskCheckboxRegex, (match) {
-    if (i++ != index) return match[0]!;
-    final checked = match[2]!.toLowerCase() == 'x';
-    return '${match[1]}[${checked ? ' ' : 'x'}]';
-  });
-}
-
 class _DescriptionCard extends StatefulWidget {
   final ListItem item;
   final ChecklistsController controller;
@@ -1036,10 +1016,7 @@ class _DescriptionCardState extends State<_DescriptionCard> {
     }
   }
 
-  void _onToggle(int index) {
-    final current = _description ?? '';
-    final updated = _toggleTaskCheckbox(current, index);
-    if (updated == current) return;
+  void _onDescriptionChanged(String updated) {
     setState(() => _description = updated);
     widget.controller.updateItem(widget.item, description: updated);
   }
@@ -1051,7 +1028,6 @@ class _DescriptionCardState extends State<_DescriptionCard> {
     final v = m.checklists.viewItem;
     final description = _description;
     final hasDesc = description != null && description.trim().isNotEmpty;
-    final dir = detectTextDirection(description);
 
     final label = Text(
       v.descriptionLabel.toUpperCase(),
@@ -1099,69 +1075,19 @@ class _DescriptionCardState extends State<_DescriptionCard> {
         children: [
           label,
           const SizedBox(height: 8),
-          Directionality(
-            textDirection: dir,
-            child: Builder(
-              builder: (context) {
-                // Reset per build: the markdown renderer invokes the checkbox
-                // builder once per checkbox in document order, so this counter
-                // hands each one its source-order index.
-                var checkboxIndex = 0;
-                return MarkdownBody(
-                  data: description,
-                  shrinkWrap: true,
-                  softLineBreak: true,
-                  onTapLink: (text, href, title) {
-                    if (href != null) launchUrl(Uri.parse(href));
-                  },
-                  checkboxBuilder: (checked) {
-                    final index = checkboxIndex++;
-                    return _DescriptionCheckbox(
-                      checked: checked,
-                      onTap: widget.canToggle ? () => _onToggle(index) : null,
-                    );
-                  },
-                  styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                    p: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 15,
-                      height: 1.5,
-                      color: cs.onSurface,
-                    ),
-                  ),
-                );
-              },
+          MarkdownDescription(
+            description: description,
+            onChanged: widget.canToggle ? _onDescriptionChanged : null,
+            styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+              p: theme.textTheme.bodyMedium?.copyWith(
+                fontSize: 15,
+                height: 1.5,
+                color: cs.onSurface,
+              ),
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-/// A tappable checkbox rendered inline in a description's markdown task list.
-/// When [onTap] is null it stays inert (read-only lists) but keeps the same
-/// footprint so the text lines up either way.
-class _DescriptionCheckbox extends StatelessWidget {
-  final bool checked;
-  final VoidCallback? onTap;
-
-  const _DescriptionCheckbox({required this.checked, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final icon = Icon(
-      checked ? Icons.check_box : Icons.check_box_outline_blank,
-      size: 20,
-      color: onTap == null
-          ? cs.onSurfaceVariant
-          : (checked ? cs.primary : cs.onSurfaceVariant),
-    );
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(end: 6),
-      child: onTap == null
-          ? icon
-          : InkResponse(onTap: onTap, radius: 20, child: icon),
     );
   }
 }

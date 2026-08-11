@@ -18,6 +18,7 @@ import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
     show parseHexColor;
+import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/widgets/description_detail_dialog.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 import 'package:pantry/widgets/store_detail_dialog.dart';
@@ -889,7 +890,20 @@ class _MetaRow extends StatelessWidget {
             leading: Icon(Icons.notes, size: 16, color: cs.onSurfaceVariant),
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
-            onTap: () => showItemDescription(context, item.description!.trim()),
+            onTap: () {
+              final controller = context.read<ChecklistsController>();
+              final canToggle =
+                  controller.isItemWritable(item) &&
+                  controller.permissions.canEditLists;
+              showItemDescription(
+                context,
+                item.description!,
+                onChanged: canToggle
+                    ? (updated) =>
+                          controller.updateItem(item, description: updated)
+                    : null,
+              );
+            },
           ),
         if (lc == ItemLifecycle.once &&
             prefs.isItemChipVisible(ItemChipKind.oneTime.key))
