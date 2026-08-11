@@ -1116,6 +1116,17 @@ class SettingsMessages {
   ThemeNamesSettingsMessages get themeNames => ThemeNamesSettingsMessages(this);
 
   /// ```dart
+  /// "Use Nextcloud theme color"
+  /// ```
+  String get useServerThemeColor => """Use Nextcloud theme color""";
+
+  /// ```dart
+  /// "Tint the app with your Nextcloud user's theme color. Turn off to use the app's own colors."
+  /// ```
+  String get useServerThemeColorBody =>
+      """Tint the app with your Nextcloud user's theme color. Turn off to use the app's own colors.""";
+
+  /// ```dart
   /// "Notifications"
   /// ```
   String get notificationsSection => """Notifications""";
@@ -4555,6 +4566,9 @@ Password: pantry-rocks""",
   """settings.themeNames.system""": """System default""",
   """settings.themeNames.light""": """Light""",
   """settings.themeNames.dark""": """Dark""",
+  """settings.useServerThemeColor""": """Use Nextcloud theme color""",
+  """settings.useServerThemeColorBody""":
+      """Tint the app with your Nextcloud user's theme color. Turn off to use the app's own colors.""",
   """settings.notificationsSection""": """Notifications""",
   """settings.enableNotifications""": """Enable notifications""",
   """settings.enableNotificationsBody""":

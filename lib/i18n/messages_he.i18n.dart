@@ -1115,6 +1115,17 @@ class SettingsMessagesHe extends SettingsMessages {
       ThemeNamesSettingsMessagesHe(this);
 
   /// ```dart
+  /// "שימוש בצבע ערכת הנושא של Nextcloud"
+  /// ```
+  String get useServerThemeColor => """שימוש בצבע ערכת הנושא של Nextcloud""";
+
+  /// ```dart
+  /// "צביעת האפליקציה בצבע ערכת הנושא של משתמש ה-Nextcloud שלך. כבה כדי להשתמש בצבעים של האפליקציה עצמה."
+  /// ```
+  String get useServerThemeColorBody =>
+      """צביעת האפליקציה בצבע ערכת הנושא של משתמש ה-Nextcloud שלך. כבה כדי להשתמש בצבעים של האפליקציה עצמה.""";
+
+  /// ```dart
   /// "התראות"
   /// ```
   String get notificationsSection => """התראות""";
@@ -4557,6 +4568,9 @@ Map<String, String> get messagesHeMap => {
   """settings.themeNames.system""": """ברירת מחדל (המערכת)""",
   """settings.themeNames.light""": """בהיר""",
   """settings.themeNames.dark""": """כהה""",
+  """settings.useServerThemeColor""": """שימוש בצבע ערכת הנושא של Nextcloud""",
+  """settings.useServerThemeColorBody""":
+      """צביעת האפליקציה בצבע ערכת הנושא של משתמש ה-Nextcloud שלך. כבה כדי להשתמש בצבעים של האפליקציה עצמה.""",
   """settings.notificationsSection""": """התראות""",
   """settings.enableNotifications""": """הפעל התראות""",
   """settings.enableNotificationsBody""":

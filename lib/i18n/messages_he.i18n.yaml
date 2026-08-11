@@ -233,6 +233,8 @@ settings:
     system: ברירת מחדל (המערכת)
     light: בהיר
     dark: כהה
+  useServerThemeColor: שימוש בצבע ערכת הנושא של Nextcloud
+  useServerThemeColorBody: צביעת האפליקציה בצבע ערכת הנושא של משתמש ה-Nextcloud שלך. כבה כדי להשתמש בצבעים של האפליקציה עצמה.
   notificationsSection: התראות
   enableNotifications: הפעל התראות
   enableNotificationsBody: הצג התראות כשבני משק הבית מוסיפים או מעדכנים תוכן.

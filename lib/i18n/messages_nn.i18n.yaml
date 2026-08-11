@@ -312,6 +312,8 @@ settings:
     system: "Systemstandard"
     light: Lys
     dark: Mørk
+  useServerThemeColor: Bruk Nextcloud-temafarge
+  useServerThemeColorBody: Fargelegg appen med temafargen til Nextcloud-brukaren din. Slå av for å bruke appen sine eigne fargar.
   notificationsSection: Varsel
   enableNotifications: Slå på varsel
   enableNotificationsBody: Vis varsel når nokon legg til eller opppdaterer innhald.

@@ -233,6 +233,8 @@ settings:
     system: Systemstandard
     light: Hell
     dark: Dunkel
+  useServerThemeColor: Nextcloud-Designfarbe verwenden
+  useServerThemeColorBody: Färbt die App mit der Designfarbe deines Nextcloud-Benutzers. Ausschalten, um die eigenen Farben der App zu verwenden.
   notificationsSection: Benachrichtigungen
   enableNotifications: Benachrichtigungen aktivieren
   enableNotificationsBody: Zeige Benachrichtigungen, wenn Haushaltsmitglieder Inhalte hinzufugen oder aktualisieren.

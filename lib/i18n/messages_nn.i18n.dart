@@ -1122,6 +1122,17 @@ class SettingsMessagesNn extends SettingsMessages {
       ThemeNamesSettingsMessagesNn(this);
 
   /// ```dart
+  /// "Bruk Nextcloud-temafarge"
+  /// ```
+  String get useServerThemeColor => """Bruk Nextcloud-temafarge""";
+
+  /// ```dart
+  /// "Fargelegg appen med temafargen til Nextcloud-brukaren din. Slå av for å bruke appen sine eigne fargar."
+  /// ```
+  String get useServerThemeColorBody =>
+      """Fargelegg appen med temafargen til Nextcloud-brukaren din. Slå av for å bruke appen sine eigne fargar.""";
+
+  /// ```dart
   /// "Varsel"
   /// ```
   String get notificationsSection => """Varsel""";
@@ -4585,6 +4596,9 @@ Passord: pantry""",
   """settings.themeNames.system""": """Systemstandard""",
   """settings.themeNames.light""": """Lys""",
   """settings.themeNames.dark""": """Mørk""",
+  """settings.useServerThemeColor""": """Bruk Nextcloud-temafarge""",
+  """settings.useServerThemeColorBody""":
+      """Fargelegg appen med temafargen til Nextcloud-brukaren din. Slå av for å bruke appen sine eigne fargar.""",
   """settings.notificationsSection""": """Varsel""",
   """settings.enableNotifications""": """Slå på varsel""",
   """settings.enableNotificationsBody""":

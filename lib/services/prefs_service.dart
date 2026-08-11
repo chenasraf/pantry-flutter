@@ -41,6 +41,7 @@ class PrefsService extends ChangeNotifier {
   static const _navOrderKey = 'nav_order';
   static const _navDisabledKey = 'nav_disabled';
   static const _themeColorKey = 'theme_color';
+  static const _useServerThemeColorKey = 'use_server_theme_color';
   static const _displayNameKey = 'display_name';
   static const _serverLanguageKey = 'server_language';
   static const _firstDayOfWeekKey = 'first_day_of_week';
@@ -176,6 +177,12 @@ class PrefsService extends ChangeNotifier {
   /// covers transient empty `theming` blocks and offline launches.
   String? _themeColorHex;
   String? get themeColorHex => _themeColorHex;
+
+  /// When true (default), the app is tinted with the Nextcloud user's theme
+  /// color fetched from the server. When false, the app uses its own built-in
+  /// accent regardless of what the server reports.
+  bool _useServerThemeColor = true;
+  bool get useServerThemeColor => _useServerThemeColor;
 
   /// Cached snapshot of values fetched from the Nextcloud user profile. These
   /// change rarely (user has to change them in Nextcloud), so we seed
@@ -330,6 +337,11 @@ class PrefsService extends ChangeNotifier {
     if (_navOrder.every(_navDisabled.contains)) _navDisabled = {};
 
     _themeColorHex = all[_themeColorKey];
+
+    final useServerTheme = all[_useServerThemeColorKey];
+    if (useServerTheme != null) {
+      _useServerThemeColor = useServerTheme == 'true';
+    }
 
     _displayName = all[_displayNameKey];
     _serverLanguage = all[_serverLanguageKey];
@@ -622,6 +634,13 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setUseServerThemeColor(bool value) async {
+    if (_useServerThemeColor == value) return;
+    _useServerThemeColor = value;
+    await _storage.write(key: _useServerThemeColorKey, value: value.toString());
+    notifyListeners();
+  }
+
   Future<void> setUserProfileCache({
     required String? displayName,
     required String? serverLanguage,
@@ -723,6 +742,7 @@ class PrefsService extends ChangeNotifier {
     _navOrder = List.of(kDefaultNavOrder);
     _navDisabled = {};
     _themeColorHex = null;
+    _useServerThemeColor = true;
     _displayName = null;
     _serverLanguage = null;
     _firstDayOfWeek = null;
@@ -752,6 +772,7 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _navOrderKey);
     await _storage.delete(key: _navDisabledKey);
     await _storage.delete(key: _themeColorKey);
+    await _storage.delete(key: _useServerThemeColorKey);
     await _storage.delete(key: _displayNameKey);
     await _storage.delete(key: _serverLanguageKey);
     await _storage.delete(key: _firstDayOfWeekKey);

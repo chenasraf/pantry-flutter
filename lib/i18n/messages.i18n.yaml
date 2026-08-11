@@ -233,6 +233,8 @@ settings:
     system: "System default"
     light: Light
     dark: Dark
+  useServerThemeColor: Use Nextcloud theme color
+  useServerThemeColorBody: Tint the app with your Nextcloud user's theme color. Turn off to use the app's own colors.
   notificationsSection: Notifications
   enableNotifications: Enable notifications
   enableNotificationsBody: Show alerts when household members add or update content.

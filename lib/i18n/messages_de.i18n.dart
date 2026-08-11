@@ -1124,6 +1124,17 @@ class SettingsMessagesDe extends SettingsMessages {
       ThemeNamesSettingsMessagesDe(this);
 
   /// ```dart
+  /// "Nextcloud-Designfarbe verwenden"
+  /// ```
+  String get useServerThemeColor => """Nextcloud-Designfarbe verwenden""";
+
+  /// ```dart
+  /// "Färbt die App mit der Designfarbe deines Nextcloud-Benutzers. Ausschalten, um die eigenen Farben der App zu verwenden."
+  /// ```
+  String get useServerThemeColorBody =>
+      """Färbt die App mit der Designfarbe deines Nextcloud-Benutzers. Ausschalten, um die eigenen Farben der App zu verwenden.""";
+
+  /// ```dart
   /// "Benachrichtigungen"
   /// ```
   String get notificationsSection => """Benachrichtigungen""";
@@ -4609,6 +4620,9 @@ Passwort: pantry-rocks""",
   """settings.themeNames.system""": """Systemstandard""",
   """settings.themeNames.light""": """Hell""",
   """settings.themeNames.dark""": """Dunkel""",
+  """settings.useServerThemeColor""": """Nextcloud-Designfarbe verwenden""",
+  """settings.useServerThemeColorBody""":
+      """Färbt die App mit der Designfarbe deines Nextcloud-Benutzers. Ausschalten, um die eigenen Farben der App zu verwenden.""",
   """settings.notificationsSection""": """Benachrichtigungen""",
   """settings.enableNotifications""": """Benachrichtigungen aktivieren""",
   """settings.enableNotificationsBody""":

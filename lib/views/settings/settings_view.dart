@@ -152,6 +152,10 @@ class _SettingsViewState extends State<SettingsView> {
     _ => m.settings.themeNames.system,
   };
 
+  Future<void> _toggleUseServerThemeColor(bool value) async {
+    await ThemingService.instance.setUseServerThemeColor(value);
+  }
+
   // -- Notifications --
 
   Future<void> _toggleNotifications(bool value) async {
@@ -210,6 +214,7 @@ class _SettingsViewState extends State<SettingsView> {
     final density = prefs.checklistDensity;
     final swipeActionsEnabled = prefs.swipeActionsEnabled;
     final reuseExistingItems = prefs.reuseExistingItems;
+    final useServerThemeColor = prefs.useServerThemeColor;
 
     return Scaffold(
       appBar: AppBar(
@@ -272,6 +277,14 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                 ],
               ),
+            ),
+
+            SwitchListTile(
+              secondary: const Icon(Icons.color_lens_outlined),
+              title: Text(m.settings.useServerThemeColor),
+              subtitle: Text(m.settings.useServerThemeColorBody),
+              value: useServerThemeColor,
+              onChanged: _toggleUseServerThemeColor,
             ),
 
             // -- Interface --

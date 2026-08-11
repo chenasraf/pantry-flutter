@@ -233,6 +233,8 @@ settings:
     system: "Par défaut du système"
     light: Clair
     dark: Sombre
+  useServerThemeColor: Utiliser la couleur du thème Nextcloud
+  useServerThemeColorBody: Teinte l'application avec la couleur du thème de votre utilisateur Nextcloud. Désactivez pour utiliser les couleurs propres à l'application.
   notificationsSection: Notifications
   enableNotifications: Activer les notifications
   enableNotificationsBody: Afficher des alertes lorsque les membres du foyer ajoutent ou modifient du contenu.

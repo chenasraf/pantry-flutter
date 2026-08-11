@@ -15,7 +15,18 @@ class ThemingService extends ChangeNotifier {
 
   static const _defaultColor = Color(0xFF0082C9);
 
-  Color get effectiveColor => _themeColor ?? _defaultColor;
+  /// The accent the app paints with. Falls back to [_defaultColor] when the
+  /// user has opted out of the Nextcloud theme color, even if one is cached.
+  Color get effectiveColor => PrefsService.instance.useServerThemeColor
+      ? (_themeColor ?? _defaultColor)
+      : _defaultColor;
+
+  bool get useServerThemeColor => PrefsService.instance.useServerThemeColor;
+
+  Future<void> setUseServerThemeColor(bool value) async {
+    await PrefsService.instance.setUseServerThemeColor(value);
+    notifyListeners();
+  }
 
   /// Seed [_themeColor] from the last value persisted by [fetchTheme]. Lets
   /// the app paint the correct accent immediately on cold start, even if the
