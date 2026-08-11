@@ -230,6 +230,41 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
 
   String get _query => _searchCtrl.text.trim().toLowerCase();
 
+  /// Scroll offset captured the moment a text search begins. Filtering shrinks
+  /// the list (and thus `maxScrollExtent`), which clamps the offset near the
+  /// top; restoring this on clear/close returns the user to where they were
+  /// instead of stranding them at the top (issue #134).
+  double? _preSearchOffset;
+
+  /// React to search text changes: capture the pre-filter scroll anchor on the
+  /// first keystroke, or restore it once the query is cleared back to empty.
+  void _handleSearchChanged() {
+    if (_searchCtrl.text.trim().isEmpty) {
+      _restorePreSearchOffset();
+    } else if (_preSearchOffset == null) {
+      // First keystroke — the list hasn't rebuilt yet, so the controller still
+      // reports the full-list offset. Capture it before it gets clamped.
+      final ctrl = widget.scrollController;
+      if (ctrl != null && ctrl.hasClients) _preSearchOffset = ctrl.offset;
+    }
+    setState(() {});
+  }
+
+  /// Jump back to the captured pre-search offset once the full list has been
+  /// restored. Deferred to a post-frame callback so `maxScrollExtent` reflects
+  /// the unfiltered list; clamped in case items were removed while filtered.
+  void _restorePreSearchOffset() {
+    final target = _preSearchOffset;
+    _preSearchOffset = null;
+    final ctrl = widget.scrollController;
+    if (target == null || ctrl == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !ctrl.hasClients) return;
+      final max = ctrl.position.maxScrollExtent;
+      ctrl.jumpTo(target > max ? max : target);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -590,7 +625,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                         ? _SearchField(
                             key: const ValueKey('search-open'),
                             controller: _searchCtrl,
-                            onChanged: () => setState(() {}),
+                            onChanged: _handleSearchChanged,
                           )
                         : const SizedBox(
                             key: ValueKey('search-closed'),
@@ -1275,6 +1310,9 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                 _noCategorySelected = false;
                 _selectedStoreIds.clear();
                 _noStoreSelected = false;
+                // Clearing the controller doesn't fire onChanged, so return the
+                // list to its pre-search position here (issue #134).
+                _restorePreSearchOffset();
               }
             });
           },
