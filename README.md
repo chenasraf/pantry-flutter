@@ -1,5 +1,7 @@
 # Pantry
 
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/6MvhMh4Jk)
+
 A Flutter mobile client for [Nextcloud Pantry](https://github.com/chenasraf/nextcloud-pantry) —
 household management for your self-hosted Nextcloud.
 
