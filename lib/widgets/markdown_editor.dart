@@ -227,9 +227,56 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         autoFocus: widget.autofocus,
         expands: widget.expands,
         scrollable: true,
+        // The persistent toolbar sits above the editor, so the OS selection
+        // popover — which floats over the selection — covers it for selections
+        // near the top, hiding formatting exactly when the user wants it. Fold
+        // the inline formats into the popover itself so they're always reachable
+        // alongside copy/paste.
+        contextMenuBuilder: _buildSelectionMenu,
       ),
     ),
   );
+
+  /// Native copy/paste popover, with our inline formatting actions appended so
+  /// formatting stays reachable when the popover covers the toolbar. Only shown
+  /// for a ranged selection — the formats act on the highlighted text.
+  Widget _buildSelectionMenu(BuildContext context, QuillRawEditorState state) {
+    final items = [...state.contextMenuButtonItems];
+    final selection = _controller.selection;
+    if (selection.isValid && !selection.isCollapsed) {
+      final loc = FlutterQuillLocalizations.of(context);
+      final active = _controller.getSelectionStyle().attributes;
+      void toggle(Attribute attr) {
+        final isOn = active.containsKey(attr.key);
+        _controller.formatSelection(isOn ? Attribute.clone(attr, null) : attr);
+      }
+
+      items.addAll([
+        ContextMenuButtonItem(
+          label: loc?.bold ?? 'Bold',
+          onPressed: () => toggle(Attribute.bold),
+        ),
+        ContextMenuButtonItem(
+          label: loc?.italic ?? 'Italic',
+          onPressed: () => toggle(Attribute.italic),
+        ),
+        ContextMenuButtonItem(
+          label: loc?.strikeThrough ?? 'Strikethrough',
+          onPressed: () => toggle(Attribute.strikeThrough),
+        ),
+        ContextMenuButtonItem(
+          label: loc?.inlineCode ?? 'Code',
+          onPressed: () => toggle(Attribute.inlineCode),
+        ),
+      ]);
+    }
+    return TextFieldTapRegion(
+      child: AdaptiveTextSelectionToolbar.buttonItems(
+        buttonItems: items,
+        anchors: state.contextMenuAnchors,
+      ),
+    );
+  }
 
   Widget _sourceField() {
     final base = DefaultTextStyle.of(context).style;
