@@ -836,3 +836,6 @@ sync:
   pendingChanges(int count): "${_plural(count, one: '1 change waiting to sync', many: '${count} changes waiting to sync')}"
   syncError: Couldn't sync changes
   retry: Retry now
+markdownEditor:
+  editSource: Markdown
+  editRich: Rich text

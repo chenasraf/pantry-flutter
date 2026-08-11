@@ -82,6 +82,7 @@ class MessagesNn extends Messages {
   ShareMessagesNn get share => ShareMessagesNn(this);
   RecurrenceMessagesNn get recurrence => RecurrenceMessagesNn(this);
   SyncMessagesNn get sync => SyncMessagesNn(this);
+  MarkdownEditorMessagesNn get markdownEditor => MarkdownEditorMessagesNn(this);
 }
 
 class CommonMessagesNn extends CommonMessages {
@@ -4313,6 +4314,21 @@ class SyncMessagesNn extends SyncMessages {
   String get retry => """Prøv igjen no""";
 }
 
+class MarkdownEditorMessagesNn extends MarkdownEditorMessages {
+  final MessagesNn _parent;
+  const MarkdownEditorMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Markdown"
+  /// ```
+  String get editSource => """Markdown""";
+
+  /// ```dart
+  /// "Rik tekst"
+  /// ```
+  String get editRich => """Rik tekst""";
+}
+
 Map<String, String> get messagesNnMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Avbryt""",
@@ -5106,4 +5122,6 @@ Passord: pantry""",
   """sync.syncing""": """Synkroniserer endringar…""",
   """sync.syncError""": """Kunne ikkje synkronisere endringar""",
   """sync.retry""": """Prøv igjen no""",
+  """markdownEditor.editSource""": """Markdown""",
+  """markdownEditor.editRich""": """Rik tekst""",
 };

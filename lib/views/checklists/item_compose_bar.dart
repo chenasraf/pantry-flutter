@@ -13,6 +13,7 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
+import 'package:pantry/widgets/markdown_editor.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/price.dart';
@@ -225,7 +226,6 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     ..price.currency = widget.lastCurrency;
   final _nameCtrl = TextEditingController();
   final _qtyCtrl = TextEditingController();
-  final _descCtrl = TextEditingController();
   final _focusNode = FocusNode();
   bool _active = false;
   _Tray? _openTray;
@@ -305,7 +305,6 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       _draft.reset(_defaultLifecycle());
       _nameCtrl.clear();
       _qtyCtrl.clear();
-      _descCtrl.clear();
       _openTray = null;
     });
     _focusNode.requestFocus();
@@ -345,7 +344,6 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     _nameCtrl.removeListener(_onNameChanged);
     _nameCtrl.dispose();
     _qtyCtrl.dispose();
-    _descCtrl.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -360,7 +358,6 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       _draft.reset(_defaultLifecycle());
       _nameCtrl.clear();
       _qtyCtrl.clear();
-      _descCtrl.clear();
     });
     _focusNode.unfocus();
     widget.onActiveChanged?.call(false);
@@ -386,9 +383,9 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     });
     if (t == _Tray.quantity) {
       _qtyCtrl.text = _draft.quantity;
-    } else if (t == _Tray.description) {
-      _descCtrl.text = _draft.description;
     }
+    // The description tray's editor seeds itself from _draft.description when it
+    // mounts, so there's nothing to sync here.
   }
 
   Future<void> _pickImage() async {
@@ -571,7 +568,6 @@ class ItemComposeBarState extends State<ItemComposeBar> {
         _draft.reset(_defaultLifecycle());
         _nameCtrl.clear();
         _qtyCtrl.clear();
-        _descCtrl.clear();
         _openTray = null;
       });
       _focusNode.requestFocus();
@@ -658,7 +654,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
         );
       case _Tray.description:
         trayChild = _DescriptionTray(
-          controller: _descCtrl,
+          initialValue: _draft.description,
           onChanged: (v) => setState(() => _draft.description = v),
         );
       case _Tray.type:
@@ -1754,43 +1750,21 @@ class _PriceTray extends StatelessWidget {
 }
 
 class _DescriptionTray extends StatelessWidget {
-  final TextEditingController controller;
+  final String initialValue;
   final ValueChanged<String> onChanged;
 
-  const _DescriptionTray({required this.controller, required this.onChanged});
+  const _DescriptionTray({required this.initialValue, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return _TrayShell(
       label: m.checklists.compose.chipDescription,
-      child: TextField(
-        controller: controller,
+      child: MarkdownEditor(
+        initialValue: initialValue,
         onChanged: onChanged,
-        textCapitalization: TextCapitalization.sentences,
-        minLines: 3,
-        maxLines: 6,
-        decoration: InputDecoration(
-          hintText: m.checklists.compose.descHint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(11),
-            borderSide: BorderSide(color: cs.primary, width: 1.5),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(11),
-            borderSide: BorderSide(color: cs.primary, width: 1.5),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(11),
-            borderSide: BorderSide(color: cs.primary, width: 1.5),
-          ),
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 10,
-          ),
-        ),
-        style: const TextStyle(fontSize: 15),
+        placeholder: m.checklists.compose.descHint,
+        minHeight: 84,
+        maxHeight: 220,
       ),
     );
   }

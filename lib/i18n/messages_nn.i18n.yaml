@@ -957,3 +957,6 @@ sync:
     many: '${count} endringar venter på synkronisering')}"
   syncError: Kunne ikkje synkronisere endringar
   retry: Prøv igjen no
+markdownEditor:
+  editSource: Markdown
+  editRich: Rik tekst

@@ -20,6 +20,7 @@ import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
+import 'package:pantry/widgets/markdown_editor.dart';
 import 'checklist_item_tile.dart' show ItemLifecycle, lifecycleOf;
 import 'checklists_controller.dart';
 import 'form_components.dart';
@@ -39,8 +40,10 @@ class ItemFormView extends StatefulWidget {
 
 class _ItemFormViewState extends State<ItemFormView> {
   late final TextEditingController _nameController;
-  late final TextEditingController _descriptionController;
   late final TextEditingController _quantityController;
+
+  /// Item description as markdown, driven by the WYSIWYG editor.
+  late String _description;
   int? _selectedCategoryId;
   final Set<int> _selectedStoreIds = {};
   late ItemLifecycle _lifecycle;
@@ -52,7 +55,6 @@ class _ItemFormViewState extends State<ItemFormView> {
   bool _catPickerOpen = false;
   bool _storePickerOpen = false;
   TextDirection _nameDir = TextDirection.ltr;
-  TextDirection _descriptionDir = TextDirection.ltr;
   XFile? _pickedImage;
   bool _removeExistingImage = false;
   String? _focusedField;
@@ -78,9 +80,7 @@ class _ItemFormViewState extends State<ItemFormView> {
     super.initState();
     final item = widget.item;
     _nameController = TextEditingController(text: item?.name ?? '');
-    _descriptionController = TextEditingController(
-      text: item?.description ?? '',
-    );
+    _description = item?.description ?? '';
     _quantityController = TextEditingController(text: item?.quantity ?? '');
     _selectedCategoryId = item?.categoryId;
     _selectedStoreIds.addAll(item?.storeIds ?? const []);
@@ -107,11 +107,6 @@ class _ItemFormViewState extends State<ItemFormView> {
       final dir = detectTextDirection(_nameController.text);
       if (dir != _nameDir) setState(() => _nameDir = dir);
     });
-    _descriptionDir = detectTextDirection(item?.description);
-    _descriptionController.addListener(() {
-      final dir = detectTextDirection(_descriptionController.text);
-      if (dir != _descriptionDir) setState(() => _descriptionDir = dir);
-    });
     if (_cameraSupported) {
       PlatformInfo.isiOSAppOnMac.then((onMac) {
         if (!mounted || !onMac) return;
@@ -137,7 +132,6 @@ class _ItemFormViewState extends State<ItemFormView> {
   @override
   void dispose() {
     _nameController.dispose();
-    _descriptionController.dispose();
     _quantityController.dispose();
     _nameFocus.dispose();
     _descFocus.dispose();
@@ -193,7 +187,7 @@ class _ItemFormViewState extends State<ItemFormView> {
         savedItem = await widget.controller.updateItem(
           item,
           name: name,
-          description: _descriptionController.text.trim(),
+          description: _description.trim(),
           quantity: _quantityController.text.trim(),
           categoryId: _selectedCategoryId,
           clearCategory: _selectedCategoryId == null && item.categoryId != null,
@@ -213,7 +207,7 @@ class _ItemFormViewState extends State<ItemFormView> {
       } else {
         savedItem = await widget.controller.addItem(
           name: name,
-          description: _descriptionController.text.trim(),
+          description: _description.trim(),
           quantity: _quantityController.text.trim(),
           categoryId: _selectedCategoryId,
           storeIds: _storesEnabled && _selectedStoreIds.isNotEmpty
@@ -403,25 +397,13 @@ class _ItemFormViewState extends State<ItemFormView> {
                 _LabeledField(
                   label: f.description,
                   focused: _focusedField == 'desc',
-                  child: TextField(
-                    controller: _descriptionController,
+                  child: MarkdownEditor(
+                    initialValue: _description,
+                    onChanged: (md) => _description = md,
                     focusNode: _descFocus,
-                    textCapitalization: TextCapitalization.sentences,
-                    textDirection: _descriptionDir,
-                    minLines: 2,
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                      isCollapsed: true,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                      hintText: f.descHint,
-                      hintStyle: TextStyle(color: cs.onSurfaceVariant),
-                    ),
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      height: 1.45,
-                    ),
+                    placeholder: f.descHint,
+                    minHeight: 60,
+                    maxHeight: 200,
                   ),
                 ),
                 const SizedBox(height: 11),

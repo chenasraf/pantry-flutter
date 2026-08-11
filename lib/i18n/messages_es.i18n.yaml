@@ -828,3 +828,6 @@ sync:
   pendingChanges(int count): "${_plural(count, one: '1 cambio esperando a sincronizar', many: '${count} cambios esperando a sincronizar')}"
   syncError: "No se pudieron sincronizar los cambios"
   retry: Reintentar
+markdownEditor:
+  editSource: Markdown
+  editRich: Texto enriquecido

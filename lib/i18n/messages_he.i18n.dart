@@ -82,6 +82,7 @@ class MessagesHe extends Messages {
   ShareMessagesHe get share => ShareMessagesHe(this);
   RecurrenceMessagesHe get recurrence => RecurrenceMessagesHe(this);
   SyncMessagesHe get sync => SyncMessagesHe(this);
+  MarkdownEditorMessagesHe get markdownEditor => MarkdownEditorMessagesHe(this);
 }
 
 class CommonMessagesHe extends CommonMessages {
@@ -4294,6 +4295,21 @@ class SyncMessagesHe extends SyncMessages {
   String get retry => """נסה שוב""";
 }
 
+class MarkdownEditorMessagesHe extends MarkdownEditorMessages {
+  final MessagesHe _parent;
+  const MarkdownEditorMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Markdown"
+  /// ```
+  String get editSource => """Markdown""";
+
+  /// ```dart
+  /// "טקסט עשיר"
+  /// ```
+  String get editRich => """טקסט עשיר""";
+}
+
 Map<String, String> get messagesHeMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """ביטול""",
@@ -5060,4 +5076,6 @@ Map<String, String> get messagesHeMap => {
   """sync.syncing""": """מסנכרן שינויים…""",
   """sync.syncError""": """לא ניתן היה לסנכרן את השינויים""",
   """sync.retry""": """נסה שוב""",
+  """markdownEditor.editSource""": """Markdown""",
+  """markdownEditor.editRich""": """טקסט עשיר""",
 };

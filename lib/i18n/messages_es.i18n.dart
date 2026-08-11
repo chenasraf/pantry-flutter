@@ -82,6 +82,7 @@ class MessagesEs extends Messages {
   ShareMessagesEs get share => ShareMessagesEs(this);
   RecurrenceMessagesEs get recurrence => RecurrenceMessagesEs(this);
   SyncMessagesEs get sync => SyncMessagesEs(this);
+  MarkdownEditorMessagesEs get markdownEditor => MarkdownEditorMessagesEs(this);
 }
 
 class CommonMessagesEs extends CommonMessages {
@@ -4323,6 +4324,21 @@ class SyncMessagesEs extends SyncMessages {
   String get retry => """Reintentar""";
 }
 
+class MarkdownEditorMessagesEs extends MarkdownEditorMessages {
+  final MessagesEs _parent;
+  const MarkdownEditorMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Markdown"
+  /// ```
+  String get editSource => """Markdown""";
+
+  /// ```dart
+  /// "Texto enriquecido"
+  /// ```
+  String get editRich => """Texto enriquecido""";
+}
+
 Map<String, String> get messagesEsMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Cancelar""",
@@ -5126,4 +5142,6 @@ Contraseña: pantry-rocks""",
   """sync.syncing""": """Sincronizando cambios…""",
   """sync.syncError""": """No se pudieron sincronizar los cambios""",
   """sync.retry""": """Reintentar""",
+  """markdownEditor.editSource""": """Markdown""",
+  """markdownEditor.editRich""": """Texto enriquecido""",
 };

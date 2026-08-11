@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
+import 'package:pantry/utils/markdown_delta.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
+import 'package:pantry/widgets/markdown_editor.dart';
 
 const _colorOptions = <String?>[
   null, // default / no color
@@ -47,20 +49,24 @@ class NoteFormView extends StatefulWidget {
 
 class _NoteFormViewState extends State<NoteFormView> {
   late final TextEditingController _titleController;
-  late final TextEditingController _contentController;
+
+  /// The note body as markdown. Seeded from the note (normalized so the editor's
+  /// own round-tripped output can be compared against it) and updated as the
+  /// WYSIWYG editor reports edits.
+  late String _content;
+  late final String _initialContent;
   String? _selectedColor;
   bool _saving = false;
+  bool _sourceMode = false;
   TextDirection _titleDir = TextDirection.ltr;
-  TextDirection _contentDir = TextDirection.ltr;
 
   bool get _isEditing => widget.note != null;
 
   bool get _hasUnsavedChanges {
     final baseTitle = widget.note?.title ?? '';
-    final baseContent = widget.note?.content ?? widget.prefillContent ?? '';
     final baseColor = widget.note?.color;
     return _titleController.text != baseTitle ||
-        _contentController.text != baseContent ||
+        _content != _initialContent ||
         _selectedColor != baseColor;
   }
 
@@ -68,28 +74,21 @@ class _NoteFormViewState extends State<NoteFormView> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.note?.title ?? '');
-    _contentController = TextEditingController(
-      text: widget.note?.content ?? widget.prefillContent ?? '',
+    _initialContent = normalizeMarkdown(
+      widget.note?.content ?? widget.prefillContent ?? '',
     );
+    _content = _initialContent;
     _selectedColor = widget.note?.color;
     _titleDir = detectTextDirection(widget.note?.title);
-    _contentDir = detectTextDirection(
-      widget.note?.content ?? widget.prefillContent,
-    );
     _titleController.addListener(() {
       final dir = detectTextDirection(_titleController.text);
       if (dir != _titleDir) setState(() => _titleDir = dir);
-    });
-    _contentController.addListener(() {
-      final dir = detectTextDirection(_contentController.text);
-      if (dir != _contentDir) setState(() => _contentDir = dir);
     });
   }
 
   @override
   void dispose() {
     _titleController.dispose();
-    _contentController.dispose();
     super.dispose();
   }
 
@@ -103,13 +102,13 @@ class _NoteFormViewState extends State<NoteFormView> {
         await widget.controller.updateNote(
           widget.note!,
           title: title,
-          content: _contentController.text,
+          content: _content,
           color: _selectedColor ?? '',
         );
       } else {
         await widget.controller.addNote(
           title: title,
-          content: _contentController.text,
+          content: _content,
           color: _selectedColor,
         );
       }
@@ -185,7 +184,34 @@ class _NoteFormViewState extends State<NoteFormView> {
           backgroundColor: bgColor,
           foregroundColor: textColor,
           leading: appBarBackLeading(context),
-          title: Text(_isEditing ? m.notesWall.editNote : m.notesWall.newNote),
+          titleSpacing: 0,
+          title: TextField(
+            controller: _titleController,
+            decoration: InputDecoration(
+              hintText: m.notesWall.title,
+              hintStyle: TextStyle(color: textColor.withAlpha(120)),
+              border: InputBorder.none,
+              isCollapsed: true,
+            ),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: textColor,
+              fontWeight: FontWeight.bold,
+            ),
+            autofocus: !_isEditing,
+            textCapitalization: TextCapitalization.sentences,
+            textInputAction: TextInputAction.next,
+            textDirection: _titleDir,
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8),
+              child: MarkdownModeSwitch(
+                richMode: !_sourceMode,
+                foregroundColor: textColor,
+                onChanged: (rich) => setState(() => _sourceMode = !rich),
+              ),
+            ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _saving ? null : _save,
@@ -199,43 +225,16 @@ class _NoteFormViewState extends State<NoteFormView> {
         ),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-              child: TextField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  hintText: m.notesWall.title,
-                  hintStyle: TextStyle(color: textColor.withAlpha(100)),
-                  border: InputBorder.none,
-                ),
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: textColor,
-                  fontWeight: FontWeight.bold,
-                ),
-                autofocus: !_isEditing,
-                textCapitalization: TextCapitalization.sentences,
-                textInputAction: TextInputAction.next,
-                textDirection: _titleDir,
-              ),
-            ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                child: TextField(
-                  controller: _contentController,
-                  decoration: InputDecoration(
-                    hintText: m.notesWall.content,
-                    hintStyle: TextStyle(color: textColor.withAlpha(100)),
-                    border: InputBorder.none,
-                  ),
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: textColor.withAlpha(230),
-                  ),
-                  textCapitalization: TextCapitalization.sentences,
-                  maxLines: null,
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 0),
+                child: MarkdownEditor(
+                  initialValue: _content,
+                  onChanged: (md) => setState(() => _content = md),
                   expands: true,
-                  textAlignVertical: TextAlignVertical.top,
-                  textDirection: _contentDir,
+                  foregroundColor: textColor,
+                  placeholder: m.notesWall.content,
+                  sourceMode: _sourceMode,
                 ),
               ),
             ),

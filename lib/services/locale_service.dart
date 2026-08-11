@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/nn_localizations.dart';
 import 'package:pantry/i18n/messages.i18n.dart';
@@ -49,6 +50,8 @@ const localizationsDelegates = <LocalizationsDelegate<dynamic>>[
   GlobalMaterialLocalizations.delegate,
   GlobalWidgetsLocalizations.delegate,
   GlobalCupertinoLocalizations.delegate,
+  // The WYSIWYG markdown editor (flutter_quill) needs its own localizations.
+  FlutterQuillLocalizations.delegate,
 ];
 
 class LocaleService extends ChangeNotifier {

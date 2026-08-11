@@ -81,6 +81,7 @@ class Messages {
   ShareMessages get share => ShareMessages(this);
   RecurrenceMessages get recurrence => RecurrenceMessages(this);
   SyncMessages get sync => SyncMessages(this);
+  MarkdownEditorMessages get markdownEditor => MarkdownEditorMessages(this);
 }
 
 class CommonMessages {
@@ -4288,6 +4289,21 @@ class SyncMessages {
   String get retry => """Retry now""";
 }
 
+class MarkdownEditorMessages {
+  final Messages _parent;
+  const MarkdownEditorMessages(this._parent);
+
+  /// ```dart
+  /// "Markdown"
+  /// ```
+  String get editSource => """Markdown""";
+
+  /// ```dart
+  /// "Rich text"
+  /// ```
+  String get editRich => """Rich text""";
+}
+
 Map<String, String> get messagesMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Cancel""",
@@ -5067,4 +5083,6 @@ Password: pantry-rocks""",
   """sync.syncing""": """Syncing changes…""",
   """sync.syncError""": """Couldn't sync changes""",
   """sync.retry""": """Retry now""",
+  """markdownEditor.editSource""": """Markdown""",
+  """markdownEditor.editRich""": """Rich text""",
 };
