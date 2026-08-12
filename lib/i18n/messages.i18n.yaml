@@ -520,6 +520,20 @@ checklists:
   hideProgressHero: "Hide progress card"
   sortTooltip: "Sort"
   doneCount(int count): "Done · $count"
+  uncheckAll: Uncheck all
+  uncheckAllConfirm: Uncheck all items?
+  uncheckAllConfirmBody: Every checked item in this list will be returned to the active list.
+  uncheckedCount(int count): "${_plural(count, one: 'Unchecked 1 item', many: 'Unchecked $count items')}"
+  resetOrder:
+    menuLabel: Reset custom order…
+    pickTitle: Reset custom order to…
+    confirmTitle: Reset custom order?
+    confirmBody: This overwrites the current custom order for this list. You can rearrange items afterwards.
+    action: Reset order
+    success: Custom order reset
+    basisDateAdded: Date added
+    basisNameAsc: "Name A–Z"
+    basisNameDesc: "Name Z–A"
   addToList(String name): "Add to $name…"
   addFirstItem: Add your first item…
   noItemsTitle: Nothing on this list yet

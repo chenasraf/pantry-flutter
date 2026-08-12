@@ -9,7 +9,7 @@ import '../helpers/test_models.dart';
 // item's store link is many-valued, so an item is emitted once under each store
 // it belongs to; items with no (resolvable) store fall under a trailing "No
 // store" group. Store groups follow `sortedStores` order; items within a group
-// sort by name.
+// sort by `sortOrder` (tie-break name), honouring a custom within-column order.
 
 Store _store(int id, String name, {int sortOrder = 0}) => Store(
   id: id,
@@ -37,20 +37,51 @@ void main() {
       expect(groups[1].items.single.id, 10);
     });
 
-    test('groups follow sortedStores order, items sort by name within', () {
-      final stores = [_store(2, 'Bakery'), _store(1, 'Aldi')];
+    test(
+      'groups follow sortedStores order, items name-sort on equal order',
+      () {
+        final stores = [_store(2, 'Bakery'), _store(1, 'Aldi')];
+        final items = [
+          makeListItem(id: 10, name: 'Zucchini', storeIds: [1]),
+          makeListItem(id: 11, name: 'Apples', storeIds: [1]),
+          makeListItem(id: 12, name: 'Baguette', storeIds: [2]),
+        ];
+
+        final groups = groupItemsByStore(items, stores);
+
+        expect(groups.map((g) => g.storeId).toList(), [2, 1]);
+        expect(groups[0].items.map((i) => i.id).toList(), [12]);
+        // Equal sortOrder → name tie-break: Apples (11) before Zucchini (10).
+        expect(groups[1].items.map((i) => i.id).toList(), [11, 10]);
+      },
+    );
+
+    test('within a group, sortOrder wins over name', () {
+      final stores = [_store(1, 'Aldi')];
       final items = [
-        makeListItem(id: 10, name: 'Zucchini', storeIds: [1]),
-        makeListItem(id: 11, name: 'Apples', storeIds: [1]),
-        makeListItem(id: 12, name: 'Baguette', storeIds: [2]),
+        // Alphabetically Apples < Zucchini, but sortOrder puts Zucchini first.
+        makeListItem(id: 10, name: 'Zucchini', storeIds: [1], sortOrder: 0),
+        makeListItem(id: 11, name: 'Apples', storeIds: [1], sortOrder: 1),
       ];
 
       final groups = groupItemsByStore(items, stores);
 
-      expect(groups.map((g) => g.storeId).toList(), [2, 1]);
-      expect(groups[0].items.map((i) => i.id).toList(), [12]);
-      // Aldi group is name-sorted: Apples (11) before Zucchini (10).
-      expect(groups[1].items.map((i) => i.id).toList(), [11, 10]);
+      expect(groups.single.items.map((i) => i.id).toList(), [10, 11]);
+    });
+
+    test('a multi-store item keeps one sortOrder across its columns', () {
+      final stores = [_store(1, 'Aldi'), _store(2, 'Bakery')];
+      final items = [
+        makeListItem(id: 10, name: 'Cookies', storeIds: [1, 2], sortOrder: 0),
+        makeListItem(id: 11, name: 'Bread', storeIds: [1], sortOrder: 1),
+        makeListItem(id: 12, name: 'Cake', storeIds: [2], sortOrder: 1),
+      ];
+
+      final groups = groupItemsByStore(items, stores);
+
+      // Cookies (sortOrder 0) leads in both its columns despite its later name.
+      expect(groups[0].items.map((i) => i.id).toList(), [10, 11]);
+      expect(groups[1].items.map((i) => i.id).toList(), [10, 12]);
     });
 
     test('items with no store fall under a trailing null group', () {

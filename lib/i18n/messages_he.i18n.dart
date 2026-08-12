@@ -2145,6 +2145,30 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String doneCount(int count) => """בוצעו · $count""";
 
   /// ```dart
+  /// "בטל סימון להכול"
+  /// ```
+  String get uncheckAll => """בטל סימון להכול""";
+
+  /// ```dart
+  /// "לבטל את הסימון של כל הפריטים?"
+  /// ```
+  String get uncheckAllConfirm => """לבטל את הסימון של כל הפריטים?""";
+
+  /// ```dart
+  /// "כל פריט מסומן ברשימה זו יוחזר לרשימה הפעילה."
+  /// ```
+  String get uncheckAllConfirmBody =>
+      """כל פריט מסומן ברשימה זו יוחזר לרשימה הפעילה.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'בוטל הסימון של פריט אחד', many: 'בוטל הסימון של $count פריטים')}"
+  /// ```
+  String uncheckedCount(int count) =>
+      """${_plural(count, one: 'בוטל הסימון של פריט אחד', many: 'בוטל הסימון של $count פריטים')}""";
+  ResetOrderChecklistsMessagesHe get resetOrder =>
+      ResetOrderChecklistsMessagesHe(this);
+
+  /// ```dart
   /// "הוסף אל $name…"
   /// ```
   String addToList(String name) => """הוסף אל $name…""";
@@ -2895,6 +2919,57 @@ class SortChecklistsMessagesHe extends SortChecklistsMessages {
   /// "מותאם אישית"
   /// ```
   String get custom => """מותאם אישית""";
+}
+
+class ResetOrderChecklistsMessagesHe extends ResetOrderChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const ResetOrderChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "איפוס סדר מותאם…"
+  /// ```
+  String get menuLabel => """איפוס סדר מותאם…""";
+
+  /// ```dart
+  /// "איפוס הסדר המותאם לפי…"
+  /// ```
+  String get pickTitle => """איפוס הסדר המותאם לפי…""";
+
+  /// ```dart
+  /// "לאפס את הסדר המותאם?"
+  /// ```
+  String get confirmTitle => """לאפס את הסדר המותאם?""";
+
+  /// ```dart
+  /// "פעולה זו תדרוס את הסדר המותאם הנוכחי של רשימה זו. ניתן לסדר מחדש את הפריטים לאחר מכן."
+  /// ```
+  String get confirmBody =>
+      """פעולה זו תדרוס את הסדר המותאם הנוכחי של רשימה זו. ניתן לסדר מחדש את הפריטים לאחר מכן.""";
+
+  /// ```dart
+  /// "איפוס סדר"
+  /// ```
+  String get action => """איפוס סדר""";
+
+  /// ```dart
+  /// "הסדר המותאם אופס"
+  /// ```
+  String get success => """הסדר המותאם אופס""";
+
+  /// ```dart
+  /// "תאריך הוספה"
+  /// ```
+  String get basisDateAdded => """תאריך הוספה""";
+
+  /// ```dart
+  /// "שם א׳–ת׳"
+  /// ```
+  String get basisNameAsc => """שם א׳–ת׳""";
+
+  /// ```dart
+  /// "שם ת׳–א׳"
+  /// ```
+  String get basisNameDesc => """שם ת׳–א׳""";
 }
 
 class ItemTypesChecklistsMessagesHe extends ItemTypesChecklistsMessages {
@@ -4886,6 +4961,20 @@ Map<String, String> get messagesHeMap => {
   """checklists.allDone""": """הכל בוצע 🎉""",
   """checklists.hideProgressHero""": """הסתר כרטיס התקדמות""",
   """checklists.sortTooltip""": """מיון""",
+  """checklists.uncheckAll""": """בטל סימון להכול""",
+  """checklists.uncheckAllConfirm""": """לבטל את הסימון של כל הפריטים?""",
+  """checklists.uncheckAllConfirmBody""":
+      """כל פריט מסומן ברשימה זו יוחזר לרשימה הפעילה.""",
+  """checklists.resetOrder.menuLabel""": """איפוס סדר מותאם…""",
+  """checklists.resetOrder.pickTitle""": """איפוס הסדר המותאם לפי…""",
+  """checklists.resetOrder.confirmTitle""": """לאפס את הסדר המותאם?""",
+  """checklists.resetOrder.confirmBody""":
+      """פעולה זו תדרוס את הסדר המותאם הנוכחי של רשימה זו. ניתן לסדר מחדש את הפריטים לאחר מכן.""",
+  """checklists.resetOrder.action""": """איפוס סדר""",
+  """checklists.resetOrder.success""": """הסדר המותאם אופס""",
+  """checklists.resetOrder.basisDateAdded""": """תאריך הוספה""",
+  """checklists.resetOrder.basisNameAsc""": """שם א׳–ת׳""",
+  """checklists.resetOrder.basisNameDesc""": """שם ת׳–א׳""",
   """checklists.addFirstItem""": """הוסף את הפריט הראשון…""",
   """checklists.noItemsTitle""": """אין פריטים ברשימה""",
   """checklists.noItemsBody""":

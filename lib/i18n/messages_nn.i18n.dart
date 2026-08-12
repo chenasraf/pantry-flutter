@@ -2154,6 +2154,30 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   String doneCount(int count) => """Fullført · $count""";
 
   /// ```dart
+  /// "Fjern alle avkryssingar"
+  /// ```
+  String get uncheckAll => """Fjern alle avkryssingar""";
+
+  /// ```dart
+  /// "Fjerne avkryssing på alle oppføringar?"
+  /// ```
+  String get uncheckAllConfirm => """Fjerne avkryssing på alle oppføringar?""";
+
+  /// ```dart
+  /// "Alle avkryssa oppføringar i denne lista blir sende tilbake til den aktive lista."
+  /// ```
+  String get uncheckAllConfirmBody =>
+      """Alle avkryssa oppføringar i denne lista blir sende tilbake til den aktive lista.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Fjerna avkryssing på 1 oppføring', many: 'Fjerna avkryssing på $count oppføringar')}"
+  /// ```
+  String uncheckedCount(int count) =>
+      """${_plural(count, one: 'Fjerna avkryssing på 1 oppføring', many: 'Fjerna avkryssing på $count oppføringar')}""";
+  ResetOrderChecklistsMessagesNn get resetOrder =>
+      ResetOrderChecklistsMessagesNn(this);
+
+  /// ```dart
   /// "Legg til $name…"
   /// ```
   String addToList(String name) => """Legg til $name…""";
@@ -2906,6 +2930,57 @@ class SortChecklistsMessagesNn extends SortChecklistsMessages {
   /// "Sjølvvald"
   /// ```
   String get custom => """Sjølvvald""";
+}
+
+class ResetOrderChecklistsMessagesNn extends ResetOrderChecklistsMessages {
+  final ChecklistsMessagesNn _parent;
+  const ResetOrderChecklistsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Tilbakestill eigen rekkjefølgje…"
+  /// ```
+  String get menuLabel => """Tilbakestill eigen rekkjefølgje…""";
+
+  /// ```dart
+  /// "Tilbakestill eigen rekkjefølgje til…"
+  /// ```
+  String get pickTitle => """Tilbakestill eigen rekkjefølgje til…""";
+
+  /// ```dart
+  /// "Tilbakestille eigen rekkjefølgje?"
+  /// ```
+  String get confirmTitle => """Tilbakestille eigen rekkjefølgje?""";
+
+  /// ```dart
+  /// "Dette overskriv den noverande eigne rekkjefølgja for denne lista. Du kan omorganisere oppføringane etterpå."
+  /// ```
+  String get confirmBody =>
+      """Dette overskriv den noverande eigne rekkjefølgja for denne lista. Du kan omorganisere oppføringane etterpå.""";
+
+  /// ```dart
+  /// "Tilbakestill rekkjefølgje"
+  /// ```
+  String get action => """Tilbakestill rekkjefølgje""";
+
+  /// ```dart
+  /// "Eigen rekkjefølgje tilbakestilt"
+  /// ```
+  String get success => """Eigen rekkjefølgje tilbakestilt""";
+
+  /// ```dart
+  /// "Lagt til-dato"
+  /// ```
+  String get basisDateAdded => """Lagt til-dato""";
+
+  /// ```dart
+  /// "Namn A–Z"
+  /// ```
+  String get basisNameAsc => """Namn A–Z""";
+
+  /// ```dart
+  /// "Namn Z–A"
+  /// ```
+  String get basisNameDesc => """Namn Z–A""";
 }
 
 class ItemTypesChecklistsMessagesNn extends ItemTypesChecklistsMessages {
@@ -4922,6 +4997,23 @@ Passord: pantry""",
   """checklists.allDone""": """Ferdig 🎉""",
   """checklists.hideProgressHero""": """Sjul framgangskort""",
   """checklists.sortTooltip""": """Sorter""",
+  """checklists.uncheckAll""": """Fjern alle avkryssingar""",
+  """checklists.uncheckAllConfirm""":
+      """Fjerne avkryssing på alle oppføringar?""",
+  """checklists.uncheckAllConfirmBody""":
+      """Alle avkryssa oppføringar i denne lista blir sende tilbake til den aktive lista.""",
+  """checklists.resetOrder.menuLabel""": """Tilbakestill eigen rekkjefølgje…""",
+  """checklists.resetOrder.pickTitle""":
+      """Tilbakestill eigen rekkjefølgje til…""",
+  """checklists.resetOrder.confirmTitle""":
+      """Tilbakestille eigen rekkjefølgje?""",
+  """checklists.resetOrder.confirmBody""":
+      """Dette overskriv den noverande eigne rekkjefølgja for denne lista. Du kan omorganisere oppføringane etterpå.""",
+  """checklists.resetOrder.action""": """Tilbakestill rekkjefølgje""",
+  """checklists.resetOrder.success""": """Eigen rekkjefølgje tilbakestilt""",
+  """checklists.resetOrder.basisDateAdded""": """Lagt til-dato""",
+  """checklists.resetOrder.basisNameAsc""": """Namn A–Z""",
+  """checklists.resetOrder.basisNameDesc""": """Namn Z–A""",
   """checklists.addFirstItem""": """Legg til di fyrste oppføring…""",
   """checklists.noItemsTitle""": """Ingenting på denne lista enno""",
   """checklists.noItemsBody""":

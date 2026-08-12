@@ -428,6 +428,20 @@ class ChecklistService {
     );
   }
 
+  /// Clears the done-state on every checked item in one request (#668).
+  /// Idempotent: already-unchecked items are left alone and omitted from the
+  /// returned `items`. Permission `canCheckItems`.
+  Future<PantryBatchResult> batchUncheckItems(
+    int houseId, {
+    required List<int> itemIds,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, PantryBatchResult>(
+      '/houses/$houseId/items/batch/uncheck',
+      body: {'itemIds': itemIds},
+      fromJson: (data) => PantryBatchResult.fromJson(data),
+    );
+  }
+
   Future<ListItem> createItem(
     int houseId,
     int listId, {

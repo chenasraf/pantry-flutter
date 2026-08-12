@@ -292,6 +292,10 @@ class SyncExecutor {
             archive: op.body['archive'] as bool? ?? true,
           ),
         );
+      case 'uncheck':
+        return SyncResult(
+          await svc.batchUncheckItems(houseId, itemIds: itemIds),
+        );
       default:
         return SyncResult.empty;
     }

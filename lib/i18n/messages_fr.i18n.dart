@@ -2163,6 +2163,30 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String doneCount(int count) => """Faits · $count""";
 
   /// ```dart
+  /// "Tout décocher"
+  /// ```
+  String get uncheckAll => """Tout décocher""";
+
+  /// ```dart
+  /// "Décocher tous les articles ?"
+  /// ```
+  String get uncheckAllConfirm => """Décocher tous les articles ?""";
+
+  /// ```dart
+  /// "Chaque article coché de cette liste sera renvoyé vers la liste active."
+  /// ```
+  String get uncheckAllConfirmBody =>
+      """Chaque article coché de cette liste sera renvoyé vers la liste active.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article décoché', many: '$count articles décochés')}"
+  /// ```
+  String uncheckedCount(int count) =>
+      """${_plural(count, one: '1 article décoché', many: '$count articles décochés')}""";
+  ResetOrderChecklistsMessagesFr get resetOrder =>
+      ResetOrderChecklistsMessagesFr(this);
+
+  /// ```dart
   /// "Ajouter à $name…"
   /// ```
   String addToList(String name) => """Ajouter à $name…""";
@@ -2917,6 +2941,57 @@ class SortChecklistsMessagesFr extends SortChecklistsMessages {
   /// "Personnalisé"
   /// ```
   String get custom => """Personnalisé""";
+}
+
+class ResetOrderChecklistsMessagesFr extends ResetOrderChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const ResetOrderChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Réinitialiser l'ordre personnalisé…"
+  /// ```
+  String get menuLabel => """Réinitialiser l'ordre personnalisé…""";
+
+  /// ```dart
+  /// "Réinitialiser l'ordre personnalisé sur…"
+  /// ```
+  String get pickTitle => """Réinitialiser l'ordre personnalisé sur…""";
+
+  /// ```dart
+  /// "Réinitialiser l'ordre personnalisé ?"
+  /// ```
+  String get confirmTitle => """Réinitialiser l'ordre personnalisé ?""";
+
+  /// ```dart
+  /// "Cela remplace l'ordre personnalisé actuel de cette liste. Vous pourrez réorganiser les articles ensuite."
+  /// ```
+  String get confirmBody =>
+      """Cela remplace l'ordre personnalisé actuel de cette liste. Vous pourrez réorganiser les articles ensuite.""";
+
+  /// ```dart
+  /// "Réinitialiser l'ordre"
+  /// ```
+  String get action => """Réinitialiser l'ordre""";
+
+  /// ```dart
+  /// "Ordre personnalisé réinitialisé"
+  /// ```
+  String get success => """Ordre personnalisé réinitialisé""";
+
+  /// ```dart
+  /// "Date d'ajout"
+  /// ```
+  String get basisDateAdded => """Date d'ajout""";
+
+  /// ```dart
+  /// "Nom A–Z"
+  /// ```
+  String get basisNameAsc => """Nom A–Z""";
+
+  /// ```dart
+  /// "Nom Z–A"
+  /// ```
+  String get basisNameDesc => """Nom Z–A""";
 }
 
 class ItemTypesChecklistsMessagesFr extends ItemTypesChecklistsMessages {
@@ -4958,6 +5033,23 @@ Mot de passe : pantry-rocks""",
   """checklists.allDone""": """Tout est fait 🎉""",
   """checklists.hideProgressHero""": """Masquer la carte de progression""",
   """checklists.sortTooltip""": """Trier""",
+  """checklists.uncheckAll""": """Tout décocher""",
+  """checklists.uncheckAllConfirm""": """Décocher tous les articles ?""",
+  """checklists.uncheckAllConfirmBody""":
+      """Chaque article coché de cette liste sera renvoyé vers la liste active.""",
+  """checklists.resetOrder.menuLabel""":
+      """Réinitialiser l'ordre personnalisé…""",
+  """checklists.resetOrder.pickTitle""":
+      """Réinitialiser l'ordre personnalisé sur…""",
+  """checklists.resetOrder.confirmTitle""":
+      """Réinitialiser l'ordre personnalisé ?""",
+  """checklists.resetOrder.confirmBody""":
+      """Cela remplace l'ordre personnalisé actuel de cette liste. Vous pourrez réorganiser les articles ensuite.""",
+  """checklists.resetOrder.action""": """Réinitialiser l'ordre""",
+  """checklists.resetOrder.success""": """Ordre personnalisé réinitialisé""",
+  """checklists.resetOrder.basisDateAdded""": """Date d'ajout""",
+  """checklists.resetOrder.basisNameAsc""": """Nom A–Z""",
+  """checklists.resetOrder.basisNameDesc""": """Nom Z–A""",
   """checklists.addFirstItem""": """Ajoutez votre premier article…""",
   """checklists.noItemsTitle""": """Rien dans cette liste pour le moment""",
   """checklists.noItemsBody""":

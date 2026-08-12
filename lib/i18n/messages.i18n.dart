@@ -2138,6 +2138,30 @@ class ChecklistsMessages {
   String doneCount(int count) => """Done · $count""";
 
   /// ```dart
+  /// "Uncheck all"
+  /// ```
+  String get uncheckAll => """Uncheck all""";
+
+  /// ```dart
+  /// "Uncheck all items?"
+  /// ```
+  String get uncheckAllConfirm => """Uncheck all items?""";
+
+  /// ```dart
+  /// "Every checked item in this list will be returned to the active list."
+  /// ```
+  String get uncheckAllConfirmBody =>
+      """Every checked item in this list will be returned to the active list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Unchecked 1 item', many: 'Unchecked $count items')}"
+  /// ```
+  String uncheckedCount(int count) =>
+      """${_plural(count, one: 'Unchecked 1 item', many: 'Unchecked $count items')}""";
+  ResetOrderChecklistsMessages get resetOrder =>
+      ResetOrderChecklistsMessages(this);
+
+  /// ```dart
   /// "Add to $name…"
   /// ```
   String addToList(String name) => """Add to $name…""";
@@ -2887,6 +2911,57 @@ class SortChecklistsMessages {
   /// "Custom"
   /// ```
   String get custom => """Custom""";
+}
+
+class ResetOrderChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const ResetOrderChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Reset custom order…"
+  /// ```
+  String get menuLabel => """Reset custom order…""";
+
+  /// ```dart
+  /// "Reset custom order to…"
+  /// ```
+  String get pickTitle => """Reset custom order to…""";
+
+  /// ```dart
+  /// "Reset custom order?"
+  /// ```
+  String get confirmTitle => """Reset custom order?""";
+
+  /// ```dart
+  /// "This overwrites the current custom order for this list. You can rearrange items afterwards."
+  /// ```
+  String get confirmBody =>
+      """This overwrites the current custom order for this list. You can rearrange items afterwards.""";
+
+  /// ```dart
+  /// "Reset order"
+  /// ```
+  String get action => """Reset order""";
+
+  /// ```dart
+  /// "Custom order reset"
+  /// ```
+  String get success => """Custom order reset""";
+
+  /// ```dart
+  /// "Date added"
+  /// ```
+  String get basisDateAdded => """Date added""";
+
+  /// ```dart
+  /// "Name A–Z"
+  /// ```
+  String get basisNameAsc => """Name A–Z""";
+
+  /// ```dart
+  /// "Name Z–A"
+  /// ```
+  String get basisNameDesc => """Name Z–A""";
 }
 
 class ItemTypesChecklistsMessages {
@@ -4889,6 +4964,20 @@ Password: pantry-rocks""",
   """checklists.allDone""": """All done 🎉""",
   """checklists.hideProgressHero""": """Hide progress card""",
   """checklists.sortTooltip""": """Sort""",
+  """checklists.uncheckAll""": """Uncheck all""",
+  """checklists.uncheckAllConfirm""": """Uncheck all items?""",
+  """checklists.uncheckAllConfirmBody""":
+      """Every checked item in this list will be returned to the active list.""",
+  """checklists.resetOrder.menuLabel""": """Reset custom order…""",
+  """checklists.resetOrder.pickTitle""": """Reset custom order to…""",
+  """checklists.resetOrder.confirmTitle""": """Reset custom order?""",
+  """checklists.resetOrder.confirmBody""":
+      """This overwrites the current custom order for this list. You can rearrange items afterwards.""",
+  """checklists.resetOrder.action""": """Reset order""",
+  """checklists.resetOrder.success""": """Custom order reset""",
+  """checklists.resetOrder.basisDateAdded""": """Date added""",
+  """checklists.resetOrder.basisNameAsc""": """Name A–Z""",
+  """checklists.resetOrder.basisNameDesc""": """Name Z–A""",
   """checklists.addFirstItem""": """Add your first item…""",
   """checklists.noItemsTitle""": """Nothing on this list yet""",
   """checklists.noItemsBody""":

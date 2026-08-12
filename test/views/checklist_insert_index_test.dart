@@ -112,10 +112,20 @@ void main() {
   });
 
   group('checklistInsertIndex — custom sort', () {
-    test('new item goes to the top', () {
-      final items = [makeListItem(id: 1, name: 'a', createdAt: 100)];
+    test('new item appends at the bottom of custom order (#665)', () {
+      // The server assigns max(sortOrder)+1 on add, so the optimistic slot is
+      // the end of the list — matching what the server returns.
+      final items = [
+        makeListItem(id: 1, name: 'a', createdAt: 100),
+        makeListItem(id: 2, name: 'b', createdAt: 200),
+      ];
       final n = makeListItem(id: 99, name: 'new', createdAt: 400);
-      expect(checklistInsertIndex(items, 'custom', n, _noRank), 0);
+      expect(checklistInsertIndex(items, 'custom', n, _noRank), 2);
+    });
+
+    test('empty list inserts at 0', () {
+      final n = makeListItem(id: 99, name: 'new', createdAt: 400);
+      expect(checklistInsertIndex(const [], 'custom', n, _noRank), 0);
     });
   });
 }

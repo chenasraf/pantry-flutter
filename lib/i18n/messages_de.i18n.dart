@@ -2160,6 +2160,31 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String doneCount(int count) => """Erledigt · $count""";
 
   /// ```dart
+  /// "Alle Häkchen entfernen"
+  /// ```
+  String get uncheckAll => """Alle Häkchen entfernen""";
+
+  /// ```dart
+  /// "Bei allen Einträgen das Häkchen entfernen?"
+  /// ```
+  String get uncheckAllConfirm =>
+      """Bei allen Einträgen das Häkchen entfernen?""";
+
+  /// ```dart
+  /// "Jeder abgehakte Eintrag in dieser Liste wird in die aktive Liste zurückgeholt."
+  /// ```
+  String get uncheckAllConfirmBody =>
+      """Jeder abgehakte Eintrag in dieser Liste wird in die aktive Liste zurückgeholt.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Häkchen bei 1 Eintrag entfernt', many: 'Häkchen bei $count Einträgen entfernt')}"
+  /// ```
+  String uncheckedCount(int count) =>
+      """${_plural(count, one: 'Häkchen bei 1 Eintrag entfernt', many: 'Häkchen bei $count Einträgen entfernt')}""";
+  ResetOrderChecklistsMessagesDe get resetOrder =>
+      ResetOrderChecklistsMessagesDe(this);
+
+  /// ```dart
   /// "Zu $name hinzufügen…"
   /// ```
   String addToList(String name) => """Zu $name hinzufügen…""";
@@ -2917,6 +2942,57 @@ class SortChecklistsMessagesDe extends SortChecklistsMessages {
   /// "Benutzerdefiniert"
   /// ```
   String get custom => """Benutzerdefiniert""";
+}
+
+class ResetOrderChecklistsMessagesDe extends ResetOrderChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const ResetOrderChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Eigene Reihenfolge zurücksetzen…"
+  /// ```
+  String get menuLabel => """Eigene Reihenfolge zurücksetzen…""";
+
+  /// ```dart
+  /// "Eigene Reihenfolge zurücksetzen auf…"
+  /// ```
+  String get pickTitle => """Eigene Reihenfolge zurücksetzen auf…""";
+
+  /// ```dart
+  /// "Eigene Reihenfolge zurücksetzen?"
+  /// ```
+  String get confirmTitle => """Eigene Reihenfolge zurücksetzen?""";
+
+  /// ```dart
+  /// "Dies überschreibt die aktuelle eigene Reihenfolge dieser Liste. Du kannst die Einträge danach neu anordnen."
+  /// ```
+  String get confirmBody =>
+      """Dies überschreibt die aktuelle eigene Reihenfolge dieser Liste. Du kannst die Einträge danach neu anordnen.""";
+
+  /// ```dart
+  /// "Reihenfolge zurücksetzen"
+  /// ```
+  String get action => """Reihenfolge zurücksetzen""";
+
+  /// ```dart
+  /// "Eigene Reihenfolge zurückgesetzt"
+  /// ```
+  String get success => """Eigene Reihenfolge zurückgesetzt""";
+
+  /// ```dart
+  /// "Hinzugefügt am"
+  /// ```
+  String get basisDateAdded => """Hinzugefügt am""";
+
+  /// ```dart
+  /// "Name A–Z"
+  /// ```
+  String get basisNameAsc => """Name A–Z""";
+
+  /// ```dart
+  /// "Name Z–A"
+  /// ```
+  String get basisNameDesc => """Name Z–A""";
 }
 
 class ItemTypesChecklistsMessagesDe extends ItemTypesChecklistsMessages {
@@ -4960,6 +5036,23 @@ Passwort: pantry-rocks""",
   """checklists.allDone""": """Alles erledigt 🎉""",
   """checklists.hideProgressHero""": """Fortschrittskarte ausblenden""",
   """checklists.sortTooltip""": """Sortieren""",
+  """checklists.uncheckAll""": """Alle Häkchen entfernen""",
+  """checklists.uncheckAllConfirm""":
+      """Bei allen Einträgen das Häkchen entfernen?""",
+  """checklists.uncheckAllConfirmBody""":
+      """Jeder abgehakte Eintrag in dieser Liste wird in die aktive Liste zurückgeholt.""",
+  """checklists.resetOrder.menuLabel""": """Eigene Reihenfolge zurücksetzen…""",
+  """checklists.resetOrder.pickTitle""":
+      """Eigene Reihenfolge zurücksetzen auf…""",
+  """checklists.resetOrder.confirmTitle""":
+      """Eigene Reihenfolge zurücksetzen?""",
+  """checklists.resetOrder.confirmBody""":
+      """Dies überschreibt die aktuelle eigene Reihenfolge dieser Liste. Du kannst die Einträge danach neu anordnen.""",
+  """checklists.resetOrder.action""": """Reihenfolge zurücksetzen""",
+  """checklists.resetOrder.success""": """Eigene Reihenfolge zurückgesetzt""",
+  """checklists.resetOrder.basisDateAdded""": """Hinzugefügt am""",
+  """checklists.resetOrder.basisNameAsc""": """Name A–Z""",
+  """checklists.resetOrder.basisNameDesc""": """Name Z–A""",
   """checklists.addFirstItem""": """Füge deinen ersten Eintrag hinzu…""",
   """checklists.noItemsTitle""": """Noch nichts auf dieser Liste""",
   """checklists.noItemsBody""":

@@ -520,6 +520,20 @@ checklists:
   hideProgressHero: "הסתר כרטיס התקדמות"
   sortTooltip: "מיון"
   doneCount(int count): "בוצעו · $count"
+  uncheckAll: "בטל סימון להכול"
+  uncheckAllConfirm: "לבטל את הסימון של כל הפריטים?"
+  uncheckAllConfirmBody: "כל פריט מסומן ברשימה זו יוחזר לרשימה הפעילה."
+  uncheckedCount(int count): "${_plural(count, one: 'בוטל הסימון של פריט אחד', many: 'בוטל הסימון של $count פריטים')}"
+  resetOrder:
+    menuLabel: "איפוס סדר מותאם…"
+    pickTitle: "איפוס הסדר המותאם לפי…"
+    confirmTitle: "לאפס את הסדר המותאם?"
+    confirmBody: "פעולה זו תדרוס את הסדר המותאם הנוכחי של רשימה זו. ניתן לסדר מחדש את הפריטים לאחר מכן."
+    action: "איפוס סדר"
+    success: "הסדר המותאם אופס"
+    basisDateAdded: "תאריך הוספה"
+    basisNameAsc: "שם א׳–ת׳"
+    basisNameDesc: "שם ת׳–א׳"
   addToList(String name): "הוסף אל $name…"
   addFirstItem: הוסף את הפריט הראשון…
   noItemsTitle: אין פריטים ברשימה

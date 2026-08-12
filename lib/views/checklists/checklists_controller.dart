@@ -111,8 +111,126 @@ int checklistInsertIndex(
       return items.length;
     case 'custom':
     default:
-      return 0;
+      // The server assigns a new item `max(sortOrder)+1` on add, so the
+      // optimistic position is the end of the custom-ordered list (#665). The
+      // created item's real sortOrder comes back in the response and is
+      // reconciled then — this is only the optimistic slot.
+      return items.length;
   }
+}
+
+/// True-order reconstruction for a drag-to-reorder (#665/#666/store). Only
+/// [dragId] moves; every other item — checked items *and* items in other groups
+/// — keeps its stored `sortOrder` slot. The dragged item is re-slotted next to
+/// its new neighbour within [scope], the ordered items the drag was constrained
+/// to (the whole active partition in custom sort, a category block in category
+/// sort, a store column in store sort).
+///
+/// [allItems] is every item currently in the list (done + not-done); [scope]
+/// includes the dragged item and is in display order; [dropIndex] is the target
+/// position within [scope] *with the dragged item removed* (i.e. the index the
+/// reorderable already adjusted with `if (newIndex > oldIndex) newIndex--`).
+///
+/// Returns the full renumbered order (every item `0..n`) to POST to the reorder
+/// endpoint, or an empty list when [dragId] isn't in [scope] (a no-op drop).
+/// Pure, so it can be unit tested without the controller.
+List<({int id, int sortOrder})> reorderToTrueOrder(
+  List<ListItem> allItems,
+  List<ListItem> scope,
+  int dragId,
+  int dropIndex,
+) {
+  final draggedIndex = scope.indexWhere((i) => i.id == dragId);
+  if (draggedIndex == -1) return const [];
+  final dragged = scope[draggedIndex];
+
+  // New order *within the scope* after the drop.
+  final without = [
+    for (final i in scope)
+      if (i.id != dragId) i,
+  ];
+  final clamped = dropIndex < 0
+      ? 0
+      : (dropIndex > without.length ? without.length : dropIndex);
+  final reordered = [...without]..insert(clamped, dragged);
+
+  // Full true order = all items sorted by (sortOrder, then name) — the stored
+  // order the server persists.
+  final trueOrder = [...allItems]
+    ..sort((a, b) {
+      final c = a.sortOrder.compareTo(b.sortOrder);
+      return c != 0 ? c : a.name.toLowerCase().compareTo(b.name.toLowerCase());
+    });
+  final origIndex = trueOrder.indexWhere((i) => i.id == dragId);
+  final finalOrder = [
+    for (final i in trueOrder)
+      if (i.id != dragId) i,
+  ];
+
+  final pos = reordered.indexWhere((i) => i.id == dragId);
+  final predecessor = pos > 0 ? reordered[pos - 1] : null;
+  final successor = pos < reordered.length - 1 ? reordered[pos + 1] : null;
+
+  final int insertAt;
+  if (predecessor != null) {
+    insertAt = finalOrder.indexWhere((i) => i.id == predecessor.id) + 1;
+  } else if (successor != null) {
+    insertAt = finalOrder.indexWhere((i) => i.id == successor.id);
+  } else {
+    // Dragged item is alone in its scope — keep its original slot.
+    insertAt = origIndex == -1 ? finalOrder.length : origIndex;
+  }
+
+  finalOrder.insert(insertAt, dragged);
+  return [
+    for (var i = 0; i < finalOrder.length; i++)
+      (id: finalOrder[i].id, sortOrder: i),
+  ];
+}
+
+/// Re-seeds `sortOrder` from a chosen [basis] for the "Reset custom order to …"
+/// action (#667), leaving the list hand-reorderable afterwards. A pure client
+/// computation over the existing reorder endpoint — no server endpoint.
+///
+/// [basis] is `dateAdded` (oldest first), `name_asc`, or `name_desc`.
+/// [categoryOrder] is the category ids in header order, supplied *only* in
+/// category sort so the reseed keeps the category grouping (uncategorized last);
+/// null elsewhere for a flat reseed. Pure, for unit testing.
+List<({int id, int sortOrder})> reseedOrder(
+  List<ListItem> items,
+  String basis,
+  List<int>? categoryOrder,
+) {
+  int cmp(ListItem a, ListItem b) {
+    switch (basis) {
+      case 'name_asc':
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      case 'name_desc':
+        return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+      default: // dateAdded — oldest first
+        return a.createdAt.compareTo(b.createdAt);
+    }
+  }
+
+  final ordered = [...items];
+  if (categoryOrder != null) {
+    const maxRank = 1 << 30;
+    int rankOf(int? catId) {
+      if (catId == null) return maxRank;
+      final idx = categoryOrder.indexOf(catId);
+      return idx == -1 ? maxRank : idx;
+    }
+
+    ordered.sort((a, b) {
+      final r = rankOf(a.categoryId).compareTo(rankOf(b.categoryId));
+      return r != 0 ? r : cmp(a, b);
+    });
+  } else {
+    ordered.sort(cmp);
+  }
+  return [
+    for (var i = 0; i < ordered.length; i++) (id: ordered[i].id, sortOrder: i),
+  ];
 }
 
 class ChecklistsController extends ChangeNotifier {
@@ -1093,34 +1211,65 @@ class ChecklistsController extends ChangeNotifier {
     );
   }
 
-  Future<void> reorderItems(
-    List<ListItem> partition,
-    int oldIndex,
-    int newIndex,
-  ) async {
-    if (oldIndex == newIndex) return;
-    if (_currentList == null) return;
-    // Meta view aggregates across lists; per-list sort_order is meaningless
-    // here.
-    if (isMetaMode) return;
+  /// Whether within-group drag-to-reorder (category / store sort) is available.
+  /// The server orders within-category by `sortOrder` only on newer builds
+  /// (#666); on an older server a within-category drag would snap back on
+  /// refetch, so gate it on the capability flag. Store within-group ordering is
+  /// client-side, but it's gated together for a consistent UX.
+  bool get canReorderWithinGroups => hasFeature('custom-order-within-groups');
 
-    final item = partition.removeAt(oldIndex);
-    partition.insert(newIndex, item);
+  /// Whether the "Uncheck all" affordance should be offered. Gated on the new
+  /// endpoint's capability flag, plus a writable non-meta list and the
+  /// check-items permission.
+  bool get canUncheckAll =>
+      hasFeature('uncheck-all') &&
+      !isMetaMode &&
+      isCurrentListWritable &&
+      permissions.canCheckItems;
 
-    final order = <Map<String, int>>[];
-    for (var i = 0; i < partition.length; i++) {
-      order.add({'id': partition[i].id, 'sortOrder': i});
+  /// Re-orders `_items` into the display order the current sort implies after a
+  /// drag has rewritten `sortOrder`. Custom and store sort read straight from
+  /// `sortOrder` (store grouping re-sorts each column itself, so only presence
+  /// matters); category sort groups by category rank first, then `sortOrder`
+  /// within each category — mirroring the server's `sortBy=category` order.
+  List<ListItem> _displaySorted(List<ListItem> items) {
+    int bySortOrder(ListItem a, ListItem b) {
+      final c = a.sortOrder.compareTo(b.sortOrder);
+      return c != 0 ? c : a.name.toLowerCase().compareTo(b.name.toLowerCase());
     }
 
-    final unchecked = _items.where((i) => !i.done).toList();
-    final checked = _items.where((i) => i.done).toList();
-    final isUncheckedPartition = partition.isNotEmpty && !partition.first.done;
-    if (isUncheckedPartition) {
-      _items = [...partition, ...checked];
+    final sorted = [...items];
+    if (effectiveSortBy == 'category') {
+      final ranked = sortedCategories;
+      final rank = <int, int>{};
+      for (var i = 0; i < ranked.length; i++) {
+        rank[ranked[i].id] = i;
+      }
+      const uncategorizedRank = 1 << 30;
+      int rankOf(int? id) =>
+          id == null ? uncategorizedRank : (rank[id] ?? uncategorizedRank);
+      sorted.sort((a, b) {
+        final r = rankOf(a.categoryId).compareTo(rankOf(b.categoryId));
+        return r != 0 ? r : bySortOrder(a, b);
+      });
     } else {
-      _items = [...unchecked, ...partition];
+      sorted.sort(bySortOrder);
     }
+    return sorted;
+  }
 
+  /// Persists a full renumbered order across the list. Shared by the drag
+  /// handlers ([reorderItems]) and the "Reset custom order" action
+  /// ([resetOrder]): applies the new `sortOrder` to every item, re-sorts the
+  /// view, caches, and enqueues one reorder op carrying the whole set.
+  void _applyItemOrder(List<({int id, int sortOrder})> order) {
+    if (order.isEmpty || _currentList == null) return;
+    final orderMap = {for (final o in order) o.id: o.sortOrder};
+    _items = [
+      for (final i in _items)
+        orderMap.containsKey(i.id) ? i.copyWith(sortOrder: orderMap[i.id]) : i,
+    ];
+    _items = _displaySorted(_items);
     _checklistService.cacheItems(_currentList!.id, List.of(_items));
     notifyListeners();
 
@@ -1131,10 +1280,85 @@ class ChecklistsController extends ChangeNotifier {
         op: SyncOpKind.reorder,
         houseId: houseId,
         parentId: _currentList!.id,
-        body: {'order': order},
+        body: {
+          'order': [
+            for (final o in order) {'id': o.id, 'sortOrder': o.sortOrder},
+          ],
+        },
         createdAt: _now(),
       ),
     );
+  }
+
+  /// Commit a drag-to-reorder. [scope] is the ordered items the drag was
+  /// constrained to (the whole active partition in custom sort, a category
+  /// block in category sort, a store column in store sort), including the
+  /// dragged item. [oldIndex] indexes the dragged item within [scope];
+  /// [newIndex] is its drop position with the dragged item removed (the caller
+  /// already applied `if (newIndex > oldIndex) newIndex--`).
+  ///
+  /// Only the dragged item moves: every other item — checked items and items in
+  /// other groups — keeps its stored slot, so unchecking returns items to their
+  /// true position (#665) and a within-group drag doesn't disturb siblings.
+  Future<void> reorderItems(
+    List<ListItem> scope,
+    int oldIndex,
+    int newIndex,
+  ) async {
+    if (oldIndex == newIndex) return;
+    if (_currentList == null) return;
+    // Meta view aggregates across lists; per-list sort_order is meaningless
+    // here.
+    if (isMetaMode) return;
+    if (oldIndex < 0 || oldIndex >= scope.length) return;
+
+    final order = reorderToTrueOrder(
+      _items,
+      scope,
+      scope[oldIndex].id,
+      newIndex,
+    );
+    _applyItemOrder(order);
+  }
+
+  /// Re-seed the custom order from [basis] (`dateAdded` / `name_asc` /
+  /// `name_desc`) and leave the list hand-reorderable (#667). In category sort
+  /// the reseed keeps the category grouping; elsewhere it's a flat reseed. No-op
+  /// in the meta view (no per-list custom order) or when there's nothing to
+  /// order.
+  Future<void> resetOrder(String basis) async {
+    if (_currentList == null || isMetaMode) return;
+    if (_items.isEmpty) return;
+    // Only the category view needs the grouped reseed, and only when the server
+    // orders within-category by sortOrder (same gate as within-group drag);
+    // otherwise a flat reseed, which sticks on any server.
+    final categoryOrder =
+        effectiveSortBy == 'category' && canReorderWithinGroups
+        ? [for (final c in sortedCategories) c.id]
+        : null;
+    final order = reseedOrder(_items, basis, categoryOrder);
+    _applyItemOrder(order);
+  }
+
+  /// Clear the done-state on every checked item in the current list in one batch
+  /// (#668). Gathers *all* done items (unfiltered — "uncheck all in the list",
+  /// not just what a search/category filter shows), applies the optimistic
+  /// uncheck, and enqueues a single batch op reconciled in [_onSyncApplied].
+  void uncheckAll() {
+    if (!canUncheckAll) return;
+    final ids = [
+      for (final i in _items)
+        if (i.done && i.deletedAt == null) i.id,
+    ];
+    if (ids.isEmpty) return;
+    final idSet = ids.toSet();
+    _items = [
+      for (final i in _items)
+        idSet.contains(i.id) ? i.copyWith(done: false, updatedAt: _now()) : i,
+    ];
+    _cacheCurrentItems();
+    _enqueueBatch('uncheck', ids);
+    notifyListeners();
   }
 
   Future<void> refresh() async {
@@ -1527,6 +1751,10 @@ class ChecklistsController extends ChangeNotifier {
         }
       case 'category':
       case 'stores':
+      case 'uncheck':
+        // `uncheck` returns the now-unchecked rows (idempotent: already-active
+        // items are omitted). Swapping them by id folds the authoritative
+        // done/doneAt/nextDueAt back over the optimistic uncheck.
         _items = reconcileReplaceById(_items, result.items);
         _cacheCurrentItems();
       case 'delete':

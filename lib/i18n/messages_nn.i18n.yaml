@@ -625,6 +625,20 @@ checklists:
   hideProgressHero: Sjul framgangskort
   sortTooltip: Sorter
   doneCount(int count): Fullført · $count
+  uncheckAll: "Fjern alle avkryssingar"
+  uncheckAllConfirm: "Fjerne avkryssing på alle oppføringar?"
+  uncheckAllConfirmBody: "Alle avkryssa oppføringar i denne lista blir sende tilbake til den aktive lista."
+  uncheckedCount(int count): "${_plural(count, one: 'Fjerna avkryssing på 1 oppføring', many: 'Fjerna avkryssing på $count oppføringar')}"
+  resetOrder:
+    menuLabel: "Tilbakestill eigen rekkjefølgje…"
+    pickTitle: "Tilbakestill eigen rekkjefølgje til…"
+    confirmTitle: "Tilbakestille eigen rekkjefølgje?"
+    confirmBody: "Dette overskriv den noverande eigne rekkjefølgja for denne lista. Du kan omorganisere oppføringane etterpå."
+    action: "Tilbakestill rekkjefølgje"
+    success: "Eigen rekkjefølgje tilbakestilt"
+    basisDateAdded: "Lagt til-dato"
+    basisNameAsc: "Namn A–Z"
+    basisNameDesc: "Namn Z–A"
   addToList(String name): Legg til $name…
   addFirstItem: Legg til di fyrste oppføring…
   noItemsTitle: Ingenting på denne lista enno

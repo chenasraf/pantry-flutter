@@ -535,8 +535,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     // would persist a partial, wrong order. Gate it to the unfiltered case.
     // It also requires the long-press action to be the built-in
     // multi-select/reorder behavior; any other choice frees long-press for it.
-    final canReorder =
-        controller.effectiveSortBy == 'custom' &&
+    final baseReorderable =
         prefs.defaultItemLongPressAction == 'multiselect' &&
         !isMeta &&
         !controller.isSoftView &&
@@ -548,6 +547,16 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         !_priceFilter.isActive &&
         _query.isEmpty &&
         controller.isCurrentListWritable;
+    final canReorder =
+        controller.effectiveSortBy == 'custom' && baseReorderable;
+    // Within-group drag: category/store sort, gated on the server ordering
+    // within groups by sort_order (#666/store). Constrained to the dragged
+    // item's own category block / store column by the per-group reorderables.
+    final canReorderGroups =
+        baseReorderable &&
+        controller.canReorderWithinGroups &&
+        (controller.effectiveSortBy == 'category' ||
+            controller.effectiveSortBy == 'store');
     final total = controller.items.where((i) => i.deletedAt == null).length;
     final done = controller.items.where((i) => i.done).length;
 
@@ -778,6 +787,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                                     activeItems: activeItems,
                                     doneItems: doneItems,
                                     canReorder: canReorder,
+                                    canReorderGroups: canReorderGroups,
                                     isCards: isCards,
                                     doneCollapsed: doneCollapsed,
                                     groupByCategory:
@@ -1534,6 +1544,19 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           label: m.checklists.showProgressHero,
           selected: !(controller.currentList!.hideProgressHero),
         ),
+      // "Reset custom order" re-seeds sort_order from a chosen basis and leaves
+      // the list hand-reorderable (#667). Per-list only (no cross-list custom
+      // order in meta) and needs edit permission.
+      if (controller.currentList != null &&
+          !isMeta &&
+          controller.permissions.canEditLists) ...[
+        const PopupMenuDivider(),
+        _menuRow(
+          value: 'reset_order',
+          leading: const Icon(Icons.sort_by_alpha, size: 18),
+          label: m.checklists.resetOrder.menuLabel,
+        ),
+      ],
       // Markdown import/export are per-list only — not offered in the meta
       // "All lists" view, which has no single target.
       if (controller.currentList != null && !isMeta) ...[
@@ -1686,6 +1709,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         await controller.setSortBy('store');
       case 'sort_custom':
         await controller.setSortBy('custom');
+      case 'reset_order':
+        await _showResetOrderDialog(context, controller);
       case 'toggle_added_by':
         await controller.setShowAddedBy(!controller.showAddedBy);
       case 'toggle_progress_hero':
@@ -1759,6 +1784,61 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     );
     if (picked != null) {
       await controller.setSortBy(picked);
+    }
+  }
+
+  /// Pick a basis (Date added / Name A–Z / Name Z–A), confirm the destructive
+  /// overwrite, then re-seed the custom order (#667).
+  Future<void> _showResetOrderDialog(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    final bases = <({String key, String label})>[
+      (key: 'dateAdded', label: m.checklists.resetOrder.basisDateAdded),
+      (key: 'name_asc', label: m.checklists.resetOrder.basisNameAsc),
+      (key: 'name_desc', label: m.checklists.resetOrder.basisNameDesc),
+    ];
+    final basis = await showDialog<String>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text(m.checklists.resetOrder.pickTitle),
+        children: [
+          for (final b in bases)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, b.key),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(b.label),
+              ),
+            ),
+        ],
+      ),
+    );
+    if (basis == null || !context.mounted) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.resetOrder.confirmTitle),
+        content: Text(m.checklists.resetOrder.confirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.checklists.resetOrder.action),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await controller.resetOrder(basis);
+    if (context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(m.checklists.resetOrder.success)));
     }
   }
 
@@ -2699,6 +2779,11 @@ class _ItemList extends StatefulWidget {
   final List<ListItem> activeItems;
   final List<ListItem> doneItems;
   final bool canReorder;
+
+  /// When true (category / store sort with the within-group ordering
+  /// capability), each active category block / store column is independently
+  /// drag-reorderable — a drag is confined to its own group.
+  final bool canReorderGroups;
   final bool isCards;
   final bool doneCollapsed;
 
@@ -2723,6 +2808,7 @@ class _ItemList extends StatefulWidget {
     required this.activeItems,
     required this.doneItems,
     required this.canReorder,
+    required this.canReorderGroups,
     required this.isCards,
     required this.doneCollapsed,
     required this.groupByCategory,
@@ -2747,6 +2833,41 @@ class _ItemListState extends State<_ItemList> {
   final Map<int, GlobalKey> _tileKeys = {};
 
   GlobalKey _keyFor(int id) => _tileKeys.putIfAbsent(id, () => GlobalKey());
+
+  /// Stable (non-global) key for an active tile. A [ValueKey] keeps tile state
+  /// within its list without the cross-sliver reparenting a [GlobalKey] incurs.
+  ValueKey<String> _activeKey(int id) => ValueKey('active-$id');
+
+  // A long-press on a reorderable row lifts the item (a drag session starts at
+  // the long-press timeout). If it's released without moving far enough to
+  // change its slot, the drop lands at the start index — we read that as
+  // "select this item" and enter multi-select instead of reordering. The id is
+  // captured at drag start so a mid-drag rebuild can't shift the index lookup.
+  int? _dragStartIndex;
+  int? _dragStartItemId;
+
+  void _onReorderStart(List<ListItem> scope, int index) {
+    _dragStartIndex = index;
+    _dragStartItemId = (index >= 0 && index < scope.length)
+        ? scope[index].id
+        : null;
+  }
+
+  void _onReorderEnd(int endIndex) {
+    final start = _dragStartIndex;
+    final id = _dragStartItemId;
+    _dragStartIndex = null;
+    _dragStartItemId = null;
+    // Moved to a new slot → a real reorder (handled by onReorder), not a select.
+    if (start == null || id == null || endIndex != start) return;
+    if (!widget.controller.canSelectItems) return;
+    // The drop is still settling inside the list's setState; defer the
+    // selection (which rebuilds this subtree, tearing down the reorderable) to
+    // after the frame so we don't mutate the tree mid-build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.controller.enterSelection(id);
+    });
+  }
 
   @override
   void didUpdateWidget(_ItemList oldWidget) {
@@ -2778,6 +2899,8 @@ class _ItemListState extends State<_ItemList> {
       slivers.add(
         SliverReorderableList(
           itemCount: widget.activeItems.length,
+          onReorderStart: (index) => _onReorderStart(widget.activeItems, index),
+          onReorderEnd: _onReorderEnd,
           onReorder: (oldIndex, newIndex) {
             if (newIndex > oldIndex) newIndex--;
             widget.controller.reorderItems(
@@ -2799,9 +2922,19 @@ class _ItemListState extends State<_ItemList> {
         ),
       );
     } else if (widget.groupByCategory) {
-      slivers.addAll(_groupedSlivers(widget.activeItems));
+      slivers.addAll(
+        _groupedSlivers(
+          widget.activeItems,
+          reorderable: widget.canReorderGroups,
+        ),
+      );
     } else if (widget.groupByStore) {
-      slivers.addAll(_groupedByStoreSlivers(widget.activeItems));
+      slivers.addAll(
+        _groupedByStoreSlivers(
+          widget.activeItems,
+          reorderable: widget.canReorderGroups,
+        ),
+      );
     } else {
       slivers.add(
         SliverList.builder(
@@ -2816,9 +2949,11 @@ class _ItemListState extends State<_ItemList> {
 
     if (showDoneItems) {
       if (widget.groupByCategory) {
-        slivers.addAll(_groupedSlivers(widget.doneItems));
+        slivers.addAll(_groupedSlivers(widget.doneItems, reorderable: false));
       } else if (widget.groupByStore) {
-        slivers.addAll(_groupedByStoreSlivers(widget.doneItems));
+        slivers.addAll(
+          _groupedByStoreSlivers(widget.doneItems, reorderable: false),
+        );
       } else {
         slivers.add(
           SliverList.builder(
@@ -2874,6 +3009,27 @@ class _ItemListState extends State<_ItemList> {
                 ),
               ),
               const Spacer(),
+              if (widget.controller.canUncheckAll) ...[
+                TextButton(
+                  onPressed: () => _confirmUncheckAll(context),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 10,
+                    ),
+                    minimumSize: const Size(0, 32),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  child: Text(
+                    m.checklists.uncheckAll,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+              ],
               AnimatedRotation(
                 duration: const Duration(milliseconds: 200),
                 turns: widget.doneCollapsed ? 0 : 0.5,
@@ -2890,11 +3046,45 @@ class _ItemListState extends State<_ItemList> {
     );
   }
 
+  /// Confirm, then clear the done-state on every checked item in the list
+  /// (#668). The count is captured before the call since the Done section
+  /// empties immediately.
+  Future<void> _confirmUncheckAll(BuildContext context) async {
+    final count = widget.doneItems.length;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.uncheckAllConfirm),
+        content: Text(m.checklists.uncheckAllConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.checklists.uncheckAll),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    widget.controller.uncheckAll();
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(m.checklists.uncheckedCount(count))),
+      );
+    }
+  }
+
   /// One [SliverMainAxisGroup] per category run: a pinned category header
   /// followed by that group's tiles. Grouping each header with its own items
   /// makes the header stick to the top while its group is on screen and
   /// release as the next group scrolls up to take its place.
-  Iterable<Widget> _groupedSlivers(List<ListItem> items) {
+  Iterable<Widget> _groupedSlivers(
+    List<ListItem> items, {
+    required bool reorderable,
+  }) {
     return groupItemsByCategory(items).map((group) {
       final category = group.categoryId != null
           ? widget.controller.categories[group.categoryId]
@@ -2905,10 +3095,33 @@ class _ItemListState extends State<_ItemList> {
             pinned: true,
             delegate: _CategoryHeaderDelegate(category: category),
           ),
-          SliverList.builder(
-            itemCount: group.items.length,
-            itemBuilder: (context, i) => _buildTile(context, group.items[i]),
-          ),
+          if (reorderable)
+            // A drag is confined to this category's own SliverReorderableList,
+            // so it can never cross into another category (#666). The scope
+            // handed to the controller is exactly this group's items.
+            SliverReorderableList(
+              key: ValueKey('cat-reorder-${group.categoryId}'),
+              itemCount: group.items.length,
+              onReorderStart: (index) => _onReorderStart(group.items, index),
+              onReorderEnd: _onReorderEnd,
+              onReorder: (oldIndex, newIndex) {
+                if (newIndex > oldIndex) newIndex--;
+                widget.controller.reorderItems(group.items, oldIndex, newIndex);
+              },
+              itemBuilder: (context, i) {
+                final item = group.items[i];
+                return ReorderableDelayedDragStartListener(
+                  key: ValueKey('cat-${group.categoryId}-${item.id}'),
+                  index: i,
+                  child: _buildTile(context, item),
+                );
+              },
+            )
+          else
+            SliverList.builder(
+              itemCount: group.items.length,
+              itemBuilder: (context, i) => _buildTile(context, group.items[i]),
+            ),
         ],
       );
     });
@@ -2918,7 +3131,10 @@ class _ItemListState extends State<_ItemList> {
   /// (in `sortedStores` order) plus a trailing "No store" group. An item linked
   /// to several stores is emitted under each, so each rendered copy needs a key
   /// unique to its (store, item) pair — the item's own id alone would collide.
-  Iterable<Widget> _groupedByStoreSlivers(List<ListItem> items) {
+  Iterable<Widget> _groupedByStoreSlivers(
+    List<ListItem> items, {
+    required bool reorderable,
+  }) {
     final sortedStores = widget.controller.sortedStores;
     return groupItemsByStore(items, sortedStores).map((group) {
       final store = group.storeId != null
@@ -2930,17 +3146,46 @@ class _ItemListState extends State<_ItemList> {
             pinned: true,
             delegate: _StoreHeaderDelegate(store: store),
           ),
-          SliverList.builder(
-            itemCount: group.items.length,
-            itemBuilder: (context, i) {
-              final item = group.items[i];
-              return _buildTile(
-                context,
-                item,
-                keyOverride: ValueKey('store-${group.storeId}-${item.id}'),
-              );
-            },
-          ),
+          if (reorderable)
+            // The drag is confined to this store column. A multi-store item
+            // shares one sort_order, so re-slotting it here also moves it in its
+            // other columns — the intended "one order, many lenses" coupling.
+            SliverReorderableList(
+              key: ValueKey('store-reorder-${group.storeId}'),
+              itemCount: group.items.length,
+              onReorderStart: (index) => _onReorderStart(group.items, index),
+              onReorderEnd: _onReorderEnd,
+              onReorder: (oldIndex, newIndex) {
+                if (newIndex > oldIndex) newIndex--;
+                widget.controller.reorderItems(group.items, oldIndex, newIndex);
+              },
+              itemBuilder: (context, i) {
+                final item = group.items[i];
+                return ReorderableDelayedDragStartListener(
+                  key: ValueKey('store-${group.storeId}-${item.id}'),
+                  index: i,
+                  child: _buildTile(
+                    context,
+                    item,
+                    keyOverride: ValueKey(
+                      'store-tile-${group.storeId}-${item.id}',
+                    ),
+                  ),
+                );
+              },
+            )
+          else
+            SliverList.builder(
+              itemCount: group.items.length,
+              itemBuilder: (context, i) {
+                final item = group.items[i];
+                return _buildTile(
+                  context,
+                  item,
+                  keyOverride: ValueKey('store-${group.storeId}-${item.id}'),
+                );
+              },
+            ),
         ],
       );
     });
@@ -2984,7 +3229,12 @@ class _ItemListState extends State<_ItemList> {
       }
     }
     return ChecklistItemTile(
-      key: keyOverride ?? _keyFor(item.id),
+      // Only done tiles carry the per-id GlobalKey — [_onToggle] measures their
+      // height for scroll compensation. Active tiles use a plain ValueKey so the
+      // GlobalKey never reparents between slivers (active↔done on toggle, or the
+      // reorderable↔plain swap when entering selection), which would mutate a
+      // RenderObject mid-layout and crash a lazily-built sliver.
+      key: keyOverride ?? (item.done ? _keyFor(item.id) : _activeKey(item.id)),
       item: item,
       category: item.categoryId != null
           ? controller.categories[item.categoryId]
@@ -3053,7 +3303,10 @@ class _ItemListState extends State<_ItemList> {
       // Long-press enters selection only where it won't fight the reorder
       // drag (custom sort uses ReorderableDelayedDragStartListener). The
       // overflow "Select items" action covers the reorderable case.
-      onLongPressSelect: controller.canSelectItems && !widget.canReorder
+      onLongPressSelect:
+          controller.canSelectItems &&
+              !widget.canReorder &&
+              !widget.canReorderGroups
           ? (i) => controller.enterSelection(i.id)
           : null,
     );
@@ -3447,14 +3700,17 @@ List<({int? categoryId, List<ListItem> items})> groupItemsByCategory(
 /// an item's store link is many-valued, so an item is emitted once under *each*
 /// store it belongs to (duplicated across headers). An item with no store — or
 /// only ids whose store was deleted — lands in the "No store" group. Items
-/// within every group are sorted by name (A→Z). Only non-empty groups are
-/// returned.
+/// within every group are ordered by `sortOrder` (tie-break name A→Z) so a
+/// custom within-column order is honoured (multi-store items share one
+/// sort_order across their columns). Only non-empty groups are returned.
 List<({int? storeId, List<ListItem> items})> groupItemsByStore(
   List<ListItem> items,
   List<models.Store> sortedStores,
 ) {
-  int byName(ListItem a, ListItem b) =>
-      a.name.toLowerCase().compareTo(b.name.toLowerCase());
+  int bySortOrder(ListItem a, ListItem b) {
+    final c = a.sortOrder.compareTo(b.sortOrder);
+    return c != 0 ? c : a.name.toLowerCase().compareTo(b.name.toLowerCase());
+  }
 
   final validIds = {for (final s in sortedStores) s.id};
   final groups = <({int? storeId, List<ListItem> items})>[];
@@ -3463,7 +3719,7 @@ List<({int? storeId, List<ListItem> items})> groupItemsByStore(
     final inStore = [
       for (final item in items)
         if (item.storeIds.contains(store.id)) item,
-    ]..sort(byName);
+    ]..sort(bySortOrder);
     if (inStore.isNotEmpty) {
       groups.add((storeId: store.id, items: inStore));
     }
@@ -3472,7 +3728,7 @@ List<({int? storeId, List<ListItem> items})> groupItemsByStore(
   final noStore = [
     for (final item in items)
       if (!item.storeIds.any(validIds.contains)) item,
-  ]..sort(byName);
+  ]..sort(bySortOrder);
   if (noStore.isNotEmpty) {
     groups.add((storeId: null, items: noStore));
   }
