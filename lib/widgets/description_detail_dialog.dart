@@ -4,12 +4,10 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/widgets/markdown_description.dart';
 
-/// Opens a read-only dialog showing an item's full [description], rendered as
-/// markdown. When [onChanged] is supplied, task-list checkboxes become
-/// tappable and each toggle emits the full updated source so the caller can
-/// persist it; pass null to keep the dialog read-only. Mirrors
-/// [showStoreDetails] — tapping the item's description chip surfaces the whole
-/// text without leaving the list.
+/// Opens a dialog showing an item's full [description], rendered as markdown.
+/// When [onChanged] is supplied, task-list checkboxes become tappable and each
+/// toggle emits the full updated source so the caller can persist it; pass null
+/// to keep the dialog read-only.
 Future<void> showItemDescription(
   BuildContext context,
   String description, {

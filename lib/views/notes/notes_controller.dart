@@ -109,7 +109,6 @@ class NotesController extends ChangeNotifier {
   Future<void> load() async {
     _error = null;
 
-    // Restore from cache
     _sortBy = _service.cachedSortBy(houseId);
     final cached = _service.getCachedNotes(houseId);
     if (cached != null && _notes.isEmpty) {

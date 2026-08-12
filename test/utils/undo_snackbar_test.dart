@@ -6,9 +6,9 @@ import 'package:pantry/utils/undo_snackbar.dart';
 /// Hosts the widgets under test with a [ScaffoldMessenger] wired to
 /// [rootScaffoldMessengerKey] (the key both helpers post to). When
 /// [accessibleNavigation] is true an action SnackBar would default to never
-/// auto-dismissing — the exact scenario that left toasts stuck open
-/// (issue #100) — so it doubles as the regression harness for the helper's
-/// `persist: false` opt-out.
+/// auto-dismissing — the exact scenario that left toasts stuck open — so it
+/// doubles as the regression harness for the helper's `persist: false`
+/// opt-out.
 Widget _host({bool accessibleNavigation = false}) {
   return MaterialApp(
     home: Builder(
@@ -154,7 +154,7 @@ void main() {
     });
   });
 
-  group('regression: issue #100 (toasts stuck open)', () {
+  group('regression: toasts stuck open', () {
     testWidgets('action snackbar still auto-dismisses under accessible '
         'navigation', (tester) async {
       // With accessible navigation on, an action snackbar defaults to NOT

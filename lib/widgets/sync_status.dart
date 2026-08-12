@@ -8,9 +8,8 @@ import 'package:pantry/sync/sync_manager.dart';
 typedef SyncStatusPresentation = ({IconData icon, Color color, String label});
 
 /// Resolve the current sync state into a presentation, or null when it should
-/// stay hidden. The visibility rule is intentionally unchanged from the old
-/// banner: surface only an unsynced backlog from an offline period or a sync
-/// error — a single online op-flush stays silent.
+/// stay hidden. Surface only an unsynced backlog from an offline period or a
+/// sync error — a single online op-flush stays silent.
 SyncStatusPresentation? syncStatusPresentation(
   BuildContext context, {
   required SyncStatus status,
@@ -76,10 +75,8 @@ class SyncStatusBuilder extends StatelessWidget {
 }
 
 /// Invisible widget that feeds `flutter_offline`'s connectivity signal into
-/// [SyncManager] so the queue flushes as soon as the device reconnects. This
-/// used to live inside the visible status banner; the status now surfaces on
-/// the user avatar instead, but the connectivity feed still needs a mount
-/// point in the tree.
+/// [SyncManager] so the queue flushes as soon as the device reconnects — the
+/// connectivity feed needs a mount point in the tree.
 class SyncConnectivityListener extends StatelessWidget {
   const SyncConnectivityListener({super.key});
 

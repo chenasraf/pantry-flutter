@@ -111,8 +111,7 @@ class ItemDetailView extends StatelessWidget {
     );
   }
 
-  /// Whether the current user may use any of the move/copy/delete overflow
-  /// actions — drives whether the ⋮ button is shown at all.
+  /// Whether any overflow action is available — drives whether the ⋮ button shows.
   bool _hasOverflowActions() {
     final writable = controller.isItemWritable(item);
     if (!writable) return false;
@@ -285,8 +284,7 @@ class ItemDetailView extends StatelessWidget {
     if (targetId == null || !context.mounted) return;
     try {
       await controller.moveItem(item, targetId);
-      // The item is no longer on the current list; close the detail view so
-      // the user lands back on the checklist they came from.
+      // Item left the current list; close the detail view.
       if (context.mounted) Navigator.of(context).pop(true);
     } catch (_) {
       if (context.mounted) {
@@ -404,9 +402,8 @@ class _PhotoHeader extends StatelessWidget {
   final List<models.Store> stores;
   final VoidCallback onBack;
 
-  /// Receives the BuildContext of the more button so callers can anchor a
-  /// popup to it (desktop dropdown menu). Null hides the button entirely when
-  /// the user has no overflow actions available.
+  /// Receives the more button's BuildContext so callers can anchor a popup to
+  /// it (desktop dropdown). Null hides the button when there are no actions.
   final ValueChanged<BuildContext>? onMore;
 
   const _PhotoHeader({
@@ -554,8 +551,7 @@ class _FallbackHeader extends StatelessWidget {
       height: 230,
       child: Stack(
         children: [
-          // Tinted gradient backdrop blending the category color into the
-          // page surface.
+          // Tinted category-color backdrop fading into the page surface.
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(

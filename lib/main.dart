@@ -64,16 +64,12 @@ void main() async {
     WakelockPlus.enable();
   }
 
-  // Register Nynorsk (nn) date-formatting data with intl before the first
-  // frame; intl ships no nn data, so the nn localization delegates would throw
-  // when building their DateFormats otherwise.
+  // intl ships no Nynorsk (nn) data, so register it before the first frame or
+  // the nn localization delegates throw when building their DateFormats.
   registerNnLocaleData();
 
-  // Parallelize independent platform-channel work. AuthService.loadCredentials
-  // and PrefsService.load are independent reads from secure storage;
-  // PackageInfo and LocalNotificationsService.init touch other channels.
-  // Doing them concurrently roughly halves cold-start wall-clock on the
-  // pre-frame critical path.
+  // Independent platform-channel reads run concurrently to roughly halve
+  // cold-start wall-clock on the pre-frame critical path.
   await Future.wait([
     AuthService.instance.loadCredentials(),
     PrefsService.instance.load(),
@@ -81,19 +77,16 @@ void main() async {
     LocalNotificationsService.instance.init(),
     PackageInfo.fromPlatform().then((info) => appVersion = info.version),
   ]);
-  // Install pinned-cert HttpOverrides before any HTTP call fires so
-  // user-trusted self-signed certs are accepted from the very first
-  // request (capabilities/theme/profile fetches start right below).
+  // Install pinned-cert HttpOverrides before any HTTP call fires so user-trusted
+  // self-signed certs are accepted from the first request (fetches start below).
   CertTrustService.instance.install();
-  // Both services are loaded; seed the auth profile from PrefsService's
-  // cache so display name, server language, and first day of week are
-  // available on first frame without waiting for the network refresh.
+  // Seed the auth profile from cache so display name / server language / first
+  // day of week are available on first frame without waiting for the network.
   AuthService.instance.hydrateFromCache();
   ThemingService.instance.loadCached();
 
   if (AuthService.instance.isLoggedIn) {
-    // Disk caches are still awaited — the home view needs them on first
-    // frame to avoid an empty flash.
+    // Awaited: the home view needs these on first frame to avoid an empty flash.
     await Future.wait([
       HouseService.instance.cache.load(),
       CategoryService.instance.cache.load(),
@@ -104,18 +97,14 @@ void main() async {
       ServerVersionService.instance.loadCached(),
       SyncManager.instance.init(),
     ]);
-    // Network-bound refreshes — kept off the critical path. The cached
-    // theme color already drives the initial paint; capabilities/version
-    // and the profile fetch update listeners when they land.
-    // ServerVersionService must land before ThemingService — on NC ≥ 34
-    // the theme color comes from the cached capabilities `theming` block.
+    // Network-bound refreshes kept off the critical path; the cached theme color
+    // already drives the initial paint. ServerVersionService must land before
+    // ThemingService — on NC ≥ 34 the theme color comes from the cached
+    // capabilities `theming` block.
     //
-    // Exception: when the user has unseen onboarding pending, await the
-    // capabilities fetch (with a short timeout so offline launches still
-    // proceed). Pages like `AllListsOnboardingPage` always show, but consult
-    // `hasFeature(...)` to decide whether to append a "requires Pantry vX"
-    // note — blocking on fresh caps keeps that note from firing off stale
-    // cached capabilities on a server that already supports the feature.
+    // Exception: with unseen onboarding pending, await the capabilities fetch
+    // (short timeout so offline launches still proceed) so onboarding's
+    // `hasFeature(...)` checks don't fire off stale cached capabilities.
     if (hasPendingOnboardingCandidates(
       PrefsService.instance.lastSeenOnboardingVersion,
     )) {
@@ -144,7 +133,6 @@ void main() async {
     // may survive, so the widget would otherwise stay empty until the
     // next pin toggle.
     unawaited(PrefsService.instance.pushWidgetPinnedLists());
-    // Kick off the periodic background poll if notifications are enabled.
     if (PrefsService.instance.notificationsEnabled) {
       unawaited(registerBackgroundNotificationPoll());
     }
@@ -240,10 +228,8 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     if (mounted) setState(() {});
   }
 
-  /// Pick the next route for a logged-in user. Onboarding takes priority over
-  /// the notifications intro — both run only once, but onboarding is more
-  /// likely to recur (a returning user upgrading the app), so we sequence
-  /// onboarding → notifications intro → home.
+  /// Pick the next route for a logged-in user, sequencing onboarding →
+  /// notifications intro → home. Onboarding wins because it can recur on upgrade.
   String _nextPostLoginRoute() {
     final hasUnseenOnboarding = resolveOnboardingPages(
       PrefsService.instance.lastSeenOnboardingVersion,

@@ -7,17 +7,13 @@ import 'package:pantry/views/checklists/barcode_attribution.dart';
 
 /// Full-screen camera barcode scanner. Resolves to the decoded digits of the
 /// first EAN/UPC it sees (or a manually-typed number), or null if dismissed.
-///
-/// Push it with [BarcodeScanView.scan], which returns the scanned EAN so the
-/// caller can run the cache lookup / external resolve / prepopulate flow.
 class BarcodeScanView extends StatefulWidget {
   const BarcodeScanView({super.key});
 
   /// Returns a barcode to look up, or null if the user backed out.
   ///
-  /// Camera scanning is a mobile-only affordance — desktop and web have no
-  /// reliable camera path, so there it goes straight to the manual-entry
-  /// dialog instead of opening the (cameraless) scanner.
+  /// Desktop and web have no reliable camera path, so there it goes straight to
+  /// the manual-entry dialog instead of opening the scanner.
   static Future<String?> scan(BuildContext context) {
     if (!PlatformInfo.isMobile) {
       return showDialog<String>(
@@ -44,8 +40,8 @@ class _BarcodeScanViewState extends State<BarcodeScanView> {
       Format.ean13 | Format.ean8 | Format.upca | Format.upce;
 
   /// Fraction of the shorter screen edge used as the (square) decode crop.
-  /// Shared between the decoder and the viewfinder border so the box the user
-  /// aims at is exactly the region being read.
+  /// Shared with the viewfinder border so the box the user aims at is exactly
+  /// the region being read.
   static const double _cropPercent = 0.7;
 
   /// Guards against a second decode racing the pop after the first hit.
@@ -100,15 +96,10 @@ class _BarcodeScanViewState extends State<BarcodeScanView> {
             onScan: _onScan,
             codeFormat: _formats,
             // tryHarder/tryInverted markedly improve 1D (EAN/UPC) hit rate,
-            // which is otherwise unreliable in zxing-cpp. The decoder reads a
-            // centered square of [_cropPercent]; we render our viewfinder
-            // border through the widget's own overlay hook so it's painted by
-            // the same code path as the decode crop and can never drift.
+            // which is otherwise unreliable in zxing-cpp.
             tryHarder: true,
             tryInverted: true,
             cropPercent: _cropPercent,
-            // Our viewfinder: a rounded border + dimmed surround, positioned to
-            // match the decoder's crop region (see [_ViewfinderBorder]).
             scannerOverlay: const _ViewfinderBorder(
               cutOutPercent: _cropPercent,
             ),
@@ -219,9 +210,8 @@ class _ManualBarcodeDialogState extends State<_ManualBarcodeDialog> {
 }
 
 /// Viewfinder overlay for [ReaderWidget]: a rounded border with the surround
-/// dimmed for legibility. Passed as the widget's `scannerOverlay` so it renders
-/// in place of the built-in corner-bracket overlay, letting us use our own
-/// corner radius while keeping the same dimmed look.
+/// dimmed for legibility. Passed as `scannerOverlay` in place of the built-in
+/// corner-bracket overlay so we control the corner radius.
 class _ViewfinderBorder extends ShapeBorder {
   const _ViewfinderBorder({required this.cutOutPercent});
 
@@ -279,7 +269,6 @@ class _ViewfinderBorder extends ShapeBorder {
       );
       canvas.drawPath(scrim, Paint()..color = overlayColor);
     }
-    // Border around the cut-out.
     canvas.drawRRect(
       cutOut,
       Paint()

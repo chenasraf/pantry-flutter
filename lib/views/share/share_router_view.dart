@@ -95,7 +95,6 @@ class _ShareRouterViewState extends State<ShareRouterView> {
   }
 
   Future<void> _runPhotoFlow(House house) async {
-    // Fetch folders for the selected house (used in the picker).
     List<PhotoFolder> folders;
     try {
       folders = await PhotoService.instance.getFolders(house.id);

@@ -5,10 +5,9 @@
 /// [start] and [end] are 24-hour `HH:MM` strings, with `start` < `end`
 /// (no overnight/wrap intervals).
 class OpeningHoursInterval {
-  final int
-  day; // 1..7, ISO-8601 (1 = Monday .. 7 = Sunday) == DateTime.weekday
-  final String start; // "HH:MM"
-  final String end; // "HH:MM"
+  final int day;
+  final String start;
+  final String end;
 
   const OpeningHoursInterval({
     required this.day,

@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
-/// Introduces item prices. Shows a mock item row carrying a price chip above a
-/// simplified price input (a Set/Range toggle, an amount, and a currency) so
-/// users recognise both what a price looks like on the list and how they set
-/// one. Always shown; when the server doesn't report the `item-price`
-/// capability, a footnote spells out the Pantry version it needs.
+/// Introduces item prices: a mock item row with a price chip above a simplified
+/// price input (Set/Range toggle, amount, currency), so users recognise both
+/// what a price looks like and how to set one. Always shown; a footnote names
+/// the required Pantry version when the server lacks the `item-price` capability.
 class ItemPriceOnboardingPage extends StatelessWidget {
   const ItemPriceOnboardingPage({super.key});
 

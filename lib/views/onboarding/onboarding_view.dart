@@ -75,9 +75,8 @@ class _OnboardingViewState extends State<OnboardingView> {
     final total = _pages.length;
 
     return PopScope(
-      // Intercept back instead of letting it pop the route (which on Android
-      // would close the app from the onboarding cold-start). Treat back the
-      // same as Skip — save the version, advance to the next screen.
+      // Intercept back instead of popping the route (on Android that would
+      // close the app during onboarding cold-start). Treat back as Skip.
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;

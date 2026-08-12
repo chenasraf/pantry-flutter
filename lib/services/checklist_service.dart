@@ -13,11 +13,11 @@ class ChecklistService {
   static const _itemsPrefix = 'items';
   static const _selectedListKey = 'selectedListId';
 
-  // Legacy single-house lists cache (before the snapshot was keyed per house).
-  // A single `houseId` marker meant switching houses offline wiped the previous
-  // house's snapshot (issue #118). Kept as a read-only fallback so the first
-  // offline session after upgrading still finds the most-recently-used house's
-  // lists; the first per-house write supersedes it.
+  // Legacy single-house lists cache (before the snapshot was keyed per house):
+  // a single `houseId` marker meant switching houses offline wiped the other
+  // house's snapshot. Kept as a read-only fallback so the first offline session
+  // after upgrading still finds the most-recently-used house; superseded by the
+  // first per-house write.
   static const _legacyListsKey = 'lists';
   static const _legacyHouseIdKey = 'houseId';
 
@@ -60,9 +60,8 @@ class ChecklistService {
   }
 
   /// Drop only the cached items for [listId], leaving every other list's
-  /// offline cache intact. Used when a change affects a single list (e.g. an
-  /// item-sort change re-orders just the current list) so we don't wipe the
-  /// offline snapshots the other lists rely on (issue #92).
+  /// offline snapshot intact. Used when a change affects a single list so we
+  /// don't wipe the offline caches the other lists rely on.
   void invalidateItemsFor(int listId) =>
       cache.removeKey('$_itemsPrefix:$listId');
 
@@ -101,7 +100,7 @@ class ChecklistService {
   /// Page through an items endpoint until every item is retrieved. The server
   /// caps the number of items returned per request, so a single call silently
   /// drops the trailing items of long lists — when sorted by category that
-  /// looks like the last categories disappearing entirely (issue #80).
+  /// looks like the last categories disappearing entirely.
   Future<List<ListItem>> _fetchAllItems(
     String path, {
     required String sortBy,
@@ -428,7 +427,7 @@ class ChecklistService {
     );
   }
 
-  /// Clears the done-state on every checked item in one request (#668).
+  /// Clears the done-state on every checked item in one request.
   /// Idempotent: already-unchecked items are left alone and omitted from the
   /// returned `items`. Permission `canCheckItems`.
   Future<PantryBatchResult> batchUncheckItems(

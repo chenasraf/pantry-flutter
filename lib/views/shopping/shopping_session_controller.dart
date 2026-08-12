@@ -49,10 +49,9 @@ class ShoppingSessionController extends ChangeNotifier {
   List<ListItem> _items = [];
   List<ListItem> get items => _items;
 
-  /// This session's checked log (server-computed, grouped by store). Drives the
-  /// Done drawer and the in-cart count. Deliberately session-scoped via
-  /// [ShoppingService.getReview] rather than the house/day `done-today` tally,
-  /// which would fold in items checked on earlier trips today.
+  /// This session's checked log (server-computed). Drives the Done drawer and
+  /// in-cart count; session-scoped via [ShoppingService.getReview] so items
+  /// checked on earlier trips today aren't folded in.
   ShoppingReview? _review;
 
   /// Flat list of everything checked off on this trip, for the Done drawer.
@@ -123,11 +122,10 @@ class ShoppingSessionController extends ChangeNotifier {
         unawaited(_refreshReview());
         return;
       }
-      // An unskip (delete) landed — the item is back in the trip, so pull the
-      // fresh list to slot it into its server-sorted position. A skip (create)
-      // landing needs nothing: the item is already hidden optimistically and
-      // the server now excludes it too, so refreshing mid-flush would only risk
-      // hiding it again when a skip+unskip pair flushes back to back.
+      // An unskip (delete) landed — pull the fresh list to slot the item back
+      // into server-sorted order. A skip (create) landing needs no refresh: it
+      // is already hidden optimistically and now excluded server-side, and
+      // refreshing mid-flush could re-hide it when a skip+unskip pair flushes.
       if (_isOwnSkipOp(e.op) && e.op.op == SyncOpKind.delete) {
         unawaited(_refreshLiveData(includeHeartbeat: false).catchError((_) {}));
       }
@@ -297,22 +295,19 @@ class ShoppingSessionController extends ChangeNotifier {
     }
   }
 
-  /// Items checked locally whose removal the server hasn't caught up to yet.
-  /// The check endpoint and the item query are eventually consistent, so an
-  /// immediate re-fetch can still return a just-checked item as unchecked —
-  /// which would make it flicker back onto the list. We hide these ids from any
-  /// fetch result until a fetch stops returning them (server confirmed).
+  /// Items checked locally but not yet reflected by the server. The check
+  /// endpoint and item query are eventually consistent, so a just-checked item
+  /// can re-appear as unchecked; hide these ids until a fetch stops returning
+  /// them.
   final Set<int> _checkedPending = {};
 
-  /// Items removed from this trip locally whose skip the server hasn't caught
-  /// up to yet — the skip mirror of [_checkedPending]. Hidden from any fetch
-  /// result until a skip is confirmed (queue-drained and no longer listed), so
-  /// an offline / still-flushing removal can't flicker back onto the list.
+  /// The skip mirror of [_checkedPending]: items removed from this trip
+  /// locally, hidden until the skip is confirmed so an offline / still-flushing
+  /// removal can't flicker back.
   final Set<int> _skippedPending = {};
 
-  /// The last item removed from the trip per id, kept only long enough for its
-  /// Undo to restore it instantly at its original position without waiting on a
-  /// server re-fetch (which, offline, can't reach the server anyway).
+  /// Last removed item per id, kept so Undo can restore it in place instantly
+  /// without a server re-fetch (which offline can't reach anyway).
   final Map<int, ({ListItem item, int index})> _skipUndo = {};
 
   Future<void> _refreshLiveData({required bool includeHeartbeat}) async {
@@ -325,10 +320,9 @@ class ShoppingSessionController extends ChangeNotifier {
         _service.getPresence(houseId),
     ]);
     final fetched = results[0] as List<ListItem>;
-    // Hide any item with a pending check op (offline / still flushing) plus any
-    // we optimistically checked that the server still returns (eventual
-    // consistency). Drop an id from the hidden set only once it is neither
-    // queue-pending nor still listed by the server — i.e. fully confirmed gone.
+    // Hide items with a pending check op or that the server still returns after
+    // an optimistic check. Drop an id only once it is neither queue-pending nor
+    // still listed — i.e. fully confirmed gone.
     final queuePending = SyncManager.instance.pendingShoppingCheckedIds(
       houseId,
       sessionId,
@@ -371,11 +365,9 @@ class ShoppingSessionController extends ChangeNotifier {
     }
   }
 
-  /// Optimistically remove [item] and enqueue the check on the sync queue, so
-  /// it survives offline / spotty in-store connectivity and flushes when
-  /// possible. The id is held in [_checkedPending] (and reflected in the queue)
-  /// so an eventually-consistent re-fetch can't flicker it back; the sync
-  /// subscriptions reconcile once the op lands or is dropped.
+  /// Optimistically remove [item] and enqueue the check so it survives offline /
+  /// spotty connectivity. Held in [_checkedPending] so a re-fetch can't flicker
+  /// it back; sync subscriptions reconcile once the op lands or is dropped.
   Future<void> checkItem(ListItem item) async {
     _checkedPending.add(item.id);
     _items = _items.where((i) => i.id != item.id).toList();
@@ -393,11 +385,10 @@ class ShoppingSessionController extends ChangeNotifier {
     );
   }
 
-  /// Remove [item] from this trip only — it drops off the to-buy list but stays
-  /// on the checklist (not checked, not deleted). Optimistic and queued, like
-  /// [checkItem], so it survives spotty connectivity. Reversible via
-  /// [unskipItem]; [_skipUndo] remembers the item so an Undo can restore it in
-  /// place instantly.
+  /// Remove [item] from this trip only — off the to-buy list but still on the
+  /// checklist (not checked, not deleted). Optimistic and queued like
+  /// [checkItem]; reversible via [unskipItem], with [_skipUndo] enabling
+  /// instant in-place restore.
   Future<void> skipItem(ListItem item) async {
     final index = _items.indexWhere((i) => i.id == item.id);
     _skipUndo[item.id] = (item: item, index: index < 0 ? 0 : index);
@@ -417,10 +408,9 @@ class ShoppingSessionController extends ChangeNotifier {
     );
   }
 
-  /// Undo a trip removal: bring [itemId] back to the to-buy list and queue the
-  /// unskip. Restores the item at its pre-removal position optimistically (so
-  /// it reappears immediately even offline); the unskip landing later triggers
-  /// a refresh that reconciles it to the server's sorted order.
+  /// Undo a trip removal: bring [itemId] back and queue the unskip. Restores it
+  /// at its pre-removal position optimistically; the unskip landing later
+  /// reconciles it to the server's sorted order.
   Future<void> unskipItem(int itemId) async {
     final undo = _skipUndo.remove(itemId);
     _skippedPending.remove(itemId);

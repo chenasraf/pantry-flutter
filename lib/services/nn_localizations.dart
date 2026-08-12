@@ -37,10 +37,9 @@ bool _nnRegistered = false;
 /// and again (cheaply) inside each delegate's `load` as a safety net.
 void registerNnLocaleData() {
   if (_nnRegistered) return;
-  // Load the bundled standard-locale data first. initializeDateFormattingCustom
-  // resets the symbol/pattern maps to empty when they are still uninitialized,
-  // which would drop every other locale (en, nb, …). Loading the standard data
-  // first turns that reset into a no-op, and our nn entry is then layered on top.
+  // Load standard data first: initializeDateFormattingCustom resets the
+  // symbol/pattern maps to empty when uninitialized, dropping every other
+  // locale (en, nb, …). Loading first turns that reset into a no-op.
   initializeDateFormatting();
   date_symbol_data_custom.initializeDateFormattingCustom(
     locale: 'nn',

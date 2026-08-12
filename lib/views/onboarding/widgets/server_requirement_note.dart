@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/services/server_version_service.dart';
 
-/// Footnote for onboarding pages that pitch a server-backed feature. The pages
-/// always show — even against a server too old to support the feature — so this
-/// note fills the gap: when the connected server hasn't confirmed [feature],
-/// it explains the minimum Pantry version the feature needs. Once the server
-/// reports support (or the dev force-features override is on), it renders
-/// nothing.
+/// Footnote for onboarding pages that pitch a server-backed feature. Those
+/// pages always show, even on a too-old server — so when the server hasn't
+/// confirmed [feature], this note names the minimum Pantry version it needs.
+/// Renders nothing once the server reports support (or force-features is on).
 class ServerRequirementNote extends StatelessWidget {
   /// Capability name checked via [hasFeature]. The note only appears while this
   /// returns `false`.

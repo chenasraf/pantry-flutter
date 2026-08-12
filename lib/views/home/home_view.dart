@@ -73,10 +73,8 @@ class _HomeViewBody extends StatefulWidget {
 class _HomeViewBodyState extends State<_HomeViewBody>
     with WidgetsBindingObserver {
   int _tabIndex = 0;
-  // Tracks the order seen at the last build/listener pass so we can remap
-  // _tabIndex when the user reorders sections in settings — the active
-  // section should follow its new display position, not snap to whatever
-  // index it used to be.
+  // Order seen at the last pass, so a reorder in settings can remap _tabIndex
+  // to follow the active section to its new position instead of snapping.
   late List<NavSection> _lastOrder = PrefsService.instance.enabledNavOrder;
   final _pageController = PageController();
   final _notificationsController = NotificationsController();
@@ -84,10 +82,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   // the bottom bar doesn't rewire which tab pulls which refresher.
   final Map<NavSection, ValueNotifier<Future<void> Function()?>>
   _tabRefreshers = {for (final s in NavSection.values) s: ValueNotifier(null)};
-  // Per-section scroll controllers, owned here so iOS status-bar-tap can
-  // scroll the active tab to the top regardless of which view is hosting it.
-  // Each tab's view receives its controller via [scrollController:] and uses
-  // it as the controller of its primary vertical scrollable.
+  // Per-section scroll controllers, owned here so iOS status-bar-tap can scroll
+  // the active tab to the top regardless of which view is hosting it.
   final Map<NavSection, ScrollController> _tabScrollers = {
     for (final s in NavSection.values) s: ScrollController(),
   };
@@ -239,7 +235,6 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     if (link == null) return;
     final homeController = context.read<HomeController>();
 
-    // Switch house if specified and different from current.
     if (link.houseId != null &&
         link.houseId != homeController.currentHouse?.id) {
       final house = homeController.houses.cast<House?>().firstWhere(
@@ -272,7 +267,6 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
     final homeController = context.read<HomeController>();
 
-    // Switch to the right house if provided.
     if (tap.houseId != null && tap.houseId != homeController.currentHouse?.id) {
       final house = homeController.houses.cast<House?>().firstWhere(
         (h) => h!.id == tap.houseId,
@@ -285,7 +279,6 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     ChecklistService.instance.selectedListId = tap.listId;
 
     if (!mounted) return;
-    // Navigate to the checklists tab regardless of its current position.
     final checklistsIndex = _navOrder.indexOf(NavSection.checklists);
     if (_pageController.hasClients) {
       _goToTab(checklistsIndex);
@@ -293,8 +286,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
       setState(() => _tabIndex = checklistsIndex);
     }
 
-    // Trigger a refresh on the checklists tab so the controller reloads
-    // and picks up the new selectedListId.
+    // Refresh so the checklists controller reloads with the new selectedListId.
     _tabRefreshers[NavSection.checklists]?.value?.call();
   }
 
@@ -330,9 +322,6 @@ class _HomeViewBodyState extends State<_HomeViewBody>
       for (final s in _navOrder)
         if (_sectionVisible(s, permissions)) s,
     ];
-    // Clamp so a reorder that shifted the active section still lands on a
-    // real tab. The current section is preserved by adjusting `_tabIndex`
-    // once a reorder happens via the settings screen.
     final destinations = [
       for (final s in order) (icon: _sectionIcon(s), label: _sectionTitle(s)),
     ];
@@ -386,10 +375,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
           final tabIndex = _tabIndex.clamp(0, order.length - 1);
           final body = _buildBody(controller, useRail: useRail, order: order);
 
-          // Single shared AppBar across all tabs. On the checklists tab,
-          // ChecklistsView populates `_checklistsAppBarSpec` with its leading /
-          // title / actions; the AppBar widget instance stays put across tab
-          // swipes so there's no jarring swap — only its content changes.
+          // On the checklists tab, ChecklistsView populates
+          // `_checklistsAppBarSpec` with its leading / title / actions.
           final currentSection = order[tabIndex];
           final isChecklistsTab = currentSection == NavSection.checklists;
 

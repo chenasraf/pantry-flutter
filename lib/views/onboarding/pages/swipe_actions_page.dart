@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
 
-/// Teaches the swipe-to-reveal gesture on list items. Renders a mocked-up
-/// checklist row and runs a continuous demo animation that swipes the row
-/// open, holds, then snaps back — so the reader can see the affordance
-/// without having to actually swipe anything.
+/// Teaches the swipe-to-reveal gesture on list items. Runs a continuous demo
+/// that swipes a mocked row open, holds, then snaps back, so the reader sees
+/// the affordance without swiping.
 class SwipeActionsOnboardingPage extends StatefulWidget {
   const SwipeActionsOnboardingPage({super.key});
 
@@ -75,9 +74,8 @@ class _SwipeActionsOnboardingPageState extends State<SwipeActionsOnboardingPage>
     return 0;
   }
 
-  /// Hint opacity during the closing phase. Fades in just before the close
-  /// motion starts so it reads as "we're about to do this", visible through
-  /// the close, then fades out as the row settles back to idle.
+  /// Hint opacity during the closing phase: fades in just before the close
+  /// motion, holds through it, fades out as the row settles.
   double _closingHintOpacity(double t) {
     const fadeIn = 0.02;
     const fadeOut = 0.04;
@@ -245,8 +243,8 @@ class _DemoRow extends StatelessWidget {
               ),
             ),
           ),
-          // Floating "Swipe left" hint with a hand icon. Sits over the row
-          // during the actual sliding so it reads as a gesture instruction.
+          // Floating swipe hint over the row during the slide so it reads as a
+          // gesture instruction.
           IgnorePointer(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

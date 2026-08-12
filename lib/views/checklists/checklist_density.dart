@@ -1,7 +1,7 @@
 /// Vertical density of checklist rows, chosen in Settings. Each level carries
-/// the concrete layout metrics (row padding, checkbox tap height, swipe-action
+/// its concrete layout metrics (row padding, checkbox tap height, swipe-action
 /// sizing) so the row and swipe widgets stay declarative instead of branching
-/// on a string. Adding a level is a matter of adding an enum entry.
+/// on a string.
 enum ChecklistDensity {
   /// Generous spacing — the default.
   normal(

@@ -17,7 +17,7 @@ void main() {
 
   final service = ChecklistService.instance;
 
-  group('per-house lists cache (issue #118)', () {
+  group('per-house lists cache', () {
     test('each house keeps its own snapshot across writes', () {
       service.cacheLists(1, [_list(10, 1, 'Groceries')]);
       // Writing a second house must not wipe the first — the core bug.

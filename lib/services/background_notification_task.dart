@@ -33,11 +33,9 @@ void backgroundCallbackDispatcher() {
 }
 
 Future<void> _pollAndNotify() async {
-  // In a background isolate, AuthService and PrefsService are fresh
-  // instances — load credentials + user prefs.
-  // HttpOverrides is per-isolate, so the pinned-cert override installed
-  // in main() isn't present here — load and install before any HTTP
-  // call or self-signed-cert servers fail to poll.
+  // Background isolate: services are fresh instances and HttpOverrides is
+  // per-isolate, so the pinned-cert override from main() isn't present. Install
+  // it and load credentials before any HTTP call, or self-signed servers fail.
   await CertTrustService.instance.load();
   CertTrustService.instance.install();
   await AuthService.instance.loadCredentials();
@@ -49,7 +47,6 @@ Future<void> _pollAndNotify() async {
   final notifications = await NotificationService.instance.getNotifications();
   if (notifications.isEmpty) return;
 
-  // Compare against stored seen IDs.
   const storage = FlutterSecureStorage();
   final seenRaw = await storage.read(key: _seenIdsKey);
   final seen = seenRaw == null || seenRaw.isEmpty
@@ -73,8 +70,7 @@ Future<void> _pollAndNotify() async {
     );
   }
 
-  // Persist the current set of IDs (drop stale entries — keep only what the
-  // server still returns, to avoid the list growing unbounded).
+  // Persist only IDs the server still returns, so the set can't grow unbounded.
   final currentIds = notifications.map((n) => n.notificationId).toSet();
   await storage.write(key: _seenIdsKey, value: currentIds.join(','));
 }

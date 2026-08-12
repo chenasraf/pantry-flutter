@@ -192,7 +192,7 @@ class _ItemFormViewState extends State<ItemFormView> {
           categoryId: _selectedCategoryId,
           clearCategory: _selectedCategoryId == null && item.categoryId != null,
           // null leaves stores unchanged; [] clears them. Only send when the
-          // feature exists and the set actually differs from the item's.
+          // stores feature exists.
           storeIds: _storesEnabled ? _selectedStoreIds.toList() : null,
           rrule: effectiveRrule,
           repeatFromCompletion: effectiveRepeatFromCompletion,

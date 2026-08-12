@@ -81,10 +81,8 @@ class ThemingService extends ChangeNotifier {
       }
     }
 
-    // Preserve the cached color when the live fetch came up empty — a
-    // transient capabilities response without a `theming` block shouldn't
-    // demote the user back to the default accent until they fix things on
-    // their server.
+    // Keep the cached color on an empty fetch — a transient capabilities
+    // response without a `theming` block shouldn't demote the accent.
     if (fetched == null) return;
     if (fetched == _themeColor) return;
     _themeColor = fetched;

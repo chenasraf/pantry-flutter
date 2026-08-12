@@ -16,11 +16,10 @@ class LocalNotificationsService {
 
   Future<void> init() async {
     if (_initialized) return;
-    // Mark initialized up-front and never let a failure escape: init() runs on
-    // the pre-first-frame startup path (main() awaits it), so an unhandled
-    // error here aborts main() before runApp() and freezes the splash. A
-    // broken notification setup must degrade to "notifications don't work",
-    // never to "the app won't start".
+    // Mark initialized up-front and swallow failures below: init() is awaited on
+    // the pre-first-frame startup path, so an escaping error would freeze the
+    // splash. A broken setup must degrade to "notifications don't work", not
+    // "the app won't start".
     _initialized = true;
 
     const androidSettings = AndroidInitializationSettings(

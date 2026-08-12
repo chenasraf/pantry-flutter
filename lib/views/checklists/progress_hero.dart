@@ -6,10 +6,9 @@ import 'package:pantry/i18n.dart';
 /// A card with a circular progress ring and "{N} items left / {done} of
 /// {total} done" labels. Animates the ring on state changes.
 ///
-/// When [onDismiss] is non-null, a small X button is rendered at the trailing
-/// top corner so the card can be dismissed without a swipe gesture. The
-/// caller decides when to provide it (typically on desktop, where horizontal
-/// swipes aren't reliably available).
+/// When [onDismiss] is non-null, a trailing-corner X button lets the card be
+/// dismissed without a swipe — the caller provides it on desktop, where
+/// horizontal swipes aren't reliably available.
 class ProgressHero extends StatelessWidget {
   final int total;
   final int done;

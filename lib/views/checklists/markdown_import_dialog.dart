@@ -33,9 +33,8 @@ class MarkdownImportResult {
 /// default fields (category, quantity, description, item type + recurrence) is
 /// applied to every imported item — exactly like the multi-item add form.
 ///
-/// Note: OS file drag-and-drop is intentionally not offered — the app has no
-/// desktop file-drop plugin (e.g. `desktop_drop`), so import is limited to the
-/// upload-file and paste methods. Both feed the same text buffer.
+/// OS file drag-and-drop is intentionally not offered (no desktop file-drop
+/// plugin); import is limited to upload-file and paste, which share one buffer.
 class MarkdownImportDialog extends StatefulWidget {
   final List<models.Category> categories;
 
@@ -76,8 +75,8 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
   final RecurrenceState _recurrence = RecurrenceState();
   bool _forceReuse = false;
 
-  // Only offer the override when the global pref would not already reuse on
-  // its own — i.e. when it is "ask" or "never" — and the server supports it.
+  // Only offer the override when the global pref wouldn't already reuse ("ask"
+  // or "never") and the server supports it.
   bool get _canForceReuse =>
       widget.reuseFeatureAvailable && widget.reusePref != 'reuse';
 
@@ -92,7 +91,7 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
   void _recompute() {
     setState(() {
       _parsed = parseMarkdownItems(_textController.text);
-      // Everything is selected by default whenever the parsed set changes.
+      // Select everything whenever the parsed set changes.
       _selected = List.filled(_parsed.length, true);
     });
   }

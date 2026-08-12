@@ -535,7 +535,7 @@ class _ListStage extends StatelessWidget {
     try {
       await controller.deleteList(list);
       if (!context.mounted) return;
-      Navigator.pop(context); // close the switcher sheet
+      Navigator.pop(context);
       // Snackbar runs against the host scaffold, not the dismissed sheet.
       showUndoSnackBar(
         message: m.checklists.listRemoved,
@@ -869,10 +869,9 @@ class _ListFormStageState extends State<_ListFormStage> {
 
   bool get _isEdit => widget.existing != null;
 
-  // Per-list color is only meaningful on servers that ship the
-  // `checklist-color` feature. On older servers, sending a color is rejected
-  // by the backend's enum validation, so we hide the picker and let the
-  // backend assign its default (the API treats absence and null as default).
+  // Per-list color only works on servers with the `checklist-color` feature;
+  // older servers reject a sent color, so we hide the picker and let the
+  // backend assign its default.
   bool get _supportsListColor => hasFeature('checklist-color');
 
   @override

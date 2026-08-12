@@ -259,11 +259,9 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Maps a thrown error to a user-facing message. The exact exception is
-  /// always preserved in [errorDetails] behind "See details"; this only
-  /// picks a headline that points the user at the real class of problem
-  /// (name resolution / VPN, timeout, or something else) instead of always
-  /// blaming the URL.
+  /// Maps a thrown error to a user-facing headline (timeout, unreachable, or
+  /// generic) instead of always blaming the URL; the exact exception is kept
+  /// in [errorDetails].
   void _failWith(Object e, StackTrace st) {
     _isLoading = false;
     _isPolling = false;

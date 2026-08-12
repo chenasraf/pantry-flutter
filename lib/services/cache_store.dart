@@ -41,13 +41,11 @@ class CacheStore {
 
   /// Persist [_data] to disk, serializing concurrent callers.
   ///
-  /// Mutations fire many un-awaited [_save] calls in bursts (e.g. warming
-  /// every list's item cache on load). Writing them concurrently to the same
-  /// file raced: each call encodes a snapshot at its own start, and whichever
-  /// `writeAsString` *finished last* won — so an earlier, smaller snapshot
-  /// could clobber a newer one and silently drop just-cached keys (issue #92).
-  /// Funnelling every write through a single drain loop guarantees writes never
-  /// overlap and the final on-disk copy always reflects the latest [_data].
+  /// Mutations fire many un-awaited [_save] calls in bursts. Writing them
+  /// concurrently raced — each encodes its own snapshot and whichever
+  /// `writeAsString` finished last won, so an older snapshot could clobber a
+  /// newer one. A single drain loop guarantees writes never overlap and the
+  /// on-disk copy always reflects the latest [_data].
   Future<void> _save() {
     _dirty = true;
     return _writing ??= _drain();

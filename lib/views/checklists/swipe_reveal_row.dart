@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 
-/// A row whose action buttons slide IN from the trailing edge on swipe, on
-/// top of a stationary foreground. The list item content (checkbox, name,
-/// chips) stays fully visible while the action buttons overlay the trailing
-/// portion of the row. Snap-open past ~1/3 threshold, snap-closed otherwise,
-/// transform animation disabled while actively dragging.
+/// A row whose action buttons slide in from the trailing edge on swipe, on top
+/// of a stationary foreground that stays fully visible. Snaps open past a ~1/3
+/// threshold, snaps closed otherwise; transform animation is off while dragging.
 ///
-/// On desktop platforms (macOS / Windows / Linux) the swipe gesture isn't
-/// reliably available — many users are on mice without touchpads — so the
-/// actions render permanently pinned at the trailing edge instead, with the
-/// content shrinking to make room. Gated on [PlatformInfo.isDesktop].
+/// On desktop the swipe gesture isn't reliably available (mice without
+/// touchpads), so the actions render permanently pinned at the trailing edge
+/// instead, with the content shrinking to make room. Gated on
+/// [PlatformInfo.isDesktop].
 class SwipeRevealRow extends StatefulWidget {
   final Widget child;
   final List<SwipeAction> actions;
@@ -78,12 +76,9 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
   @override
   Widget build(BuildContext context) {
     if (PlatformInfo.isDesktop) {
-      // Desktop layout: lay content + actions out in a Row. The foreground
-      // keeps its full hit area for taps, but loses the trailing space to
-      // the always-visible action buttons. No clip, no slide, no gesture.
-      // `stretch` so the action tiles span the row's full height — without
-      // it the Row sizes to its tallest child and the action backgrounds
-      // sit centered, leaving visible gaps above and below.
+      // Desktop: content + always-visible actions in a plain Row (no clip,
+      // slide, or gesture). `stretch` makes the action tiles span the row's
+      // full height; otherwise their backgrounds center and leave gaps.
       return IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,17 +96,14 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
       );
     }
     final isRtl = Directionality.of(context) == TextDirection.rtl;
-    // Translate the action row in from off-screen. `_offset` ranges from 0
-    // (closed) to -_maxSwipe (fully open). When closed the actions are
-    // shifted by +_maxSwipe past the trailing edge (so they're hidden behind
-    // the ClipRect); when open they're at translation 0 and fully visible.
-    // In RTL the "trailing edge" is on the left, so the translation flips.
+    // Translate the action row in from off-screen. `_offset` ranges 0 (closed,
+    // actions shifted +_maxSwipe past the trailing edge behind the ClipRect) to
+    // -_maxSwipe (open, translation 0). RTL flips the trailing edge to the left.
     final slide = (_maxSwipe + _offset) * (isRtl ? -1 : 1);
     return ClipRect(
       child: Stack(
         children: [
-          // Foreground stays put — the list item content (checkbox, name,
-          // chips) remains fully visible regardless of swipe state.
+          // Foreground stays put and fully visible regardless of swipe state.
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onHorizontalDragStart: widget.enabled ? _onPanStart : null,
@@ -119,9 +111,8 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
             onHorizontalDragEnd: widget.enabled ? _onPanEnd : null,
             child: widget.child,
           ),
-          // Action row, anchored at the trailing edge and translated in/out
-          // by `slide`. Sits on top of the foreground so the buttons cover
-          // (but don't displace) the row's content while open.
+          // Action row anchored at the trailing edge, translated in/out by
+          // `slide`. Sits on top so the buttons cover (not displace) the content.
           PositionedDirectional(
             top: 0,
             bottom: 0,

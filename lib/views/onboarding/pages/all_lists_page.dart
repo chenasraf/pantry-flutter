@@ -4,11 +4,9 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
-/// Introduces the All-lists meta view added in 0.17.0. Shows a mocked
-/// AppBar with the dashboard icon, a couple of item rows tagged with their
-/// owning-list badges, and the compose bar with the new "List" chip
-/// highlighted — the one the user has to pick from when adding an item
-/// from this view.
+/// Introduces the All-lists meta view. Shows a mocked AppBar with the dashboard
+/// icon, item rows tagged with owning-list badges, and the compose bar with the
+/// new "List" chip highlighted — the destination picker for adding from here.
 class AllListsOnboardingPage extends StatelessWidget {
   const AllListsOnboardingPage({super.key});
 

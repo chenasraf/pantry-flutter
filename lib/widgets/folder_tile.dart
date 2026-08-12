@@ -68,7 +68,6 @@ class FolderTile extends StatelessWidget {
                           ),
                   ),
                 ),
-                // Count badge
                 if (photoCount > 0)
                   Positioned(
                     top: 6,
@@ -124,7 +123,6 @@ class FolderTile extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Menu
                 if (menuItems.isNotEmpty)
                   Positioned(
                     top: 2,

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
 
-/// Demonstrates the new bottom compose bar at a glance. Renders a mocked-up
-/// bar — chip row + input row with the gradient send button — so users
-/// recognize it the next time they see it without explaining each chip.
+/// Demonstrates the bottom compose bar — chip row + input row with the gradient
+/// send button — so users recognise it next time without explaining each chip.
 class AddItemsOnboardingPage extends StatelessWidget {
   const AddItemsOnboardingPage({super.key});
 

@@ -6,16 +6,13 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/utils/text_direction.dart';
 
 /// Attribution line for the barcode product data, with a tappable link to
-/// Open Food Facts. Shown wherever a scan can pull in product info (the scan
-/// view, the manual-entry dialog).
+/// Open Food Facts.
 ///
-/// The localized string wraps the link label in `linkStart`/`linkEnd` markers;
-/// we pass private-use sentinels for those and split on them, so the link
+/// The link label is wrapped in private-use sentinels we split on, so the link
 /// position survives translation without depending on the label text.
 class BarcodeAttribution extends StatefulWidget {
-  /// Base text color. When null, falls back to the theme's muted body color
-  /// (and the link uses the primary color). Pass an explicit color on dark
-  /// surfaces like the camera view.
+  /// Base text color. When null, uses the theme's muted body color (link uses
+  /// primary). Pass an explicit color on dark surfaces like the camera view.
   final Color? color;
 
   const BarcodeAttribution({super.key, this.color});
@@ -26,9 +23,8 @@ class BarcodeAttribution extends StatefulWidget {
 
 class _BarcodeAttributionState extends State<BarcodeAttribution> {
   static const _url = 'https://world.openfoodfacts.org/';
-  // Private-use sentinels injected as the link markers, then split on. They
-  // never occur in real copy and are bidi-neutral, so they don't disturb
-  // direction detection.
+  // Private-use sentinels used as link markers: never occur in real copy and
+  // are bidi-neutral, so they don't disturb direction detection.
   static const _startMarker = '\u{E000}';
   static const _endMarker = '\u{E001}';
 
@@ -94,8 +90,7 @@ class _BarcodeAttributionState extends State<BarcodeAttribution> {
         style: baseStyle,
       ),
       textAlign: TextAlign.center,
-      // Direction from the sentence start (the leading strong char), so RTL
-      // locales lay the whole line out correctly.
+      // Direction from the sentence start so RTL locales lay the line out right.
       textDirection: detectTextDirection(before.isNotEmpty ? before : raw),
     );
   }

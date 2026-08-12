@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
-/// Introduces Shopping Mode. Shows a mock of the dense shopping screen — a
-/// store bar with the active store, an "in cart" progress row, and a couple of
-/// category-grouped rows (one already checked) — so users recognise the
-/// walk-the-aisles flow. Always shown; when the server doesn't report the
-/// `shopping` capability, a footnote spells out the Pantry version it needs.
+/// Introduces Shopping Mode with a mock of the dense shopping screen — store
+/// bar, "in cart" progress row, and category-grouped rows — so users recognise
+/// the walk-the-aisles flow. Always shown; a footnote names the required Pantry
+/// version when the server lacks the `shopping` capability.
 class ShoppingModeOnboardingPage extends StatelessWidget {
   const ShoppingModeOnboardingPage({super.key});
 

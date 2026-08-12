@@ -7,7 +7,7 @@ import '../helpers/test_models.dart';
 // The server orders checklist items purely by their sort key (created_at,
 // name, category rank) and never groups done items at the end — done rows sit
 // wherever their key places them. `checklistInsertIndex` must mirror that so a
-// freshly added item lands where a refresh would put it. See issue #81.
+// freshly added item lands where a refresh would put it.
 
 /// No categories configured — everything is uncategorized.
 int _noRank(int? _) => 1 << 30;
@@ -23,7 +23,7 @@ int _activePositionAfterInsert(List<ListItem> items, String sort, ListItem n) {
 void main() {
   group('checklistInsertIndex — oldest sort', () {
     test('new item lands at the bottom when a done item sorts first', () {
-      // Reproduces #81: an old *completed* item is the earliest by created_at,
+      // An old *completed* item is the earliest by created_at,
       // so it appears first in the server order. The buggy boundary logic
       // collapsed to that done item's index and inserted the new item at the
       // top.
@@ -112,7 +112,7 @@ void main() {
   });
 
   group('checklistInsertIndex — custom sort', () {
-    test('new item appends at the bottom of custom order (#665)', () {
+    test('new item appends at the bottom of custom order', () {
       // The server assigns max(sortOrder)+1 on add, so the optimistic slot is
       // the end of the list — matching what the server returns.
       final items = [

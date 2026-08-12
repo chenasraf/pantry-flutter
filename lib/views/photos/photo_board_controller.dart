@@ -180,7 +180,6 @@ class PhotoBoardController extends ChangeNotifier {
     return _folders;
   }
 
-  /// Count of photos inside a folder.
   int folderPhotoCount(int folderId) =>
       _photos.where((p) => p.folderId == folderId).length;
 
@@ -194,7 +193,6 @@ class PhotoBoardController extends ChangeNotifier {
   Future<void> load() async {
     _error = null;
 
-    // Restore from cache immediately
     _restoreFromCache();
 
     if (_photos.isEmpty && _folders.isEmpty) {
@@ -458,7 +456,6 @@ class PhotoBoardController extends ChangeNotifier {
     );
     final index = _photos.indexWhere((p) => p.id == photoId);
     if (index != -1) {
-      // Reload the photo from server to get updated state
       await _reloadPhotos();
     }
   }

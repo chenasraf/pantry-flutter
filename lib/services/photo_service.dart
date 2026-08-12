@@ -203,7 +203,6 @@ class PhotoService {
     int folderId, {
     bool deleteContents = false,
   }) async {
-    // deleteContents as query param
     final path = deleteContents
         ? '/houses/$houseId/photos/folders/$folderId?deleteContents=true'
         : '/houses/$houseId/photos/folders/$folderId';

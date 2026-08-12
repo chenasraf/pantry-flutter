@@ -73,7 +73,6 @@ class LocaleService extends ChangeNotifier {
     final pref = PrefsService.instance.locale;
     if (pref != null) return Locale(pref);
 
-    // Try the Nextcloud server's user language first
     final serverLang = AuthService.instance.serverLanguage;
     if (serverLang != null) {
       for (final supported in supportedLocales) {
@@ -81,7 +80,6 @@ class LocaleService extends ChangeNotifier {
       }
     }
 
-    // Fall back to system locale
     final systemLocale = ui.PlatformDispatcher.instance.locale;
     for (final supported in supportedLocales) {
       if (systemLocale.languageCode == supported.languageCode) {

@@ -45,11 +45,9 @@ class BulkAddOnboardingPage extends StatelessWidget {
   }
 }
 
-/// Stylised compose bar in bulk-mode. The Multiple toggle sits on the
-/// trailing edge of the input bar (top-aligned, mirroring the real layout
-/// where the toggle hugs the first line), and the "separate items by new
-/// lines" hint renders as small caption text below the bar with start
-/// padding 4 — same as the real compose bar.
+/// Stylised bulk-mode compose bar: the Multiple toggle hugs the top-trailing
+/// edge (mirroring the real layout) and the "separate by new lines" hint sits
+/// as caption text below, matching the real compose bar.
 class _MockBulkComposeBar extends StatelessWidget {
   const _MockBulkComposeBar();
 

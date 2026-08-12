@@ -4,10 +4,9 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
-/// Tells users that notes can be pinned from the overflow menu to keep them
-/// at the top of the Notes Wall. Renders a stylised pinned-note card that
-/// matches the real `NoteTile` look (pin icon + title + content) so the
-/// reader recognises the affordance the moment they next open the wall.
+/// Tells users notes can be pinned from the overflow menu to keep them atop the
+/// Notes Wall. Renders a stylised card matching the real `NoteTile` look so the
+/// affordance is recognisable later.
 class PinnedNotesOnboardingPage extends StatelessWidget {
   const PinnedNotesOnboardingPage({super.key});
 
@@ -53,9 +52,8 @@ class PinnedNotesOnboardingPage extends StatelessWidget {
   }
 }
 
-/// Stylised pinned note tile — matches the real `NoteTile` foreground layout
-/// (pin glyph + title + content + overflow menu icon) so the user recognises
-/// what a pinned note looks like on their Notes Wall.
+/// Stylised pinned note tile matching the real `NoteTile` layout (pin glyph +
+/// title + content + overflow icon).
 class _PinnedNoteMock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

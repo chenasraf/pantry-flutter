@@ -42,7 +42,7 @@ void main() {
 
     // A fresh instance reads whatever actually landed on disk. Before writes
     // were serialized, an earlier/smaller snapshot could finish last and drop
-    // keys written after it (issue #92).
+    // keys written after it.
     final reloaded = CacheStore('burst.json');
     await reloaded.load();
 

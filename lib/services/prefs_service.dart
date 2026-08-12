@@ -114,11 +114,10 @@ class PrefsService extends ChangeNotifier {
   String _checklistCheckboxPosition = 'start';
   String get checklistCheckboxPosition => _checklistCheckboxPosition;
 
-  /// Visual density of checklist rows. "normal" (default) keeps generous
-  /// vertical padding; "dense" trims padding, checkbox tap height and swipe
-  /// action sizing so more items fit on screen; "compact" squeezes them
-  /// further still. Legacy prefs only ever stored "normal"/"dense", both of
-  /// which remain valid, so no migration is needed.
+  /// Visual density of checklist rows: "normal" (default), "dense", "compact".
+  /// Denser values trim padding, tap height and swipe sizing to fit more rows.
+  /// Legacy prefs stored only "normal"/"dense" (both still valid), so no
+  /// migration is needed.
   String _checklistDensity = 'normal';
   String get checklistDensity => _checklistDensity;
 
@@ -147,7 +146,7 @@ class PrefsService extends ChangeNotifier {
 
   /// Progress-card visibility for the synthetic All-lists view. The All-lists
   /// view has no server entity, so its toggle lives here, keyed by sentinel
-  /// id 0. Re-enable from the list's overflow menu.
+  /// id 0.
   bool _allListsProgressHeroHidden = false;
   bool get allListsProgressHeroHidden => _allListsProgressHeroHidden;
 

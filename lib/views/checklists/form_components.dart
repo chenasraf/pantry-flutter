@@ -175,9 +175,8 @@ class LifecycleRow extends StatelessWidget {
   }
 }
 
-/// Color-coded chip used in the inline category picker. Selected swatches get
-/// a tinted background + accent-color border at 1.5px to match the chosen
-/// row in the lifecycle picker.
+/// Color-coded chip used in the inline category picker. Selected swatches get a
+/// tinted background + accent-color border.
 class CategorySwatch extends StatelessWidget {
   final IconData? icon;
   final String label;

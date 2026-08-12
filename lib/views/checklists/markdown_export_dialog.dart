@@ -13,11 +13,9 @@ import 'package:pantry/utils/markdown_list.dart';
 /// Dialog that turns a list into an editable Markdown document the user can
 /// copy to the clipboard or share/download as a `.md` file.
 ///
-/// Completed items are excluded by default; the "Include completed items"
-/// checkbox opts them back in. The text field is pre-seeded with the generated
-/// document and stays editable — copy/share use whatever is currently in the
-/// field. Toggling the include checkbox regenerates the text (discarding manual
-/// edits), and re-opening the dialog re-seeds fresh from the list.
+/// Completed items are excluded unless the include checkbox is ticked. The text
+/// field stays editable and copy/share use its current contents; toggling the
+/// checkbox regenerates the text, discarding manual edits.
 class MarkdownExportDialog extends StatefulWidget {
   final String listName;
   final List<ListItem> items;
@@ -35,7 +33,6 @@ class MarkdownExportDialog extends StatefulWidget {
 }
 
 class _MarkdownExportDialogState extends State<MarkdownExportDialog> {
-  // Completed items are excluded by default.
   bool _includeCompleted = false;
   final _controller = TextEditingController();
 
@@ -112,8 +109,7 @@ class _MarkdownExportDialogState extends State<MarkdownExportDialog> {
               onChanged: (v) {
                 setState(() {
                   _includeCompleted = v ?? false;
-                  // A content-changing toggle regenerates the document,
-                  // discarding any manual edits.
+                  // Regenerate the document, discarding any manual edits.
                   _reseed();
                 });
               },

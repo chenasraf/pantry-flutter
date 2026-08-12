@@ -35,24 +35,18 @@ class ApiClient {
     basePath: '/ocs/v2.php/apps/pantry/api',
   );
 
-  /// Wall-clock budget for a single request. Without this an unreachable
-  /// server (common when away from the home network — the socket hangs
-  /// rather than failing fast) blocks the awaiting future forever, so the
-  /// caller's cache-fallback/error path never runs and the UI spins
-  /// indefinitely (issue #87).
+  /// Wall-clock budget for a single request. Without it an unreachable server
+  /// (socket hangs rather than failing fast) would block the future forever, so
+  /// the caller's cache-fallback path never runs and the UI spins.
   static const _timeout = Duration(seconds: 15);
 
-  /// Uploads (photos) legitimately take longer than a regular request, so
-  /// they get a more generous budget than [_timeout] while still bailing on
-  /// an unreachable server instead of hanging forever.
+  /// More generous budget than [_timeout] since uploads legitimately take
+  /// longer, while still bailing on an unreachable server.
   static const _uploadTimeout = Duration(seconds: 60);
 
-  /// Invoked whenever any request comes back `403 Forbidden`, regardless of
-  /// verb or call site (direct awaits and SyncManager-queued ops alike funnel
-  /// through here). Registered once at app startup to surface a single
-  /// "you don't have permission" snackbar. The server is the source of truth
-  /// for roles; this is the safety net for permissions that changed
-  /// mid-session after the UI was already gated.
+  /// Invoked on any `403 Forbidden`, regardless of verb or call site. Registered
+  /// once at startup to surface a single "you don't have permission" snackbar —
+  /// the safety net for roles that changed mid-session after the UI was gated.
   static void Function()? onForbidden;
 
   static void _notify(int statusCode) {

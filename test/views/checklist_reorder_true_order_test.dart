@@ -6,8 +6,8 @@ import '../helpers/test_models.dart';
 
 // `reorderToTrueOrder` reconstructs the full stored order after a drag: only the
 // dragged item moves, every other item keeps its sort_order slot. It backs the
-// stable custom order across check/uncheck (#665) and the within-group drags in
-// category (#666) and store sort.
+// stable custom order across check/uncheck and the within-group drags in
+// category and store sort.
 
 /// The order of ids after applying [order] over [items] (sorted by resulting
 /// sortOrder). Mirrors what the client persists and the server stores.

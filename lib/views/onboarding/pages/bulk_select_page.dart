@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
-/// Teaches multi-select (group actions). Runs a continuous demo that selects a
-/// few mocked rows one after another, brings up the group-action bar, holds so
-/// the reader can take it in, then resets — mirroring the real "long-press /
-/// Select items → pick an action" flow without the reader touching anything.
+/// Teaches multi-select (group actions). Runs a continuous demo that selects
+/// mocked rows one by one, raises the group-action bar, holds, then resets —
+/// mirroring the real long-press → pick-an-action flow.
 class BulkSelectOnboardingPage extends StatefulWidget {
   const BulkSelectOnboardingPage({super.key});
 

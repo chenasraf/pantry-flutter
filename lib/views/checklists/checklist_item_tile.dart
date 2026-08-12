@@ -24,8 +24,7 @@ import 'package:pantry/widgets/member_avatar.dart';
 import 'package:pantry/widgets/store_detail_dialog.dart';
 import 'swipe_reveal_row.dart';
 
-/// Lightweight pointer to the list an item belongs to, used by the All-lists
-/// view to render a per-item chip identifying its parent list.
+/// Pointer to an item's parent list; the All-lists view renders it as a chip.
 class ItemListBadge {
   final String name;
   final String icon;
@@ -95,11 +94,10 @@ class ChecklistItemTile extends StatefulWidget {
   /// the header above it.
   final bool hideCategory;
 
-  /// Multi-select (group actions) state. When [selectionMode] is true, tapping
-  /// the row toggles [selected] via [onSelectToggle] instead of running the
-  /// normal tap action, swipe actions are suppressed, and the leading control
-  /// becomes a selection circle. When [selectionMode] is false and
-  /// [onLongPressSelect] is non-null, long-pressing the row enters selection.
+  /// Multi-select state. When true, tapping the row toggles [selected] via
+  /// [onSelectToggle], swipe actions are suppressed, and the leading control
+  /// becomes a selection circle. When false, a non-null [onLongPressSelect]
+  /// lets a long-press enter selection.
   final bool selectionMode;
   final bool selected;
   final ValueChanged<ListItem>? onSelectToggle;
@@ -207,9 +205,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
         ? (_parseColor(cat.color) ?? cs.primary)
         : cs.onSurfaceVariant;
 
-    // Suggestion flavor short-circuits the whole swipe/selection machinery —
-    // it's a plain, tappable row that mirrors the normal layout minus the
-    // checkbox.
+    // Suggestion flavor short-circuits the swipe/selection machinery — a plain
+    // tappable row that mirrors the normal layout minus the checkbox.
     if (widget.suggestion) {
       return _RowContent(
         item: item,
@@ -234,10 +231,9 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       );
     }
 
-    // Action buttons overlay the row's foreground in SwipeRevealRow, so a
-    // translucent background lets chips and text bleed through. Pre-blend
-    // each tint onto cs.surface (the foreground row's Material color) to get
-    // the same visual tone with no transparency.
+    // Pre-blend each tint onto cs.surface for an opaque background: a
+    // translucent one would let the foreground row's chips and text bleed
+    // through the revealed action.
     Color tintedSurface(Color tint, double alpha) =>
         Color.alphaBlend(tint.withValues(alpha: alpha), cs.surface);
 
@@ -581,10 +577,8 @@ class _RowContent extends StatelessWidget {
       decoration: checked ? TextDecoration.lineThrough : null,
     );
 
-    // Spacing around the checkbox is folded into its own tap target so the
-    // whole padded area toggles the item — taps just above, below, or beside
-    // the box no longer fall through to the row's Edit action. The box keeps
-    // its 24px look but sits in a 48px-tall (Material minimum) hit area.
+    // Spacing is folded into the checkbox's tap target so taps around the box
+    // toggle the item instead of falling through to the row's Edit action.
     final checkboxPadding = checkboxAtEnd
         ? const EdgeInsetsDirectional.only(start: 14, end: 16)
         : const EdgeInsetsDirectional.only(start: 18, end: 14);

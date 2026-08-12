@@ -102,14 +102,10 @@ class _ChecklistsViewState extends State<ChecklistsView>
   late final _controller = ChecklistsController(houseId: widget.houseId);
 
   /// Polls the server on the user-configured checklist interval (default 30s)
-  /// so the list stays current without the user pulling-to-refresh.
-  /// `refresh()` shows cached items immediately and updates silently in the
-  /// background once the lists cache is populated. Paused while the app is
-  /// hidden/backgrounded so we don't waste a request the user can't see — and
-  /// a fresh refresh fires on resume regardless. In a soft view
-  /// (trash/archive) the poll is routed through a silent in-place refresh so
-  /// the list stays current without flashing to a spinner mid-read (issue
-  /// #106). A `null` interval means the user turned auto-refresh off.
+  /// so the list stays current without a pull-to-refresh. Paused while
+  /// backgrounded (a fresh refresh fires on resume); soft views route through a
+  /// silent in-place refresh so they don't flash a spinner mid-read. A `null`
+  /// interval means auto-refresh is off.
   Timer? _backgroundRefreshTimer;
   Duration? _activeRefreshInterval;
 
@@ -257,7 +253,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
   /// Scroll offset captured the moment a text search begins. Filtering shrinks
   /// the list (and thus `maxScrollExtent`), which clamps the offset near the
   /// top; restoring this on clear/close returns the user to where they were
-  /// instead of stranding them at the top (issue #134).
+  /// instead of stranding them at the top.
   double? _preSearchOffset;
 
   /// React to search text changes: capture the pre-filter scroll anchor on the
@@ -550,8 +546,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     final canReorder =
         controller.effectiveSortBy == 'custom' && baseReorderable;
     // Within-group drag: category/store sort, gated on the server ordering
-    // within groups by sort_order (#666/store). Constrained to the dragged
-    // item's own category block / store column by the per-group reorderables.
+    // within groups by sort_order. Constrained to the dragged item's own
+    // category block / store column by the per-group reorderables.
     final canReorderGroups =
         baseReorderable &&
         controller.canReorderWithinGroups &&
@@ -630,13 +626,11 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Compose bar is overlaid on top of the screen content via a Stack
-        // so it can grow upward and visually cover the progress hero +
-        // filter row when its trays expand, instead of being squeezed by
-        // the headers' footprint. ConstrainedBox(maxHeight: full viewport)
-        // funnels a finite ceiling down to ItemComposeBar's internal
-        // Flexible+SCV, which still scrolls only when even the full
-        // viewport isn't enough (e.g. tiny screen + keyboard up).
+        // Compose bar is overlaid via a Stack so its expanding trays can grow
+        // upward and cover the progress hero + filter row instead of being
+        // squeezed by them. The ConstrainedBox ceiling (full viewport) funnels
+        // down to the bar's internal Flexible+scroll view, which scrolls only
+        // when even that isn't enough (tiny screen + keyboard up).
         return Stack(
           children: [
             Column(
@@ -762,7 +756,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                       : controller.itemsUnavailable
                       // Fetch failed with nothing cached (typically offline) —
                       // show a retry affordance rather than the empty state,
-                      // which otherwise reads as "my data is gone" (issue #92).
+                      // which otherwise reads as "my data is gone".
                       ? _ErrorView(
                           message: m.checklists.failedToLoadItems,
                           onRetry: () {
@@ -866,8 +860,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                         _composeTargetListId = null;
                       }
                       // Existing items on the target list, surfaced as fuzzy
-                      // "reuse instead of duplicate" suggestions while typing
-                      // (issue #104). Gated on the reuse capability and the
+                      // "reuse instead of duplicate" suggestions while typing.
+                      // Gated on the reuse capability and the
                       // check permission — reuse un-checks a done item.
                       final reuseTargetId = meta
                           ? _composeTargetListId
@@ -1013,7 +1007,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     );
   }
 
-  /// Handles a tap on a live reuse suggestion (issue #104): confirms the user
+  /// Handles a tap on a live reuse suggestion: confirms the user
   /// wants the tapped item instead of adding a new one, then reuses it —
   /// un-checking it if it was already done. Returns true when reused so the
   /// compose bar clears its input.
@@ -1345,7 +1339,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                 _selectedStoreIds.clear();
                 _noStoreSelected = false;
                 // Clearing the controller doesn't fire onChanged, so return the
-                // list to its pre-search position here (issue #134).
+                // list to its pre-search position here.
                 _restorePreSearchOffset();
               }
             });
@@ -1545,8 +1539,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           selected: !(controller.currentList!.hideProgressHero),
         ),
       // "Reset custom order" re-seeds sort_order from a chosen basis and leaves
-      // the list hand-reorderable (#667). Per-list only (no cross-list custom
-      // order in meta) and needs edit permission.
+      // the list hand-reorderable. Per-list only (no cross-list custom order in
+      // meta) and needs edit permission.
       if (controller.currentList != null &&
           !isMeta &&
           controller.permissions.canEditLists) ...[
@@ -1788,7 +1782,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
   }
 
   /// Pick a basis (Date added / Name A–Z / Name Z–A), confirm the destructive
-  /// overwrite, then re-seed the custom order (#667).
+  /// overwrite, then re-seed the custom order.
   Future<void> _showResetOrderDialog(
     BuildContext context,
     ChecklistsController controller,
@@ -3046,9 +3040,9 @@ class _ItemListState extends State<_ItemList> {
     );
   }
 
-  /// Confirm, then clear the done-state on every checked item in the list
-  /// (#668). The count is captured before the call since the Done section
-  /// empties immediately.
+  /// Confirm, then clear the done-state on every checked item in the list. The
+  /// count is captured before the call since the Done section empties
+  /// immediately.
   Future<void> _confirmUncheckAll(BuildContext context) async {
     final count = widget.doneItems.length;
     final confirmed = await showDialog<bool>(
@@ -3097,8 +3091,8 @@ class _ItemListState extends State<_ItemList> {
           ),
           if (reorderable)
             // A drag is confined to this category's own SliverReorderableList,
-            // so it can never cross into another category (#666). The scope
-            // handed to the controller is exactly this group's items.
+            // so it can never cross into another category. The scope handed to
+            // the controller is exactly this group's items.
             SliverReorderableList(
               key: ValueKey('cat-reorder-${group.categoryId}'),
               itemCount: group.items.length,
@@ -3696,13 +3690,12 @@ List<({int? categoryId, List<ListItem> items})> groupItemsByCategory(
 }
 
 /// Group store-sorted items under one entry per store, in [sortedStores] order,
-/// with a trailing `storeId: null` "No store" group. Unlike category grouping,
-/// an item's store link is many-valued, so an item is emitted once under *each*
-/// store it belongs to (duplicated across headers). An item with no store — or
-/// only ids whose store was deleted — lands in the "No store" group. Items
-/// within every group are ordered by `sortOrder` (tie-break name A→Z) so a
-/// custom within-column order is honoured (multi-store items share one
-/// sort_order across their columns). Only non-empty groups are returned.
+/// with a trailing `storeId: null` "No store" group. An item's store link is
+/// many-valued, so it's emitted once under *each* store it belongs to; items
+/// with no (resolvable) store land in "No store". Within a group items are
+/// ordered by `sortOrder` (tie-break name), so a multi-store item's single
+/// sort_order positions it across all its columns. Only non-empty groups
+/// returned.
 List<({int? storeId, List<ListItem> items})> groupItemsByStore(
   List<ListItem> items,
   List<models.Store> sortedStores,

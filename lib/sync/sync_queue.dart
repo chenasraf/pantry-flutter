@@ -90,13 +90,8 @@ class SyncQueue {
     final before = _ops.length;
     final result = <SyncOp>[];
 
-    // Group consecutive runs by (entity, effectiveEntityId) but preserve
-    // global ordering by walking the list once and folding into result.
-    // We then do a second pass that lets later ops cancel earlier ones on
-    // the same record across the entire queue (the rules don't require
-    // adjacency).
-
-    // Build an index: most-recent-op-by-record while we copy.
+    // Copy into result, then collapse. Rules may cancel non-adjacent ops on
+    // the same record, so we rewrite result in place rather than regrouping.
     for (final op in _ops) {
       result.add(op);
     }
@@ -138,11 +133,9 @@ class SyncQueue {
             ((op.parentId == null && o.houseId == op.houseId) ||
                 o.parentId == parent),
       );
-      // Only report progress when something was actually collapsed. The
-      // emptyTrash op itself is never removed here, so signalling `changed`
-      // unconditionally kept merge()'s fixed-point loop spinning forever
-      // whenever a lone emptyTrash op sat in the queue — freezing startup
-      // when SyncManager flushed it.
+      // Only signal `changed` when something actually collapsed: the
+      // emptyTrash op is never removed here, so an unconditional `changed`
+      // spun merge()'s fixed-point loop forever on a lone emptyTrash op.
       if (ops.length != before) changed = true;
     }
     return changed;

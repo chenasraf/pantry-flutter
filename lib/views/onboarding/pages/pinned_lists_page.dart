@@ -181,11 +181,10 @@ class _HowToPin extends StatelessWidget {
       label: action,
       accent: true,
     );
-    // The body string already includes "${menu}" and "${action}" placeholders
-    // — but i18n keeps those as inline text, not widgets. To get widget chips
-    // inline with the body sentence we render the chips above the paragraph
-    // and let the paragraph reference them by name. Compact, accessible, and
-    // avoids hand-parsing the localized string into RichText spans.
+    // The body string includes "${menu}"/"${action}" placeholders, but i18n
+    // keeps them as inline text, not widgets. So we render the chips above the
+    // paragraph and let the sentence reference them by name — avoids
+    // hand-parsing the localized string into RichText spans.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

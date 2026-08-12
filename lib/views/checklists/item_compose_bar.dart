@@ -167,7 +167,7 @@ class ItemComposeBar extends StatefulWidget {
 
   /// Existing items on the current target list. While composing a single item,
   /// the bar fuzzy-matches the typed name against these and offers matches so
-  /// the user can reuse one instead of creating a duplicate (issue #104).
+  /// the user can reuse one instead of creating a duplicate.
   /// Empty disables the suggestions UI.
   final List<ListItem> reuseCandidates;
 
@@ -272,10 +272,9 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   static const _categoryMatchCutoff = 65;
 
   /// Single-mode fuzzy matches of the typed name against [reuseCandidates],
-  /// best-ranked first. Uses fuzzywuzzy's weighted ratio, which blends token
-  /// and partial matching — so extra words in the query ("Organic milk") still
-  /// match a shorter item name ("Milk"). Empty in multiple mode, with no query,
-  /// or when the feature is unwired.
+  /// best-ranked first. fuzzywuzzy's weighted ratio blends token and partial
+  /// matching, so a longer query ("Organic milk") still matches a shorter name
+  /// ("Milk"). Empty in multiple mode, with no query, or when unwired.
   List<ListItem> _reuseMatches() {
     if (_multiple ||
         widget.buildReuseSuggestion == null ||
@@ -406,13 +405,10 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     });
   }
 
-  /// Camera-scan (or manually enter) a barcode, then prepopulate the current
-  /// draft. A scan is not an API call — only a cache miss is: check the shared
-  /// server cache first, and only resolve against Open Food Facts (writing the
-  /// result back for the whole house) on a miss. On a hit we prefill without
-  /// clobbering anything the user has already typed; on a total miss the draft
-  /// is left untouched (never a raw EAN dumped into the name) and a toast says
-  /// so.
+  /// Scan (or manually enter) a barcode, then prefill the draft. Checks the
+  /// shared server cache first, resolving against Open Food Facts (and caching
+  /// the result for the house) only on a miss. Prefills never clobber existing
+  /// input; a total miss leaves the draft untouched and shows a toast.
   Future<void> _scanBarcode() async {
     if (_multiple) return;
     if (!_active) _activate();
@@ -640,9 +636,8 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       case _Tray.quantity:
         trayChild = _QuantityTray(
           controller: _qtyCtrl,
-          // setState so the chip row in the bar above rebuilds live with each
-          // keystroke (label flips back to "Quantity" the moment the user
-          // clears the field, etc).
+          // setState so the chip row above rebuilds live as the user types
+          // (e.g. the label flips back to "Quantity" when the field clears).
           onChanged: (v) => setState(() => _draft.quantity = v),
           onMinus: () => _stepQty(-1),
           onPlus: () => _stepQty(1),

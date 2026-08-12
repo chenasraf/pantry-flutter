@@ -18,28 +18,23 @@ import 'pages/quick_actions_page.dart';
 import 'pages/shopping_mode_page.dart';
 import 'pages/swipe_actions_page.dart';
 
-/// The first app version that ships an onboarding flow. New users that haven't
-/// completed any onboarding are treated as "before" this version, so they see
-/// the full sequence (welcome + every feature page in [kAppOnboardingPages]).
+/// The first app version that ships an onboarding flow. Users who never
+/// completed onboarding are treated as "before" this, so they see everything.
 const String kAppOnboardingFirstVersion = '0.16.0';
 
-/// Context passed to an [OnboardingPageEntry.showWhen] predicate so it can
-/// decide whether the page is relevant to *this* viewer. Bundles every
-/// audience signal we currently filter on (and is the place to add more —
-/// locale, paid tier, feature flag, …).
+/// Audience signals passed to an [OnboardingPageEntry.showWhen] predicate so it
+/// can decide whether a page is relevant to *this* viewer.
 class OnboardingAudience {
-  /// `true` when the user has never finished any onboarding before — i.e.
-  /// their `lastSeenOnboardingVersion` is null. Inverse of "upgrader".
+  /// `true` when the user has never finished onboarding (no
+  /// `lastSeenOnboardingVersion`). Inverse of "upgrader".
   final bool isNewUser;
 
-  /// `true` when the running platform is Android (and not web). Use to gate
-  /// features that only exist on Android, e.g. the home-screen widget.
+  /// `true` on Android (not web). Gates Android-only features like the
+  /// home-screen widget.
   final bool isAndroid;
 
-  /// `true` when the running platform is a desktop OS (macOS / Windows /
-  /// Linux), where horizontal-swipe gestures aren't universally available.
-  /// Use to swap interaction explanations (e.g. "swipe to reveal" → "tap
-  /// the action").
+  /// `true` on desktop (macOS / Windows / Linux), where swipe gestures aren't
+  /// universal — used to swap gesture explanations for click ones.
   final bool isDesktop;
 
   const OnboardingAudience({
@@ -52,40 +47,36 @@ class OnboardingAudience {
 /// Predicate that returns `true` when the page should appear for [audience].
 typedef OnboardingShowWhen = bool Function(OnboardingAudience audience);
 
-/// Shows the page only to returning users — those upgrading from an older
-/// version. "What's new" recaps live behind this.
+/// Shows the page only to returning users (upgraders) — "what's new" recaps.
 bool onboardingUpgradersOnly(OnboardingAudience a) => !a.isNewUser;
 
-/// Shows the page only on Android. The home-screen widget is Android-only,
-/// so any page that advertises it should gate on this.
+/// Shows the page only on Android (e.g. pages advertising the home-screen
+/// widget).
 bool onboardingAndroidOnly(OnboardingAudience a) => a.isAndroid;
 
-/// Shows the page only on desktop platforms. Use for explanations that only
-/// make sense to a mouse/keyboard user (e.g. always-visible action buttons).
+/// Shows the page only on desktop — for explanations that only make sense with
+/// a mouse/keyboard (e.g. always-visible action buttons).
 bool onboardingDesktopOnly(OnboardingAudience a) => a.isDesktop;
 
-/// Shows the page only on non-desktop platforms (mobile + web). Use for
-/// explanations of touch gestures (swipe, long-press) that don't translate.
+/// Shows the page only on non-desktop (mobile + web) — for touch-gesture
+/// explanations (swipe, long-press).
 bool onboardingMobileOnly(OnboardingAudience a) => !a.isDesktop;
 
-/// One entry in [kAppOnboardingPages]. Carries the page builder plus an
-/// optional [showWhen] predicate that decides whether *this* viewer sees it.
-/// Compose multiple conditions inline with `&&` — e.g.
-/// `showWhen: (a) => onboardingAndroidOnly(a) && onboardingUpgradersOnly(a)`.
+/// One entry in [kAppOnboardingPages] — a page builder plus an optional
+/// [showWhen] predicate. Compose conditions with `&&`.
 class OnboardingPageEntry {
   final WidgetBuilder builder;
 
-  /// When non-null, the page only appears if the predicate returns `true`
-  /// for the current audience. A null predicate means "always show".
+  /// When non-null, the page appears only if the predicate returns `true`.
+  /// Null means "always show".
   final OnboardingShowWhen? showWhen;
 
   const OnboardingPageEntry({required this.builder, this.showWhen});
 }
 
-/// Map of app version → ordered list of page entries introduced in that
-/// version. When a user opens a build whose `lastSeenOnboardingVersion` is
-/// older than a key here, they will see every page for that key (subject to
-/// per-entry filters like [OnboardingPageEntry.updateOnly]).
+/// Map of app version → ordered page entries introduced in that version. A user
+/// whose `lastSeenOnboardingVersion` is older than a key sees every page for
+/// that key (subject to per-entry [OnboardingPageEntry.showWhen] filters).
 ///
 /// Keys MUST be valid dotted versions parseable by [Version].
 final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
@@ -129,8 +120,7 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   ],
   '0.24.0': [
     OnboardingPageEntry(
-      // Camera scanning is the flagship surface — pitch it only where a camera
-      // is the point. Manual entry works everywhere, but that's not the story.
+      // Pitch camera scanning only where a camera is the point (mobile).
       builder: (_) => const BarcodeScanOnboardingPage(),
       showWhen: onboardingMobileOnly,
     ),
@@ -141,11 +131,9 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   ],
 };
 
-/// Versions offered by the dev-only "Show onboarding" picker — the actual page
-/// versions in [kAppOnboardingPages], newest first. Picking one previews *that*
-/// version's what's-new (see [onboardingPreviewLastSeen]), so the option you
-/// tap is the version you want to check — e.g. tap `0.20.0` to see what's new
-/// in 0.20.0.
+/// Versions offered by the dev-only "Show onboarding" picker — the
+/// [kAppOnboardingPages] keys, newest first. Picking one previews that
+/// version's what's-new (see [onboardingPreviewLastSeen]).
 List<String> get kDevOnboardingPickableVersions {
   final keys = kAppOnboardingPages.keys.toList()
     ..sort((a, b) => Version.parse(b).compareTo(Version.parse(a)));
@@ -154,10 +142,10 @@ List<String> get kDevOnboardingPickableVersions {
 
 /// Dev-only: the `lastSeenOnboardingVersion` to persist so an onboarding
 /// preview starts at [targetVersion]'s what's-new — the greatest page version
-/// strictly below [targetVersion], or a below-everything sentinel when it's the
-/// earliest. Because [resolveOnboardingPages] shows every version newer than
-/// last-seen, seeding just below [targetVersion] surfaces that version's pages
-/// (and any newer), exactly as an upgrader to it would see them.
+/// strictly below [targetVersion] (or a below-everything sentinel when it's the
+/// earliest). [resolveOnboardingPages] shows everything newer than last-seen,
+/// so seeding just below surfaces exactly what an upgrader to [targetVersion]
+/// would see.
 String onboardingPreviewLastSeen(String targetVersion) {
   final target = Version.parse(targetVersion);
   Version? predecessor;
@@ -169,14 +157,11 @@ String onboardingPreviewLastSeen(String targetVersion) {
   return (predecessor ?? Version.parse('0.0.0')).toString();
 }
 
-/// The version string to persist when the user finishes/skips onboarding for
-/// build [appVersion]. Returns whichever is higher between [appVersion] and
-/// the newest key in [kAppOnboardingPages]. The defensive `max` matters
-/// because some platforms (notably Android's `local.properties` /
-/// `flutter.versionName`) cache the previous version between builds, so
-/// `PackageInfo` can briefly report a stale version — without the clamp,
-/// saving that stale value would re-trigger the same onboarding on next
-/// launch.
+/// The version to persist when the user finishes/skips onboarding for build
+/// [appVersion]: the higher of [appVersion] and the newest [kAppOnboardingPages]
+/// key. The `max` guards a platform quirk — Android can cache the previous
+/// `flutter.versionName`, so `PackageInfo` may briefly report a stale version;
+/// without the clamp, saving it would re-trigger the same onboarding next launch.
 String onboardingMarkSeenVersion(String appVersion) {
   final appV = Version.tryParse(appVersion);
   Version? maxKeyV;
@@ -190,14 +175,11 @@ String onboardingMarkSeenVersion(String appVersion) {
   return appV.compareTo(maxKeyV) >= 0 ? appV.toString() : maxKeyV.toString();
 }
 
-/// Returns `true` when [kAppOnboardingPages] has at least one version entry
-/// strictly newer than [lastSeen] (or any entry at all when [lastSeen] is
-/// null). Cheap, feature-independent check used at cold start to decide
-/// whether the first capabilities fetch needs to block the initial route —
-/// pages that advertise a server-backed feature (e.g. `checklist-all-view`)
-/// always show, but consult `hasFeature(...)` to decide whether to append a
-/// "requires Pantry vX" note; blocking on fresh caps keeps that note accurate
-/// instead of derived from stale cached capabilities.
+/// Returns `true` when [kAppOnboardingPages] has an entry newer than [lastSeen]
+/// (or any entry when null). Cheap cold-start check for whether the first
+/// capabilities fetch must block the initial route: server-backed pages always
+/// show, but need fresh caps so the "requires Pantry vX" note is accurate
+/// rather than derived from stale cached capabilities.
 bool hasPendingOnboardingCandidates(String? lastSeen) {
   final lastSeenVersion = Version.tryParse(lastSeen);
   for (final key in kAppOnboardingPages.keys) {
@@ -210,12 +192,10 @@ bool hasPendingOnboardingCandidates(String? lastSeen) {
   return false;
 }
 
-/// Resolve which feature-page builders should appear in onboarding for a user
-/// whose last-seen onboarding version is [lastSeen]. Returns pages from every
-/// version newer than [lastSeen] (or all of them when [lastSeen] is null),
-/// preserving each version's internal order, sorted oldest → newest. Entries
-/// whose [OnboardingPageEntry.showWhen] predicate returns `false` for the
-/// current audience are filtered out.
+/// Feature-page builders to show for a user whose last-seen version is
+/// [lastSeen]: pages from every version newer than [lastSeen] (all when null),
+/// oldest → newest, preserving each version's internal order. Entries whose
+/// [OnboardingPageEntry.showWhen] returns `false` for the audience are dropped.
 List<WidgetBuilder> resolveOnboardingPages(String? lastSeen) {
   final lastSeenVersion = Version.tryParse(lastSeen);
   final audience = OnboardingAudience(

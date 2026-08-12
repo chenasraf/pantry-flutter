@@ -54,11 +54,9 @@ class CategoryService {
     String sort,
   ) {
     final list = categories.toList();
-    // Every comparison falls back to id (creation order) as a final
-    // tiebreaker so ties never render in arbitrary order. Custom sort in
-    // particular relies on this: fresh categories all share the same
-    // sortOrder until reordered, so without the tiebreaker the list would
-    // reshuffle unpredictably as categories are added (issue #113).
+    // Fall back to id (creation order) as a final tiebreaker: fresh categories
+    // share the same sortOrder until reordered, so without it the custom list
+    // would reshuffle unpredictably as categories are added.
     switch (sort) {
       case 'name_asc':
         list.sort((a, b) {

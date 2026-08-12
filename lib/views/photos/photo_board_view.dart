@@ -470,12 +470,10 @@ class _PhotoGrid extends StatelessWidget {
       );
     }
 
-    // Active uploads (not yet completed or with errors)
     final activeUploads = controller.uploads
         .where((t) => !t.done || t.error != null)
         .toList();
 
-    // Build combined items list
     final items = <_GridItem>[];
     if (controller.foldersFirst) {
       for (final f in folders) {

@@ -3,19 +3,16 @@ import 'package:pantry/main.dart' show rootScaffoldMessengerKey;
 
 /// Every transient snackbar in the app goes through here.
 ///
-/// As of Flutter 3.38 a `SnackBar` that carries an action defaults to *not*
-/// auto-dismissing — it waits for the user. That default is what left the
-/// delete/archive undo toasts pinned open indefinitely (issue #100). Passing
+/// As of Flutter 3.38 a `SnackBar` with an action defaults to *not*
+/// auto-dismissing, which left undo toasts pinned open indefinitely. Passing
 /// `persist: false` opts back into duration-based auto-dismissal even with an
-/// action present, so the built-in `duration` timer is reliable again and no
-/// hand-rolled timer is needed. Routing every snackbar through this one helper
-/// keeps the whole app consistent (which is how the bug kept coming back when
-/// it was fixed call-site by call-site).
+/// action present. Routing every snackbar through one helper keeps this
+/// consistent across the app.
 ///
 /// See: https://docs.flutter.dev/release/breaking-changes/snackbar-with-action-behavior-update
 ///
 /// Shown on the root [ScaffoldMessengerState] via [rootScaffoldMessengerKey] so
-/// it survives rebuilds/reparenting of whatever widget triggered it.
+/// it survives rebuilds/reparenting of the triggering widget.
 
 /// Shows [message] and auto-dismisses it after [duration]. Pass [action] for an
 /// inline button (e.g. Undo). No-op if the root messenger isn't mounted yet.

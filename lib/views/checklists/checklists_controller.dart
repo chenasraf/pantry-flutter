@@ -63,17 +63,10 @@ List<ListItem> reconcileRemoveIds(List<ListItem> current, Set<int> removeIds) =>
 /// Index at which a newly added [item] should slot into [items] so the
 /// optimistic insert matches the order the server returns for [sortBy].
 ///
-/// The server orders these views purely by their sort key (created_at, name,
-/// category rank) and does *not* group done items at the end — done rows are
-/// interleaved by the same key. So we scan the whole list rather than stopping
-/// at the first done row (the old boundary that yanked new items to the top
-/// whenever a done item sorted early); the view re-partitions active/done for
-/// display, and a freshly added item has the newest created_at, so ties
-/// resolve to the end of their group exactly as the server would.
-///
-/// [categoryRankOf] maps a categoryId (null = uncategorized) to its display
-/// rank; only consulted for the 'category' sort. Pure, so it can be unit
-/// tested without the controller's singleton dependencies.
+/// The server interleaves done rows by the same sort key rather than grouping
+/// them at the end, so this scans the whole list instead of stopping at the
+/// first done row. [categoryRankOf] maps a categoryId (null = uncategorized) to
+/// its display rank; only consulted for the 'category' sort. Pure.
 int checklistInsertIndex(
   List<ListItem> items,
   String sortBy,
@@ -112,14 +105,14 @@ int checklistInsertIndex(
     case 'custom':
     default:
       // The server assigns a new item `max(sortOrder)+1` on add, so the
-      // optimistic position is the end of the custom-ordered list (#665). The
-      // created item's real sortOrder comes back in the response and is
-      // reconciled then — this is only the optimistic slot.
+      // optimistic position is the end of the custom-ordered list. The created
+      // item's real sortOrder comes back in the response and is reconciled
+      // then — this is only the optimistic slot.
       return items.length;
   }
 }
 
-/// True-order reconstruction for a drag-to-reorder (#665/#666/store). Only
+/// True-order reconstruction for a drag-to-reorder. Only
 /// [dragId] moves; every other item — checked items *and* items in other groups
 /// — keeps its stored `sortOrder` slot. The dragged item is re-slotted next to
 /// its new neighbour within [scope], the ordered items the drag was constrained
@@ -189,7 +182,7 @@ List<({int id, int sortOrder})> reorderToTrueOrder(
 }
 
 /// Re-seeds `sortOrder` from a chosen [basis] for the "Reset custom order to …"
-/// action (#667), leaving the list hand-reorderable afterwards. A pure client
+/// action, leaving the list hand-reorderable afterwards. A pure client
 /// computation over the existing reorder endpoint — no server endpoint.
 ///
 /// [basis] is `dateAdded` (oldest first), `name_asc`, or `name_desc`.
@@ -296,7 +289,7 @@ class ChecklistsController extends ChangeNotifier {
 
   /// Image uploads staged against items whose optimistic create hasn't synced
   /// yet, keyed by the item's negative temp id. Drained in `_onSyncApplied`
-  /// once the create resolves to a real server id (issue #132).
+  /// once the create resolves to a real server id.
   final Map<int, _PendingImageUpload> _pendingImageUploads = {};
 
   @override
@@ -307,13 +300,9 @@ class ChecklistsController extends ChangeNotifier {
     super.dispose();
   }
 
-  /// Re-run the cache-first load when connectivity returns. The background
-  /// pre-cache pass is online-only, so a list never opened while online — or
-  /// any list on a fresh install used offline — has no cached items and falls
-  /// to the offline/retry view. Reloading on reconnect re-fetches the lists,
-  /// re-selects the current one and re-warms every other list's offline cache,
-  /// so those retry views resolve on their own and later offline switches show
-  /// cached data (issue #117).
+  /// Re-run the cache-first load when connectivity returns, so lists that fell
+  /// to the offline/retry view (never opened online, or a fresh offline install)
+  /// re-fetch and re-warm their caches on their own.
   void _onReconnect(void _) {
     if (_disposed) return;
     unawaited(load());
@@ -409,7 +398,7 @@ class ChecklistsController extends ChangeNotifier {
   /// failed and there was no cached snapshot to fall back on — as opposed to a
   /// genuinely empty list. Lets the view surface an offline/retry state instead
   /// of the "Nothing on this list yet" empty state, which otherwise reads as
-  /// "my data is gone" while offline (issue #92).
+  /// "my data is gone" while offline.
   bool get itemsUnavailable =>
       _error != null && _items.isEmpty && !_isLoading && !isSoftView;
 
@@ -517,7 +506,6 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> load() async {
     _error = null;
 
-    // Restore all from cache
     _restoreFromCache();
 
     if (_lists.isEmpty) {
@@ -548,7 +536,7 @@ class ChecklistsController extends ChangeNotifier {
         }
       }
 
-      // House prefs (sort + showAddedBy + categorySort) are non-fatal
+      // House prefs are non-fatal
       try {
         final prefs = await _checklistService.getHousePrefs(houseId);
         ServerVersionService.instance.observeHousePrefs(prefs);
@@ -603,7 +591,7 @@ class ChecklistsController extends ChangeNotifier {
 
       // Warm the on-disk cache for the lists we're not currently viewing so
       // opening them later while offline shows cached data instead of an
-      // infinite spinner (issue #87). Fire-and-forget; never blocks the UI.
+      // infinite spinner. Fire-and-forget; never blocks the UI.
       unawaited(_precacheListItems());
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load: $e');
@@ -616,7 +604,7 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   /// Best-effort fetch + cache of items for every list the user isn't
-  /// currently viewing, so they're available offline (issue #87, #92). Skips
+  /// currently viewing, so they're available offline. Skips
   /// optimistic (temp-id) lists and any list with a pending op — caching a
   /// server snapshot there would clobber the un-acked optimistic change. A
   /// per-list fetch failure is skipped (a transient error on one list must not
@@ -794,7 +782,7 @@ class ChecklistsController extends ChangeNotifier {
     if (list.id == kAllListsId) {
       // The aggregate is cached under the sentinel id so the All-lists view
       // opens with data while offline instead of an infinite spinner or an
-      // empty state (issue #92). Show it first, then refresh in place.
+      // empty state. Show it first, then refresh in place.
       final cachedAll = _checklistService.getCachedItems(kAllListsId);
       if (cachedAll != null) {
         _items = cachedAll;
@@ -891,17 +879,14 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
-  /// Overlays un-acked local mutations onto a freshly fetched server
-  /// snapshot. The pending sync queue is exactly the set of records the
-  /// server may not yet reflect, so for those ids the local optimistic state
-  /// wins and every other record takes the server's version. Without this a
-  /// background refresh that lands while a toggle/edit/create is still in
-  /// flight momentarily reverts the item, then the op's response flips it
-  /// back — a visible flicker.
+  /// Overlays un-acked local mutations onto a freshly fetched server snapshot:
+  /// for ids still in the pending sync queue the local optimistic state wins,
+  /// every other record takes the server's. Without this a background refresh
+  /// landing mid-flight momentarily reverts the item, then the op's response
+  /// flips it back — a visible flicker.
   ///
-  /// [server] holds only the records for the view being refreshed (one list,
-  /// or the whole house in meta mode); intersecting the house-wide pending
-  /// set with the current `_items`/`server` keeps it correctly scoped.
+  /// [server] holds only the records for the view being refreshed (one list, or
+  /// the whole house in meta mode).
   List<ListItem> _overlayPending(List<ListItem> server) {
     final pending = _sync.pendingItemIds(houseId);
     if (pending.isEmpty) return server;
@@ -1027,7 +1012,7 @@ class ChecklistsController extends ChangeNotifier {
 
     if (_currentList != null) {
       // Only the current list's cached snapshot is now stale-ordered; drop just
-      // that one so the other lists keep their offline caches (issue #92). The
+      // that one so the other lists keep their offline caches. The
       // re-warm below refreshes them in the new order while online.
       if (!isMetaMode) _checklistService.invalidateItemsFor(_currentList!.id);
       await selectList(_currentList!, refreshInPlace: true);
@@ -1212,9 +1197,9 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   /// Whether within-group drag-to-reorder (category / store sort) is available.
-  /// The server orders within-category by `sortOrder` only on newer builds
-  /// (#666); on an older server a within-category drag would snap back on
-  /// refetch, so gate it on the capability flag. Store within-group ordering is
+  /// The server orders within-category by `sortOrder` only on newer builds;
+  /// on an older server a within-category drag would snap back on refetch, so
+  /// gate it on the capability flag. Store within-group ordering is
   /// client-side, but it's gated together for a consistent UX.
   bool get canReorderWithinGroups => hasFeature('custom-order-within-groups');
 
@@ -1299,7 +1284,7 @@ class ChecklistsController extends ChangeNotifier {
   ///
   /// Only the dragged item moves: every other item — checked items and items in
   /// other groups — keeps its stored slot, so unchecking returns items to their
-  /// true position (#665) and a within-group drag doesn't disturb siblings.
+  /// true position and a within-group drag doesn't disturb siblings.
   Future<void> reorderItems(
     List<ListItem> scope,
     int oldIndex,
@@ -1322,8 +1307,8 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   /// Re-seed the custom order from [basis] (`dateAdded` / `name_asc` /
-  /// `name_desc`) and leave the list hand-reorderable (#667). In category sort
-  /// the reseed keeps the category grouping; elsewhere it's a flat reseed. No-op
+  /// `name_desc`) and leave the list hand-reorderable. In category sort the
+  /// reseed keeps the category grouping; elsewhere it's a flat reseed. No-op
   /// in the meta view (no per-list custom order) or when there's nothing to
   /// order.
   Future<void> resetOrder(String basis) async {
@@ -1340,8 +1325,8 @@ class ChecklistsController extends ChangeNotifier {
     _applyItemOrder(order);
   }
 
-  /// Clear the done-state on every checked item in the current list in one batch
-  /// (#668). Gathers *all* done items (unfiltered — "uncheck all in the list",
+  /// Clear the done-state on every checked item in the current list in one
+  /// batch. Gathers *all* done items (unfiltered — "uncheck all in the list",
   /// not just what a search/category filter shows), applies the optimistic
   /// uncheck, and enqueues a single batch op reconciled in [_onSyncApplied].
   void uncheckAll() {
@@ -1365,14 +1350,14 @@ class ChecklistsController extends ChangeNotifier {
     // `load()` re-fetches the current list and re-warms every other list's
     // offline cache via `_precacheListItems`. Wiping the non-current caches
     // here (the old behavior) raced that warm-up and, if the user went offline
-    // before it finished, left those lists showing nothing (issue #92).
+    // before it finished, left those lists showing nothing.
     await load();
   }
 
   /// Silently re-fetches the current soft view's items in place. Unlike
   /// [selectList]'s soft-view path, it leaves the existing rows on screen while
   /// the new snapshot loads (no empty flash, no spinner), so background polling
-  /// keeps trash/archive current without disturbing a read (issue #106). No-op
+  /// keeps trash/archive current without disturbing a read. No-op
   /// outside a soft view or on the meta view (which has no soft view of its own).
   Future<void> refreshSoftView() async {
     if (!isSoftView) return;
@@ -1573,7 +1558,7 @@ class ChecklistsController extends ChangeNotifier {
   /// active view: the concrete list's slot, or the shared All-lists aggregate
   /// slot ([kAllListsId]) in meta mode. Routing every item-cache write through
   /// here keeps the All-lists view — and optimistic edits made from it —
-  /// available offline alongside the per-list caches (issue #92).
+  /// available offline alongside the per-list caches.
   void _cacheVisibleItems([int? listId]) {
     final key = isMetaMode ? kAllListsId : (listId ?? _currentList?.id);
     if (key == null) return;
@@ -2178,7 +2163,7 @@ class ChecklistsController extends ChangeNotifier {
       // Photo uploads need a real server id, but this item's optimistic create
       // hasn't synced yet (its id is still the negative temp id). Stash the
       // upload keyed by that temp id; `_onSyncApplied` fires it once the create
-      // resolves to a real id (issue #132). Returning the item unchanged keeps
+      // resolves to a real id. Returning the item unchanged keeps
       // the save flow succeeding — the image lands a moment later.
       _pendingImageUploads[item.id] = _PendingImageUpload(
         bytes: bytes,
@@ -2492,7 +2477,7 @@ class ChecklistsController extends ChangeNotifier {
             return;
           }
           // A create just bound to a real id — fire any image upload that was
-          // staged against the temp id while the create was in flight (#132).
+          // staged against the temp id while the create was in flight.
           if (tempId != null) _flushPendingImageUpload(tempId, entity);
           if (tempId != null) {
             final i = _items.indexWhere((it) => it.id == tempId);
@@ -2539,7 +2524,7 @@ class ChecklistsController extends ChangeNotifier {
 
   /// Uploads an image that was staged against [tempId] before the item's
   /// optimistic create had a real server id, now that the create resolved to
-  /// [item] (issue #132). Fire-and-forget: the originating save call already
+  /// [item]. Fire-and-forget: the originating save call already
   /// returned, so failures are logged rather than surfaced.
   void _flushPendingImageUpload(int tempId, ListItem item) {
     final pending = _pendingImageUploads.remove(tempId);
@@ -2560,7 +2545,7 @@ class ChecklistsController extends ChangeNotifier {
 
 /// An image upload staged against an item whose optimistic create hasn't synced
 /// yet. Held in [ChecklistsController._pendingImageUploads] until the create
-/// resolves to a real server id (issue #132).
+/// resolves to a real server id.
 class _PendingImageUpload {
   final List<int> bytes;
   final String fileName;

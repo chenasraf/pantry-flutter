@@ -143,7 +143,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title row
                 Row(
                   children: [
                     Expanded(
@@ -157,7 +156,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                 ),
                 const SizedBox(height: 16),
 
-                // Presets
                 Text(r.presets, style: theme.textTheme.labelMedium),
                 const SizedBox(height: 8),
                 Wrap(
@@ -187,7 +185,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                 ),
                 const SizedBox(height: 20),
 
-                // Every / Unit row
                 Row(
                   children: [
                     Column(
@@ -269,7 +266,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                 ),
                 const SizedBox(height: 20),
 
-                // Repeat on (days) - only for weekly
                 if (_freq == 'WEEKLY') ...[
                   Text(r.repeatOn, style: theme.textTheme.labelMedium),
                   const SizedBox(height: 8),
@@ -280,7 +276,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                   const SizedBox(height: 20),
                 ],
 
-                // Ends
                 Text(r.ends, style: theme.textTheme.labelMedium),
                 const SizedBox(height: 8),
                 RadioGroup<_EndType>(
@@ -361,7 +356,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                 ),
                 const SizedBox(height: 16),
 
-                // Count from completion toggle
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   value: _repeatFromCompletion,
@@ -384,7 +378,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                 ),
                 const SizedBox(height: 16),
 
-                // Summary
                 Row(
                   children: [
                     const Icon(Icons.event_repeat, size: 20),
@@ -400,7 +393,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                 ),
                 const SizedBox(height: 24),
 
-                // Actions
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

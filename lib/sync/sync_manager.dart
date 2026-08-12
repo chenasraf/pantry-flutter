@@ -45,11 +45,10 @@ class SyncManager {
   final ValueNotifier<SyncStatus> status = ValueNotifier(SyncStatus.idle);
   final ValueNotifier<int> pendingCount = ValueNotifier(0);
 
-  /// True when the current queue contents originated from an offline period —
-  /// either an op enqueued while disconnected, or a queue persisted from a
-  /// previous session. Drives whether the user-avatar sync indicator surfaces
-  /// the sync activity; a single-op flush while online does not flip this.
-  /// Cleared once the queue fully drains.
+  /// True when the queue holds work from an offline period — an op enqueued
+  /// while disconnected or a queue persisted from a previous session. Drives
+  /// the user-avatar sync indicator (a single-op flush while online does not
+  /// flip it). Cleared once the queue fully drains.
   final ValueNotifier<bool> hasBacklog = ValueNotifier(false);
 
   final _appliedController = StreamController<SyncOpApplied>.broadcast();
@@ -63,13 +62,13 @@ class SyncManager {
   /// Fires when connectivity transitions from offline back to online. Lets
   /// cache-first controllers re-warm the offline snapshots they couldn't fetch
   /// while disconnected — e.g. lists whose items were never pre-cached because
-  /// the app was used offline from a fresh install (issue #117).
+  /// the app was used offline from a fresh install.
   Stream<void> get onReconnect => _reconnectController.stream;
 
   /// Ceiling on delivery attempts for a single op. Past this we treat the op
   /// as poison and dead-letter it (drop + emit skipped) rather than retry it
   /// forever — an endlessly-failing head op would otherwise block every op
-  /// queued behind it, so changes made after it never sync (issue #113).
+  /// queued behind it, so changes made after it never sync.
   static const _maxAttempts = 8;
 
   bool _online = true;
@@ -82,11 +81,10 @@ class SyncManager {
   Future<void> init() async {
     if (_initialized) return;
     _initialized = true;
-    // Loading persisted sync state runs on the pre-first-frame startup path
-    // (main() awaits this). A corrupt or version-incompatible on-disk queue
-    // must degrade to an empty queue rather than throw — an unhandled error
-    // here aborts main() before runApp() and freezes the splash. Drop the
-    // bad state and let the app start clean.
+    // main() awaits this on the pre-first-frame path, so a corrupt or
+    // version-incompatible on-disk queue must degrade to empty rather than
+    // throw — an unhandled error here aborts main() before runApp() and
+    // freezes the splash.
     try {
       await Future.wait([_queue.load(), _remap.load()]);
     } catch (e) {
@@ -121,7 +119,7 @@ class SyncManager {
       if (!_queue.isEmpty) hasBacklog.value = true;
       // A fresh online session gets a full retry budget: only *consecutive*
       // online failures should count toward dead-lettering, so attempts spent
-      // before we dropped offline don't erode a still-syncable op (issue #113).
+      // before we dropped offline don't erode a still-syncable op.
       _queue.resetAttempts();
       unawaited(flushNow());
       if (_reconnectController.hasListener) _reconnectController.add(null);
@@ -187,7 +185,7 @@ class SyncManager {
   /// either a list-level op (create/update/…) or an item op whose `parentId`
   /// names the list. Pre-caching uses this to skip only the lists whose cached
   /// snapshot would clobber a pending optimistic change, instead of bailing the
-  /// whole warm-up when any op is queued (issue #92).
+  /// whole warm-up when any op is queued.
   ///
   /// Returns `null` when the queue holds a house-scoped batch op: those address
   /// items across lists via the body, so the affected lists can't be resolved
@@ -396,12 +394,11 @@ class SyncManager {
   }
 
   /// React to a transient/server-side failure on the head op. Retries with
-  /// backoff until [_maxAttempts], then dead-letters the op so the queue can
-  /// keep draining instead of wedging behind it forever.
+  /// backoff until [_maxAttempts], then dead-letters so the queue keeps
+  /// draining instead of wedging behind it forever.
   ///
-  /// Returns true when the op was dead-lettered (the caller should `continue`
-  /// the flush loop onto the next op) and false when a retry was scheduled
-  /// (the caller should stop the loop and wait for the backoff timer).
+  /// Returns true when dead-lettered (caller should `continue` onto the next
+  /// op), false when a retry was scheduled (caller should stop and wait).
   bool _onRetryableFailure(SyncOp op, String error) {
     final attempt = op.attemptCount + 1;
     if (attempt >= _maxAttempts) {
@@ -422,13 +419,12 @@ class SyncManager {
   }
 
   /// Drop [op] from the queue and, when it was an optimistic create, reconcile
-  /// the ops queued behind it that leaned on it. Same-record follow-ups
-  /// (update/delete on a row that now never existed) are dropped; cross-entity
-  /// references to the dead temp id are stripped so the dependent op can still
-  /// flush — an item keeps syncing, just without the category/store that
-  /// failed to create. Leaving a dangling temp reference would re-wedge the
-  /// queue, since the flush loop holds any op that still points at an
-  /// unresolved temp id.
+  /// the ops queued behind it. Same-record follow-ups (update/delete on a row
+  /// that now never existed) are dropped; cross-entity references to the dead
+  /// temp id are stripped so the dependent op can still flush — an item keeps
+  /// syncing, just without the failed category/store. A dangling temp reference
+  /// would otherwise re-wedge the queue, since the flush loop holds any op still
+  /// pointing at an unresolved temp id.
   void _deadLetter(SyncOp op, String reason) {
     _queue.pop(op.uuid);
     if (op.op == SyncOpKind.create && op.tempEntityId != null) {

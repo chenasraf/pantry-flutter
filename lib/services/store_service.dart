@@ -50,11 +50,9 @@ class StoreService {
   /// Returns a new list; the input is not mutated.
   static List<Store> sortStores(Iterable<Store> stores, String sort) {
     final list = stores.toList();
-    // Every comparison falls back to id (creation order) as a final tiebreaker
-    // so ties never render in arbitrary order — mirrors CategoryService: fresh
-    // stores all share the same sortOrder until reordered, so without the
-    // tiebreaker the custom list would reshuffle unpredictably as stores are
-    // added.
+    // Fall back to id (creation order) as a final tiebreaker: fresh stores
+    // share the same sortOrder until reordered, so without it the custom list
+    // would reshuffle unpredictably as stores are added.
     switch (sort) {
       case 'name_desc':
         list.sort((a, b) {
