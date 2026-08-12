@@ -245,6 +245,19 @@ settings:
   pollInterval2h: Every 2 hours
   pollInterval6h: Every 6 hours
   permissionDenied: Notification permission was denied. Enable it in system settings.
+  refreshSection: Auto-refresh
+  refreshSectionBody: How often each screen checks the server for changes while you're viewing it. You can always pull down to refresh manually.
+  checklistRefresh: Checklists
+  notesRefresh: Notes
+  photosRefresh: Photos
+  shoppingRefresh: Shopping mode
+  refreshOff: "Off"
+  refreshInherit: Same as checklists
+  refresh15s: Every 15 seconds
+  refresh30s: Every 30 seconds
+  refresh1m: Every minute
+  refresh2m: Every 2 minutes
+  refresh5m: Every 5 minutes
 
 notifications:
   title: Notifications

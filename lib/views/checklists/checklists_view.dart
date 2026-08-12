@@ -34,6 +34,7 @@ import 'package:pantry/views/shopping/shopping_history_view.dart';
 import 'package:pantry/views/shopping/shopping_session_view.dart';
 import 'package:pantry/views/shopping/shopping_start_view.dart';
 import 'package:pantry/views/stores/stores_view.dart';
+import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'checklist_item_tile.dart';
@@ -100,23 +101,31 @@ class _ChecklistsViewState extends State<ChecklistsView>
     with WidgetsBindingObserver {
   late final _controller = ChecklistsController(houseId: widget.houseId);
 
-  /// Polls the server every 30s so the list stays current without the
-  /// user pulling-to-refresh. `refresh()` shows cached items immediately and
-  /// updates silently in the background once the lists cache is populated.
-  /// Paused while the app is hidden/backgrounded so we don't waste a request
-  /// the user can't see — and a fresh refresh fires on resume regardless.
-  /// In a soft view (trash/archive) the poll is routed through a silent
-  /// in-place refresh so the list stays current without flashing to a spinner
-  /// mid-read (issue #106).
-  static const _backgroundRefreshInterval = Duration(seconds: 30);
+  /// Polls the server on the user-configured checklist interval (default 30s)
+  /// so the list stays current without the user pulling-to-refresh.
+  /// `refresh()` shows cached items immediately and updates silently in the
+  /// background once the lists cache is populated. Paused while the app is
+  /// hidden/backgrounded so we don't waste a request the user can't see — and
+  /// a fresh refresh fires on resume regardless. In a soft view
+  /// (trash/archive) the poll is routed through a silent in-place refresh so
+  /// the list stays current without flashing to a spinner mid-read (issue
+  /// #106). A `null` interval means the user turned auto-refresh off.
   Timer? _backgroundRefreshTimer;
+  Duration? _activeRefreshInterval;
+
+  Duration? get _refreshInterval => AutoRefresh.durationFromSeconds(
+    PrefsService.instance.checklistRefreshSeconds,
+  );
 
   @override
   void initState() {
     super.initState();
     _controller.load();
     WidgetsBinding.instance.addObserver(this);
+    _activeRefreshInterval = _refreshInterval;
     _startBackgroundRefreshTimer();
+    // Restart the timer when the user changes the checklist refresh interval.
+    PrefsService.instance.addListener(_onPrefsChanged);
     final holder = widget.refreshHolder;
     if (holder != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -128,13 +137,25 @@ class _ChecklistsViewState extends State<ChecklistsView>
 
   void _startBackgroundRefreshTimer() {
     _backgroundRefreshTimer?.cancel();
-    _backgroundRefreshTimer = Timer.periodic(_backgroundRefreshInterval, (_) {
+    final interval = _refreshInterval;
+    if (interval == null) {
+      _backgroundRefreshTimer = null;
+      return;
+    }
+    _backgroundRefreshTimer = Timer.periodic(interval, (_) {
       if (_controller.isSoftView) {
         _controller.refreshSoftView();
       } else {
         _controller.refresh();
       }
     });
+  }
+
+  void _onPrefsChanged() {
+    final interval = _refreshInterval;
+    if (interval == _activeRefreshInterval) return;
+    _activeRefreshInterval = interval;
+    _startBackgroundRefreshTimer();
   }
 
   void _stopBackgroundRefreshTimer() {
@@ -146,7 +167,9 @@ class _ChecklistsViewState extends State<ChecklistsView>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        _controller.refresh();
+        // Skip the resume refresh when auto-refresh is off — "off" means no
+        // automatic server calls, only manual pull-to-refresh.
+        if (_refreshInterval != null) _controller.refresh();
         _startBackgroundRefreshTimer();
       case AppLifecycleState.hidden:
       case AppLifecycleState.paused:
@@ -159,6 +182,7 @@ class _ChecklistsViewState extends State<ChecklistsView>
 
   @override
   void dispose() {
+    PrefsService.instance.removeListener(_onPrefsChanged);
     _stopBackgroundRefreshTimer();
     WidgetsBinding.instance.removeObserver(this);
     if (widget.refreshHolder?.value == _controller.refresh) {

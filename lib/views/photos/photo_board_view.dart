@@ -5,7 +5,9 @@ import 'package:pantry/models/house.dart';
 import 'package:pantry/models/photo.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/photo_service.dart';
+import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/folder_tile.dart';
 import 'package:pantry/widgets/photo_add_button.dart';
 import 'package:pantry/widgets/photo_selection_actions.dart';
@@ -79,6 +81,7 @@ class _PhotoBoardBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<PhotoBoardController>();
+    final prefs = context.watch<PrefsService>();
 
     if (controller.isLoading && controller.photos.isEmpty) {
       return const Center(child: CircularProgressIndicator());
@@ -106,47 +109,52 @@ class _PhotoBoardBody extends StatelessWidget {
     final inFolder = controller.currentFolderId != null;
     final inTrash = controller.isTrashMode;
 
-    return PopScope(
-      canPop: !inFolder && !inTrash,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        if (controller.isTrashMode) {
-          controller.setTrashMode(false);
-          return;
-        }
-        if (controller.currentFolderId != null) {
-          controller.exitFolder();
-        }
-      },
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              if (inTrash)
-                _TrashBanner(controller: controller)
-              else
-                _TopBar(controller: controller),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: inTrash
-                      ? controller.refreshTrash
-                      : controller.refresh,
-                  child: inTrash
-                      ? _TrashGrid(
-                          controller: controller,
-                          scrollController: scrollController,
-                        )
-                      : _PhotoGrid(
-                          controller: controller,
-                          scrollController: scrollController,
-                        ),
+    return AutoRefresh(
+      interval: AutoRefresh.durationFromSeconds(prefs.photosRefreshSeconds),
+      onRefresh: () =>
+          inTrash ? controller.refreshTrash() : controller.refresh(),
+      child: PopScope(
+        canPop: !inFolder && !inTrash,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+          if (controller.isTrashMode) {
+            controller.setTrashMode(false);
+            return;
+          }
+          if (controller.currentFolderId != null) {
+            controller.exitFolder();
+          }
+        },
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                if (inTrash)
+                  _TrashBanner(controller: controller)
+                else
+                  _TopBar(controller: controller),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: inTrash
+                        ? controller.refreshTrash
+                        : controller.refresh,
+                    child: inTrash
+                        ? _TrashGrid(
+                            controller: controller,
+                            scrollController: scrollController,
+                          )
+                        : _PhotoGrid(
+                            controller: controller,
+                            scrollController: scrollController,
+                          ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          if (!inTrash)
-            Positioned.fill(child: PhotoAddButton(controller: controller)),
-        ],
+              ],
+            ),
+            if (!inTrash)
+              Positioned.fill(child: PhotoAddButton(controller: controller)),
+          ],
+        ),
       ),
     );
   }
@@ -294,6 +302,7 @@ class _TrashGrid extends StatelessWidget {
     if (photos.isEmpty) {
       return ListView(
         controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
           const SizedBox(height: 100),
           Center(
@@ -309,6 +318,7 @@ class _TrashGrid extends StatelessWidget {
     }
     return GridView.builder(
       controller: scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 180,
@@ -452,6 +462,7 @@ class _PhotoGrid extends StatelessWidget {
     if (folders.isEmpty && photos.isEmpty) {
       return ListView(
         controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
           const SizedBox(height: 100),
           Center(child: Text(m.photoBoard.noPhotos)),
@@ -491,6 +502,7 @@ class _PhotoGrid extends StatelessWidget {
 
     return GridView.builder(
       controller: scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 96),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 180,

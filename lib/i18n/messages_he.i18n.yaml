@@ -245,6 +245,19 @@ settings:
   pollInterval2h: כל שעתיים
   pollInterval6h: כל 6 שעות
   permissionDenied: הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.
+  refreshSection: רענון אוטומטי
+  refreshSectionBody: כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני.
+  checklistRefresh: רשימות
+  notesRefresh: פתקים
+  photosRefresh: תמונות
+  shoppingRefresh: מצב קניות
+  refreshOff: כבוי
+  refreshInherit: כמו ברשימות
+  refresh15s: כל 15 שניות
+  refresh30s: כל 30 שניות
+  refresh1m: כל דקה
+  refresh2m: כל 2 דקות
+  refresh5m: כל 5 דקות
 
 notifications:
   title: התראות

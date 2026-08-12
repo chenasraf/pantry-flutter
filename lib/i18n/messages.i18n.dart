@@ -1177,6 +1177,72 @@ class SettingsMessages {
   /// ```
   String get permissionDenied =>
       """Notification permission was denied. Enable it in system settings.""";
+
+  /// ```dart
+  /// "Auto-refresh"
+  /// ```
+  String get refreshSection => """Auto-refresh""";
+
+  /// ```dart
+  /// "How often each screen checks the server for changes while you're viewing it. You can always pull down to refresh manually."
+  /// ```
+  String get refreshSectionBody =>
+      """How often each screen checks the server for changes while you're viewing it. You can always pull down to refresh manually.""";
+
+  /// ```dart
+  /// "Checklists"
+  /// ```
+  String get checklistRefresh => """Checklists""";
+
+  /// ```dart
+  /// "Notes"
+  /// ```
+  String get notesRefresh => """Notes""";
+
+  /// ```dart
+  /// "Photos"
+  /// ```
+  String get photosRefresh => """Photos""";
+
+  /// ```dart
+  /// "Shopping mode"
+  /// ```
+  String get shoppingRefresh => """Shopping mode""";
+
+  /// ```dart
+  /// "Off"
+  /// ```
+  String get refreshOff => """Off""";
+
+  /// ```dart
+  /// "Same as checklists"
+  /// ```
+  String get refreshInherit => """Same as checklists""";
+
+  /// ```dart
+  /// "Every 15 seconds"
+  /// ```
+  String get refresh15s => """Every 15 seconds""";
+
+  /// ```dart
+  /// "Every 30 seconds"
+  /// ```
+  String get refresh30s => """Every 30 seconds""";
+
+  /// ```dart
+  /// "Every minute"
+  /// ```
+  String get refresh1m => """Every minute""";
+
+  /// ```dart
+  /// "Every 2 minutes"
+  /// ```
+  String get refresh2m => """Every 2 minutes""";
+
+  /// ```dart
+  /// "Every 5 minutes"
+  /// ```
+  String get refresh5m => """Every 5 minutes""";
 }
 
 class ItemTapActionNamesSettingsMessages {
@@ -4581,6 +4647,20 @@ Password: pantry-rocks""",
   """settings.pollInterval6h""": """Every 6 hours""",
   """settings.permissionDenied""":
       """Notification permission was denied. Enable it in system settings.""",
+  """settings.refreshSection""": """Auto-refresh""",
+  """settings.refreshSectionBody""":
+      """How often each screen checks the server for changes while you're viewing it. You can always pull down to refresh manually.""",
+  """settings.checklistRefresh""": """Checklists""",
+  """settings.notesRefresh""": """Notes""",
+  """settings.photosRefresh""": """Photos""",
+  """settings.shoppingRefresh""": """Shopping mode""",
+  """settings.refreshOff""": """Off""",
+  """settings.refreshInherit""": """Same as checklists""",
+  """settings.refresh15s""": """Every 15 seconds""",
+  """settings.refresh30s""": """Every 30 seconds""",
+  """settings.refresh1m""": """Every minute""",
+  """settings.refresh2m""": """Every 2 minutes""",
+  """settings.refresh5m""": """Every 5 minutes""",
   """notifications.title""": """Notifications""",
   """notifications.empty""": """No new notifications.""",
   """notifications.failedToLoad""": """Failed to load notifications.""",

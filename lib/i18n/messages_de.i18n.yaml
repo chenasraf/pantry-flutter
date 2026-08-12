@@ -245,6 +245,19 @@ settings:
   pollInterval2h: Alle 2 Stunden
   pollInterval6h: Alle 6 Stunden
   permissionDenied: Benachrichtigungsberechtigung wurde verweigert. Aktiviere sie in den Systemeinstellungen.
+  refreshSection: Automatische Aktualisierung
+  refreshSectionBody: Wie oft jeder Bildschirm den Server auf Änderungen prüft, während du ihn ansiehst. Zum manuellen Aktualisieren kannst du jederzeit nach unten ziehen.
+  checklistRefresh: Listen
+  notesRefresh: Notizen
+  photosRefresh: Fotos
+  shoppingRefresh: Einkaufsmodus
+  refreshOff: Aus
+  refreshInherit: Wie Listen
+  refresh15s: Alle 15 Sekunden
+  refresh30s: Alle 30 Sekunden
+  refresh1m: Jede Minute
+  refresh2m: Alle 2 Minuten
+  refresh5m: Alle 5 Minuten
 
 notifications:
   title: Benachrichtigungen

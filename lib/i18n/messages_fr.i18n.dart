@@ -1189,6 +1189,72 @@ class SettingsMessagesFr extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """La permission de notification a été refusée. Activez-la dans les réglages système.""";
+
+  /// ```dart
+  /// "Actualisation automatique"
+  /// ```
+  String get refreshSection => """Actualisation automatique""";
+
+  /// ```dart
+  /// "À quelle fréquence chaque écran vérifie les changements sur le serveur pendant que vous le consultez. Vous pouvez toujours tirer vers le bas pour actualiser manuellement."
+  /// ```
+  String get refreshSectionBody =>
+      """À quelle fréquence chaque écran vérifie les changements sur le serveur pendant que vous le consultez. Vous pouvez toujours tirer vers le bas pour actualiser manuellement.""";
+
+  /// ```dart
+  /// "Listes"
+  /// ```
+  String get checklistRefresh => """Listes""";
+
+  /// ```dart
+  /// "Notes"
+  /// ```
+  String get notesRefresh => """Notes""";
+
+  /// ```dart
+  /// "Photos"
+  /// ```
+  String get photosRefresh => """Photos""";
+
+  /// ```dart
+  /// "Mode courses"
+  /// ```
+  String get shoppingRefresh => """Mode courses""";
+
+  /// ```dart
+  /// "Désactivé"
+  /// ```
+  String get refreshOff => """Désactivé""";
+
+  /// ```dart
+  /// "Comme les listes"
+  /// ```
+  String get refreshInherit => """Comme les listes""";
+
+  /// ```dart
+  /// "Toutes les 15 secondes"
+  /// ```
+  String get refresh15s => """Toutes les 15 secondes""";
+
+  /// ```dart
+  /// "Toutes les 30 secondes"
+  /// ```
+  String get refresh30s => """Toutes les 30 secondes""";
+
+  /// ```dart
+  /// "Chaque minute"
+  /// ```
+  String get refresh1m => """Chaque minute""";
+
+  /// ```dart
+  /// "Toutes les 2 minutes"
+  /// ```
+  String get refresh2m => """Toutes les 2 minutes""";
+
+  /// ```dart
+  /// "Toutes les 5 minutes"
+  /// ```
+  String get refresh5m => """Toutes les 5 minutes""";
 }
 
 class ItemTapActionNamesSettingsMessagesFr
@@ -4640,6 +4706,20 @@ Mot de passe : pantry-rocks""",
   """settings.pollInterval6h""": """Toutes les 6 heures""",
   """settings.permissionDenied""":
       """La permission de notification a été refusée. Activez-la dans les réglages système.""",
+  """settings.refreshSection""": """Actualisation automatique""",
+  """settings.refreshSectionBody""":
+      """À quelle fréquence chaque écran vérifie les changements sur le serveur pendant que vous le consultez. Vous pouvez toujours tirer vers le bas pour actualiser manuellement.""",
+  """settings.checklistRefresh""": """Listes""",
+  """settings.notesRefresh""": """Notes""",
+  """settings.photosRefresh""": """Photos""",
+  """settings.shoppingRefresh""": """Mode courses""",
+  """settings.refreshOff""": """Désactivé""",
+  """settings.refreshInherit""": """Comme les listes""",
+  """settings.refresh15s""": """Toutes les 15 secondes""",
+  """settings.refresh30s""": """Toutes les 30 secondes""",
+  """settings.refresh1m""": """Chaque minute""",
+  """settings.refresh2m""": """Toutes les 2 minutes""",
+  """settings.refresh5m""": """Toutes les 5 minutes""",
   """notifications.title""": """Notifications""",
   """notifications.empty""": """Aucune nouvelle notification.""",
   """notifications.failedToLoad""":

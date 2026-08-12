@@ -245,6 +245,19 @@ settings:
   pollInterval2h: Toutes les 2 heures
   pollInterval6h: Toutes les 6 heures
   permissionDenied: "La permission de notification a été refusée. Activez-la dans les réglages système."
+  refreshSection: Actualisation automatique
+  refreshSectionBody: "À quelle fréquence chaque écran vérifie les changements sur le serveur pendant que vous le consultez. Vous pouvez toujours tirer vers le bas pour actualiser manuellement."
+  checklistRefresh: Listes
+  notesRefresh: Notes
+  photosRefresh: Photos
+  shoppingRefresh: Mode courses
+  refreshOff: Désactivé
+  refreshInherit: Comme les listes
+  refresh15s: Toutes les 15 secondes
+  refresh30s: Toutes les 30 secondes
+  refresh1m: Chaque minute
+  refresh2m: Toutes les 2 minutes
+  refresh5m: Toutes les 5 minutes
 
 notifications:
   title: Notifications

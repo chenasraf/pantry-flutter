@@ -1185,6 +1185,72 @@ class SettingsMessagesDe extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """Benachrichtigungsberechtigung wurde verweigert. Aktiviere sie in den Systemeinstellungen.""";
+
+  /// ```dart
+  /// "Automatische Aktualisierung"
+  /// ```
+  String get refreshSection => """Automatische Aktualisierung""";
+
+  /// ```dart
+  /// "Wie oft jeder Bildschirm den Server auf Änderungen prüft, während du ihn ansiehst. Zum manuellen Aktualisieren kannst du jederzeit nach unten ziehen."
+  /// ```
+  String get refreshSectionBody =>
+      """Wie oft jeder Bildschirm den Server auf Änderungen prüft, während du ihn ansiehst. Zum manuellen Aktualisieren kannst du jederzeit nach unten ziehen.""";
+
+  /// ```dart
+  /// "Listen"
+  /// ```
+  String get checklistRefresh => """Listen""";
+
+  /// ```dart
+  /// "Notizen"
+  /// ```
+  String get notesRefresh => """Notizen""";
+
+  /// ```dart
+  /// "Fotos"
+  /// ```
+  String get photosRefresh => """Fotos""";
+
+  /// ```dart
+  /// "Einkaufsmodus"
+  /// ```
+  String get shoppingRefresh => """Einkaufsmodus""";
+
+  /// ```dart
+  /// "Aus"
+  /// ```
+  String get refreshOff => """Aus""";
+
+  /// ```dart
+  /// "Wie Listen"
+  /// ```
+  String get refreshInherit => """Wie Listen""";
+
+  /// ```dart
+  /// "Alle 15 Sekunden"
+  /// ```
+  String get refresh15s => """Alle 15 Sekunden""";
+
+  /// ```dart
+  /// "Alle 30 Sekunden"
+  /// ```
+  String get refresh30s => """Alle 30 Sekunden""";
+
+  /// ```dart
+  /// "Jede Minute"
+  /// ```
+  String get refresh1m => """Jede Minute""";
+
+  /// ```dart
+  /// "Alle 2 Minuten"
+  /// ```
+  String get refresh2m => """Alle 2 Minuten""";
+
+  /// ```dart
+  /// "Alle 5 Minuten"
+  /// ```
+  String get refresh5m => """Alle 5 Minuten""";
 }
 
 class ItemTapActionNamesSettingsMessagesDe
@@ -4635,6 +4701,20 @@ Passwort: pantry-rocks""",
   """settings.pollInterval6h""": """Alle 6 Stunden""",
   """settings.permissionDenied""":
       """Benachrichtigungsberechtigung wurde verweigert. Aktiviere sie in den Systemeinstellungen.""",
+  """settings.refreshSection""": """Automatische Aktualisierung""",
+  """settings.refreshSectionBody""":
+      """Wie oft jeder Bildschirm den Server auf Änderungen prüft, während du ihn ansiehst. Zum manuellen Aktualisieren kannst du jederzeit nach unten ziehen.""",
+  """settings.checklistRefresh""": """Listen""",
+  """settings.notesRefresh""": """Notizen""",
+  """settings.photosRefresh""": """Fotos""",
+  """settings.shoppingRefresh""": """Einkaufsmodus""",
+  """settings.refreshOff""": """Aus""",
+  """settings.refreshInherit""": """Wie Listen""",
+  """settings.refresh15s""": """Alle 15 Sekunden""",
+  """settings.refresh30s""": """Alle 30 Sekunden""",
+  """settings.refresh1m""": """Jede Minute""",
+  """settings.refresh2m""": """Alle 2 Minuten""",
+  """settings.refresh5m""": """Alle 5 Minuten""",
   """notifications.title""": """Benachrichtigungen""",
   """notifications.empty""": """Keine neuen Benachrichtigungen.""",
   """notifications.failedToLoad""":

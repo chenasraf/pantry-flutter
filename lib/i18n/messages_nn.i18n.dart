@@ -1183,6 +1183,72 @@ class SettingsMessagesNn extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """Tilgang til å sende varslar vart ikkje gitt. Slå det på i systeminnstillingane.""";
+
+  /// ```dart
+  /// "Automatisk oppdatering"
+  /// ```
+  String get refreshSection => """Automatisk oppdatering""";
+
+  /// ```dart
+  /// "Kor ofte kvar skjerm ser etter endringar på tenaren medan du ser på han. Du kan alltid dra ned for å oppdatere manuelt."
+  /// ```
+  String get refreshSectionBody =>
+      """Kor ofte kvar skjerm ser etter endringar på tenaren medan du ser på han. Du kan alltid dra ned for å oppdatere manuelt.""";
+
+  /// ```dart
+  /// "Lister"
+  /// ```
+  String get checklistRefresh => """Lister""";
+
+  /// ```dart
+  /// "Notat"
+  /// ```
+  String get notesRefresh => """Notat""";
+
+  /// ```dart
+  /// "Bilete"
+  /// ```
+  String get photosRefresh => """Bilete""";
+
+  /// ```dart
+  /// "Handlemodus"
+  /// ```
+  String get shoppingRefresh => """Handlemodus""";
+
+  /// ```dart
+  /// "Av"
+  /// ```
+  String get refreshOff => """Av""";
+
+  /// ```dart
+  /// "Som lister"
+  /// ```
+  String get refreshInherit => """Som lister""";
+
+  /// ```dart
+  /// "Kvart 15. sekund"
+  /// ```
+  String get refresh15s => """Kvart 15. sekund""";
+
+  /// ```dart
+  /// "Kvart 30. sekund"
+  /// ```
+  String get refresh30s => """Kvart 30. sekund""";
+
+  /// ```dart
+  /// "Kvart minutt"
+  /// ```
+  String get refresh1m => """Kvart minutt""";
+
+  /// ```dart
+  /// "Kvart 2. minutt"
+  /// ```
+  String get refresh2m => """Kvart 2. minutt""";
+
+  /// ```dart
+  /// "Kvart 5. minutt"
+  /// ```
+  String get refresh5m => """Kvart 5. minutt""";
 }
 
 class ItemTapActionNamesSettingsMessagesNn
@@ -4611,6 +4677,20 @@ Passord: pantry""",
   """settings.pollInterval6h""": """Kvart 6. time""",
   """settings.permissionDenied""":
       """Tilgang til å sende varslar vart ikkje gitt. Slå det på i systeminnstillingane.""",
+  """settings.refreshSection""": """Automatisk oppdatering""",
+  """settings.refreshSectionBody""":
+      """Kor ofte kvar skjerm ser etter endringar på tenaren medan du ser på han. Du kan alltid dra ned for å oppdatere manuelt.""",
+  """settings.checklistRefresh""": """Lister""",
+  """settings.notesRefresh""": """Notat""",
+  """settings.photosRefresh""": """Bilete""",
+  """settings.shoppingRefresh""": """Handlemodus""",
+  """settings.refreshOff""": """Av""",
+  """settings.refreshInherit""": """Som lister""",
+  """settings.refresh15s""": """Kvart 15. sekund""",
+  """settings.refresh30s""": """Kvart 30. sekund""",
+  """settings.refresh1m""": """Kvart minutt""",
+  """settings.refresh2m""": """Kvart 2. minutt""",
+  """settings.refresh5m""": """Kvart 5. minutt""",
   """notifications.title""": """Varsel""",
   """notifications.empty""": """Ingen nye varsel.""",
   """notifications.failedToLoad""": """Klart ikkje laste varslingar.""",

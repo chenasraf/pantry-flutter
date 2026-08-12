@@ -46,6 +46,19 @@ class PrefsService extends ChangeNotifier {
   static const _serverLanguageKey = 'server_language';
   static const _firstDayOfWeekKey = 'first_day_of_week';
   static const _devForceAllFeaturesKey = 'dev_force_all_features';
+  static const _checklistRefreshSecondsKey = 'checklist_refresh_seconds';
+  static const _notesRefreshSecondsKey = 'notes_refresh_seconds';
+  static const _photosRefreshSecondsKey = 'photos_refresh_seconds';
+  static const _shoppingRefreshSecondsKey = 'shopping_refresh_seconds';
+
+  /// Allowed auto-refresh intervals in seconds. 0 means "off" (no background
+  /// polling; manual pull-to-refresh only).
+  static const _validRefreshSeconds = {0, 15, 30, 60, 120, 300};
+
+  /// Sentinel for the shopping view's "same as checklists" option: resolve it
+  /// against [checklistRefreshSeconds] at read time via
+  /// [shoppingRefreshSecondsResolved].
+  static const shoppingRefreshInherit = -1;
   final _storage = const FlutterSecureStorage();
 
   int? _lastHouseId;
@@ -206,6 +219,28 @@ class PrefsService extends ChangeNotifier {
   bool _devForceAllFeatures = false;
   bool get devForceAllFeatures => _devForceAllFeatures;
 
+  /// How often each view silently polls the server in the foreground, in
+  /// seconds. 0 disables auto-refresh for that view. Shopping additionally
+  /// accepts [shoppingRefreshInherit] to follow the checklist interval.
+  int _checklistRefreshSeconds = 30;
+  int get checklistRefreshSeconds => _checklistRefreshSeconds;
+
+  int _notesRefreshSeconds = 60;
+  int get notesRefreshSeconds => _notesRefreshSeconds;
+
+  int _photosRefreshSeconds = 60;
+  int get photosRefreshSeconds => _photosRefreshSeconds;
+
+  int _shoppingRefreshSeconds = shoppingRefreshInherit;
+  int get shoppingRefreshSeconds => _shoppingRefreshSeconds;
+
+  /// The shopping interval with [shoppingRefreshInherit] resolved to the
+  /// current checklist interval, so callers get a concrete seconds value.
+  int get shoppingRefreshSecondsResolved =>
+      _shoppingRefreshSeconds == shoppingRefreshInherit
+      ? _checklistRefreshSeconds
+      : _shoppingRefreshSeconds;
+
   Future<void> load() async {
     // One platform-channel round trip instead of ~17 sequential reads —
     // measurably shaves cold-start time on iOS Keychain / Android Keystore.
@@ -350,6 +385,31 @@ class PrefsService extends ChangeNotifier {
 
     final devForce = all[_devForceAllFeaturesKey];
     if (devForce != null) _devForceAllFeatures = devForce == 'true';
+
+    final checklistRefresh = int.tryParse(
+      all[_checklistRefreshSecondsKey] ?? '',
+    );
+    if (checklistRefresh != null &&
+        _validRefreshSeconds.contains(checklistRefresh)) {
+      _checklistRefreshSeconds = checklistRefresh;
+    }
+
+    final notesRefresh = int.tryParse(all[_notesRefreshSecondsKey] ?? '');
+    if (notesRefresh != null && _validRefreshSeconds.contains(notesRefresh)) {
+      _notesRefreshSeconds = notesRefresh;
+    }
+
+    final photosRefresh = int.tryParse(all[_photosRefreshSecondsKey] ?? '');
+    if (photosRefresh != null && _validRefreshSeconds.contains(photosRefresh)) {
+      _photosRefreshSeconds = photosRefresh;
+    }
+
+    final shoppingRefresh = int.tryParse(all[_shoppingRefreshSecondsKey] ?? '');
+    if (shoppingRefresh != null &&
+        (shoppingRefresh == shoppingRefreshInherit ||
+            _validRefreshSeconds.contains(shoppingRefresh))) {
+      _shoppingRefreshSeconds = shoppingRefresh;
+    }
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -709,6 +769,53 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setChecklistRefreshSeconds(int seconds) async {
+    if (!_validRefreshSeconds.contains(seconds)) return;
+    if (_checklistRefreshSeconds == seconds) return;
+    _checklistRefreshSeconds = seconds;
+    await _storage.write(
+      key: _checklistRefreshSecondsKey,
+      value: seconds.toString(),
+    );
+    notifyListeners();
+  }
+
+  Future<void> setNotesRefreshSeconds(int seconds) async {
+    if (!_validRefreshSeconds.contains(seconds)) return;
+    if (_notesRefreshSeconds == seconds) return;
+    _notesRefreshSeconds = seconds;
+    await _storage.write(
+      key: _notesRefreshSecondsKey,
+      value: seconds.toString(),
+    );
+    notifyListeners();
+  }
+
+  Future<void> setPhotosRefreshSeconds(int seconds) async {
+    if (!_validRefreshSeconds.contains(seconds)) return;
+    if (_photosRefreshSeconds == seconds) return;
+    _photosRefreshSeconds = seconds;
+    await _storage.write(
+      key: _photosRefreshSecondsKey,
+      value: seconds.toString(),
+    );
+    notifyListeners();
+  }
+
+  Future<void> setShoppingRefreshSeconds(int seconds) async {
+    if (seconds != shoppingRefreshInherit &&
+        !_validRefreshSeconds.contains(seconds)) {
+      return;
+    }
+    if (_shoppingRefreshSeconds == seconds) return;
+    _shoppingRefreshSeconds = seconds;
+    await _storage.write(
+      key: _shoppingRefreshSecondsKey,
+      value: seconds.toString(),
+    );
+    notifyListeners();
+  }
+
   Future<void> setNotificationsIntroSeen(bool value) async {
     _notificationsIntroSeen = value;
     await _storage.write(
@@ -747,6 +854,10 @@ class PrefsService extends ChangeNotifier {
     _serverLanguage = null;
     _firstDayOfWeek = null;
     _devForceAllFeatures = false;
+    _checklistRefreshSeconds = 30;
+    _notesRefreshSeconds = 60;
+    _photosRefreshSeconds = 60;
+    _shoppingRefreshSeconds = shoppingRefreshInherit;
     await _storage.delete(key: _lastHouseKey);
     await _storage.delete(key: _pinnedListIdsKey);
     await _storage.delete(key: _notificationsEnabledKey);
@@ -777,6 +888,10 @@ class PrefsService extends ChangeNotifier {
     await _storage.delete(key: _serverLanguageKey);
     await _storage.delete(key: _firstDayOfWeekKey);
     await _storage.delete(key: _devForceAllFeaturesKey);
+    await _storage.delete(key: _checklistRefreshSecondsKey);
+    await _storage.delete(key: _notesRefreshSecondsKey);
+    await _storage.delete(key: _photosRefreshSecondsKey);
+    await _storage.delete(key: _shoppingRefreshSecondsKey);
     notifyListeners();
   }
 }

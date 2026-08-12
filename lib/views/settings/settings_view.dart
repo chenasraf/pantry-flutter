@@ -37,6 +37,16 @@ class _SettingsViewState extends State<SettingsView> {
     'none',
   ];
   static const _reuseExistingItemsOptions = ['ask', 'reuse', 'never'];
+  static const _refreshOptions = [0, 15, 30, 60, 120, 300];
+  static const _shoppingRefreshOptions = [
+    PrefsService.shoppingRefreshInherit,
+    0,
+    15,
+    30,
+    60,
+    120,
+    300,
+  ];
 
   @override
   void initState() {
@@ -202,6 +212,61 @@ class _SettingsViewState extends State<SettingsView> {
     _ => '$minutes min',
   };
 
+  // -- Auto-refresh intervals --
+
+  String _refreshLabel(int seconds) => switch (seconds) {
+    PrefsService.shoppingRefreshInherit => m.settings.refreshInherit,
+    0 => m.settings.refreshOff,
+    15 => m.settings.refresh15s,
+    30 => m.settings.refresh30s,
+    60 => m.settings.refresh1m,
+    120 => m.settings.refresh2m,
+    300 => m.settings.refresh5m,
+    _ => '$seconds s',
+  };
+
+  Future<void> _setChecklistRefresh(int? seconds) async {
+    if (seconds == null) return;
+    await context.read<PrefsService>().setChecklistRefreshSeconds(seconds);
+  }
+
+  Future<void> _setNotesRefresh(int? seconds) async {
+    if (seconds == null) return;
+    await context.read<PrefsService>().setNotesRefreshSeconds(seconds);
+  }
+
+  Future<void> _setPhotosRefresh(int? seconds) async {
+    if (seconds == null) return;
+    await context.read<PrefsService>().setPhotosRefreshSeconds(seconds);
+  }
+
+  Future<void> _setShoppingRefresh(int? seconds) async {
+    if (seconds == null) return;
+    await context.read<PrefsService>().setShoppingRefreshSeconds(seconds);
+  }
+
+  Widget _refreshTile({
+    required IconData icon,
+    required String title,
+    required int value,
+    required List<int> options,
+    required ValueChanged<int?> onChanged,
+  }) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      subtitle: Text(_refreshLabel(value)),
+      trailing: DropdownButton<int>(
+        value: value,
+        onChanged: onChanged,
+        items: [
+          for (final option in options)
+            DropdownMenuItem(value: option, child: Text(_refreshLabel(option))),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -215,6 +280,10 @@ class _SettingsViewState extends State<SettingsView> {
     final swipeActionsEnabled = prefs.swipeActionsEnabled;
     final reuseExistingItems = prefs.reuseExistingItems;
     final useServerThemeColor = prefs.useServerThemeColor;
+    final checklistRefresh = prefs.checklistRefreshSeconds;
+    final notesRefresh = prefs.notesRefreshSeconds;
+    final photosRefresh = prefs.photosRefreshSeconds;
+    final shoppingRefresh = prefs.shoppingRefreshSeconds;
 
     return Scaffold(
       appBar: AppBar(
@@ -411,6 +480,46 @@ class _SettingsViewState extends State<SettingsView> {
                   ],
                 ),
               ),
+
+            // -- Auto-refresh --
+            _SectionHeader(m.settings.refreshSection),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),
+              child: Text(
+                m.settings.refreshSectionBody,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+            _refreshTile(
+              icon: Icons.checklist_rtl,
+              title: m.settings.checklistRefresh,
+              value: checklistRefresh,
+              options: _refreshOptions,
+              onChanged: _setChecklistRefresh,
+            ),
+            _refreshTile(
+              icon: Icons.sticky_note_2_outlined,
+              title: m.settings.notesRefresh,
+              value: notesRefresh,
+              options: _refreshOptions,
+              onChanged: _setNotesRefresh,
+            ),
+            _refreshTile(
+              icon: Icons.photo_library_outlined,
+              title: m.settings.photosRefresh,
+              value: photosRefresh,
+              options: _refreshOptions,
+              onChanged: _setPhotosRefresh,
+            ),
+            _refreshTile(
+              icon: Icons.shopping_cart_outlined,
+              title: m.settings.shoppingRefresh,
+              value: shoppingRefresh,
+              options: _shoppingRefreshOptions,
+              onChanged: _setShoppingRefresh,
+            ),
 
             // -- Notifications --
             if (supportsFeature('notifications')) ...[

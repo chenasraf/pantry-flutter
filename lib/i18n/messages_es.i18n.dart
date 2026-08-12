@@ -1186,6 +1186,72 @@ class SettingsMessagesEs extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """El permiso de notificaciones fue denegado. Actívalo en los ajustes del sistema.""";
+
+  /// ```dart
+  /// "Actualización automática"
+  /// ```
+  String get refreshSection => """Actualización automática""";
+
+  /// ```dart
+  /// "Con qué frecuencia cada pantalla comprueba si hay cambios en el servidor mientras la estás viendo. Siempre puedes deslizar hacia abajo para actualizar manualmente."
+  /// ```
+  String get refreshSectionBody =>
+      """Con qué frecuencia cada pantalla comprueba si hay cambios en el servidor mientras la estás viendo. Siempre puedes deslizar hacia abajo para actualizar manualmente.""";
+
+  /// ```dart
+  /// "Listas"
+  /// ```
+  String get checklistRefresh => """Listas""";
+
+  /// ```dart
+  /// "Notas"
+  /// ```
+  String get notesRefresh => """Notas""";
+
+  /// ```dart
+  /// "Fotos"
+  /// ```
+  String get photosRefresh => """Fotos""";
+
+  /// ```dart
+  /// "Modo compra"
+  /// ```
+  String get shoppingRefresh => """Modo compra""";
+
+  /// ```dart
+  /// "Desactivado"
+  /// ```
+  String get refreshOff => """Desactivado""";
+
+  /// ```dart
+  /// "Igual que las listas"
+  /// ```
+  String get refreshInherit => """Igual que las listas""";
+
+  /// ```dart
+  /// "Cada 15 segundos"
+  /// ```
+  String get refresh15s => """Cada 15 segundos""";
+
+  /// ```dart
+  /// "Cada 30 segundos"
+  /// ```
+  String get refresh30s => """Cada 30 segundos""";
+
+  /// ```dart
+  /// "Cada minuto"
+  /// ```
+  String get refresh1m => """Cada minuto""";
+
+  /// ```dart
+  /// "Cada 2 minutos"
+  /// ```
+  String get refresh2m => """Cada 2 minutos""";
+
+  /// ```dart
+  /// "Cada 5 minutos"
+  /// ```
+  String get refresh5m => """Cada 5 minutos""";
 }
 
 class ItemTapActionNamesSettingsMessagesEs
@@ -4624,6 +4690,20 @@ Contraseña: pantry-rocks""",
   """settings.pollInterval6h""": """Cada 6 horas""",
   """settings.permissionDenied""":
       """El permiso de notificaciones fue denegado. Actívalo en los ajustes del sistema.""",
+  """settings.refreshSection""": """Actualización automática""",
+  """settings.refreshSectionBody""":
+      """Con qué frecuencia cada pantalla comprueba si hay cambios en el servidor mientras la estás viendo. Siempre puedes deslizar hacia abajo para actualizar manualmente.""",
+  """settings.checklistRefresh""": """Listas""",
+  """settings.notesRefresh""": """Notas""",
+  """settings.photosRefresh""": """Fotos""",
+  """settings.shoppingRefresh""": """Modo compra""",
+  """settings.refreshOff""": """Desactivado""",
+  """settings.refreshInherit""": """Igual que las listas""",
+  """settings.refresh15s""": """Cada 15 segundos""",
+  """settings.refresh30s""": """Cada 30 segundos""",
+  """settings.refresh1m""": """Cada minuto""",
+  """settings.refresh2m""": """Cada 2 minutos""",
+  """settings.refresh5m""": """Cada 5 minutos""",
   """notifications.title""": """Notificaciones""",
   """notifications.empty""": """No hay notificaciones nuevas.""",
   """notifications.failedToLoad""":

@@ -324,6 +324,19 @@ settings:
   pollInterval2h: Kvart 2. time
   pollInterval6h: Kvart 6. time
   permissionDenied: Tilgang til å sende varslar vart ikkje gitt. Slå det på i systeminnstillingane.
+  refreshSection: Automatisk oppdatering
+  refreshSectionBody: Kor ofte kvar skjerm ser etter endringar på tenaren medan du ser på han. Du kan alltid dra ned for å oppdatere manuelt.
+  checklistRefresh: Lister
+  notesRefresh: Notat
+  photosRefresh: Bilete
+  shoppingRefresh: Handlemodus
+  refreshOff: Av
+  refreshInherit: Som lister
+  refresh15s: Kvart 15. sekund
+  refresh30s: Kvart 30. sekund
+  refresh1m: Kvart minutt
+  refresh2m: Kvart 2. minutt
+  refresh5m: Kvart 5. minutt
 notifications:
   title: Varsel
   empty: Ingen nye varsel.

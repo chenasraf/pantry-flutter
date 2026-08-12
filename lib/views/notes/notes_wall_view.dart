@@ -3,7 +3,9 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/models/note.dart';
 import 'package:pantry/services/pending_note_share_service.dart';
+import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/note_selection_actions.dart';
 import 'package:pantry/widgets/note_sort_button.dart';
 import 'package:pantry/widgets/note_tile.dart';
@@ -91,6 +93,7 @@ class _NotesWallBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<NotesController>();
+    final prefs = context.watch<PrefsService>();
 
     if (controller.isLoading && controller.notes.isEmpty) {
       return const Center(child: CircularProgressIndicator());
@@ -117,79 +120,84 @@ class _NotesWallBody extends StatelessWidget {
 
     final inTrash = controller.isTrashMode;
 
-    return PopScope(
-      canPop: !inTrash,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        if (controller.isTrashMode) controller.setTrashMode(false);
-      },
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              if (inTrash)
-                _TrashBanner(controller: controller)
-              else
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    end: 4,
-                    top: 8,
-                    bottom: 8,
-                  ),
-                  child: Row(
-                    children: [
-                      const Spacer(),
-                      if (controller.selectMode)
-                        NoteSelectionActions(controller: controller)
-                      else ...[
-                        // Selection mode only enables bulk delete.
-                        if (controller.permissions.canDeleteNotes)
-                          IconButton(
-                            icon: const Icon(Icons.checklist),
-                            tooltip: '',
-                            onPressed: controller.toggleSelectMode,
-                          ),
-                        NoteSortButton(controller: controller),
-                        if (hasFeature('note-trash') &&
-                            controller.permissions.canDeleteNotes)
-                          IconButton(
-                            icon: const Icon(Icons.delete_outline),
-                            tooltip: m.notesWall.viewTrash,
-                            onPressed: () => controller.setTrashMode(true),
-                          ),
+    return AutoRefresh(
+      interval: AutoRefresh.durationFromSeconds(prefs.notesRefreshSeconds),
+      onRefresh: () =>
+          inTrash ? controller.refreshTrash() : controller.refresh(),
+      child: PopScope(
+        canPop: !inTrash,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+          if (controller.isTrashMode) controller.setTrashMode(false);
+        },
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                if (inTrash)
+                  _TrashBanner(controller: controller)
+                else
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      end: 4,
+                      top: 8,
+                      bottom: 8,
+                    ),
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        if (controller.selectMode)
+                          NoteSelectionActions(controller: controller)
+                        else ...[
+                          // Selection mode only enables bulk delete.
+                          if (controller.permissions.canDeleteNotes)
+                            IconButton(
+                              icon: const Icon(Icons.checklist),
+                              tooltip: '',
+                              onPressed: controller.toggleSelectMode,
+                            ),
+                          NoteSortButton(controller: controller),
+                          if (hasFeature('note-trash') &&
+                              controller.permissions.canDeleteNotes)
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              tooltip: m.notesWall.viewTrash,
+                              onPressed: () => controller.setTrashMode(true),
+                            ),
+                        ],
                       ],
-                    ],
+                    ),
+                  ),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: inTrash
+                        ? controller.refreshTrash
+                        : controller.refresh,
+                    child: inTrash
+                        ? _TrashGrid(
+                            controller: controller,
+                            scrollController: scrollController,
+                          )
+                        : _NotesGrid(
+                            controller: controller,
+                            scrollController: scrollController,
+                          ),
                   ),
                 ),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: inTrash
-                      ? controller.refreshTrash
-                      : controller.refresh,
-                  child: inTrash
-                      ? _TrashGrid(
-                          controller: controller,
-                          scrollController: scrollController,
-                        )
-                      : _NotesGrid(
-                          controller: controller,
-                          scrollController: scrollController,
-                        ),
+              ],
+            ),
+            if (!inTrash && controller.permissions.canCreateNotes)
+              PositionedDirectional(
+                end: 16,
+                bottom: 16,
+                child: FloatingActionButton(
+                  heroTag: 'notes-fab',
+                  onPressed: () => _createNote(context, controller),
+                  child: const Icon(Icons.add),
                 ),
               ),
-            ],
-          ),
-          if (!inTrash && controller.permissions.canCreateNotes)
-            PositionedDirectional(
-              end: 16,
-              bottom: 16,
-              child: FloatingActionButton(
-                heroTag: 'notes-fab',
-                onPressed: () => _createNote(context, controller),
-                child: const Icon(Icons.add),
-              ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -214,6 +222,7 @@ class _NotesGrid extends StatelessWidget {
     if (notes.isEmpty) {
       return ListView(
         controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
           const SizedBox(height: 100),
           Center(child: Text(m.notesWall.noNotes)),
@@ -223,6 +232,7 @@ class _NotesGrid extends StatelessWidget {
 
     return GridView.builder(
       controller: scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 96),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 220,
@@ -336,6 +346,7 @@ class _TrashGrid extends StatelessWidget {
     if (notes.isEmpty) {
       return ListView(
         controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
           const SizedBox(height: 100),
           Center(
@@ -351,6 +362,7 @@ class _TrashGrid extends StatelessWidget {
     }
     return GridView.builder(
       controller: scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 220,

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +8,7 @@ import 'package:pantry/models/shopping_estimate.dart';
 import 'package:pantry/models/shopping_presence_entry.dart';
 import 'package:pantry/models/shopping_reminder.dart';
 import 'package:pantry/models/shopping_session.dart';
+import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/color.dart';
 import 'package:pantry/utils/price.dart';
@@ -20,10 +19,13 @@ import 'package:pantry/views/shopping/shopping_reminders_view.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
+import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 
-/// The live, dense shopping screen. Owns the ~1-min poll (items + heartbeat +
-/// done-today), paused while the app is backgrounded and fired on resume.
+/// The live, dense shopping screen. Polls (items + heartbeat + done-today) on
+/// the user-configured shopping interval — which defaults to following the
+/// checklist interval — paused while the app is backgrounded and fired on
+/// resume. Also supports pull-to-refresh.
 class ShoppingSessionView extends StatefulWidget {
   final ShoppingSession session;
 
@@ -64,53 +66,11 @@ class _SessionBody extends StatefulWidget {
   State<_SessionBody> createState() => _SessionBodyState();
 }
 
-class _SessionBodyState extends State<_SessionBody>
-    with WidgetsBindingObserver {
-  static const _pollInterval = Duration(seconds: 60);
-  Timer? _timer;
+class _SessionBodyState extends State<_SessionBody> {
   bool _doneExpanded = false;
   bool _busy = false;
 
   ShoppingSessionController get _c => context.read<ShoppingSessionController>();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _startTimer();
-  }
-
-  @override
-  void dispose() {
-    _stopTimer();
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  void _startTimer() {
-    _timer?.cancel();
-    _timer = Timer.periodic(_pollInterval, (_) => _c.poll());
-  }
-
-  void _stopTimer() {
-    _timer?.cancel();
-    _timer = null;
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        _c.poll();
-        _startTimer();
-      case AppLifecycleState.hidden:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-        _stopTimer();
-      case AppLifecycleState.inactive:
-        break;
-    }
-  }
 
   Future<void> _check(ListItem item) async {
     try {
@@ -219,55 +179,63 @@ class _SessionBodyState extends State<_SessionBody>
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<ShoppingSessionController>();
+    final prefs = context.watch<PrefsService>();
     final session = controller.session;
     final activeStore = session.activeStoreId != null
         ? controller.stores[session.activeStoreId]
         : null;
     final hasNext = session.nextStoreId != null;
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(activeStore?.name ?? m.shopping.startTitle),
-        actions: [
-          IconButton(
-            icon: Icon(
-              session.isPrivate ? Icons.visibility_off : Icons.visibility,
-            ),
-            tooltip: session.isPrivate
-                ? m.shopping.makePublic
-                : m.shopping.makePrivate,
-            onPressed: _togglePrivacy,
-          ),
-        ],
+    return AutoRefresh(
+      interval: AutoRefresh.durationFromSeconds(
+        prefs.shoppingRefreshSecondsResolved,
       ),
-      body: controller.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                if (session.stores.isNotEmpty)
-                  _StoreBar(controller: controller),
-                _ProgressRow(controller: controller),
-                Expanded(
-                  child: _ItemArea(
-                    controller: controller,
-                    onCheck: _check,
-                    onSkip: _skip,
+      onRefresh: () => _c.poll(),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: appBarBackLeading(context),
+          title: Text(activeStore?.name ?? m.shopping.startTitle),
+          actions: [
+            IconButton(
+              icon: Icon(
+                session.isPrivate ? Icons.visibility_off : Icons.visibility,
+              ),
+              tooltip: session.isPrivate
+                  ? m.shopping.makePublic
+                  : m.shopping.makePrivate,
+              onPressed: _togglePrivacy,
+            ),
+          ],
+        ),
+        body: controller.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  if (session.stores.isNotEmpty)
+                    _StoreBar(controller: controller),
+                  _ProgressRow(controller: controller),
+                  Expanded(
+                    child: _ItemArea(
+                      controller: controller,
+                      onCheck: _check,
+                      onSkip: _skip,
+                      onRefresh: () => _c.poll(),
+                    ),
                   ),
-                ),
-              ],
-            ),
-      bottomNavigationBar: controller.isLoading
-          ? null
-          : _BottomBar(
-              controller: controller,
-              doneExpanded: _doneExpanded,
-              onToggleDone: () =>
-                  setState(() => _doneExpanded = !_doneExpanded),
-              busy: _busy,
-              hasNext: hasNext,
-              onProceed: _reviewAndProceed,
-            ),
+                ],
+              ),
+        bottomNavigationBar: controller.isLoading
+            ? null
+            : _BottomBar(
+                controller: controller,
+                doneExpanded: _doneExpanded,
+                onToggleDone: () =>
+                    setState(() => _doneExpanded = !_doneExpanded),
+                busy: _busy,
+                hasNext: hasNext,
+                onProceed: _reviewAndProceed,
+              ),
+      ),
     );
   }
 }
@@ -462,34 +430,55 @@ class _ItemArea extends StatelessWidget {
   final ShoppingSessionController controller;
   final Future<void> Function(ListItem) onCheck;
   final void Function(ListItem) onSkip;
+  final Future<void> Function() onRefresh;
 
   const _ItemArea({
     required this.controller,
     required this.onCheck,
     required this.onSkip,
+    required this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
     final groups = controller.groupedItems;
-    if (groups.isEmpty) return _EmptyState(controller: controller);
 
-    return ListView(
-      padding: const EdgeInsets.only(bottom: 8),
-      children: [
-        for (final group in groups) ...[
-          _CategoryHeader(category: group.category, count: group.items.length),
-          for (final item in group.items)
-            _ShoppingItemRow(
-              // Key by item id so the Dismissible tracks the right row as the
-              // list shifts when items above it are checked or removed.
-              key: ValueKey(item.id),
-              item: item,
-              onCheck: () => onCheck(item),
-              onSkip: () => onSkip(item),
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: groups.isEmpty
+          // Keep the pull gesture available even with nothing to buy: an empty
+          // Center can't scroll, so wrap it so it always overscrolls.
+          ? LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: _EmptyState(controller: controller),
+                ),
+              ),
+            )
+          : ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 8),
+              children: [
+                for (final group in groups) ...[
+                  _CategoryHeader(
+                    category: group.category,
+                    count: group.items.length,
+                  ),
+                  for (final item in group.items)
+                    _ShoppingItemRow(
+                      // Key by item id so the Dismissible tracks the right row
+                      // as the list shifts when items above it are checked or
+                      // removed.
+                      key: ValueKey(item.id),
+                      item: item,
+                      onCheck: () => onCheck(item),
+                      onSkip: () => onSkip(item),
+                    ),
+                ],
+              ],
             ),
-        ],
-      ],
     );
   }
 }

@@ -1176,6 +1176,72 @@ class SettingsMessagesHe extends SettingsMessages {
   /// ```
   String get permissionDenied =>
       """הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.""";
+
+  /// ```dart
+  /// "רענון אוטומטי"
+  /// ```
+  String get refreshSection => """רענון אוטומטי""";
+
+  /// ```dart
+  /// "כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני."
+  /// ```
+  String get refreshSectionBody =>
+      """כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני.""";
+
+  /// ```dart
+  /// "רשימות"
+  /// ```
+  String get checklistRefresh => """רשימות""";
+
+  /// ```dart
+  /// "פתקים"
+  /// ```
+  String get notesRefresh => """פתקים""";
+
+  /// ```dart
+  /// "תמונות"
+  /// ```
+  String get photosRefresh => """תמונות""";
+
+  /// ```dart
+  /// "מצב קניות"
+  /// ```
+  String get shoppingRefresh => """מצב קניות""";
+
+  /// ```dart
+  /// "כבוי"
+  /// ```
+  String get refreshOff => """כבוי""";
+
+  /// ```dart
+  /// "כמו ברשימות"
+  /// ```
+  String get refreshInherit => """כמו ברשימות""";
+
+  /// ```dart
+  /// "כל 15 שניות"
+  /// ```
+  String get refresh15s => """כל 15 שניות""";
+
+  /// ```dart
+  /// "כל 30 שניות"
+  /// ```
+  String get refresh30s => """כל 30 שניות""";
+
+  /// ```dart
+  /// "כל דקה"
+  /// ```
+  String get refresh1m => """כל דקה""";
+
+  /// ```dart
+  /// "כל 2 דקות"
+  /// ```
+  String get refresh2m => """כל 2 דקות""";
+
+  /// ```dart
+  /// "כל 5 דקות"
+  /// ```
+  String get refresh5m => """כל 5 דקות""";
 }
 
 class ItemTapActionNamesSettingsMessagesHe
@@ -4583,6 +4649,20 @@ Map<String, String> get messagesHeMap => {
   """settings.pollInterval6h""": """כל 6 שעות""",
   """settings.permissionDenied""":
       """הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.""",
+  """settings.refreshSection""": """רענון אוטומטי""",
+  """settings.refreshSectionBody""":
+      """כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני.""",
+  """settings.checklistRefresh""": """רשימות""",
+  """settings.notesRefresh""": """פתקים""",
+  """settings.photosRefresh""": """תמונות""",
+  """settings.shoppingRefresh""": """מצב קניות""",
+  """settings.refreshOff""": """כבוי""",
+  """settings.refreshInherit""": """כמו ברשימות""",
+  """settings.refresh15s""": """כל 15 שניות""",
+  """settings.refresh30s""": """כל 30 שניות""",
+  """settings.refresh1m""": """כל דקה""",
+  """settings.refresh2m""": """כל 2 דקות""",
+  """settings.refresh5m""": """כל 5 דקות""",
   """notifications.title""": """התראות""",
   """notifications.empty""": """אין התראות חדשות.""",
   """notifications.failedToLoad""": """טעינת ההתראות נכשלה.""",
