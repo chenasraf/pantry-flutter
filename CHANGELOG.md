@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.27.0](https://github.com/chenasraf/pantry-flutter/compare/v0.26.0...v0.27.0) (2026-08-13)
+
+
+### Features
+
+* **checklists:** move overflow menu into a draggable bottom sheet ([a9dc589](https://github.com/chenasraf/pantry-flutter/commit/a9dc589f084eb1338f57d7a533013eb39fe5aac7))
+* **checklists:** reorder items within categories and stores, reset order, and uncheck all ([570bdbb](https://github.com/chenasraf/pantry-flutter/commit/570bdbb756c09c8525a07a7c9b6cb1823a29307e))
+* **checklist:** tick description checkboxes from the chip popup ([44ade48](https://github.com/chenasraf/pantry-flutter/commit/44ade4893d54af521891d8ec7d0e19e5997f092c))
+* **checklist:** tick markdown checkboxes in an item's description ([e1b56a1](https://github.com/chenasraf/pantry-flutter/commit/e1b56a1a01dd2aa472cde64ca50e4d37251675eb))
+* **editor:** add text formatting to the selection popup ([4106325](https://github.com/chenasraf/pantry-flutter/commit/41063254848f3ba18f5cc53ecc5d5e2dc6d59010))
+* **navigation:** hide the nav bar when only one tab is visible ([9ef7ad2](https://github.com/chenasraf/pantry-flutter/commit/9ef7ad27435d1cea62b4d2ae6c71c59dbe343a30))
+* rich text editor for notes and item descriptions ([269d93c](https://github.com/chenasraf/pantry-flutter/commit/269d93c6ad83d598c065dde98fee8231cdb10434))
+* **settings:** configurable auto-refresh intervals with pull-to-refresh ([7c810ee](https://github.com/chenasraf/pantry-flutter/commit/7c810ee0d71ab65a2e0c3e7d5ddfc853c7d440cf))
+* **settings:** toggle to move start shopping button into the menu ([62916de](https://github.com/chenasraf/pantry-flutter/commit/62916de302aa840deb216d6516dfcf7e74a6aebe))
+* **settings:** toggle whether the app uses your Nextcloud theme color ([c2cccee](https://github.com/chenasraf/pantry-flutter/commit/c2cccee1b327f03ce85600a0c2e99e74d57f76d7))
+
+
+### Bug Fixes
+
+* **checklists:** keep scroll position after clearing or closing search ([617cc4f](https://github.com/chenasraf/pantry-flutter/commit/617cc4f9c1d1e672df15624bdf33a66795bf8b05)), closes [#134](https://github.com/chenasraf/pantry-flutter/issues/134)
+
 ## [0.26.0](https://github.com/chenasraf/pantry-flutter/compare/v0.25.0...v0.26.0) (2026-08-09)
 
 
