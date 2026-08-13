@@ -953,7 +953,9 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
             // Start / resume shopping. Hidden in soft (trash/archive) and
             // selection modes, and while the add-item sheet is active (it would
             // float over the sheet); lifted above the resting compose bar.
+            // When the FAB is turned off it moves into the overflow menu.
             if (hasFeature('shopping') &&
+                prefs.startShoppingFabEnabled &&
                 !controller.isSoftView &&
                 !controller.selectionMode &&
                 !_composeActive)
@@ -1500,7 +1502,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     // platform.
     final isMeta = controller.isMetaMode;
     final effective = controller.effectiveSortBy;
-    return <PopupMenuEntry<String>>[
+    final items = <PopupMenuEntry<String>>[
       if (controller.canSelectItems && controller.items.isNotEmpty) ...[
         _menuRow(
           value: 'select_items',
@@ -1569,11 +1571,24 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
       ],
       if (hasFeature('shopping')) ...[
         const PopupMenuDivider(),
+        // When the FAB is turned off, its action lives here, above history.
+        if (!prefs.startShoppingFabEnabled)
+          _menuRow(
+            value: 'start_shopping',
+            leading: Icon(
+              _shoppingSession != null ? Icons.play_arrow : Icons.shopping_cart,
+              size: 18,
+            ),
+            label: _shoppingSession != null
+                ? m.shopping.resumeShopping
+                : m.shopping.startShopping,
+          ),
         _menuRow(
           value: 'shopping_history',
           leading: const Icon(Icons.history, size: 18),
           label: m.shopping.shoppingHistory,
         ),
+        const PopupMenuDivider(),
       ],
       if (!PlatformInfo.isDesktop) ...[
         if (controller.permissions.canEditLists)
@@ -1636,6 +1651,12 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         ),
       ],
     ];
+    // Drop a dangling divider so a trailing section separator (e.g. the one
+    // below shopping history) never renders as the last item.
+    while (items.isNotEmpty && items.last is PopupMenuDivider) {
+      items.removeLast();
+    }
+    return items;
   }
 
   /// Single source of truth for menu-row layout — guarantees that text in
@@ -1728,6 +1749,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         await _openManageCategories(context, controller);
       case 'manage_stores':
         await _openManageStores(context, controller);
+      case 'start_shopping':
+        await _openShopping(controller);
       case 'shopping_history':
         await _openShoppingHistory(controller);
       case 'export_markdown':

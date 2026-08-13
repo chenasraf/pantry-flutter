@@ -113,6 +113,10 @@ class _SettingsViewState extends State<SettingsView> {
     await context.read<PrefsService>().setSwipeActionsEnabled(value);
   }
 
+  Future<void> _toggleStartShoppingFab(bool value) async {
+    await context.read<PrefsService>().setStartShoppingFabEnabled(value);
+  }
+
   // -- Reuse existing items (account-scoped, persisted server-side) --
 
   Future<void> _setReuseExistingItems(String? value) async {
@@ -278,6 +282,7 @@ class _SettingsViewState extends State<SettingsView> {
     final checkboxPosition = prefs.checklistCheckboxPosition;
     final density = prefs.checklistDensity;
     final swipeActionsEnabled = prefs.swipeActionsEnabled;
+    final startShoppingFabEnabled = prefs.startShoppingFabEnabled;
     final reuseExistingItems = prefs.reuseExistingItems;
     final useServerThemeColor = prefs.useServerThemeColor;
     final checklistRefresh = prefs.checklistRefreshSeconds;
@@ -463,6 +468,14 @@ class _SettingsViewState extends State<SettingsView> {
               value: swipeActionsEnabled,
               onChanged: _toggleSwipeActions,
             ),
+            if (hasFeature('shopping'))
+              SwitchListTile(
+                secondary: const Icon(Icons.shopping_cart_outlined),
+                title: Text(m.settings.startShoppingButton),
+                subtitle: Text(m.settings.startShoppingButtonBody),
+                value: startShoppingFabEnabled,
+                onChanged: _toggleStartShoppingFab,
+              ),
             if (hasFeature('reuse-existing-items'))
               ListTile(
                 leading: const Icon(Icons.autorenew),

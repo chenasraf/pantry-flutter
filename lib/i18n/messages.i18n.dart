@@ -1037,6 +1037,17 @@ class SettingsMessages {
       """Show quick actions on each item. When off, actions move to a menu button on each item.""";
 
   /// ```dart
+  /// "Start shopping button"
+  /// ```
+  String get startShoppingButton => """Start shopping button""";
+
+  /// ```dart
+  /// "Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu."
+  /// ```
+  String get startShoppingButtonBody =>
+      """Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu.""";
+
+  /// ```dart
   /// "Reuse existing items when adding"
   /// ```
   String get reuseExistingItems => """Reuse existing items when adding""";
@@ -4674,6 +4685,9 @@ Password: pantry-rocks""",
   """settings.itemActions""": """Item actions""",
   """settings.itemActionsBody""":
       """Show quick actions on each item. When off, actions move to a menu button on each item.""",
+  """settings.startShoppingButton""": """Start shopping button""",
+  """settings.startShoppingButtonBody""":
+      """Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu.""",
   """settings.reuseExistingItems""": """Reuse existing items when adding""",
   """settings.reuseExistingItemsBody""":
       """When you try to add an item that already exists in the list, reuse that item.""",

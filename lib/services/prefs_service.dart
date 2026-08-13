@@ -31,6 +31,7 @@ class PrefsService extends ChangeNotifier {
   static const _checklistDensityKey = 'checklist_density';
   static const _validDensities = {'normal', 'dense', 'compact'};
   static const _swipeActionsEnabledKey = 'swipe_actions_enabled';
+  static const _startShoppingFabEnabledKey = 'start_shopping_fab_enabled';
   static const _checklistListFilterKey = 'checklist_list_filter';
   static const _hiddenItemChipsKey = 'hidden_item_chips';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
@@ -127,6 +128,12 @@ class PrefsService extends ChangeNotifier {
   /// gesture accidentally while scrolling.
   bool _swipeActionsEnabled = true;
   bool get swipeActionsEnabled => _swipeActionsEnabled;
+
+  /// When true (default), the "Start shopping" floating action button shows on
+  /// the checklists screen. When false, the button is hidden and the action
+  /// moves into the overflow menu instead.
+  bool _startShoppingFabEnabled = true;
+  bool get startShoppingFabEnabled => _startShoppingFabEnabled;
 
   /// Selected list IDs for the All-lists view's per-list filter. Empty means
   /// "all lists". Local-only (not synced) so each device keeps its own focus.
@@ -325,6 +332,11 @@ class PrefsService extends ChangeNotifier {
 
     final swipeActions = all[_swipeActionsEnabledKey];
     if (swipeActions != null) _swipeActionsEnabled = swipeActions == 'true';
+
+    final startShoppingFab = all[_startShoppingFabEnabledKey];
+    if (startShoppingFab != null) {
+      _startShoppingFabEnabled = startShoppingFab == 'true';
+    }
 
     final listFilter = all[_checklistListFilterKey];
     if (listFilter != null && listFilter.isNotEmpty) {
@@ -618,6 +630,16 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setStartShoppingFabEnabled(bool value) async {
+    if (_startShoppingFabEnabled == value) return;
+    _startShoppingFabEnabled = value;
+    await _storage.write(
+      key: _startShoppingFabEnabledKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
   Future<void> setChecklistListFilter(Set<int> ids) async {
     _checklistListFilter = {...ids};
     await _storage.write(
@@ -839,6 +861,7 @@ class PrefsService extends ChangeNotifier {
     _checklistCheckboxPosition = 'start';
     _checklistDensity = 'normal';
     _swipeActionsEnabled = true;
+    _startShoppingFabEnabled = true;
     _checklistListFilter = {};
     _hiddenItemChips = {};
     _checklistDoneCollapsed = true;
@@ -857,40 +880,48 @@ class PrefsService extends ChangeNotifier {
     _notesRefreshSeconds = 60;
     _photosRefreshSeconds = 60;
     _shoppingRefreshSeconds = shoppingRefreshInherit;
-    await _storage.delete(key: _lastHouseKey);
-    await _storage.delete(key: _pinnedListIdsKey);
-    await _storage.delete(key: _notificationsEnabledKey);
-    await _storage.delete(key: _pollIntervalMinutesKey);
-    await _storage.delete(key: _notificationsIntroSeenKey);
-    await _storage.delete(key: _localeKey);
-    await _storage.delete(key: _themeModeKey);
-    await _storage.delete(key: _checklistTapRowToToggleKey);
-    await _storage.delete(key: _defaultItemTapActionKey);
-    await _storage.delete(key: _defaultItemLongPressActionKey);
-    await _storage.delete(key: _checklistCategorySpacingKey);
-    await _storage.delete(key: _reuseExistingItemsKey);
-    await _storage.delete(key: _checklistViewKey);
-    await _storage.delete(key: _checklistCheckboxPositionKey);
-    await _storage.delete(key: _checklistDensityKey);
-    await _storage.delete(key: _swipeActionsEnabledKey);
-    await _storage.delete(key: _checklistListFilterKey);
-    await _storage.delete(key: _hiddenItemChipsKey);
-    await _storage.delete(key: _checklistDoneCollapsedKey);
-    await _storage.delete(key: _allListsProgressHeroHiddenKey);
-    await _storage.delete(key: _progressHeroHiddenListIdsKey);
-    await _storage.delete(key: _lastSeenOnboardingVersionKey);
-    await _storage.delete(key: _navOrderKey);
-    await _storage.delete(key: _navDisabledKey);
-    await _storage.delete(key: _themeColorKey);
-    await _storage.delete(key: _useServerThemeColorKey);
-    await _storage.delete(key: _displayNameKey);
-    await _storage.delete(key: _serverLanguageKey);
-    await _storage.delete(key: _firstDayOfWeekKey);
-    await _storage.delete(key: _devForceAllFeaturesKey);
-    await _storage.delete(key: _checklistRefreshSecondsKey);
-    await _storage.delete(key: _notesRefreshSecondsKey);
-    await _storage.delete(key: _photosRefreshSecondsKey);
-    await _storage.delete(key: _shoppingRefreshSecondsKey);
+    final keys = [
+      _lastHouseKey,
+      _pinnedListIdsKey,
+      _notificationsEnabledKey,
+      _pollIntervalMinutesKey,
+      _notificationsIntroSeenKey,
+      _localeKey,
+      _themeModeKey,
+      _checklistTapRowToToggleKey,
+      _defaultItemTapActionKey,
+      _defaultItemLongPressActionKey,
+      _checklistCategorySpacingKey,
+      _reuseExistingItemsKey,
+      _checklistViewKey,
+      _checklistCheckboxPositionKey,
+      _checklistDensityKey,
+      _swipeActionsEnabledKey,
+      _startShoppingFabEnabledKey,
+      _checklistListFilterKey,
+      _hiddenItemChipsKey,
+      _checklistDoneCollapsedKey,
+      _allListsProgressHeroHiddenKey,
+      _progressHeroHiddenListIdsKey,
+      _lastSeenOnboardingVersionKey,
+      _navOrderKey,
+      _navDisabledKey,
+      _themeColorKey,
+      _useServerThemeColorKey,
+      _displayNameKey,
+      _serverLanguageKey,
+      _firstDayOfWeekKey,
+      _devForceAllFeaturesKey,
+      _checklistRefreshSecondsKey,
+      _notesRefreshSecondsKey,
+      _photosRefreshSecondsKey,
+      _shoppingRefreshSecondsKey,
+    ];
+    final futures = <Future>[];
+    for (final key in keys) {
+      futures.add(_storage.delete(key: key));
+    }
+    await Future.wait(futures);
     notifyListeners();
   }
 }
