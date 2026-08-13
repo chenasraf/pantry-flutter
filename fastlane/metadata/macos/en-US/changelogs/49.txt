@@ -1,0 +1,11 @@
+Features
+- move overflow menu into a draggable bottom sheet
+- reorder items within categories and stores, reset order, and uncheck all
+- tick description checkboxes from the chip popup
+- tick markdown checkboxes in an item's description
+- add text formatting to the selection popup
+- hide the nav bar when only one tab is visible
+- rich text editor for notes and item descriptions
+- configurable auto-refresh intervals with pull-to-refresh
+
+… see full notes on GitHub.
