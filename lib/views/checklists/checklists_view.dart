@@ -1397,11 +1397,15 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
               onPressed: () => controller.setArchiveMode(true),
             ),
         ],
-        PopupMenuButton<String>(
+        IconButton(
           icon: const Icon(Icons.more_vert),
-          onSelected: (v) => _onOverflow(context, controller, v),
-          itemBuilder: (_) =>
-              _overflowItems(controller, prefs, isPinned: isPinned),
+          tooltip: m.common.more,
+          onPressed: () => _showOverflowSheet(
+            context,
+            controller,
+            prefs,
+            isPinned: isPinned,
+          ),
         ),
       ],
     );
@@ -1450,50 +1454,50 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     return m.checklists.sort.newestFirst;
   }
 
-  List<PopupMenuEntry<String>> _overflowItems(
+  List<_OverflowEntry> _overflowItems(
     ChecklistsController controller,
     PrefsService prefs, {
     required bool isPinned,
   }) {
     if (controller.isTrashMode) {
-      return [
-        _menuRow(
+      return _normalizeOverflow([
+        _OverflowAction(
           value: 'exit_trash',
-          leading: const Icon(Icons.arrow_back, size: 18),
+          icon: Icons.arrow_back,
           label: m.checklists.exitTrash,
         ),
         // Bulk restore / permanent-delete need a selection; surface the entry
         // point here so it's reachable without a long-press (desktop).
         if (controller.canSelectItems && controller.items.isNotEmpty)
-          _menuRow(
+          _OverflowAction(
             value: 'select_items',
-            leading: const Icon(Icons.checklist, size: 18),
+            icon: Icons.checklist,
             label: m.checklists.selectItems,
           ),
-        _menuRow(
+        _OverflowAction(
           value: 'empty_trash',
-          leading: const Icon(Icons.delete_forever, size: 18),
+          icon: Icons.delete_forever,
           label: m.checklists.emptyTrash,
         ),
-      ];
+      ]);
     }
     // Archive has no "empty" action — archived items are kept indefinitely.
     if (controller.isArchiveMode) {
-      return [
-        _menuRow(
+      return _normalizeOverflow([
+        _OverflowAction(
           value: 'exit_archive',
-          leading: const Icon(Icons.arrow_back, size: 18),
+          icon: Icons.arrow_back,
           label: m.checklists.exitArchive,
         ),
         // Bulk unarchive / permanent-delete need a selection; surface the
         // entry point here so it's reachable without a long-press (desktop).
         if (controller.canSelectItems && controller.items.isNotEmpty)
-          _menuRow(
+          _OverflowAction(
             value: 'select_items',
-            leading: const Icon(Icons.checklist, size: 18),
+            icon: Icons.checklist,
             label: m.checklists.selectItems,
           ),
-      ];
+      ]);
     }
     // Desktop has promoted refresh / sort / categories / trash to dedicated
     // toolbar buttons, and pinning lists feeds an Android-only widget, so
@@ -1502,43 +1506,40 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     // platform.
     final isMeta = controller.isMetaMode;
     final effective = controller.effectiveSortBy;
-    final items = <PopupMenuEntry<String>>[
+    return _normalizeOverflow([
       if (controller.canSelectItems && controller.items.isNotEmpty) ...[
-        _menuRow(
+        _OverflowAction(
           value: 'select_items',
-          leading: const Icon(Icons.checklist, size: 18),
+          icon: Icons.checklist,
           label: m.checklists.selectItems,
         ),
-        const PopupMenuDivider(),
+        const _OverflowDivider(),
       ],
       if (!PlatformInfo.isDesktop) ...[
-        _menuRow(
+        _OverflowAction(
           value: 'sort',
-          leading: const Icon(Icons.sort, size: 18),
+          icon: Icons.sort,
           label: '${m.checklists.sortTooltip}: ${_sortLabel(effective)}',
         ),
-        const PopupMenuDivider(),
+        const _OverflowDivider(),
         if (controller.currentList != null && !isMeta)
-          _menuRow(
+          _OverflowAction(
             value: 'toggle_pin',
-            leading: Icon(
-              isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-              size: 18,
-            ),
+            icon: isPinned ? Icons.push_pin : Icons.push_pin_outlined,
             label: isPinned ? m.checklists.unpinList : m.checklists.pinList,
           ),
       ],
       if (hasFeature('item-authors'))
-        _checkboxRow(
+        _OverflowCheckboxAction(
           value: 'toggle_added_by',
           label: m.checklists.showAddedBy,
-          selected: controller.showAddedBy,
+          checked: controller.showAddedBy,
         ),
       if (controller.currentList != null)
-        _checkboxRow(
+        _OverflowCheckboxAction(
           value: 'toggle_progress_hero',
           label: m.checklists.showProgressHero,
-          selected: !(controller.currentList!.hideProgressHero),
+          checked: !(controller.currentList!.hideProgressHero),
         ),
       // "Reset custom order" re-seeds sort_order from a chosen basis and leaves
       // the list hand-reorderable. Per-list only (no cross-list custom order in
@@ -1546,79 +1547,78 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
       if (controller.currentList != null &&
           !isMeta &&
           controller.permissions.canEditLists) ...[
-        const PopupMenuDivider(),
-        _menuRow(
+        const _OverflowDivider(),
+        _OverflowAction(
           value: 'reset_order',
-          leading: const Icon(Icons.sort_by_alpha, size: 18),
+          icon: Icons.sort_by_alpha,
           label: m.checklists.resetOrder.menuLabel,
         ),
       ],
       // Markdown import/export are per-list only — not offered in the meta
       // "All lists" view, which has no single target.
       if (controller.currentList != null && !isMeta) ...[
-        const PopupMenuDivider(),
-        _menuRow(
+        const _OverflowDivider(),
+        _OverflowAction(
           value: 'export_markdown',
-          leading: const Icon(Icons.file_download_outlined, size: 18),
+          icon: Icons.file_download_outlined,
           label: m.checklists.markdown.exportTitle,
         ),
         if (controller.canAddItemsHere)
-          _menuRow(
+          _OverflowAction(
             value: 'import_markdown',
-            leading: const Icon(Icons.file_upload_outlined, size: 18),
+            icon: Icons.file_upload_outlined,
             label: m.checklists.markdown.importTitle,
           ),
       ],
       if (hasFeature('shopping')) ...[
-        const PopupMenuDivider(),
+        const _OverflowDivider(),
         // When the FAB is turned off, its action lives here, above history.
         if (!prefs.startShoppingFabEnabled)
-          _menuRow(
+          _OverflowAction(
             value: 'start_shopping',
-            leading: Icon(
-              _shoppingSession != null ? Icons.play_arrow : Icons.shopping_cart,
-              size: 18,
-            ),
+            icon: _shoppingSession != null
+                ? Icons.play_arrow
+                : Icons.shopping_cart,
             label: _shoppingSession != null
                 ? m.shopping.resumeShopping
                 : m.shopping.startShopping,
           ),
-        _menuRow(
+        _OverflowAction(
           value: 'shopping_history',
-          leading: const Icon(Icons.history, size: 18),
+          icon: Icons.history,
           label: m.shopping.shoppingHistory,
         ),
-        const PopupMenuDivider(),
+        const _OverflowDivider(),
       ],
       if (!PlatformInfo.isDesktop) ...[
         if (controller.permissions.canEditLists)
-          _menuRow(
+          _OverflowAction(
             value: 'manage_categories',
-            leading: const Icon(Icons.sell_outlined, size: 18),
+            icon: Icons.sell_outlined,
             label: m.categories.manageTitle,
           ),
         if (controller.permissions.canEditLists && hasFeature('stores'))
-          _menuRow(
+          _OverflowAction(
             value: 'manage_stores',
-            leading: const Icon(Icons.storefront_outlined, size: 18),
+            icon: Icons.storefront_outlined,
             label: m.stores.manageTitle,
           ),
         // Mobile has reliable pull-to-refresh, so it doesn't need a menu row.
         // Web (the other non-desktop host here) doesn't, so keep it there.
         if (PlatformInfo.isWeb)
-          _menuRow(
+          _OverflowAction(
             value: 'refresh',
-            leading: const Icon(Icons.refresh, size: 18),
+            icon: Icons.refresh,
             label: m.common.refresh,
           ),
         if (!isMeta &&
             controller.isCurrentListWritable &&
             controller.permissions.canDeleteItems &&
             (supportsFeature('soft-delete') || hasFeature('item-trash'))) ...[
-          const PopupMenuDivider(),
-          _menuRow(
+          const _OverflowDivider(),
+          _OverflowAction(
             value: 'view_trash',
-            leading: const Icon(Icons.delete_outline, size: 18),
+            icon: Icons.delete_outline,
             label: m.checklists.viewTrash,
           ),
         ],
@@ -1626,37 +1626,49 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
             controller.isCurrentListWritable &&
             controller.permissions.canEditLists &&
             hasFeature('item-archive'))
-          _menuRow(
+          _OverflowAction(
             value: 'view_archive',
-            leading: const Icon(Icons.archive_outlined, size: 18),
+            icon: Icons.archive_outlined,
             label: m.checklists.viewArchive,
           ),
       ],
       if (kDebugMode) ...[
-        const PopupMenuDivider(),
-        _menuRow(
+        const _OverflowDivider(),
+        _OverflowAction(
           value: 'dev_show_onboarding',
-          leading: const Icon(Icons.bug_report_outlined, size: 18),
+          icon: Icons.bug_report_outlined,
           label: m.onboarding.dev.showOnboarding,
         ),
-        _checkboxRow(
+        _OverflowCheckboxAction(
           value: 'dev_force_all_features',
           label: m.onboarding.dev.forceAllFeatures,
-          selected: prefs.devForceAllFeatures,
+          checked: prefs.devForceAllFeatures,
         ),
-        _menuRow(
+        _OverflowAction(
           value: 'dev_test_notification',
-          leading: const Icon(Icons.notifications_active_outlined, size: 18),
+          icon: Icons.notifications_active_outlined,
           label: m.onboarding.dev.sendTestNotification,
         ),
       ],
-    ];
-    // Drop a dangling divider so a trailing section separator (e.g. the one
-    // below shopping history) never renders as the last item.
-    while (items.isNotEmpty && items.last is PopupMenuDivider) {
-      items.removeLast();
+    ]);
+  }
+
+  /// Collapses consecutive dividers and strips leading/trailing ones so the
+  /// sheet never shows a stray or doubled separator — e.g. the divider below
+  /// shopping history when nothing follows it.
+  List<_OverflowEntry> _normalizeOverflow(List<_OverflowEntry> entries) {
+    final out = <_OverflowEntry>[];
+    for (final entry in entries) {
+      if (entry is _OverflowDivider &&
+          (out.isEmpty || out.last is _OverflowDivider)) {
+        continue;
+      }
+      out.add(entry);
     }
-    return items;
+    while (out.isNotEmpty && out.last is _OverflowDivider) {
+      out.removeLast();
+    }
+    return out;
   }
 
   /// Single source of truth for menu-row layout — guarantees that text in
@@ -1689,15 +1701,94 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     label: label,
   );
 
-  PopupMenuItem<String> _checkboxRow({
-    required String value,
-    required String label,
-    required bool selected,
-  }) => _menuRow(
-    value: value,
-    leading: _CheckboxIndicator(selected: selected),
-    label: label,
-  );
+  /// The AppBar overflow lives in a bottom sheet rather than a popup menu: it
+  /// carries enough entries (view toggles, per-list actions, shopping, dev
+  /// tools) that a sheet reads and scrolls better than a tall anchored menu.
+  Future<void> _showOverflowSheet(
+    BuildContext context,
+    ChecklistsController controller,
+    PrefsService prefs, {
+    required bool isPinned,
+  }) async {
+    final entries = _overflowItems(controller, prefs, isPinned: isPinned);
+    if (entries.isEmpty) return;
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final cs = Theme.of(sheetContext).colorScheme;
+        final media = MediaQuery.of(sheetContext);
+        // Open sized to the content instead of the default ~half-height cap.
+        // Estimate the natural height so a short menu stays short and a long
+        // one grows (up to most of the screen) before it needs to scroll.
+        const rowHeight = 56.0;
+        const handleHeight = 30.0;
+        final contentHeight =
+            handleHeight +
+            media.padding.bottom +
+            entries.fold<double>(
+              0,
+              (h, e) => h + (e is _OverflowDivider ? 1.0 : rowHeight),
+            );
+        final available = media.size.height - media.padding.top;
+        final fraction = (contentHeight / available).clamp(0.25, 0.9);
+        // DraggableScrollableSheet ties the inner scroll to the sheet's own
+        // drag: at the top of the list, a downward swipe drags the whole
+        // sheet down (and dismisses it) rather than just overscrolling.
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: fraction,
+          maxChildSize: fraction,
+          minChildSize: (fraction - 0.2).clamp(0.15, fraction),
+          builder: (context, scrollController) => SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 38,
+                  height: 5,
+                  margin: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: cs.outlineVariant,
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+                for (final entry in entries)
+                  switch (entry) {
+                    _OverflowDivider() => const Divider(height: 1),
+                    _OverflowAction(:final value, :final icon, :final label) =>
+                      ListTile(
+                        leading: Icon(icon),
+                        title: Text(label),
+                        onTap: () => Navigator.of(sheetContext).pop(value),
+                      ),
+                    _OverflowCheckboxAction(
+                      :final value,
+                      :final label,
+                      :final checked,
+                    ) =>
+                      ListTile(
+                        leading: Icon(
+                          checked
+                              ? Icons.check_box
+                              : Icons.check_box_outline_blank,
+                        ),
+                        title: Text(label),
+                        onTap: () => Navigator.of(sheetContext).pop(value),
+                      ),
+                  },
+                SizedBox(height: media.padding.bottom),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (selected != null && context.mounted) {
+      await _onOverflow(context, controller, selected);
+    }
+  }
 
   Future<void> _onOverflow(
     BuildContext context,
@@ -4086,6 +4177,42 @@ class _NoListsEmptyState extends StatelessWidget {
   }
 }
 
+/// One row in the AppBar overflow bottom sheet: a section [_OverflowDivider], a
+/// plain [_OverflowAction], or a toggle [_OverflowCheckboxAction].
+sealed class _OverflowEntry {
+  const _OverflowEntry();
+}
+
+class _OverflowDivider extends _OverflowEntry {
+  const _OverflowDivider();
+}
+
+class _OverflowAction extends _OverflowEntry {
+  const _OverflowAction({
+    required this.value,
+    required this.icon,
+    required this.label,
+  });
+
+  /// Dispatched to `_onOverflow` when the row is tapped.
+  final String value;
+  final IconData icon;
+  final String label;
+}
+
+class _OverflowCheckboxAction extends _OverflowEntry {
+  const _OverflowCheckboxAction({
+    required this.value,
+    required this.label,
+    required this.checked,
+  });
+
+  /// Dispatched to `_onOverflow` when the row is tapped.
+  final String value;
+  final String label;
+  final bool checked;
+}
+
 /// Radio-style indicator used by the sort options in the AppBar overflow.
 /// Hollow circle when unselected; filled accent circle with a white check
 /// when selected. Reads as a radio but matches the language of the list-item
@@ -4104,35 +4231,6 @@ class _RadioIndicator extends StatelessWidget {
       decoration: BoxDecoration(
         color: selected ? cs.primary : Colors.transparent,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: selected ? cs.primary : cs.outlineVariant,
-          width: 2,
-        ),
-      ),
-      child: selected
-          ? const Icon(Icons.check, size: 12, color: Colors.white)
-          : null,
-    );
-  }
-}
-
-/// Checkbox-style indicator used by the boolean toggles in the AppBar
-/// overflow. Rounded-rect outline when unselected, filled accent rounded
-/// rect with a white check when selected — mirrors the list-item checkbox.
-class _CheckboxIndicator extends StatelessWidget {
-  final bool selected;
-
-  const _CheckboxIndicator({required this.selected});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      width: 18,
-      height: 18,
-      decoration: BoxDecoration(
-        color: selected ? cs.primary : Colors.transparent,
-        borderRadius: BorderRadius.circular(6),
         border: Border.all(
           color: selected ? cs.primary : cs.outlineVariant,
           width: 2,

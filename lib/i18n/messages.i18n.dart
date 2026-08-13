@@ -159,6 +159,11 @@ class CommonMessages {
   String get clear => """Clear""";
 
   /// ```dart
+  /// "More"
+  /// ```
+  String get more => """More""";
+
+  /// ```dart
   /// "You don't have permission to do that"
   /// ```
   String get permissionDenied => """You don't have permission to do that""";
@@ -4482,6 +4487,7 @@ Map<String, String> get messagesMap => {
   """common.closeDialog""": """Done""",
   """common.remove""": """Remove""",
   """common.clear""": """Clear""",
+  """common.more""": """More""",
   """common.permissionDenied""": """You don't have permission to do that""",
   """common.noAccessTitle""": """No access""",
   """common.noAccessBody""":
