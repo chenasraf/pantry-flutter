@@ -6,6 +6,7 @@ import 'package:pantry/models/shopping_estimate.dart';
 import 'package:pantry/models/shopping_reminder.dart';
 import 'package:pantry/models/shopping_review.dart';
 import 'package:pantry/models/store.dart';
+import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/shopping_service.dart';
 import 'package:pantry/utils/color.dart';
 import 'package:pantry/utils/currencies.dart';
@@ -60,10 +61,36 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
   bool _loading = true;
   String? _error;
 
+  /// House's remembered currency, used to preselect the billed-total dropdown
+  /// for a store that hasn't been billed yet. Seeded from cache, then refreshed.
+  String _lastCurrency = defaultCurrency;
+
   @override
   void initState() {
     super.initState();
+    _lastCurrency =
+        ChecklistService.instance.cache.get<String>(
+          'lastCurrency:${widget.houseId}',
+        ) ??
+        defaultCurrency;
     _load();
+    _refreshLastCurrency();
+  }
+
+  Future<void> _refreshLastCurrency() async {
+    try {
+      final code = await ChecklistService.instance.getLastCurrencyPref(
+        widget.houseId,
+      );
+      ChecklistService.instance.cache.set(
+        'lastCurrency:${widget.houseId}',
+        code,
+      );
+      if (!mounted) return;
+      setState(() => _lastCurrency = code);
+    } catch (_) {
+      // Non-fatal: fall back to the cached/seeded value.
+    }
   }
 
   Future<void> _load() async {
@@ -101,6 +128,7 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
     double? total,
     String currency,
   ) async {
+    _rememberCurrency(currency);
     try {
       if (store.storeId == null) {
         await _service.setSessionBilled(
@@ -123,6 +151,24 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(m.shopping.saveTotalFailed)));
+    }
+  }
+
+  /// Persist the currency the user picked so the next session preselects it.
+  Future<void> _rememberCurrency(String currency) async {
+    if (currency == _lastCurrency) return;
+    _lastCurrency = currency;
+    ChecklistService.instance.cache.set(
+      'lastCurrency:${widget.houseId}',
+      currency,
+    );
+    try {
+      await ChecklistService.instance.setLastCurrencyPref(
+        widget.houseId,
+        currency,
+      );
+    } catch (_) {
+      // Non-fatal: the cached value still preselects within this session.
     }
   }
 
@@ -155,6 +201,7 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
                     storeName: _storeName(store.storeId),
                     storeColor: _storeColor(store.storeId),
                     storeIconData: _storeIcon(store.storeId),
+                    fallbackCurrency: _lastCurrency,
                     readOnly: _readOnly,
                     onSaveBilled: (total, currency) =>
                         _saveBilled(store, total, currency),
@@ -221,6 +268,10 @@ class _StoreSection extends StatefulWidget {
   final String storeName;
   final Color? storeColor;
   final IconData storeIconData;
+
+  /// Currency to preselect when this store has no billed currency and its items
+  /// carry no priced estimate — the house's remembered currency.
+  final String fallbackCurrency;
   final bool readOnly;
   final void Function(double? total, String currency) onSaveBilled;
 
@@ -229,6 +280,7 @@ class _StoreSection extends StatefulWidget {
     required this.storeName,
     required this.storeColor,
     required this.storeIconData,
+    required this.fallbackCurrency,
     required this.readOnly,
     required this.onSaveBilled,
   });
@@ -252,7 +304,23 @@ class _StoreSectionState extends State<_StoreSection> {
         widget.store.billedCurrency ??
         (widget.store.estimate.isNotEmpty
             ? widget.store.estimate.first.currency
-            : defaultCurrency);
+            : widget.fallbackCurrency);
+  }
+
+  /// True when the picker is still showing the house fallback (nothing billed,
+  /// no priced estimate, and the user hasn't touched it), so a late refresh of
+  /// the remembered currency may safely re-seed it.
+  bool get _showingFallback =>
+      widget.store.billedCurrency == null && widget.store.estimate.isEmpty;
+
+  @override
+  void didUpdateWidget(_StoreSection old) {
+    super.didUpdateWidget(old);
+    if (_showingFallback &&
+        _currency == old.fallbackCurrency &&
+        widget.fallbackCurrency != old.fallbackCurrency) {
+      setState(() => _currency = widget.fallbackCurrency);
+    }
   }
 
   static String _trim(double v) {
