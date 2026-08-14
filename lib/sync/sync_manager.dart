@@ -232,6 +232,24 @@ class SyncManager {
     return out;
   }
 
+  /// Item ids in [sessionId] that still have a pending Shopping Mode *uncheck*
+  /// (delete) op queued for [houseId]. The dense shopping view keeps these out
+  /// of the Done drawer — and, when they belong to the active store, back on the
+  /// to-buy list — until a fetch reflects the uncheck. The mirror of
+  /// [pendingShoppingCheckedIds]: only delete ops count, since a re-check
+  /// (create) must move the item off the list again.
+  Set<int> pendingShoppingUncheckedIds(int houseId, int sessionId) {
+    final out = <int>{};
+    for (final raw in _queue.all()) {
+      if (raw.entity != SyncEntity.shoppingCheck) continue;
+      if (raw.houseId != houseId || raw.parentId != sessionId) continue;
+      if (raw.op != SyncOpKind.delete) continue;
+      final id = raw.entityId;
+      if (id != null) out.add(id);
+    }
+    return out;
+  }
+
   /// Item ids in [sessionId] that still have a pending Shopping Mode *skip*
   /// (create) op queued for [houseId] — items removed from this trip whose
   /// removal hasn't synced yet. The dense shopping view hides these from its

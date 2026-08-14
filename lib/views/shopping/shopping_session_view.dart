@@ -83,6 +83,19 @@ class _SessionBodyState extends State<_SessionBody> {
     }
   }
 
+  /// Tap a Done-drawer row to reverse the check — it leaves the drawer and
+  /// returns to the to-buy list.
+  Future<void> _uncheck(ListItem item) async {
+    try {
+      await _c.uncheckItem(item);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(m.shopping.checkFailed)));
+    }
+  }
+
   /// Swipe removed [item] from this trip. Optimistic + queued (survives
   /// offline); an Undo toast unskips it.
   void _skip(ListItem item) {
@@ -231,6 +244,7 @@ class _SessionBodyState extends State<_SessionBody> {
                 doneExpanded: _doneExpanded,
                 onToggleDone: () =>
                     setState(() => _doneExpanded = !_doneExpanded),
+                onUncheck: _uncheck,
                 busy: _busy,
                 hasNext: hasNext,
                 onProceed: _reviewAndProceed,
@@ -666,6 +680,7 @@ class _BottomBar extends StatelessWidget {
   final ShoppingSessionController controller;
   final bool doneExpanded;
   final VoidCallback onToggleDone;
+  final Future<void> Function(ListItem) onUncheck;
   final bool busy;
   final bool hasNext;
   final VoidCallback onProceed;
@@ -674,6 +689,7 @@ class _BottomBar extends StatelessWidget {
     required this.controller,
     required this.doneExpanded,
     required this.onToggleDone,
+    required this.onUncheck,
     required this.busy,
     required this.hasNext,
     required this.onProceed,
@@ -734,6 +750,7 @@ class _BottomBar extends StatelessWidget {
                     for (final item in doneItems)
                       ListTile(
                         dense: true,
+                        onTap: () => onUncheck(item),
                         leading: Icon(
                           Icons.check_circle,
                           color: Colors.green,

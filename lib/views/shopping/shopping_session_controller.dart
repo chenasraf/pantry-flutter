@@ -55,9 +55,12 @@ class ShoppingSessionController extends ChangeNotifier {
   ShoppingReview? _review;
 
   /// Flat list of everything checked off on this trip, for the Done drawer.
+  /// Items unchecked locally but still reported as checked by the server (see
+  /// [_uncheckedPending]) are filtered out so the drawer reacts instantly.
   List<ListItem> get doneItems => [
     for (final s in _review?.stores ?? const <ShoppingReviewStore>[])
-      ...s.items,
+      for (final i in s.items)
+        if (!_uncheckedPending.contains(i.id)) i,
   ];
 
   /// Per-currency estimate of this trip's checked items — the Done drawer total.
@@ -118,8 +121,16 @@ class ShoppingSessionController extends ChangeNotifier {
     _appliedSub ??= SyncManager.instance.onApplied.listen((e) {
       // A check landed on the server — refresh the session review so the Done
       // drawer / in-cart count catch up. The item list is already optimistic.
+      // An uncheck (delete) landing instead pulls the full list so the item
+      // slots back onto the to-buy list in server-sorted order.
       if (_isOwnCheckOp(e.op)) {
-        unawaited(_refreshReview());
+        if (e.op.op == SyncOpKind.delete) {
+          unawaited(
+            _refreshLiveData(includeHeartbeat: false).catchError((_) {}),
+          );
+        } else {
+          unawaited(_refreshReview());
+        }
         return;
       }
       // An unskip (delete) landed — pull the fresh list to slot the item back
@@ -131,11 +142,18 @@ class ShoppingSessionController extends ChangeNotifier {
       }
     });
     _skippedSub ??= SyncManager.instance.onSkipped.listen((e) {
-      // A check was dropped (e.g. the session closed, or a 4xx) — un-hide the
-      // item so it returns to the list on the next fetch.
-      if (_isOwnCheckOp(e.op) && e.op.op == SyncOpKind.create) {
+      // A check/uncheck was dropped (e.g. the session closed, or a 4xx) — clear
+      // the matching optimistic guard so the next fetch is authoritative.
+      if (_isOwnCheckOp(e.op)) {
         final id = e.op.entityId;
-        if (id != null) _checkedPending.remove(id);
+        if (id != null) {
+          if (e.op.op == SyncOpKind.create) {
+            _checkedPending.remove(id);
+          } else if (e.op.op == SyncOpKind.delete) {
+            _uncheckedPending.remove(id);
+            _uncheckedReinsert.remove(id);
+          }
+        }
         unawaited(_refreshLiveData(includeHeartbeat: false).catchError((_) {}));
       }
       // A skip/unskip was dropped — un-hide any skip and reconcile from the
@@ -306,6 +324,17 @@ class ShoppingSessionController extends ChangeNotifier {
   /// removal can't flicker back.
   final Set<int> _skippedPending = {};
 
+  /// The uncheck mirror of [_checkedPending]: items unchecked locally but still
+  /// reported as checked by the (eventually consistent) server. Kept out of the
+  /// Done drawer until a fetch reflects the uncheck.
+  final Set<int> _uncheckedPending = {};
+
+  /// The active-store subset of [_uncheckedPending], keyed by id with the item
+  /// to render, so an uncheck lands the item back on the to-buy list instantly.
+  /// Cross-store unchecks aren't re-shown here — they belong to another store's
+  /// narrowed list and reappear there once synced.
+  final Map<int, ListItem> _uncheckedReinsert = {};
+
   /// Last removed item per id, kept so Undo can restore it in place instantly
   /// without a server re-fetch (which offline can't reach anyway).
   final Map<int, ({ListItem item, int index})> _skipUndo = {};
@@ -342,6 +371,26 @@ class ShoppingSessionController extends ChangeNotifier {
       (id) => !queueSkipPending.contains(id) && !fetched.any((i) => i.id == id),
     );
     _skippedPending.addAll(queueSkipPending);
+    // Mirror guard for local unchecks. Drop an id only once it is neither
+    // uncheck-op-pending nor still listed as checked in the fetched review —
+    // i.e. the uncheck is fully confirmed server-side.
+    _review = results[1] as ShoppingReview;
+    final reviewIds = <int>{
+      for (final s in _review!.stores)
+        for (final i in s.items) i.id,
+    };
+    final queueUncheckPending = SyncManager.instance
+        .pendingShoppingUncheckedIds(houseId, sessionId);
+    _uncheckedPending.removeWhere(
+      (id) => !queueUncheckPending.contains(id) && !reviewIds.contains(id),
+    );
+    _uncheckedPending.addAll(queueUncheckPending);
+    // A re-shown item drops out of the reinsert map once the server returns it
+    // on the to-buy list itself, or the uncheck is no longer pending.
+    _uncheckedReinsert.removeWhere(
+      (id, _) =>
+          !_uncheckedPending.contains(id) || fetched.any((i) => i.id == id),
+    );
     _items = fetched
         .where(
           (i) =>
@@ -349,7 +398,9 @@ class ShoppingSessionController extends ChangeNotifier {
               !_skippedPending.contains(i.id),
         )
         .toList();
-    _review = results[1] as ShoppingReview;
+    for (final item in _uncheckedReinsert.values) {
+      if (!_items.any((i) => i.id == item.id)) _items = [..._items, item];
+    }
     _presence = results[2] as List<ShoppingPresenceEntry>;
     notifyListeners();
   }
@@ -369,6 +420,8 @@ class ShoppingSessionController extends ChangeNotifier {
   /// spotty connectivity. Held in [_checkedPending] so a re-fetch can't flicker
   /// it back; sync subscriptions reconcile once the op lands or is dropped.
   Future<void> checkItem(ListItem item) async {
+    _uncheckedPending.remove(item.id);
+    _uncheckedReinsert.remove(item.id);
     _checkedPending.add(item.id);
     _items = _items.where((i) => i.id != item.id).toList();
     notifyListeners();
@@ -383,6 +436,40 @@ class ShoppingSessionController extends ChangeNotifier {
         createdAt: DateTime.now().millisecondsSinceEpoch,
       ),
     );
+  }
+
+  /// Reverse a check from the Done drawer: the item leaves the drawer and, when
+  /// it belongs to the active store, returns to the to-buy list. Optimistic and
+  /// queued like [checkItem]; reconciled by the sync subscriptions and polls.
+  Future<void> uncheckItem(ListItem item) async {
+    final storeId = _reviewStoreOf(item.id);
+    _checkedPending.remove(item.id);
+    _uncheckedPending.add(item.id);
+    if (storeId == null || storeId == _session.activeStoreId) {
+      _uncheckedReinsert[item.id] = item;
+      if (!_items.any((i) => i.id == item.id)) _items = [..._items, item];
+    }
+    notifyListeners();
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.shoppingCheck,
+        op: SyncOpKind.delete,
+        houseId: houseId,
+        entityId: item.id,
+        parentId: sessionId,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+  }
+
+  /// The store an item was checked at per the current review, or null when it's
+  /// in the storeless bucket or not found.
+  int? _reviewStoreOf(int itemId) {
+    for (final s in _review?.stores ?? const <ShoppingReviewStore>[]) {
+      if (s.items.any((i) => i.id == itemId)) return s.storeId;
+    }
+    return null;
   }
 
   /// Remove [item] from this trip only — off the to-buy list but still on the
