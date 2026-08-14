@@ -267,6 +267,7 @@ platform :mac do
       key_id: key_id,
       issuer_id: ENV.fetch("APP_STORE_ISSUER_ID"),
       key_filepath: File.join(ENV.fetch("APP_STORE_KEY_PATH"), "AuthKey_#{key_id}.p8"),
+      set_spaceship_token: true,
     )
   end
 
@@ -301,27 +302,35 @@ platform :mac do
     version_info[:build].to_i + 10_000
   end
 
-  # True if this exact macOS build is already on App Store Connect, so a
-  # re-run of the deploy can skip the (duplicate, rejected) binary upload.
-  def macos_binary_already_uploaded?(key)
-    latest = app_store_build_number(
-      api_key: key,
-      app_identifier: "dev.casraf.pantry",
-      platform: "osx",
-      version: version_info[:name],
-      live: false,
-      initial_build_number: 0,
-    )
-    latest.to_i >= macos_build_number
+  # True only when this exact macOS build (CFBundleVersion == macos_build_number)
+  # is already on App Store Connect, so a re-run can skip the duplicate binary
+  # upload. Queries the build list directly and matches the build number on the
+  # osx platform: app_store_build_number resolves by version *string* (shared
+  # across the iOS and macOS trains under one bundle id), which returned a false
+  # positive and skipped a needed upload.
+  def macos_binary_already_uploaded?
+    app = Spaceship::ConnectAPI::App.find("dev.casraf.pantry")
+    target = macos_build_number.to_s
+    builds = Spaceship::ConnectAPI.get_builds(
+      filter: { app: app.id },
+      includes: "preReleaseVersion",
+      sort: "-uploadedDate",
+      limit: 50,
+    ).to_models
+    builds.any? do |b|
+      b.version == target &&
+        b.pre_release_version&.platform == "MAC_OS" &&
+        b.processing_state != "INVALID"
+    end
   rescue => e
-    UI.message("Could not look up latest macOS build (#{e.message}); proceeding with upload.")
+    UI.message("Could not look up macOS build #{macos_build_number} (#{e.message}); proceeding with upload.")
     false
   end
 
   desc "Upload to Mac App Store"
   lane :release do
     key = api_key
-    skip_binary = macos_binary_already_uploaded?(key)
+    skip_binary = macos_binary_already_uploaded?
     if skip_binary
       UI.important("Build #{macos_build_number} already uploaded — skipping binary, syncing metadata and submitting.")
     end
