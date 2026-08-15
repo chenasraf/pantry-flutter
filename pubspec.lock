@@ -648,10 +648,11 @@ packages:
   flutter_zxing:
     dependency: "direct main"
     description:
-      name: flutter_zxing
-      sha256: "6bf0cb0fde122455e73ae78214457c106fbde3c633af4624ce29567ac590ef21"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "1f3067f2386f38b37d1e0566a6c21592dcba0886"
+      resolved-ref: "1f3067f2386f38b37d1e0566a6c21592dcba0886"
+      url: "https://github.com/chenasraf/flutter_zxing.git"
+    source: git
     version: "2.3.0"
   frontend_server_client:
     dependency: transitive

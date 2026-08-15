@@ -84,6 +84,15 @@ dev_dependencies:
   yaml_edit: ^2.2.4
   yaml: ^3.1.3
 
+dependency_overrides:
+  # Fork of flutter_zxing 2.3.0 that skips the post-init image-stream
+  # force-restart which greys out the camera preview on iOS
+  # (khoren93/flutter_zxing#235). Remove once a fixed version is published.
+  flutter_zxing:
+    git:
+      url: https://github.com/chenasraf/flutter_zxing.git
+      ref: 1f3067f2386f38b37d1e0566a6c21592dcba0886
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
