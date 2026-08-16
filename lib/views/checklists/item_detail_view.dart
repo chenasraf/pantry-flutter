@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
@@ -18,6 +17,7 @@ import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/image_preview.dart';
 import 'package:pantry/widgets/markdown_description.dart';
 import 'package:pantry/widgets/member_avatar.dart';
@@ -1221,11 +1221,11 @@ class _CoverImage extends StatelessWidget {
     );
     final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
 
-    return CachedNetworkImage(
+    return AvifNetworkImage(
       imageUrl: uri.toString(),
-      httpHeaders: headers,
+      headers: headers,
       fit: BoxFit.cover,
-      errorWidget: (_, _, _) => Center(
+      errorWidget: Center(
         child: Icon(
           Icons.broken_image_outlined,
           size: 48,

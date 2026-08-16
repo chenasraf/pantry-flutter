@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,6 +6,7 @@ import 'package:pantry/services/photo_service.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
+import 'package:pantry/widgets/avif_image.dart';
 
 class PhotoDetailView extends StatefulWidget {
   final Photo photo;
@@ -163,12 +163,14 @@ class _PhotoDetailViewState extends State<PhotoDetailView> {
                 return InteractiveViewer(
                   transformationController: _transformerFor(index),
                   child: Center(
-                    child: CachedNetworkImage(
+                    child: AvifNetworkImage(
                       imageUrl: uri.toString(),
-                      httpHeaders: widget.headers,
+                      headers: widget.headers,
                       fit: BoxFit.contain,
-                      errorWidget: (_, _, _) =>
-                          const Icon(Icons.broken_image_outlined, size: 64),
+                      errorWidget: const Icon(
+                        Icons.broken_image_outlined,
+                        size: 64,
+                      ),
                     ),
                   ),
                 );

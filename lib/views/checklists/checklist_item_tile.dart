@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +18,7 @@ import 'package:pantry/views/checklists/checklist_density.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
     show parseHexColor;
 import 'package:pantry/views/checklists/checklists_controller.dart';
+import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/description_detail_dialog.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 import 'package:pantry/widgets/store_detail_dialog.dart';
@@ -1003,13 +1003,13 @@ class _ItemThumb extends StatelessWidget {
     final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: CachedNetworkImage(
+      child: AvifNetworkImage(
         imageUrl: uri.toString(),
-        httpHeaders: headers,
+        headers: headers,
         width: 40,
         height: 40,
         fit: BoxFit.cover,
-        errorWidget: (_, _, _) => Container(
+        errorWidget: Container(
           width: 40,
           height: 40,
           color: Theme.of(context).colorScheme.surfaceContainerHighest,

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
@@ -8,6 +7,7 @@ import 'package:pantry/services/photo_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
+import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/folder_tile.dart';
 import 'package:pantry/widgets/photo_add_button.dart';
 import 'package:pantry/widgets/photo_selection_actions.dart';
@@ -358,11 +358,11 @@ class _TrashedPhotoTile extends StatelessWidget {
           children: [
             Opacity(
               opacity: 0.7,
-              child: CachedNetworkImage(
+              child: AvifNetworkImage(
                 imageUrl: uri.toString(),
-                httpHeaders: headers,
+                headers: headers,
                 fit: BoxFit.cover,
-                errorWidget: (_, _, _) => Container(
+                errorWidget: Container(
                   color: theme.colorScheme.surfaceContainerHighest,
                   child: const Icon(Icons.broken_image_outlined, size: 32),
                 ),

@@ -66,6 +66,8 @@ dependencies:
   flutter_quill: ^11.5.1
   markdown_quill: ^4.3.0
   markdown: ^7.3.1
+  flutter_avif: ^3.1.0
+  flutter_cache_manager: ^3.4.2
 
 dev_dependencies:
   flutter_test:

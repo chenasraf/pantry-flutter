@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
@@ -6,6 +5,7 @@ import 'package:pantry/models/photo.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/photo_service.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
+import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/context_menu_region.dart';
 import 'package:pantry/widgets/tile_menu_button.dart';
 
@@ -225,9 +225,9 @@ class FolderTile extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(5),
-              child: CachedNetworkImage(
+              child: AvifNetworkImage(
                 imageUrl: uri.toString(),
-                httpHeaders: headers,
+                headers: headers,
                 fit: BoxFit.cover,
               ),
             ),

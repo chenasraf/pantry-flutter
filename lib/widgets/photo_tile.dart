@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
@@ -9,6 +8,7 @@ import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/views/photos/photo_detail_view.dart';
+import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/context_menu_region.dart';
 import 'package:pantry/widgets/tile_menu_button.dart';
 
@@ -39,11 +39,11 @@ class PhotoTile extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              CachedNetworkImage(
+              AvifNetworkImage(
                 imageUrl: uri.toString(),
-                httpHeaders: headers,
+                headers: headers,
                 fit: BoxFit.cover,
-                errorWidget: (_, _, _) => Container(
+                errorWidget: Container(
                   color: theme.colorScheme.surfaceContainerHighest,
                   child: const Icon(Icons.broken_image_outlined, size: 32),
                 ),
@@ -119,9 +119,9 @@ class PhotoTile extends StatelessWidget {
               height: 100,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: CachedNetworkImage(
+                child: AvifNetworkImage(
                   imageUrl: uri.toString(),
-                  httpHeaders: headers,
+                  headers: headers,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -148,11 +148,11 @@ class PhotoTile extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            CachedNetworkImage(
+            AvifNetworkImage(
               imageUrl: uri.toString(),
-              httpHeaders: headers,
+              headers: headers,
               fit: BoxFit.cover,
-              errorWidget: (_, _, _) => Container(
+              errorWidget: Container(
                 color: theme.colorScheme.surfaceContainerHighest,
                 child: const Icon(Icons.broken_image_outlined, size: 32),
               ),

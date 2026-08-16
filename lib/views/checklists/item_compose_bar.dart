@@ -13,6 +13,7 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
+import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
@@ -1838,7 +1839,7 @@ class _ImageTray extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.memory(
+                  child: AvifMemoryImage(
                     bytes!,
                     width: 64,
                     height: 64,

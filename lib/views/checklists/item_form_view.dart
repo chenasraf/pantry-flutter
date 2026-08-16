@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
@@ -18,6 +17,7 @@ import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
+import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
@@ -528,7 +528,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   Widget _buildImageSection(ThemeData theme) {
     if (_pickedImage != null) {
       return _ImagePreviewTile(
-        image: FileImage(File(_pickedImage!.path)),
+        image: AvifAwareFileImage(File(_pickedImage!.path)),
         onRemove: () => setState(() {
           _pickedImage = null;
           if (!_isEditing) _removeExistingImage = false;
@@ -546,7 +546,7 @@ class _ItemFormViewState extends State<ItemFormView> {
       );
       final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
       return _ImagePreviewTile(
-        image: CachedNetworkImageProvider(uri.toString(), headers: headers),
+        image: AvifAwareNetworkImage(uri.toString(), headers: headers),
         onRemove: () => setState(() {
           _removeExistingImage = true;
         }),

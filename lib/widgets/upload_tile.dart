@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry/views/photos/photo_board_controller.dart';
+import 'package:pantry/widgets/avif_image.dart';
 
 class UploadTile extends StatelessWidget {
   final UploadTask task;
@@ -21,7 +22,7 @@ class UploadTile extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             if (task.thumbnailBytes != null)
-              Image.memory(
+              AvifMemoryImage(
                 task.thumbnailBytes!,
                 fit: BoxFit.cover,
                 opacity: const AlwaysStoppedAnimation(0.4),

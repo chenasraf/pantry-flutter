@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:pantry/widgets/app_bar_back_leading.dart';
+import 'package:pantry/widgets/avif_image.dart';
 
 class ImagePreview extends StatelessWidget {
   final String imageUrl;
@@ -56,11 +56,11 @@ class ImagePreview extends StatelessWidget {
           child: Center(
             child: Hero(
               tag: heroTag,
-              child: CachedNetworkImage(
+              child: AvifNetworkImage(
                 imageUrl: imageUrl,
-                httpHeaders: headers,
+                headers: headers,
                 fit: BoxFit.contain,
-                errorWidget: (_, _, _) => const Icon(
+                errorWidget: const Icon(
                   Icons.broken_image_outlined,
                   size: 64,
                   color: Colors.white54,
