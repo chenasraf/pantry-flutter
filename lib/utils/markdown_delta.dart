@@ -28,8 +28,12 @@ final _deltaToMd = DeltaToMarkdown(
 Delta markdownToDelta(String markdown) => _mdToDelta().convert(markdown);
 
 /// Serialize a Quill [delta] back to markdown, trimming the trailing newline
-/// Quill always keeps on its document.
-String deltaToMarkdown(Delta delta) => _deltaToMd.convert(delta).trimRight();
+/// Quill always keeps on its document. An empty delta yields empty markdown —
+/// [DeltaToMarkdown] builds a [Document] internally, which rejects an empty delta.
+String deltaToMarkdown(Delta delta) {
+  if (delta.isEmpty) return '';
+  return _deltaToMd.convert(delta).trimRight();
+}
 
 /// The markdown [source] as it would be re-emitted after a round-trip through
 /// the editor. Comparing a field's current value against the normalized form of
