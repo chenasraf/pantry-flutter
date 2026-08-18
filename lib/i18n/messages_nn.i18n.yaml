@@ -414,6 +414,7 @@ checklists:
     scan: Skann strekkode
     scanTitle: Skann strekkode
     scanInstructions: Rett kameraet mot ein produktstrekkode
+    torch: Slå lommelykt av/på
     enterManually: Skriv inn manuelt
     manualTitle: Skriv inn strekkode
     manualHint: Strekkodenummer

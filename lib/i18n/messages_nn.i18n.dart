@@ -2365,6 +2365,11 @@ class BarcodeChecklistsMessagesNn extends BarcodeChecklistsMessages {
   String get scanInstructions => """Rett kameraet mot ein produktstrekkode""";
 
   /// ```dart
+  /// "Slå lommelykt av/på"
+  /// ```
+  String get torch => """Slå lommelykt av/på""";
+
+  /// ```dart
   /// "Skriv inn manuelt"
   /// ```
   String get enterManually => """Skriv inn manuelt""";
@@ -4848,6 +4853,7 @@ Passord: pantry""",
   """checklists.barcode.scanTitle""": """Skann strekkode""",
   """checklists.barcode.scanInstructions""":
       """Rett kameraet mot ein produktstrekkode""",
+  """checklists.barcode.torch""": """Slå lommelykt av/på""",
   """checklists.barcode.enterManually""": """Skriv inn manuelt""",
   """checklists.barcode.manualTitle""": """Skriv inn strekkode""",
   """checklists.barcode.manualHint""": """Strekkodenummer""",

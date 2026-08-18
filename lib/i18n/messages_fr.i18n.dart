@@ -2375,6 +2375,11 @@ class BarcodeChecklistsMessagesFr extends BarcodeChecklistsMessages {
       """Dirigez la caméra vers un code-barres de produit""";
 
   /// ```dart
+  /// "Activer le flash"
+  /// ```
+  String get torch => """Activer le flash""";
+
+  /// ```dart
   /// "Saisir manuellement"
   /// ```
   String get enterManually => """Saisir manuellement""";
@@ -4878,6 +4883,7 @@ Mot de passe : pantry-rocks""",
   """checklists.barcode.scanTitle""": """Scanner le code-barres""",
   """checklists.barcode.scanInstructions""":
       """Dirigez la caméra vers un code-barres de produit""",
+  """checklists.barcode.torch""": """Activer le flash""",
   """checklists.barcode.enterManually""": """Saisir manuellement""",
   """checklists.barcode.manualTitle""": """Saisir le code-barres""",
   """checklists.barcode.manualHint""": """Numéro de code-barres""",

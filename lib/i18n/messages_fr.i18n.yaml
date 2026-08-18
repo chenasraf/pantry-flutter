@@ -333,6 +333,7 @@ checklists:
     scan: Scanner le code-barres
     scanTitle: Scanner le code-barres
     scanInstructions: Dirigez la caméra vers un code-barres de produit
+    torch: Activer le flash
     enterManually: Saisir manuellement
     manualTitle: Saisir le code-barres
     manualHint: Numéro de code-barres

@@ -333,6 +333,7 @@ checklists:
     scan: Escanear código de barras
     scanTitle: Escanear código de barras
     scanInstructions: Apunta la cámara a un código de barras de producto
+    torch: Alternar flash
     enterManually: Introducir manualmente
     manualTitle: Introducir código de barras
     manualHint: Número de código de barras

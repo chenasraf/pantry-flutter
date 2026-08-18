@@ -189,6 +189,83 @@ jobs:
           files: |
             build/app/outputs/bundle/release/pantry-${{ needs.release-please.outputs.version }}.aab
 
+  # FLOSS variant for F-Droid: the barcode scanner is swapped from Google ML Kit
+  # (mobile_scanner) to flutter_zxing so the APK carries no proprietary code.
+  # Emits -fdroid-suffixed split APKs; point the F-Droid repo at these, not the
+  # default APKs above. Signed with the same keystore so they update in place.
+  build-android-fdroid:
+    needs: [setup, release-please]
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Apply F-Droid scanner variant
+        run: tool/fdroid/apply.sh
+
+      - name: Remove JNI build-id for reproducible builds
+        run: |
+          for f in $PUB_CACHE/hosted/pub.dev/jni-*/src/CMakeLists.txt; do
+            [ -e "$f" ] && sed -i -e 's/-Wl,/-Wl,--build-id=none,/' "$f"
+          done
+
+      - name: Decode keystore
+        run: echo ${{ secrets.ANDROID_KEYSTORE_BASE64 }} | base64 -d > android/app/upload-keystore.jks
+
+      - name: Create key.properties
+        run: |
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+
+      - name: Build split APKs
+        run: flutter build apk --release --split-per-abi
+
+      - name: Rename artifacts
+        run: |
+          VERSION=${{ needs.release-please.outputs.version }}
+          APK_DIR=build/app/outputs/flutter-apk
+          mv ${APK_DIR}/app-armeabi-v7a-release.apk ${APK_DIR}/pantry-${VERSION}-fdroid-armeabi-v7a.apk
+          mv ${APK_DIR}/app-arm64-v8a-release.apk ${APK_DIR}/pantry-${VERSION}-fdroid-arm64-v8a.apk
+          mv ${APK_DIR}/app-x86_64-release.apk ${APK_DIR}/pantry-${VERSION}-fdroid-x86_64.apk
+
+      - name: Upload F-Droid APKs to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          files: |
+            build/app/outputs/flutter-apk/pantry-${{ needs.release-please.outputs.version }}-fdroid-armeabi-v7a.apk
+            build/app/outputs/flutter-apk/pantry-${{ needs.release-please.outputs.version }}-fdroid-arm64-v8a.apk
+            build/app/outputs/flutter-apk/pantry-${{ needs.release-please.outputs.version }}-fdroid-x86_64.apk
+
   build-ios:
     needs: [setup, release-please]
     if: false # TEMPORARILY DISABLED — was: ${{ needs.release-please.outputs.release_created }}
@@ -244,7 +321,7 @@ jobs:
             build/ios/ipa/pantry-${{ needs.release-please.outputs.version }}-unsigned.ipa
 
   post-release-comment:
-    needs: [release-please, build-android]
+    needs: [release-please, build-android, build-android-fdroid]
     if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
 

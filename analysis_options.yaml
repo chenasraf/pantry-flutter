@@ -9,6 +9,14 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  exclude:
+    # F-Droid build overrides — these depend on flutter_zxing, which is not a
+    # dependency of the default (ML Kit) build, so analyzing them here would
+    # fail. They are analyzed after tool/fdroid/apply.sh copies the active one
+    # into lib/. See fdroid/README.md.
+    - fdroid/**
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`

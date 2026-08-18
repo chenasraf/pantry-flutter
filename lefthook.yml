@@ -6,6 +6,13 @@ pre-commit:
       stage_fixed: true
     analyze:
       glob: "*.dart"
+      # F-Droid build overrides depend on flutter_zxing, which isn't a
+      # dependency of the default build; analyzing them per-file here (which
+      # bypasses analysis_options' exclude) would fail. They're analyzed once
+      # tool/fdroid/apply.sh copies the active one into lib/. See fdroid/README.md.
+      exclude:
+        - "fdroid/*.dart"
+        - "fdroid/**/*.dart"
       run: dart analyze {staged_files}
     format-yaml:
       glob: "*.{yml,yaml}"

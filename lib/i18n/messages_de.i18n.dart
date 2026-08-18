@@ -2373,6 +2373,11 @@ class BarcodeChecklistsMessagesDe extends BarcodeChecklistsMessages {
       """Richte die Kamera auf einen Produkt-Barcode""";
 
   /// ```dart
+  /// "Blitz umschalten"
+  /// ```
+  String get torch => """Blitz umschalten""";
+
+  /// ```dart
   /// "Manuell eingeben"
   /// ```
   String get enterManually => """Manuell eingeben""";
@@ -4874,6 +4879,7 @@ Passwort: pantry-rocks""",
   """checklists.barcode.scanTitle""": """Barcode scannen""",
   """checklists.barcode.scanInstructions""":
       """Richte die Kamera auf einen Produkt-Barcode""",
+  """checklists.barcode.torch""": """Blitz umschalten""",
   """checklists.barcode.enterManually""": """Manuell eingeben""",
   """checklists.barcode.manualTitle""": """Barcode eingeben""",
   """checklists.barcode.manualHint""": """Barcode-Nummer""",

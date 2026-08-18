@@ -58,6 +58,7 @@ help:
 	@echo "    android-install     Build APK and install on connected device"
 	@echo "    android-build-apk   Build Android APK"
 	@echo "    android-build-apk-split  Build Android split-per-ABI APKs"
+	@echo "    android-build-apk-fdroid Build FLOSS (flutter_zxing) split APKs for F-Droid"
 	@echo "    android-build-aab   Build Android App Bundle"
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
@@ -67,6 +68,7 @@ help:
 	@echo ""
 	@echo "  Release:"
 	@echo "    android-release-apk Build APK and copy to build/release/"
+	@echo "    android-release-apk-fdroid  Build FLOSS F-Droid APKs -> build/release/ (…-fdroid-<abi>.apk)"
 	@echo "    android-release-aab Build AAB and copy to build/release/"
 	@echo "    ios-release         Build IPA and copy to build/release/"
 	@echo "    macos-release       Build PKG and copy to build/release/"
@@ -160,6 +162,24 @@ android-build-apk-split:
 android-install: android-build-apk
 	flutter install
 
+# F-Droid variant — swaps the barcode scanner from Google ML Kit
+# (mobile_scanner) to the FLOSS flutter_zxing so the APK carries no proprietary
+# code. `fdroid-apply` mutates pubspec.yaml + the scanner impl in place;
+# `fdroid-revert` restores them. See fdroid/README.md.
+.PHONY: fdroid-apply
+fdroid-apply:
+	tool/fdroid/apply.sh
+
+.PHONY: fdroid-revert
+fdroid-revert:
+	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart
+	flutter pub get
+
+.PHONY: android-build-apk-fdroid
+android-build-apk-fdroid: fdroid-apply
+	flutter build apk --release --split-per-abi
+	@echo "F-Droid split APKs built. Run 'make fdroid-revert' to restore the ML Kit default."
+
 .PHONY: android-push
 android-push: android-build-apk
 	adb push build/app/outputs/flutter-apk/app-release.apk /sdcard/Download/pantry-$(VERSION).apk
@@ -210,6 +230,16 @@ android-release-aab: android-build-aab
 	mkdir -p build/release
 	cp build/app/outputs/bundle/release/app-release.aab build/release/pantry-$(VERSION).aab
 	@echo "-> build/release/pantry-$(VERSION).aab"
+
+.PHONY: android-release-apk-fdroid
+android-release-apk-fdroid: android-build-apk-fdroid
+	mkdir -p build/release
+	@APK_DIR=build/app/outputs/flutter-apk; \
+	for abi in armeabi-v7a arm64-v8a x86_64; do \
+		cp $$APK_DIR/app-$$abi-release.apk build/release/pantry-$(VERSION)-fdroid-$$abi.apk; \
+		echo "-> build/release/pantry-$(VERSION)-fdroid-$$abi.apk"; \
+	done
+	@echo "Run 'make fdroid-revert' to restore the ML Kit default."
 
 .PHONY: ios-release
 ios-release: ios-build-ipa

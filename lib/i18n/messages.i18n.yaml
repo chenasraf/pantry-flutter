@@ -333,6 +333,7 @@ checklists:
     scan: Scan barcode
     scanTitle: Scan barcode
     scanInstructions: Point your camera at a product barcode
+    torch: Toggle flash
     enterManually: Enter manually
     manualTitle: Enter barcode
     manualHint: Barcode number

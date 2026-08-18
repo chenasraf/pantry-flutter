@@ -2356,6 +2356,11 @@ class BarcodeChecklistsMessagesHe extends BarcodeChecklistsMessages {
   String get scanInstructions => """כוון את המצלמה אל ברקוד של מוצר""";
 
   /// ```dart
+  /// "הפעלת פנס"
+  /// ```
+  String get torch => """הפעלת פנס""";
+
+  /// ```dart
   /// "הזנה ידנית"
   /// ```
   String get enterManually => """הזנה ידנית""";
@@ -4819,6 +4824,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.barcode.scanTitle""": """סריקת ברקוד""",
   """checklists.barcode.scanInstructions""":
       """כוון את המצלמה אל ברקוד של מוצר""",
+  """checklists.barcode.torch""": """הפעלת פנס""",
   """checklists.barcode.enterManually""": """הזנה ידנית""",
   """checklists.barcode.manualTitle""": """הזנת ברקוד""",
   """checklists.barcode.manualHint""": """מספר ברקוד""",
