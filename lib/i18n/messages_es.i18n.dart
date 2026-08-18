@@ -1059,6 +1059,17 @@ class SettingsMessagesEs extends SettingsMessages {
       """Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú.""";
 
   /// ```dart
+  /// "Truncar nombres de artículos largos"
+  /// ```
+  String get truncateItemNames => """Truncar nombres de artículos largos""";
+
+  /// ```dart
+  /// "Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas."
+  /// ```
+  String get truncateItemNamesBody =>
+      """Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.""";
+
+  /// ```dart
   /// "Reutilizar artículos existentes al añadir"
   /// ```
   String get reuseExistingItems =>
@@ -4741,6 +4752,9 @@ Contraseña: pantry-rocks""",
   """settings.startShoppingButton""": """Botón «Empezar a comprar»""",
   """settings.startShoppingButtonBody""":
       """Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú.""",
+  """settings.truncateItemNames""": """Truncar nombres de artículos largos""",
+  """settings.truncateItemNamesBody""":
+      """Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.""",
   """settings.reuseExistingItems""":
       """Reutilizar artículos existentes al añadir""",
   """settings.reuseExistingItemsBody""":

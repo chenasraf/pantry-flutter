@@ -649,7 +649,14 @@ class _RowContent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(item.name, style: nameStyle),
+                        Text(
+                          item.name,
+                          style: nameStyle,
+                          maxLines: prefs.truncateItemNames ? 1 : null,
+                          overflow: prefs.truncateItemNames
+                              ? TextOverflow.ellipsis
+                              : null,
+                        ),
                         if (_hasMeta(prefs)) ...[
                           SizedBox(height: density.metaGap),
                           _MetaRow(

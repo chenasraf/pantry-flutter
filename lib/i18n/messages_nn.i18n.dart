@@ -1056,6 +1056,17 @@ class SettingsMessagesNn extends SettingsMessages {
       """Vis den flytande «Start handel»-knappen på sjekklistesida. Når slått av blir han flytta til menyen.""";
 
   /// ```dart
+  /// "Forkort lange oppføringsnamn"
+  /// ```
+  String get truncateItemNames => """Forkort lange oppføringsnamn""";
+
+  /// ```dart
+  /// "Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med ellipse. Når slått av, bryt lange namn over fleire linjer."
+  /// ```
+  String get truncateItemNamesBody =>
+      """Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med ellipse. Når slått av, bryt lange namn over fleire linjer.""";
+
+  /// ```dart
   /// "Bruk eksisterande oppføringar på nytt når du leggjer til nye"
   /// ```
   String get reuseExistingItems =>
@@ -4728,6 +4739,9 @@ Passord: pantry""",
   """settings.startShoppingButton""": """Knapp for «Start handel»""",
   """settings.startShoppingButtonBody""":
       """Vis den flytande «Start handel»-knappen på sjekklistesida. Når slått av blir han flytta til menyen.""",
+  """settings.truncateItemNames""": """Forkort lange oppføringsnamn""",
+  """settings.truncateItemNamesBody""":
+      """Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med ellipse. Når slått av, bryt lange namn over fleire linjer.""",
   """settings.reuseExistingItems""":
       """Bruk eksisterande oppføringar på nytt når du leggjer til nye""",
   """settings.reuseExistingItemsBody""":

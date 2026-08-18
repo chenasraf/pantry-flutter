@@ -205,6 +205,8 @@ settings:
   itemActionsBody: Muestra acciones rápidas en cada elemento. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.
   startShoppingButton: Botón «Empezar a comprar»
   startShoppingButtonBody: Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú.
+  truncateItemNames: Truncar nombres de artículos largos
+  truncateItemNamesBody: Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.
   reuseExistingItems: Reutilizar artículos existentes al añadir
   reuseExistingItemsBody: "Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo."
   reuseExistingItemsNames:

@@ -279,6 +279,10 @@ settings:
   startShoppingButtonBody:
     Vis den flytande «Start handel»-knappen på sjekklistesida. Når
     slått av blir han flytta til menyen.
+  truncateItemNames: Forkort lange oppføringsnamn
+  truncateItemNamesBody:
+    Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med
+    ellipse. Når slått av, bryt lange namn over fleire linjer.
   reuseExistingItems: Bruk eksisterande oppføringar på nytt når du leggjer til nye
   reuseExistingItemsBody:
     "Når du prøver å leggje til ei oppføring som allereie finst,

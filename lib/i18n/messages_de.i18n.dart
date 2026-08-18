@@ -1058,6 +1058,17 @@ class SettingsMessagesDe extends SettingsMessages {
       """Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.""";
 
   /// ```dart
+  /// "Lange Eintragsnamen kürzen"
+  /// ```
+  String get truncateItemNames => """Lange Eintragsnamen kürzen""";
+
+  /// ```dart
+  /// "Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen."
+  /// ```
+  String get truncateItemNamesBody =>
+      """Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.""";
+
+  /// ```dart
   /// "Vorhandene Einträge beim Hinzufügen wiederverwenden"
   /// ```
   String get reuseExistingItems =>
@@ -4753,6 +4764,9 @@ Passwort: pantry-rocks""",
   """settings.startShoppingButton""": """„Einkaufen starten“-Schaltfläche""",
   """settings.startShoppingButtonBody""":
       """Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.""",
+  """settings.truncateItemNames""": """Lange Eintragsnamen kürzen""",
+  """settings.truncateItemNamesBody""":
+      """Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.""",
   """settings.reuseExistingItems""":
       """Vorhandene Einträge beim Hinzufügen wiederverwenden""",
   """settings.reuseExistingItemsBody""":

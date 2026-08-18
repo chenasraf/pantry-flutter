@@ -205,6 +205,8 @@ settings:
   itemActionsBody: Schnellaktionen an jedem Eintrag anzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.
   startShoppingButton: „Einkaufen starten“-Schaltfläche
   startShoppingButtonBody: Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.
+  truncateItemNames: Lange Eintragsnamen kürzen
+  truncateItemNamesBody: Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.
   reuseExistingItems: Vorhandene Einträge beim Hinzufügen wiederverwenden
   reuseExistingItemsBody: "Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet."
   reuseExistingItemsNames:

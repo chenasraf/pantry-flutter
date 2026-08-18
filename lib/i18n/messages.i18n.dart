@@ -1053,6 +1053,17 @@ class SettingsMessages {
       """Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu.""";
 
   /// ```dart
+  /// "Truncate long item names"
+  /// ```
+  String get truncateItemNames => """Truncate long item names""";
+
+  /// ```dart
+  /// "Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines."
+  /// ```
+  String get truncateItemNamesBody =>
+      """Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.""";
+
+  /// ```dart
   /// "Reuse existing items when adding"
   /// ```
   String get reuseExistingItems => """Reuse existing items when adding""";
@@ -4699,6 +4710,9 @@ Password: pantry-rocks""",
   """settings.startShoppingButton""": """Start shopping button""",
   """settings.startShoppingButtonBody""":
       """Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu.""",
+  """settings.truncateItemNames""": """Truncate long item names""",
+  """settings.truncateItemNamesBody""":
+      """Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.""",
   """settings.reuseExistingItems""": """Reuse existing items when adding""",
   """settings.reuseExistingItemsBody""":
       """When you try to add an item that already exists in the list, reuse that item.""",

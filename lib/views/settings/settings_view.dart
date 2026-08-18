@@ -119,6 +119,10 @@ class _SettingsViewState extends State<SettingsView> {
     await context.read<PrefsService>().setStartShoppingFabEnabled(value);
   }
 
+  Future<void> _toggleTruncateItemNames(bool value) async {
+    await context.read<PrefsService>().setTruncateItemNames(value);
+  }
+
   // -- Reuse existing items (account-scoped, persisted server-side) --
 
   Future<void> _setReuseExistingItems(String? value) async {
@@ -281,6 +285,7 @@ class _SettingsViewState extends State<SettingsView> {
     final density = prefs.checklistDensity;
     final swipeActionsEnabled = prefs.swipeActionsEnabled;
     final startShoppingFabEnabled = prefs.startShoppingFabEnabled;
+    final truncateItemNames = prefs.truncateItemNames;
     final reuseExistingItems = prefs.reuseExistingItems;
     final useServerThemeColor = prefs.useServerThemeColor;
     final checklistRefresh = prefs.checklistRefreshSeconds;
@@ -421,6 +426,13 @@ class _SettingsViewState extends State<SettingsView> {
                 value: startShoppingFabEnabled,
                 onChanged: _toggleStartShoppingFab,
               ),
+            SwitchListTile(
+              secondary: const Icon(Icons.notes_outlined),
+              title: Text(m.settings.truncateItemNames),
+              subtitle: Text(m.settings.truncateItemNamesBody),
+              value: truncateItemNames,
+              onChanged: _toggleTruncateItemNames,
+            ),
             if (hasFeature('reuse-existing-items'))
               _DropdownSettingTile<String>(
                 icon: Icons.autorenew,

@@ -32,6 +32,7 @@ class PrefsService extends ChangeNotifier {
   static const _validDensities = {'normal', 'dense', 'compact'};
   static const _swipeActionsEnabledKey = 'swipe_actions_enabled';
   static const _startShoppingFabEnabledKey = 'start_shopping_fab_enabled';
+  static const _truncateItemNamesKey = 'truncate_item_names';
   static const _checklistListFilterKey = 'checklist_list_filter';
   static const _hiddenItemChipsKey = 'hidden_item_chips';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
@@ -134,6 +135,11 @@ class PrefsService extends ChangeNotifier {
   /// moves into the overflow menu instead.
   bool _startShoppingFabEnabled = true;
   bool get startShoppingFabEnabled => _startShoppingFabEnabled;
+
+  /// When false (default), long item names wrap onto multiple lines. When true,
+  /// each item name is kept to a single line and truncated with an ellipsis.
+  bool _truncateItemNames = false;
+  bool get truncateItemNames => _truncateItemNames;
 
   /// Selected list IDs for the All-lists view's per-list filter. Empty means
   /// "all lists". Local-only (not synced) so each device keeps its own focus.
@@ -336,6 +342,11 @@ class PrefsService extends ChangeNotifier {
     final startShoppingFab = all[_startShoppingFabEnabledKey];
     if (startShoppingFab != null) {
       _startShoppingFabEnabled = startShoppingFab == 'true';
+    }
+
+    final truncateItemNames = all[_truncateItemNamesKey];
+    if (truncateItemNames != null) {
+      _truncateItemNames = truncateItemNames == 'true';
     }
 
     final listFilter = all[_checklistListFilterKey];
@@ -637,6 +648,13 @@ class PrefsService extends ChangeNotifier {
       key: _startShoppingFabEnabledKey,
       value: value.toString(),
     );
+    notifyListeners();
+  }
+
+  Future<void> setTruncateItemNames(bool value) async {
+    if (_truncateItemNames == value) return;
+    _truncateItemNames = value;
+    await _storage.write(key: _truncateItemNamesKey, value: value.toString());
     notifyListeners();
   }
 

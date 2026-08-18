@@ -205,6 +205,8 @@ settings:
   itemActionsBody: Show quick actions on each item. When off, actions move to a menu button on each item.
   startShoppingButton: Start shopping button
   startShoppingButtonBody: Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu.
+  truncateItemNames: Truncate long item names
+  truncateItemNamesBody: Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.
   reuseExistingItems: Reuse existing items when adding
   reuseExistingItemsBody: "When you try to add an item that already exists in the list, reuse that item."
   reuseExistingItemsNames:

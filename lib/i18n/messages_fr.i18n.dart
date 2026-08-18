@@ -1061,6 +1061,17 @@ class SettingsMessagesFr extends SettingsMessages {
       """Affiche le bouton flottant « Commencer les courses » sur l'écran des listes. Désactivé, il passe dans le menu.""";
 
   /// ```dart
+  /// "Tronquer les noms d'articles longs"
+  /// ```
+  String get truncateItemNames => """Tronquer les noms d'articles longs""";
+
+  /// ```dart
+  /// "Garde chaque nom d'article sur une seule ligne, se terminant par des points de suspension. Désactivé, les noms longs passent sur plusieurs lignes."
+  /// ```
+  String get truncateItemNamesBody =>
+      """Garde chaque nom d'article sur une seule ligne, se terminant par des points de suspension. Désactivé, les noms longs passent sur plusieurs lignes.""";
+
+  /// ```dart
   /// "Réutiliser les articles existants lors de l'ajout"
   /// ```
   String get reuseExistingItems =>
@@ -4756,6 +4767,9 @@ Mot de passe : pantry-rocks""",
   """settings.startShoppingButton""": """Bouton « Commencer les courses »""",
   """settings.startShoppingButtonBody""":
       """Affiche le bouton flottant « Commencer les courses » sur l'écran des listes. Désactivé, il passe dans le menu.""",
+  """settings.truncateItemNames""": """Tronquer les noms d'articles longs""",
+  """settings.truncateItemNamesBody""":
+      """Garde chaque nom d'article sur une seule ligne, se terminant par des points de suspension. Désactivé, les noms longs passent sur plusieurs lignes.""",
   """settings.reuseExistingItems""":
       """Réutiliser les articles existants lors de l'ajout""",
   """settings.reuseExistingItemsBody""":

@@ -205,6 +205,8 @@ settings:
   itemActionsBody: הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.
   startShoppingButton: כפתור «התחלת קניות»
   startShoppingButtonBody: הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט.
+  truncateItemNames: קיצור שמות פריטים ארוכים
+  truncateItemNamesBody: שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.
   reuseExistingItems: שימוש חוזר בפריטים קיימים בעת הוספה
   reuseExistingItemsBody: "כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים."
   reuseExistingItemsNames:
