@@ -228,12 +228,6 @@ jobs:
       - name: Apply F-Droid scanner variant
         run: tool/fdroid/apply.sh
 
-      - name: Remove JNI build-id for reproducible builds
-        run: |
-          for f in $PUB_CACHE/hosted/pub.dev/jni-*/src/CMakeLists.txt; do
-            [ -e "$f" ] && sed -i -e 's/-Wl,/-Wl,--build-id=none,/' "$f"
-          done
-
       - name: Decode keystore
         run: echo ${{ secrets.ANDROID_KEYSTORE_BASE64 }} | base64 -d > android/app/upload-keystore.jks
 

@@ -38,4 +38,25 @@ cp "$override" "$impl"
 
 flutter pub get
 
+# Native-library reproducibility for F-Droid.
+#
+# Every Android .so the linker emits carries a .note.gnu.build-id derived from
+# the pre-strip binary, so host-specific paths in its debug info make the id
+# differ between build machines. F-Droid compares the published APK against its
+# own rebuild byte-for-byte, and a mismatched build-id fails that check (#131).
+# Drop the note by injecting --build-id=none into every bundled native lib's
+# link flags. `flutter pub get` above populated $PUB_CACHE, so the package
+# sources are present to patch. Kept here (not only in CI) so the F-Droid
+# recipe, which runs this script, gets reproducible libs too.
+pub_cache="${PUB_CACHE:-$HOME/.pub-cache}"
+for cml in \
+  "$pub_cache"/hosted/pub.dev/jni-*/src/CMakeLists.txt \
+  "$pub_cache"/hosted/pub.dev/flutter_zxing-*/src/CMakeLists.txt; do
+  [ -e "$cml" ] || continue
+  grep -q -- '--build-id=none' "$cml" && continue
+  sed -i.bak -e 's/-Wl,/-Wl,--build-id=none,/' "$cml"
+  rm -f "$cml.bak"
+  echo "fdroid: stripped native build-id in $cml"
+done
+
 echo "fdroid: applied flutter_zxing scanner variant (pubspec + $impl)."
