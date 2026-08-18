@@ -48,3 +48,20 @@ The `build-android-fdroid` job in `.github/workflows/release.yml` runs on every
 release: it applies the swap and uploads `pantry-<version>-fdroid-<abi>.apk`
 alongside the normal APKs. Point the F-Droid repository at those `-fdroid`
 artifacts, not the default ones.
+
+## Reproducible builds
+
+F-Droid verifies our published APK by rebuilding it from source and comparing
+byte-for-byte. Native libraries break this: the linker stamps each `.so` with a
+`.note.gnu.build-id` derived from the pre-strip binary, so host-specific paths
+in the debug info give the same code a different build-id on a different machine
+(#131). `apply.sh` neutralises this by injecting `--build-id=none` into the link
+flags of every bundled native lib's CMakeLists — currently `jni` and
+`flutter_zxing` (the zxing scanner's `libflutter_zxing.so`).
+
+**Both build hosts must apply this**, or the note is present on one side and
+absent on the other. Because the patch lives in `apply.sh`, the `fdroiddata`
+build recipe stays reproducible **only if it runs `tool/fdroid/apply.sh`** in
+its `prebuild` (it must run it anyway for the scanner swap). If the recipe
+replicates the swap by hand instead of calling the script, mirror the
+`--build-id=none` sed there too.

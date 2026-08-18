@@ -59,108 +59,17 @@ Download the latest APK from the
 
 ## Development
 
-### Prerequisites
-
-- [Flutter](https://docs.flutter.dev/get-started/install) (stable channel)
-- Android Studio / Xcode for platform builds
-- A Nextcloud instance with the Pantry server app for testing
-
-### Quick Start
+Setup, workflow, project layout, the i18n guide, and coding/commit conventions live in
+**[DEVELOPMENT.md](DEVELOPMENT.md)**. Quick start:
 
 ```bash
 make get            # install dependencies
+make install-hooks  # install git hooks
 make i18n           # generate i18n code
 make run            # run in debug mode
 ```
 
-### Common Tasks
-
-```bash
-make analyze        # analyze staged files
-make format         # format staged files
-make check          # analyze + format check
-make test           # run tests
-```
-
-See `make help` for the full list.
-
-### Project Layout
-
-```
-lib/
-├─ main.dart               # App entry + theming
-├─ models/                 # Data models (Photo, Note, Checklist, etc.)
-├─ services/               # API clients, cache, auth
-├─ utils/                  # Pure utilities (rrule, icons)
-├─ widgets/                # Reusable widgets (recurrence dialog, category picker)
-└─ views/
-   ├─ checklists/
-   ├─ photos/
-   ├─ notes/
-   ├─ home/
-   └─ login/
-```
-
-### API
-
-The app consumes the Nextcloud Pantry OCS API. The OpenAPI spec is kept in sync via:
-
-```bash
-make fetch-openapi
-make fetch-openapi REF=<branch/sha>
-```
-
-### Translations
-
-Translations live in `lib/i18n/`, one YAML file per language:
-
-- `messages.i18n.yaml` — the base file (English), the source of truth for all keys.
-- `messages_<langCode>.i18n.yaml` — one per language (e.g. `messages_de.i18n.yaml`,
-  `messages_fr.i18n.yaml`, `messages_he.i18n.yaml`).
-
-**To improve an existing translation**, edit the values in that language's file. Keep the **keys
-identical** to the base file — translate only the values.
-
-**To add a new language:**
-
-1. Copy `lib/i18n/messages.i18n.yaml` to `lib/i18n/messages_<langCode>.i18n.yaml` and translate the
-   values.
-2. Add the locale to `supportedLocales` and its native name to `languageNativeNames` (the endonym
-   shown in the language picker) in `lib/services/locale_service.dart`.
-3. Run `make i18n` to regenerate the Dart code.
-
-**Reuse translations from the Nextcloud app.** Many strings already exist in the
-[Pantry Nextcloud app](https://github.com/chenasraf/nextcloud-pantry). You can auto-populate a
-language file from the Nextcloud app's translations instead of translating those strings by hand:
-
-```bash
-make i18n-from-nextcloud \
-  NC_JSON=~/Dev/nextcloud-pantry/l10n/nn_NO.json \
-  TARGET=lib/i18n/messages_nn.i18n.yaml
-```
-
-`NC_JSON` is the path to the language's JSON file in the Nextcloud app's `l10n/` directory, and
-`TARGET` is the Flutter language file to fill in. It only replaces values that still match the
-English base (case-insensitively), so already-translated strings are left untouched. Run `make i18n`
-afterwards to regenerate the Dart code.
-
-A few rules to keep translations working:
-
-- **Don't rename keys** — they must match the base file exactly. Any key you don't translate falls
-  back to English.
-- **Preserve placeholders and parameters.** If a string is defined as
-  `stepLabel(int current, int total): "Step ${current} of ${total}"`, keep the `(...)` signature and
-  the `${current}` / `${total}` placeholders intact — only translate the surrounding words.
-- **RTL languages** (like Hebrew) are supported automatically; the app mirrors its layout based on
-  the active locale.
-
-After editing any translation file, run `make i18n` to regenerate the generated Dart:
-
-```bash
-make i18n
-```
-
-Contributions of new or improved translations are very welcome — open a pull request.
+Translations are very welcome — see the [i18n guide](DEVELOPMENT.md#internationalization-i18n).
 
 ## Privacy
 
@@ -181,6 +90,9 @@ just a small amount to help sustain this project, I would be very very thankful!
 
 I welcome any issues or pull requests on GitHub. If you find a bug, or would like a new feature,
 don't hesitate to open an appropriate issue and I will do my best to reply promptly.
+
+Ready to hack on it? See **[DEVELOPMENT.md](DEVELOPMENT.md)** for the dev setup, workflow, and
+contribution guide.
 
 ## License
 
