@@ -160,6 +160,11 @@ class CommonMessagesEs extends CommonMessages {
   String get clear => """Borrar""";
 
   /// ```dart
+  /// "Más"
+  /// ```
+  String get more => """Más""";
+
+  /// ```dart
   /// "No tienes permiso para hacer eso"
   /// ```
   String get permissionDenied => """No tienes permiso para hacer eso""";
@@ -1041,6 +1046,17 @@ class SettingsMessagesEs extends SettingsMessages {
   /// ```
   String get itemActionsBody =>
       """Muestra acciones rápidas en cada elemento. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.""";
+
+  /// ```dart
+  /// "Botón «Empezar a comprar»"
+  /// ```
+  String get startShoppingButton => """Botón «Empezar a comprar»""";
+
+  /// ```dart
+  /// "Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú."
+  /// ```
+  String get startShoppingButtonBody =>
+      """Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú.""";
 
   /// ```dart
   /// "Reutilizar artículos existentes al añadir"
@@ -4506,6 +4522,7 @@ Map<String, String> get messagesEsMap => {
   """common.closeDialog""": """Listo""",
   """common.remove""": """Quitar""",
   """common.clear""": """Borrar""",
+  """common.more""": """Más""",
   """common.permissionDenied""": """No tienes permiso para hacer eso""",
   """common.noAccessTitle""": """Sin acceso""",
   """common.noAccessBody""":
@@ -4716,6 +4733,9 @@ Contraseña: pantry-rocks""",
   """settings.itemActions""": """Acciones de elementos""",
   """settings.itemActionsBody""":
       """Muestra acciones rápidas en cada elemento. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.""",
+  """settings.startShoppingButton""": """Botón «Empezar a comprar»""",
+  """settings.startShoppingButtonBody""":
+      """Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú.""",
   """settings.reuseExistingItems""":
       """Reutilizar artículos existentes al añadir""",
   """settings.reuseExistingItemsBody""":

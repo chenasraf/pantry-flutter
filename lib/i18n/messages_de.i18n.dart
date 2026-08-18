@@ -160,6 +160,11 @@ class CommonMessagesDe extends CommonMessages {
   String get clear => """Leeren""";
 
   /// ```dart
+  /// "Mehr"
+  /// ```
+  String get more => """Mehr""";
+
+  /// ```dart
   /// "Dazu hast du keine Berechtigung"
   /// ```
   String get permissionDenied => """Dazu hast du keine Berechtigung""";
@@ -1040,6 +1045,17 @@ class SettingsMessagesDe extends SettingsMessages {
   /// ```
   String get itemActionsBody =>
       """Schnellaktionen an jedem Eintrag anzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.""";
+
+  /// ```dart
+  /// "„Einkaufen starten“-Schaltfläche"
+  /// ```
+  String get startShoppingButton => """„Einkaufen starten“-Schaltfläche""";
+
+  /// ```dart
+  /// "Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü."
+  /// ```
+  String get startShoppingButtonBody =>
+      """Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.""";
 
   /// ```dart
   /// "Vorhandene Einträge beim Hinzufügen wiederverwenden"
@@ -4519,6 +4535,7 @@ Map<String, String> get messagesDeMap => {
   """common.closeDialog""": """Fertig""",
   """common.remove""": """Entfernen""",
   """common.clear""": """Leeren""",
+  """common.more""": """Mehr""",
   """common.permissionDenied""": """Dazu hast du keine Berechtigung""",
   """common.noAccessTitle""": """Kein Zugriff""",
   """common.noAccessBody""":
@@ -4728,6 +4745,9 @@ Passwort: pantry-rocks""",
   """settings.itemActions""": """Eintragsaktionen""",
   """settings.itemActionsBody""":
       """Schnellaktionen an jedem Eintrag anzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.""",
+  """settings.startShoppingButton""": """„Einkaufen starten“-Schaltfläche""",
+  """settings.startShoppingButtonBody""":
+      """Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.""",
   """settings.reuseExistingItems""":
       """Vorhandene Einträge beim Hinzufügen wiederverwenden""",
   """settings.reuseExistingItemsBody""":

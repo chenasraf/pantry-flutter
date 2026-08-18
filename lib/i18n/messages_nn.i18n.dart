@@ -160,6 +160,11 @@ class CommonMessagesNn extends CommonMessages {
   String get clear => """Tøm""";
 
   /// ```dart
+  /// "Meir"
+  /// ```
+  String get more => """Meir""";
+
+  /// ```dart
   /// "Du har ikkje tilgang til å gjere det"
   /// ```
   String get permissionDenied => """Du har ikkje tilgang til å gjere det""";
@@ -1038,6 +1043,17 @@ class SettingsMessagesNn extends SettingsMessages {
   /// ```
   String get itemActionsBody =>
       """Vis hurtighandlingar på kvar oppføring. Når slått av vil handlingane bli flytta til ein menyknapp på kvar oppføring.""";
+
+  /// ```dart
+  /// "Knapp for «Start handel»"
+  /// ```
+  String get startShoppingButton => """Knapp for «Start handel»""";
+
+  /// ```dart
+  /// "Vis den flytande «Start handel»-knappen på sjekklistesida. Når slått av blir han flytta til menyen."
+  /// ```
+  String get startShoppingButtonBody =>
+      """Vis den flytande «Start handel»-knappen på sjekklistesida. Når slått av blir han flytta til menyen.""";
 
   /// ```dart
   /// "Bruk eksisterande oppføringar på nytt når du leggjer til nye"
@@ -4496,6 +4512,7 @@ Map<String, String> get messagesNnMap => {
   """common.closeDialog""": """Ferdig""",
   """common.remove""": """Fjern""",
   """common.clear""": """Tøm""",
+  """common.more""": """Meir""",
   """common.permissionDenied""": """Du har ikkje tilgang til å gjere det""",
   """common.noAccessTitle""": """Ingen tilgang""",
   """common.noAccessBody""":
@@ -4703,6 +4720,9 @@ Passord: pantry""",
   """settings.itemActions""": """Handlingar""",
   """settings.itemActionsBody""":
       """Vis hurtighandlingar på kvar oppføring. Når slått av vil handlingane bli flytta til ein menyknapp på kvar oppføring.""",
+  """settings.startShoppingButton""": """Knapp for «Start handel»""",
+  """settings.startShoppingButtonBody""":
+      """Vis den flytande «Start handel»-knappen på sjekklistesida. Når slått av blir han flytta til menyen.""",
   """settings.reuseExistingItems""":
       """Bruk eksisterande oppføringar på nytt når du leggjer til nye""",
   """settings.reuseExistingItemsBody""":

@@ -14,6 +14,7 @@ common:
   closeDialog: Ferdig
   remove: Fjern
   clear: Tøm
+  more: Meir
   permissionDenied: Du har ikkje tilgang til å gjere det
   noAccessTitle: Ingen tilgang
   noAccessBody:
@@ -274,6 +275,10 @@ settings:
   itemActionsBody:
     Vis hurtighandlingar på kvar oppføring. Når slått av vil handlingane
     bli flytta til ein menyknapp på kvar oppføring.
+  startShoppingButton: Knapp for «Start handel»
+  startShoppingButtonBody:
+    Vis den flytande «Start handel»-knappen på sjekklistesida. Når
+    slått av blir han flytta til menyen.
   reuseExistingItems: Bruk eksisterande oppføringar på nytt når du leggjer til nye
   reuseExistingItemsBody:
     "Når du prøver å leggje til ei oppføring som allereie finst,

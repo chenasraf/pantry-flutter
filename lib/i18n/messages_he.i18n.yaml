@@ -13,6 +13,7 @@ common:
   closeDialog: סיום
   remove: הסר
   clear: נקה
+  more: עוד
   permissionDenied: אין לך הרשאה לבצע פעולה זו
   noAccessTitle: אין גישה
   noAccessBody: עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.
@@ -202,6 +203,8 @@ settings:
   swipeActionsBody: החליקו פריטים כדי לחשוף פעולות מהירות. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.
   itemActions: פעולות פריט
   itemActionsBody: הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.
+  startShoppingButton: כפתור «התחלת קניות»
+  startShoppingButtonBody: הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט.
   reuseExistingItems: שימוש חוזר בפריטים קיימים בעת הוספה
   reuseExistingItemsBody: "כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים."
   reuseExistingItemsNames:

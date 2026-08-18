@@ -160,6 +160,11 @@ class CommonMessagesFr extends CommonMessages {
   String get clear => """Effacer""";
 
   /// ```dart
+  /// "Plus"
+  /// ```
+  String get more => """Plus""";
+
+  /// ```dart
   /// "Vous n'avez pas la permission de faire cela"
   /// ```
   String get permissionDenied =>
@@ -1043,6 +1048,17 @@ class SettingsMessagesFr extends SettingsMessages {
   /// ```
   String get itemActionsBody =>
       """Affiche des actions rapides sur chaque élément. Désactivé, les actions passent dans un menu sur chaque élément.""";
+
+  /// ```dart
+  /// "Bouton « Commencer les courses »"
+  /// ```
+  String get startShoppingButton => """Bouton « Commencer les courses »""";
+
+  /// ```dart
+  /// "Affiche le bouton flottant « Commencer les courses » sur l'écran des listes. Désactivé, il passe dans le menu."
+  /// ```
+  String get startShoppingButtonBody =>
+      """Affiche le bouton flottant « Commencer les courses » sur l'écran des listes. Désactivé, il passe dans le menu.""";
 
   /// ```dart
   /// "Réutiliser les articles existants lors de l'ajout"
@@ -4514,6 +4530,7 @@ Map<String, String> get messagesFrMap => {
   """common.closeDialog""": """Terminé""",
   """common.remove""": """Retirer""",
   """common.clear""": """Effacer""",
+  """common.more""": """Plus""",
   """common.permissionDenied""":
       """Vous n'avez pas la permission de faire cela""",
   """common.noAccessTitle""": """Aucun accès""",
@@ -4731,6 +4748,9 @@ Mot de passe : pantry-rocks""",
   """settings.itemActions""": """Actions des éléments""",
   """settings.itemActionsBody""":
       """Affiche des actions rapides sur chaque élément. Désactivé, les actions passent dans un menu sur chaque élément.""",
+  """settings.startShoppingButton""": """Bouton « Commencer les courses »""",
+  """settings.startShoppingButtonBody""":
+      """Affiche le bouton flottant « Commencer les courses » sur l'écran des listes. Désactivé, il passe dans le menu.""",
   """settings.reuseExistingItems""":
       """Réutiliser les articles existants lors de l'ajout""",
   """settings.reuseExistingItemsBody""":

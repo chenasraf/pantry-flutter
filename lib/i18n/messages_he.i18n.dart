@@ -160,6 +160,11 @@ class CommonMessagesHe extends CommonMessages {
   String get clear => """נקה""";
 
   /// ```dart
+  /// "עוד"
+  /// ```
+  String get more => """עוד""";
+
+  /// ```dart
   /// "אין לך הרשאה לבצע פעולה זו"
   /// ```
   String get permissionDenied => """אין לך הרשאה לבצע פעולה זו""";
@@ -1033,6 +1038,17 @@ class SettingsMessagesHe extends SettingsMessages {
   /// ```
   String get itemActionsBody =>
       """הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.""";
+
+  /// ```dart
+  /// "כפתור «התחלת קניות»"
+  /// ```
+  String get startShoppingButton => """כפתור «התחלת קניות»""";
+
+  /// ```dart
+  /// "הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט."
+  /// ```
+  String get startShoppingButtonBody =>
+      """הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט.""";
 
   /// ```dart
   /// "שימוש חוזר בפריטים קיימים בעת הוספה"
@@ -4477,6 +4493,7 @@ Map<String, String> get messagesHeMap => {
   """common.closeDialog""": """סיום""",
   """common.remove""": """הסר""",
   """common.clear""": """נקה""",
+  """common.more""": """עוד""",
   """common.permissionDenied""": """אין לך הרשאה לבצע פעולה זו""",
   """common.noAccessTitle""": """אין גישה""",
   """common.noAccessBody""":
@@ -4677,6 +4694,9 @@ Map<String, String> get messagesHeMap => {
   """settings.itemActions""": """פעולות פריט""",
   """settings.itemActionsBody""":
       """הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.""",
+  """settings.startShoppingButton""": """כפתור «התחלת קניות»""",
+  """settings.startShoppingButtonBody""":
+      """הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט.""",
   """settings.reuseExistingItems""": """שימוש חוזר בפריטים קיימים בעת הוספה""",
   """settings.reuseExistingItemsBody""":
       """כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים.""",

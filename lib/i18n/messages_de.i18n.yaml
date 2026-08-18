@@ -13,6 +13,7 @@ common:
   closeDialog: Fertig
   remove: "Entfernen"
   clear: Leeren
+  more: Mehr
   permissionDenied: "Dazu hast du keine Berechtigung"
   noAccessTitle: "Kein Zugriff"
   noAccessBody: "Du hast noch keinen Zugriff auf Inhalte in diesem Haushalt. Eine Administratorin oder ein Administrator kann dir in der Pantry-Web-App Berechtigungen erteilen."
@@ -202,6 +203,8 @@ settings:
   swipeActionsBody: Wische Einträge nach links, um Schnellaktionen anzuzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.
   itemActions: Eintragsaktionen
   itemActionsBody: Schnellaktionen an jedem Eintrag anzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.
+  startShoppingButton: „Einkaufen starten“-Schaltfläche
+  startShoppingButtonBody: Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.
   reuseExistingItems: Vorhandene Einträge beim Hinzufügen wiederverwenden
   reuseExistingItemsBody: "Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet."
   reuseExistingItemsNames:

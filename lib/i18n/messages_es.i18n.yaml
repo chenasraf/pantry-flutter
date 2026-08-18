@@ -13,6 +13,7 @@ common:
   closeDialog: Listo
   remove: Quitar
   clear: Borrar
+  more: Más
   permissionDenied: No tienes permiso para hacer eso
   noAccessTitle: Sin acceso
   noAccessBody: Todavía no tienes acceso a nada en este hogar. Un administrador puede concederte permisos en la aplicación web de Pantry.
@@ -202,6 +203,8 @@ settings:
   swipeActionsBody: Desliza los elementos hacia la izquierda para ver acciones rápidas. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.
   itemActions: Acciones de elementos
   itemActionsBody: Muestra acciones rápidas en cada elemento. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.
+  startShoppingButton: Botón «Empezar a comprar»
+  startShoppingButtonBody: Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú.
   reuseExistingItems: Reutilizar artículos existentes al añadir
   reuseExistingItemsBody: "Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo."
   reuseExistingItemsNames:
