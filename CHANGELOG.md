@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.27.1](https://github.com/chenasraf/pantry-flutter/compare/v0.27.0...v0.27.1) (2026-08-18)
+
+
+### Features
+
+* add setting to truncate long item names ([5017d95](https://github.com/chenasraf/pantry-flutter/commit/5017d95882b354c7b3d787428d8296e706c1ad86))
+* **photos:** display AVIF image attachments ([e7b5872](https://github.com/chenasraf/pantry-flutter/commit/e7b5872ffb92f94462656df18bf5975c741b4f82)), closes [#147](https://github.com/chenasraf/pantry-flutter/issues/147)
+* **shopping:** uncheck done items to return them to the list ([c0dbe20](https://github.com/chenasraf/pantry-flutter/commit/c0dbe202fecd2cd23fb3abb39eb7e963b49275d5))
+
+
+### Bug Fixes
+
+* **barcode:** restore faster, more reliable barcode scanning ([3df6984](https://github.com/chenasraf/pantry-flutter/commit/3df6984a0b8e93f08d00b6fd4f7a9431eab0beae))
+* **fdroid:** make libflutter_zxing.so reproducible for F-Droid ([c11fefa](https://github.com/chenasraf/pantry-flutter/commit/c11fefa8c777645df7f2e845b474fcc3f84bb777))
+* **i18n:** translate missing 'more' and start-shopping settings keys ([d8876eb](https://github.com/chenasraf/pantry-flutter/commit/d8876eb207df44fd63b303a6d6c260096514784d))
+* **ios:** prevent grey screen when opening the scanner on iOS ([7876dee](https://github.com/chenasraf/pantry-flutter/commit/7876dee6a9c0d01b77778960c9ced9eeca876d2c))
+* **notes:** prevent crash when opening a new note ([59adbd9](https://github.com/chenasraf/pantry-flutter/commit/59adbd9f6ef63df9ed15f516b73feea0e126c289))
+* **settings:** overflow setting tiles into another row when there isn't enough space ([0eeba67](https://github.com/chenasraf/pantry-flutter/commit/0eeba67696745cfbe6162bd97a65dd418c613482)), closes [#137](https://github.com/chenasraf/pantry-flutter/issues/137)
+* **shopping:** remember selected currency for future sessions ([7cd32f5](https://github.com/chenasraf/pantry-flutter/commit/7cd32f59bb9071a4735095b8e98975f4b61049a1)), closes [#139](https://github.com/chenasraf/pantry-flutter/issues/139)
+
 ## [0.27.0](https://github.com/chenasraf/pantry-flutter/compare/v0.26.0...v0.27.0) (2026-08-13)
 
 

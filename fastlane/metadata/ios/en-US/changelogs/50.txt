@@ -1,0 +1,13 @@
+Features
+- add setting to truncate long item names
+- display AVIF image attachments
+- uncheck done items to return them to the list
+Bug Fixes
+- restore faster, more reliable barcode scanning
+- make libflutter_zxing.so reproducible for F-Droid
+- translate missing 'more' and start-shopping settings keys
+- prevent grey screen when opening the scanner on iOS
+- prevent crash when opening a new note
+- overflow setting tiles into another row when there isn't enough space
+
+… see full notes on GitHub.
