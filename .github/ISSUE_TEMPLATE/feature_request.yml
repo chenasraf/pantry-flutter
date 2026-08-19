@@ -52,6 +52,22 @@ body:
       placeholder: Provide links or descriptions of similar features elsewhere...
 
   - type: dropdown
+    id: app-variant
+    attributes:
+      label: App Variant / Install Source
+      description: |
+        Which build of the app are you using? The F-Droid build differs from the Google Play build
+        (e.g. a different barcode scanner and no AVIF image support), which can affect platform-specific requests.
+      options:
+        - Google Play
+        - F-Droid
+        - Direct APK (GitHub release)
+        - Desktop (macOS / Windows / Linux)
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
     id: willing-to-contribute
     attributes:
       label: Willing to Contribute?

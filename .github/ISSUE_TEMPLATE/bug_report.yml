@@ -56,6 +56,22 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: app-variant
+    attributes:
+      label: App Variant / Install Source
+      description: |
+        Which build of the app are you using? The F-Droid build differs from the Google Play build
+        (e.g. a different barcode scanner and no AVIF image support), so this helps us reproduce the issue.
+      options:
+        - Google Play
+        - F-Droid
+        - Direct APK (GitHub release)
+        - Desktop (macOS / Windows / Linux)
+        - Not sure
+    validations:
+      required: true
+
   - type: input
     id: web-app-version
     attributes:
