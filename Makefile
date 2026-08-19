@@ -173,7 +173,7 @@ fdroid-apply:
 
 .PHONY: fdroid-revert
 fdroid-revert:
-	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart
+	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart lib/widgets/avif_image.dart
 	flutter pub get
 
 # Regenerate the pinned F-Droid lockfile (tool/fdroid/pubspec.lock) after
@@ -184,7 +184,7 @@ fdroid-lock:
 	@set -e; \
 	FDROID_REGEN_LOCK=1 tool/fdroid/apply.sh; \
 	cp pubspec.lock tool/fdroid/pubspec.lock; \
-	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart; \
+	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart lib/widgets/avif_image.dart; \
 	flutter pub get; \
 	echo "Regenerated tool/fdroid/pubspec.lock — commit it."
 

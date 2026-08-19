@@ -14,29 +14,45 @@ no longer needed — this variant uses the published package.
 
 Flutter has no per-flavor package dependencies: any package listed in
 `pubspec.yaml` is compiled and registered into **every** build. So a runtime
-flavor flag can't keep ML Kit out of the F-Droid APK — the dependency itself has
-to differ. The swap is therefore done at build time by
+flavor flag can't keep a non-FLOSS package out of the F-Droid APK — the
+dependency itself has to differ. The swap is therefore done at build time by
 [`tool/fdroid/apply.sh`](../tool/fdroid/apply.sh), which:
 
-1. rewrites `pubspec.yaml`: `mobile_scanner` → `flutter_zxing`, and
+1. rewrites `pubspec.yaml`: `mobile_scanner` → `flutter_zxing`, and removes
+   `flutter_avif`;
 2. overwrites `lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart`
-   with `fdroid/barcode_camera_scanner.dart` (this directory's zxing scanner).
+   with `fdroid/barcode_camera_scanner.dart` (this directory's zxing scanner);
+3. overwrites `lib/widgets/avif_image.dart` with `fdroid/avif_image.dart` (the
+   AVIF-free image widgets).
 
 Everything else — the `BarcodeScanView.scan()` entry point, the manual-entry
-dialog, the Open Food Facts attribution — is shared and untouched. Both scanner
-files expose the same `BarcodeCameraScanner` widget, so the shared code compiles
-against either.
+dialog, the Open Food Facts attribution, every `AvifNetworkImage` call site — is
+shared and untouched. Each override file exposes the same public API as the file
+it replaces (`BarcodeCameraScanner`; `AvifNetworkImage`/`AvifMemoryImage`/
+`AvifAware*Image`), so the shared code compiles against either.
+
+### Why `flutter_avif` is removed, not swapped
+
+`flutter_avif` decodes AVIF images, but it ships **prebuilt native blobs**
+(`libflutter_avif.so`, web `.wasm`, etc.) with no buildable source. F-Droid's
+scanner deletes such blobs at build time, so its rebuild lacks them while the
+reference APK still carries them — the reproducible check can never match. There
+is no FLOSS drop-in, so the F-Droid variant drops AVIF support entirely:
+`fdroid/avif_image.dart` keeps the same widgets but decodes with Flutter's
+built-in codecs (JPEG/PNG/WebP/GIF) only. Raw AVIF originals won't render on the
+F-Droid build; Nextcloud's preview endpoint transcodes to JPEG, so the common
+case is unaffected.
 
 `fdroid/**` is excluded from `flutter analyze` (see `analysis_options.yaml`)
 because its zxing import isn't a dependency of the default build. Once
-`apply.sh` copies the file into `lib/`, it is analyzed and built normally.
+`apply.sh` copies the files into `lib/`, they are analyzed and built normally.
 
 ## Building locally
 
 ```sh
 make android-build-apk-fdroid    # apply swap + build split-per-ABI APKs
 make android-release-apk-fdroid  # + copy to build/release/ as pantry-<ver>-fdroid-<abi>.apk
-make fdroid-revert               # restore pubspec + scanner to the ML Kit default
+make fdroid-revert               # restore pubspec + swapped files to the default build
 ```
 
 `apply.sh` leaves the working tree modified. Run `make fdroid-revert` when done
@@ -54,18 +70,26 @@ versionCode — see below.
 ## Reproducible builds
 
 F-Droid verifies our published APK by rebuilding it from source and comparing
-byte-for-byte. Three things have to match between the host that publishes the
+byte-for-byte. Four things have to match between the host that publishes the
 reference APK (our CI) and the host that rebuilds it (F-Droid):
 
-### 1. Pinned dependencies
+### 1. No unverifiable prebuilt blobs
+
+F-Droid's scanner strips any bundled binary it can't build from source. The
+`mobile_scanner` swap and the `flutter_avif` removal above exist for this reason:
+whatever the scanner deletes on F-Droid's side must be absent from our reference
+APK too, or the two diverge. This is what made the check fail on 0.27.1/0.27.2 —
+`flutter_avif`'s prebuilt `.so`/`.wasm` were in the reference APK but scrubbed
+from F-Droid's rebuild.
+
+### 2. Pinned dependencies
 
 `apply.sh` rewrites `pubspec.yaml`, so the default `pubspec.lock` (which tracks
 `mobile_scanner`) no longer applies. A plain `flutter pub get` would then
 re-resolve `flutter_zxing`'s subtree — `camera_*` and other transitives — to
 whatever is newest at build time, so a rebuild weeks later can pick up different
-versions than the reference APK and diverge (e.g. a different `flutter_avif`
-pulling different bundled assets). To pin it, `tool/fdroid/pubspec.lock` holds
-the resolved post-swap lock; `apply.sh` copies it into place and runs
+versions than the reference APK and diverge. To pin it, `tool/fdroid/pubspec.lock`
+holds the resolved post-swap lock; `apply.sh` copies it into place and runs
 `flutter pub get --enforce-lockfile`.
 
 Regenerate it whenever dependencies change:
@@ -77,7 +101,7 @@ make fdroid-lock   # re-resolves the swapped tree, rewrites tool/fdroid/pubspec.
 Commit the result. `--enforce-lockfile` fails the build loudly if the committed
 lock ever drifts from `pubspec.yaml`.
 
-### 2. Identical build command (per-ABI)
+### 3. Identical build command (per-ABI)
 
 The `fdroiddata` recipe builds each ABI as its own versionCode with
 `flutter build apk --release --split-per-abi --target-platform=<plat>`. A plain
@@ -87,17 +111,16 @@ three ABIs one at a time with the matching `--target-platform`
 (`android-arm`, `android-arm64`, `android-x64`), running `flutter clean` between
 them to keep each build isolated as F-Droid does.
 
-### 3. Stable native build-ids
+### 4. Stable native build-ids
 
 The linker stamps each compiled `.so` with a `.note.gnu.build-id` derived from
 the pre-strip binary, so host-specific paths in the debug info give the same
 code a different build-id on a different machine (#131). `apply.sh` neutralises
 this by injecting `--build-id=none` into the link flags of every **source-built**
 native lib's CMakeLists — currently `jni` and `flutter_zxing` (the zxing
-scanner's `libflutter_zxing.so`). `flutter_avif` ships prebuilt `.so`s in its
-`jniLibs`, so it needs no patching.
+scanner's `libflutter_zxing.so`).
 
-**Because all three live in `apply.sh` (plus the committed lock and the CI/Make
+**Because all four live in `apply.sh` (plus the committed lock and the CI/Make
 build commands), the `fdroiddata` recipe stays reproducible only if it runs
 `tool/fdroid/apply.sh`** in its `prebuild` (it must run it anyway for the scanner
 swap) and builds per-ABI with `--target-platform`. Since these fixes changed

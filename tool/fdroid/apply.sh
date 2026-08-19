@@ -18,10 +18,15 @@ impl="lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart"
 override="fdroid/barcode_camera_scanner.dart"
 zxing_version="^2.3.0"
 
-if [ ! -f "$override" ]; then
-  echo "fdroid: missing $override" >&2
-  exit 1
-fi
+avif_impl="lib/widgets/avif_image.dart"
+avif_override="fdroid/avif_image.dart"
+
+for f in "$override" "$avif_override"; do
+  if [ ! -f "$f" ]; then
+    echo "fdroid: missing $f" >&2
+    exit 1
+  fi
+done
 
 if ! grep -q '^  mobile_scanner:' pubspec.yaml; then
   echo "fdroid: pubspec.yaml has no mobile_scanner dependency — already applied?" >&2
@@ -33,8 +38,17 @@ fi
 sed -i.bak "s|^  mobile_scanner: .*\$|  flutter_zxing: ${zxing_version}|" pubspec.yaml
 rm -f pubspec.yaml.bak
 
-# Implementation swap: replace the ML Kit camera widget with the zxing one.
+# Drop flutter_avif entirely: it ships prebuilt native blobs (libflutter_avif.so,
+# wasm) with no buildable source, so F-Droid's scanner strips them and the
+# rebuild can't match the reference APK. The FLOSS avif_image.dart below keeps
+# the same API but decodes with Flutter's built-in codecs only.
+sed -i.bak "/^  flutter_avif:/d" pubspec.yaml
+rm -f pubspec.yaml.bak
+
+# Implementation swap: replace the ML Kit camera widget with the zxing one, and
+# the AVIF-decoding image widgets with the native-codec-only versions.
 cp "$override" "$impl"
+cp "$avif_override" "$avif_impl"
 
 # Reproducibility: pin the post-swap dependency set. The default pubspec.lock
 # tracks mobile_scanner, so it can't lock this FLOSS variant; instead swap in the
