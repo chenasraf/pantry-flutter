@@ -334,8 +334,135 @@ jobs:
           files: |
             build/ios/ipa/pantry-${{ needs.release-please.outputs.version }}-unsigned.ipa
 
+  # Developer ID signed + notarized macOS build for direct download from the
+  # GitHub release (distributed outside the App Store). Requires the six macOS
+  # signing secrets — see the DEVELOPER_ID/NOTARY_* references below.
+  build-macos:
+    needs: [setup, release-please]
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: macos-latest
+    env:
+      TEAM_ID: Y893L6NQP2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            macos/Pods
+            ~/.cocoapods
+          key: pods-macos-${{ runner.os }}-${{ hashFiles('macos/Podfile') }}
+          restore-keys: pods-macos-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Import Developer ID certificate
+        env:
+          CERT_P12_BASE64: ${{ secrets.DEVELOPER_ID_APP_CERT_P12_BASE64 }}
+          CERT_PASSWORD: ${{ secrets.DEVELOPER_ID_APP_CERT_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          CERT_PATH="$RUNNER_TEMP/certificate.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/build.keychain-db"
+          echo "$CERT_P12_BASE64" | base64 --decode > "$CERT_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$CERT_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
+
+      - name: Build & archive (Developer ID signed)
+        run: |
+          set -euo pipefail
+          VERSION=${{ needs.release-please.outputs.version }}
+          flutter build macos --config-only --release \
+            --obfuscate --split-debug-info=build/debug-info-macos
+          xcodebuild archive \
+            -workspace macos/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination 'generic/platform=macOS' \
+            -archivePath "$RUNNER_TEMP/Pantry.xcarchive" \
+            MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Developer ID Application" \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            ENABLE_HARDENED_RUNTIME=YES \
+            OTHER_CODE_SIGN_FLAGS="--timestamp"
+
+      - name: Verify signature & package DMG
+        run: |
+          set -euo pipefail
+          VERSION=${{ needs.release-please.outputs.version }}
+          APP="$RUNNER_TEMP/Pantry.xcarchive/Products/Applications/Pantry.app"
+          codesign --verify --deep --strict --verbose=2 "$APP"
+          codesign -dvv "$APP" 2>&1 | grep -E "Authority=|TeamIdentifier=" || true
+          STAGE="$RUNNER_TEMP/dmg"
+          DMG="$GITHUB_WORKSPACE/pantry-${VERSION}-macos.dmg"
+          mkdir -p "$STAGE"
+          cp -R "$APP" "$STAGE/"
+          ln -s /Applications "$STAGE/Applications"
+          hdiutil create -volname "Pantry" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
+          echo "DMG=$DMG" >> "$GITHUB_ENV"
+
+      - name: Notarize & staple
+        env:
+          API_KEY_ID: ${{ secrets.NOTARY_API_KEY_ID }}
+          API_ISSUER_ID: ${{ secrets.NOTARY_API_ISSUER_ID }}
+          API_KEY_P8_BASE64: ${{ secrets.NOTARY_API_KEY_P8_BASE64 }}
+        run: |
+          set -euo pipefail
+          KEY_PATH="$RUNNER_TEMP/AuthKey.p8"
+          echo "$API_KEY_P8_BASE64" | base64 --decode > "$KEY_PATH"
+          SUBMIT_JSON="$RUNNER_TEMP/notary-submit.json"
+          xcrun notarytool submit "$DMG" \
+            --key "$KEY_PATH" \
+            --key-id "$API_KEY_ID" \
+            --issuer "$API_ISSUER_ID" \
+            --wait --output-format json | tee "$SUBMIT_JSON"
+          SUB_ID="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["id"])' "$SUBMIT_JSON")"
+          STATUS="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["status"])' "$SUBMIT_JSON")"
+          echo "=== notarytool log ($STATUS) ==="
+          xcrun notarytool log "$SUB_ID" \
+            --key "$KEY_PATH" --key-id "$API_KEY_ID" --issuer "$API_ISSUER_ID" || true
+          if [ "$STATUS" != "Accepted" ]; then
+            echo "::error::Notarization was $STATUS — see the log above."
+            exit 1
+          fi
+          xcrun stapler staple "$DMG"
+
+      - name: Upload macOS DMG to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          files: |
+            pantry-${{ needs.release-please.outputs.version }}-macos.dmg
+
   post-release-comment:
-    needs: [release-please, build-android, build-android-fdroid]
+    needs: [release-please, build-android, build-android-fdroid, build-macos]
     if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
 
