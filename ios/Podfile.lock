@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_avif_ios (0.0.1):
+    - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
   - receive_sharing_intent (1.8.1):
@@ -9,6 +11,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_avif_ios (from `.symlinks/plugins/flutter_avif_ios/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - receive_sharing_intent (from `.symlinks/plugins/receive_sharing_intent/ios`)
   - workmanager_apple (from `.symlinks/plugins/workmanager_apple/ios`)
@@ -16,6 +19,8 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_avif_ios:
+    :path: ".symlinks/plugins/flutter_avif_ios/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   receive_sharing_intent:
@@ -25,6 +30,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_avif_ios: 2553d2aafda56339cf924e943da89ad3f40af2dd
   flutter_local_notifications: 395056b3175ba4f08480a7c5de30cd36d69827e4
   receive_sharing_intent: 222384f00ffe7e952bbfabaa9e3967cb87e5fe00
   workmanager_apple: 904529ae31e97fc5be632cf628507652294a0778

@@ -240,16 +240,36 @@ jobs:
           storeFile=upload-keystore.jks
           EOF
 
-      - name: Build split APKs
-        run: flutter build apk --release --split-per-abi
-
-      - name: Rename artifacts
+      # Build one ABI at a time with --target-platform, byte-for-byte matching
+      # F-Droid's per-versionCode recipe. F-Droid rebuilds each ABI in isolation
+      # and compares the result against the APK uploaded here, so a plain
+      # multi-ABI `--split-per-abi` build (whose per-APK output differs from the
+      # isolated recipe build) fails the reproducible check. `flutter clean`
+      # between ABIs keeps each build isolated too; APKs are stashed before the
+      # next clean wipes build/.
+      - name: Build F-Droid split APKs (per-ABI, matching the recipe)
         run: |
           VERSION=${{ needs.release-please.outputs.version }}
+          # Stash outside build/ — `flutter clean` wipes the whole build/ dir.
+          OUT="${RUNNER_TEMP:-/tmp}/fdroid-apks"
+          mkdir -p "$OUT"
+          build_one() {
+            local plat="$1" abi="$2"
+            flutter clean
+            flutter pub get --enforce-lockfile
+            flutter build apk --release --split-per-abi --target-platform="$plat"
+            mv build/app/outputs/flutter-apk/app-"$abi"-release.apk \
+              "$OUT/pantry-${VERSION}-fdroid-$abi.apk"
+          }
+          build_one android-arm   armeabi-v7a
+          build_one android-arm64 arm64-v8a
+          build_one android-x64   x86_64
+
+      - name: Collect artifacts
+        run: |
           APK_DIR=build/app/outputs/flutter-apk
-          mv ${APK_DIR}/app-armeabi-v7a-release.apk ${APK_DIR}/pantry-${VERSION}-fdroid-armeabi-v7a.apk
-          mv ${APK_DIR}/app-arm64-v8a-release.apk ${APK_DIR}/pantry-${VERSION}-fdroid-arm64-v8a.apk
-          mv ${APK_DIR}/app-x86_64-release.apk ${APK_DIR}/pantry-${VERSION}-fdroid-x86_64.apk
+          mkdir -p "$APK_DIR"
+          mv "${RUNNER_TEMP:-/tmp}/fdroid-apks"/*.apk "$APK_DIR"/
 
       - name: Upload F-Droid APKs to release
         uses: softprops/action-gh-release@v2

@@ -36,7 +36,22 @@ rm -f pubspec.yaml.bak
 # Implementation swap: replace the ML Kit camera widget with the zxing one.
 cp "$override" "$impl"
 
-flutter pub get
+# Reproducibility: pin the post-swap dependency set. The default pubspec.lock
+# tracks mobile_scanner, so it can't lock this FLOSS variant; instead swap in the
+# committed fdroid lock and resolve against it with --enforce-lockfile. Without
+# this, `pub get` re-resolves flutter_zxing's subtree (camera_*, etc.) to
+# whatever is latest at build time, so F-Droid's later rebuild can pick up
+# different transitive versions than the published reference APK and fail the
+# byte-for-byte reproducible check.
+#
+# FDROID_REGEN_LOCK=1 resolves fresh (unpinned) instead, so `make fdroid-lock`
+# can capture an updated lock after dependencies change.
+if [ "${FDROID_REGEN_LOCK:-}" = "1" ]; then
+  flutter pub get
+else
+  cp tool/fdroid/pubspec.lock pubspec.lock
+  flutter pub get --enforce-lockfile
+fi
 
 # Native-library reproducibility for F-Droid.
 #

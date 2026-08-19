@@ -59,6 +59,7 @@ help:
 	@echo "    android-build-apk   Build Android APK"
 	@echo "    android-build-apk-split  Build Android split-per-ABI APKs"
 	@echo "    android-build-apk-fdroid Build FLOSS (flutter_zxing) split APKs for F-Droid"
+	@echo "    fdroid-lock         Regenerate the pinned F-Droid lockfile after dep changes"
 	@echo "    android-build-aab   Build Android App Bundle"
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
@@ -175,9 +176,38 @@ fdroid-revert:
 	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart
 	flutter pub get
 
+# Regenerate the pinned F-Droid lockfile (tool/fdroid/pubspec.lock) after
+# dependency changes. Applies the scanner swap, resolves fresh (unpinned),
+# captures the lock, then restores the working tree. Commit the updated lock.
+.PHONY: fdroid-lock
+fdroid-lock:
+	@set -e; \
+	FDROID_REGEN_LOCK=1 tool/fdroid/apply.sh; \
+	cp pubspec.lock tool/fdroid/pubspec.lock; \
+	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart; \
+	flutter pub get; \
+	echo "Regenerated tool/fdroid/pubspec.lock — commit it."
+
+# Build the FLOSS split APKs one ABI at a time with --target-platform, matching
+# F-Droid's per-versionCode recipe exactly so the output reproduces byte-for-byte
+# (see fdroid/README.md). `flutter clean` isolates each ABI as F-Droid does;
+# APKs are stashed outside build/ since clean wipes it.
 .PHONY: android-build-apk-fdroid
 android-build-apk-fdroid: fdroid-apply
-	flutter build apk --release --split-per-abi
+	@set -e; \
+	OUT=$$(mktemp -d); \
+	build_one() { \
+		flutter clean; \
+		flutter pub get --enforce-lockfile; \
+		flutter build apk --release --split-per-abi --target-platform="$$1"; \
+		mv build/app/outputs/flutter-apk/app-"$$2"-release.apk "$$OUT/app-$$2-release.apk"; \
+	}; \
+	build_one android-arm armeabi-v7a; \
+	build_one android-arm64 arm64-v8a; \
+	build_one android-x64 x86_64; \
+	mkdir -p build/app/outputs/flutter-apk; \
+	mv "$$OUT"/*.apk build/app/outputs/flutter-apk/; \
+	rmdir "$$OUT"
 	@echo "F-Droid split APKs built. Run 'make fdroid-revert' to restore the ML Kit default."
 
 .PHONY: android-push
