@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.27.2](https://github.com/chenasraf/pantry-flutter/compare/v0.27.1...v0.27.2) (2026-08-19)
+
+
+### Bug Fixes
+
+* **fdroid:** pin dependencies and build per-ABI for reproducible builds ([efeff9e](https://github.com/chenasraf/pantry-flutter/commit/efeff9e878e450fd423d7fe7ddaeece83a86198a))
+
 ## [0.27.1](https://github.com/chenasraf/pantry-flutter/compare/v0.27.0...v0.27.1) (2026-08-18)
 
 
