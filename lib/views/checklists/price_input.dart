@@ -3,7 +3,12 @@ import 'package:flutter/services.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/utils/currencies.dart';
+import 'package:pantry/utils/price.dart';
+import 'package:pantry/utils/store_icons.dart';
+import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
+    show parseHexColor;
 
 /// Format a stored amount for seeding an input field: trim trailing zeros so a
 /// round number shows as "1" (not "1.00") and "9.99" stays "9.99".
@@ -34,22 +39,23 @@ class PriceDraft {
     this.currency = defaultCurrency,
   });
 
-  /// Seed from an existing item, falling back to [fallbackCurrency] (the
-  /// house's last-used currency) when the item carries none.
-  factory PriceDraft.fromItem(
-    ListItem item, {
+  /// Seed from a single [ItemPrice] entry (or null for an empty row), falling
+  /// back to [fallbackCurrency] (the house's last-used currency) when the entry
+  /// carries no currency.
+  factory PriceDraft.fromItemPrice(
+    ItemPrice? price, {
     required String fallbackCurrency,
   }) {
-    final type = item.priceType;
+    final type = price?.priceType;
     final hasPrice =
-        (type == 'set' || type == 'range') && item.priceMin != null;
+        (type == 'set' || type == 'range') && price?.priceMin != null;
     return PriceDraft(
       isRange: type == 'range',
-      minText: hasPrice ? _seedAmount(item.priceMin!) : '',
-      maxText: type == 'range' && item.priceMax != null
-          ? _seedAmount(item.priceMax!)
+      minText: hasPrice ? _seedAmount(price!.priceMin!) : '',
+      maxText: type == 'range' && price?.priceMax != null
+          ? _seedAmount(price!.priceMax!)
           : '',
-      currency: item.priceCurrency ?? fallbackCurrency,
+      currency: price?.priceCurrency ?? fallbackCurrency,
     );
   }
 
@@ -59,16 +65,25 @@ class PriceDraft {
   /// Whether the draft carries a usable price (a parseable min amount).
   bool get hasPrice => _min != null;
 
-  /// priceType to send on **create** — null when there's no price.
-  String? get createPriceType => hasPrice ? (isRange ? 'range' : 'set') : null;
-
-  /// priceType to send on **update** — `''` clears when there's no price,
-  /// otherwise `'set'`/`'range'`. Always send the full group on edit.
-  String get updatePriceType => hasPrice ? (isRange ? 'range' : 'set') : '';
+  /// priceType this draft represents, or null when there's no price.
+  String? get priceType => hasPrice ? (isRange ? 'range' : 'set') : null;
 
   double? get priceMin => hasPrice ? _min : null;
   double? get priceMax => hasPrice && isRange ? _max : null;
   String? get priceCurrency => hasPrice ? currency : null;
+
+  /// Compose this draft into an [ItemPrice] for [storeId], or null when the
+  /// draft carries no usable amount.
+  ItemPrice? toItemPrice(int? storeId) {
+    if (!hasPrice) return null;
+    return ItemPrice(
+      storeId: storeId,
+      priceType: priceType,
+      priceMin: priceMin,
+      priceMax: priceMax,
+      priceCurrency: priceCurrency,
+    );
+  }
 }
 
 /// A Set/Range segmented control, one or two amount fields, and a currency
@@ -324,6 +339,346 @@ class _CurrencyDropdown extends StatelessWidget {
           ],
           onChanged: (code) {
             if (code != null) onChanged(code);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// One per-store price row within a [PricesDraft]. [key] is a stable identity so
+/// the row's [PriceInput] keeps its text controllers as rows are added/removed.
+class StorePriceRow {
+  static int _nextKey = 0;
+
+  final int key;
+  int storeId;
+  final PriceDraft draft;
+
+  StorePriceRow({required this.storeId, required this.draft})
+    : key = _nextKey++;
+}
+
+/// Mutable draft for an item's full set of prices: a store-less (default) price
+/// plus zero or more per-store rows. Mirrors the web app's `ItemPricesEditor`
+/// model. Compose into the wire shape with [toItemPrices].
+class PricesDraft {
+  final PriceDraft storeless;
+  final List<StorePriceRow> rows;
+  final String defaultCurrency;
+
+  PricesDraft({
+    required this.storeless,
+    required this.rows,
+    required this.defaultCurrency,
+  });
+
+  factory PricesDraft.empty(String currency) => PricesDraft(
+    storeless: PriceDraft(currency: currency),
+    rows: [],
+    defaultCurrency: currency,
+  );
+
+  /// Seed from an existing item, falling back to [fallbackCurrency] where an
+  /// entry carries no currency.
+  factory PricesDraft.fromItem(
+    ListItem item, {
+    required String fallbackCurrency,
+  }) {
+    final rows = [
+      for (final p in item.prices)
+        if (p.storeId != null)
+          StorePriceRow(
+            storeId: p.storeId!,
+            draft: PriceDraft.fromItemPrice(
+              p,
+              fallbackCurrency: fallbackCurrency,
+            ),
+          ),
+    ];
+    return PricesDraft(
+      storeless: PriceDraft.fromItemPrice(
+        storelessPrice(item.prices),
+        fallbackCurrency: fallbackCurrency,
+      ),
+      rows: rows,
+      defaultCurrency: fallbackCurrency,
+    );
+  }
+
+  /// Whether any price (store-less or per-store) carries a usable amount.
+  bool get hasAnyPrice =>
+      storeless.hasPrice || rows.any((r) => r.draft.hasPrice);
+
+  /// Currency worth remembering for the next new item: the store-less price's
+  /// currency when set, else the first priced row's, else null.
+  String? get rememberCurrency {
+    if (storeless.hasPrice) return storeless.currency;
+    for (final r in rows) {
+      if (r.draft.hasPrice) return r.draft.currency;
+    }
+    return null;
+  }
+
+  /// Compose into the wire list, dropping rows without a usable amount. Safe to
+  /// send as the `prices` param on create/update (empty clears all prices).
+  List<ItemPrice> toItemPrices() {
+    final out = <ItemPrice>[];
+    final s = storeless.toItemPrice(null);
+    if (s != null) out.add(s);
+    for (final r in rows) {
+      final p = r.draft.toItemPrice(r.storeId);
+      if (p != null) out.add(p);
+    }
+    return out;
+  }
+}
+
+/// Editor for an item's prices: a pinned "Any store" row plus an add-row per
+/// store. Mirrors the web app's `ItemPricesEditor`. Renders bare so callers can
+/// host it inside their own section (the item form and the compose bar tray).
+class ItemPricesEditor extends StatefulWidget {
+  final PricesDraft draft;
+
+  /// Stores offered for per-store rows. Empty (and the add button hidden) when
+  /// the server lacks the `stores` capability.
+  final List<models.Store> stores;
+
+  /// Whether the server advertises `item-price-per-store`. When false the editor
+  /// collapses to just the store-less price input (the legacy single-price UI):
+  /// no "Any store" label, per-store rows, or add button.
+  final bool perStoreEnabled;
+
+  /// Called on any change so the host can rebuild its live preview.
+  final VoidCallback onChanged;
+
+  const ItemPricesEditor({
+    super.key,
+    required this.draft,
+    required this.stores,
+    required this.perStoreEnabled,
+    required this.onChanged,
+  });
+
+  @override
+  State<ItemPricesEditor> createState() => _ItemPricesEditorState();
+}
+
+class _ItemPricesEditorState extends State<ItemPricesEditor> {
+  List<models.Store> get _stores => widget.stores;
+
+  /// Stores not already claimed by a per-store row.
+  List<models.Store> get _availableStores {
+    final used = widget.draft.rows.map((r) => r.storeId).toSet();
+    return [
+      for (final s in _stores)
+        if (!used.contains(s.id)) s,
+    ];
+  }
+
+  void _addRow() {
+    final next = _availableStores.isNotEmpty ? _availableStores.first : null;
+    if (next == null) return;
+    setState(() {
+      widget.draft.rows.add(
+        StorePriceRow(
+          storeId: next.id,
+          draft: PriceDraft(currency: widget.draft.defaultCurrency),
+        ),
+      );
+    });
+    widget.onChanged();
+  }
+
+  void _removeRow(int index) {
+    setState(() => widget.draft.rows.removeAt(index));
+    widget.onChanged();
+  }
+
+  void _selectStore(int index, int storeId) {
+    setState(() => widget.draft.rows[index].storeId = storeId);
+    widget.onChanged();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Legacy single-price servers: just the store-less input, nothing else.
+    if (!widget.perStoreEnabled) {
+      return PriceInput(
+        draft: widget.draft.storeless,
+        onChanged: widget.onChanged,
+      );
+    }
+    final p = m.checklists.price;
+    final rows = widget.draft.rows;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _StoreLabel(text: p.anyStore),
+        const SizedBox(height: 8),
+        PriceInput(draft: widget.draft.storeless, onChanged: widget.onChanged),
+        for (var i = 0; i < rows.length; i++) ...[
+          const SizedBox(height: 14),
+          _StoreRow(
+            row: rows[i],
+            stores: _stores,
+            // A row may keep its own store plus any not used elsewhere.
+            options: [
+              for (final s in _stores)
+                if (s.id == rows[i].storeId ||
+                    _availableStores.any((a) => a.id == s.id))
+                  s,
+            ],
+            onStoreSelected: (id) => _selectStore(i, id),
+            onRemove: () => _removeRow(i),
+            onChanged: widget.onChanged,
+          ),
+        ],
+        if (_stores.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: _availableStores.isEmpty ? null : _addRow,
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(p.addPrice),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _StoreLabel extends StatelessWidget {
+  final String text;
+
+  const _StoreLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(start: 2),
+      child: Text(
+        text.toUpperCase(),
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.6,
+          color: cs.onSurfaceVariant,
+        ),
+      ),
+    );
+  }
+}
+
+class _StoreRow extends StatelessWidget {
+  final StorePriceRow row;
+  final List<models.Store> stores;
+  final List<models.Store> options;
+  final ValueChanged<int> onStoreSelected;
+  final VoidCallback onRemove;
+  final VoidCallback onChanged;
+
+  const _StoreRow({
+    required this.row,
+    required this.stores,
+    required this.options,
+    required this.onStoreSelected,
+    required this.onRemove,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _StoreSelect(
+                value: row.storeId,
+                options: options,
+                onChanged: onStoreSelected,
+              ),
+            ),
+            const SizedBox(width: 4),
+            IconButton(
+              onPressed: onRemove,
+              icon: const Icon(Icons.close, size: 18),
+              tooltip: m.checklists.price.removePrice,
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        PriceInput(
+          key: ValueKey('price-row-${row.key}'),
+          draft: row.draft,
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+}
+
+class _StoreSelect extends StatelessWidget {
+  final int value;
+  final List<models.Store> options;
+  final ValueChanged<int> onChanged;
+
+  const _StoreSelect({
+    required this.value,
+    required this.options,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final selectable = options.any((s) => s.id == value);
+    return InputDecorator(
+      decoration: InputDecoration(
+        labelText: m.checklists.price.store,
+        isDense: true,
+        contentPadding: const EdgeInsetsDirectional.fromSTEB(12, 12, 8, 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: BorderSide(color: cs.outlineVariant),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: BorderSide(color: cs.outlineVariant),
+        ),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<int>(
+          value: selectable ? value : null,
+          isExpanded: true,
+          isDense: true,
+          items: [
+            for (final s in options)
+              DropdownMenuItem<int>(
+                value: s.id,
+                child: Row(
+                  children: [
+                    Icon(
+                      storeIcon(s.icon),
+                      size: 16,
+                      color: parseHexColor(s.color) ?? cs.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(s.name, overflow: TextOverflow.ellipsis),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+          onChanged: (id) {
+            if (id != null) onChanged(id);
           },
         ),
       ),

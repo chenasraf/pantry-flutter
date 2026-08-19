@@ -888,6 +888,9 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                             ? controller.sortedStores
                             : const [],
                         priceEnabled: hasFeature('item-price'),
+                        perStorePriceEnabled: hasFeature(
+                          kItemPricePerStoreFeature,
+                        ),
                         lastCurrency: controller.lastCurrency,
                         initiallyFocused: false,
                         targetLists: realLists,
@@ -1111,10 +1114,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
           barcode: s.barcode,
-          priceType: s.priceType,
-          priceMin: s.priceMin,
-          priceMax: s.priceMax,
-          priceCurrency: s.priceCurrency,
+          prices: s.prices,
         );
       } else {
         created = await controller.addItem(
@@ -1127,15 +1127,15 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
           barcode: s.barcode,
-          priceType: s.priceType,
-          priceMin: s.priceMin,
-          priceMax: s.priceMax,
-          priceCurrency: s.priceCurrency,
+          prices: s.prices,
         );
       }
-      // Remember the chosen currency when the new item actually has a price.
-      if (s.priceType != null && s.priceCurrency != null) {
-        await controller.setLastCurrency(s.priceCurrency!);
+      // Remember the chosen currency when the new item actually has a price:
+      // the store-less price's currency, else the first per-store price's.
+      final prices = s.prices;
+      if (prices != null && prices.isNotEmpty) {
+        final currency = (storelessPrice(prices) ?? prices.first).priceCurrency;
+        if (currency != null) await controller.setLastCurrency(currency);
       }
       if (s.imageBytes != null) {
         await controller.uploadItemImage(
@@ -3278,6 +3278,7 @@ class _ItemListState extends State<_ItemList> {
                     keyOverride: ValueKey(
                       'store-tile-${group.storeId}-${item.id}',
                     ),
+                    priceStoreContext: group.storeId,
                   ),
                 );
               },
@@ -3291,6 +3292,7 @@ class _ItemListState extends State<_ItemList> {
                   context,
                   item,
                   keyOverride: ValueKey('store-${group.storeId}-${item.id}'),
+                  priceStoreContext: group.storeId,
                 );
               },
             ),
@@ -3304,7 +3306,12 @@ class _ItemListState extends State<_ItemList> {
   /// mounted twice (a duplicate-key crash), so those rows key off a unique
   /// (store, item) [ValueKey] instead. Toggles/edits still target `item.id`, so
   /// checking one copy updates every copy on the next rebuild.
-  Widget _buildTile(BuildContext context, ListItem item, {Key? keyOverride}) {
+  Widget _buildTile(
+    BuildContext context,
+    ListItem item, {
+    Key? keyOverride,
+    int? priceStoreContext,
+  }) {
     final controller = widget.controller;
     // A view-only shared list disables every item write; the granular house
     // caps still apply on top. Resolved per-item so the All-lists view (whose
@@ -3356,6 +3363,7 @@ class _ItemListState extends State<_ItemList> {
       addedByDisplayName: addedByDisplayName,
       listBadge: listBadge,
       hideCategory: widget.groupByCategory,
+      priceStoreContext: priceStoreContext,
       onToggle: (i) => _onToggle(context, controller, i),
       canCheck: writable && controller.permissions.canCheckItems,
       onView: (i) => _openView(context, controller, i),

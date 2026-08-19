@@ -2,6 +2,47 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/cache_store.dart';
+import 'package:pantry/services/server_version_service.dart';
+
+/// Capability advertised by servers that store a price per store (the `prices`
+/// array). Absent on older servers, which keep the flat single-price fields.
+const kItemPricePerStoreFeature = 'item-price-per-store';
+
+/// Serialize a [prices] value for the item create/update body, adapting to what
+/// the server supports. `null` omits the field entirely (prices unchanged).
+///
+/// On `item-price-per-store` servers the full array is sent. On older servers
+/// the prices collapse to the store-less (default) entry sent as the legacy
+/// flat fields; when there's no usable store-less price an update clears it via
+/// the `priceType: ''` sentinel and a create sends nothing.
+Map<String, dynamic> itemPriceBody(
+  List<ItemPrice>? prices, {
+  required bool isUpdate,
+}) {
+  if (prices == null) return const {};
+  if (hasFeature(kItemPricePerStoreFeature)) {
+    return {'prices': prices.map((p) => p.toJson()).toList()};
+  }
+  ItemPrice? storeless;
+  for (final p in prices) {
+    if (p.storeId == null) {
+      storeless = p;
+      break;
+    }
+  }
+  final usable =
+      storeless != null &&
+      (storeless.priceType == 'set' || storeless.priceType == 'range') &&
+      storeless.priceMin != null;
+  if (!usable) return isUpdate ? {'priceType': ''} : const {};
+  return {
+    'priceType': storeless.priceType,
+    'priceMin': storeless.priceMin,
+    if (storeless.priceMax != null) 'priceMax': storeless.priceMax,
+    if (storeless.priceCurrency != null)
+      'priceCurrency': storeless.priceCurrency,
+  };
+}
 
 class ChecklistService {
   ChecklistService._();
@@ -453,10 +494,7 @@ class ChecklistService {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
-    String? priceType,
-    double? priceMin,
-    double? priceMax,
-    String? priceCurrency,
+    List<ItemPrice>? prices,
   }) async {
     final loginName = AuthService.instance.credentials?.loginName;
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
@@ -473,10 +511,9 @@ class ChecklistService {
         'deleteOnDone': ?deleteOnDone,
         'addedBy': ?loginName,
         'barcode': ?barcode,
-        'priceType': ?priceType,
-        'priceMin': ?priceMin,
-        'priceMax': ?priceMax,
-        'priceCurrency': ?priceCurrency,
+        // Adapts to the server: `prices` array on item-price-per-store servers,
+        // legacy flat fields otherwise. null omits (no prices).
+        ...itemPriceBody(prices, isUpdate: false),
       },
       fromJson: (data) => ListItem.fromJson(data),
     );
@@ -496,10 +533,7 @@ class ChecklistService {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
-    String? priceType,
-    double? priceMin,
-    double? priceMax,
-    String? priceCurrency,
+    List<ItemPrice>? prices,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items/$itemId',
@@ -515,13 +549,10 @@ class ChecklistService {
         'repeatFromCompletion': ?repeatFromCompletion,
         'deleteOnDone': ?deleteOnDone,
         'barcode': ?barcode,
-        // priceType '' clears the price; 'set'/'range' sets it; null omits
-        // (unchanged). The `?` drops the key only on null, so a '' clear still
-        // reaches the server.
-        'priceType': ?priceType,
-        'priceMin': ?priceMin,
-        'priceMax': ?priceMax,
-        'priceCurrency': ?priceCurrency,
+        // Prices mirror stores: null omits (unchanged), an empty list clears
+        // all prices, otherwise the full set replaces the item's prices. On
+        // legacy servers this collapses to the store-less flat fields.
+        ...itemPriceBody(prices, isUpdate: true),
       },
       fromJson: (data) => ListItem.fromJson(data),
     );

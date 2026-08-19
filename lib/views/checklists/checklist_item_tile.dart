@@ -94,6 +94,12 @@ class ChecklistItemTile extends StatefulWidget {
   /// the header above it.
   final bool hideCategory;
 
+  /// Store context for the price chip. When non-null (store-grouped views), the
+  /// chip resolves this store's price, falling back to the store-less price;
+  /// null (flat/category views) shows the store-less price. See
+  /// `resolveItemPrice`.
+  final int? priceStoreContext;
+
   /// Multi-select state. When true, tapping the row toggles [selected] via
   /// [onSelectToggle], swipe actions are suppressed, and the leading control
   /// becomes a selection circle. When false, a non-null [onLongPressSelect]
@@ -133,6 +139,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.addedByDisplayName,
     this.listBadge,
     this.hideCategory = false,
+    this.priceStoreContext,
     this.selectionMode = false,
     this.selected = false,
     this.onSelectToggle,
@@ -168,6 +175,7 @@ class ChecklistItemTile extends StatefulWidget {
        addedByDisplayName = null,
        listBadge = null,
        hideCategory = false,
+       priceStoreContext = null,
        selectionMode = false,
        selected = false,
        onSelectToggle = null,
@@ -409,6 +417,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       addedByDisplayName: widget.addedByDisplayName,
       listBadge: widget.listBadge,
       hideCategory: widget.hideCategory,
+      priceStoreContext: widget.priceStoreContext,
       onCheckboxTap: widget.canCheck ? _toggleAndCloseSwipe : null,
       onRowTap: rowTap,
       onRowLongPress: rowLongPress,
@@ -530,6 +539,7 @@ class _RowContent extends StatelessWidget {
   final String? addedByDisplayName;
   final ItemListBadge? listBadge;
   final bool hideCategory;
+  final int? priceStoreContext;
   final VoidCallback? onCheckboxTap;
   final VoidCallback? onRowTap;
   final VoidCallback? onRowLongPress;
@@ -554,6 +564,7 @@ class _RowContent extends StatelessWidget {
     required this.addedByDisplayName,
     required this.listBadge,
     required this.hideCategory,
+    this.priceStoreContext,
     required this.onCheckboxTap,
     required this.onRowTap,
     required this.onRowLongPress,
@@ -665,6 +676,7 @@ class _RowContent extends StatelessWidget {
                             stores: stores,
                             catColor: catColor,
                             listBadge: listBadge,
+                            priceStoreContext: priceStoreContext,
                           ),
                         ],
                       ],
@@ -700,7 +712,7 @@ class _RowContent extends StatelessWidget {
         item.quantity!.trim().isNotEmpty &&
         prefs.isItemChipVisible(ItemChipKind.quantity.key);
     final hasPrice =
-        item.hasPrice &&
+        item.hasPriceFor(priceStoreContext) &&
         hasFeature('item-price') &&
         prefs.isItemChipVisible(ItemChipKind.price.key);
     final hasDesc =
@@ -803,6 +815,7 @@ class _MetaRow extends StatelessWidget {
   final List<models.Store> stores;
   final Color catColor;
   final ItemListBadge? listBadge;
+  final int? priceStoreContext;
 
   const _MetaRow({
     required this.item,
@@ -810,6 +823,7 @@ class _MetaRow extends StatelessWidget {
     required this.stores,
     required this.catColor,
     required this.listBadge,
+    this.priceStoreContext,
   });
 
   @override
@@ -876,11 +890,11 @@ class _MetaRow extends StatelessWidget {
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
           ),
-        if (item.hasPrice &&
+        if (item.hasPriceFor(priceStoreContext) &&
             hasFeature('item-price') &&
             prefs.isItemChipVisible(ItemChipKind.price.key))
           _Chip(
-            label: item.formattedPrice!,
+            label: item.formattedPriceFor(priceStoreContext)!,
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
           ),

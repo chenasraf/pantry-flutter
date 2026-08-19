@@ -3212,6 +3212,26 @@ class PriceChecklistsMessagesFr extends PriceChecklistsMessages {
   /// "Effacer le prix"
   /// ```
   String get clear => """Effacer le prix""";
+
+  /// ```dart
+  /// "N'importe quel magasin"
+  /// ```
+  String get anyStore => """N'importe quel magasin""";
+
+  /// ```dart
+  /// "Magasin"
+  /// ```
+  String get store => """Magasin""";
+
+  /// ```dart
+  /// "Ajouter un prix"
+  /// ```
+  String get addPrice => """Ajouter un prix""";
+
+  /// ```dart
+  /// "Supprimer le prix"
+  /// ```
+  String get removePrice => """Supprimer le prix""";
 }
 
 class ReuseChecklistsMessagesFr extends ReuseChecklistsMessages {
@@ -5150,6 +5170,10 @@ Mot de passe : pantry-rocks""",
   """checklists.price.max""": """Max""",
   """checklists.price.currency""": """Devise""",
   """checklists.price.clear""": """Effacer le prix""",
+  """checklists.price.anyStore""": """N'importe quel magasin""",
+  """checklists.price.store""": """Magasin""",
+  """checklists.price.addPrice""": """Ajouter un prix""",
+  """checklists.price.removePrice""": """Supprimer le prix""",
   """checklists.reuse.dialogTitle""": """L'article existe déjà""",
   """checklists.reuse.reuseExisting""": """Réutiliser l'existant""",
   """checklists.reuse.addAnyway""": """Ajouter quand même""",

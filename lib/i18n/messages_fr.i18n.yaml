@@ -601,6 +601,10 @@ checklists:
     max: Max
     currency: Devise
     clear: Effacer le prix
+    anyStore: N'importe quel magasin
+    store: Magasin
+    addPrice: Ajouter un prix
+    removePrice: Supprimer le prix
   reuse:
     dialogTitle: "L'article existe déjà"
     dialogBody(String name): 'Un article nommé "$name" existe déjà dans cette liste. Le réutiliser au lieu d''en ajouter un nouveau ?'

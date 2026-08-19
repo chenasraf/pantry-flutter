@@ -164,10 +164,7 @@ class SyncExecutor {
           repeatFromCompletion: op.body['repeatFromCompletion'] as bool?,
           deleteOnDone: op.body['deleteOnDone'] as bool?,
           barcode: op.body['barcode'] as String?,
-          priceType: op.body['priceType'] as String?,
-          priceMin: (op.body['priceMin'] as num?)?.toDouble(),
-          priceMax: (op.body['priceMax'] as num?)?.toDouble(),
-          priceCurrency: op.body['priceCurrency'] as String?,
+          prices: _pricesFromBody(op.body['prices']),
         );
         return SyncResult(item);
       case SyncOpKind.update:
@@ -186,10 +183,7 @@ class SyncExecutor {
           repeatFromCompletion: op.body['repeatFromCompletion'] as bool?,
           deleteOnDone: op.body['deleteOnDone'] as bool?,
           barcode: op.body['barcode'] as String?,
-          priceType: op.body['priceType'] as String?,
-          priceMin: (op.body['priceMin'] as num?)?.toDouble(),
-          priceMax: (op.body['priceMax'] as num?)?.toDouble(),
-          priceCurrency: op.body['priceCurrency'] as String?,
+          prices: _pricesFromBody(op.body['prices']),
         );
         return SyncResult(item);
       case SyncOpKind.delete:
@@ -464,6 +458,16 @@ class SyncExecutor {
         return SyncResult.empty;
     }
   }
+}
+
+/// Decode a queued `prices` payload back into [ItemPrice]s. Null (the key was
+/// omitted) leaves prices unchanged, so it stays null; a list — even empty —
+/// is passed through so an empty array can clear all prices on update.
+List<ItemPrice>? _pricesFromBody(Object? raw) {
+  if (raw == null) return null;
+  return (raw as List)
+      .map((e) => ItemPrice.fromJson(e as Map<String, dynamic>))
+      .toList();
 }
 
 /// Helpers to extract the server id from a result, used by the manager to

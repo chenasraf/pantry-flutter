@@ -117,6 +117,44 @@ extension ChecklistSharing on ChecklistList {
       hasFeature('share-users') ? (canEdit ?? houseCanEdit) : houseCanEdit;
 }
 
+/// A single price entry for an item. [storeId] `null` is the store-less
+/// (default) price — at most one per item; a non-null [storeId] scopes the
+/// price to that store, at most one per store. [priceType] is `'set'` (single
+/// amount in [priceMin]), `'range'` ([priceMin]–[priceMax]), or null for no
+/// price. [priceCurrency] is an ISO 4217 code. Gated behind the `item-price`
+/// capability.
+class ItemPrice {
+  final int? storeId;
+  final String? priceType;
+  final double? priceMin;
+  final double? priceMax;
+  final String? priceCurrency;
+
+  const ItemPrice({
+    this.storeId,
+    this.priceType,
+    this.priceMin,
+    this.priceMax,
+    this.priceCurrency,
+  });
+
+  factory ItemPrice.fromJson(Map<String, dynamic> json) => ItemPrice(
+    storeId: json['storeId'] as int?,
+    priceType: json['priceType'] as String?,
+    priceMin: (json['priceMin'] as num?)?.toDouble(),
+    priceMax: (json['priceMax'] as num?)?.toDouble(),
+    priceCurrency: json['priceCurrency'] as String?,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'storeId': storeId,
+    'priceType': priceType,
+    'priceMin': priceMin,
+    'priceMax': priceMax,
+    'priceCurrency': priceCurrency,
+  };
+}
+
 class ListItem {
   final int id;
   final int listId;
@@ -137,13 +175,10 @@ class ListItem {
   final String? addedBy;
   final String? barcode;
 
-  /// Optional price. [priceType] is `'set'` (single amount in [priceMin]),
-  /// `'range'` ([priceMin]–[priceMax]), or null for no price. [priceCurrency]
-  /// is an ISO 4217 code. Gated behind the `item-price` capability.
-  final String? priceType;
-  final double? priceMin;
-  final double? priceMax;
-  final String? priceCurrency;
+  /// Prices for this item, one per store plus an optional store-less default.
+  /// Empty when the item carries no price. See [ItemPrice] and the resolution
+  /// helpers in `utils/price.dart`. Gated behind the `item-price` capability.
+  final List<ItemPrice> prices;
   final int sortOrder;
   final int createdAt;
   final int updatedAt;
@@ -169,10 +204,7 @@ class ListItem {
     this.imageUploadedBy,
     this.addedBy,
     this.barcode,
-    this.priceType,
-    this.priceMin,
-    this.priceMax,
-    this.priceCurrency,
+    this.prices = const [],
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -201,16 +233,39 @@ class ListItem {
     imageUploadedBy: json['imageUploadedBy'] as String?,
     addedBy: json['addedBy'] as String?,
     barcode: json['barcode'] as String?,
-    priceType: json['priceType'] as String?,
-    priceMin: (json['priceMin'] as num?)?.toDouble(),
-    priceMax: (json['priceMax'] as num?)?.toDouble(),
-    priceCurrency: json['priceCurrency'] as String?,
+    prices: _pricesFromJson(json),
     sortOrder: json['sortOrder'] as int,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
     deletedAt: json['deletedAt'] as int?,
     archivedAt: json['archivedAt'] as int?,
   );
+
+  /// Read prices from either shape: the new `prices` array (servers advertising
+  /// `item-price-per-store`, and our own cache) or the legacy flat
+  /// `priceType/priceMin/priceMax/priceCurrency` fields (older servers), which
+  /// collapse to a single store-less [ItemPrice].
+  static List<ItemPrice> _pricesFromJson(Map<String, dynamic> json) {
+    final raw = json['prices'];
+    if (raw is List) {
+      return raw
+          .map((e) => ItemPrice.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+    final type = json['priceType'] as String?;
+    final min = (json['priceMin'] as num?)?.toDouble();
+    if ((type == 'set' || type == 'range') && min != null) {
+      return [
+        ItemPrice(
+          priceType: type,
+          priceMin: min,
+          priceMax: (json['priceMax'] as num?)?.toDouble(),
+          priceCurrency: json['priceCurrency'] as String?,
+        ),
+      ];
+    }
+    return const [];
+  }
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -231,10 +286,7 @@ class ListItem {
     'imageUploadedBy': imageUploadedBy,
     'addedBy': addedBy,
     'barcode': barcode,
-    'priceType': priceType,
-    'priceMin': priceMin,
-    'priceMax': priceMax,
-    'priceCurrency': priceCurrency,
+    'prices': prices.map((p) => p.toJson()).toList(),
     'sortOrder': sortOrder,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
@@ -261,11 +313,7 @@ class ListItem {
     bool clearImage = false,
     String? imageUploadedBy,
     String? barcode,
-    String? priceType,
-    double? priceMin,
-    double? priceMax,
-    String? priceCurrency,
-    bool clearPrice = false,
+    List<ItemPrice>? prices,
     int? sortOrder,
     int? updatedAt,
     int? deletedAt,
@@ -293,10 +341,7 @@ class ListItem {
         : (imageUploadedBy ?? this.imageUploadedBy),
     addedBy: addedBy,
     barcode: barcode ?? this.barcode,
-    priceType: clearPrice ? null : (priceType ?? this.priceType),
-    priceMin: clearPrice ? null : (priceMin ?? this.priceMin),
-    priceMax: clearPrice ? null : (priceMax ?? this.priceMax),
-    priceCurrency: clearPrice ? null : (priceCurrency ?? this.priceCurrency),
+    prices: prices ?? this.prices,
     sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,

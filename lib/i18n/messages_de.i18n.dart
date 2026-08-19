@@ -3212,6 +3212,26 @@ class PriceChecklistsMessagesDe extends PriceChecklistsMessages {
   /// "Preis entfernen"
   /// ```
   String get clear => """Preis entfernen""";
+
+  /// ```dart
+  /// "Beliebiger Laden"
+  /// ```
+  String get anyStore => """Beliebiger Laden""";
+
+  /// ```dart
+  /// "Laden"
+  /// ```
+  String get store => """Laden""";
+
+  /// ```dart
+  /// "Preis hinzufügen"
+  /// ```
+  String get addPrice => """Preis hinzufügen""";
+
+  /// ```dart
+  /// "Preis entfernen"
+  /// ```
+  String get removePrice => """Preis entfernen""";
 }
 
 class ReuseChecklistsMessagesDe extends ReuseChecklistsMessages {
@@ -5153,6 +5173,10 @@ Passwort: pantry-rocks""",
   """checklists.price.max""": """Max""",
   """checklists.price.currency""": """Währung""",
   """checklists.price.clear""": """Preis entfernen""",
+  """checklists.price.anyStore""": """Beliebiger Laden""",
+  """checklists.price.store""": """Laden""",
+  """checklists.price.addPrice""": """Preis hinzufügen""",
+  """checklists.price.removePrice""": """Preis entfernen""",
   """checklists.reuse.dialogTitle""": """Eintrag existiert bereits""",
   """checklists.reuse.reuseExisting""": """Vorhandenen wiederverwenden""",
   """checklists.reuse.addAnyway""": """Trotzdem hinzufügen""",

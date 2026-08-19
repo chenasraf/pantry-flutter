@@ -601,6 +601,10 @@ checklists:
     max: מקס׳
     currency: מטבע
     clear: נקה מחיר
+    anyStore: כל חנות
+    store: חנות
+    addPrice: הוספת מחיר
+    removePrice: הסרת מחיר
   reuse:
     dialogTitle: הפריט כבר קיים
     dialogBody(String name): 'פריט בשם "$name" כבר קיים ברשימה. להשתמש בו במקום להוסיף פריט חדש?'

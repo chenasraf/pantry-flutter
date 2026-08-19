@@ -715,6 +715,10 @@ checklists:
     max: Maks
     currency: Valuta
     clear: Fjern pris
+    anyStore: Kva som helst butikk
+    store: Butikk
+    addPrice: Legg til pris
+    removePrice: Fjern pris
   reuse:
     dialogTitle: Oppføringa finst allereie
     dialogBody(String name):

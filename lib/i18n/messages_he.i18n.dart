@@ -3187,6 +3187,26 @@ class PriceChecklistsMessagesHe extends PriceChecklistsMessages {
   /// "נקה מחיר"
   /// ```
   String get clear => """נקה מחיר""";
+
+  /// ```dart
+  /// "כל חנות"
+  /// ```
+  String get anyStore => """כל חנות""";
+
+  /// ```dart
+  /// "חנות"
+  /// ```
+  String get store => """חנות""";
+
+  /// ```dart
+  /// "הוספת מחיר"
+  /// ```
+  String get addPrice => """הוספת מחיר""";
+
+  /// ```dart
+  /// "הסרת מחיר"
+  /// ```
+  String get removePrice => """הסרת מחיר""";
 }
 
 class ReuseChecklistsMessagesHe extends ReuseChecklistsMessages {
@@ -5074,6 +5094,10 @@ Map<String, String> get messagesHeMap => {
   """checklists.price.max""": """מקס׳""",
   """checklists.price.currency""": """מטבע""",
   """checklists.price.clear""": """נקה מחיר""",
+  """checklists.price.anyStore""": """כל חנות""",
+  """checklists.price.store""": """חנות""",
+  """checklists.price.addPrice""": """הוספת מחיר""",
+  """checklists.price.removePrice""": """הסרת מחיר""",
   """checklists.reuse.dialogTitle""": """הפריט כבר קיים""",
   """checklists.reuse.reuseExisting""": """השתמש בקיים""",
   """checklists.reuse.addAnyway""": """הוסף בכל זאת""",

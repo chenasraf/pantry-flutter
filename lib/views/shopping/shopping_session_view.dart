@@ -487,6 +487,7 @@ class _ItemArea extends StatelessWidget {
                       // removed.
                       key: ValueKey(item.id),
                       item: item,
+                      storeContext: controller.session.activeStoreId,
                       onCheck: () => onCheck(item),
                       onSkip: () => onSkip(item),
                     ),
@@ -539,9 +540,14 @@ class _ShoppingItemRow extends StatelessWidget {
   final VoidCallback onCheck;
   final VoidCallback onSkip;
 
+  /// Active store leg, so the row shows this store's price (falling back to the
+  /// store-less price) rather than always the store-less default.
+  final int? storeContext;
+
   const _ShoppingItemRow({
     super.key,
     required this.item,
+    required this.storeContext,
     required this.onCheck,
     required this.onSkip,
   });
@@ -549,7 +555,7 @@ class _ShoppingItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final price = item.formattedPrice;
+    final price = item.formattedPriceFor(storeContext);
     return Dismissible(
       key: ValueKey('skip-${item.id}'),
       // End-to-start (trailing → leading) keeps the "swipe it away" gesture

@@ -601,6 +601,10 @@ checklists:
     max: Max
     currency: Currency
     clear: Clear price
+    anyStore: Any store
+    store: Store
+    addPrice: Add price
+    removePrice: Remove price
   reuse:
     dialogTitle: Item already exists
     dialogBody(String name): 'An item named "$name" already exists in this list. Reuse it instead of adding a new one?'
