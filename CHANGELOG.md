@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.27.3](https://github.com/chenasraf/pantry-flutter/compare/v0.27.2...v0.27.3) (2026-08-19)
+
+
+### Bug Fixes
+
+* **fdroid:** remove flutter_avif so F-Droid builds are reproducible ([4c41d92](https://github.com/chenasraf/pantry-flutter/commit/4c41d92f9ccda31e039e48cdf7777aa7190496ca))
+
 ## [0.27.2](https://github.com/chenasraf/pantry-flutter/compare/v0.27.1...v0.27.2) (2026-08-19)
 
 
