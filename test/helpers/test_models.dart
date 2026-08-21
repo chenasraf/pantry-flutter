@@ -74,6 +74,7 @@ Category makeCategory({
   String icon = 'food',
   String color = '#ef4444',
   int sortOrder = 0,
+  int? listId,
   int? createdAt,
   int? updatedAt,
 }) => Category(
@@ -83,6 +84,7 @@ Category makeCategory({
   icon: icon,
   color: color,
   sortOrder: sortOrder,
+  listId: listId,
   createdAt: createdAt ?? _now,
   updatedAt: updatedAt ?? _now,
 );

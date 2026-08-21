@@ -329,6 +329,19 @@ class ChecklistsController extends ChangeNotifier {
   List<models.Category> get sortedCategories =>
       CategoryService.sortCategories(_categories.values, _categorySort);
 
+  /// Categories offered for an item on [listId], applying the effective-list
+  /// rule: a list's own scoped categories plus every global one. When [listId]
+  /// is null (the All-lists meta view, where the target list isn't chosen yet)
+  /// only globals apply. A no-op filter on servers without `category-lists`,
+  /// where every category is global.
+  List<models.Category> categoriesForList(int? listId) {
+    if (!hasFeature('category-lists')) return sortedCategories;
+    return [
+      for (final c in sortedCategories)
+        if (c.listId == null || (listId != null && c.listId == listId)) c,
+    ];
+  }
+
   Map<int, models.Store> _stores = {};
   Map<int, models.Store> get stores => _stores;
 
@@ -1042,10 +1055,31 @@ class ChecklistsController extends ChangeNotifier {
 
       if (_sortBy == 'category') _resortItemsByCategory();
       notifyListeners();
+
+      // Re-scoping a category detaches it from items on other lists server-side
+      // (their `categoryId` is cleared), so the current view's cached items may
+      // now be stale. Refetch them so a detached item doesn't keep showing a
+      // category it no longer has. Only relevant when scoping is available.
+      if (hasFeature('category-lists') && _currentList != null && !isSoftView) {
+        await selectList(_currentList!, refreshInPlace: true);
+      }
     } catch (e) {
       debugPrint(
         '[ChecklistsController] Failed to refresh after categories changed: $e',
       );
+    }
+  }
+
+  /// Refetch just the categories and adopt them, keeping the on-disk cache
+  /// honest. Used after a server-side cascade (a permanent list delete) prunes
+  /// scoped categories out from under us.
+  Future<void> _refreshCategories() async {
+    try {
+      final cats = await _categoryService.getCategories(houseId);
+      _categories = {for (final c in cats) c.id: c};
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to refresh categories: $e');
     }
   }
 
@@ -2408,6 +2442,21 @@ class ChecklistsController extends ChangeNotifier {
     final tempId = applied.op.tempEntityId;
     switch (applied.op.entity) {
       case SyncEntity.checklistList:
+        // Permanently deleting a list cascade-deletes its scoped categories on
+        // the server (emptying the lists trash does the same for every trashed
+        // list). Drop the obvious ones locally and refetch so the category
+        // cache doesn't keep offering categories that no longer exist.
+        final kind = applied.op.op;
+        if (hasFeature('category-lists') &&
+            (kind == SyncOpKind.permanentDelete ||
+                kind == SyncOpKind.emptyTrash)) {
+          final deletedListId = applied.op.entityId;
+          if (deletedListId != null) {
+            _categories.removeWhere((_, c) => c.listId == deletedListId);
+          }
+          notifyListeners();
+          unawaited(_refreshCategories());
+        }
         final entity = applied.entity;
         if (entity is ChecklistList) {
           // Server entities never carry the client-only progress-card state,

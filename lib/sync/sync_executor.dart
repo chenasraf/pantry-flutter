@@ -306,16 +306,22 @@ class SyncExecutor {
           name: op.body['name'] as String,
           icon: op.body['icon'] as String,
           color: op.body['color'] as String,
+          listId: op.body['listId'] as int?,
         );
         return SyncResult(cat);
       case SyncOpKind.update:
         if (id == null) return SyncResult.empty;
+        // Presence is significant: `listId` absent leaves the scope alone; a
+        // key present with a value (including null → global) re-scopes it.
         final cat = await svc.updateCategory(
           houseId,
           id,
           name: op.body['name'] as String?,
           icon: op.body['icon'] as String?,
           color: op.body['color'] as String?,
+          listId: op.body.containsKey('listId')
+              ? op.body['listId']
+              : categoryListIdUnset,
         );
         return SyncResult(cat);
       case SyncOpKind.delete:

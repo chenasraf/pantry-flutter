@@ -67,7 +67,20 @@ class _ItemFormViewState extends State<ItemFormView> {
   bool get _hasExistingImage =>
       widget.item?.imageFileId != null && !_removeExistingImage;
 
-  List<models.Category> get _categories => widget.controller.sortedCategories;
+  /// The list whose scope governs which categories are offered: the edited
+  /// item's own list, or — when adding — the list in context (null in the
+  /// All-lists meta view, where the target isn't chosen yet, so only globals
+  /// apply).
+  int? get _effectiveListId {
+    final item = widget.item;
+    if (item != null) return item.listId;
+    final current = widget.controller.currentList;
+    if (current == null || current.id == kAllListsId) return null;
+    return current.id;
+  }
+
+  List<models.Category> get _categories =>
+      widget.controller.categoriesForList(_effectiveListId);
   List<models.Store> get _stores => widget.controller.sortedStores;
   bool get _storesEnabled => hasFeature('stores');
   List<models.Store> get _selectedStores => [
@@ -293,10 +306,9 @@ class _ItemFormViewState extends State<ItemFormView> {
   models.Category? get _selectedCategory {
     final id = _selectedCategoryId;
     if (id == null) return null;
-    for (final c in _categories) {
-      if (c.id == id) return c;
-    }
-    return null;
+    // Resolve against the full set, not the scoped list, so an already-assigned
+    // category still renders even if it falls outside the current scope.
+    return widget.controller.categories[id];
   }
 
   Color? _parseColor(String hex) {
@@ -507,7 +519,10 @@ class _ItemFormViewState extends State<ItemFormView> {
   Future<void> _openCreateCategory() async {
     final created = await showDialog<models.Category>(
       context: context,
-      builder: (_) => CreateCategoryDialog(houseId: widget.controller.houseId),
+      builder: (_) => CreateCategoryDialog(
+        houseId: widget.controller.houseId,
+        defaultListId: _effectiveListId,
+      ),
     );
     if (created == null || !mounted) return;
     widget.controller.categories[created.id] = created;

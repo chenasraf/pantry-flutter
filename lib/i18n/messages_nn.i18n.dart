@@ -791,6 +791,27 @@ Passord: pantry""";
   String get shoppingMockStoreNext => """Apotek""";
 
   /// ```dart
+  /// "Kategoriar per liste"
+  /// ```
+  String get categoryScopeTitle => """Kategoriar per liste""";
+
+  /// ```dart
+  /// "Hald ein kategori på éi liste, eller gjer han global så han dukkar opp på alle listene. Nye kategoriar er globale om du ikkje vel ei liste."
+  /// ```
+  String get categoryScopeBody =>
+      """Hald ein kategori på éi liste, eller gjer han global så han dukkar opp på alle listene. Nye kategoriar er globale om du ikkje vel ei liste.""";
+
+  /// ```dart
+  /// "Synest på alle listene"
+  /// ```
+  String get categoryScopeGlobalCaption => """Synest på alle listene""";
+
+  /// ```dart
+  /// "Synest berre på denne lista"
+  /// ```
+  String get categoryScopeScopedCaption => """Synest berre på denne lista""";
+
+  /// ```dart
   /// "* Krev Pantry for Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -1563,6 +1584,16 @@ class CategoriesMessagesNn extends CategoriesMessages {
   /// ```
   String get deleteConfirmBody =>
       """Oppføringar i denne kategorien vil verta ukategoriserte. Dette kan ikkje angrast.""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
+
+  /// ```dart
+  /// "Alle lister (global)"
+  /// ```
+  String get globalList => """Alle lister (global)""";
   SortCategoriesMessagesNn get sort => SortCategoriesMessagesNn(this);
 }
 
@@ -4704,6 +4735,12 @@ Passord: pantry""",
       """Start ein handletur over listene dine, gå gjennom kvar butikk i rekkjefølgje og kryss av varer undervegs — med ei løpande prissum.""",
   """onboarding.shoppingMockStoreActive""": """Supermarknad""",
   """onboarding.shoppingMockStoreNext""": """Apotek""",
+  """onboarding.categoryScopeTitle""": """Kategoriar per liste""",
+  """onboarding.categoryScopeBody""":
+      """Hald ein kategori på éi liste, eller gjer han global så han dukkar opp på alle listene. Nye kategoriar er globale om du ikkje vel ei liste.""",
+  """onboarding.categoryScopeGlobalCaption""": """Synest på alle listene""",
+  """onboarding.categoryScopeScopedCaption""":
+      """Synest berre på denne lista""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4857,6 +4894,8 @@ Passord: pantry""",
   """categories.deleteConfirm""": """Slett denne kategorien?""",
   """categories.deleteConfirmBody""":
       """Oppføringar i denne kategorien vil verta ukategoriserte. Dette kan ikkje angrast.""",
+  """categories.list""": """Liste""",
+  """categories.globalList""": """Alle lister (global)""",
   """categories.sort.nameAZ""": """Namn A-Z""",
   """categories.sort.nameZA""": """Namn Z-A""",
   """categories.sort.custom""": """Sjølvvald""",

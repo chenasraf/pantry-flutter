@@ -2,6 +2,12 @@ import 'package:pantry/models/category.dart';
 import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/cache_store.dart';
 
+/// Sentinel for [CategoryService.updateCategory]'s `listId`: pass it (the
+/// default) to omit `listId` from the PATCH entirely, leaving the scope
+/// unchanged. `null` is a *meaningful* value ("make global"), so it can't
+/// double as "unset".
+const Object categoryListIdUnset = Object();
+
 class CategoryService {
   CategoryService._();
   static final CategoryService instance = CategoryService._();
@@ -83,24 +89,38 @@ class CategoryService {
     required String name,
     required String icon,
     required String color,
+    int? listId,
   }) async {
     return ApiClient.instance.post<Map<String, dynamic>, Category>(
       '/houses/$houseId/categories',
-      body: {'name': name, 'icon': icon, 'color': color},
+      // A null `listId` means global — the server default — so it's only sent
+      // when scoping to a real list.
+      body: {'name': name, 'icon': icon, 'color': color, 'listId': ?listId},
       fromJson: (data) => Category.fromJson(data),
     );
   }
 
+  /// Pass [listId] as an int to scope the category, `null` to make it global,
+  /// or leave it as [categoryListIdUnset] to keep the current scope. The `?`
+  /// map-spread would silently drop an explicit `null`, so `listId` is added
+  /// separately.
   Future<Category> updateCategory(
     int houseId,
     int categoryId, {
     String? name,
     String? icon,
     String? color,
+    Object? listId = categoryListIdUnset,
   }) async {
+    final body = <String, dynamic>{
+      'name': ?name,
+      'icon': ?icon,
+      'color': ?color,
+    };
+    if (!identical(listId, categoryListIdUnset)) body['listId'] = listId;
     return ApiClient.instance.patch<Map<String, dynamic>, Category>(
       '/houses/$houseId/categories/$categoryId',
-      body: {'name': ?name, 'icon': ?icon, 'color': ?color},
+      body: body,
       fromJson: (data) => Category.fromJson(data),
     );
   }

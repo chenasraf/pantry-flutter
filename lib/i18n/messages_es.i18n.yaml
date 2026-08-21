@@ -135,6 +135,10 @@ onboarding:
   shoppingIntroBody: "Inicia una compra con tus listas, recorre cada tienda en orden y marca los artículos sobre la marcha, con un total de precio en tiempo real."
   shoppingMockStoreActive: "Supermercado"
   shoppingMockStoreNext: "Farmacia"
+  categoryScopeTitle: "Categorías por lista"
+  categoryScopeBody: "Mantén una categoría en una sola lista, o hazla global para que aparezca en todas las listas. Las categorías nuevas siguen siendo globales a menos que elijas una lista."
+  categoryScopeGlobalCaption: "Aparece en todas las listas"
+  categoryScopeScopedCaption: "Aparece solo en esta lista"
   serverRequirementNote(String version): "* Requiere Pantry para Nextcloud v${version}+"
   dev:
     showOnboarding: "Mostrar introducción"
@@ -286,6 +290,8 @@ categories:
   deleteFailed: "No se pudo eliminar la categoría."
   deleteConfirm: "¿Eliminar esta categoría?"
   deleteConfirmBody: "Los artículos en esta categoría quedarán sin categoría. Esta acción no se puede deshacer."
+  list: Lista
+  globalList: Todas las listas (global)
   sort:
     nameAZ: "Nombre A–Z"
     nameZA: "Nombre Z–A"

@@ -792,6 +792,27 @@ Passwort: pantry-rocks""";
   String get shoppingMockStoreNext => """Apotheke""";
 
   /// ```dart
+  /// "Kategorien pro Liste"
+  /// ```
+  String get categoryScopeTitle => """Kategorien pro Liste""";
+
+  /// ```dart
+  /// "Behalte eine Kategorie auf einer einzigen Liste oder mache sie global, damit sie auf jeder Liste erscheint. Neue Kategorien bleiben global, sofern du keine Liste wählst."
+  /// ```
+  String get categoryScopeBody =>
+      """Behalte eine Kategorie auf einer einzigen Liste oder mache sie global, damit sie auf jeder Liste erscheint. Neue Kategorien bleiben global, sofern du keine Liste wählst.""";
+
+  /// ```dart
+  /// "Erscheint auf allen Listen"
+  /// ```
+  String get categoryScopeGlobalCaption => """Erscheint auf allen Listen""";
+
+  /// ```dart
+  /// "Erscheint nur auf dieser Liste"
+  /// ```
+  String get categoryScopeScopedCaption => """Erscheint nur auf dieser Liste""";
+
+  /// ```dart
   /// "* Erfordert Pantry für Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -1566,6 +1587,16 @@ class CategoriesMessagesDe extends CategoriesMessages {
   /// ```
   String get deleteConfirmBody =>
       """Einträge in dieser Kategorie werden unkategorisiert. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
+
+  /// ```dart
+  /// "Alle Listen (global)"
+  /// ```
+  String get globalList => """Alle Listen (global)""";
   SortCategoriesMessagesDe get sort => SortCategoriesMessagesDe(this);
 }
 
@@ -4728,6 +4759,12 @@ Passwort: pantry-rocks""",
       """Starte einen Einkauf über deine Listen, gehe die Geschäfte der Reihe nach ab und hake Artikel unterwegs ab — mit laufender Preissumme.""",
   """onboarding.shoppingMockStoreActive""": """Supermarkt""",
   """onboarding.shoppingMockStoreNext""": """Apotheke""",
+  """onboarding.categoryScopeTitle""": """Kategorien pro Liste""",
+  """onboarding.categoryScopeBody""":
+      """Behalte eine Kategorie auf einer einzigen Liste oder mache sie global, damit sie auf jeder Liste erscheint. Neue Kategorien bleiben global, sofern du keine Liste wählst.""",
+  """onboarding.categoryScopeGlobalCaption""": """Erscheint auf allen Listen""",
+  """onboarding.categoryScopeScopedCaption""":
+      """Erscheint nur auf dieser Liste""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4884,6 +4921,8 @@ Passwort: pantry-rocks""",
   """categories.deleteConfirm""": """Diese Kategorie löschen?""",
   """categories.deleteConfirmBody""":
       """Einträge in dieser Kategorie werden unkategorisiert. Dies kann nicht rückgängig gemacht werden.""",
+  """categories.list""": """Liste""",
+  """categories.globalList""": """Alle Listen (global)""",
   """categories.sort.nameAZ""": """Name A–Z""",
   """categories.sort.nameZA""": """Name Z–A""",
   """categories.sort.custom""": """Benutzerdefiniert""",

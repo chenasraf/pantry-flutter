@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart';
+import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
@@ -28,6 +29,11 @@ class _CategoriesViewState extends State<CategoriesView> {
       : _allSortKeys.where((k) => k != 'custom').toList();
 
   List<Category> _categories = [];
+
+  /// Lists in display order, used to group categories by scope and to label the
+  /// per-list sections. Only loaded when the `category-lists` feature is on.
+  List<ChecklistList> _lists = [];
+  bool get _scopingEnabled => hasFeature('category-lists');
   String _sort = 'custom';
   bool _isLoading = true;
   String? _error;
@@ -50,10 +56,19 @@ class _CategoriesViewState extends State<CategoriesView> {
       final categoriesFuture = CategoryService.instance.getCategories(
         widget.houseId,
       );
-      final results = await Future.wait([prefsFuture, categoriesFuture]);
+      // Lists back the per-scope grouping; only needed when scoping is on.
+      final listsFuture = _scopingEnabled
+          ? ChecklistService.instance.getLists(widget.houseId)
+          : Future.value(const <ChecklistList>[]);
+      final results = await Future.wait([
+        prefsFuture,
+        categoriesFuture,
+        listsFuture,
+      ]);
       if (!mounted) return;
       final prefs = results[0] as Map<String, dynamic>;
       final list = results[1] as List<Category>;
+      final lists = results[2] as List<ChecklistList>;
       setState(() {
         var sort = prefs['categorySort'] as String? ?? 'custom';
         if (sort == 'custom' && !hasFeature('category-sort')) {
@@ -61,6 +76,7 @@ class _CategoriesViewState extends State<CategoriesView> {
         }
         _sort = sort;
         _categories = CategoryService.sortCategories(list, _sort);
+        _lists = ChecklistService.sortLists(lists, 'custom');
         _isLoading = false;
       });
     } catch (e) {
@@ -92,12 +108,40 @@ class _CategoriesViewState extends State<CategoriesView> {
       final item = _categories.removeAt(oldIndex);
       _categories.insert(newIndex, item);
     });
+    _persistOrder(_categories);
+  }
 
-    final order = <Map<String, int>>[];
-    for (var i = 0; i < _categories.length; i++) {
-      order.add({'id': _categories[i].id, 'sortOrder': i});
+  /// Reorder within a single scope group. Only the dragged group's slice is
+  /// reordered; the full house-wide sequence is then renumbered (the drag can't
+  /// move a category across scopes — each group is its own reorderable).
+  Future<void> _reorderGroup(
+    _CategoryGroup group,
+    int oldIndex,
+    int newIndex,
+  ) async {
+    if (_sort != 'custom') return;
+    if (newIndex > oldIndex) newIndex--;
+    if (oldIndex == newIndex) return;
+
+    final reordered = [...group.categories];
+    final moved = reordered.removeAt(oldIndex);
+    reordered.insert(newIndex, moved);
+
+    // Splice the reordered slice back into the full display order, keeping every
+    // other group untouched.
+    final flat = <Category>[];
+    for (final g in _buildGroups()) {
+      flat.addAll(g.listId == group.listId ? reordered : g.categories);
     }
+    setState(() => _categories = flat);
+    _persistOrder(flat);
+  }
 
+  void _persistOrder(List<Category> ordered) {
+    final order = <Map<String, int>>[];
+    for (var i = 0; i < ordered.length; i++) {
+      order.add({'id': ordered[i].id, 'sortOrder': i});
+    }
     SyncManager.instance.enqueue(
       SyncOp(
         uuid: SyncIds.newOpUuid(),
@@ -108,6 +152,52 @@ class _CategoriesViewState extends State<CategoriesView> {
         createdAt: DateTime.now().millisecondsSinceEpoch,
       ),
     );
+  }
+
+  /// Partition [_categories] into scope groups for display: the global ("All
+  /// lists") section first, then one section per list that has categories, in
+  /// the lists' display order. Any category scoped to a list that isn't loaded
+  /// (e.g. mid-removal) still gets a best-effort section so it stays visible.
+  List<_CategoryGroup> _buildGroups() {
+    final globals = [
+      for (final c in _categories)
+        if (c.listId == null) c,
+    ];
+    final byList = <int, List<Category>>{};
+    for (final c in _categories) {
+      final lid = c.listId;
+      if (lid != null) byList.putIfAbsent(lid, () => []).add(c);
+    }
+
+    final groups = <_CategoryGroup>[];
+    if (globals.isNotEmpty) {
+      groups.add(
+        _CategoryGroup(
+          listId: null,
+          title: m.categories.globalList,
+          categories: globals,
+        ),
+      );
+    }
+    for (final list in _lists) {
+      final cats = byList.remove(list.id);
+      if (cats != null && cats.isNotEmpty) {
+        groups.add(
+          _CategoryGroup(listId: list.id, title: list.name, categories: cats),
+        );
+      }
+    }
+    // Orphans: scoped to a list we don't have loaded. Keep them addressable.
+    for (final entry in byList.entries) {
+      groups.add(
+        _CategoryGroup(
+          listId: entry.key,
+          title: '#${entry.key}',
+          categories: entry.value,
+        ),
+      );
+    }
+    return groups;
   }
 
   Future<void> _create() async {
@@ -260,25 +350,76 @@ class _CategoriesViewState extends State<CategoriesView> {
           ? Center(child: Text(m.categories.noCategories))
           : RefreshIndicator(
               onRefresh: _load,
-              child: _sort == 'custom'
-                  ? ReorderableListView.builder(
-                      padding: const EdgeInsets.only(bottom: 96),
-                      itemCount: _categories.length,
-                      onReorder: _reorder,
-                      itemBuilder: (context, index) =>
-                          _buildTile(theme, _categories[index]),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.only(bottom: 96),
-                      itemCount: _categories.length,
-                      itemBuilder: (context, index) =>
-                          _buildTile(theme, _categories[index]),
-                    ),
+              child: _scopingEnabled
+                  ? _buildGroupedList(theme)
+                  : _buildFlatList(theme),
             ),
     );
   }
 
-  Widget _buildTile(ThemeData theme, Category cat) {
+  /// Flat, ungrouped list — used on servers without `category-lists`, where
+  /// every category is global.
+  Widget _buildFlatList(ThemeData theme) {
+    if (_sort == 'custom') {
+      return ReorderableListView.builder(
+        padding: const EdgeInsets.only(bottom: 96),
+        itemCount: _categories.length,
+        onReorder: _reorder,
+        itemBuilder: (context, index) =>
+            _buildTile(theme, _categories[index], dragIndex: index),
+      );
+    }
+    return ListView.builder(
+      padding: const EdgeInsets.only(bottom: 96),
+      itemCount: _categories.length,
+      itemBuilder: (context, index) => _buildTile(theme, _categories[index]),
+    );
+  }
+
+  /// Grouped by scope: an "All lists" section, then one section per list that
+  /// has categories. In custom sort each group is its own reorderable, so drags
+  /// stay within a scope.
+  Widget _buildGroupedList(ThemeData theme) {
+    final groups = _buildGroups();
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 96),
+      children: [
+        for (final group in groups) ...[
+          _buildSectionHeader(theme, group.title),
+          if (_sort == 'custom')
+            ReorderableListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              buildDefaultDragHandles: false,
+              itemCount: group.categories.length,
+              onReorder: (oldIndex, newIndex) =>
+                  _reorderGroup(group, oldIndex, newIndex),
+              itemBuilder: (context, index) =>
+                  _buildTile(theme, group.categories[index], dragIndex: index),
+            )
+          else
+            for (final cat in group.categories) _buildTile(theme, cat),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSectionHeader(ThemeData theme, String title) => Padding(
+    padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 4),
+    child: Text(
+      title.toUpperCase(),
+      style: theme.textTheme.labelSmall?.copyWith(
+        color: theme.colorScheme.primary,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.6,
+      ),
+    ),
+  );
+
+  /// [dragIndex] is the item's index within its reorderable (the whole list
+  /// when flat, the group when grouped); the drag handle is shown only when
+  /// it's provided and the sort is custom.
+  Widget _buildTile(ThemeData theme, Category cat, {int? dragIndex}) {
     final color = _parseColor(cat.color) ?? theme.colorScheme.primary;
     return ListTile(
       key: ValueKey(cat.id),
@@ -298,9 +439,9 @@ class _CategoriesViewState extends State<CategoriesView> {
             icon: const Icon(Icons.delete, size: 20),
             onPressed: () => _delete(cat),
           ),
-          if (_sort == 'custom')
+          if (_sort == 'custom' && dragIndex != null)
             ReorderableDragStartListener(
-              index: _categories.indexOf(cat),
+              index: dragIndex,
               child: Icon(
                 Icons.drag_handle,
                 color: theme.colorScheme.onSurfaceVariant,
@@ -311,4 +452,18 @@ class _CategoriesViewState extends State<CategoriesView> {
       onTap: () => _edit(cat),
     );
   }
+}
+
+/// A display group of categories sharing a scope: `listId == null` for the
+/// global ("All lists") section, or a list id for a per-list section.
+class _CategoryGroup {
+  final int? listId;
+  final String title;
+  final List<Category> categories;
+
+  const _CategoryGroup({
+    required this.listId,
+    required this.title,
+    required this.categories,
+  });
 }

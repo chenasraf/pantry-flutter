@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/widgets/create_category_dialog.dart';
 
@@ -11,6 +12,11 @@ class CategoryPicker extends StatelessWidget {
   final List<Category> categories;
   final int? selectedId;
   final int houseId;
+
+  /// The list whose scope governs which categories are offered — a list's own
+  /// scoped categories plus every global one. Null (the All-lists view) offers
+  /// only globals. Ignored on servers without the `category-lists` feature.
+  final int? listId;
   final ValueChanged<int?> onChanged;
   final ValueChanged<Category> onCreated;
 
@@ -19,9 +25,20 @@ class CategoryPicker extends StatelessWidget {
     required this.categories,
     required this.selectedId,
     required this.houseId,
+    this.listId,
     required this.onChanged,
     required this.onCreated,
   });
+
+  /// Categories in scope for [listId] under the effective-list rule. A no-op on
+  /// servers without `category-lists`, where every category is global.
+  List<Category> get _scopedCategories {
+    if (!hasFeature('category-lists')) return categories;
+    return [
+      for (final c in categories)
+        if (c.listId == null || (listId != null && c.listId == listId)) c,
+    ];
+  }
 
   Color? _parseColor(String hex) {
     if (hex.isEmpty) return null;
@@ -45,7 +62,7 @@ class CategoryPicker extends StatelessWidget {
       ),
       items: [
         DropdownMenuItem<int?>(value: null, child: Text(f.noCategory)),
-        ...categories.map((cat) {
+        ..._scopedCategories.map((cat) {
           final color = _parseColor(cat.color) ?? theme.colorScheme.primary;
           return DropdownMenuItem<int?>(
             value: cat.id,
@@ -85,7 +102,8 @@ class CategoryPicker extends StatelessWidget {
   void _showCreateDialog(BuildContext context) {
     showDialog<Category>(
       context: context,
-      builder: (_) => CreateCategoryDialog(houseId: houseId),
+      builder: (_) =>
+          CreateCategoryDialog(houseId: houseId, defaultListId: listId),
     ).then((created) {
       if (created != null) {
         onCreated(created);

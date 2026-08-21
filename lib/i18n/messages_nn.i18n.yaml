@@ -198,6 +198,10 @@ onboarding:
   shoppingIntroBody: "Start ein handletur over listene dine, gå gjennom kvar butikk i rekkjefølgje og kryss av varer undervegs — med ei løpande prissum."
   shoppingMockStoreActive: "Supermarknad"
   shoppingMockStoreNext: "Apotek"
+  categoryScopeTitle: "Kategoriar per liste"
+  categoryScopeBody: "Hald ein kategori på éi liste, eller gjer han global så han dukkar opp på alle listene. Nye kategoriar er globale om du ikkje vel ei liste."
+  categoryScopeGlobalCaption: "Synest på alle listene"
+  categoryScopeScopedCaption: "Synest berre på denne lista"
   serverRequirementNote(String version): "* Krev Pantry for Nextcloud v${version}+"
   dev:
     showOnboarding: Vis oppstartshjelp
@@ -369,6 +373,8 @@ categories:
   deleteConfirmBody:
     "Oppføringar i denne kategorien vil verta ukategoriserte. Dette
     kan ikkje angrast."
+  list: Liste
+  globalList: Alle lister (global)
   sort:
     nameAZ: "Namn A-Z"
     nameZA: "Namn Z-A"

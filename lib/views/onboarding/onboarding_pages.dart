@@ -7,6 +7,7 @@ import 'pages/all_lists_page.dart';
 import 'pages/barcode_scan_page.dart';
 import 'pages/bulk_add_page.dart';
 import 'pages/bulk_select_page.dart';
+import 'pages/category_scope_page.dart';
 import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
 import 'pages/item_price_page.dart';
@@ -128,6 +129,9 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   ],
   '0.25.0': [
     OnboardingPageEntry(builder: (_) => const ShoppingModeOnboardingPage()),
+  ],
+  '0.28.0': [
+    OnboardingPageEntry(builder: (_) => const CategoryScopeOnboardingPage()),
   ],
 };
 

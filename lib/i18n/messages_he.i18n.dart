@@ -788,6 +788,27 @@ class OnboardingMessagesHe extends OnboardingMessages {
   String get shoppingMockStoreNext => """בית מרקחת""";
 
   /// ```dart
+  /// "קטגוריות לכל רשימה"
+  /// ```
+  String get categoryScopeTitle => """קטגוריות לכל רשימה""";
+
+  /// ```dart
+  /// "השאירו קטגוריה ברשימה אחת, או הפכו אותה לגלובלית כך שתופיע בכל הרשימות. קטגוריות חדשות נשארות גלובליות אלא אם בוחרים רשימה."
+  /// ```
+  String get categoryScopeBody =>
+      """השאירו קטגוריה ברשימה אחת, או הפכו אותה לגלובלית כך שתופיע בכל הרשימות. קטגוריות חדשות נשארות גלובליות אלא אם בוחרים רשימה.""";
+
+  /// ```dart
+  /// "מופיעה בכל הרשימות"
+  /// ```
+  String get categoryScopeGlobalCaption => """מופיעה בכל הרשימות""";
+
+  /// ```dart
+  /// "מופיעה ברשימה זו בלבד"
+  /// ```
+  String get categoryScopeScopedCaption => """מופיעה ברשימה זו בלבד""";
+
+  /// ```dart
   /// "* דורש את Pantry ל-Nextcloud בגרסה ${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -1556,6 +1577,16 @@ class CategoriesMessagesHe extends CategoriesMessages {
   /// ```
   String get deleteConfirmBody =>
       """פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "רשימה"
+  /// ```
+  String get list => """רשימה""";
+
+  /// ```dart
+  /// "כל הרשימות (גלובלי)"
+  /// ```
+  String get globalList => """כל הרשימות (גלובלי)""";
   SortCategoriesMessagesHe get sort => SortCategoriesMessagesHe(this);
 }
 
@@ -4679,6 +4710,11 @@ Map<String, String> get messagesHeMap => {
       """התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן.""",
   """onboarding.shoppingMockStoreActive""": """סופרמרקט""",
   """onboarding.shoppingMockStoreNext""": """בית מרקחת""",
+  """onboarding.categoryScopeTitle""": """קטגוריות לכל רשימה""",
+  """onboarding.categoryScopeBody""":
+      """השאירו קטגוריה ברשימה אחת, או הפכו אותה לגלובלית כך שתופיע בכל הרשימות. קטגוריות חדשות נשארות גלובליות אלא אם בוחרים רשימה.""",
+  """onboarding.categoryScopeGlobalCaption""": """מופיעה בכל הרשימות""",
+  """onboarding.categoryScopeScopedCaption""": """מופיעה ברשימה זו בלבד""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4829,6 +4865,8 @@ Map<String, String> get messagesHeMap => {
   """categories.deleteConfirm""": """למחוק את הקטגוריה?""",
   """categories.deleteConfirmBody""":
       """פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו.""",
+  """categories.list""": """רשימה""",
+  """categories.globalList""": """כל הרשימות (גלובלי)""",
   """categories.sort.nameAZ""": """שם א'–ת'""",
   """categories.sort.nameZA""": """שם ת'–א'""",
   """categories.sort.custom""": """מותאם אישית""",

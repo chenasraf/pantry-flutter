@@ -135,6 +135,10 @@ onboarding:
   shoppingIntroBody: "התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן."
   shoppingMockStoreActive: "סופרמרקט"
   shoppingMockStoreNext: "בית מרקחת"
+  categoryScopeTitle: "קטגוריות לכל רשימה"
+  categoryScopeBody: "השאירו קטגוריה ברשימה אחת, או הפכו אותה לגלובלית כך שתופיע בכל הרשימות. קטגוריות חדשות נשארות גלובליות אלא אם בוחרים רשימה."
+  categoryScopeGlobalCaption: "מופיעה בכל הרשימות"
+  categoryScopeScopedCaption: "מופיעה ברשימה זו בלבד"
   serverRequirementNote(String version): "* דורש את Pantry ל-Nextcloud בגרסה ${version}+"
   dev:
     showOnboarding: "הצג היכרות"
@@ -286,6 +290,8 @@ categories:
   deleteFailed: מחיקת הקטגוריה נכשלה.
   deleteConfirm: למחוק את הקטגוריה?
   deleteConfirmBody: "פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו."
+  list: רשימה
+  globalList: כל הרשימות (גלובלי)
   sort:
     nameAZ: "שם א'–ת'"
     nameZA: "שם ת'–א'"

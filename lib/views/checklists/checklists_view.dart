@@ -883,7 +883,9 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                         deleteOnDoneDefault: meta
                             ? false
                             : list.deleteOnDoneDefault,
-                        categories: controller.sortedCategories,
+                        categories: controller.categoriesForList(
+                          meta ? _composeTargetListId : list.id,
+                        ),
                         stores: hasFeature('stores')
                             ? controller.sortedStores
                             : const [],
@@ -920,7 +922,13 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                         },
                         onRequestCreateCategory:
                             controller.permissions.canEditLists
-                            ? () => _createCategory(context, controller)
+                            ? () => _createCategory(
+                                context,
+                                controller,
+                                defaultListId: meta
+                                    ? _composeTargetListId
+                                    : list.id,
+                              )
                             : null,
                         onRequestCreateStore:
                             hasFeature('stores') &&
@@ -1190,10 +1198,11 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     final result = await showDialog<MarkdownImportResult>(
       context: context,
       builder: (_) => MarkdownImportDialog(
-        categories: controller.sortedCategories,
+        categories: controller.categoriesForList(targetListId),
         reusePref: prefs.reuseExistingItems,
         reuseFeatureAvailable: hasFeature('reuse-existing-items'),
-        onRequestCreateCategory: () => _createCategory(context, controller),
+        onRequestCreateCategory: () =>
+            _createCategory(context, controller, defaultListId: targetListId),
       ),
     );
     if (result == null || !context.mounted) return;
@@ -2035,11 +2044,15 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
   /// can auto-select it on the draft.
   Future<models.Category?> _createCategory(
     BuildContext context,
-    ChecklistsController controller,
-  ) async {
+    ChecklistsController controller, {
+    int? defaultListId,
+  }) async {
     final created = await showDialog<models.Category>(
       context: context,
-      builder: (_) => CreateCategoryDialog(houseId: controller.houseId),
+      builder: (_) => CreateCategoryDialog(
+        houseId: controller.houseId,
+        defaultListId: defaultListId,
+      ),
     );
     if (created != null) {
       await controller.onCategoriesChanged();
@@ -4642,7 +4655,11 @@ class _SelectionActionBar extends StatelessWidget {
   /// Category picker for set-category. Returns null on dismiss,
   /// [_kBatchClearCategory] for "No category", or a positive category id.
   Future<int?> _pickCategory(BuildContext context) {
-    final cats = controller.sortedCategories;
+    // Selected items may span lists (meta view), so only globals are safe there;
+    // in a per-list view the current list's scope applies.
+    final cats = controller.categoriesForList(
+      controller.isMetaMode ? null : controller.currentList?.id,
+    );
     final cs = Theme.of(context).colorScheme;
     return showDialog<int>(
       context: context,

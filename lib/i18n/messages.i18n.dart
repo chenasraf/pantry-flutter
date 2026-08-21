@@ -788,6 +788,27 @@ Password: pantry-rocks""";
   String get shoppingMockStoreNext => """Pharmacy""";
 
   /// ```dart
+  /// "Categories, per list"
+  /// ```
+  String get categoryScopeTitle => """Categories, per list""";
+
+  /// ```dart
+  /// "Keep a category on a single list, or make it global so it shows up on every list. New categories stay global unless you pick a list."
+  /// ```
+  String get categoryScopeBody =>
+      """Keep a category on a single list, or make it global so it shows up on every list. New categories stay global unless you pick a list.""";
+
+  /// ```dart
+  /// "Shows on every list"
+  /// ```
+  String get categoryScopeGlobalCaption => """Shows on every list""";
+
+  /// ```dart
+  /// "Shows on this list only"
+  /// ```
+  String get categoryScopeScopedCaption => """Shows on this list only""";
+
+  /// ```dart
   /// "* Requires Pantry for Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -1551,6 +1572,16 @@ class CategoriesMessages {
   /// ```
   String get deleteConfirmBody =>
       """Items currently in this category will be uncategorized. This cannot be undone.""";
+
+  /// ```dart
+  /// "List"
+  /// ```
+  String get list => """List""";
+
+  /// ```dart
+  /// "All lists (global)"
+  /// ```
+  String get globalList => """All lists (global)""";
   SortCategoriesMessages get sort => SortCategoriesMessages(this);
 }
 
@@ -4675,6 +4706,11 @@ Password: pantry-rocks""",
       """Start a shopping trip over your lists, walk each store in order, and check items off as you go — with a running price total.""",
   """onboarding.shoppingMockStoreActive""": """Supermarket""",
   """onboarding.shoppingMockStoreNext""": """Pharmacy""",
+  """onboarding.categoryScopeTitle""": """Categories, per list""",
+  """onboarding.categoryScopeBody""":
+      """Keep a category on a single list, or make it global so it shows up on every list. New categories stay global unless you pick a list.""",
+  """onboarding.categoryScopeGlobalCaption""": """Shows on every list""",
+  """onboarding.categoryScopeScopedCaption""": """Shows on this list only""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4827,6 +4863,8 @@ Password: pantry-rocks""",
   """categories.deleteConfirm""": """Delete this category?""",
   """categories.deleteConfirmBody""":
       """Items currently in this category will be uncategorized. This cannot be undone.""",
+  """categories.list""": """List""",
+  """categories.globalList""": """All lists (global)""",
   """categories.sort.nameAZ""": """Name A–Z""",
   """categories.sort.nameZA""": """Name Z–A""",
   """categories.sort.custom""": """Custom""",

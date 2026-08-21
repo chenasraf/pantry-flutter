@@ -793,6 +793,27 @@ Contraseña: pantry-rocks""";
   String get shoppingMockStoreNext => """Farmacia""";
 
   /// ```dart
+  /// "Categorías por lista"
+  /// ```
+  String get categoryScopeTitle => """Categorías por lista""";
+
+  /// ```dart
+  /// "Mantén una categoría en una sola lista, o hazla global para que aparezca en todas las listas. Las categorías nuevas siguen siendo globales a menos que elijas una lista."
+  /// ```
+  String get categoryScopeBody =>
+      """Mantén una categoría en una sola lista, o hazla global para que aparezca en todas las listas. Las categorías nuevas siguen siendo globales a menos que elijas una lista.""";
+
+  /// ```dart
+  /// "Aparece en todas las listas"
+  /// ```
+  String get categoryScopeGlobalCaption => """Aparece en todas las listas""";
+
+  /// ```dart
+  /// "Aparece solo en esta lista"
+  /// ```
+  String get categoryScopeScopedCaption => """Aparece solo en esta lista""";
+
+  /// ```dart
   /// "* Requiere Pantry para Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -1566,6 +1587,16 @@ class CategoriesMessagesEs extends CategoriesMessages {
   /// ```
   String get deleteConfirmBody =>
       """Los artículos en esta categoría quedarán sin categoría. Esta acción no se puede deshacer.""";
+
+  /// ```dart
+  /// "Lista"
+  /// ```
+  String get list => """Lista""";
+
+  /// ```dart
+  /// "Todas las listas (global)"
+  /// ```
+  String get globalList => """Todas las listas (global)""";
   SortCategoriesMessagesEs get sort => SortCategoriesMessagesEs(this);
 }
 
@@ -4716,6 +4747,12 @@ Contraseña: pantry-rocks""",
       """Inicia una compra con tus listas, recorre cada tienda en orden y marca los artículos sobre la marcha, con un total de precio en tiempo real.""",
   """onboarding.shoppingMockStoreActive""": """Supermercado""",
   """onboarding.shoppingMockStoreNext""": """Farmacia""",
+  """onboarding.categoryScopeTitle""": """Categorías por lista""",
+  """onboarding.categoryScopeBody""":
+      """Mantén una categoría en una sola lista, o hazla global para que aparezca en todas las listas. Las categorías nuevas siguen siendo globales a menos que elijas una lista.""",
+  """onboarding.categoryScopeGlobalCaption""":
+      """Aparece en todas las listas""",
+  """onboarding.categoryScopeScopedCaption""": """Aparece solo en esta lista""",
   """onboarding.dev.showOnboarding""": """Mostrar introducción""",
   """onboarding.dev.pickLastSeenTitle""": """Ver novedades""",
   """onboarding.dev.pickLastSeenBody""":
@@ -4871,6 +4908,8 @@ Contraseña: pantry-rocks""",
   """categories.deleteConfirm""": """¿Eliminar esta categoría?""",
   """categories.deleteConfirmBody""":
       """Los artículos en esta categoría quedarán sin categoría. Esta acción no se puede deshacer.""",
+  """categories.list""": """Lista""",
+  """categories.globalList""": """Todas las listas (global)""",
   """categories.sort.nameAZ""": """Nombre A–Z""",
   """categories.sort.nameZA""": """Nombre Z–A""",
   """categories.sort.custom""": """Personalizado""",

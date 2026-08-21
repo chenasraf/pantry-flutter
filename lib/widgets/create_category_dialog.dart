@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart';
+import 'package:pantry/models/checklist.dart';
+import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/sync/sync_ids.dart';
 import 'package:pantry/sync/sync_manager.dart';
@@ -25,7 +28,17 @@ class CreateCategoryDialog extends StatefulWidget {
   /// If non-null, we're editing this category instead of creating a new one.
   final Category? existing;
 
-  const CreateCategoryDialog({super.key, required this.houseId, this.existing});
+  /// Scope to preselect when *creating* — the list currently in context (e.g.
+  /// the list an item form belongs to). `null` defaults to global. Ignored when
+  /// editing, where the scope is seeded from [existing].
+  final int? defaultListId;
+
+  const CreateCategoryDialog({
+    super.key,
+    required this.houseId,
+    this.existing,
+    this.defaultListId,
+  });
 
   @override
   State<CreateCategoryDialog> createState() => _CreateCategoryDialogState();
@@ -35,9 +48,17 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
   late final TextEditingController _nameController;
   late String _selectedIcon;
   late String _selectedColor;
+
+  /// Selected scope: `null` = global (all lists), otherwise a list id.
+  int? _selectedListId;
   bool _saving = false;
 
+  /// Lists offered in the scope selector. Only populated when the
+  /// `category-lists` feature is available.
+  List<ChecklistList> _lists = [];
+
   bool get _isEditing => widget.existing != null;
+  bool get _scopingEnabled => hasFeature('category-lists');
 
   @override
   void initState() {
@@ -46,6 +67,23 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
     _nameController = TextEditingController(text: e?.name ?? '');
     _selectedIcon = e?.icon ?? 'tag';
     _selectedColor = e?.color ?? categoryColors.first;
+    _selectedListId = e != null ? e.listId : widget.defaultListId;
+    if (_scopingEnabled) _loadLists();
+  }
+
+  Future<void> _loadLists() async {
+    final cached = ChecklistService.instance.getCachedLists(widget.houseId);
+    if (cached != null && mounted) {
+      setState(() => _lists = ChecklistService.sortLists(cached, 'custom'));
+    }
+    try {
+      final lists = await ChecklistService.instance.getLists(widget.houseId);
+      if (mounted) {
+        setState(() => _lists = ChecklistService.sortLists(lists, 'custom'));
+      }
+    } catch (_) {
+      // Offline or transient — keep whatever cache gave us (possibly none).
+    }
   }
 
   @override
@@ -61,6 +99,8 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
     setState(() => _saving = true);
     final sync = SyncManager.instance;
     final now = DateTime.now().millisecondsSinceEpoch;
+    // With the flag off, never send `listId` — every category stays global.
+    final listId = _scopingEnabled ? _selectedListId : null;
     final Category result;
     if (_isEditing) {
       final existing = widget.existing!;
@@ -68,6 +108,7 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
         name: name,
         icon: _selectedIcon,
         color: _selectedColor,
+        listId: _scopingEnabled ? _selectedListId : existing.listId,
         updatedAt: now,
       );
       sync.enqueue(
@@ -78,7 +119,15 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
           houseId: widget.houseId,
           entityId: existing.id < 0 ? null : existing.id,
           tempEntityId: existing.id < 0 ? existing.id : null,
-          body: {'name': name, 'icon': _selectedIcon, 'color': _selectedColor},
+          body: {
+            'name': name,
+            'icon': _selectedIcon,
+            'color': _selectedColor,
+            // Present with a value (int or explicit null → global) re-scopes;
+            // omitted entirely on servers without the feature so the scope is
+            // never touched.
+            if (_scopingEnabled) 'listId': _selectedListId,
+          },
           createdAt: now,
         ),
       );
@@ -90,6 +139,7 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
         name: name,
         icon: _selectedIcon,
         color: _selectedColor,
+        listId: listId,
         sortOrder: 1 << 20,
         createdAt: now,
         updatedAt: now,
@@ -101,7 +151,12 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
           op: SyncOpKind.create,
           houseId: widget.houseId,
           tempEntityId: tempId,
-          body: {'name': name, 'icon': _selectedIcon, 'color': _selectedColor},
+          body: {
+            'name': name,
+            'icon': _selectedIcon,
+            'color': _selectedColor,
+            'listId': ?listId,
+          },
           createdAt: now,
         ),
       );
@@ -113,6 +168,40 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
     hex = hex.replaceFirst('#', '');
     if (hex.length == 6) hex = 'FF$hex';
     return Color(int.parse(hex, radix: 16));
+  }
+
+  Widget _buildListSelector() {
+    // The current scope must always have a matching item, or the dropdown
+    // asserts. When editing a category whose list hasn't loaded yet (cache
+    // miss), fall back to the global option until [_loadLists] fills it in.
+    final knownIds = _lists.map((l) => l.id).toSet();
+    final value = _selectedListId == null || knownIds.contains(_selectedListId)
+        ? _selectedListId
+        : null;
+    return DropdownButtonFormField<int?>(
+      initialValue: value,
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: m.categories.list,
+        border: const OutlineInputBorder(),
+      ),
+      items: [
+        DropdownMenuItem<int?>(
+          value: null,
+          child: Text(m.categories.globalList),
+        ),
+        for (final list in _lists)
+          DropdownMenuItem<int?>(
+            value: list.id,
+            child: Text(
+              list.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+      ],
+      onChanged: (v) => setState(() => _selectedListId = v),
+    );
   }
 
   @override
@@ -136,6 +225,10 @@ class _CreateCategoryDialogState extends State<CreateCategoryDialog> {
                 border: const OutlineInputBorder(),
               ),
             ),
+            if (_scopingEnabled) ...[
+              const SizedBox(height: 16),
+              _buildListSelector(),
+            ],
             const SizedBox(height: 16),
             Text(f.categoryIcon, style: theme.textTheme.bodyMedium),
             const SizedBox(height: 8),
