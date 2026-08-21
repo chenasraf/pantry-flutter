@@ -312,6 +312,7 @@ settings:
   chipNames:
     category: Kategori
     store: Butikk
+    label: Etikett
     quantity: Mengd
     price: Pris
     note: Notat
@@ -414,6 +415,25 @@ stores:
     nameAZ: "Namn A–Å"
     nameZA: "Namn Å–A"
     custom: Tilpassa
+labels:
+  manageTitle: Behandle etikettar
+  noLabels: Ingen etikettar enno.
+  editTitle: Rediger etikett
+  addTitle: Ny etikett
+  name: Namn
+  icon: Ikon
+  color: Farge
+  saveFailed: Klarte ikkje lagre etikett.
+  deleteFailed: Klarte ikkje slette etikett.
+  deleteConfirm: Slett denne etiketten?
+  deleteConfirmBody: "Denne etiketten vil bli fjerna frå alle oppføringar. Dette
+    kan ikkje angrast."
+  list: Liste
+  globalList: Alle lister (global)
+  sort:
+    nameAZ: "Namn A-Z"
+    nameZA: "Namn Z-A"
+    custom: Sjølvvald
 checklists:
   categories: Kategoriar
   noChecklists: Ingen sjekklister enno.
@@ -439,11 +459,14 @@ checklists:
     lists: Lister
     categories: Kategoriar
     stores: Butikkar
+    labels: Etikettar
     allLists: Alle lister
     allCategories: Alle kategoriar
     allStores: Alle butikkar
+    allLabels: Alle etikettar
     noCategory: Ingen kategori
     noStores: Ingen butikkar
+    noLabels: Ingen etikett
     price: Pris
     anyCurrency: Kva som helst valuta
   failedToLoad: Kunne ikkje laste sjekklister.
@@ -466,11 +489,13 @@ checklists:
     copyTitle: Kopier oppføringar til
     categoryTitle: Vel kategori
     storesTitle: Vel butikkar
+    labelsTitle: Vel etikettar
     clearCategory: Ingen kategori
     move: Flytt
     copy: Kopier
     category: Kategori
     stores: Butikkar
+    labels: Etikettar
     delete: Slett
     archive: Arkiver
     unarchive: Angre arkivering
@@ -501,6 +526,9 @@ checklists:
       "${_plural(count, one: 'Oppdaterte 1 oppføring', many:
       'Oppdaterte $count oppføringar')}"
     storesSet(int count):
+      "${_plural(count, one: 'Oppdaterte 1 oppføring', many: 'Oppdaterte
+      $count oppføringar')}"
+    labelsSet(int count):
       "${_plural(count, one: 'Oppdaterte 1 oppføring', many: 'Oppdaterte
       $count oppføringar')}"
     skipped(int count): "${_plural(count, one: 'Hoppa over 1', many: 'Hoppa over $count')}"
@@ -605,6 +633,11 @@ checklists:
     createStore: Ny butikk
     storesChange: Endre
     storesPick: Vel nokre
+    labels: Etikettar
+    noLabels: Ingen
+    createLabel: Ny etikett
+    labelsChange: Endre
+    labelsPick: Vel nokre
     repeat: Gjentek
     once: Ein gang
     onceDescription: Slett denne oppføringa når den er markert som fullført.
@@ -697,6 +730,7 @@ checklists:
   compose:
     chipCategory: Kategori
     chipStore: Butikkar
+    chipLabel: Etikettar
     chipQuantity: Tal
     chipType: Type
     chipImage: Bilete

@@ -4,12 +4,14 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
+import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/label_icons.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/date_format.dart';
 import 'package:pantry/utils/item_modal_route.dart';
@@ -29,6 +31,7 @@ class ItemDetailView extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
   final List<models.Store> stores;
+  final List<models.Label> labels;
   final int houseId;
   final ChecklistsController controller;
 
@@ -37,6 +40,7 @@ class ItemDetailView extends StatelessWidget {
     required this.item,
     this.category,
     this.stores = const [],
+    this.labels = const [],
     required this.houseId,
     required this.controller,
   });
@@ -71,6 +75,7 @@ class ItemDetailView extends StatelessWidget {
                           houseId: houseId,
                           category: category,
                           stores: stores,
+                          labels: labels,
                           onBack: () => Navigator.of(context).maybePop(),
                           onMore: onMore,
                         )
@@ -78,6 +83,7 @@ class ItemDetailView extends StatelessWidget {
                           item: item,
                           category: category,
                           stores: stores,
+                          labels: labels,
                           onBack: () => Navigator.of(context).maybePop(),
                           onMore: onMore,
                         ),
@@ -400,6 +406,7 @@ class _PhotoHeader extends StatelessWidget {
   final int houseId;
   final models.Category? category;
   final List<models.Store> stores;
+  final List<models.Label> labels;
   final VoidCallback onBack;
 
   /// Receives the more button's BuildContext so callers can anchor a popup to
@@ -411,6 +418,7 @@ class _PhotoHeader extends StatelessWidget {
     required this.houseId,
     required this.category,
     required this.stores,
+    required this.labels,
     required this.onBack,
     required this.onMore,
   });
@@ -512,6 +520,7 @@ class _PhotoHeader extends StatelessWidget {
               name: item.name,
               category: category,
               stores: stores,
+              labels: labels,
               onPhoto: true,
             ),
           ),
@@ -527,6 +536,7 @@ class _FallbackHeader extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
   final List<models.Store> stores;
+  final List<models.Label> labels;
   final VoidCallback onBack;
   final ValueChanged<BuildContext>? onMore;
 
@@ -534,6 +544,7 @@ class _FallbackHeader extends StatelessWidget {
     required this.item,
     required this.category,
     required this.stores,
+    required this.labels,
     required this.onBack,
     required this.onMore,
   });
@@ -622,6 +633,7 @@ class _FallbackHeader extends StatelessWidget {
                       name: item.name,
                       category: category,
                       stores: stores,
+                      labels: labels,
                       onPhoto: false,
                     ),
                   ),
@@ -639,12 +651,14 @@ class _HeaderTitleBlock extends StatelessWidget {
   final String name;
   final models.Category? category;
   final List<models.Store> stores;
+  final List<models.Label> labels;
   final bool onPhoto;
 
   const _HeaderTitleBlock({
     required this.name,
     required this.category,
     required this.stores,
+    required this.labels,
     required this.onPhoto,
   });
 
@@ -656,7 +670,7 @@ class _HeaderTitleBlock extends StatelessWidget {
         : cs.primary;
     final nameDir = detectTextDirection(name);
     final nameColor = onPhoto ? Colors.white : cs.onSurface;
-    final hasChips = category != null || stores.isNotEmpty;
+    final hasChips = category != null || stores.isNotEmpty || labels.isNotEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -677,6 +691,13 @@ class _HeaderTitleBlock extends StatelessWidget {
                   color: _parseColor(s.color) ?? cs.primary,
                   label: s.name,
                   icon: storeIcon(s.icon),
+                  onPhoto: onPhoto,
+                ),
+              for (final l in labels)
+                _CategoryChip(
+                  color: _parseColor(l.color) ?? cs.primary,
+                  label: l.name,
+                  icon: labelIcon(l.icon),
                   onPhoto: onPhoto,
                 ),
             ],

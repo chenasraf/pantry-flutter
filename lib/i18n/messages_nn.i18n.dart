@@ -75,6 +75,7 @@ class MessagesNn extends Messages {
   NotificationsMessagesNn get notifications => NotificationsMessagesNn(this);
   CategoriesMessagesNn get categories => CategoriesMessagesNn(this);
   StoresMessagesNn get stores => StoresMessagesNn(this);
+  LabelsMessagesNn get labels => LabelsMessagesNn(this);
   ChecklistsMessagesNn get checklists => ChecklistsMessagesNn(this);
   NotesWallMessagesNn get notesWall => NotesWallMessagesNn(this);
   PhotoBoardMessagesNn get photoBoard => PhotoBoardMessagesNn(this);
@@ -1430,6 +1431,11 @@ class ChipNamesSettingsMessagesNn extends ChipNamesSettingsMessages {
   String get store => """Butikk""";
 
   /// ```dart
+  /// "Etikett"
+  /// ```
+  String get label => """Etikett""";
+
+  /// ```dart
   /// "Mengd"
   /// ```
   String get quantity => """Mengd""";
@@ -1782,6 +1788,98 @@ class SortStoresMessagesNn extends SortStoresMessages {
   /// "Tilpassa"
   /// ```
   String get custom => """Tilpassa""";
+}
+
+class LabelsMessagesNn extends LabelsMessages {
+  final MessagesNn _parent;
+  const LabelsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Behandle etikettar"
+  /// ```
+  String get manageTitle => """Behandle etikettar""";
+
+  /// ```dart
+  /// "Ingen etikettar enno."
+  /// ```
+  String get noLabels => """Ingen etikettar enno.""";
+
+  /// ```dart
+  /// "Rediger etikett"
+  /// ```
+  String get editTitle => """Rediger etikett""";
+
+  /// ```dart
+  /// "Ny etikett"
+  /// ```
+  String get addTitle => """Ny etikett""";
+
+  /// ```dart
+  /// "Namn"
+  /// ```
+  String get name => """Namn""";
+
+  /// ```dart
+  /// "Ikon"
+  /// ```
+  String get icon => """Ikon""";
+
+  /// ```dart
+  /// "Farge"
+  /// ```
+  String get color => """Farge""";
+
+  /// ```dart
+  /// "Klarte ikkje lagre etikett."
+  /// ```
+  String get saveFailed => """Klarte ikkje lagre etikett.""";
+
+  /// ```dart
+  /// "Klarte ikkje slette etikett."
+  /// ```
+  String get deleteFailed => """Klarte ikkje slette etikett.""";
+
+  /// ```dart
+  /// "Slett denne etiketten?"
+  /// ```
+  String get deleteConfirm => """Slett denne etiketten?""";
+
+  /// ```dart
+  /// "Denne etiketten vil bli fjerna frå alle oppføringar. Dette kan ikkje angrast."
+  /// ```
+  String get deleteConfirmBody =>
+      """Denne etiketten vil bli fjerna frå alle oppføringar. Dette kan ikkje angrast.""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
+
+  /// ```dart
+  /// "Alle lister (global)"
+  /// ```
+  String get globalList => """Alle lister (global)""";
+  SortLabelsMessagesNn get sort => SortLabelsMessagesNn(this);
+}
+
+class SortLabelsMessagesNn extends SortLabelsMessages {
+  final LabelsMessagesNn _parent;
+  const SortLabelsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Namn A-Z"
+  /// ```
+  String get nameAZ => """Namn A-Z""";
+
+  /// ```dart
+  /// "Namn Z-A"
+  /// ```
+  String get nameZA => """Namn Z-A""";
+
+  /// ```dart
+  /// "Sjølvvald"
+  /// ```
+  String get custom => """Sjølvvald""";
 }
 
 class ChecklistsMessagesNn extends ChecklistsMessages {
@@ -2463,6 +2561,11 @@ class FiltersChecklistsMessagesNn extends FiltersChecklistsMessages {
   String get stores => """Butikkar""";
 
   /// ```dart
+  /// "Etikettar"
+  /// ```
+  String get labels => """Etikettar""";
+
+  /// ```dart
   /// "Alle lister"
   /// ```
   String get allLists => """Alle lister""";
@@ -2478,6 +2581,11 @@ class FiltersChecklistsMessagesNn extends FiltersChecklistsMessages {
   String get allStores => """Alle butikkar""";
 
   /// ```dart
+  /// "Alle etikettar"
+  /// ```
+  String get allLabels => """Alle etikettar""";
+
+  /// ```dart
   /// "Ingen kategori"
   /// ```
   String get noCategory => """Ingen kategori""";
@@ -2486,6 +2594,11 @@ class FiltersChecklistsMessagesNn extends FiltersChecklistsMessages {
   /// "Ingen butikkar"
   /// ```
   String get noStores => """Ingen butikkar""";
+
+  /// ```dart
+  /// "Ingen etikett"
+  /// ```
+  String get noLabels => """Ingen etikett""";
 
   /// ```dart
   /// "Pris"
@@ -2529,6 +2642,11 @@ class BatchChecklistsMessagesNn extends BatchChecklistsMessages {
   String get storesTitle => """Vel butikkar""";
 
   /// ```dart
+  /// "Vel etikettar"
+  /// ```
+  String get labelsTitle => """Vel etikettar""";
+
+  /// ```dart
   /// "Ingen kategori"
   /// ```
   String get clearCategory => """Ingen kategori""";
@@ -2552,6 +2670,11 @@ class BatchChecklistsMessagesNn extends BatchChecklistsMessages {
   /// "Butikkar"
   /// ```
   String get stores => """Butikkar""";
+
+  /// ```dart
+  /// "Etikettar"
+  /// ```
+  String get labels => """Etikettar""";
 
   /// ```dart
   /// "Slett"
@@ -2625,6 +2748,12 @@ class BatchChecklistsMessagesNn extends BatchChecklistsMessages {
   /// "${_plural(count, one: 'Oppdaterte 1 oppføring', many: 'Oppdaterte $count oppføringar')}"
   /// ```
   String storesSet(int count) =>
+      """${_plural(count, one: 'Oppdaterte 1 oppføring', many: 'Oppdaterte $count oppføringar')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Oppdaterte 1 oppføring', many: 'Oppdaterte $count oppføringar')}"
+  /// ```
+  String labelsSet(int count) =>
       """${_plural(count, one: 'Oppdaterte 1 oppføring', many: 'Oppdaterte $count oppføringar')}""";
 
   /// ```dart
@@ -2852,6 +2981,31 @@ class ItemFormChecklistsMessagesNn extends ItemFormChecklistsMessages {
   /// "Vel nokre"
   /// ```
   String get storesPick => """Vel nokre""";
+
+  /// ```dart
+  /// "Etikettar"
+  /// ```
+  String get labels => """Etikettar""";
+
+  /// ```dart
+  /// "Ingen"
+  /// ```
+  String get noLabels => """Ingen""";
+
+  /// ```dart
+  /// "Ny etikett"
+  /// ```
+  String get createLabel => """Ny etikett""";
+
+  /// ```dart
+  /// "Endre"
+  /// ```
+  String get labelsChange => """Endre""";
+
+  /// ```dart
+  /// "Vel nokre"
+  /// ```
+  String get labelsPick => """Vel nokre""";
 
   /// ```dart
   /// "Gjentek"
@@ -3110,6 +3264,11 @@ class ComposeChecklistsMessagesNn extends ComposeChecklistsMessages {
   /// "Butikkar"
   /// ```
   String get chipStore => """Butikkar""";
+
+  /// ```dart
+  /// "Etikettar"
+  /// ```
+  String get chipLabel => """Etikettar""";
 
   /// ```dart
   /// "Tal"
@@ -4836,6 +4995,7 @@ Passord: pantry""",
   """settings.visibleChipsReset""": """Nullstill""",
   """settings.chipNames.category""": """Kategori""",
   """settings.chipNames.store""": """Butikk""",
+  """settings.chipNames.label""": """Etikett""",
   """settings.chipNames.quantity""": """Mengd""",
   """settings.chipNames.price""": """Pris""",
   """settings.chipNames.note""": """Notat""",
@@ -4931,6 +5091,23 @@ Passord: pantry""",
   """stores.sort.nameAZ""": """Namn A–Å""",
   """stores.sort.nameZA""": """Namn Å–A""",
   """stores.sort.custom""": """Tilpassa""",
+  """labels.manageTitle""": """Behandle etikettar""",
+  """labels.noLabels""": """Ingen etikettar enno.""",
+  """labels.editTitle""": """Rediger etikett""",
+  """labels.addTitle""": """Ny etikett""",
+  """labels.name""": """Namn""",
+  """labels.icon""": """Ikon""",
+  """labels.color""": """Farge""",
+  """labels.saveFailed""": """Klarte ikkje lagre etikett.""",
+  """labels.deleteFailed""": """Klarte ikkje slette etikett.""",
+  """labels.deleteConfirm""": """Slett denne etiketten?""",
+  """labels.deleteConfirmBody""":
+      """Denne etiketten vil bli fjerna frå alle oppføringar. Dette kan ikkje angrast.""",
+  """labels.list""": """Liste""",
+  """labels.globalList""": """Alle lister (global)""",
+  """labels.sort.nameAZ""": """Namn A-Z""",
+  """labels.sort.nameZA""": """Namn Z-A""",
+  """labels.sort.custom""": """Sjølvvald""",
   """checklists.categories""": """Kategoriar""",
   """checklists.noChecklists""": """Ingen sjekklister enno.""",
   """checklists.noItems""": """Ingen oppføringar i denne lista.""",
@@ -4956,11 +5133,14 @@ Passord: pantry""",
   """checklists.filters.lists""": """Lister""",
   """checklists.filters.categories""": """Kategoriar""",
   """checklists.filters.stores""": """Butikkar""",
+  """checklists.filters.labels""": """Etikettar""",
   """checklists.filters.allLists""": """Alle lister""",
   """checklists.filters.allCategories""": """Alle kategoriar""",
   """checklists.filters.allStores""": """Alle butikkar""",
+  """checklists.filters.allLabels""": """Alle etikettar""",
   """checklists.filters.noCategory""": """Ingen kategori""",
   """checklists.filters.noStores""": """Ingen butikkar""",
+  """checklists.filters.noLabels""": """Ingen etikett""",
   """checklists.filters.price""": """Pris""",
   """checklists.filters.anyCurrency""": """Kva som helst valuta""",
   """checklists.failedToLoad""": """Kunne ikkje laste sjekklister.""",
@@ -4980,11 +5160,13 @@ Passord: pantry""",
   """checklists.batch.copyTitle""": """Kopier oppføringar til""",
   """checklists.batch.categoryTitle""": """Vel kategori""",
   """checklists.batch.storesTitle""": """Vel butikkar""",
+  """checklists.batch.labelsTitle""": """Vel etikettar""",
   """checklists.batch.clearCategory""": """Ingen kategori""",
   """checklists.batch.move""": """Flytt""",
   """checklists.batch.copy""": """Kopier""",
   """checklists.batch.category""": """Kategori""",
   """checklists.batch.stores""": """Butikkar""",
+  """checklists.batch.labels""": """Etikettar""",
   """checklists.batch.delete""": """Slett""",
   """checklists.batch.archive""": """Arkiver""",
   """checklists.batch.unarchive""": """Angre arkivering""",
@@ -5080,6 +5262,11 @@ Passord: pantry""",
   """checklists.itemForm.createStore""": """Ny butikk""",
   """checklists.itemForm.storesChange""": """Endre""",
   """checklists.itemForm.storesPick""": """Vel nokre""",
+  """checklists.itemForm.labels""": """Etikettar""",
+  """checklists.itemForm.noLabels""": """Ingen""",
+  """checklists.itemForm.createLabel""": """Ny etikett""",
+  """checklists.itemForm.labelsChange""": """Endre""",
+  """checklists.itemForm.labelsPick""": """Vel nokre""",
   """checklists.itemForm.repeat""": """Gjentek""",
   """checklists.itemForm.once""": """Ein gang""",
   """checklists.itemForm.onceDescription""":
@@ -5163,6 +5350,7 @@ Passord: pantry""",
   """checklists.itemTypes.weekly""": """Kvar veke""",
   """checklists.compose.chipCategory""": """Kategori""",
   """checklists.compose.chipStore""": """Butikkar""",
+  """checklists.compose.chipLabel""": """Etikettar""",
   """checklists.compose.chipQuantity""": """Tal""",
   """checklists.compose.chipType""": """Type""",
   """checklists.compose.chipImage""": """Bilete""",

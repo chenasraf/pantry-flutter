@@ -58,6 +58,7 @@ class IdRemap {
     // resolved (unlike the scalar categoryId, which has this same latent gap).
     if (result.entity == SyncEntity.checklistItem) {
       result = _rewriteItemStoreIds(result);
+      result = _rewriteItemLabelIds(result);
     }
     return result;
   }
@@ -72,6 +73,23 @@ class IdRemap {
     if (_sameInts(mapped, storeIds)) return op;
     final body = Map<String, dynamic>.from(op.body);
     body['storeIds'] = mapped;
+    return op.copyWith(body: body);
+  }
+
+  /// A checklist-item create/update carries its label attachments in
+  /// body['labelIds']; any of those may be a temp id when the label was created
+  /// in the same offline session. Remap each to its real id where resolved,
+  /// mirroring [_rewriteItemStoreIds].
+  SyncOp _rewriteItemLabelIds(SyncOp op) {
+    final labelIds = (op.body['labelIds'] as List?)?.cast<int>();
+    if (labelIds == null) return op;
+    final mapped = [
+      for (final id in labelIds)
+        id < 0 ? (resolve(SyncEntity.label, id) ?? id) : id,
+    ];
+    if (_sameInts(mapped, labelIds)) return op;
+    final body = Map<String, dynamic>.from(op.body);
+    body['labelIds'] = mapped;
     return op.copyWith(body: body);
   }
 
@@ -124,6 +142,19 @@ class IdRemap {
       ];
       if (!_sameInts(mapped, storeIds)) {
         body['storeIds'] = mapped;
+        changed = true;
+      }
+    }
+
+    // set-labels: target label ids may be temp ids from this offline session.
+    final labelIds = (body['labelIds'] as List?)?.cast<int>();
+    if (labelIds != null) {
+      final mapped = [
+        for (final id in labelIds)
+          id < 0 ? (resolve(SyncEntity.label, id) ?? id) : id,
+      ];
+      if (!_sameInts(mapped, labelIds)) {
+        body['labelIds'] = mapped;
         changed = true;
       }
     }

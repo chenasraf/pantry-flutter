@@ -14,6 +14,7 @@ class ChipVisibilityView extends StatelessWidget {
   static String _label(ItemChipKind kind) => switch (kind) {
     ItemChipKind.category => m.settings.chipNames.category,
     ItemChipKind.store => m.settings.chipNames.store,
+    ItemChipKind.label => m.settings.chipNames.label,
     ItemChipKind.quantity => m.settings.chipNames.quantity,
     ItemChipKind.price => m.settings.chipNames.price,
     ItemChipKind.note => m.settings.chipNames.note,
@@ -25,6 +26,7 @@ class ChipVisibilityView extends StatelessWidget {
   static IconData _icon(ItemChipKind kind) => switch (kind) {
     ItemChipKind.category => Icons.circle,
     ItemChipKind.store => Icons.storefront_outlined,
+    ItemChipKind.label => Icons.sell_outlined,
     ItemChipKind.quantity => Icons.tag,
     ItemChipKind.price => Icons.sell_outlined,
     ItemChipKind.note => Icons.notes,

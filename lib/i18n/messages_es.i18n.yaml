@@ -229,6 +229,7 @@ settings:
   chipNames:
     category: Categoría
     store: Tienda
+    label: Etiqueta
     quantity: Cantidad
     price: Precio
     note: Nota
@@ -331,6 +332,25 @@ stores:
     nameZA: "Nombre Z–A"
     custom: Personalizado
 
+labels:
+  manageTitle: "Gestionar etiquetas"
+  noLabels: "Aún no hay etiquetas."
+  editTitle: "Editar etiqueta"
+  addTitle: "Nueva etiqueta"
+  name: Nombre
+  icon: Icono
+  color: Color
+  saveFailed: "No se pudo guardar la etiqueta."
+  deleteFailed: "No se pudo eliminar la etiqueta."
+  deleteConfirm: "¿Eliminar esta etiqueta?"
+  deleteConfirmBody: "Esta etiqueta se eliminará de todos los artículos. Esto no se puede deshacer."
+  list: Lista
+  globalList: Todas las listas (global)
+  sort:
+    nameAZ: "Nombre A–Z"
+    nameZA: "Nombre Z–A"
+    custom: "Personalizado"
+
 checklists:
   categories: "Categorías"
   noChecklists: "Aún no hay listas."
@@ -356,11 +376,14 @@ checklists:
     lists: Listas
     categories: Categorías
     stores: Tiendas
+    labels: Etiquetas
     allLists: Todas las listas
     allCategories: Todas las categorías
     allStores: Todas las tiendas
+    allLabels: Todas las etiquetas
     noCategory: Sin categoría
     noStores: Sin tienda
+    noLabels: Sin etiqueta
     price: Precio
     anyCurrency: Cualquier moneda
   failedToLoad: No se pudieron cargar las listas.
@@ -383,11 +406,13 @@ checklists:
     copyTitle: Copiar artículos a
     categoryTitle: Establecer categoría
     storesTitle: Establecer tiendas
+    labelsTitle: Establecer etiquetas
     clearCategory: Sin categoría
     move: Mover
     copy: Copiar
     category: Categoría
     stores: Tiendas
+    labels: Etiquetas
     delete: Eliminar
     archive: Archivar
     unarchive: Desarchivar
@@ -401,6 +426,7 @@ checklists:
     unarchived(int count): "${_plural(count, one: '1 artículo desarchivado', many: '$count artículos desarchivados')}"
     categorySet(int count): "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
     storesSet(int count): "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
+    labelsSet(int count): "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
     skipped(int count): "${_plural(count, one: '1 omitido', many: '$count omitidos')}"
     failed: "Algo salió mal. Inténtalo de nuevo."
   viewTrash: Ver papelera
@@ -498,6 +524,11 @@ checklists:
     createStore: Nueva tienda
     storesChange: Cambiar
     storesPick: Elegir
+    labels: Etiquetas
+    noLabels: Ninguna
+    createLabel: Nueva etiqueta
+    labelsChange: Cambiar
+    labelsPick: Elegir
     repeat: Repetir
     once: "Una vez"
     onceDescription: "Eliminar este artículo cuando se marque como hecho."
@@ -583,6 +614,7 @@ checklists:
   compose:
     chipCategory: Categoría
     chipStore: Tiendas
+    chipLabel: Etiquetas
     chipQuantity: Cantidad
     chipType: Tipo
     chipImage: Imagen

@@ -229,6 +229,7 @@ settings:
   chipNames:
     category: קטגוריה
     store: חנות
+    label: תווית
     quantity: כמות
     price: מחיר
     note: הערה
@@ -331,6 +332,25 @@ stores:
     nameZA: "שם ת׳–א׳"
     custom: מותאם אישית
 
+labels:
+  manageTitle: ניהול תוויות
+  noLabels: אין תוויות עדיין.
+  editTitle: עריכת תווית
+  addTitle: תווית חדשה
+  name: שם
+  icon: אייקון
+  color: צבע
+  saveFailed: שמירת התווית נכשלה.
+  deleteFailed: מחיקת התווית נכשלה.
+  deleteConfirm: למחוק את התווית הזו?
+  deleteConfirmBody: "התווית תוסר מכל הפריטים. לא ניתן לבטל פעולה זו."
+  list: רשימה
+  globalList: כל הרשימות (גלובלי)
+  sort:
+    nameAZ: "שם א'–ת'"
+    nameZA: "שם ת'–א'"
+    custom: מותאם אישית
+
 checklists:
   categories: קטגוריות
   noChecklists: אין רשימות עדיין.
@@ -356,11 +376,14 @@ checklists:
     lists: רשימות
     categories: קטגוריות
     stores: חנויות
+    labels: תוויות
     allLists: כל הרשימות
     allCategories: כל הקטגוריות
     allStores: כל החנויות
+    allLabels: כל התוויות
     noCategory: ללא קטגוריה
     noStores: ללא חנות
+    noLabels: ללא תווית
     price: מחיר
     anyCurrency: כל מטבע
   failedToLoad: טעינת הרשימות נכשלה.
@@ -383,11 +406,13 @@ checklists:
     copyTitle: העתקת פריטים אל
     categoryTitle: הגדרת קטגוריה
     storesTitle: הגדרת חנויות
+    labelsTitle: הגדרת תוויות
     clearCategory: ללא קטגוריה
     move: העבר
     copy: העתק
     category: קטגוריה
     stores: חנויות
+    labels: תוויות
     delete: מחק
     archive: העבר לארכיון
     unarchive: הוצא מהארכיון
@@ -401,6 +426,7 @@ checklists:
     unarchived(int count): "${_plural(count, one: 'פריט אחד הוצא מהארכיון', many: '$count פריטים הוצאו מהארכיון')}"
     categorySet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
     storesSet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
+    labelsSet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
     skipped(int count): "${_plural(count, one: 'פריט אחד דולג', many: '$count דולגו')}"
     failed: משהו השתבש. נסה שוב.
   viewTrash: הצג אשפה
@@ -498,6 +524,11 @@ checklists:
     createStore: חנות חדשה
     storesChange: שינוי
     storesPick: בחירה
+    labels: תוויות
+    noLabels: ללא
+    createLabel: תווית חדשה
+    labelsChange: שינוי
+    labelsPick: בחירה
     repeat: חזרה
     once: פעם אחת
     onceDescription: מחק את הפריט ברגע שהוא מסומן כבוצע.
@@ -583,6 +614,7 @@ checklists:
   compose:
     chipCategory: קטגוריה
     chipStore: חנויות
+    chipLabel: תוויות
     chipQuantity: כמות
     chipType: סוג פריט
     chipImage: תמונה

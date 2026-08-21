@@ -11,6 +11,7 @@ import 'package:pantry/views/onboarding/onboarding_pages.dart';
 import 'package:pantry/views/onboarding/onboarding_view.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
+import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/models/shopping_session.dart';
@@ -25,17 +26,20 @@ import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/currencies.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/price.dart';
+import 'package:pantry/utils/label_icons.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/categories/categories_view.dart';
+import 'package:pantry/views/labels/labels_view.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/views/shopping/shopping_history_view.dart';
 import 'package:pantry/views/shopping/shopping_session_view.dart';
 import 'package:pantry/views/shopping/shopping_start_view.dart';
 import 'package:pantry/views/stores/stores_view.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
+import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'checklist_item_tile.dart';
 import 'checklist_switcher_sheet.dart';
@@ -235,6 +239,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
   bool _noCategorySelected = false;
   final Set<int> _selectedStoreIds = {};
   bool _noStoreSelected = false;
+  final Set<int> _selectedLabelIds = {};
+  bool _noLabelSelected = false;
   PriceFilter _priceFilter = PriceFilter.empty;
 
   /// In All-lists mode, the most recently chosen target list. Pre-selected on
@@ -451,9 +457,11 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     final categoryFilterActive =
         _selectedCategoryIds.isNotEmpty || _noCategorySelected;
     final storeFilterActive = _selectedStoreIds.isNotEmpty || _noStoreSelected;
+    final labelFilterActive = _selectedLabelIds.isNotEmpty || _noLabelSelected;
     final priceFilterActive = _priceFilter.isActive;
     if (!categoryFilterActive &&
         !storeFilterActive &&
+        !labelFilterActive &&
         !priceFilterActive &&
         selectedListIds.isEmpty &&
         _query.isEmpty) {
@@ -468,6 +476,13 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
       if (storeFilterActive) {
         final matchesId = item.storeIds.any(_selectedStoreIds.contains);
         final matchesNone = _noStoreSelected && item.storeIds.isEmpty;
+        if (!matchesId && !matchesNone) return false;
+      }
+      if (labelFilterActive) {
+        // Match-ANY (OR): an item passes if it carries at least one selected
+        // label; "No label" matches items with no labels.
+        final matchesId = item.labelIds.any(_selectedLabelIds.contains);
+        final matchesNone = _noLabelSelected && item.labelIds.isEmpty;
         if (!matchesId && !matchesNone) return false;
       }
       if (priceFilterActive && !matchesPriceFilter(item, _priceFilter)) {
@@ -540,6 +555,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         !_noCategorySelected &&
         _selectedStoreIds.isEmpty &&
         !_noStoreSelected &&
+        _selectedLabelIds.isEmpty &&
+        !_noLabelSelected &&
         !_priceFilter.isActive &&
         _query.isEmpty &&
         controller.isCurrentListWritable;
@@ -596,6 +613,25 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     // Offer the store filter only when there's something to filter by.
     final showStoreFilter =
         storesEnabled && (filterStores.isNotEmpty || hasNoStoreItems);
+
+    // Label filter mirrors stores, gated on the `labels` capability. Only
+    // labels with at least one (non-trashed) item on this list are offered.
+    final labelsEnabled = hasFeature('labels');
+    final activeLabelIds = <int>{
+      if (labelsEnabled)
+        for (final i in controller.items)
+          if (i.deletedAt == null) ...i.labelIds,
+    };
+    final filterLabels = labelsEnabled
+        ? controller.sortedLabels
+              .where((l) => activeLabelIds.contains(l.id))
+              .toList()
+        : const <models.Label>[];
+    final hasNoLabelItems =
+        labelsEnabled &&
+        controller.items.any((i) => i.deletedAt == null && i.labelIds.isEmpty);
+    final showLabelFilter =
+        labelsEnabled && (filterLabels.isNotEmpty || hasNoLabelItems);
 
     // Price filter mirrors the store gate (and the web app): shown only when
     // the server supports prices and at least one (non-trashed) item actually
@@ -732,6 +768,24 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                     noStoreSelected: _noStoreSelected,
                     onToggleNoStore: () =>
                         setState(() => _noStoreSelected = !_noStoreSelected),
+                    showLabelFilter: showLabelFilter,
+                    labels: filterLabels,
+                    selectedLabelIds: _selectedLabelIds,
+                    onToggleLabel: (id) {
+                      setState(() {
+                        if (!_selectedLabelIds.remove(id)) {
+                          _selectedLabelIds.add(id);
+                        }
+                      });
+                    },
+                    onClearLabels: () => setState(() {
+                      _selectedLabelIds.clear();
+                      _noLabelSelected = false;
+                    }),
+                    showNoLabel: hasNoLabelItems,
+                    noLabelSelected: _noLabelSelected,
+                    onToggleNoLabel: () =>
+                        setState(() => _noLabelSelected = !_noLabelSelected),
                     showPriceFilter: showPriceFilter,
                     priceFilter: _priceFilter,
                     onPriceFilterChanged: (f) =>
@@ -889,6 +943,11 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                         stores: hasFeature('stores')
                             ? controller.sortedStores
                             : const [],
+                        labels: hasFeature('labels')
+                            ? controller.labelsForList(
+                                meta ? _composeTargetListId : list.id,
+                              )
+                            : const [],
                         priceEnabled: hasFeature('item-price'),
                         perStorePriceEnabled: hasFeature(
                           kItemPricePerStoreFeature,
@@ -910,6 +969,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                                   ? controller.categories[item.categoryId]
                                   : null,
                               stores: controller.storesFor(item),
+                              labels: controller.labelsFor(item),
                               houseId: controller.houseId,
                               onTap: onTap,
                             ),
@@ -934,6 +994,17 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                             hasFeature('stores') &&
                                 controller.permissions.canEditLists
                             ? () => _createStore(context, controller)
+                            : null,
+                        onRequestCreateLabel:
+                            hasFeature('labels') &&
+                                controller.permissions.canEditLists
+                            ? () => _createLabel(
+                                context,
+                                controller,
+                                defaultListId: meta
+                                    ? _composeTargetListId
+                                    : list.id,
+                              )
                             : null,
                         onSubmit: (s) async {
                           final targetListId = meta
@@ -1118,6 +1189,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           quantity: s.quantity,
           categoryId: s.categoryId,
           storeIds: s.storeIds.isEmpty ? null : s.storeIds,
+          labelIds: s.labelIds.isEmpty ? null : s.labelIds,
           rrule: s.rrule,
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
@@ -1131,6 +1203,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           quantity: s.quantity,
           categoryId: s.categoryId,
           storeIds: s.storeIds.isEmpty ? null : s.storeIds,
+          labelIds: s.labelIds.isEmpty ? null : s.labelIds,
           rrule: s.rrule,
           repeatFromCompletion: s.repeatFromCompletion,
           deleteOnDone: s.deleteOnDone,
@@ -1349,6 +1422,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                 _noCategorySelected = false;
                 _selectedStoreIds.clear();
                 _noStoreSelected = false;
+                _selectedLabelIds.clear();
+                _noLabelSelected = false;
                 // Clearing the controller doesn't fire onChanged, so return the
                 // list to its pre-search position here.
                 _restorePreSearchOffset();
@@ -1383,6 +1458,12 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
               icon: const Icon(Icons.storefront_outlined),
               tooltip: m.stores.manageTitle,
               onPressed: () => _openManageStores(context, controller),
+            ),
+          if (controller.permissions.canEditLists && hasFeature('labels'))
+            IconButton(
+              icon: const Icon(Icons.sell_outlined),
+              tooltip: m.labels.manageTitle,
+              onPressed: () => _openManageLabels(context, controller),
             ),
           // Meta view has no trash of its own; trash stays per-list.
           if (!controller.isMetaMode &&
@@ -1652,6 +1733,12 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
             icon: Icons.storefront_outlined,
             label: m.stores.manageTitle,
           ),
+        if (controller.permissions.canEditLists && hasFeature('labels'))
+          _OverflowAction(
+            value: 'manage_labels',
+            icon: Icons.sell_outlined,
+            label: m.labels.manageTitle,
+          ),
         // Mobile has reliable pull-to-refresh, so it doesn't need a menu row.
         // Web (the other non-desktop host here) doesn't, so keep it there.
         if (PlatformInfo.isWeb)
@@ -1889,6 +1976,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         await _openManageCategories(context, controller);
       case 'manage_stores':
         await _openManageStores(context, controller);
+      case 'manage_labels':
+        await _openManageLabels(context, controller);
       case 'start_shopping':
         await _openShopping(controller);
       case 'shopping_history':
@@ -2073,6 +2162,18 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     await controller.onStoresChanged();
   }
 
+  Future<void> _openManageLabels(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => LabelsView(houseId: controller.houseId),
+      ),
+    );
+    await controller.onLabelsChanged();
+  }
+
   /// Opens the create-store dialog inline from the compose bar's store tray. On
   /// success, refreshes the controller's store list (so the new option shows up
   /// in the tray) and returns the new Store so compose bar can auto-select it.
@@ -2086,6 +2187,27 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     );
     if (created != null) {
       await controller.onStoresChanged();
+    }
+    return created;
+  }
+
+  /// Opens the create-label dialog inline from the compose bar's label tray. On
+  /// success, refreshes the controller's label list (so the new option shows up
+  /// in the tray) and returns the new Label so compose bar can auto-select it.
+  Future<models.Label?> _createLabel(
+    BuildContext context,
+    ChecklistsController controller, {
+    int? defaultListId,
+  }) async {
+    final created = await showDialog<models.Label>(
+      context: context,
+      builder: (_) => CreateLabelDialog(
+        houseId: controller.houseId,
+        defaultListId: defaultListId,
+      ),
+    );
+    if (created != null) {
+      await controller.onLabelsChanged();
     }
     return created;
   }
@@ -2228,6 +2350,17 @@ class _FiltersSection extends StatefulWidget {
   final bool noStoreSelected;
   final VoidCallback onToggleNoStore;
 
+  /// Label filter — gated on the `labels` capability and only shown when at
+  /// least one item on the list carries (or lacks) a label. OR semantics.
+  final bool showLabelFilter;
+  final List<models.Label> labels;
+  final Set<int> selectedLabelIds;
+  final ValueChanged<int> onToggleLabel;
+  final VoidCallback onClearLabels;
+  final bool showNoLabel;
+  final bool noLabelSelected;
+  final VoidCallback onToggleNoLabel;
+
   /// Price filter — gated on the `item-price` capability and only shown when at
   /// least one item on the list carries a price.
   final bool showPriceFilter;
@@ -2258,6 +2391,14 @@ class _FiltersSection extends StatefulWidget {
     required this.showNoStore,
     required this.noStoreSelected,
     required this.onToggleNoStore,
+    required this.showLabelFilter,
+    required this.labels,
+    required this.selectedLabelIds,
+    required this.onToggleLabel,
+    required this.onClearLabels,
+    required this.showNoLabel,
+    required this.noLabelSelected,
+    required this.onToggleNoLabel,
     required this.showPriceFilter,
     required this.priceFilter,
     required this.onPriceFilterChanged,
@@ -2365,6 +2506,41 @@ class _FiltersSectionState extends State<_FiltersSection> {
     );
   }
 
+  _FilterDropdown _labelDropdown(ColorScheme cs) {
+    final count =
+        widget.selectedLabelIds.length + (widget.noLabelSelected ? 1 : 0);
+    return _FilterDropdown(
+      label: m.checklists.filters.labels,
+      icon: Icons.sell_outlined,
+      selectedCount: count,
+      entries: [
+        _FilterMenuEntry(
+          label: m.checklists.filters.allLabels,
+          color: cs.primary,
+          icon: Icons.done_all,
+          selected: count == 0,
+          onTap: widget.onClearLabels,
+        ),
+        for (final l in widget.labels)
+          _FilterMenuEntry(
+            label: l.name,
+            color: parseHexColor(l.color) ?? cs.primary,
+            icon: labelIcon(l.icon),
+            selected: widget.selectedLabelIds.contains(l.id),
+            onTap: () => widget.onToggleLabel(l.id),
+          ),
+        if (widget.showNoLabel)
+          _FilterMenuEntry(
+            label: m.checklists.filters.noLabels,
+            color: cs.outline,
+            icon: Icons.label_off_outlined,
+            selected: widget.noLabelSelected,
+            onTap: widget.onToggleNoLabel,
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -2376,6 +2552,7 @@ class _FiltersSectionState extends State<_FiltersSection> {
       if (widget.showListFilter) _listDropdown(cs),
       _categoryDropdown(cs),
       if (widget.showStoreFilter) _storeDropdown(cs),
+      if (widget.showLabelFilter) _labelDropdown(cs),
       if (widget.showPriceFilter)
         _PriceFilterDropdown(
           value: widget.priceFilter,
@@ -3406,6 +3583,7 @@ class _ItemListState extends State<_ItemList> {
           ? controller.categories[item.categoryId]
           : null,
       stores: controller.storesFor(item),
+      labels: controller.labelsFor(item),
       houseId: controller.houseId,
       isCardsView: widget.isCards,
       trashMode: controller.isTrashMode,
@@ -3639,6 +3817,7 @@ class _ItemListState extends State<_ItemList> {
               ? controller.categories[item.categoryId]
               : null,
           stores: controller.storesFor(item),
+          labels: controller.labelsFor(item),
           houseId: controller.houseId,
           controller: controller,
         ),
@@ -4438,6 +4617,14 @@ class _SelectionActionBar extends StatelessWidget {
                         enabled: controller.canBatchStores,
                         onTap: () => _stores(context),
                       ),
+                    if (controller.hasLabelsFeature)
+                      _action(
+                        context,
+                        icon: Icons.sell_outlined,
+                        label: m.checklists.batch.labels,
+                        enabled: controller.canBatchLabels,
+                        onTap: () => _labels(context),
+                      ),
                     _action(
                       context,
                       icon: Icons.archive_outlined,
@@ -4543,6 +4730,17 @@ class _SelectionActionBar extends StatelessWidget {
     _showUndo(
       m.checklists.batch.storesSet(affected.length),
       () => controller.undoBatchSetStores(affected),
+    );
+  }
+
+  Future<void> _labels(BuildContext context) async {
+    final affected = List.of(controller.selectedItems);
+    final choice = await _pickLabels(context);
+    if (choice == null) return;
+    controller.batchSetLabels(choice);
+    _showUndo(
+      m.checklists.batch.labelsSet(affected.length),
+      () => controller.undoBatchSetLabels(affected),
     );
   }
 
@@ -4728,6 +4926,59 @@ class _SelectionActionBar extends StatelessWidget {
                             color: parseHexColor(s.color) ?? cs.primary,
                           ),
                           title: Text(s.name),
+                        ),
+                    ],
+                  ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(m.common.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, selected.toList()),
+              child: Text(m.common.save),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Multi-select label picker for set-labels. Returns null on dismiss, or the
+  /// chosen label ids (an empty list clears the labels on every item). The set
+  /// replaces whatever the items currently carry, so it starts empty.
+  Future<List<int>?> _pickLabels(BuildContext context) {
+    final labels = controller.sortedLabels;
+    final cs = Theme.of(context).colorScheme;
+    final selected = <int>{};
+    return showDialog<List<int>>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setState) => AlertDialog(
+          title: Text(m.checklists.batch.labelsTitle),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: labels.isEmpty
+                ? Text(m.labels.noLabels)
+                : ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final l in labels)
+                        CheckboxListTile(
+                          value: selected.contains(l.id),
+                          onChanged: (v) => setState(() {
+                            if (v ?? false) {
+                              selected.add(l.id);
+                            } else {
+                              selected.remove(l.id);
+                            }
+                          }),
+                          secondary: Icon(
+                            labelIcon(l.icon),
+                            color: parseHexColor(l.color) ?? cs.primary,
+                          ),
+                          title: Text(l.name),
                         ),
                     ],
                   ),

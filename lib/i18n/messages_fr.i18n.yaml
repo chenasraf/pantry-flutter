@@ -229,6 +229,7 @@ settings:
   chipNames:
     category: "Catégorie"
     store: "Magasin"
+    label: "Étiquette"
     quantity: "Quantité"
     price: Prix
     note: "Note"
@@ -331,6 +332,25 @@ stores:
     nameZA: "Nom Z–A"
     custom: Personnalisé
 
+labels:
+  manageTitle: "Gérer les étiquettes"
+  noLabels: "Aucune étiquette pour le moment."
+  editTitle: "Modifier l'étiquette"
+  addTitle: "Nouvelle étiquette"
+  name: Nom
+  icon: "Icône"
+  color: Couleur
+  saveFailed: "Impossible d'enregistrer l'étiquette."
+  deleteFailed: "Impossible de supprimer l'étiquette."
+  deleteConfirm: "Supprimer cette étiquette ?"
+  deleteConfirmBody: "Cette étiquette sera retirée de tous les articles. Cette action est irréversible."
+  list: Liste
+  globalList: Toutes les listes (global)
+  sort:
+    nameAZ: "Nom A–Z"
+    nameZA: "Nom Z–A"
+    custom: "Personnalisé"
+
 checklists:
   categories: "Catégories"
   noChecklists: Aucune liste pour le moment.
@@ -356,11 +376,14 @@ checklists:
     lists: Listes
     categories: Catégories
     stores: Magasins
+    labels: Étiquettes
     allLists: Toutes les listes
     allCategories: Toutes les catégories
     allStores: Tous les magasins
+    allLabels: Toutes les étiquettes
     noCategory: Sans catégorie
     noStores: Sans magasin
+    noLabels: Sans étiquette
     price: Prix
     anyCurrency: "N'importe quelle devise"
   failedToLoad: Impossible de charger les listes.
@@ -383,11 +406,13 @@ checklists:
     copyTitle: Copier les articles vers
     categoryTitle: Définir la catégorie
     storesTitle: Définir les magasins
+    labelsTitle: Définir les étiquettes
     clearCategory: Aucune catégorie
     move: Déplacer
     copy: Copier
     category: Catégorie
     stores: Magasins
+    labels: Étiquettes
     delete: Supprimer
     archive: Archiver
     unarchive: Désarchiver
@@ -401,6 +426,7 @@ checklists:
     unarchived(int count): "${_plural(count, one: '1 article désarchivé', many: '$count articles désarchivés')}"
     categorySet(int count): "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
     storesSet(int count): "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
+    labelsSet(int count): "${_plural(count, one: '1 article mis à jour', many: '$count articles mis à jour')}"
     skipped(int count): "${_plural(count, one: '1 ignoré', many: '$count ignorés')}"
     failed: "Une erreur s'est produite. Veuillez réessayer."
   viewTrash: "Afficher la corbeille"
@@ -498,6 +524,11 @@ checklists:
     createStore: Nouveau magasin
     storesChange: Modifier
     storesPick: Choisir
+    labels: Étiquettes
+    noLabels: Aucune
+    createLabel: Nouvelle étiquette
+    labelsChange: Modifier
+    labelsPick: Choisir
     repeat: "Répéter"
     once: "Une fois"
     onceDescription: "Supprimer cet article une fois qu'il est marqué comme fait."
@@ -583,6 +614,7 @@ checklists:
   compose:
     chipCategory: Catégorie
     chipStore: Magasins
+    chipLabel: Étiquettes
     chipQuantity: Quantité
     chipType: Type
     chipImage: Image

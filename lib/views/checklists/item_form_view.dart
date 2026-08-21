@@ -7,6 +7,7 @@ import 'package:mime/mime.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
+import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
@@ -15,11 +16,13 @@ import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/rrule.dart';
+import 'package:pantry/utils/label_icons.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'checklist_item_tile.dart' show ItemLifecycle, lifecycleOf;
@@ -47,6 +50,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   late String _description;
   int? _selectedCategoryId;
   final Set<int> _selectedStoreIds = {};
+  final Set<int> _selectedLabelIds = {};
   late ItemLifecycle _lifecycle;
   late RecurrenceState _recurrence;
   late final bool _priceEnabled;
@@ -55,6 +59,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   bool _deleting = false;
   bool _catPickerOpen = false;
   bool _storePickerOpen = false;
+  bool _labelPickerOpen = false;
   TextDirection _nameDir = TextDirection.ltr;
   XFile? _pickedImage;
   bool _removeExistingImage = false;
@@ -89,6 +94,17 @@ class _ItemFormViewState extends State<ItemFormView> {
       if (_selectedStoreIds.contains(s.id)) s,
   ];
 
+  /// Labels offered for this item, scoped to its effective list (globals plus
+  /// the list's own). An already-attached out-of-scope label still renders via
+  /// [_selectedLabels], which resolves against the full set.
+  List<models.Label> get _labels =>
+      widget.controller.labelsForList(_effectiveListId);
+  bool get _labelsEnabled => hasFeature('labels');
+  List<models.Label> get _selectedLabels => [
+    for (final l in widget.controller.sortedLabels)
+      if (_selectedLabelIds.contains(l.id)) l,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -98,6 +114,7 @@ class _ItemFormViewState extends State<ItemFormView> {
     _quantityController = TextEditingController(text: item?.quantity ?? '');
     _selectedCategoryId = item?.categoryId;
     _selectedStoreIds.addAll(item?.storeIds ?? const []);
+    _selectedLabelIds.addAll(item?.labelIds ?? const []);
     _recurrence = RecurrenceState.fromRrule(
       item?.rrule,
       repeatFromCompletion: item?.repeatFromCompletion ?? false,
@@ -208,6 +225,8 @@ class _ItemFormViewState extends State<ItemFormView> {
           // null leaves stores unchanged; [] clears them. Only send when the
           // stores feature exists.
           storeIds: _storesEnabled ? _selectedStoreIds.toList() : null,
+          // Labels mirror stores: null leaves them unchanged, [] clears.
+          labelIds: _labelsEnabled ? _selectedLabelIds.toList() : null,
           rrule: effectiveRrule,
           repeatFromCompletion: effectiveRepeatFromCompletion,
           deleteOnDone: isOnce,
@@ -223,6 +242,9 @@ class _ItemFormViewState extends State<ItemFormView> {
           categoryId: _selectedCategoryId,
           storeIds: _storesEnabled && _selectedStoreIds.isNotEmpty
               ? _selectedStoreIds.toList()
+              : null,
+          labelIds: _labelsEnabled && _selectedLabelIds.isNotEmpty
+              ? _selectedLabelIds.toList()
               : null,
           rrule: isRecurring ? effectiveRrule : null,
           deleteOnDone: isOnce,
@@ -485,6 +507,32 @@ class _ItemFormViewState extends State<ItemFormView> {
                     ),
                   ],
                 ],
+                if (_labelsEnabled) ...[
+                  const SizedBox(height: 16),
+                  _SectionLabel(text: f.labels),
+                  const SizedBox(height: 8),
+                  _LabelDropdownRow(
+                    labels: _selectedLabels,
+                    parseColor: _parseColor,
+                    open: _labelPickerOpen,
+                    onTap: () =>
+                        setState(() => _labelPickerOpen = !_labelPickerOpen),
+                  ),
+                  if (_labelPickerOpen) ...[
+                    const SizedBox(height: 11),
+                    _LabelPickerPanel(
+                      labels: _labels,
+                      selectedIds: _selectedLabelIds,
+                      onToggle: (id) => setState(() {
+                        if (!_selectedLabelIds.remove(id)) {
+                          _selectedLabelIds.add(id);
+                        }
+                      }),
+                      onCreateRequest: _openCreateLabel,
+                      parseColor: _parseColor,
+                    ),
+                  ],
+                ],
                 const SizedBox(height: 16),
                 _SectionLabel(text: m.checklists.itemTypes.label),
                 const SizedBox(height: 10),
@@ -542,6 +590,19 @@ class _ItemFormViewState extends State<ItemFormView> {
     if (created == null || !mounted) return;
     widget.controller.stores[created.id] = created;
     setState(() => _selectedStoreIds.add(created.id));
+  }
+
+  Future<void> _openCreateLabel() async {
+    final created = await showDialog<models.Label>(
+      context: context,
+      builder: (_) => CreateLabelDialog(
+        houseId: widget.controller.houseId,
+        defaultListId: _effectiveListId,
+      ),
+    );
+    if (created == null || !mounted) return;
+    widget.controller.labels[created.id] = created;
+    setState(() => _selectedLabelIds.add(created.id));
   }
 
   Widget _buildImageSection(ThemeData theme) {
@@ -1147,6 +1208,144 @@ class _StorePickerPanel extends StatelessWidget {
           NewCategoryChipButton(
             color: cs.primary,
             label: m.checklists.itemForm.createStore,
+            onTap: () => onCreateRequest(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Collapsed row for the multi-select label picker. Mirrors [_StoreDropdownRow]:
+/// shows a summary of the currently-selected labels (or "None") and toggles the
+/// panel open.
+class _LabelDropdownRow extends StatelessWidget {
+  final List<models.Label> labels;
+  final Color? Function(String hex) parseColor;
+  final bool open;
+  final VoidCallback onTap;
+
+  const _LabelDropdownRow({
+    required this.labels,
+    required this.parseColor,
+    required this.open,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final f = m.checklists.itemForm;
+    final label = labels.isEmpty
+        ? f.noLabels
+        : labels.map((l) => l.name).join(', ');
+    final actionColor = open ? cs.primary : cs.onSurfaceVariant;
+    final actionLabel = open ? f.labelsPick : f.labelsChange;
+    final leadColor = labels.isNotEmpty
+        ? (parseColor(labels.first.color) ?? cs.primary)
+        : cs.onSurfaceVariant;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+        decoration: BoxDecoration(
+          color: cs.surfaceContainer,
+          border: Border.all(
+            color: open ? cs.primary : cs.outlineVariant,
+            width: open ? 1.5 : 1,
+          ),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              labels.isNotEmpty ? labelIcon(labels.first.icon) : Icons.sell,
+              size: 18,
+              color: leadColor,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
+                ),
+              ),
+            ),
+            Text(
+              actionLabel,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: actionColor,
+              ),
+            ),
+            const SizedBox(width: 4),
+            AnimatedRotation(
+              duration: const Duration(milliseconds: 200),
+              turns: open ? 0.5 : 0,
+              child: Icon(
+                Icons.keyboard_arrow_down,
+                color: actionColor,
+                size: 20,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Multi-select swatch grid for labels. Mirrors [_StorePickerPanel]: tapping a
+/// swatch toggles membership and keeps the panel open; an empty selection means
+/// no labels.
+class _LabelPickerPanel extends StatelessWidget {
+  final List<models.Label> labels;
+  final Set<int> selectedIds;
+  final ValueChanged<int> onToggle;
+  final Future<void> Function() onCreateRequest;
+  final Color? Function(String hex) parseColor;
+
+  const _LabelPickerPanel({
+    required this.labels,
+    required this.selectedIds,
+    required this.onToggle,
+    required this.onCreateRequest,
+    required this.parseColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(13, 13, 13, 14),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainer,
+        border: Border.all(color: cs.outlineVariant),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final l in labels)
+            CategorySwatch(
+              icon: labelIcon(l.icon),
+              label: l.name,
+              color: parseColor(l.color) ?? cs.primary,
+              selected: selectedIds.contains(l.id),
+              onTap: () => onToggle(l.id),
+            ),
+          NewCategoryChipButton(
+            color: cs.primary,
+            label: m.checklists.itemForm.createLabel,
             onTap: () => onCreateRequest(),
           ),
         ],

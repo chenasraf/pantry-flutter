@@ -206,6 +206,7 @@ class SyncManager {
           if (raw.tempEntityId != null) out.add(raw.tempEntityId!);
         case SyncEntity.category:
         case SyncEntity.store:
+        case SyncEntity.label:
         case SyncEntity.note:
         case SyncEntity.shoppingCheck:
         case SyncEntity.shoppingSkip:
@@ -326,9 +327,10 @@ class SyncManager {
           break;
         }
         if (op.entity == SyncEntity.checklistItem &&
-            _itemHasUnresolvedStores(op)) {
-          // A checklist-item create/update attaches a store whose create is
-          // still ahead in the queue — hold it so we never send a temp store id.
+            (_itemHasUnresolvedStores(op) || _itemHasUnresolvedLabels(op))) {
+          // A checklist-item create/update attaches a store or label whose
+          // create is still ahead in the queue — hold it so we never send a
+          // temp store/label id.
           break;
         }
         try {
@@ -414,6 +416,14 @@ class SyncManager {
     return storeIds.any((id) => id < 0);
   }
 
+  /// A checklist-item op that attaches labels is dispatchable only once every
+  /// label id in its body has resolved to a real (non-negative) server id.
+  bool _itemHasUnresolvedLabels(SyncOp op) {
+    final labelIds = (op.body['labelIds'] as List?)?.cast<int>();
+    if (labelIds == null) return false;
+    return labelIds.any((id) => id < 0);
+  }
+
   /// A rewritten batch op is dispatchable only once every id it references
   /// resolves to a real (non-negative) server id.
   bool _batchHasUnresolvedRefs(SyncOp op) {
@@ -425,6 +435,8 @@ class SyncManager {
     if (cat is int && cat < 0) return true;
     final storeIds = (op.body['storeIds'] as List?)?.cast<int>();
     if (storeIds != null && storeIds.any((id) => id < 0)) return true;
+    final labelIds = (op.body['labelIds'] as List?)?.cast<int>();
+    if (labelIds != null && labelIds.any((id) => id < 0)) return true;
     return false;
   }
 
@@ -510,6 +522,13 @@ class SyncManager {
         if (storeIds != null && storeIds.contains(tempId)) {
           final body = Map<String, dynamic>.of(o.body)
             ..['storeIds'] = storeIds.where((s) => s != tempId).toList();
+          return o.copyWith(body: body);
+        }
+      case SyncEntity.label:
+        final labelIds = (o.body['labelIds'] as List?)?.cast<int>();
+        if (labelIds != null && labelIds.contains(tempId)) {
+          final body = Map<String, dynamic>.of(o.body)
+            ..['labelIds'] = labelIds.where((l) => l != tempId).toList();
           return o.copyWith(body: body);
         }
       case SyncEntity.checklistList:

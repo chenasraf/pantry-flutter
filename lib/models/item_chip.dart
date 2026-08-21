@@ -4,6 +4,7 @@
 enum ItemChipKind {
   category('category'),
   store('store'),
+  label('label'),
   quantity('quantity'),
   price('price'),
   note('note'),

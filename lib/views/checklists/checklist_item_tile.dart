@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
+import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/item_chip.dart';
 import 'package:pantry/services/auth_service.dart';
@@ -12,6 +13,7 @@ import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/price.dart';
+import 'package:pantry/utils/label_icons.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
@@ -53,6 +55,10 @@ class ChecklistItemTile extends StatefulWidget {
   /// Stores attached to this item, resolved and name-ordered by the caller.
   /// Rendered as one chip each in the meta row.
   final List<models.Store> stores;
+
+  /// Labels attached to this item, resolved and sort-ordered by the caller.
+  /// Rendered as one chip each in the meta row (store-chip styling).
+  final List<models.Label> labels;
   final int houseId;
   final bool isCardsView;
   final bool trashMode;
@@ -120,6 +126,7 @@ class ChecklistItemTile extends StatefulWidget {
     required this.item,
     required this.category,
     this.stores = const [],
+    this.labels = const [],
     required this.houseId,
     required this.isCardsView,
     required this.onToggle,
@@ -155,6 +162,7 @@ class ChecklistItemTile extends StatefulWidget {
     required this.item,
     required this.category,
     this.stores = const [],
+    this.labels = const [],
     required this.houseId,
     required VoidCallback onTap,
   }) : isCardsView = false,
@@ -220,6 +228,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
         item: item,
         category: cat,
         stores: widget.stores,
+        labels: widget.labels,
         catColor: catColor,
         houseId: widget.houseId,
         isCardsView: false,
@@ -407,6 +416,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       item: item,
       category: cat,
       stores: widget.stores,
+      labels: widget.labels,
       catColor: catColor,
       houseId: widget.houseId,
       isCardsView: widget.isCardsView,
@@ -529,6 +539,7 @@ class _RowContent extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
   final List<models.Store> stores;
+  final List<models.Label> labels;
   final Color catColor;
   final int houseId;
   final bool isCardsView;
@@ -554,6 +565,7 @@ class _RowContent extends StatelessWidget {
     required this.item,
     required this.category,
     required this.stores,
+    required this.labels,
     required this.catColor,
     required this.houseId,
     required this.isCardsView,
@@ -674,6 +686,7 @@ class _RowContent extends StatelessWidget {
                             item: item,
                             category: hideCategory ? null : category,
                             stores: stores,
+                            labels: labels,
                             catColor: catColor,
                             listBadge: listBadge,
                             priceStoreContext: priceStoreContext,
@@ -707,6 +720,8 @@ class _RowContent extends StatelessWidget {
         prefs.isItemChipVisible(ItemChipKind.category.key);
     final hasStores =
         stores.isNotEmpty && prefs.isItemChipVisible(ItemChipKind.store.key);
+    final hasLabels =
+        labels.isNotEmpty && prefs.isItemChipVisible(ItemChipKind.label.key);
     final hasQty =
         item.quantity != null &&
         item.quantity!.trim().isNotEmpty &&
@@ -729,6 +744,7 @@ class _RowContent extends StatelessWidget {
         listBadge != null && prefs.isItemChipVisible(ItemChipKind.list.key);
     return hasCat ||
         hasStores ||
+        hasLabels ||
         hasQty ||
         hasPrice ||
         hasDesc ||
@@ -813,6 +829,7 @@ class _MetaRow extends StatelessWidget {
   final ListItem item;
   final models.Category? category;
   final List<models.Store> stores;
+  final List<models.Label> labels;
   final Color catColor;
   final ItemListBadge? listBadge;
   final int? priceStoreContext;
@@ -821,6 +838,7 @@ class _MetaRow extends StatelessWidget {
     required this.item,
     required this.category,
     required this.stores,
+    required this.labels,
     required this.catColor,
     required this.listBadge,
     this.priceStoreContext,
@@ -881,6 +899,20 @@ class _MetaRow extends StatelessWidget {
                 alpha: 0.13,
               ),
               onTap: () => showStoreDetails(context, s),
+            ),
+        if (prefs.isItemChipVisible(ItemChipKind.label.key))
+          for (final l in labels)
+            _Chip(
+              leading: Icon(
+                labelIcon(l.icon),
+                size: 12,
+                color: parseHexColor(l.color) ?? cs.primary,
+              ),
+              label: l.name,
+              textColor: parseHexColor(l.color) ?? cs.primary,
+              background: (parseHexColor(l.color) ?? cs.primary).withValues(
+                alpha: 0.13,
+              ),
             ),
         if (item.quantity != null &&
             item.quantity!.trim().isNotEmpty &&

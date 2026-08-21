@@ -3,6 +3,7 @@ enum SyncEntity {
   checklistItem,
   category,
   store,
+  label,
   note,
 
   /// A Shopping Mode item check-log write. [SyncOp.op] is [SyncOpKind.create]

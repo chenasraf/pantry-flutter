@@ -229,6 +229,7 @@ settings:
   chipNames:
     category: Category
     store: Store
+    label: Label
     quantity: Quantity
     price: Price
     note: Note
@@ -331,6 +332,25 @@ stores:
     nameZA: "Name Z–A"
     custom: Custom
 
+labels:
+  manageTitle: Manage labels
+  noLabels: No labels yet.
+  editTitle: Edit label
+  addTitle: New label
+  name: Name
+  icon: Icon
+  color: Color
+  saveFailed: Failed to save label.
+  deleteFailed: Failed to delete label.
+  deleteConfirm: Delete this label?
+  deleteConfirmBody: "This label will be removed from all items. This cannot be undone."
+  list: List
+  globalList: All lists (global)
+  sort:
+    nameAZ: "Name A–Z"
+    nameZA: "Name Z–A"
+    custom: Custom
+
 checklists:
   categories: Categories
   noChecklists: No checklists yet.
@@ -356,11 +376,14 @@ checklists:
     lists: Lists
     categories: Categories
     stores: Stores
+    labels: Labels
     allLists: All lists
     allCategories: All categories
     allStores: All stores
+    allLabels: All labels
     noCategory: No category
     noStores: No stores
+    noLabels: No label
     price: Price
     anyCurrency: Any currency
   failedToLoad: Failed to load checklists.
@@ -383,11 +406,13 @@ checklists:
     copyTitle: Copy items to
     categoryTitle: Set category
     storesTitle: Set stores
+    labelsTitle: Set labels
     clearCategory: No category
     move: Move
     copy: Copy
     category: Category
     stores: Stores
+    labels: Labels
     delete: Delete
     archive: Archive
     unarchive: Unarchive
@@ -401,6 +426,7 @@ checklists:
     unarchived(int count): "${_plural(count, one: 'Unarchived 1 item', many: 'Unarchived $count items')}"
     categorySet(int count): "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
     storesSet(int count): "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
+    labelsSet(int count): "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
     skipped(int count): "${_plural(count, one: '1 skipped', many: '$count skipped')}"
     failed: Something went wrong. Please try again.
   viewTrash: View trash
@@ -498,6 +524,11 @@ checklists:
     createStore: New store
     storesChange: Change
     storesPick: Pick some
+    labels: Labels
+    noLabels: None
+    createLabel: New label
+    labelsChange: Change
+    labelsPick: Pick some
     repeat: Repeat
     once: Once
     onceDescription: Delete this item once it is marked as done.
@@ -583,6 +614,7 @@ checklists:
   compose:
     chipCategory: Category
     chipStore: Stores
+    chipLabel: Labels
     chipQuantity: Quantity
     chipType: Item type
     chipImage: Image

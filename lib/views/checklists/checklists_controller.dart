@@ -5,12 +5,14 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
+import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/member.dart';
 import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/label_service.dart';
 import 'package:pantry/services/store_service.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/prefs_service.dart';
@@ -355,6 +357,32 @@ class ChecklistsController extends ChangeNotifier {
       if (item.storeIds.contains(s.id)) s,
   ];
 
+  Map<int, models.Label> _labels = {};
+  Map<int, models.Label> get labels => _labels;
+
+  List<models.Label> get sortedLabels =>
+      LabelService.sortLabels(_labels.values, _labelSort);
+
+  /// Labels offered for an item on [listId], applying the effective-list rule:
+  /// a list's own scoped labels plus every global one. When [listId] is null
+  /// (the All-lists meta view) only globals apply. A no-op filter on servers
+  /// without `label-lists`, where every label is global. Mirrors
+  /// [categoriesForList].
+  List<models.Label> labelsForList(int? listId) {
+    if (!hasFeature('label-lists')) return sortedLabels;
+    return [
+      for (final l in sortedLabels)
+        if (l.listId == null || (listId != null && l.listId == listId)) l,
+    ];
+  }
+
+  /// Resolve an item's `labelIds` to the labels that still exist, in sort
+  /// order. Ids whose label was deleted are silently dropped.
+  List<models.Label> labelsFor(ListItem item) => [
+    for (final l in sortedLabels)
+      if (item.labelIds.contains(l.id)) l,
+  ];
+
   String _sortBy = 'custom';
   String get sortBy => _sortBy;
 
@@ -363,6 +391,9 @@ class ChecklistsController extends ChangeNotifier {
 
   String _storeSort = 'name_asc';
   String get storeSort => _storeSort;
+
+  String _labelSort = 'name_asc';
+  String get labelSort => _labelSort;
 
   String _listSort = 'custom';
   String get listSort => _listSort;
@@ -486,6 +517,10 @@ class ChecklistsController extends ChangeNotifier {
   bool get hasStoresFeature => hasFeature('stores');
   bool get canBatchStores =>
       hasStoresFeature && _allSelectedWritable && permissions.canEditLists;
+  // Batch label-assignment mirrors stores, gated on the `labels` feature.
+  bool get hasLabelsFeature => hasFeature('labels');
+  bool get canBatchLabels =>
+      hasLabelsFeature && _allSelectedWritable && permissions.canEditLists;
   bool get canBatchCopy => selectedItems.isNotEmpty && permissions.canCopyItems;
   // Archive/unarchive are gated on canEditLists, not canDeleteItems.
   bool get canBatchArchive => _allSelectedWritable && permissions.canEditLists;
@@ -496,6 +531,7 @@ class ChecklistsController extends ChangeNotifier {
   ChecklistService get _checklistService => ChecklistService.instance;
   CategoryService get _categoryService => CategoryService.instance;
   StoreService get _storeService => StoreService.instance;
+  LabelService get _labelService => LabelService.instance;
   HouseService get _houseService => HouseService.instance;
   SyncManager get _sync => SyncManager.instance;
 
@@ -549,6 +585,17 @@ class ChecklistsController extends ChangeNotifier {
         }
       }
 
+      // Labels are gated on the `labels` capability and fetched non-fatally so
+      // a server without the feature (404) doesn't break the whole load.
+      if (hasFeature('labels')) {
+        try {
+          final labels = await _labelService.getLabels(houseId);
+          _labels = {for (final l in labels) l.id: l};
+        } catch (e) {
+          debugPrint('[ChecklistsController] Failed to load labels: $e');
+        }
+      }
+
       // House prefs are non-fatal
       try {
         final prefs = await _checklistService.getHousePrefs(houseId);
@@ -557,12 +604,14 @@ class ChecklistsController extends ChangeNotifier {
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _categorySort = prefs['categorySort'] as String? ?? 'custom';
         _storeSort = prefs['storeSort'] as String? ?? 'name_asc';
+        _labelSort = prefs['labelSort'] as String? ?? 'name_asc';
         _listSort = prefs['checklistListSort'] as String? ?? 'custom';
         _lastCurrency = prefs['lastCurrency'] as String? ?? 'USD';
         _checklistService.cache.set('sortBy:$houseId', _sortBy);
         _checklistService.cache.set('showAddedBy:$houseId', _showAddedBy);
         _checklistService.cache.set('categorySort:$houseId', _categorySort);
         _checklistService.cache.set('storeSort:$houseId', _storeSort);
+        _checklistService.cache.set('labelSort:$houseId', _labelSort);
         _checklistService.cache.set('listSort:$houseId', _listSort);
         _checklistService.cache.set('lastCurrency:$houseId', _lastCurrency);
       } catch (e) {
@@ -698,6 +747,10 @@ class ChecklistsController extends ChangeNotifier {
         cache.get<String>('storeSort:$houseId') ??
         cache.get<String>('storeSort') ??
         'name_asc';
+    _labelSort =
+        cache.get<String>('labelSort:$houseId') ??
+        cache.get<String>('labelSort') ??
+        'name_asc';
     _listSort =
         cache.get<String>('listSort:$houseId') ??
         cache.get<String>('listSort') ??
@@ -720,6 +773,11 @@ class ChecklistsController extends ChangeNotifier {
     final cachedStores = _storeService.getCached(houseId);
     if (cachedStores != null && _stores.isEmpty) {
       _stores = {for (final s in cachedStores) s.id: s};
+    }
+
+    final cachedLabels = _labelService.getCached(houseId);
+    if (cachedLabels != null && _labels.isEmpty) {
+      _labels = {for (final l in cachedLabels) l.id: l};
     }
 
     final cachedLists = _checklistService.getCachedLists(houseId);
@@ -1083,6 +1141,19 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
+  /// Refetch just the labels and adopt them, keeping the on-disk cache honest.
+  /// Used after a server-side cascade (a permanent list delete) prunes scoped
+  /// labels out from under us.
+  Future<void> _refreshLabels() async {
+    try {
+      final labels = await _labelService.getLabels(houseId);
+      _labels = {for (final l in labels) l.id: l};
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to refresh labels: $e');
+    }
+  }
+
   Future<void> onStoresChanged() async {
     if (!hasFeature('stores')) return;
     try {
@@ -1099,6 +1170,34 @@ class ChecklistsController extends ChangeNotifier {
     } catch (e) {
       debugPrint(
         '[ChecklistsController] Failed to refresh after stores changed: $e',
+      );
+    }
+  }
+
+  Future<void> onLabelsChanged() async {
+    if (!hasFeature('labels')) return;
+    try {
+      final results = await Future.wait([
+        _checklistService.getHousePrefs(houseId),
+        _labelService.getLabels(houseId),
+      ]);
+      final prefs = results[0] as Map<String, dynamic>;
+      final labels = results[1] as List<models.Label>;
+      _labelSort = prefs['labelSort'] as String? ?? 'name_asc';
+      _labels = {for (final l in labels) l.id: l};
+      _checklistService.cache.set('labelSort:$houseId', _labelSort);
+      notifyListeners();
+
+      // Re-scoping a label detaches it from items on other lists server-side,
+      // so the current view's cached items may now be stale. Refetch them so a
+      // detached item doesn't keep showing a label it no longer has. Only
+      // relevant when scoping is available.
+      if (hasFeature('label-lists') && _currentList != null && !isSoftView) {
+        await selectList(_currentList!, refreshInPlace: true);
+      }
+    } catch (e) {
+      debugPrint(
+        '[ChecklistsController] Failed to refresh after labels changed: $e',
       );
     }
   }
@@ -1728,6 +1827,23 @@ class ChecklistsController extends ChangeNotifier {
     exitSelection();
   }
 
+  /// Replace the label set on every selected item (an empty list clears them),
+  /// mirroring the server's `batch/labels` replace semantics.
+  void batchSetLabels(List<int> labelIds) {
+    final ids = _selectedItemIds.toList();
+    if (ids.isEmpty) return;
+    final idSet = ids.toSet();
+    _items = [
+      for (final i in _items)
+        idSet.contains(i.id)
+            ? i.copyWith(labelIds: List.of(labelIds), updatedAt: _now())
+            : i,
+    ];
+    _cacheCurrentItems();
+    _enqueueBatch('labels', ids, extra: {'labelIds': labelIds});
+    exitSelection();
+  }
+
   /// Reconciles the authoritative envelope from a flushed `batch` op back into
   /// the view — see [_onSyncApplied].
   void _reconcileBatchApplied(SyncOp op, PantryBatchResult result) {
@@ -1769,6 +1885,7 @@ class ChecklistsController extends ChangeNotifier {
         }
       case 'category':
       case 'stores':
+      case 'labels':
       case 'uncheck':
         // `uncheck` returns the now-unchecked rows (idempotent: already-active
         // items are omitted). Swapping them by id folds the authoritative
@@ -1968,12 +2085,44 @@ class ChecklistsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Return every item to its original label set. Items may have had different
+  /// sets, so the reverse is grouped per original set (keyed by its sorted ids)
+  /// into one batch op each. Mirrors [undoBatchSetStores].
+  void undoBatchSetLabels(List<ListItem> items) {
+    if (items.isEmpty) return;
+    final byId = {for (final it in items) it.id: it};
+    _items = [
+      for (final i in _items)
+        if (byId[i.id] case final original?)
+          i.copyWith(labelIds: List.of(original.labelIds), updatedAt: _now())
+        else
+          i,
+    ];
+    _cacheCurrentItems();
+    final groups = <String, List<int>>{};
+    final labelSets = <String, List<int>>{};
+    for (final it in items) {
+      final key = (List.of(it.labelIds)..sort()).join(',');
+      groups.putIfAbsent(key, () => []).add(it.id);
+      labelSets[key] = it.labelIds;
+    }
+    for (final entry in groups.entries) {
+      _enqueueBatch(
+        'labels',
+        entry.value,
+        extra: {'labelIds': labelSets[entry.key]!},
+      );
+    }
+    notifyListeners();
+  }
+
   Future<ListItem> addItem({
     required String name,
     String? description,
     String? quantity,
     int? categoryId,
     List<int>? storeIds,
+    List<int>? labelIds,
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
@@ -1995,6 +2144,7 @@ class ChecklistsController extends ChangeNotifier {
       quantity: quantity,
       categoryId: categoryId,
       storeIds: storeIds,
+      labelIds: labelIds,
       rrule: rrule,
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
@@ -2014,6 +2164,7 @@ class ChecklistsController extends ChangeNotifier {
     String? quantity,
     int? categoryId,
     List<int>? storeIds,
+    List<int>? labelIds,
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
@@ -2030,6 +2181,7 @@ class ChecklistsController extends ChangeNotifier {
       description: description,
       categoryId: categoryId,
       storeIds: storeIds ?? const [],
+      labelIds: labelIds ?? const [],
       quantity: quantity,
       done: false,
       rrule: rrule,
@@ -2062,6 +2214,7 @@ class ChecklistsController extends ChangeNotifier {
           'quantity': ?quantity,
           'categoryId': ?categoryId,
           'storeIds': ?storeIds,
+          'labelIds': ?labelIds,
           'rrule': ?rrule,
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
@@ -2104,6 +2257,7 @@ class ChecklistsController extends ChangeNotifier {
     int? categoryId,
     bool clearCategory = false,
     List<int>? storeIds,
+    List<int>? labelIds,
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
@@ -2117,6 +2271,7 @@ class ChecklistsController extends ChangeNotifier {
       categoryId: categoryId,
       clearCategory: clearCategory,
       storeIds: storeIds,
+      labelIds: labelIds,
       rrule: rrule,
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
@@ -2147,6 +2302,7 @@ class ChecklistsController extends ChangeNotifier {
           if (clearCategory) 'clearCategory': true,
           'categoryId': ?categoryId,
           'storeIds': ?storeIds,
+          'labelIds': ?labelIds,
           'rrule': ?rrule,
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
@@ -2456,6 +2612,19 @@ class ChecklistsController extends ChangeNotifier {
           notifyListeners();
           unawaited(_refreshCategories());
         }
+        // Labels cascade the same way: a permanent list delete removes that
+        // list's scoped labels (globals untouched). Prune and refetch so the
+        // label cache stays honest.
+        if (hasFeature('label-lists') &&
+            (kind == SyncOpKind.permanentDelete ||
+                kind == SyncOpKind.emptyTrash)) {
+          final deletedListId = applied.op.entityId;
+          if (deletedListId != null) {
+            _labels.removeWhere((_, l) => l.listId == deletedListId);
+          }
+          notifyListeners();
+          unawaited(_refreshLabels());
+        }
         final entity = applied.entity;
         if (entity is ChecklistList) {
           // Server entities never carry the client-only progress-card state,
@@ -2532,6 +2701,15 @@ class ChecklistsController extends ChangeNotifier {
             _stores.remove(tempId);
           }
           _stores[entity.id] = entity;
+          notifyListeners();
+        }
+      case SyncEntity.label:
+        final entity = applied.entity;
+        if (entity is models.Label) {
+          if (tempId != null) {
+            _labels.remove(tempId);
+          }
+          _labels[entity.id] = entity;
           notifyListeners();
         }
       case SyncEntity.note:

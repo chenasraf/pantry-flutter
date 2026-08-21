@@ -229,6 +229,7 @@ settings:
   chipNames:
     category: Kategorie
     store: Geschäft
+    label: Etikett
     quantity: Menge
     price: Preis
     note: Notiz
@@ -331,6 +332,25 @@ stores:
     nameZA: "Name Z–A"
     custom: Benutzerdefiniert
 
+labels:
+  manageTitle: Etiketten verwalten
+  noLabels: Noch keine Etiketten.
+  editTitle: Etikett bearbeiten
+  addTitle: Neues Etikett
+  name: Name
+  icon: Symbol
+  color: Farbe
+  saveFailed: Etikett konnte nicht gespeichert werden.
+  deleteFailed: "Etikett konnte nicht gelöscht werden."
+  deleteConfirm: "Dieses Etikett löschen?"
+  deleteConfirmBody: "Dieses Etikett wird von allen Artikeln entfernt. Dies kann nicht rückgängig gemacht werden."
+  list: Liste
+  globalList: Alle Listen (global)
+  sort:
+    nameAZ: "Name A–Z"
+    nameZA: "Name Z–A"
+    custom: Benutzerdefiniert
+
 checklists:
   categories: Kategorien
   noChecklists: Noch keine Checklisten.
@@ -356,11 +376,14 @@ checklists:
     lists: Listen
     categories: Kategorien
     stores: Geschäfte
+    labels: Etiketten
     allLists: Alle Listen
     allCategories: Alle Kategorien
     allStores: Alle Geschäfte
+    allLabels: Alle Etiketten
     noCategory: Keine Kategorie
     noStores: Keine Geschäfte
+    noLabels: Kein Etikett
     price: Preis
     anyCurrency: Beliebige Währung
   failedToLoad: Checklisten konnten nicht geladen werden.
@@ -383,11 +406,13 @@ checklists:
     copyTitle: Einträge kopieren nach
     categoryTitle: Kategorie festlegen
     storesTitle: Geschäfte festlegen
+    labelsTitle: Etiketten festlegen
     clearCategory: Keine Kategorie
     move: Verschieben
     copy: Kopieren
     category: Kategorie
     stores: Geschäfte
+    labels: Etiketten
     delete: "Löschen"
     archive: Archivieren
     unarchive: Dearchivieren
@@ -401,6 +426,7 @@ checklists:
     unarchived(int count): "${_plural(count, one: '1 Eintrag dearchiviert', many: '$count Einträge dearchiviert')}"
     categorySet(int count): "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
     storesSet(int count): "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
+    labelsSet(int count): "${_plural(count, one: '1 Eintrag aktualisiert', many: '$count Einträge aktualisiert')}"
     skipped(int count): "${_plural(count, one: '1 übersprungen', many: '$count übersprungen')}"
     failed: Etwas ist schiefgelaufen. Bitte versuche es erneut.
   viewTrash: Papierkorb anzeigen
@@ -498,6 +524,11 @@ checklists:
     createStore: Neues Geschäft
     storesChange: Ändern
     storesPick: Auswählen
+    labels: Etiketten
+    noLabels: Keine
+    createLabel: Neues Etikett
+    labelsChange: Ändern
+    labelsPick: Auswählen
     repeat: Wiederholen
     once: Einmalig
     onceDescription: Diesen Eintrag löschen, sobald er als erledigt markiert ist.
@@ -583,6 +614,7 @@ checklists:
   compose:
     chipCategory: Kategorie
     chipStore: Geschäfte
+    chipLabel: Etiketten
     chipQuantity: Menge
     chipType: Eintragstyp
     chipImage: Bild

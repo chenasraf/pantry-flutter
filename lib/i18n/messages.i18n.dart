@@ -74,6 +74,7 @@ class Messages {
   NotificationsMessages get notifications => NotificationsMessages(this);
   CategoriesMessages get categories => CategoriesMessages(this);
   StoresMessages get stores => StoresMessages(this);
+  LabelsMessages get labels => LabelsMessages(this);
   ChecklistsMessages get checklists => ChecklistsMessages(this);
   NotesWallMessages get notesWall => NotesWallMessages(this);
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
@@ -1418,6 +1419,11 @@ class ChipNamesSettingsMessages {
   String get store => """Store""";
 
   /// ```dart
+  /// "Label"
+  /// ```
+  String get label => """Label""";
+
+  /// ```dart
   /// "Quantity"
   /// ```
   String get quantity => """Quantity""";
@@ -1755,6 +1761,98 @@ class StoresMessages {
 class SortStoresMessages {
   final StoresMessages _parent;
   const SortStoresMessages(this._parent);
+
+  /// ```dart
+  /// "Name A–Z"
+  /// ```
+  String get nameAZ => """Name A–Z""";
+
+  /// ```dart
+  /// "Name Z–A"
+  /// ```
+  String get nameZA => """Name Z–A""";
+
+  /// ```dart
+  /// "Custom"
+  /// ```
+  String get custom => """Custom""";
+}
+
+class LabelsMessages {
+  final Messages _parent;
+  const LabelsMessages(this._parent);
+
+  /// ```dart
+  /// "Manage labels"
+  /// ```
+  String get manageTitle => """Manage labels""";
+
+  /// ```dart
+  /// "No labels yet."
+  /// ```
+  String get noLabels => """No labels yet.""";
+
+  /// ```dart
+  /// "Edit label"
+  /// ```
+  String get editTitle => """Edit label""";
+
+  /// ```dart
+  /// "New label"
+  /// ```
+  String get addTitle => """New label""";
+
+  /// ```dart
+  /// "Name"
+  /// ```
+  String get name => """Name""";
+
+  /// ```dart
+  /// "Icon"
+  /// ```
+  String get icon => """Icon""";
+
+  /// ```dart
+  /// "Color"
+  /// ```
+  String get color => """Color""";
+
+  /// ```dart
+  /// "Failed to save label."
+  /// ```
+  String get saveFailed => """Failed to save label.""";
+
+  /// ```dart
+  /// "Failed to delete label."
+  /// ```
+  String get deleteFailed => """Failed to delete label.""";
+
+  /// ```dart
+  /// "Delete this label?"
+  /// ```
+  String get deleteConfirm => """Delete this label?""";
+
+  /// ```dart
+  /// "This label will be removed from all items. This cannot be undone."
+  /// ```
+  String get deleteConfirmBody =>
+      """This label will be removed from all items. This cannot be undone.""";
+
+  /// ```dart
+  /// "List"
+  /// ```
+  String get list => """List""";
+
+  /// ```dart
+  /// "All lists (global)"
+  /// ```
+  String get globalList => """All lists (global)""";
+  SortLabelsMessages get sort => SortLabelsMessages(this);
+}
+
+class SortLabelsMessages {
+  final LabelsMessages _parent;
+  const SortLabelsMessages(this._parent);
 
   /// ```dart
   /// "Name A–Z"
@@ -2446,6 +2544,11 @@ class FiltersChecklistsMessages {
   String get stores => """Stores""";
 
   /// ```dart
+  /// "Labels"
+  /// ```
+  String get labels => """Labels""";
+
+  /// ```dart
   /// "All lists"
   /// ```
   String get allLists => """All lists""";
@@ -2461,6 +2564,11 @@ class FiltersChecklistsMessages {
   String get allStores => """All stores""";
 
   /// ```dart
+  /// "All labels"
+  /// ```
+  String get allLabels => """All labels""";
+
+  /// ```dart
   /// "No category"
   /// ```
   String get noCategory => """No category""";
@@ -2469,6 +2577,11 @@ class FiltersChecklistsMessages {
   /// "No stores"
   /// ```
   String get noStores => """No stores""";
+
+  /// ```dart
+  /// "No label"
+  /// ```
+  String get noLabels => """No label""";
 
   /// ```dart
   /// "Price"
@@ -2512,6 +2625,11 @@ class BatchChecklistsMessages {
   String get storesTitle => """Set stores""";
 
   /// ```dart
+  /// "Set labels"
+  /// ```
+  String get labelsTitle => """Set labels""";
+
+  /// ```dart
   /// "No category"
   /// ```
   String get clearCategory => """No category""";
@@ -2535,6 +2653,11 @@ class BatchChecklistsMessages {
   /// "Stores"
   /// ```
   String get stores => """Stores""";
+
+  /// ```dart
+  /// "Labels"
+  /// ```
+  String get labels => """Labels""";
 
   /// ```dart
   /// "Delete"
@@ -2608,6 +2731,12 @@ class BatchChecklistsMessages {
   /// "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
   /// ```
   String storesSet(int count) =>
+      """${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}"
+  /// ```
+  String labelsSet(int count) =>
       """${_plural(count, one: 'Updated 1 item', many: 'Updated $count items')}""";
 
   /// ```dart
@@ -2833,6 +2962,31 @@ class ItemFormChecklistsMessages {
   /// "Pick some"
   /// ```
   String get storesPick => """Pick some""";
+
+  /// ```dart
+  /// "Labels"
+  /// ```
+  String get labels => """Labels""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get noLabels => """None""";
+
+  /// ```dart
+  /// "New label"
+  /// ```
+  String get createLabel => """New label""";
+
+  /// ```dart
+  /// "Change"
+  /// ```
+  String get labelsChange => """Change""";
+
+  /// ```dart
+  /// "Pick some"
+  /// ```
+  String get labelsPick => """Pick some""";
 
   /// ```dart
   /// "Repeat"
@@ -3090,6 +3244,11 @@ class ComposeChecklistsMessages {
   /// "Stores"
   /// ```
   String get chipStore => """Stores""";
+
+  /// ```dart
+  /// "Labels"
+  /// ```
+  String get chipLabel => """Labels""";
 
   /// ```dart
   /// "Quantity"
@@ -4805,6 +4964,7 @@ Password: pantry-rocks""",
   """settings.visibleChipsReset""": """Reset""",
   """settings.chipNames.category""": """Category""",
   """settings.chipNames.store""": """Store""",
+  """settings.chipNames.label""": """Label""",
   """settings.chipNames.quantity""": """Quantity""",
   """settings.chipNames.price""": """Price""",
   """settings.chipNames.note""": """Note""",
@@ -4900,6 +5060,23 @@ Password: pantry-rocks""",
   """stores.sort.nameAZ""": """Name A–Z""",
   """stores.sort.nameZA""": """Name Z–A""",
   """stores.sort.custom""": """Custom""",
+  """labels.manageTitle""": """Manage labels""",
+  """labels.noLabels""": """No labels yet.""",
+  """labels.editTitle""": """Edit label""",
+  """labels.addTitle""": """New label""",
+  """labels.name""": """Name""",
+  """labels.icon""": """Icon""",
+  """labels.color""": """Color""",
+  """labels.saveFailed""": """Failed to save label.""",
+  """labels.deleteFailed""": """Failed to delete label.""",
+  """labels.deleteConfirm""": """Delete this label?""",
+  """labels.deleteConfirmBody""":
+      """This label will be removed from all items. This cannot be undone.""",
+  """labels.list""": """List""",
+  """labels.globalList""": """All lists (global)""",
+  """labels.sort.nameAZ""": """Name A–Z""",
+  """labels.sort.nameZA""": """Name Z–A""",
+  """labels.sort.custom""": """Custom""",
   """checklists.categories""": """Categories""",
   """checklists.noChecklists""": """No checklists yet.""",
   """checklists.noItems""": """No items in this list.""",
@@ -4924,11 +5101,14 @@ Password: pantry-rocks""",
   """checklists.filters.lists""": """Lists""",
   """checklists.filters.categories""": """Categories""",
   """checklists.filters.stores""": """Stores""",
+  """checklists.filters.labels""": """Labels""",
   """checklists.filters.allLists""": """All lists""",
   """checklists.filters.allCategories""": """All categories""",
   """checklists.filters.allStores""": """All stores""",
+  """checklists.filters.allLabels""": """All labels""",
   """checklists.filters.noCategory""": """No category""",
   """checklists.filters.noStores""": """No stores""",
+  """checklists.filters.noLabels""": """No label""",
   """checklists.filters.price""": """Price""",
   """checklists.filters.anyCurrency""": """Any currency""",
   """checklists.failedToLoad""": """Failed to load checklists.""",
@@ -4948,11 +5128,13 @@ Password: pantry-rocks""",
   """checklists.batch.copyTitle""": """Copy items to""",
   """checklists.batch.categoryTitle""": """Set category""",
   """checklists.batch.storesTitle""": """Set stores""",
+  """checklists.batch.labelsTitle""": """Set labels""",
   """checklists.batch.clearCategory""": """No category""",
   """checklists.batch.move""": """Move""",
   """checklists.batch.copy""": """Copy""",
   """checklists.batch.category""": """Category""",
   """checklists.batch.stores""": """Stores""",
+  """checklists.batch.labels""": """Labels""",
   """checklists.batch.delete""": """Delete""",
   """checklists.batch.archive""": """Archive""",
   """checklists.batch.unarchive""": """Unarchive""",
@@ -5046,6 +5228,11 @@ Password: pantry-rocks""",
   """checklists.itemForm.createStore""": """New store""",
   """checklists.itemForm.storesChange""": """Change""",
   """checklists.itemForm.storesPick""": """Pick some""",
+  """checklists.itemForm.labels""": """Labels""",
+  """checklists.itemForm.noLabels""": """None""",
+  """checklists.itemForm.createLabel""": """New label""",
+  """checklists.itemForm.labelsChange""": """Change""",
+  """checklists.itemForm.labelsPick""": """Pick some""",
   """checklists.itemForm.repeat""": """Repeat""",
   """checklists.itemForm.once""": """Once""",
   """checklists.itemForm.onceDescription""":
@@ -5125,6 +5312,7 @@ Password: pantry-rocks""",
   """checklists.itemTypes.weekly""": """Weekly""",
   """checklists.compose.chipCategory""": """Category""",
   """checklists.compose.chipStore""": """Stores""",
+  """checklists.compose.chipLabel""": """Labels""",
   """checklists.compose.chipQuantity""": """Quantity""",
   """checklists.compose.chipType""": """Item type""",
   """checklists.compose.chipImage""": """Image""",

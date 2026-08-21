@@ -75,6 +75,7 @@ class MessagesEs extends Messages {
   NotificationsMessagesEs get notifications => NotificationsMessagesEs(this);
   CategoriesMessagesEs get categories => CategoriesMessagesEs(this);
   StoresMessagesEs get stores => StoresMessagesEs(this);
+  LabelsMessagesEs get labels => LabelsMessagesEs(this);
   ChecklistsMessagesEs get checklists => ChecklistsMessagesEs(this);
   NotesWallMessagesEs get notesWall => NotesWallMessagesEs(this);
   PhotoBoardMessagesEs get photoBoard => PhotoBoardMessagesEs(this);
@@ -1433,6 +1434,11 @@ class ChipNamesSettingsMessagesEs extends ChipNamesSettingsMessages {
   String get store => """Tienda""";
 
   /// ```dart
+  /// "Etiqueta"
+  /// ```
+  String get label => """Etiqueta""";
+
+  /// ```dart
   /// "Cantidad"
   /// ```
   String get quantity => """Cantidad""";
@@ -1770,6 +1776,98 @@ class StoresMessagesEs extends StoresMessages {
 class SortStoresMessagesEs extends SortStoresMessages {
   final StoresMessagesEs _parent;
   const SortStoresMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Nombre A–Z"
+  /// ```
+  String get nameAZ => """Nombre A–Z""";
+
+  /// ```dart
+  /// "Nombre Z–A"
+  /// ```
+  String get nameZA => """Nombre Z–A""";
+
+  /// ```dart
+  /// "Personalizado"
+  /// ```
+  String get custom => """Personalizado""";
+}
+
+class LabelsMessagesEs extends LabelsMessages {
+  final MessagesEs _parent;
+  const LabelsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Gestionar etiquetas"
+  /// ```
+  String get manageTitle => """Gestionar etiquetas""";
+
+  /// ```dart
+  /// "Aún no hay etiquetas."
+  /// ```
+  String get noLabels => """Aún no hay etiquetas.""";
+
+  /// ```dart
+  /// "Editar etiqueta"
+  /// ```
+  String get editTitle => """Editar etiqueta""";
+
+  /// ```dart
+  /// "Nueva etiqueta"
+  /// ```
+  String get addTitle => """Nueva etiqueta""";
+
+  /// ```dart
+  /// "Nombre"
+  /// ```
+  String get name => """Nombre""";
+
+  /// ```dart
+  /// "Icono"
+  /// ```
+  String get icon => """Icono""";
+
+  /// ```dart
+  /// "Color"
+  /// ```
+  String get color => """Color""";
+
+  /// ```dart
+  /// "No se pudo guardar la etiqueta."
+  /// ```
+  String get saveFailed => """No se pudo guardar la etiqueta.""";
+
+  /// ```dart
+  /// "No se pudo eliminar la etiqueta."
+  /// ```
+  String get deleteFailed => """No se pudo eliminar la etiqueta.""";
+
+  /// ```dart
+  /// "¿Eliminar esta etiqueta?"
+  /// ```
+  String get deleteConfirm => """¿Eliminar esta etiqueta?""";
+
+  /// ```dart
+  /// "Esta etiqueta se eliminará de todos los artículos. Esto no se puede deshacer."
+  /// ```
+  String get deleteConfirmBody =>
+      """Esta etiqueta se eliminará de todos los artículos. Esto no se puede deshacer.""";
+
+  /// ```dart
+  /// "Lista"
+  /// ```
+  String get list => """Lista""";
+
+  /// ```dart
+  /// "Todas las listas (global)"
+  /// ```
+  String get globalList => """Todas las listas (global)""";
+  SortLabelsMessagesEs get sort => SortLabelsMessagesEs(this);
+}
+
+class SortLabelsMessagesEs extends SortLabelsMessages {
+  final LabelsMessagesEs _parent;
+  const SortLabelsMessagesEs(this._parent) : super(_parent);
 
   /// ```dart
   /// "Nombre A–Z"
@@ -2469,6 +2567,11 @@ class FiltersChecklistsMessagesEs extends FiltersChecklistsMessages {
   String get stores => """Tiendas""";
 
   /// ```dart
+  /// "Etiquetas"
+  /// ```
+  String get labels => """Etiquetas""";
+
+  /// ```dart
   /// "Todas las listas"
   /// ```
   String get allLists => """Todas las listas""";
@@ -2484,6 +2587,11 @@ class FiltersChecklistsMessagesEs extends FiltersChecklistsMessages {
   String get allStores => """Todas las tiendas""";
 
   /// ```dart
+  /// "Todas las etiquetas"
+  /// ```
+  String get allLabels => """Todas las etiquetas""";
+
+  /// ```dart
   /// "Sin categoría"
   /// ```
   String get noCategory => """Sin categoría""";
@@ -2492,6 +2600,11 @@ class FiltersChecklistsMessagesEs extends FiltersChecklistsMessages {
   /// "Sin tienda"
   /// ```
   String get noStores => """Sin tienda""";
+
+  /// ```dart
+  /// "Sin etiqueta"
+  /// ```
+  String get noLabels => """Sin etiqueta""";
 
   /// ```dart
   /// "Precio"
@@ -2535,6 +2648,11 @@ class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   String get storesTitle => """Establecer tiendas""";
 
   /// ```dart
+  /// "Establecer etiquetas"
+  /// ```
+  String get labelsTitle => """Establecer etiquetas""";
+
+  /// ```dart
   /// "Sin categoría"
   /// ```
   String get clearCategory => """Sin categoría""";
@@ -2558,6 +2676,11 @@ class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   /// "Tiendas"
   /// ```
   String get stores => """Tiendas""";
+
+  /// ```dart
+  /// "Etiquetas"
+  /// ```
+  String get labels => """Etiquetas""";
 
   /// ```dart
   /// "Eliminar"
@@ -2631,6 +2754,12 @@ class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
   /// "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
   /// ```
   String storesSet(int count) =>
+      """${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
+  /// ```
+  String labelsSet(int count) =>
       """${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}""";
 
   /// ```dart
@@ -2858,6 +2987,31 @@ class ItemFormChecklistsMessagesEs extends ItemFormChecklistsMessages {
   /// "Elegir"
   /// ```
   String get storesPick => """Elegir""";
+
+  /// ```dart
+  /// "Etiquetas"
+  /// ```
+  String get labels => """Etiquetas""";
+
+  /// ```dart
+  /// "Ninguna"
+  /// ```
+  String get noLabels => """Ninguna""";
+
+  /// ```dart
+  /// "Nueva etiqueta"
+  /// ```
+  String get createLabel => """Nueva etiqueta""";
+
+  /// ```dart
+  /// "Cambiar"
+  /// ```
+  String get labelsChange => """Cambiar""";
+
+  /// ```dart
+  /// "Elegir"
+  /// ```
+  String get labelsPick => """Elegir""";
 
   /// ```dart
   /// "Repetir"
@@ -3115,6 +3269,11 @@ class ComposeChecklistsMessagesEs extends ComposeChecklistsMessages {
   /// "Tiendas"
   /// ```
   String get chipStore => """Tiendas""";
+
+  /// ```dart
+  /// "Etiquetas"
+  /// ```
+  String get chipLabel => """Etiquetas""";
 
   /// ```dart
   /// "Cantidad"
@@ -4849,6 +5008,7 @@ Contraseña: pantry-rocks""",
   """settings.visibleChipsReset""": """Restablecer""",
   """settings.chipNames.category""": """Categoría""",
   """settings.chipNames.store""": """Tienda""",
+  """settings.chipNames.label""": """Etiqueta""",
   """settings.chipNames.quantity""": """Cantidad""",
   """settings.chipNames.price""": """Precio""",
   """settings.chipNames.note""": """Nota""",
@@ -4945,6 +5105,23 @@ Contraseña: pantry-rocks""",
   """stores.sort.nameAZ""": """Nombre A–Z""",
   """stores.sort.nameZA""": """Nombre Z–A""",
   """stores.sort.custom""": """Personalizado""",
+  """labels.manageTitle""": """Gestionar etiquetas""",
+  """labels.noLabels""": """Aún no hay etiquetas.""",
+  """labels.editTitle""": """Editar etiqueta""",
+  """labels.addTitle""": """Nueva etiqueta""",
+  """labels.name""": """Nombre""",
+  """labels.icon""": """Icono""",
+  """labels.color""": """Color""",
+  """labels.saveFailed""": """No se pudo guardar la etiqueta.""",
+  """labels.deleteFailed""": """No se pudo eliminar la etiqueta.""",
+  """labels.deleteConfirm""": """¿Eliminar esta etiqueta?""",
+  """labels.deleteConfirmBody""":
+      """Esta etiqueta se eliminará de todos los artículos. Esto no se puede deshacer.""",
+  """labels.list""": """Lista""",
+  """labels.globalList""": """Todas las listas (global)""",
+  """labels.sort.nameAZ""": """Nombre A–Z""",
+  """labels.sort.nameZA""": """Nombre Z–A""",
+  """labels.sort.custom""": """Personalizado""",
   """checklists.categories""": """Categorías""",
   """checklists.noChecklists""": """Aún no hay listas.""",
   """checklists.noItems""": """No hay artículos en esta lista.""",
@@ -4970,11 +5147,14 @@ Contraseña: pantry-rocks""",
   """checklists.filters.lists""": """Listas""",
   """checklists.filters.categories""": """Categorías""",
   """checklists.filters.stores""": """Tiendas""",
+  """checklists.filters.labels""": """Etiquetas""",
   """checklists.filters.allLists""": """Todas las listas""",
   """checklists.filters.allCategories""": """Todas las categorías""",
   """checklists.filters.allStores""": """Todas las tiendas""",
+  """checklists.filters.allLabels""": """Todas las etiquetas""",
   """checklists.filters.noCategory""": """Sin categoría""",
   """checklists.filters.noStores""": """Sin tienda""",
+  """checklists.filters.noLabels""": """Sin etiqueta""",
   """checklists.filters.price""": """Precio""",
   """checklists.filters.anyCurrency""": """Cualquier moneda""",
   """checklists.failedToLoad""": """No se pudieron cargar las listas.""",
@@ -4995,11 +5175,13 @@ Contraseña: pantry-rocks""",
   """checklists.batch.copyTitle""": """Copiar artículos a""",
   """checklists.batch.categoryTitle""": """Establecer categoría""",
   """checklists.batch.storesTitle""": """Establecer tiendas""",
+  """checklists.batch.labelsTitle""": """Establecer etiquetas""",
   """checklists.batch.clearCategory""": """Sin categoría""",
   """checklists.batch.move""": """Mover""",
   """checklists.batch.copy""": """Copiar""",
   """checklists.batch.category""": """Categoría""",
   """checklists.batch.stores""": """Tiendas""",
+  """checklists.batch.labels""": """Etiquetas""",
   """checklists.batch.delete""": """Eliminar""",
   """checklists.batch.archive""": """Archivar""",
   """checklists.batch.unarchive""": """Desarchivar""",
@@ -5096,6 +5278,11 @@ Contraseña: pantry-rocks""",
   """checklists.itemForm.createStore""": """Nueva tienda""",
   """checklists.itemForm.storesChange""": """Cambiar""",
   """checklists.itemForm.storesPick""": """Elegir""",
+  """checklists.itemForm.labels""": """Etiquetas""",
+  """checklists.itemForm.noLabels""": """Ninguna""",
+  """checklists.itemForm.createLabel""": """Nueva etiqueta""",
+  """checklists.itemForm.labelsChange""": """Cambiar""",
+  """checklists.itemForm.labelsPick""": """Elegir""",
   """checklists.itemForm.repeat""": """Repetir""",
   """checklists.itemForm.once""": """Una vez""",
   """checklists.itemForm.onceDescription""":
@@ -5178,6 +5365,7 @@ Contraseña: pantry-rocks""",
   """checklists.itemTypes.weekly""": """Semanal""",
   """checklists.compose.chipCategory""": """Categoría""",
   """checklists.compose.chipStore""": """Tiendas""",
+  """checklists.compose.chipLabel""": """Etiquetas""",
   """checklists.compose.chipQuantity""": """Cantidad""",
   """checklists.compose.chipType""": """Tipo""",
   """checklists.compose.chipImage""": """Imagen""",

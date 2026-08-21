@@ -9,6 +9,7 @@ import 'package:mime/mime.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
+import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry/utils/platform_info.dart';
@@ -19,6 +20,7 @@ import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/currencies.dart';
 import 'package:pantry/utils/price.dart';
+import 'package:pantry/utils/label_icons.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
@@ -34,6 +36,7 @@ class ItemDraft {
   String quantity = '';
   int? categoryId;
   Set<int> storeIds = {};
+  Set<int> labelIds = {};
   ItemLifecycle lifecycle = ItemLifecycle.staple;
   // RRULE state when lifecycle == recurring. Default = weekly every 1 week.
   RecurrenceState recurrence = RecurrenceState();
@@ -54,6 +57,7 @@ class ItemDraft {
     quantity = '';
     categoryId = null;
     storeIds = {};
+    labelIds = {};
     lifecycle = defaultLifecycle;
     recurrence = RecurrenceState();
     imageFile = null;
@@ -79,6 +83,7 @@ class ComposeSubmission {
   final String? quantity;
   final int? categoryId;
   final List<int> storeIds;
+  final List<int> labelIds;
   final String? rrule;
   final bool deleteOnDone;
   final bool repeatFromCompletion;
@@ -97,6 +102,7 @@ class ComposeSubmission {
     this.quantity,
     this.categoryId,
     this.storeIds = const [],
+    this.labelIds = const [],
     this.rrule,
     required this.deleteOnDone,
     required this.repeatFromCompletion,
@@ -116,6 +122,10 @@ class ItemComposeBar extends StatefulWidget {
   /// Stores offered in the store tray. Empty (and the store chip hidden) when
   /// the server lacks the `stores` capability.
   final List<models.Store> stores;
+
+  /// Labels offered in the label tray. Empty (and the label chip hidden) when
+  /// the server lacks the `labels` capability.
+  final List<models.Label> labels;
   final Future<bool> Function(ComposeSubmission submission) onSubmit;
   final bool initiallyFocused;
   final bool dimmedListBackground;
@@ -147,6 +157,11 @@ class ItemComposeBar extends StatefulWidget {
   /// [onRequestCreateCategory]: drive the create-store UI, refresh the parent's
   /// store list, and return the new Store — compose bar then selects it.
   final Future<models.Store?> Function()? onRequestCreateStore;
+
+  /// Optional hook for the "+ New" chip in the label tray. Mirrors
+  /// [onRequestCreateStore]: drive the create-label UI, refresh the parent's
+  /// label list, and return the new Label — compose bar then selects it.
+  final Future<models.Label?> Function()? onRequestCreateLabel;
 
   /// When non-null, switches the bar into All-lists mode: the user must pick
   /// which list the new item lands in before submit. The selected target
@@ -187,6 +202,7 @@ class ItemComposeBar extends StatefulWidget {
     required this.deleteOnDoneDefault,
     required this.categories,
     this.stores = const [],
+    this.labels = const [],
     required this.onSubmit,
     this.initiallyFocused = false,
     this.dimmedListBackground = false,
@@ -196,6 +212,7 @@ class ItemComposeBar extends StatefulWidget {
     this.onActiveChanged,
     this.onRequestCreateCategory,
     this.onRequestCreateStore,
+    this.onRequestCreateLabel,
     this.targetLists,
     this.selectedTargetListId,
     this.onTargetListChanged,
@@ -214,6 +231,7 @@ enum _Tray {
   targetList,
   category,
   store,
+  label,
   quantity,
   price,
   description,
@@ -518,6 +536,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       quantity: _draft.quantity.trim().isEmpty ? null : _draft.quantity.trim(),
       categoryId: _draft.categoryId,
       storeIds: _draft.storeIds.toList(),
+      labelIds: _draft.labelIds.toList(),
       rrule: _draft.rrule,
       deleteOnDone: _draft.deleteOnDoneForCreate,
       repeatFromCompletion: _draft.repeatFromCompletion,
@@ -625,6 +644,23 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                   setState(() => _draft.storeIds.add(created.id));
                 },
         );
+      case _Tray.label:
+        trayChild = _LabelTray(
+          labels: widget.labels,
+          selectedIds: _draft.labelIds,
+          onToggle: (id) {
+            setState(() {
+              if (!_draft.labelIds.remove(id)) _draft.labelIds.add(id);
+            });
+          },
+          onRequestCreate: widget.onRequestCreateLabel == null
+              ? null
+              : () async {
+                  final created = await widget.onRequestCreateLabel!();
+                  if (created == null || !mounted) return;
+                  setState(() => _draft.labelIds.add(created.id));
+                },
+        );
       case _Tray.quantity:
         trayChild = _QuantityTray(
           controller: _qtyCtrl,
@@ -676,9 +712,13 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                 draft: _draft,
                 categories: widget.categories,
                 stores: widget.stores,
+                labels: widget.labels,
                 showStoreChip:
                     widget.stores.isNotEmpty ||
                     widget.onRequestCreateStore != null,
+                showLabelChip:
+                    widget.labels.isNotEmpty ||
+                    widget.onRequestCreateLabel != null,
                 showPriceChip: widget.priceEnabled && !_multiple,
                 openTray: _openTray,
                 onOpen: _toggleTray,
@@ -1019,7 +1059,9 @@ class _ChipRow extends StatelessWidget {
   final ItemDraft draft;
   final List<models.Category> categories;
   final List<models.Store> stores;
+  final List<models.Label> labels;
   final bool showStoreChip;
+  final bool showLabelChip;
   final bool showPriceChip;
   final _Tray? openTray;
   final ValueChanged<_Tray> onOpen;
@@ -1031,7 +1073,9 @@ class _ChipRow extends StatelessWidget {
     required this.draft,
     required this.categories,
     required this.stores,
+    required this.labels,
     required this.showStoreChip,
+    required this.showLabelChip,
     required this.showPriceChip,
     required this.openTray,
     required this.onOpen,
@@ -1066,6 +1110,20 @@ class _ChipRow extends StatelessWidget {
         : selectedStores.length == 1
         ? selectedStores.first.name
         : '${selectedStores.first.name} +${selectedStores.length - 1}';
+
+    final selectedLabels = [
+      for (final l in labels)
+        if (draft.labelIds.contains(l.id)) l,
+    ];
+    final hasLabels = selectedLabels.isNotEmpty;
+    final labelColor = hasLabels
+        ? (parseHexColor(selectedLabels.first.color) ?? cs.primary)
+        : cs.onSurfaceVariant;
+    final labelLabel = !hasLabels
+        ? m.checklists.compose.chipLabel
+        : selectedLabels.length == 1
+        ? selectedLabels.first.name
+        : '${selectedLabels.first.name} +${selectedLabels.length - 1}';
 
     final hasQty = draft.quantity.trim().isNotEmpty;
     final hasDesc = draft.description.trim().isNotEmpty;
@@ -1125,6 +1183,23 @@ class _ChipRow extends StatelessWidget {
                   : null,
               selected: openTray == _Tray.store,
               onTap: () => onOpen(_Tray.store),
+            ),
+          ],
+          if (showLabelChip) ...[
+            const SizedBox(width: 8),
+            _ComposeChip(
+              label: labelLabel,
+              color: hasLabels ? labelColor : null,
+              icon: hasLabels ? null : Icons.sell_outlined,
+              leading: hasLabels
+                  ? Icon(
+                      labelIcon(selectedLabels.first.icon),
+                      size: 14,
+                      color: labelColor,
+                    )
+                  : null,
+              selected: openTray == _Tray.label,
+              onTap: () => onOpen(_Tray.label),
             ),
           ],
           const SizedBox(width: 8),
@@ -1614,6 +1689,51 @@ class _StoreTray extends StatelessWidget {
             NewCategoryChipButton(
               color: cs.primary,
               label: m.checklists.itemForm.createStore,
+              onTap: () => onRequestCreate!(),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Multi-select label tray: tapping a swatch toggles membership and keeps the
+/// tray open. No "None" swatch — an empty selection means no labels. Mirrors
+/// [_StoreTray].
+class _LabelTray extends StatelessWidget {
+  final List<models.Label> labels;
+  final Set<int> selectedIds;
+  final ValueChanged<int> onToggle;
+  final Future<void> Function()? onRequestCreate;
+
+  const _LabelTray({
+    required this.labels,
+    required this.selectedIds,
+    required this.onToggle,
+    this.onRequestCreate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return _TrayShell(
+      label: m.checklists.compose.chipLabel,
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final l in labels)
+            CategorySwatch(
+              icon: labelIcon(l.icon),
+              label: l.name,
+              color: parseHexColor(l.color) ?? cs.primary,
+              selected: selectedIds.contains(l.id),
+              onTap: () => onToggle(l.id),
+            ),
+          if (onRequestCreate != null)
+            NewCategoryChipButton(
+              color: cs.primary,
+              label: m.checklists.itemForm.createLabel,
               onTap: () => onRequestCreate!(),
             ),
         ],

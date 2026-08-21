@@ -468,6 +468,20 @@ class ChecklistService {
     );
   }
 
+  /// Replaces the label set on every item (an empty list clears them),
+  /// mirroring `batch/stores`. Returns the [PantryBatchResult] envelope.
+  Future<PantryBatchResult> batchSetLabels(
+    int houseId, {
+    required List<int> itemIds,
+    required List<int> labelIds,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, PantryBatchResult>(
+      '/houses/$houseId/items/batch/labels',
+      body: {'itemIds': itemIds, 'labelIds': labelIds},
+      fromJson: (data) => PantryBatchResult.fromJson(data),
+    );
+  }
+
   /// Clears the done-state on every checked item in one request.
   /// Idempotent: already-unchecked items are left alone and omitted from the
   /// returned `items`. Permission `canCheckItems`.
@@ -490,6 +504,7 @@ class ChecklistService {
     String? quantity,
     int? categoryId,
     List<int>? storeIds,
+    List<int>? labelIds,
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
@@ -506,6 +521,7 @@ class ChecklistService {
         if (quantity != null && quantity.isNotEmpty) 'quantity': quantity,
         'categoryId': ?categoryId,
         'storeIds': ?storeIds,
+        'labelIds': ?labelIds,
         if (rrule != null && rrule.isNotEmpty) 'rrule': rrule,
         'repeatFromCompletion': ?repeatFromCompletion,
         'deleteOnDone': ?deleteOnDone,
@@ -529,6 +545,7 @@ class ChecklistService {
     int? categoryId,
     bool clearCategory = false,
     List<int>? storeIds,
+    List<int>? labelIds,
     String? rrule,
     bool? repeatFromCompletion,
     bool? deleteOnDone,
@@ -545,6 +562,8 @@ class ChecklistService {
         if (!clearCategory && categoryId != null) 'categoryId': categoryId,
         // Stores have no clear-sentinel: null omits (unchanged), [] clears.
         'storeIds': ?storeIds,
+        // Labels mirror stores: null omits (unchanged), [] clears.
+        'labelIds': ?labelIds,
         'rrule': ?rrule,
         'repeatFromCompletion': ?repeatFromCompletion,
         'deleteOnDone': ?deleteOnDone,

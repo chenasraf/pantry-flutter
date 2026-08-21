@@ -75,6 +75,7 @@ class MessagesHe extends Messages {
   NotificationsMessagesHe get notifications => NotificationsMessagesHe(this);
   CategoriesMessagesHe get categories => CategoriesMessagesHe(this);
   StoresMessagesHe get stores => StoresMessagesHe(this);
+  LabelsMessagesHe get labels => LabelsMessagesHe(this);
   ChecklistsMessagesHe get checklists => ChecklistsMessagesHe(this);
   NotesWallMessagesHe get notesWall => NotesWallMessagesHe(this);
   PhotoBoardMessagesHe get photoBoard => PhotoBoardMessagesHe(this);
@@ -1423,6 +1424,11 @@ class ChipNamesSettingsMessagesHe extends ChipNamesSettingsMessages {
   String get store => """חנות""";
 
   /// ```dart
+  /// "תווית"
+  /// ```
+  String get label => """תווית""";
+
+  /// ```dart
   /// "כמות"
   /// ```
   String get quantity => """כמות""";
@@ -1770,6 +1776,98 @@ class SortStoresMessagesHe extends SortStoresMessages {
   /// "שם ת׳–א׳"
   /// ```
   String get nameZA => """שם ת׳–א׳""";
+
+  /// ```dart
+  /// "מותאם אישית"
+  /// ```
+  String get custom => """מותאם אישית""";
+}
+
+class LabelsMessagesHe extends LabelsMessages {
+  final MessagesHe _parent;
+  const LabelsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "ניהול תוויות"
+  /// ```
+  String get manageTitle => """ניהול תוויות""";
+
+  /// ```dart
+  /// "אין תוויות עדיין."
+  /// ```
+  String get noLabels => """אין תוויות עדיין.""";
+
+  /// ```dart
+  /// "עריכת תווית"
+  /// ```
+  String get editTitle => """עריכת תווית""";
+
+  /// ```dart
+  /// "תווית חדשה"
+  /// ```
+  String get addTitle => """תווית חדשה""";
+
+  /// ```dart
+  /// "שם"
+  /// ```
+  String get name => """שם""";
+
+  /// ```dart
+  /// "אייקון"
+  /// ```
+  String get icon => """אייקון""";
+
+  /// ```dart
+  /// "צבע"
+  /// ```
+  String get color => """צבע""";
+
+  /// ```dart
+  /// "שמירת התווית נכשלה."
+  /// ```
+  String get saveFailed => """שמירת התווית נכשלה.""";
+
+  /// ```dart
+  /// "מחיקת התווית נכשלה."
+  /// ```
+  String get deleteFailed => """מחיקת התווית נכשלה.""";
+
+  /// ```dart
+  /// "למחוק את התווית הזו?"
+  /// ```
+  String get deleteConfirm => """למחוק את התווית הזו?""";
+
+  /// ```dart
+  /// "התווית תוסר מכל הפריטים. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get deleteConfirmBody =>
+      """התווית תוסר מכל הפריטים. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "רשימה"
+  /// ```
+  String get list => """רשימה""";
+
+  /// ```dart
+  /// "כל הרשימות (גלובלי)"
+  /// ```
+  String get globalList => """כל הרשימות (גלובלי)""";
+  SortLabelsMessagesHe get sort => SortLabelsMessagesHe(this);
+}
+
+class SortLabelsMessagesHe extends SortLabelsMessages {
+  final LabelsMessagesHe _parent;
+  const SortLabelsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "שם א'–ת'"
+  /// ```
+  String get nameAZ => """שם א'–ת'""";
+
+  /// ```dart
+  /// "שם ת'–א'"
+  /// ```
+  String get nameZA => """שם ת'–א'""";
 
   /// ```dart
   /// "מותאם אישית"
@@ -2454,6 +2552,11 @@ class FiltersChecklistsMessagesHe extends FiltersChecklistsMessages {
   String get stores => """חנויות""";
 
   /// ```dart
+  /// "תוויות"
+  /// ```
+  String get labels => """תוויות""";
+
+  /// ```dart
   /// "כל הרשימות"
   /// ```
   String get allLists => """כל הרשימות""";
@@ -2469,6 +2572,11 @@ class FiltersChecklistsMessagesHe extends FiltersChecklistsMessages {
   String get allStores => """כל החנויות""";
 
   /// ```dart
+  /// "כל התוויות"
+  /// ```
+  String get allLabels => """כל התוויות""";
+
+  /// ```dart
   /// "ללא קטגוריה"
   /// ```
   String get noCategory => """ללא קטגוריה""";
@@ -2477,6 +2585,11 @@ class FiltersChecklistsMessagesHe extends FiltersChecklistsMessages {
   /// "ללא חנות"
   /// ```
   String get noStores => """ללא חנות""";
+
+  /// ```dart
+  /// "ללא תווית"
+  /// ```
+  String get noLabels => """ללא תווית""";
 
   /// ```dart
   /// "מחיר"
@@ -2520,6 +2633,11 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   String get storesTitle => """הגדרת חנויות""";
 
   /// ```dart
+  /// "הגדרת תוויות"
+  /// ```
+  String get labelsTitle => """הגדרת תוויות""";
+
+  /// ```dart
   /// "ללא קטגוריה"
   /// ```
   String get clearCategory => """ללא קטגוריה""";
@@ -2543,6 +2661,11 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   /// "חנויות"
   /// ```
   String get stores => """חנויות""";
+
+  /// ```dart
+  /// "תוויות"
+  /// ```
+  String get labels => """תוויות""";
 
   /// ```dart
   /// "מחק"
@@ -2616,6 +2739,12 @@ class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
   /// "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
   /// ```
   String storesSet(int count) =>
+      """${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
+  /// ```
+  String labelsSet(int count) =>
       """${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}""";
 
   /// ```dart
@@ -2842,6 +2971,31 @@ class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
   /// "בחירה"
   /// ```
   String get storesPick => """בחירה""";
+
+  /// ```dart
+  /// "תוויות"
+  /// ```
+  String get labels => """תוויות""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get noLabels => """ללא""";
+
+  /// ```dart
+  /// "תווית חדשה"
+  /// ```
+  String get createLabel => """תווית חדשה""";
+
+  /// ```dart
+  /// "שינוי"
+  /// ```
+  String get labelsChange => """שינוי""";
+
+  /// ```dart
+  /// "בחירה"
+  /// ```
+  String get labelsPick => """בחירה""";
 
   /// ```dart
   /// "חזרה"
@@ -3098,6 +3252,11 @@ class ComposeChecklistsMessagesHe extends ComposeChecklistsMessages {
   /// "חנויות"
   /// ```
   String get chipStore => """חנויות""";
+
+  /// ```dart
+  /// "תוויות"
+  /// ```
+  String get chipLabel => """תוויות""";
 
   /// ```dart
   /// "כמות"
@@ -4807,6 +4966,7 @@ Map<String, String> get messagesHeMap => {
   """settings.visibleChipsReset""": """איפוס""",
   """settings.chipNames.category""": """קטגוריה""",
   """settings.chipNames.store""": """חנות""",
+  """settings.chipNames.label""": """תווית""",
   """settings.chipNames.quantity""": """כמות""",
   """settings.chipNames.price""": """מחיר""",
   """settings.chipNames.note""": """הערה""",
@@ -4902,6 +5062,23 @@ Map<String, String> get messagesHeMap => {
   """stores.sort.nameAZ""": """שם א׳–ת׳""",
   """stores.sort.nameZA""": """שם ת׳–א׳""",
   """stores.sort.custom""": """מותאם אישית""",
+  """labels.manageTitle""": """ניהול תוויות""",
+  """labels.noLabels""": """אין תוויות עדיין.""",
+  """labels.editTitle""": """עריכת תווית""",
+  """labels.addTitle""": """תווית חדשה""",
+  """labels.name""": """שם""",
+  """labels.icon""": """אייקון""",
+  """labels.color""": """צבע""",
+  """labels.saveFailed""": """שמירת התווית נכשלה.""",
+  """labels.deleteFailed""": """מחיקת התווית נכשלה.""",
+  """labels.deleteConfirm""": """למחוק את התווית הזו?""",
+  """labels.deleteConfirmBody""":
+      """התווית תוסר מכל הפריטים. לא ניתן לבטל פעולה זו.""",
+  """labels.list""": """רשימה""",
+  """labels.globalList""": """כל הרשימות (גלובלי)""",
+  """labels.sort.nameAZ""": """שם א'–ת'""",
+  """labels.sort.nameZA""": """שם ת'–א'""",
+  """labels.sort.custom""": """מותאם אישית""",
   """checklists.categories""": """קטגוריות""",
   """checklists.noChecklists""": """אין רשימות עדיין.""",
   """checklists.noItems""": """אין פריטים ברשימה.""",
@@ -4924,11 +5101,14 @@ Map<String, String> get messagesHeMap => {
   """checklists.filters.lists""": """רשימות""",
   """checklists.filters.categories""": """קטגוריות""",
   """checklists.filters.stores""": """חנויות""",
+  """checklists.filters.labels""": """תוויות""",
   """checklists.filters.allLists""": """כל הרשימות""",
   """checklists.filters.allCategories""": """כל הקטגוריות""",
   """checklists.filters.allStores""": """כל החנויות""",
+  """checklists.filters.allLabels""": """כל התוויות""",
   """checklists.filters.noCategory""": """ללא קטגוריה""",
   """checklists.filters.noStores""": """ללא חנות""",
+  """checklists.filters.noLabels""": """ללא תווית""",
   """checklists.filters.price""": """מחיר""",
   """checklists.filters.anyCurrency""": """כל מטבע""",
   """checklists.failedToLoad""": """טעינת הרשימות נכשלה.""",
@@ -4948,11 +5128,13 @@ Map<String, String> get messagesHeMap => {
   """checklists.batch.copyTitle""": """העתקת פריטים אל""",
   """checklists.batch.categoryTitle""": """הגדרת קטגוריה""",
   """checklists.batch.storesTitle""": """הגדרת חנויות""",
+  """checklists.batch.labelsTitle""": """הגדרת תוויות""",
   """checklists.batch.clearCategory""": """ללא קטגוריה""",
   """checklists.batch.move""": """העבר""",
   """checklists.batch.copy""": """העתק""",
   """checklists.batch.category""": """קטגוריה""",
   """checklists.batch.stores""": """חנויות""",
+  """checklists.batch.labels""": """תוויות""",
   """checklists.batch.delete""": """מחק""",
   """checklists.batch.archive""": """העבר לארכיון""",
   """checklists.batch.unarchive""": """הוצא מהארכיון""",
@@ -5043,6 +5225,11 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemForm.createStore""": """חנות חדשה""",
   """checklists.itemForm.storesChange""": """שינוי""",
   """checklists.itemForm.storesPick""": """בחירה""",
+  """checklists.itemForm.labels""": """תוויות""",
+  """checklists.itemForm.noLabels""": """ללא""",
+  """checklists.itemForm.createLabel""": """תווית חדשה""",
+  """checklists.itemForm.labelsChange""": """שינוי""",
+  """checklists.itemForm.labelsPick""": """בחירה""",
   """checklists.itemForm.repeat""": """חזרה""",
   """checklists.itemForm.once""": """פעם אחת""",
   """checklists.itemForm.onceDescription""":
@@ -5123,6 +5310,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemTypes.weekly""": """שבועי""",
   """checklists.compose.chipCategory""": """קטגוריה""",
   """checklists.compose.chipStore""": """חנויות""",
+  """checklists.compose.chipLabel""": """תוויות""",
   """checklists.compose.chipQuantity""": """כמות""",
   """checklists.compose.chipType""": """סוג פריט""",
   """checklists.compose.chipImage""": """תמונה""",
