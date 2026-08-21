@@ -766,6 +766,9 @@ shopping:
   removedFromTrip: הוסר מהקנייה הזו
   undo: בטל
   undoRemoveFailed: הביטול נכשל.
+  removedSection(int count): "הוסרו ($count)"
+  restore: שחזר
+  restoreFailed: שחזור הפריט נכשל.
   reviewTitle: סיכום
   advanceTitle: החנות הבאה
   actualPaid: שולם בפועל

@@ -3990,6 +3990,21 @@ class ShoppingMessages {
   String get undoRemoveFailed => """Couldn't undo.""";
 
   /// ```dart
+  /// "Removed ($count)"
+  /// ```
+  String removedSection(int count) => """Removed ($count)""";
+
+  /// ```dart
+  /// "Restore"
+  /// ```
+  String get restore => """Restore""";
+
+  /// ```dart
+  /// "Couldn't restore the item."
+  /// ```
+  String get restoreFailed => """Couldn't restore the item.""";
+
+  /// ```dart
   /// "Review"
   /// ```
   String get reviewTitle => """Review""";
@@ -5245,6 +5260,8 @@ Password: pantry-rocks""",
   """shopping.removedFromTrip""": """Removed from this trip""",
   """shopping.undo""": """Undo""",
   """shopping.undoRemoveFailed""": """Couldn't undo.""",
+  """shopping.restore""": """Restore""",
+  """shopping.restoreFailed""": """Couldn't restore the item.""",
   """shopping.reviewTitle""": """Review""",
   """shopping.advanceTitle""": """Next store""",
   """shopping.actualPaid""": """Actual paid""",

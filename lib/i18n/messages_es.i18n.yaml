@@ -766,6 +766,9 @@ shopping:
   removedFromTrip: Quitado de esta compra
   undo: Deshacer
   undoRemoveFailed: No se pudo deshacer.
+  removedSection(int count): "Eliminados ($count)"
+  restore: Restaurar
+  restoreFailed: No se pudo restaurar el artículo.
   reviewTitle: Resumen
   advanceTitle: Siguiente tienda
   actualPaid: Pagado real

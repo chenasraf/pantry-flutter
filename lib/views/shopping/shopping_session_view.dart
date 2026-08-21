@@ -68,6 +68,7 @@ class _SessionBody extends StatefulWidget {
 
 class _SessionBodyState extends State<_SessionBody> {
   bool _doneExpanded = false;
+  bool _removedExpanded = false;
   bool _busy = false;
 
   ShoppingSessionController get _c => context.read<ShoppingSessionController>();
@@ -106,6 +107,19 @@ class _SessionBodyState extends State<_SessionBody> {
       onUndo: () => _c.unskipItem(item.id),
       undoFailedMessage: m.shopping.undoRemoveFailed,
     );
+  }
+
+  /// Restore a removed item back onto the trip from the "Removed" section.
+  /// Shares the unskip path with the Undo snackbar.
+  Future<void> _restore(ListItem item) async {
+    try {
+      await _c.unskipItem(item.id);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(m.shopping.restoreFailed)));
+    }
   }
 
   Future<void> _jumpToStore(int storeId) async {
@@ -245,6 +259,10 @@ class _SessionBodyState extends State<_SessionBody> {
                 onToggleDone: () =>
                     setState(() => _doneExpanded = !_doneExpanded),
                 onUncheck: _uncheck,
+                removedExpanded: _removedExpanded,
+                onToggleRemoved: () =>
+                    setState(() => _removedExpanded = !_removedExpanded),
+                onRestore: _restore,
                 busy: _busy,
                 hasNext: hasNext,
                 onProceed: _reviewAndProceed,
@@ -687,6 +705,9 @@ class _BottomBar extends StatelessWidget {
   final bool doneExpanded;
   final VoidCallback onToggleDone;
   final Future<void> Function(ListItem) onUncheck;
+  final bool removedExpanded;
+  final VoidCallback onToggleRemoved;
+  final Future<void> Function(ListItem) onRestore;
   final bool busy;
   final bool hasNext;
   final VoidCallback onProceed;
@@ -696,6 +717,9 @@ class _BottomBar extends StatelessWidget {
     required this.doneExpanded,
     required this.onToggleDone,
     required this.onUncheck,
+    required this.removedExpanded,
+    required this.onToggleRemoved,
+    required this.onRestore,
     required this.busy,
     required this.hasNext,
     required this.onProceed,
@@ -707,6 +731,7 @@ class _BottomBar extends StatelessWidget {
     final doneItems = controller.doneItems;
     final doneCount = doneItems.length;
     final estimate = formatShoppingEstimate(controller.doneEstimate);
+    final removedItems = controller.removedItems;
 
     return SafeArea(
       top: false,
@@ -769,6 +794,61 @@ class _BottomBar extends StatelessWidget {
                         trailing: item.formattedPrice != null
                             ? Text(item.formattedPrice!)
                             : null,
+                      ),
+                  ],
+                ),
+              ),
+          ],
+          if (removedItems.isNotEmpty) ...[
+            const Divider(height: 1),
+            InkWell(
+              onTap: onToggleRemoved,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      removedExpanded
+                          ? Icons.keyboard_arrow_down
+                          : Icons.keyboard_arrow_up,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        m.shopping.removedSection(removedItems.length),
+                        style: theme.textTheme.titleSmall,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (removedExpanded)
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 220),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for (final item in removedItems)
+                      ListTile(
+                        dense: true,
+                        leading: Icon(
+                          Icons.remove_shopping_cart_outlined,
+                          color: theme.colorScheme.onSurfaceVariant,
+                          size: 20,
+                        ),
+                        title: Text(
+                          item.name,
+                          textDirection: detectTextDirection(item.name),
+                        ),
+                        trailing: TextButton.icon(
+                          onPressed: () => onRestore(item),
+                          icon: const Icon(Icons.restore, size: 18),
+                          label: Text(m.shopping.restore),
+                        ),
                       ),
                   ],
                 ),

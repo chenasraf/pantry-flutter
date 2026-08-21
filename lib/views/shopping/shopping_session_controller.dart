@@ -339,6 +339,16 @@ class ShoppingSessionController extends ChangeNotifier {
   /// without a server re-fetch (which offline can't reach anyway).
   final Map<int, ({ListItem item, int index})> _skipUndo = {};
 
+  /// Items removed from this trip, keyed by id — backs the persistent "Removed"
+  /// section. Seeded from the server on load/poll so removals survive restarts,
+  /// and mutated optimistically on skip/unskip for instant feedback.
+  Map<int, ListItem> _removed = {};
+
+  /// The removed items in name order, for the restore-only "Removed" section.
+  List<ListItem> get removedItems =>
+      _removed.values.toList()
+        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
   Future<void> _refreshLiveData({required bool includeHeartbeat}) async {
     final results = await Future.wait([
       _service.getItems(houseId, sessionId),
@@ -347,6 +357,12 @@ class ShoppingSessionController extends ChangeNotifier {
         _service.heartbeat(houseId)
       else
         _service.getPresence(houseId),
+      // Guarded: a hiccup fetching the Removed section must not fail the whole
+      // poll (items/review/presence). Null keeps the current removed set.
+      _service
+          .getRemovedItems(houseId, sessionId)
+          .then<List<ListItem>?>((v) => v)
+          .catchError((_) => null),
     ]);
     final fetched = results[0] as List<ListItem>;
     // Hide items with a pending check op or that the server still returns after
@@ -402,6 +418,27 @@ class ShoppingSessionController extends ChangeNotifier {
       if (!_items.any((i) => i.id == item.id)) _items = [..._items, item];
     }
     _presence = results[2] as List<ShoppingPresenceEntry>;
+    // Reconcile the Removed section against the server, respecting in-flight
+    // skips/unskips so an optimistic change isn't undone by a stale fetch.
+    final fetchedRemoved = results[3] as List<ListItem>?;
+    if (fetchedRemoved != null) {
+      final unskipPending = SyncManager.instance.pendingShoppingUnskippedIds(
+        houseId,
+        sessionId,
+      );
+      final next = <int, ListItem>{};
+      for (final i in fetchedRemoved) {
+        if (unskipPending.contains(i.id)) continue;
+        next[i.id] = i;
+      }
+      // Keep optimistically-skipped items the fetch doesn't reflect yet.
+      for (final id in queueSkipPending) {
+        if (next.containsKey(id)) continue;
+        final item = _removed[id] ?? _skipUndo[id]?.item;
+        if (item != null) next[id] = item;
+      }
+      _removed = next;
+    }
     notifyListeners();
   }
 
@@ -481,6 +518,7 @@ class ShoppingSessionController extends ChangeNotifier {
     _skipUndo[item.id] = (item: item, index: index < 0 ? 0 : index);
     _skippedPending.add(item.id);
     _items = _items.where((i) => i.id != item.id).toList();
+    _removed = {..._removed, item.id: item};
     notifyListeners();
     SyncManager.instance.enqueue(
       SyncOp(
@@ -506,6 +544,7 @@ class ShoppingSessionController extends ChangeNotifier {
       list.insert(undo.index.clamp(0, list.length), undo.item);
       _items = list;
     }
+    _removed = {..._removed}..remove(itemId);
     notifyListeners();
     SyncManager.instance.enqueue(
       SyncOp(

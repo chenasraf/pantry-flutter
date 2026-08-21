@@ -268,6 +268,23 @@ class SyncManager {
     return out;
   }
 
+  /// Item ids in [sessionId] that still have a pending Shopping Mode *unskip*
+  /// (delete) op queued for [houseId] — items being restored to the trip whose
+  /// restore hasn't synced yet. The "Removed" section drops these so a stale
+  /// fetch of removed items can't resurrect them mid-restore. The mirror of
+  /// [pendingShoppingSkippedIds].
+  Set<int> pendingShoppingUnskippedIds(int houseId, int sessionId) {
+    final out = <int>{};
+    for (final raw in _queue.all()) {
+      if (raw.entity != SyncEntity.shoppingSkip) continue;
+      if (raw.houseId != houseId || raw.parentId != sessionId) continue;
+      if (raw.op != SyncOpKind.delete) continue;
+      final id = raw.entityId;
+      if (id != null) out.add(id);
+    }
+    return out;
+  }
+
   /// Enqueue an op. Returns immediately. If online, kicks the flush loop.
   void enqueue(SyncOp op) {
     _queue.enqueue(op);

@@ -770,6 +770,9 @@ shopping:
   removedFromTrip: Removed from this trip
   undo: Undo
   undoRemoveFailed: Couldn't undo.
+  removedSection(int count): "Removed ($count)"
+  restore: Restore
+  restoreFailed: Couldn't restore the item.
   # Review / close
   reviewTitle: Review
   advanceTitle: Next store

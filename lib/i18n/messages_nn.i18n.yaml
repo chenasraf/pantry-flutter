@@ -894,6 +894,9 @@ shopping:
   removedFromTrip: Fjerna frå denne handleturen
   undo: Angre
   undoRemoveFailed: Klarte ikkje å angre.
+  removedSection(int count): "Fjerna ($count)"
+  restore: Gjenopprett
+  restoreFailed: Klarte ikkje å gjenopprette varen.
   reviewTitle: Oppsummering
   advanceTitle: Neste butikk
   actualPaid: Faktisk betalt

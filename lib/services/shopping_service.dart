@@ -196,6 +196,19 @@ class ShoppingService {
     );
   }
 
+  /// (10c) The items skipped from this trip — flat, name-sorted, prices
+  /// attached. Durable source for the "Removed" section so removals survive
+  /// across restarts ([getItems] excludes skipped items). Same [ListItem]
+  /// shape as the live list.
+  Future<List<ListItem>> getRemovedItems(int houseId, int sessionId) {
+    return _api.get<List, List<ListItem>>(
+      '${_base(houseId)}/sessions/$sessionId/items/removed',
+      fromJson: (data) => data
+          .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
   // -- Review / done-today ---------------------------------------------------
 
   /// (11) The bought log grouped by store (server-computed, authoritative).

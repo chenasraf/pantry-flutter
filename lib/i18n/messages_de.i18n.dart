@@ -4031,6 +4031,22 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get undoRemoveFailed => """Rückgängig machen fehlgeschlagen.""";
 
   /// ```dart
+  /// "Entfernt ($count)"
+  /// ```
+  String removedSection(int count) => """Entfernt ($count)""";
+
+  /// ```dart
+  /// "Wiederherstellen"
+  /// ```
+  String get restore => """Wiederherstellen""";
+
+  /// ```dart
+  /// "Artikel konnte nicht wiederhergestellt werden."
+  /// ```
+  String get restoreFailed =>
+      """Artikel konnte nicht wiederhergestellt werden.""";
+
+  /// ```dart
   /// "Überblick"
   /// ```
   String get reviewTitle => """Überblick""";
@@ -5336,6 +5352,9 @@ Passwort: pantry-rocks""",
   """shopping.removedFromTrip""": """Aus diesem Einkauf entfernt""",
   """shopping.undo""": """Rückgängig""",
   """shopping.undoRemoveFailed""": """Rückgängig machen fehlgeschlagen.""",
+  """shopping.restore""": """Wiederherstellen""",
+  """shopping.restoreFailed""":
+      """Artikel konnte nicht wiederhergestellt werden.""",
   """shopping.reviewTitle""": """Überblick""",
   """shopping.advanceTitle""": """Nächstes Geschäft""",
   """shopping.actualPaid""": """Tatsächlich bezahlt""",

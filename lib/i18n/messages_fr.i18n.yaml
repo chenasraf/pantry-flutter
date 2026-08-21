@@ -766,6 +766,9 @@ shopping:
   removedFromTrip: Retiré de cette sortie
   undo: Annuler
   undoRemoveFailed: "Impossible d'annuler."
+  removedSection(int count): "Retirés ($count)"
+  restore: Restaurer
+  restoreFailed: "Impossible de restaurer l'article."
   reviewTitle: Récapitulatif
   advanceTitle: Magasin suivant
   actualPaid: Payé réel

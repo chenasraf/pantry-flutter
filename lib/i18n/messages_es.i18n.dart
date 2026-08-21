@@ -4023,6 +4023,21 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get undoRemoveFailed => """No se pudo deshacer.""";
 
   /// ```dart
+  /// "Eliminados ($count)"
+  /// ```
+  String removedSection(int count) => """Eliminados ($count)""";
+
+  /// ```dart
+  /// "Restaurar"
+  /// ```
+  String get restore => """Restaurar""";
+
+  /// ```dart
+  /// "No se pudo restaurar el artículo."
+  /// ```
+  String get restoreFailed => """No se pudo restaurar el artículo.""";
+
+  /// ```dart
   /// "Resumen"
   /// ```
   String get reviewTitle => """Resumen""";
@@ -5303,6 +5318,8 @@ Contraseña: pantry-rocks""",
   """shopping.removedFromTrip""": """Quitado de esta compra""",
   """shopping.undo""": """Deshacer""",
   """shopping.undoRemoveFailed""": """No se pudo deshacer.""",
+  """shopping.restore""": """Restaurar""",
+  """shopping.restoreFailed""": """No se pudo restaurar el artículo.""",
   """shopping.reviewTitle""": """Resumen""",
   """shopping.advanceTitle""": """Siguiente tienda""",
   """shopping.actualPaid""": """Pagado real""",

@@ -3996,6 +3996,21 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get undoRemoveFailed => """הביטול נכשל.""";
 
   /// ```dart
+  /// "הוסרו ($count)"
+  /// ```
+  String removedSection(int count) => """הוסרו ($count)""";
+
+  /// ```dart
+  /// "שחזר"
+  /// ```
+  String get restore => """שחזר""";
+
+  /// ```dart
+  /// "שחזור הפריט נכשל."
+  /// ```
+  String get restoreFailed => """שחזור הפריט נכשל.""";
+
+  /// ```dart
   /// "סיכום"
   /// ```
   String get reviewTitle => """סיכום""";
@@ -5239,6 +5254,8 @@ Map<String, String> get messagesHeMap => {
   """shopping.removedFromTrip""": """הוסר מהקנייה הזו""",
   """shopping.undo""": """בטל""",
   """shopping.undoRemoveFailed""": """הביטול נכשל.""",
+  """shopping.restore""": """שחזר""",
+  """shopping.restoreFailed""": """שחזור הפריט נכשל.""",
   """shopping.reviewTitle""": """סיכום""",
   """shopping.advanceTitle""": """החנות הבאה""",
   """shopping.actualPaid""": """שולם בפועל""",

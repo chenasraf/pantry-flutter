@@ -766,6 +766,9 @@ shopping:
   removedFromTrip: Aus diesem Einkauf entfernt
   undo: "Rückgängig"
   undoRemoveFailed: Rückgängig machen fehlgeschlagen.
+  removedSection(int count): "Entfernt ($count)"
+  restore: Wiederherstellen
+  restoreFailed: Artikel konnte nicht wiederhergestellt werden.
   reviewTitle: Überblick
   advanceTitle: Nächstes Geschäft
   actualPaid: Tatsächlich bezahlt

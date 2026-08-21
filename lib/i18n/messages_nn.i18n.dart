@@ -4014,6 +4014,21 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get undoRemoveFailed => """Klarte ikkje å angre.""";
 
   /// ```dart
+  /// "Fjerna ($count)"
+  /// ```
+  String removedSection(int count) => """Fjerna ($count)""";
+
+  /// ```dart
+  /// "Gjenopprett"
+  /// ```
+  String get restore => """Gjenopprett""";
+
+  /// ```dart
+  /// "Klarte ikkje å gjenopprette varen."
+  /// ```
+  String get restoreFailed => """Klarte ikkje å gjenopprette varen.""";
+
+  /// ```dart
   /// "Oppsummering"
   /// ```
   String get reviewTitle => """Oppsummering""";
@@ -5286,6 +5301,8 @@ Passord: pantry""",
   """shopping.removedFromTrip""": """Fjerna frå denne handleturen""",
   """shopping.undo""": """Angre""",
   """shopping.undoRemoveFailed""": """Klarte ikkje å angre.""",
+  """shopping.restore""": """Gjenopprett""",
+  """shopping.restoreFailed""": """Klarte ikkje å gjenopprette varen.""",
   """shopping.reviewTitle""": """Oppsummering""",
   """shopping.advanceTitle""": """Neste butikk""",
   """shopping.actualPaid""": """Faktisk betalt""",

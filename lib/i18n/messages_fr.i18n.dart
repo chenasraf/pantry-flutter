@@ -4029,6 +4029,21 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get undoRemoveFailed => """Impossible d'annuler.""";
 
   /// ```dart
+  /// "Retirés ($count)"
+  /// ```
+  String removedSection(int count) => """Retirés ($count)""";
+
+  /// ```dart
+  /// "Restaurer"
+  /// ```
+  String get restore => """Restaurer""";
+
+  /// ```dart
+  /// "Impossible de restaurer l'article."
+  /// ```
+  String get restoreFailed => """Impossible de restaurer l'article.""";
+
+  /// ```dart
   /// "Récapitulatif"
   /// ```
   String get reviewTitle => """Récapitulatif""";
@@ -5327,6 +5342,8 @@ Mot de passe : pantry-rocks""",
   """shopping.removedFromTrip""": """Retiré de cette sortie""",
   """shopping.undo""": """Annuler""",
   """shopping.undoRemoveFailed""": """Impossible d'annuler.""",
+  """shopping.restore""": """Restaurer""",
+  """shopping.restoreFailed""": """Impossible de restaurer l'article.""",
   """shopping.reviewTitle""": """Récapitulatif""",
   """shopping.advanceTitle""": """Magasin suivant""",
   """shopping.actualPaid""": """Payé réel""",
