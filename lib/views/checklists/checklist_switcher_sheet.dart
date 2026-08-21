@@ -387,7 +387,7 @@ class _ListStage extends StatelessWidget {
                   shrinkWrap: true,
                   buildDefaultDragHandles: false,
                   itemCount: realLists.length,
-                  onReorder: controller.reorderLists,
+                  onReorderItem: controller.reorderLists,
                   proxyDecorator: (child, _, _) =>
                       Material(color: Colors.transparent, child: child),
                   itemBuilder: (_, i) {

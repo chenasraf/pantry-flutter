@@ -215,7 +215,6 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
 
   void _reorderStores(int oldIndex, int newIndex) {
     setState(() {
-      if (newIndex > oldIndex) newIndex--;
       final moved = _orderedStoreIds.removeAt(oldIndex);
       _orderedStoreIds.insert(newIndex, moved);
     });
@@ -460,7 +459,7 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
                   physics: const NeverScrollableScrollPhysics(),
                   buildDefaultDragHandles: false,
                   itemCount: _orderedStoreIds.length,
-                  onReorder: _reorderStores,
+                  onReorderItem: _reorderStores,
                   itemBuilder: (context, index) {
                     final id = _orderedStoreIds[index];
                     final store = _stores[id];

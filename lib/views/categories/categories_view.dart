@@ -105,7 +105,6 @@ class _CategoriesViewState extends State<CategoriesView> {
   Future<void> _reorder(int oldIndex, int newIndex) async {
     if (_sort != 'custom') return;
     setState(() {
-      if (newIndex > oldIndex) newIndex--;
       final item = _categories.removeAt(oldIndex);
       _categories.insert(newIndex, item);
     });
@@ -121,7 +120,6 @@ class _CategoriesViewState extends State<CategoriesView> {
     int newIndex,
   ) async {
     if (_sort != 'custom') return;
-    if (newIndex > oldIndex) newIndex--;
     if (oldIndex == newIndex) return;
 
     final reordered = [...group.categories];
@@ -364,7 +362,7 @@ class _CategoriesViewState extends State<CategoriesView> {
       return ReorderableListView.builder(
         padding: const EdgeInsets.only(bottom: 96),
         itemCount: _categories.length,
-        onReorder: _reorder,
+        onReorderItem: _reorder,
         itemBuilder: (context, index) =>
             _buildTile(theme, _categories[index], dragIndex: index),
       );
@@ -392,7 +390,7 @@ class _CategoriesViewState extends State<CategoriesView> {
               physics: const NeverScrollableScrollPhysics(),
               buildDefaultDragHandles: false,
               itemCount: group.categories.length,
-              onReorder: (oldIndex, newIndex) =>
+              onReorderItem: (oldIndex, newIndex) =>
                   _reorderGroup(group, oldIndex, newIndex),
               itemBuilder: (context, index) =>
                   _buildTile(theme, group.categories[index], dragIndex: index),

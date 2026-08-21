@@ -3063,8 +3063,7 @@ class _ItemListState extends State<_ItemList> {
           itemCount: widget.activeItems.length,
           onReorderStart: (index) => _onReorderStart(widget.activeItems, index),
           onReorderEnd: _onReorderEnd,
-          onReorder: (oldIndex, newIndex) {
-            if (newIndex > oldIndex) newIndex--;
+          onReorderItem: (oldIndex, newIndex) {
             widget.controller.reorderItems(
               widget.activeItems,
               oldIndex,
@@ -3266,8 +3265,7 @@ class _ItemListState extends State<_ItemList> {
               itemCount: group.items.length,
               onReorderStart: (index) => _onReorderStart(group.items, index),
               onReorderEnd: _onReorderEnd,
-              onReorder: (oldIndex, newIndex) {
-                if (newIndex > oldIndex) newIndex--;
+              onReorderItem: (oldIndex, newIndex) {
                 widget.controller.reorderItems(group.items, oldIndex, newIndex);
               },
               itemBuilder: (context, i) {
@@ -3317,8 +3315,7 @@ class _ItemListState extends State<_ItemList> {
               itemCount: group.items.length,
               onReorderStart: (index) => _onReorderStart(group.items, index),
               onReorderEnd: _onReorderEnd,
-              onReorder: (oldIndex, newIndex) {
-                if (newIndex > oldIndex) newIndex--;
+              onReorderItem: (oldIndex, newIndex) {
                 widget.controller.reorderItems(group.items, oldIndex, newIndex);
               },
               itemBuilder: (context, i) {

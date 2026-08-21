@@ -87,7 +87,6 @@ class _StoresViewState extends State<StoresView> {
   Future<void> _reorder(int oldIndex, int newIndex) async {
     if (_sort != 'custom') return;
     setState(() {
-      if (newIndex > oldIndex) newIndex--;
       final item = _stores.removeAt(oldIndex);
       _stores.insert(newIndex, item);
     });
@@ -268,7 +267,7 @@ class _StoresViewState extends State<StoresView> {
                   ? ReorderableListView.builder(
                       padding: const EdgeInsets.only(bottom: 96),
                       itemCount: _stores.length,
-                      onReorder: _reorder,
+                      onReorderItem: _reorder,
                       itemBuilder: (context, index) =>
                           _buildTile(theme, _stores[index]),
                     )

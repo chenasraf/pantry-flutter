@@ -122,7 +122,7 @@ int checklistInsertIndex(
 /// [allItems] is every item currently in the list (done + not-done); [scope]
 /// includes the dragged item and is in display order; [dropIndex] is the target
 /// position within [scope] *with the dragged item removed* (i.e. the index the
-/// reorderable already adjusted with `if (newIndex > oldIndex) newIndex--`).
+/// reorderable's `onReorderItem` already adjusted for the removed item).
 ///
 /// Returns the full renumbered order (every item `0..n`) to POST to the reorder
 /// endpoint, or an empty list when [dragId] isn't in [scope] (a no-op drop).
@@ -1198,7 +1198,6 @@ class ChecklistsController extends ChangeNotifier {
 
   Future<void> reorderLists(int oldIndex, int newIndex) async {
     if (_listSort != 'custom') return;
-    if (newIndex > oldIndex) newIndex--;
     if (oldIndex == newIndex) return;
 
     final ordered = sortedLists;
@@ -1313,8 +1312,8 @@ class ChecklistsController extends ChangeNotifier {
   /// constrained to (the whole active partition in custom sort, a category
   /// block in category sort, a store column in store sort), including the
   /// dragged item. [oldIndex] indexes the dragged item within [scope];
-  /// [newIndex] is its drop position with the dragged item removed (the caller
-  /// already applied `if (newIndex > oldIndex) newIndex--`).
+  /// [newIndex] is its drop position with the dragged item removed (as supplied
+  /// by the reorderable's `onReorderItem`).
   ///
   /// Only the dragged item moves: every other item — checked items and items in
   /// other groups — keeps its stored slot, so unchecking returns items to their

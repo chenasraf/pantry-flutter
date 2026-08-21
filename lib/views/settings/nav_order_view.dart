@@ -36,9 +36,8 @@ class _NavOrderViewState extends State<NavOrderView> {
 
   Future<void> _onReorder(int oldIndex, int newIndex) async {
     setState(() {
-      final adjusted = newIndex > oldIndex ? newIndex - 1 : newIndex;
       final item = _order.removeAt(oldIndex);
-      _order.insert(adjusted, item);
+      _order.insert(newIndex, item);
     });
     await context.read<PrefsService>().setNavOrder(_order);
   }
@@ -94,7 +93,7 @@ class _NavOrderViewState extends State<NavOrderView> {
             child: ReorderableListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: _order.length,
-              onReorder: _onReorder,
+              onReorderItem: _onReorder,
               itemBuilder: (context, i) {
                 final s = _order[i];
                 final enabled = prefs.isNavSectionEnabled(s);

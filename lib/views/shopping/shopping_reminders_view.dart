@@ -147,7 +147,6 @@ class _ShoppingRemindersViewState extends State<ShoppingRemindersView> {
     int newIndex,
   ) async {
     final group = _group(moment);
-    if (newIndex > oldIndex) newIndex--;
     if (oldIndex == newIndex) return;
     final moved = group.removeAt(oldIndex);
     group.insert(newIndex, moved);
@@ -312,7 +311,7 @@ class _MomentGroupState extends State<_MomentGroup> {
             physics: const NeverScrollableScrollPhysics(),
             buildDefaultDragHandles: false,
             itemCount: widget.reminders.length,
-            onReorder: widget.onReorder,
+            onReorderItem: widget.onReorder,
             itemBuilder: (context, index) {
               final r = widget.reminders[index];
               return _ReminderEditRow(
