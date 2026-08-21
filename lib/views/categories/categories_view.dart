@@ -9,9 +9,10 @@ import 'package:pantry/sync/sync_ids.dart';
 import 'package:pantry/sync/sync_manager.dart';
 import 'package:pantry/sync/sync_op.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
-import 'package:pantry/widgets/create_category_dialog.dart';
 
 class CategoriesView extends StatefulWidget {
   final int houseId;
@@ -201,10 +202,9 @@ class _CategoriesViewState extends State<CategoriesView> {
   }
 
   Future<void> _create() async {
-    final created = await showDialog<Category>(
-      context: context,
-      builder: (_) => CreateCategoryDialog(houseId: widget.houseId),
-    );
+    final created = await Navigator.of(
+      context,
+    ).push<Category>(itemModalRoute(CategoryFormView(houseId: widget.houseId)));
     if (created != null) {
       setState(() {
         _categories = CategoryService.sortCategories([
@@ -216,10 +216,10 @@ class _CategoriesViewState extends State<CategoriesView> {
   }
 
   Future<void> _edit(Category category) async {
-    final updated = await showDialog<Category>(
-      context: context,
-      builder: (_) =>
-          CreateCategoryDialog(houseId: widget.houseId, existing: category),
+    final updated = await Navigator.of(context).push<Category>(
+      itemModalRoute(
+        CategoryFormView(houseId: widget.houseId, existing: category),
+      ),
     );
     if (updated != null) {
       setState(() {

@@ -3,7 +3,8 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
-import 'package:pantry/widgets/create_category_dialog.dart';
+import 'package:pantry/utils/item_modal_route.dart';
+import 'package:pantry/views/categories/category_form_view.dart';
 
 /// Sentinel value used for the "Create category" dropdown item.
 const int _createCategoryValue = -1;
@@ -100,15 +101,17 @@ class CategoryPicker extends StatelessWidget {
   }
 
   void _showCreateDialog(BuildContext context) {
-    showDialog<Category>(
-      context: context,
-      builder: (_) =>
-          CreateCategoryDialog(houseId: houseId, defaultListId: listId),
-    ).then((created) {
-      if (created != null) {
-        onCreated(created);
-        onChanged(created.id);
-      }
-    });
+    Navigator.of(context)
+        .push<Category>(
+          itemModalRoute(
+            CategoryFormView(houseId: houseId, defaultListId: listId),
+          ),
+        )
+        .then((created) {
+          if (created != null) {
+            onCreated(created);
+            onChanged(created.id);
+          }
+        });
   }
 }

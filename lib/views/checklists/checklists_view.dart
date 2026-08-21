@@ -30,12 +30,12 @@ import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/categories/categories_view.dart';
+import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/views/shopping/shopping_history_view.dart';
 import 'package:pantry/views/shopping/shopping_session_view.dart';
 import 'package:pantry/views/shopping/shopping_start_view.dart';
 import 'package:pantry/views/stores/stores_view.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
-import 'package:pantry/widgets/create_category_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'checklist_item_tile.dart';
 import 'checklist_switcher_sheet.dart';
@@ -2047,11 +2047,12 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     ChecklistsController controller, {
     int? defaultListId,
   }) async {
-    final created = await showDialog<models.Category>(
-      context: context,
-      builder: (_) => CreateCategoryDialog(
-        houseId: controller.houseId,
-        defaultListId: defaultListId,
+    final created = await Navigator.of(context).push<models.Category>(
+      itemModalRoute(
+        CategoryFormView(
+          houseId: controller.houseId,
+          defaultListId: defaultListId,
+        ),
       ),
     );
     if (created != null) {

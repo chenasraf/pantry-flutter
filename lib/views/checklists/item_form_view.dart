@@ -12,13 +12,14 @@ import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/avif_image.dart';
-import 'package:pantry/widgets/create_category_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'checklist_item_tile.dart' show ItemLifecycle, lifecycleOf;
@@ -517,11 +518,12 @@ class _ItemFormViewState extends State<ItemFormView> {
   }
 
   Future<void> _openCreateCategory() async {
-    final created = await showDialog<models.Category>(
-      context: context,
-      builder: (_) => CreateCategoryDialog(
-        houseId: widget.controller.houseId,
-        defaultListId: _effectiveListId,
+    final created = await Navigator.of(context).push<models.Category>(
+      itemModalRoute(
+        CategoryFormView(
+          houseId: widget.controller.houseId,
+          defaultListId: _effectiveListId,
+        ),
       ),
     );
     if (created == null || !mounted) return;
