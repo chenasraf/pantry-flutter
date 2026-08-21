@@ -1397,18 +1397,58 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
               onPressed: () => controller.setArchiveMode(true),
             ),
         ],
-        IconButton(
-          icon: const Icon(Icons.more_vert),
-          tooltip: m.common.more,
-          onPressed: () => _showOverflowSheet(
-            context,
-            controller,
-            prefs,
-            isPinned: isPinned,
+        // Desktop shows the overflow as an anchored popup menu; mobile keeps
+        // it in a bottom sheet, which reads and scrolls better on touch.
+        if (PlatformInfo.isDesktop)
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            tooltip: m.common.more,
+            onSelected: (v) => _onOverflow(context, controller, v),
+            itemBuilder: (_) => _overflowMenuItems(
+              _overflowItems(controller, prefs, isPinned: isPinned),
+            ),
+          )
+        else
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            tooltip: m.common.more,
+            onPressed: () => _showOverflowSheet(
+              context,
+              controller,
+              prefs,
+              isPinned: isPinned,
+            ),
           ),
-        ),
       ],
     );
+  }
+
+  /// Renders the shared overflow [entries] as anchored popup-menu rows for the
+  /// desktop toolbar. The bottom-sheet variant renders the same entries as
+  /// [ListTile]s in [_showOverflowSheet].
+  List<PopupMenuEntry<String>> _overflowMenuItems(
+    List<_OverflowEntry> entries,
+  ) {
+    return [
+      for (final entry in entries)
+        switch (entry) {
+          _OverflowDivider() => const PopupMenuDivider(),
+          _OverflowAction(:final value, :final icon, :final label) => _menuRow(
+            value: value,
+            leading: Icon(icon, size: 20),
+            label: label,
+          ),
+          _OverflowCheckboxAction(:final value, :final label, :final checked) =>
+            _menuRow(
+              value: value,
+              leading: Icon(
+                checked ? Icons.check_box : Icons.check_box_outline_blank,
+                size: 20,
+              ),
+              label: label,
+            ),
+        },
+    ];
   }
 
   /// Sort radio rows lifted out of `_overflowItems` so the desktop toolbar's
