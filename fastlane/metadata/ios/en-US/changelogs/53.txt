@@ -1,0 +1,6 @@
+Features
+- edit categories on a full page instead of a dialog
+- scope categories to lists
+- add labels
+- per-store item prices ([#152](https://github.com/chenasraf/pantry-flutter/issues/152))
+- recover items removed from a trip

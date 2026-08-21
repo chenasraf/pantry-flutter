@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.28.0](https://github.com/chenasraf/pantry-flutter/compare/v0.27.3...v0.28.0) (2026-08-21)
+
+
+### Features
+
+* **categories:** edit categories on a full page instead of a dialog ([8a5dc21](https://github.com/chenasraf/pantry-flutter/commit/8a5dc2171b744bbcb20d31d8286b4563dc14e38a))
+* **categories:** scope categories to lists ([d88b5c3](https://github.com/chenasraf/pantry-flutter/commit/d88b5c3536b2aa47b77e3e5db981e881a58de033))
+* **checklists:** add labels ([67501d5](https://github.com/chenasraf/pantry-flutter/commit/67501d5bd40f4637fe77bc389a0af27bcd769c1b))
+* **desktop:** show overflow menu as popup ([021a459](https://github.com/chenasraf/pantry-flutter/commit/021a459ed0d52e333da060b0c7e687b87e9b5a64))
+* **prices:** per-store item prices ([#152](https://github.com/chenasraf/pantry-flutter/issues/152)) ([9f14662](https://github.com/chenasraf/pantry-flutter/commit/9f1466291a976498fbb6c478e646b39bf12b097f))
+* **shopping:** recover items removed from a trip ([957b7ef](https://github.com/chenasraf/pantry-flutter/commit/957b7efa160e1ae490b465b8e647a85aece65adf))
+
 ## [0.27.3](https://github.com/chenasraf/pantry-flutter/compare/v0.27.2...v0.27.3) (2026-08-19)
 
 
