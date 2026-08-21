@@ -17,6 +17,7 @@ import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/currencies.dart';
 import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
@@ -43,9 +44,9 @@ class ItemDraft {
   /// scan flow; null for hand-typed items.
   String? barcode;
 
-  /// Optional price for the composed item. Currency is preserved across
+  /// Optional prices for the composed item. Currency is preserved across
   /// [reset] so the last-picked currency sticks for rapid same-currency adds.
-  PriceDraft price = PriceDraft();
+  PricesDraft price = PricesDraft.empty(defaultCurrency);
 
   void reset(ItemLifecycle defaultLifecycle) {
     name = '';
@@ -58,7 +59,7 @@ class ItemDraft {
     imageFile = null;
     imageBytes = null;
     barcode = null;
-    price = PriceDraft(currency: price.currency);
+    price = PricesDraft.empty(price.storeless.currency);
   }
 
   bool get repeatFromCompletion => recurrence.repeatFromCompletion;
@@ -86,12 +87,9 @@ class ComposeSubmission {
   final String? imageMime;
   final String? barcode;
 
-  /// Price group for the created item. [priceType] is null when there's no
-  /// price (create semantics — omit the group).
-  final String? priceType;
-  final double? priceMin;
-  final double? priceMax;
-  final String? priceCurrency;
+  /// Prices for the created item, or null when there's no price (create
+  /// semantics — omit the field).
+  final List<ItemPrice>? prices;
 
   const ComposeSubmission({
     required this.name,
@@ -106,10 +104,7 @@ class ComposeSubmission {
     this.imageName,
     this.imageMime,
     this.barcode,
-    this.priceType,
-    this.priceMin,
-    this.priceMax,
-    this.priceCurrency,
+    this.prices,
   });
 }
 
@@ -128,6 +123,10 @@ class ItemComposeBar extends StatefulWidget {
   /// Whether the server advertises `item-price`. Hides the price chip + tray
   /// entirely when false.
   final bool priceEnabled;
+
+  /// Whether the server advertises `item-price-per-store`. When false the price
+  /// tray shows only the single store-less price (legacy single-price UI).
+  final bool perStorePriceEnabled;
 
   /// House's last-used currency, preselected when the price tray first opens.
   final String lastCurrency;
@@ -192,6 +191,7 @@ class ItemComposeBar extends StatefulWidget {
     this.initiallyFocused = false,
     this.dimmedListBackground = false,
     this.priceEnabled = false,
+    this.perStorePriceEnabled = false,
     this.lastCurrency = 'USD',
     this.onActiveChanged,
     this.onRequestCreateCategory,
@@ -224,7 +224,7 @@ enum _Tray {
 class ItemComposeBarState extends State<ItemComposeBar> {
   late final ItemDraft _draft = ItemDraft()
     ..lifecycle = _defaultLifecycle()
-    ..price.currency = widget.lastCurrency;
+    ..price = PricesDraft.empty(widget.lastCurrency);
   final _nameCtrl = TextEditingController();
   final _qtyCtrl = TextEditingController();
   final _focusNode = FocusNode();
@@ -529,17 +529,8 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       barcode: _multiple ? null : _draft.barcode,
       // Price is a single-item concern — omitted entirely in bulk mode or when
       // the server lacks the capability.
-      priceType: (!_multiple && widget.priceEnabled)
-          ? _draft.price.createPriceType
-          : null,
-      priceMin: (!_multiple && widget.priceEnabled)
-          ? _draft.price.priceMin
-          : null,
-      priceMax: (!_multiple && widget.priceEnabled)
-          ? _draft.price.priceMax
-          : null,
-      priceCurrency: (!_multiple && widget.priceEnabled)
-          ? _draft.price.priceCurrency
+      prices: (!_multiple && widget.priceEnabled && _draft.price.hasAnyPrice)
+          ? _draft.price.toItemPrices()
           : null,
     );
   }
@@ -646,6 +637,8 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       case _Tray.price:
         trayChild = _PriceTray(
           draft: _draft.price,
+          stores: widget.stores,
+          perStoreEnabled: widget.perStorePriceEnabled,
           onChanged: () => setState(() {}),
         );
       case _Tray.description:
@@ -1077,13 +1070,16 @@ class _ChipRow extends StatelessWidget {
     final hasQty = draft.quantity.trim().isNotEmpty;
     final hasDesc = draft.description.trim().isNotEmpty;
     final hasType = draft.lifecycle != ItemLifecycle.staple;
-    final hasPrice = draft.price.hasPrice;
+    final hasPrice = draft.price.hasAnyPrice;
+    final storeless = draft.price.storeless;
+    // Chip previews the store-less price when set; otherwise it just reflects
+    // the "has any price" accent state with the plain label.
     final priceLabel = hasPrice
         ? (formatPrice(
-                priceType: draft.price.createPriceType,
-                priceMin: draft.price.priceMin,
-                priceMax: draft.price.priceMax,
-                priceCurrency: draft.price.priceCurrency,
+                priceType: storeless.priceType,
+                priceMin: storeless.priceMin,
+                priceMax: storeless.priceMax,
+                priceCurrency: storeless.priceCurrency,
               ) ??
               m.checklists.price.label)
         : m.checklists.price.label;
@@ -1731,16 +1727,28 @@ class _QuantityTray extends StatelessWidget {
 }
 
 class _PriceTray extends StatelessWidget {
-  final PriceDraft draft;
+  final PricesDraft draft;
+  final List<models.Store> stores;
+  final bool perStoreEnabled;
   final VoidCallback onChanged;
 
-  const _PriceTray({required this.draft, required this.onChanged});
+  const _PriceTray({
+    required this.draft,
+    required this.stores,
+    required this.perStoreEnabled,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return _TrayShell(
       label: m.checklists.price.label,
-      child: PriceInput(draft: draft, onChanged: onChanged),
+      child: ItemPricesEditor(
+        draft: draft,
+        stores: stores,
+        perStoreEnabled: perStoreEnabled,
+        onChanged: onChanged,
+      ),
     );
   }
 }

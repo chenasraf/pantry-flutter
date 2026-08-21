@@ -3179,6 +3179,26 @@ class PriceChecklistsMessages {
   /// "Clear price"
   /// ```
   String get clear => """Clear price""";
+
+  /// ```dart
+  /// "Any store"
+  /// ```
+  String get anyStore => """Any store""";
+
+  /// ```dart
+  /// "Store"
+  /// ```
+  String get store => """Store""";
+
+  /// ```dart
+  /// "Add price"
+  /// ```
+  String get addPrice => """Add price""";
+
+  /// ```dart
+  /// "Remove price"
+  /// ```
+  String get removePrice => """Remove price""";
 }
 
 class ReuseChecklistsMessages {
@@ -5076,6 +5096,10 @@ Password: pantry-rocks""",
   """checklists.price.max""": """Max""",
   """checklists.price.currency""": """Currency""",
   """checklists.price.clear""": """Clear price""",
+  """checklists.price.anyStore""": """Any store""",
+  """checklists.price.store""": """Store""",
+  """checklists.price.addPrice""": """Add price""",
+  """checklists.price.removePrice""": """Remove price""",
   """checklists.reuse.dialogTitle""": """Item already exists""",
   """checklists.reuse.reuseExisting""": """Reuse existing""",
   """checklists.reuse.addAnyway""": """Add anyway""",

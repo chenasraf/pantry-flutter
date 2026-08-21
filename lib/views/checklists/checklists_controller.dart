@@ -1945,10 +1945,7 @@ class ChecklistsController extends ChangeNotifier {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
-    String? priceType,
-    double? priceMin,
-    double? priceMax,
-    String? priceCurrency,
+    List<ItemPrice>? prices,
   }) async {
     final list = _currentList;
     if (list == null || list.id == kAllListsId) {
@@ -1969,10 +1966,7 @@ class ChecklistsController extends ChangeNotifier {
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
       barcode: barcode,
-      priceType: priceType,
-      priceMin: priceMin,
-      priceMax: priceMax,
-      priceCurrency: priceCurrency,
+      prices: prices,
     );
   }
 
@@ -1991,10 +1985,7 @@ class ChecklistsController extends ChangeNotifier {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
-    String? priceType,
-    double? priceMin,
-    double? priceMax,
-    String? priceCurrency,
+    List<ItemPrice>? prices,
   }) async {
     final listId = targetListId;
     final tempId = _sync.newTempId();
@@ -2013,10 +2004,7 @@ class ChecklistsController extends ChangeNotifier {
       deleteOnDone: deleteOnDone ?? false,
       addedBy: loginName,
       barcode: barcode,
-      priceType: priceType,
-      priceMin: priceMin,
-      priceMax: priceMax,
-      priceCurrency: priceCurrency,
+      prices: prices ?? const [],
       sortOrder: 0,
       createdAt: _now(),
       updatedAt: _now(),
@@ -2045,10 +2033,7 @@ class ChecklistsController extends ChangeNotifier {
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
           'barcode': ?barcode,
-          'priceType': ?priceType,
-          'priceMin': ?priceMin,
-          'priceMax': ?priceMax,
-          'priceCurrency': ?priceCurrency,
+          if (prices != null) 'prices': prices.map((p) => p.toJson()).toList(),
         },
         createdAt: _now(),
       ),
@@ -2090,14 +2075,8 @@ class ChecklistsController extends ChangeNotifier {
     bool? repeatFromCompletion,
     bool? deleteOnDone,
     String? barcode,
-    String? priceType,
-    double? priceMin,
-    double? priceMax,
-    String? priceCurrency,
+    List<ItemPrice>? prices,
   }) async {
-    // An empty-string priceType is the "clear the price" sentinel on PATCH;
-    // reflect that optimistically by nulling the whole group locally.
-    final clearingPrice = priceType == '';
     final updated = item.copyWith(
       name: name,
       description: description,
@@ -2109,11 +2088,8 @@ class ChecklistsController extends ChangeNotifier {
       repeatFromCompletion: repeatFromCompletion,
       deleteOnDone: deleteOnDone,
       barcode: barcode,
-      clearPrice: clearingPrice,
-      priceType: clearingPrice ? null : priceType,
-      priceMin: priceMin,
-      priceMax: priceMax,
-      priceCurrency: priceCurrency,
+      // null leaves prices unchanged; a list (even empty) replaces them.
+      prices: prices,
       updatedAt: _now(),
     );
     final index = _items.indexWhere((i) => i.id == item.id);
@@ -2142,10 +2118,7 @@ class ChecklistsController extends ChangeNotifier {
           'repeatFromCompletion': ?repeatFromCompletion,
           'deleteOnDone': ?deleteOnDone,
           'barcode': ?barcode,
-          'priceType': ?priceType,
-          'priceMin': ?priceMin,
-          'priceMax': ?priceMax,
-          'priceCurrency': ?priceCurrency,
+          if (prices != null) 'prices': prices.map((p) => p.toJson()).toList(),
         },
         createdAt: _now(),
       ),

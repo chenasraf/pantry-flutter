@@ -3200,6 +3200,26 @@ class PriceChecklistsMessagesNn extends PriceChecklistsMessages {
   /// "Fjern pris"
   /// ```
   String get clear => """Fjern pris""";
+
+  /// ```dart
+  /// "Kva som helst butikk"
+  /// ```
+  String get anyStore => """Kva som helst butikk""";
+
+  /// ```dart
+  /// "Butikk"
+  /// ```
+  String get store => """Butikk""";
+
+  /// ```dart
+  /// "Legg til pris"
+  /// ```
+  String get addPrice => """Legg til pris""";
+
+  /// ```dart
+  /// "Fjern pris"
+  /// ```
+  String get removePrice => """Fjern pris""";
 }
 
 class ReuseChecklistsMessagesNn extends ReuseChecklistsMessages {
@@ -5114,6 +5134,10 @@ Passord: pantry""",
   """checklists.price.max""": """Maks""",
   """checklists.price.currency""": """Valuta""",
   """checklists.price.clear""": """Fjern pris""",
+  """checklists.price.anyStore""": """Kva som helst butikk""",
+  """checklists.price.store""": """Butikk""",
+  """checklists.price.addPrice""": """Legg til pris""",
+  """checklists.price.removePrice""": """Fjern pris""",
   """checklists.reuse.dialogTitle""": """Oppføringa finst allereie""",
   """checklists.reuse.reuseExisting""": """Gjenbruk""",
   """checklists.reuse.addAnyway""": """Legg til likevel""",

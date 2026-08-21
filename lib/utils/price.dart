@@ -41,17 +41,57 @@ String? formatPrice({
       : '$body${currency.symbol}';
 }
 
-extension ListItemPrice on ListItem {
-  /// Whether this item carries a usable price.
-  bool get hasPrice => hasPriceValue(priceType, priceMin);
+/// The item's store-less (default) price, or null when it has none. Mirrors
+/// the web app's `storelessPrice`.
+ItemPrice? storelessPrice(List<ItemPrice> prices) {
+  for (final p in prices) {
+    if (p.storeId == null) return p;
+  }
+  return null;
+}
 
-  /// Formatted price label for this item, or null when it has no price.
-  String? get formattedPrice => formatPrice(
+/// The price to show for a given store context: the store's own price when set,
+/// otherwise the store-less price. Passing null (non-store views) resolves the
+/// store-less price directly. Returns null when neither exists. Mirrors the web
+/// app's `resolveItemPrice`.
+ItemPrice? resolveItemPrice(List<ItemPrice> prices, int? storeId) {
+  if (storeId != null) {
+    for (final p in prices) {
+      if (p.storeId == storeId) return p;
+    }
+  }
+  return storelessPrice(prices);
+}
+
+extension ItemPriceX on ItemPrice {
+  /// Whether this entry carries a usable price.
+  bool get hasValue => hasPriceValue(priceType, priceMin);
+
+  /// Formatted price label for this entry, or null when it has no price.
+  String? get formatted => formatPrice(
     priceType: priceType,
     priceMin: priceMin,
     priceMax: priceMax,
     priceCurrency: priceCurrency,
   );
+}
+
+extension ListItemPrice on ListItem {
+  /// Whether this item's store-less (default) price is usable.
+  bool get hasPrice => storelessPrice(prices)?.hasValue ?? false;
+
+  /// Store-less (default) price label, or null when there is none.
+  String? get formattedPrice => storelessPrice(prices)?.formatted;
+
+  /// Whether the item has a usable price in [storeId]'s context (the store's
+  /// own price, else the store-less fallback).
+  bool hasPriceFor(int? storeId) =>
+      resolveItemPrice(prices, storeId)?.hasValue ?? false;
+
+  /// Price label resolved for [storeId] (store price, else store-less), or null
+  /// when neither exists.
+  String? formattedPriceFor(int? storeId) =>
+      resolveItemPrice(prices, storeId)?.formatted;
 }
 
 /// An active price-range filter. [currency] `null` means "any currency" —
@@ -82,19 +122,27 @@ class PriceFilter {
   );
 }
 
-/// Whether [item] passes [filter]. An item passes when its price overlaps
-/// `[min, max]`; a `set` price is treated as a zero-width range. When a
-/// currency is chosen, only items in that currency match. Items with no price
-/// never match an active filter. Mirrors the web app's `matchesPriceFilter`.
+/// Whether [item] passes [filter]. An item passes when **any** of its prices
+/// overlaps `[min, max]`; a `set` price is treated as a zero-width range. When a
+/// currency is chosen, only prices in that currency are considered. Items with
+/// no price never match an active filter. Mirrors the web app's
+/// `matchesPriceFilter`.
 bool matchesPriceFilter(ListItem item, PriceFilter filter) {
-  if (!item.hasPrice) return false;
+  for (final price in item.prices) {
+    if (_priceEntryMatches(price, filter)) return true;
+  }
+  return false;
+}
+
+bool _priceEntryMatches(ItemPrice price, PriceFilter filter) {
+  if (!price.hasValue) return false;
   if (filter.currency != null &&
-      (item.priceCurrency ?? '').toUpperCase() != filter.currency) {
+      (price.priceCurrency ?? '').toUpperCase() != filter.currency) {
     return false;
   }
-  final lo = item.priceMin!;
-  final hi = item.priceType == 'range' && item.priceMax != null
-      ? item.priceMax!
+  final lo = price.priceMin!;
+  final hi = price.priceType == 'range' && price.priceMax != null
+      ? price.priceMax!
       : lo;
   if (filter.min != null && hi < filter.min!) return false;
   if (filter.max != null && lo > filter.max!) return false;

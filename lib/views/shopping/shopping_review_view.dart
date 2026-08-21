@@ -387,7 +387,8 @@ class _StoreSectionState extends State<_StoreSection> {
               ],
             ),
             const SizedBox(height: 8),
-            for (final item in store.items) _ReviewItemRow(item: item),
+            for (final item in store.items)
+              _ReviewItemRow(item: item, storeContext: store.storeId),
             if (store.noPriceCount > 0)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
@@ -490,12 +491,16 @@ class _StoreSectionState extends State<_StoreSection> {
 class _ReviewItemRow extends StatelessWidget {
   final ListItem item;
 
-  const _ReviewItemRow({required this.item});
+  /// Store this review row belongs to (null for the store-less "Any store"
+  /// group), so the price resolves for that store with the store-less fallback.
+  final int? storeContext;
+
+  const _ReviewItemRow({required this.item, required this.storeContext});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final price = item.formattedPrice;
+    final price = item.formattedPriceFor(storeContext);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
