@@ -65,6 +65,8 @@ help:
 	@echo "    ios-build           Build iOS (no codesign)"
 	@echo "    macos-build         Build macOS app (.app bundle, no codesign)"
 	@echo "    macos-build-pkg     Build signed macOS .pkg for App Store"
+	@echo "    linux-build         Build Linux desktop bundle"
+	@echo "    windows-build       Build Windows desktop bundle"
 	@echo "    build-all           Build all platforms"
 	@echo ""
 	@echo "  Release:"
@@ -73,6 +75,8 @@ help:
 	@echo "    android-release-aab Build AAB and copy to build/release/"
 	@echo "    ios-release         Build IPA and copy to build/release/"
 	@echo "    macos-release       Build PKG and copy to build/release/"
+	@echo "    linux-release       Build Linux tarball -> build/release/"
+	@echo "    windows-release     Build Windows zip -> build/release/"
 	@echo "    release-all         Build and release all platforms"
 	@echo ""
 	@echo "  Deploying:"
@@ -245,6 +249,14 @@ macos-build-pkg:
 		-exportOptionsPlist macos/ExportOptions.plist \
 		-allowProvisioningUpdates
 
+.PHONY: linux-build
+linux-build:
+	flutter build linux --release --obfuscate --split-debug-info=build/debug-info-linux
+
+.PHONY: windows-build
+windows-build:
+	flutter build windows --release --obfuscate --split-debug-info=build/debug-info-windows
+
 .PHONY: build-all
 build-all: android-build-apk android-build-aab
 
@@ -282,6 +294,18 @@ macos-release: macos-build-pkg
 	mkdir -p build/release
 	cp build/macos/pkg/*.pkg build/release/pantry-$(VERSION).pkg
 	@echo "-> build/release/pantry-$(VERSION).pkg"
+
+.PHONY: linux-release
+linux-release: linux-build
+	mkdir -p build/release
+	tar -czf build/release/pantry-$(VERSION)-linux-x64.tar.gz -C build/linux/x64/release/bundle .
+	@echo "-> build/release/pantry-$(VERSION)-linux-x64.tar.gz"
+
+.PHONY: windows-release
+windows-release: windows-build
+	mkdir -p build/release
+	cd build/windows/x64/runner/Release && zip -r "$(CURDIR)/build/release/pantry-$(VERSION)-windows-x64.zip" .
+	@echo "-> build/release/pantry-$(VERSION)-windows-x64.zip"
 
 .PHONY: android-upload
 android-upload:

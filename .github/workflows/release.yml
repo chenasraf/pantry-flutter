@@ -12,10 +12,15 @@ on:
         required: true
         type: string
       targets:
-        description: "Comma-separated platforms to build from the selected branch: android, fdroid, macos, ios. 'all' = every auto-release platform (android, fdroid, macos); pass 'ios' explicitly to force the disabled iOS build."
+        description: "Comma-separated platforms to build from the selected branch: android, fdroid, macos, linux, windows, ios. 'all' = every auto-release platform (android, fdroid, macos, linux, windows); pass 'ios' explicitly to force the disabled iOS build."
         required: true
         default: all
         type: string
+      upload:
+        description: "Upload the built artifacts to the release. Disable to test a build: artifacts are published as workflow artifacts instead of touching any release."
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   contents: write
@@ -542,8 +547,185 @@ jobs:
             "pantry-${{ steps.meta.outputs.version }}-macos.dmg" \
             --clobber
 
+  build-linux:
+    needs: [setup, release-please]
+    if: >-
+      ${{ always()
+          && needs.setup.result == 'success'
+          && (needs.release-please.outputs.release_created == 'true'
+              || (github.event_name == 'workflow_dispatch'
+                  && (inputs.targets == 'all' || contains(inputs.targets, 'linux')))) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || needs.release-please.outputs.tag_name }}
+
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.release_tag }}"
+          else
+            TAG="${{ needs.release-please.outputs.tag_name }}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev libjsoncpp-dev
+
+      # The transitive `jni` FFI plugin compiles against the JDK headers.
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable Linux desktop
+        run: flutter config --enable-linux-desktop
+
+      - name: Build Linux
+        run: flutter build linux --release --obfuscate --split-debug-info=build/debug-info-linux
+
+      - name: Package tarball
+        run: |
+          set -euo pipefail
+          VERSION=${{ steps.meta.outputs.version }}
+          tar -czf pantry-${VERSION}-linux-x64.tar.gz -C build/linux/x64/release/bundle .
+
+      - name: Upload Linux tarball to release
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.upload }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release upload "${{ steps.meta.outputs.tag }}" \
+            pantry-${{ steps.meta.outputs.version }}-linux-x64.tar.gz \
+            --clobber
+
+      - name: Upload Linux tarball as workflow artifact
+        if: ${{ github.event_name == 'workflow_dispatch' && !inputs.upload }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pantry-${{ steps.meta.outputs.version }}-linux-x64
+          path: pantry-${{ steps.meta.outputs.version }}-linux-x64.tar.gz
+
+  build-windows:
+    needs: [setup, release-please]
+    if: >-
+      ${{ always()
+          && needs.setup.result == 'success'
+          && (needs.release-please.outputs.release_created == 'true'
+              || (github.event_name == 'workflow_dispatch'
+                  && (inputs.targets == 'all' || contains(inputs.targets, 'windows')))) }}
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || needs.release-please.outputs.tag_name }}
+
+      - name: Resolve release metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.release_tag }}"
+          else
+            TAG="${{ needs.release-please.outputs.tag_name }}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      # The transitive `jni` FFI plugin compiles against the JDK headers.
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\AppData\Local\Pub\Cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Build Windows
+        run: flutter build windows --release --obfuscate --split-debug-info=build/debug-info-windows
+
+      - name: Package zip
+        shell: pwsh
+        run: |
+          $version = "${{ steps.meta.outputs.version }}"
+          Compress-Archive -Path "build/windows/x64/runner/Release/*" `
+            -DestinationPath "pantry-$version-windows-x64.zip" -Force
+
+      - name: Upload Windows zip to release
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.upload }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release upload "${{ steps.meta.outputs.tag }}" \
+            pantry-${{ steps.meta.outputs.version }}-windows-x64.zip \
+            --clobber
+
+      - name: Upload Windows zip as workflow artifact
+        if: ${{ github.event_name == 'workflow_dispatch' && !inputs.upload }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pantry-${{ steps.meta.outputs.version }}-windows-x64
+          path: pantry-${{ steps.meta.outputs.version }}-windows-x64.zip
+
   post-release-comment:
-    needs: [release-please, build-android, build-android-fdroid, build-macos]
+    needs:
+      [
+        release-please,
+        build-android,
+        build-android-fdroid,
+        build-macos,
+        build-linux,
+        build-windows,
+      ]
     if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
 
