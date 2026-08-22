@@ -5,6 +5,12 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
+    inputs:
+      macos_release_tag:
+        description: "Build the signed macOS DMG from the selected branch and attach it to this EXISTING release tag (no new version cut). e.g. v0.28.0"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -339,7 +345,11 @@ jobs:
   # signing secrets — see the DEVELOPER_ID/NOTARY_* references below.
   build-macos:
     needs: [setup, release-please]
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: >-
+      ${{ always()
+          && needs.setup.result == 'success'
+          && (needs.release-please.outputs.release_created == 'true'
+              || github.event_name == 'workflow_dispatch') }}
     runs-on: macos-latest
     env:
       TEAM_ID: Y893L6NQP2
@@ -348,7 +358,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || needs.release-please.outputs.tag_name }}
+
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.macos_release_tag }}"
+          else
+            TAG="${{ needs.release-please.outputs.tag_name }}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -396,7 +418,7 @@ jobs:
       - name: Build & archive (Developer ID signed)
         run: |
           set -euo pipefail
-          VERSION=${{ needs.release-please.outputs.version }}
+          VERSION=${{ steps.meta.outputs.version }}
           flutter build macos --config-only --release \
             --obfuscate --split-debug-info=build/debug-info-macos
           xcodebuild archive \
@@ -416,7 +438,7 @@ jobs:
       - name: Verify signature & package DMG
         run: |
           set -euo pipefail
-          VERSION=${{ needs.release-please.outputs.version }}
+          VERSION=${{ steps.meta.outputs.version }}
           APP="$RUNNER_TEMP/Pantry.xcarchive/Products/Applications/Pantry.app"
           codesign --verify --deep --strict --verbose=2 "$APP"
           codesign -dvv "$APP" 2>&1 | grep -E "Authority=|TeamIdentifier=" || true
@@ -457,9 +479,9 @@ jobs:
       - name: Upload macOS DMG to release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          tag_name: ${{ steps.meta.outputs.tag }}
           files: |
-            pantry-${{ needs.release-please.outputs.version }}-macos.dmg
+            pantry-${{ steps.meta.outputs.version }}-macos.dmg
 
   post-release-comment:
     needs: [release-please, build-android, build-android-fdroid, build-macos]
