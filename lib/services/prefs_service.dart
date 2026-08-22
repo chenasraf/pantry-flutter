@@ -8,6 +8,7 @@ import '../models/nav_section.dart';
 import '../utils/platform_info.dart';
 import 'checklist_service.dart';
 import 'house_service.dart';
+import 'list_link_service.dart';
 
 class PrefsService extends ChangeNotifier {
   PrefsService._();
@@ -470,6 +471,7 @@ class PrefsService extends ChangeNotifier {
         qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
       );
     }
+    await ListLinkService.instance.setPinnedShortcuts(allPinnedAfterToggle);
     notifyListeners();
   }
 
@@ -512,27 +514,19 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Rebuild the pinned-lists JSON the Android widget reads — from cached
-  /// lists + items for the current house. Call after caches load on app
-  /// start so the widget survives an `HomeWidgetPreferences` wipe (e.g. a
-  /// fresh install) without waiting for the next pin toggle.
-  Future<void> pushWidgetPinnedLists() async {
-    if (!_supportsWidget) return;
-    if (_pinnedListIds.isEmpty) {
-      await HomeWidget.saveWidgetData<String>('pinned_lists', '[]');
-      await HomeWidget.updateWidget(
-        qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
-      );
-      return;
-    }
+  /// Build the pinned-lists payload from cached lists + items for the current
+  /// house. Returns an empty list when nothing is pinned, or null when the
+  /// caches aren't ready yet (the caller should skip and retry later).
+  List<Map<String, dynamic>>? _buildPinnedEntries() {
+    if (_pinnedListIds.isEmpty) return const [];
     final cs = ChecklistService.instance;
     final houseId = _lastHouseId;
     final lists = houseId == null ? null : cs.getCachedLists(houseId);
-    if (lists == null) return;
+    if (lists == null) return null;
     final housesById = {
       for (final h in HouseService.instance.getCached() ?? []) h.id: h.name,
     };
-    final entries = lists.where((l) => _pinnedListIds.contains(l.id)).map((l) {
+    return lists.where((l) => _pinnedListIds.contains(l.id)).map((l) {
       final cached = cs.getCachedItems(l.id) ?? [];
       final active = cached.where((i) => i.deletedAt == null).toList();
       final unchecked = active.where((i) => !i.done).length;
@@ -546,6 +540,18 @@ class PrefsService extends ChangeNotifier {
         'total': active.length,
       };
     }).toList();
+  }
+
+  /// Rebuild the pinned-lists payload the Android widget reads and the launcher
+  /// quick actions expose — from cached lists + items for the current house.
+  /// Call after caches load on app start so both survive a preferences wipe
+  /// (e.g. a fresh install) without waiting for the next pin toggle.
+  Future<void> pushWidgetPinnedLists() async {
+    final entries = _buildPinnedEntries();
+    if (entries != null) {
+      await ListLinkService.instance.setPinnedShortcuts(entries);
+    }
+    if (!_supportsWidget || entries == null) return;
     await HomeWidget.saveWidgetData<String>(
       'pinned_lists',
       jsonEncode(entries),

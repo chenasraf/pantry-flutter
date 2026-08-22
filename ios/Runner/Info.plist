@@ -109,6 +109,16 @@
 					<string>ShareMedia-dev.casraf.pantry</string>
 				</array>
 			</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLName</key>
+				<string>dev.casraf.pantry.deeplink</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>pantry</string>
+				</array>
+			</dict>
 		</array>
 	</dict>
 </plist>

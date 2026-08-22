@@ -8,6 +8,7 @@ import 'package:pantry/models/house.dart';
 import 'package:pantry/models/nav_section.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/deep_link_service.dart';
+import 'package:pantry/services/list_link_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/share_intent_service.dart';
 import 'package:pantry/services/widget_link_service.dart';
@@ -105,6 +106,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _consumePendingDeepLink();
       _consumePendingShare();
+      _consumePendingListLink();
       WidgetLinkService.instance.checkOnResume();
     });
 
@@ -113,6 +115,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     DeepLinkService.instance.pending.addListener(_consumePendingDeepLink);
     ShareIntentService.instance.pending.addListener(_consumePendingShare);
     WidgetLinkService.instance.pending.addListener(_consumePendingWidgetTap);
+    ListLinkService.instance.pending.addListener(_consumePendingListLink);
   }
 
   @override
@@ -120,6 +123,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     DeepLinkService.instance.pending.removeListener(_consumePendingDeepLink);
     ShareIntentService.instance.pending.removeListener(_consumePendingShare);
     WidgetLinkService.instance.pending.removeListener(_consumePendingWidgetTap);
+    ListLinkService.instance.pending.removeListener(_consumePendingListLink);
     PrefsService.instance.removeListener(_onPrefsChanged);
     WidgetsBinding.instance.removeObserver(this);
     _pageController.dispose();
@@ -264,19 +268,32 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     final tap = WidgetLinkService.instance.pending.value;
     if (tap == null) return;
     WidgetLinkService.instance.pending.value = null;
+    _openList(listId: tap.listId, houseId: tap.houseId);
+  }
 
+  void _consumePendingListLink() {
+    final link = ListLinkService.instance.pending.value;
+    if (link == null) return;
+    ListLinkService.instance.pending.value = null;
+    _openList(listId: link.listId, houseId: link.houseId);
+  }
+
+  /// Switch to [houseId] (when given and not already current), pre-select
+  /// [listId], and jump to the checklists tab. Shared sink for widget taps,
+  /// `pantry://` URL deep links, launcher quick actions and pinned shortcuts.
+  void _openList({required int listId, int? houseId}) {
     final homeController = context.read<HomeController>();
 
-    if (tap.houseId != null && tap.houseId != homeController.currentHouse?.id) {
+    if (houseId != null && houseId != homeController.currentHouse?.id) {
       final house = homeController.houses.cast<House?>().firstWhere(
-        (h) => h!.id == tap.houseId,
+        (h) => h!.id == houseId,
         orElse: () => null,
       );
       if (house != null) homeController.selectHouse(house);
     }
 
     // Pre-select the list so ChecklistsController picks it up on load.
-    ChecklistService.instance.selectedListId = tap.listId;
+    ChecklistService.instance.selectedListId = listId;
 
     if (!mounted) return;
     final checklistsIndex = _navOrder.indexOf(NavSection.checklists);

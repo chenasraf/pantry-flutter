@@ -2189,14 +2189,30 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get listTrashEmpty => """Keine gelöschten Listen.""";
 
   /// ```dart
-  /// "Liste anheften"
+  /// "Zum Home-Widget hinzufügen"
   /// ```
-  String get pinList => """Liste anheften""";
+  String get pinList => """Zum Home-Widget hinzufügen""";
 
   /// ```dart
-  /// "Liste lösen"
+  /// "Aus Home-Widget entfernen"
   /// ```
-  String get unpinList => """Liste lösen""";
+  String get unpinList => """Aus Home-Widget entfernen""";
+
+  /// ```dart
+  /// "Link kopieren"
+  /// ```
+  String get copyLink => """Link kopieren""";
+
+  /// ```dart
+  /// "Zum Startbildschirm hinzufügen"
+  /// ```
+  String get addToHomeScreen => """Zum Startbildschirm hinzufügen""";
+
+  /// ```dart
+  /// "Verknüpfung konnte nicht hinzugefügt werden."
+  /// ```
+  String get addToHomeScreenFailed =>
+      """Verknüpfung konnte nicht hinzugefügt werden.""";
 
   /// ```dart
   /// "Liste entfernen"
@@ -5246,8 +5262,12 @@ Passwort: pantry-rocks""",
   """checklists.failedToLoadTrash""":
       """Papierkorb konnte nicht geladen werden.""",
   """checklists.listTrashEmpty""": """Keine gelöschten Listen.""",
-  """checklists.pinList""": """Liste anheften""",
-  """checklists.unpinList""": """Liste lösen""",
+  """checklists.pinList""": """Zum Home-Widget hinzufügen""",
+  """checklists.unpinList""": """Aus Home-Widget entfernen""",
+  """checklists.copyLink""": """Link kopieren""",
+  """checklists.addToHomeScreen""": """Zum Startbildschirm hinzufügen""",
+  """checklists.addToHomeScreenFailed""":
+      """Verknüpfung konnte nicht hinzugefügt werden.""",
   """checklists.removeList""": """Liste entfernen""",
   """checklists.editList""": """Liste bearbeiten""",
   """checklists.editListTitle""": """Liste bearbeiten""",

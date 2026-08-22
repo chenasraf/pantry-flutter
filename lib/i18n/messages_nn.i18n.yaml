@@ -570,8 +570,11 @@ checklists:
   listsTrashTitle: Sletta lister
   failedToLoadTrash: Klarte ikkje laste papirkorga.
   listTrashEmpty: Ingen sletta lister
-  pinList: Fest liste
-  unpinList: Fjern festing av liste
+  pinList: Legg til i heim-widget
+  unpinList: Fjern frå heim-widget
+  copyLink: Kopier lenke
+  addToHomeScreen: Legg til på startskjermen
+  addToHomeScreenFailed: Klarte ikkje å leggja til snarvegen.
   removeList: Fjern liste
   editList: Rediger liste
   editListTitle: Rediger liste

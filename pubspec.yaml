@@ -68,6 +68,8 @@ dependencies:
   markdown: ^7.3.1
   flutter_avif: ^3.1.0
   flutter_cache_manager: ^3.4.2
+  app_links: ^7.2.1
+  quick_actions: ^1.1.0
 
 dev_dependencies:
   flutter_test:

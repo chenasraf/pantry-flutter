@@ -2174,14 +2174,29 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get listTrashEmpty => """אין רשימות שנמחקו.""";
 
   /// ```dart
-  /// "הצמד רשימה"
+  /// "הוסף לווידג׳ט הבית"
   /// ```
-  String get pinList => """הצמד רשימה""";
+  String get pinList => """הוסף לווידג׳ט הבית""";
 
   /// ```dart
-  /// "בטל הצמדה"
+  /// "הסר מווידג׳ט הבית"
   /// ```
-  String get unpinList => """בטל הצמדה""";
+  String get unpinList => """הסר מווידג׳ט הבית""";
+
+  /// ```dart
+  /// "העתק קישור"
+  /// ```
+  String get copyLink => """העתק קישור""";
+
+  /// ```dart
+  /// "הוסף למסך הבית"
+  /// ```
+  String get addToHomeScreen => """הוסף למסך הבית""";
+
+  /// ```dart
+  /// "לא ניתן היה להוסיף את הקיצור."
+  /// ```
+  String get addToHomeScreenFailed => """לא ניתן היה להוסיף את הקיצור.""";
 
   /// ```dart
   /// "הסר רשימה"
@@ -5175,8 +5190,11 @@ Map<String, String> get messagesHeMap => {
   """checklists.listsTrashTitle""": """רשימות שנמחקו""",
   """checklists.failedToLoadTrash""": """טעינת סל המיחזור נכשלה.""",
   """checklists.listTrashEmpty""": """אין רשימות שנמחקו.""",
-  """checklists.pinList""": """הצמד רשימה""",
-  """checklists.unpinList""": """בטל הצמדה""",
+  """checklists.pinList""": """הוסף לווידג׳ט הבית""",
+  """checklists.unpinList""": """הסר מווידג׳ט הבית""",
+  """checklists.copyLink""": """העתק קישור""",
+  """checklists.addToHomeScreen""": """הוסף למסך הבית""",
+  """checklists.addToHomeScreenFailed""": """לא ניתן היה להוסיף את הקיצור.""",
   """checklists.removeList""": """הסר רשימה""",
   """checklists.editList""": """ערוך רשימה""",
   """checklists.editListTitle""": """ערוך רשימה""",

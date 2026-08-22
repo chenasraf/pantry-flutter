@@ -2193,14 +2193,29 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get listTrashEmpty => """Aucune liste supprimée.""";
 
   /// ```dart
-  /// "Épingler la liste"
+  /// "Ajouter au widget d'accueil"
   /// ```
-  String get pinList => """Épingler la liste""";
+  String get pinList => """Ajouter au widget d'accueil""";
 
   /// ```dart
-  /// "Détacher la liste"
+  /// "Retirer du widget d'accueil"
   /// ```
-  String get unpinList => """Détacher la liste""";
+  String get unpinList => """Retirer du widget d'accueil""";
+
+  /// ```dart
+  /// "Copier le lien"
+  /// ```
+  String get copyLink => """Copier le lien""";
+
+  /// ```dart
+  /// "Ajouter à l'écran d'accueil"
+  /// ```
+  String get addToHomeScreen => """Ajouter à l'écran d'accueil""";
+
+  /// ```dart
+  /// "Impossible d'ajouter le raccourci."
+  /// ```
+  String get addToHomeScreenFailed => """Impossible d'ajouter le raccourci.""";
 
   /// ```dart
   /// "Retirer la liste"
@@ -5244,8 +5259,12 @@ Mot de passe : pantry-rocks""",
   """checklists.listsTrashTitle""": """Listes supprimées""",
   """checklists.failedToLoadTrash""": """Impossible de charger la corbeille.""",
   """checklists.listTrashEmpty""": """Aucune liste supprimée.""",
-  """checklists.pinList""": """Épingler la liste""",
-  """checklists.unpinList""": """Détacher la liste""",
+  """checklists.pinList""": """Ajouter au widget d'accueil""",
+  """checklists.unpinList""": """Retirer du widget d'accueil""",
+  """checklists.copyLink""": """Copier le lien""",
+  """checklists.addToHomeScreen""": """Ajouter à l'écran d'accueil""",
+  """checklists.addToHomeScreenFailed""":
+      """Impossible d'ajouter le raccourci.""",
   """checklists.removeList""": """Retirer la liste""",
   """checklists.editList""": """Modifier la liste""",
   """checklists.editListTitle""": """Modifier la liste""",

@@ -464,8 +464,11 @@ checklists:
   listsTrashTitle: רשימות שנמחקו
   failedToLoadTrash: טעינת סל המיחזור נכשלה.
   listTrashEmpty: אין רשימות שנמחקו.
-  pinList: הצמד רשימה
-  unpinList: בטל הצמדה
+  pinList: הוסף לווידג׳ט הבית
+  unpinList: הסר מווידג׳ט הבית
+  copyLink: העתק קישור
+  addToHomeScreen: הוסף למסך הבית
+  addToHomeScreenFailed: לא ניתן היה להוסיף את הקיצור.
   removeList: הסר רשימה
   editList: ערוך רשימה
   editListTitle: ערוך רשימה

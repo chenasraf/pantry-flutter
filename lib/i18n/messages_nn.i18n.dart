@@ -2183,14 +2183,30 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   String get listTrashEmpty => """Ingen sletta lister""";
 
   /// ```dart
-  /// "Fest liste"
+  /// "Legg til i heim-widget"
   /// ```
-  String get pinList => """Fest liste""";
+  String get pinList => """Legg til i heim-widget""";
 
   /// ```dart
-  /// "Fjern festing av liste"
+  /// "Fjern frå heim-widget"
   /// ```
-  String get unpinList => """Fjern festing av liste""";
+  String get unpinList => """Fjern frå heim-widget""";
+
+  /// ```dart
+  /// "Kopier lenke"
+  /// ```
+  String get copyLink => """Kopier lenke""";
+
+  /// ```dart
+  /// "Legg til på startskjermen"
+  /// ```
+  String get addToHomeScreen => """Legg til på startskjermen""";
+
+  /// ```dart
+  /// "Klarte ikkje å leggja til snarvegen."
+  /// ```
+  String get addToHomeScreenFailed =>
+      """Klarte ikkje å leggja til snarvegen.""";
 
   /// ```dart
   /// "Fjern liste"
@@ -5210,8 +5226,12 @@ Passord: pantry""",
   """checklists.listsTrashTitle""": """Sletta lister""",
   """checklists.failedToLoadTrash""": """Klarte ikkje laste papirkorga.""",
   """checklists.listTrashEmpty""": """Ingen sletta lister""",
-  """checklists.pinList""": """Fest liste""",
-  """checklists.unpinList""": """Fjern festing av liste""",
+  """checklists.pinList""": """Legg til i heim-widget""",
+  """checklists.unpinList""": """Fjern frå heim-widget""",
+  """checklists.copyLink""": """Kopier lenke""",
+  """checklists.addToHomeScreen""": """Legg til på startskjermen""",
+  """checklists.addToHomeScreenFailed""":
+      """Klarte ikkje å leggja til snarvegen.""",
   """checklists.removeList""": """Fjern liste""",
   """checklists.editList""": """Rediger liste""",
   """checklists.editListTitle""": """Rediger liste""",

@@ -45,6 +45,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
+            <!-- Deep link: pantry://list/<houseId>/<listId> opens a specific list.
+                 Usable by NFC tags, launcher/pinned shortcuts and automation apps. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="pantry" android:host="list" />
+            </intent-filter>
         </activity>
         <!-- Widget: receives APPWIDGET_UPDATE broadcasts -->
         <receiver

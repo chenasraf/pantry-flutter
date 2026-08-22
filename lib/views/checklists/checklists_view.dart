@@ -17,6 +17,7 @@ import 'package:pantry/models/house.dart';
 import 'package:pantry/models/shopping_session.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/house_service.dart';
+import 'package:pantry/services/list_link_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
@@ -1658,6 +1659,18 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
             icon: isPinned ? Icons.push_pin : Icons.push_pin_outlined,
             label: isPinned ? m.checklists.unpinList : m.checklists.pinList,
           ),
+        if (controller.currentList != null && !isMeta && PlatformInfo.isMobile)
+          _OverflowAction(
+            value: 'copy_link',
+            icon: Icons.link,
+            label: m.checklists.copyLink,
+          ),
+        if (controller.currentList != null && !isMeta && PlatformInfo.isAndroid)
+          _OverflowAction(
+            value: 'add_to_home',
+            icon: Icons.add_to_home_screen,
+            label: m.checklists.addToHomeScreen,
+          ),
       ],
       if (hasFeature('item-authors'))
         _OverflowCheckboxAction(
@@ -1972,6 +1985,10 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         await controller.setArchiveMode(false);
       case 'toggle_pin':
         await _togglePin(context, controller);
+      case 'copy_link':
+        await _copyListLink(context, controller);
+      case 'add_to_home':
+        await _addListToHomeScreen(context, controller);
       case 'manage_categories':
         await _openManageCategories(context, controller);
       case 'manage_stores':
@@ -2248,6 +2265,37 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         })
         .toList();
     await prefs.togglePinnedList(list.id, allPinned);
+  }
+
+  Future<void> _copyListLink(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    final list = controller.currentList;
+    if (list == null) return;
+    final uri = ListLink.uri(list.houseId, list.id);
+    await Clipboard.setData(ClipboardData(text: uri.toString()));
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(m.common.copied)));
+  }
+
+  Future<void> _addListToHomeScreen(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    final list = controller.currentList;
+    if (list == null) return;
+    final ok = await ListLinkService.instance.pinListToHomeScreen(
+      houseId: list.houseId,
+      listId: list.id,
+      name: list.name,
+    );
+    if (ok || !context.mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(m.checklists.addToHomeScreenFailed)));
   }
 
   Future<void> _confirmEmptyTrash(

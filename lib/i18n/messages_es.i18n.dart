@@ -2187,14 +2187,30 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get listTrashEmpty => """No hay listas eliminadas.""";
 
   /// ```dart
-  /// "Fijar lista"
+  /// "Añadir al widget de inicio"
   /// ```
-  String get pinList => """Fijar lista""";
+  String get pinList => """Añadir al widget de inicio""";
 
   /// ```dart
-  /// "Desfijar lista"
+  /// "Quitar del widget de inicio"
   /// ```
-  String get unpinList => """Desfijar lista""";
+  String get unpinList => """Quitar del widget de inicio""";
+
+  /// ```dart
+  /// "Copiar enlace"
+  /// ```
+  String get copyLink => """Copiar enlace""";
+
+  /// ```dart
+  /// "Añadir a la pantalla de inicio"
+  /// ```
+  String get addToHomeScreen => """Añadir a la pantalla de inicio""";
+
+  /// ```dart
+  /// "No se pudo añadir el acceso directo."
+  /// ```
+  String get addToHomeScreenFailed =>
+      """No se pudo añadir el acceso directo.""";
 
   /// ```dart
   /// "Quitar lista"
@@ -5226,8 +5242,12 @@ Contraseña: pantry-rocks""",
   """checklists.listsTrashTitle""": """Listas eliminadas""",
   """checklists.failedToLoadTrash""": """No se pudo cargar la papelera.""",
   """checklists.listTrashEmpty""": """No hay listas eliminadas.""",
-  """checklists.pinList""": """Fijar lista""",
-  """checklists.unpinList""": """Desfijar lista""",
+  """checklists.pinList""": """Añadir al widget de inicio""",
+  """checklists.unpinList""": """Quitar del widget de inicio""",
+  """checklists.copyLink""": """Copiar enlace""",
+  """checklists.addToHomeScreen""": """Añadir a la pantalla de inicio""",
+  """checklists.addToHomeScreenFailed""":
+      """No se pudo añadir el acceso directo.""",
   """checklists.removeList""": """Quitar lista""",
   """checklists.editList""": """Editar lista""",
   """checklists.editListTitle""": """Editar lista""",

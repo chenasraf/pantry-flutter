@@ -2169,14 +2169,29 @@ class ChecklistsMessages {
   String get listTrashEmpty => """No deleted lists.""";
 
   /// ```dart
-  /// "Pin list"
+  /// "Add to home widget"
   /// ```
-  String get pinList => """Pin list""";
+  String get pinList => """Add to home widget""";
 
   /// ```dart
-  /// "Unpin list"
+  /// "Remove from home widget"
   /// ```
-  String get unpinList => """Unpin list""";
+  String get unpinList => """Remove from home widget""";
+
+  /// ```dart
+  /// "Copy link"
+  /// ```
+  String get copyLink => """Copy link""";
+
+  /// ```dart
+  /// "Add to Home screen"
+  /// ```
+  String get addToHomeScreen => """Add to Home screen""";
+
+  /// ```dart
+  /// "Couldn't add the shortcut."
+  /// ```
+  String get addToHomeScreenFailed => """Couldn't add the shortcut.""";
 
   /// ```dart
   /// "Remove list"
@@ -5176,8 +5191,11 @@ Password: pantry-rocks""",
   """checklists.listsTrashTitle""": """Deleted lists""",
   """checklists.failedToLoadTrash""": """Failed to load trash.""",
   """checklists.listTrashEmpty""": """No deleted lists.""",
-  """checklists.pinList""": """Pin list""",
-  """checklists.unpinList""": """Unpin list""",
+  """checklists.pinList""": """Add to home widget""",
+  """checklists.unpinList""": """Remove from home widget""",
+  """checklists.copyLink""": """Copy link""",
+  """checklists.addToHomeScreen""": """Add to Home screen""",
+  """checklists.addToHomeScreenFailed""": """Couldn't add the shortcut.""",
   """checklists.removeList""": """Remove list""",
   """checklists.editList""": """Edit list""",
   """checklists.editListTitle""": """Edit list""",

@@ -16,6 +16,7 @@ import 'services/locale_service.dart';
 import 'services/category_service.dart';
 import 'services/checklist_service.dart';
 import 'services/house_service.dart';
+import 'services/list_link_service.dart';
 import 'services/local_notifications_service.dart';
 import 'services/nn_localizations.dart';
 import 'services/store_service.dart';
@@ -141,6 +142,7 @@ void main() async {
   ApiClient.onForbidden = _showPermissionDeniedSnackbar;
   unawaited(ShareIntentService.instance.init());
   WidgetLinkService.instance.init();
+  unawaited(ListLinkService.instance.init());
   runApp(const PantryApp());
 }
 

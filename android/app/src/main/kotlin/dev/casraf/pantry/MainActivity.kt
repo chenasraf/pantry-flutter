@@ -1,13 +1,18 @@
 package dev.casraf.pantry
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private val channel = "dev.casraf.pantry/widget"
+    private val shortcutChannel = "dev.casraf.pantry/shortcuts"
     private var pendingListId: Int? = null
     private var pendingHouseId: Int? = null
 
@@ -40,6 +45,35 @@ class MainActivity : FlutterActivity() {
                     result.notImplemented()
                 }
             }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, shortcutChannel)
+            .setMethodCallHandler { call, result ->
+                if (call.method == "pinListShortcut") {
+                    val listId = call.argument<Int>("listId")
+                    val houseId = call.argument<Int>("houseId")
+                    val name = call.argument<String>("name") ?: ""
+                    if (listId == null || houseId == null) {
+                        result.success(false)
+                    } else {
+                        result.success(pinListShortcut(houseId, listId, name))
+                    }
+                } else {
+                    result.notImplemented()
+                }
+            }
+    }
+
+    private fun pinListShortcut(houseId: Int, listId: Int, name: String): Boolean {
+        if (!ShortcutManagerCompat.isRequestPinShortcutSupported(this)) return false
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("pantry://list/$houseId/$listId"))
+            .setPackage(packageName)
+        val shortcut = ShortcutInfoCompat.Builder(this, "list_${houseId}_${listId}")
+            .setShortLabel(name)
+            .setLongLabel(name)
+            .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_launcher))
+            .setIntent(intent)
+            .build()
+        return ShortcutManagerCompat.requestPinShortcut(this, shortcut, null)
     }
 
     private fun handleWidgetIntent(intent: Intent?) {
