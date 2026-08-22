@@ -1,0 +1,2 @@
+Bug Fixes
+- drop keychain-access-groups entitlement to allow Developer ID signing
