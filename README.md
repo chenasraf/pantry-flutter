@@ -57,6 +57,26 @@ Download the latest APK from the
 
 [Install from the App Store](https://apps.apple.com/us/app/pantry-for-nextcloud/id6762161619)
 
+### Linux
+
+Download `pantry-<version>-linux-x64.tar.gz` from the
+[releases page](https://github.com/chenasraf/pantry-flutter/releases), then extract and run it:
+
+```bash
+tar -xzf pantry-<version>-linux-x64.tar.gz -C ~/pantry
+~/pantry/pantry
+```
+
+The bundle requires the GTK 3 and libsecret runtime libraries, which are already present on most
+desktop distributions (`libgtk-3-0` and `libsecret-1-0` if you need to install them manually).
+
+### Windows
+
+Download `pantry-<version>-windows-x64.zip` from the
+[releases page](https://github.com/chenasraf/pantry-flutter/releases), extract it anywhere, and run
+`pantry.exe`. The build is unsigned, so Windows SmartScreen may warn on first launch — choose **More
+info → Run anyway**.
+
 ## Development
 
 Setup, workflow, project layout, the i18n guide, and coding/commit conventions live in
