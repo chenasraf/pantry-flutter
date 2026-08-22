@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.1](https://github.com/chenasraf/pantry-flutter/compare/v0.28.0...v0.28.1) (2026-08-22)
+
+
+### Bug Fixes
+
+* **macos:** drop keychain-access-groups entitlement to allow Developer ID signing ([d64c154](https://github.com/chenasraf/pantry-flutter/commit/d64c154a0b907a81536c7365d6a30cb89e5b8f10))
+
 ## [0.28.0](https://github.com/chenasraf/pantry-flutter/compare/v0.27.3...v0.28.0) (2026-08-21)
 
 
