@@ -7,9 +7,14 @@ on:
     branches: [master]
   workflow_dispatch:
     inputs:
-      macos_release_tag:
-        description: "Build the signed macOS DMG from the selected branch and attach it to this EXISTING release tag (no new version cut). e.g. v0.28.0"
+      release_tag:
+        description: "Existing release tag to attach the built artifacts to (no new version cut). e.g. v0.28.0"
         required: true
+        type: string
+      targets:
+        description: "Comma-separated platforms to build from the selected branch: android, fdroid, macos, ios. 'all' = every auto-release platform (android, fdroid, macos); pass 'ios' explicitly to force the disabled iOS build."
+        required: true
+        default: all
         type: string
 
 permissions:
@@ -110,14 +115,30 @@ jobs:
 
   build-android:
     needs: [setup, release-please]
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: >-
+      ${{ always()
+          && needs.setup.result == 'success'
+          && (needs.release-please.outputs.release_created == 'true'
+              || (github.event_name == 'workflow_dispatch'
+                  && (inputs.targets == 'all' || contains(inputs.targets, 'android')))) }}
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || needs.release-please.outputs.tag_name }}
+
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.release_tag }}"
+          else
+            TAG="${{ needs.release-please.outputs.tag_name }}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -172,28 +193,25 @@ jobs:
         run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab
       - name: Rename artifacts
         run: |
-          VERSION=${{ needs.release-please.outputs.version }}
+          VERSION=${{ steps.meta.outputs.version }}
           APK_DIR=build/app/outputs/flutter-apk
           mv ${APK_DIR}/app-armeabi-v7a-release.apk ${APK_DIR}/pantry-${VERSION}-armeabi-v7a.apk
           mv ${APK_DIR}/app-arm64-v8a-release.apk ${APK_DIR}/pantry-${VERSION}-arm64-v8a.apk
           mv ${APK_DIR}/app-x86_64-release.apk ${APK_DIR}/pantry-${VERSION}-x86_64.apk
           mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/pantry-${VERSION}.aab
 
-      - name: Upload APKs to release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.release-please.outputs.tag_name }}
-          files: |
-            build/app/outputs/flutter-apk/pantry-${{ needs.release-please.outputs.version }}-armeabi-v7a.apk
-            build/app/outputs/flutter-apk/pantry-${{ needs.release-please.outputs.version }}-arm64-v8a.apk
-            build/app/outputs/flutter-apk/pantry-${{ needs.release-please.outputs.version }}-x86_64.apk
-
-      - name: Upload App Bundle to release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.release-please.outputs.tag_name }}
-          files: |
-            build/app/outputs/bundle/release/pantry-${{ needs.release-please.outputs.version }}.aab
+      - name: Upload APKs and App Bundle to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION=${{ steps.meta.outputs.version }}
+          gh release upload "${{ steps.meta.outputs.tag }}" \
+            build/app/outputs/flutter-apk/pantry-${VERSION}-armeabi-v7a.apk \
+            build/app/outputs/flutter-apk/pantry-${VERSION}-arm64-v8a.apk \
+            build/app/outputs/flutter-apk/pantry-${VERSION}-x86_64.apk \
+            build/app/outputs/bundle/release/pantry-${VERSION}.aab \
+            --clobber
 
   # FLOSS variant for F-Droid: the barcode scanner is swapped from Google ML Kit
   # (mobile_scanner) to flutter_zxing so the APK carries no proprietary code.
@@ -201,14 +219,30 @@ jobs:
   # default APKs above. Signed with the same keystore so they update in place.
   build-android-fdroid:
     needs: [setup, release-please]
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: >-
+      ${{ always()
+          && needs.setup.result == 'success'
+          && (needs.release-please.outputs.release_created == 'true'
+              || (github.event_name == 'workflow_dispatch'
+                  && (inputs.targets == 'all' || contains(inputs.targets, 'fdroid')))) }}
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || needs.release-please.outputs.tag_name }}
+
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.release_tag }}"
+          else
+            TAG="${{ needs.release-please.outputs.tag_name }}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -255,7 +289,7 @@ jobs:
       # next clean wipes build/.
       - name: Build F-Droid split APKs (per-ABI, matching the recipe)
         run: |
-          VERSION=${{ needs.release-please.outputs.version }}
+          VERSION=${{ steps.meta.outputs.version }}
           # Stash outside build/ — `flutter clean` wipes the whole build/ dir.
           OUT="${RUNNER_TEMP:-/tmp}/fdroid-apks"
           mkdir -p "$OUT"
@@ -278,24 +312,44 @@ jobs:
           mv "${RUNNER_TEMP:-/tmp}/fdroid-apks"/*.apk "$APK_DIR"/
 
       - name: Upload F-Droid APKs to release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.release-please.outputs.tag_name }}
-          files: |
-            build/app/outputs/flutter-apk/pantry-${{ needs.release-please.outputs.version }}-fdroid-armeabi-v7a.apk
-            build/app/outputs/flutter-apk/pantry-${{ needs.release-please.outputs.version }}-fdroid-arm64-v8a.apk
-            build/app/outputs/flutter-apk/pantry-${{ needs.release-please.outputs.version }}-fdroid-x86_64.apk
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION=${{ steps.meta.outputs.version }}
+          gh release upload "${{ steps.meta.outputs.tag }}" \
+            build/app/outputs/flutter-apk/pantry-${VERSION}-fdroid-armeabi-v7a.apk \
+            build/app/outputs/flutter-apk/pantry-${VERSION}-fdroid-arm64-v8a.apk \
+            build/app/outputs/flutter-apk/pantry-${VERSION}-fdroid-x86_64.apk \
+            --clobber
 
+  # Auto-release for iOS is TEMPORARILY DISABLED; it runs only via manual
+  # workflow_dispatch when 'ios' is explicitly listed in the targets input.
   build-ios:
     needs: [setup, release-please]
-    if: false # TEMPORARILY DISABLED — was: ${{ needs.release-please.outputs.release_created }}
+    if: >-
+      ${{ always()
+          && needs.setup.result == 'success'
+          && github.event_name == 'workflow_dispatch'
+          && contains(inputs.targets, 'ios') }}
     runs-on: macos-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || needs.release-please.outputs.tag_name }}
+
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.release_tag }}"
+          else
+            TAG="${{ needs.release-please.outputs.tag_name }}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -331,14 +385,16 @@ jobs:
           cd build/ios/iphoneos
           mkdir -p Payload
           cp -r Runner.app Payload/
-          zip -r ../ipa/pantry-${{ needs.release-please.outputs.version }}-unsigned.ipa Payload
+          zip -r ../ipa/pantry-${{ steps.meta.outputs.version }}-unsigned.ipa Payload
 
       - name: Upload IPA to release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.release-please.outputs.tag_name }}
-          files: |
-            build/ios/ipa/pantry-${{ needs.release-please.outputs.version }}-unsigned.ipa
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release upload "${{ steps.meta.outputs.tag }}" \
+            build/ios/ipa/pantry-${{ steps.meta.outputs.version }}-unsigned.ipa \
+            --clobber
 
   # Developer ID signed + notarized macOS build for direct download from the
   # GitHub release (distributed outside the App Store). Requires the six macOS
@@ -349,7 +405,8 @@ jobs:
       ${{ always()
           && needs.setup.result == 'success'
           && (needs.release-please.outputs.release_created == 'true'
-              || github.event_name == 'workflow_dispatch') }}
+              || (github.event_name == 'workflow_dispatch'
+                  && (inputs.targets == 'all' || contains(inputs.targets, 'macos')))) }}
     runs-on: macos-latest
     env:
       TEAM_ID: Y893L6NQP2
@@ -365,7 +422,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            TAG="${{ inputs.macos_release_tag }}"
+            TAG="${{ inputs.release_tag }}"
           else
             TAG="${{ needs.release-please.outputs.tag_name }}"
           fi
@@ -477,11 +534,13 @@ jobs:
           xcrun stapler staple "$DMG"
 
       - name: Upload macOS DMG to release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.meta.outputs.tag }}
-          files: |
-            pantry-${{ steps.meta.outputs.version }}-macos.dmg
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release upload "${{ steps.meta.outputs.tag }}" \
+            "pantry-${{ steps.meta.outputs.version }}-macos.dmg" \
+            --clobber
 
   post-release-comment:
     needs: [release-please, build-android, build-android-fdroid, build-macos]
