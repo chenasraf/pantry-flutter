@@ -24,14 +24,17 @@ class ShareIntentService {
 
     _sub ??= ReceiveSharingIntent.instance.getMediaStream().listen(
       (files) {
-        if (files.isNotEmpty) pending.value = files;
+        final real = _withoutOwnDeepLinks(files);
+        if (real.isNotEmpty) pending.value = real;
       },
       onError: (Object e) {
         debugPrint('[ShareIntentService] stream error: $e');
       },
     );
 
-    final initial = await ReceiveSharingIntent.instance.getInitialMedia();
+    final initial = _withoutOwnDeepLinks(
+      await ReceiveSharingIntent.instance.getInitialMedia(),
+    );
     if (initial.isNotEmpty) {
       pending.value = initial;
     }
@@ -39,6 +42,13 @@ class ShareIntentService {
     // subsequent cold starts.
     await ReceiveSharingIntent.instance.reset();
   }
+
+  /// receive_sharing_intent claims every `ACTION_VIEW` intent, including our
+  /// own `pantry://` deep links (list shortcuts, widget config, NFC tags). Left
+  /// alone it would route them into the share/note flow, so drop anything that
+  /// is one of our deep links — app_links handles those separately.
+  List<SharedMediaFile> _withoutOwnDeepLinks(List<SharedMediaFile> files) =>
+      files.where((f) => !f.path.startsWith('pantry://')).toList();
 
   /// Take the most recent share payload and clear it.
   List<SharedMediaFile>? consume() {
