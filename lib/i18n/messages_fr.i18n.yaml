@@ -65,6 +65,11 @@ nav:
   photoBoard: Tableau photos
   notesWall: Mur de notes
 
+widget:
+  chooseListsTitle: Choisir les listes
+  chooseListsSubtitle: Choisis les listes affichées par ce widget.
+  noLists: Aucune liste disponible.
+
 onboarding:
   next: Suivant
   back: Retour
@@ -100,14 +105,13 @@ onboarding:
   progressHeroHint: "Balaie pour masquer"
   progressHeroDismissTitle: "Masque la carte de progression"
   progressHeroDismissBody: "Tu n'as pas besoin de l'anneau de progression en haut ? Clique sur le X de la carte pour la masquer."
-  pinnedListsTitle: "Épingle des listes à ton écran d'accueil"
-  pinnedListsBody: "Ajoute le widget Pantry à ton écran d'accueil pour voir d'un coup d'œil combien d'articles restent sur tes listes préférées — sans ouvrir l'app."
-  pinnedListsHow(String menu, String action): "Ouvre une liste, touche ${menu} en haut à droite, puis choisis ${action}. Les listes épinglées apparaissent dans le widget ; désépingle-les pour les masquer."
-  pinnedListsMenuLabel: "le menu"
-  pinnedListsActionLabel: "Épingler la liste"
-  pinnedListsWidgetTitle: "Pantry"
-  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 restant', many: '${count} restants')}"
-  pinnedListsWidgetEmpty: "Tout est fait"
+  widgetListsTitle: "Choisis les listes de ton widget"
+  widgetListsBody: "Ajoute le widget Pantry à ton écran d'accueil pour voir d'un coup d'œil combien d'articles restent sur chaque liste — sans ouvrir l'app."
+  widgetListsHow(String action): "En ajoutant un widget, tu choisis ses listes tout de suite. Touche ${action} sur un widget pour les changer plus tard, et ajoute autant de widgets que tu veux — chacun avec ses propres listes."
+  widgetListsActionLabel: "Choisir les listes"
+  widgetListsWidgetTitle: "Pantry"
+  widgetListsWidgetItemsLeft(int count): "${_plural(count, one: '1 restant', many: '${count} restants')}"
+  widgetListsWidgetEmpty: "Tout est fait"
   pinnedNotesTitle: "Garde les notes importantes en haut"
   pinnedNotesBody: "Épingle une note depuis son menu de débordement pour la fixer en haut de ton mur de notes, au-dessus des notes plus récentes."
   mockPinnedNoteTitle: "Mot de passe Wi-Fi"
@@ -464,8 +468,6 @@ checklists:
   listsTrashTitle: "Listes supprimées"
   failedToLoadTrash: "Impossible de charger la corbeille."
   listTrashEmpty: "Aucune liste supprimée."
-  pinList: "Ajouter au widget d'accueil"
-  unpinList: "Retirer du widget d'accueil"
   copyLink: "Copier le lien"
   addToHomeScreen: "Ajouter à l'écran d'accueil"
   addToHomeScreenFailed: "Impossible d'ajouter le raccourci."

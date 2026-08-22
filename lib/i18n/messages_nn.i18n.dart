@@ -67,6 +67,7 @@ class MessagesNn extends Messages {
   LoginMessagesNn get login => LoginMessagesNn(this);
   HomeMessagesNn get home => HomeMessagesNn(this);
   NavMessagesNn get nav => NavMessagesNn(this);
+  WidgetMessagesNn get widget => WidgetMessagesNn(this);
   OnboardingMessagesNn get onboarding => OnboardingMessagesNn(this);
   NotificationsIntroMessagesNn get notificationsIntro =>
       NotificationsIntroMessagesNn(this);
@@ -415,6 +416,26 @@ class NavMessagesNn extends NavMessages {
   String get notesWall => """Notatvegg""";
 }
 
+class WidgetMessagesNn extends WidgetMessages {
+  final MessagesNn _parent;
+  const WidgetMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Vel lister"
+  /// ```
+  String get chooseListsTitle => """Vel lister""";
+
+  /// ```dart
+  /// "Vel kva lister denne widgeten viser."
+  /// ```
+  String get chooseListsSubtitle => """Vel kva lister denne widgeten viser.""";
+
+  /// ```dart
+  /// "Ingen lister tilgjengelege."
+  /// ```
+  String get noLists => """Ingen lister tilgjengelege.""";
+}
+
 class OnboardingMessagesNn extends OnboardingMessages {
   final MessagesNn _parent;
   const OnboardingMessagesNn(this._parent) : super(_parent);
@@ -601,47 +622,42 @@ class OnboardingMessagesNn extends OnboardingMessages {
       """Treng du ikkje framdriftsringen på toppen? Trykk på X-en på kortet for å skjule det.""";
 
   /// ```dart
-  /// "Fest lister til heimskjermen"
+  /// "Vel lister for skjermelementet"
   /// ```
-  String get pinnedListsTitle => """Fest lister til heimskjermen""";
+  String get widgetListsTitle => """Vel lister for skjermelementet""";
 
   /// ```dart
-  /// "Legg skjermelementet til Pantry på heimskjermen for å sjå kor mange oppføringar som er igjen på favorittlistene dine utan å opne appen."
+  /// "Legg skjermelementet til Pantry på heimskjermen for å sjå kor mange oppføringar som er igjen på kvar liste utan å opne appen."
   /// ```
-  String get pinnedListsBody =>
-      """Legg skjermelementet til Pantry på heimskjermen for å sjå kor mange oppføringar som er igjen på favorittlistene dine utan å opne appen.""";
+  String get widgetListsBody =>
+      """Legg skjermelementet til Pantry på heimskjermen for å sjå kor mange oppføringar som er igjen på kvar liste utan å opne appen.""";
 
   /// ```dart
-  /// "Opne ei liste, trykk på ${menu} øvst til høgre og vel ${action}. Festa lister blir vist på skjermelementet på heimskjermen. Fjern festinga for å skjule dei."
+  /// "Når du legg til eit skjermelement, vel du listene med ein gong. Trykk på ${action} på eit skjermelement for å endre dei seinare, og legg til så mange skjermelement du vil — kvart med sine eigne lister."
   /// ```
-  String pinnedListsHow(String menu, String action) =>
-      """Opne ei liste, trykk på ${menu} øvst til høgre og vel ${action}. Festa lister blir vist på skjermelementet på heimskjermen. Fjern festinga for å skjule dei.""";
+  String widgetListsHow(String action) =>
+      """Når du legg til eit skjermelement, vel du listene med ein gong. Trykk på ${action} på eit skjermelement for å endre dei seinare, og legg til så mange skjermelement du vil — kvart med sine eigne lister.""";
 
   /// ```dart
-  /// "kebab-menyen"
+  /// "Vel lister"
   /// ```
-  String get pinnedListsMenuLabel => """kebab-menyen""";
-
-  /// ```dart
-  /// "Fest liste"
-  /// ```
-  String get pinnedListsActionLabel => """Fest liste""";
+  String get widgetListsActionLabel => """Vel lister""";
 
   /// ```dart
   /// "Pantry"
   /// ```
-  String get pinnedListsWidgetTitle => """Pantry""";
+  String get widgetListsWidgetTitle => """Pantry""";
 
   /// ```dart
   /// "${_plural(count, one: '1 igjen', many: '${count} igjen')}"
   /// ```
-  String pinnedListsWidgetItemsLeft(int count) =>
+  String widgetListsWidgetItemsLeft(int count) =>
       """${_plural(count, one: '1 igjen', many: '${count} igjen')}""";
 
   /// ```dart
   /// "Ferdig"
   /// ```
-  String get pinnedListsWidgetEmpty => """Ferdig""";
+  String get widgetListsWidgetEmpty => """Ferdig""";
 
   /// ```dart
   /// "Hald viktige notat på toppen"
@@ -2181,16 +2197,6 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   /// "Ingen sletta lister"
   /// ```
   String get listTrashEmpty => """Ingen sletta lister""";
-
-  /// ```dart
-  /// "Legg til i heim-widget"
-  /// ```
-  String get pinList => """Legg til i heim-widget""";
-
-  /// ```dart
-  /// "Fjern frå heim-widget"
-  /// ```
-  String get unpinList => """Fjern frå heim-widget""";
 
   /// ```dart
   /// "Kopier lenke"
@@ -4823,6 +4829,9 @@ Fullfør innlogginga i nettlesaren din.""",
   """nav.checklists""": """Sjekkliste""",
   """nav.photoBoard""": """Fotovegg""",
   """nav.notesWall""": """Notatvegg""",
+  """widget.chooseListsTitle""": """Vel lister""",
+  """widget.chooseListsSubtitle""": """Vel kva lister denne widgeten viser.""",
+  """widget.noLists""": """Ingen lister tilgjengelege.""",
   """onboarding.next""": """Neste""",
   """onboarding.back""": """Tilbake""",
   """onboarding.skip""": """Hopp over""",
@@ -4866,13 +4875,12 @@ Fullfør innlogginga i nettlesaren din.""",
   """onboarding.progressHeroDismissTitle""": """Skjul framgangskortet""",
   """onboarding.progressHeroDismissBody""":
       """Treng du ikkje framdriftsringen på toppen? Trykk på X-en på kortet for å skjule det.""",
-  """onboarding.pinnedListsTitle""": """Fest lister til heimskjermen""",
-  """onboarding.pinnedListsBody""":
-      """Legg skjermelementet til Pantry på heimskjermen for å sjå kor mange oppføringar som er igjen på favorittlistene dine utan å opne appen.""",
-  """onboarding.pinnedListsMenuLabel""": """kebab-menyen""",
-  """onboarding.pinnedListsActionLabel""": """Fest liste""",
-  """onboarding.pinnedListsWidgetTitle""": """Pantry""",
-  """onboarding.pinnedListsWidgetEmpty""": """Ferdig""",
+  """onboarding.widgetListsTitle""": """Vel lister for skjermelementet""",
+  """onboarding.widgetListsBody""":
+      """Legg skjermelementet til Pantry på heimskjermen for å sjå kor mange oppføringar som er igjen på kvar liste utan å opne appen.""",
+  """onboarding.widgetListsActionLabel""": """Vel lister""",
+  """onboarding.widgetListsWidgetTitle""": """Pantry""",
+  """onboarding.widgetListsWidgetEmpty""": """Ferdig""",
   """onboarding.pinnedNotesTitle""": """Hald viktige notat på toppen""",
   """onboarding.pinnedNotesBody""":
       """Fest eit notat frå overflytsmenyen for å låse det til toppen av notatveggen, sånn at det alltid er synleg.""",
@@ -5226,8 +5234,6 @@ Passord: pantry""",
   """checklists.listsTrashTitle""": """Sletta lister""",
   """checklists.failedToLoadTrash""": """Klarte ikkje laste papirkorga.""",
   """checklists.listTrashEmpty""": """Ingen sletta lister""",
-  """checklists.pinList""": """Legg til i heim-widget""",
-  """checklists.unpinList""": """Fjern frå heim-widget""",
   """checklists.copyLink""": """Kopier lenke""",
   """checklists.addToHomeScreen""": """Legg til på startskjermen""",
   """checklists.addToHomeScreenFailed""":

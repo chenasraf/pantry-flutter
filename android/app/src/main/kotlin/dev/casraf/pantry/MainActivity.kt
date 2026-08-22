@@ -31,18 +31,20 @@ class MainActivity : FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channel)
             .setMethodCallHandler { call, result ->
-                if (call.method == "getPendingWidgetTap") {
-                    val listId = pendingListId
-                    val houseId = pendingHouseId
-                    if (listId != null) {
-                        pendingListId = null
-                        pendingHouseId = null
-                        result.success(mapOf("listId" to listId, "houseId" to houseId))
-                    } else {
-                        result.success(null)
+                when (call.method) {
+                    "getPendingWidgetTap" -> {
+                        val listId = pendingListId
+                        val houseId = pendingHouseId
+                        if (listId != null) {
+                            pendingListId = null
+                            pendingHouseId = null
+                            result.success(mapOf("listId" to listId, "houseId" to houseId))
+                        } else {
+                            result.success(null)
+                        }
                     }
-                } else {
-                    result.notImplemented()
+                    "getListsWidgetIds" -> result.success(listsWidgetIds().toList())
+                    else -> result.notImplemented()
                 }
             }
 
@@ -75,6 +77,8 @@ class MainActivity : FlutterActivity() {
             .build()
         return ShortcutManagerCompat.requestPinShortcut(this, shortcut, null)
     }
+
+    private fun listsWidgetIds(): IntArray = PantryWidgetProvider.widgetIds(this)
 
     private fun handleWidgetIntent(intent: Intent?) {
         if (intent?.action == "dev.casraf.pantry.OPEN_LIST") {

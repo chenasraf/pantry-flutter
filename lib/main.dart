@@ -27,6 +27,7 @@ import 'services/server_version_service.dart';
 import 'services/share_intent_service.dart';
 import 'services/widget_link_service.dart';
 import 'services/theming_service.dart';
+import 'services/widget_service.dart';
 import 'sync/sync_manager.dart';
 import 'utils/platform_info.dart';
 import 'views/home/home_view.dart';
@@ -34,6 +35,7 @@ import 'views/login/login_view.dart';
 import 'views/notifications_intro/notifications_intro_view.dart';
 import 'views/onboarding/onboarding_pages.dart';
 import 'views/onboarding/onboarding_view.dart';
+import 'views/widget/widget_config_view.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -59,8 +61,22 @@ void _showPermissionDeniedSnackbar() {
 /// has a sane value to compare against.
 String appVersion = kAppOnboardingFirstVersion;
 
+/// Initial route the native [WidgetConfigActivity] launches its Flutter engine
+/// with. The lean widget-config app is run instead of the full app for it.
+const kWidgetConfigRoutePrefix = '/widget-config/';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // The lists-widget config activity runs this same entrypoint in its own
+  // engine; branch to a lean selector app instead of the full app.
+  final initialRoute =
+      WidgetsBinding.instance.platformDispatcher.defaultRouteName;
+  if (initialRoute.startsWith(kWidgetConfigRoutePrefix)) {
+    await _runWidgetConfigApp(initialRoute);
+    return;
+  }
+
   if (kDebugMode) {
     WakelockPlus.enable();
   }
@@ -129,11 +145,10 @@ void main() async {
         (_) => LocaleService.instance.apply(),
       ),
     );
-    // Rebuild the home-screen widget's pinned-list payload from caches —
-    // a fresh install wipes HomeWidgetPreferences but secure-storage pins
-    // may survive, so the widget would otherwise stay empty until the
-    // next pin toggle.
-    unawaited(PrefsService.instance.pushWidgetPinnedLists());
+    // Refresh each home-screen widget's list payload from caches — item
+    // counts drift as the user checks things off, and a fresh install wipes
+    // HomeWidgetPreferences. Also resyncs the launcher quick actions.
+    unawaited(WidgetService.instance.refreshAll());
     if (PrefsService.instance.notificationsEnabled) {
       unawaited(registerBackgroundNotificationPoll());
     }
@@ -144,6 +159,67 @@ void main() async {
   WidgetLinkService.instance.init();
   unawaited(ListLinkService.instance.init());
   runApp(const PantryApp());
+}
+
+/// Boot a minimal app that shows only the widget list selector. Runs in the
+/// [WidgetConfigActivity] engine, so it loads just enough (auth + list caches +
+/// theme/locale) to render and save a selection.
+Future<void> _runWidgetConfigApp(String route) async {
+  final appWidgetId = int.tryParse(
+    route.substring(kWidgetConfigRoutePrefix.length),
+  );
+  registerNnLocaleData();
+  await Future.wait([
+    AuthService.instance.loadCredentials(),
+    PrefsService.instance.load(),
+    CertTrustService.instance.load(),
+  ]);
+  CertTrustService.instance.install();
+  AuthService.instance.hydrateFromCache();
+  ThemingService.instance.loadCached();
+  await Future.wait([
+    HouseService.instance.cache.load(),
+    ChecklistService.instance.cache.load(),
+  ]);
+  LocaleService.instance.apply();
+  runApp(WidgetConfigApp(appWidgetId: appWidgetId ?? -1));
+}
+
+/// Minimal MaterialApp wrapper around [WidgetConfigView], themed and localised
+/// like the main app for a consistent look.
+class WidgetConfigApp extends StatelessWidget {
+  final int appWidgetId;
+
+  const WidgetConfigApp({super.key, required this.appWidgetId});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = ThemingService.instance.effectiveColor;
+    return Directionality(
+      textDirection: LocaleService.instance.textDirection,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        locale: LocaleService.instance.effectiveLocale,
+        supportedLocales: supportedLocales,
+        localizationsDelegates: localizationsDelegates,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: color,
+          ).copyWith(primary: color),
+          useMaterial3: true,
+        ),
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: color,
+            brightness: Brightness.dark,
+          ).copyWith(primary: color),
+          useMaterial3: true,
+        ),
+        themeMode: ThemingService.instance.themeMode,
+        home: WidgetConfigView(appWidgetId: appWidgetId),
+      ),
+    );
+  }
 }
 
 class PantryApp extends StatefulWidget {
@@ -219,10 +295,10 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       // Re-sync widget data from the foreground isolate — background
-      // workers can't reliably resolve platform brightness, and the
-      // pinned-list payload can drift if HomeWidgetPreferences is wiped.
+      // workers can't reliably resolve platform brightness, and item counts
+      // drift as lists change.
       PrefsService.instance.pushWidgetTheme();
-      PrefsService.instance.pushWidgetPinnedLists();
+      unawaited(WidgetService.instance.refreshAll());
     }
   }
 

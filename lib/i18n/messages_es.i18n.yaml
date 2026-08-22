@@ -65,6 +65,11 @@ nav:
   photoBoard: Tablero de fotos
   notesWall: Muro de notas
 
+widget:
+  chooseListsTitle: Elegir listas
+  chooseListsSubtitle: Elige qué listas muestra este widget.
+  noLists: No hay listas disponibles.
+
 onboarding:
   next: Siguiente
   back: Atrás
@@ -100,14 +105,13 @@ onboarding:
   progressHeroHint: "Desliza para descartar"
   progressHeroDismissTitle: "Oculta la tarjeta de progreso"
   progressHeroDismissBody: "¿No necesitas el anillo de progreso arriba? Pulsa la X en la tarjeta para ocultarla."
-  pinnedListsTitle: "Fija listas en tu pantalla de inicio"
-  pinnedListsBody: "Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en tus listas favoritas, sin abrir la app."
-  pinnedListsHow(String menu, String action): "Abre una lista, toca ${menu} en la esquina superior y elige ${action}. Las listas fijadas aparecen en el widget; quita la fijación para ocultarlas."
-  pinnedListsMenuLabel: "el menú"
-  pinnedListsActionLabel: "Fijar lista"
-  pinnedListsWidgetTitle: "Pantry"
-  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 pendiente', many: '${count} pendientes')}"
-  pinnedListsWidgetEmpty: "Todo hecho"
+  widgetListsTitle: "Elige las listas de tu widget"
+  widgetListsBody: "Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en cada lista, sin abrir la app."
+  widgetListsHow(String action): "Al añadir un widget eliges sus listas al momento. Toca ${action} en un widget para cambiarlas después y añade tantos widgets como quieras, cada uno con sus propias listas."
+  widgetListsActionLabel: "Elegir listas"
+  widgetListsWidgetTitle: "Pantry"
+  widgetListsWidgetItemsLeft(int count): "${_plural(count, one: '1 pendiente', many: '${count} pendientes')}"
+  widgetListsWidgetEmpty: "Todo hecho"
   pinnedNotesTitle: "Mantén tus notas importantes arriba"
   pinnedNotesBody: "Fija una nota desde su menú de opciones para que se mantenga en lo alto del muro de notas, por encima de las notas más recientes."
   mockPinnedNoteTitle: "Contraseña Wi-Fi"
@@ -464,8 +468,6 @@ checklists:
   listsTrashTitle: "Listas eliminadas"
   failedToLoadTrash: "No se pudo cargar la papelera."
   listTrashEmpty: "No hay listas eliminadas."
-  pinList: "Añadir al widget de inicio"
-  unpinList: "Quitar del widget de inicio"
   copyLink: "Copiar enlace"
   addToHomeScreen: "Añadir a la pantalla de inicio"
   addToHomeScreenFailed: "No se pudo añadir el acceso directo."

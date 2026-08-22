@@ -1,5 +1,6 @@
 package dev.casraf.pantry
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
@@ -9,12 +10,18 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class PantryWidgetService : RemoteViewsService() {
-    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory =
-        PantryWidgetFactory(applicationContext)
+    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
+        val widgetId = intent.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID,
+        )
+        return PantryWidgetFactory(applicationContext, widgetId)
+    }
 }
 
 private class PantryWidgetFactory(
     private val ctx: Context,
+    private val widgetId: Int,
 ) : RemoteViewsService.RemoteViewsFactory {
 
     data class ListEntry(
@@ -49,8 +56,11 @@ private class PantryWidgetFactory(
         }
 
         // home_widget stores data in HomeWidgetPreferences SharedPreferences.
+        // Each instance of this lists-overview widget keeps its own selection
+        // under lists_widget_<id> (a future single-checklist widget will use a
+        // distinct prefix such as checklist_widget_<id>).
         val prefs = ctx.getSharedPreferences("HomeWidgetPreferences", Context.MODE_PRIVATE)
-        val json = prefs.getString("pinned_lists", "[]") ?: "[]"
+        val json = prefs.getString("lists_widget_$widgetId", "[]") ?: "[]"
         items = try {
             val arr = JSONArray(json)
             (0 until arr.length()).map { i ->

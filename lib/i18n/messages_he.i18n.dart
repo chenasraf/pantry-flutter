@@ -67,6 +67,7 @@ class MessagesHe extends Messages {
   LoginMessagesHe get login => LoginMessagesHe(this);
   HomeMessagesHe get home => HomeMessagesHe(this);
   NavMessagesHe get nav => NavMessagesHe(this);
+  WidgetMessagesHe get widget => WidgetMessagesHe(this);
   OnboardingMessagesHe get onboarding => OnboardingMessagesHe(this);
   NotificationsIntroMessagesHe get notificationsIntro =>
       NotificationsIntroMessagesHe(this);
@@ -414,6 +415,26 @@ class NavMessagesHe extends NavMessages {
   String get notesWall => """קיר הערות""";
 }
 
+class WidgetMessagesHe extends WidgetMessages {
+  final MessagesHe _parent;
+  const WidgetMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "בחירת רשימות"
+  /// ```
+  String get chooseListsTitle => """בחירת רשימות""";
+
+  /// ```dart
+  /// "בחר אילו רשימות הווידג'ט הזה יציג."
+  /// ```
+  String get chooseListsSubtitle => """בחר אילו רשימות הווידג'ט הזה יציג.""";
+
+  /// ```dart
+  /// "אין רשימות זמינות."
+  /// ```
+  String get noLists => """אין רשימות זמינות.""";
+}
+
 class OnboardingMessagesHe extends OnboardingMessages {
   final MessagesHe _parent;
   const OnboardingMessagesHe(this._parent) : super(_parent);
@@ -600,47 +621,42 @@ class OnboardingMessagesHe extends OnboardingMessages {
       """לא צריך את טבעת ההתקדמות למעלה? לחץ על ה-X בכרטיס כדי להסתיר אותו.""";
 
   /// ```dart
-  /// "הצמד רשימות למסך הבית"
+  /// "בחר רשימות לווידג'ט"
   /// ```
-  String get pinnedListsTitle => """הצמד רשימות למסך הבית""";
+  String get widgetListsTitle => """בחר רשימות לווידג'ט""";
 
   /// ```dart
-  /// "הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו ברשימות המועדפות עליך — בלי לפתוח את האפליקציה."
+  /// "הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו בכל רשימה — בלי לפתוח את האפליקציה."
   /// ```
-  String get pinnedListsBody =>
-      """הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו ברשימות המועדפות עליך — בלי לפתוח את האפליקציה.""";
+  String get widgetListsBody =>
+      """הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו בכל רשימה — בלי לפתוח את האפליקציה.""";
 
   /// ```dart
-  /// "פתח רשימה, הקש על ${menu} בפינה העליונה, ובחר ${action}. רשימות מוצמדות מופיעות בווידג'ט; בטל הצמדה כדי להסתיר אותן."
+  /// "בעת הוספת ווידג'ט תבחר את הרשימות שלו מיד. הקש על ${action} בווידג'ט כדי לשנות אותן מאוחר יותר, ואפשר להוסיף כמה ווידג'טים שרוצים — כל אחד עם הרשימות שלו."
   /// ```
-  String pinnedListsHow(String menu, String action) =>
-      """פתח רשימה, הקש על ${menu} בפינה העליונה, ובחר ${action}. רשימות מוצמדות מופיעות בווידג'ט; בטל הצמדה כדי להסתיר אותן.""";
+  String widgetListsHow(String action) =>
+      """בעת הוספת ווידג'ט תבחר את הרשימות שלו מיד. הקש על ${action} בווידג'ט כדי לשנות אותן מאוחר יותר, ואפשר להוסיף כמה ווידג'טים שרוצים — כל אחד עם הרשימות שלו.""";
 
   /// ```dart
-  /// "התפריט"
+  /// "בחר רשימות"
   /// ```
-  String get pinnedListsMenuLabel => """התפריט""";
-
-  /// ```dart
-  /// "הצמד רשימה"
-  /// ```
-  String get pinnedListsActionLabel => """הצמד רשימה""";
+  String get widgetListsActionLabel => """בחר רשימות""";
 
   /// ```dart
   /// "Pantry"
   /// ```
-  String get pinnedListsWidgetTitle => """Pantry""";
+  String get widgetListsWidgetTitle => """Pantry""";
 
   /// ```dart
   /// "${_plural(count, one: 'פריט אחד נותר', many: '${count} נותרו')}"
   /// ```
-  String pinnedListsWidgetItemsLeft(int count) =>
+  String widgetListsWidgetItemsLeft(int count) =>
       """${_plural(count, one: 'פריט אחד נותר', many: '${count} נותרו')}""";
 
   /// ```dart
   /// "הכל בוצע"
   /// ```
-  String get pinnedListsWidgetEmpty => """הכל בוצע""";
+  String get widgetListsWidgetEmpty => """הכל בוצע""";
 
   /// ```dart
   /// "השאר הערות חשובות בראש הקיר"
@@ -2172,16 +2188,6 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "אין רשימות שנמחקו."
   /// ```
   String get listTrashEmpty => """אין רשימות שנמחקו.""";
-
-  /// ```dart
-  /// "הוסף לווידג׳ט הבית"
-  /// ```
-  String get pinList => """הוסף לווידג׳ט הבית""";
-
-  /// ```dart
-  /// "הסר מווידג׳ט הבית"
-  /// ```
-  String get unpinList => """הסר מווידג׳ט הבית""";
 
   /// ```dart
   /// "העתק קישור"
@@ -4802,6 +4808,9 @@ Map<String, String> get messagesHeMap => {
   """nav.checklists""": """רשימות""",
   """nav.photoBoard""": """לוח תמונות""",
   """nav.notesWall""": """קיר הערות""",
+  """widget.chooseListsTitle""": """בחירת רשימות""",
+  """widget.chooseListsSubtitle""": """בחר אילו רשימות הווידג'ט הזה יציג.""",
+  """widget.noLists""": """אין רשימות זמינות.""",
   """onboarding.next""": """הבא""",
   """onboarding.back""": """חזור""",
   """onboarding.skip""": """דלג""",
@@ -4842,13 +4851,12 @@ Map<String, String> get messagesHeMap => {
   """onboarding.progressHeroDismissTitle""": """הסתר את כרטיס ההתקדמות""",
   """onboarding.progressHeroDismissBody""":
       """לא צריך את טבעת ההתקדמות למעלה? לחץ על ה-X בכרטיס כדי להסתיר אותו.""",
-  """onboarding.pinnedListsTitle""": """הצמד רשימות למסך הבית""",
-  """onboarding.pinnedListsBody""":
-      """הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו ברשימות המועדפות עליך — בלי לפתוח את האפליקציה.""",
-  """onboarding.pinnedListsMenuLabel""": """התפריט""",
-  """onboarding.pinnedListsActionLabel""": """הצמד רשימה""",
-  """onboarding.pinnedListsWidgetTitle""": """Pantry""",
-  """onboarding.pinnedListsWidgetEmpty""": """הכל בוצע""",
+  """onboarding.widgetListsTitle""": """בחר רשימות לווידג'ט""",
+  """onboarding.widgetListsBody""":
+      """הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו בכל רשימה — בלי לפתוח את האפליקציה.""",
+  """onboarding.widgetListsActionLabel""": """בחר רשימות""",
+  """onboarding.widgetListsWidgetTitle""": """Pantry""",
+  """onboarding.widgetListsWidgetEmpty""": """הכל בוצע""",
   """onboarding.pinnedNotesTitle""": """השאר הערות חשובות בראש הקיר""",
   """onboarding.pinnedNotesBody""":
       """הצמד הערה מתפריט שלוש הנקודות שלה כדי שתישאר בראש קיר ההערות, מעל הערות חדשות יותר.""",
@@ -5190,8 +5198,6 @@ Map<String, String> get messagesHeMap => {
   """checklists.listsTrashTitle""": """רשימות שנמחקו""",
   """checklists.failedToLoadTrash""": """טעינת סל המיחזור נכשלה.""",
   """checklists.listTrashEmpty""": """אין רשימות שנמחקו.""",
-  """checklists.pinList""": """הוסף לווידג׳ט הבית""",
-  """checklists.unpinList""": """הסר מווידג׳ט הבית""",
   """checklists.copyLink""": """העתק קישור""",
   """checklists.addToHomeScreen""": """הוסף למסך הבית""",
   """checklists.addToHomeScreenFailed""": """לא ניתן היה להוסיף את הקיצור.""",

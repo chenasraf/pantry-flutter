@@ -67,6 +67,7 @@ class MessagesEs extends Messages {
   LoginMessagesEs get login => LoginMessagesEs(this);
   HomeMessagesEs get home => HomeMessagesEs(this);
   NavMessagesEs get nav => NavMessagesEs(this);
+  WidgetMessagesEs get widget => WidgetMessagesEs(this);
   OnboardingMessagesEs get onboarding => OnboardingMessagesEs(this);
   NotificationsIntroMessagesEs get notificationsIntro =>
       NotificationsIntroMessagesEs(this);
@@ -418,6 +419,26 @@ class NavMessagesEs extends NavMessages {
   String get notesWall => """Muro de notas""";
 }
 
+class WidgetMessagesEs extends WidgetMessages {
+  final MessagesEs _parent;
+  const WidgetMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Elegir listas"
+  /// ```
+  String get chooseListsTitle => """Elegir listas""";
+
+  /// ```dart
+  /// "Elige qué listas muestra este widget."
+  /// ```
+  String get chooseListsSubtitle => """Elige qué listas muestra este widget.""";
+
+  /// ```dart
+  /// "No hay listas disponibles."
+  /// ```
+  String get noLists => """No hay listas disponibles.""";
+}
+
 class OnboardingMessagesEs extends OnboardingMessages {
   final MessagesEs _parent;
   const OnboardingMessagesEs(this._parent) : super(_parent);
@@ -604,47 +625,42 @@ class OnboardingMessagesEs extends OnboardingMessages {
       """¿No necesitas el anillo de progreso arriba? Pulsa la X en la tarjeta para ocultarla.""";
 
   /// ```dart
-  /// "Fija listas en tu pantalla de inicio"
+  /// "Elige las listas de tu widget"
   /// ```
-  String get pinnedListsTitle => """Fija listas en tu pantalla de inicio""";
+  String get widgetListsTitle => """Elige las listas de tu widget""";
 
   /// ```dart
-  /// "Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en tus listas favoritas, sin abrir la app."
+  /// "Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en cada lista, sin abrir la app."
   /// ```
-  String get pinnedListsBody =>
-      """Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en tus listas favoritas, sin abrir la app.""";
+  String get widgetListsBody =>
+      """Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en cada lista, sin abrir la app.""";
 
   /// ```dart
-  /// "Abre una lista, toca ${menu} en la esquina superior y elige ${action}. Las listas fijadas aparecen en el widget; quita la fijación para ocultarlas."
+  /// "Al añadir un widget eliges sus listas al momento. Toca ${action} en un widget para cambiarlas después y añade tantos widgets como quieras, cada uno con sus propias listas."
   /// ```
-  String pinnedListsHow(String menu, String action) =>
-      """Abre una lista, toca ${menu} en la esquina superior y elige ${action}. Las listas fijadas aparecen en el widget; quita la fijación para ocultarlas.""";
+  String widgetListsHow(String action) =>
+      """Al añadir un widget eliges sus listas al momento. Toca ${action} en un widget para cambiarlas después y añade tantos widgets como quieras, cada uno con sus propias listas.""";
 
   /// ```dart
-  /// "el menú"
+  /// "Elegir listas"
   /// ```
-  String get pinnedListsMenuLabel => """el menú""";
-
-  /// ```dart
-  /// "Fijar lista"
-  /// ```
-  String get pinnedListsActionLabel => """Fijar lista""";
+  String get widgetListsActionLabel => """Elegir listas""";
 
   /// ```dart
   /// "Pantry"
   /// ```
-  String get pinnedListsWidgetTitle => """Pantry""";
+  String get widgetListsWidgetTitle => """Pantry""";
 
   /// ```dart
   /// "${_plural(count, one: '1 pendiente', many: '${count} pendientes')}"
   /// ```
-  String pinnedListsWidgetItemsLeft(int count) =>
+  String widgetListsWidgetItemsLeft(int count) =>
       """${_plural(count, one: '1 pendiente', many: '${count} pendientes')}""";
 
   /// ```dart
   /// "Todo hecho"
   /// ```
-  String get pinnedListsWidgetEmpty => """Todo hecho""";
+  String get widgetListsWidgetEmpty => """Todo hecho""";
 
   /// ```dart
   /// "Mantén tus notas importantes arriba"
@@ -2185,16 +2201,6 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "No hay listas eliminadas."
   /// ```
   String get listTrashEmpty => """No hay listas eliminadas.""";
-
-  /// ```dart
-  /// "Añadir al widget de inicio"
-  /// ```
-  String get pinList => """Añadir al widget de inicio""";
-
-  /// ```dart
-  /// "Quitar del widget de inicio"
-  /// ```
-  String get unpinList => """Quitar del widget de inicio""";
 
   /// ```dart
   /// "Copiar enlace"
@@ -4836,6 +4842,9 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """nav.checklists""": """Listas""",
   """nav.photoBoard""": """Tablero de fotos""",
   """nav.notesWall""": """Muro de notas""",
+  """widget.chooseListsTitle""": """Elegir listas""",
+  """widget.chooseListsSubtitle""": """Elige qué listas muestra este widget.""",
+  """widget.noLists""": """No hay listas disponibles.""",
   """onboarding.next""": """Siguiente""",
   """onboarding.back""": """Atrás""",
   """onboarding.skip""": """Omitir""",
@@ -4879,13 +4888,12 @@ Por favor, completa el inicio de sesión en tu navegador.""",
       """Oculta la tarjeta de progreso""",
   """onboarding.progressHeroDismissBody""":
       """¿No necesitas el anillo de progreso arriba? Pulsa la X en la tarjeta para ocultarla.""",
-  """onboarding.pinnedListsTitle""": """Fija listas en tu pantalla de inicio""",
-  """onboarding.pinnedListsBody""":
-      """Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en tus listas favoritas, sin abrir la app.""",
-  """onboarding.pinnedListsMenuLabel""": """el menú""",
-  """onboarding.pinnedListsActionLabel""": """Fijar lista""",
-  """onboarding.pinnedListsWidgetTitle""": """Pantry""",
-  """onboarding.pinnedListsWidgetEmpty""": """Todo hecho""",
+  """onboarding.widgetListsTitle""": """Elige las listas de tu widget""",
+  """onboarding.widgetListsBody""":
+      """Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en cada lista, sin abrir la app.""",
+  """onboarding.widgetListsActionLabel""": """Elegir listas""",
+  """onboarding.widgetListsWidgetTitle""": """Pantry""",
+  """onboarding.widgetListsWidgetEmpty""": """Todo hecho""",
   """onboarding.pinnedNotesTitle""": """Mantén tus notas importantes arriba""",
   """onboarding.pinnedNotesBody""":
       """Fija una nota desde su menú de opciones para que se mantenga en lo alto del muro de notas, por encima de las notas más recientes.""",
@@ -5242,8 +5250,6 @@ Contraseña: pantry-rocks""",
   """checklists.listsTrashTitle""": """Listas eliminadas""",
   """checklists.failedToLoadTrash""": """No se pudo cargar la papelera.""",
   """checklists.listTrashEmpty""": """No hay listas eliminadas.""",
-  """checklists.pinList""": """Añadir al widget de inicio""",
-  """checklists.unpinList""": """Quitar del widget de inicio""",
   """checklists.copyLink""": """Copiar enlace""",
   """checklists.addToHomeScreen""": """Añadir a la pantalla de inicio""",
   """checklists.addToHomeScreenFailed""":

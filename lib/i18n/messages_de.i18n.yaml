@@ -65,6 +65,11 @@ nav:
   photoBoard: Fotowand
   notesWall: Notizwand
 
+widget:
+  chooseListsTitle: Listen auswählen
+  chooseListsSubtitle: Wähle, welche Listen dieses Widget zeigt.
+  noLists: Keine Listen verfügbar.
+
 onboarding:
   next: Weiter
   back: Zurück
@@ -100,14 +105,13 @@ onboarding:
   progressHeroHint: "Zum Ausblenden wischen"
   progressHeroDismissTitle: "Fortschrittskarte ausblenden"
   progressHeroDismissBody: "Brauchst du den Fortschrittsring oben nicht? Klicke auf das X auf der Karte, um sie auszublenden."
-  pinnedListsTitle: "Listen auf dem Startbildschirm anheften"
-  pinnedListsBody: "Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf deinen Lieblingslisten noch offen sind — ohne die App zu öffnen."
-  pinnedListsHow(String menu, String action): "Öffne eine Liste, tippe oben rechts auf ${menu} und wähle ${action}. Angeheftete Listen erscheinen im Widget; löse die Anheftung, um sie auszublenden."
-  pinnedListsMenuLabel: "das Menü"
-  pinnedListsActionLabel: "Liste anheften"
-  pinnedListsWidgetTitle: "Pantry"
-  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 offen', many: '${count} offen')}"
-  pinnedListsWidgetEmpty: "Alles erledigt"
+  widgetListsTitle: "Listen für dein Widget auswählen"
+  widgetListsBody: "Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf jeder Liste noch offen sind — ohne die App zu öffnen."
+  widgetListsHow(String action): "Beim Hinzufügen eines Widgets wählst du direkt seine Listen. Tippe später auf ${action}, um sie zu ändern, und füge beliebig viele Widgets hinzu — jedes mit eigenen Listen."
+  widgetListsActionLabel: "Listen auswählen"
+  widgetListsWidgetTitle: "Pantry"
+  widgetListsWidgetItemsLeft(int count): "${_plural(count, one: '1 offen', many: '${count} offen')}"
+  widgetListsWidgetEmpty: "Alles erledigt"
   pinnedNotesTitle: "Wichtige Notizen oben halten"
   pinnedNotesBody: "Hefte eine Notiz über das Überlaufmenü an, damit sie oben an deiner Notizwand bleibt — über neueren Notizen sichtbar."
   mockPinnedNoteTitle: "WLAN-Passwort"
@@ -464,8 +468,6 @@ checklists:
   listsTrashTitle: "Gelöschte Listen"
   failedToLoadTrash: "Papierkorb konnte nicht geladen werden."
   listTrashEmpty: "Keine gelöschten Listen."
-  pinList: "Zum Home-Widget hinzufügen"
-  unpinList: "Aus Home-Widget entfernen"
   copyLink: "Link kopieren"
   addToHomeScreen: "Zum Startbildschirm hinzufügen"
   addToHomeScreenFailed: "Verknüpfung konnte nicht hinzugefügt werden."

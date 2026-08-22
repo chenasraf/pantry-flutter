@@ -1,21 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:home_widget/home_widget.dart';
 
 import '../models/nav_section.dart';
 import '../utils/platform_info.dart';
-import 'checklist_service.dart';
-import 'house_service.dart';
-import 'list_link_service.dart';
 
 class PrefsService extends ChangeNotifier {
   PrefsService._();
   static final PrefsService instance = PrefsService._();
 
   static const _lastHouseKey = 'last_house_id';
-  static const _pinnedListIdsKey = 'pinned_list_ids';
   static const _notificationsEnabledKey = 'notifications_enabled';
   static const _pollIntervalMinutesKey = 'poll_interval_minutes';
   static const _notificationsIntroSeenKey = 'notifications_intro_seen';
@@ -66,10 +60,6 @@ class PrefsService extends ChangeNotifier {
 
   int? _lastHouseId;
   int? get lastHouseId => _lastHouseId;
-
-  Set<int> _pinnedListIds = {};
-  Set<int> get pinnedListIds => _pinnedListIds;
-  bool isListPinned(int id) => _pinnedListIds.contains(id);
 
   bool _notificationsEnabled = true;
   bool get notificationsEnabled => _notificationsEnabled;
@@ -262,18 +252,6 @@ class PrefsService extends ChangeNotifier {
     final lastHouse = all[_lastHouseKey];
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);
 
-    final pins = all[_pinnedListIdsKey];
-    if (pins != null && pins.isNotEmpty) {
-      // tryParse (not parse): a single corrupt id here runs on the
-      // pre-first-frame startup path and would otherwise throw, freezing the
-      // splash. Skip unparseable ids instead.
-      _pinnedListIds = pins
-          .split(',')
-          .map(int.tryParse)
-          .whereType<int>()
-          .toSet();
-    }
-
     final notif = all[_notificationsEnabledKey];
     if (notif != null) _notificationsEnabled = notif == 'true';
 
@@ -446,35 +424,6 @@ class PrefsService extends ChangeNotifier {
   /// MissingPluginException. Gate every widget side-effect on this.
   static bool get _supportsWidget => PlatformInfo.isAndroid;
 
-  /// Toggle pin for [listId]. Pass [pinnedListsJson] — a JSON-encoded list of
-  /// `{id, name, houseId}` objects for all currently pinned lists after the
-  /// toggle — so the Android widget SharedPrefs stay in sync.
-  Future<void> togglePinnedList(
-    int listId,
-    List<Map<String, dynamic>> allPinnedAfterToggle,
-  ) async {
-    if (_pinnedListIds.contains(listId)) {
-      _pinnedListIds.remove(listId);
-    } else {
-      _pinnedListIds.add(listId);
-    }
-    await _storage.write(
-      key: _pinnedListIdsKey,
-      value: _pinnedListIds.isEmpty ? '' : _pinnedListIds.join(','),
-    );
-    if (_supportsWidget) {
-      await HomeWidget.saveWidgetData<String>(
-        'pinned_lists',
-        jsonEncode(allPinnedAfterToggle),
-      );
-      await HomeWidget.updateWidget(
-        qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
-      );
-    }
-    await ListLinkService.instance.setPinnedShortcuts(allPinnedAfterToggle);
-    notifyListeners();
-  }
-
   Future<void> setNotificationsEnabled(bool value) async {
     _notificationsEnabled = value;
     await _storage.write(
@@ -512,53 +461,6 @@ class PrefsService extends ChangeNotifier {
     }
     await pushWidgetTheme();
     notifyListeners();
-  }
-
-  /// Build the pinned-lists payload from cached lists + items for the current
-  /// house. Returns an empty list when nothing is pinned, or null when the
-  /// caches aren't ready yet (the caller should skip and retry later).
-  List<Map<String, dynamic>>? _buildPinnedEntries() {
-    if (_pinnedListIds.isEmpty) return const [];
-    final cs = ChecklistService.instance;
-    final houseId = _lastHouseId;
-    final lists = houseId == null ? null : cs.getCachedLists(houseId);
-    if (lists == null) return null;
-    final housesById = {
-      for (final h in HouseService.instance.getCached() ?? []) h.id: h.name,
-    };
-    return lists.where((l) => _pinnedListIds.contains(l.id)).map((l) {
-      final cached = cs.getCachedItems(l.id) ?? [];
-      final active = cached.where((i) => i.deletedAt == null).toList();
-      final unchecked = active.where((i) => !i.done).length;
-      return {
-        'id': l.id,
-        'name': l.name,
-        'houseId': l.houseId,
-        'houseName': housesById[l.houseId],
-        'icon': l.icon,
-        'unchecked': unchecked,
-        'total': active.length,
-      };
-    }).toList();
-  }
-
-  /// Rebuild the pinned-lists payload the Android widget reads and the launcher
-  /// quick actions expose — from cached lists + items for the current house.
-  /// Call after caches load on app start so both survive a preferences wipe
-  /// (e.g. a fresh install) without waiting for the next pin toggle.
-  Future<void> pushWidgetPinnedLists() async {
-    final entries = _buildPinnedEntries();
-    if (entries != null) {
-      await ListLinkService.instance.setPinnedShortcuts(entries);
-    }
-    if (!_supportsWidget || entries == null) return;
-    await HomeWidget.saveWidgetData<String>(
-      'pinned_lists',
-      jsonEncode(entries),
-    );
-    await HomeWidget.updateWidget(
-      qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
-    );
   }
 
   /// Push the effective theme (`light` or `dark`) to the Android home-screen
@@ -872,7 +774,6 @@ class PrefsService extends ChangeNotifier {
 
   Future<void> clear() async {
     _lastHouseId = null;
-    _pinnedListIds = {};
     _notificationsEnabled = true;
     _pollIntervalMinutes = 15;
     _notificationsIntroSeen = false;
@@ -906,7 +807,6 @@ class PrefsService extends ChangeNotifier {
     _shoppingRefreshSeconds = shoppingRefreshInherit;
     final keys = [
       _lastHouseKey,
-      _pinnedListIdsKey,
       _notificationsEnabledKey,
       _pollIntervalMinutesKey,
       _notificationsIntroSeenKey,

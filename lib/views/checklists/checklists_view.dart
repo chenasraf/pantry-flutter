@@ -16,7 +16,6 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/models/shopping_session.dart';
 import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/list_link_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/services/prefs_service.dart';
@@ -1339,8 +1338,6 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         ? cs.primary
         : (parseHexColor(list?.color) ?? cs.primary);
     final iconData = isMeta ? allListsIcon : checklistIcon(list?.icon);
-    final isPinned =
-        list != null && !isMeta && PrefsService.instance.isListPinned(list.id);
 
     return ChecklistsAppBarSpec(
       // titleSpacing is the gap between the leading slot and the title — set
@@ -1495,20 +1492,14 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
             icon: const Icon(Icons.more_vert),
             tooltip: m.common.more,
             onSelected: (v) => _onOverflow(context, controller, v),
-            itemBuilder: (_) => _overflowMenuItems(
-              _overflowItems(controller, prefs, isPinned: isPinned),
-            ),
+            itemBuilder: (_) =>
+                _overflowMenuItems(_overflowItems(controller, prefs)),
           )
         else
           IconButton(
             icon: const Icon(Icons.more_vert),
             tooltip: m.common.more,
-            onPressed: () => _showOverflowSheet(
-              context,
-              controller,
-              prefs,
-              isPinned: isPinned,
-            ),
+            onPressed: () => _showOverflowSheet(context, controller, prefs),
           ),
       ],
     );
@@ -1587,9 +1578,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
 
   List<_OverflowEntry> _overflowItems(
     ChecklistsController controller,
-    PrefsService prefs, {
-    required bool isPinned,
-  }) {
+    PrefsService prefs,
+  ) {
     if (controller.isTrashMode) {
       return _normalizeOverflow([
         _OverflowAction(
@@ -1653,12 +1643,6 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           label: '${m.checklists.sortTooltip}: ${_sortLabel(effective)}',
         ),
         const _OverflowDivider(),
-        if (controller.currentList != null && !isMeta)
-          _OverflowAction(
-            value: 'toggle_pin',
-            icon: isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-            label: isPinned ? m.checklists.unpinList : m.checklists.pinList,
-          ),
         if (controller.currentList != null && !isMeta && PlatformInfo.isMobile)
           _OverflowAction(
             value: 'copy_link',
@@ -1856,10 +1840,9 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
   Future<void> _showOverflowSheet(
     BuildContext context,
     ChecklistsController controller,
-    PrefsService prefs, {
-    required bool isPinned,
-  }) async {
-    final entries = _overflowItems(controller, prefs, isPinned: isPinned);
+    PrefsService prefs,
+  ) async {
+    final entries = _overflowItems(controller, prefs);
     if (entries.isEmpty) return;
     final selected = await showModalBottomSheet<String>(
       context: context,
@@ -1983,8 +1966,6 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         await controller.setArchiveMode(true);
       case 'exit_archive':
         await controller.setArchiveMode(false);
-      case 'toggle_pin':
-        await _togglePin(context, controller);
       case 'copy_link':
         await _copyListLink(context, controller);
       case 'add_to_home':
@@ -2227,44 +2208,6 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
       await controller.onLabelsChanged();
     }
     return created;
-  }
-
-  Future<void> _togglePin(
-    BuildContext context,
-    ChecklistsController controller,
-  ) async {
-    final list = controller.currentList;
-    if (list == null) return;
-    final prefs = PrefsService.instance;
-    final willBePinned = !prefs.isListPinned(list.id);
-    final nextPinnedIds = Set<int>.from(prefs.pinnedListIds);
-    if (willBePinned) {
-      nextPinnedIds.add(list.id);
-    } else {
-      nextPinnedIds.remove(list.id);
-    }
-    final cs = ChecklistService.instance;
-    final housesById = {
-      for (final h in HouseService.instance.getCached() ?? []) h.id: h.name,
-    };
-    final allPinned = controller.lists
-        .where((l) => nextPinnedIds.contains(l.id))
-        .map((l) {
-          final cached = cs.getCachedItems(l.id) ?? [];
-          final active = cached.where((i) => i.deletedAt == null).toList();
-          final unchecked = active.where((i) => !i.done).length;
-          return {
-            'id': l.id,
-            'name': l.name,
-            'houseId': l.houseId,
-            'houseName': housesById[l.houseId],
-            'icon': l.icon,
-            'unchecked': unchecked,
-            'total': active.length,
-          };
-        })
-        .toList();
-    await prefs.togglePinnedList(list.id, allPinned);
   }
 
   Future<void> _copyListLink(

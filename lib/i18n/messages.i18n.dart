@@ -66,6 +66,7 @@ class Messages {
   LoginMessages get login => LoginMessages(this);
   HomeMessages get home => HomeMessages(this);
   NavMessages get nav => NavMessages(this);
+  WidgetMessages get widget => WidgetMessages(this);
   OnboardingMessages get onboarding => OnboardingMessages(this);
   NotificationsIntroMessages get notificationsIntro =>
       NotificationsIntroMessages(this);
@@ -415,6 +416,26 @@ class NavMessages {
   String get notesWall => """Notes Wall""";
 }
 
+class WidgetMessages {
+  final Messages _parent;
+  const WidgetMessages(this._parent);
+
+  /// ```dart
+  /// "Choose lists"
+  /// ```
+  String get chooseListsTitle => """Choose lists""";
+
+  /// ```dart
+  /// "Pick which lists this widget shows."
+  /// ```
+  String get chooseListsSubtitle => """Pick which lists this widget shows.""";
+
+  /// ```dart
+  /// "No lists available."
+  /// ```
+  String get noLists => """No lists available.""";
+}
+
 class OnboardingMessages {
   final Messages _parent;
   const OnboardingMessages(this._parent);
@@ -600,47 +621,42 @@ class OnboardingMessages {
       """Don't need the progress ring at the top? Click the X on the card to hide it.""";
 
   /// ```dart
-  /// "Pin lists to your home screen"
+  /// "Choose lists for your widget"
   /// ```
-  String get pinnedListsTitle => """Pin lists to your home screen""";
+  String get widgetListsTitle => """Choose lists for your widget""";
 
   /// ```dart
-  /// "Add the Pantry widget to your home screen to see how many items are left on your favorite lists at a glance — no need to open the app."
+  /// "Add the Pantry widget to your home screen to see how many items are left on each list at a glance — no need to open the app."
   /// ```
-  String get pinnedListsBody =>
-      """Add the Pantry widget to your home screen to see how many items are left on your favorite lists at a glance — no need to open the app.""";
+  String get widgetListsBody =>
+      """Add the Pantry widget to your home screen to see how many items are left on each list at a glance — no need to open the app.""";
 
   /// ```dart
-  /// "Open a list, tap ${menu} in the top-right, then choose ${action}. Pinned lists show up on the widget; unpin to hide them."
+  /// "Adding a widget lets you pick its lists right away. Tap ${action} on a widget to change them later, and add as many widgets as you like — each with its own lists."
   /// ```
-  String pinnedListsHow(String menu, String action) =>
-      """Open a list, tap ${menu} in the top-right, then choose ${action}. Pinned lists show up on the widget; unpin to hide them.""";
+  String widgetListsHow(String action) =>
+      """Adding a widget lets you pick its lists right away. Tap ${action} on a widget to change them later, and add as many widgets as you like — each with its own lists.""";
 
   /// ```dart
-  /// "the kebab menu"
+  /// "Choose lists"
   /// ```
-  String get pinnedListsMenuLabel => """the kebab menu""";
-
-  /// ```dart
-  /// "Pin list"
-  /// ```
-  String get pinnedListsActionLabel => """Pin list""";
+  String get widgetListsActionLabel => """Choose lists""";
 
   /// ```dart
   /// "Pantry"
   /// ```
-  String get pinnedListsWidgetTitle => """Pantry""";
+  String get widgetListsWidgetTitle => """Pantry""";
 
   /// ```dart
   /// "${_plural(count, one: '1 left', many: '${count} left')}"
   /// ```
-  String pinnedListsWidgetItemsLeft(int count) =>
+  String widgetListsWidgetItemsLeft(int count) =>
       """${_plural(count, one: '1 left', many: '${count} left')}""";
 
   /// ```dart
   /// "All done"
   /// ```
-  String get pinnedListsWidgetEmpty => """All done""";
+  String get widgetListsWidgetEmpty => """All done""";
 
   /// ```dart
   /// "Keep important notes on top"
@@ -2167,16 +2183,6 @@ class ChecklistsMessages {
   /// "No deleted lists."
   /// ```
   String get listTrashEmpty => """No deleted lists.""";
-
-  /// ```dart
-  /// "Add to home widget"
-  /// ```
-  String get pinList => """Add to home widget""";
-
-  /// ```dart
-  /// "Remove from home widget"
-  /// ```
-  String get unpinList => """Remove from home widget""";
 
   /// ```dart
   /// "Copy link"
@@ -4798,6 +4804,9 @@ Please complete login in your browser.""",
   """nav.checklists""": """Checklists""",
   """nav.photoBoard""": """Photo Board""",
   """nav.notesWall""": """Notes Wall""",
+  """widget.chooseListsTitle""": """Choose lists""",
+  """widget.chooseListsSubtitle""": """Pick which lists this widget shows.""",
+  """widget.noLists""": """No lists available.""",
   """onboarding.next""": """Next""",
   """onboarding.back""": """Back""",
   """onboarding.skip""": """Skip""",
@@ -4838,13 +4847,12 @@ Please complete login in your browser.""",
   """onboarding.progressHeroDismissTitle""": """Hide the progress card""",
   """onboarding.progressHeroDismissBody""":
       """Don't need the progress ring at the top? Click the X on the card to hide it.""",
-  """onboarding.pinnedListsTitle""": """Pin lists to your home screen""",
-  """onboarding.pinnedListsBody""":
-      """Add the Pantry widget to your home screen to see how many items are left on your favorite lists at a glance — no need to open the app.""",
-  """onboarding.pinnedListsMenuLabel""": """the kebab menu""",
-  """onboarding.pinnedListsActionLabel""": """Pin list""",
-  """onboarding.pinnedListsWidgetTitle""": """Pantry""",
-  """onboarding.pinnedListsWidgetEmpty""": """All done""",
+  """onboarding.widgetListsTitle""": """Choose lists for your widget""",
+  """onboarding.widgetListsBody""":
+      """Add the Pantry widget to your home screen to see how many items are left on each list at a glance — no need to open the app.""",
+  """onboarding.widgetListsActionLabel""": """Choose lists""",
+  """onboarding.widgetListsWidgetTitle""": """Pantry""",
+  """onboarding.widgetListsWidgetEmpty""": """All done""",
   """onboarding.pinnedNotesTitle""": """Keep important notes on top""",
   """onboarding.pinnedNotesBody""":
       """Pin a note from its overflow menu to lock it to the top of your Notes Wall, so it stays visible above newer notes.""",
@@ -5191,8 +5199,6 @@ Password: pantry-rocks""",
   """checklists.listsTrashTitle""": """Deleted lists""",
   """checklists.failedToLoadTrash""": """Failed to load trash.""",
   """checklists.listTrashEmpty""": """No deleted lists.""",
-  """checklists.pinList""": """Add to home widget""",
-  """checklists.unpinList""": """Remove from home widget""",
   """checklists.copyLink""": """Copy link""",
   """checklists.addToHomeScreen""": """Add to Home screen""",
   """checklists.addToHomeScreenFailed""": """Couldn't add the shortcut.""",

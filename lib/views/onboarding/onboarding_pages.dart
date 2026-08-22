@@ -11,13 +11,13 @@ import 'pages/category_scope_page.dart';
 import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
 import 'pages/item_price_page.dart';
-import 'pages/pinned_lists_page.dart';
 import 'pages/pinned_notes_page.dart';
 import 'pages/progress_hero_dismiss_page.dart';
 import 'pages/progress_hero_page.dart';
 import 'pages/quick_actions_page.dart';
 import 'pages/shopping_mode_page.dart';
 import 'pages/swipe_actions_page.dart';
+import 'pages/widget_lists_page.dart';
 
 /// The first app version that ships an onboarding flow. Users who never
 /// completed onboarding are treated as "before" this, so they see everything.
@@ -107,7 +107,7 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
       showWhen: onboardingDesktopOnly,
     ),
     OnboardingPageEntry(
-      builder: (_) => const PinnedListsOnboardingPage(),
+      builder: (_) => const WidgetListsOnboardingPage(),
       showWhen: onboardingAndroidOnly,
     ),
     OnboardingPageEntry(builder: (_) => const PinnedNotesOnboardingPage()),

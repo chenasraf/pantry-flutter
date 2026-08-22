@@ -86,6 +86,12 @@ nav:
   checklists: Sjekkliste
   photoBoard: Fotovegg
   notesWall: Notatvegg
+
+widget:
+  chooseListsTitle: Vel lister
+  chooseListsSubtitle: Vel kva lister denne widgeten viser.
+  noLists: Ingen lister tilgjengelege.
+
 onboarding:
   next: Neste
   back: Tilbake
@@ -140,20 +146,19 @@ onboarding:
   progressHeroDismissBody:
     Treng du ikkje framdriftsringen på toppen? Trykk på X-en
     på kortet for å skjule det.
-  pinnedListsTitle: Fest lister til heimskjermen
-  pinnedListsBody:
+  widgetListsTitle: Vel lister for skjermelementet
+  widgetListsBody:
     Legg skjermelementet til Pantry på heimskjermen for å sjå kor mange
-    oppføringar som er igjen på favorittlistene dine utan å opne appen.
-  pinnedListsHow(String menu, String action):
-    Opne ei liste, trykk på ${menu} øvst
-    til høgre og vel ${action}. Festa lister blir vist på skjermelementet på heimskjermen.
-    Fjern festinga for å skjule dei.
-  pinnedListsMenuLabel: kebab-menyen
-  pinnedListsActionLabel: Fest liste
-  pinnedListsWidgetTitle: "Pantry"
-  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 igjen', many:
+    oppføringar som er igjen på kvar liste utan å opne appen.
+  widgetListsHow(String action):
+    Når du legg til eit skjermelement, vel du listene med ein gong. Trykk på
+    ${action} på eit skjermelement for å endre dei seinare, og legg til så mange
+    skjermelement du vil — kvart med sine eigne lister.
+  widgetListsActionLabel: Vel lister
+  widgetListsWidgetTitle: "Pantry"
+  widgetListsWidgetItemsLeft(int count): "${_plural(count, one: '1 igjen', many:
     '${count} igjen')}"
-  pinnedListsWidgetEmpty: Ferdig
+  widgetListsWidgetEmpty: Ferdig
   pinnedNotesTitle: Hald viktige notat på toppen
   pinnedNotesBody:
     Fest eit notat frå overflytsmenyen for å låse det til toppen av
@@ -570,8 +575,6 @@ checklists:
   listsTrashTitle: Sletta lister
   failedToLoadTrash: Klarte ikkje laste papirkorga.
   listTrashEmpty: Ingen sletta lister
-  pinList: Legg til i heim-widget
-  unpinList: Fjern frå heim-widget
   copyLink: Kopier lenke
   addToHomeScreen: Legg til på startskjermen
   addToHomeScreenFailed: Klarte ikkje å leggja til snarvegen.

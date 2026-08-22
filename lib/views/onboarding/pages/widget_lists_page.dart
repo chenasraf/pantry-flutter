@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
 
-/// Tells users that pinning a list shows it in the Pantry home-screen widget,
-/// and explains how to pin (overflow menu → Pin list). Stays static — the
-/// "demo" is a stylised mock of the widget; the real widget UX varies per OS
-/// and would be wasteful to animate here.
-class PinnedListsOnboardingPage extends StatelessWidget {
-  const PinnedListsOnboardingPage({super.key});
+/// Tells users that the Pantry home-screen widget shows the lists they choose,
+/// picked via the widget's gear, and that they can add several widgets each
+/// with its own lists. The "demo" is a stylised mock of the widget; the real
+/// widget UX varies per OS and would be wasteful to animate here.
+class WidgetListsOnboardingPage extends StatelessWidget {
+  const WidgetListsOnboardingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class PinnedListsOnboardingPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            ob.pinnedListsTitle,
+            ob.widgetListsTitle,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w800,
               letterSpacing: -0.3,
@@ -30,7 +30,7 @@ class PinnedListsOnboardingPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            ob.pinnedListsBody,
+            ob.widgetListsBody,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: cs.onSurfaceVariant,
               height: 1.4,
@@ -40,18 +40,15 @@ class PinnedListsOnboardingPage extends StatelessWidget {
           const SizedBox(height: 28),
           const _WidgetMock(),
           const SizedBox(height: 24),
-          _HowToPin(
-            menu: ob.pinnedListsMenuLabel,
-            action: ob.pinnedListsActionLabel,
-          ),
+          _HowTo(action: ob.widgetListsActionLabel),
         ],
       ),
     );
   }
 }
 
-/// Stylised home-screen widget tile — header bar + two pinned-list rows so
-/// the user recognises what they're looking at on their actual launcher.
+/// Stylised home-screen widget tile — header bar (with the gear) + two list
+/// rows so the user recognises what they're looking at on their launcher.
 class _WidgetMock extends StatelessWidget {
   const _WidgetMock();
 
@@ -90,17 +87,20 @@ class _WidgetMock extends StatelessWidget {
                   color: cs.primary.withValues(alpha: 0.16),
                   borderRadius: BorderRadius.circular(7),
                 ),
-                child: Icon(Icons.push_pin, size: 14, color: cs.primary),
+                child: Icon(Icons.list_alt, size: 14, color: cs.primary),
               ),
               const SizedBox(width: 8),
-              Text(
-                ob.pinnedListsWidgetTitle,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  color: cs.onSurface,
+              Expanded(
+                child: Text(
+                  ob.widgetListsWidgetTitle,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: cs.onSurface,
+                  ),
                 ),
               ),
+              Icon(Icons.settings, size: 16, color: cs.onSurfaceVariant),
             ],
           ),
           const SizedBox(height: 10),
@@ -125,8 +125,8 @@ class _WidgetRow extends StatelessWidget {
     final ob = m.onboarding;
     final done = leftCount == 0;
     final summary = done
-        ? ob.pinnedListsWidgetEmpty
-        : ob.pinnedListsWidgetItemsLeft(leftCount);
+        ? ob.widgetListsWidgetEmpty
+        : ob.widgetListsWidgetItemsLeft(leftCount);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
       decoration: BoxDecoration(
@@ -162,41 +162,25 @@ class _WidgetRow extends StatelessWidget {
   }
 }
 
-/// Inline instruction with the actual icons the user will tap. Reading the
-/// words alongside the glyphs makes the step land without a screenshot.
-class _HowToPin extends StatelessWidget {
-  final String menu;
+/// Inline instruction with the actual gear glyph the user will tap, so reading
+/// the words alongside the icon makes the step land without a screenshot.
+class _HowTo extends StatelessWidget {
   final String action;
 
-  const _HowToPin({required this.menu, required this.action});
+  const _HowTo({required this.action});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final ob = m.onboarding;
-    final menuChip = _InlineGlyph(icon: Icons.more_vert, label: menu);
-    final actionChip = _InlineGlyph(
-      icon: Icons.push_pin,
-      label: action,
-      accent: true,
-    );
-    // The body string includes "${menu}"/"${action}" placeholders, but i18n
-    // keeps them as inline text, not widgets. So we render the chips above the
-    // paragraph and let the sentence reference them by name — avoids
-    // hand-parsing the localized string into RichText spans.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 10,
-          runSpacing: 6,
-          children: [menuChip, actionChip],
-        ),
+        _InlineGlyph(icon: Icons.settings, label: action, accent: true),
         const SizedBox(height: 12),
         Text(
-          ob.pinnedListsHow(menu, action),
+          ob.widgetListsHow(action),
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: cs.onSurfaceVariant,
@@ -222,27 +206,24 @@ class _InlineGlyph extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final tint = accent ? cs.primary : cs.onSurfaceVariant;
+    final fg = accent ? cs.primary : cs.onSurfaceVariant;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 12, 6),
       decoration: BoxDecoration(
-        color: accent
-            ? cs.primary.withValues(alpha: 0.14)
-            : cs.surfaceContainerHighest,
-        border: Border.all(color: tint.withValues(alpha: 0.4)),
-        borderRadius: BorderRadius.circular(8),
+        color: (accent ? cs.primary : cs.onSurface).withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: tint),
+          Icon(icon, size: 16, color: fg),
           const SizedBox(width: 6),
           Text(
             label,
             style: TextStyle(
-              fontSize: 12.5,
+              fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: tint,
+              color: fg,
             ),
           ),
         ],

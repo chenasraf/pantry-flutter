@@ -65,6 +65,11 @@ nav:
   photoBoard: לוח תמונות
   notesWall: קיר הערות
 
+widget:
+  chooseListsTitle: בחירת רשימות
+  chooseListsSubtitle: בחר אילו רשימות הווידג'ט הזה יציג.
+  noLists: אין רשימות זמינות.
+
 onboarding:
   next: הבא
   back: חזור
@@ -100,14 +105,13 @@ onboarding:
   progressHeroHint: "החלק כדי להסיר"
   progressHeroDismissTitle: "הסתר את כרטיס ההתקדמות"
   progressHeroDismissBody: "לא צריך את טבעת ההתקדמות למעלה? לחץ על ה-X בכרטיס כדי להסתיר אותו."
-  pinnedListsTitle: "הצמד רשימות למסך הבית"
-  pinnedListsBody: "הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו ברשימות המועדפות עליך — בלי לפתוח את האפליקציה."
-  pinnedListsHow(String menu, String action): "פתח רשימה, הקש על ${menu} בפינה העליונה, ובחר ${action}. רשימות מוצמדות מופיעות בווידג'ט; בטל הצמדה כדי להסתיר אותן."
-  pinnedListsMenuLabel: "התפריט"
-  pinnedListsActionLabel: "הצמד רשימה"
-  pinnedListsWidgetTitle: "Pantry"
-  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: 'פריט אחד נותר', many: '${count} נותרו')}"
-  pinnedListsWidgetEmpty: "הכל בוצע"
+  widgetListsTitle: "בחר רשימות לווידג'ט"
+  widgetListsBody: "הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו בכל רשימה — בלי לפתוח את האפליקציה."
+  widgetListsHow(String action): "בעת הוספת ווידג'ט תבחר את הרשימות שלו מיד. הקש על ${action} בווידג'ט כדי לשנות אותן מאוחר יותר, ואפשר להוסיף כמה ווידג'טים שרוצים — כל אחד עם הרשימות שלו."
+  widgetListsActionLabel: "בחר רשימות"
+  widgetListsWidgetTitle: "Pantry"
+  widgetListsWidgetItemsLeft(int count): "${_plural(count, one: 'פריט אחד נותר', many: '${count} נותרו')}"
+  widgetListsWidgetEmpty: "הכל בוצע"
   pinnedNotesTitle: "השאר הערות חשובות בראש הקיר"
   pinnedNotesBody: "הצמד הערה מתפריט שלוש הנקודות שלה כדי שתישאר בראש קיר ההערות, מעל הערות חדשות יותר."
   mockPinnedNoteTitle: "סיסמת Wi-Fi"
@@ -464,8 +468,6 @@ checklists:
   listsTrashTitle: רשימות שנמחקו
   failedToLoadTrash: טעינת סל המיחזור נכשלה.
   listTrashEmpty: אין רשימות שנמחקו.
-  pinList: הוסף לווידג׳ט הבית
-  unpinList: הסר מווידג׳ט הבית
   copyLink: העתק קישור
   addToHomeScreen: הוסף למסך הבית
   addToHomeScreenFailed: לא ניתן היה להוסיף את הקיצור.

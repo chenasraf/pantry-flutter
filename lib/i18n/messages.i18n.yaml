@@ -65,6 +65,11 @@ nav:
   photoBoard: Photo Board
   notesWall: Notes Wall
 
+widget:
+  chooseListsTitle: Choose lists
+  chooseListsSubtitle: Pick which lists this widget shows.
+  noLists: No lists available.
+
 onboarding:
   next: Next
   back: Back
@@ -100,14 +105,13 @@ onboarding:
   progressHeroHint: "Swipe to dismiss"
   progressHeroDismissTitle: "Hide the progress card"
   progressHeroDismissBody: "Don't need the progress ring at the top? Click the X on the card to hide it."
-  pinnedListsTitle: "Pin lists to your home screen"
-  pinnedListsBody: "Add the Pantry widget to your home screen to see how many items are left on your favorite lists at a glance — no need to open the app."
-  pinnedListsHow(String menu, String action): "Open a list, tap ${menu} in the top-right, then choose ${action}. Pinned lists show up on the widget; unpin to hide them."
-  pinnedListsMenuLabel: "the kebab menu"
-  pinnedListsActionLabel: "Pin list"
-  pinnedListsWidgetTitle: "Pantry"
-  pinnedListsWidgetItemsLeft(int count): "${_plural(count, one: '1 left', many: '${count} left')}"
-  pinnedListsWidgetEmpty: "All done"
+  widgetListsTitle: "Choose lists for your widget"
+  widgetListsBody: "Add the Pantry widget to your home screen to see how many items are left on each list at a glance — no need to open the app."
+  widgetListsHow(String action): "Adding a widget lets you pick its lists right away. Tap ${action} on a widget to change them later, and add as many widgets as you like — each with its own lists."
+  widgetListsActionLabel: "Choose lists"
+  widgetListsWidgetTitle: "Pantry"
+  widgetListsWidgetItemsLeft(int count): "${_plural(count, one: '1 left', many: '${count} left')}"
+  widgetListsWidgetEmpty: "All done"
   pinnedNotesTitle: "Keep important notes on top"
   pinnedNotesBody: "Pin a note from its overflow menu to lock it to the top of your Notes Wall, so it stays visible above newer notes."
   mockPinnedNoteTitle: "Wi-Fi password"
@@ -464,8 +468,6 @@ checklists:
   listsTrashTitle: Deleted lists
   failedToLoadTrash: Failed to load trash.
   listTrashEmpty: No deleted lists.
-  pinList: Add to home widget
-  unpinList: Remove from home widget
   copyLink: Copy link
   addToHomeScreen: Add to Home screen
   addToHomeScreenFailed: Couldn't add the shortcut.

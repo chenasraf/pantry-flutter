@@ -67,6 +67,7 @@ class MessagesDe extends Messages {
   LoginMessagesDe get login => LoginMessagesDe(this);
   HomeMessagesDe get home => HomeMessagesDe(this);
   NavMessagesDe get nav => NavMessagesDe(this);
+  WidgetMessagesDe get widget => WidgetMessagesDe(this);
   OnboardingMessagesDe get onboarding => OnboardingMessagesDe(this);
   NotificationsIntroMessagesDe get notificationsIntro =>
       NotificationsIntroMessagesDe(this);
@@ -417,6 +418,27 @@ class NavMessagesDe extends NavMessages {
   String get notesWall => """Notizwand""";
 }
 
+class WidgetMessagesDe extends WidgetMessages {
+  final MessagesDe _parent;
+  const WidgetMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Listen auswählen"
+  /// ```
+  String get chooseListsTitle => """Listen auswählen""";
+
+  /// ```dart
+  /// "Wähle, welche Listen dieses Widget zeigt."
+  /// ```
+  String get chooseListsSubtitle =>
+      """Wähle, welche Listen dieses Widget zeigt.""";
+
+  /// ```dart
+  /// "Keine Listen verfügbar."
+  /// ```
+  String get noLists => """Keine Listen verfügbar.""";
+}
+
 class OnboardingMessagesDe extends OnboardingMessages {
   final MessagesDe _parent;
   const OnboardingMessagesDe(this._parent) : super(_parent);
@@ -603,47 +625,42 @@ class OnboardingMessagesDe extends OnboardingMessages {
       """Brauchst du den Fortschrittsring oben nicht? Klicke auf das X auf der Karte, um sie auszublenden.""";
 
   /// ```dart
-  /// "Listen auf dem Startbildschirm anheften"
+  /// "Listen für dein Widget auswählen"
   /// ```
-  String get pinnedListsTitle => """Listen auf dem Startbildschirm anheften""";
+  String get widgetListsTitle => """Listen für dein Widget auswählen""";
 
   /// ```dart
-  /// "Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf deinen Lieblingslisten noch offen sind — ohne die App zu öffnen."
+  /// "Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf jeder Liste noch offen sind — ohne die App zu öffnen."
   /// ```
-  String get pinnedListsBody =>
-      """Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf deinen Lieblingslisten noch offen sind — ohne die App zu öffnen.""";
+  String get widgetListsBody =>
+      """Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf jeder Liste noch offen sind — ohne die App zu öffnen.""";
 
   /// ```dart
-  /// "Öffne eine Liste, tippe oben rechts auf ${menu} und wähle ${action}. Angeheftete Listen erscheinen im Widget; löse die Anheftung, um sie auszublenden."
+  /// "Beim Hinzufügen eines Widgets wählst du direkt seine Listen. Tippe später auf ${action}, um sie zu ändern, und füge beliebig viele Widgets hinzu — jedes mit eigenen Listen."
   /// ```
-  String pinnedListsHow(String menu, String action) =>
-      """Öffne eine Liste, tippe oben rechts auf ${menu} und wähle ${action}. Angeheftete Listen erscheinen im Widget; löse die Anheftung, um sie auszublenden.""";
+  String widgetListsHow(String action) =>
+      """Beim Hinzufügen eines Widgets wählst du direkt seine Listen. Tippe später auf ${action}, um sie zu ändern, und füge beliebig viele Widgets hinzu — jedes mit eigenen Listen.""";
 
   /// ```dart
-  /// "das Menü"
+  /// "Listen auswählen"
   /// ```
-  String get pinnedListsMenuLabel => """das Menü""";
-
-  /// ```dart
-  /// "Liste anheften"
-  /// ```
-  String get pinnedListsActionLabel => """Liste anheften""";
+  String get widgetListsActionLabel => """Listen auswählen""";
 
   /// ```dart
   /// "Pantry"
   /// ```
-  String get pinnedListsWidgetTitle => """Pantry""";
+  String get widgetListsWidgetTitle => """Pantry""";
 
   /// ```dart
   /// "${_plural(count, one: '1 offen', many: '${count} offen')}"
   /// ```
-  String pinnedListsWidgetItemsLeft(int count) =>
+  String widgetListsWidgetItemsLeft(int count) =>
       """${_plural(count, one: '1 offen', many: '${count} offen')}""";
 
   /// ```dart
   /// "Alles erledigt"
   /// ```
-  String get pinnedListsWidgetEmpty => """Alles erledigt""";
+  String get widgetListsWidgetEmpty => """Alles erledigt""";
 
   /// ```dart
   /// "Wichtige Notizen oben halten"
@@ -2187,16 +2204,6 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Keine gelöschten Listen."
   /// ```
   String get listTrashEmpty => """Keine gelöschten Listen.""";
-
-  /// ```dart
-  /// "Zum Home-Widget hinzufügen"
-  /// ```
-  String get pinList => """Zum Home-Widget hinzufügen""";
-
-  /// ```dart
-  /// "Aus Home-Widget entfernen"
-  /// ```
-  String get unpinList => """Aus Home-Widget entfernen""";
 
   /// ```dart
   /// "Link kopieren"
@@ -4849,6 +4856,10 @@ Bitte melde dich in deinem Browser an.""",
   """nav.checklists""": """Checklisten""",
   """nav.photoBoard""": """Fotowand""",
   """nav.notesWall""": """Notizwand""",
+  """widget.chooseListsTitle""": """Listen auswählen""",
+  """widget.chooseListsSubtitle""":
+      """Wähle, welche Listen dieses Widget zeigt.""",
+  """widget.noLists""": """Keine Listen verfügbar.""",
   """onboarding.next""": """Weiter""",
   """onboarding.back""": """Zurück""",
   """onboarding.skip""": """Überspringen""",
@@ -4889,14 +4900,12 @@ Bitte melde dich in deinem Browser an.""",
   """onboarding.progressHeroDismissTitle""": """Fortschrittskarte ausblenden""",
   """onboarding.progressHeroDismissBody""":
       """Brauchst du den Fortschrittsring oben nicht? Klicke auf das X auf der Karte, um sie auszublenden.""",
-  """onboarding.pinnedListsTitle""":
-      """Listen auf dem Startbildschirm anheften""",
-  """onboarding.pinnedListsBody""":
-      """Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf deinen Lieblingslisten noch offen sind — ohne die App zu öffnen.""",
-  """onboarding.pinnedListsMenuLabel""": """das Menü""",
-  """onboarding.pinnedListsActionLabel""": """Liste anheften""",
-  """onboarding.pinnedListsWidgetTitle""": """Pantry""",
-  """onboarding.pinnedListsWidgetEmpty""": """Alles erledigt""",
+  """onboarding.widgetListsTitle""": """Listen für dein Widget auswählen""",
+  """onboarding.widgetListsBody""":
+      """Füge das Pantry-Widget zu deinem Startbildschirm hinzu, um auf einen Blick zu sehen, wie viele Einträge auf jeder Liste noch offen sind — ohne die App zu öffnen.""",
+  """onboarding.widgetListsActionLabel""": """Listen auswählen""",
+  """onboarding.widgetListsWidgetTitle""": """Pantry""",
+  """onboarding.widgetListsWidgetEmpty""": """Alles erledigt""",
   """onboarding.pinnedNotesTitle""": """Wichtige Notizen oben halten""",
   """onboarding.pinnedNotesBody""":
       """Hefte eine Notiz über das Überlaufmenü an, damit sie oben an deiner Notizwand bleibt — über neueren Notizen sichtbar.""",
@@ -5262,8 +5271,6 @@ Passwort: pantry-rocks""",
   """checklists.failedToLoadTrash""":
       """Papierkorb konnte nicht geladen werden.""",
   """checklists.listTrashEmpty""": """Keine gelöschten Listen.""",
-  """checklists.pinList""": """Zum Home-Widget hinzufügen""",
-  """checklists.unpinList""": """Aus Home-Widget entfernen""",
   """checklists.copyLink""": """Link kopieren""",
   """checklists.addToHomeScreen""": """Zum Startbildschirm hinzufügen""",
   """checklists.addToHomeScreenFailed""":

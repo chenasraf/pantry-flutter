@@ -3,6 +3,7 @@ package dev.casraf.pantry
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -14,7 +15,23 @@ class PantryWidgetProvider : AppWidgetProvider() {
         for (id in ids) updateWidget(ctx, mgr, id)
     }
 
+    override fun onDeleted(ctx: Context, ids: IntArray) {
+        val prefs = ctx.getSharedPreferences(
+            "HomeWidgetPreferences",
+            Context.MODE_PRIVATE,
+        )
+        prefs.edit().apply {
+            for (id in ids) remove("lists_widget_$id")
+        }.apply()
+    }
+
     companion object {
+        /// App widget ids for every placed instance of this provider.
+        fun widgetIds(ctx: Context): IntArray =
+            AppWidgetManager.getInstance(ctx).getAppWidgetIds(
+                ComponentName(ctx, PantryWidgetProvider::class.java),
+            )
+
         fun updateWidget(ctx: Context, mgr: AppWidgetManager, widgetId: Int) {
             val views = RemoteViews(ctx.packageName, R.layout.widget_pantry)
 
@@ -30,6 +47,7 @@ class PantryWidgetProvider : AppWidgetProvider() {
             views.setInt(R.id.widget_root, "setBackgroundColor", bg)
             views.setTextColor(R.id.widget_title, fg)
             views.setTextColor(R.id.widget_empty, fg)
+            views.setInt(R.id.widget_config, "setColorFilter", fg)
 
             // Adapter intent — URI must be unique per widget ID so Android
             // doesn't reuse a stale factory for a different widget instance,
@@ -57,6 +75,22 @@ class PantryWidgetProvider : AppWidgetProvider() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
             )
             views.setPendingIntentTemplate(R.id.widget_list, pendingTemplate)
+
+            // Header cog: reconfigure this widget's list selection by opening
+            // the same config activity used when the widget is added.
+            val configIntent = Intent(ctx, WidgetConfigActivity::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                // Unique data so distinct widgets don't share one PendingIntent.
+                data = Uri.parse("pantry-widget://configure/$widgetId")
+            }
+            val pendingConfig = PendingIntent.getActivity(
+                ctx,
+                widgetId,
+                configIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
+            views.setOnClickPendingIntent(R.id.widget_config, pendingConfig)
 
             mgr.updateAppWidget(widgetId, views)
             mgr.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_list)

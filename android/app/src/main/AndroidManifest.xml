@@ -26,6 +26,13 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <!-- app_links is the sole deep-link handler. Without this, Flutter's
+                 built-in deep linking also routes pantry:// URIs through
+                 onGenerateRoute, which falls through to the login view. -->
+            <meta-data
+              android:name="flutter_deeplinking_enabled"
+              android:value="false"
+              />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -45,8 +52,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
-            <!-- Deep link: pantry://list/<houseId>/<listId> opens a specific list.
-                 Usable by NFC tags, launcher/pinned shortcuts and automation apps. -->
+            <!-- Deep link: pantry://list/<houseId>/<listId> opens a specific
+                 list (NFC tags, launcher/pinned shortcuts, automation apps). -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -54,6 +61,25 @@
                 <data android:scheme="pantry" android:host="list" />
             </intent-filter>
         </activity>
+
+        <!-- Widget: list selector shown when a widget is added (android:configure)
+             and when its header cog is tapped. Its own Flutter engine renders
+             the /widget-config/<id> route. -->
+        <activity
+            android:name=".WidgetConfigActivity"
+            android:exported="true"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
         <!-- Widget: receives APPWIDGET_UPDATE broadcasts -->
         <receiver
             android:name=".PantryWidgetProvider"
