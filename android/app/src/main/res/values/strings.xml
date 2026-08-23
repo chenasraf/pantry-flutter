@@ -4,4 +4,8 @@
     <string name="widget_description">Shows Pantry lists you choose</string>
     <string name="widget_empty">No lists yet.\nTap the gear to choose lists.</string>
     <string name="widget_configure">Choose lists</string>
+    <string name="widget_checklist_description">Shows one checklist\'s items</string>
+    <string name="widget_checklist_empty">No items yet.\nTap the gear to choose a list.</string>
+    <string name="widget_done">Done</string>
+    <string name="widget_toggle_item">Toggle item</string>
 </resources>

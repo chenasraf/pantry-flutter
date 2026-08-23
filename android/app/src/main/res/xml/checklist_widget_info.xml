@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="180dp"
+    android:minHeight="180dp"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/widget_checklist"
+    android:widgetCategory="home_screen"
+    android:resizeMode="horizontal|vertical"
+    android:configure="dev.casraf.pantry.ChecklistWidgetConfigActivity"
+    android:widgetFeatures="reconfigurable|configuration_optional"
+    android:description="@string/widget_checklist_description" />

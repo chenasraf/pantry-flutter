@@ -7,13 +7,11 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
-/// Configuration screen for the lists widget. Runs a lean Flutter app (the list
-/// selector) in its own engine via the `/widget-config/<id>` initial route.
-/// Declared as the widget's `android:configure`, so it opens when a widget is
-/// added, and is also launched by the widget's header cog to reconfigure.
-/// Returns RESULT_OK only once the user saves, so the launcher commits the
-/// widget; backing out leaves the default RESULT_CANCELED.
-class WidgetConfigActivity : FlutterActivity() {
+/// Configuration screen for the single-checklist widget. Runs a lean Flutter
+/// app via the `/checklist-widget-config/<id>` initial route. Declared as the
+/// widget's `android:configure` and also opened by its header cog. Returns
+/// RESULT_OK only once the user saves so the launcher commits the widget.
+class ChecklistWidgetConfigActivity : FlutterActivity() {
     private val configChannel = "dev.casraf.pantry/widget_config"
     private val widgetChannel = "dev.casraf.pantry/widget"
 
@@ -31,7 +29,7 @@ class WidgetConfigActivity : FlutterActivity() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun getInitialRoute(): String = "/widget-config/$appWidgetId"
+    override fun getInitialRoute(): String = "/checklist-widget-config/$appWidgetId"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -42,9 +40,10 @@ class WidgetConfigActivity : FlutterActivity() {
                 val ok = call.argument<Boolean>("ok") ?: false
                 val id = appWidgetId
                 if (ok && id != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    // Just finalize the widget. The lists were already pushed by
-                    // setConfig; binding the collection service from this activity
-                    // (updateWidget) leaks it and can leave the widget pending.
+                    // Just finalize the widget. The rows were already pushed by
+                    // setConfig; rendering happens via the launcher's post-config
+                    // onUpdate. Binding the collection service from this activity
+                    // (updateWidget) leaks it and leaves the widget pending.
                     setResult(
                         RESULT_OK,
                         Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id),
@@ -57,11 +56,9 @@ class WidgetConfigActivity : FlutterActivity() {
             }
         }
 
-        // The config engine's WidgetService needs live widget ids to resync the
-        // launcher shortcut union when a selection is saved.
         MethodChannel(messenger, widgetChannel).setMethodCallHandler { call, result ->
-            if (call.method == "getListsWidgetIds") {
-                result.success(PantryWidgetProvider.widgetIds(this).toList())
+            if (call.method == "getChecklistWidgetIds") {
+                result.success(ChecklistWidgetProvider.widgetIds(this).toList())
             } else {
                 result.notImplemented()
             }

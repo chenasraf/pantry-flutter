@@ -430,6 +430,16 @@ class WidgetMessagesHe extends WidgetMessages {
   String get chooseListsSubtitle => """בחר אילו רשימות הווידג'ט הזה יציג.""";
 
   /// ```dart
+  /// "בחירת רשימה"
+  /// ```
+  String get chooseListTitle => """בחירת רשימה""";
+
+  /// ```dart
+  /// "בחר את הרשימה שהווידג'ט הזה יציג."
+  /// ```
+  String get chooseListSubtitle => """בחר את הרשימה שהווידג'ט הזה יציג.""";
+
+  /// ```dart
   /// "אין רשימות זמינות."
   /// ```
   String get noLists => """אין רשימות זמינות.""";
@@ -4810,6 +4820,8 @@ Map<String, String> get messagesHeMap => {
   """nav.notesWall""": """קיר הערות""",
   """widget.chooseListsTitle""": """בחירת רשימות""",
   """widget.chooseListsSubtitle""": """בחר אילו רשימות הווידג'ט הזה יציג.""",
+  """widget.chooseListTitle""": """בחירת רשימה""",
+  """widget.chooseListSubtitle""": """בחר את הרשימה שהווידג'ט הזה יציג.""",
   """widget.noLists""": """אין רשימות זמינות.""",
   """onboarding.next""": """הבא""",
   """onboarding.back""": """חזור""",

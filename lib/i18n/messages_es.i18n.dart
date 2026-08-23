@@ -434,6 +434,17 @@ class WidgetMessagesEs extends WidgetMessages {
   String get chooseListsSubtitle => """Elige qué listas muestra este widget.""";
 
   /// ```dart
+  /// "Elegir una lista"
+  /// ```
+  String get chooseListTitle => """Elegir una lista""";
+
+  /// ```dart
+  /// "Elige la lista que muestra este widget."
+  /// ```
+  String get chooseListSubtitle =>
+      """Elige la lista que muestra este widget.""";
+
+  /// ```dart
   /// "No hay listas disponibles."
   /// ```
   String get noLists => """No hay listas disponibles.""";
@@ -4844,6 +4855,9 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """nav.notesWall""": """Muro de notas""",
   """widget.chooseListsTitle""": """Elegir listas""",
   """widget.chooseListsSubtitle""": """Elige qué listas muestra este widget.""",
+  """widget.chooseListTitle""": """Elegir una lista""",
+  """widget.chooseListSubtitle""":
+      """Elige la lista que muestra este widget.""",
   """widget.noLists""": """No hay listas disponibles.""",
   """onboarding.next""": """Siguiente""",
   """onboarding.back""": """Atrás""",

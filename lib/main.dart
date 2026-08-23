@@ -16,6 +16,7 @@ import 'services/locale_service.dart';
 import 'services/category_service.dart';
 import 'services/checklist_service.dart';
 import 'services/house_service.dart';
+import 'services/label_service.dart';
 import 'services/list_link_service.dart';
 import 'services/local_notifications_service.dart';
 import 'services/nn_localizations.dart';
@@ -26,7 +27,9 @@ import 'services/prefs_service.dart';
 import 'services/server_version_service.dart';
 import 'services/share_intent_service.dart';
 import 'services/widget_link_service.dart';
+import 'services/checklist_widget_service.dart';
 import 'services/theming_service.dart';
+import 'services/widget_interactivity.dart';
 import 'services/widget_service.dart';
 import 'sync/sync_manager.dart';
 import 'utils/platform_info.dart';
@@ -35,6 +38,7 @@ import 'views/login/login_view.dart';
 import 'views/notifications_intro/notifications_intro_view.dart';
 import 'views/onboarding/onboarding_pages.dart';
 import 'views/onboarding/onboarding_view.dart';
+import 'views/widget/checklist_widget_config_view.dart';
 import 'views/widget/widget_config_view.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -61,17 +65,22 @@ void _showPermissionDeniedSnackbar() {
 /// has a sane value to compare against.
 String appVersion = kAppOnboardingFirstVersion;
 
-/// Initial route the native [WidgetConfigActivity] launches its Flutter engine
-/// with. The lean widget-config app is run instead of the full app for it.
+/// Initial routes the native widget-config activities launch their Flutter
+/// engines with. The matching lean config app runs instead of the full app.
 const kWidgetConfigRoutePrefix = '/widget-config/';
+const kChecklistWidgetConfigRoutePrefix = '/checklist-widget-config/';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // The lists-widget config activity runs this same entrypoint in its own
-  // engine; branch to a lean selector app instead of the full app.
+  // The widget-config activities run this same entrypoint in their own engines;
+  // branch to the matching lean selector app instead of the full app.
   final initialRoute =
       WidgetsBinding.instance.platformDispatcher.defaultRouteName;
+  if (initialRoute.startsWith(kChecklistWidgetConfigRoutePrefix)) {
+    await _runChecklistWidgetConfigApp(initialRoute);
+    return;
+  }
   if (initialRoute.startsWith(kWidgetConfigRoutePrefix)) {
     await _runWidgetConfigApp(initialRoute);
     return;
@@ -145,10 +154,11 @@ void main() async {
         (_) => LocaleService.instance.apply(),
       ),
     );
-    // Refresh each home-screen widget's list payload from caches — item
-    // counts drift as the user checks things off, and a fresh install wipes
+    // Refresh each home-screen widget's payload from caches — item counts and
+    // rows drift as the user checks things off, and a fresh install wipes
     // HomeWidgetPreferences. Also resyncs the launcher quick actions.
     unawaited(WidgetService.instance.refreshAll());
+    unawaited(ChecklistWidgetService.instance.refreshAll());
     if (PrefsService.instance.notificationsEnabled) {
       unawaited(registerBackgroundNotificationPoll());
     }
@@ -158,16 +168,13 @@ void main() async {
   unawaited(ShareIntentService.instance.init());
   WidgetLinkService.instance.init();
   unawaited(ListLinkService.instance.init());
+  registerWidgetInteractivity();
   runApp(const PantryApp());
 }
 
-/// Boot a minimal app that shows only the widget list selector. Runs in the
-/// [WidgetConfigActivity] engine, so it loads just enough (auth + list caches +
-/// theme/locale) to render and save a selection.
-Future<void> _runWidgetConfigApp(String route) async {
-  final appWidgetId = int.tryParse(
-    route.substring(kWidgetConfigRoutePrefix.length),
-  );
+/// Load just enough (auth + list caches + theme/locale) for a widget-config
+/// engine to render and save, then run [home] in a minimal themed app.
+Future<void> _runConfigApp(Widget home) async {
   registerNnLocaleData();
   await Future.wait([
     AuthService.instance.loadCredentials(),
@@ -180,17 +187,32 @@ Future<void> _runWidgetConfigApp(String route) async {
   await Future.wait([
     HouseService.instance.cache.load(),
     ChecklistService.instance.cache.load(),
+    CategoryService.instance.cache.load(),
+    StoreService.instance.cache.load(),
+    LabelService.instance.cache.load(),
   ]);
   LocaleService.instance.apply();
-  runApp(WidgetConfigApp(appWidgetId: appWidgetId ?? -1));
+  runApp(_LeanConfigApp(home: home));
 }
 
-/// Minimal MaterialApp wrapper around [WidgetConfigView], themed and localised
-/// like the main app for a consistent look.
-class WidgetConfigApp extends StatelessWidget {
-  final int appWidgetId;
+Future<void> _runWidgetConfigApp(String route) async {
+  final id = int.tryParse(route.substring(kWidgetConfigRoutePrefix.length));
+  await _runConfigApp(WidgetConfigView(appWidgetId: id ?? -1));
+}
 
-  const WidgetConfigApp({super.key, required this.appWidgetId});
+Future<void> _runChecklistWidgetConfigApp(String route) async {
+  final id = int.tryParse(
+    route.substring(kChecklistWidgetConfigRoutePrefix.length),
+  );
+  await _runConfigApp(ChecklistWidgetConfigView(appWidgetId: id ?? -1));
+}
+
+/// Minimal MaterialApp wrapper for the widget-config screens, themed and
+/// localised like the main app for a consistent look.
+class _LeanConfigApp extends StatelessWidget {
+  final Widget home;
+
+  const _LeanConfigApp({required this.home});
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +238,13 @@ class WidgetConfigApp extends StatelessWidget {
           useMaterial3: true,
         ),
         themeMode: ThemingService.instance.themeMode,
-        home: WidgetConfigView(appWidgetId: appWidgetId),
+        // The engine's initial route is the deep config path (e.g.
+        // /checklist-widget-config/131); resolve any route to [home] so it
+        // isn't reported as an unresolved initial route.
+        onGenerateInitialRoutes: (_) => [
+          MaterialPageRoute(builder: (_) => home),
+        ],
+        onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => home),
       ),
     );
   }
@@ -299,6 +327,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
       // drift as lists change.
       PrefsService.instance.pushWidgetTheme();
       unawaited(WidgetService.instance.refreshAll());
+      unawaited(ChecklistWidgetService.instance.refreshAll());
     }
   }
 

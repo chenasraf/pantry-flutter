@@ -3217,6 +3217,14 @@ class _ItemListState extends State<_ItemList> {
 
   @override
   Widget build(BuildContext context) {
+    // An item deep link (e.g. the checklist widget) asks to open a specific
+    // item once its list has loaded and rendered here.
+    if (ChecklistService.instance.pendingOpenItemId != null) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _maybeOpenPendingItem(),
+      );
+    }
+
     final showDone = widget.doneItems.isNotEmpty;
     final showDoneItems = showDone && !widget.doneCollapsed;
 
@@ -3793,6 +3801,21 @@ class _ItemListState extends State<_ItemList> {
       },
       undoFailedMessage: m.checklists.restoreFailed,
     );
+  }
+
+  /// Consume a pending item deep link: once the target list's items are loaded,
+  /// open that item's detail. Cleared whether or not the item is found (so a
+  /// stale request can't reopen on later rebuilds).
+  void _maybeOpenPendingItem() {
+    final id = ChecklistService.instance.pendingOpenItemId;
+    if (id == null || !mounted || widget.controller.isLoading) return;
+    ChecklistService.instance.pendingOpenItemId = null;
+    for (final item in [...widget.activeItems, ...widget.doneItems]) {
+      if (item.id == id) {
+        _openView(context, widget.controller, item);
+        return;
+      }
+    }
   }
 
   void _openView(

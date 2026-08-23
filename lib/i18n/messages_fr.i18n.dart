@@ -436,6 +436,17 @@ class WidgetMessagesFr extends WidgetMessages {
       """Choisis les listes affichées par ce widget.""";
 
   /// ```dart
+  /// "Choisir une liste"
+  /// ```
+  String get chooseListTitle => """Choisir une liste""";
+
+  /// ```dart
+  /// "Choisis la liste affichée par ce widget."
+  /// ```
+  String get chooseListSubtitle =>
+      """Choisis la liste affichée par ce widget.""";
+
+  /// ```dart
   /// "Aucune liste disponible."
   /// ```
   String get noLists => """Aucune liste disponible.""";
@@ -4855,6 +4866,9 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """widget.chooseListsTitle""": """Choisir les listes""",
   """widget.chooseListsSubtitle""":
       """Choisis les listes affichées par ce widget.""",
+  """widget.chooseListTitle""": """Choisir une liste""",
+  """widget.chooseListSubtitle""":
+      """Choisis la liste affichée par ce widget.""",
   """widget.noLists""": """Aucune liste disponible.""",
   """onboarding.next""": """Suivant""",
   """onboarding.back""": """Retour""",

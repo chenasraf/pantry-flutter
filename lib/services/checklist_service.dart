@@ -67,6 +67,10 @@ class ChecklistService {
   int? get selectedListId => cache.get<int>(_selectedListKey);
   set selectedListId(int? id) => cache.set(_selectedListKey, id);
 
+  /// Transient (in-memory) request to open an item's detail once its list is
+  /// loaded — set by an item deep link, consumed by the checklists view.
+  int? pendingOpenItemId;
+
   List<ChecklistList>? getCachedLists(int houseId) {
     final scoped = cache.getKeyedList(
       _listsPrefix,

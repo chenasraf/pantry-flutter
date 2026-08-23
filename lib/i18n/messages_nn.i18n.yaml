@@ -90,6 +90,8 @@ nav:
 widget:
   chooseListsTitle: Vel lister
   chooseListsSubtitle: Vel kva lister denne widgeten viser.
+  chooseListTitle: Vel ei liste
+  chooseListSubtitle: Vel lista denne widgeten viser.
   noLists: Ingen lister tilgjengelege.
 
 onboarding:

@@ -52,13 +52,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
-            <!-- Deep link: pantry://list/<houseId>/<listId> opens a specific
-                 list (NFC tags, launcher/pinned shortcuts, automation apps). -->
+            <!-- Deep links:
+                 pantry://list/<houseId>/<listId>            opens a list.
+                 pantry://item/<houseId>/<listId>/<itemId>   opens an item.
+                 (NFC tags, launcher/pinned shortcuts, the checklist widget). -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="pantry" android:host="list" />
+                <data android:scheme="pantry" android:host="item" />
             </intent-filter>
         </activity>
 
@@ -97,6 +100,58 @@
             android:name=".PantryWidgetService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <!-- Single-checklist widget: provider, its item-list service, and its
+             list/chip config screen. -->
+        <receiver
+            android:name=".ChecklistWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/checklist_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".ChecklistWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <!-- home_widget's interactive-callback receiver (the plugin ships no
+             manifest entry). Drives the checklist widget's checkbox toggle. -->
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="es.antonborri.home_widget.action.BACKGROUND" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Invisible trampoline for checklist-widget row taps: toggles an item
+             (fires the background callback) or opens it in the app. -->
+        <activity
+            android:name=".WidgetActionActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity
+            android:name=".ChecklistWidgetConfigActivity"
+            android:exported="true"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

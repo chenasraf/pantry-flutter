@@ -68,6 +68,8 @@ nav:
 widget:
   chooseListsTitle: Listen auswählen
   chooseListsSubtitle: Wähle, welche Listen dieses Widget zeigt.
+  chooseListTitle: Liste auswählen
+  chooseListSubtitle: Wähle die Liste, die dieses Widget zeigt.
   noLists: Keine Listen verfügbar.
 
 onboarding:

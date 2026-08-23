@@ -431,6 +431,16 @@ class WidgetMessagesNn extends WidgetMessages {
   String get chooseListsSubtitle => """Vel kva lister denne widgeten viser.""";
 
   /// ```dart
+  /// "Vel ei liste"
+  /// ```
+  String get chooseListTitle => """Vel ei liste""";
+
+  /// ```dart
+  /// "Vel lista denne widgeten viser."
+  /// ```
+  String get chooseListSubtitle => """Vel lista denne widgeten viser.""";
+
+  /// ```dart
   /// "Ingen lister tilgjengelege."
   /// ```
   String get noLists => """Ingen lister tilgjengelege.""";
@@ -4831,6 +4841,8 @@ Fullfør innlogginga i nettlesaren din.""",
   """nav.notesWall""": """Notatvegg""",
   """widget.chooseListsTitle""": """Vel lister""",
   """widget.chooseListsSubtitle""": """Vel kva lister denne widgeten viser.""",
+  """widget.chooseListTitle""": """Vel ei liste""",
+  """widget.chooseListSubtitle""": """Vel lista denne widgeten viser.""",
   """widget.noLists""": """Ingen lister tilgjengelege.""",
   """onboarding.next""": """Neste""",
   """onboarding.back""": """Tilbake""",

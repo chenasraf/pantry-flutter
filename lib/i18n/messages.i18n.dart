@@ -431,6 +431,16 @@ class WidgetMessages {
   String get chooseListsSubtitle => """Pick which lists this widget shows.""";
 
   /// ```dart
+  /// "Choose a list"
+  /// ```
+  String get chooseListTitle => """Choose a list""";
+
+  /// ```dart
+  /// "Pick the list this widget shows."
+  /// ```
+  String get chooseListSubtitle => """Pick the list this widget shows.""";
+
+  /// ```dart
   /// "No lists available."
   /// ```
   String get noLists => """No lists available.""";
@@ -4806,6 +4816,8 @@ Please complete login in your browser.""",
   """nav.notesWall""": """Notes Wall""",
   """widget.chooseListsTitle""": """Choose lists""",
   """widget.chooseListsSubtitle""": """Pick which lists this widget shows.""",
+  """widget.chooseListTitle""": """Choose a list""",
+  """widget.chooseListSubtitle""": """Pick the list this widget shows.""",
   """widget.noLists""": """No lists available.""",
   """onboarding.next""": """Next""",
   """onboarding.back""": """Back""",

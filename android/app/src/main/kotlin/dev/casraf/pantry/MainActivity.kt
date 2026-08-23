@@ -44,6 +44,8 @@ class MainActivity : FlutterActivity() {
                         }
                     }
                     "getListsWidgetIds" -> result.success(listsWidgetIds().toList())
+                    "getChecklistWidgetIds" ->
+                        result.success(ChecklistWidgetProvider.widgetIds(this).toList())
                     else -> result.notImplemented()
                 }
             }

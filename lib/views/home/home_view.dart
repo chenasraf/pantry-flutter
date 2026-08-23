@@ -275,13 +275,14 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     final link = ListLinkService.instance.pending.value;
     if (link == null) return;
     ListLinkService.instance.pending.value = null;
-    _openList(listId: link.listId, houseId: link.houseId);
+    _openList(listId: link.listId, houseId: link.houseId, itemId: link.itemId);
   }
 
   /// Switch to [houseId] (when given and not already current), pre-select
   /// [listId], and jump to the checklists tab. Shared sink for widget taps,
   /// `pantry://` URL deep links, launcher quick actions and pinned shortcuts.
-  void _openList({required int listId, int? houseId}) {
+  /// When [itemId] is given, the checklists view opens that item once loaded.
+  void _openList({required int listId, int? houseId, int? itemId}) {
     final homeController = context.read<HomeController>();
 
     if (houseId != null && houseId != homeController.currentHouse?.id) {
@@ -294,6 +295,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
     // Pre-select the list so ChecklistsController picks it up on load.
     ChecklistService.instance.selectedListId = listId;
+    ChecklistService.instance.pendingOpenItemId = itemId;
 
     if (!mounted) return;
     final checklistsIndex = _navOrder.indexOf(NavSection.checklists);

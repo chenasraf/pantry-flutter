@@ -68,6 +68,8 @@ nav:
 widget:
   chooseListsTitle: בחירת רשימות
   chooseListsSubtitle: בחר אילו רשימות הווידג'ט הזה יציג.
+  chooseListTitle: בחירת רשימה
+  chooseListSubtitle: בחר את הרשימה שהווידג'ט הזה יציג.
   noLists: אין רשימות זמינות.
 
 onboarding:
