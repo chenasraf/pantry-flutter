@@ -29,11 +29,40 @@ class ChecklistWidgetProvider : AppWidgetProvider() {
         }.apply()
     }
 
+    override fun onReceive(ctx: Context, intent: Intent) {
+        if (intent.action == ACTION_TOGGLE_LOCK) {
+            val id = intent.getIntExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID,
+            )
+            if (id != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                toggleLock(ctx, id)
+            }
+        }
+        super.onReceive(ctx, intent)
+    }
+
     companion object {
+        const val ACTION_TOGGLE_LOCK = "dev.casraf.pantry.TOGGLE_LOCK"
+
         fun widgetIds(ctx: Context): IntArray =
             AppWidgetManager.getInstance(ctx).getAppWidgetIds(
                 ComponentName(ctx, ChecklistWidgetProvider::class.java),
             )
+
+        /// Flip the widget's locked flag in its stored payload, then re-render.
+        private fun toggleLock(ctx: Context, widgetId: Int) {
+            val prefs = ctx.getSharedPreferences(
+                "HomeWidgetPreferences",
+                Context.MODE_PRIVATE,
+            )
+            val key = "checklist_widget_$widgetId"
+            val json = prefs.getString(key, null) ?: return
+            val obj = runCatching { JSONObject(json) }.getOrNull() ?: return
+            obj.put("locked", !obj.optBoolean("locked", false))
+            prefs.edit().putString(key, obj.toString()).apply()
+            updateWidget(ctx, AppWidgetManager.getInstance(ctx), widgetId)
+        }
 
         fun updateWidget(ctx: Context, mgr: AppWidgetManager, widgetId: Int) {
             val views = RemoteViews(ctx.packageName, R.layout.widget_checklist)
@@ -51,19 +80,39 @@ class ChecklistWidgetProvider : AppWidgetProvider() {
             views.setTextColor(R.id.widget_title, fg)
             views.setTextColor(R.id.widget_empty, fg)
             views.setInt(R.id.widget_config, "setColorFilter", fg)
+            views.setInt(R.id.widget_lock, "setColorFilter", fg)
 
             val prefs = ctx.getSharedPreferences(
                 "HomeWidgetPreferences",
                 Context.MODE_PRIVATE,
             )
             val stored = prefs.getString("checklist_widget_$widgetId", null)
-            val title = runCatching {
-                JSONObject(stored ?: "{}").optString("listName")
-            }.getOrNull()
+            val obj = runCatching { JSONObject(stored ?: "{}") }.getOrNull()
+            val title = obj?.optString("listName")
+            val locked = obj?.optBoolean("locked", false) ?: false
             views.setTextViewText(
                 R.id.widget_title,
                 if (title.isNullOrEmpty()) ctx.getString(R.string.app_name) else title,
             )
+            views.setImageViewResource(
+                R.id.widget_lock,
+                if (locked) R.drawable.widget_lock else R.drawable.widget_lock_open,
+            )
+
+            // Header lock button toggles the locked flag (broadcast to this
+            // provider); unique data keeps distinct widgets' intents separate.
+            val lockIntent = Intent(ctx, ChecklistWidgetProvider::class.java).apply {
+                action = ACTION_TOGGLE_LOCK
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                data = Uri.parse("pantry-checklist-widget://lock/$widgetId")
+            }
+            val pendingLock = PendingIntent.getBroadcast(
+                ctx,
+                widgetId,
+                lockIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
+            views.setOnClickPendingIntent(R.id.widget_lock, pendingLock)
 
             val serviceIntent = Intent(ctx, ChecklistWidgetService::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)

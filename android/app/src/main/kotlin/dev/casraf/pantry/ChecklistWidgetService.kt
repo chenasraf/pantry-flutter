@@ -33,6 +33,7 @@ private class ChecklistWidgetFactory(
     private var rows: JSONArray = JSONArray()
     private var houseId: Int = -1
     private var listId: Int = -1
+    private var locked: Boolean = false
     private var fg: Int = 0
     private var pillRes: Int = R.drawable.widget_count_pill_light
 
@@ -57,10 +58,12 @@ private class ChecklistWidgetFactory(
             val obj = JSONObject(json ?: "{}")
             houseId = obj.optInt("houseId", -1)
             listId = obj.optInt("listId", -1)
+            locked = obj.optBoolean("locked", false)
             obj.optJSONArray("rows") ?: JSONArray()
         } catch (_: Exception) {
             houseId = -1
             listId = -1
+            locked = false
             JSONArray()
         }
     }
@@ -97,11 +100,13 @@ private class ChecklistWidgetFactory(
         val rv = RemoteViews(ctx.packageName, R.layout.widget_checklist_item)
         val done = row.optBoolean("done")
 
+        // Item text/chips only dim when done (RemoteViews.setInt can't bind
+        // TextView.setAlpha, a float, so fold the alpha into each colour). The
+        // checkbox dims when the widget is locked, to signal it can't be tapped.
+        val alpha = if (done) 140 else 255
+
         rv.setTextViewText(R.id.widget_item_name, row.optString("name"))
-        // Dim done items by lowering the text-colour alpha (TextView.setAlpha
-        // takes a float, which RemoteViews.setInt can't bind).
-        val nameColor = if (done) (fg and 0x00FFFFFF) or (140 shl 24) else fg
-        rv.setTextColor(R.id.widget_item_name, nameColor)
+        rv.setTextColor(R.id.widget_item_name, dim(fg, alpha))
         val flags = Paint.ANTI_ALIAS_FLAG or
             if (done) Paint.STRIKE_THRU_TEXT_FLAG else 0
         rv.setInt(R.id.widget_item_name, "setPaintFlags", flags)
@@ -111,6 +116,8 @@ private class ChecklistWidgetFactory(
             if (done) R.drawable.widget_check_on else R.drawable.widget_check_off,
         )
         rv.setInt(R.id.widget_item_check, "setColorFilter", fg)
+        // setImageAlpha honours alpha on an ImageView; setColorFilter doesn't.
+        rv.setInt(R.id.widget_item_check, "setImageAlpha", if (locked) 90 else 255)
 
         val pills = row.optJSONArray("pills") ?: JSONArray()
         val pillIds = intArrayOf(
@@ -127,33 +134,44 @@ private class ChecklistWidgetFactory(
                 rv.setTextViewText(pillIds[i], pill.optString("text"))
                 rv.setTextColor(
                     pillIds[i],
-                    parseColor(pill.optStringOrNull("color")) ?: fg,
+                    dim(parseColor(pill.optStringOrNull("color")) ?: fg, alpha),
                 )
                 rv.setInt(pillIds[i], "setBackgroundResource", pillRes)
             }
         }
 
-        // Fill-in intents on the two child targets (NOT the row root, which
-        // would otherwise swallow checkbox taps): the checkbox toggles the item,
-        // the content area opens it. Both merge with the provider's
-        // background-broadcast template.
+        // Fill-ins on the two child targets: checkbox toggles, content opens.
+        // When locked, set EMPTY fill-ins (a no-op at the trampoline) rather
+        // than omitting them — recycled row views keep a previously-set fill-in,
+        // so the intent must be overwritten to actually disable the tap.
         val itemId = row.optInt("id")
         rv.setOnClickFillInIntent(
             R.id.widget_item_check,
-            Intent().apply {
-                data = Uri.parse(
-                    "pantry-widget://toggle/$houseId/$listId/$itemId/$widgetId",
-                )
+            if (locked) {
+                Intent()
+            } else {
+                Intent().apply {
+                    data = Uri.parse(
+                        "pantry-widget://toggle/$houseId/$listId/$itemId/$widgetId",
+                    )
+                }
             },
         )
         rv.setOnClickFillInIntent(
             R.id.widget_item_content,
-            Intent().apply {
-                data = Uri.parse("pantry-widget://open/$houseId/$listId/$itemId")
+            if (locked) {
+                Intent()
+            } else {
+                Intent().apply {
+                    data = Uri.parse("pantry-widget://open/$houseId/$listId/$itemId")
+                }
             },
         )
         return rv
     }
+
+    private fun dim(color: Int, alpha: Int): Int =
+        (color and 0x00FFFFFF) or (alpha shl 24)
 
     // Mirrors Dart's parseHexColor: accepts "#RRGGBB", "RRGGBB" or "AARRGGBB"
     // (the app stores colours without a leading '#', which Color.parseColor

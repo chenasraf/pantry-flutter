@@ -101,6 +101,9 @@ class ChecklistWidgetService {
   }
 
   Future<void> _writeRows(int widgetId, ChecklistWidgetConfig config) async {
+    // The lock flag is toggled natively; preserve it across Dart re-renders.
+    final locked = (await _read(widgetId))?['locked'] as bool? ?? false;
+
     final cs = ChecklistService.instance;
     final lists = cs.getCachedLists(config.houseId);
     ChecklistList? list;
@@ -146,6 +149,7 @@ class ChecklistWidgetService {
         'listName': list?.name ?? '',
         'chips': config.chips.toList(),
         'showAddedBy': config.showAddedBy,
+        'locked': locked,
         'rows': rows,
       }),
     );

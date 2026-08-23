@@ -8,4 +8,5 @@
     <string name="widget_checklist_empty">No items yet.\nTap the gear to choose a list.</string>
     <string name="widget_done">Done</string>
     <string name="widget_toggle_item">Toggle item</string>
+    <string name="widget_lock">Lock or unlock</string>
 </resources>
