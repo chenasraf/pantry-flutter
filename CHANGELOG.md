@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.29.0](https://github.com/chenasraf/pantry-flutter/compare/v0.28.0...v0.29.0) (2026-08-24)
+
+
+### Features
+
+* **android:** allow locking checklist widget to prevent accidental taps ([b21d72e](https://github.com/chenasraf/pantry-flutter/commit/b21d72eb84ef95f604e07df8d16386cba6303a8e))
+* **android:** choose which lists each home-screen widget shows ([be33a82](https://github.com/chenasraf/pantry-flutter/commit/be33a82a67c9e71560f8cecae6fab43fe5f1344f))
+* **android:** copy a list's link and add lists to your home screen ([19e655b](https://github.com/chenasraf/pantry-flutter/commit/19e655b6b26237ef167231eeae7a41ea54bb333e))
+* **android:** single-checklist widget with in-widget check-off ([a5c0926](https://github.com/chenasraf/pantry-flutter/commit/a5c09260014fe8a959d94543926da3caca0a0921)), closes [#112](https://github.com/chenasraf/pantry-flutter/issues/112)
+* **checklists:** archive checklists and open trashed or archived lists ([cbb4c8f](https://github.com/chenasraf/pantry-flutter/commit/cbb4c8f42aac7af570407bb0e6dc1040796cbb93))
+* **notes:** import a note's contents into a list ([ce82a0a](https://github.com/chenasraf/pantry-flutter/commit/ce82a0a30e6f530a421f6f5b2babdc6f320bada2))
+
+
+### Bug Fixes
+
+* **mobile:** opening a Pantry link no longer creates a note ([11ac301](https://github.com/chenasraf/pantry-flutter/commit/11ac301ae4e5584acc4176325b72dd1418074e91))
+
 ## [0.28.0](https://github.com/chenasraf/pantry-flutter/compare/v0.27.3...v0.28.0) (2026-08-21)
 
 

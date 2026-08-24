@@ -1,0 +1,9 @@
+Features
+- allow locking checklist widget to prevent accidental taps
+- choose which lists each home-screen widget shows
+- copy a list's link and add lists to your home screen
+- single-checklist widget with in-widget check-off
+- archive checklists and open trashed or archived lists
+- import a note's contents into a list
+Bug Fixes
+- opening a Pantry link no longer creates a note
