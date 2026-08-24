@@ -1,0 +1,5 @@
+Features
+- archive checklists and open trashed or archived lists
+- import a note's contents into a list
+Bug Fixes
+- opening a Pantry link no longer creates a note
