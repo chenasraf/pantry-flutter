@@ -666,6 +666,7 @@ checklists:
     uncategorized: Uncategorized
     exportTitle: Export to Markdown
     importTitle: Import from Markdown
+    importToLabel: Import to
     includeCompleted: Include completed items
     editHint: Edit the text below to modify the exported list
     copy: Copy
@@ -716,6 +717,8 @@ notesWall:
   keepEditing: Keep editing
   pinNote: Pin note
   unpinNote: Unpin note
+  importToList: Import to list
+  importNoLists: No lists available to import into.
   title: Title
   content: Content
   color: Color

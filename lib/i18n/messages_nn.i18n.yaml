@@ -785,6 +785,7 @@ checklists:
     uncategorized: Ukategorisert
     exportTitle: Eksporter til markdown
     importTitle: Importer frå markdown
+    importToLabel: Importer til
     includeCompleted: Inkluder fullførte oppføringar
     editHint: Rediger teksten under for å endre den eksporterte lista
     copy: Kopier
@@ -845,6 +846,8 @@ notesWall:
   keepEditing: Fortset å redigere
   pinNote: Fest notat
   unpinNote: Fjern festing av notat
+  importToList: Importer til liste
+  importNoLists: Ingen lister tilgjengelege å importere til.
   title: Tittel
   content: Innhald
   color: Farge

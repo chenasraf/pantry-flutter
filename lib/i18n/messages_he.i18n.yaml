@@ -666,6 +666,7 @@ checklists:
     uncategorized: ללא קטגוריה
     exportTitle: ייצוא ל-Markdown
     importTitle: ייבוא מ-Markdown
+    importToLabel: ייבוא אל
     includeCompleted: לכלול פריטים שהושלמו
     editHint: ערכו את הטקסט למטה כדי לשנות את הרשימה המיוצאת
     copy: העתקה
@@ -716,6 +717,8 @@ notesWall:
   keepEditing: המשך עריכה
   pinNote: הצמדת הערה
   unpinNote: ביטול הצמדה
+  importToList: ייבוא לרשימה
+  importNoLists: אין רשימות זמינות לייבוא.
   title: כותרת
   content: תוכן
   color: צבע

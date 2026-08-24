@@ -3512,6 +3512,11 @@ class MarkdownChecklistsMessagesEs extends MarkdownChecklistsMessages {
   String get importTitle => """Importar desde Markdown""";
 
   /// ```dart
+  /// "Importar a"
+  /// ```
+  String get importToLabel => """Importar a""";
+
+  /// ```dart
   /// "Incluir elementos completados"
   /// ```
   String get includeCompleted => """Incluir elementos completados""";
@@ -3767,6 +3772,16 @@ class NotesWallMessagesEs extends NotesWallMessages {
   /// "Quitar fijación"
   /// ```
   String get unpinNote => """Quitar fijación""";
+
+  /// ```dart
+  /// "Importar a una lista"
+  /// ```
+  String get importToList => """Importar a una lista""";
+
+  /// ```dart
+  /// "No hay listas disponibles para importar."
+  /// ```
+  String get importNoLists => """No hay listas disponibles para importar.""";
 
   /// ```dart
   /// "Título"
@@ -5446,6 +5461,7 @@ Contraseña: pantry-rocks""",
   """checklists.markdown.uncategorized""": """Sin categoría""",
   """checklists.markdown.exportTitle""": """Exportar a Markdown""",
   """checklists.markdown.importTitle""": """Importar desde Markdown""",
+  """checklists.markdown.importToLabel""": """Importar a""",
   """checklists.markdown.includeCompleted""":
       """Incluir elementos completados""",
   """checklists.markdown.editHint""":
@@ -5499,6 +5515,8 @@ Contraseña: pantry-rocks""",
   """notesWall.keepEditing""": """Seguir editando""",
   """notesWall.pinNote""": """Fijar nota""",
   """notesWall.unpinNote""": """Quitar fijación""",
+  """notesWall.importToList""": """Importar a una lista""",
+  """notesWall.importNoLists""": """No hay listas disponibles para importar.""",
   """notesWall.title""": """Título""",
   """notesWall.content""": """Contenido""",
   """notesWall.color""": """Color""",

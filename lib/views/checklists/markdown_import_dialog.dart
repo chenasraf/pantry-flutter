@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
+import 'package:pantry/models/checklist.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/markdown_list.dart';
 import 'package:pantry/views/checklists/checklist_item_tile.dart'
@@ -22,9 +23,15 @@ class MarkdownImportResult {
   final List<ComposeSubmission> submissions;
   final bool forceReuse;
 
+  /// The list the user chose to import into, when the dialog offered a list
+  /// picker (the note-driven "import to list" flow). Null when the caller fixed
+  /// the target list up front (the in-list import).
+  final int? listId;
+
   const MarkdownImportResult({
     required this.submissions,
     required this.forceReuse,
+    this.listId,
   });
 }
 
@@ -49,12 +56,33 @@ class MarkdownImportDialog extends StatefulWidget {
   /// Opens the create-category flow and returns the new category (or null).
   final Future<models.Category?> Function()? onRequestCreateCategory;
 
+  /// Prefills the paste field (and parses it immediately) — used when importing
+  /// a note's contents.
+  final String? initialText;
+
+  /// When non-null, the dialog shows a target-list picker at the top and
+  /// returns the chosen list in [MarkdownImportResult.listId]. The categories
+  /// shown then follow the selected list via [categoriesForList] rather than
+  /// the fixed [categories] list.
+  final List<ChecklistList>? pickableLists;
+
+  /// The list pre-selected in the picker; defaults to the first pickable list.
+  final int? initialListId;
+
+  /// Categories offered for a given list id. Required when [pickableLists] is
+  /// set so the defaults section can follow the chosen list.
+  final List<models.Category> Function(int listId)? categoriesForList;
+
   const MarkdownImportDialog({
     super.key,
     required this.categories,
     required this.reusePref,
     required this.reuseFeatureAvailable,
     this.onRequestCreateCategory,
+    this.initialText,
+    this.pickableLists,
+    this.initialListId,
+    this.categoriesForList,
   });
 
   @override
@@ -69,16 +97,60 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
   List<ParsedMarkdownItem> _parsed = const [];
   List<bool> _selected = const [];
 
-  late List<models.Category> _categories = List.of(widget.categories);
+  late int? _listId = _initialListId();
+  late List<models.Category> _categories = _categoriesForCurrentList();
   int? _categoryId;
   ItemLifecycle _lifecycle = ItemLifecycle.staple;
   final RecurrenceState _recurrence = RecurrenceState();
   bool _forceReuse = false;
 
+  bool get _showListPicker =>
+      widget.pickableLists != null && widget.pickableLists!.isNotEmpty;
+
+  int? _initialListId() {
+    final lists = widget.pickableLists;
+    if (lists == null || lists.isEmpty) return null;
+    final wanted = widget.initialListId;
+    if (wanted != null && lists.any((l) => l.id == wanted)) return wanted;
+    return lists.first.id;
+  }
+
+  List<models.Category> _categoriesForCurrentList() {
+    if (_showListPicker &&
+        widget.categoriesForList != null &&
+        _listId != null) {
+      return List.of(widget.categoriesForList!(_listId!));
+    }
+    return List.of(widget.categories);
+  }
+
   // Only offer the override when the global pref wouldn't already reuse ("ask"
   // or "never") and the server supports it.
   bool get _canForceReuse =>
       widget.reuseFeatureAvailable && widget.reusePref != 'reuse';
+
+  @override
+  void initState() {
+    super.initState();
+    final initial = widget.initialText;
+    if (initial != null && initial.isNotEmpty) {
+      _textController.text = initial;
+      _parsed = parseMarkdownItems(initial);
+      _selected = List.filled(_parsed.length, true);
+    }
+  }
+
+  void _onListChanged(int? id) {
+    if (id == null || id == _listId) return;
+    setState(() {
+      _listId = id;
+      _categories = _categoriesForCurrentList();
+      // A category scoped to the previous list may not apply to the new one.
+      if (_categoryId != null && !_categories.any((c) => c.id == _categoryId)) {
+        _categoryId = null;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -160,6 +232,7 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
       MarkdownImportResult(
         submissions: submissions,
         forceReuse: _canForceReuse && _forceReuse,
+        listId: _showListPicker ? _listId : null,
       ),
     );
   }
@@ -179,6 +252,13 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (_showListPicker) ...[
+                // A few px so the dropdown's floating label isn't clipped by
+                // the top of the dialog body.
+                const SizedBox(height: 8),
+                _listPicker(),
+                const SizedBox(height: 12),
+              ],
               Align(
                 alignment: AlignmentDirectional.centerStart,
                 child: OutlinedButton.icon(
@@ -239,6 +319,26 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
           child: Text(m.checklists.markdown.addItems(_selectedCount)),
         ),
       ],
+    );
+  }
+
+  Widget _listPicker() {
+    return DropdownButtonFormField<int>(
+      initialValue: _listId,
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: m.checklists.markdown.importToLabel,
+        border: const OutlineInputBorder(),
+        isDense: true,
+      ),
+      items: [
+        for (final l in widget.pickableLists!)
+          DropdownMenuItem(
+            value: l.id,
+            child: Text(l.name, overflow: TextOverflow.ellipsis),
+          ),
+      ],
+      onChanged: _onListChanged,
     );
   }
 

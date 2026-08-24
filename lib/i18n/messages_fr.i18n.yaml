@@ -666,6 +666,7 @@ checklists:
     uncategorized: Sans catégorie
     exportTitle: Exporter en Markdown
     importTitle: Importer depuis Markdown
+    importToLabel: Importer vers
     includeCompleted: Inclure les éléments terminés
     editHint: Modifiez le texte ci-dessous pour ajuster la liste exportée
     copy: Copier
@@ -716,6 +717,8 @@ notesWall:
   keepEditing: Continuer la modification
   pinNote: Épingler la note
   unpinNote: Désépingler la note
+  importToList: Importer vers une liste
+  importNoLists: Aucune liste disponible pour l'importation.
   title: Titre
   content: Contenu
   color: Couleur

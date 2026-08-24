@@ -3506,6 +3506,11 @@ class MarkdownChecklistsMessagesNn extends MarkdownChecklistsMessages {
   String get importTitle => """Importer frå markdown""";
 
   /// ```dart
+  /// "Importer til"
+  /// ```
+  String get importToLabel => """Importer til""";
+
+  /// ```dart
   /// "Inkluder fullførte oppføringar"
   /// ```
   String get includeCompleted => """Inkluder fullførte oppføringar""";
@@ -3759,6 +3764,16 @@ class NotesWallMessagesNn extends NotesWallMessages {
   /// "Fjern festing av notat"
   /// ```
   String get unpinNote => """Fjern festing av notat""";
+
+  /// ```dart
+  /// "Importer til liste"
+  /// ```
+  String get importToList => """Importer til liste""";
+
+  /// ```dart
+  /// "Ingen lister tilgjengelege å importere til."
+  /// ```
+  String get importNoLists => """Ingen lister tilgjengelege å importere til.""";
 
   /// ```dart
   /// "Tittel"
@@ -5429,6 +5444,7 @@ Passord: pantry""",
   """checklists.markdown.uncategorized""": """Ukategorisert""",
   """checklists.markdown.exportTitle""": """Eksporter til markdown""",
   """checklists.markdown.importTitle""": """Importer frå markdown""",
+  """checklists.markdown.importToLabel""": """Importer til""",
   """checklists.markdown.includeCompleted""":
       """Inkluder fullførte oppføringar""",
   """checklists.markdown.editHint""":
@@ -5482,6 +5498,9 @@ Passord: pantry""",
   """notesWall.keepEditing""": """Fortset å redigere""",
   """notesWall.pinNote""": """Fest notat""",
   """notesWall.unpinNote""": """Fjern festing av notat""",
+  """notesWall.importToList""": """Importer til liste""",
+  """notesWall.importNoLists""":
+      """Ingen lister tilgjengelege å importere til.""",
   """notesWall.title""": """Tittel""",
   """notesWall.content""": """Innhald""",
   """notesWall.color""": """Farge""",

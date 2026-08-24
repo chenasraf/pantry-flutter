@@ -3491,6 +3491,11 @@ class MarkdownChecklistsMessagesHe extends MarkdownChecklistsMessages {
   String get importTitle => """ייבוא מ-Markdown""";
 
   /// ```dart
+  /// "ייבוא אל"
+  /// ```
+  String get importToLabel => """ייבוא אל""";
+
+  /// ```dart
   /// "לכלול פריטים שהושלמו"
   /// ```
   String get includeCompleted => """לכלול פריטים שהושלמו""";
@@ -3741,6 +3746,16 @@ class NotesWallMessagesHe extends NotesWallMessages {
   /// "ביטול הצמדה"
   /// ```
   String get unpinNote => """ביטול הצמדה""";
+
+  /// ```dart
+  /// "ייבוא לרשימה"
+  /// ```
+  String get importToList => """ייבוא לרשימה""";
+
+  /// ```dart
+  /// "אין רשימות זמינות לייבוא."
+  /// ```
+  String get importNoLists => """אין רשימות זמינות לייבוא.""";
 
   /// ```dart
   /// "כותרת"
@@ -5386,6 +5401,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.markdown.uncategorized""": """ללא קטגוריה""",
   """checklists.markdown.exportTitle""": """ייצוא ל-Markdown""",
   """checklists.markdown.importTitle""": """ייבוא מ-Markdown""",
+  """checklists.markdown.importToLabel""": """ייבוא אל""",
   """checklists.markdown.includeCompleted""": """לכלול פריטים שהושלמו""",
   """checklists.markdown.editHint""":
       """ערכו את הטקסט למטה כדי לשנות את הרשימה המיוצאת""",
@@ -5433,6 +5449,8 @@ Map<String, String> get messagesHeMap => {
   """notesWall.keepEditing""": """המשך עריכה""",
   """notesWall.pinNote""": """הצמדת הערה""",
   """notesWall.unpinNote""": """ביטול הצמדה""",
+  """notesWall.importToList""": """ייבוא לרשימה""",
+  """notesWall.importNoLists""": """אין רשימות זמינות לייבוא.""",
   """notesWall.title""": """כותרת""",
   """notesWall.content""": """תוכן""",
   """notesWall.color""": """צבע""",

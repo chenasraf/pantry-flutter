@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
 import 'package:pantry/utils/markdown_list.dart';
+import 'package:pantry/views/checklists/import_to_list.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
@@ -30,6 +32,12 @@ class NoteDetailView extends StatefulWidget {
 class _NoteDetailViewState extends State<NoteDetailView> {
   late Note _note = widget.note;
 
+  void _importToList(BuildContext context) {
+    final content = _note.content;
+    if (content == null || content.trim().isEmpty) return;
+    showImportToListDialog(context, houseId: _note.houseId, markdown: content);
+  }
+
   void _onToggleCheckbox(int ordinal) {
     final content = _note.content;
     if (content == null) return;
@@ -51,6 +59,10 @@ class _NoteDetailViewState extends State<NoteDetailView> {
     final hasEditButton = note.canEditWith(
       controller.permissions.canUpdateNotes,
     );
+    final canImportToList =
+        controller.permissions.canViewLists &&
+        controller.permissions.canAddItems &&
+        (note.content?.trim().isNotEmpty ?? false);
     // The Markdown builder invokes checkboxBuilder once per task-list item in
     // document order; this counter maps each rendered checkbox back to the Nth
     // `- [ ]` line in the source. Reset every build.
@@ -70,6 +82,14 @@ class _NoteDetailViewState extends State<NoteDetailView> {
         foregroundColor: textColor,
         leading: appBarBackLeading(context),
         title: Directionality(textDirection: titleDir, child: Text(note.title)),
+        actions: [
+          if (canImportToList)
+            IconButton(
+              icon: const Icon(Icons.playlist_add),
+              tooltip: m.notesWall.importToList,
+              onPressed: () => _importToList(context),
+            ),
+        ],
       ),
       floatingActionButton: hasEditButton
           ? FloatingActionButton(

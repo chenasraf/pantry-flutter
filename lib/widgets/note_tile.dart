@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/note.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/views/checklists/import_to_list.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
@@ -273,6 +274,17 @@ class NoteTile extends StatelessWidget {
           ],
         ),
       ),
+    if (_canImportToList)
+      PopupMenuItem(
+        value: 'import_to_list',
+        child: Row(
+          children: [
+            const Icon(Icons.playlist_add, size: 18),
+            const SizedBox(width: 8),
+            Text(m.notesWall.importToList),
+          ],
+        ),
+      ),
     if (controller.permissions.canDeleteNotes)
       PopupMenuItem(
         value: 'delete',
@@ -286,6 +298,13 @@ class NoteTile extends StatelessWidget {
       ),
   ];
 
+  /// Importing a note into a list needs viewable lists to file into, the cap to
+  /// add items, and something to import.
+  bool get _canImportToList =>
+      controller.permissions.canViewLists &&
+      controller.permissions.canAddItems &&
+      (note.content?.trim().isNotEmpty ?? false);
+
   String get _softDeleteLabel =>
       hasFeature('note-trash') ? m.common.remove : m.common.delete;
 
@@ -295,6 +314,15 @@ class NoteTile extends StatelessWidget {
         _editNote(context);
       case 'pin':
         controller.togglePin(note);
+      case 'import_to_list':
+        final content = note.content;
+        if (content != null && content.trim().isNotEmpty) {
+          showImportToListDialog(
+            context,
+            houseId: note.houseId,
+            markdown: content,
+          );
+        }
       case 'delete':
         _confirmDelete(context);
     }
