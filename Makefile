@@ -60,6 +60,7 @@ help:
 	@echo "    android-build-apk-split  Build Android split-per-ABI APKs"
 	@echo "    android-build-apk-fdroid Build FLOSS (flutter_zxing) split APKs for F-Droid"
 	@echo "    fdroid-lock         Regenerate the pinned F-Droid lockfile after dep changes"
+	@echo "    fdroid-check        Verify the pinned F-Droid lockfile is in sync with pubspec.yaml"
 	@echo "    android-build-aab   Build Android App Bundle"
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
@@ -179,6 +180,13 @@ fdroid-apply:
 fdroid-revert:
 	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart lib/widgets/avif_image.dart
 	flutter pub get
+
+# Verify the pinned F-Droid lockfile still satisfies the FLOSS pubspec, catching
+# a dependency change that wasn't followed by `make fdroid-lock`. Restores the
+# working tree afterwards. Run by CI and the pubspec pre-commit hook.
+.PHONY: fdroid-check
+fdroid-check:
+	tool/fdroid/check-lock.sh
 
 # Regenerate the pinned F-Droid lockfile (tool/fdroid/pubspec.lock) after
 # dependency changes. Applies the scanner swap, resolves fresh (unpinned),

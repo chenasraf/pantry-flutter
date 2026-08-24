@@ -103,6 +103,35 @@ jobs:
           files: coverage/lcov.info
           fail_ci_if_error: false
 
+  # Guard the FLOSS lockfile: a dependency added or bumped in pubspec.yaml
+  # without `make fdroid-lock` leaves tool/fdroid/pubspec.lock unable to satisfy
+  # the swapped pubspec, which fails the F-Droid build's --enforce-lockfile step
+  # at release time. Catch it on every push/PR instead.
+  fdroid-lock-check:
+    needs: setup
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Check F-Droid lockfile is in sync
+        run: make fdroid-check
+
   release-please:
     needs: [lint, test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'

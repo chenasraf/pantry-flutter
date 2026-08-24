@@ -18,3 +18,10 @@ pre-commit:
       glob: "*.{yml,yaml}"
       run: pnpm exec prettier --write {staged_files}
       stage_fixed: true
+    # Only fires when a pubspec (or the pinned F-Droid lock) is staged, so normal
+    # commits stay fast. Verifies tool/fdroid/pubspec.lock still satisfies the
+    # FLOSS pubspec — a dep change without `make fdroid-lock` would otherwise only
+    # surface as a failed F-Droid build at release time. Restores the tree itself.
+    fdroid-lock:
+      glob: "{pubspec.yaml,pubspec.lock,tool/fdroid/pubspec.lock}"
+      run: tool/fdroid/check-lock.sh
