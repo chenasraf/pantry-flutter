@@ -2271,6 +2271,51 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get listRemoved => """הרשימה הוסרה""";
 
   /// ```dart
+  /// "רשימות בארכיון"
+  /// ```
+  String get archivedLists => """רשימות בארכיון""";
+
+  /// ```dart
+  /// "רשימות בארכיון"
+  /// ```
+  String get archivedListsTitle => """רשימות בארכיון""";
+
+  /// ```dart
+  /// "רשימות בארכיון יופיעו כאן."
+  /// ```
+  String get archivedListsEmpty => """רשימות בארכיון יופיעו כאן.""";
+
+  /// ```dart
+  /// "טעינת הרשימות בארכיון נכשלה."
+  /// ```
+  String get failedToLoadArchivedLists => """טעינת הרשימות בארכיון נכשלה.""";
+
+  /// ```dart
+  /// "העבר לארכיון"
+  /// ```
+  String get archiveList => """העבר לארכיון""";
+
+  /// ```dart
+  /// "הוצא מהארכיון"
+  /// ```
+  String get unarchiveList => """הוצא מהארכיון""";
+
+  /// ```dart
+  /// "הרשימה הועברה לארכיון"
+  /// ```
+  String get listArchived => """הרשימה הועברה לארכיון""";
+
+  /// ```dart
+  /// "העברת הרשימה לארכיון נכשלה."
+  /// ```
+  String get archiveListFailed => """העברת הרשימה לארכיון נכשלה.""";
+
+  /// ```dart
+  /// "הוצאת הרשימה מהארכיון נכשלה."
+  /// ```
+  String get unarchiveListFailed => """הוצאת הרשימה מהארכיון נכשלה.""";
+
+  /// ```dart
   /// "רשימה חדשה"
   /// ```
   String get createList => """רשימה חדשה""";
@@ -5238,6 +5283,16 @@ Map<String, String> get messagesHeMap => {
   """checklists.restoreList""": """שחזר רשימה""",
   """checklists.permanentlyDeleteList""": """מחק לצמיתות""",
   """checklists.listRemoved""": """הרשימה הוסרה""",
+  """checklists.archivedLists""": """רשימות בארכיון""",
+  """checklists.archivedListsTitle""": """רשימות בארכיון""",
+  """checklists.archivedListsEmpty""": """רשימות בארכיון יופיעו כאן.""",
+  """checklists.failedToLoadArchivedLists""":
+      """טעינת הרשימות בארכיון נכשלה.""",
+  """checklists.archiveList""": """העבר לארכיון""",
+  """checklists.unarchiveList""": """הוצא מהארכיון""",
+  """checklists.listArchived""": """הרשימה הועברה לארכיון""",
+  """checklists.archiveListFailed""": """העברת הרשימה לארכיון נכשלה.""",
+  """checklists.unarchiveListFailed""": """הוצאת הרשימה מהארכיון נכשלה.""",
   """checklists.createList""": """רשימה חדשה""",
   """checklists.listName""": """שם הרשימה""",
   """checklists.listDescription""": """תיאור (אופציונלי)""",

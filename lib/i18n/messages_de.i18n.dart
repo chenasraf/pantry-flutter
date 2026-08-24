@@ -2289,6 +2289,55 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get listRemoved => """Liste entfernt""";
 
   /// ```dart
+  /// "Archivierte Checklisten"
+  /// ```
+  String get archivedLists => """Archivierte Checklisten""";
+
+  /// ```dart
+  /// "Archivierte Checklisten"
+  /// ```
+  String get archivedListsTitle => """Archivierte Checklisten""";
+
+  /// ```dart
+  /// "Archivierte Checklisten werden hier angezeigt."
+  /// ```
+  String get archivedListsEmpty =>
+      """Archivierte Checklisten werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Archivierte Checklisten konnten nicht geladen werden."
+  /// ```
+  String get failedToLoadArchivedLists =>
+      """Archivierte Checklisten konnten nicht geladen werden.""";
+
+  /// ```dart
+  /// "Archivieren"
+  /// ```
+  String get archiveList => """Archivieren""";
+
+  /// ```dart
+  /// "Aus Archiv holen"
+  /// ```
+  String get unarchiveList => """Aus Archiv holen""";
+
+  /// ```dart
+  /// "Checkliste archiviert"
+  /// ```
+  String get listArchived => """Checkliste archiviert""";
+
+  /// ```dart
+  /// "Checkliste konnte nicht archiviert werden."
+  /// ```
+  String get archiveListFailed =>
+      """Checkliste konnte nicht archiviert werden.""";
+
+  /// ```dart
+  /// "Checkliste konnte nicht aus dem Archiv geholt werden."
+  /// ```
+  String get unarchiveListFailed =>
+      """Checkliste konnte nicht aus dem Archiv geholt werden.""";
+
+  /// ```dart
   /// "Neue Liste"
   /// ```
   String get createList => """Neue Liste""";
@@ -5315,6 +5364,19 @@ Passwort: pantry-rocks""",
   """checklists.restoreList""": """Liste wiederherstellen""",
   """checklists.permanentlyDeleteList""": """Endgültig löschen""",
   """checklists.listRemoved""": """Liste entfernt""",
+  """checklists.archivedLists""": """Archivierte Checklisten""",
+  """checklists.archivedListsTitle""": """Archivierte Checklisten""",
+  """checklists.archivedListsEmpty""":
+      """Archivierte Checklisten werden hier angezeigt.""",
+  """checklists.failedToLoadArchivedLists""":
+      """Archivierte Checklisten konnten nicht geladen werden.""",
+  """checklists.archiveList""": """Archivieren""",
+  """checklists.unarchiveList""": """Aus Archiv holen""",
+  """checklists.listArchived""": """Checkliste archiviert""",
+  """checklists.archiveListFailed""":
+      """Checkliste konnte nicht archiviert werden.""",
+  """checklists.unarchiveListFailed""":
+      """Checkliste konnte nicht aus dem Archiv geholt werden.""",
   """checklists.createList""": """Neue Liste""",
   """checklists.listName""": """Listenname""",
   """checklists.listDescription""": """Beschreibung (optional)""",

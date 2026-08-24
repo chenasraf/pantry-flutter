@@ -188,7 +188,7 @@ class _SheetHost extends StatefulWidget {
   State<_SheetHost> createState() => _SheetHostState();
 }
 
-enum _Stage { list, create, edit, trash }
+enum _Stage { list, create, edit, trash, archive }
 
 class _SheetHostState extends State<_SheetHost> {
   _Stage _stage = _Stage.list;
@@ -246,6 +246,7 @@ class _SheetHostState extends State<_SheetHost> {
                     _stage = _Stage.edit;
                   }),
                   onOpenTrash: () => setState(() => _stage = _Stage.trash),
+                  onOpenArchive: () => setState(() => _stage = _Stage.archive),
                 ),
               )
             else if (_stage == _Stage.create)
@@ -261,8 +262,13 @@ class _SheetHostState extends State<_SheetHost> {
                 onBack: () => setState(() => _stage = _Stage.list),
                 onSaved: () => setState(() => _stage = _Stage.list),
               )
-            else
+            else if (_stage == _Stage.trash)
               _TrashStage(
+                controller: widget.controller,
+                onBack: () => setState(() => _stage = _Stage.list),
+              )
+            else
+              _ArchiveStage(
                 controller: widget.controller,
                 onBack: () => setState(() => _stage = _Stage.list),
               ),
@@ -293,6 +299,7 @@ class _ListStage extends StatelessWidget {
   final VoidCallback onCreateNew;
   final ValueChanged<ChecklistList> onEdit;
   final VoidCallback onOpenTrash;
+  final VoidCallback onOpenArchive;
 
   const _ListStage({
     required this.controller,
@@ -300,6 +307,7 @@ class _ListStage extends StatelessWidget {
     required this.onCreateNew,
     required this.onEdit,
     required this.onOpenTrash,
+    required this.onOpenArchive,
   });
 
   @override
@@ -317,6 +325,7 @@ class _ListStage extends StatelessWidget {
     final perms = controller.permissions;
     final canEditLists = perms.canEditLists;
     final canDeleteLists = perms.canDeleteLists;
+    final canArchiveLists = hasFeature('checklist-archive') && canEditLists;
     final canReorder =
         hasFeature('checklist-sort') &&
         controller.listSort == 'custom' &&
@@ -412,6 +421,9 @@ class _ListStage extends StatelessWidget {
                         onRemove: showMenu && canDeleteLists
                             ? () => _confirmRemove(context, list)
                             : null,
+                        onArchive: canArchiveLists
+                            ? () => _archiveList(context, list)
+                            : null,
                       ),
                     );
                   },
@@ -437,6 +449,9 @@ class _ListStage extends StatelessWidget {
                           : null,
                       onRemove: showMenu && canDeleteLists
                           ? () => _confirmRemove(context, list)
+                          : null,
+                      onArchive: canArchiveLists
+                          ? () => _archiveList(context, list)
                           : null,
                     );
                   },
@@ -509,6 +524,34 @@ class _ListStage extends StatelessWidget {
             ),
           ),
         ],
+        if (hasFeature('checklist-archive')) ...[
+          const SizedBox(height: 4),
+          InkWell(
+            onTap: onOpenArchive,
+            borderRadius: BorderRadius.circular(14),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.archive_outlined,
+                    size: 18,
+                    color: cs.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    m.checklists.archivedLists,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -551,6 +594,27 @@ class _ListStage extends StatelessWidget {
       }
     }
   }
+
+  Future<void> _archiveList(BuildContext context, ChecklistList list) async {
+    try {
+      await controller.archiveList(list);
+      if (!context.mounted) return;
+      Navigator.pop(context);
+      // Snackbar runs against the host scaffold, not the dismissed sheet.
+      showUndoSnackBar(
+        message: m.checklists.listArchived,
+        undoLabel: m.checklists.undo,
+        onUndo: () => controller.unarchiveList(list),
+        undoFailedMessage: m.checklists.unarchiveListFailed,
+      );
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(m.checklists.archiveListFailed)));
+      }
+    }
+  }
 }
 
 class _ListTile extends StatelessWidget {
@@ -560,6 +624,7 @@ class _ListTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onRemove;
+  final VoidCallback? onArchive;
   final int? dragIndex;
   final bool showOverflow;
 
@@ -570,6 +635,7 @@ class _ListTile extends StatelessWidget {
     required this.onTap,
     this.onEdit,
     this.onRemove,
+    this.onArchive,
     this.dragIndex,
     this.showOverflow = false,
   });
@@ -653,7 +719,8 @@ class _ListTile extends StatelessWidget {
               ),
               child: const Icon(Icons.check, color: Colors.white, size: 16),
             ),
-          if (showOverflow && (onEdit != null || onRemove != null))
+          if (showOverflow &&
+              (onEdit != null || onRemove != null || onArchive != null))
             SizedBox(
               width: 36,
               height: 36,
@@ -667,6 +734,7 @@ class _ListTile extends StatelessWidget {
                 ),
                 onSelected: (v) {
                   if (v == 'edit') onEdit?.call();
+                  if (v == 'archive') onArchive?.call();
                   if (v == 'remove') onRemove?.call();
                 },
                 itemBuilder: (_) => [
@@ -678,6 +746,17 @@ class _ListTile extends StatelessWidget {
                           const Icon(Icons.edit_outlined, size: 18),
                           const SizedBox(width: 10),
                           Text(m.checklists.editList),
+                        ],
+                      ),
+                    ),
+                  if (onArchive != null)
+                    PopupMenuItem<String>(
+                      value: 'archive',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.archive_outlined, size: 18),
+                          const SizedBox(width: 10),
+                          Text(m.checklists.archiveList),
                         ],
                       ),
                     ),
@@ -717,15 +796,18 @@ class _ListTile extends StatelessWidget {
       child: tile,
     );
 
-    if (!PlatformInfo.isDesktop || (onEdit == null && onRemove == null)) {
+    if (!PlatformInfo.isDesktop ||
+        (onEdit == null && onRemove == null && onArchive == null)) {
       return interactive;
     }
 
     return _ContextMenuRegion(
       onEdit: onEdit,
       onRemove: onRemove,
+      onArchive: onArchive,
       editLabel: m.checklists.editList,
       removeLabel: m.checklists.removeList,
+      archiveLabel: m.checklists.archiveList,
       child: interactive,
     );
   }
@@ -736,15 +818,19 @@ class _ContextMenuRegion extends StatefulWidget {
   final Widget child;
   final VoidCallback? onEdit;
   final VoidCallback? onRemove;
+  final VoidCallback? onArchive;
   final String editLabel;
   final String removeLabel;
+  final String archiveLabel;
 
   const _ContextMenuRegion({
     required this.child,
     required this.onEdit,
     required this.onRemove,
+    required this.onArchive,
     required this.editLabel,
     required this.removeLabel,
+    required this.archiveLabel,
   });
 
   @override
@@ -772,6 +858,17 @@ class _ContextMenuRegionState extends State<_ContextMenuRegion> {
               ],
             ),
           ),
+        if (widget.onArchive != null)
+          PopupMenuItem<String>(
+            value: 'archive',
+            child: Row(
+              children: [
+                const Icon(Icons.archive_outlined, size: 18),
+                const SizedBox(width: 10),
+                Text(widget.archiveLabel),
+              ],
+            ),
+          ),
         if (widget.onRemove != null)
           PopupMenuItem<String>(
             value: 'remove',
@@ -786,6 +883,7 @@ class _ContextMenuRegionState extends State<_ContextMenuRegion> {
       ],
     );
     if (result == 'edit') widget.onEdit?.call();
+    if (result == 'archive') widget.onArchive?.call();
     if (result == 'remove') widget.onRemove?.call();
   }
 
@@ -1215,15 +1313,27 @@ class _TrashStageState extends State<_TrashStage> {
               separatorBuilder: (_, _) => const SizedBox(height: 8),
               itemBuilder: (_, i) {
                 final list = trashed[i];
+                final canOpen = hasFeature('checklist-trash-open');
                 return _TrashedListTile(
                   list: list,
-                  onTap: () => _showActions(list),
+                  // With the open capability a tap browses the list's items and
+                  // restore/permanent move to the trailing menu; without it the
+                  // tap keeps its old actions-only behaviour.
+                  onTap: canOpen
+                      ? () => _openList(list)
+                      : () => _showActions(list),
+                  onMenu: canOpen ? () => _showActions(list) : null,
                 );
               },
             ),
           ),
       ],
     );
+  }
+
+  Future<void> _openList(ChecklistList list) async {
+    Navigator.pop(context);
+    await widget.controller.selectList(list);
   }
 
   Future<void> _showActions(ChecklistList list) async {
@@ -1325,7 +1435,22 @@ class _TrashedListTile extends StatelessWidget {
   final ChecklistList list;
   final VoidCallback onTap;
 
-  const _TrashedListTile({required this.list, required this.onTap});
+  /// When set, the tile shows a trailing overflow button that opens the
+  /// restore / permanent-delete (or unarchive) actions, leaving [onTap] free to
+  /// open the list. When null the tile shows a static [glyph] and [onTap]
+  /// carries the actions itself (older servers without `checklist-trash-open`,
+  /// or an archived list a viewer can't recover).
+  final VoidCallback? onMenu;
+
+  /// The static trailing glyph shown when [onMenu] is null.
+  final IconData glyph;
+
+  const _TrashedListTile({
+    required this.list,
+    required this.onTap,
+    this.onMenu,
+    this.glyph = Icons.delete_outline,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1337,7 +1462,12 @@ class _TrashedListTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(14),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+          padding: EdgeInsetsDirectional.only(
+            start: 13,
+            end: onMenu != null ? 4 : 13,
+            top: 12,
+            bottom: 12,
+          ),
           decoration: BoxDecoration(
             color: cs.surfaceContainer,
             border: Border.all(color: cs.outlineVariant),
@@ -1366,12 +1496,184 @@ class _TrashedListTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Icon(Icons.delete_outline, color: cs.onSurfaceVariant, size: 18),
+              if (onMenu != null)
+                SizedBox(
+                  width: 36,
+                  height: 36,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    tooltip: m.checklists.restoreList,
+                    icon: Icon(
+                      Icons.more_vert,
+                      size: 20,
+                      color: cs.onSurfaceVariant,
+                    ),
+                    onPressed: onMenu,
+                  ),
+                )
+              else
+                Icon(glyph, color: cs.onSurfaceVariant, size: 18),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+/// The archived-lists view: a hidden second state that mirrors the trash view
+/// but is never bulk-emptied (no "empty" button) or auto-purged. Tapping a tile
+/// opens the archived list into the normal item view; the trailing menu offers
+/// Unarchive as the one-tap recover action.
+class _ArchiveStage extends StatefulWidget {
+  final ChecklistsController controller;
+  final VoidCallback onBack;
+
+  const _ArchiveStage({required this.controller, required this.onBack});
+
+  @override
+  State<_ArchiveStage> createState() => _ArchiveStageState();
+}
+
+class _ArchiveStageState extends State<_ArchiveStage> {
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      await widget.controller.loadArchivedLists();
+    } catch (_) {
+      if (!mounted) return;
+      _error = m.checklists.failedToLoadArchivedLists;
+    }
+    if (!mounted) return;
+    setState(() => _loading = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final archived = widget.controller.archivedLists;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsetsDirectional.only(bottom: 14),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: widget.onBack,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                m.checklists.archivedListsTitle,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: cs.onSurface,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (_loading)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(child: CircularProgressIndicator()),
+          )
+        else if (_error != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Column(
+              children: [
+                Text(_error!, textAlign: TextAlign.center),
+                const SizedBox(height: 12),
+                FilledButton(onPressed: _load, child: Text(m.common.retry)),
+              ],
+            ),
+          )
+        else if (archived.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: Text(
+                m.checklists.archivedListsEmpty,
+                style: TextStyle(color: cs.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          )
+        else
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.5,
+            ),
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: archived.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 8),
+              itemBuilder: (_, i) {
+                final list = archived[i];
+                // Unarchive needs canEditLists; a viewer can still browse the
+                // list's items by tapping, but gets no recover action.
+                final canUnarchive = widget.controller.permissions.canEditLists;
+                return _TrashedListTile(
+                  list: list,
+                  onTap: () => _openList(list),
+                  onMenu: canUnarchive ? () => _showActions(list) : null,
+                  glyph: Icons.archive_outlined,
+                );
+              },
+            ),
+          ),
+      ],
+    );
+  }
+
+  Future<void> _openList(ChecklistList list) async {
+    Navigator.pop(context);
+    await widget.controller.selectList(list);
+  }
+
+  Future<void> _showActions(ChecklistList list) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.unarchive_outlined),
+              title: Text(m.checklists.unarchiveList),
+              onTap: () => Navigator.pop(ctx, 'unarchive'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (action != 'unarchive' || !mounted) return;
+    try {
+      await widget.controller.unarchiveList(list);
+      if (mounted) setState(() {});
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(m.checklists.unarchiveListFailed)));
+    }
   }
 }
 

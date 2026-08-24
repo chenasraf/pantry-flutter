@@ -484,6 +484,15 @@ checklists:
   restoreList: שחזר רשימה
   permanentlyDeleteList: מחק לצמיתות
   listRemoved: הרשימה הוסרה
+  archivedLists: רשימות בארכיון
+  archivedListsTitle: רשימות בארכיון
+  archivedListsEmpty: רשימות בארכיון יופיעו כאן.
+  failedToLoadArchivedLists: טעינת הרשימות בארכיון נכשלה.
+  archiveList: העבר לארכיון
+  unarchiveList: הוצא מהארכיון
+  listArchived: הרשימה הועברה לארכיון
+  archiveListFailed: העברת הרשימה לארכיון נכשלה.
+  unarchiveListFailed: הוצאת הרשימה מהארכיון נכשלה.
   createList: רשימה חדשה
   listName: שם הרשימה
   listDescription: תיאור (אופציונלי)

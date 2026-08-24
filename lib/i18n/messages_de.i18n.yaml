@@ -484,6 +484,15 @@ checklists:
   restoreList: "Liste wiederherstellen"
   permanentlyDeleteList: "Endgültig löschen"
   listRemoved: "Liste entfernt"
+  archivedLists: "Archivierte Checklisten"
+  archivedListsTitle: "Archivierte Checklisten"
+  archivedListsEmpty: "Archivierte Checklisten werden hier angezeigt."
+  failedToLoadArchivedLists: "Archivierte Checklisten konnten nicht geladen werden."
+  archiveList: "Archivieren"
+  unarchiveList: "Aus Archiv holen"
+  listArchived: "Checkliste archiviert"
+  archiveListFailed: "Checkliste konnte nicht archiviert werden."
+  unarchiveListFailed: "Checkliste konnte nicht aus dem Archiv geholt werden."
   createList: Neue Liste
   listName: Listenname
   listDescription: Beschreibung (optional)

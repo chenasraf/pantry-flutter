@@ -2292,6 +2292,52 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get listRemoved => """Liste retirée""";
 
   /// ```dart
+  /// "Listes archivées"
+  /// ```
+  String get archivedLists => """Listes archivées""";
+
+  /// ```dart
+  /// "Listes archivées"
+  /// ```
+  String get archivedListsTitle => """Listes archivées""";
+
+  /// ```dart
+  /// "Les listes archivées apparaîtront ici."
+  /// ```
+  String get archivedListsEmpty => """Les listes archivées apparaîtront ici.""";
+
+  /// ```dart
+  /// "Impossible de charger les listes archivées."
+  /// ```
+  String get failedToLoadArchivedLists =>
+      """Impossible de charger les listes archivées.""";
+
+  /// ```dart
+  /// "Archiver"
+  /// ```
+  String get archiveList => """Archiver""";
+
+  /// ```dart
+  /// "Désarchiver"
+  /// ```
+  String get unarchiveList => """Désarchiver""";
+
+  /// ```dart
+  /// "Liste archivée"
+  /// ```
+  String get listArchived => """Liste archivée""";
+
+  /// ```dart
+  /// "Impossible d'archiver la liste."
+  /// ```
+  String get archiveListFailed => """Impossible d'archiver la liste.""";
+
+  /// ```dart
+  /// "Impossible de désarchiver la liste."
+  /// ```
+  String get unarchiveListFailed => """Impossible de désarchiver la liste.""";
+
+  /// ```dart
   /// "Nouvelle liste"
   /// ```
   String get createList => """Nouvelle liste""";
@@ -5312,6 +5358,18 @@ Mot de passe : pantry-rocks""",
   """checklists.restoreList""": """Restaurer la liste""",
   """checklists.permanentlyDeleteList""": """Supprimer définitivement""",
   """checklists.listRemoved""": """Liste retirée""",
+  """checklists.archivedLists""": """Listes archivées""",
+  """checklists.archivedListsTitle""": """Listes archivées""",
+  """checklists.archivedListsEmpty""":
+      """Les listes archivées apparaîtront ici.""",
+  """checklists.failedToLoadArchivedLists""":
+      """Impossible de charger les listes archivées.""",
+  """checklists.archiveList""": """Archiver""",
+  """checklists.unarchiveList""": """Désarchiver""",
+  """checklists.listArchived""": """Liste archivée""",
+  """checklists.archiveListFailed""": """Impossible d'archiver la liste.""",
+  """checklists.unarchiveListFailed""":
+      """Impossible de désarchiver la liste.""",
   """checklists.createList""": """Nouvelle liste""",
   """checklists.listName""": """Nom de la liste""",
   """checklists.listDescription""": """Description (facultatif)""",

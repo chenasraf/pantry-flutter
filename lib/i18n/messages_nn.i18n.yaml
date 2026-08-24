@@ -593,6 +593,15 @@ checklists:
   restoreList: Gjenopprett liste
   permanentlyDeleteList: Slett permanent
   listRemoved: Liste fjerna
+  archivedLists: Arkiverte lister
+  archivedListsTitle: Arkiverte lister
+  archivedListsEmpty: Arkiverte lister dukkar opp her.
+  failedToLoadArchivedLists: Klarte ikkje laste arkiverte lister.
+  archiveList: Arkiver
+  unarchiveList: Hent ut av arkivet
+  listArchived: Liste arkivert
+  archiveListFailed: Klarte ikkje arkivere lista.
+  unarchiveListFailed: Klarte ikkje hente lista ut av arkivet.
   createList: Ny liste
   listName: Listenamn
   listDescription: Skildring (valfritt)

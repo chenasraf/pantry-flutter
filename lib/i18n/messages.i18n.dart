@@ -2266,6 +2266,52 @@ class ChecklistsMessages {
   String get listRemoved => """List removed""";
 
   /// ```dart
+  /// "Archived checklists"
+  /// ```
+  String get archivedLists => """Archived checklists""";
+
+  /// ```dart
+  /// "Archived checklists"
+  /// ```
+  String get archivedListsTitle => """Archived checklists""";
+
+  /// ```dart
+  /// "Archived checklists will appear here."
+  /// ```
+  String get archivedListsEmpty => """Archived checklists will appear here.""";
+
+  /// ```dart
+  /// "Failed to load archived checklists."
+  /// ```
+  String get failedToLoadArchivedLists =>
+      """Failed to load archived checklists.""";
+
+  /// ```dart
+  /// "Archive"
+  /// ```
+  String get archiveList => """Archive""";
+
+  /// ```dart
+  /// "Unarchive"
+  /// ```
+  String get unarchiveList => """Unarchive""";
+
+  /// ```dart
+  /// "Checklist archived"
+  /// ```
+  String get listArchived => """Checklist archived""";
+
+  /// ```dart
+  /// "Failed to archive checklist."
+  /// ```
+  String get archiveListFailed => """Failed to archive checklist.""";
+
+  /// ```dart
+  /// "Failed to unarchive checklist."
+  /// ```
+  String get unarchiveListFailed => """Failed to unarchive checklist.""";
+
+  /// ```dart
   /// "New list"
   /// ```
   String get createList => """New list""";
@@ -5239,6 +5285,17 @@ Password: pantry-rocks""",
   """checklists.restoreList""": """Restore list""",
   """checklists.permanentlyDeleteList""": """Delete forever""",
   """checklists.listRemoved""": """List removed""",
+  """checklists.archivedLists""": """Archived checklists""",
+  """checklists.archivedListsTitle""": """Archived checklists""",
+  """checklists.archivedListsEmpty""":
+      """Archived checklists will appear here.""",
+  """checklists.failedToLoadArchivedLists""":
+      """Failed to load archived checklists.""",
+  """checklists.archiveList""": """Archive""",
+  """checklists.unarchiveList""": """Unarchive""",
+  """checklists.listArchived""": """Checklist archived""",
+  """checklists.archiveListFailed""": """Failed to archive checklist.""",
+  """checklists.unarchiveListFailed""": """Failed to unarchive checklist.""",
   """checklists.createList""": """New list""",
   """checklists.listName""": """List name""",
   """checklists.listDescription""": """Description (optional)""",

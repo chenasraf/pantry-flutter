@@ -13,6 +13,14 @@ class ChecklistList {
   final int createdAt;
   final int updatedAt;
 
+  /// Epoch-ms the list was trashed / archived, or `null` when it's active.
+  /// The trash/archive views are served by dedicated endpoints, so these aren't
+  /// required for logic; they mirror the server shape (and the item model) and
+  /// are handy for badging a list's lifecycle state. A list is in at most one of
+  /// the three states (active / trash / archive).
+  final int? deletedAt;
+  final int? archivedAt;
+
   /// Whether the current user may edit this list's settings (name/icon/color).
   /// `null` on servers without the `share-users` capability, where gating falls
   /// back to house-level `canEditLists`. See [ChecklistSharing].
@@ -36,6 +44,8 @@ class ChecklistList {
     this.hideProgressHero = false,
     required this.createdAt,
     required this.updatedAt,
+    this.deletedAt,
+    this.archivedAt,
     this.canEdit,
     this.sharedOnly,
   });
@@ -52,6 +62,8 @@ class ChecklistList {
     hideProgressHero: json['hideProgressHero'] as bool? ?? false,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
+    deletedAt: json['deletedAt'] as int?,
+    archivedAt: json['archivedAt'] as int?,
     canEdit: json['canEdit'] as bool?,
     sharedOnly: json['sharedOnly'] as bool?,
   );
@@ -68,6 +80,8 @@ class ChecklistList {
     'hideProgressHero': hideProgressHero,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
+    'deletedAt': deletedAt,
+    'archivedAt': archivedAt,
     'canEdit': canEdit,
     'sharedOnly': sharedOnly,
   };
@@ -82,6 +96,10 @@ class ChecklistList {
     bool? deleteOnDoneDefault,
     bool? hideProgressHero,
     int? updatedAt,
+    int? deletedAt,
+    bool clearDeletedAt = false,
+    int? archivedAt,
+    bool clearArchivedAt = false,
   }) => ChecklistList(
     id: id ?? this.id,
     houseId: houseId,
@@ -94,6 +112,8 @@ class ChecklistList {
     hideProgressHero: hideProgressHero ?? this.hideProgressHero,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
+    archivedAt: clearArchivedAt ? null : (archivedAt ?? this.archivedAt),
     canEdit: canEdit,
     sharedOnly: sharedOnly,
   );

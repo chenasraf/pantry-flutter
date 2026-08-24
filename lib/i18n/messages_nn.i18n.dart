@@ -2281,6 +2281,53 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   String get listRemoved => """Liste fjerna""";
 
   /// ```dart
+  /// "Arkiverte lister"
+  /// ```
+  String get archivedLists => """Arkiverte lister""";
+
+  /// ```dart
+  /// "Arkiverte lister"
+  /// ```
+  String get archivedListsTitle => """Arkiverte lister""";
+
+  /// ```dart
+  /// "Arkiverte lister dukkar opp her."
+  /// ```
+  String get archivedListsEmpty => """Arkiverte lister dukkar opp her.""";
+
+  /// ```dart
+  /// "Klarte ikkje laste arkiverte lister."
+  /// ```
+  String get failedToLoadArchivedLists =>
+      """Klarte ikkje laste arkiverte lister.""";
+
+  /// ```dart
+  /// "Arkiver"
+  /// ```
+  String get archiveList => """Arkiver""";
+
+  /// ```dart
+  /// "Hent ut av arkivet"
+  /// ```
+  String get unarchiveList => """Hent ut av arkivet""";
+
+  /// ```dart
+  /// "Liste arkivert"
+  /// ```
+  String get listArchived => """Liste arkivert""";
+
+  /// ```dart
+  /// "Klarte ikkje arkivere lista."
+  /// ```
+  String get archiveListFailed => """Klarte ikkje arkivere lista.""";
+
+  /// ```dart
+  /// "Klarte ikkje hente lista ut av arkivet."
+  /// ```
+  String get unarchiveListFailed =>
+      """Klarte ikkje hente lista ut av arkivet.""";
+
+  /// ```dart
   /// "Ny liste"
   /// ```
   String get createList => """Ny liste""";
@@ -5275,6 +5322,17 @@ Passord: pantry""",
   """checklists.restoreList""": """Gjenopprett liste""",
   """checklists.permanentlyDeleteList""": """Slett permanent""",
   """checklists.listRemoved""": """Liste fjerna""",
+  """checklists.archivedLists""": """Arkiverte lister""",
+  """checklists.archivedListsTitle""": """Arkiverte lister""",
+  """checklists.archivedListsEmpty""": """Arkiverte lister dukkar opp her.""",
+  """checklists.failedToLoadArchivedLists""":
+      """Klarte ikkje laste arkiverte lister.""",
+  """checklists.archiveList""": """Arkiver""",
+  """checklists.unarchiveList""": """Hent ut av arkivet""",
+  """checklists.listArchived""": """Liste arkivert""",
+  """checklists.archiveListFailed""": """Klarte ikkje arkivere lista.""",
+  """checklists.unarchiveListFailed""":
+      """Klarte ikkje hente lista ut av arkivet.""",
   """checklists.createList""": """Ny liste""",
   """checklists.listName""": """Listenamn""",
   """checklists.listDescription""": """Skildring (valfritt)""",

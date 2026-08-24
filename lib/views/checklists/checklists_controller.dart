@@ -426,6 +426,9 @@ class ChecklistsController extends ChangeNotifier {
   List<ChecklistList> _trashedLists = [];
   List<ChecklistList> get trashedLists => _trashedLists;
 
+  List<ChecklistList> _archivedLists = [];
+  List<ChecklistList> get archivedLists => _archivedLists;
+
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
@@ -2567,6 +2570,85 @@ class ChecklistsController extends ChangeNotifier {
         createdAt: _now(),
       ),
     );
+  }
+
+  // -- Lists archive (the lists themselves) --
+  //
+  // The archive is the whole-list mirror of the item-level archive: a hidden
+  // second state that behaves like trash but is never bulk-emptied or
+  // auto-purged. It's served by a dedicated online-only endpoint, so
+  // archive/unarchive call the service directly (rather than the offline sync
+  // queue the trash actions use) and reconcile the active index optimistically.
+
+  Future<void> loadArchivedLists() async {
+    try {
+      _archivedLists = await _checklistService.getArchivedLists(houseId);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to load archived lists: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> archiveList(ChecklistList list) async {
+    // Optimistically drop it from the active index and step off it if current.
+    _lists.removeWhere((l) => l.id == list.id);
+    _checklistService.cacheLists(houseId, _lists);
+    if (_currentList?.id == list.id) {
+      final next = _lists.isNotEmpty ? _lists.first : null;
+      if (next != null) {
+        await selectList(next);
+      } else {
+        _currentList = null;
+        _items = [];
+        notifyListeners();
+      }
+    } else {
+      notifyListeners();
+    }
+    try {
+      await _checklistService.archiveList(houseId, list.id);
+    } catch (e) {
+      // Roll the list back onto the active index so it isn't lost on failure.
+      if (!_lists.any((l) => l.id == list.id)) {
+        _lists = [..._lists, _withLocalListPrefs(list)];
+        _checklistService.cacheLists(houseId, _lists);
+        notifyListeners();
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> unarchiveList(ChecklistList list) async {
+    _archivedLists.removeWhere((l) => l.id == list.id);
+    final existed = _lists.any((l) => l.id == list.id);
+    if (!existed) {
+      _lists = [..._lists, _withLocalListPrefs(list)];
+      _checklistService.cacheLists(houseId, _lists);
+    }
+    notifyListeners();
+    try {
+      final restored = await _checklistService.unarchiveList(houseId, list.id);
+      final reconciled = _withLocalListPrefs(restored);
+      final i = _lists.indexWhere((l) => l.id == list.id);
+      if (i != -1) {
+        _lists[i] = reconciled;
+        if (_currentList?.id == list.id) _currentList = reconciled;
+        _checklistService.cacheLists(houseId, _lists);
+        notifyListeners();
+      }
+    } catch (e) {
+      // Undo the optimistic re-add so the list stays put in the archive view.
+      if (!existed) {
+        _lists.removeWhere((l) => l.id == list.id);
+        _checklistService.cacheLists(houseId, _lists);
+      }
+      if (!_archivedLists.any((l) => l.id == list.id)) {
+        _archivedLists = [..._archivedLists, list];
+      }
+      notifyListeners();
+      rethrow;
+    }
   }
 
   Future<void> toggleItem(ListItem item) async {

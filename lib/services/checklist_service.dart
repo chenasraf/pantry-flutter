@@ -344,6 +344,34 @@ class ChecklistService {
     await ApiClient.instance.delete('/houses/$houseId/lists/trash');
   }
 
+  Future<List<ChecklistList>> getArchivedLists(
+    int houseId, {
+    int limit = 200,
+    int offset = 0,
+  }) async {
+    return ApiClient.instance.get<List, List<ChecklistList>>(
+      '/houses/$houseId/lists/archive',
+      query: {'limit': limit.toString(), 'offset': offset.toString()},
+      fromJson: (data) => data
+          .map((e) => ChecklistList.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  Future<ChecklistList> archiveList(int houseId, int listId) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ChecklistList>(
+      '/houses/$houseId/lists/$listId/archive',
+      fromJson: (data) => ChecklistList.fromJson(data),
+    );
+  }
+
+  Future<ChecklistList> unarchiveList(int houseId, int listId) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ChecklistList>(
+      '/houses/$houseId/lists/$listId/unarchive',
+      fromJson: (data) => ChecklistList.fromJson(data),
+    );
+  }
+
   Future<ChecklistList> updateList(
     int houseId,
     int listId, {

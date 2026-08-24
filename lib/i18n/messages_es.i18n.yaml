@@ -484,6 +484,15 @@ checklists:
   restoreList: "Restaurar lista"
   permanentlyDeleteList: "Eliminar para siempre"
   listRemoved: "Lista eliminada"
+  archivedLists: "Listas archivadas"
+  archivedListsTitle: "Listas archivadas"
+  archivedListsEmpty: "Las listas archivadas aparecerán aquí."
+  failedToLoadArchivedLists: "No se pudieron cargar las listas archivadas."
+  archiveList: "Archivar"
+  unarchiveList: "Desarchivar"
+  listArchived: "Lista archivada"
+  archiveListFailed: "No se pudo archivar la lista."
+  unarchiveListFailed: "No se pudo desarchivar la lista."
   createList: Nueva lista
   listName: Nombre de la lista
   listDescription: "Descripción (opcional)"
