@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.1](https://github.com/chenasraf/pantry-flutter/compare/v0.29.0...v0.29.1) (2026-08-25)
+
+
+### Miscellaneous Chores
+
+* fdroid build ([fcde1cb](https://github.com/chenasraf/pantry-flutter/commit/fcde1cbe53c2d7e0767e0f2e47acf89fa105e8c2))
+
 ## [0.29.0](https://github.com/chenasraf/pantry-flutter/compare/v0.28.0...v0.29.0) (2026-08-24)
 
 
