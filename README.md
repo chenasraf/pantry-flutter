@@ -5,6 +5,9 @@
 A Flutter mobile client for [Nextcloud Pantry](https://github.com/chenasraf/nextcloud-pantry) —
 household management for your self-hosted Nextcloud.
 
+**Website & documentation: [pantry.casraf.dev](https://pantry.casraf.dev)** — including a
+[guide to pairing the app](https://pantry.casraf.dev/docs/getting-started/pairing) with your server.
+
 ## Features
 
 - **Checklists**: Shared checklists with categories, quantities, images, and recurring items.
