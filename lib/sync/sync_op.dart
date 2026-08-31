@@ -5,6 +5,7 @@ enum SyncEntity {
   store,
   label,
   note,
+  customField,
 
   /// A Shopping Mode item check-log write. [SyncOp.op] is [SyncOpKind.create]
   /// for a check and [SyncOpKind.delete] for an uncheck; [SyncOp.entityId] is

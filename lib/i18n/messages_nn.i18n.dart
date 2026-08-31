@@ -75,6 +75,7 @@ class MessagesNn extends Messages {
   SettingsMessagesNn get settings => SettingsMessagesNn(this);
   NotificationsMessagesNn get notifications => NotificationsMessagesNn(this);
   CategoriesMessagesNn get categories => CategoriesMessagesNn(this);
+  CustomFieldsMessagesNn get customFields => CustomFieldsMessagesNn(this);
   StoresMessagesNn get stores => StoresMessagesNn(this);
   LabelsMessagesNn get labels => LabelsMessagesNn(this);
   ChecklistsMessagesNn get checklists => ChecklistsMessagesNn(this);
@@ -1647,6 +1648,296 @@ class SortCategoriesMessagesNn extends SortCategoriesMessages {
   /// "Sjølvvald"
   /// ```
   String get custom => """Sjølvvald""";
+}
+
+class CustomFieldsMessagesNn extends CustomFieldsMessages {
+  final MessagesNn _parent;
+  const CustomFieldsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Eigendefinerte felt"
+  /// ```
+  String get manageTitle => """Eigendefinerte felt""";
+
+  /// ```dart
+  /// "Ingen eigendefinerte felt enno. Legg til eitt for å knyte ekstra informasjon til oppføringar."
+  /// ```
+  String get empty =>
+      """Ingen eigendefinerte felt enno. Legg til eitt for å knyte ekstra informasjon til oppføringar.""";
+
+  /// ```dart
+  /// "Legg til felt"
+  /// ```
+  String get addField => """Legg til felt""";
+
+  /// ```dart
+  /// "Alle lister"
+  /// ```
+  String get allLists => """Alle lister""";
+
+  /// ```dart
+  /// "Slett felt"
+  /// ```
+  String get deleteTitle => """Slett felt""";
+
+  /// ```dart
+  /// "Slette dette feltet? Verdiar som alt er sette på oppføringar vert tekne vare på, men gøymde."
+  /// ```
+  String get deleteConfirm =>
+      """Slette dette feltet? Verdiar som alt er sette på oppføringar vert tekne vare på, men gøymde.""";
+
+  /// ```dart
+  /// "Klarte ikkje fjerne alternativet."
+  /// ```
+  String get optionDeleteFailed => """Klarte ikkje fjerne alternativet.""";
+  TypesCustomFieldsMessagesNn get types => TypesCustomFieldsMessagesNn(this);
+
+  /// ```dart
+  /// "Namn"
+  /// ```
+  String get name => """Namn""";
+
+  /// ```dart
+  /// "t.d. Utløp, Gang"
+  /// ```
+  String get namePlaceholder => """t.d. Utløp, Gang""";
+
+  /// ```dart
+  /// "Type"
+  /// ```
+  String get type => """Type""";
+
+  /// ```dart
+  /// "Typen kan ikkje endrast etter at feltet er oppretta."
+  /// ```
+  String get typeLocked =>
+      """Typen kan ikkje endrast etter at feltet er oppretta.""";
+
+  /// ```dart
+  /// "Omfang"
+  /// ```
+  String get scope => """Omfang""";
+
+  /// ```dart
+  /// "Hjelpetekst"
+  /// ```
+  String get hint => """Hjelpetekst""";
+
+  /// ```dart
+  /// "Vist som plasshaldar for verdien"
+  /// ```
+  String get hintPlaceholder => """Vist som plasshaldar for verdien""";
+
+  /// ```dart
+  /// "Fleirlinja tekstområde"
+  /// ```
+  String get multiline => """Fleirlinja tekstområde""";
+
+  /// ```dart
+  /// "Alternativ"
+  /// ```
+  String get options => """Alternativ""";
+
+  /// ```dart
+  /// "Alternativnamn"
+  /// ```
+  String get optionPlaceholder => """Alternativnamn""";
+
+  /// ```dart
+  /// "Legg til alternativ"
+  /// ```
+  String get addOption => """Legg til alternativ""";
+
+  /// ```dart
+  /// "Fjern alternativ"
+  /// ```
+  String get removeOption => """Fjern alternativ""";
+
+  /// ```dart
+  /// "Datoinntasting"
+  /// ```
+  String get entryMode => """Datoinntasting""";
+
+  /// ```dart
+  /// "Absolutt"
+  /// ```
+  String get dateAbsolute => """Absolutt""";
+
+  /// ```dart
+  /// "Relativ"
+  /// ```
+  String get dateRelative => """Relativ""";
+
+  /// ```dart
+  /// "Standardforskyving (dagar)"
+  /// ```
+  String get defaultOffset => """Standardforskyving (dagar)""";
+
+  /// ```dart
+  /// "t.d. 7"
+  /// ```
+  String get defaultOffsetPlaceholder => """t.d. 7""";
+
+  /// ```dart
+  /// "Minn på som standard"
+  /// ```
+  String get notifyDefault => """Minn på som standard""";
+
+  /// ```dart
+  /// "Minn på"
+  /// ```
+  String get leadTime => """Minn på""";
+
+  /// ```dart
+  /// "Same dag"
+  /// ```
+  String get leadOnDay => """Same dag""";
+
+  /// ```dart
+  /// "1 dag før"
+  /// ```
+  String get leadDay1 => """1 dag før""";
+
+  /// ```dart
+  /// "2 dagar før"
+  /// ```
+  String get leadDay2 => """2 dagar før""";
+
+  /// ```dart
+  /// "3 dagar før"
+  /// ```
+  String get leadDay3 => """3 dagar før""";
+
+  /// ```dart
+  /// "1 veke før"
+  /// ```
+  String get leadWeek1 => """1 veke før""";
+
+  /// ```dart
+  /// "Overstyring av påminning"
+  /// ```
+  String get overridePolicy => """Overstyring av påminning""";
+
+  /// ```dart
+  /// "Same påminning for kvar oppføring"
+  /// ```
+  String get overrideFieldOnly => """Same påminning for kvar oppføring""";
+
+  /// ```dart
+  /// "Kvar oppføring set si eiga påminning"
+  /// ```
+  String get overrideItem => """Kvar oppføring set si eiga påminning""";
+
+  /// ```dart
+  /// "Slutt å minne på når oppføringa er ferdig"
+  /// ```
+  String get stopWhenDone => """Slutt å minne på når oppføringa er ferdig""";
+
+  /// ```dart
+  /// "Standardverdi"
+  /// ```
+  String get defaultValue => """Standardverdi""";
+
+  /// ```dart
+  /// "På som standard"
+  /// ```
+  String get defaultChecked => """På som standard""";
+
+  /// ```dart
+  /// "Ingen standard"
+  /// ```
+  String get noDefault => """Ingen standard""";
+
+  /// ```dart
+  /// "Ingen verdi"
+  /// ```
+  String get noValue => """Ingen verdi""";
+
+  /// ```dart
+  /// "Dagar frå i dag"
+  /// ```
+  String get daysFromToday => """Dagar frå i dag""";
+
+  /// ```dart
+  /// "Forfell ${date}"
+  /// ```
+  String due(String date) => """Forfell ${date}""";
+
+  /// ```dart
+  /// "Forankre datoen på nytt"
+  /// ```
+  String get reanchor => """Forankre datoen på nytt""";
+
+  /// ```dart
+  /// "Minn meg på"
+  /// ```
+  String get remindMe => """Minn meg på""";
+
+  /// ```dart
+  /// "Eiga påminning for denne oppføringa"
+  /// ```
+  String get customReminder => """Eiga påminning for denne oppføringa""";
+
+  /// ```dart
+  /// "Bruk feltstandarden"
+  /// ```
+  String get useFieldDefault => """Bruk feltstandarden""";
+
+  /// ```dart
+  /// "Ferdig"
+  /// ```
+  String get done => """Ferdig""";
+
+  /// ```dart
+  /// "Alternativet er i bruk"
+  /// ```
+  String get remapTitle => """Alternativet er i bruk""";
+
+  /// ```dart
+  /// "Fjern det frå desse oppføringane"
+  /// ```
+  String get remapClear => """Fjern det frå desse oppføringane""";
+
+  /// ```dart
+  /// "Flytt det til ${label}"
+  /// ```
+  String remapMoveTo(String label) => """Flytt det til ${label}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '${label} vert brukt av 1 oppføring. Kva skal skje med det?', many: '${label} vert brukt av ${count} oppføringar. Kva skal skje med dei?')}"
+  /// ```
+  String remapPrompt(int count, String label) =>
+      """${_plural(count, one: '${label} vert brukt av 1 oppføring. Kva skal skje med det?', many: '${label} vert brukt av ${count} oppføringar. Kva skal skje med dei?')}""";
+}
+
+class TypesCustomFieldsMessagesNn extends TypesCustomFieldsMessages {
+  final CustomFieldsMessagesNn _parent;
+  const TypesCustomFieldsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Tekst"
+  /// ```
+  String get text => """Tekst""";
+
+  /// ```dart
+  /// "Tal"
+  /// ```
+  String get number => """Tal""";
+
+  /// ```dart
+  /// "Avkryssingsrute"
+  /// ```
+  String get checkbox => """Avkryssingsrute""";
+
+  /// ```dart
+  /// "Dato"
+  /// ```
+  String get date => """Dato""";
+
+  /// ```dart
+  /// "Val"
+  /// ```
+  String get select => """Val""";
 }
 
 class StoresMessagesNn extends StoresMessages {
@@ -5157,6 +5448,63 @@ Passord: pantry""",
   """categories.sort.nameAZ""": """Namn A-Z""",
   """categories.sort.nameZA""": """Namn Z-A""",
   """categories.sort.custom""": """Sjølvvald""",
+  """customFields.manageTitle""": """Eigendefinerte felt""",
+  """customFields.empty""":
+      """Ingen eigendefinerte felt enno. Legg til eitt for å knyte ekstra informasjon til oppføringar.""",
+  """customFields.addField""": """Legg til felt""",
+  """customFields.allLists""": """Alle lister""",
+  """customFields.deleteTitle""": """Slett felt""",
+  """customFields.deleteConfirm""":
+      """Slette dette feltet? Verdiar som alt er sette på oppføringar vert tekne vare på, men gøymde.""",
+  """customFields.optionDeleteFailed""":
+      """Klarte ikkje fjerne alternativet.""",
+  """customFields.types.text""": """Tekst""",
+  """customFields.types.number""": """Tal""",
+  """customFields.types.checkbox""": """Avkryssingsrute""",
+  """customFields.types.date""": """Dato""",
+  """customFields.types.select""": """Val""",
+  """customFields.name""": """Namn""",
+  """customFields.namePlaceholder""": """t.d. Utløp, Gang""",
+  """customFields.type""": """Type""",
+  """customFields.typeLocked""":
+      """Typen kan ikkje endrast etter at feltet er oppretta.""",
+  """customFields.scope""": """Omfang""",
+  """customFields.hint""": """Hjelpetekst""",
+  """customFields.hintPlaceholder""": """Vist som plasshaldar for verdien""",
+  """customFields.multiline""": """Fleirlinja tekstområde""",
+  """customFields.options""": """Alternativ""",
+  """customFields.optionPlaceholder""": """Alternativnamn""",
+  """customFields.addOption""": """Legg til alternativ""",
+  """customFields.removeOption""": """Fjern alternativ""",
+  """customFields.entryMode""": """Datoinntasting""",
+  """customFields.dateAbsolute""": """Absolutt""",
+  """customFields.dateRelative""": """Relativ""",
+  """customFields.defaultOffset""": """Standardforskyving (dagar)""",
+  """customFields.defaultOffsetPlaceholder""": """t.d. 7""",
+  """customFields.notifyDefault""": """Minn på som standard""",
+  """customFields.leadTime""": """Minn på""",
+  """customFields.leadOnDay""": """Same dag""",
+  """customFields.leadDay1""": """1 dag før""",
+  """customFields.leadDay2""": """2 dagar før""",
+  """customFields.leadDay3""": """3 dagar før""",
+  """customFields.leadWeek1""": """1 veke før""",
+  """customFields.overridePolicy""": """Overstyring av påminning""",
+  """customFields.overrideFieldOnly""": """Same påminning for kvar oppføring""",
+  """customFields.overrideItem""": """Kvar oppføring set si eiga påminning""",
+  """customFields.stopWhenDone""":
+      """Slutt å minne på når oppføringa er ferdig""",
+  """customFields.defaultValue""": """Standardverdi""",
+  """customFields.defaultChecked""": """På som standard""",
+  """customFields.noDefault""": """Ingen standard""",
+  """customFields.noValue""": """Ingen verdi""",
+  """customFields.daysFromToday""": """Dagar frå i dag""",
+  """customFields.reanchor""": """Forankre datoen på nytt""",
+  """customFields.remindMe""": """Minn meg på""",
+  """customFields.customReminder""": """Eiga påminning for denne oppføringa""",
+  """customFields.useFieldDefault""": """Bruk feltstandarden""",
+  """customFields.done""": """Ferdig""",
+  """customFields.remapTitle""": """Alternativet er i bruk""",
+  """customFields.remapClear""": """Fjern det frå desse oppføringane""",
   """stores.manageTitle""": """Behandle butikkar""",
   """stores.noStores""": """Ingen butikkar enno.""",
   """stores.editTitle""": """Rediger butikk""",

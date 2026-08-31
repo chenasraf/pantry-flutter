@@ -208,6 +208,7 @@ class SyncManager {
         case SyncEntity.store:
         case SyncEntity.label:
         case SyncEntity.note:
+        case SyncEntity.customField:
         case SyncEntity.shoppingCheck:
         case SyncEntity.shoppingSkip:
           break;
@@ -549,6 +550,10 @@ class SyncManager {
           );
         }
       case SyncEntity.note:
+        break;
+      case SyncEntity.customField:
+        // Field-definition ops address their own record by id (rewritten by
+        // the id-remap), never another entity's temp id in their body.
         break;
       case SyncEntity.shoppingCheck:
       case SyncEntity.shoppingSkip:

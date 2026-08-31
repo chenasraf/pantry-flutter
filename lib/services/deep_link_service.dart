@@ -7,22 +7,38 @@ class DeepLink {
   final int tabIndex;
   final int? houseId;
 
-  const DeepLink({required this.tabIndex, this.houseId});
+  /// When both are set (a checklists deep link), the target list is preselected
+  /// and its item is opened once loaded — used by custom-field date reminders.
+  final int? listId;
+  final int? itemId;
+
+  const DeepLink({
+    required this.tabIndex,
+    this.houseId,
+    this.listId,
+    this.itemId,
+  });
 
   /// Serialize to a compact string for notification payloads.
-  String encode() => '$tabIndex:${houseId ?? ''}';
+  String encode() =>
+      '$tabIndex:${houseId ?? ''}:${listId ?? ''}:${itemId ?? ''}';
 
-  /// Parse a payload string. Returns null if invalid.
+  /// Parse a payload string. Returns null if invalid. Tolerates the older
+  /// two-field form (`tab:house`) so payloads already scheduled still decode.
   static DeepLink? decode(String? payload) {
     if (payload == null || payload.isEmpty) return null;
     final parts = payload.split(':');
     if (parts.isEmpty) return null;
     final tab = int.tryParse(parts[0]);
     if (tab == null || tab < 0 || tab > 2) return null;
-    final houseId = parts.length > 1 && parts[1].isNotEmpty
-        ? int.tryParse(parts[1])
-        : null;
-    return DeepLink(tabIndex: tab, houseId: houseId);
+    int? at(int i) =>
+        parts.length > i && parts[i].isNotEmpty ? int.tryParse(parts[i]) : null;
+    return DeepLink(
+      tabIndex: tab,
+      houseId: at(1),
+      listId: at(2),
+      itemId: at(3),
+    );
   }
 }
 

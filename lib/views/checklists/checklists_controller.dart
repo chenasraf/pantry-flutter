@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/member.dart';
@@ -12,6 +13,7 @@ import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/custom_field_service.dart';
 import 'package:pantry/services/label_service.dart';
 import 'package:pantry/services/store_service.dart';
 import 'package:pantry/services/house_service.dart';
@@ -384,6 +386,13 @@ class ChecklistsController extends ChangeNotifier {
       if (item.labelIds.contains(l.id)) l,
   ];
 
+  /// Custom-field definitions for the house, driving the compose bar's
+  /// custom-fields tray and its default seeding. Empty unless the
+  /// `custom-fields` capability is present. Loaded non-fatally with the rest.
+  List<FieldDefinition> _customFieldDefs = const [];
+  List<FieldDefinition> get customFieldDefs =>
+      hasFeature(kCustomFieldsFeature) ? _customFieldDefs : const [];
+
   String _sortBy = 'custom';
   String get sortBy => _sortBy;
 
@@ -600,6 +609,18 @@ class ChecklistsController extends ChangeNotifier {
         }
       }
 
+      // Custom-field definitions back the compose bar's default seeding; gated
+      // on the capability and fetched non-fatally.
+      if (hasFeature(kCustomFieldsFeature)) {
+        try {
+          _customFieldDefs = await CustomFieldService.instance.getFields(
+            houseId,
+          );
+        } catch (e) {
+          debugPrint('[ChecklistsController] Failed to load custom fields: $e');
+        }
+      }
+
       // House prefs are non-fatal
       try {
         final prefs = await _checklistService.getHousePrefs(houseId);
@@ -784,6 +805,11 @@ class ChecklistsController extends ChangeNotifier {
     final cachedStores = _storeService.getCached(houseId);
     if (cachedStores != null && _stores.isEmpty) {
       _stores = {for (final s in cachedStores) s.id: s};
+    }
+
+    final cachedDefs = CustomFieldService.instance.getCached(houseId);
+    if (cachedDefs != null && _customFieldDefs.isEmpty) {
+      _customFieldDefs = cachedDefs;
     }
 
     final cachedLabels = _labelService.getCached(houseId);
@@ -2139,6 +2165,7 @@ class ChecklistsController extends ChangeNotifier {
     bool? deleteOnDone,
     String? barcode,
     List<ItemPrice>? prices,
+    List<FieldValue>? customFields,
   }) async {
     final list = _currentList;
     if (list == null || list.id == kAllListsId) {
@@ -2161,6 +2188,7 @@ class ChecklistsController extends ChangeNotifier {
       deleteOnDone: deleteOnDone,
       barcode: barcode,
       prices: prices,
+      customFields: customFields,
     );
   }
 
@@ -2181,6 +2209,7 @@ class ChecklistsController extends ChangeNotifier {
     bool? deleteOnDone,
     String? barcode,
     List<ItemPrice>? prices,
+    List<FieldValue>? customFields,
   }) async {
     final listId = targetListId;
     final tempId = _sync.newTempId();
@@ -2201,6 +2230,7 @@ class ChecklistsController extends ChangeNotifier {
       addedBy: loginName,
       barcode: barcode,
       prices: prices ?? const [],
+      customFields: customFields ?? const [],
       sortOrder: 0,
       createdAt: _now(),
       updatedAt: _now(),
@@ -2231,6 +2261,8 @@ class ChecklistsController extends ChangeNotifier {
           'deleteOnDone': ?deleteOnDone,
           'barcode': ?barcode,
           if (prices != null) 'prices': prices.map((p) => p.toJson()).toList(),
+          if (customFields != null)
+            'customFields': customFields.map((v) => v.toJson()).toList(),
         },
         createdAt: _now(),
       ),
@@ -2274,6 +2306,7 @@ class ChecklistsController extends ChangeNotifier {
     bool? deleteOnDone,
     String? barcode,
     List<ItemPrice>? prices,
+    List<FieldValue>? customFields,
   }) async {
     final updated = item.copyWith(
       name: name,
@@ -2289,6 +2322,8 @@ class ChecklistsController extends ChangeNotifier {
       barcode: barcode,
       // null leaves prices unchanged; a list (even empty) replaces them.
       prices: prices,
+      // Same contract for custom-field values.
+      customFields: customFields,
       updatedAt: _now(),
     );
     final index = _items.indexWhere((i) => i.id == item.id);
@@ -2319,6 +2354,8 @@ class ChecklistsController extends ChangeNotifier {
           'deleteOnDone': ?deleteOnDone,
           'barcode': ?barcode,
           if (prices != null) 'prices': prices.map((p) => p.toJson()).toList(),
+          if (customFields != null)
+            'customFields': customFields.map((v) => v.toJson()).toList(),
         },
         createdAt: _now(),
       ),
@@ -2803,10 +2840,12 @@ class ChecklistsController extends ChangeNotifier {
           notifyListeners();
         }
       case SyncEntity.note:
+      case SyncEntity.customField:
       case SyncEntity.shoppingCheck:
       case SyncEntity.shoppingSkip:
         // Not surfaced in the checklists view — the shopping session controller
-        // reconciles its own check/skip ops.
+        // reconciles its own check/skip ops, and the custom-fields manager
+        // reconciles its own definition ops.
         break;
     }
   }

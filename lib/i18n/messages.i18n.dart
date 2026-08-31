@@ -74,6 +74,7 @@ class Messages {
   SettingsMessages get settings => SettingsMessages(this);
   NotificationsMessages get notifications => NotificationsMessages(this);
   CategoriesMessages get categories => CategoriesMessages(this);
+  CustomFieldsMessages get customFields => CustomFieldsMessages(this);
   StoresMessages get stores => StoresMessages(this);
   LabelsMessages get labels => LabelsMessages(this);
   ChecklistsMessages get checklists => ChecklistsMessages(this);
@@ -1635,6 +1636,296 @@ class SortCategoriesMessages {
   /// "Custom"
   /// ```
   String get custom => """Custom""";
+}
+
+class CustomFieldsMessages {
+  final Messages _parent;
+  const CustomFieldsMessages(this._parent);
+
+  /// ```dart
+  /// "Custom fields"
+  /// ```
+  String get manageTitle => """Custom fields""";
+
+  /// ```dart
+  /// "No custom fields yet. Add one to attach extra info to items."
+  /// ```
+  String get empty =>
+      """No custom fields yet. Add one to attach extra info to items.""";
+
+  /// ```dart
+  /// "Add field"
+  /// ```
+  String get addField => """Add field""";
+
+  /// ```dart
+  /// "All lists"
+  /// ```
+  String get allLists => """All lists""";
+
+  /// ```dart
+  /// "Delete field"
+  /// ```
+  String get deleteTitle => """Delete field""";
+
+  /// ```dart
+  /// "Delete this field? Values already set on items are kept but hidden."
+  /// ```
+  String get deleteConfirm =>
+      """Delete this field? Values already set on items are kept but hidden.""";
+
+  /// ```dart
+  /// "Failed to remove option."
+  /// ```
+  String get optionDeleteFailed => """Failed to remove option.""";
+  TypesCustomFieldsMessages get types => TypesCustomFieldsMessages(this);
+
+  /// ```dart
+  /// "Name"
+  /// ```
+  String get name => """Name""";
+
+  /// ```dart
+  /// "e.g. Expiry, Aisle"
+  /// ```
+  String get namePlaceholder => """e.g. Expiry, Aisle""";
+
+  /// ```dart
+  /// "Type"
+  /// ```
+  String get type => """Type""";
+
+  /// ```dart
+  /// "The type can't be changed after the field is created."
+  /// ```
+  String get typeLocked =>
+      """The type can't be changed after the field is created.""";
+
+  /// ```dart
+  /// "Scope"
+  /// ```
+  String get scope => """Scope""";
+
+  /// ```dart
+  /// "Hint text"
+  /// ```
+  String get hint => """Hint text""";
+
+  /// ```dart
+  /// "Shown as the value's placeholder"
+  /// ```
+  String get hintPlaceholder => """Shown as the value's placeholder""";
+
+  /// ```dart
+  /// "Multi-line text area"
+  /// ```
+  String get multiline => """Multi-line text area""";
+
+  /// ```dart
+  /// "Options"
+  /// ```
+  String get options => """Options""";
+
+  /// ```dart
+  /// "Option label"
+  /// ```
+  String get optionPlaceholder => """Option label""";
+
+  /// ```dart
+  /// "Add option"
+  /// ```
+  String get addOption => """Add option""";
+
+  /// ```dart
+  /// "Remove option"
+  /// ```
+  String get removeOption => """Remove option""";
+
+  /// ```dart
+  /// "Date entry"
+  /// ```
+  String get entryMode => """Date entry""";
+
+  /// ```dart
+  /// "Absolute"
+  /// ```
+  String get dateAbsolute => """Absolute""";
+
+  /// ```dart
+  /// "Relative"
+  /// ```
+  String get dateRelative => """Relative""";
+
+  /// ```dart
+  /// "Default offset (days)"
+  /// ```
+  String get defaultOffset => """Default offset (days)""";
+
+  /// ```dart
+  /// "e.g. 7"
+  /// ```
+  String get defaultOffsetPlaceholder => """e.g. 7""";
+
+  /// ```dart
+  /// "Remind by default"
+  /// ```
+  String get notifyDefault => """Remind by default""";
+
+  /// ```dart
+  /// "Remind"
+  /// ```
+  String get leadTime => """Remind""";
+
+  /// ```dart
+  /// "On the day"
+  /// ```
+  String get leadOnDay => """On the day""";
+
+  /// ```dart
+  /// "1 day before"
+  /// ```
+  String get leadDay1 => """1 day before""";
+
+  /// ```dart
+  /// "2 days before"
+  /// ```
+  String get leadDay2 => """2 days before""";
+
+  /// ```dart
+  /// "3 days before"
+  /// ```
+  String get leadDay3 => """3 days before""";
+
+  /// ```dart
+  /// "1 week before"
+  /// ```
+  String get leadWeek1 => """1 week before""";
+
+  /// ```dart
+  /// "Reminder override"
+  /// ```
+  String get overridePolicy => """Reminder override""";
+
+  /// ```dart
+  /// "Same reminder for every item"
+  /// ```
+  String get overrideFieldOnly => """Same reminder for every item""";
+
+  /// ```dart
+  /// "Each item sets its own reminder"
+  /// ```
+  String get overrideItem => """Each item sets its own reminder""";
+
+  /// ```dart
+  /// "Stop reminding once the item is done"
+  /// ```
+  String get stopWhenDone => """Stop reminding once the item is done""";
+
+  /// ```dart
+  /// "Default value"
+  /// ```
+  String get defaultValue => """Default value""";
+
+  /// ```dart
+  /// "On by default"
+  /// ```
+  String get defaultChecked => """On by default""";
+
+  /// ```dart
+  /// "No default"
+  /// ```
+  String get noDefault => """No default""";
+
+  /// ```dart
+  /// "No value"
+  /// ```
+  String get noValue => """No value""";
+
+  /// ```dart
+  /// "Days from today"
+  /// ```
+  String get daysFromToday => """Days from today""";
+
+  /// ```dart
+  /// "Due ${date}"
+  /// ```
+  String due(String date) => """Due ${date}""";
+
+  /// ```dart
+  /// "Re-anchor date"
+  /// ```
+  String get reanchor => """Re-anchor date""";
+
+  /// ```dart
+  /// "Remind me"
+  /// ```
+  String get remindMe => """Remind me""";
+
+  /// ```dart
+  /// "Custom reminder for this item"
+  /// ```
+  String get customReminder => """Custom reminder for this item""";
+
+  /// ```dart
+  /// "Use field default"
+  /// ```
+  String get useFieldDefault => """Use field default""";
+
+  /// ```dart
+  /// "Done"
+  /// ```
+  String get done => """Done""";
+
+  /// ```dart
+  /// "Option in use"
+  /// ```
+  String get remapTitle => """Option in use""";
+
+  /// ```dart
+  /// "Clear it from those items"
+  /// ```
+  String get remapClear => """Clear it from those items""";
+
+  /// ```dart
+  /// "Move it to ${label}"
+  /// ```
+  String remapMoveTo(String label) => """Move it to ${label}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '${label} is used by 1 item. What should happen to it?', many: '${label} is used by ${count} items. What should happen to them?')}"
+  /// ```
+  String remapPrompt(int count, String label) =>
+      """${_plural(count, one: '${label} is used by 1 item. What should happen to it?', many: '${label} is used by ${count} items. What should happen to them?')}""";
+}
+
+class TypesCustomFieldsMessages {
+  final CustomFieldsMessages _parent;
+  const TypesCustomFieldsMessages(this._parent);
+
+  /// ```dart
+  /// "Text"
+  /// ```
+  String get text => """Text""";
+
+  /// ```dart
+  /// "Number"
+  /// ```
+  String get number => """Number""";
+
+  /// ```dart
+  /// "Checkbox"
+  /// ```
+  String get checkbox => """Checkbox""";
+
+  /// ```dart
+  /// "Date"
+  /// ```
+  String get date => """Date""";
+
+  /// ```dart
+  /// "Select"
+  /// ```
+  String get select => """Select""";
 }
 
 class StoresMessages {
@@ -5124,6 +5415,61 @@ Password: pantry-rocks""",
   """categories.sort.nameAZ""": """Name A–Z""",
   """categories.sort.nameZA""": """Name Z–A""",
   """categories.sort.custom""": """Custom""",
+  """customFields.manageTitle""": """Custom fields""",
+  """customFields.empty""":
+      """No custom fields yet. Add one to attach extra info to items.""",
+  """customFields.addField""": """Add field""",
+  """customFields.allLists""": """All lists""",
+  """customFields.deleteTitle""": """Delete field""",
+  """customFields.deleteConfirm""":
+      """Delete this field? Values already set on items are kept but hidden.""",
+  """customFields.optionDeleteFailed""": """Failed to remove option.""",
+  """customFields.types.text""": """Text""",
+  """customFields.types.number""": """Number""",
+  """customFields.types.checkbox""": """Checkbox""",
+  """customFields.types.date""": """Date""",
+  """customFields.types.select""": """Select""",
+  """customFields.name""": """Name""",
+  """customFields.namePlaceholder""": """e.g. Expiry, Aisle""",
+  """customFields.type""": """Type""",
+  """customFields.typeLocked""":
+      """The type can't be changed after the field is created.""",
+  """customFields.scope""": """Scope""",
+  """customFields.hint""": """Hint text""",
+  """customFields.hintPlaceholder""": """Shown as the value's placeholder""",
+  """customFields.multiline""": """Multi-line text area""",
+  """customFields.options""": """Options""",
+  """customFields.optionPlaceholder""": """Option label""",
+  """customFields.addOption""": """Add option""",
+  """customFields.removeOption""": """Remove option""",
+  """customFields.entryMode""": """Date entry""",
+  """customFields.dateAbsolute""": """Absolute""",
+  """customFields.dateRelative""": """Relative""",
+  """customFields.defaultOffset""": """Default offset (days)""",
+  """customFields.defaultOffsetPlaceholder""": """e.g. 7""",
+  """customFields.notifyDefault""": """Remind by default""",
+  """customFields.leadTime""": """Remind""",
+  """customFields.leadOnDay""": """On the day""",
+  """customFields.leadDay1""": """1 day before""",
+  """customFields.leadDay2""": """2 days before""",
+  """customFields.leadDay3""": """3 days before""",
+  """customFields.leadWeek1""": """1 week before""",
+  """customFields.overridePolicy""": """Reminder override""",
+  """customFields.overrideFieldOnly""": """Same reminder for every item""",
+  """customFields.overrideItem""": """Each item sets its own reminder""",
+  """customFields.stopWhenDone""": """Stop reminding once the item is done""",
+  """customFields.defaultValue""": """Default value""",
+  """customFields.defaultChecked""": """On by default""",
+  """customFields.noDefault""": """No default""",
+  """customFields.noValue""": """No value""",
+  """customFields.daysFromToday""": """Days from today""",
+  """customFields.reanchor""": """Re-anchor date""",
+  """customFields.remindMe""": """Remind me""",
+  """customFields.customReminder""": """Custom reminder for this item""",
+  """customFields.useFieldDefault""": """Use field default""",
+  """customFields.done""": """Done""",
+  """customFields.remapTitle""": """Option in use""",
+  """customFields.remapClear""": """Clear it from those items""",
   """stores.manageTitle""": """Manage stores""",
   """stores.noStores""": """No stores yet.""",
   """stores.editTitle""": """Edit store""",

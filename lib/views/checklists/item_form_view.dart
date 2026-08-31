@@ -9,6 +9,7 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
@@ -20,6 +21,7 @@ import 'package:pantry/utils/label_icons.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
+import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
@@ -55,6 +57,11 @@ class _ItemFormViewState extends State<ItemFormView> {
   late RecurrenceState _recurrence;
   late final bool _priceEnabled;
   late final PricesDraft _prices;
+  late final bool _customFieldsEnabled;
+
+  /// Composed custom-field values, kept up to date by the editor's `onChanged`
+  /// (no rebuild needed — it's only read on save).
+  late List<FieldValue> _customFields;
   bool _saving = false;
   bool _deleting = false;
   bool _catPickerOpen = false;
@@ -133,6 +140,8 @@ class _ItemFormViewState extends State<ItemFormView> {
             fallbackCurrency: widget.controller.lastCurrency,
           )
         : PricesDraft.empty(widget.controller.lastCurrency);
+    _customFieldsEnabled = hasFeature(kCustomFieldsFeature);
+    _customFields = List.of(item?.customFields ?? const []);
     _nameDir = detectTextDirection(item?.name);
     _nameController.addListener(() {
       final dir = detectTextDirection(_nameController.text);
@@ -233,6 +242,8 @@ class _ItemFormViewState extends State<ItemFormView> {
           // Always send the full price set on edit (an empty list clears).
           // Omitted entirely when the server lacks the capability.
           prices: _priceEnabled ? _prices.toItemPrices() : null,
+          // Full value set on edit (empty clears); omitted without the feature.
+          customFields: _customFieldsEnabled ? _customFields : null,
         );
       } else {
         savedItem = await widget.controller.addItem(
@@ -250,6 +261,9 @@ class _ItemFormViewState extends State<ItemFormView> {
           deleteOnDone: isOnce,
           prices: _priceEnabled && _prices.hasAnyPrice
               ? _prices.toItemPrices()
+              : null,
+          customFields: _customFieldsEnabled && _customFields.isNotEmpty
+              ? _customFields
               : null,
         );
       }
@@ -533,6 +547,17 @@ class _ItemFormViewState extends State<ItemFormView> {
                     ),
                   ],
                 ],
+                if (_customFieldsEnabled) ...[
+                  const SizedBox(height: 16),
+                  _SectionLabel(text: m.customFields.manageTitle),
+                  const SizedBox(height: 10),
+                  ItemCustomFieldsEditor(
+                    houseId: widget.controller.houseId,
+                    listId: _effectiveListId,
+                    initial: _customFields,
+                    onChanged: (values) => _customFields = values,
+                  ),
+                ],
                 const SizedBox(height: 16),
                 _SectionLabel(text: m.checklists.itemTypes.label),
                 const SizedBox(height: 10),
@@ -815,36 +840,8 @@ class _LabeledField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final labelColor = focused ? cs.primary : cs.onSurfaceVariant;
-    final borderColor = focused ? cs.primary : cs.outlineVariant;
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      padding: const EdgeInsets.fromLTRB(15, 11, 15, 12),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: borderColor, width: focused ? 1.5 : 1),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.6,
-              color: labelColor,
-            ),
-          ),
-          const SizedBox(height: 4),
-          child,
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      LabeledFieldCard(label: label, focused: focused, child: child);
 }
 
 class _QuantityField extends StatelessWidget {

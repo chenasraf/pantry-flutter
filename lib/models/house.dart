@@ -26,6 +26,7 @@ class HousePermissions {
   final bool canCreateNotes;
   final bool canUpdateNotes;
   final bool canDeleteNotes;
+  final bool canEditFields;
 
   const HousePermissions({
     this.canViewLists = true,
@@ -46,6 +47,7 @@ class HousePermissions {
     this.canCreateNotes = true,
     this.canUpdateNotes = true,
     this.canDeleteNotes = true,
+    this.canEditFields = true,
   });
 
   /// Every capability granted — used as the default for pre-roles servers and
@@ -74,6 +76,7 @@ class HousePermissions {
       canCreateNotes: read('canCreateNotes'),
       canUpdateNotes: read('canUpdateNotes'),
       canDeleteNotes: read('canDeleteNotes'),
+      canEditFields: read('canEditFields'),
     );
   }
 
@@ -96,6 +99,7 @@ class HousePermissions {
     'canCreateNotes': canCreateNotes,
     'canUpdateNotes': canUpdateNotes,
     'canDeleteNotes': canDeleteNotes,
+    'canEditFields': canEditFields,
   };
 }
 

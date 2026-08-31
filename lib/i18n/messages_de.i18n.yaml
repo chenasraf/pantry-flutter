@@ -304,6 +304,64 @@ categories:
     nameZA: "Name Z–A"
     custom: Benutzerdefiniert
 
+customFields:
+  manageTitle: Benutzerdefinierte Felder
+  empty: "Noch keine benutzerdefinierten Felder. Füge eines hinzu, um Einträgen zusätzliche Informationen anzuhängen."
+  addField: Feld hinzufügen
+  allLists: Alle Listen
+  deleteTitle: Feld löschen
+  deleteConfirm: "Dieses Feld löschen? Bereits gesetzte Werte bleiben erhalten, werden aber ausgeblendet."
+  optionDeleteFailed: Option konnte nicht entfernt werden.
+  types:
+    text: Text
+    number: Zahl
+    checkbox: Kontrollkästchen
+    date: Datum
+    select: Auswahl
+  name: Name
+  namePlaceholder: "z. B. Ablaufdatum, Gang"
+  type: Typ
+  typeLocked: Der Typ kann nach dem Erstellen des Felds nicht mehr geändert werden.
+  scope: Geltungsbereich
+  hint: Hinweistext
+  hintPlaceholder: Wird als Platzhalter des Werts angezeigt
+  multiline: Mehrzeiliges Textfeld
+  options: Optionen
+  optionPlaceholder: Optionsbezeichnung
+  addOption: Option hinzufügen
+  removeOption: Option entfernen
+  entryMode: Datumseingabe
+  dateAbsolute: Absolut
+  dateRelative: Relativ
+  defaultOffset: "Standard-Versatz (Tage)"
+  defaultOffsetPlaceholder: "z. B. 7"
+  notifyDefault: Standardmäßig erinnern
+  leadTime: Erinnern
+  leadOnDay: Am selben Tag
+  leadDay1: 1 Tag vorher
+  leadDay2: 2 Tage vorher
+  leadDay3: 3 Tage vorher
+  leadWeek1: 1 Woche vorher
+  overridePolicy: Erinnerungs-Übersteuerung
+  overrideFieldOnly: Gleiche Erinnerung für jeden Eintrag
+  overrideItem: Jeder Eintrag legt seine eigene Erinnerung fest
+  stopWhenDone: Nicht mehr erinnern, sobald der Eintrag erledigt ist
+  defaultValue: Standardwert
+  defaultChecked: Standardmäßig aktiviert
+  noDefault: Kein Standard
+  noValue: Kein Wert
+  daysFromToday: Tage ab heute
+  due(String date): "Fällig am ${date}"
+  reanchor: Datum neu verankern
+  remindMe: Mich erinnern
+  customReminder: Eigene Erinnerung für diesen Eintrag
+  useFieldDefault: Feldstandard verwenden
+  done: Fertig
+  remapTitle: Option in Verwendung
+  remapClear: Aus diesen Einträgen entfernen
+  remapMoveTo(String label): "Zu ${label} verschieben"
+  remapPrompt(int count, String label): "${_plural(count, one: '${label} wird von 1 Eintrag verwendet. Was soll damit geschehen?', many: '${label} wird von ${count} Einträgen verwendet. Was soll damit geschehen?')}"
+
 stores:
   manageTitle: Geschäfte verwalten
   noStores: Noch keine Geschäfte.

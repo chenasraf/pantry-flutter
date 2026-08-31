@@ -155,6 +155,25 @@ class ApiClient {
     }
   }
 
+  /// DELETE that carries a request body and parses a response — for endpoints
+  /// where the deletion needs parameters (e.g. remap-or-clear) and returns the
+  /// updated resource.
+  Future<T> deleteWithResult<D, T>(
+    String path, {
+    Map<String, dynamic>? body,
+    required T Function(D data) fromJson,
+  }) async {
+    _ensureOnline();
+    final response = await http
+        .delete(
+          _uri(path),
+          headers: _headers,
+          body: body != null ? jsonEncode(body) : null,
+        )
+        .timeout(_timeout);
+    return _handleResponse<D, T>(response, fromJson);
+  }
+
   /// Upload raw bytes (e.g. image) via POST with a given content type.
   Future<T> uploadBytes<D, T>(
     String path, {

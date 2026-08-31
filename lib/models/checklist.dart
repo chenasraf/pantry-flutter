@@ -1,3 +1,4 @@
+import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/services/server_version_service.dart';
 
 class ChecklistList {
@@ -200,6 +201,11 @@ class ListItem {
   /// Empty when the item carries no price. See [ItemPrice] and the resolution
   /// helpers in `utils/price.dart`. Gated behind the `item-price` capability.
   final List<ItemPrice> prices;
+
+  /// Per-item custom-field values, one per filled field. Empty when the item
+  /// carries none. Gated behind the `custom-fields` capability; mirrors
+  /// [prices] in how it rides the item's create/update payload.
+  final List<FieldValue> customFields;
   final int sortOrder;
   final int createdAt;
   final int updatedAt;
@@ -227,6 +233,7 @@ class ListItem {
     this.addedBy,
     this.barcode,
     this.prices = const [],
+    this.customFields = const [],
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -259,6 +266,7 @@ class ListItem {
     addedBy: json['addedBy'] as String?,
     barcode: json['barcode'] as String?,
     prices: _pricesFromJson(json),
+    customFields: _customFieldsFromJson(json),
     sortOrder: json['sortOrder'] as int,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
@@ -292,6 +300,18 @@ class ListItem {
     return const [];
   }
 
+  /// Read custom-field values from the `customFields` array (present on servers
+  /// advertising `custom-fields`, and our own cache); absent elsewhere.
+  static List<FieldValue> _customFieldsFromJson(Map<String, dynamic> json) {
+    final raw = json['customFields'];
+    if (raw is List) {
+      return raw
+          .map((e) => FieldValue.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+    return const [];
+  }
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'listId': listId,
@@ -313,6 +333,7 @@ class ListItem {
     'addedBy': addedBy,
     'barcode': barcode,
     'prices': prices.map((p) => p.toJson()).toList(),
+    'customFields': customFields.map((v) => v.toJson()).toList(),
     'sortOrder': sortOrder,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
@@ -341,6 +362,7 @@ class ListItem {
     String? imageUploadedBy,
     String? barcode,
     List<ItemPrice>? prices,
+    List<FieldValue>? customFields,
     int? sortOrder,
     int? updatedAt,
     int? deletedAt,
@@ -370,6 +392,7 @@ class ListItem {
     addedBy: addedBy,
     barcode: barcode ?? this.barcode,
     prices: prices ?? this.prices,
+    customFields: customFields ?? this.customFields,
     sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
