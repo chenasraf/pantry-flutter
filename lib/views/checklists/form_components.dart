@@ -3,6 +3,84 @@ import 'package:flutter/material.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/utils/rrule.dart';
 
+/// The shared "filled field" frame used across item forms: a `surfaceContainer`
+/// card with a rounded-14 border that flips to the accent when focused. Pair
+/// with [fieldCardLabelStyle] for the uppercase caption.
+BoxDecoration fieldCardDecoration(ColorScheme cs, {bool focused = false}) =>
+    BoxDecoration(
+      color: cs.surfaceContainer,
+      border: Border.all(
+        color: focused ? cs.primary : cs.outlineVariant,
+        width: focused ? 1.5 : 1,
+      ),
+      borderRadius: BorderRadius.circular(14),
+    );
+
+/// The uppercase caption style used on field cards and section labels.
+TextStyle fieldCardLabelStyle(ColorScheme cs, {bool focused = false}) =>
+    TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.6,
+      color: focused ? cs.primary : cs.onSurfaceVariant,
+    );
+
+/// A labeled, filled field card: an uppercase caption above [child], wrapped in
+/// [fieldCardDecoration]. The app's standard single-field container (name,
+/// quantity, custom fields, …).
+class LabeledFieldCard extends StatelessWidget {
+  final String label;
+
+  /// The control below the caption. Omit for boolean fields whose value sits
+  /// inline via [trailing].
+  final Widget? child;
+  final bool focused;
+
+  /// Optional control pinned to the right of the caption row (e.g. a switch),
+  /// for boolean fields where the value sits inline with the label.
+  final Widget? trailing;
+
+  const LabeledFieldCard({
+    super.key,
+    required this.label,
+    this.child,
+    this.focused = false,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      padding: EdgeInsets.fromLTRB(
+        15,
+        trailing != null ? 6 : 11,
+        15,
+        trailing != null ? 6 : 12,
+      ),
+      decoration: fieldCardDecoration(cs, focused: focused),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label.toUpperCase(),
+                  style: fieldCardLabelStyle(cs, focused: focused),
+                ),
+              ),
+              ?trailing,
+            ],
+          ),
+          if (child != null) ...[const SizedBox(height: 4), child!],
+        ],
+      ),
+    );
+  }
+}
+
 /// Mutable state for the inline recurrence panel. Edited in place by
 /// [RecurrenceInline] via [onChanged] callbacks; consumers read it back at save
 /// time and call [toRrule] to serialize.

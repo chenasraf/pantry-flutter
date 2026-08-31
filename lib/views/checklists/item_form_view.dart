@@ -840,36 +840,8 @@ class _LabeledField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final labelColor = focused ? cs.primary : cs.onSurfaceVariant;
-    final borderColor = focused ? cs.primary : cs.outlineVariant;
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      padding: const EdgeInsets.fromLTRB(15, 11, 15, 12),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: borderColor, width: focused ? 1.5 : 1),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.6,
-              color: labelColor,
-            ),
-          ),
-          const SizedBox(height: 4),
-          child,
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      LabeledFieldCard(label: label, focused: focused, child: child);
 }
 
 class _QuantityField extends StatelessWidget {

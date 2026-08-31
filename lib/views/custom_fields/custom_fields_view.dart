@@ -10,6 +10,7 @@ import 'package:pantry/sync/sync_ids.dart';
 import 'package:pantry/sync/sync_manager.dart';
 import 'package:pantry/sync/sync_op.dart';
 import 'package:pantry/utils/field_type_icons.dart';
+import 'package:pantry/views/checklists/form_components.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
@@ -498,7 +499,7 @@ class _CustomFieldsViewState extends State<CustomFieldsView> {
             child: Card(
               margin: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
                 side: BorderSide(color: theme.colorScheme.primary),
               ),
               child: Padding(
@@ -556,7 +557,7 @@ class _CustomFieldsViewState extends State<CustomFieldsView> {
         margin: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           side: BorderSide(color: expanded ? cs.primary : cs.outlineVariant),
         ),
         child: ExpansionTile(
@@ -1256,22 +1257,32 @@ class _FieldEditorState extends State<_FieldEditor> {
   };
 
   Widget _label(String text) => Padding(
-    padding: const EdgeInsetsDirectional.only(bottom: 4, top: 2),
+    padding: const EdgeInsetsDirectional.only(bottom: 6, top: 2),
     child: Text(
-      text,
-      style: TextStyle(
-        fontSize: 12.5,
-        fontWeight: FontWeight.w600,
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-      ),
+      text.toUpperCase(),
+      style: fieldCardLabelStyle(Theme.of(context).colorScheme),
     ),
   );
 
-  InputDecoration _dec({String? hint}) => InputDecoration(
-    isDense: true,
-    hintText: hint,
-    border: const OutlineInputBorder(),
-  );
+  /// Filled, rounded input matching the app's field cards (surfaceContainer
+  /// fill, radius-14 outlineVariant border, accent on focus).
+  InputDecoration _dec({String? hint}) {
+    final cs = Theme.of(context).colorScheme;
+    OutlineInputBorder border(Color color, double width) => OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(color: color, width: width),
+    );
+    return InputDecoration(
+      isDense: true,
+      hintText: hint,
+      filled: true,
+      fillColor: cs.surfaceContainer,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      border: border(cs.outlineVariant, 1),
+      enabledBorder: border(cs.outlineVariant, 1),
+      focusedBorder: border(cs.primary, 1.5),
+    );
+  }
 }
 
 /// The user's answer to the remap-or-clear prompt: [clear] empties the values,

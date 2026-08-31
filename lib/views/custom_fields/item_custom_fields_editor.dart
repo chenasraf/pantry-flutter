@@ -3,6 +3,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/services/custom_field_service.dart';
 import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry/views/checklists/form_components.dart';
 
 /// The per-item "Custom fields" value-filling section. Renders one control per
 /// applicable field (house-wide ∪ the item's list), mirroring the web
@@ -181,92 +182,89 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
   }
 
   Widget _buildField(FieldDefinition field) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        switch (field.type) {
-          FieldType.text => _buildText(field),
-          FieldType.number => _buildNumber(field),
-          FieldType.checkbox => _buildCheckbox(field),
-          FieldType.select => _buildSelect(field),
-          FieldType.date => _buildDate(field),
-        },
-        if (_showReminderOverride(field)) _buildReminderOverride(field),
-      ],
-    );
+    return switch (field.type) {
+      FieldType.text => _buildText(field),
+      FieldType.number => _buildNumber(field),
+      FieldType.checkbox => _buildCheckbox(field),
+      FieldType.select => _buildSelect(field),
+      FieldType.date => _buildDate(field),
+    };
   }
 
   Widget _buildText(FieldDefinition field) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _label(field.name),
-        TextField(
-          controller: _textCtrls[field.id],
-          minLines: field.multiline ? 2 : 1,
-          maxLines: field.multiline ? 5 : 1,
-          textDirection: detectTextDirection(_textCtrls[field.id]?.text),
-          decoration: _dec(hint: field.hint),
-          onChanged: (v) {
-            _draftFor(field.id).text = v;
-            _emit();
-          },
-        ),
-      ],
+    return LabeledFieldCard(
+      label: field.name,
+      child: TextField(
+        controller: _textCtrls[field.id],
+        minLines: field.multiline ? 2 : 1,
+        maxLines: field.multiline ? 5 : 1,
+        textDirection: detectTextDirection(_textCtrls[field.id]?.text),
+        style: _valueStyle,
+        decoration: _bare(hint: field.hint),
+        onChanged: (v) {
+          _draftFor(field.id).text = v;
+          _emit();
+        },
+      ),
     );
   }
 
   Widget _buildNumber(FieldDefinition field) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _label(field.name),
-        TextField(
-          controller: _numberCtrls[field.id],
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: _dec(hint: field.hint),
-          onChanged: (v) {
-            _draftFor(field.id).number = v;
-            _emit();
-          },
-        ),
-      ],
+    return LabeledFieldCard(
+      label: field.name,
+      child: TextField(
+        controller: _numberCtrls[field.id],
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        style: _valueStyle,
+        decoration: _bare(hint: field.hint),
+        onChanged: (v) {
+          _draftFor(field.id).number = v;
+          _emit();
+        },
+      ),
     );
   }
 
   Widget _buildCheckbox(FieldDefinition field) {
-    return SwitchListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(field.name),
-      value: _draftFor(field.id).boolValue,
-      onChanged: (v) {
-        setState(() => _draftFor(field.id).boolValue = v);
-        _emit();
-      },
+    final d = _draftFor(field.id);
+    return LabeledFieldCard(
+      label: field.name,
+      trailing: Switch(
+        value: d.boolValue,
+        onChanged: (v) {
+          setState(() => d.boolValue = v);
+          _emit();
+        },
+      ),
     );
   }
 
   Widget _buildSelect(FieldDefinition field) {
     final d = _draftFor(field.id);
+    final cs = Theme.of(context).colorScheme;
     final value = field.options.any((o) => o.id == d.optionId)
         ? d.optionId
         : null;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _label(field.name),
-        DropdownButtonFormField<int?>(
-          initialValue: value,
+    return LabeledFieldCard(
+      label: field.name,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<int?>(
+          value: value,
           isExpanded: true,
-          decoration: _dec(hint: field.hint),
+          isDense: true,
+          padding: EdgeInsets.zero,
+          borderRadius: BorderRadius.circular(12),
+          style: _valueStyle,
+          hint: Text(
+            field.hint ?? m.customFields.noValue,
+            style: _valueStyle?.copyWith(color: cs.onSurfaceVariant),
+          ),
           items: [
             DropdownMenuItem<int?>(
               value: null,
               child: Text(
                 m.customFields.noValue,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                style: TextStyle(color: cs.onSurfaceVariant),
               ),
             ),
             for (final o in field.options)
@@ -284,81 +282,89 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
             _emit();
           },
         ),
-      ],
+      ),
     );
   }
 
   Widget _buildDate(FieldDefinition field) {
     final d = _draftFor(field.id);
+    final cs = Theme.of(context).colorScheme;
     if (field.dateMode == FieldDateMode.relative) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _label(field.name),
-          TextField(
-            controller: _offsetCtrls[field.id],
-            keyboardType: TextInputType.number,
-            decoration: _dec(hint: m.customFields.daysFromToday),
-            onChanged: (v) {
-              final s = v.trim();
-              setState(() {
-                if (s.isEmpty) {
-                  d.offsetDays = null;
-                  d.date = null;
-                } else {
-                  final n = int.tryParse(s);
-                  if (n != null) {
-                    d.offsetDays = n;
-                    d.date = _anchor(n);
+      return LabeledFieldCard(
+        label: field.name,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _offsetCtrls[field.id],
+              keyboardType: TextInputType.number,
+              style: _valueStyle,
+              decoration: _bare(hint: m.customFields.daysFromToday),
+              onChanged: (v) {
+                final s = v.trim();
+                setState(() {
+                  if (s.isEmpty) {
+                    d.offsetDays = null;
+                    d.date = null;
+                  } else {
+                    final n = int.tryParse(s);
+                    if (n != null) {
+                      d.offsetDays = n;
+                      d.date = _anchor(n);
+                    }
                   }
-                }
-              });
-              _emit();
-            },
-          ),
-          if (d.date != null)
-            Padding(
-              padding: const EdgeInsetsDirectional.only(top: 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      m.customFields.due(
-                        MaterialLocalizations.of(
-                          context,
-                        ).formatMediumDate(d.date!),
-                      ),
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontSize: 13,
+                });
+                _emit();
+              },
+            ),
+            if (d.date != null)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(top: 6),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        m.customFields.due(
+                          MaterialLocalizations.of(
+                            context,
+                          ).formatMediumDate(d.date!),
+                        ),
+                        style: TextStyle(
+                          color: cs.onSurfaceVariant,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {
-                      if (d.offsetDays == null) return;
-                      setState(() => d.date = _anchor(d.offsetDays!));
-                      _emit();
-                    },
-                    icon: const Icon(Icons.refresh, size: 18),
-                    label: Text(m.customFields.reanchor),
-                  ),
-                ],
+                    TextButton.icon(
+                      onPressed: () {
+                        if (d.offsetDays == null) return;
+                        setState(() => d.date = _anchor(d.offsetDays!));
+                        _emit();
+                      },
+                      icon: const Icon(Icons.refresh, size: 18),
+                      label: Text(m.customFields.reanchor),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-        ],
+            ..._reminderSection(field),
+          ],
+        ),
       );
     }
-    // Absolute date: a tappable field opening the platform date picker.
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _label(field.name),
-        InkWell(
-          onTap: () => _pickDate(field),
-          borderRadius: BorderRadius.circular(4),
-          child: InputDecorator(
-            decoration: _dec(),
+    // Absolute date: a tappable row opening the platform date picker, with the
+    // reminder controls tucked into the same card below.
+    return LabeledFieldCard(
+      label: field.name,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () => _pickDate(field),
             child: Row(
               children: [
                 Expanded(
@@ -369,16 +375,12 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
                           ).formatMediumDate(d.date!)
                         : m.customFields.noValue,
                     style: d.date == null
-                        ? TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
-                          )
-                        : null,
+                        ? _valueStyle?.copyWith(color: cs.onSurfaceVariant)
+                        : _valueStyle,
                   ),
                 ),
                 if (d.date != null)
-                  InkWell(
+                  InkResponse(
                     onTap: () {
                       setState(() => d.date = null);
                       _emit();
@@ -386,20 +388,17 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
                     child: Icon(
                       Icons.close,
                       size: 18,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: cs.onSurfaceVariant,
                     ),
                   )
                 else
-                  Icon(
-                    Icons.event,
-                    size: 18,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                  Icon(Icons.event, size: 18, color: cs.onSurfaceVariant),
               ],
             ),
           ),
-        ),
-      ],
+          ..._reminderSection(field),
+        ],
+      ),
     );
   }
 
@@ -422,7 +421,11 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
       field.overridePolicy == FieldOverridePolicy.itemOverride &&
       _draftFor(field.id).date != null;
 
-  Widget _buildReminderOverride(FieldDefinition field) {
+  /// The per-item reminder controls, embedded *inside* the date field's card
+  /// (below the date) so they read as part of that field rather than a separate
+  /// one. Empty when the field doesn't allow an item override or no date is set.
+  List<Widget> _reminderSection(FieldDefinition field) {
+    if (!_showReminderOverride(field)) return const [];
     final d = _draftFor(field.id);
     final on = d.notifyOverride ? d.notifyEnabled : field.notifyDefault;
     final lead = d.notifyOverride
@@ -433,21 +436,23 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
         (d.notifyEnabled != field.notifyDefault ||
             (d.notifyEnabled &&
                 (d.notifyLeadDays ?? field.leadDays) != field.leadDays));
-    final theme = Theme.of(context);
-    return Container(
-      margin: const EdgeInsetsDirectional.only(start: 8, top: 4),
-      padding: const EdgeInsetsDirectional.only(start: 8),
-      decoration: BoxDecoration(
-        border: BorderDirectional(
-          start: BorderSide(color: theme.colorScheme.outlineVariant, width: 2),
-        ),
+    final cs = Theme.of(context).colorScheme;
+    return [
+      Padding(
+        padding: const EdgeInsetsDirectional.only(top: 10, bottom: 2),
+        child: Divider(height: 1, color: cs.outlineVariant),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      Row(
         children: [
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(m.customFields.remindMe),
+          Icon(Icons.notifications_none, size: 18, color: cs.onSurfaceVariant),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              m.customFields.remindMe,
+              style: _valueStyle?.copyWith(color: cs.onSurface),
+            ),
+          ),
+          Switch(
             value: on,
             onChanged: (v) {
               setState(() {
@@ -460,58 +465,58 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
               _emit();
             },
           ),
-          if (on) ...[
-            _label(m.customFields.leadTime),
-            const SizedBox(height: 4),
-            DropdownButtonFormField<int>(
-              initialValue: _leadOptions.contains(lead) ? lead : 0,
-              isExpanded: true,
-              decoration: _dec(),
-              items: [
-                for (final days in _leadOptions)
-                  DropdownMenuItem(value: days, child: Text(_leadLabel(days))),
-              ],
-              onChanged: (v) {
+        ],
+      ),
+      if (on)
+        DropdownButtonHideUnderline(
+          child: DropdownButton<int>(
+            value: _leadOptions.contains(lead) ? lead : 0,
+            isExpanded: true,
+            isDense: true,
+            padding: EdgeInsets.zero,
+            borderRadius: BorderRadius.circular(12),
+            style: _valueStyle,
+            items: [
+              for (final days in _leadOptions)
+                DropdownMenuItem(value: days, child: Text(_leadLabel(days))),
+            ],
+            onChanged: (v) {
+              setState(() {
+                d.notifyOverride = true;
+                d.notifyEnabled = true;
+                d.notifyLeadDays = v ?? 0;
+              });
+              _emit();
+            },
+          ),
+        ),
+      if (on && differs)
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                m.customFields.customReminder,
+                style: TextStyle(fontSize: 12.5, color: cs.onSurfaceVariant),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
                 setState(() {
-                  d.notifyOverride = true;
-                  d.notifyEnabled = true;
-                  d.notifyLeadDays = v ?? 0;
+                  d.notifyOverride = false;
+                  d.notifyEnabled = false;
+                  d.notifyLeadDays = null;
                 });
                 _emit();
               },
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                visualDensity: VisualDensity.compact,
+              ),
+              child: Text(m.customFields.useFieldDefault),
             ),
           ],
-          if (differs)
-            Padding(
-              padding: const EdgeInsetsDirectional.only(top: 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      m.customFields.customReminder,
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        d.notifyOverride = false;
-                        d.notifyEnabled = false;
-                        d.notifyLeadDays = null;
-                      });
-                      _emit();
-                    },
-                    child: Text(m.customFields.useFieldDefault),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
+        ),
+    ];
   }
 
   String _leadLabel(int days) => switch (days) {
@@ -522,23 +527,15 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
     _ => m.customFields.leadWeek1,
   };
 
-  Widget _label(String text) => Padding(
-    padding: const EdgeInsetsDirectional.only(bottom: 4, top: 2),
-    child: Text(
-      text,
-      style: TextStyle(
-        fontSize: 12.5,
-        fontWeight: FontWeight.w600,
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-      ),
-    ),
-  );
+  TextStyle? get _valueStyle =>
+      const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w500);
 
-  InputDecoration _dec({String? hint}) => InputDecoration(
-    isDense: true,
-    hintText: hint,
-    border: const OutlineInputBorder(),
-  );
+  /// Borderless input styling — the [LabeledFieldCard] provides the frame.
+  InputDecoration _bare({String? hint}) => const InputDecoration(
+    isCollapsed: true,
+    border: InputBorder.none,
+    contentPadding: EdgeInsets.zero,
+  ).copyWith(hintText: hint);
 }
 
 /// Mutable per-field editing state, keyed by field id.
