@@ -199,10 +199,12 @@ class FolderTile extends StatelessWidget {
       final photo = previewPhotos[count - 1 - i]; // bottom-most first
       final angle =
           _angles[(_angles.length - count + i).clamp(0, _angles.length - 1)];
+      // Match the grid tile's size so the folder preview reuses the same
+      // cached thumbnail — one prefetched image serves both offline.
       final uri = PhotoService.instance.photoPreviewUri(
         houseId,
         photo.id,
-        size: 128,
+        size: 300,
       );
 
       cards.add(

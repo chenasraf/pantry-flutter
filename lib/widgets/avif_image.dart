@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:pantry/services/image_cache_service.dart';
 
 /// Decodes the [bytes] into an [AvifCodec], transparently handling AVIF and any
 /// format Flutter decodes natively (JPEG/PNG/WebP/GIF).
@@ -108,7 +109,7 @@ class AvifAwareNetworkImage extends ImageProvider<AvifAwareNetworkImage> {
         requestHeaders[name.toLowerCase()] = value;
       });
 
-      final stream = DefaultCacheManager().getImageFile(
+      final stream = ImageCacheService.instance.manager.getImageFile(
         url,
         headers: requestHeaders,
         withProgress: true,

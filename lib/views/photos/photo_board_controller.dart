@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/models/photo.dart';
+import 'package:pantry/services/image_cache_service.dart';
 import 'package:pantry/services/pending_photo_share_service.dart';
 import 'package:pantry/services/photo_service.dart';
 
@@ -221,6 +224,7 @@ class PhotoBoardController extends ChangeNotifier {
       _folders = results[1] as List<PhotoFolder>;
       _service.cachePhotos(houseId, _photos);
       _service.cacheFolders(houseId, _folders);
+      unawaited(ImageCacheService.instance.prefetchPhotos(houseId, _photos));
 
       _isLoading = false;
       notifyListeners();
@@ -293,6 +297,7 @@ class PhotoBoardController extends ChangeNotifier {
       _folders = results[1] as List<PhotoFolder>;
       _service.cachePhotos(houseId, _photos);
       _service.cacheFolders(houseId, _folders);
+      unawaited(ImageCacheService.instance.prefetchPhotos(houseId, _photos));
       notifyListeners();
     } catch (e) {
       debugPrint('[PhotoBoardController] Failed to reload: $e');

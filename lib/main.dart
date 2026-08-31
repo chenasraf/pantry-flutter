@@ -16,6 +16,7 @@ import 'services/locale_service.dart';
 import 'services/category_service.dart';
 import 'services/checklist_service.dart';
 import 'services/house_service.dart';
+import 'services/image_cache_service.dart';
 import 'services/label_service.dart';
 import 'services/list_link_service.dart';
 import 'services/local_notifications_service.dart';
@@ -402,6 +403,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
       ChecklistService.instance.cache.clear(),
       PhotoService.instance.cache.clear(),
       NoteService.instance.cache.clear(),
+      ImageCacheService.instance.manager.emptyCache(),
       SyncManager.instance.reset(),
     ]);
     _isLoggedIn = false;

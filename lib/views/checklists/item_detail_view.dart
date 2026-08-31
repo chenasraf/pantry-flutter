@@ -1234,11 +1234,13 @@ class _CoverImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Request the same size as the fullscreen viewer so the cover and the
+    // zoom share one cached file — one prefetched image serves both offline.
     final uri = ChecklistService.instance.itemImagePreviewUri(
       houseId,
       fileId,
       owner,
-      size: 1024,
+      size: 2048,
     );
     final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
 

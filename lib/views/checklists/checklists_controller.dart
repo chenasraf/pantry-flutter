@@ -15,6 +15,7 @@ import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/label_service.dart';
 import 'package:pantry/services/store_service.dart';
 import 'package:pantry/services/house_service.dart';
+import 'package:pantry/services/image_cache_service.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/sync/sync_ids.dart';
@@ -656,8 +657,15 @@ class ChecklistsController extends ChangeNotifier {
 
       // Warm the on-disk cache for the lists we're not currently viewing so
       // opening them later while offline shows cached data instead of an
-      // infinite spinner. Fire-and-forget; never blocks the UI.
-      unawaited(_precacheListItems());
+      // infinite spinner. Fire-and-forget; never blocks the UI. Once every
+      // list's items are cached, sweep their images (plus any cached photos)
+      // into the offline image store.
+      unawaited(
+        _precacheListItems().then((_) {
+          if (_disposed) return;
+          unawaited(ImageCacheService.instance.sweepHouse(houseId));
+        }),
+      );
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load: $e');
       if (_lists.isEmpty) {
