@@ -2803,10 +2803,12 @@ class ChecklistsController extends ChangeNotifier {
           notifyListeners();
         }
       case SyncEntity.note:
+      case SyncEntity.customField:
       case SyncEntity.shoppingCheck:
       case SyncEntity.shoppingSkip:
         // Not surfaced in the checklists view — the shopping session controller
-        // reconciles its own check/skip ops.
+        // reconciles its own check/skip ops, and the custom-fields manager
+        // reconciles its own definition ops.
         break;
     }
   }

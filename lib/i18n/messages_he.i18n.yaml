@@ -304,6 +304,57 @@ categories:
     nameZA: "שם ת'–א'"
     custom: מותאם אישית
 
+customFields:
+  manageTitle: שדות מותאמים אישית
+  empty: "אין עדיין שדות מותאמים אישית. הוסיפו אחד כדי לצרף מידע נוסף לפריטים."
+  addField: הוספת שדה
+  allLists: כל הרשימות
+  deleteTitle: מחיקת שדה
+  deleteConfirm: "למחוק את השדה? ערכים שכבר הוגדרו על פריטים נשמרים אך מוסתרים."
+  optionDeleteFailed: הסרת האפשרות נכשלה.
+  types:
+    text: טקסט
+    number: מספר
+    checkbox: תיבת סימון
+    date: תאריך
+    select: בחירה
+  name: שם
+  namePlaceholder: "למשל תפוגה, מעבר"
+  type: סוג
+  typeLocked: לא ניתן לשנות את הסוג לאחר יצירת השדה.
+  scope: היקף
+  hint: טקסט רמז
+  hintPlaceholder: מוצג כטקסט מציין מקום של הערך
+  multiline: אזור טקסט מרובה שורות
+  options: אפשרויות
+  optionPlaceholder: תווית האפשרות
+  addOption: הוספת אפשרות
+  removeOption: הסרת אפשרות
+  entryMode: הזנת תאריך
+  dateAbsolute: מוחלט
+  dateRelative: יחסי
+  defaultOffset: "היסט ברירת מחדל (ימים)"
+  defaultOffsetPlaceholder: "למשל 7"
+  notifyDefault: תזכורת כברירת מחדל
+  leadTime: להזכיר
+  leadOnDay: באותו יום
+  leadDay1: יום לפני
+  leadDay2: יומיים לפני
+  leadDay3: 3 ימים לפני
+  leadWeek1: שבוע לפני
+  overridePolicy: עקיפת תזכורת
+  overrideFieldOnly: אותה תזכורת לכל פריט
+  overrideItem: כל פריט מגדיר תזכורת משלו
+  stopWhenDone: להפסיק להזכיר כשהפריט הושלם
+  defaultValue: ערך ברירת מחדל
+  defaultChecked: מופעל כברירת מחדל
+  noDefault: ללא ברירת מחדל
+  done: סיום
+  remapTitle: האפשרות בשימוש
+  remapClear: לנקות אותה מהפריטים האלה
+  remapMoveTo(String label): "להעביר אל ${label}"
+  remapPrompt(int count, String label): "${_plural(count, one: '${label} בשימוש על ידי פריט אחד. מה לעשות איתו?', many: '${label} בשימוש על ידי ${count} פריטים. מה לעשות איתם?')}"
+
 stores:
   manageTitle: ניהול חנויות
   noStores: אין חנויות עדיין.

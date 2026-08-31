@@ -34,6 +34,7 @@ import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/categories/categories_view.dart';
 import 'package:pantry/views/labels/labels_view.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
+import 'package:pantry/views/custom_fields/custom_fields_view.dart';
 import 'package:pantry/views/shopping/shopping_history_view.dart';
 import 'package:pantry/views/shopping/shopping_session_view.dart';
 import 'package:pantry/views/shopping/shopping_start_view.dart';
@@ -1463,6 +1464,13 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
               tooltip: m.labels.manageTitle,
               onPressed: () => _openManageLabels(context, controller),
             ),
+          if (controller.permissions.canEditFields &&
+              hasFeature('custom-fields'))
+            IconButton(
+              icon: const Icon(Icons.tune),
+              tooltip: m.customFields.manageTitle,
+              onPressed: () => _openManageCustomFields(context, controller),
+            ),
           // Meta view has no trash of its own; trash stays per-list.
           if (!controller.isMetaMode &&
               controller.isCurrentListWritable &&
@@ -1736,6 +1744,12 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
             icon: Icons.sell_outlined,
             label: m.labels.manageTitle,
           ),
+        if (controller.permissions.canEditFields && hasFeature('custom-fields'))
+          _OverflowAction(
+            value: 'manage_custom_fields',
+            icon: Icons.tune,
+            label: m.customFields.manageTitle,
+          ),
         // Mobile has reliable pull-to-refresh, so it doesn't need a menu row.
         // Web (the other non-desktop host here) doesn't, so keep it there.
         if (PlatformInfo.isWeb)
@@ -1976,6 +1990,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         await _openManageStores(context, controller);
       case 'manage_labels':
         await _openManageLabels(context, controller);
+      case 'manage_custom_fields':
+        await _openManageCustomFields(context, controller);
       case 'start_shopping':
         await _openShopping(controller);
       case 'shopping_history':
@@ -2123,6 +2139,17 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
       ),
     );
     await controller.onCategoriesChanged();
+  }
+
+  Future<void> _openManageCustomFields(
+    BuildContext context,
+    ChecklistsController controller,
+  ) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => CustomFieldsView(houseId: controller.houseId),
+      ),
+    );
   }
 
   /// Opens the create-category dialog inline from the compose bar's category

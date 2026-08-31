@@ -387,6 +387,58 @@ categories:
     nameAZ: "Namn A-Z"
     nameZA: "Namn Z-A"
     custom: Sjølvvald
+
+customFields:
+  manageTitle: Eigendefinerte felt
+  empty: "Ingen eigendefinerte felt enno. Legg til eitt for å knyte ekstra informasjon til oppføringar."
+  addField: Legg til felt
+  allLists: Alle lister
+  deleteTitle: Slett felt
+  deleteConfirm: "Slette dette feltet? Verdiar som alt er sette på oppføringar vert tekne vare på, men gøymde."
+  optionDeleteFailed: Klarte ikkje fjerne alternativet.
+  types:
+    text: Tekst
+    number: Tal
+    checkbox: Avkryssingsrute
+    date: Dato
+    select: Val
+  name: Namn
+  namePlaceholder: "t.d. Utløp, Gang"
+  type: Type
+  typeLocked: Typen kan ikkje endrast etter at feltet er oppretta.
+  scope: Omfang
+  hint: Hjelpetekst
+  hintPlaceholder: Vist som plasshaldar for verdien
+  multiline: Fleirlinja tekstområde
+  options: Alternativ
+  optionPlaceholder: Alternativnamn
+  addOption: Legg til alternativ
+  removeOption: Fjern alternativ
+  entryMode: Datoinntasting
+  dateAbsolute: Absolutt
+  dateRelative: Relativ
+  defaultOffset: "Standardforskyving (dagar)"
+  defaultOffsetPlaceholder: "t.d. 7"
+  notifyDefault: Minn på som standard
+  leadTime: Minn på
+  leadOnDay: Same dag
+  leadDay1: 1 dag før
+  leadDay2: 2 dagar før
+  leadDay3: 3 dagar før
+  leadWeek1: 1 veke før
+  overridePolicy: Overstyring av påminning
+  overrideFieldOnly: Same påminning for kvar oppføring
+  overrideItem: Kvar oppføring set si eiga påminning
+  stopWhenDone: Slutt å minne på når oppføringa er ferdig
+  defaultValue: Standardverdi
+  defaultChecked: På som standard
+  noDefault: Ingen standard
+  done: Ferdig
+  remapTitle: Alternativet er i bruk
+  remapClear: Fjern det frå desse oppføringane
+  remapMoveTo(String label): "Flytt det til ${label}"
+  remapPrompt(int count, String label): "${_plural(count, one: '${label} vert brukt av 1 oppføring. Kva skal skje med det?', many: '${label} vert brukt av ${count} oppføringar. Kva skal skje med dei?')}"
+
 stores:
   manageTitle: Behandle butikkar
   noStores: Ingen butikkar enno.

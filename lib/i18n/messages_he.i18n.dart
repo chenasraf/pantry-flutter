@@ -75,6 +75,7 @@ class MessagesHe extends Messages {
   SettingsMessagesHe get settings => SettingsMessagesHe(this);
   NotificationsMessagesHe get notifications => NotificationsMessagesHe(this);
   CategoriesMessagesHe get categories => CategoriesMessagesHe(this);
+  CustomFieldsMessagesHe get customFields => CustomFieldsMessagesHe(this);
   StoresMessagesHe get stores => StoresMessagesHe(this);
   LabelsMessagesHe get labels => LabelsMessagesHe(this);
   ChecklistsMessagesHe get checklists => ChecklistsMessagesHe(this);
@@ -1640,6 +1641,260 @@ class SortCategoriesMessagesHe extends SortCategoriesMessages {
   /// "מותאם אישית"
   /// ```
   String get custom => """מותאם אישית""";
+}
+
+class CustomFieldsMessagesHe extends CustomFieldsMessages {
+  final MessagesHe _parent;
+  const CustomFieldsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "שדות מותאמים אישית"
+  /// ```
+  String get manageTitle => """שדות מותאמים אישית""";
+
+  /// ```dart
+  /// "אין עדיין שדות מותאמים אישית. הוסיפו אחד כדי לצרף מידע נוסף לפריטים."
+  /// ```
+  String get empty =>
+      """אין עדיין שדות מותאמים אישית. הוסיפו אחד כדי לצרף מידע נוסף לפריטים.""";
+
+  /// ```dart
+  /// "הוספת שדה"
+  /// ```
+  String get addField => """הוספת שדה""";
+
+  /// ```dart
+  /// "כל הרשימות"
+  /// ```
+  String get allLists => """כל הרשימות""";
+
+  /// ```dart
+  /// "מחיקת שדה"
+  /// ```
+  String get deleteTitle => """מחיקת שדה""";
+
+  /// ```dart
+  /// "למחוק את השדה? ערכים שכבר הוגדרו על פריטים נשמרים אך מוסתרים."
+  /// ```
+  String get deleteConfirm =>
+      """למחוק את השדה? ערכים שכבר הוגדרו על פריטים נשמרים אך מוסתרים.""";
+
+  /// ```dart
+  /// "הסרת האפשרות נכשלה."
+  /// ```
+  String get optionDeleteFailed => """הסרת האפשרות נכשלה.""";
+  TypesCustomFieldsMessagesHe get types => TypesCustomFieldsMessagesHe(this);
+
+  /// ```dart
+  /// "שם"
+  /// ```
+  String get name => """שם""";
+
+  /// ```dart
+  /// "למשל תפוגה, מעבר"
+  /// ```
+  String get namePlaceholder => """למשל תפוגה, מעבר""";
+
+  /// ```dart
+  /// "סוג"
+  /// ```
+  String get type => """סוג""";
+
+  /// ```dart
+  /// "לא ניתן לשנות את הסוג לאחר יצירת השדה."
+  /// ```
+  String get typeLocked => """לא ניתן לשנות את הסוג לאחר יצירת השדה.""";
+
+  /// ```dart
+  /// "היקף"
+  /// ```
+  String get scope => """היקף""";
+
+  /// ```dart
+  /// "טקסט רמז"
+  /// ```
+  String get hint => """טקסט רמז""";
+
+  /// ```dart
+  /// "מוצג כטקסט מציין מקום של הערך"
+  /// ```
+  String get hintPlaceholder => """מוצג כטקסט מציין מקום של הערך""";
+
+  /// ```dart
+  /// "אזור טקסט מרובה שורות"
+  /// ```
+  String get multiline => """אזור טקסט מרובה שורות""";
+
+  /// ```dart
+  /// "אפשרויות"
+  /// ```
+  String get options => """אפשרויות""";
+
+  /// ```dart
+  /// "תווית האפשרות"
+  /// ```
+  String get optionPlaceholder => """תווית האפשרות""";
+
+  /// ```dart
+  /// "הוספת אפשרות"
+  /// ```
+  String get addOption => """הוספת אפשרות""";
+
+  /// ```dart
+  /// "הסרת אפשרות"
+  /// ```
+  String get removeOption => """הסרת אפשרות""";
+
+  /// ```dart
+  /// "הזנת תאריך"
+  /// ```
+  String get entryMode => """הזנת תאריך""";
+
+  /// ```dart
+  /// "מוחלט"
+  /// ```
+  String get dateAbsolute => """מוחלט""";
+
+  /// ```dart
+  /// "יחסי"
+  /// ```
+  String get dateRelative => """יחסי""";
+
+  /// ```dart
+  /// "היסט ברירת מחדל (ימים)"
+  /// ```
+  String get defaultOffset => """היסט ברירת מחדל (ימים)""";
+
+  /// ```dart
+  /// "למשל 7"
+  /// ```
+  String get defaultOffsetPlaceholder => """למשל 7""";
+
+  /// ```dart
+  /// "תזכורת כברירת מחדל"
+  /// ```
+  String get notifyDefault => """תזכורת כברירת מחדל""";
+
+  /// ```dart
+  /// "להזכיר"
+  /// ```
+  String get leadTime => """להזכיר""";
+
+  /// ```dart
+  /// "באותו יום"
+  /// ```
+  String get leadOnDay => """באותו יום""";
+
+  /// ```dart
+  /// "יום לפני"
+  /// ```
+  String get leadDay1 => """יום לפני""";
+
+  /// ```dart
+  /// "יומיים לפני"
+  /// ```
+  String get leadDay2 => """יומיים לפני""";
+
+  /// ```dart
+  /// "3 ימים לפני"
+  /// ```
+  String get leadDay3 => """3 ימים לפני""";
+
+  /// ```dart
+  /// "שבוע לפני"
+  /// ```
+  String get leadWeek1 => """שבוע לפני""";
+
+  /// ```dart
+  /// "עקיפת תזכורת"
+  /// ```
+  String get overridePolicy => """עקיפת תזכורת""";
+
+  /// ```dart
+  /// "אותה תזכורת לכל פריט"
+  /// ```
+  String get overrideFieldOnly => """אותה תזכורת לכל פריט""";
+
+  /// ```dart
+  /// "כל פריט מגדיר תזכורת משלו"
+  /// ```
+  String get overrideItem => """כל פריט מגדיר תזכורת משלו""";
+
+  /// ```dart
+  /// "להפסיק להזכיר כשהפריט הושלם"
+  /// ```
+  String get stopWhenDone => """להפסיק להזכיר כשהפריט הושלם""";
+
+  /// ```dart
+  /// "ערך ברירת מחדל"
+  /// ```
+  String get defaultValue => """ערך ברירת מחדל""";
+
+  /// ```dart
+  /// "מופעל כברירת מחדל"
+  /// ```
+  String get defaultChecked => """מופעל כברירת מחדל""";
+
+  /// ```dart
+  /// "ללא ברירת מחדל"
+  /// ```
+  String get noDefault => """ללא ברירת מחדל""";
+
+  /// ```dart
+  /// "סיום"
+  /// ```
+  String get done => """סיום""";
+
+  /// ```dart
+  /// "האפשרות בשימוש"
+  /// ```
+  String get remapTitle => """האפשרות בשימוש""";
+
+  /// ```dart
+  /// "לנקות אותה מהפריטים האלה"
+  /// ```
+  String get remapClear => """לנקות אותה מהפריטים האלה""";
+
+  /// ```dart
+  /// "להעביר אל ${label}"
+  /// ```
+  String remapMoveTo(String label) => """להעביר אל ${label}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '${label} בשימוש על ידי פריט אחד. מה לעשות איתו?', many: '${label} בשימוש על ידי ${count} פריטים. מה לעשות איתם?')}"
+  /// ```
+  String remapPrompt(int count, String label) =>
+      """${_plural(count, one: '${label} בשימוש על ידי פריט אחד. מה לעשות איתו?', many: '${label} בשימוש על ידי ${count} פריטים. מה לעשות איתם?')}""";
+}
+
+class TypesCustomFieldsMessagesHe extends TypesCustomFieldsMessages {
+  final CustomFieldsMessagesHe _parent;
+  const TypesCustomFieldsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "טקסט"
+  /// ```
+  String get text => """טקסט""";
+
+  /// ```dart
+  /// "מספר"
+  /// ```
+  String get number => """מספר""";
+
+  /// ```dart
+  /// "תיבת סימון"
+  /// ```
+  String get checkbox => """תיבת סימון""";
+
+  /// ```dart
+  /// "תאריך"
+  /// ```
+  String get date => """תאריך""";
+
+  /// ```dart
+  /// "בחירה"
+  /// ```
+  String get select => """בחירה""";
 }
 
 class StoresMessagesHe extends StoresMessages {
@@ -5125,6 +5380,54 @@ Map<String, String> get messagesHeMap => {
   """categories.sort.nameAZ""": """שם א'–ת'""",
   """categories.sort.nameZA""": """שם ת'–א'""",
   """categories.sort.custom""": """מותאם אישית""",
+  """customFields.manageTitle""": """שדות מותאמים אישית""",
+  """customFields.empty""":
+      """אין עדיין שדות מותאמים אישית. הוסיפו אחד כדי לצרף מידע נוסף לפריטים.""",
+  """customFields.addField""": """הוספת שדה""",
+  """customFields.allLists""": """כל הרשימות""",
+  """customFields.deleteTitle""": """מחיקת שדה""",
+  """customFields.deleteConfirm""":
+      """למחוק את השדה? ערכים שכבר הוגדרו על פריטים נשמרים אך מוסתרים.""",
+  """customFields.optionDeleteFailed""": """הסרת האפשרות נכשלה.""",
+  """customFields.types.text""": """טקסט""",
+  """customFields.types.number""": """מספר""",
+  """customFields.types.checkbox""": """תיבת סימון""",
+  """customFields.types.date""": """תאריך""",
+  """customFields.types.select""": """בחירה""",
+  """customFields.name""": """שם""",
+  """customFields.namePlaceholder""": """למשל תפוגה, מעבר""",
+  """customFields.type""": """סוג""",
+  """customFields.typeLocked""": """לא ניתן לשנות את הסוג לאחר יצירת השדה.""",
+  """customFields.scope""": """היקף""",
+  """customFields.hint""": """טקסט רמז""",
+  """customFields.hintPlaceholder""": """מוצג כטקסט מציין מקום של הערך""",
+  """customFields.multiline""": """אזור טקסט מרובה שורות""",
+  """customFields.options""": """אפשרויות""",
+  """customFields.optionPlaceholder""": """תווית האפשרות""",
+  """customFields.addOption""": """הוספת אפשרות""",
+  """customFields.removeOption""": """הסרת אפשרות""",
+  """customFields.entryMode""": """הזנת תאריך""",
+  """customFields.dateAbsolute""": """מוחלט""",
+  """customFields.dateRelative""": """יחסי""",
+  """customFields.defaultOffset""": """היסט ברירת מחדל (ימים)""",
+  """customFields.defaultOffsetPlaceholder""": """למשל 7""",
+  """customFields.notifyDefault""": """תזכורת כברירת מחדל""",
+  """customFields.leadTime""": """להזכיר""",
+  """customFields.leadOnDay""": """באותו יום""",
+  """customFields.leadDay1""": """יום לפני""",
+  """customFields.leadDay2""": """יומיים לפני""",
+  """customFields.leadDay3""": """3 ימים לפני""",
+  """customFields.leadWeek1""": """שבוע לפני""",
+  """customFields.overridePolicy""": """עקיפת תזכורת""",
+  """customFields.overrideFieldOnly""": """אותה תזכורת לכל פריט""",
+  """customFields.overrideItem""": """כל פריט מגדיר תזכורת משלו""",
+  """customFields.stopWhenDone""": """להפסיק להזכיר כשהפריט הושלם""",
+  """customFields.defaultValue""": """ערך ברירת מחדל""",
+  """customFields.defaultChecked""": """מופעל כברירת מחדל""",
+  """customFields.noDefault""": """ללא ברירת מחדל""",
+  """customFields.done""": """סיום""",
+  """customFields.remapTitle""": """האפשרות בשימוש""",
+  """customFields.remapClear""": """לנקות אותה מהפריטים האלה""",
   """stores.manageTitle""": """ניהול חנויות""",
   """stores.noStores""": """אין חנויות עדיין.""",
   """stores.editTitle""": """עריכת חנות""",

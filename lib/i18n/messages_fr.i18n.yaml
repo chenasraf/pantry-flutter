@@ -304,6 +304,57 @@ categories:
     nameZA: "Nom Z–A"
     custom: "Personnalisé"
 
+customFields:
+  manageTitle: "Champs personnalisés"
+  empty: "Aucun champ personnalisé pour le moment. Ajoutez-en un pour attacher des informations supplémentaires aux articles."
+  addField: "Ajouter un champ"
+  allLists: Toutes les listes
+  deleteTitle: Supprimer le champ
+  deleteConfirm: "Supprimer ce champ ? Les valeurs déjà définies sur les articles sont conservées mais masquées."
+  optionDeleteFailed: "Impossible de supprimer l'option."
+  types:
+    text: Texte
+    number: Nombre
+    checkbox: "Case à cocher"
+    date: Date
+    select: "Sélection"
+  name: Nom
+  namePlaceholder: "p. ex. Péremption, Rayon"
+  type: Type
+  typeLocked: "Le type ne peut pas être modifié après la création du champ."
+  scope: "Portée"
+  hint: Texte d'aide
+  hintPlaceholder: "Affiché comme texte indicatif de la valeur"
+  multiline: Zone de texte multiligne
+  options: Options
+  optionPlaceholder: "Libellé de l'option"
+  addOption: "Ajouter une option"
+  removeOption: "Retirer l'option"
+  entryMode: Saisie de la date
+  dateAbsolute: Absolue
+  dateRelative: Relative
+  defaultOffset: "Décalage par défaut (jours)"
+  defaultOffsetPlaceholder: "p. ex. 7"
+  notifyDefault: Rappeler par défaut
+  leadTime: Rappeler
+  leadOnDay: Le jour même
+  leadDay1: 1 jour avant
+  leadDay2: 2 jours avant
+  leadDay3: 3 jours avant
+  leadWeek1: 1 semaine avant
+  overridePolicy: Remplacement du rappel
+  overrideFieldOnly: "Même rappel pour chaque article"
+  overrideItem: Chaque article définit son propre rappel
+  stopWhenDone: "Arrêter de rappeler une fois l'article terminé"
+  defaultValue: Valeur par défaut
+  defaultChecked: "Activé par défaut"
+  noDefault: Aucune valeur par défaut
+  done: "Terminé"
+  remapTitle: Option utilisée
+  remapClear: La retirer de ces articles
+  remapMoveTo(String label): "La déplacer vers ${label}"
+  remapPrompt(int count, String label): "${_plural(count, one: '${label} est utilisée par 1 article. Que faut-il en faire ?', many: '${label} est utilisée par ${count} articles. Que faut-il en faire ?')}"
+
 stores:
   manageTitle: Gérer les magasins
   noStores: Aucun magasin pour le moment.

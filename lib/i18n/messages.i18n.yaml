@@ -304,6 +304,57 @@ categories:
     nameZA: "Name Z–A"
     custom: Custom
 
+customFields:
+  manageTitle: Custom fields
+  empty: No custom fields yet. Add one to attach extra info to items.
+  addField: Add field
+  allLists: All lists
+  deleteTitle: Delete field
+  deleteConfirm: "Delete this field? Values already set on items are kept but hidden."
+  optionDeleteFailed: Failed to remove option.
+  types:
+    text: Text
+    number: Number
+    checkbox: Checkbox
+    date: Date
+    select: Select
+  name: Name
+  namePlaceholder: "e.g. Expiry, Aisle"
+  type: Type
+  typeLocked: The type can't be changed after the field is created.
+  scope: Scope
+  hint: Hint text
+  hintPlaceholder: Shown as the value's placeholder
+  multiline: Multi-line text area
+  options: Options
+  optionPlaceholder: Option label
+  addOption: Add option
+  removeOption: Remove option
+  entryMode: Date entry
+  dateAbsolute: Absolute
+  dateRelative: Relative
+  defaultOffset: "Default offset (days)"
+  defaultOffsetPlaceholder: "e.g. 7"
+  notifyDefault: Remind by default
+  leadTime: Remind
+  leadOnDay: On the day
+  leadDay1: 1 day before
+  leadDay2: 2 days before
+  leadDay3: 3 days before
+  leadWeek1: 1 week before
+  overridePolicy: Reminder override
+  overrideFieldOnly: Same reminder for every item
+  overrideItem: Each item sets its own reminder
+  stopWhenDone: Stop reminding once the item is done
+  defaultValue: Default value
+  defaultChecked: On by default
+  noDefault: No default
+  done: Done
+  remapTitle: Option in use
+  remapClear: Clear it from those items
+  remapMoveTo(String label): "Move it to ${label}"
+  remapPrompt(int count, String label): "${_plural(count, one: '${label} is used by 1 item. What should happen to it?', many: '${label} is used by ${count} items. What should happen to them?')}"
+
 stores:
   manageTitle: Manage stores
   noStores: No stores yet.

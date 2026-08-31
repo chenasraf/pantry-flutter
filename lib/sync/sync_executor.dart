@@ -1,10 +1,12 @@
 import 'package:pantry/models/category.dart';
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/models/label.dart';
 import 'package:pantry/models/note.dart';
 import 'package:pantry/models/store.dart';
 import 'package:pantry/services/category_service.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/services/custom_field_service.dart';
 import 'package:pantry/services/label_service.dart';
 import 'package:pantry/services/note_service.dart';
 import 'package:pantry/services/shopping_service.dart';
@@ -43,6 +45,8 @@ class SyncExecutor {
         return _executeLabel(op);
       case SyncEntity.note:
         return _executeNote(op);
+      case SyncEntity.customField:
+        return _executeCustomField(op);
       case SyncEntity.shoppingCheck:
         return _executeShoppingCheck(op);
       case SyncEntity.shoppingSkip:
@@ -360,6 +364,79 @@ class SyncExecutor {
     }
   }
 
+  Future<SyncResult> _executeCustomField(SyncOp op) async {
+    final svc = CustomFieldService.instance;
+    final houseId = op.houseId;
+    final id = op.entityId;
+    switch (op.op) {
+      case SyncOpKind.create:
+        final field = await svc.createField(
+          houseId,
+          name: op.body['name'] as String,
+          type: FieldType.fromWire(op.body['type'] as String),
+          listId: op.body['listId'] as int?,
+          hint: op.body['hint'] as String?,
+          multiline: op.body['multiline'] as bool?,
+          defaultText: op.body['defaultText'] as String?,
+          defaultNumber: (op.body['defaultNumber'] as num?)?.toDouble(),
+          defaultBool: op.body['defaultBool'] as bool?,
+          dateMode: op.body['dateMode'] as String?,
+          defaultOffsetDays: op.body['defaultOffsetDays'] as int?,
+          notifyDefault: op.body['notifyDefault'] as bool?,
+          leadDays: op.body['leadDays'] as int?,
+          overridePolicy: op.body['overridePolicy'] as String?,
+          stopWhenDone: op.body['stopWhenDone'] as bool?,
+          options: _fieldOptionsFromBody(op.body['options']),
+        );
+        return SyncResult(field);
+      case SyncOpKind.update:
+        if (id == null) return SyncResult.empty;
+        // Presence is significant: `listId` absent leaves the scope alone; a
+        // key present with a value (including null → house-wide) re-scopes it.
+        final field = await svc.updateField(
+          houseId,
+          id,
+          name: op.body['name'] as String?,
+          listId: op.body.containsKey('listId')
+              ? op.body['listId']
+              : fieldListIdUnset,
+          hint: op.body['hint'] as String?,
+          multiline: op.body['multiline'] as bool?,
+          defaultText: op.body['defaultText'] as String?,
+          defaultNumber: (op.body['defaultNumber'] as num?)?.toDouble(),
+          defaultBool: op.body['defaultBool'] as bool?,
+          defaultOptionId: op.body['defaultOptionId'] as int?,
+          dateMode: op.body['dateMode'] as String?,
+          defaultOffsetDays: op.body['defaultOffsetDays'] as int?,
+          notifyDefault: op.body['notifyDefault'] as bool?,
+          leadDays: op.body['leadDays'] as int?,
+          overridePolicy: op.body['overridePolicy'] as String?,
+          stopWhenDone: op.body['stopWhenDone'] as bool?,
+          options: _fieldOptionsFromBody(op.body['options']),
+        );
+        return SyncResult(field);
+      case SyncOpKind.delete:
+        if (id == null) return SyncResult.empty;
+        await svc.deleteField(houseId, id);
+        return SyncResult.empty;
+      case SyncOpKind.reorder:
+        final raw = (op.body['order'] as List).cast<Map>();
+        final order = raw
+            .map((e) => (id: e['id'] as int, sortOrder: e['sortOrder'] as int))
+            .toList();
+        await svc.reorderFields(houseId, order);
+        return SyncResult.empty;
+      case SyncOpKind.toggle:
+      case SyncOpKind.restore:
+      case SyncOpKind.permanentDelete:
+      case SyncOpKind.emptyTrash:
+      case SyncOpKind.archive:
+      case SyncOpKind.unarchive:
+      case SyncOpKind.batch:
+        return SyncResult.empty;
+    }
+  }
+
   Future<SyncResult> _executeStore(SyncOp op) async {
     final svc = StoreService.instance;
     final houseId = op.houseId;
@@ -541,6 +618,14 @@ List<ItemPrice>? _pricesFromBody(Object? raw) {
       .toList();
 }
 
+/// Decode a queued `options` payload back into the option-input maps
+/// [CustomFieldService] sends. Null (key omitted) leaves options unchanged; a
+/// list — even empty — is passed through so an update can clear them.
+List<Map<String, dynamic>>? _fieldOptionsFromBody(Object? raw) {
+  if (raw == null) return null;
+  return (raw as List).cast<Map<String, dynamic>>();
+}
+
 /// Helpers to extract the server id from a result, used by the manager to
 /// bind temp ids after a create.
 int? serverIdOf(Object? entity) {
@@ -550,5 +635,6 @@ int? serverIdOf(Object? entity) {
   if (entity is Store) return entity.id;
   if (entity is Label) return entity.id;
   if (entity is Note) return entity.id;
+  if (entity is FieldDefinition) return entity.id;
   return null;
 }

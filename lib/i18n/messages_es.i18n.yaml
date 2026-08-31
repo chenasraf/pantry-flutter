@@ -304,6 +304,57 @@ categories:
     nameZA: "Nombre Z–A"
     custom: "Personalizado"
 
+customFields:
+  manageTitle: "Campos personalizados"
+  empty: "Aún no hay campos personalizados. Añade uno para adjuntar información adicional a los artículos."
+  addField: "Añadir campo"
+  allLists: "Todas las listas"
+  deleteTitle: "Eliminar campo"
+  deleteConfirm: "¿Eliminar este campo? Los valores ya asignados a los artículos se conservan pero se ocultan."
+  optionDeleteFailed: "No se pudo eliminar la opción."
+  types:
+    text: Texto
+    number: "Número"
+    checkbox: Casilla
+    date: Fecha
+    select: "Selección"
+  name: Nombre
+  namePlaceholder: "p. ej. Caducidad, Pasillo"
+  type: Tipo
+  typeLocked: "El tipo no se puede cambiar una vez creado el campo."
+  scope: "Ámbito"
+  hint: Texto de ayuda
+  hintPlaceholder: "Se muestra como marcador de posición del valor"
+  multiline: "Área de texto multilínea"
+  options: Opciones
+  optionPlaceholder: "Etiqueta de la opción"
+  addOption: "Añadir opción"
+  removeOption: "Quitar opción"
+  entryMode: Entrada de fecha
+  dateAbsolute: Absoluta
+  dateRelative: Relativa
+  defaultOffset: "Desfase predeterminado (días)"
+  defaultOffsetPlaceholder: "p. ej. 7"
+  notifyDefault: Recordar de forma predeterminada
+  leadTime: Recordar
+  leadOnDay: El mismo día
+  leadDay1: 1 día antes
+  leadDay2: 2 días antes
+  leadDay3: 3 días antes
+  leadWeek1: 1 semana antes
+  overridePolicy: "Anulación del recordatorio"
+  overrideFieldOnly: El mismo recordatorio para cada artículo
+  overrideItem: Cada artículo define su propio recordatorio
+  stopWhenDone: Dejar de recordar cuando el artículo esté completado
+  defaultValue: Valor predeterminado
+  defaultChecked: Activado de forma predeterminada
+  noDefault: Sin valor predeterminado
+  done: Hecho
+  remapTitle: "Opción en uso"
+  remapClear: Quitarla de esos artículos
+  remapMoveTo(String label): "Moverla a ${label}"
+  remapPrompt(int count, String label): "${_plural(count, one: '${label} la usa 1 artículo. ¿Qué debe pasar con él?', many: '${label} la usan ${count} artículos. ¿Qué debe pasar con ellos?')}"
+
 stores:
   manageTitle: Gestionar tiendas
   noStores: Aún no hay tiendas.

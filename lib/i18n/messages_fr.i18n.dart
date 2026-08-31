@@ -75,6 +75,7 @@ class MessagesFr extends Messages {
   SettingsMessagesFr get settings => SettingsMessagesFr(this);
   NotificationsMessagesFr get notifications => NotificationsMessagesFr(this);
   CategoriesMessagesFr get categories => CategoriesMessagesFr(this);
+  CustomFieldsMessagesFr get customFields => CustomFieldsMessagesFr(this);
   StoresMessagesFr get stores => StoresMessagesFr(this);
   LabelsMessagesFr get labels => LabelsMessagesFr(this);
   ChecklistsMessagesFr get checklists => ChecklistsMessagesFr(this);
@@ -1656,6 +1657,263 @@ class SortCategoriesMessagesFr extends SortCategoriesMessages {
   /// "Personnalisé"
   /// ```
   String get custom => """Personnalisé""";
+}
+
+class CustomFieldsMessagesFr extends CustomFieldsMessages {
+  final MessagesFr _parent;
+  const CustomFieldsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Champs personnalisés"
+  /// ```
+  String get manageTitle => """Champs personnalisés""";
+
+  /// ```dart
+  /// "Aucun champ personnalisé pour le moment. Ajoutez-en un pour attacher des informations supplémentaires aux articles."
+  /// ```
+  String get empty =>
+      """Aucun champ personnalisé pour le moment. Ajoutez-en un pour attacher des informations supplémentaires aux articles.""";
+
+  /// ```dart
+  /// "Ajouter un champ"
+  /// ```
+  String get addField => """Ajouter un champ""";
+
+  /// ```dart
+  /// "Toutes les listes"
+  /// ```
+  String get allLists => """Toutes les listes""";
+
+  /// ```dart
+  /// "Supprimer le champ"
+  /// ```
+  String get deleteTitle => """Supprimer le champ""";
+
+  /// ```dart
+  /// "Supprimer ce champ ? Les valeurs déjà définies sur les articles sont conservées mais masquées."
+  /// ```
+  String get deleteConfirm =>
+      """Supprimer ce champ ? Les valeurs déjà définies sur les articles sont conservées mais masquées.""";
+
+  /// ```dart
+  /// "Impossible de supprimer l'option."
+  /// ```
+  String get optionDeleteFailed => """Impossible de supprimer l'option.""";
+  TypesCustomFieldsMessagesFr get types => TypesCustomFieldsMessagesFr(this);
+
+  /// ```dart
+  /// "Nom"
+  /// ```
+  String get name => """Nom""";
+
+  /// ```dart
+  /// "p. ex. Péremption, Rayon"
+  /// ```
+  String get namePlaceholder => """p. ex. Péremption, Rayon""";
+
+  /// ```dart
+  /// "Type"
+  /// ```
+  String get type => """Type""";
+
+  /// ```dart
+  /// "Le type ne peut pas être modifié après la création du champ."
+  /// ```
+  String get typeLocked =>
+      """Le type ne peut pas être modifié après la création du champ.""";
+
+  /// ```dart
+  /// "Portée"
+  /// ```
+  String get scope => """Portée""";
+
+  /// ```dart
+  /// "Texte d'aide"
+  /// ```
+  String get hint => """Texte d'aide""";
+
+  /// ```dart
+  /// "Affiché comme texte indicatif de la valeur"
+  /// ```
+  String get hintPlaceholder =>
+      """Affiché comme texte indicatif de la valeur""";
+
+  /// ```dart
+  /// "Zone de texte multiligne"
+  /// ```
+  String get multiline => """Zone de texte multiligne""";
+
+  /// ```dart
+  /// "Options"
+  /// ```
+  String get options => """Options""";
+
+  /// ```dart
+  /// "Libellé de l'option"
+  /// ```
+  String get optionPlaceholder => """Libellé de l'option""";
+
+  /// ```dart
+  /// "Ajouter une option"
+  /// ```
+  String get addOption => """Ajouter une option""";
+
+  /// ```dart
+  /// "Retirer l'option"
+  /// ```
+  String get removeOption => """Retirer l'option""";
+
+  /// ```dart
+  /// "Saisie de la date"
+  /// ```
+  String get entryMode => """Saisie de la date""";
+
+  /// ```dart
+  /// "Absolue"
+  /// ```
+  String get dateAbsolute => """Absolue""";
+
+  /// ```dart
+  /// "Relative"
+  /// ```
+  String get dateRelative => """Relative""";
+
+  /// ```dart
+  /// "Décalage par défaut (jours)"
+  /// ```
+  String get defaultOffset => """Décalage par défaut (jours)""";
+
+  /// ```dart
+  /// "p. ex. 7"
+  /// ```
+  String get defaultOffsetPlaceholder => """p. ex. 7""";
+
+  /// ```dart
+  /// "Rappeler par défaut"
+  /// ```
+  String get notifyDefault => """Rappeler par défaut""";
+
+  /// ```dart
+  /// "Rappeler"
+  /// ```
+  String get leadTime => """Rappeler""";
+
+  /// ```dart
+  /// "Le jour même"
+  /// ```
+  String get leadOnDay => """Le jour même""";
+
+  /// ```dart
+  /// "1 jour avant"
+  /// ```
+  String get leadDay1 => """1 jour avant""";
+
+  /// ```dart
+  /// "2 jours avant"
+  /// ```
+  String get leadDay2 => """2 jours avant""";
+
+  /// ```dart
+  /// "3 jours avant"
+  /// ```
+  String get leadDay3 => """3 jours avant""";
+
+  /// ```dart
+  /// "1 semaine avant"
+  /// ```
+  String get leadWeek1 => """1 semaine avant""";
+
+  /// ```dart
+  /// "Remplacement du rappel"
+  /// ```
+  String get overridePolicy => """Remplacement du rappel""";
+
+  /// ```dart
+  /// "Même rappel pour chaque article"
+  /// ```
+  String get overrideFieldOnly => """Même rappel pour chaque article""";
+
+  /// ```dart
+  /// "Chaque article définit son propre rappel"
+  /// ```
+  String get overrideItem => """Chaque article définit son propre rappel""";
+
+  /// ```dart
+  /// "Arrêter de rappeler une fois l'article terminé"
+  /// ```
+  String get stopWhenDone =>
+      """Arrêter de rappeler une fois l'article terminé""";
+
+  /// ```dart
+  /// "Valeur par défaut"
+  /// ```
+  String get defaultValue => """Valeur par défaut""";
+
+  /// ```dart
+  /// "Activé par défaut"
+  /// ```
+  String get defaultChecked => """Activé par défaut""";
+
+  /// ```dart
+  /// "Aucune valeur par défaut"
+  /// ```
+  String get noDefault => """Aucune valeur par défaut""";
+
+  /// ```dart
+  /// "Terminé"
+  /// ```
+  String get done => """Terminé""";
+
+  /// ```dart
+  /// "Option utilisée"
+  /// ```
+  String get remapTitle => """Option utilisée""";
+
+  /// ```dart
+  /// "La retirer de ces articles"
+  /// ```
+  String get remapClear => """La retirer de ces articles""";
+
+  /// ```dart
+  /// "La déplacer vers ${label}"
+  /// ```
+  String remapMoveTo(String label) => """La déplacer vers ${label}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '${label} est utilisée par 1 article. Que faut-il en faire ?', many: '${label} est utilisée par ${count} articles. Que faut-il en faire ?')}"
+  /// ```
+  String remapPrompt(int count, String label) =>
+      """${_plural(count, one: '${label} est utilisée par 1 article. Que faut-il en faire ?', many: '${label} est utilisée par ${count} articles. Que faut-il en faire ?')}""";
+}
+
+class TypesCustomFieldsMessagesFr extends TypesCustomFieldsMessages {
+  final CustomFieldsMessagesFr _parent;
+  const TypesCustomFieldsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Texte"
+  /// ```
+  String get text => """Texte""";
+
+  /// ```dart
+  /// "Nombre"
+  /// ```
+  String get number => """Nombre""";
+
+  /// ```dart
+  /// "Case à cocher"
+  /// ```
+  String get checkbox => """Case à cocher""";
+
+  /// ```dart
+  /// "Date"
+  /// ```
+  String get date => """Date""";
+
+  /// ```dart
+  /// "Sélection"
+  /// ```
+  String get select => """Sélection""";
 }
 
 class StoresMessagesFr extends StoresMessages {
@@ -5190,6 +5448,59 @@ Mot de passe : pantry-rocks""",
   """categories.sort.nameAZ""": """Nom A–Z""",
   """categories.sort.nameZA""": """Nom Z–A""",
   """categories.sort.custom""": """Personnalisé""",
+  """customFields.manageTitle""": """Champs personnalisés""",
+  """customFields.empty""":
+      """Aucun champ personnalisé pour le moment. Ajoutez-en un pour attacher des informations supplémentaires aux articles.""",
+  """customFields.addField""": """Ajouter un champ""",
+  """customFields.allLists""": """Toutes les listes""",
+  """customFields.deleteTitle""": """Supprimer le champ""",
+  """customFields.deleteConfirm""":
+      """Supprimer ce champ ? Les valeurs déjà définies sur les articles sont conservées mais masquées.""",
+  """customFields.optionDeleteFailed""":
+      """Impossible de supprimer l'option.""",
+  """customFields.types.text""": """Texte""",
+  """customFields.types.number""": """Nombre""",
+  """customFields.types.checkbox""": """Case à cocher""",
+  """customFields.types.date""": """Date""",
+  """customFields.types.select""": """Sélection""",
+  """customFields.name""": """Nom""",
+  """customFields.namePlaceholder""": """p. ex. Péremption, Rayon""",
+  """customFields.type""": """Type""",
+  """customFields.typeLocked""":
+      """Le type ne peut pas être modifié après la création du champ.""",
+  """customFields.scope""": """Portée""",
+  """customFields.hint""": """Texte d'aide""",
+  """customFields.hintPlaceholder""":
+      """Affiché comme texte indicatif de la valeur""",
+  """customFields.multiline""": """Zone de texte multiligne""",
+  """customFields.options""": """Options""",
+  """customFields.optionPlaceholder""": """Libellé de l'option""",
+  """customFields.addOption""": """Ajouter une option""",
+  """customFields.removeOption""": """Retirer l'option""",
+  """customFields.entryMode""": """Saisie de la date""",
+  """customFields.dateAbsolute""": """Absolue""",
+  """customFields.dateRelative""": """Relative""",
+  """customFields.defaultOffset""": """Décalage par défaut (jours)""",
+  """customFields.defaultOffsetPlaceholder""": """p. ex. 7""",
+  """customFields.notifyDefault""": """Rappeler par défaut""",
+  """customFields.leadTime""": """Rappeler""",
+  """customFields.leadOnDay""": """Le jour même""",
+  """customFields.leadDay1""": """1 jour avant""",
+  """customFields.leadDay2""": """2 jours avant""",
+  """customFields.leadDay3""": """3 jours avant""",
+  """customFields.leadWeek1""": """1 semaine avant""",
+  """customFields.overridePolicy""": """Remplacement du rappel""",
+  """customFields.overrideFieldOnly""": """Même rappel pour chaque article""",
+  """customFields.overrideItem""":
+      """Chaque article définit son propre rappel""",
+  """customFields.stopWhenDone""":
+      """Arrêter de rappeler une fois l'article terminé""",
+  """customFields.defaultValue""": """Valeur par défaut""",
+  """customFields.defaultChecked""": """Activé par défaut""",
+  """customFields.noDefault""": """Aucune valeur par défaut""",
+  """customFields.done""": """Terminé""",
+  """customFields.remapTitle""": """Option utilisée""",
+  """customFields.remapClear""": """La retirer de ces articles""",
   """stores.manageTitle""": """Gérer les magasins""",
   """stores.noStores""": """Aucun magasin pour le moment.""",
   """stores.editTitle""": """Modifier le magasin""",
