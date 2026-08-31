@@ -174,6 +174,7 @@ class SyncExecutor {
           deleteOnDone: op.body['deleteOnDone'] as bool?,
           barcode: op.body['barcode'] as String?,
           prices: _pricesFromBody(op.body['prices']),
+          customFields: _customFieldsFromBody(op.body['customFields']),
         );
         return SyncResult(item);
       case SyncOpKind.update:
@@ -194,6 +195,7 @@ class SyncExecutor {
           deleteOnDone: op.body['deleteOnDone'] as bool?,
           barcode: op.body['barcode'] as String?,
           prices: _pricesFromBody(op.body['prices']),
+          customFields: _customFieldsFromBody(op.body['customFields']),
         );
         return SyncResult(item);
       case SyncOpKind.delete:
@@ -615,6 +617,16 @@ List<ItemPrice>? _pricesFromBody(Object? raw) {
   if (raw == null) return null;
   return (raw as List)
       .map((e) => ItemPrice.fromJson(e as Map<String, dynamic>))
+      .toList();
+}
+
+/// Decode a queued `customFields` payload back into [FieldValue]s. Null (the
+/// key was omitted) leaves values unchanged; a list — even empty — is passed
+/// through so an empty array can clear all values on update.
+List<FieldValue>? _customFieldsFromBody(Object? raw) {
+  if (raw == null) return null;
+  return (raw as List)
+      .map((e) => FieldValue.fromJson(e as Map<String, dynamic>))
       .toList();
 }
 

@@ -239,6 +239,17 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     if (link == null) return;
     final homeController = context.read<HomeController>();
 
+    // A reminder that names a list + item opens that item detail directly,
+    // reusing the shared list/item sink (house switch, preselect, tab jump).
+    if (link.listId != null) {
+      _openList(
+        listId: link.listId!,
+        houseId: link.houseId,
+        itemId: link.itemId,
+      );
+      return;
+    }
+
     if (link.houseId != null &&
         link.houseId != homeController.currentHouse?.id) {
       final house = homeController.houses.cast<House?>().firstWhere(

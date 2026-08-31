@@ -1837,6 +1837,41 @@ class CustomFieldsMessages {
   String get noDefault => """No default""";
 
   /// ```dart
+  /// "No value"
+  /// ```
+  String get noValue => """No value""";
+
+  /// ```dart
+  /// "Days from today"
+  /// ```
+  String get daysFromToday => """Days from today""";
+
+  /// ```dart
+  /// "Due ${date}"
+  /// ```
+  String due(String date) => """Due ${date}""";
+
+  /// ```dart
+  /// "Re-anchor date"
+  /// ```
+  String get reanchor => """Re-anchor date""";
+
+  /// ```dart
+  /// "Remind me"
+  /// ```
+  String get remindMe => """Remind me""";
+
+  /// ```dart
+  /// "Custom reminder for this item"
+  /// ```
+  String get customReminder => """Custom reminder for this item""";
+
+  /// ```dart
+  /// "Use field default"
+  /// ```
+  String get useFieldDefault => """Use field default""";
+
+  /// ```dart
   /// "Done"
   /// ```
   String get done => """Done""";
@@ -5426,6 +5461,12 @@ Password: pantry-rocks""",
   """customFields.defaultValue""": """Default value""",
   """customFields.defaultChecked""": """On by default""",
   """customFields.noDefault""": """No default""",
+  """customFields.noValue""": """No value""",
+  """customFields.daysFromToday""": """Days from today""",
+  """customFields.reanchor""": """Re-anchor date""",
+  """customFields.remindMe""": """Remind me""",
+  """customFields.customReminder""": """Custom reminder for this item""",
+  """customFields.useFieldDefault""": """Use field default""",
   """customFields.done""": """Done""",
   """customFields.remapTitle""": """Option in use""",
   """customFields.remapClear""": """Clear it from those items""",

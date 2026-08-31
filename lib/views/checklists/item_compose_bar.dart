@@ -11,6 +11,7 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
@@ -25,6 +26,7 @@ import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
     show parseHexColor;
+import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 import 'checklist_item_tile.dart' show ItemLifecycle;
 import 'form_components.dart';
 import 'price_input.dart';
@@ -51,6 +53,11 @@ class ItemDraft {
   /// [reset] so the last-picked currency sticks for rapid same-currency adds.
   PricesDraft price = PricesDraft.empty(defaultCurrency);
 
+  /// Custom-field values the user has explicitly set via the custom-fields
+  /// tray. Only meaningful once [ItemComposeBarState] marks them edited; an
+  /// untouched item falls back to the fields' default seeds.
+  List<FieldValue> customFields = const [];
+
   void reset(ItemLifecycle defaultLifecycle) {
     name = '';
     description = '';
@@ -64,6 +71,7 @@ class ItemDraft {
     imageBytes = null;
     barcode = null;
     price = PricesDraft.empty(price.storeless.currency);
+    customFields = const [];
   }
 
   bool get repeatFromCompletion => recurrence.repeatFromCompletion;
@@ -96,6 +104,10 @@ class ComposeSubmission {
   /// semantics — omit the field).
   final List<ItemPrice>? prices;
 
+  /// Custom-field values for the created item (fields' defaults, plus any the
+  /// user set in the tray), or null when there are none.
+  final List<FieldValue>? customFields;
+
   const ComposeSubmission({
     required this.name,
     this.description,
@@ -111,11 +123,20 @@ class ComposeSubmission {
     this.imageMime,
     this.barcode,
     this.prices,
+    this.customFields,
   });
 }
 
 class ItemComposeBar extends StatefulWidget {
   final String listName;
+
+  /// House the item is added to, for loading custom-field definitions.
+  final int houseId;
+
+  /// The concrete list an item lands in when not in All-lists mode; `null` in
+  /// All-lists mode (the target is chosen via [selectedTargetListId]). Governs
+  /// which list-scoped custom fields apply.
+  final int? listId;
   final bool deleteOnDoneDefault;
   final List<models.Category> categories;
 
@@ -126,6 +147,11 @@ class ItemComposeBar extends StatefulWidget {
   /// Labels offered in the label tray. Empty (and the label chip hidden) when
   /// the server lacks the `labels` capability.
   final List<models.Label> labels;
+
+  /// Custom-field definitions for the house; empty (and the chip hidden) when
+  /// the server lacks `custom-fields`. Drives the custom-fields tray and the
+  /// default seeding.
+  final List<FieldDefinition> customFieldDefs;
   final Future<bool> Function(ComposeSubmission submission) onSubmit;
   final bool initiallyFocused;
   final bool dimmedListBackground;
@@ -199,10 +225,13 @@ class ItemComposeBar extends StatefulWidget {
   const ItemComposeBar({
     super.key,
     required this.listName,
+    required this.houseId,
+    this.listId,
     required this.deleteOnDoneDefault,
     required this.categories,
     this.stores = const [],
     this.labels = const [],
+    this.customFieldDefs = const [],
     required this.onSubmit,
     this.initiallyFocused = false,
     this.dimmedListBackground = false,
@@ -234,6 +263,7 @@ enum _Tray {
   label,
   quantity,
   price,
+  customFields,
   description,
   type,
   image,
@@ -251,6 +281,27 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   bool _submitting = false;
   bool _multiple = false;
 
+  /// True once the user touches the custom-fields tray. Until then the item
+  /// falls back to the fields' default seeds, recomputed from the live target.
+  bool _customFieldsEdited = false;
+
+  /// The list the item will land in: the picked target in All-lists mode, else
+  /// the bar's concrete list. Governs which list-scoped fields apply.
+  int? get _targetListId =>
+      widget._allListsMode ? widget.selectedTargetListId : widget.listId;
+
+  /// Custom fields applicable to the current target (house-wide ∪ the list).
+  List<FieldDefinition> get _applicableCustomFields => [
+    for (final f in widget.customFieldDefs)
+      if (f.listId == null || f.listId == _targetListId) f,
+  ];
+
+  /// The values to carry: the user's edits once they've touched the tray,
+  /// otherwise the defaults seeded from the applicable fields.
+  List<FieldValue> get _effectiveCustomFields => _customFieldsEdited
+      ? _draft.customFields
+      : seedFieldValues(widget.customFieldDefs, _targetListId);
+
   @override
   void initState() {
     super.initState();
@@ -267,6 +318,18 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       }
     });
     _nameCtrl.addListener(_onNameChanged);
+  }
+
+  @override
+  void didUpdateWidget(ItemComposeBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Switching the target list changes which fields apply, so drop any
+    // in-progress custom-field edits and fall back to the new list's defaults.
+    if (oldWidget.listId != widget.listId ||
+        oldWidget.selectedTargetListId != widget.selectedTargetListId) {
+      _customFieldsEdited = false;
+      _draft.customFields = const [];
+    }
   }
 
   void _onNameChanged() {
@@ -342,9 +405,11 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       if (_multiple) {
         _draft.imageFile = null;
         _draft.imageBytes = null;
-        // Image + price are single-item concerns; close their trays when
-        // switching to bulk entry.
-        if (_openTray == _Tray.image || _openTray == _Tray.price) {
+        // Image, price + custom fields are single-item concerns; close their
+        // trays when switching to bulk entry.
+        if (_openTray == _Tray.image ||
+            _openTray == _Tray.price ||
+            _openTray == _Tray.customFields) {
           _openTray = null;
         }
       }
@@ -551,7 +616,18 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       prices: (!_multiple && widget.priceEnabled && _draft.price.hasAnyPrice)
           ? _draft.price.toItemPrices()
           : null,
+      // Custom fields are single-item too; carry the fields' defaults plus any
+      // tray edits. Omitted in bulk mode or when no fields apply.
+      customFields: _composeCustomFields(),
     );
+  }
+
+  /// The custom-field values for the submission, or null when none apply or in
+  /// bulk mode.
+  List<FieldValue>? _composeCustomFields() {
+    if (_multiple || _applicableCustomFields.isEmpty) return null;
+    final values = _effectiveCustomFields;
+    return values.isEmpty ? null : values;
   }
 
   Future<void> _submit() async {
@@ -573,6 +649,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     if (allOk) {
       setState(() {
         _draft.reset(_defaultLifecycle());
+        _customFieldsEdited = false;
         _nameCtrl.clear();
         _qtyCtrl.clear();
         _openTray = null;
@@ -677,6 +754,21 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           perStoreEnabled: widget.perStorePriceEnabled,
           onChanged: () => setState(() {}),
         );
+      case _Tray.customFields:
+        // Keyed by the target list so switching lists rebuilds with that list's
+        // applicable fields (and their re-seeded defaults).
+        trayChild = ItemCustomFieldsEditor(
+          key: ValueKey('compose-cf-${_targetListId ?? 0}'),
+          houseId: widget.houseId,
+          listId: _targetListId,
+          initial: _effectiveCustomFields,
+          onChanged: (values) {
+            _draft.customFields = values;
+            _customFieldsEdited = true;
+            // Rebuild so the chip's accent reflects the newly-set values.
+            setState(() {});
+          },
+        );
       case _Tray.description:
         trayChild = _DescriptionTray(
           initialValue: _draft.description,
@@ -720,6 +812,9 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                     widget.labels.isNotEmpty ||
                     widget.onRequestCreateLabel != null,
                 showPriceChip: widget.priceEnabled && !_multiple,
+                showCustomFieldsChip:
+                    _applicableCustomFields.isNotEmpty && !_multiple,
+                customFieldsSet: _effectiveCustomFields.isNotEmpty,
                 openTray: _openTray,
                 onOpen: _toggleTray,
                 showImageChip: !_multiple,
@@ -1063,6 +1158,8 @@ class _ChipRow extends StatelessWidget {
   final bool showStoreChip;
   final bool showLabelChip;
   final bool showPriceChip;
+  final bool showCustomFieldsChip;
+  final bool customFieldsSet;
   final _Tray? openTray;
   final ValueChanged<_Tray> onOpen;
   final bool showImageChip;
@@ -1077,6 +1174,8 @@ class _ChipRow extends StatelessWidget {
     required this.showStoreChip,
     required this.showLabelChip,
     required this.showPriceChip,
+    required this.showCustomFieldsChip,
+    required this.customFieldsSet,
     required this.openTray,
     required this.onOpen,
     required this.multiple,
@@ -1218,6 +1317,16 @@ class _ChipRow extends StatelessWidget {
               icon: Icons.sell_outlined,
               selected: openTray == _Tray.price,
               onTap: () => onOpen(_Tray.price),
+            ),
+          ],
+          if (showCustomFieldsChip) ...[
+            const SizedBox(width: 8),
+            _ComposeChip(
+              label: m.customFields.manageTitle,
+              color: customFieldsSet ? cs.primary : null,
+              icon: Icons.tune,
+              selected: openTray == _Tray.customFields,
+              onTap: () => onOpen(_Tray.customFields),
             ),
           ],
           const SizedBox(width: 8),

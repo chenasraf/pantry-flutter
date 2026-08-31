@@ -124,5 +124,16 @@ String? _payloadFor(NcNotification n) {
     NotificationTarget.photos => 1,
     NotificationTarget.notes => 2,
   };
+  // Custom-field date reminders carry a list+item link — open that item detail
+  // directly rather than just landing on the checklists tab.
+  final itemTarget = n.itemLinkTarget;
+  if (itemTarget != null) {
+    return DeepLink(
+      tabIndex: tab,
+      houseId: itemTarget.houseId,
+      listId: itemTarget.listId,
+      itemId: itemTarget.itemId,
+    ).encode();
+  }
   return DeepLink(tabIndex: tab, houseId: n.houseId).encode();
 }

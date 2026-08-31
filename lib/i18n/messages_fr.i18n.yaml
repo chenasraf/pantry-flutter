@@ -349,6 +349,13 @@ customFields:
   defaultValue: Valeur par défaut
   defaultChecked: "Activé par défaut"
   noDefault: Aucune valeur par défaut
+  noValue: Aucune valeur
+  daysFromToday: "Jours à partir d'aujourd'hui"
+  due(String date): "Échéance le ${date}"
+  reanchor: "Réancrer la date"
+  remindMe: Me rappeler
+  customReminder: Rappel personnalisé pour cet article
+  useFieldDefault: "Utiliser la valeur par défaut du champ"
   done: "Terminé"
   remapTitle: Option utilisée
   remapClear: La retirer de ces articles

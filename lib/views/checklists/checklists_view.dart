@@ -935,6 +935,8 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                       return ItemComposeBar(
                         key: _composeKey,
                         listName: list.name,
+                        houseId: controller.houseId,
+                        listId: meta ? null : list.id,
                         deleteOnDoneDefault: meta
                             ? false
                             : list.deleteOnDoneDefault,
@@ -949,6 +951,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                                 meta ? _composeTargetListId : list.id,
                               )
                             : const [],
+                        customFieldDefs: controller.customFieldDefs,
                         priceEnabled: hasFeature('item-price'),
                         perStorePriceEnabled: hasFeature(
                           kItemPricePerStoreFeature,
@@ -1196,6 +1199,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           deleteOnDone: s.deleteOnDone,
           barcode: s.barcode,
           prices: s.prices,
+          customFields: s.customFields,
         );
       } else {
         created = await controller.addItem(
@@ -1210,6 +1214,7 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           deleteOnDone: s.deleteOnDone,
           barcode: s.barcode,
           prices: s.prices,
+          customFields: s.customFields,
         );
       }
       // Remember the chosen currency when the new item actually has a price:

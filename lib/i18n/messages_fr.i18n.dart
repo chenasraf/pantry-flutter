@@ -1860,6 +1860,41 @@ class CustomFieldsMessagesFr extends CustomFieldsMessages {
   String get noDefault => """Aucune valeur par défaut""";
 
   /// ```dart
+  /// "Aucune valeur"
+  /// ```
+  String get noValue => """Aucune valeur""";
+
+  /// ```dart
+  /// "Jours à partir d'aujourd'hui"
+  /// ```
+  String get daysFromToday => """Jours à partir d'aujourd'hui""";
+
+  /// ```dart
+  /// "Échéance le ${date}"
+  /// ```
+  String due(String date) => """Échéance le ${date}""";
+
+  /// ```dart
+  /// "Réancrer la date"
+  /// ```
+  String get reanchor => """Réancrer la date""";
+
+  /// ```dart
+  /// "Me rappeler"
+  /// ```
+  String get remindMe => """Me rappeler""";
+
+  /// ```dart
+  /// "Rappel personnalisé pour cet article"
+  /// ```
+  String get customReminder => """Rappel personnalisé pour cet article""";
+
+  /// ```dart
+  /// "Utiliser la valeur par défaut du champ"
+  /// ```
+  String get useFieldDefault => """Utiliser la valeur par défaut du champ""";
+
+  /// ```dart
   /// "Terminé"
   /// ```
   String get done => """Terminé""";
@@ -5498,6 +5533,13 @@ Mot de passe : pantry-rocks""",
   """customFields.defaultValue""": """Valeur par défaut""",
   """customFields.defaultChecked""": """Activé par défaut""",
   """customFields.noDefault""": """Aucune valeur par défaut""",
+  """customFields.noValue""": """Aucune valeur""",
+  """customFields.daysFromToday""": """Jours à partir d'aujourd'hui""",
+  """customFields.reanchor""": """Réancrer la date""",
+  """customFields.remindMe""": """Me rappeler""",
+  """customFields.customReminder""": """Rappel personnalisé pour cet article""",
+  """customFields.useFieldDefault""":
+      """Utiliser la valeur par défaut du champ""",
   """customFields.done""": """Terminé""",
   """customFields.remapTitle""": """Option utilisée""",
   """customFields.remapClear""": """La retirer de ces articles""",

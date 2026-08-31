@@ -1,4 +1,5 @@
 import 'package:pantry/models/checklist.dart';
+import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/services/api_client.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/cache_store.dart';
@@ -42,6 +43,20 @@ Map<String, dynamic> itemPriceBody(
     if (storeless.priceCurrency != null)
       'priceCurrency': storeless.priceCurrency,
   };
+}
+
+/// Capability advertised by servers that store per-item custom-field values.
+const kCustomFieldsFeature = 'custom-fields';
+
+/// Serialize [customFields] for the item create/update body. `null` omits the
+/// field (values unchanged); a list — even empty — is sent so an update can
+/// clear every value. Sent only on servers advertising `custom-fields`; older
+/// servers ignore custom fields entirely, so nothing is emitted for them.
+Map<String, dynamic> customFieldsBody(List<FieldValue>? customFields) {
+  if (customFields == null || !hasFeature(kCustomFieldsFeature)) {
+    return const {};
+  }
+  return {'customFields': customFields.map((v) => v.toJson()).toList()};
 }
 
 class ChecklistService {
@@ -542,6 +557,7 @@ class ChecklistService {
     bool? deleteOnDone,
     String? barcode,
     List<ItemPrice>? prices,
+    List<FieldValue>? customFields,
   }) async {
     final loginName = AuthService.instance.credentials?.loginName;
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
@@ -562,6 +578,9 @@ class ChecklistService {
         // Adapts to the server: `prices` array on item-price-per-store servers,
         // legacy flat fields otherwise. null omits (no prices).
         ...itemPriceBody(prices, isUpdate: false),
+        // Custom-field values ride the item; null omits, sent only when the
+        // server advertises the capability.
+        ...customFieldsBody(customFields),
       },
       fromJson: (data) => ListItem.fromJson(data),
     );
@@ -583,6 +602,7 @@ class ChecklistService {
     bool? deleteOnDone,
     String? barcode,
     List<ItemPrice>? prices,
+    List<FieldValue>? customFields,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
       '/houses/$houseId/lists/$listId/items/$itemId',
@@ -604,6 +624,9 @@ class ChecklistService {
         // all prices, otherwise the full set replaces the item's prices. On
         // legacy servers this collapses to the store-less flat fields.
         ...itemPriceBody(prices, isUpdate: true),
+        // Custom fields mirror prices: null omits (unchanged), an empty list
+        // clears every value, otherwise the set replaces the item's values.
+        ...customFieldsBody(customFields),
       },
       fromJson: (data) => ListItem.fromJson(data),
     );

@@ -1849,6 +1849,41 @@ class CustomFieldsMessagesNn extends CustomFieldsMessages {
   String get noDefault => """Ingen standard""";
 
   /// ```dart
+  /// "Ingen verdi"
+  /// ```
+  String get noValue => """Ingen verdi""";
+
+  /// ```dart
+  /// "Dagar frå i dag"
+  /// ```
+  String get daysFromToday => """Dagar frå i dag""";
+
+  /// ```dart
+  /// "Forfell ${date}"
+  /// ```
+  String due(String date) => """Forfell ${date}""";
+
+  /// ```dart
+  /// "Forankre datoen på nytt"
+  /// ```
+  String get reanchor => """Forankre datoen på nytt""";
+
+  /// ```dart
+  /// "Minn meg på"
+  /// ```
+  String get remindMe => """Minn meg på""";
+
+  /// ```dart
+  /// "Eiga påminning for denne oppføringa"
+  /// ```
+  String get customReminder => """Eiga påminning for denne oppføringa""";
+
+  /// ```dart
+  /// "Bruk feltstandarden"
+  /// ```
+  String get useFieldDefault => """Bruk feltstandarden""";
+
+  /// ```dart
   /// "Ferdig"
   /// ```
   String get done => """Ferdig""";
@@ -5461,6 +5496,12 @@ Passord: pantry""",
   """customFields.defaultValue""": """Standardverdi""",
   """customFields.defaultChecked""": """På som standard""",
   """customFields.noDefault""": """Ingen standard""",
+  """customFields.noValue""": """Ingen verdi""",
+  """customFields.daysFromToday""": """Dagar frå i dag""",
+  """customFields.reanchor""": """Forankre datoen på nytt""",
+  """customFields.remindMe""": """Minn meg på""",
+  """customFields.customReminder""": """Eiga påminning for denne oppføringa""",
+  """customFields.useFieldDefault""": """Bruk feltstandarden""",
   """customFields.done""": """Ferdig""",
   """customFields.remapTitle""": """Alternativet er i bruk""",
   """customFields.remapClear""": """Fjern det frå desse oppføringane""",

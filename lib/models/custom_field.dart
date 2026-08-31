@@ -196,6 +196,31 @@ class FieldDefinition {
     'updatedAt': updatedAt,
   };
 
+  /// The value to seed on a newly-created item, or `null` when the field
+  /// defines no default. `date` fields have no default value (a fixed default
+  /// date isn't meaningful), and an unset default yields nothing.
+  FieldValue? seedValue() {
+    switch (type) {
+      case FieldType.text:
+        final t = defaultText?.trim();
+        return (t == null || t.isEmpty)
+            ? null
+            : FieldValue(fieldId: id, valueText: defaultText);
+      case FieldType.number:
+        return defaultNumber == null
+            ? null
+            : FieldValue(fieldId: id, valueNumber: defaultNumber);
+      case FieldType.checkbox:
+        return defaultBool ? FieldValue(fieldId: id, valueBool: true) : null;
+      case FieldType.select:
+        return defaultOptionId == null
+            ? null
+            : FieldValue(fieldId: id, valueOptionId: defaultOptionId);
+      case FieldType.date:
+        return null;
+    }
+  }
+
   /// Pass `listId: null` to make the field house-wide, an int to scope it, or
   /// omit it to leave the current scope unchanged.
   FieldDefinition copyWith({
@@ -241,6 +266,19 @@ class FieldDefinition {
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
+}
+
+/// The values a newly-created item should carry: each applicable field's
+/// default ([FieldDefinition.seedValue]), for the fields in scope for [listId]
+/// (house-wide ∪ that list) that define one. Empty when nothing has a default.
+List<FieldValue> seedFieldValues(Iterable<FieldDefinition> defs, int? listId) {
+  final out = <FieldValue>[];
+  for (final def in defs) {
+    if (def.listId != null && def.listId != listId) continue;
+    final seed = def.seedValue();
+    if (seed != null) out.add(seed);
+  }
+  return out;
 }
 
 /// A per-item typed value for a custom field. Rides the checklist item (like

@@ -349,6 +349,13 @@ customFields:
   defaultValue: Default value
   defaultChecked: On by default
   noDefault: No default
+  noValue: No value
+  daysFromToday: Days from today
+  due(String date): "Due ${date}"
+  reanchor: Re-anchor date
+  remindMe: Remind me
+  customReminder: Custom reminder for this item
+  useFieldDefault: Use field default
   done: Done
   remapTitle: Option in use
   remapClear: Clear it from those items

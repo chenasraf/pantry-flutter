@@ -1841,6 +1841,41 @@ class CustomFieldsMessagesHe extends CustomFieldsMessages {
   String get noDefault => """ללא ברירת מחדל""";
 
   /// ```dart
+  /// "אין ערך"
+  /// ```
+  String get noValue => """אין ערך""";
+
+  /// ```dart
+  /// "ימים מהיום"
+  /// ```
+  String get daysFromToday => """ימים מהיום""";
+
+  /// ```dart
+  /// "יעד ${date}"
+  /// ```
+  String due(String date) => """יעד ${date}""";
+
+  /// ```dart
+  /// "עיגון מחדש של התאריך"
+  /// ```
+  String get reanchor => """עיגון מחדש של התאריך""";
+
+  /// ```dart
+  /// "להזכיר לי"
+  /// ```
+  String get remindMe => """להזכיר לי""";
+
+  /// ```dart
+  /// "תזכורת מותאמת לפריט זה"
+  /// ```
+  String get customReminder => """תזכורת מותאמת לפריט זה""";
+
+  /// ```dart
+  /// "להשתמש בברירת המחדל של השדה"
+  /// ```
+  String get useFieldDefault => """להשתמש בברירת המחדל של השדה""";
+
+  /// ```dart
   /// "סיום"
   /// ```
   String get done => """סיום""";
@@ -5425,6 +5460,12 @@ Map<String, String> get messagesHeMap => {
   """customFields.defaultValue""": """ערך ברירת מחדל""",
   """customFields.defaultChecked""": """מופעל כברירת מחדל""",
   """customFields.noDefault""": """ללא ברירת מחדל""",
+  """customFields.noValue""": """אין ערך""",
+  """customFields.daysFromToday""": """ימים מהיום""",
+  """customFields.reanchor""": """עיגון מחדש של התאריך""",
+  """customFields.remindMe""": """להזכיר לי""",
+  """customFields.customReminder""": """תזכורת מותאמת לפריט זה""",
+  """customFields.useFieldDefault""": """להשתמש בברירת המחדל של השדה""",
   """customFields.done""": """סיום""",
   """customFields.remapTitle""": """האפשרות בשימוש""",
   """customFields.remapClear""": """לנקות אותה מהפריטים האלה""",

@@ -1856,6 +1856,41 @@ class CustomFieldsMessagesDe extends CustomFieldsMessages {
   String get noDefault => """Kein Standard""";
 
   /// ```dart
+  /// "Kein Wert"
+  /// ```
+  String get noValue => """Kein Wert""";
+
+  /// ```dart
+  /// "Tage ab heute"
+  /// ```
+  String get daysFromToday => """Tage ab heute""";
+
+  /// ```dart
+  /// "Fällig am ${date}"
+  /// ```
+  String due(String date) => """Fällig am ${date}""";
+
+  /// ```dart
+  /// "Datum neu verankern"
+  /// ```
+  String get reanchor => """Datum neu verankern""";
+
+  /// ```dart
+  /// "Mich erinnern"
+  /// ```
+  String get remindMe => """Mich erinnern""";
+
+  /// ```dart
+  /// "Eigene Erinnerung für diesen Eintrag"
+  /// ```
+  String get customReminder => """Eigene Erinnerung für diesen Eintrag""";
+
+  /// ```dart
+  /// "Feldstandard verwenden"
+  /// ```
+  String get useFieldDefault => """Feldstandard verwenden""";
+
+  /// ```dart
   /// "Fertig"
   /// ```
   String get done => """Fertig""";
@@ -5498,6 +5533,12 @@ Passwort: pantry-rocks""",
   """customFields.defaultValue""": """Standardwert""",
   """customFields.defaultChecked""": """Standardmäßig aktiviert""",
   """customFields.noDefault""": """Kein Standard""",
+  """customFields.noValue""": """Kein Wert""",
+  """customFields.daysFromToday""": """Tage ab heute""",
+  """customFields.reanchor""": """Datum neu verankern""",
+  """customFields.remindMe""": """Mich erinnern""",
+  """customFields.customReminder""": """Eigene Erinnerung für diesen Eintrag""",
+  """customFields.useFieldDefault""": """Feldstandard verwenden""",
   """customFields.done""": """Fertig""",
   """customFields.remapTitle""": """Option in Verwendung""",
   """customFields.remapClear""": """Aus diesen Einträgen entfernen""",

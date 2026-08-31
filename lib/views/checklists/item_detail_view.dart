@@ -9,6 +9,7 @@ import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry/views/custom_fields/item_custom_fields_display.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/label_icons.dart';
@@ -96,6 +97,14 @@ class ItemDetailView extends StatelessWidget {
                       if (hasFeature('item-price') && item.hasPrice) ...[
                         const SizedBox(height: 12),
                         _PriceTile(item: item),
+                      ],
+                      if (hasFeature('custom-fields') &&
+                          item.customFields.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        ItemCustomFieldsDisplay(
+                          houseId: houseId,
+                          values: item.customFields,
+                        ),
                       ],
                       const SizedBox(height: 12),
                       _DescriptionCard(

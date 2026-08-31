@@ -1856,6 +1856,41 @@ class CustomFieldsMessagesEs extends CustomFieldsMessages {
   String get noDefault => """Sin valor predeterminado""";
 
   /// ```dart
+  /// "Sin valor"
+  /// ```
+  String get noValue => """Sin valor""";
+
+  /// ```dart
+  /// "Días desde hoy"
+  /// ```
+  String get daysFromToday => """Días desde hoy""";
+
+  /// ```dart
+  /// "Vence el ${date}"
+  /// ```
+  String due(String date) => """Vence el ${date}""";
+
+  /// ```dart
+  /// "Reanclar fecha"
+  /// ```
+  String get reanchor => """Reanclar fecha""";
+
+  /// ```dart
+  /// "Recordármelo"
+  /// ```
+  String get remindMe => """Recordármelo""";
+
+  /// ```dart
+  /// "Recordatorio propio para este artículo"
+  /// ```
+  String get customReminder => """Recordatorio propio para este artículo""";
+
+  /// ```dart
+  /// "Usar el valor predeterminado del campo"
+  /// ```
+  String get useFieldDefault => """Usar el valor predeterminado del campo""";
+
+  /// ```dart
   /// "Hecho"
   /// ```
   String get done => """Hecho""";
@@ -5481,6 +5516,14 @@ Contraseña: pantry-rocks""",
   """customFields.defaultValue""": """Valor predeterminado""",
   """customFields.defaultChecked""": """Activado de forma predeterminada""",
   """customFields.noDefault""": """Sin valor predeterminado""",
+  """customFields.noValue""": """Sin valor""",
+  """customFields.daysFromToday""": """Días desde hoy""",
+  """customFields.reanchor""": """Reanclar fecha""",
+  """customFields.remindMe""": """Recordármelo""",
+  """customFields.customReminder""":
+      """Recordatorio propio para este artículo""",
+  """customFields.useFieldDefault""":
+      """Usar el valor predeterminado del campo""",
   """customFields.done""": """Hecho""",
   """customFields.remapTitle""": """Opción en uso""",
   """customFields.remapClear""": """Quitarla de esos artículos""",

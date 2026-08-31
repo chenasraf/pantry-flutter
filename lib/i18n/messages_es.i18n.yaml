@@ -349,6 +349,13 @@ customFields:
   defaultValue: Valor predeterminado
   defaultChecked: Activado de forma predeterminada
   noDefault: Sin valor predeterminado
+  noValue: Sin valor
+  daysFromToday: "Días desde hoy"
+  due(String date): "Vence el ${date}"
+  reanchor: Reanclar fecha
+  remindMe: Recordármelo
+  customReminder: Recordatorio propio para este artículo
+  useFieldDefault: Usar el valor predeterminado del campo
   done: Hecho
   remapTitle: "Opción en uso"
   remapClear: Quitarla de esos artículos

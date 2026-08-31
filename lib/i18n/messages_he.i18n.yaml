@@ -349,6 +349,13 @@ customFields:
   defaultValue: ערך ברירת מחדל
   defaultChecked: מופעל כברירת מחדל
   noDefault: ללא ברירת מחדל
+  noValue: אין ערך
+  daysFromToday: ימים מהיום
+  due(String date): "יעד ${date}"
+  reanchor: עיגון מחדש של התאריך
+  remindMe: להזכיר לי
+  customReminder: תזכורת מותאמת לפריט זה
+  useFieldDefault: להשתמש בברירת המחדל של השדה
   done: סיום
   remapTitle: האפשרות בשימוש
   remapClear: לנקות אותה מהפריטים האלה

@@ -349,6 +349,13 @@ customFields:
   defaultValue: Standardwert
   defaultChecked: Standardmäßig aktiviert
   noDefault: Kein Standard
+  noValue: Kein Wert
+  daysFromToday: Tage ab heute
+  due(String date): "Fällig am ${date}"
+  reanchor: Datum neu verankern
+  remindMe: Mich erinnern
+  customReminder: Eigene Erinnerung für diesen Eintrag
+  useFieldDefault: Feldstandard verwenden
   done: Fertig
   remapTitle: Option in Verwendung
   remapClear: Aus diesen Einträgen entfernen

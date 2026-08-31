@@ -433,6 +433,13 @@ customFields:
   defaultValue: Standardverdi
   defaultChecked: På som standard
   noDefault: Ingen standard
+  noValue: Ingen verdi
+  daysFromToday: Dagar frå i dag
+  due(String date): "Forfell ${date}"
+  reanchor: Forankre datoen på nytt
+  remindMe: Minn meg på
+  customReminder: Eiga påminning for denne oppføringa
+  useFieldDefault: Bruk feltstandarden
   done: Ferdig
   remapTitle: Alternativet er i bruk
   remapClear: Fjern det frå desse oppføringane
