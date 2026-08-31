@@ -496,17 +496,24 @@ class RecurrenceInline extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 8),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            value: state.repeatFromCompletion,
-            onChanged: (v) {
-              state.repeatFromCompletion = v;
-              onChanged();
-            },
-            title: Text(
-              r.countFromCompletion,
-              style: TextStyle(fontSize: 13, color: cs.onSurface),
-            ),
+          // A plain Row + Switch rather than a SwitchListTile: this sits inside
+          // a colored Container, where a ListTile's ink/background can't paint.
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  r.countFromCompletion,
+                  style: TextStyle(fontSize: 13, color: cs.onSurface),
+                ),
+              ),
+              Switch(
+                value: state.repeatFromCompletion,
+                onChanged: (v) {
+                  state.repeatFromCompletion = v;
+                  onChanged();
+                },
+              ),
+            ],
           ),
         ],
       ),
