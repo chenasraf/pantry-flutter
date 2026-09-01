@@ -24,6 +24,7 @@ import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/services/shopping_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/color.dart';
 import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/utils/currencies.dart';
 import 'package:pantry/utils/item_modal_route.dart';

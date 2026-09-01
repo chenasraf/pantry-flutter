@@ -7,8 +7,7 @@ import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/utils/currencies.dart';
 import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/store_icons.dart';
-import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
-    show parseHexColor;
+import 'package:pantry/utils/color.dart';
 
 /// Format a stored amount for seeding an input field: trim trailing zeros so a
 /// round number shows as "1" (not "1.00") and "9.99" stays "9.99".

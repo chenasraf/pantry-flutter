@@ -18,8 +18,7 @@ import 'package:pantry/utils/label_icons.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
-import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
-    show parseHexColor;
+import 'package:pantry/utils/color.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/description_detail_dialog.dart';

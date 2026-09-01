@@ -4,6 +4,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/color.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
@@ -21,14 +22,6 @@ const List<String> kListColorSwatches = [
   '#673ab7', // deep purple
   '#e91e63', // pink
 ];
-
-Color? parseHexColor(String? hex) {
-  if (hex == null || hex.isEmpty) return null;
-  var h = hex.replaceFirst('#', '');
-  if (h.length == 6) h = 'FF$h';
-  final v = int.tryParse(h, radix: 16);
-  return v != null ? Color(v) : null;
-}
 
 /// Show the checklist switcher. On mobile/web it slides up as a bottom sheet;
 /// on desktop, when [anchorContext] is provided, it opens as a positioned
