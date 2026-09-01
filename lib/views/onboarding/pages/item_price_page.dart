@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Introduces item prices: a mock item row with a price chip above a simplified
@@ -108,7 +109,7 @@ class _MockItemRow extends StatelessWidget {
                     ),
                     _Chip(
                       leading: Icon(
-                        Icons.sell_outlined,
+                        EntityIcons.price,
                         size: 12,
                         color: cs.onSurfaceVariant,
                       ),

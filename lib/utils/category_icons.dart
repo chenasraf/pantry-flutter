@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'entity_icons.dart';
+
 const categoryIconMap = <String, IconData>{
   'tag': Icons.label,
   'food': Icons.lunch_dining,
@@ -57,7 +59,7 @@ const categoryIconMap = <String, IconData>{
   'beach': Icons.beach_access,
 };
 
-const defaultCategoryIcon = Icons.label;
+const defaultCategoryIcon = EntityIcons.category;
 
 IconData categoryIcon(String? key) {
   return categoryIconMap[key ?? ''] ?? defaultCategoryIcon;

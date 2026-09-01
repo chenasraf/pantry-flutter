@@ -15,7 +15,7 @@ void main() {
 
     test('returns default icon for unknown key', () {
       expect(categoryIcon('nope'), defaultCategoryIcon);
-      expect(categoryIcon('nope'), Icons.label);
+      expect(categoryIcon('nope'), Icons.label_outline);
     });
 
     test('returns default icon for null key', () {

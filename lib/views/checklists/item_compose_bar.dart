@@ -19,6 +19,7 @@ import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/utils/currencies.dart';
 import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/label_icons.dart';
@@ -1298,7 +1299,7 @@ class _ChipRow extends StatelessWidget {
           _ComposeChip(
             label: cat?.name ?? m.checklists.compose.chipCategory,
             color: cat != null ? catColor : null,
-            icon: cat != null ? null : Icons.label_outline,
+            icon: cat != null ? null : EntityIcons.category,
             leading: cat != null
                 ? Container(
                     width: 8,
@@ -1317,7 +1318,7 @@ class _ChipRow extends StatelessWidget {
             _ComposeChip(
               label: storeLabel,
               color: hasStores ? storeColor : null,
-              icon: hasStores ? null : Icons.store,
+              icon: hasStores ? null : EntityIcons.store,
               leading: hasStores
                   ? Icon(
                       storeIcon(selectedStores.first.icon),
@@ -1334,7 +1335,7 @@ class _ChipRow extends StatelessWidget {
             _ComposeChip(
               label: labelLabel,
               color: hasLabels ? labelColor : null,
-              icon: hasLabels ? null : Icons.sell_outlined,
+              icon: hasLabels ? null : EntityIcons.label,
               leading: hasLabels
                   ? Icon(
                       labelIcon(selectedLabels.first.icon),
@@ -1359,7 +1360,7 @@ class _ChipRow extends StatelessWidget {
             _ComposeChip(
               label: priceLabel,
               color: hasPrice ? cs.primary : null,
-              icon: Icons.sell_outlined,
+              icon: EntityIcons.price,
               selected: openTray == _Tray.price,
               onTap: () => onOpen(_Tray.price),
             ),

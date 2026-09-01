@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Icon shown for an unknown/unset label key. Mirrors the web's `tag` fallback
-/// in `labelIcons.ts` (`labelIconComponent` → `TagIcon`).
-const defaultLabelIcon = Icons.sell;
+import 'entity_icons.dart';
+
+/// Icon shown for an unknown/unset label key — the generic label glyph.
+const defaultLabelIcon = EntityIcons.label;
 
 /// `key → IconData` for the label icon palette, ported from the web's
 /// `LABEL_ICONS` (`src/components/LabelPicker/labelIcons.ts`). The keys are the

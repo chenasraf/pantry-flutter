@@ -14,6 +14,7 @@ import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/rrule.dart';
@@ -1120,7 +1121,9 @@ class _StoreDropdownRow extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              stores.isNotEmpty ? storeIcon(stores.first.icon) : Icons.store,
+              stores.isNotEmpty
+                  ? storeIcon(stores.first.icon)
+                  : EntityIcons.store,
               size: 18,
               color: leadColor,
             ),
@@ -1258,7 +1261,9 @@ class _LabelDropdownRow extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              labels.isNotEmpty ? labelIcon(labels.first.icon) : Icons.sell,
+              labels.isNotEmpty
+                  ? labelIcon(labels.first.icon)
+                  : EntityIcons.label,
               size: 18,
               color: leadColor,
             ),

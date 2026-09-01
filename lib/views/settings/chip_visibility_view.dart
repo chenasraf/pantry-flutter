@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/models/item_chip.dart';
+import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/services/prefs_service.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
@@ -25,10 +26,10 @@ class ChipVisibilityView extends StatelessWidget {
 
   static IconData _icon(ItemChipKind kind) => switch (kind) {
     ItemChipKind.category => Icons.circle,
-    ItemChipKind.store => Icons.storefront_outlined,
-    ItemChipKind.label => Icons.sell_outlined,
+    ItemChipKind.store => EntityIcons.store,
+    ItemChipKind.label => EntityIcons.label,
     ItemChipKind.quantity => Icons.tag,
-    ItemChipKind.price => Icons.sell_outlined,
+    ItemChipKind.price => EntityIcons.price,
     ItemChipKind.note => Icons.notes,
     ItemChipKind.oneTime => Icons.check_circle_outline,
     ItemChipKind.recurring => Icons.repeat,

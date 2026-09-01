@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry/i18n.dart';
+import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Teaches multi-select (group actions). Runs a continuous demo that selects
@@ -259,7 +260,7 @@ class _MockActionBar extends StatelessWidget {
         children: [
           _MockAction(icon: Icons.drive_file_move_outlined, label: b.move),
           _MockAction(icon: Icons.copy_outlined, label: b.copy),
-          _MockAction(icon: Icons.sell_outlined, label: b.category),
+          _MockAction(icon: EntityIcons.category, label: b.category),
           _MockAction(icon: Icons.delete_outline, label: b.delete),
         ],
       ),

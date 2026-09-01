@@ -12,6 +12,7 @@ import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_display.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/utils/label_icons.dart';
 import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/date_format.dart';
@@ -933,7 +934,7 @@ class _PriceTile extends StatelessWidget {
       label: m.checklists.viewItem.priceLabel,
       child: Row(
         children: [
-          Icon(Icons.sell_outlined, size: 18, color: cs.primary),
+          Icon(EntityIcons.price, size: 18, color: cs.primary),
           const SizedBox(width: 8),
           Flexible(
             child: Text(

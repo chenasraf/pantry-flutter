@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-const defaultStoreIcon = Icons.store;
+import 'entity_icons.dart';
+
+const defaultStoreIcon = EntityIcons.store;
 
 const storeIconMap = <String, IconData>{
   'store': Icons.store,

@@ -4,6 +4,7 @@ import 'package:pantry/i18n.dart';
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
 import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/services/checklist_widget_service.dart';
 import 'package:pantry/services/house_service.dart';
 import 'package:pantry/services/prefs_service.dart';
@@ -208,9 +209,9 @@ class _ChecklistWidgetConfigViewState extends State<ChecklistWidgetConfigView> {
   IconData _chipIcon(String key) => switch (key) {
     'category' => Icons.circle,
     'quantity' => Icons.tag,
-    'store' => Icons.storefront_outlined,
-    'label' => Icons.sell_outlined,
-    _ => Icons.label_outline,
+    'store' => EntityIcons.store,
+    'label' => EntityIcons.label,
+    _ => EntityIcons.category,
   };
 }
 

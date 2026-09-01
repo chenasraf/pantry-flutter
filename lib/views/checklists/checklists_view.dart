@@ -23,6 +23,7 @@ import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/services/shopping_service.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/utils/currencies.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/price.dart';
@@ -42,6 +43,7 @@ import 'package:pantry/views/stores/stores_view.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
+import 'package:pantry/widgets/entity_icon.dart';
 import 'checklist_item_tile.dart';
 import 'checklist_switcher_sheet.dart';
 import 'checklists_controller.dart';
@@ -1486,19 +1488,19 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
           ),
           if (controller.permissions.canEditLists)
             IconButton(
-              icon: const Icon(Icons.sell_outlined),
+              icon: const Icon(EntityIcons.category),
               tooltip: m.categories.manageTitle,
               onPressed: () => _openManageCategories(context, controller),
             ),
           if (controller.permissions.canEditLists && hasFeature('stores'))
             IconButton(
-              icon: const Icon(Icons.storefront_outlined),
+              icon: const Icon(EntityIcons.store),
               tooltip: m.stores.manageTitle,
               onPressed: () => _openManageStores(context, controller),
             ),
           if (controller.permissions.canEditLists && hasFeature('labels'))
             IconButton(
-              icon: const Icon(Icons.sell_outlined),
+              icon: const Icon(EntityIcons.label),
               tooltip: m.labels.manageTitle,
               onPressed: () => _openManageLabels(context, controller),
             ),
@@ -1767,19 +1769,19 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
         if (controller.permissions.canEditLists)
           _OverflowAction(
             value: 'manage_categories',
-            icon: Icons.sell_outlined,
+            icon: EntityIcons.category,
             label: m.categories.manageTitle,
           ),
         if (controller.permissions.canEditLists && hasFeature('stores'))
           _OverflowAction(
             value: 'manage_stores',
-            icon: Icons.storefront_outlined,
+            icon: EntityIcons.store,
             label: m.stores.manageTitle,
           ),
         if (controller.permissions.canEditLists && hasFeature('labels'))
           _OverflowAction(
             value: 'manage_labels',
-            icon: Icons.sell_outlined,
+            icon: EntityIcons.label,
             label: m.labels.manageTitle,
           ),
         if (controller.permissions.canEditFields && hasFeature('custom-fields'))
@@ -2497,7 +2499,7 @@ class _FiltersSectionState extends State<_FiltersSection> {
         widget.selectedCategoryIds.length + (widget.noCategorySelected ? 1 : 0);
     return _FilterDropdown(
       label: m.checklists.filters.categories,
-      icon: Icons.label_outline,
+      icon: EntityIcons.category,
       selectedCount: count,
       entries: [
         _FilterMenuEntry(
@@ -2519,7 +2521,8 @@ class _FiltersSectionState extends State<_FiltersSection> {
           _FilterMenuEntry(
             label: m.checklists.filters.noCategory,
             color: cs.outline,
-            icon: Icons.label_off_outlined,
+            icon: EntityIcons.category,
+            off: true,
             selected: widget.noCategorySelected,
             onTap: widget.onToggleNoCategory,
           ),
@@ -2532,7 +2535,7 @@ class _FiltersSectionState extends State<_FiltersSection> {
         widget.selectedStoreIds.length + (widget.noStoreSelected ? 1 : 0);
     return _FilterDropdown(
       label: m.checklists.filters.stores,
-      icon: Icons.storefront_outlined,
+      icon: EntityIcons.store,
       selectedCount: count,
       entries: [
         _FilterMenuEntry(
@@ -2554,7 +2557,8 @@ class _FiltersSectionState extends State<_FiltersSection> {
           _FilterMenuEntry(
             label: m.checklists.filters.noStores,
             color: cs.outline,
-            icon: Icons.label_off_outlined,
+            icon: EntityIcons.store,
+            off: true,
             selected: widget.noStoreSelected,
             onTap: widget.onToggleNoStore,
           ),
@@ -2567,7 +2571,7 @@ class _FiltersSectionState extends State<_FiltersSection> {
         widget.selectedLabelIds.length + (widget.noLabelSelected ? 1 : 0);
     return _FilterDropdown(
       label: m.checklists.filters.labels,
-      icon: Icons.sell_outlined,
+      icon: EntityIcons.label,
       selectedCount: count,
       entries: [
         _FilterMenuEntry(
@@ -2589,7 +2593,8 @@ class _FiltersSectionState extends State<_FiltersSection> {
           _FilterMenuEntry(
             label: m.checklists.filters.noLabels,
             color: cs.outline,
-            icon: Icons.label_off_outlined,
+            icon: EntityIcons.label,
+            off: true,
             selected: widget.noLabelSelected,
             onTap: widget.onToggleNoLabel,
           ),
@@ -2651,6 +2656,7 @@ class _FilterMenuEntry {
   final String label;
   final Color color;
   final IconData icon;
+  final bool off;
   final bool selected;
   final VoidCallback onTap;
 
@@ -2658,6 +2664,7 @@ class _FilterMenuEntry {
     required this.label,
     required this.color,
     required this.icon,
+    this.off = false,
     required this.selected,
     required this.onTap,
   });
@@ -2737,7 +2744,12 @@ class _FilterMenuRow extends StatelessWidget {
         padding: const EdgeInsetsDirectional.fromSTEB(14, 11, 14, 11),
         child: Row(
           children: [
-            Icon(entry.icon, size: 17, color: entry.color),
+            EntityIcon(
+              entry.icon,
+              off: entry.off,
+              size: 17,
+              color: entry.color,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -3040,7 +3052,7 @@ class _PriceFilterDropdownState extends State<_PriceFilterDropdown> {
       ],
       builder: (context, controller, _) => _FilterButton(
         label: _triggerLabel(),
-        icon: Icons.sell_outlined,
+        icon: EntityIcons.price,
         active: active,
         open: controller.isOpen,
         onTap: () => controller.isOpen ? controller.close() : controller.open(),
@@ -4741,7 +4753,7 @@ class _SelectionActionBar extends StatelessWidget {
                     ),
                     _action(
                       context,
-                      icon: Icons.sell_outlined,
+                      icon: EntityIcons.category,
                       label: m.checklists.batch.category,
                       enabled: controller.canBatchCategory,
                       onTap: () => _category(context),
@@ -4749,7 +4761,7 @@ class _SelectionActionBar extends StatelessWidget {
                     if (controller.hasStoresFeature)
                       _action(
                         context,
-                        icon: Icons.storefront_outlined,
+                        icon: EntityIcons.store,
                         label: m.checklists.batch.stores,
                         enabled: controller.canBatchStores,
                         onTap: () => _stores(context),
@@ -4757,7 +4769,7 @@ class _SelectionActionBar extends StatelessWidget {
                     if (controller.hasLabelsFeature)
                       _action(
                         context,
-                        icon: Icons.sell_outlined,
+                        icon: EntityIcons.label,
                         label: m.checklists.batch.labels,
                         enabled: controller.canBatchLabels,
                         onTap: () => _labels(context),
