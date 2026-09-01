@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.30.1](https://github.com/chenasraf/pantry-flutter/compare/v0.30.0...v0.30.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* **custom-fields:** creating a new field now works ([bd367fe](https://github.com/chenasraf/pantry-flutter/commit/bd367feebea6b7d7cf6cc6fe237fab74f35793f8))
+* **onboarding:** introduce custom fields in the tour ([dedb591](https://github.com/chenasraf/pantry-flutter/commit/dedb591e6f78162d585fc2714cfef8491a287d67))
+
 ## [0.30.0](https://github.com/chenasraf/pantry-flutter/compare/v0.29.1...v0.30.0) (2026-09-01)
 
 

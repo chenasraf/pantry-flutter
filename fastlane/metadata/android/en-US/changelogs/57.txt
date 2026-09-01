@@ -1,0 +1,3 @@
+Bug Fixes
+- creating a new field now works
+- introduce custom fields in the tour
