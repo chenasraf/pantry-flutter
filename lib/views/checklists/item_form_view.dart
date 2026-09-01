@@ -27,6 +27,7 @@ import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
+import 'package:pantry/widgets/dashed_border.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'package:pantry/models/item_lifecycle.dart';
 import 'checklists_controller.dart';
@@ -1447,7 +1448,7 @@ class _AddImageTile extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
-      child: DottedRoundedBorder(
+      child: DashedBorder(
         color: cs.outlineVariant,
         radius: 14,
         strokeWidth: 1.5,
@@ -1506,73 +1507,6 @@ class _ImageSourceSheet extends StatelessWidget {
 
 /// Simple dashed outline using a CustomPainter — Flutter Material doesn't
 /// support dashed borders on Container natively.
-class DottedRoundedBorder extends StatelessWidget {
-  final Widget child;
-  final Color color;
-  final double radius;
-  final double strokeWidth;
-
-  const DottedRoundedBorder({
-    super.key,
-    required this.child,
-    required this.color,
-    this.radius = 14,
-    this.strokeWidth = 1.5,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _DashedBorderPainter(
-        color: color,
-        radius: radius,
-        strokeWidth: strokeWidth,
-      ),
-      child: child,
-    );
-  }
-}
-
-class _DashedBorderPainter extends CustomPainter {
-  final Color color;
-  final double radius;
-  final double strokeWidth;
-
-  _DashedBorderPainter({
-    required this.color,
-    required this.radius,
-    required this.strokeWidth,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
-    final rrect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(radius),
-    );
-    final path = Path()..addRRect(rrect);
-    const dashWidth = 6.0;
-    const dashGap = 4.0;
-    for (final metric in path.computeMetrics()) {
-      double distance = 0;
-      while (distance < metric.length) {
-        final next = (distance + dashWidth).clamp(0, metric.length).toDouble();
-        canvas.drawPath(metric.extractPath(distance, next), paint);
-        distance = next + dashGap;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DashedBorderPainter old) =>
-      old.color != color ||
-      old.radius != radius ||
-      old.strokeWidth != strokeWidth;
-}
 
 class _DockedSaveBar extends StatelessWidget {
   final VoidCallback? onCancel;

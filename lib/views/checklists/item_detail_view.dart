@@ -22,6 +22,7 @@ import 'package:pantry/utils/price.dart';
 import 'package:pantry/utils/rrule.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry/widgets/dashed_border.dart';
 import 'package:pantry/widgets/image_preview.dart';
 import 'package:pantry/widgets/markdown_description.dart';
 import 'package:pantry/widgets/member_avatar.dart';
@@ -1067,7 +1068,9 @@ class _DescriptionCardState extends State<_DescriptionCard> {
     );
 
     if (!hasDesc) {
-      return _DashedCard(
+      return DashedBorder(
+        radius: 15,
+        strokeWidth: 1,
         padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
         color: cs.outlineVariant,
         background: cs.surfaceContainerLow,
@@ -1320,74 +1323,4 @@ class _CoverImage extends StatelessWidget {
       ),
     );
   }
-}
-
-class _DashedCard extends StatelessWidget {
-  final Widget child;
-  final EdgeInsets padding;
-  final Color color;
-  final Color background;
-
-  const _DashedCard({
-    required this.child,
-    required this.padding,
-    required this.color,
-    required this.background,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _DashedRRectPainter(color: color, radius: 15, strokeWidth: 1),
-      child: Container(
-        decoration: BoxDecoration(
-          color: background,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        padding: padding,
-        child: child,
-      ),
-    );
-  }
-}
-
-class _DashedRRectPainter extends CustomPainter {
-  final Color color;
-  final double radius;
-  final double strokeWidth;
-
-  _DashedRRectPainter({
-    required this.color,
-    required this.radius,
-    required this.strokeWidth,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
-    final rrect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Radius.circular(radius),
-    );
-    final path = Path()..addRRect(rrect);
-    const dashWidth = 6.0;
-    const dashGap = 4.0;
-    for (final metric in path.computeMetrics()) {
-      double distance = 0;
-      while (distance < metric.length) {
-        final next = (distance + dashWidth).clamp(0, metric.length).toDouble();
-        canvas.drawPath(metric.extractPath(distance, next), paint);
-        distance = next + dashGap;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DashedRRectPainter old) =>
-      old.color != color ||
-      old.radius != radius ||
-      old.strokeWidth != strokeWidth;
 }
