@@ -223,6 +223,8 @@ settings:
     ask: Always ask
     reuse: Always reuse
     never: Never reuse
+  suggestArchivedItems: Suggest archived items
+  suggestArchivedItemsBody: When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it.
   navOrderTitle: Navigation order
   navOrderSubtitle: Reorder the bottom navigation tabs. The first item is opened on app start.
   navOrderBody: Drag to reorder the tabs. The first visible section opens when the app starts. Turn off any section you don't use to hide its tab — at least one must stay on.
@@ -731,6 +733,9 @@ checklists:
     addAnyway: Add anyway
     reusedSnack(String name): "Reused existing item “$name”"
     suggestionsHeader: Already on this list
+    archivedBadge: Archived
+    archivedDialogBody(String name): 'An archived item named "$name" already exists. Reuse it instead of adding a new one? It will be unarchived.'
+    reusedArchivedSnack(String name): "Reused archived item “$name”"
   allLists: All lists
   allListsSubtitle: Items from every list
   addToAnyList: "Add an item…"

@@ -223,6 +223,8 @@ settings:
     ask: Toujours demander
     reuse: "Toujours réutiliser"
     never: "Ne jamais réutiliser"
+  suggestArchivedItems: "Suggérer les articles archivés"
+  suggestArchivedItemsBody: "Lors de l'ajout d'un article, rechercher aussi des suggestions de réutilisation parmi les articles archivés. Réutiliser un article archivé le désarchive."
   navOrderTitle: Ordre de navigation
   navOrderSubtitle: "Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage."
   navOrderBody: "Faites glisser pour réorganiser les onglets. La première section visible s'ouvre au démarrage de l'application. Désactivez les sections que vous n'utilisez pas pour masquer leur onglet ; au moins une doit rester activée."
@@ -731,6 +733,9 @@ checklists:
     addAnyway: Ajouter quand même
     reusedSnack(String name): 'Article existant "$name" réutilisé'
     suggestionsHeader: Déjà dans cette liste
+    archivedBadge: Archivé
+    archivedDialogBody(String name): 'Un article archivé nommé "$name" existe déjà. Le réutiliser au lieu d''en ajouter un nouveau ? Il sera désarchivé.'
+    reusedArchivedSnack(String name): 'Article archivé "$name" réutilisé'
   allLists: Toutes les listes
   allListsSubtitle: Éléments de toutes les listes
   addToAnyList: "Ajouter un élément…"

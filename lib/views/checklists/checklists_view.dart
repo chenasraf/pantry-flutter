@@ -921,16 +921,27 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                       final reuseTargetId = meta
                           ? _composeTargetListId
                           : list.id;
-                      final reuseCandidates =
+                      final reuseActive =
                           hasFeature('reuse-existing-items') &&
-                              controller.permissions.canCheckItems &&
-                              reuseTargetId != null
+                          controller.permissions.canCheckItems &&
+                          reuseTargetId != null;
+                      final reuseCandidates = reuseActive
                           ? [
                               for (final i in controller.items)
                                 if (i.deletedAt == null &&
                                     i.listId == reuseTargetId)
                                   i,
                             ]
+                          : const <ListItem>[];
+                      // Archived items join the reuse pool only when the user
+                      // opts in and the server advertises the capability; the
+                      // controller fetches them lazily and keeps them live.
+                      final suggestArchived =
+                          reuseActive &&
+                          hasFeature('pref-suggest-archived-items') &&
+                          prefs.suggestArchivedItems;
+                      final archivedReuseCandidates = suggestArchived
+                          ? controller.archivedReuseCandidates(reuseTargetId)
                           : const <ListItem>[];
                       return ItemComposeBar(
                         key: _composeKey,
@@ -976,9 +987,14 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
                               labels: controller.labelsFor(item),
                               houseId: controller.houseId,
                               onTap: onTap,
+                              archived: item.archivedAt != null,
                             ),
                         onReuseExisting: (item) =>
                             _reuseFromSuggestion(context, controller, item),
+                        archivedReuseCandidates: archivedReuseCandidates,
+                        onArchivedSearchStarted: suggestArchived
+                            ? controller.ensureArchivedReuseLoaded
+                            : null,
                         onActiveChanged: (active) {
                           if (active != _composeActive) {
                             setState(() => _composeActive = active);
@@ -1104,11 +1120,18 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
     ChecklistsController controller,
     ListItem item,
   ) async {
+    // An archived suggestion is unarchived on confirm, so it warns the user and
+    // takes the unarchive path instead of the plain done-toggle reuse.
+    final archived = item.archivedAt != null;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(m.checklists.reuse.dialogTitle),
-        content: Text(m.checklists.reuse.dialogBody(item.name)),
+        content: Text(
+          archived
+              ? m.checklists.reuse.archivedDialogBody(item.name)
+              : m.checklists.reuse.dialogBody(item.name),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -1122,10 +1145,20 @@ class _BodyState extends State<_Body> with WidgetsBindingObserver {
       ),
     );
     if (confirmed != true || !context.mounted) return false;
-    await controller.reuseItem(item);
+    if (archived) {
+      await controller.reuseArchivedItem(item);
+    } else {
+      await controller.reuseItem(item);
+    }
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(m.checklists.reuse.reusedSnack(item.name))),
+        SnackBar(
+          content: Text(
+            archived
+                ? m.checklists.reuse.reusedArchivedSnack(item.name)
+                : m.checklists.reuse.reusedSnack(item.name),
+          ),
+        ),
       );
     }
     return true;

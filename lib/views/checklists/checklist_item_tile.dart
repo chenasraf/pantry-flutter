@@ -121,6 +121,11 @@ class ChecklistItemTile extends StatefulWidget {
   final bool suggestion;
   final VoidCallback? onSuggestionTap;
 
+  /// Marks a reuse suggestion as coming from the archive: the row shows an
+  /// "Archived" badge, and reusing it unarchives the item. Only meaningful when
+  /// [suggestion] is true.
+  final bool archived;
+
   const ChecklistItemTile({
     super.key,
     required this.item,
@@ -153,6 +158,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.onLongPressSelect,
     this.suggestion = false,
     this.onSuggestionTap,
+    this.archived = false,
   });
 
   /// A read-only tile used as a reuse suggestion in the compose bar: name and
@@ -165,6 +171,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.labels = const [],
     required this.houseId,
     required VoidCallback onTap,
+    this.archived = false,
   }) : isCardsView = false,
        onToggle = _noop,
        onView = _noop,
@@ -245,6 +252,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
         selectionMode: false,
         selected: false,
         suggestion: true,
+        archived: widget.archived,
       );
     }
 
@@ -561,6 +569,9 @@ class _RowContent extends StatelessWidget {
   /// row's background stay transparent so it blends into the suggestions panel.
   final bool suggestion;
 
+  /// Suggestion drawn from the archive: adds the trailing "Archived" badge.
+  final bool archived;
+
   const _RowContent({
     required this.item,
     required this.category,
@@ -583,6 +594,7 @@ class _RowContent extends StatelessWidget {
     required this.selectionMode,
     required this.selected,
     this.suggestion = false,
+    this.archived = false,
   });
 
   @override
@@ -701,6 +713,19 @@ class _RowContent extends StatelessWidget {
                       userId: addedByUserId,
                       displayName: addedByDisplayName ?? addedByUserId!,
                       size: 26,
+                    ),
+                  ],
+                  if (suggestion && archived) ...[
+                    const SizedBox(width: 10),
+                    _Chip(
+                      leading: Icon(
+                        Icons.archive_outlined,
+                        size: 13,
+                        color: cs.onSurfaceVariant,
+                      ),
+                      label: m.checklists.reuse.archivedBadge,
+                      textColor: cs.onSurfaceVariant,
+                      background: cs.surfaceContainerHighest,
                     ),
                   ],
                   if (checkboxAtEnd && !suggestion) leadingControl,

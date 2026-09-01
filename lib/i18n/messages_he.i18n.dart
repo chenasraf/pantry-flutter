@@ -1124,6 +1124,17 @@ class SettingsMessagesHe extends SettingsMessages {
       ReuseExistingItemsNamesSettingsMessagesHe(this);
 
   /// ```dart
+  /// "הצעת פריטים בארכיון"
+  /// ```
+  String get suggestArchivedItems => """הצעת פריטים בארכיון""";
+
+  /// ```dart
+  /// "בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון."
+  /// ```
+  String get suggestArchivedItemsBody =>
+      """בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון.""";
+
+  /// ```dart
   /// "סדר ניווט"
   /// ```
   String get navOrderTitle => """סדר ניווט""";
@@ -3837,6 +3848,23 @@ class ReuseChecklistsMessagesHe extends ReuseChecklistsMessages {
   /// "כבר ברשימה הזו"
   /// ```
   String get suggestionsHeader => """כבר ברשימה הזו""";
+
+  /// ```dart
+  /// "בארכיון"
+  /// ```
+  String get archivedBadge => """בארכיון""";
+
+  /// ```dart
+  /// "פריט בארכיון בשם "$name" כבר קיים. להשתמש בו במקום להוסיף פריט חדש? הוא יוצא מהארכיון."
+  /// ```
+  String archivedDialogBody(String name) =>
+      """פריט בארכיון בשם "$name" כבר קיים. להשתמש בו במקום להוסיף פריט חדש? הוא יוצא מהארכיון.""";
+
+  /// ```dart
+  /// "נעשה שימוש חוזר בפריט מהארכיון “$name”"
+  /// ```
+  String reusedArchivedSnack(String name) =>
+      """נעשה שימוש חוזר בפריט מהארכיון “$name”""";
 }
 
 class MarkdownChecklistsMessagesHe extends MarkdownChecklistsMessages {
@@ -5375,6 +5403,9 @@ Map<String, String> get messagesHeMap => {
   """settings.reuseExistingItemsNames.ask""": """תמיד לשאול""",
   """settings.reuseExistingItemsNames.reuse""": """תמיד להשתמש מחדש""",
   """settings.reuseExistingItemsNames.never""": """לעולם לא להשתמש מחדש""",
+  """settings.suggestArchivedItems""": """הצעת פריטים בארכיון""",
+  """settings.suggestArchivedItemsBody""":
+      """בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון.""",
   """settings.navOrderTitle""": """סדר ניווט""",
   """settings.navOrderSubtitle""":
       """שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה.""",
@@ -5835,6 +5866,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.reuse.reuseExisting""": """השתמש בקיים""",
   """checklists.reuse.addAnyway""": """הוסף בכל זאת""",
   """checklists.reuse.suggestionsHeader""": """כבר ברשימה הזו""",
+  """checklists.reuse.archivedBadge""": """בארכיון""",
   """checklists.allLists""": """כל הרשימות""",
   """checklists.allListsSubtitle""": """פריטים מכל הרשימות""",
   """checklists.addToAnyList""": """הוסף פריט…""",

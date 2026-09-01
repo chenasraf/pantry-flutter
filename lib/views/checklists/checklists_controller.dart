@@ -439,6 +439,17 @@ class ChecklistsController extends ChangeNotifier {
   List<ChecklistList> _archivedLists = [];
   List<ChecklistList> get archivedLists => _archivedLists;
 
+  /// Archived items per list, folded into the item-reuse suggestions when the
+  /// user has enabled "suggest archived items". Fetched lazily the first time a
+  /// list's suggestions are searched (see [ensureArchivedReuseLoaded]) and then
+  /// kept live: archiving an item adds it here, unarchiving removes it, so the
+  /// suggestions stay in sync without a refetch.
+  final Map<int, List<ListItem>> _archivedReuse = {};
+
+  /// Lists whose archived-reuse set has a fetch in flight or completed, so the
+  /// lazy load fires at most once per list per session.
+  final Set<int> _archivedReuseRequested = {};
+
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
@@ -1813,20 +1824,28 @@ class ChecklistsController extends ChangeNotifier {
   }
 
   void batchArchive() {
+    final items = List.of(selectedItems);
     final ids = _selectedItemIds.toList();
     if (ids.isEmpty) return;
     // Archived items leave the active view immediately.
     _items = reconcileRemoveIds(_items, ids.toSet());
+    for (final item in items) {
+      _addToArchivedReuse(item.copyWith(archivedAt: _now()));
+    }
     if (!isSoftView) _cacheCurrentItems();
     _enqueueBatch('archive', ids, extra: {'archive': true});
     exitSelection();
   }
 
   void batchUnarchive() {
+    final items = List.of(selectedItems);
     final ids = _selectedItemIds.toList();
     if (ids.isEmpty) return;
     // Unarchived items leave the archive view and return to the active list.
     _items = reconcileRemoveIds(_items, ids.toSet());
+    for (final item in items) {
+      _removeFromArchivedReuse(item);
+    }
     if (!isSoftView) _cacheCurrentItems();
     _enqueueBatch('archive', ids, extra: {'archive': false});
     exitSelection();
@@ -2028,6 +2047,7 @@ class ChecklistsController extends ChangeNotifier {
     final existing = {for (final i in _items) i.id};
     for (final item in items) {
       if (existing.contains(item.id)) continue;
+      _removeFromArchivedReuse(item);
       final restored = item.copyWith(clearArchivedAt: true, updatedAt: _now());
       _items.insert(_insertIndexFor(restored), restored);
       _sync.enqueue(
@@ -2053,6 +2073,7 @@ class ChecklistsController extends ChangeNotifier {
     final existing = {for (final i in _items) i.id};
     for (final item in items) {
       if (existing.contains(item.id)) continue;
+      _addToArchivedReuse(item);
       _items.insert(_insertIndexFor(item), item);
       _sync.enqueue(
         SyncOp(
@@ -2320,6 +2341,68 @@ class ChecklistsController extends ChangeNotifier {
     if (item.done) await toggleItem(item);
   }
 
+  /// Archived items on [listId] currently available as reuse suggestions.
+  /// Returns what's loaded now (empty until the first fetch resolves); pair with
+  /// [ensureArchivedReuseLoaded] to trigger that fetch.
+  List<ListItem> archivedReuseCandidates(int listId) =>
+      _archivedReuse[listId] ?? const [];
+
+  /// Kick off the one-time lazy fetch of [listId]'s archived items for reuse
+  /// suggestions. A no-op once requested. Merges the server result with any
+  /// items archived locally this session (which the server may not have synced
+  /// yet) and notifies listeners so the suggestions refresh.
+  void ensureArchivedReuseLoaded(int listId) {
+    if (_archivedReuseRequested.contains(listId)) return;
+    _archivedReuseRequested.add(listId);
+    unawaited(_fetchArchivedReuse(listId));
+  }
+
+  Future<void> _fetchArchivedReuse(int listId) async {
+    try {
+      final items = await _checklistService.getArchivedItems(houseId, listId);
+      final fetchedIds = {for (final i in items) i.id};
+      final sessionExtras = [
+        for (final e in _archivedReuse[listId] ?? const <ListItem>[])
+          if (!fetchedIds.contains(e.id)) e,
+      ];
+      _archivedReuse[listId] = [...items, ...sessionExtras];
+      notifyListeners();
+    } catch (e) {
+      debugPrint(
+        '[ChecklistsController] Failed to load archived reuse candidates: $e',
+      );
+      // Allow a later search to retry the fetch.
+      _archivedReuseRequested.remove(listId);
+    }
+  }
+
+  /// Reflect a just-archived item in the reuse suggestions immediately, without
+  /// waiting for a server refetch or sync. No-op until the list's archive has
+  /// been requested for suggestions.
+  void _addToArchivedReuse(ListItem archived) {
+    final list = _archivedReuse[archived.listId];
+    if (list == null) return;
+    if (list.any((i) => i.id == archived.id)) return;
+    _archivedReuse[archived.listId] = [archived, ...list];
+  }
+
+  void _removeFromArchivedReuse(ListItem item) =>
+      _archivedReuse[item.listId]?.removeWhere((i) => i.id == item.id);
+
+  /// Reuse an archived suggestion: unarchive it back onto the active list, and
+  /// if it was done, toggle it active so it returns as a fresh unchecked item.
+  /// Drops it from the archived-reuse set so it isn't offered again.
+  Future<void> reuseArchivedItem(ListItem item) async {
+    await unarchiveItem(item);
+    if (item.done) {
+      final restored = _items.firstWhere(
+        (i) => i.id == item.id,
+        orElse: () => item,
+      );
+      if (restored.done) await toggleItem(restored);
+    }
+  }
+
   Future<ListItem> updateItem(
     ListItem item, {
     String? name,
@@ -2499,6 +2582,7 @@ class ChecklistsController extends ChangeNotifier {
   /// of `deletedAt`; the item leaves the active list for the archive view.
   Future<void> archiveItem(ListItem item) async {
     _items.removeWhere((i) => i.id == item.id);
+    _addToArchivedReuse(item.copyWith(archivedAt: _now()));
     _cacheVisibleItems(item.listId);
     notifyListeners();
     _sync.enqueue(
@@ -2520,6 +2604,7 @@ class ChecklistsController extends ChangeNotifier {
   /// just-archived item) it reappears with `archivedAt` cleared.
   Future<void> unarchiveItem(ListItem item) async {
     _items.removeWhere((i) => i.id == item.id);
+    _removeFromArchivedReuse(item);
     if (!_isArchiveMode) {
       _items.add(item.copyWith(clearArchivedAt: true, updatedAt: _now()));
       _cacheVisibleItems(item.listId);

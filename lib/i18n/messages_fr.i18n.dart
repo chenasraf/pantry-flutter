@@ -1138,6 +1138,17 @@ class SettingsMessagesFr extends SettingsMessages {
       ReuseExistingItemsNamesSettingsMessagesFr(this);
 
   /// ```dart
+  /// "Suggérer les articles archivés"
+  /// ```
+  String get suggestArchivedItems => """Suggérer les articles archivés""";
+
+  /// ```dart
+  /// "Lors de l'ajout d'un article, rechercher aussi des suggestions de réutilisation parmi les articles archivés. Réutiliser un article archivé le désarchive."
+  /// ```
+  String get suggestArchivedItemsBody =>
+      """Lors de l'ajout d'un article, rechercher aussi des suggestions de réutilisation parmi les articles archivés. Réutiliser un article archivé le désarchive.""";
+
+  /// ```dart
   /// "Ordre de navigation"
   /// ```
   String get navOrderTitle => """Ordre de navigation""";
@@ -3869,6 +3880,23 @@ class ReuseChecklistsMessagesFr extends ReuseChecklistsMessages {
   /// "Déjà dans cette liste"
   /// ```
   String get suggestionsHeader => """Déjà dans cette liste""";
+
+  /// ```dart
+  /// "Archivé"
+  /// ```
+  String get archivedBadge => """Archivé""";
+
+  /// ```dart
+  /// "Un article archivé nommé "$name" existe déjà. Le réutiliser au lieu d'en ajouter un nouveau ? Il sera désarchivé."
+  /// ```
+  String archivedDialogBody(String name) =>
+      """Un article archivé nommé "$name" existe déjà. Le réutiliser au lieu d'en ajouter un nouveau ? Il sera désarchivé.""";
+
+  /// ```dart
+  /// "Article archivé "$name" réutilisé"
+  /// ```
+  String reusedArchivedSnack(String name) =>
+      """Article archivé "$name" réutilisé""";
 }
 
 class MarkdownChecklistsMessagesFr extends MarkdownChecklistsMessages {
@@ -5440,6 +5468,9 @@ Mot de passe : pantry-rocks""",
   """settings.reuseExistingItemsNames.ask""": """Toujours demander""",
   """settings.reuseExistingItemsNames.reuse""": """Toujours réutiliser""",
   """settings.reuseExistingItemsNames.never""": """Ne jamais réutiliser""",
+  """settings.suggestArchivedItems""": """Suggérer les articles archivés""",
+  """settings.suggestArchivedItemsBody""":
+      """Lors de l'ajout d'un article, rechercher aussi des suggestions de réutilisation parmi les articles archivés. Réutiliser un article archivé le désarchive.""",
   """settings.navOrderTitle""": """Ordre de navigation""",
   """settings.navOrderSubtitle""":
       """Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage.""",
@@ -5930,6 +5961,7 @@ Mot de passe : pantry-rocks""",
   """checklists.reuse.reuseExisting""": """Réutiliser l'existant""",
   """checklists.reuse.addAnyway""": """Ajouter quand même""",
   """checklists.reuse.suggestionsHeader""": """Déjà dans cette liste""",
+  """checklists.reuse.archivedBadge""": """Archivé""",
   """checklists.allLists""": """Toutes les listes""",
   """checklists.allListsSubtitle""": """Éléments de toutes les listes""",
   """checklists.addToAnyList""": """Ajouter un élément…""",

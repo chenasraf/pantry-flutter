@@ -1130,6 +1130,17 @@ class SettingsMessagesNn extends SettingsMessages {
       ReuseExistingItemsNamesSettingsMessagesNn(this);
 
   /// ```dart
+  /// "Føreslå arkiverte oppføringar"
+  /// ```
+  String get suggestArchivedItems => """Føreslå arkiverte oppføringar""";
+
+  /// ```dart
+  /// "Når du leggjer til ei oppføring, søk òg blant arkiverte oppføringar etter forslag til gjenbruk. Å bruke ei arkivert oppføring på nytt hentar ho ut av arkivet."
+  /// ```
+  String get suggestArchivedItemsBody =>
+      """Når du leggjer til ei oppføring, søk òg blant arkiverte oppføringar etter forslag til gjenbruk. Å bruke ei arkivert oppføring på nytt hentar ho ut av arkivet.""";
+
+  /// ```dart
   /// "Navigasjonsrekkefylgje"
   /// ```
   String get navOrderTitle => """Navigasjonsrekkefylgje""";
@@ -3855,6 +3866,23 @@ class ReuseChecklistsMessagesNn extends ReuseChecklistsMessages {
   /// "Allereie i denne lista"
   /// ```
   String get suggestionsHeader => """Allereie i denne lista""";
+
+  /// ```dart
+  /// "Arkivert"
+  /// ```
+  String get archivedBadge => """Arkivert""";
+
+  /// ```dart
+  /// "Ei arkivert oppføring som heiter «$name» finst allereie. Vil du bruke ho på nytt i staden for å leggje til ei ny? Ho vert henta ut av arkivet."
+  /// ```
+  String archivedDialogBody(String name) =>
+      """Ei arkivert oppføring som heiter «$name» finst allereie. Vil du bruke ho på nytt i staden for å leggje til ei ny? Ho vert henta ut av arkivet.""";
+
+  /// ```dart
+  /// "Brukar arkivert oppføring «$name» på nytt"
+  /// ```
+  String reusedArchivedSnack(String name) =>
+      """Brukar arkivert oppføring «$name» på nytt""";
 }
 
 class MarkdownChecklistsMessagesNn extends MarkdownChecklistsMessages {
@@ -5407,6 +5435,9 @@ Passord: pantry""",
   """settings.reuseExistingItemsNames.ask""": """Alltid spør""",
   """settings.reuseExistingItemsNames.reuse""": """Alltid bruk igjen""",
   """settings.reuseExistingItemsNames.never""": """Aldri bruk igjen""",
+  """settings.suggestArchivedItems""": """Føreslå arkiverte oppføringar""",
+  """settings.suggestArchivedItemsBody""":
+      """Når du leggjer til ei oppføring, søk òg blant arkiverte oppføringar etter forslag til gjenbruk. Å bruke ei arkivert oppføring på nytt hentar ho ut av arkivet.""",
   """settings.navOrderTitle""": """Navigasjonsrekkefylgje""",
   """settings.navOrderSubtitle""":
       """Endre rekkefylgja på navigasjonsfanene. Den fyrste oppføringa er den som blir vist når du opnar appen.""",
@@ -5885,6 +5916,7 @@ Passord: pantry""",
   """checklists.reuse.reuseExisting""": """Gjenbruk""",
   """checklists.reuse.addAnyway""": """Legg til likevel""",
   """checklists.reuse.suggestionsHeader""": """Allereie i denne lista""",
+  """checklists.reuse.archivedBadge""": """Arkivert""",
   """checklists.allLists""": """Alle lister""",
   """checklists.allListsSubtitle""": """Oppføringar frå alle lister""",
   """checklists.addToAnyList""": """Lag oppføring…""",

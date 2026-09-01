@@ -21,6 +21,7 @@ class PrefsService extends ChangeNotifier {
       'default_item_long_press_action';
   static const _checklistCategorySpacingKey = 'checklist_category_spacing';
   static const _reuseExistingItemsKey = 'reuse_existing_items';
+  static const _suggestArchivedItemsKey = 'suggest_archived_items';
   static const _checklistViewKey = 'checklist_view';
   static const _checklistCheckboxPositionKey = 'checklist_checkbox_position';
   static const _checklistDensityKey = 'checklist_density';
@@ -96,6 +97,14 @@ class PrefsService extends ChangeNotifier {
   /// the `reuse-existing-items` capability.
   String _reuseExistingItems = 'ask';
   String get reuseExistingItems => _reuseExistingItems;
+
+  /// Account-scoped pref synced from the Pantry user-prefs endpoint, cached
+  /// locally so the add-item path can read it synchronously. When true, the
+  /// item-reuse suggestions also search archived items on the target list.
+  /// Only meaningful when the server advertises the
+  /// `pref-suggest-archived-items` capability.
+  bool _suggestArchivedItems = false;
+  bool get suggestArchivedItems => _suggestArchivedItems;
 
   /// "list" or "cards"
   String _checklistView = 'list';
@@ -297,6 +306,11 @@ class PrefsService extends ChangeNotifier {
     final reuse = all[_reuseExistingItemsKey];
     if (reuse != null && _isValidReuseExistingItems(reuse)) {
       _reuseExistingItems = reuse;
+    }
+
+    final suggestArchived = all[_suggestArchivedItemsKey];
+    if (suggestArchived != null) {
+      _suggestArchivedItems = suggestArchived == 'true';
     }
 
     final view = all[_checklistViewKey];
@@ -516,6 +530,16 @@ class PrefsService extends ChangeNotifier {
     if (_reuseExistingItems == value) return;
     _reuseExistingItems = value;
     await _storage.write(key: _reuseExistingItemsKey, value: value);
+    notifyListeners();
+  }
+
+  Future<void> setSuggestArchivedItemsCache(bool value) async {
+    if (_suggestArchivedItems == value) return;
+    _suggestArchivedItems = value;
+    await _storage.write(
+      key: _suggestArchivedItemsKey,
+      value: value.toString(),
+    );
     notifyListeners();
   }
 
@@ -782,6 +806,7 @@ class PrefsService extends ChangeNotifier {
     _defaultItemTapAction = 'view';
     _defaultItemLongPressAction = 'multiselect';
     _reuseExistingItems = 'ask';
+    _suggestArchivedItems = false;
     _checklistView = 'list';
     _checklistCheckboxPosition = 'start';
     _checklistDensity = 'normal';
@@ -817,6 +842,7 @@ class PrefsService extends ChangeNotifier {
       _defaultItemLongPressActionKey,
       _checklistCategorySpacingKey,
       _reuseExistingItemsKey,
+      _suggestArchivedItemsKey,
       _checklistViewKey,
       _checklistCheckboxPositionKey,
       _checklistDensityKey,

@@ -178,6 +178,14 @@ class AuthService {
         if (reuse != null) {
           unawaited(PrefsService.instance.setReuseExistingItemsCache(reuse));
         }
+        // The `suggestArchivedItems` key is only present when the server
+        // advertises the `pref-suggest-archived-items` capability.
+        final suggestArchived = prefs?['suggestArchivedItems'] as bool?;
+        if (suggestArchived != null) {
+          unawaited(
+            PrefsService.instance.setSuggestArchivedItemsCache(suggestArchived),
+          );
+        }
       }
     } catch (e) {
       debugPrint('[AuthService] Failed to fetch first day of week: $e');
@@ -201,6 +209,28 @@ class AuthService {
         'Content-Type': 'application/json',
       },
       body: jsonEncode({'reuseExistingItems': value}),
+    );
+    if (response.statusCode >= 400) {
+      throw Exception('Failed to update prefs: ${response.statusCode}');
+    }
+  }
+
+  /// Persist the account-scoped `suggestArchivedItems` pref to the Pantry
+  /// user-prefs endpoint. Throws on a non-2xx response so callers can revert
+  /// an optimistic update. Caller is responsible for updating the local cache.
+  Future<void> setSuggestArchivedItems(bool value) async {
+    if (_credentials == null) return;
+    final uri = Uri.parse(
+      '${_credentials!.serverUrl}/ocs/v2.php/apps/pantry/api/prefs',
+    );
+    final response = await http.put(
+      uri,
+      headers: {
+        ..._credentials!.basicAuthHeaders,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'suggestArchivedItems': value}),
     );
     if (response.statusCode >= 400) {
       throw Exception('Failed to update prefs: ${response.statusCode}');

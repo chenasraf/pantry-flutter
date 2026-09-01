@@ -223,6 +223,8 @@ settings:
     ask: Preguntar siempre
     reuse: Reutilizar siempre
     never: Nunca reutilizar
+  suggestArchivedItems: Sugerir artículos archivados
+  suggestArchivedItemsBody: Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.
   navOrderTitle: Orden de navegación
   navOrderSubtitle: Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.
   navOrderBody: Arrastra para reordenar las pestañas. La primera sección visible se abre al iniciar la app. Desactiva las secciones que no uses para ocultar su pestaña; al menos una debe permanecer activada.
@@ -731,6 +733,9 @@ checklists:
     addAnyway: Añadir de todos modos
     reusedSnack(String name): "Se reutilizó el artículo existente “$name”"
     suggestionsHeader: Ya en esta lista
+    archivedBadge: Archivado
+    archivedDialogBody(String name): 'Ya existe un artículo archivado llamado "$name". ¿Reutilizarlo en lugar de añadir uno nuevo? Se desarchivará.'
+    reusedArchivedSnack(String name): "Se reutilizó el artículo archivado “$name”"
   allLists: Todas las listas
   allListsSubtitle: Elementos de todas las listas
   addToAnyList: "Añadir un elemento…"

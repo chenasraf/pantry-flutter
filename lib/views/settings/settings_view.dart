@@ -147,6 +147,23 @@ class _SettingsViewState extends State<SettingsView> {
     _ => m.settings.reuseExistingItemsNames.ask,
   };
 
+  // -- Suggest archived items (account-scoped, persisted server-side) --
+
+  Future<void> _toggleSuggestArchivedItems(bool value) async {
+    final prefs = context.read<PrefsService>();
+    final previous = prefs.suggestArchivedItems;
+    if (value == previous) return;
+    // Optimistic: flip the local cache, then push to the server; revert on
+    // failure.
+    await prefs.setSuggestArchivedItemsCache(value);
+    try {
+      await AuthService.instance.setSuggestArchivedItems(value);
+    } catch (e) {
+      debugPrint('[SettingsView] Failed to persist suggestArchivedItems: $e');
+      await prefs.setSuggestArchivedItemsCache(previous);
+    }
+  }
+
   // -- Language --
 
   Future<void> _setLocale(String? value) async {
@@ -287,6 +304,7 @@ class _SettingsViewState extends State<SettingsView> {
     final startShoppingFabEnabled = prefs.startShoppingFabEnabled;
     final truncateItemNames = prefs.truncateItemNames;
     final reuseExistingItems = prefs.reuseExistingItems;
+    final suggestArchivedItems = prefs.suggestArchivedItems;
     final useServerThemeColor = prefs.useServerThemeColor;
     final checklistRefresh = prefs.checklistRefreshSeconds;
     final notesRefresh = prefs.notesRefreshSeconds;
@@ -442,6 +460,14 @@ class _SettingsViewState extends State<SettingsView> {
                 options: _reuseExistingItemsOptions,
                 labelOf: _reuseExistingItemsLabel,
                 onChanged: _setReuseExistingItems,
+              ),
+            if (hasFeature('pref-suggest-archived-items'))
+              SwitchListTile(
+                secondary: const Icon(Icons.archive_outlined),
+                title: Text(m.settings.suggestArchivedItems),
+                subtitle: Text(m.settings.suggestArchivedItemsBody),
+                value: suggestArchivedItems,
+                onChanged: _toggleSuggestArchivedItems,
               ),
 
             // -- Auto-refresh --

@@ -223,6 +223,8 @@ settings:
     ask: Immer fragen
     reuse: Immer wiederverwenden
     never: Nie wiederverwenden
+  suggestArchivedItems: Archivierte Einträge vorschlagen
+  suggestArchivedItemsBody: Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf.
   navOrderTitle: Navigationsreihenfolge
   navOrderSubtitle: Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.
   navOrderBody: Zum Neuanordnen ziehen. Der erste sichtbare Bereich wird beim Start der App geöffnet. Schalte nicht genutzte Bereiche aus, um ihren Tab auszublenden – mindestens einer muss aktiviert bleiben.
@@ -731,6 +733,9 @@ checklists:
     addAnyway: Trotzdem hinzufügen
     reusedSnack(String name): 'Vorhandener Eintrag "$name" wiederverwendet'
     suggestionsHeader: Bereits auf dieser Liste
+    archivedBadge: Archiviert
+    archivedDialogBody(String name): 'Ein archivierter Eintrag namens "$name" existiert bereits. Wiederverwenden, statt einen neuen hinzuzufügen? Die Archivierung wird aufgehoben.'
+    reusedArchivedSnack(String name): 'Archivierter Eintrag "$name" wiederverwendet'
   allLists: Alle Listen
   allListsSubtitle: Einträge aus allen Listen
   addToAnyList: "Eintrag hinzufügen…"

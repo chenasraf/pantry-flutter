@@ -1134,6 +1134,17 @@ class SettingsMessagesDe extends SettingsMessages {
       ReuseExistingItemsNamesSettingsMessagesDe(this);
 
   /// ```dart
+  /// "Archivierte Einträge vorschlagen"
+  /// ```
+  String get suggestArchivedItems => """Archivierte Einträge vorschlagen""";
+
+  /// ```dart
+  /// "Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf."
+  /// ```
+  String get suggestArchivedItemsBody =>
+      """Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf.""";
+
+  /// ```dart
   /// "Navigationsreihenfolge"
   /// ```
   String get navOrderTitle => """Navigationsreihenfolge""";
@@ -3873,6 +3884,23 @@ class ReuseChecklistsMessagesDe extends ReuseChecklistsMessages {
   /// "Bereits auf dieser Liste"
   /// ```
   String get suggestionsHeader => """Bereits auf dieser Liste""";
+
+  /// ```dart
+  /// "Archiviert"
+  /// ```
+  String get archivedBadge => """Archiviert""";
+
+  /// ```dart
+  /// "Ein archivierter Eintrag namens "$name" existiert bereits. Wiederverwenden, statt einen neuen hinzuzufügen? Die Archivierung wird aufgehoben."
+  /// ```
+  String archivedDialogBody(String name) =>
+      """Ein archivierter Eintrag namens "$name" existiert bereits. Wiederverwenden, statt einen neuen hinzuzufügen? Die Archivierung wird aufgehoben.""";
+
+  /// ```dart
+  /// "Archivierter Eintrag "$name" wiederverwendet"
+  /// ```
+  String reusedArchivedSnack(String name) =>
+      """Archivierter Eintrag "$name" wiederverwendet""";
 }
 
 class MarkdownChecklistsMessagesDe extends MarkdownChecklistsMessages {
@@ -5440,6 +5468,9 @@ Passwort: pantry-rocks""",
   """settings.reuseExistingItemsNames.ask""": """Immer fragen""",
   """settings.reuseExistingItemsNames.reuse""": """Immer wiederverwenden""",
   """settings.reuseExistingItemsNames.never""": """Nie wiederverwenden""",
+  """settings.suggestArchivedItems""": """Archivierte Einträge vorschlagen""",
+  """settings.suggestArchivedItemsBody""":
+      """Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf.""",
   """settings.navOrderTitle""": """Navigationsreihenfolge""",
   """settings.navOrderSubtitle""":
       """Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.""",
@@ -5937,6 +5968,7 @@ Passwort: pantry-rocks""",
   """checklists.reuse.reuseExisting""": """Vorhandenen wiederverwenden""",
   """checklists.reuse.addAnyway""": """Trotzdem hinzufügen""",
   """checklists.reuse.suggestionsHeader""": """Bereits auf dieser Liste""",
+  """checklists.reuse.archivedBadge""": """Archiviert""",
   """checklists.allLists""": """Alle Listen""",
   """checklists.allListsSubtitle""": """Einträge aus allen Listen""",
   """checklists.addToAnyList""": """Eintrag hinzufügen…""",

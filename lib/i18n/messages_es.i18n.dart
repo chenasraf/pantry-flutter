@@ -1134,6 +1134,17 @@ class SettingsMessagesEs extends SettingsMessages {
       ReuseExistingItemsNamesSettingsMessagesEs(this);
 
   /// ```dart
+  /// "Sugerir artículos archivados"
+  /// ```
+  String get suggestArchivedItems => """Sugerir artículos archivados""";
+
+  /// ```dart
+  /// "Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva."
+  /// ```
+  String get suggestArchivedItemsBody =>
+      """Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.""";
+
+  /// ```dart
   /// "Orden de navegación"
   /// ```
   String get navOrderTitle => """Orden de navegación""";
@@ -3863,6 +3874,23 @@ class ReuseChecklistsMessagesEs extends ReuseChecklistsMessages {
   /// "Ya en esta lista"
   /// ```
   String get suggestionsHeader => """Ya en esta lista""";
+
+  /// ```dart
+  /// "Archivado"
+  /// ```
+  String get archivedBadge => """Archivado""";
+
+  /// ```dart
+  /// "Ya existe un artículo archivado llamado "$name". ¿Reutilizarlo en lugar de añadir uno nuevo? Se desarchivará."
+  /// ```
+  String archivedDialogBody(String name) =>
+      """Ya existe un artículo archivado llamado "$name". ¿Reutilizarlo en lugar de añadir uno nuevo? Se desarchivará.""";
+
+  /// ```dart
+  /// "Se reutilizó el artículo archivado “$name”"
+  /// ```
+  String reusedArchivedSnack(String name) =>
+      """Se reutilizó el artículo archivado “$name”""";
 }
 
 class MarkdownChecklistsMessagesEs extends MarkdownChecklistsMessages {
@@ -5424,6 +5452,9 @@ Contraseña: pantry-rocks""",
   """settings.reuseExistingItemsNames.ask""": """Preguntar siempre""",
   """settings.reuseExistingItemsNames.reuse""": """Reutilizar siempre""",
   """settings.reuseExistingItemsNames.never""": """Nunca reutilizar""",
+  """settings.suggestArchivedItems""": """Sugerir artículos archivados""",
+  """settings.suggestArchivedItemsBody""":
+      """Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.""",
   """settings.navOrderTitle""": """Orden de navegación""",
   """settings.navOrderSubtitle""":
       """Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.""",
@@ -5909,6 +5940,7 @@ Contraseña: pantry-rocks""",
   """checklists.reuse.reuseExisting""": """Reutilizar existente""",
   """checklists.reuse.addAnyway""": """Añadir de todos modos""",
   """checklists.reuse.suggestionsHeader""": """Ya en esta lista""",
+  """checklists.reuse.archivedBadge""": """Archivado""",
   """checklists.allLists""": """Todas las listas""",
   """checklists.allListsSubtitle""": """Elementos de todas las listas""",
   """checklists.addToAnyList""": """Añadir un elemento…""",

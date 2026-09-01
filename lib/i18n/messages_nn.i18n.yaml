@@ -302,6 +302,11 @@ settings:
     ask: Alltid spør
     reuse: Alltid bruk igjen
     never: Aldri bruk igjen
+  suggestArchivedItems: Føreslå arkiverte oppføringar
+  suggestArchivedItemsBody:
+    Når du leggjer til ei oppføring, søk òg blant arkiverte oppføringar
+    etter forslag til gjenbruk. Å bruke ei arkivert oppføring på nytt hentar
+    ho ut av arkivet.
   navOrderTitle: Navigasjonsrekkefylgje
   navOrderSubtitle:
     Endre rekkefylgja på navigasjonsfanene. Den fyrste oppføringa
@@ -851,6 +856,11 @@ checklists:
     addAnyway: Legg til likevel
     reusedSnack(String name): Brukar eksisterande oppføring «$name» på nytt
     suggestionsHeader: Allereie i denne lista
+    archivedBadge: Arkivert
+    archivedDialogBody(String name):
+      Ei arkivert oppføring som heiter «$name» finst allereie. Vil du bruke
+      ho på nytt i staden for å leggje til ei ny? Ho vert henta ut av arkivet.
+    reusedArchivedSnack(String name): Brukar arkivert oppføring «$name» på nytt
   allLists: Alle lister
   allListsSubtitle: Oppføringar frå alle lister
   addToAnyList: Lag oppføring…

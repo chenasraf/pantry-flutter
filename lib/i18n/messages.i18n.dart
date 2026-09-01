@@ -1126,6 +1126,17 @@ class SettingsMessages {
       ReuseExistingItemsNamesSettingsMessages(this);
 
   /// ```dart
+  /// "Suggest archived items"
+  /// ```
+  String get suggestArchivedItems => """Suggest archived items""";
+
+  /// ```dart
+  /// "When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it."
+  /// ```
+  String get suggestArchivedItemsBody =>
+      """When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it.""";
+
+  /// ```dart
   /// "Navigation order"
   /// ```
   String get navOrderTitle => """Navigation order""";
@@ -3830,6 +3841,22 @@ class ReuseChecklistsMessages {
   /// "Already on this list"
   /// ```
   String get suggestionsHeader => """Already on this list""";
+
+  /// ```dart
+  /// "Archived"
+  /// ```
+  String get archivedBadge => """Archived""";
+
+  /// ```dart
+  /// "An archived item named "$name" already exists. Reuse it instead of adding a new one? It will be unarchived."
+  /// ```
+  String archivedDialogBody(String name) =>
+      """An archived item named "$name" already exists. Reuse it instead of adding a new one? It will be unarchived.""";
+
+  /// ```dart
+  /// "Reused archived item “$name”"
+  /// ```
+  String reusedArchivedSnack(String name) => """Reused archived item “$name”""";
 }
 
 class MarkdownChecklistsMessages {
@@ -5373,6 +5400,9 @@ Password: pantry-rocks""",
   """settings.reuseExistingItemsNames.ask""": """Always ask""",
   """settings.reuseExistingItemsNames.reuse""": """Always reuse""",
   """settings.reuseExistingItemsNames.never""": """Never reuse""",
+  """settings.suggestArchivedItems""": """Suggest archived items""",
+  """settings.suggestArchivedItemsBody""":
+      """When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it.""",
   """settings.navOrderTitle""": """Navigation order""",
   """settings.navOrderSubtitle""":
       """Reorder the bottom navigation tabs. The first item is opened on app start.""",
@@ -5840,6 +5870,7 @@ Password: pantry-rocks""",
   """checklists.reuse.reuseExisting""": """Reuse existing""",
   """checklists.reuse.addAnyway""": """Add anyway""",
   """checklists.reuse.suggestionsHeader""": """Already on this list""",
+  """checklists.reuse.archivedBadge""": """Archived""",
   """checklists.allLists""": """All lists""",
   """checklists.allListsSubtitle""": """Items from every list""",
   """checklists.addToAnyList""": """Add an item…""",

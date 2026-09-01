@@ -222,6 +222,17 @@ class ItemComposeBar extends StatefulWidget {
   /// true when the item was reused, so the bar clears its input afterwards.
   final Future<bool> Function(ListItem item)? onReuseExisting;
 
+  /// Archived items on the current target list, folded into the same fuzzy
+  /// reuse pool as [reuseCandidates] (each carries a non-null `archivedAt`).
+  /// The host keeps this live; the bar signals when to populate it via
+  /// [onArchivedSearchStarted]. Empty when archived suggestions are disabled.
+  final List<ListItem> archivedReuseCandidates;
+
+  /// Called the first time the user searches a resolved target list, so the
+  /// host can lazily load that list's archived items (fed back through
+  /// [archivedReuseCandidates]). Null disables archived suggestions.
+  final ValueChanged<int>? onArchivedSearchStarted;
+
   const ItemComposeBar({
     super.key,
     required this.listName,
@@ -248,6 +259,8 @@ class ItemComposeBar extends StatefulWidget {
     this.reuseCandidates = const [],
     this.buildReuseSuggestion,
     this.onReuseExisting,
+    this.archivedReuseCandidates = const [],
+    this.onArchivedSearchStarted,
   });
 
   bool get _allListsMode => targetLists != null;
@@ -333,9 +346,43 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   }
 
   void _onNameChanged() {
+    _maybeLoadArchived();
     // Rebuild so the bulk-add hint tracks input in multiple mode, and the
     // single-mode reuse suggestions re-filter as the user types.
-    if (_multiple || widget.reuseCandidates.isNotEmpty) setState(() {});
+    if (_multiple ||
+        widget.reuseCandidates.isNotEmpty ||
+        widget.archivedReuseCandidates.isNotEmpty ||
+        widget.onArchivedSearchStarted != null) {
+      setState(() {});
+    }
+  }
+
+  /// Ask the host to lazily load the current target list's archived items the
+  /// first time the user searches it. Gated to single-item mode with a resolved
+  /// target and a non-empty query, so nothing loads on screen open or in bulk
+  /// mode. The host de-dupes the actual fetch.
+  void _maybeLoadArchived() {
+    final onSearch = widget.onArchivedSearchStarted;
+    if (onSearch == null || _multiple) return;
+    final listId = _targetListId;
+    if (listId == null) return;
+    if (_nameCtrl.text.trim().isEmpty) return;
+    onSearch(listId);
+  }
+
+  /// The reuse-match pool: the host's active candidates plus any archived
+  /// candidates for the current target, with archived duplicates of an active
+  /// item dropped so an item can't be offered twice.
+  List<ListItem> _reusePool() {
+    final active = widget.reuseCandidates;
+    final archived = widget.archivedReuseCandidates;
+    if (archived.isEmpty) return active;
+    final activeIds = {for (final i in active) i.id};
+    return [
+      ...active,
+      for (final a in archived)
+        if (!activeIds.contains(a.id)) a,
+    ];
   }
 
   /// Max reuse suggestions surfaced at once — enough to catch the near matches
@@ -358,16 +405,14 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   /// matching, so a longer query ("Organic milk") still matches a shorter name
   /// ("Milk"). Empty in multiple mode, with no query, or when unwired.
   List<ListItem> _reuseMatches() {
-    if (_multiple ||
-        widget.buildReuseSuggestion == null ||
-        widget.reuseCandidates.isEmpty) {
-      return const [];
-    }
+    if (_multiple || widget.buildReuseSuggestion == null) return const [];
+    final pool = _reusePool();
+    if (pool.isEmpty) return const [];
     final query = _nameCtrl.text.trim();
     if (query.isEmpty) return const [];
     final results = extractTop<ListItem>(
       query: query,
-      choices: widget.reuseCandidates,
+      choices: pool,
       getter: (item) => item.name,
       limit: _maxReuseSuggestions,
       cutoff: _reuseMatchCutoff,
