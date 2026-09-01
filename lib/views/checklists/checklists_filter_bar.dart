@@ -390,7 +390,12 @@ class _FilterDropdown extends StatelessWidget {
             maxWidth: 300,
             maxHeight: 340,
           ),
+          // Own controller (not the app's PrimaryScrollController): the menu
+          // panel MenuAnchor wraps this in already claims the primary
+          // controller, and a second primary ScrollPosition trips the menu's
+          // Scrollbar assertion when the dropdown opens.
           child: SingleChildScrollView(
+            primary: false,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [for (final e in entries) _FilterMenuRow(entry: e)],
