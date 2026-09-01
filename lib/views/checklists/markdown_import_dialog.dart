@@ -9,8 +9,7 @@ import 'package:pantry/models/category.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/utils/category_icons.dart';
 import 'package:pantry/utils/markdown_list.dart';
-import 'package:pantry/views/checklists/checklist_item_tile.dart'
-    show ItemLifecycle;
+import 'package:pantry/models/item_lifecycle.dart';
 import 'package:pantry/views/checklists/form_components.dart';
 import 'package:pantry/views/checklists/item_compose_bar.dart'
     show ComposeSubmission;

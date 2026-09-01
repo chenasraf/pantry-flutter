@@ -25,7 +25,7 @@ import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/image_preview.dart';
 import 'package:pantry/widgets/markdown_description.dart';
 import 'package:pantry/widgets/member_avatar.dart';
-import 'checklist_item_tile.dart' show ItemLifecycle, lifecycleOf;
+import 'package:pantry/models/item_lifecycle.dart';
 import 'checklists_controller.dart';
 import 'item_form_view.dart';
 

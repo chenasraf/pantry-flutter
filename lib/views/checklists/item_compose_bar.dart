@@ -28,7 +28,7 @@ import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/views/checklists/checklist_switcher_sheet.dart'
     show parseHexColor;
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
-import 'checklist_item_tile.dart' show ItemLifecycle;
+import 'package:pantry/models/item_lifecycle.dart';
 import 'form_components.dart';
 import 'price_input.dart';
 

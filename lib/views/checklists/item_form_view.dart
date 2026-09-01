@@ -28,7 +28,7 @@ import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
-import 'checklist_item_tile.dart' show ItemLifecycle, lifecycleOf;
+import 'package:pantry/models/item_lifecycle.dart';
 import 'checklists_controller.dart';
 import 'form_components.dart';
 import 'price_input.dart';

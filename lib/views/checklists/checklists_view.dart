@@ -14,6 +14,7 @@ import 'package:pantry/models/store.dart' as models;
 import 'package:pantry/models/label.dart' as models;
 import 'package:pantry/models/checklist.dart';
 import 'package:pantry/models/house.dart';
+import 'package:pantry/models/item_lifecycle.dart';
 import 'package:pantry/models/shopping_session.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/list_link_service.dart';
