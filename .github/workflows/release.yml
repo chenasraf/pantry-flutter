@@ -746,11 +746,12 @@ jobs:
           path: pantry-${{ steps.meta.outputs.version }}-windows-x64.zip
 
   # Rebuild the marketing/docs website (separate repo) with the new version so
-  # its desktop download links (pantry-<version>-*.dmg/.zip/.tar.gz) point at the
-  # assets just uploaded above. Depends on the desktop build jobs so we never
-  # publish links to files that aren't on the release yet.
+  # its download links (pantry-<version>-*.apk/.dmg/.zip/.tar.gz) point at the
+  # assets just uploaded above. Depends on the build jobs so we never publish
+  # links to files that aren't on the release yet.
   dispatch-website:
-    needs: [release-please, build-macos, build-linux, build-windows]
+    needs:
+      [release-please, build-android, build-macos, build-linux, build-windows]
     if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     steps:
