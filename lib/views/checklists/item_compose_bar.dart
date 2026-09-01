@@ -15,117 +15,14 @@ import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
-import 'package:pantry/widgets/avif_image.dart';
-import 'package:pantry/widgets/markdown_editor.dart';
-import 'package:pantry/utils/category_icons.dart';
-import 'package:pantry/utils/checklist_icons.dart';
-import 'package:pantry/utils/entity_icons.dart';
-import 'package:pantry/utils/currencies.dart';
-import 'package:pantry/utils/price.dart';
-import 'package:pantry/utils/label_icons.dart';
-import 'package:pantry/utils/rrule.dart';
-import 'package:pantry/utils/store_icons.dart';
-import 'package:pantry/utils/color.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 import 'package:pantry/models/item_lifecycle.dart';
-import 'form_components.dart';
+import 'item_compose_chips.dart';
+import 'item_compose_trays.dart';
+import 'item_draft.dart';
 import 'price_input.dart';
 
-/// Draft state for an item being composed in the quick-add bar.
-class ItemDraft {
-  String name = '';
-  String description = '';
-  String quantity = '';
-  int? categoryId;
-  Set<int> storeIds = {};
-  Set<int> labelIds = {};
-  ItemLifecycle lifecycle = ItemLifecycle.staple;
-  // RRULE state when lifecycle == recurring. Default = weekly every 1 week.
-  RecurrenceState recurrence = RecurrenceState();
-  XFile? imageFile;
-  Uint8List? imageBytes;
-
-  /// Scanned barcode (EAN/UPC) carried through to the created item. Set by the
-  /// scan flow; null for hand-typed items.
-  String? barcode;
-
-  /// Optional prices for the composed item. Currency is preserved across
-  /// [reset] so the last-picked currency sticks for rapid same-currency adds.
-  PricesDraft price = PricesDraft.empty(defaultCurrency);
-
-  /// Custom-field values the user has explicitly set via the custom-fields
-  /// tray. Only meaningful once [ItemComposeBarState] marks them edited; an
-  /// untouched item falls back to the fields' default seeds.
-  List<FieldValue> customFields = const [];
-
-  void reset(ItemLifecycle defaultLifecycle) {
-    name = '';
-    description = '';
-    quantity = '';
-    categoryId = null;
-    storeIds = {};
-    labelIds = {};
-    lifecycle = defaultLifecycle;
-    recurrence = RecurrenceState();
-    imageFile = null;
-    imageBytes = null;
-    barcode = null;
-    price = PricesDraft.empty(price.storeless.currency);
-    customFields = const [];
-  }
-
-  bool get repeatFromCompletion => recurrence.repeatFromCompletion;
-
-  String? get rrule {
-    if (lifecycle != ItemLifecycle.recurring) return null;
-    return recurrence.toRrule();
-  }
-
-  bool get deleteOnDoneForCreate => lifecycle == ItemLifecycle.once;
-}
-
-/// Result returned by ItemComposeBar's onSubmit so caller can persist.
-class ComposeSubmission {
-  final String name;
-  final String? description;
-  final String? quantity;
-  final int? categoryId;
-  final List<int> storeIds;
-  final List<int> labelIds;
-  final String? rrule;
-  final bool deleteOnDone;
-  final bool repeatFromCompletion;
-  final Uint8List? imageBytes;
-  final String? imageName;
-  final String? imageMime;
-  final String? barcode;
-
-  /// Prices for the created item, or null when there's no price (create
-  /// semantics — omit the field).
-  final List<ItemPrice>? prices;
-
-  /// Custom-field values for the created item (fields' defaults, plus any the
-  /// user set in the tray), or null when there are none.
-  final List<FieldValue>? customFields;
-
-  const ComposeSubmission({
-    required this.name,
-    this.description,
-    this.quantity,
-    this.categoryId,
-    this.storeIds = const [],
-    this.labelIds = const [],
-    this.rrule,
-    required this.deleteOnDone,
-    required this.repeatFromCompletion,
-    this.imageBytes,
-    this.imageName,
-    this.imageMime,
-    this.barcode,
-    this.prices,
-    this.customFields,
-  });
-}
+export 'item_draft.dart' show ComposeSubmission;
 
 class ItemComposeBar extends StatefulWidget {
   final String listName;
@@ -269,7 +166,7 @@ class ItemComposeBar extends StatefulWidget {
   State<ItemComposeBar> createState() => ItemComposeBarState();
 }
 
-enum _Tray {
+enum Tray {
   targetList,
   category,
   store,
@@ -290,7 +187,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   final _qtyCtrl = TextEditingController();
   final _focusNode = FocusNode();
   bool _active = false;
-  _Tray? _openTray;
+  Tray? _openTray;
   bool _submitting = false;
   bool _multiple = false;
 
@@ -452,9 +349,9 @@ class ItemComposeBarState extends State<ItemComposeBar> {
         _draft.imageBytes = null;
         // Image, price + custom fields are single-item concerns; close their
         // trays when switching to bulk entry.
-        if (_openTray == _Tray.image ||
-            _openTray == _Tray.price ||
-            _openTray == _Tray.customFields) {
+        if (_openTray == Tray.image ||
+            _openTray == Tray.price ||
+            _openTray == Tray.customFields) {
           _openTray = null;
         }
       }
@@ -505,11 +402,11 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     widget.onActiveChanged?.call(false);
   }
 
-  void _toggleTray(_Tray t) {
+  void _toggleTray(Tray t) {
     setState(() {
       _openTray = _openTray == t ? null : t;
     });
-    if (t == _Tray.quantity) {
+    if (t == Tray.quantity) {
       _qtyCtrl.text = _draft.quantity;
     }
     // The description tray's editor seeds itself from _draft.description when it
@@ -717,9 +614,9 @@ class ItemComposeBarState extends State<ItemComposeBar> {
 
     Widget? trayChild;
     switch (_openTray) {
-      case _Tray.targetList:
+      case Tray.targetList:
         trayChild = widget._allListsMode
-            ? _TargetListTray(
+            ? TargetListTray(
                 lists: widget.targetLists!,
                 selectedId: widget.selectedTargetListId,
                 onSelected: (id) {
@@ -728,8 +625,8 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                 },
               )
             : null;
-      case _Tray.category:
-        trayChild = _CategoryTray(
+      case Tray.category:
+        trayChild = CategoryTray(
           categories: widget.categories,
           selectedId: _draft.categoryId,
           onSelected: (id) {
@@ -749,8 +646,8 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                   });
                 },
         );
-      case _Tray.store:
-        trayChild = _StoreTray(
+      case Tray.store:
+        trayChild = StoreTray(
           stores: widget.stores,
           selectedIds: _draft.storeIds,
           onToggle: (id) {
@@ -766,8 +663,8 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                   setState(() => _draft.storeIds.add(created.id));
                 },
         );
-      case _Tray.label:
-        trayChild = _LabelTray(
+      case Tray.label:
+        trayChild = LabelTray(
           labels: widget.labels,
           selectedIds: _draft.labelIds,
           onToggle: (id) {
@@ -783,8 +680,8 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                   setState(() => _draft.labelIds.add(created.id));
                 },
         );
-      case _Tray.quantity:
-        trayChild = _QuantityTray(
+      case Tray.quantity:
+        trayChild = QuantityTray(
           controller: _qtyCtrl,
           // setState so the chip row above rebuilds live as the user types
           // (e.g. the label flips back to "Quantity" when the field clears).
@@ -792,14 +689,14 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           onMinus: () => _stepQty(-1),
           onPlus: () => _stepQty(1),
         );
-      case _Tray.price:
-        trayChild = _PriceTray(
+      case Tray.price:
+        trayChild = PriceTray(
           draft: _draft.price,
           stores: widget.stores,
           perStoreEnabled: widget.perStorePriceEnabled,
           onChanged: () => setState(() {}),
         );
-      case _Tray.customFields:
+      case Tray.customFields:
         // Keyed by the target list so switching lists rebuilds with that list's
         // applicable fields (and their re-seeded defaults).
         trayChild = ItemCustomFieldsEditor(
@@ -814,15 +711,15 @@ class ItemComposeBarState extends State<ItemComposeBar> {
             setState(() {});
           },
         );
-      case _Tray.description:
-        trayChild = _DescriptionTray(
+      case Tray.description:
+        trayChild = DescriptionTray(
           initialValue: _draft.description,
           onChanged: (v) => setState(() => _draft.description = v),
         );
-      case _Tray.type:
-        trayChild = _TypeTray(draft: _draft, onChanged: () => setState(() {}));
-      case _Tray.image:
-        trayChild = _ImageTray(
+      case Tray.type:
+        trayChild = TypeTray(draft: _draft, onChanged: () => setState(() {}));
+      case Tray.image:
+        trayChild = ImageTray(
           bytes: _draft.imageBytes,
           onPick: _pickImage,
           onRemove: _removeImage,
@@ -845,7 +742,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (_active) ...[
-              _ChipRow(
+              ChipRow(
                 draft: _draft,
                 categories: widget.categories,
                 stores: widget.stores,
@@ -905,17 +802,17 @@ class ItemComposeBarState extends State<ItemComposeBar> {
               multiple: _multiple,
               onScan: _multiple ? null : _scanBarcode,
               targetListLeading: widget._allListsMode
-                  ? _BarTargetChip(
+                  ? BarTargetChip(
                       list: widget.targetLists
                           ?.cast<ChecklistList?>()
                           .firstWhere(
                             (l) => l!.id == widget.selectedTargetListId,
                             orElse: () => null,
                           ),
-                      highlighted: _openTray == _Tray.targetList,
+                      highlighted: _openTray == Tray.targetList,
                       onTap: () {
                         if (!_active) _activate();
-                        _toggleTray(_Tray.targetList);
+                        _toggleTray(Tray.targetList);
                       },
                     )
                   : null,
@@ -1147,11 +1044,11 @@ class _BarIconAction extends StatelessWidget {
   }
 }
 
-class _MultipleToggle extends StatelessWidget {
+class MultipleToggle extends StatelessWidget {
   final bool active;
   final VoidCallback onTap;
 
-  const _MultipleToggle({required this.active, required this.onTap});
+  const MultipleToggle({super.key, required this.active, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -1185,387 +1082,6 @@ class _MultipleToggle extends StatelessWidget {
                   fontSize: 12,
                   fontWeight: active ? FontWeight.w700 : FontWeight.w600,
                   color: accent,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ChipRow extends StatelessWidget {
-  final ItemDraft draft;
-  final List<models.Category> categories;
-  final List<models.Store> stores;
-  final List<models.Label> labels;
-  final bool showStoreChip;
-  final bool showLabelChip;
-  final bool showPriceChip;
-  final bool showCustomFieldsChip;
-  final bool customFieldsSet;
-  final _Tray? openTray;
-  final ValueChanged<_Tray> onOpen;
-  final bool showImageChip;
-  final bool multiple;
-  final VoidCallback onToggleMultiple;
-
-  const _ChipRow({
-    required this.draft,
-    required this.categories,
-    required this.stores,
-    required this.labels,
-    required this.showStoreChip,
-    required this.showLabelChip,
-    required this.showPriceChip,
-    required this.showCustomFieldsChip,
-    required this.customFieldsSet,
-    required this.openTray,
-    required this.onOpen,
-    required this.multiple,
-    required this.onToggleMultiple,
-    this.showImageChip = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final cat = draft.categoryId != null
-        ? categories.cast<models.Category?>().firstWhere(
-            (c) => c!.id == draft.categoryId,
-            orElse: () => null,
-          )
-        : null;
-    final catColor = cat != null
-        ? (_parseColor(cat.color) ?? cs.primary)
-        : cs.onSurfaceVariant;
-
-    final selectedStores = [
-      for (final s in stores)
-        if (draft.storeIds.contains(s.id)) s,
-    ];
-    final hasStores = selectedStores.isNotEmpty;
-    final storeColor = hasStores
-        ? (parseHexColor(selectedStores.first.color) ?? cs.primary)
-        : cs.onSurfaceVariant;
-    final storeLabel = !hasStores
-        ? m.checklists.compose.chipStore
-        : selectedStores.length == 1
-        ? selectedStores.first.name
-        : '${selectedStores.first.name} +${selectedStores.length - 1}';
-
-    final selectedLabels = [
-      for (final l in labels)
-        if (draft.labelIds.contains(l.id)) l,
-    ];
-    final hasLabels = selectedLabels.isNotEmpty;
-    final labelColor = hasLabels
-        ? (parseHexColor(selectedLabels.first.color) ?? cs.primary)
-        : cs.onSurfaceVariant;
-    final labelLabel = !hasLabels
-        ? m.checklists.compose.chipLabel
-        : selectedLabels.length == 1
-        ? selectedLabels.first.name
-        : '${selectedLabels.first.name} +${selectedLabels.length - 1}';
-
-    final hasQty = draft.quantity.trim().isNotEmpty;
-    final hasDesc = draft.description.trim().isNotEmpty;
-    final hasType = draft.lifecycle != ItemLifecycle.staple;
-    final hasPrice = draft.price.hasAnyPrice;
-    final storeless = draft.price.storeless;
-    // Chip previews the store-less price when set; otherwise it just reflects
-    // the "has any price" accent state with the plain label.
-    final priceLabel = hasPrice
-        ? (formatPrice(
-                priceType: storeless.priceType,
-                priceMin: storeless.priceMin,
-                priceMax: storeless.priceMax,
-                priceCurrency: storeless.priceCurrency,
-              ) ??
-              m.checklists.price.label)
-        : m.checklists.price.label;
-
-    return SizedBox(
-      height: 36,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          Center(
-            child: _MultipleToggle(active: multiple, onTap: onToggleMultiple),
-          ),
-          const SizedBox(width: 8),
-          _ComposeChip(
-            label: cat?.name ?? m.checklists.compose.chipCategory,
-            color: cat != null ? catColor : null,
-            icon: cat != null ? null : EntityIcons.category,
-            leading: cat != null
-                ? Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: catColor,
-                      shape: BoxShape.circle,
-                    ),
-                  )
-                : null,
-            selected: openTray == _Tray.category,
-            onTap: () => onOpen(_Tray.category),
-          ),
-          if (showStoreChip) ...[
-            const SizedBox(width: 8),
-            _ComposeChip(
-              label: storeLabel,
-              color: hasStores ? storeColor : null,
-              icon: hasStores ? null : EntityIcons.store,
-              leading: hasStores
-                  ? Icon(
-                      storeIcon(selectedStores.first.icon),
-                      size: 14,
-                      color: storeColor,
-                    )
-                  : null,
-              selected: openTray == _Tray.store,
-              onTap: () => onOpen(_Tray.store),
-            ),
-          ],
-          if (showLabelChip) ...[
-            const SizedBox(width: 8),
-            _ComposeChip(
-              label: labelLabel,
-              color: hasLabels ? labelColor : null,
-              icon: hasLabels ? null : EntityIcons.label,
-              leading: hasLabels
-                  ? Icon(
-                      labelIcon(selectedLabels.first.icon),
-                      size: 14,
-                      color: labelColor,
-                    )
-                  : null,
-              selected: openTray == _Tray.label,
-              onTap: () => onOpen(_Tray.label),
-            ),
-          ],
-          const SizedBox(width: 8),
-          _ComposeChip(
-            label: hasQty ? draft.quantity : m.checklists.compose.chipQuantity,
-            color: hasQty ? cs.primary : null,
-            icon: Icons.format_list_numbered,
-            selected: openTray == _Tray.quantity,
-            onTap: () => onOpen(_Tray.quantity),
-          ),
-          if (showPriceChip) ...[
-            const SizedBox(width: 8),
-            _ComposeChip(
-              label: priceLabel,
-              color: hasPrice ? cs.primary : null,
-              icon: EntityIcons.price,
-              selected: openTray == _Tray.price,
-              onTap: () => onOpen(_Tray.price),
-            ),
-          ],
-          if (showCustomFieldsChip) ...[
-            const SizedBox(width: 8),
-            _ComposeChip(
-              label: m.customFields.manageTitle,
-              color: customFieldsSet ? cs.primary : null,
-              icon: Icons.tune,
-              selected: openTray == _Tray.customFields,
-              onTap: () => onOpen(_Tray.customFields),
-            ),
-          ],
-          const SizedBox(width: 8),
-          // Description label is intentionally static even when set —
-          // descriptions are typically long, so the chip only flips its
-          // accent state instead of trying to preview the text.
-          _ComposeChip(
-            label: m.checklists.compose.chipDescription,
-            color: hasDesc ? cs.primary : null,
-            icon: Icons.notes_outlined,
-            selected: openTray == _Tray.description,
-            onTap: () => onOpen(_Tray.description),
-          ),
-          const SizedBox(width: 8),
-          _ComposeChip(
-            label: hasType
-                ? _typeChipLabel(draft)
-                : m.checklists.compose.chipType,
-            color: hasType ? cs.primary : null,
-            icon: Icons.cached,
-            selected: openTray == _Tray.type,
-            onTap: () => onOpen(_Tray.type),
-          ),
-          if (showImageChip) ...[
-            const SizedBox(width: 8),
-            _ComposeChip(
-              label: draft.imageBytes != null
-                  ? '✓'
-                  : m.checklists.compose.chipImage,
-              color: draft.imageBytes != null ? cs.primary : null,
-              icon: Icons.image_outlined,
-              selected: openTray == _Tray.image,
-              onTap: () => onOpen(_Tray.image),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  static String _typeChipLabel(ItemDraft d) {
-    switch (d.lifecycle) {
-      case ItemLifecycle.staple:
-        return m.checklists.itemTypes.staple;
-      case ItemLifecycle.once:
-        return m.checklists.itemTypes.onceTime;
-      case ItemLifecycle.recurring:
-        final r = d.rrule;
-        if (r == null) return m.checklists.itemTypes.recurring;
-        return formatRrule(r);
-    }
-  }
-
-  static Color? _parseColor(String hex) {
-    if (hex.isEmpty) return null;
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    final value = int.tryParse(hex, radix: 16);
-    return value != null ? Color(value) : null;
-  }
-}
-
-class _ComposeChip extends StatelessWidget {
-  final String label;
-  final Color? color;
-  final IconData? icon;
-  final Widget? leading;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _ComposeChip({
-    required this.label,
-    this.color,
-    this.icon,
-    this.leading,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final accent = color ?? cs.onSurfaceVariant;
-    final isSet = color != null;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSet
-              ? accent.withValues(alpha: 0.14)
-              : cs.surfaceContainerHighest,
-          border: Border.all(
-            color: isSet
-                ? accent.withValues(alpha: 0.4)
-                : (selected ? cs.primary : cs.outlineVariant),
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (leading != null) ...[
-              leading!,
-              const SizedBox(width: 6),
-            ] else if (icon != null) ...[
-              Icon(icon, size: 14, color: accent),
-              const SizedBox(width: 6),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: isSet ? FontWeight.w700 : FontWeight.w600,
-                color: accent,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Leading chip in the input bar (All-lists mode only) that opens the
-/// target-list picker. When no list is selected yet it reads as an outlined
-/// "Pick a list" affordance; once a list is chosen it switches to the list's
-/// color + icon. Tap surface matches the size of the resting "+" tile so the
-/// input field's baseline doesn't shift between modes.
-class _BarTargetChip extends StatelessWidget {
-  final ChecklistList? list;
-  final bool highlighted;
-  final VoidCallback onTap;
-
-  const _BarTargetChip({
-    required this.list,
-    required this.highlighted,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final hasList = list != null;
-    final accent = hasList
-        ? (parseHexColor(list!.color) ?? cs.primary)
-        : cs.onSurfaceVariant;
-    final tooltip = hasList ? list!.name : m.checklists.compose.pickTargetList;
-    return Tooltip(
-      message: tooltip,
-      waitDuration: const Duration(milliseconds: 600),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(9),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          curve: Curves.easeOut,
-          height: 30,
-          padding: EdgeInsetsDirectional.symmetric(horizontal: hasList ? 9 : 8),
-          decoration: BoxDecoration(
-            color: hasList
-                ? accent.withValues(alpha: 0.14)
-                : Colors.transparent,
-            border: Border.all(
-              color: hasList
-                  ? accent.withValues(alpha: 0.4)
-                  : (highlighted ? cs.primary : cs.outlineVariant),
-              width: highlighted ? 1.5 : 1,
-            ),
-            borderRadius: BorderRadius.circular(9),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                hasList
-                    ? checklistIcon(list!.icon)
-                    : Icons.playlist_add_outlined,
-                size: 16,
-                color: accent,
-              ),
-              const SizedBox(width: 6),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 96),
-                child: Text(
-                  hasList ? list!.name : m.checklists.compose.pickTargetList,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: hasList ? FontWeight.w700 : FontWeight.w600,
-                    color: accent,
-                  ),
                 ),
               ),
             ],
@@ -1627,527 +1143,6 @@ class _ReuseSuggestions extends StatelessWidget {
           ],
         ],
       ),
-    );
-  }
-}
-
-class _TrayShell extends StatelessWidget {
-  final String label;
-  final Widget child;
-
-  const _TrayShell({required this.label, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 13),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.6,
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 10),
-          child,
-        ],
-      ),
-    );
-  }
-}
-
-class _TargetListTray extends StatelessWidget {
-  final List<ChecklistList> lists;
-  final int? selectedId;
-  final ValueChanged<int> onSelected;
-
-  const _TargetListTray({
-    required this.lists,
-    required this.selectedId,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return _TrayShell(
-      label: m.checklists.pickListTitle,
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (final list in lists)
-            _TargetListChip(
-              list: list,
-              selected: list.id == selectedId,
-              accent: parseHexColor(list.color) ?? cs.primary,
-              onTap: () => onSelected(list.id),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TargetListChip extends StatelessWidget {
-  final ChecklistList list;
-  final bool selected;
-  final Color accent;
-  final VoidCallback onTap;
-
-  const _TargetListChip({
-    required this.list,
-    required this.selected,
-    required this.accent,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(11),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
-        decoration: BoxDecoration(
-          color: selected
-              ? accent.withValues(alpha: 0.16)
-              : cs.surfaceContainerHighest,
-          border: Border.all(
-            color: selected ? accent : cs.outlineVariant,
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(checklistIcon(list.icon), size: 16, color: accent),
-            const SizedBox(width: 8),
-            Text(
-              list.name,
-              style: TextStyle(
-                fontSize: 13.5,
-                fontWeight: FontWeight.w700,
-                color: selected ? accent : cs.onSurface,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CategoryTray extends StatelessWidget {
-  final List<models.Category> categories;
-  final int? selectedId;
-  final ValueChanged<int?> onSelected;
-  final Future<void> Function()? onRequestCreate;
-
-  const _CategoryTray({
-    required this.categories,
-    required this.selectedId,
-    required this.onSelected,
-    this.onRequestCreate,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return _TrayShell(
-      label: m.checklists.compose.chipCategory,
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          CategorySwatch(
-            label: m.checklists.compose.none,
-            color: cs.onSurfaceVariant,
-            selected: selectedId == null,
-            onTap: () => onSelected(null),
-          ),
-          for (final c in categories)
-            CategorySwatch(
-              icon: categoryIcon(c.icon),
-              label: c.name,
-              color: _parseColor(c.color) ?? cs.primary,
-              selected: selectedId == c.id,
-              onTap: () => onSelected(c.id),
-            ),
-          if (onRequestCreate != null)
-            NewCategoryChipButton(
-              color: cs.primary,
-              label: m.checklists.itemForm.createCategory,
-              onTap: () => onRequestCreate!(),
-            ),
-        ],
-      ),
-    );
-  }
-
-  static Color? _parseColor(String hex) {
-    if (hex.isEmpty) return null;
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    final value = int.tryParse(hex, radix: 16);
-    return value != null ? Color(value) : null;
-  }
-}
-
-/// Multi-select store tray: tapping a swatch toggles membership and keeps the
-/// tray open. No "None" swatch — an empty selection means no stores.
-class _StoreTray extends StatelessWidget {
-  final List<models.Store> stores;
-  final Set<int> selectedIds;
-  final ValueChanged<int> onToggle;
-  final Future<void> Function()? onRequestCreate;
-
-  const _StoreTray({
-    required this.stores,
-    required this.selectedIds,
-    required this.onToggle,
-    this.onRequestCreate,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return _TrayShell(
-      label: m.checklists.compose.chipStore,
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (final s in stores)
-            CategorySwatch(
-              icon: storeIcon(s.icon),
-              label: s.name,
-              color: parseHexColor(s.color) ?? cs.primary,
-              selected: selectedIds.contains(s.id),
-              onTap: () => onToggle(s.id),
-            ),
-          if (onRequestCreate != null)
-            NewCategoryChipButton(
-              color: cs.primary,
-              label: m.checklists.itemForm.createStore,
-              onTap: () => onRequestCreate!(),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Multi-select label tray: tapping a swatch toggles membership and keeps the
-/// tray open. No "None" swatch — an empty selection means no labels. Mirrors
-/// [_StoreTray].
-class _LabelTray extends StatelessWidget {
-  final List<models.Label> labels;
-  final Set<int> selectedIds;
-  final ValueChanged<int> onToggle;
-  final Future<void> Function()? onRequestCreate;
-
-  const _LabelTray({
-    required this.labels,
-    required this.selectedIds,
-    required this.onToggle,
-    this.onRequestCreate,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return _TrayShell(
-      label: m.checklists.compose.chipLabel,
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (final l in labels)
-            CategorySwatch(
-              icon: labelIcon(l.icon),
-              label: l.name,
-              color: parseHexColor(l.color) ?? cs.primary,
-              selected: selectedIds.contains(l.id),
-              onTap: () => onToggle(l.id),
-            ),
-          if (onRequestCreate != null)
-            NewCategoryChipButton(
-              color: cs.primary,
-              label: m.checklists.itemForm.createLabel,
-              onTap: () => onRequestCreate!(),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _QuantityTray extends StatelessWidget {
-  final TextEditingController controller;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onMinus;
-  final VoidCallback onPlus;
-
-  const _QuantityTray({
-    required this.controller,
-    required this.onChanged,
-    required this.onMinus,
-    required this.onPlus,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return _TrayShell(
-      label: m.checklists.compose.chipQuantity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              FormStepperButton(icon: Icons.remove, onTap: onMinus),
-              const SizedBox(width: 10),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  onChanged: onChanged,
-                  textCapitalization: TextCapitalization.none,
-                  decoration: InputDecoration(
-                    hintText: m.checklists.compose.qtyHint,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(color: cs.primary, width: 1.5),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(color: cs.primary, width: 1.5),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(color: cs.primary, width: 1.5),
-                    ),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
-                    ),
-                    // Trailing clear button — appears only when there's a
-                    // value, and also clears the parent's draft via
-                    // onChanged('') so the chip label resets to "Quantity".
-                    suffixIcon: ListenableBuilder(
-                      listenable: controller,
-                      builder: (_, _) {
-                        if (controller.text.isEmpty) {
-                          return const SizedBox.shrink();
-                        }
-                        return IconButton(
-                          icon: const Icon(Icons.close, size: 18),
-                          tooltip: m.common.delete,
-                          splashRadius: 18,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(
-                            minWidth: 32,
-                            minHeight: 32,
-                          ),
-                          onPressed: () {
-                            controller.clear();
-                            onChanged('');
-                          },
-                        );
-                      },
-                    ),
-                    suffixIconConstraints: const BoxConstraints(
-                      minWidth: 32,
-                      minHeight: 32,
-                    ),
-                  ),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              FormStepperButton(icon: Icons.add, accent: true, onTap: onPlus),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            m.checklists.compose.qtyStepperHelp,
-            style: TextStyle(
-              fontSize: 12,
-              color: cs.onSurfaceVariant,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PriceTray extends StatelessWidget {
-  final PricesDraft draft;
-  final List<models.Store> stores;
-  final bool perStoreEnabled;
-  final VoidCallback onChanged;
-
-  const _PriceTray({
-    required this.draft,
-    required this.stores,
-    required this.perStoreEnabled,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return _TrayShell(
-      label: m.checklists.price.label,
-      child: ItemPricesEditor(
-        draft: draft,
-        stores: stores,
-        perStoreEnabled: perStoreEnabled,
-        onChanged: onChanged,
-      ),
-    );
-  }
-}
-
-class _DescriptionTray extends StatelessWidget {
-  final String initialValue;
-  final ValueChanged<String> onChanged;
-
-  const _DescriptionTray({required this.initialValue, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return _TrayShell(
-      label: m.checklists.compose.chipDescription,
-      child: MarkdownEditor(
-        initialValue: initialValue,
-        onChanged: onChanged,
-        placeholder: m.checklists.compose.descHint,
-        minHeight: 84,
-        maxHeight: 220,
-      ),
-    );
-  }
-}
-
-class _TypeTray extends StatelessWidget {
-  final ItemDraft draft;
-  final VoidCallback onChanged;
-
-  const _TypeTray({required this.draft, required this.onChanged});
-
-  void _set(ItemLifecycle lc) {
-    draft.lifecycle = lc;
-    onChanged();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final t = m.checklists.itemTypes;
-    return _TrayShell(
-      label: t.label,
-      child: Column(
-        children: [
-          LifecycleRow(
-            label: t.staple,
-            body: t.stapleBody,
-            selected: draft.lifecycle == ItemLifecycle.staple,
-            onTap: () => _set(ItemLifecycle.staple),
-          ),
-          const SizedBox(height: 7),
-          LifecycleRow(
-            label: t.onceTime,
-            body: t.onceTimeBody,
-            selected: draft.lifecycle == ItemLifecycle.once,
-            onTap: () => _set(ItemLifecycle.once),
-          ),
-          const SizedBox(height: 7),
-          LifecycleRow(
-            label: t.recurring,
-            body: t.recurringBody,
-            selected: draft.lifecycle == ItemLifecycle.recurring,
-            onTap: () => _set(ItemLifecycle.recurring),
-          ),
-          if (draft.lifecycle == ItemLifecycle.recurring) ...[
-            const SizedBox(height: 12),
-            RecurrenceInline(state: draft.recurrence, onChanged: onChanged),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _ImageTray extends StatelessWidget {
-  final Uint8List? bytes;
-  final VoidCallback onPick;
-  final VoidCallback onRemove;
-
-  const _ImageTray({
-    required this.bytes,
-    required this.onPick,
-    required this.onRemove,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return _TrayShell(
-      label: m.checklists.compose.chipImage,
-      child: bytes == null
-          ? OutlinedButton.icon(
-              onPressed: onPick,
-              icon: const Icon(Icons.add_photo_alternate_outlined),
-              label: Text(m.checklists.itemForm.addImage),
-            )
-          : Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: AvifMemoryImage(
-                    bytes!,
-                    width: 64,
-                    height: 64,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      OutlinedButton.icon(
-                        onPressed: onPick,
-                        icon: const Icon(Icons.swap_horiz, size: 16),
-                        label: Text(m.checklists.itemForm.replaceImage),
-                      ),
-                      OutlinedButton.icon(
-                        onPressed: onRemove,
-                        icon: const Icon(Icons.close, size: 16),
-                        label: Text(m.checklists.itemForm.removeImage),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
     );
   }
 }
