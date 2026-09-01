@@ -13,13 +13,9 @@ import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/services/auth_service.dart';
 import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/utils/category_icons.dart';
-import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/platform_info.dart';
 import 'package:pantry/utils/rrule.dart';
-import 'package:pantry/utils/label_icons.dart';
-import 'package:pantry/utils/store_icons.dart';
 import 'package:pantry/utils/text_direction.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
@@ -27,11 +23,13 @@ import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
-import 'package:pantry/widgets/dashed_border.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'package:pantry/models/item_lifecycle.dart';
 import 'checklists_controller.dart';
 import 'form_components.dart';
+import 'item_form_fields.dart';
+import 'item_form_image.dart';
+import 'item_form_pickers.dart';
 import 'price_input.dart';
 
 class ItemFormView extends StatefulWidget {
@@ -397,7 +395,7 @@ class _ItemFormViewState extends State<ItemFormView> {
           if (_isEditing)
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 12),
-              child: _DeleteIconButton(
+              child: DeleteIconButton(
                 onTap: _deleting ? null : _confirmDelete,
                 busy: _deleting,
               ),
@@ -410,7 +408,7 @@ class _ItemFormViewState extends State<ItemFormView> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
               children: [
-                _HeaderPreview(
+                HeaderPreview(
                   name: _nameController.text.trim().isEmpty
                       ? f.untitledItem
                       : _nameController.text.trim(),
@@ -419,7 +417,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                   typeSummary: _typeSummary(),
                 ),
                 const SizedBox(height: 16),
-                _LabeledField(
+                LabeledField(
                   label: f.name,
                   focused: _focusedField == 'name',
                   child: TextField(
@@ -442,7 +440,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ),
                 ),
                 const SizedBox(height: 11),
-                _LabeledField(
+                LabeledField(
                   label: f.description,
                   focused: _focusedField == 'desc',
                   child: MarkdownEditor(
@@ -455,7 +453,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ),
                 ),
                 const SizedBox(height: 11),
-                _QuantityField(
+                QuantityField(
                   controller: _quantityController,
                   focusNode: _qtyFocus,
                   focused: _focusedField == 'qty',
@@ -464,7 +462,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                 ),
                 const SizedBox(height: 16),
                 if (_priceEnabled) ...[
-                  _SectionLabel(text: m.checklists.price.label),
+                  SectionLabel(text: m.checklists.price.label),
                   const SizedBox(height: 10),
                   ItemPricesEditor(
                     draft: _prices,
@@ -474,9 +472,9 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ),
                   const SizedBox(height: 16),
                 ],
-                _SectionLabel(text: f.category),
+                SectionLabel(text: f.category),
                 const SizedBox(height: 8),
-                _CategoryDropdownRow(
+                CategoryDropdownRow(
                   category: _selectedCategory,
                   parseColor: _parseColor,
                   open: _catPickerOpen,
@@ -484,7 +482,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                 ),
                 if (_catPickerOpen) ...[
                   const SizedBox(height: 11),
-                  _CategoryPickerPanel(
+                  CategoryPickerPanel(
                     categories: _categories,
                     selectedId: _selectedCategoryId,
                     onSelect: (id) {
@@ -499,9 +497,9 @@ class _ItemFormViewState extends State<ItemFormView> {
                 ],
                 if (_storesEnabled) ...[
                   const SizedBox(height: 16),
-                  _SectionLabel(text: f.stores),
+                  SectionLabel(text: f.stores),
                   const SizedBox(height: 8),
-                  _StoreDropdownRow(
+                  StoreDropdownRow(
                     stores: _selectedStores,
                     parseColor: _parseColor,
                     open: _storePickerOpen,
@@ -510,7 +508,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ),
                   if (_storePickerOpen) ...[
                     const SizedBox(height: 11),
-                    _StorePickerPanel(
+                    StorePickerPanel(
                       stores: _stores,
                       selectedIds: _selectedStoreIds,
                       onToggle: (id) => setState(() {
@@ -525,9 +523,9 @@ class _ItemFormViewState extends State<ItemFormView> {
                 ],
                 if (_labelsEnabled) ...[
                   const SizedBox(height: 16),
-                  _SectionLabel(text: f.labels),
+                  SectionLabel(text: f.labels),
                   const SizedBox(height: 8),
-                  _LabelDropdownRow(
+                  LabelDropdownRow(
                     labels: _selectedLabels,
                     parseColor: _parseColor,
                     open: _labelPickerOpen,
@@ -536,7 +534,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ),
                   if (_labelPickerOpen) ...[
                     const SizedBox(height: 11),
-                    _LabelPickerPanel(
+                    LabelPickerPanel(
                       labels: _labels,
                       selectedIds: _selectedLabelIds,
                       onToggle: (id) => setState(() {
@@ -551,7 +549,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                 ],
                 if (_customFieldsEnabled) ...[
                   const SizedBox(height: 16),
-                  _SectionLabel(text: m.customFields.manageTitle),
+                  SectionLabel(text: m.customFields.manageTitle),
                   const SizedBox(height: 10),
                   ItemCustomFieldsEditor(
                     houseId: widget.controller.houseId,
@@ -561,9 +559,9 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ),
                 ],
                 const SizedBox(height: 16),
-                _SectionLabel(text: m.checklists.itemTypes.label),
+                SectionLabel(text: m.checklists.itemTypes.label),
                 const SizedBox(height: 10),
-                _LifecyclePicker(value: _lifecycle, onChanged: _setLifecycle),
+                LifecyclePicker(value: _lifecycle, onChanged: _setLifecycle),
                 if (_lifecycle == ItemLifecycle.recurring) ...[
                   const SizedBox(height: 8),
                   RecurrenceInline(
@@ -572,14 +570,14 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ),
                 ],
                 const SizedBox(height: 16),
-                _SectionLabel(text: f.image),
+                SectionLabel(text: f.image),
                 const SizedBox(height: 10),
                 _buildImageSection(theme),
                 const SizedBox(height: 8),
               ],
             ),
           ),
-          _DockedSaveBar(
+          DockedSaveBar(
             onCancel: _saving
                 ? null
                 : () => Navigator.of(context).maybePop(false),
@@ -634,7 +632,7 @@ class _ItemFormViewState extends State<ItemFormView> {
 
   Widget _buildImageSection(ThemeData theme) {
     if (_pickedImage != null) {
-      return _ImagePreviewTile(
+      return ImagePreviewTile(
         image: AvifAwareFileImage(File(_pickedImage!.path)),
         onRemove: () => setState(() {
           _pickedImage = null;
@@ -652,7 +650,7 @@ class _ItemFormViewState extends State<ItemFormView> {
         size: 256,
       );
       final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
-      return _ImagePreviewTile(
+      return ImagePreviewTile(
         image: AvifAwareNetworkImage(uri.toString(), headers: headers),
         onRemove: () => setState(() {
           _removeExistingImage = true;
@@ -661,7 +659,7 @@ class _ItemFormViewState extends State<ItemFormView> {
       );
     }
 
-    return _AddImageButtons(
+    return AddImageButtons(
       onChooseImage: () => _pickImage(ImageSource.gallery),
       onTakePhoto: _cameraSupported
           ? () => _pickImage(ImageSource.camera)
@@ -677,7 +675,7 @@ class _ItemFormViewState extends State<ItemFormView> {
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       showDragHandle: true,
-      builder: (ctx) => _ImageSourceSheet(),
+      builder: (ctx) => const ImageSourceSheet(),
     );
     if (source != null) await _pickImage(source);
   }
@@ -691,1004 +689,5 @@ class _ItemFormViewState extends State<ItemFormView> {
         _removeExistingImage = true;
       });
     }
-  }
-}
-
-class _DeleteIconButton extends StatelessWidget {
-  final VoidCallback? onTap;
-  final bool busy;
-
-  const _DeleteIconButton({required this.onTap, required this.busy});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(11),
-      child: Container(
-        width: 38,
-        height: 38,
-        decoration: BoxDecoration(
-          color: cs.error.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: busy
-            ? Padding(
-                padding: const EdgeInsets.all(9),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: cs.error,
-                ),
-              )
-            : Icon(Icons.delete_outline, color: cs.error, size: 20),
-      ),
-    );
-  }
-}
-
-class _HeaderPreview extends StatelessWidget {
-  final String name;
-  final models.Category? category;
-  final Color? Function(String hex) parseColor;
-  final String typeSummary;
-
-  const _HeaderPreview({
-    required this.name,
-    required this.category,
-    required this.parseColor,
-    required this.typeSummary,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final catColor = category != null
-        ? (parseColor(category!.color) ?? cs.primary)
-        : cs.onSurfaceVariant;
-    final tileBg = category != null
-        ? catColor.withValues(alpha: 0.14)
-        : cs.surfaceContainer;
-    final tileBorder = category != null
-        ? catColor.withValues(alpha: 0.3)
-        : cs.outlineVariant;
-    final icon = category != null
-        ? categoryIcon(category!.icon)
-        : Icons.shopping_basket_outlined;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 54,
-          height: 54,
-          decoration: BoxDecoration(
-            color: tileBg,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: tileBorder),
-          ),
-          child: Icon(icon, color: catColor, size: 26),
-        ),
-        const SizedBox(width: 13),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w800,
-                  color: cs.onSurface,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                typeSummary,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  final String text;
-
-  const _SectionLabel({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(start: 2),
-      child: Text(
-        text.toUpperCase(),
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.6,
-          color: cs.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
-}
-
-/// Filled card wrapping a single text field. The card's border + label color
-/// flip to the accent when the field is focused — same treatment for name,
-/// description, and (visually) the quantity row's inner input.
-class _LabeledField extends StatelessWidget {
-  final String label;
-  final bool focused;
-  final Widget child;
-
-  const _LabeledField({
-    required this.label,
-    required this.focused,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) =>
-      LabeledFieldCard(label: label, focused: focused, child: child);
-}
-
-class _QuantityField extends StatelessWidget {
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final bool focused;
-  final VoidCallback onMinus;
-  final VoidCallback onPlus;
-
-  const _QuantityField({
-    required this.controller,
-    required this.focusNode,
-    required this.focused,
-    required this.onMinus,
-    required this.onPlus,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final labelColor = focused ? cs.primary : cs.onSurfaceVariant;
-    final borderColor = focused ? cs.primary : cs.outlineVariant;
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      padding: const EdgeInsets.fromLTRB(14, 11, 14, 12),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: borderColor, width: focused ? 1.5 : 1),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            m.checklists.itemForm.quantity.toUpperCase(),
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.6,
-              color: labelColor,
-            ),
-          ),
-          const SizedBox(height: 9),
-          Row(
-            children: [
-              FormStepperButton(icon: Icons.remove, onTap: onMinus),
-              const SizedBox(width: 10),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  focusNode: focusNode,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: m.checklists.compose.qtyHint,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 9,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cs.outlineVariant),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cs.outlineVariant),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cs.primary, width: 1.5),
-                    ),
-                  ),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              FormStepperButton(icon: Icons.add, accent: true, onTap: onPlus),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            m.checklists.compose.qtyStepperHelp,
-            style: TextStyle(
-              fontSize: 12,
-              color: cs.onSurfaceVariant,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CategoryDropdownRow extends StatelessWidget {
-  final models.Category? category;
-  final Color? Function(String hex) parseColor;
-  final bool open;
-  final VoidCallback onTap;
-
-  const _CategoryDropdownRow({
-    required this.category,
-    required this.parseColor,
-    required this.open,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final f = m.checklists.itemForm;
-    final catColor = category != null
-        ? (parseColor(category!.color) ?? cs.primary)
-        : cs.onSurfaceVariant;
-    final label = category?.name ?? f.noCategory;
-    final actionColor = open ? cs.primary : cs.onSurfaceVariant;
-    final actionLabel = open ? f.categoryPick : f.categoryChange;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainer,
-          border: Border.all(
-            color: open ? cs.primary : cs.outlineVariant,
-            width: open ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: catColor,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: cs.onSurface,
-                ),
-              ),
-            ),
-            Text(
-              actionLabel,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: actionColor,
-              ),
-            ),
-            const SizedBox(width: 4),
-            AnimatedRotation(
-              duration: const Duration(milliseconds: 200),
-              turns: open ? 0.5 : 0,
-              child: Icon(
-                Icons.keyboard_arrow_down,
-                color: actionColor,
-                size: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CategoryPickerPanel extends StatelessWidget {
-  final List<models.Category> categories;
-  final int? selectedId;
-  final ValueChanged<int?> onSelect;
-  final Future<void> Function() onCreateRequest;
-  final Color? Function(String hex) parseColor;
-
-  const _CategoryPickerPanel({
-    required this.categories,
-    required this.selectedId,
-    required this.onSelect,
-    required this.onCreateRequest,
-    required this.parseColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(13, 13, 13, 14),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          CategorySwatch(
-            label: m.checklists.itemForm.noCategory,
-            color: cs.onSurfaceVariant,
-            selected: selectedId == null,
-            onTap: () => onSelect(null),
-          ),
-          for (final c in categories)
-            CategorySwatch(
-              icon: categoryIcon(c.icon),
-              label: c.name,
-              color: parseColor(c.color) ?? cs.primary,
-              selected: selectedId == c.id,
-              onTap: () => onSelect(c.id),
-            ),
-          NewCategoryChipButton(
-            color: cs.primary,
-            label: m.checklists.itemForm.createCategory,
-            onTap: () => onCreateRequest(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Collapsed row for the multi-select store picker. Shows a summary of the
-/// currently-selected stores (or "None") and toggles the panel open.
-class _StoreDropdownRow extends StatelessWidget {
-  final List<models.Store> stores;
-  final Color? Function(String hex) parseColor;
-  final bool open;
-  final VoidCallback onTap;
-
-  const _StoreDropdownRow({
-    required this.stores,
-    required this.parseColor,
-    required this.open,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final f = m.checklists.itemForm;
-    final label = stores.isEmpty
-        ? f.noStores
-        : stores.map((s) => s.name).join(', ');
-    final actionColor = open ? cs.primary : cs.onSurfaceVariant;
-    final actionLabel = open ? f.storesPick : f.storesChange;
-    final leadColor = stores.isNotEmpty
-        ? (parseColor(stores.first.color) ?? cs.primary)
-        : cs.onSurfaceVariant;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainer,
-          border: Border.all(
-            color: open ? cs.primary : cs.outlineVariant,
-            width: open ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              stores.isNotEmpty
-                  ? storeIcon(stores.first.icon)
-                  : EntityIcons.store,
-              size: 18,
-              color: leadColor,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: cs.onSurface,
-                ),
-              ),
-            ),
-            Text(
-              actionLabel,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: actionColor,
-              ),
-            ),
-            const SizedBox(width: 4),
-            AnimatedRotation(
-              duration: const Duration(milliseconds: 200),
-              turns: open ? 0.5 : 0,
-              child: Icon(
-                Icons.keyboard_arrow_down,
-                color: actionColor,
-                size: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Multi-select swatch grid for stores. Tapping a swatch toggles membership
-/// and keeps the panel open (unlike the single-select category picker); there
-/// is no "None" swatch — an empty selection means no stores.
-class _StorePickerPanel extends StatelessWidget {
-  final List<models.Store> stores;
-  final Set<int> selectedIds;
-  final ValueChanged<int> onToggle;
-  final Future<void> Function() onCreateRequest;
-  final Color? Function(String hex) parseColor;
-
-  const _StorePickerPanel({
-    required this.stores,
-    required this.selectedIds,
-    required this.onToggle,
-    required this.onCreateRequest,
-    required this.parseColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(13, 13, 13, 14),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (final s in stores)
-            CategorySwatch(
-              icon: storeIcon(s.icon),
-              label: s.name,
-              color: parseColor(s.color) ?? cs.primary,
-              selected: selectedIds.contains(s.id),
-              onTap: () => onToggle(s.id),
-            ),
-          NewCategoryChipButton(
-            color: cs.primary,
-            label: m.checklists.itemForm.createStore,
-            onTap: () => onCreateRequest(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Collapsed row for the multi-select label picker. Mirrors [_StoreDropdownRow]:
-/// shows a summary of the currently-selected labels (or "None") and toggles the
-/// panel open.
-class _LabelDropdownRow extends StatelessWidget {
-  final List<models.Label> labels;
-  final Color? Function(String hex) parseColor;
-  final bool open;
-  final VoidCallback onTap;
-
-  const _LabelDropdownRow({
-    required this.labels,
-    required this.parseColor,
-    required this.open,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final f = m.checklists.itemForm;
-    final label = labels.isEmpty
-        ? f.noLabels
-        : labels.map((l) => l.name).join(', ');
-    final actionColor = open ? cs.primary : cs.onSurfaceVariant;
-    final actionLabel = open ? f.labelsPick : f.labelsChange;
-    final leadColor = labels.isNotEmpty
-        ? (parseColor(labels.first.color) ?? cs.primary)
-        : cs.onSurfaceVariant;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainer,
-          border: Border.all(
-            color: open ? cs.primary : cs.outlineVariant,
-            width: open ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              labels.isNotEmpty
-                  ? labelIcon(labels.first.icon)
-                  : EntityIcons.label,
-              size: 18,
-              color: leadColor,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: cs.onSurface,
-                ),
-              ),
-            ),
-            Text(
-              actionLabel,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: actionColor,
-              ),
-            ),
-            const SizedBox(width: 4),
-            AnimatedRotation(
-              duration: const Duration(milliseconds: 200),
-              turns: open ? 0.5 : 0,
-              child: Icon(
-                Icons.keyboard_arrow_down,
-                color: actionColor,
-                size: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Multi-select swatch grid for labels. Mirrors [_StorePickerPanel]: tapping a
-/// swatch toggles membership and keeps the panel open; an empty selection means
-/// no labels.
-class _LabelPickerPanel extends StatelessWidget {
-  final List<models.Label> labels;
-  final Set<int> selectedIds;
-  final ValueChanged<int> onToggle;
-  final Future<void> Function() onCreateRequest;
-  final Color? Function(String hex) parseColor;
-
-  const _LabelPickerPanel({
-    required this.labels,
-    required this.selectedIds,
-    required this.onToggle,
-    required this.onCreateRequest,
-    required this.parseColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(13, 13, 13, 14),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (final l in labels)
-            CategorySwatch(
-              icon: labelIcon(l.icon),
-              label: l.name,
-              color: parseColor(l.color) ?? cs.primary,
-              selected: selectedIds.contains(l.id),
-              onTap: () => onToggle(l.id),
-            ),
-          NewCategoryChipButton(
-            color: cs.primary,
-            label: m.checklists.itemForm.createLabel,
-            onTap: () => onCreateRequest(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _LifecyclePicker extends StatelessWidget {
-  final ItemLifecycle value;
-  final ValueChanged<ItemLifecycle> onChanged;
-
-  const _LifecyclePicker({required this.value, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    final t = m.checklists.itemTypes;
-    return Column(
-      children: [
-        LifecycleRow(
-          label: t.staple,
-          body: t.stapleBody,
-          selected: value == ItemLifecycle.staple,
-          onTap: () => onChanged(ItemLifecycle.staple),
-        ),
-        const SizedBox(height: 7),
-        LifecycleRow(
-          label: t.onceTime,
-          body: t.onceTimeBody,
-          selected: value == ItemLifecycle.once,
-          onTap: () => onChanged(ItemLifecycle.once),
-        ),
-        const SizedBox(height: 7),
-        LifecycleRow(
-          label: t.recurring,
-          body: t.recurringBody,
-          selected: value == ItemLifecycle.recurring,
-          onTap: () => onChanged(ItemLifecycle.recurring),
-        ),
-      ],
-    );
-  }
-}
-
-class _AddImageButtons extends StatelessWidget {
-  final VoidCallback onChooseImage;
-  final VoidCallback? onTakePhoto;
-
-  const _AddImageButtons({required this.onChooseImage, this.onTakePhoto});
-
-  @override
-  Widget build(BuildContext context) {
-    final f = m.checklists.itemForm;
-    if (onTakePhoto == null) {
-      return _AddImageTile(
-        icon: Icons.add_photo_alternate_outlined,
-        label: f.addImage,
-        onTap: onChooseImage,
-      );
-    }
-    return Row(
-      children: [
-        Expanded(
-          child: _AddImageTile(
-            icon: Icons.photo_camera_outlined,
-            label: f.takePhoto,
-            onTap: onTakePhoto!,
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _AddImageTile(
-            icon: Icons.add_photo_alternate_outlined,
-            label: f.chooseImage,
-            onTap: onChooseImage,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _AddImageTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const _AddImageTile({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: DashedBorder(
-        color: cs.outlineVariant,
-        radius: 14,
-        strokeWidth: 1.5,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: cs.primary, size: 20),
-              const SizedBox(width: 9),
-              Flexible(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w700,
-                    color: cs.primary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ImageSourceSheet extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final f = m.checklists.itemForm;
-    return SafeArea(
-      top: false,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.photo_camera_outlined),
-            title: Text(f.takePhoto),
-            onTap: () => Navigator.pop(context, ImageSource.camera),
-          ),
-          ListTile(
-            leading: const Icon(Icons.add_photo_alternate_outlined),
-            title: Text(f.chooseImage),
-            onTap: () => Navigator.pop(context, ImageSource.gallery),
-          ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
-  }
-}
-
-/// Simple dashed outline using a CustomPainter — Flutter Material doesn't
-/// support dashed borders on Container natively.
-
-class _DockedSaveBar extends StatelessWidget {
-  final VoidCallback? onCancel;
-  final VoidCallback? onSave;
-  final bool saving;
-  final String label;
-
-  const _DockedSaveBar({
-    required this.onCancel,
-    required this.onSave,
-    required this.saving,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return SafeArea(
-      top: false,
-      child: Container(
-        decoration: BoxDecoration(
-          color: cs.surface,
-          border: Border(
-            top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5)),
-          ),
-        ),
-        padding: const EdgeInsets.fromLTRB(18, 12, 18, 12),
-        child: Row(
-          children: [
-            InkWell(
-              onTap: onCancel,
-              borderRadius: BorderRadius.circular(14),
-              child: Container(
-                height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 18),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: cs.surfaceContainer,
-                  border: Border.all(color: cs.outlineVariant),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Text(
-                  m.common.cancel,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 11),
-            Expanded(
-              child: InkWell(
-                onTap: onSave,
-                borderRadius: BorderRadius.circular(14),
-                child: Container(
-                  height: 48,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [cs.primary, cs.primary.withValues(alpha: 0.78)],
-                    ),
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: cs.primary.withValues(alpha: 0.35),
-                        blurRadius: 22,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (saving)
-                        const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      else
-                        const Icon(Icons.check, color: Colors.white, size: 20),
-                      const SizedBox(width: 9),
-                      Text(
-                        label,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ImagePreviewTile extends StatelessWidget {
-  final ImageProvider image;
-  final VoidCallback onRemove;
-  final VoidCallback onReplace;
-
-  const _ImagePreviewTile({
-    required this.image,
-    required this.onRemove,
-    required this.onReplace,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final f = m.checklists.itemForm;
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(14),
-          child: Image(
-            image: image,
-            width: double.infinity,
-            height: 200,
-            fit: BoxFit.cover,
-          ),
-        ),
-        Positioned(
-          top: 8,
-          right: 8,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _ImageActionButton(
-                icon: Icons.swap_horiz,
-                tooltip: f.replaceImage,
-                onPressed: onReplace,
-              ),
-              const SizedBox(width: 4),
-              _ImageActionButton(
-                icon: Icons.close,
-                tooltip: f.removeImage,
-                onPressed: onRemove,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ImageActionButton extends StatelessWidget {
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onPressed;
-
-  const _ImageActionButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black54,
-      shape: const CircleBorder(),
-      child: IconButton(
-        icon: Icon(icon, color: Colors.white, size: 20),
-        tooltip: tooltip,
-        onPressed: onPressed,
-        constraints: const BoxConstraints.tightFor(width: 36, height: 36),
-        padding: EdgeInsets.zero,
-      ),
-    );
   }
 }
