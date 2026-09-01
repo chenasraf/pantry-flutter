@@ -5,9 +5,18 @@ import 'package:home_widget/home_widget.dart';
 import '../models/nav_section.dart';
 import '../utils/platform_info.dart';
 
+part 'prefs_service.checklist.dart';
+part 'prefs_service.appearance.dart';
+part 'prefs_service.sync.dart';
+
 class PrefsService extends ChangeNotifier {
   PrefsService._();
   static final PrefsService instance = PrefsService._();
+
+  // Exposed so the setter extensions in this library's part files can notify;
+  // ChangeNotifier.notifyListeners is otherwise @protected to the subclass body.
+  @override
+  void notifyListeners() => super.notifyListeners();
 
   static const _lastHouseKey = 'last_house_id';
   static const _notificationsEnabledKey = 'notifications_enabled';
@@ -438,74 +447,8 @@ class PrefsService extends ChangeNotifier {
   /// MissingPluginException. Gate every widget side-effect on this.
   static bool get _supportsWidget => PlatformInfo.isAndroid;
 
-  Future<void> setNotificationsEnabled(bool value) async {
-    _notificationsEnabled = value;
-    await _storage.write(
-      key: _notificationsEnabledKey,
-      value: value.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setPollIntervalMinutes(int minutes) async {
-    _pollIntervalMinutes = minutes;
-    await _storage.write(
-      key: _pollIntervalMinutesKey,
-      value: minutes.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setLocale(String? locale) async {
-    _locale = locale;
-    if (locale == null) {
-      await _storage.delete(key: _localeKey);
-    } else {
-      await _storage.write(key: _localeKey, value: locale);
-    }
-    notifyListeners();
-  }
-
-  Future<void> setThemeMode(String? mode) async {
-    _themeMode = mode;
-    if (mode == null) {
-      await _storage.delete(key: _themeModeKey);
-    } else {
-      await _storage.write(key: _themeModeKey, value: mode);
-    }
-    await pushWidgetTheme();
-    notifyListeners();
-  }
-
-  /// Push the effective theme (`light` or `dark`) to the Android home-screen
-  /// widget. Call after the user changes the in-app theme, and when the
-  /// platform brightness changes while in system mode.
-  Future<void> pushWidgetTheme() async {
-    if (!_supportsWidget) return;
-    final resolved = switch (_themeMode) {
-      'light' => 'light',
-      'dark' => 'dark',
-      _ =>
-        PlatformDispatcher.instance.platformBrightness == Brightness.dark
-            ? 'dark'
-            : 'light',
-    };
-    await HomeWidget.saveWidgetData<String>('widget_theme', resolved);
-    await HomeWidget.updateWidget(
-      qualifiedAndroidName: 'dev.casraf.pantry.PantryWidgetProvider',
-    );
-  }
-
   static bool _isValidTapAction(String value) =>
       value == 'done' || value == 'view' || value == 'edit' || value == 'none';
-
-  Future<void> setDefaultItemTapAction(String value) async {
-    if (!_isValidTapAction(value)) return;
-    if (_defaultItemTapAction == value) return;
-    _defaultItemTapAction = value;
-    await _storage.write(key: _defaultItemTapActionKey, value: value);
-    notifyListeners();
-  }
 
   static bool _isValidLongPressAction(String value) =>
       value == 'multiselect' ||
@@ -514,135 +457,8 @@ class PrefsService extends ChangeNotifier {
       value == 'edit' ||
       value == 'none';
 
-  Future<void> setDefaultItemLongPressAction(String value) async {
-    if (!_isValidLongPressAction(value)) return;
-    if (_defaultItemLongPressAction == value) return;
-    _defaultItemLongPressAction = value;
-    await _storage.write(key: _defaultItemLongPressActionKey, value: value);
-    notifyListeners();
-  }
-
   static bool _isValidReuseExistingItems(String value) =>
       value == 'ask' || value == 'reuse' || value == 'never';
-
-  Future<void> setReuseExistingItemsCache(String value) async {
-    if (!_isValidReuseExistingItems(value)) return;
-    if (_reuseExistingItems == value) return;
-    _reuseExistingItems = value;
-    await _storage.write(key: _reuseExistingItemsKey, value: value);
-    notifyListeners();
-  }
-
-  Future<void> setSuggestArchivedItemsCache(bool value) async {
-    if (_suggestArchivedItems == value) return;
-    _suggestArchivedItems = value;
-    await _storage.write(
-      key: _suggestArchivedItemsKey,
-      value: value.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setChecklistView(String value) async {
-    if (value != 'list' && value != 'cards') return;
-    _checklistView = value;
-    await _storage.write(key: _checklistViewKey, value: value);
-    notifyListeners();
-  }
-
-  Future<void> setChecklistCheckboxPosition(String value) async {
-    if (value != 'start' && value != 'end') return;
-    if (_checklistCheckboxPosition == value) return;
-    _checklistCheckboxPosition = value;
-    await _storage.write(key: _checklistCheckboxPositionKey, value: value);
-    notifyListeners();
-  }
-
-  Future<void> setChecklistDensity(String value) async {
-    if (!_validDensities.contains(value)) return;
-    if (_checklistDensity == value) return;
-    _checklistDensity = value;
-    await _storage.write(key: _checklistDensityKey, value: value);
-    notifyListeners();
-  }
-
-  Future<void> setSwipeActionsEnabled(bool value) async {
-    if (_swipeActionsEnabled == value) return;
-    _swipeActionsEnabled = value;
-    await _storage.write(key: _swipeActionsEnabledKey, value: value.toString());
-    notifyListeners();
-  }
-
-  Future<void> setStartShoppingFabEnabled(bool value) async {
-    if (_startShoppingFabEnabled == value) return;
-    _startShoppingFabEnabled = value;
-    await _storage.write(
-      key: _startShoppingFabEnabledKey,
-      value: value.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setTruncateItemNames(bool value) async {
-    if (_truncateItemNames == value) return;
-    _truncateItemNames = value;
-    await _storage.write(key: _truncateItemNamesKey, value: value.toString());
-    notifyListeners();
-  }
-
-  Future<void> setChecklistListFilter(Set<int> ids) async {
-    _checklistListFilter = {...ids};
-    await _storage.write(
-      key: _checklistListFilterKey,
-      value: _checklistListFilter.isEmpty ? '' : _checklistListFilter.join(','),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setItemChipVisible(String key, bool visible) async {
-    final changed = visible
-        ? _hiddenItemChips.remove(key)
-        : _hiddenItemChips.add(key);
-    if (!changed) return;
-    await _storage.write(
-      key: _hiddenItemChipsKey,
-      value: _hiddenItemChips.isEmpty ? '' : _hiddenItemChips.join(','),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setChecklistDoneCollapsed(bool value) async {
-    _checklistDoneCollapsed = value;
-    await _storage.write(
-      key: _checklistDoneCollapsedKey,
-      value: value.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setAllListsProgressHeroHidden(bool value) async {
-    if (_allListsProgressHeroHidden == value) return;
-    _allListsProgressHeroHidden = value;
-    await _storage.write(
-      key: _allListsProgressHeroHiddenKey,
-      value: value.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setListProgressHeroHidden(int id, bool hidden) async {
-    final changed = hidden
-        ? _progressHeroHiddenListIds.add(id)
-        : _progressHeroHiddenListIds.remove(id);
-    if (!changed) return;
-    await _storage.write(
-      key: _progressHeroHiddenListIdsKey,
-      value: _progressHeroHiddenListIds.isEmpty
-          ? ''
-          : _progressHeroHiddenListIds.join(','),
-    );
-    notifyListeners();
-  }
 
   Future<void> setLastSeenOnboardingVersion(String? version) async {
     _lastSeenOnboardingVersion = version;
@@ -654,145 +470,10 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setThemeColorHex(String? hex) async {
-    if (_themeColorHex == hex) return;
-    _themeColorHex = hex;
-    if (hex == null) {
-      await _storage.delete(key: _themeColorKey);
-    } else {
-      await _storage.write(key: _themeColorKey, value: hex);
-    }
-    notifyListeners();
-  }
-
-  Future<void> setUseServerThemeColor(bool value) async {
-    if (_useServerThemeColor == value) return;
-    _useServerThemeColor = value;
-    await _storage.write(key: _useServerThemeColorKey, value: value.toString());
-    notifyListeners();
-  }
-
-  Future<void> setUserProfileCache({
-    required String? displayName,
-    required String? serverLanguage,
-  }) async {
-    var changed = false;
-    if (_displayName != displayName) {
-      _displayName = displayName;
-      if (displayName == null) {
-        await _storage.delete(key: _displayNameKey);
-      } else {
-        await _storage.write(key: _displayNameKey, value: displayName);
-      }
-      changed = true;
-    }
-    if (_serverLanguage != serverLanguage) {
-      _serverLanguage = serverLanguage;
-      if (serverLanguage == null) {
-        await _storage.delete(key: _serverLanguageKey);
-      } else {
-        await _storage.write(key: _serverLanguageKey, value: serverLanguage);
-      }
-      changed = true;
-    }
-    if (changed) notifyListeners();
-  }
-
-  Future<void> setFirstDayOfWeekCache(int? value) async {
-    if (_firstDayOfWeek == value) return;
-    _firstDayOfWeek = value;
-    if (value == null) {
-      await _storage.delete(key: _firstDayOfWeekKey);
-    } else {
-      await _storage.write(key: _firstDayOfWeekKey, value: value.toString());
-    }
-    notifyListeners();
-  }
-
-  Future<void> setNavOrder(List<NavSection> order) async {
-    final normalized = decodeNavOrder(encodeNavOrder(order));
-    _navOrder = normalized;
-    await _storage.write(key: _navOrderKey, value: encodeNavOrder(normalized));
-    notifyListeners();
-  }
-
-  /// Show or hide [section] in the primary navigation. Hiding is rejected when
-  /// [section] is the last visible one, so at least one tab always remains.
-  Future<void> setNavSectionEnabled(NavSection section, bool enabled) async {
-    final bool changed;
-    if (enabled) {
-      changed = _navDisabled.remove(section);
-    } else {
-      changed = enabledNavOrder.length > 1 && _navDisabled.add(section);
-    }
-    if (!changed) return;
-    await _storage.write(
-      key: _navDisabledKey,
-      value: encodeNavDisabled(_navDisabled),
-    );
-    notifyListeners();
-  }
-
   Future<void> setDevForceAllFeatures(bool value) async {
     if (_devForceAllFeatures == value) return;
     _devForceAllFeatures = value;
     await _storage.write(key: _devForceAllFeaturesKey, value: value.toString());
-    notifyListeners();
-  }
-
-  Future<void> setChecklistRefreshSeconds(int seconds) async {
-    if (!_validRefreshSeconds.contains(seconds)) return;
-    if (_checklistRefreshSeconds == seconds) return;
-    _checklistRefreshSeconds = seconds;
-    await _storage.write(
-      key: _checklistRefreshSecondsKey,
-      value: seconds.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setNotesRefreshSeconds(int seconds) async {
-    if (!_validRefreshSeconds.contains(seconds)) return;
-    if (_notesRefreshSeconds == seconds) return;
-    _notesRefreshSeconds = seconds;
-    await _storage.write(
-      key: _notesRefreshSecondsKey,
-      value: seconds.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setPhotosRefreshSeconds(int seconds) async {
-    if (!_validRefreshSeconds.contains(seconds)) return;
-    if (_photosRefreshSeconds == seconds) return;
-    _photosRefreshSeconds = seconds;
-    await _storage.write(
-      key: _photosRefreshSecondsKey,
-      value: seconds.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setShoppingRefreshSeconds(int seconds) async {
-    if (seconds != shoppingRefreshInherit &&
-        !_validRefreshSeconds.contains(seconds)) {
-      return;
-    }
-    if (_shoppingRefreshSeconds == seconds) return;
-    _shoppingRefreshSeconds = seconds;
-    await _storage.write(
-      key: _shoppingRefreshSecondsKey,
-      value: seconds.toString(),
-    );
-    notifyListeners();
-  }
-
-  Future<void> setNotificationsIntroSeen(bool value) async {
-    _notificationsIntroSeen = value;
-    await _storage.write(
-      key: _notificationsIntroSeenKey,
-      value: value.toString(),
-    );
     notifyListeners();
   }
 
