@@ -145,6 +145,13 @@ onboarding:
   categoryScopeBody: "Keep a category on a single list, or make it global so it shows up on every list. New categories stay global unless you pick a list."
   categoryScopeGlobalCaption: "Shows on every list"
   categoryScopeScopedCaption: "Shows on this list only"
+  customFieldsTitle: "Fields of your own"
+  customFieldsBody: "Track the details that matter to you — an expiry date, an aisle, a size. Set a field up once for the whole house or for a single list, and it shows on every item."
+  customFieldsMockExpiry: "Expiry"
+  customFieldsMockExpiryValue: "12 Sep"
+  customFieldsMockAisle: "Aisle"
+  customFieldsMockAisleValue: "Dairy"
+  customFieldsTypesCaption: "Pick the type that fits what you're tracking."
   serverRequirementNote(String version): "* Requires Pantry for Nextcloud v${version}+"
   dev:
     showOnboarding: "Show onboarding"

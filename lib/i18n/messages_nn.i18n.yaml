@@ -209,6 +209,13 @@ onboarding:
   categoryScopeBody: "Hald ein kategori på éi liste, eller gjer han global så han dukkar opp på alle listene. Nye kategoriar er globale om du ikkje vel ei liste."
   categoryScopeGlobalCaption: "Synest på alle listene"
   categoryScopeScopedCaption: "Synest berre på denne lista"
+  customFieldsTitle: "Dine eigne felt"
+  customFieldsBody: "Hald styr på detaljane som betyr noko for deg — ein utløpsdato, ein gang, ein storleik. Lag eit felt éin gong for heile huset eller for éi liste, så dukkar det opp på kvar vare."
+  customFieldsMockExpiry: "Utløp"
+  customFieldsMockExpiryValue: "12. sep."
+  customFieldsMockAisle: "Gang"
+  customFieldsMockAisleValue: "Meieri"
+  customFieldsTypesCaption: "Vel typen som passar til det du noterer."
   serverRequirementNote(String version): "* Krev Pantry for Nextcloud v${version}+"
   dev:
     showOnboarding: Vis oppstartshjelp

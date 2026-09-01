@@ -847,6 +847,43 @@ Mot de passe : pantry-rocks""";
       """Apparaît sur cette liste uniquement""";
 
   /// ```dart
+  /// "Vos propres champs"
+  /// ```
+  String get customFieldsTitle => """Vos propres champs""";
+
+  /// ```dart
+  /// "Notez les détails qui comptent pour vous : une date de péremption, un rayon, une taille. Créez un champ une fois pour toute la maison ou pour une seule liste, et il apparaît sur chaque article."
+  /// ```
+  String get customFieldsBody =>
+      """Notez les détails qui comptent pour vous : une date de péremption, un rayon, une taille. Créez un champ une fois pour toute la maison ou pour une seule liste, et il apparaît sur chaque article.""";
+
+  /// ```dart
+  /// "Péremption"
+  /// ```
+  String get customFieldsMockExpiry => """Péremption""";
+
+  /// ```dart
+  /// "12 sept."
+  /// ```
+  String get customFieldsMockExpiryValue => """12 sept.""";
+
+  /// ```dart
+  /// "Rayon"
+  /// ```
+  String get customFieldsMockAisle => """Rayon""";
+
+  /// ```dart
+  /// "Produits laitiers"
+  /// ```
+  String get customFieldsMockAisleValue => """Produits laitiers""";
+
+  /// ```dart
+  /// "Choisissez le type qui correspond à ce que vous notez."
+  /// ```
+  String get customFieldsTypesCaption =>
+      """Choisissez le type qui correspond à ce que vous notez.""";
+
+  /// ```dart
   /// "* Nécessite Pantry pour Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -5384,6 +5421,15 @@ Mot de passe : pantry-rocks""",
       """Apparaît sur toutes les listes""",
   """onboarding.categoryScopeScopedCaption""":
       """Apparaît sur cette liste uniquement""",
+  """onboarding.customFieldsTitle""": """Vos propres champs""",
+  """onboarding.customFieldsBody""":
+      """Notez les détails qui comptent pour vous : une date de péremption, un rayon, une taille. Créez un champ une fois pour toute la maison ou pour une seule liste, et il apparaît sur chaque article.""",
+  """onboarding.customFieldsMockExpiry""": """Péremption""",
+  """onboarding.customFieldsMockExpiryValue""": """12 sept.""",
+  """onboarding.customFieldsMockAisle""": """Rayon""",
+  """onboarding.customFieldsMockAisleValue""": """Produits laitiers""",
+  """onboarding.customFieldsTypesCaption""":
+      """Choisissez le type qui correspond à ce que vous notez.""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":

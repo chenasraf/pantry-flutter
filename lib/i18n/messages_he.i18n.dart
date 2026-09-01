@@ -837,6 +837,43 @@ class OnboardingMessagesHe extends OnboardingMessages {
   String get categoryScopeScopedCaption => """מופיעה ברשימה זו בלבד""";
 
   /// ```dart
+  /// "שדות משלכם"
+  /// ```
+  String get customFieldsTitle => """שדות משלכם""";
+
+  /// ```dart
+  /// "עקבו אחרי הפרטים שחשובים לכם — תאריך תפוגה, מעבר בסופר, מידה. הגדירו שדה פעם אחת לכל הבית או לרשימה אחת, והוא יופיע בכל פריט."
+  /// ```
+  String get customFieldsBody =>
+      """עקבו אחרי הפרטים שחשובים לכם — תאריך תפוגה, מעבר בסופר, מידה. הגדירו שדה פעם אחת לכל הבית או לרשימה אחת, והוא יופיע בכל פריט.""";
+
+  /// ```dart
+  /// "תפוגה"
+  /// ```
+  String get customFieldsMockExpiry => """תפוגה""";
+
+  /// ```dart
+  /// "12 בספט׳"
+  /// ```
+  String get customFieldsMockExpiryValue => """12 בספט׳""";
+
+  /// ```dart
+  /// "מעבר"
+  /// ```
+  String get customFieldsMockAisle => """מעבר""";
+
+  /// ```dart
+  /// "מוצרי חלב"
+  /// ```
+  String get customFieldsMockAisleValue => """מוצרי חלב""";
+
+  /// ```dart
+  /// "בחרו את הסוג שמתאים למה שאתם רושמים."
+  /// ```
+  String get customFieldsTypesCaption =>
+      """בחרו את הסוג שמתאים למה שאתם רושמים.""";
+
+  /// ```dart
   /// "* דורש את Pantry ל-Nextcloud בגרסה ${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -5325,6 +5362,15 @@ Map<String, String> get messagesHeMap => {
       """השאירו קטגוריה ברשימה אחת, או הפכו אותה לגלובלית כך שתופיע בכל הרשימות. קטגוריות חדשות נשארות גלובליות אלא אם בוחרים רשימה.""",
   """onboarding.categoryScopeGlobalCaption""": """מופיעה בכל הרשימות""",
   """onboarding.categoryScopeScopedCaption""": """מופיעה ברשימה זו בלבד""",
+  """onboarding.customFieldsTitle""": """שדות משלכם""",
+  """onboarding.customFieldsBody""":
+      """עקבו אחרי הפרטים שחשובים לכם — תאריך תפוגה, מעבר בסופר, מידה. הגדירו שדה פעם אחת לכל הבית או לרשימה אחת, והוא יופיע בכל פריט.""",
+  """onboarding.customFieldsMockExpiry""": """תפוגה""",
+  """onboarding.customFieldsMockExpiryValue""": """12 בספט׳""",
+  """onboarding.customFieldsMockAisle""": """מעבר""",
+  """onboarding.customFieldsMockAisleValue""": """מוצרי חלב""",
+  """onboarding.customFieldsTypesCaption""":
+      """בחרו את הסוג שמתאים למה שאתם רושמים.""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":

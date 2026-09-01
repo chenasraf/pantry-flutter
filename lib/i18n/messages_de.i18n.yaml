@@ -145,6 +145,13 @@ onboarding:
   categoryScopeBody: "Behalte eine Kategorie auf einer einzigen Liste oder mache sie global, damit sie auf jeder Liste erscheint. Neue Kategorien bleiben global, sofern du keine Liste wählst."
   categoryScopeGlobalCaption: "Erscheint auf allen Listen"
   categoryScopeScopedCaption: "Erscheint nur auf dieser Liste"
+  customFieldsTitle: "Eigene Felder"
+  customFieldsBody: "Erfasse die Details, die dir wichtig sind — ein Ablaufdatum, einen Gang, eine Größe. Lege ein Feld einmal für den ganzen Haushalt oder für eine einzelne Liste an, und es erscheint bei jedem Eintrag."
+  customFieldsMockExpiry: "Ablauf"
+  customFieldsMockExpiryValue: "12. Sep."
+  customFieldsMockAisle: "Gang"
+  customFieldsMockAisleValue: "Milchprodukte"
+  customFieldsTypesCaption: "Wähle den Typ, der zu deinen Angaben passt."
   serverRequirementNote(String version): "* Erfordert Pantry für Nextcloud v${version}+"
   dev:
     showOnboarding: "Onboarding anzeigen"

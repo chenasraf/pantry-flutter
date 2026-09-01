@@ -837,6 +837,43 @@ Password: pantry-rocks""";
   String get categoryScopeScopedCaption => """Shows on this list only""";
 
   /// ```dart
+  /// "Fields of your own"
+  /// ```
+  String get customFieldsTitle => """Fields of your own""";
+
+  /// ```dart
+  /// "Track the details that matter to you — an expiry date, an aisle, a size. Set a field up once for the whole house or for a single list, and it shows on every item."
+  /// ```
+  String get customFieldsBody =>
+      """Track the details that matter to you — an expiry date, an aisle, a size. Set a field up once for the whole house or for a single list, and it shows on every item.""";
+
+  /// ```dart
+  /// "Expiry"
+  /// ```
+  String get customFieldsMockExpiry => """Expiry""";
+
+  /// ```dart
+  /// "12 Sep"
+  /// ```
+  String get customFieldsMockExpiryValue => """12 Sep""";
+
+  /// ```dart
+  /// "Aisle"
+  /// ```
+  String get customFieldsMockAisle => """Aisle""";
+
+  /// ```dart
+  /// "Dairy"
+  /// ```
+  String get customFieldsMockAisleValue => """Dairy""";
+
+  /// ```dart
+  /// "Pick the type that fits what you're tracking."
+  /// ```
+  String get customFieldsTypesCaption =>
+      """Pick the type that fits what you're tracking.""";
+
+  /// ```dart
   /// "* Requires Pantry for Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -5321,6 +5358,15 @@ Password: pantry-rocks""",
       """Keep a category on a single list, or make it global so it shows up on every list. New categories stay global unless you pick a list.""",
   """onboarding.categoryScopeGlobalCaption""": """Shows on every list""",
   """onboarding.categoryScopeScopedCaption""": """Shows on this list only""",
+  """onboarding.customFieldsTitle""": """Fields of your own""",
+  """onboarding.customFieldsBody""":
+      """Track the details that matter to you — an expiry date, an aisle, a size. Set a field up once for the whole house or for a single list, and it shows on every item.""",
+  """onboarding.customFieldsMockExpiry""": """Expiry""",
+  """onboarding.customFieldsMockExpiryValue""": """12 Sep""",
+  """onboarding.customFieldsMockAisle""": """Aisle""",
+  """onboarding.customFieldsMockAisleValue""": """Dairy""",
+  """onboarding.customFieldsTypesCaption""":
+      """Pick the type that fits what you're tracking.""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":

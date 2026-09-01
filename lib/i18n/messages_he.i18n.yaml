@@ -145,6 +145,13 @@ onboarding:
   categoryScopeBody: "השאירו קטגוריה ברשימה אחת, או הפכו אותה לגלובלית כך שתופיע בכל הרשימות. קטגוריות חדשות נשארות גלובליות אלא אם בוחרים רשימה."
   categoryScopeGlobalCaption: "מופיעה בכל הרשימות"
   categoryScopeScopedCaption: "מופיעה ברשימה זו בלבד"
+  customFieldsTitle: "שדות משלכם"
+  customFieldsBody: "עקבו אחרי הפרטים שחשובים לכם — תאריך תפוגה, מעבר בסופר, מידה. הגדירו שדה פעם אחת לכל הבית או לרשימה אחת, והוא יופיע בכל פריט."
+  customFieldsMockExpiry: "תפוגה"
+  customFieldsMockExpiryValue: "12 בספט׳"
+  customFieldsMockAisle: "מעבר"
+  customFieldsMockAisleValue: "מוצרי חלב"
+  customFieldsTypesCaption: "בחרו את הסוג שמתאים למה שאתם רושמים."
   serverRequirementNote(String version): "* דורש את Pantry ל-Nextcloud בגרסה ${version}+"
   dev:
     showOnboarding: "הצג היכרות"

@@ -10,6 +10,7 @@ import 'pages/bulk_select_page.dart';
 import 'pages/category_scope_page.dart';
 import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
+import 'pages/custom_fields_page.dart';
 import 'pages/item_price_page.dart';
 import 'pages/pinned_notes_page.dart';
 import 'pages/progress_hero_dismiss_page.dart';
@@ -132,6 +133,9 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   ],
   '0.28.0': [
     OnboardingPageEntry(builder: (_) => const CategoryScopeOnboardingPage()),
+  ],
+  '0.30.0': [
+    OnboardingPageEntry(builder: (_) => const CustomFieldsOnboardingPage()),
   ],
 };
 

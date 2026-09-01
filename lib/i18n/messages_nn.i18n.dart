@@ -840,6 +840,43 @@ Passord: pantry""";
   String get categoryScopeScopedCaption => """Synest berre på denne lista""";
 
   /// ```dart
+  /// "Dine eigne felt"
+  /// ```
+  String get customFieldsTitle => """Dine eigne felt""";
+
+  /// ```dart
+  /// "Hald styr på detaljane som betyr noko for deg — ein utløpsdato, ein gang, ein storleik. Lag eit felt éin gong for heile huset eller for éi liste, så dukkar det opp på kvar vare."
+  /// ```
+  String get customFieldsBody =>
+      """Hald styr på detaljane som betyr noko for deg — ein utløpsdato, ein gang, ein storleik. Lag eit felt éin gong for heile huset eller for éi liste, så dukkar det opp på kvar vare.""";
+
+  /// ```dart
+  /// "Utløp"
+  /// ```
+  String get customFieldsMockExpiry => """Utløp""";
+
+  /// ```dart
+  /// "12. sep."
+  /// ```
+  String get customFieldsMockExpiryValue => """12. sep.""";
+
+  /// ```dart
+  /// "Gang"
+  /// ```
+  String get customFieldsMockAisle => """Gang""";
+
+  /// ```dart
+  /// "Meieri"
+  /// ```
+  String get customFieldsMockAisleValue => """Meieri""";
+
+  /// ```dart
+  /// "Vel typen som passar til det du noterer."
+  /// ```
+  String get customFieldsTypesCaption =>
+      """Vel typen som passar til det du noterer.""";
+
+  /// ```dart
   /// "* Krev Pantry for Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -5355,6 +5392,15 @@ Passord: pantry""",
   """onboarding.categoryScopeGlobalCaption""": """Synest på alle listene""",
   """onboarding.categoryScopeScopedCaption""":
       """Synest berre på denne lista""",
+  """onboarding.customFieldsTitle""": """Dine eigne felt""",
+  """onboarding.customFieldsBody""":
+      """Hald styr på detaljane som betyr noko for deg — ein utløpsdato, ein gang, ein storleik. Lag eit felt éin gong for heile huset eller for éi liste, så dukkar det opp på kvar vare.""",
+  """onboarding.customFieldsMockExpiry""": """Utløp""",
+  """onboarding.customFieldsMockExpiryValue""": """12. sep.""",
+  """onboarding.customFieldsMockAisle""": """Gang""",
+  """onboarding.customFieldsMockAisleValue""": """Meieri""",
+  """onboarding.customFieldsTypesCaption""":
+      """Vel typen som passar til det du noterer.""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":

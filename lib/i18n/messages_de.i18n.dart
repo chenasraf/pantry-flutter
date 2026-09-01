@@ -843,6 +843,43 @@ Passwort: pantry-rocks""";
   String get categoryScopeScopedCaption => """Erscheint nur auf dieser Liste""";
 
   /// ```dart
+  /// "Eigene Felder"
+  /// ```
+  String get customFieldsTitle => """Eigene Felder""";
+
+  /// ```dart
+  /// "Erfasse die Details, die dir wichtig sind — ein Ablaufdatum, einen Gang, eine Größe. Lege ein Feld einmal für den ganzen Haushalt oder für eine einzelne Liste an, und es erscheint bei jedem Eintrag."
+  /// ```
+  String get customFieldsBody =>
+      """Erfasse die Details, die dir wichtig sind — ein Ablaufdatum, einen Gang, eine Größe. Lege ein Feld einmal für den ganzen Haushalt oder für eine einzelne Liste an, und es erscheint bei jedem Eintrag.""";
+
+  /// ```dart
+  /// "Ablauf"
+  /// ```
+  String get customFieldsMockExpiry => """Ablauf""";
+
+  /// ```dart
+  /// "12. Sep."
+  /// ```
+  String get customFieldsMockExpiryValue => """12. Sep.""";
+
+  /// ```dart
+  /// "Gang"
+  /// ```
+  String get customFieldsMockAisle => """Gang""";
+
+  /// ```dart
+  /// "Milchprodukte"
+  /// ```
+  String get customFieldsMockAisleValue => """Milchprodukte""";
+
+  /// ```dart
+  /// "Wähle den Typ, der zu deinen Angaben passt."
+  /// ```
+  String get customFieldsTypesCaption =>
+      """Wähle den Typ, der zu deinen Angaben passt.""";
+
+  /// ```dart
   /// "* Erfordert Pantry für Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -5386,6 +5423,15 @@ Passwort: pantry-rocks""",
   """onboarding.categoryScopeGlobalCaption""": """Erscheint auf allen Listen""",
   """onboarding.categoryScopeScopedCaption""":
       """Erscheint nur auf dieser Liste""",
+  """onboarding.customFieldsTitle""": """Eigene Felder""",
+  """onboarding.customFieldsBody""":
+      """Erfasse die Details, die dir wichtig sind — ein Ablaufdatum, einen Gang, eine Größe. Lege ein Feld einmal für den ganzen Haushalt oder für eine einzelne Liste an, und es erscheint bei jedem Eintrag.""",
+  """onboarding.customFieldsMockExpiry""": """Ablauf""",
+  """onboarding.customFieldsMockExpiryValue""": """12. Sep.""",
+  """onboarding.customFieldsMockAisle""": """Gang""",
+  """onboarding.customFieldsMockAisleValue""": """Milchprodukte""",
+  """onboarding.customFieldsTypesCaption""":
+      """Wähle den Typ, der zu deinen Angaben passt.""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":

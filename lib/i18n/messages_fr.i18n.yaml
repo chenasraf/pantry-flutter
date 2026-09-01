@@ -145,6 +145,13 @@ onboarding:
   categoryScopeBody: "Gardez une catégorie sur une seule liste, ou rendez-la globale pour qu'elle apparaisse sur toutes les listes. Les nouvelles catégories restent globales sauf si vous choisissez une liste."
   categoryScopeGlobalCaption: "Apparaît sur toutes les listes"
   categoryScopeScopedCaption: "Apparaît sur cette liste uniquement"
+  customFieldsTitle: "Vos propres champs"
+  customFieldsBody: "Notez les détails qui comptent pour vous : une date de péremption, un rayon, une taille. Créez un champ une fois pour toute la maison ou pour une seule liste, et il apparaît sur chaque article."
+  customFieldsMockExpiry: "Péremption"
+  customFieldsMockExpiryValue: "12 sept."
+  customFieldsMockAisle: "Rayon"
+  customFieldsMockAisleValue: "Produits laitiers"
+  customFieldsTypesCaption: "Choisissez le type qui correspond à ce que vous notez."
   serverRequirementNote(String version): "* Nécessite Pantry pour Nextcloud v${version}+"
   dev:
     showOnboarding: "Afficher l'intro"

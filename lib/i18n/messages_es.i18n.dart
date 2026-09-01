@@ -843,6 +843,43 @@ Contraseña: pantry-rocks""";
   String get categoryScopeScopedCaption => """Aparece solo en esta lista""";
 
   /// ```dart
+  /// "Campos a tu medida"
+  /// ```
+  String get customFieldsTitle => """Campos a tu medida""";
+
+  /// ```dart
+  /// "Anota los detalles que te importan: una fecha de caducidad, un pasillo, una talla. Crea un campo una vez para toda la casa o para una sola lista, y aparecerá en cada artículo."
+  /// ```
+  String get customFieldsBody =>
+      """Anota los detalles que te importan: una fecha de caducidad, un pasillo, una talla. Crea un campo una vez para toda la casa o para una sola lista, y aparecerá en cada artículo.""";
+
+  /// ```dart
+  /// "Caducidad"
+  /// ```
+  String get customFieldsMockExpiry => """Caducidad""";
+
+  /// ```dart
+  /// "12 sep"
+  /// ```
+  String get customFieldsMockExpiryValue => """12 sep""";
+
+  /// ```dart
+  /// "Pasillo"
+  /// ```
+  String get customFieldsMockAisle => """Pasillo""";
+
+  /// ```dart
+  /// "Lácteos"
+  /// ```
+  String get customFieldsMockAisleValue => """Lácteos""";
+
+  /// ```dart
+  /// "Elige el tipo que encaje con lo que quieres anotar."
+  /// ```
+  String get customFieldsTypesCaption =>
+      """Elige el tipo que encaje con lo que quieres anotar.""";
+
+  /// ```dart
   /// "* Requiere Pantry para Nextcloud v${version}+"
   /// ```
   String serverRequirementNote(String version) =>
@@ -5371,6 +5408,15 @@ Contraseña: pantry-rocks""",
   """onboarding.categoryScopeGlobalCaption""":
       """Aparece en todas las listas""",
   """onboarding.categoryScopeScopedCaption""": """Aparece solo en esta lista""",
+  """onboarding.customFieldsTitle""": """Campos a tu medida""",
+  """onboarding.customFieldsBody""":
+      """Anota los detalles que te importan: una fecha de caducidad, un pasillo, una talla. Crea un campo una vez para toda la casa o para una sola lista, y aparecerá en cada artículo.""",
+  """onboarding.customFieldsMockExpiry""": """Caducidad""",
+  """onboarding.customFieldsMockExpiryValue""": """12 sep""",
+  """onboarding.customFieldsMockAisle""": """Pasillo""",
+  """onboarding.customFieldsMockAisleValue""": """Lácteos""",
+  """onboarding.customFieldsTypesCaption""":
+      """Elige el tipo que encaje con lo que quieres anotar.""",
   """onboarding.dev.showOnboarding""": """Mostrar introducción""",
   """onboarding.dev.pickLastSeenTitle""": """Ver novedades""",
   """onboarding.dev.pickLastSeenBody""":
