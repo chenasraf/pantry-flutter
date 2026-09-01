@@ -20,6 +20,14 @@ BUILD_NUMBER := $(shell grep '^version:' pubspec.yaml | sed 's/.*+//')
 # the shared bundle ID in App Store Connect.
 MACOS_BUILD_NUMBER := $(shell echo $$(($(BUILD_NUMBER) + 10000)))
 
+# Pin rsync to system version to avoid Homebrew versions
+RSYNC_SHIM := $(CURDIR)/build/.rsync-shim
+
+.PHONY: rsync-shim
+rsync-shim:
+	@mkdir -p $(RSYNC_SHIM)
+	@ln -sf /usr/bin/rsync $(RSYNC_SHIM)/rsync
+
 # Default target
 .PHONY: help
 help:
@@ -234,15 +242,15 @@ android-build-aab:
 ios-build:
 	flutter build ios --release --no-codesign --obfuscate --split-debug-info=build/debug-info-ios
 .PHONY: ios-build-ipa
-ios-build-ipa:
-	flutter build ipa --release --obfuscate --split-debug-info=build/debug-info-ios --dart-define-from-file=.env --export-options-plist=ios/ExportOptions.plist
+ios-build-ipa: rsync-shim
+	PATH="$(RSYNC_SHIM):$$PATH" flutter build ipa --release --obfuscate --split-debug-info=build/debug-info-ios --dart-define-from-file=.env --export-options-plist=ios/ExportOptions.plist
 
 .PHONY: macos-build
 macos-build:
 	flutter build macos --release --build-number=$(MACOS_BUILD_NUMBER) --obfuscate --split-debug-info=build/debug-info-macos
 
 .PHONY: macos-build-pkg
-macos-build-pkg:
+macos-build-pkg: rsync-shim
 	flutter build macos --config-only --build-number=$(MACOS_BUILD_NUMBER) --obfuscate --split-debug-info=build/debug-info-macos
 	rm -rf build/macos/Runner.xcarchive build/macos/pkg
 	xcodebuild -workspace macos/Runner.xcworkspace \
@@ -251,7 +259,7 @@ macos-build-pkg:
 		-archivePath build/macos/Runner.xcarchive \
 		-allowProvisioningUpdates \
 		archive
-	xcodebuild -exportArchive \
+	PATH="$(RSYNC_SHIM):$$PATH" xcodebuild -exportArchive \
 		-archivePath build/macos/Runner.xcarchive \
 		-exportPath build/macos/pkg \
 		-exportOptionsPlist macos/ExportOptions.plist \
