@@ -3136,6 +3136,9 @@ class _ViewToggleBtn extends StatelessWidget {
   }
 }
 
+/// Overflow-menu actions in the Done section header.
+enum _DoneAction { uncheckAll, removeAll }
+
 class _ItemList extends StatefulWidget {
   final ChecklistsController controller;
   final List<ListItem> activeItems;
@@ -3378,24 +3381,47 @@ class _ItemListState extends State<_ItemList> {
                 ),
               ),
               const Spacer(),
-              if (widget.controller.canUncheckAll) ...[
-                TextButton(
-                  onPressed: () => _confirmUncheckAll(context),
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsetsDirectional.symmetric(
-                      horizontal: 10,
-                    ),
-                    minimumSize: const Size(0, 32),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
+              if (widget.controller.canUncheckAll ||
+                  widget.controller.canRemoveAllDone) ...[
+                PopupMenuButton<_DoneAction>(
+                  tooltip: m.checklists.moreActions,
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: cs.onSurfaceVariant,
+                    size: 20,
                   ),
-                  child: Text(
-                    m.checklists.uncheckAll,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  padding: EdgeInsets.zero,
+                  splashRadius: 20,
+                  onSelected: (action) {
+                    switch (action) {
+                      case _DoneAction.uncheckAll:
+                        _confirmUncheckAll(context);
+                      case _DoneAction.removeAll:
+                        _confirmRemoveAllDone(context);
+                    }
+                  },
+                  itemBuilder: (ctx) => [
+                    if (widget.controller.canUncheckAll)
+                      PopupMenuItem(
+                        value: _DoneAction.uncheckAll,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          dense: true,
+                          leading: const Icon(Icons.remove_done, size: 20),
+                          title: Text(m.checklists.uncheckAll),
+                        ),
+                      ),
+                    if (widget.controller.canRemoveAllDone)
+                      PopupMenuItem(
+                        value: _DoneAction.removeAll,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          dense: true,
+                          leading: const Icon(Icons.delete_outline, size: 20),
+                          title: Text(m.checklists.removeAll),
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(width: 6),
               ],
@@ -3444,6 +3470,38 @@ class _ItemListState extends State<_ItemList> {
         SnackBar(content: Text(m.checklists.uncheckedCount(count))),
       );
     }
+  }
+
+  /// Confirm, then soft-delete every done item in the list, offering an Undo
+  /// snackbar that restores them. The removed snapshots are captured from the
+  /// controller so undo can re-add exactly what left.
+  Future<void> _confirmRemoveAllDone(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.removeAllConfirm),
+        content: Text(m.checklists.removeAllConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.checklists.removeAll),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final removed = widget.controller.removeAllDone();
+    if (removed.isEmpty) return;
+    showUndoSnackBar(
+      message: m.checklists.removedCount(removed.length),
+      undoLabel: m.checklists.undo,
+      onUndo: () async => widget.controller.undoBatchDelete(removed),
+      undoFailedMessage: m.checklists.restoreFailed,
+    );
   }
 
   /// One [SliverMainAxisGroup] per category run: a pinned category header

@@ -2687,6 +2687,28 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// ```
   String uncheckedCount(int count) =>
       """${_plural(count, one: 'בוטל הסימון של פריט אחד', many: 'בוטל הסימון של $count פריטים')}""";
+
+  /// ```dart
+  /// "להסיר הכול"
+  /// ```
+  String get removeAll => """להסיר הכול""";
+
+  /// ```dart
+  /// "להסיר את כל הפריטים המסומנים?"
+  /// ```
+  String get removeAllConfirm => """להסיר את כל הפריטים המסומנים?""";
+
+  /// ```dart
+  /// "כל פריט מסומן ברשימה זו יועבר לאשפה. אפשר לשחזר אותם לאחר מכן."
+  /// ```
+  String get removeAllConfirmBody =>
+      """כל פריט מסומן ברשימה זו יועבר לאשפה. אפשר לשחזר אותם לאחר מכן.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'הוסר פריט אחד', many: 'הוסרו $count פריטים')}"
+  /// ```
+  String removedCount(int count) =>
+      """${_plural(count, one: 'הוסר פריט אחד', many: 'הוסרו $count פריטים')}""";
   ResetOrderChecklistsMessagesHe get resetOrder =>
       ResetOrderChecklistsMessagesHe(this);
 
@@ -3199,6 +3221,22 @@ class ViewItemChecklistsMessagesHe extends ViewItemChecklistsMessages {
   /// "נוסף $time"
   /// ```
   String addedMeta(String time) => """נוסף $time""";
+
+  /// ```dart
+  /// "הושלם על-ידי $name · $time"
+  /// ```
+  String doneByMeta(String name, String time) =>
+      """הושלם על-ידי $name · $time""";
+
+  /// ```dart
+  /// "הושלם על-ידך · $time"
+  /// ```
+  String doneByYouMeta(String time) => """הושלם על-ידך · $time""";
+
+  /// ```dart
+  /// "הושלם $time"
+  /// ```
+  String doneMeta(String time) => """הושלם $time""";
 
   /// ```dart
   /// "ממש עכשיו"
@@ -5715,6 +5753,10 @@ Map<String, String> get messagesHeMap => {
   """checklists.uncheckAllConfirm""": """לבטל את הסימון של כל הפריטים?""",
   """checklists.uncheckAllConfirmBody""":
       """כל פריט מסומן ברשימה זו יוחזר לרשימה הפעילה.""",
+  """checklists.removeAll""": """להסיר הכול""",
+  """checklists.removeAllConfirm""": """להסיר את כל הפריטים המסומנים?""",
+  """checklists.removeAllConfirmBody""":
+      """כל פריט מסומן ברשימה זו יועבר לאשפה. אפשר לשחזר אותם לאחר מכן.""",
   """checklists.resetOrder.menuLabel""": """איפוס סדר מותאם…""",
   """checklists.resetOrder.pickTitle""": """איפוס הסדר המותאם לפי…""",
   """checklists.resetOrder.confirmTitle""": """לאפס את הסדר המותאם?""",

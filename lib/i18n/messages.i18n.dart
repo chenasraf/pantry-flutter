@@ -2682,6 +2682,28 @@ class ChecklistsMessages {
   /// ```
   String uncheckedCount(int count) =>
       """${_plural(count, one: 'Unchecked 1 item', many: 'Unchecked $count items')}""";
+
+  /// ```dart
+  /// "Remove all"
+  /// ```
+  String get removeAll => """Remove all""";
+
+  /// ```dart
+  /// "Remove all done items?"
+  /// ```
+  String get removeAllConfirm => """Remove all done items?""";
+
+  /// ```dart
+  /// "Every checked item in this list will be moved to the trash. You can restore them afterwards."
+  /// ```
+  String get removeAllConfirmBody =>
+      """Every checked item in this list will be moved to the trash. You can restore them afterwards.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Removed 1 item', many: 'Removed $count items')}"
+  /// ```
+  String removedCount(int count) =>
+      """${_plural(count, one: 'Removed 1 item', many: 'Removed $count items')}""";
   ResetOrderChecklistsMessages get resetOrder =>
       ResetOrderChecklistsMessages(this);
 
@@ -3192,6 +3214,21 @@ class ViewItemChecklistsMessages {
   /// "Added $time"
   /// ```
   String addedMeta(String time) => """Added $time""";
+
+  /// ```dart
+  /// "Done by $name · $time"
+  /// ```
+  String doneByMeta(String name, String time) => """Done by $name · $time""";
+
+  /// ```dart
+  /// "Done by you · $time"
+  /// ```
+  String doneByYouMeta(String time) => """Done by you · $time""";
+
+  /// ```dart
+  /// "Done $time"
+  /// ```
+  String doneMeta(String time) => """Done $time""";
 
   /// ```dart
   /// "just now"
@@ -5722,6 +5759,10 @@ Password: pantry-rocks""",
   """checklists.uncheckAllConfirm""": """Uncheck all items?""",
   """checklists.uncheckAllConfirmBody""":
       """Every checked item in this list will be returned to the active list.""",
+  """checklists.removeAll""": """Remove all""",
+  """checklists.removeAllConfirm""": """Remove all done items?""",
+  """checklists.removeAllConfirmBody""":
+      """Every checked item in this list will be moved to the trash. You can restore them afterwards.""",
   """checklists.resetOrder.menuLabel""": """Reset custom order…""",
   """checklists.resetOrder.pickTitle""": """Reset custom order to…""",
   """checklists.resetOrder.confirmTitle""": """Reset custom order?""",

@@ -1124,31 +1124,84 @@ class _MetaRow extends StatelessWidget {
 
   const _MetaRow({required this.item, required this.controller});
 
+  String _actorName(String uid) => controller.members[uid]?.displayName ?? uid;
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final v = m.checklists.viewItem;
+    final currentUser = AuthService.instance.credentials?.loginName;
+
     final addedBy = item.addedBy;
     final hasAuthor = addedBy != null && addedBy.isNotEmpty;
-    final currentUser = AuthService.instance.credentials?.loginName;
-    final isYou = hasAuthor && addedBy == currentUser;
-    final member = hasAuthor ? controller.members[addedBy] : null;
-    final displayName = member?.displayName ?? addedBy ?? '';
-    final time = relativeTime(item.createdAt);
+    final addedByYou = hasAuthor && addedBy == currentUser;
+    final addedTime = relativeTime(item.createdAt);
     // When the author is unknown (older items without an `addedBy`), drop
     // the "by … " segment, hide the avatar, and lead with "Added {time}".
-    final text = !hasAuthor
-        ? v.addedMeta(time)
-        : isYou
-        ? v.addedByYouMeta(time)
-        : v.addedByMeta(displayName, time);
+    final addedText = !hasAuthor
+        ? v.addedMeta(addedTime)
+        : addedByYou
+        ? v.addedByYouMeta(addedTime)
+        : v.addedByMeta(_actorName(addedBy), addedTime);
 
+    final doneAt = item.doneAt;
+    final showDone = item.done && doneAt != null;
+    final doneBy = item.doneBy;
+    final hasDoneAuthor = doneBy != null && doneBy.isNotEmpty;
+    final doneByYou = hasDoneAuthor && doneBy == currentUser;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _MetaLine(
+          leading: hasAuthor
+              ? MemberAvatar(
+                  userId: addedBy,
+                  displayName: _actorName(addedBy),
+                  size: 28,
+                )
+              : null,
+          text: addedText,
+          color: cs.onSurfaceVariant,
+        ),
+        if (showDone)
+          _MetaLine(
+            leading: Icon(
+              Icons.check_circle_outline,
+              size: 20,
+              color: cs.primary,
+            ),
+            text: !hasDoneAuthor
+                ? v.doneMeta(relativeTime(doneAt))
+                : doneByYou
+                ? v.doneByYouMeta(relativeTime(doneAt))
+                : v.doneByMeta(_actorName(doneBy), relativeTime(doneAt)),
+            color: cs.onSurfaceVariant,
+          ),
+      ],
+    );
+  }
+}
+
+class _MetaLine extends StatelessWidget {
+  final Widget? leading;
+  final String text;
+  final Color color;
+
+  const _MetaLine({
+    required this.leading,
+    required this.text,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
       child: Row(
         children: [
-          if (hasAuthor) ...[
-            MemberAvatar(userId: addedBy, displayName: displayName, size: 28),
+          if (leading != null) ...[
+            SizedBox(width: 28, child: Center(child: leading)),
             const SizedBox(width: 10),
           ],
           Expanded(
@@ -1159,7 +1212,7 @@ class _MetaRow extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: cs.onSurfaceVariant,
+                color: color,
               ),
             ),
           ),

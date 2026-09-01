@@ -2712,6 +2712,28 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// ```
   String uncheckedCount(int count) =>
       """${_plural(count, one: '1 article décoché', many: '$count articles décochés')}""";
+
+  /// ```dart
+  /// "Tout supprimer"
+  /// ```
+  String get removeAll => """Tout supprimer""";
+
+  /// ```dart
+  /// "Supprimer tous les articles cochés ?"
+  /// ```
+  String get removeAllConfirm => """Supprimer tous les articles cochés ?""";
+
+  /// ```dart
+  /// "Chaque article coché de cette liste sera déplacé vers la corbeille. Vous pourrez les restaurer ensuite."
+  /// ```
+  String get removeAllConfirmBody =>
+      """Chaque article coché de cette liste sera déplacé vers la corbeille. Vous pourrez les restaurer ensuite.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article supprimé', many: '$count articles supprimés')}"
+  /// ```
+  String removedCount(int count) =>
+      """${_plural(count, one: '1 article supprimé', many: '$count articles supprimés')}""";
   ResetOrderChecklistsMessagesFr get resetOrder =>
       ResetOrderChecklistsMessagesFr(this);
 
@@ -3227,6 +3249,22 @@ class ViewItemChecklistsMessagesFr extends ViewItemChecklistsMessages {
   /// "Ajouté $time"
   /// ```
   String addedMeta(String time) => """Ajouté $time""";
+
+  /// ```dart
+  /// "Terminé par $name · $time"
+  /// ```
+  String doneByMeta(String name, String time) =>
+      """Terminé par $name · $time""";
+
+  /// ```dart
+  /// "Terminé par vous · $time"
+  /// ```
+  String doneByYouMeta(String time) => """Terminé par vous · $time""";
+
+  /// ```dart
+  /// "Terminé $time"
+  /// ```
+  String doneMeta(String time) => """Terminé $time""";
 
   /// ```dart
   /// "à l'instant"
@@ -5806,6 +5844,10 @@ Mot de passe : pantry-rocks""",
   """checklists.uncheckAllConfirm""": """Décocher tous les articles ?""",
   """checklists.uncheckAllConfirmBody""":
       """Chaque article coché de cette liste sera renvoyé vers la liste active.""",
+  """checklists.removeAll""": """Tout supprimer""",
+  """checklists.removeAllConfirm""": """Supprimer tous les articles cochés ?""",
+  """checklists.removeAllConfirmBody""":
+      """Chaque article coché de cette liste sera déplacé vers la corbeille. Vous pourrez les restaurer ensuite.""",
   """checklists.resetOrder.menuLabel""":
       """Réinitialiser l'ordre personnalisé…""",
   """checklists.resetOrder.pickTitle""":

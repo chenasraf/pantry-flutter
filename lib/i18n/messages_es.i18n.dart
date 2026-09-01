@@ -2707,6 +2707,28 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// ```
   String uncheckedCount(int count) =>
       """${_plural(count, one: 'Se desmarcó 1 artículo', many: 'Se desmarcaron $count artículos')}""";
+
+  /// ```dart
+  /// "Eliminar todo"
+  /// ```
+  String get removeAll => """Eliminar todo""";
+
+  /// ```dart
+  /// "¿Eliminar todos los artículos marcados?"
+  /// ```
+  String get removeAllConfirm => """¿Eliminar todos los artículos marcados?""";
+
+  /// ```dart
+  /// "Todos los artículos marcados de esta lista se moverán a la papelera. Podrás restaurarlos después."
+  /// ```
+  String get removeAllConfirmBody =>
+      """Todos los artículos marcados de esta lista se moverán a la papelera. Podrás restaurarlos después.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Se eliminó 1 artículo', many: 'Se eliminaron $count artículos')}"
+  /// ```
+  String removedCount(int count) =>
+      """${_plural(count, one: 'Se eliminó 1 artículo', many: 'Se eliminaron $count artículos')}""";
   ResetOrderChecklistsMessagesEs get resetOrder =>
       ResetOrderChecklistsMessagesEs(this);
 
@@ -3222,6 +3244,22 @@ class ViewItemChecklistsMessagesEs extends ViewItemChecklistsMessages {
   /// "Añadido $time"
   /// ```
   String addedMeta(String time) => """Añadido $time""";
+
+  /// ```dart
+  /// "Completado por $name · $time"
+  /// ```
+  String doneByMeta(String name, String time) =>
+      """Completado por $name · $time""";
+
+  /// ```dart
+  /// "Completado por ti · $time"
+  /// ```
+  String doneByYouMeta(String time) => """Completado por ti · $time""";
+
+  /// ```dart
+  /// "Completado $time"
+  /// ```
+  String doneMeta(String time) => """Completado $time""";
 
   /// ```dart
   /// "ahora mismo"
@@ -5786,6 +5824,11 @@ Contraseña: pantry-rocks""",
   """checklists.uncheckAllConfirm""": """¿Desmarcar todos los artículos?""",
   """checklists.uncheckAllConfirmBody""":
       """Todos los artículos marcados de esta lista volverán a la lista activa.""",
+  """checklists.removeAll""": """Eliminar todo""",
+  """checklists.removeAllConfirm""":
+      """¿Eliminar todos los artículos marcados?""",
+  """checklists.removeAllConfirmBody""":
+      """Todos los artículos marcados de esta lista se moverán a la papelera. Podrás restaurarlos después.""",
   """checklists.resetOrder.menuLabel""": """Restablecer orden personalizado…""",
   """checklists.resetOrder.pickTitle""":
       """Restablecer orden personalizado a…""",

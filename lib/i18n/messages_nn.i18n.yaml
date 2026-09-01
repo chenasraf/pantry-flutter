@@ -681,6 +681,9 @@ checklists:
     addedByMeta(String name, String time): Lagt til av $name · $time
     addedByYouMeta(String time): Lagt til av deg · $time
     addedMeta(String time): Lagt til $time
+    doneByMeta(String name, String time): Fullført av $name · $time
+    doneByYouMeta(String time): Fullført av deg · $time
+    doneMeta(String time): Fullført $time
     relJustNow: nett no
     relToday: i dag
     relYesterday: i går
@@ -754,6 +757,10 @@ checklists:
   uncheckAllConfirm: "Fjerne avkryssing på alle oppføringar?"
   uncheckAllConfirmBody: "Alle avkryssa oppføringar i denne lista blir sende tilbake til den aktive lista."
   uncheckedCount(int count): "${_plural(count, one: 'Fjerna avkryssing på 1 oppføring', many: 'Fjerna avkryssing på $count oppføringar')}"
+  removeAll: Fjern alle
+  removeAllConfirm: Fjerne alle avkryssa oppføringar?
+  removeAllConfirmBody: Kvar avkryssa oppføring i denne lista blir flytta til papirkorga. Du kan gjenoppretta dei etterpå.
+  removedCount(int count): "${_plural(count, one: 'Fjerna 1 oppføring', many: 'Fjerna $count oppføringar')}"
   resetOrder:
     menuLabel: "Tilbakestill eigen rekkjefølgje…"
     pickTitle: "Tilbakestill eigen rekkjefølgje til…"

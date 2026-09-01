@@ -571,6 +571,9 @@ checklists:
     addedByMeta(String name, String time): "Added by $name · $time"
     addedByYouMeta(String time): "Added by you · $time"
     addedMeta(String time): "Added $time"
+    doneByMeta(String name, String time): "Done by $name · $time"
+    doneByYouMeta(String time): "Done by you · $time"
+    doneMeta(String time): "Done $time"
     relJustNow: just now
     relToday: today
     relYesterday: yesterday
@@ -641,6 +644,10 @@ checklists:
   uncheckAllConfirm: Uncheck all items?
   uncheckAllConfirmBody: Every checked item in this list will be returned to the active list.
   uncheckedCount(int count): "${_plural(count, one: 'Unchecked 1 item', many: 'Unchecked $count items')}"
+  removeAll: Remove all
+  removeAllConfirm: Remove all done items?
+  removeAllConfirmBody: Every checked item in this list will be moved to the trash. You can restore them afterwards.
+  removedCount(int count): "${_plural(count, one: 'Removed 1 item', many: 'Removed $count items')}"
   resetOrder:
     menuLabel: Reset custom order…
     pickTitle: Reset custom order to…

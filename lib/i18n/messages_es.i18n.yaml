@@ -571,6 +571,9 @@ checklists:
     addedByMeta(String name, String time): "Añadido por $name · $time"
     addedByYouMeta(String time): "Añadido por ti · $time"
     addedMeta(String time): "Añadido $time"
+    doneByMeta(String name, String time): "Completado por $name · $time"
+    doneByYouMeta(String time): "Completado por ti · $time"
+    doneMeta(String time): "Completado $time"
     relJustNow: ahora mismo
     relToday: hoy
     relYesterday: ayer
@@ -641,6 +644,10 @@ checklists:
   uncheckAllConfirm: "¿Desmarcar todos los artículos?"
   uncheckAllConfirmBody: "Todos los artículos marcados de esta lista volverán a la lista activa."
   uncheckedCount(int count): "${_plural(count, one: 'Se desmarcó 1 artículo', many: 'Se desmarcaron $count artículos')}"
+  removeAll: Eliminar todo
+  removeAllConfirm: "¿Eliminar todos los artículos marcados?"
+  removeAllConfirmBody: Todos los artículos marcados de esta lista se moverán a la papelera. Podrás restaurarlos después.
+  removedCount(int count): "${_plural(count, one: 'Se eliminó 1 artículo', many: 'Se eliminaron $count artículos')}"
   resetOrder:
     menuLabel: "Restablecer orden personalizado…"
     pickTitle: "Restablecer orden personalizado a…"

@@ -2700,6 +2700,28 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   /// ```
   String uncheckedCount(int count) =>
       """${_plural(count, one: 'Fjerna avkryssing på 1 oppføring', many: 'Fjerna avkryssing på $count oppføringar')}""";
+
+  /// ```dart
+  /// "Fjern alle"
+  /// ```
+  String get removeAll => """Fjern alle""";
+
+  /// ```dart
+  /// "Fjerne alle avkryssa oppføringar?"
+  /// ```
+  String get removeAllConfirm => """Fjerne alle avkryssa oppføringar?""";
+
+  /// ```dart
+  /// "Kvar avkryssa oppføring i denne lista blir flytta til papirkorga. Du kan gjenoppretta dei etterpå."
+  /// ```
+  String get removeAllConfirmBody =>
+      """Kvar avkryssa oppføring i denne lista blir flytta til papirkorga. Du kan gjenoppretta dei etterpå.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Fjerna 1 oppføring', many: 'Fjerna $count oppføringar')}"
+  /// ```
+  String removedCount(int count) =>
+      """${_plural(count, one: 'Fjerna 1 oppføring', many: 'Fjerna $count oppføringar')}""";
   ResetOrderChecklistsMessagesNn get resetOrder =>
       ResetOrderChecklistsMessagesNn(this);
 
@@ -3213,6 +3235,22 @@ class ViewItemChecklistsMessagesNn extends ViewItemChecklistsMessages {
   /// "Lagt til $time"
   /// ```
   String addedMeta(String time) => """Lagt til $time""";
+
+  /// ```dart
+  /// "Fullført av $name · $time"
+  /// ```
+  String doneByMeta(String name, String time) =>
+      """Fullført av $name · $time""";
+
+  /// ```dart
+  /// "Fullført av deg · $time"
+  /// ```
+  String doneByYouMeta(String time) => """Fullført av deg · $time""";
+
+  /// ```dart
+  /// "Fullført $time"
+  /// ```
+  String doneMeta(String time) => """Fullført $time""";
 
   /// ```dart
   /// "nett no"
@@ -5762,6 +5800,10 @@ Passord: pantry""",
       """Fjerne avkryssing på alle oppføringar?""",
   """checklists.uncheckAllConfirmBody""":
       """Alle avkryssa oppføringar i denne lista blir sende tilbake til den aktive lista.""",
+  """checklists.removeAll""": """Fjern alle""",
+  """checklists.removeAllConfirm""": """Fjerne alle avkryssa oppføringar?""",
+  """checklists.removeAllConfirmBody""":
+      """Kvar avkryssa oppføring i denne lista blir flytta til papirkorga. Du kan gjenoppretta dei etterpå.""",
   """checklists.resetOrder.menuLabel""": """Tilbakestill eigen rekkjefølgje…""",
   """checklists.resetOrder.pickTitle""":
       """Tilbakestill eigen rekkjefølgje til…""",

@@ -571,6 +571,9 @@ checklists:
     addedByMeta(String name, String time): "Hinzugefügt von $name · $time"
     addedByYouMeta(String time): "Hinzugefügt von dir · $time"
     addedMeta(String time): "Hinzugefügt $time"
+    doneByMeta(String name, String time): "Erledigt von $name · $time"
+    doneByYouMeta(String time): "Erledigt von dir · $time"
+    doneMeta(String time): "Erledigt $time"
     relJustNow: gerade eben
     relToday: heute
     relYesterday: gestern
@@ -641,6 +644,10 @@ checklists:
   uncheckAllConfirm: "Bei allen Einträgen das Häkchen entfernen?"
   uncheckAllConfirmBody: "Jeder abgehakte Eintrag in dieser Liste wird in die aktive Liste zurückgeholt."
   uncheckedCount(int count): "${_plural(count, one: 'Häkchen bei 1 Eintrag entfernt', many: 'Häkchen bei $count Einträgen entfernt')}"
+  removeAll: Alle entfernen
+  removeAllConfirm: Alle erledigten Einträge entfernen?
+  removeAllConfirmBody: Jeder abgehakte Eintrag dieser Liste wird in den Papierkorb verschoben. Du kannst sie danach wiederherstellen.
+  removedCount(int count): "${_plural(count, one: '1 Eintrag entfernt', many: '$count Einträge entfernt')}"
   resetOrder:
     menuLabel: "Eigene Reihenfolge zurücksetzen…"
     pickTitle: "Eigene Reihenfolge zurücksetzen auf…"

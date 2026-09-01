@@ -2713,6 +2713,28 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// ```
   String uncheckedCount(int count) =>
       """${_plural(count, one: 'Häkchen bei 1 Eintrag entfernt', many: 'Häkchen bei $count Einträgen entfernt')}""";
+
+  /// ```dart
+  /// "Alle entfernen"
+  /// ```
+  String get removeAll => """Alle entfernen""";
+
+  /// ```dart
+  /// "Alle erledigten Einträge entfernen?"
+  /// ```
+  String get removeAllConfirm => """Alle erledigten Einträge entfernen?""";
+
+  /// ```dart
+  /// "Jeder abgehakte Eintrag dieser Liste wird in den Papierkorb verschoben. Du kannst sie danach wiederherstellen."
+  /// ```
+  String get removeAllConfirmBody =>
+      """Jeder abgehakte Eintrag dieser Liste wird in den Papierkorb verschoben. Du kannst sie danach wiederherstellen.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag entfernt', many: '$count Einträge entfernt')}"
+  /// ```
+  String removedCount(int count) =>
+      """${_plural(count, one: '1 Eintrag entfernt', many: '$count Einträge entfernt')}""";
   ResetOrderChecklistsMessagesDe get resetOrder =>
       ResetOrderChecklistsMessagesDe(this);
 
@@ -3230,6 +3252,22 @@ class ViewItemChecklistsMessagesDe extends ViewItemChecklistsMessages {
   /// "Hinzugefügt $time"
   /// ```
   String addedMeta(String time) => """Hinzugefügt $time""";
+
+  /// ```dart
+  /// "Erledigt von $name · $time"
+  /// ```
+  String doneByMeta(String name, String time) =>
+      """Erledigt von $name · $time""";
+
+  /// ```dart
+  /// "Erledigt von dir · $time"
+  /// ```
+  String doneByYouMeta(String time) => """Erledigt von dir · $time""";
+
+  /// ```dart
+  /// "Erledigt $time"
+  /// ```
+  String doneMeta(String time) => """Erledigt $time""";
 
   /// ```dart
   /// "gerade eben"
@@ -5814,6 +5852,10 @@ Passwort: pantry-rocks""",
       """Bei allen Einträgen das Häkchen entfernen?""",
   """checklists.uncheckAllConfirmBody""":
       """Jeder abgehakte Eintrag in dieser Liste wird in die aktive Liste zurückgeholt.""",
+  """checklists.removeAll""": """Alle entfernen""",
+  """checklists.removeAllConfirm""": """Alle erledigten Einträge entfernen?""",
+  """checklists.removeAllConfirmBody""":
+      """Jeder abgehakte Eintrag dieser Liste wird in den Papierkorb verschoben. Du kannst sie danach wiederherstellen.""",
   """checklists.resetOrder.menuLabel""": """Eigene Reihenfolge zurücksetzen…""",
   """checklists.resetOrder.pickTitle""":
       """Eigene Reihenfolge zurücksetzen auf…""",

@@ -1381,6 +1381,15 @@ class ChecklistsController extends ChangeNotifier {
       isCurrentListWritable &&
       permissions.canCheckItems;
 
+  /// Whether the "Remove all" affordance (bulk soft-delete of every done item)
+  /// should be offered. A writable non-meta list in the active view, plus the
+  /// delete-items permission.
+  bool get canRemoveAllDone =>
+      !isMetaMode &&
+      !isSoftView &&
+      isCurrentListWritable &&
+      permissions.canDeleteItems;
+
   /// Re-orders `_items` into the display order the current sort implies after a
   /// drag has rewritten `sortOrder`. Custom and store sort read straight from
   /// `sortOrder` (store grouping re-sorts each column itself, so only presence
@@ -1513,6 +1522,25 @@ class ChecklistsController extends ChangeNotifier {
     _cacheCurrentItems();
     _enqueueBatch('uncheck', ids);
     notifyListeners();
+  }
+
+  /// Soft-delete every done item in the current list in one batch. Gathers
+  /// *all* done items (unfiltered — "remove all done in the list", not just
+  /// what a search/category filter shows), removes them optimistically, and
+  /// enqueues a single batch delete op. Returns the removed snapshots so the
+  /// caller can offer undo via [undoBatchDelete].
+  List<ListItem> removeAllDone() {
+    if (!canRemoveAllDone) return const [];
+    final removed = [
+      for (final i in _items)
+        if (i.done && i.deletedAt == null) i,
+    ];
+    if (removed.isEmpty) return const [];
+    _items = reconcileRemoveIds(_items, {for (final i in removed) i.id});
+    _cacheCurrentItems();
+    _enqueueBatch('delete', [for (final i in removed) i.id]);
+    notifyListeners();
+    return removed;
   }
 
   Future<void> refresh() async {
