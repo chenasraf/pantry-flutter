@@ -49,6 +49,7 @@ import 'package:pantry/widgets/entity_icon.dart';
 import 'checklist_item_tile.dart';
 import 'checklist_switcher_sheet.dart';
 import 'checklists_controller.dart';
+import 'item_picker_dialogs.dart';
 import 'item_compose_bar.dart';
 import 'item_detail_view.dart';
 import 'item_form_view.dart';
@@ -3807,24 +3808,10 @@ class _ItemListState extends State<_ItemList> {
         .where((l) => l.id != excludeId && l.id != kAllListsId)
         .toList();
     if (others.isEmpty) return;
-    final targetId = await showDialog<int>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text(m.checklists.moveItem),
-        children: [
-          for (final list in others)
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(ctx, list.id),
-              child: Row(
-                children: [
-                  Icon(checklistIcon(list.icon), size: 20),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(list.name)),
-                ],
-              ),
-            ),
-        ],
-      ),
+    final targetId = await pickTargetList(
+      context,
+      title: m.checklists.moveItem,
+      lists: others,
     );
     if (targetId == null) return;
     try {
@@ -3852,24 +3839,10 @@ class _ItemListState extends State<_ItemList> {
         .where((l) => l.id != excludeId && l.id != kAllListsId)
         .toList();
     if (others.isEmpty) return;
-    final targetId = await showDialog<int>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text(m.checklists.copyItem),
-        children: [
-          for (final list in others)
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(ctx, list.id),
-              child: Row(
-                children: [
-                  Icon(checklistIcon(list.icon), size: 20),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(list.name)),
-                ],
-              ),
-            ),
-        ],
-      ),
+    final targetId = await pickTargetList(
+      context,
+      title: m.checklists.copyItem,
+      lists: others,
     );
     if (targetId == null) return;
     try {
@@ -4670,10 +4643,6 @@ class _DevLastSeenPickerDialog extends StatelessWidget {
   }
 }
 
-/// Sentinel returned by the category picker to mean "clear the category"
-/// (distinct from a null dismissal and from a real positive category id).
-const int _kBatchClearCategory = -1;
-
 /// Bottom bar shown while items are multi-selected. Surfaces the four group
 /// actions, each enabled per the controller's permission/writability gating,
 /// and drives the batch endpoints with a target/category picker + result
@@ -4835,11 +4804,23 @@ class _SelectionActionBar extends StatelessWidget {
   // immediate snackbar; move / delete / set-category also offer Undo, driven
   // from the pre-action item snapshots captured before the selection clears.
 
+  /// Valid move/copy targets: every list except the synthetic All-lists entry
+  /// and the current list (a no-op target).
+  List<ChecklistList> _targetLists() {
+    final currentId = controller.isMetaMode ? null : controller.currentList?.id;
+    return controller.lists
+        .where((l) => l.id != kAllListsId && l.id != currentId)
+        .toList();
+  }
+
   Future<void> _move(BuildContext context) async {
     final affected = List.of(controller.selectedItems);
-    final targetId = await _pickTargetList(
+    final targets = _targetLists();
+    if (targets.isEmpty) return;
+    final targetId = await pickTargetList(
       context,
       title: m.checklists.batch.moveTitle,
+      lists: targets,
     );
     if (targetId == null) return;
     controller.batchMove(targetId);
@@ -4851,9 +4832,12 @@ class _SelectionActionBar extends StatelessWidget {
 
   Future<void> _copy(BuildContext context) async {
     final count = controller.selectedCount;
-    final targetId = await _pickTargetList(
+    final targets = _targetLists();
+    if (targets.isEmpty) return;
+    final targetId = await pickTargetList(
       context,
       title: m.checklists.batch.copyTitle,
+      lists: targets,
     );
     if (targetId == null) return;
     controller.batchCopy(targetId);
@@ -4863,9 +4847,14 @@ class _SelectionActionBar extends StatelessWidget {
 
   Future<void> _category(BuildContext context) async {
     final affected = List.of(controller.selectedItems);
-    final choice = await _pickCategory(context);
+    // Selected items may span lists (meta view), so only globals are safe there;
+    // in a per-list view the current list's scope applies.
+    final cats = controller.categoriesForList(
+      controller.isMetaMode ? null : controller.currentList?.id,
+    );
+    final choice = await pickCategory(context, categories: cats);
     if (choice == null) return;
-    final categoryId = choice == _kBatchClearCategory ? null : choice;
+    final categoryId = choice == kBatchClearCategory ? null : choice;
     controller.batchSetCategory(categoryId);
     _showUndo(
       m.checklists.batch.categorySet(affected.length),
@@ -4875,7 +4864,7 @@ class _SelectionActionBar extends StatelessWidget {
 
   Future<void> _stores(BuildContext context) async {
     final affected = List.of(controller.selectedItems);
-    final choice = await _pickStores(context);
+    final choice = await pickStores(context, stores: controller.sortedStores);
     if (choice == null) return;
     controller.batchSetStores(choice);
     _showUndo(
@@ -4886,7 +4875,7 @@ class _SelectionActionBar extends StatelessWidget {
 
   Future<void> _labels(BuildContext context) async {
     final affected = List.of(controller.selectedItems);
-    final choice = await _pickLabels(context);
+    final choice = await pickLabels(context, labels: controller.sortedLabels);
     if (choice == null) return;
     controller.batchSetLabels(choice);
     _showUndo(
@@ -4967,185 +4956,6 @@ class _SelectionActionBar extends StatelessWidget {
       message: message,
       undoLabel: m.checklists.undo,
       onUndo: () async => onUndo(),
-    );
-  }
-
-  /// Target-list picker for move/copy. Excludes the synthetic All-lists entry
-  /// and, in a per-list view, the current list (a no-op target).
-  Future<int?> _pickTargetList(BuildContext context, {required String title}) {
-    final currentId = controller.isMetaMode ? null : controller.currentList?.id;
-    final others = controller.lists
-        .where((l) => l.id != kAllListsId && l.id != currentId)
-        .toList();
-    if (others.isEmpty) return Future.value(null);
-    return showDialog<int>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text(title),
-        children: [
-          for (final list in others)
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(ctx, list.id),
-              child: Row(
-                children: [
-                  Icon(checklistIcon(list.icon), size: 20),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(list.name)),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  /// Category picker for set-category. Returns null on dismiss,
-  /// [_kBatchClearCategory] for "No category", or a positive category id.
-  Future<int?> _pickCategory(BuildContext context) {
-    // Selected items may span lists (meta view), so only globals are safe there;
-    // in a per-list view the current list's scope applies.
-    final cats = controller.categoriesForList(
-      controller.isMetaMode ? null : controller.currentList?.id,
-    );
-    final cs = Theme.of(context).colorScheme;
-    return showDialog<int>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text(m.checklists.batch.categoryTitle),
-        children: [
-          SimpleDialogOption(
-            onPressed: () => Navigator.pop(ctx, _kBatchClearCategory),
-            child: Row(
-              children: [
-                const Icon(Icons.block, size: 20),
-                const SizedBox(width: 12),
-                Expanded(child: Text(m.checklists.batch.clearCategory)),
-              ],
-            ),
-          ),
-          for (final cat in cats)
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(ctx, cat.id),
-              child: Row(
-                children: [
-                  Icon(
-                    categoryIcon(cat.icon),
-                    size: 20,
-                    color: parseHexColor(cat.color) ?? cs.primary,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(cat.name)),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  /// Multi-select store picker for set-stores. Returns null on dismiss, or the
-  /// chosen store ids (an empty list clears the stores on every item). The set
-  /// replaces whatever the items currently carry, so it starts empty.
-  Future<List<int>?> _pickStores(BuildContext context) {
-    final stores = controller.sortedStores;
-    final cs = Theme.of(context).colorScheme;
-    final selected = <int>{};
-    return showDialog<List<int>>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) => AlertDialog(
-          title: Text(m.checklists.batch.storesTitle),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: stores.isEmpty
-                ? Text(m.stores.noStores)
-                : ListView(
-                    shrinkWrap: true,
-                    children: [
-                      for (final s in stores)
-                        CheckboxListTile(
-                          value: selected.contains(s.id),
-                          onChanged: (v) => setState(() {
-                            if (v ?? false) {
-                              selected.add(s.id);
-                            } else {
-                              selected.remove(s.id);
-                            }
-                          }),
-                          secondary: Icon(
-                            storeIcon(s.icon),
-                            color: parseHexColor(s.color) ?? cs.primary,
-                          ),
-                          title: Text(s.name),
-                        ),
-                    ],
-                  ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(m.common.cancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, selected.toList()),
-              child: Text(m.common.save),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Multi-select label picker for set-labels. Returns null on dismiss, or the
-  /// chosen label ids (an empty list clears the labels on every item). The set
-  /// replaces whatever the items currently carry, so it starts empty.
-  Future<List<int>?> _pickLabels(BuildContext context) {
-    final labels = controller.sortedLabels;
-    final cs = Theme.of(context).colorScheme;
-    final selected = <int>{};
-    return showDialog<List<int>>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) => AlertDialog(
-          title: Text(m.checklists.batch.labelsTitle),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: labels.isEmpty
-                ? Text(m.labels.noLabels)
-                : ListView(
-                    shrinkWrap: true,
-                    children: [
-                      for (final l in labels)
-                        CheckboxListTile(
-                          value: selected.contains(l.id),
-                          onChanged: (v) => setState(() {
-                            if (v ?? false) {
-                              selected.add(l.id);
-                            } else {
-                              selected.remove(l.id);
-                            }
-                          }),
-                          secondary: Icon(
-                            labelIcon(l.icon),
-                            color: parseHexColor(l.color) ?? cs.primary,
-                          ),
-                          title: Text(l.name),
-                        ),
-                    ],
-                  ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(m.common.cancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, selected.toList()),
-              child: Text(m.common.save),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -11,7 +11,6 @@ import 'package:pantry/services/checklist_service.dart';
 import 'package:pantry/services/server_version_service.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_display.dart';
 import 'package:pantry/utils/category_icons.dart';
-import 'package:pantry/utils/checklist_icons.dart';
 import 'package:pantry/utils/entity_icons.dart';
 import 'package:pantry/utils/label_icons.dart';
 import 'package:pantry/utils/store_icons.dart';
@@ -29,6 +28,7 @@ import 'package:pantry/widgets/member_avatar.dart';
 import 'package:pantry/models/item_lifecycle.dart';
 import 'checklists_controller.dart';
 import 'item_form_view.dart';
+import 'item_picker_dialogs.dart';
 
 class ItemDetailView extends StatelessWidget {
   final ListItem item;
@@ -279,24 +279,10 @@ class ItemDetailView extends StatelessWidget {
         .where((l) => l.id != controller.currentList?.id)
         .toList();
     if (others.isEmpty) return;
-    final targetId = await showDialog<int>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text(m.checklists.moveItem),
-        children: [
-          for (final list in others)
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(ctx, list.id),
-              child: Row(
-                children: [
-                  Icon(checklistIcon(list.icon), size: 20),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(list.name)),
-                ],
-              ),
-            ),
-        ],
-      ),
+    final targetId = await pickTargetList(
+      context,
+      title: m.checklists.moveItem,
+      lists: others,
     );
     if (targetId == null || !context.mounted) return;
     try {
@@ -317,24 +303,10 @@ class ItemDetailView extends StatelessWidget {
         .where((l) => l.id != controller.currentList?.id)
         .toList();
     if (others.isEmpty) return;
-    final targetId = await showDialog<int>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text(m.checklists.copyItem),
-        children: [
-          for (final list in others)
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(ctx, list.id),
-              child: Row(
-                children: [
-                  Icon(checklistIcon(list.icon), size: 20),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text(list.name)),
-                ],
-              ),
-            ),
-        ],
-      ),
+    final targetId = await pickTargetList(
+      context,
+      title: m.checklists.copyItem,
+      lists: others,
     );
     if (targetId == null || !context.mounted) return;
     try {
