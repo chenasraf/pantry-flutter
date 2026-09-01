@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.30.0](https://github.com/chenasraf/pantry-flutter/compare/v0.29.1...v0.30.0) (2026-09-01)
+
+
+### Features
+
+* **checklist:** allow opt-in suggestions for reusing archived items ([4f62d9a](https://github.com/chenasraf/pantry-flutter/commit/4f62d9a40e27197429a9ea322bfebe8b97bb0feb))
+* **checklist:** bulk remove-all done items ([45daf2d](https://github.com/chenasraf/pantry-flutter/commit/45daf2da7daaea27bfa4a9f34a73fc207ca83748))
+* custom fields for checklist items ([e635e96](https://github.com/chenasraf/pantry-flutter/commit/e635e96e2634b3fa45d4e9e9821add64bb390580))
+
+
+### Bug Fixes
+
+* cache item and photo images for offline viewing ([52acdd2](https://github.com/chenasraf/pantry-flutter/commit/52acdd218830f435da82077ac97cd663c7213dc6)), closes [#159](https://github.com/chenasraf/pantry-flutter/issues/159)
+* **checklists:** fix filter dropdown scroll error ([1ba2ad6](https://github.com/chenasraf/pantry-flutter/commit/1ba2ad6a08dd397383a56328bd4f51c4de7d8b15))
+* **icons:** properly unify category, label, store and price icons across the app ([d0b1702](https://github.com/chenasraf/pantry-flutter/commit/d0b17028edcd2126b483a23e6727ba43beeef400))
+
 ## [0.29.1](https://github.com/chenasraf/pantry-flutter/compare/v0.29.0...v0.29.1) (2026-08-25)
 
 

@@ -1,0 +1,8 @@
+Features
+- allow opt-in suggestions for reusing archived items
+- bulk remove-all done items
+- custom fields for checklist items
+Bug Fixes
+- cache item and photo images for offline viewing
+- fix filter dropdown scroll error
+- properly unify category, label, store and price icons across the app
