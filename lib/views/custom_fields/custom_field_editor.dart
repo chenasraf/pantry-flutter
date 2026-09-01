@@ -48,6 +48,10 @@ class _CustomFieldEditorState extends State<CustomFieldEditor> {
 
   late FieldDraft _d;
   TextDirection _nameDir = TextDirection.ltr;
+
+  /// Drives the submit button's enabled state — a field can't be saved
+  /// nameless, and a dead button says so better than a silent no-op.
+  bool _nameBlank = true;
   bool _busy = false;
 
   bool get _isEditing => widget.initial != null;
@@ -92,9 +96,16 @@ class _CustomFieldEditorState extends State<CustomFieldEditor> {
       _optionCtrls.add(TextEditingController(text: o.label));
     }
     _nameDir = detectTextDirection(_d.name);
+    _nameBlank = _d.name.trim().isEmpty;
     _name.addListener(() {
       final dir = detectTextDirection(_name.text);
-      if (dir != _nameDir) setState(() => _nameDir = dir);
+      final blank = _name.text.trim().isEmpty;
+      if (dir != _nameDir || blank != _nameBlank) {
+        setState(() {
+          _nameDir = dir;
+          _nameBlank = blank;
+        });
+      }
     });
   }
 
@@ -556,7 +567,7 @@ class _CustomFieldEditorState extends State<CustomFieldEditor> {
           ),
         const Spacer(),
         FilledButton(
-          onPressed: _busy ? null : _submit,
+          onPressed: _busy || _nameBlank ? null : _submit,
           child: Text(m.customFields.done),
         ),
       ],

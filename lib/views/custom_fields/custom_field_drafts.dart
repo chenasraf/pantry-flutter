@@ -49,8 +49,10 @@ class FieldDraft {
     this.leadDays = 0,
     this.overridePolicy = FieldOverridePolicy.fieldOnly,
     this.stopWhenDone = false,
-    this.options = const [],
-  });
+    // Copied so the editor can add and remove options in place, whatever the
+    // caller passed in.
+    List<OptionDraft>? options,
+  }) : options = [...?options];
 }
 
 class OptionDraft {
