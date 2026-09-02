@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.31.0](https://github.com/chenasraf/pantry-flutter/compare/v0.30.1...v0.31.0) (2026-09-02)
+
+
+### Features
+
+* **fields:** auto-detect links in text fields ([25c9f4f](https://github.com/chenasraf/pantry-flutter/commit/25c9f4f788fba66112009d23be46dc4c9270837c))
+
+
+### Bug Fixes
+
+* **editor:** allow selecting text after removing a link ([29550c4](https://github.com/chenasraf/pantry-flutter/commit/29550c496ce8927588682c90631a00dd37d1265f))
+* **editor:** keep the cursor in place while typing in rich text ([41df00e](https://github.com/chenasraf/pantry-flutter/commit/41df00e903007d793aa8833b7454121a7c712cd5)), closes [#165](https://github.com/chenasraf/pantry-flutter/issues/165)
+
 ## [0.30.1](https://github.com/chenasraf/pantry-flutter/compare/v0.30.0...v0.30.1) (2026-09-01)
 
 

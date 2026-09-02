@@ -1,0 +1,5 @@
+Features
+- auto-detect links in text fields
+Bug Fixes
+- allow selecting text after removing a link
+- keep the cursor in place while typing in rich text
