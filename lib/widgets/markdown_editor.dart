@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill/quill_delta.dart';
 
 import 'package:pantry/i18n.dart';
 import 'package:pantry/utils/markdown_delta.dart';
@@ -224,9 +225,44 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         // the user wants it. Fold the inline formats into the popover so they
         // stay reachable.
         contextMenuBuilder: _buildSelectionMenu,
+        linkActionPickerDelegate: _pickLinkAction,
       ),
     ),
   );
+
+  /// The link menu, with "remove" handled here rather than by flutter_quill.
+  ///
+  /// flutter_quill caches a link's gesture recognizer against the text node and
+  /// consults that cache before asking whether the node is still a link,
+  /// dropping it only when the line is disposed. Clearing the attribute leaves
+  /// the recognizer bound to text that is no longer a link, where it goes on
+  /// swallowing every long press — the text can never be selected again.
+  /// Rewriting the text instead hands the line a new node, which no recognizer
+  /// is attached to.
+  Future<LinkMenuAction> _pickLinkAction(
+    BuildContext context,
+    String link,
+    Node node,
+  ) async {
+    final action = await defaultLinkActionPickerDelegate(context, link, node);
+    if (action != LinkMenuAction.remove) return action;
+
+    final range = getLinkRange(node);
+    final surviving = Map.of(node.style.attributes)..remove(Attribute.link.key);
+    // Composed rather than replaced: an insert runs Quill's auto-format rules,
+    // which would spot the URL and link it straight back.
+    _controller.compose(
+      Delta()
+        ..retain(range.start)
+        ..delete(range.end - range.start)
+        ..insert(node.toPlainText(), {
+          for (final entry in surviving.entries) entry.key: entry.value.value,
+        }),
+      _controller.selection,
+      ChangeSource.local,
+    );
+    return LinkMenuAction.none;
+  }
 
   /// Native copy/paste popover, with our inline formatting actions appended so
   /// formatting stays reachable when the popover covers the toolbar. Only shown

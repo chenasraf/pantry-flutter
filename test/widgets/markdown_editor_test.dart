@@ -170,6 +170,69 @@ void main() {
     // where it was typed.
     expect(controller().document.toPlainText(), 'hello\n\nworld\n');
   });
+
+  group('removing a link', () {
+    /// Long-press the text, then pick "Remove" from flutter_quill's link menu.
+    Future<void> removeLinkAt(WidgetTester tester, Offset anchor) async {
+      await tester.longPressAt(anchor);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove'));
+      await tester.pumpAndSettle();
+    }
+
+    Offset anchorOn(WidgetTester tester, String word) =>
+        tester
+            .getRect(find.textContaining(word, findRichText: true).first)
+            .centerLeft +
+        const Offset(25, 0);
+
+    testWidgets('leaves the text selectable', (tester) async {
+      await tester.pumpWidget(
+        wrapped(const MarkdownEditor(initialValue: 'https://google.com')),
+      );
+      await tester.pumpAndSettle();
+
+      final controller = tester
+          .widget<QuillEditor>(find.byType(QuillEditor))
+          .controller;
+      await removeLinkAt(tester, anchorOn(tester, 'google'));
+
+      // The link is gone for good — Quill's auto-format must not put it back.
+      expect(
+        controller.document.querySegmentLeafNode(1).leaf?.style.attributes,
+        isEmpty,
+      );
+
+      // The long press the link used to swallow now selects a word again.
+      await tester.longPressAt(anchorOn(tester, 'google'));
+      await tester.pumpAndSettle();
+      expect(controller.selection.isCollapsed, isFalse);
+    });
+
+    testWidgets('keeps the other formatting on the text', (tester) async {
+      await tester.pumpWidget(
+        wrapped(
+          const MarkdownEditor(
+            initialValue: '[**search**](https://google.com)',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final controller = tester
+          .widget<QuillEditor>(find.byType(QuillEditor))
+          .controller;
+      await removeLinkAt(tester, anchorOn(tester, 'search'));
+
+      final attributes = controller.document
+          .querySegmentLeafNode(1)
+          .leaf
+          ?.style
+          .attributes;
+      expect(attributes, contains(Attribute.bold.key));
+      expect(attributes, isNot(contains(Attribute.link.key)));
+    });
+  });
 }
 
 /// Stands in for the note editor, which keeps the markdown the editor reports
