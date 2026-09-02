@@ -4,6 +4,7 @@ import 'package:pantry/models/custom_field.dart';
 import 'package:pantry/services/custom_field_service.dart';
 import 'package:pantry/utils/field_type_icons.dart';
 import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry/widgets/linkified_text.dart';
 
 /// Read-only display of an item's custom-field values, one row per filled
 /// field, resolved against the field definitions (for names, option labels and
@@ -121,11 +122,11 @@ class _ItemCustomFieldsDisplayState extends State<ItemCustomFieldsDisplay> {
       return Icon(Icons.check, size: 20, color: cs.primary);
     }
     final text = _format(def, v) ?? '';
-    return Text(
-      text,
-      textDirection: detectTextDirection(text),
-      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-    );
+    const style = TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
+    if (def.type == FieldType.text) {
+      return LinkifiedText(text, style: style);
+    }
+    return Text(text, textDirection: detectTextDirection(text), style: style);
   }
 
   bool _hasValue(FieldDefinition def, FieldValue v) => switch (def.type) {
