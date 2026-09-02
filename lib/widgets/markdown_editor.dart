@@ -138,7 +138,11 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
     super.didUpdateWidget(oldWidget);
     // Reseed only when the caller hands us a genuinely different starting value
     // (a reset), not when it feeds our own last output back as initialValue.
+    // Callers that hold the editor's output in their own state hand it back on
+    // every keystroke, and reseeding mid-edit would drop the caret along with
+    // anything markdown can't yet represent (an empty list item, say).
     if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _lastEmitted &&
         normalizeMarkdown(widget.initialValue) != _lastEmitted) {
       _controller.removeListener(_onRichChanged);
       _controller.dispose();

@@ -107,4 +107,88 @@ void main() {
     expect(find.byType(TextField), findsNothing);
     expect(find.textContaining('oat milk', findRichText: true), findsWidgets);
   });
+
+  testWidgets('Enter in a list keeps the new item when the host echoes back', (
+    tester,
+  ) async {
+    await tester.pumpWidget(wrapped(const _EchoingHost('- milk')));
+    await tester.pumpAndSettle();
+
+    final controller = tester
+        .widget<QuillEditor>(find.byType(QuillEditor))
+        .controller;
+    final end = controller.document.length - 1;
+    controller.replaceText(
+      end,
+      0,
+      '\n',
+      TextSelection.collapsed(offset: end + 1),
+    );
+    await tester.pumpAndSettle();
+
+    // Same controller, empty second item intact, caret sitting in it.
+    expect(
+      tester.widget<QuillEditor>(find.byType(QuillEditor)).controller,
+      same(controller),
+    );
+    expect(controller.document.toPlainText(), 'milk\n\n');
+    expect(controller.selection.baseOffset, end + 1);
+    // An item with no text yet isn't markdown the host should store.
+    expect(
+      tester.state<_EchoingHostState>(find.byType(_EchoingHost)).content,
+      '- milk',
+    );
+  });
+
+  testWidgets('typing after two returns carries on where the caret is', (
+    tester,
+  ) async {
+    await tester.pumpWidget(wrapped(const _EchoingHost('')));
+    await tester.pumpAndSettle();
+
+    QuillController controller() =>
+        tester.widget<QuillEditor>(find.byType(QuillEditor)).controller;
+
+    Future<void> type(String text) async {
+      final at = controller().selection.baseOffset;
+      controller().replaceText(
+        at,
+        0,
+        text,
+        TextSelection.collapsed(offset: at + text.length),
+      );
+      await tester.pump();
+    }
+
+    for (final character in 'hello\n\nworld'.split('')) {
+      await type(character);
+    }
+    await tester.pumpAndSettle();
+
+    // Blank lines between the two paragraphs collapse when markdown is parsed
+    // back, so the caret must not follow a reparse — every character belongs
+    // where it was typed.
+    expect(controller().document.toPlainText(), 'hello\n\nworld\n');
+  });
+}
+
+/// Stands in for the note editor, which keeps the markdown the editor reports
+/// in its own state and hands it straight back as [MarkdownEditor.initialValue].
+class _EchoingHost extends StatefulWidget {
+  final String initialValue;
+
+  const _EchoingHost(this.initialValue);
+
+  @override
+  State<_EchoingHost> createState() => _EchoingHostState();
+}
+
+class _EchoingHostState extends State<_EchoingHost> {
+  late String content = widget.initialValue;
+
+  @override
+  Widget build(BuildContext context) => MarkdownEditor(
+    initialValue: content,
+    onChanged: (markdown) => setState(() => content = markdown),
+  );
 }

@@ -27,12 +27,21 @@ final _deltaToMd = DeltaToMarkdown(
 /// Parse [markdown] into a Quill [Delta].
 Delta markdownToDelta(String markdown) => _mdToDelta().convert(markdown);
 
+/// A trailing bullet, number or quote marker with nothing after it — the empty
+/// block the editor opens the instant Enter is pressed at the end of a list or
+/// quote. Markdown can't hold it (a re-parse drops the empty item), so emitting
+/// it would make the very next round-trip lose content.
+final _danglingBlockMarker = RegExp(
+  r'(?:^|\n)[ \t]*(?:[-*+]|\d+[.)]|>)[ \t]*$',
+);
+
 /// Serialize a Quill [delta] back to markdown, trimming the trailing newline
 /// Quill always keeps on its document. An empty delta yields empty markdown —
 /// [DeltaToMarkdown] builds a [Document] internally, which rejects an empty delta.
 String deltaToMarkdown(Delta delta) {
   if (delta.isEmpty) return '';
-  return _deltaToMd.convert(delta).trimRight();
+  final markdown = _deltaToMd.convert(delta).trimRight();
+  return markdown.replaceFirst(_danglingBlockMarker, '').trimRight();
 }
 
 /// The markdown [source] as it would be re-emitted after a round-trip through
