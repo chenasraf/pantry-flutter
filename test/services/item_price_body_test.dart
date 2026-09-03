@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 
 void main() {
   tearDown(() => ServerVersionService.instance.debugSeed());

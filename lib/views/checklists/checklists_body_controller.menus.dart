@@ -312,7 +312,9 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
             icon: Icons.link,
             label: m.checklists.copyLink,
           ),
-        if (domain.currentList != null && !isMeta && PlatformInfo.isAndroid)
+        if (domain.currentList != null &&
+            !isMeta &&
+            PlatformInfo.isAndroidPhone)
           ChecklistsOverflowAction(
             value: 'add_to_home',
             icon: Icons.add_to_home_screen,

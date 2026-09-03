@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/entity_icons.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Introduces Shopping Mode with a mock of the dense shopping screen — store

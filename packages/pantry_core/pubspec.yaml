@@ -1,0 +1,33 @@
+name: pantry_core
+description: "Shared domain, sync and service layer for every Pantry form factor."
+publish_to: "none"
+version: 0.0.1
+
+environment:
+  sdk: ^3.11.1
+
+# Core may depend on the Flutter framework, but only on plugins that run on
+# every form factor it serves — which now includes Wear OS. A plugin needing a
+# host the watch does not have (home screen widgets, share sheets, background
+# workers) belongs in the app that owns that host, with core inverted to notify
+# rather than call.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  crypto: ^3.0.7
+  flutter_secure_storage: ^10.0.0
+  http: ^1.6.0
+  http_parser: ^4.1.2
+  i18n:
+    git: https://github.com/chenasraf/i18n
+  intl: ^0.20.2
+  path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.5.4

@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/services/auth_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry/services/auth_session_macos.dart';
-import 'package:pantry/services/cert_trust_service.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PendingCertPrompt {

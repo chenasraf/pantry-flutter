@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 class WelcomeOnboardingPage extends StatelessWidget {
   final bool isNewUser;

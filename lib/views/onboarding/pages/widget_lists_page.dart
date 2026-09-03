@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Tells users that the Pantry home-screen widget shows the lists they choose,
 /// picked via the widget's gear, and that they can add several widgets each

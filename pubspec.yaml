@@ -33,6 +33,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  pantry_core:
+    path: packages/pantry_core
+  pantry_wear:
+    path: packages/pantry_wear
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8

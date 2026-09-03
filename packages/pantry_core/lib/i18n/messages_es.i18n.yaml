@@ -1,0 +1,1012 @@
+common:
+  appTitle: Pantry
+  cancel: Cancelar
+  delete: Eliminar
+  save: Guardar
+  retry: Reintentar
+  refresh: Actualizar
+  logout: Cerrar sesión
+  loading: Cargando...
+  error: Error
+  copy: Copiar
+  copied: Copiado
+  closeDialog: Listo
+  remove: Quitar
+  clear: Borrar
+  more: Más
+  permissionDenied: No tienes permiso para hacer eso
+  noAccessTitle: Sin acceso
+  noAccessBody: Todavía no tienes acceso a nada en este hogar. Un administrador puede concederte permisos en la aplicación web de Pantry.
+
+login:
+  connectToNextcloud: "Conéctate a tu instancia de Nextcloud"
+  serverUrl: URL del servidor
+  serverUrlHint: cloud.example.com
+  connect: Conectar
+  waitingForAuth: "Esperando autenticación...\nPor favor, completa el inicio de sesión en tu navegador."
+  couldNotConnect: No se pudo conectar al servidor. Por favor, verifica la URL.
+  loginFailed: "Inicio de sesión fallido. Por favor, inténtalo de nuevo."
+  seeDetails: Ver detalles
+  errorDetailsTitle: Detalles del error
+  untrustedCertTitle: Certificado no confiable
+  untrustedCertBody(String host): "${host} está usando un certificado que tu dispositivo no reconoce — normalmente porque es autofirmado. Comprueba que la huella digital coincida con la que te dio el administrador del servidor antes de confiar en él."
+  untrustedCertWarning: Confía en este certificado solo si reconoces la huella digital. Confiar en un certificado inesperado puede permitir que un atacante lea tu tráfico.
+  trustCertificate: Confiar en el certificado
+  certFingerprint: "Huella SHA-256"
+  certSubject: Sujeto
+  certIssuer: Emisor
+  certValidity: "Válido"
+  useAppPassword: Iniciar sesión con una contraseña de aplicación
+  useBrowserLogin: Iniciar sesión con el navegador
+  username: Nombre de usuario
+  appPassword: Contraseña de aplicación
+  appPasswordHelp: "Crea una contraseña de aplicación en Nextcloud en Ajustes → Seguridad → Dispositivos y sesiones. Úsala si el inicio de sesión del navegador no se abre o tu servidor usa un certificado autofirmado."
+  appPasswordMissing: Introduce tu nombre de usuario y tu contraseña de aplicación.
+  signIn: Iniciar sesión
+  couldNotReachServer: No se pudo conectar con el servidor. Comprueba la dirección y tu conexión de red o VPN.
+  connectionTimeout: El servidor tardó demasiado en responder. Comprueba tu conexión de red o VPN e inténtalo de nuevo.
+  certProbeFailed: No se pudo leer el certificado del servidor para verificarlo. La conexión puede ser inestable o el servidor no estar disponible.
+
+home:
+  noHouses: "Aún no hay casas."
+  noHousesBody: "Las casas son espacios compartidos para tu hogar. Crea tu primera casa para comenzar a agregar listas, fotos y notas."
+  createHouse: Crear casa
+  houseName: Nombre de la casa
+  houseDescription: "Descripción (opcional)"
+  createHouseFailed: No se pudo crear la casa.
+  failedToLoadHouses: No se pudieron cargar las casas.
+  serverAppMissingTitle: Pantry no está instalado
+  serverAppMissingBody: "Esta app es un cliente para la app Pantry en Nextcloud. Parece que Pantry aún no está instalado en tu servidor. Pide a tu administrador que lo instale desde la tienda de apps de Nextcloud, o instálalo tú mismo si tienes acceso de administrador."
+  openAppStore: Abrir apps de Nextcloud
+  learnMore: "Más información"
+
+nav:
+  checklists: Listas
+  photoBoard: Tablero de fotos
+  notesWall: Muro de notas
+
+widget:
+  chooseListsTitle: Elegir listas
+  chooseListsSubtitle: Elige qué listas muestra este widget.
+  chooseListTitle: Elegir una lista
+  chooseListSubtitle: Elige la lista que muestra este widget.
+  noLists: No hay listas disponibles.
+
+onboarding:
+  next: Siguiente
+  back: Atrás
+  skip: Omitir
+  done: Empezar
+  stepLabel(int current, int total): "Paso ${current} de ${total}"
+  welcomeNewTitle: "Bienvenido a Pantry"
+  welcomeNewBody: "Vamos a hacer un recorrido rápido por cómo funciona Pantry para que le saques el máximo provecho."
+  welcomeUpdateTitle: "Novedades"
+  welcomeUpdateBody: "Pantry ha aprendido algunos trucos nuevos desde la última vez que lo abriste. Aquí tienes un repaso rápido."
+  checklistsRedesignTitle: "Las listas tienen un nuevo aspecto"
+  checklistsRedesignBody: "La página de listas se ha rehecho desde cero: un diseño más limpio, una forma más rápida de añadir elementos y acciones rápidas en cada fila. Las próximas páginas te muestran las novedades."
+  checklistSelectorTitle: "Cambia de lista desde arriba"
+  checklistSelectorBody: "Toca el nombre de la lista o su icono en la parte superior para cambiar entre listas o crear una nueva."
+  checklistSelectorHint: "Toca para cambiar de lista"
+  mockListGroceries: "Compras"
+  mockListHardware: "Ferretería"
+  mockListWeekend: "Viaje de fin de semana"
+  mockItemCountSummary(int count): "${count} artículos"
+  newListLabel: "Nueva lista"
+  swipeActionsTitle: "Desliza los artículos para gestionarlos"
+  swipeActionsBody: "Desliza un artículo de derecha a izquierda para ver acciones rápidas: editar, mover o eliminar."
+  swipeActionsHint: "Desliza a la izquierda"
+  swipeActionsHintBack: "Desliza a la derecha"
+  quickActionsTitle: "Acciones rápidas en cada artículo"
+  quickActionsBody: "Cada artículo muestra botones de acción al final — pulsa uno para editar, mover o eliminar el artículo sin abrirlo."
+  addItemsTitle: "Una forma más rápida de añadir"
+  addItemsBody: "Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba."
+  mockComposeListName: "Compras"
+  progressHeroTitle: "Oculta la tarjeta de progreso"
+  progressHeroBody: "¿No necesitas el anillo de progreso arriba? Deslízalo para descartarlo."
+  progressHeroBringBack(String toggle): "Puedes volver a mostrarla en cualquier momento desde el menú de la lista → ${toggle}."
+  progressHeroHint: "Desliza para descartar"
+  progressHeroDismissTitle: "Oculta la tarjeta de progreso"
+  progressHeroDismissBody: "¿No necesitas el anillo de progreso arriba? Pulsa la X en la tarjeta para ocultarla."
+  widgetListsTitle: "Elige las listas de tu widget"
+  widgetListsBody: "Añade el widget de Pantry a tu pantalla de inicio para ver de un vistazo cuántos artículos quedan en cada lista, sin abrir la app."
+  widgetListsHow(String action): "Al añadir un widget eliges sus listas al momento. Toca ${action} en un widget para cambiarlas después y añade tantos widgets como quieras, cada uno con sus propias listas."
+  widgetListsActionLabel: "Elegir listas"
+  widgetListsWidgetTitle: "Pantry"
+  widgetListsWidgetItemsLeft(int count): "${_plural(count, one: '1 pendiente', many: '${count} pendientes')}"
+  widgetListsWidgetEmpty: "Todo hecho"
+  pinnedNotesTitle: "Mantén tus notas importantes arriba"
+  pinnedNotesBody: "Fija una nota desde su menú de opciones para que se mantenga en lo alto del muro de notas, por encima de las notas más recientes."
+  mockPinnedNoteTitle: "Contraseña Wi-Fi"
+  mockPinnedNoteContent: "Red: Casa\nContraseña: pantry-rocks"
+  mockItemName: "Tomates"
+  mockItemQuantity: "x2"
+  mockItemCategory: "Verduras"
+  mockHardwareItemName: "Bombillas"
+  mockBulkItemThird: "Leche"
+  mockBulkItemFourth: "Pan"
+  allListsTitle: "Todo en una sola vista"
+  allListsBody: "Abre la vista Todas las listas desde el selector para ver los elementos de todas tus listas juntos. Cuando añades un elemento desde aquí, el formulario te pide a qué lista enviarlo — elígela en el chip de lista."
+  bulkAddTitle: "Añade varios artículos a la vez"
+  bulkAddBody: "Activa el interruptor Múltiple y el campo se convierte en un cuadro de varias líneas — cada línea se convierte en un artículo. Práctico cuando pegas una lista o anotas toda la compra de golpe."
+  bulkSelectTitle: "Actúa sobre varios artículos a la vez"
+  bulkSelectBody: "Mantén pulsado un artículo —o toca Seleccionar en el menú— para empezar a seleccionar y luego mover, copiar, asignar una categoría o eliminar todo lo elegido de una vez."
+  barcodeScanTitle: "Escanea un código de barras para añadir artículos"
+  barcodeScanBody: "Toca el botón de escaneo en la barra de añadir y apunta la cámara al código de barras de un producto. Pantry busca el nombre, la categoría y la foto y los rellena por ti, o escribe el número a mano. El primer escaneo de un producto hace la búsqueda; después es instantáneo para toda tu casa."
+  barcodeScanMockName: "Coca-Cola Zero"
+  barcodeScanMockCategory: "Bebidas"
+  priceTitle: "Añade precios a tus artículos"
+  priceBody: "Dale a cualquier artículo un precio, un importe único o un rango, en la moneda que prefieras. Aparece como una etiqueta en el artículo y puedes filtrar la lista por precio para ajustarte al presupuesto."
+  priceMockName: "Aceite de oliva"
+  shoppingIntroTitle: "Compra tienda por tienda"
+  shoppingIntroBody: "Inicia una compra con tus listas, recorre cada tienda en orden y marca los artículos sobre la marcha, con un total de precio en tiempo real."
+  shoppingMockStoreActive: "Supermercado"
+  shoppingMockStoreNext: "Farmacia"
+  categoryScopeTitle: "Categorías por lista"
+  categoryScopeBody: "Mantén una categoría en una sola lista, o hazla global para que aparezca en todas las listas. Las categorías nuevas siguen siendo globales a menos que elijas una lista."
+  categoryScopeGlobalCaption: "Aparece en todas las listas"
+  categoryScopeScopedCaption: "Aparece solo en esta lista"
+  customFieldsTitle: "Campos a tu medida"
+  customFieldsBody: "Anota los detalles que te importan: una fecha de caducidad, un pasillo, una talla. Crea un campo una vez para toda la casa o para una sola lista, y aparecerá en cada artículo."
+  customFieldsMockExpiry: "Caducidad"
+  customFieldsMockExpiryValue: "12 sep"
+  customFieldsMockAisle: "Pasillo"
+  customFieldsMockAisleValue: "Lácteos"
+  customFieldsTypesCaption: "Elige el tipo que encaje con lo que quieres anotar."
+  serverRequirementNote(String version): "* Requiere Pantry para Nextcloud v${version}+"
+  dev:
+    showOnboarding: "Mostrar introducción"
+    pickLastSeenTitle: "Ver novedades"
+    pickLastSeenBody: "Elige la versión cuyas novedades quieres ver, tal como las vería quien actualiza a esa versión."
+    neverSeen: "Nunca vista (usuario nuevo)"
+    forceAllFeatures: "Forzar todas las funciones"
+    sendTestNotification: "Enviar notificación de prueba"
+
+notificationsIntro:
+  title: "Mantente al día"
+  body: "Pantry puede notificarte cuando los miembros del hogar agreguen artículos a las listas, suban fotos o dejen notas. Las notificaciones se obtienen de tu propio servidor Nextcloud — nada pasa por Google ni terceros."
+  bullet1: Alertas de actividad del hogar
+  bullet2: Obtenidas directamente de tu servidor
+  bullet3: "Funciona incluso con la app cerrada"
+  enableButton: Activar notificaciones
+  skipButton: Ahora no
+  permissionDeniedTitle: Permiso denegado
+  permissionDeniedBody: "Puedes activar las notificaciones más tarde en los ajustes de la app. Si tu dispositivo las bloquea, primero deberás permitirlas en los ajustes del sistema."
+  ok: OK
+
+about:
+  title: Acerca de
+  developer: Desarrollador
+  email: Correo
+  repository: "Código fuente"
+  nextcloudApp: App de Nextcloud
+  privacyPolicy: "Política de privacidad"
+  feedback: Comentarios y problemas
+  serverVersion: Servidor Nextcloud
+  pantryServerVersion: Pantry en el servidor
+  versionUnknown: Desconocido
+  buyMeACoffee: "Invítame a un café"
+
+settings:
+  title: Ajustes de la app
+  generalSection: General
+  interfaceSection: Interfaz
+  defaultItemTapAction: Acción al tocar un elemento
+  defaultItemTapActionBody: "Qué ocurre al tocar la fila de un elemento."
+  itemTapActionNames:
+    done: Marcar como completado
+    view: Ver
+    edit: Editar
+    none: Ninguna
+  defaultItemLongPressAction: Acción al mantener pulsado un elemento
+  defaultItemLongPressActionBody: "Qué ocurre al mantener pulsada la fila de un elemento."
+  itemLongPressActionNames:
+    multiselect: Selección múltiple/Reordenar
+    done: Marcar como completado
+    view: Ver
+    edit: Editar
+    none: Ninguna
+  checkboxPosition: Posición de la casilla
+  checkboxPositionBody: En qué lado de la fila aparece la casilla.
+  checkboxPositionNames:
+    start: Inicio
+    end: Fin
+  density: Densidad de la lista
+  densityBody: Cuánto espacio ocupa cada artículo en tus listas.
+  densityNames:
+    normal: Normal
+    dense: Compacta
+    compact: Muy compacta
+  swipeActions: Acciones al deslizar
+  swipeActionsBody: Desliza los elementos hacia la izquierda para ver acciones rápidas. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.
+  itemActions: Acciones de elementos
+  itemActionsBody: Muestra acciones rápidas en cada elemento. Si se desactiva, las acciones pasan a un botón de menú en cada elemento.
+  startShoppingButton: Botón «Empezar a comprar»
+  startShoppingButtonBody: Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú.
+  truncateItemNames: Truncar nombres de artículos largos
+  truncateItemNamesBody: Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.
+  reuseExistingItems: Reutilizar artículos existentes al añadir
+  reuseExistingItemsBody: "Cuando intentes añadir un artículo que ya existe en la lista, reutiliza ese artículo."
+  reuseExistingItemsNames:
+    ask: Preguntar siempre
+    reuse: Reutilizar siempre
+    never: Nunca reutilizar
+  suggestArchivedItems: Sugerir artículos archivados
+  suggestArchivedItemsBody: Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.
+  navOrderTitle: Orden de navegación
+  navOrderSubtitle: Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.
+  navOrderBody: Arrastra para reordenar las pestañas. La primera sección visible se abre al iniciar la app. Desactiva las secciones que no uses para ocultar su pestaña; al menos una debe permanecer activada.
+  navOrderDefaultHint: Se abre al iniciar
+  navOrderReset: Restablecer
+  visibleChipsTitle: Detalles del artículo
+  visibleChipsSubtitle: Elige qué detalles se muestran en cada artículo.
+  visibleChipsBody: Desactiva cualquier detalle que no quieras mostrar como etiqueta en las filas de artículos.
+  visibleChipsReset: Restablecer
+  chipNames:
+    category: Categoría
+    store: Tienda
+    label: Etiqueta
+    quantity: Cantidad
+    price: Precio
+    note: Nota
+    oneTime: Único
+    recurring: Recurrente
+    list: Lista
+  language: Idioma
+  systemLanguage: Predeterminado del sistema
+  theme: Tema
+  themeNames:
+    system: "Predeterminado del sistema"
+    light: Claro
+    dark: Oscuro
+  useServerThemeColor: Usar el color del tema de Nextcloud
+  useServerThemeColorBody: Colorea la aplicación con el color del tema de tu usuario de Nextcloud. Desactívalo para usar los colores propios de la aplicación.
+  notificationsSection: Notificaciones
+  enableNotifications: Activar notificaciones
+  enableNotificationsBody: Mostrar alertas cuando los miembros del hogar agreguen o actualicen contenido.
+  pollInterval: Buscar nueva actividad
+  pollInterval15m: Cada 15 minutos
+  pollInterval30m: Cada 30 minutos
+  pollInterval1h: Cada hora
+  pollInterval2h: Cada 2 horas
+  pollInterval6h: Cada 6 horas
+  permissionDenied: "El permiso de notificaciones fue denegado. Actívalo en los ajustes del sistema."
+  refreshSection: Actualización automática
+  refreshSectionBody: Con qué frecuencia cada pantalla comprueba si hay cambios en el servidor mientras la estás viendo. Siempre puedes deslizar hacia abajo para actualizar manualmente.
+  checklistRefresh: Listas
+  notesRefresh: Notas
+  photosRefresh: Fotos
+  shoppingRefresh: Modo compra
+  refreshOff: Desactivado
+  refreshInherit: Igual que las listas
+  refresh15s: Cada 15 segundos
+  refresh30s: Cada 30 segundos
+  refresh1m: Cada minuto
+  refresh2m: Cada 2 minutos
+  refresh5m: Cada 5 minutos
+
+notifications:
+  title: Notificaciones
+  empty: No hay notificaciones nuevas.
+  failedToLoad: No se pudieron cargar las notificaciones.
+  dismissAll: Descartar todas
+  justNow: ahora mismo
+  minutesAgo(int count): "hace ${count} min"
+  hoursAgo(int count): "hace ${count} h"
+  daysAgo(int count): "hace ${count} d"
+
+categories:
+  manageTitle: "Gestionar categorías"
+  noCategories: "Aún no hay categorías."
+  editTitle: "Editar categoría"
+  addTitle: "Nueva categoría"
+  name: Nombre
+  icon: Icono
+  color: Color
+  saveFailed: "No se pudo guardar la categoría."
+  deleteFailed: "No se pudo eliminar la categoría."
+  deleteConfirm: "¿Eliminar esta categoría?"
+  deleteConfirmBody: "Los artículos en esta categoría quedarán sin categoría. Esta acción no se puede deshacer."
+  list: Lista
+  globalList: Todas las listas (global)
+  sort:
+    nameAZ: "Nombre A–Z"
+    nameZA: "Nombre Z–A"
+    custom: "Personalizado"
+
+customFields:
+  manageTitle: "Campos personalizados"
+  empty: "Aún no hay campos personalizados. Añade uno para adjuntar información adicional a los artículos."
+  addField: "Añadir campo"
+  allLists: "Todas las listas"
+  deleteTitle: "Eliminar campo"
+  deleteConfirm: "¿Eliminar este campo? Los valores ya asignados a los artículos se conservan pero se ocultan."
+  optionDeleteFailed: "No se pudo eliminar la opción."
+  types:
+    text: Texto
+    number: "Número"
+    checkbox: Casilla
+    date: Fecha
+    select: "Selección"
+  name: Nombre
+  namePlaceholder: "p. ej. Caducidad, Pasillo"
+  type: Tipo
+  typeLocked: "El tipo no se puede cambiar una vez creado el campo."
+  scope: "Ámbito"
+  hint: Texto de ayuda
+  hintPlaceholder: "Se muestra como marcador de posición del valor"
+  multiline: "Área de texto multilínea"
+  options: Opciones
+  optionPlaceholder: "Etiqueta de la opción"
+  addOption: "Añadir opción"
+  removeOption: "Quitar opción"
+  entryMode: Entrada de fecha
+  dateAbsolute: Absoluta
+  dateRelative: Relativa
+  defaultOffset: "Desfase predeterminado (días)"
+  defaultOffsetPlaceholder: "p. ej. 7"
+  notifyDefault: Recordar de forma predeterminada
+  leadTime: Recordar
+  leadOnDay: El mismo día
+  leadDay1: 1 día antes
+  leadDay2: 2 días antes
+  leadDay3: 3 días antes
+  leadWeek1: 1 semana antes
+  overridePolicy: "Anulación del recordatorio"
+  overrideFieldOnly: El mismo recordatorio para cada artículo
+  overrideItem: Cada artículo define su propio recordatorio
+  stopWhenDone: Dejar de recordar cuando el artículo esté completado
+  defaultValue: Valor predeterminado
+  defaultChecked: Activado de forma predeterminada
+  noDefault: Sin valor predeterminado
+  noValue: Sin valor
+  daysFromToday: "Días desde hoy"
+  due(String date): "Vence el ${date}"
+  reanchor: Reanclar fecha
+  remindMe: Recordármelo
+  customReminder: Recordatorio propio para este artículo
+  useFieldDefault: Usar el valor predeterminado del campo
+  done: Hecho
+  remapTitle: "Opción en uso"
+  remapClear: Quitarla de esos artículos
+  remapMoveTo(String label): "Moverla a ${label}"
+  remapPrompt(int count, String label): "${_plural(count, one: '${label} la usa 1 artículo. ¿Qué debe pasar con él?', many: '${label} la usan ${count} artículos. ¿Qué debe pasar con ellos?')}"
+
+stores:
+  manageTitle: Gestionar tiendas
+  noStores: Aún no hay tiendas.
+  editTitle: Editar tienda
+  addTitle: Nueva tienda
+  name: Nombre
+  icon: Icono
+  color: Color
+  saveFailed: "No se pudo guardar la tienda."
+  deleteFailed: "No se pudo eliminar la tienda."
+  deleteConfirm: "¿Eliminar esta tienda?"
+  deleteConfirmBody: "Esta tienda se eliminará de todos los artículos. Esto no se puede deshacer."
+  brand: Marca/cadena
+  brandHint: "p. ej. Walmart, IKEA"
+  location: Ubicación
+  locationHint: "p. ej. Calle Mayor 12"
+  openingHours: Horario de apertura
+  addOpeningHours: Añadir horario
+  openingHoursStart: Desde
+  openingHoursEnd: Hasta
+  openingHoursAdd: Añadir
+  contact: Contacto
+  contactHint: "p. ej. teléfono, sitio web, redes sociales"
+  responsible: Responsable
+  responsibleHint: "p. ej. encargado de la tienda"
+  notes: Notas
+  notesHint: Cualquier otra cosa que convenga recordar
+  noDetails: Aún no se han añadido detalles.
+  editAction: Editar
+  sort:
+    nameAZ: "Nombre A–Z"
+    nameZA: "Nombre Z–A"
+    custom: Personalizado
+
+labels:
+  manageTitle: "Gestionar etiquetas"
+  noLabels: "Aún no hay etiquetas."
+  editTitle: "Editar etiqueta"
+  addTitle: "Nueva etiqueta"
+  name: Nombre
+  icon: Icono
+  color: Color
+  saveFailed: "No se pudo guardar la etiqueta."
+  deleteFailed: "No se pudo eliminar la etiqueta."
+  deleteConfirm: "¿Eliminar esta etiqueta?"
+  deleteConfirmBody: "Esta etiqueta se eliminará de todos los artículos. Esto no se puede deshacer."
+  list: Lista
+  globalList: Todas las listas (global)
+  sort:
+    nameAZ: "Nombre A–Z"
+    nameZA: "Nombre Z–A"
+    custom: "Personalizado"
+
+checklists:
+  categories: "Categorías"
+  noChecklists: "Aún no hay listas."
+  noItems: No hay artículos en esta lista.
+  noSearchResults: Ningún artículo coincide con tu búsqueda.
+  searchHint: Escribe para filtrar...
+  barcode:
+    scan: Escanear código de barras
+    scanTitle: Escanear código de barras
+    scanInstructions: Apunta la cámara a un código de barras de producto
+    torch: Alternar flash
+    enterManually: Introducir manualmente
+    manualTitle: Introducir código de barras
+    manualHint: Número de código de barras
+    invalidBarcode: Eso no parece un código de barras válido
+    notFound: No se encontró información de producto para ese código de barras
+    disclaimer(String linkStart, String linkEnd): "Productos proporcionados por ${linkStart}Open Food Facts${linkEnd}, una base de datos comunitaria externa que Pantry no posee ni controla."
+  allCategories: Todos
+  allListsChip: Todos
+  filterByList: Filtrar por lista
+  filterByCategory: Filtrar por categoría
+  filters:
+    lists: Listas
+    categories: Categorías
+    stores: Tiendas
+    labels: Etiquetas
+    allLists: Todas las listas
+    allCategories: Todas las categorías
+    allStores: Todas las tiendas
+    allLabels: Todas las etiquetas
+    noCategory: Sin categoría
+    noStores: Sin tienda
+    noLabels: Sin etiqueta
+    price: Precio
+    anyCurrency: Cualquier moneda
+  failedToLoad: No se pudieron cargar las listas.
+  failedToLoadItems: "No se pudieron cargar los artículos."
+  completedCount(int count): "Completados ($count)"
+  editItem: "Editar artículo"
+  removeItem: "Eliminar artículo"
+  moveItem: Mover a lista
+  moveFailed: "No se pudo mover el artículo."
+  copyItem: Copiar a lista
+  copyFailed: "No se pudo copiar el artículo."
+  itemCopied: "Artículo copiado"
+  itemMarkedDone: "Artículo marcado como hecho"
+  itemRemoved: "Artículo eliminado"
+  undo: Deshacer
+  selectItems: Seleccionar
+  batch:
+    selected(int count): "${_plural(count, one: '1 seleccionado', many: '$count seleccionados')}"
+    moveTitle: Mover artículos a
+    copyTitle: Copiar artículos a
+    categoryTitle: Establecer categoría
+    storesTitle: Establecer tiendas
+    labelsTitle: Establecer etiquetas
+    clearCategory: Sin categoría
+    move: Mover
+    copy: Copiar
+    category: Categoría
+    stores: Tiendas
+    labels: Etiquetas
+    delete: Eliminar
+    archive: Archivar
+    unarchive: Desarchivar
+    deleteConfirmTitle: "¿Eliminar artículos?"
+    deleteConfirmBody(int count): "${_plural(count, one: '¿Eliminar 1 artículo seleccionado? Puedes restaurarlo desde la papelera.', many: '¿Eliminar $count artículos seleccionados? Puedes restaurarlos desde la papelera.')}"
+    moved(int count): "${_plural(count, one: '1 artículo movido', many: '$count artículos movidos')}"
+    copied(int count): "${_plural(count, one: '1 artículo copiado', many: '$count artículos copiados')}"
+    deleted(int count): "${_plural(count, one: '1 artículo eliminado', many: '$count artículos eliminados')}"
+    restored(int count): "${_plural(count, one: '1 artículo restaurado', many: '$count artículos restaurados')}"
+    archived(int count): "${_plural(count, one: '1 artículo archivado', many: '$count artículos archivados')}"
+    unarchived(int count): "${_plural(count, one: '1 artículo desarchivado', many: '$count artículos desarchivados')}"
+    categorySet(int count): "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
+    storesSet(int count): "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
+    labelsSet(int count): "${_plural(count, one: '1 artículo actualizado', many: '$count artículos actualizados')}"
+    skipped(int count): "${_plural(count, one: '1 omitido', many: '$count omitidos')}"
+    failed: "Algo salió mal. Inténtalo de nuevo."
+  viewTrash: Ver papelera
+  exitTrash: Salir de la papelera
+  showAddedBy: Mostrar quién añadió cada artículo
+  showProgressHero: Mostrar tarjeta de progreso en esta lista
+  addedBy(String name): "Añadido por $name"
+  trashTitle: Papelera
+  noTrashedItems: La papelera está vacía.
+  emptyTrash: Vaciar papelera
+  emptyTrashConfirm: ¿Vaciar la papelera?
+  emptyTrashConfirmBody: "Todos los artículos de la papelera se eliminarán permanentemente. Esta acción no se puede deshacer."
+  emptyTrashFailed: No se pudo vaciar la papelera.
+  restoreItem: Restaurar
+  permanentlyDeleteItem: Eliminar
+  permanentlyDeleteConfirm: "¿Eliminar este artículo permanentemente?"
+  permanentlyDeleteConfirmBody: Esta acción no se puede deshacer.
+  restoreFailed: No se pudo restaurar el artículo.
+  permanentlyDeleteFailed: No se pudo eliminar el artículo.
+  itemRestored: Artículo restaurado
+  viewArchive: Ver archivo
+  exitArchive: Salir del archivo
+  archiveTitle: Archivo
+  noCategory: Sin categoría
+  noStore: Sin tienda
+  noArchivedItems: El archivo está vacío.
+  archiveItem: Archivar
+  unarchiveItem: Desarchivar
+  archiveFailed: No se pudo archivar el artículo.
+  unarchiveFailed: No se pudo desarchivar el artículo.
+  itemArchived: Artículo archivado
+  itemUnarchived: Artículo desarchivado
+  failedToLoadArchive: No se pudo cargar el archivo.
+  viewListsTrash: "Listas eliminadas"
+  listsTrashTitle: "Listas eliminadas"
+  failedToLoadTrash: "No se pudo cargar la papelera."
+  listTrashEmpty: "No hay listas eliminadas."
+  copyLink: "Copiar enlace"
+  addToHomeScreen: "Añadir a la pantalla de inicio"
+  addToHomeScreenFailed: "No se pudo añadir el acceso directo."
+  removeList: "Quitar lista"
+  editList: "Editar lista"
+  editListTitle: "Editar lista"
+  saveListButton: "Guardar cambios"
+  updateListFailed: "No se pudo actualizar la lista."
+  removeListConfirm: "¿Quitar la lista?"
+  removeListConfirmBody(String name): '¿Quitar la lista "$name"? Puedes restaurarla desde la papelera.'
+  removeListFailed: "No se pudo quitar la lista."
+  restoreList: "Restaurar lista"
+  permanentlyDeleteList: "Eliminar para siempre"
+  listRemoved: "Lista eliminada"
+  archivedLists: "Listas archivadas"
+  archivedListsTitle: "Listas archivadas"
+  archivedListsEmpty: "Las listas archivadas aparecerán aquí."
+  failedToLoadArchivedLists: "No se pudieron cargar las listas archivadas."
+  archiveList: "Archivar"
+  unarchiveList: "Desarchivar"
+  listArchived: "Lista archivada"
+  archiveListFailed: "No se pudo archivar la lista."
+  unarchiveListFailed: "No se pudo desarchivar la lista."
+  createList: Nueva lista
+  listName: Nombre de la lista
+  listDescription: "Descripción (opcional)"
+  listIcon: Icono
+  createListFailed: No se pudo crear la lista.
+  viewItem:
+    quantity: "Cantidad:"
+    category: "Categoría:"
+    recurrence: "Recurrencia:"
+    nextDue: "Próximo vencimiento:"
+    nextDueFromCompletion: "Próximo vencimiento (desde finalización):"
+    overdue: Vencido
+    quantityLabel: Cantidad
+    typeLabel: Tipo
+    priceLabel: Precio
+    descriptionLabel: Descripción
+    noDescription: Sin descripción.
+    addedByMeta(String name, String time): "Añadido por $name · $time"
+    addedByYouMeta(String time): "Añadido por ti · $time"
+    addedMeta(String time): "Añadido $time"
+    doneByMeta(String name, String time): "Completado por $name · $time"
+    doneByYouMeta(String time): "Completado por ti · $time"
+    doneMeta(String time): "Completado $time"
+    relJustNow: ahora mismo
+    relToday: hoy
+    relYesterday: ayer
+    relDaysAgo(int n): "hace $n días"
+    relWeeksAgo(int n): "${_plural(n, one: 'hace 1 semana', many: 'hace $n semanas')}"
+    relMonthsAgo(int n): "${_plural(n, one: 'hace 1 mes', many: 'hace $n meses')}"
+    relYearsAgo(int n): "${_plural(n, one: 'hace 1 año', many: 'hace $n años')}"
+  itemForm:
+    addTitle: "Agregar artículo"
+    editTitle: "Editar artículo"
+    name: "Nombre del artículo"
+    description: "Descripción"
+    quantity: Cantidad
+    category: "Categoría"
+    noCategory: Ninguna
+    noCategories: "No hay categorías disponibles."
+    createCategory: "Nueva categoría"
+    categoryName: Nombre
+    categoryIcon: Icono
+    categoryColor: Color
+    categoryCreated: "Categoría creada."
+    categoryCreateFailed: "No se pudo crear la categoría."
+    stores: Tiendas
+    noStores: Ninguna
+    createStore: Nueva tienda
+    storesChange: Cambiar
+    storesPick: Elegir
+    labels: Etiquetas
+    noLabels: Ninguna
+    createLabel: Nueva etiqueta
+    labelsChange: Cambiar
+    labelsPick: Elegir
+    repeat: Repetir
+    once: "Una vez"
+    onceDescription: "Eliminar este artículo cuando se marque como hecho."
+    image: Imagen
+    addImage: Agregar imagen
+    takePhoto: Tomar foto
+    chooseImage: Elegir imagen
+    replaceImage: Reemplazar
+    removeImage: Eliminar
+    saveFailed: "No se pudo guardar el artículo."
+    deleteFailed: "No se pudo eliminar el artículo."
+    deleteConfirm: "¿Eliminar este artículo?"
+    save: Guardar cambios
+    descHint: Añadir una descripción (opcional)
+    categoryChange: Cambiar
+    categoryPick: Elige una
+    untitledItem: Artículo sin título
+    typeStaple: Artículo recurrente
+    typeOnce: Artículo único
+    typeRecurring: Recurrente
+  sort:
+    newestFirst: "Más recientes"
+    oldestFirst: "Más antiguos"
+    nameAZ: "Nombre A–Z"
+    nameZA: "Nombre Z–A"
+    category: "Por categoría"
+    store: "Por tienda"
+    custom: Personalizado
+  itemsLeft(int count): "${_plural(count, one: '1 artículo restante', many: '$count artículos restantes')}"
+  allDone: Todo listo 🎉
+  listProgress(int done, int total): "$done de $total hechos"
+  hideProgressHero: "Ocultar tarjeta de progreso"
+  sortTooltip: "Ordenar"
+  doneCount(int count): "Hechos · $count"
+  uncheckAll: "Desmarcar todo"
+  uncheckAllConfirm: "¿Desmarcar todos los artículos?"
+  uncheckAllConfirmBody: "Todos los artículos marcados de esta lista volverán a la lista activa."
+  uncheckedCount(int count): "${_plural(count, one: 'Se desmarcó 1 artículo', many: 'Se desmarcaron $count artículos')}"
+  removeAll: Eliminar todo
+  removeAllConfirm: "¿Eliminar todos los artículos marcados?"
+  removeAllConfirmBody: Todos los artículos marcados de esta lista se moverán a la papelera. Podrás restaurarlos después.
+  removedCount(int count): "${_plural(count, one: 'Se eliminó 1 artículo', many: 'Se eliminaron $count artículos')}"
+  resetOrder:
+    menuLabel: "Restablecer orden personalizado…"
+    pickTitle: "Restablecer orden personalizado a…"
+    confirmTitle: "¿Restablecer orden personalizado?"
+    confirmBody: "Esto sobrescribe el orden personalizado actual de esta lista. Puedes reordenar los artículos después."
+    action: "Restablecer orden"
+    success: "Orden personalizado restablecido"
+    basisDateAdded: "Fecha de adición"
+    basisNameAsc: "Nombre A–Z"
+    basisNameDesc: "Nombre Z–A"
+  addToList(String name): "Agregar a $name…"
+  addFirstItem: "Agrega tu primer artículo…"
+  noItemsTitle: Nada en esta lista todavía
+  noItemsBody: Agrega tu primer artículo con la barra de abajo — configura una categoría, cantidad o programación con los chips.
+  noListsTitle: "Aún no hay listas"
+  noListsBody: "Crea tu primera lista para empezar a rastrear compras, recados, tareas o cualquier cosa que tu hogar necesite tener al día."
+  createFirstList: Crear tu primera lista
+  yourChecklists: Tus listas
+  listsCount(int count): "${_plural(count, one: '1 lista', many: '$count listas')}"
+  itemsSummary(int count): "${_plural(count, one: '1 artículo', many: '$count artículos')}"
+  allDoneSummary: "Todo listo · 0 restantes"
+  newChecklist: Nueva lista
+  createListButton: Crear lista
+  view: Ver
+  swipeView: Ver
+  swipeEdit: Editar
+  swipeMove: Mover
+  swipeCopy: Copiar
+  swipeDelete: Quitar
+  swipeArchive: Archivar
+  moreActions: Más acciones
+  viewList: Vista de lista
+  viewCards: Vista de tarjetas
+  listColor: Color
+  itemTypes:
+    label: Tipo de artículo
+    staple: Habitual
+    stapleBody: Permanece en la lista después de completarlo
+    onceTime: Una vez
+    onceTimeBody: Se elimina al completarlo
+    recurring: Recurrente
+    recurringBody: Vuelve según un horario
+    weekly: Semanal
+    everyNWeeks(int n): "Cada $n sem"
+  compose:
+    chipCategory: Categoría
+    chipStore: Tiendas
+    chipLabel: Etiquetas
+    chipQuantity: Cantidad
+    chipType: Tipo
+    chipImage: Imagen
+    chipDescription: Descripción
+    descHint: "Notas, instrucciones, enlaces…"
+    qtyHint: "p. ej. 2 L, 500 g"
+    qtyStepperHelp: ＋ / − cambian el número y mantienen la unidad.
+    none: Ninguna
+    every: Cada
+    week: semana
+    weeks: semanas
+    chipTargetList: Lista
+    pickTargetList: Elige una lista
+    multiple: Varios
+    multipleHint: Separa los elementos con saltos de línea
+  price:
+    label: Precio
+    set: Fijo
+    range: Rango
+    amount: Importe
+    min: Mín
+    max: Máx
+    currency: Moneda
+    clear: Borrar precio
+    anyStore: Cualquier tienda
+    store: Tienda
+    addPrice: Añadir precio
+    removePrice: Quitar precio
+  reuse:
+    dialogTitle: El artículo ya existe
+    dialogBody(String name): 'Ya existe un artículo llamado "$name" en esta lista. ¿Reutilizarlo en lugar de añadir uno nuevo?'
+    reuseExisting: Reutilizar existente
+    addAnyway: Añadir de todos modos
+    reusedSnack(String name): "Se reutilizó el artículo existente “$name”"
+    suggestionsHeader: Ya en esta lista
+    archivedBadge: Archivado
+    archivedDialogBody(String name): 'Ya existe un artículo archivado llamado "$name". ¿Reutilizarlo en lugar de añadir uno nuevo? Se desarchivará.'
+    reusedArchivedSnack(String name): "Se reutilizó el artículo archivado “$name”"
+  allLists: Todas las listas
+  allListsSubtitle: Elementos de todas las listas
+  addToAnyList: "Añadir un elemento…"
+  pickListTitle: "¿A qué lista añadir?"
+  markdown:
+    exported(String date): "Exportado el $date"
+    uncategorized: Sin categoría
+    exportTitle: Exportar a Markdown
+    importTitle: Importar desde Markdown
+    importToLabel: Importar a
+    includeCompleted: Incluir elementos completados
+    editHint: Edita el texto de abajo para modificar la lista exportada
+    copy: Copiar
+    download: Descargar .md
+    copied: Copiado al portapapeles
+    copyFailed: No se pudo copiar al portapapeles
+    close: Cerrar
+    shareFailed: No se pudo exportar el archivo
+    uploadFile: Subir archivo .md
+    pasteLabel: Pegar Markdown
+    pastePlaceholder: "Pega aquí una lista en Markdown…"
+    noneFound: No se encontraron elementos de lista en el texto.
+    selectAll: Seleccionar todo
+    deselectAll: Deseleccionar todo
+    reuseExisting: Reutilizar elementos existentes en lugar de añadir duplicados
+    defaultFields: Valores aplicados a cada elemento importado
+    itemsFound(int count): "${_plural(count, one: '1 elemento encontrado', many: '$count elementos encontrados')}"
+    addItems(int count): "${_plural(count, one: 'Añadir 1 elemento', many: 'Añadir $count elementos')}"
+    imported(int count): "${_plural(count, one: '1 elemento importado', many: '$count elementos importados')}"
+
+notesWall:
+  noNotes: "Aún no hay notas."
+  failedToLoad: No se pudieron cargar las notas.
+  saveFailed: No se pudo guardar la nota.
+  deleteFailed: No se pudo eliminar la nota.
+  deleteConfirm: "¿Eliminar esta nota?"
+  deleteSelectedConfirm(int count): "¿Eliminar ${_plural(count, one: 'esta nota', many: '$count notas')}?"
+  noteRemoved(int count): "${_plural(count, one: 'Nota eliminada', many: '$count notas eliminadas')}"
+  viewTrash: "Ver papelera"
+  exitTrash: "Salir de la papelera"
+  trashTitle: Papelera
+  trashEmpty: "La papelera está vacía."
+  emptyTrash: "Vaciar papelera"
+  emptyTrashConfirm: "¿Vaciar la papelera?"
+  emptyTrashConfirmBody: "Todas las notas en la papelera se eliminarán permanentemente. Esta acción no se puede deshacer."
+  emptyTrashFailed: "No se pudo vaciar la papelera."
+  failedToLoadTrash: "No se pudo cargar la papelera."
+  restore: Restaurar
+  restoreFailed: "No se pudo restaurar la nota."
+  permanentlyDelete: "Eliminar para siempre"
+  permanentlyDeleteConfirm: "¿Eliminar esta nota permanentemente?"
+  permanentlyDeleteConfirmBody: "Esta acción no se puede deshacer."
+  newNote: Nueva nota
+  editNote: Editar nota
+  unsavedChanges: Cambios sin guardar
+  unsavedChangesBody: Tienes cambios sin guardar. ¿Quieres guardarlos?
+  discard: Descartar
+  keepEditing: Seguir editando
+  pinNote: Fijar nota
+  unpinNote: Quitar fijación
+  importToList: Importar a una lista
+  importNoLists: No hay listas disponibles para importar.
+  title: "Título"
+  content: Contenido
+  color: Color
+  sort:
+    newestFirst: "Más recientes"
+    oldestFirst: "Más antiguos"
+    titleAZ: "Título A–Z"
+    titleZA: "Título Z–A"
+    custom: Personalizado
+
+photoBoard:
+  noPhotos: "Aún no hay fotos."
+  failedToLoad: No se pudieron cargar las fotos.
+  uploadFailed: No se pudo subir la foto.
+  deleteFailed: No se pudo eliminar la foto.
+  deleteConfirm: "¿Eliminar esta foto?"
+  deleteSelectedConfirm(int count): "¿Eliminar ${_plural(count, one: 'esta foto', many: '$count fotos')}?"
+  photoRemoved(int count): "${_plural(count, one: 'Foto eliminada', many: '$count fotos eliminadas')}"
+  viewTrash: "Ver papelera"
+  exitTrash: "Salir de la papelera"
+  trashTitle: Papelera
+  trashEmpty: "La papelera está vacía."
+  emptyTrash: "Vaciar papelera"
+  emptyTrashConfirm: "¿Vaciar la papelera?"
+  emptyTrashConfirmBody: "Todas las fotos en la papelera se eliminarán permanentemente. Esta acción no se puede deshacer."
+  emptyTrashFailed: "No se pudo vaciar la papelera."
+  failedToLoadTrash: "No se pudo cargar la papelera."
+  restore: Restaurar
+  restoreFailed: "No se pudo restaurar la foto."
+  permanentlyDelete: "Eliminar para siempre"
+  permanentlyDeleteConfirm: "¿Eliminar esta foto permanentemente?"
+  permanentlyDeleteConfirmBody: "Esta acción no se puede deshacer."
+  deleteFolder: Eliminar carpeta
+  deleteFolderConfirm: "¿Eliminar esta carpeta?"
+  deleteFolderKeepPhotos: "Mover fotos a la raíz"
+  deleteFolderDeleteAll: Eliminar carpeta y fotos
+  newFolder: Nueva carpeta
+  folderName: Nombre de la carpeta
+  renameFolder: Renombrar carpeta
+  caption: "Descripción"
+  photoCount(int count): "$count"
+  addMenu:
+    upload: Subir fotos
+    camera: Tomar foto
+    newFolder: Nueva carpeta
+  sort:
+    foldersFirst: Carpetas primero
+    newestFirst: "Más recientes"
+    oldestFirst: "Más antiguos"
+    captionAZ: "Descripción A–Z"
+    captionZA: "Descripción Z–A"
+    custom: Personalizado
+
+shopping:
+  startShopping: Empezar a comprar
+  resumeShopping: Reanudar compra
+  shoppingHistory: Historial de compras
+  resume: Reanudar
+  bannerShoppingAt(String store): "Comprando en ${store}"
+  bannerStoreProgress(int index, int total): "Tienda $index/$total"
+  bannerShoppingNow: Comprando ahora
+  startTitle: Empezar a comprar
+  listsToShop: Listas para comprar
+  selectAll: Seleccionar todo
+  selectNone: No seleccionar nada
+  noListsToShop: Aún no hay listas para comprar.
+  storesTitle: Tiendas
+  storesHint: "Activa o desactiva las tiendas que visitarás y arrástralas para ordenarlas."
+  noStoresWithItems: Ninguna de las listas seleccionadas tiene artículos asignados a una tienda.
+  includeUnassigned: Incluir artículos sin tienda asignada
+  start: Empezar
+  startFailed: No se pudo empezar a comprar.
+  tripInProgress: Ya tienes una compra en curso.
+  tripInProgressElsewhere(String house): "Tienes una compra en curso en ${house}."
+  endPreviousTrip: Terminar compra anterior
+  endPreviousFailed: No se pudo terminar la compra anterior.
+  inCart(int count): "$count en el carrito"
+  makePrivate: Ocultar compra a los convivientes
+  makePublic: Mostrar compra a los convivientes
+  privateBadge: Privada
+  nextStore: Siguiente tienda
+  finish: Terminar
+  finishTrip: Terminar compra
+  allCheckedHere: Todo marcado aquí
+  moveOnToNext: Pasa a la siguiente tienda.
+  allDone: Todo listo
+  everythingInCart: Todo está en el carrito.
+  doneToday(int count): "Hecho ($count)"
+  nothingToBuyHere: Nada que comprar aquí.
+  checkFailed: No se pudo actualizar el artículo.
+  loadItemsFailed: No se pudieron cargar los artículos.
+  removeFromTrip: Quitar de la compra
+  removedFromTrip: Quitado de esta compra
+  undo: Deshacer
+  undoRemoveFailed: No se pudo deshacer.
+  removedSection(int count): "Eliminados ($count)"
+  restore: Restaurar
+  restoreFailed: No se pudo restaurar el artículo.
+  reviewTitle: Resumen
+  advanceTitle: Siguiente tienda
+  actualPaid: Pagado real
+  grandTotal: Total
+  itemsWithoutPrice(int count): "${_plural(count, one: '1 artículo sin precio', many: '$count artículos sin precio')}"
+  itemsStillUnchecked(int count): "${_plural(count, one: '1 artículo sin marcar', many: '$count artículos sin marcar')}"
+  anyStore: Cualquier tienda
+  saveTotalFailed: No se pudo guardar el total.
+  remindersTitle: Recordatorios
+  manageReminders: Gestionar recordatorios
+  reminderGroupStart: Al empezar
+  reminderGroupAdvance: Entre tiendas
+  reminderGroupEnd: Al terminar
+  noRemindersHere: Aún no hay recordatorios aquí.
+  noRemindersStep: Aún no hay recordatorios para este paso.
+  addReminders: Añadir recordatorios
+  addReminderHint: Añadir un recordatorio
+  reminderWhen: Cuándo mostrar
+  whenOnStart: Al empezar
+  whenOnStoreAdvance: Entre tiendas
+  whenOnClose: Al terminar
+  add: Añadir
+  reminderSaveFailed: No se pudo guardar el recordatorio.
+  reminderDeleteFailed: No se pudo eliminar el recordatorio.
+  historyTitle: Historial de compras
+  scopeMine: Mías
+  scopeHouse: Casa
+  noStorePath: Sin tienda
+  itemsCount(int count): "${_plural(count, one: '1 artículo', many: '$count artículos')}"
+  loadMore: Cargar más
+  noTripsYet: Aún no hay compras.
+  noHouseTripsYet: Aún no hay compras en esta casa.
+  loadHistoryFailed: No se pudo cargar el historial.
+  loadFailed: Algo salió mal. Inténtalo de nuevo.
+  uncategorized: Sin categoría
+
+share:
+  title: Compartir con Pantry
+  chooseHouse: Elegir casa
+  choosePhotoDestination: Subir a
+  photoBoardRoot: Tablón de fotos
+  newFolder: Nueva carpeta
+  newFolderName: Nombre de la carpeta
+  failedToCreateFolder: No se pudo crear la carpeta.
+  failedToOpenShare: No se pudo abrir el contenido compartido.
+  noHouses: No hay casas disponibles. Crea una casa primero.
+
+recurrence:
+  title: Recurrencia
+  presets: Preajustes
+  daily: Diario
+  weekly: Semanal
+  monthly: Mensual
+  everyLabel: Cada
+  unit: Unidad
+  unitDays: "días"
+  unitWeeks: semanas
+  unitMonths: meses
+  unitYears: "años"
+  repeatOn: Repetir en
+  ends: Termina
+  never: Nunca
+  after: "Después de"
+  occurrences: repeticiones
+  onDate: En fecha
+  countFromCompletion: "Contar intervalo desde que se marca el artículo"
+  countFromCompletionHintOff: "El horario es fijo: el artículo reaparece en su próxima ocurrencia programada, sin importar cuándo lo marques."
+  countFromCompletionHintOn: "La próxima ocurrencia se cuenta desde el momento en que marcas el artículo, así que siempre vuelve un intervalo completo después de completarlo."
+  summary: Resumen
+  notSet: no establecido
+  set: establecido
+  every(String unit): "cada $unit"
+  everyButton(String unit): "Cada $unit"
+  onDays(String days): "los $days"
+  day(int count): "${_plural(count, one: 'día', many: '$count días')}"
+  week(int count): "${_plural(count, one: 'semana', many: '$count semanas')}"
+  month(int count): "${_plural(count, one: 'mes', many: '$count meses')}"
+  year(int count): "${_plural(count, one: 'año', many: '$count años')}"
+  dayNames:
+    monday: Lunes
+    tuesday: Martes
+    wednesday: "Miércoles"
+    thursday: Jueves
+    friday: Viernes
+    saturday: "Sábado"
+    sunday: Domingo
+  dayAbbr:
+    mo: Lu
+    tu: Ma
+    we: Mi
+    th: Ju
+    fr: Vi
+    sa: "Sá"
+    su: Do
+
+sync:
+  offline: Sin conexión
+  syncing: Sincronizando cambios…
+  pendingChanges(int count): "${_plural(count, one: '1 cambio esperando a sincronizar', many: '${count} cambios esperando a sincronizar')}"
+  syncError: "No se pudieron sincronizar los cambios"
+  retry: Reintentar
+markdownEditor:
+  editSource: Markdown
+  editRich: Texto enriquecido
+wear:
+  signedInAs(String name): "Sesión iniciada como ${name}"
+  notSignedIn: Inicia sesión en tu teléfono

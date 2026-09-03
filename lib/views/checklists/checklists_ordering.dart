@@ -1,6 +1,6 @@
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 
 /// Sentinel id used by the synthetic "All lists" meta view. Real list ids on
 /// the backend are always positive; temp ids minted by SyncManager are

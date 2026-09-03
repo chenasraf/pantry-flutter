@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/utils/version.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 
 void main() {
   const introduced = {'category-sort': '0.15.0', 'futureThing': '0.20.0'};

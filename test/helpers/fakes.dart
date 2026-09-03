@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/models/note.dart';
-import 'package:pantry/models/notification.dart';
-import 'package:pantry/models/photo.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/models/notification.dart';
+import 'package:pantry_core/models/photo.dart';
 import 'package:pantry/views/home/home_controller.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 import 'package:pantry/views/notifications/notifications_controller.dart';

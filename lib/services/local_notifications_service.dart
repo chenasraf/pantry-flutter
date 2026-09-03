@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:pantry/services/deep_link_service.dart';
+import 'package:pantry_core/services/deep_link_service.dart';
 
 class LocalNotificationsService {
   LocalNotificationsService._();

@@ -1,0 +1,21 @@
+name: pantry_wear
+description: "Wear OS user interface for Pantry."
+publish_to: "none"
+version: 0.0.1
+
+environment:
+  sdk: ^3.11.1
+
+# Deliberately thin. Depending on pantry_core and nothing else is what makes a
+# phone view unreachable from a watch screen — the compiler enforces the
+# boundary that convention would not.
+dependencies:
+  flutter:
+    sdk: flutter
+  pantry_core:
+    path: ../pantry_core
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

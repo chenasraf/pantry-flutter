@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/utils/platform_info.dart';
-import 'package:pantry/utils/version.dart';
+import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'pages/add_items_page.dart';
 import 'pages/all_lists_page.dart';
 import 'pages/barcode_scan_page.dart';
@@ -208,7 +208,7 @@ List<WidgetBuilder> resolveOnboardingPages(String? lastSeen) {
   final lastSeenVersion = Version.tryParse(lastSeen);
   final audience = OnboardingAudience(
     isNewUser: lastSeen == null,
-    isAndroid: PlatformInfo.isAndroid,
+    isAndroid: PlatformInfo.isAndroidPhone,
     isDesktop: PlatformInfo.isDesktop,
   );
   final entries = kAppOnboardingPages.entries.toList();

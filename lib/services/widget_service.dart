@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
 
-import '../models/checklist.dart';
-import '../utils/platform_info.dart';
-import 'checklist_service.dart';
-import 'house_service.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/house_service.dart';
 import 'list_link_service.dart';
 
 /// Manages the Android home-screen "lists" widgets. Each widget instance keeps
@@ -25,7 +25,7 @@ class WidgetService {
 
   // Only Android ships the home-screen widget; every side-effect is gated on
   // this to avoid MissingPluginException on other platforms.
-  static bool get _supported => PlatformInfo.isAndroid;
+  static bool get _supported => PlatformInfo.isAndroidPhone;
 
   String _key(int widgetId) => 'lists_widget_$widgetId';
 

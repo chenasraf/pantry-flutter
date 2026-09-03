@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/custom_field.dart';
-import 'package:pantry/utils/field_type_icons.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/utils/field_type_icons.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Introduces custom fields: a mock of the item detail's custom-fields tile

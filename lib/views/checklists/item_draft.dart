@@ -2,10 +2,10 @@ import 'dart:typed_data';
 
 import 'package:image_picker/image_picker.dart';
 
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/custom_field.dart';
-import 'package:pantry/models/item_lifecycle.dart';
-import 'package:pantry/utils/currencies.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/utils/currencies.dart';
 import 'form_components.dart';
 import 'price_input.dart';
 

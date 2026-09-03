@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Shown when the current house grants the user no viewable sections at all
 /// (no lists, photos, or notes). The shared home AppBar — with its house

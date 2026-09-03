@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/utils/entity_icons.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'checklists_controller.dart';
 import 'item_picker_dialogs.dart';

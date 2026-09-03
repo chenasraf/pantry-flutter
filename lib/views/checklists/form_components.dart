@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/rrule.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/rrule.dart';
 
 /// The shared "filled field" frame used across item forms: a `surfaceContainer`
 /// card with a rounded-14 border that flips to the accent when focused. Pair

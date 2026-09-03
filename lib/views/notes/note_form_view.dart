@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/note.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/note.dart';
 import 'package:pantry/utils/markdown_delta.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/markdown_editor.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

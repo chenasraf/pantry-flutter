@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/item_chip.dart';
-import 'package:pantry/utils/entity_icons.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/item_chip.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Settings sub-screen letting the user choose which metadata chips appear on

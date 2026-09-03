@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/shopping_reminder.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/shopping_reminder.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 
 /// A non-blocking, inline block that surfaces the enabled reminders for one
 /// moment (start / advance / close). Acknowledgement is **client-local only** —

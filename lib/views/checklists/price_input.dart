@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/store.dart' as models;
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry/views/checklists/price_draft.dart';
 import 'package:pantry/views/checklists/price_input_fields.dart';
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/photo.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/services/photo_service.dart';
-import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/photo.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/photo_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/views/photos/photo_detail_view.dart';

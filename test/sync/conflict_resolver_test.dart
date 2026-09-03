@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/sync/conflict_resolver.dart';
-import 'package:pantry/sync/sync_op.dart';
+import 'package:pantry_core/sync/conflict_resolver.dart';
+import 'package:pantry_core/sync/sync_op.dart';
 
 SyncOp _op(SyncOpKind kind, {int createdAt = 100, int? entityId = 1}) => SyncOp(
   uuid: 'u',

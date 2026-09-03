@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/checklist_icons.dart';
 
 void main() {
   group('checklistIcon', () {

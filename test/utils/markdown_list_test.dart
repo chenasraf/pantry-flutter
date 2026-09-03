@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/category.dart';
-import 'package:pantry/utils/markdown_list.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/utils/markdown_list.dart';
 
 import '../helpers/test_models.dart';
 

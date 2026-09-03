@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 
 /// How a sync status should be presented — icon, accent colour and label.
 /// Null means there is nothing the user needs to see.

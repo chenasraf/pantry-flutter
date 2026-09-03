@@ -1118,6 +1118,20 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
+  pantry_core:
+    dependency: "direct main"
+    description:
+      path: "packages/pantry_core"
+      relative: true
+    source: path
+    version: "0.0.1"
+  pantry_wear:
+    dependency: "direct main"
+    description:
+      path: "packages/pantry_wear"
+      relative: true
+    source: path
+    version: "0.0.1"
   path:
     dependency: transitive
     description:

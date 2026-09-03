@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 
 Map<String, dynamic> _baseJson() => {
   'id': 1,

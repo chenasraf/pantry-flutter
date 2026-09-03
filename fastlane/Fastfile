@@ -102,7 +102,7 @@ platform :android do
     UI.message(changed ? "Images changed — uploading." : "Images unchanged — skipping.")
 
     upload_to_play_store(
-      aab: File.expand_path("../build/app/outputs/bundle/release/app-release.aab", __dir__),
+      aab: File.expand_path("../build/app/outputs/bundle/phoneRelease/app-phone-release.aab", __dir__),
       track: options[:track] || "internal",
       release_status: options[:status] || "draft",
       version_name: version_name,

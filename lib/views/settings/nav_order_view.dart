@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/nav_section.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/nav_section.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class NavOrderView extends StatefulWidget {

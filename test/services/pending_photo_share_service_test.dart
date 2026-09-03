@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/services/pending_photo_share_service.dart';
+import 'package:pantry_core/services/pending_photo_share_service.dart';
 
 void main() {
   final service = PendingPhotoShareService.instance;

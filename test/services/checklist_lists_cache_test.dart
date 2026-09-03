@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/checklist_service.dart';
 
 ChecklistList _list(int id, int houseId, String name) => ChecklistList(
   id: id,

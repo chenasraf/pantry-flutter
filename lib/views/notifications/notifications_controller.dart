@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:pantry/models/notification.dart';
+import 'package:pantry_core/models/notification.dart';
 import 'package:pantry/services/background_notification_task.dart';
-import 'package:pantry/services/notification_service.dart';
+import 'package:pantry_core/services/notification_service.dart';
 
 class NotificationsController extends ChangeNotifier {
   NotificationsController();

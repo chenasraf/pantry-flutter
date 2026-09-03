@@ -1,0 +1,60 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Marks the APK as a watch app. Play uses this to route the wear build to
+         watches, and it is what the Wear OS launcher looks for. -->
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <!-- Watches have no usable camera, and the scanner does not ship here. Both
+         the permission and the two features it implies are stripped, or Play
+         filters the app off every device lacking them. -->
+    <uses-permission android:name="android.permission.CAMERA" tools:node="remove" />
+    <uses-feature android:name="android.hardware.camera" tools:node="remove" />
+    <uses-feature android:name="android.hardware.camera.autofocus" tools:node="remove" />
+
+    <!-- Contributed by a plugin's manifest; nothing on the watch reads it. -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:node="remove" />
+
+    <application android:name="${applicationName}">
+
+        <!-- Sign-in comes from the paired phone, so the watch app cannot yet
+             stand on its own. Flipping this to true is additive and needs no
+             Play Console change, but Google validates the claim at serving
+             time — the capability has to be real first. -->
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="false" />
+
+        <activity android:name=".MainActivity">
+            <!-- Drop every filter the phone declares — image and text SEND
+                 targets, and the item deep link that only phone surfaces emit —
+                 then re-declare the two the watch actually serves. -->
+            <intent-filter tools:node="removeAll" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- The list Tile opens the app here. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="pantry" android:host="list" />
+            </intent-filter>
+        </activity>
+
+        <!-- The home-screen widgets and their config screens have no host on a
+             watch; their classes still compile into the flavor, but nothing
+             should be able to launch them. -->
+        <activity android:name=".WidgetConfigActivity" tools:node="remove" />
+        <activity android:name=".ChecklistWidgetConfigActivity" tools:node="remove" />
+        <activity android:name=".WidgetActionActivity" tools:node="remove" />
+        <receiver android:name=".PantryWidgetProvider" tools:node="remove" />
+        <receiver android:name=".ChecklistWidgetProvider" tools:node="remove" />
+        <service android:name=".PantryWidgetService" tools:node="remove" />
+        <service android:name=".ChecklistWidgetService" tools:node="remove" />
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+            tools:node="remove" />
+    </application>
+</manifest>

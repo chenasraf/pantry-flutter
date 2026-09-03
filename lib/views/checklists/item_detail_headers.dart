@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/models/category.dart' as models;
-import 'package:pantry/models/store.dart' as models;
-import 'package:pantry/models/label.dart' as models;
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/utils/category_icons.dart';
-import 'package:pantry/utils/label_icons.dart';
-import 'package:pantry/utils/store_icons.dart';
-import 'package:pantry/utils/platform_info.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/models/category.dart' as models;
+import 'package:pantry_core/models/store.dart' as models;
+import 'package:pantry_core/models/label.dart' as models;
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/utils/category_icons.dart';
+import 'package:pantry_core/utils/label_icons.dart';
+import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/image_preview.dart';
 

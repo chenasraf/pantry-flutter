@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 
 /// Attribution line for the barcode product data, with a tappable link to
 /// Open Food Facts.

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 
 /// Matches a GitHub-style task-list checkbox at the start of a list item
 /// (`- [ ]`, `* [x]`, `1. [ ]`, …). Group 1 is the bullet marker plus spacing,

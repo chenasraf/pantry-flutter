@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/services/api_client.dart';
-import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry_core/services/api_client.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 
 void main() {
   // Restore the default (online) state so the global SyncManager singleton

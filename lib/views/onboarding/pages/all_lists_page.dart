@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Introduces the All-lists meta view. Shows a mocked AppBar with the dashboard

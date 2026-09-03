@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry/views/checklists/barcode_attribution.dart';
 

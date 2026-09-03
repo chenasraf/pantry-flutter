@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 

@@ -1,17 +1,17 @@
 import 'package:flutter/widgets.dart';
 import 'package:home_widget/home_widget.dart';
 
-import '../models/checklist.dart';
-import '../sync/sync_ids.dart';
-import '../sync/sync_manager.dart';
-import '../sync/sync_op.dart';
-import 'auth_service.dart';
-import 'category_service.dart';
-import 'cert_trust_service.dart';
-import 'checklist_service.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/sync/sync_ids.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/category_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
 import 'checklist_widget_service.dart';
-import 'label_service.dart';
-import 'store_service.dart';
+import 'package:pantry_core/services/label_service.dart';
+import 'package:pantry_core/services/store_service.dart';
 
 /// Register the interactive-widget callback so checkbox/row taps on the
 /// single-checklist widget reach [widgetInteractivityCallback]. Call once from

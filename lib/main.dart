@@ -7,33 +7,35 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
-import 'i18n.dart';
-import 'services/api_client.dart';
-import 'services/auth_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/api_client.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'services/background_notification_task.dart';
-import 'services/cert_trust_service.dart';
-import 'services/locale_service.dart';
-import 'services/category_service.dart';
-import 'services/checklist_service.dart';
-import 'services/house_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/locale_service.dart';
+import 'services/localizations_delegates.dart';
+import 'package:pantry_core/services/category_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/house_service.dart';
 import 'services/image_cache_service.dart';
-import 'services/label_service.dart';
+import 'package:pantry_core/services/label_service.dart';
 import 'services/list_link_service.dart';
 import 'services/local_notifications_service.dart';
-import 'services/nn_localizations.dart';
-import 'services/store_service.dart';
-import 'services/note_service.dart';
-import 'services/photo_service.dart';
-import 'services/prefs_service.dart';
-import 'services/server_version_service.dart';
+import 'package:pantry_core/services/nn_localizations.dart';
+import 'package:pantry_core/services/store_service.dart';
+import 'package:pantry_core/services/note_service.dart';
+import 'package:pantry_core/services/photo_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'services/share_intent_service.dart';
 import 'services/widget_link_service.dart';
 import 'services/checklist_widget_service.dart';
-import 'services/theming_service.dart';
+import 'package:pantry_core/services/theming_service.dart';
 import 'services/widget_interactivity.dart';
 import 'services/widget_service.dart';
-import 'sync/sync_manager.dart';
-import 'utils/platform_info.dart';
+import 'services/widget_theme.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'views/home/home_view.dart';
 import 'views/login/login_view.dart';
 import 'views/notifications_intro/notifications_intro_view.dart';
@@ -302,8 +304,10 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     ThemingService.instance.addListener(_rebuild);
     // Re-push the widget theme after first frame — at startup the platform
     // brightness can briefly report a stale value.
+    PrefsService.instance.addListener(_pushWidgetTheme);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      PrefsService.instance.pushWidgetTheme();
+      invalidateWidgetTheme();
+      unawaited(pushWidgetTheme());
     });
   }
 
@@ -312,13 +316,17 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     LocaleService.instance.removeListener(_rebuild);
     ThemingService.instance.removeListener(_rebuild);
+    PrefsService.instance.removeListener(_pushWidgetTheme);
     super.dispose();
   }
 
   @override
   void didChangePlatformBrightness() {
-    PrefsService.instance.pushWidgetTheme();
+    invalidateWidgetTheme();
+    unawaited(pushWidgetTheme());
   }
+
+  void _pushWidgetTheme() => unawaited(pushWidgetTheme());
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -326,7 +334,8 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
       // Re-sync widget data from the foreground isolate — background
       // workers can't reliably resolve platform brightness, and item counts
       // drift as lists change.
-      PrefsService.instance.pushWidgetTheme();
+      invalidateWidgetTheme();
+      unawaited(pushWidgetTheme());
       unawaited(WidgetService.instance.refreshAll());
       unawaited(ChecklistWidgetService.instance.refreshAll());
     }

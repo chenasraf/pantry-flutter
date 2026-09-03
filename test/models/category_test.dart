@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/category.dart';
+import 'package:pantry_core/models/category.dart';
 
 void main() {
   Category make({int? listId}) => Category(

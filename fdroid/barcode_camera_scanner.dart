@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry/views/checklists/barcode_attribution.dart';
 import 'package:pantry/views/checklists/barcode_scanner/manual_barcode_dialog.dart';

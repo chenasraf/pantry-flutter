@@ -1,0 +1,1012 @@
+common:
+  appTitle: Pantry
+  cancel: ביטול
+  delete: מחיקה
+  save: שמירה
+  retry: נסה שוב
+  refresh: רענון
+  logout: התנתקות
+  loading: טוען...
+  error: שגיאה
+  copy: העתק
+  copied: הועתק
+  closeDialog: סיום
+  remove: הסר
+  clear: נקה
+  more: עוד
+  permissionDenied: אין לך הרשאה לבצע פעולה זו
+  noAccessTitle: אין גישה
+  noAccessBody: עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.
+
+login:
+  connectToNextcloud: התחבר לשרת ה-Nextcloud שלך
+  serverUrl: כתובת השרת
+  serverUrlHint: cloud.example.com
+  connect: התחבר
+  waitingForAuth: "ממתין לאימות...\nאנא השלם את ההתחברות בדפדפן."
+  couldNotConnect: לא ניתן להתחבר לשרת. אנא בדוק את הכתובת.
+  loginFailed: ההתחברות נכשלה. אנא נסה שוב.
+  seeDetails: הצג פרטים
+  errorDetailsTitle: פרטי השגיאה
+  untrustedCertTitle: "תעודה לא מהימנה"
+  untrustedCertBody(String host): "${host} משתמש בתעודה שהמכשיר שלך לא סומך עליה — בדרך כלל מפני שהיא חתומה עצמית. ודא שהטביעה הדיגיטלית תואמת לזו שמנהל השרת שלך נתן לך לפני שתאשר אותה."
+  untrustedCertWarning: "סמוך על התעודה הזו רק אם אתה מזהה את הטביעה הדיגיטלית. סמיכה על תעודה לא צפויה עלולה לאפשר לתוקף לקרוא את התעבורה שלך."
+  trustCertificate: סמוך על התעודה
+  certFingerprint: "טביעה דיגיטלית SHA-256"
+  certSubject: נושא
+  certIssuer: מנפיק
+  certValidity: בתוקף
+  useAppPassword: התחברות באמצעות סיסמת יישום
+  useBrowserLogin: התחברות באמצעות הדפדפן
+  username: שם משתמש
+  appPassword: סיסמת יישום
+  appPasswordHelp: "צרו סיסמת יישום ב‑Nextcloud תחת הגדרות → אבטחה → מכשירים והפעלות. השתמשו בזה אם התחברות הדפדפן לא נפתחת או שהשרת שלכם משתמש באישור בחתימה עצמית."
+  appPasswordMissing: אנא הזינו שם משתמש וסיסמת יישום.
+  signIn: התחברות
+  couldNotReachServer: לא ניתן להגיע לשרת. בדקו את הכתובת ואת חיבור הרשת או ה‑VPN שלכם.
+  connectionTimeout: השרת לא הגיב בזמן. בדקו את חיבור הרשת או ה‑VPN שלכם ונסו שוב.
+  certProbeFailed: לא ניתן היה לקרוא את אישור השרת כדי לאמת אותו. ייתכן שהחיבור אינו יציב או שהשרת אינו זמין.
+
+home:
+  noHouses: אין בתים עדיין.
+  noHousesBody: "בתים הם מרחבים משותפים למשק הבית שלך. צור את הבית הראשון שלך כדי להתחיל להוסיף רשימות, תמונות והערות."
+  createHouse: צור בית
+  houseName: שם הבית
+  houseDescription: תיאור (אופציונלי)
+  createHouseFailed: יצירת הבית נכשלה.
+  failedToLoadHouses: טעינת הבתים נכשלה.
+  serverAppMissingTitle: Pantry לא מותקן
+  serverAppMissingBody: "אפליקציה זו היא לקוח עבור אפליקציית Pantry ב-Nextcloud. נראה ש-Pantry עדיין לא מותקן בשרת שלך. בקש ממנהל המערכת להתקין אותו מחנות האפליקציות של Nextcloud, או התקן בעצמך אם יש לך הרשאות מנהל."
+  openAppStore: פתח אפליקציות Nextcloud
+  learnMore: למד עוד
+
+nav:
+  checklists: רשימות
+  photoBoard: לוח תמונות
+  notesWall: קיר הערות
+
+widget:
+  chooseListsTitle: בחירת רשימות
+  chooseListsSubtitle: בחר אילו רשימות הווידג'ט הזה יציג.
+  chooseListTitle: בחירת רשימה
+  chooseListSubtitle: בחר את הרשימה שהווידג'ט הזה יציג.
+  noLists: אין רשימות זמינות.
+
+onboarding:
+  next: הבא
+  back: חזור
+  skip: דלג
+  done: בואו נתחיל
+  stepLabel(int current, int total): "שלב ${current} מתוך ${total}"
+  welcomeNewTitle: "ברוכים הבאים ל-Pantry"
+  welcomeNewBody: "בוא נעבור סיור קצר על איך Pantry עובד כדי שתפיק ממנו את המקסימום."
+  welcomeUpdateTitle: "מה חדש"
+  welcomeUpdateBody: "מאז הפעם האחרונה שפתחת את Pantry נוספו כמה דברים חדשים. הנה סקירה קצרה של מה שהשתנה."
+  checklistsRedesignTitle: "הרשימות בעיצוב חדש"
+  checklistsRedesignBody: "עמוד הרשימות נבנה מחדש מהיסוד — מבנה נקי יותר, דרך מהירה להוסיף פריטים ופעולות מהירות על כל שורה. הדפים הבאים יסבירו מה חדש."
+  checklistSelectorTitle: "החלף רשימות מלמעלה"
+  checklistSelectorBody: "הקש על שם הרשימה או על הסמל למעלה כדי להחליף בין רשימות או ליצור רשימה חדשה."
+  checklistSelectorHint: "הקש כדי להחליף רשימות"
+  mockListGroceries: "מצרכים"
+  mockListHardware: "חומרי בניין"
+  mockListWeekend: "טיול סוף שבוע"
+  mockItemCountSummary(int count): "${count} פריטים"
+  newListLabel: "רשימה חדשה"
+  swipeActionsTitle: "החלק פריטים כדי לנהל אותם"
+  swipeActionsBody: "החלק פריט ברשימה משמאל לימין כדי לחשוף פעולות מהירות לעריכה, העברה או מחיקה."
+  swipeActionsHint: "החלק ימינה"
+  swipeActionsHintBack: "החלק שמאלה"
+  quickActionsTitle: "פעולות מהירות לכל פריט"
+  quickActionsBody: "לכל פריט יש כפתורי פעולה בקצה — לחץ עליהם כדי לערוך, להעביר או למחוק את הפריט בלי לפתוח אותו."
+  addItemsTitle: "דרך מהירה יותר להוסיף פריטים"
+  addItemsBody: "הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו."
+  mockComposeListName: "מצרכים"
+  progressHeroTitle: "הסתר את כרטיס ההתקדמות"
+  progressHeroBody: "לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה."
+  progressHeroBringBack(String toggle): "אפשר להחזיר אותה בכל עת דרך תפריט הרשימה ← ${toggle}."
+  progressHeroHint: "החלק כדי להסיר"
+  progressHeroDismissTitle: "הסתר את כרטיס ההתקדמות"
+  progressHeroDismissBody: "לא צריך את טבעת ההתקדמות למעלה? לחץ על ה-X בכרטיס כדי להסתיר אותו."
+  widgetListsTitle: "בחר רשימות לווידג'ט"
+  widgetListsBody: "הוסף את הווידג'ט של Pantry למסך הבית כדי לראות במבט אחד כמה פריטים נותרו בכל רשימה — בלי לפתוח את האפליקציה."
+  widgetListsHow(String action): "בעת הוספת ווידג'ט תבחר את הרשימות שלו מיד. הקש על ${action} בווידג'ט כדי לשנות אותן מאוחר יותר, ואפשר להוסיף כמה ווידג'טים שרוצים — כל אחד עם הרשימות שלו."
+  widgetListsActionLabel: "בחר רשימות"
+  widgetListsWidgetTitle: "Pantry"
+  widgetListsWidgetItemsLeft(int count): "${_plural(count, one: 'פריט אחד נותר', many: '${count} נותרו')}"
+  widgetListsWidgetEmpty: "הכל בוצע"
+  pinnedNotesTitle: "השאר הערות חשובות בראש הקיר"
+  pinnedNotesBody: "הצמד הערה מתפריט שלוש הנקודות שלה כדי שתישאר בראש קיר ההערות, מעל הערות חדשות יותר."
+  mockPinnedNoteTitle: "סיסמת Wi-Fi"
+  mockPinnedNoteContent: "רשת: בית\nסיסמה: pantry-rocks"
+  mockItemName: "עגבניות"
+  mockItemQuantity: "x2"
+  mockItemCategory: "ירקות"
+  mockHardwareItemName: "נורות"
+  mockBulkItemThird: "חלב"
+  mockBulkItemFourth: "לחם"
+  allListsTitle: "הכל בתצוגה אחת"
+  allListsBody: "פתח את התצוגה כל הרשימות ממחליף הרשימות כדי לראות פריטים מכל הרשימות ביחד. כשמוסיפים פריט מכאן, הטופס שואל לאיזו רשימה להוסיף אותו — בוחרים אותה מצ'יפ הרשימה."
+  bulkAddTitle: "הוספת פריטים רבים בבת אחת"
+  bulkAddBody: "הפעל את מתג מרובה והשדה הופך לתיבת קלט רב-שורתית — כל שורה הופכת לפריט נפרד. נוח כשמדביקים רשימה או רושמים קנייה שלמה בבת אחת."
+  bulkSelectTitle: "בצע פעולה על כמה פריטים בבת אחת"
+  bulkSelectBody: "לחיצה ארוכה על פריט — או הקשה על ״בחירה״ בתפריט — כדי להתחיל לבחור, ואז להעביר, להעתיק, להגדיר קטגוריה או למחוק את כל מה שבחרת בבת אחת."
+  barcodeScanTitle: "סרוק ברקוד כדי להוסיף פריטים"
+  barcodeScanBody: "הקש על כפתור הסריקה בשורת ההוספה וכוון את המצלמה אל הברקוד של מוצר. Pantry מאתר את השם, הקטגוריה והתמונה וממלא אותם עבורך — או הקלד את המספר ידנית. הסריקה הראשונה של מוצר מבצעת את החיפוש; לאחר מכן זה מיידי עבור כל בני הבית."
+  barcodeScanMockName: "Coca-Cola Zero"
+  barcodeScanMockCategory: "משקאות"
+  priceTitle: "הוסף מחירים לפריטים שלך"
+  priceBody: "תנו לכל פריט מחיר — סכום יחיד או טווח — במטבע שתבחרו. הוא מוצג כתגית על הפריט, ותוכלו לסנן את הרשימה לפי מחיר כדי לעמוד בתקציב."
+  priceMockName: "שמן זית"
+  shoppingIntroTitle: "קונים חנות אחר חנות"
+  shoppingIntroBody: "התחילו מסע קניות על הרשימות שלכם, עברו בין החנויות לפי הסדר וסמנו פריטים תוך כדי — עם סכום מחירים מתעדכן."
+  shoppingMockStoreActive: "סופרמרקט"
+  shoppingMockStoreNext: "בית מרקחת"
+  categoryScopeTitle: "קטגוריות לכל רשימה"
+  categoryScopeBody: "השאירו קטגוריה ברשימה אחת, או הפכו אותה לגלובלית כך שתופיע בכל הרשימות. קטגוריות חדשות נשארות גלובליות אלא אם בוחרים רשימה."
+  categoryScopeGlobalCaption: "מופיעה בכל הרשימות"
+  categoryScopeScopedCaption: "מופיעה ברשימה זו בלבד"
+  customFieldsTitle: "שדות משלכם"
+  customFieldsBody: "עקבו אחרי הפרטים שחשובים לכם — תאריך תפוגה, מעבר בסופר, מידה. הגדירו שדה פעם אחת לכל הבית או לרשימה אחת, והוא יופיע בכל פריט."
+  customFieldsMockExpiry: "תפוגה"
+  customFieldsMockExpiryValue: "12 בספט׳"
+  customFieldsMockAisle: "מעבר"
+  customFieldsMockAisleValue: "מוצרי חלב"
+  customFieldsTypesCaption: "בחרו את הסוג שמתאים למה שאתם רושמים."
+  serverRequirementNote(String version): "* דורש את Pantry ל-Nextcloud בגרסה ${version}+"
+  dev:
+    showOnboarding: "הצג היכרות"
+    pickLastSeenTitle: "תצוגה מקדימה של החדש"
+    pickLastSeenBody: "בחר את הגרסה שברצונך לראות מה חדש בה, כפי שמשתמש שמשדרג לגרסה הזו היה רואה."
+    neverSeen: "מעולם לא נצפה (משתמש חדש)"
+    forceAllFeatures: "הפעל את כל התכונות"
+    sendTestNotification: "שלח התראת בדיקה"
+
+notificationsIntro:
+  title: הישאר מעודכן
+  body: "Pantry יכול להודיע לך כשבני משק הבית מוסיפים פריטים לרשימות, מעלים תמונות או משאירים הערות. ההתראות נשלפות מהשרת שלך — שום דבר לא עובר דרך Google או צדדים שלישיים."
+  bullet1: התראות על פעילות במשק הבית
+  bullet2: נשלפות ישירות מהשרת שלך
+  bullet3: עובד גם כשהאפליקציה סגורה
+  enableButton: הפעל התראות
+  skipButton: לא עכשיו
+  permissionDeniedTitle: ההרשאה נדחתה
+  permissionDeniedBody: "תוכל להפעיל התראות מאוחר יותר בהגדרות האפליקציה. אם המכשיר חוסם אותן, תצטרך לאשר אותן קודם בהגדרות המערכת."
+  ok: אישור
+
+about:
+  title: אודות
+  developer: מפתח
+  email: דוא"ל
+  repository: קוד מקור
+  nextcloudApp: אפליקציית Nextcloud
+  privacyPolicy: מדיניות פרטיות
+  feedback: משוב ובעיות
+  serverVersion: שרת Nextcloud
+  pantryServerVersion: Pantry בשרת
+  versionUnknown: לא ידוע
+  buyMeACoffee: קנו לי קפה
+
+settings:
+  title: הגדרות האפליקציה
+  generalSection: כללי
+  interfaceSection: ממשק
+  defaultItemTapAction: פעולת ברירת מחדל בלחיצה
+  defaultItemTapActionBody: מה קורה כאשר לוחצים על שורת פריט.
+  itemTapActionNames:
+    done: סמן כהושלם
+    view: צפייה
+    edit: עריכה
+    none: ללא
+  defaultItemLongPressAction: פעולת ברירת מחדל בלחיצה ארוכה
+  defaultItemLongPressActionBody: מה קורה כאשר לוחצים לחיצה ארוכה על שורת פריט.
+  itemLongPressActionNames:
+    multiselect: בחירה מרובה/סידור מחדש
+    done: סמן כהושלם
+    view: צפייה
+    edit: עריכה
+    none: ללא
+  checkboxPosition: מיקום תיבת הסימון
+  checkboxPositionBody: באיזה צד של השורה תופיע תיבת הסימון.
+  checkboxPositionNames:
+    start: התחלה
+    end: סוף
+  density: צפיפות הרשימה
+  densityBody: כמה מקום כל פריט תופס ברשימות שלך.
+  densityNames:
+    normal: רגילה
+    dense: צפופה
+    compact: צפופה מאוד
+  swipeActions: פעולות החלקה
+  swipeActionsBody: החליקו פריטים כדי לחשוף פעולות מהירות. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.
+  itemActions: פעולות פריט
+  itemActionsBody: הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.
+  startShoppingButton: כפתור «התחלת קניות»
+  startShoppingButtonBody: הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט.
+  truncateItemNames: קיצור שמות פריטים ארוכים
+  truncateItemNamesBody: שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.
+  reuseExistingItems: שימוש חוזר בפריטים קיימים בעת הוספה
+  reuseExistingItemsBody: "כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים."
+  reuseExistingItemsNames:
+    ask: תמיד לשאול
+    reuse: תמיד להשתמש מחדש
+    never: לעולם לא להשתמש מחדש
+  suggestArchivedItems: הצעת פריטים בארכיון
+  suggestArchivedItemsBody: בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון.
+  navOrderTitle: סדר ניווט
+  navOrderSubtitle: שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה.
+  navOrderBody: גרור כדי לשנות את סדר הלשוניות. הקטע הגלוי הראשון נפתח עם הפעלת האפליקציה. כבה כל קטע שאינך משתמש בו כדי להסתיר את הלשונית שלו — לפחות אחד חייב להישאר פעיל.
+  navOrderDefaultHint: נפתח עם הפעלת האפליקציה
+  navOrderReset: איפוס
+  visibleChipsTitle: פרטי פריט
+  visibleChipsSubtitle: בחירת הפרטים שיוצגו בכל פריט.
+  visibleChipsBody: כבה כל פרט שאינך רוצה שיוצג כתגית בשורות הפריטים.
+  visibleChipsReset: איפוס
+  chipNames:
+    category: קטגוריה
+    store: חנות
+    label: תווית
+    quantity: כמות
+    price: מחיר
+    note: הערה
+    oneTime: חד-פעמי
+    recurring: חוזר
+    list: רשימה
+  language: שפה
+  systemLanguage: ברירת מחדל (שפת המערכת)
+  theme: ערכת נושא
+  themeNames:
+    system: ברירת מחדל (המערכת)
+    light: בהיר
+    dark: כהה
+  useServerThemeColor: שימוש בצבע ערכת הנושא של Nextcloud
+  useServerThemeColorBody: צביעת האפליקציה בצבע ערכת הנושא של משתמש ה-Nextcloud שלך. כבה כדי להשתמש בצבעים של האפליקציה עצמה.
+  notificationsSection: התראות
+  enableNotifications: הפעל התראות
+  enableNotificationsBody: הצג התראות כשבני משק הבית מוסיפים או מעדכנים תוכן.
+  pollInterval: בדוק פעילות חדשה
+  pollInterval15m: כל 15 דקות
+  pollInterval30m: כל 30 דקות
+  pollInterval1h: כל שעה
+  pollInterval2h: כל שעתיים
+  pollInterval6h: כל 6 שעות
+  permissionDenied: הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.
+  refreshSection: רענון אוטומטי
+  refreshSectionBody: כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני.
+  checklistRefresh: רשימות
+  notesRefresh: פתקים
+  photosRefresh: תמונות
+  shoppingRefresh: מצב קניות
+  refreshOff: כבוי
+  refreshInherit: כמו ברשימות
+  refresh15s: כל 15 שניות
+  refresh30s: כל 30 שניות
+  refresh1m: כל דקה
+  refresh2m: כל 2 דקות
+  refresh5m: כל 5 דקות
+
+notifications:
+  title: התראות
+  empty: אין התראות חדשות.
+  failedToLoad: טעינת ההתראות נכשלה.
+  dismissAll: סגור הכל
+  justNow: הרגע
+  minutesAgo(int count): "לפני ${count} ד׳"
+  hoursAgo(int count): "לפני ${count} שע׳"
+  daysAgo(int count): "לפני ${count} י׳"
+
+categories:
+  manageTitle: ניהול קטגוריות
+  noCategories: אין קטגוריות עדיין.
+  editTitle: עריכת קטגוריה
+  addTitle: קטגוריה חדשה
+  name: שם
+  icon: אייקון
+  color: צבע
+  saveFailed: שמירת הקטגוריה נכשלה.
+  deleteFailed: מחיקת הקטגוריה נכשלה.
+  deleteConfirm: למחוק את הקטגוריה?
+  deleteConfirmBody: "פריטים בקטגוריה זו יהפכו ללא קטגוריה. לא ניתן לבטל פעולה זו."
+  list: רשימה
+  globalList: כל הרשימות (גלובלי)
+  sort:
+    nameAZ: "שם א'–ת'"
+    nameZA: "שם ת'–א'"
+    custom: מותאם אישית
+
+customFields:
+  manageTitle: שדות מותאמים אישית
+  empty: "אין עדיין שדות מותאמים אישית. הוסיפו אחד כדי לצרף מידע נוסף לפריטים."
+  addField: הוספת שדה
+  allLists: כל הרשימות
+  deleteTitle: מחיקת שדה
+  deleteConfirm: "למחוק את השדה? ערכים שכבר הוגדרו על פריטים נשמרים אך מוסתרים."
+  optionDeleteFailed: הסרת האפשרות נכשלה.
+  types:
+    text: טקסט
+    number: מספר
+    checkbox: תיבת סימון
+    date: תאריך
+    select: בחירה
+  name: שם
+  namePlaceholder: "למשל תפוגה, מעבר"
+  type: סוג
+  typeLocked: לא ניתן לשנות את הסוג לאחר יצירת השדה.
+  scope: היקף
+  hint: טקסט רמז
+  hintPlaceholder: מוצג כטקסט מציין מקום של הערך
+  multiline: אזור טקסט מרובה שורות
+  options: אפשרויות
+  optionPlaceholder: תווית האפשרות
+  addOption: הוספת אפשרות
+  removeOption: הסרת אפשרות
+  entryMode: הזנת תאריך
+  dateAbsolute: מוחלט
+  dateRelative: יחסי
+  defaultOffset: "היסט ברירת מחדל (ימים)"
+  defaultOffsetPlaceholder: "למשל 7"
+  notifyDefault: תזכורת כברירת מחדל
+  leadTime: להזכיר
+  leadOnDay: באותו יום
+  leadDay1: יום לפני
+  leadDay2: יומיים לפני
+  leadDay3: 3 ימים לפני
+  leadWeek1: שבוע לפני
+  overridePolicy: עקיפת תזכורת
+  overrideFieldOnly: אותה תזכורת לכל פריט
+  overrideItem: כל פריט מגדיר תזכורת משלו
+  stopWhenDone: להפסיק להזכיר כשהפריט הושלם
+  defaultValue: ערך ברירת מחדל
+  defaultChecked: מופעל כברירת מחדל
+  noDefault: ללא ברירת מחדל
+  noValue: אין ערך
+  daysFromToday: ימים מהיום
+  due(String date): "יעד ${date}"
+  reanchor: עיגון מחדש של התאריך
+  remindMe: להזכיר לי
+  customReminder: תזכורת מותאמת לפריט זה
+  useFieldDefault: להשתמש בברירת המחדל של השדה
+  done: סיום
+  remapTitle: האפשרות בשימוש
+  remapClear: לנקות אותה מהפריטים האלה
+  remapMoveTo(String label): "להעביר אל ${label}"
+  remapPrompt(int count, String label): "${_plural(count, one: '${label} בשימוש על ידי פריט אחד. מה לעשות איתו?', many: '${label} בשימוש על ידי ${count} פריטים. מה לעשות איתם?')}"
+
+stores:
+  manageTitle: ניהול חנויות
+  noStores: אין חנויות עדיין.
+  editTitle: עריכת חנות
+  addTitle: חנות חדשה
+  name: שם
+  icon: סמל
+  color: צבע
+  saveFailed: שמירת החנות נכשלה.
+  deleteFailed: מחיקת החנות נכשלה.
+  deleteConfirm: למחוק את החנות הזו?
+  deleteConfirmBody: "החנות תוסר מכל הפריטים. לא ניתן לבטל פעולה זו."
+  brand: מותג/רשת
+  brandHint: "לדוגמה: שופרסל, IKEA"
+  location: מיקום
+  locationHint: "לדוגמה: רחוב הרצל 12"
+  openingHours: שעות פתיחה
+  addOpeningHours: הוספת שעות פתיחה
+  openingHoursStart: התחלה
+  openingHoursEnd: סיום
+  openingHoursAdd: הוספה
+  contact: איש קשר
+  contactHint: "לדוגמה: טלפון, אתר, רשתות חברתיות"
+  responsible: אחראי
+  responsibleHint: "לדוגמה: מנהל החנות"
+  notes: הערות
+  notesHint: כל דבר נוסף שכדאי לזכור
+  noDetails: עדיין לא נוספו פרטים.
+  editAction: עריכה
+  sort:
+    nameAZ: "שם א׳–ת׳"
+    nameZA: "שם ת׳–א׳"
+    custom: מותאם אישית
+
+labels:
+  manageTitle: ניהול תוויות
+  noLabels: אין תוויות עדיין.
+  editTitle: עריכת תווית
+  addTitle: תווית חדשה
+  name: שם
+  icon: אייקון
+  color: צבע
+  saveFailed: שמירת התווית נכשלה.
+  deleteFailed: מחיקת התווית נכשלה.
+  deleteConfirm: למחוק את התווית הזו?
+  deleteConfirmBody: "התווית תוסר מכל הפריטים. לא ניתן לבטל פעולה זו."
+  list: רשימה
+  globalList: כל הרשימות (גלובלי)
+  sort:
+    nameAZ: "שם א'–ת'"
+    nameZA: "שם ת'–א'"
+    custom: מותאם אישית
+
+checklists:
+  categories: קטגוריות
+  noChecklists: אין רשימות עדיין.
+  noItems: אין פריטים ברשימה.
+  noSearchResults: אין פריטים תואמים לחיפוש.
+  searchHint: הקלד לסינון...
+  barcode:
+    scan: סרוק ברקוד
+    scanTitle: סריקת ברקוד
+    scanInstructions: כוון את המצלמה אל ברקוד של מוצר
+    torch: הפעלת פנס
+    enterManually: הזנה ידנית
+    manualTitle: הזנת ברקוד
+    manualHint: מספר ברקוד
+    invalidBarcode: זה לא נראה כמו ברקוד תקין
+    notFound: לא נמצא מידע על מוצר עבור ברקוד זה
+    disclaimer(String linkStart, String linkEnd): "המוצרים מסופקים על ידי ${linkStart}Open Food Facts${linkEnd}, מסד נתונים קהילתי חיצוני ש-Pantry אינה הבעלים שלו ואינה שולטת בו."
+  allCategories: הכל
+  allListsChip: הכל
+  filterByList: סינון לפי רשימה
+  filterByCategory: סינון לפי קטגוריה
+  filters:
+    lists: רשימות
+    categories: קטגוריות
+    stores: חנויות
+    labels: תוויות
+    allLists: כל הרשימות
+    allCategories: כל הקטגוריות
+    allStores: כל החנויות
+    allLabels: כל התוויות
+    noCategory: ללא קטגוריה
+    noStores: ללא חנות
+    noLabels: ללא תווית
+    price: מחיר
+    anyCurrency: כל מטבע
+  failedToLoad: טעינת הרשימות נכשלה.
+  failedToLoadItems: טעינת הפריטים נכשלה.
+  completedCount(int count): "הושלמו ($count)"
+  editItem: ערוך פריט
+  removeItem: הסר פריט
+  moveItem: העבר לרשימה
+  moveFailed: העברת הפריט נכשלה.
+  copyItem: העתק לרשימה
+  copyFailed: העתקת הפריט נכשלה.
+  itemCopied: הפריט הועתק
+  itemMarkedDone: הפריט סומן כהושלם
+  itemRemoved: הפריט הוסר
+  undo: בטל
+  selectItems: בחירה
+  batch:
+    selected(int count): "${_plural(count, one: 'פריט אחד נבחר', many: '$count נבחרו')}"
+    moveTitle: העברת פריטים אל
+    copyTitle: העתקת פריטים אל
+    categoryTitle: הגדרת קטגוריה
+    storesTitle: הגדרת חנויות
+    labelsTitle: הגדרת תוויות
+    clearCategory: ללא קטגוריה
+    move: העבר
+    copy: העתק
+    category: קטגוריה
+    stores: חנויות
+    labels: תוויות
+    delete: מחק
+    archive: העבר לארכיון
+    unarchive: הוצא מהארכיון
+    deleteConfirmTitle: למחוק פריטים?
+    deleteConfirmBody(int count): "${_plural(count, one: 'למחוק פריט אחד שנבחר? ניתן לשחזר אותו מהאשפה.', many: 'למחוק $count פריטים שנבחרו? ניתן לשחזר אותם מהאשפה.')}"
+    moved(int count): "${_plural(count, one: 'פריט אחד הועבר', many: '$count פריטים הועברו')}"
+    copied(int count): "${_plural(count, one: 'פריט אחד הועתק', many: '$count פריטים הועתקו')}"
+    deleted(int count): "${_plural(count, one: 'פריט אחד נמחק', many: '$count פריטים נמחקו')}"
+    restored(int count): "${_plural(count, one: 'פריט אחד שוחזר', many: '$count פריטים שוחזרו')}"
+    archived(int count): "${_plural(count, one: 'פריט אחד הועבר לארכיון', many: '$count פריטים הועברו לארכיון')}"
+    unarchived(int count): "${_plural(count, one: 'פריט אחד הוצא מהארכיון', many: '$count פריטים הוצאו מהארכיון')}"
+    categorySet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
+    storesSet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
+    labelsSet(int count): "${_plural(count, one: 'פריט אחד עודכן', many: '$count פריטים עודכנו')}"
+    skipped(int count): "${_plural(count, one: 'פריט אחד דולג', many: '$count דולגו')}"
+    failed: משהו השתבש. נסה שוב.
+  viewTrash: הצג אשפה
+  exitTrash: צא מהאשפה
+  showAddedBy: הצג מי הוסיף כל פריט
+  showProgressHero: הצג כרטיס התקדמות ברשימה הזו
+  addedBy(String name): "הוסף על ידי $name"
+  trashTitle: אשפה
+  noTrashedItems: האשפה ריקה.
+  emptyTrash: רוקן אשפה
+  emptyTrashConfirm: לרוקן את האשפה?
+  emptyTrashConfirmBody: כל הפריטים באשפה יימחקו לצמיתות. לא ניתן לבטל פעולה זו.
+  emptyTrashFailed: ריקון האשפה נכשל.
+  restoreItem: שחזר
+  permanentlyDeleteItem: מחק
+  permanentlyDeleteConfirm: למחוק את הפריט לצמיתות?
+  permanentlyDeleteConfirmBody: לא ניתן לבטל פעולה זו.
+  restoreFailed: שחזור הפריט נכשל.
+  permanentlyDeleteFailed: מחיקת הפריט נכשלה.
+  itemRestored: הפריט שוחזר
+  viewArchive: הצג ארכיון
+  exitArchive: צא מהארכיון
+  archiveTitle: ארכיון
+  noCategory: ללא קטגוריה
+  noStore: ללא חנות
+  noArchivedItems: הארכיון ריק.
+  archiveItem: העבר לארכיון
+  unarchiveItem: הוצא מהארכיון
+  archiveFailed: העברת הפריט לארכיון נכשלה.
+  unarchiveFailed: הוצאת הפריט מהארכיון נכשלה.
+  itemArchived: הפריט הועבר לארכיון
+  itemUnarchived: הפריט הוצא מהארכיון
+  failedToLoadArchive: טעינת הארכיון נכשלה.
+  viewListsTrash: רשימות שנמחקו
+  listsTrashTitle: רשימות שנמחקו
+  failedToLoadTrash: טעינת סל המיחזור נכשלה.
+  listTrashEmpty: אין רשימות שנמחקו.
+  copyLink: העתק קישור
+  addToHomeScreen: הוסף למסך הבית
+  addToHomeScreenFailed: לא ניתן היה להוסיף את הקיצור.
+  removeList: הסר רשימה
+  editList: ערוך רשימה
+  editListTitle: ערוך רשימה
+  saveListButton: שמור שינויים
+  updateListFailed: עדכון הרשימה נכשל.
+  removeListConfirm: להסיר את הרשימה?
+  removeListConfirmBody(String name): 'להסיר את הרשימה "$name"? ניתן לשחזר אותה מסל המיחזור.'
+  removeListFailed: הסרת הרשימה נכשלה.
+  restoreList: שחזר רשימה
+  permanentlyDeleteList: מחק לצמיתות
+  listRemoved: הרשימה הוסרה
+  archivedLists: רשימות בארכיון
+  archivedListsTitle: רשימות בארכיון
+  archivedListsEmpty: רשימות בארכיון יופיעו כאן.
+  failedToLoadArchivedLists: טעינת הרשימות בארכיון נכשלה.
+  archiveList: העבר לארכיון
+  unarchiveList: הוצא מהארכיון
+  listArchived: הרשימה הועברה לארכיון
+  archiveListFailed: העברת הרשימה לארכיון נכשלה.
+  unarchiveListFailed: הוצאת הרשימה מהארכיון נכשלה.
+  createList: רשימה חדשה
+  listName: שם הרשימה
+  listDescription: תיאור (אופציונלי)
+  listIcon: אייקון
+  createListFailed: יצירת הרשימה נכשלה.
+  viewItem:
+    quantity: "כמות:"
+    category: "קטגוריה:"
+    recurrence: "חזרה:"
+    nextDue: "מועד הבא:"
+    nextDueFromCompletion: "מועד הבא (מהשלמה):"
+    overdue: באיחור
+    quantityLabel: כמות
+    typeLabel: סוג
+    priceLabel: מחיר
+    descriptionLabel: תיאור
+    noDescription: לא נוסף תיאור.
+    addedByMeta(String name, String time): "נוסף על-ידי $name · $time"
+    addedByYouMeta(String time): "נוסף על-ידך · $time"
+    addedMeta(String time): "נוסף $time"
+    doneByMeta(String name, String time): "הושלם על-ידי $name · $time"
+    doneByYouMeta(String time): "הושלם על-ידך · $time"
+    doneMeta(String time): "הושלם $time"
+    relJustNow: ממש עכשיו
+    relToday: היום
+    relYesterday: אתמול
+    relDaysAgo(int n): "לפני $n ימים"
+    relWeeksAgo(int n): "${_plural(n, one: 'לפני שבוע', many: 'לפני $n שבועות')}"
+    relMonthsAgo(int n): "${_plural(n, one: 'לפני חודש', many: 'לפני $n חודשים')}"
+    relYearsAgo(int n): "${_plural(n, one: 'לפני שנה', many: 'לפני $n שנים')}"
+  itemForm:
+    addTitle: הוסף פריט
+    editTitle: ערוך פריט
+    name: שם הפריט
+    description: תיאור
+    quantity: כמות
+    category: קטגוריה
+    noCategory: ללא
+    noCategories: אין קטגוריות זמינות.
+    createCategory: קטגוריה חדשה
+    categoryName: שם
+    categoryIcon: אייקון
+    categoryColor: צבע
+    categoryCreated: הקטגוריה נוצרה.
+    categoryCreateFailed: יצירת הקטגוריה נכשלה.
+    stores: חנויות
+    noStores: ללא
+    createStore: חנות חדשה
+    storesChange: שינוי
+    storesPick: בחירה
+    labels: תוויות
+    noLabels: ללא
+    createLabel: תווית חדשה
+    labelsChange: שינוי
+    labelsPick: בחירה
+    repeat: חזרה
+    once: פעם אחת
+    onceDescription: מחק את הפריט ברגע שהוא מסומן כבוצע.
+    image: תמונה
+    addImage: הוסף תמונה
+    takePhoto: צלם תמונה
+    chooseImage: בחר תמונה
+    replaceImage: החלף
+    removeImage: הסר
+    saveFailed: שמירת הפריט נכשלה.
+    deleteFailed: מחיקת הפריט נכשלה.
+    deleteConfirm: למחוק את הפריט?
+    save: שמור שינויים
+    descHint: הוסף תיאור (אופציונלי)
+    categoryChange: שנה
+    categoryPick: בחר אחת
+    untitledItem: פריט ללא שם
+    typeStaple: פריט קבוע
+    typeOnce: פריט חד-פעמי
+    typeRecurring: חוזר
+  sort:
+    newestFirst: החדש ביותר
+    oldestFirst: הישן ביותר
+    nameAZ: "שם א–ת"
+    nameZA: "שם ת–א"
+    category: לפי קטגוריה
+    store: לפי חנות
+    custom: מותאם אישית
+  itemsLeft(int count): "${_plural(count, one: 'פריט אחד נותר', many: '$count פריטים נותרו')}"
+  allDone: הכל בוצע 🎉
+  listProgress(int done, int total): "$done מתוך $total בוצעו"
+  hideProgressHero: "הסתר כרטיס התקדמות"
+  sortTooltip: "מיון"
+  doneCount(int count): "בוצעו · $count"
+  uncheckAll: "בטל סימון להכול"
+  uncheckAllConfirm: "לבטל את הסימון של כל הפריטים?"
+  uncheckAllConfirmBody: "כל פריט מסומן ברשימה זו יוחזר לרשימה הפעילה."
+  uncheckedCount(int count): "${_plural(count, one: 'בוטל הסימון של פריט אחד', many: 'בוטל הסימון של $count פריטים')}"
+  removeAll: "להסיר הכול"
+  removeAllConfirm: "להסיר את כל הפריטים המסומנים?"
+  removeAllConfirmBody: "כל פריט מסומן ברשימה זו יועבר לאשפה. אפשר לשחזר אותם לאחר מכן."
+  removedCount(int count): "${_plural(count, one: 'הוסר פריט אחד', many: 'הוסרו $count פריטים')}"
+  resetOrder:
+    menuLabel: "איפוס סדר מותאם…"
+    pickTitle: "איפוס הסדר המותאם לפי…"
+    confirmTitle: "לאפס את הסדר המותאם?"
+    confirmBody: "פעולה זו תדרוס את הסדר המותאם הנוכחי של רשימה זו. ניתן לסדר מחדש את הפריטים לאחר מכן."
+    action: "איפוס סדר"
+    success: "הסדר המותאם אופס"
+    basisDateAdded: "תאריך הוספה"
+    basisNameAsc: "שם א׳–ת׳"
+    basisNameDesc: "שם ת׳–א׳"
+  addToList(String name): "הוסף אל $name…"
+  addFirstItem: הוסף את הפריט הראשון…
+  noItemsTitle: אין פריטים ברשימה
+  noItemsBody: הוסף את הפריט הראשון בעזרת השורה למטה — קבע קטגוריה, כמות או לוח זמנים בעזרת הצ׳יפים.
+  noListsTitle: אין רשימות עדיין
+  noListsBody: צור את הרשימה הראשונה שלך כדי להתחיל לעקוב אחר מצרכים, סידורים, משימות או כל דבר שמשק הבית צריך לזכור.
+  createFirstList: צור את הרשימה הראשונה
+  yourChecklists: הרשימות שלך
+  listsCount(int count): "${_plural(count, one: 'רשימה אחת', many: '$count רשימות')}"
+  itemsSummary(int count): "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
+  allDoneSummary: "הכל בוצע · 0 נותרו"
+  newChecklist: רשימה חדשה
+  createListButton: צור רשימה
+  view: צפה
+  swipeView: צפייה
+  swipeEdit: עריכה
+  swipeMove: העברה
+  swipeCopy: העתקה
+  swipeDelete: הסר
+  swipeArchive: העבר לארכיון
+  moreActions: פעולות נוספות
+  viewList: תצוגת רשימה
+  viewCards: תצוגת כרטיסים
+  listColor: צבע
+  itemTypes:
+    label: סוג פריט
+    staple: קבוע
+    stapleBody: נשאר ברשימה אחרי שמסמנים אותו כבוצע
+    onceTime: חד-פעמי
+    onceTimeBody: מוסר מהרשימה ברגע שמסמנים אותו כבוצע
+    recurring: חוזר
+    recurringBody: חוזר ברשימה לפי לוח זמנים
+    weekly: שבועי
+    everyNWeeks(int n): "כל $n שבועות"
+  compose:
+    chipCategory: קטגוריה
+    chipStore: חנויות
+    chipLabel: תוויות
+    chipQuantity: כמות
+    chipType: סוג פריט
+    chipImage: תמונה
+    chipDescription: תיאור
+    descHint: "הערות, הוראות, קישורים…"
+    qtyHint: "למשל 2 ליטר, 500 ג׳"
+    qtyStepperHelp: ＋ / − משנים את המספר ושומרים על היחידה.
+    none: ללא
+    every: כל
+    week: שבוע
+    weeks: שבועות
+    chipTargetList: רשימה
+    pickTargetList: בחר רשימה
+    multiple: מרובה
+    multipleHint: הפרד פריטים בשורות חדשות
+  price:
+    label: מחיר
+    set: קבוע
+    range: טווח
+    amount: סכום
+    min: מינ׳
+    max: מקס׳
+    currency: מטבע
+    clear: נקה מחיר
+    anyStore: כל חנות
+    store: חנות
+    addPrice: הוספת מחיר
+    removePrice: הסרת מחיר
+  reuse:
+    dialogTitle: הפריט כבר קיים
+    dialogBody(String name): 'פריט בשם "$name" כבר קיים ברשימה. להשתמש בו במקום להוסיף פריט חדש?'
+    reuseExisting: השתמש בקיים
+    addAnyway: הוסף בכל זאת
+    reusedSnack(String name): "נעשה שימוש חוזר בפריט “$name”"
+    suggestionsHeader: כבר ברשימה הזו
+    archivedBadge: בארכיון
+    archivedDialogBody(String name): 'פריט בארכיון בשם "$name" כבר קיים. להשתמש בו במקום להוסיף פריט חדש? הוא יוצא מהארכיון.'
+    reusedArchivedSnack(String name): "נעשה שימוש חוזר בפריט מהארכיון “$name”"
+  allLists: כל הרשימות
+  allListsSubtitle: פריטים מכל הרשימות
+  addToAnyList: "הוסף פריט…"
+  pickListTitle: להוסיף לאיזו רשימה?
+  markdown:
+    exported(String date): "יוצא בתאריך $date"
+    uncategorized: ללא קטגוריה
+    exportTitle: ייצוא ל-Markdown
+    importTitle: ייבוא מ-Markdown
+    importToLabel: ייבוא אל
+    includeCompleted: לכלול פריטים שהושלמו
+    editHint: ערכו את הטקסט למטה כדי לשנות את הרשימה המיוצאת
+    copy: העתקה
+    download: הורדת .md
+    copied: הועתק ללוח
+    copyFailed: לא ניתן להעתיק ללוח
+    close: סגירה
+    shareFailed: לא ניתן לייצא את הקובץ
+    uploadFile: העלאת קובץ .md
+    pasteLabel: הדבקת Markdown
+    pastePlaceholder: "הדביקו כאן רשימת Markdown…"
+    noneFound: לא נמצאו פריטי רשימה בטקסט.
+    selectAll: בחירת הכול
+    deselectAll: ביטול בחירת הכול
+    reuseExisting: שימוש חוזר בפריטים קיימים במקום הוספת כפילויות
+    defaultFields: ערכים שיחולו על כל פריט מיובא
+    itemsFound(int count): "${_plural(count, one: 'נמצא פריט אחד', many: 'נמצאו $count פריטים')}"
+    addItems(int count): "${_plural(count, one: 'הוספת פריט אחד', many: 'הוספת $count פריטים')}"
+    imported(int count): "${_plural(count, one: 'יובא פריט אחד', many: 'יובאו $count פריטים')}"
+
+notesWall:
+  noNotes: אין הערות עדיין.
+  failedToLoad: טעינת ההערות נכשלה.
+  saveFailed: שמירת ההערה נכשלה.
+  deleteFailed: מחיקת ההערה נכשלה.
+  deleteConfirm: למחוק את ההערה?
+  deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'הערה זו', many: '$count הערות')}?"
+  noteRemoved(int count): "${_plural(count, one: 'הערה נמחקה', many: '$count הערות נמחקו')}"
+  viewTrash: הצג סל מיחזור
+  exitTrash: צא מסל המיחזור
+  trashTitle: סל מיחזור
+  trashEmpty: סל המיחזור ריק.
+  emptyTrash: רוקן סל מיחזור
+  emptyTrashConfirm: לרוקן את סל המיחזור?
+  emptyTrashConfirmBody: כל ההערות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו.
+  emptyTrashFailed: ריקון סל המיחזור נכשל.
+  failedToLoadTrash: טעינת סל המיחזור נכשלה.
+  restore: שחזר
+  restoreFailed: שחזור ההערה נכשל.
+  permanentlyDelete: מחק לצמיתות
+  permanentlyDeleteConfirm: למחוק את ההערה לצמיתות?
+  permanentlyDeleteConfirmBody: לא ניתן לבטל פעולה זו.
+  newNote: הערה חדשה
+  editNote: עריכת הערה
+  unsavedChanges: שינויים שלא נשמרו
+  unsavedChangesBody: יש לך שינויים שלא נשמרו. לשמור אותם?
+  discard: התעלם
+  keepEditing: המשך עריכה
+  pinNote: הצמדת הערה
+  unpinNote: ביטול הצמדה
+  importToList: ייבוא לרשימה
+  importNoLists: אין רשימות זמינות לייבוא.
+  title: כותרת
+  content: תוכן
+  color: צבע
+  sort:
+    newestFirst: החדש ביותר
+    oldestFirst: הישן ביותר
+    titleAZ: "כותרת א–ת"
+    titleZA: "כותרת ת–א"
+    custom: מותאם אישית
+
+photoBoard:
+  noPhotos: אין תמונות עדיין.
+  failedToLoad: טעינת התמונות נכשלה.
+  uploadFailed: העלאת התמונה נכשלה.
+  deleteFailed: מחיקת התמונה נכשלה.
+  deleteConfirm: למחוק את התמונה?
+  deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'תמונה זו', many: '$count תמונות')}?"
+  photoRemoved(int count): "${_plural(count, one: 'תמונה נמחקה', many: '$count תמונות נמחקו')}"
+  viewTrash: הצג סל מיחזור
+  exitTrash: צא מסל המיחזור
+  trashTitle: סל מיחזור
+  trashEmpty: סל המיחזור ריק.
+  emptyTrash: רוקן סל מיחזור
+  emptyTrashConfirm: לרוקן את סל המיחזור?
+  emptyTrashConfirmBody: כל התמונות בסל המיחזור יימחקו לצמיתות. לא ניתן לבטל פעולה זו.
+  emptyTrashFailed: ריקון סל המיחזור נכשל.
+  failedToLoadTrash: טעינת סל המיחזור נכשלה.
+  restore: שחזר
+  restoreFailed: שחזור התמונה נכשל.
+  permanentlyDelete: מחק לצמיתות
+  permanentlyDeleteConfirm: למחוק את התמונה לצמיתות?
+  permanentlyDeleteConfirmBody: לא ניתן לבטל פעולה זו.
+  deleteFolder: מחק תיקייה
+  deleteFolderConfirm: למחוק את התיקייה?
+  deleteFolderKeepPhotos: העבר תמונות לשורש
+  deleteFolderDeleteAll: מחק תיקייה ותמונות
+  newFolder: תיקייה חדשה
+  folderName: שם התיקייה
+  renameFolder: שנה שם תיקייה
+  caption: כיתוב
+  photoCount(int count): "$count"
+  addMenu:
+    upload: העלאת תמונות
+    camera: צילום תמונה
+    newFolder: תיקייה חדשה
+  sort:
+    foldersFirst: תיקיות קודם
+    newestFirst: החדש ביותר
+    oldestFirst: הישן ביותר
+    captionAZ: "כיתוב א–ת"
+    captionZA: "כיתוב ת–א"
+    custom: מותאם אישית
+
+shopping:
+  startShopping: התחלת קניות
+  resumeShopping: המשך קניות
+  shoppingHistory: היסטוריית קניות
+  resume: המשך
+  bannerShoppingAt(String store): "קונים ב-${store}"
+  bannerStoreProgress(int index, int total): "חנות $index/$total"
+  bannerShoppingNow: קונים עכשיו
+  startTitle: התחלת קניות
+  listsToShop: רשימות לקנייה
+  selectAll: בחירת הכול
+  selectNone: ביטול הבחירה
+  noListsToShop: אין עדיין רשימות לקנייה.
+  storesTitle: חנויות
+  storesHint: "הפעילו או כבו את החנויות שתבקרו בהן, וגררו כדי לקבוע את הסדר."
+  noStoresWithItems: לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות.
+  includeUnassigned: לכלול פריטים שאינם משויכים לחנות
+  start: התחלה
+  startFailed: התחלת הקנייה נכשלה.
+  tripInProgress: כבר יש לך קנייה פעילה.
+  tripInProgressElsewhere(String house): "יש לך קנייה פעילה ב-${house}."
+  endPreviousTrip: סיום הקנייה הקודמת
+  endPreviousFailed: סיום הקנייה הקודמת נכשל.
+  inCart(int count): "$count בעגלה"
+  makePrivate: הסתרת הקנייה משותפי הבית
+  makePublic: הצגת הקנייה לשותפי הבית
+  privateBadge: פרטי
+  nextStore: החנות הבאה
+  finish: סיום
+  finishTrip: סיום הקנייה
+  allCheckedHere: הכול סומן כאן
+  moveOnToNext: אפשר לעבור לחנות הבאה.
+  allDone: הכול הושלם
+  everythingInCart: הכול בעגלה.
+  doneToday(int count): "הושלם ($count)"
+  nothingToBuyHere: אין מה לקנות כאן.
+  checkFailed: עדכון הפריט נכשל.
+  loadItemsFailed: טעינת הפריטים נכשלה.
+  removeFromTrip: הסרה מהקנייה
+  removedFromTrip: הוסר מהקנייה הזו
+  undo: בטל
+  undoRemoveFailed: הביטול נכשל.
+  removedSection(int count): "הוסרו ($count)"
+  restore: שחזר
+  restoreFailed: שחזור הפריט נכשל.
+  reviewTitle: סיכום
+  advanceTitle: החנות הבאה
+  actualPaid: שולם בפועל
+  grandTotal: סך הכול
+  itemsWithoutPrice(int count): "${_plural(count, one: 'פריט אחד ללא מחיר', many: '$count פריטים ללא מחיר')}"
+  itemsStillUnchecked(int count): "${_plural(count, one: 'פריט אחד עדיין לא סומן', many: '$count פריטים עדיין לא סומנו')}"
+  anyStore: כל חנות
+  saveTotalFailed: שמירת הסכום נכשלה.
+  remindersTitle: תזכורות
+  manageReminders: ניהול תזכורות
+  reminderGroupStart: בהתחלה
+  reminderGroupAdvance: בין חנויות
+  reminderGroupEnd: בסיום
+  noRemindersHere: אין עדיין תזכורות כאן.
+  noRemindersStep: אין עדיין תזכורות לשלב הזה.
+  addReminders: הוספת תזכורות
+  addReminderHint: הוספת תזכורת
+  reminderWhen: מתי להציג
+  whenOnStart: בהתחלה
+  whenOnStoreAdvance: בין חנויות
+  whenOnClose: בסיום
+  add: הוספה
+  reminderSaveFailed: שמירת התזכורת נכשלה.
+  reminderDeleteFailed: מחיקת התזכורת נכשלה.
+  historyTitle: היסטוריית קניות
+  scopeMine: שלי
+  scopeHouse: הבית
+  noStorePath: ללא חנות
+  itemsCount(int count): "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
+  loadMore: טעינת עוד
+  noTripsYet: אין עדיין קניות.
+  noHouseTripsYet: אין עדיין קניות בבית הזה.
+  loadHistoryFailed: טעינת ההיסטוריה נכשלה.
+  loadFailed: משהו השתבש. נסו שוב.
+  uncategorized: ללא קטגוריה
+
+share:
+  title: שיתוף ל-Pantry
+  chooseHouse: בחר בית
+  choosePhotoDestination: העלה אל
+  photoBoardRoot: לוח התמונות
+  newFolder: תיקייה חדשה
+  newFolderName: שם התיקייה
+  failedToCreateFolder: יצירת התיקייה נכשלה.
+  failedToOpenShare: לא ניתן לפתוח את התוכן ששותף.
+  noHouses: אין בתים זמינים. צור תחילה בית.
+
+recurrence:
+  title: חזרה
+  presets: הגדרות מוכנות
+  daily: יומי
+  weekly: שבועי
+  monthly: חודשי
+  everyLabel: כל
+  unit: יחידה
+  unitDays: ימים
+  unitWeeks: שבועות
+  unitMonths: חודשים
+  unitYears: שנים
+  repeatOn: חזור ב
+  ends: מסתיים
+  never: לעולם לא
+  after: אחרי
+  occurrences: חזרות
+  onDate: בתאריך
+  countFromCompletion: חשב מרווח מרגע סימון הפריט
+  countFromCompletionHintOff: "לוח הזמנים קבוע: הפריט יופיע מחדש במועד המתוכנן הבא, ללא קשר למתי סימנת אותו."
+  countFromCompletionHintOn: "המועד הבא נספר מרגע סימון הפריט, כך שהוא תמיד חוזר מרווח מלא לאחר ההשלמה."
+  summary: סיכום
+  notSet: לא נקבע
+  set: נקבע
+  every(String unit): "כל $unit"
+  everyButton(String unit): "כל $unit"
+  onDays(String days): "ב$days"
+  day(int count): "${_plural(count, one: 'יום', two: 'יומיים', many: '$count ימים')}"
+  week(int count): "${_plural(count, one: 'שבוע', two: 'שבועיים', many: '$count שבועות')}"
+  month(int count): "${_plural(count, one: 'חודש', two: 'חודשיים', many: '$count חודשים')}"
+  year(int count): "${_plural(count, one: 'שנה', two: 'שנתיים', many: '$count שנים')}"
+  dayNames:
+    monday: יום שני
+    tuesday: יום שלישי
+    wednesday: יום רביעי
+    thursday: יום חמישי
+    friday: יום שישי
+    saturday: שבת
+    sunday: יום ראשון
+  dayAbbr:
+    mo: ב׳
+    tu: ג׳
+    we: ד׳
+    th: ה׳
+    fr: ו׳
+    sa: ש׳
+    su: א׳
+
+sync:
+  offline: לא מקוון
+  syncing: מסנכרן שינויים…
+  pendingChanges(int count): "${_plural(count, one: 'שינוי אחד ממתין לסנכרון', two: '2 שינויים ממתינים לסנכרון', many: '${count} שינויים ממתינים לסנכרון')}"
+  syncError: לא ניתן היה לסנכרן את השינויים
+  retry: נסה שוב
+markdownEditor:
+  editSource: Markdown
+  editRich: טקסט עשיר
+wear:
+  signedInAs(String name): "מחובר בתור ${name}"
+  notSignedIn: היכנס מהטלפון שלך

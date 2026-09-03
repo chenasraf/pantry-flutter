@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/photo.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/photo_service.dart';
-import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/photo.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/photo_service.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 
 /// Disk cache for Nextcloud preview images, shared by the display path
 /// ([AvifAwareNetworkImage]) and the background prefetcher so proactively

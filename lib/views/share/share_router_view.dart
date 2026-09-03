@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/models/photo.dart';
-import 'package:pantry/services/deep_link_service.dart';
-import 'package:pantry/services/house_service.dart';
-import 'package:pantry/services/pending_note_share_service.dart';
-import 'package:pantry/services/pending_photo_share_service.dart';
-import 'package:pantry/services/photo_service.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/photo.dart';
+import 'package:pantry_core/services/deep_link_service.dart';
+import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/pending_note_share_service.dart';
+import 'package:pantry_core/services/pending_photo_share_service.dart';
+import 'package:pantry_core/services/photo_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Entry screen for an incoming OS share intent. Classifies the payload,

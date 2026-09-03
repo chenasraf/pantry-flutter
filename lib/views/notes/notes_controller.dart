@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/models/note.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/services/note_service.dart';
-import 'package:pantry/services/photo_service.dart';
-import 'package:pantry/sync/sync_ids.dart';
-import 'package:pantry/sync/sync_manager.dart';
-import 'package:pantry/sync/sync_op.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/note_service.dart';
+import 'package:pantry_core/services/photo_service.dart';
+import 'package:pantry_core/sync/sync_ids.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
 
 class NotesController extends ChangeNotifier {
   final int houseId;

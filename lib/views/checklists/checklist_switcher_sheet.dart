@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 import 'switcher_archive_stage.dart';

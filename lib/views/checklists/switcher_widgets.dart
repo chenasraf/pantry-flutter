@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/checklist_icons.dart';
 
 /// Per-list color swatches the user can pick from in the create form. Values
 /// must come from the backend's `ChecklistColor` enum (Material Design 500

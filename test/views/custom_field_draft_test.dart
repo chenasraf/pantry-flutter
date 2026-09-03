@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/custom_field.dart';
+import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry/views/custom_fields/custom_field_drafts.dart';
 
 // The editor mutates `options` in place — adding a row, dropping blank ones on

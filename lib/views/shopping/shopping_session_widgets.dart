@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/shopping_estimate.dart';
-import 'package:pantry/models/shopping_presence_entry.dart';
-import 'package:pantry/utils/category_icons.dart';
-import 'package:pantry/utils/color.dart';
-import 'package:pantry/utils/price.dart';
-import 'package:pantry/utils/store_icons.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/shopping_estimate.dart';
+import 'package:pantry_core/models/shopping_presence_entry.dart';
+import 'package:pantry_core/utils/category_icons.dart';
+import 'package:pantry_core/utils/color.dart';
+import 'package:pantry_core/utils/price.dart';
+import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 

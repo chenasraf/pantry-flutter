@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:pantry/main.dart' show appVersion;
-import 'package:pantry/services/api_client.dart';
+import 'package:pantry_core/services/api_client.dart';
 
 /// A resolved product for a barcode (EAN/UPC). Mirrors the server's
 /// `PantryBarcode` shape — the shared cache and the Open Food Facts resolve

@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:quick_actions/quick_actions.dart';
 
-import '../utils/platform_info.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 
 /// A request to open a specific list, produced by an OS-level entry point: a
 /// `pantry://list/<houseId>/<listId>` URL (NFC tags, automation apps, browser
@@ -129,7 +129,7 @@ class ListLinkService {
     required int listId,
     required String name,
   }) async {
-    if (!PlatformInfo.isAndroid) return false;
+    if (!PlatformInfo.isAndroidPhone) return false;
     try {
       final ok = await _shortcutChannel.invokeMethod<bool>('pinListShortcut', {
         'houseId': houseId,

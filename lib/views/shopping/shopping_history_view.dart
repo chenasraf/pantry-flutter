@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/shopping_estimate.dart';
-import 'package:pantry/models/shopping_history_row.dart';
-import 'package:pantry/models/store.dart';
-import 'package:pantry/services/house_service.dart';
-import 'package:pantry/services/shopping_service.dart';
-import 'package:pantry/services/store_service.dart';
-import 'package:pantry/utils/date_format.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/shopping_estimate.dart';
+import 'package:pantry_core/models/shopping_history_row.dart';
+import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/shopping_service.dart';
+import 'package:pantry_core/services/store_service.dart';
+import 'package:pantry_core/utils/date_format.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/member_avatar.dart';

@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/utils/markdown_list.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/utils/markdown_list.dart';
 
 /// Dialog that turns a list into an editable Markdown document the user can
 /// copy to the clipboard or share/download as a `.md` file.

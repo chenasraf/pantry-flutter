@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Introduces list-scoped categories: a mock of the category "List" selector

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart' as models;
-import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart' as models;
+import 'package:pantry_core/utils/category_icons.dart';
 import 'form_components.dart';
 
 class DeleteIconButton extends StatelessWidget {

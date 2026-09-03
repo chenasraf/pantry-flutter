@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// A card with a circular progress ring and "{N} items left / {done} of
 /// {total} done" labels. Animates the ring on state changes.

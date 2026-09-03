@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/models/photo.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/photo.dart';
 import 'package:pantry/services/image_cache_service.dart';
-import 'package:pantry/services/pending_photo_share_service.dart';
-import 'package:pantry/services/photo_service.dart';
+import 'package:pantry_core/services/pending_photo_share_service.dart';
+import 'package:pantry_core/services/photo_service.dart';
 
 class UploadTask {
   final String fileName;

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/services/category_service.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/sync/sync_ids.dart';
-import 'package:pantry/sync/sync_manager.dart';
-import 'package:pantry/sync/sync_op.dart';
-import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/category_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/sync/sync_ids.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry/utils/item_modal_route.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 

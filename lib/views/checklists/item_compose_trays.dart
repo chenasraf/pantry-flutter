@@ -2,17 +2,17 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart' as models;
-import 'package:pantry/models/store.dart' as models;
-import 'package:pantry/models/label.dart' as models;
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/item_lifecycle.dart';
-import 'package:pantry/utils/category_icons.dart';
-import 'package:pantry/utils/checklist_icons.dart';
-import 'package:pantry/utils/store_icons.dart';
-import 'package:pantry/utils/label_icons.dart';
-import 'package:pantry/utils/color.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart' as models;
+import 'package:pantry_core/models/store.dart' as models;
+import 'package:pantry_core/models/label.dart' as models;
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/utils/category_icons.dart';
+import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry_core/utils/label_icons.dart';
+import 'package:pantry_core/utils/color.dart';
 import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'form_components.dart';

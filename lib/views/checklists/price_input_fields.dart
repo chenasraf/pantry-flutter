@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/store.dart' as models;
-import 'package:pantry/utils/currencies.dart';
-import 'package:pantry/utils/store_icons.dart';
-import 'package:pantry/utils/color.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/store.dart' as models;
+import 'package:pantry_core/utils/currencies.dart';
+import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry_core/utils/color.dart';
 import 'package:pantry/views/checklists/price_draft.dart';
 import 'package:pantry/views/checklists/price_input.dart';
 

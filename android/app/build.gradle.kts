@@ -54,6 +54,26 @@ android {
         includeInBundle = false
     }
 
+    flavorDimensions += "form"
+
+    productFlavors {
+        create("phone") {
+            dimension = "form"
+            isDefault = true
+        }
+        // Wear OS 3 is the floor where standalone distribution, the modern
+        // watch Play Store and Tiles all settled.
+        create("wear") {
+            dimension = "form"
+            minSdk = 30
+            // Play serves the highest compatible versionCode, and a watch also
+            // matches the phone APK. The offset keeps the wear build ahead so
+            // the watch never resolves to the phone binary. Mirrors
+            // MACOS_BUILD_NUMBER in the Makefile.
+            versionCode = flutter.versionCode + 20000
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"

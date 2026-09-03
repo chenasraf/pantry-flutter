@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/models/note.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/note.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
 
 import '../helpers/fakes.dart';

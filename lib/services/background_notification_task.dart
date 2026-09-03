@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:pantry/models/notification.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/services/cert_trust_service.dart';
-import 'package:pantry/services/deep_link_service.dart';
+import 'package:pantry_core/models/notification.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/deep_link_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
-import 'package:pantry/services/notification_service.dart';
-import 'package:pantry/services/prefs_service.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/services/notification_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:workmanager/workmanager.dart';
 
 /// Unique name for the periodic notification poll task.

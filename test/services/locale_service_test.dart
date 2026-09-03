@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/services/locale_service.dart';
+import 'package:pantry_core/services/locale_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart' as models;
-import 'package:pantry/models/store.dart' as models;
-import 'package:pantry/models/label.dart' as models;
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/custom_field.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart' as models;
+import 'package:pantry_core/models/store.dart' as models;
+import 'package:pantry_core/models/label.dart' as models;
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/utils/item_modal_route.dart';
-import 'package:pantry/utils/platform_info.dart';
-import 'package:pantry/utils/rrule.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry/utils/apple_host_info.dart';
+import 'package:pantry_core/utils/rrule.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
@@ -24,7 +25,7 @@ import 'package:pantry/widgets/avif_image.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
-import 'package:pantry/models/item_lifecycle.dart';
+import 'package:pantry_core/models/item_lifecycle.dart';
 import 'checklists_controller.dart';
 import 'form_components.dart';
 import 'item_form_fields.dart';
@@ -148,7 +149,7 @@ class _ItemFormViewState extends State<ItemFormView> {
       if (dir != _nameDir) setState(() => _nameDir = dir);
     });
     if (_cameraSupported) {
-      PlatformInfo.isiOSAppOnMac.then((onMac) {
+      isiOSAppOnMac().then((onMac) {
         if (!mounted || !onMac) return;
         setState(() => _cameraSupported = false);
       });

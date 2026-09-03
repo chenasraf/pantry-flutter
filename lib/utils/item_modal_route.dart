@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 
 /// Width of the desktop item modal — sized to the phone form factor so the
 /// layouts (originally designed for mobile) don't stretch awkwardly across a

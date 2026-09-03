@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'onboarding_pages.dart';
 import 'pages/welcome_page.dart';
 

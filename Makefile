@@ -45,7 +45,10 @@ help:
 	@echo "    i18n-from-nextcloud Populate a translation file from a Nextcloud l10n JSON (NC_JSON=, TARGET=)"
 	@echo ""
 	@echo "  Development:"
-	@echo "    run                 Run the app in debug mode"
+	@echo "    run                 Run the app in debug mode (iOS/desktop)"
+	@echo "    android-run         Run the phone app in debug mode"
+	@echo "    wear-run            Run the Wear OS app in debug mode"
+	@echo "    wear-emulator       Create (if needed) and boot the round Wear OS AVD"
 	@echo "    format              Format all Dart files"
 	@echo "    analyze             Analyze all Dart files"
 	@echo "    check               Check all files (format + analyze, no changes)"
@@ -70,6 +73,9 @@ help:
 	@echo "    fdroid-lock         Regenerate the pinned F-Droid lockfile after dep changes"
 	@echo "    fdroid-check        Verify the pinned F-Droid lockfile is in sync with pubspec.yaml"
 	@echo "    android-build-aab   Build Android App Bundle"
+	@echo "    wear-build-apk      Build Wear OS APK"
+	@echo "    wear-build-aab      Build Wear OS App Bundle"
+	@echo "    wear-install        Build Wear OS APK and install on the connected watch"
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
 	@echo "    macos-build         Build macOS app (.app bundle, no codesign)"
@@ -82,6 +88,8 @@ help:
 	@echo "    android-release-apk Build APK and copy to build/release/"
 	@echo "    android-release-apk-fdroid  Build FLOSS F-Droid APKs -> build/release/ (…-fdroid-<abi>.apk)"
 	@echo "    android-release-aab Build AAB and copy to build/release/"
+	@echo "    wear-release-apk    Build Wear OS APK and copy to build/release/"
+	@echo "    wear-release-aab    Build Wear OS AAB and copy to build/release/"
 	@echo "    ios-release         Build IPA and copy to build/release/"
 	@echo "    macos-release       Build PKG and copy to build/release/"
 	@echo "    linux-release       Build Linux tarball -> build/release/"
@@ -117,26 +125,33 @@ build-clean:
 .PHONY: i18n
 i18n:
 	dart run tool/fix_i18n_escapes.dart
-	dart run build_runner build --delete-conflicting-outputs
+	cd packages/pantry_core && dart run build_runner build --delete-conflicting-outputs
 
 .PHONY: i18n-watch
 i18n-watch:
-	dart run build_runner watch --delete-conflicting-outputs
+	cd packages/pantry_core && dart run build_runner watch --delete-conflicting-outputs
 
 .PHONY: i18n-from-nextcloud
 i18n-from-nextcloud:
 ifndef NC_JSON
-	$(error NC_JSON is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=lib/i18n/messages_nn.i18n.yaml)
+	$(error NC_JSON is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=packages/pantry_core/lib/i18n/messages_nn.i18n.yaml)
 endif
 ifndef TARGET
-	$(error TARGET is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=lib/i18n/messages_nn.i18n.yaml)
+	$(error TARGET is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=packages/pantry_core/lib/i18n/messages_nn.i18n.yaml)
 endif
 	dart run tool/i18n_generate_from_nextcloud.dart $(NC_JSON) $(TARGET)
 
 # Development
+# `run` stays flavorless so it still works for iOS, macOS, Linux and Windows.
+# Android now has a flavor dimension and cannot build without one — use
+# `android-run` for a phone or emulator.
 .PHONY: run
 run:
 	flutter run
+
+.PHONY: android-run
+android-run:
+	flutter run --flavor phone
 .PHONY: format
 format:
 	dart format .
@@ -168,13 +183,62 @@ test-coverage:
 # Building
 .PHONY: android-build-apk
 android-build-apk:
-	flutter build apk --release --obfuscate --split-debug-info=build/debug-info-apk
+	flutter build apk --release --flavor phone --obfuscate --split-debug-info=build/debug-info-apk
 .PHONY: android-build-apk-split
 android-build-apk-split:
-	flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/debug-info-apk
+	flutter build apk --release --flavor phone --split-per-abi --obfuscate --split-debug-info=build/debug-info-apk
 .PHONY: android-install
 android-install: android-build-apk
-	flutter install
+	flutter install --flavor phone
+
+# Wear OS. A separate entrypoint (`lib/main_wear.dart`) drives the watch UI from
+# packages/pantry_wear; the flavor gives it its own merged manifest, minSdk and
+# versionCode. The build number offset must match the gradle flavor's.
+# The +20000 versionCode offset that keeps a watch from resolving to the phone
+# APK is applied by the wear flavor in android/app/build.gradle.kts, not here —
+# it has to hold for any wear build, including one that never goes through make.
+WEAR_TARGET := lib/main_wear.dart
+WEAR_FLAGS := --flavor wear --target $(WEAR_TARGET)
+
+.PHONY: wear-run
+wear-run:
+	flutter run $(WEAR_FLAGS)
+
+.PHONY: wear-build-apk
+wear-build-apk:
+	flutter build apk --release $(WEAR_FLAGS) --obfuscate --split-debug-info=build/debug-info-wear
+
+.PHONY: wear-build-aab
+wear-build-aab:
+	flutter build appbundle --release $(WEAR_FLAGS) --obfuscate --split-debug-info=build/debug-info-wear
+
+.PHONY: wear-install
+wear-install: wear-build-apk
+	flutter install --flavor wear
+
+# The AVD the watch UI is developed against. Round is the shape that catches
+# layout mistakes first — square is the forgiving case, and the layout is
+# shape-agnostic, so nothing needs a second AVD to develop against.
+# Override to check other geometry, e.g.
+#   make wear-emulator WEAR_DEVICE=wear_square
+#   make wear-emulator WEAR_DEVICE=wear_round_chin_320_290   # flat tire
+# or the minSdk floor:
+#   make wear-emulator WEAR_AVD=pantry_wear_api30 \
+#     WEAR_SYSTEM_IMAGE="system-images;android-30;android-wear;arm64-v8a"
+WEAR_AVD := pantry_wear_round
+WEAR_DEVICE := wear_round
+WEAR_SYSTEM_IMAGE := system-images;android-34;android-wear;arm64-v8a
+
+.PHONY: wear-emulator
+wear-emulator:
+	@if ! avdmanager list avd -c 2>/dev/null | grep -qx "$(WEAR_AVD)"; then \
+		echo "Creating AVD $(WEAR_AVD)…"; \
+		yes | sdkmanager "$(WEAR_SYSTEM_IMAGE)"; \
+		echo no | avdmanager create avd -n "$(WEAR_AVD)" \
+			-k "$(WEAR_SYSTEM_IMAGE)" -d "$(WEAR_DEVICE)"; \
+	fi
+	@echo "Booting $(WEAR_AVD) — once it is up, run: make wear-run"
+	emulator -avd "$(WEAR_AVD)" -no-snapshot-load
 
 # F-Droid variant — swaps the barcode scanner from Google ML Kit
 # (mobile_scanner) to the FLOSS flutter_zxing so the APK carries no proprietary
@@ -219,8 +283,8 @@ android-build-apk-fdroid: fdroid-apply
 	build_one() { \
 		flutter clean; \
 		flutter pub get --enforce-lockfile; \
-		flutter build apk --release --split-per-abi --target-platform="$$1"; \
-		mv build/app/outputs/flutter-apk/app-"$$2"-release.apk "$$OUT/app-$$2-release.apk"; \
+		flutter build apk --release --flavor phone --split-per-abi --target-platform="$$1"; \
+		mv build/app/outputs/flutter-apk/app-"$$2"-phone-release.apk "$$OUT/app-$$2-release.apk"; \
 	}; \
 	build_one android-arm armeabi-v7a; \
 	build_one android-arm64 arm64-v8a; \
@@ -232,12 +296,12 @@ android-build-apk-fdroid: fdroid-apply
 
 .PHONY: android-push
 android-push: android-build-apk
-	adb push build/app/outputs/flutter-apk/app-release.apk /sdcard/Download/pantry-$(VERSION).apk
+	adb push build/app/outputs/flutter-apk/app-phone-release.apk /sdcard/Download/pantry-$(VERSION).apk
 	@echo "-> /sdcard/Download/pantry-$(VERSION).apk"
 
 .PHONY: android-build-aab
 android-build-aab:
-	flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab
+	flutter build appbundle --release --flavor phone --obfuscate --split-debug-info=build/debug-info-aab
 .PHONY: ios-build
 ios-build:
 	flutter build ios --release --no-codesign --obfuscate --split-debug-info=build/debug-info-ios
@@ -280,13 +344,13 @@ build-all: android-build-apk android-build-aab
 .PHONY: android-release-apk
 android-release-apk: android-build-apk
 	mkdir -p build/release
-	cp build/app/outputs/flutter-apk/app-release.apk build/release/pantry-$(VERSION).apk
+	cp build/app/outputs/flutter-apk/app-phone-release.apk build/release/pantry-$(VERSION).apk
 	@echo "-> build/release/pantry-$(VERSION).apk"
 
 .PHONY: android-release-aab
 android-release-aab: android-build-aab
 	mkdir -p build/release
-	cp build/app/outputs/bundle/release/app-release.aab build/release/pantry-$(VERSION).aab
+	cp build/app/outputs/bundle/phoneRelease/app-phone-release.aab build/release/pantry-$(VERSION).aab
 	@echo "-> build/release/pantry-$(VERSION).aab"
 
 .PHONY: android-release-apk-fdroid
@@ -298,6 +362,18 @@ android-release-apk-fdroid: android-build-apk-fdroid
 		echo "-> build/release/pantry-$(VERSION)-fdroid-$$abi.apk"; \
 	done
 	@echo "Run 'make fdroid-revert' to restore the ML Kit default."
+
+.PHONY: wear-release-apk
+wear-release-apk: wear-build-apk
+	mkdir -p build/release
+	cp build/app/outputs/flutter-apk/app-wear-release.apk build/release/pantry-$(VERSION)-wear.apk
+	@echo "-> build/release/pantry-$(VERSION)-wear.apk"
+
+.PHONY: wear-release-aab
+wear-release-aab: wear-build-aab
+	mkdir -p build/release
+	cp build/app/outputs/bundle/wearRelease/app-wear-release.aab build/release/pantry-$(VERSION)-wear.aab
+	@echo "-> build/release/pantry-$(VERSION)-wear.aab"
 
 .PHONY: ios-release
 ios-release: ios-build-ipa

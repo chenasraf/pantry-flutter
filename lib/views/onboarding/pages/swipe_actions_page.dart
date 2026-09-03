@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Teaches the swipe-to-reveal gesture on list items. Runs a continuous demo
 /// that swipes a mocked row open, holds, then snaps back, so the reader sees

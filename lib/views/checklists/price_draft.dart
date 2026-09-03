@@ -1,6 +1,6 @@
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/utils/currencies.dart';
-import 'package:pantry/utils/price.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/utils/currencies.dart';
+import 'package:pantry_core/utils/price.dart';
 
 /// Format a stored amount for seeding an input field: trim trailing zeros so a
 /// round number shows as "1" (not "1.00") and "9.99" stays "9.99".

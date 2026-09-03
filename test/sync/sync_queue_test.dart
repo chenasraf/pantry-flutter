@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/services/cache_store.dart';
-import 'package:pantry/sync/sync_op.dart';
-import 'package:pantry/sync/sync_queue.dart';
+import 'package:pantry_core/services/cache_store.dart';
+import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/sync/sync_queue.dart';
 
 int _seq = 0;
 SyncQueue _newQueue() => SyncQueue(CacheStore('test_queue_${_seq++}.json'));

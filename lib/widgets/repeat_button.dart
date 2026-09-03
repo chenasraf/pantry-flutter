@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/rrule.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/rrule.dart';
 
 class RepeatButton extends StatelessWidget {
   final String? rrule;

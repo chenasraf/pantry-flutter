@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+
+import 'package:pantry_core/utils/entity_icons.dart';
+
+const categoryIconMap = <String, IconData>{
+  'tag': Icons.label,
+  'food': Icons.lunch_dining,
+  'fruit': Icons.apple,
+  'vegetable': Icons.grass,
+  'bakery': Icons.bakery_dining,
+  'dairy': Icons.egg_alt,
+  'meat': Icons.kebab_dining,
+  'fish': Icons.set_meal,
+  'snacks': Icons.breakfast_dining,
+  'cookie': Icons.cookie,
+  'drinks': Icons.wine_bar,
+  'coffee': Icons.coffee,
+  'frozen': Icons.ac_unit,
+  'household': Icons.cleaning_services,
+  'pets': Icons.pets,
+  'baby': Icons.child_friendly,
+  'home': Icons.home,
+  'leaf': Icons.eco,
+  'pizza': Icons.local_pizza,
+  'clipboard-check': Icons.assignment_turned_in,
+  'clipboard-list': Icons.assignment,
+  'format-list-checks': Icons.checklist,
+  'cart': Icons.shopping_cart,
+  'basket': Icons.shopping_basket,
+  'star': Icons.star,
+  'heart': Icons.favorite,
+  'calendar': Icons.calendar_today,
+  'bell': Icons.notifications,
+  'flag': Icons.flag,
+  'bookmark': Icons.bookmark,
+  'pin': Icons.push_pin,
+  'map-marker': Icons.place,
+  'briefcase': Icons.work,
+  'wrench': Icons.build,
+  'silverware': Icons.restaurant,
+  'gift': Icons.card_giftcard,
+  'book': Icons.menu_book,
+  'school': Icons.school,
+  'palette': Icons.palette,
+  'camera': Icons.camera_alt,
+  'music': Icons.music_note,
+  'gamepad': Icons.sports_esports,
+  'run': Icons.directions_run,
+  'dumbbell': Icons.fitness_center,
+  'pill': Icons.medication,
+  'paw': Icons.pets,
+  'flower': Icons.local_florist,
+  'tree': Icons.park,
+  'broom': Icons.cleaning_services,
+  'lightbulb': Icons.lightbulb,
+  'package': Icons.inventory_2,
+  'car': Icons.directions_car,
+  'bike': Icons.directions_bike,
+  'beach': Icons.beach_access,
+};
+
+const defaultCategoryIcon = EntityIcons.category;
+
+IconData categoryIcon(String? key) {
+  return categoryIconMap[key ?? ''] ?? defaultCategoryIcon;
+}

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart' as models;
-import 'package:pantry/models/store.dart' as models;
-import 'package:pantry/models/label.dart' as models;
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/item_lifecycle.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart' as models;
+import 'package:pantry_core/models/store.dart' as models;
+import 'package:pantry_core/models/label.dart' as models;
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'checklist_item_tile_parts.dart';
 import 'swipe_reveal_row.dart';

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/utils/category_icons.dart';
-import 'package:pantry/utils/platform_info.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/category_icons.dart';
+import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
-import 'package:pantry/sync/sync_ids.dart';
-import 'package:pantry/sync/sync_manager.dart';
-import 'package:pantry/sync/sync_op.dart';
+import 'package:pantry_core/sync/sync_ids.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
 
 const categoryColors = [
   '#ef4444',

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/shopping_estimate.dart';
-import 'package:pantry/models/shopping_reminder.dart';
-import 'package:pantry/models/shopping_review.dart';
-import 'package:pantry/models/store.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/shopping_service.dart';
-import 'package:pantry/utils/color.dart';
-import 'package:pantry/utils/currencies.dart';
-import 'package:pantry/utils/price.dart';
-import 'package:pantry/utils/store_icons.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/shopping_estimate.dart';
+import 'package:pantry_core/models/shopping_reminder.dart';
+import 'package:pantry_core/models/shopping_review.dart';
+import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/shopping_service.dart';
+import 'package:pantry_core/utils/color.dart';
+import 'package:pantry_core/utils/currencies.dart';
+import 'package:pantry_core/utils/price.dart';
+import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/shopping/shopping_reminder_block.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 

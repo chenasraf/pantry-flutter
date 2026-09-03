@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry/services/background_notification_task.dart';
 import 'package:pantry/services/local_notifications_service.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 
 class NotificationsIntroView extends StatefulWidget {
   final VoidCallback onDone;
