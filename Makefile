@@ -76,6 +76,8 @@ help:
 	@echo "    wear-build-apk      Build Wear OS APK"
 	@echo "    wear-build-aab      Build Wear OS App Bundle"
 	@echo "    wear-install        Build Wear OS APK and install on the connected watch"
+	@echo "    wear-variant-apk    Build a Wear OS APK with a platform switch flipped (WEAR_ARGS=)"
+	@echo "    wear-coldstart      Time cold starts of the installed Wear OS build (COLDSTART_ARGS=)"
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
 	@echo "    macos-build         Build macOS app (.app bundle, no codesign)"
@@ -215,6 +217,27 @@ wear-build-aab:
 .PHONY: wear-install
 wear-install: wear-build-apk
 	flutter install --flavor wear
+
+# Build a wear APK with one of the platform switches flipped, for a size or
+# cold-start comparison, as `key=value` pairs:
+#   make wear-variant-apk WEAR_ARGS="wearImpeller=false"
+#   make wear-variant-apk WEAR_ARGS="wearKeepNative=true"
+#   make wear-variant-apk WEAR_ARGS="wearSwipeToDismiss=true"
+WEAR_ARGS :=
+COLDSTART_ARGS :=
+WEAR_RELEASE_FLAGS := --release $(WEAR_FLAGS) --obfuscate --split-debug-info=build/debug-info-wear
+
+.PHONY: wear-variant-apk
+wear-variant-apk:
+	flutter build apk $(WEAR_RELEASE_FLAGS) $(foreach a,$(WEAR_ARGS),--android-project-arg=$(a))
+
+.PHONY: wear-variant-install
+wear-variant-install: wear-variant-apk
+	flutter install --flavor wear
+
+.PHONY: wear-coldstart
+wear-coldstart:
+	tool/wear_coldstart.sh $(COLDSTART_ARGS)
 
 # The AVD the watch UI is developed against. Round is the shape that catches
 # layout mistakes first — square is the forgiving case, and the layout is

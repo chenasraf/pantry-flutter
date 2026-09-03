@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Route (a) of the gesture question, per Godot's PR #100601: ask the
+         window to stop handling the left-edge swipe itself so the app can page
+         horizontally, and hand-roll the back gesture. AOSP marks the attribute
+         "@deprecated Swipe-to-dismiss isn't functional anymore", which is
+         exactly what the device session is here to check.
+
+         Inheriting rather than redefining keeps the night and API-31 variants of
+         the base themes in play — the parent reference resolves per
+         configuration. The flag itself comes from the wear flavor in
+         build.gradle.kts so a build can be flipped without editing resources. -->
+    <style name="WearLaunchTheme" parent="@style/LaunchTheme">
+        <item name="android:windowSwipeToDismiss">@bool/wear_swipe_to_dismiss</item>
+    </style>
+
+    <style name="WearNormalTheme" parent="@style/NormalTheme">
+        <item name="android:windowSwipeToDismiss">@bool/wear_swipe_to_dismiss</item>
+    </style>
+</resources>

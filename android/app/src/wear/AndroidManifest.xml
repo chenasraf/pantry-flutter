@@ -17,6 +17,10 @@
 
     <application android:name="${applicationName}">
 
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="${wearEnableImpeller}" />
+
         <!-- Sign-in comes from the paired phone, so the watch app cannot yet
              stand on its own. Flipping this to true is additive and needs no
              Play Console change, but Google validates the claim at serving
@@ -25,7 +29,16 @@
             android:name="com.google.android.wearable.standalone"
             android:value="false" />
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/WearLaunchTheme"
+            tools:replace="android:theme">
+            <!-- The engine swaps to this once it is running, so both themes have
+                 to carry the swipe flag or the window reverts mid-launch. -->
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/WearNormalTheme"
+                tools:replace="android:resource" />
             <!-- Drop every filter the phone declares — image and text SEND
                  targets, and the item deep link that only phone surfaces emit —
                  then re-declare the two the watch actually serves. -->

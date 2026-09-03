@@ -66,6 +66,20 @@ android {
         create("wear") {
             dimension = "form"
             minSdk = 30
+            // Whether the window keeps its own left-edge swipe-to-dismiss. A
+            // horizontal pager needs it off; -PwearSwipeToDismiss=true puts it
+            // back for the comparison.
+            resValue(
+                "bool",
+                "wear_swipe_to_dismiss",
+                ((project.findProperty("wearSwipeToDismiss") as String?)?.toBoolean() == true).toString(),
+            )
+            // Impeller is what a Wear device gets by default — API 33+, no
+            // denylisted GPU — and the Skia opt-out is on its way out. The
+            // switch exists so the cost of that default can be quantified
+            // rather than estimated: -PwearImpeller=false.
+            manifestPlaceholders["wearEnableImpeller"] =
+                ((project.findProperty("wearImpeller") as String?)?.toBoolean() != false).toString()
             // Play serves the highest compatible versionCode, and a watch also
             // matches the phone APK. The offset keeps the wear build ahead so
             // the watch never resolves to the phone binary. Mirrors
@@ -95,6 +109,60 @@ android.applicationVariants.configureEach {
         val abiVersionCode = abiCodes[output.filters.find { it.filterType == "ABI" }?.identifier]
         if (abiVersionCode != null) {
             (output as ApkVariantOutputImpl).versionCodeOverride = variant.versionCode * 10 + abiVersionCode
+        }
+    }
+}
+
+// Every flavor carries every plugin, because Flutter regenerates one
+// GeneratedPluginRegistrant naming all of them. The Java classes have to stay so
+// that registrant compiles, but the native libraries behind the plugins a watch
+// cannot use do not have to be packaged. A plugin that opens its library at
+// registration time rather than on first use would crash on startup here; the
+// ones excluded below all load lazily.
+//
+// Set -PwearKeepNative=true to package them anyway, for a size comparison.
+//
+// `libflutter_avif.so` is deliberately not among them. Android's platform
+// decoder handles AVIF from API 31, but that guarantee follows the handheld CDD
+// and Wear OS takes the exemption: this watch ships no AV1 decoder at all, so
+// neither the engine's fallback nor a direct ImageDecoder call can read an AVIF.
+// The plugin is the only thing that can, and it is also the one plugin here that
+// opens its library at registration rather than on first use — excluding it
+// would log a load failure on every launch.
+val wearStripNative = (project.findProperty("wearKeepNative") as String?)?.toBoolean() != true
+
+val wearExcludedLibs = if (!wearStripNative) emptyList() else listOf(
+    // ML Kit barcode scanning and CameraX — no camera on a watch.
+    "**/libbarhopper_v3.so",
+    "**/libimage_processing_util_jni.so",
+    "**/libsurface_util_jni.so",
+)
+
+// The barcode models ship as assets rather than jniLibs, so the packaging DSL
+// does not reach them; they are deleted from the merged asset dir instead. The
+// flutter_avif wasm is dead on the phone too — a web-only artifact the Android
+// build has no reason to carry.
+val wearExcludedAssets = listOf(
+    "mlkit_barcode_models",
+    "flutter_assets/packages/flutter_avif_web",
+)
+
+androidComponents {
+    onVariants(selector().withFlavor("form" to "wear")) { variant ->
+        variant.packaging.jniLibs.excludes.addAll(wearExcludedLibs)
+
+        // Flutter's own copy task writes into the same merged directory *after*
+        // AGP's merge, so the flutter_assets entries only stay deleted if the
+        // sweep also runs on the later task.
+        val variantName = variant.name.replaceFirstChar { it.uppercase() }
+        val assetTasks = setOf("merge${variantName}Assets", "copyFlutterAssets$variantName")
+        tasks.matching { it.name in assetTasks }.configureEach {
+            val roots = outputs.files
+            doLast {
+                roots.forEach { root ->
+                    wearExcludedAssets.forEach { root.resolve(it).deleteRecursively() }
+                }
+            }
         }
     }
 }
