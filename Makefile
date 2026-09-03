@@ -169,17 +169,30 @@ check:
 	flutter analyze --no-fatal-infos
 
 # Testing
+#
+# Each package resolves its own dependencies, so `flutter test` from the root
+# sees only the app's own suite; the workspace packages have to be entered.
+PACKAGES := packages/pantry_core packages/pantry_wear
+
 .PHONY: test
 test:
 ifdef FILES
 	flutter test $(FILES)
 else
 	flutter test
+	@for pkg in $(PACKAGES); do \
+		echo "==> $$pkg"; \
+		(cd $$pkg && flutter test) || exit 1; \
+	done
 endif
 
 .PHONY: test-coverage
 test-coverage:
 	flutter test --coverage
+	@for pkg in $(PACKAGES); do \
+		echo "==> $$pkg"; \
+		(cd $$pkg && flutter test --coverage) || exit 1; \
+	done
 	@echo "Coverage report generated at coverage/lcov.info"
 
 # Building
@@ -273,7 +286,7 @@ fdroid-apply:
 
 .PHONY: fdroid-revert
 fdroid-revert:
-	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart lib/widgets/avif_image.dart
+	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart lib/widgets/avif_image.dart android/app/build.gradle.kts android/app/src/main/kotlin/dev/casraf/pantry/DataLayerChannel.kt
 	flutter pub get
 
 # Verify the pinned F-Droid lockfile still satisfies the FLOSS pubspec, catching
@@ -291,7 +304,7 @@ fdroid-lock:
 	@set -e; \
 	FDROID_REGEN_LOCK=1 tool/fdroid/apply.sh; \
 	cp pubspec.lock tool/fdroid/pubspec.lock; \
-	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart lib/widgets/avif_image.dart; \
+	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart lib/widgets/avif_image.dart android/app/build.gradle.kts android/app/src/main/kotlin/dev/casraf/pantry/DataLayerChannel.kt; \
 	flutter pub get; \
 	echo "Regenerated tool/fdroid/pubspec.lock — commit it."
 

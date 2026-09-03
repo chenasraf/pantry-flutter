@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
+
+import 'debug/channel_harness_view.dart';
 
 /// Root of the watch app.
 class PantryWearApp extends StatelessWidget {
@@ -63,6 +66,17 @@ class _WearHome extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
+              if (kDebugMode) ...[
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const ChannelHarnessView(),
+                    ),
+                  ),
+                  child: const Text('Channels'),
+                ),
+              ],
             ],
           ),
         ),

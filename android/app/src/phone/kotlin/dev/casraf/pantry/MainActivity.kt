@@ -15,6 +15,7 @@ class MainActivity : FlutterActivity() {
     private val shortcutChannel = "dev.casraf.pantry/shortcuts"
     private var pendingListId: Int? = null
     private var pendingHouseId: Int? = null
+    private val dataLayer by lazy { DataLayerChannel(applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +30,8 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        dataLayer.attachTo(flutterEngine)
+
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channel)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
@@ -65,6 +68,11 @@ class MainActivity : FlutterActivity() {
                     result.notImplemented()
                 }
             }
+    }
+
+    override fun onDestroy() {
+        dataLayer.detach()
+        super.onDestroy()
     }
 
     private fun pinListShortcut(houseId: Int, listId: Int, name: String): Boolean {

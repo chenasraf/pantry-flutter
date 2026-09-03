@@ -182,4 +182,11 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.core:core-ktx:1.13.1")
+    // Both flavors: the Data Layer is two-sided and the phone is the half that
+    // sends the credential. Proprietary, so tool/fdroid/apply.sh strips this
+    // line and swaps DataLayerChannel.kt for a stub that reports unavailable.
+    implementation("com.google.android.gms:play-services-wearable:20.0.1")
+    // RemoteActivityHelper, for opening a link on the paired phone. Named as a
+    // string because flavor configurations have no generated Kotlin accessor.
+    add("wearImplementation", "androidx.wear:wear-remote-interactions:1.1.0")
 }

@@ -6,6 +6,8 @@
 # This MUTATES the working tree in place:
 #   - pubspec.yaml:   mobile_scanner -> flutter_zxing
 #   - the scanner:    lib/.../barcode_camera_scanner.dart <- fdroid/barcode_camera_scanner.dart
+#   - the watch link: android/.../DataLayerChannel.kt <- fdroid/DataLayerChannel.kt
+#   - build.gradle.kts: drop play-services-wearable
 #
 # Reverse it with `make fdroid-revert` (or `git checkout` of those paths). CI
 # runs this in a throwaway checkout, so it never needs reverting there.
@@ -21,7 +23,11 @@ zxing_version="^2.3.0"
 avif_impl="lib/widgets/avif_image.dart"
 avif_override="fdroid/avif_image.dart"
 
-for f in "$override" "$avif_override"; do
+link_impl="android/app/src/main/kotlin/dev/casraf/pantry/DataLayerChannel.kt"
+link_override="fdroid/DataLayerChannel.kt"
+gradle="android/app/build.gradle.kts"
+
+for f in "$override" "$avif_override" "$link_override"; do
   if [ ! -f "$f" ]; then
     echo "fdroid: missing $f" >&2
     exit 1
@@ -44,6 +50,14 @@ rm -f pubspec.yaml.bak
 # the same API but decodes with Flutter's built-in codecs only.
 sed -i.bak "/^  flutter_avif:/d" pubspec.yaml
 rm -f pubspec.yaml.bak
+
+# The Wear Data Layer is Google Play services, with no FLOSS equivalent to swap
+# in, so watch pairing is the one feature the F-Droid build cannot carry. The
+# stub keeps both channels registered and reports the link unavailable, which is
+# what lets the pairing entry point hide itself rather than crash.
+sed -i.bak '/play-services-wearable/d' "$gradle"
+rm -f "$gradle.bak"
+cp "$link_override" "$link_impl"
 
 # Implementation swap: replace the ML Kit camera widget with the zxing one, and
 # the AVIF-decoding image widgets with the native-codec-only versions.

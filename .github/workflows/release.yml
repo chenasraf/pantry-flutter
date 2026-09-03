@@ -92,15 +92,19 @@ jobs:
           key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
           restore-keys: pub-${{ runner.os }}-
 
+      # Each workspace package resolves its own dependencies, and `make test`
+      # runs their suites too.
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          for pkg in packages/*/; do (cd "$pkg" && flutter pub get); done
 
       - name: Run tests
-        run: flutter test --coverage
+        run: make test-coverage
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
-          files: coverage/lcov.info
+          files: coverage/lcov.info,packages/pantry_core/coverage/lcov.info,packages/pantry_wear/coverage/lcov.info
           fail_ci_if_error: false
 
   # Guard the FLOSS lockfile: a dependency added or bumped in pubspec.yaml

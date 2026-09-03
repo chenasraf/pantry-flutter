@@ -16,11 +16,15 @@ import 'package:pantry_wear/pantry_wear.dart';
 /// Entrypoint for the `wear` flavor. Lives in the app package because
 /// `--target` cannot point into a path dependency; everything it touches is
 /// either core or the watch UI package.
-void main() async {
+///
+/// [args] carries the screen shape, which the activity reads from the window
+/// configuration and passes here so layout has it before the first frame.
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   // Before anything reads a platform gate: a watch answers `true` to every
   // Android check, so nothing else can tell this binary from the phone's.
   PlatformInfo.markAsWatch();
+  WearShape.markFrom(args);
 
   registerNnLocaleData();
 

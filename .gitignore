@@ -31,7 +31,9 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/packages/*/build/
 /coverage/
+/packages/*/coverage/
 
 # Symbolication related
 app.*.symbols
