@@ -261,7 +261,6 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
                                   : null,
                               groupIcon: geometry.stickyIcon,
                               groupColor: geometry.stickyColor,
-                              push: geometry.stickyPush,
                               page: _page,
                               pages: _pages.length,
                               offline: _offline,
@@ -307,7 +306,6 @@ class _Rail extends StatelessWidget {
   final String? group;
   final IconData? groupIcon;
   final Color? groupColor;
-  final double push;
   final int page;
   final int pages;
   final bool offline;
@@ -320,7 +318,6 @@ class _Rail extends StatelessWidget {
     required this.group,
     required this.groupIcon,
     required this.groupColor,
-    required this.push,
     required this.page,
     required this.pages,
     required this.offline,
@@ -385,42 +382,53 @@ class _Rail extends StatelessWidget {
             ),
             SizedBox(
               height: 13,
-              child: ClipRect(
+              // Driven by the label changing, not by a header's distance from
+              // the centre line. Those are different events: the header starts
+              // approaching while the last row of the outgoing group is still
+              // focused, so a geometric transition began a row early and had
+              // nothing left to play when the new label actually arrived.
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, 0.7),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  ),
+                ),
                 child: group == null
                     ? const SizedBox.shrink()
-                    : Transform.translate(
-                        offset: Offset(0, -13 * push),
-                        // The group's own icon and colour, the same pair the
-                        // header and the chip draw with, so one entity reads
-                        // the same wherever it appears.
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (groupIcon != null) ...[
-                              Icon(
-                                groupIcon,
-                                size: 10,
+                    : Row(
+                        key: ValueKey(group),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (groupIcon != null) ...[
+                            Icon(
+                              groupIcon,
+                              size: 10,
+                              color: groupColor ?? Colors.white38,
+                            ),
+                            const SizedBox(width: 4),
+                          ],
+                          Flexible(
+                            child: Text(
+                              group!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textDirection: detectTextDirection(group!),
+                              style: TextStyle(
+                                fontSize: 9,
+                                height: 1.1,
+                                letterSpacing: 0.4,
+                                fontWeight: FontWeight.w700,
                                 color: groupColor ?? Colors.white38,
                               ),
-                              const SizedBox(width: 4),
-                            ],
-                            Flexible(
-                              child: Text(
-                                group!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textDirection: detectTextDirection(group!),
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  height: 1.1,
-                                  letterSpacing: 0.4,
-                                  fontWeight: FontWeight.w700,
-                                  color: groupColor ?? Colors.white38,
-                                ),
-                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
               ),
             ),

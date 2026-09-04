@@ -68,16 +68,11 @@ class FocusGeometry {
   final IconData? stickyIcon;
   final Color? stickyColor;
 
-  /// 0 while the sticky label rests, rising to 1 as the next group's header
-  /// arrives and shoulders it out.
-  final double stickyPush;
-
   const FocusGeometry({
     this.centredIndex = -1,
     this.stickyGroup,
     this.stickyIcon,
     this.stickyColor,
-    this.stickyPush = 0,
   });
 }
 
@@ -257,31 +252,15 @@ class SnapFocusListState extends State<SnapFocusList> {
     // rail a group behind for the whole of that first row.
     final focused = best >= 0 ? widget.elements[best] : null;
 
-    // Which makes the centre line the handover point too: the next header
-    // shoulders the current label out as it approaches the centre, and the
-    // focus crosses into its group as it passes.
-    var push = 0.0;
-    for (var i = 0; i < widget.elements.length; i++) {
-      if (!widget.elements[i].isHeader) continue;
-      final distance = _tops[i] - centre;
-      if (distance < 0) continue;
-      if (distance < widget.elements[i].extent) {
-        push = 1 - (distance / widget.elements[i].extent);
-      }
-      break;
-    }
-
     final next = FocusGeometry(
       centredIndex: best,
       stickyGroup: focused?.groupLabel,
       stickyIcon: focused?.groupIcon,
       stickyColor: focused?.groupColor,
-      stickyPush: push.clamp(0.0, 1.0),
     );
     final current = notifier.value;
     if (current.centredIndex == next.centredIndex &&
-        current.stickyGroup == next.stickyGroup &&
-        (current.stickyPush - next.stickyPush).abs() < 0.01) {
+        current.stickyGroup == next.stickyGroup) {
       return;
     }
 
