@@ -9,6 +9,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
 import 'focus_list.dart';
+import 'proto_mechanics.dart';
 import 'proto_checklist_data.dart';
 import 'proto_tuning.dart';
 
@@ -778,118 +779,121 @@ class ItemDetailPage extends StatelessWidget {
     final storeTint = protoStoreColors[item.store] ?? neutral;
     return Scaffold(
       backgroundColor: const Color(0xFF0B0B0C),
-      body: ListView(
-        padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: 18,
-          vertical: 46,
-        ),
-        children: [
-          Text(
-            item.name,
-            textAlign: TextAlign.center,
-            textDirection: detectTextDirection(item.name),
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+      body: EdgeDismissible(
+        onDismiss: () => Navigator.of(context).pop(),
+        child: ListView(
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: 18,
+            vertical: 46,
           ),
-          if (item.description != null) ...[
-            const SizedBox(height: 6),
+          children: [
             Text(
-              item.description!,
+              item.name,
               textAlign: TextAlign.center,
-              textDirection: detectTextDirection(item.description!),
-              style: const TextStyle(fontSize: 12, color: Colors.white60),
+              textDirection: detectTextDirection(item.name),
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
-          ],
-          const SizedBox(height: 14),
-          if (item.qty != null)
+            if (item.description != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                item.description!,
+                textAlign: TextAlign.center,
+                textDirection: detectTextDirection(item.description!),
+                style: const TextStyle(fontSize: 12, color: Colors.white60),
+              ),
+            ],
+            const SizedBox(height: 14),
+            if (item.qty != null)
+              _fact(
+                'Quantity',
+                value: EntityChip(textColor: neutral, label: item.qty!),
+              ),
             _fact(
-              'Quantity',
-              value: EntityChip(textColor: neutral, label: item.qty!),
-            ),
-          _fact(
-            'Category',
-            value: EntityChip(
-              textColor: item.category.color,
-              label: item.category.name,
-              leading: Icon(
-                categoryIcon(item.category.iconKey),
-                size: 12,
-                color: item.category.color,
-              ),
-            ),
-          ),
-          _fact(
-            'Store',
-            value: EntityChip(
-              textColor: storeTint,
-              label: item.store,
-              leading: Icon(
-                storeIcon(protoStoreIcons[item.store]),
-                size: 12,
-                color: storeTint,
-              ),
-            ),
-          ),
-          if (item.price != null)
-            _fact(
-              'Price',
-              value: EntityChip(textColor: neutral, label: item.price!),
-            ),
-          // A schedule, not a flag: "recurring" alone tells you nothing you
-          // could act on, so the row carries what core already knows how to
-          // say about the rule.
-          _fact(
-            'Repeats',
-            value: EntityChip(
-              textColor: item.recurring ? scheme.primary : neutral,
-              label: item.recurring ? formatRrule(item.rrule!) : 'One-time',
-              leading: Icon(
-                item.recurring ? Icons.repeat : Icons.looks_one_outlined,
-                size: 12,
-                color: item.recurring ? scheme.primary : neutral,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          _button(
-            context,
-            icon: item.done ? Icons.remove_done : Icons.check,
-            label: item.done ? 'Mark undone' : 'Mark done',
-            color: scheme.primary,
-            onTap: () {
-              onToggleDone();
-              Navigator.of(context).pop();
-            },
-          ),
-          if (mode == ChecklistMode.session) ...[
-            const SizedBox(height: 8),
-            _button(
-              context,
-              icon: item.skipped ? Icons.undo : Icons.block,
-              label: item.skipped ? 'Unskip' : 'Skip this trip',
-              color: const Color(0xFF8A8A92),
-              onTap: () {
-                onSkip();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-          const SizedBox(height: 8),
-          _button(
-            context,
-            icon: Icons.phone_android,
-            label: 'Open on phone',
-            color: const Color(0xFF8A8A92),
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                duration: Duration(seconds: 1),
-                content: Text(
-                  'pantry://item/1/1/…',
-                  style: TextStyle(fontSize: 11),
+              'Category',
+              value: EntityChip(
+                textColor: item.category.color,
+                label: item.category.name,
+                leading: Icon(
+                  categoryIcon(item.category.iconKey),
+                  size: 12,
+                  color: item.category.color,
                 ),
               ),
             ),
-          ),
-        ],
+            _fact(
+              'Store',
+              value: EntityChip(
+                textColor: storeTint,
+                label: item.store,
+                leading: Icon(
+                  storeIcon(protoStoreIcons[item.store]),
+                  size: 12,
+                  color: storeTint,
+                ),
+              ),
+            ),
+            if (item.price != null)
+              _fact(
+                'Price',
+                value: EntityChip(textColor: neutral, label: item.price!),
+              ),
+            // A schedule, not a flag: "recurring" alone tells you nothing you
+            // could act on, so the row carries what core already knows how to
+            // say about the rule.
+            _fact(
+              'Repeats',
+              value: EntityChip(
+                textColor: item.recurring ? scheme.primary : neutral,
+                label: item.recurring ? formatRrule(item.rrule!) : 'One-time',
+                leading: Icon(
+                  item.recurring ? Icons.repeat : Icons.looks_one_outlined,
+                  size: 12,
+                  color: item.recurring ? scheme.primary : neutral,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            _button(
+              context,
+              icon: item.done ? Icons.remove_done : Icons.check,
+              label: item.done ? 'Mark undone' : 'Mark done',
+              color: scheme.primary,
+              onTap: () {
+                onToggleDone();
+                Navigator.of(context).pop();
+              },
+            ),
+            if (mode == ChecklistMode.session) ...[
+              const SizedBox(height: 8),
+              _button(
+                context,
+                icon: item.skipped ? Icons.undo : Icons.block,
+                label: item.skipped ? 'Unskip' : 'Skip this trip',
+                color: const Color(0xFF8A8A92),
+                onTap: () {
+                  onSkip();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+            const SizedBox(height: 8),
+            _button(
+              context,
+              icon: Icons.phone_android,
+              label: 'Open on phone',
+              color: const Color(0xFF8A8A92),
+              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text(
+                    'pantry://item/1/1/…',
+                    style: TextStyle(fontSize: 11),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

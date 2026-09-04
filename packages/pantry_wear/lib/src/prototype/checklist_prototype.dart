@@ -78,8 +78,8 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
   List<Widget> get _pages => _mode == ChecklistMode.browse
       ? [
           _checklist(),
-          const _PhotosPage(),
-          const _NotesPage(),
+          _PhotosPage(tuning: _tuning, active: _page == 1),
+          _NotesPage(tuning: _tuning, active: _page == 2),
           const _StubPage(title: 'Account', icon: Icons.person_outline),
         ]
       : [
@@ -551,112 +551,173 @@ class _CollectionPage extends StatelessWidget {
 
 /// Photos read as a grid rather than a stack of full-width cards — a wrist is
 /// scanning for the one it remembers, and two to a row halves how far it has
-/// to scan. View only; the mirror carries no bytes, so these are online-only.
-class _PhotosPage extends StatelessWidget {
-  const _PhotosPage();
+/// to scan. A *row* of tiles is what the centre line holds, so the focus
+/// falloff applies to the row, not the tile. View only; the mirror carries no
+/// bytes, so these are online-only.
+class _PhotosPage extends StatefulWidget {
+  final ProtoTuning tuning;
+  final bool active;
+
+  const _PhotosPage({required this.tuning, required this.active});
+
+  @override
+  State<_PhotosPage> createState() => _PhotosPageState();
+}
+
+class _PhotosPageState extends State<_PhotosPage> {
+  final _controller = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final top = MediaQuery.sizeOf(context).height * 0.24;
-    return GridView.count(
-      crossAxisCount: 2,
-      mainAxisSpacing: 6,
-      crossAxisSpacing: 6,
-      padding: EdgeInsetsDirectional.only(
-        top: top,
-        bottom: 30,
-        start: 14,
-        end: 14,
-      ),
-      children: [
-        for (final photo in protoPhotos)
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [photo.a, photo.b]),
-              ),
-              child: Align(
-                alignment: AlignmentDirectional.bottomStart,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.all(6),
-                  child: Text(
-                    photo.caption,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: detectTextDirection(photo.caption),
-                    style: const TextStyle(fontSize: 10),
+    final rows = (protoPhotos.length / 2).ceil();
+    return SnapFocusList(
+      controller: _controller,
+      itemExtent: 88,
+      falloffRows: widget.tuning.falloffRows,
+      snapEnabled: widget.tuning.snapEnabled,
+      rotaryActive: widget.active,
+      elements: [
+        for (var row = 0; row < rows; row++)
+          FocusElement(
+            extent: 88,
+            builder: (context, d) => Padding(
+              padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
+              child: Row(
+                children: [
+                  Expanded(child: _tile(protoPhotos[row * 2])),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: row * 2 + 1 < protoPhotos.length
+                        ? _tile(protoPhotos[row * 2 + 1])
+                        : const SizedBox.shrink(),
                   ),
-                ),
+                ],
               ),
             ),
           ),
       ],
     );
   }
+
+  Widget _tile(ProtoPhoto photo) => ClipRRect(
+    borderRadius: BorderRadius.circular(12),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [photo.a, photo.b]),
+      ),
+      child: Align(
+        alignment: AlignmentDirectional.bottomStart,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.all(6),
+          child: Text(
+            photo.caption,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textDirection: detectTextDirection(photo.caption),
+            style: const TextStyle(fontSize: 10),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 /// Notes ride the mirror whole, bodies included, so a note is readable on the
 /// wrist without a fetch.
-class _NotesPage extends StatelessWidget {
-  const _NotesPage();
+class _NotesPage extends StatefulWidget {
+  final ProtoTuning tuning;
+  final bool active;
+
+  const _NotesPage({required this.tuning, required this.active});
+
+  @override
+  State<_NotesPage> createState() => _NotesPageState();
+}
+
+class _NotesPageState extends State<_NotesPage> {
+  final _controller = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final top = MediaQuery.sizeOf(context).height * 0.24;
-    return ListView.builder(
-      padding: EdgeInsetsDirectional.only(
-        top: top,
-        bottom: 30,
-        start: 16,
-        end: 16,
-      ),
-      itemCount: protoNotes.length,
-      itemBuilder: (context, i) {
-        final note = protoNotes[i];
-        return Padding(
-          padding: const EdgeInsetsDirectional.only(bottom: 6),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: const Color(0xFF17171A),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsetsDirectional.symmetric(
-                horizontal: 11,
-                vertical: 8,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    note.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: detectTextDirection(note.title),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+    return SnapFocusList(
+      controller: _controller,
+      itemExtent: 72,
+      falloffRows: widget.tuning.falloffRows,
+      snapEnabled: widget.tuning.snapEnabled,
+      rotaryActive: widget.active,
+      elements: [
+        for (final note in protoNotes)
+          FocusElement(
+            extent: 72,
+            builder: (context, d) => Center(
+              child: SizedBox(
+                height: 66,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Color.lerp(
+                      const Color(0xFF17171A),
+                      const Color(0xFF121215),
+                      d,
+                    ),
+                    borderRadius: BorderRadius.circular(
+                      WearShape.isRound ? 18 : 12,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    note.body,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: detectTextDirection(note.body),
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Colors.white60,
-                      height: 1.25,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 13,
+                      vertical: 9,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          note.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textDirection: detectTextDirection(note.title),
+                          style: TextStyle(
+                            fontSize: 13,
+                            height: 1.1,
+                            fontWeight: d < 0.5
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Expanded(
+                          child: Text(
+                            note.body,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textDirection: detectTextDirection(note.body),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.white60,
+                              height: 1.25,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        );
-      },
+      ],
     );
   }
 }
@@ -740,83 +801,87 @@ class _TuningPageState extends State<TuningPage> {
     final t = widget.tuning;
     return Scaffold(
       backgroundColor: const Color(0xFF0B0B0C),
-      body: ListView(
-        padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: 16,
-          vertical: 44,
-        ),
-        children: [
-          const _Heading('Session'),
-          _toggle(
-            'Live session',
-            t.sessionActive,
-            (v) =>
-                widget.onMode(v ? ChecklistMode.session : ChecklistMode.browse),
+      body: EdgeDismissible(
+        onDismiss: () => Navigator.of(context).pop(),
+        child: ListView(
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: 16,
+            vertical: 44,
           ),
-          _toggle('Offline', t.offline, widget.onOffline),
-          const _Heading('List'),
-          _toggle(
-            'Snap',
-            t.snapEnabled,
-            (v) => t.update(() => t.snapEnabled = v),
-          ),
-          _toggle(
-            'Wheel (the 714 control)',
-            t.useWheel,
-            (v) => t.update(() => t.useWheel = v),
-          ),
-          _toggle(
-            'Expand centre card',
-            t.expandCentre,
-            (v) => t.update(() => t.expandCentre = v),
-          ),
-          _slider(
-            'Undo ${t.undoMs}ms',
-            t.undoMs.toDouble(),
-            600,
-            4000,
-            (v) => t.update(() => t.undoMs = v.round()),
-          ),
-          _slider(
-            'Falloff ${t.falloffRows.toStringAsFixed(1)} rows',
-            t.falloffRows,
-            1,
-            5,
-            (v) => t.update(() => t.falloffRows = v),
-          ),
-          _slider(
-            'Row ${t.itemExtent.round()}px',
-            t.itemExtent,
-            44,
-            72,
-            (v) => t.update(() => t.itemExtent = v),
-          ),
-          _slider(
-            'Card gap ${t.cardGap.round()}px',
-            t.cardGap,
-            0,
-            16,
-            (v) => t.update(() => t.cardGap = v),
-          ),
-          _slider(
-            'Header ${t.headerExtent.round()}px',
-            t.headerExtent,
-            14,
-            48,
-            (v) => t.update(() => t.headerExtent = v),
-          ),
-          const _Heading('Grouping'),
-          for (final g in GroupBy.values)
+          children: [
+            const _Heading('Session'),
             _toggle(
-              g.name,
-              t.groupBy == g,
-              (_) => t.update(() => t.groupBy = g),
+              'Live session',
+              t.sessionActive,
+              (v) => widget.onMode(
+                v ? ChecklistMode.session : ChecklistMode.browse,
+              ),
             ),
-          const _Heading('Chips'),
-          for (final key in _chips)
-            _toggle(key, t.isChipVisible(key), (_) => t.toggleChip(key)),
-          const SizedBox(height: 20),
-        ],
+            _toggle('Offline', t.offline, widget.onOffline),
+            const _Heading('List'),
+            _toggle(
+              'Snap',
+              t.snapEnabled,
+              (v) => t.update(() => t.snapEnabled = v),
+            ),
+            _toggle(
+              'Wheel (the 714 control)',
+              t.useWheel,
+              (v) => t.update(() => t.useWheel = v),
+            ),
+            _toggle(
+              'Expand centre card',
+              t.expandCentre,
+              (v) => t.update(() => t.expandCentre = v),
+            ),
+            _slider(
+              'Undo ${t.undoMs}ms',
+              t.undoMs.toDouble(),
+              600,
+              4000,
+              (v) => t.update(() => t.undoMs = v.round()),
+            ),
+            _slider(
+              'Falloff ${t.falloffRows.toStringAsFixed(1)} rows',
+              t.falloffRows,
+              1,
+              5,
+              (v) => t.update(() => t.falloffRows = v),
+            ),
+            _slider(
+              'Row ${t.itemExtent.round()}px',
+              t.itemExtent,
+              44,
+              72,
+              (v) => t.update(() => t.itemExtent = v),
+            ),
+            _slider(
+              'Card gap ${t.cardGap.round()}px',
+              t.cardGap,
+              0,
+              16,
+              (v) => t.update(() => t.cardGap = v),
+            ),
+            _slider(
+              'Header ${t.headerExtent.round()}px',
+              t.headerExtent,
+              14,
+              48,
+              (v) => t.update(() => t.headerExtent = v),
+            ),
+            const _Heading('Grouping'),
+            for (final g in GroupBy.values)
+              _toggle(
+                g.name,
+                t.groupBy == g,
+                (_) => t.update(() => t.groupBy = g),
+              ),
+            const _Heading('Chips'),
+            for (final key in _chips)
+              _toggle(key, t.isChipVisible(key), (_) => t.toggleChip(key)),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

@@ -99,6 +99,49 @@ class EdgeAwarePageView extends StatelessWidget {
   }
 }
 
+/// The leading-edge back gesture, for a route pushed *over* the pager.
+///
+/// Route (a) turns off `windowSwipeToDismiss` for the whole app, so a pushed
+/// route inherits no way back at all — it has to rebuild one. This is the same
+/// strip the pager spends on leaving the app, spent here on leaving the route,
+/// so the wearer learns one gesture rather than two.
+class EdgeDismissible extends StatelessWidget {
+  final VoidCallback onDismiss;
+  final Widget child;
+
+  const EdgeDismissible({
+    super.key,
+    required this.onDismiss,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ltr = Directionality.of(context) == TextDirection.ltr;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        return Stack(
+          children: [
+            Positioned.fill(child: child),
+            PositionedDirectional(
+              start: 0,
+              top: 0,
+              bottom: 0,
+              width: width * kEdgeExclusionFraction,
+              child: _DismissStrip(
+                width: width,
+                towardsEnd: ltr ? 1 : -1,
+                onDismiss: onDismiss,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class _DismissStrip extends StatefulWidget {
   final double width;
   final double towardsEnd;
