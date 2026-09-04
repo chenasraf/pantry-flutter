@@ -196,10 +196,12 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
       // Two planes, not one: the rail has to read as separate from the cards
       // that scroll under it.
       scaffoldBackgroundColor: const Color(0xFF0B0B0C),
+      // Only the two ground planes are overridden. `primary` stays whatever
+      // ThemingService seeded, so the watch wears the same accent as the phone
+      // rather than a colour invented for the prototype.
       colorScheme: base.colorScheme.copyWith(
         surface: const Color(0xFF0B0B0C),
         surfaceContainerHighest: const Color(0xFF17171A),
-        primary: const Color(0xFF7FD18A),
       ),
     );
   }
@@ -358,8 +360,8 @@ class _Rail extends StatelessWidget {
                   Container(
                     width: 5,
                     height: 5,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF7FD18A),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -423,23 +425,25 @@ class _Rail extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 3),
+            // Bars, not dots: the current page grows into a line so the
+            // indicator says *where* you are as well as how many there are,
+            // and it animates rather than cutting between the two widths.
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 for (var i = 0; i < window.count; i++)
-                  Padding(
-                    padding: const EdgeInsetsDirectional.symmetric(
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    margin: const EdgeInsetsDirectional.symmetric(
                       horizontal: 2,
                     ),
-                    child: Container(
-                      width: 4,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: i == window.selected
-                            ? Colors.white
-                            : Colors.white24,
-                      ),
+                    width: i == window.selected ? 14 : 8,
+                    height: 3,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      color: i == window.selected
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.white24,
                     ),
                   ),
               ],
@@ -698,7 +702,9 @@ class _TuningPageState extends State<TuningPage> {
               Icon(
                 value ? Icons.check_box : Icons.check_box_outline_blank,
                 size: 16,
-                color: value ? const Color(0xFF7FD18A) : Colors.white38,
+                color: value
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.white38,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -739,7 +745,7 @@ class _TuningPageState extends State<TuningPage> {
               value: value.clamp(min, max),
               min: min,
               max: max,
-              activeColor: const Color(0xFF7FD18A),
+              activeColor: Theme.of(context).colorScheme.primary,
               inactiveColor: Colors.white24,
               onChanged: onChanged,
             ),
