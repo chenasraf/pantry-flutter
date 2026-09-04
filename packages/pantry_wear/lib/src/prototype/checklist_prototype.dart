@@ -182,9 +182,18 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
       _page = landing;
       _pager = PageController(initialPage: landing);
     });
-    // The outgoing PageView is still mounted for this frame, so the controller
-    // it is holding cannot be torn down until after it.
-    WidgetsBinding.instance.addPostFrameCallback((_) => previous.dispose());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // The outgoing PageView is still mounted for this frame, so its
+      // controller cannot be torn down until after it.
+      previous.dispose();
+      // `initialPage` is not enough: swapping a controller makes the new
+      // ScrollPosition `absorb` the old one, which carries the previous pixel
+      // offset across and discards the initial page. The dots read state and
+      // the pager read the absorbed offset, so they disagreed by exactly the
+      // landing index.
+      if (!mounted || !_pager.hasClients) return;
+      if (_pager.page?.round() != landing) _pager.jumpToPage(landing);
+    });
     _tuning.update(() => _tuning.sessionActive = next == ChecklistMode.session);
     _lockTimer = Timer(const Duration(milliseconds: 450), () {
       if (mounted) setState(() => _locked = false);

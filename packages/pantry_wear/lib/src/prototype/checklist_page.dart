@@ -894,22 +894,26 @@ class ItemDetailPage extends StatelessWidget {
     );
   }
 
+  /// Label over value rather than beside it. A watch is too narrow to put a
+  /// caption and an arbitrary-length value on one line — a recurrence summary
+  /// alone can run to "Every week on Monday, Thursday" — so the value gets the
+  /// full width and wraps into it.
   Widget _fact(String label, {required Widget value}) => Padding(
-    padding: const EdgeInsetsDirectional.only(bottom: 7),
-    child: Row(
+    padding: const EdgeInsetsDirectional.only(bottom: 9),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Text(
-            label.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 9,
-              letterSpacing: 0.7,
-              color: Colors.white38,
-              fontWeight: FontWeight.w700,
-            ),
+        Text(
+          label.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 9,
+            letterSpacing: 0.7,
+            color: Colors.white38,
+            fontWeight: FontWeight.w700,
           ),
         ),
-        Flexible(child: value),
+        const SizedBox(height: 3),
+        Align(alignment: AlignmentDirectional.centerStart, child: value),
       ],
     ),
   );

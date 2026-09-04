@@ -104,12 +104,17 @@ class EntityChip extends StatelessWidget {
             if (hasLabel) SizedBox(width: density.gap),
           ],
           if (hasLabel)
-            Text(
-              label!,
-              style: TextStyle(
-                color: textColor,
-                fontSize: density.fontSize,
-                fontWeight: FontWeight.w600,
+            // Flexible so a long label wraps inside a bounded chip instead of
+            // running off the edge. Unbounded callers are unaffected: the row
+            // is still mainAxisSize.min, so the chip hugs its text.
+            Flexible(
+              child: Text(
+                label!,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: density.fontSize,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
         ],
