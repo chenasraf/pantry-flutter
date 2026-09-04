@@ -301,7 +301,7 @@ class SnapFocusListState extends State<SnapFocusList> {
             controller: widget.controller,
             physics: widget.snapEnabled
                 ? _SnapPhysics(
-                    targets: _snapTargets,
+                    targets: () => _snapTargets,
                     parent: const AlwaysScrollableScrollPhysics(
                       parent: ClampingScrollPhysics(),
                     ),
@@ -392,7 +392,13 @@ class SnapFocusListState extends State<SnapFocusList> {
 /// elements, so a header is not something the list declines to land on — it
 /// was never in the table.
 class _SnapPhysics extends ScrollPhysics {
-  final List<double> targets;
+  /// Read live rather than captured. A `ScrollPosition` re-runs its ballistic
+  /// whenever the content's dimensions change — expanding the Done section is
+  /// exactly that — and it does so with the physics attached at that instant.
+  /// A snapshot taken at build time is a frame behind the element list there,
+  /// so the snap hauls the list back to the *old* last row and the new rows
+  /// cannot be reached at all.
+  final List<double> Function() targets;
 
   const _SnapPhysics({required this.targets, super.parent});
 
@@ -400,14 +406,20 @@ class _SnapPhysics extends ScrollPhysics {
   _SnapPhysics applyTo(ScrollPhysics? ancestor) =>
       _SnapPhysics(targets: targets, parent: buildParent(ancestor));
 
-  double _nearest(double value) {
-    var best = targets.first;
-    var bestDistance = (best - value).abs();
-    for (final t in targets) {
-      final d = (t - value).abs();
+  double _nearest(double value, ScrollMetrics position) {
+    var best = double.nan;
+    var bestDistance = double.infinity;
+    for (final t in targets()) {
+      // A row whose centre lies past the end of the scrollable can never be
+      // reached, so snapping at it would fight the clamp forever.
+      final reachable = t.clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      );
+      final d = (reachable - value).abs();
       if (d < bestDistance) {
         bestDistance = d;
-        best = t;
+        best = reachable;
       }
     }
     return best;
@@ -418,7 +430,7 @@ class _SnapPhysics extends ScrollPhysics {
     ScrollMetrics position,
     double velocity,
   ) {
-    if (targets.isEmpty) {
+    if (targets().isEmpty) {
       return super.createBallisticSimulation(position, velocity);
     }
     // Out of range at either end: let the parent haul it back first.
@@ -431,8 +443,9 @@ class _SnapPhysics extends ScrollPhysics {
     if (!settle.isFinite) settle = position.pixels;
     settle = settle.clamp(position.minScrollExtent, position.maxScrollExtent);
 
-    final target = _nearest(settle);
-    if ((target - position.pixels).abs() < toleranceFor(position).distance) {
+    final target = _nearest(settle, position);
+    if (target.isNaN ||
+        (target - position.pixels).abs() < toleranceFor(position).distance) {
       return null;
     }
     return ScrollSpringSimulation(

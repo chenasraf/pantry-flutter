@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pantry_core/utils/category_icons.dart';
+import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry_core/utils/text_direction.dart';
@@ -773,6 +774,8 @@ class ItemDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    const neutral = Color(0xFFB6B6BE);
+    final storeTint = protoStoreColors[item.store] ?? neutral;
     return Scaffold(
       backgroundColor: const Color(0xFF0B0B0C),
       body: ListView(
@@ -797,11 +800,55 @@ class ItemDetailPage extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 14),
-          _fact('Quantity', item.qty ?? '—'),
-          _fact('Category', item.category.name, dot: item.category.color),
-          _fact('Store', item.store),
-          if (item.price != null) _fact('Price', item.price!),
-          _fact('Type', item.recurring ? 'Recurring' : 'One-time'),
+          if (item.qty != null)
+            _fact(
+              'Quantity',
+              value: EntityChip(textColor: neutral, label: item.qty!),
+            ),
+          _fact(
+            'Category',
+            value: EntityChip(
+              textColor: item.category.color,
+              label: item.category.name,
+              leading: Icon(
+                categoryIcon(item.category.iconKey),
+                size: 12,
+                color: item.category.color,
+              ),
+            ),
+          ),
+          _fact(
+            'Store',
+            value: EntityChip(
+              textColor: storeTint,
+              label: item.store,
+              leading: Icon(
+                storeIcon(protoStoreIcons[item.store]),
+                size: 12,
+                color: storeTint,
+              ),
+            ),
+          ),
+          if (item.price != null)
+            _fact(
+              'Price',
+              value: EntityChip(textColor: neutral, label: item.price!),
+            ),
+          // A schedule, not a flag: "recurring" alone tells you nothing you
+          // could act on, so the row carries what core already knows how to
+          // say about the rule.
+          _fact(
+            'Repeats',
+            value: EntityChip(
+              textColor: item.recurring ? scheme.primary : neutral,
+              label: item.recurring ? formatRrule(item.rrule!) : 'One-time',
+              leading: Icon(
+                item.recurring ? Icons.repeat : Icons.looks_one_outlined,
+                size: 12,
+                color: item.recurring ? scheme.primary : neutral,
+              ),
+            ),
+          ),
           const SizedBox(height: 16),
           _button(
             context,
@@ -847,7 +894,7 @@ class ItemDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _fact(String label, String value, {Color? dot}) => Padding(
+  Widget _fact(String label, {required Widget value}) => Padding(
     padding: const EdgeInsetsDirectional.only(bottom: 7),
     child: Row(
       children: [
@@ -862,15 +909,7 @@ class ItemDetailPage extends StatelessWidget {
             ),
           ),
         ),
-        if (dot != null) ...[
-          Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 5),
-        ],
-        Text(value, style: const TextStyle(fontSize: 12)),
+        Flexible(child: value),
       ],
     ),
   );

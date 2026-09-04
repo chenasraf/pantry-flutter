@@ -61,4 +61,29 @@ void main() {
     // Twice over: the group's own header in the list, and the rail naming it.
     expect(find.text('Dairy'), findsNWidgets(2));
   });
+
+  testWidgets('the done section is reachable once opened', (tester) async {
+    tester.view.physicalSize = const Size(480, 480);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(const MaterialApp(home: ChecklistPrototype()));
+    await tester.pumpAndSettle();
+
+    final controller = tester
+        .widget<SnapFocusList>(find.byType(SnapFocusList))
+        .controller;
+
+    controller.jumpTo(controller.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining('Done ('));
+    await tester.pumpAndSettle();
+
+    final opened = tester.widget<SnapFocusList>(find.byType(SnapFocusList));
+
+    controller.jumpTo(controller.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+    expect(opened.geometry!.value.stickyGroup, 'Done');
+    expect(opened.geometry!.value.centredIndex, opened.elements.length - 1);
+  });
 }

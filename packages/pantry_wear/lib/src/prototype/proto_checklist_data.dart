@@ -44,7 +44,10 @@ class ProtoChecklistItem {
   final String store;
   final String? price;
   final String? note;
-  final bool recurring;
+
+  /// The real model carries an RRULE, not a flag — the detail page has to
+  /// describe the schedule, which a boolean cannot do.
+  final String? rrule;
   final bool done;
   final bool skipped;
 
@@ -56,7 +59,7 @@ class ProtoChecklistItem {
     this.qty,
     this.price,
     this.note,
-    this.recurring = false,
+    this.rrule,
     this.done = false,
     this.skipped = false,
   });
@@ -70,10 +73,12 @@ class ProtoChecklistItem {
         qty: qty,
         price: price,
         note: note,
-        recurring: recurring,
+        rrule: rrule,
         done: done ?? this.done,
         skipped: skipped ?? this.skipped,
       );
+
+  bool get recurring => rrule != null;
 
   /// The description the read-only detail page shows under the name. Long
   /// enough on a couple of items to prove the wrapping case.
@@ -149,7 +154,7 @@ const protoChecklistItems = <ProtoChecklistItem>[
     category: _pantryCat,
     store: 'Shufersal',
     price: '₪48.00',
-    recurring: true,
+    rrule: 'FREQ=WEEKLY;INTERVAL=2',
   ),
   ProtoChecklistItem(
     id: 10,
@@ -184,7 +189,7 @@ const protoChecklistItems = <ProtoChecklistItem>[
     qty: '4',
     category: _household,
     store: 'Am:Pm',
-    recurring: true,
+    rrule: 'FREQ=MONTHLY;INTERVAL=1',
   ),
   ProtoChecklistItem(
     id: 15,
@@ -232,7 +237,7 @@ const protoChecklistItems = <ProtoChecklistItem>[
     qty: '8 pouches',
     category: _household,
     store: 'Am:Pm',
-    recurring: true,
+    rrule: 'FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TH',
   ),
   ProtoChecklistItem(
     id: 22,

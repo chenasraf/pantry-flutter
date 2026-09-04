@@ -9,6 +9,7 @@ import '../wear_shape.dart';
 import 'checklist_page.dart';
 import 'focus_list.dart';
 import 'proto_checklist_data.dart';
+import 'proto_data.dart';
 import 'proto_mechanics.dart';
 import 'proto_tuning.dart';
 
@@ -77,8 +78,8 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
   List<Widget> get _pages => _mode == ChecklistMode.browse
       ? [
           _checklist(),
-          const _StubPage(title: 'Photos', icon: Icons.photo_library_outlined),
-          const _StubPage(title: 'Notes', icon: Icons.sticky_note_2_outlined),
+          const _PhotosPage(),
+          const _NotesPage(),
           const _StubPage(title: 'Account', icon: Icons.person_outline),
         ]
       : [
@@ -530,6 +531,118 @@ class _CollectionPage extends StatelessWidget {
                     const Icon(Icons.undo, size: 14, color: Colors.white38),
                   ],
                 ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Photos read as a grid rather than a stack of full-width cards — a wrist is
+/// scanning for the one it remembers, and two to a row halves how far it has
+/// to scan. View only; the mirror carries no bytes, so these are online-only.
+class _PhotosPage extends StatelessWidget {
+  const _PhotosPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final top = MediaQuery.sizeOf(context).height * 0.24;
+    return GridView.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 6,
+      crossAxisSpacing: 6,
+      padding: EdgeInsetsDirectional.only(
+        top: top,
+        bottom: 30,
+        start: 14,
+        end: 14,
+      ),
+      children: [
+        for (final photo in protoPhotos)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [photo.a, photo.b]),
+              ),
+              child: Align(
+                alignment: AlignmentDirectional.bottomStart,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.all(6),
+                  child: Text(
+                    photo.caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textDirection: detectTextDirection(photo.caption),
+                    style: const TextStyle(fontSize: 10),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Notes ride the mirror whole, bodies included, so a note is readable on the
+/// wrist without a fetch.
+class _NotesPage extends StatelessWidget {
+  const _NotesPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final top = MediaQuery.sizeOf(context).height * 0.24;
+    return ListView.builder(
+      padding: EdgeInsetsDirectional.only(
+        top: top,
+        bottom: 30,
+        start: 16,
+        end: 16,
+      ),
+      itemCount: protoNotes.length,
+      itemBuilder: (context, i) {
+        final note = protoNotes[i];
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(bottom: 6),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: const Color(0xFF17171A),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: 11,
+                vertical: 8,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    note.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textDirection: detectTextDirection(note.title),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    note.body,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textDirection: detectTextDirection(note.body),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Colors.white60,
+                      height: 1.25,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
