@@ -582,6 +582,7 @@ class _PhotosPageState extends State<_PhotosPage> {
       falloffRows: widget.tuning.falloffRows,
       snapEnabled: widget.tuning.snapEnabled,
       rotaryActive: widget.active,
+      horizontalInset: widget.tuning.tallSideInset,
       elements: [
         for (var row = 0; row < rows; row++)
           FocusElement(
@@ -657,13 +658,16 @@ class _NotesPageState extends State<_NotesPage> {
       falloffRows: widget.tuning.falloffRows,
       snapEnabled: widget.tuning.snapEnabled,
       rotaryActive: widget.active,
+      horizontalInset: widget.tuning.tallSideInset,
       elements: [
         for (final note in protoNotes)
           FocusElement(
             extent: 72,
-            builder: (context, d) => Center(
+            builder: (context, d) => Padding(
+              padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
               child: SizedBox(
                 height: 66,
+                width: double.infinity,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: Color.lerp(

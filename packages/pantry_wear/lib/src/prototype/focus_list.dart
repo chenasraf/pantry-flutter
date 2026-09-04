@@ -94,6 +94,16 @@ class SnapFocusList extends StatefulWidget {
   /// Only the page being looked at may steer from the crown.
   final bool rotaryActive;
 
+  /// Fraction of the width held back at each side, applied to every row
+  /// including the focused one.
+  ///
+  /// The falloff's width factor is 1.0 on the centre line, so without this the
+  /// focused row runs to the glass. A short pill nearly gets away with it — at
+  /// the centre line a circle is at its widest — but a tall row's corners sit
+  /// well above and below that line, where the circle has already narrowed,
+  /// and the bezel shaves them.
+  final double horizontalInset;
+
   /// Updated on every scroll frame. The rail listens to it.
   final ValueNotifier<FocusGeometry>? geometry;
 
@@ -106,6 +116,7 @@ class SnapFocusList extends StatefulWidget {
     this.snapEnabled = true,
     this.useWheel = false,
     this.rotaryActive = false,
+    this.horizontalInset = 0.04,
     this.geometry,
   });
 
@@ -292,59 +303,62 @@ class SnapFocusListState extends State<SnapFocusList> {
         final falloff = widget.falloffRows * widget.itemExtent;
         final lead = math.max(0.0, h / 2 - widget.itemExtent / 2);
 
-        return NotificationListener<ScrollNotification>(
-          onNotification: (_) {
-            _publish();
-            return false;
-          },
-          child: CustomScrollView(
-            controller: widget.controller,
-            physics: widget.snapEnabled
-                ? _SnapPhysics(
-                    targets: () => _snapTargets,
-                    parent: const AlwaysScrollableScrollPhysics(
+        return Padding(
+          padding: EdgeInsetsDirectional.symmetric(
+            horizontal: constraints.maxWidth * widget.horizontalInset,
+          ),
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (_) {
+              _publish();
+              return false;
+            },
+            child: CustomScrollView(
+              controller: widget.controller,
+              physics: widget.snapEnabled
+                  ? _SnapPhysics(
+                      targets: () => _snapTargets,
+                      parent: const AlwaysScrollableScrollPhysics(
+                        parent: ClampingScrollPhysics(),
+                      ),
+                    )
+                  : const AlwaysScrollableScrollPhysics(
                       parent: ClampingScrollPhysics(),
                     ),
-                  )
-                : const AlwaysScrollableScrollPhysics(
-                    parent: ClampingScrollPhysics(),
-                  ),
-            slivers: [
-              SliverToBoxAdapter(child: SizedBox(height: lead)),
-              SliverList(
-                delegate: SliverChildBuilderDelegate((context, i) {
-                  final e = widget.elements[i];
-                  return SizedBox(
-                    height: e.extent,
-                    child: AnimatedBuilder(
-                      animation: widget.controller,
-                      builder: (context, _) {
-                        final centre = widget.controller.hasClients
-                            ? widget.controller.offset + h / 2
-                            : h / 2;
-                        final rowCentre = _tops[i] + e.extent / 2;
-                        final d = ((rowCentre - centre).abs() / falloff).clamp(
-                          0.0,
-                          1.0,
-                        );
-                        // A header neither grows nor shrinks: it is chrome
-                        // passing through, not a candidate for the focus.
-                        if (e.isHeader) return e.builder(context, d);
-                        final g = railFocusCurve(d);
-                        return FractionallySizedBox(
-                          widthFactor: g.widthFactor,
-                          child: Transform.scale(
-                            scale: g.scale,
-                            child: e.builder(context, d),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }, childCount: widget.elements.length),
-              ),
-              SliverToBoxAdapter(child: SizedBox(height: lead)),
-            ],
+              slivers: [
+                SliverToBoxAdapter(child: SizedBox(height: lead)),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate((context, i) {
+                    final e = widget.elements[i];
+                    return SizedBox(
+                      height: e.extent,
+                      child: AnimatedBuilder(
+                        animation: widget.controller,
+                        builder: (context, _) {
+                          final centre = widget.controller.hasClients
+                              ? widget.controller.offset + h / 2
+                              : h / 2;
+                          final rowCentre = _tops[i] + e.extent / 2;
+                          final d = ((rowCentre - centre).abs() / falloff)
+                              .clamp(0.0, 1.0);
+                          // A header neither grows nor shrinks: it is chrome
+                          // passing through, not a candidate for the focus.
+                          if (e.isHeader) return e.builder(context, d);
+                          final g = railFocusCurve(d);
+                          return FractionallySizedBox(
+                            widthFactor: g.widthFactor,
+                            child: Transform.scale(
+                              scale: g.scale,
+                              child: e.builder(context, d),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }, childCount: widget.elements.length),
+                ),
+                SliverToBoxAdapter(child: SizedBox(height: lead)),
+              ],
+            ),
           ),
         );
       },

@@ -39,6 +39,12 @@ class ProtoTuning extends ChangeNotifier {
   /// reads as flicker under a fast rotary spin.
   bool expandCentre = true;
 
+  /// Fraction of the width held back at each side of a list. Photos and notes
+  /// are taller than a checklist row, so they sit further from the centre line
+  /// where a round screen is narrower, and want more of it.
+  double sideInset = 0.04;
+  double tallSideInset = 0.08;
+
   GroupBy groupBy = GroupBy.category;
 
   /// Mirrored here rather than held only by the harness so the tuning page

@@ -318,6 +318,7 @@ class ChecklistPageState extends State<ChecklistPage>
       snapEnabled: widget.tuning.snapEnabled,
       useWheel: widget.tuning.useWheel,
       rotaryActive: widget.active,
+      horizontalInset: widget.tuning.sideInset,
       geometry: widget.geometry,
     );
   }
