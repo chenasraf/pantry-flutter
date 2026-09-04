@@ -254,6 +254,11 @@ const protoChecklistItems = <ProtoChecklistItem>[
 const protoHouseName = 'Home';
 const protoListTitle = 'Groceries';
 
+/// A list carries its own icon and colour, the same as a category or a store,
+/// so the rail names it in its own livery rather than as plain text.
+const protoListIconKey = 'cart';
+const protoListColor = Color(0xFF8FB8E0);
+
 /// The store a live session is standing in. Switching between stores is card
 /// 718's, so the prototype stands in one store and never advances.
 const protoSessionStore = 'Shufersal';

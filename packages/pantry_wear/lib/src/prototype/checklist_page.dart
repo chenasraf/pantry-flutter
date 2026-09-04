@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
@@ -622,8 +623,9 @@ class _MetaLine extends StatelessWidget {
     if (groupBy != GroupBy.category) {
       chip(
         'category',
-        _WatchChip(
-          color: item.category.color,
+        EntityChip(
+          density: ChipDensity.dense,
+          textColor: item.category.color,
           label: item.category.name,
           leading: Container(
             width: 6,
@@ -640,8 +642,9 @@ class _MetaLine extends StatelessWidget {
       final tint = protoStoreColors[item.store] ?? neutral;
       chip(
         'store',
-        _WatchChip(
-          color: tint,
+        EntityChip(
+          density: ChipDensity.dense,
+          textColor: tint,
           label: item.store,
           leading: Icon(
             storeIcon(protoStoreIcons[item.store]),
@@ -652,16 +655,31 @@ class _MetaLine extends StatelessWidget {
       );
     }
     if (item.qty != null) {
-      chip('quantity', _WatchChip(color: neutral, label: item.qty!));
+      chip(
+        'quantity',
+        EntityChip(
+          density: ChipDensity.dense,
+          textColor: neutral,
+          label: item.qty!,
+        ),
+      );
     }
     if (item.price != null) {
-      chip('price', _WatchChip(color: neutral, label: item.price!));
+      chip(
+        'price',
+        EntityChip(
+          density: ChipDensity.dense,
+          textColor: neutral,
+          label: item.price!,
+        ),
+      );
     }
     if (item.note != null) {
       chip(
         'note',
-        _WatchChip(
-          color: neutral,
+        EntityChip(
+          density: ChipDensity.dense,
+          textColor: neutral,
           leading: const Icon(
             Icons.sticky_note_2_outlined,
             size: 9,
@@ -673,8 +691,9 @@ class _MetaLine extends StatelessWidget {
     if (item.recurring) {
       chip(
         'recurring',
-        _WatchChip(
-          color: neutral,
+        EntityChip(
+          density: ChipDensity.dense,
+          textColor: neutral,
           leading: const Icon(Icons.repeat, size: 9, color: Color(0xFFB6B6BE)),
         ),
       );
@@ -688,56 +707,6 @@ class _MetaLine extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         physics: const NeverScrollableScrollPhysics(),
         child: Row(mainAxisSize: MainAxisSize.min, children: parts),
-      ),
-    );
-  }
-}
-
-/// The phone's chip, denser. `lib/views/checklists/` is app code and
-/// `pantry_wear` cannot import it, so the shape is matched rather than shared:
-/// leading glyph and label in the entity's colour over that colour at low
-/// alpha. An absent label makes it an icon-only badge, exactly as on the phone.
-class _WatchChip extends StatelessWidget {
-  final Color color;
-  final String? label;
-  final Widget? leading;
-
-  const _WatchChip({required this.color, this.label, this.leading});
-
-  @override
-  Widget build(BuildContext context) {
-    final hasLabel = label != null;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.16),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Padding(
-        padding: EdgeInsetsDirectional.symmetric(
-          horizontal: hasLabel ? 5 : 4,
-          vertical: 2,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (leading != null) ...[
-              leading!,
-              if (hasLabel) const SizedBox(width: 4),
-            ],
-            if (hasLabel)
-              Text(
-                label!,
-                maxLines: 1,
-                textDirection: detectTextDirection(label!),
-                style: TextStyle(
-                  color: color,
-                  fontSize: 9,
-                  height: 1.1,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-          ],
-        ),
       ),
     );
   }

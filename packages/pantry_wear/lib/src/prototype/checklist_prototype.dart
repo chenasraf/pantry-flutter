@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
@@ -243,6 +245,15 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
                               title: _mode == ChecklistMode.session
                                   ? protoSessionStore
                                   : protoListTitle,
+                              titleIcon: _mode == ChecklistMode.session
+                                  ? storeIcon(
+                                      protoStoreIcons[protoSessionStore],
+                                    )
+                                  : checklistIcon(protoListIconKey),
+                              titleColor: _mode == ChecklistMode.session
+                                  ? (protoStoreColors[protoSessionStore] ??
+                                        protoListColor)
+                                  : protoListColor,
                               group: _page == _checklistIndex
                                   ? geometry.stickyGroup
                                   : null,
@@ -289,6 +300,8 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
 /// [push] is the next header arriving and shouldering the current label out.
 class _Rail extends StatelessWidget {
   final String title;
+  final IconData titleIcon;
+  final Color titleColor;
   final String? group;
   final IconData? groupIcon;
   final Color? groupColor;
@@ -300,6 +313,8 @@ class _Rail extends StatelessWidget {
 
   const _Rail({
     required this.title,
+    required this.titleIcon,
+    required this.titleColor,
     required this.group,
     required this.groupIcon,
     required this.groupColor,
@@ -349,15 +364,17 @@ class _Rail extends StatelessWidget {
                     ),
                   ),
                 const SizedBox(width: 6),
+                Icon(titleIcon, size: 12, color: titleColor),
+                const SizedBox(width: 4),
                 Flexible(
                   child: Text(
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textDirection: detectTextDirection(title),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: Colors.white70,
+                      color: titleColor,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

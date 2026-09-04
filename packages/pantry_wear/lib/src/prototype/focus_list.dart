@@ -439,8 +439,9 @@ class _SnapPhysics extends ScrollPhysics {
     ScrollMetrics position,
     double velocity,
   ) {
-    if (targets.isEmpty)
+    if (targets.isEmpty) {
       return super.createBallisticSimulation(position, velocity);
+    }
     // Out of range at either end: let the parent haul it back first.
     if (position.outOfRange) {
       return super.createBallisticSimulation(position, velocity);
