@@ -10,6 +10,7 @@ import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
@@ -22,6 +23,11 @@ import '../widgets/wear_metrics.dart';
 /// Browsing a list, or walking a trip. A live session is a different pager,
 /// not a mode of one page, so this is what the shell swaps its sections on.
 enum ChecklistMode { browse, session }
+
+/// What a group of rows has in common. Both wear the entity's own icon and
+/// colour, and the chip naming whichever one is in force is dropped from the
+/// row — the header is already saying it.
+enum ChecklistGrouping { category, store }
 
 /// Everything the checklists page draws, and every write it makes.
 ///
@@ -47,7 +53,9 @@ class ChecklistsController extends ChangeNotifier {
     List<Category> categories = const [],
     List<Store> stores = const [],
     ShoppingSession? session,
+    String itemSort = 'custom',
   }) {
+    _itemSort = itemSort;
     _houseId = houseId;
     _list = list;
     _lists = lists;
@@ -102,6 +110,32 @@ class ChecklistsController extends ChangeNotifier {
 
   Map<int, Category> _categories = const {};
   Map<int, Store> _stores = const {};
+
+  /// The house's own sort preferences, which are house data rather than device
+  /// settings — they come down with the house and mean the same thing on the
+  /// phone, the web app and here.
+  String _itemSort = 'custom';
+  String _categorySort = 'custom';
+  String _storeSort = 'name_asc';
+
+  /// What the list is bucketed by. The house's item sort decides it, exactly as
+  /// on the phone — except in a session, which never groups by store because
+  /// the store it is standing in is already named in the rail.
+  ///
+  /// The `store-sort` capability is deliberately not consulted: it gates the
+  /// picker that *sets* the pref, and the watch has no picker. A house whose
+  /// pref already says `store` is grouped by store, the same way the phone
+  /// renders it.
+  ChecklistGrouping get grouping =>
+      _itemSort == 'store' && mode == ChecklistMode.browse
+      ? ChecklistGrouping.store
+      : ChecklistGrouping.category;
+
+  List<Category> get sortedCategories =>
+      CategoryService.sortCategories(_categories.values, _categorySort);
+
+  List<Store> get sortedStores =>
+      StoreService.sortStores(_stores.values, _storeSort);
 
   Category? categoryOf(ListItem item) => _categories[item.categoryId];
 
@@ -222,6 +256,7 @@ class ChecklistsController extends ChangeNotifier {
       for (final s in StoreService.instance.getCached(house) ?? const [])
         s.id: s,
     };
+    _restoreHousePrefs(house);
     _lists = _checklists.getCachedLists(house) ?? const [];
     if (_session == null) {
       final listId = await _scope.resolveList(_lists) ?? _scope.listId;
@@ -230,6 +265,31 @@ class ChecklistsController extends ChangeNotifier {
     }
     _loading = false;
     _emit();
+  }
+
+  /// The house's sort prefs as the phone last cached them, under the phone's
+  /// own keys — one house pref, one cached answer, whichever device fetched it.
+  void _restoreHousePrefs(int house) {
+    final cache = _checklists.cache;
+    _itemSort = cache.get<String>('sortBy:$house') ?? _itemSort;
+    _categorySort = cache.get<String>('categorySort:$house') ?? _categorySort;
+    _storeSort = cache.get<String>('storeSort:$house') ?? _storeSort;
+  }
+
+  /// House prefs are never fatal: a failed read leaves the cached answer in
+  /// place, and the list keeps the grouping it already had.
+  Future<void> _refreshHousePrefs(int house) async {
+    try {
+      final prefs = await _checklists.getHousePrefs(house);
+      ServerVersionService.instance.observeHousePrefs(prefs);
+      _itemSort = prefs['checklistItemSort'] as String? ?? 'custom';
+      _categorySort = prefs['categorySort'] as String? ?? 'custom';
+      _storeSort = prefs['storeSort'] as String? ?? 'name_asc';
+      final cache = _checklists.cache;
+      cache.set('sortBy:$house', _itemSort);
+      cache.set('categorySort:$house', _categorySort);
+      cache.set('storeSort:$house', _storeSort);
+    } catch (_) {}
   }
 
   ChecklistList? _listFor(int? id, int house) {
@@ -312,6 +372,7 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> _loadReferenceSets() async {
     final house = _houseId;
     if (house == null) return;
+    await _refreshHousePrefs(house);
     try {
       final categories = await CategoryService.instance.getCategories(house);
       _categories = {for (final c in categories) c.id: c};

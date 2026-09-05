@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
-import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/item_chip.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
@@ -56,10 +56,6 @@ class ChecklistsPageState extends State<ChecklistsPage>
   /// Checks that have fired but not yet run out their undo window, keyed by
   /// item id. The controller drives the border stroke and the clock.
   final _pending = <int, AnimationController>{};
-
-  /// Items in the order [_elements] emitted them, with nulls where headers
-  /// sit, so a tap can tell whether the card it hit is the focused one.
-  List<ListItem?> _flat = const [];
 
   var _doneCollapsed = true;
 
@@ -152,22 +148,24 @@ class ChecklistsPageState extends State<ChecklistsPage>
     );
   }
 
-  void _onCardTap(ListItem item) {
-    if (_scrollTo(item)) return;
+  void _onCardTap(ListItem item, int index) {
+    if (_scrollTo(index)) return;
     _tapCentred(item);
   }
 
-  void _onCardLongPress(ListItem item) {
-    if (_scrollTo(item)) return;
+  void _onCardLongPress(ListItem item, int index) {
+    if (_scrollTo(index)) return;
     unawaited(_openDetail(item));
   }
 
   /// Brings an off-centre card to the centre line and reports that it did, so
   /// the gesture stops there rather than acting on a row the wearer was only
   /// aiming at.
-  bool _scrollTo(ListItem item) {
-    final index = _flat.indexWhere((i) => i?.id == item.id);
-    if (index < 0 || index == widget.geometry.value.centredIndex) return false;
+  ///
+  /// The row's own index, not its item's: grouping by store repeats an item in
+  /// every store it belongs to, so an id names several rows.
+  bool _scrollTo(int index) {
+    if (index == widget.geometry.value.centredIndex) return false;
     _listKey.currentState?.centreOn(index);
     return true;
   }
@@ -179,7 +177,6 @@ class ChecklistsPageState extends State<ChecklistsPage>
   List<FocusElement> _elements() {
     final controller = widget.controller;
     final elements = <FocusElement>[];
-    final flat = <ListItem?>[];
 
     void addItems(
       List<ListItem> items, {
@@ -188,7 +185,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
       Color? color,
     }) {
       for (final item in items) {
-        flat.add(item);
+        final index = elements.length;
         elements.add(
           FocusElement(
             extent: WearMetrics.itemExtent,
@@ -200,8 +197,8 @@ class ChecklistsPageState extends State<ChecklistsPage>
               d: d,
               controller: controller,
               pending: _pending[item.id],
-              onTap: () => _onCardTap(item),
-              onLongPress: () => _onCardLongPress(item),
+              onTap: () => _onCardTap(item, index),
+              onLongPress: () => _onCardLongPress(item, index),
             ),
           ),
         );
@@ -215,7 +212,6 @@ class ChecklistsPageState extends State<ChecklistsPage>
       Widget? trailing,
       VoidCallback? onTap,
     }) {
-      flat.add(null);
       elements.add(
         FocusElement(
           extent: WearMetrics.headerExtent,
@@ -267,40 +263,102 @@ class ChecklistsPageState extends State<ChecklistsPage>
       }
     }
 
-    _flat = flat;
     return elements;
   }
 
   /// Items bucketed by category, categories in their own sort order and
   /// uncategorised last — the phone's grouping, with the header carrying the
   /// category's icon and colour.
-  List<_Group> _groups(List<ListItem> items, ChecklistsController controller) {
+  List<_Group> _groups(List<ListItem> items, ChecklistsController controller) =>
+      controller.grouping == ChecklistGrouping.store
+      ? _storeGroups(items, controller)
+      : _categoryGroups(items, controller);
+
+  /// Categories in the house's own order, uncategorised last, each item in
+  /// exactly one bucket.
+  List<_Group> _categoryGroups(
+    List<ListItem> items,
+    ChecklistsController controller,
+  ) {
     final buckets = <int?, List<ListItem>>{};
     for (final item in items) {
       buckets.putIfAbsent(item.categoryId, () => []).add(item);
     }
-    final keys = buckets.keys.toList()
-      ..sort((a, b) {
-        final ca = controller.categoryOf(_first(buckets[a]!));
-        final cb = controller.categoryOf(_first(buckets[b]!));
-        if (ca == null) return cb == null ? 0 : 1;
-        if (cb == null) return -1;
-        return ca.sortOrder.compareTo(cb.sortOrder);
-      });
-    return [
-      for (final key in keys)
-        _group(controller.categoryOf(_first(buckets[key]!)), buckets[key]!),
-    ];
+    final groups = <_Group>[];
+    for (final category in controller.sortedCategories) {
+      final bucket = buckets.remove(category.id);
+      if (bucket == null) continue;
+      groups.add(
+        _Group(
+          label: category.name,
+          icon: categoryIcon(category.icon),
+          color: parseHexColor(category.color) ?? Colors.white54,
+          items: bucket..sort(_byOrder),
+        ),
+      );
+    }
+    // Whatever is left names a category this house no longer has, which reads
+    // the same way to a wearer as having none.
+    final uncategorised = [for (final bucket in buckets.values) ...bucket];
+    if (uncategorised.isNotEmpty) {
+      groups.add(
+        _Group(
+          label: m.checklists.filters.noCategory,
+          icon: defaultCategoryIcon,
+          color: Colors.white54,
+          items: uncategorised..sort(_byOrder),
+        ),
+      );
+    }
+    return groups;
   }
 
-  ListItem _first(List<ListItem> items) => items.first;
+  /// Stores in the house's own order, unassigned last. An item belonging to
+  /// several stores appears under **each** of them — the phone's rule, and the
+  /// only one that answers "what do I pick up here" at every stop.
+  List<_Group> _storeGroups(
+    List<ListItem> items,
+    ChecklistsController controller,
+  ) {
+    final stores = controller.sortedStores;
+    final known = {for (final s in stores) s.id};
+    final groups = <_Group>[];
+    for (final store in stores) {
+      final bucket = [
+        for (final item in items)
+          if (item.storeIds.contains(store.id)) item,
+      ]..sort(_byOrder);
+      if (bucket.isEmpty) continue;
+      groups.add(
+        _Group(
+          label: store.name,
+          icon: storeIcon(store.icon),
+          color: parseHexColor(store.color) ?? Colors.white54,
+          items: bucket,
+        ),
+      );
+    }
+    final unassigned = [
+      for (final item in items)
+        if (!item.storeIds.any(known.contains)) item,
+    ]..sort(_byOrder);
+    if (unassigned.isNotEmpty) {
+      groups.add(
+        _Group(
+          label: m.checklists.noStore,
+          icon: EntityIcons.store,
+          color: Colors.white54,
+          items: unassigned,
+        ),
+      );
+    }
+    return groups;
+  }
 
-  _Group _group(Category? category, List<ListItem> items) => _Group(
-    label: category?.name ?? m.checklists.filters.noCategory,
-    icon: category == null ? defaultCategoryIcon : categoryIcon(category.icon),
-    color: parseHexColor(category?.color) ?? Colors.white54,
-    items: items,
-  );
+  int _byOrder(ListItem a, ListItem b) {
+    final c = a.sortOrder.compareTo(b.sortOrder);
+    return c != 0 ? c : a.name.toLowerCase().compareTo(b.name.toLowerCase());
+  }
 
   /// Nothing to draw has three causes, and only one of them is an empty list.
   String _emptyMessage(ChecklistsController controller) {
@@ -562,8 +620,9 @@ class _ItemCard extends StatelessWidget {
 /// The second line the centre card earns.
 ///
 /// Chips are filtered by `hiddenItemChips`, which the phone seeds once at
-/// pairing and never overrides — and by what the grouping already says: the
-/// category chip repeats its own header, so it never draws here.
+/// pairing and never overrides — and by what the grouping already says:
+/// whichever chip names the current grouping repeats its own header, so it is
+/// the one chip that never draws.
 class _MetaLine extends StatelessWidget {
   final ListItem item;
   final ChecklistsController controller;
@@ -574,6 +633,7 @@ class _MetaLine extends StatelessWidget {
   Widget build(BuildContext context) {
     const neutral = Color(0xFFB6B6BE);
     final prefs = PrefsService.instance;
+    final grouping = controller.grouping;
     final parts = <Widget>[];
 
     void chip(ItemChipKind kind, Widget child) {
@@ -582,8 +642,22 @@ class _MetaLine extends StatelessWidget {
       parts.add(child);
     }
 
+    final category = controller.categoryOf(item);
+    if (grouping != ChecklistGrouping.category && category != null) {
+      final tint = parseHexColor(category.color) ?? neutral;
+      chip(
+        ItemChipKind.category,
+        EntityChip(
+          density: ChipDensity.dense,
+          textColor: tint,
+          label: category.name,
+          leading: Icon(categoryIcon(category.icon), size: 9, color: tint),
+        ),
+      );
+    }
+
     final store = controller.storeOf(item);
-    if (store != null) {
+    if (grouping != ChecklistGrouping.store && store != null) {
       final tint = parseHexColor(store.color) ?? neutral;
       chip(
         ItemChipKind.store,
