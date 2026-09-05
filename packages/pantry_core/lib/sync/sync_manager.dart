@@ -9,6 +9,7 @@ import 'package:pantry_core/sync/sync_executor.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/sync/sync_queue.dart';
+import 'package:pantry_core/utils/markdown_list.dart';
 
 enum SyncStatus { idle, syncing, offline, error }
 
@@ -283,6 +284,37 @@ class SyncManager {
       if (raw.op != SyncOpKind.delete) continue;
       final id = raw.entityId;
       if (id != null) out.add(id);
+    }
+    return out;
+  }
+
+  /// [content] with every still-queued task-line write for note [noteId] laid
+  /// back over it.
+  ///
+  /// A note body is a document the server rewrites at drain rather than a
+  /// field the op replaces, so a fetched snapshot is only right once what is
+  /// still queued has been re-applied to it — otherwise a poll landing between
+  /// a tick and its drain draws the line the way it was before the tick. Ops
+  /// name their line by ordinal *and* text and are replayed in queue order, so
+  /// the overlay lands on the same line the drain will.
+  String? pendingNoteContent(int houseId, int noteId, String? content) {
+    if (content == null) return null;
+    var out = content;
+    for (final raw in _queue.all()) {
+      if (raw.entity != SyncEntity.note) continue;
+      if (raw.op != SyncOpKind.toggle) continue;
+      if (raw.houseId != houseId) continue;
+      final op = _remap.rewrite(raw);
+      if (op.effectiveEntityId != noteId && raw.tempEntityId != noteId) {
+        continue;
+      }
+      final ordinal = op.body['ordinal'] as int?;
+      final text = op.body['text'] as String?;
+      final checked = op.body['checked'] as bool?;
+      if (ordinal == null || text == null || checked == null) continue;
+      final target = resolveTaskLine(out, ordinal: ordinal, text: text);
+      if (target == null) continue;
+      out = setChecklistItem(out, target, checked);
     }
     return out;
   }

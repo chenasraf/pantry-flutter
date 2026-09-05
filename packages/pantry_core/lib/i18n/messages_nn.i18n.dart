@@ -5340,6 +5340,16 @@ class WearMessagesNn extends WearMessages {
   String get nothingRemoved => """Ingenting er fjerna""";
 
   /// ```dart
+  /// "$count igjen"
+  /// ```
+  String tasksLeft(int count) => """$count igjen""";
+
+  /// ```dart
+  /// "Alt er gjort"
+  /// ```
+  String get allTasksDone => """Alt er gjort""";
+
+  /// ```dart
   /// "Ingen lister her enno"
   /// ```
   String get noLists => """Ingen lister her enno""";
@@ -6502,6 +6512,7 @@ Passord: pantry""",
   """wear.openOnPhoneFailed""": """Fekk ikkje kontakt med telefonen""",
   """wear.nothingToCheckOff""": """Ingenting å krysse av""",
   """wear.nothingRemoved""": """Ingenting er fjerna""",
+  """wear.allTasksDone""": """Alt er gjort""",
   """wear.noLists""": """Ingen lister her enno""",
   """wear.setupTitle""": """Set opp Pantry""",
   """wear.setupBody""": """Logg inn frå telefonen — ingenting å skrive her.""",

@@ -1029,6 +1029,8 @@ wear:
   queued(int count): "$count ממתינים"
   nothingToCheckOff: אין מה לסמן
   nothingRemoved: לא הוסר דבר
+  tasksLeft(int count): "נותרו $count"
+  allTasksDone: הכול הושלם
   noLists: אין כאן רשימות עדיין
   setupTitle: הגדרת Pantry
   setupBody: ההתחברות נעשית מהטלפון — אין מה להקליד כאן.

@@ -14,8 +14,8 @@ import '../checklists/checklists_controller.dart';
 import '../checklists/checklists_page.dart';
 import '../checklists/list_switcher_page.dart';
 import '../photos/photos_page.dart';
+import '../notes/notes_page.dart';
 import '../prototype/degraded_proto.dart';
-import '../prototype/notes_page.dart';
 import '../prototype/proto_tuning.dart';
 import '../services/wear_deep_link.dart';
 import '../wear_shape.dart';
@@ -187,7 +187,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
       ? [
           _checklists(),
           PhotosPage(active: _isActive(1)),
-          NotesPage(tuning: _skeletonTuning, active: _isActive(2)),
+          NotesPage(active: _isActive(2), onNotice: _showNotice),
           AccountPage(tuning: _skeletonTuning),
         ]
       : [

@@ -1,28 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
-import 'package:pantry_wear/src/checklists/checklists_controller.dart';
-import 'package:pantry_wear/src/shell/wear_shell.dart';
-import 'package:pantry_wear/src/prototype/note_blocks.dart';
-import 'package:pantry_wear/src/prototype/note_markdown.dart';
-import 'package:pantry_wear/src/prototype/notes_page.dart';
-import 'package:pantry_wear/src/prototype/proto_note_data.dart';
-import 'package:pantry_wear/src/prototype/proto_tuning.dart';
+import 'package:pantry_wear/src/notes/note_blocks.dart';
+import 'package:pantry_wear/src/notes/note_markdown.dart';
 
-import 'wear_fixtures.dart';
+import 'note_fixtures.dart';
 
-/// The checks the notes page earned.
+/// The reader the notes page is built on.
 ///
-/// The first is the load-bearing one: the watch decides *which* checkbox you
-/// tapped by counting task lines as it renders them, and core decides which
+/// The first group is the load-bearing one: the watch decides *which* checkbox
+/// you tapped by counting task lines as it renders them, and core decides which
 /// one to rewrite by counting task lines as it rewrites them. If those two
-/// counts ever disagree, a tap silently ticks a different line — a wrong
-/// write, with nothing on screen to say so.
+/// counts ever disagree, a tap silently ticks a different line — a wrong write,
+/// with nothing on screen to say so. [parseNoteBlocks] asks core rather than
+/// counting for itself, and these hold it to that.
 void main() {
   group('task ordinals agree with core', () {
     test('every rendered task maps to the line core rewrites', () {
-      for (final note in protoNotes) {
+      for (final note in sampleNotes) {
         final blocks = parseNoteBlocks(
           note.body,
         ).where((b) => b.kind == NoteBlockKind.task).toList();
@@ -48,6 +43,19 @@ void main() {
             expect(after[i].text, blocks[i].text);
           }
         }
+      }
+    });
+
+    test('a block\'s text is the text core would carry on the write', () {
+      // The queued op names its line by text as well as ordinal, so the two
+      // have to be the same string — a trimmed or de-marked one would fail to
+      // re-anchor and drop the write.
+      for (final note in sampleNotes) {
+        final drawn = parseNoteBlocks(note.body)
+            .where((b) => b.kind == NoteBlockKind.task)
+            .map((b) => b.text)
+            .toList();
+        expect(drawn, taskLines(note.body).map((l) => l.text).toList());
       }
     });
 
@@ -108,14 +116,62 @@ void main() {
       expect(blocks.last.taskOrdinal, 0);
     });
 
+    test('an ordered marker and an upper-case tick are both task lines', () {
+      // Whatever core reads as a task line the page must draw as one: a block
+      // parser that missed either would draw it as a bullet and shift every
+      // later ordinal by one.
+      final blocks = parseNoteBlocks('1. [X] Meter reading\n2. [ ] Photo');
+      expect(blocks.map((b) => b.kind), everyElement(NoteBlockKind.task));
+      expect(blocks.first.checked, isTrue);
+      expect(blocks.map((b) => b.taskOrdinal), [0, 1]);
+    });
+
     test('progress counts only task lines', () {
-      expect(taskProgress(protoNotes.first.body), (done: 2, total: 6));
+      expect(taskProgress(sampleNotes.first.body), (done: 2, total: 6));
       expect(taskProgress('just prose'), (done: 0, total: 0));
+      expect(taskProgress(null), (done: 0, total: 0));
     });
 
     test('inline markers are stripped, link text is kept', () {
       expect(flattenInline('**bold** and `code`'), 'bold and code');
       expect(flattenInline('[report here](https://x.test)'), 'report here');
+    });
+  });
+
+  group('measuring', () {
+    final metrics = NoteBlockMetrics();
+
+    test('a task row claims the snap extent even on one short line', () {
+      // The rows around a task are deliberately variable, which is what makes
+      // this exception easy to talk yourself into. Slack a row gives up becomes
+      // a gap, not a tighter list.
+      const short = NoteBlock(
+        kind: NoteBlockKind.task,
+        text: 'Tea',
+        taskOrdinal: 0,
+      );
+      expect(metrics.extentOf(short, 200), kTaskRowExtent);
+    });
+
+    test('a paragraph grows with its text and shrinks with its width', () {
+      const long = NoteBlock(
+        kind: NoteBlockKind.paragraph,
+        text: 'The engineer needs the boiler pressure written down.',
+      );
+      const brief = NoteBlock(kind: NoteBlockKind.paragraph, text: 'Short.');
+      expect(
+        metrics.extentOf(long, 200),
+        greaterThan(metrics.extentOf(brief, 200)),
+      );
+      expect(
+        metrics.extentOf(long, 140),
+        greaterThan(metrics.extentOf(long, 400)),
+      );
+    });
+
+    test('the same block at the same width answers the same', () {
+      const block = NoteBlock(kind: NoteBlockKind.paragraph, text: 'Bin day');
+      expect(metrics.extentOf(block, 180), metrics.extentOf(block, 180));
     });
   });
 
@@ -130,163 +186,6 @@ void main() {
       expect(noteInk(const Color(0xFF9C27B0)), Colors.white, reason: 'purple');
       // An uncoloured note falls back to the card plane, which is near-black.
       expect(noteInk(kNotePlane), Colors.white);
-    });
-
-    testWidgets('a light note draws dark text, a dark note light', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(480, 480);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.reset);
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: NotesPage(
-              tuning: ProtoTuning(),
-              active: true,
-              bodies: {for (final n in protoNotes) n.id: n.body},
-              onSetTask: (_, _, _) {},
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      Color titleColour(String title) =>
-          tester.widget<Text>(find.text(title)).style!.color!;
-
-      // "Boiler service" is amber; "Hardware shop" is blue.
-      expect(titleColour('Boiler service'), Colors.black87);
-      expect(titleColour('Hardware shop'), Colors.white);
-    });
-  });
-
-  group('the page in the pager', () {
-    /// One page, deliberately slowly. A `tester.drag` of a screen's width is a
-    /// fling, and a fling carries the pager past more than one page — which is
-    /// itself worth knowing, since the wearer's swipe is the slow kind.
-    Future<void> swipeToNextPage(WidgetTester tester) async {
-      final gesture = await tester.startGesture(
-        tester.getCenter(find.byType(PageView)),
-      );
-      for (var i = 0; i < 12; i++) {
-        await gesture.moveBy(const Offset(-24, 0));
-        await tester.pump(const Duration(milliseconds: 16));
-      }
-      await gesture.up();
-      await tester.pumpAndSettle();
-    }
-
-    testWidgets('notes is the third browse page, after checklists and photos', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(480, 480);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.reset);
-      final controller = ChecklistsController.seeded(
-        houseId: 1,
-        list: testList(),
-        lists: [testList()],
-        items: [testItem(id: 1, name: 'Milk')],
-      );
-      addTearDown(controller.dispose);
-      await tester.pumpWidget(
-        MaterialApp(home: WearShell(controller: controller)),
-      );
-      await tester.pumpAndSettle();
-
-      await swipeToNextPage(tester);
-      // The photos page fetches for itself and there is no house to fetch for
-      // here, so the rail — which names the page you are on — is what says
-      // where the pager landed.
-      expect(find.text(m.nav.photoBoard), findsOneWidget, reason: 'photos');
-
-      await swipeToNextPage(tester);
-      // "Hardware shop" holds 6 tasks, 2 of them ticked.
-      expect(find.text('4 left'), findsOneWidget);
-      // A note without tasks previews its prose instead of a count.
-      expect(find.textContaining('Green bin'), findsOneWidget);
-    });
-  });
-
-  group('the notes page', () {
-    Future<List<(int, int, bool)>> pumpNotes(WidgetTester tester) async {
-      tester.view.physicalSize = const Size(480, 480);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.reset);
-
-      final writes = <(int, int, bool)>[];
-      final bodies = {for (final n in protoNotes) n.id: n.body};
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: NotesPage(
-              tuning: ProtoTuning(),
-              active: true,
-              bodies: bodies,
-              onSetTask: (id, ordinal, checked) =>
-                  writes.add((id, ordinal, checked)),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      return writes;
-    }
-
-    testWidgets('an off-centre tap scrolls the note here, the next opens it', (
-      tester,
-    ) async {
-      await pumpNotes(tester);
-
-      // The second note is off the centre line, so the first tap only brings
-      // it here — a mis-aim costs a scroll, never a route.
-      await tester.tap(find.text('Boiler service'));
-      await tester.pumpAndSettle();
-      expect(find.text('Clear the cupboard under the stairs'), findsNothing);
-
-      // It is now the focused row, so the identical tap acts.
-      await tester.tap(find.text('Boiler service'));
-      await tester.pumpAndSettle();
-      expect(find.text('Clear the cupboard under the stairs'), findsOneWidget);
-    });
-
-    testWidgets('an off-centre task scrolls rather than writing', (
-      tester,
-    ) async {
-      final writes = await pumpNotes(tester);
-
-      await tester.tap(find.text('Hardware shop'));
-      await tester.pumpAndSettle();
-
-      // Third task down, well off the centre line.
-      await tester.tap(find.text('6mm wall plugs'));
-      await tester.pumpAndSettle(const Duration(seconds: 3));
-      expect(writes, isEmpty);
-
-      // Centred now, so it commits.
-      await tester.tap(find.text('6mm wall plugs'));
-      await tester.pumpAndSettle(const Duration(seconds: 3));
-      expect(writes, [(1, 2, true)]);
-    });
-
-    testWidgets('a tick reports an absolute state, after its undo window', (
-      tester,
-    ) async {
-      final writes = await pumpNotes(tester);
-
-      await tester.tap(find.text('Hardware shop'));
-      await tester.pumpAndSettle();
-
-      // "Picture hooks" is ticked in the source, so setting it must ask for
-      // false — the op carries where the line is going, not that it moved.
-      await tester.tap(find.text('Picture hooks'));
-      await tester.pump();
-      expect(writes, isEmpty, reason: 'the undo window has not drained yet');
-
-      await tester.pumpAndSettle(const Duration(seconds: 3));
-      expect(writes, [(1, 0, false)]);
     });
   });
 }

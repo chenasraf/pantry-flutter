@@ -5316,6 +5316,16 @@ class WearMessagesHe extends WearMessages {
   String get nothingRemoved => """לא הוסר דבר""";
 
   /// ```dart
+  /// "נותרו $count"
+  /// ```
+  String tasksLeft(int count) => """נותרו $count""";
+
+  /// ```dart
+  /// "הכול הושלם"
+  /// ```
+  String get allTasksDone => """הכול הושלם""";
+
+  /// ```dart
   /// "אין כאן רשימות עדיין"
   /// ```
   String get noLists => """אין כאן רשימות עדיין""";
@@ -6435,6 +6445,7 @@ Map<String, String> get messagesHeMap => {
   """wear.openOnPhoneFailed""": """לא הצלחנו להגיע לטלפון שלך""",
   """wear.nothingToCheckOff""": """אין מה לסמן""",
   """wear.nothingRemoved""": """לא הוסר דבר""",
+  """wear.allTasksDone""": """הכול הושלם""",
   """wear.noLists""": """אין כאן רשימות עדיין""",
   """wear.setupTitle""": """הגדרת Pantry""",
   """wear.setupBody""": """ההתחברות נעשית מהטלפון — אין מה להקליד כאן.""",

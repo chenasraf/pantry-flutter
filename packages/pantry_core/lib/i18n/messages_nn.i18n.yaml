@@ -1173,6 +1173,8 @@ wear:
   queued(int count): "$count ventar"
   nothingToCheckOff: Ingenting å krysse av
   nothingRemoved: Ingenting er fjerna
+  tasksLeft(int count): "$count igjen"
+  allTasksDone: Alt er gjort
   noLists: Ingen lister her enno
   setupTitle: Set opp Pantry
   setupBody: Logg inn frå telefonen — ingenting å skrive her.

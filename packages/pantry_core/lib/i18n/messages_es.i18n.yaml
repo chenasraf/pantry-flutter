@@ -1029,6 +1029,8 @@ wear:
   queued(int count): "$count en espera"
   nothingToCheckOff: Nada que marcar
   nothingRemoved: No has quitado nada
+  tasksLeft(int count): "Quedan $count"
+  allTasksDone: Todo hecho
   noLists: Aún no hay listas aquí
   setupTitle: Configurar Pantry
   setupBody: "Inicia sesión desde tu teléfono: aquí no hay que escribir nada."

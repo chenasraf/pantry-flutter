@@ -5353,6 +5353,16 @@ class WearMessagesEs extends WearMessages {
   String get nothingRemoved => """No has quitado nada""";
 
   /// ```dart
+  /// "Quedan $count"
+  /// ```
+  String tasksLeft(int count) => """Quedan $count""";
+
+  /// ```dart
+  /// "Todo hecho"
+  /// ```
+  String get allTasksDone => """Todo hecho""";
+
+  /// ```dart
   /// "Aún no hay listas aquí"
   /// ```
   String get noLists => """Aún no hay listas aquí""";
@@ -6529,6 +6539,7 @@ Contraseña: pantry-rocks""",
   """wear.openOnPhoneFailed""": """No se pudo contactar con tu teléfono""",
   """wear.nothingToCheckOff""": """Nada que marcar""",
   """wear.nothingRemoved""": """No has quitado nada""",
+  """wear.allTasksDone""": """Todo hecho""",
   """wear.noLists""": """Aún no hay listas aquí""",
   """wear.setupTitle""": """Configurar Pantry""",
   """wear.setupBody""":

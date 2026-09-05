@@ -36,6 +36,13 @@ class WearMetrics {
   /// Between the two tiles in a photo row.
   static const double photoTileGap = 6;
 
+  /// A note on the wall. Taller than a checklist card because a card carries a
+  /// title over either a progress bar or two lines of preview.
+  static const double noteRowExtent = 72;
+
+  /// The drawn height of a note card, as opposed to the row extent it sits in.
+  static const double noteCardHeight = 66;
+
   /// The inset a photo row takes instead of [sideInset]. A tile is tall
   /// enough that its corners sit well above and below the centre line, where a
   /// round screen has already narrowed, so it wants more of the width held

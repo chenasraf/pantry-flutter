@@ -13,7 +13,16 @@ const kNotePlane = Color(0xFF17171A);
 Color noteInk(Color background) =>
     background.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
 
-/// PROTOTYPE — one markdown block, drawn at watch size.
+/// Metrics only — the colour is supplied per note. Kept const so the block
+/// measuring pass can lay text out without building a style per call.
+const noteBodyStyle = TextStyle(fontSize: 12, height: 1.32);
+
+const _headingStyle = TextStyle(fontSize: 14, height: 1.2);
+
+/// The extent a task row claims, however short its text.
+const kTaskRowExtent = 46.0;
+
+/// One markdown block, drawn at watch size.
 ///
 /// The note page is a focus list of these: prose blocks read as themselves and
 /// cannot be landed on, task rows carry the card treatment and commit on the
@@ -88,9 +97,74 @@ class NoteBlockView extends StatelessWidget {
   }
 }
 
-/// Metrics only — the colour is supplied per note. Kept const so the block
-/// measuring pass can lay text out without building a style per call.
-const noteBodyStyle = TextStyle(fontSize: 12, height: 1.32);
+/// The height each block needs at a given content width.
+///
+/// A cost the checklists page never paid: its rows were uniform by
+/// construction, where a paragraph's height is a function of its text and the
+/// width it gets. Measuring runs for every block on every rebuild, so the
+/// answers are held against `(text, width)` — the width is part of the key
+/// rather than a reason to invalidate, so a rotation or a shape change simply
+/// starts filling a second set.
+class NoteBlockMetrics {
+  final _heights = <_MetricKey, double>{};
+
+  /// Beyond this the map is holding answers for notes the wearer has long
+  /// since scrolled past. Nothing here is expensive to recompute.
+  static const _limit = 512;
+
+  double extentOf(NoteBlock block, double width) {
+    final key = _MetricKey(block.kind, block.text, block.level, width);
+    final held = _heights[key];
+    if (held != null) return held;
+
+    final style = block.kind == NoteBlockKind.heading
+        ? _headingStyle
+        : noteBodyStyle;
+    // Task and bullet rows lose width to their marker.
+    final indent =
+        block.kind == NoteBlockKind.task || block.kind == NoteBlockKind.bullet
+        ? 22.0 + 8.0 * block.level
+        : 0.0;
+    final painter = TextPainter(
+      text: TextSpan(text: flattenInline(block.text), style: style),
+      textDirection: detectTextDirection(block.text),
+      maxLines: 6,
+    )..layout(maxWidth: (width - indent).clamp(40.0, double.infinity));
+    final vertical = block.kind == NoteBlockKind.task ? 20.0 : 14.0;
+    // A task row claims the full snap extent even when its text is one short
+    // line: slack a row gives up becomes a gap, not a tighter list. The rows
+    // around it are deliberately variable, which is what makes this one easy
+    // to talk yourself out of.
+    final floor = block.kind == NoteBlockKind.task ? kTaskRowExtent : 24.0;
+    final extent = (painter.height + vertical).clamp(floor, 220.0);
+    painter.dispose();
+
+    if (_heights.length >= _limit) _heights.clear();
+    _heights[key] = extent;
+    return extent;
+  }
+}
+
+@immutable
+class _MetricKey {
+  final NoteBlockKind kind;
+  final String text;
+  final int level;
+  final double width;
+
+  const _MetricKey(this.kind, this.text, this.level, this.width);
+
+  @override
+  bool operator ==(Object other) =>
+      other is _MetricKey &&
+      other.kind == kind &&
+      other.text == text &&
+      other.level == level &&
+      other.width == width;
+
+  @override
+  int get hashCode => Object.hash(kind, text, level, width);
+}
 
 class _Dot extends StatelessWidget {
   final Color color;

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-/// PROTOTYPE — a watch-sized reader for the markdown a note body holds.
+import 'package:pantry_core/utils/markdown_list.dart';
+
+/// A watch-sized reader for the markdown a note body holds.
 ///
 /// The phone renders note bodies with `flutter_markdown_plus`, which draws
 /// tables, images, blockquotes, code fences and horizontal rules. None of
 /// those survive contact with a 450px circle, and the package is an app
-/// dependency rather than a core one — so this parser exists partly to read
-/// notes and partly to find out how much of markdown a watch actually owes a
-/// household note.
-///
-/// It covers headings, paragraphs, bullets, ordered items and task lines, and
-/// draws anything else as its own literal text rather than dropping it — a
+/// dependency rather than a core one — so the watch carries this instead: it
+/// covers headings, paragraphs, bullets, ordered items and task lines, and
+/// draws anything else as its own literal text rather than dropping it. A
 /// wearer seeing a stray `|` learns more than a wearer seeing a gap.
 enum NoteBlockKind { heading, paragraph, bullet, task, literal }
 
@@ -23,7 +22,7 @@ class NoteBlock {
   final int level;
 
   /// Position among the task lines of the document, counting only task lines,
-  /// in document order — the ordinal `toggleChecklistItem` addresses. Null on
+  /// in document order — the ordinal [setChecklistItem] addresses. Null on
   /// every non-task block.
   final int? taskOrdinal;
   final bool checked;
@@ -39,13 +38,20 @@ class NoteBlock {
 
 final _headingRe = RegExp(r'^(#{1,6})\s+(.*)$');
 final _listRe = RegExp(r'^(\s*)(?:[-*+]|\d+[.)])\s+(.+)$');
-final _taskRe = RegExp(r'^\[([ xX])\]\s*(.*)$');
 
 /// Split a markdown body into the blocks a watch draws.
 ///
 /// Consecutive prose lines join into one paragraph, the way markdown itself
 /// treats them — a note written on a desktop is hard-wrapped, and drawing each
 /// wrapped line as its own block would shred it.
+///
+/// What counts as a task line is core's answer, never a second regex here:
+/// [taskLines] holds no state across lines, so asking it about one line gives
+/// the same verdict it will give about that line when the queued write drains.
+/// The ordinal the page draws is then the ordinal core rewrites by
+/// construction. Two counters that merely agree today would disagree silently,
+/// and a disagreement is a write landing on the wrong line with nothing on
+/// screen to show it.
 List<NoteBlock> parseNoteBlocks(String body) {
   final out = <NoteBlock>[];
   final paragraph = <String>[];
@@ -79,31 +85,31 @@ List<NoteBlock> parseNoteBlocks(String body) {
       continue;
     }
 
+    final task = taskLines(line);
+    if (task.length == 1) {
+      flush();
+      out.add(
+        NoteBlock(
+          kind: NoteBlockKind.task,
+          text: task.single.text,
+          level: (line.length - line.trimLeft().length) ~/ 2,
+          taskOrdinal: taskCount++,
+          checked: task.single.checked,
+        ),
+      );
+      continue;
+    }
+
     final list = _listRe.firstMatch(line);
     if (list != null) {
       flush();
-      final indent = list.group(1)!.length;
-      final rest = list.group(2)!;
-      final task = _taskRe.firstMatch(rest);
-      if (task != null) {
-        out.add(
-          NoteBlock(
-            kind: NoteBlockKind.task,
-            text: task.group(2)!.trim(),
-            level: indent ~/ 2,
-            taskOrdinal: taskCount++,
-            checked: task.group(1)!.toLowerCase() == 'x',
-          ),
-        );
-      } else {
-        out.add(
-          NoteBlock(
-            kind: NoteBlockKind.bullet,
-            text: rest.trim(),
-            level: indent ~/ 2,
-          ),
-        );
-      }
+      out.add(
+        NoteBlock(
+          kind: NoteBlockKind.bullet,
+          text: list.group(2)!.trim(),
+          level: list.group(1)!.length ~/ 2,
+        ),
+      );
       continue;
     }
 
@@ -116,15 +122,14 @@ List<NoteBlock> parseNoteBlocks(String body) {
 /// How many task lines a body holds, and how many are ticked. Drives the wall
 /// card's progress, which is the whole point of the page once ticking is the
 /// only write.
-({int done, int total}) taskProgress(String body) {
+({int done, int total}) taskProgress(String? body) {
+  if (body == null) return (done: 0, total: 0);
+  final lines = taskLines(body);
   var done = 0;
-  var total = 0;
-  for (final b in parseNoteBlocks(body)) {
-    if (b.kind != NoteBlockKind.task) continue;
-    total++;
-    if (b.checked) done++;
+  for (final line in lines) {
+    if (line.checked) done++;
   }
-  return (done: done, total: total);
+  return (done: done, total: lines.length);
 }
 
 final _inlineRe = RegExp(

@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pantry_core/models/note.dart';
 
-/// PROTOTYPE — stand-in notes, shaped like the ones a household keeps.
+/// Sample notes, shaped like the ones a household keeps.
 ///
 /// Note bodies are **raw markdown**: that is what the server stores and what
 /// the Nextcloud web app co-edits. The phone's Quill editor is a view over
@@ -11,20 +12,21 @@ import 'package:flutter/material.dart';
 /// the three that break a naive design: a note whose tasks are interleaved
 /// with prose, a note far longer than the screen, and an RTL note.
 @immutable
-class ProtoNote {
+class SampleNote {
   final int id;
   final String title;
 
   /// Raw markdown, exactly as `Note.content` holds it.
   final String body;
 
-  /// The user's chosen note colour, as the phone stores it. The set is the
-  /// Material 500 palette `note_form_view.dart` offers, so the samples span
-  /// both ink branches: yellow and amber take dark text, the rest light.
-  final Color? color;
+  /// The user's chosen note colour, as the server stores it — a `#RRGGBB`
+  /// string. The set is the Material 500 palette `note_form_view.dart` offers,
+  /// so the samples span both ink branches: yellow and amber take dark text,
+  /// the rest light.
+  final String? color;
   final bool pinned;
 
-  const ProtoNote({
+  const SampleNote({
     required this.id,
     required this.title,
     required this.body,
@@ -33,13 +35,13 @@ class ProtoNote {
   });
 }
 
-const protoNotes = <ProtoNote>[
+const sampleNotes = <SampleNote>[
   // Pure task list — the case scope A is built for.
-  ProtoNote(
+  SampleNote(
     id: 1,
     title: 'Hardware shop',
     pinned: true,
-    color: Color(0xFF2196F3), // blue
+    color: '#2196F3', // blue
     body: '''
 - [x] Picture hooks
 - [ ] Masking tape
@@ -52,10 +54,10 @@ const protoNotes = <ProtoNote>[
 
   // Prose with tasks interleaved — the note that punishes any design which
   // lifts the checkboxes out into their own surface.
-  ProtoNote(
+  SampleNote(
     id: 2,
     title: 'Boiler service',
-    color: Color(0xFFFFC107), // amber — light enough to need dark ink
+    color: '#FFC107', // amber — light enough to need dark ink
     body: '''
 Engineer comes **Thursday between 8 and 12**. Someone has to be in.
 
@@ -71,10 +73,10 @@ gets here.
 
   // Formatting the watch has to render or flatten: headings, emphasis, a link,
   // a nested list, inline code.
-  ProtoNote(
+  SampleNote(
     id: 3,
     title: 'Bin day',
-    color: Color(0xFF4CAF50), // green
+    color: '#4CAF50', // green
     body: '''
 ## Collections
 
@@ -88,10 +90,10 @@ Missed collections: [report here](https://example.org/bins)
   ),
 
   // Long enough that reading is the problem, not ticking.
-  ProtoNote(
+  SampleNote(
     id: 4,
     title: 'House rules for sitters',
-    color: Color(0xFF9C27B0), // purple
+    color: '#9C27B0', // purple
     body: '''
 ## Cat
 
@@ -119,13 +121,13 @@ Call the letting agent, not the landlord. Number is in the drawer.
   ),
 
   // No body at all — the empty case a wall card still has to draw.
-  ProtoNote(id: 5, title: 'Spare key with Dana', body: ''),
+  SampleNote(id: 5, title: 'Spare key with Dana', body: ''),
 
   // RTL, with tasks, so direction is judged on both surfaces.
-  ProtoNote(
+  SampleNote(
     id: 6,
     title: 'פינוי אשפה',
-    color: Color(0xFFFFEB3B), // yellow — the lightest the palette offers
+    color: '#FFEB3B', // yellow — the lightest the palette offers
     body: '''
 שלישי בבוקר, לפני שבע.
 
@@ -134,4 +136,22 @@ Call the letting agent, not the landlord. Number is in the drawer.
 - [ ] לבדוק את קוד השער
 ''',
   ),
+];
+
+/// The sample as the app sees it: what the mirror lands and the wall draws.
+Note noteOf(SampleNote sample, {int houseId = 1}) => Note(
+  id: sample.id,
+  houseId: houseId,
+  title: sample.title,
+  content: sample.body,
+  color: sample.color,
+  createdBy: 'someone',
+  sortOrder: sample.id,
+  isPinned: sample.pinned,
+  createdAt: 0,
+  updatedAt: 0,
+);
+
+List<Note> sampleNoteRecords({int houseId = 1}) => [
+  for (final s in sampleNotes) noteOf(s, houseId: houseId),
 ];
