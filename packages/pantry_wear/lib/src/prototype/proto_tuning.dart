@@ -29,6 +29,13 @@ class ProtoTuning extends ChangeNotifier {
   /// row is the thing that was rejected.
   double headerExtent = 24;
 
+  /// A row of two photo tiles. Taller than a checklist card because a tile is
+  /// the content rather than a label for it.
+  double photoRowExtent = 88;
+
+  /// Between the two tiles in a photo row.
+  double tileGap = 6;
+
   /// Two lines on the centre card. Off is the free fallback if the expansion
   /// reads as flicker under a fast rotary spin.
   bool expandCentre = true;

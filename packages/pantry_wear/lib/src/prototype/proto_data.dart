@@ -45,24 +45,6 @@ const protoItems = <ProtoItem>[
   ProtoItem('Cat food', qty: '8 pouches'),
 ];
 
-@immutable
-class ProtoPhoto {
-  final String caption;
-  final Color a;
-  final Color b;
-
-  const ProtoPhoto(this.caption, this.a, this.b);
-}
-
-const protoPhotos = <ProtoPhoto>[
-  ProtoPhoto('Fridge shelf', Color(0xFF3A6EA5), Color(0xFF1B3A5C)),
-  ProtoPhoto('Receipt', Color(0xFF8E6A3A), Color(0xFF4A3620)),
-  ProtoPhoto('Paint colour', Color(0xFF4B7F52), Color(0xFF223A26)),
-  ProtoPhoto('Boiler dial', Color(0xFF7A4A6E), Color(0xFF3A2434)),
-  ProtoPhoto('Bike lock', Color(0xFF9A5A3A), Color(0xFF4A2A1B)),
-  ProtoPhoto('Spare key', Color(0xFF3A7A7A), Color(0xFF1C3B3B)),
-];
-
 /// The three states the shell has to show. The phone surfaces only a backlog
 /// or an error and stays silent on a clean flush; the watch has far less room
 /// to spend, so this is the set worth designing against.

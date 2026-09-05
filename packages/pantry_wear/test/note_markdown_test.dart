@@ -184,7 +184,13 @@ void main() {
       await tester.pumpAndSettle();
 
       await swipeToNextPage(tester);
-      expect(find.text('Fridge shelf'), findsOneWidget, reason: 'photos');
+      // A tile rather than its caption: only the focused row is captioned, and
+      // the board opens on its first folder.
+      expect(
+        find.byKey(const ValueKey('photo-1')),
+        findsOneWidget,
+        reason: 'photos',
+      );
 
       await swipeToNextPage(tester);
       // "Hardware shop" holds 6 tasks, 2 of them ticked.

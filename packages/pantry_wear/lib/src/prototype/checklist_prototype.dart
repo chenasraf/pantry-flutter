@@ -10,8 +10,8 @@ import 'checklist_page.dart';
 import 'focus_list.dart';
 import 'note_markdown.dart';
 import 'notes_page.dart';
+import 'photos_page.dart';
 import 'proto_checklist_data.dart';
-import 'proto_data.dart';
 import 'proto_mechanics.dart';
 import 'proto_note_data.dart';
 import 'proto_tuning.dart';
@@ -87,7 +87,7 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
   List<Widget> get _pages => _mode == ChecklistMode.browse
       ? [
           _checklist(),
-          _PhotosPage(tuning: _tuning, active: _page == 1),
+          PhotosPage(tuning: _tuning, active: _page == 1),
           NotesPage(
             tuning: _tuning,
             active: _page == 2,
@@ -575,86 +575,6 @@ class _CollectionPage extends StatelessWidget {
       },
     );
   }
-}
-
-/// Photos read as a grid rather than a stack of full-width cards — a wrist is
-/// scanning for the one it remembers, and two to a row halves how far it has
-/// to scan. A *row* of tiles is what the centre line holds, so the focus
-/// falloff applies to the row, not the tile. View only; the mirror carries no
-/// bytes, so these are online-only.
-class _PhotosPage extends StatefulWidget {
-  final ProtoTuning tuning;
-  final bool active;
-
-  const _PhotosPage({required this.tuning, required this.active});
-
-  @override
-  State<_PhotosPage> createState() => _PhotosPageState();
-}
-
-class _PhotosPageState extends State<_PhotosPage> {
-  final _controller = ScrollController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final rows = (protoPhotos.length / 2).ceil();
-    return SnapFocusList(
-      controller: _controller,
-      itemExtent: 88,
-      falloffRows: widget.tuning.falloffRows,
-      snapEnabled: widget.tuning.snapEnabled,
-      rotaryActive: widget.active,
-      horizontalInset: widget.tuning.tallSideInset,
-      elements: [
-        for (var row = 0; row < rows; row++)
-          FocusElement(
-            extent: 88,
-            builder: (context, d) => Padding(
-              padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
-              child: Row(
-                children: [
-                  Expanded(child: _tile(protoPhotos[row * 2])),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: row * 2 + 1 < protoPhotos.length
-                        ? _tile(protoPhotos[row * 2 + 1])
-                        : const SizedBox.shrink(),
-                  ),
-                ],
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _tile(ProtoPhoto photo) => ClipRRect(
-    borderRadius: BorderRadius.circular(12),
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [photo.a, photo.b]),
-      ),
-      child: Align(
-        alignment: AlignmentDirectional.bottomStart,
-        child: Padding(
-          padding: const EdgeInsetsDirectional.all(6),
-          child: Text(
-            photo.caption,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textDirection: detectTextDirection(photo.caption),
-            style: const TextStyle(fontSize: 10),
-          ),
-        ),
-      ),
-    ),
-  );
 }
 
 class _StubPage extends StatelessWidget {
