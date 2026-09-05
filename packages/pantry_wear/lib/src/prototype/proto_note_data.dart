@@ -18,7 +18,9 @@ class ProtoNote {
   /// Raw markdown, exactly as `Note.content` holds it.
   final String body;
 
-  /// The user's chosen note colour, as the phone stores it.
+  /// The user's chosen note colour, as the phone stores it. The set is the
+  /// Material 500 palette `note_form_view.dart` offers, so the samples span
+  /// both ink branches: yellow and amber take dark text, the rest light.
   final Color? color;
   final bool pinned;
 
@@ -37,7 +39,7 @@ const protoNotes = <ProtoNote>[
     id: 1,
     title: 'Hardware shop',
     pinned: true,
-    color: Color(0xFF3A6EA5),
+    color: Color(0xFF2196F3), // blue
     body: '''
 - [x] Picture hooks
 - [ ] Masking tape
@@ -53,7 +55,7 @@ const protoNotes = <ProtoNote>[
   ProtoNote(
     id: 2,
     title: 'Boiler service',
-    color: Color(0xFF8E6A3A),
+    color: Color(0xFFFFC107), // amber — light enough to need dark ink
     body: '''
 Engineer comes **Thursday between 8 and 12**. Someone has to be in.
 
@@ -72,7 +74,7 @@ gets here.
   ProtoNote(
     id: 3,
     title: 'Bin day',
-    color: Color(0xFF4B7F52),
+    color: Color(0xFF4CAF50), // green
     body: '''
 ## Collections
 
@@ -89,7 +91,7 @@ Missed collections: [report here](https://example.org/bins)
   ProtoNote(
     id: 4,
     title: 'House rules for sitters',
-    color: Color(0xFF7A4A6E),
+    color: Color(0xFF9C27B0), // purple
     body: '''
 ## Cat
 
@@ -123,7 +125,7 @@ Call the letting agent, not the landlord. Number is in the drawer.
   ProtoNote(
     id: 6,
     title: 'פינוי אשפה',
-    color: Color(0xFF3A7A7A),
+    color: Color(0xFFFFEB3B), // yellow — the lightest the palette offers
     body: '''
 שלישי בבוקר, לפני שבע.
 

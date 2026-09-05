@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry_wear/src/prototype/checklist_prototype.dart';
+import 'package:pantry_wear/src/prototype/note_blocks.dart';
 import 'package:pantry_wear/src/prototype/note_markdown.dart';
 import 'package:pantry_wear/src/prototype/notes_page.dart';
 import 'package:pantry_wear/src/prototype/proto_note_data.dart';
@@ -111,6 +112,49 @@ void main() {
     test('inline markers are stripped, link text is kept', () {
       expect(flattenInline('**bold** and `code`'), 'bold and code');
       expect(flattenInline('[report here](https://x.test)'), 'report here');
+    });
+  });
+
+  group('a note is drawn on its own colour', () {
+    test('ink flips with the colour it has to sit on', () {
+      // The two ends of the palette the phone offers.
+      expect(
+        noteInk(const Color(0xFFFFEB3B)),
+        Colors.black87,
+        reason: 'yellow',
+      );
+      expect(noteInk(const Color(0xFF9C27B0)), Colors.white, reason: 'purple');
+      // An uncoloured note falls back to the card plane, which is near-black.
+      expect(noteInk(kNotePlane), Colors.white);
+    });
+
+    testWidgets('a light note draws dark text, a dark note light', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(480, 480);
+      tester.view.devicePixelRatio = 2.0;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: NotesPage(
+              tuning: ProtoTuning(),
+              active: true,
+              bodies: {for (final n in protoNotes) n.id: n.body},
+              onSetTask: (_, _, _) {},
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      Color titleColour(String title) =>
+          tester.widget<Text>(find.text(title)).style!.color!;
+
+      // "Boiler service" is amber; "Hardware shop" is blue.
+      expect(titleColour('Boiler service'), Colors.black87);
+      expect(titleColour('Hardware shop'), Colors.white);
     });
   });
 

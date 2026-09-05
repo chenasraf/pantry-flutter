@@ -96,6 +96,13 @@ class _NotesPageState extends State<NotesPage> {
 /// Ticking is the only thing the watch can do to a note, so a note holding
 /// tasks says how many are left rather than previewing prose the wearer will
 /// open it to read anyway.
+///
+/// The card is **filled with the note's own colour**, as it is on the phone, so
+/// a wearer finds a note by its hue before reading a word of it. Text is black
+/// or white by the colour's luminance. The falloff arrives as opacity rather
+/// than the checklists page's colour lerp: lerping a hue toward the ground
+/// plane would walk it across the luminance threshold mid-scroll and flip the
+/// ink from black to white under the wearer's eye.
 class _NoteCard extends StatelessWidget {
   final ProtoNote note;
   final String body;
@@ -117,99 +124,87 @@ class _NoteCard extends StatelessWidget {
         .map((b) => flattenInline(b.text))
         .join(' · ');
 
+    final ground = note.color ?? kNotePlane;
+    final ink = noteInk(ground);
+
     return Padding(
       padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        child: SizedBox(
-          // State both, always: a Column of Text sizes to its longest line, so
-          // short notes would otherwise draw short cards.
-          width: double.infinity,
-          height: 66,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: Color.lerp(
-                const Color(0xFF17171A),
-                const Color(0xFF121215),
-                distance,
+        child: Opacity(
+          opacity: 1 - distance * 0.45,
+          child: SizedBox(
+            // State both, always: a Column of Text sizes to its longest line,
+            // so short notes would otherwise draw short cards.
+            width: double.infinity,
+            height: 66,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: ground,
+                borderRadius: BorderRadius.circular(
+                  WearShape.isRound ? 18 : 12,
+                ),
               ),
-              borderRadius: BorderRadius.circular(WearShape.isRound ? 18 : 12),
-            ),
-            child: Row(
-              children: [
-                // The note's own colour as an edge rather than a fill: the
-                // theme is two planes of near-black, and six user-picked hues
-                // filling six cards would be the loudest thing on the watch.
-                if (note.color != null)
-                  Container(
-                    width: 3,
-                    margin: const EdgeInsetsDirectional.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: note.color!.withValues(alpha: 1 - distance * 0.6),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.symmetric(
-                      horizontal: 12,
-                      vertical: 9,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: 12,
+                  vertical: 9,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            if (note.pinned) ...[
-                              const Icon(
-                                Icons.push_pin,
-                                size: 11,
-                                color: Colors.white54,
-                              ),
-                              const SizedBox(width: 4),
-                            ],
-                            Expanded(
-                              child: Text(
-                                note.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textDirection: detectTextDirection(note.title),
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  height: 1.1,
-                                  fontWeight: distance < 0.5
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
+                        if (note.pinned) ...[
+                          Icon(
+                            Icons.push_pin,
+                            size: 11,
+                            color: ink.withValues(alpha: 0.6),
+                          ),
+                          const SizedBox(width: 4),
+                        ],
                         Expanded(
-                          child: progress.total > 0
-                              ? _Progress(
-                                  done: progress.done,
-                                  total: progress.total,
-                                )
-                              : Text(
-                                  preview.isEmpty ? '—' : preview,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  textDirection: detectTextDirection(preview),
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    height: 1.25,
-                                    color: Colors.white60,
-                                  ),
-                                ),
+                          child: Text(
+                            note.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textDirection: detectTextDirection(note.title),
+                            style: TextStyle(
+                              fontSize: 13,
+                              height: 1.1,
+                              color: ink,
+                              fontWeight: distance < 0.5
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 4),
+                    Expanded(
+                      child: progress.total > 0
+                          ? _Progress(
+                              done: progress.done,
+                              total: progress.total,
+                              ink: ink,
+                            )
+                          : Text(
+                              preview.isEmpty ? '—' : preview,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textDirection: detectTextDirection(preview),
+                              style: TextStyle(
+                                fontSize: 10,
+                                height: 1.25,
+                                color: ink.withValues(alpha: 0.72),
+                              ),
+                            ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -222,11 +217,15 @@ class _Progress extends StatelessWidget {
   final int done;
   final int total;
 
-  const _Progress({required this.done, required this.total});
+  /// Progress is drawn in the note's own ink rather than the theme accent: on a
+  /// card filled with a user-picked hue, the seeded accent is one more colour
+  /// competing with it, and it may be near-invisible against some of them.
+  final Color ink;
+
+  const _Progress({required this.done, required this.total, required this.ink});
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
     final complete = done == total;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,7 +236,8 @@ class _Progress extends StatelessWidget {
           style: TextStyle(
             fontSize: 10,
             height: 1.0,
-            color: complete ? primary : Colors.white70,
+            fontWeight: complete ? FontWeight.w700 : FontWeight.w400,
+            color: ink.withValues(alpha: complete ? 0.95 : 0.8),
           ),
         ),
         const SizedBox(height: 5),
@@ -246,8 +246,8 @@ class _Progress extends StatelessWidget {
           child: LinearProgressIndicator(
             value: total == 0 ? 0 : done / total,
             minHeight: 3,
-            backgroundColor: Colors.white12,
-            valueColor: AlwaysStoppedAnimation(primary),
+            backgroundColor: ink.withValues(alpha: 0.18),
+            valueColor: AlwaysStoppedAnimation(ink.withValues(alpha: 0.9)),
           ),
         ),
       ],
@@ -335,11 +335,16 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final blocks = parseNoteBlocks(widget.bodyOf());
     final inset = widget.tuning.tallSideInset;
+    // The detail page carries the note's colour edge to edge, so opening a
+    // note is continuous with the card it was opened from rather than a drop
+    // back onto the app's ground.
+    final ground = widget.note.color ?? kNotePlane;
+    final ink = noteInk(ground);
 
     return EdgeDismissible(
       onDismiss: () => Navigator.of(context).pop(),
       child: Scaffold(
-        backgroundColor: const Color(0xFF0B0B0C),
+        backgroundColor: ground,
         body: LayoutBuilder(
           builder: (context, constraints) {
             final contentWidth = constraints.maxWidth * (1 - inset * 2) - 20;
@@ -362,6 +367,7 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
                           builder: (context, d) => _BlockRow(
                             block: block,
                             distance: d,
+                            ink: ink,
                             checked: _echo[block.taskOrdinal] ?? block.checked,
                             pending: _pending[block.taskOrdinal],
                             onTap: block.kind == NoteBlockKind.task && d < 0.18
@@ -387,10 +393,7 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [
-                            const Color(0xFF0B0B0C),
-                            const Color(0xFF0B0B0C).withValues(alpha: 0),
-                          ],
+                          colors: [ground, ground.withValues(alpha: 0)],
                         ),
                       ),
                       child: Text(
@@ -398,11 +401,11 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textDirection: detectTextDirection(widget.note.title),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           height: 1.0,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white70,
+                          color: ink.withValues(alpha: 0.8),
                         ),
                       ),
                     ),
@@ -448,6 +451,7 @@ double _measure(NoteBlock block, double width) {
 class _BlockRow extends StatelessWidget {
   final NoteBlock block;
   final double distance;
+  final Color ink;
   final bool checked;
   final AnimationController? pending;
   final VoidCallback? onTap;
@@ -455,6 +459,7 @@ class _BlockRow extends StatelessWidget {
   const _BlockRow({
     required this.block,
     required this.distance,
+    required this.ink,
     required this.checked,
     this.pending,
     this.onTap,
@@ -469,12 +474,11 @@ class _BlockRow extends StatelessWidget {
         opacity: 1 - distance * 0.45,
         child: Align(
           alignment: AlignmentDirectional.centerStart,
-          child: NoteBlockView(block: block),
+          child: NoteBlockView(block: block, ink: ink),
         ),
       );
     }
 
-    final primary = Theme.of(context).colorScheme.primary;
     final dir = detectTextDirection(block.text);
     Widget card = SizedBox(
       // State the card's width and height; never let either be inferred from
@@ -483,11 +487,10 @@ class _BlockRow extends StatelessWidget {
       height: 40,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Color.lerp(
-            const Color(0xFF17171A),
-            const Color(0xFF121215),
-            distance,
-          ),
+          // A task card is the note's own ink laid thinly over the note's own
+          // colour, so it reads on any hue — a fixed dark plane would vanish
+          // on a dark note and shout on a light one.
+          color: ink.withValues(alpha: 0.16 - distance * 0.07),
           borderRadius: BorderRadius.circular(WearShape.isRound ? 15 : 10),
         ),
         child: Padding(
@@ -499,7 +502,7 @@ class _BlockRow extends StatelessWidget {
                 Icon(
                   checked ? Icons.check_box : Icons.check_box_outline_blank,
                   size: 16,
-                  color: checked ? primary : Colors.white54,
+                  color: ink.withValues(alpha: checked ? 0.9 : 0.55),
                 ),
                 const SizedBox(width: 9),
                 Expanded(
@@ -512,8 +515,9 @@ class _BlockRow extends StatelessWidget {
                       // Pin the line height: left to the font's own metrics a
                       // two-line row lands within a pixel of its extent.
                       height: 1.18,
-                      color: checked ? Colors.white38 : Colors.white,
+                      color: ink.withValues(alpha: checked ? 0.45 : 1),
                       decoration: checked ? TextDecoration.lineThrough : null,
+                      decorationColor: ink.withValues(alpha: 0.45),
                     ),
                   ),
                 ),
@@ -531,7 +535,7 @@ class _BlockRow extends StatelessWidget {
         builder: (context, child) => CustomPaint(
           foregroundPainter: _UndoStroke(
             progress: window.value,
-            color: primary,
+            color: ink,
             radius: WearShape.isRound ? 15 : 10,
           ),
           child: child,
