@@ -12,12 +12,6 @@ class ProtoTuning extends ChangeNotifier {
   /// "is the snap earning its complexity".
   bool snapEnabled = true;
 
-  /// Fall back to [ListWheelScrollView] and `FixedExtentScrollPhysics` — the
-  /// widget card 714 chose. The one real risk in dropping it is that a
-  /// hand-rolled snap feels worse, so the comparison stays reachable.
-  /// Headers vanish in wheel mode; a wheel cannot draw them short.
-  bool useWheel = false;
-
   /// How long a check sits reversible before it commits.
   int undoMs = 2000;
 

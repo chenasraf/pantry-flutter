@@ -75,34 +75,10 @@ class ChecklistPageState extends State<ChecklistPage>
 
   var _doneCollapsed = true;
 
-  /// [ProtoTuning] is one mutable object shared with the harness, so the two
-  /// widget configurations either side of a rebuild carry the *same* instance
-  /// and comparing `oldWidget.tuning` against `widget.tuning` can never see a
-  /// change. The last value has to be held here instead.
-  late bool _useWheel;
-
   @override
   void initState() {
     super.initState();
-    _useWheel = widget.tuning.useWheel;
-    _controller = _useWheel
-        ? FixedExtentScrollController()
-        : ScrollController();
-  }
-
-  @override
-  void didUpdateWidget(ChecklistPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Switching between the sliver list and the wheel swaps the controller
-    // type the list needs, so it cannot be reused across the toggle.
-    if (widget.tuning.useWheel != _useWheel) {
-      _useWheel = widget.tuning.useWheel;
-      final previous = _controller;
-      _controller = _useWheel
-          ? FixedExtentScrollController()
-          : ScrollController();
-      WidgetsBinding.instance.addPostFrameCallback((_) => previous.dispose());
-    }
+    _controller = ScrollController();
   }
 
   @override
@@ -316,7 +292,6 @@ class ChecklistPageState extends State<ChecklistPage>
       itemExtent: widget.tuning.itemExtent,
       falloffRows: widget.tuning.falloffRows,
       snapEnabled: widget.tuning.snapEnabled,
-      useWheel: widget.tuning.useWheel,
       rotaryActive: widget.active,
       horizontalInset: widget.tuning.sideInset,
       geometry: widget.geometry,

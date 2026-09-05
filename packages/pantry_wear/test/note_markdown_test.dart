@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
+import 'package:pantry_wear/src/prototype/checklist_prototype.dart';
 import 'package:pantry_wear/src/prototype/note_markdown.dart';
-import 'package:pantry_wear/src/prototype/notes_prototype.dart';
+import 'package:pantry_wear/src/prototype/notes_page.dart';
 import 'package:pantry_wear/src/prototype/proto_note_data.dart';
-import 'package:pantry_wear/src/prototype/variant_note_document.dart';
+import 'package:pantry_wear/src/prototype/proto_tuning.dart';
 
-/// PROTOTYPE — the checks worth having while the notes page is being judged.
+/// The checks the notes page earned.
 ///
 /// The first is the load-bearing one: the watch decides *which* checkbox you
 /// tapped by counting task lines as it renders them, and core decides which
-/// one to flip by counting task lines as it rewrites them. If those two counts
-/// ever disagree, a tap silently ticks a different line — a wrong write, with
-/// nothing on screen to say so.
+/// one to rewrite by counting task lines as it rewrites them. If those two
+/// counts ever disagree, a tap silently ticks a different line — a wrong
+/// write, with nothing on screen to say so.
 void main() {
   group('task ordinals agree with core', () {
     test('every rendered task maps to the line core rewrites', () {
@@ -45,7 +46,7 @@ void main() {
       }
     });
 
-    test('a toggle changes exactly one character', () {
+    test('a rewrite changes exactly one character', () {
       const body = '- [ ] Wood glue\n- [x] Sandpaper\n';
       final flipped = toggleChecklistItem(body, 0);
       expect(flipped.length, body.length);
@@ -54,6 +55,28 @@ void main() {
         if (body[i] != flipped[i]) diffs++;
       }
       expect(diffs, 1);
+    });
+  });
+
+  group('a tick sets a state rather than flipping one', () {
+    const body = '- [ ] Wood glue\n- [x] Sandpaper\n';
+
+    test('setting a line to what it already is changes nothing', () {
+      // The whole point: a tick landing on a line a housemate already ticked
+      // must converge, not undo them.
+      expect(setChecklistItem(body, 1, true), same(body));
+      expect(setChecklistItem(body, 0, false), same(body));
+    });
+
+    test('applying the same set twice is the same as applying it once', () {
+      final once = setChecklistItem(body, 0, true);
+      final twice = setChecklistItem(once, 0, true);
+      expect(once, isNot(body));
+      expect(twice, once);
+    });
+
+    test('an ordinal past the end is a no-op', () {
+      expect(setChecklistItem(body, 9, true), same(body));
     });
   });
 
@@ -91,61 +114,97 @@ void main() {
     });
   });
 
-  group('the page', () {
-    testWidgets('the wall says what is left rather than previewing prose', (
+  group('the page in the pager', () {
+    /// One page, deliberately slowly. A `tester.drag` of a screen's width is a
+    /// fling, and a fling carries the pager past more than one page — which is
+    /// itself worth knowing, since the wearer's swipe is the slow kind.
+    Future<void> swipeToNextPage(WidgetTester tester) async {
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byType(PageView)),
+      );
+      for (var i = 0; i < 12; i++) {
+        await gesture.moveBy(const Offset(-24, 0));
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      await gesture.up();
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('notes is the third browse page, after checklists and photos', (
       tester,
     ) async {
       tester.view.physicalSize = const Size(480, 480);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.reset);
-
-      await tester.pumpWidget(const MaterialApp(home: NotesPrototype()));
+      await tester.pumpWidget(const MaterialApp(home: ChecklistPrototype()));
       await tester.pumpAndSettle();
 
-      // "Hardware shop" has 6 tasks, 2 ticked.
-      expect(find.text('4 left'), findsOneWidget);
-    });
+      await swipeToNextPage(tester);
+      expect(find.text('Fridge shelf'), findsOneWidget, reason: 'photos');
 
-    testWidgets('a tap on a task reports the ordinal it drew', (tester) async {
+      await swipeToNextPage(tester);
+      // "Hardware shop" holds 6 tasks, 2 of them ticked.
+      expect(find.text('4 left'), findsOneWidget);
+      // A note without tasks previews its prose instead of a count.
+      expect(find.textContaining('Green bin'), findsOneWidget);
+    });
+  });
+
+  group('the notes page', () {
+    Future<List<(int, int, bool)>> pumpNotes(WidgetTester tester) async {
       tester.view.physicalSize = const Size(480, 480);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.reset);
 
-      final fired = <int>[];
+      final writes = <(int, int, bool)>[];
+      final bodies = {for (final n in protoNotes) n.id: n.body};
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VariantNoteDocument(
-              body: protoNotes.first.body,
-              onToggle: fired.add,
+            body: NotesPage(
+              tuning: ProtoTuning(),
+              active: true,
+              bodies: bodies,
+              onSetTask: (id, ordinal, checked) =>
+                  writes.add((id, ordinal, checked)),
             ),
           ),
         ),
       );
       await tester.pumpAndSettle();
+      return writes;
+    }
 
-      await tester.tap(find.text('Wood glue'));
-      expect(fired, [4]);
+    testWidgets('only the centred card opens a note', (tester) async {
+      await pumpNotes(tester);
+
+      // The second note is off the centre line, so tapping it must scroll
+      // rather than open: a mis-aim costs a scroll, never a route.
+      await tester.tap(find.text('Boiler service'));
+      await tester.pumpAndSettle();
+      expect(find.text('Clear the cupboard under the stairs'), findsNothing);
+
+      await tester.tap(find.text('Hardware shop'));
+      await tester.pumpAndSettle();
+      expect(find.text('Masking tape'), findsOneWidget);
     });
 
-    testWidgets('a read-only document does not fire', (tester) async {
-      tester.view.physicalSize = const Size(480, 480);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.reset);
+    testWidgets('a tick reports an absolute state, after its undo window', (
+      tester,
+    ) async {
+      final writes = await pumpNotes(tester);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: VariantNoteDocument(body: protoNotes.first.body),
-          ),
-        ),
-      );
+      await tester.tap(find.text('Hardware shop'));
       await tester.pumpAndSettle();
 
-      // Nothing to assert but the absence of a crash and of a handler: the
-      // point is that variant C's reading surface cannot write.
-      await tester.tap(find.text('Wood glue'));
+      // "Picture hooks" is ticked in the source, so setting it must ask for
+      // false — the op carries where the line is going, not that it moved.
+      await tester.tap(find.text('Picture hooks'));
       await tester.pump();
+      expect(writes, isEmpty, reason: 'the undo window has not drained yet');
+
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+      expect(writes, [(1, 0, false)]);
     });
   });
 }

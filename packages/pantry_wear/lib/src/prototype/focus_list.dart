@@ -19,11 +19,6 @@ import 'proto_mechanics.dart';
 /// a row's distance from the **screen's** centre, which is why the viewport
 /// stays full-height with the rail overlaying it rather than sitting in a
 /// column below it.
-///
-/// [useWheel] keeps the wheel reachable side by side, because the one real
-/// risk in dropping it is that a hand-rolled snap feels worse than the tuned
-/// one — a question only a wrist can answer. Wheel mode drops headers, since
-/// it cannot draw them short.
 
 /// One entry in the list: a row you can land on, or a header you cannot.
 @immutable
@@ -89,7 +84,6 @@ class SnapFocusList extends StatefulWidget {
   final double falloffRows;
 
   final bool snapEnabled;
-  final bool useWheel;
 
   /// Only the page being looked at may steer from the crown.
   final bool rotaryActive;
@@ -114,7 +108,6 @@ class SnapFocusList extends StatefulWidget {
     required this.itemExtent,
     this.falloffRows = 2.2,
     this.snapEnabled = true,
-    this.useWheel = false,
     this.rotaryActive = false,
     this.horizontalInset = 0.04,
     this.geometry,
@@ -298,8 +291,6 @@ class SnapFocusListState extends State<SnapFocusList> {
         _measure(h);
         WidgetsBinding.instance.addPostFrameCallback((_) => _publish());
 
-        if (widget.useWheel) return _wheel(h);
-
         final falloff = widget.falloffRows * widget.itemExtent;
         final lead = math.max(0.0, h / 2 - widget.itemExtent / 2);
 
@@ -362,42 +353,6 @@ class SnapFocusListState extends State<SnapFocusList> {
           ),
         );
       },
-    );
-  }
-
-  /// The control: [FixedExtentScrollPhysics] on the wheel card 714 chose.
-  /// Headers are dropped, since a wheel has one extent for every child.
-  Widget _wheel(double h) {
-    final rows = widget.elements.where((e) => e.snappable).toList();
-    return ListWheelScrollView.useDelegate(
-      controller: widget.controller is FixedExtentScrollController
-          ? widget.controller as FixedExtentScrollController
-          : null,
-      itemExtent: widget.itemExtent,
-      physics: const FixedExtentScrollPhysics(),
-      diameterRatio: 100,
-      perspective: 0.00001,
-      overAndUnderCenterOpacity: 1,
-      childDelegate: ListWheelChildBuilderDelegate(
-        childCount: rows.length,
-        builder: (context, i) => AnimatedBuilder(
-          animation: widget.controller,
-          builder: (context, _) {
-            final centre = widget.controller.hasClients
-                ? widget.controller.offset / widget.itemExtent
-                : 0.0;
-            final d = ((i - centre).abs() / widget.falloffRows).clamp(0.0, 1.0);
-            final g = railFocusCurve(d);
-            return FractionallySizedBox(
-              widthFactor: g.widthFactor,
-              child: Transform.scale(
-                scale: g.scale,
-                child: rows[i].builder(context, d),
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 }

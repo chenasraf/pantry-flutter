@@ -46,22 +46,6 @@ const protoItems = <ProtoItem>[
 ];
 
 @immutable
-class ProtoNote {
-  final String title;
-  final String body;
-
-  const ProtoNote(this.title, this.body);
-}
-
-const protoNotes = <ProtoNote>[
-  ProtoNote('Bin day', 'Green bin Tuesday, recycling every other Friday.'),
-  ProtoNote('Boiler code', 'Hold reset 5s, then dial to 60.'),
-  ProtoNote('Plant watering', 'Ferns twice a week. The fiddle-leaf hates it.'),
-  ProtoNote('Wifi', 'Guest network password is on the fridge.'),
-  ProtoNote('פינוי אשפה', 'שלישי בבוקר, לפני שבע.'),
-];
-
-@immutable
 class ProtoPhoto {
   final String caption;
   final Color a;

@@ -8,9 +8,12 @@ import 'package:pantry_core/utils/text_direction.dart';
 import '../wear_shape.dart';
 import 'checklist_page.dart';
 import 'focus_list.dart';
+import 'note_markdown.dart';
+import 'notes_page.dart';
 import 'proto_checklist_data.dart';
 import 'proto_data.dart';
 import 'proto_mechanics.dart';
+import 'proto_note_data.dart';
 import 'proto_tuning.dart';
 
 /// PROTOTYPE — the checklists page in both of the shells it lives in, to be
@@ -42,6 +45,11 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
   var _page = 0;
   var _mode = ChecklistMode.browse;
   var _items = List.of(protoChecklistItems);
+
+  /// Note bodies as raw markdown, owned here rather than by the notes page so
+  /// a tick feeds the same queue counter a checklist commit does — one sync
+  /// story for every write on the watch.
+  var _noteBodies = {for (final n in protoNotes) n.id: n.body};
 
   /// The mode transition holds input for a moment after the pager swaps, so a
   /// tap already descending cannot land on a page set that did not exist when
@@ -79,7 +87,12 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
       ? [
           _checklist(),
           _PhotosPage(tuning: _tuning, active: _page == 1),
-          _NotesPage(tuning: _tuning, active: _page == 2),
+          NotesPage(
+            tuning: _tuning,
+            active: _page == 2,
+            bodies: _noteBodies,
+            onSetTask: _setNoteTask,
+          ),
           const _StubPage(title: 'Account', icon: Icons.person_outline),
         ]
       : [
@@ -139,6 +152,20 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
       _items = [
         for (final i in _items) i.id == id ? i.copyWith(skipped: true) : i,
       ];
+      if (_offline) _queued++;
+    });
+  }
+
+  /// The watch's only note write: set a markdown task line to a state.
+  ///
+  /// Absolute, never a flip — so a tick that lands on a line a housemate has
+  /// already ticked queues nothing at all rather than undoing them.
+  void _setNoteTask(int noteId, int ordinal, bool checked) {
+    final before = _noteBodies[noteId]!;
+    final after = setChecklistItem(before, ordinal, checked);
+    if (after == before) return;
+    setState(() {
+      _noteBodies = {..._noteBodies, noteId: after};
       if (_offline) _queued++;
     });
   }
@@ -629,103 +656,6 @@ class _PhotosPageState extends State<_PhotosPage> {
   );
 }
 
-/// Notes ride the mirror whole, bodies included, so a note is readable on the
-/// wrist without a fetch.
-class _NotesPage extends StatefulWidget {
-  final ProtoTuning tuning;
-  final bool active;
-
-  const _NotesPage({required this.tuning, required this.active});
-
-  @override
-  State<_NotesPage> createState() => _NotesPageState();
-}
-
-class _NotesPageState extends State<_NotesPage> {
-  final _controller = ScrollController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SnapFocusList(
-      controller: _controller,
-      itemExtent: 72,
-      falloffRows: widget.tuning.falloffRows,
-      snapEnabled: widget.tuning.snapEnabled,
-      rotaryActive: widget.active,
-      horizontalInset: widget.tuning.tallSideInset,
-      elements: [
-        for (final note in protoNotes)
-          FocusElement(
-            extent: 72,
-            builder: (context, d) => Padding(
-              padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
-              child: SizedBox(
-                height: 66,
-                width: double.infinity,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Color.lerp(
-                      const Color(0xFF17171A),
-                      const Color(0xFF121215),
-                      d,
-                    ),
-                    borderRadius: BorderRadius.circular(
-                      WearShape.isRound ? 18 : 12,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.symmetric(
-                      horizontal: 13,
-                      vertical: 9,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          note.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textDirection: detectTextDirection(note.title),
-                          style: TextStyle(
-                            fontSize: 13,
-                            height: 1.1,
-                            fontWeight: d < 0.5
-                                ? FontWeight.w700
-                                : FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Expanded(
-                          child: Text(
-                            note.body,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textDirection: detectTextDirection(note.body),
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.white60,
-                              height: 1.25,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
 class _StubPage extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -827,11 +757,6 @@ class _TuningPageState extends State<TuningPage> {
               'Snap',
               t.snapEnabled,
               (v) => t.update(() => t.snapEnabled = v),
-            ),
-            _toggle(
-              'Wheel (the 714 control)',
-              t.useWheel,
-              (v) => t.update(() => t.useWheel = v),
             ),
             _toggle(
               'Expand centre card',
