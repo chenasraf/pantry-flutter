@@ -9,6 +9,8 @@ import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/services/wear_mirror_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
+import 'services/wear_tile_service.dart';
+
 /// Every store the watch reads or writes, loaded before anything can touch
 /// one.
 ///
@@ -27,6 +29,11 @@ import 'package:pantry_core/sync/sync_manager.dart';
 /// `SyncManager.reset()` rather than a bare cache clear: the queue holds the
 /// wearer's unsent intent, and dropping the file without the manager's own
 /// teardown would leave it re-saving what it still held in memory.
+///
+/// The Tile snapshot goes with them. It is a copy of the same household names,
+/// held outside every store here because the Tile is drawn with no engine
+/// running — so a clear that stopped at the caches would leave the list names
+/// on the watch face of a watch that no longer has an account.
 Future<void> clearWearStores() => Future.wait([
   HouseService.instance.cache.clear(),
   ChecklistService.instance.cache.clear(),
@@ -38,6 +45,7 @@ Future<void> clearWearStores() => Future.wait([
   ShoppingService.instance.cache.clear(),
   WearMirrorService.instance.clear(),
   SyncManager.instance.reset(),
+  WearTileService.instance.clear(),
 ]);
 
 Future<void> loadWearStores() => Future.wait([

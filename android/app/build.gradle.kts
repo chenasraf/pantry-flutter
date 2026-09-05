@@ -189,4 +189,11 @@ dependencies {
     // RemoteActivityHelper, for opening a link on the paired phone. Named as a
     // string because flavor configurations have no generated Kotlin accessor.
     add("wearImplementation", "androidx.wear:wear-remote-interactions:1.1.0")
+    // The list Tile. Wear-only and pure AndroidX — unlike wear-remote-interactions,
+    // nothing here reaches play-services, so tool/fdroid/apply.sh leaves it alone.
+    add("wearImplementation", "androidx.wear.tiles:tiles:1.6.2")
+    add("wearImplementation", "androidx.wear.protolayout:protolayout:1.4.2")
+    // ListenableFuture with a way to complete one: androidx.wear.tiles brings the
+    // guava *stub*, which is the interface and nothing that builds an instance.
+    add("wearImplementation", "androidx.concurrent:concurrent-futures:1.3.0")
 }

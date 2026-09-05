@@ -56,6 +56,22 @@
             </intent-filter>
         </activity>
 
+        <!-- The list Tile. The system binds this to draw the tile, with no
+             engine of ours running, so everything it needs is in the snapshot
+             MainActivity writes over `dev.casraf.pantry/tile`. -->
+        <service
+            android:name=".ListTileService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
+            <intent-filter>
+                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+            </intent-filter>
+            <meta-data
+                android:name="androidx.wear.tiles.PREVIEW"
+                android:resource="@drawable/tile_preview" />
+        </service>
+
         <!-- The home-screen widgets and their config screens have no host on a
              watch; their classes still compile into the flavor, but nothing
              should be able to launch them. -->

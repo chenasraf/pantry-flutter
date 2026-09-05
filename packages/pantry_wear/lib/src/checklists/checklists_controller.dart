@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' hide Category;
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
@@ -20,6 +21,7 @@ import 'package:pantry_core/sync/sync_op.dart';
 
 import '../scope/wear_scope.dart';
 import '../services/wear_mirror_client.dart';
+import '../services/wear_tile_service.dart';
 import '../widgets/wear_metrics.dart';
 
 /// Browsing a list, or walking a trip. A live session is a different pager,
@@ -78,6 +80,8 @@ class ChecklistsController extends ChangeNotifier {
 
   int? _houseId;
   int? get houseId => _houseId;
+
+  String? _houseName;
 
   ChecklistList? _list;
 
@@ -276,6 +280,7 @@ class ChecklistsController extends ChangeNotifier {
       _emit();
       return;
     }
+    _houseName = _nameOfHouse(houses, house);
 
     _categories = {
       for (final c in CategoryService.instance.getCached(house) ?? const [])
@@ -292,6 +297,7 @@ class ChecklistsController extends ChangeNotifier {
       final listId = await _scope.resolveList(_lists) ?? _scope.listId;
       _list = _listFor(listId, house);
       _applyItems(_cachedItems(listId));
+      _publishTile();
     } else {
       final cached = _shopping.getCachedItems(session.id);
       if (cached != null) {
@@ -377,7 +383,36 @@ class ChecklistsController extends ChangeNotifier {
     try {
       final houses = await HouseService.instance.getHouses();
       _houseId = await _scope.resolveHouse(houses) ?? _houseId;
+      final house = _houseId;
+      if (house != null) _houseName = _nameOfHouse(houses, house);
     } catch (_) {}
+  }
+
+  String? _nameOfHouse(List<House> houses, int id) {
+    for (final h in houses) {
+      if (h.id == id) return h.name;
+    }
+    return null;
+  }
+
+  /// Hand the list Tile what it draws, every time the answer is re-read.
+  ///
+  /// The lists are the current house's active ones, which is the same notion
+  /// of "lists" the switcher offers — a Tile that offered a different set
+  /// would be a second scope for the wearer to reconcile. Publishing is
+  /// unconditional and cheap: native drops a payload identical to the one it
+  /// holds, so nothing wakes the Tile unless a list was renamed, added or
+  /// removed.
+  void _publishTile() {
+    final house = _houseId;
+    if (house == null) return;
+    unawaited(
+      WearTileService.instance.publish(
+        houseId: house,
+        houseName: _houseName,
+        lists: _lists,
+      ),
+    );
   }
 
   Future<void> _refreshSession() async {
@@ -431,6 +466,7 @@ class ChecklistsController extends ChangeNotifier {
       _checklists.cacheLists(house, lists);
       final listId = await _scope.resolveList(lists) ?? _scope.listId;
       _list = _listFor(listId, house);
+      _publishTile();
     } catch (_) {}
 
     final listId = _list?.id;

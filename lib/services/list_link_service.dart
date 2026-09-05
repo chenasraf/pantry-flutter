@@ -3,68 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:quick_actions/quick_actions.dart';
 
+import 'package:pantry_core/models/list_link.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 
-/// A request to open a specific list, produced by an OS-level entry point: a
-/// `pantry://list/<houseId>/<listId>` URL (NFC tags, automation apps, browser
-/// links), a launcher quick action, or a pinned home-screen shortcut.
-class ListLink {
-  final int listId;
-  final int? houseId;
-
-  /// When set, open this item's detail after opening the list.
-  final int? itemId;
-
-  const ListLink({required this.listId, this.houseId, this.itemId});
-
-  static const scheme = 'pantry';
-  static const host = 'list';
-  static const itemHost = 'item';
-
-  /// The canonical deep-link URL for [listId] in [houseId].
-  static Uri uri(int houseId, int listId) =>
-      Uri.parse('$scheme://$host/$houseId/$listId');
-
-  /// The canonical deep-link URL for [itemId] in [listId] / [houseId].
-  static Uri itemUri(int houseId, int listId, int itemId) =>
-      Uri.parse('$scheme://$itemHost/$houseId/$listId/$itemId');
-
-  /// Parse `pantry://list/<houseId>/<listId>` (or `pantry://list/<listId>`), or
-  /// `pantry://item/<houseId>/<listId>/<itemId>`. Null if not well-formed.
-  static ListLink? fromUri(Uri uri) {
-    if (uri.scheme != scheme) return null;
-    final segments = uri.pathSegments.where((s) => s.isNotEmpty).toList();
-    if (uri.host == itemHost) {
-      if (segments.length < 3) return null;
-      final houseId = int.tryParse(segments[0]);
-      final listId = int.tryParse(segments[1]);
-      final itemId = int.tryParse(segments[2]);
-      if (listId == null || itemId == null) return null;
-      return ListLink(listId: listId, houseId: houseId, itemId: itemId);
-    }
-    if (uri.host != host) return null;
-    if (segments.isEmpty) return null;
-    if (segments.length == 1) {
-      final listId = int.tryParse(segments[0]);
-      return listId == null ? null : ListLink(listId: listId);
-    }
-    final houseId = int.tryParse(segments[0]);
-    final listId = int.tryParse(segments[1]);
-    return listId == null ? null : ListLink(listId: listId, houseId: houseId);
-  }
-
-  static String quickActionType(int houseId, int listId) =>
-      'list:$houseId:$listId';
-
-  /// Parse a quick-action type string `list:<houseId>:<listId>`.
-  static ListLink? fromQuickActionType(String type) {
-    final parts = type.split(':');
-    if (parts.length != 3 || parts[0] != 'list') return null;
-    final houseId = int.tryParse(parts[1]);
-    final listId = int.tryParse(parts[2]);
-    return listId == null ? null : ListLink(listId: listId, houseId: houseId);
-  }
-}
+export 'package:pantry_core/models/list_link.dart';
 
 /// Resolves OS-level requests to open a specific list. Owns the custom URL
 /// scheme (`app_links`), launcher quick actions (`quick_actions`) and the

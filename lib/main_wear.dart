@@ -15,14 +15,17 @@ import 'package:pantry_wear/pantry_wear.dart';
 /// `--target` cannot point into a path dependency; everything it touches is
 /// either core or the watch UI package.
 ///
-/// [args] carries the screen shape, which the activity reads from the window
-/// configuration and passes here so layout has it before the first frame.
+/// [args] carries the screen shape and, when the app was launched from the
+/// list Tile or a `pantry://list/...` intent, the list to open. Both are read
+/// from the launch intent in `onCreate` and passed here so the first frame is
+/// already the right one.
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   // Before anything reads a platform gate: a watch answers `true` to every
   // Android check, so nothing else can tell this binary from the phone's.
   PlatformInfo.markAsWatch();
   WearShape.markFrom(args);
+  WearDeepLink.instance.markFrom(args);
 
   registerNnLocaleData();
 
@@ -37,10 +40,17 @@ void main(List<String> args) async {
 
   if (AuthService.instance.isLoggedIn) await loadWearStores();
 
+  // Scope moves before the first frame rather than after it. Applying a Tile
+  // tap later would draw the list the watch was last on, then swap — which is
+  // the reflow the shape argument exists to avoid, on the one launch where the
+  // wearer named the destination themselves.
+  await WearDeepLink.instance.applyPending();
+
   LocaleService.instance.apply();
   ApiClient.onForbidden = () {};
   runApp(const PantryWearApp());
   // After the first frame: the mirror only ever accelerates, so nothing it
   // does belongs on the path to drawing what the watch already knows.
   unawaited(WearMirrorClient.instance.start());
+  unawaited(WearDeepLink.instance.start());
 }

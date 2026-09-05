@@ -16,6 +16,7 @@ import '../checklists/list_switcher_page.dart';
 import '../prototype/notes_page.dart';
 import '../prototype/photos_page.dart';
 import '../prototype/proto_tuning.dart';
+import '../services/wear_deep_link.dart';
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_mechanics.dart';
@@ -83,12 +84,14 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     _page = _mode == ChecklistMode.session ? 1 : 0;
     _pager = PageController(initialPage: _page);
     _controller.addListener(_onData);
+    WearDeepLink.instance.addListener(_onDeepLink);
     if (widget.controller == null) unawaited(_controller.start());
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    WearDeepLink.instance.removeListener(_onDeepLink);
     _lockTimer?.cancel();
     _railTimer?.cancel();
     _noticeTimer?.cancel();
@@ -121,6 +124,20 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
       return;
     }
     setState(() {});
+  }
+
+  /// A Tile tap landing on an app that is already up. The launch case is
+  /// applied before `runApp` and never reaches here.
+  ///
+  /// Scope moves, and the pager follows it to the page that shows a list —
+  /// arriving from the Tile onto the notes page would leave the wearer looking
+  /// at the one thing they did not ask for.
+  Future<void> _onDeepLink() async {
+    if (!await WearDeepLink.instance.applyPending()) return;
+    if (!mounted) return;
+    final landing = _checklistIndex;
+    if (_page == landing || !_pager.hasClients) return;
+    _pager.jumpToPage(landing);
   }
 
   void _showNotice(String message) {
