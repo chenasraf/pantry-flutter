@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
@@ -15,6 +16,13 @@ import 'proto_checklist_data.dart';
 import 'proto_mechanics.dart';
 import 'proto_note_data.dart';
 import 'proto_tuning.dart';
+
+/// What the rail says you are looking at.
+typedef _PageTitle = ({String label, IconData icon, Color color});
+
+/// The livery of a page that is not a list. A list wears its own colour, so
+/// anything else taking one would read as an identity it does not have.
+const _chrome = Color(0xFFB6B6BE);
 
 /// PROTOTYPE — the wear skeleton: the shell, and every page designed so far.
 ///
@@ -94,29 +102,65 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
             bodies: _noteBodies,
             onSetTask: _setNoteTask,
           ),
-          const _StubPage(title: 'Account', icon: Icons.person_outline),
+          const _StubPage(title: 'Account', icon: Icons.person),
         ]
       : [
           const _StubPage(
             title: 'Progression',
-            icon: Icons.storefront_outlined,
+            icon: EntityIcons.store,
             note: 'card 718',
           ),
           _checklist(),
           _CollectionPage(
-            title: 'Done',
             items: _items.where((i) => i.done).toList(),
             empty: 'Nothing bought yet',
             onTap: (id) => _commit(id, false),
           ),
           _CollectionPage(
-            title: 'Skipped',
             items: _items.where((i) => i.skipped).toList(),
             empty: 'Nothing skipped',
             onTap: _unskip,
           ),
-          const _StubPage(title: 'Account', icon: Icons.person_outline),
+          const _StubPage(title: 'Account', icon: Icons.person),
         ];
+
+  /// The rail names the page you are on, one entry per [_pages] entry.
+  List<_PageTitle> get _titles => _mode == ChecklistMode.browse
+      ? [
+          _listTitle,
+          const (label: 'Photos', icon: EntityIcons.photos, color: _chrome),
+          const (label: 'Notes', icon: EntityIcons.notes, color: _chrome),
+          const (label: 'Account', icon: Icons.person, color: _chrome),
+        ]
+      : [
+          const (label: 'Progression', icon: EntityIcons.store, color: _chrome),
+          _listTitle,
+          const (
+            label: 'Done',
+            icon: Icons.check_circle_outline,
+            color: _chrome,
+          ),
+          const (
+            label: 'Skipped',
+            icon: Icons.remove_shopping_cart_outlined,
+            color: _chrome,
+          ),
+          const (label: 'Account', icon: Icons.person, color: _chrome),
+        ];
+
+  /// A session names the store it is being shopped at, because that is the
+  /// thing you are standing in; browsing names the list.
+  _PageTitle get _listTitle => _mode == ChecklistMode.session
+      ? (
+          label: protoSessionStore,
+          icon: storeIcon(protoStoreIcons[protoSessionStore]),
+          color: protoStoreColors[protoSessionStore] ?? protoListColor,
+        )
+      : (
+          label: protoListTitle,
+          icon: checklistIcon(protoListIconKey),
+          color: protoListColor,
+        );
 
   Widget _checklist() {
     final session = _mode == ChecklistMode.session;
@@ -255,6 +299,10 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
             builder: (context, constraints) {
               final h = constraints.maxHeight;
               final railHeight = WearShape.isRound ? h * 0.21 : h * 0.15;
+              final titles = _titles;
+              // The pager can land mid-swap, one frame before the mode's page
+              // set is the one being drawn.
+              final title = titles[_page.clamp(0, titles.length - 1)];
               return IgnorePointer(
                 ignoring: _locked,
                 child: Stack(
@@ -282,18 +330,9 @@ class _ChecklistPrototypeState extends State<ChecklistPrototype> {
                           child: ValueListenableBuilder(
                             valueListenable: _geometry,
                             builder: (context, geometry, _) => _Rail(
-                              title: _mode == ChecklistMode.session
-                                  ? protoSessionStore
-                                  : protoListTitle,
-                              titleIcon: _mode == ChecklistMode.session
-                                  ? storeIcon(
-                                      protoStoreIcons[protoSessionStore],
-                                    )
-                                  : checklistIcon(protoListIconKey),
-                              titleColor: _mode == ChecklistMode.session
-                                  ? (protoStoreColors[protoSessionStore] ??
-                                        protoListColor)
-                                  : protoListColor,
+                              title: title.label,
+                              titleIcon: title.icon,
+                              titleColor: title.color,
                               group: _page == _checklistIndex
                                   ? geometry.stickyGroup
                                   : null,
@@ -503,13 +542,11 @@ class _Rail extends StatelessWidget {
 
 /// The done and skipped pages a session gets in place of photos and notes.
 class _CollectionPage extends StatelessWidget {
-  final String title;
   final List<ProtoChecklistItem> items;
   final String empty;
   final void Function(int id) onTap;
 
   const _CollectionPage({
-    required this.title,
     required this.items,
     required this.empty,
     required this.onTap,
