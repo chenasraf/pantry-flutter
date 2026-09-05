@@ -1048,6 +1048,7 @@ wear:
   setupPhoneSignedOutBody: Your phone isn't signed in to Pantry yet.
   setupSyncing: Getting your lists
   setupSyncingBody: Almost there.
+  signOutConfirm: Tap again to sign out
 
 watch:
   title: Watch

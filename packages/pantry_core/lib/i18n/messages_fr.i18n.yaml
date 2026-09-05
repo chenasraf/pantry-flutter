@@ -1040,6 +1040,7 @@ wear:
   setupPhoneSignedOutBody: Votre téléphone n'est pas encore connecté à Pantry.
   setupSyncing: Récupération de vos listes
   setupSyncingBody: Presque terminé.
+  signOutConfirm: Touchez à nouveau pour vous déconnecter
 
 watch:
   title: Montre

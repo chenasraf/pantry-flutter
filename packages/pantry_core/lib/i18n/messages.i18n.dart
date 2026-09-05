@@ -5366,6 +5366,11 @@ class WearMessages {
   /// "Almost there."
   /// ```
   String get setupSyncingBody => """Almost there.""";
+
+  /// ```dart
+  /// "Tap again to sign out"
+  /// ```
+  String get signOutConfirm => """Tap again to sign out""";
 }
 
 class WatchMessages {
@@ -6455,6 +6460,7 @@ Password: pantry-rocks""",
       """Your phone isn't signed in to Pantry yet.""",
   """wear.setupSyncing""": """Getting your lists""",
   """wear.setupSyncingBody""": """Almost there.""",
+  """wear.signOutConfirm""": """Tap again to sign out""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

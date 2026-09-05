@@ -21,6 +21,25 @@ import 'package:pantry_core/sync/sync_manager.dart';
 /// One list, called from both paths that reach a signed-in watch: the boot
 /// that finds a credential already stored, and the pairing that has just
 /// received one.
+/// Drop everything [loadWearStores] loaded, plus the mirror's arrival record —
+/// dated snapshots describing caches that no longer exist would outlive them.
+///
+/// `SyncManager.reset()` rather than a bare cache clear: the queue holds the
+/// wearer's unsent intent, and dropping the file without the manager's own
+/// teardown would leave it re-saving what it still held in memory.
+Future<void> clearWearStores() => Future.wait([
+  HouseService.instance.cache.clear(),
+  ChecklistService.instance.cache.clear(),
+  CategoryService.instance.cache.clear(),
+  StoreService.instance.cache.clear(),
+  LabelService.instance.cache.clear(),
+  CustomFieldService.instance.cache.clear(),
+  NoteService.instance.cache.clear(),
+  ShoppingService.instance.cache.clear(),
+  WearMirrorService.instance.clear(),
+  SyncManager.instance.reset(),
+]);
+
 Future<void> loadWearStores() => Future.wait([
   HouseService.instance.cache.load(),
   ChecklistService.instance.cache.load(),

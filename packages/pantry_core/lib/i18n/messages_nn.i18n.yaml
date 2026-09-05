@@ -1184,6 +1184,7 @@ wear:
   setupPhoneSignedOutBody: Telefonen din er ikkje logga inn i Pantry enno.
   setupSyncing: Hentar listene dine
   setupSyncingBody: Straks ferdig.
+  signOutConfirm: Trykk igjen for å logge ut
 
 watch:
   title: Klokke

@@ -1040,6 +1040,7 @@ wear:
   setupPhoneSignedOutBody: הטלפון שלך עדיין לא מחובר ל-Pantry.
   setupSyncing: מביאים את הרשימות שלך
   setupSyncingBody: כמעט מוכן.
+  signOutConfirm: הקש שוב כדי להתנתק
 
 watch:
   title: שעון

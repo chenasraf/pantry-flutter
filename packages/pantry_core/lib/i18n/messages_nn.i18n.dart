@@ -5397,6 +5397,11 @@ class WearMessagesNn extends WearMessages {
   /// "Straks ferdig."
   /// ```
   String get setupSyncingBody => """Straks ferdig.""";
+
+  /// ```dart
+  /// "Trykk igjen for å logge ut"
+  /// ```
+  String get signOutConfirm => """Trykk igjen for å logge ut""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -6511,6 +6516,7 @@ Passord: pantry""",
       """Telefonen din er ikkje logga inn i Pantry enno.""",
   """wear.setupSyncing""": """Hentar listene dine""",
   """wear.setupSyncingBody""": """Straks ferdig.""",
+  """wear.signOutConfirm""": """Trykk igjen for å logge ut""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

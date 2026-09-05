@@ -1040,6 +1040,7 @@ wear:
   setupPhoneSignedOutBody: Tu teléfono aún no ha iniciado sesión en Pantry.
   setupSyncing: Trayendo tus listas
   setupSyncingBody: Casi está.
+  signOutConfirm: Toca otra vez para cerrar sesión
 
 watch:
   title: Reloj

@@ -5418,6 +5418,11 @@ class WearMessagesFr extends WearMessages {
   /// "Presque terminé."
   /// ```
   String get setupSyncingBody => """Presque terminé.""";
+
+  /// ```dart
+  /// "Touchez à nouveau pour vous déconnecter"
+  /// ```
+  String get signOutConfirm => """Touchez à nouveau pour vous déconnecter""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6565,6 +6570,7 @@ Mot de passe : pantry-rocks""",
       """Votre téléphone n'est pas encore connecté à Pantry.""",
   """wear.setupSyncing""": """Récupération de vos listes""",
   """wear.setupSyncingBody""": """Presque terminé.""",
+  """wear.signOutConfirm""": """Touchez à nouveau pour vous déconnecter""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

@@ -196,11 +196,17 @@ class WearPairingClient extends ChangeNotifier {
     _enter(WearSetupState.ready);
   }
 
-  /// Drop the session at the phone's request, without revoking: the app
+  /// Drop the session and everything it cached, without revoking: the app
   /// password is the phone's own and it is not the device leaving.
+  ///
+  /// The caches go because this is the deliberate act — a watch handed on or
+  /// reset — rather than the 401 that must keep them readable. Household names
+  /// left on a watch someone else now wears would be the same leak the
+  /// pairing confirmation exists to prevent.
   Future<void> forget() async {
     _stopAsking();
     await AuthService.instance.logout(revoke: false);
+    await clearWearStores();
     _state = WearSetupState.checking;
     notifyListeners();
     await start();

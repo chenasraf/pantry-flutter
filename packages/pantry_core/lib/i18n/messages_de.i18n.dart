@@ -5426,6 +5426,11 @@ class WearMessagesDe extends WearMessages {
   /// "Fast fertig."
   /// ```
   String get setupSyncingBody => """Fast fertig.""";
+
+  /// ```dart
+  /// "Zum Abmelden erneut tippen"
+  /// ```
+  String get signOutConfirm => """Zum Abmelden erneut tippen""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6577,6 +6582,7 @@ Passwort: pantry-rocks""",
       """Dein Telefon ist noch nicht bei Pantry angemeldet.""",
   """wear.setupSyncing""": """Deine Listen kommen""",
   """wear.setupSyncingBody""": """Fast fertig.""",
+  """wear.signOutConfirm""": """Zum Abmelden erneut tippen""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

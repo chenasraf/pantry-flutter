@@ -5371,6 +5371,11 @@ class WearMessagesHe extends WearMessages {
   /// "כמעט מוכן."
   /// ```
   String get setupSyncingBody => """כמעט מוכן.""";
+
+  /// ```dart
+  /// "הקש שוב כדי להתנתק"
+  /// ```
+  String get signOutConfirm => """הקש שוב כדי להתנתק""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6442,6 +6447,7 @@ Map<String, String> get messagesHeMap => {
   """wear.setupPhoneSignedOutBody""": """הטלפון שלך עדיין לא מחובר ל-Pantry.""",
   """wear.setupSyncing""": """מביאים את הרשימות שלך""",
   """wear.setupSyncingBody""": """כמעט מוכן.""",
+  """wear.signOutConfirm""": """הקש שוב כדי להתנתק""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",
