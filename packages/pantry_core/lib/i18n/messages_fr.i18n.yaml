@@ -1043,6 +1043,10 @@ wear:
   setupSyncing: Récupération de vos listes
   setupSyncingBody: Presque terminé.
   signOutConfirm: Touchez à nouveau pour vous déconnecter
+  signOutPending(int count): "$count non envoyé(s)"
+  signOutWait: Envoyer d'abord
+  signOutSending: Envoi…
+  signOutAnyway: Se déconnecter quand même
 
 watch:
   title: Montre

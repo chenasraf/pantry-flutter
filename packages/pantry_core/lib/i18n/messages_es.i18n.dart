@@ -5425,6 +5425,26 @@ class WearMessagesEs extends WearMessages {
   /// "Toca otra vez para cerrar sesión"
   /// ```
   String get signOutConfirm => """Toca otra vez para cerrar sesión""";
+
+  /// ```dart
+  /// "$count sin enviar"
+  /// ```
+  String signOutPending(int count) => """$count sin enviar""";
+
+  /// ```dart
+  /// "Enviar primero"
+  /// ```
+  String get signOutWait => """Enviar primero""";
+
+  /// ```dart
+  /// "Enviando…"
+  /// ```
+  String get signOutSending => """Enviando…""";
+
+  /// ```dart
+  /// "Cerrar sesión igualmente"
+  /// ```
+  String get signOutAnyway => """Cerrar sesión igualmente""";
 }
 
 class WatchMessagesEs extends WatchMessages {
@@ -6556,6 +6576,9 @@ Contraseña: pantry-rocks""",
   """wear.setupSyncing""": """Trayendo tus listas""",
   """wear.setupSyncingBody""": """Casi está.""",
   """wear.signOutConfirm""": """Toca otra vez para cerrar sesión""",
+  """wear.signOutWait""": """Enviar primero""",
+  """wear.signOutSending""": """Enviando…""",
+  """wear.signOutAnyway""": """Cerrar sesión igualmente""",
   """watch.title""": """Reloj""",
   """watch.requestWarning""":
       """Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.""",

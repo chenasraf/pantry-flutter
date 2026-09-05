@@ -63,7 +63,23 @@ class WearScope extends ChangeNotifier {
   Future<void> selectList(int id) async {
     if (listId == id) return;
     ChecklistService.instance.selectedListId = id;
+    _pruneItemCache();
     notifyListeners();
+  }
+
+  /// Scope is also what bounds the watch's item cache: leaving a list is what
+  /// drops its snapshot, so nothing accumulates and nothing has to be evicted.
+  /// That is a stronger guarantee than any byte ceiling, whose worst bug
+  /// deletes the offline copy the watch exists to keep.
+  ///
+  /// The all-lists view is the exception that proves it: its rows *are* every
+  /// list's own cached snapshot, so they are all in scope. A session needs no
+  /// exception — its items live in the shopping cache, which this never
+  /// touches.
+  void _pruneItemCache() {
+    final id = listId;
+    if (id == null || id == kAllListsId) return;
+    ChecklistService.instance.invalidateItems(keepListId: id);
   }
 
   /// Arrival from a deep link or the Tile. Both levels persist, exactly as

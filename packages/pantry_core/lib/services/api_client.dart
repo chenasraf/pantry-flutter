@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -15,11 +17,17 @@ class ApiException implements Exception {
   String toString() => 'ApiException($statusCode): $message';
 }
 
-/// Thrown when a request is attempted while the device has no connectivity.
-/// Surfaced as a fast failure (statusCode 0) so callers fall back to their
-/// on-disk cache immediately instead of waiting out the request timeout.
+/// Thrown when a request never reached the server — the socket failed, the
+/// name did not resolve, or the wall-clock budget ran out.
+///
+/// Offline is a property of the *request*, not of the network interface: a
+/// Bluetooth-proxied watch has no interface of its own and reaches the server
+/// fine, while a phone on a captive Wi-Fi has one and reaches nothing. Carries
+/// statusCode 0 so the sync queue treats it as retryable and spends no budget
+/// on it.
 class OfflineException extends ApiException {
-  const OfflineException() : super(0, 'Device is offline');
+  const OfflineException([String message = 'Server unreachable'])
+    : super(0, message);
 }
 
 class ApiClient {
@@ -67,12 +75,31 @@ class ApiClient {
     return creds;
   }
 
-  /// Fails fast when connectivity is known to be down, so reads fall back to
-  /// cache immediately instead of waiting out [_timeout]. Note this only
-  /// catches a missing network interface — a reachable network with an
-  /// unreachable server still relies on [_timeout].
-  void _ensureOnline() {
-    if (!SyncManager.instance.isOnline) throw const OfflineException();
+  /// Runs [send] and reports what came back, so the app's notion of online is
+  /// the outcome of a real request rather than a reading of the platform's
+  /// interfaces.
+  ///
+  /// A transport failure becomes an [OfflineException] here rather than
+  /// reaching callers raw: cache-first reads and the sync queue both branch on
+  /// it, and neither can be asked to know that `ClientException` is what an
+  /// Android socket says when a watch walks out of range.
+  Future<http.Response> _send(Future<http.Response> Function() send) async {
+    try {
+      final response = await send();
+      SyncManager.instance.setOnline(true);
+      return response;
+    } on SocketException catch (e) {
+      SyncManager.instance.setOnline(false);
+      throw OfflineException(e.message);
+    } on http.ClientException catch (e) {
+      SyncManager.instance.setOnline(false);
+      throw OfflineException(e.message);
+    } on TimeoutException {
+      // A server that accepts the connection and then says nothing inside the
+      // budget is unreachable for every purpose the caller has.
+      SyncManager.instance.setOnline(false);
+      throw const OfflineException('Request timed out');
+    }
   }
 
   Uri _uri(String path, [Map<String, String>? queryParameters]) {
@@ -97,10 +124,9 @@ class ApiClient {
     Map<String, String>? query,
     required T Function(D data) fromJson,
   }) async {
-    _ensureOnline();
-    final response = await http
-        .get(_uri(path, query), headers: _headers)
-        .timeout(_timeout);
+    final response = await _send(
+      () => http.get(_uri(path, query), headers: _headers).timeout(_timeout),
+    );
     return _handleResponse<D, T>(response, fromJson);
   }
 
@@ -109,14 +135,15 @@ class ApiClient {
     Map<String, dynamic>? body,
     required T Function(D data) fromJson,
   }) async {
-    _ensureOnline();
-    final response = await http
-        .post(
-          _uri(path),
-          headers: _headers,
-          body: body != null ? jsonEncode(body) : null,
-        )
-        .timeout(_timeout);
+    final response = await _send(
+      () => http
+          .post(
+            _uri(path),
+            headers: _headers,
+            body: body != null ? jsonEncode(body) : null,
+          )
+          .timeout(_timeout),
+    );
     return _handleResponse<D, T>(response, fromJson);
   }
 
@@ -125,14 +152,15 @@ class ApiClient {
     Map<String, dynamic>? body,
     required T Function(D data) fromJson,
   }) async {
-    _ensureOnline();
-    final response = await http
-        .put(
-          _uri(path),
-          headers: _headers,
-          body: body != null ? jsonEncode(body) : null,
-        )
-        .timeout(_timeout);
+    final response = await _send(
+      () => http
+          .put(
+            _uri(path),
+            headers: _headers,
+            body: body != null ? jsonEncode(body) : null,
+          )
+          .timeout(_timeout),
+    );
     return _handleResponse<D, T>(response, fromJson);
   }
 
@@ -141,22 +169,22 @@ class ApiClient {
     Map<String, dynamic>? body,
     required T Function(D data) fromJson,
   }) async {
-    _ensureOnline();
-    final response = await http
-        .patch(
-          _uri(path),
-          headers: _headers,
-          body: body != null ? jsonEncode(body) : null,
-        )
-        .timeout(_timeout);
+    final response = await _send(
+      () => http
+          .patch(
+            _uri(path),
+            headers: _headers,
+            body: body != null ? jsonEncode(body) : null,
+          )
+          .timeout(_timeout),
+    );
     return _handleResponse<D, T>(response, fromJson);
   }
 
   Future<void> delete(String path) async {
-    _ensureOnline();
-    final response = await http
-        .delete(_uri(path), headers: _headers)
-        .timeout(_timeout);
+    final response = await _send(
+      () => http.delete(_uri(path), headers: _headers).timeout(_timeout),
+    );
     _notify(response.statusCode);
     if (response.statusCode >= 400) {
       throw ApiException(response.statusCode, response.body);
@@ -171,14 +199,15 @@ class ApiClient {
     Map<String, dynamic>? body,
     required T Function(D data) fromJson,
   }) async {
-    _ensureOnline();
-    final response = await http
-        .delete(
-          _uri(path),
-          headers: _headers,
-          body: body != null ? jsonEncode(body) : null,
-        )
-        .timeout(_timeout);
+    final response = await _send(
+      () => http
+          .delete(
+            _uri(path),
+            headers: _headers,
+            body: body != null ? jsonEncode(body) : null,
+          )
+          .timeout(_timeout),
+    );
     return _handleResponse<D, T>(response, fromJson);
   }
 
@@ -190,15 +219,16 @@ class ApiClient {
     Map<String, String>? query,
     required T Function(D data) fromJson,
   }) async {
-    _ensureOnline();
     final headers = {
       ..._credentials.basicAuthHeaders,
       'Accept': 'application/json',
       'Content-Type': contentType,
     };
-    final response = await http
-        .post(_uri(path, query), headers: headers, body: bytes)
-        .timeout(_uploadTimeout);
+    final response = await _send(
+      () => http
+          .post(_uri(path, query), headers: headers, body: bytes)
+          .timeout(_uploadTimeout),
+    );
     return _handleResponse<D, T>(response, fromJson);
   }
 
@@ -212,7 +242,6 @@ class ApiClient {
     Map<String, String>? fields,
     required T Function(D data) fromJson,
   }) async {
-    _ensureOnline();
     final request = http.MultipartRequest('POST', _uri(path))
       ..headers.addAll({
         ..._credentials.basicAuthHeaders,
@@ -229,10 +258,10 @@ class ApiClient {
     if (fields != null) {
       request.fields.addAll(fields);
     }
-    final streamed = await request.send().timeout(_uploadTimeout);
-    final response = await http.Response.fromStream(
-      streamed,
-    ).timeout(_uploadTimeout);
+    final response = await _send(() async {
+      final streamed = await request.send().timeout(_uploadTimeout);
+      return http.Response.fromStream(streamed).timeout(_uploadTimeout);
+    });
     return _handleResponse<D, T>(response, fromJson);
   }
 

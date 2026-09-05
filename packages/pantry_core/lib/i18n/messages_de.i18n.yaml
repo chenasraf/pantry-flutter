@@ -1043,6 +1043,10 @@ wear:
   setupSyncing: Deine Listen kommen
   setupSyncingBody: Fast fertig.
   signOutConfirm: Zum Abmelden erneut tippen
+  signOutPending(int count): "$count noch nicht gesendet"
+  signOutWait: Erst senden
+  signOutSending: Wird gesendet …
+  signOutAnyway: Trotzdem abmelden
 
 watch:
   title: Uhr

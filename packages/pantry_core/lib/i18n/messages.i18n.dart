@@ -5381,6 +5381,26 @@ class WearMessages {
   /// "Tap again to sign out"
   /// ```
   String get signOutConfirm => """Tap again to sign out""";
+
+  /// ```dart
+  /// "$count not sent yet"
+  /// ```
+  String signOutPending(int count) => """$count not sent yet""";
+
+  /// ```dart
+  /// "Send first"
+  /// ```
+  String get signOutWait => """Send first""";
+
+  /// ```dart
+  /// "Sending…"
+  /// ```
+  String get signOutSending => """Sending…""";
+
+  /// ```dart
+  /// "Sign out anyway"
+  /// ```
+  String get signOutAnyway => """Sign out anyway""";
 }
 
 class WatchMessages {
@@ -6472,6 +6492,9 @@ Password: pantry-rocks""",
   """wear.setupSyncing""": """Getting your lists""",
   """wear.setupSyncingBody""": """Almost there.""",
   """wear.signOutConfirm""": """Tap again to sign out""",
+  """wear.signOutWait""": """Send first""",
+  """wear.signOutSending""": """Sending…""",
+  """wear.signOutAnyway""": """Sign out anyway""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

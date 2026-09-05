@@ -5433,6 +5433,26 @@ class WearMessagesFr extends WearMessages {
   /// "Touchez à nouveau pour vous déconnecter"
   /// ```
   String get signOutConfirm => """Touchez à nouveau pour vous déconnecter""";
+
+  /// ```dart
+  /// "$count non envoyé(s)"
+  /// ```
+  String signOutPending(int count) => """$count non envoyé(s)""";
+
+  /// ```dart
+  /// "Envoyer d'abord"
+  /// ```
+  String get signOutWait => """Envoyer d'abord""";
+
+  /// ```dart
+  /// "Envoi…"
+  /// ```
+  String get signOutSending => """Envoi…""";
+
+  /// ```dart
+  /// "Se déconnecter quand même"
+  /// ```
+  String get signOutAnyway => """Se déconnecter quand même""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6582,6 +6602,9 @@ Mot de passe : pantry-rocks""",
   """wear.setupSyncing""": """Récupération de vos listes""",
   """wear.setupSyncingBody""": """Presque terminé.""",
   """wear.signOutConfirm""": """Touchez à nouveau pour vous déconnecter""",
+  """wear.signOutWait""": """Envoyer d'abord""",
+  """wear.signOutSending""": """Envoi…""",
+  """wear.signOutAnyway""": """Se déconnecter quand même""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

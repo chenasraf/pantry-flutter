@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/cache_store.dart';
-import 'package:pantry_core/sync/conflict_resolver.dart';
 import 'package:pantry_core/sync/id_remap.dart';
 import 'package:pantry_core/sync/sync_executor.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
@@ -38,10 +37,16 @@ class SyncManager {
   SyncManager._();
   static final SyncManager instance = SyncManager._();
 
-  final SyncQueue _queue = SyncQueue(CacheStore('sync_queue.json'));
-  final IdRemap _remap = IdRemap(CacheStore('sync_id_remap.json'));
+  /// Both stores are queue-class: they hold what the user asked for, which
+  /// nothing can rebuild. A debounce here would trade a check-off for half a
+  /// second of write traffic.
+  final SyncQueue _queue = SyncQueue(
+    CacheStore('sync_queue.json', durability: CacheDurability.queue),
+  );
+  final IdRemap _remap = IdRemap(
+    CacheStore('sync_id_remap.json', durability: CacheDurability.queue),
+  );
   final SyncExecutor _executor = const SyncExecutor();
-  final ConflictResolver _resolver = const ConflictResolver();
 
   final ValueNotifier<SyncStatus> status = ValueNotifier(SyncStatus.idle);
   final ValueNotifier<int> pendingCount = ValueNotifier(0);
@@ -76,12 +81,18 @@ class SyncManager {
   bool _flushing = false;
   Timer? _retryTimer;
   bool _initialized = false;
+  _ResumeDrain? _resumeDrain;
 
+  /// Whether the server answered the last request that reached it. Not a
+  /// reading of the network interface: a Bluetooth-proxied watch reports no
+  /// interface while the server is perfectly reachable, and a phone on a
+  /// captive Wi-Fi reports one while nothing answers.
   bool get isOnline => _online;
 
   Future<void> init() async {
     if (_initialized) return;
     _initialized = true;
+    _resumeDrain ??= _ResumeDrain(this);
     // main() awaits this on the pre-first-frame path, so a corrupt or
     // version-incompatible on-disk queue must degrade to empty rather than
     // throw — an unhandled error here aborts main() before runApp() and
@@ -106,9 +117,12 @@ class SyncManager {
     }
   }
 
-  /// Externally-supplied connectivity signal. The top-level
-  /// `OfflineBuilder` from package:flutter_offline forwards changes here
-  /// so the manager doesn't need to know how connectivity is detected.
+  /// The outcome of a real request, reported by [ApiClient]: true when the
+  /// server answered — whatever it answered with — and false when the request
+  /// never reached it.
+  ///
+  /// This is the whole definition of online. Anything the platform says about
+  /// interfaces is a hint that arrives through [reportInterfaceAvailable].
   void setOnline(bool online) {
     final wasOnline = _online;
     _online = online;
@@ -127,6 +141,16 @@ class SyncManager {
     } else if (_queue.isEmpty) {
       status.value = SyncStatus.idle;
     }
+  }
+
+  /// A network interface came back. Purely an accelerator: it never decides
+  /// whether the app is online, it only saves the queue from waiting out a
+  /// backoff for a link that is demonstrably up again. The request it kicks
+  /// off is what settles [isOnline].
+  void reportInterfaceAvailable() {
+    if (_queue.isEmpty) return;
+    _queue.resetAttempts();
+    unawaited(flushNow());
   }
 
   /// Clears the queue and id-remap. Called at logout.
@@ -159,11 +183,19 @@ class SyncManager {
   /// create has resolved yet. Controllers use this to keep optimistic state
   /// authoritative when a background fetch returns a snapshot that predates a
   /// pending op (the check-then-flicker-back race).
-  Set<int> pendingItemIds(int houseId) {
+  Set<int> pendingItemIds(int houseId) => _pendingItemIds(houseId);
+
+  /// [pendingItemIds] with the house filter dropped, for a writer that knows
+  /// which list a snapshot belongs to but not which house — the mirror's
+  /// landing path addresses a cache key, and a cache key names a list. Item
+  /// ids are server-unique, so the wider set pins nothing it should not.
+  Set<int> pendingItemIdsAnyHouse() => _pendingItemIds(null);
+
+  Set<int> _pendingItemIds(int? houseId) {
     final out = <int>{};
     for (final raw in _queue.all()) {
       if (raw.entity != SyncEntity.checklistItem) continue;
-      if (raw.houseId != houseId) continue;
+      if (houseId != null && raw.houseId != houseId) continue;
       if (raw.op == SyncOpKind.batch) {
         // Batch ops address many items via the body — count both the temp and
         // (once bound) real ids so a mid-flight batch keeps its items pinned.
@@ -404,12 +436,17 @@ class SyncManager {
             _queue.pop(op.uuid);
             pendingCount.value = _queue.length;
             _skippedController.add(SyncOpSkipped(op, 'gone'));
-            _resolver.shouldApply(
-              op,
-              serverUpdatedAt: null,
-              serverDeletedAt: 0,
-            );
             continue;
+          }
+          if (e.statusCode == 401) {
+            // A credential problem, not a data problem: the op is well-formed
+            // and the record is there, so it would land the moment a valid
+            // password returns. Phone and watch share one app password, so a
+            // logout on either revokes it — dropping here would delete the
+            // other device's unsynced check-offs in silence. Same exit as the
+            // offline fast-fail: no retry budget spent, ops stay pending.
+            status.value = _online ? SyncStatus.syncing : SyncStatus.offline;
+            return;
           }
           if (e.statusCode >= 400 && e.statusCode < 500) {
             debugPrint(
@@ -625,4 +662,26 @@ class SyncManager {
   /// retries mid-flush, which needs a live server to fail against).
   @visibleForTesting
   void deadLetterForTest(SyncOp op) => _deadLetter(op, 'exhausted');
+}
+
+/// Retries the queue when the app comes back to the foreground.
+///
+/// The drain itself is event-driven and deliberately keeps running while the
+/// app is backgrounded — the bad case is a shopper checking off the last item,
+/// dropping their wrist and walking out of range. What a resume adds is the
+/// one moment the app is certain something may have changed underneath it:
+/// a backoff timer that fired against a dead link has left the queue waiting
+/// out an interval that no longer describes anything.
+class _ResumeDrain with WidgetsBindingObserver {
+  final SyncManager _manager;
+
+  _ResumeDrain(this._manager) {
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    unawaited(_manager.flushNow());
+  }
 }

@@ -10,6 +10,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cache_store.dart';
 import 'services/background_notification_task.dart';
 import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/services/locale_service.dart';
@@ -26,6 +27,7 @@ import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/services/note_service.dart';
 import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/reachability_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'services/share_intent_service.dart';
 import 'services/wear_mirror_host.dart';
@@ -177,6 +179,10 @@ void main() async {
   }
   LocaleService.instance.apply();
   ApiClient.onForbidden = _showPermissionDeniedSnackbar;
+  // A debounced cache write needs somewhere to land before the process goes,
+  // and a queue waiting out a backoff needs telling when a link returns.
+  CacheStore.installPauseCheckpoint();
+  ReachabilityService.instance.start();
   unawaited(ShareIntentService.instance.init());
   WidgetLinkService.instance.init();
   unawaited(ListLinkService.instance.init());

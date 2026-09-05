@@ -15,6 +15,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
+import 'package:pantry_core/sync/pending_overlay.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
@@ -472,17 +473,38 @@ class ChecklistsController extends ChangeNotifier {
     final listId = _list?.id;
     if (listId == null) return;
     try {
+      // The cached copy is read before the fetch is written over it: it is the
+      // local half of the overlay, and on a device whose process dies as
+      // readily as a watch's it is the only place a check made by a previous
+      // launch still exists.
+      final held = _cachedItems(listId);
+      final fetched = listId == kAllListsId
+          ? await _checklists.getHouseItems(house)
+          : await _checklists.getItems(house, listId);
+      final overlaid = _withPendingWrites(fetched, held, house);
       if (listId == kAllListsId) {
-        final items = await _checklists.getHouseItems(house);
-        _cacheByList(items);
-        _applyItems(items);
+        _cacheByList(overlaid);
       } else {
-        final items = await _checklists.getItems(house, listId);
-        _checklists.cacheItems(listId, items);
-        _applyItems(items);
+        _checklists.cacheItems(listId, overlaid);
       }
+      _applyItems(overlaid);
     } catch (_) {}
   }
+
+  /// A fetched snapshot describes what the server knew, which is older than
+  /// anything still in the queue. The queue wins — over this snapshot as over
+  /// a mirrored one — or a poll landing between a check and its drain flips
+  /// the row back under the wearer's finger, and the cache write behind it
+  /// makes the reversal outlive the process.
+  List<ListItem> _withPendingWrites(
+    List<ListItem> fetched,
+    List<ListItem> held,
+    int house,
+  ) => overlayPendingItems(
+    server: fetched,
+    local: held,
+    pending: _sync.pendingItemIds(house),
+  );
 
   void _cacheByList(List<ListItem> items) {
     final byList = <int, List<ListItem>>{};

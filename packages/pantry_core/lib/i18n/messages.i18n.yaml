@@ -1051,6 +1051,10 @@ wear:
   setupSyncing: Getting your lists
   setupSyncingBody: Almost there.
   signOutConfirm: Tap again to sign out
+  signOutPending(int count): "$count not sent yet"
+  signOutWait: Send first
+  signOutSending: Sending…
+  signOutAnyway: Sign out anyway
 
 watch:
   title: Watch

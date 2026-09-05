@@ -5441,6 +5441,26 @@ class WearMessagesDe extends WearMessages {
   /// "Zum Abmelden erneut tippen"
   /// ```
   String get signOutConfirm => """Zum Abmelden erneut tippen""";
+
+  /// ```dart
+  /// "$count noch nicht gesendet"
+  /// ```
+  String signOutPending(int count) => """$count noch nicht gesendet""";
+
+  /// ```dart
+  /// "Erst senden"
+  /// ```
+  String get signOutWait => """Erst senden""";
+
+  /// ```dart
+  /// "Wird gesendet …"
+  /// ```
+  String get signOutSending => """Wird gesendet …""";
+
+  /// ```dart
+  /// "Trotzdem abmelden"
+  /// ```
+  String get signOutAnyway => """Trotzdem abmelden""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6594,6 +6614,9 @@ Passwort: pantry-rocks""",
   """wear.setupSyncing""": """Deine Listen kommen""",
   """wear.setupSyncingBody""": """Fast fertig.""",
   """wear.signOutConfirm""": """Zum Abmelden erneut tippen""",
+  """wear.signOutWait""": """Erst senden""",
+  """wear.signOutSending""": """Wird gesendet …""",
+  """wear.signOutAnyway""": """Trotzdem abmelden""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

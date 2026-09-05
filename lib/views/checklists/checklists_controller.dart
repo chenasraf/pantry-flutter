@@ -21,6 +21,7 @@ import 'package:pantry/services/image_cache_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
+import 'package:pantry_core/sync/pending_overlay.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'checklists_ordering.dart';
@@ -637,12 +638,9 @@ class ChecklistsController extends ChangeNotifier {
           _currentList = allListsSentinel(houseId);
           // The aggregate has its own cache slot (kAllListsId), so the
           // All-lists view restores offline just like a concrete list.
-          final cachedItems = _checklistService.getCachedItems(kAllListsId);
-          if (cachedItems != null) {
-            _items = cachedItems;
-            _isLoading = false;
-            notifyListeners();
-          }
+          _items = _checklistService.getCachedItems(kAllListsId) ?? const [];
+          _isLoading = false;
+          notifyListeners();
         } else {
           _currentList =
               (savedId != null
@@ -652,14 +650,10 @@ class ChecklistsController extends ChangeNotifier {
                     )
                   : null) ??
               _lists.first;
-          final cachedItems = _checklistService.getCachedItems(
-            _currentList!.id,
-          );
-          if (cachedItems != null) {
-            _items = cachedItems;
-            _isLoading = false;
-            notifyListeners();
-          }
+          _items =
+              _checklistService.getCachedItems(_currentList!.id) ?? const [];
+          _isLoading = false;
+          notifyListeners();
         }
       }
     }
@@ -806,42 +800,12 @@ class ChecklistsController extends ChangeNotifier {
   ///
   /// [server] holds only the records for the view being refreshed (one list, or
   /// the whole house in meta mode).
-  List<ListItem> _overlayPending(List<ListItem> server) {
-    final pending = _sync.pendingItemIds(houseId);
-    if (pending.isEmpty) return server;
-
-    final localById = {for (final i in _items) i.id: i};
-    final out = <ListItem>[];
-    for (final s in server) {
-      if (pending.contains(s.id)) {
-        // Un-acked toggle/edit: trust local. If it's gone locally (pending
-        // delete) drop it rather than letting the stale snapshot revive it.
-        final local = localById[s.id];
-        if (local != null) out.add(local);
-      } else {
-        out.add(s);
-      }
-    }
-
-    // Optimistic creates the server hasn't returned yet (temp ids). Slot each
-    // into the freshly fetched snapshot at the position the active sort
-    // dictates instead of blindly prepending — otherwise a refresh that lands
-    // before the create acks yanks the new item to the top regardless of sort.
-    final present = out.map((i) => i.id).toSet();
-    final localOnly = [
-      for (final l in _items)
-        if (pending.contains(l.id) && !present.contains(l.id)) l,
-    ];
-    // Resolve each create's slot against the untouched snapshot first, then
-    // splice from the back. `localOnly` follows `_items` (display) order, so
-    // those indices are non-decreasing; inserting highest-first keeps earlier
-    // indices valid and preserves the relative order of ties.
-    final slots = [for (final l in localOnly) (l, _insertIndexFor(l, out))];
-    for (final (l, at) in slots.reversed) {
-      out.insert(at, l);
-    }
-    return out;
-  }
+  List<ListItem> _overlayPending(List<ListItem> server) => overlayPendingItems(
+    server: server,
+    local: _items,
+    pending: _sync.pendingItemIds(houseId),
+    insertIndex: (item, into) => _insertIndexFor(item, into),
+  );
 
   Future<void> _loadTrashItems(ChecklistList list) async {
     try {

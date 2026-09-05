@@ -5412,6 +5412,26 @@ class WearMessagesNn extends WearMessages {
   /// "Trykk igjen for å logge ut"
   /// ```
   String get signOutConfirm => """Trykk igjen for å logge ut""";
+
+  /// ```dart
+  /// "$count ikkje sendt enno"
+  /// ```
+  String signOutPending(int count) => """$count ikkje sendt enno""";
+
+  /// ```dart
+  /// "Send fyrst"
+  /// ```
+  String get signOutWait => """Send fyrst""";
+
+  /// ```dart
+  /// "Sender …"
+  /// ```
+  String get signOutSending => """Sender …""";
+
+  /// ```dart
+  /// "Logg ut likevel"
+  /// ```
+  String get signOutAnyway => """Logg ut likevel""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -6528,6 +6548,9 @@ Passord: pantry""",
   """wear.setupSyncing""": """Hentar listene dine""",
   """wear.setupSyncingBody""": """Straks ferdig.""",
   """wear.signOutConfirm""": """Trykk igjen for å logge ut""",
+  """wear.signOutWait""": """Send fyrst""",
+  """wear.signOutSending""": """Sender …""",
+  """wear.signOutAnyway""": """Logg ut likevel""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

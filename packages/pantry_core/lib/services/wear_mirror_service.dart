@@ -13,6 +13,8 @@ import 'package:pantry_core/services/label_service.dart';
 import 'package:pantry_core/services/note_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
+import 'package:pantry_core/sync/pending_overlay.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 
 /// One kind of mirrored payload, and the key that scopes it — a house for the
 /// reference sets, a list for items, a session for a trip's items.
@@ -175,12 +177,18 @@ class WearMirrorService extends ChangeNotifier {
       case MirrorEntity.items:
         ChecklistService.instance.cacheItems(
           scope.key,
-          rows.map(ListItem.fromJson).toList(),
+          _withPendingWrites(
+            rows.map(ListItem.fromJson).toList(),
+            ChecklistService.instance.getCachedItems(scope.key),
+          ),
         );
       case MirrorEntity.sessionItems:
         ShoppingService.instance.cacheItems(
           scope.key,
-          rows.map(ListItem.fromJson).toList(),
+          _withPendingWrites(
+            rows.map(ListItem.fromJson).toList(),
+            ShoppingService.instance.getCachedItems(scope.key),
+          ),
         );
       case MirrorEntity.categories:
         CategoryService.instance.cacheCategories(
@@ -205,7 +213,7 @@ class WearMirrorService extends ChangeNotifier {
       case MirrorEntity.notes:
         NoteService.instance.cacheNotes(
           scope.key,
-          rows.map(Note.fromJson).toList(),
+          _withPendingTicks(scope.key, rows.map(Note.fromJson).toList()),
         );
     }
 
@@ -213,6 +221,34 @@ class WearMirrorService extends ChangeNotifier {
     notifyListeners();
     return true;
   }
+
+  /// A snapshot is a rendering of what the sender knew, so it is subject to
+  /// the overlay rule like any other writer: what is still queued locally wins
+  /// over it. Without this a watch that checked three rows off in a dead zone
+  /// watches them flip back the moment it drifts into range, which on a wrist
+  /// mid-shop reads as the watch forgetting.
+  List<ListItem> _withPendingWrites(List<ListItem> rows, List<ListItem>? held) {
+    if (held == null) return rows;
+    return overlayPendingItems(
+      server: rows,
+      local: held,
+      pending: SyncManager.instance.pendingItemIdsAnyHouse(),
+    );
+  }
+
+  /// The same rule over a note body. A tick is queued as a line-level change
+  /// the executor applies to whatever the body says at drain, so the overlay
+  /// is a replay of the queued ops rather than a swap of the cached value.
+  List<Note> _withPendingTicks(int houseId, List<Note> rows) => [
+    for (final note in rows)
+      note.copyWith(
+        content: SyncManager.instance.pendingNoteContent(
+          houseId,
+          note.id,
+          note.content,
+        ),
+      ),
+  ];
 
   /// When the snapshot at [path] was taken on the sending device — the sync
   /// detail the account page reads. A missing value means nothing has ever

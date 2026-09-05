@@ -5386,6 +5386,26 @@ class WearMessagesHe extends WearMessages {
   /// "הקש שוב כדי להתנתק"
   /// ```
   String get signOutConfirm => """הקש שוב כדי להתנתק""";
+
+  /// ```dart
+  /// "$count עדיין לא נשלחו"
+  /// ```
+  String signOutPending(int count) => """$count עדיין לא נשלחו""";
+
+  /// ```dart
+  /// "לשלוח קודם"
+  /// ```
+  String get signOutWait => """לשלוח קודם""";
+
+  /// ```dart
+  /// "שולח…"
+  /// ```
+  String get signOutSending => """שולח…""";
+
+  /// ```dart
+  /// "להתנתק בכל זאת"
+  /// ```
+  String get signOutAnyway => """להתנתק בכל זאת""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6459,6 +6479,9 @@ Map<String, String> get messagesHeMap => {
   """wear.setupSyncing""": """מביאים את הרשימות שלך""",
   """wear.setupSyncingBody""": """כמעט מוכן.""",
   """wear.signOutConfirm""": """הקש שוב כדי להתנתק""",
+  """wear.signOutWait""": """לשלוח קודם""",
+  """wear.signOutSending""": """שולח…""",
+  """wear.signOutAnyway""": """להתנתק בכל זאת""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

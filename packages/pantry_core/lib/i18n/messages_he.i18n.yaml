@@ -1043,6 +1043,10 @@ wear:
   setupSyncing: מביאים את הרשימות שלך
   setupSyncingBody: כמעט מוכן.
   signOutConfirm: הקש שוב כדי להתנתק
+  signOutPending(int count): "$count עדיין לא נשלחו"
+  signOutWait: לשלוח קודם
+  signOutSending: שולח…
+  signOutAnyway: להתנתק בכל זאת
 
 watch:
   title: שעון

@@ -12,9 +12,6 @@
     <uses-feature android:name="android.hardware.camera" tools:node="remove" />
     <uses-feature android:name="android.hardware.camera.autofocus" tools:node="remove" />
 
-    <!-- Contributed by a plugin's manifest; nothing on the watch reads it. -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:node="remove" />
-
     <application android:name="${applicationName}">
 
         <meta-data

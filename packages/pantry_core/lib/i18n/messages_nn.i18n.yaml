@@ -1187,6 +1187,10 @@ wear:
   setupSyncing: Hentar listene dine
   setupSyncingBody: Straks ferdig.
   signOutConfirm: Trykk igjen for å logge ut
+  signOutPending(int count): "$count ikkje sendt enno"
+  signOutWait: Send fyrst
+  signOutSending: Sender …
+  signOutAnyway: Logg ut likevel
 
 watch:
   title: Klokke

@@ -1,8 +1,21 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
+
+/// How much a store owes the user if the process dies before its next write.
+enum CacheDurability {
+  /// A rendering that can be rebuilt — from the server, or from the sync queue
+  /// laid back over it. Writes coalesce behind a short debounce and are
+  /// flushed at a lifecycle checkpoint.
+  cache,
+
+  /// The durable record of the user's intent, which nothing can rebuild.
+  /// Every mutation goes straight to disk.
+  queue,
+}
 
 /// Persistent key-value cache that serializes to a JSON file.
 ///
@@ -10,6 +23,12 @@ import 'package:path_provider/path_provider.dart';
 /// All mutations auto-persist to disk.
 class CacheStore {
   final String fileName;
+
+  /// Which durability class this store belongs to. It decides whether a
+  /// mutation may wait behind [_debounce] — a lost cache write is rebuilt on
+  /// the next read, and a lost queue write is simply gone.
+  final CacheDurability durability;
+
   Map<String, dynamic> _data = {};
 
   /// The write currently draining to disk, or null when idle. All mutations
@@ -20,7 +39,28 @@ class CacheStore {
   /// drain loop knows to encode-and-write one more time with the latest state.
   bool _dirty = false;
 
-  CacheStore(this.fileName);
+  /// Pending debounce for a cache-class store, or null when nothing is waiting.
+  Timer? _debounceTimer;
+
+  /// Completes when the debounced write has reached disk. Held so [flush] and
+  /// a caller awaiting [_save] see the same future the timer will satisfy.
+  Completer<void>? _debounced;
+
+  /// Long enough to swallow the trickle of mutations a settings screen or a
+  /// scroll-driven cache refresh produces, short enough that a process killed
+  /// without a lifecycle callback loses at most one beat. Bursts already
+  /// coalesce inside [_drain]; this catches the spaced-out case it cannot.
+  static const _debounce = Duration(milliseconds: 500);
+
+  /// Every store built so far, so a lifecycle checkpoint can flush them
+  /// without each owner remembering to register itself.
+  static final List<CacheStore> _live = [];
+
+  static _CacheCheckpoint? _checkpoint;
+
+  CacheStore(this.fileName, {this.durability = CacheDurability.cache}) {
+    _live.add(this);
+  }
 
   // -- Disk I/O --
 
@@ -48,13 +88,43 @@ class CacheStore {
   /// on-disk copy always reflects the latest [_data].
   Future<void> _save() {
     _dirty = true;
-    return _writing ??= _drain();
+    if (durability == CacheDurability.queue) return _writing ??= _drain();
+    final completer = _debounced ??= Completer<void>();
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(_debounce, _writeDebounced);
+    return completer.future;
   }
 
-  /// Completes once every pending mutation has been written to disk. Useful to
-  /// guarantee durability at a checkpoint (e.g. app pause) and to await the
-  /// serialized drain in tests.
-  Future<void> flush() => _writing ?? Future<void>.value();
+  void _writeDebounced() {
+    _debounceTimer = null;
+    final completer = _debounced;
+    _debounced = null;
+    final write = _writing ??= _drain();
+    if (completer != null && !completer.isCompleted) {
+      completer.complete(write);
+    }
+  }
+
+  /// Completes once every pending mutation has been written to disk. Cancels
+  /// any waiting debounce first, so a checkpoint (app pause, sign-out, a test
+  /// awaiting the drain) never returns while a mutation is still only in
+  /// memory.
+  Future<void> flush() {
+    if (_debounceTimer != null) _writeDebounced();
+    return _writing ?? Future<void>.value();
+  }
+
+  /// Flush every live store. Wired to the lifecycle checkpoint so a debounced
+  /// cache write cannot be lost to a process the system kills while the app is
+  /// in the background.
+  static Future<void> flushAll() =>
+      Future.wait([for (final store in _live) store.flush()]);
+
+  /// Start flushing every store when the app leaves the foreground. Called
+  /// once per entrypoint, after the binding exists.
+  static void installPauseCheckpoint() {
+    _checkpoint ??= _CacheCheckpoint();
+  }
 
   Future<void> _drain() async {
     try {
@@ -74,7 +144,16 @@ class CacheStore {
 
   Future<void> clear() async {
     _data.clear();
-    await _save();
+    _dirty = true;
+    _debounceTimer?.cancel();
+    _debounceTimer = null;
+    final completer = _debounced;
+    _debounced = null;
+    final write = _writing ??= _drain();
+    if (completer != null && !completer.isCompleted) {
+      completer.complete(write);
+    }
+    await write;
   }
 
   // -- Scalar values --
@@ -142,5 +221,21 @@ class CacheStore {
   void removeKey(String key) {
     _data.remove(key);
     _save();
+  }
+}
+
+/// Turns the app leaving the foreground into the durability checkpoint
+/// [CacheStore.flush] documents. Without it a debounced write is only ever a
+/// promise: a watch process is killed far more readily than a phone's, and the
+/// kill arrives after the pause, not before it.
+class _CacheCheckpoint with WidgetsBindingObserver {
+  _CacheCheckpoint() {
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) return;
+    unawaited(CacheStore.flushAll());
   }
 }

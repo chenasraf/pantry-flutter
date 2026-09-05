@@ -1043,6 +1043,10 @@ wear:
   setupSyncing: Trayendo tus listas
   setupSyncingBody: Casi está.
   signOutConfirm: Toca otra vez para cerrar sesión
+  signOutPending(int count): "$count sin enviar"
+  signOutWait: Enviar primero
+  signOutSending: Enviando…
+  signOutAnyway: Cerrar sesión igualmente
 
 watch:
   title: Reloj
