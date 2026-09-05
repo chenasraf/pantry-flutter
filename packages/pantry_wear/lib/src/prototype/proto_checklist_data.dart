@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// PROTOTYPE — throwaway stand-in data for the checklists page. Nothing here
-/// reaches a server: the page is being judged on gesture, density and the feel
-/// of a hand-rolled snap, none of which need real fetching.
+/// PROTOTYPE — stand-in data for the checklists page. Nothing here reaches a
+/// server: the page shows gesture, density and the feel of a hand-rolled
+/// snap, none of which need real fetching.
 
 @immutable
 class ProtoCategory {

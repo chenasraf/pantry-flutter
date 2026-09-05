@@ -16,14 +16,15 @@ import 'proto_mechanics.dart';
 import 'proto_note_data.dart';
 import 'proto_tuning.dart';
 
-/// PROTOTYPE — the checklists page in both of the shells it lives in, to be
-/// judged on a real watch and then thrown away.
+/// PROTOTYPE — the wear skeleton: the shell, and every page designed so far.
 ///
-/// The structure was settled by grilling, so this is not a set of rival
-/// designs: it is one design with the parts that can only be judged on a
-/// wrist left live. **Double-tap the rail** for the tuning page — the snap,
-/// the falloff, the undo window, the centre-card expansion, grouping, chip
-/// visibility, and the two mode switches.
+/// It carries one design rather than a set of rivals — each was judged on a
+/// Samsung SM-L315F and the losers are gone — and it exists so the real
+/// implementation has a source for what a document cannot carry: the falloff
+/// constants, the snap table, the undo stroke, the row geometry. What is still
+/// live is the tuning: **double-tap the rail** for the snap, the falloff, the
+/// undo window, the centre-card expansion, grouping, chip visibility, and the
+/// two mode switches.
 ///
 /// A live session is a different pager, not a mode of this page: browse is
 /// checklists · photos · notes · account, and a session replaces the first

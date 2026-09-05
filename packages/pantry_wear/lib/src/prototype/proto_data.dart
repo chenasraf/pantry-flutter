@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-/// PROTOTYPE — throwaway stand-in data. Nothing here reaches a server; the
-/// shell is being judged on density and geometry, not on fetching.
+/// PROTOTYPE — stand-in data. Nothing here reaches a server: the shell shows
+/// density and geometry, neither of which needs real fetching.
 
 @immutable
 class ProtoItem {
@@ -68,8 +68,8 @@ const protoPhotos = <ProtoPhoto>[
 /// to spend, so this is the set worth designing against.
 enum ProtoSync { idle, offline, error }
 
-/// Walks the sync states on a timer so every variant can be judged in all
-/// three without a control to drive it.
+/// Walks the sync states on a timer, so all three are seen on the wrist
+/// without a control to drive them.
 ///
 /// It pauses when the watch stops showing the app, which is the behaviour the
 /// real polling loop needs: a Dart timer keeps firing through a doze window,
@@ -115,8 +115,8 @@ class ProtoSyncCycler extends ChangeNotifier {
   }
 }
 
-/// Icon, colour and label for a sync state, so the three variants disagree
-/// about placement rather than about vocabulary.
+/// Icon, colour and label for a sync state, so every surface that shows one
+/// says it in the same vocabulary.
 ({IconData icon, Color color, String label}) protoSyncLook(
   BuildContext context,
   ProtoSync state,

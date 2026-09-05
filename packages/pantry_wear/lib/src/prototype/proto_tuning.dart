@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 
 import 'checklist_page.dart';
 
-/// PROTOTYPE — the knobs the checklists page is being judged on.
+/// PROTOTYPE — the knobs the pages are tuned by.
 ///
-/// The structure of the page was settled by grilling; what is left is feel,
-/// and every piece of it is a wrist judgement. These are live so the watch can
-/// be tuned in the hand rather than through a rebuild.
+/// Structure was settled by grilling and the design by wearing it; what these
+/// hold is feel, every piece of it a wrist judgement. They stay live so the
+/// watch can be tuned in the hand rather than through a rebuild.
 class ProtoTuning extends ChangeNotifier {
   /// Hand-rolled snap, or free scrolling. Off is the honest control for
   /// "is the snap earning its complexity".

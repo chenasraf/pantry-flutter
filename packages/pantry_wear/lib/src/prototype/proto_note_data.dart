@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// PROTOTYPE — notes to judge the wrist reading experience against.
+/// PROTOTYPE — stand-in notes, shaped like the ones a household keeps.
 ///
 /// Note bodies are **raw markdown**: that is what the server stores and what
 /// the Nextcloud web app co-edits. The phone's Quill editor is a view over

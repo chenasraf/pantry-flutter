@@ -8,12 +8,12 @@ import 'package:pantry_core/utils/text_direction.dart';
 import '../services/rotary_service.dart';
 import '../wear_shape.dart';
 
-/// PROTOTYPE — the shell machinery the three variants share.
+/// PROTOTYPE — the machinery every page and pushed route shares.
 ///
-/// Layout is deliberately *not* shared: each variant is free to throw the
-/// whole frame away. What lives here is mechanism the platform forces on us
-/// and that every variant must behave identically under — gesture ownership,
-/// the hand-rolled exit, rotary, and the geometry of a curved row.
+/// Layout is deliberately *not* here: a page owns its own frame. What lives
+/// here is mechanism the platform forces on us and that every surface must
+/// behave identically under — gesture ownership, the hand-rolled exit,
+/// rotary, and the geometry of a curved row.
 
 /// Google's rule for a pager on a watch: a drag that starts within this much
 /// of the screen width from the leading edge belongs to the system dismiss,
