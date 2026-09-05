@@ -183,6 +183,22 @@ class CommonMessagesEs extends CommonMessages {
   /// ```
   String get noAccessBody =>
       """Todavía no tienes acceso a nada en este hogar. Un administrador puede concederte permisos en la aplicación web de Pantry.""";
+
+  /// ```dart
+  /// "Sesión caducada"
+  /// ```
+  String get sessionExpiredTitle => """Sesión caducada""";
+
+  /// ```dart
+  /// "El servidor ya no acepta tu inicio de sesión. Tus datos siguen aquí, y cualquier cambio esperará hasta que vuelvas a iniciar sesión."
+  /// ```
+  String get sessionExpiredBody =>
+      """El servidor ya no acepta tu inicio de sesión. Tus datos siguen aquí, y cualquier cambio esperará hasta que vuelvas a iniciar sesión.""";
+
+  /// ```dart
+  /// "Iniciar sesión de nuevo"
+  /// ```
+  String get signInAgain => """Iniciar sesión de nuevo""";
 }
 
 class LoginMessagesEs extends LoginMessages {
@@ -5275,6 +5291,10 @@ Map<String, String> get messagesEsMap => {
   """common.noAccessTitle""": """Sin acceso""",
   """common.noAccessBody""":
       """Todavía no tienes acceso a nada en este hogar. Un administrador puede concederte permisos en la aplicación web de Pantry.""",
+  """common.sessionExpiredTitle""": """Sesión caducada""",
+  """common.sessionExpiredBody""":
+      """El servidor ya no acepta tu inicio de sesión. Tus datos siguen aquí, y cualquier cambio esperará hasta que vuelvas a iniciar sesión.""",
+  """common.signInAgain""": """Iniciar sesión de nuevo""",
   """login.connectToNextcloud""": """Conéctate a tu instancia de Nextcloud""",
   """login.serverUrl""": """URL del servidor""",
   """login.serverUrlHint""": """cloud.example.com""",

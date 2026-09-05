@@ -49,8 +49,16 @@ class ApiClient {
   /// the safety net for roles that changed mid-session after the UI was gated.
   static void Function()? onForbidden;
 
+  /// Every response passes through here so a `401` and the success that
+  /// disproves it are observed at the same point. The state itself lives on
+  /// [AuthService], beside the credential it describes.
   static void _notify(int statusCode) {
     if (statusCode == 403) onForbidden?.call();
+    if (statusCode == 401) {
+      AuthService.instance.reportUnauthorized();
+    } else if (statusCode < 400) {
+      AuthService.instance.reportAuthorized();
+    }
   }
 
   NextcloudCredentials get _credentials {
@@ -149,8 +157,8 @@ class ApiClient {
     final response = await http
         .delete(_uri(path), headers: _headers)
         .timeout(_timeout);
+    _notify(response.statusCode);
     if (response.statusCode >= 400) {
-      _notify(response.statusCode);
       throw ApiException(response.statusCode, response.body);
     }
   }
@@ -233,8 +241,8 @@ class ApiClient {
   Map<String, String> get authHeaders => _credentials.basicAuthHeaders;
 
   T _handleResponse<D, T>(http.Response response, T Function(D) fromJson) {
+    _notify(response.statusCode);
     if (response.statusCode >= 400) {
-      _notify(response.statusCode);
       throw ApiException(response.statusCode, response.body);
     }
     final json = jsonDecode(response.body);

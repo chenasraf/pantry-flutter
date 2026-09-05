@@ -184,6 +184,22 @@ class CommonMessagesFr extends CommonMessages {
   /// ```
   String get noAccessBody =>
       """Vous n'avez encore accès à rien dans ce foyer. Un administrateur peut vous accorder des autorisations dans l'application web Pantry.""";
+
+  /// ```dart
+  /// "Connexion expirée"
+  /// ```
+  String get sessionExpiredTitle => """Connexion expirée""";
+
+  /// ```dart
+  /// "Le serveur n'accepte plus votre connexion. Vos données sont toujours là, et toute modification attendra que vous vous reconnectiez."
+  /// ```
+  String get sessionExpiredBody =>
+      """Le serveur n'accepte plus votre connexion. Vos données sont toujours là, et toute modification attendra que vous vous reconnectiez.""";
+
+  /// ```dart
+  /// "Se reconnecter"
+  /// ```
+  String get signInAgain => """Se reconnecter""";
 }
 
 class LoginMessagesFr extends LoginMessages {
@@ -5284,6 +5300,10 @@ Map<String, String> get messagesFrMap => {
   """common.noAccessTitle""": """Aucun accès""",
   """common.noAccessBody""":
       """Vous n'avez encore accès à rien dans ce foyer. Un administrateur peut vous accorder des autorisations dans l'application web Pantry.""",
+  """common.sessionExpiredTitle""": """Connexion expirée""",
+  """common.sessionExpiredBody""":
+      """Le serveur n'accepte plus votre connexion. Vos données sont toujours là, et toute modification attendra que vous vous reconnectiez.""",
+  """common.signInAgain""": """Se reconnecter""",
   """login.connectToNextcloud""":
       """Connectez-vous à votre instance Nextcloud""",
   """login.serverUrl""": """URL du serveur""",

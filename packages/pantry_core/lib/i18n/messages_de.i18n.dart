@@ -183,6 +183,22 @@ class CommonMessagesDe extends CommonMessages {
   /// ```
   String get noAccessBody =>
       """Du hast noch keinen Zugriff auf Inhalte in diesem Haushalt. Eine Administratorin oder ein Administrator kann dir in der Pantry-Web-App Berechtigungen erteilen.""";
+
+  /// ```dart
+  /// "Anmeldung abgelaufen"
+  /// ```
+  String get sessionExpiredTitle => """Anmeldung abgelaufen""";
+
+  /// ```dart
+  /// "Der Server akzeptiert deine Anmeldung nicht mehr. Deine Daten sind weiterhin vorhanden, und alle Änderungen warten, bis du dich erneut anmeldest."
+  /// ```
+  String get sessionExpiredBody =>
+      """Der Server akzeptiert deine Anmeldung nicht mehr. Deine Daten sind weiterhin vorhanden, und alle Änderungen warten, bis du dich erneut anmeldest.""";
+
+  /// ```dart
+  /// "Erneut anmelden"
+  /// ```
+  String get signInAgain => """Erneut anmelden""";
 }
 
 class LoginMessagesDe extends LoginMessages {
@@ -5292,6 +5308,10 @@ Map<String, String> get messagesDeMap => {
   """common.noAccessTitle""": """Kein Zugriff""",
   """common.noAccessBody""":
       """Du hast noch keinen Zugriff auf Inhalte in diesem Haushalt. Eine Administratorin oder ein Administrator kann dir in der Pantry-Web-App Berechtigungen erteilen.""",
+  """common.sessionExpiredTitle""": """Anmeldung abgelaufen""",
+  """common.sessionExpiredBody""":
+      """Der Server akzeptiert deine Anmeldung nicht mehr. Deine Daten sind weiterhin vorhanden, und alle Änderungen warten, bis du dich erneut anmeldest.""",
+  """common.signInAgain""": """Erneut anmelden""",
   """login.connectToNextcloud""": """Mit deiner Nextcloud-Instanz verbinden""",
   """login.serverUrl""": """Server-URL""",
   """login.serverUrlHint""": """cloud.example.com""",

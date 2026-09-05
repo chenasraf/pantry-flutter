@@ -17,6 +17,9 @@ common:
   permissionDenied: "Dazu hast du keine Berechtigung"
   noAccessTitle: "Kein Zugriff"
   noAccessBody: "Du hast noch keinen Zugriff auf Inhalte in diesem Haushalt. Eine Administratorin oder ein Administrator kann dir in der Pantry-Web-App Berechtigungen erteilen."
+  sessionExpiredTitle: "Anmeldung abgelaufen"
+  sessionExpiredBody: "Der Server akzeptiert deine Anmeldung nicht mehr. Deine Daten sind weiterhin vorhanden, und alle Änderungen warten, bis du dich erneut anmeldest."
+  signInAgain: "Erneut anmelden"
 
 login:
   connectToNextcloud: Mit deiner Nextcloud-Instanz verbinden

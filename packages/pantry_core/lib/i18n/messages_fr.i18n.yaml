@@ -17,6 +17,9 @@ common:
   permissionDenied: Vous n'avez pas la permission de faire cela
   noAccessTitle: Aucun accès
   noAccessBody: Vous n'avez encore accès à rien dans ce foyer. Un administrateur peut vous accorder des autorisations dans l'application web Pantry.
+  sessionExpiredTitle: Connexion expirée
+  sessionExpiredBody: Le serveur n'accepte plus votre connexion. Vos données sont toujours là, et toute modification attendra que vous vous reconnectiez.
+  signInAgain: Se reconnecter
 
 login:
   connectToNextcloud: "Connectez-vous à votre instance Nextcloud"

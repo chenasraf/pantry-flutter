@@ -62,6 +62,44 @@ class AuthService {
   NextcloudCredentials? get credentials => _credentials;
   bool get isLoggedIn => _credentials != null;
 
+  /// How long a `401` must stand before it is shown. A proxy, a server
+  /// misconfiguration or a mid-request upgrade can produce a single one, and a
+  /// banner that appears and vanishes is worse than one that never appeared.
+  static const _unauthorizedGrace = Duration(seconds: 3);
+
+  /// True while the server is rejecting the stored credential. Both surfaces
+  /// degrade on this rather than signing out: the caches stay readable and the
+  /// sync queue holds, so a revocation costs the user nothing they can't
+  /// recover by signing in again.
+  final ValueNotifier<bool> isUnauthorized = ValueNotifier(false);
+
+  Timer? _unauthorizedTimer;
+
+  /// Called by [ApiClient] on every `401`. A revoked password answers every
+  /// request this way, so nothing will clear the timer and the state stands.
+  void reportUnauthorized() {
+    if (isUnauthorized.value || _unauthorizedTimer != null) return;
+    _unauthorizedTimer = Timer(_unauthorizedGrace, () {
+      _unauthorizedTimer = null;
+      isUnauthorized.value = true;
+    });
+  }
+
+  /// Called by [ApiClient] on every response the server did not reject. Any
+  /// success proves the credential works, which is what makes the state
+  /// trustworthy — counting consecutive failures would not, since the app
+  /// issues requests concurrently and one revocation produces a burst of them.
+  void reportAuthorized() {
+    if (_unauthorizedTimer == null && !isUnauthorized.value) return;
+    _clearUnauthorized();
+  }
+
+  void _clearUnauthorized() {
+    _unauthorizedTimer?.cancel();
+    _unauthorizedTimer = null;
+    isUnauthorized.value = false;
+  }
+
   /// First day of week from Nextcloud user settings.
   /// 0 = Sunday, 1 = Monday, ..., 6 = Saturday.
   int _firstDayOfWeek = _firstDayFromLocale();
@@ -429,6 +467,7 @@ class AuthService {
 
   Future<void> _saveCredentials(NextcloudCredentials creds) async {
     _credentials = creds;
+    _clearUnauthorized();
     await _storage.write(
       key: _credentialsKey,
       value: jsonEncode(creds.toJson()),
@@ -448,6 +487,7 @@ class AuthService {
       }
     }
     _credentials = null;
+    _clearUnauthorized();
     await _storage.delete(key: _credentialsKey);
   }
 }

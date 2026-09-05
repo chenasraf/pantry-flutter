@@ -43,6 +43,7 @@ import 'views/onboarding/onboarding_pages.dart';
 import 'views/onboarding/onboarding_view.dart';
 import 'views/widget/checklist_widget_config_view.dart';
 import 'views/widget/widget_config_view.dart';
+import 'widgets/session_expired_banner.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -358,6 +359,30 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     return '/home';
   }
 
+  /// True while the re-authentication screen the banner offers is on the stack.
+  bool _reauthOpen = false;
+
+  /// Re-authentication keeps the user where they were: the sign-in screen is
+  /// pushed over the app and popped on success, so the caches, the open route
+  /// and the held sync queue all survive the round trip.
+  Future<void> _onReauthRequested() async {
+    final navigator = rootNavigatorKey.currentState;
+    if (navigator == null) return;
+    setState(() => _reauthOpen = true);
+    await navigator.push(
+      MaterialPageRoute(
+        builder: (_) => LoginView(
+          onLoginSuccess: () async {
+            await ServerVersionService.instance.fetch();
+            await ThemingService.instance.fetchTheme();
+            navigator.pop();
+          },
+        ),
+      ),
+    );
+    if (mounted) setState(() => _reauthOpen = false);
+  }
+
   Future<void> _onLoginSuccess() async {
     await ServerVersionService.instance.fetch();
     await ThemingService.instance.fetchTheme();
@@ -475,8 +500,14 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
           themeMode: ThemingService.instance.themeMode,
           builder: (context, child) {
             if (child == null) return const SizedBox.shrink();
-            if (!PlatformInfo.isDesktopHost) return child;
-            return _EscapePopWrapper(child: child);
+            final wrapped = PlatformInfo.isDesktopHost
+                ? _EscapePopWrapper(child: child)
+                : child;
+            return SessionExpiredBanner(
+              suppressed: _reauthOpen,
+              onSignIn: _onReauthRequested,
+              child: wrapped,
+            );
           },
           onGenerateInitialRoutes: (initialRoute) => [
             MaterialPageRoute(

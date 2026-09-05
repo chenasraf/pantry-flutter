@@ -182,6 +182,22 @@ class CommonMessages {
   /// ```
   String get noAccessBody =>
       """You don't have access to anything in this house yet. An admin can grant you permissions in the Pantry web app.""";
+
+  /// ```dart
+  /// "Sign-in expired"
+  /// ```
+  String get sessionExpiredTitle => """Sign-in expired""";
+
+  /// ```dart
+  /// "The server is no longer accepting your sign-in. Your data is still here, and any changes you make wait until you sign in again."
+  /// ```
+  String get sessionExpiredBody =>
+      """The server is no longer accepting your sign-in. Your data is still here, and any changes you make wait until you sign in again.""";
+
+  /// ```dart
+  /// "Sign in again"
+  /// ```
+  String get signInAgain => """Sign in again""";
 }
 
 class LoginMessages {
@@ -5233,6 +5249,10 @@ Map<String, String> get messagesMap => {
   """common.noAccessTitle""": """No access""",
   """common.noAccessBody""":
       """You don't have access to anything in this house yet. An admin can grant you permissions in the Pantry web app.""",
+  """common.sessionExpiredTitle""": """Sign-in expired""",
+  """common.sessionExpiredBody""":
+      """The server is no longer accepting your sign-in. Your data is still here, and any changes you make wait until you sign in again.""",
+  """common.signInAgain""": """Sign in again""",
   """login.connectToNextcloud""": """Connect to your Nextcloud instance""",
   """login.serverUrl""": """Server URL""",
   """login.serverUrlHint""": """cloud.example.com""",

@@ -20,6 +20,11 @@ common:
   noAccessBody:
     Du har ikkje tilgang til noko i dette huset enno. Ein administrator
     kan gi deg tilgang gjennom Pantry-nettappen.
+  sessionExpiredTitle: Innlogginga har gått ut
+  sessionExpiredBody:
+    Tenaren godtek ikkje innlogginga di lenger. Dataa dine er framleis
+    her, og alle endringar ventar til du loggar inn att.
+  signInAgain: Logg inn att
 login:
   connectToNextcloud: Koble til Nextcloud-instansen din
   serverUrl: Tenaradresse

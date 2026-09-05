@@ -183,6 +183,22 @@ class CommonMessagesNn extends CommonMessages {
   /// ```
   String get noAccessBody =>
       """Du har ikkje tilgang til noko i dette huset enno. Ein administrator kan gi deg tilgang gjennom Pantry-nettappen.""";
+
+  /// ```dart
+  /// "Innlogginga har gått ut"
+  /// ```
+  String get sessionExpiredTitle => """Innlogginga har gått ut""";
+
+  /// ```dart
+  /// "Tenaren godtek ikkje innlogginga di lenger. Dataa dine er framleis her, og alle endringar ventar til du loggar inn att."
+  /// ```
+  String get sessionExpiredBody =>
+      """Tenaren godtek ikkje innlogginga di lenger. Dataa dine er framleis her, og alle endringar ventar til du loggar inn att.""";
+
+  /// ```dart
+  /// "Logg inn att"
+  /// ```
+  String get signInAgain => """Logg inn att""";
 }
 
 class LoginMessagesNn extends LoginMessages {
@@ -5262,6 +5278,10 @@ Map<String, String> get messagesNnMap => {
   """common.noAccessTitle""": """Ingen tilgang""",
   """common.noAccessBody""":
       """Du har ikkje tilgang til noko i dette huset enno. Ein administrator kan gi deg tilgang gjennom Pantry-nettappen.""",
+  """common.sessionExpiredTitle""": """Innlogginga har gått ut""",
+  """common.sessionExpiredBody""":
+      """Tenaren godtek ikkje innlogginga di lenger. Dataa dine er framleis her, og alle endringar ventar til du loggar inn att.""",
+  """common.signInAgain""": """Logg inn att""",
   """login.connectToNextcloud""": """Koble til Nextcloud-instansen din""",
   """login.serverUrl""": """Tenaradresse""",
   """login.serverUrlHint""": """sky.example.com""",

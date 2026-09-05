@@ -183,6 +183,22 @@ class CommonMessagesHe extends CommonMessages {
   /// ```
   String get noAccessBody =>
       """עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.""";
+
+  /// ```dart
+  /// "ההתחברות פגה"
+  /// ```
+  String get sessionExpiredTitle => """ההתחברות פגה""";
+
+  /// ```dart
+  /// "השרת כבר לא מקבל את ההתחברות שלך. הנתונים שלך עדיין כאן, וכל שינוי ימתין עד שתתחבר מחדש."
+  /// ```
+  String get sessionExpiredBody =>
+      """השרת כבר לא מקבל את ההתחברות שלך. הנתונים שלך עדיין כאן, וכל שינוי ימתין עד שתתחבר מחדש.""";
+
+  /// ```dart
+  /// "התחברות מחדש"
+  /// ```
+  String get signInAgain => """התחברות מחדש""";
 }
 
 class LoginMessagesHe extends LoginMessages {
@@ -5239,6 +5255,10 @@ Map<String, String> get messagesHeMap => {
   """common.noAccessTitle""": """אין גישה""",
   """common.noAccessBody""":
       """עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.""",
+  """common.sessionExpiredTitle""": """ההתחברות פגה""",
+  """common.sessionExpiredBody""":
+      """השרת כבר לא מקבל את ההתחברות שלך. הנתונים שלך עדיין כאן, וכל שינוי ימתין עד שתתחבר מחדש.""",
+  """common.signInAgain""": """התחברות מחדש""",
   """login.connectToNextcloud""": """התחבר לשרת ה-Nextcloud שלך""",
   """login.serverUrl""": """כתובת השרת""",
   """login.serverUrlHint""": """cloud.example.com""",

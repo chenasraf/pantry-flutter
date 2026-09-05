@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 import 'login_controller.dart';
@@ -26,6 +27,10 @@ class _LoginViewState extends State<LoginView> {
     _urlController.addListener(() {
       _controller.setServerUrl(_urlController.text);
     });
+    // Empty on a first sign-in, and the user's own server when they are
+    // re-authenticating after a rejected credential.
+    final serverUrl = AuthService.instance.credentials?.serverUrl;
+    if (serverUrl != null) _urlController.text = serverUrl;
   }
 
   @override

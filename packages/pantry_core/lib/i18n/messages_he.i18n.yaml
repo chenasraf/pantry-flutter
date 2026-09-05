@@ -17,6 +17,9 @@ common:
   permissionDenied: אין לך הרשאה לבצע פעולה זו
   noAccessTitle: אין גישה
   noAccessBody: עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.
+  sessionExpiredTitle: ההתחברות פגה
+  sessionExpiredBody: השרת כבר לא מקבל את ההתחברות שלך. הנתונים שלך עדיין כאן, וכל שינוי ימתין עד שתתחבר מחדש.
+  signInAgain: התחברות מחדש
 
 login:
   connectToNextcloud: התחבר לשרת ה-Nextcloud שלך
