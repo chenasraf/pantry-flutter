@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
 
-import 'prototype/checklist_prototype.dart';
+import 'prototype/notes_prototype.dart';
 
 /// Root of the watch app.
 class PantryWearApp extends StatelessWidget {
@@ -26,7 +26,7 @@ class PantryWearApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.black,
         useMaterial3: true,
       ),
-      home: const ChecklistPrototype(),
+      home: const NotesPrototype(),
     );
   }
 }
