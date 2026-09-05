@@ -759,7 +759,7 @@ class ItemDetailPage extends StatelessWidget {
         onDismiss: () => Navigator.of(context).pop(),
         child: ListView(
           padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 18,
+            horizontal: 11,
             vertical: 46,
           ),
           children: [

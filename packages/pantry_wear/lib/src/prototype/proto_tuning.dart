@@ -43,8 +43,8 @@ class ProtoTuning extends ChangeNotifier {
   /// Fraction of the width held back at each side of a list. Photos and notes
   /// are taller than a checklist row, so they sit further from the centre line
   /// where a round screen is narrower, and want more of it.
-  double sideInset = 0.04;
-  double tallSideInset = 0.08;
+  double sideInset = 0.025;
+  double tallSideInset = 0.05;
 
   GroupBy groupBy = GroupBy.category;
 

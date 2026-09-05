@@ -109,7 +109,7 @@ class SnapFocusList extends StatefulWidget {
     this.falloffRows = 2.2,
     this.snapEnabled = true,
     this.rotaryActive = false,
-    this.horizontalInset = 0.04,
+    this.horizontalInset = 0.025,
     this.geometry,
   });
 

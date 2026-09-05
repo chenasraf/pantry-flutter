@@ -529,8 +529,8 @@ class _CollectionPage extends StatelessWidget {
       padding: EdgeInsetsDirectional.only(
         top: MediaQuery.sizeOf(context).height * 0.24,
         bottom: 30,
-        start: 16,
-        end: 16,
+        start: 10,
+        end: 10,
       ),
       itemCount: items.length,
       itemBuilder: (context, i) {
@@ -660,7 +660,7 @@ class _TuningPageState extends State<TuningPage> {
         onDismiss: () => Navigator.of(context).pop(),
         child: ListView(
           padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 16,
+            horizontal: 10,
             vertical: 44,
           ),
           children: [
