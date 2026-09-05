@@ -17,6 +17,7 @@ import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
@@ -250,7 +251,7 @@ class ChecklistTileRowContent extends StatelessWidget {
                   ],
                   if (suggestion && archived) ...[
                     const SizedBox(width: 10),
-                    _Chip(
+                    EntityChip(
                       leading: Icon(
                         Icons.archive_outlined,
                         size: 13,
@@ -418,7 +419,7 @@ class _MetaRow extends StatelessWidget {
       runSpacing: 4,
       children: [
         if (listBadge != null && prefs.isItemChipVisible(ItemChipKind.list.key))
-          _Chip(
+          EntityChip(
             leading: Icon(
               checklistIcon(listBadge!.icon),
               size: 12,
@@ -430,7 +431,7 @@ class _MetaRow extends StatelessWidget {
           ),
         if (category != null &&
             prefs.isItemChipVisible(ItemChipKind.category.key))
-          _Chip(
+          EntityChip(
             leading: Container(
               width: 7,
               height: 7,
@@ -445,7 +446,7 @@ class _MetaRow extends StatelessWidget {
           ),
         if (prefs.isItemChipVisible(ItemChipKind.store.key))
           for (final s in stores)
-            _Chip(
+            EntityChip(
               leading: Icon(
                 storeIcon(s.icon),
                 size: 12,
@@ -460,7 +461,7 @@ class _MetaRow extends StatelessWidget {
             ),
         if (prefs.isItemChipVisible(ItemChipKind.label.key))
           for (final l in labels)
-            _Chip(
+            EntityChip(
               leading: Icon(
                 labelIcon(l.icon),
                 size: 12,
@@ -475,7 +476,7 @@ class _MetaRow extends StatelessWidget {
         if (item.quantity != null &&
             item.quantity!.trim().isNotEmpty &&
             prefs.isItemChipVisible(ItemChipKind.quantity.key))
-          _Chip(
+          EntityChip(
             label: item.quantity!,
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
@@ -483,7 +484,7 @@ class _MetaRow extends StatelessWidget {
         if (item.hasPriceFor(priceStoreContext) &&
             hasFeature('item-price') &&
             prefs.isItemChipVisible(ItemChipKind.price.key))
-          _Chip(
+          EntityChip(
             label: item.formattedPriceFor(priceStoreContext)!,
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
@@ -491,7 +492,7 @@ class _MetaRow extends StatelessWidget {
         if (item.description != null &&
             item.description!.trim().isNotEmpty &&
             prefs.isItemChipVisible(ItemChipKind.note.key))
-          _Chip(
+          EntityChip(
             leading: Icon(Icons.notes, size: 16, color: cs.onSurfaceVariant),
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
@@ -512,14 +513,14 @@ class _MetaRow extends StatelessWidget {
           ),
         if (lc == ItemLifecycle.once &&
             prefs.isItemChipVisible(ItemChipKind.oneTime.key))
-          _Chip(
+          EntityChip(
             label: m.checklists.itemTypes.onceTime,
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
           ),
         if (lc == ItemLifecycle.recurring &&
             prefs.isItemChipVisible(ItemChipKind.recurring.key))
-          _Chip(
+          EntityChip(
             label: _recurringLabel(item),
             textColor: cs.primary,
             background: cs.primary.withValues(alpha: 0.13),
@@ -532,63 +533,6 @@ class _MetaRow extends StatelessWidget {
     final rrule = item.rrule ?? '';
     final summary = formatRrule(rrule);
     return summary;
-  }
-}
-
-class _Chip extends StatelessWidget {
-  final Widget? leading;
-
-  /// Chip caption. When null the chip renders as an icon-only badge (used by
-  /// the description chip), so the leading icon carries the whole meaning.
-  final String? label;
-  final Color textColor;
-  final Color background;
-
-  /// When set, the chip becomes tappable (used by the store chip to open the
-  /// store details view). Other chips stay inert.
-  final VoidCallback? onTap;
-
-  const _Chip({
-    this.leading,
-    this.label,
-    required this.textColor,
-    required this.background,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final hasLabel = label != null;
-    final radius = BorderRadius.circular(7);
-    final content = Container(
-      padding: EdgeInsets.symmetric(horizontal: hasLabel ? 9 : 6, vertical: 3),
-      decoration: BoxDecoration(color: background, borderRadius: radius),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (leading != null) ...[
-            leading!,
-            if (hasLabel) const SizedBox(width: 6),
-          ],
-          if (hasLabel)
-            Text(
-              label!,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-        ],
-      ),
-    );
-
-    if (onTap == null) return content;
-    return Material(
-      color: Colors.transparent,
-      borderRadius: radius,
-      child: InkWell(onTap: onTap, borderRadius: radius, child: content),
-    );
   }
 }
 
