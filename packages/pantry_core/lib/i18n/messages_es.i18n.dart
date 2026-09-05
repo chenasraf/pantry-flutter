@@ -5269,6 +5269,81 @@ class WearMessagesEs extends WearMessages {
   /// "Inicia sesión en tu teléfono"
   /// ```
   String get notSignedIn => """Inicia sesión en tu teléfono""";
+
+  /// ```dart
+  /// "Cambiar de lista"
+  /// ```
+  String get changeList => """Cambiar de lista""";
+
+  /// ```dart
+  /// "Recorrido"
+  /// ```
+  String get progression => """Recorrido""";
+
+  /// ```dart
+  /// "Hecho"
+  /// ```
+  String get done => """Hecho""";
+
+  /// ```dart
+  /// "Quitados"
+  /// ```
+  String get skipped => """Quitados""";
+
+  /// ```dart
+  /// "Cuenta"
+  /// ```
+  String get account => """Cuenta""";
+
+  /// ```dart
+  /// "Marcar como hecho"
+  /// ```
+  String get markDone => """Marcar como hecho""";
+
+  /// ```dart
+  /// "Marcar como pendiente"
+  /// ```
+  String get markUndone => """Marcar como pendiente""";
+
+  /// ```dart
+  /// "Se repite"
+  /// ```
+  String get repeats => """Se repite""";
+
+  /// ```dart
+  /// "Abrir en el teléfono"
+  /// ```
+  String get openOnPhone => """Abrir en el teléfono""";
+
+  /// ```dart
+  /// "Mira tu teléfono"
+  /// ```
+  String get openedOnPhone => """Mira tu teléfono""";
+
+  /// ```dart
+  /// "No se pudo contactar con tu teléfono"
+  /// ```
+  String get openOnPhoneFailed => """No se pudo contactar con tu teléfono""";
+
+  /// ```dart
+  /// "$count en espera"
+  /// ```
+  String queued(int count) => """$count en espera""";
+
+  /// ```dart
+  /// "Nada que marcar"
+  /// ```
+  String get nothingToCheckOff => """Nada que marcar""";
+
+  /// ```dart
+  /// "No has quitado nada"
+  /// ```
+  String get nothingRemoved => """No has quitado nada""";
+
+  /// ```dart
+  /// "Aún no hay listas aquí"
+  /// ```
+  String get noLists => """Aún no hay listas aquí""";
 }
 
 Map<String, String> get messagesEsMap => {
@@ -6265,4 +6340,18 @@ Contraseña: pantry-rocks""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Texto enriquecido""",
   """wear.notSignedIn""": """Inicia sesión en tu teléfono""",
+  """wear.changeList""": """Cambiar de lista""",
+  """wear.progression""": """Recorrido""",
+  """wear.done""": """Hecho""",
+  """wear.skipped""": """Quitados""",
+  """wear.account""": """Cuenta""",
+  """wear.markDone""": """Marcar como hecho""",
+  """wear.markUndone""": """Marcar como pendiente""",
+  """wear.repeats""": """Se repite""",
+  """wear.openOnPhone""": """Abrir en el teléfono""",
+  """wear.openedOnPhone""": """Mira tu teléfono""",
+  """wear.openOnPhoneFailed""": """No se pudo contactar con tu teléfono""",
+  """wear.nothingToCheckOff""": """Nada que marcar""",
+  """wear.nothingRemoved""": """No has quitado nada""",
+  """wear.noLists""": """Aún no hay listas aquí""",
 };

@@ -5286,6 +5286,81 @@ class WearMessagesDe extends WearMessages {
   /// "Melde dich auf deinem Telefon an"
   /// ```
   String get notSignedIn => """Melde dich auf deinem Telefon an""";
+
+  /// ```dart
+  /// "Liste wechseln"
+  /// ```
+  String get changeList => """Liste wechseln""";
+
+  /// ```dart
+  /// "Verlauf"
+  /// ```
+  String get progression => """Verlauf""";
+
+  /// ```dart
+  /// "Erledigt"
+  /// ```
+  String get done => """Erledigt""";
+
+  /// ```dart
+  /// "Entfernt"
+  /// ```
+  String get skipped => """Entfernt""";
+
+  /// ```dart
+  /// "Konto"
+  /// ```
+  String get account => """Konto""";
+
+  /// ```dart
+  /// "Als erledigt markieren"
+  /// ```
+  String get markDone => """Als erledigt markieren""";
+
+  /// ```dart
+  /// "Als offen markieren"
+  /// ```
+  String get markUndone => """Als offen markieren""";
+
+  /// ```dart
+  /// "Wiederholung"
+  /// ```
+  String get repeats => """Wiederholung""";
+
+  /// ```dart
+  /// "Auf dem Telefon öffnen"
+  /// ```
+  String get openOnPhone => """Auf dem Telefon öffnen""";
+
+  /// ```dart
+  /// "Schau auf dein Telefon"
+  /// ```
+  String get openedOnPhone => """Schau auf dein Telefon""";
+
+  /// ```dart
+  /// "Telefon nicht erreichbar"
+  /// ```
+  String get openOnPhoneFailed => """Telefon nicht erreichbar""";
+
+  /// ```dart
+  /// "$count wartet"
+  /// ```
+  String queued(int count) => """$count wartet""";
+
+  /// ```dart
+  /// "Nichts zum Abhaken"
+  /// ```
+  String get nothingToCheckOff => """Nichts zum Abhaken""";
+
+  /// ```dart
+  /// "Nichts entfernt"
+  /// ```
+  String get nothingRemoved => """Nichts entfernt""";
+
+  /// ```dart
+  /// "Noch keine Listen hier"
+  /// ```
+  String get noLists => """Noch keine Listen hier""";
 }
 
 Map<String, String> get messagesDeMap => {
@@ -6305,4 +6380,18 @@ Passwort: pantry-rocks""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Rich-Text""",
   """wear.notSignedIn""": """Melde dich auf deinem Telefon an""",
+  """wear.changeList""": """Liste wechseln""",
+  """wear.progression""": """Verlauf""",
+  """wear.done""": """Erledigt""",
+  """wear.skipped""": """Entfernt""",
+  """wear.account""": """Konto""",
+  """wear.markDone""": """Als erledigt markieren""",
+  """wear.markUndone""": """Als offen markieren""",
+  """wear.repeats""": """Wiederholung""",
+  """wear.openOnPhone""": """Auf dem Telefon öffnen""",
+  """wear.openedOnPhone""": """Schau auf dein Telefon""",
+  """wear.openOnPhoneFailed""": """Telefon nicht erreichbar""",
+  """wear.nothingToCheckOff""": """Nichts zum Abhaken""",
+  """wear.nothingRemoved""": """Nichts entfernt""",
+  """wear.noLists""": """Noch keine Listen hier""",
 };

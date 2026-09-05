@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
-import 'focus_list.dart';
+import '../widgets/focus_list.dart';
 import 'note_blocks.dart';
 import 'note_markdown.dart';
-import 'proto_mechanics.dart';
+import '../widgets/wear_mechanics.dart';
 import 'proto_note_data.dart';
 import 'proto_tuning.dart';
 
@@ -24,17 +25,17 @@ class NotesPage extends StatefulWidget {
   final ProtoTuning tuning;
   final bool active;
 
-  /// Note bodies as raw markdown, owned by the pager so a tick can feed the
-  /// same queue counter the checklist's commits feed.
-  final Map<int, String> bodies;
-  final void Function(int noteId, int ordinal, bool checked) onSetTask;
+  /// Bodies and the write sink are supplied only by tests, which watch what a
+  /// tick reports. The page holds its own fixtures otherwise.
+  final Map<int, String>? bodies;
+  final void Function(int noteId, int ordinal, bool checked)? onSetTask;
 
   const NotesPage({
     super.key,
     required this.tuning,
     required this.active,
-    required this.bodies,
-    required this.onSetTask,
+    this.bodies,
+    this.onSetTask,
   });
 
   @override
@@ -42,6 +43,22 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
+  /// Note bodies as raw markdown. The skeleton owns its own fixtures; the
+  /// implementation reads them from the mirror, which carries notes whole.
+  late final _bodies =
+      widget.bodies ?? {for (final n in protoNotes) n.id: n.body};
+
+  /// Setting a task line to a state, absolute rather than a flip, so a tick
+  /// landing after a housemate set the same state converges instead of undoing
+  /// them.
+  void _setTask(int noteId, int ordinal, bool checked) {
+    final before = _bodies[noteId]!;
+    final after = setChecklistItem(before, ordinal, checked);
+    if (after == before) return;
+    setState(() => _bodies[noteId] = after);
+    widget.onSetTask?.call(noteId, ordinal, checked);
+  }
+
   final _controller = ScrollController();
   final _listKey = GlobalKey<SnapFocusListState>();
 
@@ -74,9 +91,8 @@ class _NotesPageState extends State<NotesPage> {
         builder: (_) => NoteRoute(
           note: note,
           tuning: widget.tuning,
-          bodyOf: () => widget.bodies[note.id]!,
-          onSetTask: (ordinal, checked) =>
-              widget.onSetTask(note.id, ordinal, checked),
+          bodyOf: () => _bodies[note.id]!,
+          onSetTask: (ordinal, checked) => _setTask(note.id, ordinal, checked),
         ),
       ),
     );
@@ -99,7 +115,7 @@ class _NotesPageState extends State<NotesPage> {
             extent: 72,
             builder: (context, d) => _NoteCard(
               note: protoNotes[i],
-              body: widget.bodies[protoNotes[i].id]!,
+              body: _bodies[protoNotes[i].id]!,
               distance: d,
               onTap: () => _onCardTap(i, protoNotes[i]),
             ),

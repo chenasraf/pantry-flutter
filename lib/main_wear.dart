@@ -3,13 +3,16 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/services/nn_localizations.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_wear/pantry_wear.dart';
 
@@ -41,6 +44,12 @@ void main(List<String> args) async {
     await Future.wait([
       HouseService.instance.cache.load(),
       ChecklistService.instance.cache.load(),
+      CategoryService.instance.cache.load(),
+      StoreService.instance.cache.load(),
+      // Before anything can enqueue: the queue is written back whole on every
+      // change, so a first enqueue against an unloaded queue replaces whatever
+      // the last session left unsent with that single op.
+      SyncManager.instance.init(),
     ]);
   }
 

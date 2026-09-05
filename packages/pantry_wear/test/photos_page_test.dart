@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry_wear/src/prototype/focus_list.dart';
+import 'package:pantry_wear/src/widgets/focus_list.dart';
 import 'package:pantry_wear/src/prototype/photos_page.dart';
 import 'package:pantry_wear/src/prototype/proto_photo_data.dart';
 import 'package:pantry_wear/src/prototype/proto_tuning.dart';

@@ -1013,3 +1013,18 @@ markdownEditor:
 wear:
   signedInAs(String name): "Connecté en tant que ${name}"
   notSignedIn: "Connectez-vous sur votre téléphone"
+  changeList: Changer de liste
+  progression: Parcours
+  done: Fait
+  skipped: Retirés
+  account: Compte
+  markDone: Marquer comme fait
+  markUndone: Marquer comme à faire
+  repeats: Récurrence
+  openOnPhone: Ouvrir sur le téléphone
+  openedOnPhone: Regardez votre téléphone
+  openOnPhoneFailed: "Téléphone injoignable"
+  queued(int count): "$count en attente"
+  nothingToCheckOff: Rien à cocher
+  nothingRemoved: Rien de retiré
+  noLists: "Aucune liste ici pour l'instant"

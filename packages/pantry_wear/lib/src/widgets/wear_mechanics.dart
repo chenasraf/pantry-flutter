@@ -8,7 +8,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 import '../services/rotary_service.dart';
 import '../wear_shape.dart';
 
-/// PROTOTYPE — the machinery every page and pushed route shares.
+/// The machinery every page and pushed route shares.
 ///
 /// Layout is deliberately *not* here: a page owns its own frame. What lives
 /// here is mechanism the platform forces on us and that every surface must

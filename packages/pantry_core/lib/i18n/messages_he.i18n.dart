@@ -5233,6 +5233,81 @@ class WearMessagesHe extends WearMessages {
   /// "היכנס מהטלפון שלך"
   /// ```
   String get notSignedIn => """היכנס מהטלפון שלך""";
+
+  /// ```dart
+  /// "החלפת רשימה"
+  /// ```
+  String get changeList => """החלפת רשימה""";
+
+  /// ```dart
+  /// "מסלול"
+  /// ```
+  String get progression => """מסלול""";
+
+  /// ```dart
+  /// "בוצע"
+  /// ```
+  String get done => """בוצע""";
+
+  /// ```dart
+  /// "הוסרו"
+  /// ```
+  String get skipped => """הוסרו""";
+
+  /// ```dart
+  /// "חשבון"
+  /// ```
+  String get account => """חשבון""";
+
+  /// ```dart
+  /// "סימון כבוצע"
+  /// ```
+  String get markDone => """סימון כבוצע""";
+
+  /// ```dart
+  /// "סימון כלא בוצע"
+  /// ```
+  String get markUndone => """סימון כלא בוצע""";
+
+  /// ```dart
+  /// "חוזר"
+  /// ```
+  String get repeats => """חוזר""";
+
+  /// ```dart
+  /// "פתיחה בטלפון"
+  /// ```
+  String get openOnPhone => """פתיחה בטלפון""";
+
+  /// ```dart
+  /// "בדוק את הטלפון שלך"
+  /// ```
+  String get openedOnPhone => """בדוק את הטלפון שלך""";
+
+  /// ```dart
+  /// "לא הצלחנו להגיע לטלפון שלך"
+  /// ```
+  String get openOnPhoneFailed => """לא הצלחנו להגיע לטלפון שלך""";
+
+  /// ```dart
+  /// "$count ממתינים"
+  /// ```
+  String queued(int count) => """$count ממתינים""";
+
+  /// ```dart
+  /// "אין מה לסמן"
+  /// ```
+  String get nothingToCheckOff => """אין מה לסמן""";
+
+  /// ```dart
+  /// "לא הוסר דבר"
+  /// ```
+  String get nothingRemoved => """לא הוסר דבר""";
+
+  /// ```dart
+  /// "אין כאן רשימות עדיין"
+  /// ```
+  String get noLists => """אין כאן רשימות עדיין""";
 }
 
 Map<String, String> get messagesHeMap => {
@@ -6178,4 +6253,18 @@ Map<String, String> get messagesHeMap => {
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """טקסט עשיר""",
   """wear.notSignedIn""": """היכנס מהטלפון שלך""",
+  """wear.changeList""": """החלפת רשימה""",
+  """wear.progression""": """מסלול""",
+  """wear.done""": """בוצע""",
+  """wear.skipped""": """הוסרו""",
+  """wear.account""": """חשבון""",
+  """wear.markDone""": """סימון כבוצע""",
+  """wear.markUndone""": """סימון כלא בוצע""",
+  """wear.repeats""": """חוזר""",
+  """wear.openOnPhone""": """פתיחה בטלפון""",
+  """wear.openedOnPhone""": """בדוק את הטלפון שלך""",
+  """wear.openOnPhoneFailed""": """לא הצלחנו להגיע לטלפון שלך""",
+  """wear.nothingToCheckOff""": """אין מה לסמן""",
+  """wear.nothingRemoved""": """לא הוסר דבר""",
+  """wear.noLists""": """אין כאן רשימות עדיין""",
 };

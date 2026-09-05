@@ -1013,3 +1013,18 @@ markdownEditor:
 wear:
   signedInAs(String name): "מחובר בתור ${name}"
   notSignedIn: היכנס מהטלפון שלך
+  changeList: החלפת רשימה
+  progression: מסלול
+  done: בוצע
+  skipped: הוסרו
+  account: חשבון
+  markDone: סימון כבוצע
+  markUndone: סימון כלא בוצע
+  repeats: חוזר
+  openOnPhone: פתיחה בטלפון
+  openedOnPhone: בדוק את הטלפון שלך
+  openOnPhoneFailed: לא הצלחנו להגיע לטלפון שלך
+  queued(int count): "$count ממתינים"
+  nothingToCheckOff: אין מה לסמן
+  nothingRemoved: לא הוסר דבר
+  noLists: אין כאן רשימות עדיין

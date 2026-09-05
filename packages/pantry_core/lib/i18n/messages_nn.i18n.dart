@@ -5256,6 +5256,81 @@ class WearMessagesNn extends WearMessages {
   /// "Logg inn på telefonen din"
   /// ```
   String get notSignedIn => """Logg inn på telefonen din""";
+
+  /// ```dart
+  /// "Byt liste"
+  /// ```
+  String get changeList => """Byt liste""";
+
+  /// ```dart
+  /// "Runde"
+  /// ```
+  String get progression => """Runde""";
+
+  /// ```dart
+  /// "Ferdig"
+  /// ```
+  String get done => """Ferdig""";
+
+  /// ```dart
+  /// "Fjerna"
+  /// ```
+  String get skipped => """Fjerna""";
+
+  /// ```dart
+  /// "Konto"
+  /// ```
+  String get account => """Konto""";
+
+  /// ```dart
+  /// "Merk som ferdig"
+  /// ```
+  String get markDone => """Merk som ferdig""";
+
+  /// ```dart
+  /// "Merk som ugjort"
+  /// ```
+  String get markUndone => """Merk som ugjort""";
+
+  /// ```dart
+  /// "Gjentakingar"
+  /// ```
+  String get repeats => """Gjentakingar""";
+
+  /// ```dart
+  /// "Opna på telefonen"
+  /// ```
+  String get openOnPhone => """Opna på telefonen""";
+
+  /// ```dart
+  /// "Sjå på telefonen din"
+  /// ```
+  String get openedOnPhone => """Sjå på telefonen din""";
+
+  /// ```dart
+  /// "Fekk ikkje kontakt med telefonen"
+  /// ```
+  String get openOnPhoneFailed => """Fekk ikkje kontakt med telefonen""";
+
+  /// ```dart
+  /// "$count ventar"
+  /// ```
+  String queued(int count) => """$count ventar""";
+
+  /// ```dart
+  /// "Ingenting å krysse av"
+  /// ```
+  String get nothingToCheckOff => """Ingenting å krysse av""";
+
+  /// ```dart
+  /// "Ingenting er fjerna"
+  /// ```
+  String get nothingRemoved => """Ingenting er fjerna""";
+
+  /// ```dart
+  /// "Ingen lister her enno"
+  /// ```
+  String get noLists => """Ingen lister her enno""";
 }
 
 Map<String, String> get messagesNnMap => {
@@ -6238,4 +6313,18 @@ Passord: pantry""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Rik tekst""",
   """wear.notSignedIn""": """Logg inn på telefonen din""",
+  """wear.changeList""": """Byt liste""",
+  """wear.progression""": """Runde""",
+  """wear.done""": """Ferdig""",
+  """wear.skipped""": """Fjerna""",
+  """wear.account""": """Konto""",
+  """wear.markDone""": """Merk som ferdig""",
+  """wear.markUndone""": """Merk som ugjort""",
+  """wear.repeats""": """Gjentakingar""",
+  """wear.openOnPhone""": """Opna på telefonen""",
+  """wear.openedOnPhone""": """Sjå på telefonen din""",
+  """wear.openOnPhoneFailed""": """Fekk ikkje kontakt med telefonen""",
+  """wear.nothingToCheckOff""": """Ingenting å krysse av""",
+  """wear.nothingRemoved""": """Ingenting er fjerna""",
+  """wear.noLists""": """Ingen lister her enno""",
 };

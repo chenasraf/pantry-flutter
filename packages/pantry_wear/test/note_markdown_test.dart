@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
-import 'package:pantry_wear/src/prototype/checklist_prototype.dart';
+import 'package:pantry_wear/src/checklists/checklists_controller.dart';
+import 'package:pantry_wear/src/shell/wear_shell.dart';
 import 'package:pantry_wear/src/prototype/note_blocks.dart';
 import 'package:pantry_wear/src/prototype/note_markdown.dart';
 import 'package:pantry_wear/src/prototype/notes_page.dart';
 import 'package:pantry_wear/src/prototype/proto_note_data.dart';
 import 'package:pantry_wear/src/prototype/proto_tuning.dart';
+
+import 'wear_fixtures.dart';
 
 /// The checks the notes page earned.
 ///
@@ -180,7 +183,16 @@ void main() {
       tester.view.physicalSize = const Size(480, 480);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.reset);
-      await tester.pumpWidget(const MaterialApp(home: ChecklistPrototype()));
+      final controller = ChecklistsController.seeded(
+        houseId: 1,
+        list: testList(),
+        lists: [testList()],
+        items: [testItem(id: 1, name: 'Milk')],
+      );
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(
+        MaterialApp(home: WearShell(controller: controller)),
+      );
       await tester.pumpAndSettle();
 
       await swipeToNextPage(tester);

@@ -1,6 +1,11 @@
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 
+/// Sentinel id used by the synthetic "All lists" meta view. Real list ids on
+/// the backend are always positive; temp ids minted by SyncManager are
+/// negative. `0` is unused by both, which keeps the sentinel disjoint.
+const int kAllListsId = 0;
+
 class ChecklistList {
   final int id;
   final int houseId;

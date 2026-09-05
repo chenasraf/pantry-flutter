@@ -1157,3 +1157,18 @@ markdownEditor:
 wear:
   signedInAs(String name): "Innlogga som ${name}"
   notSignedIn: Logg inn på telefonen din
+  changeList: Byt liste
+  progression: Runde
+  done: Ferdig
+  skipped: Fjerna
+  account: Konto
+  markDone: Merk som ferdig
+  markUndone: Merk som ugjort
+  repeats: Gjentakingar
+  openOnPhone: Opna på telefonen
+  openedOnPhone: Sjå på telefonen din
+  openOnPhoneFailed: Fekk ikkje kontakt med telefonen
+  queued(int count): "$count ventar"
+  nothingToCheckOff: Ingenting å krysse av
+  nothingRemoved: Ingenting er fjerna
+  noLists: Ingen lister her enno

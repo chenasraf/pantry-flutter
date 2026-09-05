@@ -6,8 +6,8 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../services/rotary_service.dart';
 import '../wear_shape.dart';
-import 'focus_list.dart';
-import 'proto_mechanics.dart';
+import '../widgets/focus_list.dart';
+import '../widgets/wear_mechanics.dart';
 import 'proto_photo_data.dart';
 import 'proto_tuning.dart';
 

@@ -1,15 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry_wear/src/prototype/checklist_prototype.dart';
-import 'package:pantry_wear/src/prototype/focus_list.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_wear/src/checklists/checklists_controller.dart';
+import 'package:pantry_wear/src/shell/wear_shell.dart';
+import 'package:pantry_wear/src/wear_shape.dart';
+import 'package:pantry_wear/src/widgets/focus_list.dart';
 
-/// PROTOTYPE — guards the one bug that stayed invisible to every other check.
-/// The list computed the focused group correctly the whole time; the rail
-/// never saw it, because a scroll notification arrives during layout and the
-/// rebuild it asked for was dropped inside the frame already building.
-/// Analysis was clean and no exception reached logcat, so only pumping the
-/// real tree caught it.
+import 'wear_fixtures.dart';
+
+/// Guards the bug that stayed invisible to every other check. The list
+/// computed the focused group correctly the whole time; the rail never saw it,
+/// because a scroll notification arrives during layout and the rebuild it
+/// asked for was dropped inside the frame already building. Analysis was clean
+/// and no exception reached logcat, so only pumping the real tree caught it.
 void main() {
+  setUp(() => WearShape.markFrom(['round']));
+
+  ChecklistsController seeded({List<ListItem> done = const []}) =>
+      ChecklistsController.seeded(
+        houseId: 1,
+        list: testList(),
+        lists: [testList()],
+        categories: [testCategory(id: 1, name: 'Dairy')],
+        items: [
+          for (var i = 0; i < 4; i++)
+            testItem(id: i + 1, name: 'Item ${i + 1}', categoryId: 1),
+        ],
+        done: done,
+      );
+
+  Future<ChecklistsController> pumpShell(
+    WidgetTester tester, {
+    List<ListItem> done = const [],
+  }) async {
+    tester.view.physicalSize = const Size(450, 450);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final controller = seeded(done: done);
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      MaterialApp(home: WearShell(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+    return controller;
+  }
+
   testWidgets('the list publishes the focused row group', (tester) async {
     final controller = ScrollController();
     addTearDown(controller.dispose);
@@ -51,39 +87,53 @@ void main() {
   });
 
   testWidgets('the rail renders the focused group', (tester) async {
-    tester.view.physicalSize = const Size(480, 480);
-    tester.view.devicePixelRatio = 2.0;
-    addTearDown(tester.view.reset);
-
-    await tester.pumpWidget(const MaterialApp(home: ChecklistPrototype()));
-    await tester.pumpAndSettle();
+    await pumpShell(tester);
 
     // Twice over: the group's own header in the list, and the rail naming it.
     expect(find.text('Dairy'), findsNWidgets(2));
   });
 
-  testWidgets('the done section is reachable once opened', (tester) async {
-    tester.view.physicalSize = const Size(480, 480);
-    tester.view.devicePixelRatio = 2.0;
-    addTearDown(tester.view.reset);
+  testWidgets('the completed section is reachable once opened', (tester) async {
+    await pumpShell(
+      tester,
+      done: [testItem(id: 9, name: 'Milk', categoryId: 1, done: true)],
+    );
 
-    await tester.pumpWidget(const MaterialApp(home: ChecklistPrototype()));
-    await tester.pumpAndSettle();
-
+    final label = m.checklists.completedCount(1);
     final controller = tester
         .widget<SnapFocusList>(find.byType(SnapFocusList))
         .controller;
 
     controller.jumpTo(controller.position.maxScrollExtent);
     await tester.pumpAndSettle();
-    await tester.tap(find.textContaining('Done ('));
+    await tester.tap(find.text(label));
     await tester.pumpAndSettle();
 
     final opened = tester.widget<SnapFocusList>(find.byType(SnapFocusList));
-
     controller.jumpTo(controller.position.maxScrollExtent);
     await tester.pumpAndSettle();
-    expect(opened.geometry!.value.stickyGroup, 'Done');
+
+    expect(opened.geometry!.value.stickyGroup, label);
     expect(opened.geometry!.value.centredIndex, opened.elements.length - 1);
+  });
+
+  testWidgets('an off-centre tap scrolls rather than checking', (tester) async {
+    await pumpShell(tester);
+
+    final geometry = tester
+        .widget<SnapFocusList>(find.byType(SnapFocusList))
+        .geometry!;
+    final centred = geometry.value.centredIndex;
+
+    // The last row drawn is well below the centre line, so this is a mis-aim.
+    await tester.tap(find.text('Item 4'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byIcon(Icons.check_circle),
+      findsNothing,
+      reason: 'a mis-aim costs a scroll, never a write',
+    );
+    expect(geometry.value.centredIndex, isNot(centred));
   });
 }

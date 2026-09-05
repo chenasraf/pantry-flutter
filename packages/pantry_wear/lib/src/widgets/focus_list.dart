@@ -5,20 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../services/rotary_service.dart';
-import 'proto_mechanics.dart';
+import 'wear_mechanics.dart';
 
-/// PROTOTYPE — the centred-focus list, rebuilt over slivers.
+/// The centred-focus list every scrolling page on the watch is built from.
 ///
-/// Card 714 judged the shell on a [ListWheelScrollView], which was buying two
-/// things: a uniform `itemExtent` and [FixedExtentScrollPhysics]' snapping.
-/// Group headers need neither — they have to be shorter than a row and must
-/// never take the focus — and a wheel can express neither, so the list is a
-/// [CustomScrollView] whose snapping is hand-rolled over row offsets only.
+/// Snapping is hand-rolled over row offsets rather than taken from a
+/// [ListWheelScrollView]: a wheel has one `itemExtent` and no sliver protocol,
+/// so it can express neither a group header shorter than a row nor one that
+/// never takes the focus.
 ///
-/// The falloff is unchanged: it was never the wheel's. [railFocusCurve] reads
-/// a row's distance from the **screen's** centre, which is why the viewport
-/// stays full-height with the rail overlaying it rather than sitting in a
-/// column below it.
+/// [railFocusCurve] reads a row's distance from the **screen's** centre, which
+/// is why the viewport stays full-height with the rail overlaying it rather
+/// than sitting in a column below it.
 
 /// One entry in the list: a row you can land on, or a header you cannot.
 @immutable

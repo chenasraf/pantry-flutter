@@ -5227,6 +5227,81 @@ class WearMessages {
   /// "Sign in on your phone"
   /// ```
   String get notSignedIn => """Sign in on your phone""";
+
+  /// ```dart
+  /// "Change list"
+  /// ```
+  String get changeList => """Change list""";
+
+  /// ```dart
+  /// "Progression"
+  /// ```
+  String get progression => """Progression""";
+
+  /// ```dart
+  /// "Done"
+  /// ```
+  String get done => """Done""";
+
+  /// ```dart
+  /// "Skipped"
+  /// ```
+  String get skipped => """Skipped""";
+
+  /// ```dart
+  /// "Account"
+  /// ```
+  String get account => """Account""";
+
+  /// ```dart
+  /// "Mark done"
+  /// ```
+  String get markDone => """Mark done""";
+
+  /// ```dart
+  /// "Mark undone"
+  /// ```
+  String get markUndone => """Mark undone""";
+
+  /// ```dart
+  /// "Repeats"
+  /// ```
+  String get repeats => """Repeats""";
+
+  /// ```dart
+  /// "Open on phone"
+  /// ```
+  String get openOnPhone => """Open on phone""";
+
+  /// ```dart
+  /// "Check your phone"
+  /// ```
+  String get openedOnPhone => """Check your phone""";
+
+  /// ```dart
+  /// "Couldn't reach your phone"
+  /// ```
+  String get openOnPhoneFailed => """Couldn't reach your phone""";
+
+  /// ```dart
+  /// "$count waiting"
+  /// ```
+  String queued(int count) => """$count waiting""";
+
+  /// ```dart
+  /// "Nothing to check off"
+  /// ```
+  String get nothingToCheckOff => """Nothing to check off""";
+
+  /// ```dart
+  /// "Nothing removed"
+  /// ```
+  String get nothingRemoved => """Nothing removed""";
+
+  /// ```dart
+  /// "No lists here yet"
+  /// ```
+  String get noLists => """No lists here yet""";
 }
 
 Map<String, String> get messagesMap => {
@@ -6187,4 +6262,18 @@ Password: pantry-rocks""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Rich text""",
   """wear.notSignedIn""": """Sign in on your phone""",
+  """wear.changeList""": """Change list""",
+  """wear.progression""": """Progression""",
+  """wear.done""": """Done""",
+  """wear.skipped""": """Skipped""",
+  """wear.account""": """Account""",
+  """wear.markDone""": """Mark done""",
+  """wear.markUndone""": """Mark undone""",
+  """wear.repeats""": """Repeats""",
+  """wear.openOnPhone""": """Open on phone""",
+  """wear.openedOnPhone""": """Check your phone""",
+  """wear.openOnPhoneFailed""": """Couldn't reach your phone""",
+  """wear.nothingToCheckOff""": """Nothing to check off""",
+  """wear.nothingRemoved""": """Nothing removed""",
+  """wear.noLists""": """No lists here yet""",
 };
