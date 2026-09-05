@@ -219,18 +219,40 @@ void main() {
       return writes;
     }
 
-    testWidgets('only the centred card opens a note', (tester) async {
+    testWidgets('an off-centre tap scrolls the note here, the next opens it', (
+      tester,
+    ) async {
       await pumpNotes(tester);
 
-      // The second note is off the centre line, so tapping it must scroll
-      // rather than open: a mis-aim costs a scroll, never a route.
+      // The second note is off the centre line, so the first tap only brings
+      // it here — a mis-aim costs a scroll, never a route.
       await tester.tap(find.text('Boiler service'));
       await tester.pumpAndSettle();
       expect(find.text('Clear the cupboard under the stairs'), findsNothing);
 
+      // It is now the focused row, so the identical tap acts.
+      await tester.tap(find.text('Boiler service'));
+      await tester.pumpAndSettle();
+      expect(find.text('Clear the cupboard under the stairs'), findsOneWidget);
+    });
+
+    testWidgets('an off-centre task scrolls rather than writing', (
+      tester,
+    ) async {
+      final writes = await pumpNotes(tester);
+
       await tester.tap(find.text('Hardware shop'));
       await tester.pumpAndSettle();
-      expect(find.text('Masking tape'), findsOneWidget);
+
+      // Third task down, well off the centre line.
+      await tester.tap(find.text('6mm wall plugs'));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+      expect(writes, isEmpty);
+
+      // Centred now, so it commits.
+      await tester.tap(find.text('6mm wall plugs'));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+      expect(writes, [(1, 2, true)]);
     });
 
     testWidgets('a tick reports an absolute state, after its undo window', (

@@ -43,11 +43,29 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   final _controller = ScrollController();
+  final _listKey = GlobalKey<SnapFocusListState>();
+
+  /// Which row is on the centre line. Read from the list rather than from the
+  /// falloff distance handed to a builder: the distance is a rendering value
+  /// that several rows can share near the middle, where "is this the focused
+  /// row" has exactly one answer.
+  final _geometry = ValueNotifier(const FocusGeometry());
 
   @override
   void dispose() {
     _controller.dispose();
+    _geometry.dispose();
     super.dispose();
+  }
+
+  /// The checklists page's rule, unchanged: an off-centre tap scrolls that row
+  /// to the centre line instead of acting on it, so a mis-aim costs a scroll.
+  void _onCardTap(int index, ProtoNote note) {
+    if (index != _geometry.value.centredIndex) {
+      _listKey.currentState?.centreOn(index);
+      return;
+    }
+    _open(note);
   }
 
   void _open(ProtoNote note) {
@@ -67,23 +85,23 @@ class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
     return SnapFocusList(
+      key: _listKey,
       controller: _controller,
       itemExtent: 72,
       falloffRows: widget.tuning.falloffRows,
       snapEnabled: widget.tuning.snapEnabled,
       rotaryActive: widget.active,
       horizontalInset: widget.tuning.tallSideInset,
+      geometry: _geometry,
       elements: [
-        for (final note in protoNotes)
+        for (var i = 0; i < protoNotes.length; i++)
           FocusElement(
             extent: 72,
             builder: (context, d) => _NoteCard(
-              note: note,
-              body: widget.bodies[note.id]!,
+              note: protoNotes[i],
+              body: widget.bodies[protoNotes[i].id]!,
               distance: d,
-              // The wall inherits the checklists page's rule: only the centred
-              // card opens, an off-centre tap just scrolls it there.
-              onTap: d < 0.18 ? () => _open(note) : null,
+              onTap: () => _onCardTap(i, protoNotes[i]),
             ),
           ),
       ],
@@ -284,6 +302,8 @@ class NoteRoute extends StatefulWidget {
 
 class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
   final _controller = ScrollController();
+  final _listKey = GlobalKey<SnapFocusListState>();
+  final _geometry = ValueNotifier(const FocusGeometry());
 
   /// Ticks that have fired but not yet run out their undo window, keyed by
   /// task ordinal, exactly as a check is held on the checklists page.
@@ -299,7 +319,18 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
       c.dispose();
     }
     _controller.dispose();
+    _geometry.dispose();
     super.dispose();
+  }
+
+  /// Same rule as the wall and the checklists page: an off-centre task scrolls
+  /// to the centre line, and only the row already there is written.
+  void _onTaskTap(int index, NoteBlock block) {
+    if (index != _geometry.value.centredIndex) {
+      _listKey.currentState?.centreOn(index);
+      return;
+    }
+    _fire(block);
   }
 
   void _fire(NoteBlock block) {
@@ -352,26 +383,30 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
               children: [
                 Positioned.fill(
                   child: SnapFocusList(
+                    key: _listKey,
                     controller: _controller,
                     itemExtent: 46,
                     falloffRows: widget.tuning.falloffRows,
                     snapEnabled: widget.tuning.snapEnabled,
                     rotaryActive: true,
                     horizontalInset: inset,
+                    geometry: _geometry,
                     elements: [
-                      for (final block in blocks)
+                      for (var i = 0; i < blocks.length; i++)
                         FocusElement(
-                          extent: _measure(block, contentWidth),
-                          snappable: block.kind == NoteBlockKind.task,
-                          isHeader: block.kind != NoteBlockKind.task,
+                          extent: _measure(blocks[i], contentWidth),
+                          snappable: blocks[i].kind == NoteBlockKind.task,
+                          isHeader: blocks[i].kind != NoteBlockKind.task,
                           builder: (context, d) => _BlockRow(
-                            block: block,
+                            block: blocks[i],
                             distance: d,
                             ink: ink,
-                            checked: _echo[block.taskOrdinal] ?? block.checked,
-                            pending: _pending[block.taskOrdinal],
-                            onTap: block.kind == NoteBlockKind.task && d < 0.18
-                                ? () => _fire(block)
+                            checked:
+                                _echo[blocks[i].taskOrdinal] ??
+                                blocks[i].checked,
+                            pending: _pending[blocks[i].taskOrdinal],
+                            onTap: blocks[i].kind == NoteBlockKind.task
+                                ? () => _onTaskTap(i, blocks[i])
                                 : null,
                           ),
                         ),
