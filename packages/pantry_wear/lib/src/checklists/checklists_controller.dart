@@ -10,6 +10,7 @@ import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
@@ -18,6 +19,7 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 
 import '../scope/wear_scope.dart';
+import '../services/wear_mirror_client.dart';
 import '../widgets/wear_metrics.dart';
 
 /// Browsing a list, or walking a trip. A live session is a different pager,
@@ -72,6 +74,7 @@ class ChecklistsController extends ChangeNotifier {
   final _shopping = ShoppingService.instance;
   final _sync = SyncManager.instance;
   final _scope = WearScope.instance;
+  final _mirror = WearMirrorClient.instance;
 
   int? _houseId;
   int? get houseId => _houseId;
@@ -186,6 +189,7 @@ class ChecklistsController extends ChangeNotifier {
     _applied ??= _sync.onApplied.listen(_onApplied);
     _skipped ??= _sync.onSkipped.listen(_onSkipped);
     _scope.addListener(_onScopeChanged);
+    _mirror.addListener(_onMirrored);
     await _loadFromCache();
     _schedulePoll();
     unawaited(refresh());
@@ -198,7 +202,15 @@ class ChecklistsController extends ChangeNotifier {
     _applied?.cancel();
     _skipped?.cancel();
     _scope.removeListener(_onScopeChanged);
+    _mirror.removeListener(_onMirrored);
     super.dispose();
+  }
+
+  /// A snapshot landed in the caches this page reads, so re-read them. It is
+  /// the same read a poll would have done, arriving without the request.
+  void _onMirrored() {
+    _schedulePoll();
+    unawaited(_loadFromCache());
   }
 
   void _emit() {
@@ -213,6 +225,9 @@ class ChecklistsController extends ChangeNotifier {
     _active = active;
     if (active) {
       _schedulePoll();
+      // Waking is the moment the watch has been off the link for however long
+      // the wrist was down, so it asks rather than waiting to be told.
+      unawaited(_mirror.requestMirror());
       unawaited(refresh());
     } else {
       _poll?.cancel();
@@ -223,10 +238,24 @@ class ChecklistsController extends ChangeNotifier {
   void _schedulePoll() {
     _poll?.cancel();
     if (!_active) return;
-    _poll = Timer.periodic(
-      WearMetrics.pollInterval,
-      (_) => unawaited(refresh()),
-    );
+    final interval = pollInterval;
+    if (interval == null) return;
+    _poll = Timer.periodic(interval, (_) => unawaited(refresh()));
+  }
+
+  /// How often to re-read, or null when the wearer has turned polling off.
+  ///
+  /// Stretched while snapshots are arriving, because an arrival is the phone
+  /// saying it is alive and pushing — and never stopped, because the mirror is
+  /// an accelerator and a watch that stopped polling would be trusting it.
+  Duration? get pollInterval {
+    final seconds = PrefsService.instance.wearPollSeconds;
+    if (seconds <= 0) return null;
+    final landed = _mirror.landedAt;
+    final fresh =
+        landed != null &&
+        DateTime.now().difference(landed) < WearMetrics.mirrorFreshFor;
+    return Duration(seconds: seconds * (fresh ? WearMetrics.pollStretch : 1));
   }
 
   void _onScopeChanged() {
@@ -258,10 +287,16 @@ class ChecklistsController extends ChangeNotifier {
     };
     _restoreHousePrefs(house);
     _lists = _checklists.getCachedLists(house) ?? const [];
-    if (_session == null) {
+    final session = _session;
+    if (session == null) {
       final listId = await _scope.resolveList(_lists) ?? _scope.listId;
       _list = _listFor(listId, house);
       _applyItems(_cachedItems(listId));
+    } else {
+      final cached = _shopping.getCachedItems(session.id);
+      if (cached != null) {
+        _items = _withoutPendingSessionWrites(cached, house, session.id);
+      }
     }
     _loading = false;
     _emit();
@@ -350,6 +385,9 @@ class ChecklistsController extends ChangeNotifier {
       final live = await _shopping.getCurrentSession();
       final was = _session?.id;
       _session = live;
+      // A trip's items are their own mirrored scope, so the phone has to hear
+      // about it the same way it hears about the list.
+      _mirror.setSession(live?.id);
       if (live == null) {
         // Closing a trip needs no rule of its own: the remembered list is
         // still there when the session was in this house, and invalid — so
@@ -425,7 +463,14 @@ class ChecklistsController extends ChangeNotifier {
     try {
       final items = await _shopping.getItems(house, session.id);
       _items = _withoutPendingSessionWrites(items, house, session.id);
-    } catch (_) {}
+    } catch (_) {
+      // The last snapshot — the watch's own or a mirrored one — is a better
+      // answer mid-aisle than an empty trip.
+      final cached = _shopping.getCachedItems(session.id);
+      if (cached != null) {
+        _items = _withoutPendingSessionWrites(cached, house, session.id);
+      }
+    }
     try {
       final review = await _shopping.getReview(house, session.id);
       _done = [

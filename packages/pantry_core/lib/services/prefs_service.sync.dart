@@ -61,6 +61,17 @@ extension PrefsServiceSyncSetters on PrefsService {
     notifyListeners();
   }
 
+  Future<void> setWearPollSeconds(int seconds) async {
+    if (!PrefsService._validRefreshSeconds.contains(seconds)) return;
+    if (_wearPollSeconds == seconds) return;
+    _wearPollSeconds = seconds;
+    await _storage.write(
+      key: PrefsService._wearPollSecondsKey,
+      value: seconds.toString(),
+    );
+    notifyListeners();
+  }
+
   Future<void> setShoppingRefreshSeconds(int seconds) async {
     if (seconds != PrefsService.shoppingRefreshInherit &&
         !PrefsService._validRefreshSeconds.contains(seconds)) {

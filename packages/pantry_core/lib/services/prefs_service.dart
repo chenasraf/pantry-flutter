@@ -55,6 +55,7 @@ class PrefsService extends ChangeNotifier {
   static const _notesRefreshSecondsKey = 'notes_refresh_seconds';
   static const _photosRefreshSecondsKey = 'photos_refresh_seconds';
   static const _shoppingRefreshSecondsKey = 'shopping_refresh_seconds';
+  static const _wearPollSecondsKey = 'wear_poll_seconds';
 
   /// Allowed auto-refresh intervals in seconds. 0 means "off" (no background
   /// polling; manual pull-to-refresh only).
@@ -253,6 +254,13 @@ class PrefsService extends ChangeNotifier {
   int _shoppingRefreshSeconds = shoppingRefreshInherit;
   int get shoppingRefreshSeconds => _shoppingRefreshSeconds;
 
+  /// How often the watch re-reads what it is showing, in seconds. It does not
+  /// inherit [checklistRefreshSeconds]: that interval was chosen for a device
+  /// on mains power with a phone's battery, and following it would put the
+  /// watch's endurance in a pref set on another wrist-less screen.
+  int _wearPollSeconds = 60;
+  int get wearPollSeconds => _wearPollSeconds;
+
   /// The shopping interval with [shoppingRefreshInherit] resolved to the
   /// current checklist interval, so callers get a concrete seconds value.
   int get shoppingRefreshSecondsResolved =>
@@ -432,6 +440,11 @@ class PrefsService extends ChangeNotifier {
             _validRefreshSeconds.contains(shoppingRefresh))) {
       _shoppingRefreshSeconds = shoppingRefresh;
     }
+
+    final wearPoll = int.tryParse(all[_wearPollSecondsKey] ?? '');
+    if (wearPoll != null && _validRefreshSeconds.contains(wearPoll)) {
+      _wearPollSeconds = wearPoll;
+    }
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -504,6 +517,7 @@ class PrefsService extends ChangeNotifier {
     _notesRefreshSeconds = 60;
     _photosRefreshSeconds = 60;
     _shoppingRefreshSeconds = shoppingRefreshInherit;
+    _wearPollSeconds = 60;
     final keys = [
       _lastHouseKey,
       _notificationsEnabledKey,
@@ -540,6 +554,7 @@ class PrefsService extends ChangeNotifier {
       _notesRefreshSecondsKey,
       _photosRefreshSecondsKey,
       _shoppingRefreshSecondsKey,
+      _wearPollSecondsKey,
     ];
     final futures = <Future>[];
     for (final key in keys) {

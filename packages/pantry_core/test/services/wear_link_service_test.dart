@@ -26,6 +26,7 @@ void main() {
                 {'id': 'node-1', 'name': 'Pixel', 'nearby': true},
               ];
             case 'send':
+            case 'stream':
             case 'publish':
             case 'clear':
               return true;
@@ -62,6 +63,7 @@ void main() {
 
     expect(await link.isAvailable(), isFalse);
     expect(await link.send('/p', const {}), isFalse);
+    expect(await link.stream('/p', const {}), isFalse);
     expect(await link.publish('/p', const {}), isFalse);
     expect(await link.clear('/p'), isFalse);
     expect(await link.nodes(), isEmpty);
@@ -90,6 +92,18 @@ void main() {
 
     final call = calls.firstWhere((c) => c.method == 'send');
     expect(call.arguments.containsKey('nodeId'), isFalse);
+  });
+
+  test('stream carries a snapshot to one node', () async {
+    expect(
+      await link.stream('/mirror/items/4', const {'rows': []}, nodeId: 'n1'),
+      isTrue,
+    );
+
+    final call = calls.firstWhere((c) => c.method == 'stream');
+    expect(call.arguments['path'], '/mirror/items/4');
+    expect(jsonDecode(call.arguments['payload'] as String), {'rows': []});
+    expect(call.arguments['nodeId'], 'n1');
   });
 
   test('publish and clear reach their own methods', () async {
@@ -147,17 +161,25 @@ void main() {
       'payload': jsonEncode({'id': 7}),
       'nodeId': null,
     });
+    handler.emit({
+      'delivery': 'channel',
+      'path': '/mirror/items/4',
+      'payload': jsonEncode({'rows': []}),
+      'nodeId': 'node-1',
+    });
     // Malformed payloads are dropped rather than killing the stream.
     handler.emit({'delivery': 'message', 'path': '/x', 'payload': 42});
     await pumpEventQueue();
 
-    expect(received, hasLength(2));
+    expect(received, hasLength(3));
     expect(received.first.delivery, WearLinkDelivery.message);
     expect(received.first.path, '/creds');
     expect(received.first.data, {'token': 'abc'});
     expect(received.first.nodeId, 'node-1');
-    expect(received.last.delivery, WearLinkDelivery.dataItem);
-    expect(received.last.data, {'id': 7});
+    expect(received[1].delivery, WearLinkDelivery.dataItem);
+    expect(received[1].data, {'id': 7});
+    expect(received.last.delivery, WearLinkDelivery.channel);
+    expect(received.last.path, '/mirror/items/4');
 
     await sub.cancel();
   });

@@ -30,6 +30,10 @@ class CustomFieldService {
   List<FieldDefinition>? getCached(int houseId) =>
       cache.getKeyedList(_prefix, '$houseId', FieldDefinition.fromJson);
 
+  void cacheFields(int houseId, List<FieldDefinition> fields) {
+    cache.setKeyedList(_prefix, '$houseId', fields, (f) => f.toJson());
+  }
+
   Future<List<FieldDefinition>> getFields(int houseId) async {
     final fields = await ApiClient.instance.get<List, List<FieldDefinition>>(
       '/houses/$houseId/fields',
@@ -37,7 +41,7 @@ class CustomFieldService {
           .map((e) => FieldDefinition.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
-    cache.setKeyedList(_prefix, '$houseId', fields, (f) => f.toJson());
+    cacheFields(houseId, fields);
     return fields;
   }
 

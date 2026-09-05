@@ -20,13 +20,15 @@ enum ShoppingHistoryScope {
 }
 
 /// Singleton wrapping the 21 Shopping Mode endpoints via [ApiClient.instance].
-/// Mirrors [StoreService]. Live session/item/presence data is polled, so it is
-/// not cached; reminders are cached for offline surfacing.
+/// Mirrors [StoreService]. Presence is polled and never cached; reminders and
+/// the live session's items are cached so a trip survives a dead link.
 class ShoppingService {
   ShoppingService._();
   static final ShoppingService instance = ShoppingService._();
 
   final cache = CacheStore('shopping_cache.json');
+
+  static const _sessionItemsPrefix = 'sessionItems';
 
   ApiClient get _api => ApiClient.instance;
 
@@ -148,15 +150,30 @@ class ShoppingService {
 
   // -- Items -----------------------------------------------------------------
 
+  List<ListItem>? getCachedItems(int sessionId) =>
+      cache.getKeyedList(_sessionItemsPrefix, '$sessionId', ListItem.fromJson);
+
+  /// A user has one live session at a time, so caching a second one's items
+  /// would only ever be a closed trip nothing will read again — the snapshot
+  /// replaces rather than accumulates.
+  void cacheItems(int sessionId, List<ListItem> items) {
+    cache.removeKeyed(_sessionItemsPrefix, keepKey: '$sessionId');
+    cache.setKeyedList(_sessionItemsPrefix, '$sessionId', items, (i) {
+      return i.toJson();
+    });
+  }
+
   /// (8) The flat, ordered, store-narrowed list of what to buy now (unchecked
   /// & in-scope). Client groups by category. Re-query each poll.
-  Future<List<ListItem>> getItems(int houseId, int sessionId) {
-    return _api.get<List, List<ListItem>>(
+  Future<List<ListItem>> getItems(int houseId, int sessionId) async {
+    final items = await _api.get<List, List<ListItem>>(
       '${_base(houseId)}/sessions/$sessionId/items',
       fromJson: (data) => data
           .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
+    cacheItems(sessionId, items);
+    return items;
   }
 
   /// (9) Mark an item bought — an explicit action, not a field edit. Returns

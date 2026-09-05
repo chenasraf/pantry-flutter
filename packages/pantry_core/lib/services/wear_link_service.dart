@@ -13,6 +13,11 @@ enum WearLinkDelivery {
 
   /// Persisted and mirrored until deleted, and included in cloud backup.
   dataItem,
+
+  /// An ordered, reliable, unbounded stream. What a whole-scope snapshot
+  /// travels on, since [message] guarantees neither delivery nor ordering and
+  /// chunking over it would mean owning a transport protocol.
+  channel,
 }
 
 /// A peer on the other end of the link — for a watch, the paired phone.
@@ -127,6 +132,22 @@ class WearLinkService {
         'nodeId': ?nodeId,
       });
 
+  /// Stream [data] to one peer, or to every connected peer when [nodeId] is
+  /// omitted, over an ordered and reliable channel with no size limit.
+  ///
+  /// Nothing is persisted at either end. An interrupted transfer fails whole
+  /// rather than arriving truncated, which is what lets a payload be a
+  /// complete snapshot with no resume protocol behind it.
+  Future<bool> stream(
+    String path,
+    Map<String, dynamic> data, {
+    String? nodeId,
+  }) => _invoke('stream', {
+    'path': path,
+    'payload': jsonEncode(data),
+    'nodeId': ?nodeId,
+  });
+
   /// Mirror [data] at [path] until it is overwritten or cleared. Every write
   /// is urgent — an ordinary one can sit undelivered for half an hour.
   ///
@@ -168,9 +189,11 @@ class WearLinkService {
     return WearLinkMessage(
       path: event['path'] as String? ?? '',
       data: Map<String, dynamic>.from(decoded),
-      delivery: event['delivery'] == 'dataItem'
-          ? WearLinkDelivery.dataItem
-          : WearLinkDelivery.message,
+      delivery: switch (event['delivery']) {
+        'dataItem' => WearLinkDelivery.dataItem,
+        'channel' => WearLinkDelivery.channel,
+        _ => WearLinkDelivery.message,
+      },
       nodeId: event['nodeId'] as String?,
     );
   }

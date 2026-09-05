@@ -13,13 +13,17 @@ class StoreService {
   List<Store>? getCached(int houseId) =>
       cache.getKeyedList(_prefix, '$houseId', Store.fromJson);
 
+  void cacheStores(int houseId, List<Store> stores) {
+    cache.setKeyedList(_prefix, '$houseId', stores, (s) => s.toJson());
+  }
+
   Future<List<Store>> getStores(int houseId) async {
     final stores = await ApiClient.instance.get<List, List<Store>>(
       '/houses/$houseId/stores',
       fromJson: (data) =>
           data.map((e) => Store.fromJson(e as Map<String, dynamic>)).toList(),
     );
-    cache.setKeyedList(_prefix, '$houseId', stores, (s) => s.toJson());
+    cacheStores(houseId, stores);
     return stores;
   }
 

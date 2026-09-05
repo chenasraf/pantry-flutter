@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.wearable.ChannelClient
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -15,7 +16,10 @@ import com.google.android.gms.wearable.Wearable
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
+import java.io.IOException
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * The link between a paired phone and watch, over the Wear Data Layer.
@@ -23,12 +27,14 @@ import java.nio.charset.StandardCharsets
  * Both flavors attach it: the phone is the half that sends the credential, so
  * this is the one piece of the wear surface that cannot be watch-only.
  *
- * Two delivery verbs, because the Data Layer's two clients differ in ways that
+ * Three delivery verbs, because the Data Layer's clients differ in ways that
  * matter here. A [MessageClient] message is fire-and-forget and leaves nothing
  * behind, which is the only acceptable carrier for a credential. A
  * [DataClient] item persists and is included in cloud backup, so it carries
  * only state worth mirroring — and every write is `setUrgent`, or the system
- * may sit on it for half an hour.
+ * may sit on it for half an hour. A [ChannelClient] stream is ordered,
+ * reliable and unbounded, which is what a whole-scope snapshot needs and what
+ * `sendMessage` guarantees none of.
  */
 class DataLayerChannel(private val context: Context) {
     private companion object {
@@ -44,9 +50,17 @@ class DataLayerChannel(private val context: Context) {
         const val PAYLOAD_KEY = "json"
         const val DELIVERY_MESSAGE = "message"
         const val DELIVERY_DATA_ITEM = "dataItem"
+        const val DELIVERY_CHANNEL = "channel"
     }
 
     private val main = Handler(Looper.getMainLooper())
+
+    /**
+     * Channel streams block, so neither end may touch the main thread. One
+     * thread rather than a pool: a snapshot per path is the whole traffic, and
+     * serialising it costs nothing next to the link's own latency.
+     */
+    private var io: ExecutorService? = null
 
     private var methodChannel: MethodChannel? = null
     private var eventChannel: EventChannel? = null
@@ -59,6 +73,33 @@ class DataLayerChannel(private val context: Context) {
     private val dataListener = DataClient.OnDataChangedListener { buffer ->
         forEachChangedItem(buffer) { path, payload, nodeId ->
             emit(DELIVERY_DATA_ITEM, path, payload, nodeId)
+        }
+    }
+
+    private val channelListener = object : ChannelClient.ChannelCallback() {
+        override fun onChannelOpened(channel: ChannelClient.Channel) {
+            val client = Wearable.getChannelClient(context)
+            client.getInputStream(channel)
+                .addOnSuccessListener { stream ->
+                    submit {
+                        val payload = try {
+                            String(stream.readBytes(), StandardCharsets.UTF_8)
+                        } catch (e: IOException) {
+                            null
+                        } finally {
+                            try {
+                                stream.close()
+                            } catch (e: IOException) {
+                                // Nothing left to salvage; the payload above is the outcome.
+                            }
+                        }
+                        client.close(channel)
+                        if (payload != null) {
+                            emit(DELIVERY_CHANNEL, channel.path, payload, channel.nodeId)
+                        }
+                    }
+                }
+                .addOnFailureListener { client.close(channel) }
         }
     }
 
@@ -76,6 +117,7 @@ class DataLayerChannel(private val context: Context) {
                     if (!isAvailable()) return
                     Wearable.getMessageClient(context).addListener(messageListener)
                     Wearable.getDataClient(context).addListener(dataListener)
+                    Wearable.getChannelClient(context).registerChannelCallback(channelListener)
                 }
 
                 override fun onCancel(arguments: Any?) {
@@ -83,6 +125,7 @@ class DataLayerChannel(private val context: Context) {
                     if (!isAvailable()) return
                     Wearable.getMessageClient(context).removeListener(messageListener)
                     Wearable.getDataClient(context).removeListener(dataListener)
+                    Wearable.getChannelClient(context).unregisterChannelCallback(channelListener)
                 }
             })
         }
@@ -96,8 +139,20 @@ class DataLayerChannel(private val context: Context) {
         if (isAvailable()) {
             Wearable.getMessageClient(context).removeListener(messageListener)
             Wearable.getDataClient(context).removeListener(dataListener)
+            Wearable.getChannelClient(context).unregisterChannelCallback(channelListener)
         }
         events = null
+        io?.shutdown()
+        io = null
+    }
+
+    /**
+     * Started on first use and torn down with the activity, so a build that
+     * never opens a channel never pays for a thread.
+     */
+    private fun submit(work: () -> Unit) {
+        val executor = io ?: Executors.newSingleThreadExecutor().also { io = it }
+        executor.execute(work)
     }
 
     private fun onMethodCall(
@@ -116,6 +171,12 @@ class DataLayerChannel(private val context: Context) {
         when (method) {
             "nodes" -> nodes(result)
             "send" -> send(
+                call.argument<String>("path").orEmpty(),
+                call.argument<String>("payload").orEmpty(),
+                call.argument<String>("nodeId"),
+                result,
+            )
+            "stream" -> stream(
                 call.argument<String>("path").orEmpty(),
                 call.argument<String>("payload").orEmpty(),
                 call.argument<String>("nodeId"),
@@ -177,6 +238,72 @@ class DataLayerChannel(private val context: Context) {
                 }
             }
             .addOnFailureListener { result.success(false) }
+    }
+
+    /**
+     * Ordered and reliable, unlike [send], and with no documented size limit —
+     * the carrier a whole-scope snapshot needs. An interrupted transfer simply
+     * fails; the next snapshot replaces it, so there is no resume protocol.
+     */
+    private fun stream(path: String, payload: String, nodeId: String?, result: MethodChannel.Result) {
+        val bytes = payload.toByteArray(StandardCharsets.UTF_8)
+        if (nodeId != null) {
+            streamTo(nodeId, path, bytes) { delivered -> main.post { result.success(delivered) } }
+            return
+        }
+        Wearable.getNodeClient(context).connectedNodes
+            .addOnSuccessListener { nodes ->
+                if (nodes.isEmpty()) {
+                    result.success(false)
+                    return@addOnSuccessListener
+                }
+                var remaining = nodes.size
+                var anyDelivered = false
+                nodes.forEach { node ->
+                    streamTo(node.id, path, bytes) { delivered ->
+                        main.post {
+                            if (delivered) anyDelivered = true
+                            remaining -= 1
+                            if (remaining == 0) result.success(anyDelivered)
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { result.success(false) }
+    }
+
+    private fun streamTo(nodeId: String, path: String, bytes: ByteArray, onDone: (Boolean) -> Unit) {
+        val client = Wearable.getChannelClient(context)
+        client.openChannel(nodeId, path)
+            .addOnSuccessListener { channel ->
+                client.getOutputStream(channel)
+                    .addOnSuccessListener { stream ->
+                        submit {
+                            val delivered = try {
+                                stream.write(bytes)
+                                stream.flush()
+                                true
+                            } catch (e: IOException) {
+                                false
+                            } finally {
+                                // Closing the stream is what tells the far end the
+                                // payload is complete; leaving it open hangs the read.
+                                try {
+                                    stream.close()
+                                } catch (e: IOException) {
+                                    // The write above already decided the outcome.
+                                }
+                            }
+                            client.close(channel)
+                            onDone(delivered)
+                        }
+                    }
+                    .addOnFailureListener {
+                        client.close(channel)
+                        onDone(false)
+                    }
+            }
+            .addOnFailureListener { onDone(false) }
     }
 
     private fun publish(path: String, payload: String, result: MethodChannel.Result) {

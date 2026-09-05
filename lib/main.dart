@@ -28,6 +28,7 @@ import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'services/share_intent_service.dart';
+import 'services/wear_mirror_host.dart';
 import 'services/widget_link_service.dart';
 import 'services/checklist_widget_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
@@ -166,6 +167,9 @@ void main() async {
     if (PrefsService.instance.notificationsEnabled) {
       unawaited(registerBackgroundNotificationPoll());
     }
+    // Answers a paired watch for as long as this process lives. It hides
+    // itself on a build with no Data Layer, so there is nothing to gate here.
+    unawaited(WearMirrorHost.instance.init());
   }
   LocaleService.instance.apply();
   ApiClient.onForbidden = _showPermissionDeniedSnackbar;
@@ -429,6 +433,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     await AuthService.instance.logout();
     ThemingService.instance.clear();
     ServerVersionService.instance.clear();
+    WearMirrorHost.instance.forget();
     await Future.wait([
       PrefsService.instance.clear(),
       HouseService.instance.cache.clear(),

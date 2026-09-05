@@ -18,13 +18,17 @@ class LabelService {
   List<Label>? getCached(int houseId) =>
       cache.getKeyedList(_prefix, '$houseId', Label.fromJson);
 
+  void cacheLabels(int houseId, List<Label> labels) {
+    cache.setKeyedList(_prefix, '$houseId', labels, (l) => l.toJson());
+  }
+
   Future<List<Label>> getLabels(int houseId) async {
     final labels = await ApiClient.instance.get<List, List<Label>>(
       '/houses/$houseId/labels',
       fromJson: (data) =>
           data.map((e) => Label.fromJson(e as Map<String, dynamic>)).toList(),
     );
-    cache.setKeyedList(_prefix, '$houseId', labels, (l) => l.toJson());
+    cacheLabels(houseId, labels);
     return labels;
   }
 

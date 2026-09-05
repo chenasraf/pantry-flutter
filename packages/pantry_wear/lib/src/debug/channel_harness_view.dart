@@ -5,6 +5,7 @@ import 'package:pantry_core/services/wear_link_service.dart';
 
 import '../services/rotary_service.dart';
 import '../services/wear_host_service.dart';
+import '../services/wear_mirror_client.dart';
 import '../wear_shape.dart';
 
 /// Exercises each native channel against real hardware.
@@ -31,10 +32,14 @@ class _ChannelHarnessViewState extends State<ChannelHarnessView> {
   String _lastSend = '—';
   String _lastReceived = '—';
   String _lastOpen = '—';
+  String _lastMirror = '—';
+
+  final _mirror = WearMirrorClient.instance;
 
   @override
   void initState() {
     super.initState();
+    _mirror.addListener(_onMirrored);
     _rotary = RotaryService.instance.detents.listen((value) {
       setState(() {
         _detents += 1;
@@ -51,7 +56,25 @@ class _ChannelHarnessViewState extends State<ChannelHarnessView> {
   void dispose() {
     _rotary?.cancel();
     _link?.cancel();
+    _mirror.removeListener(_onMirrored);
     super.dispose();
+  }
+
+  void _onMirrored() {
+    if (!mounted) return;
+    setState(() {
+      final captured = _mirror.capturedAt;
+      _lastMirror = captured == null
+          ? 'landed, no timestamp'
+          : 'landed, captured ${captured.toIso8601String()}';
+    });
+  }
+
+  Future<void> _requestMirror() async {
+    await _mirror.reportScope();
+    await _mirror.requestMirror();
+    if (!mounted) return;
+    setState(() => _lastMirror = 'requested');
   }
 
   Future<void> _probeLink() async {
@@ -106,9 +129,14 @@ class _ChannelHarnessViewState extends State<ChannelHarnessView> {
             _row('sent', _lastSend),
             _row('received', _lastReceived),
             _row('openOnPhone', _lastOpen),
+            _row('mirror', _lastMirror),
             const SizedBox(height: 12),
             TextButton(onPressed: _ping, child: const Text('Send ping')),
             TextButton(onPressed: _open, child: const Text('Open on phone')),
+            TextButton(
+              onPressed: _requestMirror,
+              child: const Text('Request mirror'),
+            ),
             TextButton(onPressed: _probeLink, child: const Text('Re-probe')),
           ],
         ),

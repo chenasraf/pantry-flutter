@@ -19,6 +19,10 @@ class CategoryService {
   List<Category>? getCached(int houseId) =>
       cache.getKeyedList(_prefix, '$houseId', Category.fromJson);
 
+  void cacheCategories(int houseId, List<Category> categories) {
+    cache.setKeyedList(_prefix, '$houseId', categories, (c) => c.toJson());
+  }
+
   Future<List<Category>> getCategories(int houseId) async {
     final categories = await ApiClient.instance.get<List, List<Category>>(
       '/houses/$houseId/categories',
@@ -26,7 +30,7 @@ class CategoryService {
           .map((e) => Category.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
-    cache.setKeyedList(_prefix, '$houseId', categories, (c) => c.toJson());
+    cacheCategories(houseId, categories);
     return categories;
   }
 

@@ -37,7 +37,11 @@ class WearMetrics {
   /// not exist when the finger started moving.
   static const Duration modeLockout = Duration(milliseconds: 450);
 
-  /// How often the watch re-reads what it is showing. Watch-local and fixed:
-  /// the phone's interval describes a device that is not on a wrist.
-  static const Duration pollInterval = Duration(seconds: 60);
+  /// How long a snapshot's arrival counts as the phone actively pushing.
+  static const Duration mirrorFreshFor = Duration(minutes: 3);
+
+  /// What the read poll's interval is multiplied by while snapshots are
+  /// arriving. Stretched, never stopped: the mirror is an accelerator, so
+  /// leaning on it is a saving to take and never a dependency to acquire.
+  static const int pollStretch = 3;
 }
