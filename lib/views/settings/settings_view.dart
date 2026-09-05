@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry_core/i18n.dart';
@@ -482,21 +483,21 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
             _refreshTile(
-              icon: Icons.checklist_rtl,
+              icon: EntityIcons.checklists,
               title: m.settings.checklistRefresh,
               value: checklistRefresh,
               options: _refreshOptions,
               onChanged: _setChecklistRefresh,
             ),
             _refreshTile(
-              icon: Icons.sticky_note_2_outlined,
+              icon: EntityIcons.notes,
               title: m.settings.notesRefresh,
               value: notesRefresh,
               options: _refreshOptions,
               onChanged: _setNotesRefresh,
             ),
             _refreshTile(
-              icon: Icons.photo_library_outlined,
+              icon: EntityIcons.photos,
               title: m.settings.photosRefresh,
               value: photosRefresh,
               options: _refreshOptions,

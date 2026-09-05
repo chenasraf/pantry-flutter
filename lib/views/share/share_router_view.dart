@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'package:pantry_core/i18n.dart';
@@ -235,7 +236,7 @@ class _PhotoDestinationPicker extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
+              leading: const Icon(EntityIcons.photos),
               title: Text(m.share.photoBoardRoot),
               onTap: () =>
                   Navigator.pop(context, const _PhotoDestination.root()),

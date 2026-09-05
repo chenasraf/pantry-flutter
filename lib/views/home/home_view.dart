@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry_core/i18n.dart';
@@ -328,9 +329,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   };
 
   IconData _sectionIcon(NavSection s) => switch (s) {
-    NavSection.checklists => Icons.assignment_turned_in,
-    NavSection.photoBoard => Icons.photo,
-    NavSection.notesWall => Icons.insert_drive_file,
+    NavSection.checklists => EntityIcons.checklists,
+    NavSection.photoBoard => EntityIcons.photos,
+    NavSection.notesWall => EntityIcons.notes,
   };
 
   bool _sectionVisible(NavSection s, HousePermissions perms) => switch (s) {
