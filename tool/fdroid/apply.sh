@@ -7,7 +7,7 @@
 #   - pubspec.yaml:   mobile_scanner -> flutter_zxing
 #   - the scanner:    lib/.../barcode_camera_scanner.dart <- fdroid/barcode_camera_scanner.dart
 #   - the watch link: android/.../DataLayerChannel.kt <- fdroid/DataLayerChannel.kt
-#   - build.gradle.kts: drop play-services-wearable
+#   - build.gradle.kts: drop play-services-wearable and wear-remote-interactions
 #
 # Reverse it with `make fdroid-revert` (or `git checkout` of those paths). CI
 # runs this in a throwaway checkout, so it never needs reverting there.
@@ -57,6 +57,17 @@ rm -f pubspec.yaml.bak
 # what lets the pairing entry point hide itself rather than crash.
 sed -i.bak '/play-services-wearable/d' "$gradle"
 rm -f "$gradle.bak"
+
+# wear-remote-interactions sits under F-Droid's com.google.android.gms signature
+# block. It escapes the scanner today only because the scanner derives its
+# dependency-line regexes from the flavors named in the recipe's `gradle:` field,
+# which this recipe does not have — so `wearImplementation` is never one of the
+# names it looks for. Nothing chose that; drop the line rather than depend on it.
+# Free either way: it is a wear-only configuration and F-Droid builds --flavor
+# phone, so it was never in the APK.
+sed -i.bak '/wear-remote-interactions/d' "$gradle"
+rm -f "$gradle.bak"
+
 cp "$link_override" "$link_impl"
 
 # Implementation swap: replace the ML Kit camera widget with the zxing one, and
