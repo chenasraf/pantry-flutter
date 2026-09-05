@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'degraded_proto.dart';
+
 /// PROTOTYPE — the knobs the photos and notes skeletons are drawn by.
 ///
 /// Structure was settled by grilling and the design by wearing it; what these
@@ -28,6 +30,10 @@ class ProtoTuning extends ChangeNotifier {
   double tallSideInset = 0.05;
 
   bool offline = false;
+
+  /// Which degraded-state treatment is being worn, or null for none. Cycled
+  /// from the account page in debug builds.
+  DegradedProto? degraded;
 
   void update(void Function() change) {
     change();

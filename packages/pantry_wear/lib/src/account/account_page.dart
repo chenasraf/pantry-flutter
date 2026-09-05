@@ -1,18 +1,25 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../pairing/wear_pairing_client.dart';
+import '../prototype/degraded_proto.dart';
+import '../prototype/proto_tuning.dart';
 
 /// Who the watch is signed in as, and the way back out.
 ///
 /// Signing out here does **not** revoke: the app password is the phone's, and
 /// revoking it from the wrist would sign the phone out too.
 class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
+  /// PROTOTYPE — carries the degraded-state cycle control, which is the only
+  /// way to wear the treatments without a real revocation.
+  final ProtoTuning? tuning;
+
+  const AccountPage({super.key, this.tuning});
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -90,6 +97,17 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
             ),
+            if (kDebugMode && widget.tuning != null) ...[
+              const SizedBox(height: 10),
+              ListenableBuilder(
+                listenable: widget.tuning!,
+                builder: (context, _) => ProtoDegradedSwitch(
+                  value: widget.tuning!.degraded,
+                  onChanged: (v) =>
+                      widget.tuning!.update(() => widget.tuning!.degraded = v),
+                ),
+              ),
+            ],
           ],
         ),
       ),

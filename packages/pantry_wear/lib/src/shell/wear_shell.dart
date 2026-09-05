@@ -14,6 +14,7 @@ import '../checklists/checklists_controller.dart';
 import '../checklists/checklists_page.dart';
 import '../checklists/list_switcher_page.dart';
 import '../photos/photos_page.dart';
+import '../prototype/degraded_proto.dart';
 import '../prototype/notes_page.dart';
 import '../prototype/proto_tuning.dart';
 import '../services/wear_deep_link.dart';
@@ -187,7 +188,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
           _checklists(),
           PhotosPage(active: _isActive(1)),
           NotesPage(tuning: _skeletonTuning, active: _isActive(2)),
-          const AccountPage(),
+          AccountPage(tuning: _skeletonTuning),
         ]
       : [
           _StubPage(title: m.wear.progression, icon: EntityIcons.store),
@@ -204,7 +205,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
             trailing: Icons.undo,
             onTap: _controller.unskipItem,
           ),
-          const AccountPage(),
+          AccountPage(tuning: _skeletonTuning),
         ];
 
   bool _isActive(int index) => _page == index && !_routeOpen;
@@ -305,6 +306,16 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     if (mounted) setState(() => _routeOpen = false);
   }
 
+  /// PROTOTYPE — where *Set up again* lands. A pushed route, so it inherits
+  /// the same crown hand-off and back strip every other pushed route needs.
+  Future<void> _openSetUpAgain() async {
+    setState(() => _routeOpen = true);
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const ProtoSetupAgainPage()),
+    );
+    if (mounted) setState(() => _routeOpen = false);
+  }
+
   // -- Frame -----------------------------------------------------------------
 
   ThemeData _theme(BuildContext context) {
@@ -365,20 +376,41 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
                         color: const Color(0xFF0B0B0C),
                         child: ValueListenableBuilder(
                           valueListenable: _geometry,
-                          builder: (context, geometry, _) => WearRail(
-                            title: title,
-                            group: _page == _checklistIndex
-                                ? geometry.stickyGroup
-                                : null,
-                            groupIcon: geometry.stickyIcon,
-                            groupColor: geometry.stickyColor,
-                            page: _page,
-                            pages: _pages.length,
-                            expanded: _railExpanded,
-                            onTapTitle: _tapRail,
-                            onChangeList: _openSwitcher,
+                          builder: (context, geometry, _) => ListenableBuilder(
+                            listenable: _skeletonTuning,
+                            builder: (context, _) => WearRail(
+                              title: title,
+                              group: _page == _checklistIndex
+                                  ? geometry.stickyGroup
+                                  : null,
+                              groupIcon: geometry.stickyIcon,
+                              groupColor: geometry.stickyColor,
+                              page: _page,
+                              pages: _pages.length,
+                              expanded: _railExpanded,
+                              onTapTitle: _tapRail,
+                              onChangeList: _openSwitcher,
+                              degraded: _skeletonTuning.degraded,
+                              onSetUpAgain: _openSetUpAgain,
+                            ),
                           ),
                         ),
+                      ),
+                    ),
+                    // PROTOTYPE — variant C, the persistent strip. It sits
+                    // where the transient notice draws, so the two can be seen
+                    // fighting for the same space.
+                    PositionedDirectional(
+                      start: 0,
+                      end: 0,
+                      bottom: h * 0.02,
+                      child: ListenableBuilder(
+                        listenable: _skeletonTuning,
+                        builder: (context, _) =>
+                            _skeletonTuning.degraded ==
+                                DegradedProto.bottomStrip
+                            ? ProtoDegradedStrip(onTap: _openSetUpAgain)
+                            : const SizedBox.shrink(),
                       ),
                     ),
                     if (_notice != null)
