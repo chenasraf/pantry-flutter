@@ -286,6 +286,8 @@ settings:
   refresh1m: כל דקה
   refresh2m: כל 2 דקות
   refresh5m: כל 5 דקות
+  watchSection: שעון
+  watchSubtitle: חיבור שעון Wear OS והתחברות בו
 
 notifications:
   title: התראות
@@ -1028,3 +1030,33 @@ wear:
   nothingToCheckOff: אין מה לסמן
   nothingRemoved: לא הוסר דבר
   noLists: אין כאן רשימות עדיין
+  setupTitle: הגדרת Pantry
+  setupBody: ההתחברות נעשית מהטלפון — אין מה להקליד כאן.
+  setupNoLink: אין חיבור לטלפון
+  setupNoLinkBody: השעון הזה לא מצליח להגיע לטלפון. Pantry זקוק לאחד כדי להתחבר.
+  setupNoPhone: חבר את הטלפון שלך
+  setupNoPhoneBody: קרב את הטלפון והשאר את המסך הזה פתוח.
+  setupPhoneSignedOut: היכנס קודם מהטלפון שלך
+  setupPhoneSignedOutBody: הטלפון שלך עדיין לא מחובר ל-Pantry.
+  setupSyncing: מביאים את הרשימות שלך
+  setupSyncingBody: כמעט מוכן.
+
+watch:
+  title: שעון
+  requestTitle(String name): "${name} מבקש להתחבר"
+  requestBody(String account, String server): "הוא ישתמש בחשבון ${account} בשרת ${server}."
+  requestWarning: אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.
+  allow: אישור
+  deny: דחייה
+  transferring: מחברים את השעון שלך
+  transferringBody: השאר את המסך הזה פתוח עד שיסתיים.
+  pairedSnack: השעון שלך מחובר
+  pairFailedSnack: לא הצלחנו להגיע לשעון שלך
+  waitingBody: פתח את Pantry בשעון והקש על ״פתיחה בטלפון״. הבקשה תופיע כאן.
+  pairedBody: השעון שלך מחובר ונשאר מסונכרן עם הטלפון הזה.
+  pairedStatus: מחובר
+  unnamedWatch: השעון שלך
+  unpair: ניתוק השעון
+  unpairSubtitle: ניתוק השעון הזה והפסקת הסנכרון אליו
+  unpairTitle: לנתק את השעון הזה?
+  unpairBody: השעון יתנתק וישכח את הבית שלך. אפשר להגדיר אותו מחדש בכל עת.

@@ -286,6 +286,8 @@ settings:
   refresh1m: Every minute
   refresh2m: Every 2 minutes
   refresh5m: Every 5 minutes
+  watchSection: Watch
+  watchSubtitle: Pair a Wear OS watch and sign it in
 
 notifications:
   title: Notifications
@@ -1036,3 +1038,33 @@ wear:
   nothingToCheckOff: Nothing to check off
   nothingRemoved: Nothing removed
   noLists: No lists here yet
+  setupTitle: Set up Pantry
+  setupBody: Sign in from your phone — nothing to type here.
+  setupNoLink: No phone link
+  setupNoLinkBody: This watch can't reach a phone. Pantry needs one to sign in.
+  setupNoPhone: Connect your phone
+  setupNoPhoneBody: Bring your phone closer and keep this screen open.
+  setupPhoneSignedOut: Sign in on your phone first
+  setupPhoneSignedOutBody: Your phone isn't signed in to Pantry yet.
+  setupSyncing: Getting your lists
+  setupSyncingBody: Almost there.
+
+watch:
+  title: Watch
+  requestTitle(String name): "${name} wants to sign in"
+  requestBody(String account, String server): "It will use your account ${account} on ${server}."
+  requestWarning: Only allow this if the watch is yours. It gets the same access to your household as this phone.
+  allow: Allow
+  deny: Deny
+  transferring: Signing in your watch
+  transferringBody: Keep this screen open until it finishes.
+  pairedSnack: Your watch is signed in
+  pairFailedSnack: Couldn't reach your watch
+  waitingBody: Open Pantry on your watch and tap Open on phone. The request shows up here.
+  pairedBody: Your watch is signed in and keeps in step with this phone.
+  pairedStatus: Signed in
+  unnamedWatch: Your watch
+  unpair: Unpair watch
+  unpairSubtitle: Sign this watch out and stop syncing to it
+  unpairTitle: Unpair this watch?
+  unpairBody: The watch signs out and forgets your household. You can set it up again any time.

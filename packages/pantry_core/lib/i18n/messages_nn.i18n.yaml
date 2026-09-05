@@ -375,6 +375,8 @@ settings:
   refresh1m: Kvart minutt
   refresh2m: Kvart 2. minutt
   refresh5m: Kvart 5. minutt
+  watchSection: Klokke
+  watchSubtitle: Kople til ei Wear OS-klokke og logg henne inn
 notifications:
   title: Varsel
   empty: Ingen nye varsel.
@@ -1172,3 +1174,33 @@ wear:
   nothingToCheckOff: Ingenting å krysse av
   nothingRemoved: Ingenting er fjerna
   noLists: Ingen lister her enno
+  setupTitle: Set opp Pantry
+  setupBody: Logg inn frå telefonen — ingenting å skrive her.
+  setupNoLink: Inga telefonkopling
+  setupNoLinkBody: Denne klokka når ingen telefon. Pantry treng ein for å logge inn.
+  setupNoPhone: Kople til telefonen din
+  setupNoPhoneBody: Ha telefonen nærare og lat denne skjermen stå open.
+  setupPhoneSignedOut: Logg inn på telefonen først
+  setupPhoneSignedOutBody: Telefonen din er ikkje logga inn i Pantry enno.
+  setupSyncing: Hentar listene dine
+  setupSyncingBody: Straks ferdig.
+
+watch:
+  title: Klokke
+  requestTitle(String name): "${name} vil logge inn"
+  requestBody(String account, String server): "Ho vil bruke kontoen din ${account} på ${server}."
+  requestWarning: Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.
+  allow: Tillat
+  deny: Avslå
+  transferring: Loggar inn klokka di
+  transferringBody: Lat denne skjermen stå open til det er ferdig.
+  pairedSnack: Klokka di er logga inn
+  pairFailedSnack: Fekk ikkje kontakt med klokka
+  waitingBody: Opna Pantry på klokka og trykk «Opna på telefonen». Førespurnaden dukkar opp her.
+  pairedBody: Klokka di er logga inn og held følgje med denne telefonen.
+  pairedStatus: Logga inn
+  unnamedWatch: Klokka di
+  unpair: Kople frå klokka
+  unpairSubtitle: Logg ut denne klokka og slutt å synkronisere til henne
+  unpairTitle: Kople frå denne klokka?
+  unpairBody: Klokka loggar ut og gløymer husstanden din. Du kan setje henne opp att når som helst.

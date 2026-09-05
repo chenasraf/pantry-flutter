@@ -87,6 +87,7 @@ class MessagesHe extends Messages {
   SyncMessagesHe get sync => SyncMessagesHe(this);
   MarkdownEditorMessagesHe get markdownEditor => MarkdownEditorMessagesHe(this);
   WearMessagesHe get wear => WearMessagesHe(this);
+  WatchMessagesHe get watch => WatchMessagesHe(this);
 }
 
 class CommonMessagesHe extends CommonMessages {
@@ -1383,6 +1384,16 @@ class SettingsMessagesHe extends SettingsMessages {
   /// "כל 5 דקות"
   /// ```
   String get refresh5m => """כל 5 דקות""";
+
+  /// ```dart
+  /// "שעון"
+  /// ```
+  String get watchSection => """שעון""";
+
+  /// ```dart
+  /// "חיבור שעון Wear OS והתחברות בו"
+  /// ```
+  String get watchSubtitle => """חיבור שעון Wear OS והתחברות בו""";
 }
 
 class ItemTapActionNamesSettingsMessagesHe
@@ -5308,6 +5319,157 @@ class WearMessagesHe extends WearMessages {
   /// "אין כאן רשימות עדיין"
   /// ```
   String get noLists => """אין כאן רשימות עדיין""";
+
+  /// ```dart
+  /// "הגדרת Pantry"
+  /// ```
+  String get setupTitle => """הגדרת Pantry""";
+
+  /// ```dart
+  /// "ההתחברות נעשית מהטלפון — אין מה להקליד כאן."
+  /// ```
+  String get setupBody => """ההתחברות נעשית מהטלפון — אין מה להקליד כאן.""";
+
+  /// ```dart
+  /// "אין חיבור לטלפון"
+  /// ```
+  String get setupNoLink => """אין חיבור לטלפון""";
+
+  /// ```dart
+  /// "השעון הזה לא מצליח להגיע לטלפון. Pantry זקוק לאחד כדי להתחבר."
+  /// ```
+  String get setupNoLinkBody =>
+      """השעון הזה לא מצליח להגיע לטלפון. Pantry זקוק לאחד כדי להתחבר.""";
+
+  /// ```dart
+  /// "חבר את הטלפון שלך"
+  /// ```
+  String get setupNoPhone => """חבר את הטלפון שלך""";
+
+  /// ```dart
+  /// "קרב את הטלפון והשאר את המסך הזה פתוח."
+  /// ```
+  String get setupNoPhoneBody => """קרב את הטלפון והשאר את המסך הזה פתוח.""";
+
+  /// ```dart
+  /// "היכנס קודם מהטלפון שלך"
+  /// ```
+  String get setupPhoneSignedOut => """היכנס קודם מהטלפון שלך""";
+
+  /// ```dart
+  /// "הטלפון שלך עדיין לא מחובר ל-Pantry."
+  /// ```
+  String get setupPhoneSignedOutBody =>
+      """הטלפון שלך עדיין לא מחובר ל-Pantry.""";
+
+  /// ```dart
+  /// "מביאים את הרשימות שלך"
+  /// ```
+  String get setupSyncing => """מביאים את הרשימות שלך""";
+
+  /// ```dart
+  /// "כמעט מוכן."
+  /// ```
+  String get setupSyncingBody => """כמעט מוכן.""";
+}
+
+class WatchMessagesHe extends WatchMessages {
+  final MessagesHe _parent;
+  const WatchMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "שעון"
+  /// ```
+  String get title => """שעון""";
+
+  /// ```dart
+  /// "${name} מבקש להתחבר"
+  /// ```
+  String requestTitle(String name) => """${name} מבקש להתחבר""";
+
+  /// ```dart
+  /// "הוא ישתמש בחשבון ${account} בשרת ${server}."
+  /// ```
+  String requestBody(String account, String server) =>
+      """הוא ישתמש בחשבון ${account} בשרת ${server}.""";
+
+  /// ```dart
+  /// "אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה."
+  /// ```
+  String get requestWarning =>
+      """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""";
+
+  /// ```dart
+  /// "אישור"
+  /// ```
+  String get allow => """אישור""";
+
+  /// ```dart
+  /// "דחייה"
+  /// ```
+  String get deny => """דחייה""";
+
+  /// ```dart
+  /// "מחברים את השעון שלך"
+  /// ```
+  String get transferring => """מחברים את השעון שלך""";
+
+  /// ```dart
+  /// "השאר את המסך הזה פתוח עד שיסתיים."
+  /// ```
+  String get transferringBody => """השאר את המסך הזה פתוח עד שיסתיים.""";
+
+  /// ```dart
+  /// "השעון שלך מחובר"
+  /// ```
+  String get pairedSnack => """השעון שלך מחובר""";
+
+  /// ```dart
+  /// "לא הצלחנו להגיע לשעון שלך"
+  /// ```
+  String get pairFailedSnack => """לא הצלחנו להגיע לשעון שלך""";
+
+  /// ```dart
+  /// "פתח את Pantry בשעון והקש על ״פתיחה בטלפון״. הבקשה תופיע כאן."
+  /// ```
+  String get waitingBody =>
+      """פתח את Pantry בשעון והקש על ״פתיחה בטלפון״. הבקשה תופיע כאן.""";
+
+  /// ```dart
+  /// "השעון שלך מחובר ונשאר מסונכרן עם הטלפון הזה."
+  /// ```
+  String get pairedBody => """השעון שלך מחובר ונשאר מסונכרן עם הטלפון הזה.""";
+
+  /// ```dart
+  /// "מחובר"
+  /// ```
+  String get pairedStatus => """מחובר""";
+
+  /// ```dart
+  /// "השעון שלך"
+  /// ```
+  String get unnamedWatch => """השעון שלך""";
+
+  /// ```dart
+  /// "ניתוק השעון"
+  /// ```
+  String get unpair => """ניתוק השעון""";
+
+  /// ```dart
+  /// "ניתוק השעון הזה והפסקת הסנכרון אליו"
+  /// ```
+  String get unpairSubtitle => """ניתוק השעון הזה והפסקת הסנכרון אליו""";
+
+  /// ```dart
+  /// "לנתק את השעון הזה?"
+  /// ```
+  String get unpairTitle => """לנתק את השעון הזה?""";
+
+  /// ```dart
+  /// "השעון יתנתק וישכח את הבית שלך. אפשר להגדיר אותו מחדש בכל עת."
+  /// ```
+  String get unpairBody =>
+      """השעון יתנתק וישכח את הבית שלך. אפשר להגדיר אותו מחדש בכל עת.""";
 }
 
 Map<String, String> get messagesHeMap => {
@@ -5619,6 +5781,8 @@ Map<String, String> get messagesHeMap => {
   """settings.refresh1m""": """כל דקה""",
   """settings.refresh2m""": """כל 2 דקות""",
   """settings.refresh5m""": """כל 5 דקות""",
+  """settings.watchSection""": """שעון""",
+  """settings.watchSubtitle""": """חיבור שעון Wear OS והתחברות בו""",
   """notifications.title""": """התראות""",
   """notifications.empty""": """אין התראות חדשות.""",
   """notifications.failedToLoad""": """טעינת ההתראות נכשלה.""",
@@ -6267,4 +6431,34 @@ Map<String, String> get messagesHeMap => {
   """wear.nothingToCheckOff""": """אין מה לסמן""",
   """wear.nothingRemoved""": """לא הוסר דבר""",
   """wear.noLists""": """אין כאן רשימות עדיין""",
+  """wear.setupTitle""": """הגדרת Pantry""",
+  """wear.setupBody""": """ההתחברות נעשית מהטלפון — אין מה להקליד כאן.""",
+  """wear.setupNoLink""": """אין חיבור לטלפון""",
+  """wear.setupNoLinkBody""":
+      """השעון הזה לא מצליח להגיע לטלפון. Pantry זקוק לאחד כדי להתחבר.""",
+  """wear.setupNoPhone""": """חבר את הטלפון שלך""",
+  """wear.setupNoPhoneBody""": """קרב את הטלפון והשאר את המסך הזה פתוח.""",
+  """wear.setupPhoneSignedOut""": """היכנס קודם מהטלפון שלך""",
+  """wear.setupPhoneSignedOutBody""": """הטלפון שלך עדיין לא מחובר ל-Pantry.""",
+  """wear.setupSyncing""": """מביאים את הרשימות שלך""",
+  """wear.setupSyncingBody""": """כמעט מוכן.""",
+  """watch.title""": """שעון""",
+  """watch.requestWarning""":
+      """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",
+  """watch.allow""": """אישור""",
+  """watch.deny""": """דחייה""",
+  """watch.transferring""": """מחברים את השעון שלך""",
+  """watch.transferringBody""": """השאר את המסך הזה פתוח עד שיסתיים.""",
+  """watch.pairedSnack""": """השעון שלך מחובר""",
+  """watch.pairFailedSnack""": """לא הצלחנו להגיע לשעון שלך""",
+  """watch.waitingBody""":
+      """פתח את Pantry בשעון והקש על ״פתיחה בטלפון״. הבקשה תופיע כאן.""",
+  """watch.pairedBody""": """השעון שלך מחובר ונשאר מסונכרן עם הטלפון הזה.""",
+  """watch.pairedStatus""": """מחובר""",
+  """watch.unnamedWatch""": """השעון שלך""",
+  """watch.unpair""": """ניתוק השעון""",
+  """watch.unpairSubtitle""": """ניתוק השעון הזה והפסקת הסנכרון אליו""",
+  """watch.unpairTitle""": """לנתק את השעון הזה?""",
+  """watch.unpairBody""":
+      """השעון יתנתק וישכח את הבית שלך. אפשר להגדיר אותו מחדש בכל עת.""",
 };

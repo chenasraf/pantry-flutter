@@ -286,6 +286,8 @@ settings:
   refresh1m: Cada minuto
   refresh2m: Cada 2 minutos
   refresh5m: Cada 5 minutos
+  watchSection: Reloj
+  watchSubtitle: Vincula un reloj Wear OS e inicia sesión en él
 
 notifications:
   title: Notificaciones
@@ -1028,3 +1030,33 @@ wear:
   nothingToCheckOff: Nada que marcar
   nothingRemoved: No has quitado nada
   noLists: Aún no hay listas aquí
+  setupTitle: Configurar Pantry
+  setupBody: "Inicia sesión desde tu teléfono: aquí no hay que escribir nada."
+  setupNoLink: Sin conexión al teléfono
+  setupNoLinkBody: Este reloj no alcanza ningún teléfono. Pantry necesita uno para iniciar sesión.
+  setupNoPhone: Conecta tu teléfono
+  setupNoPhoneBody: Acerca tu teléfono y deja esta pantalla abierta.
+  setupPhoneSignedOut: Inicia sesión primero en tu teléfono
+  setupPhoneSignedOutBody: Tu teléfono aún no ha iniciado sesión en Pantry.
+  setupSyncing: Trayendo tus listas
+  setupSyncingBody: Casi está.
+
+watch:
+  title: Reloj
+  requestTitle(String name): "${name} quiere iniciar sesión"
+  requestBody(String account, String server): "Usará tu cuenta ${account} en ${server}."
+  requestWarning: Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.
+  allow: Permitir
+  deny: Denegar
+  transferring: Iniciando sesión en tu reloj
+  transferringBody: Deja esta pantalla abierta hasta que termine.
+  pairedSnack: Tu reloj ha iniciado sesión
+  pairFailedSnack: No se pudo contactar con tu reloj
+  waitingBody: Abre Pantry en tu reloj y toca Abrir en el teléfono. La solicitud aparecerá aquí.
+  pairedBody: Tu reloj tiene sesión iniciada y se mantiene al día con este teléfono.
+  pairedStatus: Sesión iniciada
+  unnamedWatch: Tu reloj
+  unpair: Desvincular reloj
+  unpairSubtitle: Cerrar la sesión de este reloj y dejar de sincronizar con él
+  unpairTitle: "¿Desvincular este reloj?"
+  unpairBody: El reloj cerrará la sesión y olvidará tu hogar. Puedes configurarlo de nuevo cuando quieras.

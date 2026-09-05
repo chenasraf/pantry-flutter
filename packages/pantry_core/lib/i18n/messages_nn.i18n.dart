@@ -87,6 +87,7 @@ class MessagesNn extends Messages {
   SyncMessagesNn get sync => SyncMessagesNn(this);
   MarkdownEditorMessagesNn get markdownEditor => MarkdownEditorMessagesNn(this);
   WearMessagesNn get wear => WearMessagesNn(this);
+  WatchMessagesNn get watch => WatchMessagesNn(this);
 }
 
 class CommonMessagesNn extends CommonMessages {
@@ -1390,6 +1391,17 @@ class SettingsMessagesNn extends SettingsMessages {
   /// "Kvart 5. minutt"
   /// ```
   String get refresh5m => """Kvart 5. minutt""";
+
+  /// ```dart
+  /// "Klokke"
+  /// ```
+  String get watchSection => """Klokke""";
+
+  /// ```dart
+  /// "Kople til ei Wear OS-klokke og logg henne inn"
+  /// ```
+  String get watchSubtitle =>
+      """Kople til ei Wear OS-klokke og logg henne inn""";
 }
 
 class ItemTapActionNamesSettingsMessagesNn
@@ -5331,6 +5343,162 @@ class WearMessagesNn extends WearMessages {
   /// "Ingen lister her enno"
   /// ```
   String get noLists => """Ingen lister her enno""";
+
+  /// ```dart
+  /// "Set opp Pantry"
+  /// ```
+  String get setupTitle => """Set opp Pantry""";
+
+  /// ```dart
+  /// "Logg inn frå telefonen — ingenting å skrive her."
+  /// ```
+  String get setupBody =>
+      """Logg inn frå telefonen — ingenting å skrive her.""";
+
+  /// ```dart
+  /// "Inga telefonkopling"
+  /// ```
+  String get setupNoLink => """Inga telefonkopling""";
+
+  /// ```dart
+  /// "Denne klokka når ingen telefon. Pantry treng ein for å logge inn."
+  /// ```
+  String get setupNoLinkBody =>
+      """Denne klokka når ingen telefon. Pantry treng ein for å logge inn.""";
+
+  /// ```dart
+  /// "Kople til telefonen din"
+  /// ```
+  String get setupNoPhone => """Kople til telefonen din""";
+
+  /// ```dart
+  /// "Ha telefonen nærare og lat denne skjermen stå open."
+  /// ```
+  String get setupNoPhoneBody =>
+      """Ha telefonen nærare og lat denne skjermen stå open.""";
+
+  /// ```dart
+  /// "Logg inn på telefonen først"
+  /// ```
+  String get setupPhoneSignedOut => """Logg inn på telefonen først""";
+
+  /// ```dart
+  /// "Telefonen din er ikkje logga inn i Pantry enno."
+  /// ```
+  String get setupPhoneSignedOutBody =>
+      """Telefonen din er ikkje logga inn i Pantry enno.""";
+
+  /// ```dart
+  /// "Hentar listene dine"
+  /// ```
+  String get setupSyncing => """Hentar listene dine""";
+
+  /// ```dart
+  /// "Straks ferdig."
+  /// ```
+  String get setupSyncingBody => """Straks ferdig.""";
+}
+
+class WatchMessagesNn extends WatchMessages {
+  final MessagesNn _parent;
+  const WatchMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Klokke"
+  /// ```
+  String get title => """Klokke""";
+
+  /// ```dart
+  /// "${name} vil logge inn"
+  /// ```
+  String requestTitle(String name) => """${name} vil logge inn""";
+
+  /// ```dart
+  /// "Ho vil bruke kontoen din ${account} på ${server}."
+  /// ```
+  String requestBody(String account, String server) =>
+      """Ho vil bruke kontoen din ${account} på ${server}.""";
+
+  /// ```dart
+  /// "Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen."
+  /// ```
+  String get requestWarning =>
+      """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""";
+
+  /// ```dart
+  /// "Tillat"
+  /// ```
+  String get allow => """Tillat""";
+
+  /// ```dart
+  /// "Avslå"
+  /// ```
+  String get deny => """Avslå""";
+
+  /// ```dart
+  /// "Loggar inn klokka di"
+  /// ```
+  String get transferring => """Loggar inn klokka di""";
+
+  /// ```dart
+  /// "Lat denne skjermen stå open til det er ferdig."
+  /// ```
+  String get transferringBody =>
+      """Lat denne skjermen stå open til det er ferdig.""";
+
+  /// ```dart
+  /// "Klokka di er logga inn"
+  /// ```
+  String get pairedSnack => """Klokka di er logga inn""";
+
+  /// ```dart
+  /// "Fekk ikkje kontakt med klokka"
+  /// ```
+  String get pairFailedSnack => """Fekk ikkje kontakt med klokka""";
+
+  /// ```dart
+  /// "Opna Pantry på klokka og trykk «Opna på telefonen». Førespurnaden dukkar opp her."
+  /// ```
+  String get waitingBody =>
+      """Opna Pantry på klokka og trykk «Opna på telefonen». Førespurnaden dukkar opp her.""";
+
+  /// ```dart
+  /// "Klokka di er logga inn og held følgje med denne telefonen."
+  /// ```
+  String get pairedBody =>
+      """Klokka di er logga inn og held følgje med denne telefonen.""";
+
+  /// ```dart
+  /// "Logga inn"
+  /// ```
+  String get pairedStatus => """Logga inn""";
+
+  /// ```dart
+  /// "Klokka di"
+  /// ```
+  String get unnamedWatch => """Klokka di""";
+
+  /// ```dart
+  /// "Kople frå klokka"
+  /// ```
+  String get unpair => """Kople frå klokka""";
+
+  /// ```dart
+  /// "Logg ut denne klokka og slutt å synkronisere til henne"
+  /// ```
+  String get unpairSubtitle =>
+      """Logg ut denne klokka og slutt å synkronisere til henne""";
+
+  /// ```dart
+  /// "Kople frå denne klokka?"
+  /// ```
+  String get unpairTitle => """Kople frå denne klokka?""";
+
+  /// ```dart
+  /// "Klokka loggar ut og gløymer husstanden din. Du kan setje henne opp att når som helst."
+  /// ```
+  String get unpairBody =>
+      """Klokka loggar ut og gløymer husstanden din. Du kan setje henne opp att når som helst.""";
 }
 
 Map<String, String> get messagesNnMap => {
@@ -5652,6 +5820,9 @@ Passord: pantry""",
   """settings.refresh1m""": """Kvart minutt""",
   """settings.refresh2m""": """Kvart 2. minutt""",
   """settings.refresh5m""": """Kvart 5. minutt""",
+  """settings.watchSection""": """Klokke""",
+  """settings.watchSubtitle""":
+      """Kople til ei Wear OS-klokke og logg henne inn""",
   """notifications.title""": """Varsel""",
   """notifications.empty""": """Ingen nye varsel.""",
   """notifications.failedToLoad""": """Klart ikkje laste varslingar.""",
@@ -6327,4 +6498,39 @@ Passord: pantry""",
   """wear.nothingToCheckOff""": """Ingenting å krysse av""",
   """wear.nothingRemoved""": """Ingenting er fjerna""",
   """wear.noLists""": """Ingen lister her enno""",
+  """wear.setupTitle""": """Set opp Pantry""",
+  """wear.setupBody""": """Logg inn frå telefonen — ingenting å skrive her.""",
+  """wear.setupNoLink""": """Inga telefonkopling""",
+  """wear.setupNoLinkBody""":
+      """Denne klokka når ingen telefon. Pantry treng ein for å logge inn.""",
+  """wear.setupNoPhone""": """Kople til telefonen din""",
+  """wear.setupNoPhoneBody""":
+      """Ha telefonen nærare og lat denne skjermen stå open.""",
+  """wear.setupPhoneSignedOut""": """Logg inn på telefonen først""",
+  """wear.setupPhoneSignedOutBody""":
+      """Telefonen din er ikkje logga inn i Pantry enno.""",
+  """wear.setupSyncing""": """Hentar listene dine""",
+  """wear.setupSyncingBody""": """Straks ferdig.""",
+  """watch.title""": """Klokke""",
+  """watch.requestWarning""":
+      """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",
+  """watch.allow""": """Tillat""",
+  """watch.deny""": """Avslå""",
+  """watch.transferring""": """Loggar inn klokka di""",
+  """watch.transferringBody""":
+      """Lat denne skjermen stå open til det er ferdig.""",
+  """watch.pairedSnack""": """Klokka di er logga inn""",
+  """watch.pairFailedSnack""": """Fekk ikkje kontakt med klokka""",
+  """watch.waitingBody""":
+      """Opna Pantry på klokka og trykk «Opna på telefonen». Førespurnaden dukkar opp her.""",
+  """watch.pairedBody""":
+      """Klokka di er logga inn og held følgje med denne telefonen.""",
+  """watch.pairedStatus""": """Logga inn""",
+  """watch.unnamedWatch""": """Klokka di""",
+  """watch.unpair""": """Kople frå klokka""",
+  """watch.unpairSubtitle""":
+      """Logg ut denne klokka og slutt å synkronisere til henne""",
+  """watch.unpairTitle""": """Kople frå denne klokka?""",
+  """watch.unpairBody""":
+      """Klokka loggar ut og gløymer husstanden din. Du kan setje henne opp att når som helst.""",
 };

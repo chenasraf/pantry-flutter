@@ -474,10 +474,22 @@ class AuthService {
     );
   }
 
-  Future<void> logout() async {
-    if (_credentials != null) {
+  /// Take on a credential obtained somewhere other than this device's own
+  /// sign-in — a watch receiving its phone's over the Data Layer.
+  Future<void> adoptCredentials(NextcloudCredentials creds) =>
+      _saveCredentials(creds);
+
+  /// Forget the session on this device, and by default revoke the app
+  /// password server-side so it cannot be used again.
+  ///
+  /// Pass `revoke: false` to forget it locally and leave the password valid.
+  /// A watch and its phone share one app password, so a watch that revoked on
+  /// its way out would sign the phone out with it — there is no way to say
+  /// "only me" to the server, so a device that cannot revoke alone settles for
+  /// forgetting.
+  Future<void> logout({bool revoke = true}) async {
+    if (revoke && _credentials != null) {
       try {
-        // Revoke the app password
         final uri = Uri.parse(
           '${_credentials!.serverUrl}/ocs/v2.php/core/apppassword',
         );

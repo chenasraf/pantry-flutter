@@ -86,6 +86,7 @@ class Messages {
   SyncMessages get sync => SyncMessages(this);
   MarkdownEditorMessages get markdownEditor => MarkdownEditorMessages(this);
   WearMessages get wear => WearMessages(this);
+  WatchMessages get watch => WatchMessages(this);
 }
 
 class CommonMessages {
@@ -1384,6 +1385,16 @@ class SettingsMessages {
   /// "Every 5 minutes"
   /// ```
   String get refresh5m => """Every 5 minutes""";
+
+  /// ```dart
+  /// "Watch"
+  /// ```
+  String get watchSection => """Watch""";
+
+  /// ```dart
+  /// "Pair a Wear OS watch and sign it in"
+  /// ```
+  String get watchSubtitle => """Pair a Wear OS watch and sign it in""";
 }
 
 class ItemTapActionNamesSettingsMessages {
@@ -5302,6 +5313,159 @@ class WearMessages {
   /// "No lists here yet"
   /// ```
   String get noLists => """No lists here yet""";
+
+  /// ```dart
+  /// "Set up Pantry"
+  /// ```
+  String get setupTitle => """Set up Pantry""";
+
+  /// ```dart
+  /// "Sign in from your phone — nothing to type here."
+  /// ```
+  String get setupBody => """Sign in from your phone — nothing to type here.""";
+
+  /// ```dart
+  /// "No phone link"
+  /// ```
+  String get setupNoLink => """No phone link""";
+
+  /// ```dart
+  /// "This watch can't reach a phone. Pantry needs one to sign in."
+  /// ```
+  String get setupNoLinkBody =>
+      """This watch can't reach a phone. Pantry needs one to sign in.""";
+
+  /// ```dart
+  /// "Connect your phone"
+  /// ```
+  String get setupNoPhone => """Connect your phone""";
+
+  /// ```dart
+  /// "Bring your phone closer and keep this screen open."
+  /// ```
+  String get setupNoPhoneBody =>
+      """Bring your phone closer and keep this screen open.""";
+
+  /// ```dart
+  /// "Sign in on your phone first"
+  /// ```
+  String get setupPhoneSignedOut => """Sign in on your phone first""";
+
+  /// ```dart
+  /// "Your phone isn't signed in to Pantry yet."
+  /// ```
+  String get setupPhoneSignedOutBody =>
+      """Your phone isn't signed in to Pantry yet.""";
+
+  /// ```dart
+  /// "Getting your lists"
+  /// ```
+  String get setupSyncing => """Getting your lists""";
+
+  /// ```dart
+  /// "Almost there."
+  /// ```
+  String get setupSyncingBody => """Almost there.""";
+}
+
+class WatchMessages {
+  final Messages _parent;
+  const WatchMessages(this._parent);
+
+  /// ```dart
+  /// "Watch"
+  /// ```
+  String get title => """Watch""";
+
+  /// ```dart
+  /// "${name} wants to sign in"
+  /// ```
+  String requestTitle(String name) => """${name} wants to sign in""";
+
+  /// ```dart
+  /// "It will use your account ${account} on ${server}."
+  /// ```
+  String requestBody(String account, String server) =>
+      """It will use your account ${account} on ${server}.""";
+
+  /// ```dart
+  /// "Only allow this if the watch is yours. It gets the same access to your household as this phone."
+  /// ```
+  String get requestWarning =>
+      """Only allow this if the watch is yours. It gets the same access to your household as this phone.""";
+
+  /// ```dart
+  /// "Allow"
+  /// ```
+  String get allow => """Allow""";
+
+  /// ```dart
+  /// "Deny"
+  /// ```
+  String get deny => """Deny""";
+
+  /// ```dart
+  /// "Signing in your watch"
+  /// ```
+  String get transferring => """Signing in your watch""";
+
+  /// ```dart
+  /// "Keep this screen open until it finishes."
+  /// ```
+  String get transferringBody => """Keep this screen open until it finishes.""";
+
+  /// ```dart
+  /// "Your watch is signed in"
+  /// ```
+  String get pairedSnack => """Your watch is signed in""";
+
+  /// ```dart
+  /// "Couldn't reach your watch"
+  /// ```
+  String get pairFailedSnack => """Couldn't reach your watch""";
+
+  /// ```dart
+  /// "Open Pantry on your watch and tap Open on phone. The request shows up here."
+  /// ```
+  String get waitingBody =>
+      """Open Pantry on your watch and tap Open on phone. The request shows up here.""";
+
+  /// ```dart
+  /// "Your watch is signed in and keeps in step with this phone."
+  /// ```
+  String get pairedBody =>
+      """Your watch is signed in and keeps in step with this phone.""";
+
+  /// ```dart
+  /// "Signed in"
+  /// ```
+  String get pairedStatus => """Signed in""";
+
+  /// ```dart
+  /// "Your watch"
+  /// ```
+  String get unnamedWatch => """Your watch""";
+
+  /// ```dart
+  /// "Unpair watch"
+  /// ```
+  String get unpair => """Unpair watch""";
+
+  /// ```dart
+  /// "Sign this watch out and stop syncing to it"
+  /// ```
+  String get unpairSubtitle => """Sign this watch out and stop syncing to it""";
+
+  /// ```dart
+  /// "Unpair this watch?"
+  /// ```
+  String get unpairTitle => """Unpair this watch?""";
+
+  /// ```dart
+  /// "The watch signs out and forgets your household. You can set it up again any time."
+  /// ```
+  String get unpairBody =>
+      """The watch signs out and forgets your household. You can set it up again any time.""";
 }
 
 Map<String, String> get messagesMap => {
@@ -5617,6 +5781,8 @@ Password: pantry-rocks""",
   """settings.refresh1m""": """Every minute""",
   """settings.refresh2m""": """Every 2 minutes""",
   """settings.refresh5m""": """Every 5 minutes""",
+  """settings.watchSection""": """Watch""",
+  """settings.watchSubtitle""": """Pair a Wear OS watch and sign it in""",
   """notifications.title""": """Notifications""",
   """notifications.empty""": """No new notifications.""",
   """notifications.failedToLoad""": """Failed to load notifications.""",
@@ -6276,4 +6442,37 @@ Password: pantry-rocks""",
   """wear.nothingToCheckOff""": """Nothing to check off""",
   """wear.nothingRemoved""": """Nothing removed""",
   """wear.noLists""": """No lists here yet""",
+  """wear.setupTitle""": """Set up Pantry""",
+  """wear.setupBody""": """Sign in from your phone — nothing to type here.""",
+  """wear.setupNoLink""": """No phone link""",
+  """wear.setupNoLinkBody""":
+      """This watch can't reach a phone. Pantry needs one to sign in.""",
+  """wear.setupNoPhone""": """Connect your phone""",
+  """wear.setupNoPhoneBody""":
+      """Bring your phone closer and keep this screen open.""",
+  """wear.setupPhoneSignedOut""": """Sign in on your phone first""",
+  """wear.setupPhoneSignedOutBody""":
+      """Your phone isn't signed in to Pantry yet.""",
+  """wear.setupSyncing""": """Getting your lists""",
+  """wear.setupSyncingBody""": """Almost there.""",
+  """watch.title""": """Watch""",
+  """watch.requestWarning""":
+      """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",
+  """watch.allow""": """Allow""",
+  """watch.deny""": """Deny""",
+  """watch.transferring""": """Signing in your watch""",
+  """watch.transferringBody""": """Keep this screen open until it finishes.""",
+  """watch.pairedSnack""": """Your watch is signed in""",
+  """watch.pairFailedSnack""": """Couldn't reach your watch""",
+  """watch.waitingBody""":
+      """Open Pantry on your watch and tap Open on phone. The request shows up here.""",
+  """watch.pairedBody""":
+      """Your watch is signed in and keeps in step with this phone.""",
+  """watch.pairedStatus""": """Signed in""",
+  """watch.unnamedWatch""": """Your watch""",
+  """watch.unpair""": """Unpair watch""",
+  """watch.unpairSubtitle""": """Sign this watch out and stop syncing to it""",
+  """watch.unpairTitle""": """Unpair this watch?""",
+  """watch.unpairBody""":
+      """The watch signs out and forgets your household. You can set it up again any time.""",
 };

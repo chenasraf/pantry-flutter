@@ -87,6 +87,7 @@ class MessagesEs extends Messages {
   SyncMessagesEs get sync => SyncMessagesEs(this);
   MarkdownEditorMessagesEs get markdownEditor => MarkdownEditorMessagesEs(this);
   WearMessagesEs get wear => WearMessagesEs(this);
+  WatchMessagesEs get watch => WatchMessagesEs(this);
 }
 
 class CommonMessagesEs extends CommonMessages {
@@ -1394,6 +1395,17 @@ class SettingsMessagesEs extends SettingsMessages {
   /// "Cada 5 minutos"
   /// ```
   String get refresh5m => """Cada 5 minutos""";
+
+  /// ```dart
+  /// "Reloj"
+  /// ```
+  String get watchSection => """Reloj""";
+
+  /// ```dart
+  /// "Vincula un reloj Wear OS e inicia sesión en él"
+  /// ```
+  String get watchSubtitle =>
+      """Vincula un reloj Wear OS e inicia sesión en él""";
 }
 
 class ItemTapActionNamesSettingsMessagesEs
@@ -5344,6 +5356,162 @@ class WearMessagesEs extends WearMessages {
   /// "Aún no hay listas aquí"
   /// ```
   String get noLists => """Aún no hay listas aquí""";
+
+  /// ```dart
+  /// "Configurar Pantry"
+  /// ```
+  String get setupTitle => """Configurar Pantry""";
+
+  /// ```dart
+  /// "Inicia sesión desde tu teléfono: aquí no hay que escribir nada."
+  /// ```
+  String get setupBody =>
+      """Inicia sesión desde tu teléfono: aquí no hay que escribir nada.""";
+
+  /// ```dart
+  /// "Sin conexión al teléfono"
+  /// ```
+  String get setupNoLink => """Sin conexión al teléfono""";
+
+  /// ```dart
+  /// "Este reloj no alcanza ningún teléfono. Pantry necesita uno para iniciar sesión."
+  /// ```
+  String get setupNoLinkBody =>
+      """Este reloj no alcanza ningún teléfono. Pantry necesita uno para iniciar sesión.""";
+
+  /// ```dart
+  /// "Conecta tu teléfono"
+  /// ```
+  String get setupNoPhone => """Conecta tu teléfono""";
+
+  /// ```dart
+  /// "Acerca tu teléfono y deja esta pantalla abierta."
+  /// ```
+  String get setupNoPhoneBody =>
+      """Acerca tu teléfono y deja esta pantalla abierta.""";
+
+  /// ```dart
+  /// "Inicia sesión primero en tu teléfono"
+  /// ```
+  String get setupPhoneSignedOut => """Inicia sesión primero en tu teléfono""";
+
+  /// ```dart
+  /// "Tu teléfono aún no ha iniciado sesión en Pantry."
+  /// ```
+  String get setupPhoneSignedOutBody =>
+      """Tu teléfono aún no ha iniciado sesión en Pantry.""";
+
+  /// ```dart
+  /// "Trayendo tus listas"
+  /// ```
+  String get setupSyncing => """Trayendo tus listas""";
+
+  /// ```dart
+  /// "Casi está."
+  /// ```
+  String get setupSyncingBody => """Casi está.""";
+}
+
+class WatchMessagesEs extends WatchMessages {
+  final MessagesEs _parent;
+  const WatchMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Reloj"
+  /// ```
+  String get title => """Reloj""";
+
+  /// ```dart
+  /// "${name} quiere iniciar sesión"
+  /// ```
+  String requestTitle(String name) => """${name} quiere iniciar sesión""";
+
+  /// ```dart
+  /// "Usará tu cuenta ${account} en ${server}."
+  /// ```
+  String requestBody(String account, String server) =>
+      """Usará tu cuenta ${account} en ${server}.""";
+
+  /// ```dart
+  /// "Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono."
+  /// ```
+  String get requestWarning =>
+      """Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.""";
+
+  /// ```dart
+  /// "Permitir"
+  /// ```
+  String get allow => """Permitir""";
+
+  /// ```dart
+  /// "Denegar"
+  /// ```
+  String get deny => """Denegar""";
+
+  /// ```dart
+  /// "Iniciando sesión en tu reloj"
+  /// ```
+  String get transferring => """Iniciando sesión en tu reloj""";
+
+  /// ```dart
+  /// "Deja esta pantalla abierta hasta que termine."
+  /// ```
+  String get transferringBody =>
+      """Deja esta pantalla abierta hasta que termine.""";
+
+  /// ```dart
+  /// "Tu reloj ha iniciado sesión"
+  /// ```
+  String get pairedSnack => """Tu reloj ha iniciado sesión""";
+
+  /// ```dart
+  /// "No se pudo contactar con tu reloj"
+  /// ```
+  String get pairFailedSnack => """No se pudo contactar con tu reloj""";
+
+  /// ```dart
+  /// "Abre Pantry en tu reloj y toca Abrir en el teléfono. La solicitud aparecerá aquí."
+  /// ```
+  String get waitingBody =>
+      """Abre Pantry en tu reloj y toca Abrir en el teléfono. La solicitud aparecerá aquí.""";
+
+  /// ```dart
+  /// "Tu reloj tiene sesión iniciada y se mantiene al día con este teléfono."
+  /// ```
+  String get pairedBody =>
+      """Tu reloj tiene sesión iniciada y se mantiene al día con este teléfono.""";
+
+  /// ```dart
+  /// "Sesión iniciada"
+  /// ```
+  String get pairedStatus => """Sesión iniciada""";
+
+  /// ```dart
+  /// "Tu reloj"
+  /// ```
+  String get unnamedWatch => """Tu reloj""";
+
+  /// ```dart
+  /// "Desvincular reloj"
+  /// ```
+  String get unpair => """Desvincular reloj""";
+
+  /// ```dart
+  /// "Cerrar la sesión de este reloj y dejar de sincronizar con él"
+  /// ```
+  String get unpairSubtitle =>
+      """Cerrar la sesión de este reloj y dejar de sincronizar con él""";
+
+  /// ```dart
+  /// "¿Desvincular este reloj?"
+  /// ```
+  String get unpairTitle => """¿Desvincular este reloj?""";
+
+  /// ```dart
+  /// "El reloj cerrará la sesión y olvidará tu hogar. Puedes configurarlo de nuevo cuando quieras."
+  /// ```
+  String get unpairBody =>
+      """El reloj cerrará la sesión y olvidará tu hogar. Puedes configurarlo de nuevo cuando quieras.""";
 }
 
 Map<String, String> get messagesEsMap => {
@@ -5669,6 +5837,9 @@ Contraseña: pantry-rocks""",
   """settings.refresh1m""": """Cada minuto""",
   """settings.refresh2m""": """Cada 2 minutos""",
   """settings.refresh5m""": """Cada 5 minutos""",
+  """settings.watchSection""": """Reloj""",
+  """settings.watchSubtitle""":
+      """Vincula un reloj Wear OS e inicia sesión en él""",
   """notifications.title""": """Notificaciones""",
   """notifications.empty""": """No hay notificaciones nuevas.""",
   """notifications.failedToLoad""":
@@ -6354,4 +6525,40 @@ Contraseña: pantry-rocks""",
   """wear.nothingToCheckOff""": """Nada que marcar""",
   """wear.nothingRemoved""": """No has quitado nada""",
   """wear.noLists""": """Aún no hay listas aquí""",
+  """wear.setupTitle""": """Configurar Pantry""",
+  """wear.setupBody""":
+      """Inicia sesión desde tu teléfono: aquí no hay que escribir nada.""",
+  """wear.setupNoLink""": """Sin conexión al teléfono""",
+  """wear.setupNoLinkBody""":
+      """Este reloj no alcanza ningún teléfono. Pantry necesita uno para iniciar sesión.""",
+  """wear.setupNoPhone""": """Conecta tu teléfono""",
+  """wear.setupNoPhoneBody""":
+      """Acerca tu teléfono y deja esta pantalla abierta.""",
+  """wear.setupPhoneSignedOut""": """Inicia sesión primero en tu teléfono""",
+  """wear.setupPhoneSignedOutBody""":
+      """Tu teléfono aún no ha iniciado sesión en Pantry.""",
+  """wear.setupSyncing""": """Trayendo tus listas""",
+  """wear.setupSyncingBody""": """Casi está.""",
+  """watch.title""": """Reloj""",
+  """watch.requestWarning""":
+      """Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.""",
+  """watch.allow""": """Permitir""",
+  """watch.deny""": """Denegar""",
+  """watch.transferring""": """Iniciando sesión en tu reloj""",
+  """watch.transferringBody""":
+      """Deja esta pantalla abierta hasta que termine.""",
+  """watch.pairedSnack""": """Tu reloj ha iniciado sesión""",
+  """watch.pairFailedSnack""": """No se pudo contactar con tu reloj""",
+  """watch.waitingBody""":
+      """Abre Pantry en tu reloj y toca Abrir en el teléfono. La solicitud aparecerá aquí.""",
+  """watch.pairedBody""":
+      """Tu reloj tiene sesión iniciada y se mantiene al día con este teléfono.""",
+  """watch.pairedStatus""": """Sesión iniciada""",
+  """watch.unnamedWatch""": """Tu reloj""",
+  """watch.unpair""": """Desvincular reloj""",
+  """watch.unpairSubtitle""":
+      """Cerrar la sesión de este reloj y dejar de sincronizar con él""",
+  """watch.unpairTitle""": """¿Desvincular este reloj?""",
+  """watch.unpairBody""":
+      """El reloj cerrará la sesión y olvidará tu hogar. Puedes configurarlo de nuevo cuando quieras.""",
 };

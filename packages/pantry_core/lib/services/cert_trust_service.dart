@@ -50,6 +50,29 @@ class CertTrustService {
     await _persist();
   }
 
+  /// The pin store, flat enough to cross a device link.
+  ///
+  /// A watch has no way to answer a certificate prompt — there is no browser
+  /// and nothing to compare a fingerprint against — so it has to arrive
+  /// already knowing what its phone accepted, before its first HTTPS call.
+  Map<String, List<String>> export() => {
+    for (final e in _pinned.entries) e.key: e.value.toList(),
+  };
+
+  /// Merge pins accepted on another device into this one's store. Additive:
+  /// a host this device already pinned keeps the fingerprints it had, since
+  /// dropping one would reject a server the user is currently reaching.
+  Future<void> adopt(Map<String, List<String>> pins) async {
+    var changed = false;
+    for (final entry in pins.entries) {
+      final set = _pinned.putIfAbsent(entry.key, () => <String>{});
+      for (final fingerprint in entry.value) {
+        if (set.add(fingerprint)) changed = true;
+      }
+    }
+    if (changed) await _persist();
+  }
+
   Future<void> _persist() async {
     final encoded = jsonEncode({
       for (final e in _pinned.entries) e.key: e.value.toList(),

@@ -109,6 +109,18 @@ extension PrefsServiceChecklistSetters on PrefsService {
     notifyListeners();
   }
 
+  /// Replace the hidden set wholesale. The seed a watch receives at pairing
+  /// arrives as one value, and applying it chip by chip would write the file
+  /// once per chip before the app has drawn anything.
+  Future<void> setHiddenItemChips(Set<String> keys) async {
+    _hiddenItemChips = {...keys};
+    await _storage.write(
+      key: PrefsService._hiddenItemChipsKey,
+      value: _hiddenItemChips.isEmpty ? '' : _hiddenItemChips.join(','),
+    );
+    notifyListeners();
+  }
+
   Future<void> setItemChipVisible(String key, bool visible) async {
     final changed = visible
         ? _hiddenItemChips.remove(key)

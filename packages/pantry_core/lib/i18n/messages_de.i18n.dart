@@ -87,6 +87,7 @@ class MessagesDe extends Messages {
   SyncMessagesDe get sync => SyncMessagesDe(this);
   MarkdownEditorMessagesDe get markdownEditor => MarkdownEditorMessagesDe(this);
   WearMessagesDe get wear => WearMessagesDe(this);
+  WatchMessagesDe get watch => WatchMessagesDe(this);
 }
 
 class CommonMessagesDe extends CommonMessages {
@@ -1394,6 +1395,16 @@ class SettingsMessagesDe extends SettingsMessages {
   /// "Alle 5 Minuten"
   /// ```
   String get refresh5m => """Alle 5 Minuten""";
+
+  /// ```dart
+  /// "Uhr"
+  /// ```
+  String get watchSection => """Uhr""";
+
+  /// ```dart
+  /// "Eine Wear OS Uhr koppeln und anmelden"
+  /// ```
+  String get watchSubtitle => """Eine Wear OS Uhr koppeln und anmelden""";
 }
 
 class ItemTapActionNamesSettingsMessagesDe
@@ -5361,6 +5372,162 @@ class WearMessagesDe extends WearMessages {
   /// "Noch keine Listen hier"
   /// ```
   String get noLists => """Noch keine Listen hier""";
+
+  /// ```dart
+  /// "Pantry einrichten"
+  /// ```
+  String get setupTitle => """Pantry einrichten""";
+
+  /// ```dart
+  /// "Melde dich vom Telefon aus an — hier musst du nichts tippen."
+  /// ```
+  String get setupBody =>
+      """Melde dich vom Telefon aus an — hier musst du nichts tippen.""";
+
+  /// ```dart
+  /// "Keine Telefonverbindung"
+  /// ```
+  String get setupNoLink => """Keine Telefonverbindung""";
+
+  /// ```dart
+  /// "Diese Uhr erreicht kein Telefon. Pantry braucht eins zum Anmelden."
+  /// ```
+  String get setupNoLinkBody =>
+      """Diese Uhr erreicht kein Telefon. Pantry braucht eins zum Anmelden.""";
+
+  /// ```dart
+  /// "Telefon verbinden"
+  /// ```
+  String get setupNoPhone => """Telefon verbinden""";
+
+  /// ```dart
+  /// "Nimm dein Telefon näher und lass diesen Bildschirm offen."
+  /// ```
+  String get setupNoPhoneBody =>
+      """Nimm dein Telefon näher und lass diesen Bildschirm offen.""";
+
+  /// ```dart
+  /// "Melde dich zuerst auf dem Telefon an"
+  /// ```
+  String get setupPhoneSignedOut => """Melde dich zuerst auf dem Telefon an""";
+
+  /// ```dart
+  /// "Dein Telefon ist noch nicht bei Pantry angemeldet."
+  /// ```
+  String get setupPhoneSignedOutBody =>
+      """Dein Telefon ist noch nicht bei Pantry angemeldet.""";
+
+  /// ```dart
+  /// "Deine Listen kommen"
+  /// ```
+  String get setupSyncing => """Deine Listen kommen""";
+
+  /// ```dart
+  /// "Fast fertig."
+  /// ```
+  String get setupSyncingBody => """Fast fertig.""";
+}
+
+class WatchMessagesDe extends WatchMessages {
+  final MessagesDe _parent;
+  const WatchMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Uhr"
+  /// ```
+  String get title => """Uhr""";
+
+  /// ```dart
+  /// "${name} möchte sich anmelden"
+  /// ```
+  String requestTitle(String name) => """${name} möchte sich anmelden""";
+
+  /// ```dart
+  /// "Dabei wird dein Konto ${account} auf ${server} verwendet."
+  /// ```
+  String requestBody(String account, String server) =>
+      """Dabei wird dein Konto ${account} auf ${server} verwendet.""";
+
+  /// ```dart
+  /// "Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon."
+  /// ```
+  String get requestWarning =>
+      """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""";
+
+  /// ```dart
+  /// "Erlauben"
+  /// ```
+  String get allow => """Erlauben""";
+
+  /// ```dart
+  /// "Ablehnen"
+  /// ```
+  String get deny => """Ablehnen""";
+
+  /// ```dart
+  /// "Uhr wird angemeldet"
+  /// ```
+  String get transferring => """Uhr wird angemeldet""";
+
+  /// ```dart
+  /// "Lass diesen Bildschirm offen, bis es fertig ist."
+  /// ```
+  String get transferringBody =>
+      """Lass diesen Bildschirm offen, bis es fertig ist.""";
+
+  /// ```dart
+  /// "Deine Uhr ist angemeldet"
+  /// ```
+  String get pairedSnack => """Deine Uhr ist angemeldet""";
+
+  /// ```dart
+  /// "Uhr nicht erreichbar"
+  /// ```
+  String get pairFailedSnack => """Uhr nicht erreichbar""";
+
+  /// ```dart
+  /// "Öffne Pantry auf deiner Uhr und tippe auf „Auf dem Telefon öffnen“. Die Anfrage erscheint dann hier."
+  /// ```
+  String get waitingBody =>
+      """Öffne Pantry auf deiner Uhr und tippe auf „Auf dem Telefon öffnen“. Die Anfrage erscheint dann hier.""";
+
+  /// ```dart
+  /// "Deine Uhr ist angemeldet und bleibt mit diesem Telefon im Gleichschritt."
+  /// ```
+  String get pairedBody =>
+      """Deine Uhr ist angemeldet und bleibt mit diesem Telefon im Gleichschritt.""";
+
+  /// ```dart
+  /// "Angemeldet"
+  /// ```
+  String get pairedStatus => """Angemeldet""";
+
+  /// ```dart
+  /// "Deine Uhr"
+  /// ```
+  String get unnamedWatch => """Deine Uhr""";
+
+  /// ```dart
+  /// "Uhr entkoppeln"
+  /// ```
+  String get unpair => """Uhr entkoppeln""";
+
+  /// ```dart
+  /// "Diese Uhr abmelden und nicht mehr mit ihr synchronisieren"
+  /// ```
+  String get unpairSubtitle =>
+      """Diese Uhr abmelden und nicht mehr mit ihr synchronisieren""";
+
+  /// ```dart
+  /// "Diese Uhr entkoppeln?"
+  /// ```
+  String get unpairTitle => """Diese Uhr entkoppeln?""";
+
+  /// ```dart
+  /// "Die Uhr meldet sich ab und vergisst deinen Haushalt. Du kannst sie jederzeit neu einrichten."
+  /// ```
+  String get unpairBody =>
+      """Die Uhr meldet sich ab und vergisst deinen Haushalt. Du kannst sie jederzeit neu einrichten.""";
 }
 
 Map<String, String> get messagesDeMap => {
@@ -5685,6 +5852,8 @@ Passwort: pantry-rocks""",
   """settings.refresh1m""": """Jede Minute""",
   """settings.refresh2m""": """Alle 2 Minuten""",
   """settings.refresh5m""": """Alle 5 Minuten""",
+  """settings.watchSection""": """Uhr""",
+  """settings.watchSubtitle""": """Eine Wear OS Uhr koppeln und anmelden""",
   """notifications.title""": """Benachrichtigungen""",
   """notifications.empty""": """Keine neuen Benachrichtigungen.""",
   """notifications.failedToLoad""":
@@ -6394,4 +6563,40 @@ Passwort: pantry-rocks""",
   """wear.nothingToCheckOff""": """Nichts zum Abhaken""",
   """wear.nothingRemoved""": """Nichts entfernt""",
   """wear.noLists""": """Noch keine Listen hier""",
+  """wear.setupTitle""": """Pantry einrichten""",
+  """wear.setupBody""":
+      """Melde dich vom Telefon aus an — hier musst du nichts tippen.""",
+  """wear.setupNoLink""": """Keine Telefonverbindung""",
+  """wear.setupNoLinkBody""":
+      """Diese Uhr erreicht kein Telefon. Pantry braucht eins zum Anmelden.""",
+  """wear.setupNoPhone""": """Telefon verbinden""",
+  """wear.setupNoPhoneBody""":
+      """Nimm dein Telefon näher und lass diesen Bildschirm offen.""",
+  """wear.setupPhoneSignedOut""": """Melde dich zuerst auf dem Telefon an""",
+  """wear.setupPhoneSignedOutBody""":
+      """Dein Telefon ist noch nicht bei Pantry angemeldet.""",
+  """wear.setupSyncing""": """Deine Listen kommen""",
+  """wear.setupSyncingBody""": """Fast fertig.""",
+  """watch.title""": """Uhr""",
+  """watch.requestWarning""":
+      """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",
+  """watch.allow""": """Erlauben""",
+  """watch.deny""": """Ablehnen""",
+  """watch.transferring""": """Uhr wird angemeldet""",
+  """watch.transferringBody""":
+      """Lass diesen Bildschirm offen, bis es fertig ist.""",
+  """watch.pairedSnack""": """Deine Uhr ist angemeldet""",
+  """watch.pairFailedSnack""": """Uhr nicht erreichbar""",
+  """watch.waitingBody""":
+      """Öffne Pantry auf deiner Uhr und tippe auf „Auf dem Telefon öffnen“. Die Anfrage erscheint dann hier.""",
+  """watch.pairedBody""":
+      """Deine Uhr ist angemeldet und bleibt mit diesem Telefon im Gleichschritt.""",
+  """watch.pairedStatus""": """Angemeldet""",
+  """watch.unnamedWatch""": """Deine Uhr""",
+  """watch.unpair""": """Uhr entkoppeln""",
+  """watch.unpairSubtitle""":
+      """Diese Uhr abmelden und nicht mehr mit ihr synchronisieren""",
+  """watch.unpairTitle""": """Diese Uhr entkoppeln?""",
+  """watch.unpairBody""":
+      """Die Uhr meldet sich ab und vergisst deinen Haushalt. Du kannst sie jederzeit neu einrichten.""",
 };

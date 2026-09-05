@@ -1,0 +1,231 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/wear_link_service.dart';
+import 'package:pantry_core/services/wear_pairing.dart';
+
+import '../services/wear_mirror_client.dart';
+import '../wear_stores.dart';
+
+/// Where the watch has got to in getting itself signed in.
+enum WearSetupState {
+  /// Asking the link whether it exists at all. Brief, and never returned to.
+  checking,
+
+  /// No Data Layer on this device — an F-Droid build, or a watch with no Play
+  /// services. A dead end rather than a wait.
+  unavailable,
+
+  /// The link works and nothing is connected to it.
+  noPhone,
+
+  /// A phone is connected and the request is going out on a timer. Whether
+  /// the phone app is installed, open, or merely unattended looks identical
+  /// from here, so this state makes no promises about which.
+  waiting,
+
+  /// The phone answered that it holds no credential of its own. Retrying
+  /// cannot fix it, so the loop stops here.
+  phoneSignedOut,
+
+  /// The credential landed and the house data behind it is on its way.
+  syncing,
+
+  /// Signed in, with something to show.
+  ready,
+}
+
+/// The watch's half of the credential handoff.
+///
+/// The watch starts the flow because the watch is where the problem is
+/// discovered — a wearer raises their wrist and finds the app signed out —
+/// while the phone is the only device that can answer. It re-sends on a timer
+/// rather than once, which is what makes the screen self-healing in every
+/// ordering: whether the phone app was already open, opened from the button,
+/// or opened from the launcher a minute later, the next re-send finds a live
+/// listener.
+class WearPairingClient extends ChangeNotifier {
+  WearPairingClient._();
+
+  static final WearPairingClient instance = WearPairingClient._();
+
+  final _link = WearLinkService.instance;
+
+  StreamSubscription<WearLinkMessage>? _messages;
+  Timer? _retry;
+  Timer? _seedDeadline;
+
+  var _state = WearSetupState.checking;
+
+  WearSetupState get state => _state;
+
+  /// Slow enough not to spend the radio on a screen that may be up for
+  /// minutes, quick enough that a user walking to their phone and opening the
+  /// app does not stand there wondering.
+  static const _retryInterval = Duration(seconds: 5);
+
+  /// How long the syncing state waits for the first snapshot before entering
+  /// the app anyway. The mirror only ever accelerates — the watch can fetch
+  /// everything here for itself now that it holds a credential — so a phone
+  /// that goes quiet mid-transfer must not be able to strand the wearer on a
+  /// spinner.
+  static const _seedWait = Duration(seconds: 15);
+
+  /// Listen to the link, and ask it for a session if this watch has none.
+  ///
+  /// The listening half runs whether or not the watch is signed in: unpair is
+  /// a phone-side control, and a watch that only listened while signed out
+  /// could never hear it.
+  Future<void> start() async {
+    if (_messages == null) {
+      if (!await _link.isAvailable()) {
+        _enter(WearSetupState.unavailable);
+        return;
+      }
+      _messages = _link.messages.listen(_onMessage);
+    }
+    if (AuthService.instance.isLoggedIn) {
+      _enter(WearSetupState.ready);
+      return;
+    }
+    await _tick();
+    _retry ??= Timer.periodic(_retryInterval, (_) => unawaited(_tick()));
+  }
+
+  @override
+  void dispose() {
+    _stopAsking();
+    unawaited(_messages?.cancel());
+    _messages = null;
+    super.dispose();
+  }
+
+  /// Drop the retry loop and the seed deadline, leaving the link subscription
+  /// attached.
+  void _stopAsking() {
+    _retry?.cancel();
+    _retry = null;
+    _seedDeadline?.cancel();
+    _seedDeadline = null;
+  }
+
+  /// One round of the loop: look for a phone, and ask the one that is there.
+  ///
+  /// Nodes are re-read every round rather than once, so a phone coming into
+  /// range moves the screen off "connect your phone" without the wearer
+  /// touching anything.
+  Future<void> _tick() async {
+    if (_state == WearSetupState.phoneSignedOut) return;
+    final nodes = await _link.nodes();
+    if (nodes.isEmpty) {
+      _enter(WearSetupState.noPhone);
+      return;
+    }
+    _enter(WearSetupState.waiting);
+    await _link.send(WearPairing.requestPath, const {});
+  }
+
+  void _onMessage(WearLinkMessage message) {
+    switch (message.path) {
+      case WearPairing.grantPath:
+        final grant = WearPairingGrant.fromJson(message.data);
+        // A payload this build cannot read is one it must not half-apply: the
+        // loop keeps running and the next re-send gets another answer.
+        if (grant != null) unawaited(_accept(grant));
+      case WearPairing.refusalPath:
+        if (WearPairingRefusal.fromJson(message.data) ==
+            WearPairingRefusal.signedOut) {
+          _retry?.cancel();
+          _retry = null;
+          _enter(WearSetupState.phoneSignedOut);
+        }
+      case WearPairing.unpairPath:
+        unawaited(forget());
+    }
+  }
+
+  /// Take on the session, then wait for the house data behind it.
+  Future<void> _accept(WearPairingGrant grant) async {
+    _retry?.cancel();
+    _retry = null;
+
+    // Pins first: they describe how to reach the server, and an HTTPS call
+    // made before they land is one the watch has no way to answer for.
+    await CertTrustService.instance.adopt(grant.certPins);
+    await AuthService.instance.adoptCredentials(grant.credentials);
+    await PrefsService.instance.setHiddenItemChips(grant.hiddenItemChips);
+
+    // Before the scope is written, and before a snapshot can land: both go
+    // into stores that rewrite their whole file per mutation.
+    await loadWearStores();
+
+    final houseId = grant.houseId;
+    if (houseId != null) await PrefsService.instance.setLastHouseId(houseId);
+    // Seeded once and never overridden. From here the watch owns its scope,
+    // including the meta list, which is a legal value rather than a mode.
+    if (grant.listId != null) {
+      ChecklistService.instance.selectedListId = grant.listId;
+    }
+
+    _enter(WearSetupState.syncing);
+
+    // Reporting the scope is what asks for the seed: the phone mirrors what
+    // the watch says it is showing, and the first of those snapshots is it.
+    WearMirrorClient.instance.addListener(_onSnapshot);
+    _seedDeadline = Timer(_seedWait, _finishSyncing);
+    await WearMirrorClient.instance.start();
+    await WearMirrorClient.instance.reportScope();
+    await WearMirrorClient.instance.requestMirror();
+  }
+
+  void _onSnapshot() {
+    if (WearMirrorClient.instance.landedAt == null) return;
+    _finishSyncing();
+  }
+
+  void _finishSyncing() {
+    if (_state != WearSetupState.syncing) return;
+    _seedDeadline?.cancel();
+    _seedDeadline = null;
+    WearMirrorClient.instance.removeListener(_onSnapshot);
+    _stopAsking();
+    _enter(WearSetupState.ready);
+  }
+
+  /// Drop the session at the phone's request, without revoking: the app
+  /// password is the phone's own and it is not the device leaving.
+  Future<void> forget() async {
+    _stopAsking();
+    await AuthService.instance.logout(revoke: false);
+    _state = WearSetupState.checking;
+    notifyListeners();
+    await start();
+  }
+
+  void _enter(WearSetupState next) {
+    if (_state == next) return;
+    _state = next;
+    notifyListeners();
+  }
+
+  /// Run one round of the retry loop now, rather than waiting out the timer.
+  @visibleForTesting
+  Future<void> debugTick() => _tick();
+
+  /// Drop every timer and subscription so a test can start a second client
+  /// against a different fake link. Awaited, because the link's stream is
+  /// shared and a subscription still tearing down would take the next test's
+  /// events with it.
+  @visibleForTesting
+  Future<void> debugReset() async {
+    _stopAsking();
+    await _messages?.cancel();
+    _messages = null;
+    WearMirrorClient.instance.removeListener(_onSnapshot);
+    _state = WearSetupState.checking;
+  }
+}

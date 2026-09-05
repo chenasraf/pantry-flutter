@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -13,8 +14,10 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry_core/services/wear_link_service.dart';
 import 'package:pantry/views/settings/chip_visibility_view.dart';
 import 'package:pantry/views/settings/nav_order_view.dart';
+import 'package:pantry/views/watch/watch_pairing_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class SettingsView extends StatefulWidget {
@@ -51,11 +54,21 @@ class _SettingsViewState extends State<SettingsView> {
     300,
   ];
 
+  /// Whether this build can reach a watch at all. The FLOSS build carries no
+  /// Data Layer, so the row is absent there rather than present and dead.
+  var _watchLinkAvailable = false;
+
   @override
   void initState() {
     super.initState();
     _selectedLocale = PrefsService.instance.locale;
     _selectedTheme = PrefsService.instance.themeMode;
+    unawaited(_resolveWatchLink());
+  }
+
+  Future<void> _resolveWatchLink() async {
+    final available = await WearLinkService.instance.isAvailable();
+    if (mounted && available) setState(() => _watchLinkAvailable = true);
   }
 
   Future<void> _setItemTapAction(String? value) async {
@@ -510,6 +523,25 @@ class _SettingsViewState extends State<SettingsView> {
               options: _shoppingRefreshOptions,
               onChanged: _setShoppingRefresh,
             ),
+
+            // -- Watch --
+            // Reactive by design: the phone never raises the subject first,
+            // because the flow starts on the watch, which is where a user who
+            // has the watch app will meet it.
+            if (_watchLinkAvailable) ...[
+              _SectionHeader(m.settings.watchSection),
+              ListTile(
+                leading: const Icon(Icons.watch_outlined),
+                title: Text(m.watch.title),
+                subtitle: Text(m.settings.watchSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const WatchPairingView()),
+                  );
+                },
+              ),
+            ],
 
             // -- Notifications --
             if (supportsFeature('notifications')) ...[

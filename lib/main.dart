@@ -29,6 +29,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'services/share_intent_service.dart';
 import 'services/wear_mirror_host.dart';
+import 'services/wear_pairing_host.dart';
 import 'services/widget_link_service.dart';
 import 'services/checklist_widget_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
@@ -176,6 +177,10 @@ void main() async {
   unawaited(ShareIntentService.instance.init());
   WidgetLinkService.instance.init();
   unawaited(ListLinkService.instance.init());
+  // Unconditional, unlike the mirror: a watch asking a signed-out phone is the
+  // likeliest failure of the whole flow, and the refusal that stops it
+  // retrying is the one answer a phone with no credential can still give.
+  unawaited(WearPairingHost.instance.init());
   registerWidgetInteractivity();
   runApp(const PantryApp());
 }

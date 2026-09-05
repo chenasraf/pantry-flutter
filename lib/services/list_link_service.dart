@@ -78,6 +78,14 @@ class ListLinkService {
 
   final ValueNotifier<ListLink?> pending = ValueNotifier(null);
 
+  /// A watch asking this phone to open its pairing screen. It arrives on the
+  /// same `pantry://` scheme and therefore through the same subscription, so
+  /// it is answered here rather than by a second `app_links` reader — two
+  /// would each open their own stream over one messenger.
+  final ValueNotifier<bool> pendingWatchSetup = ValueNotifier(false);
+
+  static const _watchSetupHost = 'watch-setup';
+
   AppLinks? _appLinks;
   final QuickActions _quickActions = const QuickActions();
 
@@ -99,6 +107,10 @@ class ListLinkService {
   }
 
   void _handleUri(Uri uri) {
+    if (uri.scheme == ListLink.scheme && uri.host == _watchSetupHost) {
+      pendingWatchSetup.value = true;
+      return;
+    }
     final link = ListLink.fromUri(uri);
     if (link != null) pending.value = link;
   }

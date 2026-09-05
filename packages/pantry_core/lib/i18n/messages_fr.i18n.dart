@@ -87,6 +87,7 @@ class MessagesFr extends Messages {
   SyncMessagesFr get sync => SyncMessagesFr(this);
   MarkdownEditorMessagesFr get markdownEditor => MarkdownEditorMessagesFr(this);
   WearMessagesFr get wear => WearMessagesFr(this);
+  WatchMessagesFr get watch => WatchMessagesFr(this);
 }
 
 class CommonMessagesFr extends CommonMessages {
@@ -1399,6 +1400,16 @@ class SettingsMessagesFr extends SettingsMessages {
   /// "Toutes les 5 minutes"
   /// ```
   String get refresh5m => """Toutes les 5 minutes""";
+
+  /// ```dart
+  /// "Montre"
+  /// ```
+  String get watchSection => """Montre""";
+
+  /// ```dart
+  /// "Associer une montre Wear OS et la connecter"
+  /// ```
+  String get watchSubtitle => """Associer une montre Wear OS et la connecter""";
 }
 
 class ItemTapActionNamesSettingsMessagesFr
@@ -5352,6 +5363,162 @@ class WearMessagesFr extends WearMessages {
   /// "Aucune liste ici pour l'instant"
   /// ```
   String get noLists => """Aucune liste ici pour l'instant""";
+
+  /// ```dart
+  /// "Configurer Pantry"
+  /// ```
+  String get setupTitle => """Configurer Pantry""";
+
+  /// ```dart
+  /// "Connectez-vous depuis votre téléphone — rien à saisir ici."
+  /// ```
+  String get setupBody =>
+      """Connectez-vous depuis votre téléphone — rien à saisir ici.""";
+
+  /// ```dart
+  /// "Aucune liaison au téléphone"
+  /// ```
+  String get setupNoLink => """Aucune liaison au téléphone""";
+
+  /// ```dart
+  /// "Cette montre n'atteint aucun téléphone. Pantry en a besoin d'un pour se connecter."
+  /// ```
+  String get setupNoLinkBody =>
+      """Cette montre n'atteint aucun téléphone. Pantry en a besoin d'un pour se connecter.""";
+
+  /// ```dart
+  /// "Connectez votre téléphone"
+  /// ```
+  String get setupNoPhone => """Connectez votre téléphone""";
+
+  /// ```dart
+  /// "Rapprochez votre téléphone et laissez cet écran ouvert."
+  /// ```
+  String get setupNoPhoneBody =>
+      """Rapprochez votre téléphone et laissez cet écran ouvert.""";
+
+  /// ```dart
+  /// "Connectez-vous d'abord sur votre téléphone"
+  /// ```
+  String get setupPhoneSignedOut =>
+      """Connectez-vous d'abord sur votre téléphone""";
+
+  /// ```dart
+  /// "Votre téléphone n'est pas encore connecté à Pantry."
+  /// ```
+  String get setupPhoneSignedOutBody =>
+      """Votre téléphone n'est pas encore connecté à Pantry.""";
+
+  /// ```dart
+  /// "Récupération de vos listes"
+  /// ```
+  String get setupSyncing => """Récupération de vos listes""";
+
+  /// ```dart
+  /// "Presque terminé."
+  /// ```
+  String get setupSyncingBody => """Presque terminé.""";
+}
+
+class WatchMessagesFr extends WatchMessages {
+  final MessagesFr _parent;
+  const WatchMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Montre"
+  /// ```
+  String get title => """Montre""";
+
+  /// ```dart
+  /// "${name} veut se connecter"
+  /// ```
+  String requestTitle(String name) => """${name} veut se connecter""";
+
+  /// ```dart
+  /// "Elle utilisera votre compte ${account} sur ${server}."
+  /// ```
+  String requestBody(String account, String server) =>
+      """Elle utilisera votre compte ${account} sur ${server}.""";
+
+  /// ```dart
+  /// "N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone."
+  /// ```
+  String get requestWarning =>
+      """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""";
+
+  /// ```dart
+  /// "Autoriser"
+  /// ```
+  String get allow => """Autoriser""";
+
+  /// ```dart
+  /// "Refuser"
+  /// ```
+  String get deny => """Refuser""";
+
+  /// ```dart
+  /// "Connexion de votre montre"
+  /// ```
+  String get transferring => """Connexion de votre montre""";
+
+  /// ```dart
+  /// "Laissez cet écran ouvert jusqu'à la fin."
+  /// ```
+  String get transferringBody => """Laissez cet écran ouvert jusqu'à la fin.""";
+
+  /// ```dart
+  /// "Votre montre est connectée"
+  /// ```
+  String get pairedSnack => """Votre montre est connectée""";
+
+  /// ```dart
+  /// "Montre injoignable"
+  /// ```
+  String get pairFailedSnack => """Montre injoignable""";
+
+  /// ```dart
+  /// "Ouvrez Pantry sur votre montre et touchez « Ouvrir sur le téléphone ». La demande apparaîtra ici."
+  /// ```
+  String get waitingBody =>
+      """Ouvrez Pantry sur votre montre et touchez « Ouvrir sur le téléphone ». La demande apparaîtra ici.""";
+
+  /// ```dart
+  /// "Votre montre est connectée et reste au diapason de ce téléphone."
+  /// ```
+  String get pairedBody =>
+      """Votre montre est connectée et reste au diapason de ce téléphone.""";
+
+  /// ```dart
+  /// "Connectée"
+  /// ```
+  String get pairedStatus => """Connectée""";
+
+  /// ```dart
+  /// "Votre montre"
+  /// ```
+  String get unnamedWatch => """Votre montre""";
+
+  /// ```dart
+  /// "Dissocier la montre"
+  /// ```
+  String get unpair => """Dissocier la montre""";
+
+  /// ```dart
+  /// "Déconnecter cette montre et cesser de synchroniser avec elle"
+  /// ```
+  String get unpairSubtitle =>
+      """Déconnecter cette montre et cesser de synchroniser avec elle""";
+
+  /// ```dart
+  /// "Dissocier cette montre ?"
+  /// ```
+  String get unpairTitle => """Dissocier cette montre ?""";
+
+  /// ```dart
+  /// "La montre se déconnecte et oublie votre foyer. Vous pourrez la reconfigurer à tout moment."
+  /// ```
+  String get unpairBody =>
+      """La montre se déconnecte et oublie votre foyer. Vous pourrez la reconfigurer à tout moment.""";
 }
 
 Map<String, String> get messagesFrMap => {
@@ -5686,6 +5853,9 @@ Mot de passe : pantry-rocks""",
   """settings.refresh1m""": """Chaque minute""",
   """settings.refresh2m""": """Toutes les 2 minutes""",
   """settings.refresh5m""": """Toutes les 5 minutes""",
+  """settings.watchSection""": """Montre""",
+  """settings.watchSubtitle""":
+      """Associer une montre Wear OS et la connecter""",
   """notifications.title""": """Notifications""",
   """notifications.empty""": """Aucune nouvelle notification.""",
   """notifications.failedToLoad""":
@@ -6380,4 +6550,40 @@ Mot de passe : pantry-rocks""",
   """wear.nothingToCheckOff""": """Rien à cocher""",
   """wear.nothingRemoved""": """Rien de retiré""",
   """wear.noLists""": """Aucune liste ici pour l'instant""",
+  """wear.setupTitle""": """Configurer Pantry""",
+  """wear.setupBody""":
+      """Connectez-vous depuis votre téléphone — rien à saisir ici.""",
+  """wear.setupNoLink""": """Aucune liaison au téléphone""",
+  """wear.setupNoLinkBody""":
+      """Cette montre n'atteint aucun téléphone. Pantry en a besoin d'un pour se connecter.""",
+  """wear.setupNoPhone""": """Connectez votre téléphone""",
+  """wear.setupNoPhoneBody""":
+      """Rapprochez votre téléphone et laissez cet écran ouvert.""",
+  """wear.setupPhoneSignedOut""":
+      """Connectez-vous d'abord sur votre téléphone""",
+  """wear.setupPhoneSignedOutBody""":
+      """Votre téléphone n'est pas encore connecté à Pantry.""",
+  """wear.setupSyncing""": """Récupération de vos listes""",
+  """wear.setupSyncingBody""": """Presque terminé.""",
+  """watch.title""": """Montre""",
+  """watch.requestWarning""":
+      """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",
+  """watch.allow""": """Autoriser""",
+  """watch.deny""": """Refuser""",
+  """watch.transferring""": """Connexion de votre montre""",
+  """watch.transferringBody""": """Laissez cet écran ouvert jusqu'à la fin.""",
+  """watch.pairedSnack""": """Votre montre est connectée""",
+  """watch.pairFailedSnack""": """Montre injoignable""",
+  """watch.waitingBody""":
+      """Ouvrez Pantry sur votre montre et touchez « Ouvrir sur le téléphone ». La demande apparaîtra ici.""",
+  """watch.pairedBody""":
+      """Votre montre est connectée et reste au diapason de ce téléphone.""",
+  """watch.pairedStatus""": """Connectée""",
+  """watch.unnamedWatch""": """Votre montre""",
+  """watch.unpair""": """Dissocier la montre""",
+  """watch.unpairSubtitle""":
+      """Déconnecter cette montre et cesser de synchroniser avec elle""",
+  """watch.unpairTitle""": """Dissocier cette montre ?""",
+  """watch.unpairBody""":
+      """La montre se déconnecte et oublie votre foyer. Vous pourrez la reconfigurer à tout moment.""",
 };

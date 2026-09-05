@@ -286,6 +286,8 @@ settings:
   refresh1m: Jede Minute
   refresh2m: Alle 2 Minuten
   refresh5m: Alle 5 Minuten
+  watchSection: Uhr
+  watchSubtitle: Eine Wear OS Uhr koppeln und anmelden
 
 notifications:
   title: Benachrichtigungen
@@ -1028,3 +1030,33 @@ wear:
   nothingToCheckOff: Nichts zum Abhaken
   nothingRemoved: Nichts entfernt
   noLists: Noch keine Listen hier
+  setupTitle: Pantry einrichten
+  setupBody: Melde dich vom Telefon aus an — hier musst du nichts tippen.
+  setupNoLink: Keine Telefonverbindung
+  setupNoLinkBody: Diese Uhr erreicht kein Telefon. Pantry braucht eins zum Anmelden.
+  setupNoPhone: Telefon verbinden
+  setupNoPhoneBody: Nimm dein Telefon näher und lass diesen Bildschirm offen.
+  setupPhoneSignedOut: Melde dich zuerst auf dem Telefon an
+  setupPhoneSignedOutBody: Dein Telefon ist noch nicht bei Pantry angemeldet.
+  setupSyncing: Deine Listen kommen
+  setupSyncingBody: Fast fertig.
+
+watch:
+  title: Uhr
+  requestTitle(String name): "${name} möchte sich anmelden"
+  requestBody(String account, String server): "Dabei wird dein Konto ${account} auf ${server} verwendet."
+  requestWarning: Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.
+  allow: Erlauben
+  deny: Ablehnen
+  transferring: Uhr wird angemeldet
+  transferringBody: Lass diesen Bildschirm offen, bis es fertig ist.
+  pairedSnack: Deine Uhr ist angemeldet
+  pairFailedSnack: Uhr nicht erreichbar
+  waitingBody: Öffne Pantry auf deiner Uhr und tippe auf „Auf dem Telefon öffnen“. Die Anfrage erscheint dann hier.
+  pairedBody: Deine Uhr ist angemeldet und bleibt mit diesem Telefon im Gleichschritt.
+  pairedStatus: Angemeldet
+  unnamedWatch: Deine Uhr
+  unpair: Uhr entkoppeln
+  unpairSubtitle: Diese Uhr abmelden und nicht mehr mit ihr synchronisieren
+  unpairTitle: Diese Uhr entkoppeln?
+  unpairBody: Die Uhr meldet sich ab und vergisst deinen Haushalt. Du kannst sie jederzeit neu einrichten.

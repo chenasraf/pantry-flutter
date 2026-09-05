@@ -286,6 +286,8 @@ settings:
   refresh1m: Chaque minute
   refresh2m: Toutes les 2 minutes
   refresh5m: Toutes les 5 minutes
+  watchSection: Montre
+  watchSubtitle: Associer une montre Wear OS et la connecter
 
 notifications:
   title: Notifications
@@ -1028,3 +1030,33 @@ wear:
   nothingToCheckOff: Rien à cocher
   nothingRemoved: Rien de retiré
   noLists: "Aucune liste ici pour l'instant"
+  setupTitle: Configurer Pantry
+  setupBody: Connectez-vous depuis votre téléphone — rien à saisir ici.
+  setupNoLink: Aucune liaison au téléphone
+  setupNoLinkBody: Cette montre n'atteint aucun téléphone. Pantry en a besoin d'un pour se connecter.
+  setupNoPhone: Connectez votre téléphone
+  setupNoPhoneBody: Rapprochez votre téléphone et laissez cet écran ouvert.
+  setupPhoneSignedOut: Connectez-vous d'abord sur votre téléphone
+  setupPhoneSignedOutBody: Votre téléphone n'est pas encore connecté à Pantry.
+  setupSyncing: Récupération de vos listes
+  setupSyncingBody: Presque terminé.
+
+watch:
+  title: Montre
+  requestTitle(String name): "${name} veut se connecter"
+  requestBody(String account, String server): "Elle utilisera votre compte ${account} sur ${server}."
+  requestWarning: N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.
+  allow: Autoriser
+  deny: Refuser
+  transferring: Connexion de votre montre
+  transferringBody: Laissez cet écran ouvert jusqu'à la fin.
+  pairedSnack: Votre montre est connectée
+  pairFailedSnack: Montre injoignable
+  waitingBody: Ouvrez Pantry sur votre montre et touchez « Ouvrir sur le téléphone ». La demande apparaîtra ici.
+  pairedBody: Votre montre est connectée et reste au diapason de ce téléphone.
+  pairedStatus: Connectée
+  unnamedWatch: Votre montre
+  unpair: Dissocier la montre
+  unpairSubtitle: Déconnecter cette montre et cesser de synchroniser avec elle
+  unpairTitle: Dissocier cette montre ?
+  unpairBody: La montre se déconnecte et oublie votre foyer. Vous pourrez la reconfigurer à tout moment.
