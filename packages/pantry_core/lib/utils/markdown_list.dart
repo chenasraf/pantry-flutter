@@ -103,25 +103,111 @@ final _checkboxRe = RegExp(r'^\[(.)\]\s*(.*)$');
 // the single state character between the brackets.
 final _taskLineRe = RegExp(r'^(\s*(?:[-*+]|\d+[.)])\s+)\[([ xX])\]');
 
-/// Toggle the `[ ]` / `[x]` state of the checkbox at position [ordinal] (0-based,
-/// counting only task-list lines in document order) within a Markdown document.
+/// One task-list line of a Markdown document, as [taskLines] reports it.
+class TaskLine {
+  /// State of the `[ ]` / `[x]` checkbox.
+  final bool checked;
+
+  /// Everything after the checkbox, trimmed. Excludes the state character, so
+  /// a line still answers to the same text once its checkbox has been written.
+  final String text;
+
+  const TaskLine({required this.checked, required this.text});
+
+  @override
+  bool operator ==(Object other) =>
+      other is TaskLine && other.checked == checked && other.text == text;
+
+  @override
+  int get hashCode => Object.hash(checked, text);
+
+  @override
+  String toString() => 'TaskLine(checked: $checked, text: $text)';
+}
+
+/// The task-list lines of [content], in document order. Their positions are the
+/// ordinals [setChecklistItem] and [toggleChecklistItem] address.
+List<TaskLine> taskLines(String content) {
+  final out = <TaskLine>[];
+  for (final line in content.split(RegExp(r'\r?\n'))) {
+    final match = _taskLineRe.firstMatch(line);
+    if (match == null) continue;
+    out.add(
+      TaskLine(
+        checked: match.group(2)! != ' ',
+        text: line.substring(match.end).trim(),
+      ),
+    );
+  }
+  return out;
+}
+
+/// Which task line a write recorded against [ordinal], on a line then reading
+/// [text], should land on in the [content] as it stands now — or null when no
+/// line can be named without guessing.
 ///
-/// Indentation, list marker and the rest of the line are preserved. If [ordinal]
-/// doesn't correspond to a checkbox line, [content] is returned unchanged.
-String toggleChecklistItem(String content, int ordinal) {
+/// An ordinal only names the same line while the task lines are unchanged. A
+/// line inserted or deleted above it before the write lands would otherwise
+/// point the write at a neighbour and set a *definite* state on it, which is
+/// the silent corruption a target state exists to avoid. So the text decides:
+/// the ordinal is honoured only while it still reads as [text], and otherwise
+/// the write follows the one line that does. Two lines reading alike name
+/// nothing, and re-anchoring on a guess is worse than dropping the write.
+int? resolveTaskLine(
+  String content, {
+  required int ordinal,
+  required String text,
+}) {
+  final lines = taskLines(content);
+  if (ordinal >= 0 && ordinal < lines.length && lines[ordinal].text == text) {
+    return ordinal;
+  }
+  int? found;
+  for (var i = 0; i < lines.length; i++) {
+    if (lines[i].text != text) continue;
+    if (found != null) return null;
+    found = i;
+  }
+  return found;
+}
+
+/// Set the checkbox at position [ordinal] (0-based, counting only task-list
+/// lines in document order) to [checked] within a Markdown document.
+///
+/// Indentation, list marker and the rest of the line are preserved. Returns
+/// [content] unchanged when [ordinal] names no task line or that line already
+/// holds [checked], which is what makes a queued write idempotent: replayed,
+/// or landed after someone else set the same state, it converges rather than
+/// undoing them.
+String setChecklistItem(String content, int ordinal, bool checked) {
   final lines = content.split(RegExp(r'\r?\n'));
   var seen = 0;
   for (var i = 0; i < lines.length; i++) {
     final match = _taskLineRe.firstMatch(lines[i]);
     if (match == null) continue;
     if (seen == ordinal) {
-      final checked = match.group(2)! == ' ' ? 'x' : ' ';
-      lines[i] = '${match.group(1)!}[$checked]${lines[i].substring(match.end)}';
+      if ((match.group(2)! != ' ') == checked) return content;
+      final state = checked ? 'x' : ' ';
+      lines[i] = '${match.group(1)!}[$state]${lines[i].substring(match.end)}';
       return lines.join('\n');
     }
     seen++;
   }
   return content;
+}
+
+/// Flip the `[ ]` / `[x]` state of the checkbox at position [ordinal] (0-based,
+/// counting only task-list lines in document order) within a Markdown document.
+///
+/// Indentation, list marker and the rest of the line are preserved. If [ordinal]
+/// doesn't correspond to a checkbox line, [content] is returned unchanged.
+///
+/// A flip is only safe against a document nobody else is holding. Anything that
+/// queues the write wants [setChecklistItem] instead.
+String toggleChecklistItem(String content, int ordinal) {
+  final lines = taskLines(content);
+  if (ordinal < 0 || ordinal >= lines.length) return content;
+  return setChecklistItem(content, ordinal, !lines[ordinal].checked);
 }
 
 /// Parse list items out of a Markdown document. Headings, the export-date line

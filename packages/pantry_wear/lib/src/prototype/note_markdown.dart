@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry_core/utils/markdown_list.dart';
-
 /// PROTOTYPE — a watch-sized reader for the markdown a note body holds.
 ///
 /// The phone renders note bodies with `flutter_markdown_plus`, which draws
@@ -113,22 +111,6 @@ List<NoteBlock> parseNoteBlocks(String body) {
   }
   flush();
   return out;
-}
-
-/// Set the task line at [ordinal] to [checked], returning [content] untouched
-/// when it is already in that state.
-///
-/// The shape core needs, and the reason a queued tick carries a state rather
-/// than a flip: an op saying "flip line 3" applied after a housemate ticked
-/// line 3 unticks it, where one saying "line 3 is checked" is idempotent and
-/// converges. Core has only the flip today; that is card 741.
-String setChecklistItem(String content, int ordinal, bool checked) {
-  final current = parseNoteBlocks(
-    content,
-  ).where((b) => b.kind == NoteBlockKind.task).toList();
-  if (ordinal >= current.length) return content;
-  if (current[ordinal].checked == checked) return content;
-  return toggleChecklistItem(content, ordinal);
 }
 
 /// How many task lines a body holds, and how many are ticked. Drives the wall

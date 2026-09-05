@@ -10,6 +10,7 @@ import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/utils/markdown_list.dart';
 
 class NotesController extends ChangeNotifier {
   final int houseId;
@@ -230,6 +231,45 @@ class NotesController extends ChangeNotifier {
       notifyListeners();
     }
     _sync.enqueue(_buildUpdate(note, title, content, color, isPinned));
+    return updated;
+  }
+
+  /// Tick the task line at [ordinal] — reading [text] — to [checked].
+  ///
+  /// Queued as the change rather than the rewritten body. A whole-document
+  /// write is one the server cannot arbitrate: held behind an offline spell it
+  /// drains as "set this note's body to what my cache said", answering 200
+  /// while silently reverting whatever was edited elsewhere in the window.
+  Future<Note> setTaskLine(
+    Note note, {
+    required int ordinal,
+    required String text,
+    required bool checked,
+  }) async {
+    final content = note.content;
+    if (content == null) return note;
+    final body = setChecklistItem(content, ordinal, checked);
+    if (body == content) return note;
+    final updated = note.copyWith(content: body, updatedAt: _now());
+    final index = _notes.indexWhere((n) => n.id == note.id);
+    if (index != -1) {
+      _notes[index] = updated;
+      _service.cacheNotes(houseId, _notes);
+      notifyListeners();
+    }
+    final isTemp = note.id < 0;
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.note,
+        op: SyncOpKind.toggle,
+        houseId: houseId,
+        entityId: isTemp ? null : note.id,
+        tempEntityId: isTemp ? note.id : null,
+        body: {'ordinal': ordinal, 'text': text, 'checked': checked},
+        createdAt: _now(),
+      ),
+    );
     return updated;
   }
 

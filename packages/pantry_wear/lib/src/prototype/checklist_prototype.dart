@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
+import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
 import 'checklist_page.dart';
 import 'focus_list.dart';
-import 'note_markdown.dart';
 import 'notes_page.dart';
 import 'photos_page.dart';
 import 'proto_checklist_data.dart';

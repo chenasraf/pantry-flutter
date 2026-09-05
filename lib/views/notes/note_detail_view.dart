@@ -38,13 +38,20 @@ class _NoteDetailViewState extends State<NoteDetailView> {
     showImportToListDialog(context, houseId: _note.houseId, markdown: content);
   }
 
-  void _onToggleCheckbox(int ordinal) {
+  Future<void> _onToggleCheckbox(int ordinal) async {
     final content = _note.content;
     if (content == null) return;
-    final updated = toggleChecklistItem(content, ordinal);
-    if (updated == content) return;
-    setState(() => _note = _note.copyWith(content: updated));
-    widget.controller.updateNote(_note, content: updated);
+    final lines = taskLines(content);
+    if (ordinal >= lines.length) return;
+    final line = lines[ordinal];
+    final updated = await widget.controller.setTaskLine(
+      _note,
+      ordinal: ordinal,
+      text: line.text,
+      checked: !line.checked,
+    );
+    if (!mounted) return;
+    setState(() => _note = updated);
   }
 
   @override

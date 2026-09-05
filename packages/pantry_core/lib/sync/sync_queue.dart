@@ -318,24 +318,32 @@ class SyncQueue {
   }
 
   bool _applyTogglePairs(List<SyncOp> ops) {
-    final byRecord = <String, List<int>>{};
-    for (var i = 0; i < ops.length; i++) {
-      final op = ops[i];
+    // A note's toggle addresses a task line rather than the record, so two ops
+    // on one note are only the same write when they name the same line — and
+    // because each carries a target state rather than a flip, the last of them
+    // says everything the earlier ones did. Every other entity flips, so an
+    // even number of ops is a no-op.
+    final byRecord = <String, List<SyncOp>>{};
+    for (final op in ops) {
       if (op.op != SyncOpKind.toggle) continue;
-      final k = '${op.entity.name}:${op.effectiveEntityId}';
-      byRecord.putIfAbsent(k, () => []).add(i);
+      final k = op.entity == SyncEntity.note
+          ? 'note:${op.effectiveEntityId}:${op.body['ordinal']}'
+          : '${op.entity.name}:${op.effectiveEntityId}';
+      byRecord.putIfAbsent(k, () => []).add(op);
     }
-    bool changed = false;
-    for (final indices in byRecord.values) {
-      if (indices.length < 2) continue;
-      // Even count: cancel all. Odd: keep the most recent (last index).
-      final keep = indices.length.isOdd ? indices.last : -1;
-      for (final i in indices.reversed) {
-        if (i != keep) ops.removeAt(i);
+    final dropped = <String>{};
+    for (final group in byRecord.values) {
+      if (group.length < 2) continue;
+      final keep = group.first.entity == SyncEntity.note
+          ? group.last
+          : (group.length.isOdd ? group.last : null);
+      for (final op in group) {
+        if (op != keep) dropped.add(op.uuid);
       }
-      changed = true;
     }
-    return changed;
+    if (dropped.isEmpty) return false;
+    ops.removeWhere((o) => dropped.contains(o.uuid));
+    return true;
   }
 
   bool _applyUpdateCollapse(List<SyncOp> ops) {

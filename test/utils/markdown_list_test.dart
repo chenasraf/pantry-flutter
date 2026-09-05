@@ -169,4 +169,78 @@ void main() {
       expect(toggleChecklistItem(text, 0), text);
     });
   });
+
+  group('taskLines', () {
+    test('reports state and text, skipping prose and plain bullets', () {
+      const text =
+          '# Title\n\n- Plain bullet\n- [ ] Milk — 2 L\nprose\n  1. [X] Bread';
+      expect(taskLines(text), const [
+        TaskLine(checked: false, text: 'Milk — 2 L'),
+        TaskLine(checked: true, text: 'Bread'),
+      ]);
+    });
+
+    test('a line keeps its text across a write to its own checkbox', () {
+      const before = '- [ ] Milk';
+      final after = setChecklistItem(before, 0, true);
+      expect(taskLines(after).single.text, taskLines(before).single.text);
+    });
+  });
+
+  group('setChecklistItem', () {
+    test('writes the state asked for, in either direction', () {
+      expect(setChecklistItem('- [ ] Milk', 0, true), '- [x] Milk');
+      expect(setChecklistItem('- [X] Milk', 0, false), '- [ ] Milk');
+    });
+
+    test('a line already in that state is left alone', () {
+      const text = '- [x] Milk';
+      expect(setChecklistItem(text, 0, true), same(text));
+    });
+
+    test('an out-of-range ordinal is left alone', () {
+      const text = '- [ ] Milk';
+      expect(setChecklistItem(text, 5, true), same(text));
+    });
+  });
+
+  group('resolveTaskLine', () {
+    const text = '- [ ] Milk\n- [ ] Bread\n- [ ] Eggs';
+
+    test('honours the ordinal while it still reads as the recorded text', () {
+      expect(resolveTaskLine(text, ordinal: 1, text: 'Bread'), 1);
+    });
+
+    test('follows the text when a line is inserted above it', () {
+      const shifted = '- [ ] Cheese\n- [ ] Milk\n- [ ] Bread\n- [ ] Eggs';
+      expect(resolveTaskLine(shifted, ordinal: 1, text: 'Bread'), 2);
+    });
+
+    test('follows the text when a line is deleted above it', () {
+      const shortened = '- [ ] Bread\n- [ ] Eggs';
+      expect(resolveTaskLine(shortened, ordinal: 1, text: 'Bread'), 0);
+    });
+
+    test('a ticked line still answers to its recorded text', () {
+      const ticked = '- [ ] Milk\n- [x] Bread\n- [ ] Eggs';
+      expect(resolveTaskLine(ticked, ordinal: 1, text: 'Bread'), 1);
+    });
+
+    test(
+      'once the ordinal has moved, two lines reading alike name nothing',
+      () {
+        const duplicated = '- [ ] Bread\n- [ ] Bread\n- [ ] Cheese';
+        expect(resolveTaskLine(duplicated, ordinal: 2, text: 'Bread'), isNull);
+      },
+    );
+
+    test('a duplicate elsewhere does not unseat a matching ordinal', () {
+      const duplicated = '- [ ] Bread\n- [ ] Bread';
+      expect(resolveTaskLine(duplicated, ordinal: 0, text: 'Bread'), 0);
+    });
+
+    test('a line that is simply gone names nothing', () {
+      expect(resolveTaskLine(text, ordinal: 1, text: 'Butter'), isNull);
+    });
+  });
 }

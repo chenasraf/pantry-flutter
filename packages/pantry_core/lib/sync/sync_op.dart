@@ -4,6 +4,12 @@ enum SyncEntity {
   category,
   store,
   label,
+
+  /// A note. [SyncOpKind.toggle] is the one kind that does not rewrite the
+  /// document: it ticks a single markdown task line, carrying
+  /// `{ordinal, text, checked}` — the line, what it read, and the state it
+  /// must end in. Absolute rather than a flip, so an op landing after someone
+  /// else set the same state converges instead of undoing them.
   note,
   customField,
 

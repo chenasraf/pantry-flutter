@@ -186,6 +186,60 @@ void main() {
       expect(q.length, 1);
       expect(q.peek()!.uuid, 't2');
     });
+
+    test('toggles on two records collapse independently', () {
+      final q = _newQueue();
+      for (final id in [10, 20]) {
+        for (var i = 0; i < 2; i++) {
+          q.enqueue(
+            _op(
+              uuid: 't$id-$i',
+              entity: SyncEntity.checklistItem,
+              op: SyncOpKind.toggle,
+              entityId: id,
+            ),
+          );
+        }
+      }
+      q.merge();
+      expect(q.isEmpty, isTrue);
+    });
+
+    test('note ticks on one line keep the latest, never cancel', () {
+      final q = _newQueue();
+      for (var i = 0; i < 2; i++) {
+        q.enqueue(
+          _op(
+            uuid: 'n$i',
+            entity: SyncEntity.note,
+            op: SyncOpKind.toggle,
+            entityId: 7,
+            body: {'ordinal': 0, 'text': 'Milk', 'checked': i.isEven},
+          ),
+        );
+      }
+      q.merge();
+      expect(q.length, 1);
+      expect(q.peek()!.uuid, 'n1');
+      expect(q.peek()!.body['checked'], isFalse);
+    });
+
+    test('note ticks on different lines of one note both survive', () {
+      final q = _newQueue();
+      for (var ordinal = 0; ordinal < 2; ordinal++) {
+        q.enqueue(
+          _op(
+            uuid: 'n$ordinal',
+            entity: SyncEntity.note,
+            op: SyncOpKind.toggle,
+            entityId: 7,
+            body: {'ordinal': ordinal, 'text': 'l$ordinal', 'checked': true},
+          ),
+        );
+      }
+      q.merge();
+      expect(q.length, 2);
+    });
   });
 
   group('merge — reorders', () {

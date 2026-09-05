@@ -12,6 +12,7 @@ import 'package:pantry_core/services/note_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/utils/markdown_list.dart';
 
 /// Result of executing a single op.
 ///
@@ -602,11 +603,47 @@ class SyncExecutor {
         await svc.reorderNotes(houseId, order);
         return SyncResult.empty;
       case SyncOpKind.toggle:
+        if (id == null) return SyncResult.empty;
+        return _executeNoteTaskLine(svc, houseId, id, op.body);
       case SyncOpKind.archive:
       case SyncOpKind.unarchive:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
+  }
+
+  /// Land a queued task-line tick on the note's *current* body.
+  ///
+  /// The op carries `{ordinal, text, checked}` — the change, not the document.
+  /// Rewriting the whole body from a cache the queue may have held for hours
+  /// is a write the server cannot arbitrate: it answers 200 and silently
+  /// reverts every phone or web edit made in the window. So the body is read
+  /// fresh here and only the one line is written.
+  ///
+  /// There is no single-note read, so the note comes out of the house listing.
+  Future<SyncResult> _executeNoteTaskLine(
+    NoteService svc,
+    int houseId,
+    int id,
+    Map<String, dynamic> body,
+  ) async {
+    final ordinal = body['ordinal'] as int?;
+    final checked = body['checked'] as bool?;
+    final text = body['text'] as String?;
+    if (ordinal == null || checked == null || text == null) {
+      return SyncResult.empty;
+    }
+    Note? note;
+    for (final n in await svc.getNotes(houseId)) {
+      if (n.id == id) note = n;
+    }
+    final content = note?.content;
+    if (note == null || content == null) return SyncResult.empty;
+    final target = resolveTaskLine(content, ordinal: ordinal, text: text);
+    if (target == null) return SyncResult(note);
+    final updated = setChecklistItem(content, target, checked);
+    if (updated == content) return SyncResult(note);
+    return SyncResult(await svc.updateNote(houseId, id, content: updated));
   }
 }
 
