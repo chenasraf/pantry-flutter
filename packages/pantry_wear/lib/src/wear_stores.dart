@@ -4,6 +4,7 @@ import 'package:pantry_core/services/custom_field_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/services/label_service.dart';
 import 'package:pantry_core/services/note_service.dart';
+import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/services/wear_mirror_service.dart';
@@ -42,6 +43,7 @@ Future<void> clearWearStores() => Future.wait([
   LabelService.instance.cache.clear(),
   CustomFieldService.instance.cache.clear(),
   NoteService.instance.cache.clear(),
+  PhotoService.instance.cache.clear(),
   ShoppingService.instance.cache.clear(),
   WearMirrorService.instance.clear(),
   SyncManager.instance.reset(),
@@ -56,6 +58,7 @@ Future<void> loadWearStores() => Future.wait([
   LabelService.instance.cache.load(),
   CustomFieldService.instance.cache.load(),
   NoteService.instance.cache.load(),
+  PhotoService.instance.cache.load(),
   ShoppingService.instance.cache.load(),
   WearMirrorService.instance.cache.load(),
   SyncManager.instance.init(),

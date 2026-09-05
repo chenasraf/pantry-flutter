@@ -29,6 +29,19 @@ class WearMetrics {
   /// glass and a round bezel shaves its corners.
   static const double sideInset = 0.025;
 
+  /// A row of two photo tiles. Taller than a checklist card because a tile is
+  /// the content rather than a label for it.
+  static const double photoRowExtent = 88;
+
+  /// Between the two tiles in a photo row.
+  static const double photoTileGap = 6;
+
+  /// The inset a photo row takes instead of [sideInset]. A tile is tall
+  /// enough that its corners sit well above and below the centre line, where a
+  /// round screen has already narrowed, so it wants more of the width held
+  /// back than a short card does.
+  static const double tallSideInset = 0.05;
+
   /// How long a check sits reversible before it is written.
   static const Duration undoWindow = Duration(milliseconds: 2000);
 

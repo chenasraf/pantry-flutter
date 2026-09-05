@@ -21,7 +21,7 @@ import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
-import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/description_detail_dialog.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 import 'package:pantry/widgets/store_detail_dialog.dart';

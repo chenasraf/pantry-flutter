@@ -431,7 +431,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_avif:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_avif
       sha256: "6035f073189c1ae134affa73338c2eca79bf412e9abdb8f8628fdefcccff4444"

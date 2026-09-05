@@ -78,6 +78,9 @@ const kChecklistWidgetConfigRoutePrefix = '/checklist-widget-config/';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Ahead of the config-app branch below: those engines draw item tiles too,
+  // and core's providers have no store until one is installed.
+  ImageCacheService.instance.install();
 
   // The widget-config activities run this same entrypoint in their own engines;
   // branch to the matching lean selector app instead of the full app.

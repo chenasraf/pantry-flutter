@@ -7,7 +7,7 @@ import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
-import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/folder_tile.dart';
 import 'package:pantry/widgets/photo_add_button.dart';
 import 'package:pantry/widgets/photo_selection_actions.dart';

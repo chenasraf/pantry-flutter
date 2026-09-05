@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:pantry/services/image_cache_service.dart';
+import 'package:pantry_core/services/image_bytes_cache.dart';
 
 /// Decodes the [bytes] into an [AvifCodec], transparently handling AVIF and any
 /// format Flutter decodes natively (JPEG/PNG/WebP/GIF).
@@ -63,7 +63,7 @@ class _NativeAvifCodec implements AvifCodec {
 
 /// [ImageProvider] that displays a remote image, decoding AVIF when the server
 /// serves it and falling back to Flutter's native decoders otherwise. Bytes are
-/// disk-cached via [DefaultCacheManager], matching cached_network_image.
+/// disk-cached through [ImageBytesCache], whose store the form factor owns.
 class AvifAwareNetworkImage extends ImageProvider<AvifAwareNetworkImage> {
   const AvifAwareNetworkImage(
     this.url, {
@@ -109,7 +109,7 @@ class AvifAwareNetworkImage extends ImageProvider<AvifAwareNetworkImage> {
         requestHeaders[name.toLowerCase()] = value;
       });
 
-      final stream = ImageCacheService.instance.manager.getImageFile(
+      final stream = ImageBytesCache.manager.getImageFile(
         url,
         headers: requestHeaders,
         withProgress: true,

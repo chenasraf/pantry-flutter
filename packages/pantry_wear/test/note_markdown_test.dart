@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry_wear/src/checklists/checklists_controller.dart';
 import 'package:pantry_wear/src/shell/wear_shell.dart';
@@ -196,13 +197,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await swipeToNextPage(tester);
-      // A tile rather than its caption: only the focused row is captioned, and
-      // the board opens on its first folder.
-      expect(
-        find.byKey(const ValueKey('photo-1')),
-        findsOneWidget,
-        reason: 'photos',
-      );
+      // The photos page fetches for itself and there is no house to fetch for
+      // here, so the rail — which names the page you are on — is what says
+      // where the pager landed.
+      expect(find.text(m.nav.photoBoard), findsOneWidget, reason: 'photos');
 
       await swipeToNextPage(tester);
       // "Hardware shop" holds 6 tasks, 2 of them ticked.

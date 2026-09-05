@@ -13,7 +13,7 @@ import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/color.dart';
-import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'form_components.dart';
 import 'item_draft.dart';

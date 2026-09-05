@@ -5,6 +5,7 @@
 #
 # This MUTATES the working tree in place:
 #   - pubspec.yaml:   mobile_scanner -> flutter_zxing
+#   - core pubspec:   drop flutter_avif
 #   - the scanner:    lib/.../barcode_camera_scanner.dart <- fdroid/barcode_camera_scanner.dart
 #   - the watch link: android/.../DataLayerChannel.kt <- fdroid/DataLayerChannel.kt
 #   - build.gradle.kts: drop play-services-wearable and wear-remote-interactions
@@ -20,8 +21,10 @@ impl="lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart"
 override="fdroid/barcode_camera_scanner.dart"
 zxing_version="^2.3.0"
 
-avif_impl="lib/widgets/avif_image.dart"
+avif_impl="packages/pantry_core/lib/widgets/avif_image.dart"
 avif_override="fdroid/avif_image.dart"
+
+core_pubspec="packages/pantry_core/pubspec.yaml"
 
 link_impl="android/app/src/main/kotlin/dev/casraf/pantry/DataLayerChannel.kt"
 link_override="fdroid/DataLayerChannel.kt"
@@ -48,8 +51,16 @@ rm -f pubspec.yaml.bak
 # wasm) with no buildable source, so F-Droid's scanner strips them and the
 # rebuild can't match the reference APK. The FLOSS avif_image.dart below keeps
 # the same API but decodes with Flutter's built-in codecs only.
-sed -i.bak "/^  flutter_avif:/d" pubspec.yaml
-rm -f pubspec.yaml.bak
+#
+# It is core's dependency, not the app's: the provider is shared with the watch,
+# which has no AV1 decoder of its own and so is the device that actually needs
+# flutter_avif — and is also the one flavor this swapped tree cannot build.
+if ! grep -q '^  flutter_avif:' "$core_pubspec"; then
+  echo "fdroid: $core_pubspec has no flutter_avif dependency — already applied?" >&2
+  exit 1
+fi
+sed -i.bak "/^  flutter_avif:/d" "$core_pubspec"
+rm -f "$core_pubspec.bak"
 
 # The Wear Data Layer is Google Play services, with no FLOSS equivalent to swap
 # in, so watch pairing is the one feature the F-Droid build cannot carry. The

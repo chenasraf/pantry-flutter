@@ -21,25 +21,34 @@ import '../wear_shape.dart';
 /// pages back before it could be dismissed.
 const kEdgeExclusionFraction = 0.15;
 
-/// The pager is the only widget competing with a vertical list for a drag, and
-/// it loses ties too readily at the stock threshold.
-const kSlopInflation = 1.10;
+/// How much of the stock drag threshold the pager needs before it claims a
+/// horizontal drag, as a fraction.
+///
+/// Every page is a scrolling list, so the pager and that list race: whichever
+/// recognizer passes its own slop first takes the gesture. Above 1 the list
+/// wins ties, which stops a vertical scroll flipping pages — and costs a
+/// deliberate sideways swipe, which on a wrist is short, arced and thumb-shaped
+/// and so carries vertical movement of its own. Below 1 the pager claims
+/// sooner. Judged on the watch: the list's own slop is enough to protect a
+/// scroll, and a page that will not turn is the worse failure.
+const kPagerSlopFactor = 0.75;
 
 /// Google's hard limit on page dots.
 const kMaxDots = 6;
 
-/// Page slop wide enough that a vertical scroll doesn't flip pages.
-class InflatedSlopPageScrollPhysics extends PageScrollPhysics {
-  const InflatedSlopPageScrollPhysics({super.parent});
+/// Page physics tuned by [kPagerSlopFactor], so the pager and the list under
+/// it race on terms chosen for a wrist rather than a phone.
+class PagerScrollPhysics extends PageScrollPhysics {
+  const PagerScrollPhysics({super.parent});
 
   @override
-  InflatedSlopPageScrollPhysics applyTo(ScrollPhysics? ancestor) =>
-      InflatedSlopPageScrollPhysics(parent: buildParent(ancestor));
+  PagerScrollPhysics applyTo(ScrollPhysics? ancestor) =>
+      PagerScrollPhysics(parent: buildParent(ancestor));
 
   @override
   double? get dragStartDistanceMotionThreshold {
     final base = super.dragStartDistanceMotionThreshold ?? 3.5;
-    return base * kSlopInflation;
+    return base * kPagerSlopFactor;
   }
 }
 
@@ -76,7 +85,7 @@ class EdgeAwarePageView extends StatelessWidget {
           children: [
             PageView(
               controller: controller,
-              physics: const InflatedSlopPageScrollPhysics(),
+              physics: const PagerScrollPhysics(),
               onPageChanged: onPageChanged,
               children: children,
             ),

@@ -1,22 +1,48 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry_wear/src/widgets/focus_list.dart';
-import 'package:pantry_wear/src/prototype/photos_page.dart';
-import 'package:pantry_wear/src/prototype/proto_photo_data.dart';
-import 'package:pantry_wear/src/prototype/proto_tuning.dart';
+import 'package:pantry_wear/src/photos/photo_route.dart';
+import 'package:pantry_wear/src/photos/photo_sizes.dart';
+import 'package:pantry_wear/src/photos/photos_controller.dart';
+import 'package:pantry_wear/src/photos/photos_page.dart';
 import 'package:pantry_wear/src/wear_shape.dart';
+import 'package:pantry_wear/src/widgets/focus_list.dart';
+
+import 'wear_fixtures.dart';
 
 /// The checks the photos page earned.
 ///
 /// Everything here analysed clean before it was pumped, which is the whole
 /// reason the page has tests at all: a watch layout fails by drawing the wrong
 /// thing quietly, not by throwing.
+///
+/// No image cache is installed, so every preview fails to resolve — which is
+/// exactly the offline board, and the state the grid has to keep its shape in.
 void main() {
-  Widget host(ProtoTuning tuning) => MaterialApp(
+  final folders = [
+    testPhotoFolder(id: 7, name: 'House'),
+    testPhotoFolder(id: 8, name: 'Receipts', sortOrder: 1),
+  ];
+  final photos = [
+    testPhoto(id: 1, caption: 'Fridge shelf'),
+    testPhoto(id: 2, caption: 'Spare key'),
+    testPhoto(id: 3, caption: 'Boiler dial'),
+    testPhoto(id: 5, caption: 'Front door', folderId: 7),
+    testPhoto(id: 6, caption: 'Boxed heater', folderId: 7),
+  ];
+
+  PhotosController seeded({bool foldersFirst = true}) =>
+      PhotosController.seeded(
+        houseId: 1,
+        folders: folders,
+        photos: photos,
+        foldersFirst: foldersFirst,
+      );
+
+  Widget host(PhotosController controller) => MaterialApp(
     home: Scaffold(
       backgroundColor: Colors.black,
-      body: PhotosPage(tuning: tuning, active: true),
+      body: PhotosPage(controller: controller, active: true),
     ),
   );
 
@@ -49,25 +75,40 @@ void main() {
     sizeToWatch(tester);
     for (final shape in ['round', 'square']) {
       WearShape.markFrom([shape]);
-      await tester.pumpWidget(host(ProtoTuning()));
+      await tester.pumpWidget(host(seeded()));
       await tester.pumpAndSettle();
 
       // Folders come first, then the photos that sit outside any of them.
       expect(find.text('House'), findsOneWidget);
       expect(find.text('Receipts'), findsOneWidget);
       expect(tile(1), findsOneWidget);
+      // A photo inside a folder is not on the board.
+      expect(tile(5), findsNothing);
       expect(tester.takeException(), isNull);
     }
+  });
+
+  testWidgets('the house decides which end the folders go', (tester) async {
+    sizeToWatch(tester);
+    await tester.pumpWidget(host(seeded(foldersFirst: false)));
+    await tester.pumpAndSettle();
+
+    // `photoFoldersFirst` is a house pref, so the watch orders the board the
+    // way the household's phone does — folders last is a real setting, not a
+    // state the watch can end up in by itself.
+    expect(tile(1), findsOneWidget);
+    // The board now opens on a photo row, so its captions are drawn.
+    expect(find.text('Fridge shelf'), findsOneWidget);
   });
 
   testWidgets('an off-centre tap scrolls, and the centred row opens', (
     tester,
   ) async {
     sizeToWatch(tester);
-    await tester.pumpWidget(host(ProtoTuning()));
+    await tester.pumpWidget(host(seeded()));
     await tester.pumpAndSettle();
 
-    // The board opens on the first folder, so the first photo row is below the
+    // The board opens on the folder row, so the first photo row is below the
     // centre line and carries no caption — eight captions at once is the thing
     // being avoided.
     expect(find.text('Fridge shelf'), findsNothing);
@@ -75,7 +116,7 @@ void main() {
     await tester.tap(tile(1));
     await tester.pumpAndSettle();
 
-    // A mis-aim costs a scroll, never a write or a route.
+    // A mis-aim costs a scroll, never a route.
     expect(find.byType(PhotoRoute), findsNothing);
     // Having arrived on the centre line, the row now says what it holds.
     expect(find.text('Fridge shelf'), findsOneWidget);
@@ -88,7 +129,7 @@ void main() {
 
   testWidgets('the tapped tile opens, not the row', (tester) async {
     sizeToWatch(tester);
-    await tester.pumpWidget(host(ProtoTuning()));
+    await tester.pumpWidget(host(seeded()));
     await tester.pumpAndSettle();
 
     // Centre the row, then act on its second tile: the row is the focus unit,
@@ -106,7 +147,7 @@ void main() {
 
   testWidgets('a folder opens as a route that takes the crown', (tester) async {
     sizeToWatch(tester);
-    await tester.pumpWidget(host(ProtoTuning()));
+    await tester.pumpWidget(host(seeded()));
     await tester.pumpAndSettle();
 
     expect(rotaryListeners(tester), 1);
@@ -131,21 +172,16 @@ void main() {
 
   testWidgets('an unavailable photo keeps its slot', (tester) async {
     sizeToWatch(tester);
-    await tester.pumpWidget(host(ProtoTuning()..offline = true));
+    await tester.pumpWidget(host(seeded()));
     await tester.pumpAndSettle();
 
     // Hiding a photo the watch cannot draw would move every tile after it
     // between online and offline, so the grid keeps the slot and marks it.
-    final uncached = protoPhotosIn(null).where((p) => !p.cached).toList();
-    expect(uncached, isNotEmpty);
-    for (final photo in uncached) {
+    for (final photo in photos.where((p) => p.folderId == null)) {
       expect(tile(photo.id), findsOneWidget);
     }
-    expect(
-      find.byIcon(Icons.cloud_off_outlined),
-      findsNWidgets(uncached.length),
-    );
-    expect(find.byIcon(Icons.image_outlined), findsNWidgets(uncached.length));
+    expect(find.byIcon(Icons.cloud_off_outlined), findsWidgets);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('a photo opens at fit and double-taps back to it', (
@@ -153,7 +189,7 @@ void main() {
   ) async {
     sizeToWatch(tester);
     await tester.pumpWidget(
-      MaterialApp(home: PhotoRoute(photo: protoPhotos.first, available: true)),
+      MaterialApp(home: PhotoRoute(photo: photos.first, houseId: 1)),
     );
     await tester.pumpAndSettle();
 
@@ -184,7 +220,7 @@ void main() {
   testWidgets('a double tap travels rather than cutting', (tester) async {
     sizeToWatch(tester);
     await tester.pumpWidget(
-      MaterialApp(home: PhotoRoute(photo: protoPhotos.first, available: true)),
+      MaterialApp(home: PhotoRoute(photo: photos.first, houseId: 1)),
     );
     await tester.pumpAndSettle();
 
@@ -207,5 +243,51 @@ void main() {
 
     await tester.pumpAndSettle();
     expect(view.value.getMaxScaleOnAxis(), closeTo(2.5, 0.001));
+  });
+
+  testWidgets('the zoom badge tracks the zoom it names', (tester) async {
+    sizeToWatch(tester);
+    await tester.pumpWidget(
+      MaterialApp(home: PhotoRoute(photo: photos.first, houseId: 1)),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(InteractiveViewer));
+    await tester.pump(kDoubleTapMinTime);
+    await tester.tap(find.byType(InteractiveViewer));
+    await tester.pumpAndSettle();
+
+    // The route itself rebuilds only when the zoom crosses a threshold, so a
+    // badge that read the transform at build time would stop at whatever the
+    // last crossing left behind and go on claiming it.
+    expect(find.text('2.5×'), findsOneWidget);
+  });
+
+  testWidgets('a tile asks for a tile, and a screen for a screen', (
+    tester,
+  ) async {
+    sizeToWatch(tester);
+    late int tileSize;
+    late int fitSize;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (context) {
+            tileSize = WearPreviewSize.tile(context);
+            fitSize = WearPreviewSize.fit(context);
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+
+    // Two tiles to a row, so a tile is worth about half a screen — and the
+    // ladder is what keeps the falloff's own scaling from inventing a new URL
+    // per frame.
+    expect(tileSize, lessThan(fitSize));
+    expect(fitSize, lessThanOrEqualTo(WearPreviewSize.max));
+    for (final size in [tileSize, fitSize, WearPreviewSize.zoomed]) {
+      expect(size & (size - 1), 0, reason: '$size is not a rung');
+    }
   });
 }

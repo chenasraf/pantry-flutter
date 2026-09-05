@@ -19,7 +19,8 @@ files=(
   pubspec.yaml
   pubspec.lock
   lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart
-  lib/widgets/avif_image.dart
+  packages/pantry_core/pubspec.yaml
+  packages/pantry_core/lib/widgets/avif_image.dart
   android/app/build.gradle.kts
   android/app/src/main/kotlin/dev/casraf/pantry/DataLayerChannel.kt
 )

@@ -21,7 +21,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
-import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'package:pantry/widgets/markdown_editor.dart';

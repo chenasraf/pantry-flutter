@@ -11,7 +11,7 @@ import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/text_direction.dart';
-import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/image_preview.dart';
 
 Color? _parseColor(String hex) {

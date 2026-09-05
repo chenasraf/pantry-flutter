@@ -6,7 +6,7 @@ import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
-import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 
 class PhotoDetailView extends StatefulWidget {
   final Photo photo;

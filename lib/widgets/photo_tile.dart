@@ -8,7 +8,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/views/photos/photo_detail_view.dart';
-import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/context_menu_region.dart';
 import 'package:pantry/widgets/tile_menu_button.dart';
 

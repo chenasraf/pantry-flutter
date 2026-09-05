@@ -1,5 +1,6 @@
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/photo.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
 
@@ -86,6 +87,37 @@ ShoppingSession testSession({int? activeStoreId}) => ShoppingSession(
   isPrivate: false,
   lastSeenAt: 0,
   live: true,
+  createdAt: 0,
+  updatedAt: 0,
+);
+
+Photo testPhoto({
+  required int id,
+  String? caption,
+  int? folderId,
+  String uploadedBy = 'dana',
+  int createdAt = 0,
+}) => Photo(
+  id: id,
+  houseId: 1,
+  folderId: folderId,
+  fileId: 1000 + id,
+  caption: caption,
+  uploadedBy: uploadedBy,
+  sortOrder: id,
+  createdAt: createdAt,
+  updatedAt: createdAt,
+);
+
+PhotoFolder testPhotoFolder({
+  required int id,
+  required String name,
+  int sortOrder = 0,
+}) => PhotoFolder(
+  id: id,
+  houseId: 1,
+  name: name,
+  sortOrder: sortOrder,
   createdAt: 0,
   updatedAt: 0,
 );

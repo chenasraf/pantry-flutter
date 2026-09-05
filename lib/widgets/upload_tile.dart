@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry/views/photos/photo_board_controller.dart';
-import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 
 class UploadTile extends StatelessWidget {
   final UploadTask task;

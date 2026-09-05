@@ -26,6 +26,9 @@ void main(List<String> args) async {
   PlatformInfo.markAsWatch();
   WearShape.markFrom(args);
   WearDeepLink.instance.markFrom(args);
+  // Core's image providers have no store until one is installed, and the
+  // watch's is not the phone's.
+  WearImageCache.install();
 
   registerNnLocaleData();
 

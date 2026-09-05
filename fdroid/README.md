@@ -19,11 +19,12 @@ dependency itself has to differ. The swap is therefore done at build time by
 [`tool/fdroid/apply.sh`](../tool/fdroid/apply.sh), which:
 
 1. rewrites `pubspec.yaml`: `mobile_scanner` → `flutter_zxing`, and removes
-   `flutter_avif`;
+   `flutter_avif` from `packages/pantry_core/pubspec.yaml`, which is where it is
+   declared — the AVIF-aware provider is shared with the watch;
 2. overwrites `lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart`
    with `fdroid/barcode_camera_scanner.dart` (this directory's zxing scanner);
-3. overwrites `lib/widgets/avif_image.dart` with `fdroid/avif_image.dart` (the
-   AVIF-free image widgets).
+3. overwrites `packages/pantry_core/lib/widgets/avif_image.dart` with
+   `fdroid/avif_image.dart` (the AVIF-free image widgets).
 
 Everything else — the `BarcodeScanView.scan()` entry point, the manual-entry
 dialog, the Open Food Facts attribution, every `AvifNetworkImage` call site — is
@@ -42,6 +43,10 @@ is no FLOSS drop-in, so the F-Droid variant drops AVIF support entirely:
 built-in codecs (JPEG/PNG/WebP/GIF) only. Raw AVIF originals won't render on the
 F-Droid build; Nextcloud's preview endpoint transcodes to JPEG, so the common
 case is unaffected.
+
+This costs the watch more than the phone — Wear OS ships no AV1 decoder at all,
+so an AVIF original is unreadable there by any route — but a swapped tree cannot
+build the `wear` flavor anyway, so no F-Droid build is affected by that.
 
 `fdroid/**` is excluded from `flutter analyze` (see `analysis_options.yaml`)
 because its zxing import isn't a dependency of the default build. Once
