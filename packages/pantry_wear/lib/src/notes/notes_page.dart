@@ -150,11 +150,12 @@ class _NotesWallState extends State<NotesWall> {
     super.dispose();
   }
 
-  /// The checklists page's rule, unchanged: a card that is not on the centre
-  /// line scrolls there and nothing opens, so a mis-aim costs a scroll.
+  /// The checklists page's rule, unchanged: a card the wearer was only aiming
+  /// at comes within reach and nothing opens, so a mis-aim costs a scroll.
   Future<void> _onCardTap(int index, Note note) async {
-    if (index != _geometry.value.centredIndex) {
-      _listKey.currentState?.centreOn(index);
+    final list = _listKey.currentState;
+    if (list == null || !list.canActOn(index)) {
+      list?.reveal(index);
       return;
     }
     setState(() => _covered = true);
@@ -175,6 +176,7 @@ class _NotesWallState extends State<NotesWall> {
       rotaryActive: widget.rotary && !_covered,
       horizontalInset: WearMetrics.tallSideInset,
       geometry: _geometry,
+      underRail: true,
       elements: [
         for (var i = 0; i < notes.length; i++)
           FocusElement(

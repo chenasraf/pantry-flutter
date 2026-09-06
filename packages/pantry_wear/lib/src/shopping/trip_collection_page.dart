@@ -83,10 +83,9 @@ class _TripCollectionPageState extends State<TripCollectionPage>
   /// "nearest snappable" is not "on the line", and acting on a row the wearer
   /// can see is not in charge is the failure the rule exists to prevent.
   void _tap(int index, ListItem item) {
-    final geometry = _geometry.value;
-    if (index != geometry.centredIndex ||
-        geometry.centredDistance > WearMetrics.itemExtent / 2) {
-      _listKey.currentState?.centreOn(index);
+    final list = _listKey.currentState;
+    if (list == null || !list.canActOn(index)) {
+      list?.reveal(index);
       return;
     }
     // False is where the row is heading: off this page and back onto the list,
@@ -118,6 +117,7 @@ class _TripCollectionPageState extends State<TripCollectionPage>
       rotaryActive: widget.rotary,
       horizontalInset: WearMetrics.sideInset,
       geometry: _geometry,
+      underRail: true,
       elements: [
         for (var i = 0; i < items.length; i++)
           FocusElement(

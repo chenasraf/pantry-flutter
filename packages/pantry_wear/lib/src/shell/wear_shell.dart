@@ -21,7 +21,6 @@ import '../services/wear_deep_link.dart';
 import '../shopping/progression_page.dart';
 import '../shopping/start_trip_page.dart';
 import '../shopping/trip_collection_page.dart';
-import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
@@ -499,7 +498,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
           body: LayoutBuilder(
             builder: (context, constraints) {
               final h = constraints.maxHeight;
-              final railHeight = WearShape.isRound ? h * 0.21 : h * 0.15;
+              final railHeight = WearMetrics.railHeight(h);
               final titles = _titles;
               // The pager can land mid-swap, one frame before the mode's page
               // set is the one being drawn.

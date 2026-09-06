@@ -24,10 +24,12 @@ import 'photos_controller.dart';
 ///
 /// The grid is **two tiles to a row and the row is the focus unit**. What the
 /// row cannot decide is *which* tile an action lands on, so the two rules split
-/// by axis: an off-centre row scrolls to the centre line instead of acting, and
-/// within the centred row the tile you touched is the one that opens. Q19's
-/// safety is about a mis-aimed scroll, which is vertical; horizontally the two
-/// tiles are large targets and there is nothing to protect against.
+/// by axis: a row the wearer was only aiming at comes within reach instead of
+/// acting, and within a row that does act the tile you touched is the one that
+/// opens. The safety being bought is about a mis-aimed scroll, which is
+/// vertical; horizontally the two tiles are large targets and there is nothing
+/// to protect against. Which rows act is the list's to say, and it depends on
+/// the screen's shape.
 class PhotosPage extends StatefulWidget {
   /// Supplied only by tests, which pump the real tree against a controller
   /// holding a fixed answer. The page starts the one it makes itself.
@@ -102,6 +104,7 @@ class _PhotosPageState extends State<PhotosPage> {
       houseId: house,
       cells: cells,
       rotary: widget.rotary,
+      underRail: true,
     );
   }
 }
@@ -118,12 +121,17 @@ class PhotoBoard extends StatefulWidget {
   /// Whether the crown is this board's to steer.
   final bool rotary;
 
+  /// Whether the shell's rail is drawn over this board. The root board sits
+  /// under it; a folder is a pushed route with nothing above it.
+  final bool underRail;
+
   const PhotoBoard({
     super.key,
     required this.controller,
     required this.houseId,
     required this.cells,
     required this.rotary,
+    this.underRail = false,
   });
 
   @override
@@ -153,16 +161,18 @@ class _PhotoBoardState extends State<PhotoBoard> {
     if (mounted) setState(() => _covered = false);
   }
 
-  /// The vertical half of the tap rule: a row that is not on the centre line
-  /// scrolls there and nothing opens, so a mis-aimed scroll costs a scroll.
-  bool _centred(int index) {
-    if (index == _geometry.value.centredIndex) return true;
-    _listKey.currentState?.centreOn(index);
+  /// The vertical half of the tap rule: a row the wearer was only aiming at
+  /// comes within reach and nothing opens, so a mis-aim costs a scroll. The
+  /// horizontal half never applies — both tiles in a row are large targets.
+  bool _actionable(int index) {
+    final list = _listKey.currentState;
+    if (list != null && list.canActOn(index)) return true;
+    list?.reveal(index);
     return false;
   }
 
   void _openFolder(int index, PhotoFolder folder) {
-    if (!_centred(index)) return;
+    if (!_actionable(index)) return;
     unawaited(
       _push(
         PhotoFolderRoute(
@@ -175,7 +185,7 @@ class _PhotoBoardState extends State<PhotoBoard> {
   }
 
   void _openPhoto(int index, Photo photo) {
-    if (!_centred(index)) return;
+    if (!_actionable(index)) return;
     unawaited(_push(PhotoRoute(photo: photo, houseId: widget.houseId)));
   }
 
@@ -218,6 +228,7 @@ class _PhotoBoardState extends State<PhotoBoard> {
       rotaryActive: widget.rotary && !_covered,
       horizontalInset: WearMetrics.tallSideInset,
       geometry: _geometry,
+      underRail: widget.underRail,
       elements: [
         for (var row = 0; row < rows; row++)
           FocusElement(
@@ -230,7 +241,13 @@ class _PhotoBoardState extends State<PhotoBoard> {
               return ValueListenableBuilder<FocusGeometry>(
                 valueListenable: _geometry,
                 builder: (context, geometry, _) {
-                  final captioned = geometry.centredIndex == row;
+                  // Only the row in charge is captioned, so the board reads as
+                  // photos rather than as a page of labels. Where no row is in
+                  // charge there is nothing to single out, and every row keeps
+                  // its caption.
+                  final captioned =
+                      !SnapFocusList.hasFocusRow ||
+                      geometry.centredIndex == row;
                   return Padding(
                     padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
                     child: Row(

@@ -115,10 +115,9 @@ class _ProgressionPageState extends State<ProgressionPage> {
   /// line scrolls there and nothing happens, so a mis-aim costs a scroll rather
   /// than a write.
   void _tap(int index, VoidCallback action) {
-    final geometry = _geometry.value;
-    if (index != geometry.centredIndex ||
-        geometry.centredDistance > WearMetrics.itemExtent / 2) {
-      _listKey.currentState?.centreOn(index);
+    final list = _listKey.currentState;
+    if (list == null || !list.canActOn(index)) {
+      list?.reveal(index);
       return;
     }
     action();
@@ -258,6 +257,7 @@ class _ProgressionPageState extends State<ProgressionPage> {
               falloffRows: WearMetrics.falloffRows,
               rotaryActive: widget.rotary && !_covered,
               geometry: _geometry,
+              underRail: true,
               elements: _elements(),
             ),
           ),

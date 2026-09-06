@@ -1,3 +1,5 @@
+import '../wear_shape.dart';
+
 /// The geometry and timings the watch's lists are drawn to, judged on a round
 /// screen rather than derived.
 ///
@@ -6,6 +8,15 @@
 /// deliberately costs well under a row.
 class WearMetrics {
   const WearMetrics._();
+
+  /// What the rail takes off the top of the screen.
+  ///
+  /// The rail overlays the list rather than sitting above it, so this is also
+  /// the space a page underneath has to hold back before its first row — on a
+  /// round screen the half-viewport lead already clears it, but a flat list
+  /// starts at the top and would draw its first row behind the rail.
+  static double railHeight(double viewportHeight) =>
+      viewportHeight * (WearShape.isRound ? 0.21 : 0.15);
 
   /// The extent one row occupies, gap included.
   static const double itemExtent = 54;

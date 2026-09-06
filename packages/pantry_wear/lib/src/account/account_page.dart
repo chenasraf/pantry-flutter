@@ -125,10 +125,9 @@ class _AccountPageState extends State<AccountPage> {
   /// and a rule that trusted the index alone would fire on a row the wearer
   /// can see is not the one in charge.
   void _tap(int index, VoidCallback action) {
-    final geometry = _geometry.value;
-    if (index != geometry.centredIndex ||
-        geometry.centredDistance > WearMetrics.itemExtent / 2) {
-      _listKey.currentState?.centreOn(index);
+    final list = _listKey.currentState;
+    if (list == null || !list.canActOn(index)) {
+      list?.reveal(index);
       return;
     }
     action();
@@ -257,6 +256,7 @@ class _AccountPageState extends State<AccountPage> {
       falloffRows: WearMetrics.falloffRows,
       rotaryActive: widget.rotary && !_covered,
       geometry: _geometry,
+      underRail: true,
       elements: _elements(),
     );
   }

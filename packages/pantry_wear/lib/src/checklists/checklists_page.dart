@@ -20,9 +20,11 @@ import 'item_detail_page.dart';
 
 /// The checklists page, in both shells.
 ///
-/// Tap the centred card to check it; tapping an off-centre card scrolls it to
-/// the centre instead, so a mis-aim costs a scroll rather than a write.
-/// Long-press the centred card for the read-only detail.
+/// Tap a card to check it. On a round screen that means the centred card, and
+/// tapping any other scrolls it to the centre instead, so a mis-aim costs a
+/// scroll rather than a write; on a square screen, where no row is in charge,
+/// any card the wearer can see all of acts where it lies. Long-press is the
+/// read-only detail, under the same rule.
 ///
 /// Neither direction leaves immediately: the card stays put with a stroke
 /// running down its border, and a second tap inside that window takes it back.
@@ -142,15 +144,16 @@ class ChecklistsPageState extends State<ChecklistsPage>
     unawaited(_openDetail(item));
   }
 
-  /// Brings an off-centre card to the centre line and reports that it did, so
-  /// the gesture stops there rather than acting on a row the wearer was only
-  /// aiming at.
+  /// Brings a card the wearer was only aiming at within reach and reports that
+  /// it did, so the gesture stops there rather than acting on it. What counts
+  /// as aimed at is the list's to say — see `SnapFocusListState.canActOn`.
   ///
   /// The row's own index, not its item's: grouping by store repeats an item in
   /// every store it belongs to, so an id names several rows.
   bool _scrollTo(int index) {
-    if (index == widget.geometry.value.centredIndex) return false;
-    _listKey.currentState?.centreOn(index);
+    final list = _listKey.currentState;
+    if (list != null && list.canActOn(index)) return false;
+    list?.reveal(index);
     return true;
   }
 
@@ -370,6 +373,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
       rotaryActive: widget.rotary,
       horizontalInset: WearMetrics.sideInset,
       geometry: widget.geometry,
+      underRail: true,
     );
   }
 }

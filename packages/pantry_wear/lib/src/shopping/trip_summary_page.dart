@@ -72,10 +72,9 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
   }
 
   void _tap(int index, VoidCallback action) {
-    final geometry = _geometry.value;
-    if (index != geometry.centredIndex ||
-        geometry.centredDistance > WearMetrics.itemExtent / 2) {
-      _listKey.currentState?.centreOn(index);
+    final list = _listKey.currentState;
+    if (list == null || !list.canActOn(index)) {
+      list?.reveal(index);
       return;
     }
     action();

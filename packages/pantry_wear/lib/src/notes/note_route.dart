@@ -81,11 +81,12 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
     orElse: () => widget.note,
   );
 
-  /// Same rule as the wall and the checklists page: an off-centre task scrolls
-  /// to the centre line, and only the row already there is written.
+  /// Same rule as the wall and the checklists page: a task the wearer was only
+  /// aiming at comes within reach, and only a row already there is written.
   void _onTaskTap(int index, NoteBlock block) {
-    if (index != _geometry.value.centredIndex) {
-      _listKey.currentState?.centreOn(index);
+    final list = _listKey.currentState;
+    if (list == null || !list.canActOn(index)) {
+      list?.reveal(index);
       return;
     }
     _fire(block);

@@ -5,9 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../services/rotary_service.dart';
+import '../wear_shape.dart';
 import 'wear_mechanics.dart';
+import 'wear_metrics.dart';
 
-/// The centred-focus list every scrolling page on the watch is built from.
+/// The list every scrolling page on the watch is built from — centred-focus on
+/// a round screen, flat on a square one.
+///
+/// The focus is a round screen's answer to its own geometry, not a house style:
+/// the glass narrows towards the top and bottom, so one row sits where the
+/// screen is widest and is worth building around. A square screen narrows
+/// nowhere, so it keeps the same rows, the same grouping and the same rail, and
+/// drops the snap, the falloff and the aim-then-act tap that all follow from
+/// having a row in charge. [hasFocusRow] is the one place that branches.
 ///
 /// Snapping is hand-rolled over row offsets rather than taken from a
 /// [ListWheelScrollView]: a wheel has one `itemExtent` and no sliver protocol,
@@ -109,6 +119,13 @@ class SnapFocusList extends StatefulWidget {
   /// Updated on every scroll frame. The rail listens to it.
   final ValueNotifier<FocusGeometry>? geometry;
 
+  /// Whether the rail is drawn over this list.
+  ///
+  /// Only read on a square screen, where the list starts at the top instead of
+  /// half a viewport down and would otherwise put its first row behind the
+  /// rail. A pushed route leaves this false: it has no rail over it.
+  final bool underRail;
+
   const SnapFocusList({
     super.key,
     required this.controller,
@@ -119,7 +136,18 @@ class SnapFocusList extends StatefulWidget {
     this.rotaryActive = false,
     this.horizontalInset = 0.025,
     this.geometry,
+    this.underRail = false,
   });
+
+  /// Whether this list has a row in charge.
+  ///
+  /// A round screen narrows towards the top and bottom, so one row sits at the
+  /// glass's widest point and the list is built around it: rows recede from it,
+  /// the scroll settles on it, and it is the row a tap acts on. A square screen
+  /// narrows nowhere — every row is as wide and as readable as every other — so
+  /// there is no row to elect, and building one anyway costs the wearer a
+  /// scroll before every action for nothing.
+  static bool get hasFocusRow => WearShape.isRound;
 
   @override
   SnapFocusListState createState() => SnapFocusListState();
@@ -166,8 +194,20 @@ class SnapFocusListState extends State<SnapFocusList> {
     super.dispose();
   }
 
+  /// Space above the first row. Half a viewport where every row has to be able
+  /// to reach the centre line; on a flat list only what the rail covers.
+  double _leadPad(double viewportHeight) => SnapFocusList.hasFocusRow
+      ? math.max(0.0, viewportHeight / 2 - widget.itemExtent / 2)
+      : (widget.underRail ? WearMetrics.railHeight(viewportHeight) : 0.0);
+
+  /// Space below the last row. A flat list needs only enough to lift the last
+  /// row off the bottom edge.
+  double _trailPad(double viewportHeight) => SnapFocusList.hasFocusRow
+      ? _leadPad(viewportHeight)
+      : WearMetrics.cardGap;
+
   void _measure(double viewportHeight) {
-    final lead = math.max(0.0, viewportHeight / 2 - widget.itemExtent / 2);
+    final lead = _leadPad(viewportHeight);
     final tops = <double>[];
     var y = lead;
     for (final e in widget.elements) {
@@ -192,9 +232,24 @@ class SnapFocusListState extends State<SnapFocusList> {
   /// it falls between two cards — which is why the first row of a group could
   /// not be reached.
   void step(int delta) {
-    if (_snapTargets.isEmpty || !widget.controller.hasClients) return;
+    if (!widget.controller.hasClients) return;
     final position = widget.controller.position;
     final from = _stepTarget ?? position.pixels;
+
+    // A flat list has no landing grid to walk, so a detent is simply a row's
+    // worth of scrolling. The snap table's whole purpose was to keep landings
+    // on the centre line, and there is no line here to fall off.
+    if (!SnapFocusList.hasFocusRow) {
+      _animateStep(
+        (from + delta * widget.itemExtent).clamp(
+          position.minScrollExtent,
+          position.maxScrollExtent,
+        ),
+        from,
+      );
+      return;
+    }
+    if (_snapTargets.isEmpty) return;
 
     var nearest = 0;
     var bestDistance = double.infinity;
@@ -219,10 +274,19 @@ class SnapFocusListState extends State<SnapFocusList> {
     final next = !resting && ahead
         ? nearest
         : (nearest + delta).clamp(0, _snapTargets.length - 1);
-    final target = _snapTargets[next].clamp(
-      position.minScrollExtent,
-      position.maxScrollExtent,
+    _animateStep(
+      _snapTargets[next].clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      ),
+      from,
     );
+  }
+
+  /// Carry the crown to [target], remembering where it was heading so a fast
+  /// turn accumulates instead of each detent re-measuring from a position
+  /// still in flight.
+  void _animateStep(double target, double from) {
     if (target == from) return;
     _stepTarget = target;
     widget.controller
@@ -232,6 +296,64 @@ class SnapFocusListState extends State<SnapFocusList> {
           curve: Curves.easeOutCubic,
         )
         .whenComplete(() => _stepTarget = null);
+  }
+
+  /// Whether a tap on [index] acts, or only brings the row within reach.
+  ///
+  /// Where there is a row in charge, only that row acts, and only while it is
+  /// actually on the line — "nearest snappable" is not the same as "centred",
+  /// so a tall header above the first row can leave it a whole row short while
+  /// still being the nearest thing to the line.
+  ///
+  /// Where there is none, a tap acts wherever it lands, so long as the row is
+  /// whole: a row running off an edge was not aimed at squarely either, and
+  /// tapping one brings it in instead.
+  bool canActOn(int index) {
+    if (index < 0 || index >= widget.elements.length) return false;
+    if (!SnapFocusList.hasFocusRow) return isFullyVisible(index);
+    final geometry = widget.geometry?.value;
+    if (geometry == null) return false;
+    return index == geometry.centredIndex &&
+        geometry.centredDistance <= widget.itemExtent / 2;
+  }
+
+  /// Whether every pixel of [index] is inside the viewport.
+  bool isFullyVisible(int index) {
+    if (index < 0 || index >= _tops.length) return false;
+    if (!widget.controller.hasClients || _viewport <= 0) return false;
+    final offset = widget.controller.offset;
+    final top = _tops[index];
+    final bottom = top + widget.elements[index].extent;
+    // A hair of tolerance: a row flush with an edge is whole, and floating
+    // point makes "flush" arrive as either side of exact.
+    return top >= offset - 0.5 && bottom <= offset + _viewport + 0.5;
+  }
+
+  /// Bring [index] within reach of a tap — to the centre line where the list
+  /// has one, and just inside the viewport where it does not. Scrolling a
+  /// square list to a centre it does not have would be the very haul that
+  /// having no focus row exists to avoid.
+  void reveal(int index) {
+    if (SnapFocusList.hasFocusRow) return centreOn(index);
+    if (index < 0 || index >= _tops.length) return;
+    if (!widget.controller.hasClients) return;
+    final position = widget.controller.position;
+    final offset = widget.controller.offset;
+    final top = _tops[index];
+    final bottom = top + widget.elements[index].extent;
+    var target = offset;
+    if (top < offset) {
+      target = top;
+    } else if (bottom > offset + _viewport) {
+      target = bottom - _viewport;
+    }
+    target = target.clamp(position.minScrollExtent, position.maxScrollExtent);
+    if ((target - offset).abs() < 0.5) return;
+    widget.controller.animateTo(
+      target,
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   /// Bring an element to the centre line. Tapping an off-centre card scrolls
@@ -312,8 +434,10 @@ class SnapFocusListState extends State<SnapFocusList> {
         _measure(h);
         WidgetsBinding.instance.addPostFrameCallback((_) => _publish());
 
+        final focused = SnapFocusList.hasFocusRow;
         final falloff = widget.falloffRows * widget.itemExtent;
-        final lead = math.max(0.0, h / 2 - widget.itemExtent / 2);
+        final lead = _leadPad(h);
+        final trail = _trailPad(h);
 
         return Padding(
           padding: EdgeInsetsDirectional.symmetric(
@@ -326,7 +450,7 @@ class SnapFocusListState extends State<SnapFocusList> {
             },
             child: CustomScrollView(
               controller: widget.controller,
-              physics: widget.snapEnabled
+              physics: widget.snapEnabled && focused
                   ? _SnapPhysics(
                       targets: () => _snapTargets,
                       reach: widget.itemExtent,
@@ -342,6 +466,15 @@ class SnapFocusListState extends State<SnapFocusList> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate((context, i) {
                     final e = widget.elements[i];
+                    // Every row at full strength, none of them receding, and
+                    // nothing to rebuild on scroll: a flat list has no row to
+                    // measure a distance from.
+                    if (!focused) {
+                      return SizedBox(
+                        height: e.extent,
+                        child: e.builder(context, 0),
+                      );
+                    }
                     return SizedBox(
                       height: e.extent,
                       child: AnimatedBuilder(
@@ -369,7 +502,7 @@ class SnapFocusListState extends State<SnapFocusList> {
                     );
                   }, childCount: widget.elements.length),
                 ),
-                SliverToBoxAdapter(child: SizedBox(height: lead)),
+                SliverToBoxAdapter(child: SizedBox(height: trail)),
               ],
             ),
           ),
