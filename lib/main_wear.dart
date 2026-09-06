@@ -57,6 +57,10 @@ void main(List<String> args) async {
   // where a debounced cache write has to land.
   CacheStore.installPauseCheckpoint();
   ReachabilityService.instance.start();
+  // Unawaited, and before the frame rather than after it: an unpair published
+  // while this watch was asleep is only discoverable by reading, and reading
+  // costs a channel round trip that must not sit in front of the first frame.
+  unawaited(WearPairingClient.instance.readPairing());
   runApp(const PantryWearApp());
   // After the first frame: the mirror only ever accelerates, so nothing it
   // does belongs on the path to drawing what the watch already knows.

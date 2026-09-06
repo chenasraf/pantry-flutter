@@ -110,16 +110,25 @@ class WearLinkService {
       final raw = await _methods.invokeListMethod<dynamic>('nodes');
       return (raw ?? const [])
           .cast<Map<Object?, Object?>>()
-          .map(
-            (node) => WearLinkNode(
-              id: node['id'] as String? ?? '',
-              name: node['name'] as String? ?? '',
-              nearby: node['nearby'] as bool? ?? false,
-            ),
-          )
+          .map(_node)
           .toList(growable: false);
     } on PlatformException {
       return const [];
+    }
+  }
+
+  /// This device, as the link names it.
+  ///
+  /// What lets a device recognise itself in something a peer published about
+  /// it, rather than storing an id of its own that can go stale or be lost
+  /// with the file holding it. Null when the link cannot say.
+  Future<WearLinkNode?> localNode() async {
+    if (!await isAvailable()) return null;
+    try {
+      final raw = await _methods.invokeMapMethod<String, dynamic>('localNode');
+      return raw == null ? null : _node(raw);
+    } on PlatformException {
+      return null;
     }
   }
 
@@ -158,6 +167,27 @@ class WearLinkService {
   /// Drop whatever [publish] left at [path].
   Future<bool> clear(String path) => _invoke('clear', {'path': path});
 
+  /// Whatever any peer has [publish]ed at [path], read now.
+  ///
+  /// [messages] reports a change, and a Wear app runs for seconds a day — so
+  /// an item that landed while this app was not running, which is most of
+  /// them, is reachable no other way.
+  Future<List<WearLinkMessage>> dataItems(String path) async {
+    if (!await isAvailable()) return const [];
+    try {
+      final raw = await _methods.invokeListMethod<dynamic>('dataItems', {
+        'path': path,
+      });
+      return (raw ?? const [])
+          .map(_decode)
+          .where((message) => message != null)
+          .cast<WearLinkMessage>()
+          .toList(growable: false);
+    } on PlatformException {
+      return const [];
+    }
+  }
+
   /// Payloads arriving from peers, by either delivery. Broadcast: the link is
   /// one transport shared by every feature layered on it.
   ///
@@ -179,6 +209,12 @@ class WearLinkService {
       return false;
     }
   }
+
+  WearLinkNode _node(Map<Object?, Object?> node) => WearLinkNode(
+    id: node['id'] as String? ?? '',
+    name: node['name'] as String? ?? '',
+    nearby: node['nearby'] as bool? ?? false,
+  );
 
   WearLinkMessage? _decode(dynamic event) {
     if (event is! Map) return null;

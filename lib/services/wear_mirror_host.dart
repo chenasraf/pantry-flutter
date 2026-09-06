@@ -38,6 +38,15 @@ class WearMirrorHost {
   /// with more than one.
   final _scopes = <String, MirrorScopeReport>{};
 
+  /// The watch this phone has signed in, and the only one it mirrors to.
+  ///
+  /// Set by the pairing host, which owns the pairing: the mirror is told
+  /// rather than asking, as it already is about scope, and the dependency runs
+  /// the wrong way for it to ask. A watch that missed its unpair reports a
+  /// scope on its next wake, and answering it would push the household back
+  /// onto a device that is no longer ours.
+  String? pairedNode;
+
   /// Paths waiting to be sent, and to whom. A batch across thirty items marks
   /// one path thirty times and sends one snapshot.
   final _pending = <String, Set<MirrorScope>>{};
@@ -98,7 +107,7 @@ class WearMirrorHost {
 
   void _onMessage(WearLinkMessage message) {
     final nodeId = message.nodeId;
-    if (nodeId == null) return;
+    if (nodeId == null || nodeId != pairedNode) return;
     switch (message.path) {
       case WearMirrorService.scopeReportPath:
       case WearMirrorService.mirrorRequestPath:

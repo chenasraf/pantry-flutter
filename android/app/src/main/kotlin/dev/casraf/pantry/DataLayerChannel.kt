@@ -170,6 +170,7 @@ class DataLayerChannel(private val context: Context) {
         }
         when (method) {
             "nodes" -> nodes(result)
+            "localNode" -> localNode(result)
             "send" -> send(
                 call.argument<String>("path").orEmpty(),
                 call.argument<String>("payload").orEmpty(),
@@ -188,6 +189,7 @@ class DataLayerChannel(private val context: Context) {
                 result,
             )
             "clear" -> clear(call.argument<String>("path").orEmpty(), result)
+            "dataItems" -> dataItems(call.argument<String>("path").orEmpty(), result)
             else -> result.notImplemented()
         }
     }
@@ -209,6 +211,18 @@ class DataLayerChannel(private val context: Context) {
                 )
             }
             .addOnFailureListener { result.success(emptyList<Map<String, Any>>()) }
+    }
+
+    /**
+     * This device as the Data Layer names it, so a peer's statement about a
+     * node id can be recognised as being about us.
+     */
+    private fun localNode(result: MethodChannel.Result) {
+        Wearable.getNodeClient(context).localNode
+            .addOnSuccessListener { node ->
+                result.success(mapOf("id" to node.id, "name" to node.displayName, "nearby" to node.isNearby))
+            }
+            .addOnFailureListener { result.success(null) }
     }
 
     private fun send(path: String, payload: String, nodeId: String?, result: MethodChannel.Result) {
@@ -321,6 +335,35 @@ class DataLayerChannel(private val context: Context) {
             .deleteDataItems(android.net.Uri.parse("wear://*$path"))
             .addOnSuccessListener { result.success(true) }
             .addOnFailureListener { result.success(false) }
+    }
+
+    /**
+     * What [publish] left at [path], read rather than waited for.
+     *
+     * [dataListener] fires on a change, and an item that arrived while this
+     * process was dead produces none — so on a watch, which is running for a
+     * few seconds a day, this is the only way to see one at all.
+     */
+    private fun dataItems(path: String, result: MethodChannel.Result) {
+        Wearable.getDataClient(context)
+            .getDataItems(android.net.Uri.parse("wear://*$path"))
+            .addOnSuccessListener { buffer ->
+                // Everything read out is copied before the release below: the
+                // buffer's items do not outlive it.
+                val items = buffer.mapNotNull { item ->
+                    val payload = DataMapItem.fromDataItem(item).dataMap.getString(PAYLOAD_KEY)
+                        ?: return@mapNotNull null
+                    mapOf(
+                        "delivery" to DELIVERY_DATA_ITEM,
+                        "path" to item.uri.path.orEmpty(),
+                        "payload" to payload,
+                        "nodeId" to item.uri.host,
+                    )
+                }
+                buffer.release()
+                result.success(items)
+            }
+            .addOnFailureListener { result.success(emptyList<Map<String, Any?>>()) }
     }
 
     private inline fun forEachChangedItem(

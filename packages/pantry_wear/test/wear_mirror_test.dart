@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
@@ -99,6 +100,14 @@ void main() {
 
     link.debugReset();
     WearLinkService.debugHostSupported = true;
+    // A snapshot is landed only into a session it belongs to.
+    await AuthService.instance.adoptCredentials(
+      const NextcloudCredentials(
+        serverUrl: 'https://cloud.example',
+        loginName: 'ada',
+        appPassword: 'secret',
+      ),
+    );
     await mirror.clear();
     await ChecklistService.instance.cache.clear();
     await CategoryService.instance.cache.clear();
@@ -107,6 +116,7 @@ void main() {
 
   tearDown(() async {
     await client.debugReset();
+    await AuthService.instance.logout(revoke: false);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       ..setMockMethodCallHandler(methods, null)
       ..setMockStreamHandler(events, null)
@@ -146,6 +156,25 @@ void main() {
         mirror.pathFor(MirrorEntity.items, 4),
         snapshot([testItem(id: 1, name: 'Milk').toJson()]),
         delivery: 'message',
+      );
+      await pumpEventQueue();
+
+      expect(ChecklistService.instance.getCachedItems(4), isNull);
+      expect(client.landedAt, isNull);
+    });
+
+    test('a snapshot arriving after the session ends is dropped', () async {
+      await client.start();
+      await pumpEventQueue();
+
+      // The phone coalesces for 800 ms, so a push already dispatched when the
+      // unpair lands arrives at a watch that has just emptied its stores —
+      // and would refill them with the household it was told to forget.
+      await AuthService.instance.logout(revoke: false);
+
+      emit(
+        mirror.pathFor(MirrorEntity.items, 4),
+        snapshot([testItem(id: 1, name: 'Milk').toJson()]),
       );
       await pumpEventQueue();
 

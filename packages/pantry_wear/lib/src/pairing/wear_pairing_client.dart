@@ -85,12 +85,9 @@ class WearPairingClient extends ChangeNotifier {
   /// a phone-side control, and a watch that only listened while signed out
   /// could never hear it.
   Future<void> start() async {
-    if (_messages == null) {
-      if (!await _link.isAvailable()) {
-        _enter(WearSetupState.unavailable);
-        return;
-      }
-      _messages = _link.messages.listen(_onMessage);
+    if (!await _attach()) {
+      _enter(WearSetupState.unavailable);
+      return;
     }
     if (AuthService.instance.isLoggedIn) {
       _enter(WearSetupState.ready);
@@ -109,12 +106,9 @@ class WearPairingClient extends ChangeNotifier {
   /// here — not the caches, not the queue, and not scope, which the phone
   /// seeds once at pairing and never overrides.
   Future<void> renew() async {
-    if (_messages == null) {
-      if (!await _link.isAvailable()) {
-        _enter(WearSetupState.unavailable);
-        return;
-      }
-      _messages = _link.messages.listen(_onMessage);
+    if (!await _attach()) {
+      _enter(WearSetupState.unavailable);
+      return;
     }
     // A renewal can be asked for from a state the retry loop stopped in, and
     // the phone may since have signed back in.
@@ -126,12 +120,33 @@ class WearPairingClient extends ChangeNotifier {
     _retry ??= Timer.periodic(_retryInterval, (_) => unawaited(_tick()));
   }
 
+  /// Find out whether the phone still counts this watch as its own.
+  ///
+  /// Started from `main()` and never awaited: an unpaired watch draws its
+  /// cached list for a beat before clearing, which is cheaper than spending a
+  /// channel round trip on every cold start for a case most wearers never
+  /// meet — and those names were readable at leisure at any point before now.
+  Future<void> readPairing() async {
+    if (!await _attach()) return;
+    for (final item in await _link.dataItems(WearPairing.statePath)) {
+      await _readState(item.data);
+    }
+  }
+
   @override
   void dispose() {
     _stopAsking();
     unawaited(_messages?.cancel());
     _messages = null;
     super.dispose();
+  }
+
+  /// Attach to the link, or report that there is none to attach to.
+  Future<bool> _attach() async {
+    if (_messages != null) return true;
+    if (!await _link.isAvailable()) return false;
+    _messages = _link.messages.listen(_onMessage);
+    return true;
   }
 
   /// Drop the retry loop and the seed deadline, leaving the link subscription
@@ -173,9 +188,24 @@ class WearPairingClient extends ChangeNotifier {
           _retry = null;
           _enter(WearSetupState.phoneSignedOut);
         }
-      case WearPairing.unpairPath:
-        unawaited(forget());
+      case WearPairing.statePath:
+        unawaited(_readState(message.data));
     }
+  }
+
+  /// Act on the pairing the phone published.
+  ///
+  /// Only a *present* item naming somebody else, or nobody, makes this watch
+  /// forget. A watch signed in through the QR path, one whose phone is too old
+  /// to publish and one with no Data Layer at all read nothing here and are
+  /// all left alone — one rule rather than three exemptions.
+  Future<void> _readState(Map<String, dynamic> data) async {
+    if (!AuthService.instance.isLoggedIn) return;
+    final local = await _link.localNode();
+    // Nothing to compare against is not a statement that we were unpaired.
+    if (local == null) return;
+    if (WearPairingState.fromJson(data).nodeId == local.id) return;
+    await forget();
   }
 
   /// Take on the session, then wait for the house data behind it.

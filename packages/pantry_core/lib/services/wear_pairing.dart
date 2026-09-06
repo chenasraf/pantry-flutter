@@ -20,9 +20,34 @@ class WearPairing {
   /// the watch cannot detect on its own.
   static const refusalPath = '/pairing/refusal';
 
-  /// Phone → watch. The watch forgets its session; nothing is revoked, since
-  /// the app password is the phone's own.
-  static const unpairPath = '/pairing/unpair';
+  /// Phone → watch, carrying a [WearPairingState]. Published rather than
+  /// sent: a message reaches nothing on a watch whose app is not running,
+  /// which is a watch almost all of the time.
+  static const statePath = '/pairing/state';
+}
+
+/// Which watch a phone has signed in — the pairing itself, as absolute state.
+///
+/// The phone publishes this rather than sending an unpair, because a watch
+/// away across both a grant and an unpair would learn neither. Absence carries
+/// no information: a watch that reads nothing here was signed in by some other
+/// route, or by a phone too old to publish, and is left alone. So a phone with
+/// nobody signed in publishes an empty pairing rather than deleting the item.
+class WearPairingState {
+  /// The granted node, or null for a phone that has signed nobody in.
+  final String? nodeId;
+
+  const WearPairingState({this.nodeId});
+
+  Map<String, dynamic> toJson() => {'nodeId': nodeId};
+
+  static WearPairingState fromJson(Map<String, dynamic> json) =>
+      WearPairingState(
+        nodeId: switch (json['nodeId']) {
+          final String id when id.isNotEmpty => id,
+          _ => null,
+        },
+      );
 }
 
 /// Why a phone answered a pairing request with nothing to hand over.

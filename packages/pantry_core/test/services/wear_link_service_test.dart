@@ -25,6 +25,17 @@ void main() {
               return [
                 {'id': 'node-1', 'name': 'Pixel', 'nearby': true},
               ];
+            case 'localNode':
+              return {'id': 'me', 'name': 'Galaxy Watch', 'nearby': true};
+            case 'dataItems':
+              return [
+                {
+                  'delivery': 'dataItem',
+                  'path': call.arguments['path'],
+                  'payload': jsonEncode({'nodeId': 'me'}),
+                  'nodeId': 'node-1',
+                },
+              ];
             case 'send':
             case 'stream':
             case 'publish':
@@ -67,6 +78,8 @@ void main() {
     expect(await link.publish('/p', const {}), isFalse);
     expect(await link.clear('/p'), isFalse);
     expect(await link.nodes(), isEmpty);
+    expect(await link.localNode(), isNull);
+    expect(await link.dataItems('/p'), isEmpty);
     expect(calls, isEmpty);
   });
 
@@ -138,6 +151,30 @@ void main() {
     expect(nodes.single.id, 'node-1');
     expect(nodes.single.name, 'Pixel');
     expect(nodes.single.nearby, isTrue);
+  });
+
+  test('the local node is how a device recognises itself', () async {
+    expect((await link.localNode())?.id, 'me');
+  });
+
+  test('a published item is readable without waiting for a change', () async {
+    final items = await link.dataItems('/pairing/state');
+
+    expect(items.single.path, '/pairing/state');
+    expect(items.single.delivery, WearLinkDelivery.dataItem);
+    expect(items.single.data, {'nodeId': 'me'});
+    expect(items.single.nodeId, 'node-1');
+  });
+
+  test('an unreadable published item is nothing, not a throw', () async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(methods, (call) async {
+          if (call.method == 'isAvailable') return true;
+          throw PlatformException(code: 'API_UNAVAILABLE');
+        });
+
+    expect(await link.dataItems('/p'), isEmpty);
+    expect(await link.localNode(), isNull);
   });
 
   test('incoming payloads decode into messages by delivery', () async {

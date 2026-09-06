@@ -42,10 +42,12 @@ void main() {
       ..setMockStreamHandler(events, handler);
     link.debugReset();
     WearLinkService.debugHostSupported = true;
+    host.pairedNode = 'watch-1';
     await host.init();
   });
 
   tearDown(() async {
+    host.pairedNode = null;
     await host.dispose();
     SyncManager.instance.setOnline(true);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -142,6 +144,21 @@ void main() {
     host.nudge(houseId: 2);
 
     expect(host.debugPendingFor('watch-1'), isEmpty);
+  });
+
+  test('an unpaired watch is answered nothing when it wakes', () async {
+    // The failing case the published pairing exists for: the unpair reached
+    // nobody, and the watch comes back reporting a scope as if nothing had
+    // happened.
+    emit(WearMirrorService.scopeReportPath, const {
+      'houseId': 1,
+      'listId': 4,
+      'sessionId': null,
+    }, nodeId: 'watch-2');
+    await pumpEventQueue();
+    host.nudge(houseId: 1);
+
+    expect(host.debugPendingFor('watch-2'), isEmpty);
   });
 
   test('a snapshot that could not be fetched is not sent empty', () async {

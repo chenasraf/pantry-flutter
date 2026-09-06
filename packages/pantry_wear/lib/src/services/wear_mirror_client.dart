@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
 import 'package:pantry_core/services/wear_mirror_service.dart';
 
@@ -114,6 +115,12 @@ class WearMirrorClient extends ChangeNotifier {
 
   void _onMessage(WearLinkMessage message) {
     if (message.delivery != WearLinkDelivery.channel) return;
+    // A push already in flight when the unpair landed — the phone coalesces
+    // for 800 ms — would write the household straight back into the stores
+    // that were just emptied, and so would one arriving after the wearer
+    // signed out here. The seed is unaffected: the credential is adopted
+    // before the mirror is started.
+    if (!AuthService.instance.isLoggedIn) return;
     if (!_mirror.land(message.path, message.data)) return;
     _landedAt = DateTime.now();
     notifyListeners();

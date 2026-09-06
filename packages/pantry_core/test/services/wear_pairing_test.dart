@@ -108,6 +108,28 @@ void main() {
     expect(WearPairing.requestPath, '/pairing/request');
     expect(WearPairing.grantPath, '/pairing/grant');
     expect(WearPairing.refusalPath, '/pairing/refusal');
-    expect(WearPairing.unpairPath, '/pairing/unpair');
+    expect(WearPairing.statePath, '/pairing/state');
+  });
+
+  group('the published pairing', () {
+    test('names the granted watch', () {
+      expect(
+        WearPairingState.fromJson(
+          const WearPairingState(nodeId: 'watch-1').toJson(),
+        ).nodeId,
+        'watch-1',
+      );
+    });
+
+    test('says nobody rather than saying nothing', () {
+      // The distinction the whole design rests on: a phone that has unpaired
+      // publishes this, and it is not the same as no item at all.
+      expect(
+        WearPairingState.fromJson(const WearPairingState().toJson()).nodeId,
+        isNull,
+      );
+      expect(WearPairingState.fromJson(const {'nodeId': ''}).nodeId, isNull);
+      expect(WearPairingState.fromJson(const {}).nodeId, isNull);
+    });
   });
 }

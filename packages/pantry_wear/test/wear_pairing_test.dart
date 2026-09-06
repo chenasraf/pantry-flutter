@@ -37,6 +37,8 @@ void main() {
   var nodes = <Map<String, Object?>>[
     {'id': 'phone-1', 'name': 'Pixel', 'nearby': true},
   ];
+  const localNode = {'id': 'watch-1', 'name': 'Galaxy Watch', 'nearby': true};
+  final published = <Map<String, Object?>>[];
 
   const credentials = NextcloudCredentials(
     serverUrl: 'https://cloud.example',
@@ -44,12 +46,30 @@ void main() {
     appPassword: 'secret',
   );
 
-  void emit(String path, Map<String, dynamic> payload) => handler.emit({
-    'delivery': 'message',
+  void emit(
+    String path,
+    Map<String, dynamic> payload, {
+    String delivery = 'message',
+  }) => handler.emit({
+    'delivery': delivery,
     'path': path,
     'payload': jsonEncode(payload),
     'nodeId': 'phone-1',
   });
+
+  /// What the phone has published about this watch, as the link would report
+  /// it on a cold start.
+  void publishPairing(Map<String, dynamic>? state) => published
+    ..clear()
+    ..addAll([
+      if (state != null)
+        {
+          'delivery': 'dataItem',
+          'path': WearPairing.statePath,
+          'payload': jsonEncode(state),
+          'nodeId': 'phone-1',
+        },
+    ]);
 
   List<String> sentPaths() => [
     for (final call in sent)
@@ -64,6 +84,7 @@ void main() {
   setUp(() async {
     sent.clear();
     storage.clear();
+    published.clear();
     available = true;
     nodes = [
       {'id': 'phone-1', 'name': 'Pixel', 'nearby': true},
@@ -75,6 +96,8 @@ void main() {
         sent.add(call);
         if (call.method == 'isAvailable') return available;
         if (call.method == 'nodes') return nodes;
+        if (call.method == 'localNode') return localNode;
+        if (call.method == 'dataItems') return published;
         return true;
       })
       ..setMockStreamHandler(events, handler)
@@ -274,13 +297,13 @@ void main() {
     });
   });
 
-  group('unpair', () {
+  group('the pairing the phone published', () {
     test('drops the session and the stored credential with it', () async {
       await AuthService.instance.adoptCredentials(credentials);
       await client.start();
       expect(storage, isNotEmpty);
 
-      emit(WearPairing.unpairPath, const {});
+      emit(WearPairing.statePath, const {}, delivery: 'dataItem');
       await settle();
 
       expect(AuthService.instance.isLoggedIn, isFalse);
@@ -291,10 +314,70 @@ void main() {
       await AuthService.instance.adoptCredentials(credentials);
       await client.start();
 
-      emit(WearPairing.unpairPath, const {});
+      emit(WearPairing.statePath, const {}, delivery: 'dataItem');
       await settle();
 
       expect(client.state, WearSetupState.waiting);
+    });
+
+    test('naming another watch is an unpair too', () async {
+      // The phone paired something else. Nothing was ever aimed at this watch,
+      // and the state alone has to be enough.
+      await AuthService.instance.adoptCredentials(credentials);
+      await client.start();
+
+      emit(WearPairing.statePath, const {
+        'nodeId': 'watch-2',
+      }, delivery: 'dataItem');
+      await settle();
+
+      expect(AuthService.instance.isLoggedIn, isFalse);
+    });
+
+    test('naming this watch leaves it alone', () async {
+      await AuthService.instance.adoptCredentials(credentials);
+      await client.start();
+
+      emit(WearPairing.statePath, const {
+        'nodeId': 'watch-1',
+      }, delivery: 'dataItem');
+      await settle();
+
+      expect(AuthService.instance.isLoggedIn, isTrue);
+      expect(client.state, WearSetupState.ready);
+    });
+
+    test('is read on a cold start, not waited for', () async {
+      // The unpair landed while the watch was asleep, so no change is ever
+      // reported — the item is simply there on the next run.
+      await AuthService.instance.adoptCredentials(credentials);
+      publishPairing(const {'nodeId': 'watch-2'});
+
+      await client.readPairing();
+      await settle();
+
+      expect(AuthService.instance.isLoggedIn, isFalse);
+    });
+
+    test('nothing published says nothing about this watch', () async {
+      // A watch signed in by the QR path, or by a phone too old to publish.
+      await AuthService.instance.adoptCredentials(credentials);
+      publishPairing(null);
+
+      await client.readPairing();
+      await settle();
+
+      expect(AuthService.instance.isLoggedIn, isTrue);
+    });
+
+    test('a signed-out watch has nothing to forget', () async {
+      publishPairing(const {});
+
+      await client.readPairing();
+      await settle();
+
+      expect(client.state, WearSetupState.checking);
+      expect(sentPaths(), isEmpty);
     });
   });
 }

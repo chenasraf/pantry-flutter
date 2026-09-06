@@ -85,6 +85,12 @@ class WearPairingHost {
         nodeId: nodeId,
         nodeName: _store.get<String>(_nodeNameKey) ?? '',
       );
+      WearMirrorHost.instance.pairedNode = nodeId;
+      // A pairing granted before the phone published any heals itself here,
+      // and an identical item is a no-op on the wire. Nothing is published
+      // when the store is empty: a phone that has paired nobody has no
+      // statement to make, and "nobody" would be one.
+      await _publish(nodeId);
     }
     _messages = _link.messages.listen(_onMessage);
   }
@@ -168,25 +174,37 @@ class WearPairingHost {
     _store.set(_nodeIdKey, request.nodeId);
     _store.set(_nodeNameKey, request.nodeName);
     _store.set(_pairedAtKey, DateTime.now().millisecondsSinceEpoch);
+    await _publish(request.nodeId);
 
     // The seed is the mirror's first write, not a payload of its own. The
     // watch reports its scope once the grant lands and the mirror answers
     // that, so all this does is make sure the host is listening for it.
+    WearMirrorHost.instance.pairedNode = request.nodeId;
     await WearMirrorHost.instance.init();
     return true;
   }
 
-  /// Tell the paired watch to forget its session, and forget it here.
+  /// Forget the paired watch, and say so where a sleeping watch will find it.
   ///
   /// Nothing is revoked: the app password is the phone's own, and this device
   /// is not the one leaving.
   Future<void> unpair() async {
-    final node = paired.value;
-    if (node != null) {
-      await _link.send(WearPairing.unpairPath, const {}, nodeId: node.nodeId);
-    }
+    // Only a phone with something to withdraw says so. "Nobody" is a
+    // statement, and one made by a phone that paired nobody would forget a
+    // watch signed in by some other route.
+    if (paired.value == null) return;
+    // An empty pairing rather than a deletion — the watch reads absence as
+    // "this phone has never said", which is what leaves a QR-signed-in or
+    // F-Droid watch alone.
+    await _publish(null);
+    WearMirrorHost.instance.pairedNode = null;
     paired.value = null;
     pending.value = null;
     await _store.clear();
   }
+
+  Future<void> _publish(String? nodeId) => _link.publish(
+    WearPairing.statePath,
+    WearPairingState(nodeId: nodeId).toJson(),
+  );
 }
