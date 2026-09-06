@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
+import '../prototype/qr_signin_proto.dart';
 import '../services/wear_host_service.dart';
 import '../wear_shape.dart';
 import 'wear_pairing_client.dart';
@@ -55,11 +56,13 @@ class _WearSetupPageState extends State<WearSetupPage> {
               icon: Icons.link_off,
               title: m.wear.setupNoLink,
               body: m.wear.setupNoLinkBody,
+              qrSignIn: true,
             ),
             WearSetupState.noPhone => _Message(
               icon: Icons.phonelink_off,
               title: m.wear.setupNoPhone,
               body: m.wear.setupNoPhoneBody,
+              qrSignIn: true,
             ),
             WearSetupState.phoneSignedOut => _Message(
               icon: Icons.person_off_outlined,
@@ -147,9 +150,44 @@ class _Waiting extends StatelessWidget {
             style: const TextStyle(fontSize: 10, color: Colors.white38),
           ),
         ],
+        const _QrSignIn(),
       ],
     );
   }
+}
+
+/// PROTOTYPE — the second way in, under the one that needs a phone.
+///
+/// Below rather than beside it because the handoff stays the advertised path.
+/// It also rides the two dead ends: a watch with no Data Layer, or with no
+/// phone connected to it, is precisely the watch this path exists for — those
+/// screens can only say what has gone wrong, and this is the one thing the
+/// wearer can still do about it.
+class _QrSignIn extends StatelessWidget {
+  const _QrSignIn();
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.only(top: 8),
+    child: GestureDetector(
+      onTap: () => Navigator.of(
+        context,
+      ).push(MaterialPageRoute<void>(builder: (_) => const QrSignInProto())),
+      behavior: HitTestBehavior.opaque,
+      child: const Padding(
+        padding: EdgeInsetsDirectional.symmetric(horizontal: 10, vertical: 5),
+        child: Text(
+          'Sign in with QR',
+          style: TextStyle(
+            fontSize: 11,
+            color: Colors.white54,
+            decoration: TextDecoration.underline,
+            decorationColor: Colors.white24,
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 class _Message extends StatelessWidget {
@@ -158,11 +196,16 @@ class _Message extends StatelessWidget {
   final String body;
   final bool spinning;
 
+  /// A dead end the QR path can get the wearer out of, as opposed to one that
+  /// is merely waiting on something.
+  final bool qrSignIn;
+
   const _Message({
     required this.icon,
     required this.title,
     required this.body,
     this.spinning = false,
+    this.qrSignIn = false,
   });
 
   @override
@@ -200,6 +243,7 @@ class _Message extends StatelessWidget {
           textDirection: detectTextDirection(body),
           style: const TextStyle(fontSize: 11, color: Colors.white54),
         ),
+        if (qrSignIn) const _QrSignIn(),
       ],
     );
   }
