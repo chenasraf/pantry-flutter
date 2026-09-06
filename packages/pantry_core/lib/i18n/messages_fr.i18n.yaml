@@ -250,7 +250,7 @@ settings:
     label: "Étiquette"
     quantity: "Quantité"
     price: Prix
-    note: "Note"
+    note: "Description"
     oneTime: "Unique"
     recurring: "Récurrent"
     list: "Liste"

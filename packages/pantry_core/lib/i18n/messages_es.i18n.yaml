@@ -250,7 +250,7 @@ settings:
     label: Etiqueta
     quantity: Cantidad
     price: Precio
-    note: Nota
+    note: Descripción
     oneTime: Único
     recurring: Recurrente
     list: Lista
@@ -1022,7 +1022,7 @@ wear:
   account: Cuenta
   markDone: Marcar como hecho
   markUndone: Marcar como pendiente
-  repeats: Se repite
+  repeats: Recurrencia
   openOnPhone: Abrir en el teléfono
   openedOnPhone: Mira tu teléfono
   openOnPhoneFailed: No se pudo contactar con tu teléfono

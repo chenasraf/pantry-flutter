@@ -1537,9 +1537,9 @@ class ChipNamesSettingsMessages {
   String get price => """Price""";
 
   /// ```dart
-  /// "Note"
+  /// "Description"
   /// ```
-  String get note => """Note""";
+  String get note => """Description""";
 
   /// ```dart
   /// "One-time"
@@ -5255,9 +5255,9 @@ class WearMessages {
   String get done => """Done""";
 
   /// ```dart
-  /// "Skipped"
+  /// "Removed"
   /// ```
-  String get skipped => """Skipped""";
+  String get skipped => """Removed""";
 
   /// ```dart
   /// "Account"
@@ -5275,9 +5275,9 @@ class WearMessages {
   String get markUndone => """Mark undone""";
 
   /// ```dart
-  /// "Repeats"
+  /// "Recurrence"
   /// ```
-  String get repeats => """Repeats""";
+  String get repeats => """Recurrence""";
 
   /// ```dart
   /// "Open on phone"
@@ -6058,7 +6058,7 @@ Password: pantry-rocks""",
   """settings.chipNames.label""": """Label""",
   """settings.chipNames.quantity""": """Quantity""",
   """settings.chipNames.price""": """Price""",
-  """settings.chipNames.note""": """Note""",
+  """settings.chipNames.note""": """Description""",
   """settings.chipNames.oneTime""": """One-time""",
   """settings.chipNames.recurring""": """Recurring""",
   """settings.chipNames.list""": """List""",
@@ -6747,11 +6747,11 @@ Password: pantry-rocks""",
   """wear.changeList""": """Change list""",
   """wear.progression""": """Progression""",
   """wear.done""": """Done""",
-  """wear.skipped""": """Skipped""",
+  """wear.skipped""": """Removed""",
   """wear.account""": """Account""",
   """wear.markDone""": """Mark done""",
   """wear.markUndone""": """Mark undone""",
-  """wear.repeats""": """Repeats""",
+  """wear.repeats""": """Recurrence""",
   """wear.openOnPhone""": """Open on phone""",
   """wear.openedOnPhone""": """Check your phone""",
   """wear.openOnPhoneFailed""": """Couldn't reach your phone""",

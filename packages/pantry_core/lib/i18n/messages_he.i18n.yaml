@@ -250,7 +250,7 @@ settings:
     label: תווית
     quantity: כמות
     price: מחיר
-    note: הערה
+    note: תיאור
     oneTime: חד-פעמי
     recurring: חוזר
     list: רשימה
@@ -1022,7 +1022,7 @@ wear:
   account: חשבון
   markDone: סימון כבוצע
   markUndone: סימון כלא בוצע
-  repeats: חוזר
+  repeats: חזרה
   openOnPhone: פתיחה בטלפון
   openedOnPhone: בדוק את הטלפון שלך
   openOnPhoneFailed: לא הצלחנו להגיע לטלפון שלך

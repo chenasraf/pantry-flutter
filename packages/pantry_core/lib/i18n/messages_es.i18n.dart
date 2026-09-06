@@ -1554,9 +1554,9 @@ class ChipNamesSettingsMessagesEs extends ChipNamesSettingsMessages {
   String get price => """Precio""";
 
   /// ```dart
-  /// "Nota"
+  /// "Descripción"
   /// ```
-  String get note => """Nota""";
+  String get note => """Descripción""";
 
   /// ```dart
   /// "Único"
@@ -5318,9 +5318,9 @@ class WearMessagesEs extends WearMessages {
   String get markUndone => """Marcar como pendiente""";
 
   /// ```dart
-  /// "Se repite"
+  /// "Recurrencia"
   /// ```
-  String get repeats => """Se repite""";
+  String get repeats => """Recurrencia""";
 
   /// ```dart
   /// "Abrir en el teléfono"
@@ -6115,7 +6115,7 @@ Contraseña: pantry-rocks""",
   """settings.chipNames.label""": """Etiqueta""",
   """settings.chipNames.quantity""": """Cantidad""",
   """settings.chipNames.price""": """Precio""",
-  """settings.chipNames.note""": """Nota""",
+  """settings.chipNames.note""": """Descripción""",
   """settings.chipNames.oneTime""": """Único""",
   """settings.chipNames.recurring""": """Recurrente""",
   """settings.chipNames.list""": """Lista""",
@@ -6835,7 +6835,7 @@ Contraseña: pantry-rocks""",
   """wear.account""": """Cuenta""",
   """wear.markDone""": """Marcar como hecho""",
   """wear.markUndone""": """Marcar como pendiente""",
-  """wear.repeats""": """Se repite""",
+  """wear.repeats""": """Recurrencia""",
   """wear.openOnPhone""": """Abrir en el teléfono""",
   """wear.openedOnPhone""": """Mira tu teléfono""",
   """wear.openOnPhoneFailed""": """No se pudo contactar con tu teléfono""",

@@ -250,7 +250,7 @@ settings:
     label: Label
     quantity: Quantity
     price: Price
-    note: Note
+    note: Description
     oneTime: One-time
     recurring: Recurring
     list: List
@@ -1026,11 +1026,11 @@ wear:
   changeList: Change list
   progression: Progression
   done: Done
-  skipped: Skipped
+  skipped: Removed
   account: Account
   markDone: Mark done
   markUndone: Mark undone
-  repeats: Repeats
+  repeats: Recurrence
   openOnPhone: Open on phone
   openedOnPhone: Check your phone
   openOnPhoneFailed: "Couldn't reach your phone"

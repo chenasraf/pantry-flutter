@@ -1542,9 +1542,9 @@ class ChipNamesSettingsMessagesHe extends ChipNamesSettingsMessages {
   String get price => """מחיר""";
 
   /// ```dart
-  /// "הערה"
+  /// "תיאור"
   /// ```
-  String get note => """הערה""";
+  String get note => """תיאור""";
 
   /// ```dart
   /// "חד-פעמי"
@@ -5281,9 +5281,9 @@ class WearMessagesHe extends WearMessages {
   String get markUndone => """סימון כלא בוצע""";
 
   /// ```dart
-  /// "חוזר"
+  /// "חזרה"
   /// ```
-  String get repeats => """חוזר""";
+  String get repeats => """חזרה""";
 
   /// ```dart
   /// "פתיחה בטלפון"
@@ -6056,7 +6056,7 @@ Map<String, String> get messagesHeMap => {
   """settings.chipNames.label""": """תווית""",
   """settings.chipNames.quantity""": """כמות""",
   """settings.chipNames.price""": """מחיר""",
-  """settings.chipNames.note""": """הערה""",
+  """settings.chipNames.note""": """תיאור""",
   """settings.chipNames.oneTime""": """חד-פעמי""",
   """settings.chipNames.recurring""": """חוזר""",
   """settings.chipNames.list""": """רשימה""",
@@ -6738,7 +6738,7 @@ Map<String, String> get messagesHeMap => {
   """wear.account""": """חשבון""",
   """wear.markDone""": """סימון כבוצע""",
   """wear.markUndone""": """סימון כלא בוצע""",
-  """wear.repeats""": """חוזר""",
+  """wear.repeats""": """חזרה""",
   """wear.openOnPhone""": """פתיחה בטלפון""",
   """wear.openedOnPhone""": """בדוק את הטלפון שלך""",
   """wear.openOnPhoneFailed""": """לא הצלחנו להגיע לטלפון שלך""",

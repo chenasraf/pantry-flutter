@@ -339,7 +339,7 @@ settings:
     label: Etikett
     quantity: Mengd
     price: Pris
-    note: Notat
+    note: Skildring
     oneTime: Eingongs
     recurring: Gjentakande
     list: Liste
@@ -1166,7 +1166,7 @@ wear:
   account: Konto
   markDone: Merk som ferdig
   markUndone: Merk som ugjort
-  repeats: Gjentakingar
+  repeats: Tidsplan
   openOnPhone: Opna på telefonen
   openedOnPhone: Sjå på telefonen din
   openOnPhoneFailed: Fekk ikkje kontakt med telefonen

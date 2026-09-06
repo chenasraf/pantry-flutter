@@ -250,7 +250,7 @@ settings:
     label: Etikett
     quantity: Menge
     price: Preis
-    note: Notiz
+    note: Beschreibung
     oneTime: Einmalig
     recurring: Wiederkehrend
     list: Liste

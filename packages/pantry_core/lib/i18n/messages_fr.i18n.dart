@@ -1558,9 +1558,9 @@ class ChipNamesSettingsMessagesFr extends ChipNamesSettingsMessages {
   String get price => """Prix""";
 
   /// ```dart
-  /// "Note"
+  /// "Description"
   /// ```
-  String get note => """Note""";
+  String get note => """Description""";
 
   /// ```dart
   /// "Unique"
@@ -6130,7 +6130,7 @@ Mot de passe : pantry-rocks""",
   """settings.chipNames.label""": """Étiquette""",
   """settings.chipNames.quantity""": """Quantité""",
   """settings.chipNames.price""": """Prix""",
-  """settings.chipNames.note""": """Note""",
+  """settings.chipNames.note""": """Description""",
   """settings.chipNames.oneTime""": """Unique""",
   """settings.chipNames.recurring""": """Récurrent""",
   """settings.chipNames.list""": """Liste""",

@@ -1550,9 +1550,9 @@ class ChipNamesSettingsMessagesNn extends ChipNamesSettingsMessages {
   String get price => """Pris""";
 
   /// ```dart
-  /// "Notat"
+  /// "Skildring"
   /// ```
-  String get note => """Notat""";
+  String get note => """Skildring""";
 
   /// ```dart
   /// "Eingongs"
@@ -5305,9 +5305,9 @@ class WearMessagesNn extends WearMessages {
   String get markUndone => """Merk som ugjort""";
 
   /// ```dart
-  /// "Gjentakingar"
+  /// "Tidsplan"
   /// ```
-  String get repeats => """Gjentakingar""";
+  String get repeats => """Tidsplan""";
 
   /// ```dart
   /// "Opna på telefonen"
@@ -6097,7 +6097,7 @@ Passord: pantry""",
   """settings.chipNames.label""": """Etikett""",
   """settings.chipNames.quantity""": """Mengd""",
   """settings.chipNames.price""": """Pris""",
-  """settings.chipNames.note""": """Notat""",
+  """settings.chipNames.note""": """Skildring""",
   """settings.chipNames.oneTime""": """Eingongs""",
   """settings.chipNames.recurring""": """Gjentakande""",
   """settings.chipNames.list""": """Liste""",
@@ -6807,7 +6807,7 @@ Passord: pantry""",
   """wear.account""": """Konto""",
   """wear.markDone""": """Merk som ferdig""",
   """wear.markUndone""": """Merk som ugjort""",
-  """wear.repeats""": """Gjentakingar""",
+  """wear.repeats""": """Tidsplan""",
   """wear.openOnPhone""": """Opna på telefonen""",
   """wear.openedOnPhone""": """Sjå på telefonen din""",
   """wear.openOnPhoneFailed""": """Fekk ikkje kontakt med telefonen""",
