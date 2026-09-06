@@ -14,9 +14,14 @@ class WearRow extends StatelessWidget {
   final Color tint;
   final String label;
 
-  /// What this row currently answers, drawn at the end. A menu row that opens
-  /// a picker says what it would be opening away from, so the wearer can read
-  /// the setting without descending into it.
+  /// What this row currently answers, drawn under the label. A menu row that
+  /// opens a picker says what it would be opening away from, so the wearer can
+  /// read the setting without descending into it.
+  ///
+  /// It sits under the label rather than beside it because the two were
+  /// competing for one line: on a small screen a long setting name and its
+  /// value both elided, leaving a row that named neither. Stacked, each gets
+  /// the whole width, and the card's fixed extent has room for the second line.
   final String? value;
 
   /// Drawn as a check in place of [value], for a row that is one of a set
@@ -81,6 +86,10 @@ class WearRow extends StatelessWidget {
         ? Colors.white54
         : Colors.white;
 
+    // A row answering with a check or a switch has already said what it is.
+    // The value line belongs to the rows that answer by opening a page.
+    final subtitle = toggled == null && !checkbox && !selected ? value : null;
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -111,23 +120,45 @@ class WearRow extends StatelessWidget {
                 const SizedBox(width: 8),
               ],
               Expanded(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textDirection: detectTextDirection(label),
-                  style: TextStyle(
-                    fontSize: 14,
-                    // Pinned rather than left to the font's own metrics: the
-                    // card has to fit inside a fixed row extent, and an
-                    // unpinned line height is the difference between fitting
-                    // and the striped overflow banner.
-                    height: 1.1,
-                    // Weight is the one thing the scale cannot carry: a scaled
-                    // regular is still a regular.
-                    fontWeight: d < 0.5 ? FontWeight.w600 : FontWeight.w400,
-                    color: ink,
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textDirection: detectTextDirection(label),
+                      style: TextStyle(
+                        fontSize: 14,
+                        // Pinned rather than left to the font's own metrics:
+                        // the card has to fit inside a fixed row extent, and an
+                        // unpinned line height is the difference between
+                        // fitting and the striped overflow banner.
+                        height: 1.1,
+                        // Weight is the one thing the scale cannot carry: a
+                        // scaled regular is still a regular.
+                        fontWeight: d < 0.5 ? FontWeight.w600 : FontWeight.w400,
+                        color: ink,
+                      ),
+                    ),
+                    if (subtitle != null)
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(top: 2),
+                        child: Text(
+                          subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textDirection: detectTextDirection(subtitle),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            height: 1.1,
+                            color: Colors.white54,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               if (toggled != null)
@@ -139,23 +170,7 @@ class WearRow extends StatelessWidget {
                   color: selected ? scheme.primary : Colors.white38,
                 )
               else if (selected)
-                Icon(Icons.check, size: 14, color: scheme.primary)
-              else if (value != null) ...[
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(
-                    value!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: detectTextDirection(value!),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      height: 1.1,
-                      color: Colors.white54,
-                    ),
-                  ),
-                ),
-              ],
+                Icon(Icons.check, size: 14, color: scheme.primary),
             ],
           ),
         ),
