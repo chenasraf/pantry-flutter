@@ -1092,6 +1092,16 @@ wear:
   undoWindow: Undo
   undoOff: "Off"
   undoSeconds(int count): "${_plural(count, one: '1 second', many: '$count seconds')}"
+  qrSignIn: Sign in with QR
+  qrServer: Your server
+  qrServerHint: cloud.example.com
+  qrShowCode: Show code
+  qrUnreachable: "Couldn't reach that server"
+  qrExpired: The code expired
+  qrStartOver: Start over
+  certUntrustedBody(String host): "${host} sent a certificate this watch can't verify. Trust it only if the fingerprint is the one you expect."
+  certTrust: Trust
+  certUnreadable: "Couldn't read that server's certificate"
 
 watch:
   title: Watch

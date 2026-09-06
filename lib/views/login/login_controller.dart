@@ -8,6 +8,7 @@ import 'package:pantry/services/auth_session_macos.dart';
 import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry_core/utils/server_url.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PendingCertPrompt {
@@ -82,15 +83,6 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _normalizeUrl(String url) {
-    url = url.trim();
-    if (url.endsWith('/')) url = url.substring(0, url.length - 1);
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://$url';
-    }
-    return url;
-  }
-
   Future<void> startLogin() async {
     if (_serverUrl.isEmpty) {
       _error = 'Please enter a server URL';
@@ -106,7 +98,7 @@ class LoginController extends ChangeNotifier {
     _pendingCertHostKey = null;
     notifyListeners();
 
-    final normalizedUrl = _normalizeUrl(_serverUrl);
+    final normalizedUrl = normalizeServerUrl(_serverUrl);
     _pendingRetry = startLogin;
     try {
       unawaited(ServerVersionService.instance.fetch(serverUrl: normalizedUrl));
@@ -136,7 +128,7 @@ class LoginController extends ChangeNotifier {
 
       _startPolling(normalizedUrl);
     } catch (e, st) {
-      if (_isHandshakeFailure(e)) {
+      if (CertTrustService.isHandshakeFailure(e)) {
         await _probeCertificate(normalizedUrl, e, st);
         return;
       }
@@ -170,7 +162,7 @@ class LoginController extends ChangeNotifier {
     _pendingCertHostKey = null;
     notifyListeners();
 
-    final normalizedUrl = _normalizeUrl(_serverUrl);
+    final normalizedUrl = normalizeServerUrl(_serverUrl);
     _pendingRetry = () => startAppPasswordLogin(username, appPassword);
     try {
       unawaited(ServerVersionService.instance.fetch(serverUrl: normalizedUrl));
@@ -188,19 +180,12 @@ class LoginController extends ChangeNotifier {
       notifyListeners();
       _onLoginSuccess?.call();
     } catch (e, st) {
-      if (_isHandshakeFailure(e)) {
+      if (CertTrustService.isHandshakeFailure(e)) {
         await _probeCertificate(normalizedUrl, e, st);
         return;
       }
       _failWith(e, st);
     }
-  }
-
-  bool _isHandshakeFailure(Object e) {
-    if (e is HandshakeException) return true;
-    final msg = e.toString();
-    return msg.contains('CERTIFICATE_VERIFY_FAILED') ||
-        msg.contains('HandshakeException');
   }
 
   Future<void> _probeCertificate(

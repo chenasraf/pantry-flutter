@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
-import '../prototype/qr_signin_proto.dart';
 import '../services/wear_host_service.dart';
 import '../wear_shape.dart';
+import 'qr_sign_in_page.dart';
 import 'wear_pairing_client.dart';
 
 /// What the watch shows before it has a session.
@@ -156,7 +156,7 @@ class _Waiting extends StatelessWidget {
   }
 }
 
-/// PROTOTYPE — the second way in, under the one that needs a phone.
+/// The second way in, under the one that needs a phone.
 ///
 /// Below rather than beside it because the handoff stays the advertised path.
 /// It also rides the two dead ends: a watch with no Data Layer, or with no
@@ -172,13 +172,18 @@ class _QrSignIn extends StatelessWidget {
     child: GestureDetector(
       onTap: () => Navigator.of(
         context,
-      ).push(MaterialPageRoute<void>(builder: (_) => const QrSignInProto())),
+      ).push(MaterialPageRoute<void>(builder: (_) => const QrSignInPage())),
       behavior: HitTestBehavior.opaque,
-      child: const Padding(
-        padding: EdgeInsetsDirectional.symmetric(horizontal: 10, vertical: 5),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: 10,
+          vertical: 5,
+        ),
         child: Text(
-          'Sign in with QR',
-          style: TextStyle(
+          m.wear.qrSignIn,
+          textAlign: TextAlign.center,
+          textDirection: detectTextDirection(m.wear.qrSignIn),
+          style: const TextStyle(
             fontSize: 11,
             color: Colors.white54,
             decoration: TextDecoration.underline,

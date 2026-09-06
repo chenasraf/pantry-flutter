@@ -1084,6 +1084,16 @@ wear:
   undoWindow: ביטול
   undoOff: כבוי
   undoSeconds(int count): "${_plural(count, one: 'שנייה אחת', many: '$count שניות')}"
+  qrSignIn: "כניסה עם QR"
+  qrServer: השרת שלך
+  qrServerHint: cloud.example.com
+  qrShowCode: הצגת הקוד
+  qrUnreachable: לא הצלחנו להגיע לשרת הזה
+  qrExpired: הקוד פג
+  qrStartOver: להתחיל מחדש
+  certUntrustedBody(String host): "‏${host} שלח אישור שהשעון הזה לא יכול לאמת. תנו בו אמון רק אם טביעת האצבע היא זו שציפיתם לה."
+  certTrust: לתת אמון
+  certUnreadable: לא הצלחנו לקרוא את האישור של השרת
 
 watch:
   title: שעון

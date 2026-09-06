@@ -5651,6 +5651,57 @@ class WearMessagesDe extends WearMessages {
   /// ```
   String undoSeconds(int count) =>
       """${_plural(count, one: '1 Sekunde', many: '$count Sekunden')}""";
+
+  /// ```dart
+  /// "Mit Code anmelden"
+  /// ```
+  String get qrSignIn => """Mit Code anmelden""";
+
+  /// ```dart
+  /// "Dein Server"
+  /// ```
+  String get qrServer => """Dein Server""";
+
+  /// ```dart
+  /// "cloud.example.com"
+  /// ```
+  String get qrServerHint => """cloud.example.com""";
+
+  /// ```dart
+  /// "Code zeigen"
+  /// ```
+  String get qrShowCode => """Code zeigen""";
+
+  /// ```dart
+  /// "Server nicht erreichbar"
+  /// ```
+  String get qrUnreachable => """Server nicht erreichbar""";
+
+  /// ```dart
+  /// "Der Code ist abgelaufen"
+  /// ```
+  String get qrExpired => """Der Code ist abgelaufen""";
+
+  /// ```dart
+  /// "Neu beginnen"
+  /// ```
+  String get qrStartOver => """Neu beginnen""";
+
+  /// ```dart
+  /// "${host} sendet ein Zertifikat, das diese Uhr nicht prüfen kann. Vertraue ihm nur, wenn der Fingerabdruck der erwartete ist."
+  /// ```
+  String certUntrustedBody(String host) =>
+      """${host} sendet ein Zertifikat, das diese Uhr nicht prüfen kann. Vertraue ihm nur, wenn der Fingerabdruck der erwartete ist.""";
+
+  /// ```dart
+  /// "Vertrauen"
+  /// ```
+  String get certTrust => """Vertrauen""";
+
+  /// ```dart
+  /// "Zertifikat des Servers nicht lesbar"
+  /// ```
+  String get certUnreadable => """Zertifikat des Servers nicht lesbar""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6834,6 +6885,15 @@ Passwort: pantry-rocks""",
   """wear.crownTurnsPages""": """Seiten wechseln""",
   """wear.undoWindow""": """Rückgängig""",
   """wear.undoOff""": """Aus""",
+  """wear.qrSignIn""": """Mit Code anmelden""",
+  """wear.qrServer""": """Dein Server""",
+  """wear.qrServerHint""": """cloud.example.com""",
+  """wear.qrShowCode""": """Code zeigen""",
+  """wear.qrUnreachable""": """Server nicht erreichbar""",
+  """wear.qrExpired""": """Der Code ist abgelaufen""",
+  """wear.qrStartOver""": """Neu beginnen""",
+  """wear.certTrust""": """Vertrauen""",
+  """wear.certUnreadable""": """Zertifikat des Servers nicht lesbar""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

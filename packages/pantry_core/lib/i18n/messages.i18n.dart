@@ -5591,6 +5591,57 @@ class WearMessages {
   /// ```
   String undoSeconds(int count) =>
       """${_plural(count, one: '1 second', many: '$count seconds')}""";
+
+  /// ```dart
+  /// "Sign in with a code"
+  /// ```
+  String get qrSignIn => """Sign in with a code""";
+
+  /// ```dart
+  /// "Your server"
+  /// ```
+  String get qrServer => """Your server""";
+
+  /// ```dart
+  /// "cloud.example.com"
+  /// ```
+  String get qrServerHint => """cloud.example.com""";
+
+  /// ```dart
+  /// "Show code"
+  /// ```
+  String get qrShowCode => """Show code""";
+
+  /// ```dart
+  /// "Couldn't reach that server"
+  /// ```
+  String get qrUnreachable => """Couldn't reach that server""";
+
+  /// ```dart
+  /// "The code expired"
+  /// ```
+  String get qrExpired => """The code expired""";
+
+  /// ```dart
+  /// "Start over"
+  /// ```
+  String get qrStartOver => """Start over""";
+
+  /// ```dart
+  /// "${host} sent a certificate this watch can't verify. Trust it only if the fingerprint is the one you expect."
+  /// ```
+  String certUntrustedBody(String host) =>
+      """${host} sent a certificate this watch can't verify. Trust it only if the fingerprint is the one you expect.""";
+
+  /// ```dart
+  /// "Trust"
+  /// ```
+  String get certTrust => """Trust""";
+
+  /// ```dart
+  /// "Couldn't read that server's certificate"
+  /// ```
+  String get certUnreadable => """Couldn't read that server's certificate""";
 }
 
 class WatchMessages {
@@ -6712,6 +6763,15 @@ Password: pantry-rocks""",
   """wear.crownTurnsPages""": """Turn pages""",
   """wear.undoWindow""": """Undo""",
   """wear.undoOff""": """Off""",
+  """wear.qrSignIn""": """Sign in with a code""",
+  """wear.qrServer""": """Your server""",
+  """wear.qrServerHint""": """cloud.example.com""",
+  """wear.qrShowCode""": """Show code""",
+  """wear.qrUnreachable""": """Couldn't reach that server""",
+  """wear.qrExpired""": """The code expired""",
+  """wear.qrStartOver""": """Start over""",
+  """wear.certTrust""": """Trust""",
+  """wear.certUnreadable""": """Couldn't read that server's certificate""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

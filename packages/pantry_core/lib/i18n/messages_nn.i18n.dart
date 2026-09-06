@@ -5622,6 +5622,57 @@ class WearMessagesNn extends WearMessages {
   /// ```
   String undoSeconds(int count) =>
       """${_plural(count, one: '1 sekund', many: '$count sekund')}""";
+
+  /// ```dart
+  /// "Logg inn med kode"
+  /// ```
+  String get qrSignIn => """Logg inn med kode""";
+
+  /// ```dart
+  /// "Tenaren din"
+  /// ```
+  String get qrServer => """Tenaren din""";
+
+  /// ```dart
+  /// "cloud.example.com"
+  /// ```
+  String get qrServerHint => """cloud.example.com""";
+
+  /// ```dart
+  /// "Vis kode"
+  /// ```
+  String get qrShowCode => """Vis kode""";
+
+  /// ```dart
+  /// "Fekk ikkje kontakt med tenaren"
+  /// ```
+  String get qrUnreachable => """Fekk ikkje kontakt med tenaren""";
+
+  /// ```dart
+  /// "Koden gjekk ut"
+  /// ```
+  String get qrExpired => """Koden gjekk ut""";
+
+  /// ```dart
+  /// "Byrj på nytt"
+  /// ```
+  String get qrStartOver => """Byrj på nytt""";
+
+  /// ```dart
+  /// "${host} sender eit sertifikat denne klokka ikkje kan stadfeste. Stol på det berre om fingeravtrykket er det du ventar."
+  /// ```
+  String certUntrustedBody(String host) =>
+      """${host} sender eit sertifikat denne klokka ikkje kan stadfeste. Stol på det berre om fingeravtrykket er det du ventar.""";
+
+  /// ```dart
+  /// "Stol på det"
+  /// ```
+  String get certTrust => """Stol på det""";
+
+  /// ```dart
+  /// "Fekk ikkje lese sertifikatet til tenaren"
+  /// ```
+  String get certUnreadable => """Fekk ikkje lese sertifikatet til tenaren""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -6768,6 +6819,15 @@ Passord: pantry""",
   """wear.crownTurnsPages""": """Byt side""",
   """wear.undoWindow""": """Angre""",
   """wear.undoOff""": """Av""",
+  """wear.qrSignIn""": """Logg inn med kode""",
+  """wear.qrServer""": """Tenaren din""",
+  """wear.qrServerHint""": """cloud.example.com""",
+  """wear.qrShowCode""": """Vis kode""",
+  """wear.qrUnreachable""": """Fekk ikkje kontakt med tenaren""",
+  """wear.qrExpired""": """Koden gjekk ut""",
+  """wear.qrStartOver""": """Byrj på nytt""",
+  """wear.certTrust""": """Stol på det""",
+  """wear.certUnreadable""": """Fekk ikkje lese sertifikatet til tenaren""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

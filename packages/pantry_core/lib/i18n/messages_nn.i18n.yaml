@@ -1228,6 +1228,16 @@ wear:
   undoWindow: Angre
   undoOff: Av
   undoSeconds(int count): "${_plural(count, one: '1 sekund', many: '$count sekund')}"
+  qrSignIn: Logg inn med QR
+  qrServer: Tenaren din
+  qrServerHint: cloud.example.com
+  qrShowCode: Vis kode
+  qrUnreachable: Fekk ikkje kontakt med tenaren
+  qrExpired: Koden gjekk ut
+  qrStartOver: Byrj på nytt
+  certUntrustedBody(String host): "${host} sender eit sertifikat denne klokka ikkje kan stadfeste. Stol på det berre om fingeravtrykket er det du ventar."
+  certTrust: Stol på det
+  certUnreadable: Fekk ikkje lese sertifikatet til tenaren
 
 watch:
   title: Klokke

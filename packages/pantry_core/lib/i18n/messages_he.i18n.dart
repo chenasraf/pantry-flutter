@@ -5594,6 +5594,57 @@ class WearMessagesHe extends WearMessages {
   /// ```
   String undoSeconds(int count) =>
       """${_plural(count, one: 'שנייה אחת', many: '$count שניות')}""";
+
+  /// ```dart
+  /// "כניסה עם קוד"
+  /// ```
+  String get qrSignIn => """כניסה עם קוד""";
+
+  /// ```dart
+  /// "השרת שלך"
+  /// ```
+  String get qrServer => """השרת שלך""";
+
+  /// ```dart
+  /// "cloud.example.com"
+  /// ```
+  String get qrServerHint => """cloud.example.com""";
+
+  /// ```dart
+  /// "הצגת הקוד"
+  /// ```
+  String get qrShowCode => """הצגת הקוד""";
+
+  /// ```dart
+  /// "לא הצלחנו להגיע לשרת הזה"
+  /// ```
+  String get qrUnreachable => """לא הצלחנו להגיע לשרת הזה""";
+
+  /// ```dart
+  /// "הקוד פג"
+  /// ```
+  String get qrExpired => """הקוד פג""";
+
+  /// ```dart
+  /// "להתחיל מחדש"
+  /// ```
+  String get qrStartOver => """להתחיל מחדש""";
+
+  /// ```dart
+  /// "‏${host} שלח אישור שהשעון הזה לא יכול לאמת. תנו בו אמון רק אם טביעת האצבע היא זו שציפיתם לה."
+  /// ```
+  String certUntrustedBody(String host) =>
+      """‏${host} שלח אישור שהשעון הזה לא יכול לאמת. תנו בו אמון רק אם טביעת האצבע היא זו שציפיתם לה.""";
+
+  /// ```dart
+  /// "לתת אמון"
+  /// ```
+  String get certTrust => """לתת אמון""";
+
+  /// ```dart
+  /// "לא הצלחנו לקרוא את האישור של השרת"
+  /// ```
+  String get certUnreadable => """לא הצלחנו לקרוא את האישור של השרת""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6695,6 +6746,15 @@ Map<String, String> get messagesHeMap => {
   """wear.crownTurnsPages""": """מעבר בין דפים""",
   """wear.undoWindow""": """ביטול""",
   """wear.undoOff""": """כבוי""",
+  """wear.qrSignIn""": """כניסה עם קוד""",
+  """wear.qrServer""": """השרת שלך""",
+  """wear.qrServerHint""": """cloud.example.com""",
+  """wear.qrShowCode""": """הצגת הקוד""",
+  """wear.qrUnreachable""": """לא הצלחנו להגיע לשרת הזה""",
+  """wear.qrExpired""": """הקוד פג""",
+  """wear.qrStartOver""": """להתחיל מחדש""",
+  """wear.certTrust""": """לתת אמון""",
+  """wear.certUnreadable""": """לא הצלחנו לקרוא את האישור של השרת""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

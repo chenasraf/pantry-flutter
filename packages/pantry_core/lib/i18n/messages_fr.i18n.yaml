@@ -1084,6 +1084,16 @@ wear:
   undoWindow: Annuler
   undoOff: Désactivé
   undoSeconds(int count): "${_plural(count, one: '1 seconde', many: '$count secondes')}"
+  qrSignIn: Se connecter avec un QR
+  qrServer: Votre serveur
+  qrServerHint: cloud.example.com
+  qrShowCode: Afficher le code
+  qrUnreachable: Serveur injoignable
+  qrExpired: Le code a expiré
+  qrStartOver: Recommencer
+  certUntrustedBody(String host): "${host} envoie un certificat que cette montre ne peut pas vérifier. Ne l'acceptez que si l'empreinte est celle attendue."
+  certTrust: Faire confiance
+  certUnreadable: Impossible de lire le certificat du serveur
 
 watch:
   title: Montre

@@ -120,6 +120,20 @@ class WearPairingClient extends ChangeNotifier {
     _retry ??= Timer.periodic(_retryInterval, (_) => unawaited(_tick()));
   }
 
+  /// Take on a session the watch signed itself into, with no phone involved.
+  ///
+  /// There is no grant here and so nothing to seed from: scope falls to the
+  /// lowest-`sortOrder` list by the same rule that covers every other invalid
+  /// scope, and the pins were accepted on this device rather than transferred.
+  /// The stores are loaded here because a signed-out watch boots without them,
+  /// and a snapshot or a queued write landing in an unloaded store replaces
+  /// whatever the last session left in it.
+  Future<void> adoptLocalSignIn() async {
+    _stopAsking();
+    await loadWearStores();
+    _enter(WearSetupState.ready);
+  }
+
   /// Find out whether the phone still counts this watch as its own.
   ///
   /// Started from `main()` and never awaited: an unpaired watch draws its

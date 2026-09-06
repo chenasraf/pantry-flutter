@@ -5635,6 +5635,58 @@ class WearMessagesEs extends WearMessages {
   /// ```
   String undoSeconds(int count) =>
       """${_plural(count, one: '1 segundo', many: '$count segundos')}""";
+
+  /// ```dart
+  /// "Iniciar sesión con un código"
+  /// ```
+  String get qrSignIn => """Iniciar sesión con un código""";
+
+  /// ```dart
+  /// "Tu servidor"
+  /// ```
+  String get qrServer => """Tu servidor""";
+
+  /// ```dart
+  /// "cloud.example.com"
+  /// ```
+  String get qrServerHint => """cloud.example.com""";
+
+  /// ```dart
+  /// "Mostrar código"
+  /// ```
+  String get qrShowCode => """Mostrar código""";
+
+  /// ```dart
+  /// "No se pudo contactar con ese servidor"
+  /// ```
+  String get qrUnreachable => """No se pudo contactar con ese servidor""";
+
+  /// ```dart
+  /// "El código ha caducado"
+  /// ```
+  String get qrExpired => """El código ha caducado""";
+
+  /// ```dart
+  /// "Empezar de nuevo"
+  /// ```
+  String get qrStartOver => """Empezar de nuevo""";
+
+  /// ```dart
+  /// "${host} envía un certificado que este reloj no puede verificar. Confía en él solo si la huella es la que esperas."
+  /// ```
+  String certUntrustedBody(String host) =>
+      """${host} envía un certificado que este reloj no puede verificar. Confía en él solo si la huella es la que esperas.""";
+
+  /// ```dart
+  /// "Confiar"
+  /// ```
+  String get certTrust => """Confiar""";
+
+  /// ```dart
+  /// "No se pudo leer el certificado del servidor"
+  /// ```
+  String get certUnreadable =>
+      """No se pudo leer el certificado del servidor""";
 }
 
 class WatchMessagesEs extends WatchMessages {
@@ -6796,6 +6848,15 @@ Contraseña: pantry-rocks""",
   """wear.crownTurnsPages""": """Cambiar de página""",
   """wear.undoWindow""": """Deshacer""",
   """wear.undoOff""": """Desactivado""",
+  """wear.qrSignIn""": """Iniciar sesión con un código""",
+  """wear.qrServer""": """Tu servidor""",
+  """wear.qrServerHint""": """cloud.example.com""",
+  """wear.qrShowCode""": """Mostrar código""",
+  """wear.qrUnreachable""": """No se pudo contactar con ese servidor""",
+  """wear.qrExpired""": """El código ha caducado""",
+  """wear.qrStartOver""": """Empezar de nuevo""",
+  """wear.certTrust""": """Confiar""",
+  """wear.certUnreadable""": """No se pudo leer el certificado del servidor""",
   """watch.title""": """Reloj""",
   """watch.requestWarning""":
       """Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.""",

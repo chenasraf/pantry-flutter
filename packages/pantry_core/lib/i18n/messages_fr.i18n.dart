@@ -5643,6 +5643,58 @@ class WearMessagesFr extends WearMessages {
   /// ```
   String undoSeconds(int count) =>
       """${_plural(count, one: '1 seconde', many: '$count secondes')}""";
+
+  /// ```dart
+  /// "Se connecter avec un code"
+  /// ```
+  String get qrSignIn => """Se connecter avec un code""";
+
+  /// ```dart
+  /// "Votre serveur"
+  /// ```
+  String get qrServer => """Votre serveur""";
+
+  /// ```dart
+  /// "cloud.example.com"
+  /// ```
+  String get qrServerHint => """cloud.example.com""";
+
+  /// ```dart
+  /// "Afficher le code"
+  /// ```
+  String get qrShowCode => """Afficher le code""";
+
+  /// ```dart
+  /// "Serveur injoignable"
+  /// ```
+  String get qrUnreachable => """Serveur injoignable""";
+
+  /// ```dart
+  /// "Le code a expiré"
+  /// ```
+  String get qrExpired => """Le code a expiré""";
+
+  /// ```dart
+  /// "Recommencer"
+  /// ```
+  String get qrStartOver => """Recommencer""";
+
+  /// ```dart
+  /// "${host} envoie un certificat que cette montre ne peut pas vérifier. Ne l'acceptez que si l'empreinte est celle attendue."
+  /// ```
+  String certUntrustedBody(String host) =>
+      """${host} envoie un certificat que cette montre ne peut pas vérifier. Ne l'acceptez que si l'empreinte est celle attendue.""";
+
+  /// ```dart
+  /// "Faire confiance"
+  /// ```
+  String get certTrust => """Faire confiance""";
+
+  /// ```dart
+  /// "Impossible de lire le certificat du serveur"
+  /// ```
+  String get certUnreadable =>
+      """Impossible de lire le certificat du serveur""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6822,6 +6874,15 @@ Mot de passe : pantry-rocks""",
   """wear.crownTurnsPages""": """Changer de page""",
   """wear.undoWindow""": """Annuler""",
   """wear.undoOff""": """Désactivé""",
+  """wear.qrSignIn""": """Se connecter avec un code""",
+  """wear.qrServer""": """Votre serveur""",
+  """wear.qrServerHint""": """cloud.example.com""",
+  """wear.qrShowCode""": """Afficher le code""",
+  """wear.qrUnreachable""": """Serveur injoignable""",
+  """wear.qrExpired""": """Le code a expiré""",
+  """wear.qrStartOver""": """Recommencer""",
+  """wear.certTrust""": """Faire confiance""",
+  """wear.certUnreadable""": """Impossible de lire le certificat du serveur""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

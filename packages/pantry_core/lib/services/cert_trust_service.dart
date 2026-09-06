@@ -88,6 +88,18 @@ class CertTrustService {
         .join(':');
   }
 
+  /// Whether [e] is the connection failing on the server's certificate rather
+  /// than on anything else. Both surfaces that accept a typed address have to
+  /// tell that apart from an unreachable host, since only one of them is worth
+  /// offering a fingerprint for — and the message is what survives when an
+  /// intervening layer wraps the exception.
+  static bool isHandshakeFailure(Object e) {
+    if (e is HandshakeException) return true;
+    final message = e.toString();
+    return message.contains('CERTIFICATE_VERIFY_FAILED') ||
+        message.contains('HandshakeException');
+  }
+
   /// Key used in [_pinned]. Default ports are dropped so `host` and
   /// `host:443` resolve to the same pin set.
   static String hostKey(String host, int port, {required bool isHttps}) {
