@@ -207,7 +207,18 @@ class SnapFocusListState extends State<SnapFocusList> {
     }
     // A detent from a resting position moves one row; a detent mid-flight
     // continues from where the last one was heading.
-    final next = (nearest + delta).clamp(0, _snapTargets.length - 1);
+    //
+    // Resting somewhere that is not a row is its own case: at the top of a
+    // list that opens on a header, the nearest row is already *ahead* of the
+    // wearer, so stepping toward it has to land on it rather than step past it
+    // — which is how the first row got skipped on the way down.
+    final resting = (_snapTargets[nearest] - from).abs() < 1;
+    final ahead = delta > 0
+        ? _snapTargets[nearest] > from
+        : _snapTargets[nearest] < from;
+    final next = !resting && ahead
+        ? nearest
+        : (nearest + delta).clamp(0, _snapTargets.length - 1);
     final target = _snapTargets[next].clamp(
       position.minScrollExtent,
       position.maxScrollExtent,
@@ -318,6 +329,7 @@ class SnapFocusListState extends State<SnapFocusList> {
               physics: widget.snapEnabled
                   ? _SnapPhysics(
                       targets: () => _snapTargets,
+                      reach: widget.itemExtent,
                       parent: const AlwaysScrollableScrollPhysics(
                         parent: ClampingScrollPhysics(),
                       ),
@@ -370,6 +382,21 @@ class SnapFocusListState extends State<SnapFocusList> {
 /// Settles on row centres only. The snap table is built from snappable
 /// elements, so a header is not something the list declines to land on — it
 /// was never in the table.
+///
+/// Which leaves the question of everything that is *not* a row. A note's prose,
+/// the account page's identity and its sync line are all content a wearer has
+/// to be able to stop and read, and a snap that always hauls them to the
+/// nearest row makes exactly that impossible. Two rules keep such content
+/// reachable without loosening the grid anywhere it matters:
+///
+/// - **The ends of the scrollable are always resting places.** On a list whose
+///   elements are all landable these already coincide with the first and last
+///   row, so this changes nothing there — but where a header sits above the
+///   first row, it is the only thing that lets the wearer stay on it.
+/// - **The snap only reaches [reach].** A list of landable rows never settles
+///   further than half a row from one, so it always snaps; a stretch of
+///   unlandable content is longer than that, and in the middle of one the list
+///   is left where it came to rest.
 class _SnapPhysics extends ScrollPhysics {
   /// Read live rather than captured. A `ScrollPosition` re-runs its ballistic
   /// whenever the content's dimensions change — expanding the Done section is
@@ -379,28 +406,39 @@ class _SnapPhysics extends ScrollPhysics {
   /// cannot be reached at all.
   final List<double> Function() targets;
 
-  const _SnapPhysics({required this.targets, super.parent});
+  /// How far the snap pulls from, in pixels — one row.
+  final double reach;
+
+  const _SnapPhysics({
+    required this.targets,
+    required this.reach,
+    super.parent,
+  });
 
   @override
-  _SnapPhysics applyTo(ScrollPhysics? ancestor) =>
-      _SnapPhysics(targets: targets, parent: buildParent(ancestor));
+  _SnapPhysics applyTo(ScrollPhysics? ancestor) => _SnapPhysics(
+    targets: targets,
+    reach: reach,
+    parent: buildParent(ancestor),
+  );
 
   double _nearest(double value, ScrollMetrics position) {
     var best = double.nan;
     var bestDistance = double.infinity;
+    void consider(double candidate) {
+      final d = (candidate - value).abs();
+      if (d >= bestDistance) return;
+      bestDistance = d;
+      best = candidate;
+    }
+
     for (final t in targets()) {
       // A row whose centre lies past the end of the scrollable can never be
       // reached, so snapping at it would fight the clamp forever.
-      final reachable = t.clamp(
-        position.minScrollExtent,
-        position.maxScrollExtent,
-      );
-      final d = (reachable - value).abs();
-      if (d < bestDistance) {
-        bestDistance = d;
-        best = reachable;
-      }
+      consider(t.clamp(position.minScrollExtent, position.maxScrollExtent));
     }
+    consider(position.minScrollExtent);
+    consider(position.maxScrollExtent);
     return best;
   }
 
@@ -423,8 +461,10 @@ class _SnapPhysics extends ScrollPhysics {
     settle = settle.clamp(position.minScrollExtent, position.maxScrollExtent);
 
     final target = _nearest(settle, position);
-    if (target.isNaN ||
-        (target - position.pixels).abs() < toleranceFor(position).distance) {
+    // Out of reach means the wearer came to rest inside something that is not
+    // a row, and is entitled to stay there.
+    if (target.isNaN || (target - settle).abs() > reach) return natural;
+    if ((target - position.pixels).abs() < toleranceFor(position).distance) {
       return null;
     }
     return ScrollSpringSimulation(

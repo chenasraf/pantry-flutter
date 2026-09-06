@@ -189,7 +189,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
           _checklists(),
           PhotosPage(active: _isActive(1)),
           NotesPage(active: _isActive(2), onNotice: _showNotice),
-          AccountPage(active: _isActive(3), tuning: _skeletonTuning),
+          AccountPage(active: _isActive(3)),
         ]
       : [
           _StubPage(title: m.wear.progression, icon: EntityIcons.store),
@@ -206,7 +206,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
             trailing: Icons.undo,
             onTap: _controller.unskipItem,
           ),
-          AccountPage(active: _isActive(4), tuning: _skeletonTuning),
+          AccountPage(active: _isActive(4)),
         ];
 
   bool _isActive(int index) => _page == index && !_routeOpen;

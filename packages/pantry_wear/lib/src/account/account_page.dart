@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
@@ -9,7 +8,6 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../prototype/degraded_proto.dart';
-import '../prototype/proto_tuning.dart';
 import '../scope/wear_scope.dart';
 import '../services/wear_mirror_client.dart';
 import '../wear_shape.dart';
@@ -34,11 +32,7 @@ class AccountPage extends StatefulWidget {
   /// Only the page being looked at may steer from the crown.
   final bool active;
 
-  /// PROTOTYPE — lets the degraded rows be worn without a real revocation,
-  /// alongside the rail treatments this same control cycles.
-  final ProtoTuning? tuning;
-
-  const AccountPage({super.key, required this.active, this.tuning});
+  const AccountPage({super.key, required this.active});
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -94,10 +88,7 @@ class _AccountPageState extends State<AccountPage> {
     _scheduleLanding();
   }
 
-  bool get _degraded =>
-      AuthService.instance.isUnauthorized.value ||
-      // PROTOTYPE — dies with the degraded-state build.
-      (kDebugMode && widget.tuning?.degraded != null);
+  bool get _degraded => AuthService.instance.isUnauthorized.value;
 
   /// The degraded rail line is a signpost, and a signpost has to arrive at what
   /// it points at. A wearer who followed one lands on *Set up again* rather
@@ -191,6 +182,7 @@ class _AccountPageState extends State<AccountPage> {
     }
 
     header(_identityExtent, const _Identity());
+    header(_syncExtent, const _SyncStatus());
 
     // Beside the identity it concerns, and above everything the wearer might
     // otherwise have come here to do.
@@ -212,19 +204,6 @@ class _AccountPageState extends State<AccountPage> {
       onTap: () => unawaited(_push(const HouseSwitcherPage())),
     );
 
-    // A readout, not a control: the queue is the wearer's own and the mirror's
-    // arrival is not, so one of these can be acted on and neither opens
-    // anything.
-    row(
-      icon: SyncManager.instance.pendingCount.value > 0
-          ? Icons.cloud_upload_outlined
-          : Icons.cloud_done_outlined,
-      label: SyncManager.instance.pendingCount.value > 0
-          ? m.wear.queued(SyncManager.instance.pendingCount.value)
-          : m.wear.allSaved,
-      value: _syncedAgo,
-    );
-
     row(
       icon: Icons.tune,
       label: m.wear.settings,
@@ -238,33 +217,7 @@ class _AccountPageState extends State<AccountPage> {
       onTap: () => unawaited(_push(const SignOutPage())),
     );
 
-    if (kDebugMode && widget.tuning != null) {
-      header(
-        WearMetrics.headerExtent,
-        Center(
-          child: ListenableBuilder(
-            listenable: widget.tuning!,
-            builder: (context, _) => ProtoDegradedSwitch(
-              value: widget.tuning!.degraded,
-              onChanged: (v) =>
-                  widget.tuning!.update(() => widget.tuning!.degraded = v),
-            ),
-          ),
-        ),
-      );
-    }
-
     return elements;
-  }
-
-  /// When the phone last pushed a snapshot — and nothing at all when there is
-  /// no link, because a watch with none has no snapshot to be late. Saying it
-  /// had never received one would report a fault where the design has none: a
-  /// standalone or F-Droid watch reads everything for itself and is exactly as
-  /// correct.
-  String? _syncedAgo() {
-    final captured = WearMirrorClient.instance.capturedAt;
-    return captured == null ? null : m.wear.syncedAgo(_ago(captured));
   }
 
   String? get _houseName {
@@ -279,6 +232,9 @@ class _AccountPageState extends State<AccountPage> {
   /// Two lines and the space above them — more than a group header costs and
   /// less than a row, because identity is read once and never aimed at.
   static const double _identityExtent = 62;
+
+  /// One line, under the identity it reports on.
+  static const double _syncExtent = 20;
 
   @override
   Widget build(BuildContext context) {
@@ -338,6 +294,63 @@ class _Identity extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Whether the wearer's own work is safe, and how lately the phone pushed.
+///
+/// A label rather than a card, and under the identity rather than among the
+/// rows: it answers a question instead of offering an action, and a tile among
+/// tiles reads as one more thing to tap. Colour carries the state, so the
+/// answer arrives before the words do.
+///
+/// The mirror half is absent when nothing has ever landed. A watch with no link
+/// has no snapshot to be late, and "never synced" would name a fault the design
+/// does not have — a standalone or F-Droid watch reads everything for itself
+/// and is exactly as correct.
+class _SyncStatus extends StatelessWidget {
+  const _SyncStatus();
+
+  static const _safe = Color(0xFF7FB77E);
+  static const _waiting = Color(0xFFE0C07A);
+
+  @override
+  Widget build(BuildContext context) {
+    final queued = SyncManager.instance.pendingCount.value;
+    final captured = WearMirrorClient.instance.capturedAt;
+    return Center(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Text(
+              queued > 0 ? m.wear.queued(queued) : m.wear.allSaved,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11,
+                height: 1.1,
+                fontWeight: FontWeight.w600,
+                color: queued > 0 ? _waiting : _safe,
+              ),
+            ),
+          ),
+          if (captured != null)
+            Flexible(
+              child: Text(
+                ' · ${m.wear.syncedAgo(_ago(captured))}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 11,
+                  height: 1.1,
+                  color: Colors.white38,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

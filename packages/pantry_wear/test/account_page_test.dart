@@ -148,11 +148,31 @@ void main() {
     expect(list.elements.first.isHeader, isTrue);
     expect(
       list.elements.where((e) => e.snappable).length,
-      4,
+      3,
       reason:
-          'household, sync, settings and the way out — and nothing else '
-          'while the credential still works',
+          'household, settings and the way out — and nothing else while the '
+          'credential still works. Sync is a readout, not a row.',
     );
+  });
+
+  testWidgets('the top of the page is somewhere the wearer can stay', (
+    tester,
+  ) async {
+    await pump(tester);
+    final scroll = tester
+        .widget<SnapFocusList>(find.byType(SnapFocusList))
+        .controller;
+
+    // Identity and the sync line sit above the first landable row, so without
+    // the ends of the scrollable being resting places the snap hauls the
+    // wearer straight past them onto the household row and they can never be
+    // read.
+    await tester.drag(find.byType(SnapFocusList), const Offset(0, 60));
+    await tester.pumpAndSettle();
+
+    expect(scroll.offset, 0);
+    expect(find.text(m.wear.signedInAs('ada')), findsOneWidget);
+    expect(find.text(m.wear.allSaved), findsOneWidget);
   });
 
   testWidgets('the household row names the household', (tester) async {
@@ -242,15 +262,34 @@ void main() {
       expect(find.textContaining(m.wear.agoJustNow), findsNothing);
     });
 
-    testWidgets('opens nothing', (tester) async {
+    testWidgets('is a label under the identity, not a row among the rows', (
+      tester,
+    ) async {
       await pump(tester);
 
       final list = tester.widget<SnapFocusList>(find.byType(SnapFocusList));
       expect(
-        list.elements.where((e) => e.snappable).length,
-        4,
-        reason: 'the readout is centred to be read, and is still a row',
+        list.elements[1].snappable,
+        isFalse,
+        reason:
+            'it answers a question instead of offering an action, and a tile '
+            'among tiles reads as one more thing to tap',
       );
+      expect(list.elements[1].isHeader, isTrue);
+    });
+
+    testWidgets('carries its state in colour, not only in words', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      // The mirror half beside it is the page's ordinary quiet grey; the state
+      // half is not, so the answer arrives before the words do.
+      final safe = tester.widget<Text>(find.text(m.wear.allSaved));
+      expect(safe.style!.color, isNotNull);
+      expect(safe.style!.color, isNot(Colors.white38));
+      expect(safe.style!.color, isNot(Colors.white54));
+      expect(safe.style!.fontWeight, FontWeight.w600);
     });
   });
 
@@ -286,12 +325,16 @@ void main() {
 
       // The rail line spent the group label to buy a signpost, so the signpost
       // has to arrive at what it points at rather than one scroll above it.
-      // Identity, then the note explaining the state, then the button: the
-      // wearer reads why on the way to the thing that fixes it.
+      // Identity, the sync line, then the note explaining the state, then the
+      // button: the wearer reads why on the way to the thing that fixes it.
       final list = tester.widget<SnapFocusList>(find.byType(SnapFocusList));
       final geometry = list.geometry!.value;
 
-      expect(geometry.centredIndex, 2);
+      expect(
+        geometry.centredIndex,
+        list.elements.indexWhere((e) => e.snappable),
+        reason: 'while degraded, the first landable row is Set up again',
+      );
       expect(
         geometry.centredDistance,
         lessThan(list.itemExtent / 2),
