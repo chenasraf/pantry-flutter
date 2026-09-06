@@ -231,6 +231,68 @@ void main() {
     expect(find.text(m.wear.refreshInterval), findsOneWidget);
   });
 
+  /// A trip's five pages, opened on the done page — the one that used to read
+  /// nothing, being the only page in either pager that was not a focus list.
+  Future<void> launchDonePage(WidgetTester tester) async {
+    tester.view.physicalSize = const Size(450, 450);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final controller = ChecklistsController.seeded(
+      houseId: 1,
+      stores: [testStore(id: 1, name: 'Corner shop')],
+      categories: [testCategory(id: 1, name: 'Dairy')],
+      session: testSession(activeStoreId: 1),
+      items: [testItem(id: 9, name: 'Eggs', categoryId: 1)],
+      done: [
+        testItem(id: 1, name: 'Bread', categoryId: 1),
+        testItem(id: 2, name: 'Milk', categoryId: 1),
+        testItem(id: 3, name: 'Apples', categoryId: 1),
+      ],
+    );
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      MaterialApp(home: WearShell(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+    // A session opens on its checklist; done is the next page along.
+    await tester.fling(
+      find.byType(PageView).first,
+      const Offset(-300, 0),
+      1000,
+    );
+    await tester.pumpAndSettle();
+    expect(page(tester), 2);
+  }
+
+  testWidgets('the done page reads the crown like every other page', (
+    tester,
+  ) async {
+    await launchDonePage(tester);
+
+    expect(RotaryService.instance.readerCount, 1);
+    final before = tester.getTopLeft(find.text('Bread')).dy;
+    await turn(tester, clockwise: true);
+
+    expect(tester.getTopLeft(find.text('Bread')).dy, lessThan(before));
+    expect(page(tester), 2);
+  });
+
+  testWidgets('and goes quiet when the crown turns pages', (tester) async {
+    await PrefsService.instance.setWearCrownTurnsPages(true);
+    await launchDonePage(tester);
+
+    // One reader, and it is the shell: the page holds no subscription to be
+    // scrolled by the same detent. Its stillness cannot be asserted directly —
+    // a `PageView` builds only the page on screen, so the turn that would
+    // prove it also takes the page out of the tree — which is exactly why the
+    // rule is carried by the count.
+    expect(RotaryService.instance.readerCount, 1);
+    await turn(tester, clockwise: true);
+
+    expect(page(tester), 3);
+    expect(RotaryService.instance.readerCount, 1);
+  });
+
   testWidgets('a platform that will not answer leaves the row standing', (
     tester,
   ) async {

@@ -20,9 +20,9 @@ import '../services/rotary_service.dart';
 import '../services/wear_deep_link.dart';
 import '../shopping/progression_page.dart';
 import '../shopping/start_trip_page.dart';
+import '../shopping/trip_collection_page.dart';
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
-import '../widgets/undo_window.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
@@ -308,17 +308,21 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
             rotary: _steersList(0),
           ),
           _checklists(),
-          _CollectionPage(
+          TripCollectionPage(
+            controller: _controller,
             items: _controller.done,
             empty: m.wear.nothingToCheckOff,
-            trailing: Icons.undo,
+            markedIcon: Icons.check_circle,
             onTap: _controller.uncheckItem,
+            rotary: _steersList(2),
           ),
-          _CollectionPage(
+          TripCollectionPage(
+            controller: _controller,
             items: _controller.removed,
             empty: m.wear.nothingRemoved,
-            trailing: Icons.undo,
+            markedIcon: Icons.remove_shopping_cart,
             onTap: _controller.unskipItem,
+            rotary: _steersList(3),
           ),
           AccountPage(rotary: _steersList(4)),
         ];
@@ -562,137 +566,6 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// The done and skipped pages a session gets in place of photos and notes.
-///
-/// A tap here sends an item back to the list, and it runs the wearer's undo
-/// window like every other reversible tap: the row reads as returned at once,
-/// the stroke drains down its edge, and a second tap inside the window takes
-/// it back. These rows are tapped where they lie rather than at a centre line,
-/// so the window is the only protection a mis-aim has.
-class _CollectionPage extends StatefulWidget {
-  final List<ListItem> items;
-  final String empty;
-  final IconData trailing;
-  final void Function(ListItem item) onTap;
-
-  const _CollectionPage({
-    required this.items,
-    required this.empty,
-    required this.trailing,
-    required this.onTap,
-  });
-
-  @override
-  State<_CollectionPage> createState() => _CollectionPageState();
-}
-
-class _CollectionPageState extends State<_CollectionPage>
-    with TickerProviderStateMixin {
-  late final UndoWindows<int> _pending;
-
-  @override
-  void initState() {
-    super.initState();
-    _pending = UndoWindows(
-      vsync: this,
-      onChanged: () {
-        if (mounted) setState(() {});
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _pending.dispose();
-    super.dispose();
-  }
-
-  /// An item on its way back is still on this page until it is written, so the
-  /// row it left behind cannot be reused for another item in the meantime.
-  void _tap(ListItem item) =>
-      _pending.fire(item.id, target: true, commit: (_) => widget.onTap(item));
-
-  @override
-  Widget build(BuildContext context) {
-    final items = widget.items;
-    final empty = widget.empty;
-    final scheme = Theme.of(context).colorScheme;
-    if (items.isEmpty) {
-      return Center(
-        child: Text(
-          empty,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12, color: Colors.white38),
-        ),
-      );
-    }
-    return ListView.builder(
-      padding: EdgeInsetsDirectional.only(
-        top: MediaQuery.sizeOf(context).height * 0.24,
-        bottom: 30,
-        start: 10,
-        end: 10,
-      ),
-      itemCount: items.length,
-      itemBuilder: (context, i) {
-        final item = items[i];
-        // A row on its way back reads as though it already is: the line
-        // through the name lifts and the undo mark takes the accent, which is
-        // the same "the write is what waits, not the feedback" the cards use.
-        final returning = _pending.targetOf(item.id) ?? false;
-        return Padding(
-          padding: const EdgeInsetsDirectional.only(bottom: 5),
-          child: GestureDetector(
-            onTap: () => _tap(item),
-            behavior: HitTestBehavior.opaque,
-            child: UndoStroke(
-              window: _pending.controllerOf(item.id),
-              color: scheme.primary,
-              radius: 12,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF17171A),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.symmetric(
-                    horizontal: 10,
-                    vertical: 7,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          item.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textDirection: detectTextDirection(item.name),
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: returning ? Colors.white : Colors.white54,
-                            decoration: returning
-                                ? null
-                                : TextDecoration.lineThrough,
-                          ),
-                        ),
-                      ),
-                      Icon(
-                        widget.trailing,
-                        size: 14,
-                        color: returning ? scheme.primary : Colors.white38,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }
