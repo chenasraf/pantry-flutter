@@ -181,8 +181,8 @@ class _AccountPageState extends State<AccountPage> {
       );
     }
 
-    header(_identityExtent, const _Identity());
-    header(_syncExtent, const _SyncStatus());
+    header(_identityExtent, _Identity(credentials: _credentials));
+    header(_syncExtent, _SyncStatus(queued: _queued, captured: _capturedAt));
 
     // Beside the identity it concerns, and above everything the wearer might
     // otherwise have come here to do.
@@ -220,6 +220,18 @@ class _AccountPageState extends State<AccountPage> {
     return elements;
   }
 
+  /// Read here and handed down, never reached for inside the widget that draws
+  /// them. A header that took none of them could be `const`, and a `const`
+  /// widget is one canonical instance — so the parent's rebuild would find an
+  /// identical child, skip its subtree, and the page would answer with whatever
+  /// was true when it opened. The listeners above are what make these change;
+  /// passing them is what makes that visible.
+  NextcloudCredentials? get _credentials => AuthService.instance.credentials;
+
+  int get _queued => SyncManager.instance.pendingCount.value;
+
+  DateTime? get _capturedAt => WearMirrorClient.instance.capturedAt;
+
   String? get _houseName {
     final id = WearScope.instance.houseId;
     if (id == null) return null;
@@ -254,12 +266,13 @@ class _AccountPageState extends State<AccountPage> {
 /// credential is the phone's — so this is the one place the watch says out
 /// loud whose household it is showing.
 class _Identity extends StatelessWidget {
-  const _Identity();
+  final NextcloudCredentials? credentials;
+
+  const _Identity({required this.credentials});
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final credentials = AuthService.instance.credentials;
     final name = credentials?.loginName ?? '';
     final server = _host(credentials?.serverUrl);
     return Column(
@@ -310,15 +323,17 @@ class _Identity extends StatelessWidget {
 /// does not have — a standalone or F-Droid watch reads everything for itself
 /// and is exactly as correct.
 class _SyncStatus extends StatelessWidget {
-  const _SyncStatus();
+  final int queued;
+  final DateTime? captured;
+
+  const _SyncStatus({required this.queued, required this.captured});
 
   static const _safe = Color(0xFF7FB77E);
   static const _waiting = Color(0xFFE0C07A);
 
   @override
   Widget build(BuildContext context) {
-    final queued = SyncManager.instance.pendingCount.value;
-    final captured = WearMirrorClient.instance.capturedAt;
+    final captured = this.captured;
     return Center(
       child: Row(
         mainAxisSize: MainAxisSize.min,

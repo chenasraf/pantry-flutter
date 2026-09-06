@@ -262,6 +262,22 @@ void main() {
       expect(find.textContaining(m.wear.agoJustNow), findsNothing);
     });
 
+    testWidgets('follows the queue while the page is being looked at', (
+      tester,
+    ) async {
+      await pump(tester);
+      expect(find.text(m.wear.allSaved), findsOneWidget);
+
+      SyncManager.instance.pendingCount.value = 2;
+      await tester.pump();
+
+      // The page is the one place the watch answers "is my work safe", and a
+      // check-off made on the page behind it is exactly when the answer
+      // changes.
+      expect(find.text(m.wear.queued(2)), findsOneWidget);
+      expect(find.text(m.wear.allSaved), findsNothing);
+    });
+
     testWidgets('is a label under the identity, not a row among the rows', (
       tester,
     ) async {
