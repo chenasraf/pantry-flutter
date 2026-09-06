@@ -114,6 +114,36 @@ platform :android do
     save_image_hashes if changed
   end
 
+  # Mirrors the wear flavor's versionCode offset in android/app/build.gradle.kts:
+  # a version code has to be unique across form factors, and Play resolves the
+  # release notes for an upload by the code of the artifact being uploaded.
+  WEAR_VERSION_CODE_OFFSET = 20_000
+
+  desc "Upload the Wear OS AAB to Google Play's wear track"
+  lane :deploy_wear do |options|
+    version_code = version_info[:build].to_i + WEAR_VERSION_CODE_OFFSET
+    changelog_dir = File.expand_path("metadata/android-wear/en-US/changelogs", __dir__)
+    changelog_file = File.join(changelog_dir, "#{version_code}.txt")
+    unless File.exist?(changelog_file)
+      FileUtils.mkdir_p(changelog_dir)
+      File.write(changelog_file, play_changelog)
+    end
+
+    # The listing is shared and belongs to the phone lane: Play has no
+    # per-form-factor description, and the wear screenshots it does keep
+    # separate live under metadata/android, which `deploy` already uploads.
+    upload_to_play_store(
+      aab: File.expand_path("../build/app/outputs/bundle/wearRelease/app-wear-release.aab", __dir__),
+      track: "wear:#{options[:track] || "internal"}",
+      release_status: options[:status] || "draft",
+      version_name: version_name,
+      metadata_path: File.expand_path("metadata/android-wear", __dir__),
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
   desc "Sync metadata and screenshots only (no AAB upload)"
   lane :metadata do
     changed = images_changed?

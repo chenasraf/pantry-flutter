@@ -1,14 +1,37 @@
-# Use bash with pipefail so a failing command in a pipe (e.g. a labeled
-# sub-make below) still fails the recipe instead of being masked by awk.
 SHELL := bash
+
+# .SHELLFLAGS arrived in GNU Make 3.82 and the system make on macOS is 3.81,
+# where it is parsed and never read — so pipefail is carried by the recipe that
+# needs it (`labeled` below) rather than by the shell flags. Without it a
+# labeled step's exit status is perl's, which always succeeds, and a deploy
+# aggregate runs every platform after a failing one and exits 0.
 .SHELLFLAGS := -o pipefail -c
 
-# Run a sub-make target with every stdout/stderr line prefixed by [<target>],
-# so the back-to-back per-platform logs in deploy-* are easy to scan. The job
-# runs under a pseudo-TTY (script) so fastlane/flutter keep their colors, and
-# perl adds the prefix while stripping the pty's trailing CR and the "^D" EOF
-# marker script prints on its first line. Usage: $(call labeled,<target>,<args>)
-labeled = script -q /dev/null $(MAKE) $(1) $(2) </dev/null 2>&1 | perl -pe 'BEGIN{$$|=1} s/\r$$//; s/^\^D\x08*// if $$.==1; s/^/[$(1)] /'
+# Where a deploy aggregate's combined log lands. Truncated at the top of each
+# run, gitignored, and written without the escape codes that make it readable
+# on a terminal.
+RELEASE_LOG := release.log
+strip_ansi = perl -pe 's/\e\[[0-9;]*[a-zA-Z]//g'
+
+# Run a sub-make target with every stdout/stderr line prefixed by [<label>], so
+# the back-to-back per-platform logs in deploy-* are easy to scan. The job runs
+# under a pseudo-TTY (script) so fastlane/flutter keep their colors, and perl
+# adds the prefix while stripping the pty's trailing CR and the "^D" EOF marker
+# script prints on its first line.
+# Usage: $(call labeled,<label>,<target>,<args>)
+labeled = set -o pipefail; script -q /dev/null $(MAKE) $(2) $(3) </dev/null 2>&1 | perl -pe 'BEGIN{$$|=1} s/\r$$//; s/^\^D\x08*// if $$.==1; s/^/[$(1)] /' | tee >($(strip_ansi) >> $(RELEASE_LOG))
+
+# Platforms a deploy aggregate may omit: `make deploy-production SKIP=macos,wear`.
+# The tokens are the release workflow's `targets` vocabulary. A skipped platform
+# still prints its line, so the log says what did not run.
+comma := ,
+empty :=
+space := $(empty) $(empty)
+SKIP_PLATFORMS := android wear ios macos
+SKIP_LIST := $(subst $(comma),$(space),$(SKIP))
+
+# Usage: $(call deploy_step,<platform>,<target>,<args>)
+deploy_step = $(if $(filter $(1),$(SKIP_LIST)),@echo "[$(1)] skipped" | tee -a $(RELEASE_LOG),$(call labeled,$(1),$(2),$(3)))
 
 # Version from pubspec.yaml (without build number)
 VERSION := $(shell grep '^version:' pubspec.yaml | sed 's/version: *//;s/+.*//')
@@ -101,12 +124,14 @@ help:
 	@echo "  Deploying:"
 	@echo "    android-deploy      Build AAB and upload to Google Play (TRACK=internal|beta|production, STATUS=draft|completed)"
 	@echo "    android-promote     Promote release between tracks (FROM=internal, TO=production, STATUS=draft|completed)"
+	@echo "    wear-deploy         Build the Wear OS AAB and upload to Google Play's wear:<TRACK>"
 	@echo "    ios-deploy          Build IPA and upload (DEST=testflight|appstore, default: testflight)"
 	@echo "    ios-submit          Submit the existing App Store build for review (no upload)"
 	@echo "    macos-deploy        Build PKG and upload (DEST=testflight|appstore, default: testflight)"
 	@echo "    macos-submit        Submit the existing Mac App Store build for review (no upload)"
 	@echo "    deploy-production   Build and deploy to production (Google Play + App Store)"
 	@echo "    deploy-beta         Build and deploy to beta (Google Play beta + TestFlight)"
+	@echo "                        Both accept SKIP=android,wear,ios,macos and log to release.log"
 
 # Setup
 .PHONY: get
@@ -208,10 +233,11 @@ android-install: android-build-apk
 
 # Wear OS. A separate entrypoint (`lib/main_wear.dart`) drives the watch UI from
 # packages/pantry_wear; the flavor gives it its own merged manifest, minSdk and
-# versionCode. The build number offset must match the gradle flavor's.
-# The +20000 versionCode offset that keeps a watch from resolving to the phone
-# APK is applied by the wear flavor in android/app/build.gradle.kts, not here —
-# it has to hold for any wear build, including one that never goes through make.
+# versionCode. The +20000 versionCode offset that keeps the watch's code unique
+# across form factors is applied by the wear flavor in
+# android/app/build.gradle.kts, not here — it has to hold for any wear build,
+# including one that never goes through make. The fastlane lane mirrors it to
+# name the changelog file Play will look the upload up by.
 WEAR_TARGET := lib/main_wear.dart
 WEAR_FLAGS := --flavor wear --target $(WEAR_TARGET)
 
@@ -219,9 +245,12 @@ WEAR_FLAGS := --flavor wear --target $(WEAR_TARGET)
 wear-run:
 	flutter run $(WEAR_FLAGS)
 
+# Plain, where the bundle below is obfuscated: a sideloaded APK's only
+# debugging channel is a stack trace a user pastes, and the split debug symbols
+# that would decode an obfuscated one have nowhere to be published to.
 .PHONY: wear-build-apk
 wear-build-apk:
-	flutter build apk --release $(WEAR_FLAGS) --obfuscate --split-debug-info=build/debug-info-wear
+	flutter build apk --release $(WEAR_FLAGS)
 
 .PHONY: wear-build-aab
 wear-build-aab:
@@ -487,20 +516,49 @@ macos-deploy: macos-build-pkg macos-upload
 macos-submit:
 	bundle exec fastlane mac submit
 
+# The watch has tracks of its own — the lane prefixes `wear:` — and releases
+# independently of the mobile track, so TRACK here names the wear track.
+.PHONY: wear-upload
+wear-upload:
+	@echo "$(or $(TRACK),beta)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TRACK '$(TRACK)'. Must be: internal, alpha, beta, production"; exit 1)
+	@echo "$(or $(STATUS),draft)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
+	@echo "Track: wear:$(or $(TRACK),internal) | Status: $(or $(STATUS),draft)"
+	bundle exec fastlane deploy_wear track:$(or $(TRACK),internal) status:$(or $(STATUS),draft)
+
+.PHONY: wear-deploy
+wear-deploy: wear-build-aab wear-upload
+
 .PHONY: release-all
 release-all: android-release-apk android-release-aab
 
+# A SKIP typo fails by silently *doing* the platform it was meant to omit,
+# which is why it is validated the way TRACK, STATUS and DEST are.
+.PHONY: check-skip
+check-skip:
+	@for t in $(SKIP_LIST); do \
+		case " $(SKIP_PLATFORMS) " in \
+			*" $$t "*) ;; \
+			*) echo "Error: Invalid SKIP platform '$$t'. Must be one of: $(SKIP_PLATFORMS)"; exit 1;; \
+		esac; \
+	done
+
+.PHONY: release-log-reset
+release-log-reset:
+	@: > $(RELEASE_LOG)
+
 .PHONY: deploy-production
-deploy-production:
-	$(call labeled,android-deploy,TRACK=production STATUS=completed)
-	$(call labeled,ios-deploy,DEST=appstore)
-	$(call labeled,macos-deploy,DEST=appstore)
+deploy-production: check-skip release-log-reset
+	$(call deploy_step,android,android-deploy,TRACK=production STATUS=completed)
+	$(call deploy_step,wear,wear-deploy,TRACK=production STATUS=completed)
+	$(call deploy_step,ios,ios-deploy,DEST=appstore)
+	$(call deploy_step,macos,macos-deploy,DEST=appstore)
 
 .PHONY: deploy-beta
-deploy-beta:
-	$(call labeled,android-deploy,TRACK=beta STATUS=completed)
-	$(call labeled,ios-deploy,DEST=testflight)
-	$(call labeled,macos-deploy,DEST=testflight)
+deploy-beta: check-skip release-log-reset
+	$(call deploy_step,android,android-deploy,TRACK=beta STATUS=completed)
+	$(call deploy_step,wear,wear-deploy,TRACK=beta STATUS=completed)
+	$(call deploy_step,ios,ios-deploy,DEST=testflight)
+	$(call deploy_step,macos,macos-deploy,DEST=testflight)
 
 # CocoaPods
 .PHONY: pods

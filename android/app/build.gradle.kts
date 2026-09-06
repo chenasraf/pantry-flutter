@@ -80,9 +80,9 @@ android {
             // rather than estimated: -PwearImpeller=false.
             manifestPlaceholders["wearEnableImpeller"] =
                 ((project.findProperty("wearImpeller") as String?)?.toBoolean() != false).toString()
-            // Play serves the highest compatible versionCode, and a watch also
-            // matches the phone APK. The offset keeps the wear build ahead so
-            // the watch never resolves to the phone binary. Mirrors
+            // A watch build is delivered by its own Play track rather than by
+            // version code, but a version code must still be unique across the
+            // form factors sharing one package name. Mirrors
             // MACOS_BUILD_NUMBER in the Makefile.
             versionCode = flutter.versionCode + 20000
         }
