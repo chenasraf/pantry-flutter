@@ -189,6 +189,55 @@ void main() {
     });
   });
 
+  group('quantity is drawn once, and the toggle reaches it', () {
+    threeWithQuantities() => [
+      testItem(id: 1, name: 'Milk', quantity: '2 L'),
+      testItem(id: 2, name: 'Bread', quantity: '500 g'),
+      testItem(id: 3, name: 'Eggs', quantity: '12'),
+    ];
+
+    testWidgets('every row draws its quantity exactly once', (tester) async {
+      await pumpRows(
+        tester,
+        ChecklistsController.seeded(
+          houseId: 1,
+          list: testList(),
+          lists: [testList()],
+          items: threeWithQuantities(),
+        ),
+      );
+
+      for (final quantity in ['2 L', '500 g', '12']) {
+        expect(find.text(quantity), findsOneWidget);
+      }
+    });
+
+    testWidgets('turning it off reaches the title line, not just a chip', (
+      tester,
+    ) async {
+      // The toggle used to govern a meta chip while the title line drew its
+      // own copy unconditionally, so switching quantity off left it on screen
+      // on every row that was not the centred one.
+      await PrefsService.instance.setHiddenItemChips({
+        ItemChipKind.quantity.key,
+      });
+
+      await pumpRows(
+        tester,
+        ChecklistsController.seeded(
+          houseId: 1,
+          list: testList(),
+          lists: [testList()],
+          items: threeWithQuantities(),
+        ),
+      );
+
+      for (final quantity in ['2 L', '500 g', '12']) {
+        expect(find.text(quantity), findsNothing);
+      }
+    });
+  });
+
   group('the picker', () {
     Future<void> pumpPicker(WidgetTester tester) async {
       tester.view.physicalSize = const Size(450, 450);

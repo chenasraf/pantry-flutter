@@ -125,7 +125,14 @@ class ItemCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (item.quantity != null && expansion < 0.5)
+                // The only place a quantity is drawn. It rides the title line
+                // rather than the meta line because it is the one detail that
+                // qualifies the name itself — and drawing it in both put it on
+                // screen twice on every row between the centre and the edge.
+                if (item.quantity != null &&
+                    PrefsService.instance.isItemChipVisible(
+                      ItemChipKind.quantity.key,
+                    ))
                   Text(
                     item.quantity!,
                     style: const TextStyle(fontSize: 11, color: Colors.white54),
@@ -184,8 +191,9 @@ class ItemCard extends StatelessWidget {
 ///
 /// Chips are filtered by `hiddenItemChips`, which the wearer owns on this
 /// device — and by what the surface already says: whichever chip names the
-/// current grouping repeats its own header, and the list is only named when
-/// the rail is not already naming it.
+/// current grouping repeats its own header, the list is only named when the
+/// rail is not already naming it, and quantity is absent because the title
+/// line draws it on every row rather than only on this one.
 ///
 /// They draw in the enum's own order, so what survives a clip is predictable
 /// and the picker reads in the order the row does. Nothing caps the count:
@@ -248,16 +256,6 @@ class _MetaLine extends StatelessWidget {
           textColor: neutral,
           label: '${item.labelIds.length}',
           leading: const Icon(EntityIcons.label, size: 9, color: neutral),
-        ),
-      );
-    }
-    if (item.quantity != null) {
-      chip(
-        ItemChipKind.quantity,
-        EntityChip(
-          density: ChipDensity.dense,
-          textColor: neutral,
-          label: item.quantity!,
         ),
       );
     }
