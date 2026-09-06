@@ -56,6 +56,15 @@ class FocusGeometry {
   /// Index of the element nearest the centre line, or -1 before first layout.
   final int centredIndex;
 
+  /// How far [centredIndex] actually is from the centre line, in pixels.
+  ///
+  /// "Nearest snappable" is not the same as "on the line": a header cannot be
+  /// landed on, so a tall one at the top of a list leaves the first row a whole
+  /// row below the centre while still being the nearest thing to it. A page
+  /// that acts on the centred row has to know the difference, or a tap lands on
+  /// a row the wearer can plainly see is not the one in charge.
+  final double centredDistance;
+
   /// The group the focused card is in, in that group's own livery.
   final String? stickyGroup;
   final IconData? stickyIcon;
@@ -63,6 +72,7 @@ class FocusGeometry {
 
   const FocusGeometry({
     this.centredIndex = -1,
+    this.centredDistance = 0,
     this.stickyGroup,
     this.stickyIcon,
     this.stickyColor,
@@ -256,12 +266,14 @@ class SnapFocusListState extends State<SnapFocusList> {
 
     final next = FocusGeometry(
       centredIndex: best,
+      centredDistance: best >= 0 ? bestDistance : 0,
       stickyGroup: focused?.groupLabel,
       stickyIcon: focused?.groupIcon,
       stickyColor: focused?.groupColor,
     );
     final current = notifier.value;
     if (current.centredIndex == next.centredIndex &&
+        current.centredDistance == next.centredDistance &&
         current.stickyGroup == next.stickyGroup) {
       return;
     }

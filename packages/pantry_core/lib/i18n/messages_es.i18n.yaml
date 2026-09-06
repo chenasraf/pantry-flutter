@@ -1042,11 +1042,29 @@ wear:
   setupPhoneSignedOutBody: Tu teléfono aún no ha iniciado sesión en Pantry.
   setupSyncing: Trayendo tus listas
   setupSyncingBody: Casi está.
-  signOutConfirm: Toca otra vez para cerrar sesión
   signOutPending(int count): "$count sin enviar"
   signOutWait: Enviar primero
   signOutSending: Enviando…
   signOutAnyway: Cerrar sesión igualmente
+  signOutTitle: "¿Cerrar sesión?"
+  signOutBody: Este reloj olvidará tu hogar. Tu teléfono seguirá con la sesión iniciada.
+  household: Hogar
+  chooseHousehold: Elegir hogar
+  noHouses: Aún no hay hogares
+  nowShowing(String name): "Mostrando ${name}"
+  settings: Ajustes
+  refreshInterval: Actualizar
+  refreshOff: Desactivado
+  refreshSeconds(int count): "$count segundos"
+  refreshMinutes(int count): "$count minutos"
+  allSaved: Todo guardado
+  syncedAgo(String when): "sincronizado ${when}"
+  agoJustNow: ahora mismo
+  agoMinutes(int count): "hace $count min"
+  agoHours(int count): "hace $count h"
+  agoDays(int count): "hace $count d"
+  setUpAgain: Configurar de nuevo
+  sessionExpiredShort: Tu teléfono debe volver a iniciar sesión en este reloj.
 
 watch:
   title: Reloj

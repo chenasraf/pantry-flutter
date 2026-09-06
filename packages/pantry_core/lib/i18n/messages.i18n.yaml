@@ -1050,11 +1050,29 @@ wear:
   setupPhoneSignedOutBody: Your phone isn't signed in to Pantry yet.
   setupSyncing: Getting your lists
   setupSyncingBody: Almost there.
-  signOutConfirm: Tap again to sign out
   signOutPending(int count): "$count not sent yet"
   signOutWait: Send first
   signOutSending: Sending…
   signOutAnyway: Sign out anyway
+  signOutTitle: Sign out?
+  signOutBody: This watch forgets your household. Your phone stays signed in.
+  household: Household
+  chooseHousehold: Choose household
+  noHouses: No households yet
+  nowShowing(String name): "Now showing ${name}"
+  settings: Settings
+  refreshInterval: Refresh
+  refreshOff: "Off"
+  refreshSeconds(int count): "$count seconds"
+  refreshMinutes(int count): "$count minutes"
+  allSaved: All saved
+  syncedAgo(String when): "synced ${when}"
+  agoJustNow: just now
+  agoMinutes(int count): "${count}m ago"
+  agoHours(int count): "${count}h ago"
+  agoDays(int count): "${count}d ago"
+  setUpAgain: Set up again
+  sessionExpiredShort: Your phone needs to sign this watch in again.
 
 watch:
   title: Watch

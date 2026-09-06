@@ -10,6 +10,7 @@ import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../account/account_page.dart';
+import '../account/set_up_again_page.dart';
 import '../checklists/checklists_controller.dart';
 import '../checklists/checklists_page.dart';
 import '../checklists/list_switcher_page.dart';
@@ -188,7 +189,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
           _checklists(),
           PhotosPage(active: _isActive(1)),
           NotesPage(active: _isActive(2), onNotice: _showNotice),
-          AccountPage(tuning: _skeletonTuning),
+          AccountPage(active: _isActive(3), tuning: _skeletonTuning),
         ]
       : [
           _StubPage(title: m.wear.progression, icon: EntityIcons.store),
@@ -205,7 +206,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
             trailing: Icons.undo,
             onTap: _controller.unskipItem,
           ),
-          AccountPage(tuning: _skeletonTuning),
+          AccountPage(active: _isActive(4), tuning: _skeletonTuning),
         ];
 
   bool _isActive(int index) => _page == index && !_routeOpen;
@@ -306,13 +307,13 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     if (mounted) setState(() => _routeOpen = false);
   }
 
-  /// PROTOTYPE — where *Set up again* lands. A pushed route, so it inherits
-  /// the same crown hand-off and back strip every other pushed route needs.
+  /// Where the degraded rail line lands. A pushed route, so it inherits the
+  /// same crown hand-off and back strip every other pushed route needs.
   Future<void> _openSetUpAgain() async {
     setState(() => _routeOpen = true);
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const ProtoSetupAgainPage()),
-    );
+    await Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const SetUpAgainPage()));
     if (mounted) setState(() => _routeOpen = false);
   }
 

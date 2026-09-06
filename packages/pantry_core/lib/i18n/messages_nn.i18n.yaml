@@ -1186,11 +1186,29 @@ wear:
   setupPhoneSignedOutBody: Telefonen din er ikkje logga inn i Pantry enno.
   setupSyncing: Hentar listene dine
   setupSyncingBody: Straks ferdig.
-  signOutConfirm: Trykk igjen for å logge ut
   signOutPending(int count): "$count ikkje sendt enno"
   signOutWait: Send fyrst
   signOutSending: Sender …
   signOutAnyway: Logg ut likevel
+  signOutTitle: Logge ut?
+  signOutBody: Denne klokka gløymer husstanden din. Telefonen din er framleis innlogga.
+  household: Husstand
+  chooseHousehold: Vel husstand
+  noHouses: Ingen husstandar enno
+  nowShowing(String name): "Viser no ${name}"
+  settings: Innstillingar
+  refreshInterval: Oppdater
+  refreshOff: Av
+  refreshSeconds(int count): "$count sekund"
+  refreshMinutes(int count): "$count minutt"
+  allSaved: Alt er lagra
+  syncedAgo(String when): "synkronisert ${when}"
+  agoJustNow: nettopp
+  agoMinutes(int count): "for $count min sidan"
+  agoHours(int count): "for $count t sidan"
+  agoDays(int count): "for $count d sidan"
+  setUpAgain: Set opp på nytt
+  sessionExpiredShort: Telefonen din må logge inn denne klokka på nytt.
 
 watch:
   title: Klokke

@@ -5383,11 +5383,6 @@ class WearMessagesHe extends WearMessages {
   String get setupSyncingBody => """כמעט מוכן.""";
 
   /// ```dart
-  /// "הקש שוב כדי להתנתק"
-  /// ```
-  String get signOutConfirm => """הקש שוב כדי להתנתק""";
-
-  /// ```dart
   /// "$count עדיין לא נשלחו"
   /// ```
   String signOutPending(int count) => """$count עדיין לא נשלחו""";
@@ -5406,6 +5401,102 @@ class WearMessagesHe extends WearMessages {
   /// "להתנתק בכל זאת"
   /// ```
   String get signOutAnyway => """להתנתק בכל זאת""";
+
+  /// ```dart
+  /// "להתנתק?"
+  /// ```
+  String get signOutTitle => """להתנתק?""";
+
+  /// ```dart
+  /// "השעון ישכח את משק הבית שלך. הטלפון יישאר מחובר."
+  /// ```
+  String get signOutBody =>
+      """השעון ישכח את משק הבית שלך. הטלפון יישאר מחובר.""";
+
+  /// ```dart
+  /// "משק בית"
+  /// ```
+  String get household => """משק בית""";
+
+  /// ```dart
+  /// "בחירת משק בית"
+  /// ```
+  String get chooseHousehold => """בחירת משק בית""";
+
+  /// ```dart
+  /// "אין עדיין משקי בית"
+  /// ```
+  String get noHouses => """אין עדיין משקי בית""";
+
+  /// ```dart
+  /// "מציג כעת את ${name}"
+  /// ```
+  String nowShowing(String name) => """מציג כעת את ${name}""";
+
+  /// ```dart
+  /// "הגדרות"
+  /// ```
+  String get settings => """הגדרות""";
+
+  /// ```dart
+  /// "רענון"
+  /// ```
+  String get refreshInterval => """רענון""";
+
+  /// ```dart
+  /// "כבוי"
+  /// ```
+  String get refreshOff => """כבוי""";
+
+  /// ```dart
+  /// "$count שניות"
+  /// ```
+  String refreshSeconds(int count) => """$count שניות""";
+
+  /// ```dart
+  /// "$count דקות"
+  /// ```
+  String refreshMinutes(int count) => """$count דקות""";
+
+  /// ```dart
+  /// "הכול נשמר"
+  /// ```
+  String get allSaved => """הכול נשמר""";
+
+  /// ```dart
+  /// "סונכרן ${when}"
+  /// ```
+  String syncedAgo(String when) => """סונכרן ${when}""";
+
+  /// ```dart
+  /// "ממש עכשיו"
+  /// ```
+  String get agoJustNow => """ממש עכשיו""";
+
+  /// ```dart
+  /// "לפני $count דק׳"
+  /// ```
+  String agoMinutes(int count) => """לפני $count דק׳""";
+
+  /// ```dart
+  /// "לפני $count ש׳"
+  /// ```
+  String agoHours(int count) => """לפני $count ש׳""";
+
+  /// ```dart
+  /// "לפני $count י׳"
+  /// ```
+  String agoDays(int count) => """לפני $count י׳""";
+
+  /// ```dart
+  /// "הגדרה מחדש"
+  /// ```
+  String get setUpAgain => """הגדרה מחדש""";
+
+  /// ```dart
+  /// "הטלפון שלך צריך לחבר את השעון מחדש."
+  /// ```
+  String get sessionExpiredShort => """הטלפון שלך צריך לחבר את השעון מחדש.""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6478,10 +6569,21 @@ Map<String, String> get messagesHeMap => {
   """wear.setupPhoneSignedOutBody""": """הטלפון שלך עדיין לא מחובר ל-Pantry.""",
   """wear.setupSyncing""": """מביאים את הרשימות שלך""",
   """wear.setupSyncingBody""": """כמעט מוכן.""",
-  """wear.signOutConfirm""": """הקש שוב כדי להתנתק""",
   """wear.signOutWait""": """לשלוח קודם""",
   """wear.signOutSending""": """שולח…""",
   """wear.signOutAnyway""": """להתנתק בכל זאת""",
+  """wear.signOutTitle""": """להתנתק?""",
+  """wear.signOutBody""": """השעון ישכח את משק הבית שלך. הטלפון יישאר מחובר.""",
+  """wear.household""": """משק בית""",
+  """wear.chooseHousehold""": """בחירת משק בית""",
+  """wear.noHouses""": """אין עדיין משקי בית""",
+  """wear.settings""": """הגדרות""",
+  """wear.refreshInterval""": """רענון""",
+  """wear.refreshOff""": """כבוי""",
+  """wear.allSaved""": """הכול נשמר""",
+  """wear.agoJustNow""": """ממש עכשיו""",
+  """wear.setUpAgain""": """הגדרה מחדש""",
+  """wear.sessionExpiredShort""": """הטלפון שלך צריך לחבר את השעון מחדש.""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

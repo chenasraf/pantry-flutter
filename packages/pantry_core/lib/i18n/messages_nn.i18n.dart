@@ -5409,11 +5409,6 @@ class WearMessagesNn extends WearMessages {
   String get setupSyncingBody => """Straks ferdig.""";
 
   /// ```dart
-  /// "Trykk igjen for å logge ut"
-  /// ```
-  String get signOutConfirm => """Trykk igjen for å logge ut""";
-
-  /// ```dart
   /// "$count ikkje sendt enno"
   /// ```
   String signOutPending(int count) => """$count ikkje sendt enno""";
@@ -5432,6 +5427,103 @@ class WearMessagesNn extends WearMessages {
   /// "Logg ut likevel"
   /// ```
   String get signOutAnyway => """Logg ut likevel""";
+
+  /// ```dart
+  /// "Logge ut?"
+  /// ```
+  String get signOutTitle => """Logge ut?""";
+
+  /// ```dart
+  /// "Denne klokka gløymer husstanden din. Telefonen din er framleis innlogga."
+  /// ```
+  String get signOutBody =>
+      """Denne klokka gløymer husstanden din. Telefonen din er framleis innlogga.""";
+
+  /// ```dart
+  /// "Husstand"
+  /// ```
+  String get household => """Husstand""";
+
+  /// ```dart
+  /// "Vel husstand"
+  /// ```
+  String get chooseHousehold => """Vel husstand""";
+
+  /// ```dart
+  /// "Ingen husstandar enno"
+  /// ```
+  String get noHouses => """Ingen husstandar enno""";
+
+  /// ```dart
+  /// "Viser no ${name}"
+  /// ```
+  String nowShowing(String name) => """Viser no ${name}""";
+
+  /// ```dart
+  /// "Innstillingar"
+  /// ```
+  String get settings => """Innstillingar""";
+
+  /// ```dart
+  /// "Oppdater"
+  /// ```
+  String get refreshInterval => """Oppdater""";
+
+  /// ```dart
+  /// "Av"
+  /// ```
+  String get refreshOff => """Av""";
+
+  /// ```dart
+  /// "$count sekund"
+  /// ```
+  String refreshSeconds(int count) => """$count sekund""";
+
+  /// ```dart
+  /// "$count minutt"
+  /// ```
+  String refreshMinutes(int count) => """$count minutt""";
+
+  /// ```dart
+  /// "Alt er lagra"
+  /// ```
+  String get allSaved => """Alt er lagra""";
+
+  /// ```dart
+  /// "synkronisert ${when}"
+  /// ```
+  String syncedAgo(String when) => """synkronisert ${when}""";
+
+  /// ```dart
+  /// "nettopp"
+  /// ```
+  String get agoJustNow => """nettopp""";
+
+  /// ```dart
+  /// "for $count min sidan"
+  /// ```
+  String agoMinutes(int count) => """for $count min sidan""";
+
+  /// ```dart
+  /// "for $count t sidan"
+  /// ```
+  String agoHours(int count) => """for $count t sidan""";
+
+  /// ```dart
+  /// "for $count d sidan"
+  /// ```
+  String agoDays(int count) => """for $count d sidan""";
+
+  /// ```dart
+  /// "Set opp på nytt"
+  /// ```
+  String get setUpAgain => """Set opp på nytt""";
+
+  /// ```dart
+  /// "Telefonen din må logge inn denne klokka på nytt."
+  /// ```
+  String get sessionExpiredShort =>
+      """Telefonen din må logge inn denne klokka på nytt.""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -6547,10 +6639,23 @@ Passord: pantry""",
       """Telefonen din er ikkje logga inn i Pantry enno.""",
   """wear.setupSyncing""": """Hentar listene dine""",
   """wear.setupSyncingBody""": """Straks ferdig.""",
-  """wear.signOutConfirm""": """Trykk igjen for å logge ut""",
   """wear.signOutWait""": """Send fyrst""",
   """wear.signOutSending""": """Sender …""",
   """wear.signOutAnyway""": """Logg ut likevel""",
+  """wear.signOutTitle""": """Logge ut?""",
+  """wear.signOutBody""":
+      """Denne klokka gløymer husstanden din. Telefonen din er framleis innlogga.""",
+  """wear.household""": """Husstand""",
+  """wear.chooseHousehold""": """Vel husstand""",
+  """wear.noHouses""": """Ingen husstandar enno""",
+  """wear.settings""": """Innstillingar""",
+  """wear.refreshInterval""": """Oppdater""",
+  """wear.refreshOff""": """Av""",
+  """wear.allSaved""": """Alt er lagra""",
+  """wear.agoJustNow""": """nettopp""",
+  """wear.setUpAgain""": """Set opp på nytt""",
+  """wear.sessionExpiredShort""":
+      """Telefonen din må logge inn denne klokka på nytt.""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

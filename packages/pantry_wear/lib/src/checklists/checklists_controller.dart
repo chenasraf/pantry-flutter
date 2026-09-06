@@ -275,6 +275,7 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> _loadFromCache() async {
     final houses = HouseService.instance.getCached() ?? const [];
     _houseId = await _scope.resolveHouse(houses) ?? _scope.houseId;
+    _dropped ??= _scope.takeFallbackNotice();
     final house = _houseId;
     if (house == null) {
       _loading = false;
@@ -384,6 +385,7 @@ class ChecklistsController extends ChangeNotifier {
     try {
       final houses = await HouseService.instance.getHouses();
       _houseId = await _scope.resolveHouse(houses) ?? _houseId;
+      _dropped ??= _scope.takeFallbackNotice();
       final house = _houseId;
       if (house != null) _houseName = _nameOfHouse(houses, house);
     } catch (_) {}

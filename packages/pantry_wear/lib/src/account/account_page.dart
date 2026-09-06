@@ -4,242 +4,382 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
-import '../pairing/wear_pairing_client.dart';
 import '../prototype/degraded_proto.dart';
 import '../prototype/proto_tuning.dart';
+import '../scope/wear_scope.dart';
+import '../services/wear_mirror_client.dart';
+import '../wear_shape.dart';
+import '../widgets/focus_list.dart';
+import '../widgets/wear_metrics.dart';
+import '../widgets/wear_row.dart';
+import 'house_switcher_page.dart';
+import 'set_up_again_page.dart';
+import 'sign_out_page.dart';
+import 'wear_settings_page.dart';
 
-/// Who the watch is signed in as, and the way back out.
+/// Who this watch is, what it is still carrying, and the ways out.
 ///
-/// Signing out here does **not** revoke: the app password is the phone's, and
-/// revoking it from the wrist would sign the phone out too.
+/// Every entry is a row of the same centred-focus list the other pages are
+/// built from, and every row that asks a question opens a page rather than
+/// answering it in place: a wrist has no room for a control whose current
+/// value you must read before you can predict what tapping it does.
 ///
-/// It does clear, though — "signed out" has to mean the household data is off
-/// the watch, which may well have just been handed to someone else. So an
-/// unsent check-off is the one thing a sign-out has to say out loud first: a
-/// 401 happens *to* the wearer and holds the queue, where this is chosen, and
-/// the difference between the two is consent.
+/// Identity is the exception and rides as a header — it is a label, not a
+/// target, which is what a header already means here.
 class AccountPage extends StatefulWidget {
-  /// PROTOTYPE — carries the degraded-state cycle control, which is the only
-  /// way to wear the treatments without a real revocation.
+  /// Only the page being looked at may steer from the crown.
+  final bool active;
+
+  /// PROTOTYPE — lets the degraded rows be worn without a real revocation,
+  /// alongside the rail treatments this same control cycles.
   final ProtoTuning? tuning;
 
-  const AccountPage({super.key, this.tuning});
+  const AccountPage({super.key, required this.active, this.tuning});
 
   @override
   State<AccountPage> createState() => _AccountPageState();
 }
 
 class _AccountPageState extends State<AccountPage> {
-  /// A watch has no room for a dialog and no cancel a wearer can aim at, so
-  /// the confirmation is a second tap on the same target — and it lapses on
-  /// its own, which a dialog left open on a wrist would not.
-  var _confirming = false;
-  Timer? _lapse;
+  final _scroll = ScrollController();
+  final _listKey = GlobalKey<SnapFocusListState>();
+  final _geometry = ValueNotifier(const FocusGeometry());
 
-  /// The wearer chose to let the queue drain first. Sign-out follows on its
-  /// own once the count reaches zero, since waiting for it was the whole
-  /// instruction.
-  var _waiting = false;
+  /// A route pushed over this page must take the crown with it: the detent
+  /// stream is broadcast and a covered list stays mounted, so without this one
+  /// turn of the bezel scrolls both the page on top and this one underneath.
+  var _covered = false;
+
+  /// Where *Set up again* ended up in the element list, so the landing can
+  /// reach it without the row order being written down twice.
+  int? _setUpAgainIndex;
+
+  /// Whether the wearer has already been carried there. Once, on arriving into
+  /// the state — not on every rebuild, which would haul the list back under
+  /// somebody scrolling away from it.
+  var _landed = false;
 
   @override
   void initState() {
     super.initState();
-    SyncManager.instance.pendingCount.addListener(_onQueueChanged);
+    AuthService.instance.isUnauthorized.addListener(_onDegraded);
+    SyncManager.instance.pendingCount.addListener(_onChanged);
+    WearMirrorClient.instance.addListener(_onChanged);
+    WearScope.instance.addListener(_onChanged);
+    _scheduleLanding();
   }
 
   @override
   void dispose() {
-    SyncManager.instance.pendingCount.removeListener(_onQueueChanged);
-    _lapse?.cancel();
+    AuthService.instance.isUnauthorized.removeListener(_onDegraded);
+    SyncManager.instance.pendingCount.removeListener(_onChanged);
+    WearMirrorClient.instance.removeListener(_onChanged);
+    WearScope.instance.removeListener(_onChanged);
+    _scroll.dispose();
+    _geometry.dispose();
     super.dispose();
   }
 
-  void _onQueueChanged() {
-    if (!_waiting || SyncManager.instance.pendingCount.value > 0) return;
-    _waiting = false;
-    _signOut();
+  void _onChanged() {
+    if (mounted) setState(() {});
   }
 
-  void _tap() {
-    if (!_confirming) {
-      setState(() => _confirming = true);
-      _lapse = Timer(const Duration(seconds: 4), () {
-        if (mounted) setState(() => _confirming = false);
-      });
-      return;
-    }
-    if (_waiting) return;
-    if (SyncManager.instance.pendingCount.value > 0) {
-      _lapse?.cancel();
-      setState(() => _waiting = true);
-      unawaited(SyncManager.instance.flushNow());
-      return;
-    }
-    _signOut();
+  void _onDegraded() {
+    if (!mounted) return;
+    setState(() {});
+    _scheduleLanding();
   }
 
-  void _signOut() {
-    _lapse?.cancel();
-    unawaited(WearPairingClient.instance.forget());
+  bool get _degraded =>
+      AuthService.instance.isUnauthorized.value ||
+      // PROTOTYPE — dies with the degraded-state build.
+      (kDebugMode && widget.tuning?.degraded != null);
+
+  /// The degraded rail line is a signpost, and a signpost has to arrive at what
+  /// it points at. A wearer who followed one lands on *Set up again* rather
+  /// than one scroll above it.
+  void _scheduleLanding() {
+    if (!_degraded) {
+      _landed = false;
+      return;
+    }
+    if (_landed) return;
+    _landed = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final index = _setUpAgainIndex;
+      if (mounted && index != null) _listKey.currentState?.centreOn(index);
+    });
   }
+
+  Future<void> _push(Widget page) async {
+    setState(() => _covered = true);
+    await Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => page));
+    // The page behind may have changed what a row says about itself.
+    if (mounted) setState(() => _covered = false);
+  }
+
+  /// The checklists page's rule, unchanged: a card that is not on the centre
+  /// line scrolls there and nothing opens, so a mis-aim costs a scroll rather
+  /// than a page.
+  ///
+  /// The distance is checked as well as the index, because this page opens on
+  /// a header. Identity cannot be landed on, which leaves the household row
+  /// the *nearest* snappable element while it sits a full row below the line —
+  /// and a rule that trusted the index alone would fire on a row the wearer
+  /// can see is not the one in charge.
+  void _tap(int index, VoidCallback action) {
+    final geometry = _geometry.value;
+    if (index != geometry.centredIndex ||
+        geometry.centredDistance > WearMetrics.itemExtent / 2) {
+      _listKey.currentState?.centreOn(index);
+      return;
+    }
+    action();
+  }
+
+  // -- The list --------------------------------------------------------------
+
+  List<FocusElement> _elements() {
+    final scheme = Theme.of(context).colorScheme;
+    final elements = <FocusElement>[];
+    _setUpAgainIndex = null;
+
+    void header(double extent, Widget child) => elements.add(
+      FocusElement(
+        extent: extent,
+        snappable: false,
+        isHeader: true,
+        builder: (context, _) => child,
+      ),
+    );
+
+    void row({
+      required IconData icon,
+      Color tint = Colors.white70,
+      required String label,
+      String? Function()? value,
+      bool warning = false,
+      VoidCallback? onTap,
+    }) {
+      // Captured as the row is added, so the order lives in one place.
+      final index = elements.length;
+      elements.add(
+        FocusElement(
+          extent: WearMetrics.itemExtent,
+          builder: (context, d) => Padding(
+            padding: const EdgeInsetsDirectional.only(
+              bottom: WearMetrics.cardGap,
+            ),
+            child: WearRow(
+              icon: icon,
+              tint: tint,
+              label: label,
+              value: value?.call(),
+              warning: warning,
+              distance: d,
+              onTap: onTap == null ? null : () => _tap(index, onTap),
+            ),
+          ),
+        ),
+      );
+    }
+
+    header(_identityExtent, const _Identity());
+
+    // Beside the identity it concerns, and above everything the wearer might
+    // otherwise have come here to do.
+    if (_degraded) {
+      header(WearMetrics.headerExtent, const _DegradedNote());
+      _setUpAgainIndex = elements.length;
+      row(
+        icon: Icons.lock_outline,
+        label: m.wear.setUpAgain,
+        onTap: () => unawaited(_push(const SetUpAgainPage())),
+      );
+    }
+
+    row(
+      icon: Icons.home_outlined,
+      tint: scheme.primary,
+      label: m.wear.household,
+      value: () => _houseName,
+      onTap: () => unawaited(_push(const HouseSwitcherPage())),
+    );
+
+    // A readout, not a control: the queue is the wearer's own and the mirror's
+    // arrival is not, so one of these can be acted on and neither opens
+    // anything.
+    row(
+      icon: SyncManager.instance.pendingCount.value > 0
+          ? Icons.cloud_upload_outlined
+          : Icons.cloud_done_outlined,
+      label: SyncManager.instance.pendingCount.value > 0
+          ? m.wear.queued(SyncManager.instance.pendingCount.value)
+          : m.wear.allSaved,
+      value: _syncedAgo,
+    );
+
+    row(
+      icon: Icons.tune,
+      label: m.wear.settings,
+      onTap: () => unawaited(_push(const WearSettingsPage())),
+    );
+
+    row(
+      icon: Icons.logout,
+      label: m.common.logout,
+      warning: true,
+      onTap: () => unawaited(_push(const SignOutPage())),
+    );
+
+    if (kDebugMode && widget.tuning != null) {
+      header(
+        WearMetrics.headerExtent,
+        Center(
+          child: ListenableBuilder(
+            listenable: widget.tuning!,
+            builder: (context, _) => ProtoDegradedSwitch(
+              value: widget.tuning!.degraded,
+              onChanged: (v) =>
+                  widget.tuning!.update(() => widget.tuning!.degraded = v),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return elements;
+  }
+
+  /// When the phone last pushed a snapshot — and nothing at all when there is
+  /// no link, because a watch with none has no snapshot to be late. Saying it
+  /// had never received one would report a fault where the design has none: a
+  /// standalone or F-Droid watch reads everything for itself and is exactly as
+  /// correct.
+  String? _syncedAgo() {
+    final captured = WearMirrorClient.instance.capturedAt;
+    return captured == null ? null : m.wear.syncedAgo(_ago(captured));
+  }
+
+  String? get _houseName {
+    final id = WearScope.instance.houseId;
+    if (id == null) return null;
+    for (final house in HouseService.instance.getCached() ?? const []) {
+      if (house.id == id) return house.name;
+    }
+    return null;
+  }
+
+  /// Two lines and the space above them — more than a group header costs and
+  /// less than a row, because identity is read once and never aimed at.
+  static const double _identityExtent = 62;
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final name = AuthService.instance.credentials?.loginName ?? '';
-    return Center(
-      child: Padding(
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 22),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.person, size: 22, color: scheme.primary),
-            const SizedBox(height: 6),
-            Text(
-              name.isEmpty ? m.wear.account : m.wear.signedInAs(name),
-              textAlign: TextAlign.center,
-              textDirection: detectTextDirection(name),
-              style: const TextStyle(fontSize: 12, color: Colors.white70),
-            ),
-            const SizedBox(height: 12),
-            ValueListenableBuilder<int>(
-              valueListenable: SyncManager.instance.pendingCount,
-              builder: (context, queued, _) => _SignOut(
-                confirming: _confirming,
-                waiting: _waiting,
-                queued: queued,
-                onTap: _tap,
-                onSignOutAnyway: _signOut,
-              ),
-            ),
-            if (kDebugMode && widget.tuning != null) ...[
-              const SizedBox(height: 10),
-              ListenableBuilder(
-                listenable: widget.tuning!,
-                builder: (context, _) => ProtoDegradedSwitch(
-                  value: widget.tuning!.degraded,
-                  onChanged: (v) =>
-                      widget.tuning!.update(() => widget.tuning!.degraded = v),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
+    return SnapFocusList(
+      key: _listKey,
+      controller: _scroll,
+      itemExtent: WearMetrics.itemExtent,
+      falloffRows: WearMetrics.falloffRows,
+      rotaryActive: widget.active && !_covered,
+      geometry: _geometry,
+      elements: _elements(),
     );
   }
 }
 
-/// The sign-out control, in whichever of its three states applies: the plain
-/// label, the second-tap confirmation, and — when the queue still holds
-/// something — what is unsent, with the offer to send it first.
-class _SignOut extends StatelessWidget {
-  final bool confirming;
-  final bool waiting;
-  final int queued;
-  final VoidCallback onTap;
-  final VoidCallback onSignOutAnyway;
-
-  const _SignOut({
-    required this.confirming,
-    required this.waiting,
-    required this.queued,
-    required this.onTap,
-    required this.onSignOutAnyway,
-  });
+/// Which account, and on which server. The wearer typed neither — the
+/// credential is the phone's — so this is the one place the watch says out
+/// loud whose household it is showing.
+class _Identity extends StatelessWidget {
+  const _Identity();
 
   @override
   Widget build(BuildContext context) {
-    final pending = queued > 0;
-    final label = switch ((confirming, waiting, pending)) {
-      (_, true, _) => m.wear.signOutSending,
-      (true, _, true) => m.wear.signOutWait,
-      (true, _, false) => m.wear.signOutConfirm,
-      _ => m.common.logout,
-    };
+    final scheme = Theme.of(context).colorScheme;
+    final credentials = AuthService.instance.credentials;
+    final name = credentials?.loginName ?? '';
+    final server = _host(credentials?.serverUrl);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (confirming && pending) ...[
-          Text(
-            m.wear.signOutPending(queued),
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 11, color: Color(0xFFE0A0A0)),
+        Icon(Icons.person, size: 18, color: scheme.primary),
+        const SizedBox(height: 2),
+        Text(
+          name.isEmpty ? m.wear.notSignedIn : m.wear.signedInAs(name),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          textDirection: detectTextDirection(name),
+          style: const TextStyle(
+            fontSize: 12,
+            height: 1.1,
+            color: Colors.white,
           ),
-          const SizedBox(height: 6),
-        ],
-        _SignOutButton(
-          label: label,
-          highlighted: confirming,
-          onTap: waiting ? null : onTap,
         ),
-        // Only ever the second target, and never the one under the finger that
-        // opened the confirmation: leaving is what this page is for, and a
-        // wearer who has been told what it costs is allowed to.
-        if (confirming && pending && !waiting) ...[
-          const SizedBox(height: 6),
-          GestureDetector(
-            onTap: onSignOutAnyway,
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.symmetric(
-                horizontal: 10,
-                vertical: 6,
-              ),
-              child: Text(
-                m.wear.signOutAnyway,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 11, color: Colors.white54),
-              ),
+        if (server != null)
+          Text(
+            server,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            textDirection: detectTextDirection(server),
+            style: const TextStyle(
+              fontSize: 10,
+              height: 1.2,
+              color: Colors.white38,
             ),
           ),
-        ],
       ],
     );
   }
 }
 
-class _SignOutButton extends StatelessWidget {
-  final String label;
-  final bool highlighted;
-  final VoidCallback? onTap;
-
-  const _SignOutButton({
-    required this.label,
-    required this.highlighted,
-    required this.onTap,
-  });
+/// Why the row under this one is here. `common.sessionExpiredBody` is
+/// phone-length prose — six lines at this size, on a page that also has to
+/// carry identity, the household, sync and the way out.
+class _DegradedNote extends StatelessWidget {
+  const _DegradedNote();
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: highlighted
-              ? const Color(0xFF3A1D1D)
-              : const Color(0xFF17171A),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 14,
-            vertical: 8,
-          ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12,
-              color: highlighted ? const Color(0xFFE0A0A0) : Colors.white,
-            ),
-          ),
-        ),
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsetsDirectional.symmetric(
+      horizontal: WearShape.isRound ? 24 : 12,
+    ),
+    child: Text(
+      m.wear.sessionExpiredShort,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontSize: 10,
+        height: 1.15,
+        color: protoDegradedInk,
       ),
-    );
-  }
+    ),
+  );
+}
+
+/// Coarse, and short enough to sit at the end of a row beside the queue.
+/// `relativeTime` is day-granular, which cannot say the thing that matters
+/// here: whether the phone is pushing *now*.
+String _ago(DateTime when) {
+  final diff = DateTime.now().difference(when);
+  if (diff.inMinutes < 1) return m.wear.agoJustNow;
+  if (diff.inMinutes < 60) return m.wear.agoMinutes(diff.inMinutes);
+  if (diff.inHours < 24) return m.wear.agoHours(diff.inHours);
+  return m.wear.agoDays(diff.inDays);
+}
+
+String? _host(String? url) {
+  if (url == null || url.isEmpty) return null;
+  final host = Uri.tryParse(url)?.host;
+  return host == null || host.isEmpty ? url : host;
 }

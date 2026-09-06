@@ -5430,11 +5430,6 @@ class WearMessagesFr extends WearMessages {
   String get setupSyncingBody => """Presque terminé.""";
 
   /// ```dart
-  /// "Touchez à nouveau pour vous déconnecter"
-  /// ```
-  String get signOutConfirm => """Touchez à nouveau pour vous déconnecter""";
-
-  /// ```dart
   /// "$count non envoyé(s)"
   /// ```
   String signOutPending(int count) => """$count non envoyé(s)""";
@@ -5453,6 +5448,103 @@ class WearMessagesFr extends WearMessages {
   /// "Se déconnecter quand même"
   /// ```
   String get signOutAnyway => """Se déconnecter quand même""";
+
+  /// ```dart
+  /// "Se déconnecter ?"
+  /// ```
+  String get signOutTitle => """Se déconnecter ?""";
+
+  /// ```dart
+  /// "Cette montre oubliera votre foyer. Votre téléphone reste connecté."
+  /// ```
+  String get signOutBody =>
+      """Cette montre oubliera votre foyer. Votre téléphone reste connecté.""";
+
+  /// ```dart
+  /// "Foyer"
+  /// ```
+  String get household => """Foyer""";
+
+  /// ```dart
+  /// "Choisir un foyer"
+  /// ```
+  String get chooseHousehold => """Choisir un foyer""";
+
+  /// ```dart
+  /// "Aucun foyer pour l'instant"
+  /// ```
+  String get noHouses => """Aucun foyer pour l'instant""";
+
+  /// ```dart
+  /// "Affiche ${name}"
+  /// ```
+  String nowShowing(String name) => """Affiche ${name}""";
+
+  /// ```dart
+  /// "Réglages"
+  /// ```
+  String get settings => """Réglages""";
+
+  /// ```dart
+  /// "Actualiser"
+  /// ```
+  String get refreshInterval => """Actualiser""";
+
+  /// ```dart
+  /// "Désactivé"
+  /// ```
+  String get refreshOff => """Désactivé""";
+
+  /// ```dart
+  /// "$count secondes"
+  /// ```
+  String refreshSeconds(int count) => """$count secondes""";
+
+  /// ```dart
+  /// "$count minutes"
+  /// ```
+  String refreshMinutes(int count) => """$count minutes""";
+
+  /// ```dart
+  /// "Tout est enregistré"
+  /// ```
+  String get allSaved => """Tout est enregistré""";
+
+  /// ```dart
+  /// "synchronisé ${when}"
+  /// ```
+  String syncedAgo(String when) => """synchronisé ${when}""";
+
+  /// ```dart
+  /// "à l'instant"
+  /// ```
+  String get agoJustNow => """à l'instant""";
+
+  /// ```dart
+  /// "il y a $count min"
+  /// ```
+  String agoMinutes(int count) => """il y a $count min""";
+
+  /// ```dart
+  /// "il y a $count h"
+  /// ```
+  String agoHours(int count) => """il y a $count h""";
+
+  /// ```dart
+  /// "il y a $count j"
+  /// ```
+  String agoDays(int count) => """il y a $count j""";
+
+  /// ```dart
+  /// "Reconfigurer"
+  /// ```
+  String get setUpAgain => """Reconfigurer""";
+
+  /// ```dart
+  /// "Votre téléphone doit reconnecter cette montre."
+  /// ```
+  String get sessionExpiredShort =>
+      """Votre téléphone doit reconnecter cette montre.""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6601,10 +6693,23 @@ Mot de passe : pantry-rocks""",
       """Votre téléphone n'est pas encore connecté à Pantry.""",
   """wear.setupSyncing""": """Récupération de vos listes""",
   """wear.setupSyncingBody""": """Presque terminé.""",
-  """wear.signOutConfirm""": """Touchez à nouveau pour vous déconnecter""",
   """wear.signOutWait""": """Envoyer d'abord""",
   """wear.signOutSending""": """Envoi…""",
   """wear.signOutAnyway""": """Se déconnecter quand même""",
+  """wear.signOutTitle""": """Se déconnecter ?""",
+  """wear.signOutBody""":
+      """Cette montre oubliera votre foyer. Votre téléphone reste connecté.""",
+  """wear.household""": """Foyer""",
+  """wear.chooseHousehold""": """Choisir un foyer""",
+  """wear.noHouses""": """Aucun foyer pour l'instant""",
+  """wear.settings""": """Réglages""",
+  """wear.refreshInterval""": """Actualiser""",
+  """wear.refreshOff""": """Désactivé""",
+  """wear.allSaved""": """Tout est enregistré""",
+  """wear.agoJustNow""": """à l'instant""",
+  """wear.setUpAgain""": """Reconfigurer""",
+  """wear.sessionExpiredShort""":
+      """Votre téléphone doit reconnecter cette montre.""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

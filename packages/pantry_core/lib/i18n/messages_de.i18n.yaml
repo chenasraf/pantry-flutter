@@ -1042,11 +1042,29 @@ wear:
   setupPhoneSignedOutBody: Dein Telefon ist noch nicht bei Pantry angemeldet.
   setupSyncing: Deine Listen kommen
   setupSyncingBody: Fast fertig.
-  signOutConfirm: Zum Abmelden erneut tippen
   signOutPending(int count): "$count noch nicht gesendet"
   signOutWait: Erst senden
   signOutSending: Wird gesendet …
   signOutAnyway: Trotzdem abmelden
+  signOutTitle: Abmelden?
+  signOutBody: Diese Uhr vergisst deinen Haushalt. Dein Telefon bleibt angemeldet.
+  household: Haushalt
+  chooseHousehold: Haushalt wählen
+  noHouses: Noch keine Haushalte
+  nowShowing(String name): "Zeigt jetzt ${name}"
+  settings: Einstellungen
+  refreshInterval: Aktualisieren
+  refreshOff: Aus
+  refreshSeconds(int count): "$count Sekunden"
+  refreshMinutes(int count): "$count Minuten"
+  allSaved: Alles gesichert
+  syncedAgo(String when): "synchronisiert ${when}"
+  agoJustNow: gerade eben
+  agoMinutes(int count): "vor $count Min."
+  agoHours(int count): "vor $count Std."
+  agoDays(int count): "vor $count T."
+  setUpAgain: Neu einrichten
+  sessionExpiredShort: Dein Telefon muss diese Uhr erneut anmelden.
 
 watch:
   title: Uhr

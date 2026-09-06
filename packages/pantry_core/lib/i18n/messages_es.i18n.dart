@@ -5422,11 +5422,6 @@ class WearMessagesEs extends WearMessages {
   String get setupSyncingBody => """Casi está.""";
 
   /// ```dart
-  /// "Toca otra vez para cerrar sesión"
-  /// ```
-  String get signOutConfirm => """Toca otra vez para cerrar sesión""";
-
-  /// ```dart
   /// "$count sin enviar"
   /// ```
   String signOutPending(int count) => """$count sin enviar""";
@@ -5445,6 +5440,103 @@ class WearMessagesEs extends WearMessages {
   /// "Cerrar sesión igualmente"
   /// ```
   String get signOutAnyway => """Cerrar sesión igualmente""";
+
+  /// ```dart
+  /// "¿Cerrar sesión?"
+  /// ```
+  String get signOutTitle => """¿Cerrar sesión?""";
+
+  /// ```dart
+  /// "Este reloj olvidará tu hogar. Tu teléfono seguirá con la sesión iniciada."
+  /// ```
+  String get signOutBody =>
+      """Este reloj olvidará tu hogar. Tu teléfono seguirá con la sesión iniciada.""";
+
+  /// ```dart
+  /// "Hogar"
+  /// ```
+  String get household => """Hogar""";
+
+  /// ```dart
+  /// "Elegir hogar"
+  /// ```
+  String get chooseHousehold => """Elegir hogar""";
+
+  /// ```dart
+  /// "Aún no hay hogares"
+  /// ```
+  String get noHouses => """Aún no hay hogares""";
+
+  /// ```dart
+  /// "Mostrando ${name}"
+  /// ```
+  String nowShowing(String name) => """Mostrando ${name}""";
+
+  /// ```dart
+  /// "Ajustes"
+  /// ```
+  String get settings => """Ajustes""";
+
+  /// ```dart
+  /// "Actualizar"
+  /// ```
+  String get refreshInterval => """Actualizar""";
+
+  /// ```dart
+  /// "Desactivado"
+  /// ```
+  String get refreshOff => """Desactivado""";
+
+  /// ```dart
+  /// "$count segundos"
+  /// ```
+  String refreshSeconds(int count) => """$count segundos""";
+
+  /// ```dart
+  /// "$count minutos"
+  /// ```
+  String refreshMinutes(int count) => """$count minutos""";
+
+  /// ```dart
+  /// "Todo guardado"
+  /// ```
+  String get allSaved => """Todo guardado""";
+
+  /// ```dart
+  /// "sincronizado ${when}"
+  /// ```
+  String syncedAgo(String when) => """sincronizado ${when}""";
+
+  /// ```dart
+  /// "ahora mismo"
+  /// ```
+  String get agoJustNow => """ahora mismo""";
+
+  /// ```dart
+  /// "hace $count min"
+  /// ```
+  String agoMinutes(int count) => """hace $count min""";
+
+  /// ```dart
+  /// "hace $count h"
+  /// ```
+  String agoHours(int count) => """hace $count h""";
+
+  /// ```dart
+  /// "hace $count d"
+  /// ```
+  String agoDays(int count) => """hace $count d""";
+
+  /// ```dart
+  /// "Configurar de nuevo"
+  /// ```
+  String get setUpAgain => """Configurar de nuevo""";
+
+  /// ```dart
+  /// "Tu teléfono debe volver a iniciar sesión en este reloj."
+  /// ```
+  String get sessionExpiredShort =>
+      """Tu teléfono debe volver a iniciar sesión en este reloj.""";
 }
 
 class WatchMessagesEs extends WatchMessages {
@@ -6575,10 +6667,23 @@ Contraseña: pantry-rocks""",
       """Tu teléfono aún no ha iniciado sesión en Pantry.""",
   """wear.setupSyncing""": """Trayendo tus listas""",
   """wear.setupSyncingBody""": """Casi está.""",
-  """wear.signOutConfirm""": """Toca otra vez para cerrar sesión""",
   """wear.signOutWait""": """Enviar primero""",
   """wear.signOutSending""": """Enviando…""",
   """wear.signOutAnyway""": """Cerrar sesión igualmente""",
+  """wear.signOutTitle""": """¿Cerrar sesión?""",
+  """wear.signOutBody""":
+      """Este reloj olvidará tu hogar. Tu teléfono seguirá con la sesión iniciada.""",
+  """wear.household""": """Hogar""",
+  """wear.chooseHousehold""": """Elegir hogar""",
+  """wear.noHouses""": """Aún no hay hogares""",
+  """wear.settings""": """Ajustes""",
+  """wear.refreshInterval""": """Actualizar""",
+  """wear.refreshOff""": """Desactivado""",
+  """wear.allSaved""": """Todo guardado""",
+  """wear.agoJustNow""": """ahora mismo""",
+  """wear.setUpAgain""": """Configurar de nuevo""",
+  """wear.sessionExpiredShort""":
+      """Tu teléfono debe volver a iniciar sesión en este reloj.""",
   """watch.title""": """Reloj""",
   """watch.requestWarning""":
       """Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.""",

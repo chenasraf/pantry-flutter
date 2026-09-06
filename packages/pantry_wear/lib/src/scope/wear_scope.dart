@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/services/checklist_service.dart';
@@ -24,6 +25,21 @@ class WearScope extends ChangeNotifier {
 
   bool get isAllLists => listId == kAllListsId;
 
+  /// Said once when a remembered household stopped existing and the watch
+  /// moved on without asking. Read and cleared by whoever shows it.
+  ///
+  /// The phone can fall back silently because its switcher is one tap from the
+  /// title; here the household control is two pages away, so "your items are
+  /// gone and these are someone else's" earns a line of explanation. A first
+  /// run has nothing to explain and sets nothing.
+  String? _fellBackTo;
+
+  String? takeFallbackNotice() {
+    final notice = _fellBackTo;
+    _fellBackTo = null;
+    return notice;
+  }
+
   /// The house to show, given everything the watch knows about. Falls back to
   /// the first house the server returns when the remembered one has stopped
   /// existing — the same signal the phone reads — so a house leaving under the
@@ -32,9 +48,10 @@ class WearScope extends ChangeNotifier {
     if (houses.isEmpty) return null;
     final current = houseId;
     if (current != null && houses.any((h) => h.id == current)) return current;
-    final fallback = houses.first.id;
-    await selectHouse(fallback);
-    return fallback;
+    final fallback = houses.first;
+    if (current != null) _fellBackTo = m.wear.nowShowing(fallback.name);
+    await selectHouse(fallback.id);
+    return fallback.id;
   }
 
   /// The list to show within [lists], which are the current house's active

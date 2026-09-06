@@ -14,7 +14,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
-import 'package:pantry_wear/src/account/account_page.dart';
+import 'package:pantry_wear/src/account/sign_out_page.dart';
 import 'package:pantry_wear/src/scope/wear_scope.dart';
 import 'package:pantry_wear/src/wear_shape.dart';
 
@@ -152,34 +152,31 @@ void main() {
           }
         });
 
+    /// The page *is* the confirmation: reaching it took a deliberate push, and
+    /// the leading-edge strip it carries is the cancel a card on a crowded page
+    /// could not offer.
     Future<void> pump(WidgetTester tester) async {
       tester.view.physicalSize = const Size(450, 450);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       await tester.pumpWidget(
-        const MaterialApp(home: Scaffold(body: AccountPage())),
+        const MaterialApp(home: Scaffold(body: SignOutPage())),
       );
       await tester.pump();
     }
 
-    testWidgets('an empty queue confirms and says nothing else', (
-      tester,
-    ) async {
+    testWidgets('an empty queue asks and says nothing else', (tester) async {
       await pump(tester);
 
-      await tester.tap(find.text(m.common.logout));
-      await tester.pump();
-
-      expect(find.text(m.wear.signOutConfirm), findsOneWidget);
+      expect(find.text(m.wear.signOutTitle), findsOneWidget);
+      expect(find.text(m.wear.signOutBody), findsOneWidget);
+      expect(find.text(m.common.logout), findsOneWidget);
       expect(find.text(m.wear.signOutAnyway), findsNothing);
     });
 
     testWidgets('an unsent write is said out loud first', (tester) async {
       await queue(tester, 2);
       await pump(tester);
-
-      await tester.tap(find.text(m.common.logout));
-      await tester.pump();
 
       // A 401 happens *to* the wearer and holds the queue; this is chosen, and
       // "signed out" has to mean the household data is off a watch that may
@@ -200,8 +197,6 @@ void main() {
       // asserting: the op is held rather than dropped, so the wait is real and
       // the watch must not sign out from under an unsent check-off.
       await http.runWithClient(() async {
-        await tester.tap(find.text(m.common.logout));
-        await tester.pump();
         await tester.tap(find.text(m.wear.signOutWait));
         await tester.pump();
       }, () => MockClient((_) async => http.Response('{}', 401)));

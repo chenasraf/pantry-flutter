@@ -5438,11 +5438,6 @@ class WearMessagesDe extends WearMessages {
   String get setupSyncingBody => """Fast fertig.""";
 
   /// ```dart
-  /// "Zum Abmelden erneut tippen"
-  /// ```
-  String get signOutConfirm => """Zum Abmelden erneut tippen""";
-
-  /// ```dart
   /// "$count noch nicht gesendet"
   /// ```
   String signOutPending(int count) => """$count noch nicht gesendet""";
@@ -5461,6 +5456,103 @@ class WearMessagesDe extends WearMessages {
   /// "Trotzdem abmelden"
   /// ```
   String get signOutAnyway => """Trotzdem abmelden""";
+
+  /// ```dart
+  /// "Abmelden?"
+  /// ```
+  String get signOutTitle => """Abmelden?""";
+
+  /// ```dart
+  /// "Diese Uhr vergisst deinen Haushalt. Dein Telefon bleibt angemeldet."
+  /// ```
+  String get signOutBody =>
+      """Diese Uhr vergisst deinen Haushalt. Dein Telefon bleibt angemeldet.""";
+
+  /// ```dart
+  /// "Haushalt"
+  /// ```
+  String get household => """Haushalt""";
+
+  /// ```dart
+  /// "Haushalt wählen"
+  /// ```
+  String get chooseHousehold => """Haushalt wählen""";
+
+  /// ```dart
+  /// "Noch keine Haushalte"
+  /// ```
+  String get noHouses => """Noch keine Haushalte""";
+
+  /// ```dart
+  /// "Zeigt jetzt ${name}"
+  /// ```
+  String nowShowing(String name) => """Zeigt jetzt ${name}""";
+
+  /// ```dart
+  /// "Einstellungen"
+  /// ```
+  String get settings => """Einstellungen""";
+
+  /// ```dart
+  /// "Aktualisieren"
+  /// ```
+  String get refreshInterval => """Aktualisieren""";
+
+  /// ```dart
+  /// "Aus"
+  /// ```
+  String get refreshOff => """Aus""";
+
+  /// ```dart
+  /// "$count Sekunden"
+  /// ```
+  String refreshSeconds(int count) => """$count Sekunden""";
+
+  /// ```dart
+  /// "$count Minuten"
+  /// ```
+  String refreshMinutes(int count) => """$count Minuten""";
+
+  /// ```dart
+  /// "Alles gesichert"
+  /// ```
+  String get allSaved => """Alles gesichert""";
+
+  /// ```dart
+  /// "synchronisiert ${when}"
+  /// ```
+  String syncedAgo(String when) => """synchronisiert ${when}""";
+
+  /// ```dart
+  /// "gerade eben"
+  /// ```
+  String get agoJustNow => """gerade eben""";
+
+  /// ```dart
+  /// "vor $count Min."
+  /// ```
+  String agoMinutes(int count) => """vor $count Min.""";
+
+  /// ```dart
+  /// "vor $count Std."
+  /// ```
+  String agoHours(int count) => """vor $count Std.""";
+
+  /// ```dart
+  /// "vor $count T."
+  /// ```
+  String agoDays(int count) => """vor $count T.""";
+
+  /// ```dart
+  /// "Neu einrichten"
+  /// ```
+  String get setUpAgain => """Neu einrichten""";
+
+  /// ```dart
+  /// "Dein Telefon muss diese Uhr erneut anmelden."
+  /// ```
+  String get sessionExpiredShort =>
+      """Dein Telefon muss diese Uhr erneut anmelden.""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6613,10 +6705,23 @@ Passwort: pantry-rocks""",
       """Dein Telefon ist noch nicht bei Pantry angemeldet.""",
   """wear.setupSyncing""": """Deine Listen kommen""",
   """wear.setupSyncingBody""": """Fast fertig.""",
-  """wear.signOutConfirm""": """Zum Abmelden erneut tippen""",
   """wear.signOutWait""": """Erst senden""",
   """wear.signOutSending""": """Wird gesendet …""",
   """wear.signOutAnyway""": """Trotzdem abmelden""",
+  """wear.signOutTitle""": """Abmelden?""",
+  """wear.signOutBody""":
+      """Diese Uhr vergisst deinen Haushalt. Dein Telefon bleibt angemeldet.""",
+  """wear.household""": """Haushalt""",
+  """wear.chooseHousehold""": """Haushalt wählen""",
+  """wear.noHouses""": """Noch keine Haushalte""",
+  """wear.settings""": """Einstellungen""",
+  """wear.refreshInterval""": """Aktualisieren""",
+  """wear.refreshOff""": """Aus""",
+  """wear.allSaved""": """Alles gesichert""",
+  """wear.agoJustNow""": """gerade eben""",
+  """wear.setUpAgain""": """Neu einrichten""",
+  """wear.sessionExpiredShort""":
+      """Dein Telefon muss diese Uhr erneut anmelden.""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

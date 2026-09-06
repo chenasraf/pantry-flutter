@@ -1042,11 +1042,29 @@ wear:
   setupPhoneSignedOutBody: הטלפון שלך עדיין לא מחובר ל-Pantry.
   setupSyncing: מביאים את הרשימות שלך
   setupSyncingBody: כמעט מוכן.
-  signOutConfirm: הקש שוב כדי להתנתק
   signOutPending(int count): "$count עדיין לא נשלחו"
   signOutWait: לשלוח קודם
   signOutSending: שולח…
   signOutAnyway: להתנתק בכל זאת
+  signOutTitle: להתנתק?
+  signOutBody: השעון ישכח את משק הבית שלך. הטלפון יישאר מחובר.
+  household: משק בית
+  chooseHousehold: בחירת משק בית
+  noHouses: אין עדיין משקי בית
+  nowShowing(String name): "מציג כעת את ${name}"
+  settings: הגדרות
+  refreshInterval: רענון
+  refreshOff: כבוי
+  refreshSeconds(int count): "$count שניות"
+  refreshMinutes(int count): "$count דקות"
+  allSaved: הכול נשמר
+  syncedAgo(String when): "סונכרן ${when}"
+  agoJustNow: ממש עכשיו
+  agoMinutes(int count): "לפני $count דק׳"
+  agoHours(int count): "לפני $count ש׳"
+  agoDays(int count): "לפני $count י׳"
+  setUpAgain: הגדרה מחדש
+  sessionExpiredShort: הטלפון שלך צריך לחבר את השעון מחדש.
 
 watch:
   title: שעון

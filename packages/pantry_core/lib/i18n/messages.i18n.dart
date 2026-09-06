@@ -5378,11 +5378,6 @@ class WearMessages {
   String get setupSyncingBody => """Almost there.""";
 
   /// ```dart
-  /// "Tap again to sign out"
-  /// ```
-  String get signOutConfirm => """Tap again to sign out""";
-
-  /// ```dart
   /// "$count not sent yet"
   /// ```
   String signOutPending(int count) => """$count not sent yet""";
@@ -5401,6 +5396,103 @@ class WearMessages {
   /// "Sign out anyway"
   /// ```
   String get signOutAnyway => """Sign out anyway""";
+
+  /// ```dart
+  /// "Sign out?"
+  /// ```
+  String get signOutTitle => """Sign out?""";
+
+  /// ```dart
+  /// "This watch forgets your household. Your phone stays signed in."
+  /// ```
+  String get signOutBody =>
+      """This watch forgets your household. Your phone stays signed in.""";
+
+  /// ```dart
+  /// "Household"
+  /// ```
+  String get household => """Household""";
+
+  /// ```dart
+  /// "Choose household"
+  /// ```
+  String get chooseHousehold => """Choose household""";
+
+  /// ```dart
+  /// "No households yet"
+  /// ```
+  String get noHouses => """No households yet""";
+
+  /// ```dart
+  /// "Now showing ${name}"
+  /// ```
+  String nowShowing(String name) => """Now showing ${name}""";
+
+  /// ```dart
+  /// "Settings"
+  /// ```
+  String get settings => """Settings""";
+
+  /// ```dart
+  /// "Refresh"
+  /// ```
+  String get refreshInterval => """Refresh""";
+
+  /// ```dart
+  /// "Off"
+  /// ```
+  String get refreshOff => """Off""";
+
+  /// ```dart
+  /// "$count seconds"
+  /// ```
+  String refreshSeconds(int count) => """$count seconds""";
+
+  /// ```dart
+  /// "$count minutes"
+  /// ```
+  String refreshMinutes(int count) => """$count minutes""";
+
+  /// ```dart
+  /// "All saved"
+  /// ```
+  String get allSaved => """All saved""";
+
+  /// ```dart
+  /// "synced ${when}"
+  /// ```
+  String syncedAgo(String when) => """synced ${when}""";
+
+  /// ```dart
+  /// "just now"
+  /// ```
+  String get agoJustNow => """just now""";
+
+  /// ```dart
+  /// "${count}m ago"
+  /// ```
+  String agoMinutes(int count) => """${count}m ago""";
+
+  /// ```dart
+  /// "${count}h ago"
+  /// ```
+  String agoHours(int count) => """${count}h ago""";
+
+  /// ```dart
+  /// "${count}d ago"
+  /// ```
+  String agoDays(int count) => """${count}d ago""";
+
+  /// ```dart
+  /// "Set up again"
+  /// ```
+  String get setUpAgain => """Set up again""";
+
+  /// ```dart
+  /// "Your phone needs to sign this watch in again."
+  /// ```
+  String get sessionExpiredShort =>
+      """Your phone needs to sign this watch in again.""";
 }
 
 class WatchMessages {
@@ -6491,10 +6583,23 @@ Password: pantry-rocks""",
       """Your phone isn't signed in to Pantry yet.""",
   """wear.setupSyncing""": """Getting your lists""",
   """wear.setupSyncingBody""": """Almost there.""",
-  """wear.signOutConfirm""": """Tap again to sign out""",
   """wear.signOutWait""": """Send first""",
   """wear.signOutSending""": """Sending…""",
   """wear.signOutAnyway""": """Sign out anyway""",
+  """wear.signOutTitle""": """Sign out?""",
+  """wear.signOutBody""":
+      """This watch forgets your household. Your phone stays signed in.""",
+  """wear.household""": """Household""",
+  """wear.chooseHousehold""": """Choose household""",
+  """wear.noHouses""": """No households yet""",
+  """wear.settings""": """Settings""",
+  """wear.refreshInterval""": """Refresh""",
+  """wear.refreshOff""": """Off""",
+  """wear.allSaved""": """All saved""",
+  """wear.agoJustNow""": """just now""",
+  """wear.setUpAgain""": """Set up again""",
+  """wear.sessionExpiredShort""":
+      """Your phone needs to sign this watch in again.""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

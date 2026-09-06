@@ -1042,11 +1042,29 @@ wear:
   setupPhoneSignedOutBody: Votre téléphone n'est pas encore connecté à Pantry.
   setupSyncing: Récupération de vos listes
   setupSyncingBody: Presque terminé.
-  signOutConfirm: Touchez à nouveau pour vous déconnecter
   signOutPending(int count): "$count non envoyé(s)"
   signOutWait: Envoyer d'abord
   signOutSending: Envoi…
   signOutAnyway: Se déconnecter quand même
+  signOutTitle: Se déconnecter ?
+  signOutBody: Cette montre oubliera votre foyer. Votre téléphone reste connecté.
+  household: Foyer
+  chooseHousehold: Choisir un foyer
+  noHouses: Aucun foyer pour l'instant
+  nowShowing(String name): "Affiche ${name}"
+  settings: Réglages
+  refreshInterval: Actualiser
+  refreshOff: Désactivé
+  refreshSeconds(int count): "$count secondes"
+  refreshMinutes(int count): "$count minutes"
+  allSaved: Tout est enregistré
+  syncedAgo(String when): "synchronisé ${when}"
+  agoJustNow: à l'instant
+  agoMinutes(int count): "il y a $count min"
+  agoHours(int count): "il y a $count h"
+  agoDays(int count): "il y a $count j"
+  setUpAgain: Reconfigurer
+  sessionExpiredShort: Votre téléphone doit reconnecter cette montre.
 
 watch:
   title: Montre

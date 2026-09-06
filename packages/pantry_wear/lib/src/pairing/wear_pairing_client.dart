@@ -61,6 +61,10 @@ class WearPairingClient extends ChangeNotifier {
 
   var _state = WearSetupState.checking;
 
+  /// Whether the grant this round is waiting for is a first pairing, and so
+  /// carries the seed, or a renewal of a credential the watch already had.
+  var _seeding = true;
+
   WearSetupState get state => _state;
 
   /// Slow enough not to spend the radio on a screen that may be up for
@@ -92,6 +96,32 @@ class WearPairingClient extends ChangeNotifier {
       _enter(WearSetupState.ready);
       return;
     }
+    _seeding = true;
+    await _tick();
+    _retry ??= Timer.periodic(_retryInterval, (_) => unawaited(_tick()));
+  }
+
+  /// Ask the phone for a fresh credential while giving nothing up.
+  ///
+  /// The way out of a rejected credential cannot be [forget]: a 401 holds the
+  /// queue rather than clearing it, and forgetting would destroy the unsent
+  /// writes the wearer is renewing in order to send. Nothing local is dropped
+  /// here — not the caches, not the queue, and not scope, which the phone
+  /// seeds once at pairing and never overrides.
+  Future<void> renew() async {
+    if (_messages == null) {
+      if (!await _link.isAvailable()) {
+        _enter(WearSetupState.unavailable);
+        return;
+      }
+      _messages = _link.messages.listen(_onMessage);
+    }
+    // A renewal can be asked for from a state the retry loop stopped in, and
+    // the phone may since have signed back in.
+    if (_state == WearSetupState.phoneSignedOut) {
+      _enter(WearSetupState.checking);
+    }
+    _seeding = false;
     await _tick();
     _retry ??= Timer.periodic(_retryInterval, (_) => unawaited(_tick()));
   }
@@ -157,6 +187,17 @@ class WearPairingClient extends ChangeNotifier {
     // made before they land is one the watch has no way to answer for.
     await CertTrustService.instance.adopt(grant.certPins);
     await AuthService.instance.adoptCredentials(grant.credentials);
+
+    // A renewal replaces the credential and nothing else. The stores are
+    // already loaded and already hold what the wearer was reading, and the
+    // seed below would overwrite the scope they have since chosen for
+    // themselves. The rejection clears itself: the next request to succeed is
+    // what disproves it.
+    if (!_seeding) {
+      _enter(WearSetupState.ready);
+      return;
+    }
+
     await PrefsService.instance.setHiddenItemChips(grant.hiddenItemChips);
 
     // Before the scope is written, and before a snapshot can land: both go
