@@ -5662,6 +5662,26 @@ class WearMessages {
   /// "Shopping trip"
   /// ```
   String get shoppingTripChip => """Shopping trip""";
+
+  /// ```dart
+  /// "Follow phone"
+  /// ```
+  String get followPhone => """Follow phone""";
+
+  /// ```dart
+  /// "Accent"
+  /// ```
+  String get accent => """Accent""";
+
+  /// ```dart
+  /// "Your Nextcloud color"
+  /// ```
+  String get accentServer => """Your Nextcloud color""";
+
+  /// ```dart
+  /// "Pantry color"
+  /// ```
+  String get accentApp => """Pantry color""";
 }
 
 class WatchMessages {
@@ -6796,6 +6816,10 @@ Password: pantry-rocks""",
   """wear.notificationsAllowed""": """Allowed""",
   """wear.notificationsBlocked""": """Blocked""",
   """wear.shoppingTripChip""": """Shopping trip""",
+  """wear.followPhone""": """Follow phone""",
+  """wear.accent""": """Accent""",
+  """wear.accentServer""": """Your Nextcloud color""",
+  """wear.accentApp""": """Pantry color""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

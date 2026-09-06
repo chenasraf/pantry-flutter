@@ -149,9 +149,7 @@ class _PhotoBoardState extends State<PhotoBoard> {
 
   Future<void> _push(Widget route) async {
     setState(() => _covered = true);
-    await Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => route));
+    await Navigator.of(context).push(wearRoute<void>(route));
     if (mounted) setState(() => _covered = false);
   }
 

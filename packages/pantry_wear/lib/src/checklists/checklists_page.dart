@@ -12,6 +12,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../widgets/focus_list.dart';
 import '../widgets/undo_window.dart';
+import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'checklists_controller.dart';
 import 'item_card.dart';
@@ -125,9 +126,8 @@ class ChecklistsPageState extends State<ChecklistsPage>
 
   Future<void> _openDetail(ListItem item) async {
     await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) =>
-            ItemDetailPage(item: item, controller: widget.controller),
+      wearRoute<void>(
+        ItemDetailPage(item: item, controller: widget.controller),
       ),
     );
   }

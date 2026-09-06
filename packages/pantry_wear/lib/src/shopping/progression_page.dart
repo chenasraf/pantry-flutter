@@ -13,6 +13,7 @@ import 'package:pantry_core/utils/store_icons.dart';
 import '../checklists/checklists_controller.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_cta.dart';
+import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
 import 'trip_reminders_page.dart';
@@ -106,9 +107,7 @@ class _ProgressionPageState extends State<ProgressionPage> {
 
   Future<void> _push(Widget page) async {
     setState(() => _covered = true);
-    await Navigator.of(
-      context,
-    ).push<void>(MaterialPageRoute<void>(builder: (_) => page));
+    await Navigator.of(context).push<void>(wearRoute<void>(page));
     if (mounted) setState(() => _covered = false);
   }
 
@@ -148,9 +147,7 @@ class _ProgressionPageState extends State<ProgressionPage> {
       _error = null;
     });
     final closed = await Navigator.of(context).push<bool>(
-      MaterialPageRoute<bool>(
-        builder: (_) => TripSummaryPage(controller: widget.controller),
-      ),
+      wearRoute<bool>(TripSummaryPage(controller: widget.controller)),
     );
     if (!mounted) return;
     setState(() {

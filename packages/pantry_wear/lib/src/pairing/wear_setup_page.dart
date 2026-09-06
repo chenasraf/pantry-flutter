@@ -4,6 +4,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../services/wear_host_service.dart';
 import '../wear_shape.dart';
+import '../widgets/wear_mechanics.dart';
 import 'qr_sign_in_page.dart';
 import 'wear_pairing_client.dart';
 
@@ -170,9 +171,8 @@ class _QrSignIn extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsetsDirectional.only(top: 8),
     child: GestureDetector(
-      onTap: () => Navigator.of(
-        context,
-      ).push(MaterialPageRoute<void>(builder: (_) => const QrSignInPage())),
+      onTap: () =>
+          Navigator.of(context).push(wearRoute<void>(const QrSignInPage())),
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: const EdgeInsetsDirectional.symmetric(

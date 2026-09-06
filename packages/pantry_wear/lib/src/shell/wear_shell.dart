@@ -439,9 +439,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
       _railExpanded = false;
       _routeOpen = true;
     });
-    final result = await Navigator.of(
-      context,
-    ).push<T>(MaterialPageRoute<T>(builder: (_) => page));
+    final result = await Navigator.of(context).push<T>(wearRoute<T>(page));
     if (mounted) setState(() => _routeOpen = false);
     return result;
   }

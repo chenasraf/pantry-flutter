@@ -8,6 +8,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
 import 'package:pantry_core/services/wear_pairing.dart';
 
+import '../services/wear_appearance_client.dart';
 import '../services/wear_host_service.dart';
 import '../services/wear_mirror_client.dart';
 import '../wear_stores.dart';
@@ -305,6 +306,11 @@ class WearPairingClient extends ChangeNotifier {
     _stopAsking();
     await AuthService.instance.logout(revoke: false);
     await clearWearStores();
+    // Not a store, and not household data either — but a language published by
+    // a phone this watch is no longer paired to is the stale default the
+    // publication exists to prevent. What the wearer chose for themselves
+    // stays: it was theirs before the pairing and it outranks it.
+    await WearAppearanceClient.instance.forget();
     _state = WearSetupState.checking;
     notifyListeners();
     await start();

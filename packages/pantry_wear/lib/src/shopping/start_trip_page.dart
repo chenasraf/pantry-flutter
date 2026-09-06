@@ -81,9 +81,7 @@ class _StartTripPageState extends State<StartTripPage> {
 
   Future<void> _push(Widget page) async {
     setState(() => _covered = true);
-    await Navigator.of(
-      context,
-    ).push<void>(MaterialPageRoute<void>(builder: (_) => page));
+    await Navigator.of(context).push<void>(wearRoute<void>(page));
     if (mounted) setState(() => _covered = false);
   }
 

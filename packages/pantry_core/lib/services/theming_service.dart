@@ -23,7 +23,11 @@ class ThemingService extends ChangeNotifier {
 
   bool get useServerThemeColor => PrefsService.instance.useServerThemeColor;
 
-  Future<void> setUseServerThemeColor(bool value) async {
+  /// This device's own answer, or null while it is following a paired phone's.
+  bool? get useServerThemeColorPref =>
+      PrefsService.instance.useServerThemeColorPref;
+
+  Future<void> setUseServerThemeColor(bool? value) async {
     await PrefsService.instance.setUseServerThemeColor(value);
     notifyListeners();
   }
@@ -35,6 +39,22 @@ class ThemingService extends ChangeNotifier {
     final hex = PrefsService.instance.themeColorHex;
     final cached = _parseHex(hex);
     if (cached != null) _themeColor = cached;
+  }
+
+  /// Take on the accent a paired phone published.
+  ///
+  /// Absolute where [fetchTheme] is not: a phone that states no accent clears
+  /// the one being held, because nothing on a watch ever fetches one and a
+  /// value kept "just in case" would outlive the only thing that could
+  /// contradict it.
+  Future<void> adoptPublishedColor(String? hex) async {
+    final adopted = _parseHex(hex);
+    if (adopted == _themeColor && hex == PrefsService.instance.themeColorHex) {
+      return;
+    }
+    _themeColor = adopted;
+    await PrefsService.instance.setThemeColorHex(hex);
+    notifyListeners();
   }
 
   ThemeMode get themeMode {

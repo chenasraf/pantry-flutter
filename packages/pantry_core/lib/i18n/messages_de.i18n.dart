@@ -5722,6 +5722,26 @@ class WearMessagesDe extends WearMessages {
   /// "Einkauf"
   /// ```
   String get shoppingTripChip => """Einkauf""";
+
+  /// ```dart
+  /// "Wie auf dem Handy"
+  /// ```
+  String get followPhone => """Wie auf dem Handy""";
+
+  /// ```dart
+  /// "Akzentfarbe"
+  /// ```
+  String get accent => """Akzentfarbe""";
+
+  /// ```dart
+  /// "Deine Nextcloud-Farbe"
+  /// ```
+  String get accentServer => """Deine Nextcloud-Farbe""";
+
+  /// ```dart
+  /// "Pantry-Farbe"
+  /// ```
+  String get accentApp => """Pantry-Farbe""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6918,6 +6938,10 @@ Passwort: pantry-rocks""",
   """wear.notificationsAllowed""": """Erlaubt""",
   """wear.notificationsBlocked""": """Blockiert""",
   """wear.shoppingTripChip""": """Einkauf""",
+  """wear.followPhone""": """Wie auf dem Handy""",
+  """wear.accent""": """Akzentfarbe""",
+  """wear.accentServer""": """Deine Nextcloud-Farbe""",
+  """wear.accentApp""": """Pantry-Farbe""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

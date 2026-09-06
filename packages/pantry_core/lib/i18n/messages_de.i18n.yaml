@@ -1098,6 +1098,10 @@ wear:
   notificationsAllowed: Erlaubt
   notificationsBlocked: Blockiert
   shoppingTripChip: Einkauf
+  followPhone: Wie auf dem Handy
+  accent: Akzentfarbe
+  accentServer: Deine Nextcloud-Farbe
+  accentApp: Pantry-Farbe
 
 watch:
   title: Uhr

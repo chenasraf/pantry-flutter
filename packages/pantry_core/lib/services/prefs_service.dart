@@ -47,6 +47,8 @@ class PrefsService extends ChangeNotifier {
   static const _navDisabledKey = 'nav_disabled';
   static const _themeColorKey = 'theme_color';
   static const _useServerThemeColorKey = 'use_server_theme_color';
+  static const _phoneLocaleKey = 'phone_locale';
+  static const _phoneUseServerThemeColorKey = 'phone_use_server_theme_color';
   static const _displayNameKey = 'display_name';
   static const _serverLanguageKey = 'server_language';
   static const _firstDayOfWeekKey = 'first_day_of_week';
@@ -218,11 +220,31 @@ class PrefsService extends ChangeNotifier {
   String? _themeColorHex;
   String? get themeColorHex => _themeColorHex;
 
-  /// When true (default), the app is tinted with the Nextcloud user's theme
-  /// color fetched from the server. When false, the app uses its own built-in
-  /// accent regardless of what the server reports.
-  bool _useServerThemeColor = true;
-  bool get useServerThemeColor => _useServerThemeColor;
+  /// This device's own answer to "tint the app with the Nextcloud theme
+  /// color", or null to follow whatever a paired phone publishes. Only a watch
+  /// ever leaves it null with something to follow; everywhere else the
+  /// resolution below lands on the same `true` it always did.
+  bool? _useServerThemeColor;
+  bool? get useServerThemeColorPref => _useServerThemeColor;
+
+  /// Whether the app is tinted with the Nextcloud user's theme color: this
+  /// device's choice, then the paired phone's, then on.
+  bool get useServerThemeColor =>
+      _useServerThemeColor ?? _phoneUseServerThemeColor ?? true;
+
+  /// The locale the paired phone says it draws in, and the accent opt-out it
+  /// draws under.
+  ///
+  /// Written only from what a phone publishes, so they are null on the phone
+  /// itself and on every watch nobody publishes to — one signed in by QR, or
+  /// paired to a build with no Data Layer. Absence carries no information
+  /// there: such a watch keeps its own answers rather than being given the
+  /// defaults of a phone it has never met.
+  String? _phoneLocale;
+  String? get phoneLocale => _phoneLocale;
+
+  bool? _phoneUseServerThemeColor;
+  bool? get phoneUseServerThemeColor => _phoneUseServerThemeColor;
 
   /// Cached snapshot of values fetched from the Nextcloud user profile. These
   /// change rarely (user has to change them in Nextcloud), so we seed
@@ -425,10 +447,9 @@ class PrefsService extends ChangeNotifier {
 
     _themeColorHex = all[_themeColorKey];
 
-    final useServerTheme = all[_useServerThemeColorKey];
-    if (useServerTheme != null) {
-      _useServerThemeColor = useServerTheme == 'true';
-    }
+    _useServerThemeColor = _parseBool(all[_useServerThemeColorKey]);
+    _phoneLocale = all[_phoneLocaleKey];
+    _phoneUseServerThemeColor = _parseBool(all[_phoneUseServerThemeColorKey]);
 
     _displayName = all[_displayNameKey];
     _serverLanguage = all[_serverLanguageKey];
@@ -481,6 +502,14 @@ class PrefsService extends ChangeNotifier {
     await _storage.write(key: _lastHouseKey, value: id.toString());
     notifyListeners();
   }
+
+  /// Null for a key that has never been written, which for the appearance
+  /// prefs is a state of its own rather than a missing value.
+  static bool? _parseBool(String? raw) => switch (raw) {
+    'true' => true,
+    'false' => false,
+    _ => null,
+  };
 
   static bool _isValidTapAction(String value) =>
       value == 'done' || value == 'view' || value == 'edit' || value == 'none';
@@ -537,7 +566,9 @@ class PrefsService extends ChangeNotifier {
     _navOrder = List.of(kDefaultNavOrder);
     _navDisabled = {};
     _themeColorHex = null;
-    _useServerThemeColor = true;
+    _useServerThemeColor = null;
+    _phoneLocale = null;
+    _phoneUseServerThemeColor = null;
     _displayName = null;
     _serverLanguage = null;
     _firstDayOfWeek = null;
@@ -577,6 +608,8 @@ class PrefsService extends ChangeNotifier {
       _navDisabledKey,
       _themeColorKey,
       _useServerThemeColorKey,
+      _phoneLocaleKey,
+      _phoneUseServerThemeColorKey,
       _displayNameKey,
       _serverLanguageKey,
       _firstDayOfWeekKey,

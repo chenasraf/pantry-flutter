@@ -5665,6 +5665,26 @@ class WearMessagesHe extends WearMessages {
   /// "קנייה"
   /// ```
   String get shoppingTripChip => """קנייה""";
+
+  /// ```dart
+  /// "לפי הטלפון"
+  /// ```
+  String get followPhone => """לפי הטלפון""";
+
+  /// ```dart
+  /// "צבע הדגשה"
+  /// ```
+  String get accent => """צבע הדגשה""";
+
+  /// ```dart
+  /// "צבע ה־Nextcloud שלך"
+  /// ```
+  String get accentServer => """צבע ה־Nextcloud שלך""";
+
+  /// ```dart
+  /// "צבע Pantry"
+  /// ```
+  String get accentApp => """צבע Pantry""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6779,6 +6799,10 @@ Map<String, String> get messagesHeMap => {
   """wear.notificationsAllowed""": """מותרות""",
   """wear.notificationsBlocked""": """חסומות""",
   """wear.shoppingTripChip""": """קנייה""",
+  """wear.followPhone""": """לפי הטלפון""",
+  """wear.accent""": """צבע הדגשה""",
+  """wear.accentServer""": """צבע ה־Nextcloud שלך""",
+  """wear.accentApp""": """צבע Pantry""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

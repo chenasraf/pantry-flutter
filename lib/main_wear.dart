@@ -61,6 +61,10 @@ void main(List<String> args) async {
   // while this watch was asleep is only discoverable by reading, and reading
   // costs a channel round trip that must not sit in front of the first frame.
   unawaited(WearPairingClient.instance.readPairing());
+  // Same shape and the same reason: the phone's language and accent were
+  // persisted when they landed, so the first frame is already right and a
+  // change since then applies when the read comes back.
+  unawaited(WearAppearanceClient.instance.start());
   runApp(const PantryWearApp());
   // After the first frame: the mirror only ever accelerates, so nothing it
   // does belongs on the path to drawing what the watch already knows.

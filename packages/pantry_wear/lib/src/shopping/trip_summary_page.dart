@@ -87,8 +87,8 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
     final billed = widget.controller.billedFor(storeId);
     setState(() => _covered = true);
     final entered = await Navigator.of(context).push<BilledAmount>(
-      MaterialPageRoute<BilledAmount>(
-        builder: (_) => BilledAmountPage(
+      wearRoute<BilledAmount>(
+        BilledAmountPage(
           storeName: storeName,
           total: billed.total,
           currency: billed.currency ?? widget.controller.lastCurrency,

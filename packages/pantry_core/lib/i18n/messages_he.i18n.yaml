@@ -1098,6 +1098,10 @@ wear:
   notificationsAllowed: מותרות
   notificationsBlocked: חסומות
   shoppingTripChip: קנייה
+  followPhone: לפי הטלפון
+  accent: צבע הדגשה
+  accentServer: צבע ה־Nextcloud שלך
+  accentApp: צבע Pantry
 
 watch:
   title: שעון

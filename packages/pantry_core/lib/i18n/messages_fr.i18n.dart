@@ -5715,6 +5715,26 @@ class WearMessagesFr extends WearMessages {
   /// "Sortie courses"
   /// ```
   String get shoppingTripChip => """Sortie courses""";
+
+  /// ```dart
+  /// "Suivre le téléphone"
+  /// ```
+  String get followPhone => """Suivre le téléphone""";
+
+  /// ```dart
+  /// "Couleur d'accent"
+  /// ```
+  String get accent => """Couleur d'accent""";
+
+  /// ```dart
+  /// "Votre couleur Nextcloud"
+  /// ```
+  String get accentServer => """Votre couleur Nextcloud""";
+
+  /// ```dart
+  /// "Couleur de Pantry"
+  /// ```
+  String get accentApp => """Couleur de Pantry""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6907,6 +6927,10 @@ Mot de passe : pantry-rocks""",
   """wear.notificationsAllowed""": """Autorisées""",
   """wear.notificationsBlocked""": """Bloquées""",
   """wear.shoppingTripChip""": """Sortie courses""",
+  """wear.followPhone""": """Suivre le téléphone""",
+  """wear.accent""": """Couleur d'accent""",
+  """wear.accentServer""": """Votre couleur Nextcloud""",
+  """wear.accentApp""": """Couleur de Pantry""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

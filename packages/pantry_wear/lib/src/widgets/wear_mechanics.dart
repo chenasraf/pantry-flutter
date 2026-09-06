@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../services/rotary_service.dart';
@@ -35,6 +36,28 @@ const kPagerSlopFactor = 0.75;
 
 /// Google's hard limit on page dots.
 const kMaxDots = 6;
+
+/// A route over the pager, drawn in whatever language is current.
+///
+/// The page rides inside a subtree keyed on the locale, and that key is the
+/// whole point. A rebuild reaches a child only when the child *widget* differs
+/// from the one already mounted, and a route builder hands back the instance it
+/// closed over — identical every time, and identical again for a `const` page.
+/// So a language landing from the phone repaints the frame and leaves every
+/// pushed route beneath it in the language it was pushed in.
+///
+/// Keying is what forces that open, and it is the narrowest thing that does:
+/// the route itself is untouched, so the wearer keeps their place in a stack
+/// each level of which costs a deliberate edge-strip drag to climb back. The
+/// page's own state is discarded, which is the price, and a language change is
+/// rare and deliberate enough to pay it. The accent needs none of this — a
+/// theme is inherited, so a colour reaches through a `const` widget on its own.
+Route<T> wearRoute<T>(Widget page) => MaterialPageRoute<T>(
+  builder: (_) => KeyedSubtree(
+    key: ValueKey(LocaleService.instance.effectiveLocale.languageCode),
+    child: page,
+  ),
+);
 
 /// Page physics tuned by [kPagerSlopFactor], so the pager and the list under
 /// it race on terms chosen for a wrist rather than a phone.

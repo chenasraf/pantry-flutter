@@ -1,6 +1,7 @@
 export 'src/debug/channel_harness_view.dart';
 export 'src/pairing/wear_pairing_client.dart';
 export 'src/services/rotary_service.dart';
+export 'src/services/wear_appearance_client.dart';
 export 'src/services/wear_deep_link.dart';
 export 'src/services/wear_host_service.dart';
 export 'src/services/wear_image_cache.dart';

@@ -10,8 +10,42 @@ import 'pairing/wear_setup_page.dart';
 import 'shell/wear_shell.dart';
 
 /// Root of the watch app.
-class PantryWearApp extends StatelessWidget {
+///
+/// It listens to the two services that decide how the watch looks, because
+/// both of their values can land from the paired phone while the app is open —
+/// a language changed on the phone, an accent refetched there — and a root that
+/// only read them at startup would draw the previous answer until something
+/// else happened to rebuild it.
+///
+/// Listening is all it does: [MaterialApp] is never keyed on
+/// [LocaleService.revision], so a landed value and a wrist choice alike are a
+/// rebuild rather than a teardown. Keying would drop every pushed route, and on
+/// a watch each level back is a deliberate edge-strip drag rather than a button.
+class PantryWearApp extends StatefulWidget {
   const PantryWearApp({super.key});
+
+  @override
+  State<PantryWearApp> createState() => _PantryWearAppState();
+}
+
+class _PantryWearAppState extends State<PantryWearApp> {
+  @override
+  void initState() {
+    super.initState();
+    LocaleService.instance.addListener(_onAppearance);
+    ThemingService.instance.addListener(_onAppearance);
+  }
+
+  @override
+  void dispose() {
+    LocaleService.instance.removeListener(_onAppearance);
+    ThemingService.instance.removeListener(_onAppearance);
+    super.dispose();
+  }
+
+  void _onAppearance() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +65,11 @@ class PantryWearApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.black,
         useMaterial3: true,
       ),
-      home: const _WearHome(),
+      // Deliberately not `const`. A rebuild reaches a child only when the
+      // child widget differs from the one already there, and a `const` widget
+      // is canonicalised to a single instance — so a landed language would
+      // repaint the frame and nothing inside it.
+      home: _WearHome(),
     );
   }
 }
@@ -79,6 +117,8 @@ class _WearHomeState extends State<_WearHome> {
     final held =
         !AuthService.instance.isLoggedIn ||
         _pairing.state == WearSetupState.syncing;
-    return held ? WearSetupPage(client: _pairing) : const WearShell();
+    // Not `const`, for the same reason `home` is not: the shell is what a
+    // landed language has to reach.
+    return held ? WearSetupPage(client: _pairing) : WearShell();
   }
 }

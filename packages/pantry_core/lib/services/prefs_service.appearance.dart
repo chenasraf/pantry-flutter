@@ -43,13 +43,50 @@ extension PrefsServiceAppearanceSetters on PrefsService {
     notifyListeners();
   }
 
-  Future<void> setUseServerThemeColor(bool value) async {
+  /// Null clears the choice, leaving the app to follow whatever a paired phone
+  /// publishes — the state every device but a set-up watch starts in.
+  Future<void> setUseServerThemeColor(bool? value) async {
     if (_useServerThemeColor == value) return;
     _useServerThemeColor = value;
-    await _storage.write(
-      key: PrefsService._useServerThemeColorKey,
-      value: value.toString(),
-    );
+    if (value == null) {
+      await _storage.delete(key: PrefsService._useServerThemeColorKey);
+    } else {
+      await _storage.write(
+        key: PrefsService._useServerThemeColorKey,
+        value: value.toString(),
+      );
+    }
+    notifyListeners();
+  }
+
+  /// Land what the paired phone publishes about how it draws itself.
+  ///
+  /// One write for the whole statement: a landed payload is a single event,
+  /// and notifying per field would repaint the tree three times for one
+  /// arrival.
+  Future<void> setPhoneAppearance({
+    required String? locale,
+    required bool? useServerThemeColor,
+  }) async {
+    if (_phoneLocale == locale &&
+        _phoneUseServerThemeColor == useServerThemeColor) {
+      return;
+    }
+    _phoneLocale = locale;
+    _phoneUseServerThemeColor = useServerThemeColor;
+    await Future.wait([
+      if (locale == null)
+        _storage.delete(key: PrefsService._phoneLocaleKey)
+      else
+        _storage.write(key: PrefsService._phoneLocaleKey, value: locale),
+      if (useServerThemeColor == null)
+        _storage.delete(key: PrefsService._phoneUseServerThemeColorKey)
+      else
+        _storage.write(
+          key: PrefsService._phoneUseServerThemeColorKey,
+          value: useServerThemeColor.toString(),
+        ),
+    ]);
     notifyListeners();
   }
 

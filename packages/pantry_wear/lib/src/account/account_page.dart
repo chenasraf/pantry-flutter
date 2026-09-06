@@ -12,6 +12,7 @@ import '../scope/wear_scope.dart';
 import '../services/wear_mirror_client.dart';
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
+import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
 import 'house_switcher_page.dart';
@@ -109,9 +110,7 @@ class _AccountPageState extends State<AccountPage> {
 
   Future<void> _push(Widget page) async {
     setState(() => _covered = true);
-    await Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => page));
+    await Navigator.of(context).push(wearRoute<void>(page));
     // The page behind may have changed what a row says about itself.
     if (mounted) setState(() => _covered = false);
   }

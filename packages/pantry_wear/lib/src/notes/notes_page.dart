@@ -9,6 +9,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
+import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'note_blocks.dart';
 import 'note_markdown.dart';
@@ -158,9 +159,7 @@ class _NotesWallState extends State<NotesWall> {
     }
     setState(() => _covered = true);
     await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => NoteRoute(controller: widget.controller, note: note),
-      ),
+      wearRoute<void>(NoteRoute(controller: widget.controller, note: note)),
     );
     if (mounted) setState(() => _covered = false);
   }

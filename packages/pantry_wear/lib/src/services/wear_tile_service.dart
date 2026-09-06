@@ -33,6 +33,12 @@ class WearTileService {
   @visibleForTesting
   static MethodChannel get channel => _channel;
 
+  /// The last snapshot handed over, so an accent landing from the phone can be
+  /// re-sent without the controller that owns the lists being asked for them
+  /// again. Null until something has been published, which is also what a
+  /// cleared Tile is.
+  Map<String, Object?>? _snapshot;
+
   /// Hand the Tile the current house's lists, lowest `sortOrder` first.
   ///
   /// Safe to call on every read — native compares the payload with what it
@@ -45,7 +51,7 @@ class WearTileService {
   }) {
     final ordered = [...lists]
       ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
-    return _send('publish', {
+    _snapshot = {
       'houseId': houseId,
       'houseName': houseName,
       'accent': _hex(ThemingService.instance.effectiveColor),
@@ -53,14 +59,33 @@ class WearTileService {
         for (final l in ordered.take(maxLists))
           {'id': l.id, 'name': l.name, 'icon': l.icon, 'color': l.color},
       ],
-    });
+    };
+    return _send('publish', _snapshot!);
+  }
+
+  /// Re-send the last snapshot under the accent as it now stands.
+  ///
+  /// The Tile has no engine behind it and no way to fetch anything, so an
+  /// accent it was handed hours ago is the one it keeps drawing. Nothing else
+  /// in the snapshot can change without the controller republishing anyway.
+  Future<void> republish() async {
+    final snapshot = _snapshot;
+    if (snapshot == null) return;
+    _snapshot = {
+      ...snapshot,
+      'accent': _hex(ThemingService.instance.effectiveColor),
+    };
+    await _send('publish', _snapshot!);
   }
 
   /// Drop the snapshot. Signing out or being unpaired has to take the Tile with
   /// it — otherwise a watch that no longer has an account keeps showing a
   /// household's list names on its face, which is the same leak by a slower
   /// route.
-  Future<void> clear() => _send('clear', const {});
+  Future<void> clear() {
+    _snapshot = null;
+    return _send('clear', const {});
+  }
 
   Future<void> _send(String method, Map<String, Object?> args) async {
     try {

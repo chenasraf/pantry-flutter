@@ -1242,6 +1242,10 @@ wear:
   notificationsAllowed: Tillate
   notificationsBlocked: Blokkerte
   shoppingTripChip: Handletur
+  followPhone: Følg telefonen
+  accent: Aksentfarge
+  accentServer: Nextcloud-fargen din
+  accentApp: Pantry-fargen
 
 watch:
   title: Klokke

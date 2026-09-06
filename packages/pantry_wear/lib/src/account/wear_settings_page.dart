@@ -3,13 +3,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/theming_service.dart';
 
 import '../services/wear_host_service.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
+import 'accent_page.dart';
 import 'chip_visibility_page.dart';
 import 'crown_steering_page.dart';
+import 'language_page.dart';
 import 'refresh_interval_page.dart';
 import 'undo_window_page.dart';
 
@@ -72,9 +75,7 @@ class _WearSettingsPageState extends State<WearSettingsPage>
   }
 
   Future<void> _open(Widget page) async {
-    await Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => page));
+    await Navigator.of(context).push(wearRoute<void>(page));
     // The picker wrote the value; this page draws it.
     if (mounted) setState(() {});
   }
@@ -95,6 +96,28 @@ class _WearSettingsPageState extends State<WearSettingsPage>
               vertical: 44,
             ),
             children: [
+              SizedBox(
+                height: WearMetrics.cardHeight,
+                child: WearRow(
+                  icon: Icons.language,
+                  label: m.settings.language,
+                  value: languageLabel(PrefsService.instance.locale),
+                  onTap: () => unawaited(_open(const LanguagePage())),
+                ),
+              ),
+              const SizedBox(height: WearMetrics.cardGap),
+              SizedBox(
+                height: WearMetrics.cardHeight,
+                child: WearRow(
+                  icon: Icons.color_lens_outlined,
+                  label: m.wear.accent,
+                  value: accentLabel(
+                    ThemingService.instance.useServerThemeColorPref,
+                  ),
+                  onTap: () => unawaited(_open(const AccentPage())),
+                ),
+              ),
+              const SizedBox(height: WearMetrics.cardGap),
               SizedBox(
                 height: WearMetrics.cardHeight,
                 child: WearRow(

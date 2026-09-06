@@ -1106,6 +1106,10 @@ wear:
   notificationsAllowed: Allowed
   notificationsBlocked: Blocked
   shoppingTripChip: Shopping trip
+  followPhone: Follow phone
+  accent: Accent
+  accentServer: Your Nextcloud color
+  accentApp: Pantry color
 
 watch:
   title: Watch

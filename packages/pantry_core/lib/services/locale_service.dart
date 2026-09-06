@@ -68,10 +68,21 @@ class LocaleService extends ChangeNotifier {
   int get revision => _revision;
 
   /// Resolve the effective locale from the user preference, or auto-detect
-  /// from the Nextcloud server language, then the system locale.
+  /// from a paired phone's published locale, then the Nextcloud server
+  /// language, then the system locale.
   Locale get effectiveLocale {
     final pref = PrefsService.instance.locale;
     if (pref != null) return Locale(pref);
+
+    // The rung a watch has in place of the server's. Nothing on a watch reads
+    // a user profile, so what its phone resolved is the nearest thing it has
+    // to one; a device that can ask the server itself never has a value here.
+    final phoneLang = PrefsService.instance.phoneLocale;
+    if (phoneLang != null) {
+      for (final supported in supportedLocales) {
+        if (phoneLang == supported.languageCode) return supported;
+      }
+    }
 
     final serverLang = AuthService.instance.serverLanguage;
     if (serverLang != null) {
