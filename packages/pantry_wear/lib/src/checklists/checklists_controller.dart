@@ -291,16 +291,26 @@ class ChecklistsController extends ChangeNotifier {
   /// Everything the watch can answer without the network. Runs before the
   /// first fetch and again whenever scope moves, so the page draws immediately
   /// with whatever the last session left behind.
+  ///
+  /// The shell holds its first frame until this resolves, so the gate ends on
+  /// the read *finishing* rather than on it succeeding: a throw anywhere inside
+  /// would otherwise leave the watch on a bare ground plane with nothing left
+  /// to end it.
   Future<void> _loadFromCache() async {
+    try {
+      await _readCache();
+    } finally {
+      _loading = false;
+      _emit();
+    }
+  }
+
+  Future<void> _readCache() async {
     final houses = HouseService.instance.getCached() ?? const [];
     _houseId = await _scope.resolveHouse(houses) ?? _scope.houseId;
     _dropped ??= _scope.takeFallbackNotice();
     final house = _houseId;
-    if (house == null) {
-      _loading = false;
-      _emit();
-      return;
-    }
+    if (house == null) return;
     _houseName = _nameOfHouse(houses, house);
 
     _categories = {
@@ -334,8 +344,6 @@ class ChecklistsController extends ChangeNotifier {
         _items = _withoutPendingSessionWrites(cached, house, session.id);
       }
     }
-    _loading = false;
-    _emit();
   }
 
   /// The house's sort prefs as the phone last cached them, under the phone's

@@ -61,6 +61,14 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   var _locked = false;
   Timer? _lockTimer;
 
+  /// True until the controller's first cache read resolves. `mode` derives from
+  /// the trip, and the trip is read from the cache — so at `initState` it is
+  /// always `browse`, and a watch woken mid-shop would draw the empty browse
+  /// checklist and then swap off it. Nothing is drawn over that gap instead,
+  /// which is microtasks rather than frames: the stores are loaded before
+  /// `runApp` and the read touches no network.
+  var _awaitingFirstRead = false;
+
   /// A route pushed over the pager takes the crown with it: the detent stream
   /// is broadcast and a covered page stays mounted, so leaving it subscribed
   /// means one turn of the bezel scrolls two lists.
@@ -77,9 +85,8 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _controller = widget.controller ?? ChecklistsController();
-    _mode = _controller.mode;
-    _page = _mode == ChecklistMode.session ? 1 : 0;
-    _pager = PageController(initialPage: _page);
+    _awaitingFirstRead = _controller.isLoading;
+    _adoptMode(_controller.mode);
     _controller.addListener(_onData);
     WearDeepLink.instance.addListener(_onDeepLink);
     if (widget.controller == null) unawaited(_controller.start());
@@ -115,11 +122,32 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
       _showNotice(dropped);
       _controller.clearDropped();
     }
+    // The first read settling is the shell opening, not a mode change: no
+    // pager has been drawn, so the mode it lands on is taken on outright
+    // rather than swapped into behind a lockout.
+    if (_awaitingFirstRead && !_controller.isLoading) {
+      _awaitingFirstRead = false;
+      final previous = _pager;
+      setState(() => _adoptMode(_controller.mode));
+      // Never attached to a PageView — the gate is what kept one from being
+      // built — so unlike _setMode's swap this needs no frame to outlive.
+      previous.dispose();
+      return;
+    }
     if (_controller.mode != _mode) {
       unawaited(_setMode(_controller.mode));
       return;
     }
     setState(() {});
+  }
+
+  /// Take a mode on with no transition: its landing page, and a pager already
+  /// opening there. Correct only while nothing is on screen — a mounted
+  /// `PageView` needs [_setMode]'s swap instead.
+  void _adoptMode(ChecklistMode next) {
+    _mode = next;
+    _page = next == ChecklistMode.session ? 1 : 0;
+    _pager = PageController(initialPage: _page);
   }
 
   /// A Tile tap landing on an app that is already up. The launch case is
@@ -363,6 +391,12 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    // The ground plane the pager arrives on, so there is no colour step when
+    // it does. Nothing is said over it: the wait is shorter than a spinner
+    // would take to become legible, and a flash of one reads as a fault.
+    if (_awaitingFirstRead) {
+      return const ColoredBox(color: wearGround, child: SizedBox.expand());
+    }
     return Theme(
       data: _theme(context),
       child: Builder(
