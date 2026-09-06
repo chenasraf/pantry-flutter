@@ -5455,25 +5455,20 @@ class WearMessagesFr extends WearMessages {
   String get signOutTitle => """Se déconnecter ?""";
 
   /// ```dart
-  /// "Cette montre oubliera votre foyer. Votre téléphone reste connecté."
+  /// "Cette montre oubliera votre maison. Votre téléphone reste connecté."
   /// ```
   String get signOutBody =>
-      """Cette montre oubliera votre foyer. Votre téléphone reste connecté.""";
+      """Cette montre oubliera votre maison. Votre téléphone reste connecté.""";
 
   /// ```dart
-  /// "Foyer"
+  /// "Maison"
   /// ```
-  String get household => """Foyer""";
+  String get house => """Maison""";
 
   /// ```dart
-  /// "Choisir un foyer"
+  /// "Aucune maison pour le moment"
   /// ```
-  String get chooseHousehold => """Choisir un foyer""";
-
-  /// ```dart
-  /// "Aucun foyer pour l'instant"
-  /// ```
-  String get noHouses => """Aucun foyer pour l'instant""";
+  String get noHouses => """Aucune maison pour le moment""";
 
   /// ```dart
   /// "Affiche ${name}"
@@ -6698,10 +6693,9 @@ Mot de passe : pantry-rocks""",
   """wear.signOutAnyway""": """Se déconnecter quand même""",
   """wear.signOutTitle""": """Se déconnecter ?""",
   """wear.signOutBody""":
-      """Cette montre oubliera votre foyer. Votre téléphone reste connecté.""",
-  """wear.household""": """Foyer""",
-  """wear.chooseHousehold""": """Choisir un foyer""",
-  """wear.noHouses""": """Aucun foyer pour l'instant""",
+      """Cette montre oubliera votre maison. Votre téléphone reste connecté.""",
+  """wear.house""": """Maison""",
+  """wear.noHouses""": """Aucune maison pour le moment""",
   """wear.settings""": """Réglages""",
   """wear.refreshInterval""": """Actualiser""",
   """wear.refreshOff""": """Désactivé""",

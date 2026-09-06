@@ -5447,25 +5447,20 @@ class WearMessagesEs extends WearMessages {
   String get signOutTitle => """¿Cerrar sesión?""";
 
   /// ```dart
-  /// "Este reloj olvidará tu hogar. Tu teléfono seguirá con la sesión iniciada."
+  /// "Este reloj olvidará tu casa. Tu teléfono seguirá con la sesión iniciada."
   /// ```
   String get signOutBody =>
-      """Este reloj olvidará tu hogar. Tu teléfono seguirá con la sesión iniciada.""";
+      """Este reloj olvidará tu casa. Tu teléfono seguirá con la sesión iniciada.""";
 
   /// ```dart
-  /// "Hogar"
+  /// "Casa"
   /// ```
-  String get household => """Hogar""";
+  String get house => """Casa""";
 
   /// ```dart
-  /// "Elegir hogar"
+  /// "Aún no hay casas"
   /// ```
-  String get chooseHousehold => """Elegir hogar""";
-
-  /// ```dart
-  /// "Aún no hay hogares"
-  /// ```
-  String get noHouses => """Aún no hay hogares""";
+  String get noHouses => """Aún no hay casas""";
 
   /// ```dart
   /// "Mostrando ${name}"
@@ -6672,10 +6667,9 @@ Contraseña: pantry-rocks""",
   """wear.signOutAnyway""": """Cerrar sesión igualmente""",
   """wear.signOutTitle""": """¿Cerrar sesión?""",
   """wear.signOutBody""":
-      """Este reloj olvidará tu hogar. Tu teléfono seguirá con la sesión iniciada.""",
-  """wear.household""": """Hogar""",
-  """wear.chooseHousehold""": """Elegir hogar""",
-  """wear.noHouses""": """Aún no hay hogares""",
+      """Este reloj olvidará tu casa. Tu teléfono seguirá con la sesión iniciada.""",
+  """wear.house""": """Casa""",
+  """wear.noHouses""": """Aún no hay casas""",
   """wear.settings""": """Ajustes""",
   """wear.refreshInterval""": """Actualizar""",
   """wear.refreshOff""": """Desactivado""",

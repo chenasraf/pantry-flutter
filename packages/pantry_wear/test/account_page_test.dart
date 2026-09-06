@@ -135,7 +135,7 @@ void main() {
         findsOneWidget,
         reason:
             'the wearer typed neither the account nor the server, so this is '
-            'the one place the watch says whose household it is showing',
+            'the one place the watch says whose house it is showing',
       );
     }
   });
@@ -150,7 +150,7 @@ void main() {
       list.elements.where((e) => e.snappable).length,
       3,
       reason:
-          'household, settings and the way out — and nothing else while the '
+          'house, settings and the way out — and nothing else while the '
           'credential still works. Sync is a readout, not a row.',
     );
   });
@@ -165,7 +165,7 @@ void main() {
 
     // Identity and the sync line sit above the first landable row, so without
     // the ends of the scrollable being resting places the snap hauls the
-    // wearer straight past them onto the household row and they can never be
+    // wearer straight past them onto the house row and they can never be
     // read.
     await tester.drag(find.byType(SnapFocusList), const Offset(0, 60));
     await tester.pumpAndSettle();
@@ -175,11 +175,11 @@ void main() {
     expect(find.text(m.wear.allSaved), findsOneWidget);
   });
 
-  testWidgets('the household row names the household', (tester) async {
+  testWidgets('the house row names the house', (tester) async {
     await seedHouses(tester, [house(1, 'Ada House'), house(2, 'The Annexe')]);
     await pump(tester);
 
-    expect(find.text(m.wear.household), findsOneWidget);
+    expect(find.text(m.wear.house), findsOneWidget);
     expect(find.text('Ada House'), findsOneWidget);
   });
 
@@ -228,13 +228,13 @@ void main() {
     );
   });
 
-  testWidgets('the household row opens the switcher', (tester) async {
+  testWidgets('the house row opens the switcher', (tester) async {
     await seedHouses(tester, [house(1, 'Ada House'), house(2, 'The Annexe')]);
     await pump(tester);
 
-    await tester.tap(find.text(m.wear.household));
+    await tester.tap(find.text(m.wear.house));
     await tester.pumpAndSettle();
-    await tester.tap(find.text(m.wear.household));
+    await tester.tap(find.text(m.wear.house));
     await tester.pumpAndSettle();
 
     expect(find.byType(HouseSwitcherPage), findsOneWidget);
@@ -313,7 +313,7 @@ void main() {
 
       // A 401 degrades rather than signing out: the caches stay readable and
       // the queue holds, so the page it is shown on must not lose its rows.
-      expect(find.text(m.wear.household), findsOneWidget);
+      expect(find.text(m.wear.house), findsOneWidget);
       expect(find.text(m.wear.settings), findsOneWidget);
       expect(find.text(m.common.logout), findsOneWidget);
     });

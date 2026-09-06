@@ -8,16 +8,16 @@ import 'package:pantry_core/services/house_service.dart';
 import '../scope/wear_scope.dart';
 import '../widgets/wear_choice_page.dart';
 
-/// Which household the watch is showing.
+/// Which house the watch is showing.
 ///
 /// The one control that changes it, and it lives here rather than on the
-/// checklists page: switching household is rare enough that it earns no chrome
+/// checklists page: switching house is rare enough that it earns no chrome
 /// in the primary view, where the rail's two-step switcher already spends what
 /// there is on the list.
 ///
-/// A single-household wearer still gets the row and still gets this page. The
+/// A single-house wearer still gets the row and still gets this page. The
 /// control being sometimes absent is worse than it being sometimes short:
-/// somebody who joins a second household later has nowhere to learn where the
+/// somebody who joins a second house later has nowhere to learn where the
 /// switch lives.
 class HouseSwitcherPage extends StatefulWidget {
   const HouseSwitcherPage({super.key});

@@ -6,6 +6,7 @@ import 'package:pantry_core/sync/sync_manager.dart';
 
 import '../pairing/wear_pairing_client.dart';
 import '../wear_shape.dart';
+import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 
 /// Leaving, and the one thing leaving has to say first.
@@ -84,7 +85,7 @@ class _SignOutPageState extends State<SignOutPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.logout, size: 20, color: _ink),
+                const Icon(Icons.logout, size: 20, color: wearNoticeInk),
                 const SizedBox(height: 6),
                 Text(
                   m.wear.signOutTitle,
@@ -102,7 +103,7 @@ class _SignOutPageState extends State<SignOutPage> {
                   style: TextStyle(
                     fontSize: 10,
                     height: 1.2,
-                    color: pending ? _ink : Colors.white54,
+                    color: pending ? wearNoticeInk : Colors.white54,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -132,8 +133,6 @@ class _SignOutPageState extends State<SignOutPage> {
     );
   }
 }
-
-const _ink = Color(0xFFE0A0A0);
 
 class _Button extends StatelessWidget {
   /// Null while the queue is draining: the label becomes the progress, and
@@ -165,7 +164,7 @@ class _Button extends StatelessWidget {
             fontSize: 12,
             color: label == null
                 ? Colors.white38
-                : (warning ? _ink : Colors.white),
+                : (warning ? wearNoticeInk : Colors.white),
           ),
         ),
       ),

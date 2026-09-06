@@ -5463,25 +5463,20 @@ class WearMessagesDe extends WearMessages {
   String get signOutTitle => """Abmelden?""";
 
   /// ```dart
-  /// "Diese Uhr vergisst deinen Haushalt. Dein Telefon bleibt angemeldet."
+  /// "Diese Uhr vergisst dein Haus. Dein Telefon bleibt angemeldet."
   /// ```
   String get signOutBody =>
-      """Diese Uhr vergisst deinen Haushalt. Dein Telefon bleibt angemeldet.""";
+      """Diese Uhr vergisst dein Haus. Dein Telefon bleibt angemeldet.""";
 
   /// ```dart
-  /// "Haushalt"
+  /// "Haus"
   /// ```
-  String get household => """Haushalt""";
+  String get house => """Haus""";
 
   /// ```dart
-  /// "Haushalt wählen"
+  /// "Noch keine Häuser"
   /// ```
-  String get chooseHousehold => """Haushalt wählen""";
-
-  /// ```dart
-  /// "Noch keine Haushalte"
-  /// ```
-  String get noHouses => """Noch keine Haushalte""";
+  String get noHouses => """Noch keine Häuser""";
 
   /// ```dart
   /// "Zeigt jetzt ${name}"
@@ -6710,10 +6705,9 @@ Passwort: pantry-rocks""",
   """wear.signOutAnyway""": """Trotzdem abmelden""",
   """wear.signOutTitle""": """Abmelden?""",
   """wear.signOutBody""":
-      """Diese Uhr vergisst deinen Haushalt. Dein Telefon bleibt angemeldet.""",
-  """wear.household""": """Haushalt""",
-  """wear.chooseHousehold""": """Haushalt wählen""",
-  """wear.noHouses""": """Noch keine Haushalte""",
+      """Diese Uhr vergisst dein Haus. Dein Telefon bleibt angemeldet.""",
+  """wear.house""": """Haus""",
+  """wear.noHouses""": """Noch keine Häuser""",
   """wear.settings""": """Einstellungen""",
   """wear.refreshInterval""": """Aktualisieren""",
   """wear.refreshOff""": """Aus""",

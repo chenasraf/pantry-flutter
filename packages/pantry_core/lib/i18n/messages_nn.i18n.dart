@@ -5434,25 +5434,20 @@ class WearMessagesNn extends WearMessages {
   String get signOutTitle => """Logge ut?""";
 
   /// ```dart
-  /// "Denne klokka gløymer husstanden din. Telefonen din er framleis innlogga."
+  /// "Denne klokka gløymer huset ditt. Telefonen din er framleis innlogga."
   /// ```
   String get signOutBody =>
-      """Denne klokka gløymer husstanden din. Telefonen din er framleis innlogga.""";
+      """Denne klokka gløymer huset ditt. Telefonen din er framleis innlogga.""";
 
   /// ```dart
-  /// "Husstand"
+  /// "Hus"
   /// ```
-  String get household => """Husstand""";
+  String get house => """Hus""";
 
   /// ```dart
-  /// "Vel husstand"
+  /// "Ingen hus enno"
   /// ```
-  String get chooseHousehold => """Vel husstand""";
-
-  /// ```dart
-  /// "Ingen husstandar enno"
-  /// ```
-  String get noHouses => """Ingen husstandar enno""";
+  String get noHouses => """Ingen hus enno""";
 
   /// ```dart
   /// "Viser no ${name}"
@@ -6644,10 +6639,9 @@ Passord: pantry""",
   """wear.signOutAnyway""": """Logg ut likevel""",
   """wear.signOutTitle""": """Logge ut?""",
   """wear.signOutBody""":
-      """Denne klokka gløymer husstanden din. Telefonen din er framleis innlogga.""",
-  """wear.household""": """Husstand""",
-  """wear.chooseHousehold""": """Vel husstand""",
-  """wear.noHouses""": """Ingen husstandar enno""",
+      """Denne klokka gløymer huset ditt. Telefonen din er framleis innlogga.""",
+  """wear.house""": """Hus""",
+  """wear.noHouses""": """Ingen hus enno""",
   """wear.settings""": """Innstillingar""",
   """wear.refreshInterval""": """Oppdater""",
   """wear.refreshOff""": """Av""",

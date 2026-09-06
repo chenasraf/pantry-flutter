@@ -5408,25 +5408,19 @@ class WearMessagesHe extends WearMessages {
   String get signOutTitle => """להתנתק?""";
 
   /// ```dart
-  /// "השעון ישכח את משק הבית שלך. הטלפון יישאר מחובר."
+  /// "השעון ישכח את הבית שלך. הטלפון יישאר מחובר."
   /// ```
-  String get signOutBody =>
-      """השעון ישכח את משק הבית שלך. הטלפון יישאר מחובר.""";
+  String get signOutBody => """השעון ישכח את הבית שלך. הטלפון יישאר מחובר.""";
 
   /// ```dart
-  /// "משק בית"
+  /// "בית"
   /// ```
-  String get household => """משק בית""";
+  String get house => """בית""";
 
   /// ```dart
-  /// "בחירת משק בית"
+  /// "אין בתים עדיין"
   /// ```
-  String get chooseHousehold => """בחירת משק בית""";
-
-  /// ```dart
-  /// "אין עדיין משקי בית"
-  /// ```
-  String get noHouses => """אין עדיין משקי בית""";
+  String get noHouses => """אין בתים עדיין""";
 
   /// ```dart
   /// "מציג כעת את ${name}"
@@ -6573,10 +6567,9 @@ Map<String, String> get messagesHeMap => {
   """wear.signOutSending""": """שולח…""",
   """wear.signOutAnyway""": """להתנתק בכל זאת""",
   """wear.signOutTitle""": """להתנתק?""",
-  """wear.signOutBody""": """השעון ישכח את משק הבית שלך. הטלפון יישאר מחובר.""",
-  """wear.household""": """משק בית""",
-  """wear.chooseHousehold""": """בחירת משק בית""",
-  """wear.noHouses""": """אין עדיין משקי בית""",
+  """wear.signOutBody""": """השעון ישכח את הבית שלך. הטלפון יישאר מחובר.""",
+  """wear.house""": """בית""",
+  """wear.noHouses""": """אין בתים עדיין""",
   """wear.settings""": """הגדרות""",
   """wear.refreshInterval""": """רענון""",
   """wear.refreshOff""": """כבוי""",

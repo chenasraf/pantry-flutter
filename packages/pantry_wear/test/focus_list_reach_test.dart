@@ -11,7 +11,7 @@ import 'package:pantry_wear/src/widgets/wear_metrics.dart';
 /// anywhere, so anything sitting between two rows, or above the first, was
 /// hauled off the screen the moment the wearer let go. Worn on the reference
 /// watch as "the text above the checkboxes is hard to scroll into" on a note,
-/// and as the account page snapping back to the household row.
+/// and as the account page snapping back to the house row.
 void main() {
   setUp(() => WearShape.markFrom(['round']));
 

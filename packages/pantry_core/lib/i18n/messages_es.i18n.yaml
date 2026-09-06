@@ -1047,10 +1047,9 @@ wear:
   signOutSending: Enviando…
   signOutAnyway: Cerrar sesión igualmente
   signOutTitle: "¿Cerrar sesión?"
-  signOutBody: Este reloj olvidará tu hogar. Tu teléfono seguirá con la sesión iniciada.
-  household: Hogar
-  chooseHousehold: Elegir hogar
-  noHouses: Aún no hay hogares
+  signOutBody: Este reloj olvidará tu casa. Tu teléfono seguirá con la sesión iniciada.
+  house: Casa
+  noHouses: Aún no hay casas
   nowShowing(String name): "Mostrando ${name}"
   settings: Ajustes
   refreshInterval: Actualizar

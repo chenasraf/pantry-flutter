@@ -1055,10 +1055,9 @@ wear:
   signOutSending: Sending…
   signOutAnyway: Sign out anyway
   signOutTitle: Sign out?
-  signOutBody: This watch forgets your household. Your phone stays signed in.
-  household: Household
-  chooseHousehold: Choose household
-  noHouses: No households yet
+  signOutBody: This watch forgets your house. Your phone stays signed in.
+  house: House
+  noHouses: No houses yet
   nowShowing(String name): "Now showing ${name}"
   settings: Settings
   refreshInterval: Refresh

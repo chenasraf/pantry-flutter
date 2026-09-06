@@ -5403,25 +5403,20 @@ class WearMessages {
   String get signOutTitle => """Sign out?""";
 
   /// ```dart
-  /// "This watch forgets your household. Your phone stays signed in."
+  /// "This watch forgets your house. Your phone stays signed in."
   /// ```
   String get signOutBody =>
-      """This watch forgets your household. Your phone stays signed in.""";
+      """This watch forgets your house. Your phone stays signed in.""";
 
   /// ```dart
-  /// "Household"
+  /// "House"
   /// ```
-  String get household => """Household""";
+  String get house => """House""";
 
   /// ```dart
-  /// "Choose household"
+  /// "No houses yet"
   /// ```
-  String get chooseHousehold => """Choose household""";
-
-  /// ```dart
-  /// "No households yet"
-  /// ```
-  String get noHouses => """No households yet""";
+  String get noHouses => """No houses yet""";
 
   /// ```dart
   /// "Now showing ${name}"
@@ -6588,10 +6583,9 @@ Password: pantry-rocks""",
   """wear.signOutAnyway""": """Sign out anyway""",
   """wear.signOutTitle""": """Sign out?""",
   """wear.signOutBody""":
-      """This watch forgets your household. Your phone stays signed in.""",
-  """wear.household""": """Household""",
-  """wear.chooseHousehold""": """Choose household""",
-  """wear.noHouses""": """No households yet""",
+      """This watch forgets your house. Your phone stays signed in.""",
+  """wear.house""": """House""",
+  """wear.noHouses""": """No houses yet""",
   """wear.settings""": """Settings""",
   """wear.refreshInterval""": """Refresh""",
   """wear.refreshOff""": """Off""",

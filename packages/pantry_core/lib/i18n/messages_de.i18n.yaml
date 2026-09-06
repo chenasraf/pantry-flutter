@@ -1047,10 +1047,9 @@ wear:
   signOutSending: Wird gesendet …
   signOutAnyway: Trotzdem abmelden
   signOutTitle: Abmelden?
-  signOutBody: Diese Uhr vergisst deinen Haushalt. Dein Telefon bleibt angemeldet.
-  household: Haushalt
-  chooseHousehold: Haushalt wählen
-  noHouses: Noch keine Haushalte
+  signOutBody: Diese Uhr vergisst dein Haus. Dein Telefon bleibt angemeldet.
+  house: Haus
+  noHouses: Noch keine Häuser
   nowShowing(String name): "Zeigt jetzt ${name}"
   settings: Einstellungen
   refreshInterval: Aktualisieren

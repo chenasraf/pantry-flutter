@@ -1047,10 +1047,9 @@ wear:
   signOutSending: Envoi…
   signOutAnyway: Se déconnecter quand même
   signOutTitle: Se déconnecter ?
-  signOutBody: Cette montre oubliera votre foyer. Votre téléphone reste connecté.
-  household: Foyer
-  chooseHousehold: Choisir un foyer
-  noHouses: Aucun foyer pour l'instant
+  signOutBody: Cette montre oubliera votre maison. Votre téléphone reste connecté.
+  house: Maison
+  noHouses: Aucune maison pour le moment
   nowShowing(String name): "Affiche ${name}"
   settings: Réglages
   refreshInterval: Actualiser

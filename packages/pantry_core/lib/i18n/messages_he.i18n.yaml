@@ -1047,10 +1047,9 @@ wear:
   signOutSending: שולח…
   signOutAnyway: להתנתק בכל זאת
   signOutTitle: להתנתק?
-  signOutBody: השעון ישכח את משק הבית שלך. הטלפון יישאר מחובר.
-  household: משק בית
-  chooseHousehold: בחירת משק בית
-  noHouses: אין עדיין משקי בית
+  signOutBody: השעון ישכח את הבית שלך. הטלפון יישאר מחובר.
+  house: בית
+  noHouses: אין בתים עדיין
   nowShowing(String name): "מציג כעת את ${name}"
   settings: הגדרות
   refreshInterval: רענון

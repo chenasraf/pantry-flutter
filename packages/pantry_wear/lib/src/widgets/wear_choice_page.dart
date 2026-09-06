@@ -24,7 +24,7 @@ class WearChoice<T> {
 
 /// A pushed page that asks the wearer to pick one of a short list.
 ///
-/// The household, the list and the refresh interval are the same question with
+/// The house, the list and the refresh interval are the same question with
 /// different nouns, so they are the same page — one row geometry and one back
 /// gesture, rather than three that drift apart.
 ///

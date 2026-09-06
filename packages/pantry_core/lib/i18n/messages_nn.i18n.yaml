@@ -1191,10 +1191,9 @@ wear:
   signOutSending: Sender …
   signOutAnyway: Logg ut likevel
   signOutTitle: Logge ut?
-  signOutBody: Denne klokka gløymer husstanden din. Telefonen din er framleis innlogga.
-  household: Husstand
-  chooseHousehold: Vel husstand
-  noHouses: Ingen husstandar enno
+  signOutBody: Denne klokka gløymer huset ditt. Telefonen din er framleis innlogga.
+  house: Hus
+  noHouses: Ingen hus enno
   nowShowing(String name): "Viser no ${name}"
   settings: Innstillingar
   refreshInterval: Oppdater

@@ -10,17 +10,15 @@ import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../account/account_page.dart';
-import '../account/set_up_again_page.dart';
 import '../checklists/checklists_controller.dart';
 import '../checklists/checklists_page.dart';
 import '../checklists/list_switcher_page.dart';
 import '../photos/photos_page.dart';
 import '../notes/notes_page.dart';
-import '../prototype/degraded_proto.dart';
-import '../prototype/proto_tuning.dart';
 import '../services/wear_deep_link.dart';
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
+import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'wear_rail.dart';
@@ -50,10 +48,6 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   late final ChecklistsController _controller;
   final _geometry = ValueNotifier(const FocusGeometry());
   final _pageKey = GlobalKey<ChecklistsPageState>();
-
-  /// The notes page is still the design skeleton, drawn from fixtures; it
-  /// carries its own tuning until it is built against the server.
-  final _skeletonTuning = ProtoTuning();
 
   late PageController _pager;
   var _page = 0;
@@ -101,7 +95,6 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     if (widget.controller == null) _controller.dispose();
     _geometry.dispose();
     _pager.dispose();
-    _skeletonTuning.dispose();
     super.dispose();
   }
 
@@ -307,16 +300,6 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     if (mounted) setState(() => _routeOpen = false);
   }
 
-  /// Where the degraded rail line lands. A pushed route, so it inherits the
-  /// same crown hand-off and back strip every other pushed route needs.
-  Future<void> _openSetUpAgain() async {
-    setState(() => _routeOpen = true);
-    await Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => const SetUpAgainPage()));
-    if (mounted) setState(() => _routeOpen = false);
-  }
-
   // -- Frame -----------------------------------------------------------------
 
   ThemeData _theme(BuildContext context) {
@@ -377,41 +360,20 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
                         color: const Color(0xFF0B0B0C),
                         child: ValueListenableBuilder(
                           valueListenable: _geometry,
-                          builder: (context, geometry, _) => ListenableBuilder(
-                            listenable: _skeletonTuning,
-                            builder: (context, _) => WearRail(
-                              title: title,
-                              group: _page == _checklistIndex
-                                  ? geometry.stickyGroup
-                                  : null,
-                              groupIcon: geometry.stickyIcon,
-                              groupColor: geometry.stickyColor,
-                              page: _page,
-                              pages: _pages.length,
-                              expanded: _railExpanded,
-                              onTapTitle: _tapRail,
-                              onChangeList: _openSwitcher,
-                              degraded: _skeletonTuning.degraded,
-                              onSetUpAgain: _openSetUpAgain,
-                            ),
+                          builder: (context, geometry, _) => WearRail(
+                            title: title,
+                            group: _page == _checklistIndex
+                                ? geometry.stickyGroup
+                                : null,
+                            groupIcon: geometry.stickyIcon,
+                            groupColor: geometry.stickyColor,
+                            page: _page,
+                            pages: _pages.length,
+                            expanded: _railExpanded,
+                            onTapTitle: _tapRail,
+                            onChangeList: _openSwitcher,
                           ),
                         ),
-                      ),
-                    ),
-                    // PROTOTYPE — variant C, the persistent strip. It sits
-                    // where the transient notice draws, so the two can be seen
-                    // fighting for the same space.
-                    PositionedDirectional(
-                      start: 0,
-                      end: 0,
-                      bottom: h * 0.02,
-                      child: ListenableBuilder(
-                        listenable: _skeletonTuning,
-                        builder: (context, _) =>
-                            _skeletonTuning.degraded ==
-                                DegradedProto.bottomStrip
-                            ? ProtoDegradedStrip(onTap: _openSetUpAgain)
-                            : const SizedBox.shrink(),
                       ),
                     ),
                     if (_notice != null)
@@ -521,7 +483,7 @@ class _Notice extends StatelessWidget {
   Widget build(BuildContext context) => Center(
     child: DecoratedBox(
       decoration: BoxDecoration(
-        color: const Color(0xFF2A1D1D),
+        color: wearNoticeGround,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
@@ -533,7 +495,7 @@ class _Notice extends StatelessWidget {
           message,
           textAlign: TextAlign.center,
           textDirection: detectTextDirection(message),
-          style: const TextStyle(fontSize: 10, color: Color(0xFFE0A0A0)),
+          style: const TextStyle(fontSize: 10, color: wearNoticeInk),
         ),
       ),
     ),

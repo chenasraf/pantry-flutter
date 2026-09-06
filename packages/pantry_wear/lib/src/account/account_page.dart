@@ -7,7 +7,7 @@ import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
-import '../prototype/degraded_proto.dart';
+import '../widgets/wear_ink.dart';
 import '../scope/wear_scope.dart';
 import '../services/wear_mirror_client.dart';
 import '../wear_shape.dart';
@@ -199,7 +199,7 @@ class _AccountPageState extends State<AccountPage> {
     row(
       icon: Icons.home_outlined,
       tint: scheme.primary,
-      label: m.wear.household,
+      label: m.wear.house,
       value: () => _houseName,
       onTap: () => unawaited(_push(const HouseSwitcherPage())),
     );
@@ -357,7 +357,7 @@ class _SyncStatus extends StatelessWidget {
 
 /// Why the row under this one is here. `common.sessionExpiredBody` is
 /// phone-length prose — six lines at this size, on a page that also has to
-/// carry identity, the household, sync and the way out.
+/// carry identity, the house, sync and the way out.
 class _DegradedNote extends StatelessWidget {
   const _DegradedNote();
 
@@ -371,11 +371,7 @@ class _DegradedNote extends StatelessWidget {
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,
-      style: const TextStyle(
-        fontSize: 10,
-        height: 1.15,
-        color: protoDegradedInk,
-      ),
+      style: const TextStyle(fontSize: 10, height: 1.15, color: wearNoticeInk),
     ),
   );
 }
