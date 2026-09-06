@@ -56,6 +56,7 @@ class PrefsService extends ChangeNotifier {
   static const _photosRefreshSecondsKey = 'photos_refresh_seconds';
   static const _shoppingRefreshSecondsKey = 'shopping_refresh_seconds';
   static const _wearPollSecondsKey = 'wear_poll_seconds';
+  static const _wearCrownTurnsPagesKey = 'wear_crown_turns_pages';
 
   /// Allowed auto-refresh intervals in seconds. 0 means "off" (no background
   /// polling; manual pull-to-refresh only).
@@ -261,6 +262,13 @@ class PrefsService extends ChangeNotifier {
   int _wearPollSeconds = 60;
   int get wearPollSeconds => _wearPollSeconds;
 
+  /// Whether a turn of the watch's bezel or crown moves between pages instead
+  /// of scrolling the page it is on. A turn means one thing at a time, so this
+  /// is what the crown steers rather than what it steers first: with it on,
+  /// lists scroll by touch alone.
+  bool _wearCrownTurnsPages = false;
+  bool get wearCrownTurnsPages => _wearCrownTurnsPages;
+
   /// The shopping interval with [shoppingRefreshInherit] resolved to the
   /// current checklist interval, so callers get a concrete seconds value.
   int get shoppingRefreshSecondsResolved =>
@@ -445,6 +453,8 @@ class PrefsService extends ChangeNotifier {
     if (wearPoll != null && _validRefreshSeconds.contains(wearPoll)) {
       _wearPollSeconds = wearPoll;
     }
+
+    _wearCrownTurnsPages = all[_wearCrownTurnsPagesKey] == 'true';
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -518,6 +528,7 @@ class PrefsService extends ChangeNotifier {
     _photosRefreshSeconds = 60;
     _shoppingRefreshSeconds = shoppingRefreshInherit;
     _wearPollSeconds = 60;
+    _wearCrownTurnsPages = false;
     final keys = [
       _lastHouseKey,
       _notificationsEnabledKey,
@@ -555,6 +566,7 @@ class PrefsService extends ChangeNotifier {
       _photosRefreshSecondsKey,
       _shoppingRefreshSecondsKey,
       _wearPollSecondsKey,
+      _wearCrownTurnsPagesKey,
     ];
     final futures = <Future>[];
     for (final key in keys) {

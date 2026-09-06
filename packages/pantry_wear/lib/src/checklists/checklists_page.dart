@@ -36,14 +36,15 @@ class ChecklistsPage extends StatefulWidget {
   final ChecklistsController controller;
   final ValueNotifier<FocusGeometry> geometry;
 
-  /// Only the page being looked at may steer from the crown.
-  final bool active;
+  /// Whether the crown is this list's to steer: only the page being looked at
+  /// may read it, and only while turning it scrolls rather than turns pages.
+  final bool rotary;
 
   const ChecklistsPage({
     super.key,
     required this.controller,
     required this.geometry,
-    required this.active,
+    required this.rotary,
   });
 
   @override
@@ -384,7 +385,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
       elements: _elements(),
       itemExtent: WearMetrics.itemExtent,
       falloffRows: WearMetrics.falloffRows,
-      rotaryActive: widget.active,
+      rotaryActive: widget.rotary,
       horizontalInset: WearMetrics.sideInset,
       geometry: widget.geometry,
     );

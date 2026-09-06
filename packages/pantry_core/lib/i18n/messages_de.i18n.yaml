@@ -1078,6 +1078,9 @@ wear:
   notBilled: Nicht gesetzt
   currency: Währung
   notANumber: Nur Zahlen
+  crown: Krone
+  crownScrollsList: Liste scrollen
+  crownTurnsPages: Seiten wechseln
 
 watch:
   title: Uhr

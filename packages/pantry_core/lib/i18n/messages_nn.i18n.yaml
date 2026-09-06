@@ -1222,6 +1222,9 @@ wear:
   notBilled: Ikkje sett
   currency: Valuta
   notANumber: Berre tal
+  crown: Krone
+  crownScrollsList: Bla i lista
+  crownTurnsPages: Byt side
 
 watch:
   title: Klokke

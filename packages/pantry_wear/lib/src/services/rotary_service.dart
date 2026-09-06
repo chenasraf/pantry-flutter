@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 /// The rotating bezel and the crown.
@@ -19,12 +21,41 @@ class RotaryService {
   /// single sink — so a second call would silently strand the first reader.
   /// This one stream still detaches and re-attaches as its listener count
   /// crosses zero, so nothing leaks while no screen is watching.
-  static final _events = _channel.receiveBroadcastStream();
+  static final _events = _channel
+      .receiveBroadcastStream()
+      .map((event) => (event as num).toDouble())
+      .handleError((_) {});
+
+  int _readers = 0;
+
+  /// How many readers are attached to [detents] right now.
+  ///
+  /// Exactly one is the rule everywhere — a page and a route pushed over it are
+  /// both mounted, so leaving both subscribed means one turn of the bezel moves
+  /// two things. Rotary is not injectable over adb, so the only way to hold
+  /// that rule is a test that counts, and this is what it counts.
+  int get readerCount => _readers;
 
   /// One event per detent, `+1.0` clockwise and `-1.0` counter-clockwise.
   ///
-  /// Broadcast, because a page and the list inside it both want to steer by
-  /// the bezel and only one of them is focused at a time.
-  Stream<double> get detents =>
-      _events.map((event) => (event as num).toDouble()).handleError((_) {});
+  /// A reader of its own each time, over the one platform subscription, so a
+  /// page and the route covering it are told apart rather than sharing a
+  /// listener count of one.
+  Stream<double> get detents {
+    late final StreamController<double> reader;
+    StreamSubscription<double>? source;
+    reader = StreamController<double>.broadcast(
+      onListen: () {
+        _readers++;
+        source = _events.listen(reader.add);
+      },
+      onCancel: () async {
+        _readers--;
+        final sub = source;
+        source = null;
+        await sub?.cancel();
+      },
+    );
+    return reader.stream;
+  }
 }

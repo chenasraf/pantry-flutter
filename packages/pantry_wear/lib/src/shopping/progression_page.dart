@@ -31,13 +31,18 @@ import 'trip_summary_page.dart';
 class ProgressionPage extends StatefulWidget {
   final ChecklistsController controller;
 
-  /// Only the page being looked at may steer from the crown.
+  /// Whether this is the page in front.
   final bool active;
+
+  /// Whether the crown is this list's to steer: [active], and only while
+  /// turning it scrolls rather than turns pages.
+  final bool rotary;
 
   const ProgressionPage({
     super.key,
     required this.controller,
     required this.active,
+    required this.rotary,
   });
 
   @override
@@ -254,7 +259,7 @@ class _ProgressionPageState extends State<ProgressionPage> {
               controller: _scroll,
               itemExtent: WearMetrics.itemExtent,
               falloffRows: WearMetrics.falloffRows,
-              rotaryActive: widget.active && !_covered,
+              rotaryActive: widget.rotary && !_covered,
               geometry: _geometry,
               elements: _elements(),
             ),

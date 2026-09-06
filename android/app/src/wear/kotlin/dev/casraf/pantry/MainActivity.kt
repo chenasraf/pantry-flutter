@@ -112,6 +112,7 @@ class MainActivity : FlutterActivity() {
         MethodChannel(messenger, hostChannel).setMethodCallHandler { call, result ->
             when (call.method) {
                 "openOnPhone" -> openOnPhone(call.argument<String>("url"), result)
+                "hasRotary" -> result.success(hasRotary())
                 else -> result.notImplemented()
             }
         }
@@ -137,6 +138,16 @@ class MainActivity : FlutterActivity() {
                 .requestUpdate(ListTileService::class.java)
         }
         result.success(null)
+    }
+
+    /**
+     * Whether any attached input device speaks rotary, asked of the same source
+     * [onGenericMotionEvent] filters on. Enumeration is what the platform will
+     * say before a single detent has been turned, which is when a settings page
+     * has to draw or hide the row that configures them.
+     */
+    private fun hasRotary(): Boolean = InputDevice.getDeviceIds().any { id ->
+        InputDevice.getDevice(id)?.supportsSource(InputDevice.SOURCE_ROTARY_ENCODER) == true
     }
 
     /**

@@ -5612,6 +5612,21 @@ class WearMessagesFr extends WearMessages {
   /// "Chiffres uniquement"
   /// ```
   String get notANumber => """Chiffres uniquement""";
+
+  /// ```dart
+  /// "Couronne"
+  /// ```
+  String get crown => """Couronne""";
+
+  /// ```dart
+  /// "Faire défiler la liste"
+  /// ```
+  String get crownScrollsList => """Faire défiler la liste""";
+
+  /// ```dart
+  /// "Changer de page"
+  /// ```
+  String get crownTurnsPages => """Changer de page""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6786,6 +6801,9 @@ Mot de passe : pantry-rocks""",
   """wear.notBilled""": """Non renseigné""",
   """wear.currency""": """Devise""",
   """wear.notANumber""": """Chiffres uniquement""",
+  """wear.crown""": """Couronne""",
+  """wear.crownScrollsList""": """Faire défiler la liste""",
+  """wear.crownTurnsPages""": """Changer de page""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

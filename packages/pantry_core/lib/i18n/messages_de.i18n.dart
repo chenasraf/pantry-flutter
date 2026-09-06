@@ -5620,6 +5620,21 @@ class WearMessagesDe extends WearMessages {
   /// "Nur Zahlen"
   /// ```
   String get notANumber => """Nur Zahlen""";
+
+  /// ```dart
+  /// "Krone"
+  /// ```
+  String get crown => """Krone""";
+
+  /// ```dart
+  /// "Liste scrollen"
+  /// ```
+  String get crownScrollsList => """Liste scrollen""";
+
+  /// ```dart
+  /// "Seiten wechseln"
+  /// ```
+  String get crownTurnsPages => """Seiten wechseln""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6798,6 +6813,9 @@ Passwort: pantry-rocks""",
   """wear.notBilled""": """Nicht gesetzt""",
   """wear.currency""": """Währung""",
   """wear.notANumber""": """Nur Zahlen""",
+  """wear.crown""": """Krone""",
+  """wear.crownScrollsList""": """Liste scrollen""",
+  """wear.crownTurnsPages""": """Seiten wechseln""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

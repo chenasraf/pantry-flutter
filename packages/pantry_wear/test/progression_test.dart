@@ -46,7 +46,11 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: ProgressionPage(controller: controller, active: true),
+          body: ProgressionPage(
+            controller: controller,
+            active: true,
+            rotary: true,
+          ),
         ),
       ),
     );

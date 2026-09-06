@@ -5591,6 +5591,21 @@ class WearMessagesNn extends WearMessages {
   /// "Berre tal"
   /// ```
   String get notANumber => """Berre tal""";
+
+  /// ```dart
+  /// "Krone"
+  /// ```
+  String get crown => """Krone""";
+
+  /// ```dart
+  /// "Bla i lista"
+  /// ```
+  String get crownScrollsList => """Bla i lista""";
+
+  /// ```dart
+  /// "Byt side"
+  /// ```
+  String get crownTurnsPages => """Byt side""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -6732,6 +6747,9 @@ Passord: pantry""",
   """wear.notBilled""": """Ikkje sett""",
   """wear.currency""": """Valuta""",
   """wear.notANumber""": """Berre tal""",
+  """wear.crown""": """Krone""",
+  """wear.crownScrollsList""": """Bla i lista""",
+  """wear.crownTurnsPages""": """Byt side""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

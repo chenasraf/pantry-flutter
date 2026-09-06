@@ -31,8 +31,12 @@ class NotesPage extends StatefulWidget {
   /// holding a fixed answer. The page starts the one it makes itself.
   final NotesController? controller;
 
-  /// Only the page being looked at may steer from the crown, poll, or fetch.
+  /// Only the page being looked at may poll or fetch.
   final bool active;
+
+  /// Whether the crown is this wall's to steer: [active], and only while
+  /// turning it scrolls rather than turns pages.
+  final bool rotary;
 
   /// Where a refused write is said out loud. The shell owns the one notice
   /// slot, so the page hands its message over rather than drawing a second.
@@ -42,6 +46,7 @@ class NotesPage extends StatefulWidget {
     super.key,
     this.controller,
     required this.active,
+    required this.rotary,
     this.onNotice,
   });
 
@@ -103,7 +108,7 @@ class _NotesPageState extends State<NotesPage> {
     return NotesWall(
       controller: _controller,
       notes: notes,
-      active: widget.active,
+      rotary: widget.rotary,
     );
   }
 }
@@ -112,13 +117,15 @@ class _NotesPageState extends State<NotesPage> {
 class NotesWall extends StatefulWidget {
   final NotesController controller;
   final List<Note> notes;
-  final bool active;
+
+  /// Whether the crown is this wall's to steer.
+  final bool rotary;
 
   const NotesWall({
     super.key,
     required this.controller,
     required this.notes,
-    required this.active,
+    required this.rotary,
   });
 
   @override
@@ -166,7 +173,7 @@ class _NotesWallState extends State<NotesWall> {
       controller: _scroll,
       itemExtent: WearMetrics.noteRowExtent,
       falloffRows: WearMetrics.falloffRows,
-      rotaryActive: widget.active && !_covered,
+      rotaryActive: widget.rotary && !_covered,
       horizontalInset: WearMetrics.tallSideInset,
       geometry: _geometry,
       elements: [

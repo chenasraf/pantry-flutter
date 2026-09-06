@@ -1078,6 +1078,9 @@ wear:
   notBilled: לא הוזן
   currency: מטבע
   notANumber: מספרים בלבד
+  crown: כתר
+  crownScrollsList: גלילה ברשימה
+  crownTurnsPages: מעבר בין דפים
 
 watch:
   title: שעון

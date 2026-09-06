@@ -1078,6 +1078,9 @@ wear:
   notBilled: Non renseigné
   currency: Devise
   notANumber: Chiffres uniquement
+  crown: Couronne
+  crownScrollsList: Faire défiler la liste
+  crownTurnsPages: Changer de page
 
 watch:
   title: Montre

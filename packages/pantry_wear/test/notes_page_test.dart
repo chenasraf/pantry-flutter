@@ -36,7 +36,7 @@ void main() {
   Widget host(NotesController controller) => MaterialApp(
     home: Scaffold(
       backgroundColor: Colors.black,
-      body: NotesPage(controller: controller, active: true),
+      body: NotesPage(controller: controller, active: true, rotary: true),
     ),
   );
 

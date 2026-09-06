@@ -25,4 +25,25 @@ class WearHostService {
       return false;
     }
   }
+
+  /// Whether this watch has a bezel or a crown at all.
+  ///
+  /// Answered by enumerating input devices for the same source
+  /// `onGenericMotionEvent` filters on, which is a claim about hardware the
+  /// platform makes rather than one we have watched arrive — nothing here has
+  /// seen a detent yet, and a settings page needs the answer before the wearer
+  /// has turned anything.
+  ///
+  /// So it fails towards yes: a useless row on a watch with no crown costs one
+  /// line, where a hidden row on a watch that has one costs a setting the
+  /// wearer can neither reach nor discover.
+  Future<bool> hasRotary() async {
+    try {
+      return await _channel.invokeMethod<bool>('hasRotary') ?? true;
+    } on PlatformException {
+      return true;
+    } on MissingPluginException {
+      return true;
+    }
+  }
 }

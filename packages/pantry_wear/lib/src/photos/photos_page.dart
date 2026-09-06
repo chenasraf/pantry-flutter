@@ -33,10 +33,19 @@ class PhotosPage extends StatefulWidget {
   /// holding a fixed answer. The page starts the one it makes itself.
   final PhotosController? controller;
 
-  /// Only the page being looked at may steer from the crown, poll, or fetch.
+  /// Only the page being looked at may poll or fetch.
   final bool active;
 
-  const PhotosPage({super.key, this.controller, required this.active});
+  /// Whether the crown is this board's to steer: [active], and only while
+  /// turning it scrolls rather than turns pages.
+  final bool rotary;
+
+  const PhotosPage({
+    super.key,
+    this.controller,
+    required this.active,
+    required this.rotary,
+  });
 
   @override
   State<PhotosPage> createState() => _PhotosPageState();
@@ -92,7 +101,7 @@ class _PhotosPageState extends State<PhotosPage> {
       controller: _controller,
       houseId: house,
       cells: cells,
-      active: widget.active,
+      rotary: widget.rotary,
     );
   }
 }
@@ -105,14 +114,16 @@ class PhotoBoard extends StatefulWidget {
   final PhotosController controller;
   final int houseId;
   final List<PhotoCell> cells;
-  final bool active;
+
+  /// Whether the crown is this board's to steer.
+  final bool rotary;
 
   const PhotoBoard({
     super.key,
     required this.controller,
     required this.houseId,
     required this.cells,
-    required this.active,
+    required this.rotary,
   });
 
   @override
@@ -206,7 +217,7 @@ class _PhotoBoardState extends State<PhotoBoard> {
       controller: _controller,
       itemExtent: extent,
       falloffRows: WearMetrics.falloffRows,
-      rotaryActive: widget.active && !_covered,
+      rotaryActive: widget.rotary && !_covered,
       horizontalInset: WearMetrics.tallSideInset,
       geometry: _geometry,
       elements: [
@@ -517,7 +528,9 @@ class PhotoFolderRoute extends StatelessWidget {
                 controller: controller,
                 houseId: houseId,
                 cells: controller.cellsInFolder(folder.id),
-                active: true,
+                // A pushed route has no pager to turn, so the crown scrolls its
+                // list whichever way the setting is pointing.
+                rotary: true,
               ),
             ),
             RouteTitle(text: folder.name),

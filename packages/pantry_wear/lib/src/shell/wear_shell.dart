@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
@@ -15,6 +16,7 @@ import '../checklists/checklists_page.dart';
 import '../checklists/list_switcher_page.dart';
 import '../photos/photos_page.dart';
 import '../notes/notes_page.dart';
+import '../services/rotary_service.dart';
 import '../services/wear_deep_link.dart';
 import '../shopping/progression_page.dart';
 import '../shopping/start_trip_page.dart';
@@ -74,6 +76,26 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   /// means one turn of the bezel scrolls two lists.
   var _routeOpen = false;
 
+  /// What the wearer has said a turn of the bezel steers. Cached rather than
+  /// read in `build`, so the pages are rebuilt when it changes and not on every
+  /// other pref written anywhere in the app.
+  var _crownTurnsPages = false;
+
+  /// The shell's own subscription, held only while the crown turns pages —
+  /// exactly the times no page holds one.
+  StreamSubscription<double>? _rotary;
+
+  /// Where the last detent was heading, so a fast turn accumulates pages
+  /// instead of each detent re-measuring against one still in flight.
+  int? _pageTarget;
+
+  /// Whether anything is drawn over the shell. [_routeOpen] only knows about
+  /// the routes the shell itself pushes; a page pushing its own route is
+  /// invisible to it, and in page mode that would leave the shell turning
+  /// pages under a route that is scrolling its own list. The navigator is
+  /// asked instead, which knows about both.
+  var _uncovered = true;
+
   var _railExpanded = false;
   Timer? _railTimer;
 
@@ -87,15 +109,28 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     _controller = widget.controller ?? ChecklistsController();
     _awaitingFirstRead = _controller.isLoading;
     _adoptMode(_controller.mode);
+    _crownTurnsPages = PrefsService.instance.wearCrownTurnsPages;
     _controller.addListener(_onData);
+    PrefsService.instance.addListener(_onPrefs);
     WearDeepLink.instance.addListener(_onDeepLink);
     if (widget.controller == null) unawaited(_controller.start());
+  }
+
+  /// `isCurrent` is carried on an inherited widget, so reading it here is also
+  /// what has this called again when a route is pushed or popped over us.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _uncovered = ModalRoute.of(context)?.isCurrent ?? true;
+    _syncRotary();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     WearDeepLink.instance.removeListener(_onDeepLink);
+    PrefsService.instance.removeListener(_onPrefs);
+    _rotary?.cancel();
     _lockTimer?.cancel();
     _railTimer?.cancel();
     _noticeTimer?.cancel();
@@ -172,6 +207,49 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     });
   }
 
+  // -- The crown -------------------------------------------------------------
+
+  void _onPrefs() {
+    final next = PrefsService.instance.wearCrownTurnsPages;
+    if (next == _crownTurnsPages) return;
+    setState(() => _crownTurnsPages = next);
+    _syncRotary();
+  }
+
+  /// Exactly one reader of the detent stream, always. In page mode that is the
+  /// shell and every page has gone quiet; otherwise it is the page in front,
+  /// or the route standing over it.
+  void _syncRotary() {
+    final wanted = _crownTurnsPages && _uncovered;
+    if (wanted == (_rotary != null)) return;
+    _rotary?.cancel();
+    _rotary = wanted ? RotaryService.instance.detents.listen(_onDetent) : null;
+    _pageTarget = null;
+  }
+
+  /// The axis reports the opposite of what the wrist means: turning the bezel
+  /// clockwise reads negative, and clockwise has to go to the next page.
+  ///
+  /// The step is one page and the snap table has nothing to say about it —
+  /// stepping the table is a rule about a list, where a short header between
+  /// two rows makes a fixed pixel step walk off the grid.
+  void _onDetent(double detent) {
+    if (_locked || !_pager.hasClients) return;
+    final from = _pageTarget ?? _page;
+    final next = (from + (detent < 0 ? 1 : -1)).clamp(0, _pages.length - 1);
+    if (next == from) return;
+    _pageTarget = next;
+    unawaited(
+      _pager
+          .animateToPage(
+            next,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+          )
+          .whenComplete(() => _pageTarget = null),
+    );
+  }
+
   int get _checklistIndex => _mode == ChecklistMode.session ? 1 : 0;
 
   /// Last of either page set — a page, not a route, so following the rail's
@@ -214,12 +292,20 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   List<Widget> get _pages => _mode == ChecklistMode.browse
       ? [
           _checklists(),
-          PhotosPage(active: _isActive(1)),
-          NotesPage(active: _isActive(2), onNotice: _showNotice),
-          AccountPage(active: _isActive(3)),
+          PhotosPage(active: _isActive(1), rotary: _steersList(1)),
+          NotesPage(
+            active: _isActive(2),
+            rotary: _steersList(2),
+            onNotice: _showNotice,
+          ),
+          AccountPage(rotary: _steersList(3)),
         ]
       : [
-          ProgressionPage(controller: _controller, active: _isActive(0)),
+          ProgressionPage(
+            controller: _controller,
+            active: _isActive(0),
+            rotary: _steersList(0),
+          ),
           _checklists(),
           _CollectionPage(
             items: _controller.done,
@@ -233,16 +319,21 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
             trailing: Icons.undo,
             onTap: _controller.unskipItem,
           ),
-          AccountPage(active: _isActive(4)),
+          AccountPage(rotary: _steersList(4)),
         ];
 
   bool _isActive(int index) => _page == index && !_routeOpen;
+
+  /// The page the crown scrolls: the one in front, and only while scrolling is
+  /// what the crown does. With it turning pages instead, every page goes quiet
+  /// and the shell is the one reader.
+  bool _steersList(int index) => _isActive(index) && !_crownTurnsPages;
 
   Widget _checklists() => ChecklistsPage(
     key: _pageKey,
     controller: _controller,
     geometry: _geometry,
-    active: _isActive(_checklistIndex),
+    rotary: _steersList(_checklistIndex),
   );
 
   /// The rail names the page you are on, one entry per [_pages] entry.

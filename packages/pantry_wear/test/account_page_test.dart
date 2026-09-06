@@ -105,7 +105,7 @@ void main() {
   Future<void> pump(WidgetTester tester) async {
     sizeToWatch(tester);
     await tester.pumpWidget(
-      const MaterialApp(home: Scaffold(body: AccountPage(active: true))),
+      const MaterialApp(home: Scaffold(body: AccountPage(rotary: true))),
     );
     await tester.pump();
   }

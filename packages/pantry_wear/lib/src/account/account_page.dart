@@ -29,10 +29,11 @@ import 'wear_settings_page.dart';
 /// Identity is the exception and rides as a header — it is a label, not a
 /// target, which is what a header already means here.
 class AccountPage extends StatefulWidget {
-  /// Only the page being looked at may steer from the crown.
-  final bool active;
+  /// Whether the crown is this list's to steer: only the page being looked at
+  /// may read it, and only while turning it scrolls rather than turns pages.
+  final bool rotary;
 
-  const AccountPage({super.key, required this.active});
+  const AccountPage({super.key, required this.rotary});
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -255,7 +256,7 @@ class _AccountPageState extends State<AccountPage> {
       controller: _scroll,
       itemExtent: WearMetrics.itemExtent,
       falloffRows: WearMetrics.falloffRows,
-      rotaryActive: widget.active && !_covered,
+      rotaryActive: widget.rotary && !_covered,
       geometry: _geometry,
       elements: _elements(),
     );

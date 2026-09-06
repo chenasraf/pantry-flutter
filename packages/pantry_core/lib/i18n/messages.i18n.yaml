@@ -1086,6 +1086,9 @@ wear:
   notBilled: Not set
   currency: Currency
   notANumber: Numbers only
+  crown: Crown
+  crownScrollsList: Scroll the list
+  crownTurnsPages: Turn pages
 
 watch:
   title: Watch

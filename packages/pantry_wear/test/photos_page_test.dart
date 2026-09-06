@@ -42,7 +42,7 @@ void main() {
   Widget host(PhotosController controller) => MaterialApp(
     home: Scaffold(
       backgroundColor: Colors.black,
-      body: PhotosPage(controller: controller, active: true),
+      body: PhotosPage(controller: controller, active: true, rotary: true),
     ),
   );
 

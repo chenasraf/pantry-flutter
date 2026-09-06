@@ -5563,6 +5563,21 @@ class WearMessagesHe extends WearMessages {
   /// "מספרים בלבד"
   /// ```
   String get notANumber => """מספרים בלבד""";
+
+  /// ```dart
+  /// "כתר"
+  /// ```
+  String get crown => """כתר""";
+
+  /// ```dart
+  /// "גלילה ברשימה"
+  /// ```
+  String get crownScrollsList => """גלילה ברשימה""";
+
+  /// ```dart
+  /// "מעבר בין דפים"
+  /// ```
+  String get crownTurnsPages => """מעבר בין דפים""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6659,6 +6674,9 @@ Map<String, String> get messagesHeMap => {
   """wear.notBilled""": """לא הוזן""",
   """wear.currency""": """מטבע""",
   """wear.notANumber""": """מספרים בלבד""",
+  """wear.crown""": """כתר""",
+  """wear.crownScrollsList""": """גלילה ברשימה""",
+  """wear.crownTurnsPages""": """מעבר בין דפים""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

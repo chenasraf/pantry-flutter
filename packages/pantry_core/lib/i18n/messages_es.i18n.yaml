@@ -1078,6 +1078,9 @@ wear:
   notBilled: Sin definir
   currency: Moneda
   notANumber: Solo números
+  crown: Corona
+  crownScrollsList: Desplazar la lista
+  crownTurnsPages: Cambiar de página
 
 watch:
   title: Reloj

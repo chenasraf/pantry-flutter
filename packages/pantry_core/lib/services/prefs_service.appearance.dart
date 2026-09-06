@@ -125,4 +125,14 @@ extension PrefsServiceAppearanceSetters on PrefsService {
     );
     notifyListeners();
   }
+
+  Future<void> setWearCrownTurnsPages(bool value) async {
+    if (_wearCrownTurnsPages == value) return;
+    _wearCrownTurnsPages = value;
+    await _storage.write(
+      key: PrefsService._wearCrownTurnsPagesKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
 }

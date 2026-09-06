@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 
+import '../services/wear_host_service.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
 import 'chip_visibility_page.dart';
+import 'crown_steering_page.dart';
 import 'refresh_interval_page.dart';
 
 /// What the wearer can change about how the watch behaves.
@@ -25,6 +27,21 @@ class WearSettingsPage extends StatefulWidget {
 
 class _WearSettingsPageState extends State<WearSettingsPage> {
   final _scroll = ScrollController();
+
+  /// Drawn until the platform says otherwise, which is also what it stays as
+  /// if the platform says nothing: the crown row fails towards being offered.
+  var _hasRotary = true;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_readRotary());
+  }
+
+  Future<void> _readRotary() async {
+    final present = await WearHostService.instance.hasRotary();
+    if (mounted) setState(() => _hasRotary = present);
+  }
 
   @override
   void dispose() {
@@ -67,6 +84,20 @@ class _WearSettingsPageState extends State<WearSettingsPage> {
                   onTap: () => unawaited(_open(const RefreshIntervalPage())),
                 ),
               ),
+              if (_hasRotary) ...[
+                const SizedBox(height: WearMetrics.cardGap),
+                SizedBox(
+                  height: WearMetrics.cardHeight,
+                  child: WearRow(
+                    icon: Icons.rotate_right,
+                    label: m.wear.crown,
+                    value: crownSteeringLabel(
+                      PrefsService.instance.wearCrownTurnsPages,
+                    ),
+                    onTap: () => unawaited(_open(const CrownSteeringPage())),
+                  ),
+                ),
+              ],
               const SizedBox(height: WearMetrics.cardGap),
               SizedBox(
                 height: WearMetrics.cardHeight,

@@ -5604,6 +5604,21 @@ class WearMessagesEs extends WearMessages {
   /// "Solo números"
   /// ```
   String get notANumber => """Solo números""";
+
+  /// ```dart
+  /// "Corona"
+  /// ```
+  String get crown => """Corona""";
+
+  /// ```dart
+  /// "Desplazar la lista"
+  /// ```
+  String get crownScrollsList => """Desplazar la lista""";
+
+  /// ```dart
+  /// "Cambiar de página"
+  /// ```
+  String get crownTurnsPages => """Cambiar de página""";
 }
 
 class WatchMessagesEs extends WatchMessages {
@@ -6760,6 +6775,9 @@ Contraseña: pantry-rocks""",
   """wear.notBilled""": """Sin definir""",
   """wear.currency""": """Moneda""",
   """wear.notANumber""": """Solo números""",
+  """wear.crown""": """Corona""",
+  """wear.crownScrollsList""": """Desplazar la lista""",
+  """wear.crownTurnsPages""": """Cambiar de página""",
   """watch.title""": """Reloj""",
   """watch.requestWarning""":
       """Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.""",

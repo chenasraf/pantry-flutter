@@ -5560,6 +5560,21 @@ class WearMessages {
   /// "Numbers only"
   /// ```
   String get notANumber => """Numbers only""";
+
+  /// ```dart
+  /// "Crown"
+  /// ```
+  String get crown => """Crown""";
+
+  /// ```dart
+  /// "Scroll the list"
+  /// ```
+  String get crownScrollsList => """Scroll the list""";
+
+  /// ```dart
+  /// "Turn pages"
+  /// ```
+  String get crownTurnsPages => """Turn pages""";
 }
 
 class WatchMessages {
@@ -6676,6 +6691,9 @@ Password: pantry-rocks""",
   """wear.notBilled""": """Not set""",
   """wear.currency""": """Currency""",
   """wear.notANumber""": """Numbers only""",
+  """wear.crown""": """Crown""",
+  """wear.crownScrollsList""": """Scroll the list""",
+  """wear.crownTurnsPages""": """Turn pages""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",
