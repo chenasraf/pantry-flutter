@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' show Bidi;
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/nn_localizations.dart';
 import 'package:pantry_core/i18n/messages.i18n.dart';
@@ -102,6 +103,23 @@ class LocaleService extends ChangeNotifier {
 
   /// Whether the current locale is RTL.
   bool get isRtl => effectiveLocale.languageCode == 'he';
+
+  /// Whether the **device** reads right-to-left, whatever language the app
+  /// happens to be drawing in.
+  ///
+  /// System gestures belong to the system. Someone running the app in Hebrew on
+  /// an English phone still swipes back the way every other app on that phone
+  /// swipes back, because the gesture is muscle memory built outside this app
+  /// and not part of its reading order. Deliberately not [isRtl], and asked of
+  /// `Bidi` rather than compared against `'he'`: the app is drawn in one of six
+  /// languages, but the device can be set to any of them.
+  /// Read through the binding rather than `PlatformDispatcher.instance`, which
+  /// is the real singleton even under a test and so cannot be given a locale to
+  /// answer with. Anything that asks this is building a widget, so a binding
+  /// exists by then.
+  bool get systemIsRtl => Bidi.isRtlLanguage(
+    WidgetsBinding.instance.platformDispatcher.locale.languageCode,
+  );
 
   /// Text direction for the current locale.
   TextDirection get textDirection =>

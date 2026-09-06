@@ -97,7 +97,6 @@ class EdgeAwarePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ltr = Directionality.of(context) == TextDirection.ltr;
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
@@ -109,23 +108,51 @@ class EdgeAwarePageView extends StatelessWidget {
               onPageChanged: onPageChanged,
               children: children,
             ),
+            // The pager itself follows the app's reading order — the pages are
+            // content, and content in Hebrew runs right to left. The strip
+            // does not: see [systemEdgeStrip].
             if (page == 0)
-              PositionedDirectional(
-                start: 0,
-                top: 0,
-                bottom: 0,
-                width: width * kEdgeExclusionFraction,
-                child: _DismissStrip(
-                  width: width,
-                  towardsEnd: ltr ? 1 : -1,
-                  onDismiss: () => SystemNavigator.pop(),
-                ),
+              systemEdgeStrip(
+                width: width,
+                onDismiss: () => SystemNavigator.pop(),
               ),
           ],
         );
       },
     );
   }
+}
+
+/// The dismiss strip, on the edge the **device** starts its reading from.
+///
+/// Every other gesture in the watch tree follows the app's `Directionality`,
+/// and this one deliberately does not. Going back is muscle memory built by the
+/// system and every other app on the watch, so it belongs to the device's
+/// language rather than to the one the wearer chose in here: someone reading
+/// Pantry in Hebrew on an English watch still swipes in from the left, the way
+/// they do everywhere else on it.
+///
+/// Positioned against the physical edge rather than with `PositionedDirectional`
+/// for the same reason — `start` resolves against the app's direction, which is
+/// exactly the thing that must not move it.
+Widget systemEdgeStrip({
+  required double width,
+  required VoidCallback onDismiss,
+}) {
+  final rtl = LocaleService.instance.systemIsRtl;
+  final strip = _DismissStrip(
+    width: width,
+    towardsEnd: rtl ? -1 : 1,
+    onDismiss: onDismiss,
+  );
+  return Positioned(
+    left: rtl ? null : 0,
+    right: rtl ? 0 : null,
+    top: 0,
+    bottom: 0,
+    width: width * kEdgeExclusionFraction,
+    child: strip,
+  );
 }
 
 /// The leading-edge back gesture, for a route pushed *over* the pager.
@@ -146,24 +173,13 @@ class EdgeDismissible extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ltr = Directionality.of(context) == TextDirection.ltr;
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
         return Stack(
           children: [
             Positioned.fill(child: child),
-            PositionedDirectional(
-              start: 0,
-              top: 0,
-              bottom: 0,
-              width: width * kEdgeExclusionFraction,
-              child: _DismissStrip(
-                width: width,
-                towardsEnd: ltr ? 1 : -1,
-                onDismiss: onDismiss,
-              ),
-            ),
+            systemEdgeStrip(width: width, onDismiss: onDismiss),
           ],
         );
       },
