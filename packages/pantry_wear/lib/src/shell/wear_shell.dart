@@ -144,6 +144,10 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
 
   int get _checklistIndex => _mode == ChecklistMode.session ? 1 : 0;
 
+  /// Last of either page set — a page, not a route, so following the rail's
+  /// degraded signpost is a pager move rather than a push.
+  int get _accountIndex => _mode == ChecklistMode.session ? 4 : 3;
+
   /// Resolve → swap → lock out. The undo windows resolve first so nothing is
   /// left half-committed against a page set that is about to be replaced.
   Future<void> _setMode(ChecklistMode next) async {
@@ -283,6 +287,19 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     });
   }
 
+  /// Following the degraded line. It animates rather than jumping: the wearer
+  /// tapped a signpost and the movement is what tells them the tap was read.
+  void _showAccount() {
+    _railTimer?.cancel();
+    setState(() => _railExpanded = false);
+    if (_page == _accountIndex || !_pager.hasClients) return;
+    _pager.animateToPage(
+      _accountIndex,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
   Future<void> _openSwitcher() async {
     _railTimer?.cancel();
     setState(() {
@@ -372,6 +389,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
                             expanded: _railExpanded,
                             onTapTitle: _tapRail,
                             onChangeList: _openSwitcher,
+                            onSetUpAgain: _showAccount,
                           ),
                         ),
                       ),
