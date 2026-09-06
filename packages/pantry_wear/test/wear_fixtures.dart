@@ -42,17 +42,34 @@ ListItem testItem({
   bool done = false,
   String? quantity,
   List<int> storeIds = const [],
+  List<int> labelIds = const [],
+  bool deleteOnDone = false,
+  String? rrule,
 }) => ListItem(
   id: id,
   listId: listId,
   name: name,
   categoryId: categoryId,
   storeIds: storeIds,
+  labelIds: labelIds,
   quantity: quantity,
   done: done,
+  rrule: rrule,
   repeatFromCompletion: false,
-  deleteOnDone: false,
+  deleteOnDone: deleteOnDone,
   sortOrder: id,
+  createdAt: 0,
+  updatedAt: 0,
+);
+
+/// The synthetic entry the watch scopes to when it is showing every list at
+/// once — the one browse scope in which a row's own list is worth naming.
+ChecklistList testAllLists() => ChecklistList(
+  id: kAllListsId,
+  houseId: 1,
+  name: 'All lists',
+  icon: 'all-lists',
+  sortOrder: -1 << 30,
   createdAt: 0,
   updatedAt: 0,
 );

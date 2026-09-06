@@ -180,6 +180,22 @@ class ChecklistsController extends ChangeNotifier {
 
   Store? storeById(int? id) => id == null ? null : _stores[id];
 
+  /// The list a row is on. A house holds a handful, so the scan costs less
+  /// than the map it would otherwise be kept in.
+  ChecklistList? listOf(ListItem item) {
+    for (final l in _lists) {
+      if (l.id == item.listId) return l;
+    }
+    return null;
+  }
+
+  /// True when every row on screen is on the list the rail already names, so a
+  /// chip naming it would repeat the header — the same rule that drops the
+  /// chip naming the current grouping. The all-lists view spans several, and a
+  /// trip spans several while the rail names the shop instead.
+  bool get railNamesList =>
+      _session == null && _list != null && _list!.id != kAllListsId;
+
   bool _loading = true;
   bool get isLoading => _loading;
 

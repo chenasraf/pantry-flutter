@@ -7,13 +7,15 @@ import 'package:pantry_core/services/prefs_service.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
+import 'chip_visibility_page.dart';
 import 'refresh_interval_page.dart';
 
 /// What the wearer can change about how the watch behaves.
 ///
-/// The phone's section order, its hidden-section prefs and the checklist prefs
-/// are not among them: the shell ignores the first two by design and fixes the
-/// third on the watch.
+/// The phone's section order and its hidden-section prefs are not among them:
+/// the shell ignores both by design. Of the checklist prefs, only chip
+/// visibility is offered — it is the one that decides what fits on a row this
+/// narrow, and every setting here is written to this device alone.
 class WearSettingsPage extends StatefulWidget {
   const WearSettingsPage({super.key});
 
@@ -63,6 +65,16 @@ class _WearSettingsPageState extends State<WearSettingsPage> {
                     PrefsService.instance.wearPollSeconds,
                   ),
                   onTap: () => unawaited(_open(const RefreshIntervalPage())),
+                ),
+              ),
+              const SizedBox(height: WearMetrics.cardGap),
+              SizedBox(
+                height: WearMetrics.cardHeight,
+                child: WearRow(
+                  icon: Icons.more_horiz,
+                  label: m.settings.visibleChipsTitle,
+                  value: m.wear.nSelected(visibleChipCount()),
+                  onTap: () => unawaited(_open(const ChipVisibilityPage())),
                 ),
               ),
             ],

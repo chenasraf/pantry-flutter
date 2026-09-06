@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/item_chip.dart';
+import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/utils/category_icons.dart';
+import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/price.dart';
@@ -619,10 +621,15 @@ class _ItemCard extends StatelessWidget {
 
 /// The second line the centre card earns.
 ///
-/// Chips are filtered by `hiddenItemChips`, which the phone seeds once at
-/// pairing and never overrides — and by what the grouping already says:
-/// whichever chip names the current grouping repeats its own header, so it is
-/// the one chip that never draws.
+/// Chips are filtered by `hiddenItemChips`, which the wearer owns on this
+/// device — and by what the surface already says: whichever chip names the
+/// current grouping repeats its own header, and the list is only named when
+/// the rail is not already naming it.
+///
+/// They draw in the enum's own order, so what survives a clip is predictable
+/// and the picker reads in the order the row does. Nothing caps the count:
+/// the row clips at the card's edge, on the card the wearer is reading, and
+/// the lever against it is the picker.
 class _MetaLine extends StatelessWidget {
   final ListItem item;
   final ChecklistsController controller;
@@ -669,6 +676,20 @@ class _MetaLine extends StatelessWidget {
         ),
       );
     }
+    if (item.labelIds.isNotEmpty) {
+      // A count, not the labels: five labels cost one short chip instead of
+      // five long ones, and the id list carries the number already — so the
+      // watch draws this without a label model, service or cache of its own.
+      chip(
+        ItemChipKind.label,
+        EntityChip(
+          density: ChipDensity.dense,
+          textColor: neutral,
+          label: '${item.labelIds.length}',
+          leading: const Icon(EntityIcons.label, size: 9, color: neutral),
+        ),
+      );
+    }
     if (item.quantity != null) {
       chip(
         ItemChipKind.quantity,
@@ -711,13 +732,42 @@ class _MetaLine extends StatelessWidget {
         ),
       );
     }
-    if (item.rrule != null) {
+    // The phone's own reading of the two flags, so one pref key means one
+    // thing on both devices: a one-time item is the one that leaves the list
+    // when it is checked, not merely one without a schedule.
+    switch (lifecycleOf(item)) {
+      case ItemLifecycle.once:
+        chip(
+          ItemChipKind.oneTime,
+          const EntityChip(
+            density: ChipDensity.dense,
+            textColor: neutral,
+            leading: Icon(Icons.looks_one_outlined, size: 9, color: neutral),
+          ),
+        );
+      case ItemLifecycle.recurring:
+        chip(
+          ItemChipKind.recurring,
+          const EntityChip(
+            density: ChipDensity.dense,
+            textColor: neutral,
+            leading: Icon(Icons.repeat, size: 9, color: neutral),
+          ),
+        );
+      case ItemLifecycle.staple:
+        break;
+    }
+
+    final list = controller.railNamesList ? null : controller.listOf(item);
+    if (list != null) {
+      final tint = parseHexColor(list.color) ?? neutral;
       chip(
-        ItemChipKind.recurring,
-        const EntityChip(
+        ItemChipKind.list,
+        EntityChip(
           density: ChipDensity.dense,
-          textColor: neutral,
-          leading: Icon(Icons.repeat, size: 9, color: neutral),
+          textColor: tint,
+          label: list.name,
+          leading: Icon(checklistIcon(list.icon), size: 9, color: tint),
         ),
       );
     }

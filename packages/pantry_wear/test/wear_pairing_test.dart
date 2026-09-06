@@ -221,6 +221,48 @@ void main() {
       expect(sentPaths(), contains('/watch/scope'));
     });
 
+    test(
+      'a renewal replaces the credential and leaves the chips alone',
+      () async {
+        await client.start();
+
+        emit(
+          WearPairing.grantPath,
+          const WearPairingGrant(
+            credentials: credentials,
+            certPins: {},
+            houseId: 4,
+            hiddenItemChips: {'price'},
+          ).toJson(),
+        );
+        await settle();
+
+        // The wearer has since chosen for themselves, on the watch, for the
+        // watch — and the phone has moved on too.
+        await PrefsService.instance.setItemChipVisible('price', true);
+        await PrefsService.instance.setItemChipVisible('note', false);
+
+        await client.renew();
+        emit(
+          WearPairing.grantPath,
+          const WearPairingGrant(
+            credentials: NextcloudCredentials(
+              serverUrl: 'https://cloud.example',
+              loginName: 'ada',
+              appPassword: 'fresher',
+            ),
+            certPins: {},
+            houseId: 4,
+            hiddenItemChips: {'store', 'quantity'},
+          ).toJson(),
+        );
+        await settle();
+
+        expect(AuthService.instance.credentials?.appPassword, 'fresher');
+        expect(PrefsService.instance.hiddenItemChips, {'note'});
+      },
+    );
+
     test('a malformed grant leaves the watch signed out', () async {
       await client.start();
 
