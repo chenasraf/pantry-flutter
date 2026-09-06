@@ -1089,6 +1089,9 @@ wear:
   crown: Crown
   crownScrollsList: Scroll the list
   crownTurnsPages: Turn pages
+  undoWindow: Undo
+  undoOff: "Off"
+  undoSeconds(int count): "${_plural(count, one: '1 second', many: '$count seconds')}"
 
 watch:
   title: Watch

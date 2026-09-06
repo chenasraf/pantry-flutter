@@ -5635,6 +5635,22 @@ class WearMessagesDe extends WearMessages {
   /// "Seiten wechseln"
   /// ```
   String get crownTurnsPages => """Seiten wechseln""";
+
+  /// ```dart
+  /// "Rückgängig"
+  /// ```
+  String get undoWindow => """Rückgängig""";
+
+  /// ```dart
+  /// "Aus"
+  /// ```
+  String get undoOff => """Aus""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Sekunde', many: '$count Sekunden')}"
+  /// ```
+  String undoSeconds(int count) =>
+      """${_plural(count, one: '1 Sekunde', many: '$count Sekunden')}""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6816,6 +6832,8 @@ Passwort: pantry-rocks""",
   """wear.crown""": """Krone""",
   """wear.crownScrollsList""": """Liste scrollen""",
   """wear.crownTurnsPages""": """Seiten wechseln""",
+  """wear.undoWindow""": """Rückgängig""",
+  """wear.undoOff""": """Aus""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

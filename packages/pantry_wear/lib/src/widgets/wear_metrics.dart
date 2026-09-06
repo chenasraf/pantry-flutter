@@ -70,9 +70,6 @@ class WearMetrics {
   /// back than a short card does.
   static const double tallSideInset = 0.05;
 
-  /// How long a check sits reversible before it is written.
-  static const Duration undoWindow = Duration(milliseconds: 2000);
-
   /// Input is held for this long after the pager swaps between browse and a
   /// session, so a tap already descending cannot land on a page set that did
   /// not exist when the finger started moving.

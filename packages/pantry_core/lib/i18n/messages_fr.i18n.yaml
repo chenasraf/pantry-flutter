@@ -1081,6 +1081,9 @@ wear:
   crown: Couronne
   crownScrollsList: Faire défiler la liste
   crownTurnsPages: Changer de page
+  undoWindow: Annuler
+  undoOff: Désactivé
+  undoSeconds(int count): "${_plural(count, one: '1 seconde', many: '$count secondes')}"
 
 watch:
   title: Montre

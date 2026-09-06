@@ -135,4 +135,15 @@ extension PrefsServiceAppearanceSetters on PrefsService {
     );
     notifyListeners();
   }
+
+  Future<void> setWearUndoSeconds(int seconds) async {
+    if (!PrefsService.validUndoSeconds.contains(seconds)) return;
+    if (_wearUndoSeconds == seconds) return;
+    _wearUndoSeconds = seconds;
+    await _storage.write(
+      key: PrefsService._wearUndoSecondsKey,
+      value: seconds.toString(),
+    );
+    notifyListeners();
+  }
 }

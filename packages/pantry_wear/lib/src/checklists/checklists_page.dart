@@ -18,6 +18,7 @@ import 'package:pantry_core/widgets/entity_chip.dart';
 
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
+import '../widgets/undo_window.dart';
 import '../widgets/wear_metrics.dart';
 import 'checklists_controller.dart';
 import 'item_detail_page.dart';
@@ -28,10 +29,12 @@ import 'item_detail_page.dart';
 /// the centre instead, so a mis-aim costs a scroll rather than a write.
 /// Long-press the centred card for the read-only detail.
 ///
-/// A check does not leave immediately: the card stays put with a stroke
+/// Neither direction leaves immediately: the card stays put with a stroke
 /// running down its border, and a second tap inside that window takes it back.
 /// Only when the stroke runs out is the write queued — to the completed
-/// section in browse, or off to the done page in a session.
+/// section in browse, or off to the done page in a session. Unchecking earns
+/// the same window as checking, since it is the one of the two that undoes
+/// work already done.
 class ChecklistsPage extends StatefulWidget {
   final ChecklistsController controller;
   final ValueNotifier<FocusGeometry> geometry;
@@ -56,9 +59,9 @@ class ChecklistsPageState extends State<ChecklistsPage>
   final _listKey = GlobalKey<SnapFocusListState>();
   late ScrollController _controller;
 
-  /// Checks that have fired but not yet run out their undo window, keyed by
-  /// item id. The controller drives the border stroke and the clock.
-  final _pending = <int, AnimationController>{};
+  /// Taps that have fired but not yet run out their undo window, keyed by item
+  /// id.
+  late final UndoWindows<int> _pending;
 
   var _doneCollapsed = true;
 
@@ -66,16 +69,19 @@ class ChecklistsPageState extends State<ChecklistsPage>
   void initState() {
     super.initState();
     _controller = ScrollController();
+    _pending = UndoWindows(
+      vsync: this,
+      onChanged: () {
+        if (mounted) setState(() {});
+      },
+    );
     widget.controller.addListener(_onData);
   }
 
   @override
   void dispose() {
     widget.controller.removeListener(_onData);
-    for (final window in _pending.values) {
-      window.dispose();
-    }
-
+    _pending.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -87,50 +93,31 @@ class ChecklistsPageState extends State<ChecklistsPage>
   /// Resolve every open undo window at once. The mode transition calls this
   /// before the pager swaps, so nothing is left half-committed against a page
   /// set that no longer exists.
-  void resolvePending({required bool commit}) {
-    for (final entry in _pending.entries.toList()) {
-      entry.value.stop();
-      entry.value.dispose();
-      if (commit) _write(_itemById(entry.key), true);
-    }
-    _pending.clear();
-    if (mounted) setState(() {});
-  }
+  void resolvePending({required bool commit}) =>
+      _pending.resolveAll(commit: commit);
 
+  /// The item a row's window is holding, as the controller now has it.
+  ///
+  /// Both collections, because both are drawn: an uncheck is fired from the
+  /// completed section, where the item is precisely the one [items] does not
+  /// hold.
   ListItem? _itemById(int id) {
-    for (final item in widget.controller.items) {
+    for (final item in [
+      ...widget.controller.items,
+      ...widget.controller.done,
+    ]) {
       if (item.id == id) return item;
     }
     return null;
   }
 
-  void _tapCentred(ListItem item) {
-    final open = _pending[item.id];
-    if (open != null) {
-      // Second tap inside the window takes it back. Nothing was ever written.
-      open.stop();
-      open.dispose();
-      setState(() => _pending.remove(item.id));
-      return;
-    }
-    if (item.done) {
-      _write(item, false);
-      return;
-    }
-    final window = AnimationController(
-      vsync: this,
-      duration: WearMetrics.undoWindow,
-    );
-    window.addStatusListener((status) {
-      if (status != AnimationStatus.completed) return;
-      window.dispose();
-      if (!mounted) return;
-      setState(() => _pending.remove(item.id));
-      _write(item, true);
-    });
-    setState(() => _pending[item.id] = window);
-    window.forward();
-  }
+  void _tapCentred(ListItem item) => _pending.fire(
+    item.id,
+    target: !item.done,
+    // Resolved again at commit rather than captured: a snapshot landing while
+    // the stroke drains replaces the item this tap was aimed at.
+    commit: (done) => _write(_itemById(item.id), done),
+  );
 
   void _write(ListItem? item, bool done) {
     if (item == null) return;
@@ -199,7 +186,8 @@ class ChecklistsPageState extends State<ChecklistsPage>
               item: item,
               d: d,
               controller: controller,
-              pending: _pending[item.id],
+              target: _pending.targetOf(item.id),
+              pending: _pending.controllerOf(item.id),
               onTap: () => _onCardTap(item, index),
               onLongPress: () => _onCardLongPress(item, index),
             ),
@@ -473,6 +461,9 @@ class _ItemCard extends StatelessWidget {
   final ListItem item;
   final double d;
   final ChecklistsController controller;
+
+  /// What an open window is taking this card to, or null when none is open.
+  final bool? target;
   final AnimationController? pending;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
@@ -481,6 +472,7 @@ class _ItemCard extends StatelessWidget {
     required this.item,
     required this.d,
     required this.controller,
+    required this.target,
     required this.pending,
     required this.onTap,
     required this.onLongPress,
@@ -489,9 +481,9 @@ class _ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    // A pending check reads as done straight away: the write is the thing
-    // being delayed, not the feedback.
-    final checked = item.done || pending != null;
+    // A pending tap reads as landed straight away, in either direction: the
+    // write is the thing being delayed, not the feedback.
+    final checked = target ?? item.done;
 
     // The centre card is the only one that can afford a second line: every
     // other card is already scaled below 1 and leaving slack inside its
@@ -598,22 +590,12 @@ class _ItemCard extends StatelessWidget {
         // list up, so every card claims its extent less the gap.
         child: SizedBox(
           height: WearMetrics.cardHeight,
-          child: pending == null
-              ? card
-              : AnimatedBuilder(
-                  animation: pending!,
-                  builder: (context, child) => CustomPaint(
-                    foregroundPainter: _UndoStrokePainter(
-                      // Counts down, so the ring draining is the window
-                      // draining.
-                      remaining: 1 - pending!.value,
-                      color: scheme.primary,
-                      radius: radius,
-                    ),
-                    child: child,
-                  ),
-                  child: card,
-                ),
+          child: UndoStroke(
+            window: pending,
+            color: scheme.primary,
+            radius: radius,
+            child: card,
+          ),
         ),
       ),
     );
@@ -784,48 +766,6 @@ class _MetaLine extends StatelessWidget {
       ),
     );
   }
-}
-
-/// The undo window, drawn as a stroke running down the card's own border. The
-/// card already has this edge; nothing new is introduced to carry the clock.
-class _UndoStrokePainter extends CustomPainter {
-  final double remaining;
-  final Color color;
-  final double radius;
-
-  const _UndoStrokePainter({
-    required this.remaining,
-    required this.color,
-    required this.radius,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (remaining <= 0) return;
-    // A pill radius is quoted against the row extent, but the card is shorter
-    // than its extent — an unclamped radius here draws a malformed path rather
-    // than being scaled down the way a BorderRadius would be.
-    final rrect = RRect.fromRectAndRadius(
-      Offset.zero & size,
-      Radius.circular(radius.clamp(0.0, size.shortestSide / 2)),
-    );
-    final path = Path()..addRRect(rrect);
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round
-      ..color = color;
-    for (final metric in path.computeMetrics()) {
-      canvas.drawPath(
-        metric.extractPath(0, metric.length * remaining.clamp(0.0, 1.0)),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(_UndoStrokePainter old) =>
-      old.remaining != remaining || old.color != color || old.radius != radius;
 }
 
 class _Empty extends StatelessWidget {

@@ -5,6 +5,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
+import '../widgets/undo_window.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'note_blocks.dart';
@@ -41,26 +42,27 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
   final _metrics = NoteBlockMetrics();
 
   /// Ticks that have fired but not yet run out their undo window, keyed by
-  /// task ordinal, exactly as a check is held on the checklists page.
-  final _pending = <int, AnimationController>{};
-
-  /// The state each in-flight tick is heading for, so the row draws its new
-  /// value while the window drains. Once the window runs out the write is
-  /// queued and the queue overlay draws it instead.
-  final _echo = <int, bool>{};
+  /// task ordinal, on the mechanism a check is held by everywhere else. Once a
+  /// window runs out the write is queued and the queue overlay draws it
+  /// instead.
+  late final UndoWindows<int> _pending;
 
   @override
   void initState() {
     super.initState();
+    _pending = UndoWindows(
+      vsync: this,
+      onChanged: () {
+        if (mounted) setState(() {});
+      },
+    );
     widget.controller.addListener(_onData);
   }
 
   @override
   void dispose() {
     widget.controller.removeListener(_onData);
-    for (final c in _pending.values) {
-      c.dispose();
-    }
+    _pending.dispose();
     _scroll.dispose();
     _geometry.dispose();
     super.dispose();
@@ -91,40 +93,20 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
 
   void _fire(NoteBlock block) {
     final ordinal = block.taskOrdinal!;
-    final open = _pending.remove(ordinal);
-    if (open != null) {
-      // A second tap inside the window cancels the first rather than queueing
-      // a second write.
-      open.dispose();
-      setState(() => _echo.remove(ordinal));
-      return;
-    }
-    final target = !block.checked;
     // The line as the page drew it, carried into the write so it follows this
     // line rather than this position when another is inserted above it. Held
     // here rather than re-read at drain, which would defeat the point.
     final text = block.text;
-    final controller = AnimationController(
-      vsync: this,
-      duration: WearMetrics.undoWindow,
-    )..reverse(from: 1);
-    controller.addStatusListener((status) {
-      if (status != AnimationStatus.dismissed || !mounted) return;
-      controller.dispose();
-      _pending.remove(ordinal);
-      _echo.remove(ordinal);
-      widget.controller.setTaskLine(
+    _pending.fire(
+      ordinal,
+      target: !block.checked,
+      commit: (checked) => widget.controller.setTaskLine(
         _note,
         ordinal: ordinal,
         text: text,
-        checked: target,
-      );
-      setState(() {});
-    });
-    setState(() {
-      _pending[ordinal] = controller;
-      _echo[ordinal] = target;
-    });
+        checked: checked,
+      ),
+    );
   }
 
   @override
@@ -164,9 +146,11 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
                             distance: d,
                             ink: ink,
                             checked:
-                                _echo[blocks[i].taskOrdinal] ??
+                                _pending.targetOf(blocks[i].taskOrdinal) ??
                                 blocks[i].checked,
-                            pending: _pending[blocks[i].taskOrdinal],
+                            pending: _pending.controllerOf(
+                              blocks[i].taskOrdinal,
+                            ),
                             onTap: blocks[i].kind == NoteBlockKind.task
                                 ? () => _onTaskTap(i, blocks[i])
                                 : null,
@@ -297,21 +281,13 @@ class _BlockRow extends StatelessWidget {
       ),
     );
 
-    final window = pending;
-    if (window != null) {
-      card = AnimatedBuilder(
-        animation: window,
-        builder: (context, child) => CustomPaint(
-          foregroundPainter: _UndoStroke(
-            progress: window.value,
-            color: ink,
-            radius: WearShape.isRound ? 15 : 10,
-          ),
-          child: child,
-        ),
-        child: card,
-      );
-    }
+    card = UndoStroke(
+      window: pending,
+      color: ink,
+      radius: WearShape.isRound ? 15 : 10,
+      strokeWidth: 1.6,
+      child: card,
+    );
 
     return Padding(
       padding: const EdgeInsetsDirectional.symmetric(vertical: 3),
@@ -322,48 +298,4 @@ class _BlockRow extends StatelessWidget {
       ),
     );
   }
-}
-
-/// The undo window drawn as a stroke draining off the card's own border, so
-/// the thing running out is the thing you would be undoing. The checklists
-/// page draws a check the same way.
-class _UndoStroke extends CustomPainter {
-  final double progress;
-  final Color color;
-  final double radius;
-
-  const _UndoStroke({
-    required this.progress,
-    required this.color,
-    required this.radius,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (progress <= 0) return;
-    // An oversized RRect radius is not scaled down by `addRRect` the way
-    // `BorderRadius` scales it, so it has to be clamped before it reaches a
-    // Path or the outline comes out malformed.
-    final r = radius.clamp(0.0, size.shortestSide / 2);
-    final path = Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(0.5, 0.5, size.width - 1, size.height - 1),
-          Radius.circular(r),
-        ),
-      );
-    for (final metric in path.computeMetrics()) {
-      canvas.drawPath(
-        metric.extractPath(0, metric.length * progress),
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.6
-          ..color = color,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(_UndoStroke old) =>
-      old.progress != progress || old.color != color;
 }

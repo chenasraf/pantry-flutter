@@ -13,7 +13,7 @@ import 'package:pantry_wear/src/notes/notes_controller.dart';
 import 'package:pantry_wear/src/notes/notes_page.dart';
 import 'package:pantry_wear/src/wear_shape.dart';
 import 'package:pantry_wear/src/widgets/focus_list.dart';
-import 'package:pantry_wear/src/widgets/wear_metrics.dart';
+import 'package:pantry_wear/src/widgets/undo_window.dart';
 
 import 'note_fixtures.dart';
 
@@ -217,7 +217,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(controller.bodyOf(notes.first), notes.first.content);
 
-    await tester.pump(WearMetrics.undoWindow);
+    await tester.pump(undoWindow);
     await tester.pumpAndSettle();
 
     // The queue is the optimistic update: a read has to see it, and the body
@@ -242,7 +242,7 @@ void main() {
     await tester.tap(find.text('Picture hooks'));
     await tester.pump(const Duration(milliseconds: 100));
     await tester.tap(find.text('Picture hooks'));
-    await tester.pump(WearMetrics.undoWindow);
+    await tester.pump(undoWindow);
     await tester.pumpAndSettle();
 
     expect(controller.bodyOf(notes.first), notes.first.content);

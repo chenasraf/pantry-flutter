@@ -57,10 +57,16 @@ class PrefsService extends ChangeNotifier {
   static const _shoppingRefreshSecondsKey = 'shopping_refresh_seconds';
   static const _wearPollSecondsKey = 'wear_poll_seconds';
   static const _wearCrownTurnsPagesKey = 'wear_crown_turns_pages';
+  static const _wearUndoSecondsKey = 'wear_undo_seconds';
 
   /// Allowed auto-refresh intervals in seconds. 0 means "off" (no background
   /// polling; manual pull-to-refresh only).
   static const _validRefreshSeconds = {0, 15, 30, 60, 120, 300};
+
+  /// Allowed undo windows in seconds. 0 means "off": a tap is written the
+  /// moment it lands, which is a wearer trading mis-tap protection for speed
+  /// rather than an app with a broken window.
+  static const validUndoSeconds = {0, 1, 2, 3, 5};
 
   /// Sentinel for the shopping view's "same as checklists" option: resolve it
   /// against [checklistRefreshSeconds] at read time via
@@ -269,6 +275,14 @@ class PrefsService extends ChangeNotifier {
   bool _wearCrownTurnsPages = false;
   bool get wearCrownTurnsPages => _wearCrownTurnsPages;
 
+  /// How long a tap on the watch stays reversible before it is written, in
+  /// seconds. It covers every reversible tap the watch offers — a checklist
+  /// item and a note's task line alike — because a watch where one surface is
+  /// reversible for two seconds and another for five is a watch with two
+  /// rules.
+  int _wearUndoSeconds = 2;
+  int get wearUndoSeconds => _wearUndoSeconds;
+
   /// The shopping interval with [shoppingRefreshInherit] resolved to the
   /// current checklist interval, so callers get a concrete seconds value.
   int get shoppingRefreshSecondsResolved =>
@@ -455,6 +469,11 @@ class PrefsService extends ChangeNotifier {
     }
 
     _wearCrownTurnsPages = all[_wearCrownTurnsPagesKey] == 'true';
+
+    final wearUndo = int.tryParse(all[_wearUndoSecondsKey] ?? '');
+    if (wearUndo != null && validUndoSeconds.contains(wearUndo)) {
+      _wearUndoSeconds = wearUndo;
+    }
   }
 
   Future<void> setLastHouseId(int id) async {
@@ -529,6 +548,7 @@ class PrefsService extends ChangeNotifier {
     _shoppingRefreshSeconds = shoppingRefreshInherit;
     _wearPollSeconds = 60;
     _wearCrownTurnsPages = false;
+    _wearUndoSeconds = 2;
     final keys = [
       _lastHouseKey,
       _notificationsEnabledKey,
@@ -567,6 +587,7 @@ class PrefsService extends ChangeNotifier {
       _shoppingRefreshSecondsKey,
       _wearPollSecondsKey,
       _wearCrownTurnsPagesKey,
+      _wearUndoSecondsKey,
     ];
     final futures = <Future>[];
     for (final key in keys) {

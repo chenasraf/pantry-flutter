@@ -5627,6 +5627,22 @@ class WearMessagesFr extends WearMessages {
   /// "Changer de page"
   /// ```
   String get crownTurnsPages => """Changer de page""";
+
+  /// ```dart
+  /// "Annuler"
+  /// ```
+  String get undoWindow => """Annuler""";
+
+  /// ```dart
+  /// "Désactivé"
+  /// ```
+  String get undoOff => """Désactivé""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 seconde', many: '$count secondes')}"
+  /// ```
+  String undoSeconds(int count) =>
+      """${_plural(count, one: '1 seconde', many: '$count secondes')}""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6804,6 +6820,8 @@ Mot de passe : pantry-rocks""",
   """wear.crown""": """Couronne""",
   """wear.crownScrollsList""": """Faire défiler la liste""",
   """wear.crownTurnsPages""": """Changer de page""",
+  """wear.undoWindow""": """Annuler""",
+  """wear.undoOff""": """Désactivé""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

@@ -1081,6 +1081,9 @@ wear:
   crown: כתר
   crownScrollsList: גלילה ברשימה
   crownTurnsPages: מעבר בין דפים
+  undoWindow: ביטול
+  undoOff: כבוי
+  undoSeconds(int count): "${_plural(count, one: 'שנייה אחת', many: '$count שניות')}"
 
 watch:
   title: שעון

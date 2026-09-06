@@ -5578,6 +5578,22 @@ class WearMessagesHe extends WearMessages {
   /// "מעבר בין דפים"
   /// ```
   String get crownTurnsPages => """מעבר בין דפים""";
+
+  /// ```dart
+  /// "ביטול"
+  /// ```
+  String get undoWindow => """ביטול""";
+
+  /// ```dart
+  /// "כבוי"
+  /// ```
+  String get undoOff => """כבוי""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'שנייה אחת', many: '$count שניות')}"
+  /// ```
+  String undoSeconds(int count) =>
+      """${_plural(count, one: 'שנייה אחת', many: '$count שניות')}""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6677,6 +6693,8 @@ Map<String, String> get messagesHeMap => {
   """wear.crown""": """כתר""",
   """wear.crownScrollsList""": """גלילה ברשימה""",
   """wear.crownTurnsPages""": """מעבר בין דפים""",
+  """wear.undoWindow""": """ביטול""",
+  """wear.undoOff""": """כבוי""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

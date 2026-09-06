@@ -5619,6 +5619,22 @@ class WearMessagesEs extends WearMessages {
   /// "Cambiar de página"
   /// ```
   String get crownTurnsPages => """Cambiar de página""";
+
+  /// ```dart
+  /// "Deshacer"
+  /// ```
+  String get undoWindow => """Deshacer""";
+
+  /// ```dart
+  /// "Desactivado"
+  /// ```
+  String get undoOff => """Desactivado""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 segundo', many: '$count segundos')}"
+  /// ```
+  String undoSeconds(int count) =>
+      """${_plural(count, one: '1 segundo', many: '$count segundos')}""";
 }
 
 class WatchMessagesEs extends WatchMessages {
@@ -6778,6 +6794,8 @@ Contraseña: pantry-rocks""",
   """wear.crown""": """Corona""",
   """wear.crownScrollsList""": """Desplazar la lista""",
   """wear.crownTurnsPages""": """Cambiar de página""",
+  """wear.undoWindow""": """Deshacer""",
+  """wear.undoOff""": """Desactivado""",
   """watch.title""": """Reloj""",
   """watch.requestWarning""":
       """Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.""",

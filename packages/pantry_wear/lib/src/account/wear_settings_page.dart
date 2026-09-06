@@ -11,6 +11,7 @@ import '../widgets/wear_row.dart';
 import 'chip_visibility_page.dart';
 import 'crown_steering_page.dart';
 import 'refresh_interval_page.dart';
+import 'undo_window_page.dart';
 
 /// What the wearer can change about how the watch behaves.
 ///
@@ -82,6 +83,16 @@ class _WearSettingsPageState extends State<WearSettingsPage> {
                     PrefsService.instance.wearPollSeconds,
                   ),
                   onTap: () => unawaited(_open(const RefreshIntervalPage())),
+                ),
+              ),
+              const SizedBox(height: WearMetrics.cardGap),
+              SizedBox(
+                height: WearMetrics.cardHeight,
+                child: WearRow(
+                  icon: Icons.undo,
+                  label: m.wear.undoWindow,
+                  value: undoWindowLabel(PrefsService.instance.wearUndoSeconds),
+                  onTap: () => unawaited(_open(const UndoWindowPage())),
                 ),
               ),
               if (_hasRotary) ...[

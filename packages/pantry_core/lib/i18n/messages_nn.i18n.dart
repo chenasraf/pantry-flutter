@@ -5606,6 +5606,22 @@ class WearMessagesNn extends WearMessages {
   /// "Byt side"
   /// ```
   String get crownTurnsPages => """Byt side""";
+
+  /// ```dart
+  /// "Angre"
+  /// ```
+  String get undoWindow => """Angre""";
+
+  /// ```dart
+  /// "Av"
+  /// ```
+  String get undoOff => """Av""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 sekund', many: '$count sekund')}"
+  /// ```
+  String undoSeconds(int count) =>
+      """${_plural(count, one: '1 sekund', many: '$count sekund')}""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -6750,6 +6766,8 @@ Passord: pantry""",
   """wear.crown""": """Krone""",
   """wear.crownScrollsList""": """Bla i lista""",
   """wear.crownTurnsPages""": """Byt side""",
+  """wear.undoWindow""": """Angre""",
+  """wear.undoOff""": """Av""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",
