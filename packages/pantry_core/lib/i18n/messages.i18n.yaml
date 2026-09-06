@@ -1072,6 +1072,11 @@ wear:
   agoDays(int count): "${count}d ago"
   setUpAgain: Set up again
   sessionExpiredShort: Your phone needs to sign this watch in again.
+  privateTrip: Private trip
+  needsConnection: Needs a connection
+  pickAList: Pick a list first
+  nSelected(int count): "$count selected"
+  noStoresHere: No stores here yet
 
 watch:
   title: Watch

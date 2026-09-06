@@ -5519,6 +5519,31 @@ class WearMessagesNn extends WearMessages {
   /// ```
   String get sessionExpiredShort =>
       """Telefonen din må logge inn denne klokka på nytt.""";
+
+  /// ```dart
+  /// "Privat handletur"
+  /// ```
+  String get privateTrip => """Privat handletur""";
+
+  /// ```dart
+  /// "Treng ei tilkopling"
+  /// ```
+  String get needsConnection => """Treng ei tilkopling""";
+
+  /// ```dart
+  /// "Vel ei liste først"
+  /// ```
+  String get pickAList => """Vel ei liste først""";
+
+  /// ```dart
+  /// "$count valde"
+  /// ```
+  String nSelected(int count) => """$count valde""";
+
+  /// ```dart
+  /// "Ingen butikkar enno"
+  /// ```
+  String get noStoresHere => """Ingen butikkar enno""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -6650,6 +6675,10 @@ Passord: pantry""",
   """wear.setUpAgain""": """Set opp på nytt""",
   """wear.sessionExpiredShort""":
       """Telefonen din må logge inn denne klokka på nytt.""",
+  """wear.privateTrip""": """Privat handletur""",
+  """wear.needsConnection""": """Treng ei tilkopling""",
+  """wear.pickAList""": """Vel ei liste først""",
+  """wear.noStoresHere""": """Ingen butikkar enno""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

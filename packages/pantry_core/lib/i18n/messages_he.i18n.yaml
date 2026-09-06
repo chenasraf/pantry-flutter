@@ -1064,6 +1064,11 @@ wear:
   agoDays(int count): "לפני $count י׳"
   setUpAgain: הגדרה מחדש
   sessionExpiredShort: הטלפון שלך צריך לחבר את השעון מחדש.
+  privateTrip: קנייה פרטית
+  needsConnection: צריך חיבור
+  pickAList: בחר קודם רשימה
+  nSelected(int count): "$count נבחרו"
+  noStoresHere: אין עדיין חנויות
 
 watch:
   title: שעון

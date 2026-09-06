@@ -5488,6 +5488,31 @@ class WearMessages {
   /// ```
   String get sessionExpiredShort =>
       """Your phone needs to sign this watch in again.""";
+
+  /// ```dart
+  /// "Private trip"
+  /// ```
+  String get privateTrip => """Private trip""";
+
+  /// ```dart
+  /// "Needs a connection"
+  /// ```
+  String get needsConnection => """Needs a connection""";
+
+  /// ```dart
+  /// "Pick a list first"
+  /// ```
+  String get pickAList => """Pick a list first""";
+
+  /// ```dart
+  /// "$count selected"
+  /// ```
+  String nSelected(int count) => """$count selected""";
+
+  /// ```dart
+  /// "No stores here yet"
+  /// ```
+  String get noStoresHere => """No stores here yet""";
 }
 
 class WatchMessages {
@@ -6594,6 +6619,10 @@ Password: pantry-rocks""",
   """wear.setUpAgain""": """Set up again""",
   """wear.sessionExpiredShort""":
       """Your phone needs to sign this watch in again.""",
+  """wear.privateTrip""": """Private trip""",
+  """wear.needsConnection""": """Needs a connection""",
+  """wear.pickAList""": """Pick a list first""",
+  """wear.noStoresHere""": """No stores here yet""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

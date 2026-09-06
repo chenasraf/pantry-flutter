@@ -1064,6 +1064,11 @@ wear:
   agoDays(int count): "hace $count d"
   setUpAgain: Configurar de nuevo
   sessionExpiredShort: Tu teléfono debe volver a iniciar sesión en este reloj.
+  privateTrip: Compra privada
+  needsConnection: Necesita conexión
+  pickAList: Elige una lista primero
+  nSelected(int count): "$count seleccionadas"
+  noStoresHere: Aún no hay tiendas
 
 watch:
   title: Reloj

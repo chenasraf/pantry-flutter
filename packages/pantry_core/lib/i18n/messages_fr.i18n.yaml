@@ -1064,6 +1064,11 @@ wear:
   agoDays(int count): "il y a $count j"
   setUpAgain: Reconfigurer
   sessionExpiredShort: Votre téléphone doit reconnecter cette montre.
+  privateTrip: Sortie privée
+  needsConnection: Connexion nécessaire
+  pickAList: Choisis d’abord une liste
+  nSelected(int count): "$count sélectionnées"
+  noStoresHere: Pas encore de magasins
 
 watch:
   title: Montre

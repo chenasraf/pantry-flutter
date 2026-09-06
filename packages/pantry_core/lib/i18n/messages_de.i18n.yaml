@@ -1064,6 +1064,11 @@ wear:
   agoDays(int count): "vor $count T."
   setUpAgain: Neu einrichten
   sessionExpiredShort: Dein Telefon muss diese Uhr erneut anmelden.
+  privateTrip: Privater Einkauf
+  needsConnection: Braucht eine Verbindung
+  pickAList: Erst eine Liste wählen
+  nSelected(int count): "$count ausgewählt"
+  noStoresHere: Noch keine Geschäfte
 
 watch:
   title: Uhr

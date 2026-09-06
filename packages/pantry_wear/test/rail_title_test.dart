@@ -62,16 +62,35 @@ void main() {
     }
   });
 
-  testWidgets('tapping the rail offers the list switcher', (tester) async {
+  testWidgets('tapping the rail offers both of its buttons', (tester) async {
     await pump(tester);
 
     expect(find.text(m.wear.changeList), findsNothing);
+    expect(find.text(m.shopping.startShopping), findsNothing);
     await tester.tap(find.text(testList().name));
     await tester.pumpAndSettle();
 
-    // One tap expands, a second one opens: a mistap on a rail this small would
+    // One tap expands, a second one acts: a mistap on a rail this small would
     // otherwise cost the wearer their place.
     expect(find.text(m.wear.changeList), findsOneWidget);
+    expect(find.text(m.shopping.startShopping), findsOneWidget);
+  });
+
+  testWidgets('the expansion takes height rather than borrowing it', (
+    tester,
+  ) async {
+    // A button a wearer aims at cannot live in the group label's 13 logical
+    // pixels, which is the whole reason the rail grows.
+    await pump(tester);
+    final collapsed = tester.getSize(find.byType(WearRail)).height;
+
+    await tester.tap(find.text(testList().name));
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getSize(find.byType(WearRail)).height,
+      greaterThan(collapsed),
+    );
   });
 
   testWidgets('a rejected credential takes the rail line', (tester) async {
@@ -109,7 +128,11 @@ void main() {
     expect(wash(), findsOneWidget);
   });
 
-  testWidgets('a title tap cannot hide the state', (tester) async {
+  testWidgets('the rail expands without hiding the state', (tester) async {
+    // The rail is the switcher's only entry point, so a state that suppressed
+    // the expansion put the wearer's lists out of reach for as long as it
+    // stood. A slot grown into a real button row carries the line above it
+    // instead of being displaced by it.
     await pump(tester);
     AuthService.instance.isUnauthorized.value = true;
     await tester.pumpAndSettle();
@@ -117,9 +140,7 @@ void main() {
     await tester.tap(find.text(testList().name));
     await tester.pumpAndSettle();
 
-    // The slot the *Change list* button lives in is spoken for while the state
-    // stands, so the expansion that would cover it never happens.
-    expect(find.text(m.wear.changeList), findsNothing);
+    expect(find.text(m.wear.changeList), findsOneWidget);
     expect(find.byKey(const ValueKey('degraded-line')), findsOneWidget);
   });
 

@@ -16,6 +16,7 @@ import '../checklists/list_switcher_page.dart';
 import '../photos/photos_page.dart';
 import '../notes/notes_page.dart';
 import '../services/wear_deep_link.dart';
+import '../shopping/start_trip_page.dart';
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_ink.dart';
@@ -273,16 +274,20 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     );
   }
 
-  // -- The list switcher -----------------------------------------------------
+  // -- The rail's buttons ----------------------------------------------------
 
-  /// Tapping the rail expands it; the button it reveals is what opens the
-  /// switcher. Untouched, the expansion collapses on its own.
+  /// Tapping the rail expands it; the buttons it reveals are what act.
+  /// Untouched, the expansion collapses on its own.
+  ///
+  /// Two buttons take longer to read than one, so the window is wide enough to
+  /// read them and still short enough that the rail is not left standing over
+  /// the list.
   void _tapRail() {
     if (_mode == ChecklistMode.session || _page != _checklistIndex) return;
     _railTimer?.cancel();
     setState(() => _railExpanded = !_railExpanded);
     if (!_railExpanded) return;
-    _railTimer = Timer(const Duration(milliseconds: 2500), () {
+    _railTimer = Timer(const Duration(milliseconds: 3000), () {
       if (mounted) setState(() => _railExpanded = false);
     });
   }
@@ -300,21 +305,41 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _openSwitcher() async {
+  /// A route pushed over the pager takes the crown with it, and the rail
+  /// collapses behind it — an expansion the wearer has already acted on has
+  /// nothing left to offer when they come back.
+  Future<T?> _push<T>(Widget page) async {
     _railTimer?.cancel();
     setState(() {
       _railExpanded = false;
       _routeOpen = true;
     });
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => ListSwitcherPage(
-          lists: _controller.lists,
-          selectedId: _controller.list?.id,
-        ),
-      ),
-    );
+    final result = await Navigator.of(
+      context,
+    ).push<T>(MaterialPageRoute<T>(builder: (_) => page));
     if (mounted) setState(() => _routeOpen = false);
+    return result;
+  }
+
+  Future<void> _openSwitcher() => _push<void>(
+    ListSwitcherPage(
+      lists: _controller.lists,
+      selectedId: _controller.list?.id,
+    ),
+  );
+
+  /// Starting a trip is a pushed page, not a rail control: it has four things
+  /// to choose between and a wearer has to be able to leave it having chosen
+  /// none of them.
+  ///
+  /// A started trip is read back rather than handed over — the shell swaps its
+  /// page set on the controller's mode, and the controller's own refresh is
+  /// what settles it, so there is one path into a session however it began.
+  Future<void> _openStartTrip() async {
+    final house = _controller.houseId;
+    if (house == null) return;
+    final started = await _push<bool>(StartTripPage(houseId: house));
+    if (started == true) unawaited(_controller.refresh());
   }
 
   // -- Frame -----------------------------------------------------------------
@@ -368,29 +393,31 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
                         children: _pages,
                       ),
                     ),
+                    // The rail sizes itself: expanding costs height, and it is
+                    // the rail that knows what its own buttons need.
                     PositionedDirectional(
                       top: 0,
                       start: 0,
                       end: 0,
-                      height: railHeight,
-                      child: ColoredBox(
-                        color: const Color(0xFF0B0B0C),
-                        child: ValueListenableBuilder(
-                          valueListenable: _geometry,
-                          builder: (context, geometry, _) => WearRail(
-                            title: title,
-                            group: _page == _checklistIndex
-                                ? geometry.stickyGroup
-                                : null,
-                            groupIcon: geometry.stickyIcon,
-                            groupColor: geometry.stickyColor,
-                            page: _page,
-                            pages: _pages.length,
-                            expanded: _railExpanded,
-                            onTapTitle: _tapRail,
-                            onChangeList: _openSwitcher,
-                            onSetUpAgain: _showAccount,
-                          ),
+                      child: ValueListenableBuilder(
+                        valueListenable: _geometry,
+                        builder: (context, geometry, _) => WearRail(
+                          title: title,
+                          group: _page == _checklistIndex
+                              ? geometry.stickyGroup
+                              : null,
+                          groupIcon: geometry.stickyIcon,
+                          groupColor: geometry.stickyColor,
+                          page: _page,
+                          pages: _pages.length,
+                          baseHeight: railHeight,
+                          expanded: _railExpanded,
+                          onTapTitle: _tapRail,
+                          onChangeList: _openSwitcher,
+                          onStartShopping: _mode == ChecklistMode.browse
+                              ? _openStartTrip
+                              : null,
+                          onSetUpAgain: _showAccount,
                         ),
                       ),
                     ),

@@ -7,6 +7,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 import '../wear_shape.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
+import '../widgets/wear_metrics.dart';
 
 /// What the rail says you are looking at.
 typedef RailTitle = ({String label, IconData icon, Color color});
@@ -22,9 +23,14 @@ typedef RailTitle = ({String label, IconData icon, Color color});
 /// The group label is the sticky half of the header: the header itself scrolls
 /// up as an ordinary short row, and the rail takes it over as it slides under.
 ///
-/// A rejected credential takes the group label's line and washes the rail
-/// behind it. The rail listens for that itself: the shell rebuilds on
-/// controller data, and a 401 produces none.
+/// Expanded, the rail takes height of its own rather than borrowing the
+/// group label's line: a button a wearer aims at cannot be 13 logical pixels
+/// tall. It grows downward over the list, so the centre line the focus falloff
+/// measures from never moves.
+///
+/// A rejected credential washes the rail and takes a line above the buttons.
+/// The rail listens for that itself: the shell rebuilds on controller data, and
+/// a 401 produces none.
 class WearRail extends StatelessWidget {
   final RailTitle title;
   final String? group;
@@ -33,11 +39,19 @@ class WearRail extends StatelessWidget {
   final int page;
   final int pages;
 
-  /// Tapping the title expands the rail to a single button rather than opening
-  /// the switcher outright: a mistap on a rail this small would otherwise cost
-  /// the wearer their place.
+  /// The height the rail occupies collapsed. Expansion is added to it here,
+  /// so the shell has one number to give and the rail owns what it spends.
+  final double baseHeight;
+
+  /// Tapping the title expands the rail to its buttons rather than acting
+  /// outright: a mistap on a rail this small would otherwise cost the wearer
+  /// their place.
   final VoidCallback? onTapTitle;
   final VoidCallback? onChangeList;
+
+  /// Null in a session, which has a progression page of its own and no trip to
+  /// start.
+  final VoidCallback? onStartShopping;
   final bool expanded;
 
   /// Where the degraded line points. Tapping it is a page turn, not a pairing
@@ -53,11 +67,23 @@ class WearRail extends StatelessWidget {
     required this.groupColor,
     required this.page,
     required this.pages,
+    required this.baseHeight,
     this.onTapTitle,
     this.onChangeList,
+    this.onStartShopping,
     this.onSetUpAgain,
     this.expanded = false,
   });
+
+  /// What the expansion costs on top of [baseHeight]. The buttons replace the
+  /// group label's line; a degraded state keeps a line of its own above them,
+  /// which is what makes the switcher reachable while the state stands.
+  static double extentFor({required bool expanded, required bool degraded}) {
+    if (!expanded) return 0;
+    final buttons = WearMetrics.railButtonExtent - WearMetrics.railLineExtent;
+    if (!degraded) return buttons;
+    return buttons + WearMetrics.railLineExtent + WearMetrics.railStackGap;
+  }
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<bool>(
@@ -67,74 +93,97 @@ class WearRail extends StatelessWidget {
 
   Widget _build(BuildContext context, bool degraded) {
     final window = dotWindow(pages, page);
-    return DecoratedBox(
-      decoration: BoxDecoration(gradient: degraded ? _wash : null),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: FractionallySizedBox(
-          widthFactor: WearShape.isRound ? 0.68 : 0.92,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GestureDetector(
-                // While the state stands the whole rail is its signpost, so a
-                // title tap cannot expand the rail over the line that carries
-                // it. The switcher costs a page turn until sign-in is renewed.
-                onTap: degraded ? onSetUpAgain : onTapTitle,
-                behavior: HitTestBehavior.opaque,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const _SyncDot(),
-                    const SizedBox(width: 6),
-                    Icon(title.icon, size: 12, color: title.color),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: Text(
-                        title.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textDirection: detectTextDirection(title.label),
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: title.color,
-                          fontWeight: FontWeight.w600,
-                        ),
+    // Collapsed the buttons are absent, so the line the group label usually
+    // has is the state's; expanded it takes one of its own above them.
+    final slot = expanded
+        ? WearMetrics.railButtonExtent
+        : degraded
+        ? 0.0
+        : WearMetrics.railLineExtent;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOutCubic,
+      height: baseHeight + extentFor(expanded: expanded, degraded: degraded),
+      decoration: BoxDecoration(
+        color: wearGround,
+        gradient: degraded ? _wash : null,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _bounded(
+            GestureDetector(
+              onTap: onTapTitle,
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const _SyncDot(),
+                  const SizedBox(width: 6),
+                  Icon(title.icon, size: 12, color: title.color),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      title.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textDirection: detectTextDirection(title.label),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: title.color,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 13,
-                // Driven by the label changing, not by a header's distance from
-                // the centre line. Those are different events: the header starts
-                // approaching while the last row of the outgoing group is still
-                // focused, so a geometric transition began a row early and had
-                // nothing left to play when the new label actually arrived.
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0, 0.7),
-                        end: Offset.zero,
-                      ).animate(animation),
-                      child: child,
-                    ),
                   ),
-                  // The state outranks both of the slot's usual occupants: the
-                  // group label is the one rail element that changes as you
-                  // scroll, and it is the cheapest thing here to spend.
-                  child: degraded
-                      ? _DegradedLine(onTap: onSetUpAgain)
-                      : expanded
-                      ? _ChangeListButton(onTap: onChangeList)
-                      : group == null
-                      ? const SizedBox.shrink()
-                      : Row(
+                ],
+              ),
+            ),
+          ),
+          if (degraded)
+            _bounded(
+              SizedBox(
+                height: WearMetrics.railLineExtent,
+                child: _DegradedLine(onTap: onSetUpAgain),
+              ),
+            ),
+          if (degraded && expanded)
+            const SizedBox(height: WearMetrics.railStackGap),
+          if (slot > 0)
+            SizedBox(
+              height: slot,
+              // Driven by the label changing, not by a header's distance from
+              // the centre line. Those are different events: the header starts
+              // approaching while the last row of the outgoing group is still
+              // focused, so a geometric transition began a row early and had
+              // nothing left to play when the new label actually arrived.
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, 0.7),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  ),
+                ),
+                child: expanded
+                    ? _bounded(
+                        _RailButtons(
+                          onStart: onStartShopping,
+                          onChangeList: onChangeList,
+                        ),
+                        // The buttons sit lower than the title, where a round
+                        // screen is already wider, and two labels need every
+                        // pixel of it.
+                        factor: WearShape.isRound ? 0.90 : 0.96,
+                      )
+                    : group == null
+                    ? const SizedBox.shrink()
+                    : _bounded(
+                        Row(
                           key: ValueKey(group),
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -163,38 +212,44 @@ class WearRail extends StatelessWidget {
                             ),
                           ],
                         ),
+                      ),
+              ),
+            ),
+          const SizedBox(height: 3),
+          // Bars, not dots: the current page grows into a line so the
+          // indicator says *where* you are as well as how many there are,
+          // and it animates rather than cutting between the two widths.
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (var i = 0; i < window.count; i++)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  margin: const EdgeInsetsDirectional.symmetric(horizontal: 2),
+                  width: i == window.selected ? 14 : 8,
+                  height: 3,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                    color: i == window.selected
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.white24,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 3),
-              // Bars, not dots: the current page grows into a line so the
-              // indicator says *where* you are as well as how many there are,
-              // and it animates rather than cutting between the two widths.
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var i = 0; i < window.count; i++)
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 180),
-                      margin: const EdgeInsetsDirectional.symmetric(
-                        horizontal: 2,
-                      ),
-                      width: i == window.selected ? 14 : 8,
-                      height: 3,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        color: i == window.selected
-                            ? Theme.of(context).colorScheme.primary
-                            : Colors.white24,
-                      ),
-                    ),
-                ],
-              ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
+
+  /// Held back from the glass by however much the row's own height needs. Each
+  /// line answers for itself rather than the rail taking one width: the title
+  /// rides high on a round screen where the chord is short, and the buttons
+  /// sit lower where it is not.
+  Widget _bounded(Widget child, {double? factor}) => FractionallySizedBox(
+    widthFactor: factor ?? (WearShape.isRound ? 0.68 : 0.92),
+    child: child,
+  );
 }
 
 /// Behind the whole rail, and fading out before it ends: a 9pt line needs a
@@ -207,7 +262,8 @@ const _wash = LinearGradient(
   stops: [0, 0.72, 1],
 );
 
-/// The rejected credential, on the line the group label usually has.
+/// The rejected credential, on a line of its own above whatever else the rail
+/// is carrying.
 ///
 /// The wording is the phone's — 15 characters, already translated, and exactly
 /// right. Only the account page's body splits, that one being phone-length
@@ -287,36 +343,101 @@ class _SyncDot extends StatelessWidget {
   }
 }
 
-class _ChangeListButton extends StatelessWidget {
+/// What the expansion is for: the trip you could start, and the list you could
+/// be looking at instead.
+///
+/// Ranked rather than equal — starting a trip is the thing a wearer standing in
+/// a doorway came here for, and switching lists is the thing they do once.
+class _RailButtons extends StatelessWidget {
+  final VoidCallback? onStart;
+  final VoidCallback? onChangeList;
+
+  const _RailButtons({required this.onStart, required this.onChangeList});
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      if (onStart != null)
+        Flexible(
+          child: _RailButton(
+            key: const ValueKey('start-shopping'),
+            icon: Icons.shopping_cart_checkout,
+            label: m.shopping.startShopping,
+            primary: true,
+            onTap: onStart,
+          ),
+        ),
+      if (onStart != null && onChangeList != null) const SizedBox(width: 5),
+      if (onChangeList != null)
+        Flexible(
+          child: _RailButton(
+            key: const ValueKey('change-list'),
+            label: m.wear.changeList,
+            primary: false,
+            onTap: onChangeList,
+          ),
+        ),
+    ],
+  );
+}
+
+class _RailButton extends StatelessWidget {
+  final IconData? icon;
+  final String label;
+  final bool primary;
   final VoidCallback? onTap;
 
-  const _ChangeListButton({required this.onTap});
+  const _RailButton({
+    super.key,
+    this.icon,
+    required this.label,
+    required this.primary,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final ink = primary ? scheme.primary : Colors.white70;
     return GestureDetector(
-      key: const ValueKey('change-list'),
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: scheme.primary.withValues(alpha: 0.22),
-          borderRadius: BorderRadius.circular(10),
+          color: primary
+              ? scheme.primary.withValues(alpha: 0.24)
+              : Colors.white.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(WearMetrics.railButtonExtent / 2),
         ),
         child: Padding(
           padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 8,
-            vertical: 1,
+            horizontal: 9,
+            vertical: 6,
           ),
-          child: Text(
-            m.wear.changeList,
-            style: TextStyle(
-              fontSize: 9,
-              height: 1.2,
-              fontWeight: FontWeight.w700,
-              color: scheme.primary,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 12, color: ink),
+                const SizedBox(width: 4),
+              ],
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textDirection: detectTextDirection(label),
+                  style: TextStyle(
+                    fontSize: 10,
+                    height: 1.1,
+                    fontWeight: FontWeight.w700,
+                    color: ink,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

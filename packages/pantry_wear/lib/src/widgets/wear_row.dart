@@ -23,6 +23,16 @@ class WearRow extends StatelessWidget {
   /// being chosen from.
   final bool selected;
 
+  /// Draws an empty box on an unselected row rather than nothing. A row in a
+  /// set being checked on and off has to say that it is *off*, where a row in
+  /// a pick-one list only has to say which one is on.
+  final bool checkbox;
+
+  /// A row that answers in place instead of opening a page. The switch shows
+  /// the value and the outcome of a tap at once, which is what earns it the
+  /// exception — a cycling control on a wrist does not.
+  final bool? toggled;
+
   /// 0 on the centre line, 1 at the edge of the falloff. A page with no
   /// falloff leaves it at 0 and every row draws at full strength.
   final double distance;
@@ -40,6 +50,8 @@ class WearRow extends StatelessWidget {
     this.tint = Colors.white70,
     this.value,
     this.selected = false,
+    this.checkbox = false,
+    this.toggled,
     this.distance = 0,
     this.warning = false,
     this.onTap,
@@ -102,7 +114,15 @@ class WearRow extends StatelessWidget {
                   ),
                 ),
               ),
-              if (selected)
+              if (toggled != null)
+                _Toggle(on: toggled!, tint: scheme.primary)
+              else if (checkbox)
+                Icon(
+                  selected ? Icons.check_box : Icons.check_box_outline_blank,
+                  size: 15,
+                  color: selected ? scheme.primary : Colors.white38,
+                )
+              else if (selected)
                 Icon(Icons.check, size: 14, color: scheme.primary)
               else if (value != null) ...[
                 const SizedBox(width: 6),
@@ -126,4 +146,50 @@ class WearRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The switch a row answers with.
+///
+/// Drawn rather than taken from Material: a `Switch` brings a tap target of its
+/// own, and two targets on one row is exactly the ambiguity a wrist cannot
+/// afford — the whole row is the control, and this only reports it.
+class _Toggle extends StatelessWidget {
+  final bool on;
+  final Color tint;
+
+  const _Toggle({required this.on, required this.tint});
+
+  static const _width = 26.0;
+  static const _height = 15.0;
+  static const _knob = 11.0;
+
+  @override
+  Widget build(BuildContext context) => AnimatedContainer(
+    duration: const Duration(milliseconds: 160),
+    curve: Curves.easeOutCubic,
+    width: _width,
+    height: _height,
+    decoration: BoxDecoration(
+      color: on ? tint.withValues(alpha: 0.45) : Colors.white24,
+      borderRadius: BorderRadius.circular(_height / 2),
+    ),
+    child: AnimatedAlign(
+      duration: const Duration(milliseconds: 160),
+      curve: Curves.easeOutCubic,
+      alignment: on
+          ? AlignmentDirectional.centerEnd
+          : AlignmentDirectional.centerStart,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(horizontal: 2),
+        child: Container(
+          width: _knob,
+          height: _knob,
+          decoration: BoxDecoration(
+            color: on ? tint : Colors.white54,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
+    ),
+  );
 }

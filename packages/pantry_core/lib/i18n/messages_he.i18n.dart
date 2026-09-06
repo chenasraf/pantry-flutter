@@ -5491,6 +5491,31 @@ class WearMessagesHe extends WearMessages {
   /// "הטלפון שלך צריך לחבר את השעון מחדש."
   /// ```
   String get sessionExpiredShort => """הטלפון שלך צריך לחבר את השעון מחדש.""";
+
+  /// ```dart
+  /// "קנייה פרטית"
+  /// ```
+  String get privateTrip => """קנייה פרטית""";
+
+  /// ```dart
+  /// "צריך חיבור"
+  /// ```
+  String get needsConnection => """צריך חיבור""";
+
+  /// ```dart
+  /// "בחר קודם רשימה"
+  /// ```
+  String get pickAList => """בחר קודם רשימה""";
+
+  /// ```dart
+  /// "$count נבחרו"
+  /// ```
+  String nSelected(int count) => """$count נבחרו""";
+
+  /// ```dart
+  /// "אין עדיין חנויות"
+  /// ```
+  String get noStoresHere => """אין עדיין חנויות""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6577,6 +6602,10 @@ Map<String, String> get messagesHeMap => {
   """wear.agoJustNow""": """ממש עכשיו""",
   """wear.setUpAgain""": """הגדרה מחדש""",
   """wear.sessionExpiredShort""": """הטלפון שלך צריך לחבר את השעון מחדש.""",
+  """wear.privateTrip""": """קנייה פרטית""",
+  """wear.needsConnection""": """צריך חיבור""",
+  """wear.pickAList""": """בחר קודם רשימה""",
+  """wear.noStoresHere""": """אין עדיין חנויות""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

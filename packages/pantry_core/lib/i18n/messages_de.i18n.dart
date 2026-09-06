@@ -5548,6 +5548,31 @@ class WearMessagesDe extends WearMessages {
   /// ```
   String get sessionExpiredShort =>
       """Dein Telefon muss diese Uhr erneut anmelden.""";
+
+  /// ```dart
+  /// "Privater Einkauf"
+  /// ```
+  String get privateTrip => """Privater Einkauf""";
+
+  /// ```dart
+  /// "Braucht eine Verbindung"
+  /// ```
+  String get needsConnection => """Braucht eine Verbindung""";
+
+  /// ```dart
+  /// "Erst eine Liste wählen"
+  /// ```
+  String get pickAList => """Erst eine Liste wählen""";
+
+  /// ```dart
+  /// "$count ausgewählt"
+  /// ```
+  String nSelected(int count) => """$count ausgewählt""";
+
+  /// ```dart
+  /// "Noch keine Geschäfte"
+  /// ```
+  String get noStoresHere => """Noch keine Geschäfte""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6716,6 +6741,10 @@ Passwort: pantry-rocks""",
   """wear.setUpAgain""": """Neu einrichten""",
   """wear.sessionExpiredShort""":
       """Dein Telefon muss diese Uhr erneut anmelden.""",
+  """wear.privateTrip""": """Privater Einkauf""",
+  """wear.needsConnection""": """Braucht eine Verbindung""",
+  """wear.pickAList""": """Erst eine Liste wählen""",
+  """wear.noStoresHere""": """Noch keine Geschäfte""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

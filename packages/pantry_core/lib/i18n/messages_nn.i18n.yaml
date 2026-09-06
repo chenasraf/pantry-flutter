@@ -1208,6 +1208,11 @@ wear:
   agoDays(int count): "for $count d sidan"
   setUpAgain: Set opp på nytt
   sessionExpiredShort: Telefonen din må logge inn denne klokka på nytt.
+  privateTrip: Privat handletur
+  needsConnection: Treng ei tilkopling
+  pickAList: Vel ei liste først
+  nSelected(int count): "$count valde"
+  noStoresHere: Ingen butikkar enno
 
 watch:
   title: Klokke

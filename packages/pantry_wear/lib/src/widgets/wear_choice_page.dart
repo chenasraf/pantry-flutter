@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'wear_ink.dart';
 import 'wear_mechanics.dart';
 import 'wear_metrics.dart';
 import 'wear_row.dart';
@@ -112,6 +113,100 @@ class _WearChoicePageState<T> extends State<WearChoicePage<T>> {
                       label: choice.label,
                       selected: choice.value == widget.selected,
                       onTap: () => unawaited(_select(choice.value)),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The same page, asking for any number of the list rather than one of it.
+///
+/// It does not pop on a tap and it returns nothing: a set is not finished until
+/// the wearer says so, and the back gesture every pushed route already carries
+/// is what says it. The caller sees each change as it happens, so what it holds
+/// is always what the page is showing.
+class WearMultiChoicePage<T> extends StatefulWidget {
+  final List<WearChoice<T>> choices;
+  final Set<T> selected;
+
+  /// Said in place of the list when there is nothing to choose between.
+  final String empty;
+
+  final void Function(Set<T> selected) onChanged;
+
+  const WearMultiChoicePage({
+    super.key,
+    required this.choices,
+    required this.selected,
+    required this.empty,
+    required this.onChanged,
+  });
+
+  @override
+  State<WearMultiChoicePage<T>> createState() => _WearMultiChoicePageState<T>();
+}
+
+class _WearMultiChoicePageState<T> extends State<WearMultiChoicePage<T>> {
+  final _scroll = ScrollController();
+  late final Set<T> _selected = {...widget.selected};
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  void _toggle(T value) {
+    setState(() {
+      if (!_selected.remove(value)) _selected.add(value);
+    });
+    widget.onChanged({..._selected});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: wearGround,
+      body: EdgeDismissible(
+        onDismiss: () => Navigator.of(context).pop(),
+        child: RotaryScrollable(
+          controller: _scroll,
+          active: true,
+          child: ListView(
+            controller: _scroll,
+            padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: 10,
+              vertical: 44,
+            ),
+            children: [
+              if (widget.choices.isEmpty)
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(top: 12),
+                  child: Text(
+                    widget.empty,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 11, color: Colors.white38),
+                  ),
+                ),
+              for (final choice in widget.choices)
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(
+                    bottom: WearMetrics.cardGap,
+                  ),
+                  child: SizedBox(
+                    height: WearMetrics.cardHeight,
+                    child: WearRow(
+                      icon: choice.icon,
+                      tint: choice.tint,
+                      label: choice.label,
+                      checkbox: true,
+                      selected: _selected.contains(choice.value),
+                      onTap: () => _toggle(choice.value),
                     ),
                   ),
                 ),

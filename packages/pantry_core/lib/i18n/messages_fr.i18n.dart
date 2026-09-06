@@ -5540,6 +5540,31 @@ class WearMessagesFr extends WearMessages {
   /// ```
   String get sessionExpiredShort =>
       """Votre téléphone doit reconnecter cette montre.""";
+
+  /// ```dart
+  /// "Sortie privée"
+  /// ```
+  String get privateTrip => """Sortie privée""";
+
+  /// ```dart
+  /// "Connexion nécessaire"
+  /// ```
+  String get needsConnection => """Connexion nécessaire""";
+
+  /// ```dart
+  /// "Choisis d’abord une liste"
+  /// ```
+  String get pickAList => """Choisis d’abord une liste""";
+
+  /// ```dart
+  /// "$count sélectionnées"
+  /// ```
+  String nSelected(int count) => """$count sélectionnées""";
+
+  /// ```dart
+  /// "Pas encore de magasins"
+  /// ```
+  String get noStoresHere => """Pas encore de magasins""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6704,6 +6729,10 @@ Mot de passe : pantry-rocks""",
   """wear.setUpAgain""": """Reconfigurer""",
   """wear.sessionExpiredShort""":
       """Votre téléphone doit reconnecter cette montre.""",
+  """wear.privateTrip""": """Sortie privée""",
+  """wear.needsConnection""": """Connexion nécessaire""",
+  """wear.pickAList""": """Choisis d’abord une liste""",
+  """wear.noStoresHere""": """Pas encore de magasins""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

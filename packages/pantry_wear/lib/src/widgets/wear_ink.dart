@@ -8,3 +8,7 @@ import 'package:flutter/material.dart';
 /// two hex values.
 const wearNoticeInk = Color(0xFFE0A0A0);
 const wearNoticeGround = Color(0xFF2A1D1D);
+
+/// The lower of the watch's two planes, and what the rail is filled with so
+/// the list scrolls under it rather than through it.
+const wearGround = Color(0xFF0B0B0C);
