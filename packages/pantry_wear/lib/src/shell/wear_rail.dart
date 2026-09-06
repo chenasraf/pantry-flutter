@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
@@ -23,14 +24,16 @@ typedef RailTitle = ({String label, IconData icon, Color color});
 /// The group label is the sticky half of the header: the header itself scrolls
 /// up as an ordinary short row, and the rail takes it over as it slides under.
 ///
-/// Expanded, the rail takes height of its own rather than borrowing the
-/// group label's line: a button a wearer aims at cannot be 13 logical pixels
-/// tall. It grows downward over the list, so the centre line the focus falloff
-/// measures from never moves.
+/// Expanding drops a **panel of full-size buttons below** the rail rather than
+/// growing a slot inside it. Two reasons: a button a wearer aims at cannot live
+/// in the group label's 13 logical pixels, and nothing the rail already says
+/// should move when the panel appears. It covers the list, which the list can
+/// afford — the falloff measures from the *screen's* centre, so the centre line
+/// never moves either.
 ///
-/// A rejected credential washes the rail and takes a line above the buttons.
-/// The rail listens for that itself: the shell rebuilds on controller data, and
-/// a 401 produces none.
+/// A rejected credential washes the rail and takes the group label's line. The
+/// rail listens for that itself: the shell rebuilds on controller data, and a
+/// 401 produces none.
 class WearRail extends StatelessWidget {
   final RailTitle title;
   final String? group;
@@ -39,13 +42,12 @@ class WearRail extends StatelessWidget {
   final int page;
   final int pages;
 
-  /// The height the rail occupies collapsed. Expansion is added to it here,
-  /// so the shell has one number to give and the rail owns what it spends.
+  /// What the rail occupies with no panel under it — a *minimum*, not a fixed
+  /// height, so a larger system font grows the rail rather than overflowing it.
   final double baseHeight;
 
-  /// Tapping the title expands the rail to its buttons rather than acting
-  /// outright: a mistap on a rail this small would otherwise cost the wearer
-  /// their place.
+  /// Tapping the title opens the panel rather than acting outright: a mistap on
+  /// a rail this small would otherwise cost the wearer their place.
   final VoidCallback? onTapTitle;
   final VoidCallback? onChangeList;
 
@@ -75,16 +77,6 @@ class WearRail extends StatelessWidget {
     this.expanded = false,
   });
 
-  /// What the expansion costs on top of [baseHeight]. The buttons replace the
-  /// group label's line; a degraded state keeps a line of its own above them,
-  /// which is what makes the switcher reachable while the state stands.
-  static double extentFor({required bool expanded, required bool degraded}) {
-    if (!expanded) return 0;
-    final buttons = WearMetrics.railButtonExtent - WearMetrics.railLineExtent;
-    if (!degraded) return buttons;
-    return buttons + WearMetrics.railLineExtent + WearMetrics.railStackGap;
-  }
-
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<bool>(
     valueListenable: AuthService.instance.isUnauthorized,
@@ -92,66 +84,91 @@ class WearRail extends StatelessWidget {
   );
 
   Widget _build(BuildContext context, bool degraded) {
-    final window = dotWindow(pages, page);
-    // Collapsed the buttons are absent, so the line the group label usually
-    // has is the state's; expanded it takes one of its own above them.
-    final slot = expanded
-        ? WearMetrics.railButtonExtent
-        : degraded
-        ? 0.0
-        : WearMetrics.railLineExtent;
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
-      curve: Curves.easeOutCubic,
-      height: baseHeight + extentFor(expanded: expanded, degraded: degraded),
-      decoration: BoxDecoration(
-        color: wearGround,
-        gradient: degraded ? _wash : null,
-      ),
+    return ColoredBox(
+      color: wearGround,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _bounded(
-            GestureDetector(
-              onTap: onTapTitle,
-              behavior: HitTestBehavior.opaque,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const _SyncDot(),
-                  const SizedBox(width: 6),
-                  Icon(title.icon, size: 12, color: title.color),
-                  const SizedBox(width: 4),
-                  Flexible(
-                    child: Text(
-                      title.label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textDirection: detectTextDirection(title.label),
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: title.color,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+          _identity(context, degraded),
+          // The panel stays in the tree and its height is what animates, so it
+          // retracts exactly as it arrived. Adding and removing the subtree
+          // instead gives the collapse nothing to animate from.
+          ClipRect(
+            child: AnimatedAlign(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOutCubic,
+              alignment: Alignment.topCenter,
+              heightFactor: expanded ? 1 : 0,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(
+                  top: WearMetrics.railPanelGap,
+                  bottom: WearMetrics.railPanelGap,
+                ),
+                child: _bounded(
+                  _RailButtons(
+                    onStart: onStartShopping,
+                    onChangeList: onChangeList,
                   ),
-                ],
+                  // The panel hangs below the rail's own last line, where a
+                  // round screen has already opened out.
+                  factor: WearShape.isRound ? 0.82 : 0.92,
+                ),
               ),
             ),
           ),
-          if (degraded)
+        ],
+      ),
+    );
+  }
+
+  /// What the rail says regardless of the expansion: the page, its group or the
+  /// state that outranks it, and where you are in the pager.
+  ///
+  /// It keeps [baseHeight] as a *minimum* rather than a fixed height, so a
+  /// larger system font grows the rail instead of overflowing it — and so that
+  /// expanding never moves anything here. The panel drops below; nothing above
+  /// it shifts.
+  Widget _identity(BuildContext context, bool degraded) {
+    final window = dotWindow(pages, page);
+    return DecoratedBox(
+      decoration: BoxDecoration(gradient: degraded ? _wash : null),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: baseHeight),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
             _bounded(
-              SizedBox(
-                height: WearMetrics.railLineExtent,
-                child: _DegradedLine(onTap: onSetUpAgain),
+              GestureDetector(
+                onTap: onTapTitle,
+                behavior: HitTestBehavior.opaque,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const _SyncDot(),
+                    const SizedBox(width: 6),
+                    Icon(title.icon, size: 12, color: title.color),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        title.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textDirection: detectTextDirection(title.label),
+                        style: TextStyle(
+                          fontSize: 11,
+                          height: 1.1,
+                          color: title.color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          if (degraded && expanded)
-            const SizedBox(height: WearMetrics.railStackGap),
-          if (slot > 0)
             SizedBox(
-              height: slot,
+              height: WearMetrics.railLineExtent,
               // Driven by the label changing, not by a header's distance from
               // the centre line. Those are different events: the header starts
               // approaching while the last row of the outgoing group is still
@@ -169,17 +186,11 @@ class WearRail extends StatelessWidget {
                     child: child,
                   ),
                 ),
-                child: expanded
-                    ? _bounded(
-                        _RailButtons(
-                          onStart: onStartShopping,
-                          onChangeList: onChangeList,
-                        ),
-                        // The buttons sit lower than the title, where a round
-                        // screen is already wider, and two labels need every
-                        // pixel of it.
-                        factor: WearShape.isRound ? 0.90 : 0.96,
-                      )
+                // The state outranks the group label: the label is the one rail
+                // element that changes as you scroll, and it is the cheapest
+                // thing here to spend.
+                child: degraded
+                    ? _DegradedLine(onTap: onSetUpAgain)
                     : group == null
                     ? const SizedBox.shrink()
                     : _bounded(
@@ -215,29 +226,32 @@ class WearRail extends StatelessWidget {
                       ),
               ),
             ),
-          const SizedBox(height: 3),
-          // Bars, not dots: the current page grows into a line so the
-          // indicator says *where* you are as well as how many there are,
-          // and it animates rather than cutting between the two widths.
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (var i = 0; i < window.count; i++)
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  margin: const EdgeInsetsDirectional.symmetric(horizontal: 2),
-                  width: i == window.selected ? 14 : 8,
-                  height: 3,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(2),
-                    color: i == window.selected
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.white24,
+            const SizedBox(height: 3),
+            // Bars, not dots: the current page grows into a line so the
+            // indicator says *where* you are as well as how many there are,
+            // and it animates rather than cutting between the two widths.
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for (var i = 0; i < window.count; i++)
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    margin: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 2,
+                    ),
+                    width: i == window.selected ? 14 : 8,
+                    height: 3,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      color: i == window.selected
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.white24,
+                    ),
                   ),
-                ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -346,6 +360,10 @@ class _SyncDot extends StatelessWidget {
 /// What the expansion is for: the trip you could start, and the list you could
 /// be looking at instead.
 ///
+/// Stacked, not side by side, and each at the size the wearer aims at
+/// everywhere else on this watch. Two labels never fit across a wrist at a
+/// legible size, and a button shrunk until they do is one nobody can hit.
+///
 /// Ranked rather than equal — starting a trip is the thing a wearer standing in
 /// a doorway came here for, and switching lists is the thing they do once.
 class _RailButtons extends StatelessWidget {
@@ -355,42 +373,40 @@ class _RailButtons extends StatelessWidget {
   const _RailButtons({required this.onStart, required this.onChangeList});
 
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
     children: [
       if (onStart != null)
-        Flexible(
-          child: _RailButton(
-            key: const ValueKey('start-shopping'),
-            icon: Icons.shopping_cart_checkout,
-            label: m.shopping.startShopping,
-            primary: true,
-            onTap: onStart,
-          ),
+        _RailButton(
+          key: const ValueKey('start-shopping'),
+          icon: Icons.shopping_cart_checkout,
+          label: m.shopping.startShopping,
+          primary: true,
+          onTap: onStart,
         ),
-      if (onStart != null && onChangeList != null) const SizedBox(width: 5),
+      if (onStart != null && onChangeList != null)
+        const SizedBox(height: WearMetrics.railButtonGap),
       if (onChangeList != null)
-        Flexible(
-          child: _RailButton(
-            key: const ValueKey('change-list'),
-            label: m.wear.changeList,
-            primary: false,
-            onTap: onChangeList,
-          ),
+        _RailButton(
+          key: const ValueKey('change-list'),
+          icon: EntityIcons.checklists,
+          label: m.wear.changeList,
+          primary: false,
+          onTap: onChangeList,
         ),
     ],
   );
 }
 
 class _RailButton extends StatelessWidget {
-  final IconData? icon;
+  final IconData icon;
   final String label;
   final bool primary;
   final VoidCallback? onTap;
 
   const _RailButton({
     super.key,
-    this.icon,
+    required this.icon,
     required this.label,
     required this.primary,
     required this.onTap,
@@ -403,26 +419,27 @@ class _RailButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: DecoratedBox(
+      child: Container(
+        height: WearMetrics.railButtonExtent,
+        width: double.infinity,
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: primary
-              ? scheme.primary.withValues(alpha: 0.24)
+              ? scheme.primary.withValues(alpha: 0.26)
               : Colors.white.withValues(alpha: 0.10),
-          borderRadius: BorderRadius.circular(WearMetrics.railButtonExtent / 2),
+          // A round screen wants a round button, the same as a row does.
+          borderRadius: BorderRadius.circular(
+            WearShape.isRound ? WearMetrics.railButtonExtent / 2 : 14,
+          ),
         ),
         child: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 9,
-            vertical: 6,
-          ),
+          padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) ...[
-                Icon(icon, size: 12, color: ink),
-                const SizedBox(width: 4),
-              ],
+              Icon(icon, size: 15, color: ink),
+              const SizedBox(width: 7),
               Flexible(
                 child: Text(
                   label,
@@ -430,7 +447,7 @@ class _RailButton extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   textDirection: detectTextDirection(label),
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 13,
                     height: 1.1,
                     fontWeight: FontWeight.w700,
                     color: ink,

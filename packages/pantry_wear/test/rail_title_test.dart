@@ -20,6 +20,13 @@ void main() {
 
   tearDown(() => AuthService.instance.isUnauthorized.value = false);
 
+  /// The panel stays in the tree so it can animate in both directions, so its
+  /// presence proves nothing — whether the rail has opened far enough to show
+  /// it does. Collapsed, the clip leaves the buttons below the rail's own edge.
+  bool revealed(WidgetTester tester, Key key) =>
+      tester.getRect(find.byKey(key)).bottom <=
+      tester.getRect(find.byType(WearRail)).bottom;
+
   Future<void> pump(WidgetTester tester) async {
     tester.view.physicalSize = const Size(450, 450);
     tester.view.devicePixelRatio = 1;
@@ -62,18 +69,38 @@ void main() {
     }
   });
 
-  testWidgets('tapping the rail offers both of its buttons', (tester) async {
+  testWidgets('tapping the rail reveals both of its buttons', (tester) async {
     await pump(tester);
 
-    expect(find.text(m.wear.changeList), findsNothing);
-    expect(find.text(m.shopping.startShopping), findsNothing);
+    expect(revealed(tester, const ValueKey('start-shopping')), isFalse);
+    expect(revealed(tester, const ValueKey('change-list')), isFalse);
+
     await tester.tap(find.text(testList().name));
     await tester.pumpAndSettle();
 
-    // One tap expands, a second one acts: a mistap on a rail this small would
-    // otherwise cost the wearer their place.
-    expect(find.text(m.wear.changeList), findsOneWidget);
-    expect(find.text(m.shopping.startShopping), findsOneWidget);
+    // One tap opens the panel, a second one acts: a mistap on a rail this
+    // small would otherwise cost the wearer their place.
+    expect(revealed(tester, const ValueKey('start-shopping')), isTrue);
+    expect(revealed(tester, const ValueKey('change-list')), isTrue);
+  });
+
+  testWidgets('the panel retracts the way it arrived', (tester) async {
+    await pump(tester);
+    await tester.tap(find.text(testList().name));
+    await tester.pumpAndSettle();
+    final open = tester.getSize(find.byType(WearRail)).height;
+
+    await tester.tap(find.text(testList().name));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Mid-collapse: the rail is on its way back rather than already there,
+    // which is what a subtree added and removed outright cannot do.
+    final midway = tester.getSize(find.byType(WearRail)).height;
+    expect(midway, lessThan(open));
+
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(WearRail)).height, lessThan(midway));
   });
 
   testWidgets('the expansion takes height rather than borrowing it', (
@@ -140,7 +167,7 @@ void main() {
     await tester.tap(find.text(testList().name));
     await tester.pumpAndSettle();
 
-    expect(find.text(m.wear.changeList), findsOneWidget);
+    expect(revealed(tester, const ValueKey('change-list')), isTrue);
     expect(find.byKey(const ValueKey('degraded-line')), findsOneWidget);
   });
 

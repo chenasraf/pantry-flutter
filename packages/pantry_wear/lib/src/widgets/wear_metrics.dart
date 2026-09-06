@@ -25,14 +25,17 @@ class WearMetrics {
   /// outranks it. Deliberately shallow — it is a label, not a target.
   static const double railLineExtent = 13;
 
-  /// What that line grows into when the rail is expanded. A button a wearer
-  /// aims at cannot be 13 logical pixels tall, which is why the expansion has
-  /// to take height of its own rather than borrowing the label's.
-  static const double railButtonExtent = 30;
+  /// A rail button, at the size a wearer actually aims at. The expansion is a
+  /// panel dropped below the rail rather than a slot inside it, so it takes the
+  /// height it needs and covers the list — which the list can afford and a
+  /// 13-pixel button cannot.
+  static const double railButtonExtent = 42;
 
-  /// Between the degraded line and the button row, on an expanded rail
-  /// carrying both.
-  static const double railStackGap = 3;
+  /// Between the two buttons in the panel.
+  static const double railButtonGap = 6;
+
+  /// Between the rail's own last line and the panel under it.
+  static const double railPanelGap = 8;
 
   /// How far the focus falloff reaches, in rows.
   static const double falloffRows = 2.2;

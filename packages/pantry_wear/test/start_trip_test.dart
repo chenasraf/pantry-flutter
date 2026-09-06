@@ -7,6 +7,7 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_wear/src/shopping/start_trip_controller.dart';
 import 'package:pantry_wear/src/shopping/start_trip_page.dart';
 import 'package:pantry_wear/src/wear_shape.dart';
+import 'package:pantry_wear/src/widgets/focus_list.dart';
 import 'package:pantry_wear/src/widgets/wear_choice_page.dart';
 
 import 'wear_fixtures.dart';
@@ -166,15 +167,16 @@ void main() {
     expect(find.text(m.wear.pickAList), findsOneWidget);
   });
 
-  testWidgets('privacy answers in place, once it is aimed at', (tester) async {
+  testWidgets('privacy answers in place', (tester) async {
     final controller = await pump(tester, scopeListId: 4);
     expect(controller.isPrivate, isFalse);
 
-    // The mis-aim rule holds here as everywhere: a row that is not on the
-    // centre line scrolls there and nothing else happens.
-    await tester.tap(find.text(m.wear.privateTrip));
+    // Onto the centre line first. Privacy is the last row, and the call to
+    // action stands over where it starts — which is the mis-aim rule doing its
+    // job rather than a row out of reach: the trailing clearance is what lets
+    // it scroll clear of the button.
+    await tester.drag(find.byType(SnapFocusList), const Offset(0, -162));
     await tester.pumpAndSettle();
-    expect(controller.isPrivate, isFalse);
 
     await tester.tap(find.text(m.wear.privateTrip));
     await tester.pumpAndSettle();
@@ -191,8 +193,11 @@ void main() {
     final controller = await pump(tester, scopeListId: kAllListsId);
     expect(controller.enabledStoreIds, {7, 8});
 
-    await tester.tap(find.text(m.shopping.storesTitle));
+    // Onto the centre line, which is where a row is acted on — and the only
+    // place on this page that the call to action is not standing over.
+    await tester.drag(find.byType(SnapFocusList), const Offset(0, -108));
     await tester.pumpAndSettle();
+
     await tester.tap(find.text(m.shopping.storesTitle));
     await tester.pumpAndSettle();
     expect(find.byType(WearMultiChoicePage<int>), findsOneWidget);

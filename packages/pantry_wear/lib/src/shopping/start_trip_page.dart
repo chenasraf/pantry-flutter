@@ -8,6 +8,7 @@ import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
+import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_choice_page.dart';
 import '../widgets/wear_ink.dart';
@@ -174,6 +175,13 @@ class _StartTripPageState extends State<StartTripPage> {
     return elements;
   }
 
+  /// How far the call to action is held off the bottom. On a round screen the
+  /// chord runs out fast down there: at the pill's own width its lower corners
+  /// are already outside the glass a tenth of the way up, so it sits higher
+  /// than a rectangular screen would ask for.
+  static double _ctaInset(double viewport) =>
+      viewport * (WearShape.isRound ? 0.14 : 0.03);
+
   Widget _listPicker() => WearMultiChoicePage<int>(
     choices: [
       for (final list in _controller.lists)
@@ -212,35 +220,37 @@ class _StartTripPageState extends State<StartTripPage> {
       backgroundColor: wearGround,
       body: EdgeDismissible(
         onDismiss: () => Navigator.of(context).pop(),
-        child: Stack(
-          children: [
-            // The call to action is drawn over the list rather than above it,
-            // so the falloff keeps measuring from the screen's centre. The
-            // list's own trailing pad is half a viewport, which is what lets
-            // the last row scroll clear of it.
-            Positioned.fill(
-              child: SnapFocusList(
-                key: _listKey,
-                controller: _scroll,
-                itemExtent: WearMetrics.itemExtent,
-                falloffRows: WearMetrics.falloffRows,
-                rotaryActive: !_covered,
-                geometry: _geometry,
-                elements: _elements(),
+        child: LayoutBuilder(
+          builder: (context, constraints) => Stack(
+            children: [
+              // The call to action is drawn over the list rather than above it,
+              // so the falloff keeps measuring from the screen's centre. The
+              // list's own trailing pad is half a viewport, which is what lets
+              // the last row scroll clear of it.
+              Positioned.fill(
+                child: SnapFocusList(
+                  key: _listKey,
+                  controller: _scroll,
+                  itemExtent: WearMetrics.itemExtent,
+                  falloffRows: WearMetrics.falloffRows,
+                  rotaryActive: !_covered,
+                  geometry: _geometry,
+                  elements: _elements(),
+                ),
               ),
-            ),
-            PositionedDirectional(
-              start: 0,
-              end: 0,
-              bottom: 0,
-              child: _StartCta(
-                reason: _controller.blockedReason,
-                error: _controller.error,
-                busy: _controller.isStarting,
-                onTap: () => unawaited(_start()),
+              PositionedDirectional(
+                start: 0,
+                end: 0,
+                bottom: _ctaInset(constraints.maxHeight),
+                child: _StartCta(
+                  reason: _controller.blockedReason,
+                  error: _controller.error,
+                  busy: _controller.isStarting,
+                  onTap: () => unawaited(_start()),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -282,15 +292,16 @@ class _StartCta extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsetsDirectional.only(
-          start: 12,
-          end: 12,
-          top: 16,
-          bottom: 10,
+        padding: EdgeInsetsDirectional.symmetric(
+          // A round screen narrows either side of the button as well as under
+          // it, so the pill is held back from both.
+          horizontal: WearShape.isRound ? 30 : 12,
+          vertical: 0,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: 16),
             if (note != null)
               Padding(
                 padding: const EdgeInsetsDirectional.only(bottom: 4),
@@ -310,17 +321,22 @@ class _StartCta extends StatelessWidget {
               key: const ValueKey('start-trip'),
               onTap: blocked ? null : onTap,
               behavior: HitTestBehavior.opaque,
-              child: DecoratedBox(
+              child: Container(
+                // The same height the rail's own buttons take: one target size
+                // for everything on this watch a thumb goes for.
+                height: WearMetrics.railButtonExtent,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: blocked
                       ? Colors.white.withValues(alpha: 0.08)
                       : scheme.primary.withValues(alpha: 0.28),
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(
+                    WearShape.isRound ? WearMetrics.railButtonExtent / 2 : 14,
+                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsetsDirectional.symmetric(
                     horizontal: 14,
-                    vertical: 8,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
