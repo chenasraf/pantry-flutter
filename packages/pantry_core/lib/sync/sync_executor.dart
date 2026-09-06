@@ -52,7 +52,38 @@ class SyncExecutor {
         return _executeShoppingCheck(op);
       case SyncEntity.shoppingSkip:
         return _executeShoppingSkip(op);
+      case SyncEntity.shoppingSession:
+        return _executeShoppingSession(op);
     }
+  }
+
+  /// A billed total, absolute and per-store. `entityId` names the store whose
+  /// till it was paid at; null is the storeless fallback the session itself
+  /// carries. Both endpoints answer with the whole session.
+  Future<SyncResult> _executeShoppingSession(SyncOp op) async {
+    final svc = ShoppingService.instance;
+    final sessionId = op.parentId;
+    if (sessionId == null || op.op != SyncOpKind.update) {
+      return SyncResult.empty;
+    }
+    final total = (op.body['billedTotal'] as num?)?.toDouble();
+    final currency = op.body['billedCurrency'] as String?;
+    final storeId = op.entityId;
+    final session = storeId == null
+        ? await svc.setSessionBilled(
+            op.houseId,
+            sessionId,
+            billedTotal: total,
+            billedCurrency: currency,
+          )
+        : await svc.setStoreBilled(
+            op.houseId,
+            sessionId,
+            storeId,
+            billedTotal: total,
+            billedCurrency: currency,
+          );
+    return SyncResult(session);
   }
 
   /// A Shopping Mode check-log write: `create` checks the item off, `delete`

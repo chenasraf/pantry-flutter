@@ -353,7 +353,11 @@ class SyncQueue {
     for (var i = 0; i < ops.length; i++) {
       final op = ops[i];
       if (op.op != SyncOpKind.update) continue;
-      final k = '${op.entity.name}:${op.effectiveEntityId}';
+      // The parent is part of the record's identity, not decoration: a billed
+      // total is addressed by (session, store) and the store id alone repeats
+      // across trips, so two trips' totals for one shop would collapse into
+      // whichever was typed last.
+      final k = '${op.entity.name}:${op.parentId}:${op.effectiveEntityId}';
       byRecord.putIfAbsent(k, () => []).add(i);
     }
     bool changed = false;

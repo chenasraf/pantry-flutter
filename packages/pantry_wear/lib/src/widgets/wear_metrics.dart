@@ -21,6 +21,11 @@ class WearMetrics {
   /// A group header, deliberately well under a row.
   static const double headerExtent = 24;
 
+  /// One bought item on the trip summary. Shorter than a header because a
+  /// trip has many of them and none is a target — they are what the summary
+  /// says, not what it offers.
+  static const double summaryLineExtent = 20;
+
   /// The rail's second line: the group label, or the degraded state that
   /// outranks it. Deliberately shallow — it is a label, not a target.
   static const double railLineExtent = 13;

@@ -1069,6 +1069,15 @@ wear:
   pickAList: בחר קודם רשימה
   nSelected(int count): "$count נבחרו"
   noStoresHere: אין עדיין חנויות
+  hereNow: כאן עכשיו
+  nextIs(String store): "הבא: ${store}"
+  advanceFailed: לא הצלחנו להתקדם
+  finishFailed: לא הצלחנו לסיים את הקנייה
+  boughtTally(int count): "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
+  storeTally(int count): "${_plural(count, one: 'חנות אחת', many: '$count חנויות')}"
+  notBilled: לא הוזן
+  currency: מטבע
+  notANumber: מספרים בלבד
 
 watch:
   title: שעון

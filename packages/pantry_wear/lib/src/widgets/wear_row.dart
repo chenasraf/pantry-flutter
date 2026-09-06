@@ -41,6 +41,11 @@ class WearRow extends StatelessWidget {
   /// row on the page that cannot be undone does not look like its neighbours.
   final bool warning;
 
+  /// A row whose moment has passed — a store leg already walked. It keeps its
+  /// place in the sequence and its full target size, because tapping it is
+  /// still how you go back to it; only the ink recedes.
+  final bool spent;
+
   final VoidCallback? onTap;
 
   const WearRow({
@@ -54,6 +59,7 @@ class WearRow extends StatelessWidget {
     this.toggled,
     this.distance = 0,
     this.warning = false,
+    this.spent = false,
     this.onTap,
   });
 
@@ -69,7 +75,11 @@ class WearRow extends StatelessWidget {
     // already curving away, so a pill follows the bezel instead of fighting
     // it.
     final radius = WearShape.isRound ? WearMetrics.cardHeight / 2 : 14.0;
-    final ink = warning ? _warningInk : Colors.white;
+    final ink = warning
+        ? _warningInk
+        : spent
+        ? Colors.white54
+        : Colors.white;
 
     return GestureDetector(
       onTap: onTap,
@@ -91,7 +101,13 @@ class WearRow extends StatelessWidget {
           child: Row(
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 15, color: warning ? _warningInk : tint),
+                Icon(
+                  icon,
+                  size: 15,
+                  color: warning
+                      ? _warningInk
+                      : tint.withValues(alpha: spent ? 0.45 : 1),
+                ),
                 const SizedBox(width: 8),
               ],
               Expanded(

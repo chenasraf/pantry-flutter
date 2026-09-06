@@ -4,6 +4,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/cache_store.dart';
 import 'package:pantry_core/services/category_service.dart';
@@ -25,6 +26,11 @@ enum MirrorEntity {
   lists('lists'),
   items('items'),
   sessionItems('session-items'),
+
+  /// The trip itself — its legs, which one is active, and what each has been
+  /// billed. One row rather than a collection; the envelope carries rows
+  /// either way.
+  session('session'),
   categories('categories'),
   labels('labels'),
   stores('stores'),
@@ -190,6 +196,8 @@ class WearMirrorService extends ChangeNotifier {
             ShoppingService.instance.getCachedItems(scope.key),
           ),
         );
+      case MirrorEntity.session:
+        if (!_landSession(scope.key, rows)) return false;
       case MirrorEntity.categories:
         CategoryService.instance.cacheCategories(
           scope.key,
@@ -219,6 +227,21 @@ class WearMirrorService extends ChangeNotifier {
 
     _recordCapture(path, payload[capturedAtKey]);
     notifyListeners();
+    return true;
+  }
+
+  /// Land the trip a snapshot describes, and only that trip.
+  ///
+  /// The one payload here that can *end* something rather than refresh it, so
+  /// it refuses anything it cannot vouch for: an empty payload, or one naming
+  /// a different session than the path it arrived on, would clear a trip the
+  /// wearer is standing in the middle of. Discovering that a trip is over is
+  /// the watch's own read to make.
+  bool _landSession(int sessionId, List<Map<String, dynamic>> rows) {
+    if (rows.length != 1) return false;
+    final session = ShoppingSession.fromJson(rows.first);
+    if (session.id != sessionId) return false;
+    ShoppingService.instance.cacheSession(session);
     return true;
   }
 

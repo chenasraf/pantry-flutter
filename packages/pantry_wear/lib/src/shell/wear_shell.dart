@@ -16,6 +16,7 @@ import '../checklists/list_switcher_page.dart';
 import '../photos/photos_page.dart';
 import '../notes/notes_page.dart';
 import '../services/wear_deep_link.dart';
+import '../shopping/progression_page.dart';
 import '../shopping/start_trip_page.dart';
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
@@ -190,7 +191,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
           AccountPage(active: _isActive(3)),
         ]
       : [
-          _StubPage(title: m.wear.progression, icon: EntityIcons.store),
+          ProgressionPage(controller: _controller, active: _isActive(0)),
           _checklists(),
           _CollectionPage(
             items: _controller.done,
@@ -543,28 +544,6 @@ class _Notice extends StatelessWidget {
           style: const TextStyle(fontSize: 10, color: wearNoticeInk),
         ),
       ),
-    ),
-  );
-}
-
-class _StubPage extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const _StubPage({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 26, color: Colors.white24),
-        const SizedBox(height: 6),
-        Text(
-          title,
-          style: const TextStyle(fontSize: 13, color: Colors.white54),
-        ),
-      ],
     ),
   );
 }

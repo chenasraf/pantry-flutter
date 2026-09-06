@@ -5513,6 +5513,53 @@ class WearMessages {
   /// "No stores here yet"
   /// ```
   String get noStoresHere => """No stores here yet""";
+
+  /// ```dart
+  /// "Here now"
+  /// ```
+  String get hereNow => """Here now""";
+
+  /// ```dart
+  /// "Next: ${store}"
+  /// ```
+  String nextIs(String store) => """Next: ${store}""";
+
+  /// ```dart
+  /// "Couldn't move on"
+  /// ```
+  String get advanceFailed => """Couldn't move on""";
+
+  /// ```dart
+  /// "Couldn't finish the trip"
+  /// ```
+  String get finishFailed => """Couldn't finish the trip""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 bought', many: '$count bought')}"
+  /// ```
+  String boughtTally(int count) =>
+      """${_plural(count, one: '1 bought', many: '$count bought')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 shop', many: '$count shops')}"
+  /// ```
+  String storeTally(int count) =>
+      """${_plural(count, one: '1 shop', many: '$count shops')}""";
+
+  /// ```dart
+  /// "Not set"
+  /// ```
+  String get notBilled => """Not set""";
+
+  /// ```dart
+  /// "Currency"
+  /// ```
+  String get currency => """Currency""";
+
+  /// ```dart
+  /// "Numbers only"
+  /// ```
+  String get notANumber => """Numbers only""";
 }
 
 class WatchMessages {
@@ -6623,6 +6670,12 @@ Password: pantry-rocks""",
   """wear.needsConnection""": """Needs a connection""",
   """wear.pickAList""": """Pick a list first""",
   """wear.noStoresHere""": """No stores here yet""",
+  """wear.hereNow""": """Here now""",
+  """wear.advanceFailed""": """Couldn't move on""",
+  """wear.finishFailed""": """Couldn't finish the trip""",
+  """wear.notBilled""": """Not set""",
+  """wear.currency""": """Currency""",
+  """wear.notANumber""": """Numbers only""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

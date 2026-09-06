@@ -5573,6 +5573,53 @@ class WearMessagesDe extends WearMessages {
   /// "Noch keine Geschäfte"
   /// ```
   String get noStoresHere => """Noch keine Geschäfte""";
+
+  /// ```dart
+  /// "Hier"
+  /// ```
+  String get hereNow => """Hier""";
+
+  /// ```dart
+  /// "Weiter: ${store}"
+  /// ```
+  String nextIs(String store) => """Weiter: ${store}""";
+
+  /// ```dart
+  /// "Weitergehen ging nicht"
+  /// ```
+  String get advanceFailed => """Weitergehen ging nicht""";
+
+  /// ```dart
+  /// "Einkauf ließ sich nicht beenden"
+  /// ```
+  String get finishFailed => """Einkauf ließ sich nicht beenden""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 gekauft', many: '$count gekauft')}"
+  /// ```
+  String boughtTally(int count) =>
+      """${_plural(count, one: '1 gekauft', many: '$count gekauft')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Geschäft', many: '$count Geschäfte')}"
+  /// ```
+  String storeTally(int count) =>
+      """${_plural(count, one: '1 Geschäft', many: '$count Geschäfte')}""";
+
+  /// ```dart
+  /// "Nicht gesetzt"
+  /// ```
+  String get notBilled => """Nicht gesetzt""";
+
+  /// ```dart
+  /// "Währung"
+  /// ```
+  String get currency => """Währung""";
+
+  /// ```dart
+  /// "Nur Zahlen"
+  /// ```
+  String get notANumber => """Nur Zahlen""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6745,6 +6792,12 @@ Passwort: pantry-rocks""",
   """wear.needsConnection""": """Braucht eine Verbindung""",
   """wear.pickAList""": """Erst eine Liste wählen""",
   """wear.noStoresHere""": """Noch keine Geschäfte""",
+  """wear.hereNow""": """Hier""",
+  """wear.advanceFailed""": """Weitergehen ging nicht""",
+  """wear.finishFailed""": """Einkauf ließ sich nicht beenden""",
+  """wear.notBilled""": """Nicht gesetzt""",
+  """wear.currency""": """Währung""",
+  """wear.notANumber""": """Nur Zahlen""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

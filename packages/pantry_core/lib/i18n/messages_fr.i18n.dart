@@ -5565,6 +5565,53 @@ class WearMessagesFr extends WearMessages {
   /// "Pas encore de magasins"
   /// ```
   String get noStoresHere => """Pas encore de magasins""";
+
+  /// ```dart
+  /// "Ici"
+  /// ```
+  String get hereNow => """Ici""";
+
+  /// ```dart
+  /// "Ensuite : ${store}"
+  /// ```
+  String nextIs(String store) => """Ensuite : ${store}""";
+
+  /// ```dart
+  /// "Impossible de passer au suivant"
+  /// ```
+  String get advanceFailed => """Impossible de passer au suivant""";
+
+  /// ```dart
+  /// "Impossible de terminer la sortie"
+  /// ```
+  String get finishFailed => """Impossible de terminer la sortie""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 acheté', many: '$count achetés')}"
+  /// ```
+  String boughtTally(int count) =>
+      """${_plural(count, one: '1 acheté', many: '$count achetés')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 magasin', many: '$count magasins')}"
+  /// ```
+  String storeTally(int count) =>
+      """${_plural(count, one: '1 magasin', many: '$count magasins')}""";
+
+  /// ```dart
+  /// "Non renseigné"
+  /// ```
+  String get notBilled => """Non renseigné""";
+
+  /// ```dart
+  /// "Devise"
+  /// ```
+  String get currency => """Devise""";
+
+  /// ```dart
+  /// "Chiffres uniquement"
+  /// ```
+  String get notANumber => """Chiffres uniquement""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6733,6 +6780,12 @@ Mot de passe : pantry-rocks""",
   """wear.needsConnection""": """Connexion nécessaire""",
   """wear.pickAList""": """Choisis d’abord une liste""",
   """wear.noStoresHere""": """Pas encore de magasins""",
+  """wear.hereNow""": """Ici""",
+  """wear.advanceFailed""": """Impossible de passer au suivant""",
+  """wear.finishFailed""": """Impossible de terminer la sortie""",
+  """wear.notBilled""": """Non renseigné""",
+  """wear.currency""": """Devise""",
+  """wear.notANumber""": """Chiffres uniquement""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

@@ -1,6 +1,7 @@
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/photo.dart';
+import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
 
@@ -73,22 +74,59 @@ Store testStore({
 );
 
 /// A live trip, so the pager swaps to its five sections.
-ShoppingSession testSession({int? activeStoreId}) => ShoppingSession(
-  id: 12,
-  houseId: 1,
-  userId: 'casraf',
-  listIds: const [4],
+///
+/// [storeIds] are its legs in position order; left out, the trip has only the
+/// leg it is standing at.
+ShoppingSession testSession({
+  int? activeStoreId,
+  List<int> storeIds = const [],
+  double? billedTotal,
+  String? billedCurrency,
+  Map<int, double> billedByStore = const {},
+}) {
+  final legs = storeIds.isNotEmpty ? storeIds : [?activeStoreId];
+  return ShoppingSession(
+    id: 12,
+    houseId: 1,
+    userId: 'casraf',
+    listIds: const [4],
+    stores: [
+      for (var i = 0; i < legs.length; i++)
+        ShoppingSessionStore(
+          storeId: legs[i],
+          position: i,
+          billedTotal: billedByStore[legs[i]],
+          billedCurrency: billedByStore.containsKey(legs[i]) ? 'USD' : null,
+        ),
+    ],
+    activeStoreId: activeStoreId,
+    includeUnassigned: true,
+    isPrivate: false,
+    billedTotal: billedTotal,
+    billedCurrency: billedCurrency,
+    lastSeenAt: 0,
+    live: true,
+    createdAt: 0,
+    updatedAt: 0,
+  );
+}
+
+/// The bought log a trip's summary is drawn from, one bucket per store —
+/// [storeId] null being the storeless one the session's own total covers.
+ShoppingReview testReview(
+  List<({int? storeId, List<ListItem> items})> buckets,
+) => ShoppingReview(
   stores: [
-    if (activeStoreId != null)
-      ShoppingSessionStore(storeId: activeStoreId, position: 0),
+    for (final bucket in buckets)
+      ShoppingReviewStore(
+        storeId: bucket.storeId,
+        items: bucket.items,
+        estimate: const [],
+        noPriceCount: 0,
+      ),
   ],
-  activeStoreId: activeStoreId,
-  includeUnassigned: true,
-  isPrivate: false,
-  lastSeenAt: 0,
-  live: true,
-  createdAt: 0,
-  updatedAt: 0,
+  grandTotal: const [],
+  uncheckedCount: 0,
 );
 
 Photo testPhoto({

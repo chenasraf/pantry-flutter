@@ -244,6 +244,7 @@ class SyncManager {
         case SyncEntity.customField:
         case SyncEntity.shoppingCheck:
         case SyncEntity.shoppingSkip:
+        case SyncEntity.shoppingSession:
           break;
       }
     }
@@ -316,6 +317,30 @@ class SyncManager {
       if (raw.op != SyncOpKind.delete) continue;
       final id = raw.entityId;
       if (id != null) out.add(id);
+    }
+    return out;
+  }
+
+  /// The billed totals still queued for [sessionId] in [houseId], keyed by the
+  /// store they were paid at — null for the storeless fallback.
+  ///
+  /// Read back so a figure typed at a till is the one on screen before it
+  /// drains, survives the relaunch a watch is always one moment away from, and
+  /// reverts by simply no longer applying if the op is dropped. Replayed in
+  /// queue order, so a total corrected twice shows the correction.
+  Map<int?, ({double? total, String? currency})> pendingSessionBilled(
+    int houseId,
+    int sessionId,
+  ) {
+    final out = <int?, ({double? total, String? currency})>{};
+    for (final raw in _queue.all()) {
+      if (raw.entity != SyncEntity.shoppingSession) continue;
+      if (raw.op != SyncOpKind.update) continue;
+      if (raw.houseId != houseId || raw.parentId != sessionId) continue;
+      out[raw.entityId] = (
+        total: (raw.body['billedTotal'] as num?)?.toDouble(),
+        currency: raw.body['billedCurrency'] as String?,
+      );
     }
     return out;
   }
@@ -626,8 +651,10 @@ class SyncManager {
         break;
       case SyncEntity.shoppingCheck:
       case SyncEntity.shoppingSkip:
-        // Shopping checks/skips reference real item/session ids, never a temp
-        // create, so they can't hold a dead reference.
+      case SyncEntity.shoppingSession:
+        // Shopping checks, skips and billed totals reference real item, store
+        // and session ids, never a temp create, so they can't hold a dead
+        // reference.
         break;
     }
     return o;

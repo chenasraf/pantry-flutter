@@ -1213,6 +1213,15 @@ wear:
   pickAList: Vel ei liste først
   nSelected(int count): "$count valde"
   noStoresHere: Ingen butikkar enno
+  hereNow: Her no
+  nextIs(String store): "Neste: ${store}"
+  advanceFailed: Fekk ikkje gå vidare
+  finishFailed: Fekk ikkje avslutta handleturen
+  boughtTally(int count): "${_plural(count, one: '1 kjøpt', many: '$count kjøpte')}"
+  storeTally(int count): "${_plural(count, one: '1 butikk', many: '$count butikkar')}"
+  notBilled: Ikkje sett
+  currency: Valuta
+  notANumber: Berre tal
 
 watch:
   title: Klokke

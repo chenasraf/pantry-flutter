@@ -5,6 +5,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
@@ -19,6 +20,7 @@ import 'package:pantry_core/sync/pending_overlay.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/utils/currencies.dart';
 
 import '../scope/wear_scope.dart';
 import '../services/wear_mirror_client.dart';
@@ -58,6 +60,8 @@ class ChecklistsController extends ChangeNotifier {
     List<Category> categories = const [],
     List<Store> stores = const [],
     ShoppingSession? session,
+    ShoppingReview? review,
+    List<ShoppingReminder> reminders = const [],
     String itemSort = 'custom',
   }) {
     _itemSort = itemSort;
@@ -70,6 +74,8 @@ class ChecklistsController extends ChangeNotifier {
     _categories = {for (final c in categories) c.id: c};
     _stores = {for (final s in stores) s.id: s};
     _session = session;
+    _review = review;
+    _reminders = reminders;
     _loading = false;
   }
 
@@ -95,6 +101,19 @@ class ChecklistsController extends ChangeNotifier {
 
   ShoppingSession? _session;
   ShoppingSession? get session => _session;
+
+  ShoppingReview? _review;
+
+  /// The bought log grouped by store, as the server computes it. What the
+  /// summary is drawn from, so finishing a trip describes it without asking
+  /// for it.
+  ShoppingReview? get review => _review;
+
+  List<ShoppingReminder> _reminders = const [];
+
+  /// The house's reminders, every moment and every enabled state. The
+  /// progression page picks the moment it is at out of them.
+  List<ShoppingReminder> get reminders => _reminders;
 
   ChecklistMode get mode =>
       _session == null ? ChecklistMode.browse : ChecklistMode.session;
@@ -294,7 +313,16 @@ class ChecklistsController extends ChangeNotifier {
     };
     _restoreHousePrefs(house);
     _lists = _checklists.getCachedLists(house) ?? const [];
+    _reminders = _shopping.getCachedReminders(house) ?? _reminders;
+    // The cache is where the trip lives, and memory is a projection of it —
+    // every writer records the trip before this runs. A watch's process dies
+    // constantly, and a trip only discoverable online would put the wearer
+    // back in browse mode standing in the middle of a shop.
+    _session = _shopping.getCachedSession();
     final session = _session;
+    // A trip read back from the cache is still a mirrored scope, and the phone
+    // cannot push what it has not been told the watch is showing.
+    _mirror.setSession(session?.id);
     if (session == null) {
       final listId = await _scope.resolveList(_lists) ?? _scope.listId;
       _list = _listFor(listId, house);
@@ -319,6 +347,16 @@ class ChecklistsController extends ChangeNotifier {
     _storeSort = cache.get<String>('storeSort:$house') ?? _storeSort;
   }
 
+  /// The currency a billed total is offered in — the house's own remembered
+  /// one, under the phone's key, so the figure a wearer types at a till is
+  /// already denominated the way the last one was.
+  String get lastCurrency {
+    final house = _houseId;
+    if (house == null) return defaultCurrency;
+    return _checklists.cache.get<String>('lastCurrency:$house') ??
+        defaultCurrency;
+  }
+
   /// House prefs are never fatal: a failed read leaves the cached answer in
   /// place, and the list keeps the grouping it already had.
   Future<void> _refreshHousePrefs(int house) async {
@@ -332,6 +370,10 @@ class ChecklistsController extends ChangeNotifier {
       cache.set('sortBy:$house', _itemSort);
       cache.set('categorySort:$house', _categorySort);
       cache.set('storeSort:$house', _storeSort);
+      cache.set(
+        'lastCurrency:$house',
+        prefs['lastCurrency'] as String? ?? defaultCurrency,
+      );
     } catch (_) {}
   }
 
@@ -423,6 +465,9 @@ class ChecklistsController extends ChangeNotifier {
       final live = await _shopping.getCurrentSession();
       final was = _session?.id;
       _session = live;
+      // A different trip's bought log is not this one's, and the summary is
+      // drawn from it.
+      if (live?.id != was) _review = null;
       // A trip's items are their own mirrored scope, so the phone has to hear
       // about it the same way it hears about the list.
       _mirror.setSession(live?.id);
@@ -533,6 +578,7 @@ class ChecklistsController extends ChangeNotifier {
     }
     try {
       final review = await _shopping.getReview(house, session.id);
+      _review = review;
       _done = [
         for (final ShoppingReviewStore store in review.stores) ...store.items,
       ];
@@ -582,6 +628,132 @@ class ChecklistsController extends ChangeNotifier {
       for (final i in resolved)
         if (i.done) i,
     ];
+  }
+
+  /// Whether the server answered the last request that reached it. What the
+  /// lifecycle verbs refuse on, and what a page draws their refusal from.
+  bool get isOnline => _sync.isOnline;
+
+  /// The house's reminders, cache first and then the server. Asked for by the
+  /// page that reads them rather than fetched on every poll: they are the one
+  /// thing on a trip that changes on the scale of weeks.
+  Future<void> loadReminders() async {
+    final house = _houseId;
+    if (house == null) return;
+    final cached = _shopping.getCachedReminders(house);
+    if (cached != null) {
+      _reminders = cached;
+      _emit();
+    }
+    try {
+      _reminders = await _shopping.getReminders(house);
+      _emit();
+    } catch (_) {}
+  }
+
+  // -- The trip's lifecycle ---------------------------------------------------
+
+  /// Move the trip to [storeId], which may be any leg it carries — so tapping
+  /// an earlier one goes back.
+  ///
+  /// Online only. `getItems` is narrowed by the active store server-side, so a
+  /// queued advance would leave the watch showing the previous shop's items
+  /// while claiming to be at the next.
+  Future<bool> advanceTo(int storeId) async {
+    final house = _houseId;
+    final session = _session;
+    if (house == null || session == null || !_sync.isOnline) return false;
+    try {
+      _session = await _shopping.advance(house, session.id, storeId: storeId);
+    } catch (_) {
+      return false;
+    }
+    _emit();
+    await _refreshSessionItems();
+    _emit();
+    return true;
+  }
+
+  /// End the trip. Irreversible server-side, which is why the summary that
+  /// confirms it comes first.
+  ///
+  /// Online only for the same reason as [advanceTo], plus one of its own: a
+  /// queued close would have to vanish the session pager on a write that has
+  /// not happened.
+  Future<bool> closeTrip() async {
+    final house = _houseId;
+    final session = _session;
+    if (house == null || session == null || !_sync.isOnline) return false;
+    try {
+      await _shopping.close(house, session.id);
+    } on ShoppingSessionConflict {
+      // Already closed, by a retry of this same tap or by the phone. The trip
+      // is over, which is what was asked for.
+    } catch (_) {
+      return false;
+    }
+    _session = null;
+    _review = null;
+    _done = const [];
+    _removed = const [];
+    _mirror.setSession(null);
+    await _loadFromCache();
+    _emit();
+    return true;
+  }
+
+  /// What was paid at [storeId]'s till — null for the trip's storeless
+  /// fallback — with anything still queued laid over the trip the server last
+  /// described, so the figure on screen is the one that was typed.
+  ({double? total, String? currency}) billedFor(int? storeId) {
+    const none = (total: null, currency: null);
+    final house = _houseId;
+    final session = _session;
+    if (house == null || session == null) return none;
+    final pending = _sync.pendingSessionBilled(house, session.id)[storeId];
+    if (pending != null) return pending;
+    if (storeId == null) {
+      return (total: session.billedTotal, currency: session.billedCurrency);
+    }
+    for (final leg in session.stores) {
+      if (leg.storeId == storeId) {
+        return (total: leg.billedTotal, currency: leg.billedCurrency);
+      }
+    }
+    return none;
+  }
+
+  /// Record what a till charged. Queued, not sent: it is the one figure
+  /// entered at the till, and a till is where the link is worst.
+  ///
+  /// A null [total] clears the figure, which is what an emptied field means.
+  void setBilled({
+    required int? storeId,
+    required double? total,
+    required String currency,
+  }) {
+    final house = _houseId;
+    final session = _session;
+    if (house == null || session == null) return;
+    // Under the phone's own key, so the next total this house is asked for
+    // opens on the currency the last one was given in.
+    _checklists.cache.set('lastCurrency:$house', currency);
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.shoppingSession,
+        op: SyncOpKind.update,
+        houseId: house,
+        parentId: session.id,
+        entityId: storeId,
+        body: {
+          'billedTotal': total,
+          'billedCurrency': total == null ? null : currency,
+        },
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+    _emit();
   }
 
   // -- Writing ---------------------------------------------------------------

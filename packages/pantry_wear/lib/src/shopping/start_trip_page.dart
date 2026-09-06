@@ -8,9 +8,9 @@ import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
-import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_choice_page.dart';
+import '../widgets/wear_cta.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
@@ -175,13 +175,6 @@ class _StartTripPageState extends State<StartTripPage> {
     return elements;
   }
 
-  /// How far the call to action is held off the bottom. On a round screen the
-  /// chord runs out fast down there: at the pill's own width its lower corners
-  /// are already outside the glass a tenth of the way up, so it sits higher
-  /// than a rectangular screen would ask for.
-  static double _ctaInset(double viewport) =>
-      viewport * (WearShape.isRound ? 0.14 : 0.03);
-
   Widget _listPicker() => WearMultiChoicePage<int>(
     choices: [
       for (final list in _controller.lists)
@@ -223,10 +216,6 @@ class _StartTripPageState extends State<StartTripPage> {
         child: LayoutBuilder(
           builder: (context, constraints) => Stack(
             children: [
-              // The call to action is drawn over the list rather than above it,
-              // so the falloff keeps measuring from the screen's centre. The
-              // list's own trailing pad is half a viewport, which is what lets
-              // the last row scroll clear of it.
               Positioned.fill(
                 child: SnapFocusList(
                   key: _listKey,
@@ -241,8 +230,11 @@ class _StartTripPageState extends State<StartTripPage> {
               PositionedDirectional(
                 start: 0,
                 end: 0,
-                bottom: _ctaInset(constraints.maxHeight),
-                child: _StartCta(
+                bottom: WearCta.insetFor(constraints.maxHeight),
+                child: WearCta(
+                  key: const ValueKey('start-trip'),
+                  icon: Icons.shopping_cart_checkout,
+                  label: m.shopping.startShopping,
                   reason: _controller.blockedReason,
                   error: _controller.error,
                   busy: _controller.isStarting,
@@ -251,122 +243,6 @@ class _StartTripPageState extends State<StartTripPage> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The one thing this page is for, held where a thumb already is.
-///
-/// Disabled it says why rather than sitting there dead: a wearer who taps a
-/// grey button and gets nothing learns nothing, and offline in a shop is the
-/// case this button meets most.
-class _StartCta extends StatelessWidget {
-  final String? reason;
-  final String? error;
-  final bool busy;
-  final VoidCallback onTap;
-
-  const _StartCta({
-    required this.reason,
-    required this.error,
-    required this.busy,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final blocked = reason != null || busy;
-    final note = error ?? reason;
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        // Fading out upward, so the rows scrolling under the button are not
-        // cut across by a hard edge on a round screen.
-        gradient: LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [wearGround, wearGround, Color(0x000B0B0C)],
-          stops: [0, 0.55, 1],
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsetsDirectional.symmetric(
-          // A round screen narrows either side of the button as well as under
-          // it, so the pill is held back from both.
-          horizontal: WearShape.isRound ? 30 : 12,
-          vertical: 0,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 16),
-            if (note != null)
-              Padding(
-                padding: const EdgeInsetsDirectional.only(bottom: 4),
-                child: Text(
-                  note,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 9,
-                    height: 1.1,
-                    color: error != null ? wearNoticeInk : Colors.white38,
-                  ),
-                ),
-              ),
-            GestureDetector(
-              key: const ValueKey('start-trip'),
-              onTap: blocked ? null : onTap,
-              behavior: HitTestBehavior.opaque,
-              child: Container(
-                // The same height the rail's own buttons take: one target size
-                // for everything on this watch a thumb goes for.
-                height: WearMetrics.railButtonExtent,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: blocked
-                      ? Colors.white.withValues(alpha: 0.08)
-                      : scheme.primary.withValues(alpha: 0.28),
-                  borderRadius: BorderRadius.circular(
-                    WearShape.isRound ? WearMetrics.railButtonExtent / 2 : 14,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.symmetric(
-                    horizontal: 14,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.shopping_cart_checkout,
-                        size: 15,
-                        color: blocked ? Colors.white38 : scheme.primary,
-                      ),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          m.shopping.startShopping,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 13,
-                            height: 1.1,
-                            fontWeight: FontWeight.w700,
-                            color: blocked ? Colors.white38 : scheme.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

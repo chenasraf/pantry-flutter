@@ -1069,6 +1069,15 @@ wear:
   pickAList: Erst eine Liste wählen
   nSelected(int count): "$count ausgewählt"
   noStoresHere: Noch keine Geschäfte
+  hereNow: Hier
+  nextIs(String store): "Weiter: ${store}"
+  advanceFailed: Weitergehen ging nicht
+  finishFailed: Einkauf ließ sich nicht beenden
+  boughtTally(int count): "${_plural(count, one: '1 gekauft', many: '$count gekauft')}"
+  storeTally(int count): "${_plural(count, one: '1 Geschäft', many: '$count Geschäfte')}"
+  notBilled: Nicht gesetzt
+  currency: Währung
+  notANumber: Nur Zahlen
 
 watch:
   title: Uhr

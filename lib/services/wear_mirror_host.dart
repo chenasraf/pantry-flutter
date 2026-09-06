@@ -127,8 +127,10 @@ class WearMirrorHost {
       (entity: MirrorEntity.notes, key: house),
       if (hasFeature(kCustomFieldsFeature))
         (entity: MirrorEntity.fields, key: house),
-      if (report.sessionId != null)
+      if (report.sessionId != null) ...[
+        (entity: MirrorEntity.session, key: report.sessionId!),
         (entity: MirrorEntity.sessionItems, key: report.sessionId!),
+      ],
       if (report.listId != null && report.listId != kAllListsId)
         (entity: MirrorEntity.items, key: report.listId!),
     };
@@ -215,6 +217,13 @@ class WearMirrorHost {
             scope.key,
           );
           return [for (final i in items) i.toJson()];
+        case MirrorEntity.session:
+          // A trip the phone no longer sees is not one it can describe, and a
+          // silent skip leaves the watch to discover the ending for itself —
+          // which is the only device entitled to decide it.
+          final session = await ShoppingService.instance.getCurrentSession();
+          if (session == null || session.id != scope.key) return null;
+          return [session.toJson()];
         case MirrorEntity.categories:
           final categories = await CategoryService.instance.getCategories(
             house,

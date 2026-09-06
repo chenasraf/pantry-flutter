@@ -29,6 +29,7 @@ class ShoppingService {
   final cache = CacheStore('shopping_cache.json');
 
   static const _sessionItemsPrefix = 'sessionItems';
+  static const _sessionKey = 'currentSession';
 
   ApiClient get _api => ApiClient.instance;
 
@@ -36,14 +37,40 @@ class ShoppingService {
 
   // -- Sessions --------------------------------------------------------------
 
+  /// The live session as the last read left it, or null when the last read
+  /// found none.
+  ///
+  /// A trip is otherwise only discoverable online, which on a device whose
+  /// process dies constantly means a cold start with no signal drops the
+  /// shopper out of a trip they are standing in the middle of.
+  ShoppingSession? getCachedSession() {
+    final raw = cache.getObject(_sessionKey);
+    return raw == null ? null : ShoppingSession.fromJson(raw);
+  }
+
+  /// Record what the live session is, or that there is none. Clearing it takes
+  /// the trip's items with it: a closed trip's list is never read again, and
+  /// leaving it would let a later trip's cache miss fall back onto it.
+  void cacheSession(ShoppingSession? session) {
+    if (session == null) {
+      if (cache.getObject(_sessionKey) == null) return;
+      cache.removeKey(_sessionKey);
+      cache.removeKeyed(_sessionItemsPrefix);
+      return;
+    }
+    cache.set(_sessionKey, session.toJson());
+  }
+
   /// (1) Global discovery of the caller's single live session, or null when
   /// idle. Not house-scoped; the returned session carries its own `houseId`.
   /// Safe to call on launch and before the start screen — no side effects.
-  Future<ShoppingSession?> getCurrentSession() {
-    return _api.get<dynamic, ShoppingSession?>(
+  Future<ShoppingSession?> getCurrentSession() async {
+    final session = await _api.get<dynamic, ShoppingSession?>(
       '/shopping/sessions/current',
       fromJson: _sessionOrNull,
     );
+    cacheSession(session);
+    return session;
   }
 
   /// (2) Create a session over the given scope. Sessions start public; toggle
@@ -80,25 +107,31 @@ class ShoppingService {
     int houseId,
     int sessionId, {
     required int storeId,
-  }) {
-    return _api.post<Map<String, dynamic>, ShoppingSession>(
+  }) async {
+    final session = await _api.post<Map<String, dynamic>, ShoppingSession>(
       '${_base(houseId)}/sessions/$sessionId/advance',
       body: {'storeId': storeId},
       fromJson: ShoppingSession.fromJson,
     );
+    cacheSession(session);
+    return session;
   }
 
   /// (4) Close the session (irreversible). Throws [ShoppingSessionConflict]
   /// (from a 409) carrying the already-closed session when called twice.
   Future<ShoppingSession> close(int houseId, int sessionId) async {
     try {
-      return await _api.post<Map<String, dynamic>, ShoppingSession>(
+      final session = await _api.post<Map<String, dynamic>, ShoppingSession>(
         '${_base(houseId)}/sessions/$sessionId/close',
         fromJson: ShoppingSession.fromJson,
       );
+      cacheSession(null);
+      return session;
     } on ApiException catch (e) {
       final existing = _sessionFromErrorBody(e);
       if (e.statusCode == 409 && existing != null) {
+        // Already closed is closed: the cached trip is as stale as the caller's.
+        cacheSession(null);
         throw ShoppingSessionConflict(existing);
       }
       rethrow;
@@ -111,12 +144,14 @@ class ShoppingService {
     int houseId,
     int sessionId, {
     required bool isPrivate,
-  }) {
-    return _api.patch<Map<String, dynamic>, ShoppingSession>(
+  }) async {
+    final session = await _api.patch<Map<String, dynamic>, ShoppingSession>(
       '${_base(houseId)}/sessions/$sessionId/privacy',
       body: {'isPrivate': isPrivate},
       fromJson: ShoppingSession.fromJson,
     );
+    cacheSession(session);
+    return session;
   }
 
   /// (6) Set the session-level billed total (storeless grand-total fallback).
@@ -125,12 +160,14 @@ class ShoppingService {
     int sessionId, {
     double? billedTotal,
     String? billedCurrency,
-  }) {
-    return _api.patch<Map<String, dynamic>, ShoppingSession>(
+  }) async {
+    final session = await _api.patch<Map<String, dynamic>, ShoppingSession>(
       '${_base(houseId)}/sessions/$sessionId',
       body: {'billedTotal': billedTotal, 'billedCurrency': billedCurrency},
       fromJson: ShoppingSession.fromJson,
     );
+    cacheSession(session);
+    return session;
   }
 
   /// (7) Set a per-store billed total (the actual paid at that store's till).
@@ -140,12 +177,14 @@ class ShoppingService {
     int storeId, {
     double? billedTotal,
     String? billedCurrency,
-  }) {
-    return _api.patch<Map<String, dynamic>, ShoppingSession>(
+  }) async {
+    final session = await _api.patch<Map<String, dynamic>, ShoppingSession>(
       '${_base(houseId)}/sessions/$sessionId/stores/$storeId',
       body: {'billedTotal': billedTotal, 'billedCurrency': billedCurrency},
       fromJson: ShoppingSession.fromJson,
     );
+    cacheSession(session);
+    return session;
   }
 
   // -- Items -----------------------------------------------------------------

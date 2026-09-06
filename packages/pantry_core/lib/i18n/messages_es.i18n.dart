@@ -5557,6 +5557,53 @@ class WearMessagesEs extends WearMessages {
   /// "Aún no hay tiendas"
   /// ```
   String get noStoresHere => """Aún no hay tiendas""";
+
+  /// ```dart
+  /// "Aquí"
+  /// ```
+  String get hereNow => """Aquí""";
+
+  /// ```dart
+  /// "Siguiente: ${store}"
+  /// ```
+  String nextIs(String store) => """Siguiente: ${store}""";
+
+  /// ```dart
+  /// "No se pudo avanzar"
+  /// ```
+  String get advanceFailed => """No se pudo avanzar""";
+
+  /// ```dart
+  /// "No se pudo terminar la compra"
+  /// ```
+  String get finishFailed => """No se pudo terminar la compra""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 comprado', many: '$count comprados')}"
+  /// ```
+  String boughtTally(int count) =>
+      """${_plural(count, one: '1 comprado', many: '$count comprados')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 tienda', many: '$count tiendas')}"
+  /// ```
+  String storeTally(int count) =>
+      """${_plural(count, one: '1 tienda', many: '$count tiendas')}""";
+
+  /// ```dart
+  /// "Sin definir"
+  /// ```
+  String get notBilled => """Sin definir""";
+
+  /// ```dart
+  /// "Moneda"
+  /// ```
+  String get currency => """Moneda""";
+
+  /// ```dart
+  /// "Solo números"
+  /// ```
+  String get notANumber => """Solo números""";
 }
 
 class WatchMessagesEs extends WatchMessages {
@@ -6707,6 +6754,12 @@ Contraseña: pantry-rocks""",
   """wear.needsConnection""": """Necesita conexión""",
   """wear.pickAList""": """Elige una lista primero""",
   """wear.noStoresHere""": """Aún no hay tiendas""",
+  """wear.hereNow""": """Aquí""",
+  """wear.advanceFailed""": """No se pudo avanzar""",
+  """wear.finishFailed""": """No se pudo terminar la compra""",
+  """wear.notBilled""": """Sin definir""",
+  """wear.currency""": """Moneda""",
+  """wear.notANumber""": """Solo números""",
   """watch.title""": """Reloj""",
   """watch.requestWarning""":
       """Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.""",

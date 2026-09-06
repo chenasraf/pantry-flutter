@@ -5544,6 +5544,53 @@ class WearMessagesNn extends WearMessages {
   /// "Ingen butikkar enno"
   /// ```
   String get noStoresHere => """Ingen butikkar enno""";
+
+  /// ```dart
+  /// "Her no"
+  /// ```
+  String get hereNow => """Her no""";
+
+  /// ```dart
+  /// "Neste: ${store}"
+  /// ```
+  String nextIs(String store) => """Neste: ${store}""";
+
+  /// ```dart
+  /// "Fekk ikkje gå vidare"
+  /// ```
+  String get advanceFailed => """Fekk ikkje gå vidare""";
+
+  /// ```dart
+  /// "Fekk ikkje avslutta handleturen"
+  /// ```
+  String get finishFailed => """Fekk ikkje avslutta handleturen""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 kjøpt', many: '$count kjøpte')}"
+  /// ```
+  String boughtTally(int count) =>
+      """${_plural(count, one: '1 kjøpt', many: '$count kjøpte')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 butikk', many: '$count butikkar')}"
+  /// ```
+  String storeTally(int count) =>
+      """${_plural(count, one: '1 butikk', many: '$count butikkar')}""";
+
+  /// ```dart
+  /// "Ikkje sett"
+  /// ```
+  String get notBilled => """Ikkje sett""";
+
+  /// ```dart
+  /// "Valuta"
+  /// ```
+  String get currency => """Valuta""";
+
+  /// ```dart
+  /// "Berre tal"
+  /// ```
+  String get notANumber => """Berre tal""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -6679,6 +6726,12 @@ Passord: pantry""",
   """wear.needsConnection""": """Treng ei tilkopling""",
   """wear.pickAList""": """Vel ei liste først""",
   """wear.noStoresHere""": """Ingen butikkar enno""",
+  """wear.hereNow""": """Her no""",
+  """wear.advanceFailed""": """Fekk ikkje gå vidare""",
+  """wear.finishFailed""": """Fekk ikkje avslutta handleturen""",
+  """wear.notBilled""": """Ikkje sett""",
+  """wear.currency""": """Valuta""",
+  """wear.notANumber""": """Berre tal""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

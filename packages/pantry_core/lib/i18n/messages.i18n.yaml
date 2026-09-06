@@ -1077,6 +1077,15 @@ wear:
   pickAList: Pick a list first
   nSelected(int count): "$count selected"
   noStoresHere: No stores here yet
+  hereNow: Here now
+  nextIs(String store): "Next: ${store}"
+  advanceFailed: Couldn't move on
+  finishFailed: Couldn't finish the trip
+  boughtTally(int count): "${_plural(count, one: '1 bought', many: '$count bought')}"
+  storeTally(int count): "${_plural(count, one: '1 shop', many: '$count shops')}"
+  notBilled: Not set
+  currency: Currency
+  notANumber: Numbers only
 
 watch:
   title: Watch

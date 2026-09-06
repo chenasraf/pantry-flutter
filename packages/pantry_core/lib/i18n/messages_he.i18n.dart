@@ -5516,6 +5516,53 @@ class WearMessagesHe extends WearMessages {
   /// "אין עדיין חנויות"
   /// ```
   String get noStoresHere => """אין עדיין חנויות""";
+
+  /// ```dart
+  /// "כאן עכשיו"
+  /// ```
+  String get hereNow => """כאן עכשיו""";
+
+  /// ```dart
+  /// "הבא: ${store}"
+  /// ```
+  String nextIs(String store) => """הבא: ${store}""";
+
+  /// ```dart
+  /// "לא הצלחנו להתקדם"
+  /// ```
+  String get advanceFailed => """לא הצלחנו להתקדם""";
+
+  /// ```dart
+  /// "לא הצלחנו לסיים את הקנייה"
+  /// ```
+  String get finishFailed => """לא הצלחנו לסיים את הקנייה""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
+  /// ```
+  String boughtTally(int count) =>
+      """${_plural(count, one: 'פריט אחד', many: '$count פריטים')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'חנות אחת', many: '$count חנויות')}"
+  /// ```
+  String storeTally(int count) =>
+      """${_plural(count, one: 'חנות אחת', many: '$count חנויות')}""";
+
+  /// ```dart
+  /// "לא הוזן"
+  /// ```
+  String get notBilled => """לא הוזן""";
+
+  /// ```dart
+  /// "מטבע"
+  /// ```
+  String get currency => """מטבע""";
+
+  /// ```dart
+  /// "מספרים בלבד"
+  /// ```
+  String get notANumber => """מספרים בלבד""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6606,6 +6653,12 @@ Map<String, String> get messagesHeMap => {
   """wear.needsConnection""": """צריך חיבור""",
   """wear.pickAList""": """בחר קודם רשימה""",
   """wear.noStoresHere""": """אין עדיין חנויות""",
+  """wear.hereNow""": """כאן עכשיו""",
+  """wear.advanceFailed""": """לא הצלחנו להתקדם""",
+  """wear.finishFailed""": """לא הצלחנו לסיים את הקנייה""",
+  """wear.notBilled""": """לא הוזן""",
+  """wear.currency""": """מטבע""",
+  """wear.notANumber""": """מספרים בלבד""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

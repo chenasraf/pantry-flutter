@@ -25,6 +25,16 @@ enum SyncEntity {
   /// Queued (not sent direct) so removing an item from a trip — and undoing it
   /// — survives spotty in-store connectivity, mirroring [shoppingCheck].
   shoppingSkip,
+
+  /// A Shopping Mode billed-total write. [SyncOp.op] is [SyncOpKind.update];
+  /// [SyncOp.parentId] is the session id and [SyncOp.entityId] the store the
+  /// money was spent at, null for the storeless fallback. The body carries
+  /// `{billedTotal, billedCurrency}`.
+  ///
+  /// Absolute rather than a delta, so a figure landing after someone else set
+  /// the same one converges instead of doubling it — which is what lets a
+  /// total typed at a till wait out the dead link a till is usually behind.
+  shoppingSession,
 }
 
 enum SyncOpKind {
