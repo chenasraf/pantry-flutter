@@ -5596,9 +5596,9 @@ class WearMessagesHe extends WearMessages {
       """${_plural(count, one: 'שנייה אחת', many: '$count שניות')}""";
 
   /// ```dart
-  /// "כניסה עם קוד"
+  /// "כניסה עם QR"
   /// ```
-  String get qrSignIn => """כניסה עם קוד""";
+  String get qrSignIn => """כניסה עם QR""";
 
   /// ```dart
   /// "השרת שלך"
@@ -5645,6 +5645,26 @@ class WearMessagesHe extends WearMessages {
   /// "לא הצלחנו לקרוא את האישור של השרת"
   /// ```
   String get certUnreadable => """לא הצלחנו לקרוא את האישור של השרת""";
+
+  /// ```dart
+  /// "התראות"
+  /// ```
+  String get notifications => """התראות""";
+
+  /// ```dart
+  /// "מותרות"
+  /// ```
+  String get notificationsAllowed => """מותרות""";
+
+  /// ```dart
+  /// "חסומות"
+  /// ```
+  String get notificationsBlocked => """חסומות""";
+
+  /// ```dart
+  /// "קנייה"
+  /// ```
+  String get shoppingTripChip => """קנייה""";
 }
 
 class WatchMessagesHe extends WatchMessages {
@@ -6746,7 +6766,7 @@ Map<String, String> get messagesHeMap => {
   """wear.crownTurnsPages""": """מעבר בין דפים""",
   """wear.undoWindow""": """ביטול""",
   """wear.undoOff""": """כבוי""",
-  """wear.qrSignIn""": """כניסה עם קוד""",
+  """wear.qrSignIn""": """כניסה עם QR""",
   """wear.qrServer""": """השרת שלך""",
   """wear.qrServerHint""": """cloud.example.com""",
   """wear.qrShowCode""": """הצגת הקוד""",
@@ -6755,6 +6775,10 @@ Map<String, String> get messagesHeMap => {
   """wear.qrStartOver""": """להתחיל מחדש""",
   """wear.certTrust""": """לתת אמון""",
   """wear.certUnreadable""": """לא הצלחנו לקרוא את האישור של השרת""",
+  """wear.notifications""": """התראות""",
+  """wear.notificationsAllowed""": """מותרות""",
+  """wear.notificationsBlocked""": """חסומות""",
+  """wear.shoppingTripChip""": """קנייה""",
   """watch.title""": """שעון""",
   """watch.requestWarning""":
       """אשר רק אם השעון שלך. הוא מקבל גישה לבית שלך בדיוק כמו הטלפון הזה.""",

@@ -1094,6 +1094,10 @@ wear:
   certUntrustedBody(String host): "${host} envoie un certificat que cette montre ne peut pas vérifier. Ne l'acceptez que si l'empreinte est celle attendue."
   certTrust: Faire confiance
   certUnreadable: Impossible de lire le certificat du serveur
+  notifications: Notifications
+  notificationsAllowed: Autorisées
+  notificationsBlocked: Bloquées
+  shoppingTripChip: Sortie courses
 
 watch:
   title: Montre

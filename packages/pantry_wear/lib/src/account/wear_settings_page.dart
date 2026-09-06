@@ -26,17 +26,32 @@ class WearSettingsPage extends StatefulWidget {
   State<WearSettingsPage> createState() => _WearSettingsPageState();
 }
 
-class _WearSettingsPageState extends State<WearSettingsPage> {
+class _WearSettingsPageState extends State<WearSettingsPage>
+    with WidgetsBindingObserver {
   final _scroll = ScrollController();
 
   /// Drawn until the platform says otherwise, which is also what it stays as
   /// if the platform says nothing: the crown row fails towards being offered.
   var _hasRotary = true;
 
+  /// Whether the watch will draw anything the app posts.
+  var _notifications = true;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     unawaited(_readRotary());
+    unawaited(_readNotifications());
+  }
+
+  /// The notification grant is state the system owns and changes behind us —
+  /// from its own screen, or a long-press on the chip itself. [_open] hears a
+  /// pushed *Flutter* route return and nothing else, so the row would keep
+  /// drawing whatever was true when the page opened.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) unawaited(_readNotifications());
   }
 
   Future<void> _readRotary() async {
@@ -44,8 +59,14 @@ class _WearSettingsPageState extends State<WearSettingsPage> {
     if (mounted) setState(() => _hasRotary = present);
   }
 
+  Future<void> _readNotifications() async {
+    final enabled = await WearHostService.instance.notificationsEnabled();
+    if (mounted) setState(() => _notifications = enabled);
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scroll.dispose();
     super.dispose();
   }
@@ -93,6 +114,25 @@ class _WearSettingsPageState extends State<WearSettingsPage> {
                   label: m.wear.undoWindow,
                   value: undoWindowLabel(PrefsService.instance.wearUndoSeconds),
                   onTap: () => unawaited(_open(const UndoWindowPage())),
+                ),
+              ),
+              const SizedBox(height: WearMetrics.cardGap),
+              SizedBox(
+                height: WearMetrics.cardHeight,
+                child: WearRow(
+                  icon: Icons.notifications_none,
+                  label: m.wear.notifications,
+                  value: _notifications
+                      ? m.wear.notificationsAllowed
+                      : m.wear.notificationsBlocked,
+                  // Always the system's own screen, never a prompt: Android
+                  // stops showing the prompt once it has been refused, so a row
+                  // that prompted or navigated on that invisible state would do
+                  // different things on two identical taps — and only the
+                  // system screen can take a grant back.
+                  onTap: () => unawaited(
+                    WearHostService.instance.openNotificationSettings(),
+                  ),
                 ),
               ),
               if (_hasRotary) ...[

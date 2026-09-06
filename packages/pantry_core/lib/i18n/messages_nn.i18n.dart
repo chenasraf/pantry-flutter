@@ -5624,9 +5624,9 @@ class WearMessagesNn extends WearMessages {
       """${_plural(count, one: '1 sekund', many: '$count sekund')}""";
 
   /// ```dart
-  /// "Logg inn med kode"
+  /// "Logg inn med QR"
   /// ```
-  String get qrSignIn => """Logg inn med kode""";
+  String get qrSignIn => """Logg inn med QR""";
 
   /// ```dart
   /// "Tenaren din"
@@ -5673,6 +5673,26 @@ class WearMessagesNn extends WearMessages {
   /// "Fekk ikkje lese sertifikatet til tenaren"
   /// ```
   String get certUnreadable => """Fekk ikkje lese sertifikatet til tenaren""";
+
+  /// ```dart
+  /// "Varsel"
+  /// ```
+  String get notifications => """Varsel""";
+
+  /// ```dart
+  /// "Tillate"
+  /// ```
+  String get notificationsAllowed => """Tillate""";
+
+  /// ```dart
+  /// "Blokkerte"
+  /// ```
+  String get notificationsBlocked => """Blokkerte""";
+
+  /// ```dart
+  /// "Handletur"
+  /// ```
+  String get shoppingTripChip => """Handletur""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -6819,7 +6839,7 @@ Passord: pantry""",
   """wear.crownTurnsPages""": """Byt side""",
   """wear.undoWindow""": """Angre""",
   """wear.undoOff""": """Av""",
-  """wear.qrSignIn""": """Logg inn med kode""",
+  """wear.qrSignIn""": """Logg inn med QR""",
   """wear.qrServer""": """Tenaren din""",
   """wear.qrServerHint""": """cloud.example.com""",
   """wear.qrShowCode""": """Vis kode""",
@@ -6828,6 +6848,10 @@ Passord: pantry""",
   """wear.qrStartOver""": """Byrj på nytt""",
   """wear.certTrust""": """Stol på det""",
   """wear.certUnreadable""": """Fekk ikkje lese sertifikatet til tenaren""",
+  """wear.notifications""": """Varsel""",
+  """wear.notificationsAllowed""": """Tillate""",
+  """wear.notificationsBlocked""": """Blokkerte""",
+  """wear.shoppingTripChip""": """Handletur""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

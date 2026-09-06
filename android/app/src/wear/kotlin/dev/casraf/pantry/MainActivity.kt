@@ -1,9 +1,15 @@
 package dev.casraf.pantry
 
+import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.view.InputDevice
 import android.view.MotionEvent
+import androidx.core.app.NotificationManagerCompat
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import androidx.wear.tiles.TileService
 import io.flutter.embedding.android.FlutterActivity
@@ -21,6 +27,7 @@ class MainActivity : FlutterActivity() {
     private val hostChannel = "dev.casraf.pantry/wear_host"
     private val tileChannel = "dev.casraf.pantry/tile"
     private val deepLinkChannel = "dev.casraf.pantry/deep_link"
+    private val ongoingChannel = "dev.casraf.pantry/ongoing_activity"
 
     private val dataLayer by lazy { DataLayerChannel(applicationContext) }
     private val remoteActivity by lazy { RemoteActivityHelper(applicationContext) }
@@ -113,6 +120,27 @@ class MainActivity : FlutterActivity() {
             when (call.method) {
                 "openOnPhone" -> openOnPhone(call.argument<String>("url"), result)
                 "hasRotary" -> result.success(hasRotary())
+                "notificationsEnabled" ->
+                    result.success(NotificationManagerCompat.from(this).areNotificationsEnabled())
+                "requestNotifications" -> requestNotifications(result)
+                "openNotificationSettings" -> openNotificationSettings(result)
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(messenger, ongoingChannel).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "post" -> {
+                    OngoingTripChip.post(
+                        applicationContext,
+                        call.argument<String>("status").orEmpty(),
+                    )
+                    result.success(null)
+                }
+                "cancel" -> {
+                    OngoingTripChip.cancel(applicationContext)
+                    result.success(null)
+                }
                 else -> result.notImplemented()
             }
         }
@@ -138,6 +166,42 @@ class MainActivity : FlutterActivity() {
                 .requestUpdate(ListTileService::class.java)
         }
         result.success(null)
+    }
+
+    /**
+     * Ask for the runtime notification grant, answering nothing.
+     *
+     * The prompt is answered long after this returns, and Android suppresses it
+     * outright once it has been refused — so a boolean handed back here would
+     * describe neither. `notificationsEnabled` is the one reader of the grant,
+     * and it reads the system rather than anything remembered.
+     */
+    private fun requestNotifications(result: MethodChannel.Result) {
+        val needed = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        if (needed) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
+        }
+        result.success(null)
+    }
+
+    /**
+     * The system's own notification screen for this app. Never an in-app
+     * prompt: a prompt is suppressed after a refusal and can only ever grant,
+     * so a row offering one would do different things on two identical taps and
+     * could never take a grant back.
+     */
+    private fun openNotificationSettings(result: MethodChannel.Result) {
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            startActivity(intent)
+            result.success(true)
+        } catch (e: ActivityNotFoundException) {
+            result.success(false)
+        }
     }
 
     /**

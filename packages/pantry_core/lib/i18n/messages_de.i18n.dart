@@ -5653,9 +5653,9 @@ class WearMessagesDe extends WearMessages {
       """${_plural(count, one: '1 Sekunde', many: '$count Sekunden')}""";
 
   /// ```dart
-  /// "Mit Code anmelden"
+  /// "Mit QR anmelden"
   /// ```
-  String get qrSignIn => """Mit Code anmelden""";
+  String get qrSignIn => """Mit QR anmelden""";
 
   /// ```dart
   /// "Dein Server"
@@ -5702,6 +5702,26 @@ class WearMessagesDe extends WearMessages {
   /// "Zertifikat des Servers nicht lesbar"
   /// ```
   String get certUnreadable => """Zertifikat des Servers nicht lesbar""";
+
+  /// ```dart
+  /// "Mitteilungen"
+  /// ```
+  String get notifications => """Mitteilungen""";
+
+  /// ```dart
+  /// "Erlaubt"
+  /// ```
+  String get notificationsAllowed => """Erlaubt""";
+
+  /// ```dart
+  /// "Blockiert"
+  /// ```
+  String get notificationsBlocked => """Blockiert""";
+
+  /// ```dart
+  /// "Einkauf"
+  /// ```
+  String get shoppingTripChip => """Einkauf""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -6885,7 +6905,7 @@ Passwort: pantry-rocks""",
   """wear.crownTurnsPages""": """Seiten wechseln""",
   """wear.undoWindow""": """Rückgängig""",
   """wear.undoOff""": """Aus""",
-  """wear.qrSignIn""": """Mit Code anmelden""",
+  """wear.qrSignIn""": """Mit QR anmelden""",
   """wear.qrServer""": """Dein Server""",
   """wear.qrServerHint""": """cloud.example.com""",
   """wear.qrShowCode""": """Code zeigen""",
@@ -6894,6 +6914,10 @@ Passwort: pantry-rocks""",
   """wear.qrStartOver""": """Neu beginnen""",
   """wear.certTrust""": """Vertrauen""",
   """wear.certUnreadable""": """Zertifikat des Servers nicht lesbar""",
+  """wear.notifications""": """Mitteilungen""",
+  """wear.notificationsAllowed""": """Erlaubt""",
+  """wear.notificationsBlocked""": """Blockiert""",
+  """wear.shoppingTripChip""": """Einkauf""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

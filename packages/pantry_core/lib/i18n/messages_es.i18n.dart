@@ -5637,9 +5637,9 @@ class WearMessagesEs extends WearMessages {
       """${_plural(count, one: '1 segundo', many: '$count segundos')}""";
 
   /// ```dart
-  /// "Iniciar sesión con un código"
+  /// "Iniciar sesión con QR"
   /// ```
-  String get qrSignIn => """Iniciar sesión con un código""";
+  String get qrSignIn => """Iniciar sesión con QR""";
 
   /// ```dart
   /// "Tu servidor"
@@ -5687,6 +5687,26 @@ class WearMessagesEs extends WearMessages {
   /// ```
   String get certUnreadable =>
       """No se pudo leer el certificado del servidor""";
+
+  /// ```dart
+  /// "Notificaciones"
+  /// ```
+  String get notifications => """Notificaciones""";
+
+  /// ```dart
+  /// "Permitidas"
+  /// ```
+  String get notificationsAllowed => """Permitidas""";
+
+  /// ```dart
+  /// "Bloqueadas"
+  /// ```
+  String get notificationsBlocked => """Bloqueadas""";
+
+  /// ```dart
+  /// "Compra"
+  /// ```
+  String get shoppingTripChip => """Compra""";
 }
 
 class WatchMessagesEs extends WatchMessages {
@@ -6848,7 +6868,7 @@ Contraseña: pantry-rocks""",
   """wear.crownTurnsPages""": """Cambiar de página""",
   """wear.undoWindow""": """Deshacer""",
   """wear.undoOff""": """Desactivado""",
-  """wear.qrSignIn""": """Iniciar sesión con un código""",
+  """wear.qrSignIn""": """Iniciar sesión con QR""",
   """wear.qrServer""": """Tu servidor""",
   """wear.qrServerHint""": """cloud.example.com""",
   """wear.qrShowCode""": """Mostrar código""",
@@ -6857,6 +6877,10 @@ Contraseña: pantry-rocks""",
   """wear.qrStartOver""": """Empezar de nuevo""",
   """wear.certTrust""": """Confiar""",
   """wear.certUnreadable""": """No se pudo leer el certificado del servidor""",
+  """wear.notifications""": """Notificaciones""",
+  """wear.notificationsAllowed""": """Permitidas""",
+  """wear.notificationsBlocked""": """Bloqueadas""",
+  """wear.shoppingTripChip""": """Compra""",
   """watch.title""": """Reloj""",
   """watch.requestWarning""":
       """Permítelo solo si el reloj es tuyo. Tendrá el mismo acceso a tu hogar que este teléfono.""",

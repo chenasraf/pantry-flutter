@@ -5593,9 +5593,9 @@ class WearMessages {
       """${_plural(count, one: '1 second', many: '$count seconds')}""";
 
   /// ```dart
-  /// "Sign in with a code"
+  /// "Sign in with QR"
   /// ```
-  String get qrSignIn => """Sign in with a code""";
+  String get qrSignIn => """Sign in with QR""";
 
   /// ```dart
   /// "Your server"
@@ -5642,6 +5642,26 @@ class WearMessages {
   /// "Couldn't read that server's certificate"
   /// ```
   String get certUnreadable => """Couldn't read that server's certificate""";
+
+  /// ```dart
+  /// "Notifications"
+  /// ```
+  String get notifications => """Notifications""";
+
+  /// ```dart
+  /// "Allowed"
+  /// ```
+  String get notificationsAllowed => """Allowed""";
+
+  /// ```dart
+  /// "Blocked"
+  /// ```
+  String get notificationsBlocked => """Blocked""";
+
+  /// ```dart
+  /// "Shopping trip"
+  /// ```
+  String get shoppingTripChip => """Shopping trip""";
 }
 
 class WatchMessages {
@@ -6763,7 +6783,7 @@ Password: pantry-rocks""",
   """wear.crownTurnsPages""": """Turn pages""",
   """wear.undoWindow""": """Undo""",
   """wear.undoOff""": """Off""",
-  """wear.qrSignIn""": """Sign in with a code""",
+  """wear.qrSignIn""": """Sign in with QR""",
   """wear.qrServer""": """Your server""",
   """wear.qrServerHint""": """cloud.example.com""",
   """wear.qrShowCode""": """Show code""",
@@ -6772,6 +6792,10 @@ Password: pantry-rocks""",
   """wear.qrStartOver""": """Start over""",
   """wear.certTrust""": """Trust""",
   """wear.certUnreadable""": """Couldn't read that server's certificate""",
+  """wear.notifications""": """Notifications""",
+  """wear.notificationsAllowed""": """Allowed""",
+  """wear.notificationsBlocked""": """Blocked""",
+  """wear.shoppingTripChip""": """Shopping trip""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

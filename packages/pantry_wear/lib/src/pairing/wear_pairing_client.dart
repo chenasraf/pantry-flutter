@@ -8,6 +8,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
 import 'package:pantry_core/services/wear_pairing.dart';
 
+import '../services/wear_host_service.dart';
 import '../services/wear_mirror_client.dart';
 import '../wear_stores.dart';
 
@@ -131,8 +132,19 @@ class WearPairingClient extends ChangeNotifier {
   Future<void> adoptLocalSignIn() async {
     _stopAsking();
     await loadWearStores();
+    _askForNotifications();
     _enter(WearSetupState.ready);
   }
+
+  /// Ask for the notification grant, once, at the end of setting the watch up.
+  ///
+  /// It is the one moment the wearer is already attending to the watch with
+  /// both hands and expecting to be asked something, and it is before any trip
+  /// exists — where every other moment to ask is mid-shop. A refusal is not a
+  /// setup failure: everything else on the watch works without it, and the
+  /// settings page is where the answer can be seen and changed afterwards.
+  void _askForNotifications() =>
+      unawaited(WearHostService.instance.requestNotifications());
 
   /// Find out whether the phone still counts this watch as its own.
   ///
@@ -278,6 +290,7 @@ class WearPairingClient extends ChangeNotifier {
     _seedDeadline = null;
     WearMirrorClient.instance.removeListener(_onSnapshot);
     _stopAsking();
+    _askForNotifications();
     _enter(WearSetupState.ready);
   }
 

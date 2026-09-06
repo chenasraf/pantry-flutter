@@ -196,4 +196,7 @@ dependencies {
     // ListenableFuture with a way to complete one: androidx.wear.tiles brings the
     // guava *stub*, which is the interface and nothing that builds an instance.
     add("wearImplementation", "androidx.concurrent:concurrent-futures:1.3.0")
+    // The live-trip chip on the watch face. Pure AndroidX like the Tile, so
+    // tool/fdroid/apply.sh leaves it alone.
+    add("wearImplementation", "androidx.wear:wear-ongoing:1.0.0")
 }

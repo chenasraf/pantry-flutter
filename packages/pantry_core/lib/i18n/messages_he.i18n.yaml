@@ -1094,6 +1094,10 @@ wear:
   certUntrustedBody(String host): "‏${host} שלח אישור שהשעון הזה לא יכול לאמת. תנו בו אמון רק אם טביעת האצבע היא זו שציפיתם לה."
   certTrust: לתת אמון
   certUnreadable: לא הצלחנו לקרוא את האישור של השרת
+  notifications: התראות
+  notificationsAllowed: מותרות
+  notificationsBlocked: חסומות
+  shoppingTripChip: קנייה
 
 watch:
   title: שעון

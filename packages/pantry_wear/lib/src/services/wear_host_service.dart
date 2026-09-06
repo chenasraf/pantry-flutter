@@ -46,4 +46,46 @@ class WearHostService {
       return true;
     }
   }
+
+  /// Whether this watch will draw anything the app posts.
+  ///
+  /// Asked of the system every time rather than remembered: the wearer can
+  /// change it from the system's own screen or by long-pressing a chip, neither
+  /// of which comes back through the app. Unanswerable means yes, so a watch
+  /// that cannot say draws the row as granted rather than accusing itself of a
+  /// block it has not got.
+  Future<bool> notificationsEnabled() async {
+    try {
+      return await _channel.invokeMethod<bool>('notificationsEnabled') ?? true;
+    } on PlatformException {
+      return true;
+    } on MissingPluginException {
+      return true;
+    }
+  }
+
+  /// Ask for the runtime notification grant.
+  ///
+  /// Answers nothing: the wearer replies long after this returns, and once they
+  /// have refused Android stops showing the prompt at all. [notificationsEnabled]
+  /// is where the answer is read.
+  Future<void> requestNotifications() async {
+    try {
+      await _channel.invokeMethod<void>('requestNotifications');
+    } on PlatformException catch (_) {
+    } on MissingPluginException catch (_) {}
+  }
+
+  /// Open the watch's own notification screen for this app. `false` when the
+  /// watch has no such screen to open.
+  Future<bool> openNotificationSettings() async {
+    try {
+      return await _channel.invokeMethod<bool>('openNotificationSettings') ??
+          false;
+    } on PlatformException {
+      return false;
+    } on MissingPluginException {
+      return false;
+    }
+  }
 }

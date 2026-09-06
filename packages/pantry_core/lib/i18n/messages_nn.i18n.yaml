@@ -1238,6 +1238,10 @@ wear:
   certUntrustedBody(String host): "${host} sender eit sertifikat denne klokka ikkje kan stadfeste. Stol på det berre om fingeravtrykket er det du ventar."
   certTrust: Stol på det
   certUnreadable: Fekk ikkje lese sertifikatet til tenaren
+  notifications: Varsel
+  notificationsAllowed: Tillate
+  notificationsBlocked: Blokkerte
+  shoppingTripChip: Handletur
 
 watch:
   title: Klokke

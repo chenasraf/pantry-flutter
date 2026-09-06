@@ -5645,9 +5645,9 @@ class WearMessagesFr extends WearMessages {
       """${_plural(count, one: '1 seconde', many: '$count secondes')}""";
 
   /// ```dart
-  /// "Se connecter avec un code"
+  /// "Se connecter avec un QR"
   /// ```
-  String get qrSignIn => """Se connecter avec un code""";
+  String get qrSignIn => """Se connecter avec un QR""";
 
   /// ```dart
   /// "Votre serveur"
@@ -5695,6 +5695,26 @@ class WearMessagesFr extends WearMessages {
   /// ```
   String get certUnreadable =>
       """Impossible de lire le certificat du serveur""";
+
+  /// ```dart
+  /// "Notifications"
+  /// ```
+  String get notifications => """Notifications""";
+
+  /// ```dart
+  /// "Autorisées"
+  /// ```
+  String get notificationsAllowed => """Autorisées""";
+
+  /// ```dart
+  /// "Bloquées"
+  /// ```
+  String get notificationsBlocked => """Bloquées""";
+
+  /// ```dart
+  /// "Sortie courses"
+  /// ```
+  String get shoppingTripChip => """Sortie courses""";
 }
 
 class WatchMessagesFr extends WatchMessages {
@@ -6874,7 +6894,7 @@ Mot de passe : pantry-rocks""",
   """wear.crownTurnsPages""": """Changer de page""",
   """wear.undoWindow""": """Annuler""",
   """wear.undoOff""": """Désactivé""",
-  """wear.qrSignIn""": """Se connecter avec un code""",
+  """wear.qrSignIn""": """Se connecter avec un QR""",
   """wear.qrServer""": """Votre serveur""",
   """wear.qrServerHint""": """cloud.example.com""",
   """wear.qrShowCode""": """Afficher le code""",
@@ -6883,6 +6903,10 @@ Mot de passe : pantry-rocks""",
   """wear.qrStartOver""": """Recommencer""",
   """wear.certTrust""": """Faire confiance""",
   """wear.certUnreadable""": """Impossible de lire le certificat du serveur""",
+  """wear.notifications""": """Notifications""",
+  """wear.notificationsAllowed""": """Autorisées""",
+  """wear.notificationsBlocked""": """Bloquées""",
+  """wear.shoppingTripChip""": """Sortie courses""",
   """watch.title""": """Montre""",
   """watch.requestWarning""":
       """N'autorisez que si la montre est la vôtre. Elle obtient le même accès à votre foyer que ce téléphone.""",

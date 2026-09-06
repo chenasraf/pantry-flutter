@@ -6,6 +6,7 @@ import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
+import 'package:pantry_core/services/wear_mirror_service.dart';
 import 'package:pantry_core/services/wear_pairing.dart';
 import 'package:pantry_wear/src/pairing/wear_pairing_client.dart';
 import 'package:pantry_wear/src/services/wear_mirror_client.dart';
@@ -294,6 +295,95 @@ void main() {
 
       expect(AuthService.instance.isLoggedIn, isFalse);
       expect(client.state, WearSetupState.waiting);
+    });
+  });
+
+  /// Setting the watch up is the one moment the wearer is already attending to
+  /// it with both hands, and it is before any trip exists — where every other
+  /// moment to ask for the notification grant is mid-shop.
+  group('the notification grant', () {
+    const host = MethodChannel('dev.casraf.pantry/wear_host');
+    final asked = <String>[];
+
+    setUp(() {
+      asked.clear();
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(host, (call) async {
+            asked.add(call.method);
+            return null;
+          });
+    });
+
+    tearDown(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(host, null);
+    });
+
+    test('is asked for once the watch is signed in from the phone', () async {
+      await client.start();
+
+      emit(
+        WearPairing.grantPath,
+        const WearPairingGrant(
+          credentials: credentials,
+          certPins: {},
+          houseId: 4,
+        ).toJson(),
+      );
+      await settle();
+      // The seed is what the syncing state is waiting on, and it is the last
+      // thing between a wearer and their lists.
+      emit(
+        WearMirrorService.instance.pathFor(MirrorEntity.lists, 4),
+        WearMirrorService.instance.snapshot(
+          const [],
+          capturedAt: DateTime.fromMillisecondsSinceEpoch(1),
+        ),
+        delivery: 'channel',
+      );
+      await settle();
+
+      expect(client.state, WearSetupState.ready);
+      expect(asked, contains('requestNotifications'));
+    });
+
+    test('is asked for on the QR path too', () async {
+      await client.adoptLocalSignIn();
+
+      expect(asked, contains('requestNotifications'));
+    });
+
+    test('is not re-asked when a credential is merely renewed', () async {
+      await client.start();
+      emit(
+        WearPairing.grantPath,
+        const WearPairingGrant(
+          credentials: credentials,
+          certPins: {},
+          houseId: 4,
+        ).toJson(),
+      );
+      await settle();
+      asked.clear();
+
+      await client.renew();
+      emit(
+        WearPairing.grantPath,
+        const WearPairingGrant(
+          credentials: NextcloudCredentials(
+            serverUrl: 'https://cloud.example',
+            loginName: 'ada',
+            appPassword: 'fresher',
+          ),
+          certPins: {},
+          houseId: 4,
+        ).toJson(),
+      );
+      await settle();
+
+      // A prompt is a single moment, answered once. The settings row is where
+      // a wearer changes their mind afterwards.
+      expect(asked, isNot(contains('requestNotifications')));
     });
   });
 

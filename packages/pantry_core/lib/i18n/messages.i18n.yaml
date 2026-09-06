@@ -1102,6 +1102,10 @@ wear:
   certUntrustedBody(String host): "${host} sent a certificate this watch can't verify. Trust it only if the fingerprint is the one you expect."
   certTrust: Trust
   certUnreadable: "Couldn't read that server's certificate"
+  notifications: Notifications
+  notificationsAllowed: Allowed
+  notificationsBlocked: Blocked
+  shoppingTripChip: Shopping trip
 
 watch:
   title: Watch

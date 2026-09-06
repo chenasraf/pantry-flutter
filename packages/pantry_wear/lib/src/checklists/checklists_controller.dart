@@ -24,6 +24,7 @@ import 'package:pantry_core/utils/currencies.dart';
 
 import '../scope/wear_scope.dart';
 import '../services/wear_mirror_client.dart';
+import '../services/wear_ongoing_activity.dart';
 import '../services/wear_tile_service.dart';
 import '../widgets/wear_metrics.dart';
 
@@ -84,6 +85,7 @@ class ChecklistsController extends ChangeNotifier {
   final _sync = SyncManager.instance;
   final _scope = WearScope.instance;
   final _mirror = WearMirrorClient.instance;
+  final _chip = WearOngoingActivityService.instance;
 
   int? _houseId;
   int? get houseId => _houseId;
@@ -219,6 +221,13 @@ class ChecklistsController extends ChangeNotifier {
   /// flicker a row back.
   final _doneOverride = <int, bool>{};
 
+  /// Whether the watch face is carrying the trip chip, as far as this process
+  /// knows — null until the first read settles. A notification outlives the
+  /// process that posted it, so a launch has nothing to remember and has to act
+  /// on what it finds: a trip means post, and no trip means cancel whatever a
+  /// trip closed on the phone left behind.
+  bool? _chipUp;
+
   bool _active = true;
   bool _disposed = false;
   Timer? _poll;
@@ -268,6 +277,9 @@ class ChecklistsController extends ChangeNotifier {
       // Waking is the moment the watch has been off the link for however long
       // the wrist was down, so it asks rather than waiting to be told.
       unawaited(_mirror.requestMirror());
+      // Coming back to a trip still being walked is the one thing that extends
+      // the chip, and it is what makes an expiry mid-shop recoverable.
+      _syncChip(renewing: true);
       unawaited(refresh());
     } else {
       _poll?.cancel();
@@ -317,8 +329,24 @@ class ChecklistsController extends ChangeNotifier {
       await _readCache();
     } finally {
       _loading = false;
+      _syncChip();
       _emit();
     }
+  }
+
+  /// Draw the watch-face chip while a trip is live, and take it down when there
+  /// is none.
+  ///
+  /// [renewing] re-posts a chip that is already up, which is the only thing
+  /// that restarts the half hour Android gives it — so it is passed by a resume
+  /// and by nothing else. Without it this is a no-op unless the trip's
+  /// existence actually changed, which keeps a poll from redrawing a system
+  /// surface once a minute.
+  void _syncChip({bool renewing = false}) {
+    final live = _session != null;
+    if (live == _chipUp && !(live && renewing)) return;
+    _chipUp = live;
+    unawaited(live ? _chip.post() : _chip.cancel());
   }
 
   Future<void> _readCache() async {
@@ -435,6 +463,10 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> refresh() async {
     await _refreshHouses();
     await _refreshSession();
+    // A trip the poll or the mirror has just found is a trip that became live
+    // without anyone opening a page, which is one of the three moments the chip
+    // is posted.
+    _syncChip();
     if (_session != null) {
       await _refreshSessionItems();
     } else {

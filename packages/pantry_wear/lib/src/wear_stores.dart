@@ -10,6 +10,7 @@ import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/services/wear_mirror_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
+import 'services/wear_ongoing_activity.dart';
 import 'services/wear_tile_service.dart';
 
 /// Every store the watch reads or writes, loaded before anything can touch
@@ -31,10 +32,11 @@ import 'services/wear_tile_service.dart';
 /// wearer's unsent intent, and dropping the file without the manager's own
 /// teardown would leave it re-saving what it still held in memory.
 ///
-/// The Tile snapshot goes with them. It is a copy of the same household names,
-/// held outside every store here because the Tile is drawn with no engine
-/// running — so a clear that stopped at the caches would leave the list names
-/// on the watch face of a watch that no longer has an account.
+/// The Tile snapshot goes with them, and so does the trip chip. Both are copies
+/// of household state held outside every store here, because both are drawn
+/// with no engine running — so a clear that stopped at the caches would leave a
+/// watch that no longer has an account showing list names on its face and
+/// claiming to be out shopping.
 Future<void> clearWearStores() => Future.wait([
   HouseService.instance.cache.clear(),
   ChecklistService.instance.cache.clear(),
@@ -48,6 +50,7 @@ Future<void> clearWearStores() => Future.wait([
   WearMirrorService.instance.clear(),
   SyncManager.instance.reset(),
   WearTileService.instance.clear(),
+  WearOngoingActivityService.instance.cancel(),
 ]);
 
 Future<void> loadWearStores() => Future.wait([
