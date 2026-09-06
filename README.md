@@ -2,8 +2,8 @@
 
 [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/6MvhMh4Jk)
 
-A Flutter mobile client for [Nextcloud Pantry](https://github.com/chenasraf/nextcloud-pantry) —
-household management for your self-hosted Nextcloud.
+A Flutter client for [Nextcloud Pantry](https://github.com/chenasraf/nextcloud-pantry) — household
+management for your self-hosted Nextcloud, on your phone, your desktop, and your Wear OS watch.
 
 **Website & documentation: [pantry.casraf.dev](https://pantry.casraf.dev)** — including a
 [guide to pairing the app](https://pantry.casraf.dev/docs/getting-started/pairing) with your server.
@@ -13,6 +13,8 @@ household management for your self-hosted Nextcloud.
 - **Checklists**: Shared checklists with categories, quantities, images, and recurring items.
 - **Photo Board**: Upload and organize shared photos in folders with captions.
 - **Notes Wall**: Color-coded shared notes for household reminders.
+- **Wear OS**: A watch app with your checklists, photo board, notes, and shopping trips, plus a tile
+  for your lists and a live trip on the watch face.
 - **Drag-and-drop reordering** everywhere.
 - **Multi-select** for bulk actions.
 - **Offline caching** for fast loading.
@@ -22,6 +24,7 @@ household management for your self-hosted Nextcloud.
 |                                                                                    |                                                                                     |                                                                                    |
 | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | ![Checklists](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png) | ![Photo board](fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png) | ![Notes wall](fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png) |
+| ![Checklists](fastlane/metadata/android/en-US/images/wearScreenshots/1_en-US.png) | ![Photo board](fastlane/metadata/android/en-US/images/wearScreenshots/2_en-US.png) | ![Notes wall](fastlane/metadata/android/en-US/images/wearScreenshots/3_en-US.png) |
 
 ## Requirements
 
@@ -37,6 +40,20 @@ above. This repository is specifically for the companion mobile/desktop apps.
 
 - [Install from Google Play](https://play.google.com/store/apps/details?id=dev.casraf.pantry)
 - [Install from F-Droid](https://f-droid.org/en/packages/dev.casraf.pantry/)
+
+### Wear OS
+
+[Install from Google Play](https://play.google.com/store/apps/details?id=dev.casraf.pantry) on the
+watch — it is the same listing as the phone app, so Play offers it there once the phone app is
+installed. Alternatively, sideload `pantry-<version>-wear-<abi>.apk` from the
+[latest release](https://github.com/chenasraf/pantry-flutter/releases/latest) — most watches take
+`armeabi-v7a`.
+
+The watch starts the pairing. Open Pantry on it and tap **Open on phone**: the phone app comes up
+with the request, and allowing it signs the watch in — nothing is typed on the watch. **Sign in with
+QR** on the same screen is the alternative, drawing a code you scan with any phone's camera, which
+needs no phone app at all. The F-Droid build has no watch pairing, since the transport it needs is
+proprietary — use the QR path there.
 
 ### Beta testing
 
