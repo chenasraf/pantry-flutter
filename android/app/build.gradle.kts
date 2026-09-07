@@ -199,4 +199,9 @@ dependencies {
     // The live-trip chip on the watch face. Pure AndroidX like the Tile, so
     // tool/fdroid/apply.sh leaves it alone.
     add("wearImplementation", "androidx.wear:wear-ongoing:1.0.0")
+    // AmbientLifecycleObserver, which is what puts the watch's dimmed state
+    // under the app's control. The artifact is `androidx.wear:wear` — Google's
+    // Maven has no `androidx.wear:wear-ambient` at any version. Pure AndroidX
+    // like the Tile and the chip, so tool/fdroid/apply.sh leaves it alone.
+    add("wearImplementation", "androidx.wear:wear:1.4.0")
 }

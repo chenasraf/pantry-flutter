@@ -6,10 +6,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.view.InputDevice
 import android.view.MotionEvent
 import androidx.core.app.NotificationManagerCompat
+import androidx.wear.ambient.AmbientLifecycleObserver
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import androidx.wear.tiles.TileService
 import io.flutter.embedding.android.FlutterActivity
@@ -28,6 +30,7 @@ class MainActivity : FlutterActivity() {
     private val tileChannel = "dev.casraf.pantry/tile"
     private val deepLinkChannel = "dev.casraf.pantry/deep_link"
     private val ongoingChannel = "dev.casraf.pantry/ongoing_activity"
+    private val ambientChannel = "dev.casraf.pantry/ambient"
 
     private val dataLayer by lazy { DataLayerChannel(applicationContext) }
     private val remoteActivity by lazy { RemoteActivityHelper(applicationContext) }
@@ -38,6 +41,65 @@ class MainActivity : FlutterActivity() {
 
     /** A link that arrived before Dart was listening, held until it is. */
     private var pendingDeepLink: String? = null
+
+    private var ambientEvents: EventChannel.EventSink? = null
+
+    /**
+     * Ambient is absolute state, not a series of events: a listener attaching
+     * mid-doze has to be told where it already is, or the watch would draw the
+     * interactive theme over a dimmed screen until the next callback — up to a
+     * minute away, since updates arrive about once a minute.
+     */
+    private var ambient = ambientState(false)
+
+    private fun ambientState(
+        isAmbient: Boolean,
+        burnIn: Boolean = false,
+        lowBit: Boolean = false,
+    ): Map<String, Any?> = mapOf(
+        "isAmbient" to isAmbient,
+        "burnInProtectionRequired" to burnIn,
+        "deviceHasLowBitAmbient" to lowBit,
+    )
+
+    private val ambientCallback = object : AmbientLifecycleObserver.AmbientLifecycleCallback {
+        override fun onEnterAmbient(ambientDetails: AmbientLifecycleObserver.AmbientDetails) {
+            emitAmbient(
+                ambientState(
+                    true,
+                    ambientDetails.burnInProtectionRequired,
+                    ambientDetails.deviceHasLowBitAmbient,
+                ),
+            )
+        }
+
+        /**
+         * The system's cue to redraw, roughly once a minute. Forwarded even
+         * though the state is unchanged: the wearer sees a clock and a count,
+         * and this is the only moment either is allowed to move.
+         */
+        override fun onUpdateAmbient() = emitAmbient(ambient)
+
+        override fun onExitAmbient() = emitAmbient(ambientState(false))
+    }
+
+    private val ambientObserver by lazy { AmbientLifecycleObserver(this, ambientCallback) }
+
+    private fun emitAmbient(state: Map<String, Any?>) {
+        ambient = state
+        ambientEvents?.success(state)
+    }
+
+    /**
+     * Registered here rather than lazily from Dart: the observer makes its own
+     * `setAmbientEnabled` call when it receives `ON_CREATE`, and an activity
+     * that asks after it is already resumed has missed the window in which the
+     * system decides whether this is an ambient component at all.
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(ambientObserver)
+    }
 
     /**
      * Screen shape reaches Dart before the first frame rather than over a
@@ -112,6 +174,19 @@ class MainActivity : FlutterActivity() {
 
                 override fun onCancel(arguments: Any?) {
                     deepLinkEvents = null
+                }
+            },
+        )
+
+        EventChannel(messenger, ambientChannel).setStreamHandler(
+            object : EventChannel.StreamHandler {
+                override fun onListen(arguments: Any?, sink: EventChannel.EventSink?) {
+                    ambientEvents = sink
+                    sink?.success(ambient)
+                }
+
+                override fun onCancel(arguments: Any?) {
+                    ambientEvents = null
                 }
             },
         )
@@ -235,6 +310,8 @@ class MainActivity : FlutterActivity() {
         dataLayer.detach()
         rotaryEvents = null
         deepLinkEvents = null
+        ambientEvents = null
+        lifecycle.removeObserver(ambientObserver)
         super.onDestroy()
     }
 

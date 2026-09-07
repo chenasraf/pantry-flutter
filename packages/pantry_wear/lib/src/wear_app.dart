@@ -8,6 +8,7 @@ import 'package:pantry_core/services/theming_service.dart';
 import 'pairing/wear_pairing_client.dart';
 import 'pairing/wear_setup_page.dart';
 import 'shell/wear_shell.dart';
+import 'wear_ambient_skin.dart';
 
 /// Root of the watch app.
 ///
@@ -65,6 +66,11 @@ class _PantryWearAppState extends State<PantryWearApp> {
         scaffoldBackgroundColor: Colors.black,
         useMaterial3: true,
       ),
+      // Above `home` rather than inside it, so the dimmed treatment covers
+      // whatever the watch is showing — a pushed route and the shell alike —
+      // and the wearer keeps their place across a doze.
+      builder: (context, child) =>
+          WearAmbientSkin(child: child ?? const SizedBox.shrink()),
       // Deliberately not `const`. A rebuild reaches a child only when the
       // child widget differs from the one already there, and a `const` widget
       // is canonicalised to a single instance — so a landed language would

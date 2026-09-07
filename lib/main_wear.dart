@@ -52,6 +52,11 @@ void main(List<String> args) async {
   await WearDeepLink.instance.applyPending();
 
   LocaleService.instance.apply();
+  // Before the first frame: the watch can be dimmed at the moment the app is
+  // launched from the Tile or a deep link, and drawing the interactive theme
+  // onto an already-dimmed screen would hold until the next system update, a
+  // minute away.
+  unawaited(WearAmbient.instance.start());
   ApiClient.onForbidden = () {};
   // A watch process is killed far more readily than a phone's, so the pause is
   // where a debounced cache write has to land.

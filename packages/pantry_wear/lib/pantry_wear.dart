@@ -1,5 +1,6 @@
 export 'src/pairing/wear_pairing_client.dart';
 export 'src/services/rotary_service.dart';
+export 'src/services/wear_ambient.dart';
 export 'src/services/wear_appearance_client.dart';
 export 'src/services/wear_deep_link.dart';
 export 'src/services/wear_host_service.dart';
@@ -8,6 +9,7 @@ export 'src/services/wear_mirror_client.dart';
 export 'src/services/wear_ongoing_activity.dart';
 export 'src/services/wear_tile_service.dart';
 export 'src/scope/wear_scope.dart';
+export 'src/wear_ambient_skin.dart';
 export 'src/wear_app.dart';
 export 'src/wear_shape.dart';
 export 'src/wear_stores.dart';
