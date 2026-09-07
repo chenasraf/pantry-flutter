@@ -33,6 +33,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   static const _pollOptions = [15, 30, 60, 120, 360];
   static const _checkboxPositionOptions = ['start', 'end'];
+  static const _composeBarPositionOptions = ['bottom', 'top'];
   static const _densityOptions = ['normal', 'dense', 'compact'];
   static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
   static const _itemLongPressActionOptions = [
@@ -110,6 +111,18 @@ class _SettingsViewState extends State<SettingsView> {
   String _checkboxPositionLabel(String value) => switch (value) {
     'end' => m.settings.checkboxPositionNames.end,
     _ => m.settings.checkboxPositionNames.start,
+  };
+
+  Future<void> _setComposeBarPosition(String? value) async {
+    if (value == null) return;
+    final prefs = context.read<PrefsService>();
+    if (value == prefs.composeBarPosition) return;
+    await prefs.setComposeBarPosition(value);
+  }
+
+  String _composeBarPositionLabel(String value) => switch (value) {
+    'top' => m.settings.composeBarPositionNames.top,
+    _ => m.settings.composeBarPositionNames.bottom,
   };
 
   Future<void> _setDensity(String? value) async {
@@ -313,6 +326,7 @@ class _SettingsViewState extends State<SettingsView> {
     final itemTapAction = prefs.defaultItemTapAction;
     final itemLongPressAction = prefs.defaultItemLongPressAction;
     final checkboxPosition = prefs.checklistCheckboxPosition;
+    final composeBarPosition = prefs.composeBarPosition;
     final density = prefs.checklistDensity;
     final swipeActionsEnabled = prefs.swipeActionsEnabled;
     final startShoppingFabEnabled = prefs.startShoppingFabEnabled;
@@ -424,6 +438,18 @@ class _SettingsViewState extends State<SettingsView> {
               labelOf: _checkboxPositionLabel,
               onChanged: _setCheckboxPosition,
             ),
+            // Mobile keeps the bar pinned to the bottom, where the keyboard
+            // rises to meet it.
+            if (PlatformInfo.isDesktop)
+              _DropdownSettingTile<String>(
+                icon: Icons.vertical_align_bottom,
+                title: m.settings.composeBarPosition,
+                subtitle: m.settings.composeBarPositionBody,
+                value: composeBarPosition,
+                options: _composeBarPositionOptions,
+                labelOf: _composeBarPositionLabel,
+                onChanged: _setComposeBarPosition,
+              ),
             _DropdownSettingTile<String>(
               icon: Icons.density_medium,
               title: m.settings.density,

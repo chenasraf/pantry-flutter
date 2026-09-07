@@ -216,6 +216,11 @@ settings:
   checkboxPositionNames:
     start: Inicio
     end: Fin
+  composeBarPosition: Posición de la barra para añadir
+  composeBarPositionBody: En qué borde de la lista se sitúa la barra para añadir artículos.
+  composeBarPositionNames:
+    bottom: Abajo
+    top: Arriba
   density: Densidad de la lista
   densityBody: Cuánto espacio ocupa cada artículo en tus listas.
   densityNames:

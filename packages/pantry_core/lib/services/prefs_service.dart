@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:pantry_core/models/nav_section.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 
 part 'prefs_service.checklist.dart';
 part 'prefs_service.appearance.dart';
@@ -34,6 +35,7 @@ class PrefsService extends ChangeNotifier {
   static const _suggestArchivedItemsKey = 'suggest_archived_items';
   static const _checklistViewKey = 'checklist_view';
   static const _checklistCheckboxPositionKey = 'checklist_checkbox_position';
+  static const _composeBarPositionKey = 'compose_bar_position';
   static const _checklistDensityKey = 'checklist_density';
   static const _validDensities = {'normal', 'dense', 'compact'};
   static const _swipeActionsEnabledKey = 'swipe_actions_enabled';
@@ -137,6 +139,18 @@ class PrefsService extends ChangeNotifier {
   /// trailing edge.
   String _checklistCheckboxPosition = 'start';
   String get checklistCheckboxPosition => _checklistCheckboxPosition;
+
+  /// Which edge of the checklist the add-item bar sits against: "bottom"
+  /// (default) or "top". Offered on desktop only, where the input isn't tied
+  /// to a keyboard rising from the bottom of the screen.
+  String _composeBarPosition = 'bottom';
+  String get composeBarPosition => _composeBarPosition;
+
+  /// Resolved placement for the add-item bar. Desktop-gated at read time so a
+  /// value carried onto a phone (restored backup, shared account) can't move
+  /// the bar under the keyboard.
+  bool get composeBarOnTop =>
+      PlatformInfo.isDesktop && _composeBarPosition == 'top';
 
   /// Visual density of checklist rows: "normal" (default), "dense", "compact".
   /// Denser values trim padding, tap height and swipe sizing to fit more rows.
@@ -398,6 +412,12 @@ class PrefsService extends ChangeNotifier {
       _checklistCheckboxPosition = checkboxPosition;
     }
 
+    final composeBarPosition = all[_composeBarPositionKey];
+    if (composeBarPosition != null &&
+        (composeBarPosition == 'top' || composeBarPosition == 'bottom')) {
+      _composeBarPosition = composeBarPosition;
+    }
+
     final density = all[_checklistDensityKey];
     if (density != null && _validDensities.contains(density)) {
       _checklistDensity = density;
@@ -572,6 +592,7 @@ class PrefsService extends ChangeNotifier {
     _suggestArchivedItems = false;
     _checklistView = 'list';
     _checklistCheckboxPosition = 'start';
+    _composeBarPosition = 'bottom';
     _checklistDensity = 'normal';
     _swipeActionsEnabled = true;
     _startShoppingFabEnabled = true;
@@ -613,6 +634,7 @@ class PrefsService extends ChangeNotifier {
       _suggestArchivedItemsKey,
       _checklistViewKey,
       _checklistCheckboxPositionKey,
+      _composeBarPositionKey,
       _checklistDensityKey,
       _swipeActionsEnabledKey,
       _startShoppingFabEnabledKey,

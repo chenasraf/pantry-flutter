@@ -1136,6 +1136,19 @@ class SettingsMessagesDe extends SettingsMessages {
       CheckboxPositionNamesSettingsMessagesDe(this);
 
   /// ```dart
+  /// "Position der Eingabeleiste"
+  /// ```
+  String get composeBarPosition => """Position der Eingabeleiste""";
+
+  /// ```dart
+  /// "An welcher Kante der Liste die Leiste zum Hinzufügen von Einträgen sitzt."
+  /// ```
+  String get composeBarPositionBody =>
+      """An welcher Kante der Liste die Leiste zum Hinzufügen von Einträgen sitzt.""";
+  ComposeBarPositionNamesSettingsMessagesDe get composeBarPositionNames =>
+      ComposeBarPositionNamesSettingsMessagesDe(this);
+
+  /// ```dart
   /// "Listendichte"
   /// ```
   String get density => """Listendichte""";
@@ -1497,6 +1510,23 @@ class CheckboxPositionNamesSettingsMessagesDe
   /// "Ende"
   /// ```
   String get end => """Ende""";
+}
+
+class ComposeBarPositionNamesSettingsMessagesDe
+    extends ComposeBarPositionNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const ComposeBarPositionNamesSettingsMessagesDe(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "Unten"
+  /// ```
+  String get bottom => """Unten""";
+
+  /// ```dart
+  /// "Oben"
+  /// ```
+  String get top => """Oben""";
 }
 
 class DensityNamesSettingsMessagesDe extends DensityNamesSettingsMessages {
@@ -6447,6 +6477,11 @@ Passwort: pantry-rocks""",
       """Auf welcher Seite der Zeile das Kontrollkästchen erscheint.""",
   """settings.checkboxPositionNames.start""": """Anfang""",
   """settings.checkboxPositionNames.end""": """Ende""",
+  """settings.composeBarPosition""": """Position der Eingabeleiste""",
+  """settings.composeBarPositionBody""":
+      """An welcher Kante der Liste die Leiste zum Hinzufügen von Einträgen sitzt.""",
+  """settings.composeBarPositionNames.bottom""": """Unten""",
+  """settings.composeBarPositionNames.top""": """Oben""",
   """settings.density""": """Listendichte""",
   """settings.densityBody""":
       """Wie viel Platz jeder Eintrag in deinen Listen einnimmt.""",

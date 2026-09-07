@@ -1133,6 +1133,19 @@ class SettingsMessagesNn extends SettingsMessages {
       CheckboxPositionNamesSettingsMessagesNn(this);
 
   /// ```dart
+  /// "Plassering av innleggingsfeltet"
+  /// ```
+  String get composeBarPosition => """Plassering av innleggingsfeltet""";
+
+  /// ```dart
+  /// "Kva kant av lista feltet for å leggja til oppføringar ligg mot"
+  /// ```
+  String get composeBarPositionBody =>
+      """Kva kant av lista feltet for å leggja til oppføringar ligg mot""";
+  ComposeBarPositionNamesSettingsMessagesNn get composeBarPositionNames =>
+      ComposeBarPositionNamesSettingsMessagesNn(this);
+
+  /// ```dart
   /// "Listetettleik"
   /// ```
   String get density => """Listetettleik""";
@@ -1494,6 +1507,23 @@ class CheckboxPositionNamesSettingsMessagesNn
   /// "Slutt"
   /// ```
   String get end => """Slutt""";
+}
+
+class ComposeBarPositionNamesSettingsMessagesNn
+    extends ComposeBarPositionNamesSettingsMessages {
+  final SettingsMessagesNn _parent;
+  const ComposeBarPositionNamesSettingsMessagesNn(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "Nedst"
+  /// ```
+  String get bottom => """Nedst""";
+
+  /// ```dart
+  /// "Øvst"
+  /// ```
+  String get top => """Øvst""";
 }
 
 class DensityNamesSettingsMessagesNn extends DensityNamesSettingsMessages {
@@ -6413,6 +6443,11 @@ Passord: pantry""",
       """Kva side av rada avkrysningsboksen kjem opp på""",
   """settings.checkboxPositionNames.start""": """Start""",
   """settings.checkboxPositionNames.end""": """Slutt""",
+  """settings.composeBarPosition""": """Plassering av innleggingsfeltet""",
+  """settings.composeBarPositionBody""":
+      """Kva kant av lista feltet for å leggja til oppføringar ligg mot""",
+  """settings.composeBarPositionNames.bottom""": """Nedst""",
+  """settings.composeBarPositionNames.top""": """Øvst""",
   """settings.density""": """Listetettleik""",
   """settings.densityBody""":
       """Kor mykje plass kvar oppføring får i listene.""",

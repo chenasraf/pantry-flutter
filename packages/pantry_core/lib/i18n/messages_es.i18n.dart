@@ -1136,6 +1136,19 @@ class SettingsMessagesEs extends SettingsMessages {
       CheckboxPositionNamesSettingsMessagesEs(this);
 
   /// ```dart
+  /// "Posición de la barra para añadir"
+  /// ```
+  String get composeBarPosition => """Posición de la barra para añadir""";
+
+  /// ```dart
+  /// "En qué borde de la lista se sitúa la barra para añadir artículos."
+  /// ```
+  String get composeBarPositionBody =>
+      """En qué borde de la lista se sitúa la barra para añadir artículos.""";
+  ComposeBarPositionNamesSettingsMessagesEs get composeBarPositionNames =>
+      ComposeBarPositionNamesSettingsMessagesEs(this);
+
+  /// ```dart
   /// "Densidad de la lista"
   /// ```
   String get density => """Densidad de la lista""";
@@ -1498,6 +1511,23 @@ class CheckboxPositionNamesSettingsMessagesEs
   /// "Fin"
   /// ```
   String get end => """Fin""";
+}
+
+class ComposeBarPositionNamesSettingsMessagesEs
+    extends ComposeBarPositionNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const ComposeBarPositionNamesSettingsMessagesEs(this._parent)
+    : super(_parent);
+
+  /// ```dart
+  /// "Abajo"
+  /// ```
+  String get bottom => """Abajo""";
+
+  /// ```dart
+  /// "Arriba"
+  /// ```
+  String get top => """Arriba""";
 }
 
 class DensityNamesSettingsMessagesEs extends DensityNamesSettingsMessages {
@@ -6434,6 +6464,11 @@ Contraseña: pantry-rocks""",
       """En qué lado de la fila aparece la casilla.""",
   """settings.checkboxPositionNames.start""": """Inicio""",
   """settings.checkboxPositionNames.end""": """Fin""",
+  """settings.composeBarPosition""": """Posición de la barra para añadir""",
+  """settings.composeBarPositionBody""":
+      """En qué borde de la lista se sitúa la barra para añadir artículos.""",
+  """settings.composeBarPositionNames.bottom""": """Abajo""",
+  """settings.composeBarPositionNames.top""": """Arriba""",
   """settings.density""": """Densidad de la lista""",
   """settings.densityBody""":
       """Cuánto espacio ocupa cada artículo en tus listas.""",

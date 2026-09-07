@@ -62,6 +62,17 @@ extension PrefsServiceChecklistSetters on PrefsService {
     notifyListeners();
   }
 
+  Future<void> setComposeBarPosition(String value) async {
+    if (value != 'top' && value != 'bottom') return;
+    if (_composeBarPosition == value) return;
+    _composeBarPosition = value;
+    await _storage.write(
+      key: PrefsService._composeBarPositionKey,
+      value: value,
+    );
+    notifyListeners();
+  }
+
   Future<void> setChecklistDensity(String value) async {
     if (!PrefsService._validDensities.contains(value)) return;
     if (_checklistDensity == value) return;

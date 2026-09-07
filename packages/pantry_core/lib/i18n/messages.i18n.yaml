@@ -216,6 +216,11 @@ settings:
   checkboxPositionNames:
     start: Start
     end: End
+  composeBarPosition: Add item bar position
+  composeBarPositionBody: Which edge of the checklist the bar for adding items sits against.
+  composeBarPositionNames:
+    bottom: Bottom
+    top: Top
   density: List density
   densityBody: How much space each item takes up in your lists.
   densityNames:

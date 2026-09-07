@@ -216,6 +216,11 @@ settings:
   checkboxPositionNames:
     start: Anfang
     end: Ende
+  composeBarPosition: Position der Eingabeleiste
+  composeBarPositionBody: An welcher Kante der Liste die Leiste zum Hinzufügen von Einträgen sitzt.
+  composeBarPositionNames:
+    bottom: Unten
+    top: Oben
   density: Listendichte
   densityBody: Wie viel Platz jeder Eintrag in deinen Listen einnimmt.
   densityNames:

@@ -264,15 +264,31 @@ class ChecklistsBodyController extends ChangeNotifier
   /// the larger of the two reservations that apply.
   double listBottomInset(ChecklistList? list) {
     if (domain.isSoftView) return 36;
+    final composeAtBottom = !PrefsService.instance.composeBarOnTop;
     // Clears the resting compose bar plus a little breathing room.
-    const composeReserve = 112.0;
+    final composeReserve = composeAtBottom ? 112.0 : 0.0;
     final fabShown = hasFeature('shopping') && !domain.selectionMode;
     if (!fabShown) return composeReserve;
     // The FAB's own bottom offset (88 above a compose bar, else 16) plus the
     // extended FAB's height and a small gap.
-    final fabBottom = (list != null && domain.canAddItemsHere) ? 88.0 : 16.0;
+    final fabBottom = fabBottomOffset(list);
     final fabReserve = fabBottom + 56 + 8;
     return fabReserve > composeReserve ? fabReserve : composeReserve;
+  }
+
+  /// Distance the floating shopping FAB is lifted off the bottom edge: clear of
+  /// the resting compose bar when that bar shares the edge, otherwise a plain
+  /// margin.
+  double fabBottomOffset(ChecklistList? list) {
+    if (PrefsService.instance.composeBarOnTop) return 16;
+    return (list != null && domain.canAddItemsHere) ? 88 : 16;
+  }
+
+  /// Top inset reserved above the item list for a top-anchored compose bar.
+  double listTopInset(ChecklistList? list) {
+    if (domain.isSoftView || !PrefsService.instance.composeBarOnTop) return 0;
+    if (list == null || !domain.canAddItemsHere) return 0;
+    return 80;
   }
 
   /// The "you're shopping at {store} · [Resume]" banner shown atop the list

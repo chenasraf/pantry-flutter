@@ -130,6 +130,11 @@ class ItemComposeBar extends StatefulWidget {
   /// [archivedReuseCandidates]). Null disables archived suggestions.
   final ValueChanged<int>? onArchivedSearchStarted;
 
+  /// Mirrors the bar for a host that anchors it to the top of the list: the
+  /// input sits above the chip row and trays, which grow downward, and the
+  /// separating border moves to the bottom edge.
+  final bool onTop;
+
   const ItemComposeBar({
     super.key,
     required this.listName,
@@ -158,6 +163,7 @@ class ItemComposeBar extends StatefulWidget {
     this.onReuseExisting,
     this.archivedReuseCandidates = const [],
     this.onArchivedSearchStarted,
+    this.onTop = false,
   });
 
   bool get _allListsMode => targetLists != null;
@@ -728,65 +734,71 @@ class ItemComposeBarState extends State<ItemComposeBar> {
         trayChild = null;
     }
 
+    // Everything the input expands into, ordered for a bottom-anchored bar
+    // (furthest from the input first). Reversed wholesale when the bar is
+    // anchored to the top, which keeps the trays adjacent to the input and the
+    // chip row against the list in both anchorings.
+    final expansion = <Widget>[
+      if (_active) ...[
+        ChipRow(
+          draft: _draft,
+          categories: widget.categories,
+          stores: widget.stores,
+          labels: widget.labels,
+          showStoreChip:
+              widget.stores.isNotEmpty || widget.onRequestCreateStore != null,
+          showLabelChip:
+              widget.labels.isNotEmpty || widget.onRequestCreateLabel != null,
+          showPriceChip: widget.priceEnabled && !_multiple,
+          showCustomFieldsChip:
+              _applicableCustomFields.isNotEmpty && !_multiple,
+          customFieldsSet: _effectiveCustomFields.isNotEmpty,
+          openTray: _openTray,
+          onOpen: _toggleTray,
+          showImageChip: !_multiple,
+          multiple: _multiple,
+          onToggleMultiple: _toggleMultiple,
+        ),
+        const SizedBox(height: 10),
+        if (trayChild != null) ...[
+          // Tray takes whatever vertical room is left between the chip row and
+          // the input bar. Content scrolls internally if it doesn't fit (e.g.
+          // with the keyboard up).
+          Flexible(
+            fit: FlexFit.loose,
+            child: SingleChildScrollView(child: trayChild),
+          ),
+          const SizedBox(height: 10),
+        ] else if (reuseMatches.isNotEmpty) ...[
+          Flexible(
+            fit: FlexFit.loose,
+            child: SingleChildScrollView(
+              child: _ReuseSuggestions(
+                items: reuseMatches,
+                buildTile: widget.buildReuseSuggestion!,
+                onTap: _onSuggestionTap,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+        ],
+      ],
+    ];
+
+    final border = BorderSide(color: cs.outlineVariant.withValues(alpha: 0.4));
+
     return Material(
       color: cs.surface,
       child: Container(
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.4)),
-          ),
+          border: widget.onTop ? Border(bottom: border) : Border(top: border),
         ),
         padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (_active) ...[
-              ChipRow(
-                draft: _draft,
-                categories: widget.categories,
-                stores: widget.stores,
-                labels: widget.labels,
-                showStoreChip:
-                    widget.stores.isNotEmpty ||
-                    widget.onRequestCreateStore != null,
-                showLabelChip:
-                    widget.labels.isNotEmpty ||
-                    widget.onRequestCreateLabel != null,
-                showPriceChip: widget.priceEnabled && !_multiple,
-                showCustomFieldsChip:
-                    _applicableCustomFields.isNotEmpty && !_multiple,
-                customFieldsSet: _effectiveCustomFields.isNotEmpty,
-                openTray: _openTray,
-                onOpen: _toggleTray,
-                showImageChip: !_multiple,
-                multiple: _multiple,
-                onToggleMultiple: _toggleMultiple,
-              ),
-              const SizedBox(height: 10),
-              if (trayChild != null) ...[
-                // Tray takes whatever vertical room is left between the chip
-                // row and the input bar. Content scrolls internally if it
-                // doesn't fit (e.g. with the keyboard up).
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: SingleChildScrollView(child: trayChild),
-                ),
-                const SizedBox(height: 10),
-              ] else if (reuseMatches.isNotEmpty) ...[
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: SingleChildScrollView(
-                    child: _ReuseSuggestions(
-                      items: reuseMatches,
-                      buildTile: widget.buildReuseSuggestion!,
-                      onTap: _onSuggestionTap,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-              ],
-            ],
+            if (!widget.onTop) ...expansion,
             _Bar(
               focusNode: _focusNode,
               nameController: _nameCtrl,
@@ -817,6 +829,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                     )
                   : null,
             ),
+            // Caption for the input, so it stays under the field either way.
             if (_active && _multiple) ...[
               const SizedBox(height: 6),
               Padding(
@@ -831,6 +844,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                 ),
               ),
             ],
+            if (widget.onTop) ...expansion.reversed,
           ],
         ),
       ),

@@ -287,6 +287,11 @@ settings:
   checkboxPositionNames:
     start: Start
     end: Slutt
+  composeBarPosition: Plassering av innleggingsfeltet
+  composeBarPositionBody: Kva kant av lista feltet for å leggja til oppføringar ligg mot
+  composeBarPositionNames:
+    bottom: Nedst
+    top: Øvst
   density: Listetettleik
   densityBody: Kor mykje plass kvar oppføring får i listene.
   densityNames:

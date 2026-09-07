@@ -388,12 +388,201 @@ class _BodyState extends State<_Body> {
 
           return LayoutBuilder(
             builder: (context, constraints) {
-              // Compose bar is overlaid via a Stack so its expanding trays can
-              // grow upward and cover the progress hero + filter row instead of
-              // being squeezed by them. The ConstrainedBox ceiling (full
-              // viewport) funnels down to the bar's internal Flexible+scroll
-              // view, which scrolls only when even that isn't enough (tiny
-              // screen + keyboard up).
+              // The add-item bar overlays the list via a Stack so its
+              // expanding trays grow over the rows instead of being squeezed
+              // by them. The maxHeight ceiling funnels down to the bar's
+              // internal Flexible+scroll view, which scrolls only when even
+              // that isn't enough (tiny screen + keyboard up).
+              final composeOnTop = prefs.composeBarOnTop;
+              final showCompose =
+                  !controller.isSoftView &&
+                  !controller.selectionMode &&
+                  list != null &&
+                  controller.canAddItemsHere;
+              Widget composeBar(ChecklistList list, double maxHeight) =>
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: maxHeight),
+                    child: Builder(
+                      builder: (context) {
+                        final meta = controller.isMetaMode;
+                        // In meta mode, drop the synthetic from the picker —
+                        // it's not a real target.
+                        final realLists = meta
+                            ? controller.lists
+                                  .where((l) => l.id != kAllListsId)
+                                  .toList()
+                            : null;
+                        // Heal an orphaned selection (target list was
+                        // deleted since last add) by clearing it silently.
+                        if (meta &&
+                            body.composeTargetListId != null &&
+                            !realLists!.any(
+                              (l) => l.id == body.composeTargetListId,
+                            )) {
+                          body.composeTargetListId = null;
+                        }
+                        // Existing items on the target list, surfaced as
+                        // fuzzy "reuse instead of duplicate" suggestions
+                        // while typing. Gated on the reuse capability and
+                        // the check permission — reuse un-checks a done
+                        // item.
+                        final reuseTargetId = meta
+                            ? body.composeTargetListId
+                            : list.id;
+                        final reuseActive =
+                            hasFeature('reuse-existing-items') &&
+                            controller.permissions.canCheckItems &&
+                            reuseTargetId != null;
+                        final reuseCandidates = reuseActive
+                            ? [
+                                for (final i in controller.items)
+                                  if (i.deletedAt == null &&
+                                      i.listId == reuseTargetId)
+                                    i,
+                              ]
+                            : const <ListItem>[];
+                        // Archived items join the reuse pool only when the
+                        // user opts in and the server advertises the
+                        // capability; the controller fetches them lazily and
+                        // keeps them live.
+                        final suggestArchived =
+                            reuseActive &&
+                            hasFeature('pref-suggest-archived-items') &&
+                            prefs.suggestArchivedItems;
+                        final archivedReuseCandidates = suggestArchived
+                            ? controller.archivedReuseCandidates(reuseTargetId)
+                            : const <ListItem>[];
+                        return ItemComposeBar(
+                          key: body.composeKey,
+                          listName: list.name,
+                          houseId: controller.houseId,
+                          listId: meta ? null : list.id,
+                          deleteOnDoneDefault: meta
+                              ? false
+                              : list.deleteOnDoneDefault,
+                          categories: controller.categoriesForList(
+                            meta ? body.composeTargetListId : list.id,
+                          ),
+                          stores: hasFeature('stores')
+                              ? controller.sortedStores
+                              : const [],
+                          labels: hasFeature('labels')
+                              ? controller.labelsForList(
+                                  meta ? body.composeTargetListId : list.id,
+                                )
+                              : const [],
+                          customFieldDefs: controller.customFieldDefs,
+                          priceEnabled: hasFeature('item-price'),
+                          perStorePriceEnabled: hasFeature(
+                            kItemPricePerStoreFeature,
+                          ),
+                          lastCurrency: controller.lastCurrency,
+                          initiallyFocused: false,
+                          targetLists: realLists,
+                          selectedTargetListId: meta
+                              ? body.composeTargetListId
+                              : null,
+                          onTargetListChanged: body.setComposeTargetListId,
+                          reuseCandidates: reuseCandidates,
+                          buildReuseSuggestion: (item, onTap) =>
+                              ChecklistItemTile.suggestion(
+                                item: item,
+                                category: item.categoryId != null
+                                    ? controller.categories[item.categoryId]
+                                    : null,
+                                stores: controller.storesFor(item),
+                                labels: controller.labelsFor(item),
+                                houseId: controller.houseId,
+                                onTap: onTap,
+                                archived: item.archivedAt != null,
+                              ),
+                          onReuseExisting: (item) =>
+                              body.reuseFromSuggestion(context, item),
+                          archivedReuseCandidates: archivedReuseCandidates,
+                          onArchivedSearchStarted: suggestArchived
+                              ? controller.ensureArchivedReuseLoaded
+                              : null,
+                          onTop: composeOnTop,
+                          onActiveChanged: body.setComposeActive,
+                          onRequestCreateCategory:
+                              controller.permissions.canEditLists
+                              ? () => body.createCategory(
+                                  context,
+                                  defaultListId: meta
+                                      ? body.composeTargetListId
+                                      : list.id,
+                                )
+                              : null,
+                          onRequestCreateStore:
+                              hasFeature('stores') &&
+                                  controller.permissions.canEditLists
+                              ? () => body.createStore(context)
+                              : null,
+                          onRequestCreateLabel:
+                              hasFeature('labels') &&
+                                  controller.permissions.canEditLists
+                              ? () => body.createLabel(
+                                  context,
+                                  defaultListId: meta
+                                      ? body.composeTargetListId
+                                      : list.id,
+                                )
+                              : null,
+                          onSubmit: (s) async {
+                            final targetListId = meta
+                                ? body.composeTargetListId
+                                : list.id;
+                            if (targetListId == null) return false;
+                            return body.addItemHonoringReuse(
+                              context,
+                              targetListId: targetListId,
+                              meta: meta,
+                              s: s,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  );
+              // Scrim — fades in/out with compose-active state, always present
+              // so AnimatedOpacity has something to interpolate. IgnorePointer
+              // prevents the invisible scrim from eating taps when inactive.
+              final composeScrim = Positioned.fill(
+                child: IgnorePointer(
+                  ignoring: !body.composeActive,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOut,
+                    opacity: body.composeActive ? 1.0 : 0.0,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () =>
+                          body.composeKey.currentState?.dismissKeepingDraft(),
+                      child: const ColoredBox(color: Colors.black54),
+                    ),
+                  ),
+                ),
+              );
+              // A top-anchored bar overlays the list area alone, so the search
+              // row, progress hero and filters above it stay reachable — and
+              // the scrim comes along, since it has to stay under the bar.
+              Widget wrapListArea(Widget child) => showCompose && composeOnTop
+                  ? LayoutBuilder(
+                      builder: (context, listConstraints) => Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          child,
+                          composeScrim,
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            child: composeBar(list, listConstraints.maxHeight),
+                          ),
+                        ],
+                      ),
+                    )
+                  : child;
               return Stack(
                 children: [
                   Column(
@@ -502,245 +691,84 @@ class _BodyState extends State<_Body> {
                         // screen, in-place reloads (e.g. a sort change) keep
                         // them visible and overlay a thin refresh bar instead of
                         // flashing empty.
-                        child: controller.isLoading
-                            ? const Center(child: CircularProgressIndicator())
-                            : controller.itemsUnavailable
-                            // Fetch failed with nothing cached (typically
-                            // offline) — show a retry affordance rather than the
-                            // empty state, which otherwise reads as "my data is
-                            // gone".
-                            ? ChecklistsErrorView(
-                                message: m.checklists.failedToLoadItems,
-                                onRetry: () {
-                                  final cur = controller.currentList;
-                                  if (cur != null) controller.selectList(cur);
-                                },
-                              )
-                            : isEmptyList
-                            ? ChecklistsNoItemsEmptyState()
-                            : (filteredItems.isEmpty
-                                  ? ChecklistsNoMatchesEmptyState()
-                                  : Stack(
-                                      children: [
-                                        // The room for the resting compose bar
-                                        // and the floating shopping FAB is
-                                        // reserved as trailing scroll padding
-                                        // *inside* the list (not an outer gap),
-                                        // so items use the full viewport and are
-                                        // never clipped mid-list — the extra
-                                        // space only appears once scrolled to
-                                        // the bottom.
-                                        ChecklistItemList(
-                                          controller: controller,
-                                          activeItems: activeItems,
-                                          doneItems: doneItems,
-                                          canReorder: canReorder,
-                                          canReorderGroups: canReorderGroups,
-                                          isCards: isCards,
-                                          doneCollapsed: doneCollapsed,
-                                          groupByCategory:
-                                              controller.sortBy == 'category',
-                                          groupByStore:
-                                              controller.sortBy == 'store',
-                                          onToggleDoneCollapsed: () =>
-                                              prefs.setChecklistDoneCollapsed(
-                                                !doneCollapsed,
-                                              ),
-                                          scrollController:
-                                              widget.scrollController,
-                                          bottomInset: body.listBottomInset(
-                                            list,
-                                          ),
-                                        ),
-                                        if (controller.isRefreshing)
-                                          const PositionedDirectional(
-                                            top: 0,
-                                            start: 0,
-                                            end: 0,
-                                            child: LinearProgressIndicator(
-                                              minHeight: 2,
+                        child: wrapListArea(
+                          controller.isLoading
+                              ? const Center(child: CircularProgressIndicator())
+                              : controller.itemsUnavailable
+                              // Fetch failed with nothing cached (typically
+                              // offline) — show a retry affordance rather than the
+                              // empty state, which otherwise reads as "my data is
+                              // gone".
+                              ? ChecklistsErrorView(
+                                  message: m.checklists.failedToLoadItems,
+                                  onRetry: () {
+                                    final cur = controller.currentList;
+                                    if (cur != null) controller.selectList(cur);
+                                  },
+                                )
+                              : isEmptyList
+                              ? ChecklistsNoItemsEmptyState()
+                              : (filteredItems.isEmpty
+                                    ? ChecklistsNoMatchesEmptyState()
+                                    : Stack(
+                                        children: [
+                                          // The room for the resting compose bar
+                                          // and the floating shopping FAB is
+                                          // reserved as trailing scroll padding
+                                          // *inside* the list (not an outer gap),
+                                          // so items use the full viewport and are
+                                          // never clipped mid-list — the extra
+                                          // space only appears once scrolled to
+                                          // the bottom.
+                                          ChecklistItemList(
+                                            controller: controller,
+                                            activeItems: activeItems,
+                                            doneItems: doneItems,
+                                            canReorder: canReorder,
+                                            canReorderGroups: canReorderGroups,
+                                            isCards: isCards,
+                                            doneCollapsed: doneCollapsed,
+                                            groupByCategory:
+                                                controller.sortBy == 'category',
+                                            groupByStore:
+                                                controller.sortBy == 'store',
+                                            onToggleDoneCollapsed: () =>
+                                                prefs.setChecklistDoneCollapsed(
+                                                  !doneCollapsed,
+                                                ),
+                                            scrollController:
+                                                widget.scrollController,
+                                            bottomInset: body.listBottomInset(
+                                              list,
                                             ),
+                                            topInset: body.listTopInset(list),
                                           ),
-                                      ],
-                                    )),
+                                          if (controller.isRefreshing)
+                                            PositionedDirectional(
+                                              // Clears a top-anchored compose
+                                              // bar, which would otherwise cover
+                                              // it.
+                                              top: body.listTopInset(list),
+                                              start: 0,
+                                              end: 0,
+                                              child:
+                                                  const LinearProgressIndicator(
+                                                    minHeight: 2,
+                                                  ),
+                                            ),
+                                        ],
+                                      )),
+                        ),
                       ),
                     ],
                   ),
-                  // Scrim — fades in/out with compose-active state, always
-                  // present so AnimatedOpacity has something to interpolate.
-                  // IgnorePointer prevents the invisible scrim from eating taps
-                  // when inactive.
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      ignoring: !body.composeActive,
-                      child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 180),
-                        curve: Curves.easeOut,
-                        opacity: body.composeActive ? 1.0 : 0.0,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () => body.composeKey.currentState
-                              ?.dismissKeepingDraft(),
-                          child: const ColoredBox(color: Colors.black54),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (!controller.isSoftView &&
-                      !controller.selectionMode &&
-                      list != null &&
-                      controller.canAddItemsHere)
+                  if (!composeOnTop) composeScrim,
+                  if (showCompose && !composeOnTop)
                     Positioned(
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: constraints.maxHeight,
-                        ),
-                        child: Builder(
-                          builder: (context) {
-                            final meta = controller.isMetaMode;
-                            // In meta mode, drop the synthetic from the picker —
-                            // it's not a real target.
-                            final realLists = meta
-                                ? controller.lists
-                                      .where((l) => l.id != kAllListsId)
-                                      .toList()
-                                : null;
-                            // Heal an orphaned selection (target list was
-                            // deleted since last add) by clearing it silently.
-                            if (meta &&
-                                body.composeTargetListId != null &&
-                                !realLists!.any(
-                                  (l) => l.id == body.composeTargetListId,
-                                )) {
-                              body.composeTargetListId = null;
-                            }
-                            // Existing items on the target list, surfaced as
-                            // fuzzy "reuse instead of duplicate" suggestions
-                            // while typing. Gated on the reuse capability and
-                            // the check permission — reuse un-checks a done
-                            // item.
-                            final reuseTargetId = meta
-                                ? body.composeTargetListId
-                                : list.id;
-                            final reuseActive =
-                                hasFeature('reuse-existing-items') &&
-                                controller.permissions.canCheckItems &&
-                                reuseTargetId != null;
-                            final reuseCandidates = reuseActive
-                                ? [
-                                    for (final i in controller.items)
-                                      if (i.deletedAt == null &&
-                                          i.listId == reuseTargetId)
-                                        i,
-                                  ]
-                                : const <ListItem>[];
-                            // Archived items join the reuse pool only when the
-                            // user opts in and the server advertises the
-                            // capability; the controller fetches them lazily and
-                            // keeps them live.
-                            final suggestArchived =
-                                reuseActive &&
-                                hasFeature('pref-suggest-archived-items') &&
-                                prefs.suggestArchivedItems;
-                            final archivedReuseCandidates = suggestArchived
-                                ? controller.archivedReuseCandidates(
-                                    reuseTargetId,
-                                  )
-                                : const <ListItem>[];
-                            return ItemComposeBar(
-                              key: body.composeKey,
-                              listName: list.name,
-                              houseId: controller.houseId,
-                              listId: meta ? null : list.id,
-                              deleteOnDoneDefault: meta
-                                  ? false
-                                  : list.deleteOnDoneDefault,
-                              categories: controller.categoriesForList(
-                                meta ? body.composeTargetListId : list.id,
-                              ),
-                              stores: hasFeature('stores')
-                                  ? controller.sortedStores
-                                  : const [],
-                              labels: hasFeature('labels')
-                                  ? controller.labelsForList(
-                                      meta ? body.composeTargetListId : list.id,
-                                    )
-                                  : const [],
-                              customFieldDefs: controller.customFieldDefs,
-                              priceEnabled: hasFeature('item-price'),
-                              perStorePriceEnabled: hasFeature(
-                                kItemPricePerStoreFeature,
-                              ),
-                              lastCurrency: controller.lastCurrency,
-                              initiallyFocused: false,
-                              targetLists: realLists,
-                              selectedTargetListId: meta
-                                  ? body.composeTargetListId
-                                  : null,
-                              onTargetListChanged: body.setComposeTargetListId,
-                              reuseCandidates: reuseCandidates,
-                              buildReuseSuggestion: (item, onTap) =>
-                                  ChecklistItemTile.suggestion(
-                                    item: item,
-                                    category: item.categoryId != null
-                                        ? controller.categories[item.categoryId]
-                                        : null,
-                                    stores: controller.storesFor(item),
-                                    labels: controller.labelsFor(item),
-                                    houseId: controller.houseId,
-                                    onTap: onTap,
-                                    archived: item.archivedAt != null,
-                                  ),
-                              onReuseExisting: (item) =>
-                                  body.reuseFromSuggestion(context, item),
-                              archivedReuseCandidates: archivedReuseCandidates,
-                              onArchivedSearchStarted: suggestArchived
-                                  ? controller.ensureArchivedReuseLoaded
-                                  : null,
-                              onActiveChanged: body.setComposeActive,
-                              onRequestCreateCategory:
-                                  controller.permissions.canEditLists
-                                  ? () => body.createCategory(
-                                      context,
-                                      defaultListId: meta
-                                          ? body.composeTargetListId
-                                          : list.id,
-                                    )
-                                  : null,
-                              onRequestCreateStore:
-                                  hasFeature('stores') &&
-                                      controller.permissions.canEditLists
-                                  ? () => body.createStore(context)
-                                  : null,
-                              onRequestCreateLabel:
-                                  hasFeature('labels') &&
-                                      controller.permissions.canEditLists
-                                  ? () => body.createLabel(
-                                      context,
-                                      defaultListId: meta
-                                          ? body.composeTargetListId
-                                          : list.id,
-                                    )
-                                  : null,
-                              onSubmit: (s) async {
-                                final targetListId = meta
-                                    ? body.composeTargetListId
-                                    : list.id;
-                                if (targetListId == null) return false;
-                                return body.addItemHonoringReuse(
-                                  context,
-                                  targetListId: targetListId,
-                                  meta: meta,
-                                  s: s,
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
+                      child: composeBar(list, constraints.maxHeight),
                     ),
                   if (controller.selectionMode)
                     PositionedDirectional(
@@ -761,9 +789,7 @@ class _BodyState extends State<_Body> {
                       !body.composeActive)
                     PositionedDirectional(
                       end: 16,
-                      bottom: (list != null && controller.canAddItemsHere)
-                          ? 88
-                          : 16,
+                      bottom: body.fabBottomOffset(list),
                       child: FloatingActionButton.extended(
                         heroTag: 'shopping-fab',
                         onPressed: () => body.openShopping(context),

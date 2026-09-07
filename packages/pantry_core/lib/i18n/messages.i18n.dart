@@ -1129,6 +1129,19 @@ class SettingsMessages {
       CheckboxPositionNamesSettingsMessages(this);
 
   /// ```dart
+  /// "Add item bar position"
+  /// ```
+  String get composeBarPosition => """Add item bar position""";
+
+  /// ```dart
+  /// "Which edge of the checklist the bar for adding items sits against."
+  /// ```
+  String get composeBarPositionBody =>
+      """Which edge of the checklist the bar for adding items sits against.""";
+  ComposeBarPositionNamesSettingsMessages get composeBarPositionNames =>
+      ComposeBarPositionNamesSettingsMessages(this);
+
+  /// ```dart
   /// "List density"
   /// ```
   String get density => """List density""";
@@ -1483,6 +1496,21 @@ class CheckboxPositionNamesSettingsMessages {
   /// "End"
   /// ```
   String get end => """End""";
+}
+
+class ComposeBarPositionNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const ComposeBarPositionNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Bottom"
+  /// ```
+  String get bottom => """Bottom""";
+
+  /// ```dart
+  /// "Top"
+  /// ```
+  String get top => """Top""";
 }
 
 class DensityNamesSettingsMessages {
@@ -6375,6 +6403,11 @@ Password: pantry-rocks""",
       """Which side of the row the checkbox appears on.""",
   """settings.checkboxPositionNames.start""": """Start""",
   """settings.checkboxPositionNames.end""": """End""",
+  """settings.composeBarPosition""": """Add item bar position""",
+  """settings.composeBarPositionBody""":
+      """Which edge of the checklist the bar for adding items sits against.""",
+  """settings.composeBarPositionNames.bottom""": """Bottom""",
+  """settings.composeBarPositionNames.top""": """Top""",
   """settings.density""": """List density""",
   """settings.densityBody""":
       """How much space each item takes up in your lists.""",

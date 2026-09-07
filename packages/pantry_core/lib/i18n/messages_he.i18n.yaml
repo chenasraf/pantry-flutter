@@ -216,6 +216,11 @@ settings:
   checkboxPositionNames:
     start: התחלה
     end: סוף
+  composeBarPosition: מיקום שורת ההוספה
+  composeBarPositionBody: באיזה צד של הרשימה תמוקם השורה להוספת פריטים.
+  composeBarPositionNames:
+    bottom: למטה
+    top: למעלה
   density: צפיפות הרשימה
   densityBody: כמה מקום כל פריט תופס ברשימות שלך.
   densityNames:

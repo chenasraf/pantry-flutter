@@ -47,6 +47,10 @@ class ChecklistItemList extends StatefulWidget {
   /// use the full viewport and are never clipped mid-list.
   final double bottomInset;
 
+  /// Leading scroll padding matching [bottomInset], for a compose bar anchored
+  /// to the top of the list instead.
+  final double topInset;
+
   const ChecklistItemList({
     super.key,
     required this.controller,
@@ -61,6 +65,7 @@ class ChecklistItemList extends StatefulWidget {
     required this.onToggleDoneCollapsed,
     this.scrollController,
     this.bottomInset = 0,
+    this.topInset = 0,
   });
 
   @override
@@ -144,7 +149,11 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
     final showDoneItems = showDone && !widget.doneCollapsed;
 
     final slivers = <Widget>[
-      const SliverPadding(padding: EdgeInsets.only(top: 4)),
+      SliverPadding(
+        padding: EdgeInsets.only(
+          top: widget.topInset > 4 ? widget.topInset : 4,
+        ),
+      ),
     ];
 
     if (widget.canReorder) {
