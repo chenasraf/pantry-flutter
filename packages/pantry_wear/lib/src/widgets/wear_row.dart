@@ -52,6 +52,12 @@ class WearRow extends StatelessWidget {
   /// still how you go back to it; only the ink recedes.
   final bool spent;
 
+  /// Why this row cannot act, said in [value]'s slot. Its presence is what
+  /// disables it, the same bargain [WearCta] strikes: a row that has a reason
+  /// to refuse says it in place rather than going quiet and leaving the wearer
+  /// tapping a card that does nothing.
+  final String? reason;
+
   final VoidCallback? onTap;
 
   const WearRow({
@@ -66,6 +72,7 @@ class WearRow extends StatelessWidget {
     this.distance = 0,
     this.warning = false,
     this.spent = false,
+    this.reason,
     this.onTap,
   });
 
@@ -81,18 +88,23 @@ class WearRow extends StatelessWidget {
     // already curving away, so a pill follows the bezel instead of fighting
     // it.
     final radius = WearShape.isRound ? WearMetrics.cardHeight / 2 : 14.0;
+    final blocked = reason != null;
     final ink = warning
         ? _warningInk
-        : spent
+        : spent || blocked
         ? Colors.white54
         : Colors.white;
 
     // A row answering with a check or a switch has already said what it is.
     // The value line belongs to the rows that answer by opening a page.
-    final subtitle = toggled == null && !checkbox && !selected ? value : null;
+    final subtitle = blocked
+        ? reason
+        : toggled == null && !checkbox && !selected
+        ? value
+        : null;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: blocked ? null : onTap,
       behavior: HitTestBehavior.opaque,
       child: DecoratedBox(
         decoration: WearSurface.card(

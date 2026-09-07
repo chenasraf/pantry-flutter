@@ -5,20 +5,15 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/shopping_estimate.dart';
 import 'package:pantry_core/models/shopping_review.dart';
-import 'package:pantry_core/utils/color.dart';
-import 'package:pantry_core/utils/currencies.dart';
-import 'package:pantry_core/utils/entity_icons.dart';
-import 'package:pantry_core/utils/store_icons.dart';
-import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 
 import '../checklists/checklists_controller.dart';
-import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
-import 'billed_amount_page.dart';
+import 'store_group.dart';
 
 /// What the trip came to, and the last chance to say so.
 ///
@@ -26,6 +21,10 @@ import 'billed_amount_page.dart';
 /// declines to describe: the tally, the bought items grouped by the shop they
 /// came from, what each till charged, and *Finish trip* as the last row. The
 /// back gesture is the cancel.
+///
+/// Every leg of the trip is named, bought from or not — a shop takes money for
+/// things that were never on the list, and its till is the only place that
+/// figure can be recorded.
 ///
 /// Nothing here costs a request. It is drawn from the review the trip has been
 /// loading every poll and from the trip itself, so it works in the dead spot a
@@ -57,10 +56,14 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
   void initState() {
     super.initState();
     widget.controller.addListener(_onChanged);
+    // Closing is online-only, and whether the link is there changes without
+    // the page asking anything.
+    SyncManager.instance.status.addListener(_onChanged);
   }
 
   @override
   void dispose() {
+    SyncManager.instance.status.removeListener(_onChanged);
     widget.controller.removeListener(_onChanged);
     _scroll.dispose();
     _geometry.dispose();
@@ -80,28 +83,15 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
     action();
   }
 
-  /// The figure is queued, so it is on screen before it is sent and survives
-  /// the relaunch a watch is always one moment from.
   Future<void> _editBilled(int? storeId, String storeName) async {
-    final billed = widget.controller.billedFor(storeId);
     setState(() => _covered = true);
-    final entered = await Navigator.of(context).push<BilledAmount>(
-      wearRoute<BilledAmount>(
-        BilledAmountPage(
-          storeName: storeName,
-          total: billed.total,
-          currency: billed.currency ?? widget.controller.lastCurrency,
-        ),
-      ),
-    );
-    if (!mounted) return;
-    setState(() => _covered = false);
-    if (entered == null) return;
-    widget.controller.setBilled(
+    await askBilled(
+      context,
+      widget.controller,
       storeId: storeId,
-      total: entered.total,
-      currency: entered.currency,
+      storeName: storeName,
     );
+    if (mounted) setState(() => _covered = false);
   }
 
   /// The page leaves either way: closed, or carrying the refusal back to the
@@ -137,6 +127,7 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
       Color tint = Colors.white70,
       required String label,
       String? value,
+      String? reason,
       bool warning = false,
       required VoidCallback onTap,
     }) {
@@ -153,6 +144,7 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
               tint: tint,
               label: label,
               value: value,
+              reason: reason,
               warning: warning,
               distance: d,
               onTap: () => _tap(index, onTap),
@@ -169,52 +161,40 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
       block(_tallyExtent, _Tally(review: review));
     }
 
-    for (final store in review?.stores ?? const <ShoppingReviewStore>[]) {
-      if (store.items.isEmpty) continue;
-      final shop = controller.storeById(store.storeId);
-      final name = shop?.name ?? m.shopping.anyStore;
-      final tint = shop == null
-          ? Colors.white54
-          : parseHexColor(shop.color) ?? Colors.white54;
-      block(
-        WearMetrics.headerExtent,
-        _StoreHeader(
-          label: name,
-          icon: shop == null ? EntityIcons.store : storeIcon(shop.icon),
-          tint: tint,
-        ),
-        group: name,
-      );
-      for (final item in store.items) {
-        block(WearMetrics.summaryLineExtent, _BoughtLine(item: item));
-      }
-      final billed = controller.billedFor(store.storeId);
-      row(
-        icon: EntityIcons.price,
-        tint: tint,
-        label: m.shopping.actualPaid,
-        value: _amountLabel(billed) ?? m.wear.notBilled,
-        onTap: () => unawaited(_editBilled(store.storeId, name)),
+    void storeGroup(int? storeId, List<ListItem> items) {
+      final shop = controller.storeById(storeId);
+      appendStoreGroup(
+        elements: elements,
+        shop: shop,
+        items: items,
+        billed: controller.billedFor(storeId),
+        tap: _tap,
+        onEditBilled: () =>
+            unawaited(_editBilled(storeId, shop?.name ?? m.shopping.anyStore)),
       );
     }
 
+    final groups = review?.stores ?? const <ShoppingReviewStore>[];
+    for (final store in groups) {
+      storeGroup(store.storeId, store.items);
+    }
+    // A trip with no legs that checked nothing off is described by no groups
+    // at all, and the till still charged for whatever went in the basket. The
+    // figure it takes is the trip's own.
+    if (review != null && groups.isEmpty) storeGroup(null, const []);
+
+    // The tills above stay open on a dead link — their figures go to the queue
+    // — and only the close is held back, because a queued one would have to
+    // vanish the session pager on a write that has not happened.
     row(
       icon: Icons.done_all,
       label: m.shopping.finishTrip,
+      reason: controller.isOnline ? null : m.wear.needsConnection,
       warning: true,
       onTap: () => unawaited(_finish()),
     );
 
     return elements;
-  }
-
-  static String? _amountLabel(({double? total, String? currency}) billed) {
-    final total = billed.total;
-    if (total == null) return null;
-    return CurrencyAmount(
-      currency: billed.currency ?? defaultCurrency,
-      amount: total,
-    ).label;
   }
 
   /// Two lines and the air above them, the same weight the account page gives
@@ -282,103 +262,6 @@ class _Tally extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-/// The shop a run of bought lines came from, in the phone's own language: its
-/// icon and name in its own colour over a hairline rule.
-class _StoreHeader extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final Color tint;
-
-  const _StoreHeader({
-    required this.label,
-    required this.icon,
-    required this.tint,
-  });
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: EdgeInsetsDirectional.symmetric(
-      horizontal: WearShape.isRound ? 22 : 16,
-    ),
-    child: Container(
-      alignment: AlignmentDirectional.centerStart,
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: tint.withValues(alpha: 0.35))),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 12, color: tint),
-          const SizedBox(width: 5),
-          Flexible(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textDirection: detectTextDirection(label),
-              style: TextStyle(
-                fontSize: 10,
-                height: 1.1,
-                letterSpacing: 0.4,
-                fontWeight: FontWeight.w700,
-                color: tint,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-/// One thing that went in the basket. Content passing through rather than a
-/// target, so it is drawn as a line and not as a card.
-class _BoughtLine extends StatelessWidget {
-  final ListItem item;
-
-  const _BoughtLine({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    final quantity = item.quantity;
-    return Padding(
-      padding: EdgeInsetsDirectional.symmetric(
-        horizontal: WearShape.isRound ? 24 : 18,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              item.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textDirection: detectTextDirection(item.name),
-              style: const TextStyle(
-                fontSize: 12,
-                height: 1.1,
-                color: Colors.white70,
-              ),
-            ),
-          ),
-          if (quantity != null) ...[
-            const SizedBox(width: 6),
-            Text(
-              quantity,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textDirection: detectTextDirection(quantity),
-              style: const TextStyle(
-                fontSize: 11,
-                height: 1.1,
-                color: Colors.white38,
-              ),
-            ),
-          ],
-        ],
-      ),
     );
   }
 }

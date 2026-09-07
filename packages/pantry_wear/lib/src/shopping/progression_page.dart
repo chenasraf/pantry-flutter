@@ -16,16 +16,27 @@ import '../widgets/wear_cta.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
+import 'store_till_page.dart';
 import 'trip_reminders_page.dart';
 import 'trip_summary_page.dart';
 
 /// Where the trip has got to: the reminders for the moment it is at, the legs
 /// behind and ahead of it, and the one move it can make from here.
 ///
+/// The call to action goes by way of the leaving shop's till, so the figure is
+/// asked for while the wearer is still standing at it. Tapping a leg does not,
+/// which is what makes advance reversible: any leg is a legal target there,
+/// including one already walked, and a move backwards is a correction rather
+/// than a checkout.
+///
+/// Neither call to action is held back by a dead link, though both of the
+/// writes behind them are. Each opens a page that is worth reaching offline —
+/// the till takes its figure into the queue, the summary reads from what the
+/// trip already loaded — and each of those pages says why the one write it
+/// cannot make is out of reach.
+///
 /// The rail already names the shop the wearer is standing in, so the page never
-/// repeats it. Tapping the centred leg advances to it — Q19's commit-on-centre
-/// unchanged, which is what makes advance reversible: any leg is a legal
-/// target, so tapping an earlier one goes back.
+/// repeats it.
 ///
 /// It does not auto-advance. Ticking the last thing off a shop's list is not
 /// the same as having left it.
@@ -137,6 +148,29 @@ class _ProgressionPageState extends State<ProgressionPage> {
     });
   }
 
+  /// Moving on goes through the leaving shop's till, which is in front of the
+  /// wearer now and will not be again. The page is what advances; this only
+  /// takes the crown back off it.
+  ///
+  /// A refusal is said on that page rather than carried back here — the wearer
+  /// is still standing where they pressed, and so is the button they pressed.
+  Future<void> _leave(int nextStoreId) async {
+    setState(() {
+      _covered = true;
+      _error = null;
+    });
+    await Navigator.of(context).push<bool>(
+      wearRoute<bool>(
+        StoreTillPage(
+          controller: widget.controller,
+          storeId: _session?.activeStoreId,
+          nextStoreId: nextStoreId,
+        ),
+      ),
+    );
+    if (mounted) setState(() => _covered = false);
+  }
+
   /// Finishing goes through the summary, which doubles as the confirmation:
   /// closing is irreversible server-side, so it earns a page rather than the
   /// check's undo stroke.
@@ -245,7 +279,6 @@ class _ProgressionPageState extends State<ProgressionPage> {
     final controller = widget.controller;
     final next = _nextStoreId;
     final nextStore = controller.storeById(next);
-    final blocked = controller.isOnline ? null : m.wear.needsConnection;
     return LayoutBuilder(
       builder: (context, constraints) => Stack(
         children: [
@@ -272,16 +305,14 @@ class _ProgressionPageState extends State<ProgressionPage> {
                     label: m.wear.nextIs(
                       nextStore?.name ?? m.shopping.anyStore,
                     ),
-                    reason: blocked,
                     error: _error,
                     busy: _busy,
-                    onTap: () => unawaited(_advanceTo(next)),
+                    onTap: () => unawaited(_leave(next)),
                   )
                 : WearCta(
                     key: const ValueKey('finish-trip'),
                     icon: Icons.done_all,
                     label: m.shopping.finishTrip,
-                    reason: blocked,
                     error: _error,
                     onTap: () => unawaited(_finish()),
                   ),

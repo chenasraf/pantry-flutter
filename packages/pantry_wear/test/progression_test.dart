@@ -5,6 +5,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_wear/src/checklists/checklists_controller.dart';
 import 'package:pantry_wear/src/shopping/progression_page.dart';
+import 'package:pantry_wear/src/shopping/store_till_page.dart';
 import 'package:pantry_wear/src/shopping/trip_summary_page.dart';
 import 'package:pantry_wear/src/wear_shape.dart';
 import 'package:pantry_wear/src/widgets/focus_list.dart';
@@ -116,14 +117,33 @@ void main() {
       expect(find.text(m.wear.nextIs(market.name)), findsNothing);
     });
 
-    testWidgets('says why it cannot act with no connection', (tester) async {
+    testWidgets('a dead link still opens the till it would move on from', (
+      tester,
+    ) async {
       SyncManager.instance.setOnline(false);
       await pumpProgression(tester, seeded());
 
-      // Both lifecycle verbs are online-only: `getItems` is narrowed by the
-      // active store server-side, so a queued advance would show the previous
-      // shop's list while claiming to be at the next.
-      expect(find.text(m.wear.needsConnection), findsOneWidget);
+      // The move needs the link; the figure does not — it goes to the queue,
+      // and a till is where the link is worst. Blocking the page would put the
+      // one number typed at the till out of reach at the till.
+      expect(find.text(m.wear.needsConnection), findsNothing);
+      await tester.tap(find.text(m.wear.nextIs(market.name)));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(StoreTillPage), findsOneWidget);
+    });
+
+    testWidgets('and still opens the summary it would finish from', (
+      tester,
+    ) async {
+      SyncManager.instance.setOnline(false);
+      await pumpProgression(tester, seeded(activeStoreId: 9));
+
+      expect(find.text(m.wear.needsConnection), findsNothing);
+      await tester.tap(find.text(m.shopping.finishTrip));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TripSummaryPage), findsOneWidget);
     });
 
     testWidgets('only the centred leg is the one the trip acts on', (
@@ -141,8 +161,8 @@ void main() {
       tester.state<SnapFocusListState>(find.byType(SnapFocusList)).centreOn(3);
       await tester.pumpAndSettle();
 
-      // Q19's commit-on-centre, unchanged: a mis-aim costs a scroll rather
-      // than a write against a shop the wearer is not standing in.
+      // Commit-on-centre: a mis-aim costs a scroll rather than a write against
+      // a shop the wearer is not standing in.
       await tester.tap(find.text(corner.name));
       await tester.pumpAndSettle();
       expect(find.text(m.wear.advanceFailed), findsNothing);
@@ -151,6 +171,59 @@ void main() {
       await tester.tap(find.text(corner.name));
       await tester.pump();
       expect(find.text(m.wear.advanceFailed), findsOneWidget);
+    });
+  });
+
+  group('the till on the way out', () {
+    testWidgets('moving on asks the leaving shop what it charged', (
+      tester,
+    ) async {
+      await pumpProgression(tester, seeded());
+
+      await tester.tap(find.text(m.wear.nextIs(market.name)));
+      await tester.pumpAndSettle();
+
+      // The shop being left, not the one being walked to: the till in front of
+      // the wearer is the only one they can be asked about.
+      expect(find.byType(StoreTillPage), findsOneWidget);
+      expect(find.text(hardware.name), findsOneWidget);
+      expect(find.text(m.shopping.actualPaid), findsOneWidget);
+    });
+
+    testWidgets('it names the leg it moves to, and carries the trip there', (
+      tester,
+    ) async {
+      // Offline is the deterministic refusal, and reaching it is what proves
+      // the button is wired to the trip rather than merely drawn.
+      SyncManager.instance.setOnline(false);
+      await pumpProgression(tester, seeded());
+
+      await tester.tap(find.text(m.wear.nextIs(market.name)));
+      await tester.pumpAndSettle();
+
+      // The same call to action, on the page that now stands in front of it.
+      expect(
+        find.descendant(
+          of: find.byType(StoreTillPage),
+          matching: find.text(m.wear.nextIs(market.name)),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text(m.wear.needsConnection), findsOneWidget);
+    });
+
+    testWidgets('a trip at its last leg finishes rather than asking a till', (
+      tester,
+    ) async {
+      await pumpProgression(tester, seeded(activeStoreId: 9));
+
+      await tester.tap(find.text(m.shopping.finishTrip));
+      await tester.pumpAndSettle();
+
+      // The summary asks for every till, this one included, so a second page
+      // in front of it would ask the same question twice.
+      expect(find.byType(StoreTillPage), findsNothing);
+      expect(find.byType(TripSummaryPage), findsOneWidget);
     });
   });
 
@@ -218,6 +291,66 @@ void main() {
       await pumpSummary(tester, controller);
 
       expect(find.text(r'$12.5'), findsOneWidget);
+    });
+
+    testWidgets('a shop nothing was bought at still offers its till', (
+      tester,
+    ) async {
+      final controller = ChecklistsController.seeded(
+        houseId: 1,
+        stores: [corner, hardware],
+        session: testSession(activeStoreId: 8, storeIds: const [7, 8]),
+        review: testReview([
+          (storeId: 7, items: const <ListItem>[]),
+          (storeId: 8, items: [testItem(id: 2, name: 'Bulbs')]),
+        ]),
+      );
+
+      await pumpSummary(tester, controller);
+
+      // Off-list spend is still spend, and the shop it happened at is the only
+      // thing that can be told it.
+      expect(find.text(corner.name), findsOneWidget);
+      expect(find.text(m.shopping.actualPaid), findsNWidgets(2));
+    });
+
+    testWidgets('a trip with no shops at all still has somewhere to be paid', (
+      tester,
+    ) async {
+      final controller = ChecklistsController.seeded(
+        houseId: 1,
+        session: testSession(),
+        review: testReview(const []),
+      );
+
+      await pumpSummary(tester, controller);
+
+      expect(find.text(m.shopping.anyStore), findsOneWidget);
+      expect(find.text(m.shopping.actualPaid), findsOneWidget);
+    });
+
+    testWidgets('a dead link holds the close and leaves the tills open', (
+      tester,
+    ) async {
+      SyncManager.instance.setOnline(false);
+      await pumpSummary(tester, withReview());
+
+      // A queued close would have to vanish the session pager on a write that
+      // has not happened, so it waits for the link. The figures do not: a
+      // blocked row carries its reason, and carrying one is what makes it
+      // inert.
+      expect(
+        rowFor(tester, m.shopping.finishTrip).reason,
+        m.wear.needsConnection,
+      );
+      for (final row in tester.widgetList<WearRow>(
+        find.ancestor(
+          of: find.text(m.shopping.actualPaid),
+          matching: find.byType(WearRow),
+        ),
+      )) {
+        expect(row.reason, isNull);
+      }
     });
 
     testWidgets('a log that never arrived is absent, not zero', (tester) async {
