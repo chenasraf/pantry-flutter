@@ -16,9 +16,9 @@ import '../widgets/wear_metrics.dart';
 /// so drawing them as a different kind of row would say they were a different
 /// kind of thing.
 ///
-/// Q19 governs the tap here as everywhere else: an off-centre tap scrolls that
-/// row to the centre line and writes nothing, so a mis-aim costs a scroll. The
-/// undo window behind the write is the second protection, not the first.
+/// The tap works here as everywhere else: an off-centre tap scrolls that row to
+/// the centre line and writes nothing, so a mis-aim costs a scroll. The undo
+/// window behind the write is the second protection, not the first.
 class TripCollectionPage extends StatefulWidget {
   final ChecklistsController controller;
   final List<ListItem> items;

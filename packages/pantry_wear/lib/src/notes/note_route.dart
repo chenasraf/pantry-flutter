@@ -14,8 +14,9 @@ import 'notes_controller.dart';
 
 /// One note, pushed over the wall: a focus list of markdown blocks.
 ///
-/// Task rows are the only snappable ones, so Q19's rule carries over unchanged
-/// — the centred task commits on tap, an off-centre tap only scrolls it there.
+/// Task rows are the only snappable ones, so the commit-on-centre rule carries
+/// over — the centred task commits on tap, an off-centre tap only scrolls it
+/// there.
 /// A row you cannot act on was never a landing candidate, which is the same
 /// reasoning that keeps a group header out of the snap table.
 ///

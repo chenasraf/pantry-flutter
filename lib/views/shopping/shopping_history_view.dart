@@ -15,7 +15,7 @@ import 'package:pantry/views/shopping/shopping_review_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 
-/// Read-only list of closed trips (Phase 3). A Mine/House scope toggle selects
+/// Read-only list of closed trips. A Mine/House scope toggle selects
 /// which trips are shown; tapping a row opens its read-only per-store summary.
 class ShoppingHistoryView extends StatefulWidget {
   final int houseId;

@@ -17,9 +17,9 @@ import 'wear_fixtures.dart';
 /// checklist's own rows in a state, on the same centred-focus list as every
 /// other page that writes.
 ///
-/// Q19 is the rule under test — an off-centre tap costs a scroll, never a
-/// write — and the glyph is the one thing the two pages do not share, because
-/// a skipped item is not a checked one.
+/// Commit-on-centre is the rule under test — an off-centre tap costs a scroll,
+/// never a write — and the glyph is the one thing the two pages do not share,
+/// because a skipped item is not a checked one.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
