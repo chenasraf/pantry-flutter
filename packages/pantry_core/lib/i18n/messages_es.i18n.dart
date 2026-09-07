@@ -903,6 +903,23 @@ Contraseña: pantry-rocks""";
   /// ```
   String serverRequirementNote(String version) =>
       """* Requiere Pantry para Nextcloud v${version}+""";
+
+  /// ```dart
+  /// "Pantry en tu muñeca"
+  /// ```
+  String get watchTitle => """Pantry en tu muñeca""";
+
+  /// ```dart
+  /// "Hay una app para Wear OS. Tus listas, notas y el tablón de fotos en el reloj, funcionando sin cobertura alguna, y compras que puedes hacer con el teléfono en el bolsillo."
+  /// ```
+  String get watchBody =>
+      """Hay una app para Wear OS. Tus listas, notas y el tablón de fotos en el reloj, funcionando sin cobertura alguna, y compras que puedes hacer con el teléfono en el bolsillo.""";
+
+  /// ```dart
+  /// "Abre Pantry en tu reloj y se conectará desde este teléfono. Los consejos para usarlo están en ${settings} → ${watch}."
+  /// ```
+  String watchHowTo(String settings, String watch) =>
+      """Abre Pantry en tu reloj y se conectará desde este teléfono. Los consejos para usarlo están en ${settings} → ${watch}.""";
   DevOnboardingMessagesEs get dev => DevOnboardingMessagesEs(this);
 }
 
@@ -6358,6 +6375,9 @@ Contraseña: pantry-rocks""",
   """onboarding.customFieldsMockAisleValue""": """Lácteos""",
   """onboarding.customFieldsTypesCaption""":
       """Elige el tipo que encaje con lo que quieres anotar.""",
+  """onboarding.watchTitle""": """Pantry en tu muñeca""",
+  """onboarding.watchBody""":
+      """Hay una app para Wear OS. Tus listas, notas y el tablón de fotos en el reloj, funcionando sin cobertura alguna, y compras que puedes hacer con el teléfono en el bolsillo.""",
   """onboarding.dev.showOnboarding""": """Mostrar introducción""",
   """onboarding.dev.pickLastSeenTitle""": """Ver novedades""",
   """onboarding.dev.pickLastSeenBody""":

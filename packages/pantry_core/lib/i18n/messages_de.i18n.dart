@@ -903,6 +903,23 @@ Passwort: pantry-rocks""";
   /// ```
   String serverRequirementNote(String version) =>
       """* Erfordert Pantry für Nextcloud v${version}+""";
+
+  /// ```dart
+  /// "Pantry am Handgelenk"
+  /// ```
+  String get watchTitle => """Pantry am Handgelenk""";
+
+  /// ```dart
+  /// "Es gibt eine Wear-OS-App. Deine Listen, Notizen und die Fotowand auf der Uhr, ganz ohne Empfang — und Einkäufe, die du mit dem Telefon in der Tasche gehen kannst."
+  /// ```
+  String get watchBody =>
+      """Es gibt eine Wear-OS-App. Deine Listen, Notizen und die Fotowand auf der Uhr, ganz ohne Empfang — und Einkäufe, die du mit dem Telefon in der Tasche gehen kannst.""";
+
+  /// ```dart
+  /// "Öffne Pantry auf deiner Uhr, und sie meldet sich über dieses Telefon an. Tipps zur Bedienung findest du unter ${settings} → ${watch}."
+  /// ```
+  String watchHowTo(String settings, String watch) =>
+      """Öffne Pantry auf deiner Uhr, und sie meldet sich über dieses Telefon an. Tipps zur Bedienung findest du unter ${settings} → ${watch}.""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 
@@ -6370,6 +6387,9 @@ Passwort: pantry-rocks""",
   """onboarding.customFieldsMockAisleValue""": """Milchprodukte""",
   """onboarding.customFieldsTypesCaption""":
       """Wähle den Typ, der zu deinen Angaben passt.""",
+  """onboarding.watchTitle""": """Pantry am Handgelenk""",
+  """onboarding.watchBody""":
+      """Es gibt eine Wear-OS-App. Deine Listen, Notizen und die Fotowand auf der Uhr, ganz ohne Empfang — und Einkäufe, die du mit dem Telefon in der Tasche gehen kannst.""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":

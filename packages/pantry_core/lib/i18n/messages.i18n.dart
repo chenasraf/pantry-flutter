@@ -897,6 +897,23 @@ Password: pantry-rocks""";
   /// ```
   String serverRequirementNote(String version) =>
       """* Requires Pantry for Nextcloud v${version}+""";
+
+  /// ```dart
+  /// "Pantry on your wrist"
+  /// ```
+  String get watchTitle => """Pantry on your wrist""";
+
+  /// ```dart
+  /// "There's a Wear OS app. Your lists, notes and photo board on the watch, working with no signal at all — and shopping trips you can walk with the phone in your pocket."
+  /// ```
+  String get watchBody =>
+      """There's a Wear OS app. Your lists, notes and photo board on the watch, working with no signal at all — and shopping trips you can walk with the phone in your pocket.""";
+
+  /// ```dart
+  /// "Open Pantry on your watch and it signs in from this phone. Tips for using it live in ${settings} → ${watch}."
+  /// ```
+  String watchHowTo(String settings, String watch) =>
+      """Open Pantry on your watch and it signs in from this phone. Tips for using it live in ${settings} → ${watch}.""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 
@@ -6300,6 +6317,9 @@ Password: pantry-rocks""",
   """onboarding.customFieldsMockAisleValue""": """Dairy""",
   """onboarding.customFieldsTypesCaption""":
       """Pick the type that fits what you're tracking.""",
+  """onboarding.watchTitle""": """Pantry on your wrist""",
+  """onboarding.watchBody""":
+      """There's a Wear OS app. Your lists, notes and photo board on the watch, working with no signal at all — and shopping trips you can walk with the phone in your pocket.""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":

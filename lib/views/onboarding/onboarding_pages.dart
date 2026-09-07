@@ -18,6 +18,7 @@ import 'pages/progress_hero_page.dart';
 import 'pages/quick_actions_page.dart';
 import 'pages/shopping_mode_page.dart';
 import 'pages/swipe_actions_page.dart';
+import 'pages/watch_page.dart';
 import 'pages/widget_lists_page.dart';
 
 /// The first app version that ships an onboarding flow. Users who never
@@ -136,6 +137,13 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
   ],
   '0.30.0': [
     OnboardingPageEntry(builder: (_) => const CustomFieldsOnboardingPage()),
+  ],
+  '0.31.0': [
+    OnboardingPageEntry(
+      // Wear OS pairs to an Android phone, so nowhere else can act on this.
+      builder: (_) => const WatchOnboardingPage(),
+      showWhen: onboardingAndroidOnly,
+    ),
   ],
 };
 

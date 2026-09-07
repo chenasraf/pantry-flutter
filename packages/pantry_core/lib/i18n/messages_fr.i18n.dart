@@ -907,6 +907,23 @@ Mot de passe : pantry-rocks""";
   /// ```
   String serverRequirementNote(String version) =>
       """* Nécessite Pantry pour Nextcloud v${version}+""";
+
+  /// ```dart
+  /// "Pantry à votre poignet"
+  /// ```
+  String get watchTitle => """Pantry à votre poignet""";
+
+  /// ```dart
+  /// "Il existe une app Wear OS. Vos listes, vos notes et le tableau photo sur la montre, sans le moindre réseau — et des courses que vous pouvez faire avec le téléphone dans la poche."
+  /// ```
+  String get watchBody =>
+      """Il existe une app Wear OS. Vos listes, vos notes et le tableau photo sur la montre, sans le moindre réseau — et des courses que vous pouvez faire avec le téléphone dans la poche.""";
+
+  /// ```dart
+  /// "Ouvrez Pantry sur votre montre et elle se connecte depuis ce téléphone. Les astuces pour l'utiliser sont dans ${settings} → ${watch}."
+  /// ```
+  String watchHowTo(String settings, String watch) =>
+      """Ouvrez Pantry sur votre montre et elle se connecte depuis ce téléphone. Les astuces pour l'utiliser sont dans ${settings} → ${watch}.""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
@@ -6370,6 +6387,9 @@ Mot de passe : pantry-rocks""",
   """onboarding.customFieldsMockAisleValue""": """Produits laitiers""",
   """onboarding.customFieldsTypesCaption""":
       """Choisissez le type qui correspond à ce que vous notez.""",
+  """onboarding.watchTitle""": """Pantry à votre poignet""",
+  """onboarding.watchBody""":
+      """Il existe une app Wear OS. Vos listes, vos notes et le tableau photo sur la montre, sans le moindre réseau — et des courses que vous pouvez faire avec le téléphone dans la poche.""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":

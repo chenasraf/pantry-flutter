@@ -897,6 +897,23 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// ```
   String serverRequirementNote(String version) =>
       """* דורש את Pantry ל-Nextcloud בגרסה ${version}+""";
+
+  /// ```dart
+  /// "Pantry על פרק היד"
+  /// ```
+  String get watchTitle => """Pantry על פרק היד""";
+
+  /// ```dart
+  /// "יש אפליקציה ל־Wear OS. הרשימות, הפתקים ולוח התמונות על השעון, עובדים גם בלי שום קליטה, וקניות שאפשר לעשות כשהטלפון בכיס."
+  /// ```
+  String get watchBody =>
+      """יש אפליקציה ל־Wear OS. הרשימות, הפתקים ולוח התמונות על השעון, עובדים גם בלי שום קליטה, וקניות שאפשר לעשות כשהטלפון בכיס.""";
+
+  /// ```dart
+  /// "פתח את Pantry בשעון והוא יתחבר דרך הטלפון הזה. טיפים לשימוש נמצאים ב־${settings} ← ${watch}."
+  /// ```
+  String watchHowTo(String settings, String watch) =>
+      """פתח את Pantry בשעון והוא יתחבר דרך הטלפון הזה. טיפים לשימוש נמצאים ב־${settings} ← ${watch}.""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 
@@ -6295,6 +6312,9 @@ Map<String, String> get messagesHeMap => {
   """onboarding.customFieldsMockAisleValue""": """מוצרי חלב""",
   """onboarding.customFieldsTypesCaption""":
       """בחרו את הסוג שמתאים למה שאתם רושמים.""",
+  """onboarding.watchTitle""": """Pantry על פרק היד""",
+  """onboarding.watchBody""":
+      """יש אפליקציה ל־Wear OS. הרשימות, הפתקים ולוח התמונות על השעון, עובדים גם בלי שום קליטה, וקניות שאפשר לעשות כשהטלפון בכיס.""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":

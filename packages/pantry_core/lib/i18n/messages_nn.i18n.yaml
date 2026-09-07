@@ -222,6 +222,9 @@ onboarding:
   customFieldsMockAisleValue: "Meieri"
   customFieldsTypesCaption: "Vel typen som passar til det du noterer."
   serverRequirementNote(String version): "* Krev Pantry for Nextcloud v${version}+"
+  watchTitle: "Pantry på handleddet"
+  watchBody: "Det finst ein Wear OS-app. Listene, notata og fotoveggen din på klokka, heilt utan dekning — og handleturar du kan gå med telefonen i lomma."
+  watchHowTo(String settings, String watch): "Opna Pantry på klokka, så loggar ho inn frå denne telefonen. Tips til bruken finn du under ${settings} → ${watch}."
   dev:
     showOnboarding: Vis oppstartshjelp
     pickLastSeenTitle: Førehandsvis kva som er nytt

@@ -900,6 +900,23 @@ Passord: pantry""";
   /// ```
   String serverRequirementNote(String version) =>
       """* Krev Pantry for Nextcloud v${version}+""";
+
+  /// ```dart
+  /// "Pantry på handleddet"
+  /// ```
+  String get watchTitle => """Pantry på handleddet""";
+
+  /// ```dart
+  /// "Det finst ein Wear OS-app. Listene, notata og fotoveggen din på klokka, heilt utan dekning — og handleturar du kan gå med telefonen i lomma."
+  /// ```
+  String get watchBody =>
+      """Det finst ein Wear OS-app. Listene, notata og fotoveggen din på klokka, heilt utan dekning — og handleturar du kan gå med telefonen i lomma.""";
+
+  /// ```dart
+  /// "Opna Pantry på klokka, så loggar ho inn frå denne telefonen. Tips til bruken finn du under ${settings} → ${watch}."
+  /// ```
+  String watchHowTo(String settings, String watch) =>
+      """Opna Pantry på klokka, så loggar ho inn frå denne telefonen. Tips til bruken finn du under ${settings} → ${watch}.""";
   DevOnboardingMessagesNn get dev => DevOnboardingMessagesNn(this);
 }
 
@@ -6338,6 +6355,9 @@ Passord: pantry""",
   """onboarding.customFieldsMockAisleValue""": """Meieri""",
   """onboarding.customFieldsTypesCaption""":
       """Vel typen som passar til det du noterer.""",
+  """onboarding.watchTitle""": """Pantry på handleddet""",
+  """onboarding.watchBody""":
+      """Det finst ein Wear OS-app. Listene, notata og fotoveggen din på klokka, heilt utan dekning — og handleturar du kan gå med telefonen i lomma.""",
   """onboarding.dev.showOnboarding""": """Vis oppstartshjelp""",
   """onboarding.dev.pickLastSeenTitle""": """Førehandsvis kva som er nytt""",
   """onboarding.dev.pickLastSeenBody""":

@@ -156,6 +156,9 @@ onboarding:
   customFieldsMockAisleValue: "Produits laitiers"
   customFieldsTypesCaption: "Choisissez le type qui correspond à ce que vous notez."
   serverRequirementNote(String version): "* Nécessite Pantry pour Nextcloud v${version}+"
+  watchTitle: "Pantry à votre poignet"
+  watchBody: "Il existe une app Wear OS. Vos listes, vos notes et le tableau photo sur la montre, sans le moindre réseau — et des courses que vous pouvez faire avec le téléphone dans la poche."
+  watchHowTo(String settings, String watch): "Ouvrez Pantry sur votre montre et elle se connecte depuis ce téléphone. Les astuces pour l'utiliser sont dans ${settings} → ${watch}."
   dev:
     showOnboarding: "Afficher l'intro"
     pickLastSeenTitle: "Aperçu des nouveautés"
