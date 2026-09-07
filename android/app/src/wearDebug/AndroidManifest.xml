@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+
+        <!-- No LAUNCHER filter: two launcher entries on one watch is a way to
+             start the wrong one. `make wear-probe` names the component outright.
+
+             `LaunchTheme` rather than the wear app's `WearLaunchTheme`, which
+             turns the window's own swipe-to-dismiss off so the pager can page
+             horizontally. The probe has no hand-rolled exit to replace it with,
+             and a probe you cannot leave is worse than one you can leave by
+             accident. -->
+        <activity
+            android:name=".AmbientProbeActivity"
+            android:exported="true"
+            android:label="Ambient probe"
+            android:theme="@style/LaunchTheme">
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
+        </activity>
+    </application>
+</manifest>

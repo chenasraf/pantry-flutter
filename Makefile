@@ -318,6 +318,63 @@ wear-variant-install: wear-variant-apk
 wear-coldstart:
 	tool/wear_coldstart.sh $(COLDSTART_ARGS)
 
+# The ambient probe. Its activity, its manifest entry and the androidx.wear
+# dependency behind it are all `wearDebug`, so this is the only way to reach it
+# and a release build carries none of it.
+#
+# Turn the watch's always-on display on before running: with it off the system
+# hands the screen to the watch face whatever the app registered, and the probe
+# will say so across the top of its own screen.
+#
+# Started by component name — the probe deliberately has no launcher icon.
+WEAR_PROBE_TARGET := lib/main_wear_probe.dart
+WEAR_PROBE_ACTIVITY := dev.casraf.pantry.debug/dev.casraf.pantry.AmbientProbeActivity
+
+# A phone and a watch are usually both attached, and `adb` refuses to guess.
+# `ro.build.characteristics` is what tells them apart; a device that has gone
+# stale answers nothing and falls out of the list on the same test. DEVICE=
+# overrides. Recursive on purpose — nothing should shell out to adb on every
+# make invocation, only on the targets that need a device.
+# Two traps here, both silent. An *unbalanced* `)` in the shell text — a `case`
+# pattern, say — closes `$(shell …)` early and Make appends the remainder to the
+# result rather than complaining. And `adb shell` reads stdin, so inside a
+# `while read` loop the first call swallows the rest of the device list: the
+# serials are collected up front instead, and stdin is closed for good measure.
+WEAR_SERIAL = $(if $(DEVICE),$(DEVICE),$(shell for s in $$(adb devices | awk '$$2 == "device" { print $$1 }'); do adb -s $$s shell getprop ro.build.characteristics </dev/null 2>/dev/null | grep -q watch && echo $$s && break; done))
+ADB_FLAG = $(if $(WEAR_SERIAL),-s $(WEAR_SERIAL),)
+
+.PHONY: wear-device
+wear-device:
+	@test -n "$(WEAR_SERIAL)" || { echo "No watch attached. adb devices:"; adb devices; exit 1; }
+	@echo "watch: $(WEAR_SERIAL)"
+
+.PHONY: wear-probe
+wear-probe: wear-device
+	flutter build apk --debug --flavor wear --target $(WEAR_PROBE_TARGET)
+	# `adb install` rather than `flutter install`, which builds when it thinks it
+	# needs to — and would rebuild against the default entrypoint, quietly
+	# replacing the probe with the watch app under the same name.
+	adb $(ADB_FLAG) install -r build/app/outputs/flutter-apk/app-wear-debug.apk
+	adb $(ADB_FLAG) shell am start -n $(WEAR_PROBE_ACTIVITY)
+
+# Everything the run has to say, from all three sides: the probe's own
+# callbacks, and the two system services whose verdict the app cannot see.
+.PHONY: wear-probe-log
+wear-probe-log: wear-device
+	adb $(ADB_FLAG) logcat -v time \
+		AmbientProbe:I AmbientTaskStackManager:V DisplayOffloadService:V flutter:I '*:S'
+
+# Put the watch to sleep and wake it, rather than waiting out the display
+# timeout. Sleep, hold it there long enough for a doze transition, then wake.
+WEAR_SLEEP_SECONDS := 90
+
+.PHONY: wear-probe-sleep
+wear-probe-sleep: wear-device
+	adb $(ADB_FLAG) shell input keyevent KEYCODE_SLEEP
+	@echo "asleep for $(WEAR_SLEEP_SECONDS)s…"
+	@sleep $(WEAR_SLEEP_SECONDS)
+	adb $(ADB_FLAG) shell input keyevent KEYCODE_WAKEUP
+
 # The AVD the watch UI is developed against. Round is the shape that catches
 # layout mistakes first — square is the forgiving case, and the layout is
 # shape-agnostic, so nothing needs a second AVD to develop against.
