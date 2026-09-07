@@ -1122,3 +1122,72 @@ watch:
   unpairSubtitle: Déconnecter cette montre et cesser de synchroniser avec elle
   unpairTitle: Dissocier cette montre ?
   unpairBody: La montre se déconnecte et oublie votre foyer. Vous pourrez la reconfigurer à tout moment.
+
+watchTips:
+  section: Astuces
+  sectionBody: De courtes explications sur le fonctionnement de l'app de la montre au poignet.
+  stepsLabel: Étape par étape
+
+  pairTitle: Configurer votre montre
+  pairSubtitle: Connecter la montre depuis ce téléphone
+  pairBody: Une montre se prête mal à la saisie d'un mot de passe, elle emprunte donc la connexion de ce téléphone. Rien ne se tape au poignet.
+  pairStep1: Ouvrez Pantry sur votre montre. Un écran de configuration apparaît.
+  pairStep2: Touchez « Ouvrir sur le téléphone ». La montre demande à ce téléphone de prendre le relais.
+  pairStep3: Déverrouillez ce téléphone et touchez « Autoriser » sur la demande qui s'affiche ici.
+  pairStep4: Laissez cet écran ouvert jusqu'à ce qu'il indique que la montre est connectée.
+  pairNote: Pas de téléphone sous la main ? La montre peut afficher un QR code. Scannez-le avec n'importe quel appareil photo et terminez la connexion dans le navigateur qui s'ouvre.
+
+  itemsTitle: Cocher des articles
+  itemsSubtitle: Toucher pour cocher, maintenir pour les détails
+  itemsBody: La ligne au centre de l'écran est celle sur laquelle votre appui agit. Tout ce que vous pouvez faire à un article part de cette ligne.
+  itemsStep1: Touchez la ligne du centre pour la cocher. Touchez-la de nouveau pour la remettre.
+  itemsStep2: Un anneau se vide autour de la ligne tant que le changement peut encore être repris. Touchez de nouveau pendant ce délai et rien n'est écrit.
+  itemsStep3: Maintenez une ligne pour l'ouvrir. Quantité, prix, catégorie et notes s'y trouvent, avec un bouton qui ouvre l'article sur ce téléphone.
+  itemsNote: Toucher une ligne qui n'est pas au centre l'y amène simplement. C'est l'appui suivant qui agit, une visée ratée ne coûte donc qu'un défilement.
+
+  pagesTitle: Se repérer
+  pagesSubtitle: Balayer entre les pages, balayer pour ressortir
+  pagesBody: L'app de la montre est une suite de pages plein écran sous un même titre. Il n'y a aucun menu à ouvrir.
+  pagesStep1: Balayez latéralement pour passer entre votre liste, le tableau photo, le mur de notes et la page du compte.
+  pagesStep2: Les barres sous le titre indiquent combien il y a de pages et sur laquelle vous êtes.
+  pagesStep3: Balayez depuis le bord de l'écran pour ressortir de tout ce que vous avez ouvert.
+  pagesNote: Le titre nomme toujours la page où vous êtes, et la ligne en dessous nomme le groupe auquel appartient la ligne centrale.
+
+  listsTitle: Changer de liste
+  listsSubtitle: Touchez le titre en haut
+  listsBody: Le nom en haut de l'écran est un bouton. Le toucher ouvre les deux choses pour lesquelles on quitte une liste.
+  listsStep1: Touchez le nom de la liste en haut de l'écran.
+  listsStep2: Deux boutons se déplient en dessous, « Commencer les courses » et « Changer de liste ».
+  listsStep3: Touchez « Changer de liste » et choisissez-en une autre, ou « Toutes les listes » pour tout voir d'un coup.
+  listsNote: Les boutons se replient d'eux-mêmes au bout de quelques secondes, toucher le titre par erreur ne coûte donc rien.
+
+  shoppingTitle: Faire des courses
+  shoppingSubtitle: Parcourir les magasins, le téléphone dans la poche
+  shoppingBody: Une sortie transforme la montre en compagnon de courses. Les pages deviennent celles dont vous avez besoin dans un rayon, et le foyer peut suivre.
+  shoppingStep1: Touchez le titre, puis « Commencer les courses ». Choisissez les listes, les magasins, et si vos colocataires voient la sortie.
+  shoppingStep2: Les pages deviennent la sortie elle-même, une pour l'avancement, une pour la liste, une pour les achats et une pour les articles passés.
+  shoppingStep3: Cochez au fur et à mesure. Ce que vous passez arrive sur sa propre page et revient sur la liste d'un appui.
+  shoppingStep4: En quittant un magasin, la montre demande ce que la caisse a facturé puis vous emmène au suivant.
+  shoppingStep5: Après le dernier magasin, « Terminer les courses » affiche le total avant de rien clôturer.
+  shoppingNote: Toucher un magasin sur la page d'avancement y emmène la sortie directement, en arrière comme en avant, un détour est donc une correction et non un recommencement.
+
+  crownTitle: Tourner la couronne
+  crownSubtitle: Faire défiler la liste, ou tourner les pages
+  crownBody: Tourner la couronne ou la lunette rotative fait défiler la liste devant vous, ce qui garde votre doigt hors de ce que vous lisez.
+  crownStep1: Tournez la couronne pour parcourir la liste ligne par ligne. La ligne où elle s'arrête est celle sur laquelle un appui agit.
+  crownStep2: Pour qu'un tour change de page à la place, ouvrez « Compte », puis « Réglages », puis « Couronne » sur la montre.
+  crownNote: Un tour ne fait qu'une chose à la fois. Confier la couronne aux pages veut dire que les listes défilent au doigt seulement.
+
+  offlineTitle: Ça marche sans réseau
+  offlineSubtitle: Continuez à cocher au rayon frais
+  offlineBody: La montre garde sa propre copie de votre foyer, elle s'ouvre et fonctionne donc sans rien à portée. Ni téléphone, ni Wi-Fi, ni forfait data sur la montre.
+  offlineStep1: Un petit point en haut de l'écran signifie que tout ce que vous avez fait est enregistré.
+  offlineStep2: Un nuage suivi d'un nombre signifie qu'autant de changements attendent une connexion.
+  offlineStep3: Ils partent tout seuls dès que la montre est de nouveau à portée. Il n'y a rien à appuyer.
+
+  tileTitle: Une liste à un balayage
+  tileSubtitle: Ajouter la tuile Pantry
+  tileBody: Les tuiles sont les écrans à côté de votre cadran. Pantry en publie une qui nomme vos listes, pour qu'une liste soit à un balayage plutôt qu'à un lancement d'app.
+  tileStep1: Depuis le cadran, balayez latéralement jusqu'aux tuiles.
+  tileStep2: Maintenez appuyé, touchez le plus, et choisissez Pantry dans la liste.
+  tileStep3: Touchez une liste sur la tuile pour ouvrir l'app directement dessus.

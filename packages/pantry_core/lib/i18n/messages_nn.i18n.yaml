@@ -1266,3 +1266,72 @@ watch:
   unpairSubtitle: Logg ut denne klokka og slutt å synkronisere til henne
   unpairTitle: Kople frå denne klokka?
   unpairBody: Klokka loggar ut og gløymer husstanden din. Du kan setje henne opp att når som helst.
+
+watchTips:
+  section: Tips
+  sectionBody: Korte gjennomgangar av korleis klokkeappen fungerer på handleddet.
+  stepsLabel: Steg for steg
+
+  pairTitle: Set opp klokka
+  pairSubtitle: Logg inn klokka frå denne telefonen
+  pairBody: Ei klokke er ein dårleg stad å skrive eit passord, så ho lånar innlogginga frå denne telefonen i staden. Ingenting blir skrive på handleddet.
+  pairStep1: Opna Pantry på klokka. Ho viser ein oppsettsskjerm.
+  pairStep2: Trykk «Opna på telefonen». Klokka ber denne telefonen ta over.
+  pairStep3: Lås opp denne telefonen og trykk «Tillat» på førespurnaden som dukkar opp her.
+  pairStep4: Lat denne skjermen stå open til han seier at klokka er logga inn.
+  pairNote: Ingen telefon for handa? Klokka kan vise ein QR-kode i staden. Skann han med eit kva som helst kamera og fullfør innlogginga i nettlesaren som opnar seg.
+
+  itemsTitle: Kryss av ting
+  itemsSubtitle: Trykk for å krysse av, hald inne for detaljar
+  itemsBody: Rada midt på skjermen er den trykket ditt verkar på. Alt du kan gjere med ei vare heng på den rada.
+  itemsStep1: Trykk på den midtre rada for å krysse henne av. Trykk igjen for å hente henne tilbake.
+  itemsStep2: Ein ring tømmer seg rundt rada så lenge endringa framleis kan takast tilbake. Trykk ein gong til innanfor det vindauget, så blir ingenting skrive.
+  itemsStep3: Hald inne ei rad for å opne henne. Mengd, pris, kategori og notat ligg der, saman med ein knapp som opnar vara på denne telefonen.
+  itemsNote: Trykkjer du på ei rad som ikkje er i midten, kjem ho berre dit. Det neste trykket er det som verkar, så eit bomskot kostar berre litt rulling.
+
+  pagesTitle: Finn fram
+  pagesSubtitle: Sveip mellom sider, sveip deg ut att
+  pagesBody: Klokkeappen er ei rekkje sider i fullskjerm under éin tittel. Det finst ingen meny å opne.
+  pagesStep1: Sveip til sides for å flytte deg mellom lista, fotoveggen, notatveggen og kontosida.
+  pagesStep2: Strekane under tittelen seier kor mange sider det er og kva for ei du er på.
+  pagesStep3: Sveip inn frå kanten av skjermen for å gå ut att av alt du har opna.
+  pagesNote: Tittelen namngjev alltid sida du er på, og linja under namngjev gruppa den midtre rada høyrer til.
+
+  listsTitle: Byt liste
+  listsSubtitle: Trykk på tittelen øvst
+  listsBody: Namnet øvst på skjermen er ein knapp. Eit trykk opnar dei to tinga du ville forlate ei liste for.
+  listsStep1: Trykk på listenamnet øvst på skjermen.
+  listsStep2: To knappar fell ned under han, «Start handel» og «Byt liste».
+  listsStep3: Trykk «Byt liste» og vel ei anna, eller «Alle lister» for å sjå alt på ein gong.
+  listsNote: Knappane fell saman av seg sjølve etter nokre sekund, så eit uhell på tittelen kostar ingenting.
+
+  shoppingTitle: Gå ein handletur
+  shoppingSubtitle: Gå butikkane med telefonen i lomma
+  shoppingBody: Ein handletur gjer klokka til ein handlefølgjesvein. Sidene blir dei du vil ha i ein gang, og husstanden kan følgje med.
+  shoppingStep1: Trykk på tittelen, så «Start handel». Vel listene, butikkane, og om husfolka ser turen.
+  shoppingStep2: Sidene blir sjølve turen, ei for kor langt han er komen, ei for lista, ei for det kjøpte og ei for det hoppa over.
+  shoppingStep3: Kryss av undervegs. Det du hoppar over landar på si eiga side og går tilbake på lista med eit trykk.
+  shoppingStep4: Når du forlèt ein butikk, spør klokka kva kassa tok, og sender deg vidare til neste.
+  shoppingStep5: Etter den siste butikken viser «Fullfør handelen» summen før noko blir avslutta.
+  shoppingNote: Eit trykk på ein butikk på framdriftssida flyttar turen rett dit, bakover like godt som framover, så ein feilveg er ei retting og ikkje ein ny start.
+
+  crownTitle: Vri på krona
+  crownSubtitle: Rull lista, eller bla i sidene
+  crownBody: Å vri på krona eller den dreibare ramma rullar lista framfor deg, og held fingeren unna det du les.
+  crownStep1: Vri på krona for å gå gjennom lista ei rad om gongen. Rada ho landar på er den eit trykk verkar på.
+  crownStep2: Vil du at ei vriding skal bla i sider i staden, opna «Konto», så «Innstillingar», så «Krone» på klokka.
+  crownNote: Ei vriding gjer éin ting om gongen. Gjev du krona til sidene, blir lister rulla med fingeren åleine.
+
+  offlineTitle: Ho verkar utan dekning
+  offlineSubtitle: Hald fram med å krysse av i kjøledisken
+  offlineBody: Klokka held sin eigen kopi av husstanden, så ho opnar og verkar utan noko som helst i rekkjevidd. Ingen telefon, ingen trådlaus nett, inga dataavtale på klokka.
+  offlineStep1: Ein liten prikk øvst på skjermen tyder at alt du har gjort er lagra.
+  offlineStep2: Ei sky med eit tal ved sida av tyder at så mange endringar ventar på samband.
+  offlineStep3: Dei går ut av seg sjølve i det klokka er innanfor rekkjevidd att. Det er ingenting å trykkje på.
+
+  tileTitle: Ha ei liste eitt sveip unna
+  tileSubtitle: Legg til Pantry-ruta
+  tileBody: Ruter er skjermane ved sida av urskiva. Pantry gjev ut ei som namngjev listene dine, så ei liste er eitt sveip unna i staden for ein appstart.
+  tileStep1: Frå urskiva, sveip til sides til du kjem til rutene.
+  tileStep2: Hald inne, trykk på plussen, og vel Pantry frå lista.
+  tileStep3: Trykk på ei liste på ruta for å opne appen rett på henne.

@@ -88,6 +88,7 @@ class MessagesDe extends Messages {
   MarkdownEditorMessagesDe get markdownEditor => MarkdownEditorMessagesDe(this);
   WearMessagesDe get wear => WearMessagesDe(this);
   WatchMessagesDe get watch => WatchMessagesDe(this);
+  WatchTipsMessagesDe get watchTips => WatchTipsMessagesDe(this);
 }
 
 class CommonMessagesDe extends CommonMessages {
@@ -5846,6 +5847,349 @@ class WatchMessagesDe extends WatchMessages {
       """Die Uhr meldet sich ab und vergisst deinen Haushalt. Du kannst sie jederzeit neu einrichten.""";
 }
 
+class WatchTipsMessagesDe extends WatchTipsMessages {
+  final MessagesDe _parent;
+  const WatchTipsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Tipps"
+  /// ```
+  String get section => """Tipps""";
+
+  /// ```dart
+  /// "Kurze Anleitungen dazu, wie die Uhren-App am Handgelenk funktioniert."
+  /// ```
+  String get sectionBody =>
+      """Kurze Anleitungen dazu, wie die Uhren-App am Handgelenk funktioniert.""";
+
+  /// ```dart
+  /// "Schritt für Schritt"
+  /// ```
+  String get stepsLabel => """Schritt für Schritt""";
+
+  /// ```dart
+  /// "Uhr einrichten"
+  /// ```
+  String get pairTitle => """Uhr einrichten""";
+
+  /// ```dart
+  /// "Die Uhr über dieses Telefon anmelden"
+  /// ```
+  String get pairSubtitle => """Die Uhr über dieses Telefon anmelden""";
+
+  /// ```dart
+  /// "Auf einer Uhr tippt sich ein Passwort schlecht, deshalb übernimmt sie die Anmeldung von diesem Telefon. Am Handgelenk wird nichts getippt."
+  /// ```
+  String get pairBody =>
+      """Auf einer Uhr tippt sich ein Passwort schlecht, deshalb übernimmt sie die Anmeldung von diesem Telefon. Am Handgelenk wird nichts getippt.""";
+
+  /// ```dart
+  /// "Öffne Pantry auf deiner Uhr. Sie zeigt einen Einrichtungsbildschirm."
+  /// ```
+  String get pairStep1 =>
+      """Öffne Pantry auf deiner Uhr. Sie zeigt einen Einrichtungsbildschirm.""";
+
+  /// ```dart
+  /// "Tippe auf „Auf dem Telefon öffnen“. Die Uhr bittet dieses Telefon zu übernehmen."
+  /// ```
+  String get pairStep2 =>
+      """Tippe auf „Auf dem Telefon öffnen“. Die Uhr bittet dieses Telefon zu übernehmen.""";
+
+  /// ```dart
+  /// "Entsperre dieses Telefon und tippe bei der Anfrage, die hier erscheint, auf „Erlauben“."
+  /// ```
+  String get pairStep3 =>
+      """Entsperre dieses Telefon und tippe bei der Anfrage, die hier erscheint, auf „Erlauben“.""";
+
+  /// ```dart
+  /// "Lass diesen Bildschirm offen, bis dort steht, dass die Uhr angemeldet ist."
+  /// ```
+  String get pairStep4 =>
+      """Lass diesen Bildschirm offen, bis dort steht, dass die Uhr angemeldet ist.""";
+
+  /// ```dart
+  /// "Kein Telefon zur Hand? Die Uhr kann stattdessen einen QR-Code zeigen. Scanne ihn mit einer beliebigen Kamera und schließe die Anmeldung im Browser ab, der sich öffnet."
+  /// ```
+  String get pairNote =>
+      """Kein Telefon zur Hand? Die Uhr kann stattdessen einen QR-Code zeigen. Scanne ihn mit einer beliebigen Kamera und schließe die Anmeldung im Browser ab, der sich öffnet.""";
+
+  /// ```dart
+  /// "Dinge abhaken"
+  /// ```
+  String get itemsTitle => """Dinge abhaken""";
+
+  /// ```dart
+  /// "Tippen zum Abhaken, halten für die Details"
+  /// ```
+  String get itemsSubtitle => """Tippen zum Abhaken, halten für die Details""";
+
+  /// ```dart
+  /// "Die Zeile in der Mitte des Bildschirms ist die, auf die dein Tippen wirkt. Alles, was du mit einem Eintrag tun kannst, hängt an dieser Zeile."
+  /// ```
+  String get itemsBody =>
+      """Die Zeile in der Mitte des Bildschirms ist die, auf die dein Tippen wirkt. Alles, was du mit einem Eintrag tun kannst, hängt an dieser Zeile.""";
+
+  /// ```dart
+  /// "Tippe auf die mittlere Zeile, um sie abzuhaken. Noch einmal tippen holt sie zurück."
+  /// ```
+  String get itemsStep1 =>
+      """Tippe auf die mittlere Zeile, um sie abzuhaken. Noch einmal tippen holt sie zurück.""";
+
+  /// ```dart
+  /// "Um die Zeile herum läuft ein Ring ab, solange die Änderung noch zurückzunehmen ist. Tippst du in diesem Fenster erneut, wird gar nichts geschrieben."
+  /// ```
+  String get itemsStep2 =>
+      """Um die Zeile herum läuft ein Ring ab, solange die Änderung noch zurückzunehmen ist. Tippst du in diesem Fenster erneut, wird gar nichts geschrieben.""";
+
+  /// ```dart
+  /// "Halte eine Zeile gedrückt, um sie zu öffnen. Menge, Preis, Kategorie und Notizen stehen dort, dazu eine Schaltfläche, die den Eintrag auf diesem Telefon öffnet."
+  /// ```
+  String get itemsStep3 =>
+      """Halte eine Zeile gedrückt, um sie zu öffnen. Menge, Preis, Kategorie und Notizen stehen dort, dazu eine Schaltfläche, die den Eintrag auf diesem Telefon öffnet.""";
+
+  /// ```dart
+  /// "Tippst du auf eine Zeile, die nicht in der Mitte ist, rückt sie einfach dorthin. Erst das nächste Tippen wirkt, ein Danebengreifen kostet also nur ein Stück Scrollen."
+  /// ```
+  String get itemsNote =>
+      """Tippst du auf eine Zeile, die nicht in der Mitte ist, rückt sie einfach dorthin. Erst das nächste Tippen wirkt, ein Danebengreifen kostet also nur ein Stück Scrollen.""";
+
+  /// ```dart
+  /// "Zurechtfinden"
+  /// ```
+  String get pagesTitle => """Zurechtfinden""";
+
+  /// ```dart
+  /// "Zwischen Seiten wischen, wieder hinauswischen"
+  /// ```
+  String get pagesSubtitle =>
+      """Zwischen Seiten wischen, wieder hinauswischen""";
+
+  /// ```dart
+  /// "Die Uhren-App ist eine Reihe bildschirmfüllender Seiten unter einer Titelzeile. Es gibt kein Menü zu öffnen."
+  /// ```
+  String get pagesBody =>
+      """Die Uhren-App ist eine Reihe bildschirmfüllender Seiten unter einer Titelzeile. Es gibt kein Menü zu öffnen.""";
+
+  /// ```dart
+  /// "Wische seitwärts, um zwischen deiner Liste, der Fotowand, der Notizwand und der Kontoseite zu wechseln."
+  /// ```
+  String get pagesStep1 =>
+      """Wische seitwärts, um zwischen deiner Liste, der Fotowand, der Notizwand und der Kontoseite zu wechseln.""";
+
+  /// ```dart
+  /// "Die Balken unter dem Titel zeigen, wie viele Seiten es gibt und auf welcher du bist."
+  /// ```
+  String get pagesStep2 =>
+      """Die Balken unter dem Titel zeigen, wie viele Seiten es gibt und auf welcher du bist.""";
+
+  /// ```dart
+  /// "Wische vom Bildschirmrand herein, um alles wieder zu verlassen, was du geöffnet hast."
+  /// ```
+  String get pagesStep3 =>
+      """Wische vom Bildschirmrand herein, um alles wieder zu verlassen, was du geöffnet hast.""";
+
+  /// ```dart
+  /// "Der Titel nennt immer die Seite, auf der du bist, und die Zeile darunter die Gruppe, zu der die mittlere Zeile gehört."
+  /// ```
+  String get pagesNote =>
+      """Der Titel nennt immer die Seite, auf der du bist, und die Zeile darunter die Gruppe, zu der die mittlere Zeile gehört.""";
+
+  /// ```dart
+  /// "Liste wechseln"
+  /// ```
+  String get listsTitle => """Liste wechseln""";
+
+  /// ```dart
+  /// "Tippe oben auf den Titel"
+  /// ```
+  String get listsSubtitle => """Tippe oben auf den Titel""";
+
+  /// ```dart
+  /// "Der Name oben auf dem Bildschirm ist eine Schaltfläche. Ein Tippen darauf öffnet die zwei Dinge, für die man eine Liste verlässt."
+  /// ```
+  String get listsBody =>
+      """Der Name oben auf dem Bildschirm ist eine Schaltfläche. Ein Tippen darauf öffnet die zwei Dinge, für die man eine Liste verlässt.""";
+
+  /// ```dart
+  /// "Tippe oben auf dem Bildschirm auf den Listennamen."
+  /// ```
+  String get listsStep1 =>
+      """Tippe oben auf dem Bildschirm auf den Listennamen.""";
+
+  /// ```dart
+  /// "Darunter klappen zwei Schaltflächen auf, „Einkaufen starten“ und „Liste wechseln“."
+  /// ```
+  String get listsStep2 =>
+      """Darunter klappen zwei Schaltflächen auf, „Einkaufen starten“ und „Liste wechseln“.""";
+
+  /// ```dart
+  /// "Tippe auf „Liste wechseln“ und wähle eine andere, oder „Alle Listen“, um alles auf einmal zu sehen."
+  /// ```
+  String get listsStep3 =>
+      """Tippe auf „Liste wechseln“ und wähle eine andere, oder „Alle Listen“, um alles auf einmal zu sehen.""";
+
+  /// ```dart
+  /// "Die Schaltflächen klappen nach ein paar Sekunden von selbst wieder zu, versehentliches Tippen auf den Titel kostet also nichts."
+  /// ```
+  String get listsNote =>
+      """Die Schaltflächen klappen nach ein paar Sekunden von selbst wieder zu, versehentliches Tippen auf den Titel kostet also nichts.""";
+
+  /// ```dart
+  /// "Einen Einkauf gehen"
+  /// ```
+  String get shoppingTitle => """Einen Einkauf gehen""";
+
+  /// ```dart
+  /// "Die Läden ablaufen, das Telefon in der Tasche"
+  /// ```
+  String get shoppingSubtitle =>
+      """Die Läden ablaufen, das Telefon in der Tasche""";
+
+  /// ```dart
+  /// "Ein Einkauf macht aus der Uhr eine Einkaufsbegleitung. Die Seiten werden zu denen, die du im Gang brauchst, und der Haushalt kann mitverfolgen."
+  /// ```
+  String get shoppingBody =>
+      """Ein Einkauf macht aus der Uhr eine Einkaufsbegleitung. Die Seiten werden zu denen, die du im Gang brauchst, und der Haushalt kann mitverfolgen.""";
+
+  /// ```dart
+  /// "Tippe auf den Titel, dann auf „Einkaufen starten“. Wähle die Listen, die Läden und ob Mitbewohner den Einkauf sehen."
+  /// ```
+  String get shoppingStep1 =>
+      """Tippe auf den Titel, dann auf „Einkaufen starten“. Wähle die Listen, die Läden und ob Mitbewohner den Einkauf sehen.""";
+
+  /// ```dart
+  /// "Die Seiten werden zum Einkauf selbst, je eine für den Stand, die Liste, das Gekaufte und das Übersprungene."
+  /// ```
+  String get shoppingStep2 =>
+      """Die Seiten werden zum Einkauf selbst, je eine für den Stand, die Liste, das Gekaufte und das Übersprungene.""";
+
+  /// ```dart
+  /// "Hake unterwegs ab. Übersprungenes landet auf einer eigenen Seite und kommt mit einem Tippen zurück auf die Liste."
+  /// ```
+  String get shoppingStep3 =>
+      """Hake unterwegs ab. Übersprungenes landet auf einer eigenen Seite und kommt mit einem Tippen zurück auf die Liste.""";
+
+  /// ```dart
+  /// "Beim Verlassen eines Ladens fragt die Uhr, was die Kasse berechnet hat, und schickt dich weiter zum nächsten."
+  /// ```
+  String get shoppingStep4 =>
+      """Beim Verlassen eines Ladens fragt die Uhr, was die Kasse berechnet hat, und schickt dich weiter zum nächsten.""";
+
+  /// ```dart
+  /// "Nach dem letzten Laden zeigt „Einkauf abschließen“ die Summe, bevor irgendetwas geschlossen wird."
+  /// ```
+  String get shoppingStep5 =>
+      """Nach dem letzten Laden zeigt „Einkauf abschließen“ die Summe, bevor irgendetwas geschlossen wird.""";
+
+  /// ```dart
+  /// "Ein Tippen auf einen Laden auf der Standseite bringt den Einkauf direkt dorthin, rückwärts wie vorwärts, ein Umweg ist also eine Korrektur und kein Neuanfang."
+  /// ```
+  String get shoppingNote =>
+      """Ein Tippen auf einen Laden auf der Standseite bringt den Einkauf direkt dorthin, rückwärts wie vorwärts, ein Umweg ist also eine Korrektur und kein Neuanfang.""";
+
+  /// ```dart
+  /// "Die Krone drehen"
+  /// ```
+  String get crownTitle => """Die Krone drehen""";
+
+  /// ```dart
+  /// "Die Liste scrollen oder die Seiten wechseln"
+  /// ```
+  String get crownSubtitle => """Die Liste scrollen oder die Seiten wechseln""";
+
+  /// ```dart
+  /// "Ein Dreh an der Krone oder der drehbaren Lünette scrollt die Liste vor dir und hält deinen Finger von dem fern, was du gerade liest."
+  /// ```
+  String get crownBody =>
+      """Ein Dreh an der Krone oder der drehbaren Lünette scrollt die Liste vor dir und hält deinen Finger von dem fern, was du gerade liest.""";
+
+  /// ```dart
+  /// "Dreh die Krone, um die Liste Zeile für Zeile durchzugehen. Die Zeile, auf der sie landet, ist die, auf die ein Tippen wirkt."
+  /// ```
+  String get crownStep1 =>
+      """Dreh die Krone, um die Liste Zeile für Zeile durchzugehen. Die Zeile, auf der sie landet, ist die, auf die ein Tippen wirkt.""";
+
+  /// ```dart
+  /// "Damit ein Dreh stattdessen die Seiten wechselt, öffne auf der Uhr „Konto“, dann „Einstellungen“, dann „Krone“."
+  /// ```
+  String get crownStep2 =>
+      """Damit ein Dreh stattdessen die Seiten wechselt, öffne auf der Uhr „Konto“, dann „Einstellungen“, dann „Krone“.""";
+
+  /// ```dart
+  /// "Ein Dreh tut immer nur eines. Gibst du die Krone den Seiten, werden Listen nur noch mit dem Finger gescrollt."
+  /// ```
+  String get crownNote =>
+      """Ein Dreh tut immer nur eines. Gibst du die Krone den Seiten, werden Listen nur noch mit dem Finger gescrollt.""";
+
+  /// ```dart
+  /// "Sie läuft ohne Empfang"
+  /// ```
+  String get offlineTitle => """Sie läuft ohne Empfang""";
+
+  /// ```dart
+  /// "Auch im kalten Gang weiter abhaken"
+  /// ```
+  String get offlineSubtitle => """Auch im kalten Gang weiter abhaken""";
+
+  /// ```dart
+  /// "Die Uhr hält eine eigene Kopie deines Haushalts, sie öffnet und arbeitet also auch ohne alles in Reichweite. Kein Telefon, kein WLAN, kein Datentarif für die Uhr."
+  /// ```
+  String get offlineBody =>
+      """Die Uhr hält eine eigene Kopie deines Haushalts, sie öffnet und arbeitet also auch ohne alles in Reichweite. Kein Telefon, kein WLAN, kein Datentarif für die Uhr.""";
+
+  /// ```dart
+  /// "Ein kleiner Punkt oben auf dem Bildschirm heißt, dass alles Getane gespeichert ist."
+  /// ```
+  String get offlineStep1 =>
+      """Ein kleiner Punkt oben auf dem Bildschirm heißt, dass alles Getane gespeichert ist.""";
+
+  /// ```dart
+  /// "Eine Wolke mit einer Zahl daneben heißt, dass so viele Änderungen auf eine Verbindung warten."
+  /// ```
+  String get offlineStep2 =>
+      """Eine Wolke mit einer Zahl daneben heißt, dass so viele Änderungen auf eine Verbindung warten.""";
+
+  /// ```dart
+  /// "Sie gehen von selbst raus, sobald die Uhr wieder in Reichweite ist. Es gibt nichts zu drücken."
+  /// ```
+  String get offlineStep3 =>
+      """Sie gehen von selbst raus, sobald die Uhr wieder in Reichweite ist. Es gibt nichts zu drücken.""";
+
+  /// ```dart
+  /// "Eine Liste einen Wisch entfernt"
+  /// ```
+  String get tileTitle => """Eine Liste einen Wisch entfernt""";
+
+  /// ```dart
+  /// "Die Pantry-Kachel hinzufügen"
+  /// ```
+  String get tileSubtitle => """Die Pantry-Kachel hinzufügen""";
+
+  /// ```dart
+  /// "Kacheln sind die Bildschirme neben deinem Zifferblatt. Pantry veröffentlicht eine, die deine Listen nennt, damit eine Liste einen Wisch statt einen App-Start entfernt ist."
+  /// ```
+  String get tileBody =>
+      """Kacheln sind die Bildschirme neben deinem Zifferblatt. Pantry veröffentlicht eine, die deine Listen nennt, damit eine Liste einen Wisch statt einen App-Start entfernt ist.""";
+
+  /// ```dart
+  /// "Wische vom Zifferblatt aus seitwärts, bis du bei den Kacheln bist."
+  /// ```
+  String get tileStep1 =>
+      """Wische vom Zifferblatt aus seitwärts, bis du bei den Kacheln bist.""";
+
+  /// ```dart
+  /// "Halte gedrückt, tippe auf das Plus und wähle Pantry aus der Liste."
+  /// ```
+  String get tileStep2 =>
+      """Halte gedrückt, tippe auf das Plus und wähle Pantry aus der Liste.""";
+
+  /// ```dart
+  /// "Tippe auf der Kachel auf eine Liste, um die App direkt darauf zu öffnen."
+  /// ```
+  String get tileStep3 =>
+      """Tippe auf der Kachel auf eine Liste, um die App direkt darauf zu öffnen.""";
+}
+
 Map<String, String> get messagesDeMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Abbrechen""",
@@ -6964,4 +7308,108 @@ Passwort: pantry-rocks""",
   """watch.unpairTitle""": """Diese Uhr entkoppeln?""",
   """watch.unpairBody""":
       """Die Uhr meldet sich ab und vergisst deinen Haushalt. Du kannst sie jederzeit neu einrichten.""",
+  """watchTips.section""": """Tipps""",
+  """watchTips.sectionBody""":
+      """Kurze Anleitungen dazu, wie die Uhren-App am Handgelenk funktioniert.""",
+  """watchTips.stepsLabel""": """Schritt für Schritt""",
+  """watchTips.pairTitle""": """Uhr einrichten""",
+  """watchTips.pairSubtitle""": """Die Uhr über dieses Telefon anmelden""",
+  """watchTips.pairBody""":
+      """Auf einer Uhr tippt sich ein Passwort schlecht, deshalb übernimmt sie die Anmeldung von diesem Telefon. Am Handgelenk wird nichts getippt.""",
+  """watchTips.pairStep1""":
+      """Öffne Pantry auf deiner Uhr. Sie zeigt einen Einrichtungsbildschirm.""",
+  """watchTips.pairStep2""":
+      """Tippe auf „Auf dem Telefon öffnen“. Die Uhr bittet dieses Telefon zu übernehmen.""",
+  """watchTips.pairStep3""":
+      """Entsperre dieses Telefon und tippe bei der Anfrage, die hier erscheint, auf „Erlauben“.""",
+  """watchTips.pairStep4""":
+      """Lass diesen Bildschirm offen, bis dort steht, dass die Uhr angemeldet ist.""",
+  """watchTips.pairNote""":
+      """Kein Telefon zur Hand? Die Uhr kann stattdessen einen QR-Code zeigen. Scanne ihn mit einer beliebigen Kamera und schließe die Anmeldung im Browser ab, der sich öffnet.""",
+  """watchTips.itemsTitle""": """Dinge abhaken""",
+  """watchTips.itemsSubtitle""":
+      """Tippen zum Abhaken, halten für die Details""",
+  """watchTips.itemsBody""":
+      """Die Zeile in der Mitte des Bildschirms ist die, auf die dein Tippen wirkt. Alles, was du mit einem Eintrag tun kannst, hängt an dieser Zeile.""",
+  """watchTips.itemsStep1""":
+      """Tippe auf die mittlere Zeile, um sie abzuhaken. Noch einmal tippen holt sie zurück.""",
+  """watchTips.itemsStep2""":
+      """Um die Zeile herum läuft ein Ring ab, solange die Änderung noch zurückzunehmen ist. Tippst du in diesem Fenster erneut, wird gar nichts geschrieben.""",
+  """watchTips.itemsStep3""":
+      """Halte eine Zeile gedrückt, um sie zu öffnen. Menge, Preis, Kategorie und Notizen stehen dort, dazu eine Schaltfläche, die den Eintrag auf diesem Telefon öffnet.""",
+  """watchTips.itemsNote""":
+      """Tippst du auf eine Zeile, die nicht in der Mitte ist, rückt sie einfach dorthin. Erst das nächste Tippen wirkt, ein Danebengreifen kostet also nur ein Stück Scrollen.""",
+  """watchTips.pagesTitle""": """Zurechtfinden""",
+  """watchTips.pagesSubtitle""":
+      """Zwischen Seiten wischen, wieder hinauswischen""",
+  """watchTips.pagesBody""":
+      """Die Uhren-App ist eine Reihe bildschirmfüllender Seiten unter einer Titelzeile. Es gibt kein Menü zu öffnen.""",
+  """watchTips.pagesStep1""":
+      """Wische seitwärts, um zwischen deiner Liste, der Fotowand, der Notizwand und der Kontoseite zu wechseln.""",
+  """watchTips.pagesStep2""":
+      """Die Balken unter dem Titel zeigen, wie viele Seiten es gibt und auf welcher du bist.""",
+  """watchTips.pagesStep3""":
+      """Wische vom Bildschirmrand herein, um alles wieder zu verlassen, was du geöffnet hast.""",
+  """watchTips.pagesNote""":
+      """Der Titel nennt immer die Seite, auf der du bist, und die Zeile darunter die Gruppe, zu der die mittlere Zeile gehört.""",
+  """watchTips.listsTitle""": """Liste wechseln""",
+  """watchTips.listsSubtitle""": """Tippe oben auf den Titel""",
+  """watchTips.listsBody""":
+      """Der Name oben auf dem Bildschirm ist eine Schaltfläche. Ein Tippen darauf öffnet die zwei Dinge, für die man eine Liste verlässt.""",
+  """watchTips.listsStep1""":
+      """Tippe oben auf dem Bildschirm auf den Listennamen.""",
+  """watchTips.listsStep2""":
+      """Darunter klappen zwei Schaltflächen auf, „Einkaufen starten“ und „Liste wechseln“.""",
+  """watchTips.listsStep3""":
+      """Tippe auf „Liste wechseln“ und wähle eine andere, oder „Alle Listen“, um alles auf einmal zu sehen.""",
+  """watchTips.listsNote""":
+      """Die Schaltflächen klappen nach ein paar Sekunden von selbst wieder zu, versehentliches Tippen auf den Titel kostet also nichts.""",
+  """watchTips.shoppingTitle""": """Einen Einkauf gehen""",
+  """watchTips.shoppingSubtitle""":
+      """Die Läden ablaufen, das Telefon in der Tasche""",
+  """watchTips.shoppingBody""":
+      """Ein Einkauf macht aus der Uhr eine Einkaufsbegleitung. Die Seiten werden zu denen, die du im Gang brauchst, und der Haushalt kann mitverfolgen.""",
+  """watchTips.shoppingStep1""":
+      """Tippe auf den Titel, dann auf „Einkaufen starten“. Wähle die Listen, die Läden und ob Mitbewohner den Einkauf sehen.""",
+  """watchTips.shoppingStep2""":
+      """Die Seiten werden zum Einkauf selbst, je eine für den Stand, die Liste, das Gekaufte und das Übersprungene.""",
+  """watchTips.shoppingStep3""":
+      """Hake unterwegs ab. Übersprungenes landet auf einer eigenen Seite und kommt mit einem Tippen zurück auf die Liste.""",
+  """watchTips.shoppingStep4""":
+      """Beim Verlassen eines Ladens fragt die Uhr, was die Kasse berechnet hat, und schickt dich weiter zum nächsten.""",
+  """watchTips.shoppingStep5""":
+      """Nach dem letzten Laden zeigt „Einkauf abschließen“ die Summe, bevor irgendetwas geschlossen wird.""",
+  """watchTips.shoppingNote""":
+      """Ein Tippen auf einen Laden auf der Standseite bringt den Einkauf direkt dorthin, rückwärts wie vorwärts, ein Umweg ist also eine Korrektur und kein Neuanfang.""",
+  """watchTips.crownTitle""": """Die Krone drehen""",
+  """watchTips.crownSubtitle""":
+      """Die Liste scrollen oder die Seiten wechseln""",
+  """watchTips.crownBody""":
+      """Ein Dreh an der Krone oder der drehbaren Lünette scrollt die Liste vor dir und hält deinen Finger von dem fern, was du gerade liest.""",
+  """watchTips.crownStep1""":
+      """Dreh die Krone, um die Liste Zeile für Zeile durchzugehen. Die Zeile, auf der sie landet, ist die, auf die ein Tippen wirkt.""",
+  """watchTips.crownStep2""":
+      """Damit ein Dreh stattdessen die Seiten wechselt, öffne auf der Uhr „Konto“, dann „Einstellungen“, dann „Krone“.""",
+  """watchTips.crownNote""":
+      """Ein Dreh tut immer nur eines. Gibst du die Krone den Seiten, werden Listen nur noch mit dem Finger gescrollt.""",
+  """watchTips.offlineTitle""": """Sie läuft ohne Empfang""",
+  """watchTips.offlineSubtitle""": """Auch im kalten Gang weiter abhaken""",
+  """watchTips.offlineBody""":
+      """Die Uhr hält eine eigene Kopie deines Haushalts, sie öffnet und arbeitet also auch ohne alles in Reichweite. Kein Telefon, kein WLAN, kein Datentarif für die Uhr.""",
+  """watchTips.offlineStep1""":
+      """Ein kleiner Punkt oben auf dem Bildschirm heißt, dass alles Getane gespeichert ist.""",
+  """watchTips.offlineStep2""":
+      """Eine Wolke mit einer Zahl daneben heißt, dass so viele Änderungen auf eine Verbindung warten.""",
+  """watchTips.offlineStep3""":
+      """Sie gehen von selbst raus, sobald die Uhr wieder in Reichweite ist. Es gibt nichts zu drücken.""",
+  """watchTips.tileTitle""": """Eine Liste einen Wisch entfernt""",
+  """watchTips.tileSubtitle""": """Die Pantry-Kachel hinzufügen""",
+  """watchTips.tileBody""":
+      """Kacheln sind die Bildschirme neben deinem Zifferblatt. Pantry veröffentlicht eine, die deine Listen nennt, damit eine Liste einen Wisch statt einen App-Start entfernt ist.""",
+  """watchTips.tileStep1""":
+      """Wische vom Zifferblatt aus seitwärts, bis du bei den Kacheln bist.""",
+  """watchTips.tileStep2""":
+      """Halte gedrückt, tippe auf das Plus und wähle Pantry aus der Liste.""",
+  """watchTips.tileStep3""":
+      """Tippe auf der Kachel auf eine Liste, um die App direkt darauf zu öffnen.""",
 };

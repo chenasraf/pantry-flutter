@@ -1122,3 +1122,72 @@ watch:
   unpairSubtitle: Cerrar la sesión de este reloj y dejar de sincronizar con él
   unpairTitle: "¿Desvincular este reloj?"
   unpairBody: El reloj cerrará la sesión y olvidará tu hogar. Puedes configurarlo de nuevo cuando quieras.
+
+watchTips:
+  section: Consejos
+  sectionBody: Recorridos breves de cómo funciona la app del reloj en tu muñeca.
+  stepsLabel: Paso a paso
+
+  pairTitle: Configura tu reloj
+  pairSubtitle: Inicia sesión en el reloj desde este teléfono
+  pairBody: Un reloj es mal sitio para escribir una contraseña, así que toma prestado el inicio de sesión de este teléfono. En la muñeca no se escribe nada.
+  pairStep1: Abre Pantry en tu reloj. Mostrará una pantalla de configuración.
+  pairStep2: Toca «Abrir en el teléfono». El reloj le pide a este teléfono que se encargue.
+  pairStep3: Desbloquea este teléfono y toca «Permitir» en la solicitud que aparece aquí.
+  pairStep4: Deja esta pantalla abierta hasta que diga que el reloj ha iniciado sesión.
+  pairNote: "¿No tienes el teléfono a mano? El reloj puede mostrar un código QR. Escanéalo con cualquier cámara y termina de iniciar sesión en el navegador que se abra."
+
+  itemsTitle: Marca artículos
+  itemsSubtitle: Toca para marcar, mantén para los detalles
+  itemsBody: La fila del centro de la pantalla es sobre la que actúa tu toque. Todo lo que puedes hacer con un artículo cuelga de esa fila.
+  itemsStep1: Toca la fila del centro para marcarla. Tócala otra vez para devolverla.
+  itemsStep2: Un anillo se vacía alrededor de la fila mientras el cambio todavía es reversible. Toca de nuevo dentro de esa ventana y no se escribe nada.
+  itemsStep3: Mantén pulsada una fila para abrirla. Ahí están la cantidad, el precio, la categoría y las notas, junto a un botón que abre el artículo en este teléfono.
+  itemsNote: Tocar una fila que no está en el centro simplemente la trae al centro. El toque siguiente es el que actúa, así que fallar la puntería solo cuesta un desplazamiento.
+
+  pagesTitle: Muévete por la app
+  pagesSubtitle: Desliza entre páginas y desliza para salir
+  pagesBody: La app del reloj es una fila de páginas a pantalla completa bajo un solo título. No hay ningún menú que abrir.
+  pagesStep1: Desliza de lado para pasar entre tu lista, el tablón de fotos, el muro de notas y la página de cuenta.
+  pagesStep2: Las barras bajo el título dicen cuántas páginas hay y en cuál estás.
+  pagesStep3: Desliza desde el borde de la pantalla para salir de cualquier cosa que hayas abierto.
+  pagesNote: El título siempre nombra la página en la que estás, y la línea de debajo nombra el grupo al que pertenece la fila central.
+
+  listsTitle: Cambia de lista
+  listsSubtitle: Toca el título de arriba
+  listsBody: El nombre de arriba de la pantalla es un botón. Tocarlo abre las dos cosas por las que dejarías una lista.
+  listsStep1: Toca el nombre de la lista en la parte superior de la pantalla.
+  listsStep2: Debajo se despliegan dos botones, «Empezar a comprar» y «Cambiar de lista».
+  listsStep3: Toca «Cambiar de lista» y elige otra, o «Todas las listas» para verlo todo a la vez.
+  listsNote: Los botones se pliegan solos a los pocos segundos, así que tocar el título sin querer no cuesta nada.
+
+  shoppingTitle: Haz una compra
+  shoppingSubtitle: Recorre las tiendas con el teléfono en el bolsillo
+  shoppingBody: Una compra convierte el reloj en un acompañante. Las páginas pasan a ser las que quieres en un pasillo, y la casa puede seguirlo.
+  shoppingStep1: Toca el título y luego «Empezar a comprar». Elige las listas, las tiendas y si tus convivientes ven la compra.
+  shoppingStep2: Las páginas pasan a ser la compra misma, una para el avance, otra para la lista, otra para lo comprado y otra para lo saltado.
+  shoppingStep3: Ve marcando sobre la marcha. Lo saltado va a su propia página y vuelve a la lista con un toque.
+  shoppingStep4: Al salir de una tienda, el reloj pregunta cuánto cobró la caja y te lleva a la siguiente.
+  shoppingStep5: Tras la última tienda, «Terminar compra» muestra el total antes de cerrar nada.
+  shoppingNote: Tocar una tienda en la página de avance lleva la compra directamente allí, hacia atrás igual que hacia delante, así que equivocarse es una corrección y no volver a empezar.
+
+  crownTitle: Gira la corona
+  crownSubtitle: Desplaza la lista o pasa las páginas
+  crownBody: Girar la corona o el bisel giratorio desplaza la lista que tienes delante, lo que mantiene el dedo fuera de lo que estás leyendo.
+  crownStep1: Gira la corona para recorrer la lista fila a fila. La fila en la que se detiene es la fila sobre la que actúa un toque.
+  crownStep2: Para que un giro cambie de página, abre «Cuenta», luego «Ajustes» y luego «Corona» en el reloj.
+  crownNote: Un giro hace una sola cosa a la vez. Si le das la corona a las páginas, las listas se desplazan solo con el dedo.
+
+  offlineTitle: Funciona sin cobertura
+  offlineSubtitle: Sigue marcando en el pasillo de los congelados
+  offlineBody: El reloj guarda su propia copia de tu hogar, así que abre y funciona sin nada al alcance. Sin teléfono, sin wifi y sin tarifa de datos en el reloj.
+  offlineStep1: Un punto pequeño en la parte superior de la pantalla significa que todo lo que has hecho está guardado.
+  offlineStep2: Una nube con un número al lado significa que hay esos cambios esperando una conexión.
+  offlineStep3: Salen solos en cuanto el reloj vuelve a tener alcance. No hay nada que pulsar.
+
+  tileTitle: Ten una lista a un deslizamiento
+  tileSubtitle: Añade el mosaico de Pantry
+  tileBody: Los mosaicos son las pantallas que hay junto a la esfera del reloj. Pantry publica uno que nombra tus listas, para que una lista esté a un deslizamiento y no a un arranque de app.
+  tileStep1: Desde la esfera del reloj, desliza de lado hasta llegar a los mosaicos.
+  tileStep2: Mantén pulsado, toca el más y elige Pantry en la lista.
+  tileStep3: Toca una lista en el mosaico para abrir la app directamente en ella.

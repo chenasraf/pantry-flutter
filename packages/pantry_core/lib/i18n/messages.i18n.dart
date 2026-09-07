@@ -87,6 +87,7 @@ class Messages {
   MarkdownEditorMessages get markdownEditor => MarkdownEditorMessages(this);
   WearMessages get wear => WearMessages(this);
   WatchMessages get watch => WatchMessages(this);
+  WatchTipsMessages get watchTips => WatchTipsMessages(this);
 }
 
 class CommonMessages {
@@ -5784,6 +5785,347 @@ class WatchMessages {
       """The watch signs out and forgets your household. You can set it up again any time.""";
 }
 
+class WatchTipsMessages {
+  final Messages _parent;
+  const WatchTipsMessages(this._parent);
+
+  /// ```dart
+  /// "Tips"
+  /// ```
+  String get section => """Tips""";
+
+  /// ```dart
+  /// "Short walkthroughs of how the watch app works on your wrist."
+  /// ```
+  String get sectionBody =>
+      """Short walkthroughs of how the watch app works on your wrist.""";
+
+  /// ```dart
+  /// "Step by step"
+  /// ```
+  String get stepsLabel => """Step by step""";
+
+  /// ```dart
+  /// "Set up your watch"
+  /// ```
+  String get pairTitle => """Set up your watch""";
+
+  /// ```dart
+  /// "Sign the watch in from this phone"
+  /// ```
+  String get pairSubtitle => """Sign the watch in from this phone""";
+
+  /// ```dart
+  /// "A watch is a poor place to type a password, so it borrows the sign-in from this phone instead. Nothing is typed on your wrist."
+  /// ```
+  String get pairBody =>
+      """A watch is a poor place to type a password, so it borrows the sign-in from this phone instead. Nothing is typed on your wrist.""";
+
+  /// ```dart
+  /// "Open Pantry on your watch. It shows a setup screen."
+  /// ```
+  String get pairStep1 =>
+      """Open Pantry on your watch. It shows a setup screen.""";
+
+  /// ```dart
+  /// "Tap Open on phone. The watch asks this phone to take over."
+  /// ```
+  String get pairStep2 =>
+      """Tap Open on phone. The watch asks this phone to take over.""";
+
+  /// ```dart
+  /// "Unlock this phone and tap Allow on the request that appears here."
+  /// ```
+  String get pairStep3 =>
+      """Unlock this phone and tap Allow on the request that appears here.""";
+
+  /// ```dart
+  /// "Keep this screen open until it says the watch is signed in."
+  /// ```
+  String get pairStep4 =>
+      """Keep this screen open until it says the watch is signed in.""";
+
+  /// ```dart
+  /// "No phone to hand? The watch can show a QR code instead. Scan it with any camera and finish signing in through the browser that opens."
+  /// ```
+  String get pairNote =>
+      """No phone to hand? The watch can show a QR code instead. Scan it with any camera and finish signing in through the browser that opens.""";
+
+  /// ```dart
+  /// "Tick items off"
+  /// ```
+  String get itemsTitle => """Tick items off""";
+
+  /// ```dart
+  /// "Tap to check, hold for the details"
+  /// ```
+  String get itemsSubtitle => """Tap to check, hold for the details""";
+
+  /// ```dart
+  /// "The row in the middle of the screen is the one your tap acts on. Everything you can do to an item hangs off that row."
+  /// ```
+  String get itemsBody =>
+      """The row in the middle of the screen is the one your tap acts on. Everything you can do to an item hangs off that row.""";
+
+  /// ```dart
+  /// "Tap the middle row to check it off. Tap it again to bring it back."
+  /// ```
+  String get itemsStep1 =>
+      """Tap the middle row to check it off. Tap it again to bring it back.""";
+
+  /// ```dart
+  /// "A ring drains around the row while the change is still yours to take back. Tap again inside that window and nothing is written at all."
+  /// ```
+  String get itemsStep2 =>
+      """A ring drains around the row while the change is still yours to take back. Tap again inside that window and nothing is written at all.""";
+
+  /// ```dart
+  /// "Press and hold a row to open it. Quantity, price, category and notes are there, along with a button that opens the item on this phone."
+  /// ```
+  String get itemsStep3 =>
+      """Press and hold a row to open it. Quantity, price, category and notes are there, along with a button that opens the item on this phone.""";
+
+  /// ```dart
+  /// "Tapping a row that is not in the middle simply brings it there. The tap after that is the one that acts, so a mis-aim costs a scroll and nothing else."
+  /// ```
+  String get itemsNote =>
+      """Tapping a row that is not in the middle simply brings it there. The tap after that is the one that acts, so a mis-aim costs a scroll and nothing else.""";
+
+  /// ```dart
+  /// "Find your way around"
+  /// ```
+  String get pagesTitle => """Find your way around""";
+
+  /// ```dart
+  /// "Swipe between pages, swipe back out"
+  /// ```
+  String get pagesSubtitle => """Swipe between pages, swipe back out""";
+
+  /// ```dart
+  /// "The watch app is a row of full-screen pages under one title bar. There is no menu to open."
+  /// ```
+  String get pagesBody =>
+      """The watch app is a row of full-screen pages under one title bar. There is no menu to open.""";
+
+  /// ```dart
+  /// "Swipe sideways to move between your list, the photo board, the notes wall and the account page."
+  /// ```
+  String get pagesStep1 =>
+      """Swipe sideways to move between your list, the photo board, the notes wall and the account page.""";
+
+  /// ```dart
+  /// "The bars under the title say how many pages there are and which one you are on."
+  /// ```
+  String get pagesStep2 =>
+      """The bars under the title say how many pages there are and which one you are on.""";
+
+  /// ```dart
+  /// "Swipe in from the edge of the screen to back out of anything you opened."
+  /// ```
+  String get pagesStep3 =>
+      """Swipe in from the edge of the screen to back out of anything you opened.""";
+
+  /// ```dart
+  /// "The title always names the page you are on, and the line under it names the group the middle row belongs to."
+  /// ```
+  String get pagesNote =>
+      """The title always names the page you are on, and the line under it names the group the middle row belongs to.""";
+
+  /// ```dart
+  /// "Switch lists"
+  /// ```
+  String get listsTitle => """Switch lists""";
+
+  /// ```dart
+  /// "Tap the title at the top"
+  /// ```
+  String get listsSubtitle => """Tap the title at the top""";
+
+  /// ```dart
+  /// "The name at the top of the screen is a button. Tapping it opens the two things you would leave a list for."
+  /// ```
+  String get listsBody =>
+      """The name at the top of the screen is a button. Tapping it opens the two things you would leave a list for.""";
+
+  /// ```dart
+  /// "Tap the list name at the top of the screen."
+  /// ```
+  String get listsStep1 => """Tap the list name at the top of the screen.""";
+
+  /// ```dart
+  /// "Two buttons drop down under it, Start shopping and Change list."
+  /// ```
+  String get listsStep2 =>
+      """Two buttons drop down under it, Start shopping and Change list.""";
+
+  /// ```dart
+  /// "Tap Change list and pick another one, or All lists to see everything at once."
+  /// ```
+  String get listsStep3 =>
+      """Tap Change list and pick another one, or All lists to see everything at once.""";
+
+  /// ```dart
+  /// "The buttons fold away on their own after a few seconds, so tapping the title by accident costs nothing."
+  /// ```
+  String get listsNote =>
+      """The buttons fold away on their own after a few seconds, so tapping the title by accident costs nothing.""";
+
+  /// ```dart
+  /// "Shop a trip"
+  /// ```
+  String get shoppingTitle => """Shop a trip""";
+
+  /// ```dart
+  /// "Walk the shops with your phone in your pocket"
+  /// ```
+  String get shoppingSubtitle =>
+      """Walk the shops with your phone in your pocket""";
+
+  /// ```dart
+  /// "A trip turns the watch into a shopping companion. The pages become the ones you want in an aisle, and the household can follow along."
+  /// ```
+  String get shoppingBody =>
+      """A trip turns the watch into a shopping companion. The pages become the ones you want in an aisle, and the household can follow along.""";
+
+  /// ```dart
+  /// "Tap the title, then Start shopping. Pick the lists to shop, the shops to walk, and whether housemates see the trip."
+  /// ```
+  String get shoppingStep1 =>
+      """Tap the title, then Start shopping. Pick the lists to shop, the shops to walk, and whether housemates see the trip.""";
+
+  /// ```dart
+  /// "The pages become the trip itself, one each for where it has got to, the list, what you bought and what you skipped."
+  /// ```
+  String get shoppingStep2 =>
+      """The pages become the trip itself, one each for where it has got to, the list, what you bought and what you skipped.""";
+
+  /// ```dart
+  /// "Tick items as you go. Skipped ones land on their own page and go back on the list with a tap."
+  /// ```
+  String get shoppingStep3 =>
+      """Tick items as you go. Skipped ones land on their own page and go back on the list with a tap.""";
+
+  /// ```dart
+  /// "As you leave a shop, the watch asks what the till charged and moves you on to the next one."
+  /// ```
+  String get shoppingStep4 =>
+      """As you leave a shop, the watch asks what the till charged and moves you on to the next one.""";
+
+  /// ```dart
+  /// "After the last shop, Finish trip shows the tally before anything is closed."
+  /// ```
+  String get shoppingStep5 =>
+      """After the last shop, Finish trip shows the tally before anything is closed.""";
+
+  /// ```dart
+  /// "Tapping a shop on the progression page moves the trip straight to it, backwards as well as forwards, so a wrong turn is a correction rather than a restart."
+  /// ```
+  String get shoppingNote =>
+      """Tapping a shop on the progression page moves the trip straight to it, backwards as well as forwards, so a wrong turn is a correction rather than a restart.""";
+
+  /// ```dart
+  /// "Turn the crown"
+  /// ```
+  String get crownTitle => """Turn the crown""";
+
+  /// ```dart
+  /// "Scroll the list, or turn the pages"
+  /// ```
+  String get crownSubtitle => """Scroll the list, or turn the pages""";
+
+  /// ```dart
+  /// "Turning the crown or the rotating bezel scrolls whatever list is in front of you, which keeps your finger off the thing you are reading."
+  /// ```
+  String get crownBody =>
+      """Turning the crown or the rotating bezel scrolls whatever list is in front of you, which keeps your finger off the thing you are reading.""";
+
+  /// ```dart
+  /// "Turn the crown to walk the list a row at a time. The row it lands on is the row a tap acts on."
+  /// ```
+  String get crownStep1 =>
+      """Turn the crown to walk the list a row at a time. The row it lands on is the row a tap acts on.""";
+
+  /// ```dart
+  /// "To make a turn change pages instead, open Account, then Settings, then Crown on the watch."
+  /// ```
+  String get crownStep2 =>
+      """To make a turn change pages instead, open Account, then Settings, then Crown on the watch.""";
+
+  /// ```dart
+  /// "A turn does one thing at a time. Handing the crown to the pages means lists are scrolled by finger alone."
+  /// ```
+  String get crownNote =>
+      """A turn does one thing at a time. Handing the crown to the pages means lists are scrolled by finger alone.""";
+
+  /// ```dart
+  /// "It works without a signal"
+  /// ```
+  String get offlineTitle => """It works without a signal""";
+
+  /// ```dart
+  /// "Keep ticking in the cold aisle"
+  /// ```
+  String get offlineSubtitle => """Keep ticking in the cold aisle""";
+
+  /// ```dart
+  /// "The watch keeps its own copy of your household, so it opens and works with nothing in range. No phone, no Wi-Fi, no watch data plan."
+  /// ```
+  String get offlineBody =>
+      """The watch keeps its own copy of your household, so it opens and works with nothing in range. No phone, no Wi-Fi, no watch data plan.""";
+
+  /// ```dart
+  /// "A small dot at the top of the screen means everything you have done is saved."
+  /// ```
+  String get offlineStep1 =>
+      """A small dot at the top of the screen means everything you have done is saved.""";
+
+  /// ```dart
+  /// "A cloud with a number beside it means that many changes are waiting for a connection."
+  /// ```
+  String get offlineStep2 =>
+      """A cloud with a number beside it means that many changes are waiting for a connection.""";
+
+  /// ```dart
+  /// "They go out on their own the moment the watch is back in range. There is nothing to press."
+  /// ```
+  String get offlineStep3 =>
+      """They go out on their own the moment the watch is back in range. There is nothing to press.""";
+
+  /// ```dart
+  /// "Keep a list one swipe away"
+  /// ```
+  String get tileTitle => """Keep a list one swipe away""";
+
+  /// ```dart
+  /// "Add the Pantry tile"
+  /// ```
+  String get tileSubtitle => """Add the Pantry tile""";
+
+  /// ```dart
+  /// "Tiles are the screens beside your watch face. Pantry publishes one that names your lists, so a list is a swipe away rather than an app launch."
+  /// ```
+  String get tileBody =>
+      """Tiles are the screens beside your watch face. Pantry publishes one that names your lists, so a list is a swipe away rather than an app launch.""";
+
+  /// ```dart
+  /// "From the watch face, swipe sideways until you reach the tiles."
+  /// ```
+  String get tileStep1 =>
+      """From the watch face, swipe sideways until you reach the tiles.""";
+
+  /// ```dart
+  /// "Press and hold, tap the plus, and pick Pantry from the list."
+  /// ```
+  String get tileStep2 =>
+      """Press and hold, tap the plus, and pick Pantry from the list.""";
+
+  /// ```dart
+  /// "Tap a list on the tile to open the app straight on it."
+  /// ```
+  String get tileStep3 =>
+      """Tap a list on the tile to open the app straight on it.""";
+}
+
 Map<String, String> get messagesMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Cancel""",
@@ -6840,4 +7182,104 @@ Password: pantry-rocks""",
   """watch.unpairTitle""": """Unpair this watch?""",
   """watch.unpairBody""":
       """The watch signs out and forgets your household. You can set it up again any time.""",
+  """watchTips.section""": """Tips""",
+  """watchTips.sectionBody""":
+      """Short walkthroughs of how the watch app works on your wrist.""",
+  """watchTips.stepsLabel""": """Step by step""",
+  """watchTips.pairTitle""": """Set up your watch""",
+  """watchTips.pairSubtitle""": """Sign the watch in from this phone""",
+  """watchTips.pairBody""":
+      """A watch is a poor place to type a password, so it borrows the sign-in from this phone instead. Nothing is typed on your wrist.""",
+  """watchTips.pairStep1""":
+      """Open Pantry on your watch. It shows a setup screen.""",
+  """watchTips.pairStep2""":
+      """Tap Open on phone. The watch asks this phone to take over.""",
+  """watchTips.pairStep3""":
+      """Unlock this phone and tap Allow on the request that appears here.""",
+  """watchTips.pairStep4""":
+      """Keep this screen open until it says the watch is signed in.""",
+  """watchTips.pairNote""":
+      """No phone to hand? The watch can show a QR code instead. Scan it with any camera and finish signing in through the browser that opens.""",
+  """watchTips.itemsTitle""": """Tick items off""",
+  """watchTips.itemsSubtitle""": """Tap to check, hold for the details""",
+  """watchTips.itemsBody""":
+      """The row in the middle of the screen is the one your tap acts on. Everything you can do to an item hangs off that row.""",
+  """watchTips.itemsStep1""":
+      """Tap the middle row to check it off. Tap it again to bring it back.""",
+  """watchTips.itemsStep2""":
+      """A ring drains around the row while the change is still yours to take back. Tap again inside that window and nothing is written at all.""",
+  """watchTips.itemsStep3""":
+      """Press and hold a row to open it. Quantity, price, category and notes are there, along with a button that opens the item on this phone.""",
+  """watchTips.itemsNote""":
+      """Tapping a row that is not in the middle simply brings it there. The tap after that is the one that acts, so a mis-aim costs a scroll and nothing else.""",
+  """watchTips.pagesTitle""": """Find your way around""",
+  """watchTips.pagesSubtitle""": """Swipe between pages, swipe back out""",
+  """watchTips.pagesBody""":
+      """The watch app is a row of full-screen pages under one title bar. There is no menu to open.""",
+  """watchTips.pagesStep1""":
+      """Swipe sideways to move between your list, the photo board, the notes wall and the account page.""",
+  """watchTips.pagesStep2""":
+      """The bars under the title say how many pages there are and which one you are on.""",
+  """watchTips.pagesStep3""":
+      """Swipe in from the edge of the screen to back out of anything you opened.""",
+  """watchTips.pagesNote""":
+      """The title always names the page you are on, and the line under it names the group the middle row belongs to.""",
+  """watchTips.listsTitle""": """Switch lists""",
+  """watchTips.listsSubtitle""": """Tap the title at the top""",
+  """watchTips.listsBody""":
+      """The name at the top of the screen is a button. Tapping it opens the two things you would leave a list for.""",
+  """watchTips.listsStep1""": """Tap the list name at the top of the screen.""",
+  """watchTips.listsStep2""":
+      """Two buttons drop down under it, Start shopping and Change list.""",
+  """watchTips.listsStep3""":
+      """Tap Change list and pick another one, or All lists to see everything at once.""",
+  """watchTips.listsNote""":
+      """The buttons fold away on their own after a few seconds, so tapping the title by accident costs nothing.""",
+  """watchTips.shoppingTitle""": """Shop a trip""",
+  """watchTips.shoppingSubtitle""":
+      """Walk the shops with your phone in your pocket""",
+  """watchTips.shoppingBody""":
+      """A trip turns the watch into a shopping companion. The pages become the ones you want in an aisle, and the household can follow along.""",
+  """watchTips.shoppingStep1""":
+      """Tap the title, then Start shopping. Pick the lists to shop, the shops to walk, and whether housemates see the trip.""",
+  """watchTips.shoppingStep2""":
+      """The pages become the trip itself, one each for where it has got to, the list, what you bought and what you skipped.""",
+  """watchTips.shoppingStep3""":
+      """Tick items as you go. Skipped ones land on their own page and go back on the list with a tap.""",
+  """watchTips.shoppingStep4""":
+      """As you leave a shop, the watch asks what the till charged and moves you on to the next one.""",
+  """watchTips.shoppingStep5""":
+      """After the last shop, Finish trip shows the tally before anything is closed.""",
+  """watchTips.shoppingNote""":
+      """Tapping a shop on the progression page moves the trip straight to it, backwards as well as forwards, so a wrong turn is a correction rather than a restart.""",
+  """watchTips.crownTitle""": """Turn the crown""",
+  """watchTips.crownSubtitle""": """Scroll the list, or turn the pages""",
+  """watchTips.crownBody""":
+      """Turning the crown or the rotating bezel scrolls whatever list is in front of you, which keeps your finger off the thing you are reading.""",
+  """watchTips.crownStep1""":
+      """Turn the crown to walk the list a row at a time. The row it lands on is the row a tap acts on.""",
+  """watchTips.crownStep2""":
+      """To make a turn change pages instead, open Account, then Settings, then Crown on the watch.""",
+  """watchTips.crownNote""":
+      """A turn does one thing at a time. Handing the crown to the pages means lists are scrolled by finger alone.""",
+  """watchTips.offlineTitle""": """It works without a signal""",
+  """watchTips.offlineSubtitle""": """Keep ticking in the cold aisle""",
+  """watchTips.offlineBody""":
+      """The watch keeps its own copy of your household, so it opens and works with nothing in range. No phone, no Wi-Fi, no watch data plan.""",
+  """watchTips.offlineStep1""":
+      """A small dot at the top of the screen means everything you have done is saved.""",
+  """watchTips.offlineStep2""":
+      """A cloud with a number beside it means that many changes are waiting for a connection.""",
+  """watchTips.offlineStep3""":
+      """They go out on their own the moment the watch is back in range. There is nothing to press.""",
+  """watchTips.tileTitle""": """Keep a list one swipe away""",
+  """watchTips.tileSubtitle""": """Add the Pantry tile""",
+  """watchTips.tileBody""":
+      """Tiles are the screens beside your watch face. Pantry publishes one that names your lists, so a list is a swipe away rather than an app launch.""",
+  """watchTips.tileStep1""":
+      """From the watch face, swipe sideways until you reach the tiles.""",
+  """watchTips.tileStep2""":
+      """Press and hold, tap the plus, and pick Pantry from the list.""",
+  """watchTips.tileStep3""":
+      """Tap a list on the tile to open the app straight on it.""",
 };

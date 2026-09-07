@@ -88,6 +88,7 @@ class MessagesFr extends Messages {
   MarkdownEditorMessagesFr get markdownEditor => MarkdownEditorMessagesFr(this);
   WearMessagesFr get wear => WearMessagesFr(this);
   WatchMessagesFr get watch => WatchMessagesFr(this);
+  WatchTipsMessagesFr get watchTips => WatchTipsMessagesFr(this);
 }
 
 class CommonMessagesFr extends CommonMessages {
@@ -5838,6 +5839,350 @@ class WatchMessagesFr extends WatchMessages {
       """La montre se déconnecte et oublie votre foyer. Vous pourrez la reconfigurer à tout moment.""";
 }
 
+class WatchTipsMessagesFr extends WatchTipsMessages {
+  final MessagesFr _parent;
+  const WatchTipsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Astuces"
+  /// ```
+  String get section => """Astuces""";
+
+  /// ```dart
+  /// "De courtes explications sur le fonctionnement de l'app de la montre au poignet."
+  /// ```
+  String get sectionBody =>
+      """De courtes explications sur le fonctionnement de l'app de la montre au poignet.""";
+
+  /// ```dart
+  /// "Étape par étape"
+  /// ```
+  String get stepsLabel => """Étape par étape""";
+
+  /// ```dart
+  /// "Configurer votre montre"
+  /// ```
+  String get pairTitle => """Configurer votre montre""";
+
+  /// ```dart
+  /// "Connecter la montre depuis ce téléphone"
+  /// ```
+  String get pairSubtitle => """Connecter la montre depuis ce téléphone""";
+
+  /// ```dart
+  /// "Une montre se prête mal à la saisie d'un mot de passe, elle emprunte donc la connexion de ce téléphone. Rien ne se tape au poignet."
+  /// ```
+  String get pairBody =>
+      """Une montre se prête mal à la saisie d'un mot de passe, elle emprunte donc la connexion de ce téléphone. Rien ne se tape au poignet.""";
+
+  /// ```dart
+  /// "Ouvrez Pantry sur votre montre. Un écran de configuration apparaît."
+  /// ```
+  String get pairStep1 =>
+      """Ouvrez Pantry sur votre montre. Un écran de configuration apparaît.""";
+
+  /// ```dart
+  /// "Touchez « Ouvrir sur le téléphone ». La montre demande à ce téléphone de prendre le relais."
+  /// ```
+  String get pairStep2 =>
+      """Touchez « Ouvrir sur le téléphone ». La montre demande à ce téléphone de prendre le relais.""";
+
+  /// ```dart
+  /// "Déverrouillez ce téléphone et touchez « Autoriser » sur la demande qui s'affiche ici."
+  /// ```
+  String get pairStep3 =>
+      """Déverrouillez ce téléphone et touchez « Autoriser » sur la demande qui s'affiche ici.""";
+
+  /// ```dart
+  /// "Laissez cet écran ouvert jusqu'à ce qu'il indique que la montre est connectée."
+  /// ```
+  String get pairStep4 =>
+      """Laissez cet écran ouvert jusqu'à ce qu'il indique que la montre est connectée.""";
+
+  /// ```dart
+  /// "Pas de téléphone sous la main ? La montre peut afficher un QR code. Scannez-le avec n'importe quel appareil photo et terminez la connexion dans le navigateur qui s'ouvre."
+  /// ```
+  String get pairNote =>
+      """Pas de téléphone sous la main ? La montre peut afficher un QR code. Scannez-le avec n'importe quel appareil photo et terminez la connexion dans le navigateur qui s'ouvre.""";
+
+  /// ```dart
+  /// "Cocher des articles"
+  /// ```
+  String get itemsTitle => """Cocher des articles""";
+
+  /// ```dart
+  /// "Toucher pour cocher, maintenir pour les détails"
+  /// ```
+  String get itemsSubtitle =>
+      """Toucher pour cocher, maintenir pour les détails""";
+
+  /// ```dart
+  /// "La ligne au centre de l'écran est celle sur laquelle votre appui agit. Tout ce que vous pouvez faire à un article part de cette ligne."
+  /// ```
+  String get itemsBody =>
+      """La ligne au centre de l'écran est celle sur laquelle votre appui agit. Tout ce que vous pouvez faire à un article part de cette ligne.""";
+
+  /// ```dart
+  /// "Touchez la ligne du centre pour la cocher. Touchez-la de nouveau pour la remettre."
+  /// ```
+  String get itemsStep1 =>
+      """Touchez la ligne du centre pour la cocher. Touchez-la de nouveau pour la remettre.""";
+
+  /// ```dart
+  /// "Un anneau se vide autour de la ligne tant que le changement peut encore être repris. Touchez de nouveau pendant ce délai et rien n'est écrit."
+  /// ```
+  String get itemsStep2 =>
+      """Un anneau se vide autour de la ligne tant que le changement peut encore être repris. Touchez de nouveau pendant ce délai et rien n'est écrit.""";
+
+  /// ```dart
+  /// "Maintenez une ligne pour l'ouvrir. Quantité, prix, catégorie et notes s'y trouvent, avec un bouton qui ouvre l'article sur ce téléphone."
+  /// ```
+  String get itemsStep3 =>
+      """Maintenez une ligne pour l'ouvrir. Quantité, prix, catégorie et notes s'y trouvent, avec un bouton qui ouvre l'article sur ce téléphone.""";
+
+  /// ```dart
+  /// "Toucher une ligne qui n'est pas au centre l'y amène simplement. C'est l'appui suivant qui agit, une visée ratée ne coûte donc qu'un défilement."
+  /// ```
+  String get itemsNote =>
+      """Toucher une ligne qui n'est pas au centre l'y amène simplement. C'est l'appui suivant qui agit, une visée ratée ne coûte donc qu'un défilement.""";
+
+  /// ```dart
+  /// "Se repérer"
+  /// ```
+  String get pagesTitle => """Se repérer""";
+
+  /// ```dart
+  /// "Balayer entre les pages, balayer pour ressortir"
+  /// ```
+  String get pagesSubtitle =>
+      """Balayer entre les pages, balayer pour ressortir""";
+
+  /// ```dart
+  /// "L'app de la montre est une suite de pages plein écran sous un même titre. Il n'y a aucun menu à ouvrir."
+  /// ```
+  String get pagesBody =>
+      """L'app de la montre est une suite de pages plein écran sous un même titre. Il n'y a aucun menu à ouvrir.""";
+
+  /// ```dart
+  /// "Balayez latéralement pour passer entre votre liste, le tableau photo, le mur de notes et la page du compte."
+  /// ```
+  String get pagesStep1 =>
+      """Balayez latéralement pour passer entre votre liste, le tableau photo, le mur de notes et la page du compte.""";
+
+  /// ```dart
+  /// "Les barres sous le titre indiquent combien il y a de pages et sur laquelle vous êtes."
+  /// ```
+  String get pagesStep2 =>
+      """Les barres sous le titre indiquent combien il y a de pages et sur laquelle vous êtes.""";
+
+  /// ```dart
+  /// "Balayez depuis le bord de l'écran pour ressortir de tout ce que vous avez ouvert."
+  /// ```
+  String get pagesStep3 =>
+      """Balayez depuis le bord de l'écran pour ressortir de tout ce que vous avez ouvert.""";
+
+  /// ```dart
+  /// "Le titre nomme toujours la page où vous êtes, et la ligne en dessous nomme le groupe auquel appartient la ligne centrale."
+  /// ```
+  String get pagesNote =>
+      """Le titre nomme toujours la page où vous êtes, et la ligne en dessous nomme le groupe auquel appartient la ligne centrale.""";
+
+  /// ```dart
+  /// "Changer de liste"
+  /// ```
+  String get listsTitle => """Changer de liste""";
+
+  /// ```dart
+  /// "Touchez le titre en haut"
+  /// ```
+  String get listsSubtitle => """Touchez le titre en haut""";
+
+  /// ```dart
+  /// "Le nom en haut de l'écran est un bouton. Le toucher ouvre les deux choses pour lesquelles on quitte une liste."
+  /// ```
+  String get listsBody =>
+      """Le nom en haut de l'écran est un bouton. Le toucher ouvre les deux choses pour lesquelles on quitte une liste.""";
+
+  /// ```dart
+  /// "Touchez le nom de la liste en haut de l'écran."
+  /// ```
+  String get listsStep1 => """Touchez le nom de la liste en haut de l'écran.""";
+
+  /// ```dart
+  /// "Deux boutons se déplient en dessous, « Commencer les courses » et « Changer de liste »."
+  /// ```
+  String get listsStep2 =>
+      """Deux boutons se déplient en dessous, « Commencer les courses » et « Changer de liste ».""";
+
+  /// ```dart
+  /// "Touchez « Changer de liste » et choisissez-en une autre, ou « Toutes les listes » pour tout voir d'un coup."
+  /// ```
+  String get listsStep3 =>
+      """Touchez « Changer de liste » et choisissez-en une autre, ou « Toutes les listes » pour tout voir d'un coup.""";
+
+  /// ```dart
+  /// "Les boutons se replient d'eux-mêmes au bout de quelques secondes, toucher le titre par erreur ne coûte donc rien."
+  /// ```
+  String get listsNote =>
+      """Les boutons se replient d'eux-mêmes au bout de quelques secondes, toucher le titre par erreur ne coûte donc rien.""";
+
+  /// ```dart
+  /// "Faire des courses"
+  /// ```
+  String get shoppingTitle => """Faire des courses""";
+
+  /// ```dart
+  /// "Parcourir les magasins, le téléphone dans la poche"
+  /// ```
+  String get shoppingSubtitle =>
+      """Parcourir les magasins, le téléphone dans la poche""";
+
+  /// ```dart
+  /// "Une sortie transforme la montre en compagnon de courses. Les pages deviennent celles dont vous avez besoin dans un rayon, et le foyer peut suivre."
+  /// ```
+  String get shoppingBody =>
+      """Une sortie transforme la montre en compagnon de courses. Les pages deviennent celles dont vous avez besoin dans un rayon, et le foyer peut suivre.""";
+
+  /// ```dart
+  /// "Touchez le titre, puis « Commencer les courses ». Choisissez les listes, les magasins, et si vos colocataires voient la sortie."
+  /// ```
+  String get shoppingStep1 =>
+      """Touchez le titre, puis « Commencer les courses ». Choisissez les listes, les magasins, et si vos colocataires voient la sortie.""";
+
+  /// ```dart
+  /// "Les pages deviennent la sortie elle-même, une pour l'avancement, une pour la liste, une pour les achats et une pour les articles passés."
+  /// ```
+  String get shoppingStep2 =>
+      """Les pages deviennent la sortie elle-même, une pour l'avancement, une pour la liste, une pour les achats et une pour les articles passés.""";
+
+  /// ```dart
+  /// "Cochez au fur et à mesure. Ce que vous passez arrive sur sa propre page et revient sur la liste d'un appui."
+  /// ```
+  String get shoppingStep3 =>
+      """Cochez au fur et à mesure. Ce que vous passez arrive sur sa propre page et revient sur la liste d'un appui.""";
+
+  /// ```dart
+  /// "En quittant un magasin, la montre demande ce que la caisse a facturé puis vous emmène au suivant."
+  /// ```
+  String get shoppingStep4 =>
+      """En quittant un magasin, la montre demande ce que la caisse a facturé puis vous emmène au suivant.""";
+
+  /// ```dart
+  /// "Après le dernier magasin, « Terminer les courses » affiche le total avant de rien clôturer."
+  /// ```
+  String get shoppingStep5 =>
+      """Après le dernier magasin, « Terminer les courses » affiche le total avant de rien clôturer.""";
+
+  /// ```dart
+  /// "Toucher un magasin sur la page d'avancement y emmène la sortie directement, en arrière comme en avant, un détour est donc une correction et non un recommencement."
+  /// ```
+  String get shoppingNote =>
+      """Toucher un magasin sur la page d'avancement y emmène la sortie directement, en arrière comme en avant, un détour est donc une correction et non un recommencement.""";
+
+  /// ```dart
+  /// "Tourner la couronne"
+  /// ```
+  String get crownTitle => """Tourner la couronne""";
+
+  /// ```dart
+  /// "Faire défiler la liste, ou tourner les pages"
+  /// ```
+  String get crownSubtitle =>
+      """Faire défiler la liste, ou tourner les pages""";
+
+  /// ```dart
+  /// "Tourner la couronne ou la lunette rotative fait défiler la liste devant vous, ce qui garde votre doigt hors de ce que vous lisez."
+  /// ```
+  String get crownBody =>
+      """Tourner la couronne ou la lunette rotative fait défiler la liste devant vous, ce qui garde votre doigt hors de ce que vous lisez.""";
+
+  /// ```dart
+  /// "Tournez la couronne pour parcourir la liste ligne par ligne. La ligne où elle s'arrête est celle sur laquelle un appui agit."
+  /// ```
+  String get crownStep1 =>
+      """Tournez la couronne pour parcourir la liste ligne par ligne. La ligne où elle s'arrête est celle sur laquelle un appui agit.""";
+
+  /// ```dart
+  /// "Pour qu'un tour change de page à la place, ouvrez « Compte », puis « Réglages », puis « Couronne » sur la montre."
+  /// ```
+  String get crownStep2 =>
+      """Pour qu'un tour change de page à la place, ouvrez « Compte », puis « Réglages », puis « Couronne » sur la montre.""";
+
+  /// ```dart
+  /// "Un tour ne fait qu'une chose à la fois. Confier la couronne aux pages veut dire que les listes défilent au doigt seulement."
+  /// ```
+  String get crownNote =>
+      """Un tour ne fait qu'une chose à la fois. Confier la couronne aux pages veut dire que les listes défilent au doigt seulement.""";
+
+  /// ```dart
+  /// "Ça marche sans réseau"
+  /// ```
+  String get offlineTitle => """Ça marche sans réseau""";
+
+  /// ```dart
+  /// "Continuez à cocher au rayon frais"
+  /// ```
+  String get offlineSubtitle => """Continuez à cocher au rayon frais""";
+
+  /// ```dart
+  /// "La montre garde sa propre copie de votre foyer, elle s'ouvre et fonctionne donc sans rien à portée. Ni téléphone, ni Wi-Fi, ni forfait data sur la montre."
+  /// ```
+  String get offlineBody =>
+      """La montre garde sa propre copie de votre foyer, elle s'ouvre et fonctionne donc sans rien à portée. Ni téléphone, ni Wi-Fi, ni forfait data sur la montre.""";
+
+  /// ```dart
+  /// "Un petit point en haut de l'écran signifie que tout ce que vous avez fait est enregistré."
+  /// ```
+  String get offlineStep1 =>
+      """Un petit point en haut de l'écran signifie que tout ce que vous avez fait est enregistré.""";
+
+  /// ```dart
+  /// "Un nuage suivi d'un nombre signifie qu'autant de changements attendent une connexion."
+  /// ```
+  String get offlineStep2 =>
+      """Un nuage suivi d'un nombre signifie qu'autant de changements attendent une connexion.""";
+
+  /// ```dart
+  /// "Ils partent tout seuls dès que la montre est de nouveau à portée. Il n'y a rien à appuyer."
+  /// ```
+  String get offlineStep3 =>
+      """Ils partent tout seuls dès que la montre est de nouveau à portée. Il n'y a rien à appuyer.""";
+
+  /// ```dart
+  /// "Une liste à un balayage"
+  /// ```
+  String get tileTitle => """Une liste à un balayage""";
+
+  /// ```dart
+  /// "Ajouter la tuile Pantry"
+  /// ```
+  String get tileSubtitle => """Ajouter la tuile Pantry""";
+
+  /// ```dart
+  /// "Les tuiles sont les écrans à côté de votre cadran. Pantry en publie une qui nomme vos listes, pour qu'une liste soit à un balayage plutôt qu'à un lancement d'app."
+  /// ```
+  String get tileBody =>
+      """Les tuiles sont les écrans à côté de votre cadran. Pantry en publie une qui nomme vos listes, pour qu'une liste soit à un balayage plutôt qu'à un lancement d'app.""";
+
+  /// ```dart
+  /// "Depuis le cadran, balayez latéralement jusqu'aux tuiles."
+  /// ```
+  String get tileStep1 =>
+      """Depuis le cadran, balayez latéralement jusqu'aux tuiles.""";
+
+  /// ```dart
+  /// "Maintenez appuyé, touchez le plus, et choisissez Pantry dans la liste."
+  /// ```
+  String get tileStep2 =>
+      """Maintenez appuyé, touchez le plus, et choisissez Pantry dans la liste.""";
+
+  /// ```dart
+  /// "Touchez une liste sur la tuile pour ouvrir l'app directement dessus."
+  /// ```
+  String get tileStep3 =>
+      """Touchez une liste sur la tuile pour ouvrir l'app directement dessus.""";
+}
+
 Map<String, String> get messagesFrMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Annuler""",
@@ -6952,4 +7297,108 @@ Mot de passe : pantry-rocks""",
   """watch.unpairTitle""": """Dissocier cette montre ?""",
   """watch.unpairBody""":
       """La montre se déconnecte et oublie votre foyer. Vous pourrez la reconfigurer à tout moment.""",
+  """watchTips.section""": """Astuces""",
+  """watchTips.sectionBody""":
+      """De courtes explications sur le fonctionnement de l'app de la montre au poignet.""",
+  """watchTips.stepsLabel""": """Étape par étape""",
+  """watchTips.pairTitle""": """Configurer votre montre""",
+  """watchTips.pairSubtitle""": """Connecter la montre depuis ce téléphone""",
+  """watchTips.pairBody""":
+      """Une montre se prête mal à la saisie d'un mot de passe, elle emprunte donc la connexion de ce téléphone. Rien ne se tape au poignet.""",
+  """watchTips.pairStep1""":
+      """Ouvrez Pantry sur votre montre. Un écran de configuration apparaît.""",
+  """watchTips.pairStep2""":
+      """Touchez « Ouvrir sur le téléphone ». La montre demande à ce téléphone de prendre le relais.""",
+  """watchTips.pairStep3""":
+      """Déverrouillez ce téléphone et touchez « Autoriser » sur la demande qui s'affiche ici.""",
+  """watchTips.pairStep4""":
+      """Laissez cet écran ouvert jusqu'à ce qu'il indique que la montre est connectée.""",
+  """watchTips.pairNote""":
+      """Pas de téléphone sous la main ? La montre peut afficher un QR code. Scannez-le avec n'importe quel appareil photo et terminez la connexion dans le navigateur qui s'ouvre.""",
+  """watchTips.itemsTitle""": """Cocher des articles""",
+  """watchTips.itemsSubtitle""":
+      """Toucher pour cocher, maintenir pour les détails""",
+  """watchTips.itemsBody""":
+      """La ligne au centre de l'écran est celle sur laquelle votre appui agit. Tout ce que vous pouvez faire à un article part de cette ligne.""",
+  """watchTips.itemsStep1""":
+      """Touchez la ligne du centre pour la cocher. Touchez-la de nouveau pour la remettre.""",
+  """watchTips.itemsStep2""":
+      """Un anneau se vide autour de la ligne tant que le changement peut encore être repris. Touchez de nouveau pendant ce délai et rien n'est écrit.""",
+  """watchTips.itemsStep3""":
+      """Maintenez une ligne pour l'ouvrir. Quantité, prix, catégorie et notes s'y trouvent, avec un bouton qui ouvre l'article sur ce téléphone.""",
+  """watchTips.itemsNote""":
+      """Toucher une ligne qui n'est pas au centre l'y amène simplement. C'est l'appui suivant qui agit, une visée ratée ne coûte donc qu'un défilement.""",
+  """watchTips.pagesTitle""": """Se repérer""",
+  """watchTips.pagesSubtitle""":
+      """Balayer entre les pages, balayer pour ressortir""",
+  """watchTips.pagesBody""":
+      """L'app de la montre est une suite de pages plein écran sous un même titre. Il n'y a aucun menu à ouvrir.""",
+  """watchTips.pagesStep1""":
+      """Balayez latéralement pour passer entre votre liste, le tableau photo, le mur de notes et la page du compte.""",
+  """watchTips.pagesStep2""":
+      """Les barres sous le titre indiquent combien il y a de pages et sur laquelle vous êtes.""",
+  """watchTips.pagesStep3""":
+      """Balayez depuis le bord de l'écran pour ressortir de tout ce que vous avez ouvert.""",
+  """watchTips.pagesNote""":
+      """Le titre nomme toujours la page où vous êtes, et la ligne en dessous nomme le groupe auquel appartient la ligne centrale.""",
+  """watchTips.listsTitle""": """Changer de liste""",
+  """watchTips.listsSubtitle""": """Touchez le titre en haut""",
+  """watchTips.listsBody""":
+      """Le nom en haut de l'écran est un bouton. Le toucher ouvre les deux choses pour lesquelles on quitte une liste.""",
+  """watchTips.listsStep1""":
+      """Touchez le nom de la liste en haut de l'écran.""",
+  """watchTips.listsStep2""":
+      """Deux boutons se déplient en dessous, « Commencer les courses » et « Changer de liste ».""",
+  """watchTips.listsStep3""":
+      """Touchez « Changer de liste » et choisissez-en une autre, ou « Toutes les listes » pour tout voir d'un coup.""",
+  """watchTips.listsNote""":
+      """Les boutons se replient d'eux-mêmes au bout de quelques secondes, toucher le titre par erreur ne coûte donc rien.""",
+  """watchTips.shoppingTitle""": """Faire des courses""",
+  """watchTips.shoppingSubtitle""":
+      """Parcourir les magasins, le téléphone dans la poche""",
+  """watchTips.shoppingBody""":
+      """Une sortie transforme la montre en compagnon de courses. Les pages deviennent celles dont vous avez besoin dans un rayon, et le foyer peut suivre.""",
+  """watchTips.shoppingStep1""":
+      """Touchez le titre, puis « Commencer les courses ». Choisissez les listes, les magasins, et si vos colocataires voient la sortie.""",
+  """watchTips.shoppingStep2""":
+      """Les pages deviennent la sortie elle-même, une pour l'avancement, une pour la liste, une pour les achats et une pour les articles passés.""",
+  """watchTips.shoppingStep3""":
+      """Cochez au fur et à mesure. Ce que vous passez arrive sur sa propre page et revient sur la liste d'un appui.""",
+  """watchTips.shoppingStep4""":
+      """En quittant un magasin, la montre demande ce que la caisse a facturé puis vous emmène au suivant.""",
+  """watchTips.shoppingStep5""":
+      """Après le dernier magasin, « Terminer les courses » affiche le total avant de rien clôturer.""",
+  """watchTips.shoppingNote""":
+      """Toucher un magasin sur la page d'avancement y emmène la sortie directement, en arrière comme en avant, un détour est donc une correction et non un recommencement.""",
+  """watchTips.crownTitle""": """Tourner la couronne""",
+  """watchTips.crownSubtitle""":
+      """Faire défiler la liste, ou tourner les pages""",
+  """watchTips.crownBody""":
+      """Tourner la couronne ou la lunette rotative fait défiler la liste devant vous, ce qui garde votre doigt hors de ce que vous lisez.""",
+  """watchTips.crownStep1""":
+      """Tournez la couronne pour parcourir la liste ligne par ligne. La ligne où elle s'arrête est celle sur laquelle un appui agit.""",
+  """watchTips.crownStep2""":
+      """Pour qu'un tour change de page à la place, ouvrez « Compte », puis « Réglages », puis « Couronne » sur la montre.""",
+  """watchTips.crownNote""":
+      """Un tour ne fait qu'une chose à la fois. Confier la couronne aux pages veut dire que les listes défilent au doigt seulement.""",
+  """watchTips.offlineTitle""": """Ça marche sans réseau""",
+  """watchTips.offlineSubtitle""": """Continuez à cocher au rayon frais""",
+  """watchTips.offlineBody""":
+      """La montre garde sa propre copie de votre foyer, elle s'ouvre et fonctionne donc sans rien à portée. Ni téléphone, ni Wi-Fi, ni forfait data sur la montre.""",
+  """watchTips.offlineStep1""":
+      """Un petit point en haut de l'écran signifie que tout ce que vous avez fait est enregistré.""",
+  """watchTips.offlineStep2""":
+      """Un nuage suivi d'un nombre signifie qu'autant de changements attendent une connexion.""",
+  """watchTips.offlineStep3""":
+      """Ils partent tout seuls dès que la montre est de nouveau à portée. Il n'y a rien à appuyer.""",
+  """watchTips.tileTitle""": """Une liste à un balayage""",
+  """watchTips.tileSubtitle""": """Ajouter la tuile Pantry""",
+  """watchTips.tileBody""":
+      """Les tuiles sont les écrans à côté de votre cadran. Pantry en publie une qui nomme vos listes, pour qu'une liste soit à un balayage plutôt qu'à un lancement d'app.""",
+  """watchTips.tileStep1""":
+      """Depuis le cadran, balayez latéralement jusqu'aux tuiles.""",
+  """watchTips.tileStep2""":
+      """Maintenez appuyé, touchez le plus, et choisissez Pantry dans la liste.""",
+  """watchTips.tileStep3""":
+      """Touchez une liste sur la tuile pour ouvrir l'app directement dessus.""",
 };

@@ -4,6 +4,7 @@ import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../../services/wear_pairing_host.dart';
+import 'tips/watch_tips.dart';
 
 /// The phone's side of the credential handoff.
 ///
@@ -134,6 +135,11 @@ class _WatchPairingViewState extends State<WatchPairingView> {
                   onTap: _unpair,
                 ),
               ],
+              // Under the pairing state rather than above it: a reader who
+              // opened this page mid-handoff came for the request, and the
+              // tips are what is here the rest of the time.
+              const Divider(height: 24),
+              const WatchTipsSection(),
             ],
           ),
           if (_transferring)

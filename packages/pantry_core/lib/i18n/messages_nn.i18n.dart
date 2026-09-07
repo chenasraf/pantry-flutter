@@ -88,6 +88,7 @@ class MessagesNn extends Messages {
   MarkdownEditorMessagesNn get markdownEditor => MarkdownEditorMessagesNn(this);
   WearMessagesNn get wear => WearMessagesNn(this);
   WatchMessagesNn get watch => WatchMessagesNn(this);
+  WatchTipsMessagesNn get watchTips => WatchTipsMessagesNn(this);
 }
 
 class CommonMessagesNn extends CommonMessages {
@@ -5817,6 +5818,347 @@ class WatchMessagesNn extends WatchMessages {
       """Klokka loggar ut og gløymer husstanden din. Du kan setje henne opp att når som helst.""";
 }
 
+class WatchTipsMessagesNn extends WatchTipsMessages {
+  final MessagesNn _parent;
+  const WatchTipsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Tips"
+  /// ```
+  String get section => """Tips""";
+
+  /// ```dart
+  /// "Korte gjennomgangar av korleis klokkeappen fungerer på handleddet."
+  /// ```
+  String get sectionBody =>
+      """Korte gjennomgangar av korleis klokkeappen fungerer på handleddet.""";
+
+  /// ```dart
+  /// "Steg for steg"
+  /// ```
+  String get stepsLabel => """Steg for steg""";
+
+  /// ```dart
+  /// "Set opp klokka"
+  /// ```
+  String get pairTitle => """Set opp klokka""";
+
+  /// ```dart
+  /// "Logg inn klokka frå denne telefonen"
+  /// ```
+  String get pairSubtitle => """Logg inn klokka frå denne telefonen""";
+
+  /// ```dart
+  /// "Ei klokke er ein dårleg stad å skrive eit passord, så ho lånar innlogginga frå denne telefonen i staden. Ingenting blir skrive på handleddet."
+  /// ```
+  String get pairBody =>
+      """Ei klokke er ein dårleg stad å skrive eit passord, så ho lånar innlogginga frå denne telefonen i staden. Ingenting blir skrive på handleddet.""";
+
+  /// ```dart
+  /// "Opna Pantry på klokka. Ho viser ein oppsettsskjerm."
+  /// ```
+  String get pairStep1 =>
+      """Opna Pantry på klokka. Ho viser ein oppsettsskjerm.""";
+
+  /// ```dart
+  /// "Trykk «Opna på telefonen». Klokka ber denne telefonen ta over."
+  /// ```
+  String get pairStep2 =>
+      """Trykk «Opna på telefonen». Klokka ber denne telefonen ta over.""";
+
+  /// ```dart
+  /// "Lås opp denne telefonen og trykk «Tillat» på førespurnaden som dukkar opp her."
+  /// ```
+  String get pairStep3 =>
+      """Lås opp denne telefonen og trykk «Tillat» på førespurnaden som dukkar opp her.""";
+
+  /// ```dart
+  /// "Lat denne skjermen stå open til han seier at klokka er logga inn."
+  /// ```
+  String get pairStep4 =>
+      """Lat denne skjermen stå open til han seier at klokka er logga inn.""";
+
+  /// ```dart
+  /// "Ingen telefon for handa? Klokka kan vise ein QR-kode i staden. Skann han med eit kva som helst kamera og fullfør innlogginga i nettlesaren som opnar seg."
+  /// ```
+  String get pairNote =>
+      """Ingen telefon for handa? Klokka kan vise ein QR-kode i staden. Skann han med eit kva som helst kamera og fullfør innlogginga i nettlesaren som opnar seg.""";
+
+  /// ```dart
+  /// "Kryss av ting"
+  /// ```
+  String get itemsTitle => """Kryss av ting""";
+
+  /// ```dart
+  /// "Trykk for å krysse av, hald inne for detaljar"
+  /// ```
+  String get itemsSubtitle =>
+      """Trykk for å krysse av, hald inne for detaljar""";
+
+  /// ```dart
+  /// "Rada midt på skjermen er den trykket ditt verkar på. Alt du kan gjere med ei vare heng på den rada."
+  /// ```
+  String get itemsBody =>
+      """Rada midt på skjermen er den trykket ditt verkar på. Alt du kan gjere med ei vare heng på den rada.""";
+
+  /// ```dart
+  /// "Trykk på den midtre rada for å krysse henne av. Trykk igjen for å hente henne tilbake."
+  /// ```
+  String get itemsStep1 =>
+      """Trykk på den midtre rada for å krysse henne av. Trykk igjen for å hente henne tilbake.""";
+
+  /// ```dart
+  /// "Ein ring tømmer seg rundt rada så lenge endringa framleis kan takast tilbake. Trykk ein gong til innanfor det vindauget, så blir ingenting skrive."
+  /// ```
+  String get itemsStep2 =>
+      """Ein ring tømmer seg rundt rada så lenge endringa framleis kan takast tilbake. Trykk ein gong til innanfor det vindauget, så blir ingenting skrive.""";
+
+  /// ```dart
+  /// "Hald inne ei rad for å opne henne. Mengd, pris, kategori og notat ligg der, saman med ein knapp som opnar vara på denne telefonen."
+  /// ```
+  String get itemsStep3 =>
+      """Hald inne ei rad for å opne henne. Mengd, pris, kategori og notat ligg der, saman med ein knapp som opnar vara på denne telefonen.""";
+
+  /// ```dart
+  /// "Trykkjer du på ei rad som ikkje er i midten, kjem ho berre dit. Det neste trykket er det som verkar, så eit bomskot kostar berre litt rulling."
+  /// ```
+  String get itemsNote =>
+      """Trykkjer du på ei rad som ikkje er i midten, kjem ho berre dit. Det neste trykket er det som verkar, så eit bomskot kostar berre litt rulling.""";
+
+  /// ```dart
+  /// "Finn fram"
+  /// ```
+  String get pagesTitle => """Finn fram""";
+
+  /// ```dart
+  /// "Sveip mellom sider, sveip deg ut att"
+  /// ```
+  String get pagesSubtitle => """Sveip mellom sider, sveip deg ut att""";
+
+  /// ```dart
+  /// "Klokkeappen er ei rekkje sider i fullskjerm under éin tittel. Det finst ingen meny å opne."
+  /// ```
+  String get pagesBody =>
+      """Klokkeappen er ei rekkje sider i fullskjerm under éin tittel. Det finst ingen meny å opne.""";
+
+  /// ```dart
+  /// "Sveip til sides for å flytte deg mellom lista, fotoveggen, notatveggen og kontosida."
+  /// ```
+  String get pagesStep1 =>
+      """Sveip til sides for å flytte deg mellom lista, fotoveggen, notatveggen og kontosida.""";
+
+  /// ```dart
+  /// "Strekane under tittelen seier kor mange sider det er og kva for ei du er på."
+  /// ```
+  String get pagesStep2 =>
+      """Strekane under tittelen seier kor mange sider det er og kva for ei du er på.""";
+
+  /// ```dart
+  /// "Sveip inn frå kanten av skjermen for å gå ut att av alt du har opna."
+  /// ```
+  String get pagesStep3 =>
+      """Sveip inn frå kanten av skjermen for å gå ut att av alt du har opna.""";
+
+  /// ```dart
+  /// "Tittelen namngjev alltid sida du er på, og linja under namngjev gruppa den midtre rada høyrer til."
+  /// ```
+  String get pagesNote =>
+      """Tittelen namngjev alltid sida du er på, og linja under namngjev gruppa den midtre rada høyrer til.""";
+
+  /// ```dart
+  /// "Byt liste"
+  /// ```
+  String get listsTitle => """Byt liste""";
+
+  /// ```dart
+  /// "Trykk på tittelen øvst"
+  /// ```
+  String get listsSubtitle => """Trykk på tittelen øvst""";
+
+  /// ```dart
+  /// "Namnet øvst på skjermen er ein knapp. Eit trykk opnar dei to tinga du ville forlate ei liste for."
+  /// ```
+  String get listsBody =>
+      """Namnet øvst på skjermen er ein knapp. Eit trykk opnar dei to tinga du ville forlate ei liste for.""";
+
+  /// ```dart
+  /// "Trykk på listenamnet øvst på skjermen."
+  /// ```
+  String get listsStep1 => """Trykk på listenamnet øvst på skjermen.""";
+
+  /// ```dart
+  /// "To knappar fell ned under han, «Start handel» og «Byt liste»."
+  /// ```
+  String get listsStep2 =>
+      """To knappar fell ned under han, «Start handel» og «Byt liste».""";
+
+  /// ```dart
+  /// "Trykk «Byt liste» og vel ei anna, eller «Alle lister» for å sjå alt på ein gong."
+  /// ```
+  String get listsStep3 =>
+      """Trykk «Byt liste» og vel ei anna, eller «Alle lister» for å sjå alt på ein gong.""";
+
+  /// ```dart
+  /// "Knappane fell saman av seg sjølve etter nokre sekund, så eit uhell på tittelen kostar ingenting."
+  /// ```
+  String get listsNote =>
+      """Knappane fell saman av seg sjølve etter nokre sekund, så eit uhell på tittelen kostar ingenting.""";
+
+  /// ```dart
+  /// "Gå ein handletur"
+  /// ```
+  String get shoppingTitle => """Gå ein handletur""";
+
+  /// ```dart
+  /// "Gå butikkane med telefonen i lomma"
+  /// ```
+  String get shoppingSubtitle => """Gå butikkane med telefonen i lomma""";
+
+  /// ```dart
+  /// "Ein handletur gjer klokka til ein handlefølgjesvein. Sidene blir dei du vil ha i ein gang, og husstanden kan følgje med."
+  /// ```
+  String get shoppingBody =>
+      """Ein handletur gjer klokka til ein handlefølgjesvein. Sidene blir dei du vil ha i ein gang, og husstanden kan følgje med.""";
+
+  /// ```dart
+  /// "Trykk på tittelen, så «Start handel». Vel listene, butikkane, og om husfolka ser turen."
+  /// ```
+  String get shoppingStep1 =>
+      """Trykk på tittelen, så «Start handel». Vel listene, butikkane, og om husfolka ser turen.""";
+
+  /// ```dart
+  /// "Sidene blir sjølve turen, ei for kor langt han er komen, ei for lista, ei for det kjøpte og ei for det hoppa over."
+  /// ```
+  String get shoppingStep2 =>
+      """Sidene blir sjølve turen, ei for kor langt han er komen, ei for lista, ei for det kjøpte og ei for det hoppa over.""";
+
+  /// ```dart
+  /// "Kryss av undervegs. Det du hoppar over landar på si eiga side og går tilbake på lista med eit trykk."
+  /// ```
+  String get shoppingStep3 =>
+      """Kryss av undervegs. Det du hoppar over landar på si eiga side og går tilbake på lista med eit trykk.""";
+
+  /// ```dart
+  /// "Når du forlèt ein butikk, spør klokka kva kassa tok, og sender deg vidare til neste."
+  /// ```
+  String get shoppingStep4 =>
+      """Når du forlèt ein butikk, spør klokka kva kassa tok, og sender deg vidare til neste.""";
+
+  /// ```dart
+  /// "Etter den siste butikken viser «Fullfør handelen» summen før noko blir avslutta."
+  /// ```
+  String get shoppingStep5 =>
+      """Etter den siste butikken viser «Fullfør handelen» summen før noko blir avslutta.""";
+
+  /// ```dart
+  /// "Eit trykk på ein butikk på framdriftssida flyttar turen rett dit, bakover like godt som framover, så ein feilveg er ei retting og ikkje ein ny start."
+  /// ```
+  String get shoppingNote =>
+      """Eit trykk på ein butikk på framdriftssida flyttar turen rett dit, bakover like godt som framover, så ein feilveg er ei retting og ikkje ein ny start.""";
+
+  /// ```dart
+  /// "Vri på krona"
+  /// ```
+  String get crownTitle => """Vri på krona""";
+
+  /// ```dart
+  /// "Rull lista, eller bla i sidene"
+  /// ```
+  String get crownSubtitle => """Rull lista, eller bla i sidene""";
+
+  /// ```dart
+  /// "Å vri på krona eller den dreibare ramma rullar lista framfor deg, og held fingeren unna det du les."
+  /// ```
+  String get crownBody =>
+      """Å vri på krona eller den dreibare ramma rullar lista framfor deg, og held fingeren unna det du les.""";
+
+  /// ```dart
+  /// "Vri på krona for å gå gjennom lista ei rad om gongen. Rada ho landar på er den eit trykk verkar på."
+  /// ```
+  String get crownStep1 =>
+      """Vri på krona for å gå gjennom lista ei rad om gongen. Rada ho landar på er den eit trykk verkar på.""";
+
+  /// ```dart
+  /// "Vil du at ei vriding skal bla i sider i staden, opna «Konto», så «Innstillingar», så «Krone» på klokka."
+  /// ```
+  String get crownStep2 =>
+      """Vil du at ei vriding skal bla i sider i staden, opna «Konto», så «Innstillingar», så «Krone» på klokka.""";
+
+  /// ```dart
+  /// "Ei vriding gjer éin ting om gongen. Gjev du krona til sidene, blir lister rulla med fingeren åleine."
+  /// ```
+  String get crownNote =>
+      """Ei vriding gjer éin ting om gongen. Gjev du krona til sidene, blir lister rulla med fingeren åleine.""";
+
+  /// ```dart
+  /// "Ho verkar utan dekning"
+  /// ```
+  String get offlineTitle => """Ho verkar utan dekning""";
+
+  /// ```dart
+  /// "Hald fram med å krysse av i kjøledisken"
+  /// ```
+  String get offlineSubtitle => """Hald fram med å krysse av i kjøledisken""";
+
+  /// ```dart
+  /// "Klokka held sin eigen kopi av husstanden, så ho opnar og verkar utan noko som helst i rekkjevidd. Ingen telefon, ingen trådlaus nett, inga dataavtale på klokka."
+  /// ```
+  String get offlineBody =>
+      """Klokka held sin eigen kopi av husstanden, så ho opnar og verkar utan noko som helst i rekkjevidd. Ingen telefon, ingen trådlaus nett, inga dataavtale på klokka.""";
+
+  /// ```dart
+  /// "Ein liten prikk øvst på skjermen tyder at alt du har gjort er lagra."
+  /// ```
+  String get offlineStep1 =>
+      """Ein liten prikk øvst på skjermen tyder at alt du har gjort er lagra.""";
+
+  /// ```dart
+  /// "Ei sky med eit tal ved sida av tyder at så mange endringar ventar på samband."
+  /// ```
+  String get offlineStep2 =>
+      """Ei sky med eit tal ved sida av tyder at så mange endringar ventar på samband.""";
+
+  /// ```dart
+  /// "Dei går ut av seg sjølve i det klokka er innanfor rekkjevidd att. Det er ingenting å trykkje på."
+  /// ```
+  String get offlineStep3 =>
+      """Dei går ut av seg sjølve i det klokka er innanfor rekkjevidd att. Det er ingenting å trykkje på.""";
+
+  /// ```dart
+  /// "Ha ei liste eitt sveip unna"
+  /// ```
+  String get tileTitle => """Ha ei liste eitt sveip unna""";
+
+  /// ```dart
+  /// "Legg til Pantry-ruta"
+  /// ```
+  String get tileSubtitle => """Legg til Pantry-ruta""";
+
+  /// ```dart
+  /// "Ruter er skjermane ved sida av urskiva. Pantry gjev ut ei som namngjev listene dine, så ei liste er eitt sveip unna i staden for ein appstart."
+  /// ```
+  String get tileBody =>
+      """Ruter er skjermane ved sida av urskiva. Pantry gjev ut ei som namngjev listene dine, så ei liste er eitt sveip unna i staden for ein appstart.""";
+
+  /// ```dart
+  /// "Frå urskiva, sveip til sides til du kjem til rutene."
+  /// ```
+  String get tileStep1 =>
+      """Frå urskiva, sveip til sides til du kjem til rutene.""";
+
+  /// ```dart
+  /// "Hald inne, trykk på plussen, og vel Pantry frå lista."
+  /// ```
+  String get tileStep2 =>
+      """Hald inne, trykk på plussen, og vel Pantry frå lista.""";
+
+  /// ```dart
+  /// "Trykk på ei liste på ruta for å opne appen rett på henne."
+  /// ```
+  String get tileStep3 =>
+      """Trykk på ei liste på ruta for å opne appen rett på henne.""";
+}
+
 Map<String, String> get messagesNnMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Avbryt""",
@@ -6898,4 +7240,105 @@ Passord: pantry""",
   """watch.unpairTitle""": """Kople frå denne klokka?""",
   """watch.unpairBody""":
       """Klokka loggar ut og gløymer husstanden din. Du kan setje henne opp att når som helst.""",
+  """watchTips.section""": """Tips""",
+  """watchTips.sectionBody""":
+      """Korte gjennomgangar av korleis klokkeappen fungerer på handleddet.""",
+  """watchTips.stepsLabel""": """Steg for steg""",
+  """watchTips.pairTitle""": """Set opp klokka""",
+  """watchTips.pairSubtitle""": """Logg inn klokka frå denne telefonen""",
+  """watchTips.pairBody""":
+      """Ei klokke er ein dårleg stad å skrive eit passord, så ho lånar innlogginga frå denne telefonen i staden. Ingenting blir skrive på handleddet.""",
+  """watchTips.pairStep1""":
+      """Opna Pantry på klokka. Ho viser ein oppsettsskjerm.""",
+  """watchTips.pairStep2""":
+      """Trykk «Opna på telefonen». Klokka ber denne telefonen ta over.""",
+  """watchTips.pairStep3""":
+      """Lås opp denne telefonen og trykk «Tillat» på førespurnaden som dukkar opp her.""",
+  """watchTips.pairStep4""":
+      """Lat denne skjermen stå open til han seier at klokka er logga inn.""",
+  """watchTips.pairNote""":
+      """Ingen telefon for handa? Klokka kan vise ein QR-kode i staden. Skann han med eit kva som helst kamera og fullfør innlogginga i nettlesaren som opnar seg.""",
+  """watchTips.itemsTitle""": """Kryss av ting""",
+  """watchTips.itemsSubtitle""":
+      """Trykk for å krysse av, hald inne for detaljar""",
+  """watchTips.itemsBody""":
+      """Rada midt på skjermen er den trykket ditt verkar på. Alt du kan gjere med ei vare heng på den rada.""",
+  """watchTips.itemsStep1""":
+      """Trykk på den midtre rada for å krysse henne av. Trykk igjen for å hente henne tilbake.""",
+  """watchTips.itemsStep2""":
+      """Ein ring tømmer seg rundt rada så lenge endringa framleis kan takast tilbake. Trykk ein gong til innanfor det vindauget, så blir ingenting skrive.""",
+  """watchTips.itemsStep3""":
+      """Hald inne ei rad for å opne henne. Mengd, pris, kategori og notat ligg der, saman med ein knapp som opnar vara på denne telefonen.""",
+  """watchTips.itemsNote""":
+      """Trykkjer du på ei rad som ikkje er i midten, kjem ho berre dit. Det neste trykket er det som verkar, så eit bomskot kostar berre litt rulling.""",
+  """watchTips.pagesTitle""": """Finn fram""",
+  """watchTips.pagesSubtitle""": """Sveip mellom sider, sveip deg ut att""",
+  """watchTips.pagesBody""":
+      """Klokkeappen er ei rekkje sider i fullskjerm under éin tittel. Det finst ingen meny å opne.""",
+  """watchTips.pagesStep1""":
+      """Sveip til sides for å flytte deg mellom lista, fotoveggen, notatveggen og kontosida.""",
+  """watchTips.pagesStep2""":
+      """Strekane under tittelen seier kor mange sider det er og kva for ei du er på.""",
+  """watchTips.pagesStep3""":
+      """Sveip inn frå kanten av skjermen for å gå ut att av alt du har opna.""",
+  """watchTips.pagesNote""":
+      """Tittelen namngjev alltid sida du er på, og linja under namngjev gruppa den midtre rada høyrer til.""",
+  """watchTips.listsTitle""": """Byt liste""",
+  """watchTips.listsSubtitle""": """Trykk på tittelen øvst""",
+  """watchTips.listsBody""":
+      """Namnet øvst på skjermen er ein knapp. Eit trykk opnar dei to tinga du ville forlate ei liste for.""",
+  """watchTips.listsStep1""": """Trykk på listenamnet øvst på skjermen.""",
+  """watchTips.listsStep2""":
+      """To knappar fell ned under han, «Start handel» og «Byt liste».""",
+  """watchTips.listsStep3""":
+      """Trykk «Byt liste» og vel ei anna, eller «Alle lister» for å sjå alt på ein gong.""",
+  """watchTips.listsNote""":
+      """Knappane fell saman av seg sjølve etter nokre sekund, så eit uhell på tittelen kostar ingenting.""",
+  """watchTips.shoppingTitle""": """Gå ein handletur""",
+  """watchTips.shoppingSubtitle""": """Gå butikkane med telefonen i lomma""",
+  """watchTips.shoppingBody""":
+      """Ein handletur gjer klokka til ein handlefølgjesvein. Sidene blir dei du vil ha i ein gang, og husstanden kan følgje med.""",
+  """watchTips.shoppingStep1""":
+      """Trykk på tittelen, så «Start handel». Vel listene, butikkane, og om husfolka ser turen.""",
+  """watchTips.shoppingStep2""":
+      """Sidene blir sjølve turen, ei for kor langt han er komen, ei for lista, ei for det kjøpte og ei for det hoppa over.""",
+  """watchTips.shoppingStep3""":
+      """Kryss av undervegs. Det du hoppar over landar på si eiga side og går tilbake på lista med eit trykk.""",
+  """watchTips.shoppingStep4""":
+      """Når du forlèt ein butikk, spør klokka kva kassa tok, og sender deg vidare til neste.""",
+  """watchTips.shoppingStep5""":
+      """Etter den siste butikken viser «Fullfør handelen» summen før noko blir avslutta.""",
+  """watchTips.shoppingNote""":
+      """Eit trykk på ein butikk på framdriftssida flyttar turen rett dit, bakover like godt som framover, så ein feilveg er ei retting og ikkje ein ny start.""",
+  """watchTips.crownTitle""": """Vri på krona""",
+  """watchTips.crownSubtitle""": """Rull lista, eller bla i sidene""",
+  """watchTips.crownBody""":
+      """Å vri på krona eller den dreibare ramma rullar lista framfor deg, og held fingeren unna det du les.""",
+  """watchTips.crownStep1""":
+      """Vri på krona for å gå gjennom lista ei rad om gongen. Rada ho landar på er den eit trykk verkar på.""",
+  """watchTips.crownStep2""":
+      """Vil du at ei vriding skal bla i sider i staden, opna «Konto», så «Innstillingar», så «Krone» på klokka.""",
+  """watchTips.crownNote""":
+      """Ei vriding gjer éin ting om gongen. Gjev du krona til sidene, blir lister rulla med fingeren åleine.""",
+  """watchTips.offlineTitle""": """Ho verkar utan dekning""",
+  """watchTips.offlineSubtitle""":
+      """Hald fram med å krysse av i kjøledisken""",
+  """watchTips.offlineBody""":
+      """Klokka held sin eigen kopi av husstanden, så ho opnar og verkar utan noko som helst i rekkjevidd. Ingen telefon, ingen trådlaus nett, inga dataavtale på klokka.""",
+  """watchTips.offlineStep1""":
+      """Ein liten prikk øvst på skjermen tyder at alt du har gjort er lagra.""",
+  """watchTips.offlineStep2""":
+      """Ei sky med eit tal ved sida av tyder at så mange endringar ventar på samband.""",
+  """watchTips.offlineStep3""":
+      """Dei går ut av seg sjølve i det klokka er innanfor rekkjevidd att. Det er ingenting å trykkje på.""",
+  """watchTips.tileTitle""": """Ha ei liste eitt sveip unna""",
+  """watchTips.tileSubtitle""": """Legg til Pantry-ruta""",
+  """watchTips.tileBody""":
+      """Ruter er skjermane ved sida av urskiva. Pantry gjev ut ei som namngjev listene dine, så ei liste er eitt sveip unna i staden for ein appstart.""",
+  """watchTips.tileStep1""":
+      """Frå urskiva, sveip til sides til du kjem til rutene.""",
+  """watchTips.tileStep2""":
+      """Hald inne, trykk på plussen, og vel Pantry frå lista.""",
+  """watchTips.tileStep3""":
+      """Trykk på ei liste på ruta for å opne appen rett på henne.""",
 };

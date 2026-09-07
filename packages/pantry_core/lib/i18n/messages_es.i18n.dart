@@ -88,6 +88,7 @@ class MessagesEs extends Messages {
   MarkdownEditorMessagesEs get markdownEditor => MarkdownEditorMessagesEs(this);
   WearMessagesEs get wear => WearMessagesEs(this);
   WatchMessagesEs get watch => WatchMessagesEs(this);
+  WatchTipsMessagesEs get watchTips => WatchTipsMessagesEs(this);
 }
 
 class CommonMessagesEs extends CommonMessages {
@@ -5831,6 +5832,350 @@ class WatchMessagesEs extends WatchMessages {
       """El reloj cerrará la sesión y olvidará tu hogar. Puedes configurarlo de nuevo cuando quieras.""";
 }
 
+class WatchTipsMessagesEs extends WatchTipsMessages {
+  final MessagesEs _parent;
+  const WatchTipsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Consejos"
+  /// ```
+  String get section => """Consejos""";
+
+  /// ```dart
+  /// "Recorridos breves de cómo funciona la app del reloj en tu muñeca."
+  /// ```
+  String get sectionBody =>
+      """Recorridos breves de cómo funciona la app del reloj en tu muñeca.""";
+
+  /// ```dart
+  /// "Paso a paso"
+  /// ```
+  String get stepsLabel => """Paso a paso""";
+
+  /// ```dart
+  /// "Configura tu reloj"
+  /// ```
+  String get pairTitle => """Configura tu reloj""";
+
+  /// ```dart
+  /// "Inicia sesión en el reloj desde este teléfono"
+  /// ```
+  String get pairSubtitle =>
+      """Inicia sesión en el reloj desde este teléfono""";
+
+  /// ```dart
+  /// "Un reloj es mal sitio para escribir una contraseña, así que toma prestado el inicio de sesión de este teléfono. En la muñeca no se escribe nada."
+  /// ```
+  String get pairBody =>
+      """Un reloj es mal sitio para escribir una contraseña, así que toma prestado el inicio de sesión de este teléfono. En la muñeca no se escribe nada.""";
+
+  /// ```dart
+  /// "Abre Pantry en tu reloj. Mostrará una pantalla de configuración."
+  /// ```
+  String get pairStep1 =>
+      """Abre Pantry en tu reloj. Mostrará una pantalla de configuración.""";
+
+  /// ```dart
+  /// "Toca «Abrir en el teléfono». El reloj le pide a este teléfono que se encargue."
+  /// ```
+  String get pairStep2 =>
+      """Toca «Abrir en el teléfono». El reloj le pide a este teléfono que se encargue.""";
+
+  /// ```dart
+  /// "Desbloquea este teléfono y toca «Permitir» en la solicitud que aparece aquí."
+  /// ```
+  String get pairStep3 =>
+      """Desbloquea este teléfono y toca «Permitir» en la solicitud que aparece aquí.""";
+
+  /// ```dart
+  /// "Deja esta pantalla abierta hasta que diga que el reloj ha iniciado sesión."
+  /// ```
+  String get pairStep4 =>
+      """Deja esta pantalla abierta hasta que diga que el reloj ha iniciado sesión.""";
+
+  /// ```dart
+  /// "¿No tienes el teléfono a mano? El reloj puede mostrar un código QR. Escanéalo con cualquier cámara y termina de iniciar sesión en el navegador que se abra."
+  /// ```
+  String get pairNote =>
+      """¿No tienes el teléfono a mano? El reloj puede mostrar un código QR. Escanéalo con cualquier cámara y termina de iniciar sesión en el navegador que se abra.""";
+
+  /// ```dart
+  /// "Marca artículos"
+  /// ```
+  String get itemsTitle => """Marca artículos""";
+
+  /// ```dart
+  /// "Toca para marcar, mantén para los detalles"
+  /// ```
+  String get itemsSubtitle => """Toca para marcar, mantén para los detalles""";
+
+  /// ```dart
+  /// "La fila del centro de la pantalla es sobre la que actúa tu toque. Todo lo que puedes hacer con un artículo cuelga de esa fila."
+  /// ```
+  String get itemsBody =>
+      """La fila del centro de la pantalla es sobre la que actúa tu toque. Todo lo que puedes hacer con un artículo cuelga de esa fila.""";
+
+  /// ```dart
+  /// "Toca la fila del centro para marcarla. Tócala otra vez para devolverla."
+  /// ```
+  String get itemsStep1 =>
+      """Toca la fila del centro para marcarla. Tócala otra vez para devolverla.""";
+
+  /// ```dart
+  /// "Un anillo se vacía alrededor de la fila mientras el cambio todavía es reversible. Toca de nuevo dentro de esa ventana y no se escribe nada."
+  /// ```
+  String get itemsStep2 =>
+      """Un anillo se vacía alrededor de la fila mientras el cambio todavía es reversible. Toca de nuevo dentro de esa ventana y no se escribe nada.""";
+
+  /// ```dart
+  /// "Mantén pulsada una fila para abrirla. Ahí están la cantidad, el precio, la categoría y las notas, junto a un botón que abre el artículo en este teléfono."
+  /// ```
+  String get itemsStep3 =>
+      """Mantén pulsada una fila para abrirla. Ahí están la cantidad, el precio, la categoría y las notas, junto a un botón que abre el artículo en este teléfono.""";
+
+  /// ```dart
+  /// "Tocar una fila que no está en el centro simplemente la trae al centro. El toque siguiente es el que actúa, así que fallar la puntería solo cuesta un desplazamiento."
+  /// ```
+  String get itemsNote =>
+      """Tocar una fila que no está en el centro simplemente la trae al centro. El toque siguiente es el que actúa, así que fallar la puntería solo cuesta un desplazamiento.""";
+
+  /// ```dart
+  /// "Muévete por la app"
+  /// ```
+  String get pagesTitle => """Muévete por la app""";
+
+  /// ```dart
+  /// "Desliza entre páginas y desliza para salir"
+  /// ```
+  String get pagesSubtitle => """Desliza entre páginas y desliza para salir""";
+
+  /// ```dart
+  /// "La app del reloj es una fila de páginas a pantalla completa bajo un solo título. No hay ningún menú que abrir."
+  /// ```
+  String get pagesBody =>
+      """La app del reloj es una fila de páginas a pantalla completa bajo un solo título. No hay ningún menú que abrir.""";
+
+  /// ```dart
+  /// "Desliza de lado para pasar entre tu lista, el tablón de fotos, el muro de notas y la página de cuenta."
+  /// ```
+  String get pagesStep1 =>
+      """Desliza de lado para pasar entre tu lista, el tablón de fotos, el muro de notas y la página de cuenta.""";
+
+  /// ```dart
+  /// "Las barras bajo el título dicen cuántas páginas hay y en cuál estás."
+  /// ```
+  String get pagesStep2 =>
+      """Las barras bajo el título dicen cuántas páginas hay y en cuál estás.""";
+
+  /// ```dart
+  /// "Desliza desde el borde de la pantalla para salir de cualquier cosa que hayas abierto."
+  /// ```
+  String get pagesStep3 =>
+      """Desliza desde el borde de la pantalla para salir de cualquier cosa que hayas abierto.""";
+
+  /// ```dart
+  /// "El título siempre nombra la página en la que estás, y la línea de debajo nombra el grupo al que pertenece la fila central."
+  /// ```
+  String get pagesNote =>
+      """El título siempre nombra la página en la que estás, y la línea de debajo nombra el grupo al que pertenece la fila central.""";
+
+  /// ```dart
+  /// "Cambia de lista"
+  /// ```
+  String get listsTitle => """Cambia de lista""";
+
+  /// ```dart
+  /// "Toca el título de arriba"
+  /// ```
+  String get listsSubtitle => """Toca el título de arriba""";
+
+  /// ```dart
+  /// "El nombre de arriba de la pantalla es un botón. Tocarlo abre las dos cosas por las que dejarías una lista."
+  /// ```
+  String get listsBody =>
+      """El nombre de arriba de la pantalla es un botón. Tocarlo abre las dos cosas por las que dejarías una lista.""";
+
+  /// ```dart
+  /// "Toca el nombre de la lista en la parte superior de la pantalla."
+  /// ```
+  String get listsStep1 =>
+      """Toca el nombre de la lista en la parte superior de la pantalla.""";
+
+  /// ```dart
+  /// "Debajo se despliegan dos botones, «Empezar a comprar» y «Cambiar de lista»."
+  /// ```
+  String get listsStep2 =>
+      """Debajo se despliegan dos botones, «Empezar a comprar» y «Cambiar de lista».""";
+
+  /// ```dart
+  /// "Toca «Cambiar de lista» y elige otra, o «Todas las listas» para verlo todo a la vez."
+  /// ```
+  String get listsStep3 =>
+      """Toca «Cambiar de lista» y elige otra, o «Todas las listas» para verlo todo a la vez.""";
+
+  /// ```dart
+  /// "Los botones se pliegan solos a los pocos segundos, así que tocar el título sin querer no cuesta nada."
+  /// ```
+  String get listsNote =>
+      """Los botones se pliegan solos a los pocos segundos, así que tocar el título sin querer no cuesta nada.""";
+
+  /// ```dart
+  /// "Haz una compra"
+  /// ```
+  String get shoppingTitle => """Haz una compra""";
+
+  /// ```dart
+  /// "Recorre las tiendas con el teléfono en el bolsillo"
+  /// ```
+  String get shoppingSubtitle =>
+      """Recorre las tiendas con el teléfono en el bolsillo""";
+
+  /// ```dart
+  /// "Una compra convierte el reloj en un acompañante. Las páginas pasan a ser las que quieres en un pasillo, y la casa puede seguirlo."
+  /// ```
+  String get shoppingBody =>
+      """Una compra convierte el reloj en un acompañante. Las páginas pasan a ser las que quieres en un pasillo, y la casa puede seguirlo.""";
+
+  /// ```dart
+  /// "Toca el título y luego «Empezar a comprar». Elige las listas, las tiendas y si tus convivientes ven la compra."
+  /// ```
+  String get shoppingStep1 =>
+      """Toca el título y luego «Empezar a comprar». Elige las listas, las tiendas y si tus convivientes ven la compra.""";
+
+  /// ```dart
+  /// "Las páginas pasan a ser la compra misma, una para el avance, otra para la lista, otra para lo comprado y otra para lo saltado."
+  /// ```
+  String get shoppingStep2 =>
+      """Las páginas pasan a ser la compra misma, una para el avance, otra para la lista, otra para lo comprado y otra para lo saltado.""";
+
+  /// ```dart
+  /// "Ve marcando sobre la marcha. Lo saltado va a su propia página y vuelve a la lista con un toque."
+  /// ```
+  String get shoppingStep3 =>
+      """Ve marcando sobre la marcha. Lo saltado va a su propia página y vuelve a la lista con un toque.""";
+
+  /// ```dart
+  /// "Al salir de una tienda, el reloj pregunta cuánto cobró la caja y te lleva a la siguiente."
+  /// ```
+  String get shoppingStep4 =>
+      """Al salir de una tienda, el reloj pregunta cuánto cobró la caja y te lleva a la siguiente.""";
+
+  /// ```dart
+  /// "Tras la última tienda, «Terminar compra» muestra el total antes de cerrar nada."
+  /// ```
+  String get shoppingStep5 =>
+      """Tras la última tienda, «Terminar compra» muestra el total antes de cerrar nada.""";
+
+  /// ```dart
+  /// "Tocar una tienda en la página de avance lleva la compra directamente allí, hacia atrás igual que hacia delante, así que equivocarse es una corrección y no volver a empezar."
+  /// ```
+  String get shoppingNote =>
+      """Tocar una tienda en la página de avance lleva la compra directamente allí, hacia atrás igual que hacia delante, así que equivocarse es una corrección y no volver a empezar.""";
+
+  /// ```dart
+  /// "Gira la corona"
+  /// ```
+  String get crownTitle => """Gira la corona""";
+
+  /// ```dart
+  /// "Desplaza la lista o pasa las páginas"
+  /// ```
+  String get crownSubtitle => """Desplaza la lista o pasa las páginas""";
+
+  /// ```dart
+  /// "Girar la corona o el bisel giratorio desplaza la lista que tienes delante, lo que mantiene el dedo fuera de lo que estás leyendo."
+  /// ```
+  String get crownBody =>
+      """Girar la corona o el bisel giratorio desplaza la lista que tienes delante, lo que mantiene el dedo fuera de lo que estás leyendo.""";
+
+  /// ```dart
+  /// "Gira la corona para recorrer la lista fila a fila. La fila en la que se detiene es la fila sobre la que actúa un toque."
+  /// ```
+  String get crownStep1 =>
+      """Gira la corona para recorrer la lista fila a fila. La fila en la que se detiene es la fila sobre la que actúa un toque.""";
+
+  /// ```dart
+  /// "Para que un giro cambie de página, abre «Cuenta», luego «Ajustes» y luego «Corona» en el reloj."
+  /// ```
+  String get crownStep2 =>
+      """Para que un giro cambie de página, abre «Cuenta», luego «Ajustes» y luego «Corona» en el reloj.""";
+
+  /// ```dart
+  /// "Un giro hace una sola cosa a la vez. Si le das la corona a las páginas, las listas se desplazan solo con el dedo."
+  /// ```
+  String get crownNote =>
+      """Un giro hace una sola cosa a la vez. Si le das la corona a las páginas, las listas se desplazan solo con el dedo.""";
+
+  /// ```dart
+  /// "Funciona sin cobertura"
+  /// ```
+  String get offlineTitle => """Funciona sin cobertura""";
+
+  /// ```dart
+  /// "Sigue marcando en el pasillo de los congelados"
+  /// ```
+  String get offlineSubtitle =>
+      """Sigue marcando en el pasillo de los congelados""";
+
+  /// ```dart
+  /// "El reloj guarda su propia copia de tu hogar, así que abre y funciona sin nada al alcance. Sin teléfono, sin wifi y sin tarifa de datos en el reloj."
+  /// ```
+  String get offlineBody =>
+      """El reloj guarda su propia copia de tu hogar, así que abre y funciona sin nada al alcance. Sin teléfono, sin wifi y sin tarifa de datos en el reloj.""";
+
+  /// ```dart
+  /// "Un punto pequeño en la parte superior de la pantalla significa que todo lo que has hecho está guardado."
+  /// ```
+  String get offlineStep1 =>
+      """Un punto pequeño en la parte superior de la pantalla significa que todo lo que has hecho está guardado.""";
+
+  /// ```dart
+  /// "Una nube con un número al lado significa que hay esos cambios esperando una conexión."
+  /// ```
+  String get offlineStep2 =>
+      """Una nube con un número al lado significa que hay esos cambios esperando una conexión.""";
+
+  /// ```dart
+  /// "Salen solos en cuanto el reloj vuelve a tener alcance. No hay nada que pulsar."
+  /// ```
+  String get offlineStep3 =>
+      """Salen solos en cuanto el reloj vuelve a tener alcance. No hay nada que pulsar.""";
+
+  /// ```dart
+  /// "Ten una lista a un deslizamiento"
+  /// ```
+  String get tileTitle => """Ten una lista a un deslizamiento""";
+
+  /// ```dart
+  /// "Añade el mosaico de Pantry"
+  /// ```
+  String get tileSubtitle => """Añade el mosaico de Pantry""";
+
+  /// ```dart
+  /// "Los mosaicos son las pantallas que hay junto a la esfera del reloj. Pantry publica uno que nombra tus listas, para que una lista esté a un deslizamiento y no a un arranque de app."
+  /// ```
+  String get tileBody =>
+      """Los mosaicos son las pantallas que hay junto a la esfera del reloj. Pantry publica uno que nombra tus listas, para que una lista esté a un deslizamiento y no a un arranque de app.""";
+
+  /// ```dart
+  /// "Desde la esfera del reloj, desliza de lado hasta llegar a los mosaicos."
+  /// ```
+  String get tileStep1 =>
+      """Desde la esfera del reloj, desliza de lado hasta llegar a los mosaicos.""";
+
+  /// ```dart
+  /// "Mantén pulsado, toca el más y elige Pantry en la lista."
+  /// ```
+  String get tileStep2 =>
+      """Mantén pulsado, toca el más y elige Pantry en la lista.""";
+
+  /// ```dart
+  /// "Toca una lista en el mosaico para abrir la app directamente en ella."
+  /// ```
+  String get tileStep3 =>
+      """Toca una lista en el mosaico para abrir la app directamente en ella.""";
+}
+
 Map<String, String> get messagesEsMap => {
   """common.appTitle""": """Pantry""",
   """common.cancel""": """Cancelar""",
@@ -6927,4 +7272,109 @@ Contraseña: pantry-rocks""",
   """watch.unpairTitle""": """¿Desvincular este reloj?""",
   """watch.unpairBody""":
       """El reloj cerrará la sesión y olvidará tu hogar. Puedes configurarlo de nuevo cuando quieras.""",
+  """watchTips.section""": """Consejos""",
+  """watchTips.sectionBody""":
+      """Recorridos breves de cómo funciona la app del reloj en tu muñeca.""",
+  """watchTips.stepsLabel""": """Paso a paso""",
+  """watchTips.pairTitle""": """Configura tu reloj""",
+  """watchTips.pairSubtitle""":
+      """Inicia sesión en el reloj desde este teléfono""",
+  """watchTips.pairBody""":
+      """Un reloj es mal sitio para escribir una contraseña, así que toma prestado el inicio de sesión de este teléfono. En la muñeca no se escribe nada.""",
+  """watchTips.pairStep1""":
+      """Abre Pantry en tu reloj. Mostrará una pantalla de configuración.""",
+  """watchTips.pairStep2""":
+      """Toca «Abrir en el teléfono». El reloj le pide a este teléfono que se encargue.""",
+  """watchTips.pairStep3""":
+      """Desbloquea este teléfono y toca «Permitir» en la solicitud que aparece aquí.""",
+  """watchTips.pairStep4""":
+      """Deja esta pantalla abierta hasta que diga que el reloj ha iniciado sesión.""",
+  """watchTips.pairNote""":
+      """¿No tienes el teléfono a mano? El reloj puede mostrar un código QR. Escanéalo con cualquier cámara y termina de iniciar sesión en el navegador que se abra.""",
+  """watchTips.itemsTitle""": """Marca artículos""",
+  """watchTips.itemsSubtitle""":
+      """Toca para marcar, mantén para los detalles""",
+  """watchTips.itemsBody""":
+      """La fila del centro de la pantalla es sobre la que actúa tu toque. Todo lo que puedes hacer con un artículo cuelga de esa fila.""",
+  """watchTips.itemsStep1""":
+      """Toca la fila del centro para marcarla. Tócala otra vez para devolverla.""",
+  """watchTips.itemsStep2""":
+      """Un anillo se vacía alrededor de la fila mientras el cambio todavía es reversible. Toca de nuevo dentro de esa ventana y no se escribe nada.""",
+  """watchTips.itemsStep3""":
+      """Mantén pulsada una fila para abrirla. Ahí están la cantidad, el precio, la categoría y las notas, junto a un botón que abre el artículo en este teléfono.""",
+  """watchTips.itemsNote""":
+      """Tocar una fila que no está en el centro simplemente la trae al centro. El toque siguiente es el que actúa, así que fallar la puntería solo cuesta un desplazamiento.""",
+  """watchTips.pagesTitle""": """Muévete por la app""",
+  """watchTips.pagesSubtitle""":
+      """Desliza entre páginas y desliza para salir""",
+  """watchTips.pagesBody""":
+      """La app del reloj es una fila de páginas a pantalla completa bajo un solo título. No hay ningún menú que abrir.""",
+  """watchTips.pagesStep1""":
+      """Desliza de lado para pasar entre tu lista, el tablón de fotos, el muro de notas y la página de cuenta.""",
+  """watchTips.pagesStep2""":
+      """Las barras bajo el título dicen cuántas páginas hay y en cuál estás.""",
+  """watchTips.pagesStep3""":
+      """Desliza desde el borde de la pantalla para salir de cualquier cosa que hayas abierto.""",
+  """watchTips.pagesNote""":
+      """El título siempre nombra la página en la que estás, y la línea de debajo nombra el grupo al que pertenece la fila central.""",
+  """watchTips.listsTitle""": """Cambia de lista""",
+  """watchTips.listsSubtitle""": """Toca el título de arriba""",
+  """watchTips.listsBody""":
+      """El nombre de arriba de la pantalla es un botón. Tocarlo abre las dos cosas por las que dejarías una lista.""",
+  """watchTips.listsStep1""":
+      """Toca el nombre de la lista en la parte superior de la pantalla.""",
+  """watchTips.listsStep2""":
+      """Debajo se despliegan dos botones, «Empezar a comprar» y «Cambiar de lista».""",
+  """watchTips.listsStep3""":
+      """Toca «Cambiar de lista» y elige otra, o «Todas las listas» para verlo todo a la vez.""",
+  """watchTips.listsNote""":
+      """Los botones se pliegan solos a los pocos segundos, así que tocar el título sin querer no cuesta nada.""",
+  """watchTips.shoppingTitle""": """Haz una compra""",
+  """watchTips.shoppingSubtitle""":
+      """Recorre las tiendas con el teléfono en el bolsillo""",
+  """watchTips.shoppingBody""":
+      """Una compra convierte el reloj en un acompañante. Las páginas pasan a ser las que quieres en un pasillo, y la casa puede seguirlo.""",
+  """watchTips.shoppingStep1""":
+      """Toca el título y luego «Empezar a comprar». Elige las listas, las tiendas y si tus convivientes ven la compra.""",
+  """watchTips.shoppingStep2""":
+      """Las páginas pasan a ser la compra misma, una para el avance, otra para la lista, otra para lo comprado y otra para lo saltado.""",
+  """watchTips.shoppingStep3""":
+      """Ve marcando sobre la marcha. Lo saltado va a su propia página y vuelve a la lista con un toque.""",
+  """watchTips.shoppingStep4""":
+      """Al salir de una tienda, el reloj pregunta cuánto cobró la caja y te lleva a la siguiente.""",
+  """watchTips.shoppingStep5""":
+      """Tras la última tienda, «Terminar compra» muestra el total antes de cerrar nada.""",
+  """watchTips.shoppingNote""":
+      """Tocar una tienda en la página de avance lleva la compra directamente allí, hacia atrás igual que hacia delante, así que equivocarse es una corrección y no volver a empezar.""",
+  """watchTips.crownTitle""": """Gira la corona""",
+  """watchTips.crownSubtitle""": """Desplaza la lista o pasa las páginas""",
+  """watchTips.crownBody""":
+      """Girar la corona o el bisel giratorio desplaza la lista que tienes delante, lo que mantiene el dedo fuera de lo que estás leyendo.""",
+  """watchTips.crownStep1""":
+      """Gira la corona para recorrer la lista fila a fila. La fila en la que se detiene es la fila sobre la que actúa un toque.""",
+  """watchTips.crownStep2""":
+      """Para que un giro cambie de página, abre «Cuenta», luego «Ajustes» y luego «Corona» en el reloj.""",
+  """watchTips.crownNote""":
+      """Un giro hace una sola cosa a la vez. Si le das la corona a las páginas, las listas se desplazan solo con el dedo.""",
+  """watchTips.offlineTitle""": """Funciona sin cobertura""",
+  """watchTips.offlineSubtitle""":
+      """Sigue marcando en el pasillo de los congelados""",
+  """watchTips.offlineBody""":
+      """El reloj guarda su propia copia de tu hogar, así que abre y funciona sin nada al alcance. Sin teléfono, sin wifi y sin tarifa de datos en el reloj.""",
+  """watchTips.offlineStep1""":
+      """Un punto pequeño en la parte superior de la pantalla significa que todo lo que has hecho está guardado.""",
+  """watchTips.offlineStep2""":
+      """Una nube con un número al lado significa que hay esos cambios esperando una conexión.""",
+  """watchTips.offlineStep3""":
+      """Salen solos en cuanto el reloj vuelve a tener alcance. No hay nada que pulsar.""",
+  """watchTips.tileTitle""": """Ten una lista a un deslizamiento""",
+  """watchTips.tileSubtitle""": """Añade el mosaico de Pantry""",
+  """watchTips.tileBody""":
+      """Los mosaicos son las pantallas que hay junto a la esfera del reloj. Pantry publica uno que nombra tus listas, para que una lista esté a un deslizamiento y no a un arranque de app.""",
+  """watchTips.tileStep1""":
+      """Desde la esfera del reloj, desliza de lado hasta llegar a los mosaicos.""",
+  """watchTips.tileStep2""":
+      """Mantén pulsado, toca el más y elige Pantry en la lista.""",
+  """watchTips.tileStep3""":
+      """Toca una lista en el mosaico para abrir la app directamente en ella.""",
 };

@@ -1130,3 +1130,72 @@ watch:
   unpairSubtitle: Sign this watch out and stop syncing to it
   unpairTitle: Unpair this watch?
   unpairBody: The watch signs out and forgets your household. You can set it up again any time.
+
+watchTips:
+  section: Tips
+  sectionBody: Short walkthroughs of how the watch app works on your wrist.
+  stepsLabel: Step by step
+
+  pairTitle: Set up your watch
+  pairSubtitle: Sign the watch in from this phone
+  pairBody: A watch is a poor place to type a password, so it borrows the sign-in from this phone instead. Nothing is typed on your wrist.
+  pairStep1: Open Pantry on your watch. It shows a setup screen.
+  pairStep2: Tap Open on phone. The watch asks this phone to take over.
+  pairStep3: Unlock this phone and tap Allow on the request that appears here.
+  pairStep4: Keep this screen open until it says the watch is signed in.
+  pairNote: No phone to hand? The watch can show a QR code instead. Scan it with any camera and finish signing in through the browser that opens.
+
+  itemsTitle: Tick items off
+  itemsSubtitle: Tap to check, hold for the details
+  itemsBody: The row in the middle of the screen is the one your tap acts on. Everything you can do to an item hangs off that row.
+  itemsStep1: Tap the middle row to check it off. Tap it again to bring it back.
+  itemsStep2: A ring drains around the row while the change is still yours to take back. Tap again inside that window and nothing is written at all.
+  itemsStep3: Press and hold a row to open it. Quantity, price, category and notes are there, along with a button that opens the item on this phone.
+  itemsNote: Tapping a row that is not in the middle simply brings it there. The tap after that is the one that acts, so a mis-aim costs a scroll and nothing else.
+
+  pagesTitle: Find your way around
+  pagesSubtitle: Swipe between pages, swipe back out
+  pagesBody: The watch app is a row of full-screen pages under one title bar. There is no menu to open.
+  pagesStep1: Swipe sideways to move between your list, the photo board, the notes wall and the account page.
+  pagesStep2: The bars under the title say how many pages there are and which one you are on.
+  pagesStep3: Swipe in from the edge of the screen to back out of anything you opened.
+  pagesNote: The title always names the page you are on, and the line under it names the group the middle row belongs to.
+
+  listsTitle: Switch lists
+  listsSubtitle: Tap the title at the top
+  listsBody: The name at the top of the screen is a button. Tapping it opens the two things you would leave a list for.
+  listsStep1: Tap the list name at the top of the screen.
+  listsStep2: Two buttons drop down under it, Start shopping and Change list.
+  listsStep3: Tap Change list and pick another one, or All lists to see everything at once.
+  listsNote: The buttons fold away on their own after a few seconds, so tapping the title by accident costs nothing.
+
+  shoppingTitle: Shop a trip
+  shoppingSubtitle: Walk the shops with your phone in your pocket
+  shoppingBody: A trip turns the watch into a shopping companion. The pages become the ones you want in an aisle, and the household can follow along.
+  shoppingStep1: Tap the title, then Start shopping. Pick the lists to shop, the shops to walk, and whether housemates see the trip.
+  shoppingStep2: The pages become the trip itself, one each for where it has got to, the list, what you bought and what you skipped.
+  shoppingStep3: Tick items as you go. Skipped ones land on their own page and go back on the list with a tap.
+  shoppingStep4: As you leave a shop, the watch asks what the till charged and moves you on to the next one.
+  shoppingStep5: After the last shop, Finish trip shows the tally before anything is closed.
+  shoppingNote: Tapping a shop on the progression page moves the trip straight to it, backwards as well as forwards, so a wrong turn is a correction rather than a restart.
+
+  crownTitle: Turn the crown
+  crownSubtitle: Scroll the list, or turn the pages
+  crownBody: Turning the crown or the rotating bezel scrolls whatever list is in front of you, which keeps your finger off the thing you are reading.
+  crownStep1: Turn the crown to walk the list a row at a time. The row it lands on is the row a tap acts on.
+  crownStep2: To make a turn change pages instead, open Account, then Settings, then Crown on the watch.
+  crownNote: A turn does one thing at a time. Handing the crown to the pages means lists are scrolled by finger alone.
+
+  offlineTitle: It works without a signal
+  offlineSubtitle: Keep ticking in the cold aisle
+  offlineBody: The watch keeps its own copy of your household, so it opens and works with nothing in range. No phone, no Wi-Fi, no watch data plan.
+  offlineStep1: A small dot at the top of the screen means everything you have done is saved.
+  offlineStep2: A cloud with a number beside it means that many changes are waiting for a connection.
+  offlineStep3: They go out on their own the moment the watch is back in range. There is nothing to press.
+
+  tileTitle: Keep a list one swipe away
+  tileSubtitle: Add the Pantry tile
+  tileBody: Tiles are the screens beside your watch face. Pantry publishes one that names your lists, so a list is a swipe away rather than an app launch.
+  tileStep1: From the watch face, swipe sideways until you reach the tiles.
+  tileStep2: Press and hold, tap the plus, and pick Pantry from the list.
+  tileStep3: Tap a list on the tile to open the app straight on it.

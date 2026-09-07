@@ -1122,3 +1122,72 @@ watch:
   unpairSubtitle: Diese Uhr abmelden und nicht mehr mit ihr synchronisieren
   unpairTitle: Diese Uhr entkoppeln?
   unpairBody: Die Uhr meldet sich ab und vergisst deinen Haushalt. Du kannst sie jederzeit neu einrichten.
+
+watchTips:
+  section: Tipps
+  sectionBody: Kurze Anleitungen dazu, wie die Uhren-App am Handgelenk funktioniert.
+  stepsLabel: Schritt für Schritt
+
+  pairTitle: Uhr einrichten
+  pairSubtitle: Die Uhr über dieses Telefon anmelden
+  pairBody: Auf einer Uhr tippt sich ein Passwort schlecht, deshalb übernimmt sie die Anmeldung von diesem Telefon. Am Handgelenk wird nichts getippt.
+  pairStep1: Öffne Pantry auf deiner Uhr. Sie zeigt einen Einrichtungsbildschirm.
+  pairStep2: Tippe auf „Auf dem Telefon öffnen“. Die Uhr bittet dieses Telefon zu übernehmen.
+  pairStep3: Entsperre dieses Telefon und tippe bei der Anfrage, die hier erscheint, auf „Erlauben“.
+  pairStep4: Lass diesen Bildschirm offen, bis dort steht, dass die Uhr angemeldet ist.
+  pairNote: Kein Telefon zur Hand? Die Uhr kann stattdessen einen QR-Code zeigen. Scanne ihn mit einer beliebigen Kamera und schließe die Anmeldung im Browser ab, der sich öffnet.
+
+  itemsTitle: Dinge abhaken
+  itemsSubtitle: Tippen zum Abhaken, halten für die Details
+  itemsBody: Die Zeile in der Mitte des Bildschirms ist die, auf die dein Tippen wirkt. Alles, was du mit einem Eintrag tun kannst, hängt an dieser Zeile.
+  itemsStep1: Tippe auf die mittlere Zeile, um sie abzuhaken. Noch einmal tippen holt sie zurück.
+  itemsStep2: Um die Zeile herum läuft ein Ring ab, solange die Änderung noch zurückzunehmen ist. Tippst du in diesem Fenster erneut, wird gar nichts geschrieben.
+  itemsStep3: Halte eine Zeile gedrückt, um sie zu öffnen. Menge, Preis, Kategorie und Notizen stehen dort, dazu eine Schaltfläche, die den Eintrag auf diesem Telefon öffnet.
+  itemsNote: Tippst du auf eine Zeile, die nicht in der Mitte ist, rückt sie einfach dorthin. Erst das nächste Tippen wirkt, ein Danebengreifen kostet also nur ein Stück Scrollen.
+
+  pagesTitle: Zurechtfinden
+  pagesSubtitle: Zwischen Seiten wischen, wieder hinauswischen
+  pagesBody: Die Uhren-App ist eine Reihe bildschirmfüllender Seiten unter einer Titelzeile. Es gibt kein Menü zu öffnen.
+  pagesStep1: Wische seitwärts, um zwischen deiner Liste, der Fotowand, der Notizwand und der Kontoseite zu wechseln.
+  pagesStep2: Die Balken unter dem Titel zeigen, wie viele Seiten es gibt und auf welcher du bist.
+  pagesStep3: Wische vom Bildschirmrand herein, um alles wieder zu verlassen, was du geöffnet hast.
+  pagesNote: Der Titel nennt immer die Seite, auf der du bist, und die Zeile darunter die Gruppe, zu der die mittlere Zeile gehört.
+
+  listsTitle: Liste wechseln
+  listsSubtitle: Tippe oben auf den Titel
+  listsBody: Der Name oben auf dem Bildschirm ist eine Schaltfläche. Ein Tippen darauf öffnet die zwei Dinge, für die man eine Liste verlässt.
+  listsStep1: Tippe oben auf dem Bildschirm auf den Listennamen.
+  listsStep2: Darunter klappen zwei Schaltflächen auf, „Einkaufen starten“ und „Liste wechseln“.
+  listsStep3: Tippe auf „Liste wechseln“ und wähle eine andere, oder „Alle Listen“, um alles auf einmal zu sehen.
+  listsNote: Die Schaltflächen klappen nach ein paar Sekunden von selbst wieder zu, versehentliches Tippen auf den Titel kostet also nichts.
+
+  shoppingTitle: Einen Einkauf gehen
+  shoppingSubtitle: Die Läden ablaufen, das Telefon in der Tasche
+  shoppingBody: Ein Einkauf macht aus der Uhr eine Einkaufsbegleitung. Die Seiten werden zu denen, die du im Gang brauchst, und der Haushalt kann mitverfolgen.
+  shoppingStep1: Tippe auf den Titel, dann auf „Einkaufen starten“. Wähle die Listen, die Läden und ob Mitbewohner den Einkauf sehen.
+  shoppingStep2: Die Seiten werden zum Einkauf selbst, je eine für den Stand, die Liste, das Gekaufte und das Übersprungene.
+  shoppingStep3: Hake unterwegs ab. Übersprungenes landet auf einer eigenen Seite und kommt mit einem Tippen zurück auf die Liste.
+  shoppingStep4: Beim Verlassen eines Ladens fragt die Uhr, was die Kasse berechnet hat, und schickt dich weiter zum nächsten.
+  shoppingStep5: Nach dem letzten Laden zeigt „Einkauf abschließen“ die Summe, bevor irgendetwas geschlossen wird.
+  shoppingNote: Ein Tippen auf einen Laden auf der Standseite bringt den Einkauf direkt dorthin, rückwärts wie vorwärts, ein Umweg ist also eine Korrektur und kein Neuanfang.
+
+  crownTitle: Die Krone drehen
+  crownSubtitle: Die Liste scrollen oder die Seiten wechseln
+  crownBody: Ein Dreh an der Krone oder der drehbaren Lünette scrollt die Liste vor dir und hält deinen Finger von dem fern, was du gerade liest.
+  crownStep1: Dreh die Krone, um die Liste Zeile für Zeile durchzugehen. Die Zeile, auf der sie landet, ist die, auf die ein Tippen wirkt.
+  crownStep2: Damit ein Dreh stattdessen die Seiten wechselt, öffne auf der Uhr „Konto“, dann „Einstellungen“, dann „Krone“.
+  crownNote: Ein Dreh tut immer nur eines. Gibst du die Krone den Seiten, werden Listen nur noch mit dem Finger gescrollt.
+
+  offlineTitle: Sie läuft ohne Empfang
+  offlineSubtitle: Auch im kalten Gang weiter abhaken
+  offlineBody: Die Uhr hält eine eigene Kopie deines Haushalts, sie öffnet und arbeitet also auch ohne alles in Reichweite. Kein Telefon, kein WLAN, kein Datentarif für die Uhr.
+  offlineStep1: Ein kleiner Punkt oben auf dem Bildschirm heißt, dass alles Getane gespeichert ist.
+  offlineStep2: Eine Wolke mit einer Zahl daneben heißt, dass so viele Änderungen auf eine Verbindung warten.
+  offlineStep3: Sie gehen von selbst raus, sobald die Uhr wieder in Reichweite ist. Es gibt nichts zu drücken.
+
+  tileTitle: Eine Liste einen Wisch entfernt
+  tileSubtitle: Die Pantry-Kachel hinzufügen
+  tileBody: Kacheln sind die Bildschirme neben deinem Zifferblatt. Pantry veröffentlicht eine, die deine Listen nennt, damit eine Liste einen Wisch statt einen App-Start entfernt ist.
+  tileStep1: Wische vom Zifferblatt aus seitwärts, bis du bei den Kacheln bist.
+  tileStep2: Halte gedrückt, tippe auf das Plus und wähle Pantry aus der Liste.
+  tileStep3: Tippe auf der Kachel auf eine Liste, um die App direkt darauf zu öffnen.
