@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../widgets/wear_metrics.dart';
+import 'wear_metrics.dart';
 
 /// What `size` the watch asks the preview endpoint for.
 ///
@@ -23,8 +23,8 @@ class WearPreviewSize {
   /// Below this a preview is cheaper to fetch than to think about.
   static const int min = 64;
 
-  /// What a photo is drawn at while it is being read. Nothing between fit and
-  /// this is worth a rung: the wearer either glanced at the photo or is
+  /// What an image is drawn at while it is being read. Nothing between fit and
+  /// this is worth a rung: the wearer either glanced at the image or is
   /// zoomed into it looking for a lock code.
   static const int zoomed = max;
 
@@ -36,6 +36,10 @@ class WearPreviewSize {
     return size;
   }
 
+  /// The rung a box [logicalWidth] across lands on.
+  static int forWidth(BuildContext context, double logicalWidth) =>
+      _rung(logicalWidth * MediaQuery.devicePixelRatioOf(context));
+
   /// A tile in a two-up row.
   ///
   /// Measured from the screen rather than the tile's own box: the box shrinks
@@ -44,12 +48,10 @@ class WearPreviewSize {
   static int tile(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final usable = width * (1 - 2 * WearMetrics.tallSideInset);
-    final tileWidth = (usable - WearMetrics.photoTileGap) / 2;
-    return _rung(tileWidth * MediaQuery.devicePixelRatioOf(context));
+    return forWidth(context, (usable - WearMetrics.photoTileGap) / 2);
   }
 
-  /// A photo filling the screen, before the wearer zooms.
-  static int fit(BuildContext context) => _rung(
-    MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context),
-  );
+  /// An image filling the screen, before the wearer zooms.
+  static int fit(BuildContext context) =>
+      forWidth(context, MediaQuery.sizeOf(context).width);
 }

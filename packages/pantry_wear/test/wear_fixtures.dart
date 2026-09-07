@@ -45,6 +45,8 @@ ListItem testItem({
   List<int> labelIds = const [],
   bool deleteOnDone = false,
   String? rrule,
+  int? imageFileId,
+  String? imageUploadedBy,
 }) => ListItem(
   id: id,
   listId: listId,
@@ -55,6 +57,8 @@ ListItem testItem({
   quantity: quantity,
   done: done,
   rrule: rrule,
+  imageFileId: imageFileId,
+  imageUploadedBy: imageUploadedBy,
   repeatFromCompletion: false,
   deleteOnDone: deleteOnDone,
   sortOrder: id,

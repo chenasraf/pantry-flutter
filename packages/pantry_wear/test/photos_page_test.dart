@@ -2,11 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_wear/src/photos/photo_route.dart';
-import 'package:pantry_wear/src/photos/photo_sizes.dart';
 import 'package:pantry_wear/src/photos/photos_controller.dart';
 import 'package:pantry_wear/src/photos/photos_page.dart';
 import 'package:pantry_wear/src/wear_shape.dart';
 import 'package:pantry_wear/src/widgets/focus_list.dart';
+import 'package:pantry_wear/src/widgets/preview_sizes.dart';
 
 import 'wear_fixtures.dart';
 

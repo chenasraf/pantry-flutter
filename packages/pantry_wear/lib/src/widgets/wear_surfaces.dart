@@ -70,6 +70,10 @@ abstract final class WearSurface {
     );
   }
 
+  /// The corner a panel turns, for the odd surface that has to clip its own
+  /// content to the same shape rather than draw the decoration.
+  static const double panelRadius = 16;
+
   /// A panel that holds other things — a detail block, a sheet, a caption over
   /// a photo. Squarer than a card, because it is a region rather than a target.
   static BoxDecoration panel(
@@ -81,7 +85,7 @@ abstract final class WearSurface {
     return wearAmbientFill(
       context,
       color: fill ?? scheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(radius ?? 16),
+      borderRadius: BorderRadius.circular(radius ?? panelRadius),
     );
   }
 

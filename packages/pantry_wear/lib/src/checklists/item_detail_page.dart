@@ -12,8 +12,12 @@ import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 
 import '../services/wear_host_service.dart';
+import '../widgets/image_route.dart';
+import '../widgets/preview_image.dart';
+import '../widgets/preview_sizes.dart';
 import '../widgets/wear_mechanics.dart';
 import 'checklists_controller.dart';
+import 'item_image.dart';
 import '../widgets/wear_surfaces.dart';
 
 /// Read-only. The watch writes check-state and nothing else, so the actions
@@ -65,6 +69,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   Widget build(BuildContext context) {
     final item = widget.item;
     final controller = widget.controller;
+    final houseId = controller.houseId;
     final scheme = Theme.of(context).colorScheme;
     const neutral = Color(0xFFB6B6BE);
     final inSession = controller.mode == ChecklistMode.session;
@@ -98,6 +103,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
             vertical: 46,
           ),
           children: [
+            if (item.imageFileId != null && houseId != null) ...[
+              _Thumbnail(item: item, houseId: houseId),
+              const SizedBox(height: 12),
+            ],
             Text(
               item.name,
               textAlign: TextAlign.center,
@@ -271,4 +280,61 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       ),
     ),
   );
+}
+
+/// The item's photo, over what the page has to say about it.
+///
+/// Square and well short of the full width: it sits at the top of a scroll,
+/// which on a round screen is the narrowest the glass gets, and a first
+/// screenful that is all photo has buried the facts the wearer came for. A tap
+/// gives it the whole screen, where the label on a bottle is finally readable.
+class _Thumbnail extends StatelessWidget {
+  final ListItem item;
+  final int houseId;
+
+  const _Thumbnail({required this.item, required this.houseId});
+
+  static double _side(BuildContext context) =>
+      MediaQuery.sizeOf(context).width * 0.55;
+
+  Widget _image(BuildContext context, int size, BoxFit fit) => ItemImage(
+    item: item,
+    houseId: houseId,
+    size: size,
+    fit: fit,
+    unavailable: const ImageUnavailable(),
+  );
+
+  void _open(BuildContext context) {
+    Navigator.of(context).push(
+      wearRoute<void>(
+        ImageRoute(
+          image: (context, size) => _image(context, size, BoxFit.contain),
+          cached: (context) =>
+              WearPreviewSize.forWidth(context, _side(context)),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final side = _side(context);
+    return Center(
+      child: GestureDetector(
+        onTap: () => _open(context),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(WearSurface.panelRadius),
+          child: SizedBox.square(
+            dimension: side,
+            child: _image(
+              context,
+              WearPreviewSize.forWidth(context, side),
+              BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

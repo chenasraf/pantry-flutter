@@ -8,11 +8,12 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
+import '../widgets/preview_image.dart';
+import '../widgets/preview_sizes.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'photo_image.dart';
 import 'photo_route.dart';
-import 'photo_sizes.dart';
 import 'photos_controller.dart';
 import '../widgets/wear_surfaces.dart';
 
@@ -470,7 +471,7 @@ class _PhotoTile extends StatelessWidget {
               photo: photo,
               houseId: houseId,
               size: size,
-              unavailable: const PhotoUnavailable(),
+              unavailable: const ImageUnavailable(),
             ),
             if (captioned && caption != null && caption.isNotEmpty)
               Positioned(
