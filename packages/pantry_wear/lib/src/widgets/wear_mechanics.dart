@@ -127,7 +127,12 @@ class EdgeAwarePageView extends StatelessWidget {
                 onPageChanged: onPageChanged,
                 children: [
                   for (final child in children)
-                    Directionality(textDirection: appDirection, child: child),
+                    KeepAlivePage(
+                      child: Directionality(
+                        textDirection: appDirection,
+                        child: child,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -140,6 +145,39 @@ class EdgeAwarePageView extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+/// Holds a pager page's state while the wearer is looking at another one.
+///
+/// A `PageView` builds only the page on screen, so without this every page is
+/// torn down the moment it is swiped away and rebuilt from nothing on the way
+/// back: an expanded Done section collapses, and every list returns to the top.
+/// On a wrist that is worse than on a phone, because the way back to where you
+/// were is a swipe *through* the pages that just forgot themselves.
+///
+/// What a page does off-screen is governed by the flags the shell passes it —
+/// `active` for polling, `rotary` for the crown — and neither is what mounts
+/// it. Staying alive costs the page's controllers and its built rows; it buys
+/// nothing running.
+class KeepAlivePage extends StatefulWidget {
+  final Widget child;
+
+  const KeepAlivePage({super.key, required this.child});
+
+  @override
+  State<KeepAlivePage> createState() => _KeepAlivePageState();
+}
+
+class _KeepAlivePageState extends State<KeepAlivePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }
 
