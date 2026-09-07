@@ -90,7 +90,9 @@ help:
 	@echo ""
 	@echo "  Building:"
 	@echo "    android-install     Build APK and install on connected device"
+	@echo "    android-install-dev Build a debug APK and install it on the connected device"
 	@echo "    android-build-apk   Build Android APK"
+	@echo "    android-build-apk-dev    Build a debug Android APK"
 	@echo "    android-build-apk-split  Build Android split-per-ABI APKs"
 	@echo "    android-build-apk-fdroid Build FLOSS (flutter_zxing) split APKs for F-Droid"
 	@echo "    fdroid-lock         Regenerate the pinned F-Droid lockfile after dep changes"
@@ -98,7 +100,9 @@ help:
 	@echo "    android-build-aab   Build Android App Bundle"
 	@echo "    wear-build-apk      Build Wear OS APK"
 	@echo "    wear-build-aab      Build Wear OS App Bundle"
+	@echo "    wear-build-apk-dev  Build a debug Wear OS APK"
 	@echo "    wear-install        Build Wear OS APK and install on the connected watch"
+	@echo "    wear-install-dev    Build a debug Wear OS APK and install it on the connected watch"
 	@echo "    wear-variant-apk    Build a Wear OS APK with a platform switch flipped (WEAR_ARGS=)"
 	@echo "    wear-coldstart      Time cold starts of the installed Wear OS build (COLDSTART_ARGS=)"
 	@echo "    android-push        Build APK and push to device via adb"
@@ -108,6 +112,8 @@ help:
 	@echo "    linux-build         Build Linux desktop bundle"
 	@echo "    windows-build       Build Windows desktop bundle"
 	@echo "    build-all           Build all platforms"
+	@echo "                        Every *-install target accepts DEVICE=<id> — needed whenever a"
+	@echo "                        phone and a watch are attached at once (flutter devices)"
 	@echo ""
 	@echo "  Release:"
 	@echo "    android-release-apk Build APK and copy to build/release/"
@@ -221,6 +227,17 @@ test-coverage:
 	@echo "Coverage report generated at coverage/lcov.info"
 
 # Building
+
+# Which device an install lands on. Developing the watch means a phone and a
+# watch are both plugged in, and `flutter install` refuses to choose between
+# them — so name one:
+#   make wear-install-dev DEVICE=192.168.68.110:43639
+#   make android-install-dev DEVICE=53031FDAP000YN
+# Left empty it is omitted entirely, which is right when only one device is
+# attached and is how these targets have always behaved.
+DEVICE :=
+DEVICE_FLAG := $(if $(DEVICE),-d $(DEVICE),)
+
 .PHONY: android-build-apk
 android-build-apk:
 	flutter build apk --release --flavor phone --obfuscate --split-debug-info=build/debug-info-apk
@@ -229,7 +246,19 @@ android-build-apk-split:
 	flutter build apk --release --flavor phone --split-per-abi --obfuscate --split-debug-info=build/debug-info-apk
 .PHONY: android-install
 android-install: android-build-apk
-	flutter install --flavor phone
+	flutter install --flavor phone $(DEVICE_FLAG)
+
+# Debug builds, for putting the working tree on a device without waiting out an
+# obfuscated release. The mode is named on both halves deliberately: `flutter
+# install` builds release by default, so a debug build followed by a bare
+# install reaches for an artifact this never wrote.
+.PHONY: android-build-apk-dev
+android-build-apk-dev:
+	flutter build apk --debug --flavor phone
+
+.PHONY: android-install-dev
+android-install-dev: android-build-apk-dev
+	flutter install --debug --flavor phone $(DEVICE_FLAG)
 
 # Wear OS. A separate entrypoint (`lib/main_wear.dart`) drives the watch UI from
 # packages/pantry_wear; the flavor gives it its own merged manifest, minSdk and
@@ -258,7 +287,15 @@ wear-build-aab:
 
 .PHONY: wear-install
 wear-install: wear-build-apk
-	flutter install --flavor wear
+	flutter install --flavor wear $(DEVICE_FLAG)
+
+.PHONY: wear-build-apk-dev
+wear-build-apk-dev:
+	flutter build apk --debug $(WEAR_FLAGS)
+
+.PHONY: wear-install-dev
+wear-install-dev: wear-build-apk-dev
+	flutter install --debug --flavor wear $(DEVICE_FLAG)
 
 # Build a wear APK with one of the platform switches flipped, for a size or
 # cold-start comparison, as `key=value` pairs:
@@ -275,7 +312,7 @@ wear-variant-apk:
 
 .PHONY: wear-variant-install
 wear-variant-install: wear-variant-apk
-	flutter install --flavor wear
+	flutter install --flavor wear $(DEVICE_FLAG)
 
 .PHONY: wear-coldstart
 wear-coldstart:
