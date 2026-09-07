@@ -80,6 +80,14 @@ class ChecklistsController extends ChangeNotifier {
     _loading = false;
   }
 
+  /// Stand a seeded trip in another shop and say so, which is what [advanceTo]
+  /// leaves behind once the server has granted the move.
+  @visibleForTesting
+  void seedSession(ShoppingSession? session) {
+    _session = session;
+    _emit();
+  }
+
   final _checklists = ChecklistService.instance;
   final _shopping = ShoppingService.instance;
   final _sync = SyncManager.instance;

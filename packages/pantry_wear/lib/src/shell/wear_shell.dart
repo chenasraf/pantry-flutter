@@ -58,6 +58,10 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   var _page = 0;
   var _mode = ChecklistMode.browse;
 
+  /// The shop the trip was last seen at, so that moving to another one can be
+  /// told apart from the polls that report the same one over and over.
+  int? _leg;
+
   /// The mode transition holds input for a moment after the pager swaps, so a
   /// tap already descending cannot land on a page set that did not exist when
   /// the finger started moving.
@@ -174,7 +178,25 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
       unawaited(_setMode(_controller.mode));
       return;
     }
+    final leg = _controller.session?.activeStoreId;
+    if (_mode == ChecklistMode.session && leg != _leg) {
+      _leg = leg;
+      _showChecklist();
+    }
     setState(() {});
+  }
+
+  /// Moving to another shop puts that shop's list back under the thumb. The
+  /// page the move was made from describes the walk between shops, and the
+  /// walk is over.
+  void _showChecklist() {
+    final landing = _checklistIndex;
+    if (_page == landing || !_pager.hasClients) return;
+    _pager.animateToPage(
+      landing,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   /// Take a mode on with no transition: its landing page, and a pager already
@@ -182,6 +204,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   /// `PageView` needs [_setMode]'s swap instead.
   void _adoptMode(ChecklistMode next) {
     _mode = next;
+    _leg = _controller.session?.activeStoreId;
     _page = next == ChecklistMode.session ? 1 : 0;
     _pager = PageController(initialPage: _page);
   }
@@ -267,6 +290,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
     final previous = _pager;
     setState(() {
       _mode = next;
+      _leg = _controller.session?.activeStoreId;
       _locked = true;
       _page = landing;
       _pager = PageController(initialPage: landing);
