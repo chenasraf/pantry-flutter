@@ -17,6 +17,11 @@ class NotificationsController extends ChangeNotifier {
   String? _error;
   String? get error => _error;
 
+  /// Token for the list in [_notifications], so a refresh that finds nothing
+  /// changed costs a request with no body. Only ever sent alongside the list it
+  /// describes — a controller that has just been built holds neither.
+  String? _etag;
+
   Future<void> load() async {
     _error = null;
     if (_notifications.isEmpty) {
@@ -25,10 +30,10 @@ class NotificationsController extends ChangeNotifier {
     }
 
     try {
-      _notifications = await NotificationService.instance.getNotifications();
+      final changed = await _fetch();
       _isLoading = false;
       notifyListeners();
-      await _markAllSeen();
+      if (changed) await _markAllSeen();
     } catch (e) {
       debugPrint('[NotificationsController] Failed to load: $e');
       _isLoading = false;
@@ -39,12 +44,25 @@ class NotificationsController extends ChangeNotifier {
 
   Future<void> refresh() async {
     try {
-      _notifications = await NotificationService.instance.getNotifications();
-      notifyListeners();
-      await _markAllSeen();
+      if (await _fetch()) {
+        notifyListeners();
+        await _markAllSeen();
+      }
     } catch (e) {
       debugPrint('[NotificationsController] Failed to refresh: $e');
     }
+  }
+
+  /// Returns whether the list moved — false means the server confirmed the one
+  /// already held, so there is nothing to repaint or mark seen.
+  Future<bool> _fetch() async {
+    final fetch = await NotificationService.instance.getNotifications(
+      etag: _etag,
+    );
+    _etag = fetch.etag;
+    if (fetch.unchanged) return false;
+    _notifications = fetch.notifications;
+    return true;
   }
 
   Future<void> _markAllSeen() async {
@@ -60,6 +78,9 @@ class NotificationsController extends ChangeNotifier {
     _notifications = _notifications
         .where((n) => n.notificationId != notification.notificationId)
         .toList();
+    // The held list no longer matches what the token describes, and a dismissal
+    // the server rejected would otherwise stay hidden behind a `304`.
+    _etag = null;
     notifyListeners();
     try {
       await NotificationService.instance.dismiss(notification.notificationId);
@@ -71,6 +92,7 @@ class NotificationsController extends ChangeNotifier {
   Future<void> dismissAll() async {
     final ids = _notifications.map((n) => n.notificationId).toList();
     _notifications = [];
+    _etag = null;
     notifyListeners();
     try {
       await NotificationService.instance.dismissAll(ids);

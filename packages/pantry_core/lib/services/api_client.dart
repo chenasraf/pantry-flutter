@@ -30,6 +30,36 @@ class OfflineException extends ApiException {
     : super(0, message);
 }
 
+/// How a server answered a conditional GET.
+enum ConditionalOutcome {
+  /// A body came back — either it changed, or there was no token to compare
+  /// against.
+  changed,
+
+  /// `304 Not Modified`: what the caller already holds is current, and nothing
+  /// but headers crossed the wire.
+  unchanged,
+
+  /// `204 No Content`: the resource is empty. Nextcloud's notifications
+  /// endpoint answers this way rather than sending an empty list.
+  empty,
+}
+
+/// The result of [ApiClient.getConditional], carrying the token to send with
+/// the next request for the same resource.
+class ConditionalResponse<T> {
+  final ConditionalOutcome outcome;
+
+  /// Set only when [outcome] is [ConditionalOutcome.changed].
+  final T? data;
+
+  /// The server's `ETag`, or null if it sent none — in which case the next
+  /// request is an ordinary unconditional GET.
+  final String? etag;
+
+  const ConditionalResponse({required this.outcome, this.data, this.etag});
+}
+
 class ApiClient {
   final String basePath;
 
@@ -128,6 +158,48 @@ class ApiClient {
       () => http.get(_uri(path, query), headers: _headers).timeout(_timeout),
     );
     return _handleResponse<D, T>(response, fromJson);
+  }
+
+  /// A GET the server may answer with "unchanged" instead of a body, given the
+  /// [etag] it handed out for the copy the caller already holds. Callers that
+  /// keep the previous result — and can say what to do when it is still good —
+  /// spend a few headers per poll instead of a full download.
+  Future<ConditionalResponse<T>> getConditional<D, T>(
+    String path, {
+    Map<String, String>? query,
+    String? etag,
+    required T Function(D data) fromJson,
+  }) async {
+    final headers = {..._headers, 'If-None-Match': ?etag};
+    final response = await _send(
+      () => http.get(_uri(path, query), headers: headers).timeout(_timeout),
+    );
+    _notify(response.statusCode);
+    // A 304 carries no ETag of its own on some servers; the one the caller sent
+    // still describes what it holds, so hand that back rather than forgetting it.
+    final tag = response.headers['etag'] ?? etag;
+    if (response.statusCode == 304) {
+      return ConditionalResponse(
+        outcome: ConditionalOutcome.unchanged,
+        etag: tag,
+      );
+    }
+    if (response.statusCode >= 400) {
+      throw ApiException(response.statusCode, response.body);
+    }
+    if (response.statusCode == 204 || response.body.isEmpty) {
+      return ConditionalResponse(
+        outcome: ConditionalOutcome.empty,
+        etag: response.headers['etag'],
+      );
+    }
+    final json = jsonDecode(response.body);
+    final data = json['ocs']?['data'] ?? json;
+    return ConditionalResponse(
+      outcome: ConditionalOutcome.changed,
+      data: fromJson(data as D),
+      etag: response.headers['etag'],
+    );
   }
 
   Future<T> post<D, T>(

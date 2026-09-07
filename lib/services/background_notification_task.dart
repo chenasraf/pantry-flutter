@@ -17,6 +17,10 @@ const notificationPollTaskName = 'pantry-notification-poll';
 /// already shown as local notifications (to avoid re-notifying).
 const _seenIdsKey = 'seen_notification_ids';
 
+/// Secure storage key for the notifications endpoint's `ETag`. Each poll runs
+/// in a fresh isolate, so the token only survives between polls on disk.
+const _etagKey = 'notifications_etag';
+
 /// Top-level function required by workmanager. Must be annotated
 /// `@pragma('vm:entry-point')` so tree-shaking doesn't strip it.
 @pragma('vm:entry-point')
@@ -44,17 +48,29 @@ Future<void> _pollAndNotify() async {
   await PrefsService.instance.load();
   if (!PrefsService.instance.notificationsEnabled) return;
 
-  final notifications = await NotificationService.instance.getNotifications();
-  if (notifications.isEmpty) return;
-
   // A store that won't decrypt costs the poll its seen-set, so the user may see
   // a notification twice. Re-notifying beats the task dying mid-poll.
   String? seenRaw;
+  String? knownEtag;
   try {
     seenRaw = await secureStorage.read(key: _seenIdsKey);
+    knownEtag = await secureStorage.read(key: _etagKey);
   } catch (e) {
-    debugPrint('[bg-notify] failed to read seen notification IDs: $e');
+    debugPrint('[bg-notify] failed to read poll state: $e');
   }
+
+  final fetch = await NotificationService.instance.getNotifications(
+    etag: knownEtag,
+  );
+  // The list is identical to the one the last poll already worked through, so
+  // there is nothing to show and the token still stands.
+  if (fetch.unchanged) return;
+  final notifications = fetch.notifications;
+  if (notifications.isEmpty) {
+    await _rememberEtag(fetch.etag);
+    return;
+  }
+
   final seen = seenRaw == null || seenRaw.isEmpty
       ? <int>{}
       : seenRaw.split(',').map(int.parse).toSet();
@@ -63,7 +79,10 @@ Future<void> _pollAndNotify() async {
       .where((n) => !seen.contains(n.notificationId))
       .toList();
 
-  if (newOnes.isEmpty) return;
+  if (newOnes.isEmpty) {
+    await _rememberEtag(fetch.etag);
+    return;
+  }
 
   await LocalNotificationsService.instance.init();
 
@@ -79,6 +98,19 @@ Future<void> _pollAndNotify() async {
   // Persist only IDs the server still returns, so the set can't grow unbounded.
   final currentIds = notifications.map((n) => n.notificationId).toSet();
   await secureStorage.write(key: _seenIdsKey, value: currentIds.join(','));
+  await _rememberEtag(fetch.etag);
+}
+
+/// Store the token last, once the poll has recorded what it showed. A token
+/// written ahead of that would let the next poll answer `304` for a
+/// notification the user never saw.
+Future<void> _rememberEtag(String? etag) async {
+  if (etag == null) return;
+  try {
+    await secureStorage.write(key: _etagKey, value: etag);
+  } catch (e) {
+    debugPrint('[bg-notify] failed to store notifications ETag: $e');
+  }
 }
 
 /// Marks the currently visible notifications as "seen" without showing
