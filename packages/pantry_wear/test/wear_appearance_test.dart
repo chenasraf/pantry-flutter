@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
@@ -102,11 +103,21 @@ void main() {
     link.debugReset();
     WearLinkService.debugHostSupported = true;
     await PrefsService.instance.load();
+    // A watch reading a publication is a signed-in watch: the phone states how
+    // it draws to the watch it signed in, and a signed-out one ignores it.
+    await AuthService.instance.adoptCredentials(
+      const NextcloudCredentials(
+        serverUrl: 'https://cloud.example',
+        loginName: 'ada',
+        appPassword: 'secret',
+      ),
+    );
     ThemingService.instance.clear();
     LocaleService.instance.apply();
   });
 
   tearDown(() async {
+    await AuthService.instance.logout(revoke: false);
     await client.debugReset();
     await WearTileService.instance.clear();
     await PrefsService.instance.clear();
@@ -156,6 +167,25 @@ void main() {
       // A watch's only way back out of a route is a deliberate edge-strip
       // drag, so a landed value rebuilds rather than tearing the tree down.
       expect(LocaleService.instance.revision, before);
+    });
+
+    test('a signed-out watch reads it and takes nothing', () async {
+      // The publication is a `DataItem` and outlives the session it was made
+      // for, so it is still sitting there on the launch after a sign-out.
+      // Landing it would hand back the accent and language the wearer had just
+      // dropped — a local sign-out undone by restarting the app.
+      await AuthService.instance.logout(revoke: false);
+      publishAppearance(const {
+        'locale': 'de',
+        'themeColorHex': '#A02334',
+        'useServerThemeColor': true,
+      });
+
+      await client.start();
+      await settle();
+
+      expect(LocaleService.instance.effectiveLocale.languageCode, 'en');
+      expect(PrefsService.instance.themeColorHex, isNull);
     });
 
     test('a watch with no Data Layer keeps its own answers', () async {
@@ -277,6 +307,10 @@ void main() {
     // end — a real page, drawn from the same global message bundle as every
     // other, which is what makes it worth asserting against.
     available = false;
+    // Signed out, which is what settles the app on the setup page. These two
+    // assert the rebuild reaching a tree, not the rule about what may land, so
+    // they write the published value straight into prefs.
+    await AuthService.instance.logout(revoke: false);
     await tester.pumpWidget(const PantryWearApp());
     await tester.pumpAndSettle();
     expect(find.text('No phone link'), findsOneWidget);
@@ -301,6 +335,10 @@ void main() {
     // rebuilds only because the navigator's own widget was replaced, which is
     // a longer chain than the frame the root repainted.
     available = false;
+    // Signed out, which is what settles the app on the setup page. These two
+    // assert the rebuild reaching a tree, not the rule about what may land, so
+    // they write the published value straight into prefs.
+    await AuthService.instance.logout(revoke: false);
     await tester.pumpWidget(const PantryWearApp());
     await tester.pumpAndSettle();
 

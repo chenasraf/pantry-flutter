@@ -470,6 +470,31 @@ void main() {
       expect(sentPaths(), isEmpty);
     });
   });
+
+  group('what signing out leaves behind', () {
+    test('nothing: the settings go with the account', () async {
+      await AuthService.instance.adoptCredentials(credentials);
+      final prefs = PrefsService.instance;
+      // A wearer who has been using this watch: a language, an accent, and the
+      // three answers the settings page holds.
+      await prefs.setLocale('he');
+      await prefs.setThemeColorHex('#A02334');
+      await prefs.setWearCrownTurnsPages(true);
+      await prefs.setWearUndoSeconds(5);
+      await prefs.setHiddenItemChips({'price'});
+
+      await client.forget();
+      await settle();
+
+      // Every one of these describes how the watch draws for a household it no
+      // longer belongs to. A watch handed on starts where a new one does.
+      expect(prefs.locale, isNull);
+      expect(prefs.themeColorHex, isNull);
+      expect(prefs.wearCrownTurnsPages, isFalse);
+      expect(prefs.wearUndoSeconds, 2);
+      expect(prefs.hiddenItemChips, isEmpty);
+    });
+  });
 }
 
 class _StreamHandler extends MockStreamHandler {

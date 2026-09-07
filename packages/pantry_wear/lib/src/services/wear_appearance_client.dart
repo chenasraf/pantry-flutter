@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
@@ -97,6 +98,12 @@ class WearAppearanceClient {
   /// anywhere in one tap; under a watch's edge-strip back gesture it would
   /// charge the wearer three drags to return to where they were standing.
   Future<void> _land(Map<String, dynamic> data) async {
+    // A signed-out watch takes nothing from a phone. The publication is a
+    // `DataItem` and outlives the session it was made for, so without this a
+    // local sign-out is undone by the next launch: [start] re-reads the item
+    // and lands the very accent and language the wearer just dropped. The
+    // mirror carries the same guard, for the same reason.
+    if (!AuthService.instance.isLoggedIn) return;
     final state = WearAppearanceState.fromJson(data);
     await PrefsService.instance.setPhoneAppearance(
       locale: state.locale,

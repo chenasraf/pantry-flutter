@@ -306,10 +306,16 @@ class WearPairingClient extends ChangeNotifier {
     _stopAsking();
     await AuthService.instance.logout(revoke: false);
     await clearWearStores();
-    // Not a store, and not household data either — but a language published by
-    // a phone this watch is no longer paired to is the stale default the
-    // publication exists to prevent. What the wearer chose for themselves
-    // stays: it was theirs before the pairing and it outranks it.
+    // Settings go with the account, wrist choices included. The caches are
+    // cleared because this is the deliberate act — a watch handed on or reset
+    // — and everything describing *how* this watch draws was chosen for that
+    // same household: the language, the accent, what the crown steers, how
+    // long a tap stays reversible, which chips a row shows. A watch set up
+    // again, by anyone, starts where a new one does.
+    await PrefsService.instance.clear();
+    // The prefs are gone but the services that resolved from them are not:
+    // the accent is held in memory by `ThemingService` and `m` still points at
+    // the last language's messages, so both are re-derived here.
     await WearAppearanceClient.instance.forget();
     _state = WearSetupState.checking;
     notifyListeners();
