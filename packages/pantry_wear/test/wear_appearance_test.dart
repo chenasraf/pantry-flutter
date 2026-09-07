@@ -188,6 +188,39 @@ void main() {
       expect(PrefsService.instance.themeColorHex, isNull);
     });
 
+    test(
+      'a statement that beat the credentials is read again on sign-in',
+      () async {
+        // The pairing hands the session over by message and states the
+        // appearance by DataItem, and nothing orders the two. Arriving first, the
+        // statement is refused — and the item is still sitting there, so signing
+        // in is the moment to look again rather than the next cold start.
+        await AuthService.instance.logout(revoke: false);
+        publishAppearance(const {
+          'locale': 'de',
+          'themeColorHex': '#A02334',
+          'useServerThemeColor': true,
+        });
+
+        await client.start();
+        await settle();
+        expect(LocaleService.instance.effectiveLocale.languageCode, 'en');
+
+        await AuthService.instance.adoptCredentials(
+          const NextcloudCredentials(
+            serverUrl: 'https://cloud.example',
+            loginName: 'ada',
+            appPassword: 'secret',
+          ),
+        );
+        await client.refresh();
+        await settle();
+
+        expect(LocaleService.instance.effectiveLocale.languageCode, 'de');
+        expect(ThemingService.instance.effectiveColor.toARGB32(), 0xFFA02334);
+      },
+    );
+
     test('a watch with no Data Layer keeps its own answers', () async {
       // The F-Droid pairing: the link is not there to read, and absence
       // carries no information.

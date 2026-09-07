@@ -61,6 +61,24 @@ class WearAppearanceClient {
     }
   }
 
+  /// Read the publication again, now that this watch may take it on.
+  ///
+  /// The pairing hands over credentials by message and states the appearance
+  /// by `DataItem`, on two carriers with no ordering between them — so the
+  /// statement can arrive at a watch that is still signed out, where [_land]
+  /// refuses it. Nothing would read it again until the next launch, which is a
+  /// wearer signing in and finding the wrong language.
+  ///
+  /// Cheap to call whenever a session begins: the item is already on the
+  /// device, and landing what is already in force is a no-op.
+  Future<void> refresh() async {
+    if (!_started) return;
+    if (!await _link.isAvailable()) return;
+    for (final item in await _link.dataItems(WearAppearance.path)) {
+      await _land(item.data);
+    }
+  }
+
   /// One rule for both triggers: whatever moved the accent — a phone's
   /// publication or the wearer's own opt-out — the Tile is told.
   void _onTheming() {

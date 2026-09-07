@@ -245,6 +245,12 @@ class WearPairingClient extends ChangeNotifier {
     await CertTrustService.instance.adopt(grant.certPins);
     await AuthService.instance.adoptCredentials(grant.credentials);
 
+    // Now that there is a session, read how the phone says it draws. The grant
+    // came by message and the statement by `DataItem` — two carriers with no
+    // ordering between them — so it may already have arrived and been refused
+    // for want of exactly the credentials just adopted.
+    await WearAppearanceClient.instance.refresh();
+
     // A renewal replaces the credential and nothing else. The stores are
     // already loaded and already hold what the wearer was reading, and the
     // seed below would overwrite the scope they have since chosen for
