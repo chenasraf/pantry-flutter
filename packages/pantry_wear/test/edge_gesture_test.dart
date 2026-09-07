@@ -110,4 +110,85 @@ void main() {
     await tester.pumpAndSettle();
     expect(popped(), isFalse);
   });
+
+  group('the pager travels with the device, and its pages read with the app', () {
+    testWidgets('a leftward swipe goes forward on an English watch', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(size, size);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      tester.platformDispatcher.localeTestValue = const Locale('en');
+      addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+
+      final pager = PageController();
+      addTearDown(pager.dispose);
+      var page = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Directionality(
+            // The app in Hebrew. Left it to itself, the pager would put page 1
+            // to the *right* and this swipe would run into the end of the list.
+            textDirection: TextDirection.rtl,
+            child: EdgeAwarePageView(
+              controller: pager,
+              page: page,
+              onPageChanged: (p) => page = p,
+              children: const [Text('one'), Text('two'), Text('three')],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // From the middle, so the exit strip on the leading edge is not involved.
+      await tester.flingFrom(
+        const Offset(size / 2, size / 2),
+        const Offset(-size / 3, 0),
+        800,
+      );
+      await tester.pumpAndSettle();
+
+      expect(page, 1);
+    });
+
+    testWidgets('but a page is still laid out in the app\'s language', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(size, size);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      tester.platformDispatcher.localeTestValue = const Locale('en');
+      addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+
+      final pager = PageController();
+      addTearDown(pager.dispose);
+      late TextDirection inside;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Directionality(
+            textDirection: TextDirection.rtl,
+            child: EdgeAwarePageView(
+              controller: pager,
+              page: 0,
+              onPageChanged: (_) {},
+              children: [
+                Builder(
+                  builder: (context) {
+                    inside = Directionality.of(context);
+                    return const Text('one');
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Which way you page is navigation; what the page says is content, and
+      // content in Hebrew still runs right to left.
+      expect(inside, TextDirection.rtl);
+    });
+  });
 }

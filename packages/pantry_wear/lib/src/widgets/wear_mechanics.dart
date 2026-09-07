@@ -34,6 +34,17 @@ const kPagerSlopFactor = 0.75;
 /// Google's hard limit on page dots.
 const kMaxDots = 6;
 
+/// The direction the **device** reads in, for the navigation the wearer learnt
+/// outside this app.
+///
+/// Which way you swipe to go back, and which way pages advance, are spatial
+/// habits built by the watch and every other app on it — so an app running in
+/// Hebrew on an English watch keeps them rather than mirroring them. What is
+/// *inside* a page is content and follows the app's own `Directionality`; only
+/// the frame around it answers to this.
+TextDirection get systemTextDirection =>
+    LocaleService.instance.systemIsRtl ? TextDirection.rtl : TextDirection.ltr;
+
 /// A route over the pager, drawn in whatever language is current.
 ///
 /// The page rides inside a subtree keyed on the locale, and that key is the
@@ -97,20 +108,29 @@ class EdgeAwarePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appDirection = Directionality.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
         return Stack(
           children: [
-            PageView(
-              controller: controller,
-              physics: const PagerScrollPhysics(),
-              onPageChanged: onPageChanged,
-              children: children,
+            // Pages advance the way the device reads, so that forward and back
+            // are one spatial rule with the edge strip rather than two facing
+            // each other. Each page is handed the app's own direction straight
+            // back: which way you page is navigation, what a page says is
+            // content, and only the first of those belongs to the watch.
+            Directionality(
+              textDirection: systemTextDirection,
+              child: PageView(
+                controller: controller,
+                physics: const PagerScrollPhysics(),
+                onPageChanged: onPageChanged,
+                children: [
+                  for (final child in children)
+                    Directionality(textDirection: appDirection, child: child),
+                ],
+              ),
             ),
-            // The pager itself follows the app's reading order — the pages are
-            // content, and content in Hebrew runs right to left. The strip
-            // does not: see [systemEdgeStrip].
             if (page == 0)
               systemEdgeStrip(
                 width: width,

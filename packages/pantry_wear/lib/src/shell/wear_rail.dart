@@ -230,25 +230,31 @@ class WearRail extends StatelessWidget {
             // Bars, not dots: the current page grows into a line so the
             // indicator says *where* you are as well as how many there are,
             // and it animates rather than cutting between the two widths.
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (var i = 0; i < window.count; i++)
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    margin: const EdgeInsetsDirectional.symmetric(
-                      horizontal: 2,
+            // The dots read the way the pager moves, which is the device's
+            // direction — a row of dots running against the swipe that walks
+            // them would say the wearer is travelling the wrong way.
+            Directionality(
+              textDirection: systemTextDirection,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var i = 0; i < window.count; i++)
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      margin: const EdgeInsetsDirectional.symmetric(
+                        horizontal: 2,
+                      ),
+                      width: i == window.selected ? 14 : 8,
+                      height: 3,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        color: i == window.selected
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.white24,
+                      ),
                     ),
-                    width: i == window.selected ? 14 : 8,
-                    height: 3,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      color: i == window.selected
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.white24,
-                    ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
