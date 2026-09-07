@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
-import 'package:pantry_core/utils/rrule.dart';
+import 'package:pantry/widgets/recurrence_parts.dart';
+
+export 'package:pantry/widgets/recurrence_parts.dart'
+    show RecurrenceMonthlyMode, RecurrenceState;
 
 /// The shared "filled field" frame used across item forms: a `surfaceContainer`
 /// card with a rounded-14 border that flips to the accent when focused. Pair
@@ -79,52 +82,6 @@ class LabeledFieldCard extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Mutable state for the inline recurrence panel. Edited in place by
-/// [RecurrenceInline] via [onChanged] callbacks; consumers read it back at save
-/// time and call [toRrule] to serialize.
-class RecurrenceState {
-  String freq;
-  int interval;
-  Set<String> byDay;
-  bool repeatFromCompletion;
-
-  RecurrenceState({
-    this.freq = 'WEEKLY',
-    this.interval = 1,
-    Set<String>? byDay,
-    this.repeatFromCompletion = false,
-  }) : byDay = byDay ?? <String>{};
-
-  factory RecurrenceState.fromRrule(
-    String? rrule, {
-    bool repeatFromCompletion = false,
-  }) {
-    if (rrule == null || rrule.isEmpty) {
-      return RecurrenceState(repeatFromCompletion: repeatFromCompletion);
-    }
-    final map = parseRrule(rrule);
-    final freq = (map['FREQ'] ?? 'WEEKLY').toUpperCase();
-    final interval = int.tryParse(map['INTERVAL'] ?? '1') ?? 1;
-    final byDay = <String>{};
-    final byDayStr = map['BYDAY'];
-    if (byDayStr != null && byDayStr.isNotEmpty) {
-      byDay.addAll(byDayStr.split(','));
-    }
-    return RecurrenceState(
-      freq: freq,
-      interval: interval,
-      byDay: byDay,
-      repeatFromCompletion: repeatFromCompletion,
-    );
-  }
-
-  String toRrule() => buildRrule(
-    freq: freq,
-    interval: interval,
-    byDay: freq == 'WEEKLY' && byDay.isNotEmpty ? byDay.toList() : null,
-  );
 }
 
 /// Small square button used in the quantity stepper and the recurrence
@@ -460,8 +417,7 @@ class RecurrenceInline extends StatelessWidget {
                   ],
                   onChanged: (v) {
                     if (v == null) return;
-                    state.freq = v;
-                    if (v != 'WEEKLY') state.byDay.clear();
+                    state.setFreq(v);
                     onChanged();
                   },
                 ),
@@ -493,6 +449,105 @@ class RecurrenceInline extends StatelessWidget {
                     },
                   ),
               ],
+            ),
+          ],
+          if (state.freq == 'MONTHLY') ...[
+            const SizedBox(height: 10),
+            Text(
+              r.repeatOn,
+              style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
+            ),
+            RadioGroup<RecurrenceMonthlyMode>(
+              groupValue: state.monthlyMode,
+              onChanged: (mode) {
+                if (mode == null) return;
+                state.setMonthlyMode(mode);
+                onChanged();
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Radio<RecurrenceMonthlyMode>(
+                        value: RecurrenceMonthlyMode.days,
+                      ),
+                      Expanded(
+                        child: Text(
+                          r.monthlyModeDays,
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (state.monthlyMode == RecurrenceMonthlyMode.days) ...[
+                    MonthDayPicker(
+                      selected: state.monthDays,
+                      onChanged: (days) {
+                        state.monthDays
+                          ..clear()
+                          ..addAll(days);
+                        onChanged();
+                      },
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      r.monthDaysHint,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                  Row(
+                    children: [
+                      const Radio<RecurrenceMonthlyMode>(
+                        value: RecurrenceMonthlyMode.weekday,
+                      ),
+                      Expanded(
+                        child: Text(
+                          r.monthlyModeWeekday,
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (state.monthlyMode == RecurrenceMonthlyMode.weekday)
+                    OrdinalWeekdayPicker(
+                      bordered: false,
+                      ordinal: state.ordinal,
+                      weekday: state.ordinalWeekday,
+                      onOrdinalChanged: (value) {
+                        state.ordinal = value;
+                        onChanged();
+                      },
+                      onWeekdayChanged: (value) {
+                        state.ordinalWeekday = value;
+                        onChanged();
+                      },
+                    ),
+                ],
+              ),
+            ),
+          ],
+          if (state.freq == 'YEARLY') ...[
+            const SizedBox(height: 10),
+            Text(
+              r.yearlyDate,
+              style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
+            ),
+            const SizedBox(height: 6),
+            YearlyDateField(
+              value: state.yearlyDate,
+              onChanged: (date) {
+                state.yearlyDate = date;
+                onChanged();
+              },
+            ),
+            const SizedBox(height: 4),
+            Text(
+              r.yearlyDateHint,
+              style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant),
             ),
           ],
           const SizedBox(height: 8),

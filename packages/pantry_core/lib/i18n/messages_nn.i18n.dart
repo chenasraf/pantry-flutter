@@ -5134,6 +5134,38 @@ class RecurrenceMessagesNn extends RecurrenceMessages {
   String get repeatOn => """Gjenta på""";
 
   /// ```dart
+  /// "Dagar i månaden"
+  /// ```
+  String get monthlyModeDays => """Dagar i månaden""";
+
+  /// ```dart
+  /// "Ein vekedag i månaden"
+  /// ```
+  String get monthlyModeWeekday => """Ein vekedag i månaden""";
+
+  /// ```dart
+  /// "Lat stå tomt for å gjenta same dag kvar månad"
+  /// ```
+  String get monthDaysHint =>
+      """Lat stå tomt for å gjenta same dag kvar månad""";
+
+  /// ```dart
+  /// "Dato"
+  /// ```
+  String get yearlyDate => """Dato""";
+
+  /// ```dart
+  /// "Lat stå tomt for å gjenta same dato kvart år"
+  /// ```
+  String get yearlyDateHint =>
+      """Lat stå tomt for å gjenta same dato kvart år""";
+
+  /// ```dart
+  /// "Vel dato"
+  /// ```
+  String get pickDate => """Vel dato""";
+
+  /// ```dart
   /// "Sluttar"
   /// ```
   String get ends => """Sluttar""";
@@ -5207,6 +5239,27 @@ class RecurrenceMessagesNn extends RecurrenceMessages {
   String onDays(String days) => """på $days""";
 
   /// ```dart
+  /// "på $days"
+  /// ```
+  String onTheDays(String days) => """på $days""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'på dag $days', many: 'på dagane $days')}"
+  /// ```
+  String onMonthDays(int count, String days) =>
+      """${_plural(count, one: 'på dag $days', many: 'på dagane $days')}""";
+
+  /// ```dart
+  /// "på $date"
+  /// ```
+  String onYearlyDate(String date) => """på $date""";
+
+  /// ```dart
+  /// "$ordinal $day"
+  /// ```
+  String ordinalDay(String ordinal, String day) => """$ordinal $day""";
+
+  /// ```dart
   /// "${_plural(count, one: 'dag', many: '$count dagar')}"
   /// ```
   String day(int count) =>
@@ -5232,6 +5285,9 @@ class RecurrenceMessagesNn extends RecurrenceMessages {
   DayNamesRecurrenceMessagesNn get dayNames =>
       DayNamesRecurrenceMessagesNn(this);
   DayAbbrRecurrenceMessagesNn get dayAbbr => DayAbbrRecurrenceMessagesNn(this);
+  OrdinalRecurrenceMessagesNn get ordinal => OrdinalRecurrenceMessagesNn(this);
+  OrdinalInlineRecurrenceMessagesNn get ordinalInline =>
+      OrdinalInlineRecurrenceMessagesNn(this);
 }
 
 class DayNamesRecurrenceMessagesNn extends DayNamesRecurrenceMessages {
@@ -5312,6 +5368,67 @@ class DayAbbrRecurrenceMessagesNn extends DayAbbrRecurrenceMessages {
   /// "Su"
   /// ```
   String get su => """Su""";
+}
+
+class OrdinalRecurrenceMessagesNn extends OrdinalRecurrenceMessages {
+  final RecurrenceMessagesNn _parent;
+  const OrdinalRecurrenceMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Første"
+  /// ```
+  String get first => """Første""";
+
+  /// ```dart
+  /// "Andre"
+  /// ```
+  String get second => """Andre""";
+
+  /// ```dart
+  /// "Tredje"
+  /// ```
+  String get third => """Tredje""";
+
+  /// ```dart
+  /// "Fjerde"
+  /// ```
+  String get fourth => """Fjerde""";
+
+  /// ```dart
+  /// "Siste"
+  /// ```
+  String get last => """Siste""";
+}
+
+class OrdinalInlineRecurrenceMessagesNn
+    extends OrdinalInlineRecurrenceMessages {
+  final RecurrenceMessagesNn _parent;
+  const OrdinalInlineRecurrenceMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "første"
+  /// ```
+  String get first => """første""";
+
+  /// ```dart
+  /// "andre"
+  /// ```
+  String get second => """andre""";
+
+  /// ```dart
+  /// "tredje"
+  /// ```
+  String get third => """tredje""";
+
+  /// ```dart
+  /// "fjerde"
+  /// ```
+  String get fourth => """fjerde""";
+
+  /// ```dart
+  /// "siste"
+  /// ```
+  String get last => """siste""";
 }
 
 class SyncMessagesNn extends SyncMessages {
@@ -7232,6 +7349,14 @@ Passord: pantry""",
   """recurrence.unitMonths""": """månadar""",
   """recurrence.unitYears""": """år""",
   """recurrence.repeatOn""": """Gjenta på""",
+  """recurrence.monthlyModeDays""": """Dagar i månaden""",
+  """recurrence.monthlyModeWeekday""": """Ein vekedag i månaden""",
+  """recurrence.monthDaysHint""":
+      """Lat stå tomt for å gjenta same dag kvar månad""",
+  """recurrence.yearlyDate""": """Dato""",
+  """recurrence.yearlyDateHint""":
+      """Lat stå tomt for å gjenta same dato kvart år""",
+  """recurrence.pickDate""": """Vel dato""",
   """recurrence.ends""": """Sluttar""",
   """recurrence.never""": """Aldri""",
   """recurrence.after""": """Etter""",
@@ -7260,6 +7385,16 @@ Passord: pantry""",
   """recurrence.dayAbbr.fr""": """Fr""",
   """recurrence.dayAbbr.sa""": """La""",
   """recurrence.dayAbbr.su""": """Su""",
+  """recurrence.ordinal.first""": """Første""",
+  """recurrence.ordinal.second""": """Andre""",
+  """recurrence.ordinal.third""": """Tredje""",
+  """recurrence.ordinal.fourth""": """Fjerde""",
+  """recurrence.ordinal.last""": """Siste""",
+  """recurrence.ordinalInline.first""": """første""",
+  """recurrence.ordinalInline.second""": """andre""",
+  """recurrence.ordinalInline.third""": """tredje""",
+  """recurrence.ordinalInline.fourth""": """fjerde""",
+  """recurrence.ordinalInline.last""": """siste""",
   """sync.offline""": """Fråkobla""",
   """sync.syncing""": """Synkroniserer endringar…""",
   """sync.syncError""": """Kunne ikkje synkronisere endringar""",

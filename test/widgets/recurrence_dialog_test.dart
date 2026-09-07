@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry/widgets/recurrence_dialog.dart';
 
 // The recurrence dialog uses AuthService.instance.firstDayOfWeek for day
@@ -20,22 +21,27 @@ void main() {
     };
   });
 
+  RecurrenceResult? saved;
+
   Future<void> openDialog(
     WidgetTester tester, {
     String? initial,
     bool fromCompletion = false,
   }) async {
+    saved = null;
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: Builder(
             builder: (ctx) => Center(
               child: ElevatedButton(
-                onPressed: () => showRecurrenceDialog(
-                  ctx,
-                  initialRrule: initial,
-                  initialRepeatFromCompletion: fromCompletion,
-                ),
+                onPressed: () async {
+                  saved = await showRecurrenceDialog(
+                    ctx,
+                    initialRrule: initial,
+                    initialRepeatFromCompletion: fromCompletion,
+                  );
+                },
                 child: const Text('open'),
               ),
             ),
@@ -46,6 +52,18 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
     // Consume the known-harmless overflow exception (see setUp comment).
+    tester.takeException();
+  }
+
+  Future<void> save(WidgetTester tester) async {
+    await tester.ensureVisible(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+    tester.takeException();
+    await tester.tap(
+      find.widgetWithText(FilledButton, 'Save'),
+      warnIfMissed: false,
+    );
+    await tester.pumpAndSettle();
     tester.takeException();
   }
 
@@ -142,5 +160,48 @@ void main() {
     // Summary should show "every 3 days"
     expect(find.textContaining('3'), findsWidgets);
     expect(find.textContaining('day'), findsWidgets);
+  });
+
+  testWidgets('monthly offers both repeat-on modes', (tester) async {
+    await openDialog(tester, initial: 'FREQ=MONTHLY');
+    expect(find.text('Days of the month'), findsOneWidget);
+    expect(find.text('A weekday of the month'), findsOneWidget);
+  });
+
+  testWidgets('an ordinal weekday rule opens on the weekday mode', (
+    tester,
+  ) async {
+    await openDialog(tester, initial: 'FREQ=MONTHLY;INTERVAL=1;BYDAY=+2MO');
+    expect(find.text('Second'), findsOneWidget);
+    expect(find.text('Monday'), findsOneWidget);
+    expect(find.text('Every month on the second Monday'), findsOneWidget);
+  });
+
+  testWidgets('a yearly rule opens on its date', (tester) async {
+    await openDialog(
+      tester,
+      initial: 'FREQ=YEARLY;INTERVAL=1;BYMONTH=3;BYMONTHDAY=15',
+    );
+    expect(find.textContaining('March'), findsWidgets);
+  });
+
+  group('saving without touching anything keeps the rule', () {
+    for (final rule in const [
+      'FREQ=MONTHLY;INTERVAL=1;BYDAY=+2MO',
+      'FREQ=MONTHLY;INTERVAL=1;BYDAY=-1FR',
+      'FREQ=YEARLY;INTERVAL=1;BYMONTH=3;BYMONTHDAY=15',
+      'FREQ=MONTHLY;BYMONTHDAY=3,17',
+      'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,FR;COUNT=8',
+    ]) {
+      testWidgets(rule, (tester) async {
+        await openDialog(tester, initial: rule);
+        await save(tester);
+        expect(
+          sameRrule(saved?.rrule, rule),
+          isTrue,
+          reason: '$rule came back as ${saved?.rrule}',
+        );
+      });
+    }
   });
 }

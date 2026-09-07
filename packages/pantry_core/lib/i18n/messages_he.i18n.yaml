@@ -986,6 +986,12 @@ recurrence:
   unitMonths: חודשים
   unitYears: שנים
   repeatOn: חזור ב
+  monthlyModeDays: ימים בחודש
+  monthlyModeWeekday: יום בשבוע בחודש
+  monthDaysHint: השאר ריק כדי לחזור באותו יום בכל חודש
+  yearlyDate: תאריך
+  yearlyDateHint: השאר ריק כדי לחזור באותו תאריך בכל שנה
+  pickDate: בחירת תאריך
   ends: מסתיים
   never: לעולם לא
   after: אחרי
@@ -1000,6 +1006,10 @@ recurrence:
   every(String unit): "כל $unit"
   everyButton(String unit): "כל $unit"
   onDays(String days): "ב$days"
+  onTheDays(String days): "ב$days"
+  onMonthDays(int count, String days): "${_plural(count, one: 'ביום $days', many: 'בימים $days')}"
+  onYearlyDate(String date): "ב-$date"
+  ordinalDay(String ordinal, String day): "$day ה$ordinal"
   day(int count): "${_plural(count, one: 'יום', two: 'יומיים', many: '$count ימים')}"
   week(int count): "${_plural(count, one: 'שבוע', two: 'שבועיים', many: '$count שבועות')}"
   month(int count): "${_plural(count, one: 'חודש', two: 'חודשיים', many: '$count חודשים')}"
@@ -1020,6 +1030,18 @@ recurrence:
     fr: ו׳
     sa: ש׳
     su: א׳
+  ordinal:
+    first: ראשון
+    second: שני
+    third: שלישי
+    fourth: רביעי
+    last: אחרון
+  ordinalInline:
+    first: ראשון
+    second: שני
+    third: שלישי
+    fourth: רביעי
+    last: אחרון
 
 sync:
   offline: לא מקוון

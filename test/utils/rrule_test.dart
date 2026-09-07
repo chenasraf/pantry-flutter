@@ -80,6 +80,100 @@ void main() {
       );
       expect(rrule, 'FREQ=WEEKLY;INTERVAL=3;BYDAY=MO;COUNT=10');
     });
+
+    test('adds an ordinal BYDAY as given', () {
+      expect(
+        buildRrule(freq: 'monthly', byDay: ['2MO']),
+        'FREQ=MONTHLY;BYDAY=2MO',
+      );
+    });
+
+    test('adds BYMONTHDAY', () {
+      expect(
+        buildRrule(freq: 'monthly', byMonthDay: [3, 17]),
+        'FREQ=MONTHLY;BYMONTHDAY=3,17',
+      );
+    });
+
+    test('omits empty BYMONTHDAY', () {
+      expect(buildRrule(freq: 'monthly', byMonthDay: []), 'FREQ=MONTHLY');
+    });
+
+    test('adds a yearly month and day', () {
+      expect(
+        buildRrule(freq: 'yearly', byMonth: 3, byMonthDay: [15]),
+        'FREQ=YEARLY;BYMONTH=3;BYMONTHDAY=15',
+      );
+    });
+  });
+
+  group('parseByDay', () {
+    test('reads a plain weekday', () {
+      expect(parseByDay('MO'), (ordinal: null, weekday: 'MO'));
+    });
+
+    test('reads a positive ordinal with and without the plus', () {
+      expect(parseByDay('+2MO'), (ordinal: 2, weekday: 'MO'));
+      expect(parseByDay('2MO'), (ordinal: 2, weekday: 'MO'));
+    });
+
+    test('reads a last-of-month weekday', () {
+      expect(parseByDay('-1FR'), (ordinal: -1, weekday: 'FR'));
+    });
+
+    test('rejects anything that is not a weekday code', () {
+      expect(parseByDay('XX'), isNull);
+      expect(parseByDay('2'), isNull);
+    });
+
+    test('serializes without the plus', () {
+      expect(formatByDay((ordinal: 2, weekday: 'MO')), '2MO');
+      expect(formatByDay((ordinal: -1, weekday: 'FR')), '-1FR');
+      expect(formatByDay((ordinal: null, weekday: 'MO')), 'MO');
+    });
+  });
+
+  group('sameRrule', () {
+    test('an omitted INTERVAL matches an explicit 1', () {
+      expect(sameRrule('FREQ=WEEKLY', 'FREQ=WEEKLY;INTERVAL=1'), isTrue);
+    });
+
+    test('the optional plus on an ordinal does not change the rule', () {
+      expect(
+        sameRrule('FREQ=MONTHLY;BYDAY=+2MO', 'FREQ=MONTHLY;BYDAY=2MO'),
+        isTrue,
+      );
+    });
+
+    test('set order does not change the rule', () {
+      expect(
+        sameRrule(
+          'FREQ=MONTHLY;BYMONTHDAY=17,3',
+          'FREQ=MONTHLY;BYMONTHDAY=3,17',
+        ),
+        isTrue,
+      );
+      expect(
+        sameRrule('FREQ=WEEKLY;BYDAY=FR,MO', 'FREQ=WEEKLY;BYDAY=MO,FR'),
+        isTrue,
+      );
+    });
+
+    test('different days are different rules', () {
+      expect(
+        sameRrule('FREQ=MONTHLY;BYDAY=2MO', 'FREQ=MONTHLY;BYDAY=-1MO'),
+        isFalse,
+      );
+      expect(
+        sameRrule('FREQ=MONTHLY;BYMONTHDAY=3', 'FREQ=MONTHLY;BYMONTHDAY=3,17'),
+        isFalse,
+      );
+    });
+
+    test('a null rule matches only another null', () {
+      expect(sameRrule(null, null), isTrue);
+      expect(sameRrule(null, 'FREQ=WEEKLY'), isFalse);
+    });
   });
 
   group('formatRrule', () {
@@ -116,6 +210,42 @@ void main() {
 
     test('no FREQ returns original', () {
       expect(formatRrule('INTERVAL=2'), 'INTERVAL=2');
+    });
+
+    test('monthly ordinal weekday names the position and the day', () {
+      final s = formatRrule('FREQ=MONTHLY;INTERVAL=1;BYDAY=+2MO');
+      expect(s, 'Every month on the second Monday');
+    });
+
+    test('monthly last weekday reads as "last"', () {
+      final s = formatRrule('FREQ=MONTHLY;INTERVAL=1;BYDAY=-1FR');
+      expect(s, 'Every month on the last Friday');
+    });
+
+    test('monthly days of the month are listed', () {
+      expect(
+        formatRrule('FREQ=MONTHLY;BYMONTHDAY=3,17'),
+        'Every month on days 3, 17',
+      );
+      expect(formatRrule('FREQ=MONTHLY;BYMONTHDAY=3'), 'Every month on day 3');
+    });
+
+    test('yearly date renders in the locale order', () {
+      final s = formatRrule('FREQ=YEARLY;INTERVAL=1;BYMONTH=3;BYMONTHDAY=15');
+      expect(s, contains('March'));
+      expect(s, contains('15'));
+      expect(s, startsWith('Every year on '));
+    });
+
+    test('yearly leap day survives', () {
+      expect(
+        formatRrule('FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=29'),
+        contains('29'),
+      );
+    });
+
+    test('a yearly rule without a date stays bare', () {
+      expect(formatRrule('FREQ=YEARLY;INTERVAL=1'), 'Every year');
     });
   });
 }

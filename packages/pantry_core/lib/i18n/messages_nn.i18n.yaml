@@ -1124,6 +1124,12 @@ recurrence:
   unitMonths: månadar
   unitYears: år
   repeatOn: Gjenta på
+  monthlyModeDays: Dagar i månaden
+  monthlyModeWeekday: Ein vekedag i månaden
+  monthDaysHint: Lat stå tomt for å gjenta same dag kvar månad
+  yearlyDate: Dato
+  yearlyDateHint: Lat stå tomt for å gjenta same dato kvart år
+  pickDate: Vel dato
   ends: Sluttar
   never: Aldri
   after: Etter
@@ -1142,7 +1148,11 @@ recurrence:
   set: angitt
   every(String unit): Kvar $unit
   everyButton(String unit): Kvar $unit
-  onDays(String days): på $days
+  onDays(String days): "på $days"
+  onTheDays(String days): "på $days"
+  onMonthDays(int count, String days): "${_plural(count, one: 'på dag $days', many: 'på dagane $days')}"
+  onYearlyDate(String date): "på $date"
+  ordinalDay(String ordinal, String day): "$ordinal $day"
   day(int count): "${_plural(count, one: 'dag', many: '$count dagar')}"
   week(int count): "${_plural(count, one: 'veke', many: '$count veker')}"
   month(int count): "${_plural(count, one: 'månad', many: '$count månadar')}"
@@ -1163,6 +1173,18 @@ recurrence:
     fr: Fr
     sa: La
     su: Su
+  ordinal:
+    first: "Første"
+    second: Andre
+    third: Tredje
+    fourth: Fjerde
+    last: Siste
+  ordinalInline:
+    first: "første"
+    second: andre
+    third: tredje
+    fourth: fjerde
+    last: siste
 sync:
   offline: Fråkobla
   syncing: Synkroniserer endringar…

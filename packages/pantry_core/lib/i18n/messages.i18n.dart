@@ -5101,6 +5101,38 @@ class RecurrenceMessages {
   String get repeatOn => """Repeat on""";
 
   /// ```dart
+  /// "Days of the month"
+  /// ```
+  String get monthlyModeDays => """Days of the month""";
+
+  /// ```dart
+  /// "A weekday of the month"
+  /// ```
+  String get monthlyModeWeekday => """A weekday of the month""";
+
+  /// ```dart
+  /// "Leave empty to repeat on the same day each month"
+  /// ```
+  String get monthDaysHint =>
+      """Leave empty to repeat on the same day each month""";
+
+  /// ```dart
+  /// "Date"
+  /// ```
+  String get yearlyDate => """Date""";
+
+  /// ```dart
+  /// "Leave empty to repeat on the same date each year"
+  /// ```
+  String get yearlyDateHint =>
+      """Leave empty to repeat on the same date each year""";
+
+  /// ```dart
+  /// "Pick a date"
+  /// ```
+  String get pickDate => """Pick a date""";
+
+  /// ```dart
   /// "Ends"
   /// ```
   String get ends => """Ends""";
@@ -5174,6 +5206,27 @@ class RecurrenceMessages {
   String onDays(String days) => """on $days""";
 
   /// ```dart
+  /// "on the $days"
+  /// ```
+  String onTheDays(String days) => """on the $days""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'on day $days', many: 'on days $days')}"
+  /// ```
+  String onMonthDays(int count, String days) =>
+      """${_plural(count, one: 'on day $days', many: 'on days $days')}""";
+
+  /// ```dart
+  /// "on $date"
+  /// ```
+  String onYearlyDate(String date) => """on $date""";
+
+  /// ```dart
+  /// "$ordinal $day"
+  /// ```
+  String ordinalDay(String ordinal, String day) => """$ordinal $day""";
+
+  /// ```dart
   /// "${_plural(count, one: 'day', many: '$count days')}"
   /// ```
   String day(int count) =>
@@ -5198,6 +5251,9 @@ class RecurrenceMessages {
       """${_plural(count, one: 'year', many: '$count years')}""";
   DayNamesRecurrenceMessages get dayNames => DayNamesRecurrenceMessages(this);
   DayAbbrRecurrenceMessages get dayAbbr => DayAbbrRecurrenceMessages(this);
+  OrdinalRecurrenceMessages get ordinal => OrdinalRecurrenceMessages(this);
+  OrdinalInlineRecurrenceMessages get ordinalInline =>
+      OrdinalInlineRecurrenceMessages(this);
 }
 
 class DayNamesRecurrenceMessages {
@@ -5278,6 +5334,66 @@ class DayAbbrRecurrenceMessages {
   /// "Su"
   /// ```
   String get su => """Su""";
+}
+
+class OrdinalRecurrenceMessages {
+  final RecurrenceMessages _parent;
+  const OrdinalRecurrenceMessages(this._parent);
+
+  /// ```dart
+  /// "First"
+  /// ```
+  String get first => """First""";
+
+  /// ```dart
+  /// "Second"
+  /// ```
+  String get second => """Second""";
+
+  /// ```dart
+  /// "Third"
+  /// ```
+  String get third => """Third""";
+
+  /// ```dart
+  /// "Fourth"
+  /// ```
+  String get fourth => """Fourth""";
+
+  /// ```dart
+  /// "Last"
+  /// ```
+  String get last => """Last""";
+}
+
+class OrdinalInlineRecurrenceMessages {
+  final RecurrenceMessages _parent;
+  const OrdinalInlineRecurrenceMessages(this._parent);
+
+  /// ```dart
+  /// "first"
+  /// ```
+  String get first => """first""";
+
+  /// ```dart
+  /// "second"
+  /// ```
+  String get second => """second""";
+
+  /// ```dart
+  /// "third"
+  /// ```
+  String get third => """third""";
+
+  /// ```dart
+  /// "fourth"
+  /// ```
+  String get fourth => """fourth""";
+
+  /// ```dart
+  /// "last"
+  /// ```
+  String get last => """last""";
 }
 
 class SyncMessages {
@@ -7172,6 +7288,14 @@ Password: pantry-rocks""",
   """recurrence.unitMonths""": """months""",
   """recurrence.unitYears""": """years""",
   """recurrence.repeatOn""": """Repeat on""",
+  """recurrence.monthlyModeDays""": """Days of the month""",
+  """recurrence.monthlyModeWeekday""": """A weekday of the month""",
+  """recurrence.monthDaysHint""":
+      """Leave empty to repeat on the same day each month""",
+  """recurrence.yearlyDate""": """Date""",
+  """recurrence.yearlyDateHint""":
+      """Leave empty to repeat on the same date each year""",
+  """recurrence.pickDate""": """Pick a date""",
   """recurrence.ends""": """Ends""",
   """recurrence.never""": """Never""",
   """recurrence.after""": """After""",
@@ -7200,6 +7324,16 @@ Password: pantry-rocks""",
   """recurrence.dayAbbr.fr""": """Fr""",
   """recurrence.dayAbbr.sa""": """Sa""",
   """recurrence.dayAbbr.su""": """Su""",
+  """recurrence.ordinal.first""": """First""",
+  """recurrence.ordinal.second""": """Second""",
+  """recurrence.ordinal.third""": """Third""",
+  """recurrence.ordinal.fourth""": """Fourth""",
+  """recurrence.ordinal.last""": """Last""",
+  """recurrence.ordinalInline.first""": """first""",
+  """recurrence.ordinalInline.second""": """second""",
+  """recurrence.ordinalInline.third""": """third""",
+  """recurrence.ordinalInline.fourth""": """fourth""",
+  """recurrence.ordinalInline.last""": """last""",
   """sync.offline""": """Offline""",
   """sync.syncing""": """Syncing changes…""",
   """sync.syncError""": """Couldn't sync changes""",

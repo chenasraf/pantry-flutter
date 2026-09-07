@@ -5110,6 +5110,36 @@ class RecurrenceMessagesHe extends RecurrenceMessages {
   String get repeatOn => """חזור ב""";
 
   /// ```dart
+  /// "ימים בחודש"
+  /// ```
+  String get monthlyModeDays => """ימים בחודש""";
+
+  /// ```dart
+  /// "יום בשבוע בחודש"
+  /// ```
+  String get monthlyModeWeekday => """יום בשבוע בחודש""";
+
+  /// ```dart
+  /// "השאר ריק כדי לחזור באותו יום בכל חודש"
+  /// ```
+  String get monthDaysHint => """השאר ריק כדי לחזור באותו יום בכל חודש""";
+
+  /// ```dart
+  /// "תאריך"
+  /// ```
+  String get yearlyDate => """תאריך""";
+
+  /// ```dart
+  /// "השאר ריק כדי לחזור באותו תאריך בכל שנה"
+  /// ```
+  String get yearlyDateHint => """השאר ריק כדי לחזור באותו תאריך בכל שנה""";
+
+  /// ```dart
+  /// "בחירת תאריך"
+  /// ```
+  String get pickDate => """בחירת תאריך""";
+
+  /// ```dart
   /// "מסתיים"
   /// ```
   String get ends => """מסתיים""";
@@ -5182,6 +5212,27 @@ class RecurrenceMessagesHe extends RecurrenceMessages {
   String onDays(String days) => """ב$days""";
 
   /// ```dart
+  /// "ב$days"
+  /// ```
+  String onTheDays(String days) => """ב$days""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'ביום $days', many: 'בימים $days')}"
+  /// ```
+  String onMonthDays(int count, String days) =>
+      """${_plural(count, one: 'ביום $days', many: 'בימים $days')}""";
+
+  /// ```dart
+  /// "ב-$date"
+  /// ```
+  String onYearlyDate(String date) => """ב-$date""";
+
+  /// ```dart
+  /// "$day ה$ordinal"
+  /// ```
+  String ordinalDay(String ordinal, String day) => """$day ה$ordinal""";
+
+  /// ```dart
   /// "${_plural(count, one: 'יום', two: 'יומיים', many: '$count ימים')}"
   /// ```
   String day(int count) =>
@@ -5207,6 +5258,9 @@ class RecurrenceMessagesHe extends RecurrenceMessages {
   DayNamesRecurrenceMessagesHe get dayNames =>
       DayNamesRecurrenceMessagesHe(this);
   DayAbbrRecurrenceMessagesHe get dayAbbr => DayAbbrRecurrenceMessagesHe(this);
+  OrdinalRecurrenceMessagesHe get ordinal => OrdinalRecurrenceMessagesHe(this);
+  OrdinalInlineRecurrenceMessagesHe get ordinalInline =>
+      OrdinalInlineRecurrenceMessagesHe(this);
 }
 
 class DayNamesRecurrenceMessagesHe extends DayNamesRecurrenceMessages {
@@ -5287,6 +5341,67 @@ class DayAbbrRecurrenceMessagesHe extends DayAbbrRecurrenceMessages {
   /// "א׳"
   /// ```
   String get su => """א׳""";
+}
+
+class OrdinalRecurrenceMessagesHe extends OrdinalRecurrenceMessages {
+  final RecurrenceMessagesHe _parent;
+  const OrdinalRecurrenceMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "ראשון"
+  /// ```
+  String get first => """ראשון""";
+
+  /// ```dart
+  /// "שני"
+  /// ```
+  String get second => """שני""";
+
+  /// ```dart
+  /// "שלישי"
+  /// ```
+  String get third => """שלישי""";
+
+  /// ```dart
+  /// "רביעי"
+  /// ```
+  String get fourth => """רביעי""";
+
+  /// ```dart
+  /// "אחרון"
+  /// ```
+  String get last => """אחרון""";
+}
+
+class OrdinalInlineRecurrenceMessagesHe
+    extends OrdinalInlineRecurrenceMessages {
+  final RecurrenceMessagesHe _parent;
+  const OrdinalInlineRecurrenceMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "ראשון"
+  /// ```
+  String get first => """ראשון""";
+
+  /// ```dart
+  /// "שני"
+  /// ```
+  String get second => """שני""";
+
+  /// ```dart
+  /// "שלישי"
+  /// ```
+  String get third => """שלישי""";
+
+  /// ```dart
+  /// "רביעי"
+  /// ```
+  String get fourth => """רביעי""";
+
+  /// ```dart
+  /// "אחרון"
+  /// ```
+  String get last => """אחרון""";
 }
 
 class SyncMessagesHe extends SyncMessages {
@@ -7158,6 +7273,12 @@ Map<String, String> get messagesHeMap => {
   """recurrence.unitMonths""": """חודשים""",
   """recurrence.unitYears""": """שנים""",
   """recurrence.repeatOn""": """חזור ב""",
+  """recurrence.monthlyModeDays""": """ימים בחודש""",
+  """recurrence.monthlyModeWeekday""": """יום בשבוע בחודש""",
+  """recurrence.monthDaysHint""": """השאר ריק כדי לחזור באותו יום בכל חודש""",
+  """recurrence.yearlyDate""": """תאריך""",
+  """recurrence.yearlyDateHint""": """השאר ריק כדי לחזור באותו תאריך בכל שנה""",
+  """recurrence.pickDate""": """בחירת תאריך""",
   """recurrence.ends""": """מסתיים""",
   """recurrence.never""": """לעולם לא""",
   """recurrence.after""": """אחרי""",
@@ -7185,6 +7306,16 @@ Map<String, String> get messagesHeMap => {
   """recurrence.dayAbbr.fr""": """ו׳""",
   """recurrence.dayAbbr.sa""": """ש׳""",
   """recurrence.dayAbbr.su""": """א׳""",
+  """recurrence.ordinal.first""": """ראשון""",
+  """recurrence.ordinal.second""": """שני""",
+  """recurrence.ordinal.third""": """שלישי""",
+  """recurrence.ordinal.fourth""": """רביעי""",
+  """recurrence.ordinal.last""": """אחרון""",
+  """recurrence.ordinalInline.first""": """ראשון""",
+  """recurrence.ordinalInline.second""": """שני""",
+  """recurrence.ordinalInline.third""": """שלישי""",
+  """recurrence.ordinalInline.fourth""": """רביעי""",
+  """recurrence.ordinalInline.last""": """אחרון""",
   """sync.offline""": """לא מקוון""",
   """sync.syncing""": """מסנכרן שינויים…""",
   """sync.syncError""": """לא ניתן היה לסנכרן את השינויים""",

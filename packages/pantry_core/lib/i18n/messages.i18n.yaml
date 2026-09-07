@@ -994,6 +994,12 @@ recurrence:
   unitMonths: months
   unitYears: years
   repeatOn: Repeat on
+  monthlyModeDays: Days of the month
+  monthlyModeWeekday: A weekday of the month
+  monthDaysHint: Leave empty to repeat on the same day each month
+  yearlyDate: Date
+  yearlyDateHint: Leave empty to repeat on the same date each year
+  pickDate: Pick a date
   ends: Ends
   never: Never
   after: After
@@ -1008,6 +1014,10 @@ recurrence:
   every(String unit): "Every $unit"
   everyButton(String unit): "Every $unit"
   onDays(String days): "on $days"
+  onTheDays(String days): "on the $days"
+  onMonthDays(int count, String days): "${_plural(count, one: 'on day $days', many: 'on days $days')}"
+  onYearlyDate(String date): "on $date"
+  ordinalDay(String ordinal, String day): "$ordinal $day"
   day(int count): "${_plural(count, one: 'day', many: '$count days')}"
   week(int count): "${_plural(count, one: 'week', many: '$count weeks')}"
   month(int count): "${_plural(count, one: 'month', many: '$count months')}"
@@ -1028,6 +1038,18 @@ recurrence:
     fr: Fr
     sa: Sa
     su: Su
+  ordinal:
+    first: First
+    second: Second
+    third: Third
+    fourth: Fourth
+    last: Last
+  ordinalInline:
+    first: first
+    second: second
+    third: third
+    fourth: fourth
+    last: last
 
 sync:
   offline: Offline

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/utils/rrule.dart';
+import 'package:pantry/widgets/recurrence_parts.dart';
 
 /// Result from the recurrence dialog.
 class RecurrenceResult {
@@ -42,48 +43,36 @@ class _RecurrenceDialog extends StatefulWidget {
 enum _EndType { never, afterCount, onDate }
 
 class _RecurrenceDialogState extends State<_RecurrenceDialog> {
-  late String _freq;
-  late int _interval;
-  late Set<String> _byDay;
+  late RecurrenceState _state;
   late _EndType _endType;
   late int _endCount;
-  late DateTime? _endDate;
-  late bool _repeatFromCompletion;
+  DateTime? _endDate;
   late final TextEditingController _intervalController;
   late final TextEditingController _countController;
 
   @override
   void initState() {
     super.initState();
-    _repeatFromCompletion = widget.initialRepeatFromCompletion;
+    _state = RecurrenceState.fromRrule(
+      widget.initialRrule,
+      repeatFromCompletion: widget.initialRepeatFromCompletion,
+    );
 
-    if (widget.initialRrule != null && widget.initialRrule!.isNotEmpty) {
-      final map = parseRrule(widget.initialRrule!);
-      _freq = map['FREQ']?.toUpperCase() ?? 'WEEKLY';
-      _interval = int.tryParse(map['INTERVAL'] ?? '1') ?? 1;
-      _byDay = (map['BYDAY']?.split(',').toSet()) ?? {};
-      if (map['COUNT'] != null) {
-        _endType = _EndType.afterCount;
-        _endCount = int.tryParse(map['COUNT']!) ?? 10;
-      } else if (map['UNTIL'] != null) {
-        _endType = _EndType.onDate;
-        _endCount = 10;
-        _endDate = _parseUntil(map['UNTIL']!);
-      } else {
-        _endType = _EndType.never;
-        _endCount = 10;
-        _endDate = null;
-      }
+    final count = _state.count;
+    final until = _state.until;
+    if (count != null) {
+      _endType = _EndType.afterCount;
+      _endCount = count;
+    } else if (until != null) {
+      _endType = _EndType.onDate;
+      _endCount = 10;
+      _endDate = until;
     } else {
-      _freq = 'WEEKLY';
-      _interval = 1;
-      _byDay = {};
       _endType = _EndType.never;
       _endCount = 10;
-      _endDate = null;
     }
 
-    _intervalController = TextEditingController(text: '$_interval');
+    _intervalController = TextEditingController(text: '${_state.interval}');
     _countController = TextEditingController(text: '$_endCount');
   }
 
@@ -94,39 +83,22 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
     super.dispose();
   }
 
-  DateTime? _parseUntil(String until) {
-    // Format: YYYYMMDDTHHmmssZ
-    if (until.length < 8) return null;
-    final y = int.tryParse(until.substring(0, 4));
-    final mo = int.tryParse(until.substring(4, 6));
-    final d = int.tryParse(until.substring(6, 8));
-    if (y == null || mo == null || d == null) return null;
-    return DateTime(y, mo, d);
-  }
-
   void _applyPreset(String freq, int interval) {
     setState(() {
-      _freq = freq;
-      _interval = interval;
+      _state.freq = freq;
+      _state.interval = interval;
+      _state.resetParts();
       _intervalController.text = '$interval';
-      if (freq != 'WEEKLY') _byDay.clear();
     });
   }
 
   String _buildRrule() {
-    return buildRrule(
-      freq: _freq,
-      interval: _interval,
-      byDay: _freq == 'WEEKLY' && _byDay.isNotEmpty ? _byDay.toList() : null,
-      count: _endType == _EndType.afterCount ? _endCount : null,
-      until: _endType == _EndType.onDate ? _endDate : null,
-    );
+    _state.count = _endType == _EndType.afterCount ? _endCount : null;
+    _state.until = _endType == _EndType.onDate ? _endDate : null;
+    return _state.toRrule();
   }
 
-  String get _summary {
-    final rrule = _buildRrule();
-    return formatRrule(rrule);
-  }
+  String get _summary => formatRrule(_buildRrule());
 
   @override
   Widget build(BuildContext context) {
@@ -163,22 +135,23 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                   children: [
                     _PresetChip(
                       label: r.daily,
-                      selected: _freq == 'DAILY' && _interval == 1,
+                      selected: _state.freq == 'DAILY' && _state.interval == 1,
                       onTap: () => _applyPreset('DAILY', 1),
                     ),
                     _PresetChip(
                       label: r.weekly,
-                      selected: _freq == 'WEEKLY' && _interval == 1,
+                      selected: _state.freq == 'WEEKLY' && _state.interval == 1,
                       onTap: () => _applyPreset('WEEKLY', 1),
                     ),
                     _PresetChip(
                       label: r.everyButton(r.week(2)),
-                      selected: _freq == 'WEEKLY' && _interval == 2,
+                      selected: _state.freq == 'WEEKLY' && _state.interval == 2,
                       onTap: () => _applyPreset('WEEKLY', 2),
                     ),
                     _PresetChip(
                       label: r.monthly,
-                      selected: _freq == 'MONTHLY' && _interval == 1,
+                      selected:
+                          _state.freq == 'MONTHLY' && _state.interval == 1,
                       onTap: () => _applyPreset('MONTHLY', 1),
                     ),
                   ],
@@ -208,7 +181,7 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                             onChanged: (v) {
                               final n = int.tryParse(v);
                               if (n != null && n > 0) {
-                                setState(() => _interval = n);
+                                setState(() => _state.interval = n);
                               }
                             },
                           ),
@@ -223,7 +196,7 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                           Text(r.unit, style: theme.textTheme.labelMedium),
                           const SizedBox(height: 4),
                           DropdownButtonFormField<String>(
-                            initialValue: _freq,
+                            initialValue: _state.freq,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.symmetric(
@@ -252,10 +225,7 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                             ],
                             onChanged: (v) {
                               if (v != null) {
-                                setState(() {
-                                  _freq = v;
-                                  if (v != 'WEEKLY') _byDay.clear();
-                                });
+                                setState(() => _state.setFreq(v));
                               }
                             },
                           ),
@@ -266,12 +236,90 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                 ),
                 const SizedBox(height: 20),
 
-                if (_freq == 'WEEKLY') ...[
+                if (_state.freq == 'WEEKLY') ...[
                   Text(r.repeatOn, style: theme.textTheme.labelMedium),
                   const SizedBox(height: 8),
                   _DayPicker(
-                    selectedDays: _byDay,
-                    onChanged: (days) => setState(() => _byDay = days),
+                    selectedDays: _state.byDay,
+                    onChanged: (days) => setState(() => _state.byDay = days),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+
+                if (_state.freq == 'MONTHLY') ...[
+                  Text(r.repeatOn, style: theme.textTheme.labelMedium),
+                  RadioGroup<RecurrenceMonthlyMode>(
+                    groupValue: _state.monthlyMode,
+                    onChanged: (mode) {
+                      if (mode == null) return;
+                      setState(() => _state.setMonthlyMode(mode));
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Radio<RecurrenceMonthlyMode>(
+                              value: RecurrenceMonthlyMode.days,
+                            ),
+                            Expanded(child: Text(r.monthlyModeDays)),
+                          ],
+                        ),
+                        if (_state.monthlyMode ==
+                            RecurrenceMonthlyMode.days) ...[
+                          MonthDayPicker(
+                            selected: _state.monthDays,
+                            onChanged: (days) => setState(
+                              () => _state.monthDays
+                                ..clear()
+                                ..addAll(days),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            r.monthDaysHint,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                        Row(
+                          children: [
+                            const Radio<RecurrenceMonthlyMode>(
+                              value: RecurrenceMonthlyMode.weekday,
+                            ),
+                            Expanded(child: Text(r.monthlyModeWeekday)),
+                          ],
+                        ),
+                        if (_state.monthlyMode == RecurrenceMonthlyMode.weekday)
+                          OrdinalWeekdayPicker(
+                            ordinal: _state.ordinal,
+                            weekday: _state.ordinalWeekday,
+                            onOrdinalChanged: (value) =>
+                                setState(() => _state.ordinal = value),
+                            onWeekdayChanged: (value) =>
+                                setState(() => _state.ordinalWeekday = value),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+
+                if (_state.freq == 'YEARLY') ...[
+                  Text(r.yearlyDate, style: theme.textTheme.labelMedium),
+                  const SizedBox(height: 8),
+                  YearlyDateField(
+                    value: _state.yearlyDate,
+                    onChanged: (date) =>
+                        setState(() => _state.yearlyDate = date),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    r.yearlyDateHint,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 20),
                 ],
@@ -358,8 +406,9 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
 
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  value: _repeatFromCompletion,
-                  onChanged: (v) => setState(() => _repeatFromCompletion = v),
+                  value: _state.repeatFromCompletion,
+                  onChanged: (v) =>
+                      setState(() => _state.repeatFromCompletion = v),
                   title: Text(
                     r.countFromCompletion,
                     style: theme.textTheme.bodyMedium,
@@ -368,7 +417,7 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                 Padding(
                   padding: const EdgeInsetsDirectional.only(start: 4),
                   child: Text(
-                    _repeatFromCompletion
+                    _state.repeatFromCompletion
                         ? r.countFromCompletionHintOn
                         : r.countFromCompletionHintOff,
                     style: theme.textTheme.bodySmall?.copyWith(
@@ -379,6 +428,7 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                 const SizedBox(height: 16),
 
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Icon(Icons.event_repeat, size: 20),
                     const SizedBox(width: 8),
@@ -388,7 +438,9 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(_summary, style: theme.textTheme.bodyMedium),
+                    Expanded(
+                      child: Text(_summary, style: theme.textTheme.bodyMedium),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -407,7 +459,7 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                           context,
                           RecurrenceResult(
                             rrule: _buildRrule(),
-                            repeatFromCompletion: _repeatFromCompletion,
+                            repeatFromCompletion: _state.repeatFromCompletion,
                           ),
                         );
                       },
