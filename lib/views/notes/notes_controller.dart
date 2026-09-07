@@ -107,13 +107,30 @@ class NotesController extends ChangeNotifier {
   int? _draggingId;
   int? get draggingId => _draggingId;
 
+  /// [notes] as they should be seen: each body with every tick still waiting in
+  /// the queue laid back over it.
+  ///
+  /// The queue wins over any snapshot, from any source. A note body is a
+  /// document the server rewrites at drain rather than a field the op replaces,
+  /// so a snapshot fetched between a tick and its drain still reads the way it
+  /// did before the tick — taken as-is it would visibly un-tick the line and
+  /// cache it that way.
+  List<Note> _withPending(List<Note> notes) => [
+    for (final note in notes) _withPendingContent(note),
+  ];
+
+  Note _withPendingContent(Note note) {
+    final content = _sync.pendingNoteContent(houseId, note.id, note.content);
+    return content == note.content ? note : note.copyWith(content: content);
+  }
+
   Future<void> load() async {
     _error = null;
 
     _sortBy = _service.cachedSortBy(houseId);
     final cached = _service.getCachedNotes(houseId);
     if (cached != null && _notes.isEmpty) {
-      _notes = cached;
+      _notes = _withPending(cached);
       _isLoading = false;
       notifyListeners();
     }
@@ -133,7 +150,7 @@ class NotesController extends ChangeNotifier {
         debugPrint('[NotesController] Failed to load prefs: $e');
       }
 
-      _notes = await _service.getNotes(houseId, sortBy: _sortBy);
+      _notes = _withPending(await _service.getNotes(houseId, sortBy: _sortBy));
       _service.cacheNotes(houseId, _notes);
       _isLoading = false;
       notifyListeners();
@@ -156,7 +173,7 @@ class NotesController extends ChangeNotifier {
     notifyListeners();
     unawaited(_service.setNoteSort(houseId, sort).catchError((_) {}));
     try {
-      _notes = await _service.getNotes(houseId, sortBy: _sortBy);
+      _notes = _withPending(await _service.getNotes(houseId, sortBy: _sortBy));
       _service.cacheNotes(houseId, _notes);
       notifyListeners();
     } catch (e) {
@@ -482,11 +499,14 @@ class NotesController extends ChangeNotifier {
     if (applied.op.entity != SyncEntity.note) return;
     final entity = applied.entity;
     if (entity is Note) {
+      // The drained op's own body is in what the server returned, but a tick
+      // queued behind it is not, so this snapshot needs the overlay too.
+      final note = _withPendingContent(entity);
       final tempId = applied.op.tempEntityId;
       if (tempId != null) {
         final i = _notes.indexWhere((n) => n.id == tempId);
         if (i != -1) {
-          _notes[i] = entity;
+          _notes[i] = note;
           _service.cacheNotes(houseId, _notes);
           notifyListeners();
           return;
@@ -494,7 +514,7 @@ class NotesController extends ChangeNotifier {
       }
       final j = _notes.indexWhere((n) => n.id == entity.id);
       if (j != -1) {
-        _notes[j] = entity;
+        _notes[j] = note;
         _service.cacheNotes(houseId, _notes);
         notifyListeners();
       }
