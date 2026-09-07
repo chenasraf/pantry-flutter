@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:pantry_core/services/secure_storage.dart';
 
 /// Per-host pinned certificate fingerprints. Lets users connect to
 /// Nextcloud servers with self-signed certificates by accepting the
@@ -16,7 +16,7 @@ class CertTrustService {
   static final CertTrustService instance = CertTrustService._();
 
   static const _storageKey = 'pinned_cert_fingerprints';
-  final _storage = const FlutterSecureStorage();
+  final _storage = secureStorage;
 
   /// host[:port] -> set of accepted SHA-256 fingerprints (uppercase hex).
   Map<String, Set<String>> _pinned = {};
@@ -24,16 +24,16 @@ class CertTrustService {
   /// Load persisted pins. Call BEFORE [install] so the first request
   /// already has the pinned set available.
   Future<void> load() async {
-    final raw = await _storage.read(key: _storageKey);
-    if (raw == null || raw.isEmpty) return;
     try {
+      final raw = await _storage.read(key: _storageKey);
+      if (raw == null || raw.isEmpty) return;
       final decoded = jsonDecode(raw) as Map<String, dynamic>;
       _pinned = {
         for (final e in decoded.entries)
           e.key: (e.value as List).cast<String>().toSet(),
       };
     } catch (e) {
-      debugPrint('[CertTrustService] Failed to decode pinned certs: $e');
+      debugPrint('[CertTrustService] Failed to read pinned certs: $e');
     }
   }
 

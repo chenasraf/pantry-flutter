@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pantry_core/models/notification.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cert_trust_service.dart';
@@ -7,6 +6,7 @@ import 'package:pantry_core/services/deep_link_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry_core/services/notification_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/secure_storage.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -47,8 +47,14 @@ Future<void> _pollAndNotify() async {
   final notifications = await NotificationService.instance.getNotifications();
   if (notifications.isEmpty) return;
 
-  const storage = FlutterSecureStorage();
-  final seenRaw = await storage.read(key: _seenIdsKey);
+  // A store that won't decrypt costs the poll its seen-set, so the user may see
+  // a notification twice. Re-notifying beats the task dying mid-poll.
+  String? seenRaw;
+  try {
+    seenRaw = await secureStorage.read(key: _seenIdsKey);
+  } catch (e) {
+    debugPrint('[bg-notify] failed to read seen notification IDs: $e');
+  }
   final seen = seenRaw == null || seenRaw.isEmpty
       ? <int>{}
       : seenRaw.split(',').map(int.parse).toSet();
@@ -72,15 +78,14 @@ Future<void> _pollAndNotify() async {
 
   // Persist only IDs the server still returns, so the set can't grow unbounded.
   final currentIds = notifications.map((n) => n.notificationId).toSet();
-  await storage.write(key: _seenIdsKey, value: currentIds.join(','));
+  await secureStorage.write(key: _seenIdsKey, value: currentIds.join(','));
 }
 
 /// Marks the currently visible notifications as "seen" without showing
 /// a local notification. Called from the foreground after the user
 /// opens the app so we don't re-alert them.
 Future<void> markCurrentNotificationsAsSeen(List<int> ids) async {
-  const storage = FlutterSecureStorage();
-  await storage.write(key: _seenIdsKey, value: ids.join(','));
+  await secureStorage.write(key: _seenIdsKey, value: ids.join(','));
 }
 
 /// workmanager only supports Android and iOS; other platforms throw

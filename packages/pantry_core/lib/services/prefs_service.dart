@@ -1,9 +1,8 @@
 import 'dart:ui' show Rect, Size;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'package:pantry_core/models/nav_section.dart';
+import 'package:pantry_core/services/secure_storage.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 
 part 'prefs_service.checklist.dart';
@@ -81,7 +80,7 @@ class PrefsService extends ChangeNotifier {
   /// against [checklistRefreshSeconds] at read time via
   /// [shoppingRefreshSecondsResolved].
   static const shoppingRefreshInherit = -1;
-  final _storage = const FlutterSecureStorage();
+  final _storage = secureStorage;
 
   int? _lastHouseId;
   int? get lastHouseId => _lastHouseId;
@@ -344,7 +343,15 @@ class PrefsService extends ChangeNotifier {
   Future<void> load() async {
     // One platform-channel round trip instead of ~17 sequential reads —
     // measurably shaves cold-start time on iOS Keychain / Android Keystore.
-    final all = await _storage.readAll();
+    // A store that refuses to decrypt leaves every setting at its default for
+    // this run rather than aborting startup; the stored values stay put.
+    Map<String, String> all;
+    try {
+      all = await _storage.readAll();
+    } catch (e) {
+      debugPrint('[PrefsService] Failed to read stored prefs: $e');
+      return;
+    }
 
     final lastHouse = all[_lastHouseKey];
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);

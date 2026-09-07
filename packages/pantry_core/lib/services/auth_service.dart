@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/secure_storage.dart';
 
 class NextcloudCredentials {
   final String serverUrl;
@@ -56,7 +56,7 @@ class AuthService {
   static final AuthService instance = AuthService._();
 
   static const _credentialsKey = 'nextcloud_credentials';
-  final _storage = const FlutterSecureStorage();
+  final _storage = secureStorage;
 
   NextcloudCredentials? _credentials;
   NextcloudCredentials? get credentials => _credentials;
@@ -117,16 +117,18 @@ class AuthService {
   /// (typically in the background) once the app has started. The cached
   /// values themselves are seeded by [hydrateFromCache].
   Future<void> loadCredentials() async {
-    final json = await _storage.read(key: _credentialsKey);
-    if (json == null) return;
     // Runs on the pre-first-frame startup path (main() awaits it). A corrupt
-    // or version-incompatible stored credential must degrade to logged-out
-    // rather than throw — an unhandled error here aborts main() before
-    // runApp() and freezes the splash.
+    // or version-incompatible stored credential — or a secure store that
+    // refuses to decrypt at all — must degrade to logged-out rather than
+    // throw: an unhandled error here aborts main() before runApp() and
+    // freezes the splash. The stored value is left alone, so a store that
+    // recovers still has it.
     try {
+      final json = await _storage.read(key: _credentialsKey);
+      if (json == null) return;
       _credentials = NextcloudCredentials.fromJson(jsonDecode(json));
     } catch (e) {
-      debugPrint('[AuthService] Failed to decode stored credentials: $e');
+      debugPrint('[AuthService] Failed to read stored credentials: $e');
     }
   }
 
