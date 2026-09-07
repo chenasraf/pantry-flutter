@@ -7,6 +7,7 @@ import '../wear_shape.dart';
 import '../widgets/wear_mechanics.dart';
 import 'qr_sign_in_page.dart';
 import 'wear_pairing_client.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// What the watch shows before it has a session.
 ///
@@ -125,10 +126,7 @@ class _Waiting extends StatelessWidget {
           onTap: onOpenOnPhone,
           behavior: HitTestBehavior.opaque,
           child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: scheme.primary.withValues(alpha: 0.22),
-              borderRadius: BorderRadius.circular(16),
-            ),
+            decoration: WearSurface.pill(context, radius: 16),
             child: Padding(
               padding: const EdgeInsetsDirectional.symmetric(
                 horizontal: 14,

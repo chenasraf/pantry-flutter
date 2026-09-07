@@ -9,6 +9,7 @@ import '../wear_shape.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// What the rail says you are looking at.
 typedef RailTitle = ({String label, IconData icon, Color color});
@@ -246,11 +247,11 @@ class WearRail extends StatelessWidget {
                       ),
                       width: i == window.selected ? 14 : 8,
                       height: 3,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        color: i == window.selected
+                      decoration: WearSurface.indicator(
+                        i == window.selected
                             ? Theme.of(context).colorScheme.primary
                             : Colors.white24,
+                        radius: 2,
                       ),
                     ),
                 ],
@@ -341,9 +342,8 @@ class _SyncDot extends StatelessWidget {
           return Container(
             width: 5,
             height: 5,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              shape: BoxShape.circle,
+            decoration: WearSurface.indicator(
+              Theme.of(context).colorScheme.primary,
             ),
           );
         }
@@ -429,15 +429,7 @@ class _RailButton extends StatelessWidget {
         height: WearMetrics.railButtonExtent,
         width: double.infinity,
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: primary
-              ? scheme.primary.withValues(alpha: 0.26)
-              : Colors.white.withValues(alpha: 0.10),
-          // A round screen wants a round button, the same as a row does.
-          borderRadius: BorderRadius.circular(
-            WearShape.isRound ? WearMetrics.railButtonExtent / 2 : 14,
-          ),
-        ),
+        decoration: WearSurface.pill(context, quiet: !primary),
         child: Padding(
           padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
           child: Row(

@@ -14,6 +14,7 @@ import 'photo_image.dart';
 import 'photo_route.dart';
 import 'photo_sizes.dart';
 import 'photos_controller.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// The photos page: the household's board, at the root of the house.
 ///
@@ -322,9 +323,7 @@ class _FolderTile extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(WearShape.isRound ? 14 : 10),
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: scheme.onSurface.withValues(alpha: 0.08),
-          ),
+          decoration: WearSurface.placeholder(context, alpha: 0.08, radius: 0),
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -373,9 +372,10 @@ class _FolderTile extends StatelessWidget {
                   top: 3,
                   start: 3,
                   child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: scheme.inverseSurface,
-                      borderRadius: BorderRadius.circular(8),
+                    decoration: WearSurface.panel(
+                      context,
+                      fill: scheme.inverseSurface,
+                      radius: 8,
                     ),
                     child: Padding(
                       padding: const EdgeInsetsDirectional.symmetric(

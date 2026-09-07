@@ -8,6 +8,7 @@ import '../pairing/wear_pairing_client.dart';
 import '../wear_shape.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// Leaving, and the one thing leaving has to say first.
 ///
@@ -148,9 +149,11 @@ class _Button extends StatelessWidget {
     onTap: onTap,
     behavior: HitTestBehavior.opaque,
     child: DecoratedBox(
-      decoration: BoxDecoration(
-        color: warning ? const Color(0xFF3A1D1D) : const Color(0xFF17171A),
-        borderRadius: BorderRadius.circular(16),
+      decoration: WearSurface.pill(
+        context,
+        warning: warning,
+        fill: warning ? null : const Color(0xFF17171A),
+        radius: 16,
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.symmetric(

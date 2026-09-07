@@ -14,6 +14,7 @@ import 'package:pantry_core/widgets/entity_chip.dart';
 import '../services/wear_host_service.dart';
 import '../widgets/wear_mechanics.dart';
 import 'checklists_controller.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// Read-only. The watch writes check-state and nothing else, so the actions
 /// here are the two check verbs and a hand-off to the phone.
@@ -242,9 +243,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     onTap: onTap,
     behavior: HitTestBehavior.opaque,
     child: DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.18),
-        borderRadius: BorderRadius.circular(16),
+      decoration: WearSurface.panel(
+        context,
+        fill: color.withValues(alpha: 0.18),
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.symmetric(

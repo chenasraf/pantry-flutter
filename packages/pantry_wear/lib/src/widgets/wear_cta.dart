@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../wear_shape.dart';
 import 'wear_ink.dart';
 import 'wear_metrics.dart';
+import 'wear_surfaces.dart';
 
 /// The one thing a page is for, held where a thumb already is.
 ///
@@ -103,14 +104,12 @@ class WearCta extends StatelessWidget {
                 // for everything on this watch a thumb goes for.
                 height: WearMetrics.railButtonExtent,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: blocked
-                      ? Colors.white.withValues(alpha: 0.08)
-                      : tint.withValues(alpha: 0.28),
-                  borderRadius: BorderRadius.circular(
-                    WearShape.isRound ? WearMetrics.railButtonExtent / 2 : 14,
-                  ),
-                ),
+                decoration: blocked
+                    ? WearSurface.pill(context, quiet: true)
+                    : WearSurface.pill(
+                        context,
+                        fill: tint.withValues(alpha: 0.28),
+                      ),
                 child: Padding(
                   padding: const EdgeInsetsDirectional.symmetric(
                     horizontal: 14,

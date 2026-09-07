@@ -3,6 +3,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
 import 'wear_metrics.dart';
+import 'wear_surfaces.dart';
 
 /// The card every menu and pick-one row on the watch is drawn as.
 ///
@@ -94,13 +95,14 @@ class WearRow extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Color.lerp(
+        decoration: WearSurface.card(
+          context,
+          fill: Color.lerp(
             warning ? _warningGround : scheme.surfaceContainerHighest,
             const Color(0xFF121215),
             d,
           ),
-          borderRadius: BorderRadius.circular(radius),
+          radius: radius,
         ),
         child: Padding(
           padding: EdgeInsetsDirectional.symmetric(
@@ -200,10 +202,7 @@ class _Toggle extends StatelessWidget {
     curve: Curves.easeOutCubic,
     width: _width,
     height: _height,
-    decoration: BoxDecoration(
-      color: on ? tint.withValues(alpha: 0.45) : Colors.white24,
-      borderRadius: BorderRadius.circular(_height / 2),
-    ),
+    decoration: WearSurface.track(context, on: on, tint: tint, height: _height),
     child: AnimatedAlign(
       duration: const Duration(milliseconds: 160),
       curve: Curves.easeOutCubic,
@@ -215,10 +214,7 @@ class _Toggle extends StatelessWidget {
         child: Container(
           width: _knob,
           height: _knob,
-          decoration: BoxDecoration(
-            color: on ? tint : Colors.white54,
-            shape: BoxShape.circle,
-          ),
+          decoration: WearSurface.indicator(on ? tint : Colors.white54),
         ),
       ),
     ),

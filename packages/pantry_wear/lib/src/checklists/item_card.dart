@@ -16,6 +16,7 @@ import '../wear_shape.dart';
 import '../widgets/undo_window.dart';
 import '../widgets/wear_metrics.dart';
 import 'checklists_controller.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// An item, as a card on the centre-focus list of whichever page is drawing it.
 ///
@@ -75,13 +76,14 @@ class ItemCard extends StatelessWidget {
     final radius = WearShape.isRound ? WearMetrics.cardHeight / 2 : 14.0;
 
     final card = DecoratedBox(
-      decoration: BoxDecoration(
-        color: Color.lerp(
+      decoration: WearSurface.card(
+        context,
+        fill: Color.lerp(
           scheme.surfaceContainerHighest,
           const Color(0xFF121215),
           d,
         ),
-        borderRadius: BorderRadius.circular(radius),
+        radius: radius,
       ),
       child: Padding(
         // Tight enough that the centre card's second line still fits inside

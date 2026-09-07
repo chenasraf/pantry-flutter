@@ -3,6 +3,7 @@ import 'package:pantry_core/models/photo.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// A photo, at the size the surface drawing it needs.
 ///
@@ -63,9 +64,7 @@ class PhotoUnavailable extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final ink = scheme.onSurface.withValues(alpha: 0.28);
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: scheme.onSurface.withValues(alpha: 0.07),
-      ),
+      decoration: WearSurface.placeholder(context, radius: 0),
       child: Stack(
         children: [
           Center(child: Icon(Icons.image_outlined, size: 22, color: ink)),

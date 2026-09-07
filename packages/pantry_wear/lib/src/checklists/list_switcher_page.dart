@@ -7,6 +7,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../scope/wear_scope.dart';
 import '../widgets/wear_mechanics.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// Every list in the current house, plus the all-lists entry — which is a
 /// selectable list here, exactly as on the phone, rather than a mode.
@@ -103,11 +104,12 @@ class _ListSwitcherPageState extends State<ListSwitcherPage> {
         onTap: () => _select(id),
         behavior: HitTestBehavior.opaque,
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: selected
+          decoration: WearSurface.card(
+            context,
+            fill: selected
                 ? scheme.primary.withValues(alpha: 0.18)
                 : const Color(0xFF17171A),
-            borderRadius: BorderRadius.circular(14),
+            radius: 14,
           ),
           child: Padding(
             padding: const EdgeInsetsDirectional.symmetric(

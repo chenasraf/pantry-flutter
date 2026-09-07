@@ -26,6 +26,7 @@ import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'wear_rail.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// The livery of a page that is not a list. A list wears its own colour, so
 /// anything else taking one would read as an identity it does not have.
@@ -578,10 +579,7 @@ class _Notice extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: DecoratedBox(
-      decoration: BoxDecoration(
-        color: wearNoticeGround,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: WearSurface.notice(context),
       child: Padding(
         padding: const EdgeInsetsDirectional.symmetric(
           horizontal: 10,

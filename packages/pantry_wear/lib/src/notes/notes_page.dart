@@ -15,6 +15,7 @@ import 'note_blocks.dart';
 import 'note_markdown.dart';
 import 'note_route.dart';
 import 'notes_controller.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// The notes wall: the household's notes, one card each.
 ///
@@ -247,11 +248,10 @@ class _NoteCard extends StatelessWidget {
             width: double.infinity,
             height: WearMetrics.noteCardHeight,
             child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: ground,
-                borderRadius: BorderRadius.circular(
-                  WearShape.isRound ? 18 : 12,
-                ),
+              decoration: WearSurface.card(
+                context,
+                fill: ground,
+                radius: WearShape.isRound ? 18 : 12,
               ),
               child: Padding(
                 padding: const EdgeInsetsDirectional.symmetric(

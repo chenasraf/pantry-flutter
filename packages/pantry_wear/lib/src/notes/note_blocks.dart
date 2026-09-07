@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import 'note_markdown.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// The ground a note draws on: its own colour, or the card plane when the user
 /// never gave it one.
@@ -172,9 +173,6 @@ class _Dot extends StatelessWidget {
   const _Dot({required this.color});
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: 3,
-    height: 3,
-    decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-  );
+  Widget build(BuildContext context) =>
+      Container(width: 3, height: 3, decoration: WearSurface.indicator(color));
 }

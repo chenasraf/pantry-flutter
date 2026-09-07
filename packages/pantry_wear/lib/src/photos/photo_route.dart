@@ -11,6 +11,7 @@ import '../wear_shape.dart';
 import '../widgets/wear_mechanics.dart';
 import 'photo_image.dart';
 import 'photo_sizes.dart';
+import '../widgets/wear_surfaces.dart';
 
 /// One photo, full screen.
 ///
@@ -296,10 +297,7 @@ class _ZoomBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
-    decoration: BoxDecoration(
-      color: Colors.black54,
-      borderRadius: BorderRadius.circular(9),
-    ),
+    decoration: WearSurface.panel(context, fill: Colors.black54, radius: 9),
     child: Padding(
       padding: const EdgeInsetsDirectional.symmetric(
         horizontal: 6,
