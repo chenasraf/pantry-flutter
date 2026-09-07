@@ -608,10 +608,10 @@ class OnboardingMessagesNn extends OnboardingMessages {
   String get addItemsTitle => """Ein raskare måte å leggje til oppføringar""";
 
   /// ```dart
-  /// "Trykk på feltet ved bunnen for å skrive inn ei ny oppføring, merk det med ein kategori, mengd, type eller bilete ved å bruke brikkene over."
+  /// "Trykk på feltet ved bunnen for å skrive inn ei ny oppføring, merk det med ein kategori, mengd, gjentaking eller bilete ved å bruke brikkene over."
   /// ```
   String get addItemsBody =>
-      """Trykk på feltet ved bunnen for å skrive inn ei ny oppføring, merk det med ein kategori, mengd, type eller bilete ved å bruke brikkene over.""";
+      """Trykk på feltet ved bunnen for å skrive inn ei ny oppføring, merk det med ein kategori, mengd, gjentaking eller bilete ved å bruke brikkene over.""";
 
   /// ```dart
   /// "Daglegvarer"
@@ -3328,9 +3328,9 @@ class ViewItemChecklistsMessagesNn extends ViewItemChecklistsMessages {
   String get quantityLabel => """Tal""";
 
   /// ```dart
-  /// "Type"
+  /// "Gjentaking"
   /// ```
-  String get typeLabel => """Type""";
+  String get typeLabel => """Gjentaking""";
 
   /// ```dart
   /// "Pris"
@@ -3795,9 +3795,9 @@ class ItemTypesChecklistsMessagesNn extends ItemTypesChecklistsMessages {
   const ItemTypesChecklistsMessagesNn(this._parent) : super(_parent);
 
   /// ```dart
-  /// "Type"
+  /// "Gjentaking"
   /// ```
-  String get label => """Type""";
+  String get label => """Gjentaking""";
 
   /// ```dart
   /// "Fest"
@@ -3866,9 +3866,9 @@ class ComposeChecklistsMessagesNn extends ComposeChecklistsMessages {
   String get chipQuantity => """Tal""";
 
   /// ```dart
-  /// "Type"
+  /// "Gjentaking"
   /// ```
-  String get chipType => """Type""";
+  String get chipType => """Gjentaking""";
 
   /// ```dart
   /// "Bilete"
@@ -6492,7 +6492,7 @@ Fullfør innlogginga i nettlesaren din.""",
   """onboarding.addItemsTitle""":
       """Ein raskare måte å leggje til oppføringar""",
   """onboarding.addItemsBody""":
-      """Trykk på feltet ved bunnen for å skrive inn ei ny oppføring, merk det med ein kategori, mengd, type eller bilete ved å bruke brikkene over.""",
+      """Trykk på feltet ved bunnen for å skrive inn ei ny oppføring, merk det med ein kategori, mengd, gjentaking eller bilete ved å bruke brikkene over.""",
   """onboarding.mockComposeListName""": """Daglegvarer""",
   """onboarding.progressHeroTitle""": """Skjul framgangskortet""",
   """onboarding.progressHeroBody""":
@@ -6978,7 +6978,7 @@ Passord: pantry""",
       """Neste gjentaking (frå sist fullført):""",
   """checklists.viewItem.overdue""": """Forfalt""",
   """checklists.viewItem.quantityLabel""": """Tal""",
-  """checklists.viewItem.typeLabel""": """Type""",
+  """checklists.viewItem.typeLabel""": """Gjentaking""",
   """checklists.viewItem.priceLabel""": """Pris""",
   """checklists.viewItem.descriptionLabel""": """Skildring""",
   """checklists.viewItem.noDescription""": """Inga skildring lagt til.""",
@@ -7098,7 +7098,7 @@ Passord: pantry""",
   """checklists.listRecurrence.recurring""": """Gjentek""",
   """checklists.listRecurrence.recurringHint""":
       """Nye element kjem tilbake basert på tidsplanen nedanfor.""",
-  """checklists.itemTypes.label""": """Type""",
+  """checklists.itemTypes.label""": """Gjentaking""",
   """checklists.itemTypes.staple""": """Fest""",
   """checklists.itemTypes.stapleBody""":
       """Blir verande på lista etter at du har markert den som fullført""",
@@ -7112,7 +7112,7 @@ Passord: pantry""",
   """checklists.compose.chipStore""": """Butikkar""",
   """checklists.compose.chipLabel""": """Etikettar""",
   """checklists.compose.chipQuantity""": """Tal""",
-  """checklists.compose.chipType""": """Type""",
+  """checklists.compose.chipType""": """Gjentaking""",
   """checklists.compose.chipImage""": """Bilete""",
   """checklists.compose.chipDescription""": """Skildring""",
   """checklists.compose.descHint""": """Notat, instruksjonar, lenkjer…""",

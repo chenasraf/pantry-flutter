@@ -102,7 +102,7 @@ onboarding:
   quickActionsTitle: "פעולות מהירות לכל פריט"
   quickActionsBody: "לכל פריט יש כפתורי פעולה בקצה — לחץ עליהם כדי לערוך, להעביר או למחוק את הפריט בלי לפתוח אותו."
   addItemsTitle: "דרך מהירה יותר להוסיף פריטים"
-  addItemsBody: "הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו."
+  addItemsBody: "הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, חזרתיות או תמונה באמצעות הצ'יפים שמעליו."
   mockComposeListName: "מצרכים"
   progressHeroTitle: "הסתר את כרטיס ההתקדמות"
   progressHeroBody: "לא צריך את טבעת ההתקדמות בראש הרשימה? החלק אותה החוצה."
@@ -586,7 +586,7 @@ checklists:
     nextDueFromCompletion: "מועד הבא (מהשלמה):"
     overdue: באיחור
     quantityLabel: כמות
-    typeLabel: סוג
+    typeLabel: חזרתיות
     priceLabel: מחיר
     descriptionLabel: תיאור
     noDescription: לא נוסף תיאור.
@@ -715,7 +715,7 @@ checklists:
     recurring: חוזר
     recurringHint: פריטים חדשים חוזרים לפי לוח הזמנים שלמטה.
   itemTypes:
-    label: סוג פריט
+    label: חזרתיות
     staple: קבוע
     stapleBody: נשאר ברשימה אחרי שמסמנים אותו כבוצע
     onceTime: חד-פעמי
@@ -729,7 +729,7 @@ checklists:
     chipStore: חנויות
     chipLabel: תוויות
     chipQuantity: כמות
-    chipType: סוג פריט
+    chipType: חזרתיות
     chipImage: תמונה
     chipDescription: תיאור
     descHint: "הערות, הוראות, קישורים…"

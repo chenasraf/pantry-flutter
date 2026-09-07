@@ -612,10 +612,10 @@ class OnboardingMessagesEs extends OnboardingMessages {
   String get addItemsTitle => """Una forma más rápida de añadir""";
 
   /// ```dart
-  /// "Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba."
+  /// "Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, recurrencia o foto usando los chips de arriba."
   /// ```
   String get addItemsBody =>
-      """Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba.""";
+      """Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, recurrencia o foto usando los chips de arriba.""";
 
   /// ```dart
   /// "Compras"
@@ -3337,9 +3337,9 @@ class ViewItemChecklistsMessagesEs extends ViewItemChecklistsMessages {
   String get quantityLabel => """Cantidad""";
 
   /// ```dart
-  /// "Tipo"
+  /// "Recurrencia"
   /// ```
-  String get typeLabel => """Tipo""";
+  String get typeLabel => """Recurrencia""";
 
   /// ```dart
   /// "Precio"
@@ -3804,9 +3804,9 @@ class ItemTypesChecklistsMessagesEs extends ItemTypesChecklistsMessages {
   const ItemTypesChecklistsMessagesEs(this._parent) : super(_parent);
 
   /// ```dart
-  /// "Tipo de artículo"
+  /// "Recurrencia"
   /// ```
-  String get label => """Tipo de artículo""";
+  String get label => """Recurrencia""";
 
   /// ```dart
   /// "Habitual"
@@ -3874,9 +3874,9 @@ class ComposeChecklistsMessagesEs extends ComposeChecklistsMessages {
   String get chipQuantity => """Cantidad""";
 
   /// ```dart
-  /// "Tipo"
+  /// "Recurrencia"
   /// ```
-  String get chipType => """Tipo""";
+  String get chipType => """Recurrencia""";
 
   /// ```dart
   /// "Imagen"
@@ -6512,7 +6512,7 @@ Por favor, completa el inicio de sesión en tu navegador.""",
       """Cada artículo muestra botones de acción al final — pulsa uno para editar, mover o eliminar el artículo sin abrirlo.""",
   """onboarding.addItemsTitle""": """Una forma más rápida de añadir""",
   """onboarding.addItemsBody""":
-      """Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba.""",
+      """Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, recurrencia o foto usando los chips de arriba.""",
   """onboarding.mockComposeListName""": """Compras""",
   """onboarding.progressHeroTitle""": """Oculta la tarjeta de progreso""",
   """onboarding.progressHeroBody""":
@@ -7006,7 +7006,7 @@ Contraseña: pantry-rocks""",
       """Próximo vencimiento (desde finalización):""",
   """checklists.viewItem.overdue""": """Vencido""",
   """checklists.viewItem.quantityLabel""": """Cantidad""",
-  """checklists.viewItem.typeLabel""": """Tipo""",
+  """checklists.viewItem.typeLabel""": """Recurrencia""",
   """checklists.viewItem.priceLabel""": """Precio""",
   """checklists.viewItem.descriptionLabel""": """Descripción""",
   """checklists.viewItem.noDescription""": """Sin descripción.""",
@@ -7127,7 +7127,7 @@ Contraseña: pantry-rocks""",
   """checklists.listRecurrence.recurring""": """Recurrente""",
   """checklists.listRecurrence.recurringHint""":
       """Los artículos nuevos vuelven según el horario de abajo.""",
-  """checklists.itemTypes.label""": """Tipo de artículo""",
+  """checklists.itemTypes.label""": """Recurrencia""",
   """checklists.itemTypes.staple""": """Habitual""",
   """checklists.itemTypes.stapleBody""":
       """Permanece en la lista después de completarlo""",
@@ -7140,7 +7140,7 @@ Contraseña: pantry-rocks""",
   """checklists.compose.chipStore""": """Tiendas""",
   """checklists.compose.chipLabel""": """Etiquetas""",
   """checklists.compose.chipQuantity""": """Cantidad""",
-  """checklists.compose.chipType""": """Tipo""",
+  """checklists.compose.chipType""": """Recurrencia""",
   """checklists.compose.chipImage""": """Imagen""",
   """checklists.compose.chipDescription""": """Descripción""",
   """checklists.compose.descHint""": """Notas, instrucciones, enlaces…""",

@@ -102,7 +102,7 @@ onboarding:
   quickActionsTitle: "Schnellaktionen für jeden Eintrag"
   quickActionsBody: "Jeder Eintrag zeigt am Ende Aktions-Buttons – klicke darauf, um den Eintrag zu bearbeiten, zu verschieben oder zu löschen, ohne ihn zu öffnen."
   addItemsTitle: "Einträge schneller hinzufügen"
-  addItemsBody: "Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto."
+  addItemsBody: "Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Wiederholung oder Foto."
   mockComposeListName: "Lebensmittel"
   progressHeroTitle: "Fortschrittskarte ausblenden"
   progressHeroBody: "Brauchst du den Fortschrittsring oben nicht? Wisch ihn einfach weg."
@@ -586,7 +586,7 @@ checklists:
     nextDueFromCompletion: "Nächstes Fälligkeitsdatum (ab Erledigung):"
     overdue: Überfällig
     quantityLabel: Menge
-    typeLabel: Typ
+    typeLabel: Wiederholung
     priceLabel: Preis
     descriptionLabel: Beschreibung
     noDescription: Keine Beschreibung hinzugefügt.
@@ -715,7 +715,7 @@ checklists:
     recurring: Wiederkehrend
     recurringHint: Neue Einträge kommen nach dem Zeitplan unten zurück.
   itemTypes:
-    label: Eintragstyp
+    label: Wiederholung
     staple: Standard
     stapleBody: Bleibt auf der Liste, nachdem du ihn erledigt hast
     onceTime: Einmalig
@@ -729,7 +729,7 @@ checklists:
     chipStore: Geschäfte
     chipLabel: Etiketten
     chipQuantity: Menge
-    chipType: Eintragstyp
+    chipType: Wiederholung
     chipImage: Bild
     chipDescription: Beschreibung
     descHint: "Notizen, Hinweise, Links…"

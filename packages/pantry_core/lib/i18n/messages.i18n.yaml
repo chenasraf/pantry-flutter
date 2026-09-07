@@ -102,7 +102,7 @@ onboarding:
   quickActionsTitle: "Quick actions on every item"
   quickActionsBody: "Each item shows action buttons at its trailing edge — click one to edit, move, or delete the item without opening it."
   addItemsTitle: "A faster way to add items"
-  addItemsBody: "Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above."
+  addItemsBody: "Tap the field at the bottom to type a new item, then tag it with a category, quantity, recurrence, or photo using the chips above."
   mockComposeListName: "Groceries"
   progressHeroTitle: "Hide the progress card"
   progressHeroBody: "Don't need the progress ring at the top? Swipe it away."
@@ -586,7 +586,7 @@ checklists:
     nextDueFromCompletion: "Next due (from completion):"
     overdue: Overdue
     quantityLabel: Quantity
-    typeLabel: Type
+    typeLabel: Recurrence
     priceLabel: Price
     descriptionLabel: Description
     noDescription: No description added.
@@ -715,7 +715,7 @@ checklists:
     recurring: Recurring
     recurringHint: New items come back on the schedule below.
   itemTypes:
-    label: Item type
+    label: Recurrence
     staple: Staple
     stapleBody: Stays on the list after you complete it
     onceTime: One-time
@@ -729,7 +729,7 @@ checklists:
     chipStore: Stores
     chipLabel: Labels
     chipQuantity: Quantity
-    chipType: Item type
+    chipType: Recurrence
     chipImage: Image
     chipDescription: Description
     descHint: "Notes, instructions, links…"

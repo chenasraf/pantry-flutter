@@ -102,7 +102,7 @@ onboarding:
   quickActionsTitle: "Actions rapides sur chaque élément"
   quickActionsBody: "Chaque élément affiche des boutons d'action à son extrémité — clique dessus pour modifier, déplacer ou supprimer l'élément sans l'ouvrir."
   addItemsTitle: "Une façon plus rapide d'ajouter"
-  addItemsBody: "Touche le champ en bas pour saisir un nouvel élément, puis associe-lui une catégorie, une quantité, un type ou une photo via les chips au-dessus."
+  addItemsBody: "Touche le champ en bas pour saisir un nouvel élément, puis associe-lui une catégorie, une quantité, une récurrence ou une photo via les chips au-dessus."
   mockComposeListName: "Courses"
   progressHeroTitle: "Masquer la carte de progression"
   progressHeroBody: "Pas besoin de l'anneau de progression en haut ? Balaie-le pour le retirer."
@@ -586,7 +586,7 @@ checklists:
     nextDueFromCompletion: "Prochaine échéance (à partir de la complétion) :"
     overdue: En retard
     quantityLabel: Quantité
-    typeLabel: Type
+    typeLabel: "Récurrence"
     priceLabel: Prix
     descriptionLabel: Description
     noDescription: Aucune description ajoutée.
@@ -715,7 +715,7 @@ checklists:
     recurring: "Récurrent"
     recurringHint: "Les nouveaux articles reviennent selon l'horaire ci-dessous."
   itemTypes:
-    label: "Type d'article"
+    label: "Récurrence"
     staple: Habituel
     stapleBody: "Reste sur la liste après que vous l'avez complété"
     onceTime: Unique
@@ -729,7 +729,7 @@ checklists:
     chipStore: Magasins
     chipLabel: Étiquettes
     chipQuantity: Quantité
-    chipType: Type
+    chipType: "Récurrence"
     chipImage: Image
     chipDescription: Description
     descHint: "Notes, instructions, liens…"

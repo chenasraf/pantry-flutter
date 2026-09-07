@@ -607,10 +607,10 @@ class OnboardingMessages {
   String get addItemsTitle => """A faster way to add items""";
 
   /// ```dart
-  /// "Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above."
+  /// "Tap the field at the bottom to type a new item, then tag it with a category, quantity, recurrence, or photo using the chips above."
   /// ```
   String get addItemsBody =>
-      """Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above.""";
+      """Tap the field at the bottom to type a new item, then tag it with a category, quantity, recurrence, or photo using the chips above.""";
 
   /// ```dart
   /// "Groceries"
@@ -3305,9 +3305,9 @@ class ViewItemChecklistsMessages {
   String get quantityLabel => """Quantity""";
 
   /// ```dart
-  /// "Type"
+  /// "Recurrence"
   /// ```
-  String get typeLabel => """Type""";
+  String get typeLabel => """Recurrence""";
 
   /// ```dart
   /// "Price"
@@ -3768,9 +3768,9 @@ class ItemTypesChecklistsMessages {
   const ItemTypesChecklistsMessages(this._parent);
 
   /// ```dart
-  /// "Item type"
+  /// "Recurrence"
   /// ```
-  String get label => """Item type""";
+  String get label => """Recurrence""";
 
   /// ```dart
   /// "Staple"
@@ -3838,9 +3838,9 @@ class ComposeChecklistsMessages {
   String get chipQuantity => """Quantity""";
 
   /// ```dart
-  /// "Item type"
+  /// "Recurrence"
   /// ```
-  String get chipType => """Item type""";
+  String get chipType => """Recurrence""";
 
   /// ```dart
   /// "Image"
@@ -6452,7 +6452,7 @@ Please complete login in your browser.""",
       """Each item shows action buttons at its trailing edge — click one to edit, move, or delete the item without opening it.""",
   """onboarding.addItemsTitle""": """A faster way to add items""",
   """onboarding.addItemsBody""":
-      """Tap the field at the bottom to type a new item, then tag it with a category, quantity, type, or photo using the chips above.""",
+      """Tap the field at the bottom to type a new item, then tag it with a category, quantity, recurrence, or photo using the chips above.""",
   """onboarding.mockComposeListName""": """Groceries""",
   """onboarding.progressHeroTitle""": """Hide the progress card""",
   """onboarding.progressHeroBody""":
@@ -6927,7 +6927,7 @@ Password: pantry-rocks""",
       """Next due (from completion):""",
   """checklists.viewItem.overdue""": """Overdue""",
   """checklists.viewItem.quantityLabel""": """Quantity""",
-  """checklists.viewItem.typeLabel""": """Type""",
+  """checklists.viewItem.typeLabel""": """Recurrence""",
   """checklists.viewItem.priceLabel""": """Price""",
   """checklists.viewItem.descriptionLabel""": """Description""",
   """checklists.viewItem.noDescription""": """No description added.""",
@@ -7044,7 +7044,7 @@ Password: pantry-rocks""",
   """checklists.listRecurrence.recurring""": """Recurring""",
   """checklists.listRecurrence.recurringHint""":
       """New items come back on the schedule below.""",
-  """checklists.itemTypes.label""": """Item type""",
+  """checklists.itemTypes.label""": """Recurrence""",
   """checklists.itemTypes.staple""": """Staple""",
   """checklists.itemTypes.stapleBody""":
       """Stays on the list after you complete it""",
@@ -7057,7 +7057,7 @@ Password: pantry-rocks""",
   """checklists.compose.chipStore""": """Stores""",
   """checklists.compose.chipLabel""": """Labels""",
   """checklists.compose.chipQuantity""": """Quantity""",
-  """checklists.compose.chipType""": """Item type""",
+  """checklists.compose.chipType""": """Recurrence""",
   """checklists.compose.chipImage""": """Image""",
   """checklists.compose.chipDescription""": """Description""",
   """checklists.compose.descHint""": """Notes, instructions, links…""",

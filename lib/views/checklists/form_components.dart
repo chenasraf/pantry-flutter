@@ -129,7 +129,7 @@ class FormStepperButton extends StatelessWidget {
   }
 }
 
-/// Selectable row used by the item-type picker (Staple / One-time / Recurring)
+/// Selectable row used by the recurrence picker (Staple / One-time / Recurring)
 /// in both the compose bar and the edit form. Filled accent background +
 /// solid-dot radio when selected; neutral surface card otherwise.
 class LifecycleRow extends StatelessWidget {

@@ -36,7 +36,7 @@ class MarkdownImportResult {
 
 /// Dialog that turns pasted/uploaded Markdown into list items. The found items
 /// are shown as a selectable list (all selected by default); a shared set of
-/// default fields (category, quantity, description, item type + recurrence) is
+/// default fields (category, quantity, description, recurrence) is
 /// applied to every imported item — exactly like the multi-item add form.
 ///
 /// OS file drag-and-drop is intentionally not offered (no desktop file-drop
@@ -459,7 +459,7 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
           ),
         ),
         const SizedBox(height: 14),
-        // Item type
+        // Recurrence
         Text(
           t.label,
           style: TextStyle(fontSize: 12.5, color: cs.onSurfaceVariant),

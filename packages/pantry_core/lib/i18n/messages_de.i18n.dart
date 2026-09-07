@@ -612,10 +612,10 @@ class OnboardingMessagesDe extends OnboardingMessages {
   String get addItemsTitle => """Einträge schneller hinzufügen""";
 
   /// ```dart
-  /// "Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto."
+  /// "Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Wiederholung oder Foto."
   /// ```
   String get addItemsBody =>
-      """Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto.""";
+      """Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Wiederholung oder Foto.""";
 
   /// ```dart
   /// "Lebensmittel"
@@ -3344,9 +3344,9 @@ class ViewItemChecklistsMessagesDe extends ViewItemChecklistsMessages {
   String get quantityLabel => """Menge""";
 
   /// ```dart
-  /// "Typ"
+  /// "Wiederholung"
   /// ```
-  String get typeLabel => """Typ""";
+  String get typeLabel => """Wiederholung""";
 
   /// ```dart
   /// "Preis"
@@ -3812,9 +3812,9 @@ class ItemTypesChecklistsMessagesDe extends ItemTypesChecklistsMessages {
   const ItemTypesChecklistsMessagesDe(this._parent) : super(_parent);
 
   /// ```dart
-  /// "Eintragstyp"
+  /// "Wiederholung"
   /// ```
-  String get label => """Eintragstyp""";
+  String get label => """Wiederholung""";
 
   /// ```dart
   /// "Standard"
@@ -3883,9 +3883,9 @@ class ComposeChecklistsMessagesDe extends ComposeChecklistsMessages {
   String get chipQuantity => """Menge""";
 
   /// ```dart
-  /// "Eintragstyp"
+  /// "Wiederholung"
   /// ```
-  String get chipType => """Eintragstyp""";
+  String get chipType => """Wiederholung""";
 
   /// ```dart
   /// "Bild"
@@ -6524,7 +6524,7 @@ Bitte melde dich in deinem Browser an.""",
       """Jeder Eintrag zeigt am Ende Aktions-Buttons – klicke darauf, um den Eintrag zu bearbeiten, zu verschieben oder zu löschen, ohne ihn zu öffnen.""",
   """onboarding.addItemsTitle""": """Einträge schneller hinzufügen""",
   """onboarding.addItemsBody""":
-      """Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Typ oder Foto.""",
+      """Tippe auf das Feld unten, um einen neuen Eintrag einzugeben, und versieh ihn dann über die Chips darüber mit Kategorie, Menge, Wiederholung oder Foto.""",
   """onboarding.mockComposeListName""": """Lebensmittel""",
   """onboarding.progressHeroTitle""": """Fortschrittskarte ausblenden""",
   """onboarding.progressHeroBody""":
@@ -7027,7 +7027,7 @@ Passwort: pantry-rocks""",
       """Nächstes Fälligkeitsdatum (ab Erledigung):""",
   """checklists.viewItem.overdue""": """Überfällig""",
   """checklists.viewItem.quantityLabel""": """Menge""",
-  """checklists.viewItem.typeLabel""": """Typ""",
+  """checklists.viewItem.typeLabel""": """Wiederholung""",
   """checklists.viewItem.priceLabel""": """Preis""",
   """checklists.viewItem.descriptionLabel""": """Beschreibung""",
   """checklists.viewItem.noDescription""":
@@ -7150,7 +7150,7 @@ Passwort: pantry-rocks""",
   """checklists.listRecurrence.recurring""": """Wiederkehrend""",
   """checklists.listRecurrence.recurringHint""":
       """Neue Einträge kommen nach dem Zeitplan unten zurück.""",
-  """checklists.itemTypes.label""": """Eintragstyp""",
+  """checklists.itemTypes.label""": """Wiederholung""",
   """checklists.itemTypes.staple""": """Standard""",
   """checklists.itemTypes.stapleBody""":
       """Bleibt auf der Liste, nachdem du ihn erledigt hast""",
@@ -7164,7 +7164,7 @@ Passwort: pantry-rocks""",
   """checklists.compose.chipStore""": """Geschäfte""",
   """checklists.compose.chipLabel""": """Etiketten""",
   """checklists.compose.chipQuantity""": """Menge""",
-  """checklists.compose.chipType""": """Eintragstyp""",
+  """checklists.compose.chipType""": """Wiederholung""",
   """checklists.compose.chipImage""": """Bild""",
   """checklists.compose.chipDescription""": """Beschreibung""",
   """checklists.compose.descHint""": """Notizen, Hinweise, Links…""",

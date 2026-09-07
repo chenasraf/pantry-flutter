@@ -607,10 +607,10 @@ class OnboardingMessagesHe extends OnboardingMessages {
   String get addItemsTitle => """דרך מהירה יותר להוסיף פריטים""";
 
   /// ```dart
-  /// "הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו."
+  /// "הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, חזרתיות או תמונה באמצעות הצ'יפים שמעליו."
   /// ```
   String get addItemsBody =>
-      """הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו.""";
+      """הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, חזרתיות או תמונה באמצעות הצ'יפים שמעליו.""";
 
   /// ```dart
   /// "מצרכים"
@@ -3313,9 +3313,9 @@ class ViewItemChecklistsMessagesHe extends ViewItemChecklistsMessages {
   String get quantityLabel => """כמות""";
 
   /// ```dart
-  /// "סוג"
+  /// "חזרתיות"
   /// ```
-  String get typeLabel => """סוג""";
+  String get typeLabel => """חזרתיות""";
 
   /// ```dart
   /// "מחיר"
@@ -3778,9 +3778,9 @@ class ItemTypesChecklistsMessagesHe extends ItemTypesChecklistsMessages {
   const ItemTypesChecklistsMessagesHe(this._parent) : super(_parent);
 
   /// ```dart
-  /// "סוג פריט"
+  /// "חזרתיות"
   /// ```
-  String get label => """סוג פריט""";
+  String get label => """חזרתיות""";
 
   /// ```dart
   /// "קבוע"
@@ -3848,9 +3848,9 @@ class ComposeChecklistsMessagesHe extends ComposeChecklistsMessages {
   String get chipQuantity => """כמות""";
 
   /// ```dart
-  /// "סוג פריט"
+  /// "חזרתיות"
   /// ```
-  String get chipType => """סוג פריט""";
+  String get chipType => """חזרתיות""";
 
   /// ```dart
   /// "תמונה"
@@ -6449,7 +6449,7 @@ Map<String, String> get messagesHeMap => {
       """לכל פריט יש כפתורי פעולה בקצה — לחץ עליהם כדי לערוך, להעביר או למחוק את הפריט בלי לפתוח אותו.""",
   """onboarding.addItemsTitle""": """דרך מהירה יותר להוסיף פריטים""",
   """onboarding.addItemsBody""":
-      """הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, סוג או תמונה באמצעות הצ'יפים שמעליו.""",
+      """הקש על השדה בתחתית כדי להקליד פריט חדש, ואז סמן אותו עם קטגוריה, כמות, חזרתיות או תמונה באמצעות הצ'יפים שמעליו.""",
   """onboarding.mockComposeListName""": """מצרכים""",
   """onboarding.progressHeroTitle""": """הסתר את כרטיס ההתקדמות""",
   """onboarding.progressHeroBody""":
@@ -6916,7 +6916,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.viewItem.nextDueFromCompletion""": """מועד הבא (מהשלמה):""",
   """checklists.viewItem.overdue""": """באיחור""",
   """checklists.viewItem.quantityLabel""": """כמות""",
-  """checklists.viewItem.typeLabel""": """סוג""",
+  """checklists.viewItem.typeLabel""": """חזרתיות""",
   """checklists.viewItem.priceLabel""": """מחיר""",
   """checklists.viewItem.descriptionLabel""": """תיאור""",
   """checklists.viewItem.noDescription""": """לא נוסף תיאור.""",
@@ -7032,7 +7032,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.listRecurrence.recurring""": """חוזר""",
   """checklists.listRecurrence.recurringHint""":
       """פריטים חדשים חוזרים לפי לוח הזמנים שלמטה.""",
-  """checklists.itemTypes.label""": """סוג פריט""",
+  """checklists.itemTypes.label""": """חזרתיות""",
   """checklists.itemTypes.staple""": """קבוע""",
   """checklists.itemTypes.stapleBody""":
       """נשאר ברשימה אחרי שמסמנים אותו כבוצע""",
@@ -7046,7 +7046,7 @@ Map<String, String> get messagesHeMap => {
   """checklists.compose.chipStore""": """חנויות""",
   """checklists.compose.chipLabel""": """תוויות""",
   """checklists.compose.chipQuantity""": """כמות""",
-  """checklists.compose.chipType""": """סוג פריט""",
+  """checklists.compose.chipType""": """חזרתיות""",
   """checklists.compose.chipImage""": """תמונה""",
   """checklists.compose.chipDescription""": """תיאור""",
   """checklists.compose.descHint""": """הערות, הוראות, קישורים…""",

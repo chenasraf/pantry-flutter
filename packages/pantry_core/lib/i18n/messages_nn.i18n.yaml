@@ -141,7 +141,7 @@ onboarding:
   addItemsTitle: Ein raskare måte å leggje til oppføringar
   addItemsBody:
     Trykk på feltet ved bunnen for å skrive inn ei ny oppføring, merk
-    det med ein kategori, mengd, type eller bilete ved å bruke brikkene over.
+    det med ein kategori, mengd, gjentaking eller bilete ved å bruke brikkene over.
   mockComposeListName: Daglegvarer
   progressHeroTitle: Skjul framgangskortet
   progressHeroBody: Treng du ikkje framdriftsringen på toppen? Sveip den bort.
@@ -701,7 +701,7 @@ checklists:
     nextDueFromCompletion: "Neste gjentaking (frå sist fullført):"
     overdue: Forfalt
     quantityLabel: Tal
-    typeLabel: Type
+    typeLabel: Gjentaking
     priceLabel: Pris
     descriptionLabel: Skildring
     noDescription: Inga skildring lagt til.
@@ -838,7 +838,7 @@ checklists:
     recurring: Gjentek
     recurringHint: Nye element kjem tilbake basert på tidsplanen nedanfor.
   itemTypes:
-    label: Type
+    label: Gjentaking
     staple: Fest
     stapleBody: Blir verande på lista etter at du har markert den som fullført
     onceTime: Eingongsbruk
@@ -852,7 +852,7 @@ checklists:
     chipStore: Butikkar
     chipLabel: Etikettar
     chipQuantity: Tal
-    chipType: Type
+    chipType: Gjentaking
     chipImage: Bilete
     chipDescription: Skildring
     descHint: Notat, instruksjonar, lenkjer…

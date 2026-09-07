@@ -102,7 +102,7 @@ onboarding:
   quickActionsTitle: "Acciones rápidas en cada artículo"
   quickActionsBody: "Cada artículo muestra botones de acción al final — pulsa uno para editar, mover o eliminar el artículo sin abrirlo."
   addItemsTitle: "Una forma más rápida de añadir"
-  addItemsBody: "Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, tipo o foto usando los chips de arriba."
+  addItemsBody: "Toca el campo de abajo para escribir un nuevo artículo, y luego etiquétalo con una categoría, cantidad, recurrencia o foto usando los chips de arriba."
   mockComposeListName: "Compras"
   progressHeroTitle: "Oculta la tarjeta de progreso"
   progressHeroBody: "¿No necesitas el anillo de progreso arriba? Deslízalo para descartarlo."
@@ -586,7 +586,7 @@ checklists:
     nextDueFromCompletion: "Próximo vencimiento (desde finalización):"
     overdue: Vencido
     quantityLabel: Cantidad
-    typeLabel: Tipo
+    typeLabel: Recurrencia
     priceLabel: Precio
     descriptionLabel: Descripción
     noDescription: Sin descripción.
@@ -715,7 +715,7 @@ checklists:
     recurring: Recurrente
     recurringHint: Los artículos nuevos vuelven según el horario de abajo.
   itemTypes:
-    label: Tipo de artículo
+    label: Recurrencia
     staple: Habitual
     stapleBody: Permanece en la lista después de completarlo
     onceTime: Una vez
@@ -729,7 +729,7 @@ checklists:
     chipStore: Tiendas
     chipLabel: Etiquetas
     chipQuantity: Cantidad
-    chipType: Tipo
+    chipType: Recurrencia
     chipImage: Imagen
     chipDescription: Descripción
     descHint: "Notas, instrucciones, enlaces…"
