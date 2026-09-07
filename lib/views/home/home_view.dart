@@ -518,7 +518,11 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
           return Scaffold(
             appBar: appBar,
-            body: body,
+            // Android draws its system navigation over the app. The bottom bar
+            // normally reserves that inset for everything anchored to the
+            // bottom of a tab (compose bar, action bars, floating buttons);
+            // without the bar the tab has to reserve it itself.
+            body: showNav ? body : SafeArea(top: false, child: body),
             bottomNavigationBar: showNav
                 ? AnimatedBottomNav(
                     pageController: _pageController,
