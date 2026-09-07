@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- What the tile picker shows before the tile is added. Drawn rather than
+     screenshotted so it stays true when the row geometry changes, and kept to
+     the shapes the tile actually has: a house name over rounded list rows. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="384dp"
+    android:height="384dp"
+    android:viewportWidth="384"
+    android:viewportHeight="384">
+
+    <path
+        android:fillColor="#0B0B0C"
+        android:pathData="M0,0h384v384h-384z" />
+
+    <!-- The house name. -->
+    <path
+        android:fillColor="#8A8A93"
+        android:pathData="M40,84h96v12h-96z" />
+
+    <group>
+        <path
+            android:fillColor="#17171A"
+            android:pathData="M68,110 h248 a28,28 0 0 1 28,28 a28,28 0 0 1 -28,28 h-248 a28,28 0 0 1 -28,-28 a28,28 0 0 1 28,-28 z" />
+        <path
+            android:fillColor="#0082C9"
+            android:pathData="M68,138m-14,0a14,14 0 1,0 28,0a14,14 0 1,0 -28,0z" />
+        <path
+            android:fillColor="#ECECEE"
+            android:pathData="M98,131h150v14h-150z" />
+    </group>
+
+    <group>
+        <path
+            android:fillColor="#17171A"
+            android:pathData="M68,178 h248 a28,28 0 0 1 28,28 a28,28 0 0 1 -28,28 h-248 a28,28 0 0 1 -28,-28 a28,28 0 0 1 28,-28 z" />
+        <path
+            android:fillColor="#0082C9"
+            android:pathData="M68,206m-14,0a14,14 0 1,0 28,0a14,14 0 1,0 -28,0z" />
+        <path
+            android:fillColor="#ECECEE"
+            android:pathData="M98,199h116v14h-116z" />
+    </group>
+
+    <group>
+        <path
+            android:fillColor="#17171A"
+            android:pathData="M68,246 h248 a28,28 0 0 1 28,28 a28,28 0 0 1 -28,28 h-248 a28,28 0 0 1 -28,-28 a28,28 0 0 1 28,-28 z" />
+        <path
+            android:fillColor="#0082C9"
+            android:pathData="M68,274m-14,0a14,14 0 1,0 28,0a14,14 0 1,0 -28,0z" />
+        <path
+            android:fillColor="#ECECEE"
+            android:pathData="M98,267h134v14h-134z" />
+    </group>
+</vector>

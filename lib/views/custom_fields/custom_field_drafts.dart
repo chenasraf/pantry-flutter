@@ -1,4 +1,4 @@
-import 'package:pantry/models/custom_field.dart';
+import 'package:pantry_core/models/custom_field.dart';
 
 /// A display group of fields sharing a scope: `listId == null` for the
 /// house-wide ("All lists") section, or a list id for a per-list section.

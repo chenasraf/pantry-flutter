@@ -12,7 +12,7 @@ on:
         required: true
         type: string
       targets:
-        description: "Comma-separated platforms to build from the selected branch: android, fdroid, macos, linux, windows, ios. 'all' = every auto-release platform (android, fdroid, macos, linux, windows); pass 'ios' explicitly to force the disabled iOS build."
+        description: "Comma-separated platforms to build from the selected branch: android, wear, fdroid, macos, linux, windows, ios. 'all' = every auto-release platform (android, wear, fdroid, macos, linux, windows); pass 'ios' explicitly to force the disabled iOS build."
         required: true
         default: all
         type: string
@@ -92,15 +92,19 @@ jobs:
           key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
           restore-keys: pub-${{ runner.os }}-
 
+      # Each workspace package resolves its own dependencies, and `make test`
+      # runs their suites too.
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          for pkg in packages/*/; do (cd "$pkg" && flutter pub get); done
 
       - name: Run tests
-        run: flutter test --coverage
+        run: make test-coverage
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
-          files: coverage/lcov.info
+          files: coverage/lcov.info,packages/pantry_core/coverage/lcov.info,packages/pantry_wear/coverage/lcov.info
           fail_ci_if_error: false
 
   # Guard the FLOSS lockfile: a dependency added or bumped in pubspec.yaml
@@ -132,6 +136,46 @@ jobs:
       - name: Check F-Droid lockfile is in sync
         run: make fdroid-check
 
+  # Compile the wear flavor on every push and pull request. Nothing else here
+  # compiles Android or Kotlin before a release is cut, and essentially all of
+  # this repo's Kotlin is in the watch tree — the per-flavor MainActivity, the
+  # Tile service and six platform channels — so a broken source-set split would
+  # otherwise surface mid-release. Unsigned, and nothing is published.
+  compile-wear:
+    needs: setup
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Compile the wear flavor
+        run: flutter build apk --debug --flavor wear --target lib/main_wear.dart
+
   release-please:
     needs: [lint, test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -145,7 +189,14 @@ jobs:
         apple: |
           fastlane/metadata/ios/en-US/changelogs
           fastlane/metadata/macos/en-US/changelogs
-        android: fastlane/metadata/android/en-US/changelogs
+        android: |
+          fastlane/metadata/android/en-US/changelogs
+          fastlane/metadata/android-wear/en-US/changelogs
+        wear: fastlane/metadata/android-wear/en-US/changelogs
+      # Play resolves release notes by the version code of the artifact being
+      # uploaded, and the wear bundle's carries the flavor's +20000 offset.
+      version-code-offsets: |
+        fastlane/metadata/android-wear/en-US/changelogs: 20000
 
   build-android:
     needs: [setup, release-please]
@@ -221,18 +272,19 @@ jobs:
             2>/dev/null | grep "SHA256:" | awk '{print $2}'
 
       - name: Build split APKs
-        run: flutter build apk --release --split-per-abi
+        run: flutter build apk --release --flavor phone --split-per-abi
 
       - name: Build App Bundle
-        run: flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab
+        run: flutter build appbundle --release --flavor phone --obfuscate --split-debug-info=build/debug-info-aab
       - name: Rename artifacts
         run: |
           VERSION=${{ steps.meta.outputs.version }}
           APK_DIR=build/app/outputs/flutter-apk
-          mv ${APK_DIR}/app-armeabi-v7a-release.apk ${APK_DIR}/pantry-${VERSION}-armeabi-v7a.apk
-          mv ${APK_DIR}/app-arm64-v8a-release.apk ${APK_DIR}/pantry-${VERSION}-arm64-v8a.apk
-          mv ${APK_DIR}/app-x86_64-release.apk ${APK_DIR}/pantry-${VERSION}-x86_64.apk
-          mv build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/pantry-${VERSION}.aab
+          mv ${APK_DIR}/app-armeabi-v7a-phone-release.apk ${APK_DIR}/pantry-${VERSION}-armeabi-v7a.apk
+          mv ${APK_DIR}/app-arm64-v8a-phone-release.apk ${APK_DIR}/pantry-${VERSION}-arm64-v8a.apk
+          mv ${APK_DIR}/app-x86_64-phone-release.apk ${APK_DIR}/pantry-${VERSION}-x86_64.apk
+          mkdir -p build/app/outputs/bundle/release
+          mv build/app/outputs/bundle/phoneRelease/app-phone-release.aab build/app/outputs/bundle/release/pantry-${VERSION}.aab
 
       - name: Upload APKs and App Bundle to release
         env:
@@ -245,6 +297,112 @@ jobs:
             build/app/outputs/flutter-apk/pantry-${VERSION}-arm64-v8a.apk \
             build/app/outputs/flutter-apk/pantry-${VERSION}-x86_64.apk \
             build/app/outputs/bundle/release/pantry-${VERSION}.aab \
+            --clobber
+
+  # Wear OS build. Same package name and the same upload key as the phone, so
+  # the keystore steps are identical; what differs is the flavor, the entrypoint
+  # and the +20000 versionCode the flavor applies. All three ABIs ship: from
+  # 2026-09-15 Play refuses a new Wear submission carrying no arm64-v8a slice,
+  # and goes on serving the 32-bit slice to watches without a 64-bit processor.
+  #
+  # The APKs are not symmetry with the phone. tool/fdroid/apply.sh strips the
+  # dependencies the wear flavor compiles against, so F-Droid can never build
+  # the watch app and this is the only build a FLOSS user can install — which is
+  # also why the wear and F-Droid jobs must not share a checkout.
+  build-wear:
+    needs: [setup, release-please]
+    if: >-
+      ${{ always()
+          && needs.setup.result == 'success'
+          && (needs.release-please.outputs.release_created == 'true'
+              || (github.event_name == 'workflow_dispatch'
+                  && (inputs.targets == 'all' || contains(inputs.targets, 'wear')))) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || needs.release-please.outputs.tag_name }}
+
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.release_tag }}"
+          else
+            TAG="${{ needs.release-please.outputs.tag_name }}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Decode keystore
+        run: echo ${{ secrets.ANDROID_KEYSTORE_BASE64 }} | base64 -d > android/app/upload-keystore.jks
+
+      - name: Create key.properties
+        run: |
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+
+      # Obfuscation splits the way the phone's does: the bundle is obfuscated,
+      # the sideloaded APKs are plain. A pasted stack trace is the only
+      # debugging channel the APK has, and there is no symbol upload pipeline.
+      - name: Build split APKs
+        run: flutter build apk --release --flavor wear --target lib/main_wear.dart --split-per-abi
+
+      - name: Build App Bundle
+        run: flutter build appbundle --release --flavor wear --target lib/main_wear.dart --obfuscate --split-debug-info=build/debug-info-wear
+
+      - name: Rename artifacts
+        run: |
+          set -euo pipefail
+          VERSION=${{ steps.meta.outputs.version }}
+          APK_DIR=build/app/outputs/flutter-apk
+          for abi in armeabi-v7a arm64-v8a x86_64; do
+            mv ${APK_DIR}/app-${abi}-wear-release.apk ${APK_DIR}/pantry-${VERSION}-wear-${abi}.apk
+          done
+          mkdir -p build/app/outputs/bundle/release
+          mv build/app/outputs/bundle/wearRelease/app-wear-release.aab build/app/outputs/bundle/release/pantry-${VERSION}-wear.aab
+
+      - name: Upload APKs and App Bundle to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION=${{ steps.meta.outputs.version }}
+          gh release upload "${{ steps.meta.outputs.tag }}" \
+            build/app/outputs/flutter-apk/pantry-${VERSION}-wear-armeabi-v7a.apk \
+            build/app/outputs/flutter-apk/pantry-${VERSION}-wear-arm64-v8a.apk \
+            build/app/outputs/flutter-apk/pantry-${VERSION}-wear-x86_64.apk \
+            build/app/outputs/bundle/release/pantry-${VERSION}-wear.aab \
             --clobber
 
   # FLOSS variant for F-Droid: the barcode scanner is swapped from Google ML Kit
@@ -331,8 +489,8 @@ jobs:
             local plat="$1" abi="$2"
             flutter clean
             flutter pub get --enforce-lockfile
-            flutter build apk --release --split-per-abi --target-platform="$plat"
-            mv build/app/outputs/flutter-apk/app-"$abi"-release.apk \
+            flutter build apk --release --flavor phone --split-per-abi --target-platform="$plat"
+            mv build/app/outputs/flutter-apk/app-"$abi"-phone-release.apk \
               "$OUT/pantry-${VERSION}-fdroid-$abi.apk"
           }
           build_one android-arm   armeabi-v7a
@@ -768,6 +926,7 @@ jobs:
       [
         release-please,
         build-android,
+        build-wear,
         build-android-fdroid,
         build-macos,
         build-linux,

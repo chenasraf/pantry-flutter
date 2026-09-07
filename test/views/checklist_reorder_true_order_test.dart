@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/checklist.dart';
+import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry/views/checklists/checklists_ordering.dart';
 
 import '../helpers/test_models.dart';

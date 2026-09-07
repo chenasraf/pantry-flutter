@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/views/checklists/checklist_item_tile.dart';
 
 import '../helpers/test_app.dart';

@@ -55,13 +55,18 @@
             <!-- Deep links:
                  pantry://list/<houseId>/<listId>            opens a list.
                  pantry://item/<houseId>/<listId>/<itemId>   opens an item.
-                 (NFC tags, launcher/pinned shortcuts, the checklist widget). -->
+                 pantry://watch-setup                        opens watch pairing.
+                 (NFC tags, launcher/pinned shortcuts, the checklist widget, and
+                 a watch handing this phone a link over the Data Layer). The
+                 wear manifest strips every inherited filter, so these are the
+                 phone's alone. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="pantry" android:host="list" />
                 <data android:scheme="pantry" android:host="item" />
+                <data android:scheme="pantry" android:host="watch-setup" />
             </intent-filter>
         </activity>
 

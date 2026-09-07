@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry/views/onboarding/pages/category_scope_page.dart';
 
 void main() {

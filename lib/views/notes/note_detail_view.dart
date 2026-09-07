@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/note.dart';
-import 'package:pantry/utils/markdown_list.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry/views/checklists/import_to_list.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
@@ -38,13 +38,20 @@ class _NoteDetailViewState extends State<NoteDetailView> {
     showImportToListDialog(context, houseId: _note.houseId, markdown: content);
   }
 
-  void _onToggleCheckbox(int ordinal) {
+  Future<void> _onToggleCheckbox(int ordinal) async {
     final content = _note.content;
     if (content == null) return;
-    final updated = toggleChecklistItem(content, ordinal);
-    if (updated == content) return;
-    setState(() => _note = _note.copyWith(content: updated));
-    widget.controller.updateNote(_note, content: updated);
+    final lines = taskLines(content);
+    if (ordinal >= lines.length) return;
+    final line = lines[ordinal];
+    final updated = await widget.controller.setTaskLine(
+      _note,
+      ordinal: ordinal,
+      text: line.text,
+      checked: !line.checked,
+    );
+    if (!mounted) return;
+    setState(() => _note = updated);
   }
 
   @override

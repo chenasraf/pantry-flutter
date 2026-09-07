@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/services/api_client.dart';
-import 'package:pantry/services/house_service.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/services/api_client.dart';
+import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 
 class HomeController extends ChangeNotifier {
   List<House> _houses = [];

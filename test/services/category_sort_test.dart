@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/category.dart';
-import 'package:pantry/services/category_service.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/services/category_service.dart';
 
 Category _cat(int id, String name, {int sortOrder = 0}) => Category(
   id: id,

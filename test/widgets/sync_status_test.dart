@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry/widgets/sync_status.dart';
 
 void main() {

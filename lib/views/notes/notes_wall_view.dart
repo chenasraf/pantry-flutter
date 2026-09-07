@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/models/note.dart';
-import 'package:pantry/services/pending_note_share_service.dart';
-import 'package:pantry/services/prefs_service.dart';
-import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/services/pending_note_share_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/note_selection_actions.dart';
 import 'package:pantry/widgets/note_sort_button.dart';

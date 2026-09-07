@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:pantry/services/nn_localizations.dart';
+import 'package:pantry_core/services/nn_localizations.dart';
 
 void main() {
   group('Nynorsk (nn) framework localizations', () {

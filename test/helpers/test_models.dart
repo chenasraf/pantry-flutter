@@ -1,9 +1,9 @@
-import 'package:pantry/models/category.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/models/note.dart';
-import 'package:pantry/models/notification.dart';
-import 'package:pantry/models/photo.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/models/notification.dart';
+import 'package:pantry_core/models/photo.dart';
 
 const _now = 1700000000;
 

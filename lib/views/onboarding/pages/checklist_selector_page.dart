@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/checklist_icons.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/checklist_icons.dart';
 
 /// Teaches users that tapping the list title at the top of the checklists tab
 /// opens the list switcher. Shows a mocked-up AppBar title row + the switcher

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/house_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry/services/widget_service.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 
 /// Lets the user pick which checklists a specific home-screen widget shows.
 /// Reached via the `pantry://widget/config/<appWidgetId>` deep link — fired

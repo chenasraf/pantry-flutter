@@ -1,0 +1,169 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+/// Per-host pinned certificate fingerprints. Lets users connect to
+/// Nextcloud servers with self-signed certificates by accepting the
+/// certificate on first connect; subsequent connections only succeed if
+/// the SHA-256 fingerprint still matches the pinned value, so a MITM
+/// swapping in a different self-signed cert would still be rejected.
+class CertTrustService {
+  CertTrustService._();
+  static final CertTrustService instance = CertTrustService._();
+
+  static const _storageKey = 'pinned_cert_fingerprints';
+  final _storage = const FlutterSecureStorage();
+
+  /// host[:port] -> set of accepted SHA-256 fingerprints (uppercase hex).
+  Map<String, Set<String>> _pinned = {};
+
+  /// Load persisted pins. Call BEFORE [install] so the first request
+  /// already has the pinned set available.
+  Future<void> load() async {
+    final raw = await _storage.read(key: _storageKey);
+    if (raw == null || raw.isEmpty) return;
+    try {
+      final decoded = jsonDecode(raw) as Map<String, dynamic>;
+      _pinned = {
+        for (final e in decoded.entries)
+          e.key: (e.value as List).cast<String>().toSet(),
+      };
+    } catch (e) {
+      debugPrint('[CertTrustService] Failed to decode pinned certs: $e');
+    }
+  }
+
+  bool isPinned(String hostKey, X509Certificate cert) {
+    final fps = _pinned[hostKey];
+    if (fps == null || fps.isEmpty) return false;
+    return fps.contains(fingerprintOf(cert));
+  }
+
+  Future<void> pin(String hostKey, X509Certificate cert) async {
+    final fp = fingerprintOf(cert);
+    final set = _pinned.putIfAbsent(hostKey, () => <String>{});
+    if (!set.add(fp)) return;
+    await _persist();
+  }
+
+  /// The pin store, flat enough to cross a device link.
+  ///
+  /// A watch has no way to answer a certificate prompt — there is no browser
+  /// and nothing to compare a fingerprint against — so it has to arrive
+  /// already knowing what its phone accepted, before its first HTTPS call.
+  Map<String, List<String>> export() => {
+    for (final e in _pinned.entries) e.key: e.value.toList(),
+  };
+
+  /// Merge pins accepted on another device into this one's store. Additive:
+  /// a host this device already pinned keeps the fingerprints it had, since
+  /// dropping one would reject a server the user is currently reaching.
+  Future<void> adopt(Map<String, List<String>> pins) async {
+    var changed = false;
+    for (final entry in pins.entries) {
+      final set = _pinned.putIfAbsent(entry.key, () => <String>{});
+      for (final fingerprint in entry.value) {
+        if (set.add(fingerprint)) changed = true;
+      }
+    }
+    if (changed) await _persist();
+  }
+
+  Future<void> _persist() async {
+    final encoded = jsonEncode({
+      for (final e in _pinned.entries) e.key: e.value.toList(),
+    });
+    await _storage.write(key: _storageKey, value: encoded);
+  }
+
+  /// "AA:BB:CC:..." colon-separated uppercase hex of SHA-256 over DER.
+  static String fingerprintOf(X509Certificate cert) {
+    final digest = sha256.convert(cert.der);
+    return digest.bytes
+        .map((b) => b.toRadixString(16).padLeft(2, '0').toUpperCase())
+        .join(':');
+  }
+
+  /// Whether [e] is the connection failing on the server's certificate rather
+  /// than on anything else. Both surfaces that accept a typed address have to
+  /// tell that apart from an unreachable host, since only one of them is worth
+  /// offering a fingerprint for — and the message is what survives when an
+  /// intervening layer wraps the exception.
+  static bool isHandshakeFailure(Object e) {
+    if (e is HandshakeException) return true;
+    final message = e.toString();
+    return message.contains('CERTIFICATE_VERIFY_FAILED') ||
+        message.contains('HandshakeException');
+  }
+
+  /// Key used in [_pinned]. Default ports are dropped so `host` and
+  /// `host:443` resolve to the same pin set.
+  static String hostKey(String host, int port, {required bool isHttps}) {
+    final defaultPort = isHttps ? 443 : 80;
+    return port == defaultPort ? host : '$host:$port';
+  }
+
+  /// Install the [HttpOverrides] that consult the pin store.
+  void install() {
+    HttpOverrides.global = _PinnedHttpOverrides(this);
+  }
+
+  /// Connect to [uri] and return the server's certificate even if it
+  /// fails validation. Returns null if the TLS handshake couldn't be
+  /// reached at all (DNS failure, connection refused, timeout, etc.).
+  ///
+  /// Every step is individually bounded so a server that accepts the
+  /// connection but never answers can't wedge the caller in an infinite
+  /// spinner — the cert is captured during the handshake, so even if the
+  /// later request/drain times out we still return what we saw.
+  Future<X509Certificate?> probe(Uri uri) async {
+    X509Certificate? captured;
+    // Use a plain HttpClient and override its badCertificateCallback directly.
+    // The cascade below replaces whatever callback the global pinned override
+    // installs, so the cert is captured even for an untrusted server.
+    //
+    // Do NOT wrap this in `HttpOverrides.runZoned(createHttpClient: ...)`:
+    // constructing an HttpClient inside that override re-enters the same
+    // override (we're still in its zone) and recurses until the stack
+    // overflows. That overflow propagated out as an unhandled async error,
+    // leaving the login flow spinning forever with no cert dialog.
+    final client = HttpClient()
+      ..connectionTimeout = const Duration(seconds: 10)
+      ..badCertificateCallback = (cert, host, port) {
+        captured = cert;
+        // Accept once so the request completes and the socket can
+        // close cleanly. We never reuse this client for real work.
+        return true;
+      };
+    try {
+      final req = await client
+          .headUrl(uri)
+          .timeout(const Duration(seconds: 10));
+      final resp = await req.close().timeout(const Duration(seconds: 10));
+      await resp.drain<void>().timeout(const Duration(seconds: 5));
+    } catch (e) {
+      debugPrint('[CertTrustService] probe failed: $e');
+    } finally {
+      client.close(force: true);
+    }
+    return captured;
+  }
+}
+
+class _PinnedHttpOverrides extends HttpOverrides {
+  final CertTrustService trust;
+  _PinnedHttpOverrides(this.trust);
+
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (cert, host, port) {
+        final key = CertTrustService.hostKey(host, port, isHttps: true);
+        return trust.isPinned(key, cert);
+      };
+  }
+}

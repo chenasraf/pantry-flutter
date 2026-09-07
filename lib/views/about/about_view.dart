@@ -3,9 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class AboutView extends StatefulWidget {

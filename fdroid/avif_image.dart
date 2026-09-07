@@ -5,8 +5,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:pantry_core/services/image_bytes_cache.dart';
 
-// F-Droid variant of lib/widgets/avif_image.dart.
+// F-Droid variant of packages/pantry_core/lib/widgets/avif_image.dart.
 //
 // The default build uses `flutter_avif` to decode AVIF images, but that package
 // ships prebuilt native blobs (libflutter_avif.so, wasm) with no buildable
@@ -17,8 +18,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 // so the common case is unaffected. Keep this in sync with the real widget's
 // public surface — tool/fdroid/apply.sh copies it over the real one.
 
-/// [ImageProvider] that displays a remote image, disk-cached via
-/// [DefaultCacheManager] to match cached_network_image.
+/// [ImageProvider] that displays a remote image, disk-cached through
+/// [ImageBytesCache], whose store the form factor owns.
 class AvifAwareNetworkImage extends ImageProvider<AvifAwareNetworkImage> {
   const AvifAwareNetworkImage(
     this.url, {
@@ -63,7 +64,7 @@ class AvifAwareNetworkImage extends ImageProvider<AvifAwareNetworkImage> {
         requestHeaders[name.toLowerCase()] = value;
       });
 
-      final stream = DefaultCacheManager().getImageFile(
+      final stream = ImageBytesCache.manager.getImageFile(
         url,
         headers: requestHeaders,
         withProgress: true,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry/widgets/markdown_description.dart';
 
 /// Opens a dialog showing an item's full [description], rendered as markdown.

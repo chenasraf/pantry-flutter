@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Teaches the swipe-to-dismiss gesture on the top progress card, and how to
 /// bring it back from settings. Mocks the actual `ProgressHero` widget so the

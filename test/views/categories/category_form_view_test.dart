@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/utils/category_icons.dart';
+import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 
 // NOTE: The save path enqueues a SyncManager op, which we don't exercise here.

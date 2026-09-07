@@ -1,14 +1,37 @@
-# Use bash with pipefail so a failing command in a pipe (e.g. a labeled
-# sub-make below) still fails the recipe instead of being masked by awk.
 SHELL := bash
+
+# .SHELLFLAGS arrived in GNU Make 3.82 and the system make on macOS is 3.81,
+# where it is parsed and never read — so pipefail is carried by the recipe that
+# needs it (`labeled` below) rather than by the shell flags. Without it a
+# labeled step's exit status is perl's, which always succeeds, and a deploy
+# aggregate runs every platform after a failing one and exits 0.
 .SHELLFLAGS := -o pipefail -c
 
-# Run a sub-make target with every stdout/stderr line prefixed by [<target>],
-# so the back-to-back per-platform logs in deploy-* are easy to scan. The job
-# runs under a pseudo-TTY (script) so fastlane/flutter keep their colors, and
-# perl adds the prefix while stripping the pty's trailing CR and the "^D" EOF
-# marker script prints on its first line. Usage: $(call labeled,<target>,<args>)
-labeled = script -q /dev/null $(MAKE) $(1) $(2) </dev/null 2>&1 | perl -pe 'BEGIN{$$|=1} s/\r$$//; s/^\^D\x08*// if $$.==1; s/^/[$(1)] /'
+# Where a deploy aggregate's combined log lands. Truncated at the top of each
+# run, gitignored, and written without the escape codes that make it readable
+# on a terminal.
+RELEASE_LOG := release.log
+strip_ansi = perl -pe 's/\e\[[0-9;]*[a-zA-Z]//g'
+
+# Run a sub-make target with every stdout/stderr line prefixed by [<label>], so
+# the back-to-back per-platform logs in deploy-* are easy to scan. The job runs
+# under a pseudo-TTY (script) so fastlane/flutter keep their colors, and perl
+# adds the prefix while stripping the pty's trailing CR and the "^D" EOF marker
+# script prints on its first line.
+# Usage: $(call labeled,<label>,<target>,<args>)
+labeled = set -o pipefail; script -q /dev/null $(MAKE) $(2) $(3) </dev/null 2>&1 | perl -pe 'BEGIN{$$|=1} s/\r$$//; s/^\^D\x08*// if $$.==1; s/^/[$(1)] /' | tee >($(strip_ansi) >> $(RELEASE_LOG))
+
+# Platforms a deploy aggregate may omit: `make deploy-production SKIP=macos,wear`.
+# The tokens are the release workflow's `targets` vocabulary. A skipped platform
+# still prints its line, so the log says what did not run.
+comma := ,
+empty :=
+space := $(empty) $(empty)
+SKIP_PLATFORMS := android wear ios macos
+SKIP_LIST := $(subst $(comma),$(space),$(SKIP))
+
+# Usage: $(call deploy_step,<platform>,<target>,<args>)
+deploy_step = $(if $(filter $(1),$(SKIP_LIST)),@echo "[$(1)] skipped" | tee -a $(RELEASE_LOG),$(call labeled,$(1),$(2),$(3)))
 
 # Version from pubspec.yaml (without build number)
 VERSION := $(shell grep '^version:' pubspec.yaml | sed 's/version: *//;s/+.*//')
@@ -45,7 +68,10 @@ help:
 	@echo "    i18n-from-nextcloud Populate a translation file from a Nextcloud l10n JSON (NC_JSON=, TARGET=)"
 	@echo ""
 	@echo "  Development:"
-	@echo "    run                 Run the app in debug mode"
+	@echo "    run                 Run the app in debug mode (iOS/desktop)"
+	@echo "    android-run         Run the phone app in debug mode"
+	@echo "    wear-run            Run the Wear OS app in debug mode"
+	@echo "    wear-emulator       Create (if needed) and boot the round Wear OS AVD"
 	@echo "    format              Format all Dart files"
 	@echo "    analyze             Analyze all Dart files"
 	@echo "    check               Check all files (format + analyze, no changes)"
@@ -64,12 +90,21 @@ help:
 	@echo ""
 	@echo "  Building:"
 	@echo "    android-install     Build APK and install on connected device"
+	@echo "    android-install-dev Build a debug APK and install it on the connected device"
 	@echo "    android-build-apk   Build Android APK"
+	@echo "    android-build-apk-dev    Build a debug Android APK"
 	@echo "    android-build-apk-split  Build Android split-per-ABI APKs"
 	@echo "    android-build-apk-fdroid Build FLOSS (flutter_zxing) split APKs for F-Droid"
 	@echo "    fdroid-lock         Regenerate the pinned F-Droid lockfile after dep changes"
 	@echo "    fdroid-check        Verify the pinned F-Droid lockfile is in sync with pubspec.yaml"
 	@echo "    android-build-aab   Build Android App Bundle"
+	@echo "    wear-build-apk      Build Wear OS APK"
+	@echo "    wear-build-aab      Build Wear OS App Bundle"
+	@echo "    wear-build-apk-dev  Build a debug Wear OS APK"
+	@echo "    wear-install        Build Wear OS APK and install on the connected watch"
+	@echo "    wear-install-dev    Build a debug Wear OS APK and install it on the connected watch"
+	@echo "    wear-variant-apk    Build a Wear OS APK with a platform switch flipped (WEAR_ARGS=)"
+	@echo "    wear-coldstart      Time cold starts of the installed Wear OS build (COLDSTART_ARGS=)"
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
 	@echo "    macos-build         Build macOS app (.app bundle, no codesign)"
@@ -77,11 +112,15 @@ help:
 	@echo "    linux-build         Build Linux desktop bundle"
 	@echo "    windows-build       Build Windows desktop bundle"
 	@echo "    build-all           Build all platforms"
+	@echo "                        Every *-install target accepts DEVICE=<id> — needed whenever a"
+	@echo "                        phone and a watch are attached at once (flutter devices)"
 	@echo ""
 	@echo "  Release:"
 	@echo "    android-release-apk Build APK and copy to build/release/"
 	@echo "    android-release-apk-fdroid  Build FLOSS F-Droid APKs -> build/release/ (…-fdroid-<abi>.apk)"
 	@echo "    android-release-aab Build AAB and copy to build/release/"
+	@echo "    wear-release-apk    Build Wear OS APK and copy to build/release/"
+	@echo "    wear-release-aab    Build Wear OS AAB and copy to build/release/"
 	@echo "    ios-release         Build IPA and copy to build/release/"
 	@echo "    macos-release       Build PKG and copy to build/release/"
 	@echo "    linux-release       Build Linux tarball -> build/release/"
@@ -91,12 +130,14 @@ help:
 	@echo "  Deploying:"
 	@echo "    android-deploy      Build AAB and upload to Google Play (TRACK=internal|beta|production, STATUS=draft|completed)"
 	@echo "    android-promote     Promote release between tracks (FROM=internal, TO=production, STATUS=draft|completed)"
+	@echo "    wear-deploy         Build the Wear OS AAB and upload to Google Play's wear:<TRACK>"
 	@echo "    ios-deploy          Build IPA and upload (DEST=testflight|appstore, default: testflight)"
 	@echo "    ios-submit          Submit the existing App Store build for review (no upload)"
 	@echo "    macos-deploy        Build PKG and upload (DEST=testflight|appstore, default: testflight)"
 	@echo "    macos-submit        Submit the existing Mac App Store build for review (no upload)"
 	@echo "    deploy-production   Build and deploy to production (Google Play + App Store)"
 	@echo "    deploy-beta         Build and deploy to beta (Google Play beta + TestFlight)"
+	@echo "                        Both accept SKIP=android,wear,ios,macos and log to release.log"
 
 # Setup
 .PHONY: get
@@ -117,26 +158,33 @@ build-clean:
 .PHONY: i18n
 i18n:
 	dart run tool/fix_i18n_escapes.dart
-	dart run build_runner build --delete-conflicting-outputs
+	cd packages/pantry_core && dart run build_runner build --delete-conflicting-outputs
 
 .PHONY: i18n-watch
 i18n-watch:
-	dart run build_runner watch --delete-conflicting-outputs
+	cd packages/pantry_core && dart run build_runner watch --delete-conflicting-outputs
 
 .PHONY: i18n-from-nextcloud
 i18n-from-nextcloud:
 ifndef NC_JSON
-	$(error NC_JSON is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=lib/i18n/messages_nn.i18n.yaml)
+	$(error NC_JSON is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=packages/pantry_core/lib/i18n/messages_nn.i18n.yaml)
 endif
 ifndef TARGET
-	$(error TARGET is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=lib/i18n/messages_nn.i18n.yaml)
+	$(error TARGET is required. Usage: make i18n-from-nextcloud NC_JSON=~/path/nextcloud-pantry/l10n/nn_NO.json TARGET=packages/pantry_core/lib/i18n/messages_nn.i18n.yaml)
 endif
 	dart run tool/i18n_generate_from_nextcloud.dart $(NC_JSON) $(TARGET)
 
 # Development
+# `run` stays flavorless so it still works for iOS, macOS, Linux and Windows.
+# Android now has a flavor dimension and cannot build without one — use
+# `android-run` for a phone or emulator.
 .PHONY: run
 run:
 	flutter run
+
+.PHONY: android-run
+android-run:
+	flutter run --flavor phone
 .PHONY: format
 format:
 	dart format .
@@ -152,29 +200,204 @@ check:
 	flutter analyze --no-fatal-infos
 
 # Testing
+#
+# Each package resolves its own dependencies, so `flutter test` from the root
+# sees only the app's own suite; the workspace packages have to be entered.
+PACKAGES := packages/pantry_core packages/pantry_wear
+
 .PHONY: test
 test:
 ifdef FILES
 	flutter test $(FILES)
 else
 	flutter test
+	@for pkg in $(PACKAGES); do \
+		echo "==> $$pkg"; \
+		(cd $$pkg && flutter test) || exit 1; \
+	done
 endif
 
 .PHONY: test-coverage
 test-coverage:
 	flutter test --coverage
+	@for pkg in $(PACKAGES); do \
+		echo "==> $$pkg"; \
+		(cd $$pkg && flutter test --coverage) || exit 1; \
+	done
 	@echo "Coverage report generated at coverage/lcov.info"
 
 # Building
+
+# Which device an install lands on. Developing the watch means a phone and a
+# watch are both plugged in, and `flutter install` refuses to choose between
+# them — so name one:
+#   make wear-install-dev DEVICE=192.168.68.110:43639
+#   make android-install-dev DEVICE=53031FDAP000YN
+# Left empty it is omitted entirely, which is right when only one device is
+# attached and is how these targets have always behaved.
+DEVICE :=
+DEVICE_FLAG := $(if $(DEVICE),-d $(DEVICE),)
+
 .PHONY: android-build-apk
 android-build-apk:
-	flutter build apk --release --obfuscate --split-debug-info=build/debug-info-apk
+	flutter build apk --release --flavor phone --obfuscate --split-debug-info=build/debug-info-apk
 .PHONY: android-build-apk-split
 android-build-apk-split:
-	flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/debug-info-apk
+	flutter build apk --release --flavor phone --split-per-abi --obfuscate --split-debug-info=build/debug-info-apk
 .PHONY: android-install
 android-install: android-build-apk
-	flutter install
+	flutter install --flavor phone $(DEVICE_FLAG)
+
+# Debug builds, for putting the working tree on a device without waiting out an
+# obfuscated release. The mode is named on both halves deliberately: `flutter
+# install` builds release by default, so a debug build followed by a bare
+# install reaches for an artifact this never wrote.
+.PHONY: android-build-apk-dev
+android-build-apk-dev:
+	flutter build apk --debug --flavor phone
+
+.PHONY: android-install-dev
+android-install-dev: android-build-apk-dev
+	flutter install --debug --flavor phone $(DEVICE_FLAG)
+
+# Wear OS. A separate entrypoint (`lib/main_wear.dart`) drives the watch UI from
+# packages/pantry_wear; the flavor gives it its own merged manifest, minSdk and
+# versionCode. The +20000 versionCode offset that keeps the watch's code unique
+# across form factors is applied by the wear flavor in
+# android/app/build.gradle.kts, not here — it has to hold for any wear build,
+# including one that never goes through make. The fastlane lane mirrors it to
+# name the changelog file Play will look the upload up by.
+WEAR_TARGET := lib/main_wear.dart
+WEAR_FLAGS := --flavor wear --target $(WEAR_TARGET)
+
+.PHONY: wear-run
+wear-run:
+	flutter run $(WEAR_FLAGS)
+
+# Plain, where the bundle below is obfuscated: a sideloaded APK's only
+# debugging channel is a stack trace a user pastes, and the split debug symbols
+# that would decode an obfuscated one have nowhere to be published to.
+.PHONY: wear-build-apk
+wear-build-apk:
+	flutter build apk --release $(WEAR_FLAGS)
+
+.PHONY: wear-build-aab
+wear-build-aab:
+	flutter build appbundle --release $(WEAR_FLAGS) --obfuscate --split-debug-info=build/debug-info-wear
+
+.PHONY: wear-install
+wear-install: wear-build-apk
+	flutter install --flavor wear $(DEVICE_FLAG)
+
+.PHONY: wear-build-apk-dev
+wear-build-apk-dev:
+	flutter build apk --debug $(WEAR_FLAGS)
+
+.PHONY: wear-install-dev
+wear-install-dev: wear-build-apk-dev
+	flutter install --debug --flavor wear $(DEVICE_FLAG)
+
+# Build a wear APK with one of the platform switches flipped, for a size or
+# cold-start comparison, as `key=value` pairs:
+#   make wear-variant-apk WEAR_ARGS="wearImpeller=false"
+#   make wear-variant-apk WEAR_ARGS="wearKeepNative=true"
+#   make wear-variant-apk WEAR_ARGS="wearSwipeToDismiss=true"
+WEAR_ARGS :=
+COLDSTART_ARGS :=
+WEAR_RELEASE_FLAGS := --release $(WEAR_FLAGS) --obfuscate --split-debug-info=build/debug-info-wear
+
+.PHONY: wear-variant-apk
+wear-variant-apk:
+	flutter build apk $(WEAR_RELEASE_FLAGS) $(foreach a,$(WEAR_ARGS),--android-project-arg=$(a))
+
+.PHONY: wear-variant-install
+wear-variant-install: wear-variant-apk
+	flutter install --flavor wear $(DEVICE_FLAG)
+
+.PHONY: wear-coldstart
+wear-coldstart:
+	tool/wear_coldstart.sh $(COLDSTART_ARGS)
+
+# The ambient probe. Its activity, its manifest entry and the androidx.wear
+# dependency behind it are all `wearDebug`, so this is the only way to reach it
+# and a release build carries none of it.
+#
+# Turn the watch's always-on display on before running: with it off the system
+# hands the screen to the watch face whatever the app registered, and the probe
+# will say so across the top of its own screen.
+#
+# Started by component name — the probe deliberately has no launcher icon.
+WEAR_PROBE_TARGET := lib/main_wear_probe.dart
+WEAR_PROBE_ACTIVITY := dev.casraf.pantry.debug/dev.casraf.pantry.AmbientProbeActivity
+
+# A phone and a watch are usually both attached, and `adb` refuses to guess.
+# `ro.build.characteristics` is what tells them apart; a device that has gone
+# stale answers nothing and falls out of the list on the same test. DEVICE=
+# overrides. Recursive on purpose — nothing should shell out to adb on every
+# make invocation, only on the targets that need a device.
+# Two traps here, both silent. An *unbalanced* `)` in the shell text — a `case`
+# pattern, say — closes `$(shell …)` early and Make appends the remainder to the
+# result rather than complaining. And `adb shell` reads stdin, so inside a
+# `while read` loop the first call swallows the rest of the device list: the
+# serials are collected up front instead, and stdin is closed for good measure.
+WEAR_SERIAL = $(if $(DEVICE),$(DEVICE),$(shell for s in $$(adb devices | awk '$$2 == "device" { print $$1 }'); do adb -s $$s shell getprop ro.build.characteristics </dev/null 2>/dev/null | grep -q watch && echo $$s && break; done))
+ADB_FLAG = $(if $(WEAR_SERIAL),-s $(WEAR_SERIAL),)
+
+.PHONY: wear-device
+wear-device:
+	@test -n "$(WEAR_SERIAL)" || { echo "No watch attached. adb devices:"; adb devices; exit 1; }
+	@echo "watch: $(WEAR_SERIAL)"
+
+.PHONY: wear-probe
+wear-probe: wear-device
+	flutter build apk --debug --flavor wear --target $(WEAR_PROBE_TARGET)
+	# `adb install` rather than `flutter install`, which builds when it thinks it
+	# needs to — and would rebuild against the default entrypoint, quietly
+	# replacing the probe with the watch app under the same name.
+	adb $(ADB_FLAG) install -r build/app/outputs/flutter-apk/app-wear-debug.apk
+	adb $(ADB_FLAG) shell am start -n $(WEAR_PROBE_ACTIVITY)
+
+# Everything the run has to say, from all three sides: the probe's own
+# callbacks, and the two system services whose verdict the app cannot see.
+.PHONY: wear-probe-log
+wear-probe-log: wear-device
+	adb $(ADB_FLAG) logcat -v time \
+		AmbientProbe:I AmbientTaskStackManager:V DisplayOffloadService:V flutter:I '*:S'
+
+# Put the watch to sleep and wake it, rather than waiting out the display
+# timeout. Sleep, hold it there long enough for a doze transition, then wake.
+WEAR_SLEEP_SECONDS := 90
+
+.PHONY: wear-probe-sleep
+wear-probe-sleep: wear-device
+	adb $(ADB_FLAG) shell input keyevent KEYCODE_SLEEP
+	@echo "asleep for $(WEAR_SLEEP_SECONDS)s…"
+	@sleep $(WEAR_SLEEP_SECONDS)
+	adb $(ADB_FLAG) shell input keyevent KEYCODE_WAKEUP
+
+# The AVD the watch UI is developed against. Round is the shape that catches
+# layout mistakes first — square is the forgiving case, and the layout is
+# shape-agnostic, so nothing needs a second AVD to develop against.
+# Override to check other geometry, e.g.
+#   make wear-emulator WEAR_DEVICE=wear_square
+#   make wear-emulator WEAR_DEVICE=wear_round_chin_320_290   # flat tire
+# or the minSdk floor:
+#   make wear-emulator WEAR_AVD=pantry_wear_api30 \
+#     WEAR_SYSTEM_IMAGE="system-images;android-30;android-wear;arm64-v8a"
+WEAR_AVD := pantry_wear_round
+WEAR_DEVICE := wear_round
+WEAR_SYSTEM_IMAGE := system-images;android-34;android-wear;arm64-v8a
+
+.PHONY: wear-emulator
+wear-emulator:
+	@if ! avdmanager list avd -c 2>/dev/null | grep -qx "$(WEAR_AVD)"; then \
+		echo "Creating AVD $(WEAR_AVD)…"; \
+		yes | sdkmanager "$(WEAR_SYSTEM_IMAGE)"; \
+		echo no | avdmanager create avd -n "$(WEAR_AVD)" \
+			-k "$(WEAR_SYSTEM_IMAGE)" -d "$(WEAR_DEVICE)"; \
+	fi
+	@echo "Booting $(WEAR_AVD) — once it is up, run: make wear-run"
+	emulator -avd "$(WEAR_AVD)" -no-snapshot-load
 
 # F-Droid variant — swaps the barcode scanner from Google ML Kit
 # (mobile_scanner) to the FLOSS flutter_zxing so the APK carries no proprietary
@@ -186,7 +409,7 @@ fdroid-apply:
 
 .PHONY: fdroid-revert
 fdroid-revert:
-	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart lib/widgets/avif_image.dart
+	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart packages/pantry_core/pubspec.yaml packages/pantry_core/lib/widgets/avif_image.dart android/app/build.gradle.kts android/app/src/main/kotlin/dev/casraf/pantry/DataLayerChannel.kt
 	flutter pub get
 
 # Verify the pinned F-Droid lockfile still satisfies the FLOSS pubspec, catching
@@ -204,7 +427,7 @@ fdroid-lock:
 	@set -e; \
 	FDROID_REGEN_LOCK=1 tool/fdroid/apply.sh; \
 	cp pubspec.lock tool/fdroid/pubspec.lock; \
-	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart lib/widgets/avif_image.dart; \
+	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart packages/pantry_core/pubspec.yaml packages/pantry_core/lib/widgets/avif_image.dart android/app/build.gradle.kts android/app/src/main/kotlin/dev/casraf/pantry/DataLayerChannel.kt; \
 	flutter pub get; \
 	echo "Regenerated tool/fdroid/pubspec.lock — commit it."
 
@@ -219,8 +442,8 @@ android-build-apk-fdroid: fdroid-apply
 	build_one() { \
 		flutter clean; \
 		flutter pub get --enforce-lockfile; \
-		flutter build apk --release --split-per-abi --target-platform="$$1"; \
-		mv build/app/outputs/flutter-apk/app-"$$2"-release.apk "$$OUT/app-$$2-release.apk"; \
+		flutter build apk --release --flavor phone --split-per-abi --target-platform="$$1"; \
+		mv build/app/outputs/flutter-apk/app-"$$2"-phone-release.apk "$$OUT/app-$$2-release.apk"; \
 	}; \
 	build_one android-arm armeabi-v7a; \
 	build_one android-arm64 arm64-v8a; \
@@ -232,12 +455,12 @@ android-build-apk-fdroid: fdroid-apply
 
 .PHONY: android-push
 android-push: android-build-apk
-	adb push build/app/outputs/flutter-apk/app-release.apk /sdcard/Download/pantry-$(VERSION).apk
+	adb push build/app/outputs/flutter-apk/app-phone-release.apk /sdcard/Download/pantry-$(VERSION).apk
 	@echo "-> /sdcard/Download/pantry-$(VERSION).apk"
 
 .PHONY: android-build-aab
 android-build-aab:
-	flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info-aab
+	flutter build appbundle --release --flavor phone --obfuscate --split-debug-info=build/debug-info-aab
 .PHONY: ios-build
 ios-build:
 	flutter build ios --release --no-codesign --obfuscate --split-debug-info=build/debug-info-ios
@@ -280,13 +503,13 @@ build-all: android-build-apk android-build-aab
 .PHONY: android-release-apk
 android-release-apk: android-build-apk
 	mkdir -p build/release
-	cp build/app/outputs/flutter-apk/app-release.apk build/release/pantry-$(VERSION).apk
+	cp build/app/outputs/flutter-apk/app-phone-release.apk build/release/pantry-$(VERSION).apk
 	@echo "-> build/release/pantry-$(VERSION).apk"
 
 .PHONY: android-release-aab
 android-release-aab: android-build-aab
 	mkdir -p build/release
-	cp build/app/outputs/bundle/release/app-release.aab build/release/pantry-$(VERSION).aab
+	cp build/app/outputs/bundle/phoneRelease/app-phone-release.aab build/release/pantry-$(VERSION).aab
 	@echo "-> build/release/pantry-$(VERSION).aab"
 
 .PHONY: android-release-apk-fdroid
@@ -298,6 +521,18 @@ android-release-apk-fdroid: android-build-apk-fdroid
 		echo "-> build/release/pantry-$(VERSION)-fdroid-$$abi.apk"; \
 	done
 	@echo "Run 'make fdroid-revert' to restore the ML Kit default."
+
+.PHONY: wear-release-apk
+wear-release-apk: wear-build-apk
+	mkdir -p build/release
+	cp build/app/outputs/flutter-apk/app-wear-release.apk build/release/pantry-$(VERSION)-wear.apk
+	@echo "-> build/release/pantry-$(VERSION)-wear.apk"
+
+.PHONY: wear-release-aab
+wear-release-aab: wear-build-aab
+	mkdir -p build/release
+	cp build/app/outputs/bundle/wearRelease/app-wear-release.aab build/release/pantry-$(VERSION)-wear.aab
+	@echo "-> build/release/pantry-$(VERSION)-wear.aab"
 
 .PHONY: ios-release
 ios-release: ios-build-ipa
@@ -375,20 +610,49 @@ macos-deploy: macos-build-pkg macos-upload
 macos-submit:
 	bundle exec fastlane mac submit
 
+# The watch has tracks of its own — the lane prefixes `wear:` — and releases
+# independently of the mobile track, so TRACK here names the wear track.
+.PHONY: wear-upload
+wear-upload:
+	@echo "$(or $(TRACK),beta)" | grep -qE '^(internal|alpha|beta|production)$$' || (echo "Error: Invalid TRACK '$(TRACK)'. Must be: internal, alpha, beta, production"; exit 1)
+	@echo "$(or $(STATUS),draft)" | grep -qE '^(draft|completed|halted|inProgress)$$' || (echo "Error: Invalid STATUS '$(STATUS)'. Must be: draft, completed, halted, inProgress"; exit 1)
+	@echo "Track: wear:$(or $(TRACK),internal) | Status: $(or $(STATUS),draft)"
+	bundle exec fastlane deploy_wear track:$(or $(TRACK),internal) status:$(or $(STATUS),draft)
+
+.PHONY: wear-deploy
+wear-deploy: wear-build-aab wear-upload
+
 .PHONY: release-all
 release-all: android-release-apk android-release-aab
 
+# A SKIP typo fails by silently *doing* the platform it was meant to omit,
+# which is why it is validated the way TRACK, STATUS and DEST are.
+.PHONY: check-skip
+check-skip:
+	@for t in $(SKIP_LIST); do \
+		case " $(SKIP_PLATFORMS) " in \
+			*" $$t "*) ;; \
+			*) echo "Error: Invalid SKIP platform '$$t'. Must be one of: $(SKIP_PLATFORMS)"; exit 1;; \
+		esac; \
+	done
+
+.PHONY: release-log-reset
+release-log-reset:
+	@: > $(RELEASE_LOG)
+
 .PHONY: deploy-production
-deploy-production:
-	$(call labeled,android-deploy,TRACK=production STATUS=completed)
-	$(call labeled,ios-deploy,DEST=appstore)
-	$(call labeled,macos-deploy,DEST=appstore)
+deploy-production: check-skip release-log-reset
+	$(call deploy_step,android,android-deploy,TRACK=production STATUS=completed)
+	$(call deploy_step,wear,wear-deploy,TRACK=production STATUS=completed)
+	$(call deploy_step,ios,ios-deploy,DEST=appstore)
+	$(call deploy_step,macos,macos-deploy,DEST=appstore)
 
 .PHONY: deploy-beta
-deploy-beta:
-	$(call labeled,android-deploy,TRACK=beta STATUS=completed)
-	$(call labeled,ios-deploy,DEST=testflight)
-	$(call labeled,macos-deploy,DEST=testflight)
+deploy-beta: check-skip release-log-reset
+	$(call deploy_step,android,android-deploy,TRACK=beta STATUS=completed)
+	$(call deploy_step,wear,wear-deploy,TRACK=beta STATUS=completed)
+	$(call deploy_step,ios,ios-deploy,DEST=testflight)
+	$(call deploy_step,macos,macos-deploy,DEST=testflight)
 
 # CocoaPods
 .PHONY: pods

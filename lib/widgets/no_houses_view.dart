@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry/views/home/home_controller.dart';
 import 'package:pantry/widgets/create_house_dialog.dart';
 

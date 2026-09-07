@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/shopping_reminder.dart';
-import 'package:pantry/services/shopping_service.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/shopping_reminder.dart';
+import 'package:pantry_core/services/shopping_service.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Full-screen manager for a house's shopping reminders. Three fixed-order

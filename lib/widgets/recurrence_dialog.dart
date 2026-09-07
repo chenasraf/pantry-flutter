@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/utils/rrule.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/utils/rrule.dart';
 
 /// Result from the recurrence dialog.
 class RecurrenceResult {

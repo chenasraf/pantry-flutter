@@ -4,8 +4,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry/utils/apple_host_info.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 
 class PhotoAddButton extends StatefulWidget {
@@ -31,7 +32,7 @@ class _PhotoAddButtonState extends State<PhotoAddButton>
       duration: const Duration(milliseconds: 380),
     );
     if (_cameraSupported) {
-      PlatformInfo.isiOSAppOnMac.then((onMac) {
+      isiOSAppOnMac().then((onMac) {
         if (!mounted || !onMac) return;
         setState(() => _cameraSupported = false);
       });
@@ -61,8 +62,7 @@ class _PhotoAddButtonState extends State<PhotoAddButton>
 
   Future<void> _pickPhotos() async {
     _close();
-    final useFilePicker =
-        PlatformInfo.isMacOS || await PlatformInfo.isiOSAppOnMac;
+    final useFilePicker = PlatformInfo.isMacOS || await isiOSAppOnMac();
     if (useFilePicker) {
       final result = await FilePicker.pickFiles(
         allowMultiple: true,

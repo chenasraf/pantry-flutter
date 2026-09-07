@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/store.dart';
-import 'package:pantry/utils/opening_hours.dart';
-import 'package:pantry/utils/store_icons.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/utils/opening_hours.dart';
+import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 
 /// Opens the read-only store details dialog. If the user taps Edit and saves,

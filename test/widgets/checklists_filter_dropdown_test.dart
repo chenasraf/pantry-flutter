@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/utils/price.dart';
+import 'package:pantry_core/utils/price.dart';
 import 'package:pantry/views/checklists/checklists_filter_bar.dart';
 
 import '../helpers/test_app.dart';

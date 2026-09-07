@@ -1,31 +1,32 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/models/nav_section.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/deep_link_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/nav_section.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/deep_link_service.dart';
 import 'package:pantry/services/list_link_service.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/services/share_intent_service.dart';
 import 'package:pantry/services/widget_link_service.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
 import 'package:pantry/views/notes/notes_wall_view.dart';
 import 'package:pantry/views/notifications/notifications_controller.dart';
 import 'package:pantry/views/notifications/notifications_view.dart';
 import 'package:pantry/views/photos/photo_board_view.dart';
 import 'package:pantry/views/settings/settings_view.dart';
+import 'package:pantry/views/watch/watch_pairing_view.dart';
 import 'package:pantry/views/share/share_router_view.dart';
 import 'package:pantry/widgets/create_house_dialog.dart';
 import 'package:pantry/widgets/no_access_view.dart';
 import 'package:pantry/widgets/no_houses_view.dart';
 import 'package:pantry/widgets/notifications_bell.dart';
 import 'package:pantry/widgets/server_app_missing_view.dart';
-import 'package:pantry/widgets/sync_status.dart';
 import 'package:pantry/widgets/user_menu_button.dart';
 import 'home_bottom_nav.dart';
 import 'home_controller.dart';
@@ -108,6 +109,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
       _consumePendingDeepLink();
       _consumePendingShare();
       _consumePendingListLink();
+      _consumePendingWatchSetup();
       WidgetLinkService.instance.checkOnResume();
     });
 
@@ -117,6 +119,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     ShareIntentService.instance.pending.addListener(_consumePendingShare);
     WidgetLinkService.instance.pending.addListener(_consumePendingWidgetTap);
     ListLinkService.instance.pending.addListener(_consumePendingListLink);
+    ListLinkService.instance.pendingWatchSetup.addListener(
+      _consumePendingWatchSetup,
+    );
   }
 
   @override
@@ -125,6 +130,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     ShareIntentService.instance.pending.removeListener(_consumePendingShare);
     WidgetLinkService.instance.pending.removeListener(_consumePendingWidgetTap);
     ListLinkService.instance.pending.removeListener(_consumePendingListLink);
+    ListLinkService.instance.pendingWatchSetup.removeListener(
+      _consumePendingWatchSetup,
+    );
     PrefsService.instance.removeListener(_onPrefsChanged);
     WidgetsBinding.instance.removeObserver(this);
     _pageController.dispose();
@@ -283,6 +291,18 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     _openList(listId: tap.listId, houseId: tap.houseId);
   }
 
+  /// A watch handed this phone `pantry://watch-setup`. It opens the pairing
+  /// route over whatever the user was doing, because the wearer is standing
+  /// there having just asked for it.
+  void _consumePendingWatchSetup() {
+    if (!ListLinkService.instance.pendingWatchSetup.value) return;
+    ListLinkService.instance.pendingWatchSetup.value = false;
+    if (!mounted) return;
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const WatchPairingView()));
+  }
+
   void _consumePendingListLink() {
     final link = ListLinkService.instance.pending.value;
     if (link == null) return;
@@ -328,9 +348,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   };
 
   IconData _sectionIcon(NavSection s) => switch (s) {
-    NavSection.checklists => Icons.assignment_turned_in,
-    NavSection.photoBoard => Icons.photo,
-    NavSection.notesWall => Icons.insert_drive_file,
+    NavSection.checklists => EntityIcons.checklists,
+    NavSection.photoBoard => EntityIcons.photos,
+    NavSection.notesWall => EntityIcons.notes,
   };
 
   bool _sectionVisible(NavSection s, HousePermissions perms) => switch (s) {
@@ -479,7 +499,6 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                       child: Column(
                         children: [
                           appBar,
-                          const SyncConnectivityListener(),
                           Expanded(
                             child: Padding(
                               padding: EdgeInsetsDirectional.only(
@@ -499,12 +518,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
           return Scaffold(
             appBar: appBar,
-            body: Column(
-              children: [
-                const SyncConnectivityListener(),
-                Expanded(child: body),
-              ],
-            ),
+            body: body,
             bottomNavigationBar: showNav
                 ? AnimatedBottomNav(
                     pageController: _pageController,

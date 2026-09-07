@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:pantry/utils/link_detection.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/utils/link_detection.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 
 /// Renders [text] as plain text with any web or email addresses in it turned
 /// into tappable links.

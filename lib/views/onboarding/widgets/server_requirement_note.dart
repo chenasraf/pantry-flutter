@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/services/server_version_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 
 /// Footnote for onboarding pages that pitch a server-backed feature. Those
 /// pages always show, even on a too-old server — so when the server hasn't

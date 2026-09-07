@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Section-opener page for the checklist redesign. Sits at the start of the
 /// 0.16.0 feature pages and frames what's coming in the next few steps.

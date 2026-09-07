@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/utils/price.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/utils/price.dart';
 
 ItemPrice price({
   int? storeId,

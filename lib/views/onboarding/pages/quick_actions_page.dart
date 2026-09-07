@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Desktop counterpart to `SwipeActionsOnboardingPage`. Where the mobile flow
 /// teaches a gesture, this one explains that action buttons live permanently

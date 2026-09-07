@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 
 Widget? appBarBackLeading(BuildContext context) {
   if (!PlatformInfo.isMacOS) return null;

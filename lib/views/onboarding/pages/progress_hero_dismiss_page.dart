@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Desktop counterpart to `ProgressHeroOnboardingPage`. Where the mobile
 /// flow animates a swipe-away gesture, this one calls out the X button at

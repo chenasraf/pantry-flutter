@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/services/prefs_service.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/services/checklist_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/views/checklists/markdown_import_dialog.dart';
 

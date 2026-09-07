@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
 
-import '../i18n.dart';
-import '../models/category.dart';
-import '../models/checklist.dart';
-import '../models/label.dart';
-import '../models/store.dart';
-import '../utils/platform_info.dart';
-import 'category_service.dart';
-import 'checklist_service.dart';
-import 'label_service.dart';
-import 'store_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/label.dart';
+import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry_core/services/category_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/label_service.dart';
+import 'package:pantry_core/services/store_service.dart';
 
 /// Chip kinds the single-checklist widget can render, in display order.
 const kWidgetChipKinds = ['category', 'quantity', 'store', 'label'];
@@ -30,7 +30,7 @@ class ChecklistWidgetService {
   static const _channel = MethodChannel('dev.casraf.pantry/widget');
   static const _providerName = 'dev.casraf.pantry.ChecklistWidgetProvider';
 
-  static bool get _supported => PlatformInfo.isAndroid;
+  static bool get _supported => PlatformInfo.isAndroidPhone;
 
   // Lookups for the widget currently being rebuilt (rebuilds are sequential).
   Map<int, Category> _cats = const {};

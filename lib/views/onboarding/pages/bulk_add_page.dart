@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Introduces the Multiple toggle on the compose bar — flipping it turns
 /// the single-line input into a multi-line box where every line becomes

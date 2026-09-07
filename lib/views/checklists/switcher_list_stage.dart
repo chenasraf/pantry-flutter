@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/utils/checklist_icons.dart';
-import 'package:pantry/utils/color.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/color.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 

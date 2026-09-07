@@ -1,15 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/photo.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/photo_service.dart';
-import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/photo.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/image_bytes_cache.dart';
+import 'package:pantry_core/services/photo_service.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 
-/// Disk cache for Nextcloud preview images, shared by the display path
-/// ([AvifAwareNetworkImage]) and the background prefetcher so proactively
-/// downloaded images are the exact files the UI later reads.
+/// Disk cache for Nextcloud preview images, shared by the display path and the
+/// background prefetcher so proactively downloaded images are the exact files
+/// the UI later reads.
 ///
 /// flutter_cache_manager's default store caps at 200 objects and evicts by
 /// least-recent use; a household's photos plus per-item thumbnails overrun that
@@ -32,6 +33,11 @@ class ImageCacheService {
 
   /// Backing store for both the display widgets and the prefetcher.
   final ImageCacheManager manager = _PantryImageCacheManager();
+
+  /// Hand core's providers this store. Called at boot, before anything draws:
+  /// the phone's budget is the one thing about the image path that is the
+  /// phone's own.
+  void install() => ImageBytesCache.install(manager);
 
   /// Preview sizes fetched per checklist-item image: the list-row thumbnail and
   /// the full image shared by the detail cover and the fullscreen viewer.

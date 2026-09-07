@@ -1,0 +1,188 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_wear/src/checklists/checklists_controller.dart';
+import 'package:pantry_wear/src/shell/wear_rail.dart';
+import 'package:pantry_wear/src/shell/wear_shell.dart';
+import 'package:pantry_wear/src/wear_shape.dart';
+
+import 'wear_fixtures.dart';
+
+/// The rail is the only thing that names a page, so a page that does not reach
+/// it has no title at all — which is how every page came to read as the
+/// checklist's name.
+void main() {
+  setUp(() {
+    WearShape.markFrom(['round']);
+    AuthService.instance.isUnauthorized.value = false;
+  });
+
+  tearDown(() => AuthService.instance.isUnauthorized.value = false);
+
+  /// The panel stays in the tree so it can animate in both directions, so its
+  /// presence proves nothing — whether the rail has opened far enough to show
+  /// it does. Collapsed, the clip leaves the buttons below the rail's own edge.
+  bool revealed(WidgetTester tester, Key key) =>
+      tester.getRect(find.byKey(key)).bottom <=
+      tester.getRect(find.byType(WearRail)).bottom;
+
+  Future<void> pump(WidgetTester tester) async {
+    tester.view.physicalSize = const Size(450, 450);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final controller = ChecklistsController.seeded(
+      houseId: 1,
+      list: testList(),
+      lists: [testList()],
+      categories: [testCategory(id: 1, name: 'Dairy')],
+      items: [testItem(id: 1, name: 'Milk', categoryId: 1)],
+    );
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      MaterialApp(home: WearShell(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('each browse page is named by the rail', (tester) async {
+    await pump(tester);
+
+    final titles = [
+      testList().name,
+      m.nav.photoBoard,
+      m.nav.notesWall,
+      m.wear.account,
+    ];
+    for (final title in titles) {
+      expect(
+        find.text(title),
+        findsWidgets,
+        reason: 'the rail should name the page as "$title"',
+      );
+      await tester.fling(
+        find.byType(PageView).first,
+        const Offset(-300, 0),
+        1000,
+      );
+      await tester.pumpAndSettle();
+    }
+  });
+
+  testWidgets('tapping the rail reveals both of its buttons', (tester) async {
+    await pump(tester);
+
+    expect(revealed(tester, const ValueKey('start-shopping')), isFalse);
+    expect(revealed(tester, const ValueKey('change-list')), isFalse);
+
+    await tester.tap(find.text(testList().name));
+    await tester.pumpAndSettle();
+
+    // One tap opens the panel, a second one acts: a mistap on a rail this
+    // small would otherwise cost the wearer their place.
+    expect(revealed(tester, const ValueKey('start-shopping')), isTrue);
+    expect(revealed(tester, const ValueKey('change-list')), isTrue);
+  });
+
+  testWidgets('the panel retracts the way it arrived', (tester) async {
+    await pump(tester);
+    await tester.tap(find.text(testList().name));
+    await tester.pumpAndSettle();
+    final open = tester.getSize(find.byType(WearRail)).height;
+
+    await tester.tap(find.text(testList().name));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Mid-collapse: the rail is on its way back rather than already there,
+    // which is what a subtree added and removed outright cannot do.
+    final midway = tester.getSize(find.byType(WearRail)).height;
+    expect(midway, lessThan(open));
+
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(WearRail)).height, lessThan(midway));
+  });
+
+  testWidgets('the expansion takes height rather than borrowing it', (
+    tester,
+  ) async {
+    // A button a wearer aims at cannot live in the group label's 13 logical
+    // pixels, which is the whole reason the rail grows.
+    await pump(tester);
+    final collapsed = tester.getSize(find.byType(WearRail)).height;
+
+    await tester.tap(find.text(testList().name));
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getSize(find.byType(WearRail)).height,
+      greaterThan(collapsed),
+    );
+  });
+
+  testWidgets('a rejected credential takes the rail line', (tester) async {
+    await pump(tester);
+    expect(find.byKey(const ValueKey('degraded-line')), findsNothing);
+
+    // The rail carries no listener of the controller's, so this is the whole
+    // trigger: nothing else about the shell changes when a 401 lands.
+    AuthService.instance.isUnauthorized.value = true;
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('degraded-line')), findsOneWidget);
+    expect(find.text(m.common.sessionExpiredTitle), findsOneWidget);
+  });
+
+  testWidgets('the state is washed, not merely written', (tester) async {
+    // Worn without one, a 9pt line reads as another label rather than a state.
+    // The gradient is the fix for the hard chord a flat fill cuts across a
+    // round screen, so it is the wash's shape as much as its presence.
+    Finder wash() => find.descendant(
+      of: find.byType(WearRail),
+      matching: find.byWidgetPredicate(
+        (w) =>
+            w is DecoratedBox &&
+            (w.decoration as BoxDecoration).gradient != null,
+      ),
+    );
+
+    await pump(tester);
+    expect(wash(), findsNothing);
+
+    AuthService.instance.isUnauthorized.value = true;
+    await tester.pumpAndSettle();
+
+    expect(wash(), findsOneWidget);
+  });
+
+  testWidgets('the rail expands without hiding the state', (tester) async {
+    // The rail is the switcher's only entry point, so a state that suppressed
+    // the expansion put the wearer's lists out of reach for as long as it
+    // stood. A slot grown into a real button row carries the line above it
+    // instead of being displaced by it.
+    await pump(tester);
+    AuthService.instance.isUnauthorized.value = true;
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(testList().name));
+    await tester.pumpAndSettle();
+
+    expect(revealed(tester, const ValueKey('change-list')), isTrue);
+    expect(find.byKey(const ValueKey('degraded-line')), findsOneWidget);
+  });
+
+  testWidgets('the line is a signpost to the account page', (tester) async {
+    await pump(tester);
+    AuthService.instance.isUnauthorized.value = true;
+    await tester.pumpAndSettle();
+    expect(find.text(m.wear.account), findsNothing);
+
+    await tester.tap(find.byKey(const ValueKey('degraded-line')));
+    await tester.pumpAndSettle();
+
+    // The rail names the page under it, so this is the pager having moved —
+    // and it moved to the page holding *Set up again*, not into a pairing flow.
+    expect(find.text(m.wear.account), findsOneWidget);
+    expect(find.text(m.wear.setUpAgain), findsOneWidget);
+  });
+}

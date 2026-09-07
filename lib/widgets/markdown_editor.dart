@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill/quill_delta.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry/utils/markdown_delta.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 
 /// A markdown editor with two synced views: a rich WYSIWYG surface
 /// (flutter_quill) and a raw-markdown source field, toggled in the toolbar row —

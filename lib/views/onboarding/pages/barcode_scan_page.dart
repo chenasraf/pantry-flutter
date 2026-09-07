@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Introduces barcode scanning. Renders a mocked-up input bar with the scan
 /// button highlighted, above a small "scanned → filled in" product card, so

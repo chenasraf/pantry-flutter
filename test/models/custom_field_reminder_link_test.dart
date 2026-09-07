@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/notification.dart';
-import 'package:pantry/services/deep_link_service.dart';
+import 'package:pantry_core/models/notification.dart';
+import 'package:pantry_core/services/deep_link_service.dart';
 
 void main() {
   group('cf_reminder notification deep link', () {

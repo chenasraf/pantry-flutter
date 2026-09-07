@@ -1,0 +1,139 @@
+enum SyncEntity {
+  checklistList,
+  checklistItem,
+  category,
+  store,
+  label,
+
+  /// A note. [SyncOpKind.toggle] is the one kind that does not rewrite the
+  /// document: it ticks a single markdown task line, carrying
+  /// `{ordinal, text, checked}` — the line, what it read, and the state it
+  /// must end in. Absolute rather than a flip, so an op landing after someone
+  /// else set the same state converges instead of undoing them.
+  note,
+  customField,
+
+  /// A Shopping Mode item check-log write. [SyncOp.op] is [SyncOpKind.create]
+  /// for a check and [SyncOpKind.delete] for an uncheck; [SyncOp.entityId] is
+  /// the item id and [SyncOp.parentId] is the session id. Queued (not sent
+  /// direct) so checking items off survives spotty in-store connectivity.
+  shoppingCheck,
+
+  /// A Shopping Mode "remove from this trip" (skip) write. [SyncOp.op] is
+  /// [SyncOpKind.create] for a skip and [SyncOpKind.delete] for an unskip;
+  /// [SyncOp.entityId] is the item id and [SyncOp.parentId] is the session id.
+  /// Queued (not sent direct) so removing an item from a trip — and undoing it
+  /// — survives spotty in-store connectivity, mirroring [shoppingCheck].
+  shoppingSkip,
+
+  /// A Shopping Mode billed-total write. [SyncOp.op] is [SyncOpKind.update];
+  /// [SyncOp.parentId] is the session id and [SyncOp.entityId] the store the
+  /// money was spent at, null for the storeless fallback. The body carries
+  /// `{billedTotal, billedCurrency}`.
+  ///
+  /// Absolute rather than a delta, so a figure landing after someone else set
+  /// the same one converges instead of doubling it — which is what lets a
+  /// total typed at a till wait out the dead link a till is usually behind.
+  shoppingSession,
+}
+
+enum SyncOpKind {
+  create,
+  update,
+  delete,
+  toggle,
+  reorder,
+  restore,
+  permanentDelete,
+  emptyTrash,
+  archive,
+  unarchive,
+
+  /// House-scoped group action over many items (move / copy / delete /
+  /// set-category). Unlike every other kind this targets a *list* of items
+  /// carried in `body['itemIds']` rather than a single [SyncOp.entityId]; the
+  /// specific action is `body['batchAction']`.
+  batch,
+}
+
+class SyncOp {
+  final String uuid;
+  final SyncEntity entity;
+  final SyncOpKind op;
+  final int houseId;
+  final int? entityId;
+  final int? tempEntityId;
+  final int? parentId;
+  final Map<String, dynamic> body;
+  final int createdAt;
+  final int attemptCount;
+  final String? lastError;
+
+  const SyncOp({
+    required this.uuid,
+    required this.entity,
+    required this.op,
+    required this.houseId,
+    this.entityId,
+    this.tempEntityId,
+    this.parentId,
+    this.body = const {},
+    required this.createdAt,
+    this.attemptCount = 0,
+    this.lastError,
+  });
+
+  SyncOp copyWith({
+    int? entityId,
+    int? tempEntityId,
+    int? parentId,
+    Map<String, dynamic>? body,
+    int? attemptCount,
+    String? lastError,
+  }) => SyncOp(
+    uuid: uuid,
+    entity: entity,
+    op: op,
+    houseId: houseId,
+    entityId: entityId ?? this.entityId,
+    tempEntityId: tempEntityId ?? this.tempEntityId,
+    parentId: parentId ?? this.parentId,
+    body: body ?? this.body,
+    createdAt: createdAt,
+    attemptCount: attemptCount ?? this.attemptCount,
+    lastError: lastError ?? this.lastError,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'uuid': uuid,
+    'entity': entity.name,
+    'op': op.name,
+    'houseId': houseId,
+    if (entityId != null) 'entityId': entityId,
+    if (tempEntityId != null) 'tempEntityId': tempEntityId,
+    if (parentId != null) 'parentId': parentId,
+    'body': body,
+    'createdAt': createdAt,
+    'attemptCount': attemptCount,
+    if (lastError != null) 'lastError': lastError,
+  };
+
+  static SyncOp fromJson(Map<String, dynamic> json) => SyncOp(
+    uuid: json['uuid'] as String,
+    entity: SyncEntity.values.byName(json['entity'] as String),
+    op: SyncOpKind.values.byName(json['op'] as String),
+    houseId: json['houseId'] as int,
+    entityId: json['entityId'] as int?,
+    tempEntityId: json['tempEntityId'] as int?,
+    parentId: json['parentId'] as int?,
+    body: (json['body'] as Map?)?.cast<String, dynamic>() ?? const {},
+    createdAt: json['createdAt'] as int,
+    attemptCount: json['attemptCount'] as int? ?? 0,
+    lastError: json['lastError'] as String?,
+  );
+
+  /// Returns the id used to address this op's entity at dispatch time —
+  /// the real server id if known, otherwise the temp negative id used for
+  /// optimistic UI. Always non-null for ops that target a specific record.
+  int? get effectiveEntityId => entityId ?? tempEntityId;
+}

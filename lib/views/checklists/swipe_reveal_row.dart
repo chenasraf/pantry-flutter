@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 
 /// A row whose action buttons slide in from the trailing edge on swipe, on top

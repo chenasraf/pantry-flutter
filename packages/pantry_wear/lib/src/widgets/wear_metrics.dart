@@ -1,0 +1,96 @@
+import '../wear_shape.dart';
+
+/// The geometry and timings the watch's lists are drawn to, judged on a round
+/// screen rather than derived.
+///
+/// They sit together because they are coupled: a card claims [itemExtent] less
+/// [cardGap], the falloff is quoted in rows rather than pixels, and a header
+/// deliberately costs well under a row.
+class WearMetrics {
+  const WearMetrics._();
+
+  /// What the rail takes off the top of the screen.
+  ///
+  /// The rail overlays the list rather than sitting above it, so this is also
+  /// the space a page underneath has to hold back before its first row — on a
+  /// round screen the half-viewport lead already clears it, but a flat list
+  /// starts at the top and would draw its first row behind the rail.
+  static double railHeight(double viewportHeight) =>
+      viewportHeight * (WearShape.isRound ? 0.21 : 0.15);
+
+  /// The extent one row occupies, gap included.
+  static const double itemExtent = 54;
+
+  /// Between one card and the next. The card fills the rest of its row extent
+  /// rather than sizing to its content: on a fixed-extent list the slack a card
+  /// gives up becomes a gap, not a tighter list.
+  static const double cardGap = 5;
+
+  /// The drawn height of a card, as opposed to the row extent it sits in.
+  static const double cardHeight = itemExtent - cardGap;
+
+  /// A group header, deliberately well under a row.
+  static const double headerExtent = 24;
+
+  /// One bought item on the trip summary. Shorter than a header because a
+  /// trip has many of them and none is a target — they are what the summary
+  /// says, not what it offers.
+  static const double summaryLineExtent = 20;
+
+  /// The rail's second line: the group label, or the degraded state that
+  /// outranks it. Deliberately shallow — it is a label, not a target.
+  static const double railLineExtent = 13;
+
+  /// A rail button, at the size a wearer actually aims at. The expansion is a
+  /// panel dropped below the rail rather than a slot inside it, so it takes the
+  /// height it needs and covers the list — which the list can afford and a
+  /// 13-pixel button cannot.
+  static const double railButtonExtent = 42;
+
+  /// Between the two buttons in the panel.
+  static const double railButtonGap = 6;
+
+  /// Between the rail's own last line and the panel under it.
+  static const double railPanelGap = 8;
+
+  /// How far the focus falloff reaches, in rows.
+  static const double falloffRows = 2.2;
+
+  /// Fraction of the width held back at each side. The falloff's width factor
+  /// is 1.0 on the centre line, so without this the focused row runs to the
+  /// glass and a round bezel shaves its corners.
+  static const double sideInset = 0.025;
+
+  /// A row of two photo tiles. Taller than a checklist card because a tile is
+  /// the content rather than a label for it.
+  static const double photoRowExtent = 88;
+
+  /// Between the two tiles in a photo row.
+  static const double photoTileGap = 6;
+
+  /// A note on the wall. Taller than a checklist card because a card carries a
+  /// title over either a progress bar or two lines of preview.
+  static const double noteRowExtent = 72;
+
+  /// The drawn height of a note card, as opposed to the row extent it sits in.
+  static const double noteCardHeight = 66;
+
+  /// The inset a photo row takes instead of [sideInset]. A tile is tall
+  /// enough that its corners sit well above and below the centre line, where a
+  /// round screen has already narrowed, so it wants more of the width held
+  /// back than a short card does.
+  static const double tallSideInset = 0.05;
+
+  /// Input is held for this long after the pager swaps between browse and a
+  /// session, so a tap already descending cannot land on a page set that did
+  /// not exist when the finger started moving.
+  static const Duration modeLockout = Duration(milliseconds: 450);
+
+  /// How long a snapshot's arrival counts as the phone actively pushing.
+  static const Duration mirrorFreshFor = Duration(minutes: 3);
+
+  /// What the read poll's interval is multiplied by while snapshots are
+  /// arriving. Stretched, never stopped: the mirror is an accelerator, so
+  /// leaning on it is a saving to take and never a dependency to acquire.
+  static const int pollStretch = 3;
+}

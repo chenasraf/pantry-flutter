@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_offline/flutter_offline.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 
 /// How a sync status should be presented — icon, accent colour and label.
 /// Null means there is nothing the user needs to see.
@@ -70,30 +69,6 @@ class SyncStatusBuilder extends StatelessWidget {
               builder(context, status, pending, hasBacklog),
         ),
       ),
-    );
-  }
-}
-
-/// Invisible widget that feeds `flutter_offline`'s connectivity signal into
-/// [SyncManager] so the queue flushes as soon as the device reconnects — the
-/// connectivity feed needs a mount point in the tree.
-class SyncConnectivityListener extends StatelessWidget {
-  const SyncConnectivityListener({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return OfflineBuilder(
-      connectivityBuilder: (context, connectivity, child) {
-        final online = !connectivity.contains(ConnectivityResult.none);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          SyncManager.instance.setOnline(online);
-        });
-        return child;
-      },
-      // If connectivity_plus can't initialize (test, headless), assume online
-      // and let the queue's flush attempts surface any real errors.
-      errorBuilder: (_) => const SizedBox.shrink(),
-      child: const SizedBox.shrink(),
     );
   }
 }

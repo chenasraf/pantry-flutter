@@ -2,24 +2,24 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/category.dart' as models;
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/member.dart';
-import 'package:pantry/models/shopping_estimate.dart';
-import 'package:pantry/models/shopping_presence_entry.dart';
-import 'package:pantry/models/shopping_reminder.dart';
-import 'package:pantry/models/shopping_review.dart';
-import 'package:pantry/models/shopping_session.dart';
-import 'package:pantry/models/store.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/services/category_service.dart';
-import 'package:pantry/services/house_service.dart';
-import 'package:pantry/services/shopping_service.dart';
-import 'package:pantry/services/store_service.dart';
-import 'package:pantry/sync/sync_ids.dart';
-import 'package:pantry/sync/sync_manager.dart';
-import 'package:pantry/sync/sync_op.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart' as models;
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/member.dart';
+import 'package:pantry_core/models/shopping_estimate.dart';
+import 'package:pantry_core/models/shopping_presence_entry.dart';
+import 'package:pantry_core/models/shopping_reminder.dart';
+import 'package:pantry_core/models/shopping_review.dart';
+import 'package:pantry_core/models/shopping_session.dart';
+import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/category_service.dart';
+import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/shopping_service.dart';
+import 'package:pantry_core/services/store_service.dart';
+import 'package:pantry_core/sync/sync_ids.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
 
 /// A contiguous run of items under one category, for the grouped dense view.
 /// [category] is null for the Uncategorized run (always rendered last, matching

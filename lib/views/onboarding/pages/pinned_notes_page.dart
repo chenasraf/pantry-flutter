@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/text_direction.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/onboarding/widgets/server_requirement_note.dart';
 
 /// Tells users notes can be pinned from the overflow menu to keep them atop the

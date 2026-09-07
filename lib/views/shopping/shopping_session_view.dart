@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/shopping_reminder.dart';
-import 'package:pantry/models/shopping_session.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/shopping_reminder.dart';
+import 'package:pantry_core/models/shopping_session.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/utils/undo_snackbar.dart';
 import 'package:pantry/views/shopping/shopping_reminders_view.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry/widgets/app_bar_back_leading.dart';
-import 'package:pantry/widgets/avif_image.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 
 class ImagePreview extends StatelessWidget {
   final String imageUrl;

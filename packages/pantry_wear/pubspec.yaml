@@ -1,0 +1,29 @@
+name: pantry_wear
+description: "Wear OS user interface for Pantry."
+publish_to: "none"
+version: 0.0.1
+
+environment:
+  sdk: ^3.11.1
+
+# Deliberately thin. Depending on pantry_core and nothing else is what makes a
+# phone view unreachable from a watch screen — the compiler enforces the
+# boundary that convention would not.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_cache_manager: ^3.4.2
+  http: ^1.6.0
+  pantry_core:
+    path: ../pantry_core
+  qr_flutter: ^4.1.0
+  wakelock_plus: ^1.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  # So a test can stand in for the wakelock and hold the QR screen's release
+  # requirement to something, rather than trusting a plugin channel that has
+  # no host under a test binding.
+  wakelock_plus_platform_interface: ^1.4.0

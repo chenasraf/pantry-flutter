@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/nav_section.dart';
-import 'package:pantry/services/prefs_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/nav_section.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class NavOrderView extends StatefulWidget {
@@ -29,9 +30,9 @@ class _NavOrderViewState extends State<NavOrderView> {
   };
 
   IconData _icon(NavSection s) => switch (s) {
-    NavSection.checklists => Icons.assignment_turned_in,
-    NavSection.photoBoard => Icons.photo,
-    NavSection.notesWall => Icons.insert_drive_file,
+    NavSection.checklists => EntityIcons.checklists,
+    NavSection.photoBoard => EntityIcons.photos,
+    NavSection.notesWall => EntityIcons.notes,
   };
 
   Future<void> _onReorder(int oldIndex, int newIndex) async {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/utils/currencies.dart';
-import 'package:pantry/utils/entity_icons.dart';
-import 'package:pantry/utils/price.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/currencies.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
+import 'package:pantry_core/utils/price.dart';
 import 'checklists_filter_bar.dart';
 
 /// The price filter: a dropdown whose panel holds a min/max amount range and a

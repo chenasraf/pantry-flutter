@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/checklists/barcode_scanner/barcode_camera_scanner.dart';
 import 'package:pantry/views/checklists/barcode_scanner/manual_barcode_dialog.dart';
 

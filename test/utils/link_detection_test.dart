@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/utils/link_detection.dart';
+import 'package:pantry_core/utils/link_detection.dart';
 
 void main() {
   group('detectLinks', () {

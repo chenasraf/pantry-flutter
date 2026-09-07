@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/models/store.dart';
-import 'package:pantry/services/store_service.dart';
+import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/store_service.dart';
 
 Store _store(int id, String name, {int sortOrder = 0}) => Store(
   id: id,

@@ -9,6 +9,9 @@ Upload and organize photos into folders. Add captions, drag to reorder, and brow
 * Notes Wall
 Keep shared notes with your household. Color-code them, write in markdown, and pin the important stuff where everyone can see it.
 
+* On your wrist
+Pantry runs on your Wear OS watch too. Check items off your lists, follow a shopping trip from shop to shop and record what you paid, read your notes and tick off their tasks, and browse your photo board — without reaching for your phone. A tile keeps your lists one swipe from the watch face, and a live shopping trip shows on it while the app is closed. Setting it up starts on the watch — tap Open on phone and approve the request that appears there. Or scan a code with any phone's camera to sign the watch in on its own.
+
 * Your data, your server
 Pantry connects directly to your Nextcloud instance. No accounts to create, no cloud services in between. Your data never leaves your server.
 
@@ -18,6 +21,7 @@ Pantry connects directly to your Nextcloud instance. No accounts to create, no c
   - Color-coded notes wall
   - Drag-and-drop reordering everywhere
   - Multi-select for bulk actions
+  - Wear OS watch app with checklists, photos, notes, and shopping trips
   - Offline caching for fast loading
   - Material Design 3 with dark mode support
   - Secure login flow authentication

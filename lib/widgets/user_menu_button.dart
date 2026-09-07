@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/house.dart';
-import 'package:pantry/services/auth_service.dart';
-import 'package:pantry/sync/sync_manager.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry/views/about/about_view.dart';
 import 'package:pantry/widgets/sync_status.dart';
 

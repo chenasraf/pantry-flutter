@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/utils/version.dart';
+import 'package:pantry_core/utils/version.dart';
 
 void main() {
   group('Version.parse', () {

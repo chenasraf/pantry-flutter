@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pantry/services/auth_service.dart';
+import 'package:pantry_core/services/auth_service.dart';
 
 /// Circular avatar for a Nextcloud user. Falls back to a colored circle with
 /// the user's initial when the avatar can't be fetched (no credentials, user

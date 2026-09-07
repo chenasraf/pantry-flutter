@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 
 /// Listens for incoming OS-level share intents (photos shared from Photos
 /// app, plain text/URL shared from any app, etc.) and exposes the most

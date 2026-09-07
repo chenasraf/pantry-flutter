@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/house.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/house.dart';
 import 'package:pantry/views/home/home_controller.dart';
 
 /// Shows a dialog for creating a new house. Returns the created [House]

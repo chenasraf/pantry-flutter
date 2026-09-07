@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
+import 'package:pantry_core/i18n.dart';
 
 /// Demonstrates the bottom compose bar — chip row + input row with the gradient
 /// send button — so users recognise it next time without explaining each chip.

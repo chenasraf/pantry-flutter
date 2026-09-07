@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/label.dart';
-import 'package:pantry/services/checklist_service.dart';
-import 'package:pantry/services/label_service.dart';
-import 'package:pantry/services/server_version_service.dart';
-import 'package:pantry/sync/sync_ids.dart';
-import 'package:pantry/sync/sync_manager.dart';
-import 'package:pantry/sync/sync_op.dart';
-import 'package:pantry/utils/label_icons.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/label.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/label_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/sync/sync_ids.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/utils/label_icons.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 

@@ -19,11 +19,12 @@ dependency itself has to differ. The swap is therefore done at build time by
 [`tool/fdroid/apply.sh`](../tool/fdroid/apply.sh), which:
 
 1. rewrites `pubspec.yaml`: `mobile_scanner` → `flutter_zxing`, and removes
-   `flutter_avif`;
+   `flutter_avif` from `packages/pantry_core/pubspec.yaml`, which is where it is
+   declared — the AVIF-aware provider is shared with the watch;
 2. overwrites `lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart`
    with `fdroid/barcode_camera_scanner.dart` (this directory's zxing scanner);
-3. overwrites `lib/widgets/avif_image.dart` with `fdroid/avif_image.dart` (the
-   AVIF-free image widgets).
+3. overwrites `packages/pantry_core/lib/widgets/avif_image.dart` with
+   `fdroid/avif_image.dart` (the AVIF-free image widgets).
 
 Everything else — the `BarcodeScanView.scan()` entry point, the manual-entry
 dialog, the Open Food Facts attribution, every `AvifNetworkImage` call site — is
@@ -43,6 +44,10 @@ built-in codecs (JPEG/PNG/WebP/GIF) only. Raw AVIF originals won't render on the
 F-Droid build; Nextcloud's preview endpoint transcodes to JPEG, so the common
 case is unaffected.
 
+This costs the watch more than the phone — Wear OS ships no AV1 decoder at all,
+so an AVIF original is unreadable there by any route — but a swapped tree cannot
+build the `wear` flavor anyway, so no F-Droid build is affected by that.
+
 `fdroid/**` is excluded from `flutter analyze` (see `analysis_options.yaml`)
 because its zxing import isn't a dependency of the default build. Once
 `apply.sh` copies the files into `lib/`, they are analyzed and built normally.
@@ -57,6 +62,12 @@ make fdroid-revert               # restore pubspec + swapped files to the defaul
 
 `apply.sh` leaves the working tree modified. Run `make fdroid-revert` when done
 (CI builds in a fresh checkout, so it doesn't need to).
+
+A swapped tree builds the `phone` flavor only. `apply.sh` drops
+`androidx.wear:wear-remote-interactions`, which the wear `MainActivity` imports,
+so `make wear-build-apk` fails to compile until `make fdroid-revert` runs. That
+is deliberate: watch pairing is the one feature a FLOSS build cannot carry, so a
+wear APK built from a swapped tree would be wrong rather than merely limited.
 
 ## CI
 
@@ -101,15 +112,27 @@ make fdroid-lock   # re-resolves the swapped tree, rewrites tool/fdroid/pubspec.
 Commit the result. `--enforce-lockfile` fails the build loudly if the committed
 lock ever drifts from `pubspec.yaml`.
 
-### 3. Identical build command (per-ABI)
+### 3. Identical build command (per-ABI, and flavored)
 
 The `fdroiddata` recipe builds each ABI as its own versionCode with
-`flutter build apk --release --split-per-abi --target-platform=<plat>`. A plain
+`flutter build apk --release --flavor phone --split-per-abi --target-platform=<plat>`,
+collecting `build/app/outputs/flutter-apk/app-<abi>-phone-release.apk`. A plain
 multi-ABI `--split-per-abi` produces per-APK output that differs from the
 isolated per-ABI build, so our CI and `make android-build-apk-fdroid` build the
 three ABIs one at a time with the matching `--target-platform`
 (`android-arm`, `android-arm64`, `android-x64`), running `flutter clean` between
 them to keep each build isolated as F-Droid does.
+
+**`--flavor phone` is not optional, and omitting it does not fail.** Gradle's
+`assembleRelease` is the aggregate task over every flavor of the release build
+type, so a flavorless invocation assembles *both* flavors and writes
+`app-<abi>-phone-release.apk` and `app-<abi>-wear-release.apk`. It then exits 0
+announcing `✓ Built …/app-<abi>-release.apk` — a path it did not write — and
+rewrites that path's `.sha1` sidecar, so any stale APK left there from before the
+flavor split is freshly and correctly checksummed. On a swapped tree it does not
+get that far: `apply.sh` strips `wear-remote-interactions`, so assembling the
+wear flavor fails to compile. The hazard is a warm tree with no swap applied,
+which is why `android-build-apk-fdroid` runs `flutter clean` before each ABI.
 
 ### 4. Stable native build-ids
 

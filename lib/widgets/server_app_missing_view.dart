@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/services/auth_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/auth_service.dart';
 
 class ServerAppMissingView extends StatelessWidget {
   final VoidCallback onRetry;

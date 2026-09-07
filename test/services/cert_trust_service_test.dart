@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pantry/services/cert_trust_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
 
 /// Stands in for the app's real global override: a pinned-cert HttpOverrides
 /// that rejects everything (nothing pinned yet). [CertTrustService.probe] must

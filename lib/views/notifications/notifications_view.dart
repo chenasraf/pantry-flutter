@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/notification.dart';
-import 'package:pantry/services/deep_link_service.dart';
-import 'package:pantry/utils/platform_info.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/notification.dart';
+import 'package:pantry_core/services/deep_link_service.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'notifications_controller.dart';
 

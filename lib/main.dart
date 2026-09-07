@@ -7,33 +7,40 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
-import 'i18n.dart';
-import 'services/api_client.dart';
-import 'services/auth_service.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/api_client.dart';
+import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cache_store.dart';
 import 'services/background_notification_task.dart';
-import 'services/cert_trust_service.dart';
-import 'services/locale_service.dart';
-import 'services/category_service.dart';
-import 'services/checklist_service.dart';
-import 'services/house_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/locale_service.dart';
+import 'services/localizations_delegates.dart';
+import 'package:pantry_core/services/category_service.dart';
+import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/house_service.dart';
 import 'services/image_cache_service.dart';
-import 'services/label_service.dart';
+import 'package:pantry_core/services/label_service.dart';
 import 'services/list_link_service.dart';
 import 'services/local_notifications_service.dart';
-import 'services/nn_localizations.dart';
-import 'services/store_service.dart';
-import 'services/note_service.dart';
-import 'services/photo_service.dart';
-import 'services/prefs_service.dart';
-import 'services/server_version_service.dart';
+import 'package:pantry_core/services/nn_localizations.dart';
+import 'package:pantry_core/services/store_service.dart';
+import 'package:pantry_core/services/note_service.dart';
+import 'package:pantry_core/services/photo_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/reachability_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'services/share_intent_service.dart';
+import 'services/wear_mirror_host.dart';
+import 'services/wear_appearance_host.dart';
+import 'services/wear_pairing_host.dart';
 import 'services/widget_link_service.dart';
 import 'services/checklist_widget_service.dart';
-import 'services/theming_service.dart';
+import 'package:pantry_core/services/theming_service.dart';
 import 'services/widget_interactivity.dart';
 import 'services/widget_service.dart';
-import 'sync/sync_manager.dart';
-import 'utils/platform_info.dart';
+import 'services/widget_theme.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'views/home/home_view.dart';
 import 'views/login/login_view.dart';
 import 'views/notifications_intro/notifications_intro_view.dart';
@@ -41,6 +48,7 @@ import 'views/onboarding/onboarding_pages.dart';
 import 'views/onboarding/onboarding_view.dart';
 import 'views/widget/checklist_widget_config_view.dart';
 import 'views/widget/widget_config_view.dart';
+import 'widgets/session_expired_banner.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -73,6 +81,9 @@ const kChecklistWidgetConfigRoutePrefix = '/checklist-widget-config/';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Ahead of the config-app branch below: those engines draw item tiles too,
+  // and core's providers have no store until one is installed.
+  ImageCacheService.instance.install();
 
   // The widget-config activities run this same entrypoint in their own engines;
   // branch to the matching lean selector app instead of the full app.
@@ -163,12 +174,29 @@ void main() async {
     if (PrefsService.instance.notificationsEnabled) {
       unawaited(registerBackgroundNotificationPoll());
     }
+    // Answers a paired watch for as long as this process lives. It hides
+    // itself on a build with no Data Layer, so there is nothing to gate here.
+    unawaited(WearMirrorHost.instance.init());
   }
   LocaleService.instance.apply();
   ApiClient.onForbidden = _showPermissionDeniedSnackbar;
+  // A debounced cache write needs somewhere to land before the process goes,
+  // and a queue waiting out a backoff needs telling when a link returns.
+  CacheStore.installPauseCheckpoint();
+  ReachabilityService.instance.start();
   unawaited(ShareIntentService.instance.init());
   WidgetLinkService.instance.init();
   unawaited(ListLinkService.instance.init());
+  // Unconditional, unlike the mirror: a watch asking a signed-out phone is the
+  // likeliest failure of the whole flow, and the refusal that stops it
+  // retrying is the one answer a phone with no credential can still give.
+  // Then say how this phone draws itself, which only means anything once the
+  // pairing host knows whether there is a watch to say it to.
+  unawaited(
+    WearPairingHost.instance.init().then(
+      (_) => WearAppearanceHost.instance.init(),
+    ),
+  );
   registerWidgetInteractivity();
   runApp(const PantryApp());
 }
@@ -302,8 +330,10 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     ThemingService.instance.addListener(_rebuild);
     // Re-push the widget theme after first frame — at startup the platform
     // brightness can briefly report a stale value.
+    PrefsService.instance.addListener(_pushWidgetTheme);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      PrefsService.instance.pushWidgetTheme();
+      invalidateWidgetTheme();
+      unawaited(pushWidgetTheme());
     });
   }
 
@@ -312,13 +342,17 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     LocaleService.instance.removeListener(_rebuild);
     ThemingService.instance.removeListener(_rebuild);
+    PrefsService.instance.removeListener(_pushWidgetTheme);
     super.dispose();
   }
 
   @override
   void didChangePlatformBrightness() {
-    PrefsService.instance.pushWidgetTheme();
+    invalidateWidgetTheme();
+    unawaited(pushWidgetTheme());
   }
+
+  void _pushWidgetTheme() => unawaited(pushWidgetTheme());
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -326,7 +360,8 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
       // Re-sync widget data from the foreground isolate — background
       // workers can't reliably resolve platform brightness, and item counts
       // drift as lists change.
-      PrefsService.instance.pushWidgetTheme();
+      invalidateWidgetTheme();
+      unawaited(pushWidgetTheme());
       unawaited(WidgetService.instance.refreshAll());
       unawaited(ChecklistWidgetService.instance.refreshAll());
     }
@@ -347,6 +382,30 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
       return '/notifications-intro';
     }
     return '/home';
+  }
+
+  /// True while the re-authentication screen the banner offers is on the stack.
+  bool _reauthOpen = false;
+
+  /// Re-authentication keeps the user where they were: the sign-in screen is
+  /// pushed over the app and popped on success, so the caches, the open route
+  /// and the held sync queue all survive the round trip.
+  Future<void> _onReauthRequested() async {
+    final navigator = rootNavigatorKey.currentState;
+    if (navigator == null) return;
+    setState(() => _reauthOpen = true);
+    await navigator.push(
+      MaterialPageRoute(
+        builder: (_) => LoginView(
+          onLoginSuccess: () async {
+            await ServerVersionService.instance.fetch();
+            await ThemingService.instance.fetchTheme();
+            navigator.pop();
+          },
+        ),
+      ),
+    );
+    if (mounted) setState(() => _reauthOpen = false);
   }
 
   Future<void> _onLoginSuccess() async {
@@ -395,6 +454,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
     await AuthService.instance.logout();
     ThemingService.instance.clear();
     ServerVersionService.instance.clear();
+    WearMirrorHost.instance.forget();
     await Future.wait([
       PrefsService.instance.clear(),
       HouseService.instance.cache.clear(),
@@ -466,8 +526,14 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
           themeMode: ThemingService.instance.themeMode,
           builder: (context, child) {
             if (child == null) return const SizedBox.shrink();
-            if (!PlatformInfo.isDesktopHost) return child;
-            return _EscapePopWrapper(child: child);
+            final wrapped = PlatformInfo.isDesktopHost
+                ? _EscapePopWrapper(child: child)
+                : child;
+            return SessionExpiredBanner(
+              suppressed: _reauthOpen,
+              onSignIn: _onReauthRequested,
+              child: wrapped,
+            );
           },
           onGenerateInitialRoutes: (initialRoute) => [
             MaterialPageRoute(

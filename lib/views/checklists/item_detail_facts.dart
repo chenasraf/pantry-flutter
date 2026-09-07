@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:pantry/i18n.dart';
-import 'package:pantry/models/checklist.dart';
-import 'package:pantry/models/item_lifecycle.dart';
-import 'package:pantry/utils/entity_icons.dart';
-import 'package:pantry/utils/price.dart';
-import 'package:pantry/utils/rrule.dart';
+import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
+import 'package:pantry_core/utils/price.dart';
+import 'package:pantry_core/utils/rrule.dart';
 
 class FactTiles extends StatelessWidget {
   final ListItem item;
