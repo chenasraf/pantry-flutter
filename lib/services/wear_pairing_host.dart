@@ -200,6 +200,12 @@ class WearPairingHost {
     WearMirrorHost.instance.pairedNode = null;
     paired.value = null;
     pending.value = null;
+    // Unpairing is at least as deliberate an act about this watch as opening
+    // the pairing screen, so a refusal made earlier stops suppressing it here
+    // too. Without this, setting the same watch up again raises nothing until
+    // the screen happens to be reopened — and the watch, which re-sends every
+    // five seconds and has no state to enter on being ignored, simply waits.
+    reconsider();
     await _store.clear();
   }
 

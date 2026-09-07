@@ -45,7 +45,7 @@ class WearAppearanceHost {
     _theming.addListener(_onChanged);
     // A pairing granted after this runs is the other moment a watch needs the
     // statement, and it is the first moment one is worth making.
-    _pairing.paired.addListener(_onChanged);
+    _pairing.paired.addListener(_onPaired);
     await publish();
   }
 
@@ -54,7 +54,7 @@ class WearAppearanceHost {
     _listening = false;
     _locale.removeListener(_onChanged);
     _theming.removeListener(_onChanged);
-    _pairing.paired.removeListener(_onChanged);
+    _pairing.paired.removeListener(_onPaired);
     _published = null;
   }
 
@@ -77,4 +77,16 @@ class WearAppearanceHost {
   }
 
   void _onChanged() => unawaited(publish());
+
+  /// A pairing is a new audience, and the dedupe below is only about not
+  /// repeating ourselves to the same one.
+  ///
+  /// The statement may be word for word what the last watch was told, and this
+  /// watch has never heard it — or, having been signed out when it arrived,
+  /// deliberately ignored it. Either way the cache is dropped so the pairing
+  /// always puts one on the wire.
+  void _onPaired() {
+    _published = null;
+    _onChanged();
+  }
 }

@@ -141,6 +141,36 @@ void main() {
     // one that came in by the QR path, say.
     expect(publishedState(), isNull);
   });
+
+  /// A watch asking to be signed in, as it arrives over the link.
+  Future<void> request(String nodeId) async {
+    handler.emit({
+      'delivery': 'message',
+      'path': WearPairing.requestPath,
+      'payload': '{}',
+      'nodeId': nodeId,
+    });
+    await Future<void>.delayed(Duration.zero);
+  }
+
+  test('unpairing lets a watch that was once refused ask again', () async {
+    // A refusal suppresses that watch's prompt, or it would reappear seconds
+    // after being dismissed — the watch re-sends every five seconds and has no
+    // state to enter on being ignored.
+    await host.grant(watch);
+    await request(watch.nodeId);
+    host.deny();
+    await request(watch.nodeId);
+    expect(host.pending.value, isNull, reason: 'still refused');
+
+    // Unpairing is a deliberate act about this watch, exactly as opening the
+    // pairing screen is. Setting the same watch up again has to raise a prompt
+    // rather than wait for that screen to be reopened by chance.
+    await host.unpair();
+    await request(watch.nodeId);
+
+    expect(host.pending.value?.nodeId, watch.nodeId);
+  });
 }
 
 class _StreamHandler extends MockStreamHandler {
