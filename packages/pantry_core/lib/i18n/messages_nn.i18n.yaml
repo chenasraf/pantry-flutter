@@ -827,6 +827,16 @@ checklists:
   viewList: Listevisning
   viewCards: Kortvisning
   listColor: Farge
+  listRecurrence:
+    label: Standard gjentaking
+    remember: Hugs den siste
+    rememberHint: Nye element startar med same gjentaking som det siste elementet som vart lagt til i denne lista.
+    none: Ingen
+    noneHint: Nye element blir verande på lista etter at dei er markerte som fullførte.
+    once: Eingongsbruk
+    onceHint: Nye element blir fjerna frå lista når dei blir markerte som fullførte.
+    recurring: Gjentek
+    recurringHint: Nye element kjem tilbake basert på tidsplanen nedanfor.
   itemTypes:
     label: Type
     staple: Fest

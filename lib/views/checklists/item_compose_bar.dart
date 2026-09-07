@@ -17,6 +17,7 @@ import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/models/list_recurrence.dart';
 import 'item_compose_chips.dart';
 import 'item_compose_trays.dart';
 import 'item_draft.dart';
@@ -34,7 +35,21 @@ class ItemComposeBar extends StatefulWidget {
   /// All-lists mode (the target is chosen via [selectedTargetListId]). Governs
   /// which list-scoped custom fields apply.
   final int? listId;
-  final bool deleteOnDoneDefault;
+
+  /// The recurrence new items start with, resolved from the target list's
+  /// default. [ListRecurrenceDefault.neutral] in All-lists mode, where no
+  /// single list owns the item.
+  final ListRecurrenceDefault recurrenceDefault;
+
+  /// Reports the recurrence a submitted item used, so a list that follows the
+  /// last item added starts the next one the same way. Only fired while
+  /// [ListRecurrenceDefault.remembers] is set.
+  final void Function({
+    required ListRecurrenceKind kind,
+    String? rrule,
+    required bool repeatFromCompletion,
+  })?
+  onRecurrenceUsed;
   final List<models.Category> categories;
 
   /// Stores offered in the store tray. Empty (and the store chip hidden) when
@@ -140,7 +155,8 @@ class ItemComposeBar extends StatefulWidget {
     required this.listName,
     required this.houseId,
     this.listId,
-    required this.deleteOnDoneDefault,
+    this.recurrenceDefault = ListRecurrenceDefault.neutral,
+    this.onRecurrenceUsed,
     required this.categories,
     this.stores = const [],
     this.labels = const [],
@@ -187,7 +203,7 @@ enum Tray {
 
 class ItemComposeBarState extends State<ItemComposeBar> {
   late final ItemDraft _draft = ItemDraft()
-    ..lifecycle = _defaultLifecycle()
+    ..applyRecurrenceDefault(widget.recurrenceDefault)
     ..price = PricesDraft.empty(widget.lastCurrency);
   final _nameCtrl = TextEditingController();
   final _qtyCtrl = TextEditingController();
@@ -245,6 +261,12 @@ class ItemComposeBarState extends State<ItemComposeBar> {
         oldWidget.selectedTargetListId != widget.selectedTargetListId) {
       _customFieldsEdited = false;
       _draft.customFields = const [];
+    }
+    // The list (and so its recurrence default) can resolve after the bar mounts,
+    // or change under it in All-lists mode. A bar at rest re-seeds; one being
+    // composed in keeps whatever the user picked.
+    if (!_active && !_hasContent) {
+      _draft.applyRecurrenceDefault(widget.recurrenceDefault);
     }
   }
 
@@ -331,7 +353,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     // Reuse means we're not creating a new item — clear the draft and keep the
     // bar active/focused so the user can carry on adding.
     setState(() {
-      _draft.reset(_defaultLifecycle());
+      _draft.reset(widget.recurrenceDefault);
       _nameCtrl.clear();
       _qtyCtrl.clear();
       _openTray = null;
@@ -379,14 +401,24 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     super.dispose();
   }
 
-  ItemLifecycle _defaultLifecycle() =>
-      widget.deleteOnDoneDefault ? ItemLifecycle.once : ItemLifecycle.staple;
+  /// The recurrence the next composed item starts with. A pinned default wins
+  /// back every item; a list that follows the last one added keeps the
+  /// recurrence just used, so a run of matching items needs picking it once.
+  ListRecurrenceDefault _nextRecurrence() {
+    if (!widget.recurrenceDefault.remembers) return widget.recurrenceDefault;
+    return ListRecurrenceDefault(
+      kind: _draft.lifecycle.recurrenceKind,
+      rrule: _draft.rrule,
+      repeatFromCompletion: _draft.repeatFromCompletion,
+      remembers: true,
+    );
+  }
 
   void _cancel() {
     setState(() {
       _active = false;
       _openTray = null;
-      _draft.reset(_defaultLifecycle());
+      _draft.reset(widget.recurrenceDefault);
       _nameCtrl.clear();
       _qtyCtrl.clear();
     });
@@ -595,8 +627,16 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       }
     }
     if (allOk) {
+      final next = _nextRecurrence();
+      if (widget.recurrenceDefault.remembers) {
+        widget.onRecurrenceUsed?.call(
+          kind: _draft.lifecycle.recurrenceKind,
+          rrule: _draft.rrule,
+          repeatFromCompletion: _draft.repeatFromCompletion,
+        );
+      }
       setState(() {
-        _draft.reset(_defaultLifecycle());
+        _draft.reset(next);
         _customFieldsEdited = false;
         _nameCtrl.clear();
         _qtyCtrl.clear();

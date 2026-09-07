@@ -10,6 +10,21 @@ Map<String, String> parseRrule(String rrule) {
   return map;
 }
 
+/// Whether two rules repeat on the same schedule. Compares the parsed parts
+/// rather than the strings, because a default part may be spelled out or left
+/// off — `FREQ=WEEKLY` and `FREQ=WEEKLY;INTERVAL=1` are one rule.
+bool sameRrule(String? a, String? b) {
+  if (a == b) return true;
+  if (a == null || b == null) return false;
+  final left = parseRrule(a);
+  final right = parseRrule(b);
+  for (final key in {...left.keys, ...right.keys}) {
+    final fallback = key == 'INTERVAL' ? '1' : null;
+    if ((left[key] ?? fallback) != (right[key] ?? fallback)) return false;
+  }
+  return true;
+}
+
 /// Build an RRULE string from components.
 String buildRrule({
   required String freq,

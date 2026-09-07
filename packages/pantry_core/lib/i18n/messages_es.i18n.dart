@@ -2980,6 +2980,8 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "Color"
   /// ```
   String get listColor => """Color""";
+  ListRecurrenceChecklistsMessagesEs get listRecurrence =>
+      ListRecurrenceChecklistsMessagesEs(this);
   ItemTypesChecklistsMessagesEs get itemTypes =>
       ItemTypesChecklistsMessagesEs(this);
   ComposeChecklistsMessagesEs get compose => ComposeChecklistsMessagesEs(this);
@@ -3740,6 +3742,61 @@ class ResetOrderChecklistsMessagesEs extends ResetOrderChecklistsMessages {
   /// "Nombre Z–A"
   /// ```
   String get basisNameDesc => """Nombre Z–A""";
+}
+
+class ListRecurrenceChecklistsMessagesEs
+    extends ListRecurrenceChecklistsMessages {
+  final ChecklistsMessagesEs _parent;
+  const ListRecurrenceChecklistsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Recurrencia predeterminada"
+  /// ```
+  String get label => """Recurrencia predeterminada""";
+
+  /// ```dart
+  /// "Recordar la última"
+  /// ```
+  String get remember => """Recordar la última""";
+
+  /// ```dart
+  /// "Los artículos nuevos empiezan con la misma recurrencia que el último artículo añadido a esta lista."
+  /// ```
+  String get rememberHint =>
+      """Los artículos nuevos empiezan con la misma recurrencia que el último artículo añadido a esta lista.""";
+
+  /// ```dart
+  /// "Ninguna"
+  /// ```
+  String get none => """Ninguna""";
+
+  /// ```dart
+  /// "Los artículos nuevos permanecen en la lista después de completarlos."
+  /// ```
+  String get noneHint =>
+      """Los artículos nuevos permanecen en la lista después de completarlos.""";
+
+  /// ```dart
+  /// "Una vez"
+  /// ```
+  String get once => """Una vez""";
+
+  /// ```dart
+  /// "Los artículos nuevos se eliminan de la lista al completarlos."
+  /// ```
+  String get onceHint =>
+      """Los artículos nuevos se eliminan de la lista al completarlos.""";
+
+  /// ```dart
+  /// "Recurrente"
+  /// ```
+  String get recurring => """Recurrente""";
+
+  /// ```dart
+  /// "Los artículos nuevos vuelven según el horario de abajo."
+  /// ```
+  String get recurringHint =>
+      """Los artículos nuevos vuelven según el horario de abajo.""";
 }
 
 class ItemTypesChecklistsMessagesEs extends ItemTypesChecklistsMessages {
@@ -6940,6 +6997,19 @@ Contraseña: pantry-rocks""",
   """checklists.viewList""": """Vista de lista""",
   """checklists.viewCards""": """Vista de tarjetas""",
   """checklists.listColor""": """Color""",
+  """checklists.listRecurrence.label""": """Recurrencia predeterminada""",
+  """checklists.listRecurrence.remember""": """Recordar la última""",
+  """checklists.listRecurrence.rememberHint""":
+      """Los artículos nuevos empiezan con la misma recurrencia que el último artículo añadido a esta lista.""",
+  """checklists.listRecurrence.none""": """Ninguna""",
+  """checklists.listRecurrence.noneHint""":
+      """Los artículos nuevos permanecen en la lista después de completarlos.""",
+  """checklists.listRecurrence.once""": """Una vez""",
+  """checklists.listRecurrence.onceHint""":
+      """Los artículos nuevos se eliminan de la lista al completarlos.""",
+  """checklists.listRecurrence.recurring""": """Recurrente""",
+  """checklists.listRecurrence.recurringHint""":
+      """Los artículos nuevos vuelven según el horario de abajo.""",
   """checklists.itemTypes.label""": """Tipo de artículo""",
   """checklists.itemTypes.staple""": """Habitual""",
   """checklists.itemTypes.stapleBody""":

@@ -8,6 +8,7 @@ import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
@@ -457,9 +458,20 @@ class _BodyState extends State<_Body> {
                           listName: list.name,
                           houseId: controller.houseId,
                           listId: meta ? null : list.id,
-                          deleteOnDoneDefault: meta
-                              ? false
-                              : list.deleteOnDoneDefault,
+                          recurrenceDefault: meta
+                              ? ListRecurrenceDefault.neutral
+                              : list.recurrenceDefault,
+                          onRecurrenceUsed: meta
+                              ? null
+                              : ({
+                                  required kind,
+                                  rrule,
+                                  required repeatFromCompletion,
+                                }) => controller.setListRecurrenceDefault(
+                                  kind: kind,
+                                  rrule: rrule,
+                                  repeatFromCompletion: repeatFromCompletion,
+                                ),
                           categories: controller.categoriesForList(
                             meta ? body.composeTargetListId : list.id,
                           ),

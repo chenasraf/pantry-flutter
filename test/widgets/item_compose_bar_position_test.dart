@@ -14,7 +14,6 @@ void main() {
           listName: 'Groceries',
           houseId: 1,
           listId: 1,
-          deleteOnDoneDefault: false,
           categories: const [],
           initiallyFocused: true,
           onTop: onTop,

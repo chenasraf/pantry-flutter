@@ -704,6 +704,16 @@ checklists:
   viewList: Listenansicht
   viewCards: Kartenansicht
   listColor: Farbe
+  listRecurrence:
+    label: Standard-Wiederholung
+    remember: Letzte merken
+    rememberHint: Neue Einträge starten mit derselben Wiederholung wie der zuletzt zu dieser Liste hinzugefügte Eintrag.
+    none: Keine
+    noneHint: Neue Einträge bleiben auf der Liste, nachdem sie erledigt wurden.
+    once: Einmalig
+    onceHint: Neue Einträge werden entfernt, sobald sie erledigt wurden.
+    recurring: Wiederkehrend
+    recurringHint: Neue Einträge kommen nach dem Zeitplan unten zurück.
   itemTypes:
     label: Eintragstyp
     staple: Standard

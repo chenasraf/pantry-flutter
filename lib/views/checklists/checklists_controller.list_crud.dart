@@ -39,8 +39,18 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     String? description,
     String? icon,
     String? color,
+    ListRecurrenceMode? defaultRecurrenceMode,
+    String? defaultRrule,
+    bool defaultRepeatFromCompletion = false,
   }) async {
     final tempId = _sync.newTempId();
+    final mode = defaultRecurrenceMode ?? ListRecurrenceMode.remember;
+    final recurrence = normalizeRecurrenceDefault(
+      mode: mode,
+      currentKind: ListRecurrenceKind.none,
+      rrule: defaultRrule,
+      repeatFromCompletion: defaultRepeatFromCompletion,
+    );
     final synthetic = ChecklistList(
       id: tempId,
       houseId: houseId,
@@ -49,6 +59,10 @@ extension ChecklistsControllerListCrud on ChecklistsController {
       icon: icon ?? 'list',
       color: color,
       sortOrder: _lists.length,
+      defaultRecurrenceMode: mode,
+      defaultRecurrenceKind: recurrence.kind,
+      defaultRrule: recurrence.rrule,
+      defaultRepeatFromCompletion: recurrence.repeatFromCompletion,
       createdAt: _now(),
       updatedAt: _now(),
     );
@@ -67,6 +81,10 @@ extension ChecklistsControllerListCrud on ChecklistsController {
           'description': ?description,
           'icon': ?icon,
           'color': ?color,
+          'defaultRecurrenceMode': ?defaultRecurrenceMode?.wire,
+          'defaultRrule': ?recurrence.rrule,
+          if (defaultRecurrenceMode != null)
+            'defaultRepeatFromCompletion': recurrence.repeatFromCompletion,
         },
         createdAt: _now(),
       ),
@@ -79,18 +97,44 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     required String name,
     required String icon,
     String? color,
+    ListRecurrenceMode? defaultRecurrenceMode,
+    String? defaultRrule,
+    bool defaultRepeatFromCompletion = false,
   }) async {
     if (list.id == kAllListsId) return;
     final trimmed = name.trim();
     if (trimmed.isEmpty) return;
+    final recurrence = defaultRecurrenceMode == null
+        ? null
+        : normalizeRecurrenceDefault(
+            mode: defaultRecurrenceMode,
+            currentKind: list.defaultRecurrenceKind,
+            rrule: defaultRrule,
+            repeatFromCompletion: defaultRepeatFromCompletion,
+          );
+    final recurrenceUnchanged =
+        recurrence == null ||
+        (defaultRecurrenceMode == list.defaultRecurrenceMode &&
+            recurrence.kind == list.defaultRecurrenceKind &&
+            recurrence.rrule == list.defaultRrule &&
+            recurrence.repeatFromCompletion ==
+                list.defaultRepeatFromCompletion);
     final unchanged =
-        trimmed == list.name && icon == list.icon && color == list.color;
+        trimmed == list.name &&
+        icon == list.icon &&
+        color == list.color &&
+        recurrenceUnchanged;
     if (unchanged) return;
 
     final optimistic = list.copyWith(
       name: trimmed,
       icon: icon,
       color: color,
+      defaultRecurrenceMode: defaultRecurrenceMode,
+      defaultRecurrenceKind: recurrence?.kind,
+      defaultRrule: recurrence?.rrule,
+      clearDefaultRrule: recurrence != null && recurrence.rrule == null,
+      defaultRepeatFromCompletion: recurrence?.repeatFromCompletion,
       updatedAt: _now(),
     );
     _lists = [for (final l in _lists) l.id == list.id ? optimistic : l];
@@ -106,21 +150,75 @@ extension ChecklistsControllerListCrud on ChecklistsController {
         houseId: houseId,
         entityId: list.id < 0 ? null : list.id,
         tempEntityId: list.id < 0 ? list.id : null,
-        body: {'name': trimmed, 'icon': icon, 'color': ?color},
+        body: {
+          'name': trimmed,
+          'icon': icon,
+          'color': ?color,
+          'defaultRecurrenceMode': ?defaultRecurrenceMode?.wire,
+          'defaultRecurrenceKind': ?recurrence?.kind.wire,
+          'defaultRrule': ?recurrence?.rrule,
+          if (recurrence != null)
+            'defaultRepeatFromCompletion': recurrence.repeatFromCompletion,
+        },
         createdAt: _now(),
       ),
     );
   }
 
-  Future<void> setListDeleteOnDoneDefault(bool value) async {
+  /// Report the recurrence an item was just added with, so a list that follows
+  /// the last item added starts the next one the same way. A list pinned to a
+  /// recurrence keeps it, and the All-lists view has no list to remember on.
+  Future<void> setListRecurrenceDefault({
+    required ListRecurrenceKind kind,
+    String? rrule,
+    bool repeatFromCompletion = false,
+  }) async {
     final list = _currentList;
     if (list == null || list.id == kAllListsId) return;
-    if (list.deleteOnDoneDefault == value) return;
+    if (!list.recurrenceDefault.remembers) return;
 
-    final optimistic = list.copyWith(
-      deleteOnDoneDefault: value,
-      updatedAt: _now(),
-    );
+    final Map<String, dynamic> body;
+    final ChecklistList optimistic;
+    if (hasFeature(kListDefaultRecurrenceFeature)) {
+      final recurrence = normalizeRecurrenceDefault(
+        mode: list.defaultRecurrenceMode,
+        currentKind: kind,
+        rrule: rrule,
+        repeatFromCompletion: repeatFromCompletion,
+      );
+      if (list.recurrenceDefault.covers(
+        kind: recurrence.kind,
+        rrule: recurrence.rrule,
+        repeatFromCompletion: recurrence.repeatFromCompletion,
+      )) {
+        return;
+      }
+      optimistic = list.copyWith(
+        defaultRecurrenceKind: recurrence.kind,
+        defaultRrule: recurrence.rrule,
+        clearDefaultRrule: recurrence.rrule == null,
+        defaultRepeatFromCompletion: recurrence.repeatFromCompletion,
+        updatedAt: _now(),
+      );
+      body = {
+        'defaultRecurrenceKind': recurrence.kind.wire,
+        'defaultRrule': ?recurrence.rrule,
+        'defaultRepeatFromCompletion': recurrence.repeatFromCompletion,
+      };
+    } else {
+      // Older servers store the default only as the "one-time" flag, so a
+      // recurring item lands on the same default as a staple one.
+      final once = kind == ListRecurrenceKind.once;
+      if (list.deleteOnDoneDefault == once) return;
+      optimistic = list.copyWith(
+        defaultRecurrenceKind: once
+            ? ListRecurrenceKind.once
+            : ListRecurrenceKind.none,
+        updatedAt: _now(),
+      );
+      body = {'deleteOnDoneDefault': once};
+    }
+
     _currentList = optimistic;
     _lists = [for (final l in _lists) l.id == optimistic.id ? optimistic : l];
     _checklistService.cacheLists(houseId, _lists);
@@ -134,7 +232,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
         houseId: houseId,
         entityId: list.id < 0 ? null : list.id,
         tempEntityId: list.id < 0 ? list.id : null,
-        body: {'deleteOnDoneDefault': value},
+        body: body,
         createdAt: _now(),
       ),
     );

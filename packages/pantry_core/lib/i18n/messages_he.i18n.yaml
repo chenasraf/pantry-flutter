@@ -704,6 +704,16 @@ checklists:
   viewList: תצוגת רשימה
   viewCards: תצוגת כרטיסים
   listColor: צבע
+  listRecurrence:
+    label: חזרתיות ברירת מחדל
+    remember: לזכור את האחרון
+    rememberHint: פריטים חדשים מתחילים עם אותה חזרתיות כמו הפריט האחרון שנוסף לרשימה הזו.
+    none: ללא
+    noneHint: פריטים חדשים נשארים ברשימה אחרי שמסמנים אותם כבוצעו.
+    once: חד-פעמי
+    onceHint: פריטים חדשים מוסרים מהרשימה ברגע שמסמנים אותם כבוצעו.
+    recurring: חוזר
+    recurringHint: פריטים חדשים חוזרים לפי לוח הזמנים שלמטה.
   itemTypes:
     label: סוג פריט
     staple: קבוע

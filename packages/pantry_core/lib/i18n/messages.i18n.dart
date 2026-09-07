@@ -2952,6 +2952,8 @@ class ChecklistsMessages {
   /// "Color"
   /// ```
   String get listColor => """Color""";
+  ListRecurrenceChecklistsMessages get listRecurrence =>
+      ListRecurrenceChecklistsMessages(this);
   ItemTypesChecklistsMessages get itemTypes =>
       ItemTypesChecklistsMessages(this);
   ComposeChecklistsMessages get compose => ComposeChecklistsMessages(this);
@@ -3706,6 +3708,59 @@ class ResetOrderChecklistsMessages {
   /// "Name Z–A"
   /// ```
   String get basisNameDesc => """Name Z–A""";
+}
+
+class ListRecurrenceChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const ListRecurrenceChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Default recurrence"
+  /// ```
+  String get label => """Default recurrence""";
+
+  /// ```dart
+  /// "Remember last"
+  /// ```
+  String get remember => """Remember last""";
+
+  /// ```dart
+  /// "New items start with the same recurrence as the last item added to this list."
+  /// ```
+  String get rememberHint =>
+      """New items start with the same recurrence as the last item added to this list.""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get none => """None""";
+
+  /// ```dart
+  /// "New items stay on the list after they are marked done."
+  /// ```
+  String get noneHint =>
+      """New items stay on the list after they are marked done.""";
+
+  /// ```dart
+  /// "One-time"
+  /// ```
+  String get once => """One-time""";
+
+  /// ```dart
+  /// "New items are removed from the list once marked done."
+  /// ```
+  String get onceHint =>
+      """New items are removed from the list once marked done.""";
+
+  /// ```dart
+  /// "Recurring"
+  /// ```
+  String get recurring => """Recurring""";
+
+  /// ```dart
+  /// "New items come back on the schedule below."
+  /// ```
+  String get recurringHint => """New items come back on the schedule below.""";
 }
 
 class ItemTypesChecklistsMessages {
@@ -6860,6 +6915,19 @@ Password: pantry-rocks""",
   """checklists.viewList""": """List view""",
   """checklists.viewCards""": """Cards view""",
   """checklists.listColor""": """Color""",
+  """checklists.listRecurrence.label""": """Default recurrence""",
+  """checklists.listRecurrence.remember""": """Remember last""",
+  """checklists.listRecurrence.rememberHint""":
+      """New items start with the same recurrence as the last item added to this list.""",
+  """checklists.listRecurrence.none""": """None""",
+  """checklists.listRecurrence.noneHint""":
+      """New items stay on the list after they are marked done.""",
+  """checklists.listRecurrence.once""": """One-time""",
+  """checklists.listRecurrence.onceHint""":
+      """New items are removed from the list once marked done.""",
+  """checklists.listRecurrence.recurring""": """Recurring""",
+  """checklists.listRecurrence.recurringHint""":
+      """New items come back on the schedule below.""",
   """checklists.itemTypes.label""": """Item type""",
   """checklists.itemTypes.staple""": """Staple""",
   """checklists.itemTypes.stapleBody""":

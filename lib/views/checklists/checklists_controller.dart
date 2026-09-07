@@ -7,6 +7,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/label.dart' as models;
+import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/member.dart';
 import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/services/api_client.dart';

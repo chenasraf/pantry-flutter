@@ -704,6 +704,16 @@ checklists:
   viewList: Vue liste
   viewCards: Vue cartes
   listColor: Couleur
+  listRecurrence:
+    label: "Récurrence par défaut"
+    remember: "Mémoriser la dernière"
+    rememberHint: "Les nouveaux articles démarrent avec la même récurrence que le dernier article ajouté à cette liste."
+    none: Aucune
+    noneHint: "Les nouveaux articles restent sur la liste après avoir été complétés."
+    once: Unique
+    onceHint: "Les nouveaux articles sont supprimés de la liste une fois complétés."
+    recurring: "Récurrent"
+    recurringHint: "Les nouveaux articles reviennent selon l'horaire ci-dessous."
   itemTypes:
     label: "Type d'article"
     staple: Habituel

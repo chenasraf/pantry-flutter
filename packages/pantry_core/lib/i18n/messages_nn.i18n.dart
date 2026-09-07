@@ -2973,6 +2973,8 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   /// "Farge"
   /// ```
   String get listColor => """Farge""";
+  ListRecurrenceChecklistsMessagesNn get listRecurrence =>
+      ListRecurrenceChecklistsMessagesNn(this);
   ItemTypesChecklistsMessagesNn get itemTypes =>
       ItemTypesChecklistsMessagesNn(this);
   ComposeChecklistsMessagesNn get compose => ComposeChecklistsMessagesNn(this);
@@ -3731,6 +3733,61 @@ class ResetOrderChecklistsMessagesNn extends ResetOrderChecklistsMessages {
   /// "Namn Z–A"
   /// ```
   String get basisNameDesc => """Namn Z–A""";
+}
+
+class ListRecurrenceChecklistsMessagesNn
+    extends ListRecurrenceChecklistsMessages {
+  final ChecklistsMessagesNn _parent;
+  const ListRecurrenceChecklistsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Standard gjentaking"
+  /// ```
+  String get label => """Standard gjentaking""";
+
+  /// ```dart
+  /// "Hugs den siste"
+  /// ```
+  String get remember => """Hugs den siste""";
+
+  /// ```dart
+  /// "Nye element startar med same gjentaking som det siste elementet som vart lagt til i denne lista."
+  /// ```
+  String get rememberHint =>
+      """Nye element startar med same gjentaking som det siste elementet som vart lagt til i denne lista.""";
+
+  /// ```dart
+  /// "Ingen"
+  /// ```
+  String get none => """Ingen""";
+
+  /// ```dart
+  /// "Nye element blir verande på lista etter at dei er markerte som fullførte."
+  /// ```
+  String get noneHint =>
+      """Nye element blir verande på lista etter at dei er markerte som fullførte.""";
+
+  /// ```dart
+  /// "Eingongsbruk"
+  /// ```
+  String get once => """Eingongsbruk""";
+
+  /// ```dart
+  /// "Nye element blir fjerna frå lista når dei blir markerte som fullførte."
+  /// ```
+  String get onceHint =>
+      """Nye element blir fjerna frå lista når dei blir markerte som fullførte.""";
+
+  /// ```dart
+  /// "Gjentek"
+  /// ```
+  String get recurring => """Gjentek""";
+
+  /// ```dart
+  /// "Nye element kjem tilbake basert på tidsplanen nedanfor."
+  /// ```
+  String get recurringHint =>
+      """Nye element kjem tilbake basert på tidsplanen nedanfor.""";
 }
 
 class ItemTypesChecklistsMessagesNn extends ItemTypesChecklistsMessages {
@@ -6911,6 +6968,19 @@ Passord: pantry""",
   """checklists.viewList""": """Listevisning""",
   """checklists.viewCards""": """Kortvisning""",
   """checklists.listColor""": """Farge""",
+  """checklists.listRecurrence.label""": """Standard gjentaking""",
+  """checklists.listRecurrence.remember""": """Hugs den siste""",
+  """checklists.listRecurrence.rememberHint""":
+      """Nye element startar med same gjentaking som det siste elementet som vart lagt til i denne lista.""",
+  """checklists.listRecurrence.none""": """Ingen""",
+  """checklists.listRecurrence.noneHint""":
+      """Nye element blir verande på lista etter at dei er markerte som fullførte.""",
+  """checklists.listRecurrence.once""": """Eingongsbruk""",
+  """checklists.listRecurrence.onceHint""":
+      """Nye element blir fjerna frå lista når dei blir markerte som fullførte.""",
+  """checklists.listRecurrence.recurring""": """Gjentek""",
+  """checklists.listRecurrence.recurringHint""":
+      """Nye element kjem tilbake basert på tidsplanen nedanfor.""",
   """checklists.itemTypes.label""": """Type""",
   """checklists.itemTypes.staple""": """Fest""",
   """checklists.itemTypes.stapleBody""":

@@ -31,6 +31,9 @@ extension ChecklistServiceLists on ChecklistService {
     String? description,
     String? icon,
     String? color,
+    ListRecurrenceMode? defaultRecurrenceMode,
+    String? defaultRrule,
+    bool? defaultRepeatFromCompletion,
   }) async {
     return ApiClient.instance.post<Map<String, dynamic>, ChecklistList>(
       '/houses/$houseId/lists',
@@ -40,6 +43,9 @@ extension ChecklistServiceLists on ChecklistService {
           'description': description,
         if (icon != null && icon.isNotEmpty) 'icon': icon,
         if (color != null && color.isNotEmpty) 'color': color,
+        'defaultRecurrenceMode': ?defaultRecurrenceMode?.wire,
+        'defaultRrule': ?defaultRrule,
+        'defaultRepeatFromCompletion': ?defaultRepeatFromCompletion,
       },
       fromJson: (data) => ChecklistList.fromJson(data),
     );
@@ -115,6 +121,10 @@ extension ChecklistServiceLists on ChecklistService {
     String? color,
     int? sortOrder,
     bool? deleteOnDoneDefault,
+    ListRecurrenceMode? defaultRecurrenceMode,
+    ListRecurrenceKind? defaultRecurrenceKind,
+    String? defaultRrule,
+    bool? defaultRepeatFromCompletion,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ChecklistList>(
       '/houses/$houseId/lists/$listId',
@@ -125,6 +135,10 @@ extension ChecklistServiceLists on ChecklistService {
         'color': ?color,
         'sortOrder': ?sortOrder,
         'deleteOnDoneDefault': ?deleteOnDoneDefault,
+        'defaultRecurrenceMode': ?defaultRecurrenceMode?.wire,
+        'defaultRecurrenceKind': ?defaultRecurrenceKind?.wire,
+        'defaultRrule': ?defaultRrule,
+        'defaultRepeatFromCompletion': ?defaultRepeatFromCompletion,
       },
       fromJson: (data) => ChecklistList.fromJson(data),
     );

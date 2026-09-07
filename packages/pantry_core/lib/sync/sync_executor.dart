@@ -1,6 +1,7 @@
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/note.dart';
 import 'package:pantry_core/models/store.dart';
@@ -139,6 +140,12 @@ class SyncExecutor {
           description: op.body['description'] as String?,
           icon: op.body['icon'] as String?,
           color: op.body['color'] as String?,
+          defaultRecurrenceMode: op.body.containsKey('defaultRecurrenceMode')
+              ? ListRecurrenceMode.parse(op.body['defaultRecurrenceMode'])
+              : null,
+          defaultRrule: op.body['defaultRrule'] as String?,
+          defaultRepeatFromCompletion:
+              op.body['defaultRepeatFromCompletion'] as bool?,
         );
         return SyncResult(list);
       case SyncOpKind.update:
@@ -152,6 +159,15 @@ class SyncExecutor {
           color: op.body['color'] as String?,
           sortOrder: op.body['sortOrder'] as int?,
           deleteOnDoneDefault: op.body['deleteOnDoneDefault'] as bool?,
+          defaultRecurrenceMode: op.body.containsKey('defaultRecurrenceMode')
+              ? ListRecurrenceMode.parse(op.body['defaultRecurrenceMode'])
+              : null,
+          defaultRecurrenceKind: op.body.containsKey('defaultRecurrenceKind')
+              ? ListRecurrenceKind.parse(op.body['defaultRecurrenceKind'])
+              : null,
+          defaultRrule: op.body['defaultRrule'] as String?,
+          defaultRepeatFromCompletion:
+              op.body['defaultRepeatFromCompletion'] as bool?,
         );
         return SyncResult(list);
       case SyncOpKind.delete:

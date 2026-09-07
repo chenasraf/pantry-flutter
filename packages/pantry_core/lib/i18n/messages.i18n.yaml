@@ -704,6 +704,16 @@ checklists:
   viewList: List view
   viewCards: Cards view
   listColor: Color
+  listRecurrence:
+    label: Default recurrence
+    remember: Remember last
+    rememberHint: New items start with the same recurrence as the last item added to this list.
+    none: None
+    noneHint: New items stay on the list after they are marked done.
+    once: One-time
+    onceHint: New items are removed from the list once marked done.
+    recurring: Recurring
+    recurringHint: New items come back on the schedule below.
   itemTypes:
     label: Item type
     staple: Staple

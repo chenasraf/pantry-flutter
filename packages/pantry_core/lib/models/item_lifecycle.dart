@@ -1,4 +1,5 @@
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/list_recurrence.dart';
 
 /// Pointer to an item's parent list; the All-lists view renders it as a chip.
 class ItemListBadge {
@@ -20,4 +21,21 @@ ItemLifecycle lifecycleOf(ListItem item) {
   }
   if (item.deleteOnDone) return ItemLifecycle.once;
   return ItemLifecycle.staple;
+}
+
+extension ItemLifecycleRecurrence on ItemLifecycle {
+  /// This lifecycle in the terms a list's recurrence default is stated in.
+  ListRecurrenceKind get recurrenceKind => switch (this) {
+    ItemLifecycle.staple => ListRecurrenceKind.none,
+    ItemLifecycle.once => ListRecurrenceKind.once,
+    ItemLifecycle.recurring => ListRecurrenceKind.recurring,
+  };
+}
+
+extension ListRecurrenceKindLifecycle on ListRecurrenceKind {
+  ItemLifecycle get lifecycle => switch (this) {
+    ListRecurrenceKind.none => ItemLifecycle.staple,
+    ListRecurrenceKind.once => ItemLifecycle.once,
+    ListRecurrenceKind.recurring => ItemLifecycle.recurring,
+  };
 }

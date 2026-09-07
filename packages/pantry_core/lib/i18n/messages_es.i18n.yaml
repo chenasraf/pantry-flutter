@@ -704,6 +704,16 @@ checklists:
   viewList: Vista de lista
   viewCards: Vista de tarjetas
   listColor: Color
+  listRecurrence:
+    label: Recurrencia predeterminada
+    remember: Recordar la última
+    rememberHint: Los artículos nuevos empiezan con la misma recurrencia que el último artículo añadido a esta lista.
+    none: Ninguna
+    noneHint: Los artículos nuevos permanecen en la lista después de completarlos.
+    once: Una vez
+    onceHint: Los artículos nuevos se eliminan de la lista al completarlos.
+    recurring: Recurrente
+    recurringHint: Los artículos nuevos vuelven según el horario de abajo.
   itemTypes:
     label: Tipo de artículo
     staple: Habitual

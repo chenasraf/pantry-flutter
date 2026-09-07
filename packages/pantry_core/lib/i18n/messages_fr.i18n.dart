@@ -2984,6 +2984,8 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Couleur"
   /// ```
   String get listColor => """Couleur""";
+  ListRecurrenceChecklistsMessagesFr get listRecurrence =>
+      ListRecurrenceChecklistsMessagesFr(this);
   ItemTypesChecklistsMessagesFr get itemTypes =>
       ItemTypesChecklistsMessagesFr(this);
   ComposeChecklistsMessagesFr get compose => ComposeChecklistsMessagesFr(this);
@@ -3744,6 +3746,61 @@ class ResetOrderChecklistsMessagesFr extends ResetOrderChecklistsMessages {
   /// "Nom Z–A"
   /// ```
   String get basisNameDesc => """Nom Z–A""";
+}
+
+class ListRecurrenceChecklistsMessagesFr
+    extends ListRecurrenceChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const ListRecurrenceChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Récurrence par défaut"
+  /// ```
+  String get label => """Récurrence par défaut""";
+
+  /// ```dart
+  /// "Mémoriser la dernière"
+  /// ```
+  String get remember => """Mémoriser la dernière""";
+
+  /// ```dart
+  /// "Les nouveaux articles démarrent avec la même récurrence que le dernier article ajouté à cette liste."
+  /// ```
+  String get rememberHint =>
+      """Les nouveaux articles démarrent avec la même récurrence que le dernier article ajouté à cette liste.""";
+
+  /// ```dart
+  /// "Aucune"
+  /// ```
+  String get none => """Aucune""";
+
+  /// ```dart
+  /// "Les nouveaux articles restent sur la liste après avoir été complétés."
+  /// ```
+  String get noneHint =>
+      """Les nouveaux articles restent sur la liste après avoir été complétés.""";
+
+  /// ```dart
+  /// "Unique"
+  /// ```
+  String get once => """Unique""";
+
+  /// ```dart
+  /// "Les nouveaux articles sont supprimés de la liste une fois complétés."
+  /// ```
+  String get onceHint =>
+      """Les nouveaux articles sont supprimés de la liste une fois complétés.""";
+
+  /// ```dart
+  /// "Récurrent"
+  /// ```
+  String get recurring => """Récurrent""";
+
+  /// ```dart
+  /// "Les nouveaux articles reviennent selon l'horaire ci-dessous."
+  /// ```
+  String get recurringHint =>
+      """Les nouveaux articles reviennent selon l'horaire ci-dessous.""";
 }
 
 class ItemTypesChecklistsMessagesFr extends ItemTypesChecklistsMessages {
@@ -6959,6 +7016,19 @@ Mot de passe : pantry-rocks""",
   """checklists.viewList""": """Vue liste""",
   """checklists.viewCards""": """Vue cartes""",
   """checklists.listColor""": """Couleur""",
+  """checklists.listRecurrence.label""": """Récurrence par défaut""",
+  """checklists.listRecurrence.remember""": """Mémoriser la dernière""",
+  """checklists.listRecurrence.rememberHint""":
+      """Les nouveaux articles démarrent avec la même récurrence que le dernier article ajouté à cette liste.""",
+  """checklists.listRecurrence.none""": """Aucune""",
+  """checklists.listRecurrence.noneHint""":
+      """Les nouveaux articles restent sur la liste après avoir été complétés.""",
+  """checklists.listRecurrence.once""": """Unique""",
+  """checklists.listRecurrence.onceHint""":
+      """Les nouveaux articles sont supprimés de la liste une fois complétés.""",
+  """checklists.listRecurrence.recurring""": """Récurrent""",
+  """checklists.listRecurrence.recurringHint""":
+      """Les nouveaux articles reviennent selon l'horaire ci-dessous.""",
   """checklists.itemTypes.label""": """Type d'article""",
   """checklists.itemTypes.staple""": """Habituel""",
   """checklists.itemTypes.stapleBody""":

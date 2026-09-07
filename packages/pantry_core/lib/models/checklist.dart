@@ -1,4 +1,5 @@
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 
 /// Sentinel id used by the synthetic "All lists" meta view. Real list ids on
@@ -14,8 +15,23 @@ class ChecklistList {
   final String icon;
   final String? color;
   final int sortOrder;
-  final bool deleteOnDoneDefault;
+
+  /// The recurrence policy an editor picked for this list's new items. See
+  /// [ChecklistRecurrence.recurrenceDefault] for what it resolves to.
+  final ListRecurrenceMode defaultRecurrenceMode;
+
+  /// The recurrence new items actually start with. Tracks the last item added
+  /// while [defaultRecurrenceMode] is [ListRecurrenceMode.remember].
+  final ListRecurrenceKind defaultRecurrenceKind;
+  final String? defaultRrule;
+  final bool defaultRepeatFromCompletion;
   final bool hideProgressHero;
+
+  /// Whether new items are removed once completed. Derived, and the only shape
+  /// of the recurrence default that servers without
+  /// [kListDefaultRecurrenceFeature] understand.
+  bool get deleteOnDoneDefault =>
+      defaultRecurrenceKind == ListRecurrenceKind.once;
   final int createdAt;
   final int updatedAt;
 
@@ -46,7 +62,10 @@ class ChecklistList {
     required this.icon,
     this.color,
     required this.sortOrder,
-    this.deleteOnDoneDefault = false,
+    this.defaultRecurrenceMode = ListRecurrenceMode.remember,
+    this.defaultRecurrenceKind = ListRecurrenceKind.none,
+    this.defaultRrule,
+    this.defaultRepeatFromCompletion = false,
     this.hideProgressHero = false,
     required this.createdAt,
     required this.updatedAt,
@@ -64,7 +83,19 @@ class ChecklistList {
     icon: json['icon'] as String,
     color: json['color'] as String?,
     sortOrder: json['sortOrder'] as int,
-    deleteOnDoneDefault: json['deleteOnDoneDefault'] as bool? ?? false,
+    defaultRecurrenceMode: ListRecurrenceMode.parse(
+      json['defaultRecurrenceMode'],
+    ),
+    // Servers without the recurrence default describe it only as the "one-time"
+    // flag, which lands on the same effective recurrence.
+    defaultRecurrenceKind: json.containsKey('defaultRecurrenceKind')
+        ? ListRecurrenceKind.parse(json['defaultRecurrenceKind'])
+        : ((json['deleteOnDoneDefault'] as bool? ?? false)
+              ? ListRecurrenceKind.once
+              : ListRecurrenceKind.none),
+    defaultRrule: json['defaultRrule'] as String?,
+    defaultRepeatFromCompletion:
+        json['defaultRepeatFromCompletion'] as bool? ?? false,
     hideProgressHero: json['hideProgressHero'] as bool? ?? false,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
@@ -83,6 +114,10 @@ class ChecklistList {
     'color': color,
     'sortOrder': sortOrder,
     'deleteOnDoneDefault': deleteOnDoneDefault,
+    'defaultRecurrenceMode': defaultRecurrenceMode.wire,
+    'defaultRecurrenceKind': defaultRecurrenceKind.wire,
+    'defaultRrule': defaultRrule,
+    'defaultRepeatFromCompletion': defaultRepeatFromCompletion,
     'hideProgressHero': hideProgressHero,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
@@ -99,7 +134,11 @@ class ChecklistList {
     String? icon,
     String? color,
     int? sortOrder,
-    bool? deleteOnDoneDefault,
+    ListRecurrenceMode? defaultRecurrenceMode,
+    ListRecurrenceKind? defaultRecurrenceKind,
+    String? defaultRrule,
+    bool clearDefaultRrule = false,
+    bool? defaultRepeatFromCompletion,
     bool? hideProgressHero,
     int? updatedAt,
     int? deletedAt,
@@ -114,7 +153,13 @@ class ChecklistList {
     icon: icon ?? this.icon,
     color: color ?? this.color,
     sortOrder: sortOrder ?? this.sortOrder,
-    deleteOnDoneDefault: deleteOnDoneDefault ?? this.deleteOnDoneDefault,
+    defaultRecurrenceMode: defaultRecurrenceMode ?? this.defaultRecurrenceMode,
+    defaultRecurrenceKind: defaultRecurrenceKind ?? this.defaultRecurrenceKind,
+    defaultRrule: clearDefaultRrule
+        ? null
+        : (defaultRrule ?? this.defaultRrule),
+    defaultRepeatFromCompletion:
+        defaultRepeatFromCompletion ?? this.defaultRepeatFromCompletion,
     hideProgressHero: hideProgressHero ?? this.hideProgressHero,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -141,6 +186,31 @@ extension ChecklistSharing on ChecklistList {
   /// `share-users`; otherwise falls back to the house-level [houseCanEdit].
   bool canEditSettingsWith(bool houseCanEdit) =>
       hasFeature('share-users') ? (canEdit ?? houseCanEdit) : houseCanEdit;
+}
+
+extension ChecklistRecurrence on ChecklistList {
+  /// The recurrence new items on this list start with. A pinned mode names it
+  /// outright; [ListRecurrenceMode.remember] defers to whatever the last item
+  /// added used, which the add-item form reports back.
+  ///
+  /// Servers without [kListDefaultRecurrenceFeature] only ever store the
+  /// "one-time" flag, and the add-item form has always rewritten it — which is
+  /// exactly the remembering policy, narrowed to two of the three recurrences.
+  ListRecurrenceDefault get recurrenceDefault {
+    if (!hasFeature(kListDefaultRecurrenceFeature)) {
+      return ListRecurrenceDefault(
+        kind: defaultRecurrenceKind,
+        remembers: true,
+      );
+    }
+    final pinned = defaultRecurrenceMode.pinned;
+    return ListRecurrenceDefault(
+      kind: pinned ?? defaultRecurrenceKind,
+      rrule: defaultRrule,
+      repeatFromCompletion: defaultRepeatFromCompletion,
+      remembers: pinned == null,
+    );
+  }
 }
 
 /// A single price entry for an item. [storeId] `null` is the store-less

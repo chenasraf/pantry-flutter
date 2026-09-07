@@ -2959,6 +2959,8 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "צבע"
   /// ```
   String get listColor => """צבע""";
+  ListRecurrenceChecklistsMessagesHe get listRecurrence =>
+      ListRecurrenceChecklistsMessagesHe(this);
   ItemTypesChecklistsMessagesHe get itemTypes =>
       ItemTypesChecklistsMessagesHe(this);
   ComposeChecklistsMessagesHe get compose => ComposeChecklistsMessagesHe(this);
@@ -3715,6 +3717,60 @@ class ResetOrderChecklistsMessagesHe extends ResetOrderChecklistsMessages {
   /// "שם ת׳–א׳"
   /// ```
   String get basisNameDesc => """שם ת׳–א׳""";
+}
+
+class ListRecurrenceChecklistsMessagesHe
+    extends ListRecurrenceChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const ListRecurrenceChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "חזרתיות ברירת מחדל"
+  /// ```
+  String get label => """חזרתיות ברירת מחדל""";
+
+  /// ```dart
+  /// "לזכור את האחרון"
+  /// ```
+  String get remember => """לזכור את האחרון""";
+
+  /// ```dart
+  /// "פריטים חדשים מתחילים עם אותה חזרתיות כמו הפריט האחרון שנוסף לרשימה הזו."
+  /// ```
+  String get rememberHint =>
+      """פריטים חדשים מתחילים עם אותה חזרתיות כמו הפריט האחרון שנוסף לרשימה הזו.""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get none => """ללא""";
+
+  /// ```dart
+  /// "פריטים חדשים נשארים ברשימה אחרי שמסמנים אותם כבוצעו."
+  /// ```
+  String get noneHint =>
+      """פריטים חדשים נשארים ברשימה אחרי שמסמנים אותם כבוצעו.""";
+
+  /// ```dart
+  /// "חד-פעמי"
+  /// ```
+  String get once => """חד-פעמי""";
+
+  /// ```dart
+  /// "פריטים חדשים מוסרים מהרשימה ברגע שמסמנים אותם כבוצעו."
+  /// ```
+  String get onceHint =>
+      """פריטים חדשים מוסרים מהרשימה ברגע שמסמנים אותם כבוצעו.""";
+
+  /// ```dart
+  /// "חוזר"
+  /// ```
+  String get recurring => """חוזר""";
+
+  /// ```dart
+  /// "פריטים חדשים חוזרים לפי לוח הזמנים שלמטה."
+  /// ```
+  String get recurringHint => """פריטים חדשים חוזרים לפי לוח הזמנים שלמטה.""";
 }
 
 class ItemTypesChecklistsMessagesHe extends ItemTypesChecklistsMessages {
@@ -6848,6 +6904,19 @@ Map<String, String> get messagesHeMap => {
   """checklists.viewList""": """תצוגת רשימה""",
   """checklists.viewCards""": """תצוגת כרטיסים""",
   """checklists.listColor""": """צבע""",
+  """checklists.listRecurrence.label""": """חזרתיות ברירת מחדל""",
+  """checklists.listRecurrence.remember""": """לזכור את האחרון""",
+  """checklists.listRecurrence.rememberHint""":
+      """פריטים חדשים מתחילים עם אותה חזרתיות כמו הפריט האחרון שנוסף לרשימה הזו.""",
+  """checklists.listRecurrence.none""": """ללא""",
+  """checklists.listRecurrence.noneHint""":
+      """פריטים חדשים נשארים ברשימה אחרי שמסמנים אותם כבוצעו.""",
+  """checklists.listRecurrence.once""": """חד-פעמי""",
+  """checklists.listRecurrence.onceHint""":
+      """פריטים חדשים מוסרים מהרשימה ברגע שמסמנים אותם כבוצעו.""",
+  """checklists.listRecurrence.recurring""": """חוזר""",
+  """checklists.listRecurrence.recurringHint""":
+      """פריטים חדשים חוזרים לפי לוח הזמנים שלמטה.""",
   """checklists.itemTypes.label""": """סוג פריט""",
   """checklists.itemTypes.staple""": """קבוע""",
   """checklists.itemTypes.stapleBody""":

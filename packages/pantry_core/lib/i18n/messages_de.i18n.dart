@@ -2985,6 +2985,8 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Farbe"
   /// ```
   String get listColor => """Farbe""";
+  ListRecurrenceChecklistsMessagesDe get listRecurrence =>
+      ListRecurrenceChecklistsMessagesDe(this);
   ItemTypesChecklistsMessagesDe get itemTypes =>
       ItemTypesChecklistsMessagesDe(this);
   ComposeChecklistsMessagesDe get compose => ComposeChecklistsMessagesDe(this);
@@ -3748,6 +3750,61 @@ class ResetOrderChecklistsMessagesDe extends ResetOrderChecklistsMessages {
   /// "Name Z–A"
   /// ```
   String get basisNameDesc => """Name Z–A""";
+}
+
+class ListRecurrenceChecklistsMessagesDe
+    extends ListRecurrenceChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const ListRecurrenceChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Standard-Wiederholung"
+  /// ```
+  String get label => """Standard-Wiederholung""";
+
+  /// ```dart
+  /// "Letzte merken"
+  /// ```
+  String get remember => """Letzte merken""";
+
+  /// ```dart
+  /// "Neue Einträge starten mit derselben Wiederholung wie der zuletzt zu dieser Liste hinzugefügte Eintrag."
+  /// ```
+  String get rememberHint =>
+      """Neue Einträge starten mit derselben Wiederholung wie der zuletzt zu dieser Liste hinzugefügte Eintrag.""";
+
+  /// ```dart
+  /// "Keine"
+  /// ```
+  String get none => """Keine""";
+
+  /// ```dart
+  /// "Neue Einträge bleiben auf der Liste, nachdem sie erledigt wurden."
+  /// ```
+  String get noneHint =>
+      """Neue Einträge bleiben auf der Liste, nachdem sie erledigt wurden.""";
+
+  /// ```dart
+  /// "Einmalig"
+  /// ```
+  String get once => """Einmalig""";
+
+  /// ```dart
+  /// "Neue Einträge werden entfernt, sobald sie erledigt wurden."
+  /// ```
+  String get onceHint =>
+      """Neue Einträge werden entfernt, sobald sie erledigt wurden.""";
+
+  /// ```dart
+  /// "Wiederkehrend"
+  /// ```
+  String get recurring => """Wiederkehrend""";
+
+  /// ```dart
+  /// "Neue Einträge kommen nach dem Zeitplan unten zurück."
+  /// ```
+  String get recurringHint =>
+      """Neue Einträge kommen nach dem Zeitplan unten zurück.""";
 }
 
 class ItemTypesChecklistsMessagesDe extends ItemTypesChecklistsMessages {
@@ -6963,6 +7020,19 @@ Passwort: pantry-rocks""",
   """checklists.viewList""": """Listenansicht""",
   """checklists.viewCards""": """Kartenansicht""",
   """checklists.listColor""": """Farbe""",
+  """checklists.listRecurrence.label""": """Standard-Wiederholung""",
+  """checklists.listRecurrence.remember""": """Letzte merken""",
+  """checklists.listRecurrence.rememberHint""":
+      """Neue Einträge starten mit derselben Wiederholung wie der zuletzt zu dieser Liste hinzugefügte Eintrag.""",
+  """checklists.listRecurrence.none""": """Keine""",
+  """checklists.listRecurrence.noneHint""":
+      """Neue Einträge bleiben auf der Liste, nachdem sie erledigt wurden.""",
+  """checklists.listRecurrence.once""": """Einmalig""",
+  """checklists.listRecurrence.onceHint""":
+      """Neue Einträge werden entfernt, sobald sie erledigt wurden.""",
+  """checklists.listRecurrence.recurring""": """Wiederkehrend""",
+  """checklists.listRecurrence.recurringHint""":
+      """Neue Einträge kommen nach dem Zeitplan unten zurück.""",
   """checklists.itemTypes.label""": """Eintragstyp""",
   """checklists.itemTypes.staple""": """Standard""",
   """checklists.itemTypes.stapleBody""":

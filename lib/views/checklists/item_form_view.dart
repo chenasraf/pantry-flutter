@@ -26,6 +26,7 @@ import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/models/list_recurrence.dart';
 import 'checklists_controller.dart';
 import 'form_components.dart';
 import 'item_form_fields.dart';
@@ -123,16 +124,21 @@ class _ItemFormViewState extends State<ItemFormView> {
     _selectedCategoryId = item?.categoryId;
     _selectedStoreIds.addAll(item?.storeIds ?? const []);
     _selectedLabelIds.addAll(item?.labelIds ?? const []);
-    _recurrence = RecurrenceState.fromRrule(
-      item?.rrule,
-      repeatFromCompletion: item?.repeatFromCompletion ?? false,
-    );
     if (item != null) {
+      _recurrence = RecurrenceState.fromRrule(
+        item.rrule,
+        repeatFromCompletion: item.repeatFromCompletion,
+      );
       _lifecycle = lifecycleOf(item);
     } else {
-      _lifecycle = (widget.controller.currentList?.deleteOnDoneDefault ?? false)
-          ? ItemLifecycle.once
-          : ItemLifecycle.staple;
+      final recurrenceDefault =
+          widget.controller.currentList?.recurrenceDefault ??
+          ListRecurrenceDefault.neutral;
+      _recurrence = RecurrenceState.fromRrule(
+        recurrenceDefault.effectiveRrule,
+        repeatFromCompletion: recurrenceDefault.repeatFromCompletion,
+      );
+      _lifecycle = recurrenceDefault.kind.lifecycle;
     }
     _priceEnabled = hasFeature('item-price');
     _prices = item != null
@@ -183,11 +189,6 @@ class _ItemFormViewState extends State<ItemFormView> {
   void _setLifecycle(ItemLifecycle next) {
     if (next == _lifecycle) return;
     setState(() => _lifecycle = next);
-    // Mirror the compose bar's behavior: on creation, choosing "one-time"
-    // updates the list's default so the next blank item starts there too.
-    if (!_isEditing) {
-      widget.controller.setListDeleteOnDoneDefault(next == ItemLifecycle.once);
-    }
   }
 
   void _stepQty(int dir) {
@@ -259,6 +260,7 @@ class _ItemFormViewState extends State<ItemFormView> {
               ? _selectedLabelIds.toList()
               : null,
           rrule: isRecurring ? effectiveRrule : null,
+          repeatFromCompletion: effectiveRepeatFromCompletion,
           deleteOnDone: isOnce,
           prices: _priceEnabled && _prices.hasAnyPrice
               ? _prices.toItemPrices()
@@ -266,6 +268,13 @@ class _ItemFormViewState extends State<ItemFormView> {
           customFields: _customFieldsEnabled && _customFields.isNotEmpty
               ? _customFields
               : null,
+        );
+        // Mirror the compose bar: a list that follows the last item added
+        // starts the next one on the recurrence this item used.
+        await widget.controller.setListRecurrenceDefault(
+          kind: _lifecycle.recurrenceKind,
+          rrule: isRecurring ? effectiveRrule : null,
+          repeatFromCompletion: effectiveRepeatFromCompletion,
         );
       }
       // Remember the currency only when the saved item actually has a price.

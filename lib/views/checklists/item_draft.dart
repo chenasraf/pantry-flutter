@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/utils/currencies.dart';
 import 'form_components.dart';
 import 'price_input.dart';
@@ -36,15 +37,23 @@ class ItemDraft {
   /// untouched item falls back to the fields' default seeds.
   List<FieldValue> customFields = const [];
 
-  void reset(ItemLifecycle defaultLifecycle) {
+  /// Start this draft on the recurrence [recurrenceDefault] describes.
+  void applyRecurrenceDefault(ListRecurrenceDefault recurrenceDefault) {
+    lifecycle = recurrenceDefault.kind.lifecycle;
+    recurrence = RecurrenceState.fromRrule(
+      recurrenceDefault.effectiveRrule,
+      repeatFromCompletion: recurrenceDefault.repeatFromCompletion,
+    );
+  }
+
+  void reset(ListRecurrenceDefault recurrenceDefault) {
     name = '';
     description = '';
     quantity = '';
     categoryId = null;
     storeIds = {};
     labelIds = {};
-    lifecycle = defaultLifecycle;
-    recurrence = RecurrenceState();
+    applyRecurrenceDefault(recurrenceDefault);
     imageFile = null;
     imageBytes = null;
     barcode = null;
