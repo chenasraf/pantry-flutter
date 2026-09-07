@@ -3,7 +3,11 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- The CAMERA permission implies both of these as required features, and
+         Play filters the app off every device missing one. The scanner is one
+         way to add an item among several, so neither is worth a device for. -->
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <application
         android:label="Pantry"
         android:name="${applicationName}"
