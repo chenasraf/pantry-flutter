@@ -296,17 +296,23 @@ class _RotaryScrollableState extends State<RotaryScrollable> {
     final from = _target ?? position.pixels;
     // The axis reports the opposite of what the wrist means: turning the bezel
     // clockwise reads negative, and clockwise has to scroll down.
-    _target = (from - detent * widget.pixelsPerDetent).clamp(
+    final target = (from - detent * widget.pixelsPerDetent).clamp(
       position.minScrollExtent,
       position.maxScrollExtent,
     );
+    _target = target;
     controller
         .animateTo(
-          _target!,
+          target,
           duration: const Duration(milliseconds: 110),
           curve: Curves.easeOutCubic,
         )
-        .whenComplete(() => _target = null);
+        // Only when nothing newer has been aimed at — a cancelled animation's
+        // future completes too, so clearing unconditionally discarded the
+        // detent that interrupted this one and stalled a fast turn.
+        .whenComplete(() {
+          if (_target == target) _target = null;
+        });
   }
 
   @override

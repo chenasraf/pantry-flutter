@@ -295,7 +295,15 @@ class SnapFocusListState extends State<SnapFocusList> {
           duration: const Duration(milliseconds: 140),
           curve: Curves.easeOutCubic,
         )
-        .whenComplete(() => _stepTarget = null);
+        // Only when nothing newer has been aimed at. A detent arriving
+        // mid-flight replaces the target and cancels this animation, and a
+        // cancelled animation's future completes just like a finished one —
+        // so clearing unconditionally threw away the aim that superseded it,
+        // and every later detent in the turn measured from a list still in
+        // motion. Ten detents carried one row instead of ten.
+        .whenComplete(() {
+          if (_stepTarget == target) _stepTarget = null;
+        });
   }
 
   /// Whether a tap on [index] acts, or only brings the row within reach.
