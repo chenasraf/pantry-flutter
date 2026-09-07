@@ -73,6 +73,8 @@ dependencies:
   flutter_cache_manager: ^3.4.2
   app_links: ^7.2.1
   quick_actions: ^1.1.0
+  window_manager: ^0.5.2
+  screen_retriever: ^0.2.2
 
 dev_dependencies:
   flutter_test:

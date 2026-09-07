@@ -1,3 +1,5 @@
+import 'dart:ui' show Rect, Size;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -6,6 +8,7 @@ import 'package:pantry_core/models/nav_section.dart';
 part 'prefs_service.checklist.dart';
 part 'prefs_service.appearance.dart';
 part 'prefs_service.sync.dart';
+part 'prefs_service.window.dart';
 
 class PrefsService extends ChangeNotifier {
   PrefsService._();
@@ -60,6 +63,8 @@ class PrefsService extends ChangeNotifier {
   static const _wearPollSecondsKey = 'wear_poll_seconds';
   static const _wearCrownTurnsPagesKey = 'wear_crown_turns_pages';
   static const _wearUndoSecondsKey = 'wear_undo_seconds';
+  static const _windowBoundsKey = 'window_bounds';
+  static const _windowMaximizedKey = 'window_maximized';
 
   /// Allowed auto-refresh intervals in seconds. 0 means "off" (no background
   /// polling; manual pull-to-refresh only).
@@ -305,6 +310,16 @@ class PrefsService extends ChangeNotifier {
   int _wearUndoSeconds = 2;
   int get wearUndoSeconds => _wearUndoSeconds;
 
+  /// The desktop window's frame in logical pixels, as it was last seen
+  /// un-maximized. A maximized window keeps reporting the screen's frame, so
+  /// storing that would lose the size to restore to on un-maximize — hence
+  /// this pairs with [windowMaximized] rather than absorbing it.
+  Rect? _windowBounds;
+  Rect? get windowBounds => _windowBounds;
+
+  bool _windowMaximized = false;
+  bool get windowMaximized => _windowMaximized;
+
   /// The shopping interval with [shoppingRefreshInherit] resolved to the
   /// current checklist interval, so callers get a concrete seconds value.
   int get shoppingRefreshSecondsResolved =>
@@ -495,6 +510,9 @@ class PrefsService extends ChangeNotifier {
     if (wearUndo != null && validUndoSeconds.contains(wearUndo)) {
       _wearUndoSeconds = wearUndo;
     }
+
+    _windowBounds = decodeWindowBounds(all[_windowBoundsKey]);
+    _windowMaximized = all[_windowMaximizedKey] == 'true';
   }
 
   Future<void> setLastHouseId(int id) async {

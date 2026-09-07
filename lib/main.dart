@@ -39,6 +39,7 @@ import 'package:pantry_core/services/theming_service.dart';
 import 'services/widget_interactivity.dart';
 import 'services/widget_service.dart';
 import 'services/widget_theme.dart';
+import 'services/window_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'views/home/home_view.dart';
@@ -115,6 +116,10 @@ void main() async {
     LocalNotificationsService.instance.init(),
     PackageInfo.fromPlatform().then((info) => appVersion = info.version),
   ]);
+  // Ahead of the rest of startup: on macOS the window is waiting on this to
+  // appear at all, and every desktop wants its frame settled before the first
+  // frame is painted into it.
+  await WindowService.instance.restore();
   // Install pinned-cert HttpOverrides before any HTTP call fires so user-trusted
   // self-signed certs are accepted from the first request (fetches start below).
   CertTrustService.instance.install();

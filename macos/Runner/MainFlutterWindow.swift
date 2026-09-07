@@ -1,8 +1,16 @@
 import AuthenticationServices
 import Cocoa
 import FlutterMacOS
+import window_manager
 
 class MainFlutterWindow: NSWindow {
+  // Hold the window back on the first ordering so it is never seen at the
+  // storyboard's frame; Dart restores the remembered one and shows it.
+  override public func order(_ place: NSWindow.OrderingMode, relativeTo otherWin: Int) {
+    super.order(place, relativeTo: otherWin)
+    self.hiddenWindowAtLaunch()
+  }
+
   override func awakeFromNib() {
     let flutterViewController = FlutterViewController()
     let windowFrame = self.frame
