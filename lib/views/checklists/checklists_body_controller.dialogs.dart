@@ -27,36 +27,45 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
     );
   }
 
-  /// Handles a tap on a live reuse suggestion: confirms the user
-  /// wants the tapped item instead of adding a new one, then reuses it —
-  /// un-checking it if it was already done. Returns true when reused so the
-  /// compose bar clears its input.
+  /// Handles a tap on a live reuse suggestion: reuses the tapped item —
+  /// un-checking it if it was already done — prompting first only under the
+  /// "ask" reuse mode. The tap is itself an explicit request to reuse that one
+  /// item, so the pref only governs whether we confirm on top of it and
+  /// "never" reuses without a prompt rather than refusing. Returns true when
+  /// reused so the compose bar clears its input.
   Future<bool> reuseFromSuggestion(BuildContext context, ListItem item) async {
-    // An archived suggestion is unarchived on confirm, so it warns the user and
-    // takes the unarchive path instead of the plain done-toggle reuse.
+    // Reusing an archived suggestion unarchives it, so it warns the user in the
+    // prompt and takes the unarchive path over the plain done-toggle reuse.
     final archived = item.archivedAt != null;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(m.checklists.reuse.dialogTitle),
-        content: Text(
-          archived
-              ? m.checklists.reuse.archivedDialogBody(item.name)
-              : m.checklists.reuse.dialogBody(item.name),
+    // A server that doesn't advertise the capability never synced a mode, so
+    // the local pref reflects nothing it would honor — keep confirming there.
+    final mode = hasFeature('reuse-existing-items')
+        ? PrefsService.instance.reuseExistingItems
+        : 'ask';
+    if (mode == 'ask') {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(m.checklists.reuse.dialogTitle),
+          content: Text(
+            archived
+                ? m.checklists.reuse.archivedDialogBody(item.name)
+                : m.checklists.reuse.dialogBody(item.name),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(m.common.cancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(m.checklists.reuse.reuseExisting),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(m.common.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(m.checklists.reuse.reuseExisting),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || !context.mounted) return false;
+      );
+      if (confirmed != true || !context.mounted) return false;
+    }
     if (archived) {
       await domain.reuseArchivedItem(item);
     } else {
