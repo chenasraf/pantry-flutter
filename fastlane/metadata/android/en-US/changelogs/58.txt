@@ -1,0 +1,11 @@
+Features
+- a Pantry companion app for your Wear OS watch ([#168](https://github.com/chenasraf/pantry-flutter/issues/168))
+- auto-detect links in text fields
+- choose the recurrence new items start with, per list
+- repeat on a weekday of the month, or a date each year
+Bug Fixes
+- keep the add-item box clear of the system navigation bar
+- make the app available on Android devices without camera autofocus
+- allow selecting text after removing a link
+
+… see full notes on GitHub.

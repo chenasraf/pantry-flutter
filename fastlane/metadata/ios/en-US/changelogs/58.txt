@@ -1,0 +1,12 @@
+Features
+- auto-detect links in text fields
+- choose the recurrence new items start with, per list
+- repeat on a weekday of the month, or a date each year
+Bug Fixes
+- allow selecting text after removing a link
+- keep the cursor in place while typing in rich text
+- rename "Item type" to "Recurrence"
+- keep your login and settings when secure storage can't be unlocked
+- keep a ticked checkbox ticked when the list refreshes
+
+… see full notes on GitHub.
