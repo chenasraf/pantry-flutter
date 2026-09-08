@@ -15,9 +15,9 @@ Category _cat(int id, String name, {int sortOrder = 0}) => Category(
 
 void main() {
   group('CategoryService.sortCategories', () {
-    test('custom sort breaks sortOrder ties by id (creation order)', () {
-      // Every category shares sortOrder 0 — the state fresh categories are in
-      // before any reorder. The order must follow id, not input order.
+    test('custom sort breaks sortOrder ties by name', () {
+      // Every category shares sortOrder 0, the state of categories waiting on
+      // their first sync. The order must follow name, not input order.
       final input = [
         _cat(3, 'Aisle 3'),
         _cat(1, 'Aisle 1'),
@@ -27,6 +27,12 @@ void main() {
       expect(sorted.map((c) => c.id), [1, 2, 3]);
     });
 
+    test('custom sort falls through to id when the name ties too', () {
+      final input = [_cat(9, 'Dairy'), _cat(4, 'Dairy'), _cat(6, 'Apples')];
+      final sorted = CategoryService.sortCategories(input, 'custom');
+      expect(sorted.map((c) => c.id), [6, 4, 9]);
+    });
+
     test(
       'custom sort is stable across repeated calls with equal sortOrder',
       () {
@@ -34,7 +40,7 @@ void main() {
         final first = CategoryService.sortCategories(a, 'custom');
         final second = CategoryService.sortCategories(first, 'custom');
         expect(first.map((c) => c.id), second.map((c) => c.id));
-        expect(first.map((c) => c.id), [5, 7, 10]);
+        expect(first.map((c) => c.id), [5, 10, 7]);
       },
     );
 

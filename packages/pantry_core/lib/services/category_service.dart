@@ -64,9 +64,10 @@ class CategoryService {
     String sort,
   ) {
     final list = categories.toList();
-    // Fall back to id (creation order) as a final tiebreaker: fresh categories
-    // share the same sortOrder until reordered, so without it the custom list
-    // would reshuffle unpredictably as categories are added.
+    // Categories waiting on their first sync carry a placeholder sortOrder, so
+    // custom order settles ties on name and then id (creation order) — the way
+    // the server and the shopping screen settle them — instead of reshuffling
+    // as categories are added.
     switch (sort) {
       case 'name_asc':
         list.sort((a, b) {
@@ -82,7 +83,9 @@ class CategoryService {
       default:
         list.sort((a, b) {
           final c = a.sortOrder.compareTo(b.sortOrder);
-          return c != 0 ? c : a.id.compareTo(b.id);
+          if (c != 0) return c;
+          final n = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+          return n != 0 ? n : a.id.compareTo(b.id);
         });
     }
     return list;
