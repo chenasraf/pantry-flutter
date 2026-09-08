@@ -4854,11 +4854,6 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get anyStore => """כל חנות""";
 
   /// ```dart
-  /// "שמירת הסכום נכשלה."
-  /// ```
-  String get saveTotalFailed => """שמירת הסכום נכשלה.""";
-
-  /// ```dart
   /// "תזכורות"
   /// ```
   String get remindersTitle => """תזכורות""";
@@ -7225,7 +7220,6 @@ Map<String, String> get messagesHeMap => {
   """shopping.actualPaid""": """שולם בפועל""",
   """shopping.grandTotal""": """סך הכול""",
   """shopping.anyStore""": """כל חנות""",
-  """shopping.saveTotalFailed""": """שמירת הסכום נכשלה.""",
   """shopping.remindersTitle""": """תזכורות""",
   """shopping.manageReminders""": """ניהול תזכורות""",
   """shopping.reminderGroupStart""": """בהתחלה""",

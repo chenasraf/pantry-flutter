@@ -1072,7 +1072,6 @@ shopping:
   itemsWithoutPrice(int count): "${_plural(count, one: '1 vare utan pris', many: '$count varer utan pris')}"
   itemsStillUnchecked(int count): "${_plural(count, one: '1 vare enno ikkje kryssa av', many: '$count varer enno ikkje kryssa av')}"
   anyStore: Kva som helst butikk
-  saveTotalFailed: Klarte ikkje å lagre summen.
   remindersTitle: Påminningar
   manageReminders: Handter påminningar
   reminderGroupStart: Ved start

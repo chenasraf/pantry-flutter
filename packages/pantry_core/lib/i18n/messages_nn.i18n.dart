@@ -4878,11 +4878,6 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get anyStore => """Kva som helst butikk""";
 
   /// ```dart
-  /// "Klarte ikkje å lagre summen."
-  /// ```
-  String get saveTotalFailed => """Klarte ikkje å lagre summen.""";
-
-  /// ```dart
   /// "Påminningar"
   /// ```
   String get remindersTitle => """Påminningar""";
@@ -7300,7 +7295,6 @@ Passord: pantry""",
   """shopping.actualPaid""": """Faktisk betalt""",
   """shopping.grandTotal""": """Totalsum""",
   """shopping.anyStore""": """Kva som helst butikk""",
-  """shopping.saveTotalFailed""": """Klarte ikkje å lagre summen.""",
   """shopping.remindersTitle""": """Påminningar""",
   """shopping.manageReminders""": """Handter påminningar""",
   """shopping.reminderGroupStart""": """Ved start""",

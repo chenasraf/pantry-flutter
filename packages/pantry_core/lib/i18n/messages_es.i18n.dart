@@ -4890,11 +4890,6 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get anyStore => """Cualquier tienda""";
 
   /// ```dart
-  /// "No se pudo guardar el total."
-  /// ```
-  String get saveTotalFailed => """No se pudo guardar el total.""";
-
-  /// ```dart
   /// "Recordatorios"
   /// ```
   String get remindersTitle => """Recordatorios""";
@@ -7329,7 +7324,6 @@ Contraseña: pantry-rocks""",
   """shopping.actualPaid""": """Pagado real""",
   """shopping.grandTotal""": """Total""",
   """shopping.anyStore""": """Cualquier tienda""",
-  """shopping.saveTotalFailed""": """No se pudo guardar el total.""",
   """shopping.remindersTitle""": """Recordatorios""",
   """shopping.manageReminders""": """Gestionar recordatorios""",
   """shopping.reminderGroupStart""": """Al empezar""",

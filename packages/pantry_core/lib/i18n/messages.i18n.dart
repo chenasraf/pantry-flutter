@@ -4845,11 +4845,6 @@ class ShoppingMessages {
   String get anyStore => """Any store""";
 
   /// ```dart
-  /// "Failed to save the total."
-  /// ```
-  String get saveTotalFailed => """Failed to save the total.""";
-
-  /// ```dart
   /// "Reminders"
   /// ```
   String get remindersTitle => """Reminders""";
@@ -7240,7 +7235,6 @@ Password: pantry-rocks""",
   """shopping.actualPaid""": """Actual paid""",
   """shopping.grandTotal""": """Grand total""",
   """shopping.anyStore""": """Any store""",
-  """shopping.saveTotalFailed""": """Failed to save the total.""",
   """shopping.remindersTitle""": """Reminders""",
   """shopping.manageReminders""": """Manage reminders""",
   """shopping.reminderGroupStart""": """At start""",

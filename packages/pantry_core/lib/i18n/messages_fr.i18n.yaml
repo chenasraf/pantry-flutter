@@ -933,7 +933,6 @@ shopping:
   itemsWithoutPrice(int count): "${_plural(count, one: '1 article sans prix', many: '$count articles sans prix')}"
   itemsStillUnchecked(int count): "${_plural(count, one: '1 article non coché', many: '$count articles non cochés')}"
   anyStore: N'importe quel magasin
-  saveTotalFailed: Impossible d'enregistrer le total.
   remindersTitle: Rappels
   manageReminders: Gérer les rappels
   reminderGroupStart: Au début

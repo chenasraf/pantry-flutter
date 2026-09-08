@@ -8,6 +8,9 @@ import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
+import 'package:pantry_core/sync/sync_ids.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/currencies.dart';
 import 'package:pantry_core/utils/price.dart';
@@ -116,42 +119,70 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
     }
   }
 
+  /// What the screen draws: the fetched review with the queue laid over it.
+  ShoppingReview? get _shownReview {
+    final review = _review;
+    return review == null ? null : _withPendingBilled(review);
+  }
+
   /// The store groups to render. In advance mode, only the store being left.
-  List<ShoppingReviewStore> get _visibleStores {
-    final all = _review?.stores ?? const [];
+  List<ShoppingReviewStore> _visibleStores(ShoppingReview? review) {
+    final all = review?.stores ?? const <ShoppingReviewStore>[];
     if (widget.mode != ShoppingReviewMode.advance) return all;
     return all.where((s) => s.storeId == widget.activeStoreId).toList();
   }
 
-  Future<void> _saveBilled(
-    ShoppingReviewStore store,
-    double? total,
-    String currency,
-  ) async {
+  /// Record what a till charged. Queued, not sent: it is the one figure the
+  /// user is standing at a till to type, and a till is where the link is worst.
+  /// Safe to queue because a billed total is an absolute write — it converges
+  /// rather than accumulating, so landing after someone else set the same field
+  /// does not double it.
+  void _saveBilled(ShoppingReviewStore store, double? total, String currency) {
     _rememberCurrency(currency);
-    try {
-      if (store.storeId == null) {
-        await _service.setSessionBilled(
-          widget.houseId,
-          widget.sessionId,
-          billedTotal: total,
-          billedCurrency: total == null ? null : currency,
-        );
-      } else {
-        await _service.setStoreBilled(
-          widget.houseId,
-          widget.sessionId,
-          store.storeId!,
-          billedTotal: total,
-          billedCurrency: total == null ? null : currency,
-        );
-      }
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.shopping.saveTotalFailed)));
-    }
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.shoppingSession,
+        op: SyncOpKind.update,
+        houseId: widget.houseId,
+        parentId: widget.sessionId,
+        entityId: store.storeId,
+        body: {
+          'billedTotal': total,
+          'billedCurrency': total == null ? null : currency,
+        },
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+    // The figure is now the queue's, so anything drawn from the fetched review
+    // — this screen on its next build, and the read-only totals — has to read
+    // it through the overlay.
+    if (mounted) setState(() {});
+  }
+
+  /// [review] with every billed total still waiting in the queue laid back over
+  /// it. The queue wins over any snapshot: a review fetched after a figure was
+  /// typed but before it drained still carries the server's older value.
+  ShoppingReview _withPendingBilled(ShoppingReview review) {
+    final pending = SyncManager.instance.pendingSessionBilled(
+      widget.houseId,
+      widget.sessionId,
+    );
+    if (pending.isEmpty) return review;
+    return ShoppingReview(
+      stores: [
+        for (final store in review.stores)
+          if (pending.containsKey(store.storeId))
+            store.withBilled(
+              total: pending[store.storeId]!.total,
+              currency: pending[store.storeId]!.currency,
+            )
+          else
+            store,
+      ],
+      grandTotal: review.grandTotal,
+      uncheckedCount: review.uncheckedCount,
+    );
   }
 
   /// Persist the currency the user picked so the next session preselects it.
@@ -181,6 +212,7 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final review = _shownReview;
     return Scaffold(
       appBar: AppBar(leading: appBarBackLeading(context), title: Text(_title)),
       body: _loading
@@ -195,7 +227,7 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
                   onManage: widget.onManageReminders,
                 ),
                 const SizedBox(height: 16),
-                for (final store in _visibleStores) ...[
+                for (final store in _visibleStores(review)) ...[
                   _StoreSection(
                     store: store,
                     storeName: _storeName(store.storeId),
@@ -209,7 +241,7 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
                   const SizedBox(height: 16),
                 ],
                 if (widget.mode != ShoppingReviewMode.advance)
-                  _GrandTotal(review: _review!),
+                  _GrandTotal(review: review!),
               ],
             ),
       bottomNavigationBar: _readOnly

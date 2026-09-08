@@ -4895,11 +4895,6 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get anyStore => """N'importe quel magasin""";
 
   /// ```dart
-  /// "Impossible d'enregistrer le total."
-  /// ```
-  String get saveTotalFailed => """Impossible d'enregistrer le total.""";
-
-  /// ```dart
   /// "Rappels"
   /// ```
   String get remindersTitle => """Rappels""";
@@ -7353,7 +7348,6 @@ Mot de passe : pantry-rocks""",
   """shopping.actualPaid""": """Payé réel""",
   """shopping.grandTotal""": """Total général""",
   """shopping.anyStore""": """N'importe quel magasin""",
-  """shopping.saveTotalFailed""": """Impossible d'enregistrer le total.""",
   """shopping.remindersTitle""": """Rappels""",
   """shopping.manageReminders""": """Gérer les rappels""",
   """shopping.reminderGroupStart""": """Au début""",

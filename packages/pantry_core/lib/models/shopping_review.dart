@@ -22,6 +22,22 @@ class ShoppingReviewStore {
     this.billedCurrency,
   });
 
+  /// The same slice reading [total] / [currency] instead of what the server
+  /// said — how a figure still waiting in the sync queue is drawn over the
+  /// snapshot it predates. Both are required because null is a value here: an
+  /// emptied field queues a write that clears the total.
+  ShoppingReviewStore withBilled({
+    required double? total,
+    required String? currency,
+  }) => ShoppingReviewStore(
+    storeId: storeId,
+    items: items,
+    estimate: estimate,
+    noPriceCount: noPriceCount,
+    billedTotal: total,
+    billedCurrency: currency,
+  );
+
   factory ShoppingReviewStore.fromJson(Map<String, dynamic> json) =>
       ShoppingReviewStore(
         storeId: json['storeId'] as int?,

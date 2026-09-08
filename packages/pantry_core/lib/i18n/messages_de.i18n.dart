@@ -4901,11 +4901,6 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get anyStore => """Beliebiges Geschäft""";
 
   /// ```dart
-  /// "Summe konnte nicht gespeichert werden."
-  /// ```
-  String get saveTotalFailed => """Summe konnte nicht gespeichert werden.""";
-
-  /// ```dart
   /// "Erinnerungen"
   /// ```
   String get remindersTitle => """Erinnerungen""";
@@ -7363,7 +7358,6 @@ Passwort: pantry-rocks""",
   """shopping.actualPaid""": """Tatsächlich bezahlt""",
   """shopping.grandTotal""": """Gesamtsumme""",
   """shopping.anyStore""": """Beliebiges Geschäft""",
-  """shopping.saveTotalFailed""": """Summe konnte nicht gespeichert werden.""",
   """shopping.remindersTitle""": """Erinnerungen""",
   """shopping.manageReminders""": """Erinnerungen verwalten""",
   """shopping.reminderGroupStart""": """Zu Beginn""",
