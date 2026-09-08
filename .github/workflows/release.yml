@@ -136,14 +136,33 @@ jobs:
       - name: Check F-Droid lockfile is in sync
         run: make fdroid-check
 
-  # Compile the wear flavor on every push and pull request. Nothing else here
-  # compiles Android or Kotlin before a release is cut, and essentially all of
-  # this repo's Kotlin is in the watch tree — the per-flavor MainActivity, the
-  # Tile service and six platform channels — so a broken source-set split would
-  # otherwise surface mid-release. Unsigned, and nothing is published.
+  # The compile-* jobs below exist because `flutter analyze` sees no native
+  # code: Kotlin and Gradle, Swift and Xcode project state, and CMake and plugin
+  # registration all stay invisible to it. The jobs that do compile those trees
+  # hang off release-please, which runs only on a push to master — so without
+  # these, a native break surfaces while a release is being cut.
+  #
+  # They build release rather than debug, which is what puts the Dart AOT
+  # compile and the release Xcode configuration under test — neither runs in a
+  # debug build. Obfuscation is left off: it forces --split-debug-info and the
+  # symbols are thrown away here. None are signed and none publish anything;
+  # Android needs no keystore because the release buildType falls back to the
+  # debug signing config when key.properties is absent.
+  #
+  # Pull requests only, the release PR included. A release commit already
+  # compiles every tree through build-*, so running these there would build each
+  # platform twice; and every commit reaches master through a PR that ran them.
+  #
+  # Every Android invocation names its flavor: a flavorless `flutter build apk`
+  # is `assembleRelease`, which builds both flavors, writes neither to the path
+  # it announces, and rewrites that path's `.sha1`.
+
+  # Essentially all of this repo's Kotlin is in the watch tree — the per-flavor
+  # MainActivity, the Tile service and six platform channels — so the source-set
+  # split is what breaks first.
   compile-wear:
     needs: setup
-    if: github.event_name != 'workflow_dispatch'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -174,12 +193,215 @@ jobs:
         run: flutter pub get
 
       - name: Compile the wear flavor
-        run: flutter build apk --debug --flavor wear --target lib/main_wear.dart
+        run: flutter build apk --release --flavor wear --target lib/main_wear.dart
+
+  # The phone flavor carries what the wear manifest strips — the widget
+  # providers, their config activities and the share targets — so the two
+  # flavors fail independently.
+  compile-android:
+    needs: setup
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Compile the phone flavor
+        run: flutter build apk --release --flavor phone
+
+  compile-ios:
+    needs: setup
+    if: github.event_name == 'pull_request'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/Pods
+            ~/.cocoapods
+          key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile') }}
+          restore-keys: pods-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # The release iOS job runs only on workflow_dispatch, so this is the only
+      # thing standing between a broken Xcode project and a release attempt.
+      - name: Compile for iOS
+        run: flutter build ios --release --no-codesign
+
+  compile-macos:
+    needs: setup
+    if: github.event_name == 'pull_request'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            macos/Pods
+            ~/.cocoapods
+          key: pods-macos-${{ runner.os }}-${{ hashFiles('macos/Podfile') }}
+          restore-keys: pods-macos-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Compile for macOS
+        run: flutter build macos --release
+
+  compile-linux:
+    needs: setup
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev libjsoncpp-dev
+
+      # The transitive `jni` FFI plugin compiles against the JDK headers.
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable Linux desktop
+        run: flutter config --enable-linux-desktop
+
+      - name: Compile for Linux
+        run: flutter build linux --release
+
+  compile-windows:
+    needs: setup
+    if: github.event_name == 'pull_request'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # The transitive `jni` FFI plugin compiles against the JDK headers.
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\AppData\Local\Pub\Cache
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Compile for Windows
+        run: flutter build windows --release
 
   release-please:
     needs: [lint, test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     uses: chenasraf/workflows/.github/workflows/release-please-fastlane-changelog.yml@master
+    # A PR opened with the default GITHUB_TOKEN is authored by github-actions[bot],
+    # which the repository's first_time_contributors approval policy gates: its
+    # checks sit at action_required until someone clicks through. Authoring as a
+    # real identity clears the gate, and is also what lets the PR trigger
+    # workflows at all — GITHUB_TOKEN events deliberately do not.
+    secrets:
+      token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
     with:
       release-type: dart
       scopes: |
