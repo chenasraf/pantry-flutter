@@ -1,0 +1,4 @@
+Bug Fixes
+- break custom sort ties by name before id
+- honor your reuse setting when tapping a suggestion
+- keep each category in a single block in shopping mode
