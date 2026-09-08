@@ -23,6 +23,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Upload AAB to Google Play
 
+### android deploy_wear
+
+```sh
+[bundle exec] fastlane android deploy_wear
+```
+
+Upload the Wear OS AAB to Google Play's wear track
+
 ### android metadata
 
 ```sh
