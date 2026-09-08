@@ -1,0 +1,12 @@
+Features
+- choose whether the add item bar sits at the top or bottom
+- remember the window size and position between launches
+- auto-detect links in text fields
+- choose the recurrence new items start with, per list
+- repeat on a weekday of the month, or a date each year
+Bug Fixes
+- allow selecting text after removing a link
+- keep the cursor in place while typing in rich text
+- rename "Item type" to "Recurrence"
+
+… see full notes on GitHub.

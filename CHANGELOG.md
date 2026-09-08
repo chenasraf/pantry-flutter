@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.31.0](https://github.com/chenasraf/pantry-flutter/compare/v0.30.1...v0.31.0) (2026-09-08)
+
+
+### Features
+
+* **android:** a Pantry companion app for your Wear OS watch ([#168](https://github.com/chenasraf/pantry-flutter/issues/168)) ([3930d8e](https://github.com/chenasraf/pantry-flutter/commit/3930d8e8553aaadd714a802a58562da0624162b7))
+* **desktop:** choose whether the add item bar sits at the top or bottom ([800a807](https://github.com/chenasraf/pantry-flutter/commit/800a807d730060c334df0eeddb683ae57d3da187))
+* **desktop:** remember the window size and position between launches ([80da72a](https://github.com/chenasraf/pantry-flutter/commit/80da72ae966142c7313388ffb4a3c50c271067f8)), closes [#167](https://github.com/chenasraf/pantry-flutter/issues/167)
+* **fields:** auto-detect links in text fields ([25c9f4f](https://github.com/chenasraf/pantry-flutter/commit/25c9f4f788fba66112009d23be46dc4c9270837c))
+* **lists:** choose the recurrence new items start with, per list ([2420d5f](https://github.com/chenasraf/pantry-flutter/commit/2420d5fdda524bc303fb25dac2a61dbb9acac80f))
+* **recurrence:** repeat on a weekday of the month, or a date each year ([b48924f](https://github.com/chenasraf/pantry-flutter/commit/b48924f92f6715e0e9a97e1f5ac13ddd24f92323))
+
+
+### Bug Fixes
+
+* **android:** keep the add-item box clear of the system navigation bar ([3d9c8ea](https://github.com/chenasraf/pantry-flutter/commit/3d9c8eaaee3fc772f184e8984dca9c3107bba816)), closes [#166](https://github.com/chenasraf/pantry-flutter/issues/166)
+* **android:** make the app available on Android devices without camera autofocus ([8f0287d](https://github.com/chenasraf/pantry-flutter/commit/8f0287d9253c080374e5229d8e104f7996f60205))
+* **editor:** allow selecting text after removing a link ([29550c4](https://github.com/chenasraf/pantry-flutter/commit/29550c496ce8927588682c90631a00dd37d1265f))
+* **editor:** keep the cursor in place while typing in rich text ([41df00e](https://github.com/chenasraf/pantry-flutter/commit/41df00e903007d793aa8833b7454121a7c712cd5)), closes [#165](https://github.com/chenasraf/pantry-flutter/issues/165)
+* **i18n:** rename "Item type" to "Recurrence" ([9ee0d24](https://github.com/chenasraf/pantry-flutter/commit/9ee0d24e35d3b8b2ed87deb1f80e348e4285c2e3))
+* keep your login and settings when secure storage can't be unlocked ([2ac56df](https://github.com/chenasraf/pantry-flutter/commit/2ac56df7a611afbeb3613aa9f220001bf6091fec))
+* **notes:** keep a ticked checkbox ticked when the list refreshes ([937e116](https://github.com/chenasraf/pantry-flutter/commit/937e116a34d4233988668a6774510041d64f0326))
+* **shopping:** don't lose a billed total typed with a flaky connection ([7d86f69](https://github.com/chenasraf/pantry-flutter/commit/7d86f69fcdfbdac0805bb0a32ec719992cab9c13))
+* stop re-downloading the notification list when nothing has changed ([3d2b80b](https://github.com/chenasraf/pantry-flutter/commit/3d2b80ba52a29adf2689ff6849c4dd5e11c6dd37))
+
 ## [0.30.1](https://github.com/chenasraf/pantry-flutter/compare/v0.30.0...v0.30.1) (2026-09-01)
 
 
