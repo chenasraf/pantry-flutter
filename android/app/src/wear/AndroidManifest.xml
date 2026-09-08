@@ -18,13 +18,13 @@
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="${wearEnableImpeller}" />
 
-        <!-- Sign-in comes from the paired phone, so the watch app cannot yet
-             stand on its own. Flipping this to true is additive and needs no
-             Play Console change, but Google validates the claim at serving
-             time — the capability has to be real first. -->
+        <!-- The watch signs itself in: QR sign-in runs Nextcloud's Login Flow
+             v2, which needs neither the phone app nor the Data Layer. Google
+             validates this claim at app-serving time, so it holds only as long
+             as that path does. -->
         <meta-data
             android:name="com.google.android.wearable.standalone"
-            android:value="false" />
+            android:value="true" />
 
         <activity
             android:name=".MainActivity"
