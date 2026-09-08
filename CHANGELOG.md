@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.31.1](https://github.com/chenasraf/pantry-flutter/compare/v0.31.0...v0.31.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* **categories:** break custom sort ties by name before id ([e2b390d](https://github.com/chenasraf/pantry-flutter/commit/e2b390dc7a4ed1575e1d19d7d60cc9cc6fccdd27))
+* **checklists:** honor your reuse setting when tapping a suggestion ([523dbbe](https://github.com/chenasraf/pantry-flutter/commit/523dbbe54460e3c947ac3f9c2256427679383388))
+* **shopping:** keep each category in a single block in shopping mode ([79bac07](https://github.com/chenasraf/pantry-flutter/commit/79bac0740fa67f90a3e23d88a9c93767b33a9217))
+
 ## [0.31.0](https://github.com/chenasraf/pantry-flutter/compare/v0.30.1...v0.31.0) (2026-09-08)
 
 
