@@ -21,14 +21,65 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 
-/// A contiguous run of items under one category, for the grouped dense view.
-/// [category] is null for the Uncategorized run (always rendered last, matching
-/// the server's ordering).
+/// All the items under one category, for the grouped dense view. [category] is
+/// null for the Uncategorized group, which always renders last.
 class ShoppingItemGroup {
   final models.Category? category;
   final List<ListItem> items;
 
   const ShoppingItemGroup({required this.category, required this.items});
+}
+
+/// Bucket [items] into one group per category, ordered by the house's category
+/// order (sortOrder, then name), with Uncategorized last.
+///
+/// Bucketing by id rather than slicing the list into consecutive same-category
+/// runs: the server's flat item order interleaves two categories whenever their
+/// sort orders tie, which a run-based grouping would render as the same
+/// category repeated in several blocks. Ordering the buckets from [categories]
+/// rather than by first appearance likewise keeps the headers stable when those
+/// ties decide which item comes back first.
+///
+/// [categories] is best-effort reference data, so a category missing from it
+/// has no order to honour and trails the known ones in the order [items] gave.
+List<ShoppingItemGroup> groupShoppingItemsByCategory(
+  List<ListItem> items,
+  Map<int, models.Category> categories,
+) {
+  final buckets = <int?, List<ListItem>>{};
+  final firstSeen = <int?, int>{};
+  for (final item in items) {
+    final bucket = buckets[item.categoryId];
+    if (bucket == null) {
+      firstSeen[item.categoryId] = firstSeen.length;
+      buckets[item.categoryId] = [item];
+    } else {
+      bucket.add(item);
+    }
+  }
+
+  int compare(int? a, int? b) {
+    if (a == b) return 0;
+    if (a == null) return 1;
+    if (b == null) return -1;
+    final ca = categories[a];
+    final cb = categories[b];
+    if (ca == null || cb == null) {
+      if (ca != null) return -1;
+      if (cb != null) return 1;
+      return firstSeen[a]!.compareTo(firstSeen[b]!);
+    }
+    final bySort = ca.sortOrder.compareTo(cb.sortOrder);
+    if (bySort != 0) return bySort;
+    final byName = ca.name.toLowerCase().compareTo(cb.name.toLowerCase());
+    return byName != 0 ? byName : ca.id.compareTo(cb.id);
+  }
+
+  final keys = buckets.keys.toList()..sort(compare);
+  return [
+    for (final key in keys)
+      ShoppingItemGroup(category: categories[key], items: buckets[key]!),
+  ];
 }
 
 /// Drives the live dense shopping screen: the store-narrowed to-buy list, this
@@ -209,32 +260,10 @@ class ShoppingSessionController extends ChangeNotifier {
       if (p.activeStoreId == storeId && p.userId != currentUserId) p,
   ];
 
-  /// Items grouped into contiguous category runs, preserving the server order
-  /// (category.sortOrder, item.sortOrder; Uncategorized last).
-  List<ShoppingItemGroup> get groupedItems {
-    final groups = <ShoppingItemGroup>[];
-    int? runCategoryId;
-    var run = <ListItem>[];
-    void flush() {
-      if (run.isEmpty) return;
-      groups.add(
-        ShoppingItemGroup(category: _categories[runCategoryId], items: run),
-      );
-      run = [];
-    }
-
-    for (final item in _items) {
-      if (groups.isEmpty && run.isEmpty) {
-        runCategoryId = item.categoryId;
-      } else if (item.categoryId != runCategoryId) {
-        flush();
-        runCategoryId = item.categoryId;
-      }
-      run.add(item);
-    }
-    flush();
-    return groups;
-  }
+  /// Items grouped one block per category, in category order (Uncategorized
+  /// last), each block keeping the server's item order.
+  List<ShoppingItemGroup> get groupedItems =>
+      groupShoppingItemsByCategory(_items, _categories);
 
   Future<void> load() async {
     _bindSync();
