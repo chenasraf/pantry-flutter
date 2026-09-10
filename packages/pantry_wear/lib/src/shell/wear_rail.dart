@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
@@ -132,146 +134,189 @@ class WearRail extends StatelessWidget {
   /// it shifts.
   Widget _identity(BuildContext context, bool degraded) {
     final window = dotWindow(pages, page);
-    return DecoratedBox(
-      decoration: BoxDecoration(gradient: degraded ? _wash : null),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: baseHeight),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _bounded(
-              GestureDetector(
-                onTap: onTapTitle,
-                behavior: HitTestBehavior.opaque,
+    final metrics = WearMetrics.of(context);
+    // Where each line ends up, counted back from the bottom of the rail: the
+    // column is bottom-aligned inside its minimum height, so the dots sit last
+    // and everything else is stacked above them. The title is the line that
+    // rides highest, which is where the glass has least to give.
+    final groupTop =
+        baseHeight - _dotsExtent - _dotsGap - metrics.railLineExtent;
+    final titleTop = groupTop - _titleExtent(context);
+    return LayoutBuilder(
+      builder: (context, constraints) => DecoratedBox(
+        decoration: BoxDecoration(gradient: degraded ? _wash : null),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: baseHeight),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _bounded(
+                top: titleTop,
+                width: constraints.maxWidth,
+                GestureDetector(
+                  onTap: onTapTitle,
+                  behavior: HitTestBehavior.opaque,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const _SyncDot(),
+                      const SizedBox(width: 6),
+                      Icon(title.icon, size: 12, color: title.color),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          title.label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textDirection: detectTextDirection(title.label),
+                          style: TextStyle(
+                            fontSize: 11,
+                            height: 1.1,
+                            color: title.color,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: WearMetrics.of(context).railLineExtent,
+                // Driven by the label changing, not by a header's distance from
+                // the centre line. Those are different events: the header starts
+                // approaching while the last row of the outgoing group is still
+                // focused, so a geometric transition began a row early and had
+                // nothing left to play when the new label actually arrived.
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) => FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.7),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  ),
+                  // The state outranks the group label: the label is the one rail
+                  // element that changes as you scroll, and it is the cheapest
+                  // thing here to spend.
+                  child: degraded
+                      ? _DegradedLine(onTap: onSetUpAgain)
+                      : group == null
+                      ? const SizedBox.shrink()
+                      : _bounded(
+                          top: groupTop,
+                          width: constraints.maxWidth,
+                          Row(
+                            key: ValueKey(group),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (groupIcon != null) ...[
+                                Icon(
+                                  groupIcon,
+                                  size: 10,
+                                  color: groupColor ?? Colors.white38,
+                                ),
+                                const SizedBox(width: 4),
+                              ],
+                              Flexible(
+                                child: Text(
+                                  group!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textDirection: detectTextDirection(group!),
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    height: 1.1,
+                                    letterSpacing: 0.4,
+                                    fontWeight: FontWeight.w700,
+                                    color: groupColor ?? Colors.white38,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 3),
+              // Bars, not dots: the current page grows into a line so the
+              // indicator says *where* you are as well as how many there are,
+              // and it animates rather than cutting between the two widths.
+              // The dots read the way the pager moves, which is the device's
+              // direction — a row of dots running against the swipe that walks
+              // them would say the wearer is travelling the wrong way.
+              Directionality(
+                textDirection: systemTextDirection,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const _SyncDot(),
-                    const SizedBox(width: 6),
-                    Icon(title.icon, size: 12, color: title.color),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: Text(
-                        title.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textDirection: detectTextDirection(title.label),
-                        style: TextStyle(
-                          fontSize: 11,
-                          height: 1.1,
-                          color: title.color,
-                          fontWeight: FontWeight.w600,
+                    for (var i = 0; i < window.count; i++)
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        margin: const EdgeInsetsDirectional.symmetric(
+                          horizontal: 2,
+                        ),
+                        width: i == window.selected ? 14 : 8,
+                        height: 3,
+                        decoration: WearSurface.indicator(
+                          i == window.selected
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.white24,
+                          radius: 2,
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
-            ),
-            SizedBox(
-              height: WearMetrics.of(context).railLineExtent,
-              // Driven by the label changing, not by a header's distance from
-              // the centre line. Those are different events: the header starts
-              // approaching while the last row of the outgoing group is still
-              // focused, so a geometric transition began a row early and had
-              // nothing left to play when the new label actually arrived.
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                transitionBuilder: (child, animation) => FadeTransition(
-                  opacity: animation,
-                  child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 0.7),
-                      end: Offset.zero,
-                    ).animate(animation),
-                    child: child,
-                  ),
-                ),
-                // The state outranks the group label: the label is the one rail
-                // element that changes as you scroll, and it is the cheapest
-                // thing here to spend.
-                child: degraded
-                    ? _DegradedLine(onTap: onSetUpAgain)
-                    : group == null
-                    ? const SizedBox.shrink()
-                    : _bounded(
-                        Row(
-                          key: ValueKey(group),
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (groupIcon != null) ...[
-                              Icon(
-                                groupIcon,
-                                size: 10,
-                                color: groupColor ?? Colors.white38,
-                              ),
-                              const SizedBox(width: 4),
-                            ],
-                            Flexible(
-                              child: Text(
-                                group!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textDirection: detectTextDirection(group!),
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  height: 1.1,
-                                  letterSpacing: 0.4,
-                                  fontWeight: FontWeight.w700,
-                                  color: groupColor ?? Colors.white38,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-              ),
-            ),
-            const SizedBox(height: 3),
-            // Bars, not dots: the current page grows into a line so the
-            // indicator says *where* you are as well as how many there are,
-            // and it animates rather than cutting between the two widths.
-            // The dots read the way the pager moves, which is the device's
-            // direction — a row of dots running against the swipe that walks
-            // them would say the wearer is travelling the wrong way.
-            Directionality(
-              textDirection: systemTextDirection,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var i = 0; i < window.count; i++)
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 180),
-                      margin: const EdgeInsetsDirectional.symmetric(
-                        horizontal: 2,
-                      ),
-                      width: i == window.selected ? 14 : 8,
-                      height: 3,
-                      decoration: WearSurface.indicator(
-                        i == window.selected
-                            ? Theme.of(context).colorScheme.primary
-                            : Colors.white24,
-                        radius: 2,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
+  /// The dot row's own height, and the air above it.
+  static const double _dotsExtent = 3;
+  static const double _dotsGap = 3;
+
+  /// How tall the title line comes out. Its glyph does not follow the wearer's
+  /// font size and its text does, so the taller of the two is the line.
+  static double _titleExtent(BuildContext context) =>
+      math.max(12, 11 * 1.1 * WearMetrics.scaleOf(context));
+
   /// Held back from the glass by however much the row's own height needs. Each
   /// line answers for itself rather than the rail taking one width: the title
   /// rides high on a round screen where the chord is short, and the buttons
   /// sit lower where it is not.
-  Widget _bounded(Widget child, {double? factor}) => FractionallySizedBox(
-    widthFactor: factor ?? (WearShape.isRound ? 0.68 : 0.92),
-    child: child,
-  );
+  ///
+  /// [top] is how far the line's own upper edge sits from the top of the glass.
+  /// Given one, the chord there caps the width — a share of the screen alone
+  /// cannot, because the rail's lines are a fixed number of pixels tall while
+  /// the screen they sit on is not, so the same fraction is comfortable on a
+  /// large watch and past the bezel on a small one. The cap is what makes an
+  /// elided name end in an ellipsis the wearer can see rather than one drawn
+  /// behind the bezel.
+  Widget _bounded(Widget child, {double? factor, double? top, double? width}) {
+    final design = factor ?? (WearShape.isRound ? 0.68 : 0.92);
+    final held = top == null || width == null
+        ? design
+        : math.min(design, _chordFraction(top, width));
+    return FractionallySizedBox(widthFactor: held, child: child);
+  }
+
+  /// How much of [width] the glass still has at [top], as a fraction of it.
+  static double _chordFraction(double top, double width) {
+    if (!WearShape.isRound) return 1;
+    final r = width / 2;
+    final dy = (r - top).abs();
+    if (dy >= r) return 0;
+    return math.sqrt(1 - (dy / r) * (dy / r));
+  }
 }
 
 /// Behind the whole rail, and fading out before it ends: a 9pt line needs a

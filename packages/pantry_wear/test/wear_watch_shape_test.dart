@@ -2,15 +2,20 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_wear/src/account/wear_settings_page.dart';
+import 'package:pantry_wear/src/checklists/checklists_controller.dart';
+import 'package:pantry_wear/src/shell/wear_shell.dart';
 import 'package:pantry_wear/src/shopping/trip_reminders_page.dart';
 import 'package:pantry_wear/src/wear_shape.dart';
 import 'package:pantry_wear/src/widgets/wear_choice_page.dart';
 import 'package:pantry_wear/src/widgets/wear_metrics.dart';
+
+import 'wear_fixtures.dart';
 
 /// Whether what the watch draws is inside the glass it is drawn on.
 ///
@@ -54,11 +59,15 @@ void main() {
     await dir.delete(recursive: true);
   });
 
-  const diameter = 450.0;
+  // The glass in logical pixels, which is the only size that tells the truth
+  // here: a watch reports around 227 of them for 454 real ones, and the rail's
+  // lines are a fixed number of pixels tall whatever the screen is. Measured at
+  // twice that, everything looks comfortable that is not.
+  const diameter = 227.0;
 
   Future<void> pump(WidgetTester tester, Widget page) async {
-    tester.view.physicalSize = const Size(diameter, diameter);
-    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(diameter * 2, diameter * 2);
+    tester.view.devicePixelRatio = 2;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(MaterialApp(home: page));
     await tester.pumpAndSettle();
@@ -83,9 +92,18 @@ void main() {
   /// corners a pill does not have. What Google's rule is about — and what a
   /// wearer loses — is the line inside it.
   void expectTextInsideGlass(WidgetTester tester, {String? reason}) {
+    const screen = Rect.fromLTWH(0, 0, diameter, diameter);
     for (final element in find.byType(Text).evaluate()) {
       final rect = tester.getRect(find.byElementPredicate((e) => e == element));
       if (rect.isEmpty) continue;
+      // A line the wearer has not scrolled to yet is laid out past the bottom
+      // of the glass, and a line half onto the screen is what scrolling looks
+      // like. Neither is the screen's shape cutting a line the wearer is being
+      // shown, which is the whole of what this asks.
+      if (!screen.contains(rect.topLeft) ||
+          !screen.contains(rect.bottomRight)) {
+        continue;
+      }
       expect(
         overhang(rect),
         lessThanOrEqualTo(0.5),
@@ -178,6 +196,36 @@ void main() {
       ),
     );
     expectTextInsideGlass(tester);
+  });
+
+  testWidgets('a list name too long for the rail ends in a visible ellipsis', (
+    tester,
+  ) async {
+    const name = 'Weekly big shop for the whole household and the dog';
+    final list = testList(name: name);
+    final controller = ChecklistsController.seeded(
+      houseId: 1,
+      list: list,
+      lists: [list],
+      items: [testItem(id: 1, name: 'Milk')],
+    );
+    addTearDown(controller.dispose);
+    await pump(tester, WearShell(controller: controller));
+
+    final title = find.text(name);
+    expect(title, findsOneWidget);
+
+    // Elided, and elided somewhere the wearer can see: the rail's title line
+    // rides where the glass has least width, so a line laid out to the width
+    // the viewport reports puts its own ellipsis behind the bezel — which
+    // reads as a name that simply stops.
+    final rendered = tester.renderObject<RenderParagraph>(title);
+    expect(
+      rendered.didExceedMaxLines,
+      isTrue,
+      reason: 'the fixture has to be long enough to elide at all',
+    );
+    expect(overhang(tester.getRect(title)), lessThanOrEqualTo(0.5));
   });
 
   testWidgets('and the check is one a square layout fails', (tester) async {
