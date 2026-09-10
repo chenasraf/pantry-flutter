@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cache_store.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
@@ -82,6 +83,19 @@ void main() {
   /// see the end of it.
   Future<void> settle() => pumpEventQueue(times: 50);
 
+  /// Turn the event queue until [reached] holds, or give up and let the
+  /// assertion that follows say what was missing.
+  ///
+  /// A count of turns is a guess about how deep an async chain runs, and an
+  /// unpair is the deepest one here: a logout, ten cache stores, the prefs and
+  /// the appearance, then a fresh `start`. Waiting on the outcome instead is
+  /// what stops the same code passing and failing on different runs.
+  Future<void> settleUntil(bool Function() reached) async {
+    for (var turn = 0; turn < 200 && !reached(); turn++) {
+      await pumpEventQueue(times: 1);
+    }
+  }
+
   setUp(() async {
     sent.clear();
     storage.clear();
@@ -125,8 +139,19 @@ void main() {
   });
 
   tearDown(() async {
+    // An unpair is fired and never awaited, so its tail — the prefs, the
+    // appearance, the fresh `start` — can still be in flight when the test
+    // that set it off ends. Draining it while the mocks are still answering is
+    // what stops it calling a channel that has already been taken away, and
+    // that exception landing on whichever test happens to be running by then.
+    await settle();
     await client.debugReset();
     await WearMirrorClient.instance.debugReset();
+    // A cache write is debounced half a second, and the stores are singletons
+    // that outlive the test that wrote them — so one left armed here fires
+    // partway through a later test and writes into the very map that test is
+    // asserting about. Draining is what keeps each test's storage its own.
+    await CacheStore.flushAll();
     await AuthService.instance.logout(revoke: false);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       ..setMockMethodCallHandler(methods, null)
@@ -394,7 +419,7 @@ void main() {
       expect(storage, isNotEmpty);
 
       emit(WearPairing.statePath, const {}, delivery: 'dataItem');
-      await settle();
+      await settleUntil(() => client.state == WearSetupState.waiting);
 
       expect(AuthService.instance.isLoggedIn, isFalse);
       expect(storage.keys, isNot(contains('nextcloud_credentials')));
@@ -405,7 +430,7 @@ void main() {
       await client.start();
 
       emit(WearPairing.statePath, const {}, delivery: 'dataItem');
-      await settle();
+      await settleUntil(() => client.state == WearSetupState.waiting);
 
       expect(client.state, WearSetupState.waiting);
     });
@@ -419,7 +444,7 @@ void main() {
       emit(WearPairing.statePath, const {
         'nodeId': 'watch-2',
       }, delivery: 'dataItem');
-      await settle();
+      await settleUntil(() => client.state == WearSetupState.waiting);
 
       expect(AuthService.instance.isLoggedIn, isFalse);
     });
