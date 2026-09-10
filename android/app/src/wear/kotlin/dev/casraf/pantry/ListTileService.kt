@@ -89,7 +89,8 @@ class ListTileService : TileService() {
         const val ROW_HEIGHT = 44f
         const val ROW_GAP = 4f
         const val ICON_SIZE = 18f
-        const val CORNER_RADIUS = 22f
+        const val TITLE_SIZE = 12f
+        const val LABEL_SIZE = 15f
 
         /** The plane a row sits on — the app's raised surface, not pure black. */
         const val ROW_BACKGROUND = 0xFF17171A.toInt()
@@ -131,7 +132,7 @@ class ListTileService : TileService() {
             val content = if (snapshot == null || snapshot.lists.isEmpty()) {
                 empty(ctx, snapshot)
             } else {
-                lists(ctx, snapshot)
+                lists(ctx, snapshot, device)
             }
             return LayoutElementBuilders.Box.Builder()
                 .setWidth(expand())
@@ -150,18 +151,52 @@ class ListTileService : TileService() {
                 .build()
         }
 
-        fun lists(ctx: Context, snapshot: TileSnapshot): LayoutElementBuilders.LayoutElement {
+        /**
+         * The wearer's own font size. A Tile has no scrolling of any kind, so
+         * this decides both how tall a row is and how many of them there is
+         * room for — a row drawn past the bottom of the glass is not a row.
+         */
+        fun fontScale(ctx: Context): Float =
+            ctx.resources.configuration.fontScale.coerceAtLeast(1f)
+
+        /**
+         * How many rows fit under the title on [device], at [scale].
+         *
+         * Trimmed rather than clipped: a wearer who asked for larger type gets
+         * fewer lists they can read instead of the same number they cannot, and
+         * the last one drawn is whole.
+         */
+        fun rowsThatFit(device: DeviceParameters, scale: Float, titled: Boolean): Int {
+            val fraction = if (device.screenShape == SCREEN_SHAPE_ROUND) {
+                ROUND_MARGIN_FRACTION
+            } else {
+                SQUARE_MARGIN_FRACTION
+            }
+            val available = device.screenHeightDp * (1 - 2 * fraction) -
+                if (titled) (TITLE_SIZE * scale + ROW_GAP) else 0f
+            val row = ROW_HEIGHT * scale + ROW_GAP
+            return ((available + ROW_GAP) / row).toInt().coerceAtLeast(1)
+        }
+
+        fun lists(
+            ctx: Context,
+            snapshot: TileSnapshot,
+            device: DeviceParameters,
+        ): LayoutElementBuilders.LayoutElement {
+            val scale = fontScale(ctx)
             val column = LayoutElementBuilders.Column.Builder()
                 .setWidth(expand())
                 .setHeight(wrap())
+            val titled = snapshot.houseName != null
             snapshot.houseName?.let {
                 column.addContent(title(it))
                 column.addContent(spacer(ROW_GAP))
             }
-            snapshot.lists.forEachIndexed { index, entry ->
-                if (index > 0) column.addContent(spacer(ROW_GAP))
-                column.addContent(row(ctx, snapshot, entry))
-            }
+            snapshot.lists.take(rowsThatFit(device, scale, titled))
+                .forEachIndexed { index, entry ->
+                    if (index > 0) column.addContent(spacer(ROW_GAP))
+                    column.addContent(row(ctx, snapshot, entry, scale))
+                }
             return column.build()
         }
 
@@ -171,7 +206,7 @@ class ListTileService : TileService() {
             .setOverflow(LayoutElementBuilders.TEXT_OVERFLOW_ELLIPSIZE_END)
             .setFontStyle(
                 LayoutElementBuilders.FontStyle.Builder()
-                    .setSize(sp(12f))
+                    .setSize(sp(TITLE_SIZE))
                     .setColor(argb(MUTED))
                     .build(),
             )
@@ -186,11 +221,13 @@ class ListTileService : TileService() {
             ctx: Context,
             snapshot: TileSnapshot,
             entry: TileSnapshot.Entry,
+            scale: Float,
         ): LayoutElementBuilders.LayoutElement {
             val tint = entry.color ?: snapshot.accent
+            val height = ROW_HEIGHT * scale
             return LayoutElementBuilders.Row.Builder()
                 .setWidth(expand())
-                .setHeight(dp(ROW_HEIGHT))
+                .setHeight(dp(height))
                 .setVerticalAlignment(LayoutElementBuilders.VERTICAL_ALIGN_CENTER)
                 .setModifiers(
                     ModifiersBuilders.Modifiers.Builder()
@@ -199,7 +236,7 @@ class ListTileService : TileService() {
                                 .setColor(argb(ROW_BACKGROUND))
                                 .setCorner(
                                     ModifiersBuilders.Corner.Builder()
-                                        .setRadius(dp(CORNER_RADIUS))
+                                        .setRadius(dp(height / 2))
                                         .build(),
                                 )
                                 .build(),
@@ -221,8 +258,8 @@ class ListTileService : TileService() {
                 .addContent(
                     LayoutElementBuilders.Image.Builder()
                         .setResourceId(entry.icon ?: "default")
-                        .setWidth(dp(ICON_SIZE))
-                        .setHeight(dp(ICON_SIZE))
+                        .setWidth(dp(ICON_SIZE * scale))
+                        .setHeight(dp(ICON_SIZE * scale))
                         .setColorFilter(
                             LayoutElementBuilders.ColorFilter.Builder()
                                 .setTint(argb(tint))
@@ -240,7 +277,7 @@ class ListTileService : TileService() {
                         .setOverflow(LayoutElementBuilders.TEXT_OVERFLOW_ELLIPSIZE_END)
                         .setFontStyle(
                             LayoutElementBuilders.FontStyle.Builder()
-                                .setSize(sp(15f))
+                                .setSize(sp(LABEL_SIZE))
                                 .setColor(argb(LABEL))
                                 .build(),
                         )

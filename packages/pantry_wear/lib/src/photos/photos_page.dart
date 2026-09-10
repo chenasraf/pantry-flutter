@@ -217,7 +217,7 @@ class _PhotoBoardState extends State<PhotoBoard> {
 
   @override
   Widget build(BuildContext context) {
-    const extent = WearMetrics.photoRowExtent;
+    final extent = WearMetrics.of(context).photoRowExtent;
     final cells = widget.cells;
     final rows = (cells.length / 2).ceil();
     final size = WearPreviewSize.tile(context);

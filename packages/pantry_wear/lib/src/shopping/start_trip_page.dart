@@ -109,6 +109,7 @@ class _StartTripPageState extends State<StartTripPage> {
   // -- The list --------------------------------------------------------------
 
   List<FocusElement> _elements() {
+    final metrics = WearMetrics.of(context);
     final elements = <FocusElement>[];
 
     void row({
@@ -122,11 +123,9 @@ class _StartTripPageState extends State<StartTripPage> {
       final index = elements.length;
       elements.add(
         FocusElement(
-          extent: WearMetrics.itemExtent,
+          extent: metrics.itemExtent,
           builder: (context, d) => Padding(
-            padding: const EdgeInsetsDirectional.only(
-              bottom: WearMetrics.cardGap,
-            ),
+            padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
             child: WearRow(
               icon: icon,
               label: label,
@@ -217,7 +216,7 @@ class _StartTripPageState extends State<StartTripPage> {
                 child: SnapFocusList(
                   key: _listKey,
                   controller: _scroll,
-                  itemExtent: WearMetrics.itemExtent,
+                  itemExtent: WearMetrics.of(context).itemExtent,
                   falloffRows: WearMetrics.falloffRows,
                   rotaryActive: !_covered,
                   geometry: _geometry,

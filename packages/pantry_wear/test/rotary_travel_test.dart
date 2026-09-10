@@ -56,12 +56,12 @@ void main() {
         home: Scaffold(
           body: SnapFocusList(
             controller: scroll,
-            itemExtent: WearMetrics.itemExtent,
+            itemExtent: WearMetrics.unscaled.itemExtent,
             rotaryActive: true,
             elements: [
               for (var i = 0; i < 40; i++)
                 FocusElement(
-                  extent: WearMetrics.itemExtent,
+                  extent: WearMetrics.unscaled.itemExtent,
                   builder: (context, d) => Text('row $i'),
                 ),
             ],
@@ -83,7 +83,7 @@ void main() {
     }
     await tester.pumpAndSettle();
 
-    expect(scroll.offset, closeTo(10 * WearMetrics.itemExtent, 1));
+    expect(scroll.offset, closeTo(10 * WearMetrics.unscaled.itemExtent, 1));
   });
 
   testWidgets('and letting each detent settle carries it no further', (
@@ -100,7 +100,7 @@ void main() {
     // bezel quickly used to cost nine of these ten rows.
     expect(
       scroll.offset,
-      closeTo(10 * WearMetrics.itemExtent, 1),
+      closeTo(10 * WearMetrics.unscaled.itemExtent, 1),
       reason: 'a detent mid-flight must add to the aim, not restart from it',
     );
   });

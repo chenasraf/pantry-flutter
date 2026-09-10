@@ -16,10 +16,10 @@ import 'package:pantry_wear/src/widgets/wear_metrics.dart';
 /// path is exercised at all.
 void main() {
   const viewport = 450.0;
-  const extent = WearMetrics.itemExtent;
+  final extent = WearMetrics.unscaled.itemExtent;
 
   /// How many whole rows fit with the list scrolled to the top.
-  const whole = viewport ~/ extent;
+  final whole = viewport ~/ extent;
 
   setUp(() => WearShape.markFrom(const ['square']));
   tearDown(() => WearShape.markFrom(const ['round']));
@@ -75,7 +75,7 @@ void main() {
 
     expect(
       tester.getTopLeft(find.text('row 0')).dy,
-      closeTo(WearMetrics.railHeight(viewport), 1),
+      closeTo(WearMetrics.unscaled.railHeight(viewport), 1),
     );
   });
 

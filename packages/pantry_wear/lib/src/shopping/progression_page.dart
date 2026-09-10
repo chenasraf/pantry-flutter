@@ -206,6 +206,7 @@ class _ProgressionPageState extends State<ProgressionPage> {
   // -- The list --------------------------------------------------------------
 
   List<FocusElement> _elements() {
+    final metrics = WearMetrics.of(context);
     final controller = widget.controller;
     final session = _session;
     final elements = <FocusElement>[];
@@ -223,11 +224,9 @@ class _ProgressionPageState extends State<ProgressionPage> {
       final index = elements.length;
       elements.add(
         FocusElement(
-          extent: WearMetrics.itemExtent,
+          extent: metrics.itemExtent,
           builder: (context, d) => Padding(
-            padding: const EdgeInsetsDirectional.only(
-              bottom: WearMetrics.cardGap,
-            ),
+            padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
             child: WearRow(
               icon: icon,
               tint: tint,
@@ -286,7 +285,7 @@ class _ProgressionPageState extends State<ProgressionPage> {
             child: SnapFocusList(
               key: _listKey,
               controller: _scroll,
-              itemExtent: WearMetrics.itemExtent,
+              itemExtent: WearMetrics.of(context).itemExtent,
               falloffRows: WearMetrics.falloffRows,
               rotaryActive: widget.rotary && !_covered,
               geometry: _geometry,

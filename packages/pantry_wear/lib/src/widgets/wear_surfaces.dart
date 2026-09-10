@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../wear_ambient_skin.dart';
-import '../wear_shape.dart';
 import 'wear_ink.dart';
 import 'wear_metrics.dart';
 
@@ -36,7 +35,7 @@ abstract final class WearSurface {
       context,
       color: fill ?? scheme.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(
-        radius ?? (WearShape.isRound ? WearMetrics.cardHeight / 2 : 14),
+        radius ?? WearMetrics.of(context).cardRadius,
       ),
     );
   }
@@ -65,7 +64,7 @@ abstract final class WearSurface {
       context,
       color: fill ?? ground,
       borderRadius: BorderRadius.circular(
-        radius ?? (WearShape.isRound ? WearMetrics.railButtonExtent / 2 : 14),
+        radius ?? WearMetrics.of(context).railButtonRadius,
       ),
     );
   }

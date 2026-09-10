@@ -1,13 +1,51 @@
+import 'dart:math' as math;
+
+import 'package:flutter/widgets.dart';
+
 import '../wear_shape.dart';
 
 /// The geometry and timings the watch's lists are drawn to, judged on a round
 /// screen rather than derived.
 ///
-/// They sit together because they are coupled: a card claims [itemExtent] less
-/// [cardGap], the falloff is quoted in rows rather than pixels, and a header
-/// deliberately costs well under a row.
+/// The lengths sit together because they are coupled: a card claims
+/// [itemExtent] less [cardGap], the falloff is quoted in rows rather than
+/// pixels, and a header deliberately costs well under a row.
+///
+/// They are read through [of] rather than written down as constants because
+/// every one of them is a measurement of *text*: a row is a line of it plus the
+/// space around the line, and a wearer who asked the system for larger type
+/// asked for a taller row along with it. Held at the size they were drawn at,
+/// a scaled line runs out through the bottom of its own card and the wearer
+/// reads neither.
 class WearMetrics {
-  const WearMetrics._();
+  /// What every length here is multiplied by.
+  ///
+  /// Never below 1: a smaller system font leaves the geometry alone, because a
+  /// target is aimed at with a fingertip and a fingertip does not shrink with
+  /// the type.
+  final double scale;
+
+  const WearMetrics._(this.scale);
+
+  /// The geometry at the size it was drawn, for the few places that measure
+  /// before there is a context to measure against.
+  static const WearMetrics unscaled = WearMetrics._(1);
+
+  /// The wearer's font size, sampled at the size a row's label is set in.
+  ///
+  /// Sampled rather than read off a factor: a scaler need not be linear, and
+  /// what a row has to fit is what happens to *its* line, not what happens to
+  /// a nominal one.
+  static double scaleOf(BuildContext context) {
+    const sample = 14.0;
+    return math.max(
+      1.0,
+      MediaQuery.textScalerOf(context).scale(sample) / sample,
+    );
+  }
+
+  static WearMetrics of(BuildContext context) =>
+      WearMetrics._(scaleOf(context));
 
   /// What the rail takes off the top of the screen.
   ///
@@ -15,43 +53,75 @@ class WearMetrics {
   /// the space a page underneath has to hold back before its first row — on a
   /// round screen the half-viewport lead already clears it, but a flat list
   /// starts at the top and would draw its first row behind the rail.
-  static double railHeight(double viewportHeight) =>
-      viewportHeight * (WearShape.isRound ? 0.21 : 0.15);
+  ///
+  /// Capped, unlike the lengths below it: this one is a share of the screen
+  /// rather than a measurement of a line, and a share that grows without limit
+  /// is a rail with no list left under it.
+  double railHeight(double viewportHeight) => math.min(
+    viewportHeight * (WearShape.isRound ? 0.21 : 0.15) * scale,
+    viewportHeight * 0.35,
+  );
 
   /// The extent one row occupies, gap included.
-  static const double itemExtent = 54;
+  double get itemExtent => 54 * scale;
 
   /// Between one card and the next. The card fills the rest of its row extent
   /// rather than sizing to its content: on a fixed-extent list the slack a card
   /// gives up becomes a gap, not a tighter list.
-  static const double cardGap = 5;
+  double get cardGap => 5 * scale;
 
   /// The drawn height of a card, as opposed to the row extent it sits in.
-  static const double cardHeight = itemExtent - cardGap;
+  double get cardHeight => itemExtent - cardGap;
+
+  /// The radius that makes a card a pill on round glass: at a card's corners
+  /// the bezel is already curving away, so following it beats fighting it. A
+  /// square watch keeps the rectangle it shares an edge with.
+  double get cardRadius => WearShape.isRound ? cardHeight / 2 : 14;
 
   /// A group header, deliberately well under a row.
-  static const double headerExtent = 24;
+  double get headerExtent => 24 * scale;
 
   /// One bought item on the trip summary. Shorter than a header because a
   /// trip has many of them and none is a target — they are what the summary
   /// says, not what it offers.
-  static const double summaryLineExtent = 20;
+  double get summaryLineExtent => 20 * scale;
 
   /// The rail's second line: the group label, or the degraded state that
   /// outranks it. Deliberately shallow — it is a label, not a target.
-  static const double railLineExtent = 13;
+  double get railLineExtent => 13 * scale;
 
   /// A rail button, at the size a wearer actually aims at. The expansion is a
   /// panel dropped below the rail rather than a slot inside it, so it takes the
   /// height it needs and covers the list — which the list can afford and a
   /// 13-pixel button cannot.
-  static const double railButtonExtent = 42;
+  double get railButtonExtent => 42 * scale;
+
+  /// The radius that makes a rail button a pill on round glass.
+  double get railButtonRadius => WearShape.isRound ? railButtonExtent / 2 : 14;
 
   /// Between the two buttons in the panel.
-  static const double railButtonGap = 6;
+  double get railButtonGap => 6 * scale;
 
   /// Between the rail's own last line and the panel under it.
-  static const double railPanelGap = 8;
+  double get railPanelGap => 8 * scale;
+
+  /// A row of two photo tiles. Taller than a checklist card because a tile is
+  /// the content rather than a label for it.
+  ///
+  /// A tile is a picture rather than a line, so it grows by less than the type
+  /// does — enough for the caption riding it, not enough to cost the wearer
+  /// the second tile.
+  double get photoRowExtent => 88 * (1 + (scale - 1) / 2);
+
+  /// Between the two tiles in a photo row.
+  static const double photoTileGap = 6;
+
+  /// A note on the wall. Taller than a checklist card because a card carries a
+  /// title over either a progress bar or two lines of preview.
+  double get noteRowExtent => 72 * scale;
+
+  /// The drawn height of a note card, as opposed to the row extent it sits in.
+  double get noteCardHeight => 66 * scale;
 
   /// How far the focus falloff reaches, in rows.
   static const double falloffRows = 2.2;
@@ -60,20 +130,6 @@ class WearMetrics {
   /// is 1.0 on the centre line, so without this the focused row runs to the
   /// glass and a round bezel shaves its corners.
   static const double sideInset = 0.025;
-
-  /// A row of two photo tiles. Taller than a checklist card because a tile is
-  /// the content rather than a label for it.
-  static const double photoRowExtent = 88;
-
-  /// Between the two tiles in a photo row.
-  static const double photoTileGap = 6;
-
-  /// A note on the wall. Taller than a checklist card because a card carries a
-  /// title over either a progress bar or two lines of preview.
-  static const double noteRowExtent = 72;
-
-  /// The drawn height of a note card, as opposed to the row extent it sits in.
-  static const double noteCardHeight = 66;
 
   /// The inset a photo row takes instead of [sideInset]. A tile is tall
   /// enough that its corners sit well above and below the centre line, where a

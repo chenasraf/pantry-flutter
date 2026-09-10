@@ -82,6 +82,7 @@ class _WearSettingsPageState extends State<WearSettingsPage>
 
   @override
   Widget build(BuildContext context) {
+    final metrics = WearMetrics.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFF0B0B0C),
       body: EdgeDismissible(
@@ -97,7 +98,7 @@ class _WearSettingsPageState extends State<WearSettingsPage>
             ),
             children: [
               SizedBox(
-                height: WearMetrics.cardHeight,
+                height: metrics.cardHeight,
                 child: WearRow(
                   icon: Icons.language,
                   label: m.settings.language,
@@ -105,9 +106,9 @@ class _WearSettingsPageState extends State<WearSettingsPage>
                   onTap: () => unawaited(_open(const LanguagePage())),
                 ),
               ),
-              const SizedBox(height: WearMetrics.cardGap),
+              SizedBox(height: metrics.cardGap),
               SizedBox(
-                height: WearMetrics.cardHeight,
+                height: metrics.cardHeight,
                 child: WearRow(
                   icon: Icons.color_lens_outlined,
                   label: m.wear.accent,
@@ -117,9 +118,9 @@ class _WearSettingsPageState extends State<WearSettingsPage>
                   onTap: () => unawaited(_open(const AccentPage())),
                 ),
               ),
-              const SizedBox(height: WearMetrics.cardGap),
+              SizedBox(height: metrics.cardGap),
               SizedBox(
-                height: WearMetrics.cardHeight,
+                height: metrics.cardHeight,
                 child: WearRow(
                   icon: Icons.refresh,
                   label: m.wear.refreshInterval,
@@ -129,9 +130,9 @@ class _WearSettingsPageState extends State<WearSettingsPage>
                   onTap: () => unawaited(_open(const RefreshIntervalPage())),
                 ),
               ),
-              const SizedBox(height: WearMetrics.cardGap),
+              SizedBox(height: metrics.cardGap),
               SizedBox(
-                height: WearMetrics.cardHeight,
+                height: metrics.cardHeight,
                 child: WearRow(
                   icon: Icons.undo,
                   label: m.wear.undoWindow,
@@ -139,9 +140,9 @@ class _WearSettingsPageState extends State<WearSettingsPage>
                   onTap: () => unawaited(_open(const UndoWindowPage())),
                 ),
               ),
-              const SizedBox(height: WearMetrics.cardGap),
+              SizedBox(height: metrics.cardGap),
               SizedBox(
-                height: WearMetrics.cardHeight,
+                height: metrics.cardHeight,
                 child: WearRow(
                   icon: Icons.notifications_none,
                   label: m.wear.notifications,
@@ -159,9 +160,9 @@ class _WearSettingsPageState extends State<WearSettingsPage>
                 ),
               ),
               if (_hasRotary) ...[
-                const SizedBox(height: WearMetrics.cardGap),
+                SizedBox(height: metrics.cardGap),
                 SizedBox(
-                  height: WearMetrics.cardHeight,
+                  height: metrics.cardHeight,
                   child: WearRow(
                     icon: Icons.rotate_right,
                     label: m.wear.crown,
@@ -172,9 +173,9 @@ class _WearSettingsPageState extends State<WearSettingsPage>
                   ),
                 ),
               ],
-              const SizedBox(height: WearMetrics.cardGap),
+              SizedBox(height: metrics.cardGap),
               SizedBox(
-                height: WearMetrics.cardHeight,
+                height: metrics.cardHeight,
                 child: WearRow(
                   icon: Icons.more_horiz,
                   label: m.settings.visibleChipsTitle,

@@ -109,6 +109,7 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
 
   List<FocusElement> _elements() {
     final controller = widget.controller;
+    final metrics = WearMetrics.of(context);
     final review = controller.review;
     final elements = <FocusElement>[];
 
@@ -134,11 +135,9 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
       final index = elements.length;
       elements.add(
         FocusElement(
-          extent: WearMetrics.itemExtent,
+          extent: metrics.itemExtent,
           builder: (context, d) => Padding(
-            padding: const EdgeInsetsDirectional.only(
-              bottom: WearMetrics.cardGap,
-            ),
+            padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
             child: WearRow(
               icon: icon,
               tint: tint,
@@ -158,12 +157,13 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
     // name a trip that bought nothing, where what is true is that this watch
     // has not been told.
     if (review != null) {
-      block(_tallyExtent, _Tally(review: review));
+      block(_tallyExtent * metrics.scale, _Tally(review: review));
     }
 
     void storeGroup(int? storeId, List<ListItem> items) {
       final shop = controller.storeById(storeId);
       appendStoreGroup(
+        metrics: metrics,
         elements: elements,
         shop: shop,
         items: items,
@@ -210,7 +210,7 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
         child: SnapFocusList(
           key: _listKey,
           controller: _scroll,
-          itemExtent: WearMetrics.itemExtent,
+          itemExtent: WearMetrics.of(context).itemExtent,
           falloffRows: WearMetrics.falloffRows,
           rotaryActive: !_covered,
           geometry: _geometry,

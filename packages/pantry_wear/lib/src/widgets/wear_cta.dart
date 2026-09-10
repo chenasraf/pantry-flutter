@@ -102,7 +102,7 @@ class WearCta extends StatelessWidget {
               child: Container(
                 // The same height the rail's own buttons take: one target size
                 // for everything on this watch a thumb goes for.
-                height: WearMetrics.railButtonExtent,
+                height: WearMetrics.of(context).railButtonExtent,
                 alignment: Alignment.center,
                 decoration: blocked
                     ? WearSurface.pill(context, quiet: true)

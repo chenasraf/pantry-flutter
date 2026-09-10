@@ -4,6 +4,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../services/wear_host_service.dart';
 import '../wear_shape.dart';
+import '../widgets/wear_centre.dart';
 import '../widgets/wear_mechanics.dart';
 import 'qr_sign_in_page.dart';
 import 'wear_pairing_client.dart';
@@ -49,40 +50,38 @@ class _WearSetupPageState extends State<WearSetupPage> {
     final inset = WearShape.isRound ? 26.0 : 14.0;
     return Scaffold(
       backgroundColor: const Color(0xFF0B0B0C),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsetsDirectional.symmetric(horizontal: inset),
-          child: switch (widget.client.state) {
-            WearSetupState.checking => const _Spinner(),
-            WearSetupState.unavailable => _Message(
-              icon: Icons.link_off,
-              title: m.wear.setupNoLink,
-              body: m.wear.setupNoLinkBody,
-              qrSignIn: true,
-            ),
-            WearSetupState.noPhone => _Message(
-              icon: Icons.phonelink_off,
-              title: m.wear.setupNoPhone,
-              body: m.wear.setupNoPhoneBody,
-              qrSignIn: true,
-            ),
-            WearSetupState.phoneSignedOut => _Message(
-              icon: Icons.person_off_outlined,
-              title: m.wear.setupPhoneSignedOut,
-              body: m.wear.setupPhoneSignedOutBody,
-            ),
-            WearSetupState.syncing => _Message(
-              icon: Icons.sync,
-              title: m.wear.setupSyncing,
-              body: m.wear.setupSyncingBody,
-              spinning: true,
-            ),
-            WearSetupState.waiting || WearSetupState.ready => _Waiting(
-              notice: _notice,
-              onOpenOnPhone: _openOnPhone,
-            ),
-          },
-        ),
+      body: WearCentre(
+        padding: EdgeInsetsDirectional.symmetric(horizontal: inset),
+        child: switch (widget.client.state) {
+          WearSetupState.checking => const _Spinner(),
+          WearSetupState.unavailable => _Message(
+            icon: Icons.link_off,
+            title: m.wear.setupNoLink,
+            body: m.wear.setupNoLinkBody,
+            qrSignIn: true,
+          ),
+          WearSetupState.noPhone => _Message(
+            icon: Icons.phonelink_off,
+            title: m.wear.setupNoPhone,
+            body: m.wear.setupNoPhoneBody,
+            qrSignIn: true,
+          ),
+          WearSetupState.phoneSignedOut => _Message(
+            icon: Icons.person_off_outlined,
+            title: m.wear.setupPhoneSignedOut,
+            body: m.wear.setupPhoneSignedOutBody,
+          ),
+          WearSetupState.syncing => _Message(
+            icon: Icons.sync,
+            title: m.wear.setupSyncing,
+            body: m.wear.setupSyncingBody,
+            spinning: true,
+          ),
+          WearSetupState.waiting || WearSetupState.ready => _Waiting(
+            notice: _notice,
+            onOpenOnPhone: _openOnPhone,
+          ),
+        },
       ),
     );
   }

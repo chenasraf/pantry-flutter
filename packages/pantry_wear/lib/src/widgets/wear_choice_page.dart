@@ -77,6 +77,7 @@ class _WearChoicePageState<T> extends State<WearChoicePage<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final metrics = WearMetrics.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFF0B0B0C),
       body: EdgeDismissible(
@@ -102,11 +103,9 @@ class _WearChoicePageState<T> extends State<WearChoicePage<T>> {
                 ),
               for (final choice in widget.choices)
                 Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    bottom: WearMetrics.cardGap,
-                  ),
+                  padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
                   child: SizedBox(
-                    height: WearMetrics.cardHeight,
+                    height: metrics.cardHeight,
                     child: WearRow(
                       icon: choice.icon,
                       tint: choice.tint,
@@ -170,6 +169,7 @@ class _WearMultiChoicePageState<T> extends State<WearMultiChoicePage<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final metrics = WearMetrics.of(context);
     return Scaffold(
       backgroundColor: wearGround,
       body: EdgeDismissible(
@@ -195,11 +195,9 @@ class _WearMultiChoicePageState<T> extends State<WearMultiChoicePage<T>> {
                 ),
               for (final choice in widget.choices)
                 Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    bottom: WearMetrics.cardGap,
-                  ),
+                  padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
                   child: SizedBox(
-                    height: WearMetrics.cardHeight,
+                    height: metrics.cardHeight,
                     child: WearRow(
                       icon: choice.icon,
                       tint: choice.tint,

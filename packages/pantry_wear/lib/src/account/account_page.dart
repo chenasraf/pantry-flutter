@@ -137,6 +137,7 @@ class _AccountPageState extends State<AccountPage> {
 
   List<FocusElement> _elements() {
     final scheme = Theme.of(context).colorScheme;
+    final metrics = WearMetrics.of(context);
     final elements = <FocusElement>[];
     _setUpAgainIndex = null;
 
@@ -161,11 +162,9 @@ class _AccountPageState extends State<AccountPage> {
       final index = elements.length;
       elements.add(
         FocusElement(
-          extent: WearMetrics.itemExtent,
+          extent: metrics.itemExtent,
           builder: (context, d) => Padding(
-            padding: const EdgeInsetsDirectional.only(
-              bottom: WearMetrics.cardGap,
-            ),
+            padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
             child: WearRow(
               icon: icon,
               tint: tint,
@@ -180,13 +179,19 @@ class _AccountPageState extends State<AccountPage> {
       );
     }
 
-    header(_identityExtent, _Identity(credentials: _credentials));
-    header(_syncExtent, _SyncStatus(queued: _queued, captured: _capturedAt));
+    header(
+      _identityExtent * metrics.scale,
+      _Identity(credentials: _credentials),
+    );
+    header(
+      _syncExtent * metrics.scale,
+      _SyncStatus(queued: _queued, captured: _capturedAt),
+    );
 
     // Beside the identity it concerns, and above everything the wearer might
     // otherwise have come here to do.
     if (_degraded) {
-      header(WearMetrics.headerExtent, const _DegradedNote());
+      header(metrics.headerExtent, const _DegradedNote());
       _setUpAgainIndex = elements.length;
       row(
         icon: Icons.lock_outline,
@@ -252,7 +257,7 @@ class _AccountPageState extends State<AccountPage> {
     return SnapFocusList(
       key: _listKey,
       controller: _scroll,
-      itemExtent: WearMetrics.itemExtent,
+      itemExtent: WearMetrics.of(context).itemExtent,
       falloffRows: WearMetrics.falloffRows,
       rotaryActive: widget.rotary && !_covered,
       geometry: _geometry,
@@ -328,9 +333,6 @@ class _SyncStatus extends StatelessWidget {
 
   const _SyncStatus({required this.queued, required this.captured});
 
-  static const _safe = Color(0xFF7FB77E);
-  static const _waiting = Color(0xFFE0C07A);
-
   @override
   Widget build(BuildContext context) {
     final captured = this.captured;
@@ -347,7 +349,7 @@ class _SyncStatus extends StatelessWidget {
                 fontSize: 11,
                 height: 1.1,
                 fontWeight: FontWeight.w600,
-                color: queued > 0 ? _waiting : _safe,
+                color: queued > 0 ? wearQueuedInk : wearSyncedInk,
               ),
             ),
           ),

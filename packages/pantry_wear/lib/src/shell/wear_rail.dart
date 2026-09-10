@@ -85,6 +85,7 @@ class WearRail extends StatelessWidget {
   );
 
   Widget _build(BuildContext context, bool degraded) {
+    final metrics = WearMetrics.of(context);
     return ColoredBox(
       color: wearGround,
       child: Column(
@@ -101,9 +102,9 @@ class WearRail extends StatelessWidget {
               alignment: Alignment.topCenter,
               heightFactor: expanded ? 1 : 0,
               child: Padding(
-                padding: const EdgeInsetsDirectional.only(
-                  top: WearMetrics.railPanelGap,
-                  bottom: WearMetrics.railPanelGap,
+                padding: EdgeInsetsDirectional.only(
+                  top: metrics.railPanelGap,
+                  bottom: metrics.railPanelGap,
                 ),
                 child: _bounded(
                   _RailButtons(
@@ -169,7 +170,7 @@ class WearRail extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: WearMetrics.railLineExtent,
+              height: WearMetrics.of(context).railLineExtent,
               // Driven by the label changing, not by a header's distance from
               // the centre line. Those are different events: the header starts
               // approaching while the last row of the outgoing group is still
@@ -327,40 +328,28 @@ class _DegradedLine extends StatelessWidget {
   }
 }
 
-/// Queue depth, and nothing else. Whether the watch believes it is online is a
-/// different question from whether it is holding writes, and only the second
-/// is something the wearer can act on.
+/// Whether the watch is holding writes, in a dot. Whether it believes it is
+/// online is a different question, and only the first is something the wearer
+/// can act on.
+///
+/// A dot and never a number: the rail's title line is the width of a wrist, and
+/// a queue depth spelled out there takes the room the wearer needs to read what
+/// list they are on. How many are waiting is the account page's to say, beside
+/// the identity they are queued against.
 class _SyncDot extends StatelessWidget {
   const _SyncDot();
 
   @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<int>(
-      valueListenable: SyncManager.instance.pendingCount,
-      builder: (context, queued, _) {
-        if (queued == 0) {
-          return Container(
-            width: 5,
-            height: 5,
-            decoration: WearSurface.indicator(
-              Theme.of(context).colorScheme.primary,
-            ),
-          );
-        }
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.cloud_queue, size: 10, color: Colors.white54),
-            const SizedBox(width: 4),
-            Text(
-              m.wear.queued(queued),
-              style: const TextStyle(fontSize: 9, color: Colors.white54),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  Widget build(BuildContext context) => ValueListenableBuilder<int>(
+    valueListenable: SyncManager.instance.pendingCount,
+    builder: (context, queued, _) => Container(
+      width: 5,
+      height: 5,
+      decoration: WearSurface.indicator(
+        queued > 0 ? wearQueuedInk : Theme.of(context).colorScheme.primary,
+      ),
+    ),
+  );
 }
 
 /// What the expansion is for: the trip you could start, and the list you could
@@ -391,7 +380,7 @@ class _RailButtons extends StatelessWidget {
           onTap: onStart,
         ),
       if (onStart != null && onChangeList != null)
-        const SizedBox(height: WearMetrics.railButtonGap),
+        SizedBox(height: WearMetrics.of(context).railButtonGap),
       if (onChangeList != null)
         _RailButton(
           key: const ValueKey('change-list'),
@@ -426,7 +415,7 @@ class _RailButton extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: WearMetrics.railButtonExtent,
+        height: WearMetrics.of(context).railButtonExtent,
         width: double.infinity,
         alignment: Alignment.center,
         decoration: WearSurface.pill(context, quiet: !primary),

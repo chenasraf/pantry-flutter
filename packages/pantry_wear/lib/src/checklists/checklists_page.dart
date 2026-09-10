@@ -163,6 +163,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
   /// unsnappable; the falloff leaves them alone.
   List<FocusElement> _elements() {
     final controller = widget.controller;
+    final metrics = WearMetrics.of(context);
     final elements = <FocusElement>[];
 
     void addItems(
@@ -175,7 +176,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
         final index = elements.length;
         elements.add(
           FocusElement(
-            extent: WearMetrics.itemExtent,
+            extent: metrics.itemExtent,
             groupLabel: group,
             groupIcon: icon,
             groupColor: color,
@@ -202,7 +203,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
     }) {
       elements.add(
         FocusElement(
-          extent: WearMetrics.headerExtent,
+          extent: metrics.headerExtent,
           snappable: false,
           isHeader: true,
           groupLabel: label,
@@ -368,7 +369,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
       key: _listKey,
       controller: _controller,
       elements: _elements(),
-      itemExtent: WearMetrics.itemExtent,
+      itemExtent: WearMetrics.of(context).itemExtent,
       falloffRows: WearMetrics.falloffRows,
       rotaryActive: widget.rotary,
       horizontalInset: WearMetrics.sideInset,

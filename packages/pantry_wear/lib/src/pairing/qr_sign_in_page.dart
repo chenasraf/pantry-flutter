@@ -11,6 +11,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../wear_shape.dart';
+import '../widgets/wear_centre.dart';
 import '../widgets/wear_cta.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
@@ -540,34 +541,32 @@ class _FailedStep extends StatelessWidget {
     builder: (context, constraints) => Stack(
       children: [
         Positioned.fill(
-          child: Padding(
+          child: WearCentre(
             padding: EdgeInsetsDirectional.only(
               start: WearShape.isRound ? 26 : 14,
               end: WearShape.isRound ? 26 : 14,
               bottom: constraints.maxHeight * 0.28,
             ),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.error_outline,
-                    size: 20,
-                    color: Colors.white38,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 20,
+                  color: Colors.white38,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  reason,
+                  textAlign: TextAlign.center,
+                  textDirection: detectTextDirection(reason),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    height: 1.2,
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    reason,
-                    textAlign: TextAlign.center,
-                    textDirection: detectTextDirection(reason),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      height: 1.2,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

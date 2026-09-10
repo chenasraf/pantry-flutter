@@ -165,7 +165,7 @@ class _BilledAmountPageState extends State<BilledAmountPage> {
                       ),
                       const SizedBox(height: 8),
                       SizedBox(
-                        height: WearMetrics.cardHeight,
+                        height: WearMetrics.of(context).cardHeight,
                         child: WearRow(
                           icon: Icons.payments_outlined,
                           label: m.wear.currency,

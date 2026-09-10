@@ -109,10 +109,11 @@ class _TripCollectionPageState extends State<TripCollectionPage>
         ),
       );
     }
+    final metrics = WearMetrics.of(context);
     return SnapFocusList(
       key: _listKey,
       controller: _scroll,
-      itemExtent: WearMetrics.itemExtent,
+      itemExtent: metrics.itemExtent,
       falloffRows: WearMetrics.falloffRows,
       rotaryActive: widget.rotary,
       horizontalInset: WearMetrics.sideInset,
@@ -121,7 +122,7 @@ class _TripCollectionPageState extends State<TripCollectionPage>
       elements: [
         for (var i = 0; i < items.length; i++)
           FocusElement(
-            extent: WearMetrics.itemExtent,
+            extent: metrics.itemExtent,
             builder: (context, d) => ItemCard(
               item: items[i],
               d: d,

@@ -29,7 +29,10 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: Center(
-            child: SizedBox(height: WearMetrics.cardHeight, child: row),
+            child: SizedBox(
+              height: WearMetrics.unscaled.cardHeight,
+              child: row,
+            ),
           ),
         ),
       ),

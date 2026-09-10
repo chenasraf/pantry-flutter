@@ -23,6 +23,7 @@ import 'billed_amount_page.dart';
 /// Shared by the page that ends the trip and the one that leaves a shop, so a
 /// till is asked for the same way whichever of them is asking.
 void appendStoreGroup({
+  required WearMetrics metrics,
   required List<FocusElement> elements,
   required Store? shop,
   required List<ListItem> items,
@@ -37,7 +38,7 @@ void appendStoreGroup({
 
   elements.add(
     FocusElement(
-      extent: WearMetrics.headerExtent,
+      extent: metrics.headerExtent,
       snappable: false,
       isHeader: true,
       groupLabel: name,
@@ -52,7 +53,7 @@ void appendStoreGroup({
   for (final item in items) {
     elements.add(
       FocusElement(
-        extent: WearMetrics.summaryLineExtent,
+        extent: metrics.summaryLineExtent,
         snappable: false,
         isHeader: true,
         builder: (context, _) => _BoughtLine(item: item),
@@ -65,9 +66,9 @@ void appendStoreGroup({
   final index = elements.length;
   elements.add(
     FocusElement(
-      extent: WearMetrics.itemExtent,
+      extent: metrics.itemExtent,
       builder: (context, d) => Padding(
-        padding: const EdgeInsetsDirectional.only(bottom: WearMetrics.cardGap),
+        padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
         child: WearRow(
           icon: EntityIcons.price,
           tint: tint,

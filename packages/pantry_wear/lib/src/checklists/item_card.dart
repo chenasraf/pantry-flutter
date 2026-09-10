@@ -63,6 +63,7 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final metrics = WearMetrics.of(context);
 
     // The centre card is the only one that can afford a second line: every
     // other card is already scaled below 1 and leaving slack inside its
@@ -70,10 +71,7 @@ class ItemCard extends StatelessWidget {
     final expansion = (1 - (d / 0.4)).clamp(0.0, 1.0);
     final eased = Curves.easeOutCubic.transform(expansion);
 
-    // A round screen wants a round row: at the corners of a card the glass is
-    // already curving away, so a pill follows the bezel instead of fighting
-    // it. A square watch keeps the rectangle it shares an edge with.
-    final radius = WearShape.isRound ? WearMetrics.cardHeight / 2 : 14.0;
+    final radius = metrics.cardRadius;
 
     final card = DecoratedBox(
       decoration: WearSurface.card(
@@ -176,7 +174,7 @@ class ItemCard extends StatelessWidget {
         // the difference as dead space inside its row rather than closing the
         // list up, so every card claims its extent less the gap.
         child: SizedBox(
-          height: WearMetrics.cardHeight,
+          height: metrics.cardHeight,
           child: UndoStroke(
             window: pending,
             color: scheme.primary,
@@ -333,15 +331,14 @@ class _MetaLine extends StatelessWidget {
       );
     }
 
-    return SizedBox(
-      height: 16,
-      // Never scrolled — it is here so a row of chips wider than the card
-      // clips at the edge instead of raising an overflow.
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: const NeverScrollableScrollPhysics(),
-        child: Row(mainAxisSize: MainAxisSize.min, children: parts),
-      ),
+    // Never scrolled — it is here so a row of chips wider than the card clips
+    // at the edge instead of raising an overflow. Its *height* is the chips'
+    // own, so a wearer's font size is answered by a taller line rather than by
+    // chips drawn through the row below.
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const NeverScrollableScrollPhysics(),
+      child: Row(mainAxisSize: MainAxisSize.min, children: parts),
     );
   }
 }

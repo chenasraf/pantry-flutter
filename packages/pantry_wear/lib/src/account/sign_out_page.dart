@@ -6,6 +6,7 @@ import 'package:pantry_core/sync/sync_manager.dart';
 
 import '../pairing/wear_pairing_client.dart';
 import '../wear_shape.dart';
+import '../widgets/wear_centre.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_surfaces.dart';
@@ -78,56 +79,54 @@ class _SignOutPageState extends State<SignOutPage> {
       backgroundColor: const Color(0xFF0B0B0C),
       body: EdgeDismissible(
         onDismiss: () => Navigator.of(context).pop(),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsetsDirectional.symmetric(
-              horizontal: WearShape.isRound ? 26 : 14,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.logout, size: 20, color: wearNoticeInk),
+        child: WearCentre(
+          padding: EdgeInsetsDirectional.symmetric(
+            horizontal: WearShape.isRound ? 26 : 14,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.logout, size: 20, color: wearNoticeInk),
+              const SizedBox(height: 6),
+              Text(
+                m.wear.signOutTitle,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  height: 1.15,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                pending ? m.wear.signOutPending(queued) : m.wear.signOutBody,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 10,
+                  height: 1.2,
+                  color: pending ? wearNoticeInk : Colors.white54,
+                ),
+              ),
+              const SizedBox(height: 10),
+              if (_waiting)
+                const _Button(label: null)
+              else if (pending) ...[
+                _Button(label: m.wear.signOutWait, onTap: _sendFirst),
                 const SizedBox(height: 6),
-                Text(
-                  m.wear.signOutTitle,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    height: 1.15,
-                    color: Colors.white,
-                  ),
+                // Never the target under the finger that opened this page,
+                // and never the first one: leaving is what the page is for,
+                // and a wearer told what it costs is allowed to.
+                _Quiet(
+                  label: m.wear.signOutAnyway,
+                  onTap: () => unawaited(_signOut()),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  pending ? m.wear.signOutPending(queued) : m.wear.signOutBody,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 10,
-                    height: 1.2,
-                    color: pending ? wearNoticeInk : Colors.white54,
-                  ),
+              ] else
+                _Button(
+                  label: m.common.logout,
+                  warning: true,
+                  onTap: () => unawaited(_signOut()),
                 ),
-                const SizedBox(height: 10),
-                if (_waiting)
-                  const _Button(label: null)
-                else if (pending) ...[
-                  _Button(label: m.wear.signOutWait, onTap: _sendFirst),
-                  const SizedBox(height: 6),
-                  // Never the target under the finger that opened this page,
-                  // and never the first one: leaving is what the page is for,
-                  // and a wearer told what it costs is allowed to.
-                  _Quiet(
-                    label: m.wear.signOutAnyway,
-                    onTap: () => unawaited(_signOut()),
-                  ),
-                ] else
-                  _Button(
-                    label: m.common.logout,
-                    warning: true,
-                    onTap: () => unawaited(_signOut()),
-                  ),
-              ],
-            ),
+            ],
           ),
         ),
       ),

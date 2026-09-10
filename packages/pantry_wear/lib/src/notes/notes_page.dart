@@ -169,10 +169,11 @@ class _NotesWallState extends State<NotesWall> {
   @override
   Widget build(BuildContext context) {
     final notes = widget.notes;
+    final extent = WearMetrics.of(context).noteRowExtent;
     return SnapFocusList(
       key: _listKey,
       controller: _scroll,
-      itemExtent: WearMetrics.noteRowExtent,
+      itemExtent: extent,
       falloffRows: WearMetrics.falloffRows,
       rotaryActive: widget.rotary && !_covered,
       horizontalInset: WearMetrics.tallSideInset,
@@ -181,7 +182,7 @@ class _NotesWallState extends State<NotesWall> {
       elements: [
         for (var i = 0; i < notes.length; i++)
           FocusElement(
-            extent: WearMetrics.noteRowExtent,
+            extent: extent,
             builder: (context, d) => _NoteCard(
               key: ValueKey('note-${notes[i].id}'),
               note: notes[i],
@@ -246,7 +247,7 @@ class _NoteCard extends StatelessWidget {
             // State both, always: a Column of Text sizes to its longest line,
             // so short notes would otherwise draw short cards.
             width: double.infinity,
-            height: WearMetrics.noteCardHeight,
+            height: WearMetrics.of(context).noteCardHeight,
             child: DecoratedBox(
               decoration: WearSurface.card(
                 context,

@@ -198,13 +198,15 @@ class SnapFocusListState extends State<SnapFocusList> {
   /// to reach the centre line; on a flat list only what the rail covers.
   double _leadPad(double viewportHeight) => SnapFocusList.hasFocusRow
       ? math.max(0.0, viewportHeight / 2 - widget.itemExtent / 2)
-      : (widget.underRail ? WearMetrics.railHeight(viewportHeight) : 0.0);
+      : (widget.underRail
+            ? WearMetrics.of(context).railHeight(viewportHeight)
+            : 0.0);
 
   /// Space below the last row. A flat list needs only enough to lift the last
   /// row off the bottom edge.
   double _trailPad(double viewportHeight) => SnapFocusList.hasFocusRow
       ? _leadPad(viewportHeight)
-      : WearMetrics.cardGap;
+      : WearMetrics.of(context).cardGap;
 
   void _measure(double viewportHeight) {
     final lead = _leadPad(viewportHeight);

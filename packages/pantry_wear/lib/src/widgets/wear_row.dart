@@ -84,10 +84,7 @@ class WearRow extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final d = distance;
 
-    // A round screen wants a round row: at a card's corners the glass is
-    // already curving away, so a pill follows the bezel instead of fighting
-    // it.
-    final radius = WearShape.isRound ? WearMetrics.cardHeight / 2 : 14.0;
+    final radius = WearMetrics.of(context).cardRadius;
     final blocked = reason != null;
     final ink = warning
         ? _warningInk

@@ -523,7 +523,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
           body: LayoutBuilder(
             builder: (context, constraints) {
               final h = constraints.maxHeight;
-              final railHeight = WearMetrics.railHeight(h);
+              final railHeight = WearMetrics.of(context).railHeight(h);
               final titles = _titles;
               // The pager can land mid-swap, one frame before the mode's page
               // set is the one being drawn.

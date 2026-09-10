@@ -144,6 +144,7 @@ class _StoreTillPageState extends State<StoreTillPage> {
 
     final elements = <FocusElement>[];
     appendStoreGroup(
+      metrics: WearMetrics.of(context),
       elements: elements,
       shop: shop,
       items: _bought,
@@ -163,7 +164,7 @@ class _StoreTillPageState extends State<StoreTillPage> {
                 child: SnapFocusList(
                   key: _listKey,
                   controller: _scroll,
-                  itemExtent: WearMetrics.itemExtent,
+                  itemExtent: WearMetrics.of(context).itemExtent,
                   falloffRows: WearMetrics.falloffRows,
                   rotaryActive: !_covered,
                   geometry: _geometry,

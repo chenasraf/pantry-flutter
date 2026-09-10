@@ -29,7 +29,7 @@ void main() {
         home: Scaffold(
           body: SnapFocusList(
             controller: scroll,
-            itemExtent: WearMetrics.itemExtent,
+            itemExtent: WearMetrics.unscaled.itemExtent,
             elements: elements,
           ),
         ),
@@ -40,7 +40,7 @@ void main() {
   }
 
   FocusElement row(String label) => FocusElement(
-    extent: WearMetrics.itemExtent,
+    extent: WearMetrics.unscaled.itemExtent,
     builder: (context, _) => Text(label),
   );
 
@@ -54,7 +54,7 @@ void main() {
   testWidgets('a long unlandable stretch can be rested in', (tester) async {
     final scroll = await pump(tester, [
       row('first'),
-      prose('prose', WearMetrics.itemExtent * 5),
+      prose('prose', WearMetrics.unscaled.itemExtent * 5),
       row('last'),
     ]);
 
@@ -69,14 +69,17 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect((scroll.offset - target).abs(), lessThan(WearMetrics.itemExtent));
+    expect(
+      (scroll.offset - target).abs(),
+      lessThan(WearMetrics.unscaled.itemExtent),
+    );
   });
 
   testWidgets('a header above the first row is a resting place', (
     tester,
   ) async {
     final scroll = await pump(tester, [
-      prose('heading', WearMetrics.itemExtent),
+      prose('heading', WearMetrics.unscaled.itemExtent),
       row('first'),
       row('second'),
     ]);
@@ -102,11 +105,11 @@ void main() {
     // snap always reaches and the grid is exactly as tight as it was.
     await tester.drag(
       find.byType(SnapFocusList),
-      const Offset(0, -WearMetrics.itemExtent * 1.5),
+      Offset(0, -WearMetrics.unscaled.itemExtent * 1.5),
       touchSlopY: 0,
     );
     await tester.pumpAndSettle();
 
-    expect(scroll.offset % WearMetrics.itemExtent, closeTo(0, 0.5));
+    expect(scroll.offset % WearMetrics.unscaled.itemExtent, closeTo(0, 0.5));
   });
 }
