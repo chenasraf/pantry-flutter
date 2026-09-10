@@ -1,0 +1,2 @@
+Bug Fixes
+- open the pairing screen once instead of stacking copies
