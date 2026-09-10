@@ -50,7 +50,7 @@ class WearScope extends ChangeNotifier {
     if (current != null && houses.any((h) => h.id == current)) return current;
     final fallback = houses.first;
     if (current != null) _fellBackTo = m.wear.nowShowing(fallback.name);
-    await selectHouse(fallback.id);
+    await selectHouse(fallback.id, notify: false);
     return fallback.id;
   }
 
@@ -67,21 +67,30 @@ class WearScope extends ChangeNotifier {
     if (current != null && lists.any((l) => l.id == current)) return current;
     if (lists.isEmpty) return null;
     final lowest = lists.reduce((a, b) => b.sortOrder < a.sortOrder ? b : a);
-    await selectList(lowest.id);
+    await selectList(lowest.id, notify: false);
     return lowest.id;
   }
 
-  Future<void> selectHouse(int id) async {
+  /// [notify] is what tells the pages scope moved under them, and the two
+  /// `resolve` methods above pass it false.
+  ///
+  /// They are called from inside a read that is *already* going to draw the
+  /// scope they land on, so announcing it there does not tell anybody anything
+  /// — it re-enters the read instead, and a first sign-in resolves both the
+  /// house and the list, which is two more reads racing the one that started
+  /// them. Announcing belongs to the wearer's own choice, which nothing is
+  /// otherwise expecting.
+  Future<void> selectHouse(int id, {bool notify = true}) async {
     if (houseId == id) return;
     await PrefsService.instance.setLastHouseId(id);
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
-  Future<void> selectList(int id) async {
+  Future<void> selectList(int id, {bool notify = true}) async {
     if (listId == id) return;
     ChecklistService.instance.selectedListId = id;
     _pruneItemCache();
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   /// Scope is also what bounds the watch's item cache: leaving a list is what

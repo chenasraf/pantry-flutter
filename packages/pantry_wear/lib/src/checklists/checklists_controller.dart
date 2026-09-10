@@ -333,6 +333,15 @@ class ChecklistsController extends ChangeNotifier {
   /// would otherwise leave the watch on a bare ground plane with nothing left
   /// to end it.
   Future<void> _loadFromCache() async {
+    // A fetch already running will draw everything this would, from answers
+    // newer than the cache holds. Reading anyway is how a cold cache came to
+    // land on top of a fetch that had just found the items and wipe them —
+    // so this waits for it, rather than being dropped: a snapshot landing
+    // mid-fetch is exactly what a watch that cannot reach the server has.
+    if (_refreshing != null) {
+      _cacheAgain = true;
+      return;
+    }
     try {
       await _readCache();
     } finally {
@@ -468,7 +477,42 @@ class ChecklistsController extends ChangeNotifier {
 
   /// One pass over everything the page shows. Nothing here throws: a failed
   /// leg leaves the cached answer in place and the next poll tries again.
-  Future<void> refresh() async {
+  /// One read at a time, and one more after it if anything asked while it ran.
+  ///
+  /// A poll, a resume, a landed snapshot and a scope change can all ask within
+  /// the same second, and two traversals of this path interleave badly: they
+  /// write [_items] in whatever order their requests happen to land, and a
+  /// cache read inside one can overwrite a fetch the other had already
+  /// finished. Coalescing is also what the callers actually want — none of
+  /// them needs a second traversal, they need the current answer.
+  Future<void> refresh() {
+    final running = _refreshing;
+    if (running != null) {
+      _refreshAgain = true;
+      return running;
+    }
+    final run = _refresh().whenComplete(() {
+      _refreshing = null;
+      if (_disposed) return;
+      if (_refreshAgain) {
+        _refreshAgain = false;
+        _cacheAgain = false;
+        unawaited(refresh());
+        return;
+      }
+      if (_cacheAgain) {
+        _cacheAgain = false;
+        unawaited(_loadFromCache());
+      }
+    });
+    return _refreshing = run;
+  }
+
+  Future<void>? _refreshing;
+  var _refreshAgain = false;
+  var _cacheAgain = false;
+
+  Future<void> _refresh() async {
     await _refreshHouses();
     await _refreshSession();
     // A trip the poll or the mirror has just found is a trip that became live
@@ -554,14 +598,31 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
+  /// The three answers that describe the house rather than the list: how it
+  /// sorts, its categories and its stores.
+  ///
+  /// Asked for together, because none of them is an input to either of the
+  /// others and on a watch a round trip is a wrist held up. Each keeps its own
+  /// failure: a house whose stores cannot be reached still draws its
+  /// categories.
   Future<void> _loadReferenceSets() async {
     final house = _houseId;
     if (house == null) return;
-    await _refreshHousePrefs(house);
+    await Future.wait([
+      _refreshHousePrefs(house),
+      _refreshCategories(house),
+      _refreshStores(house),
+    ]);
+  }
+
+  Future<void> _refreshCategories(int house) async {
     try {
       final categories = await CategoryService.instance.getCategories(house);
       _categories = {for (final c in categories) c.id: c};
     } catch (_) {}
+  }
+
+  Future<void> _refreshStores(int house) async {
     try {
       final stores = await StoreService.instance.getStores(house);
       _stores = {for (final s in stores) s.id: s};
@@ -571,7 +632,11 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> _refreshBrowse() async {
     final house = _houseId;
     if (house == null) return;
-    await _loadReferenceSets();
+    // What a row *is* and what names the group it sits in are two independent
+    // reads, so the lists go out alongside the reference sets rather than
+    // behind them. Awaited before this returns either way — the page is drawn
+    // once, from all of it.
+    final references = _loadReferenceSets();
     try {
       final lists = await _checklists.getLists(house);
       _lists = lists;
@@ -582,7 +647,7 @@ class ChecklistsController extends ChangeNotifier {
     } catch (_) {}
 
     final listId = _list?.id;
-    if (listId == null) return;
+    if (listId == null) return await references;
     try {
       // The cached copy is read before the fetch is written over it: it is the
       // local half of the overlay, and on a device whose process dies as
@@ -600,6 +665,7 @@ class ChecklistsController extends ChangeNotifier {
       }
       _applyItems(overlaid);
     } catch (_) {}
+    await references;
   }
 
   /// A fetched snapshot describes what the server knew, which is older than
