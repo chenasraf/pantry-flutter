@@ -10,7 +10,6 @@ import 'package:pantry_core/utils/text_direction.dart';
 import '../widgets/wear_ink.dart';
 import '../scope/wear_scope.dart';
 import '../services/wear_mirror_client.dart';
-import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
@@ -381,7 +380,7 @@ class _DegradedNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: EdgeInsetsDirectional.symmetric(
-      horizontal: WearShape.isRound ? 24 : 12,
+      horizontal: WearMetrics.bandInsets(context).start,
     ),
     child: Text(
       m.wear.sessionExpiredShort,

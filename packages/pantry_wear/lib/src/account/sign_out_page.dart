@@ -5,7 +5,6 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
 import '../pairing/wear_pairing_client.dart';
-import '../wear_shape.dart';
 import '../widgets/wear_centre.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
@@ -80,9 +79,6 @@ class _SignOutPageState extends State<SignOutPage> {
       body: EdgeDismissible(
         onDismiss: () => Navigator.of(context).pop(),
         child: WearCentre(
-          padding: EdgeInsetsDirectional.symmetric(
-            horizontal: WearShape.isRound ? 26 : 14,
-          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

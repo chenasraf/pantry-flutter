@@ -239,7 +239,7 @@ void main() {
   });
 
   group('the picker', () {
-    Future<void> pumpPicker(WidgetTester tester) async {
+    Future<void> pumpSettings(WidgetTester tester) async {
       tester.view.physicalSize = const Size(450, 450);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
@@ -247,18 +247,20 @@ void main() {
         const MaterialApp(home: Scaffold(body: WearSettingsPage())),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text(m.settings.visibleChipsTitle));
+    }
+
+    Future<void> pumpPicker(WidgetTester tester) async {
+      await pumpSettings(tester);
+      await tester.tap(await revealRow(tester, m.settings.visibleChipsTitle));
       await tester.pumpAndSettle();
     }
 
     testWidgets('offers all nine, and says how many are showing', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: Scaffold(body: WearSettingsPage())),
-      );
-      await tester.pumpAndSettle();
+      await pumpSettings(tester);
 
+      await revealRow(tester, m.settings.visibleChipsTitle);
       expect(find.text(m.wear.nSelected(9)), findsOneWidget);
 
       await tester.tap(find.text(m.settings.visibleChipsTitle));
@@ -267,7 +269,7 @@ void main() {
       expect(find.byType(ChipVisibilityPage), findsOneWidget);
       for (final kind in ItemChipKind.values) {
         expect(
-          find.text(switch (kind) {
+          await revealRow(tester, switch (kind) {
             ItemChipKind.category => m.settings.chipNames.category,
             ItemChipKind.store => m.settings.chipNames.store,
             ItemChipKind.label => m.settings.chipNames.label,
@@ -289,7 +291,7 @@ void main() {
     ) async {
       await pumpPicker(tester);
 
-      await tester.tap(find.text(m.settings.chipNames.price));
+      await tester.tap(await revealRow(tester, m.settings.chipNames.price));
       await tester.pumpAndSettle();
 
       expect(PrefsService.instance.hiddenItemChips, {'price'});
@@ -301,7 +303,7 @@ void main() {
             'can seed from what this one leaves behind',
       );
 
-      await tester.tap(find.text(m.settings.chipNames.price));
+      await tester.tap(await revealRow(tester, m.settings.chipNames.price));
       await tester.pumpAndSettle();
 
       expect(PrefsService.instance.hiddenItemChips, isEmpty);
@@ -312,9 +314,9 @@ void main() {
     ) async {
       await pumpPicker(tester);
 
-      await tester.tap(find.text(m.settings.chipNames.price));
+      await tester.tap(await revealRow(tester, m.settings.chipNames.price));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(m.settings.chipNames.note));
+      await tester.tap(await revealRow(tester, m.settings.chipNames.note));
       await tester.pumpAndSettle();
 
       // A set is not finished until the wearer says so, and the back gesture

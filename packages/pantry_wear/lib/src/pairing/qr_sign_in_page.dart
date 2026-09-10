@@ -15,6 +15,7 @@ import '../widgets/wear_centre.dart';
 import '../widgets/wear_cta.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
+import '../widgets/wear_metrics.dart';
 import 'wear_pairing_client.dart';
 
 /// Signing the watch in with nothing but the watch.
@@ -287,9 +288,8 @@ class _AddressStep extends StatelessWidget {
       children: [
         Positioned.fill(
           child: SingleChildScrollView(
-            padding: EdgeInsetsDirectional.only(
-              start: WearShape.isRound ? 26 : 14,
-              end: WearShape.isRound ? 26 : 14,
+            // The band on both sides, and the button's own room under it.
+            padding: WearMetrics.bandInsets(context).copyWith(
               top: constraints.maxHeight * 0.2,
               bottom: constraints.maxHeight * 0.34,
             ),
@@ -438,9 +438,7 @@ class _CertStep extends StatelessWidget {
       children: [
         Positioned.fill(
           child: SingleChildScrollView(
-            padding: EdgeInsetsDirectional.only(
-              start: WearShape.isRound ? 24 : 12,
-              end: WearShape.isRound ? 24 : 12,
+            padding: WearMetrics.bandInsets(context).copyWith(
               top: constraints.maxHeight * 0.16,
               bottom: constraints.maxHeight * 0.34,
             ),
@@ -542,11 +540,9 @@ class _FailedStep extends StatelessWidget {
       children: [
         Positioned.fill(
           child: WearCentre(
-            padding: EdgeInsetsDirectional.only(
-              start: WearShape.isRound ? 26 : 14,
-              end: WearShape.isRound ? 26 : 14,
-              bottom: constraints.maxHeight * 0.28,
-            ),
+            padding: WearMetrics.bandInsets(
+              context,
+            ).copyWith(bottom: constraints.maxHeight * 0.28),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

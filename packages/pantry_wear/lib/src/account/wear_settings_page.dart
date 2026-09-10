@@ -6,6 +6,8 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
 
 import '../services/wear_host_service.dart';
+import '../widgets/focus_list.dart';
+import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
@@ -32,6 +34,7 @@ class WearSettingsPage extends StatefulWidget {
 class _WearSettingsPageState extends State<WearSettingsPage>
     with WidgetsBindingObserver {
   final _scroll = ScrollController();
+  final _listKey = GlobalKey<SnapFocusListState>();
 
   /// Drawn until the platform says otherwise, which is also what it stays as
   /// if the platform says nothing: the crown row fails towards being offered.
@@ -80,111 +83,102 @@ class _WearSettingsPageState extends State<WearSettingsPage>
     if (mounted) setState(() {});
   }
 
+  List<FocusElement> _elements() {
+    final metrics = WearMetrics.of(context);
+    final elements = <FocusElement>[];
+
+    void row({
+      required IconData icon,
+      required String label,
+      required String value,
+      required VoidCallback onTap,
+    }) {
+      elements.add(
+        FocusElement(
+          extent: metrics.itemExtent,
+          builder: (context, d) => Padding(
+            padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
+            child: WearRow(
+              icon: icon,
+              label: label,
+              value: value,
+              distance: d,
+              onTap: onTap,
+            ),
+          ),
+        ),
+      );
+    }
+
+    row(
+      icon: Icons.language,
+      label: m.settings.language,
+      value: languageLabel(PrefsService.instance.locale),
+      onTap: () => unawaited(_open(const LanguagePage())),
+    );
+    row(
+      icon: Icons.color_lens_outlined,
+      label: m.wear.accent,
+      value: accentLabel(ThemingService.instance.useServerThemeColorPref),
+      onTap: () => unawaited(_open(const AccentPage())),
+    );
+    row(
+      icon: Icons.refresh,
+      label: m.wear.refreshInterval,
+      value: refreshIntervalLabel(PrefsService.instance.wearPollSeconds),
+      onTap: () => unawaited(_open(const RefreshIntervalPage())),
+    );
+    row(
+      icon: Icons.undo,
+      label: m.wear.undoWindow,
+      value: undoWindowLabel(PrefsService.instance.wearUndoSeconds),
+      onTap: () => unawaited(_open(const UndoWindowPage())),
+    );
+    row(
+      icon: Icons.notifications_none,
+      label: m.wear.notifications,
+      value: _notifications
+          ? m.wear.notificationsAllowed
+          : m.wear.notificationsBlocked,
+      // Always the system's own screen, never a prompt: Android stops showing
+      // the prompt once it has been refused, so a row that prompted or
+      // navigated on that invisible state would do different things on two
+      // identical taps — and only the system screen can take a grant back.
+      onTap: () =>
+          unawaited(WearHostService.instance.openNotificationSettings()),
+    );
+    if (_hasRotary) {
+      row(
+        icon: Icons.rotate_right,
+        label: m.wear.crown,
+        value: crownSteeringLabel(PrefsService.instance.wearCrownTurnsPages),
+        onTap: () => unawaited(_open(const CrownSteeringPage())),
+      );
+    }
+    row(
+      icon: Icons.more_horiz,
+      label: m.settings.visibleChipsTitle,
+      value: m.wear.nSelected(visibleChipCount()),
+      onTap: () => unawaited(_open(const ChipVisibilityPage())),
+    );
+
+    return elements;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final metrics = WearMetrics.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFF0B0B0C),
+      backgroundColor: wearGround,
       body: EdgeDismissible(
         onDismiss: () => Navigator.of(context).pop(),
-        child: RotaryScrollable(
+        child: SnapFocusList(
+          key: _listKey,
           controller: _scroll,
-          active: true,
-          child: ListView(
-            controller: _scroll,
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: 10,
-              vertical: 44,
-            ),
-            children: [
-              SizedBox(
-                height: metrics.cardHeight,
-                child: WearRow(
-                  icon: Icons.language,
-                  label: m.settings.language,
-                  value: languageLabel(PrefsService.instance.locale),
-                  onTap: () => unawaited(_open(const LanguagePage())),
-                ),
-              ),
-              SizedBox(height: metrics.cardGap),
-              SizedBox(
-                height: metrics.cardHeight,
-                child: WearRow(
-                  icon: Icons.color_lens_outlined,
-                  label: m.wear.accent,
-                  value: accentLabel(
-                    ThemingService.instance.useServerThemeColorPref,
-                  ),
-                  onTap: () => unawaited(_open(const AccentPage())),
-                ),
-              ),
-              SizedBox(height: metrics.cardGap),
-              SizedBox(
-                height: metrics.cardHeight,
-                child: WearRow(
-                  icon: Icons.refresh,
-                  label: m.wear.refreshInterval,
-                  value: refreshIntervalLabel(
-                    PrefsService.instance.wearPollSeconds,
-                  ),
-                  onTap: () => unawaited(_open(const RefreshIntervalPage())),
-                ),
-              ),
-              SizedBox(height: metrics.cardGap),
-              SizedBox(
-                height: metrics.cardHeight,
-                child: WearRow(
-                  icon: Icons.undo,
-                  label: m.wear.undoWindow,
-                  value: undoWindowLabel(PrefsService.instance.wearUndoSeconds),
-                  onTap: () => unawaited(_open(const UndoWindowPage())),
-                ),
-              ),
-              SizedBox(height: metrics.cardGap),
-              SizedBox(
-                height: metrics.cardHeight,
-                child: WearRow(
-                  icon: Icons.notifications_none,
-                  label: m.wear.notifications,
-                  value: _notifications
-                      ? m.wear.notificationsAllowed
-                      : m.wear.notificationsBlocked,
-                  // Always the system's own screen, never a prompt: Android
-                  // stops showing the prompt once it has been refused, so a row
-                  // that prompted or navigated on that invisible state would do
-                  // different things on two identical taps — and only the
-                  // system screen can take a grant back.
-                  onTap: () => unawaited(
-                    WearHostService.instance.openNotificationSettings(),
-                  ),
-                ),
-              ),
-              if (_hasRotary) ...[
-                SizedBox(height: metrics.cardGap),
-                SizedBox(
-                  height: metrics.cardHeight,
-                  child: WearRow(
-                    icon: Icons.rotate_right,
-                    label: m.wear.crown,
-                    value: crownSteeringLabel(
-                      PrefsService.instance.wearCrownTurnsPages,
-                    ),
-                    onTap: () => unawaited(_open(const CrownSteeringPage())),
-                  ),
-                ),
-              ],
-              SizedBox(height: metrics.cardGap),
-              SizedBox(
-                height: metrics.cardHeight,
-                child: WearRow(
-                  icon: Icons.more_horiz,
-                  label: m.settings.visibleChipsTitle,
-                  value: m.wear.nSelected(visibleChipCount()),
-                  onTap: () => unawaited(_open(const ChipVisibilityPage())),
-                ),
-              ),
-            ],
-          ),
+          itemExtent: WearMetrics.of(context).itemExtent,
+          falloffRows: WearMetrics.falloffRows,
+          rotaryActive: true,
+          horizontalInset: WearMetrics.sideInset,
+          elements: _elements(),
         ),
       ),
     );

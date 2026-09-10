@@ -99,7 +99,7 @@ class _TripCollectionPageState extends State<TripCollectionPage>
     if (items.isEmpty) {
       return Center(
         child: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(horizontal: 24),
+          padding: WearMetrics.bandInsets(context),
           child: Text(
             widget.empty,
             textAlign: TextAlign.center,

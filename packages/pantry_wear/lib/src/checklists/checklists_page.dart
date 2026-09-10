@@ -464,7 +464,7 @@ class _Empty extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: const EdgeInsetsDirectional.symmetric(horizontal: 24),
+      padding: WearMetrics.bandInsets(context),
       child: Text(
         message,
         textAlign: TextAlign.center,

@@ -5,6 +5,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
+import '../widgets/wear_metrics.dart';
 
 /// What the house wants remembering before a trip starts, read and nothing
 /// else.
@@ -41,10 +42,10 @@ class _TripRemindersPageState extends State<TripRemindersPage> {
           active: true,
           child: ListView(
             controller: _scroll,
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: 16,
-              vertical: 44,
-            ),
+            // Prose, so it takes the band rather than following the bezel the
+            // way a row does: a line held to the widest part of the glass is
+            // shaved everywhere else on it.
+            padding: WearMetrics.bandInsets(context),
             children: [
               if (widget.reminders.isEmpty)
                 Padding(

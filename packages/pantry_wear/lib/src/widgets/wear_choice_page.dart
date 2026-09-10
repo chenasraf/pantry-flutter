@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'focus_list.dart';
 import 'wear_ink.dart';
 import 'wear_mechanics.dart';
 import 'wear_metrics.dart';
@@ -29,9 +30,19 @@ class WearChoice<T> {
 /// different nouns, so they are the same page — one row geometry and one back
 /// gesture, rather than three that drift apart.
 ///
-/// Rows are tapped where they lie, not dragged to a centre line: the falloff's
-/// "the middle one is in charge" rule earns its cost on a page whose rail
-/// reads the focus, and there is no rail here. Every row is its own target.
+/// It is built on [SnapFocusList] for the shape rather than for the focus: a
+/// round screen is only as wide as its chord, so a row held at full width has
+/// its ends shaved everywhere but the middle of the glass, and the falloff is
+/// what buys that width back — rows narrow as they leave the centre line, which
+/// is how fast the bezel closes in on them.
+///
+/// Rows are still tapped where they lie rather than dragged to the centre line.
+/// The "middle one is in charge" rule earns its cost where a tap writes
+/// something; a setting is visible in the row it was set from and one tap to
+/// put back.
+///
+/// The page opens on the answer it already holds, so confirming one is a glance
+/// and changing it is a turn of the crown.
 class WearChoicePage<T> extends StatefulWidget {
   final List<WearChoice<T>> choices;
   final T? selected;
@@ -57,16 +68,25 @@ class WearChoicePage<T> extends StatefulWidget {
 
 class _WearChoicePageState<T> extends State<WearChoicePage<T>> {
   final _scroll = ScrollController();
+  final _listKey = GlobalKey<SnapFocusListState>();
 
   /// A second tap while the first is still being written would pop a page that
   /// is already leaving.
   var _choosing = false;
 
   @override
+  void initState() {
+    super.initState();
+    _landOnSelection(_listKey, widget.choices.indexWhere(_isSelected));
+  }
+
+  @override
   void dispose() {
     _scroll.dispose();
     super.dispose();
   }
+
+  bool _isSelected(WearChoice<T> choice) => choice.value == widget.selected;
 
   Future<void> _select(T value) async {
     if (_choosing) return;
@@ -76,51 +96,14 @@ class _WearChoicePageState<T> extends State<WearChoicePage<T>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final metrics = WearMetrics.of(context);
-    return Scaffold(
-      backgroundColor: const Color(0xFF0B0B0C),
-      body: EdgeDismissible(
-        onDismiss: () => Navigator.of(context).pop(),
-        child: RotaryScrollable(
-          controller: _scroll,
-          active: true,
-          child: ListView(
-            controller: _scroll,
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: 10,
-              vertical: 44,
-            ),
-            children: [
-              if (widget.choices.isEmpty)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(top: 12),
-                  child: Text(
-                    widget.empty,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 11, color: Colors.white38),
-                  ),
-                ),
-              for (final choice in widget.choices)
-                Padding(
-                  padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
-                  child: SizedBox(
-                    height: metrics.cardHeight,
-                    child: WearRow(
-                      icon: choice.icon,
-                      tint: choice.tint,
-                      label: choice.label,
-                      selected: choice.value == widget.selected,
-                      onTap: () => unawaited(_select(choice.value)),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => _ChoiceList(
+    listKey: _listKey,
+    scroll: _scroll,
+    choices: widget.choices,
+    empty: widget.empty,
+    isSelected: _isSelected,
+    onTap: (choice) => unawaited(_select(choice.value)),
+  );
 }
 
 /// The same page, asking for any number of the list rather than one of it.
@@ -152,7 +135,19 @@ class WearMultiChoicePage<T> extends StatefulWidget {
 
 class _WearMultiChoicePageState<T> extends State<WearMultiChoicePage<T>> {
   final _scroll = ScrollController();
+  final _listKey = GlobalKey<SnapFocusListState>();
   late final Set<T> _selected = {...widget.selected};
+
+  @override
+  void initState() {
+    super.initState();
+    // The first one already on, so a set the wearer is amending opens at the
+    // part of it they can amend.
+    _landOnSelection(
+      _listKey,
+      widget.choices.indexWhere((c) => _selected.contains(c.value)),
+    );
+  }
 
   @override
   void dispose() {
@@ -168,50 +163,107 @@ class _WearMultiChoicePageState<T> extends State<WearMultiChoicePage<T>> {
   }
 
   @override
+  Widget build(BuildContext context) => _ChoiceList(
+    listKey: _listKey,
+    scroll: _scroll,
+    choices: widget.choices,
+    empty: widget.empty,
+    checkbox: true,
+    isSelected: (choice) => _selected.contains(choice.value),
+    onTap: (choice) => _toggle(choice.value),
+  );
+}
+
+/// Carry the list to the row that is already the answer, once the list has
+/// been laid out and knows where its rows are.
+///
+/// A no-op where nothing is selected, and where the list has no centre line to
+/// land on — a flat list starts at the top and every row is as reachable as
+/// every other.
+void _landOnSelection(GlobalKey<SnapFocusListState> key, int index) {
+  if (index < 0 || !SnapFocusList.hasFocusRow) return;
+  WidgetsBinding.instance.addPostFrameCallback(
+    (_) => key.currentState?.centreOn(index),
+  );
+}
+
+/// What both pages draw.
+class _ChoiceList<T> extends StatelessWidget {
+  final GlobalKey<SnapFocusListState> listKey;
+  final ScrollController scroll;
+  final List<WearChoice<T>> choices;
+  final String empty;
+  final bool checkbox;
+  final bool Function(WearChoice<T> choice) isSelected;
+  final void Function(WearChoice<T> choice) onTap;
+
+  const _ChoiceList({
+    required this.listKey,
+    required this.scroll,
+    required this.choices,
+    required this.empty,
+    required this.isSelected,
+    required this.onTap,
+    this.checkbox = false,
+  });
+
+  @override
   Widget build(BuildContext context) {
     final metrics = WearMetrics.of(context);
     return Scaffold(
       backgroundColor: wearGround,
       body: EdgeDismissible(
         onDismiss: () => Navigator.of(context).pop(),
-        child: RotaryScrollable(
-          controller: _scroll,
-          active: true,
-          child: ListView(
-            controller: _scroll,
-            padding: const EdgeInsetsDirectional.symmetric(
-              horizontal: 10,
-              vertical: 44,
-            ),
-            children: [
-              if (widget.choices.isEmpty)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(top: 12),
-                  child: Text(
-                    widget.empty,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 11, color: Colors.white38),
-                  ),
-                ),
-              for (final choice in widget.choices)
-                Padding(
-                  padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
-                  child: SizedBox(
-                    height: metrics.cardHeight,
-                    child: WearRow(
-                      icon: choice.icon,
-                      tint: choice.tint,
-                      label: choice.label,
-                      checkbox: true,
-                      selected: _selected.contains(choice.value),
-                      onTap: () => _toggle(choice.value),
+        child: choices.isEmpty
+            ? _Empty(message: empty)
+            : SnapFocusList(
+                key: listKey,
+                controller: scroll,
+                itemExtent: metrics.itemExtent,
+                falloffRows: WearMetrics.falloffRows,
+                rotaryActive: true,
+                horizontalInset: WearMetrics.sideInset,
+                elements: [
+                  for (var i = 0; i < choices.length; i++)
+                    FocusElement(
+                      extent: metrics.itemExtent,
+                      builder: (context, d) => Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          bottom: metrics.cardGap,
+                        ),
+                        child: WearRow(
+                          icon: choices[i].icon,
+                          tint: choices[i].tint,
+                          label: choices[i].label,
+                          checkbox: checkbox,
+                          selected: isSelected(choices[i]),
+                          distance: d,
+                          onTap: () => onTap(choices[i]),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-            ],
-          ),
-        ),
+                ],
+              ),
       ),
     );
   }
+}
+
+/// Nothing to choose between, said where the rows would have been.
+class _Empty extends StatelessWidget {
+  final String message;
+
+  const _Empty({required this.message});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: WearMetrics.bandInsets(context),
+    child: Center(
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontSize: 11, color: Colors.white38),
+      ),
+    ),
+  );
 }

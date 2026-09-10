@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/photo.dart';
@@ -180,3 +182,28 @@ PhotoFolder testPhotoFolder({
   createdAt: 0,
   updatedAt: 0,
 );
+
+/// Bring the row labelled [label] within reach of a tap, and hand back its
+/// finder.
+///
+/// Two things stand between a row and a test that taps it. A watch list opens
+/// with its first row on the centre line, so all but a couple of rows start
+/// below the fold and a sliver never builds one that is; and a row that has
+/// scrolled into view at the edge of a round screen is drawn as narrow as the
+/// glass is there, which is not yet a target. Both are what a wearer's thumb
+/// does about it: scroll until it exists, then bring it in to the centre line.
+Future<Finder> revealRow(WidgetTester tester, String label) async {
+  final row = find.text(label);
+  final scrollable = find.byType(Scrollable).last;
+  await tester.scrollUntilVisible(row, 54, scrollable: scrollable);
+  await tester.pumpAndSettle();
+
+  final centre = tester.getRect(scrollable).center.dy;
+  for (var step = 0; step < 12; step++) {
+    final dy = tester.getCenter(row).dy - centre;
+    if (dy.abs() <= 27) break;
+    await tester.drag(scrollable, Offset(0, dy > 0 ? -54 : 54));
+    await tester.pumpAndSettle();
+  }
+  return row;
+}

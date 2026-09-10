@@ -220,11 +220,16 @@ void main() {
 
     expect(find.byType(WearSettingsPage), findsOneWidget);
     expect(
+      find.byType(SnapFocusList, skipOffstage: false),
+      findsNWidgets(2),
+      reason: 'the covered page stays mounted under the one pushed over it',
+    );
+    expect(
       rotaryListeners(tester),
-      0,
+      1,
       reason:
-          'the covered page stays mounted, so one turn of the bezel would '
-          'otherwise scroll both it and the page on top',
+          'so leaving both subscribed would mean one turn of the bezel scrolls '
+          'the page on top and the page under it at once',
     );
   });
 

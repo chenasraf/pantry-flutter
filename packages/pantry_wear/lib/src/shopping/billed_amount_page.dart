@@ -112,9 +112,8 @@ class _BilledAmountPageState extends State<BilledAmountPage> {
             children: [
               Positioned.fill(
                 child: SingleChildScrollView(
-                  padding: EdgeInsetsDirectional.only(
-                    start: 16,
-                    end: 16,
+                  // The band on both sides, and the button's own room under it.
+                  padding: WearMetrics.bandInsets(context).copyWith(
                     top: constraints.maxHeight * 0.18,
                     bottom: constraints.maxHeight * 0.34,
                   ),

@@ -11,6 +11,8 @@ import 'package:pantry_wear/src/wear_shape.dart';
 /// simply never appears, with no error anywhere to find — so this row is the
 /// only place a wearer can see why, which makes what it says and when it
 /// re-reads it the whole of its job.
+import 'wear_fixtures.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -76,7 +78,7 @@ void main() {
     await pump(tester);
     calls.clear();
 
-    await tester.tap(find.text(m.wear.notifications));
+    await tester.tap(await revealRow(tester, m.wear.notifications));
     await tester.pumpAndSettle();
 
     // Android suppresses the prompt after a refusal, so a row that prompted

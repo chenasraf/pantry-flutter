@@ -16,6 +16,7 @@ import '../widgets/image_route.dart';
 import '../widgets/preview_image.dart';
 import '../widgets/preview_sizes.dart';
 import '../widgets/wear_mechanics.dart';
+import '../widgets/wear_metrics.dart';
 import 'checklists_controller.dart';
 import 'item_image.dart';
 import '../widgets/wear_surfaces.dart';
@@ -98,10 +99,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       body: EdgeDismissible(
         onDismiss: () => Navigator.of(context).pop(),
         child: ListView(
-          padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 11,
-            vertical: 46,
-          ),
+          // Prose, so it takes the band rather than following the bezel the way
+          // a row does: a line held to the widest part of the glass is shaved
+          // everywhere else on it.
+          padding: WearMetrics.bandInsets(context),
           children: [
             if (item.imageFileId != null && houseId != null) ...[
               _Thumbnail(item: item, houseId: houseId),

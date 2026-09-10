@@ -3,7 +3,6 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../services/wear_host_service.dart';
-import '../wear_shape.dart';
 import '../widgets/wear_centre.dart';
 import '../widgets/wear_mechanics.dart';
 import 'qr_sign_in_page.dart';
@@ -45,13 +44,9 @@ class _WearSetupPageState extends State<WearSetupPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Round screens lose the corners, so the copy sits in a narrower column
-    // than the square ones can afford.
-    final inset = WearShape.isRound ? 26.0 : 14.0;
     return Scaffold(
       backgroundColor: const Color(0xFF0B0B0C),
       body: WearCentre(
-        padding: EdgeInsetsDirectional.symmetric(horizontal: inset),
         child: switch (widget.client.state) {
           WearSetupState.checking => const _Spinner(),
           WearSetupState.unavailable => _Message(

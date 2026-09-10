@@ -131,6 +131,29 @@ class WearMetrics {
   /// glass and a round bezel shaves its corners.
   static const double sideInset = 0.025;
 
+  /// What a page of prose is held back by on every side.
+  ///
+  /// A round screen is only ever as wide as its chord, so a page whose lines
+  /// run the width of the viewport has their ends shaved wherever the circle
+  /// has closed in — which is most of the screen, and all of the top and
+  /// bottom. The band is the largest rectangle the circle holds: inside it a
+  /// line is whole at any height it comes to rest at, where a full-width line
+  /// is whole only across the middle.
+  ///
+  /// A square screen gives up nothing to its shape and keeps a margin for the
+  /// bezel and nothing more.
+  ///
+  /// Rows do not use this. They follow the bezel instead — narrowing with
+  /// distance from the centre line — which buys back the width the band gives
+  /// up and is what [SnapFocusList] exists to do.
+  static EdgeInsetsDirectional bandInsets(BuildContext context) {
+    final side = MediaQuery.sizeOf(context).shortestSide;
+    // Half the diagonal of the inscribed square is the radius, so each side
+    // gives up (1 - 1/sqrt(2)) / 2 of the diameter.
+    final inset = side * (WearShape.isRound ? 0.1465 : 0.06);
+    return EdgeInsetsDirectional.all(inset);
+  }
+
   /// The inset a photo row takes instead of [sideInset]. A tile is tall
   /// enough that its corners sit well above and below the centre line, where a
   /// round screen has already narrowed, so it wants more of the width held

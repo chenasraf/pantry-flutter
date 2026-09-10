@@ -448,6 +448,35 @@ class SnapFocusListState extends State<SnapFocusList> {
         final falloff = widget.falloffRows * widget.itemExtent;
         final lead = _leadPad(h);
         final trail = _trailPad(h);
+        final w = constraints.maxWidth;
+        final rowWidth = w * (1 - 2 * widget.horizontalInset);
+
+        /// The largest a row of [width] by [height] may be drawn, at [dy] from
+        /// the screen's centre line, with its corners still on the glass.
+        ///
+        /// The falloff alone does not answer this. It reaches two rows and then
+        /// holds, where the bezel goes on closing in all the way to the edge —
+        /// so past the falloff a row keeps a size the screen has stopped
+        /// having, and the wearer reads the middle of it.
+        ///
+        /// Scale rather than width, because a row is not free to be narrow: its
+        /// glyph and its gap are fixed, and squeezing the box they sit in only
+        /// moves the overflow inside the card. Scaling leaves the layout alone
+        /// and shrinks what is painted, which is what the glass is asking for.
+        double glassScale(double dy, double width, double height) {
+          if (!WearShape.isRound) return 1;
+          final r = w / 2;
+          final halfW = width / 2;
+          final halfH = height / 2;
+          final d = dy.abs();
+          // The corner (s·halfW, d + s·halfH) on the circle of radius r, solved
+          // for s.
+          final a = halfW * halfW + halfH * halfH;
+          final root = math.sqrt(
+            math.max(0.0, d * d * halfH * halfH - a * (d * d - r * r)),
+          );
+          return ((root - d * halfH) / a).clamp(0.0, 1.0);
+        }
 
         return Padding(
           padding: EdgeInsetsDirectional.symmetric(
@@ -494,16 +523,29 @@ class SnapFocusListState extends State<SnapFocusList> {
                               ? widget.controller.offset + h / 2
                               : h / 2;
                           final rowCentre = _tops[i] + e.extent / 2;
-                          final d = ((rowCentre - centre).abs() / falloff)
-                              .clamp(0.0, 1.0);
-                          // A header neither grows nor shrinks: it is chrome
-                          // passing through, not a candidate for the focus.
-                          if (e.isHeader) return e.builder(context, d);
+                          final dy = rowCentre - centre;
+                          final d = (dy.abs() / falloff).clamp(0.0, 1.0);
+                          // A header neither grows nor shrinks with the focus:
+                          // it is chrome passing through, not a candidate for
+                          // it. The glass it still answers to.
+                          if (e.isHeader) {
+                            return Transform.scale(
+                              scale: glassScale(dy, rowWidth, e.extent),
+                              child: e.builder(context, d),
+                            );
+                          }
                           final g = railFocusCurve(d);
                           return FractionallySizedBox(
                             widthFactor: g.widthFactor,
                             child: Transform.scale(
-                              scale: g.scale,
+                              scale: math.min(
+                                g.scale,
+                                glassScale(
+                                  dy,
+                                  rowWidth * g.widthFactor,
+                                  e.extent,
+                                ),
+                              ),
                               child: e.builder(context, d),
                             ),
                           );
