@@ -126,6 +126,27 @@ class WearMetrics {
   /// How far the focus falloff reaches, in rows.
   static const double falloffRows = 2.2;
 
+  /// Whether a row is held to the chord of the glass at its own distance from
+  /// the centre line, on top of the falloff.
+  ///
+  /// NOTE: two answers to the same question, and this is the switch between
+  /// them. Both are defensible; which one is right depends on how much of the
+  /// bezel a row is allowed to touch.
+  ///
+  /// - `true` — a row may be no larger than the width the screen actually has
+  ///   where the row sits. Nothing is ever cut, and rows recede sharply as they
+  ///   approach the top and bottom of the glass.
+  /// - `false` — the falloff alone. It narrows a row over [falloffRows] and
+  ///   then holds that size, where the bezel goes on closing in — so the
+  ///   outermost row on screen overhangs the glass by roughly 16 logical
+  ///   pixels at the checklist's geometry. This is the recession the watch
+  ///   shipped with.
+  ///
+  /// `wear_watch_shape_test.dart` pins the `true` behaviour: it asserts every
+  /// line of text is inside the circle, which is the thing `false` gives up.
+  /// Flipping this expects those tests to fail.
+  static const bool rowsFollowBezel = true;
+
   /// Fraction of the width held back at each side. The falloff's width factor
   /// is 1.0 on the centre line, so without this the focused row runs to the
   /// glass and a round bezel shaves its corners.

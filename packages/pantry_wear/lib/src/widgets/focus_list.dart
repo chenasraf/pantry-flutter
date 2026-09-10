@@ -463,8 +463,11 @@ class SnapFocusListState extends State<SnapFocusList> {
         /// glyph and its gap are fixed, and squeezing the box they sit in only
         /// moves the overflow inside the card. Scaling leaves the layout alone
         /// and shrinks what is painted, which is what the glass is asking for.
+        ///
+        /// [WearMetrics.rowsFollowBezel] turns this off, leaving the falloff to
+        /// answer alone — see the note there for what that trades.
         double glassScale(double dy, double width, double height) {
-          if (!WearShape.isRound) return 1;
+          if (!WearShape.isRound || !WearMetrics.rowsFollowBezel) return 1;
           final r = w / 2;
           final halfW = width / 2;
           final halfH = height / 2;
