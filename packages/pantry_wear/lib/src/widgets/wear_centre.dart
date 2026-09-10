@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'wear_mechanics.dart';
 import 'wear_metrics.dart';
+import 'wear_scroll_indicator.dart';
 
 /// A page held in the middle of the glass, and scrolled instead the moment it
 /// stops fitting between the edges.
@@ -44,16 +45,18 @@ class _WearCentreState extends State<WearCentre> {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) => RotaryScrollable(
-      controller: _scroll,
-      active: true,
-      child: SingleChildScrollView(
+    builder: (context, constraints) => WearScrollIndicator(
+      child: RotaryScrollable(
         controller: _scroll,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraints.maxHeight),
-          child: Padding(
-            padding: widget.padding ?? WearMetrics.bandInsets(context),
-            child: Center(child: widget.child),
+        active: true,
+        child: SingleChildScrollView(
+          controller: _scroll,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: widget.padding ?? WearMetrics.bandInsets(context),
+              child: Center(child: widget.child),
+            ),
           ),
         ),
       ),

@@ -10,6 +10,7 @@ import '../widgets/wear_cta.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
+import '../widgets/wear_scroll_indicator.dart';
 import '../widgets/wear_row.dart';
 
 /// What a till charged, typed on the wrist.
@@ -111,68 +112,70 @@ class _BilledAmountPageState extends State<BilledAmountPage> {
           builder: (context, constraints) => Stack(
             children: [
               Positioned.fill(
-                child: SingleChildScrollView(
-                  // The band on both sides, and the button's own room under it.
-                  padding: WearMetrics.bandInsets(context).copyWith(
-                    top: constraints.maxHeight * 0.18,
-                    bottom: constraints.maxHeight * 0.34,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        widget.storeName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        textDirection: detectTextDirection(widget.storeName),
-                        style: const TextStyle(
-                          fontSize: 11,
-                          height: 1.1,
-                          color: Colors.white38,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      TextField(
-                        controller: _field,
-                        autofocus: true,
-                        // Numbers read left to right in every locale the app
-                        // ships, so the field does not follow the layout.
-                        textDirection: TextDirection.ltr,
-                        textAlign: TextAlign.center,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        onChanged: (_) => setState(() {}),
-                        onSubmitted: (_) => _save(),
-                        style: const TextStyle(
-                          fontSize: 26,
-                          height: 1.1,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          border: InputBorder.none,
-                          hintText: currency.symbol,
-                          hintStyle: const TextStyle(
-                            fontSize: 26,
+                child: WearScrollIndicator(
+                  child: SingleChildScrollView(
+                    // The band on both sides, and the button's own room under it.
+                    padding: WearMetrics.bandInsets(context).copyWith(
+                      top: constraints.maxHeight * 0.18,
+                      bottom: constraints.maxHeight * 0.34,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          widget.storeName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          textDirection: detectTextDirection(widget.storeName),
+                          style: const TextStyle(
+                            fontSize: 11,
                             height: 1.1,
-                            color: Colors.white24,
+                            color: Colors.white38,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        height: WearMetrics.of(context).cardHeight,
-                        child: WearRow(
-                          icon: Icons.payments_outlined,
-                          label: m.wear.currency,
-                          value: '${currency.code} ${currency.symbol}',
-                          onTap: () => unawaited(_pickCurrency()),
+                        const SizedBox(height: 6),
+                        TextField(
+                          controller: _field,
+                          autofocus: true,
+                          // Numbers read left to right in every locale the app
+                          // ships, so the field does not follow the layout.
+                          textDirection: TextDirection.ltr,
+                          textAlign: TextAlign.center,
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          onChanged: (_) => setState(() {}),
+                          onSubmitted: (_) => _save(),
+                          style: const TextStyle(
+                            fontSize: 26,
+                            height: 1.1,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            border: InputBorder.none,
+                            hintText: currency.symbol,
+                            hintStyle: const TextStyle(
+                              fontSize: 26,
+                              height: 1.1,
+                              color: Colors.white24,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: WearMetrics.of(context).cardHeight,
+                          child: WearRow(
+                            icon: Icons.payments_outlined,
+                            label: m.wear.currency,
+                            value: '${currency.code} ${currency.symbol}',
+                            onTap: () => unawaited(_pickCurrency()),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -17,6 +17,7 @@ import '../widgets/preview_image.dart';
 import '../widgets/preview_sizes.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
+import '../widgets/wear_scroll_indicator.dart';
 import 'checklists_controller.dart';
 import 'item_image.dart';
 import '../widgets/wear_surfaces.dart';
@@ -98,123 +99,132 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       // that does not carry this strip has no way back at all.
       body: EdgeDismissible(
         onDismiss: () => Navigator.of(context).pop(),
-        child: ListView(
-          // Prose, so it takes the band rather than following the bezel the way
-          // a row does: a line held to the widest part of the glass is shaved
-          // everywhere else on it.
-          padding: WearMetrics.bandInsets(context),
-          children: [
-            if (item.imageFileId != null && houseId != null) ...[
-              _Thumbnail(item: item, houseId: houseId),
-              const SizedBox(height: 12),
-            ],
-            Text(
-              item.name,
-              textAlign: TextAlign.center,
-              textDirection: detectTextDirection(item.name),
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
-            ),
-            if ((item.description ?? '').isNotEmpty) ...[
-              const SizedBox(height: 6),
+        child: WearScrollIndicator(
+          child: ListView(
+            // Prose, so it takes the band rather than following the bezel the way
+            // a row does: a line held to the widest part of the glass is shaved
+            // everywhere else on it.
+            padding: WearMetrics.bandInsets(context),
+            children: [
+              if (item.imageFileId != null && houseId != null) ...[
+                _Thumbnail(item: item, houseId: houseId),
+                const SizedBox(height: 12),
+              ],
               Text(
-                item.description!,
+                item.name,
                 textAlign: TextAlign.center,
-                textDirection: detectTextDirection(item.description!),
-                style: const TextStyle(fontSize: 12, color: Colors.white60),
+                textDirection: detectTextDirection(item.name),
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ],
-            const SizedBox(height: 14),
-            if (item.quantity != null)
+              if ((item.description ?? '').isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  item.description!,
+                  textAlign: TextAlign.center,
+                  textDirection: detectTextDirection(item.description!),
+                  style: const TextStyle(fontSize: 12, color: Colors.white60),
+                ),
+              ],
+              const SizedBox(height: 14),
+              if (item.quantity != null)
+                _fact(
+                  m.settings.chipNames.quantity,
+                  value: EntityChip(textColor: neutral, label: item.quantity!),
+                ),
+              if (category != null)
+                _fact(
+                  m.settings.chipNames.category,
+                  value: EntityChip(
+                    textColor: parseHexColor(category.color) ?? neutral,
+                    label: category.name,
+                    leading: Icon(
+                      categoryIcon(category.icon),
+                      size: 12,
+                      color: parseHexColor(category.color) ?? neutral,
+                    ),
+                  ),
+                ),
+              if (store != null)
+                _fact(
+                  m.settings.chipNames.store,
+                  value: EntityChip(
+                    textColor: storeTint,
+                    label: store.name,
+                    leading: Icon(
+                      storeIcon(store.icon),
+                      size: 12,
+                      color: storeTint,
+                    ),
+                  ),
+                ),
+              if (price != null)
+                _fact(
+                  m.settings.chipNames.price,
+                  value: EntityChip(textColor: neutral, label: price),
+                ),
+              // A schedule, not a flag: "recurring" alone tells you nothing you
+              // could act on, so the row carries what core already knows how to
+              // say about the rule.
               _fact(
-                m.settings.chipNames.quantity,
-                value: EntityChip(textColor: neutral, label: item.quantity!),
-              ),
-            if (category != null)
-              _fact(
-                m.settings.chipNames.category,
+                m.wear.repeats,
                 value: EntityChip(
-                  textColor: parseHexColor(category.color) ?? neutral,
-                  label: category.name,
+                  textColor: item.rrule != null ? scheme.primary : neutral,
+                  label: item.rrule != null
+                      ? formatRrule(item.rrule!)
+                      : m.settings.chipNames.oneTime,
                   leading: Icon(
-                    categoryIcon(category.icon),
+                    item.rrule != null
+                        ? Icons.repeat
+                        : Icons.looks_one_outlined,
                     size: 12,
-                    color: parseHexColor(category.color) ?? neutral,
+                    color: item.rrule != null ? scheme.primary : neutral,
                   ),
                 ),
               ),
-            if (store != null)
-              _fact(
-                m.settings.chipNames.store,
-                value: EntityChip(
-                  textColor: storeTint,
-                  label: store.name,
-                  leading: Icon(
-                    storeIcon(store.icon),
-                    size: 12,
-                    color: storeTint,
-                  ),
-                ),
-              ),
-            if (price != null)
-              _fact(
-                m.settings.chipNames.price,
-                value: EntityChip(textColor: neutral, label: price),
-              ),
-            // A schedule, not a flag: "recurring" alone tells you nothing you
-            // could act on, so the row carries what core already knows how to
-            // say about the rule.
-            _fact(
-              m.wear.repeats,
-              value: EntityChip(
-                textColor: item.rrule != null ? scheme.primary : neutral,
-                label: item.rrule != null
-                    ? formatRrule(item.rrule!)
-                    : m.settings.chipNames.oneTime,
-                leading: Icon(
-                  item.rrule != null ? Icons.repeat : Icons.looks_one_outlined,
-                  size: 12,
-                  color: item.rrule != null ? scheme.primary : neutral,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            _button(
-              icon: item.done ? Icons.remove_done : Icons.check,
-              label: item.done ? m.wear.markUndone : m.wear.markDone,
-              color: scheme.primary,
-              onTap: () {
-                if (inSession) {
-                  item.done
-                      ? controller.uncheckItem(item)
-                      : controller.checkItem(item);
-                } else {
-                  controller.setDone(item, !item.done);
-                }
-                Navigator.of(context).pop();
-              },
-            ),
-            if (inSession) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               _button(
-                icon: removed ? Icons.undo : Icons.block,
-                label: removed ? m.shopping.restore : m.shopping.removeFromTrip,
-                color: const Color(0xFF8A8A92),
+                icon: item.done ? Icons.remove_done : Icons.check,
+                label: item.done ? m.wear.markUndone : m.wear.markDone,
+                color: scheme.primary,
                 onTap: () {
-                  removed
-                      ? controller.unskipItem(item)
-                      : controller.skipItem(item);
+                  if (inSession) {
+                    item.done
+                        ? controller.uncheckItem(item)
+                        : controller.checkItem(item);
+                  } else {
+                    controller.setDone(item, !item.done);
+                  }
                   Navigator.of(context).pop();
                 },
               ),
+              if (inSession) ...[
+                const SizedBox(height: 8),
+                _button(
+                  icon: removed ? Icons.undo : Icons.block,
+                  label: removed
+                      ? m.shopping.restore
+                      : m.shopping.removeFromTrip,
+                  color: const Color(0xFF8A8A92),
+                  onTap: () {
+                    removed
+                        ? controller.unskipItem(item)
+                        : controller.skipItem(item);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+              const SizedBox(height: 8),
+              _button(
+                icon: Icons.phone_android,
+                label: _handoff ?? m.wear.openOnPhone,
+                color: const Color(0xFF8A8A92),
+                onTap: _openOnPhone,
+              ),
             ],
-            const SizedBox(height: 8),
-            _button(
-              icon: Icons.phone_android,
-              label: _handoff ?? m.wear.openOnPhone,
-              color: const Color(0xFF8A8A92),
-              onTap: _openOnPhone,
-            ),
-          ],
+          ),
         ),
       ),
     );

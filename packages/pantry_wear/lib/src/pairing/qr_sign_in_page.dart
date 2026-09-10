@@ -16,6 +16,7 @@ import '../widgets/wear_cta.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
+import '../widgets/wear_scroll_indicator.dart';
 import 'wear_pairing_client.dart';
 
 /// Signing the watch in with nothing but the watch.
@@ -287,55 +288,57 @@ class _AddressStep extends StatelessWidget {
     builder: (context, constraints) => Stack(
       children: [
         Positioned.fill(
-          child: SingleChildScrollView(
-            // The band on both sides, and the button's own room under it.
-            padding: WearMetrics.bandInsets(context).copyWith(
-              top: constraints.maxHeight * 0.2,
-              bottom: constraints.maxHeight * 0.34,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  m.wear.qrServer,
-                  textAlign: TextAlign.center,
-                  textDirection: detectTextDirection(m.wear.qrServer),
-                  style: const TextStyle(
-                    fontSize: 12,
-                    height: 1.1,
-                    color: Colors.white38,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                TextField(
-                  controller: controller,
-                  autofocus: true,
-                  // A server address is always LTR, whatever the wearer's
-                  // locale, so the field does not follow the layout.
-                  textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.url,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  textInputAction: TextInputAction.go,
-                  onSubmitted: (_) => onContinue(),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    height: 1.2,
-                    color: Colors.white,
-                  ),
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    border: InputBorder.none,
-                    hintText: 'cloud.example.com',
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      height: 1.2,
-                      color: Colors.white24,
+          child: WearScrollIndicator(
+            child: SingleChildScrollView(
+              // The band on both sides, and the button's own room under it.
+              padding: WearMetrics.bandInsets(context).copyWith(
+                top: constraints.maxHeight * 0.2,
+                bottom: constraints.maxHeight * 0.34,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    m.wear.qrServer,
+                    textAlign: TextAlign.center,
+                    textDirection: detectTextDirection(m.wear.qrServer),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      height: 1.1,
+                      color: Colors.white38,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: controller,
+                    autofocus: true,
+                    // A server address is always LTR, whatever the wearer's
+                    // locale, so the field does not follow the layout.
+                    textDirection: TextDirection.ltr,
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.url,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    textInputAction: TextInputAction.go,
+                    onSubmitted: (_) => onContinue(),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      height: 1.2,
+                      color: Colors.white,
+                    ),
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      border: InputBorder.none,
+                      hintText: 'cloud.example.com',
+                      hintStyle: TextStyle(
+                        fontSize: 15,
+                        height: 1.2,
+                        color: Colors.white24,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -437,74 +440,76 @@ class _CertStep extends StatelessWidget {
     builder: (context, constraints) => Stack(
       children: [
         Positioned.fill(
-          child: SingleChildScrollView(
-            padding: WearMetrics.bandInsets(context).copyWith(
-              top: constraints.maxHeight * 0.16,
-              bottom: constraints.maxHeight * 0.34,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.gpp_maybe_outlined,
-                  size: 20,
-                  color: wearNoticeInk,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  m.login.untrustedCertTitle,
-                  textAlign: TextAlign.center,
-                  textDirection: detectTextDirection(
+          child: WearScrollIndicator(
+            child: SingleChildScrollView(
+              padding: WearMetrics.bandInsets(context).copyWith(
+                top: constraints.maxHeight * 0.16,
+                bottom: constraints.maxHeight * 0.34,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.gpp_maybe_outlined,
+                    size: 20,
+                    color: wearNoticeInk,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
                     m.login.untrustedCertTitle,
+                    textAlign: TextAlign.center,
+                    textDirection: detectTextDirection(
+                      m.login.untrustedCertTitle,
+                    ),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      height: 1.15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    height: 1.15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  m.wear.certUntrustedBody(host),
-                  textAlign: TextAlign.center,
-                  textDirection: detectTextDirection(
+                  const SizedBox(height: 4),
+                  Text(
                     m.wear.certUntrustedBody(host),
+                    textAlign: TextAlign.center,
+                    textDirection: detectTextDirection(
+                      m.wear.certUntrustedBody(host),
+                    ),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      height: 1.25,
+                      color: Colors.white54,
+                    ),
                   ),
-                  style: const TextStyle(
-                    fontSize: 10,
-                    height: 1.25,
-                    color: Colors.white54,
+                  const SizedBox(height: 8),
+                  Text(
+                    m.login.certFingerprint,
+                    textAlign: TextAlign.center,
+                    textDirection: detectTextDirection(m.login.certFingerprint),
+                    style: const TextStyle(
+                      fontSize: 9,
+                      height: 1.1,
+                      color: Colors.white38,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  m.login.certFingerprint,
-                  textAlign: TextAlign.center,
-                  textDirection: detectTextDirection(m.login.certFingerprint),
-                  style: const TextStyle(
-                    fontSize: 9,
-                    height: 1.1,
-                    color: Colors.white38,
+                  const SizedBox(height: 2),
+                  // Monospace and full, wrapping rather than truncating: the
+                  // wearer is comparing it against something, and a fingerprint
+                  // with its middle elided compares equal to far too much.
+                  Text(
+                    fingerprint,
+                    textAlign: TextAlign.center,
+                    textDirection: TextDirection.ltr,
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 10,
+                      height: 1.35,
+                      letterSpacing: 0.4,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                // Monospace and full, wrapping rather than truncating: the
-                // wearer is comparing it against something, and a fingerprint
-                // with its middle elided compares equal to far too much.
-                Text(
-                  fingerprint,
-                  textAlign: TextAlign.center,
-                  textDirection: TextDirection.ltr,
-                  style: const TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 10,
-                    height: 1.35,
-                    letterSpacing: 0.4,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -8,6 +8,7 @@ import '../services/rotary_service.dart';
 import '../wear_shape.dart';
 import 'wear_mechanics.dart';
 import 'wear_metrics.dart';
+import 'wear_scroll_indicator.dart';
 
 /// The list every scrolling page on the watch is built from — centred-focus on
 /// a round screen, flat on a square one.
@@ -481,84 +482,88 @@ class SnapFocusListState extends State<SnapFocusList> {
           return ((root - d * halfH) / a).clamp(0.0, 1.0);
         }
 
-        return Padding(
-          padding: EdgeInsetsDirectional.symmetric(
-            horizontal: constraints.maxWidth * widget.horizontalInset,
-          ),
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (_) {
-              _publish();
-              return false;
-            },
-            child: CustomScrollView(
-              controller: widget.controller,
-              physics: widget.snapEnabled && focused
-                  ? _SnapPhysics(
-                      targets: () => _snapTargets,
-                      reach: widget.itemExtent,
-                      parent: const AlwaysScrollableScrollPhysics(
+        return WearScrollIndicator(
+          // Outside the inset, so the arc is drawn against the glass rather
+          // than against the width the rows were held back to.
+          child: Padding(
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: constraints.maxWidth * widget.horizontalInset,
+            ),
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (_) {
+                _publish();
+                return false;
+              },
+              child: CustomScrollView(
+                controller: widget.controller,
+                physics: widget.snapEnabled && focused
+                    ? _SnapPhysics(
+                        targets: () => _snapTargets,
+                        reach: widget.itemExtent,
+                        parent: const AlwaysScrollableScrollPhysics(
+                          parent: ClampingScrollPhysics(),
+                        ),
+                      )
+                    : const AlwaysScrollableScrollPhysics(
                         parent: ClampingScrollPhysics(),
                       ),
-                    )
-                  : const AlwaysScrollableScrollPhysics(
-                      parent: ClampingScrollPhysics(),
-                    ),
-              slivers: [
-                SliverToBoxAdapter(child: SizedBox(height: lead)),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, i) {
-                    final e = widget.elements[i];
-                    // Every row at full strength, none of them receding, and
-                    // nothing to rebuild on scroll: a flat list has no row to
-                    // measure a distance from.
-                    if (!focused) {
+                slivers: [
+                  SliverToBoxAdapter(child: SizedBox(height: lead)),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, i) {
+                      final e = widget.elements[i];
+                      // Every row at full strength, none of them receding, and
+                      // nothing to rebuild on scroll: a flat list has no row to
+                      // measure a distance from.
+                      if (!focused) {
+                        return SizedBox(
+                          height: e.extent,
+                          child: e.builder(context, 0),
+                        );
+                      }
                       return SizedBox(
                         height: e.extent,
-                        child: e.builder(context, 0),
-                      );
-                    }
-                    return SizedBox(
-                      height: e.extent,
-                      child: AnimatedBuilder(
-                        animation: widget.controller,
-                        builder: (context, _) {
-                          final centre = widget.controller.hasClients
-                              ? widget.controller.offset + h / 2
-                              : h / 2;
-                          final rowCentre = _tops[i] + e.extent / 2;
-                          final dy = rowCentre - centre;
-                          final d = (dy.abs() / falloff).clamp(0.0, 1.0);
-                          // A header neither grows nor shrinks with the focus:
-                          // it is chrome passing through, not a candidate for
-                          // it. The glass it still answers to.
-                          if (e.isHeader) {
-                            return Transform.scale(
-                              scale: glassScale(dy, rowWidth, e.extent),
-                              child: e.builder(context, d),
-                            );
-                          }
-                          final g = railFocusCurve(d);
-                          return FractionallySizedBox(
-                            widthFactor: g.widthFactor,
-                            child: Transform.scale(
-                              scale: math.min(
-                                g.scale,
-                                glassScale(
-                                  dy,
-                                  rowWidth * g.widthFactor,
-                                  e.extent,
+                        child: AnimatedBuilder(
+                          animation: widget.controller,
+                          builder: (context, _) {
+                            final centre = widget.controller.hasClients
+                                ? widget.controller.offset + h / 2
+                                : h / 2;
+                            final rowCentre = _tops[i] + e.extent / 2;
+                            final dy = rowCentre - centre;
+                            final d = (dy.abs() / falloff).clamp(0.0, 1.0);
+                            // A header neither grows nor shrinks with the focus:
+                            // it is chrome passing through, not a candidate for
+                            // it. The glass it still answers to.
+                            if (e.isHeader) {
+                              return Transform.scale(
+                                scale: glassScale(dy, rowWidth, e.extent),
+                                child: e.builder(context, d),
+                              );
+                            }
+                            final g = railFocusCurve(d);
+                            return FractionallySizedBox(
+                              widthFactor: g.widthFactor,
+                              child: Transform.scale(
+                                scale: math.min(
+                                  g.scale,
+                                  glassScale(
+                                    dy,
+                                    rowWidth * g.widthFactor,
+                                    e.extent,
+                                  ),
                                 ),
+                                child: e.builder(context, d),
                               ),
-                              child: e.builder(context, d),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  }, childCount: widget.elements.length),
-                ),
-                SliverToBoxAdapter(child: SizedBox(height: trail)),
-              ],
+                            );
+                          },
+                        ),
+                      );
+                    }, childCount: widget.elements.length),
+                  ),
+                  SliverToBoxAdapter(child: SizedBox(height: trail)),
+                ],
+              ),
             ),
           ),
         );

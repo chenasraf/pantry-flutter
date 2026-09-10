@@ -6,6 +6,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
+import '../widgets/wear_scroll_indicator.dart';
 
 /// What the house wants remembering before a trip starts, read and nothing
 /// else.
@@ -40,51 +41,56 @@ class _TripRemindersPageState extends State<TripRemindersPage> {
         child: RotaryScrollable(
           controller: _scroll,
           active: true,
-          child: ListView(
-            controller: _scroll,
-            // Prose, so it takes the band rather than following the bezel the
-            // way a row does: a line held to the widest part of the glass is
-            // shaved everywhere else on it.
-            padding: WearMetrics.bandInsets(context),
-            children: [
-              if (widget.reminders.isEmpty)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(top: 12),
-                  child: Text(
-                    m.shopping.noRemindersHere,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 11, color: Colors.white38),
-                  ),
-                ),
-              for (final reminder in widget.reminders)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(bottom: 10),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsetsDirectional.only(top: 2, end: 8),
-                        child: Icon(
-                          Icons.notifications_none,
-                          size: 13,
-                          color: Colors.white38,
-                        ),
+          child: WearScrollIndicator(
+            child: ListView(
+              controller: _scroll,
+              // Prose, so it takes the band rather than following the bezel the
+              // way a row does: a line held to the widest part of the glass is
+              // shaved everywhere else on it.
+              padding: WearMetrics.bandInsets(context),
+              children: [
+                if (widget.reminders.isEmpty)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(top: 12),
+                    child: Text(
+                      m.shopping.noRemindersHere,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.white38,
                       ),
-                      Expanded(
-                        child: Text(
-                          reminder.text,
-                          textDirection: detectTextDirection(reminder.text),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            height: 1.25,
-                            color: Colors.white,
+                    ),
+                  ),
+                for (final reminder in widget.reminders)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(bottom: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsetsDirectional.only(top: 2, end: 8),
+                          child: Icon(
+                            Icons.notifications_none,
+                            size: 13,
+                            color: Colors.white38,
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: Text(
+                            reminder.text,
+                            textDirection: detectTextDirection(reminder.text),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              height: 1.25,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
