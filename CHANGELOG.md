@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.31.2](https://github.com/chenasraf/pantry-flutter/compare/v0.31.1...v0.31.2) (2026-09-10)
+
+
+### Bug Fixes
+
+* **watch:** open the pairing screen once instead of stacking copies ([fa5ed79](https://github.com/chenasraf/pantry-flutter/commit/fa5ed79f391f2e46d625234fd519c945e58b7e33))
+* **wear:** follow the watch's font size ([91de4ce](https://github.com/chenasraf/pantry-flutter/commit/91de4ce7e67c2c6f118852270b780e8a990f6d5b))
+* **wear:** keep a long list name's ellipsis on the screen ([65e7cb4](https://github.com/chenasraf/pantry-flutter/commit/65e7cb41c77b3484f700398a8482f3290f6ab18d))
+* **wear:** keep rows and text inside the edge of a round screen ([45dcb61](https://github.com/chenasraf/pantry-flutter/commit/45dcb61e7f2f35b19106662da3e101fe52ca1597))
+* **wear:** show the app icon while the watch app starts ([fc8b502](https://github.com/chenasraf/pantry-flutter/commit/fc8b50244612d7e781c35d353be88d0e06874cbc))
+* **wear:** show where you are in a list while you scroll it ([9d6fd14](https://github.com/chenasraf/pantry-flutter/commit/9d6fd14db855593555ca34bd15964b6c0f4f0fcb))
+* **wear:** show your lists and items right after signing in ([1e3ffc2](https://github.com/chenasraf/pantry-flutter/commit/1e3ffc289db11017ccb4df16b3c3dc11096a8285))
+
 ## [0.31.1](https://github.com/chenasraf/pantry-flutter/compare/v0.31.0...v0.31.1) (2026-09-08)
 
 

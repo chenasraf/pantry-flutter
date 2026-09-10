@@ -1,0 +1,8 @@
+Bug Fixes
+- open the pairing screen once instead of stacking copies
+- follow the watch's font size
+- keep a long list name's ellipsis on the screen
+- keep rows and text inside the edge of a round screen
+- show the app icon while the watch app starts
+- show where you are in a list while you scroll it
+- show your lists and items right after signing in
