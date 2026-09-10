@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.view.InputDevice
 import android.view.MotionEvent
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.wear.ambient.AmbientLifecycleObserver
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import androidx.wear.tiles.TileService
@@ -97,6 +98,7 @@ class MainActivity : FlutterActivity() {
      * system decides whether this is an ambient component at all.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         lifecycle.addObserver(ambientObserver)
     }
