@@ -294,13 +294,15 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   /// A watch handed this phone `pantry://watch-setup`. It opens the pairing
   /// route over whatever the user was doing, because the wearer is standing
   /// there having just asked for it.
+  ///
+  /// Once, however many times they ask. The page is already the answer to the
+  /// second ask, and a stack of copies is a back gesture that walks through
+  /// screens the user has already finished with.
   void _consumePendingWatchSetup() {
     if (!ListLinkService.instance.pendingWatchSetup.value) return;
     ListLinkService.instance.pendingWatchSetup.value = false;
     if (!mounted) return;
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const WatchPairingView()));
+    WatchPairingView.open(context);
   }
 
   void _consumePendingListLink() {

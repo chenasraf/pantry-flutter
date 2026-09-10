@@ -561,11 +561,7 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(m.watch.title),
                 subtitle: Text(m.settings.watchSubtitle),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const WatchPairingView()),
-                  );
-                },
+                onTap: () => WatchPairingView.open(context),
               ),
             ],
 

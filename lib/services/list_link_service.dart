@@ -34,14 +34,14 @@ class ListLinkService {
   Future<void> init() async {
     if (!PlatformInfo.isMobile) return;
     _appLinks = AppLinks();
-    // Links that arrive while the app is already running. The singleton lives
-    // for the app's lifetime, so the subscription is never cancelled.
+    // Every link, the one that cold-started the app included: the plugin holds
+    // the launch URI and hands it to the first subscriber. Asking for it again
+    // with `getInitialLink` is what delivered it twice — and a request to open
+    // something, answered twice, opens it twice.
+    //
+    // The singleton lives for the app's lifetime, so the subscription is never
+    // cancelled and there is never a second subscriber to miss the replay.
     _appLinks!.uriLinkStream.listen(_handleUri, onError: (_) {});
-    // The URL that cold-started the app, if any.
-    try {
-      final initial = await _appLinks!.getInitialLink();
-      if (initial != null) _handleUri(initial);
-    } catch (_) {}
     _quickActions.initialize((type) {
       final link = ListLink.fromQuickActionType(type);
       if (link != null) pending.value = link;

@@ -16,6 +16,31 @@ import 'tips/watch_tips.dart';
 class WatchPairingView extends StatefulWidget {
   const WatchPairingView({super.key});
 
+  /// Whether one of these is already on screen.
+  ///
+  /// The wearer can ask for this page more than once — a second tap on the
+  /// watch, the same intent redelivered — and settings offers it as well, so
+  /// the asks arrive from two directions with no way to see each other. Every
+  /// one of them means the same thing: *be on the pairing screen*. Pushing a
+  /// copy per ask leaves the user walking back through screens they already
+  /// dismissed to reach the one they came from.
+  ///
+  /// Counted here rather than looked for on a navigator, because there is no
+  /// public way to ask a navigator whether a route is somewhere in its stack,
+  /// and because either entry point can be the one that opened it.
+  static bool get isOpen => _open > 0;
+
+  static int _open = 0;
+
+  /// Put this page on screen, or leave it there. The one way in, so the rule
+  /// lives here rather than in a copy at every place that asks.
+  static void open(BuildContext context) {
+    if (isOpen) return;
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const WatchPairingView()));
+  }
+
   @override
   State<WatchPairingView> createState() => _WatchPairingViewState();
 }
@@ -32,6 +57,7 @@ class _WatchPairingViewState extends State<WatchPairingView> {
   @override
   void initState() {
     super.initState();
+    WatchPairingView._open++;
     _host.reconsider();
     _host.pending.addListener(_onChanged);
     _host.paired.addListener(_onChanged);
@@ -39,6 +65,7 @@ class _WatchPairingViewState extends State<WatchPairingView> {
 
   @override
   void dispose() {
+    WatchPairingView._open--;
     _host.pending.removeListener(_onChanged);
     _host.paired.removeListener(_onChanged);
     super.dispose();
