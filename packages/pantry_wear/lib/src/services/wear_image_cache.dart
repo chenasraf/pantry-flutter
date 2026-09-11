@@ -20,10 +20,11 @@ class WearImageCache extends CacheManager with ImageCacheManager {
           'pantryWearImageCache',
           stalePeriod: const Duration(days: 30),
           maxNrOfCacheObjects: 200,
+          fileService: ImageBytesCache.fileService,
         ),
       );
 
   static final WearImageCache instance = WearImageCache._();
 
-  static void install() => ImageBytesCache.install(instance);
+  static void install() => ImageBytesCache.install(() => instance);
 }

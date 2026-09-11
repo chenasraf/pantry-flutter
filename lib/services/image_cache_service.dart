@@ -23,6 +23,7 @@ class _PantryImageCacheManager extends CacheManager with ImageCacheManager {
           'pantryImageCache',
           stalePeriod: const Duration(days: 180),
           maxNrOfCacheObjects: 3000,
+          fileService: ImageBytesCache.fileService,
         ),
       );
 }
@@ -32,12 +33,12 @@ class ImageCacheService {
   static final ImageCacheService instance = ImageCacheService._();
 
   /// Backing store for both the display widgets and the prefetcher.
-  final ImageCacheManager manager = _PantryImageCacheManager();
+  late final ImageCacheManager manager = _PantryImageCacheManager();
 
   /// Hand core's providers this store. Called at boot, before anything draws:
   /// the phone's budget is the one thing about the image path that is the
   /// phone's own.
-  void install() => ImageBytesCache.install(manager);
+  void install() => ImageBytesCache.install(() => manager);
 
   /// Preview sizes fetched per checklist-item image: the list-row thumbnail and
   /// the full image shared by the detail cover and the fullscreen viewer.
