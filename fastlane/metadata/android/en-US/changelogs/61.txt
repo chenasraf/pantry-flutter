@@ -1,0 +1,2 @@
+Bug Fixes
+- show photo previews on servers with a self-signed certificate

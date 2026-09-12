@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.31.3](https://github.com/chenasraf/pantry-flutter/compare/v0.31.2...v0.31.3) (2026-09-12)
+
+
+### Bug Fixes
+
+* **photos:** show photo previews on servers with a self-signed certificate ([146f546](https://github.com/chenasraf/pantry-flutter/commit/146f54665ac171f124c46d5f0852c8ca4f34f5e6)), closes [#176](https://github.com/chenasraf/pantry-flutter/issues/176)
+
 ## [0.31.2](https://github.com/chenasraf/pantry-flutter/compare/v0.31.1...v0.31.2) (2026-09-10)
 
 
