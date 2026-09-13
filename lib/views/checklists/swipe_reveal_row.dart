@@ -193,6 +193,7 @@ class _ActionButton extends StatelessWidget {
               SizedBox(height: density.swipeLabelGap),
               Text(
                 action.label,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: action.tint,
                   fontSize: density.swipeFontSize,
