@@ -414,22 +414,18 @@ fdroid-revert:
 
 # Verify the pinned F-Droid lockfile still satisfies the FLOSS pubspec, catching
 # a dependency change that wasn't followed by `make fdroid-lock`. Restores the
-# working tree afterwards. Run by CI and the pubspec pre-commit hook.
+# working tree afterwards. Run by CI.
 .PHONY: fdroid-check
 fdroid-check:
-	tool/fdroid/check-lock.sh
+	tool/fdroid/lock.sh check
 
 # Regenerate the pinned F-Droid lockfile (tool/fdroid/pubspec.lock) after
 # dependency changes. Applies the scanner swap, resolves fresh (unpinned),
 # captures the lock, then restores the working tree. Commit the updated lock.
+# Also run by the pubspec pre-commit hook.
 .PHONY: fdroid-lock
 fdroid-lock:
-	@set -e; \
-	FDROID_REGEN_LOCK=1 tool/fdroid/apply.sh; \
-	cp pubspec.lock tool/fdroid/pubspec.lock; \
-	git checkout -- pubspec.yaml pubspec.lock lib/views/checklists/barcode_scanner/barcode_camera_scanner.dart packages/pantry_core/pubspec.yaml packages/pantry_core/lib/widgets/avif_image.dart android/app/build.gradle.kts android/app/src/main/kotlin/dev/casraf/pantry/DataLayerChannel.kt; \
-	flutter pub get; \
-	echo "Regenerated tool/fdroid/pubspec.lock — commit it."
+	tool/fdroid/lock.sh write
 
 # Build the FLOSS split APKs one ABI at a time with --target-platform, matching
 # F-Droid's per-versionCode recipe exactly so the output reproduces byte-for-byte
