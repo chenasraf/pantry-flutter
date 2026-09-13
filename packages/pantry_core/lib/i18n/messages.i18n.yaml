@@ -671,6 +671,9 @@ checklists:
   removeAllConfirm: Remove all done items?
   removeAllConfirmBody: Every checked item in this list will be moved to the trash. You can restore them afterwards.
   removedCount(int count): "${_plural(count, one: 'Removed 1 item', many: 'Removed $count items')}"
+  archiveAll: Archive all
+  archiveAllConfirm: Archive all done items?
+  archiveAllConfirmBody: Every checked item in this list will be moved to the archive. You can unarchive them afterwards.
   resetOrder:
     menuLabel: Reset custom order…
     pickTitle: Reset custom order to…

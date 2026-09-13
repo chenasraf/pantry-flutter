@@ -2863,6 +2863,22 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// ```
   String removedCount(int count) =>
       """${_plural(count, one: '1 article supprimé', many: '$count articles supprimés')}""";
+
+  /// ```dart
+  /// "Tout archiver"
+  /// ```
+  String get archiveAll => """Tout archiver""";
+
+  /// ```dart
+  /// "Archiver tous les articles cochés ?"
+  /// ```
+  String get archiveAllConfirm => """Archiver tous les articles cochés ?""";
+
+  /// ```dart
+  /// "Chaque article coché de cette liste sera déplacé vers les archives. Vous pourrez les désarchiver ensuite."
+  /// ```
+  String get archiveAllConfirmBody =>
+      """Chaque article coché de cette liste sera déplacé vers les archives. Vous pourrez les désarchiver ensuite.""";
   ResetOrderChecklistsMessagesFr get resetOrder =>
       ResetOrderChecklistsMessagesFr(this);
 
@@ -7098,6 +7114,10 @@ Mot de passe : pantry-rocks""",
   """checklists.removeAllConfirm""": """Supprimer tous les articles cochés ?""",
   """checklists.removeAllConfirmBody""":
       """Chaque article coché de cette liste sera déplacé vers la corbeille. Vous pourrez les restaurer ensuite.""",
+  """checklists.archiveAll""": """Tout archiver""",
+  """checklists.archiveAllConfirm""": """Archiver tous les articles cochés ?""",
+  """checklists.archiveAllConfirmBody""":
+      """Chaque article coché de cette liste sera déplacé vers les archives. Vous pourrez les désarchiver ensuite.""",
   """checklists.resetOrder.menuLabel""":
       """Réinitialiser l'ordre personnalisé…""",
   """checklists.resetOrder.pickTitle""":

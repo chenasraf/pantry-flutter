@@ -16,7 +16,7 @@ import 'item_form_view.dart';
 import 'item_picker_dialogs.dart';
 
 /// Overflow-menu actions in the Done section header.
-enum _DoneAction { uncheckAll, removeAll }
+enum _DoneAction { uncheckAll, archiveAll, removeAll }
 
 class ChecklistItemList extends StatefulWidget {
   final ChecklistsController controller;
@@ -271,6 +271,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
               ),
               const Spacer(),
               if (widget.controller.canUncheckAll ||
+                  widget.controller.canArchiveAllDone ||
                   widget.controller.canRemoveAllDone) ...[
                 PopupMenuButton<_DoneAction>(
                   tooltip: m.checklists.moreActions,
@@ -285,6 +286,8 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
                     switch (action) {
                       case _DoneAction.uncheckAll:
                         _confirmUncheckAll(context);
+                      case _DoneAction.archiveAll:
+                        _confirmArchiveAllDone(context);
                       case _DoneAction.removeAll:
                         _confirmRemoveAllDone(context);
                     }
@@ -298,6 +301,16 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
                           dense: true,
                           leading: const Icon(Icons.remove_done, size: 20),
                           title: Text(m.checklists.uncheckAll),
+                        ),
+                      ),
+                    if (widget.controller.canArchiveAllDone)
+                      PopupMenuItem(
+                        value: _DoneAction.archiveAll,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          dense: true,
+                          leading: const Icon(Icons.archive_outlined, size: 20),
+                          title: Text(m.checklists.archiveAll),
                         ),
                       ),
                     if (widget.controller.canRemoveAllDone)
@@ -357,6 +370,38 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
     if (context.mounted) {
       showAppToast(message: m.checklists.uncheckedCount(count));
     }
+  }
+
+  /// Confirm, then archive every done item in the list, offering an Undo toast
+  /// that unarchives them. The archived snapshots are captured from the
+  /// controller so undo can restore exactly what left.
+  Future<void> _confirmArchiveAllDone(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.checklists.archiveAllConfirm),
+        content: Text(m.checklists.archiveAllConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.checklists.archiveAll),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final archived = widget.controller.archiveAllDone();
+    if (archived.isEmpty) return;
+    showUndoToast(
+      message: m.checklists.batch.archived(archived.length),
+      undoLabel: m.checklists.undo,
+      onUndo: () async => widget.controller.undoBatchArchive(archived),
+      undoFailedMessage: m.checklists.restoreFailed,
+    );
   }
 
   /// Confirm, then soft-delete every done item in the list, offering an Undo

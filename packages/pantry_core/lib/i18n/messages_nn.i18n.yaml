@@ -789,6 +789,9 @@ checklists:
   removeAllConfirm: Fjerne alle avkryssa oppføringar?
   removeAllConfirmBody: Kvar avkryssa oppføring i denne lista blir flytta til papirkorga. Du kan gjenoppretta dei etterpå.
   removedCount(int count): "${_plural(count, one: 'Fjerna 1 oppføring', many: 'Fjerna $count oppføringar')}"
+  archiveAll: Arkiver alle
+  archiveAllConfirm: Arkivere alle avkryssa oppføringar?
+  archiveAllConfirmBody: Kvar avkryssa oppføring i denne lista blir flytta til arkivet. Du kan angre arkiveringa etterpå.
   resetOrder:
     menuLabel: "Tilbakestill eigen rekkjefølgje…"
     pickTitle: "Tilbakestill eigen rekkjefølgje til…"

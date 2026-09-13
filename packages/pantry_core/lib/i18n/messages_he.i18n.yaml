@@ -671,6 +671,9 @@ checklists:
   removeAllConfirm: "להסיר את כל הפריטים המסומנים?"
   removeAllConfirmBody: "כל פריט מסומן ברשימה זו יועבר לאשפה. אפשר לשחזר אותם לאחר מכן."
   removedCount(int count): "${_plural(count, one: 'הוסר פריט אחד', many: 'הוסרו $count פריטים')}"
+  archiveAll: "העבר הכול לארכיון"
+  archiveAllConfirm: "להעביר את כל הפריטים המסומנים לארכיון?"
+  archiveAllConfirmBody: "כל פריט מסומן ברשימה זו יועבר לארכיון. אפשר להוציא אותם מהארכיון לאחר מכן."
   resetOrder:
     menuLabel: "איפוס סדר מותאם…"
     pickTitle: "איפוס הסדר המותאם לפי…"

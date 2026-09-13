@@ -937,6 +937,16 @@ class ChecklistsController extends ChangeNotifier {
       isCurrentListWritable &&
       permissions.canDeleteItems;
 
+  /// Whether the "Archive all" affordance (bulk archive of every done item)
+  /// should be offered. Same gate as the per-item archive action, on a
+  /// writable non-meta list in the active view.
+  bool get canArchiveAllDone =>
+      hasFeature('item-archive') &&
+      !isMetaMode &&
+      !isSoftView &&
+      isCurrentListWritable &&
+      permissions.canEditLists;
+
   Future<void> refresh() async {
     // `load()` re-fetches the current list and re-warms every other list's
     // offline cache via `_precacheListItems`. Wiping the non-current caches

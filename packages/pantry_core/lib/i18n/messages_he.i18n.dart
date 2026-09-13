@@ -2838,6 +2838,22 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// ```
   String removedCount(int count) =>
       """${_plural(count, one: 'הוסר פריט אחד', many: 'הוסרו $count פריטים')}""";
+
+  /// ```dart
+  /// "העבר הכול לארכיון"
+  /// ```
+  String get archiveAll => """העבר הכול לארכיון""";
+
+  /// ```dart
+  /// "להעביר את כל הפריטים המסומנים לארכיון?"
+  /// ```
+  String get archiveAllConfirm => """להעביר את כל הפריטים המסומנים לארכיון?""";
+
+  /// ```dart
+  /// "כל פריט מסומן ברשימה זו יועבר לארכיון. אפשר להוציא אותם מהארכיון לאחר מכן."
+  /// ```
+  String get archiveAllConfirmBody =>
+      """כל פריט מסומן ברשימה זו יועבר לארכיון. אפשר להוציא אותם מהארכיון לאחר מכן.""";
   ResetOrderChecklistsMessagesHe get resetOrder =>
       ResetOrderChecklistsMessagesHe(this);
 
@@ -6987,6 +7003,11 @@ Map<String, String> get messagesHeMap => {
   """checklists.removeAllConfirm""": """להסיר את כל הפריטים המסומנים?""",
   """checklists.removeAllConfirmBody""":
       """כל פריט מסומן ברשימה זו יועבר לאשפה. אפשר לשחזר אותם לאחר מכן.""",
+  """checklists.archiveAll""": """העבר הכול לארכיון""",
+  """checklists.archiveAllConfirm""":
+      """להעביר את כל הפריטים המסומנים לארכיון?""",
+  """checklists.archiveAllConfirmBody""":
+      """כל פריט מסומן ברשימה זו יועבר לארכיון. אפשר להוציא אותם מהארכיון לאחר מכן.""",
   """checklists.resetOrder.menuLabel""": """איפוס סדר מותאם…""",
   """checklists.resetOrder.pickTitle""": """איפוס הסדר המותאם לפי…""",
   """checklists.resetOrder.confirmTitle""": """לאפס את הסדר המותאם?""",

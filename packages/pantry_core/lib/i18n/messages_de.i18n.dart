@@ -2864,6 +2864,22 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// ```
   String removedCount(int count) =>
       """${_plural(count, one: '1 Eintrag entfernt', many: '$count Einträge entfernt')}""";
+
+  /// ```dart
+  /// "Alle archivieren"
+  /// ```
+  String get archiveAll => """Alle archivieren""";
+
+  /// ```dart
+  /// "Alle erledigten Einträge archivieren?"
+  /// ```
+  String get archiveAllConfirm => """Alle erledigten Einträge archivieren?""";
+
+  /// ```dart
+  /// "Jeder abgehakte Eintrag dieser Liste wird ins Archiv verschoben. Du kannst sie danach dearchivieren."
+  /// ```
+  String get archiveAllConfirmBody =>
+      """Jeder abgehakte Eintrag dieser Liste wird ins Archiv verschoben. Du kannst sie danach dearchivieren.""";
   ResetOrderChecklistsMessagesDe get resetOrder =>
       ResetOrderChecklistsMessagesDe(this);
 
@@ -7103,6 +7119,11 @@ Passwort: pantry-rocks""",
   """checklists.removeAllConfirm""": """Alle erledigten Einträge entfernen?""",
   """checklists.removeAllConfirmBody""":
       """Jeder abgehakte Eintrag dieser Liste wird in den Papierkorb verschoben. Du kannst sie danach wiederherstellen.""",
+  """checklists.archiveAll""": """Alle archivieren""",
+  """checklists.archiveAllConfirm""":
+      """Alle erledigten Einträge archivieren?""",
+  """checklists.archiveAllConfirmBody""":
+      """Jeder abgehakte Eintrag dieser Liste wird ins Archiv verschoben. Du kannst sie danach dearchivieren.""",
   """checklists.resetOrder.menuLabel""": """Eigene Reihenfolge zurücksetzen…""",
   """checklists.resetOrder.pickTitle""":
       """Eigene Reihenfolge zurücksetzen auf…""",

@@ -2852,6 +2852,22 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   /// ```
   String removedCount(int count) =>
       """${_plural(count, one: 'Fjerna 1 oppføring', many: 'Fjerna $count oppføringar')}""";
+
+  /// ```dart
+  /// "Arkiver alle"
+  /// ```
+  String get archiveAll => """Arkiver alle""";
+
+  /// ```dart
+  /// "Arkivere alle avkryssa oppføringar?"
+  /// ```
+  String get archiveAllConfirm => """Arkivere alle avkryssa oppføringar?""";
+
+  /// ```dart
+  /// "Kvar avkryssa oppføring i denne lista blir flytta til arkivet. Du kan angre arkiveringa etterpå."
+  /// ```
+  String get archiveAllConfirmBody =>
+      """Kvar avkryssa oppføring i denne lista blir flytta til arkivet. Du kan angre arkiveringa etterpå.""";
   ResetOrderChecklistsMessagesNn get resetOrder =>
       ResetOrderChecklistsMessagesNn(this);
 
@@ -7051,6 +7067,10 @@ Passord: pantry""",
   """checklists.removeAllConfirm""": """Fjerne alle avkryssa oppføringar?""",
   """checklists.removeAllConfirmBody""":
       """Kvar avkryssa oppføring i denne lista blir flytta til papirkorga. Du kan gjenoppretta dei etterpå.""",
+  """checklists.archiveAll""": """Arkiver alle""",
+  """checklists.archiveAllConfirm""": """Arkivere alle avkryssa oppføringar?""",
+  """checklists.archiveAllConfirmBody""":
+      """Kvar avkryssa oppføring i denne lista blir flytta til arkivet. Du kan angre arkiveringa etterpå.""",
   """checklists.resetOrder.menuLabel""": """Tilbakestill eigen rekkjefølgje…""",
   """checklists.resetOrder.pickTitle""":
       """Tilbakestill eigen rekkjefølgje til…""",

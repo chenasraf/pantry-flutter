@@ -2831,6 +2831,22 @@ class ChecklistsMessages {
   /// ```
   String removedCount(int count) =>
       """${_plural(count, one: 'Removed 1 item', many: 'Removed $count items')}""";
+
+  /// ```dart
+  /// "Archive all"
+  /// ```
+  String get archiveAll => """Archive all""";
+
+  /// ```dart
+  /// "Archive all done items?"
+  /// ```
+  String get archiveAllConfirm => """Archive all done items?""";
+
+  /// ```dart
+  /// "Every checked item in this list will be moved to the archive. You can unarchive them afterwards."
+  /// ```
+  String get archiveAllConfirmBody =>
+      """Every checked item in this list will be moved to the archive. You can unarchive them afterwards.""";
   ResetOrderChecklistsMessages get resetOrder =>
       ResetOrderChecklistsMessages(this);
 
@@ -6999,6 +7015,10 @@ Password: pantry-rocks""",
   """checklists.removeAllConfirm""": """Remove all done items?""",
   """checklists.removeAllConfirmBody""":
       """Every checked item in this list will be moved to the trash. You can restore them afterwards.""",
+  """checklists.archiveAll""": """Archive all""",
+  """checklists.archiveAllConfirm""": """Archive all done items?""",
+  """checklists.archiveAllConfirmBody""":
+      """Every checked item in this list will be moved to the archive. You can unarchive them afterwards.""",
   """checklists.resetOrder.menuLabel""": """Reset custom order…""",
   """checklists.resetOrder.pickTitle""": """Reset custom order to…""",
   """checklists.resetOrder.confirmTitle""": """Reset custom order?""",

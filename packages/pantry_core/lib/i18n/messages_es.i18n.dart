@@ -2859,6 +2859,22 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// ```
   String removedCount(int count) =>
       """${_plural(count, one: 'Se eliminó 1 artículo', many: 'Se eliminaron $count artículos')}""";
+
+  /// ```dart
+  /// "Archivar todo"
+  /// ```
+  String get archiveAll => """Archivar todo""";
+
+  /// ```dart
+  /// "¿Archivar todos los artículos marcados?"
+  /// ```
+  String get archiveAllConfirm => """¿Archivar todos los artículos marcados?""";
+
+  /// ```dart
+  /// "Todos los artículos marcados de esta lista se moverán al archivo. Podrás desarchivarlos después."
+  /// ```
+  String get archiveAllConfirmBody =>
+      """Todos los artículos marcados de esta lista se moverán al archivo. Podrás desarchivarlos después.""";
   ResetOrderChecklistsMessagesEs get resetOrder =>
       ResetOrderChecklistsMessagesEs(this);
 
@@ -7080,6 +7096,11 @@ Contraseña: pantry-rocks""",
       """¿Eliminar todos los artículos marcados?""",
   """checklists.removeAllConfirmBody""":
       """Todos los artículos marcados de esta lista se moverán a la papelera. Podrás restaurarlos después.""",
+  """checklists.archiveAll""": """Archivar todo""",
+  """checklists.archiveAllConfirm""":
+      """¿Archivar todos los artículos marcados?""",
+  """checklists.archiveAllConfirmBody""":
+      """Todos los artículos marcados de esta lista se moverán al archivo. Podrás desarchivarlos después.""",
   """checklists.resetOrder.menuLabel""": """Restablecer orden personalizado…""",
   """checklists.resetOrder.pickTitle""":
       """Restablecer orden personalizado a…""",

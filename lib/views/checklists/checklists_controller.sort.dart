@@ -349,4 +349,30 @@ extension ChecklistsControllerSort on ChecklistsController {
     notifyListeners();
     return removed;
   }
+
+  /// Archive every done item in the current list in one batch. Gathers *all*
+  /// done items (unfiltered — "archive all done in the list", not just what a
+  /// search/category filter shows), moves them out of the active view
+  /// optimistically, and enqueues a single batch archive op. Returns the
+  /// archived snapshots so the caller can offer undo via [undoBatchArchive].
+  List<ListItem> archiveAllDone() {
+    if (!canArchiveAllDone) return const [];
+    final archived = [
+      for (final i in _items)
+        if (i.done && i.deletedAt == null) i,
+    ];
+    if (archived.isEmpty) return const [];
+    _items = reconcileRemoveIds(_items, {for (final i in archived) i.id});
+    for (final item in archived) {
+      _addToArchivedReuse(item.copyWith(archivedAt: _now()));
+    }
+    _cacheCurrentItems();
+    _enqueueBatch(
+      'archive',
+      [for (final i in archived) i.id],
+      extra: {'archive': true},
+    );
+    notifyListeners();
+    return archived;
+  }
 }

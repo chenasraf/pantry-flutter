@@ -671,6 +671,9 @@ checklists:
   removeAllConfirm: "Supprimer tous les articles cochés ?"
   removeAllConfirmBody: Chaque article coché de cette liste sera déplacé vers la corbeille. Vous pourrez les restaurer ensuite.
   removedCount(int count): "${_plural(count, one: '1 article supprimé', many: '$count articles supprimés')}"
+  archiveAll: Tout archiver
+  archiveAllConfirm: "Archiver tous les articles cochés ?"
+  archiveAllConfirmBody: Chaque article coché de cette liste sera déplacé vers les archives. Vous pourrez les désarchiver ensuite.
   resetOrder:
     menuLabel: "Réinitialiser l'ordre personnalisé…"
     pickTitle: "Réinitialiser l'ordre personnalisé sur…"

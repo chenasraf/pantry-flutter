@@ -671,6 +671,9 @@ checklists:
   removeAllConfirm: "¿Eliminar todos los artículos marcados?"
   removeAllConfirmBody: Todos los artículos marcados de esta lista se moverán a la papelera. Podrás restaurarlos después.
   removedCount(int count): "${_plural(count, one: 'Se eliminó 1 artículo', many: 'Se eliminaron $count artículos')}"
+  archiveAll: Archivar todo
+  archiveAllConfirm: "¿Archivar todos los artículos marcados?"
+  archiveAllConfirmBody: Todos los artículos marcados de esta lista se moverán al archivo. Podrás desarchivarlos después.
   resetOrder:
     menuLabel: "Restablecer orden personalizado…"
     pickTitle: "Restablecer orden personalizado a…"

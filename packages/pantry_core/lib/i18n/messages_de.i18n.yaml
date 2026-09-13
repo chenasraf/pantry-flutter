@@ -671,6 +671,9 @@ checklists:
   removeAllConfirm: Alle erledigten Einträge entfernen?
   removeAllConfirmBody: Jeder abgehakte Eintrag dieser Liste wird in den Papierkorb verschoben. Du kannst sie danach wiederherstellen.
   removedCount(int count): "${_plural(count, one: '1 Eintrag entfernt', many: '$count Einträge entfernt')}"
+  archiveAll: Alle archivieren
+  archiveAllConfirm: Alle erledigten Einträge archivieren?
+  archiveAllConfirmBody: Jeder abgehakte Eintrag dieser Liste wird ins Archiv verschoben. Du kannst sie danach dearchivieren.
   resetOrder:
     menuLabel: "Eigene Reihenfolge zurücksetzen…"
     pickTitle: "Eigene Reihenfolge zurücksetzen auf…"
