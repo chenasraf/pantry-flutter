@@ -12,6 +12,7 @@ common:
   copy: Kopier
   copied: Kopiert
   closeDialog: Ferdig
+  dismiss: Lukk
   remove: Fjern
   clear: Tøm
   more: Meir

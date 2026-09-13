@@ -11,6 +11,7 @@ common:
   copy: Copier
   copied: "Copié"
   closeDialog: "Terminé"
+  dismiss: Masquer
   remove: Retirer
   clear: Effacer
   more: Plus

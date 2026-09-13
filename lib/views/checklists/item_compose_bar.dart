@@ -14,6 +14,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
@@ -500,9 +501,10 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     // Not found anywhere: leave the form as it was and just tell the user, so
     // an unrecognized code never lands in the name field.
     if (result == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.checklists.barcode.notFound)));
+      showAppToast(
+        message: m.checklists.barcode.notFound,
+        kind: ToastKind.error,
+      );
       return;
     }
 

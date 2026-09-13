@@ -4,6 +4,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Full-screen manager for a house's shopping reminders. Three fixed-order
@@ -178,9 +179,7 @@ class _ShoppingRemindersViewState extends State<ShoppingRemindersView> {
 
   void _showError(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    showAppToast(message: message, kind: ToastKind.error);
   }
 
   String _momentLabel(ShoppingReminderMoment moment) => switch (moment) {

@@ -7,7 +7,7 @@ import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/utils/item_modal_route.dart';
-import 'package:pantry/utils/undo_snackbar.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'checklist_item_tile.dart';
 import 'checklists_controller.dart';
 import 'checklists_sliver_headers.dart';
@@ -355,14 +355,12 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
     if (confirmed != true) return;
     widget.controller.uncheckAll();
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(m.checklists.uncheckedCount(count))),
-      );
+      showAppToast(message: m.checklists.uncheckedCount(count));
     }
   }
 
   /// Confirm, then soft-delete every done item in the list, offering an Undo
-  /// snackbar that restores them. The removed snapshots are captured from the
+  /// toast that restores them. The removed snapshots are captured from the
   /// controller so undo can re-add exactly what left.
   Future<void> _confirmRemoveAllDone(BuildContext context) async {
     final confirmed = await showDialog<bool>(
@@ -385,7 +383,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
     if (confirmed != true) return;
     final removed = widget.controller.removeAllDone();
     if (removed.isEmpty) return;
-    showUndoSnackBar(
+    showUndoToast(
       message: m.checklists.removedCount(removed.length),
       undoLabel: m.checklists.undo,
       onUndo: () async => widget.controller.undoBatchDelete(removed),
@@ -659,9 +657,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
       await controller.moveItem(item, targetId);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.moveFailed)));
+        showAppToast(message: m.checklists.moveFailed, kind: ToastKind.error);
       }
     }
   }
@@ -690,9 +686,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
       await controller.copyItem(item, targetId);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.copyFailed)));
+        showAppToast(message: m.checklists.copyFailed, kind: ToastKind.error);
       }
     }
   }
@@ -734,7 +728,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
     }
 
     if (wasDone) return;
-    showUndoSnackBar(
+    showUndoToast(
       message: m.checklists.itemMarkedDone,
       undoLabel: m.checklists.undo,
       onUndo: () async {
@@ -808,10 +802,13 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
     try {
       await controller.deleteItem(item);
     } catch (_) {
-      showAppSnackBar(message: m.checklists.itemForm.deleteFailed);
+      showAppToast(
+        message: m.checklists.itemForm.deleteFailed,
+        kind: ToastKind.error,
+      );
       return;
     }
-    showUndoSnackBar(
+    showUndoToast(
       message: m.checklists.itemRemoved,
       undoLabel: m.checklists.undo,
       onUndo: () => controller.restoreItem(item),
@@ -826,9 +823,9 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
   ) async {
     try {
       await controller.restoreItem(item);
-      showAppSnackBar(message: m.checklists.itemRestored);
+      showAppToast(message: m.checklists.itemRestored);
     } catch (_) {
-      showAppSnackBar(message: m.checklists.restoreFailed);
+      showAppToast(message: m.checklists.restoreFailed, kind: ToastKind.error);
     }
   }
 
@@ -840,10 +837,10 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
     try {
       await controller.archiveItem(item);
     } catch (_) {
-      showAppSnackBar(message: m.checklists.archiveFailed);
+      showAppToast(message: m.checklists.archiveFailed, kind: ToastKind.error);
       return;
     }
-    showUndoSnackBar(
+    showUndoToast(
       message: m.checklists.itemArchived,
       undoLabel: m.checklists.undo,
       onUndo: () => controller.unarchiveItem(item),
@@ -858,9 +855,12 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
   ) async {
     try {
       await controller.unarchiveItem(item);
-      showAppSnackBar(message: m.checklists.itemUnarchived);
+      showAppToast(message: m.checklists.itemUnarchived);
     } catch (_) {
-      showAppSnackBar(message: m.checklists.unarchiveFailed);
+      showAppToast(
+        message: m.checklists.unarchiveFailed,
+        kind: ToastKind.error,
+      );
     }
   }
 
@@ -891,8 +891,9 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
       await controller.permanentlyDeleteItem(item);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(m.checklists.permanentlyDeleteFailed)),
+        showAppToast(
+          message: m.checklists.permanentlyDeleteFailed,
+          kind: ToastKind.error,
         );
       }
     }

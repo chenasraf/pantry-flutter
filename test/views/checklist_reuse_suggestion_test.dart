@@ -95,8 +95,16 @@ void main() {
     return result;
   }
 
-  /// Lets the snackbar's auto-dismiss timer run out so none outlives the test.
-  Future<void> settleSnackBar(WidgetTester tester) async {
+  /// Pumps a dialog out and the toast that follows it in. Bounded rather than
+  /// settled: a toast animates its border for the whole of its life, so
+  /// `pumpAndSettle` would run the clock out and dismiss it.
+  Future<void> pumpToastIn(WidgetTester tester) async {
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+  }
+
+  /// Lets the toast's auto-dismiss timer run out so none outlives the test.
+  Future<void> settleToast(WidgetTester tester) async {
     await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();
   }
@@ -109,14 +117,14 @@ void main() {
     expect(find.text(m.checklists.reuse.dialogTitle), findsOneWidget);
 
     await tester.tap(find.text(m.checklists.reuse.reuseExisting));
-    await tester.pumpAndSettle();
+    await pumpToastIn(tester);
 
     expect(await result, isTrue);
     expect(
       find.text(m.checklists.reuse.reusedSnack(item.name)),
       findsOneWidget,
     );
-    await settleSnackBar(tester);
+    await settleToast(tester);
   });
 
   testWidgets('ask mode reuses nothing on cancel', (tester) async {
@@ -136,7 +144,7 @@ void main() {
     final item = makeListItem(name: 'Milk', done: true);
 
     final result = await tapSuggestion(tester, item);
-    await tester.pumpAndSettle();
+    await pumpToastIn(tester);
 
     expect(find.byType(AlertDialog), findsNothing);
     expect(await result, isTrue);
@@ -144,7 +152,7 @@ void main() {
       find.text(m.checklists.reuse.reusedSnack(item.name)),
       findsOneWidget,
     );
-    await settleSnackBar(tester);
+    await settleToast(tester);
   });
 
   testWidgets('never mode reuses without a dialog', (tester) async {
@@ -152,7 +160,7 @@ void main() {
     final item = makeListItem(name: 'Milk', done: true);
 
     final result = await tapSuggestion(tester, item);
-    await tester.pumpAndSettle();
+    await pumpToastIn(tester);
 
     expect(find.byType(AlertDialog), findsNothing);
     expect(await result, isTrue);
@@ -160,7 +168,7 @@ void main() {
       find.text(m.checklists.reuse.reusedSnack(item.name)),
       findsOneWidget,
     );
-    await settleSnackBar(tester);
+    await settleToast(tester);
   });
 
   testWidgets('reuse mode unarchives an archived suggestion without a dialog', (
@@ -170,7 +178,7 @@ void main() {
     final item = makeListItem(name: 'Milk', done: true, archivedAt: 1000);
 
     final result = await tapSuggestion(tester, item);
-    await tester.pumpAndSettle();
+    await pumpToastIn(tester);
 
     expect(find.byType(AlertDialog), findsNothing);
     expect(await result, isTrue);
@@ -182,7 +190,7 @@ void main() {
       find.text(m.checklists.reuse.reusedArchivedSnack(item.name)),
       findsOneWidget,
     );
-    await settleSnackBar(tester);
+    await settleToast(tester);
   });
 
   testWidgets('confirms when the server lacks the reuse capability', (
@@ -195,9 +203,9 @@ void main() {
     expect(find.text(m.checklists.reuse.dialogTitle), findsOneWidget);
 
     await tester.tap(find.text(m.checklists.reuse.reuseExisting));
-    await tester.pumpAndSettle();
+    await pumpToastIn(tester);
 
     expect(await result, isTrue);
-    await settleSnackBar(tester);
+    await settleToast(tester);
   });
 }

@@ -6,7 +6,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/services/prefs_service.dart';
-import 'package:pantry/utils/undo_snackbar.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/shopping/shopping_reminders_view.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
@@ -71,9 +71,7 @@ class _SessionBodyState extends State<_SessionBody> {
       await _c.checkItem(item);
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.shopping.checkFailed)));
+      showAppToast(message: m.shopping.checkFailed, kind: ToastKind.error);
     }
   }
 
@@ -84,9 +82,7 @@ class _SessionBodyState extends State<_SessionBody> {
       await _c.uncheckItem(item);
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.shopping.checkFailed)));
+      showAppToast(message: m.shopping.checkFailed, kind: ToastKind.error);
     }
   }
 
@@ -94,7 +90,7 @@ class _SessionBodyState extends State<_SessionBody> {
   /// offline); an Undo toast unskips it.
   void _skip(ListItem item) {
     _c.skipItem(item);
-    showUndoSnackBar(
+    showUndoToast(
       message: m.shopping.removedFromTrip,
       undoLabel: m.shopping.undo,
       onUndo: () => _c.unskipItem(item.id),
@@ -103,15 +99,13 @@ class _SessionBodyState extends State<_SessionBody> {
   }
 
   /// Restore a removed item back onto the trip from the "Removed" section.
-  /// Shares the unskip path with the Undo snackbar.
+  /// Shares the unskip path with the Undo toast.
   Future<void> _restore(ListItem item) async {
     try {
       await _c.unskipItem(item.id);
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.shopping.restoreFailed)));
+      showAppToast(message: m.shopping.restoreFailed, kind: ToastKind.error);
     }
   }
 
@@ -187,9 +181,7 @@ class _SessionBodyState extends State<_SessionBody> {
       }
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.shopping.loadFailed)));
+        showAppToast(message: m.shopping.loadFailed, kind: ToastKind.error);
       }
     } finally {
       if (mounted) setState(() => _busy = false);

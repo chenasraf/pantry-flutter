@@ -156,6 +156,11 @@ class CommonMessagesHe extends CommonMessages {
   String get closeDialog => """סיום""";
 
   /// ```dart
+  /// "סגור"
+  /// ```
+  String get dismiss => """סגור""";
+
+  /// ```dart
   /// "הסר"
   /// ```
   String get remove => """הסר""";
@@ -6349,6 +6354,7 @@ Map<String, String> get messagesHeMap => {
   """common.copy""": """העתק""",
   """common.copied""": """הועתק""",
   """common.closeDialog""": """סיום""",
+  """common.dismiss""": """סגור""",
   """common.remove""": """הסר""",
   """common.clear""": """נקה""",
   """common.more""": """עוד""",

@@ -13,6 +13,7 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/utils/apple_host_info.dart';
@@ -301,8 +302,9 @@ class _ItemFormViewState extends State<ItemFormView> {
       if (mounted) Navigator.of(context).pop(true);
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(m.checklists.itemForm.saveFailed)),
+        showAppToast(
+          message: m.checklists.itemForm.saveFailed,
+          kind: ToastKind.error,
         );
       }
     } finally {
@@ -341,9 +343,7 @@ class _ItemFormViewState extends State<ItemFormView> {
       if (mounted) Navigator.of(context).pop(true);
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(f.deleteFailed)));
+        showAppToast(message: f.deleteFailed, kind: ToastKind.error);
       }
     } finally {
       if (mounted) setState(() => _deleting = false);

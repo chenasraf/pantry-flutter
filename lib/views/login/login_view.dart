@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:pantry/utils/app_toast.dart';
 
 import 'login_controller.dart';
 
@@ -408,11 +409,10 @@ Future<void> _showErrorDetails(BuildContext context, String details) {
           onPressed: () async {
             await Clipboard.setData(ClipboardData(text: details));
             if (!ctx.mounted) return;
-            ScaffoldMessenger.of(ctx).showSnackBar(
-              SnackBar(
-                content: Text(m.common.copied),
-                duration: const Duration(seconds: 2),
-              ),
+            showAppToast(
+              message: m.common.copied,
+              kind: ToastKind.success,
+              duration: const Duration(seconds: 2),
             );
           },
         ),

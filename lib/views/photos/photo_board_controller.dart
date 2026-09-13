@@ -39,7 +39,7 @@ class PhotoBoardController extends ChangeNotifier {
   final int houseId;
 
   /// Effective capabilities for this house. Kept fresh by the view; gating is
-  /// UX only (the server enforces, a 403 surfaces a snackbar).
+  /// UX only (the server enforces, a 403 surfaces a toast).
   HousePermissions permissions = HousePermissions.unrestricted;
 
   PhotoBoardController({required this.houseId}) {

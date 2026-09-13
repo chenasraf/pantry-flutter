@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 import 'switcher_trash_stage.dart';
@@ -159,9 +160,10 @@ class _ArchiveStageState extends State<ArchiveStage> {
       if (mounted) setState(() {});
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.checklists.unarchiveListFailed)));
+      showAppToast(
+        message: m.checklists.unarchiveListFailed,
+        kind: ToastKind.error,
+      );
     }
   }
 }

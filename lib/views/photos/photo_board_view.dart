@@ -6,6 +6,7 @@ import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/folder_tile.dart';
@@ -282,9 +283,10 @@ class _TrashBanner extends StatelessWidget {
       await controller.emptyTrash();
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.photoBoard.emptyTrashFailed)));
+        showAppToast(
+          message: m.photoBoard.emptyTrashFailed,
+          kind: ToastKind.error,
+        );
       }
     }
   }
@@ -411,9 +413,10 @@ class _TrashedPhotoTile extends StatelessWidget {
         await controller.restorePhoto(photo);
       } catch (_) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(m.photoBoard.restoreFailed)));
+          showAppToast(
+            message: m.photoBoard.restoreFailed,
+            kind: ToastKind.error,
+          );
         }
       }
     } else if (action == 'permanent') {
@@ -439,9 +442,10 @@ class _TrashedPhotoTile extends StatelessWidget {
         await controller.permanentlyDeletePhoto(photo);
       } catch (_) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(m.photoBoard.deleteFailed)));
+          showAppToast(
+            message: m.photoBoard.deleteFailed,
+            kind: ToastKind.error,
+          );
         }
       }
     }

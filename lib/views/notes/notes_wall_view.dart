@@ -5,6 +5,7 @@ import 'package:pantry_core/models/note.dart';
 import 'package:pantry_core/services/pending_note_share_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/note_selection_actions.dart';
 import 'package:pantry/widgets/note_sort_button.dart';
@@ -326,9 +327,10 @@ class _TrashBanner extends StatelessWidget {
       await controller.emptyTrash();
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.notesWall.emptyTrashFailed)));
+        showAppToast(
+          message: m.notesWall.emptyTrashFailed,
+          kind: ToastKind.error,
+        );
       }
     }
   }
@@ -475,9 +477,10 @@ class _TrashedNoteTile extends StatelessWidget {
         await controller.restoreNote(note);
       } catch (_) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(m.notesWall.restoreFailed)));
+          showAppToast(
+            message: m.notesWall.restoreFailed,
+            kind: ToastKind.error,
+          );
         }
       }
     } else if (action == 'permanent') {
@@ -503,9 +506,10 @@ class _TrashedNoteTile extends StatelessWidget {
         await controller.permanentlyDeleteNote(note);
       } catch (_) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(m.notesWall.deleteFailed)));
+          showAppToast(
+            message: m.notesWall.deleteFailed,
+            kind: ToastKind.error,
+          );
         }
       }
     }

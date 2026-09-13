@@ -72,14 +72,10 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       await domain.reuseItem(item);
     }
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            archived
-                ? m.checklists.reuse.reusedArchivedSnack(item.name)
-                : m.checklists.reuse.reusedSnack(item.name),
-          ),
-        ),
+      showAppToast(
+        message: archived
+            ? m.checklists.reuse.reusedArchivedSnack(item.name)
+            : m.checklists.reuse.reusedSnack(item.name),
       );
     }
     return true;
@@ -124,10 +120,8 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
         if (reuse) {
           await domain.reuseItem(existing);
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(m.checklists.reuse.reusedSnack(existing.name)),
-              ),
+            showAppToast(
+              message: m.checklists.reuse.reusedSnack(existing.name),
             );
           }
           return true;
@@ -188,9 +182,10 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       return true;
     } catch (_) {
       if (!context.mounted) return false;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.checklists.itemForm.saveFailed)));
+      showAppToast(
+        message: m.checklists.itemForm.saveFailed,
+        kind: ToastKind.error,
+      );
       return false;
     }
   }
@@ -245,8 +240,9 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       if (ok) added++;
     }
     if (context.mounted && added > 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(m.checklists.markdown.imported(added))),
+      showAppToast(
+        message: m.checklists.markdown.imported(added),
+        kind: ToastKind.success,
       );
     }
   }
@@ -489,9 +485,10 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
     if (confirmed != true) return;
     await domain.resetOrder(basis);
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.checklists.resetOrder.success)));
+      showAppToast(
+        message: m.checklists.resetOrder.success,
+        kind: ToastKind.success,
+      );
     }
   }
 
@@ -528,9 +525,7 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
     final uri = ListLink.uri(list.houseId, list.id);
     await Clipboard.setData(ClipboardData(text: uri.toString()));
     if (!context.mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(m.common.copied)));
+    showAppToast(message: m.common.copied, kind: ToastKind.success);
   }
 
   Future<void> addListToHomeScreen(BuildContext context) async {
@@ -542,9 +537,10 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       name: list.name,
     );
     if (ok || !context.mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(m.checklists.addToHomeScreenFailed)));
+    showAppToast(
+      message: m.checklists.addToHomeScreenFailed,
+      kind: ToastKind.error,
+    );
   }
 
   Future<void> confirmEmptyTrash(BuildContext context) async {
@@ -570,9 +566,10 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       await domain.emptyTrash();
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.emptyTrashFailed)));
+        showAppToast(
+          message: m.checklists.emptyTrashFailed,
+          kind: ToastKind.error,
+        );
       }
     }
   }

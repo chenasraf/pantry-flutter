@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/utils/app_toast.dart';
 
 import '../../services/wear_pairing_host.dart';
 import 'tips/watch_tips.dart';
@@ -80,11 +81,9 @@ class _WatchPairingViewState extends State<WatchPairingView> {
     final granted = await _host.grant(request);
     if (!mounted) return;
     setState(() => _transferring = false);
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(granted ? m.watch.pairedSnack : m.watch.pairFailedSnack),
-      ),
+    showAppToast(
+      message: granted ? m.watch.pairedSnack : m.watch.pairFailedSnack,
+      kind: granted ? ToastKind.success : ToastKind.error,
     );
   }
 

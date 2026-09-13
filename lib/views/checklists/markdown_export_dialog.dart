@@ -9,6 +9,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
+import 'package:pantry/utils/app_toast.dart';
 
 /// Dialog that turns a list into an editable Markdown document the user can
 /// copy to the clipboard or share/download as a `.md` file.
@@ -62,9 +63,10 @@ class _MarkdownExportDialogState extends State<MarkdownExportDialog> {
   Future<void> _copy() async {
     await Clipboard.setData(ClipboardData(text: _controller.text));
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(m.checklists.markdown.copied)));
+    showAppToast(
+      message: m.checklists.markdown.copied,
+      kind: ToastKind.success,
+    );
   }
 
   /// Sanitize the list name into a filesystem-safe `.md` filename, falling
@@ -85,8 +87,9 @@ class _MarkdownExportDialogState extends State<MarkdownExportDialog> {
       );
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(m.checklists.markdown.shareFailed)),
+      showAppToast(
+        message: m.checklists.markdown.shareFailed,
+        kind: ToastKind.error,
       );
     }
   }

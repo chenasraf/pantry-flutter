@@ -11,6 +11,7 @@ common:
   copy: Copy
   copied: Copied
   closeDialog: Done
+  dismiss: Dismiss
   remove: Remove
   clear: Clear
   more: More

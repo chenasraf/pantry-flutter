@@ -7,7 +7,7 @@ import 'package:pantry_core/models/note.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/views/checklists/import_to_list.dart';
 import 'package:pantry_core/utils/text_direction.dart';
-import 'package:pantry/utils/undo_snackbar.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
@@ -358,24 +358,21 @@ class NoteTile extends StatelessWidget {
         await controller.deleteNote(note);
         if (!context.mounted) return;
         if (hasFeature('note-trash')) {
-          showUndoSnackBar(
+          showUndoToast(
             message: m.notesWall.noteRemoved(1),
             undoLabel: m.checklists.undo,
             onUndo: () => controller.restoreNote(note),
             undoFailedMessage: m.notesWall.restoreFailed,
           );
         } else {
-          final messenger = ScaffoldMessenger.of(context);
-          messenger.clearSnackBars();
-          messenger.showSnackBar(
-            SnackBar(content: Text(m.notesWall.noteRemoved(1))),
-          );
+          showAppToast(message: m.notesWall.noteRemoved(1));
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(m.notesWall.deleteFailed)));
+          showAppToast(
+            message: m.notesWall.deleteFailed,
+            kind: ToastKind.error,
+          );
         }
       }
     });

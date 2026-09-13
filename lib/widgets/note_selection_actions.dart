@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/server_version_service.dart';
-import 'package:pantry/utils/undo_snackbar.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 
 class NoteSelectionActions extends StatelessWidget {
@@ -63,7 +63,7 @@ class NoteSelectionActions extends StatelessWidget {
             .toList();
         if (!context.mounted) return;
         if (hasFeature('note-trash') && deleted.isNotEmpty) {
-          showUndoSnackBar(
+          showUndoToast(
             message: m.notesWall.noteRemoved(deleted.length),
             undoLabel: m.checklists.undo,
             onUndo: () async {
@@ -74,17 +74,14 @@ class NoteSelectionActions extends StatelessWidget {
             undoFailedMessage: m.notesWall.restoreFailed,
           );
         } else {
-          final messenger = ScaffoldMessenger.of(context);
-          messenger.clearSnackBars();
-          messenger.showSnackBar(
-            SnackBar(content: Text(m.notesWall.noteRemoved(count))),
-          );
+          showAppToast(message: m.notesWall.noteRemoved(count));
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(m.notesWall.deleteFailed)));
+          showAppToast(
+            message: m.notesWall.deleteFailed,
+            kind: ToastKind.error,
+          );
         }
       }
     });

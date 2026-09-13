@@ -155,6 +155,11 @@ class CommonMessages {
   String get closeDialog => """Done""";
 
   /// ```dart
+  /// "Dismiss"
+  /// ```
+  String get dismiss => """Dismiss""";
+
+  /// ```dart
   /// "Remove"
   /// ```
   String get remove => """Remove""";
@@ -6350,6 +6355,7 @@ Map<String, String> get messagesMap => {
   """common.copy""": """Copy""",
   """common.copied""": """Copied""",
   """common.closeDialog""": """Done""",
+  """common.dismiss""": """Dismiss""",
   """common.remove""": """Remove""",
   """common.clear""": """Clear""",
   """common.more""": """More""",

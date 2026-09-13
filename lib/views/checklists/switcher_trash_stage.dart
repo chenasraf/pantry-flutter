@@ -5,6 +5,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 class TrashStage extends StatefulWidget {
@@ -167,9 +168,10 @@ class _TrashStageState extends State<TrashStage> {
         setState(() {});
       } catch (_) {
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.restoreFailed)));
+        showAppToast(
+          message: m.checklists.restoreFailed,
+          kind: ToastKind.error,
+        );
       }
     } else if (action == 'permanent') {
       final confirmed = await showDialog<bool>(
@@ -195,9 +197,10 @@ class _TrashStageState extends State<TrashStage> {
         if (mounted) setState(() {});
       } catch (_) {
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.removeListFailed)));
+        showAppToast(
+          message: m.checklists.removeListFailed,
+          kind: ToastKind.error,
+        );
       }
     }
   }
@@ -226,9 +229,10 @@ class _TrashStageState extends State<TrashStage> {
       if (mounted) setState(() {});
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.checklists.emptyTrashFailed)));
+      showAppToast(
+        message: m.checklists.emptyTrashFailed,
+        kind: ToastKind.error,
+      );
     }
   }
 }

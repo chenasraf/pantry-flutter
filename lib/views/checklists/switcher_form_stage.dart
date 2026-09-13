@@ -7,6 +7,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 import 'form_components.dart';
@@ -128,14 +129,11 @@ class _ListFormStageState extends State<ListFormStage> {
       widget.onSaved();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _isEdit
-                  ? m.checklists.updateListFailed
-                  : m.checklists.createListFailed,
-            ),
-          ),
+        showAppToast(
+          message: _isEdit
+              ? m.checklists.updateListFailed
+              : m.checklists.createListFailed,
+          kind: ToastKind.error,
         );
       }
     } finally {

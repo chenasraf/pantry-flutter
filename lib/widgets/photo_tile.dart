@@ -5,7 +5,7 @@ import 'package:pantry_core/models/photo.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
-import 'package:pantry/utils/undo_snackbar.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
 import 'package:pantry/views/photos/photo_detail_view.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
@@ -313,24 +313,21 @@ class PhotoTile extends StatelessWidget {
         await controller.deletePhoto(photo);
         if (!context.mounted) return;
         if (hasFeature('photo-trash')) {
-          showUndoSnackBar(
+          showUndoToast(
             message: m.photoBoard.photoRemoved(1),
             undoLabel: m.checklists.undo,
             onUndo: () => controller.restorePhoto(photo),
             undoFailedMessage: m.photoBoard.restoreFailed,
           );
         } else {
-          final messenger = ScaffoldMessenger.of(context);
-          messenger.clearSnackBars();
-          messenger.showSnackBar(
-            SnackBar(content: Text(m.photoBoard.photoRemoved(1))),
-          );
+          showAppToast(message: m.photoBoard.photoRemoved(1));
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(m.photoBoard.deleteFailed)));
+          showAppToast(
+            message: m.photoBoard.deleteFailed,
+            kind: ToastKind.error,
+          );
         }
       }
     });

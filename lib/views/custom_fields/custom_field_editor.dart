@@ -5,6 +5,7 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/services/custom_field_service.dart';
 import 'package:pantry_core/utils/field_type_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/form_components.dart';
 import 'package:pantry/views/custom_fields/custom_field_drafts.dart';
 
@@ -174,8 +175,9 @@ class _CustomFieldEditorState extends State<CustomFieldEditor> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(m.customFields.optionDeleteFailed)),
+        showAppToast(
+          message: m.customFields.optionDeleteFailed,
+          kind: ToastKind.error,
         );
       }
     } finally {

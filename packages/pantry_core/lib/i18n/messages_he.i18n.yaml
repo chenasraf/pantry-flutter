@@ -11,6 +11,7 @@ common:
   copy: העתק
   copied: הועתק
   closeDialog: סיום
+  dismiss: סגור
   remove: הסר
   clear: נקה
   more: עוד

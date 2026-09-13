@@ -38,7 +38,7 @@ class ChecklistsController extends ChangeNotifier {
 
   /// Effective capabilities for the house this controller serves. The view
   /// keeps this fresh from the current house; gating is UX only (the server
-  /// enforces and a 403 surfaces a snackbar). Defaults to all-allowed so the
+  /// enforces and a 403 surfaces a toast). Defaults to all-allowed so the
   /// controller behaves normally before the view assigns real permissions.
   HousePermissions permissions = HousePermissions.unrestricted;
 
@@ -72,7 +72,7 @@ class ChecklistsController extends ChangeNotifier {
   /// Requires the house `canAddItems` cap and — outside the All-lists view — a
   /// writable current list. In All-lists mode the target list varies per add,
   /// so writability is enforced per-target server-side (a 403 surfaces the
-  /// permission snackbar).
+  /// permission toast).
   bool get canAddItemsHere {
     if (!permissions.canAddItems) return false;
     if (isMetaMode) return true;

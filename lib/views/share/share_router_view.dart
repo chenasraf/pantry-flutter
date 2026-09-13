@@ -11,6 +11,7 @@ import 'package:pantry_core/services/pending_note_share_service.dart';
 import 'package:pantry_core/services/pending_photo_share_service.dart';
 import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Entry screen for an incoming OS share intent. Classifies the payload,
@@ -126,9 +127,10 @@ class _ShareRouterViewState extends State<ShareRouterView> {
         folderId = folder.id;
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(m.share.failedToCreateFolder)));
+          showAppToast(
+            message: m.share.failedToCreateFolder,
+            kind: ToastKind.error,
+          );
         }
         return;
       }

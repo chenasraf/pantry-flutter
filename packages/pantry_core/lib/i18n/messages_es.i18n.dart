@@ -156,6 +156,11 @@ class CommonMessagesEs extends CommonMessages {
   String get closeDialog => """Listo""";
 
   /// ```dart
+  /// "Descartar"
+  /// ```
+  String get dismiss => """Descartar""";
+
+  /// ```dart
   /// "Quitar"
   /// ```
   String get remove => """Quitar""";
@@ -6405,6 +6410,7 @@ Map<String, String> get messagesEsMap => {
   """common.copy""": """Copiar""",
   """common.copied""": """Copiado""",
   """common.closeDialog""": """Listo""",
+  """common.dismiss""": """Descartar""",
   """common.remove""": """Quitar""",
   """common.clear""": """Borrar""",
   """common.more""": """Más""",

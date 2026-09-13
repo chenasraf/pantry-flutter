@@ -5,6 +5,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/views/checklists/markdown_import_dialog.dart';
 
@@ -20,7 +21,6 @@ Future<void> showImportToListDialog(
   required int houseId,
   required String markdown,
 }) async {
-  final messenger = ScaffoldMessenger.of(context);
   final prefs = PrefsService.instance;
 
   // Preserve the checklists tab's remembered selection: loading and briefly
@@ -48,9 +48,7 @@ Future<void> showImportToListDialog(
         .where((l) => l.id != kAllListsId && l.isWritable)
         .toList();
     if (lists.isEmpty) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(m.notesWall.importNoLists)),
-      );
+      showAppToast(message: m.notesWall.importNoLists, kind: ToastKind.error);
       return;
     }
 
@@ -105,8 +103,9 @@ Future<void> showImportToListDialog(
       added++;
     }
     if (added > 0) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(m.checklists.markdown.imported(added))),
+      showAppToast(
+        message: m.checklists.markdown.imported(added),
+        kind: ToastKind.success,
       );
     }
   } finally {

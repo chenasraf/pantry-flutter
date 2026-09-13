@@ -156,6 +156,11 @@ class CommonMessagesDe extends CommonMessages {
   String get closeDialog => """Fertig""";
 
   /// ```dart
+  /// "Ausblenden"
+  /// ```
+  String get dismiss => """Ausblenden""";
+
+  /// ```dart
   /// "Entfernen"
   /// ```
   String get remove => """Entfernen""";
@@ -6419,6 +6424,7 @@ Map<String, String> get messagesDeMap => {
   """common.copy""": """Kopieren""",
   """common.copied""": """Kopiert""",
   """common.closeDialog""": """Fertig""",
+  """common.dismiss""": """Ausblenden""",
   """common.remove""": """Entfernen""",
   """common.clear""": """Leeren""",
   """common.more""": """Mehr""",

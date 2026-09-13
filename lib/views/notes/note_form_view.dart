@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/note.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/utils/markdown_delta.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
@@ -115,9 +116,7 @@ class _NoteFormViewState extends State<NoteFormView> {
       if (mounted) Navigator.of(context).pop(true);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.notesWall.saveFailed)));
+        showAppToast(message: m.notesWall.saveFailed, kind: ToastKind.error);
       }
     } finally {
       if (mounted) setState(() => _saving = false);

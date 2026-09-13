@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
-import 'package:pantry/utils/undo_snackbar.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'checklists_controller.dart';
 import 'item_picker_dialogs.dart';
 
 /// Bottom bar shown while items are multi-selected. Surfaces the four group
 /// actions, each enabled per the controller's permission/writability gating,
 /// and drives the batch endpoints with a target/category picker + result
-/// snackbar (including the skipped count).
+/// toast (including the skipped count).
 class SelectionActionBar extends StatelessWidget {
   final ChecklistsController controller;
 
@@ -165,7 +165,7 @@ class SelectionActionBar extends StatelessWidget {
 
   // The batch actions are optimistic and go through the offline sync queue, so
   // the outcome is reconciled later rather than awaited here. Each shows an
-  // immediate snackbar; move / delete / set-category also offer Undo, driven
+  // immediate toast; move / delete / set-category also offer Undo, driven
   // from the pre-action item snapshots captured before the selection clears.
 
   /// Valid move/copy targets: every list except the synthetic All-lists entry
@@ -206,7 +206,7 @@ class SelectionActionBar extends StatelessWidget {
     if (targetId == null) return;
     controller.batchCopy(targetId);
     // Copy is additive and non-destructive — no undo, just a confirmation.
-    showAppSnackBar(message: m.checklists.batch.copied(count));
+    showAppToast(message: m.checklists.batch.copied(count));
   }
 
   Future<void> _category(BuildContext context) async {
@@ -278,7 +278,7 @@ class SelectionActionBar extends StatelessWidget {
     controller.batchDelete(permanent: permanent);
     // A permanent delete has no undo path.
     if (permanent) {
-      showAppSnackBar(message: m.checklists.batch.deleted(affected.length));
+      showAppToast(message: m.checklists.batch.deleted(affected.length));
       return;
     }
     _showUndo(
@@ -314,9 +314,9 @@ class SelectionActionBar extends StatelessWidget {
     );
   }
 
-  /// Shows a confirmation snackbar with an Undo action for a batch operation.
+  /// Shows a confirmation toast with an Undo action for a batch operation.
   void _showUndo(String message, VoidCallback onUndo) {
-    showUndoSnackBar(
+    showUndoToast(
       message: message,
       undoLabel: m.checklists.undo,
       onUndo: () async => onUndo(),

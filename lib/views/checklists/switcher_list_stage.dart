@@ -6,7 +6,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/platform_info.dart';
-import 'package:pantry/utils/undo_snackbar.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 import 'switcher_widgets.dart';
@@ -298,8 +298,7 @@ class ListStage extends StatelessWidget {
       await controller.deleteList(list);
       if (!context.mounted) return;
       Navigator.pop(context);
-      // Snackbar runs against the host scaffold, not the dismissed sheet.
-      showUndoSnackBar(
+      showUndoToast(
         message: m.checklists.listRemoved,
         undoLabel: m.checklists.undo,
         onUndo: () => controller.restoreList(list),
@@ -307,9 +306,10 @@ class ListStage extends StatelessWidget {
       );
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.removeListFailed)));
+        showAppToast(
+          message: m.checklists.removeListFailed,
+          kind: ToastKind.error,
+        );
       }
     }
   }
@@ -319,8 +319,7 @@ class ListStage extends StatelessWidget {
       await controller.archiveList(list);
       if (!context.mounted) return;
       Navigator.pop(context);
-      // Snackbar runs against the host scaffold, not the dismissed sheet.
-      showUndoSnackBar(
+      showUndoToast(
         message: m.checklists.listArchived,
         undoLabel: m.checklists.undo,
         onUndo: () => controller.unarchiveList(list),
@@ -328,9 +327,10 @@ class ListStage extends StatelessWidget {
       );
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.archiveListFailed)));
+        showAppToast(
+          message: m.checklists.archiveListFailed,
+          kind: ToastKind.error,
+        );
       }
     }
   }

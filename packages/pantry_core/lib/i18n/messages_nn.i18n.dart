@@ -156,6 +156,11 @@ class CommonMessagesNn extends CommonMessages {
   String get closeDialog => """Ferdig""";
 
   /// ```dart
+  /// "Lukk"
+  /// ```
+  String get dismiss => """Lukk""";
+
+  /// ```dart
   /// "Fjern"
   /// ```
   String get remove => """Fjern""";
@@ -6388,6 +6393,7 @@ Map<String, String> get messagesNnMap => {
   """common.copy""": """Kopier""",
   """common.copied""": """Kopiert""",
   """common.closeDialog""": """Ferdig""",
+  """common.dismiss""": """Lukk""",
   """common.remove""": """Fjern""",
   """common.clear""": """Tøm""",
   """common.more""": """Meir""",

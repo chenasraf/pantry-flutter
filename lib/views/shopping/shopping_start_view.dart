@@ -14,6 +14,7 @@ import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/shopping/shopping_reminder_block.dart';
 import 'package:pantry/views/shopping/shopping_reminders_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
@@ -245,9 +246,7 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _submitting = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.shopping.startFailed)));
+      showAppToast(message: m.shopping.startFailed, kind: ToastKind.error);
     }
   }
 
@@ -266,9 +265,10 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _submitting = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(m.shopping.endPreviousFailed)));
+      showAppToast(
+        message: m.shopping.endPreviousFailed,
+        kind: ToastKind.error,
+      );
       return;
     }
     if (!mounted) return;

@@ -42,6 +42,7 @@ import 'services/widget_theme.dart';
 import 'services/window_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'utils/app_toast.dart';
 import 'views/home/home_view.dart';
 import 'views/login/login_view.dart';
 import 'views/notifications_intro/notifications_intro_view.dart';
@@ -52,22 +53,19 @@ import 'views/widget/widget_config_view.dart';
 import 'widgets/session_expired_banner.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
-final rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
-/// Suppress a burst of 403 snackbars (e.g. SyncManager flushing several queued
+/// Suppress a burst of 403 toasts (e.g. SyncManager flushing several queued
 /// ops that all violate the same revoked permission) down to one.
-DateTime? _lastForbiddenSnackbar;
+DateTime? _lastForbiddenToast;
 
-void _showPermissionDeniedSnackbar() {
+void _showPermissionDeniedToast() {
   final now = DateTime.now();
-  if (_lastForbiddenSnackbar != null &&
-      now.difference(_lastForbiddenSnackbar!) < const Duration(seconds: 3)) {
+  if (_lastForbiddenToast != null &&
+      now.difference(_lastForbiddenToast!) < const Duration(seconds: 3)) {
     return;
   }
-  _lastForbiddenSnackbar = now;
-  rootScaffoldMessengerKey.currentState
-    ?..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(m.common.permissionDenied)));
+  _lastForbiddenToast = now;
+  showAppToast(message: m.common.permissionDenied, kind: ToastKind.error);
 }
 
 /// Resolved at startup from `package_info_plus`. Defaulted to the bundled
@@ -184,7 +182,7 @@ void main() async {
     unawaited(WearMirrorHost.instance.init());
   }
   LocaleService.instance.apply();
-  ApiClient.onForbidden = _showPermissionDeniedSnackbar;
+  ApiClient.onForbidden = _showPermissionDeniedToast;
   // A debounced cache write needs somewhere to land before the process goes,
   // and a queue waiting out a backoff needs telling when a link returns.
   CacheStore.installPauseCheckpoint();
@@ -494,7 +492,6 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
           key: ValueKey(LocaleService.instance.revision),
           debugShowCheckedModeBanner: false,
           navigatorKey: rootNavigatorKey,
-          scaffoldMessengerKey: rootScaffoldMessengerKey,
           locale: locale,
           supportedLocales: supportedLocales,
           localizationsDelegates: localizationsDelegates,
@@ -534,10 +531,16 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
             final wrapped = PlatformInfo.isDesktopHost
                 ? _EscapePopWrapper(child: child)
                 : child;
-            return SessionExpiredBanner(
-              suppressed: _reauthOpen,
-              onSignIn: _onReauthRequested,
-              child: wrapped,
+            // Outermost, so a toast floats over routes, sheets and dialogs
+            // alike. It owns the overlay the toasts are inserted into, and
+            // sets the text direction for everything under it.
+            return AppToastHost(
+              textDirection: LocaleService.instance.textDirection,
+              child: SessionExpiredBanner(
+                suppressed: _reauthOpen,
+                onSignIn: _onReauthRequested,
+                child: wrapped,
+              ),
             );
           },
           onGenerateInitialRoutes: (initialRoute) => [

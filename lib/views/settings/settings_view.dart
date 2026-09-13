@@ -15,6 +15,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/settings/chip_visibility_view.dart';
 import 'package:pantry/views/settings/nav_order_view.dart';
 import 'package:pantry/views/watch/watch_pairing_view.dart';
@@ -228,9 +229,10 @@ class _SettingsViewState extends State<SettingsView> {
           .requestPermission();
       if (!granted) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(m.settings.permissionDenied)));
+          showAppToast(
+            message: m.settings.permissionDenied,
+            kind: ToastKind.error,
+          );
         }
         return;
       }

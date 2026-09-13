@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/house.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/home/home_controller.dart';
 
 /// Shows a dialog for creating a new house. Returns the created [House]
@@ -49,9 +50,7 @@ class _CreateHouseDialogState extends State<CreateHouseDialog> {
       if (mounted) Navigator.of(context).pop(house);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.home.createHouseFailed)));
+        showAppToast(message: m.home.createHouseFailed, kind: ToastKind.error);
       }
     } finally {
       if (mounted) setState(() => _saving = false);

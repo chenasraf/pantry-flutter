@@ -6,6 +6,7 @@ import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_display.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/platform_info.dart';
@@ -255,9 +256,10 @@ class ItemDetailView extends StatelessWidget {
       if (context.mounted) Navigator.of(context).pop(true);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.archiveFailed)));
+        showAppToast(
+          message: m.checklists.archiveFailed,
+          kind: ToastKind.error,
+        );
       }
     }
   }
@@ -279,9 +281,7 @@ class ItemDetailView extends StatelessWidget {
       if (context.mounted) Navigator.of(context).pop(true);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.moveFailed)));
+        showAppToast(message: m.checklists.moveFailed, kind: ToastKind.error);
       }
     }
   }
@@ -300,15 +300,11 @@ class ItemDetailView extends StatelessWidget {
     try {
       await controller.copyItem(item, targetId);
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.itemCopied)));
+        showAppToast(message: m.checklists.itemCopied, kind: ToastKind.success);
       }
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(m.checklists.copyFailed)));
+        showAppToast(message: m.checklists.copyFailed, kind: ToastKind.error);
       }
     }
   }
@@ -341,9 +337,7 @@ class ItemDetailView extends StatelessWidget {
       if (context.mounted) Navigator.of(context).pop(true);
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(f.deleteFailed)));
+        showAppToast(message: f.deleteFailed, kind: ToastKind.error);
       }
     }
   }

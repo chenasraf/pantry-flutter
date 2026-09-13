@@ -11,6 +11,7 @@ common:
   copy: Kopieren
   copied: Kopiert
   closeDialog: Fertig
+  dismiss: Ausblenden
   remove: "Entfernen"
   clear: Leeren
   more: Mehr
