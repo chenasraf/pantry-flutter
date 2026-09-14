@@ -1135,6 +1135,8 @@ wear:
   qrExpired: Der Code ist abgelaufen
   qrStartOver: Neu beginnen
   certUntrustedBody(String host): "${host} sendet ein Zertifikat, das diese Uhr nicht prüfen kann. Vertraue ihm nur, wenn der Fingerabdruck der erwartete ist."
+  certUntrustedShort: Server nicht geprüft
+  trustCertificate: Zertifikat vertrauen
   certTrust: Vertrauen
   certUnreadable: Zertifikat des Servers nicht lesbar
   notifications: Mitteilungen

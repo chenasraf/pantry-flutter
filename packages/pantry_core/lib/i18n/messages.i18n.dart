@@ -5867,6 +5867,16 @@ class WearMessages {
       """${host} sent a certificate this watch can't verify. Trust it only if the fingerprint is the one you expect.""";
 
   /// ```dart
+  /// "Server not verified"
+  /// ```
+  String get certUntrustedShort => """Server not verified""";
+
+  /// ```dart
+  /// "Trust certificate"
+  /// ```
+  String get trustCertificate => """Trust certificate""";
+
+  /// ```dart
   /// "Trust"
   /// ```
   String get certTrust => """Trust""";
@@ -7427,6 +7437,8 @@ Password: pantry-rocks""",
   """wear.qrUnreachable""": """Couldn't reach that server""",
   """wear.qrExpired""": """The code expired""",
   """wear.qrStartOver""": """Start over""",
+  """wear.certUntrustedShort""": """Server not verified""",
+  """wear.trustCertificate""": """Trust certificate""",
   """wear.certTrust""": """Trust""",
   """wear.certUnreadable""": """Couldn't read that server's certificate""",
   """wear.notifications""": """Notifications""",

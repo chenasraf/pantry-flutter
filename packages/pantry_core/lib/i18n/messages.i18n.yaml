@@ -1143,6 +1143,8 @@ wear:
   qrExpired: The code expired
   qrStartOver: Start over
   certUntrustedBody(String host): "${host} sent a certificate this watch can't verify. Trust it only if the fingerprint is the one you expect."
+  certUntrustedShort: Server not verified
+  trustCertificate: Trust certificate
   certTrust: Trust
   certUnreadable: "Couldn't read that server's certificate"
   notifications: Notifications

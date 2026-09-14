@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cache_store.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
@@ -409,6 +410,77 @@ void main() {
       // A prompt is a single moment, answered once. The settings row is where
       // a wearer changes their mind afterwards.
       expect(asked, isNot(contains('requestNotifications')));
+    });
+  });
+
+  group('the pins the phone published', () {
+    /// A certificate accepted on the phone after this watch was paired. The
+    /// grant is long past, and the watch has no screen on which to be asked.
+    void publishPins(Map<String, List<String>> pins) => published
+      ..clear()
+      ..addAll([
+        {
+          'delivery': 'dataItem',
+          'path': WearPairing.pinsPath,
+          'payload': jsonEncode(WearPairingPins(pins: pins).toJson()),
+          'nodeId': 'phone-1',
+        },
+      ]);
+
+    test('land on a watch that is already signed in', () async {
+      await AuthService.instance.adoptCredentials(credentials);
+      await client.start();
+
+      emit(
+        WearPairing.pinsPath,
+        WearPairingPins(
+          pins: const {
+            'later.example': ['CC:DD'],
+          },
+        ).toJson(),
+        delivery: 'dataItem',
+      );
+      await settle();
+
+      expect(CertTrustService.instance.export()['later.example'], ['CC:DD']);
+    });
+
+    test(
+      'are read on a cold start, before the first request goes out',
+      () async {
+        // A watch runs for seconds a day. The item that landed while it was
+        // asleep is reachable no other way, and reading it late is reading it
+        // after the request it was needed for.
+        await AuthService.instance.adoptCredentials(credentials);
+        publishPins(const {
+          'cold.example': ['EE:FF'],
+        });
+
+        await client.readPairing();
+        await settle();
+
+        expect(CertTrustService.instance.export()['cold.example'], ['EE:FF']);
+      },
+    );
+
+    test('withdraw nothing when the phone has accepted nothing', () async {
+      // A watch signed in through the QR path accepted a certificate on its
+      // own screen, against a phone that never saw one. An empty store is not
+      // an instruction to forget that.
+      await AuthService.instance.adoptCredentials(credentials);
+      await CertTrustService.instance.adopt(const {
+        'own.example': ['11:22'],
+      });
+      await client.start();
+
+      emit(
+        WearPairing.pinsPath,
+        const WearPairingPins().toJson(),
+        delivery: 'dataItem',
+      );
+      await settle();
+
+      expect(CertTrustService.instance.export()['own.example'], ['11:22']);
     });
   });
 

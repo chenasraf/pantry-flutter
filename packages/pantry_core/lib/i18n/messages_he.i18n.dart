@@ -5872,6 +5872,16 @@ class WearMessagesHe extends WearMessages {
       """‏${host} שלח אישור שהשעון הזה לא יכול לאמת. תנו בו אמון רק אם טביעת האצבע היא זו שציפיתם לה.""";
 
   /// ```dart
+  /// "השרת לא מאומת"
+  /// ```
+  String get certUntrustedShort => """השרת לא מאומת""";
+
+  /// ```dart
+  /// "לתת אמון באישור"
+  /// ```
+  String get trustCertificate => """לתת אמון באישור""";
+
+  /// ```dart
   /// "לתת אמון"
   /// ```
   String get certTrust => """לתת אמון""";
@@ -7406,6 +7416,8 @@ Map<String, String> get messagesHeMap => {
   """wear.qrUnreachable""": """לא הצלחנו להגיע לשרת הזה""",
   """wear.qrExpired""": """הקוד פג""",
   """wear.qrStartOver""": """להתחיל מחדש""",
+  """wear.certUntrustedShort""": """השרת לא מאומת""",
+  """wear.trustCertificate""": """לתת אמון באישור""",
   """wear.certTrust""": """לתת אמון""",
   """wear.certUnreadable""": """לא הצלחנו לקרוא את האישור של השרת""",
   """wear.notifications""": """התראות""",

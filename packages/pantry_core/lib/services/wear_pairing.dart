@@ -24,6 +24,45 @@ class WearPairing {
   /// sent: a message reaches nothing on a watch whose app is not running,
   /// which is a watch almost all of the time.
   static const statePath = '/pairing/state';
+
+  /// Phone → watch, carrying a [WearPairingPins]. Published for the same
+  /// reason the pairing is, and safe to publish where a credential is not: a
+  /// fingerprint is a hash of a certificate the server hands to anyone who
+  /// connects.
+  static const pinsPath = '/pairing/pins';
+}
+
+/// Which certificates the phone has accepted.
+///
+/// The grant carries these too, but only once. A phone that accepts a
+/// certificate *after* pairing — because the server's changed, or because it
+/// was never asked about the one it has — would otherwise leave the watch
+/// holding a set of pins the server does not answer to, unable to reach it and
+/// with no screen of its own on which to be asked about it.
+class WearPairingPins {
+  /// `host[:port]` → accepted SHA-256 fingerprints, as
+  /// `CertTrustService.export` produces them.
+  final Map<String, List<String>> pins;
+
+  const WearPairingPins({this.pins = const {}});
+
+  Map<String, dynamic> toJson() => {
+    'pins': {for (final e in pins.entries) e.key: e.value},
+  };
+
+  static WearPairingPins fromJson(Map<String, dynamic> json) {
+    final raw = json['pins'];
+    if (raw is! Map) return const WearPairingPins();
+    return WearPairingPins(
+      pins: {
+        for (final entry in raw.entries)
+          if (entry.value is List)
+            '${entry.key}': [
+              for (final fingerprint in entry.value as List) '$fingerprint',
+            ],
+      },
+    );
+  }
 }
 
 /// Which watch a phone has signed in — the pairing itself, as absolute state.

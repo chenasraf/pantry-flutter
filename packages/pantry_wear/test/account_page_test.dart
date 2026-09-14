@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
@@ -70,10 +71,12 @@ void main() {
     await PrefsService.instance.setLastHouseId(1);
     await SyncManager.instance.reset();
     AuthService.instance.isUnauthorized.value = false;
+    CertTrustService.instance.reportReachable();
   });
 
   tearDown(() async {
     AuthService.instance.isUnauthorized.value = false;
+    CertTrustService.instance.reportReachable();
     await SyncManager.instance.reset();
     await HouseService.instance.cache.clear();
     await dir.delete(recursive: true);
@@ -361,6 +364,64 @@ void main() {
         lessThan(list.itemExtent / 2),
         reason: 'landed on the row, not merely nearest to it',
       );
+    });
+  });
+
+  group('a refused certificate', () {
+    Future<void> pumpUntrusted(WidgetTester tester) async {
+      await pump(tester);
+      CertTrustService.instance.reportUntrusted('cloud.example');
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('explains itself and offers the decision', (tester) async {
+      // A phone that validates the server through an authority installed on it
+      // accepts nothing, so it has nothing to push across — and a watch holds
+      // no such authority. Without this row the wearer reads what the phone
+      // mirrors and cannot send one change back.
+      await pumpUntrusted(tester);
+
+      expect(find.text(m.wear.certUntrustedShort), findsOneWidget);
+      expect(find.text(m.wear.trustCertificate), findsOneWidget);
+    });
+
+    testWidgets('is absent while the server is answering', (tester) async {
+      await pump(tester);
+
+      expect(find.text(m.wear.trustCertificate), findsNothing);
+    });
+
+    testWidgets('yields to a rejected credential, which is the shorter road', (
+      tester,
+    ) async {
+      await pumpUntrusted(tester);
+      AuthService.instance.isUnauthorized.value = true;
+      await tester.pumpAndSettle();
+
+      // Both rows stand — they are different repairs — but the landing goes to
+      // the credential, since trusting a server does not make a password the
+      // server rejects good again.
+      expect(find.text(m.wear.setUpAgain), findsOneWidget);
+      expect(find.text(m.wear.trustCertificate), findsOneWidget);
+
+      final list = tester.widget<SnapFocusList>(find.byType(SnapFocusList));
+      final geometry = list.geometry!.value;
+      expect(
+        geometry.centredIndex,
+        list.elements.indexWhere((e) => e.snappable),
+      );
+    });
+
+    testWidgets('clears itself once a request reaches the server', (
+      tester,
+    ) async {
+      await pumpUntrusted(tester);
+      expect(find.text(m.wear.trustCertificate), findsOneWidget);
+
+      CertTrustService.instance.reportReachable();
+      await tester.pumpAndSettle();
+
+      expect(find.text(m.wear.trustCertificate), findsNothing);
     });
   });
 }

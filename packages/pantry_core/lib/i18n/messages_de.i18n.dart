@@ -5932,6 +5932,16 @@ class WearMessagesDe extends WearMessages {
       """${host} sendet ein Zertifikat, das diese Uhr nicht prüfen kann. Vertraue ihm nur, wenn der Fingerabdruck der erwartete ist.""";
 
   /// ```dart
+  /// "Server nicht geprüft"
+  /// ```
+  String get certUntrustedShort => """Server nicht geprüft""";
+
+  /// ```dart
+  /// "Zertifikat vertrauen"
+  /// ```
+  String get trustCertificate => """Zertifikat vertrauen""";
+
+  /// ```dart
   /// "Vertrauen"
   /// ```
   String get certTrust => """Vertrauen""";
@@ -7557,6 +7567,8 @@ Passwort: pantry-rocks""",
   """wear.qrUnreachable""": """Server nicht erreichbar""",
   """wear.qrExpired""": """Der Code ist abgelaufen""",
   """wear.qrStartOver""": """Neu beginnen""",
+  """wear.certUntrustedShort""": """Server nicht geprüft""",
+  """wear.trustCertificate""": """Zertifikat vertrauen""",
   """wear.certTrust""": """Vertrauen""",
   """wear.certUnreadable""": """Zertifikat des Servers nicht lesbar""",
   """wear.notifications""": """Mitteilungen""",

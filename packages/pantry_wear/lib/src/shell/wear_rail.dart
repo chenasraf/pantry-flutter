@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
@@ -59,10 +60,10 @@ class WearRail extends StatelessWidget {
   final VoidCallback? onStartShopping;
   final bool expanded;
 
-  /// Where the degraded line points. Tapping it is a page turn, not a pairing
-  /// flow: the line is a signpost, and *Set up again* is a full-size button
+  /// Where the notice line points. Tapping it is a page turn, not the repair
+  /// itself: the line is a signpost, and what answers it is a full-size button
   /// beside the identity it concerns.
-  final VoidCallback? onSetUpAgain;
+  final VoidCallback? onNotice;
 
   const WearRail({
     super.key,
@@ -76,24 +77,41 @@ class WearRail extends StatelessWidget {
     this.onTapTitle,
     this.onChangeList,
     this.onStartShopping,
-    this.onSetUpAgain,
+    this.onNotice,
     this.expanded = false,
   });
 
+  /// Two states outrank the group label, and neither arrives through the
+  /// controller: a 401 produces no data, and a refused certificate produces
+  /// the same nothing one layer lower. The rail listens for both itself.
+  ///
+  /// The credential wins when both stand. It is the shorter road back — a
+  /// renewal is one tap against a phone already holding the answer — and a
+  /// credential the server rejects is not made good by trusting the server.
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<bool>(
     valueListenable: AuthService.instance.isUnauthorized,
-    builder: (context, degraded, _) => _build(context, degraded),
+    builder: (context, unauthorized, _) => ValueListenableBuilder<String?>(
+      valueListenable: CertTrustService.instance.untrustedHost,
+      builder: (context, untrusted, _) => _build(
+        context,
+        unauthorized
+            ? m.common.sessionExpiredTitle
+            : untrusted != null
+            ? m.wear.certUntrustedShort
+            : null,
+      ),
+    ),
   );
 
-  Widget _build(BuildContext context, bool degraded) {
+  Widget _build(BuildContext context, String? notice) {
     final metrics = WearMetrics.of(context);
     return ColoredBox(
       color: wearGround,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _identity(context, degraded),
+          _identity(context, notice),
           // The panel stays in the tree and its height is what animates, so it
           // retracts exactly as it arrived. Adding and removing the subtree
           // instead gives the collapse nothing to animate from.
@@ -132,7 +150,8 @@ class WearRail extends StatelessWidget {
   /// larger system font grows the rail instead of overflowing it — and so that
   /// expanding never moves anything here. The panel drops below; nothing above
   /// it shifts.
-  Widget _identity(BuildContext context, bool degraded) {
+  Widget _identity(BuildContext context, String? notice) {
+    final degraded = notice != null;
     final window = dotWindow(pages, page);
     final metrics = WearMetrics.of(context);
     // Where each line ends up, counted back from the bottom of the rail: the
@@ -204,8 +223,8 @@ class WearRail extends StatelessWidget {
                   // The state outranks the group label: the label is the one rail
                   // element that changes as you scroll, and it is the cheapest
                   // thing here to spend.
-                  child: degraded
-                      ? _DegradedLine(onTap: onSetUpAgain)
+                  child: notice != null
+                      ? _DegradedLine(label: notice, onTap: onNotice)
                       : group == null
                       ? const SizedBox.shrink()
                       : _bounded(
@@ -329,20 +348,21 @@ const _wash = LinearGradient(
   stops: [0, 0.72, 1],
 );
 
-/// The rejected credential, on a line of its own above whatever else the rail
-/// is carrying.
+/// The state that outranks the group label, on a line of its own above
+/// whatever else the rail is carrying.
 ///
-/// The wording is the phone's — 15 characters, already translated, and exactly
-/// right. Only the account page's body splits, that one being phone-length
-/// prose.
+/// The label is handed in rather than chosen here: the caller is what knows
+/// which state stands, and this line's whole job is to fit one short phrase
+/// into 9pt and lead somewhere. Only the account page's bodies split, those
+/// being phone-length prose.
 class _DegradedLine extends StatelessWidget {
+  final String label;
   final VoidCallback? onTap;
 
-  const _DegradedLine({required this.onTap});
+  const _DegradedLine({required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final label = m.common.sessionExpiredTitle;
     return GestureDetector(
       key: const ValueKey('degraded-line'),
       onTap: onTap,

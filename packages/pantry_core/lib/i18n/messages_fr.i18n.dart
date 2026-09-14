@@ -5924,6 +5924,16 @@ class WearMessagesFr extends WearMessages {
       """${host} envoie un certificat que cette montre ne peut pas vérifier. Ne l'acceptez que si l'empreinte est celle attendue.""";
 
   /// ```dart
+  /// "Serveur non vérifié"
+  /// ```
+  String get certUntrustedShort => """Serveur non vérifié""";
+
+  /// ```dart
+  /// "Approuver le certificat"
+  /// ```
+  String get trustCertificate => """Approuver le certificat""";
+
+  /// ```dart
   /// "Faire confiance"
   /// ```
   String get certTrust => """Faire confiance""";
@@ -7546,6 +7556,8 @@ Mot de passe : pantry-rocks""",
   """wear.qrUnreachable""": """Serveur injoignable""",
   """wear.qrExpired""": """Le code a expiré""",
   """wear.qrStartOver""": """Recommencer""",
+  """wear.certUntrustedShort""": """Serveur non vérifié""",
+  """wear.trustCertificate""": """Approuver le certificat""",
   """wear.certTrust""": """Faire confiance""",
   """wear.certUnreadable""": """Impossible de lire le certificat du serveur""",
   """wear.notifications""": """Notifications""",

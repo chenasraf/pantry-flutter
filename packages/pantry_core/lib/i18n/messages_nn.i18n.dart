@@ -5903,6 +5903,16 @@ class WearMessagesNn extends WearMessages {
       """${host} sender eit sertifikat denne klokka ikkje kan stadfeste. Stol på det berre om fingeravtrykket er det du ventar.""";
 
   /// ```dart
+  /// "Tenaren er ikkje stadfesta"
+  /// ```
+  String get certUntrustedShort => """Tenaren er ikkje stadfesta""";
+
+  /// ```dart
+  /// "Stol på sertifikatet"
+  /// ```
+  String get trustCertificate => """Stol på sertifikatet""";
+
+  /// ```dart
   /// "Stol på det"
   /// ```
   String get certTrust => """Stol på det""";
@@ -7488,6 +7498,8 @@ Passord: pantry""",
   """wear.qrUnreachable""": """Fekk ikkje kontakt med tenaren""",
   """wear.qrExpired""": """Koden gjekk ut""",
   """wear.qrStartOver""": """Byrj på nytt""",
+  """wear.certUntrustedShort""": """Tenaren er ikkje stadfesta""",
+  """wear.trustCertificate""": """Stol på sertifikatet""",
   """wear.certTrust""": """Stol på det""",
   """wear.certUnreadable""": """Fekk ikkje lese sertifikatet til tenaren""",
   """wear.notifications""": """Varsel""",

@@ -21,6 +21,30 @@ class CertTrustService {
   /// host[:port] -> set of accepted SHA-256 fingerprints (uppercase hex).
   Map<String, Set<String>> _pinned = {};
 
+  /// The host whose certificate the last request refused, or null while the
+  /// server is answering. A device that can offer the trust decision draws it
+  /// from here; one that cannot simply never reads it.
+  final untrustedHost = ValueNotifier<String?>(null);
+
+  /// Bumped whenever the store changes. A phone republishes what it holds off
+  /// the back of this, so a watch paired before the server's certificate was
+  /// accepted — or before it was replaced — heals without being paired again.
+  final revision = ValueNotifier<int>(0);
+
+  /// A request came back refusing [hostKey]'s certificate.
+  void reportUntrusted(String hostKey) {
+    if (untrustedHost.value == hostKey) return;
+    untrustedHost.value = hostKey;
+  }
+
+  /// A request reached the server, which disproves any refusal standing
+  /// against it. Observed at the same point as the refusal, for the same
+  /// reason a 401 and the success that clears it are.
+  void reportReachable() {
+    if (untrustedHost.value == null) return;
+    untrustedHost.value = null;
+  }
+
   /// Load persisted pins. Call BEFORE [install] so the first request
   /// already has the pinned set available.
   Future<void> load() async {
@@ -46,6 +70,7 @@ class CertTrustService {
   Future<void> pin(String hostKey, X509Certificate cert) async {
     final fp = fingerprintOf(cert);
     final set = _pinned.putIfAbsent(hostKey, () => <String>{});
+    if (untrustedHost.value == hostKey) untrustedHost.value = null;
     if (!set.add(fp)) return;
     await _persist();
   }
@@ -70,7 +95,11 @@ class CertTrustService {
         if (set.add(fingerprint)) changed = true;
       }
     }
-    if (changed) await _persist();
+    if (!changed) return;
+    // The refusal standing against a host these pins cover was made against
+    // the old store, and the next request is what settles the new one.
+    if (pins.containsKey(untrustedHost.value)) untrustedHost.value = null;
+    await _persist();
   }
 
   Future<void> _persist() async {
@@ -78,6 +107,7 @@ class CertTrustService {
       for (final e in _pinned.entries) e.key: e.value.toList(),
     });
     await _storage.write(key: _storageKey, value: encoded);
+    revision.value++;
   }
 
   /// "AA:BB:CC:..." colon-separated uppercase hex of SHA-256 over DER.

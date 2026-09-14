@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/text_direction.dart';
@@ -17,6 +18,7 @@ import '../widgets/wear_row.dart';
 import 'house_switcher_page.dart';
 import 'set_up_again_page.dart';
 import 'sign_out_page.dart';
+import 'trust_cert_page.dart';
 import 'wear_settings_page.dart';
 
 /// Who this watch is, what it is still carrying, and the ways out.
@@ -49,9 +51,12 @@ class _AccountPageState extends State<AccountPage> {
   /// turn of the bezel scrolls both the page on top and this one underneath.
   var _covered = false;
 
-  /// Where *Set up again* ended up in the element list, so the landing can
-  /// reach it without the row order being written down twice.
-  int? _setUpAgainIndex;
+  /// Where the row answering the notice above it ended up in the element list,
+  /// so the landing can reach it without the row order being written down
+  /// twice. Two states put one there — a rejected credential and a refused
+  /// certificate — and a wearer who followed a rail line is owed whichever of
+  /// them sent them here.
+  int? _noticeIndex;
 
   /// Whether the wearer has already been carried there. Once, on arriving into
   /// the state — not on every rebuild, which would haul the list back under
@@ -62,6 +67,7 @@ class _AccountPageState extends State<AccountPage> {
   void initState() {
     super.initState();
     AuthService.instance.isUnauthorized.addListener(_onDegraded);
+    CertTrustService.instance.untrustedHost.addListener(_onDegraded);
     SyncManager.instance.pendingCount.addListener(_onChanged);
     WearMirrorClient.instance.addListener(_onChanged);
     WearScope.instance.addListener(_onChanged);
@@ -71,6 +77,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void dispose() {
     AuthService.instance.isUnauthorized.removeListener(_onDegraded);
+    CertTrustService.instance.untrustedHost.removeListener(_onDegraded);
     SyncManager.instance.pendingCount.removeListener(_onChanged);
     WearMirrorClient.instance.removeListener(_onChanged);
     WearScope.instance.removeListener(_onChanged);
@@ -91,18 +98,20 @@ class _AccountPageState extends State<AccountPage> {
 
   bool get _degraded => AuthService.instance.isUnauthorized.value;
 
-  /// The degraded rail line is a signpost, and a signpost has to arrive at what
-  /// it points at. A wearer who followed one lands on *Set up again* rather
-  /// than one scroll above it.
+  bool get _untrusted => CertTrustService.instance.untrustedHost.value != null;
+
+  /// The rail's notice line is a signpost, and a signpost has to arrive at what
+  /// it points at. A wearer who followed one lands on the row that answers it
+  /// rather than one scroll above it.
   void _scheduleLanding() {
-    if (!_degraded) {
+    if (!_degraded && !_untrusted) {
       _landed = false;
       return;
     }
     if (_landed) return;
     _landed = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final index = _setUpAgainIndex;
+      final index = _noticeIndex;
       if (mounted && index != null) _listKey.currentState?.centreOn(index);
     });
   }
@@ -138,7 +147,7 @@ class _AccountPageState extends State<AccountPage> {
     final scheme = Theme.of(context).colorScheme;
     final metrics = WearMetrics.of(context);
     final elements = <FocusElement>[];
-    _setUpAgainIndex = null;
+    _noticeIndex = null;
 
     void header(double extent, Widget child) => elements.add(
       FocusElement(
@@ -191,11 +200,25 @@ class _AccountPageState extends State<AccountPage> {
     // otherwise have come here to do.
     if (_degraded) {
       header(metrics.headerExtent, const _DegradedNote());
-      _setUpAgainIndex = elements.length;
+      _noticeIndex = elements.length;
       row(
         icon: Icons.lock_outline,
         label: m.wear.setUpAgain,
         onTap: () => unawaited(_push(const SetUpAgainPage())),
+      );
+    }
+
+    // Below a rejected credential when both are true, because a credential the
+    // server rejects is not made good by a certificate being accepted, and
+    // renewing is the shorter road back.
+    if (_untrusted) {
+      header(metrics.headerExtent, const _UntrustedNote());
+      _noticeIndex ??= elements.length;
+      row(
+        icon: Icons.gpp_maybe_outlined,
+        label: m.wear.trustCertificate,
+        warning: true,
+        onTap: () => unawaited(_push(const TrustCertPage())),
       );
     }
 
@@ -384,6 +407,26 @@ class _DegradedNote extends StatelessWidget {
     ),
     child: Text(
       m.wear.sessionExpiredShort,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 10, height: 1.15, color: wearNoticeInk),
+    ),
+  );
+}
+
+/// Why the row under this one is here. The panel behind that row carries the
+/// host and the fingerprint; this has room only to say what is wrong.
+class _UntrustedNote extends StatelessWidget {
+  const _UntrustedNote();
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsetsDirectional.symmetric(
+      horizontal: WearMetrics.bandInsets(context).start,
+    ),
+    child: Text(
+      m.wear.certUntrustedShort,
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,

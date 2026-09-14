@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry/services/wear_mirror_host.dart';
 import 'package:pantry/services/wear_pairing_host.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
 import 'package:pantry_core/services/wear_pairing.dart';
 
@@ -170,6 +171,60 @@ void main() {
     await request(watch.nodeId);
 
     expect(host.pending.value?.nodeId, watch.nodeId);
+  });
+
+  group('the pins', () {
+    /// Certificates accepted on this phone, as they went out on the wire.
+    Map<String, List<String>>? publishedPins() {
+      final call = calls.cast<MethodCall?>().lastWhere(
+        (c) =>
+            c!.method == 'publish' &&
+            c.arguments['path'] == WearPairing.pinsPath,
+        orElse: () => null,
+      );
+      if (call == null) return null;
+      return WearPairingPins.fromJson(
+        jsonDecode(call.arguments['payload'] as String) as Map<String, dynamic>,
+      ).pins;
+    }
+
+    test('go out with the pairing', () async {
+      await CertTrustService.instance.adopt(const {
+        'cloud.example': ['AA:BB'],
+      });
+      calls.clear();
+
+      await host.grant(watch);
+
+      expect(publishedPins()?['cloud.example'], ['AA:BB']);
+    });
+
+    test('go out again when one is accepted after pairing', () async {
+      // The case the grant alone cannot cover: a certificate this phone had no
+      // reason to be asked about until today. The watch has no screen on which
+      // to be asked at all, so what this phone decides is its only answer.
+      await host.grant(watch);
+      calls.clear();
+
+      await CertTrustService.instance.adopt(const {
+        'later.example': ['CC:DD'],
+      });
+      await Future<void>.delayed(Duration.zero);
+
+      expect(publishedPins()?['later.example'], ['CC:DD']);
+    });
+
+    test('stay put while no watch is paired', () async {
+      // Nothing is listening, and the item is persisted and backed up.
+      calls.clear();
+
+      await CertTrustService.instance.adopt(const {
+        'unpaired.example': ['EE:FF'],
+      });
+      await Future<void>.delayed(Duration.zero);
+
+      expect(publishedPins(), isNull);
+    });
   });
 }
 

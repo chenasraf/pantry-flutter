@@ -570,7 +570,7 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
                           onStartShopping: _mode == ChecklistMode.browse
                               ? _openStartTrip
                               : null,
-                          onSetUpAgain: _showAccount,
+                          onNotice: _showAccount,
                         ),
                       ),
                     ),

@@ -5916,6 +5916,16 @@ class WearMessagesEs extends WearMessages {
       """${host} envía un certificado que este reloj no puede verificar. Confía en él solo si la huella es la que esperas.""";
 
   /// ```dart
+  /// "Servidor sin verificar"
+  /// ```
+  String get certUntrustedShort => """Servidor sin verificar""";
+
+  /// ```dart
+  /// "Confiar en el certificado"
+  /// ```
+  String get trustCertificate => """Confiar en el certificado""";
+
+  /// ```dart
   /// "Confiar"
   /// ```
   String get certTrust => """Confiar""";
@@ -7521,6 +7531,8 @@ Contraseña: pantry-rocks""",
   """wear.qrUnreachable""": """No se pudo contactar con ese servidor""",
   """wear.qrExpired""": """El código ha caducado""",
   """wear.qrStartOver""": """Empezar de nuevo""",
+  """wear.certUntrustedShort""": """Servidor sin verificar""",
+  """wear.trustCertificate""": """Confiar en el certificado""",
   """wear.certTrust""": """Confiar""",
   """wear.certUnreadable""": """No se pudo leer el certificado del servidor""",
   """wear.notifications""": """Notificaciones""",

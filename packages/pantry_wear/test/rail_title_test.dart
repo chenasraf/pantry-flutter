@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_wear/src/checklists/checklists_controller.dart';
 import 'package:pantry_wear/src/shell/wear_rail.dart';
 import 'package:pantry_wear/src/shell/wear_shell.dart';
@@ -16,9 +17,13 @@ void main() {
   setUp(() {
     WearShape.markFrom(['round']);
     AuthService.instance.isUnauthorized.value = false;
+    CertTrustService.instance.reportReachable();
   });
 
-  tearDown(() => AuthService.instance.isUnauthorized.value = false);
+  tearDown(() {
+    AuthService.instance.isUnauthorized.value = false;
+    CertTrustService.instance.reportReachable();
+  });
 
   /// The panel stays in the tree so it can animate in both directions, so its
   /// presence proves nothing — whether the rail has opened far enough to show
@@ -184,5 +189,32 @@ void main() {
     // and it moved to the page holding *Set up again*, not into a pairing flow.
     expect(find.text(m.wear.account), findsOneWidget);
     expect(find.text(m.wear.setUpAgain), findsOneWidget);
+  });
+
+  testWidgets('a refused certificate takes it too', (tester) async {
+    // The watch reads on from the phone's mirror while this stands, so without
+    // the line nothing on the glass says why every change the wearer makes is
+    // sitting in the queue.
+    await pump(tester);
+    expect(find.byKey(const ValueKey('degraded-line')), findsNothing);
+
+    CertTrustService.instance.reportUntrusted('cloud.example');
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('degraded-line')), findsOneWidget);
+    expect(find.text(m.wear.certUntrustedShort), findsOneWidget);
+  });
+
+  testWidgets('and yields the line to a rejected credential', (tester) async {
+    // One line, two states. The credential wins: renewing is one tap against a
+    // phone that already holds the answer, and trusting the server would not
+    // make a password the server rejects good again.
+    await pump(tester);
+    CertTrustService.instance.reportUntrusted('cloud.example');
+    AuthService.instance.isUnauthorized.value = true;
+    await tester.pumpAndSettle();
+
+    expect(find.text(m.common.sessionExpiredTitle), findsOneWidget);
+    expect(find.text(m.wear.certUntrustedShort), findsNothing);
   });
 }

@@ -1135,6 +1135,8 @@ wear:
   qrExpired: El código ha caducado
   qrStartOver: Empezar de nuevo
   certUntrustedBody(String host): "${host} envía un certificado que este reloj no puede verificar. Confía en él solo si la huella es la que esperas."
+  certUntrustedShort: Servidor sin verificar
+  trustCertificate: Confiar en el certificado
   certTrust: Confiar
   certUnreadable: No se pudo leer el certificado del servidor
   notifications: Notificaciones

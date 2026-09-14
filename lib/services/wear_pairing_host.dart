@@ -91,14 +91,24 @@ class WearPairingHost {
       // when the store is empty: a phone that has paired nobody has no
       // statement to make, and "nobody" would be one.
       await _publish(nodeId);
+      await _publishPins();
     }
+    CertTrustService.instance.revision.addListener(_onPinsChanged);
     _messages = _link.messages.listen(_onMessage);
   }
 
   Future<void> dispose() async {
+    CertTrustService.instance.revision.removeListener(_onPinsChanged);
     await _messages?.cancel();
     _messages = null;
     pending.value = null;
+  }
+
+  /// A certificate was accepted on this phone. The watch cannot be asked about
+  /// one, so what this phone decides is the only answer it will ever have.
+  void _onPinsChanged() {
+    if (paired.value == null) return;
+    unawaited(_publishPins());
   }
 
   void _onMessage(WearLinkMessage message) {
@@ -175,6 +185,10 @@ class WearPairingHost {
     _store.set(_nodeNameKey, request.nodeName);
     _store.set(_pairedAtKey, DateTime.now().millisecondsSinceEpoch);
     await _publish(request.nodeId);
+    // The grant carried these as well. Publishing them too is what makes the
+    // watch's copy a mirror of this phone's rather than a snapshot of the
+    // moment it was paired.
+    await _publishPins();
 
     // The seed is the mirror's first write, not a payload of its own. The
     // watch reports its scope once the grant lands and the mirror answers
@@ -212,5 +226,14 @@ class WearPairingHost {
   Future<void> _publish(String? nodeId) => _link.publish(
     WearPairing.statePath,
     WearPairingState(nodeId: nodeId).toJson(),
+  );
+
+  /// An empty store is still published: a phone that has accepted nothing is
+  /// saying so, and the watch's own adoption is additive — it drops nothing on
+  /// reading this, so a watch that was signed in by QR against a certificate
+  /// it accepted itself keeps that pin.
+  Future<void> _publishPins() => _link.publish(
+    WearPairing.pinsPath,
+    WearPairingPins(pins: CertTrustService.instance.export()).toJson(),
   );
 }

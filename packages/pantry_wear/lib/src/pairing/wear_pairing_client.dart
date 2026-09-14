@@ -7,6 +7,7 @@ import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
 import 'package:pantry_core/services/wear_pairing.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 
 import '../services/wear_appearance_client.dart';
 import '../services/wear_host_service.dart';
@@ -155,6 +156,12 @@ class WearPairingClient extends ChangeNotifier {
   /// meet — and those names were readable at leisure at any point before now.
   Future<void> readPairing() async {
     if (!await _attach()) return;
+    // The pins first, and whether or not this watch is still paired: a watch
+    // about to be forgotten loses nothing by reading them, and one that is
+    // staying needs them before its first request rather than after it.
+    for (final item in await _link.dataItems(WearPairing.pinsPath)) {
+      await _readPins(item.data);
+    }
     for (final item in await _link.dataItems(WearPairing.statePath)) {
       await _readState(item.data);
     }
@@ -217,7 +224,23 @@ class WearPairingClient extends ChangeNotifier {
         }
       case WearPairing.statePath:
         unawaited(_readState(message.data));
+      case WearPairing.pinsPath:
+        unawaited(_readPins(message.data));
     }
+  }
+
+  /// Take on what the phone has accepted since.
+  ///
+  /// Additive, like every other adoption: a watch that accepted a certificate
+  /// on its own screen through the QR path keeps that decision, and a phone
+  /// publishing an empty store withdraws nothing. The queue is kicked because
+  /// this is the one event that can turn a held queue into a sendable one
+  /// without anything else changing.
+  Future<void> _readPins(Map<String, dynamic> data) async {
+    final pins = WearPairingPins.fromJson(data).pins;
+    if (pins.isEmpty) return;
+    await CertTrustService.instance.adopt(pins);
+    SyncManager.instance.reportInterfaceAvailable();
   }
 
   /// Act on the pairing the phone published.

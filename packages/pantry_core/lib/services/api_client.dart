@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
 class ApiException implements Exception {
@@ -28,6 +29,34 @@ class ApiException implements Exception {
 class OfflineException extends ApiException {
   const OfflineException([String message = 'Server unreachable'])
     : super(0, message);
+}
+
+/// Thrown when the TLS handshake failed because this device has not accepted
+/// the server's certificate.
+///
+/// An [OfflineException] by inheritance, and deliberately so: a server this
+/// device refuses to talk to is unreachable for every purpose a caller has, so
+/// the cache-first reads and the sync queue both want exactly the behaviour
+/// they already have for a dead socket — fall back to the cache, hold the
+/// queue, spend no retry budget. Dropping into the queue's generic failure
+/// path instead would dead-letter the wearer's changes over a server that is
+/// running and correct.
+///
+/// What the subclass adds is [hostKey], because the decision is answerable:
+/// the phone's login screen asks it and the watch's sign-in asks it, and
+/// neither can ask about a host it was not told.
+class CertUntrustedException extends OfflineException {
+  /// `host[:port]`, as [CertTrustService.hostKey] spells it.
+  final String hostKey;
+
+  /// The handshake failure verbatim, so this still answers to
+  /// [CertTrustService.isHandshakeFailure] — the surfaces that offer a
+  /// fingerprint recognise the failure by its message, and one of them sits
+  /// behind a layer that wraps what it catches.
+  const CertUntrustedException(
+    this.hostKey, [
+    super.message = 'HandshakeException',
+  ]);
 }
 
 /// How a server answered a conditional GET.
@@ -117,7 +146,19 @@ class ApiClient {
     try {
       final response = await send();
       SyncManager.instance.setOnline(true);
+      CertTrustService.instance.reportReachable();
       return response;
+    } on TlsException catch (e) {
+      // A refused certificate is neither a socket failure nor an HTTP one, so
+      // it reaches here as itself — `package:http` wraps `SocketException` and
+      // `HttpException` and passes everything else through. Left uncaught it
+      // would travel to callers raw, leaving the app believing it is online
+      // while the queue burned its retry budget on a handshake no number of
+      // attempts can change.
+      final host = _hostKey;
+      SyncManager.instance.setOnline(false);
+      CertTrustService.instance.reportUntrusted(host);
+      throw CertUntrustedException(host, e.toString());
     } on SocketException catch (e) {
       SyncManager.instance.setOnline(false);
       throw OfflineException(e.message);
@@ -130,6 +171,23 @@ class ApiClient {
       SyncManager.instance.setOnline(false);
       throw const OfflineException('Request timed out');
     }
+  }
+
+  /// Which server the failure above was against. Every request this client
+  /// makes goes to the one [_uri] builds from, so the host is the session's
+  /// rather than the call's — and it is read defensively, because a sign-out
+  /// racing an in-flight request must not replace the failure with a
+  /// [StateError] about the credential it no longer has.
+  String get _hostKey {
+    final url = AuthService.instance.credentials?.serverUrl;
+    final uri = url == null ? null : Uri.tryParse(url);
+    if (uri == null || uri.host.isEmpty) return url ?? '';
+    final isHttps = uri.scheme != 'http';
+    return CertTrustService.hostKey(
+      uri.host,
+      uri.hasPort ? uri.port : (isHttps ? 443 : 80),
+      isHttps: isHttps,
+    );
   }
 
   Uri _uri(String path, [Map<String, String>? queryParameters]) {
