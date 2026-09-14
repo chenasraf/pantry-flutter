@@ -1,0 +1,6 @@
+Features
+- add archive all action to done items
+- float messages at the top, with a dismiss button and a countdown
+Bug Fixes
+- align swipe action button text
+- show photo previews on servers with a self-signed certificate

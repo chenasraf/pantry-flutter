@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.32.0](https://github.com/chenasraf/pantry-flutter/compare/v0.31.2...v0.32.0) (2026-09-14)
+
+
+### Features
+
+* **checklist:** add archive all action to done items ([a59b03a](https://github.com/chenasraf/pantry-flutter/commit/a59b03a747f0a2abeefb5992bdb6339a3011edc3))
+* **toasts:** float messages at the top, with a dismiss button and a countdown ([7f75847](https://github.com/chenasraf/pantry-flutter/commit/7f7584723d56d80c265b39b1afc6c7f9545ba24e)), closes [#172](https://github.com/chenasraf/pantry-flutter/issues/172)
+
+
+### Bug Fixes
+
+* **checklist:** align swipe action button text ([bd94dd9](https://github.com/chenasraf/pantry-flutter/commit/bd94dd9b6460385b684336e548bd76957b353443))
+* **photos:** show photo previews on servers with a self-signed certificate ([146f546](https://github.com/chenasraf/pantry-flutter/commit/146f54665ac171f124c46d5f0852c8ca4f34f5e6)), closes [#176](https://github.com/chenasraf/pantry-flutter/issues/176)
+* **wear:** sync changes to servers with a self-signed certificate ([ea58bbd](https://github.com/chenasraf/pantry-flutter/commit/ea58bbdd8f2922a10e77e18e4afec113e6fdb8b8))
+
 ## [0.31.2](https://github.com/chenasraf/pantry-flutter/compare/v0.31.1...v0.31.2) (2026-09-10)
 
 
