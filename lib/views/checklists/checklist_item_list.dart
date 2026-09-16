@@ -605,6 +605,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
           : null,
       stores: controller.storesFor(item),
       labels: controller.labelsFor(item),
+      pendingImage: controller.pendingItemImage(item.id),
       houseId: controller.houseId,
       isCardsView: widget.isCards,
       trashMode: controller.isTrashMode,

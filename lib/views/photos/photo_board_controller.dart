@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
@@ -6,14 +7,35 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/photo.dart';
 import 'package:pantry/services/image_cache_service.dart';
+import 'package:pantry/utils/app_toast.dart';
+import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/pending_photo_share_service.dart';
+import 'package:pantry_core/services/pending_upload_store.dart';
 import 'package:pantry_core/services/photo_service.dart';
+import 'package:pantry_core/sync/sync_ids.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
 
 class UploadTask {
   final String fileName;
-  final Uint8List? thumbnailBytes;
   final String mimeType;
   final int? folderId;
+
+  /// The image, while it is in flight. Released once the upload is handed to
+  /// the sync queue, which may hold it for days — a trip's worth of
+  /// full-resolution captures resident at once is the difference between a
+  /// waiting upload and a dead app.
+  Uint8List? thumbnailBytes;
+
+  /// The queue's copy of the image, once there is one. The tile draws from it
+  /// instead of from memory, and a retry reads it back.
+  File? pendingFile;
+
+  /// The queued op that owes this upload, once it has been handed over. A
+  /// queued task waits on connectivity rather than on a request in flight, so
+  /// it draws as pending and the sync queue — not a tap — retries it.
+  String? opUuid;
+
   double progress;
   bool done;
   String? error;
@@ -24,14 +46,19 @@ class UploadTask {
     this.thumbnailBytes,
     this.mimeType = 'image/jpeg',
     this.folderId,
+    this.opUuid,
+    this.pendingFile,
   }) : progress = 0.0,
        done = false;
+
+  bool get isQueued => opUuid != null;
 
   void reset() {
     progress = 0.0;
     done = false;
     error = null;
     result = null;
+    opUuid = null;
   }
 }
 
@@ -43,16 +70,23 @@ class PhotoBoardController extends ChangeNotifier {
   HousePermissions permissions = HousePermissions.unrestricted;
 
   PhotoBoardController({required this.houseId}) {
+    _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
+    _skippedSub = SyncManager.instance.onSkipped.listen(_onSyncSkipped);
+    unawaited(_adoptQueuedUploads());
     PendingPhotoShareService.instance.addListener(_consumePendingShares);
     // Consume any shares that arrived while this controller didn't exist.
     _consumePendingShares();
   }
 
   bool _disposed = false;
+  StreamSubscription<SyncOpApplied>? _appliedSub;
+  StreamSubscription<SyncOpSkipped>? _skippedSub;
 
   @override
   void dispose() {
     _disposed = true;
+    _appliedSub?.cancel();
+    _skippedSub?.cancel();
     PendingPhotoShareService.instance.removeListener(_consumePendingShares);
     super.dispose();
   }
@@ -309,7 +343,7 @@ class PhotoBoardController extends ChangeNotifier {
   Future<void> uploadPhotos(List<XFile> files, {int? folderId}) async {
     final target = folderId ?? _currentFolderId;
     // Create all tasks up front with thumbnail bytes
-    final tasks = <(UploadTask, XFile)>[];
+    final tasks = <UploadTask>[];
     for (final file in files) {
       final bytes = await file.readAsBytes();
       final task = UploadTask(
@@ -319,25 +353,41 @@ class PhotoBoardController extends ChangeNotifier {
         folderId: target,
       );
       _uploads.add(task);
-      tasks.add((task, file));
+      tasks.add(task);
     }
     notifyListeners();
 
-    for (final (task, _) in tasks) {
+    for (final task in tasks) {
       await _runUpload(task);
+    }
+
+    final queued = tasks.where((t) => t.isQueued).length;
+    if (queued > 0) {
+      showAppToast(message: m.photoBoard.queuedOffline(queued));
     }
 
     _cleanUpDoneUploads();
   }
 
   Future<void> _runUpload(UploadTask task) async {
+    final bytes = task.thumbnailBytes;
+    if (bytes == null) {
+      task.error = 'missing bytes';
+      task.done = true;
+      notifyListeners();
+      return;
+    }
+    if (!SyncManager.instance.isOnline) {
+      await _queueUpload(task, bytes);
+      return;
+    }
     try {
       task.progress = 0.3;
       notifyListeners();
 
       final photo = await _service.uploadPhoto(
         houseId,
-        bytes: task.thumbnailBytes!,
+        bytes: bytes,
         fileName: task.fileName,
         mimeType: task.mimeType,
         folderId: task.folderId,
@@ -348,6 +398,11 @@ class PhotoBoardController extends ChangeNotifier {
       task.progress = 1.0;
       task.done = true;
       notifyListeners();
+    } on OfflineException {
+      // The link died mid-upload. The picture is already taken and the capture
+      // it came from is a cache file the OS will reclaim, so hand the bytes to
+      // the queue rather than asking for a shot that can't be taken again.
+      await _queueUpload(task, bytes);
     } catch (e) {
       debugPrint('[PhotoBoardController] Upload failed: $e');
       task.error = e.toString();
@@ -356,10 +411,114 @@ class PhotoBoardController extends ChangeNotifier {
     }
   }
 
+  /// Park [bytes] on disk and queue the upload, so it drains the moment the
+  /// server is reachable again — this session or a later one.
+  Future<void> _queueUpload(UploadTask task, Uint8List bytes) async {
+    final uuid = SyncIds.newOpUuid();
+    try {
+      await PendingUploadStore.instance.save(uuid, bytes);
+    } catch (e) {
+      debugPrint('[PhotoBoardController] Failed to stash photo bytes: $e');
+      task.error = e.toString();
+      task.done = true;
+      notifyListeners();
+      return;
+    }
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: uuid,
+        entity: SyncEntity.photo,
+        op: SyncOpKind.create,
+        houseId: houseId,
+        tempEntityId: SyncManager.instance.newTempId(),
+        body: {
+          'fileName': task.fileName,
+          'mimeType': task.mimeType,
+          if (task.folderId != null) 'folderId': task.folderId,
+        },
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+    task.opUuid = uuid;
+    task.pendingFile = await PendingUploadStore.instance.fileFor(uuid);
+    task.thumbnailBytes = null;
+    task.progress = 0.0;
+    task.done = false;
+    task.error = null;
+    notifyListeners();
+  }
+
+  /// Re-adopt uploads the queue is still holding — from an earlier session, or
+  /// from a board that was closed while they waited. Without this a photo taken
+  /// offline vanishes from the grid on relaunch even though its bytes are safe
+  /// on disk and still owed to the server.
+  Future<void> _adoptQueuedUploads() async {
+    for (final op in SyncManager.instance.pendingPhotoUploads(houseId)) {
+      if (_disposed) return;
+      if (_uploads.any((t) => t.opUuid == op.uuid)) continue;
+      final file = await PendingUploadStore.instance.fileFor(op.uuid);
+      if (_disposed) return;
+      _uploads.add(
+        UploadTask(
+          fileName: op.body['fileName'] as String? ?? '',
+          mimeType: op.body['mimeType'] as String? ?? 'image/jpeg',
+          folderId: op.body['folderId'] as int?,
+          opUuid: op.uuid,
+          pendingFile: file,
+        ),
+      );
+      notifyListeners();
+    }
+  }
+
+  void _onSyncApplied(SyncOpApplied e) {
+    if (e.op.entity != SyncEntity.photo || e.op.houseId != houseId) return;
+    _uploads.removeWhere((t) => t.opUuid == e.op.uuid);
+    final photo = e.entity;
+    if (photo is Photo && !_photos.any((p) => p.id == photo.id)) {
+      _photos.insert(0, photo);
+      _service.cachePhotos(houseId, _photos);
+    }
+    notifyListeners();
+  }
+
+  void _onSyncSkipped(SyncOpSkipped e) {
+    if (e.op.entity != SyncEntity.photo || e.op.houseId != houseId) return;
+    final task = _uploads.cast<UploadTask?>().firstWhere(
+      (t) => t!.opUuid == e.op.uuid,
+      orElse: () => null,
+    );
+    if (task == null) return;
+    // The queue has given up, but the bytes outlive the op: the tile stays on
+    // the board as a failed upload the user can retry, rather than the photo
+    // disappearing without a word — which is the whole complaint.
+    task.opUuid = null;
+    task.error = e.reason;
+    task.done = true;
+    notifyListeners();
+  }
+
   Future<void> retryUpload(UploadTask task) async {
+    final stale = task.pendingFile;
+    if (task.thumbnailBytes == null && stale != null) {
+      try {
+        if (await stale.exists()) {
+          task.thumbnailBytes = await stale.readAsBytes();
+        }
+        // A retry re-queues under a fresh op if it has to, so the abandoned
+        // op's blob is nobody's once its bytes are back in hand.
+        await stale.delete();
+      } catch (e) {
+        debugPrint('[PhotoBoardController] Failed to reclaim queued bytes: $e');
+      }
+      task.pendingFile = null;
+    }
     task.reset();
     notifyListeners();
     await _runUpload(task);
+    if (task.isQueued) {
+      showAppToast(message: m.photoBoard.queuedOffline(1));
+    }
     _cleanUpDoneUploads();
   }
 

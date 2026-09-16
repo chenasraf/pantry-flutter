@@ -3623,6 +3623,12 @@ class ItemFormChecklistsMessagesFr extends ItemFormChecklistsMessages {
   String get removeImage => """Supprimer""";
 
   /// ```dart
+  /// "Pas de connexion — l'image sera jointe dès votre retour en ligne."
+  /// ```
+  String get imageQueuedOffline =>
+      """Pas de connexion — l'image sera jointe dès votre retour en ligne.""";
+
+  /// ```dart
   /// "Impossible d'enregistrer l'article."
   /// ```
   String get saveFailed => """Impossible d'enregistrer l'article.""";
@@ -4450,6 +4456,17 @@ class PhotoBoardMessagesFr extends PhotoBoardMessages {
   /// "Impossible de télécharger la photo."
   /// ```
   String get uploadFailed => """Impossible de télécharger la photo.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Pas de connexion — la photo sera envoyée dès votre retour en ligne.', many: 'Pas de connexion — $count photos seront envoyées dès votre retour en ligne.')}"
+  /// ```
+  String queuedOffline(int count) =>
+      """${_plural(count, one: 'Pas de connexion — la photo sera envoyée dès votre retour en ligne.', many: 'Pas de connexion — $count photos seront envoyées dès votre retour en ligne.')}""";
+
+  /// ```dart
+  /// "En attente d'une connexion"
+  /// ```
+  String get waitingForConnection => """En attente d'une connexion""";
 
   /// ```dart
   /// "Impossible de supprimer la photo."
@@ -7092,6 +7109,8 @@ Mot de passe : pantry-rocks""",
   """checklists.itemForm.chooseImage""": """Choisir une image""",
   """checklists.itemForm.replaceImage""": """Remplacer""",
   """checklists.itemForm.removeImage""": """Supprimer""",
+  """checklists.itemForm.imageQueuedOffline""":
+      """Pas de connexion — l'image sera jointe dès votre retour en ligne.""",
   """checklists.itemForm.saveFailed""":
       """Impossible d'enregistrer l'article.""",
   """checklists.itemForm.deleteFailed""":
@@ -7300,6 +7319,7 @@ Mot de passe : pantry-rocks""",
   """photoBoard.noPhotos""": """Aucune photo pour le moment.""",
   """photoBoard.failedToLoad""": """Impossible de charger les photos.""",
   """photoBoard.uploadFailed""": """Impossible de télécharger la photo.""",
+  """photoBoard.waitingForConnection""": """En attente d'une connexion""",
   """photoBoard.deleteFailed""": """Impossible de supprimer la photo.""",
   """photoBoard.deleteConfirm""": """Supprimer cette photo ?""",
   """photoBoard.viewTrash""": """Voir la corbeille""",

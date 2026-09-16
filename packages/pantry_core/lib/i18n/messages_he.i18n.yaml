@@ -638,6 +638,7 @@ checklists:
     chooseImage: בחר תמונה
     replaceImage: החלף
     removeImage: הסר
+    imageQueuedOffline: אין חיבור — התמונה תצורף כשהחיבור יחזור.
     saveFailed: שמירת הפריט נכשלה.
     deleteFailed: מחיקת הפריט נכשלה.
     deleteConfirm: למחוק את הפריט?
@@ -846,6 +847,8 @@ photoBoard:
   noPhotos: אין תמונות עדיין.
   failedToLoad: טעינת התמונות נכשלה.
   uploadFailed: העלאת התמונה נכשלה.
+  queuedOffline(int count): "${_plural(count, one: 'אין חיבור — התמונה תועלה כשהחיבור יחזור.', many: 'אין חיבור — $count תמונות יועלו כשהחיבור יחזור.')}"
+  waitingForConnection: ממתין לחיבור
   deleteFailed: מחיקת התמונה נכשלה.
   deleteConfirm: למחוק את התמונה?
   deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'תמונה זו', many: '$count תמונות')}?"

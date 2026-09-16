@@ -41,7 +41,8 @@ class ItemDetailView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final hasImage = item.imageFileId != null;
+    final pendingImage = controller.pendingItemImage(item.id);
+    final hasImage = item.imageFileId != null || pendingImage != null;
     final lifecycle = lifecycleOf(item);
     final perms = controller.permissions;
     // A view-only shared list makes the whole item read-only.
@@ -68,6 +69,7 @@ class ItemDetailView extends StatelessWidget {
                           category: category,
                           stores: stores,
                           labels: labels,
+                          pendingImage: pendingImage,
                           onBack: () => Navigator.of(context).maybePop(),
                           onMore: onMore,
                         )

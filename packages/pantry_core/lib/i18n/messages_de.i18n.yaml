@@ -638,6 +638,7 @@ checklists:
     chooseImage: Bild auswählen
     replaceImage: Ersetzen
     removeImage: Entfernen
+    imageQueuedOffline: Keine Verbindung — das Bild wird angehängt, sobald du wieder online bist.
     saveFailed: Eintrag konnte nicht gespeichert werden.
     deleteFailed: "Eintrag konnte nicht gelöscht werden."
     deleteConfirm: "Diesen Eintrag löschen?"
@@ -846,6 +847,8 @@ photoBoard:
   noPhotos: Noch keine Fotos.
   failedToLoad: Fotos konnten nicht geladen werden.
   uploadFailed: Foto konnte nicht hochgeladen werden.
+  queuedOffline(int count): "${_plural(count, one: 'Keine Verbindung — das Foto wird hochgeladen, sobald du wieder online bist.', many: 'Keine Verbindung — $count Fotos werden hochgeladen, sobald du wieder online bist.')}"
+  waitingForConnection: Warten auf eine Verbindung
   deleteFailed: "Foto konnte nicht gelöscht werden."
   deleteConfirm: "Dieses Foto löschen?"
   deleteSelectedConfirm(int count): "${_plural(count, one: 'Dieses Foto', many: '$count Fotos')} löschen?"

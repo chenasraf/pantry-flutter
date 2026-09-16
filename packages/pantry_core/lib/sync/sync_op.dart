@@ -26,6 +26,15 @@ enum SyncEntity {
   /// — survives spotty in-store connectivity, mirroring [shoppingCheck].
   shoppingSkip,
 
+  /// A photo upload. [SyncOp.op] is [SyncOpKind.create]; the body carries
+  /// `{fileName, mimeType, folderId?, caption?}` and the image bytes live in
+  /// `PendingUploadStore` under the op's uuid.
+  ///
+  /// Queued rather than sent direct because the source is gone the moment the
+  /// shutter closes: a camera capture exists only in a cache file the OS
+  /// reclaims, and the user cannot be asked to take the picture again.
+  photo,
+
   /// A Shopping Mode billed-total write. [SyncOp.op] is [SyncOpKind.update];
   /// [SyncOp.parentId] is the session id and [SyncOp.entityId] the store the
   /// money was spent at, null for the storeless fallback. The body carries
@@ -48,6 +57,19 @@ enum SyncOpKind {
   emptyTrash,
   archive,
   unarchive,
+
+  /// Attach an image to a checklist item. The image bytes live in
+  /// `PendingUploadStore` under the op's uuid, for the same reason a
+  /// [SyncEntity.photo] create keeps them there; the body carries
+  /// `{fileName, mimeType}`.
+  ///
+  /// Absolute rather than additive — an item has one image — so a later
+  /// [setImage] or [clearImage] on the same item says everything the earlier
+  /// ones did.
+  setImage,
+
+  /// Remove a checklist item's image. The mirror of [setImage].
+  clearImage,
 
   /// House-scoped group action over many items (move / copy / delete /
   /// set-category). Unlike every other kind this targets a *list* of items

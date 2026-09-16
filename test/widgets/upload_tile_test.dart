@@ -65,6 +65,27 @@ void main() {
     expect(controller.lastRetried, same(task));
   });
 
+  testWidgets('shows offline glyph and hides dismiss while queued', (
+    tester,
+  ) async {
+    final controller = FakePhotoBoardController();
+    final task = makeUploadTask(opUuid: 'op_1');
+
+    await tester.pumpWidget(
+      wrapForTest(
+        SizedBox(
+          width: 120,
+          height: 120,
+          child: UploadTile(task: task, controller: controller),
+        ),
+      ),
+    );
+
+    expect(find.byIcon(Icons.cloud_off), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byIcon(Icons.close), findsNothing);
+  });
+
   testWidgets('tapping close dismisses upload', (tester) async {
     final controller = FakePhotoBoardController();
     final task = makeUploadTask(progress: 0.2);

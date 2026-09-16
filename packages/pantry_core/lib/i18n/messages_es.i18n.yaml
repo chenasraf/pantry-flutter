@@ -638,6 +638,7 @@ checklists:
     chooseImage: Elegir imagen
     replaceImage: Reemplazar
     removeImage: Eliminar
+    imageQueuedOffline: "Sin conexión: la imagen se adjuntará cuando vuelvas a estar en línea."
     saveFailed: "No se pudo guardar el artículo."
     deleteFailed: "No se pudo eliminar el artículo."
     deleteConfirm: "¿Eliminar este artículo?"
@@ -846,6 +847,8 @@ photoBoard:
   noPhotos: "Aún no hay fotos."
   failedToLoad: No se pudieron cargar las fotos.
   uploadFailed: No se pudo subir la foto.
+  queuedOffline(int count): "${_plural(count, one: 'Sin conexión: la foto se subirá cuando vuelvas a estar en línea.', many: 'Sin conexión: $count fotos se subirán cuando vuelvas a estar en línea.')}"
+  waitingForConnection: Esperando una conexión
   deleteFailed: No se pudo eliminar la foto.
   deleteConfirm: "¿Eliminar esta foto?"
   deleteSelectedConfirm(int count): "¿Eliminar ${_plural(count, one: 'esta foto', many: '$count fotos')}?"

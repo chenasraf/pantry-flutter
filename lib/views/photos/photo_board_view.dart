@@ -84,11 +84,17 @@ class _PhotoBoardBody extends StatelessWidget {
     final controller = context.watch<PhotoBoardController>();
     final prefs = context.watch<PrefsService>();
 
-    if (controller.isLoading && controller.photos.isEmpty) {
+    // A board that couldn't be fetched still has to show what the user just
+    // added: offline is exactly when the fetch fails and exactly when an upload
+    // is waiting, and a full-screen "failed to load" over it is how a queued
+    // photo reads as lost.
+    final hasUploads = controller.uploads.isNotEmpty;
+
+    if (controller.isLoading && controller.photos.isEmpty && !hasUploads) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (controller.error != null && controller.photos.isEmpty) {
+    if (controller.error != null && controller.photos.isEmpty && !hasUploads) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -463,7 +469,20 @@ class _PhotoGrid extends StatelessWidget {
     final folders = controller.visibleFolders;
     final photos = controller.visiblePhotos;
 
-    if (folders.isEmpty && photos.isEmpty) {
+    // An upload draws in the folder it will land in, so a queued one — which
+    // may sit there for days — isn't shown twice or in the wrong place.
+    final activeUploads = controller.uploads
+        .where(
+          (t) =>
+              (!t.done || t.error != null) &&
+              t.folderId == controller.currentFolderId,
+        )
+        .toList();
+
+    // An upload in flight, waiting on the queue, or failed is the only thing on
+    // an otherwise empty board — telling the user there are no photos while
+    // their photo sits right there is how it reads as lost.
+    if (folders.isEmpty && photos.isEmpty && activeUploads.isEmpty) {
       return ListView(
         controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
@@ -473,10 +492,6 @@ class _PhotoGrid extends StatelessWidget {
         ],
       );
     }
-
-    final activeUploads = controller.uploads
-        .where((t) => !t.done || t.error != null)
-        .toList();
 
     final items = <_GridItem>[];
     if (controller.foldersFirst) {

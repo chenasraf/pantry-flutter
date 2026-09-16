@@ -3585,6 +3585,12 @@ class ItemFormChecklistsMessages {
   String get removeImage => """Remove""";
 
   /// ```dart
+  /// "No connection — the image will be attached once you are back online."
+  /// ```
+  String get imageQueuedOffline =>
+      """No connection — the image will be attached once you are back online.""";
+
+  /// ```dart
   /// "Failed to save item."
   /// ```
   String get saveFailed => """Failed to save item.""";
@@ -4403,6 +4409,17 @@ class PhotoBoardMessages {
   /// "Failed to upload photo."
   /// ```
   String get uploadFailed => """Failed to upload photo.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'No connection — the photo will be uploaded once you are back online.', many: 'No connection — $count photos will be uploaded once you are back online.')}"
+  /// ```
+  String queuedOffline(int count) =>
+      """${_plural(count, one: 'No connection — the photo will be uploaded once you are back online.', many: 'No connection — $count photos will be uploaded once you are back online.')}""";
+
+  /// ```dart
+  /// "Waiting for a connection"
+  /// ```
+  String get waitingForConnection => """Waiting for a connection""";
 
   /// ```dart
   /// "Failed to delete photo."
@@ -6996,6 +7013,8 @@ Password: pantry-rocks""",
   """checklists.itemForm.chooseImage""": """Choose image""",
   """checklists.itemForm.replaceImage""": """Replace""",
   """checklists.itemForm.removeImage""": """Remove""",
+  """checklists.itemForm.imageQueuedOffline""":
+      """No connection — the image will be attached once you are back online.""",
   """checklists.itemForm.saveFailed""": """Failed to save item.""",
   """checklists.itemForm.deleteFailed""": """Failed to delete item.""",
   """checklists.itemForm.deleteConfirm""": """Delete this item?""",
@@ -7189,6 +7208,7 @@ Password: pantry-rocks""",
   """photoBoard.noPhotos""": """No photos yet.""",
   """photoBoard.failedToLoad""": """Failed to load photos.""",
   """photoBoard.uploadFailed""": """Failed to upload photo.""",
+  """photoBoard.waitingForConnection""": """Waiting for a connection""",
   """photoBoard.deleteFailed""": """Failed to delete photo.""",
   """photoBoard.deleteConfirm""": """Delete this photo?""",
   """photoBoard.viewTrash""": """View trash""",

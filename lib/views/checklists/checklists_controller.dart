@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:pantry_core/i18n.dart';
@@ -16,9 +17,11 @@ import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/custom_field_service.dart';
 import 'package:pantry_core/services/label_service.dart';
+import 'package:pantry_core/services/pending_upload_store.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry/services/image_cache_service.dart';
+import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
@@ -45,6 +48,10 @@ class ChecklistsController extends ChangeNotifier {
   ChecklistsController({required this.houseId}) {
     _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
     _reconnectSub = SyncManager.instance.onReconnect.listen(_onReconnect);
+    // Every enqueue and every drain moves the queue's length, which is the one
+    // signal that the set of waiting images may have changed.
+    SyncManager.instance.pendingCount.addListener(_onQueueLengthChanged);
+    unawaited(_refreshPendingItemImages());
   }
 
   /// True when the synthetic "All lists" entry is selected.
@@ -94,16 +101,48 @@ class ChecklistsController extends ChangeNotifier {
   StreamSubscription<SyncOpApplied>? _appliedSub;
   StreamSubscription<void>? _reconnectSub;
 
-  /// Image uploads staged against items whose optimistic create hasn't synced
-  /// yet, keyed by the item's negative temp id. Drained in `_onSyncApplied`
-  /// once the create resolves to a real server id.
-  final Map<int, _PendingImageUpload> _pendingImageUploads = {};
+  /// Images the queue still owes the server, keyed by every id their item
+  /// answers to. Rebuilt from the queue rather than tracked alongside it, so a
+  /// relaunch, a collapse and a temp id binding to a real one all land here on
+  /// their own.
+  final Map<int, File> _pendingItemImages = {};
+
+  /// The queued image for [itemId], if one is waiting to upload.
+  ///
+  /// An item carries no `imageFileId` until the upload lands, so without this a
+  /// picture attached offline leaves the row looking exactly like a row that
+  /// never had one.
+  File? pendingItemImage(int itemId) => _pendingItemImages[itemId];
+
+  void _onQueueLengthChanged() => unawaited(_refreshPendingItemImages());
+
+  Future<void> _refreshPendingItemImages() async {
+    final byId = SyncManager.instance.pendingItemImages(houseId);
+    final files = byId.isEmpty
+        ? const <String, File>{}
+        : await PendingUploadStore.instance.filesFor(byId.values);
+    if (_disposed) return;
+    final next = {
+      for (final entry in byId.entries) entry.key: files[entry.value]!,
+    };
+    if (next.length == _pendingItemImages.length &&
+        next.entries.every(
+          (e) => _pendingItemImages[e.key]?.path == e.value.path,
+        )) {
+      return;
+    }
+    _pendingItemImages
+      ..clear()
+      ..addAll(next);
+    notifyListeners();
+  }
 
   @override
   void dispose() {
     _disposed = true;
     _appliedSub?.cancel();
     _reconnectSub?.cancel();
+    SyncManager.instance.pendingCount.removeListener(_onQueueLengthChanged);
     super.dispose();
   }
 
@@ -988,6 +1027,11 @@ class ChecklistsController extends ChangeNotifier {
 
   void _onSyncApplied(SyncOpApplied applied) {
     final tempId = applied.op.tempEntityId;
+    // A create that just bound a real id re-keys the waiting image onto it
+    // without the queue's length moving, so the length listener never sees it.
+    if (applied.boundRealId != null) {
+      unawaited(_refreshPendingItemImages());
+    }
     switch (applied.op.entity) {
       case SyncEntity.checklistList:
         // Permanently deleting a list cascade-deletes its scoped categories on
@@ -1053,15 +1097,11 @@ class ChecklistsController extends ChangeNotifier {
           // view (the archive view keeps its own separately-loaded list).
           if (entity.deletedAt != null ||
               (entity.archivedAt != null && !_isArchiveMode)) {
-            if (tempId != null) _pendingImageUploads.remove(tempId);
             _items.removeWhere((i) => i.id == entity.id || i.id == tempId);
             _cacheVisibleItems();
             notifyListeners();
             return;
           }
-          // A create just bound to a real id — fire any image upload that was
-          // staged against the temp id while the create was in flight.
-          if (tempId != null) _flushPendingImageUpload(tempId, entity);
           if (tempId != null) {
             final i = _items.indexWhere((it) => it.id == tempId);
             if (i != -1) {
@@ -1107,28 +1147,14 @@ class ChecklistsController extends ChangeNotifier {
         }
       case SyncEntity.note:
       case SyncEntity.customField:
+      case SyncEntity.photo:
       case SyncEntity.shoppingCheck:
       case SyncEntity.shoppingSkip:
       case SyncEntity.shoppingSession:
         // Not surfaced in the checklists view — the shopping session controller
-        // reconciles its own check, skip and billed ops, and the custom-fields
-        // manager reconciles its own definition ops.
+        // reconciles its own check, skip and billed ops, the custom-fields
+        // manager its own definition ops, and the photo board its own uploads.
         break;
     }
   }
-}
-
-/// An image upload staged against an item whose optimistic create hasn't synced
-/// yet. Held in [ChecklistsController._pendingImageUploads] until the create
-/// resolves to a real server id.
-class _PendingImageUpload {
-  final List<int> bytes;
-  final String fileName;
-  final String mimeType;
-
-  const _PendingImageUpload({
-    required this.bytes,
-    required this.fileName,
-    required this.mimeType,
-  });
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -79,6 +81,10 @@ class ChecklistItemTile extends StatefulWidget {
   final ValueChanged<ListItem>? onSelectToggle;
   final ValueChanged<ListItem>? onLongPressSelect;
 
+  /// An image the sync queue is still holding for this item, drawn in place of
+  /// the server's while it waits. See [ChecklistTileRowContent.pendingImage].
+  final File? pendingImage;
+
   /// Suggestion flavor: the row is rendered without a checkbox, swipe actions,
   /// or selection affordance — just the name + meta chips as a single tap
   /// target. Backs the compose bar's "reuse an existing item" suggestions.
@@ -120,6 +126,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.selected = false,
     this.onSelectToggle,
     this.onLongPressSelect,
+    this.pendingImage,
     this.suggestion = false,
     this.onSuggestionTap,
     this.archived = false,
@@ -135,6 +142,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.labels = const [],
     required this.houseId,
     required VoidCallback onTap,
+    this.pendingImage,
     this.archived = false,
   }) : isCardsView = false,
        onToggle = _noop,
@@ -215,6 +223,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
         onRowLongPress: null,
         selectionMode: false,
         selected: false,
+        pendingImage: widget.pendingImage,
         suggestion: true,
         archived: widget.archived,
       );
@@ -405,6 +414,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       onRowLongPress: rowLongPress,
       selectionMode: selecting,
       selected: widget.selected,
+      pendingImage: widget.pendingImage,
     );
 
     // In selection mode the row toggles selection and shows no swipe actions,

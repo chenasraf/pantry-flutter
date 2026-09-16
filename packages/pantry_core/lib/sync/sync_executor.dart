@@ -4,12 +4,15 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/models/photo.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/custom_field_service.dart';
 import 'package:pantry_core/services/label_service.dart';
 import 'package:pantry_core/services/note_service.dart';
+import 'package:pantry_core/services/pending_upload_store.dart';
+import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/sync/sync_op.dart';
@@ -49,6 +52,8 @@ class SyncExecutor {
         return _executeNote(op);
       case SyncEntity.customField:
         return _executeCustomField(op);
+      case SyncEntity.photo:
+        return _executePhoto(op);
       case SyncEntity.shoppingCheck:
         return _executeShoppingCheck(op);
       case SyncEntity.shoppingSkip:
@@ -128,6 +133,26 @@ class SyncExecutor {
     }
   }
 
+  /// A queued photo upload. The bytes sit in [PendingUploadStore] under the
+  /// op's uuid; if they are gone there is nothing left to send, so the op
+  /// resolves empty and drains rather than wedging the queue behind a file that
+  /// will never come back.
+  Future<SyncResult> _executePhoto(SyncOp op) async {
+    if (op.op != SyncOpKind.create) return SyncResult.empty;
+    final bytes = await PendingUploadStore.instance.read(op.uuid);
+    if (bytes == null) return SyncResult.empty;
+    final photo = await PhotoService.instance.uploadPhoto(
+      op.houseId,
+      bytes: bytes,
+      fileName: op.body['fileName'] as String? ?? 'photo.jpg',
+      mimeType: op.body['mimeType'] as String? ?? 'image/jpeg',
+      folderId: op.body['folderId'] as int?,
+      caption: op.body['caption'] as String?,
+    );
+    await PendingUploadStore.instance.delete(op.uuid);
+    return SyncResult(photo);
+  }
+
   Future<SyncResult> _executeChecklistList(SyncOp op) async {
     final svc = ChecklistService.instance;
     final houseId = op.houseId;
@@ -195,6 +220,8 @@ class SyncExecutor {
       case SyncOpKind.toggle:
       case SyncOpKind.archive:
       case SyncOpKind.unarchive:
+      case SyncOpKind.setImage:
+      case SyncOpKind.clearImage:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -282,9 +309,41 @@ class SyncExecutor {
             .toList();
         await svc.reorderItems(houseId, listId, order);
         return SyncResult.empty;
+      case SyncOpKind.setImage:
+        if (listId == null || id == null) return SyncResult.empty;
+        return _executeItemImage(svc, houseId, listId, id, op);
+      case SyncOpKind.clearImage:
+        if (listId == null || id == null) return SyncResult.empty;
+        await svc.deleteItemImage(houseId, listId, id);
+        return SyncResult.empty;
       case SyncOpKind.batch:
         return _executeItemBatch(svc, houseId, op);
     }
+  }
+
+  /// Attach a queued image to an item. The bytes sit in [PendingUploadStore]
+  /// under the op's uuid; if they are gone there is nothing left to send, so
+  /// the op resolves empty and drains rather than wedging the queue behind a
+  /// file that will never come back.
+  Future<SyncResult> _executeItemImage(
+    ChecklistService svc,
+    int houseId,
+    int listId,
+    int itemId,
+    SyncOp op,
+  ) async {
+    final bytes = await PendingUploadStore.instance.read(op.uuid);
+    if (bytes == null) return SyncResult.empty;
+    final item = await svc.uploadItemImage(
+      houseId,
+      listId,
+      itemId,
+      bytes: bytes,
+      fileName: op.body['fileName'] as String? ?? 'image.jpg',
+      mimeType: op.body['mimeType'] as String? ?? 'image/jpeg',
+    );
+    await PendingUploadStore.instance.delete(op.uuid);
+    return SyncResult(item);
   }
 
   /// House-scoped group action. `body['batchAction']` selects the operation;
@@ -409,6 +468,8 @@ class SyncExecutor {
       case SyncOpKind.emptyTrash:
       case SyncOpKind.archive:
       case SyncOpKind.unarchive:
+      case SyncOpKind.setImage:
+      case SyncOpKind.clearImage:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -482,6 +543,8 @@ class SyncExecutor {
       case SyncOpKind.emptyTrash:
       case SyncOpKind.archive:
       case SyncOpKind.unarchive:
+      case SyncOpKind.setImage:
+      case SyncOpKind.clearImage:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -547,6 +610,8 @@ class SyncExecutor {
       case SyncOpKind.emptyTrash:
       case SyncOpKind.archive:
       case SyncOpKind.unarchive:
+      case SyncOpKind.setImage:
+      case SyncOpKind.clearImage:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -598,6 +663,8 @@ class SyncExecutor {
       case SyncOpKind.emptyTrash:
       case SyncOpKind.archive:
       case SyncOpKind.unarchive:
+      case SyncOpKind.setImage:
+      case SyncOpKind.clearImage:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -654,6 +721,8 @@ class SyncExecutor {
         return _executeNoteTaskLine(svc, houseId, id, op.body);
       case SyncOpKind.archive:
       case SyncOpKind.unarchive:
+      case SyncOpKind.setImage:
+      case SyncOpKind.clearImage:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -731,6 +800,7 @@ int? serverIdOf(Object? entity) {
   if (entity is Store) return entity.id;
   if (entity is Label) return entity.id;
   if (entity is Note) return entity.id;
+  if (entity is Photo) return entity.id;
   if (entity is FieldDefinition) return entity.id;
   return null;
 }

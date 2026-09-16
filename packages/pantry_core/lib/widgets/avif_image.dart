@@ -304,6 +304,41 @@ class AvifNetworkImage extends StatelessWidget {
   }
 }
 
+/// Displays a local image file with AVIF support.
+class AvifFileImage extends StatelessWidget {
+  const AvifFileImage(
+    this.file, {
+    super.key,
+    this.fit,
+    this.width,
+    this.height,
+    this.opacity,
+    this.errorWidget,
+  });
+
+  final File file;
+  final BoxFit? fit;
+  final double? width;
+  final double? height;
+  final Animation<double>? opacity;
+  final Widget? errorWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image(
+      image: AvifAwareFileImage(file),
+      fit: fit,
+      width: width,
+      height: height,
+      opacity: opacity,
+      gaplessPlayback: true,
+      errorBuilder: errorWidget == null
+          ? null
+          : (context, error, stackTrace) => errorWidget!,
+    );
+  }
+}
+
 /// Displays in-memory image bytes with AVIF support.
 class AvifMemoryImage extends StatelessWidget {
   const AvifMemoryImage(

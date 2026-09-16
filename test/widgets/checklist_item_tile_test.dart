@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/views/checklists/checklist_item_tile.dart';
+import 'package:pantry_core/widgets/avif_image.dart';
 
 import '../helpers/test_app.dart';
 import '../helpers/test_models.dart';
@@ -217,7 +221,47 @@ void main() {
     // category name no longer renders on the row itself.
     expect(find.text('Dairy'), findsNothing);
   });
+
+  testWidgets('an image still waiting to upload draws from the local file', (
+    tester,
+  ) async {
+    final blob = File(
+      '${Directory.systemTemp.createTempSync('pantry_tile').path}/shot.jpg',
+    )..writeAsBytesSync(_onePixelPng);
+    addTearDown(() => blob.parent.deleteSync(recursive: true));
+
+    await tester.pumpWidget(
+      wrapForTest(
+        ChangeNotifierProvider<PrefsService>.value(
+          value: PrefsService.instance,
+          child: ListView(
+            children: [
+              ChecklistItemTile(
+                // No imageFileId: the server has never seen this picture.
+                item: makeListItem(name: 'Milk'),
+                category: null,
+                houseId: 1,
+                isCardsView: false,
+                pendingImage: blob,
+                onToggle: (_) {},
+                onView: (_) {},
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(AvifFileImage), findsOneWidget);
+    expect(find.byType(AvifNetworkImage), findsNothing);
+  });
 }
+
+/// Smallest thing the decoder will accept, so the tile's image actually
+/// resolves instead of falling through to the broken-image placeholder.
+final _onePixelPng = base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+);
 
 class ListItemTapRecorder {
   int toggled = 0;

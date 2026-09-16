@@ -1,23 +1,33 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
 
 class ImagePreview extends StatelessWidget {
-  final String imageUrl;
+  /// The image on the server. Ignored when [file] is set.
+  final String? imageUrl;
   final Map<String, String> headers;
+
+  /// A local image to show instead of [imageUrl] — an upload the sync queue is
+  /// still holding, which the server has no copy of to serve.
+  final File? file;
+
   final String heroTag;
 
   const ImagePreview({
     super.key,
-    required this.imageUrl,
+    this.imageUrl,
+    this.file,
     required this.heroTag,
     this.headers = const {},
-  });
+  }) : assert(imageUrl != null || file != null, 'nothing to show');
 
   static void show(
     BuildContext context, {
-    required String imageUrl,
+    String? imageUrl,
+    File? file,
     required String heroTag,
     Map<String, String> headers = const {},
   }) {
@@ -30,6 +40,7 @@ class ImagePreview extends StatelessWidget {
         reverseTransitionDuration: const Duration(milliseconds: 300),
         pageBuilder: (context, _, _) => ImagePreview(
           imageUrl: imageUrl,
+          file: file,
           heroTag: heroTag,
           headers: headers,
         ),
@@ -39,6 +50,12 @@ class ImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const broken = Icon(
+      Icons.broken_image_outlined,
+      size: 64,
+      color: Colors.white54,
+    );
+    final local = file;
     return GestureDetector(
       onTap: () => Navigator.of(context).pop(),
       child: Scaffold(
@@ -56,16 +73,18 @@ class ImagePreview extends StatelessWidget {
           child: Center(
             child: Hero(
               tag: heroTag,
-              child: AvifNetworkImage(
-                imageUrl: imageUrl,
-                headers: headers,
-                fit: BoxFit.contain,
-                errorWidget: const Icon(
-                  Icons.broken_image_outlined,
-                  size: 64,
-                  color: Colors.white54,
-                ),
-              ),
+              child: local != null
+                  ? AvifFileImage(
+                      local,
+                      fit: BoxFit.contain,
+                      errorWidget: broken,
+                    )
+                  : AvifNetworkImage(
+                      imageUrl: imageUrl!,
+                      headers: headers,
+                      fit: BoxFit.contain,
+                      errorWidget: broken,
+                    ),
             ),
           ),
         ),

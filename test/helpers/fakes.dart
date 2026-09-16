@@ -263,11 +263,13 @@ UploadTask makeUploadTask({
   double progress = 0.0,
   bool done = false,
   String? error,
+  String? opUuid,
 }) {
   final task = UploadTask(
     fileName: fileName,
     thumbnailBytes: thumbnailBytes,
     mimeType: 'image/jpeg',
+    opUuid: opUuid,
   );
   task.progress = progress;
   task.done = done;

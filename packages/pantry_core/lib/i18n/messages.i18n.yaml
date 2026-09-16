@@ -638,6 +638,7 @@ checklists:
     chooseImage: Choose image
     replaceImage: Replace
     removeImage: Remove
+    imageQueuedOffline: No connection — the image will be attached once you are back online.
     saveFailed: Failed to save item.
     deleteFailed: Failed to delete item.
     deleteConfirm: Delete this item?
@@ -846,6 +847,8 @@ photoBoard:
   noPhotos: No photos yet.
   failedToLoad: Failed to load photos.
   uploadFailed: Failed to upload photo.
+  queuedOffline(int count): "${_plural(count, one: 'No connection — the photo will be uploaded once you are back online.', many: 'No connection — $count photos will be uploaded once you are back online.')}"
+  waitingForConnection: Waiting for a connection
   deleteFailed: Failed to delete photo.
   deleteConfirm: Delete this photo?
   deleteSelectedConfirm(int count): "Delete ${_plural(count, one: 'this photo', many: '$count photos')}?"

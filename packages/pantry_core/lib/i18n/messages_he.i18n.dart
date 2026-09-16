@@ -3594,6 +3594,12 @@ class ItemFormChecklistsMessagesHe extends ItemFormChecklistsMessages {
   String get removeImage => """הסר""";
 
   /// ```dart
+  /// "אין חיבור — התמונה תצורף כשהחיבור יחזור."
+  /// ```
+  String get imageQueuedOffline =>
+      """אין חיבור — התמונה תצורף כשהחיבור יחזור.""";
+
+  /// ```dart
   /// "שמירת הפריט נכשלה."
   /// ```
   String get saveFailed => """שמירת הפריט נכשלה.""";
@@ -4413,6 +4419,17 @@ class PhotoBoardMessagesHe extends PhotoBoardMessages {
   /// "העלאת התמונה נכשלה."
   /// ```
   String get uploadFailed => """העלאת התמונה נכשלה.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'אין חיבור — התמונה תועלה כשהחיבור יחזור.', many: 'אין חיבור — $count תמונות יועלו כשהחיבור יחזור.')}"
+  /// ```
+  String queuedOffline(int count) =>
+      """${_plural(count, one: 'אין חיבור — התמונה תועלה כשהחיבור יחזור.', many: 'אין חיבור — $count תמונות יועלו כשהחיבור יחזור.')}""";
+
+  /// ```dart
+  /// "ממתין לחיבור"
+  /// ```
+  String get waitingForConnection => """ממתין לחיבור""";
 
   /// ```dart
   /// "מחיקת התמונה נכשלה."
@@ -6984,6 +7001,8 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemForm.chooseImage""": """בחר תמונה""",
   """checklists.itemForm.replaceImage""": """החלף""",
   """checklists.itemForm.removeImage""": """הסר""",
+  """checklists.itemForm.imageQueuedOffline""":
+      """אין חיבור — התמונה תצורף כשהחיבור יחזור.""",
   """checklists.itemForm.saveFailed""": """שמירת הפריט נכשלה.""",
   """checklists.itemForm.deleteFailed""": """מחיקת הפריט נכשלה.""",
   """checklists.itemForm.deleteConfirm""": """למחוק את הפריט?""",
@@ -7178,6 +7197,7 @@ Map<String, String> get messagesHeMap => {
   """photoBoard.noPhotos""": """אין תמונות עדיין.""",
   """photoBoard.failedToLoad""": """טעינת התמונות נכשלה.""",
   """photoBoard.uploadFailed""": """העלאת התמונה נכשלה.""",
+  """photoBoard.waitingForConnection""": """ממתין לחיבור""",
   """photoBoard.deleteFailed""": """מחיקת התמונה נכשלה.""",
   """photoBoard.deleteConfirm""": """למחוק את התמונה?""",
   """photoBoard.viewTrash""": """הצג סל מיחזור""",

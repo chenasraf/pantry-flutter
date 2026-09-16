@@ -754,6 +754,7 @@ checklists:
     chooseImage: Vel bilete
     replaceImage: Erstatt
     removeImage: Fjern
+    imageQueuedOffline: Inga tilkopling — biletet blir lagt ved når du er tilkopla att.
     saveFailed: Klarte ikkje slette oppføring.
     deleteFailed: Klarte ikkje slette oppføring.
     deleteConfirm: Slett denne oppføringa?
@@ -982,6 +983,8 @@ photoBoard:
   noPhotos: Ingen bilete enno.
   failedToLoad: Klarte ikkje laste bilete.
   uploadFailed: Klarte ikkje laste opp bilete.
+  queuedOffline(int count): "${_plural(count, one: 'Inga tilkopling — biletet blir lasta opp når du er tilkopla att.', many: 'Inga tilkopling — $count bilete blir lasta opp når du er tilkopla att.')}"
+  waitingForConnection: Ventar på tilkopling
   deleteFailed: Klarte ikkje slette bilete
   deleteConfirm: Slett dette biletet?
   deleteSelectedConfirm(int count): "Slett ${_plural(count, one: 'dette bilete',

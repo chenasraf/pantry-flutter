@@ -81,7 +81,15 @@ class _ItemFormViewState extends State<ItemFormView> {
 
   bool get _isEditing => widget.item != null;
   bool get _hasExistingImage =>
-      widget.item?.imageFileId != null && !_removeExistingImage;
+      (widget.item?.imageFileId != null || _queuedImage != null) &&
+      !_removeExistingImage;
+
+  /// The image this item's edit form should show when the server has none yet:
+  /// one the sync queue is still holding from an earlier offline session.
+  File? get _queuedImage {
+    final item = widget.item;
+    return item == null ? null : widget.controller.pendingItemImage(item.id);
+  }
 
   /// The list whose scope governs which categories are offered: the edited
   /// item's own list, or — when adding — the list in context (null in the
@@ -653,15 +661,23 @@ class _ItemFormViewState extends State<ItemFormView> {
     }
 
     if (_hasExistingImage) {
-      final uri = ChecklistService.instance.itemImagePreviewUri(
-        widget.controller.houseId,
-        widget.item!.imageFileId!,
-        widget.item!.imageUploadedBy ?? '',
-        size: 256,
-      );
-      final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
+      final queued = _queuedImage;
+      final ImageProvider image;
+      if (queued != null) {
+        image = AvifAwareFileImage(queued);
+      } else {
+        final uri = ChecklistService.instance.itemImagePreviewUri(
+          widget.controller.houseId,
+          widget.item!.imageFileId!,
+          widget.item!.imageUploadedBy ?? '',
+          size: 256,
+        );
+        final headers =
+            AuthService.instance.credentials?.basicAuthHeaders ?? {};
+        image = AvifAwareNetworkImage(uri.toString(), headers: headers);
+      }
       return ImagePreviewTile(
-        image: AvifAwareNetworkImage(uri.toString(), headers: headers),
+        image: image,
         onRemove: () => setState(() {
           _removeExistingImage = true;
         }),

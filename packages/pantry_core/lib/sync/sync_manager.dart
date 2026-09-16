@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/cache_store.dart';
+import 'package:pantry_core/services/pending_upload_store.dart';
 import 'package:pantry_core/sync/id_remap.dart';
 import 'package:pantry_core/sync/sync_executor.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
@@ -107,6 +108,12 @@ class SyncManager {
     SyncIds.seedTempIds(
       _queue.all().map((o) => o.tempEntityId).whereType<int>(),
     );
+    // Awaited: the sweep deletes anything the queue does not claim, so it has
+    // to finish before the app is running and able to queue a new upload — a
+    // blob written after the snapshot would look like garbage to it.
+    await PendingUploadStore.instance.sweep(
+      _queue.all().map((o) => o.uuid).toSet(),
+    );
     pendingCount.value = _queue.length;
     if (!_queue.isEmpty) hasBacklog.value = true;
     status.value = _queue.isEmpty
@@ -159,6 +166,7 @@ class SyncManager {
     _retryTimer = null;
     await _queue.clear();
     await _remap.clear();
+    await PendingUploadStore.instance.sweep(const {});
     pendingCount.value = 0;
     hasBacklog.value = false;
     status.value = SyncStatus.idle;
@@ -242,6 +250,7 @@ class SyncManager {
         case SyncEntity.label:
         case SyncEntity.note:
         case SyncEntity.customField:
+        case SyncEntity.photo:
         case SyncEntity.shoppingCheck:
         case SyncEntity.shoppingSkip:
         case SyncEntity.shoppingSession:
@@ -376,6 +385,48 @@ class SyncManager {
     return out;
   }
 
+  /// Checklist items in [houseId] with an image waiting in the queue, mapped
+  /// to the op holding its bytes.
+  ///
+  /// Both the temp id and — once the item's create has bound one — the real id
+  /// name the same op, so a row matches whether or not its create has resolved.
+  /// Replayed in queue order, so an image attached and then removed before
+  /// either reached the server leaves nothing behind.
+  Map<int, String> pendingItemImages(int houseId) {
+    final out = <int, String>{};
+    for (final raw in _queue.all()) {
+      if (raw.entity != SyncEntity.checklistItem) continue;
+      if (raw.houseId != houseId) continue;
+      final isSet = raw.op == SyncOpKind.setImage;
+      if (!isSet && raw.op != SyncOpKind.clearImage) continue;
+      for (final id in [
+        _remap.rewrite(raw).effectiveEntityId,
+        raw.tempEntityId,
+      ]) {
+        if (id == null) continue;
+        if (isSet) {
+          out[id] = raw.uuid;
+        } else {
+          out.remove(id);
+        }
+      }
+    }
+    return out;
+  }
+
+  /// Photo uploads still queued for [houseId], oldest first.
+  ///
+  /// The photo board renders one tile per op, so a picture taken away from a
+  /// connection is visible — and visibly waiting — from the shutter until it
+  /// lands, across relaunches.
+  List<SyncOp> pendingPhotoUploads(int houseId) => [
+    for (final op in _queue.all())
+      if (op.entity == SyncEntity.photo &&
+          op.op == SyncOpKind.create &&
+          op.houseId == houseId)
+        op,
+  ];
+
   /// Enqueue an op. Returns immediately. If online, kicks the flush loop.
   void enqueue(SyncOp op) {
     _queue.enqueue(op);
@@ -457,7 +508,9 @@ class SyncManager {
                   op.op == SyncOpKind.restore ||
                   op.op == SyncOpKind.permanentDelete ||
                   op.op == SyncOpKind.archive ||
-                  op.op == SyncOpKind.unarchive)) {
+                  op.op == SyncOpKind.unarchive ||
+                  op.op == SyncOpKind.setImage ||
+                  op.op == SyncOpKind.clearImage)) {
             _queue.pop(op.uuid);
             pendingCount.value = _queue.length;
             _skippedController.add(SyncOpSkipped(op, 'gone'));
@@ -648,6 +701,10 @@ class SyncManager {
       case SyncEntity.customField:
         // Field-definition ops address their own record by id (rewritten by
         // the id-remap), never another entity's temp id in their body.
+        break;
+      case SyncEntity.photo:
+        // A photo upload names its folder, and folders are only ever created
+        // against a reachable server, so it can't hold a temp reference.
         break;
       case SyncEntity.shoppingCheck:
       case SyncEntity.shoppingSkip:

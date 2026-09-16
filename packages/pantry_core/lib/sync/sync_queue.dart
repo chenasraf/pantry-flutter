@@ -106,6 +106,7 @@ class SyncQueue {
       changed = _applyArchivePairs(result) || changed;
       changed = _applyTogglePairs(result) || changed;
       changed = _applyUpdateCollapse(result) || changed;
+      changed = _applyImageCollapse(result) || changed;
       changed = _applyReorderCollapse(result) || changed;
       changed = _applyCreateFolds(result) || changed;
     }
@@ -210,11 +211,16 @@ class SyncQueue {
         changed = true;
         return true;
       }
-      // update + delete → drop the update (earlier update on same record)
+      // update + delete → drop the update (earlier update on same record).
+      // Image writes go the same way: an attachment to a record that is about
+      // to be deleted has nowhere to land, and would burn its retry budget on
+      // the 404 the delete guarantees.
       for (var j = 0; j < ops.length; j++) {
         if (j == i) continue;
         final b = ops[j];
-        if (b.op == SyncOpKind.update &&
+        if ((b.op == SyncOpKind.update ||
+                b.op == SyncOpKind.setImage ||
+                b.op == SyncOpKind.clearImage) &&
             b.entity == a.entity &&
             b.effectiveEntityId == a.effectiveEntityId) {
           ops.removeAt(j);
@@ -376,6 +382,32 @@ class SyncQueue {
       // Now find the new index of the latest op and replace it.
       final newIdx = ops.indexWhere((o) => o.uuid == latest.uuid);
       if (newIdx != -1) ops[newIdx] = latest;
+      changed = true;
+    }
+    return changed;
+  }
+
+  /// A record carries one image, and both image ops state what it ends up
+  /// being rather than how it changes, so only the last write on a record
+  /// survives. Swapping a picture twice before the link returns should send one
+  /// image, not carry every rejected shot over a connection that just came
+  /// back.
+  bool _applyImageCollapse(List<SyncOp> ops) {
+    final byRecord = <String, List<int>>{};
+    for (var i = 0; i < ops.length; i++) {
+      final op = ops[i];
+      if (op.op != SyncOpKind.setImage && op.op != SyncOpKind.clearImage) {
+        continue;
+      }
+      final k = '${op.entity.name}:${op.effectiveEntityId}';
+      byRecord.putIfAbsent(k, () => []).add(i);
+    }
+    bool changed = false;
+    for (final indices in byRecord.values) {
+      if (indices.length < 2) continue;
+      for (final i in indices.reversed) {
+        if (i != indices.last) ops.removeAt(i);
+      }
       changed = true;
     }
     return changed;

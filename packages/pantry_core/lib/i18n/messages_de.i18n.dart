@@ -3627,6 +3627,12 @@ class ItemFormChecklistsMessagesDe extends ItemFormChecklistsMessages {
   String get removeImage => """Entfernen""";
 
   /// ```dart
+  /// "Keine Verbindung — das Bild wird angehängt, sobald du wieder online bist."
+  /// ```
+  String get imageQueuedOffline =>
+      """Keine Verbindung — das Bild wird angehängt, sobald du wieder online bist.""";
+
+  /// ```dart
   /// "Eintrag konnte nicht gespeichert werden."
   /// ```
   String get saveFailed => """Eintrag konnte nicht gespeichert werden.""";
@@ -4455,6 +4461,17 @@ class PhotoBoardMessagesDe extends PhotoBoardMessages {
   /// "Foto konnte nicht hochgeladen werden."
   /// ```
   String get uploadFailed => """Foto konnte nicht hochgeladen werden.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Keine Verbindung — das Foto wird hochgeladen, sobald du wieder online bist.', many: 'Keine Verbindung — $count Fotos werden hochgeladen, sobald du wieder online bist.')}"
+  /// ```
+  String queuedOffline(int count) =>
+      """${_plural(count, one: 'Keine Verbindung — das Foto wird hochgeladen, sobald du wieder online bist.', many: 'Keine Verbindung — $count Fotos werden hochgeladen, sobald du wieder online bist.')}""";
+
+  /// ```dart
+  /// "Warten auf eine Verbindung"
+  /// ```
+  String get waitingForConnection => """Warten auf eine Verbindung""";
 
   /// ```dart
   /// "Foto konnte nicht gelöscht werden."
@@ -7097,6 +7114,8 @@ Passwort: pantry-rocks""",
   """checklists.itemForm.chooseImage""": """Bild auswählen""",
   """checklists.itemForm.replaceImage""": """Ersetzen""",
   """checklists.itemForm.removeImage""": """Entfernen""",
+  """checklists.itemForm.imageQueuedOffline""":
+      """Keine Verbindung — das Bild wird angehängt, sobald du wieder online bist.""",
   """checklists.itemForm.saveFailed""":
       """Eintrag konnte nicht gespeichert werden.""",
   """checklists.itemForm.deleteFailed""":
@@ -7308,6 +7327,7 @@ Passwort: pantry-rocks""",
   """photoBoard.noPhotos""": """Noch keine Fotos.""",
   """photoBoard.failedToLoad""": """Fotos konnten nicht geladen werden.""",
   """photoBoard.uploadFailed""": """Foto konnte nicht hochgeladen werden.""",
+  """photoBoard.waitingForConnection""": """Warten auf eine Verbindung""",
   """photoBoard.deleteFailed""": """Foto konnte nicht gelöscht werden.""",
   """photoBoard.deleteConfirm""": """Dieses Foto löschen?""",
   """photoBoard.viewTrash""": """Papierkorb anzeigen""",

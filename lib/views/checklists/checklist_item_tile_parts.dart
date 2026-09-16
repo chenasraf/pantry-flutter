@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -98,6 +100,12 @@ class ChecklistTileRowContent extends StatelessWidget {
   final bool selectionMode;
   final bool selected;
 
+  /// An image the sync queue is still holding for this item, drawn in place of
+  /// the server's while it waits — an item photographed offline carries no
+  /// `imageFileId` until the upload lands, so without this the row looks
+  /// exactly like one that never had a picture.
+  final File? pendingImage;
+
   /// Read-only reuse suggestion: omit the leading checkbox entirely and let the
   /// row's background stay transparent so it blends into the suggestions panel.
   final bool suggestion;
@@ -127,6 +135,7 @@ class ChecklistTileRowContent extends StatelessWidget {
     required this.onRowLongPress,
     required this.selectionMode,
     required this.selected,
+    this.pendingImage,
     this.suggestion = false,
     this.archived = false,
   });
@@ -205,11 +214,12 @@ class ChecklistTileRowContent extends StatelessWidget {
               child: Row(
                 children: [
                   if (!checkboxAtEnd && !suggestion) leadingControl,
-                  if (item.imageFileId != null) ...[
+                  if (item.imageFileId != null || pendingImage != null) ...[
                     _ItemThumb(
                       houseId: houseId,
-                      fileId: item.imageFileId!,
+                      fileId: item.imageFileId,
                       owner: item.imageUploadedBy ?? '',
+                      pending: pendingImage,
                     ),
                     const SizedBox(width: 12),
                   ],
@@ -538,20 +548,47 @@ class _MetaRow extends StatelessWidget {
 
 class _ItemThumb extends StatelessWidget {
   final int houseId;
-  final int fileId;
+
+  /// The server's copy, once it has one.
+  final int? fileId;
   final String owner;
+
+  /// The copy the queue is still holding. Takes precedence over [fileId]: it
+  /// is the picture the user chose most recently, and while it waits the
+  /// server's is either absent or the one being replaced.
+  final File? pending;
 
   const _ItemThumb({
     required this.houseId,
     required this.fileId,
     required this.owner,
+    this.pending,
   });
 
   @override
   Widget build(BuildContext context) {
+    final fallback = Container(
+      width: 40,
+      height: 40,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: const Icon(Icons.broken_image_outlined, size: 18),
+    );
+    final file = pending;
+    if (file != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: AvifFileImage(
+          file,
+          width: 40,
+          height: 40,
+          fit: BoxFit.cover,
+          errorWidget: fallback,
+        ),
+      );
+    }
     final uri = ChecklistService.instance.itemImagePreviewUri(
       houseId,
-      fileId,
+      fileId!,
       owner,
       size: 96,
     );
@@ -564,12 +601,7 @@ class _ItemThumb extends StatelessWidget {
         width: 40,
         height: 40,
         fit: BoxFit.cover,
-        errorWidget: Container(
-          width: 40,
-          height: 40,
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          child: const Icon(Icons.broken_image_outlined, size: 18),
-        ),
+        errorWidget: fallback,
       ),
     );
   }

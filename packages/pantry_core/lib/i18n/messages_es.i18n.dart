@@ -3619,6 +3619,12 @@ class ItemFormChecklistsMessagesEs extends ItemFormChecklistsMessages {
   String get removeImage => """Eliminar""";
 
   /// ```dart
+  /// "Sin conexión: la imagen se adjuntará cuando vuelvas a estar en línea."
+  /// ```
+  String get imageQueuedOffline =>
+      """Sin conexión: la imagen se adjuntará cuando vuelvas a estar en línea.""";
+
+  /// ```dart
   /// "No se pudo guardar el artículo."
   /// ```
   String get saveFailed => """No se pudo guardar el artículo.""";
@@ -4446,6 +4452,17 @@ class PhotoBoardMessagesEs extends PhotoBoardMessages {
   /// "No se pudo subir la foto."
   /// ```
   String get uploadFailed => """No se pudo subir la foto.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Sin conexión: la foto se subirá cuando vuelvas a estar en línea.', many: 'Sin conexión: $count fotos se subirán cuando vuelvas a estar en línea.')}"
+  /// ```
+  String queuedOffline(int count) =>
+      """${_plural(count, one: 'Sin conexión: la foto se subirá cuando vuelvas a estar en línea.', many: 'Sin conexión: $count fotos se subirán cuando vuelvas a estar en línea.')}""";
+
+  /// ```dart
+  /// "Esperando una conexión"
+  /// ```
+  String get waitingForConnection => """Esperando una conexión""";
 
   /// ```dart
   /// "No se pudo eliminar la foto."
@@ -7075,6 +7092,8 @@ Contraseña: pantry-rocks""",
   """checklists.itemForm.chooseImage""": """Elegir imagen""",
   """checklists.itemForm.replaceImage""": """Reemplazar""",
   """checklists.itemForm.removeImage""": """Eliminar""",
+  """checklists.itemForm.imageQueuedOffline""":
+      """Sin conexión: la imagen se adjuntará cuando vuelvas a estar en línea.""",
   """checklists.itemForm.saveFailed""": """No se pudo guardar el artículo.""",
   """checklists.itemForm.deleteFailed""":
       """No se pudo eliminar el artículo.""",
@@ -7279,6 +7298,7 @@ Contraseña: pantry-rocks""",
   """photoBoard.noPhotos""": """Aún no hay fotos.""",
   """photoBoard.failedToLoad""": """No se pudieron cargar las fotos.""",
   """photoBoard.uploadFailed""": """No se pudo subir la foto.""",
+  """photoBoard.waitingForConnection""": """Esperando una conexión""",
   """photoBoard.deleteFailed""": """No se pudo eliminar la foto.""",
   """photoBoard.deleteConfirm""": """¿Eliminar esta foto?""",
   """photoBoard.viewTrash""": """Ver papelera""",

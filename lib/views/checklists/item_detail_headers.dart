@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/models/category.dart' as models;
@@ -33,6 +35,11 @@ class PhotoHeader extends StatelessWidget {
   final List<models.Label> labels;
   final VoidCallback onBack;
 
+  /// The image the sync queue is still holding, drawn in place of the server's
+  /// while it waits so an item photographed offline looks the way the user left
+  /// it. Takes precedence over [ListItem.imageFileId].
+  final File? pendingImage;
+
   /// Receives the more button's BuildContext so callers can anchor a popup to
   /// it (desktop dropdown). Null hides the button when there are no actions.
   final ValueChanged<BuildContext>? onMore;
@@ -46,17 +53,21 @@ class PhotoHeader extends StatelessWidget {
     required this.labels,
     required this.onBack,
     required this.onMore,
+    this.pendingImage,
   });
 
   @override
   Widget build(BuildContext context) {
     final heroTag = 'item-image-${item.id}';
-    final fullUri = ChecklistService.instance.itemImagePreviewUri(
-      houseId,
-      item.imageFileId!,
-      item.imageUploadedBy ?? '',
-      size: 2048,
-    );
+    final pending = pendingImage;
+    final fullUri = pending != null
+        ? null
+        : ChecklistService.instance.itemImagePreviewUri(
+            houseId,
+            item.imageFileId!,
+            item.imageUploadedBy ?? '',
+            size: 2048,
+          );
     final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
     return SizedBox(
       height: 300,
@@ -66,7 +77,8 @@ class PhotoHeader extends StatelessWidget {
           GestureDetector(
             onTap: () => ImagePreview.show(
               context,
-              imageUrl: fullUri.toString(),
+              imageUrl: fullUri?.toString(),
+              file: pending,
               heroTag: heroTag,
               headers: headers,
             ),
@@ -74,8 +86,9 @@ class PhotoHeader extends StatelessWidget {
               tag: heroTag,
               child: _CoverImage(
                 houseId: houseId,
-                fileId: item.imageFileId!,
+                fileId: item.imageFileId,
                 owner: item.imageUploadedBy ?? '',
+                pending: pending,
               ),
             ),
           ),
@@ -459,22 +472,35 @@ class _SquareIconButton extends StatelessWidget {
 
 class _CoverImage extends StatelessWidget {
   final int houseId;
-  final int fileId;
+  final int? fileId;
   final String owner;
+  final File? pending;
 
   const _CoverImage({
     required this.houseId,
     required this.fileId,
     required this.owner,
+    this.pending,
   });
 
   @override
   Widget build(BuildContext context) {
+    final fallback = Center(
+      child: Icon(
+        Icons.broken_image_outlined,
+        size: 48,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+    );
+    final file = pending;
+    if (file != null) {
+      return AvifFileImage(file, fit: BoxFit.cover, errorWidget: fallback);
+    }
     // Request the same size as the fullscreen viewer so the cover and the
     // zoom share one cached file — one prefetched image serves both offline.
     final uri = ChecklistService.instance.itemImagePreviewUri(
       houseId,
-      fileId,
+      fileId!,
       owner,
       size: 2048,
     );
@@ -484,13 +510,7 @@ class _CoverImage extends StatelessWidget {
       imageUrl: uri.toString(),
       headers: headers,
       fit: BoxFit.cover,
-      errorWidget: Center(
-        child: Icon(
-          Icons.broken_image_outlined,
-          size: 48,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-      ),
+      errorWidget: fallback,
     );
   }
 }

@@ -3610,6 +3610,12 @@ class ItemFormChecklistsMessagesNn extends ItemFormChecklistsMessages {
   String get removeImage => """Fjern""";
 
   /// ```dart
+  /// "Inga tilkopling — biletet blir lagt ved når du er tilkopla att."
+  /// ```
+  String get imageQueuedOffline =>
+      """Inga tilkopling — biletet blir lagt ved når du er tilkopla att.""";
+
+  /// ```dart
   /// "Klarte ikkje slette oppføring."
   /// ```
   String get saveFailed => """Klarte ikkje slette oppføring.""";
@@ -4436,6 +4442,17 @@ class PhotoBoardMessagesNn extends PhotoBoardMessages {
   /// "Klarte ikkje laste opp bilete."
   /// ```
   String get uploadFailed => """Klarte ikkje laste opp bilete.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Inga tilkopling — biletet blir lasta opp når du er tilkopla att.', many: 'Inga tilkopling — $count bilete blir lasta opp når du er tilkopla att.')}"
+  /// ```
+  String queuedOffline(int count) =>
+      """${_plural(count, one: 'Inga tilkopling — biletet blir lasta opp når du er tilkopla att.', many: 'Inga tilkopling — $count bilete blir lasta opp når du er tilkopla att.')}""";
+
+  /// ```dart
+  /// "Ventar på tilkopling"
+  /// ```
+  String get waitingForConnection => """Ventar på tilkopling""";
 
   /// ```dart
   /// "Klarte ikkje slette bilete"
@@ -7047,6 +7064,8 @@ Passord: pantry""",
   """checklists.itemForm.chooseImage""": """Vel bilete""",
   """checklists.itemForm.replaceImage""": """Erstatt""",
   """checklists.itemForm.removeImage""": """Fjern""",
+  """checklists.itemForm.imageQueuedOffline""":
+      """Inga tilkopling — biletet blir lagt ved når du er tilkopla att.""",
   """checklists.itemForm.saveFailed""": """Klarte ikkje slette oppføring.""",
   """checklists.itemForm.deleteFailed""": """Klarte ikkje slette oppføring.""",
   """checklists.itemForm.deleteConfirm""": """Slett denne oppføringa?""",
@@ -7251,6 +7270,7 @@ Passord: pantry""",
   """photoBoard.noPhotos""": """Ingen bilete enno.""",
   """photoBoard.failedToLoad""": """Klarte ikkje laste bilete.""",
   """photoBoard.uploadFailed""": """Klarte ikkje laste opp bilete.""",
+  """photoBoard.waitingForConnection""": """Ventar på tilkopling""",
   """photoBoard.deleteFailed""": """Klarte ikkje slette bilete""",
   """photoBoard.deleteConfirm""": """Slett dette biletet?""",
   """photoBoard.viewTrash""": """Vis papirkorga""",

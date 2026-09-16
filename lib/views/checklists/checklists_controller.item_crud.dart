@@ -321,27 +321,41 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     required String fileName,
     required String mimeType,
   }) async {
-    if (item.id < 0) {
-      // Photo uploads need a real server id, but this item's optimistic create
-      // hasn't synced yet (its id is still the negative temp id). Stash the
-      // upload keyed by that temp id; `_onSyncApplied` fires it once the create
-      // resolves to a real id. Returning the item unchanged keeps
-      // the save flow succeeding — the image lands a moment later.
-      _pendingImageUploads[item.id] = _PendingImageUpload(
+    // A negative id is an optimistic create that hasn't synced, so there is no
+    // server record to attach to yet; offline there is no server to attach to
+    // at all. Either way the queue takes it — it holds an op addressing a temp
+    // id until the create binds one — rather than blocking the save.
+    if (item.id < 0 || !_sync.isOnline) {
+      await _queueItemImage(
+        item,
         bytes: bytes,
         fileName: fileName,
         mimeType: mimeType,
       );
       return item;
     }
-    final updated = await _checklistService.uploadItemImage(
-      houseId,
-      item.listId,
-      item.id,
-      bytes: bytes,
-      fileName: fileName,
-      mimeType: mimeType,
-    );
+    final ListItem updated;
+    try {
+      updated = await _checklistService.uploadItemImage(
+        houseId,
+        item.listId,
+        item.id,
+        bytes: bytes,
+        fileName: fileName,
+        mimeType: mimeType,
+      );
+    } on OfflineException {
+      // The link died mid-upload. The picture is already taken and the capture
+      // it came from is a cache file the OS will reclaim, so hand the bytes to
+      // the queue rather than failing a save that otherwise succeeded.
+      await _queueItemImage(
+        item,
+        bytes: bytes,
+        fileName: fileName,
+        mimeType: mimeType,
+      );
+      return item;
+    }
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = updated;
@@ -351,15 +365,61 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     return updated;
   }
 
+  /// Park the image bytes on disk and queue the attachment, so it lands the
+  /// moment the item has a real id and the server is reachable.
+  Future<void> _queueItemImage(
+    ListItem item, {
+    required List<int> bytes,
+    required String fileName,
+    required String mimeType,
+  }) async {
+    final uuid = SyncIds.newOpUuid();
+    try {
+      await PendingUploadStore.instance.save(uuid, bytes);
+    } catch (e) {
+      debugPrint('[Checklists] Failed to stash item image bytes: $e');
+      rethrow;
+    }
+    _sync.enqueue(
+      SyncOp(
+        uuid: uuid,
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.setImage,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id < 0 ? null : item.id,
+        tempEntityId: item.id < 0 ? item.id : null,
+        body: {'fileName': fileName, 'mimeType': mimeType},
+        createdAt: _now(),
+      ),
+    );
+    if (!_sync.isOnline) {
+      showAppToast(message: m.checklists.itemForm.imageQueuedOffline);
+    }
+  }
+
   Future<void> deleteItemImage(ListItem item) async {
-    if (item.id < 0) return;
-    await _checklistService.deleteItemImage(houseId, item.listId, item.id);
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = item.copyWith(clearImage: true, updatedAt: _now());
       _cacheVisibleItems(item.listId);
       notifyListeners();
     }
+    // Queued even for an item the server has never seen: that is how an image
+    // attached and then removed in the same offline session is cancelled — the
+    // collapse rule keeps only this one.
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.clearImage,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id < 0 ? null : item.id,
+        tempEntityId: item.id < 0 ? item.id : null,
+        createdAt: _now(),
+      ),
+    );
   }
 
   Future<void> deleteItem(ListItem item) async {
@@ -501,26 +561,6 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
         tempEntityId: item.id < 0 ? item.id : null,
         createdAt: _now(),
       ),
-    );
-  }
-
-  /// Uploads an image that was staged against [tempId] before the item's
-  /// optimistic create had a real server id, now that the create resolved to
-  /// [item]. Fire-and-forget: the originating save call already
-  /// returned, so failures are logged rather than surfaced.
-  void _flushPendingImageUpload(int tempId, ListItem item) {
-    final pending = _pendingImageUploads.remove(tempId);
-    if (pending == null) return;
-    unawaited(
-      uploadItemImage(
-        item,
-        bytes: pending.bytes,
-        fileName: pending.fileName,
-        mimeType: pending.mimeType,
-      ).catchError((Object e) {
-        debugPrint('[Checklists] deferred image upload failed: $e');
-        return item;
-      }),
     );
   }
 }
