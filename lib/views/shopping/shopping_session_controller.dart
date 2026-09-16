@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/member.dart';
 import 'package:pantry_core/models/shopping_estimate.dart';
 import 'package:pantry_core/models/shopping_presence_entry.dart';
@@ -15,6 +16,7 @@ import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/label_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
@@ -140,6 +142,15 @@ class ShoppingSessionController extends ChangeNotifier {
   Map<int, models.Category> _categories = {};
   Map<int, Store> _stores = {};
   Map<int, Store> get stores => _stores;
+
+  Map<int, Label> _labels = {};
+
+  /// An item's labels, in house order. Best-effort reference data: a label the
+  /// house no longer has simply doesn't resolve.
+  List<Label> labelsFor(ListItem item) => [
+    for (final label in LabelService.sortLabels(_labels.values, 'name_asc'))
+      if (item.labelIds.contains(label.id)) label,
+  ];
 
   /// The active store's aisle order, as category id to position. Empty when the
   /// store follows the house-wide order.
@@ -319,6 +330,10 @@ class ShoppingSessionController extends ChangeNotifier {
           in HouseService.instance.getCachedMembers(houseId) ?? const [])
         mm.userId: mm,
     };
+    _labels = {
+      for (final l in LabelService.instance.getCached(houseId) ?? const [])
+        l.id: l,
+    };
     _reminders = _service.getCachedReminders(houseId) ?? _reminders;
     _adoptCachedStoreCategoryOrder(_session.activeStoreId);
 
@@ -350,11 +365,18 @@ class ShoppingSessionController extends ChangeNotifier {
 
   Future<void> _loadReferenceData() async {
     try {
+      // Labels back the row chips, gated and fetched non-fatally — a server
+      // without `labels` costs a chip, not the trip.
       final results = await Future.wait([
         CategoryService.instance.getCategories(houseId),
         StoreService.instance.getStores(houseId),
         HouseService.instance.getMembers(houseId),
         _service.getReminders(houseId).catchError((_) => <ShoppingReminder>[]),
+        hasFeature('labels')
+            ? LabelService.instance
+                  .getLabels(houseId)
+                  .catchError((_) => <Label>[])
+            : Future.value(<Label>[]),
       ]);
       _categories = {
         for (final c in results[0] as List<models.Category>) c.id: c,
@@ -362,6 +384,7 @@ class ShoppingSessionController extends ChangeNotifier {
       _stores = {for (final s in results[1] as List<Store>) s.id: s};
       _members = {for (final mm in results[2] as List<Member>) mm.userId: mm};
       _reminders = results[3] as List<ShoppingReminder>;
+      _labels = {for (final l in results[4] as List<Label>) l.id: l};
       notifyListeners();
     } catch (e) {
       debugPrint('[ShoppingSessionController] reference load failed: $e');

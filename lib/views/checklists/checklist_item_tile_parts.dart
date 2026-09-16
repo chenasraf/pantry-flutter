@@ -10,8 +10,6 @@ import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/item_chip.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
-import 'package:pantry_core/services/auth_service.dart';
-import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
@@ -23,8 +21,8 @@ import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
-import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/description_detail_dialog.dart';
+import 'package:pantry/widgets/item_thumb.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 import 'package:pantry/widgets/store_detail_dialog.dart';
 import 'swipe_reveal_row.dart';
@@ -215,7 +213,7 @@ class ChecklistTileRowContent extends StatelessWidget {
                 children: [
                   if (!checkboxAtEnd && !suggestion) leadingControl,
                   if (item.imageFileId != null || pendingImage != null) ...[
-                    _ItemThumb(
+                    ItemThumb(
                       houseId: houseId,
                       fileId: item.imageFileId,
                       owner: item.imageUploadedBy ?? '',
@@ -543,66 +541,5 @@ class _MetaRow extends StatelessWidget {
     final rrule = item.rrule ?? '';
     final summary = formatRrule(rrule);
     return summary;
-  }
-}
-
-class _ItemThumb extends StatelessWidget {
-  final int houseId;
-
-  /// The server's copy, once it has one.
-  final int? fileId;
-  final String owner;
-
-  /// The copy the queue is still holding. Takes precedence over [fileId]: it
-  /// is the picture the user chose most recently, and while it waits the
-  /// server's is either absent or the one being replaced.
-  final File? pending;
-
-  const _ItemThumb({
-    required this.houseId,
-    required this.fileId,
-    required this.owner,
-    this.pending,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final fallback = Container(
-      width: 40,
-      height: 40,
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: const Icon(Icons.broken_image_outlined, size: 18),
-    );
-    final file = pending;
-    if (file != null) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: AvifFileImage(
-          file,
-          width: 40,
-          height: 40,
-          fit: BoxFit.cover,
-          errorWidget: fallback,
-        ),
-      );
-    }
-    final uri = ChecklistService.instance.itemImagePreviewUri(
-      houseId,
-      fileId!,
-      owner,
-      size: 96,
-    );
-    final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: AvifNetworkImage(
-        imageUrl: uri.toString(),
-        headers: headers,
-        width: 40,
-        height: 40,
-        fit: BoxFit.cover,
-        errorWidget: fallback,
-      ),
-    );
   }
 }

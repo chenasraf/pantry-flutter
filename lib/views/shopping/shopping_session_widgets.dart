@@ -9,6 +9,7 @@ import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/views/shopping/shopping_item_row.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 
@@ -223,6 +224,7 @@ class ShoppingItemArea extends StatelessWidget {
   final ShoppingSessionController controller;
   final Future<void> Function(ListItem) onCheck;
   final void Function(ListItem) onSkip;
+  final void Function(ListItem) onView;
   final Future<void> Function() onRefresh;
 
   const ShoppingItemArea({
@@ -230,6 +232,7 @@ class ShoppingItemArea extends StatelessWidget {
     required this.controller,
     required this.onCheck,
     required this.onSkip,
+    required this.onView,
     required this.onRefresh,
   });
 
@@ -261,15 +264,16 @@ class ShoppingItemArea extends StatelessWidget {
                     count: group.items.length,
                   ),
                   for (final item in group.items)
-                    _ShoppingItemRow(
+                    ShoppingItemRow(
                       // Key by item id so the Dismissible tracks the right row
                       // as the list shifts when items above it are checked or
                       // removed.
                       key: ValueKey(item.id),
                       item: item,
-                      storeContext: controller.session.activeStoreId,
+                      controller: controller,
                       onCheck: () => onCheck(item),
                       onSkip: () => onSkip(item),
+                      onView: () => onView(item),
                     ),
                 ],
               ],
@@ -307,112 +311,6 @@ class _CategoryHeader extends StatelessWidget {
             ),
           ),
           Text('$count', style: theme.textTheme.labelMedium),
-        ],
-      ),
-    );
-  }
-}
-
-/// A single to-buy row. Tapping anywhere on the row checks the item off;
-/// swiping it aside removes it from this trip only (see [onSkip]).
-class _ShoppingItemRow extends StatelessWidget {
-  final ListItem item;
-  final VoidCallback onCheck;
-  final VoidCallback onSkip;
-
-  /// Active store leg, so the row shows this store's price (falling back to the
-  /// store-less price) rather than always the store-less default.
-  final int? storeContext;
-
-  const _ShoppingItemRow({
-    super.key,
-    required this.item,
-    required this.storeContext,
-    required this.onCheck,
-    required this.onSkip,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final price = item.formattedPriceFor(storeContext);
-    return Dismissible(
-      key: ValueKey('skip-${item.id}'),
-      // End-to-start (trailing → leading) keeps the "swipe it away" gesture
-      // distinct from the whole-row tap and is direction-aware for RTL.
-      direction: DismissDirection.endToStart,
-      onDismissed: (_) => onSkip(),
-      background: _skipBackground(theme),
-      child: InkWell(
-        onTap: onCheck,
-        child: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.circle_outlined,
-                size: 22,
-                color: theme.colorScheme.outline,
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.name,
-                      textDirection: detectTextDirection(item.name),
-                      style: theme.textTheme.bodyLarge,
-                    ),
-                    if (item.quantity != null &&
-                        item.quantity!.trim().isNotEmpty)
-                      Text(
-                        item.quantity!,
-                        textDirection: detectTextDirection(item.quantity),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              if (price != null)
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 8),
-                  child: Text(
-                    price,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _skipBackground(ThemeData theme) {
-    final cs = theme.colorScheme;
-    return Container(
-      color: cs.surfaceContainerHighest,
-      alignment: AlignmentDirectional.centerEnd,
-      padding: const EdgeInsetsDirectional.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            m.shopping.removeFromTrip,
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Icon(Icons.remove_shopping_cart_outlined, color: cs.onSurfaceVariant),
         ],
       ),
     );

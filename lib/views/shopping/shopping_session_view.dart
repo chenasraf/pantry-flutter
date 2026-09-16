@@ -5,8 +5,12 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_session.dart';
+import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/utils/app_toast.dart';
+import 'package:pantry/utils/item_modal_route.dart';
+import 'package:pantry/views/checklists/checklists_controller.dart';
+import 'package:pantry/views/checklists/item_detail_view.dart';
 import 'package:pantry/views/shopping/shopping_reminders_view.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
@@ -107,6 +111,63 @@ class _SessionBodyState extends State<_SessionBody> {
       if (!mounted) return;
       showAppToast(message: m.shopping.restoreFailed, kind: ToastKind.error);
     }
+  }
+
+  /// The checklists controller [ItemDetailView] writes through, built the first
+  /// time a row's view button is pressed and kept for the rest of the trip.
+  ///
+  /// A trip is its own route, so the checklists tab's controller is not in this
+  /// tree — and a trip is walked far more often than an item is opened from
+  /// one, which is why this is not built up front.
+  ChecklistsController? _itemsController;
+
+  @override
+  void dispose() {
+    _itemsController?.dispose();
+    super.dispose();
+  }
+
+  /// Load the checklists reference data the detail screen needs, once.
+  ///
+  /// Loading selects a list, and the selection is shared with the checklists
+  /// tab — so it is put back afterwards, or opening an item mid-trip would
+  /// decide which list that tab opens on next.
+  Future<ChecklistsController> _ensureItemsController() async {
+    final existing = _itemsController;
+    if (existing != null) return existing;
+    final controller = ChecklistsController(houseId: _c.houseId);
+    _itemsController = controller;
+    final savedListId = ChecklistService.instance.selectedListId;
+    try {
+      await controller.load();
+    } finally {
+      ChecklistService.instance.selectedListId = savedListId;
+    }
+    return controller;
+  }
+
+  /// Open the item's full detail screen. Everything it offers — edit, move,
+  /// delete — goes through the sync queue, so the next poll brings the change
+  /// back onto the trip.
+  Future<void> _view(ListItem item) async {
+    final controller = await _ensureItemsController();
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      itemModalRoute(
+        ItemDetailView(
+          item: item,
+          category: item.categoryId != null
+              ? controller.categories[item.categoryId]
+              : null,
+          stores: controller.storesFor(item),
+          labels: controller.labelsFor(item),
+          houseId: controller.houseId,
+          controller: controller,
+        ),
+      ),
+    );
+    if (!mounted) return;
+    await _c.poll();
   }
 
   Future<void> _jumpToStore(int storeId) async {
@@ -274,6 +335,7 @@ class _SessionBodyState extends State<_SessionBody> {
                       controller: controller,
                       onCheck: _check,
                       onSkip: _skip,
+                      onView: _view,
                       onRefresh: () => _c.poll(),
                     ),
                   ),
