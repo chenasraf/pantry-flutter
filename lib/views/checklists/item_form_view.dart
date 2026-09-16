@@ -17,6 +17,7 @@ import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/utils/apple_host_info.dart';
+import 'package:pantry_core/utils/quantity.dart';
 import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
@@ -201,17 +202,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   }
 
   void _stepQty(int dir) {
-    final str = _quantityController.text;
-    final match = RegExp(r'\d+').firstMatch(str);
-    String next;
-    if (match != null) {
-      final n = (int.parse(match.group(0)!) + dir).clamp(0, 9999);
-      next = str.replaceFirst(RegExp(r'\d+'), '$n');
-    } else if (dir > 0) {
-      next = str.isEmpty ? '1' : '1 $str';
-    } else {
-      next = str;
-    }
+    final next = stepQuantity(_quantityController.text, dir);
     _quantityController.value = TextEditingValue(
       text: next,
       selection: TextSelection.collapsed(offset: next.length),

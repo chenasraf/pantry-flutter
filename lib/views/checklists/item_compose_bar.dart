@@ -14,6 +14,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry_core/utils/quantity.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
@@ -550,17 +551,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   }
 
   void _stepQty(int dir) {
-    final str = _draft.quantity;
-    final match = RegExp(r'\d+').firstMatch(str);
-    String next;
-    if (match != null) {
-      final n = (int.parse(match.group(0)!) + dir).clamp(0, 9999);
-      next = str.replaceFirst(RegExp(r'\d+'), '$n');
-    } else if (dir > 0) {
-      next = str.isEmpty ? '1' : '1 $str';
-    } else {
-      next = str;
-    }
+    final next = stepQuantity(_draft.quantity, dir);
     setState(() {
       _draft.quantity = next;
       _qtyCtrl.text = next;
