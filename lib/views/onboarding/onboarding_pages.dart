@@ -50,7 +50,9 @@ class OnboardingAudience {
 /// Predicate that returns `true` when the page should appear for [audience].
 typedef OnboardingShowWhen = bool Function(OnboardingAudience audience);
 
-/// Shows the page only to returning users (upgraders) — "what's new" recaps.
+/// Shows the page only to returning users (upgraders). Covers both recaps of
+/// what changed and refinements of a feature the viewer needs their own lists,
+/// notes or items on screen before the page means anything.
 bool onboardingUpgradersOnly(OnboardingAudience a) => !a.isNewUser;
 
 /// Shows the page only on Android (e.g. pages advertising the home-screen
@@ -65,8 +67,13 @@ bool onboardingDesktopOnly(OnboardingAudience a) => a.isDesktop;
 /// explanations (swipe, long-press).
 bool onboardingMobileOnly(OnboardingAudience a) => !a.isDesktop;
 
+/// Shows the page only when every one of [conditions] holds — how a page narrows
+/// by platform and by audience at the same time.
+OnboardingShowWhen onboardingAll(List<OnboardingShowWhen> conditions) =>
+    (audience) => conditions.every((condition) => condition(audience));
+
 /// One entry in [kAppOnboardingPages] — a page builder plus an optional
-/// [showWhen] predicate. Compose conditions with `&&`.
+/// [showWhen] predicate. Combine conditions with [onboardingAll].
 class OnboardingPageEntry {
   final WidgetBuilder builder;
 
@@ -80,6 +87,14 @@ class OnboardingPageEntry {
 /// Map of app version → ordered page entries introduced in that version. A user
 /// whose `lastSeenOnboardingVersion` is older than a key sees every page for
 /// that key (subject to per-entry [OnboardingPageEntry.showWhen] filters).
+///
+/// A fresh install has no last-seen version, so it matches *every* bucket at
+/// once — the whole map would otherwise play back as one sitting. The tour a new
+/// user gets is therefore whatever survives the filters, and it is held to the
+/// handful of things the app cannot teach on its own: switching lists, acting on
+/// a row, adding items, barcode scanning, shopping trips, and the watch app.
+/// Every other page carries [onboardingUpgradersOnly], so it lands as a
+/// what's-changed recap for someone who already has lists to apply it to.
 ///
 /// Keys MUST be valid dotted versions parseable by [Version].
 final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
@@ -101,25 +116,40 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
     ),
     OnboardingPageEntry(builder: (_) => const AddItemsOnboardingPage()),
     OnboardingPageEntry(
+      // Hiding the progress card only reads as an offer to someone who has
+      // watched it sit there for a while.
       builder: (_) => const ProgressHeroOnboardingPage(),
-      showWhen: onboardingMobileOnly,
+      showWhen: onboardingAll([onboardingMobileOnly, onboardingUpgradersOnly]),
     ),
     OnboardingPageEntry(
       builder: (_) => const ProgressHeroDismissOnboardingPage(),
-      showWhen: onboardingDesktopOnly,
+      showWhen: onboardingAll([onboardingDesktopOnly, onboardingUpgradersOnly]),
     ),
     OnboardingPageEntry(
+      // Adding a widget walks you through picking its lists anyway.
       builder: (_) => const WidgetListsOnboardingPage(),
-      showWhen: onboardingAndroidOnly,
+      showWhen: onboardingAll([onboardingAndroidOnly, onboardingUpgradersOnly]),
     ),
-    OnboardingPageEntry(builder: (_) => const PinnedNotesOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const PinnedNotesOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
   ],
   '0.18.0': [
-    OnboardingPageEntry(builder: (_) => const AllListsOnboardingPage()),
-    OnboardingPageEntry(builder: (_) => const BulkAddOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const AllListsOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
+    OnboardingPageEntry(
+      builder: (_) => const BulkAddOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
   ],
   '0.20.0': [
-    OnboardingPageEntry(builder: (_) => const BulkSelectOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const BulkSelectOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
   ],
   '0.24.0': [
     OnboardingPageEntry(
@@ -127,16 +157,25 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
       builder: (_) => const BarcodeScanOnboardingPage(),
       showWhen: onboardingMobileOnly,
     ),
-    OnboardingPageEntry(builder: (_) => const ItemPriceOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const ItemPriceOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
   ],
   '0.25.0': [
     OnboardingPageEntry(builder: (_) => const ShoppingModeOnboardingPage()),
   ],
   '0.28.0': [
-    OnboardingPageEntry(builder: (_) => const CategoryScopeOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const CategoryScopeOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
   ],
   '0.30.0': [
-    OnboardingPageEntry(builder: (_) => const CustomFieldsOnboardingPage()),
+    OnboardingPageEntry(
+      builder: (_) => const CustomFieldsOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
+    ),
   ],
   '0.31.0': [
     OnboardingPageEntry(
@@ -208,17 +247,28 @@ bool hasPendingOnboardingCandidates(String? lastSeen) {
   return false;
 }
 
-/// Feature-page builders to show for a user whose last-seen version is
-/// [lastSeen]: pages from every version newer than [lastSeen] (all when null),
+/// The audience a viewer with last-seen version [lastSeen] falls into on the
+/// device this build is running on.
+OnboardingAudience onboardingAudienceFor(String? lastSeen) =>
+    OnboardingAudience(
+      isNewUser: lastSeen == null,
+      isAndroid: PlatformInfo.isAndroidPhone,
+      isDesktop: PlatformInfo.isDesktop,
+    );
+
+/// Feature-page entries to show for a user whose last-seen version is
+/// [lastSeen]: entries from every version newer than [lastSeen] (all when null),
 /// oldest → newest, preserving each version's internal order. Entries whose
 /// [OnboardingPageEntry.showWhen] returns `false` for the audience are dropped.
-List<WidgetBuilder> resolveOnboardingPages(String? lastSeen) {
+///
+/// [audience] defaults to the running device via [onboardingAudienceFor]; pass
+/// one to resolve the flow for a platform other than the host's.
+List<OnboardingPageEntry> resolveOnboardingEntries(
+  String? lastSeen, {
+  OnboardingAudience? audience,
+}) {
   final lastSeenVersion = Version.tryParse(lastSeen);
-  final audience = OnboardingAudience(
-    isNewUser: lastSeen == null,
-    isAndroid: PlatformInfo.isAndroidPhone,
-    isDesktop: PlatformInfo.isDesktop,
-  );
+  final viewer = audience ?? onboardingAudienceFor(lastSeen);
   final entries = kAppOnboardingPages.entries.toList();
   entries.sort((a, b) {
     final va = Version.parse(a.key);
@@ -230,6 +280,15 @@ List<WidgetBuilder> resolveOnboardingPages(String? lastSeen) {
       if (lastSeenVersion == null ||
           Version.parse(entry.key).compareTo(lastSeenVersion) > 0)
         for (final page in entry.value)
-          if (page.showWhen == null || page.showWhen!(audience)) page.builder,
+          if (page.showWhen == null || page.showWhen!(viewer)) page,
   ];
 }
+
+/// The builders of [resolveOnboardingEntries], in the same order.
+List<WidgetBuilder> resolveOnboardingPages(
+  String? lastSeen, {
+  OnboardingAudience? audience,
+}) => [
+  for (final entry in resolveOnboardingEntries(lastSeen, audience: audience))
+    entry.builder,
+];

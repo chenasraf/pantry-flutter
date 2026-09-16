@@ -40,9 +40,14 @@ void main() {
     }
   });
 
-  test('the page is offered to Android only', () {
+  test('the page is offered to Android only, new users included', () {
     const android = OnboardingAudience(
       isNewUser: false,
+      isAndroid: true,
+      isDesktop: false,
+    );
+    const newAndroid = OnboardingAudience(
+      isNewUser: true,
       isAndroid: true,
       isDesktop: false,
     );
@@ -54,6 +59,8 @@ void main() {
     final entry = kAppOnboardingPages['0.31.0']!.single;
 
     expect(entry.showWhen!(android), isTrue);
+    // A fresh install has no other way to find out the watch app exists.
+    expect(entry.showWhen!(newAndroid), isTrue);
     expect(entry.showWhen!(iphone), isFalse);
   });
 }
