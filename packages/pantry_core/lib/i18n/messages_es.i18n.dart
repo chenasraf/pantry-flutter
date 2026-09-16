@@ -925,6 +925,28 @@ Contraseña: pantry-rocks""";
   /// ```
   String watchHowTo(String settings, String watch) =>
       """Abre Pantry en tu reloj y se conectará desde este teléfono. Los consejos para usarlo están en ${settings} → ${watch}.""";
+
+  /// ```dart
+  /// "Comprad juntos"
+  /// ```
+  String get joinTripTitle => """Comprad juntos""";
+
+  /// ```dart
+  /// "Cuando alguien de tu casa está comprando, un aviso te ofrece su compra en lugar de empezar otra tuya. La recorréis juntos: lo que marque uno desaparece para el otro."
+  /// ```
+  String get joinTripBody =>
+      """Cuando alguien de tu casa está comprando, un aviso te ofrece su compra en lugar de empezar otra tuya. La recorréis juntos: lo que marque uno desaparece para el otro.""";
+
+  /// ```dart
+  /// "Dana"
+  /// ```
+  String get joinTripMockHousemate => """Dana""";
+
+  /// ```dart
+  /// "¿Ya estabas comprando? Al unirte, tu compra se guarda primero en tu historial. Si sales de una compra a la que te uniste, sigue en marcha para quienes queden en ella."
+  /// ```
+  String get joinTripHow =>
+      """¿Ya estabas comprando? Al unirte, tu compra se guarda primero en tu historial. Si sales de una compra a la que te uniste, sigue en marcha para quienes queden en ella.""";
   DevOnboardingMessagesEs get dev => DevOnboardingMessagesEs(this);
 }
 
@@ -6862,6 +6884,12 @@ Contraseña: pantry-rocks""",
   """onboarding.watchTitle""": """Pantry en tu muñeca""",
   """onboarding.watchBody""":
       """Hay una app para Wear OS. Tus listas, notas y el tablón de fotos en el reloj, funcionando sin cobertura alguna, y compras que puedes hacer con el teléfono en el bolsillo.""",
+  """onboarding.joinTripTitle""": """Comprad juntos""",
+  """onboarding.joinTripBody""":
+      """Cuando alguien de tu casa está comprando, un aviso te ofrece su compra en lugar de empezar otra tuya. La recorréis juntos: lo que marque uno desaparece para el otro.""",
+  """onboarding.joinTripMockHousemate""": """Dana""",
+  """onboarding.joinTripHow""":
+      """¿Ya estabas comprando? Al unirte, tu compra se guarda primero en tu historial. Si sales de una compra a la que te uniste, sigue en marcha para quienes queden en ella.""",
   """onboarding.dev.showOnboarding""": """Mostrar introducción""",
   """onboarding.dev.pickLastSeenTitle""": """Ver novedades""",
   """onboarding.dev.pickLastSeenBody""":

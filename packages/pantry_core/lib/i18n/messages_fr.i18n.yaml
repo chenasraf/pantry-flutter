@@ -160,6 +160,10 @@ onboarding:
   watchTitle: "Pantry à votre poignet"
   watchBody: "Il existe une app Wear OS. Vos listes, vos notes et le tableau photo sur la montre, sans le moindre réseau — et des courses que vous pouvez faire avec le téléphone dans la poche."
   watchHowTo(String settings, String watch): "Ouvrez Pantry sur votre montre et elle se connecte depuis ce téléphone. Les astuces pour l'utiliser sont dans ${settings} → ${watch}."
+  joinTripTitle: "Faites les courses ensemble"
+  joinTripBody: "Quand quelqu'un de votre foyer est en train de faire les courses, une bannière vous propose ses courses plutôt qu'une seconde liste à vous. Vous les faites ensemble : ce que l'un coche disparaît pour l'autre."
+  joinTripMockHousemate: "Dana"
+  joinTripHow: "Déjà en courses ? Rejoindre enregistre d'abord les vôtres dans votre historique. Si vous quittez des courses que vous avez rejointes, elles continuent pour ceux qui y restent."
   dev:
     showOnboarding: "Afficher l'intro"
     pickLastSeenTitle: "Aperçu des nouveautés"

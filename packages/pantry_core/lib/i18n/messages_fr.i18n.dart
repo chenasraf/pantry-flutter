@@ -929,6 +929,28 @@ Mot de passe : pantry-rocks""";
   /// ```
   String watchHowTo(String settings, String watch) =>
       """Ouvrez Pantry sur votre montre et elle se connecte depuis ce téléphone. Les astuces pour l'utiliser sont dans ${settings} → ${watch}.""";
+
+  /// ```dart
+  /// "Faites les courses ensemble"
+  /// ```
+  String get joinTripTitle => """Faites les courses ensemble""";
+
+  /// ```dart
+  /// "Quand quelqu'un de votre foyer est en train de faire les courses, une bannière vous propose ses courses plutôt qu'une seconde liste à vous. Vous les faites ensemble : ce que l'un coche disparaît pour l'autre."
+  /// ```
+  String get joinTripBody =>
+      """Quand quelqu'un de votre foyer est en train de faire les courses, une bannière vous propose ses courses plutôt qu'une seconde liste à vous. Vous les faites ensemble : ce que l'un coche disparaît pour l'autre.""";
+
+  /// ```dart
+  /// "Dana"
+  /// ```
+  String get joinTripMockHousemate => """Dana""";
+
+  /// ```dart
+  /// "Déjà en courses ? Rejoindre enregistre d'abord les vôtres dans votre historique. Si vous quittez des courses que vous avez rejointes, elles continuent pour ceux qui y restent."
+  /// ```
+  String get joinTripHow =>
+      """Déjà en courses ? Rejoindre enregistre d'abord les vôtres dans votre historique. Si vous quittez des courses que vous avez rejointes, elles continuent pour ceux qui y restent.""";
   DevOnboardingMessagesFr get dev => DevOnboardingMessagesFr(this);
 }
 
@@ -6874,6 +6896,12 @@ Mot de passe : pantry-rocks""",
   """onboarding.watchTitle""": """Pantry à votre poignet""",
   """onboarding.watchBody""":
       """Il existe une app Wear OS. Vos listes, vos notes et le tableau photo sur la montre, sans le moindre réseau — et des courses que vous pouvez faire avec le téléphone dans la poche.""",
+  """onboarding.joinTripTitle""": """Faites les courses ensemble""",
+  """onboarding.joinTripBody""":
+      """Quand quelqu'un de votre foyer est en train de faire les courses, une bannière vous propose ses courses plutôt qu'une seconde liste à vous. Vous les faites ensemble : ce que l'un coche disparaît pour l'autre.""",
+  """onboarding.joinTripMockHousemate""": """Dana""",
+  """onboarding.joinTripHow""":
+      """Déjà en courses ? Rejoindre enregistre d'abord les vôtres dans votre historique. Si vous quittez des courses que vous avez rejointes, elles continuent pour ceux qui y restent.""",
   """onboarding.dev.showOnboarding""": """Afficher l'intro""",
   """onboarding.dev.pickLastSeenTitle""": """Aperçu des nouveautés""",
   """onboarding.dev.pickLastSeenBody""":

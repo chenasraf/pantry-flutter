@@ -925,6 +925,28 @@ Passwort: pantry-rocks""";
   /// ```
   String watchHowTo(String settings, String watch) =>
       """Öffne Pantry auf deiner Uhr, und sie meldet sich über dieses Telefon an. Tipps zur Bedienung findest du unter ${settings} → ${watch}.""";
+
+  /// ```dart
+  /// "Gemeinsam einkaufen"
+  /// ```
+  String get joinTripTitle => """Gemeinsam einkaufen""";
+
+  /// ```dart
+  /// "Wenn jemand in deinem Haushalt gerade einkauft, bietet dir ein Banner dessen Einkauf an, statt eines zweiten eigenen. Ihr geht ihn gemeinsam durch — was eine:r von euch abhakt, ist auch für die anderen weg."
+  /// ```
+  String get joinTripBody =>
+      """Wenn jemand in deinem Haushalt gerade einkauft, bietet dir ein Banner dessen Einkauf an, statt eines zweiten eigenen. Ihr geht ihn gemeinsam durch — was eine:r von euch abhakt, ist auch für die anderen weg.""";
+
+  /// ```dart
+  /// "Dana"
+  /// ```
+  String get joinTripMockHousemate => """Dana""";
+
+  /// ```dart
+  /// "Schon unterwegs? Beim Beitreten wird dein eigener Einkauf zuerst in deinem Verlauf gespeichert. Steigst du aus einem Einkauf aus, dem du beigetreten bist, läuft er für alle anderen weiter."
+  /// ```
+  String get joinTripHow =>
+      """Schon unterwegs? Beim Beitreten wird dein eigener Einkauf zuerst in deinem Verlauf gespeichert. Steigst du aus einem Einkauf aus, dem du beigetreten bist, läuft er für alle anderen weiter.""";
   DevOnboardingMessagesDe get dev => DevOnboardingMessagesDe(this);
 }
 
@@ -6875,6 +6897,12 @@ Passwort: pantry-rocks""",
   """onboarding.watchTitle""": """Pantry am Handgelenk""",
   """onboarding.watchBody""":
       """Es gibt eine Wear-OS-App. Deine Listen, Notizen und die Fotowand auf der Uhr, ganz ohne Empfang — und Einkäufe, die du mit dem Telefon in der Tasche gehen kannst.""",
+  """onboarding.joinTripTitle""": """Gemeinsam einkaufen""",
+  """onboarding.joinTripBody""":
+      """Wenn jemand in deinem Haushalt gerade einkauft, bietet dir ein Banner dessen Einkauf an, statt eines zweiten eigenen. Ihr geht ihn gemeinsam durch — was eine:r von euch abhakt, ist auch für die anderen weg.""",
+  """onboarding.joinTripMockHousemate""": """Dana""",
+  """onboarding.joinTripHow""":
+      """Schon unterwegs? Beim Beitreten wird dein eigener Einkauf zuerst in deinem Verlauf gespeichert. Steigst du aus einem Einkauf aus, dem du beigetreten bist, läuft er für alle anderen weiter.""",
   """onboarding.dev.showOnboarding""": """Onboarding anzeigen""",
   """onboarding.dev.pickLastSeenTitle""": """Neuigkeiten ansehen""",
   """onboarding.dev.pickLastSeenBody""":

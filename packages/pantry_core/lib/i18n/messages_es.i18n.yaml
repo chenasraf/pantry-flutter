@@ -160,6 +160,10 @@ onboarding:
   watchTitle: "Pantry en tu muñeca"
   watchBody: "Hay una app para Wear OS. Tus listas, notas y el tablón de fotos en el reloj, funcionando sin cobertura alguna, y compras que puedes hacer con el teléfono en el bolsillo."
   watchHowTo(String settings, String watch): "Abre Pantry en tu reloj y se conectará desde este teléfono. Los consejos para usarlo están en ${settings} → ${watch}."
+  joinTripTitle: "Comprad juntos"
+  joinTripBody: "Cuando alguien de tu casa está comprando, un aviso te ofrece su compra en lugar de empezar otra tuya. La recorréis juntos: lo que marque uno desaparece para el otro."
+  joinTripMockHousemate: "Dana"
+  joinTripHow: "¿Ya estabas comprando? Al unirte, tu compra se guarda primero en tu historial. Si sales de una compra a la que te uniste, sigue en marcha para quienes queden en ella."
   dev:
     showOnboarding: "Mostrar introducción"
     pickLastSeenTitle: "Ver novedades"

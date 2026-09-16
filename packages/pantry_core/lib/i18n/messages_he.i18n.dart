@@ -919,6 +919,28 @@ class OnboardingMessagesHe extends OnboardingMessages {
   /// ```
   String watchHowTo(String settings, String watch) =>
       """פתח את Pantry בשעון והוא יתחבר דרך הטלפון הזה. טיפים לשימוש נמצאים ב־${settings} ← ${watch}.""";
+
+  /// ```dart
+  /// "לקנות ביחד"
+  /// ```
+  String get joinTripTitle => """לקנות ביחד""";
+
+  /// ```dart
+  /// "כשמישהו בבית יצא לקניות, כרזה מציעה לך להצטרף לקנייה שלו במקום לפתוח עוד אחת משלך. אתם עוברים עליה יחד — מה שאחד מכם מסמן נעלם גם לשני."
+  /// ```
+  String get joinTripBody =>
+      """כשמישהו בבית יצא לקניות, כרזה מציעה לך להצטרף לקנייה שלו במקום לפתוח עוד אחת משלך. אתם עוברים עליה יחד — מה שאחד מכם מסמן נעלם גם לשני.""";
+
+  /// ```dart
+  /// "דנה"
+  /// ```
+  String get joinTripMockHousemate => """דנה""";
+
+  /// ```dart
+  /// "כבר באמצע קנייה? ההצטרפות שומרת קודם את הקנייה שלך בהיסטוריה. אם תצא מקנייה שהצטרפת אליה, היא ממשיכה לכל מי שנשאר בה."
+  /// ```
+  String get joinTripHow =>
+      """כבר באמצע קנייה? ההצטרפות שומרת קודם את הקנייה שלך בהיסטוריה. אם תצא מקנייה שהצטרפת אליה, היא ממשיכה לכל מי שנשאר בה.""";
   DevOnboardingMessagesHe get dev => DevOnboardingMessagesHe(this);
 }
 
@@ -6791,6 +6813,12 @@ Map<String, String> get messagesHeMap => {
   """onboarding.watchTitle""": """Pantry על פרק היד""",
   """onboarding.watchBody""":
       """יש אפליקציה ל־Wear OS. הרשימות, הפתקים ולוח התמונות על השעון, עובדים גם בלי שום קליטה, וקניות שאפשר לעשות כשהטלפון בכיס.""",
+  """onboarding.joinTripTitle""": """לקנות ביחד""",
+  """onboarding.joinTripBody""":
+      """כשמישהו בבית יצא לקניות, כרזה מציעה לך להצטרף לקנייה שלו במקום לפתוח עוד אחת משלך. אתם עוברים עליה יחד — מה שאחד מכם מסמן נעלם גם לשני.""",
+  """onboarding.joinTripMockHousemate""": """דנה""",
+  """onboarding.joinTripHow""":
+      """כבר באמצע קנייה? ההצטרפות שומרת קודם את הקנייה שלך בהיסטוריה. אם תצא מקנייה שהצטרפת אליה, היא ממשיכה לכל מי שנשאר בה.""",
   """onboarding.dev.showOnboarding""": """הצג היכרות""",
   """onboarding.dev.pickLastSeenTitle""": """תצוגה מקדימה של החדש""",
   """onboarding.dev.pickLastSeenBody""":

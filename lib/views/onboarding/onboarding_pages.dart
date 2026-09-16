@@ -12,6 +12,7 @@ import 'pages/checklist_selector_page.dart';
 import 'pages/checklists_redesign_intro_page.dart';
 import 'pages/custom_fields_page.dart';
 import 'pages/item_price_page.dart';
+import 'pages/join_trip_page.dart';
 import 'pages/pinned_notes_page.dart';
 import 'pages/progress_hero_dismiss_page.dart';
 import 'pages/progress_hero_page.dart';
@@ -182,6 +183,12 @@ final Map<String, List<OnboardingPageEntry>> kAppOnboardingPages = {
       // Wear OS pairs to an Android phone, so nowhere else can act on this.
       builder: (_) => const WatchOnboardingPage(),
       showWhen: onboardingAndroidOnly,
+    ),
+  ],
+  '0.33.0': [
+    OnboardingPageEntry(
+      builder: (_) => const JoinTripOnboardingPage(),
+      showWhen: onboardingUpgradersOnly,
     ),
   ],
 };

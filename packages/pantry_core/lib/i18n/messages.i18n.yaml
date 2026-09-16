@@ -160,6 +160,10 @@ onboarding:
   watchTitle: "Pantry on your wrist"
   watchBody: "There's a Wear OS app. Your lists, notes and photo board on the watch, working with no signal at all — and shopping trips you can walk with the phone in your pocket."
   watchHowTo(String settings, String watch): "Open Pantry on your watch and it signs in from this phone. Tips for using it live in ${settings} → ${watch}."
+  joinTripTitle: "Shop a trip together"
+  joinTripBody: "When someone in your house is out shopping, a banner offers you their trip instead of a second one of your own. You walk it together — whatever one of you ticks off is gone for the other."
+  joinTripMockHousemate: "Dana"
+  joinTripHow: "Already shopping? Joining saves your own trip to your history first. Step out of a trip you joined and it keeps running for everyone still in it."
   dev:
     showOnboarding: "Show onboarding"
     pickLastSeenTitle: "Preview what's new"

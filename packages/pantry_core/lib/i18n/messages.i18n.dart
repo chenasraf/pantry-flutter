@@ -919,6 +919,28 @@ Password: pantry-rocks""";
   /// ```
   String watchHowTo(String settings, String watch) =>
       """Open Pantry on your watch and it signs in from this phone. Tips for using it live in ${settings} → ${watch}.""";
+
+  /// ```dart
+  /// "Shop a trip together"
+  /// ```
+  String get joinTripTitle => """Shop a trip together""";
+
+  /// ```dart
+  /// "When someone in your house is out shopping, a banner offers you their trip instead of a second one of your own. You walk it together — whatever one of you ticks off is gone for the other."
+  /// ```
+  String get joinTripBody =>
+      """When someone in your house is out shopping, a banner offers you their trip instead of a second one of your own. You walk it together — whatever one of you ticks off is gone for the other.""";
+
+  /// ```dart
+  /// "Dana"
+  /// ```
+  String get joinTripMockHousemate => """Dana""";
+
+  /// ```dart
+  /// "Already shopping? Joining saves your own trip to your history first. Step out of a trip you joined and it keeps running for everyone still in it."
+  /// ```
+  String get joinTripHow =>
+      """Already shopping? Joining saves your own trip to your history first. Step out of a trip you joined and it keeps running for everyone still in it.""";
   DevOnboardingMessages get dev => DevOnboardingMessages(this);
 }
 
@@ -6797,6 +6819,12 @@ Password: pantry-rocks""",
   """onboarding.watchTitle""": """Pantry on your wrist""",
   """onboarding.watchBody""":
       """There's a Wear OS app. Your lists, notes and photo board on the watch, working with no signal at all — and shopping trips you can walk with the phone in your pocket.""",
+  """onboarding.joinTripTitle""": """Shop a trip together""",
+  """onboarding.joinTripBody""":
+      """When someone in your house is out shopping, a banner offers you their trip instead of a second one of your own. You walk it together — whatever one of you ticks off is gone for the other.""",
+  """onboarding.joinTripMockHousemate""": """Dana""",
+  """onboarding.joinTripHow""":
+      """Already shopping? Joining saves your own trip to your history first. Step out of a trip you joined and it keeps running for everyone still in it.""",
   """onboarding.dev.showOnboarding""": """Show onboarding""",
   """onboarding.dev.pickLastSeenTitle""": """Preview what's new""",
   """onboarding.dev.pickLastSeenBody""":
