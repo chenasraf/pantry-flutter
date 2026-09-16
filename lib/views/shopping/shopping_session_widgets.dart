@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
@@ -239,6 +241,7 @@ class ShoppingItemArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final groups = controller.groupedItems;
+    final headerExtent = _categoryHeaderExtent(context);
 
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -254,32 +257,92 @@ class ShoppingItemArea extends StatelessWidget {
                 ),
               ),
             )
-          : ListView(
+          : CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.only(bottom: 8),
-              children: [
-                for (final group in groups) ...[
-                  _CategoryHeader(
-                    category: group.category,
-                    count: group.items.length,
+              slivers: [
+                for (final group in groups)
+                  // Grouping header + rows pins the header only for as long as
+                  // its own items are on screen — the next group pushes it off.
+                  SliverMainAxisGroup(
+                    slivers: [
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: _CategoryHeaderDelegate(
+                          category: group.category,
+                          count: group.items.length,
+                          extent: headerExtent,
+                        ),
+                      ),
+                      SliverList.builder(
+                        itemCount: group.items.length,
+                        itemBuilder: (context, index) {
+                          final item = group.items[index];
+                          return ShoppingItemRow(
+                            // Key by item id so the Dismissible tracks the
+                            // right row as the list shifts when items above it
+                            // are checked or removed.
+                            key: ValueKey(item.id),
+                            item: item,
+                            controller: controller,
+                            onCheck: () => onCheck(item),
+                            onSkip: () => onSkip(item),
+                            onView: () => onView(item),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                  for (final item in group.items)
-                    ShoppingItemRow(
-                      // Key by item id so the Dismissible tracks the right row
-                      // as the list shifts when items above it are checked or
-                      // removed.
-                      key: ValueKey(item.id),
-                      item: item,
-                      controller: controller,
-                      onCheck: () => onCheck(item),
-                      onSkip: () => onSkip(item),
-                      onView: () => onView(item),
-                    ),
-                ],
+                const SliverToBoxAdapter(child: SizedBox(height: 8)),
               ],
             ),
     );
   }
+}
+
+/// A pinned header needs its height up front, so the text line is measured
+/// against the user's text scale rather than assumed. Rounded to a whole
+/// pixel: a fractional extent trips the sliver geometry assertions.
+double _categoryHeaderExtent(BuildContext context) {
+  final style = Theme.of(context).textTheme.labelLarge;
+  final line = (style?.fontSize ?? 14) * (style?.height ?? 1.45);
+  final scaled = MediaQuery.textScalerOf(context).scale(line);
+  return (math.max(scaled, 18) + 12).ceilToDouble();
+}
+
+class _CategoryHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Category? category;
+  final int count;
+  final double extent;
+
+  const _CategoryHeaderDelegate({
+    required this.category,
+    required this.count,
+    required this.extent,
+  });
+
+  @override
+  double get minExtent => extent;
+
+  @override
+  double get maxExtent => extent;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) => SizedBox(
+    // The header is laid out loosely, so it has to be held at exactly the
+    // extent it declares or the sliver geometry disagrees with itself.
+    height: extent,
+    child: _CategoryHeader(category: category, count: count),
+  );
+
+  @override
+  bool shouldRebuild(_CategoryHeaderDelegate oldDelegate) =>
+      oldDelegate.category != category ||
+      oldDelegate.count != count ||
+      oldDelegate.extent != extent;
 }
 
 class _CategoryHeader extends StatelessWidget {
