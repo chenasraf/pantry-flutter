@@ -4712,6 +4712,59 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get bannerShoppingNow => """Einkauf läuft""";
 
   /// ```dart
+  /// "Beitreten"
+  /// ```
+  String get join => """Beitreten""";
+
+  /// ```dart
+  /// "${name} kauft ein"
+  /// ```
+  String bannerHousemateShopping(String name) => """${name} kauft ein""";
+
+  /// ```dart
+  /// "${name} kauft in ${store} ein"
+  /// ```
+  String bannerHousemateShoppingAt(String name, String store) =>
+      """${name} kauft in ${store} ein""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$name und 1 weitere Person kaufen ein', many: '$name und $count weitere Personen kaufen ein')}"
+  /// ```
+  String bannerHousematesShopping(String name, int count) =>
+      """${_plural(count, one: '$name und 1 weitere Person kaufen ein', many: '$name und $count weitere Personen kaufen ein')}""";
+
+  /// ```dart
+  /// "Diesem Einkauf beitreten?"
+  /// ```
+  String get joinConfirmTitle => """Diesem Einkauf beitreten?""";
+
+  /// ```dart
+  /// "Dein aktueller Einkauf wird beendet und in deinem Verlauf gespeichert, dann trittst du ${name} bei."
+  /// ```
+  String joinConfirmBody(String name) =>
+      """Dein aktueller Einkauf wird beendet und in deinem Verlauf gespeichert, dann trittst du ${name} bei.""";
+
+  /// ```dart
+  /// "Meinen beenden und beitreten"
+  /// ```
+  String get endMineAndJoin => """Meinen beenden und beitreten""";
+
+  /// ```dart
+  /// "Beitritt zum Einkauf fehlgeschlagen."
+  /// ```
+  String get joinFailed => """Beitritt zum Einkauf fehlgeschlagen.""";
+
+  /// ```dart
+  /// "Einkauf verlassen"
+  /// ```
+  String get leaveTrip => """Einkauf verlassen""";
+
+  /// ```dart
+  /// "Einkauf konnte nicht verlassen werden."
+  /// ```
+  String get leaveTripFailed => """Einkauf konnte nicht verlassen werden.""";
+
+  /// ```dart
   /// "Einkaufen starten"
   /// ```
   String get startTitle => """Einkaufen starten""";
@@ -4778,6 +4831,12 @@ class ShoppingMessagesDe extends ShoppingMessages {
   /// ```
   String tripInProgressElsewhere(String house) =>
       """Du hast einen laufenden Einkauf in ${house}.""";
+
+  /// ```dart
+  /// "Du kaufst gemeinsam mit jemandem aus deinem Haushalt ein."
+  /// ```
+  String get tripWithHousemate =>
+      """Du kaufst gemeinsam mit jemandem aus deinem Haushalt ein.""";
 
   /// ```dart
   /// "Vorherigen Einkauf beenden"
@@ -4864,6 +4923,17 @@ class ShoppingMessagesDe extends ShoppingMessages {
   /// "Artikel konnten nicht geladen werden."
   /// ```
   String get loadItemsFailed => """Artikel konnten nicht geladen werden.""";
+
+  /// ```dart
+  /// "Dieser Einkauf wurde beendet."
+  /// ```
+  String get tripFinishedByHousemate => """Dieser Einkauf wurde beendet.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Einkauf mit 1 Person', many: 'Einkauf mit $count Personen')}"
+  /// ```
+  String shoppingWith(int count) =>
+      """${_plural(count, one: 'Einkauf mit 1 Person', many: 'Einkauf mit $count Personen')}""";
 
   /// ```dart
   /// "Aus Einkauf entfernen"
@@ -7373,6 +7443,12 @@ Passwort: pantry-rocks""",
   """shopping.shoppingHistory""": """Einkaufsverlauf""",
   """shopping.resume""": """Fortsetzen""",
   """shopping.bannerShoppingNow""": """Einkauf läuft""",
+  """shopping.join""": """Beitreten""",
+  """shopping.joinConfirmTitle""": """Diesem Einkauf beitreten?""",
+  """shopping.endMineAndJoin""": """Meinen beenden und beitreten""",
+  """shopping.joinFailed""": """Beitritt zum Einkauf fehlgeschlagen.""",
+  """shopping.leaveTrip""": """Einkauf verlassen""",
+  """shopping.leaveTripFailed""": """Einkauf konnte nicht verlassen werden.""",
   """shopping.startTitle""": """Einkaufen starten""",
   """shopping.listsToShop""": """Zu kaufende Listen""",
   """shopping.selectAll""": """Alle auswählen""",
@@ -7387,6 +7463,8 @@ Passwort: pantry-rocks""",
   """shopping.start""": """Starten""",
   """shopping.startFailed""": """Einkauf konnte nicht gestartet werden.""",
   """shopping.tripInProgress""": """Du hast bereits einen laufenden Einkauf.""",
+  """shopping.tripWithHousemate""":
+      """Du kaufst gemeinsam mit jemandem aus deinem Haushalt ein.""",
   """shopping.endPreviousTrip""": """Vorherigen Einkauf beenden""",
   """shopping.endPreviousFailed""":
       """Vorheriger Einkauf konnte nicht beendet werden.""",
@@ -7403,6 +7481,7 @@ Passwort: pantry-rocks""",
   """shopping.nothingToBuyHere""": """Hier gibt es nichts zu kaufen.""",
   """shopping.checkFailed""": """Artikel konnte nicht aktualisiert werden.""",
   """shopping.loadItemsFailed""": """Artikel konnten nicht geladen werden.""",
+  """shopping.tripFinishedByHousemate""": """Dieser Einkauf wurde beendet.""",
   """shopping.removeFromTrip""": """Aus Einkauf entfernen""",
   """shopping.removedFromTrip""": """Aus diesem Einkauf entfernt""",
   """shopping.undo""": """Rückgängig""",

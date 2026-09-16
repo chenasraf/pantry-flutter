@@ -126,6 +126,34 @@ class _SessionBodyState extends State<_SessionBody> {
     }
   }
 
+  /// Step out of a housemate's trip, leaving it running for them.
+  Future<void> _leave() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await _c.leave();
+      if (mounted) Navigator.of(context).pop();
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _busy = false);
+      showAppToast(message: m.shopping.leaveTripFailed, kind: ToastKind.error);
+    }
+  }
+
+  /// Whoever finishes a shared trip finishes it for everyone, so a poll can
+  /// find the screen standing on a trip that is over. Say so and step out.
+  bool _departed = false;
+
+  void _handleTripEnded() {
+    if (_departed || !mounted) return;
+    _departed = true;
+    showAppToast(
+      message: m.shopping.tripFinishedByHousemate,
+      kind: ToastKind.info,
+    );
+    Navigator.of(context).pop();
+  }
+
   Future<void> _openReminders() async {
     await Navigator.of(context).push(
       MaterialPageRoute(
@@ -157,6 +185,7 @@ class _SessionBodyState extends State<_SessionBody> {
           mode: mode,
           activeStoreId: session.activeStoreId,
           stores: controller.stores,
+          canEditBilled: controller.isStarter,
           reminders: controller.remindersFor(moment),
           onManageReminders: _openReminders,
         ),
@@ -193,6 +222,9 @@ class _SessionBodyState extends State<_SessionBody> {
     final controller = context.watch<ShoppingSessionController>();
     final prefs = context.watch<PrefsService>();
     final session = controller.session;
+    if (controller.hasEnded) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _handleTripEnded());
+    }
     final activeStore = session.activeStoreId != null
         ? controller.stores[session.activeStoreId]
         : null;
@@ -208,15 +240,24 @@ class _SessionBodyState extends State<_SessionBody> {
           leading: appBarBackLeading(context),
           title: Text(activeStore?.name ?? m.shopping.startTitle),
           actions: [
-            IconButton(
-              icon: Icon(
-                session.isPrivate ? Icons.visibility_off : Icons.visibility,
+            // Privacy belongs to the shopper who started the trip; a housemate
+            // who joined 404s on it.
+            if (controller.isStarter)
+              IconButton(
+                icon: Icon(
+                  session.isPrivate ? Icons.visibility_off : Icons.visibility,
+                ),
+                tooltip: session.isPrivate
+                    ? m.shopping.makePublic
+                    : m.shopping.makePrivate,
+                onPressed: _togglePrivacy,
+              )
+            else
+              IconButton(
+                icon: const Icon(Icons.logout),
+                tooltip: m.shopping.leaveTrip,
+                onPressed: _busy ? null : _leave,
               ),
-              tooltip: session.isPrivate
-                  ? m.shopping.makePublic
-                  : m.shopping.makePrivate,
-              onPressed: _togglePrivacy,
-            ),
           ],
         ),
         body: controller.isLoading

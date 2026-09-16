@@ -897,6 +897,17 @@ shopping:
   bannerShoppingAt(String store): "Shopping at ${store}"
   bannerStoreProgress(int index, int total): "Store $index/$total"
   bannerShoppingNow: Shopping now
+  # Joining a housemate's trip
+  join: Join
+  bannerHousemateShopping(String name): "${name} is shopping"
+  bannerHousemateShoppingAt(String name, String store): "${name} is shopping at ${store}"
+  bannerHousematesShopping(String name, int count): "${_plural(count, one: '$name and 1 other are shopping', many: '$name and $count others are shopping')}"
+  joinConfirmTitle: Join this shopping trip?
+  joinConfirmBody(String name): "Your current shopping trip will be ended and saved to your history, then you will join ${name}."
+  endMineAndJoin: End mine and join
+  joinFailed: Couldn't join the shopping trip.
+  leaveTrip: Leave trip
+  leaveTripFailed: Couldn't leave the trip.
   # Start screen
   startTitle: Start shopping
   listsToShop: Lists to shop
@@ -912,6 +923,7 @@ shopping:
   # One-live-session guard
   tripInProgress: You already have a shopping trip in progress.
   tripInProgressElsewhere(String house): "You have a shopping trip in progress in ${house}."
+  tripWithHousemate: You are shopping a trip with a housemate.
   endPreviousTrip: End previous trip
   endPreviousFailed: Failed to end the previous trip.
   # Dense session screen
@@ -930,6 +942,8 @@ shopping:
   nothingToBuyHere: Nothing to buy here.
   checkFailed: Couldn't update the item.
   loadItemsFailed: Failed to load items.
+  tripFinishedByHousemate: This shopping trip was finished.
+  shoppingWith(int count): "${_plural(count, one: 'Shopping with 1 housemate', many: 'Shopping with $count housemates')}"
   removeFromTrip: Remove from trip
   removedFromTrip: Removed from this trip
   undo: Undo

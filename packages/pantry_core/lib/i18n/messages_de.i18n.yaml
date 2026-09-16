@@ -896,6 +896,16 @@ shopping:
   bannerShoppingAt(String store): "Einkaufen bei ${store}"
   bannerStoreProgress(int index, int total): "Geschäft $index/$total"
   bannerShoppingNow: Einkauf läuft
+  join: Beitreten
+  bannerHousemateShopping(String name): "${name} kauft ein"
+  bannerHousemateShoppingAt(String name, String store): "${name} kauft in ${store} ein"
+  bannerHousematesShopping(String name, int count): "${_plural(count, one: '$name und 1 weitere Person kaufen ein', many: '$name und $count weitere Personen kaufen ein')}"
+  joinConfirmTitle: Diesem Einkauf beitreten?
+  joinConfirmBody(String name): "Dein aktueller Einkauf wird beendet und in deinem Verlauf gespeichert, dann trittst du ${name} bei."
+  endMineAndJoin: Meinen beenden und beitreten
+  joinFailed: Beitritt zum Einkauf fehlgeschlagen.
+  leaveTrip: Einkauf verlassen
+  leaveTripFailed: Einkauf konnte nicht verlassen werden.
   startTitle: Einkaufen starten
   listsToShop: Zu kaufende Listen
   selectAll: Alle auswählen
@@ -909,6 +919,7 @@ shopping:
   startFailed: Einkauf konnte nicht gestartet werden.
   tripInProgress: Du hast bereits einen laufenden Einkauf.
   tripInProgressElsewhere(String house): "Du hast einen laufenden Einkauf in ${house}."
+  tripWithHousemate: Du kaufst gemeinsam mit jemandem aus deinem Haushalt ein.
   endPreviousTrip: Vorherigen Einkauf beenden
   endPreviousFailed: Vorheriger Einkauf konnte nicht beendet werden.
   inCart(int count): "$count im Wagen"
@@ -926,6 +937,8 @@ shopping:
   nothingToBuyHere: Hier gibt es nichts zu kaufen.
   checkFailed: Artikel konnte nicht aktualisiert werden.
   loadItemsFailed: Artikel konnten nicht geladen werden.
+  tripFinishedByHousemate: Dieser Einkauf wurde beendet.
+  shoppingWith(int count): "${_plural(count, one: 'Einkauf mit 1 Person', many: 'Einkauf mit $count Personen')}"
   removeFromTrip: Aus Einkauf entfernen
   removedFromTrip: Aus diesem Einkauf entfernt
   undo: "Rückgängig"

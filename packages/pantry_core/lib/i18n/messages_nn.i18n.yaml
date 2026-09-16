@@ -1035,6 +1035,16 @@ shopping:
   bannerShoppingAt(String store): "Handlar på ${store}"
   bannerStoreProgress(int index, int total): "Butikk $index/$total"
   bannerShoppingNow: Handlar no
+  join: Bli med
+  bannerHousemateShopping(String name): "${name} handlar"
+  bannerHousemateShoppingAt(String name, String store): "${name} handlar på ${store}"
+  bannerHousematesShopping(String name, int count): "${_plural(count, one: '$name og 1 annan handlar', many: '$name og $count andre handlar')}"
+  joinConfirmTitle: Bli med på denne handelen?
+  joinConfirmBody(String name): "Handelen din blir avslutta og lagra i historikken, og så blir du med ${name}."
+  endMineAndJoin: Avslutt min og bli med
+  joinFailed: Klarte ikkje å bli med på handelen.
+  leaveTrip: Forlat handelen
+  leaveTripFailed: Klarte ikkje å forlate handelen.
   startTitle: Start handel
   listsToShop: Lister å handle
   selectAll: Vel alle
@@ -1048,6 +1058,7 @@ shopping:
   startFailed: Klarte ikkje å starte handelen.
   tripInProgress: Du har allereie ein handel i gang.
   tripInProgressElsewhere(String house): "Du har ein handel i gang i ${house}."
+  tripWithHousemate: Du handlar saman med nokon andre i husstanden.
   endPreviousTrip: Avslutt førre handel
   endPreviousFailed: Klarte ikkje å avslutte førre handel.
   inCart(int count): "$count i korga"
@@ -1065,6 +1076,8 @@ shopping:
   nothingToBuyHere: Ingenting å kjøpe her.
   checkFailed: Klarte ikkje å oppdatere vara.
   loadItemsFailed: Klarte ikkje å laste varene.
+  tripFinishedByHousemate: Denne handelen er avslutta.
+  shoppingWith(int count): "${_plural(count, one: 'Handlar med 1 annan', many: 'Handlar med $count andre')}"
   removeFromTrip: Fjern frå handleturen
   removedFromTrip: Fjerna frå denne handleturen
   undo: Angre

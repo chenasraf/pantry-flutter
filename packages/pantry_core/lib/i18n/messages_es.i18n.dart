@@ -4703,6 +4703,59 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get bannerShoppingNow => """Comprando ahora""";
 
   /// ```dart
+  /// "Unirse"
+  /// ```
+  String get join => """Unirse""";
+
+  /// ```dart
+  /// "${name} está comprando"
+  /// ```
+  String bannerHousemateShopping(String name) => """${name} está comprando""";
+
+  /// ```dart
+  /// "${name} está comprando en ${store}"
+  /// ```
+  String bannerHousemateShoppingAt(String name, String store) =>
+      """${name} está comprando en ${store}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$name y 1 persona más están comprando', many: '$name y $count personas más están comprando')}"
+  /// ```
+  String bannerHousematesShopping(String name, int count) =>
+      """${_plural(count, one: '$name y 1 persona más están comprando', many: '$name y $count personas más están comprando')}""";
+
+  /// ```dart
+  /// "¿Unirte a esta compra?"
+  /// ```
+  String get joinConfirmTitle => """¿Unirte a esta compra?""";
+
+  /// ```dart
+  /// "Tu compra actual se terminará y se guardará en tu historial, y luego te unirás a ${name}."
+  /// ```
+  String joinConfirmBody(String name) =>
+      """Tu compra actual se terminará y se guardará en tu historial, y luego te unirás a ${name}.""";
+
+  /// ```dart
+  /// "Terminar la mía y unirme"
+  /// ```
+  String get endMineAndJoin => """Terminar la mía y unirme""";
+
+  /// ```dart
+  /// "No se pudo unir a la compra."
+  /// ```
+  String get joinFailed => """No se pudo unir a la compra.""";
+
+  /// ```dart
+  /// "Salir de la compra"
+  /// ```
+  String get leaveTrip => """Salir de la compra""";
+
+  /// ```dart
+  /// "No se pudo salir de la compra."
+  /// ```
+  String get leaveTripFailed => """No se pudo salir de la compra.""";
+
+  /// ```dart
   /// "Empezar a comprar"
   /// ```
   String get startTitle => """Empezar a comprar""";
@@ -4769,6 +4822,12 @@ class ShoppingMessagesEs extends ShoppingMessages {
   /// ```
   String tripInProgressElsewhere(String house) =>
       """Tienes una compra en curso en ${house}.""";
+
+  /// ```dart
+  /// "Estás compartiendo una compra con alguien de tu casa."
+  /// ```
+  String get tripWithHousemate =>
+      """Estás compartiendo una compra con alguien de tu casa.""";
 
   /// ```dart
   /// "Terminar compra anterior"
@@ -4854,6 +4913,17 @@ class ShoppingMessagesEs extends ShoppingMessages {
   /// "No se pudieron cargar los artículos."
   /// ```
   String get loadItemsFailed => """No se pudieron cargar los artículos.""";
+
+  /// ```dart
+  /// "Esta compra ha terminado."
+  /// ```
+  String get tripFinishedByHousemate => """Esta compra ha terminado.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Comprando con 1 persona', many: 'Comprando con $count personas')}"
+  /// ```
+  String shoppingWith(int count) =>
+      """${_plural(count, one: 'Comprando con 1 persona', many: 'Comprando con $count personas')}""";
 
   /// ```dart
   /// "Quitar de la compra"
@@ -7340,6 +7410,12 @@ Contraseña: pantry-rocks""",
   """shopping.shoppingHistory""": """Historial de compras""",
   """shopping.resume""": """Reanudar""",
   """shopping.bannerShoppingNow""": """Comprando ahora""",
+  """shopping.join""": """Unirse""",
+  """shopping.joinConfirmTitle""": """¿Unirte a esta compra?""",
+  """shopping.endMineAndJoin""": """Terminar la mía y unirme""",
+  """shopping.joinFailed""": """No se pudo unir a la compra.""",
+  """shopping.leaveTrip""": """Salir de la compra""",
+  """shopping.leaveTripFailed""": """No se pudo salir de la compra.""",
   """shopping.startTitle""": """Empezar a comprar""",
   """shopping.listsToShop""": """Listas para comprar""",
   """shopping.selectAll""": """Seleccionar todo""",
@@ -7354,6 +7430,8 @@ Contraseña: pantry-rocks""",
   """shopping.start""": """Empezar""",
   """shopping.startFailed""": """No se pudo empezar a comprar.""",
   """shopping.tripInProgress""": """Ya tienes una compra en curso.""",
+  """shopping.tripWithHousemate""":
+      """Estás compartiendo una compra con alguien de tu casa.""",
   """shopping.endPreviousTrip""": """Terminar compra anterior""",
   """shopping.endPreviousFailed""":
       """No se pudo terminar la compra anterior.""",
@@ -7370,6 +7448,7 @@ Contraseña: pantry-rocks""",
   """shopping.nothingToBuyHere""": """Nada que comprar aquí.""",
   """shopping.checkFailed""": """No se pudo actualizar el artículo.""",
   """shopping.loadItemsFailed""": """No se pudieron cargar los artículos.""",
+  """shopping.tripFinishedByHousemate""": """Esta compra ha terminado.""",
   """shopping.removeFromTrip""": """Quitar de la compra""",
   """shopping.removedFromTrip""": """Quitado de esta compra""",
   """shopping.undo""": """Deshacer""",

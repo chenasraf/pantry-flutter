@@ -41,6 +41,11 @@ class ShoppingReviewView extends StatefulWidget {
   final List<ShoppingReminder> reminders;
   final VoidCallback? onManageReminders;
 
+  /// Whether the caller may type in what was actually paid. The totals belong
+  /// to the shopper who started the trip, so a housemate who joined reads them
+  /// and still confirms the transition.
+  final bool canEditBilled;
+
   const ShoppingReviewView({
     super.key,
     required this.houseId,
@@ -50,6 +55,7 @@ class ShoppingReviewView extends StatefulWidget {
     this.activeStoreId,
     this.reminders = const [],
     this.onManageReminders,
+    this.canEditBilled = true,
   });
 
   @override
@@ -234,7 +240,7 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
                     storeColor: _storeColor(store.storeId),
                     storeIconData: _storeIcon(store.storeId),
                     fallbackCurrency: _lastCurrency,
-                    readOnly: _readOnly,
+                    readOnly: _readOnly || !widget.canEditBilled,
                     onSaveBilled: (total, currency) =>
                         _saveBilled(store, total, currency),
                   ),

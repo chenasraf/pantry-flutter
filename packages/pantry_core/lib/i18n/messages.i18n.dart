@@ -4657,6 +4657,59 @@ class ShoppingMessages {
   String get bannerShoppingNow => """Shopping now""";
 
   /// ```dart
+  /// "Join"
+  /// ```
+  String get join => """Join""";
+
+  /// ```dart
+  /// "${name} is shopping"
+  /// ```
+  String bannerHousemateShopping(String name) => """${name} is shopping""";
+
+  /// ```dart
+  /// "${name} is shopping at ${store}"
+  /// ```
+  String bannerHousemateShoppingAt(String name, String store) =>
+      """${name} is shopping at ${store}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$name and 1 other are shopping', many: '$name and $count others are shopping')}"
+  /// ```
+  String bannerHousematesShopping(String name, int count) =>
+      """${_plural(count, one: '$name and 1 other are shopping', many: '$name and $count others are shopping')}""";
+
+  /// ```dart
+  /// "Join this shopping trip?"
+  /// ```
+  String get joinConfirmTitle => """Join this shopping trip?""";
+
+  /// ```dart
+  /// "Your current shopping trip will be ended and saved to your history, then you will join ${name}."
+  /// ```
+  String joinConfirmBody(String name) =>
+      """Your current shopping trip will be ended and saved to your history, then you will join ${name}.""";
+
+  /// ```dart
+  /// "End mine and join"
+  /// ```
+  String get endMineAndJoin => """End mine and join""";
+
+  /// ```dart
+  /// "Couldn't join the shopping trip."
+  /// ```
+  String get joinFailed => """Couldn't join the shopping trip.""";
+
+  /// ```dart
+  /// "Leave trip"
+  /// ```
+  String get leaveTrip => """Leave trip""";
+
+  /// ```dart
+  /// "Couldn't leave the trip."
+  /// ```
+  String get leaveTripFailed => """Couldn't leave the trip.""";
+
+  /// ```dart
   /// "Start shopping"
   /// ```
   String get startTitle => """Start shopping""";
@@ -4724,6 +4777,12 @@ class ShoppingMessages {
   /// ```
   String tripInProgressElsewhere(String house) =>
       """You have a shopping trip in progress in ${house}.""";
+
+  /// ```dart
+  /// "You are shopping a trip with a housemate."
+  /// ```
+  String get tripWithHousemate =>
+      """You are shopping a trip with a housemate.""";
 
   /// ```dart
   /// "End previous trip"
@@ -4809,6 +4868,17 @@ class ShoppingMessages {
   /// "Failed to load items."
   /// ```
   String get loadItemsFailed => """Failed to load items.""";
+
+  /// ```dart
+  /// "This shopping trip was finished."
+  /// ```
+  String get tripFinishedByHousemate => """This shopping trip was finished.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Shopping with 1 housemate', many: 'Shopping with $count housemates')}"
+  /// ```
+  String shoppingWith(int count) =>
+      """${_plural(count, one: 'Shopping with 1 housemate', many: 'Shopping with $count housemates')}""";
 
   /// ```dart
   /// "Remove from trip"
@@ -7249,6 +7319,12 @@ Password: pantry-rocks""",
   """shopping.shoppingHistory""": """Shopping history""",
   """shopping.resume""": """Resume""",
   """shopping.bannerShoppingNow""": """Shopping now""",
+  """shopping.join""": """Join""",
+  """shopping.joinConfirmTitle""": """Join this shopping trip?""",
+  """shopping.endMineAndJoin""": """End mine and join""",
+  """shopping.joinFailed""": """Couldn't join the shopping trip.""",
+  """shopping.leaveTrip""": """Leave trip""",
+  """shopping.leaveTripFailed""": """Couldn't leave the trip.""",
   """shopping.startTitle""": """Start shopping""",
   """shopping.listsToShop""": """Lists to shop""",
   """shopping.selectAll""": """Select all""",
@@ -7265,6 +7341,8 @@ Password: pantry-rocks""",
   """shopping.startFailed""": """Failed to start shopping.""",
   """shopping.tripInProgress""":
       """You already have a shopping trip in progress.""",
+  """shopping.tripWithHousemate""":
+      """You are shopping a trip with a housemate.""",
   """shopping.endPreviousTrip""": """End previous trip""",
   """shopping.endPreviousFailed""": """Failed to end the previous trip.""",
   """shopping.makePrivate""": """Hide trip from housemates""",
@@ -7280,6 +7358,8 @@ Password: pantry-rocks""",
   """shopping.nothingToBuyHere""": """Nothing to buy here.""",
   """shopping.checkFailed""": """Couldn't update the item.""",
   """shopping.loadItemsFailed""": """Failed to load items.""",
+  """shopping.tripFinishedByHousemate""":
+      """This shopping trip was finished.""",
   """shopping.removeFromTrip""": """Remove from trip""",
   """shopping.removedFromTrip""": """Removed from this trip""",
   """shopping.undo""": """Undo""",

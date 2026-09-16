@@ -896,6 +896,16 @@ shopping:
   bannerShoppingAt(String store): "Courses chez ${store}"
   bannerStoreProgress(int index, int total): "Magasin $index/$total"
   bannerShoppingNow: Courses en cours
+  join: Rejoindre
+  bannerHousemateShopping(String name): "${name} fait les courses"
+  bannerHousemateShoppingAt(String name, String store): "${name} fait les courses à ${store}"
+  bannerHousematesShopping(String name, int count): "${_plural(count, one: '$name et 1 autre personne font les courses', many: '$name et $count autres personnes font les courses')}"
+  joinConfirmTitle: Rejoindre ces courses ?
+  joinConfirmBody(String name): "Vos courses en cours seront terminées et enregistrées dans votre historique, puis vous rejoindrez ${name}."
+  endMineAndJoin: Terminer les miennes et rejoindre
+  joinFailed: Impossible de rejoindre les courses.
+  leaveTrip: Quitter les courses
+  leaveTripFailed: Impossible de quitter les courses.
   startTitle: Commencer les courses
   listsToShop: Listes à faire
   selectAll: Tout sélectionner
@@ -909,6 +919,7 @@ shopping:
   startFailed: Impossible de commencer les courses.
   tripInProgress: Vous avez déjà des courses en cours.
   tripInProgressElsewhere(String house): "Vous avez des courses en cours dans ${house}."
+  tripWithHousemate: Vous faites les courses avec une autre personne du foyer.
   endPreviousTrip: Terminer les courses précédentes
   endPreviousFailed: Impossible de terminer les courses précédentes.
   inCart(int count): "$count dans le panier"
@@ -926,6 +937,8 @@ shopping:
   nothingToBuyHere: Rien à acheter ici.
   checkFailed: Impossible de mettre à jour l'article.
   loadItemsFailed: Impossible de charger les articles.
+  tripFinishedByHousemate: Ces courses ont été terminées.
+  shoppingWith(int count): "${_plural(count, one: 'Courses avec 1 personne', many: 'Courses avec $count personnes')}"
   removeFromTrip: Retirer de la sortie
   removedFromTrip: Retiré de cette sortie
   undo: Annuler

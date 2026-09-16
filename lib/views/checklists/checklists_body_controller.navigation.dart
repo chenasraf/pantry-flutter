@@ -35,6 +35,71 @@ extension ChecklistsBodyNavigation on ChecklistsBodyController {
     await refreshShoppingSession();
   }
 
+  /// Join the housemate's trip the banner offers, then step into it.
+  ///
+  /// A live trip of the caller's own has to end first, and that is theirs to
+  /// agree to — it gets filed to their history. A trip they merely joined needs
+  /// no such ceremony: joining another leaves it by itself.
+  Future<void> joinShopping(BuildContext context) async {
+    final entry = joinableTrip;
+    final sessionId = entry?.sessionId;
+    if (entry == null || sessionId == null || joiningTrip) return;
+
+    joiningTrip = true;
+    _safeNotify();
+    try {
+      final own = shoppingSession;
+      if (own != null && own.isStartedBy(currentUserId)) {
+        final name = domain.members[entry.userId]?.displayName ?? entry.userId;
+        final confirmed = await confirmEndMineAndJoin(context, name);
+        if (!confirmed) return;
+        try {
+          await ShoppingService.instance.close(own.houseId, own.id);
+        } on ShoppingSessionConflict {
+          // Already closed — the way is clear either way.
+        } catch (_) {
+          if (context.mounted) {
+            showAppToast(message: m.shopping.joinFailed, kind: ToastKind.error);
+          }
+          return;
+        }
+        shoppingSession = null;
+      }
+
+      final ShoppingSession joined;
+      try {
+        joined = await ShoppingService.instance.joinSession(
+          domain.houseId,
+          sessionId,
+        );
+      } on ShoppingSessionConflict catch (conflict) {
+        // Another device started a trip for us between the presence read and
+        // the tap; adopt it so the next tap offers to end it.
+        shoppingSession = conflict.session;
+        if (context.mounted) {
+          showAppToast(message: m.shopping.joinFailed, kind: ToastKind.error);
+        }
+        return;
+      } catch (_) {
+        if (context.mounted) {
+          showAppToast(message: m.shopping.joinFailed, kind: ToastKind.error);
+        }
+        return;
+      }
+
+      joinableTrip = null;
+      shoppingSession = joined;
+      if (!context.mounted) return;
+      await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => ShoppingSessionView(session: joined)),
+      );
+    } finally {
+      joiningTrip = false;
+      _safeNotify();
+    }
+    await refreshShoppingSession();
+  }
+
   Future<void> openShoppingHistory(BuildContext context) async {
     await Navigator.of(context).push(
       MaterialPageRoute(

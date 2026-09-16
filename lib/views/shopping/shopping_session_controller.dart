@@ -15,6 +15,7 @@ import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
@@ -254,11 +255,23 @@ class ShoppingSessionController extends ChangeNotifier {
   }
 
   /// Other shoppers attributed to [storeId] (self excluded) — the avatar stack
-  /// on each store pill.
-  List<ShoppingPresenceEntry> presenceAt(int storeId) => [
-    for (final p in _presence)
-      if (p.activeStoreId == storeId && p.userId != currentUserId) p,
-  ];
+  /// on each store pill. Presence attributes a whole trip to a store, so
+  /// everyone shopping it belongs on that pill, not only whoever started it.
+  List<String> presenceAt(int storeId) {
+    final userIds = <String>{};
+    for (final p in _presence) {
+      if (p.activeStoreId != storeId) continue;
+      userIds.addAll(p.memberIds.where((id) => id != currentUserId));
+    }
+    return userIds.toList();
+  }
+
+  /// Whether the caller started this trip. Privacy and billed totals are the
+  /// starter's alone; a housemate who joined 404s on them.
+  bool get isStarter => _session.isStartedBy(currentUserId);
+
+  /// The housemates sharing this trip with the caller.
+  List<String> get companions => _session.othersThan(currentUserId);
 
   /// Items grouped one block per category, in category order (Uncategorized
   /// last), each block keeping the server's item order.
@@ -336,10 +349,44 @@ class ShoppingSessionController extends ChangeNotifier {
   /// refresh the done-today tally. Called ~1 min while focused.
   Future<void> poll() async {
     try {
+      if (!await _confirmStillLive()) return;
       await _refreshLiveData(includeHeartbeat: true);
     } catch (e) {
       debugPrint('[ShoppingSessionController] poll failed: $e');
     }
+  }
+
+  /// Set once a poll has established the trip is over — whoever ended it ends
+  /// it for everyone in it, and nothing reaches us until the next read.
+  bool _ended = false;
+  bool get hasEnded => _ended;
+
+  /// Re-read the trip before syncing against it, and adopt what comes back so
+  /// a store a housemate advanced to follows here too.
+  ///
+  /// A failed request is not evidence the trip ended, so only a read that
+  /// succeeds and no longer resolves to this trip ends the screen.
+  Future<bool> _confirmStillLive() async {
+    if (!hasFeature('shopping-join-session')) return true;
+    final ShoppingSession? current;
+    try {
+      current = await _service.getCurrentSession();
+    } catch (e) {
+      debugPrint('[ShoppingSessionController] liveness probe failed: $e');
+      return true;
+    }
+    if (current == null || current.id != sessionId || !current.live) {
+      _ended = true;
+      notifyListeners();
+      return false;
+    }
+    _session = current;
+    return true;
+  }
+
+  /// Step out of a trip a housemate started, leaving it running for them.
+  Future<void> leave() async {
+    await _service.leaveSession(houseId, sessionId);
   }
 
   /// Items checked locally but not yet reflected by the server. The check
@@ -648,6 +695,7 @@ extension ShoppingSessionPrivacy on ShoppingSession {
         billedTotal: s.billedTotal,
         billedCurrency: s.billedCurrency,
         lastSeenAt: s.lastSeenAt,
+        memberIds: s.memberIds,
         live: s.live,
         closedAt: s.closedAt,
         createdAt: s.createdAt,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +10,9 @@ import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/shopping_presence_entry.dart';
 import 'package:pantry_core/models/shopping_session.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry/services/list_link_service.dart';
 import 'package:pantry/services/local_notifications_service.dart';
@@ -34,6 +38,7 @@ import 'package:pantry/views/shopping/shopping_history_view.dart';
 import 'package:pantry/views/shopping/shopping_session_view.dart';
 import 'package:pantry/views/shopping/shopping_start_view.dart';
 import 'package:pantry/views/stores/stores_view.dart';
+import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'checklist_switcher_sheet.dart';
@@ -94,7 +99,22 @@ class ChecklistsBodyController extends ChangeNotifier
   /// The caller's live shopping session (any house), polled to drive the
   /// resume banner and the Start/Resume FAB. Null when there's no live trip or
   /// the server lacks the `shopping` capability.
+  ///
+  /// Not necessarily started by the caller — a trip they joined resolves here
+  /// too, so check [ShoppingSession.isStartedBy] before offering anything only
+  /// its starter may do.
   ShoppingSession? shoppingSession;
+
+  /// A housemate's live trip the caller could join, read from house presence.
+  /// Null when nobody else is out, when the caller is already on every live
+  /// trip, or when the server lacks `shopping-join-session`.
+  ShoppingPresenceEntry? joinableTrip;
+
+  /// Guards the join action: it may close the caller's own trip first, which a
+  /// second tap must not repeat.
+  bool joiningTrip = false;
+
+  final String? currentUserId = AuthService.instance.credentials?.loginName;
 
   String get query => searchCtrl.text.trim().toLowerCase();
 
@@ -111,11 +131,13 @@ class ChecklistsBodyController extends ChangeNotifier
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => refreshShoppingSession(),
     );
+    _startShoppingPoll();
   }
 
   @override
   void dispose() {
     _disposed = true;
+    _stopShoppingPoll();
     WidgetsBinding.instance.removeObserver(this);
     searchCtrl.dispose();
     super.dispose();
@@ -125,9 +147,42 @@ class ChecklistsBodyController extends ChangeNotifier
     if (!_disposed) notifyListeners();
   }
 
+  /// A housemate's trip only ever surfaces through a presence read, so the
+  /// join banner needs a cadence of its own — unlike the resume banner, which
+  /// reflects the caller's own state and can ride navigation alone. Follows the
+  /// shopping refresh interval, and "off" means no automatic calls at all.
+  Timer? _shoppingPollTimer;
+
+  void _startShoppingPoll() {
+    _stopShoppingPoll();
+    final interval = AutoRefresh.durationFromSeconds(
+      PrefsService.instance.shoppingRefreshSecondsResolved,
+    );
+    if (interval == null) return;
+    _shoppingPollTimer = Timer.periodic(
+      interval,
+      (_) => refreshShoppingSession(),
+    );
+  }
+
+  void _stopShoppingPoll() {
+    _shoppingPollTimer?.cancel();
+    _shoppingPollTimer = null;
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) refreshShoppingSession();
+    switch (state) {
+      case AppLifecycleState.resumed:
+        refreshShoppingSession();
+        _startShoppingPoll();
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.detached:
+        _stopShoppingPoll();
+      case AppLifecycleState.inactive:
+        break;
+    }
   }
 
   // --- Filter / search / compose mutators -----------------------------------
@@ -258,6 +313,34 @@ class ChecklistsBodyController extends ChangeNotifier
     } catch (_) {
       /* keep the last-known state */
     }
+    await refreshJoinableTrip();
+  }
+
+  /// Look for a housemate's trip worth offering. Presence is house-wide and
+  /// covers the caller's own trip too, so the offer is the freshest trip they
+  /// are not already on — one at a time, which keeps the action unambiguous.
+  ///
+  /// Joining implies checking things off, so it asks for `canCheckItems` and
+  /// not the `canViewLists` the rest of the screen runs on.
+  Future<void> refreshJoinableTrip() async {
+    if (!hasFeature('shopping-join-session') ||
+        !domain.permissions.canCheckItems ||
+        currentUserId == null) {
+      return;
+    }
+    try {
+      final entries = await ShoppingService.instance.getPresence(
+        domain.houseId,
+      );
+      if (_disposed) return;
+      joinableTrip = entries.cast<ShoppingPresenceEntry?>().firstWhere(
+        (e) => e!.sessionId != null && !e.includes(currentUserId),
+        orElse: () => null,
+      );
+      _safeNotify();
+    } catch (_) {
+      /* keep the last-known offer */
+    }
   }
 
   /// Bottom inset reserved under the item list so neither the resting compose
@@ -349,6 +432,59 @@ class ChecklistsBodyController extends ChangeNotifier
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  /// The "{name} is shopping · [Join]" banner offering a housemate's trip.
+  /// Joining shops that trip rather than starting a parallel one: same items,
+  /// same check log, and whoever ends it ends it for everyone.
+  Widget buildJoinBanner(BuildContext context) {
+    final entry = joinableTrip!;
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final name = domain.members[entry.userId]?.displayName ?? entry.userId;
+    final others = entry.memberIds.length - 1;
+    final storeId = entry.activeStoreId;
+    final store = storeId != null ? domain.stores[storeId] : null;
+    // A trip several housemates already share reads as the group, so the line
+    // doesn't imply its starter is out alone; the store is dropped there to
+    // keep it short.
+    final label = others > 0
+        ? m.shopping.bannerHousematesShopping(name, others)
+        : store != null
+        ? m.shopping.bannerHousemateShoppingAt(name, store.name)
+        : m.shopping.bannerHousemateShopping(name);
+
+    return Material(
+      color: cs.secondaryContainer,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: 16,
+          vertical: 10,
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.groups, color: cs.onSecondaryContainer, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                textDirection: detectTextDirection(name),
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: cs.onSecondaryContainer,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            FilledButton(
+              onPressed: joiningTrip ? null : () => joinShopping(context),
+              child: Text(m.shopping.join),
+            ),
+          ],
         ),
       ),
     );

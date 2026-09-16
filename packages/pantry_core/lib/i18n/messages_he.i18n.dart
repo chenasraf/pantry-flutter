@@ -4667,6 +4667,59 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get bannerShoppingNow => """קונים עכשיו""";
 
   /// ```dart
+  /// "הצטרפות"
+  /// ```
+  String get join => """הצטרפות""";
+
+  /// ```dart
+  /// "${name} בקניות"
+  /// ```
+  String bannerHousemateShopping(String name) => """${name} בקניות""";
+
+  /// ```dart
+  /// "${name} בקניות ב-${store}"
+  /// ```
+  String bannerHousemateShoppingAt(String name, String store) =>
+      """${name} בקניות ב-${store}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$name ועוד אחד בקניות', many: '$name ועוד $count בקניות')}"
+  /// ```
+  String bannerHousematesShopping(String name, int count) =>
+      """${_plural(count, one: '$name ועוד אחד בקניות', many: '$name ועוד $count בקניות')}""";
+
+  /// ```dart
+  /// "להצטרף לקנייה הזאת?"
+  /// ```
+  String get joinConfirmTitle => """להצטרף לקנייה הזאת?""";
+
+  /// ```dart
+  /// "הקנייה הנוכחית שלך תסתיים ותישמר בהיסטוריה, ולאחר מכן תתבצע הצטרפות אל ${name}."
+  /// ```
+  String joinConfirmBody(String name) =>
+      """הקנייה הנוכחית שלך תסתיים ותישמר בהיסטוריה, ולאחר מכן תתבצע הצטרפות אל ${name}.""";
+
+  /// ```dart
+  /// "לסיים ולהצטרף"
+  /// ```
+  String get endMineAndJoin => """לסיים ולהצטרף""";
+
+  /// ```dart
+  /// "ההצטרפות לקנייה נכשלה."
+  /// ```
+  String get joinFailed => """ההצטרפות לקנייה נכשלה.""";
+
+  /// ```dart
+  /// "יציאה מהקנייה"
+  /// ```
+  String get leaveTrip => """יציאה מהקנייה""";
+
+  /// ```dart
+  /// "היציאה מהקנייה נכשלה."
+  /// ```
+  String get leaveTripFailed => """היציאה מהקנייה נכשלה.""";
+
+  /// ```dart
   /// "התחלת קניות"
   /// ```
   String get startTitle => """התחלת קניות""";
@@ -4733,6 +4786,11 @@ class ShoppingMessagesHe extends ShoppingMessages {
   /// ```
   String tripInProgressElsewhere(String house) =>
       """יש לך קנייה פעילה ב-${house}.""";
+
+  /// ```dart
+  /// "הקנייה הזאת משותפת עם שותף לבית."
+  /// ```
+  String get tripWithHousemate => """הקנייה הזאת משותפת עם שותף לבית.""";
 
   /// ```dart
   /// "סיום הקנייה הקודמת"
@@ -4818,6 +4876,17 @@ class ShoppingMessagesHe extends ShoppingMessages {
   /// "טעינת הפריטים נכשלה."
   /// ```
   String get loadItemsFailed => """טעינת הפריטים נכשלה.""";
+
+  /// ```dart
+  /// "הקנייה הזאת הסתיימה."
+  /// ```
+  String get tripFinishedByHousemate => """הקנייה הזאת הסתיימה.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'קונים יחד עם עוד אחד', many: 'קונים יחד עם עוד $count')}"
+  /// ```
+  String shoppingWith(int count) =>
+      """${_plural(count, one: 'קונים יחד עם עוד אחד', many: 'קונים יחד עם עוד $count')}""";
 
   /// ```dart
   /// "הסרה מהקנייה"
@@ -7237,6 +7306,12 @@ Map<String, String> get messagesHeMap => {
   """shopping.shoppingHistory""": """היסטוריית קניות""",
   """shopping.resume""": """המשך""",
   """shopping.bannerShoppingNow""": """קונים עכשיו""",
+  """shopping.join""": """הצטרפות""",
+  """shopping.joinConfirmTitle""": """להצטרף לקנייה הזאת?""",
+  """shopping.endMineAndJoin""": """לסיים ולהצטרף""",
+  """shopping.joinFailed""": """ההצטרפות לקנייה נכשלה.""",
+  """shopping.leaveTrip""": """יציאה מהקנייה""",
+  """shopping.leaveTripFailed""": """היציאה מהקנייה נכשלה.""",
   """shopping.startTitle""": """התחלת קניות""",
   """shopping.listsToShop""": """רשימות לקנייה""",
   """shopping.selectAll""": """בחירת הכול""",
@@ -7251,6 +7326,7 @@ Map<String, String> get messagesHeMap => {
   """shopping.start""": """התחלה""",
   """shopping.startFailed""": """התחלת הקנייה נכשלה.""",
   """shopping.tripInProgress""": """כבר יש לך קנייה פעילה.""",
+  """shopping.tripWithHousemate""": """הקנייה הזאת משותפת עם שותף לבית.""",
   """shopping.endPreviousTrip""": """סיום הקנייה הקודמת""",
   """shopping.endPreviousFailed""": """סיום הקנייה הקודמת נכשל.""",
   """shopping.makePrivate""": """הסתרת הקנייה משותפי הבית""",
@@ -7266,6 +7342,7 @@ Map<String, String> get messagesHeMap => {
   """shopping.nothingToBuyHere""": """אין מה לקנות כאן.""",
   """shopping.checkFailed""": """עדכון הפריט נכשל.""",
   """shopping.loadItemsFailed""": """טעינת הפריטים נכשלה.""",
+  """shopping.tripFinishedByHousemate""": """הקנייה הזאת הסתיימה.""",
   """shopping.removeFromTrip""": """הסרה מהקנייה""",
   """shopping.removedFromTrip""": """הוסר מהקנייה הזו""",
   """shopping.undo""": """בטל""",

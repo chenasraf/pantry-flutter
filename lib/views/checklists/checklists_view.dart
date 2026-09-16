@@ -606,6 +606,13 @@ class _BodyState extends State<_Body> {
                       if (body.shoppingSession != null &&
                           hasFeature('shopping'))
                         body.buildResumeBanner(context),
+                      // A housemate is out shopping — offer to shop their trip
+                      // rather than start a parallel one. Shown alongside the
+                      // resume banner: having a trip of your own is a reason to
+                      // confirm the swap, not to hide the offer.
+                      if (body.joinableTrip != null &&
+                          hasFeature('shopping-join-session'))
+                        body.buildJoinBanner(context),
                       // Animate the search row sliding/fading in and out below
                       // the AppBar instead of popping in instantly.
                       AnimatedSize(

@@ -896,6 +896,16 @@ shopping:
   bannerShoppingAt(String store): "קונים ב-${store}"
   bannerStoreProgress(int index, int total): "חנות $index/$total"
   bannerShoppingNow: קונים עכשיו
+  join: הצטרפות
+  bannerHousemateShopping(String name): "${name} בקניות"
+  bannerHousemateShoppingAt(String name, String store): "${name} בקניות ב-${store}"
+  bannerHousematesShopping(String name, int count): "${_plural(count, one: '$name ועוד אחד בקניות', many: '$name ועוד $count בקניות')}"
+  joinConfirmTitle: להצטרף לקנייה הזאת?
+  joinConfirmBody(String name): "הקנייה הנוכחית שלך תסתיים ותישמר בהיסטוריה, ולאחר מכן תתבצע הצטרפות אל ${name}."
+  endMineAndJoin: לסיים ולהצטרף
+  joinFailed: ההצטרפות לקנייה נכשלה.
+  leaveTrip: יציאה מהקנייה
+  leaveTripFailed: היציאה מהקנייה נכשלה.
   startTitle: התחלת קניות
   listsToShop: רשימות לקנייה
   selectAll: בחירת הכול
@@ -909,6 +919,7 @@ shopping:
   startFailed: התחלת הקנייה נכשלה.
   tripInProgress: כבר יש לך קנייה פעילה.
   tripInProgressElsewhere(String house): "יש לך קנייה פעילה ב-${house}."
+  tripWithHousemate: הקנייה הזאת משותפת עם שותף לבית.
   endPreviousTrip: סיום הקנייה הקודמת
   endPreviousFailed: סיום הקנייה הקודמת נכשל.
   inCart(int count): "$count בעגלה"
@@ -926,6 +937,8 @@ shopping:
   nothingToBuyHere: אין מה לקנות כאן.
   checkFailed: עדכון הפריט נכשל.
   loadItemsFailed: טעינת הפריטים נכשלה.
+  tripFinishedByHousemate: הקנייה הזאת הסתיימה.
+  shoppingWith(int count): "${_plural(count, one: 'קונים יחד עם עוד אחד', many: 'קונים יחד עם עוד $count')}"
   removeFromTrip: הסרה מהקנייה
   removedFromTrip: הוסר מהקנייה הזו
   undo: בטל

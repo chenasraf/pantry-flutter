@@ -573,4 +573,27 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       }
     }
   }
+
+  /// Joining a housemate's trip ends the caller's own and files it to their
+  /// history, so it is asked rather than assumed.
+  Future<bool> confirmEndMineAndJoin(BuildContext context, String name) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(m.shopping.joinConfirmTitle),
+        content: Text(m.shopping.joinConfirmBody(name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(m.common.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(m.shopping.endMineAndJoin),
+          ),
+        ],
+      ),
+    );
+    return confirmed == true;
+  }
 }

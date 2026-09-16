@@ -6,6 +6,7 @@ import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
@@ -69,7 +70,10 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
   List<ShoppingReminder> _startReminders = [];
 
   /// A live session found on mount — shows the Resume / End guard instead.
+  /// Not necessarily the caller's own: a trip they joined blocks a new one too.
   ShoppingSession? _guardSession;
+
+  final String? _currentUserId = AuthService.instance.credentials?.loginName;
 
   @override
   void initState() {
@@ -254,19 +258,30 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
     Navigator.of(context).pop(_guardSession);
   }
 
+  /// Clear the guard so a new trip can start. A trip the shopper merely joined
+  /// is someone else's: stepping out of it clears the way, whereas closing it
+  /// would end a housemate's trip from a screen that promised nothing of the
+  /// sort.
   Future<void> _endPrevious() async {
     final session = _guardSession;
     if (session == null) return;
+    final mine = session.isStartedBy(_currentUserId);
     setState(() => _submitting = true);
     try {
-      await _shopping.close(session.houseId, session.id);
+      if (mine) {
+        await _shopping.close(session.houseId, session.id);
+      } else {
+        await _shopping.leaveSession(session.houseId, session.id);
+      }
     } on ShoppingSessionConflict {
       // Already closed — fine, proceed to the picker.
     } catch (_) {
       if (!mounted) return;
       setState(() => _submitting = false);
       showAppToast(
-        message: m.shopping.endPreviousFailed,
+        message: mine
+            ? m.shopping.endPreviousFailed
+            : m.shopping.leaveTripFailed,
         kind: ToastKind.error,
       );
       return;
@@ -324,6 +339,7 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
   Widget _buildGuard() {
     final theme = Theme.of(context);
     final session = _guardSession!;
+    final mine = session.isStartedBy(_currentUserId);
     final sameHouse = session.houseId == widget.houseId;
     final houseName = HouseService.instance
         .getCached()
@@ -349,7 +365,9 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    sameHouse || houseName == null
+                    !mine
+                        ? m.shopping.tripWithHousemate
+                        : sameHouse || houseName == null
                         ? m.shopping.tripInProgress
                         : m.shopping.tripInProgressElsewhere(houseName),
                     textAlign: TextAlign.center,
@@ -364,7 +382,9 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
                   const SizedBox(height: 8),
                   OutlinedButton(
                     onPressed: _submitting ? null : _endPrevious,
-                    child: Text(m.shopping.endPreviousTrip),
+                    child: Text(
+                      mine ? m.shopping.endPreviousTrip : m.shopping.leaveTrip,
+                    ),
                   ),
                 ],
               ),

@@ -19,7 +19,7 @@ enum ShoppingHistoryScope {
   final String wire;
 }
 
-/// Singleton wrapping the 21 Shopping Mode endpoints via [ApiClient.instance].
+/// Singleton wrapping the 23 Shopping Mode endpoints via [ApiClient.instance].
 /// Mirrors [StoreService]. Presence is polled and never cached; reminders and
 /// the live session's items are cached so a trip survives a dead link.
 class ShoppingService {
@@ -64,6 +64,10 @@ class ShoppingService {
   /// (1) Global discovery of the caller's single live session, or null when
   /// idle. Not house-scoped; the returned session carries its own `houseId`.
   /// Safe to call on launch and before the start screen — no side effects.
+  ///
+  /// Resolves to the caller's own trip, else the one they joined — so the
+  /// session is not necessarily theirs. Check [ShoppingSession.isStartedBy]
+  /// before offering anything only its starter may do.
   Future<ShoppingSession?> getCurrentSession() async {
     final session = await _api.get<dynamic, ShoppingSession?>(
       '/shopping/sessions/current',
@@ -99,6 +103,41 @@ class ShoppingService {
       }
       rethrow;
     }
+  }
+
+  /// (2a) Join a housemate's live trip instead of starting a parallel one:
+  /// same items, same check log, and whoever ends it ends it for everyone.
+  /// Idempotent, so a double tap cannot fail.
+  ///
+  /// Throws [ShoppingSessionConflict] (from a 409) carrying the caller's own
+  /// live trip — end that first — or the target trip when it has closed. A
+  /// private trip is hidden from housemates and 404s.
+  Future<ShoppingSession> joinSession(int houseId, int sessionId) async {
+    try {
+      final session = await _api.post<Map<String, dynamic>, ShoppingSession>(
+        '${_base(houseId)}/sessions/$sessionId/join',
+        fromJson: ShoppingSession.fromJson,
+      );
+      cacheSession(session);
+      return session;
+    } on ApiException catch (e) {
+      final existing = _sessionFromErrorBody(e);
+      if (e.statusCode == 409 && existing != null) {
+        throw ShoppingSessionConflict(existing);
+      }
+      rethrow;
+    }
+  }
+
+  /// (2b) Step out of a trip without ending it for the others. The shopper who
+  /// started it cannot leave — closing is their only way out — so gate the
+  /// affordance on [ShoppingSession.isStartedBy].
+  Future<void> leaveSession(int houseId, int sessionId) async {
+    await _api.post<Map<String, dynamic>, void>(
+      '${_base(houseId)}/sessions/$sessionId/leave',
+      fromJson: (_) {},
+    );
+    cacheSession(null);
   }
 
   /// (3) Move to [storeId] (must be one of the session's stores). Sets

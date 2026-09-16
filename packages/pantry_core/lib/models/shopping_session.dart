@@ -58,6 +58,11 @@ class ShoppingSession {
 
   final int lastSeenAt;
 
+  /// Everyone shopping this trip: the shopper who started it first, then the
+  /// housemates who joined. A server without `shopping-join-session` sends no
+  /// member list, so [userId] alone stands in.
+  final List<String> memberIds;
+
   /// Server-derived: `closedAt == null && fresh`.
   final bool live;
   final int? closedAt;
@@ -76,6 +81,7 @@ class ShoppingSession {
     this.billedTotal,
     this.billedCurrency,
     required this.lastSeenAt,
+    this.memberIds = const [],
     required this.live,
     this.closedAt,
     required this.createdAt,
@@ -101,6 +107,9 @@ class ShoppingSession {
         billedTotal: (json['billedTotal'] as num?)?.toDouble(),
         billedCurrency: json['billedCurrency'] as String?,
         lastSeenAt: json['lastSeenAt'] as int,
+        memberIds:
+            (json['memberIds'] as List?)?.cast<String>() ??
+            <String>[json['userId'] as String],
         live: json['live'] as bool,
         closedAt: json['closedAt'] as int?,
         createdAt: json['createdAt'] as int,
@@ -119,6 +128,7 @@ class ShoppingSession {
     'billedTotal': billedTotal,
     'billedCurrency': billedCurrency,
     'lastSeenAt': lastSeenAt,
+    'memberIds': memberIds,
     'live': live,
     'closedAt': closedAt,
     'createdAt': createdAt,
@@ -143,4 +153,12 @@ class ShoppingSession {
     if (idx < 0 || idx + 1 >= ordered.length) return null;
     return ordered[idx + 1];
   }
+
+  /// Whether [uid] is the shopper who started this trip. Privacy and billed
+  /// totals hang off this — a housemate who merely joined 404s on them.
+  bool isStartedBy(String? uid) => uid != null && uid == userId;
+
+  /// Housemates on this trip other than [uid].
+  List<String> othersThan(String? uid) =>
+      memberIds.where((id) => id != uid).toList();
 }

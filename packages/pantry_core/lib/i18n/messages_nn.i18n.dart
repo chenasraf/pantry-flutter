@@ -4691,6 +4691,59 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get bannerShoppingNow => """Handlar no""";
 
   /// ```dart
+  /// "Bli med"
+  /// ```
+  String get join => """Bli med""";
+
+  /// ```dart
+  /// "${name} handlar"
+  /// ```
+  String bannerHousemateShopping(String name) => """${name} handlar""";
+
+  /// ```dart
+  /// "${name} handlar på ${store}"
+  /// ```
+  String bannerHousemateShoppingAt(String name, String store) =>
+      """${name} handlar på ${store}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$name og 1 annan handlar', many: '$name og $count andre handlar')}"
+  /// ```
+  String bannerHousematesShopping(String name, int count) =>
+      """${_plural(count, one: '$name og 1 annan handlar', many: '$name og $count andre handlar')}""";
+
+  /// ```dart
+  /// "Bli med på denne handelen?"
+  /// ```
+  String get joinConfirmTitle => """Bli med på denne handelen?""";
+
+  /// ```dart
+  /// "Handelen din blir avslutta og lagra i historikken, og så blir du med ${name}."
+  /// ```
+  String joinConfirmBody(String name) =>
+      """Handelen din blir avslutta og lagra i historikken, og så blir du med ${name}.""";
+
+  /// ```dart
+  /// "Avslutt min og bli med"
+  /// ```
+  String get endMineAndJoin => """Avslutt min og bli med""";
+
+  /// ```dart
+  /// "Klarte ikkje å bli med på handelen."
+  /// ```
+  String get joinFailed => """Klarte ikkje å bli med på handelen.""";
+
+  /// ```dart
+  /// "Forlat handelen"
+  /// ```
+  String get leaveTrip => """Forlat handelen""";
+
+  /// ```dart
+  /// "Klarte ikkje å forlate handelen."
+  /// ```
+  String get leaveTripFailed => """Klarte ikkje å forlate handelen.""";
+
+  /// ```dart
   /// "Start handel"
   /// ```
   String get startTitle => """Start handel""";
@@ -4757,6 +4810,12 @@ class ShoppingMessagesNn extends ShoppingMessages {
   /// ```
   String tripInProgressElsewhere(String house) =>
       """Du har ein handel i gang i ${house}.""";
+
+  /// ```dart
+  /// "Du handlar saman med nokon andre i husstanden."
+  /// ```
+  String get tripWithHousemate =>
+      """Du handlar saman med nokon andre i husstanden.""";
 
   /// ```dart
   /// "Avslutt førre handel"
@@ -4842,6 +4901,17 @@ class ShoppingMessagesNn extends ShoppingMessages {
   /// "Klarte ikkje å laste varene."
   /// ```
   String get loadItemsFailed => """Klarte ikkje å laste varene.""";
+
+  /// ```dart
+  /// "Denne handelen er avslutta."
+  /// ```
+  String get tripFinishedByHousemate => """Denne handelen er avslutta.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Handlar med 1 annan', many: 'Handlar med $count andre')}"
+  /// ```
+  String shoppingWith(int count) =>
+      """${_plural(count, one: 'Handlar med 1 annan', many: 'Handlar med $count andre')}""";
 
   /// ```dart
   /// "Fjern frå handleturen"
@@ -7311,6 +7381,12 @@ Passord: pantry""",
   """shopping.shoppingHistory""": """Handelshistorikk""",
   """shopping.resume""": """Hald fram""",
   """shopping.bannerShoppingNow""": """Handlar no""",
+  """shopping.join""": """Bli med""",
+  """shopping.joinConfirmTitle""": """Bli med på denne handelen?""",
+  """shopping.endMineAndJoin""": """Avslutt min og bli med""",
+  """shopping.joinFailed""": """Klarte ikkje å bli med på handelen.""",
+  """shopping.leaveTrip""": """Forlat handelen""",
+  """shopping.leaveTripFailed""": """Klarte ikkje å forlate handelen.""",
   """shopping.startTitle""": """Start handel""",
   """shopping.listsToShop""": """Lister å handle""",
   """shopping.selectAll""": """Vel alle""",
@@ -7325,6 +7401,8 @@ Passord: pantry""",
   """shopping.start""": """Start""",
   """shopping.startFailed""": """Klarte ikkje å starte handelen.""",
   """shopping.tripInProgress""": """Du har allereie ein handel i gang.""",
+  """shopping.tripWithHousemate""":
+      """Du handlar saman med nokon andre i husstanden.""",
   """shopping.endPreviousTrip""": """Avslutt førre handel""",
   """shopping.endPreviousFailed""": """Klarte ikkje å avslutte førre handel.""",
   """shopping.makePrivate""": """Skjul handelen for husfellane""",
@@ -7340,6 +7418,7 @@ Passord: pantry""",
   """shopping.nothingToBuyHere""": """Ingenting å kjøpe her.""",
   """shopping.checkFailed""": """Klarte ikkje å oppdatere vara.""",
   """shopping.loadItemsFailed""": """Klarte ikkje å laste varene.""",
+  """shopping.tripFinishedByHousemate""": """Denne handelen er avslutta.""",
   """shopping.removeFromTrip""": """Fjern frå handleturen""",
   """shopping.removedFromTrip""": """Fjerna frå denne handleturen""",
   """shopping.undo""": """Angre""",

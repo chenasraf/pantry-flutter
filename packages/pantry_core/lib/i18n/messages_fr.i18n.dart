@@ -4707,6 +4707,59 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get bannerShoppingNow => """Courses en cours""";
 
   /// ```dart
+  /// "Rejoindre"
+  /// ```
+  String get join => """Rejoindre""";
+
+  /// ```dart
+  /// "${name} fait les courses"
+  /// ```
+  String bannerHousemateShopping(String name) => """${name} fait les courses""";
+
+  /// ```dart
+  /// "${name} fait les courses à ${store}"
+  /// ```
+  String bannerHousemateShoppingAt(String name, String store) =>
+      """${name} fait les courses à ${store}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$name et 1 autre personne font les courses', many: '$name et $count autres personnes font les courses')}"
+  /// ```
+  String bannerHousematesShopping(String name, int count) =>
+      """${_plural(count, one: '$name et 1 autre personne font les courses', many: '$name et $count autres personnes font les courses')}""";
+
+  /// ```dart
+  /// "Rejoindre ces courses ?"
+  /// ```
+  String get joinConfirmTitle => """Rejoindre ces courses ?""";
+
+  /// ```dart
+  /// "Vos courses en cours seront terminées et enregistrées dans votre historique, puis vous rejoindrez ${name}."
+  /// ```
+  String joinConfirmBody(String name) =>
+      """Vos courses en cours seront terminées et enregistrées dans votre historique, puis vous rejoindrez ${name}.""";
+
+  /// ```dart
+  /// "Terminer les miennes et rejoindre"
+  /// ```
+  String get endMineAndJoin => """Terminer les miennes et rejoindre""";
+
+  /// ```dart
+  /// "Impossible de rejoindre les courses."
+  /// ```
+  String get joinFailed => """Impossible de rejoindre les courses.""";
+
+  /// ```dart
+  /// "Quitter les courses"
+  /// ```
+  String get leaveTrip => """Quitter les courses""";
+
+  /// ```dart
+  /// "Impossible de quitter les courses."
+  /// ```
+  String get leaveTripFailed => """Impossible de quitter les courses.""";
+
+  /// ```dart
   /// "Commencer les courses"
   /// ```
   String get startTitle => """Commencer les courses""";
@@ -4773,6 +4826,12 @@ class ShoppingMessagesFr extends ShoppingMessages {
   /// ```
   String tripInProgressElsewhere(String house) =>
       """Vous avez des courses en cours dans ${house}.""";
+
+  /// ```dart
+  /// "Vous faites les courses avec une autre personne du foyer."
+  /// ```
+  String get tripWithHousemate =>
+      """Vous faites les courses avec une autre personne du foyer.""";
 
   /// ```dart
   /// "Terminer les courses précédentes"
@@ -4859,6 +4918,17 @@ class ShoppingMessagesFr extends ShoppingMessages {
   /// "Impossible de charger les articles."
   /// ```
   String get loadItemsFailed => """Impossible de charger les articles.""";
+
+  /// ```dart
+  /// "Ces courses ont été terminées."
+  /// ```
+  String get tripFinishedByHousemate => """Ces courses ont été terminées.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Courses avec 1 personne', many: 'Courses avec $count personnes')}"
+  /// ```
+  String shoppingWith(int count) =>
+      """${_plural(count, one: 'Courses avec 1 personne', many: 'Courses avec $count personnes')}""";
 
   /// ```dart
   /// "Retirer de la sortie"
@@ -7363,6 +7433,12 @@ Mot de passe : pantry-rocks""",
   """shopping.shoppingHistory""": """Historique des courses""",
   """shopping.resume""": """Reprendre""",
   """shopping.bannerShoppingNow""": """Courses en cours""",
+  """shopping.join""": """Rejoindre""",
+  """shopping.joinConfirmTitle""": """Rejoindre ces courses ?""",
+  """shopping.endMineAndJoin""": """Terminer les miennes et rejoindre""",
+  """shopping.joinFailed""": """Impossible de rejoindre les courses.""",
+  """shopping.leaveTrip""": """Quitter les courses""",
+  """shopping.leaveTripFailed""": """Impossible de quitter les courses.""",
   """shopping.startTitle""": """Commencer les courses""",
   """shopping.listsToShop""": """Listes à faire""",
   """shopping.selectAll""": """Tout sélectionner""",
@@ -7377,6 +7453,8 @@ Mot de passe : pantry-rocks""",
   """shopping.start""": """Commencer""",
   """shopping.startFailed""": """Impossible de commencer les courses.""",
   """shopping.tripInProgress""": """Vous avez déjà des courses en cours.""",
+  """shopping.tripWithHousemate""":
+      """Vous faites les courses avec une autre personne du foyer.""",
   """shopping.endPreviousTrip""": """Terminer les courses précédentes""",
   """shopping.endPreviousFailed""":
       """Impossible de terminer les courses précédentes.""",
@@ -7393,6 +7471,7 @@ Mot de passe : pantry-rocks""",
   """shopping.nothingToBuyHere""": """Rien à acheter ici.""",
   """shopping.checkFailed""": """Impossible de mettre à jour l'article.""",
   """shopping.loadItemsFailed""": """Impossible de charger les articles.""",
+  """shopping.tripFinishedByHousemate""": """Ces courses ont été terminées.""",
   """shopping.removeFromTrip""": """Retirer de la sortie""",
   """shopping.removedFromTrip""": """Retiré de cette sortie""",
   """shopping.undo""": """Annuler""",

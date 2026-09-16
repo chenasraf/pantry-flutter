@@ -4,7 +4,6 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/shopping_estimate.dart';
-import 'package:pantry_core/models/shopping_presence_entry.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/price.dart';
@@ -87,9 +86,9 @@ class ShoppingStoreBar extends StatelessWidget {
                               ),
                               if (others.isNotEmpty) ...[
                                 const SizedBox(width: 8),
-                                _AvatarStack(
+                                ShoppingAvatarStack(
                                   controller: controller,
-                                  entries: others,
+                                  userIds: others,
                                 ),
                               ],
                             ],
@@ -107,17 +106,24 @@ class ShoppingStoreBar extends StatelessWidget {
   }
 }
 
-class _AvatarStack extends StatelessWidget {
+/// Overlapping avatars for up to three shoppers, resolved against the
+/// controller's member map. Used on the store pills and wherever a shared trip
+/// needs to show who is on it.
+class ShoppingAvatarStack extends StatelessWidget {
   final ShoppingSessionController controller;
-  final List<ShoppingPresenceEntry> entries;
+  final List<String> userIds;
 
-  const _AvatarStack({required this.controller, required this.entries});
+  const ShoppingAvatarStack({
+    super.key,
+    required this.controller,
+    required this.userIds,
+  });
 
   @override
   Widget build(BuildContext context) {
     const size = 20.0;
     const overlap = 12.0;
-    final shown = entries.take(3).toList();
+    final shown = userIds.take(3).toList();
     return SizedBox(
       width: size + (shown.length - 1) * overlap,
       height: size,
@@ -128,7 +134,7 @@ class _AvatarStack extends StatelessWidget {
               start: i * overlap,
               child: Builder(
                 builder: (context) {
-                  final userId = shown[i].userId;
+                  final userId = shown[i];
                   final member = controller.members[userId];
                   return Container(
                     decoration: BoxDecoration(
@@ -161,6 +167,7 @@ class ShoppingProgressRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final companions = controller.companions;
     return Padding(
       padding: const EdgeInsetsDirectional.symmetric(
         horizontal: 16,
@@ -172,6 +179,19 @@ class ShoppingProgressRow extends StatelessWidget {
             m.shopping.inCart(controller.inCartCount),
             style: theme.textTheme.labelLarge,
           ),
+          // A storeless trip has no store bar to carry the avatars, so the
+          // shared-trip signal lives here instead.
+          if (companions.isNotEmpty)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 8),
+              child: Tooltip(
+                message: m.shopping.shoppingWith(companions.length),
+                child: ShoppingAvatarStack(
+                  controller: controller,
+                  userIds: companions,
+                ),
+              ),
+            ),
           const SizedBox(width: 12),
           Expanded(
             child: ClipRRect(
