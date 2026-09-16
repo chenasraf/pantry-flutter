@@ -196,7 +196,13 @@ about:
 settings:
   title: Ajustes de la app
   generalSection: General
+  generalSectionBody: Idioma, tema y colores
   interfaceSection: Interfaz
+  interfaceSectionBody: Navegación, listas y acciones de elementos
+  interfaceNavigationSection: Navegación
+  interfaceListsSection: Listas
+  interfaceItemActionsSection: Acciones de elementos
+  interfaceAddingSection: Añadir elementos
   defaultItemTapAction: Acción al tocar un elemento
   defaultItemTapActionBody: "Qué ocurre al tocar la fila de un elemento."
   itemTapActionNames:
@@ -273,6 +279,7 @@ settings:
   useServerThemeColor: Usar el color del tema de Nextcloud
   useServerThemeColorBody: Colorea la aplicación con el color del tema de tu usuario de Nextcloud. Desactívalo para usar los colores propios de la aplicación.
   notificationsSection: Notificaciones
+  notificationsSectionBody: Avisos y con qué frecuencia se busca actividad
   enableNotifications: Activar notificaciones
   enableNotificationsBody: Mostrar alertas cuando los miembros del hogar agreguen o actualicen contenido.
   pollInterval: Buscar nueva actividad
@@ -284,6 +291,7 @@ settings:
   permissionDenied: "El permiso de notificaciones fue denegado. Actívalo en los ajustes del sistema."
   refreshSection: Actualización automática
   refreshSectionBody: Con qué frecuencia cada pantalla comprueba si hay cambios en el servidor mientras la estás viendo. Siempre puedes deslizar hacia abajo para actualizar manualmente.
+  refreshSectionSubtitle: Con qué frecuencia cada pantalla busca cambios
   checklistRefresh: Listas
   notesRefresh: Notas
   photosRefresh: Fotos

@@ -196,7 +196,13 @@ about:
 settings:
   title: הגדרות האפליקציה
   generalSection: כללי
+  generalSectionBody: שפה, ערכת נושא וצבעים
   interfaceSection: ממשק
+  interfaceSectionBody: ניווט, רשימות ופעולות על פריטים
+  interfaceNavigationSection: ניווט
+  interfaceListsSection: רשימות
+  interfaceItemActionsSection: פעולות על פריטים
+  interfaceAddingSection: הוספת פריטים
   defaultItemTapAction: פעולת ברירת מחדל בלחיצה
   defaultItemTapActionBody: מה קורה כאשר לוחצים על שורת פריט.
   itemTapActionNames:
@@ -273,6 +279,7 @@ settings:
   useServerThemeColor: שימוש בצבע ערכת הנושא של Nextcloud
   useServerThemeColorBody: צביעת האפליקציה בצבע ערכת הנושא של משתמש ה-Nextcloud שלך. כבה כדי להשתמש בצבעים של האפליקציה עצמה.
   notificationsSection: התראות
+  notificationsSectionBody: התראות וכל כמה זמן לבדוק פעילות
   enableNotifications: הפעל התראות
   enableNotificationsBody: הצג התראות כשבני משק הבית מוסיפים או מעדכנים תוכן.
   pollInterval: בדוק פעילות חדשה
@@ -284,6 +291,7 @@ settings:
   permissionDenied: הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.
   refreshSection: רענון אוטומטי
   refreshSectionBody: כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני.
+  refreshSectionSubtitle: כל כמה זמן כל מסך בודק אם יש שינויים
   checklistRefresh: רשימות
   notesRefresh: פתקים
   photosRefresh: תמונות

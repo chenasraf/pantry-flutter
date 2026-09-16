@@ -1100,9 +1100,40 @@ class SettingsMessagesFr extends SettingsMessages {
   String get generalSection => """Général""";
 
   /// ```dart
+  /// "Langue, thème et couleurs"
+  /// ```
+  String get generalSectionBody => """Langue, thème et couleurs""";
+
+  /// ```dart
   /// "Interface"
   /// ```
   String get interfaceSection => """Interface""";
+
+  /// ```dart
+  /// "Navigation, listes et actions sur les éléments"
+  /// ```
+  String get interfaceSectionBody =>
+      """Navigation, listes et actions sur les éléments""";
+
+  /// ```dart
+  /// "Navigation"
+  /// ```
+  String get interfaceNavigationSection => """Navigation""";
+
+  /// ```dart
+  /// "Listes"
+  /// ```
+  String get interfaceListsSection => """Listes""";
+
+  /// ```dart
+  /// "Actions sur les éléments"
+  /// ```
+  String get interfaceItemActionsSection => """Actions sur les éléments""";
+
+  /// ```dart
+  /// "Ajout d'éléments"
+  /// ```
+  String get interfaceAddingSection => """Ajout d'éléments""";
 
   /// ```dart
   /// "Action par défaut au toucher"
@@ -1325,6 +1356,12 @@ class SettingsMessagesFr extends SettingsMessages {
   String get notificationsSection => """Notifications""";
 
   /// ```dart
+  /// "Alertes et fréquence de vérification de l'activité"
+  /// ```
+  String get notificationsSectionBody =>
+      """Alertes et fréquence de vérification de l'activité""";
+
+  /// ```dart
   /// "Activer les notifications"
   /// ```
   String get enableNotifications => """Activer les notifications""";
@@ -1381,6 +1418,12 @@ class SettingsMessagesFr extends SettingsMessages {
   /// ```
   String get refreshSectionBody =>
       """À quelle fréquence chaque écran vérifie les changements sur le serveur pendant que vous le consultez. Vous pouvez toujours tirer vers le bas pour actualiser manuellement.""";
+
+  /// ```dart
+  /// "À quelle fréquence chaque écran vérifie les changements"
+  /// ```
+  String get refreshSectionSubtitle =>
+      """À quelle fréquence chaque écran vérifie les changements""";
 
   /// ```dart
   /// "Listes"
@@ -6833,7 +6876,14 @@ Mot de passe : pantry-rocks""",
   """about.buyMeACoffee""": """Offrez-moi un café""",
   """settings.title""": """Réglages de l'app""",
   """settings.generalSection""": """Général""",
+  """settings.generalSectionBody""": """Langue, thème et couleurs""",
   """settings.interfaceSection""": """Interface""",
+  """settings.interfaceSectionBody""":
+      """Navigation, listes et actions sur les éléments""",
+  """settings.interfaceNavigationSection""": """Navigation""",
+  """settings.interfaceListsSection""": """Listes""",
+  """settings.interfaceItemActionsSection""": """Actions sur les éléments""",
+  """settings.interfaceAddingSection""": """Ajout d'éléments""",
   """settings.defaultItemTapAction""": """Action par défaut au toucher""",
   """settings.defaultItemTapActionBody""":
       """Ce qui se passe quand vous touchez la ligne d'un élément.""",
@@ -6922,6 +6972,8 @@ Mot de passe : pantry-rocks""",
   """settings.useServerThemeColorBody""":
       """Teinte l'application avec la couleur du thème de votre utilisateur Nextcloud. Désactivez pour utiliser les couleurs propres à l'application.""",
   """settings.notificationsSection""": """Notifications""",
+  """settings.notificationsSectionBody""":
+      """Alertes et fréquence de vérification de l'activité""",
   """settings.enableNotifications""": """Activer les notifications""",
   """settings.enableNotificationsBody""":
       """Afficher des alertes lorsque les membres du foyer ajoutent ou modifient du contenu.""",
@@ -6936,6 +6988,8 @@ Mot de passe : pantry-rocks""",
   """settings.refreshSection""": """Actualisation automatique""",
   """settings.refreshSectionBody""":
       """À quelle fréquence chaque écran vérifie les changements sur le serveur pendant que vous le consultez. Vous pouvez toujours tirer vers le bas pour actualiser manuellement.""",
+  """settings.refreshSectionSubtitle""":
+      """À quelle fréquence chaque écran vérifie les changements""",
   """settings.checklistRefresh""": """Listes""",
   """settings.notesRefresh""": """Notes""",
   """settings.photosRefresh""": """Photos""",

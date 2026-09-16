@@ -1093,9 +1093,40 @@ class SettingsMessagesNn extends SettingsMessages {
   String get generalSection => """Generelt""";
 
   /// ```dart
+  /// "Språk, tema og fargar"
+  /// ```
+  String get generalSectionBody => """Språk, tema og fargar""";
+
+  /// ```dart
   /// "Brukargrensesnitt"
   /// ```
   String get interfaceSection => """Brukargrensesnitt""";
+
+  /// ```dart
+  /// "Navigasjon, lister og handlingar på oppføringar"
+  /// ```
+  String get interfaceSectionBody =>
+      """Navigasjon, lister og handlingar på oppføringar""";
+
+  /// ```dart
+  /// "Navigasjon"
+  /// ```
+  String get interfaceNavigationSection => """Navigasjon""";
+
+  /// ```dart
+  /// "Lister"
+  /// ```
+  String get interfaceListsSection => """Lister""";
+
+  /// ```dart
+  /// "Handlingar på oppføringar"
+  /// ```
+  String get interfaceItemActionsSection => """Handlingar på oppføringar""";
+
+  /// ```dart
+  /// "Leggja til oppføringar"
+  /// ```
+  String get interfaceAddingSection => """Leggja til oppføringar""";
 
   /// ```dart
   /// "Standardhandling for rad"
@@ -1316,6 +1347,12 @@ class SettingsMessagesNn extends SettingsMessages {
   String get notificationsSection => """Varsel""";
 
   /// ```dart
+  /// "Varsel og kor ofte det blir sett etter aktivitet"
+  /// ```
+  String get notificationsSectionBody =>
+      """Varsel og kor ofte det blir sett etter aktivitet""";
+
+  /// ```dart
   /// "Slå på varsel"
   /// ```
   String get enableNotifications => """Slå på varsel""";
@@ -1372,6 +1409,12 @@ class SettingsMessagesNn extends SettingsMessages {
   /// ```
   String get refreshSectionBody =>
       """Kor ofte kvar skjerm ser etter endringar på tenaren medan du ser på han. Du kan alltid dra ned for å oppdatere manuelt.""";
+
+  /// ```dart
+  /// "Kor ofte kvar skjerm ser etter endringar"
+  /// ```
+  String get refreshSectionSubtitle =>
+      """Kor ofte kvar skjerm ser etter endringar""";
 
   /// ```dart
   /// "Lister"
@@ -6798,7 +6841,14 @@ Passord: pantry""",
   """about.buyMeACoffee""": """Kjøp ein kaffi""",
   """settings.title""": """Innstillingar""",
   """settings.generalSection""": """Generelt""",
+  """settings.generalSectionBody""": """Språk, tema og fargar""",
   """settings.interfaceSection""": """Brukargrensesnitt""",
+  """settings.interfaceSectionBody""":
+      """Navigasjon, lister og handlingar på oppføringar""",
+  """settings.interfaceNavigationSection""": """Navigasjon""",
+  """settings.interfaceListsSection""": """Lister""",
+  """settings.interfaceItemActionsSection""": """Handlingar på oppføringar""",
+  """settings.interfaceAddingSection""": """Leggja til oppføringar""",
   """settings.defaultItemTapAction""": """Standardhandling for rad""",
   """settings.defaultItemTapActionBody""":
       """Kva som skjer når du trykkar på ei rad.""",
@@ -6886,6 +6936,8 @@ Passord: pantry""",
   """settings.useServerThemeColorBody""":
       """Fargelegg appen med temafargen til Nextcloud-brukaren din. Slå av for å bruke appen sine eigne fargar.""",
   """settings.notificationsSection""": """Varsel""",
+  """settings.notificationsSectionBody""":
+      """Varsel og kor ofte det blir sett etter aktivitet""",
   """settings.enableNotifications""": """Slå på varsel""",
   """settings.enableNotificationsBody""":
       """Vis varsel når nokon legg til eller opppdaterer innhald.""",
@@ -6900,6 +6952,8 @@ Passord: pantry""",
   """settings.refreshSection""": """Automatisk oppdatering""",
   """settings.refreshSectionBody""":
       """Kor ofte kvar skjerm ser etter endringar på tenaren medan du ser på han. Du kan alltid dra ned for å oppdatere manuelt.""",
+  """settings.refreshSectionSubtitle""":
+      """Kor ofte kvar skjerm ser etter endringar""",
   """settings.checklistRefresh""": """Lister""",
   """settings.notesRefresh""": """Notat""",
   """settings.photosRefresh""": """Bilete""",

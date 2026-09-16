@@ -196,7 +196,13 @@ about:
 settings:
   title: App-Einstellungen
   generalSection: Allgemein
+  generalSectionBody: Sprache, Design und Farben
   interfaceSection: Oberfläche
+  interfaceSectionBody: Navigation, Listen und Eintragsaktionen
+  interfaceNavigationSection: Navigation
+  interfaceListsSection: Listen
+  interfaceItemActionsSection: Eintragsaktionen
+  interfaceAddingSection: Einträge hinzufügen
   defaultItemTapAction: Standardaktion beim Tippen
   defaultItemTapActionBody: "Was passiert, wenn du eine Eintragszeile antippst."
   itemTapActionNames:
@@ -273,6 +279,7 @@ settings:
   useServerThemeColor: Nextcloud-Designfarbe verwenden
   useServerThemeColorBody: Färbt die App mit der Designfarbe deines Nextcloud-Benutzers. Ausschalten, um die eigenen Farben der App zu verwenden.
   notificationsSection: Benachrichtigungen
+  notificationsSectionBody: Hinweise und wie oft nach Aktivität gesucht wird
   enableNotifications: Benachrichtigungen aktivieren
   enableNotificationsBody: Zeige Benachrichtigungen, wenn Haushaltsmitglieder Inhalte hinzufugen oder aktualisieren.
   pollInterval: "Auf neue Aktivität prüfen"
@@ -284,6 +291,7 @@ settings:
   permissionDenied: Benachrichtigungsberechtigung wurde verweigert. Aktiviere sie in den Systemeinstellungen.
   refreshSection: Automatische Aktualisierung
   refreshSectionBody: Wie oft jeder Bildschirm den Server auf Änderungen prüft, während du ihn ansiehst. Zum manuellen Aktualisieren kannst du jederzeit nach unten ziehen.
+  refreshSectionSubtitle: Wie oft jeder Bildschirm nach Änderungen sucht
   checklistRefresh: Listen
   notesRefresh: Notizen
   photosRefresh: Fotos

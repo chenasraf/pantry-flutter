@@ -1090,9 +1090,39 @@ class SettingsMessagesHe extends SettingsMessages {
   String get generalSection => """כללי""";
 
   /// ```dart
+  /// "שפה, ערכת נושא וצבעים"
+  /// ```
+  String get generalSectionBody => """שפה, ערכת נושא וצבעים""";
+
+  /// ```dart
   /// "ממשק"
   /// ```
   String get interfaceSection => """ממשק""";
+
+  /// ```dart
+  /// "ניווט, רשימות ופעולות על פריטים"
+  /// ```
+  String get interfaceSectionBody => """ניווט, רשימות ופעולות על פריטים""";
+
+  /// ```dart
+  /// "ניווט"
+  /// ```
+  String get interfaceNavigationSection => """ניווט""";
+
+  /// ```dart
+  /// "רשימות"
+  /// ```
+  String get interfaceListsSection => """רשימות""";
+
+  /// ```dart
+  /// "פעולות על פריטים"
+  /// ```
+  String get interfaceItemActionsSection => """פעולות על פריטים""";
+
+  /// ```dart
+  /// "הוספת פריטים"
+  /// ```
+  String get interfaceAddingSection => """הוספת פריטים""";
 
   /// ```dart
   /// "פעולת ברירת מחדל בלחיצה"
@@ -1309,6 +1339,11 @@ class SettingsMessagesHe extends SettingsMessages {
   String get notificationsSection => """התראות""";
 
   /// ```dart
+  /// "התראות וכל כמה זמן לבדוק פעילות"
+  /// ```
+  String get notificationsSectionBody => """התראות וכל כמה זמן לבדוק פעילות""";
+
+  /// ```dart
   /// "הפעל התראות"
   /// ```
   String get enableNotifications => """הפעל התראות""";
@@ -1365,6 +1400,12 @@ class SettingsMessagesHe extends SettingsMessages {
   /// ```
   String get refreshSectionBody =>
       """כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני.""";
+
+  /// ```dart
+  /// "כל כמה זמן כל מסך בודק אם יש שינויים"
+  /// ```
+  String get refreshSectionSubtitle =>
+      """כל כמה זמן כל מסך בודק אם יש שינויים""";
 
   /// ```dart
   /// "רשימות"
@@ -6750,7 +6791,13 @@ Map<String, String> get messagesHeMap => {
   """about.buyMeACoffee""": """קנו לי קפה""",
   """settings.title""": """הגדרות האפליקציה""",
   """settings.generalSection""": """כללי""",
+  """settings.generalSectionBody""": """שפה, ערכת נושא וצבעים""",
   """settings.interfaceSection""": """ממשק""",
+  """settings.interfaceSectionBody""": """ניווט, רשימות ופעולות על פריטים""",
+  """settings.interfaceNavigationSection""": """ניווט""",
+  """settings.interfaceListsSection""": """רשימות""",
+  """settings.interfaceItemActionsSection""": """פעולות על פריטים""",
+  """settings.interfaceAddingSection""": """הוספת פריטים""",
   """settings.defaultItemTapAction""": """פעולת ברירת מחדל בלחיצה""",
   """settings.defaultItemTapActionBody""":
       """מה קורה כאשר לוחצים על שורת פריט.""",
@@ -6835,6 +6882,8 @@ Map<String, String> get messagesHeMap => {
   """settings.useServerThemeColorBody""":
       """צביעת האפליקציה בצבע ערכת הנושא של משתמש ה-Nextcloud שלך. כבה כדי להשתמש בצבעים של האפליקציה עצמה.""",
   """settings.notificationsSection""": """התראות""",
+  """settings.notificationsSectionBody""":
+      """התראות וכל כמה זמן לבדוק פעילות""",
   """settings.enableNotifications""": """הפעל התראות""",
   """settings.enableNotificationsBody""":
       """הצג התראות כשבני משק הבית מוסיפים או מעדכנים תוכן.""",
@@ -6849,6 +6898,8 @@ Map<String, String> get messagesHeMap => {
   """settings.refreshSection""": """רענון אוטומטי""",
   """settings.refreshSectionBody""":
       """כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני.""",
+  """settings.refreshSectionSubtitle""":
+      """כל כמה זמן כל מסך בודק אם יש שינויים""",
   """settings.checklistRefresh""": """רשימות""",
   """settings.notesRefresh""": """פתקים""",
   """settings.photosRefresh""": """תמונות""",

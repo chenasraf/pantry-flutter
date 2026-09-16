@@ -1096,9 +1096,40 @@ class SettingsMessagesDe extends SettingsMessages {
   String get generalSection => """Allgemein""";
 
   /// ```dart
+  /// "Sprache, Design und Farben"
+  /// ```
+  String get generalSectionBody => """Sprache, Design und Farben""";
+
+  /// ```dart
   /// "Oberfläche"
   /// ```
   String get interfaceSection => """Oberfläche""";
+
+  /// ```dart
+  /// "Navigation, Listen und Eintragsaktionen"
+  /// ```
+  String get interfaceSectionBody =>
+      """Navigation, Listen und Eintragsaktionen""";
+
+  /// ```dart
+  /// "Navigation"
+  /// ```
+  String get interfaceNavigationSection => """Navigation""";
+
+  /// ```dart
+  /// "Listen"
+  /// ```
+  String get interfaceListsSection => """Listen""";
+
+  /// ```dart
+  /// "Eintragsaktionen"
+  /// ```
+  String get interfaceItemActionsSection => """Eintragsaktionen""";
+
+  /// ```dart
+  /// "Einträge hinzufügen"
+  /// ```
+  String get interfaceAddingSection => """Einträge hinzufügen""";
 
   /// ```dart
   /// "Standardaktion beim Tippen"
@@ -1320,6 +1351,12 @@ class SettingsMessagesDe extends SettingsMessages {
   String get notificationsSection => """Benachrichtigungen""";
 
   /// ```dart
+  /// "Hinweise und wie oft nach Aktivität gesucht wird"
+  /// ```
+  String get notificationsSectionBody =>
+      """Hinweise und wie oft nach Aktivität gesucht wird""";
+
+  /// ```dart
   /// "Benachrichtigungen aktivieren"
   /// ```
   String get enableNotifications => """Benachrichtigungen aktivieren""";
@@ -1376,6 +1413,12 @@ class SettingsMessagesDe extends SettingsMessages {
   /// ```
   String get refreshSectionBody =>
       """Wie oft jeder Bildschirm den Server auf Änderungen prüft, während du ihn ansiehst. Zum manuellen Aktualisieren kannst du jederzeit nach unten ziehen.""";
+
+  /// ```dart
+  /// "Wie oft jeder Bildschirm nach Änderungen sucht"
+  /// ```
+  String get refreshSectionSubtitle =>
+      """Wie oft jeder Bildschirm nach Änderungen sucht""";
 
   /// ```dart
   /// "Listen"
@@ -6832,7 +6875,14 @@ Passwort: pantry-rocks""",
   """about.buyMeACoffee""": """Spendier mir einen Kaffee""",
   """settings.title""": """App-Einstellungen""",
   """settings.generalSection""": """Allgemein""",
+  """settings.generalSectionBody""": """Sprache, Design und Farben""",
   """settings.interfaceSection""": """Oberfläche""",
+  """settings.interfaceSectionBody""":
+      """Navigation, Listen und Eintragsaktionen""",
+  """settings.interfaceNavigationSection""": """Navigation""",
+  """settings.interfaceListsSection""": """Listen""",
+  """settings.interfaceItemActionsSection""": """Eintragsaktionen""",
+  """settings.interfaceAddingSection""": """Einträge hinzufügen""",
   """settings.defaultItemTapAction""": """Standardaktion beim Tippen""",
   """settings.defaultItemTapActionBody""":
       """Was passiert, wenn du eine Eintragszeile antippst.""",
@@ -6920,6 +6970,8 @@ Passwort: pantry-rocks""",
   """settings.useServerThemeColorBody""":
       """Färbt die App mit der Designfarbe deines Nextcloud-Benutzers. Ausschalten, um die eigenen Farben der App zu verwenden.""",
   """settings.notificationsSection""": """Benachrichtigungen""",
+  """settings.notificationsSectionBody""":
+      """Hinweise und wie oft nach Aktivität gesucht wird""",
   """settings.enableNotifications""": """Benachrichtigungen aktivieren""",
   """settings.enableNotificationsBody""":
       """Zeige Benachrichtigungen, wenn Haushaltsmitglieder Inhalte hinzufugen oder aktualisieren.""",
@@ -6934,6 +6986,8 @@ Passwort: pantry-rocks""",
   """settings.refreshSection""": """Automatische Aktualisierung""",
   """settings.refreshSectionBody""":
       """Wie oft jeder Bildschirm den Server auf Änderungen prüft, während du ihn ansiehst. Zum manuellen Aktualisieren kannst du jederzeit nach unten ziehen.""",
+  """settings.refreshSectionSubtitle""":
+      """Wie oft jeder Bildschirm nach Änderungen sucht""",
   """settings.checklistRefresh""": """Listen""",
   """settings.notesRefresh""": """Notizen""",
   """settings.photosRefresh""": """Fotos""",

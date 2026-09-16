@@ -265,7 +265,13 @@ about:
 settings:
   title: Innstillingar
   generalSection: Generelt
+  generalSectionBody: Språk, tema og fargar
   interfaceSection: Brukargrensesnitt
+  interfaceSectionBody: Navigasjon, lister og handlingar på oppføringar
+  interfaceNavigationSection: Navigasjon
+  interfaceListsSection: Lister
+  interfaceItemActionsSection: Handlingar på oppføringar
+  interfaceAddingSection: Leggja til oppføringar
   defaultItemTapAction: Standardhandling for rad
   defaultItemTapActionBody: "Kva som skjer når du trykkar på ei rad."
   itemTapActionNames:
@@ -362,6 +368,7 @@ settings:
   useServerThemeColor: Bruk Nextcloud-temafarge
   useServerThemeColorBody: Fargelegg appen med temafargen til Nextcloud-brukaren din. Slå av for å bruke appen sine eigne fargar.
   notificationsSection: Varsel
+  notificationsSectionBody: Varsel og kor ofte det blir sett etter aktivitet
   enableNotifications: Slå på varsel
   enableNotificationsBody: Vis varsel når nokon legg til eller opppdaterer innhald.
   pollInterval: Sjå etter ny aktivitet
@@ -373,6 +380,7 @@ settings:
   permissionDenied: Tilgang til å sende varslar vart ikkje gitt. Slå det på i systeminnstillingane.
   refreshSection: Automatisk oppdatering
   refreshSectionBody: Kor ofte kvar skjerm ser etter endringar på tenaren medan du ser på han. Du kan alltid dra ned for å oppdatere manuelt.
+  refreshSectionSubtitle: Kor ofte kvar skjerm ser etter endringar
   checklistRefresh: Lister
   notesRefresh: Notat
   photosRefresh: Bilete

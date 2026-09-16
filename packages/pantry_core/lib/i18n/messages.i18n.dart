@@ -1090,9 +1090,39 @@ class SettingsMessages {
   String get generalSection => """General""";
 
   /// ```dart
+  /// "Language, theme and colors"
+  /// ```
+  String get generalSectionBody => """Language, theme and colors""";
+
+  /// ```dart
   /// "Interface"
   /// ```
   String get interfaceSection => """Interface""";
+
+  /// ```dart
+  /// "Navigation, lists and item actions"
+  /// ```
+  String get interfaceSectionBody => """Navigation, lists and item actions""";
+
+  /// ```dart
+  /// "Navigation"
+  /// ```
+  String get interfaceNavigationSection => """Navigation""";
+
+  /// ```dart
+  /// "Lists"
+  /// ```
+  String get interfaceListsSection => """Lists""";
+
+  /// ```dart
+  /// "Item actions"
+  /// ```
+  String get interfaceItemActionsSection => """Item actions""";
+
+  /// ```dart
+  /// "Adding items"
+  /// ```
+  String get interfaceAddingSection => """Adding items""";
 
   /// ```dart
   /// "Default item tap action"
@@ -1310,6 +1340,12 @@ class SettingsMessages {
   String get notificationsSection => """Notifications""";
 
   /// ```dart
+  /// "Alerts and how often to check for activity"
+  /// ```
+  String get notificationsSectionBody =>
+      """Alerts and how often to check for activity""";
+
+  /// ```dart
   /// "Enable notifications"
   /// ```
   String get enableNotifications => """Enable notifications""";
@@ -1366,6 +1402,12 @@ class SettingsMessages {
   /// ```
   String get refreshSectionBody =>
       """How often each screen checks the server for changes while you're viewing it. You can always pull down to refresh manually.""";
+
+  /// ```dart
+  /// "How often each screen checks for changes"
+  /// ```
+  String get refreshSectionSubtitle =>
+      """How often each screen checks for changes""";
 
   /// ```dart
   /// "Checklists"
@@ -6754,7 +6796,13 @@ Password: pantry-rocks""",
   """about.buyMeACoffee""": """Buy me a Coffee""",
   """settings.title""": """App Settings""",
   """settings.generalSection""": """General""",
+  """settings.generalSectionBody""": """Language, theme and colors""",
   """settings.interfaceSection""": """Interface""",
+  """settings.interfaceSectionBody""": """Navigation, lists and item actions""",
+  """settings.interfaceNavigationSection""": """Navigation""",
+  """settings.interfaceListsSection""": """Lists""",
+  """settings.interfaceItemActionsSection""": """Item actions""",
+  """settings.interfaceAddingSection""": """Adding items""",
   """settings.defaultItemTapAction""": """Default item tap action""",
   """settings.defaultItemTapActionBody""":
       """What happens when you tap an item row.""",
@@ -6841,6 +6889,8 @@ Password: pantry-rocks""",
   """settings.useServerThemeColorBody""":
       """Tint the app with your Nextcloud user's theme color. Turn off to use the app's own colors.""",
   """settings.notificationsSection""": """Notifications""",
+  """settings.notificationsSectionBody""":
+      """Alerts and how often to check for activity""",
   """settings.enableNotifications""": """Enable notifications""",
   """settings.enableNotificationsBody""":
       """Show alerts when household members add or update content.""",
@@ -6855,6 +6905,8 @@ Password: pantry-rocks""",
   """settings.refreshSection""": """Auto-refresh""",
   """settings.refreshSectionBody""":
       """How often each screen checks the server for changes while you're viewing it. You can always pull down to refresh manually.""",
+  """settings.refreshSectionSubtitle""":
+      """How often each screen checks for changes""",
   """settings.checklistRefresh""": """Checklists""",
   """settings.notesRefresh""": """Notes""",
   """settings.photosRefresh""": """Photos""",

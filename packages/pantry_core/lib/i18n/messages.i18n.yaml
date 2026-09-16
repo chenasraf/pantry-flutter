@@ -196,7 +196,13 @@ about:
 settings:
   title: App Settings
   generalSection: General
+  generalSectionBody: Language, theme and colors
   interfaceSection: Interface
+  interfaceSectionBody: Navigation, lists and item actions
+  interfaceNavigationSection: Navigation
+  interfaceListsSection: Lists
+  interfaceItemActionsSection: Item actions
+  interfaceAddingSection: Adding items
   defaultItemTapAction: Default item tap action
   defaultItemTapActionBody: "What happens when you tap an item row."
   itemTapActionNames:
@@ -273,6 +279,7 @@ settings:
   useServerThemeColor: Use Nextcloud theme color
   useServerThemeColorBody: Tint the app with your Nextcloud user's theme color. Turn off to use the app's own colors.
   notificationsSection: Notifications
+  notificationsSectionBody: Alerts and how often to check for activity
   enableNotifications: Enable notifications
   enableNotificationsBody: Show alerts when household members add or update content.
   pollInterval: Check for new activity
@@ -284,6 +291,7 @@ settings:
   permissionDenied: Notification permission was denied. Enable it in system settings.
   refreshSection: Auto-refresh
   refreshSectionBody: How often each screen checks the server for changes while you're viewing it. You can always pull down to refresh manually.
+  refreshSectionSubtitle: How often each screen checks for changes
   checklistRefresh: Checklists
   notesRefresh: Notes
   photosRefresh: Photos
