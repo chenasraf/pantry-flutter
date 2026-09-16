@@ -1762,6 +1762,8 @@ class CategoriesMessagesEs extends CategoriesMessages {
   /// ```
   String get globalList => """Todas las listas (global)""";
   SortCategoriesMessagesEs get sort => SortCategoriesMessagesEs(this);
+  StoreOrderCategoriesMessagesEs get storeOrder =>
+      StoreOrderCategoriesMessagesEs(this);
 }
 
 class SortCategoriesMessagesEs extends SortCategoriesMessages {
@@ -1782,6 +1784,48 @@ class SortCategoriesMessagesEs extends SortCategoriesMessages {
   /// "Personalizado"
   /// ```
   String get custom => """Personalizado""";
+}
+
+class StoreOrderCategoriesMessagesEs extends StoreOrderCategoriesMessages {
+  final CategoriesMessagesEs _parent;
+  const StoreOrderCategoriesMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Orden por tienda"
+  /// ```
+  String get title => """Orden por tienda""";
+
+  /// ```dart
+  /// "Ordena las categorías según recorres esta tienda. El modo compra sigue este orden mientras estás allí."
+  /// ```
+  String get hint =>
+      """Ordena las categorías según recorres esta tienda. El modo compra sigue este orden mientras estás allí.""";
+
+  /// ```dart
+  /// "Tienda"
+  /// ```
+  String get store => """Tienda""";
+
+  /// ```dart
+  /// "Aún no hay tiendas. Añade una para darle un orden propio."
+  /// ```
+  String get noStores =>
+      """Aún no hay tiendas. Añade una para darle un orden propio.""";
+
+  /// ```dart
+  /// "Arrastra para reordenar"
+  /// ```
+  String get dragHandle => """Arrastra para reordenar""";
+
+  /// ```dart
+  /// "Usar el orden compartido"
+  /// ```
+  String get useSharedOrder => """Usar el orden compartido""";
+
+  /// ```dart
+  /// "No se pudo cargar el orden de esta tienda."
+  /// ```
+  String get loadFailed => """No se pudo cargar el orden de esta tienda.""";
 }
 
 class CustomFieldsMessagesEs extends CustomFieldsMessages {
@@ -6913,6 +6957,16 @@ Contraseña: pantry-rocks""",
   """categories.sort.nameAZ""": """Nombre A–Z""",
   """categories.sort.nameZA""": """Nombre Z–A""",
   """categories.sort.custom""": """Personalizado""",
+  """categories.storeOrder.title""": """Orden por tienda""",
+  """categories.storeOrder.hint""":
+      """Ordena las categorías según recorres esta tienda. El modo compra sigue este orden mientras estás allí.""",
+  """categories.storeOrder.store""": """Tienda""",
+  """categories.storeOrder.noStores""":
+      """Aún no hay tiendas. Añade una para darle un orden propio.""",
+  """categories.storeOrder.dragHandle""": """Arrastra para reordenar""",
+  """categories.storeOrder.useSharedOrder""": """Usar el orden compartido""",
+  """categories.storeOrder.loadFailed""":
+      """No se pudo cargar el orden de esta tienda.""",
   """customFields.manageTitle""": """Campos personalizados""",
   """customFields.empty""":
       """Aún no hay campos personalizados. Añade uno para adjuntar información adicional a los artículos.""",

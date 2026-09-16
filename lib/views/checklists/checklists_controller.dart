@@ -1158,9 +1158,11 @@ class ChecklistsController extends ChangeNotifier {
       case SyncEntity.shoppingCheck:
       case SyncEntity.shoppingSkip:
       case SyncEntity.shoppingSession:
+      case SyncEntity.storeCategoryOrder:
         // Not surfaced in the checklists view — the shopping session controller
-        // reconciles its own check, skip and billed ops, the custom-fields
-        // manager its own definition ops, and the photo board its own uploads.
+        // reconciles its own check, skip, billed and aisle-order ops, the
+        // custom-fields manager its own definition ops, and the photo board its
+        // own uploads.
         break;
     }
   }

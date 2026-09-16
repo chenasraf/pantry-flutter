@@ -1758,6 +1758,8 @@ class CategoriesMessagesNn extends CategoriesMessages {
   /// ```
   String get globalList => """Alle lister (global)""";
   SortCategoriesMessagesNn get sort => SortCategoriesMessagesNn(this);
+  StoreOrderCategoriesMessagesNn get storeOrder =>
+      StoreOrderCategoriesMessagesNn(this);
 }
 
 class SortCategoriesMessagesNn extends SortCategoriesMessages {
@@ -1778,6 +1780,49 @@ class SortCategoriesMessagesNn extends SortCategoriesMessages {
   /// "Sjølvvald"
   /// ```
   String get custom => """Sjølvvald""";
+}
+
+class StoreOrderCategoriesMessagesNn extends StoreOrderCategoriesMessages {
+  final CategoriesMessagesNn _parent;
+  const StoreOrderCategoriesMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Rekkjefølgje per butikk"
+  /// ```
+  String get title => """Rekkjefølgje per butikk""";
+
+  /// ```dart
+  /// "Sorter kategoriane i den rekkjefølgja du går gjennom denne butikken. Handlemodus følgjer denne rekkjefølgja medan du er der."
+  /// ```
+  String get hint =>
+      """Sorter kategoriane i den rekkjefølgja du går gjennom denne butikken. Handlemodus følgjer denne rekkjefølgja medan du er der.""";
+
+  /// ```dart
+  /// "Butikk"
+  /// ```
+  String get store => """Butikk""";
+
+  /// ```dart
+  /// "Ingen butikkar enno. Legg til ein butikk for å gje han si eiga rekkjefølgje."
+  /// ```
+  String get noStores =>
+      """Ingen butikkar enno. Legg til ein butikk for å gje han si eiga rekkjefølgje.""";
+
+  /// ```dart
+  /// "Dra for å sortere"
+  /// ```
+  String get dragHandle => """Dra for å sortere""";
+
+  /// ```dart
+  /// "Bruk den delte rekkjefølgja"
+  /// ```
+  String get useSharedOrder => """Bruk den delte rekkjefølgja""";
+
+  /// ```dart
+  /// "Klarte ikkje laste rekkjefølgja for denne butikken."
+  /// ```
+  String get loadFailed =>
+      """Klarte ikkje laste rekkjefølgja for denne butikken.""";
 }
 
 class CustomFieldsMessagesNn extends CustomFieldsMessages {
@@ -6891,6 +6936,16 @@ Passord: pantry""",
   """categories.sort.nameAZ""": """Namn A-Z""",
   """categories.sort.nameZA""": """Namn Z-A""",
   """categories.sort.custom""": """Sjølvvald""",
+  """categories.storeOrder.title""": """Rekkjefølgje per butikk""",
+  """categories.storeOrder.hint""":
+      """Sorter kategoriane i den rekkjefølgja du går gjennom denne butikken. Handlemodus følgjer denne rekkjefølgja medan du er der.""",
+  """categories.storeOrder.store""": """Butikk""",
+  """categories.storeOrder.noStores""":
+      """Ingen butikkar enno. Legg til ein butikk for å gje han si eiga rekkjefølgje.""",
+  """categories.storeOrder.dragHandle""": """Dra for å sortere""",
+  """categories.storeOrder.useSharedOrder""": """Bruk den delte rekkjefølgja""",
+  """categories.storeOrder.loadFailed""":
+      """Klarte ikkje laste rekkjefølgja for denne butikken.""",
   """customFields.manageTitle""": """Eigendefinerte felt""",
   """customFields.empty""":
       """Ingen eigendefinerte felt enno. Legg til eitt for å knyte ekstra informasjon til oppføringar.""",

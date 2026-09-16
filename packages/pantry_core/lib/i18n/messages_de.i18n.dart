@@ -1762,6 +1762,8 @@ class CategoriesMessagesDe extends CategoriesMessages {
   /// ```
   String get globalList => """Alle Listen (global)""";
   SortCategoriesMessagesDe get sort => SortCategoriesMessagesDe(this);
+  StoreOrderCategoriesMessagesDe get storeOrder =>
+      StoreOrderCategoriesMessagesDe(this);
 }
 
 class SortCategoriesMessagesDe extends SortCategoriesMessages {
@@ -1782,6 +1784,49 @@ class SortCategoriesMessagesDe extends SortCategoriesMessages {
   /// "Benutzerdefiniert"
   /// ```
   String get custom => """Benutzerdefiniert""";
+}
+
+class StoreOrderCategoriesMessagesDe extends StoreOrderCategoriesMessages {
+  final CategoriesMessagesDe _parent;
+  const StoreOrderCategoriesMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Reihenfolge pro Geschäft"
+  /// ```
+  String get title => """Reihenfolge pro Geschäft""";
+
+  /// ```dart
+  /// "Ordne die Kategorien so an, wie du dieses Geschäft abläufst. Der Einkaufsmodus folgt dieser Reihenfolge, solange du dort bist."
+  /// ```
+  String get hint =>
+      """Ordne die Kategorien so an, wie du dieses Geschäft abläufst. Der Einkaufsmodus folgt dieser Reihenfolge, solange du dort bist.""";
+
+  /// ```dart
+  /// "Geschäft"
+  /// ```
+  String get store => """Geschäft""";
+
+  /// ```dart
+  /// "Noch keine Geschäfte. Füge eines hinzu, um ihm eine eigene Reihenfolge zu geben."
+  /// ```
+  String get noStores =>
+      """Noch keine Geschäfte. Füge eines hinzu, um ihm eine eigene Reihenfolge zu geben.""";
+
+  /// ```dart
+  /// "Zum Umsortieren ziehen"
+  /// ```
+  String get dragHandle => """Zum Umsortieren ziehen""";
+
+  /// ```dart
+  /// "Gemeinsame Reihenfolge verwenden"
+  /// ```
+  String get useSharedOrder => """Gemeinsame Reihenfolge verwenden""";
+
+  /// ```dart
+  /// "Reihenfolge für dieses Geschäft konnte nicht geladen werden."
+  /// ```
+  String get loadFailed =>
+      """Reihenfolge für dieses Geschäft konnte nicht geladen werden.""";
 }
 
 class CustomFieldsMessagesDe extends CustomFieldsMessages {
@@ -6925,6 +6970,17 @@ Passwort: pantry-rocks""",
   """categories.sort.nameAZ""": """Name A–Z""",
   """categories.sort.nameZA""": """Name Z–A""",
   """categories.sort.custom""": """Benutzerdefiniert""",
+  """categories.storeOrder.title""": """Reihenfolge pro Geschäft""",
+  """categories.storeOrder.hint""":
+      """Ordne die Kategorien so an, wie du dieses Geschäft abläufst. Der Einkaufsmodus folgt dieser Reihenfolge, solange du dort bist.""",
+  """categories.storeOrder.store""": """Geschäft""",
+  """categories.storeOrder.noStores""":
+      """Noch keine Geschäfte. Füge eines hinzu, um ihm eine eigene Reihenfolge zu geben.""",
+  """categories.storeOrder.dragHandle""": """Zum Umsortieren ziehen""",
+  """categories.storeOrder.useSharedOrder""":
+      """Gemeinsame Reihenfolge verwenden""",
+  """categories.storeOrder.loadFailed""":
+      """Reihenfolge für dieses Geschäft konnte nicht geladen werden.""",
   """customFields.manageTitle""": """Benutzerdefinierte Felder""",
   """customFields.empty""":
       """Noch keine benutzerdefinierten Felder. Füge eines hinzu, um Einträgen zusätzliche Informationen anzuhängen.""",

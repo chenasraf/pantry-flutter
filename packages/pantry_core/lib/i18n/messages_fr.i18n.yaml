@@ -326,6 +326,14 @@ categories:
     nameAZ: "Nom A–Z"
     nameZA: "Nom Z–A"
     custom: "Personnalisé"
+  storeOrder:
+    title: "Ordre par magasin"
+    hint: "Classez les catégories dans l'ordre où vous parcourez ce magasin. Le mode courses suit cet ordre pendant que vous y êtes."
+    store: Magasin
+    noStores: "Aucun magasin pour le moment. Ajoutez-en un pour lui donner son propre ordre."
+    dragHandle: "Glisser pour réorganiser"
+    useSharedOrder: "Utiliser l'ordre partagé"
+    loadFailed: "Impossible de charger l'ordre de ce magasin."
 
 customFields:
   manageTitle: "Champs personnalisés"

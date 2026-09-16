@@ -44,6 +44,16 @@ enum SyncEntity {
   /// the same one converges instead of doubling it — which is what lets a
   /// total typed at a till wait out the dead link a till is usually behind.
   shoppingSession,
+
+  /// The order a store's aisles are walked in. [SyncOp.op] is
+  /// [SyncOpKind.reorder] to arrange the store and [SyncOpKind.delete] to
+  /// return it to the house-wide order; [SyncOp.entityId] is the **store**.
+  ///
+  /// The body carries `{order: [4, 2, 7]}` — bare category ids rather than the
+  /// `{id, sortOrder}` pairs every other reorder sends, because the endpoint
+  /// takes positions from array order. Absolute, so a late arrangement says
+  /// everything the ones before it did.
+  storeCategoryOrder,
 }
 
 enum SyncOpKind {

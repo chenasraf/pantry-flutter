@@ -12,6 +12,7 @@ import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
+import 'package:pantry/views/categories/store_category_order_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class CategoriesView extends StatefulWidget {
@@ -199,6 +200,14 @@ class _CategoriesViewState extends State<CategoriesView> {
     return groups;
   }
 
+  Future<void> _openStoreOrder() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => StoreCategoryOrderView(houseId: widget.houseId),
+      ),
+    );
+  }
+
   Future<void> _create() async {
     final created = await Navigator.of(
       context,
@@ -316,6 +325,12 @@ class _CategoriesViewState extends State<CategoriesView> {
                 ),
             ],
           ),
+          if (hasFeature('store-category-order'))
+            IconButton(
+              icon: const Icon(Icons.storefront),
+              tooltip: m.categories.storeOrder.title,
+              onPressed: _openStoreOrder,
+            ),
           if (PlatformInfo.isDesktop)
             IconButton(
               icon: const Icon(Icons.refresh),

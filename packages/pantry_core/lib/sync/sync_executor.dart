@@ -60,6 +60,28 @@ class SyncExecutor {
         return _executeShoppingSkip(op);
       case SyncEntity.shoppingSession:
         return _executeShoppingSession(op);
+      case SyncEntity.storeCategoryOrder:
+        return _executeStoreCategoryOrder(op);
+    }
+  }
+
+  /// A store's aisle order. `entityId` names the store; the category ids ride
+  /// in `body['order']`, in the order they are walked. `reorder` arranges the
+  /// store, `delete` returns it to the house-wide order.
+  Future<SyncResult> _executeStoreCategoryOrder(SyncOp op) async {
+    final svc = CategoryService.instance;
+    final storeId = op.entityId;
+    if (storeId == null) return SyncResult.empty;
+    switch (op.op) {
+      case SyncOpKind.reorder:
+        final order = (op.body['order'] as List?)?.cast<int>() ?? const <int>[];
+        await svc.setStoreCategoryOrder(op.houseId, storeId, order);
+        return SyncResult.empty;
+      case SyncOpKind.delete:
+        await svc.clearStoreCategoryOrder(op.houseId, storeId);
+        return SyncResult.empty;
+      default:
+        return SyncResult.empty;
     }
   }
 

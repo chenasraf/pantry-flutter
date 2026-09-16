@@ -1750,6 +1750,8 @@ class CategoriesMessagesHe extends CategoriesMessages {
   /// ```
   String get globalList => """כל הרשימות (גלובלי)""";
   SortCategoriesMessagesHe get sort => SortCategoriesMessagesHe(this);
+  StoreOrderCategoriesMessagesHe get storeOrder =>
+      StoreOrderCategoriesMessagesHe(this);
 }
 
 class SortCategoriesMessagesHe extends SortCategoriesMessages {
@@ -1770,6 +1772,48 @@ class SortCategoriesMessagesHe extends SortCategoriesMessages {
   /// "מותאם אישית"
   /// ```
   String get custom => """מותאם אישית""";
+}
+
+class StoreOrderCategoriesMessagesHe extends StoreOrderCategoriesMessages {
+  final CategoriesMessagesHe _parent;
+  const StoreOrderCategoriesMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "סדר לפי חנות"
+  /// ```
+  String get title => """סדר לפי חנות""";
+
+  /// ```dart
+  /// "סדרו את הקטגוריות לפי הסדר שבו אתם עוברים בחנות הזו. מצב קניות יעקוב אחרי הסדר הזה בזמן שאתם שם."
+  /// ```
+  String get hint =>
+      """סדרו את הקטגוריות לפי הסדר שבו אתם עוברים בחנות הזו. מצב קניות יעקוב אחרי הסדר הזה בזמן שאתם שם.""";
+
+  /// ```dart
+  /// "חנות"
+  /// ```
+  String get store => """חנות""";
+
+  /// ```dart
+  /// "אין עדיין חנויות. הוסיפו חנות כדי לתת לה סדר משלה."
+  /// ```
+  String get noStores =>
+      """אין עדיין חנויות. הוסיפו חנות כדי לתת לה סדר משלה.""";
+
+  /// ```dart
+  /// "גררו כדי לסדר מחדש"
+  /// ```
+  String get dragHandle => """גררו כדי לסדר מחדש""";
+
+  /// ```dart
+  /// "להשתמש בסדר המשותף"
+  /// ```
+  String get useSharedOrder => """להשתמש בסדר המשותף""";
+
+  /// ```dart
+  /// "טעינת הסדר של החנות הזו נכשלה."
+  /// ```
+  String get loadFailed => """טעינת הסדר של החנות הזו נכשלה.""";
 }
 
 class CustomFieldsMessagesHe extends CustomFieldsMessages {
@@ -6840,6 +6884,15 @@ Map<String, String> get messagesHeMap => {
   """categories.sort.nameAZ""": """שם א'–ת'""",
   """categories.sort.nameZA""": """שם ת'–א'""",
   """categories.sort.custom""": """מותאם אישית""",
+  """categories.storeOrder.title""": """סדר לפי חנות""",
+  """categories.storeOrder.hint""":
+      """סדרו את הקטגוריות לפי הסדר שבו אתם עוברים בחנות הזו. מצב קניות יעקוב אחרי הסדר הזה בזמן שאתם שם.""",
+  """categories.storeOrder.store""": """חנות""",
+  """categories.storeOrder.noStores""":
+      """אין עדיין חנויות. הוסיפו חנות כדי לתת לה סדר משלה.""",
+  """categories.storeOrder.dragHandle""": """גררו כדי לסדר מחדש""",
+  """categories.storeOrder.useSharedOrder""": """להשתמש בסדר המשותף""",
+  """categories.storeOrder.loadFailed""": """טעינת הסדר של החנות הזו נכשלה.""",
   """customFields.manageTitle""": """שדות מותאמים אישית""",
   """customFields.empty""":
       """אין עדיין שדות מותאמים אישית. הוסיפו אחד כדי לצרף מידע נוסף לפריטים.""",

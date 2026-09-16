@@ -43,10 +43,17 @@ class ShoppingItemGroup {
 ///
 /// [categories] is best-effort reference data, so a category missing from it
 /// has no order to honour and trails the known ones in the order [items] gave.
+///
+/// [storeRank] is the active store's aisle order — category id to position —
+/// and is consulted before the house-wide one: a store arranges only the
+/// categories it has been arranged with, so the rest trail in house order,
+/// which is where the house-wide order appends a category nobody has walked
+/// into an aisle yet. Empty when the store follows the house order throughout.
 List<ShoppingItemGroup> groupShoppingItemsByCategory(
   List<ListItem> items,
-  Map<int, models.Category> categories,
-) {
+  Map<int, models.Category> categories, {
+  Map<int, int> storeRank = const {},
+}) {
   final buckets = <int?, List<ListItem>>{};
   final firstSeen = <int?, int>{};
   for (final item in items) {
@@ -69,6 +76,13 @@ List<ShoppingItemGroup> groupShoppingItemsByCategory(
       if (ca != null) return -1;
       if (cb != null) return 1;
       return firstSeen[a]!.compareTo(firstSeen[b]!);
+    }
+    final ra = storeRank[a];
+    final rb = storeRank[b];
+    if (ra != null || rb != null) {
+      if (ra == null) return 1;
+      if (rb == null) return -1;
+      if (ra != rb) return ra.compareTo(rb);
     }
     final bySort = ca.sortOrder.compareTo(cb.sortOrder);
     if (bySort != 0) return bySort;
@@ -126,6 +140,14 @@ class ShoppingSessionController extends ChangeNotifier {
   Map<int, models.Category> _categories = {};
   Map<int, Store> _stores = {};
   Map<int, Store> get stores => _stores;
+
+  /// The active store's aisle order, as category id to position. Empty when the
+  /// store follows the house-wide order.
+  Map<int, int> _storeRank = const {};
+
+  /// The store [_storeRank] describes. Held so advancing to the next shop can't
+  /// leave the trip being walked in the last one's aisles.
+  int? _storeRankStoreId;
 
   Map<String, Member> _members = {};
   Map<String, Member> get members => _members;
@@ -276,7 +298,7 @@ class ShoppingSessionController extends ChangeNotifier {
   /// Items grouped one block per category, in category order (Uncategorized
   /// last), each block keeping the server's item order.
   List<ShoppingItemGroup> get groupedItems =>
-      groupShoppingItemsByCategory(_items, _categories);
+      groupShoppingItemsByCategory(_items, _categories, storeRank: _storeRank);
 
   Future<void> load() async {
     _bindSync();
@@ -298,6 +320,7 @@ class ShoppingSessionController extends ChangeNotifier {
         mm.userId: mm,
     };
     _reminders = _service.getCachedReminders(houseId) ?? _reminders;
+    _adoptCachedStoreCategoryOrder(_session.activeStoreId);
 
     unawaited(_loadReferenceData());
 
@@ -425,7 +448,54 @@ class ShoppingSessionController extends ChangeNotifier {
       _removed.values.toList()
         ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
+  /// Take [storeId]'s arrangement from the cache — what a cold offline trip
+  /// opens on, and what holds the aisle order until a fresh read lands.
+  void _adoptCachedStoreCategoryOrder(int? storeId) {
+    if (storeId == null || !hasFeature('store-category-order')) {
+      _setStoreCategoryOrder(storeId, const []);
+      return;
+    }
+    _setStoreCategoryOrder(
+      storeId,
+      CategoryService.instance.getCachedStoreCategoryOrder(houseId, storeId) ??
+          const [],
+    );
+  }
+
+  void _setStoreCategoryOrder(int? storeId, List<int> categoryIds) {
+    _storeRankStoreId = storeId;
+    _storeRank = {
+      for (var i = 0; i < categoryIds.length; i++) categoryIds[i]: i,
+    };
+  }
+
+  /// Re-read the active store's aisle order. The arrangement is per-store, so
+  /// this rides along with every item refresh — advancing to the next shop is
+  /// exactly the moment the order changes. Never throws: a failed read leaves
+  /// the cached arrangement in place, which is what an aisle out of signal has
+  /// to be walked on.
+  Future<void> _refreshStoreCategoryOrder() async {
+    final storeId = _session.activeStoreId;
+    if (storeId == null || !hasFeature('store-category-order')) {
+      _setStoreCategoryOrder(storeId, const []);
+      return;
+    }
+    if (storeId != _storeRankStoreId) _adoptCachedStoreCategoryOrder(storeId);
+    try {
+      final ids = await CategoryService.instance.getStoreCategoryOrder(
+        houseId,
+        storeId,
+      );
+      if (_session.activeStoreId == storeId) {
+        _setStoreCategoryOrder(storeId, ids);
+      }
+    } catch (e) {
+      debugPrint('[ShoppingSessionController] store order refresh failed: $e');
+    }
+  }
+
   Future<void> _refreshLiveData({required bool includeHeartbeat}) async {
+    final storeOrder = _refreshStoreCategoryOrder();
     final results = await Future.wait([
       _service.getItems(houseId, sessionId),
       _service.getReview(houseId, sessionId),
@@ -515,6 +585,7 @@ class ShoppingSessionController extends ChangeNotifier {
       }
       _removed = next;
     }
+    await storeOrder;
     notifyListeners();
   }
 

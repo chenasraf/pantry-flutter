@@ -415,6 +415,16 @@ categories:
     nameAZ: "Namn A-Z"
     nameZA: "Namn Z-A"
     custom: Sjølvvald
+  storeOrder:
+    title: Rekkjefølgje per butikk
+    hint: "Sorter kategoriane i den rekkjefølgja du går gjennom denne butikken.
+      Handlemodus følgjer denne rekkjefølgja medan du er der."
+    store: Butikk
+    noStores: "Ingen butikkar enno. Legg til ein butikk for å gje han si eiga
+      rekkjefølgje."
+    dragHandle: "Dra for å sortere"
+    useSharedOrder: "Bruk den delte rekkjefølgja"
+    loadFailed: "Klarte ikkje laste rekkjefølgja for denne butikken."
 
 customFields:
   manageTitle: Eigendefinerte felt

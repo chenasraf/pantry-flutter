@@ -1743,6 +1743,8 @@ class CategoriesMessages {
   /// ```
   String get globalList => """All lists (global)""";
   SortCategoriesMessages get sort => SortCategoriesMessages(this);
+  StoreOrderCategoriesMessages get storeOrder =>
+      StoreOrderCategoriesMessages(this);
 }
 
 class SortCategoriesMessages {
@@ -1763,6 +1765,48 @@ class SortCategoriesMessages {
   /// "Custom"
   /// ```
   String get custom => """Custom""";
+}
+
+class StoreOrderCategoriesMessages {
+  final CategoriesMessages _parent;
+  const StoreOrderCategoriesMessages(this._parent);
+
+  /// ```dart
+  /// "Per-store order"
+  /// ```
+  String get title => """Per-store order""";
+
+  /// ```dart
+  /// "Arrange the categories in the order you walk this store. Shopping mode follows this order while you're there."
+  /// ```
+  String get hint =>
+      """Arrange the categories in the order you walk this store. Shopping mode follows this order while you're there.""";
+
+  /// ```dart
+  /// "Store"
+  /// ```
+  String get store => """Store""";
+
+  /// ```dart
+  /// "No stores yet. Add a store to give it an order of its own."
+  /// ```
+  String get noStores =>
+      """No stores yet. Add a store to give it an order of its own.""";
+
+  /// ```dart
+  /// "Drag to reorder"
+  /// ```
+  String get dragHandle => """Drag to reorder""";
+
+  /// ```dart
+  /// "Use the shared order"
+  /// ```
+  String get useSharedOrder => """Use the shared order""";
+
+  /// ```dart
+  /// "Couldn't load the order for this store."
+  /// ```
+  String get loadFailed => """Couldn't load the order for this store.""";
 }
 
 class CustomFieldsMessages {
@@ -6846,6 +6890,16 @@ Password: pantry-rocks""",
   """categories.sort.nameAZ""": """Name A–Z""",
   """categories.sort.nameZA""": """Name Z–A""",
   """categories.sort.custom""": """Custom""",
+  """categories.storeOrder.title""": """Per-store order""",
+  """categories.storeOrder.hint""":
+      """Arrange the categories in the order you walk this store. Shopping mode follows this order while you're there.""",
+  """categories.storeOrder.store""": """Store""",
+  """categories.storeOrder.noStores""":
+      """No stores yet. Add a store to give it an order of its own.""",
+  """categories.storeOrder.dragHandle""": """Drag to reorder""",
+  """categories.storeOrder.useSharedOrder""": """Use the shared order""",
+  """categories.storeOrder.loadFailed""":
+      """Couldn't load the order for this store.""",
   """customFields.manageTitle""": """Custom fields""",
   """customFields.empty""":
       """No custom fields yet. Add one to attach extra info to items.""",

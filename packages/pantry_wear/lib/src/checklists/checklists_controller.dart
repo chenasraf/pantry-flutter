@@ -70,6 +70,7 @@ class ChecklistsController extends ChangeNotifier {
     List<ShoppingPresenceEntry> joinableTrips = const [],
     String? currentUserId,
     String itemSort = 'custom',
+    List<int> storeCategoryOrder = const [],
   }) : _seededUserId = currentUserId {
     _itemSort = itemSort;
     _houseId = houseId;
@@ -81,6 +82,8 @@ class ChecklistsController extends ChangeNotifier {
     _categories = {for (final c in categories) c.id: c};
     _stores = {for (final s in stores) s.id: s};
     _session = session;
+    _storeCategoryOrder = storeCategoryOrder;
+    _storeCategoryOrderStoreId = session?.activeStoreId;
     _review = review;
     _reminders = reminders;
     _members = {for (final m in members) m.userId: m};
@@ -236,8 +239,31 @@ class ChecklistsController extends ChangeNotifier {
       ? ChecklistGrouping.store
       : ChecklistGrouping.category;
 
-  List<Category> get sortedCategories =>
-      CategoryService.sortCategories(_categories.values, _categorySort);
+  /// The active store's aisle order — category ids, in the order the shop is
+  /// walked — and the store it belongs to.
+  ///
+  /// Cached rather than fetched on demand: a watch is regularly out of range of
+  /// its phone and its process dies constantly, and an arrangement only
+  /// available online would drop the wearer back into house order exactly when
+  /// they are standing mid-aisle.
+  List<int> _storeCategoryOrder = const [];
+  int? _storeCategoryOrderStoreId;
+
+  /// The categories in the order the page groups by: the shop's own while a
+  /// trip is standing in one that has been arranged, and the house's otherwise.
+  List<Category> get sortedCategories {
+    final storeId = _session?.activeStoreId;
+    if (mode == ChecklistMode.session &&
+        storeId != null &&
+        storeId == _storeCategoryOrderStoreId &&
+        _storeCategoryOrder.isNotEmpty) {
+      return CategoryService.orderForStore(
+        _categories.values,
+        _storeCategoryOrder,
+      );
+    }
+    return CategoryService.sortCategories(_categories.values, _categorySort);
+  }
 
   List<Store> get sortedStores =>
       StoreService.sortStores(_stores.values, _storeSort);
@@ -467,6 +493,7 @@ class ChecklistsController extends ChangeNotifier {
     // A trip read back from the cache is still a mirrored scope, and the phone
     // cannot push what it has not been told the watch is showing.
     _mirror.setSession(session?.id);
+    _adoptCachedStoreCategoryOrder(session?.activeStoreId);
     if (session == null) {
       final listId = await _scope.resolveList(_lists) ?? _scope.listId;
       _list = _listFor(listId, house);
@@ -874,10 +901,59 @@ class ChecklistsController extends ChangeNotifier {
     byList.forEach(_checklists.cacheItems);
   }
 
+  /// The shop's aisle order as the last read left it, which is what a trip
+  /// walked out of range is grouped by.
+  void _adoptCachedStoreCategoryOrder(int? storeId) {
+    final house = _houseId;
+    if (house == null ||
+        storeId == null ||
+        !hasFeature('store-category-order')) {
+      _storeCategoryOrder = const [];
+      _storeCategoryOrderStoreId = storeId;
+      return;
+    }
+    _storeCategoryOrder =
+        CategoryService.instance.getCachedStoreCategoryOrder(house, storeId) ??
+        const [];
+    _storeCategoryOrderStoreId = storeId;
+  }
+
+  /// Re-read the shop's aisle order. Per-store, so it rides along with the
+  /// trip's items — moving to the next shop is the moment the order changes.
+  /// Never throws: the cached arrangement is a better answer mid-aisle than
+  /// dropping back to the house order.
+  Future<void> _refreshStoreCategoryOrder() async {
+    final house = _houseId;
+    final storeId = _session?.activeStoreId;
+    if (house == null ||
+        storeId == null ||
+        !hasFeature('store-category-order')) {
+      _adoptCachedStoreCategoryOrder(storeId);
+      return;
+    }
+    if (storeId != _storeCategoryOrderStoreId) {
+      _adoptCachedStoreCategoryOrder(storeId);
+    }
+    try {
+      final ids = await CategoryService.instance.getStoreCategoryOrder(
+        house,
+        storeId,
+      );
+      if (_session?.activeStoreId == storeId) {
+        _storeCategoryOrder = ids;
+        _storeCategoryOrderStoreId = storeId;
+      }
+    } catch (_) {}
+  }
+
   Future<void> _refreshSessionItems() async {
     final house = _houseId;
     final session = _session;
     if (house == null || session == null) return;
+    // What a row *is* and what orders the group it sits in are two independent
+    // reads, so the aisle order goes out alongside the items rather than in
+    // front of them — a round trip on a watch is a wrist held up.
+    final aisleOrder = _refreshStoreCategoryOrder();
     try {
       final items = await _shopping.getItems(house, session.id);
       _items = _withoutPendingSessionWrites(items, house, session.id);
@@ -899,6 +975,7 @@ class ChecklistsController extends ChangeNotifier {
     try {
       _removed = await _shopping.getRemovedItems(house, session.id);
     } catch (_) {}
+    await aisleOrder;
   }
 
   /// The queue wins over any snapshot. An item checked or taken off the trip

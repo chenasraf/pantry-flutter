@@ -60,7 +60,37 @@ class IdRemap {
       result = _rewriteItemStoreIds(result);
       result = _rewriteItemLabelIds(result);
     }
+    if (result.entity == SyncEntity.storeCategoryOrder) {
+      result = _rewriteArrangementStore(result);
+      result = _rewriteArrangementCategoryIds(result);
+    }
     return result;
+  }
+
+  /// An arrangement is addressed by the *store* it belongs to, so a temp id in
+  /// [SyncOp.tempEntityId] resolves against the store's bindings rather than
+  /// its own entity's.
+  SyncOp _rewriteArrangementStore(SyncOp op) {
+    if (op.entityId != null) return op;
+    final temp = op.tempEntityId;
+    if (temp == null) return op;
+    final real = resolve(SyncEntity.store, temp);
+    return real == null ? op : op.copyWith(entityId: real);
+  }
+
+  /// An arrangement lists bare category ids, any of which may be a temp id
+  /// when the category was created in the same offline session.
+  SyncOp _rewriteArrangementCategoryIds(SyncOp op) {
+    final order = (op.body['order'] as List?)?.cast<int>();
+    if (order == null) return op;
+    final mapped = [
+      for (final id in order)
+        id < 0 ? (resolve(SyncEntity.category, id) ?? id) : id,
+    ];
+    if (_sameInts(mapped, order)) return op;
+    final body = Map<String, dynamic>.from(op.body);
+    body['order'] = mapped;
+    return op.copyWith(body: body);
   }
 
   SyncOp _rewriteItemStoreIds(SyncOp op) {

@@ -254,6 +254,7 @@ class SyncManager {
         case SyncEntity.shoppingCheck:
         case SyncEntity.shoppingSkip:
         case SyncEntity.shoppingSession:
+        case SyncEntity.storeCategoryOrder:
           break;
       }
     }
@@ -474,6 +475,13 @@ class SyncManager {
           // temp store/label id.
           break;
         }
+        if (op.entity == SyncEntity.storeCategoryOrder &&
+            _arrangementHasUnresolvedCategories(op)) {
+          // An arrangement naming a category whose create is still ahead in
+          // the queue would be stored without it — the server drops ids it
+          // doesn't know — so hold it until that create lands.
+          break;
+        }
         try {
           final result = await _executor.execute(op);
           int? bound;
@@ -572,6 +580,14 @@ class SyncManager {
     return labelIds.any((id) => id < 0);
   }
 
+  /// A store arrangement is dispatchable only once every category id it lists
+  /// has resolved to a real (non-negative) server id.
+  bool _arrangementHasUnresolvedCategories(SyncOp op) {
+    final order = (op.body['order'] as List?)?.cast<int>();
+    if (order == null) return false;
+    return order.any((id) => id < 0);
+  }
+
   /// A rewritten batch op is dispatchable only once every id it references
   /// resolves to a real (non-negative) server id.
   bool _batchHasUnresolvedRefs(SyncOp op) {
@@ -654,6 +670,16 @@ class SyncManager {
     }
     switch (entity) {
       case SyncEntity.category:
+        // An arrangement lists bare category ids, so one that now never
+        // existed simply leaves the sequence.
+        if (o.entity == SyncEntity.storeCategoryOrder) {
+          final order = (o.body['order'] as List?)?.cast<int>();
+          if (order == null || !order.contains(tempId)) return o;
+          final kept = order.where((id) => id != tempId).toList();
+          return o.copyWith(
+            body: Map<String, dynamic>.of(o.body)..['order'] = kept,
+          );
+        }
         if (o.body['categoryId'] == tempId) {
           final body = Map<String, dynamic>.of(o.body);
           // A batch set-category keeps a null target (clears the category on
@@ -666,6 +692,12 @@ class SyncManager {
           return o.copyWith(body: body);
         }
       case SyncEntity.store:
+        // An arrangement belongs to a store that now never existed; there is
+        // nothing left for it to arrange.
+        if (o.entity == SyncEntity.storeCategoryOrder &&
+            o.effectiveEntityId == tempId) {
+          return null;
+        }
         final storeIds = (o.body['storeIds'] as List?)?.cast<int>();
         if (storeIds != null && storeIds.contains(tempId)) {
           final body = Map<String, dynamic>.of(o.body)
@@ -712,6 +744,10 @@ class SyncManager {
         // Shopping checks, skips and billed totals reference real item, store
         // and session ids, never a temp create, so they can't hold a dead
         // reference.
+        break;
+      case SyncEntity.storeCategoryOrder:
+        // Nothing is ever created under an arrangement, so no other op can
+        // hold a temp reference to one.
         break;
     }
     return o;

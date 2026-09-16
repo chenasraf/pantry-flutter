@@ -326,6 +326,14 @@ categories:
     nameAZ: "Name A–Z"
     nameZA: "Name Z–A"
     custom: Benutzerdefiniert
+  storeOrder:
+    title: Reihenfolge pro Geschäft
+    hint: "Ordne die Kategorien so an, wie du dieses Geschäft abläufst. Der Einkaufsmodus folgt dieser Reihenfolge, solange du dort bist."
+    store: "Geschäft"
+    noStores: "Noch keine Geschäfte. Füge eines hinzu, um ihm eine eigene Reihenfolge zu geben."
+    dragHandle: Zum Umsortieren ziehen
+    useSharedOrder: Gemeinsame Reihenfolge verwenden
+    loadFailed: "Reihenfolge für dieses Geschäft konnte nicht geladen werden."
 
 customFields:
   manageTitle: Benutzerdefinierte Felder

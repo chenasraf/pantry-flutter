@@ -103,4 +103,72 @@ void main() {
       );
     });
   });
+
+  group('groupShoppingItemsByCategory with a store arrangement', () {
+    final dairy = makeCategory(id: 1, name: 'Dairy', sortOrder: 1);
+    final produce = makeCategory(id: 2, name: 'Produce', sortOrder: 0);
+    final bakery = makeCategory(id: 3, name: 'Bakery', sortOrder: 2);
+    final categories = {
+      dairy.id: dairy,
+      produce.id: produce,
+      bakery.id: bakery,
+    };
+    final items = [
+      makeListItem(id: 1, categoryId: dairy.id),
+      makeListItem(id: 2, categoryId: produce.id),
+      makeListItem(id: 3, categoryId: bakery.id),
+    ];
+
+    test('an empty arrangement leaves the house order untouched', () {
+      final houseOrder = groupShoppingItemsByCategory(items, categories);
+
+      expect(
+        groupShoppingItemsByCategory(
+          items,
+          categories,
+          storeRank: const {},
+        ).map((g) => g.category?.id).toList(),
+        houseOrder.map((g) => g.category?.id).toList(),
+      );
+    });
+
+    test('arranged categories lead, in the store order', () {
+      final groups = groupShoppingItemsByCategory(
+        items,
+        categories,
+        // Dairy then Produce — the reverse of the house order.
+        storeRank: {dairy.id: 0, produce.id: 1, bakery.id: 2},
+      );
+
+      expect(groups.map((g) => g.category?.id).toList(), [
+        dairy.id,
+        produce.id,
+        bakery.id,
+      ]);
+    });
+
+    test('unarranged categories trail, in the house order', () {
+      final groups = groupShoppingItemsByCategory(
+        items,
+        categories,
+        storeRank: {bakery.id: 0},
+      );
+
+      expect(groups.map((g) => g.category?.id).toList(), [
+        bakery.id,
+        produce.id,
+        dairy.id,
+      ]);
+    });
+
+    test('uncategorized items still trail the arrangement', () {
+      final groups = groupShoppingItemsByCategory(
+        [...items, makeListItem(id: 4, categoryId: null)],
+        categories,
+        storeRank: {bakery.id: 0},
+      );
+
+      expect(groups.last.category, isNull);
+    });
+  });
 }

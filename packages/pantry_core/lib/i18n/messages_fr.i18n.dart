@@ -1766,6 +1766,8 @@ class CategoriesMessagesFr extends CategoriesMessages {
   /// ```
   String get globalList => """Toutes les listes (global)""";
   SortCategoriesMessagesFr get sort => SortCategoriesMessagesFr(this);
+  StoreOrderCategoriesMessagesFr get storeOrder =>
+      StoreOrderCategoriesMessagesFr(this);
 }
 
 class SortCategoriesMessagesFr extends SortCategoriesMessages {
@@ -1786,6 +1788,48 @@ class SortCategoriesMessagesFr extends SortCategoriesMessages {
   /// "Personnalisé"
   /// ```
   String get custom => """Personnalisé""";
+}
+
+class StoreOrderCategoriesMessagesFr extends StoreOrderCategoriesMessages {
+  final CategoriesMessagesFr _parent;
+  const StoreOrderCategoriesMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Ordre par magasin"
+  /// ```
+  String get title => """Ordre par magasin""";
+
+  /// ```dart
+  /// "Classez les catégories dans l'ordre où vous parcourez ce magasin. Le mode courses suit cet ordre pendant que vous y êtes."
+  /// ```
+  String get hint =>
+      """Classez les catégories dans l'ordre où vous parcourez ce magasin. Le mode courses suit cet ordre pendant que vous y êtes.""";
+
+  /// ```dart
+  /// "Magasin"
+  /// ```
+  String get store => """Magasin""";
+
+  /// ```dart
+  /// "Aucun magasin pour le moment. Ajoutez-en un pour lui donner son propre ordre."
+  /// ```
+  String get noStores =>
+      """Aucun magasin pour le moment. Ajoutez-en un pour lui donner son propre ordre.""";
+
+  /// ```dart
+  /// "Glisser pour réorganiser"
+  /// ```
+  String get dragHandle => """Glisser pour réorganiser""";
+
+  /// ```dart
+  /// "Utiliser l'ordre partagé"
+  /// ```
+  String get useSharedOrder => """Utiliser l'ordre partagé""";
+
+  /// ```dart
+  /// "Impossible de charger l'ordre de ce magasin."
+  /// ```
+  String get loadFailed => """Impossible de charger l'ordre de ce magasin.""";
 }
 
 class CustomFieldsMessagesFr extends CustomFieldsMessages {
@@ -6929,6 +6973,16 @@ Mot de passe : pantry-rocks""",
   """categories.sort.nameAZ""": """Nom A–Z""",
   """categories.sort.nameZA""": """Nom Z–A""",
   """categories.sort.custom""": """Personnalisé""",
+  """categories.storeOrder.title""": """Ordre par magasin""",
+  """categories.storeOrder.hint""":
+      """Classez les catégories dans l'ordre où vous parcourez ce magasin. Le mode courses suit cet ordre pendant que vous y êtes.""",
+  """categories.storeOrder.store""": """Magasin""",
+  """categories.storeOrder.noStores""":
+      """Aucun magasin pour le moment. Ajoutez-en un pour lui donner son propre ordre.""",
+  """categories.storeOrder.dragHandle""": """Glisser pour réorganiser""",
+  """categories.storeOrder.useSharedOrder""": """Utiliser l'ordre partagé""",
+  """categories.storeOrder.loadFailed""":
+      """Impossible de charger l'ordre de ce magasin.""",
   """customFields.manageTitle""": """Champs personnalisés""",
   """customFields.empty""":
       """Aucun champ personnalisé pour le moment. Ajoutez-en un pour attacher des informations supplémentaires aux articles.""",

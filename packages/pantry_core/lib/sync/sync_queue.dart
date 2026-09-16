@@ -418,7 +418,14 @@ class SyncQueue {
     for (var i = 0; i < ops.length; i++) {
       final op = ops[i];
       if (op.op != SyncOpKind.reorder) continue;
-      final k = '${op.entity.name}:${op.parentId ?? op.houseId}';
+      // What a reorder rearranges *inside*: a list for items, the house for a
+      // house-wide order — and the store for an arrangement, which names it in
+      // `entityId` rather than `parentId`, so two stores don't collapse into
+      // whichever was arranged last.
+      final scope = op.entity == SyncEntity.storeCategoryOrder
+          ? op.effectiveEntityId
+          : op.parentId;
+      final k = '${op.entity.name}:${scope ?? op.houseId}';
       byParent.putIfAbsent(k, () => []).add(i);
     }
     bool changed = false;

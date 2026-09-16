@@ -326,6 +326,14 @@ categories:
     nameAZ: "Nombre A–Z"
     nameZA: "Nombre Z–A"
     custom: "Personalizado"
+  storeOrder:
+    title: Orden por tienda
+    hint: "Ordena las categorías según recorres esta tienda. El modo compra sigue este orden mientras estás allí."
+    store: Tienda
+    noStores: "Aún no hay tiendas. Añade una para darle un orden propio."
+    dragHandle: Arrastra para reordenar
+    useSharedOrder: Usar el orden compartido
+    loadFailed: "No se pudo cargar el orden de esta tienda."
 
 customFields:
   manageTitle: "Campos personalizados"

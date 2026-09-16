@@ -326,6 +326,14 @@ categories:
     nameAZ: "Name A–Z"
     nameZA: "Name Z–A"
     custom: Custom
+  storeOrder:
+    title: Per-store order
+    hint: "Arrange the categories in the order you walk this store. Shopping mode follows this order while you're there."
+    store: Store
+    noStores: "No stores yet. Add a store to give it an order of its own."
+    dragHandle: Drag to reorder
+    useSharedOrder: Use the shared order
+    loadFailed: "Couldn't load the order for this store."
 
 customFields:
   manageTitle: Custom fields
