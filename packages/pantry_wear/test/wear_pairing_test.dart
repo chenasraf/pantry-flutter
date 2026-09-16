@@ -87,12 +87,15 @@ void main() {
   /// Turn the event queue until [reached] holds, or give up and let the
   /// assertion that follows say what was missing.
   ///
-  /// A count of turns is a guess about how deep an async chain runs, and an
-  /// unpair is the deepest one here: a logout, ten cache stores, the prefs and
-  /// the appearance, then a fresh `start`. Waiting on the outcome instead is
-  /// what stops the same code passing and failing on different runs.
+  /// The bound is wall clock rather than a count of turns, because a turn is a
+  /// trip through the scheduler and not a unit of progress: a chain waiting on
+  /// storage spends as many turns as the machine is slow, and an unpair is the
+  /// deepest chain here — a logout, ten cache stores, the prefs and the
+  /// appearance, then a fresh `start`. Counting turns gives up on a loaded
+  /// machine while the same code sails through on an idle one.
   Future<void> settleUntil(bool Function() reached) async {
-    for (var turn = 0; turn < 200 && !reached(); turn++) {
+    final giveUp = DateTime.now().add(const Duration(seconds: 5));
+    while (!reached() && DateTime.now().isBefore(giveUp)) {
       await pumpEventQueue(times: 1);
     }
   }
@@ -283,7 +286,7 @@ void main() {
             hiddenItemChips: {'price'},
           ).toJson(),
         );
-        await settle();
+        await settleUntil(() => sentPaths().contains('/watch/scope'));
 
         // The wearer has since chosen for themselves, on the watch, for the
         // watch — and the phone has moved on too.
@@ -304,7 +307,9 @@ void main() {
             hiddenItemChips: {'store', 'quantity'},
           ).toJson(),
         );
-        await settle();
+        await settleUntil(
+          () => AuthService.instance.credentials?.appPassword == 'fresher',
+        );
 
         expect(AuthService.instance.credentials?.appPassword, 'fresher');
         expect(PrefsService.instance.hiddenItemChips, {'note'});
@@ -391,7 +396,7 @@ void main() {
           houseId: 4,
         ).toJson(),
       );
-      await settle();
+      await settleUntil(() => sentPaths().contains('/watch/scope'));
       asked.clear();
 
       await client.renew();
@@ -407,7 +412,9 @@ void main() {
           houseId: 4,
         ).toJson(),
       );
-      await settle();
+      await settleUntil(
+        () => AuthService.instance.credentials?.appPassword == 'fresher',
+      );
 
       // A prompt is a single moment, answered once. The settings row is where
       // a wearer changes their mind afterwards.
@@ -442,7 +449,9 @@ void main() {
         ).toJson(),
         delivery: 'dataItem',
       );
-      await settle();
+      await settleUntil(
+        () => CertTrustService.instance.export().containsKey('later.example'),
+      );
 
       expect(CertTrustService.instance.export()['later.example'], ['CC:DD']);
     });
@@ -459,7 +468,9 @@ void main() {
         });
 
         await client.readPairing();
-        await settle();
+        await settleUntil(
+          () => CertTrustService.instance.export().containsKey('cold.example'),
+        );
 
         expect(CertTrustService.instance.export()['cold.example'], ['EE:FF']);
       },
@@ -543,7 +554,7 @@ void main() {
       publishPairing(const {'nodeId': 'watch-2'});
 
       await client.readPairing();
-      await settle();
+      await settleUntil(() => !AuthService.instance.isLoggedIn);
 
       expect(AuthService.instance.isLoggedIn, isFalse);
     });
