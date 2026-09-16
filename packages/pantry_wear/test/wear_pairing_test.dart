@@ -262,9 +262,7 @@ void main() {
           houseId: 4,
         ).toJson(),
       );
-      await pumpEventQueue();
-
-      await settle();
+      await settleUntil(() => sentPaths().contains('/watch/scope'));
 
       expect(client.state, WearSetupState.syncing);
       // Reporting the scope is what asks for the seed.
@@ -356,7 +354,11 @@ void main() {
           houseId: 4,
         ).toJson(),
       );
-      await settle();
+      // The link is one broadcast stream, so a seed emitted before the mirror
+      // is listening is one nothing ever receives. Reporting the scope is the
+      // step just after it subscribes, which makes it the signal to wait on.
+      await settleUntil(() => sentPaths().contains('/watch/scope'));
+
       // The seed is what the syncing state is waiting on, and it is the last
       // thing between a wearer and their lists.
       emit(
@@ -367,7 +369,7 @@ void main() {
         ),
         delivery: 'channel',
       );
-      await settle();
+      await settleUntil(() => client.state == WearSetupState.ready);
 
       expect(client.state, WearSetupState.ready);
       expect(asked, contains('requestNotifications'));
