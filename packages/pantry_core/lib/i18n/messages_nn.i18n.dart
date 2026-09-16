@@ -4879,6 +4879,39 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get includeUnassigned => """Ta med varer utan butikk""";
 
   /// ```dart
+  /// "Varer å handle"
+  /// ```
+  String get itemsToShop => """Varer å handle""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Alle 1 vare', many: 'Alle $count varer')}"
+  /// ```
+  String allItemsPicked(int count) =>
+      """${_plural(count, one: 'Alle 1 vare', many: 'Alle $count varer')}""";
+
+  /// ```dart
+  /// "$picked av $total varer"
+  /// ```
+  String someItemsPicked(int picked, int total) =>
+      """$picked av $total varer""";
+
+  /// ```dart
+  /// "Snu om"
+  /// ```
+  String get selectInvert => """Snu om""";
+
+  /// ```dart
+  /// "Dei valde listene har ikkje noko att å handle."
+  /// ```
+  String get noItemsToShop =>
+      """Dei valde listene har ikkje noko att å handle.""";
+
+  /// ```dart
+  /// "Vel minst éi vare å handle."
+  /// ```
+  String get pickAtLeastOneItem => """Vel minst éi vare å handle.""";
+
+  /// ```dart
   /// "Start"
   /// ```
   String get start => """Start""";
@@ -7552,6 +7585,11 @@ Passord: pantry""",
   """shopping.noStoresWithItems""":
       """Ingen av dei valde listene har varer knytte til ein butikk.""",
   """shopping.includeUnassigned""": """Ta med varer utan butikk""",
+  """shopping.itemsToShop""": """Varer å handle""",
+  """shopping.selectInvert""": """Snu om""",
+  """shopping.noItemsToShop""":
+      """Dei valde listene har ikkje noko att å handle.""",
+  """shopping.pickAtLeastOneItem""": """Vel minst éi vare å handle.""",
   """shopping.start""": """Start""",
   """shopping.startFailed""": """Klarte ikkje å starte handelen.""",
   """shopping.tripInProgress""": """Du har allereie ein handel i gang.""",

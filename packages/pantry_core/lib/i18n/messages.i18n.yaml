@@ -934,6 +934,12 @@ shopping:
   storesHint: "Turn the stores you'll visit on or off, and drag to set the order."
   noStoresWithItems: None of the selected lists have items assigned to a store.
   includeUnassigned: Include items not assigned to any store
+  itemsToShop: Items to shop
+  allItemsPicked(int count): "${_plural(count, one: 'All 1 item', many: 'All $count items')}"
+  someItemsPicked(int picked, int total): "$picked of $total items"
+  selectInvert: Invert
+  noItemsToShop: The selected lists have nothing left to shop.
+  pickAtLeastOneItem: Pick at least one item to shop.
   start: Start
   startFailed: Failed to start shopping.
   # One-live-session guard

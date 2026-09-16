@@ -4843,6 +4843,39 @@ class ShoppingMessages {
   String get includeUnassigned => """Include items not assigned to any store""";
 
   /// ```dart
+  /// "Items to shop"
+  /// ```
+  String get itemsToShop => """Items to shop""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'All 1 item', many: 'All $count items')}"
+  /// ```
+  String allItemsPicked(int count) =>
+      """${_plural(count, one: 'All 1 item', many: 'All $count items')}""";
+
+  /// ```dart
+  /// "$picked of $total items"
+  /// ```
+  String someItemsPicked(int picked, int total) =>
+      """$picked of $total items""";
+
+  /// ```dart
+  /// "Invert"
+  /// ```
+  String get selectInvert => """Invert""";
+
+  /// ```dart
+  /// "The selected lists have nothing left to shop."
+  /// ```
+  String get noItemsToShop =>
+      """The selected lists have nothing left to shop.""";
+
+  /// ```dart
+  /// "Pick at least one item to shop."
+  /// ```
+  String get pickAtLeastOneItem => """Pick at least one item to shop.""";
+
+  /// ```dart
   /// "Start"
   /// ```
   String get start => """Start""";
@@ -7488,6 +7521,11 @@ Password: pantry-rocks""",
       """None of the selected lists have items assigned to a store.""",
   """shopping.includeUnassigned""":
       """Include items not assigned to any store""",
+  """shopping.itemsToShop""": """Items to shop""",
+  """shopping.selectInvert""": """Invert""",
+  """shopping.noItemsToShop""":
+      """The selected lists have nothing left to shop.""",
+  """shopping.pickAtLeastOneItem""": """Pick at least one item to shop.""",
   """shopping.start""": """Start""",
   """shopping.startFailed""": """Failed to start shopping.""",
   """shopping.tripInProgress""":

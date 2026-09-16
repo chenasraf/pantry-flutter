@@ -931,6 +931,12 @@ shopping:
   storesHint: "Schalte die Geschäfte ein oder aus, die du besuchst, und ziehe sie in die richtige Reihenfolge."
   noStoresWithItems: Keine der ausgewählten Listen hat Artikel, die einem Geschäft zugewiesen sind.
   includeUnassigned: Artikel ohne Geschäft einbeziehen
+  itemsToShop: Zu kaufende Artikel
+  allItemsPicked(int count): "${_plural(count, one: 'Alle 1 Artikel', many: 'Alle $count Artikel')}"
+  someItemsPicked(int picked, int total): "$picked von $total Artikeln"
+  selectInvert: Umkehren
+  noItemsToShop: In den ausgewählten Listen ist nichts mehr zu kaufen.
+  pickAtLeastOneItem: Wähle mindestens einen Artikel zum Kaufen aus.
   start: Starten
   startFailed: Einkauf konnte nicht gestartet werden.
   tripInProgress: Du hast bereits einen laufenden Einkauf.

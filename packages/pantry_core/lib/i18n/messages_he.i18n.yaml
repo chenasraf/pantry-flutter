@@ -931,6 +931,12 @@ shopping:
   storesHint: "הפעילו או כבו את החנויות שתבקרו בהן, וגררו כדי לקבוע את הסדר."
   noStoresWithItems: לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות.
   includeUnassigned: לכלול פריטים שאינם משויכים לחנות
+  itemsToShop: פריטים לקנייה
+  allItemsPicked(int count): "${_plural(count, one: 'פריט אחד, הכול', many: 'כל $count הפריטים')}"
+  someItemsPicked(int picked, int total): "$picked מתוך $total פריטים"
+  selectInvert: היפוך
+  noItemsToShop: לרשימות שנבחרו לא נותר מה לקנות.
+  pickAtLeastOneItem: בחרו לפחות פריט אחד לקנייה.
   start: התחלה
   startFailed: התחלת הקנייה נכשלה.
   tripInProgress: כבר יש לך קנייה פעילה.

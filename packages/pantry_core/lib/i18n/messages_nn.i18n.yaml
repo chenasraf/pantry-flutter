@@ -1072,6 +1072,12 @@ shopping:
   storesHint: "Slå på eller av butikkane du skal innom, og dra for å setje rekkjefølgja."
   noStoresWithItems: Ingen av dei valde listene har varer knytte til ein butikk.
   includeUnassigned: Ta med varer utan butikk
+  itemsToShop: Varer å handle
+  allItemsPicked(int count): "${_plural(count, one: 'Alle 1 vare', many: 'Alle $count varer')}"
+  someItemsPicked(int picked, int total): "$picked av $total varer"
+  selectInvert: Snu om
+  noItemsToShop: Dei valde listene har ikkje noko att å handle.
+  pickAtLeastOneItem: Vel minst éi vare å handle.
   start: Start
   startFailed: Klarte ikkje å starte handelen.
   tripInProgress: Du har allereie ein handel i gang.

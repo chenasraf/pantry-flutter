@@ -4852,6 +4852,38 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get includeUnassigned => """לכלול פריטים שאינם משויכים לחנות""";
 
   /// ```dart
+  /// "פריטים לקנייה"
+  /// ```
+  String get itemsToShop => """פריטים לקנייה""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד, הכול', many: 'כל $count הפריטים')}"
+  /// ```
+  String allItemsPicked(int count) =>
+      """${_plural(count, one: 'פריט אחד, הכול', many: 'כל $count הפריטים')}""";
+
+  /// ```dart
+  /// "$picked מתוך $total פריטים"
+  /// ```
+  String someItemsPicked(int picked, int total) =>
+      """$picked מתוך $total פריטים""";
+
+  /// ```dart
+  /// "היפוך"
+  /// ```
+  String get selectInvert => """היפוך""";
+
+  /// ```dart
+  /// "לרשימות שנבחרו לא נותר מה לקנות."
+  /// ```
+  String get noItemsToShop => """לרשימות שנבחרו לא נותר מה לקנות.""";
+
+  /// ```dart
+  /// "בחרו לפחות פריט אחד לקנייה."
+  /// ```
+  String get pickAtLeastOneItem => """בחרו לפחות פריט אחד לקנייה.""";
+
+  /// ```dart
   /// "התחלה"
   /// ```
   String get start => """התחלה""";
@@ -7472,6 +7504,10 @@ Map<String, String> get messagesHeMap => {
   """shopping.noStoresWithItems""":
       """לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות.""",
   """shopping.includeUnassigned""": """לכלול פריטים שאינם משויכים לחנות""",
+  """shopping.itemsToShop""": """פריטים לקנייה""",
+  """shopping.selectInvert""": """היפוך""",
+  """shopping.noItemsToShop""": """לרשימות שנבחרו לא נותר מה לקנות.""",
+  """shopping.pickAtLeastOneItem""": """בחרו לפחות פריט אחד לקנייה.""",
   """shopping.start""": """התחלה""",
   """shopping.startFailed""": """התחלת הקנייה נכשלה.""",
   """shopping.tripInProgress""": """כבר יש לך קנייה פעילה.""",

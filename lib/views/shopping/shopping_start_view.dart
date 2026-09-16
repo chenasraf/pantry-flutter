@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
@@ -16,6 +19,7 @@ import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/utils/app_toast.dart';
+import 'package:pantry/views/shopping/shopping_item_picker_view.dart';
 import 'package:pantry/views/shopping/shopping_reminder_block.dart';
 import 'package:pantry/views/shopping/shopping_reminders_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
@@ -55,6 +59,12 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
   final Set<int> _selectedListIds = {};
   final Map<int, List<ListItem>> _itemsByList = {};
   Map<int, Store> _stores = {};
+  Map<int, models.Category> _categories = {};
+
+  /// Items the shopper has taken off the plan, tracked as an exclusion rather
+  /// than a selection so anything that enters scope afterwards — a list
+  /// re-checked, a housemate's new item — is shopped by default.
+  final Set<int> _excludedItemIds = {};
 
   /// House store-order preference (`name_asc` | `name_desc` | `custom`). Seeds
   /// the trip's default store order; the shopper still drags to reorder for the
@@ -107,12 +117,18 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
         ChecklistService.instance
             .getHousePrefs(widget.houseId)
             .catchError((_) => <String, dynamic>{}),
+        CategoryService.instance
+            .getCategories(widget.houseId)
+            .catchError((_) => <models.Category>[]),
       ]);
       if (!mounted) return;
       final lists = (results[0] as List<ChecklistList>)
           .where((l) => l.id > 0)
           .toList();
       _stores = {for (final s in results[1] as List<Store>) s.id: s};
+      _categories = {
+        for (final c in results[4] as List<models.Category>) c.id: c,
+      };
       _storeSort =
           (results[3] as Map<String, dynamic>)['storeSort'] as String? ??
           'name_asc';
@@ -199,6 +215,37 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
       ..addAll(added);
   }
 
+  /// The items a trip over the currently selected lists would cover. Matches
+  /// what the server treats as in scope, so neither the store sequence nor
+  /// [_includeUnassigned] narrows it.
+  List<ListItem> get _candidateItems => [
+    for (final list in _lists)
+      if (_selectedListIds.contains(list.id))
+        for (final item in _itemsByList[list.id] ?? const <ListItem>[])
+          if (!item.done && item.deletedAt == null && item.archivedAt == null)
+            item,
+  ];
+
+  List<int> _includedItemIds(List<ListItem> candidates) => [
+    for (final item in candidates)
+      if (!_excludedItemIds.contains(item.id)) item.id,
+  ];
+
+  Future<void> _openItemPicker() async {
+    final result = await pickShoppingItems(
+      context,
+      items: _candidateItems,
+      categories: _categories,
+      excludedItemIds: _excludedItemIds,
+    );
+    if (result == null || !mounted) return;
+    setState(() {
+      _excludedItemIds
+        ..clear()
+        ..addAll(result);
+    });
+  }
+
   void _toggleList(int id, bool selected) {
     setState(() {
       if (selected) {
@@ -227,6 +274,11 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
 
   Future<void> _start() async {
     if (_selectedListIds.isEmpty || _submitting) return;
+    final candidates = _candidateItems;
+    final included = _includedItemIds(candidates);
+    // A trip covering nothing has no representation on the wire — an empty
+    // list reads as "shop everything", the opposite of what was asked.
+    if (candidates.isNotEmpty && included.isEmpty) return;
     setState(() => _submitting = true);
     final storeIds = [
       for (final id in _orderedStoreIds)
@@ -238,6 +290,9 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
         listIds: _selectedListIds.toList(),
         storeIds: storeIds,
         includeUnassigned: _includeUnassigned,
+        // A full trip sends nothing rather than every id, which is what a
+        // server without the capability sees either way.
+        itemIds: included.length == candidates.length ? null : included,
       );
       if (!mounted) return;
       Navigator.of(context).pop(session);
@@ -398,6 +453,9 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
   Widget _buildPicker() {
     final theme = Theme.of(context);
     final allSelected = _selectedListIds.length == _lists.length;
+    final candidates = _candidateItems;
+    final included = _includedItemIds(candidates);
+    final nothingPicked = candidates.isNotEmpty && included.isEmpty;
     return Column(
       children: [
         Expanded(
@@ -507,27 +565,66 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
                 onChanged: (v) => setState(() => _includeUnassigned = v),
                 title: Text(m.shopping.includeUnassigned),
               ),
+              if (hasFeature('shopping-item-selection')) ...[
+                const SizedBox(height: 8),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  enabled: candidates.isNotEmpty,
+                  leading: const Icon(Icons.checklist),
+                  title: Text(m.shopping.itemsToShop),
+                  subtitle: Text(
+                    candidates.isEmpty
+                        ? m.shopping.noItemsToShop
+                        : included.length == candidates.length
+                        ? m.shopping.allItemsPicked(candidates.length)
+                        : m.shopping.someItemsPicked(
+                            included.length,
+                            candidates.length,
+                          ),
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: candidates.isEmpty ? null : _openItemPicker,
+                ),
+              ],
             ],
           ),
         ),
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(12),
-            child: SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: (_selectedListIds.isEmpty || _submitting)
-                    ? null
-                    : _start,
-                icon: _submitting
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.shopping_cart_checkout),
-                label: Text(m.shopping.start),
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (nothingPicked)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(bottom: 8),
+                    child: Text(
+                      m.shopping.pickAtLeastOneItem,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.error,
+                      ),
+                    ),
+                  ),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed:
+                        (_selectedListIds.isEmpty ||
+                            nothingPicked ||
+                            _submitting)
+                        ? null
+                        : _start,
+                    icon: _submitting
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.shopping_cart_checkout),
+                    label: Text(m.shopping.start),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

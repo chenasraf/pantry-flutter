@@ -80,11 +80,18 @@ class ShoppingService {
   /// (2) Create a session over the given scope. Sessions start public; toggle
   /// privacy later via [setPrivacy]. Throws [ShoppingSessionConflict] (from a
   /// 409) carrying the existing live session when one is already in progress.
+  ///
+  /// [itemIds] narrows the trip to those items, skipping everything else in
+  /// scope onto the Removed list, from where the shopper can pull any of it
+  /// back mid-shop. An empty or null list means "shop everything", so a trip
+  /// covering no items at all has no representation — callers must refuse to
+  /// start one rather than sending `[]`.
   Future<ShoppingSession> createSession(
     int houseId, {
     required List<int> listIds,
     required List<int> storeIds,
     bool includeUnassigned = true,
+    List<int>? itemIds,
   }) async {
     try {
       return await _api.post<Map<String, dynamic>, ShoppingSession>(
@@ -93,6 +100,7 @@ class ShoppingService {
           'listIds': listIds,
           'storeIds': storeIds,
           'includeUnassigned': includeUnassigned,
+          if (itemIds != null && itemIds.isNotEmpty) 'itemIds': itemIds,
         },
         fromJson: ShoppingSession.fromJson,
       );

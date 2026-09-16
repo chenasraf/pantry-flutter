@@ -4894,6 +4894,40 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get includeUnassigned => """Inclure les articles sans magasin""";
 
   /// ```dart
+  /// "Articles à acheter"
+  /// ```
+  String get itemsToShop => """Articles à acheter""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article, tous', many: 'Les $count articles')}"
+  /// ```
+  String allItemsPicked(int count) =>
+      """${_plural(count, one: '1 article, tous', many: 'Les $count articles')}""";
+
+  /// ```dart
+  /// "$picked article(s) sur $total"
+  /// ```
+  String someItemsPicked(int picked, int total) =>
+      """$picked article(s) sur $total""";
+
+  /// ```dart
+  /// "Inverser"
+  /// ```
+  String get selectInvert => """Inverser""";
+
+  /// ```dart
+  /// "Les listes sélectionnées n'ont plus rien à acheter."
+  /// ```
+  String get noItemsToShop =>
+      """Les listes sélectionnées n'ont plus rien à acheter.""";
+
+  /// ```dart
+  /// "Choisissez au moins un article à acheter."
+  /// ```
+  String get pickAtLeastOneItem =>
+      """Choisissez au moins un article à acheter.""";
+
+  /// ```dart
   /// "Commencer"
   /// ```
   String get start => """Commencer""";
@@ -7603,6 +7637,12 @@ Mot de passe : pantry-rocks""",
   """shopping.noStoresWithItems""":
       """Aucune des listes sélectionnées n'a d'articles assignés à un magasin.""",
   """shopping.includeUnassigned""": """Inclure les articles sans magasin""",
+  """shopping.itemsToShop""": """Articles à acheter""",
+  """shopping.selectInvert""": """Inverser""",
+  """shopping.noItemsToShop""":
+      """Les listes sélectionnées n'ont plus rien à acheter.""",
+  """shopping.pickAtLeastOneItem""":
+      """Choisissez au moins un article à acheter.""",
   """shopping.start""": """Commencer""",
   """shopping.startFailed""": """Impossible de commencer les courses.""",
   """shopping.tripInProgress""": """Vous avez déjà des courses en cours.""",

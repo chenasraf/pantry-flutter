@@ -4890,6 +4890,40 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get includeUnassigned => """Incluir artículos sin tienda asignada""";
 
   /// ```dart
+  /// "Artículos para comprar"
+  /// ```
+  String get itemsToShop => """Artículos para comprar""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo, todos', many: 'Los $count artículos')}"
+  /// ```
+  String allItemsPicked(int count) =>
+      """${_plural(count, one: '1 artículo, todos', many: 'Los $count artículos')}""";
+
+  /// ```dart
+  /// "$picked de $total artículos"
+  /// ```
+  String someItemsPicked(int picked, int total) =>
+      """$picked de $total artículos""";
+
+  /// ```dart
+  /// "Invertir"
+  /// ```
+  String get selectInvert => """Invertir""";
+
+  /// ```dart
+  /// "Las listas seleccionadas no tienen nada pendiente de comprar."
+  /// ```
+  String get noItemsToShop =>
+      """Las listas seleccionadas no tienen nada pendiente de comprar.""";
+
+  /// ```dart
+  /// "Elige al menos un artículo para comprar."
+  /// ```
+  String get pickAtLeastOneItem =>
+      """Elige al menos un artículo para comprar.""";
+
+  /// ```dart
   /// "Empezar"
   /// ```
   String get start => """Empezar""";
@@ -7580,6 +7614,12 @@ Contraseña: pantry-rocks""",
   """shopping.noStoresWithItems""":
       """Ninguna de las listas seleccionadas tiene artículos asignados a una tienda.""",
   """shopping.includeUnassigned""": """Incluir artículos sin tienda asignada""",
+  """shopping.itemsToShop""": """Artículos para comprar""",
+  """shopping.selectInvert""": """Invertir""",
+  """shopping.noItemsToShop""":
+      """Las listas seleccionadas no tienen nada pendiente de comprar.""",
+  """shopping.pickAtLeastOneItem""":
+      """Elige al menos un artículo para comprar.""",
   """shopping.start""": """Empezar""",
   """shopping.startFailed""": """No se pudo empezar a comprar.""",
   """shopping.tripInProgress""": """Ya tienes una compra en curso.""",
