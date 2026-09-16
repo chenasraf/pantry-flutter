@@ -99,6 +99,20 @@ void main() {
   });
 
   group('PhotoBoardController offline capture', () {
+    /// Turn the event queue until [reached] holds, or give up and let the
+    /// assertion that follows say what was missing.
+    ///
+    /// The bound is wall clock rather than a count of turns, because a turn is
+    /// a trip through the scheduler and not a unit of progress: re-adopting a
+    /// queued upload resolves the documents directory over a channel and then
+    /// touches the disk, so it spends as many turns as the machine is slow.
+    Future<void> settleUntil(bool Function() reached) async {
+      final giveUp = DateTime.now().add(const Duration(seconds: 5));
+      while (!reached() && DateTime.now().isBefore(giveUp)) {
+        await pumpEventQueue(times: 1);
+      }
+    }
+
     test('queues the photo with its bytes instead of dropping it', () async {
       manager.setOnline(false);
       final controller = PhotoBoardController(houseId: 1);
@@ -141,7 +155,7 @@ void main() {
 
       final controller = PhotoBoardController(houseId: 1);
       addTearDown(controller.dispose);
-      await pumpEventQueue();
+      await settleUntil(() => controller.uploads.isNotEmpty);
 
       expect(controller.uploads, hasLength(1));
       final task = controller.uploads.single;
@@ -158,10 +172,10 @@ void main() {
 
       final controller = PhotoBoardController(houseId: 1);
       addTearDown(controller.dispose);
-      await pumpEventQueue();
+      await settleUntil(() => controller.uploads.isNotEmpty);
 
       manager.deadLetterForTest(op);
-      await pumpEventQueue();
+      await settleUntil(() => controller.uploads.single.error != null);
 
       final task = controller.uploads.single;
       expect(task.isQueued, isFalse);
