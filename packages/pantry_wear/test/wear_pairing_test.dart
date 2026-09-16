@@ -242,7 +242,7 @@ void main() {
           hiddenItemChips: {'price'},
         ).toJson(),
       );
-      await pumpEventQueue();
+      await settleUntil(() => sentPaths().contains('/watch/scope'));
 
       expect(AuthService.instance.isLoggedIn, isTrue);
       expect(AuthService.instance.credentials?.loginName, 'ada');
