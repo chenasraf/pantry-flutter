@@ -6,17 +6,21 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/shopping_estimate.dart';
 import 'package:pantry_core/models/shopping_history_row.dart';
 import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
+import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/date_format.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 
-/// Read-only list of closed trips. A Mine/House scope toggle selects
-/// which trips are shown; tapping a row opens its read-only per-store summary.
+/// List of closed trips. A Mine/House scope toggle selects which trips are
+/// shown; tapping a row opens its per-store summary, which the shopper who
+/// made the trip can open for amending.
 class ShoppingHistoryView extends StatefulWidget {
   final int houseId;
 
@@ -31,6 +35,11 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
   ShoppingService get _service => ShoppingService.instance;
 
   ShoppingHistoryScope _scope = ShoppingHistoryScope.mine;
+
+  /// Only the shopper who made a trip may amend its totals, so the House scope
+  /// reads a housemate's trip without an edit action.
+  final String? _currentUserId = AuthService.instance.credentials?.loginName;
+
   final List<ShoppingHistoryRow> _rows = [];
   Map<int, Store> _stores = {};
   Map<String, String> _memberNames = {};
@@ -40,9 +49,18 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
   bool _hasMore = true;
   String? _error;
 
+  StreamSubscription<SyncOpApplied>? _appliedSub;
+
+  @override
+  void dispose() {
+    _appliedSub?.cancel();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
+    _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
     _stores = {
       for (final s
           in StoreService.instance.getCached(widget.houseId) ?? const [])
@@ -120,16 +138,55 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
   }
 
   Future<void> _openSummary(ShoppingHistoryRow row) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(
+    final amended = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
         builder: (_) => ShoppingReviewView(
           houseId: widget.houseId,
           sessionId: row.id,
           mode: ShoppingReviewMode.history,
           stores: _stores,
+          canEditBilled: row.userId == _currentUserId,
         ),
       ),
     );
+    if (amended == true) await _refreshRow(row.id);
+  }
+
+  /// A typed total is queued rather than sent, so it reaches the server — and
+  /// with it the row's recomputed total — whenever the queue drains, which on a
+  /// bad link is long after the summary was closed.
+  void _onSyncApplied(SyncOpApplied e) {
+    if (e.op.entity != SyncEntity.shoppingSession) return;
+    if (e.op.houseId != widget.houseId) return;
+    final sessionId = e.op.parentId;
+    if (sessionId == null) return;
+    if (!_rows.any((r) => r.id == sessionId)) return;
+    unawaited(_refreshRow(sessionId));
+  }
+
+  /// Pull an amended trip's row back down so the total on the card matches what
+  /// was typed. Rows come back in a fixed order, so a row's position is a
+  /// stable offset; a shifted position — a trip closed while this one was open
+  /// — falls back to a full reload rather than writing over the wrong row.
+  Future<void> _refreshRow(int sessionId) async {
+    final index = _rows.indexWhere((r) => r.id == sessionId);
+    if (index < 0) return;
+    try {
+      final fetched = await _service.getHistory(
+        widget.houseId,
+        scope: _scope,
+        limit: 1,
+        offset: index,
+      );
+      if (!mounted) return;
+      if (fetched.length == 1 && fetched.first.id == sessionId) {
+        setState(() => _rows[index] = fetched.first);
+      } else {
+        await _reload();
+      }
+    } catch (_) {
+      // Non-fatal: the card keeps the older figure until the next refresh.
+    }
   }
 
   @override

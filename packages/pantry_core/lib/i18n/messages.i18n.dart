@@ -4953,6 +4953,21 @@ class ShoppingMessages {
   String get anyStore => """Any store""";
 
   /// ```dart
+  /// "Edit trip totals"
+  /// ```
+  String get editTotalsTitle => """Edit trip totals""";
+
+  /// ```dart
+  /// "Edit totals"
+  /// ```
+  String get editTotals => """Edit totals""";
+
+  /// ```dart
+  /// "Done"
+  /// ```
+  String get doneEditing => """Done""";
+
+  /// ```dart
   /// "Reminders"
   /// ```
   String get remindersTitle => """Reminders""";
@@ -7371,6 +7386,9 @@ Password: pantry-rocks""",
   """shopping.actualPaid""": """Actual paid""",
   """shopping.grandTotal""": """Grand total""",
   """shopping.anyStore""": """Any store""",
+  """shopping.editTotalsTitle""": """Edit trip totals""",
+  """shopping.editTotals""": """Edit totals""",
+  """shopping.doneEditing""": """Done""",
   """shopping.remindersTitle""": """Reminders""",
   """shopping.manageReminders""": """Manage reminders""",
   """shopping.reminderGroupStart""": """At start""",

@@ -4961,6 +4961,21 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get anyStore => """כל חנות""";
 
   /// ```dart
+  /// "עריכת סכומי הקנייה"
+  /// ```
+  String get editTotalsTitle => """עריכת סכומי הקנייה""";
+
+  /// ```dart
+  /// "עריכת סכומים"
+  /// ```
+  String get editTotals => """עריכת סכומים""";
+
+  /// ```dart
+  /// "סיום"
+  /// ```
+  String get doneEditing => """סיום""";
+
+  /// ```dart
   /// "תזכורות"
   /// ```
   String get remindersTitle => """תזכורות""";
@@ -7354,6 +7369,9 @@ Map<String, String> get messagesHeMap => {
   """shopping.actualPaid""": """שולם בפועל""",
   """shopping.grandTotal""": """סך הכול""",
   """shopping.anyStore""": """כל חנות""",
+  """shopping.editTotalsTitle""": """עריכת סכומי הקנייה""",
+  """shopping.editTotals""": """עריכת סכומים""",
+  """shopping.doneEditing""": """סיום""",
   """shopping.remindersTitle""": """תזכורות""",
   """shopping.manageReminders""": """ניהול תזכורות""",
   """shopping.reminderGroupStart""": """בהתחלה""",

@@ -21,12 +21,14 @@ import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Which review the screen renders. [advance] shows only the store being left
 /// (a till summary before moving on); [close] shows the whole trip with
-/// editable totals and a confirm to finish; [history] is a read-only past trip.
+/// editable totals and a confirm to finish; [history] is a past trip, read-only
+/// until its shopper opts into amending the totals.
 enum ShoppingReviewMode { advance, close, history }
 
 /// Full-screen review of a trip. Loads `…/review` (live) or `…/summary`
 /// (history). Pops `true` when the user confirms the transition (advance /
-/// finish); billed-total edits are persisted independently as they happen.
+/// finish), or — in history mode — when a total was amended; billed-total edits
+/// are persisted independently as they happen.
 class ShoppingReviewView extends StatefulWidget {
   final int houseId;
   final int sessionId;
@@ -43,7 +45,8 @@ class ShoppingReviewView extends StatefulWidget {
 
   /// Whether the caller may type in what was actually paid. The totals belong
   /// to the shopper who started the trip, so a housemate who joined reads them
-  /// and still confirms the transition.
+  /// and still confirms the transition. In history mode it also decides whether
+  /// the trip can be opened for amending at all.
   final bool canEditBilled;
 
   const ShoppingReviewView({
@@ -64,7 +67,16 @@ class ShoppingReviewView extends StatefulWidget {
 
 class _ShoppingReviewViewState extends State<ShoppingReviewView> {
   ShoppingService get _service => ShoppingService.instance;
-  bool get _readOnly => widget.mode == ShoppingReviewMode.history;
+
+  /// Whether a finished trip has been opened for amending. A past trip reads
+  /// as a record until its shopper asks to correct what they paid.
+  bool _editing = false;
+
+  /// Whether a billed total was written while this screen was open, so the
+  /// history row it was opened from can catch up with the new figure.
+  bool _amended = false;
+
+  bool get _readOnly => widget.mode == ShoppingReviewMode.history && !_editing;
 
   ShoppingReview? _review;
   bool _loading = true;
@@ -160,6 +172,7 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
         createdAt: DateTime.now().millisecondsSinceEpoch,
       ),
     );
+    _amended = true;
     // The figure is now the queue's, so anything drawn from the fetched review
     // — this screen on its next build, and the read-only totals — has to read
     // it through the overlay.
@@ -212,15 +225,59 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
   String get _title => switch (widget.mode) {
     ShoppingReviewMode.advance => m.shopping.advanceTitle,
     ShoppingReviewMode.close => m.shopping.reviewTitle,
-    ShoppingReviewMode.history => m.shopping.reviewTitle,
+    ShoppingReviewMode.history =>
+      _editing ? m.shopping.editTotalsTitle : m.shopping.reviewTitle,
   };
+
+  /// Opting a finished trip in and out of amending. Absent everywhere else:
+  /// mid-trip the totals are already editable, and a housemate reading someone
+  /// else's trip has nothing to open.
+  List<Widget>? get _actions {
+    if (widget.mode != ShoppingReviewMode.history || !widget.canEditBilled) {
+      return null;
+    }
+    if (_editing) {
+      return [
+        TextButton(
+          onPressed: () => setState(() => _editing = false),
+          child: Text(m.shopping.doneEditing),
+        ),
+      ];
+    }
+    return [
+      IconButton(
+        icon: const Icon(Icons.edit_outlined),
+        tooltip: m.shopping.editTotals,
+        onPressed: () => setState(() => _editing = true),
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final scaffold = _buildScaffold(context);
+    if (widget.mode != ShoppingReviewMode.history) return scaffold;
+    // Leaving an amended trip carries the news back to the row it was opened
+    // from, which still shows the total from before the correction.
+    return PopScope<bool>(
+      canPop: !_amended,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        Navigator.of(context).pop(true);
+      },
+      child: scaffold,
+    );
+  }
+
+  Widget _buildScaffold(BuildContext context) {
     final theme = Theme.of(context);
     final review = _shownReview;
     return Scaffold(
-      appBar: AppBar(leading: appBarBackLeading(context), title: Text(_title)),
+      appBar: AppBar(
+        leading: appBarBackLeading(context),
+        title: Text(_title),
+        actions: _actions,
+      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
@@ -250,7 +307,9 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
                   _GrandTotal(review: review!),
               ],
             ),
-      bottomNavigationBar: _readOnly
+      // A finished trip has no transition to confirm, amended or not: each
+      // figure is saved as it is typed.
+      bottomNavigationBar: widget.mode == ShoppingReviewMode.history
           ? null
           : SafeArea(
               child: Padding(

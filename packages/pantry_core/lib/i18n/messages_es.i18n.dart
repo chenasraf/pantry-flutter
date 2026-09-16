@@ -4998,6 +4998,21 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get anyStore => """Cualquier tienda""";
 
   /// ```dart
+  /// "Editar los totales de la compra"
+  /// ```
+  String get editTotalsTitle => """Editar los totales de la compra""";
+
+  /// ```dart
+  /// "Editar totales"
+  /// ```
+  String get editTotals => """Editar totales""";
+
+  /// ```dart
+  /// "Listo"
+  /// ```
+  String get doneEditing => """Listo""";
+
+  /// ```dart
   /// "Recordatorios"
   /// ```
   String get remindersTitle => """Recordatorios""";
@@ -7460,6 +7475,9 @@ Contraseña: pantry-rocks""",
   """shopping.actualPaid""": """Pagado real""",
   """shopping.grandTotal""": """Total""",
   """shopping.anyStore""": """Cualquier tienda""",
+  """shopping.editTotalsTitle""": """Editar los totales de la compra""",
+  """shopping.editTotals""": """Editar totales""",
+  """shopping.doneEditing""": """Listo""",
   """shopping.remindersTitle""": """Recordatorios""",
   """shopping.manageReminders""": """Gestionar recordatorios""",
   """shopping.reminderGroupStart""": """Al empezar""",

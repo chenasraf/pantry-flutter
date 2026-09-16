@@ -5003,6 +5003,21 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get anyStore => """N'importe quel magasin""";
 
   /// ```dart
+  /// "Modifier les totaux des courses"
+  /// ```
+  String get editTotalsTitle => """Modifier les totaux des courses""";
+
+  /// ```dart
+  /// "Modifier les totaux"
+  /// ```
+  String get editTotals => """Modifier les totaux""";
+
+  /// ```dart
+  /// "Terminé"
+  /// ```
+  String get doneEditing => """Terminé""";
+
+  /// ```dart
   /// "Rappels"
   /// ```
   String get remindersTitle => """Rappels""";
@@ -7483,6 +7498,9 @@ Mot de passe : pantry-rocks""",
   """shopping.actualPaid""": """Payé réel""",
   """shopping.grandTotal""": """Total général""",
   """shopping.anyStore""": """N'importe quel magasin""",
+  """shopping.editTotalsTitle""": """Modifier les totaux des courses""",
+  """shopping.editTotals""": """Modifier les totaux""",
+  """shopping.doneEditing""": """Terminé""",
   """shopping.remindersTitle""": """Rappels""",
   """shopping.manageReminders""": """Gérer les rappels""",
   """shopping.reminderGroupStart""": """Au début""",

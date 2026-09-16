@@ -4986,6 +4986,21 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get anyStore => """Kva som helst butikk""";
 
   /// ```dart
+  /// "Rediger summane for handelen"
+  /// ```
+  String get editTotalsTitle => """Rediger summane for handelen""";
+
+  /// ```dart
+  /// "Rediger summar"
+  /// ```
+  String get editTotals => """Rediger summar""";
+
+  /// ```dart
+  /// "Ferdig"
+  /// ```
+  String get doneEditing => """Ferdig""";
+
+  /// ```dart
   /// "Påminningar"
   /// ```
   String get remindersTitle => """Påminningar""";
@@ -7430,6 +7445,9 @@ Passord: pantry""",
   """shopping.actualPaid""": """Faktisk betalt""",
   """shopping.grandTotal""": """Totalsum""",
   """shopping.anyStore""": """Kva som helst butikk""",
+  """shopping.editTotalsTitle""": """Rediger summane for handelen""",
+  """shopping.editTotals""": """Rediger summar""",
+  """shopping.doneEditing""": """Ferdig""",
   """shopping.remindersTitle""": """Påminningar""",
   """shopping.manageReminders""": """Handter påminningar""",
   """shopping.reminderGroupStart""": """Ved start""",

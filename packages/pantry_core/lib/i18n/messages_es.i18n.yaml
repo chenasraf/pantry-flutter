@@ -953,6 +953,9 @@ shopping:
   itemsWithoutPrice(int count): "${_plural(count, one: '1 artículo sin precio', many: '$count artículos sin precio')}"
   itemsStillUnchecked(int count): "${_plural(count, one: '1 artículo sin marcar', many: '$count artículos sin marcar')}"
   anyStore: Cualquier tienda
+  editTotalsTitle: Editar los totales de la compra
+  editTotals: Editar totales
+  doneEditing: Listo
   remindersTitle: Recordatorios
   manageReminders: Gestionar recordatorios
   reminderGroupStart: Al empezar
