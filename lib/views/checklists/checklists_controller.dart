@@ -116,12 +116,19 @@ class ChecklistsController extends ChangeNotifier {
 
   void _onQueueLengthChanged() => unawaited(_refreshPendingItemImages());
 
+  /// Rebuilds overlap, and they do not finish in the order they started: an
+  /// empty queue resolves without touching the disk, while the rebuild that
+  /// found a file is still waiting on it. Whoever started last owns the result,
+  /// or removing a picture would be undone by the rebuild the attach kicked off.
+  int _pendingItemImagesRun = 0;
+
   Future<void> _refreshPendingItemImages() async {
+    final run = ++_pendingItemImagesRun;
     final byId = SyncManager.instance.pendingItemImages(houseId);
     final files = byId.isEmpty
         ? const <String, File>{}
         : await PendingUploadStore.instance.filesFor(byId.values);
-    if (_disposed) return;
+    if (_disposed || run != _pendingItemImagesRun) return;
     final next = {
       for (final entry in byId.entries) entry.key: files[entry.value]!,
     };

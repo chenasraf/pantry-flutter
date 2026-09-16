@@ -46,6 +46,14 @@ void main() {
 
   List<SyncOp> queued() => manager.queueForTest.all().toList();
 
+  /// The pending-image cache is rebuilt off the disk, so how many turns of the
+  /// event queue it takes is the machine's business, not the test's.
+  Future<void> settleUntil(bool Function() reached) async {
+    for (var turn = 0; turn < 200 && !reached(); turn++) {
+      await pumpEventQueue(times: 1);
+    }
+  }
+
   group('attaching an image offline', () {
     test(
       'queues the attachment with its bytes instead of dropping it',
@@ -118,7 +126,7 @@ void main() {
         fileName: 'shot.jpg',
         mimeType: 'image/jpeg',
       );
-      await pumpEventQueue();
+      await settleUntil(() => controller.pendingItemImage(42) != null);
 
       final file = controller.pendingItemImage(42);
       expect(file, isNotNull);
@@ -134,7 +142,7 @@ void main() {
 
       final controller = ChecklistsController(houseId: 1);
       addTearDown(controller.dispose);
-      await pumpEventQueue();
+      await settleUntil(() => controller.pendingItemImage(-5) != null);
 
       // The row may still be drawn under the temp id or already under the real
       // one, depending on whether the create's applied event has landed.
@@ -154,11 +162,32 @@ void main() {
         fileName: 'shot.jpg',
         mimeType: 'image/jpeg',
       );
-      await pumpEventQueue();
+      await settleUntil(() => controller.pendingItemImage(42) != null);
       expect(controller.pendingItemImage(42), isNotNull);
 
       await controller.deleteItemImage(item);
-      await pumpEventQueue();
+      await settleUntil(() => controller.pendingItemImage(42) == null);
+
+      expect(controller.pendingItemImage(42), isNull);
+    });
+
+    test('a removal outruns the rebuild the attach started', () async {
+      manager.setOnline(false);
+      final op = _imageOp('img', kind: SyncOpKind.setImage, entityId: 42);
+      await PendingUploadStore.instance.save(op.uuid, _bytes);
+      manager.queueForTest.enqueue(op);
+
+      // A queued image means the controller's opening rebuild is off reading
+      // the disk, and the removal's rebuild finds an empty queue and answers
+      // without reading anything — so the two land in the order they did not
+      // start in, and the newer answer has to be the one that survives.
+      final controller = ChecklistsController(houseId: 1);
+      addTearDown(controller.dispose);
+      await controller.deleteItemImage(makeListItem(id: 42, listId: 10));
+
+      // Nothing signals a rebuild that decided to change nothing, so this waits
+      // out the one still reading the disk rather than waiting for it.
+      await pumpEventQueue(times: 50);
 
       expect(controller.pendingItemImage(42), isNull);
     });
@@ -174,11 +203,11 @@ void main() {
         fileName: 'shot.jpg',
         mimeType: 'image/jpeg',
       );
-      await pumpEventQueue();
+      await settleUntil(() => controller.pendingItemImage(42) != null);
 
       manager.queueForTest.pop(queued().single.uuid);
       manager.pendingCount.value = 0;
-      await pumpEventQueue();
+      await settleUntil(() => controller.pendingItemImage(42) == null);
 
       expect(controller.pendingItemImage(42), isNull);
     });
