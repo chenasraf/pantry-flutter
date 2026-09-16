@@ -5919,6 +5919,36 @@ class WearMessagesEs extends WearMessages {
   String get finishFailed => """No se pudo terminar la compra""";
 
   /// ```dart
+  /// "Empezar la mía"
+  /// ```
+  String get startMyOwn => """Empezar la mía""";
+
+  /// ```dart
+  /// "$name +$count"
+  /// ```
+  String plusOthers(String name, int count) => """$name +$count""";
+
+  /// ```dart
+  /// "No se pudo unir"
+  /// ```
+  String get joinFailed => """No se pudo unir""";
+
+  /// ```dart
+  /// "Compra compartida"
+  /// ```
+  String get sharedTrip => """Compra compartida""";
+
+  /// ```dart
+  /// "La compra sigue para los demás."
+  /// ```
+  String get leaveTripBody => """La compra sigue para los demás.""";
+
+  /// ```dart
+  /// "No se pudo salir"
+  /// ```
+  String get leaveFailed => """No se pudo salir""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 comprado', many: '$count comprados')}"
   /// ```
   String boughtTally(int count) =>
@@ -7633,6 +7663,11 @@ Contraseña: pantry-rocks""",
   """wear.hereNow""": """Aquí""",
   """wear.advanceFailed""": """No se pudo avanzar""",
   """wear.finishFailed""": """No se pudo terminar la compra""",
+  """wear.startMyOwn""": """Empezar la mía""",
+  """wear.joinFailed""": """No se pudo unir""",
+  """wear.sharedTrip""": """Compra compartida""",
+  """wear.leaveTripBody""": """La compra sigue para los demás.""",
+  """wear.leaveFailed""": """No se pudo salir""",
   """wear.notBilled""": """Sin definir""",
   """wear.currency""": """Moneda""",
   """wear.notANumber""": """Solo números""",

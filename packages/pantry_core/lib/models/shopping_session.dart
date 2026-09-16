@@ -154,8 +154,8 @@ class ShoppingSession {
     return ordered[idx + 1];
   }
 
-  /// Whether [uid] is the shopper who started this trip. Privacy and billed
-  /// totals hang off this — a housemate who merely joined 404s on them.
+  /// Whether [uid] is the shopper who started this trip. Privacy hangs off
+  /// this — a housemate who merely joined 404s on it.
   bool isStartedBy(String? uid) => uid != null && uid == userId;
 
   /// Housemates on this trip other than [uid].

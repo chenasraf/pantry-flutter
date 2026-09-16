@@ -5874,6 +5874,36 @@ class WearMessagesHe extends WearMessages {
   String get finishFailed => """לא הצלחנו לסיים את הקנייה""";
 
   /// ```dart
+  /// "להתחיל קנייה משלי"
+  /// ```
+  String get startMyOwn => """להתחיל קנייה משלי""";
+
+  /// ```dart
+  /// "$name +$count"
+  /// ```
+  String plusOthers(String name, int count) => """$name +$count""";
+
+  /// ```dart
+  /// "לא הצלחנו להצטרף"
+  /// ```
+  String get joinFailed => """לא הצלחנו להצטרף""";
+
+  /// ```dart
+  /// "קנייה משותפת"
+  /// ```
+  String get sharedTrip => """קנייה משותפת""";
+
+  /// ```dart
+  /// "הקנייה ממשיכה לשאר."
+  /// ```
+  String get leaveTripBody => """הקנייה ממשיכה לשאר.""";
+
+  /// ```dart
+  /// "לא הצלחנו לצאת"
+  /// ```
+  String get leaveFailed => """לא הצלחנו לצאת""";
+
+  /// ```dart
   /// "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
   /// ```
   String boughtTally(int count) =>
@@ -7516,6 +7546,11 @@ Map<String, String> get messagesHeMap => {
   """wear.hereNow""": """כאן עכשיו""",
   """wear.advanceFailed""": """לא הצלחנו להתקדם""",
   """wear.finishFailed""": """לא הצלחנו לסיים את הקנייה""",
+  """wear.startMyOwn""": """להתחיל קנייה משלי""",
+  """wear.joinFailed""": """לא הצלחנו להצטרף""",
+  """wear.sharedTrip""": """קנייה משותפת""",
+  """wear.leaveTripBody""": """הקנייה ממשיכה לשאר.""",
+  """wear.leaveFailed""": """לא הצלחנו לצאת""",
   """wear.notBilled""": """לא הוזן""",
   """wear.currency""": """מטבע""",
   """wear.notANumber""": """מספרים בלבד""",

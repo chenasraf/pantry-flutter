@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/member.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_wear/src/checklists/checklists_controller.dart';
+import 'package:pantry_wear/src/shopping/leave_trip_page.dart';
 import 'package:pantry_wear/src/shopping/progression_page.dart';
 import 'package:pantry_wear/src/shopping/store_till_page.dart';
 import 'package:pantry_wear/src/shopping/trip_summary_page.dart';
 import 'package:pantry_wear/src/wear_shape.dart';
 import 'package:pantry_wear/src/widgets/focus_list.dart';
+import 'package:pantry_wear/src/widgets/wear_avatar.dart';
 import 'package:pantry_wear/src/widgets/wear_row.dart';
 
 import 'wear_fixtures.dart';
@@ -368,6 +371,78 @@ void main() {
         reason: '"0 bought" would name a trip that bought nothing',
       );
       expect(find.text(m.shopping.finishTrip), findsOneWidget);
+    });
+  });
+
+  group('a trip shared with a housemate', () {
+    Member member(String userId, String displayName) => Member(
+      id: userId.hashCode,
+      houseId: 1,
+      userId: userId,
+      displayName: displayName,
+      role: 'member',
+      joinedAt: 0,
+    );
+
+    ChecklistsController shared({
+      String startedBy = 'dana',
+      List<String> memberIds = const ['dana', 'casraf'],
+    }) => ChecklistsController.seeded(
+      houseId: 1,
+      stores: [corner, hardware, market],
+      members: [member('casraf', 'Chen'), member('dana', 'Dana')],
+      currentUserId: 'casraf',
+      session: testSession(
+        activeStoreId: 8,
+        storeIds: const [7, 8, 9],
+        userId: startedBy,
+        memberIds: memberIds,
+      ),
+    );
+
+    testWidgets('a trip walked alone says nothing about company', (
+      tester,
+    ) async {
+      await pumpProgression(tester, seeded());
+
+      expect(find.text(m.wear.sharedTrip), findsNothing);
+    });
+
+    testWidgets('the housemates on it are named, and drawn', (tester) async {
+      await pumpProgression(tester, shared());
+
+      // The call to action at the bottom of this page finishes the trip for
+      // everyone on it, so who that is has to be readable from here.
+      expect(find.text(m.wear.sharedTrip), findsOneWidget);
+      expect(find.text('Dana'), findsOneWidget);
+      expect(find.byType(WearAvatarStack), findsOneWidget);
+    });
+
+    testWidgets('a housemate who joined can step out of it', (tester) async {
+      await pumpProgression(tester, shared());
+
+      tester.state<SnapFocusListState>(find.byType(SnapFocusList)).centreOn(0);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(m.wear.sharedTrip));
+      await tester.pumpAndSettle();
+
+      // Leaving is the only exit that is not somebody else's trip ending.
+      expect(find.byType(LeaveTripPage), findsOneWidget);
+      expect(find.text(m.shopping.leaveTrip), findsOneWidget);
+    });
+
+    testWidgets('the shopper who started it has no such door', (tester) async {
+      await pumpProgression(tester, shared(startedBy: 'casraf'));
+
+      tester.state<SnapFocusListState>(find.byType(SnapFocusList)).centreOn(0);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(m.wear.sharedTrip));
+      await tester.pumpAndSettle();
+
+      // Their way out is finishing, which ends it for everyone — a row that
+      // opened a page promising otherwise would be a lie.
+      expect(find.byType(LeaveTripPage), findsNothing);
+      expect(rowFor(tester, m.wear.sharedTrip).onTap, isNull);
     });
   });
 }

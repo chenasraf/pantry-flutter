@@ -266,8 +266,8 @@ class ShoppingSessionController extends ChangeNotifier {
     return userIds.toList();
   }
 
-  /// Whether the caller started this trip. Privacy and billed totals are the
-  /// starter's alone; a housemate who joined 404s on them.
+  /// Whether the caller started this trip. Privacy is the starter's alone; a
+  /// housemate who joined 404s on it.
   bool get isStarter => _session.isStartedBy(currentUserId);
 
   /// The housemates sharing this trip with the caller.

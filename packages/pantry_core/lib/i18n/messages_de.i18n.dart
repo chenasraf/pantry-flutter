@@ -5935,6 +5935,36 @@ class WearMessagesDe extends WearMessages {
   String get finishFailed => """Einkauf ließ sich nicht beenden""";
 
   /// ```dart
+  /// "Eigenen starten"
+  /// ```
+  String get startMyOwn => """Eigenen starten""";
+
+  /// ```dart
+  /// "$name +$count"
+  /// ```
+  String plusOthers(String name, int count) => """$name +$count""";
+
+  /// ```dart
+  /// "Beitritt ging nicht"
+  /// ```
+  String get joinFailed => """Beitritt ging nicht""";
+
+  /// ```dart
+  /// "Gemeinsamer Einkauf"
+  /// ```
+  String get sharedTrip => """Gemeinsamer Einkauf""";
+
+  /// ```dart
+  /// "Der Einkauf läuft für die anderen weiter."
+  /// ```
+  String get leaveTripBody => """Der Einkauf läuft für die anderen weiter.""";
+
+  /// ```dart
+  /// "Verlassen ging nicht"
+  /// ```
+  String get leaveFailed => """Verlassen ging nicht""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 gekauft', many: '$count gekauft')}"
   /// ```
   String boughtTally(int count) =>
@@ -7669,6 +7699,11 @@ Passwort: pantry-rocks""",
   """wear.hereNow""": """Hier""",
   """wear.advanceFailed""": """Weitergehen ging nicht""",
   """wear.finishFailed""": """Einkauf ließ sich nicht beenden""",
+  """wear.startMyOwn""": """Eigenen starten""",
+  """wear.joinFailed""": """Beitritt ging nicht""",
+  """wear.sharedTrip""": """Gemeinsamer Einkauf""",
+  """wear.leaveTripBody""": """Der Einkauf läuft für die anderen weiter.""",
+  """wear.leaveFailed""": """Verlassen ging nicht""",
   """wear.notBilled""": """Nicht gesetzt""",
   """wear.currency""": """Währung""",
   """wear.notANumber""": """Nur Zahlen""",

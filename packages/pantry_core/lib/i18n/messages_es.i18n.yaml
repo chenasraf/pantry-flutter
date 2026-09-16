@@ -1135,6 +1135,12 @@ wear:
   nextIs(String store): "Siguiente: ${store}"
   advanceFailed: No se pudo avanzar
   finishFailed: No se pudo terminar la compra
+  startMyOwn: Empezar la mía
+  plusOthers(String name, int count): "$name +$count"
+  joinFailed: No se pudo unir
+  sharedTrip: Compra compartida
+  leaveTripBody: La compra sigue para los demás.
+  leaveFailed: No se pudo salir
   boughtTally(int count): "${_plural(count, one: '1 comprado', many: '$count comprados')}"
   storeTally(int count): "${_plural(count, one: '1 tienda', many: '$count tiendas')}"
   notBilled: Sin definir

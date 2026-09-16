@@ -12,6 +12,12 @@ import 'wear_surfaces.dart';
 /// interval pickers behind that are one target at three depths.
 class WearRow extends StatelessWidget {
   final IconData? icon;
+
+  /// Drawn in [icon]'s place, for a row whose subject is a person rather than
+  /// a kind of thing. A face is recognised faster than any icon standing in
+  /// for one, which is the whole of why the slot exists.
+  final Widget? leading;
+
   final Color tint;
   final String label;
 
@@ -64,6 +70,7 @@ class WearRow extends StatelessWidget {
     super.key,
     required this.label,
     this.icon,
+    this.leading,
     this.tint = Colors.white70,
     this.value,
     this.selected = false,
@@ -120,7 +127,10 @@ class WearRow extends StatelessWidget {
           ),
           child: Row(
             children: [
-              if (icon != null) ...[
+              if (leading != null) ...[
+                leading!,
+                const SizedBox(width: 8),
+              ] else if (icon != null) ...[
                 Icon(
                   icon,
                   size: 15,

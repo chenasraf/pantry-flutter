@@ -185,7 +185,6 @@ class _SessionBodyState extends State<_SessionBody> {
           mode: mode,
           activeStoreId: session.activeStoreId,
           stores: controller.stores,
-          canEditBilled: controller.isStarter,
           reminders: controller.remindersFor(moment),
           onManageReminders: _openReminders,
         ),

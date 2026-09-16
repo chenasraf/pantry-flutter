@@ -43,10 +43,9 @@ class ShoppingReviewView extends StatefulWidget {
   final List<ShoppingReminder> reminders;
   final VoidCallback? onManageReminders;
 
-  /// Whether the caller may type in what was actually paid. The totals belong
-  /// to the shopper who started the trip, so a housemate who joined reads them
-  /// and still confirms the transition. In history mode it also decides whether
-  /// the trip can be opened for amending at all.
+  /// Whether the caller may amend what was paid on a finished trip, which is
+  /// also what decides whether it can be opened for amending at all. A trip in
+  /// history belongs to the shopper who ran it; everyone else reads it.
   final bool canEditBilled;
 
   const ShoppingReviewView({

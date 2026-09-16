@@ -1135,6 +1135,12 @@ wear:
   nextIs(String store): "הבא: ${store}"
   advanceFailed: לא הצלחנו להתקדם
   finishFailed: לא הצלחנו לסיים את הקנייה
+  startMyOwn: להתחיל קנייה משלי
+  plusOthers(String name, int count): "$name +$count"
+  joinFailed: לא הצלחנו להצטרף
+  sharedTrip: קנייה משותפת
+  leaveTripBody: הקנייה ממשיכה לשאר.
+  leaveFailed: לא הצלחנו לצאת
   boughtTally(int count): "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
   storeTally(int count): "${_plural(count, one: 'חנות אחת', many: '$count חנויות')}"
   notBilled: לא הוזן

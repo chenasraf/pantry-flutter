@@ -5906,6 +5906,36 @@ class WearMessagesNn extends WearMessages {
   String get finishFailed => """Fekk ikkje avslutta handleturen""";
 
   /// ```dart
+  /// "Start min eigen"
+  /// ```
+  String get startMyOwn => """Start min eigen""";
+
+  /// ```dart
+  /// "$name +$count"
+  /// ```
+  String plusOthers(String name, int count) => """$name +$count""";
+
+  /// ```dart
+  /// "Fekk ikkje bli med"
+  /// ```
+  String get joinFailed => """Fekk ikkje bli med""";
+
+  /// ```dart
+  /// "Delt handletur"
+  /// ```
+  String get sharedTrip => """Delt handletur""";
+
+  /// ```dart
+  /// "Handleturen held fram for dei andre."
+  /// ```
+  String get leaveTripBody => """Handleturen held fram for dei andre.""";
+
+  /// ```dart
+  /// "Fekk ikkje gå ut"
+  /// ```
+  String get leaveFailed => """Fekk ikkje gå ut""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 kjøpt', many: '$count kjøpte')}"
   /// ```
   String boughtTally(int count) =>
@@ -7600,6 +7630,11 @@ Passord: pantry""",
   """wear.hereNow""": """Her no""",
   """wear.advanceFailed""": """Fekk ikkje gå vidare""",
   """wear.finishFailed""": """Fekk ikkje avslutta handleturen""",
+  """wear.startMyOwn""": """Start min eigen""",
+  """wear.joinFailed""": """Fekk ikkje bli med""",
+  """wear.sharedTrip""": """Delt handletur""",
+  """wear.leaveTripBody""": """Handleturen held fram for dei andre.""",
+  """wear.leaveFailed""": """Fekk ikkje gå ut""",
   """wear.notBilled""": """Ikkje sett""",
   """wear.currency""": """Valuta""",
   """wear.notANumber""": """Berre tal""",

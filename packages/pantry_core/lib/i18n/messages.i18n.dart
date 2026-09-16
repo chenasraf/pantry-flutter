@@ -5870,6 +5870,36 @@ class WearMessages {
   String get finishFailed => """Couldn't finish the trip""";
 
   /// ```dart
+  /// "Start my own"
+  /// ```
+  String get startMyOwn => """Start my own""";
+
+  /// ```dart
+  /// "$name +$count"
+  /// ```
+  String plusOthers(String name, int count) => """$name +$count""";
+
+  /// ```dart
+  /// "Couldn't join"
+  /// ```
+  String get joinFailed => """Couldn't join""";
+
+  /// ```dart
+  /// "Shared trip"
+  /// ```
+  String get sharedTrip => """Shared trip""";
+
+  /// ```dart
+  /// "The trip keeps going for everyone else."
+  /// ```
+  String get leaveTripBody => """The trip keeps going for everyone else.""";
+
+  /// ```dart
+  /// "Couldn't leave"
+  /// ```
+  String get leaveFailed => """Couldn't leave""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 bought', many: '$count bought')}"
   /// ```
   String boughtTally(int count) =>
@@ -7540,6 +7570,11 @@ Password: pantry-rocks""",
   """wear.hereNow""": """Here now""",
   """wear.advanceFailed""": """Couldn't move on""",
   """wear.finishFailed""": """Couldn't finish the trip""",
+  """wear.startMyOwn""": """Start my own""",
+  """wear.joinFailed""": """Couldn't join""",
+  """wear.sharedTrip""": """Shared trip""",
+  """wear.leaveTripBody""": """The trip keeps going for everyone else.""",
+  """wear.leaveFailed""": """Couldn't leave""",
   """wear.notBilled""": """Not set""",
   """wear.currency""": """Currency""",
   """wear.notANumber""": """Numbers only""",

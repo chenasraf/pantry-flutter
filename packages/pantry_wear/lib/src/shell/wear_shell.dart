@@ -18,6 +18,7 @@ import '../photos/photos_page.dart';
 import '../notes/notes_page.dart';
 import '../services/rotary_service.dart';
 import '../services/wear_deep_link.dart';
+import '../shopping/join_trip_page.dart';
 import '../shopping/progression_page.dart';
 import '../shopping/start_trip_page.dart';
 import '../shopping/trip_collection_page.dart';
@@ -479,12 +480,29 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
   /// to choose between and a wearer has to be able to leave it having chosen
   /// none of them.
   ///
-  /// A started trip is read back rather than handed over — the shell swaps its
-  /// page set on the controller's mode, and the controller's own refresh is
-  /// what settles it, so there is one path into a session however it began.
+  /// A trip a housemate is already shopping is offered first, since two people
+  /// walking the same list in two trips is what joining exists to prevent. The
+  /// offer is skipped outright when there is none, so a house where nobody
+  /// else shops never learns the page is there.
+  ///
+  /// A started or joined trip is read back rather than handed over — the shell
+  /// swaps its page set on the controller's mode, and the controller's own
+  /// refresh is what settles it, so there is one path into a session however
+  /// it began.
   Future<void> _openStartTrip() async {
     final house = _controller.houseId;
     if (house == null) return;
+    if (_controller.joinableTrips.isNotEmpty) {
+      final choice = await _push<JoinChoice>(
+        JoinTripPage(controller: _controller),
+      );
+      if (choice == JoinChoice.joined) {
+        unawaited(_controller.refresh());
+        return;
+      }
+      // Dismissing the offer is not asking for a trip of one's own.
+      if (choice != JoinChoice.startOwn || !mounted) return;
+    }
     final started = await _push<bool>(StartTripPage(houseId: house));
     if (started == true) unawaited(_controller.refresh());
   }

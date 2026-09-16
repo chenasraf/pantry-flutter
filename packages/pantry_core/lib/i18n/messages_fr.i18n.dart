@@ -5927,6 +5927,36 @@ class WearMessagesFr extends WearMessages {
   String get finishFailed => """Impossible de terminer la sortie""";
 
   /// ```dart
+  /// "Lancer la mienne"
+  /// ```
+  String get startMyOwn => """Lancer la mienne""";
+
+  /// ```dart
+  /// "$name +$count"
+  /// ```
+  String plusOthers(String name, int count) => """$name +$count""";
+
+  /// ```dart
+  /// "Impossible de rejoindre"
+  /// ```
+  String get joinFailed => """Impossible de rejoindre""";
+
+  /// ```dart
+  /// "Sortie partagée"
+  /// ```
+  String get sharedTrip => """Sortie partagée""";
+
+  /// ```dart
+  /// "La sortie continue pour les autres."
+  /// ```
+  String get leaveTripBody => """La sortie continue pour les autres.""";
+
+  /// ```dart
+  /// "Impossible de quitter"
+  /// ```
+  String get leaveFailed => """Impossible de quitter""";
+
+  /// ```dart
   /// "${_plural(count, one: '1 acheté', many: '$count achetés')}"
   /// ```
   String boughtTally(int count) =>
@@ -7658,6 +7688,11 @@ Mot de passe : pantry-rocks""",
   """wear.hereNow""": """Ici""",
   """wear.advanceFailed""": """Impossible de passer au suivant""",
   """wear.finishFailed""": """Impossible de terminer la sortie""",
+  """wear.startMyOwn""": """Lancer la mienne""",
+  """wear.joinFailed""": """Impossible de rejoindre""",
+  """wear.sharedTrip""": """Sortie partagée""",
+  """wear.leaveTripBody""": """La sortie continue pour les autres.""",
+  """wear.leaveFailed""": """Impossible de quitter""",
   """wear.notBilled""": """Non renseigné""",
   """wear.currency""": """Devise""",
   """wear.notANumber""": """Chiffres uniquement""",

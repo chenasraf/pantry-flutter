@@ -5,10 +5,13 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/member.dart';
+import 'package:pantry_core/models/shopping_presence_entry.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/house_service.dart';
@@ -45,7 +48,7 @@ enum ChecklistGrouping { category, store }
 /// queue and the same executor the phone uses — so an in-store check survives
 /// a dead link.
 class ChecklistsController extends ChangeNotifier {
-  ChecklistsController();
+  ChecklistsController() : _seededUserId = null;
 
   /// A controller holding a fixed answer, for pumping the real widget tree
   /// without a server. Nothing here polls or subscribes: [start] is what does
@@ -63,8 +66,11 @@ class ChecklistsController extends ChangeNotifier {
     ShoppingSession? session,
     ShoppingReview? review,
     List<ShoppingReminder> reminders = const [],
+    List<Member> members = const [],
+    List<ShoppingPresenceEntry> joinableTrips = const [],
+    String? currentUserId,
     String itemSort = 'custom',
-  }) {
+  }) : _seededUserId = currentUserId {
     _itemSort = itemSort;
     _houseId = houseId;
     _list = list;
@@ -77,6 +83,8 @@ class ChecklistsController extends ChangeNotifier {
     _session = session;
     _review = review;
     _reminders = reminders;
+    _members = {for (final m in members) m.userId: m};
+    _joinableTrips = joinableTrips;
     _loading = false;
   }
 
@@ -127,6 +135,66 @@ class ChecklistsController extends ChangeNotifier {
 
   ChecklistMode get mode =>
       _session == null ? ChecklistMode.browse : ChecklistMode.session;
+
+  Map<String, Member> _members = const {};
+
+  /// The house by user id, for putting a name and a face to whoever is out
+  /// shopping. Cached, so a trip offered on a watch out of range of its phone
+  /// is still offered by name.
+  Map<String, Member> get members => _members;
+
+  /// Who the watch is signed in as, which is what tells a housemate's trip
+  /// from the wearer's own. Read rather than captured, so signing in after the
+  /// shell was built does not leave every trip looking like somebody else's.
+  String? get currentUserId =>
+      _seededUserId ?? AuthService.instance.credentials?.loginName;
+
+  final String? _seededUserId;
+
+  List<ShoppingPresenceEntry> _joinableTrips = const [];
+
+  /// Housemates' live trips the wearer could join, freshest first. Empty while
+  /// a trip of their own is running, on a server without
+  /// `shopping-join-session`, and in a house where the wearer may not check
+  /// items off — joining is checking things off.
+  List<ShoppingPresenceEntry> get joinableTrips => _joinableTrips;
+
+  /// Whether the live trip is the wearer's own. Privacy is the starter's
+  /// alone, and so is the choice between ending a trip and stepping out of it.
+  bool get isTripStarter => _session?.isStartedBy(currentUserId) ?? false;
+
+  /// The housemates sharing the live trip, in the order the server lists them.
+  ///
+  /// Empty on a watch that cannot say who it is signed in as: every member of
+  /// the trip would read as somebody else, and a trip walked alone would draw
+  /// the wearer as their own company.
+  List<Member> get companions {
+    final uid = currentUserId;
+    if (uid == null) return const [];
+    return [
+      for (final id in _session?.othersThan(uid) ?? const <String>[])
+        _members[id] ?? _unknownMember(id),
+    ];
+  }
+
+  /// A shopper the member list has not landed for. Their login name is the
+  /// best the watch can do, and it is better than an empty row.
+  Member _unknownMember(String userId) => Member(
+    id: 0,
+    houseId: _houseId ?? 0,
+    userId: userId,
+    displayName: userId,
+    role: '',
+    joinedAt: 0,
+  );
+
+  /// What to call [userId] on a row.
+  String displayNameOf(String userId) =>
+      _members[userId]?.displayName ?? userId;
+
+  /// Whether the wearer may check items off in the scoped house, which is the
+  /// permission joining asks for — joining a trip is checking things off it.
+  var _canCheckItems = true;
 
   List<ListItem> _items = const [];
 
@@ -214,8 +282,9 @@ class ChecklistsController extends ChangeNotifier {
   /// elsewhere.
   bool get hasNoScope => _houseId == null;
 
-  /// The last write the server refused, for the page to say so and put the row
-  /// back. Cleared once shown.
+  /// The one thing the shell has to say and be done with: a write the server
+  /// refused, a remembered house that stopped existing, a trip that ended
+  /// under the wearer. Cleared once shown.
   String? _dropped;
   String? get droppedMessage => _dropped;
   void clearDropped() {
@@ -372,7 +441,11 @@ class ChecklistsController extends ChangeNotifier {
     _dropped ??= _scope.takeFallbackNotice();
     final house = _houseId;
     if (house == null) return;
-    _houseName = _nameOfHouse(houses, house);
+    _adoptHouse(houses, house);
+    _members = {
+      for (final m in HouseService.instance.getCachedMembers(house) ?? const [])
+        m.userId: m,
+    };
 
     _categories = {
       for (final c in CategoryService.instance.getCached(house) ?? const [])
@@ -522,6 +595,7 @@ class ChecklistsController extends ChangeNotifier {
     if (_session != null) {
       await _refreshSessionItems();
     } else {
+      await _refreshJoinable();
       await _refreshBrowse();
     }
     _loading = false;
@@ -537,15 +611,18 @@ class ChecklistsController extends ChangeNotifier {
       _houseId = await _scope.resolveHouse(houses) ?? _houseId;
       _dropped ??= _scope.takeFallbackNotice();
       final house = _houseId;
-      if (house != null) _houseName = _nameOfHouse(houses, house);
+      if (house != null) _adoptHouse(houses, house);
     } catch (_) {}
   }
 
-  String? _nameOfHouse(List<House> houses, int id) {
-    for (final h in houses) {
-      if (h.id == id) return h.name;
+  /// What the scoped house is called, and what the wearer may do in it.
+  void _adoptHouse(List<House> houses, int id) {
+    for (final house in houses) {
+      if (house.id != id) continue;
+      _houseName = house.name;
+      _canCheckItems = house.effectivePermissions.canCheckItems;
+      return;
     }
-    return null;
   }
 
   /// Hand the list Tile what it draws, every time the answer is re-read.
@@ -580,10 +657,17 @@ class ChecklistsController extends ChangeNotifier {
       // about it the same way it hears about the list.
       _mirror.setSession(live?.id);
       if (live == null) {
-        // Closing a trip needs no rule of its own: the remembered list is
-        // still there when the session was in this house, and invalid — so
-        // the lowest-sortOrder rule picks — when it was in another.
-        if (was != null) await _loadFromCache();
+        // A trip that was live and is not was ended by somebody else — the
+        // wearer's own close clears the session before a read can find it. On
+        // a shared trip that is a housemate finishing it, and the watch
+        // swapping out of session mode mid-aisle has to account for itself.
+        if (was != null) {
+          _dropped ??= m.shopping.tripFinishedByHousemate;
+          // The remembered list needs no rule of its own: it is still there
+          // when the session was in this house, and invalid — so the
+          // lowest-sortOrder rule picks — when it was in another.
+          await _loadFromCache();
+        }
         return;
       }
       if (live.houseId != _houseId) {
@@ -598,8 +682,8 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
-  /// The three answers that describe the house rather than the list: how it
-  /// sorts, its categories and its stores.
+  /// The four answers that describe the house rather than the list: how it
+  /// sorts, its categories, its stores and who is in it.
   ///
   /// Asked for together, because none of them is an input to either of the
   /// others and on a watch a round trip is a wrist held up. Each keeps its own
@@ -612,7 +696,15 @@ class ChecklistsController extends ChangeNotifier {
       _refreshHousePrefs(house),
       _refreshCategories(house),
       _refreshStores(house),
+      _refreshMembers(house),
     ]);
+  }
+
+  Future<void> _refreshMembers(int house) async {
+    try {
+      final members = await HouseService.instance.getMembers(house);
+      _members = {for (final m in members) m.userId: m};
+    } catch (_) {}
   }
 
   Future<void> _refreshCategories(int house) async {
@@ -627,6 +719,97 @@ class ChecklistsController extends ChangeNotifier {
       final stores = await StoreService.instance.getStores(house);
       _stores = {for (final s in stores) s.id: s};
     } catch (_) {}
+  }
+
+  /// Housemates' trips worth offering, freshest first.
+  ///
+  /// Presence describes trips rather than people — everyone sharing one is
+  /// listed under the shopper who started it — so a trip the wearer is already
+  /// on comes back here too and is dropped. A read that fails keeps the last
+  /// answer: a dead link is not a housemate coming home.
+  Future<void> _refreshJoinable() async {
+    final house = _houseId;
+    if (house == null ||
+        currentUserId == null ||
+        !_canCheckItems ||
+        !hasFeature('shopping-join-session')) {
+      _joinableTrips = const [];
+      return;
+    }
+    try {
+      _joinableTrips = joinableFrom(
+        await _shopping.getPresence(house),
+        currentUserId,
+      );
+    } catch (_) {}
+  }
+
+  /// The trips in [entries] that [uid] could join: live, addressable, and not
+  /// already theirs. Freshest first, so the trip a housemate is walking right
+  /// now is the one under the thumb.
+  ///
+  /// A server without `shopping-join-session` describes presence by person and
+  /// names no trip, which is nothing to offer.
+  @visibleForTesting
+  static List<ShoppingPresenceEntry> joinableFrom(
+    List<ShoppingPresenceEntry> entries,
+    String? uid,
+  ) => [
+    for (final entry in entries)
+      if (entry.sessionId != null && !entry.includes(uid)) entry,
+  ]..sort((a, b) => b.lastSeenAt.compareTo(a.lastSeenAt));
+
+  /// Shop a housemate's trip rather than starting a parallel one: the same
+  /// items, the same check log, and whoever ends it ends it for everyone.
+  ///
+  /// Online only, for the reason starting one is — a queued join would put the
+  /// watch inside a trip the server has never put it in.
+  Future<bool> joinTrip(ShoppingPresenceEntry entry) async {
+    final house = _houseId;
+    final sessionId = entry.sessionId;
+    if (house == null || sessionId == null || !_sync.isOnline) return false;
+    try {
+      _session = await _shopping.joinSession(house, sessionId);
+    } on ShoppingSessionConflict catch (conflict) {
+      // A trip of the wearer's own started somewhere else between the presence
+      // read and the tap. It is adopted rather than discarded — the watch has
+      // to be truthful about the trip it is in — but it is not the trip that
+      // was asked for, so the tap is a refusal.
+      _session = conflict.session;
+      _emit();
+      return false;
+    } catch (_) {
+      return false;
+    }
+    _joinableTrips = const [];
+    _review = null;
+    _mirror.setSession(_session?.id);
+    await _refreshSessionItems();
+    _emit();
+    return true;
+  }
+
+  /// Step out of a housemate's trip, leaving it running for them. The shopper
+  /// who started one has no way out but [closeTrip], which ends it for
+  /// everyone in it.
+  Future<bool> leaveTrip() async {
+    final house = _houseId;
+    final session = _session;
+    if (house == null || session == null || !_sync.isOnline) return false;
+    if (session.isStartedBy(currentUserId)) return false;
+    try {
+      await _shopping.leaveSession(house, session.id);
+    } catch (_) {
+      return false;
+    }
+    _session = null;
+    _review = null;
+    _done = const [];
+    _removed = const [];
+    _mirror.setSession(null);
+    await _loadFromCache();
+    _emit();
+    return true;
   }
 
   Future<void> _refreshBrowse() async {

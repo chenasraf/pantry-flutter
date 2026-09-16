@@ -12,10 +12,12 @@ import 'package:pantry_core/utils/store_icons.dart';
 
 import '../checklists/checklists_controller.dart';
 import '../widgets/focus_list.dart';
+import '../widgets/wear_avatar.dart';
 import '../widgets/wear_cta.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_row.dart';
+import 'leave_trip_page.dart';
 import 'store_till_page.dart';
 import 'trip_reminders_page.dart';
 import 'trip_summary_page.dart';
@@ -213,12 +215,13 @@ class _ProgressionPageState extends State<ProgressionPage> {
     final reminders = _reminders;
 
     void row({
-      required IconData icon,
+      IconData? icon,
+      Widget? leading,
       Color tint = Colors.white70,
       required String label,
       String? value,
       bool spent = false,
-      required VoidCallback onTap,
+      VoidCallback? onTap,
     }) {
       // Captured as the row is added, so the order lives in one place.
       final index = elements.length;
@@ -229,15 +232,39 @@ class _ProgressionPageState extends State<ProgressionPage> {
             padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
             child: WearRow(
               icon: icon,
+              leading: leading,
               tint: tint,
               label: label,
               value: value,
               spent: spent,
               distance: d,
-              onTap: () => _tap(index, onTap),
+              onTap: onTap == null ? null : () => _tap(index, onTap),
             ),
           ),
         ),
+      );
+    }
+
+    // Who else is walking this trip, read before the reminders for it: the
+    // call to action at the bottom of this page finishes the trip for all of
+    // them, and a wearer has to be able to see that from here.
+    final companions = controller.companions;
+    if (companions.isNotEmpty) {
+      row(
+        leading: WearAvatarStack(
+          members: [
+            for (final member in companions)
+              (userId: member.userId, displayName: member.displayName),
+          ],
+        ),
+        label: m.wear.sharedTrip,
+        value: companions.map((m) => m.displayName).join(', '),
+        // Only a housemate who joined can step out; for the shopper who
+        // started it there is no way out but finishing, so the row is a
+        // statement rather than a door.
+        onTap: controller.isTripStarter
+            ? null
+            : () => unawaited(_push(LeaveTripPage(controller: controller))),
       );
     }
 

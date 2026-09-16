@@ -106,12 +106,15 @@ ShoppingSession testSession({
   double? billedTotal,
   String? billedCurrency,
   Map<int, double> billedByStore = const {},
+  String userId = 'casraf',
+  List<String> memberIds = const [],
 }) {
   final legs = storeIds.isNotEmpty ? storeIds : [?activeStoreId];
   return ShoppingSession(
     id: 12,
     houseId: 1,
-    userId: 'casraf',
+    userId: userId,
+    memberIds: memberIds.isNotEmpty ? memberIds : [userId],
     listIds: const [4],
     stores: [
       for (var i = 0; i < legs.length; i++)
