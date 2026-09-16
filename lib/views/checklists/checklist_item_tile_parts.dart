@@ -218,6 +218,11 @@ class ChecklistTileRowContent extends StatelessWidget {
                       fileId: item.imageFileId,
                       owner: item.imageUploadedBy ?? '',
                       pending: pendingImage,
+                      previewHeroTag: selectionMode
+                          ? null
+                          : suggestion
+                          ? 'suggestion-thumb-${item.id}'
+                          : 'item-thumb-${item.id}',
                     ),
                     const SizedBox(width: 12),
                   ],

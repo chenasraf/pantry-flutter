@@ -10,6 +10,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry/views/shopping/shopping_item_row.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
+import 'package:pantry/widgets/image_preview.dart';
 import 'package:pantry/widgets/item_thumb.dart';
 
 import '../helpers/test_app.dart';
@@ -159,5 +160,17 @@ void main() {
     await pumpRow(tester, makeListItem(id: 1, name: 'Milk', imageFileId: 42));
 
     expect(find.byType(ItemThumb), findsOneWidget);
+  });
+
+  testWidgets('tapping the picture opens it instead of checking the item off', (
+    tester,
+  ) async {
+    await pumpRow(tester, makeListItem(id: 1, name: 'Milk', imageFileId: 42));
+
+    await tester.tap(find.byType(ItemThumb));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ImagePreview), findsOneWidget);
+    expect(taps['check'], isNull);
   });
 }

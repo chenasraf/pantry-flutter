@@ -24,8 +24,9 @@ import 'package:pantry/widgets/item_thumb.dart';
 /// list. What differs is what a tap means: here the whole row checks the item
 /// off, whatever `defaultItemTapAction` says elsewhere, because that is the one
 /// thing a shopper does over and over with a phone in one hand. Reaching the
-/// item itself is the trailing button's job, and no chip takes a tap, so
-/// nothing in the middle of the row can swallow the gesture.
+/// item itself is the trailing button's job, and no chip takes a tap, so the
+/// only thing in the middle of the row that claims the gesture is the picture,
+/// which opens full-screen for a shopper checking they have the right tin.
 ///
 /// Swiping the row aside removes the item from this trip only (see [onSkip]).
 class ShoppingItemRow extends StatelessWidget {
@@ -77,6 +78,7 @@ class ShoppingItemRow extends StatelessWidget {
                   houseId: controller.houseId,
                   fileId: item.imageFileId,
                   owner: item.imageUploadedBy ?? '',
+                  previewHeroTag: 'shopping-thumb-${item.id}',
                 ),
                 const SizedBox(width: 12),
               ],

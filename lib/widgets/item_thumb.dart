@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
+import 'package:pantry/widgets/image_preview.dart';
 
 /// An item's picture at row size. Shared by the checklist row and the shopping
 /// row so a photographed item is recognisable in the aisle by the same square
@@ -23,6 +24,12 @@ class ItemThumb extends StatelessWidget {
 
   final double size;
 
+  /// Tag the thumbnail flies under when a tap opens the picture full-screen.
+  /// Null leaves the square inert so the whole row keeps the tap — what a row
+  /// does with one (check off, toggle selection) is worth more than the
+  /// picture when the row is in such a mode. Must be unique within a route.
+  final String? previewHeroTag;
+
   const ItemThumb({
     super.key,
     required this.houseId,
@@ -30,6 +37,7 @@ class ItemThumb extends StatelessWidget {
     required this.owner,
     this.pending,
     this.size = 40,
+    this.previewHeroTag,
   });
 
   @override
@@ -41,35 +49,51 @@ class ItemThumb extends StatelessWidget {
       child: const Icon(Icons.broken_image_outlined, size: 18),
     );
     final file = pending;
-    if (file != null) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: AvifFileImage(
-          file,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          errorWidget: fallback,
-        ),
-      );
-    }
-    final uri = ChecklistService.instance.itemImagePreviewUri(
-      houseId,
-      fileId!,
-      owner,
-      size: 96,
-    );
     final headers = AuthService.instance.credentials?.basicAuthHeaders ?? {};
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: AvifNetworkImage(
-        imageUrl: uri.toString(),
+
+    final Widget thumb;
+    String? fullUrl;
+    if (file != null) {
+      thumb = AvifFileImage(
+        file,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        errorWidget: fallback,
+      );
+    } else {
+      thumb = AvifNetworkImage(
+        imageUrl: ChecklistService.instance
+            .itemImagePreviewUri(houseId, fileId!, owner, size: 96)
+            .toString(),
         headers: headers,
         width: size,
         height: size,
         fit: BoxFit.cover,
         errorWidget: fallback,
+      );
+      fullUrl = ChecklistService.instance
+          .itemImagePreviewUri(houseId, fileId!, owner, size: 2048)
+          .toString();
+    }
+
+    final clipped = ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: thumb,
+    );
+
+    final heroTag = previewHeroTag;
+    if (heroTag == null) return clipped;
+
+    return GestureDetector(
+      onTap: () => ImagePreview.show(
+        context,
+        imageUrl: fullUrl,
+        file: file,
+        heroTag: heroTag,
+        headers: headers,
       ),
+      child: Hero(tag: heroTag, child: clipped),
     );
   }
 }

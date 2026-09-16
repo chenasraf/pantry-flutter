@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/views/checklists/checklist_item_tile.dart';
+import 'package:pantry/widgets/image_preview.dart';
+import 'package:pantry/widgets/item_thumb.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
 
 import '../helpers/test_app.dart';
@@ -254,6 +256,44 @@ void main() {
 
     expect(find.byType(AvifFileImage), findsOneWidget);
     expect(find.byType(AvifNetworkImage), findsNothing);
+  });
+
+  testWidgets('tapping the picture opens it instead of the item', (
+    tester,
+  ) async {
+    final blob = File(
+      '${Directory.systemTemp.createTempSync('pantry_tile').path}/shot.jpg',
+    )..writeAsBytesSync(_onePixelPng);
+    addTearDown(() => blob.parent.deleteSync(recursive: true));
+
+    final recorder = ListItemTapRecorder();
+    await tester.pumpWidget(
+      wrapForTest(
+        ChangeNotifierProvider<PrefsService>.value(
+          value: PrefsService.instance,
+          child: ListView(
+            children: [
+              ChecklistItemTile(
+                item: makeListItem(name: 'Milk'),
+                category: null,
+                houseId: 1,
+                isCardsView: false,
+                pendingImage: blob,
+                onToggle: recorder.onToggle,
+                onView: recorder.onView,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(ItemThumb));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ImagePreview), findsOneWidget);
+    expect(recorder.viewed, 0);
+    expect(recorder.toggled, 0);
   });
 }
 
