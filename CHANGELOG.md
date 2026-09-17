@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.33.0](https://github.com/chenasraf/pantry-flutter/compare/v0.32.0...v0.33.0) (2026-09-17)
+
+
+### Features
+
+* **categories:** per-store category order for shopping mode ([b103f75](https://github.com/chenasraf/pantry-flutter/commit/b103f757e2419987450d41ef30c0219c3869773f))
+* **checklists:** scale the quantity +/- step with the value ([66a90a1](https://github.com/chenasraf/pantry-flutter/commit/66a90a1dbec9fdced74e578c748148f16debceae)), closes [#179](https://github.com/chenasraf/pantry-flutter/issues/179)
+* **checklists:** tap an item's photo to see it full-screen ([acdb00d](https://github.com/chenasraf/pantry-flutter/commit/acdb00d5e8cd578045f0cbb02cbd3cede83d335f))
+* **onboarding:** introduce joining a housemate's shopping trip ([22d0b8e](https://github.com/chenasraf/pantry-flutter/commit/22d0b8e15fe94d2551f393db68a8df017e0e6c80))
+* **onboarding:** keep the tour short for new users ([b8d2e32](https://github.com/chenasraf/pantry-flutter/commit/b8d2e32f9e6b0adfce7daf395ec25e6164e54f3c))
+* **settings:** clean up settings page sections ([3ba1045](https://github.com/chenasraf/pantry-flutter/commit/3ba1045e16fd81b77bf6b14508686ba62dc6a2db))
+* **shopping:** amend a past trip's store and grand totals ([8d96b4e](https://github.com/chenasraf/pantry-flutter/commit/8d96b4ecc7503af687cd2f12422021b5e88073d6))
+* **shopping:** choose which items a trip covers when starting it ([50e4967](https://github.com/chenasraf/pantry-flutter/commit/50e496782238c773d3ad18b58f58a78ed075bae7))
+* **shopping:** join a housemate's shopping trip ([cbdcb09](https://github.com/chenasraf/pantry-flutter/commit/cbdcb094cd572d2906922f69803ce51aebef1c5a))
+* **shopping:** keep the category header in view while you shop it ([c154126](https://github.com/chenasraf/pantry-flutter/commit/c15412699c18fe46f04734b32adf046fb1c53c70))
+* **shopping:** see item photos, tags and full details while you shop ([325e4a3](https://github.com/chenasraf/pantry-flutter/commit/325e4a3186352e09bd087e74f757097b57183e61))
+* **wear:** join a housemate's shopping trip from your watch ([b4292ac](https://github.com/chenasraf/pantry-flutter/commit/b4292ac4b2e93446e390783430d6a566bd2a5661))
+* **wear:** open a photo or note on your phone ([997ef82](https://github.com/chenasraf/pantry-flutter/commit/997ef823ce45fda2d469f2e4b618c823f1c844e5))
+
+
+### Bug Fixes
+
+* **photos:** keep a removed photo off the row when its rebuild lands late ([a6c2f1a](https://github.com/chenasraf/pantry-flutter/commit/a6c2f1a54904575716e604cc734e7415c55ef771))
+* **photos:** keep photos taken offline and upload them when you reconnect ([479b048](https://github.com/chenasraf/pantry-flutter/commit/479b04869c4fee1ee09ffba221a873dbca518a4f)), closes [#180](https://github.com/chenasraf/pantry-flutter/issues/180)
+* **shopping:** hide reminders when viewing a past trip ([75079d9](https://github.com/chenasraf/pantry-flutter/commit/75079d9aa883a6a5ea1a6c641e083a62a41fad47))
+
 ## [0.32.0](https://github.com/chenasraf/pantry-flutter/compare/v0.31.2...v0.32.0) (2026-09-14)
 
 

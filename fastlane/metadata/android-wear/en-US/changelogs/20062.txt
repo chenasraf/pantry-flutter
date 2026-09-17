@@ -1,0 +1,13 @@
+Features
+- per-store category order for shopping mode
+- scale the quantity +/- step with the value
+- tap an item's photo to see it full-screen
+- introduce joining a housemate's shopping trip
+- keep the tour short for new users
+- clean up settings page sections
+- amend a past trip's store and grand totals
+- choose which items a trip covers when starting it
+- join a housemate's shopping trip
+- keep the category header in view while you shop it
+
+… see full notes on GitHub.
