@@ -12,6 +12,10 @@ class NoteService {
   static const _houseIdKey = 'houseId';
   static const _sortByKey = 'sortBy';
 
+  /// Transient (in-memory) request to open a note once the wall is loaded —
+  /// set by a note deep link, consumed by the notes wall view.
+  int? pendingOpenNoteId;
+
   // -- Cache --
 
   List<Note>? getCachedNotes(int houseId) {

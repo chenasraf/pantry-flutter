@@ -1114,6 +1114,10 @@ wear:
   openOnPhone: Auf dem Telefon öffnen
   openedOnPhone: Schau auf dein Telefon
   openOnPhoneFailed: Telefon nicht erreichbar
+  addedBy: Hinzugefügt von
+  added: Hinzugefügt
+  updated: Aktualisiert
+  tasks: Aufgaben
   queued(int count): "$count wartet"
   nothingToCheckOff: Nichts zum Abhaken
   nothingRemoved: Nichts entfernt

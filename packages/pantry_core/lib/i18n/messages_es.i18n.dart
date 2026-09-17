@@ -5821,6 +5821,26 @@ class WearMessagesEs extends WearMessages {
   String get openOnPhoneFailed => """No se pudo contactar con tu teléfono""";
 
   /// ```dart
+  /// "Añadido por"
+  /// ```
+  String get addedBy => """Añadido por""";
+
+  /// ```dart
+  /// "Añadido"
+  /// ```
+  String get added => """Añadido""";
+
+  /// ```dart
+  /// "Actualizado"
+  /// ```
+  String get updated => """Actualizado""";
+
+  /// ```dart
+  /// "Tareas"
+  /// ```
+  String get tasks => """Tareas""";
+
+  /// ```dart
   /// "$count en espera"
   /// ```
   String queued(int count) => """$count en espera""";
@@ -7798,6 +7818,10 @@ Contraseña: pantry-rocks""",
   """wear.openOnPhone""": """Abrir en el teléfono""",
   """wear.openedOnPhone""": """Mira tu teléfono""",
   """wear.openOnPhoneFailed""": """No se pudo contactar con tu teléfono""",
+  """wear.addedBy""": """Añadido por""",
+  """wear.added""": """Añadido""",
+  """wear.updated""": """Actualizado""",
+  """wear.tasks""": """Tareas""",
   """wear.nothingToCheckOff""": """Nada que marcar""",
   """wear.nothingRemoved""": """No has quitado nada""",
   """wear.allTasksDone""": """Todo hecho""",

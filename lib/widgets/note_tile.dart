@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/views/checklists/import_to_list.dart';
 import 'package:pantry_core/utils/text_direction.dart';
@@ -12,6 +13,16 @@ import 'package:pantry/views/notes/note_detail_view.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 import 'package:pantry/widgets/context_menu_region.dart';
+
+/// The ground a note is drawn on and the ink that reads over it.
+///
+/// Every surface that draws a note asks here, so the wall, the tile and the
+/// detail view a deep link opens all agree on a note's colour.
+({Color ground, Color ink}) noteColours(Note note, ThemeData theme) {
+  final ground =
+      parseHexColor(note.color) ?? theme.colorScheme.surfaceContainerHighest;
+  return (ground: ground, ink: noteInk(ground));
+}
 
 class NoteTile extends StatelessWidget {
   final Note note;
@@ -22,9 +33,7 @@ class NoteTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bgColor =
-        _parseColor(note.color) ?? theme.colorScheme.surfaceContainerHighest;
-    final textColor = _contrastColor(bgColor);
+    final (ground: bgColor, ink: textColor) = noteColours(note, theme);
 
     final hasMenu = _menuItems().isNotEmpty;
 
@@ -232,19 +241,6 @@ class NoteTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  static Color? _parseColor(String? hex) {
-    if (hex == null || hex.isEmpty) return null;
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    final value = int.tryParse(hex, radix: 16);
-    return value != null ? Color(value) : null;
-  }
-
-  static Color _contrastColor(Color bg) {
-    final luminance = bg.computeLuminance();
-    return luminance > 0.5 ? Colors.black87 : Colors.white;
   }
 
   List<PopupMenuEntry<String>> _menuItems() => [

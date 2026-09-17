@@ -5808,6 +5808,26 @@ class WearMessagesNn extends WearMessages {
   String get openOnPhoneFailed => """Fekk ikkje kontakt med telefonen""";
 
   /// ```dart
+  /// "Lagt til av"
+  /// ```
+  String get addedBy => """Lagt til av""";
+
+  /// ```dart
+  /// "Lagt til"
+  /// ```
+  String get added => """Lagt til""";
+
+  /// ```dart
+  /// "Oppdatert"
+  /// ```
+  String get updated => """Oppdatert""";
+
+  /// ```dart
+  /// "Oppgåver"
+  /// ```
+  String get tasks => """Oppgåver""";
+
+  /// ```dart
   /// "$count ventar"
   /// ```
   String queued(int count) => """$count ventar""";
@@ -7765,6 +7785,10 @@ Passord: pantry""",
   """wear.openOnPhone""": """Opna på telefonen""",
   """wear.openedOnPhone""": """Sjå på telefonen din""",
   """wear.openOnPhoneFailed""": """Fekk ikkje kontakt med telefonen""",
+  """wear.addedBy""": """Lagt til av""",
+  """wear.added""": """Lagt til""",
+  """wear.updated""": """Oppdatert""",
+  """wear.tasks""": """Oppgåver""",
   """wear.nothingToCheckOff""": """Ingenting å krysse av""",
   """wear.nothingRemoved""": """Ingenting er fjerna""",
   """wear.allTasksDone""": """Alt er gjort""",

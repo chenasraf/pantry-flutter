@@ -10,8 +10,8 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
 import '../widgets/wear_ink.dart';
-import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
+import '../widgets/wear_page_bars.dart';
 import '../widgets/wear_surfaces.dart';
 
 /// What the rail says you are looking at.
@@ -152,14 +152,13 @@ class WearRail extends StatelessWidget {
   /// it shifts.
   Widget _identity(BuildContext context, String? notice) {
     final degraded = notice != null;
-    final window = dotWindow(pages, page);
     final metrics = WearMetrics.of(context);
     // Where each line ends up, counted back from the bottom of the rail: the
     // column is bottom-aligned inside its minimum height, so the dots sit last
     // and everything else is stacked above them. The title is the line that
     // rides highest, which is where the glass has least to give.
     final groupTop =
-        baseHeight - _dotsExtent - _dotsGap - metrics.railLineExtent;
+        baseHeight - WearPageBars.extent - _dotsGap - metrics.railLineExtent;
     final titleTop = groupTop - _titleExtent(context);
     return LayoutBuilder(
       builder: (context, constraints) => DecoratedBox(
@@ -263,35 +262,7 @@ class WearRail extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 3),
-              // Bars, not dots: the current page grows into a line so the
-              // indicator says *where* you are as well as how many there are,
-              // and it animates rather than cutting between the two widths.
-              // The dots read the way the pager moves, which is the device's
-              // direction — a row of dots running against the swipe that walks
-              // them would say the wearer is travelling the wrong way.
-              Directionality(
-                textDirection: systemTextDirection,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (var i = 0; i < window.count; i++)
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        margin: const EdgeInsetsDirectional.symmetric(
-                          horizontal: 2,
-                        ),
-                        width: i == window.selected ? 14 : 8,
-                        height: 3,
-                        decoration: WearSurface.indicator(
-                          i == window.selected
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.white24,
-                          radius: 2,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
+              WearPageBars(page: page, pages: pages),
             ],
           ),
         ),
@@ -299,8 +270,7 @@ class WearRail extends StatelessWidget {
     );
   }
 
-  /// The dot row's own height, and the air above it.
-  static const double _dotsExtent = 3;
+  /// The air above the page bars.
   static const double _dotsGap = 3;
 
   /// How tall the title line comes out. Its glyph does not follow the wearer's

@@ -9,11 +9,6 @@ import '../widgets/wear_surfaces.dart';
 /// never gave it one.
 const kNotePlane = Color(0xFF17171A);
 
-/// Black or white, whichever the note's colour can carry — the same rule the
-/// phone's note tile uses, so a note reads the same on both.
-Color noteInk(Color background) =>
-    background.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
-
 /// Metrics only — the colour is supplied per note. Kept const so the block
 /// measuring pass can lay text out without building a style per call.
 const noteBodyStyle = TextStyle(fontSize: 12, height: 1.32);

@@ -5828,6 +5828,26 @@ class WearMessagesFr extends WearMessages {
   String get openOnPhoneFailed => """Téléphone injoignable""";
 
   /// ```dart
+  /// "Ajouté par"
+  /// ```
+  String get addedBy => """Ajouté par""";
+
+  /// ```dart
+  /// "Ajouté"
+  /// ```
+  String get added => """Ajouté""";
+
+  /// ```dart
+  /// "Mis à jour"
+  /// ```
+  String get updated => """Mis à jour""";
+
+  /// ```dart
+  /// "Tâches"
+  /// ```
+  String get tasks => """Tâches""";
+
+  /// ```dart
   /// "$count en attente"
   /// ```
   String queued(int count) => """$count en attente""";
@@ -7822,6 +7842,10 @@ Mot de passe : pantry-rocks""",
   """wear.openOnPhone""": """Ouvrir sur le téléphone""",
   """wear.openedOnPhone""": """Regardez votre téléphone""",
   """wear.openOnPhoneFailed""": """Téléphone injoignable""",
+  """wear.addedBy""": """Ajouté par""",
+  """wear.added""": """Ajouté""",
+  """wear.updated""": """Mis à jour""",
+  """wear.tasks""": """Tâches""",
   """wear.nothingToCheckOff""": """Rien à cocher""",
   """wear.nothingRemoved""": """Rien de retiré""",
   """wear.allTasksDone""": """Tout est fait""",

@@ -1260,6 +1260,10 @@ wear:
   openOnPhone: Opna på telefonen
   openedOnPhone: Sjå på telefonen din
   openOnPhoneFailed: Fekk ikkje kontakt med telefonen
+  addedBy: Lagt til av
+  added: Lagt til
+  updated: Oppdatert
+  tasks: Oppgåver
   queued(int count): "$count ventar"
   nothingToCheckOff: Ingenting å krysse av
   nothingRemoved: Ingenting er fjerna

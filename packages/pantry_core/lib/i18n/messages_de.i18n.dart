@@ -5838,6 +5838,26 @@ class WearMessagesDe extends WearMessages {
   String get openOnPhoneFailed => """Telefon nicht erreichbar""";
 
   /// ```dart
+  /// "Hinzugefügt von"
+  /// ```
+  String get addedBy => """Hinzugefügt von""";
+
+  /// ```dart
+  /// "Hinzugefügt"
+  /// ```
+  String get added => """Hinzugefügt""";
+
+  /// ```dart
+  /// "Aktualisiert"
+  /// ```
+  String get updated => """Aktualisiert""";
+
+  /// ```dart
+  /// "Aufgaben"
+  /// ```
+  String get tasks => """Aufgaben""";
+
+  /// ```dart
   /// "$count wartet"
   /// ```
   String queued(int count) => """$count wartet""";
@@ -7836,6 +7856,10 @@ Passwort: pantry-rocks""",
   """wear.openOnPhone""": """Auf dem Telefon öffnen""",
   """wear.openedOnPhone""": """Schau auf dein Telefon""",
   """wear.openOnPhoneFailed""": """Telefon nicht erreichbar""",
+  """wear.addedBy""": """Hinzugefügt von""",
+  """wear.added""": """Hinzugefügt""",
+  """wear.updated""": """Aktualisiert""",
+  """wear.tasks""": """Aufgaben""",
   """wear.nothingToCheckOff""": """Nichts zum Abhaken""",
   """wear.nothingRemoved""": """Nichts entfernt""",
   """wear.allTasksDone""": """Alles erledigt""",

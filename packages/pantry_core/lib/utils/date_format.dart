@@ -8,6 +8,14 @@ String formatDate(int timestamp) {
   return DateFormat.yMMMd().format(date);
 }
 
+/// Format a unix timestamp (seconds) as a localized date and time. Drawn
+/// beside [relativeTime] where "2 weeks ago" is the answer at a glance and the
+/// exact moment is the one worth checking.
+String formatDateTime(int timestamp) {
+  final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  return DateFormat.yMMMd().add_jm().format(date);
+}
+
 /// Whether a unix timestamp (seconds) is in the past.
 bool isOverdue(int timestamp) {
   final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);

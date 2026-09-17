@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/note.dart';
+import 'package:pantry_core/services/note_service.dart';
 import 'package:pantry_core/services/pending_note_share_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
@@ -11,6 +12,7 @@ import 'package:pantry/widgets/note_selection_actions.dart';
 import 'package:pantry/widgets/note_sort_button.dart';
 import 'package:pantry/widgets/note_tile.dart';
 import 'package:provider/provider.dart';
+import 'note_detail_view.dart';
 import 'note_form_view.dart';
 import 'notes_controller.dart';
 
@@ -39,6 +41,7 @@ class _NotesWallViewState extends State<NotesWallView> {
   @override
   void initState() {
     super.initState();
+    _controller.addListener(_maybeOpenPendingNote);
     _controller.load();
     final holder = widget.refreshHolder;
     if (holder != null) {
@@ -57,8 +60,39 @@ class _NotesWallViewState extends State<NotesWallView> {
       widget.refreshHolder?.value = null;
     }
     PendingNoteShareService.instance.removeListener(_handlePendingShare);
+    _controller.removeListener(_maybeOpenPendingNote);
     _controller.dispose();
     super.dispose();
+  }
+
+  /// Consume a pending note deep link: once the wall is loaded, open that
+  /// note. Cleared whether or not the note is found, so a stale request can't
+  /// reopen on a later load.
+  void _maybeOpenPendingNote() {
+    final id = NoteService.instance.pendingOpenNoteId;
+    if (id == null || !mounted || _controller.isLoading) return;
+    NoteService.instance.pendingOpenNoteId = null;
+    final note = _controller.notes.cast<Note?>().firstWhere(
+      (n) => n!.id == id,
+      orElse: () => null,
+    );
+    if (note == null) return;
+    // Off the notification, not into it: the wall may be mid-rebuild when the
+    // load that answered the link lands.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final colours = noteColours(note, Theme.of(context));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => NoteDetailView(
+            note: note,
+            controller: _controller,
+            bgColor: colours.ground,
+            textColor: colours.ink,
+          ),
+        ),
+      );
+    });
   }
 
   void _handlePendingShare() {

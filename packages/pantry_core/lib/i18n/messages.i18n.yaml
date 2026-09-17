@@ -1124,6 +1124,10 @@ wear:
   openOnPhone: Open on phone
   openedOnPhone: Check your phone
   openOnPhoneFailed: "Couldn't reach your phone"
+  addedBy: Added by
+  added: Added
+  updated: Updated
+  tasks: Tasks
   queued(int count): "$count waiting"
   nothingToCheckOff: Nothing to check off
   nothingRemoved: Nothing removed

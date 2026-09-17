@@ -12,6 +12,7 @@ import '../widgets/preview_image.dart';
 import '../widgets/preview_sizes.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
+import 'photo_detail_page.dart';
 import 'photo_image.dart';
 import 'photo_route.dart';
 import 'photos_controller.dart';
@@ -191,6 +192,13 @@ class _PhotoBoardState extends State<PhotoBoard> {
     unawaited(_push(PhotoRoute(photo: photo, houseId: widget.houseId)));
   }
 
+  /// The checklists page's gesture, unchanged: a hold opens what is known about
+  /// the thing under it rather than the thing itself.
+  void _openPhotoDetail(int index, Photo photo) {
+    if (!_actionable(index)) return;
+    unawaited(_push(PhotoDetailPage(photo: photo, houseId: widget.houseId)));
+  }
+
   Widget _cell(PhotoCell cell, int index, bool captioned, int size) {
     final folder = cell.folder;
     if (folder != null) {
@@ -212,6 +220,7 @@ class _PhotoBoardState extends State<PhotoBoard> {
       captioned: captioned,
       size: size,
       onTap: () => _openPhoto(index, photo),
+      onLongPress: () => _openPhotoDetail(index, photo),
     );
   }
 
@@ -446,6 +455,7 @@ class _PhotoTile extends StatelessWidget {
   final bool captioned;
   final int size;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
 
   const _PhotoTile({
     super.key,
@@ -454,6 +464,7 @@ class _PhotoTile extends StatelessWidget {
     required this.captioned,
     required this.size,
     required this.onTap,
+    required this.onLongPress,
   });
 
   @override
@@ -462,6 +473,7 @@ class _PhotoTile extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
+      onLongPress: onLongPress,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(WearShape.isRound ? 14 : 10),
         child: Stack(

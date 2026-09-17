@@ -36,7 +36,24 @@ class ImageRoute extends StatefulWidget {
   /// the moment the wearer is reading detail off it, so it shows at fit only.
   final Widget? caption;
 
-  const ImageRoute({super.key, required this.image, this.cached, this.caption});
+  /// Everything else known about the image. Installed at fit only, for the
+  /// reason the leading-edge strip is: zoomed, a finger resting on the image is
+  /// the start of a pan.
+  final VoidCallback? onLongPress;
+
+  /// Whether the crown is this route's to zoom with. A route pushed over it
+  /// leaves this one mounted and the detent stream is broadcast, so without
+  /// this one turn zooms an image nobody is looking at.
+  final bool rotary;
+
+  const ImageRoute({
+    super.key,
+    required this.image,
+    this.cached,
+    this.caption,
+    this.onLongPress,
+    this.rotary = true,
+  });
 
   @override
   State<ImageRoute> createState() => _ImageRouteState();
@@ -77,11 +94,24 @@ class _ImageRouteState extends State<ImageRoute>
   void initState() {
     super.initState();
     _view.addListener(_onView);
-    _rotary = RotaryService.instance.detents.listen(_onDetent);
+    _syncRotary();
     _travel.addListener(() {
       final journey = _journey;
       if (journey != null) _view.value = journey.value;
     });
+  }
+
+  @override
+  void didUpdateWidget(ImageRoute old) {
+    super.didUpdateWidget(old);
+    if (old.rotary != widget.rotary) _syncRotary();
+  }
+
+  void _syncRotary() {
+    _rotary?.cancel();
+    _rotary = widget.rotary
+        ? RotaryService.instance.detents.listen(_onDetent)
+        : null;
   }
 
   @override
@@ -167,6 +197,7 @@ class _ImageRouteState extends State<ImageRoute>
             child: GestureDetector(
               onDoubleTapDown: (d) => _doubleTapAt = d.localPosition,
               onDoubleTap: _onDoubleTap,
+              onLongPress: _zoomed ? null : widget.onLongPress,
               child: InteractiveViewer(
                 transformationController: _view,
                 minScale: 1,

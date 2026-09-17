@@ -153,7 +153,10 @@ class _NotesWallState extends State<NotesWall> {
 
   /// The checklists page's rule, unchanged: a card the wearer was only aiming
   /// at comes within reach and nothing opens, so a mis-aim costs a scroll.
-  Future<void> _onCardTap(int index, Note note) async {
+  ///
+  /// A hold opens the same route on its second page, where what is known about
+  /// the note is — the body is then one swipe away rather than out of reach.
+  Future<void> _openNote(int index, Note note, {required int page}) async {
     final list = _listKey.currentState;
     if (list == null || !list.canActOn(index)) {
       list?.reveal(index);
@@ -161,7 +164,9 @@ class _NotesWallState extends State<NotesWall> {
     }
     setState(() => _covered = true);
     await Navigator.of(context).push(
-      wearRoute<void>(NoteRoute(controller: widget.controller, note: note)),
+      wearRoute<void>(
+        NoteRoute(controller: widget.controller, note: note, initialPage: page),
+      ),
     );
     if (mounted) setState(() => _covered = false);
   }
@@ -189,7 +194,8 @@ class _NotesWallState extends State<NotesWall> {
               progress: widget.controller.progressOf(notes[i]),
               preview: _previewOf(widget.controller.bodyOf(notes[i])),
               distance: d,
-              onTap: () => unawaited(_onCardTap(i, notes[i])),
+              onTap: () => unawaited(_openNote(i, notes[i], page: 0)),
+              onLongPress: () => unawaited(_openNote(i, notes[i], page: 1)),
             ),
           ),
       ],
@@ -221,6 +227,7 @@ class _NoteCard extends StatelessWidget {
   final String preview;
   final double distance;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
 
   const _NoteCard({
     super.key,
@@ -229,6 +236,7 @@ class _NoteCard extends StatelessWidget {
     required this.preview,
     required this.distance,
     required this.onTap,
+    required this.onLongPress,
   });
 
   @override
@@ -241,6 +249,7 @@ class _NoteCard extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
+        onLongPress: onLongPress,
         child: Opacity(
           opacity: 1 - distance * 0.45,
           child: SizedBox(

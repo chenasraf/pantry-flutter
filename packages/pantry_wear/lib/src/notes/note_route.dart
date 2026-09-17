@@ -8,29 +8,48 @@ import '../widgets/focus_list.dart';
 import '../widgets/undo_window.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
+import '../widgets/wear_page_bars.dart';
 import 'note_blocks.dart';
+import 'note_detail_page.dart';
 import 'note_markdown.dart';
 import 'notes_controller.dart';
 
-/// One note, pushed over the wall: a focus list of markdown blocks.
+/// One note, pushed over the wall: the body, and beside it what is known about
+/// the note itself.
 ///
-/// Task rows are the only snappable ones, so the commit-on-centre rule carries
-/// over — the centred task commits on tap, an off-centre tap only scrolls it
-/// there.
-/// A row you cannot act on was never a landing candidate, which is the same
-/// reasoning that keeps a group header out of the snap table.
+/// The body is a focus list of markdown blocks. Task rows are the only
+/// snappable ones, so the commit-on-centre rule carries over — the centred task
+/// commits on tap, an off-centre tap only scrolls it there. A row you cannot
+/// act on was never a landing candidate, which is the same reasoning that keeps
+/// a group header out of the snap table.
 ///
-/// The page is drawn edge to edge in the note's own colour, so opening a note
-/// is continuous with the card it came from rather than a drop back onto the
-/// app's ground.
+/// The second page is the note's own facts and the hand-off to the phone. It is
+/// a page rather than a route because the wearer gets at it two ways — paging
+/// across from the body, or holding a card on the wall — and both want the
+/// other half a swipe away rather than a level down.
+///
+/// Both pages are drawn edge to edge in the note's own colour, so opening a
+/// note is continuous with the card it came from and paging across is one
+/// screen rather than two.
 ///
 /// It needs its own back gesture: route (a) turns off the system dismiss
-/// app-wide, so a pushed route inherits no way out at all.
+/// app-wide, so a pushed route inherits no way out at all. The pager's own edge
+/// strip is that gesture, which is why the route does not carry a second one —
+/// on the body it leaves, and on the facts it pages back to the body first.
 class NoteRoute extends StatefulWidget {
   final NotesController controller;
   final Note note;
 
-  const NoteRoute({super.key, required this.controller, required this.note});
+  /// Which page the route opens on: the body, or the note's own facts. A hold
+  /// on a wall card asks for the second.
+  final int initialPage;
+
+  const NoteRoute({
+    super.key,
+    required this.controller,
+    required this.note,
+    this.initialPage = 0,
+  });
 
   @override
   State<NoteRoute> createState() => _NoteRouteState();
@@ -41,6 +60,11 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
   final _listKey = GlobalKey<SnapFocusListState>();
   final _geometry = ValueNotifier(const FocusGeometry());
   final _metrics = NoteBlockMetrics();
+
+  late final PageController _pager = PageController(
+    initialPage: widget.initialPage,
+  );
+  late var _page = widget.initialPage;
 
   /// Ticks that have fired but not yet run out their undo window, keyed by
   /// task ordinal, on the mechanism a check is held by everywhere else. Once a
@@ -64,6 +88,7 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
   void dispose() {
     widget.controller.removeListener(_onData);
     _pending.dispose();
+    _pager.dispose();
     _scroll.dispose();
     _geometry.dispose();
     super.dispose();
@@ -114,91 +139,121 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final note = _note;
-    final blocks = parseNoteBlocks(widget.controller.bodyOf(note) ?? '');
-    const inset = WearMetrics.tallSideInset;
     final ground = parseHexColor(note.color) ?? kNotePlane;
     final ink = noteInk(ground);
 
-    return EdgeDismissible(
-      onDismiss: () => Navigator.of(context).pop(),
-      child: Scaffold(
-        backgroundColor: ground,
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            final contentWidth = constraints.maxWidth * (1 - inset * 2) - 20;
-            return Stack(
+    return Scaffold(
+      backgroundColor: ground,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: EdgeAwarePageView(
+              controller: _pager,
+              page: _page,
+              onPageChanged: (p) => setState(() => _page = p),
+              onDismiss: () => Navigator.of(context).pop(),
               children: [
-                Positioned.fill(
-                  child: SnapFocusList(
-                    key: _listKey,
-                    controller: _scroll,
-                    itemExtent: kTaskRowExtent,
-                    falloffRows: WearMetrics.falloffRows,
-                    rotaryActive: true,
-                    horizontalInset: inset,
-                    geometry: _geometry,
-                    elements: [
-                      for (var i = 0; i < blocks.length; i++)
-                        FocusElement(
-                          extent: _metrics.extentOf(blocks[i], contentWidth),
-                          snappable: blocks[i].kind == NoteBlockKind.task,
-                          isHeader: blocks[i].kind != NoteBlockKind.task,
-                          builder: (context, d) => _BlockRow(
-                            block: blocks[i],
-                            distance: d,
-                            ink: ink,
-                            checked:
-                                _pending.targetOf(blocks[i].taskOrdinal) ??
-                                blocks[i].checked,
-                            pending: _pending.controllerOf(
-                              blocks[i].taskOrdinal,
-                            ),
-                            onTap: blocks[i].kind == NoteBlockKind.task
-                                ? () => _onTaskTap(i, blocks[i])
-                                : null,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                PositionedDirectional(
-                  start: 0,
-                  end: 0,
-                  top: WearShape.isRound ? 20 : 10,
-                  child: IgnorePointer(
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsetsDirectional.symmetric(
-                        horizontal: 40,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [ground, ground.withValues(alpha: 0)],
-                        ),
-                      ),
-                      child: Text(
-                        note.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textDirection: detectTextDirection(note.title),
-                        style: TextStyle(
-                          fontSize: 12,
-                          height: 1.0,
-                          fontWeight: FontWeight.w700,
-                          color: ink.withValues(alpha: 0.8),
-                        ),
-                      ),
-                    ),
-                  ),
+                _body(note, ink),
+                NoteDetailPage(
+                  note: note,
+                  progress: widget.controller.progressOf(note),
+                  rotary: _page == 1,
                 ),
               ],
-            );
-          },
-        ),
+            ),
+          ),
+          PositionedDirectional(
+            start: 0,
+            end: 0,
+            top: WearShape.isRound ? 20 : 10,
+            child: IgnorePointer(
+              child: Container(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: 40,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [ground, ground.withValues(alpha: 0)],
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      note.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textDirection: detectTextDirection(note.title),
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 1.0,
+                        fontWeight: FontWeight.w700,
+                        color: ink.withValues(alpha: 0.8),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    // In the note's own ink rather than the theme accent: on a
+                    // page filled with a user-picked hue the seeded accent is
+                    // one more colour competing with it, and against some of
+                    // them it is close to invisible.
+                    WearPageBars(
+                      page: _page,
+                      pages: 2,
+                      tint: ink.withValues(alpha: 0.8),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  /// The note's prose and tasks, as a focus list of markdown blocks.
+  Widget _body(Note note, Color ink) {
+    const inset = WearMetrics.tallSideInset;
+    final blocks = parseNoteBlocks(widget.controller.bodyOf(note) ?? '');
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final contentWidth = constraints.maxWidth * (1 - inset * 2) - 20;
+        return SnapFocusList(
+          key: _listKey,
+          controller: _scroll,
+          itemExtent: kTaskRowExtent,
+          falloffRows: WearMetrics.falloffRows,
+          // The crown belongs to the page in front of the wearer. The pager
+          // keeps both mounted and the detent stream is broadcast, so without
+          // this one turn scrolls the body and the facts at once.
+          rotaryActive: _page == 0,
+          horizontalInset: inset,
+          geometry: _geometry,
+          elements: [
+            for (var i = 0; i < blocks.length; i++)
+              FocusElement(
+                extent: _metrics.extentOf(blocks[i], contentWidth),
+                snappable: blocks[i].kind == NoteBlockKind.task,
+                isHeader: blocks[i].kind != NoteBlockKind.task,
+                builder: (context, d) => _BlockRow(
+                  block: blocks[i],
+                  distance: d,
+                  ink: ink,
+                  checked:
+                      _pending.targetOf(blocks[i].taskOrdinal) ??
+                      blocks[i].checked,
+                  pending: _pending.controllerOf(blocks[i].taskOrdinal),
+                  onTap: blocks[i].kind == NoteBlockKind.task
+                      ? () => _onTaskTap(i, blocks[i])
+                      : null,
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

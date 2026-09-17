@@ -5771,6 +5771,26 @@ class WearMessages {
   String get openOnPhoneFailed => """Couldn't reach your phone""";
 
   /// ```dart
+  /// "Added by"
+  /// ```
+  String get addedBy => """Added by""";
+
+  /// ```dart
+  /// "Added"
+  /// ```
+  String get added => """Added""";
+
+  /// ```dart
+  /// "Updated"
+  /// ```
+  String get updated => """Updated""";
+
+  /// ```dart
+  /// "Tasks"
+  /// ```
+  String get tasks => """Tasks""";
+
+  /// ```dart
   /// "$count waiting"
   /// ```
   String queued(int count) => """$count waiting""";
@@ -7702,6 +7722,10 @@ Password: pantry-rocks""",
   """wear.openOnPhone""": """Open on phone""",
   """wear.openedOnPhone""": """Check your phone""",
   """wear.openOnPhoneFailed""": """Couldn't reach your phone""",
+  """wear.addedBy""": """Added by""",
+  """wear.added""": """Added""",
+  """wear.updated""": """Updated""",
+  """wear.tasks""": """Tasks""",
   """wear.nothingToCheckOff""": """Nothing to check off""",
   """wear.nothingRemoved""": """Nothing removed""",
   """wear.allTasksDone""": """All done""",

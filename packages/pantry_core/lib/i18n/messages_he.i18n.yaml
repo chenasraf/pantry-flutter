@@ -1114,6 +1114,10 @@ wear:
   openOnPhone: פתיחה בטלפון
   openedOnPhone: בדוק את הטלפון שלך
   openOnPhoneFailed: לא הצלחנו להגיע לטלפון שלך
+  addedBy: נוסף על-ידי
+  added: נוסף
+  updated: עודכן
+  tasks: משימות
   queued(int count): "$count ממתינים"
   nothingToCheckOff: אין מה לסמן
   nothingRemoved: לא הוסר דבר

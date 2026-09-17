@@ -10,3 +10,9 @@ Color? parseHexColor(String? hex) {
   final value = int.tryParse(h, radix: 16);
   return value != null ? Color(value) : null;
 }
+
+/// Black or white over [background], whichever it can carry. A note is drawn
+/// on the colour its author picked on every surface, so the choice of ink over
+/// it belongs here rather than to any one of them.
+Color noteInk(Color background) =>
+    background.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;

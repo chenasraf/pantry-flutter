@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/house.dart';
@@ -17,6 +19,7 @@ import 'package:pantry/widgets/photo_tile.dart';
 import 'package:pantry/widgets/upload_tile.dart';
 import 'package:provider/provider.dart';
 import 'photo_board_controller.dart';
+import 'photo_detail_view.dart';
 
 class PhotoBoardView extends StatefulWidget {
   final int houseId;
@@ -43,6 +46,7 @@ class _PhotoBoardViewState extends State<PhotoBoardView> {
   @override
   void initState() {
     super.initState();
+    _controller.addListener(_maybeOpenPendingPhoto);
     _controller.load();
     final holder = widget.refreshHolder;
     if (holder != null) {
@@ -58,8 +62,46 @@ class _PhotoBoardViewState extends State<PhotoBoardView> {
     if (widget.refreshHolder?.value == _controller.refresh) {
       widget.refreshHolder?.value = null;
     }
+    _controller.removeListener(_maybeOpenPendingPhoto);
     _controller.dispose();
     super.dispose();
+  }
+
+  /// Consume a pending photo deep link: once the board is loaded, open that
+  /// photo's detail. Cleared whether or not the photo is found, so a stale
+  /// request can't reopen on a later load.
+  void _maybeOpenPendingPhoto() {
+    final id = PhotoService.instance.pendingOpenPhotoId;
+    if (id == null || !mounted || _controller.isLoading) return;
+    PhotoService.instance.pendingOpenPhotoId = null;
+    final photo = _controller.photos.cast<Photo?>().firstWhere(
+      (p) => p!.id == id,
+      orElse: () => null,
+    );
+    if (photo == null) return;
+    // The viewer pages through the photos the board is currently showing, so
+    // the board has to be standing where the photo lives before it opens —
+    // otherwise a photo inside a folder opens as whatever is first at the root.
+    if (_controller.isTrashMode) unawaited(_controller.setTrashMode(false));
+    if (photo.folderId != _controller.currentFolderId) {
+      final folderId = photo.folderId;
+      folderId == null
+          ? _controller.exitFolder()
+          : _controller.enterFolder(folderId);
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => PhotoDetailView(
+            photo: photo,
+            houseId: widget.houseId,
+            headers: AuthService.instance.credentials?.basicAuthHeaders ?? {},
+            controller: _controller,
+          ),
+        ),
+      );
+    });
   }
 
   @override

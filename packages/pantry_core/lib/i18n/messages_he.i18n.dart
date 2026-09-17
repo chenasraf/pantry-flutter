@@ -5776,6 +5776,26 @@ class WearMessagesHe extends WearMessages {
   String get openOnPhoneFailed => """לא הצלחנו להגיע לטלפון שלך""";
 
   /// ```dart
+  /// "נוסף על-ידי"
+  /// ```
+  String get addedBy => """נוסף על-ידי""";
+
+  /// ```dart
+  /// "נוסף"
+  /// ```
+  String get added => """נוסף""";
+
+  /// ```dart
+  /// "עודכן"
+  /// ```
+  String get updated => """עודכן""";
+
+  /// ```dart
+  /// "משימות"
+  /// ```
+  String get tasks => """משימות""";
+
+  /// ```dart
   /// "$count ממתינים"
   /// ```
   String queued(int count) => """$count ממתינים""";
@@ -7678,6 +7698,10 @@ Map<String, String> get messagesHeMap => {
   """wear.openOnPhone""": """פתיחה בטלפון""",
   """wear.openedOnPhone""": """בדוק את הטלפון שלך""",
   """wear.openOnPhoneFailed""": """לא הצלחנו להגיע לטלפון שלך""",
+  """wear.addedBy""": """נוסף על-ידי""",
+  """wear.added""": """נוסף""",
+  """wear.updated""": """עודכן""",
+  """wear.tasks""": """משימות""",
   """wear.nothingToCheckOff""": """אין מה לסמן""",
   """wear.nothingRemoved""": """לא הוסר דבר""",
   """wear.allTasksDone""": """הכול הושלם""",

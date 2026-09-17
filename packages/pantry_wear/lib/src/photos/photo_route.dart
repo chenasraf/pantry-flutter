@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pantry_core/models/photo.dart';
 import 'package:pantry_core/utils/date_format.dart';
@@ -7,26 +9,57 @@ import '../wear_shape.dart';
 import '../widgets/image_route.dart';
 import '../widgets/preview_image.dart';
 import '../widgets/preview_sizes.dart';
+import '../widgets/wear_mechanics.dart';
+import 'photo_detail_page.dart';
 import 'photo_image.dart';
 
 /// One photo off the board, full screen and zoomable.
-class PhotoRoute extends StatelessWidget {
+///
+/// A press and hold opens what else is known about it, the same gesture that
+/// reaches the detail page from the tile.
+class PhotoRoute extends StatefulWidget {
   final Photo photo;
   final int houseId;
 
   const PhotoRoute({super.key, required this.photo, required this.houseId});
 
   @override
+  State<PhotoRoute> createState() => _PhotoRouteState();
+}
+
+class _PhotoRouteState extends State<PhotoRoute> {
+  /// The detail page must take the crown with it: the detent stream is
+  /// broadcast and this route stays mounted underneath, so without this one
+  /// turn zooms the photo behind the page being read.
+  var _covered = false;
+
+  Future<void> _openDetail() async {
+    setState(() => _covered = true);
+    await Navigator.of(context).push(
+      wearRoute<void>(
+        PhotoDetailPage(
+          photo: widget.photo,
+          houseId: widget.houseId,
+          onPreviewTap: () => Navigator.of(context).pop(),
+        ),
+      ),
+    );
+    if (mounted) setState(() => _covered = false);
+  }
+
+  @override
   Widget build(BuildContext context) => ImageRoute(
     image: (context, size) => PhotoImage(
-      photo: photo,
-      houseId: houseId,
+      photo: widget.photo,
+      houseId: widget.houseId,
       size: size,
       fit: BoxFit.contain,
       unavailable: const ImageUnavailable(),
     ),
     cached: WearPreviewSize.tile,
-    caption: _Meta(photo: photo),
+    caption: _Meta(photo: widget.photo),
+    onLongPress: () => unawaited(_openDetail()),
+    rotary: !_covered,
   );
 }
 

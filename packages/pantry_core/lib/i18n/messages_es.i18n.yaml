@@ -1114,6 +1114,10 @@ wear:
   openOnPhone: Abrir en el teléfono
   openedOnPhone: Mira tu teléfono
   openOnPhoneFailed: No se pudo contactar con tu teléfono
+  addedBy: Añadido por
+  added: Añadido
+  updated: Actualizado
+  tasks: Tareas
   queued(int count): "$count en espera"
   nothingToCheckOff: Nada que marcar
   nothingRemoved: No has quitado nada

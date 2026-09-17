@@ -4,14 +4,18 @@ import 'package:flutter/services.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import 'package:pantry_core/models/list_link.dart';
+import 'package:pantry_core/models/note_link.dart';
+import 'package:pantry_core/models/photo_link.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 
 export 'package:pantry_core/models/list_link.dart';
+export 'package:pantry_core/models/note_link.dart';
+export 'package:pantry_core/models/photo_link.dart';
 
-/// Resolves OS-level requests to open a specific list. Owns the custom URL
-/// scheme (`app_links`), launcher quick actions (`quick_actions`) and the
-/// native pinned home-screen shortcut channel. The home view observes
-/// [pending] and navigates when a request lands.
+/// Resolves OS-level requests to open something in the app. Owns the custom
+/// URL scheme (`app_links`), launcher quick actions (`quick_actions`) and the
+/// native pinned home-screen shortcut channel. The home view observes the
+/// pending notifiers and navigates when a request lands.
 class ListLinkService {
   ListLinkService._();
   static final ListLinkService instance = ListLinkService._();
@@ -19,6 +23,12 @@ class ListLinkService {
   static const _shortcutChannel = MethodChannel('dev.casraf.pantry/shortcuts');
 
   final ValueNotifier<ListLink?> pending = ValueNotifier(null);
+
+  /// A photo off the household board, and a note off the wall. Both arrive on
+  /// the same `pantry://` scheme as a list link and so through the same
+  /// subscription — see [pendingWatchSetup] for why that matters.
+  final ValueNotifier<PhotoLink?> pendingPhoto = ValueNotifier(null);
+  final ValueNotifier<NoteLink?> pendingNote = ValueNotifier(null);
 
   /// A watch asking this phone to open its pairing screen. It arrives on the
   /// same `pantry://` scheme and therefore through the same subscription, so
@@ -51,6 +61,16 @@ class ListLinkService {
   void _handleUri(Uri uri) {
     if (uri.scheme == ListLink.scheme && uri.host == _watchSetupHost) {
       pendingWatchSetup.value = true;
+      return;
+    }
+    final photo = PhotoLink.fromUri(uri);
+    if (photo != null) {
+      pendingPhoto.value = photo;
+      return;
+    }
+    final note = NoteLink.fromUri(uri);
+    if (note != null) {
+      pendingNote.value = note;
       return;
     }
     final link = ListLink.fromUri(uri);

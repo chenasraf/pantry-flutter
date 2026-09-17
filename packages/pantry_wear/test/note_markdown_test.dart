@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry_wear/src/notes/note_blocks.dart';
 import 'package:pantry_wear/src/notes/note_markdown.dart';

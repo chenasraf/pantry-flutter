@@ -83,19 +83,25 @@ class PagerScrollPhysics extends PageScrollPhysics {
   }
 }
 
-/// A pager that reserves the leading edge of its first page for leaving the
-/// app.
+/// A pager that reserves the leading edge of its first page for leaving it.
 ///
 /// `windowSwipeToDismiss=false` is what lets the pager own horizontal drags at
 /// all, and it removes the only way out of the app — so the way out is rebuilt
-/// here: the excluded strip takes the drag and calls [SystemNavigator.pop],
-/// which is framework and needs no Kotlin. The strip sits above the pager so
-/// it is hit-tested first and wins the arena; it is translucent, so taps still
-/// reach the content underneath.
+/// here: the excluded strip takes the drag and calls [onDismiss], which for the
+/// shell is [SystemNavigator.pop] and for a pager pushed over it is a route
+/// pop. The strip sits above the pager so it is hit-tested first and wins the
+/// arena; it is translucent, so taps still reach the content underneath.
+///
+/// Only the first page carries it, because every deeper page pages back before
+/// it could be dismissed.
 class EdgeAwarePageView extends StatelessWidget {
   final PageController controller;
   final int page;
   final ValueChanged<int> onPageChanged;
+
+  /// What the edge strip does on the first page. Leaves the app when omitted.
+  final VoidCallback? onDismiss;
+
   final List<Widget> children;
 
   const EdgeAwarePageView({
@@ -103,6 +109,7 @@ class EdgeAwarePageView extends StatelessWidget {
     required this.controller,
     required this.page,
     required this.onPageChanged,
+    this.onDismiss,
     required this.children,
   });
 
@@ -139,7 +146,7 @@ class EdgeAwarePageView extends StatelessWidget {
             if (page == 0)
               systemEdgeStrip(
                 width: width,
-                onDismiss: () => SystemNavigator.pop(),
+                onDismiss: onDismiss ?? () => SystemNavigator.pop(),
               ),
           ],
         );

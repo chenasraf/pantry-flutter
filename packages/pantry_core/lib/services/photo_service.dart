@@ -14,6 +14,10 @@ class PhotoService {
   static const _sortByKey = 'sortBy';
   static const _foldersFirstKey = 'foldersFirst';
 
+  /// Transient (in-memory) request to open a photo's detail once the board is
+  /// loaded — set by a photo deep link, consumed by the photo board view.
+  int? pendingOpenPhotoId;
+
   // -- Cache accessors --
 
   List<Photo>? getCachedPhotos(int houseId) {
