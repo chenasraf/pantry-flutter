@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:pantry_core/services/api_client.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cache_store.dart';
 import 'package:pantry_core/services/pending_upload_store.dart';
 import 'package:pantry_core/sync/id_remap.dart';
@@ -84,6 +85,12 @@ class SyncManager {
   bool _initialized = false;
   _ResumeDrain? _resumeDrain;
 
+  /// Consecutive flushes that ended without reaching the server. Paces the
+  /// re-attempt and nothing else — it is not a retry budget, because a server
+  /// that said nothing has said nothing about the change, so no number of
+  /// these may add up to dropping one.
+  int _offlineAttempt = 0;
+
   /// Whether the server answered the last request that reached it. Not a
   /// reading of the network interface: a Bluetooth-proxied watch reports no
   /// interface while the server is perfectly reachable, and a phone on a
@@ -133,6 +140,7 @@ class SyncManager {
   void setOnline(bool online) {
     final wasOnline = _online;
     _online = online;
+    if (online) _offlineAttempt = 0;
     if (!online) {
       // Any unsynced work now becomes a backlog once we reconnect.
       if (!_queue.isEmpty) hasBacklog.value = true;
@@ -157,6 +165,7 @@ class SyncManager {
   void reportInterfaceAvailable() {
     if (_queue.isEmpty) return;
     _queue.resetAttempts();
+    _offlineAttempt = 0;
     unawaited(flushNow());
   }
 
@@ -164,6 +173,7 @@ class SyncManager {
   Future<void> reset() async {
     _retryTimer?.cancel();
     _retryTimer = null;
+    _offlineAttempt = 0;
     await _queue.clear();
     await _remap.clear();
     await PendingUploadStore.instance.sweep(const {});
@@ -434,10 +444,15 @@ class SyncManager {
     pendingCount.value = _queue.length;
     if (_online) {
       unawaited(flushNow());
-    } else {
-      hasBacklog.value = true;
-      status.value = SyncStatus.offline;
+      return;
     }
+    hasBacklog.value = true;
+    status.value = SyncStatus.offline;
+    // Join the re-attempt already running, and start one when there is none —
+    // the first change made offline is what gives the loop something to carry.
+    // An enqueue says nothing about the link, so it neither shortens the wait
+    // nor extends it.
+    if (_retryTimer == null) _scheduleOfflineRetry();
   }
 
   /// Force a flush attempt. Safe to call concurrently.
@@ -529,8 +544,9 @@ class SyncManager {
             // and the record is there, so it would land the moment a valid
             // password returns. Phone and watch share one app password, so a
             // logout on either revokes it — dropping here would delete the
-            // other device's unsynced check-offs in silence. Same exit as the
-            // offline fast-fail: no retry budget spent, ops stay pending.
+            // other device's unsynced check-offs in silence. No retry budget
+            // spent and no re-attempt scheduled: a password is not something
+            // waiting longer produces, so this waits for a new credential.
             status.value = _online ? SyncStatus.syncing : SyncStatus.offline;
             return;
           }
@@ -544,10 +560,11 @@ class SyncManager {
             continue;
           }
           if (e.statusCode == 0) {
-            // Offline fast-fail from the pre-flight connectivity guard. Don't
-            // spend the op's retry budget on it — the flush resumes from this
-            // same head op once connectivity returns.
-            status.value = _online ? SyncStatus.syncing : SyncStatus.offline;
+            // The request never reached the server — an [OfflineException], a
+            // timeout, or a certificate this device has not accepted. The op's
+            // retry budget goes unspent and the flush resumes from this same
+            // head op, on the queue's own clock.
+            _holdForOffline();
             return;
           }
           if (_onRetryableFailure(op, e.toString())) continue;
@@ -621,12 +638,49 @@ class SyncManager {
     }
     _queue.update(op.copyWith(attemptCount: attempt, lastError: error));
     status.value = SyncStatus.error;
-    final delay = _backoff(attempt);
+    _armRetry(_backoff(attempt));
+    return false;
+  }
+
+  /// The flush stopped without reaching the server, and the queue re-attempts
+  /// on its own from here.
+  ///
+  /// Nothing outside it reliably will. An interface reading cannot — a
+  /// Bluetooth-proxied watch reports no interface for the whole time it is
+  /// reaching the server, so there is no return to act on — and the reads that
+  /// would otherwise settle [isOnline] are a refresh interval the wearer is
+  /// free to turn off. A queue waiting on one of those holds a check-off until
+  /// the app is next reopened, with a dot saying so and nothing to act on.
+  void _holdForOffline() {
+    status.value = _online ? SyncStatus.syncing : SyncStatus.offline;
+    _scheduleOfflineRetry();
+  }
+
+  /// Re-attempt after a growing delay, charged to [_offlineAttempt] rather
+  /// than to any op: the attempt is spent finding out whether the server is
+  /// there, which is not the head op's fault and must never dead-letter it.
+  ///
+  /// A queue with no session behind it is left where it is. There is nowhere to
+  /// send it, and an attempt made anyway fails on the missing credential rather
+  /// than on the network — which *is* charged to the op, so a watch waiting to
+  /// be signed in again would have its check-offs worn away instead. The
+  /// request that follows the new credential is what starts this up again.
+  void _scheduleOfflineRetry() {
+    if (_queue.isEmpty) return;
+    if (AuthService.instance.credentials == null) return;
+    _offlineAttempt++;
+    _armRetry(_backoff(_offlineAttempt));
+  }
+
+  /// Arm the single retry channel. Unconditional once it fires: a request is
+  /// the only thing that can discover the link is back, so a retry that
+  /// declined to make one while offline would be waiting for itself.
+  void _armRetry(Duration delay) {
     _retryTimer?.cancel();
     _retryTimer = Timer(delay, () {
-      if (_online) unawaited(flushNow());
+      _retryTimer = null;
+      unawaited(flushNow());
     });
-    return false;
   }
 
   /// Drop [op] from the queue and, when it was an optimistic create, reconcile

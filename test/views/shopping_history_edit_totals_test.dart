@@ -138,6 +138,13 @@ void main() {
       .where((op) => op.entity == SyncEntity.shoppingSession)
       .toList();
 
+  /// Takes the queue's re-attempt at an undeliverable write off the clock. It
+  /// re-arms for as long as the op is queued, so a test that leaves one behind
+  /// cannot wait it out — and the cancel is synchronous, which is all that is
+  /// needed here: the cache drain behind it never completes inside a fake-async
+  /// zone, so awaiting it would hang.
+  void quiesce() => unawaited(manager.reset());
+
   setUp(() async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(storageChannel, (call) async {
@@ -214,6 +221,7 @@ void main() {
 
       await goBack(tester);
       expect(popped, isTrue);
+      quiesce();
     });
   });
 
@@ -259,6 +267,7 @@ void main() {
       ])!;
       expect(find.text(after), findsOneWidget);
       expect(find.text(before), findsNothing);
+      quiesce();
     });
   });
 }

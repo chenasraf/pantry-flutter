@@ -84,11 +84,17 @@ void main() {
     await tester.pump();
   }
 
-  /// Lets the currency cache's debounced save fire, so the test does not end
-  /// with a timer pending. An undeliverable write costs the op no retry budget
-  /// and schedules nothing, so this is the only timer in play.
-  Future<void> quiesce(WidgetTester tester) =>
-      tester.pump(const Duration(seconds: 1));
+  /// Leaves no timer pending. Two are in play: the currency cache's debounced
+  /// save, which fires and is done, and the queue's re-attempt at a write it
+  /// could not deliver, which re-arms for as long as the op is queued — so that
+  /// one is taken off the clock rather than waited out.
+  ///
+  /// Not awaited, for the reason the teardown gives: the cancel is synchronous
+  /// and the cache drain behind it never completes inside a fake-async zone.
+  Future<void> quiesce(WidgetTester tester) async {
+    unawaited(manager.reset());
+    await tester.pump(const Duration(seconds: 1));
+  }
 
   /// The total field, the only text field on the section.
   String fieldText(WidgetTester tester) =>
