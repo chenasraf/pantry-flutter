@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:pantry_core/services/auth_service.dart';
@@ -57,6 +58,48 @@ class CertUntrustedException extends OfflineException {
     this.hostKey, [
     super.message = 'HandshakeException',
   ]);
+}
+
+/// One request, described rather than performed.
+///
+/// A request already wrapped in a closure has nothing left to say about itself,
+/// and a closure is not something another device can be asked to run. This is
+/// what lets a failure be acted on instead of only reported: the only thing
+/// that can rescue a request this device has no route for is a device that can
+/// be told what to send.
+class ApiRequest {
+  /// Upper-case, as HTTP spells it.
+  final String method;
+  final Uri uri;
+  final Map<String, String> headers;
+
+  /// Body bytes, or null for a request carrying none. Bytes rather than a
+  /// string because an upload is bytes and a JSON body is bytes of UTF-8 — one
+  /// shape, which also means a multipart body crosses the link as itself
+  /// rather than as a stream nothing on the far side could rebuild.
+  final List<int>? body;
+
+  final Duration timeout;
+
+  const ApiRequest({
+    required this.method,
+    required this.uri,
+    required this.headers,
+    required this.timeout,
+    this.body,
+  });
+
+  /// Whether performing this again, after it already reached a server once,
+  /// would be safe.
+  ///
+  /// Only ever asked about a request that failed without an answer, where the
+  /// alternative is losing the wearer's change. A read is trivially safe; the
+  /// writes this app makes are addressed at a row and carry the whole value,
+  /// so repeating one sets the same field to the same thing. A create is the
+  /// exception — it is the one verb whose repetition is a second row — which is
+  /// why the queue's own at-least-once contract, and not this, is what the
+  /// server arbitrates.
+  bool get isRead => method == 'GET' || method == 'HEAD';
 }
 
 /// How a server answered a conditional GET.
@@ -116,6 +159,20 @@ class ApiClient {
   /// the safety net for roles that changed mid-session after the UI was gated.
   static void Function()? onForbidden;
 
+  /// Asked to make a request this device could not get to a server, returning
+  /// the answer it got or null when it could not help either.
+  ///
+  /// Null on every device that is the one holding the network. Only a watch
+  /// installs one, at its entrypoint: a watch linked over Bluetooth is handed
+  /// the phone's *internet* and not the phone's *network*, so a household
+  /// server on the wearer's own LAN is unreachable across a perfectly healthy
+  /// link — and the phone beside it is the only device with a route.
+  ///
+  /// A hook rather than a call, because the half that performs the request is
+  /// the phone app and core cannot see it. Unset, there is no second path for
+  /// anything to go wrong on.
+  static Future<http.Response?> Function(ApiRequest request)? relay;
+
   /// Every response passes through here so a `401` and the success that
   /// disproves it are observed at the same point. The state itself lives on
   /// [AuthService], beside the credential it describes.
@@ -134,19 +191,22 @@ class ApiClient {
     return creds;
   }
 
-  /// Runs [send] and reports what came back, so the app's notion of online is
-  /// the outcome of a real request rather than a reading of the platform's
-  /// interfaces.
+  /// Performs [request] and reports what came back, so the app's notion of
+  /// online is the outcome of a real request rather than a reading of the
+  /// platform's interfaces.
   ///
   /// A transport failure becomes an [OfflineException] here rather than
   /// reaching callers raw: cache-first reads and the sync queue both branch on
   /// it, and neither can be asked to know that `ClientException` is what an
   /// Android socket says when a watch walks out of range.
-  Future<http.Response> _send(Future<http.Response> Function() send) async {
+  ///
+  /// Every arm that classifies a failure first offers the request to [relay],
+  /// because all four of them mean the same thing — *this never reached a
+  /// server* — and that is exactly the condition another device may not share.
+  Future<http.Response> _send(ApiRequest request) async {
     try {
-      final response = await send();
-      SyncManager.instance.setOnline(true);
-      CertTrustService.instance.reportReachable();
+      final response = await _perform(request);
+      _reachable();
       return response;
     } on TlsException catch (e) {
       // A refused certificate is neither a socket failure nor an HTTP one, so
@@ -155,22 +215,76 @@ class ApiClient {
       // would travel to callers raw, leaving the app believing it is online
       // while the queue burned its retry budget on a handshake no number of
       // attempts can change.
+      final relayed = await _relay(request);
+      if (relayed != null) return relayed;
       final host = _hostKey;
       SyncManager.instance.setOnline(false);
       CertTrustService.instance.reportUntrusted(host);
       throw CertUntrustedException(host, e.toString());
     } on SocketException catch (e) {
+      final relayed = await _relay(request);
+      if (relayed != null) return relayed;
       SyncManager.instance.setOnline(false);
       throw OfflineException(e.message);
     } on http.ClientException catch (e) {
+      final relayed = await _relay(request);
+      if (relayed != null) return relayed;
       SyncManager.instance.setOnline(false);
       throw OfflineException(e.message);
     } on TimeoutException {
       // A server that accepts the connection and then says nothing inside the
       // budget is unreachable for every purpose the caller has.
+      final relayed = await _relay(request);
+      if (relayed != null) return relayed;
       SyncManager.instance.setOnline(false);
       throw const OfflineException('Request timed out');
     }
+  }
+
+  /// A server answered, which disproves every standing claim that none would.
+  void _reachable() {
+    SyncManager.instance.setOnline(true);
+    CertTrustService.instance.reportReachable();
+  }
+
+  /// Hand [request] to whoever can still reach the server, or null when nobody
+  /// can.
+  ///
+  /// A relayed answer is reported exactly as a direct one: the server *was*
+  /// reached, and a caller that branches on being offline would otherwise fall
+  /// back to a cache while holding a fresh response. The same goes for the
+  /// certificate — the handshake succeeded somewhere, so leaving a refusal
+  /// standing would put a *Server not verified* notice above working data.
+  Future<http.Response?> _relay(ApiRequest request) async {
+    final ask = relay;
+    if (ask == null) return null;
+    try {
+      final response = await ask(request);
+      if (response == null) return null;
+      _reachable();
+      return response;
+    } catch (e) {
+      // A relay that throws is a relay that did not deliver, and the direct
+      // failure it was asked to rescue is the honest answer to give back.
+      debugPrint('[ApiClient] relay failed: $e');
+      return null;
+    }
+  }
+
+  Future<http.Response> _perform(ApiRequest r) {
+    final body = r.body;
+    return switch (r.method) {
+      'GET' => http.get(r.uri, headers: r.headers).timeout(r.timeout),
+      'POST' =>
+        http.post(r.uri, headers: r.headers, body: body).timeout(r.timeout),
+      'PUT' =>
+        http.put(r.uri, headers: r.headers, body: body).timeout(r.timeout),
+      'PATCH' =>
+        http.patch(r.uri, headers: r.headers, body: body).timeout(r.timeout),
+      'DELETE' =>
+        http.delete(r.uri, headers: r.headers, body: body).timeout(r.timeout),
+      _ => throw ArgumentError('Unsupported method ${r.method}'),
+    };
   }
 
   /// Which server the failure above was against. Every request this client
@@ -213,7 +327,12 @@ class ApiClient {
     required T Function(D data) fromJson,
   }) async {
     final response = await _send(
-      () => http.get(_uri(path, query), headers: _headers).timeout(_timeout),
+      ApiRequest(
+        method: 'GET',
+        uri: _uri(path, query),
+        headers: _headers,
+        timeout: _timeout,
+      ),
     );
     return _handleResponse<D, T>(response, fromJson);
   }
@@ -230,7 +349,12 @@ class ApiClient {
   }) async {
     final headers = {..._headers, 'If-None-Match': ?etag};
     final response = await _send(
-      () => http.get(_uri(path, query), headers: headers).timeout(_timeout),
+      ApiRequest(
+        method: 'GET',
+        uri: _uri(path, query),
+        headers: headers,
+        timeout: _timeout,
+      ),
     );
     _notify(response.statusCode);
     // A 304 carries no ETag of its own on some servers; the one the caller sent
@@ -260,20 +384,32 @@ class ApiClient {
     );
   }
 
+  /// A verb carrying a JSON body, described.
+  ///
+  /// The charset is spelled out because `package:http` used to add it: handed a
+  /// `String` body it appends `charset=utf-8` to a content type that has none,
+  /// and handed bytes it does not. Encoding here rather than there would
+  /// otherwise change what every write puts on the wire.
+  ApiRequest _jsonRequest(
+    String method,
+    String path,
+    Map<String, dynamic>? body,
+  ) => ApiRequest(
+    method: method,
+    uri: _uri(path),
+    headers: body == null
+        ? _headers
+        : {..._headers, 'Content-Type': 'application/json; charset=utf-8'},
+    timeout: _timeout,
+    body: body == null ? null : utf8.encode(jsonEncode(body)),
+  );
+
   Future<T> post<D, T>(
     String path, {
     Map<String, dynamic>? body,
     required T Function(D data) fromJson,
   }) async {
-    final response = await _send(
-      () => http
-          .post(
-            _uri(path),
-            headers: _headers,
-            body: body != null ? jsonEncode(body) : null,
-          )
-          .timeout(_timeout),
-    );
+    final response = await _send(_jsonRequest('POST', path, body));
     return _handleResponse<D, T>(response, fromJson);
   }
 
@@ -282,15 +418,7 @@ class ApiClient {
     Map<String, dynamic>? body,
     required T Function(D data) fromJson,
   }) async {
-    final response = await _send(
-      () => http
-          .put(
-            _uri(path),
-            headers: _headers,
-            body: body != null ? jsonEncode(body) : null,
-          )
-          .timeout(_timeout),
-    );
+    final response = await _send(_jsonRequest('PUT', path, body));
     return _handleResponse<D, T>(response, fromJson);
   }
 
@@ -299,22 +427,12 @@ class ApiClient {
     Map<String, dynamic>? body,
     required T Function(D data) fromJson,
   }) async {
-    final response = await _send(
-      () => http
-          .patch(
-            _uri(path),
-            headers: _headers,
-            body: body != null ? jsonEncode(body) : null,
-          )
-          .timeout(_timeout),
-    );
+    final response = await _send(_jsonRequest('PATCH', path, body));
     return _handleResponse<D, T>(response, fromJson);
   }
 
   Future<void> delete(String path) async {
-    final response = await _send(
-      () => http.delete(_uri(path), headers: _headers).timeout(_timeout),
-    );
+    final response = await _send(_jsonRequest('DELETE', path, null));
     _notify(response.statusCode);
     if (response.statusCode >= 400) {
       throw ApiException(response.statusCode, response.body);
@@ -329,15 +447,7 @@ class ApiClient {
     Map<String, dynamic>? body,
     required T Function(D data) fromJson,
   }) async {
-    final response = await _send(
-      () => http
-          .delete(
-            _uri(path),
-            headers: _headers,
-            body: body != null ? jsonEncode(body) : null,
-          )
-          .timeout(_timeout),
-    );
+    final response = await _send(_jsonRequest('DELETE', path, body));
     return _handleResponse<D, T>(response, fromJson);
   }
 
@@ -355,9 +465,13 @@ class ApiClient {
       'Content-Type': contentType,
     };
     final response = await _send(
-      () => http
-          .post(_uri(path, query), headers: headers, body: bytes)
-          .timeout(_uploadTimeout),
+      ApiRequest(
+        method: 'POST',
+        uri: _uri(path, query),
+        headers: headers,
+        timeout: _uploadTimeout,
+        body: bytes,
+      ),
     );
     return _handleResponse<D, T>(response, fromJson);
   }
@@ -388,10 +502,20 @@ class ApiClient {
     if (fields != null) {
       request.fields.addAll(fields);
     }
-    final response = await _send(() async {
-      final streamed = await request.send().timeout(_uploadTimeout);
-      return http.Response.fromStream(streamed).timeout(_uploadTimeout);
-    });
+    // Finalizing is what makes a multipart body describable: it picks the
+    // boundary, writes it into the content type, and collapses the parts into
+    // the bytes that would have gone out. A stream could not be handed to
+    // anyone else to send, and could not be sent twice.
+    final body = await request.finalize().toBytes();
+    final response = await _send(
+      ApiRequest(
+        method: 'POST',
+        uri: request.url,
+        headers: request.headers,
+        timeout: _uploadTimeout,
+        body: body,
+      ),
+    );
     return _handleResponse<D, T>(response, fromJson);
   }
 
