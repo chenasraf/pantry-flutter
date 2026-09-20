@@ -33,6 +33,7 @@ import 'services/share_intent_service.dart';
 import 'services/wear_mirror_host.dart';
 import 'services/wear_appearance_host.dart';
 import 'services/wear_pairing_host.dart';
+import 'services/wear_relay_host.dart';
 import 'services/widget_link_service.dart';
 import 'services/checklist_widget_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
@@ -195,10 +196,14 @@ void main() async {
   // retrying is the one answer a phone with no credential can still give.
   // Then say how this phone draws itself, which only means anything once the
   // pairing host knows whether there is a watch to say it to.
+  // The relay joins them for the same reason the appearance host does: it
+  // serves the paired watch only, so it has nothing to answer until the
+  // pairing host knows who that is.
   unawaited(
-    WearPairingHost.instance.init().then(
-      (_) => WearAppearanceHost.instance.init(),
-    ),
+    WearPairingHost.instance.init().then((_) async {
+      await WearAppearanceHost.instance.init();
+      await WearRelayHost.instance.init();
+    }),
   );
   registerWidgetInteractivity();
   runApp(const PantryApp());

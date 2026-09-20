@@ -58,6 +58,10 @@ void main(List<String> args) async {
   // minute away.
   unawaited(WearAmbient.instance.start());
   ApiClient.onForbidden = () {};
+  // Nothing happens here until a request fails to reach the server, which for
+  // almost every wearer is never. Installed this early all the same, because
+  // the request it has to rescue may be the first one this launch makes.
+  WearRelayClient.instance.install();
   // A watch process is killed far more readily than a phone's, so the pause is
   // where a debounced cache write has to land.
   CacheStore.installPauseCheckpoint();
