@@ -36,6 +36,14 @@ class WearRelayClient {
   StreamSubscription<WearLinkMessage>? _messages;
   var _installed = false;
 
+  /// When the link last reported no phone, or null if the last answer was that
+  /// there is one.
+  DateTime? _absentSince;
+
+  /// Long enough that one page's worth of failed reads asks once, short enough
+  /// that a wearer who walks back to their phone is not left waiting on it.
+  static const _absenceWindow = Duration(seconds: 10);
+
   /// Make this watch's failed requests reach for the phone.
   ///
   /// Called from the watch entrypoint. The link is not touched here: a watch
@@ -51,6 +59,7 @@ class WearRelayClient {
   @visibleForTesting
   void uninstall() {
     _installed = false;
+    _absentSince = null;
     ApiClient.relay = null;
     unawaited(_messages?.cancel());
     _messages = null;
@@ -70,11 +79,8 @@ class WearRelayClient {
   /// learning a third outcome.
   Future<http.Response?> _ask(ApiRequest request) async {
     if (!await _attach()) return null;
-    // A phone that is not there cannot be waited on for twenty seconds. The
-    // nodes are re-read per request rather than cached, because being in range
-    // is the most changeable thing about a watch.
-    final nodes = await _link.nodes();
-    if (nodes.isEmpty) return null;
+    // A phone that is not there cannot be waited on for twenty seconds.
+    if (!await _phoneInRange()) return null;
 
     final id = SyncIds.newOpUuid();
     final completer = Completer<WearRelayResponse>();
@@ -107,6 +113,29 @@ class WearRelayClient {
     } finally {
       _waiting.remove(id);
     }
+  }
+
+  /// Whether there is a phone to ask, with a short memory of there not being.
+  ///
+  /// `nodes()` is a live channel call, and the failures that reach here do not
+  /// arrive one at a time: a cache-first read opens a page by fetching lists,
+  /// items, categories, labels, stores and fields, and offline every one of
+  /// them fails. Paying a round trip per failure would put seconds in front of
+  /// the cache fallback on a watch that is simply out of range — against a
+  /// 671 ms cold start, and in service of a phone that was absent a moment ago.
+  ///
+  /// Only the *negative* is remembered, and only briefly. A watch that found a
+  /// phone asks it again next time, so the answer that matters is never stale;
+  /// what the window costs is noticing a phone that arrives mid-burst, one
+  /// beat late.
+  Future<bool> _phoneInRange() async {
+    final since = _absentSince;
+    if (since != null && DateTime.now().difference(since) < _absenceWindow) {
+      return false;
+    }
+    final nodes = await _link.nodes();
+    _absentSince = nodes.isEmpty ? DateTime.now() : null;
+    return nodes.isNotEmpty;
   }
 
   Future<bool> _attach() async {

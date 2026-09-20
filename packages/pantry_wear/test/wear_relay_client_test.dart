@@ -179,6 +179,35 @@ void main() {
     expect(asked(), isNull);
   });
 
+  test('a page of failed reads asks for a phone once', () async {
+    nodes = [];
+
+    // Offline, a cache-first page open fails on lists, items, categories,
+    // labels, stores and fields. `nodes` is a live channel call, so paying one
+    // per failure would put seconds in front of the cache fallback.
+    for (var i = 0; i < 6; i++) {
+      expect(await ApiClient.relay!(houses()), isNull);
+    }
+
+    expect(sent.where((c) => c.method == 'nodes'), hasLength(1));
+  });
+
+  test('but a phone that is found is asked about again', () async {
+    // Only absence is remembered. A watch that reached its phone re-reads the
+    // nodes next time, so the answer that matters is never a stale yes.
+    final pending = ApiClient.relay!(houses());
+    await Future<void>.delayed(Duration.zero);
+    await answer();
+    await pending;
+
+    final second = ApiClient.relay!(houses());
+    await Future<void>.delayed(Duration.zero);
+    await answer();
+    await second;
+
+    expect(sent.where((c) => c.method == 'nodes'), hasLength(2));
+  });
+
   test('uninstalling leaves no second path behind', () {
     client.uninstall();
 
