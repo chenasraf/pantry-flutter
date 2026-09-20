@@ -233,6 +233,51 @@ jobs:
       - name: Compile the phone flavor
         run: flutter build apk --release --flavor phone
 
+  # The F-Droid variant compiles a source tree no other job sees: the swapped
+  # scanner and the AVIF-free image widgets replace their counterparts, and
+  # `fdroid/**` is excluded from `flutter analyze` (its zxing import isn't a
+  # dependency of the default build). So an override that drifts from the public
+  # API of the file it replaces compiles everywhere except here.
+  compile-fdroid:
+    needs: setup
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.setup.outputs.flutter-version }}
+          cache: true
+
+      # Keyed on the swapped lockfile, and namespaced away from the other jobs':
+      # the FLOSS dependency set differs, and apply.sh patches link flags into
+      # the cached package sources.
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-fdroid-${{ runner.os }}-${{ hashFiles('tool/fdroid/pubspec.lock') }}
+          restore-keys: pub-fdroid-${{ runner.os }}-
+
+      # Resolves the swapped tree with --enforce-lockfile, so no separate
+      # `flutter pub get` is needed.
+      - name: Apply F-Droid scanner variant
+        run: make fdroid-apply
+
+      - name: Compile the phone flavor
+        run: flutter build apk --release --flavor phone
+
   compile-ios:
     needs: setup
     if: github.event_name == 'pull_request'
