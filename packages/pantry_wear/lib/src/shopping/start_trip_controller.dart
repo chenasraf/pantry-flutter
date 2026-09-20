@@ -10,6 +10,7 @@ import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
 import '../scope/wear_scope.dart';
+import '../services/server_reach.dart';
 
 /// What a trip is started with, and the one call that starts it.
 ///
@@ -96,7 +97,8 @@ class StartTripController extends ChangeNotifier {
   /// button says the reason rather than sitting there dead: a control a wearer
   /// can see but not use has to account for itself.
   String? get blockedReason {
-    if (!SyncManager.instance.isOnline) return m.wear.needsConnection;
+    final unreachable = unreachableReason(SyncManager.instance.isOnline);
+    if (unreachable != null) return unreachable;
     if (_selectedListIds.isEmpty) return m.wear.pickAList;
     return null;
   }

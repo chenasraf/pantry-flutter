@@ -6,6 +6,7 @@ import 'package:pantry_core/models/shopping_presence_entry.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
 import '../checklists/checklists_controller.dart';
+import '../services/server_reach.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_avatar.dart';
 import '../widgets/wear_cta.dart';
@@ -132,7 +133,7 @@ class _JoinTripPageState extends State<JoinTripPage> {
               ),
               label: others > 0 ? m.wear.plusOthers(starter, others) : starter,
               value: store?.name ?? m.shopping.bannerShoppingNow,
-              reason: offline ? m.wear.needsConnection : null,
+              reason: unreachableReason(!offline),
               distance: d,
               onTap: () => _tap(index, () => unawaited(_join(entry))),
             ),

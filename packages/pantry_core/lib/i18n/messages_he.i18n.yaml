@@ -1158,6 +1158,7 @@ wear:
   sessionExpiredShort: הטלפון שלך צריך לחבר את השעון מחדש.
   privateTrip: קנייה פרטית
   needsConnection: צריך חיבור
+  needsWifi: השרת צריך Wi-Fi
   pickAList: בחר קודם רשימה
   nSelected(int count): "$count נבחרו"
   noStoresHere: אין עדיין חנויות

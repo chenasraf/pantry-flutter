@@ -1304,6 +1304,7 @@ wear:
   sessionExpiredShort: Telefonen din må logge inn denne klokka på nytt.
   privateTrip: Privat handletur
   needsConnection: Treng ei tilkopling
+  needsWifi: Tenaren treng Wi-Fi
   pickAList: Vel ei liste først
   nSelected(int count): "$count valde"
   noStoresHere: Ingen butikkar enno

@@ -6034,6 +6034,11 @@ class WearMessagesNn extends WearMessages {
   String get needsConnection => """Treng ei tilkopling""";
 
   /// ```dart
+  /// "Tenaren treng Wi-Fi"
+  /// ```
+  String get needsWifi => """Tenaren treng Wi-Fi""";
+
+  /// ```dart
   /// "Vel ei liste først"
   /// ```
   String get pickAList => """Vel ei liste først""";
@@ -7824,6 +7829,7 @@ Passord: pantry""",
       """Telefonen din må logge inn denne klokka på nytt.""",
   """wear.privateTrip""": """Privat handletur""",
   """wear.needsConnection""": """Treng ei tilkopling""",
+  """wear.needsWifi""": """Tenaren treng Wi-Fi""",
   """wear.pickAList""": """Vel ei liste først""",
   """wear.noStoresHere""": """Ingen butikkar enno""",
   """wear.hereNow""": """Her no""",

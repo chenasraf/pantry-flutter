@@ -1168,6 +1168,7 @@ wear:
   sessionExpiredShort: Your phone needs to sign this watch in again.
   privateTrip: Private trip
   needsConnection: Needs a connection
+  needsWifi: Server needs Wi-Fi
   pickAList: Pick a list first
   nSelected(int count): "$count selected"
   noStoresHere: No stores here yet

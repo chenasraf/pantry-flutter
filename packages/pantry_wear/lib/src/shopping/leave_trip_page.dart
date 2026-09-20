@@ -6,6 +6,7 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 import '../checklists/checklists_controller.dart';
+import '../services/server_reach.dart';
 import '../widgets/wear_avatar.dart';
 import '../widgets/wear_cta.dart';
 import '../widgets/wear_ink.dart';
@@ -122,9 +123,7 @@ class _LeaveTripPageState extends State<LeaveTripPage> {
                   warning: true,
                   busy: _busy,
                   error: _error,
-                  reason: SyncManager.instance.isOnline
-                      ? null
-                      : m.wear.needsConnection,
+                  reason: unreachableReason(SyncManager.instance.isOnline),
                   onTap: () => unawaited(_leave()),
                 ),
               ),

@@ -1158,6 +1158,7 @@ wear:
   sessionExpiredShort: Votre téléphone doit reconnecter cette montre.
   privateTrip: Sortie privée
   needsConnection: Connexion nécessaire
+  needsWifi: Wi-Fi requis pour le serveur
   pickAList: Choisis d’abord une liste
   nSelected(int count): "$count sélectionnées"
   noStoresHere: Pas encore de magasins

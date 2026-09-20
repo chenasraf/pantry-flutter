@@ -5996,6 +5996,11 @@ class WearMessages {
   String get needsConnection => """Needs a connection""";
 
   /// ```dart
+  /// "Server needs Wi-Fi"
+  /// ```
+  String get needsWifi => """Server needs Wi-Fi""";
+
+  /// ```dart
   /// "Pick a list first"
   /// ```
   String get pickAList => """Pick a list first""";
@@ -7761,6 +7766,7 @@ Password: pantry-rocks""",
       """Your phone needs to sign this watch in again.""",
   """wear.privateTrip""": """Private trip""",
   """wear.needsConnection""": """Needs a connection""",
+  """wear.needsWifi""": """Server needs Wi-Fi""",
   """wear.pickAList""": """Pick a list first""",
   """wear.noStoresHere""": """No stores here yet""",
   """wear.hereNow""": """Here now""",

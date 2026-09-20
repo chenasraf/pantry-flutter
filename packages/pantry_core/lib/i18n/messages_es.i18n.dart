@@ -6047,6 +6047,11 @@ class WearMessagesEs extends WearMessages {
   String get needsConnection => """Necesita conexión""";
 
   /// ```dart
+  /// "El servidor necesita Wi-Fi"
+  /// ```
+  String get needsWifi => """El servidor necesita Wi-Fi""";
+
+  /// ```dart
   /// "Elige una lista primero"
   /// ```
   String get pickAList => """Elige una lista primero""";
@@ -7858,6 +7863,7 @@ Contraseña: pantry-rocks""",
       """Tu teléfono debe volver a iniciar sesión en este reloj.""",
   """wear.privateTrip""": """Compra privada""",
   """wear.needsConnection""": """Necesita conexión""",
+  """wear.needsWifi""": """El servidor necesita Wi-Fi""",
   """wear.pickAList""": """Elige una lista primero""",
   """wear.noStoresHere""": """Aún no hay tiendas""",
   """wear.hereNow""": """Aquí""",

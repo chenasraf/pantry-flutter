@@ -8,6 +8,7 @@ import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
 import '../checklists/checklists_controller.dart';
+import '../services/server_reach.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_ink.dart';
 import '../widgets/wear_mechanics.dart';
@@ -189,7 +190,7 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
     row(
       icon: Icons.done_all,
       label: m.shopping.finishTrip,
-      reason: controller.isOnline ? null : m.wear.needsConnection,
+      reason: unreachableReason(controller.isOnline),
       warning: true,
       onTap: () => unawaited(_finish()),
     );

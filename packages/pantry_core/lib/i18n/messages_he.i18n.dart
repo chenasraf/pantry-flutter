@@ -5998,6 +5998,11 @@ class WearMessagesHe extends WearMessages {
   String get needsConnection => """צריך חיבור""";
 
   /// ```dart
+  /// "השרת צריך Wi-Fi"
+  /// ```
+  String get needsWifi => """השרת צריך Wi-Fi""";
+
+  /// ```dart
   /// "בחר קודם רשימה"
   /// ```
   String get pickAList => """בחר קודם רשימה""";
@@ -7733,6 +7738,7 @@ Map<String, String> get messagesHeMap => {
   """wear.sessionExpiredShort""": """הטלפון שלך צריך לחבר את השעון מחדש.""",
   """wear.privateTrip""": """קנייה פרטית""",
   """wear.needsConnection""": """צריך חיבור""",
+  """wear.needsWifi""": """השרת צריך Wi-Fi""",
   """wear.pickAList""": """בחר קודם רשימה""",
   """wear.noStoresHere""": """אין עדיין חנויות""",
   """wear.hereNow""": """כאן עכשיו""",

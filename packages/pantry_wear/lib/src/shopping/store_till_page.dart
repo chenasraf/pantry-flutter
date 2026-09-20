@@ -7,6 +7,7 @@ import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
 import '../checklists/checklists_controller.dart';
+import '../services/server_reach.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/wear_cta.dart';
 import '../widgets/wear_ink.dart';
@@ -140,7 +141,7 @@ class _StoreTillPageState extends State<StoreTillPage> {
     final shop = controller.storeById(widget.storeId);
     final name = shop?.name ?? m.shopping.anyStore;
     final nextStore = controller.storeById(widget.nextStoreId);
-    final blocked = controller.isOnline ? null : m.wear.needsConnection;
+    final blocked = unreachableReason(controller.isOnline);
 
     final elements = <FocusElement>[];
     appendStoreGroup(
