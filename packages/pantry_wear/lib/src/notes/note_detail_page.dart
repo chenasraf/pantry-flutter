@@ -96,6 +96,18 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
                     ),
                   ),
                 ),
+                // Reassurance that this is the same text the wearer keeps in
+                // Notes, and nothing more: the path names a file the watch
+                // cannot open, and a file out of reach is a prompt to go fix
+                // something on a device that cannot.
+                if (note.isSynced) ...[
+                  const SizedBox(width: 5),
+                  Icon(
+                    Icons.sync_alt,
+                    size: 13,
+                    color: ink.withValues(alpha: 0.6),
+                  ),
+                ],
               ],
             ),
             const SizedBox(height: 14),

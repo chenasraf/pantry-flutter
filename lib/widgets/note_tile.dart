@@ -13,6 +13,7 @@ import 'package:pantry/views/notes/note_detail_view.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 import 'package:pantry/widgets/context_menu_region.dart';
+import 'package:pantry/widgets/note_sync.dart';
 
 /// The ground a note is drawn on and the ink that reads over it.
 ///
@@ -223,6 +224,12 @@ class NoteTile extends StatelessWidget {
                   ),
                 ),
               ),
+            ],
+            // Outside the content's Expanded, so the fade that masks the
+            // preview's last line does not swallow it.
+            if (note.isSynced) ...[
+              const SizedBox(height: 6),
+              NoteSyncLine(note: note, textColor: textColor),
             ],
           ],
         ),

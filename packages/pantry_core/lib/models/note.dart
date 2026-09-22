@@ -18,6 +18,28 @@ class Note {
   /// house-level `canUpdateNotes`. See [NoteSharing.canEditWith].
   final bool? canEdit;
 
+  /// The file this note mirrors, by Nextcloud file id, or `null` when the note
+  /// is bound to no file. This is the field that says whether a note is
+  /// synced — the other three describe a binding it already has.
+  final int? syncFileId;
+
+  /// The account whose storage holds [syncFileId]. Neither the note's author
+  /// nor necessarily the viewer.
+  final String? syncOwnerUid;
+
+  /// Where the bound file sits under [syncOwnerUid]'s files root, e.g.
+  /// `/Templates/Weekly shop.md`.
+  ///
+  /// The server resolves this from [syncFileId] on every response rather than
+  /// storing it, so the path follows the file when someone moves it in Files.
+  /// The same lookup returns nothing when the file is out of reach — in the
+  /// trash, or purged — leaving a note with a [syncFileId] and no path. That
+  /// is a binding waiting for its file back, not a broken one.
+  final String? syncPath;
+
+  /// When the note and its file last agreed, in unix seconds.
+  final int? syncAt;
+
   const Note({
     required this.id,
     required this.houseId,
@@ -30,6 +52,10 @@ class Note {
     required this.createdAt,
     required this.updatedAt,
     this.canEdit,
+    this.syncFileId,
+    this.syncOwnerUid,
+    this.syncPath,
+    this.syncAt,
   });
 
   factory Note.fromJson(Map<String, dynamic> json) => Note(
@@ -44,6 +70,10 @@ class Note {
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
     canEdit: json['canEdit'] as bool?,
+    syncFileId: json['syncFileId'] as int?,
+    syncOwnerUid: json['syncOwnerUid'] as String?,
+    syncPath: json['syncPath'] as String?,
+    syncAt: json['syncAt'] as int?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -58,6 +88,10 @@ class Note {
     'createdAt': createdAt,
     'updatedAt': updatedAt,
     'canEdit': canEdit,
+    'syncFileId': syncFileId,
+    'syncOwnerUid': syncOwnerUid,
+    'syncPath': syncPath,
+    'syncAt': syncAt,
   };
 
   Note copyWith({
@@ -80,6 +114,10 @@ class Note {
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     canEdit: canEdit,
+    syncFileId: syncFileId,
+    syncOwnerUid: syncOwnerUid,
+    syncPath: syncPath,
+    syncAt: syncAt,
   );
 }
 
@@ -90,4 +128,19 @@ extension NoteSharing on Note {
   /// the per-note field is ignored entirely and gating is purely house-level.
   bool canEditWith(bool houseCanUpdate) =>
       hasFeature('share-users') ? (canEdit ?? houseCanUpdate) : houseCanUpdate;
+}
+
+extension NoteFileSync on Note {
+  /// Whether this note mirrors a file. Gating the capability here rather than
+  /// at each call site makes an older server's nulls and a newer server's
+  /// unsynced note read identically.
+  bool get isSynced => hasFeature('note-file-sync') && syncFileId != null;
+
+  /// The bound file's path as it is shown, leading slash dropped, or `null`
+  /// when the file is out of reach. See [Note.syncPath].
+  String? get syncDisplayPath {
+    final path = syncPath;
+    if (path == null || path.isEmpty) return null;
+    return path.startsWith('/') ? path.substring(1) : path;
+  }
 }

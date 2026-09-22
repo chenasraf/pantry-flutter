@@ -855,6 +855,9 @@ notesWall:
   unpinNote: ביטול הצמדה
   importToList: ייבוא לרשימה
   importNoLists: אין רשימות זמינות לייבוא.
+  syncedToFile(String path): "מסונכרן עם ${path}"
+  syncedFileMissing: הקובץ המסונכרן חסר
+  syncedAt(String when): "סונכרן ${when}"
   title: כותרת
   content: תוכן
   color: צבע

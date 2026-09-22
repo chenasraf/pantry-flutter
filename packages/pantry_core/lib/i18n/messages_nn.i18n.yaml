@@ -994,6 +994,9 @@ notesWall:
   unpinNote: Fjern festing av notat
   importToList: Importer til liste
   importNoLists: Ingen lister tilgjengelege å importere til.
+  syncedToFile(String path): "Synkronisert med ${path}"
+  syncedFileMissing: Den synkroniserte fila manglar
+  syncedAt(String when): "Synkronisert ${when}"
   title: Tittel
   content: Innhald
   color: Farge

@@ -4473,6 +4473,21 @@ class NotesWallMessagesHe extends NotesWallMessages {
   String get importNoLists => """אין רשימות זמינות לייבוא.""";
 
   /// ```dart
+  /// "מסונכרן עם ${path}"
+  /// ```
+  String syncedToFile(String path) => """מסונכרן עם ${path}""";
+
+  /// ```dart
+  /// "הקובץ המסונכרן חסר"
+  /// ```
+  String get syncedFileMissing => """הקובץ המסונכרן חסר""";
+
+  /// ```dart
+  /// "סונכרן ${when}"
+  /// ```
+  String syncedAt(String when) => """סונכרן ${when}""";
+
+  /// ```dart
   /// "כותרת"
   /// ```
   String get title => """כותרת""";
@@ -7503,6 +7518,7 @@ Map<String, String> get messagesHeMap => {
   """notesWall.unpinNote""": """ביטול הצמדה""",
   """notesWall.importToList""": """ייבוא לרשימה""",
   """notesWall.importNoLists""": """אין רשימות זמינות לייבוא.""",
+  """notesWall.syncedFileMissing""": """הקובץ המסונכרן חסר""",
   """notesWall.title""": """כותרת""",
   """notesWall.content""": """תוכן""",
   """notesWall.color""": """צבע""",

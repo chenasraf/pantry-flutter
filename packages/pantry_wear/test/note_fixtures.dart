@@ -139,7 +139,12 @@ Call the letting agent, not the landlord. Number is in the drawer.
 ];
 
 /// The sample as the app sees it: what the mirror lands and the wall draws.
-Note noteOf(SampleNote sample, {int houseId = 1}) => Note(
+Note noteOf(
+  SampleNote sample, {
+  int houseId = 1,
+  int? syncFileId,
+  String? syncPath,
+}) => Note(
   id: sample.id,
   houseId: houseId,
   title: sample.title,
@@ -150,6 +155,8 @@ Note noteOf(SampleNote sample, {int houseId = 1}) => Note(
   isPinned: sample.pinned,
   createdAt: 0,
   updatedAt: 0,
+  syncFileId: syncFileId,
+  syncPath: syncPath,
 );
 
 List<Note> sampleNoteRecords({int houseId = 1}) => [

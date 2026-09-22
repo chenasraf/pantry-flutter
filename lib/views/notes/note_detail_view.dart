@@ -10,6 +10,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
+import 'package:pantry/widgets/note_sync.dart';
 
 class NoteDetailView extends StatefulWidget {
   final Note note;
@@ -116,95 +117,103 @@ class _NoteDetailViewState extends State<NoteDetailView> {
         tag: 'note-${note.id}',
         child: Material(
           color: bgColor,
-          child: note.content != null && note.content!.isNotEmpty
-              ? Directionality(
-                  textDirection: contentDir,
-                  child: Markdown(
-                    data: note.content!,
-                    padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPadding),
-                    selectable: true,
-                    softLineBreak: true,
-                    checkboxBuilder: (checked) {
-                      final ordinal = checkboxIndex++;
-                      final icon = Icon(
-                        checked
-                            ? Icons.check_box
-                            : Icons.check_box_outline_blank,
-                        size: 20,
-                        color: textColor.withAlpha(230),
-                      );
-                      if (!hasEditButton) return icon;
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => _onToggleCheckbox(ordinal),
-                        child: icon,
-                      );
-                    },
-                    onTapLink: (text, href, title) {
-                      if (href != null) {
-                        launchUrl(Uri.parse(href));
-                      }
-                    },
-                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                      p: theme.textTheme.bodyLarge?.copyWith(
-                        color: textColor.withAlpha(230),
-                      ),
-                      h1: theme.textTheme.headlineMedium?.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      h2: theme.textTheme.headlineSmall?.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      h3: theme.textTheme.titleLarge?.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      h4: theme.textTheme.titleMedium?.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      listBullet: theme.textTheme.bodyLarge?.copyWith(
-                        color: textColor.withAlpha(230),
-                      ),
-                      code: TextStyle(
-                        color: textColor,
-                        backgroundColor: textColor.withAlpha(30),
-                        fontFamily: 'monospace',
-                      ),
-                      codeblockDecoration: BoxDecoration(
-                        color: textColor.withAlpha(30),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      blockquote: theme.textTheme.bodyLarge?.copyWith(
-                        color: textColor.withAlpha(180),
-                        fontStyle: FontStyle.italic,
-                      ),
-                      blockquoteDecoration: BoxDecoration(
-                        border: Border(
-                          left: BorderSide(
-                            color: textColor.withAlpha(100),
-                            width: 4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (note.isSynced)
+                NoteSyncHeader(note: note, textColor: textColor),
+              if (note.content != null && note.content!.isNotEmpty)
+                Expanded(
+                  child: Directionality(
+                    textDirection: contentDir,
+                    child: Markdown(
+                      data: note.content!,
+                      padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPadding),
+                      selectable: true,
+                      softLineBreak: true,
+                      checkboxBuilder: (checked) {
+                        final ordinal = checkboxIndex++;
+                        final icon = Icon(
+                          checked
+                              ? Icons.check_box
+                              : Icons.check_box_outline_blank,
+                          size: 20,
+                          color: textColor.withAlpha(230),
+                        );
+                        if (!hasEditButton) return icon;
+                        return GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => _onToggleCheckbox(ordinal),
+                          child: icon,
+                        );
+                      },
+                      onTapLink: (text, href, title) {
+                        if (href != null) {
+                          launchUrl(Uri.parse(href));
+                        }
+                      },
+                      styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                        p: theme.textTheme.bodyLarge?.copyWith(
+                          color: textColor.withAlpha(230),
+                        ),
+                        h1: theme.textTheme.headlineMedium?.copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        h2: theme.textTheme.headlineSmall?.copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        h3: theme.textTheme.titleLarge?.copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        h4: theme.textTheme.titleMedium?.copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        listBullet: theme.textTheme.bodyLarge?.copyWith(
+                          color: textColor.withAlpha(230),
+                        ),
+                        code: TextStyle(
+                          color: textColor,
+                          backgroundColor: textColor.withAlpha(30),
+                          fontFamily: 'monospace',
+                        ),
+                        codeblockDecoration: BoxDecoration(
+                          color: textColor.withAlpha(30),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        blockquote: theme.textTheme.bodyLarge?.copyWith(
+                          color: textColor.withAlpha(180),
+                          fontStyle: FontStyle.italic,
+                        ),
+                        blockquoteDecoration: BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              color: textColor.withAlpha(100),
+                              width: 4,
+                            ),
                           ),
                         ),
-                      ),
-                      a: TextStyle(
-                        color: textColor,
-                        decoration: TextDecoration.underline,
-                      ),
-                      strong: TextStyle(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      em: TextStyle(
-                        color: textColor,
-                        fontStyle: FontStyle.italic,
+                        a: TextStyle(
+                          color: textColor,
+                          decoration: TextDecoration.underline,
+                        ),
+                        strong: TextStyle(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        em: TextStyle(
+                          color: textColor,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ),
                   ),
-                )
-              : null,
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -855,6 +855,9 @@ notesWall:
   unpinNote: Quitar fijación
   importToList: Importar a una lista
   importNoLists: No hay listas disponibles para importar.
+  syncedToFile(String path): "Sincronizada con ${path}"
+  syncedFileMissing: Falta el archivo sincronizado
+  syncedAt(String when): "Sincronizada ${when}"
   title: "Título"
   content: Contenido
   color: Color

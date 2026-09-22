@@ -4508,6 +4508,21 @@ class NotesWallMessagesEs extends NotesWallMessages {
   String get importNoLists => """No hay listas disponibles para importar.""";
 
   /// ```dart
+  /// "Sincronizada con ${path}"
+  /// ```
+  String syncedToFile(String path) => """Sincronizada con ${path}""";
+
+  /// ```dart
+  /// "Falta el archivo sincronizado"
+  /// ```
+  String get syncedFileMissing => """Falta el archivo sincronizado""";
+
+  /// ```dart
+  /// "Sincronizada ${when}"
+  /// ```
+  String syncedAt(String when) => """Sincronizada ${when}""";
+
+  /// ```dart
   /// "Título"
   /// ```
   String get title => """Título""";
@@ -7611,6 +7626,7 @@ Contraseña: pantry-rocks""",
   """notesWall.unpinNote""": """Quitar fijación""",
   """notesWall.importToList""": """Importar a una lista""",
   """notesWall.importNoLists""": """No hay listas disponibles para importar.""",
+  """notesWall.syncedFileMissing""": """Falta el archivo sincronizado""",
   """notesWall.title""": """Título""",
   """notesWall.content""": """Contenido""",
   """notesWall.color""": """Color""",

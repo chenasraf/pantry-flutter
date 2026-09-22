@@ -55,6 +55,10 @@ Note makeNote({
   int sortOrder = 0,
   int? createdAt,
   int? updatedAt,
+  int? syncFileId,
+  String? syncOwnerUid,
+  String? syncPath,
+  int? syncAt,
 }) => Note(
   id: id,
   houseId: houseId,
@@ -65,6 +69,10 @@ Note makeNote({
   sortOrder: sortOrder,
   createdAt: createdAt ?? _now,
   updatedAt: updatedAt ?? _now,
+  syncFileId: syncFileId,
+  syncOwnerUid: syncOwnerUid,
+  syncPath: syncPath,
+  syncAt: syncAt,
 );
 
 Category makeCategory({

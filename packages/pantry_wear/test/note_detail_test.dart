@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_wear/src/notes/note_detail_page.dart';
 import 'package:pantry_wear/src/notes/note_route.dart';
 import 'package:pantry_wear/src/notes/notes_controller.dart';
@@ -201,5 +202,32 @@ void main() {
     // updated row would say exactly what the added row above it already did.
     expect(find.text('ADDED'), findsOneWidget);
     expect(find.text('UPDATED'), findsNothing);
+  });
+
+  testWidgets('a synced note is marked, and its path stays off the wrist', (
+    tester,
+  ) async {
+    sizeToWatch(tester);
+    ServerVersionService.instance.debugSeed(
+      features: {'note-file-sync': true},
+      featuresAuthoritative: true,
+    );
+    addTearDown(ServerVersionService.instance.debugSeed);
+
+    final note = noteOf(
+      sampleNotes.first,
+      houseId: 4,
+      syncFileId: 256,
+      syncPath: '/Templates/Hardware shop.md',
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: NoteDetailPage(note: note, progress: (done: 2, total: 6)),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.sync_alt), findsOneWidget);
+    expect(find.textContaining('Templates'), findsNothing);
   });
 }

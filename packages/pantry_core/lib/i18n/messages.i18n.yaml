@@ -855,6 +855,9 @@ notesWall:
   unpinNote: Unpin note
   importToList: Import to list
   importNoLists: No lists available to import into.
+  syncedToFile(String path): "Synced to ${path}"
+  syncedFileMissing: Synced file is missing
+  syncedAt(String when): "Synced ${when}"
   title: Title
   content: Content
   color: Color

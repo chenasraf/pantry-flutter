@@ -4464,6 +4464,21 @@ class NotesWallMessages {
   String get importNoLists => """No lists available to import into.""";
 
   /// ```dart
+  /// "Synced to ${path}"
+  /// ```
+  String syncedToFile(String path) => """Synced to ${path}""";
+
+  /// ```dart
+  /// "Synced file is missing"
+  /// ```
+  String get syncedFileMissing => """Synced file is missing""";
+
+  /// ```dart
+  /// "Synced ${when}"
+  /// ```
+  String syncedAt(String when) => """Synced ${when}""";
+
+  /// ```dart
   /// "Title"
   /// ```
   String get title => """Title""";
@@ -7518,6 +7533,7 @@ Password: pantry-rocks""",
   """notesWall.unpinNote""": """Unpin note""",
   """notesWall.importToList""": """Import to list""",
   """notesWall.importNoLists""": """No lists available to import into.""",
+  """notesWall.syncedFileMissing""": """Synced file is missing""",
   """notesWall.title""": """Title""",
   """notesWall.content""": """Content""",
   """notesWall.color""": """Color""",

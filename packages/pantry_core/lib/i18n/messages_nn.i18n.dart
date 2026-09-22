@@ -4499,6 +4499,21 @@ class NotesWallMessagesNn extends NotesWallMessages {
   String get importNoLists => """Ingen lister tilgjengelege å importere til.""";
 
   /// ```dart
+  /// "Synkronisert med ${path}"
+  /// ```
+  String syncedToFile(String path) => """Synkronisert med ${path}""";
+
+  /// ```dart
+  /// "Den synkroniserte fila manglar"
+  /// ```
+  String get syncedFileMissing => """Den synkroniserte fila manglar""";
+
+  /// ```dart
+  /// "Synkronisert ${when}"
+  /// ```
+  String syncedAt(String when) => """Synkronisert ${when}""";
+
+  /// ```dart
   /// "Tittel"
   /// ```
   String get title => """Tittel""";
@@ -7583,6 +7598,7 @@ Passord: pantry""",
   """notesWall.importToList""": """Importer til liste""",
   """notesWall.importNoLists""":
       """Ingen lister tilgjengelege å importere til.""",
+  """notesWall.syncedFileMissing""": """Den synkroniserte fila manglar""",
   """notesWall.title""": """Tittel""",
   """notesWall.content""": """Innhald""",
   """notesWall.color""": """Farge""",
