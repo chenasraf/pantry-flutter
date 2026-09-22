@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
@@ -51,6 +52,16 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
     await ThemingService.instance.setUseServerThemeColor(value);
   }
 
+  Future<void> _toggleSyncLastHouse(bool value) async {
+    await PrefsService.instance.setSyncLastHouse(value);
+    // Switching it on makes the house on screen the account's, rather than
+    // leaving the device to adopt a staler one on its next launch.
+    final houseId = PrefsService.instance.lastHouseId;
+    if (value && houseId != null) {
+      await AuthService.instance.publishLastHouseId(houseId);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final prefs = context.watch<PrefsService>();
@@ -89,6 +100,13 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
             subtitle: Text(m.settings.useServerThemeColorBody),
             value: prefs.useServerThemeColor,
             onChanged: _toggleUseServerThemeColor,
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.sync_outlined),
+            title: Text(m.settings.syncLastHouse),
+            subtitle: Text(m.settings.syncLastHouseBody),
+            value: prefs.syncLastHouse,
+            onChanged: _toggleSyncLastHouse,
           ),
         ],
       ),

@@ -1368,6 +1368,17 @@ class SettingsMessagesDe extends SettingsMessages {
       """Färbt die App mit der Designfarbe deines Nextcloud-Benutzers. Ausschalten, um die eigenen Farben der App zu verwenden.""";
 
   /// ```dart
+  /// "Geöffnetes Haus synchronisieren"
+  /// ```
+  String get syncLastHouse => """Geöffnetes Haus synchronisieren""";
+
+  /// ```dart
+  /// "Öffnet das Haus, das du zuletzt auf einem beliebigen Gerät genutzt hast, und lässt die Web-App und deine anderen Geräte diesem hier folgen. Ausschalten, um hier ein eigenes Haus zu behalten."
+  /// ```
+  String get syncLastHouseBody =>
+      """Öffnet das Haus, das du zuletzt auf einem beliebigen Gerät genutzt hast, und lässt die Web-App und deine anderen Geräte diesem hier folgen. Ausschalten, um hier ein eigenes Haus zu behalten.""";
+
+  /// ```dart
   /// "Benachrichtigungen"
   /// ```
   String get notificationsSection => """Benachrichtigungen""";
@@ -7056,6 +7067,9 @@ Passwort: pantry-rocks""",
   """settings.useServerThemeColor""": """Nextcloud-Designfarbe verwenden""",
   """settings.useServerThemeColorBody""":
       """Färbt die App mit der Designfarbe deines Nextcloud-Benutzers. Ausschalten, um die eigenen Farben der App zu verwenden.""",
+  """settings.syncLastHouse""": """Geöffnetes Haus synchronisieren""",
+  """settings.syncLastHouseBody""":
+      """Öffnet das Haus, das du zuletzt auf einem beliebigen Gerät genutzt hast, und lässt die Web-App und deine anderen Geräte diesem hier folgen. Ausschalten, um hier ein eigenes Haus zu behalten.""",
   """settings.notificationsSection""": """Benachrichtigungen""",
   """settings.notificationsSectionBody""":
       """Hinweise und wie oft nach Aktivität gesucht wird""",

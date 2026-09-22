@@ -1368,6 +1368,17 @@ class SettingsMessagesEs extends SettingsMessages {
       """Colorea la aplicación con el color del tema de tu usuario de Nextcloud. Desactívalo para usar los colores propios de la aplicación.""";
 
   /// ```dart
+  /// "Sincronizar la casa abierta"
+  /// ```
+  String get syncLastHouse => """Sincronizar la casa abierta""";
+
+  /// ```dart
+  /// "Abre la casa que usaste por última vez en cualquier dispositivo, y deja que la aplicación web y tus otros dispositivos sigan a este. Desactívalo para mantener aquí una casa propia."
+  /// ```
+  String get syncLastHouseBody =>
+      """Abre la casa que usaste por última vez en cualquier dispositivo, y deja que la aplicación web y tus otros dispositivos sigan a este. Desactívalo para mantener aquí una casa propia.""";
+
+  /// ```dart
   /// "Notificaciones"
   /// ```
   String get notificationsSection => """Notificaciones""";
@@ -7042,6 +7053,9 @@ Contraseña: pantry-rocks""",
   """settings.useServerThemeColor""": """Usar el color del tema de Nextcloud""",
   """settings.useServerThemeColorBody""":
       """Colorea la aplicación con el color del tema de tu usuario de Nextcloud. Desactívalo para usar los colores propios de la aplicación.""",
+  """settings.syncLastHouse""": """Sincronizar la casa abierta""",
+  """settings.syncLastHouseBody""":
+      """Abre la casa que usaste por última vez en cualquier dispositivo, y deja que la aplicación web y tus otros dispositivos sigan a este. Desactívalo para mantener aquí una casa propia.""",
   """settings.notificationsSection""": """Notificaciones""",
   """settings.notificationsSectionBody""":
       """Avisos y con qué frecuencia se busca actividad""",

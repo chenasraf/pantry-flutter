@@ -371,6 +371,8 @@ settings:
     dark: Mørk
   useServerThemeColor: Bruk Nextcloud-temafarge
   useServerThemeColorBody: Fargelegg appen med temafargen til Nextcloud-brukaren din. Slå av for å bruke appen sine eigne fargar.
+  syncLastHouse: Synkroniser ope hus
+  syncLastHouseBody: Opnar huset du sist brukte på ei kva som helst eining, og lèt vev-appen og dei andre einingane dine følgje denne. Slå av for å halde på eit eige hus her.
   notificationsSection: Varsel
   notificationsSectionBody: Varsel og kor ofte det blir sett etter aktivitet
   enableNotifications: Slå på varsel

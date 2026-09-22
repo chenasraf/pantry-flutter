@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/services/api_client.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/house_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 
@@ -51,8 +54,20 @@ class HomeController extends ChangeNotifier {
         return;
       }
 
+      // The account's last-opened house has to land before the selection is
+      // restored: falling back to the first house writes that fallback
+      // locally, and a device with a house of its own no longer adopts
+      // anything. Bounded because the home screen waits on it.
+      if (PrefsService.instance.lastHouseId == null ||
+          PrefsService.instance.syncLastHouse) {
+        await AuthService.instance.fetchUserPrefs().timeout(
+          const Duration(seconds: 2),
+          onTimeout: () {},
+        );
+      }
+
       _restoreSelection();
-      await PrefsService.instance.setLastHouseId(_currentHouse!.id);
+      await _persistSelection();
 
       _isLoading = false;
       notifyListeners();
@@ -82,9 +97,23 @@ class HomeController extends ChangeNotifier {
         _houses.first;
   }
 
+  /// Records the open house on this device, and — for a device following the
+  /// account — tells the account, so the web app and the user's other devices
+  /// open the same one. Only a house this device actually moved to is worth
+  /// publishing; one it just adopted is already the account's. The publish is
+  /// not awaited: nothing on screen depends on it, and it is allowed to fail.
+  Future<void> _persistSelection() async {
+    final id = _currentHouse!.id;
+    final moved = PrefsService.instance.lastHouseId != id;
+    await PrefsService.instance.setLastHouseId(id);
+    if (moved && PrefsService.instance.syncLastHouse) {
+      unawaited(AuthService.instance.publishLastHouseId(id));
+    }
+  }
+
   Future<void> selectHouse(House house) async {
     _currentHouse = house;
-    await PrefsService.instance.setLastHouseId(house.id);
+    await _persistSelection();
     notifyListeners();
   }
 
@@ -98,7 +127,7 @@ class HomeController extends ChangeNotifier {
     _currentHouse = house;
     _serverAppMissing = false;
     _error = null;
-    await PrefsService.instance.setLastHouseId(house.id);
+    await _persistSelection();
     notifyListeners();
     return house;
   }

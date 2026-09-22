@@ -282,6 +282,8 @@ settings:
     dark: כהה
   useServerThemeColor: שימוש בצבע ערכת הנושא של Nextcloud
   useServerThemeColorBody: צביעת האפליקציה בצבע ערכת הנושא של משתמש ה-Nextcloud שלך. כבה כדי להשתמש בצבעים של האפליקציה עצמה.
+  syncLastHouse: סנכרון הבית הפתוח
+  syncLastHouseBody: פתיחת הבית שהשתמשת בו לאחרונה בכל מכשיר, ומתן אפשרות לאפליקציית הרשת ולשאר המכשירים שלך לעקוב אחרי המכשיר הזה. כבה כדי לשמור כאן בית משלך.
   notificationsSection: התראות
   notificationsSectionBody: התראות וכל כמה זמן לבדוק פעילות
   enableNotifications: הפעל התראות

@@ -67,4 +67,42 @@ void main() {
     expect(prefs.isListProgressHeroHidden(42), isFalse);
     expect(store['progress_hero_hidden_list_ids'], '');
   });
+
+  test('adoptLastHouseId takes the account house on a fresh device', () async {
+    await prefs.clear();
+
+    await prefs.adoptLastHouseId(9);
+
+    expect(prefs.lastHouseId, 9);
+    expect(store['last_house_id'], '9');
+  });
+
+  test('adoptLastHouseId leaves a house picked on this device', () async {
+    await prefs.clear();
+    await prefs.setLastHouseId(4);
+
+    await prefs.adoptLastHouseId(9);
+
+    expect(prefs.lastHouseId, 4);
+  });
+
+  test('a device syncing the open house takes the account one', () async {
+    await prefs.clear();
+    await prefs.setLastHouseId(4);
+    await prefs.setSyncLastHouse(true);
+
+    await prefs.adoptLastHouseId(9);
+
+    expect(prefs.lastHouseId, 9);
+  });
+
+  test('syncLastHouse is off until it is turned on, and persists', () async {
+    await prefs.clear();
+    expect(prefs.syncLastHouse, isFalse);
+
+    await prefs.setSyncLastHouse(true);
+    await prefs.load();
+
+    expect(prefs.syncLastHouse, isTrue);
+  });
 }

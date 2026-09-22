@@ -282,6 +282,8 @@ settings:
     dark: Sombre
   useServerThemeColor: Utiliser la couleur du thème Nextcloud
   useServerThemeColorBody: Teinte l'application avec la couleur du thème de votre utilisateur Nextcloud. Désactivez pour utiliser les couleurs propres à l'application.
+  syncLastHouse: Synchroniser la maison ouverte
+  syncLastHouseBody: "Ouvre la maison que vous avez utilisée en dernier sur n'importe quel appareil, et laisse l'application web et vos autres appareils suivre celui-ci. Désactivez pour garder ici une maison qui vous est propre."
   notificationsSection: Notifications
   notificationsSectionBody: "Alertes et fréquence de vérification de l'activité"
   enableNotifications: Activer les notifications

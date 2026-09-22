@@ -1357,6 +1357,17 @@ class SettingsMessages {
       """Tint the app with your Nextcloud user's theme color. Turn off to use the app's own colors.""";
 
   /// ```dart
+  /// "Sync open house"
+  /// ```
+  String get syncLastHouse => """Sync open house""";
+
+  /// ```dart
+  /// "Open the house you last used on any device, and let the web app and your other devices follow this one. Turn off to keep a house of your own here."
+  /// ```
+  String get syncLastHouseBody =>
+      """Open the house you last used on any device, and let the web app and your other devices follow this one. Turn off to keep a house of your own here.""";
+
+  /// ```dart
   /// "Notifications"
   /// ```
   String get notificationsSection => """Notifications""";
@@ -6974,6 +6985,9 @@ Password: pantry-rocks""",
   """settings.useServerThemeColor""": """Use Nextcloud theme color""",
   """settings.useServerThemeColorBody""":
       """Tint the app with your Nextcloud user's theme color. Turn off to use the app's own colors.""",
+  """settings.syncLastHouse""": """Sync open house""",
+  """settings.syncLastHouseBody""":
+      """Open the house you last used on any device, and let the web app and your other devices follow this one. Turn off to keep a house of your own here.""",
   """settings.notificationsSection""": """Notifications""",
   """settings.notificationsSectionBody""":
       """Alerts and how often to check for activity""",

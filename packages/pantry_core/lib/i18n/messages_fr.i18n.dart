@@ -1373,6 +1373,17 @@ class SettingsMessagesFr extends SettingsMessages {
       """Teinte l'application avec la couleur du thème de votre utilisateur Nextcloud. Désactivez pour utiliser les couleurs propres à l'application.""";
 
   /// ```dart
+  /// "Synchroniser la maison ouverte"
+  /// ```
+  String get syncLastHouse => """Synchroniser la maison ouverte""";
+
+  /// ```dart
+  /// "Ouvre la maison que vous avez utilisée en dernier sur n'importe quel appareil, et laisse l'application web et vos autres appareils suivre celui-ci. Désactivez pour garder ici une maison qui vous est propre."
+  /// ```
+  String get syncLastHouseBody =>
+      """Ouvre la maison que vous avez utilisée en dernier sur n'importe quel appareil, et laisse l'application web et vos autres appareils suivre celui-ci. Désactivez pour garder ici une maison qui vous est propre.""";
+
+  /// ```dart
   /// "Notifications"
   /// ```
   String get notificationsSection => """Notifications""";
@@ -7058,6 +7069,9 @@ Mot de passe : pantry-rocks""",
       """Utiliser la couleur du thème Nextcloud""",
   """settings.useServerThemeColorBody""":
       """Teinte l'application avec la couleur du thème de votre utilisateur Nextcloud. Désactivez pour utiliser les couleurs propres à l'application.""",
+  """settings.syncLastHouse""": """Synchroniser la maison ouverte""",
+  """settings.syncLastHouseBody""":
+      """Ouvre la maison que vous avez utilisée en dernier sur n'importe quel appareil, et laisse l'application web et vos autres appareils suivre celui-ci. Désactivez pour garder ici une maison qui vous est propre.""",
   """settings.notificationsSection""": """Notifications""",
   """settings.notificationsSectionBody""":
       """Alertes et fréquence de vérification de l'activité""",

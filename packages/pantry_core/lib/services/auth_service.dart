@@ -150,7 +150,7 @@ class AuthService {
   /// can paint with them immediately.
   Future<void> refreshUserState() async {
     if (_credentials == null) return;
-    await Future.wait([fetchFirstDayOfWeek(), fetchUserProfile()]);
+    await Future.wait([fetchUserPrefs(), fetchUserProfile()]);
     await Future.wait([
       PrefsService.instance.setUserProfileCache(
         displayName: _displayName,
@@ -191,7 +191,15 @@ class AuthService {
 
   static String get _userAgent => 'Pantry (${PlatformInfo.displayName})';
 
-  Future<void> fetchFirstDayOfWeek() async {
+  Future<void>? _userPrefsFetch;
+
+  /// Fetches the account-scoped Pantry prefs and caches them in
+  /// [PrefsService]. Concurrent callers share one request: both startup and
+  /// the home screen want these, and they race.
+  Future<void> fetchUserPrefs() => _userPrefsFetch ??= _fetchUserPrefs()
+      .whenComplete(() => _userPrefsFetch = null);
+
+  Future<void> _fetchUserPrefs() async {
     if (_credentials == null) return;
     try {
       final uri = Uri.parse(
@@ -211,6 +219,13 @@ class AuthService {
         _firstDayOfWeek = (firstDay != null && firstDay >= 0)
             ? firstDay
             : _firstDayFromLocale();
+        // The house the account last opened anywhere — the web app writes it
+        // too. Whether it overrules the house this device is already on is
+        // the user's call; see [PrefsService.syncLastHouse].
+        final lastHouse = prefs?['lastHouseId'] as int?;
+        if (lastHouse != null) {
+          await PrefsService.instance.adoptLastHouseId(lastHouse);
+        }
         // The `reuseExistingItems` key is only present when the server
         // advertises the `reuse-existing-items` capability; cache it locally
         // so the add-item path can read it synchronously.
@@ -228,8 +243,37 @@ class AuthService {
         }
       }
     } catch (e) {
-      debugPrint('[AuthService] Failed to fetch first day of week: $e');
+      debugPrint('[AuthService] Failed to fetch user prefs: $e');
       _firstDayOfWeek = _firstDayFromLocale();
+    }
+  }
+
+  /// Publish the house this device just opened to the account, for the other
+  /// devices following it. A failure is swallowed: the house is open either
+  /// way, and the local pref — which is what this device reads back — has
+  /// already been written.
+  Future<void> publishLastHouseId(int houseId) async {
+    if (_credentials == null) return;
+    try {
+      final uri = Uri.parse(
+        '${_credentials!.serverUrl}/ocs/v2.php/apps/pantry/api/prefs',
+      );
+      final response = await http.put(
+        uri,
+        headers: {
+          ..._credentials!.basicAuthHeaders,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'lastHouseId': houseId}),
+      );
+      if (response.statusCode >= 400) {
+        debugPrint(
+          '[AuthService] Failed to publish last house: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      debugPrint('[AuthService] Failed to publish last house: $e');
     }
   }
 

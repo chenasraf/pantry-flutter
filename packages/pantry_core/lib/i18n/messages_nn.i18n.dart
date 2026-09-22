@@ -1364,6 +1364,17 @@ class SettingsMessagesNn extends SettingsMessages {
       """Fargelegg appen med temafargen til Nextcloud-brukaren din. Slå av for å bruke appen sine eigne fargar.""";
 
   /// ```dart
+  /// "Synkroniser ope hus"
+  /// ```
+  String get syncLastHouse => """Synkroniser ope hus""";
+
+  /// ```dart
+  /// "Opnar huset du sist brukte på ei kva som helst eining, og lèt vev-appen og dei andre einingane dine følgje denne. Slå av for å halde på eit eige hus her."
+  /// ```
+  String get syncLastHouseBody =>
+      """Opnar huset du sist brukte på ei kva som helst eining, og lèt vev-appen og dei andre einingane dine følgje denne. Slå av for å halde på eit eige hus her.""";
+
+  /// ```dart
   /// "Varsel"
   /// ```
   String get notificationsSection => """Varsel""";
@@ -7021,6 +7032,9 @@ Passord: pantry""",
   """settings.useServerThemeColor""": """Bruk Nextcloud-temafarge""",
   """settings.useServerThemeColorBody""":
       """Fargelegg appen med temafargen til Nextcloud-brukaren din. Slå av for å bruke appen sine eigne fargar.""",
+  """settings.syncLastHouse""": """Synkroniser ope hus""",
+  """settings.syncLastHouseBody""":
+      """Opnar huset du sist brukte på ei kva som helst eining, og lèt vev-appen og dei andre einingane dine følgje denne. Slå av for å halde på eit eige hus her.""",
   """settings.notificationsSection""": """Varsel""",
   """settings.notificationsSectionBody""":
       """Varsel og kor ofte det blir sett etter aktivitet""",

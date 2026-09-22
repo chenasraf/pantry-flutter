@@ -20,6 +20,7 @@ class PrefsService extends ChangeNotifier {
   void notifyListeners() => super.notifyListeners();
 
   static const _lastHouseKey = 'last_house_id';
+  static const _syncLastHouseKey = 'sync_last_house';
   static const _notificationsEnabledKey = 'notifications_enabled';
   static const _pollIntervalMinutesKey = 'poll_interval_minutes';
   static const _notificationsIntroSeenKey = 'notifications_intro_seen';
@@ -84,6 +85,14 @@ class PrefsService extends ChangeNotifier {
 
   int? _lastHouseId;
   int? get lastHouseId => _lastHouseId;
+
+  /// When true, this device follows the account's last-opened house: it adopts
+  /// the server's on every launch and writes each switch back, so the web app
+  /// and every other synced device land on the same house. When false the
+  /// device keeps a house of its own once it has picked one — the account's
+  /// only ever seeds a device that has not.
+  bool _syncLastHouse = false;
+  bool get syncLastHouse => _syncLastHouse;
 
   bool _notificationsEnabled = true;
   bool get notificationsEnabled => _notificationsEnabled;
@@ -356,6 +365,8 @@ class PrefsService extends ChangeNotifier {
     final lastHouse = all[_lastHouseKey];
     if (lastHouse != null) _lastHouseId = int.tryParse(lastHouse);
 
+    _syncLastHouse = all[_syncLastHouseKey] == 'true';
+
     final notif = all[_notificationsEnabledKey];
     if (notif != null) _notificationsEnabled = notif == 'true';
 
@@ -548,6 +559,23 @@ class PrefsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Adopts the account's last-opened house from the server. A device that has
+  /// already picked one keeps it unless [syncLastHouse] is on: the local value
+  /// is written on every switch, offline included, and the server copy cannot
+  /// know about those.
+  Future<void> adoptLastHouseId(int id) async {
+    if (_lastHouseId != null && !_syncLastHouse) return;
+    if (_lastHouseId == id) return;
+    await setLastHouseId(id);
+  }
+
+  Future<void> setSyncLastHouse(bool value) async {
+    if (_syncLastHouse == value) return;
+    _syncLastHouse = value;
+    await _storage.write(key: _syncLastHouseKey, value: value.toString());
+    notifyListeners();
+  }
+
   /// Null for a key that has never been written, which for the appearance
   /// prefs is a state of its own rather than a missing value.
   static bool? _parseBool(String? raw) => switch (raw) {
@@ -588,6 +616,7 @@ class PrefsService extends ChangeNotifier {
 
   Future<void> clear() async {
     _lastHouseId = null;
+    _syncLastHouse = false;
     _notificationsEnabled = true;
     _pollIntervalMinutes = 15;
     _notificationsIntroSeen = false;
@@ -628,6 +657,7 @@ class PrefsService extends ChangeNotifier {
     _wearUndoSeconds = 2;
     final keys = [
       _lastHouseKey,
+      _syncLastHouseKey,
       _notificationsEnabledKey,
       _pollIntervalMinutesKey,
       _notificationsIntroSeenKey,
