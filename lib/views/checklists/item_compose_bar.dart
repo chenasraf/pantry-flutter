@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
@@ -820,65 +820,82 @@ class ItemComposeBarState extends State<ItemComposeBar> {
 
     final border = BorderSide(color: cs.outlineVariant.withValues(alpha: 0.4));
 
-    return Material(
-      color: cs.surface,
-      child: Container(
-        decoration: BoxDecoration(
-          border: widget.onTop ? Border(bottom: border) : Border(top: border),
-        ),
-        padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (!widget.onTop) ...expansion,
-            _Bar(
-              focusNode: _focusNode,
-              nameController: _nameCtrl,
-              active: _active,
-              placeholder: widget._allListsMode
-                  ? m.checklists.addToAnyList
-                  : m.checklists.addToList(widget.listName),
-              onCancel: _cancel,
-              onSubmit: _submit,
-              submitting: _submitting,
-              submitEnabled: _hasTarget && (!_multiple || _hasContent),
-              onActivate: _activate,
-              multiple: _multiple,
-              onScan: _multiple ? null : _scanBarcode,
-              targetListLeading: widget._allListsMode
-                  ? BarTargetChip(
-                      list: widget.targetLists
-                          ?.cast<ChecklistList?>()
-                          .firstWhere(
-                            (l) => l!.id == widget.selectedTargetListId,
-                            orElse: () => null,
-                          ),
-                      highlighted: _openTray == Tray.targetList,
-                      onTap: () {
-                        if (!_active) _activate();
-                        _toggleTray(Tray.targetList);
-                      },
-                    )
-                  : null,
+    // An expanded bar is its own layer as far as the user is concerned, so the
+    // platform's "go back" gestures collapse it instead of leaving the route.
+    return PopScope(
+      canPop: !_active,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) dismissKeepingDraft();
+      },
+      child: CallbackShortcuts(
+        bindings: {
+          if (_active)
+            const SingleActivator(LogicalKeyboardKey.escape):
+                dismissKeepingDraft,
+        },
+        child: Material(
+          color: cs.surface,
+          child: Container(
+            decoration: BoxDecoration(
+              border: widget.onTop
+                  ? Border(bottom: border)
+                  : Border(top: border),
             ),
-            // Caption for the input, so it stays under the field either way.
-            if (_active && _multiple) ...[
-              const SizedBox(height: 6),
-              Padding(
-                padding: const EdgeInsetsDirectional.only(start: 4),
-                child: Text(
-                  m.checklists.compose.multipleHint,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: cs.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (!widget.onTop) ...expansion,
+                _Bar(
+                  focusNode: _focusNode,
+                  nameController: _nameCtrl,
+                  active: _active,
+                  placeholder: widget._allListsMode
+                      ? m.checklists.addToAnyList
+                      : m.checklists.addToList(widget.listName),
+                  onCancel: _cancel,
+                  onSubmit: _submit,
+                  submitting: _submitting,
+                  submitEnabled: _hasTarget && (!_multiple || _hasContent),
+                  onActivate: _activate,
+                  multiple: _multiple,
+                  onScan: _multiple ? null : _scanBarcode,
+                  targetListLeading: widget._allListsMode
+                      ? BarTargetChip(
+                          list: widget.targetLists
+                              ?.cast<ChecklistList?>()
+                              .firstWhere(
+                                (l) => l!.id == widget.selectedTargetListId,
+                                orElse: () => null,
+                              ),
+                          highlighted: _openTray == Tray.targetList,
+                          onTap: () {
+                            if (!_active) _activate();
+                            _toggleTray(Tray.targetList);
+                          },
+                        )
+                      : null,
                 ),
-              ),
-            ],
-            if (widget.onTop) ...expansion.reversed,
-          ],
+                // Caption for the input, so it stays under the field either way.
+                if (_active && _multiple) ...[
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 4),
+                    child: Text(
+                      m.checklists.compose.multipleHint,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: cs.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+                if (widget.onTop) ...expansion.reversed,
+              ],
+            ),
+          ),
         ),
       ),
     );
