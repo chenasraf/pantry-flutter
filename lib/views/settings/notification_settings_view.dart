@@ -10,7 +10,12 @@ import 'package:pantry/views/settings/settings_tiles.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class NotificationSettingsView extends StatefulWidget {
-  const NotificationSettingsView({super.key});
+  /// Drawn beside the settings sidebar rather than as a screen of its own, so
+  /// the row naming it is already on show and a bar repeating that name is
+  /// chrome for nothing.
+  final bool embedded;
+
+  const NotificationSettingsView({super.key, this.embedded = false});
 
   @override
   State<NotificationSettingsView> createState() =>
@@ -71,10 +76,12 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
     final notificationsEnabled = prefs.notificationsEnabled;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(m.settings.notificationsSection),
-      ),
+      appBar: widget.embedded
+          ? null
+          : AppBar(
+              leading: appBarBackLeading(context),
+              title: Text(m.settings.notificationsSection),
+            ),
       body: SettingsList(
         children: [
           SwitchListTile(

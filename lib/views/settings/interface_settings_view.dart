@@ -12,7 +12,12 @@ import 'package:pantry/views/settings/settings_tiles.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class InterfaceSettingsView extends StatelessWidget {
-  const InterfaceSettingsView({super.key});
+  /// Drawn beside the settings sidebar rather than as a screen of its own, so
+  /// the row naming it is already on show and a bar repeating that name is
+  /// chrome for nothing.
+  final bool embedded;
+
+  const InterfaceSettingsView({super.key, this.embedded = false});
 
   static const _checkboxPositionOptions = ['start', 'end'];
   static const _composeBarPositionOptions = ['bottom', 'top'];
@@ -299,10 +304,12 @@ class InterfaceSettingsView extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(m.settings.interfaceSection),
-      ),
+      appBar: embedded
+          ? null
+          : AppBar(
+              leading: appBarBackLeading(context),
+              title: Text(m.settings.interfaceSection),
+            ),
       body: SettingsList(
         children: [
           ..._section(m.settings.interfaceNavigationSection, navigation),

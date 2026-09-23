@@ -72,11 +72,17 @@ class SettingsPageTile extends StatelessWidget {
   final String subtitle;
   final VoidCallback onTap;
 
+  /// Whether this row is the one whose screen is on show beside it. Null where
+  /// the row opens a screen of its own instead, which is what the chevron
+  /// promises — a sidebar entry drops it, having nowhere to go.
+  final bool? selected;
+
   const SettingsPageTile({
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.selected,
     super.key,
   });
 
@@ -89,7 +95,8 @@ class SettingsPageTile extends StatelessWidget {
       leading: Icon(icon),
       title: Text(title),
       subtitle: Text(subtitle),
-      trailing: Icon(forward),
+      trailing: selected == null ? Icon(forward) : null,
+      selected: selected ?? false,
       onTap: onTap,
     );
   }

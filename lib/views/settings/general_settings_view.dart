@@ -10,7 +10,12 @@ import 'package:pantry/views/settings/settings_tiles.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class GeneralSettingsView extends StatefulWidget {
-  const GeneralSettingsView({super.key});
+  /// Drawn beside the settings sidebar rather than as a screen of its own, so
+  /// the row naming it is already on show and a bar repeating that name is
+  /// chrome for nothing.
+  final bool embedded;
+
+  const GeneralSettingsView({super.key, this.embedded = false});
 
   @override
   State<GeneralSettingsView> createState() => _GeneralSettingsViewState();
@@ -67,10 +72,12 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
     final prefs = context.watch<PrefsService>();
 
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(m.settings.generalSection),
-      ),
+      appBar: widget.embedded
+          ? null
+          : AppBar(
+              leading: appBarBackLeading(context),
+              title: Text(m.settings.generalSection),
+            ),
       body: SettingsList(
         children: [
           DropdownSettingTile<String?>(

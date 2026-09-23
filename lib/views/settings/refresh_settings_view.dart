@@ -8,7 +8,12 @@ import 'package:pantry/views/settings/settings_tiles.dart';
 import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class RefreshSettingsView extends StatelessWidget {
-  const RefreshSettingsView({super.key});
+  /// Drawn beside the settings sidebar rather than as a screen of its own, so
+  /// the row naming it is already on show and a bar repeating that name is
+  /// chrome for nothing.
+  final bool embedded;
+
+  const RefreshSettingsView({super.key, this.embedded = false});
 
   static const _refreshOptions = [0, 15, 30, 60, 120, 300];
   static const _shoppingRefreshOptions = [
@@ -55,10 +60,12 @@ class RefreshSettingsView extends StatelessWidget {
     final prefs = context.watch<PrefsService>();
 
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(m.settings.refreshSection),
-      ),
+      appBar: embedded
+          ? null
+          : AppBar(
+              leading: appBarBackLeading(context),
+              title: Text(m.settings.refreshSection),
+            ),
       body: SettingsList(
         children: [
           const SizedBox(height: 16),
