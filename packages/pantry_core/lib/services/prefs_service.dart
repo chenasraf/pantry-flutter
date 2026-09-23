@@ -632,6 +632,7 @@ class PrefsService extends ChangeNotifier {
     _checklistDensity = 'normal';
     _swipeActionsEnabled = true;
     _startShoppingFabEnabled = true;
+    _truncateItemNames = false;
     _checklistListFilter = {};
     _hiddenItemChips = {};
     _checklistDoneCollapsed = true;
@@ -675,6 +676,7 @@ class PrefsService extends ChangeNotifier {
       _checklistDensityKey,
       _swipeActionsEnabledKey,
       _startShoppingFabEnabledKey,
+      _truncateItemNamesKey,
       _checklistListFilterKey,
       _hiddenItemChipsKey,
       _checklistDoneCollapsedKey,
