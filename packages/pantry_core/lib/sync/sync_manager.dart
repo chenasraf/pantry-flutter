@@ -790,7 +790,8 @@ class SyncManager {
         break;
       case SyncEntity.photo:
         // A photo upload names its folder, and folders are only ever created
-        // against a reachable server, so it can't hold a temp reference.
+        // against a reachable server. A reorder names photos, whose temp ids
+        // the remap rewrites from the body.
         break;
       case SyncEntity.shoppingCheck:
       case SyncEntity.shoppingSkip:

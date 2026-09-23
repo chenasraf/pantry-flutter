@@ -54,6 +54,19 @@ class Photo {
     'updatedAt': updatedAt,
     'canEdit': canEdit,
   };
+
+  Photo copyWith({int? sortOrder}) => Photo(
+    id: id,
+    houseId: houseId,
+    folderId: folderId,
+    fileId: fileId,
+    caption: caption,
+    uploadedBy: uploadedBy,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    canEdit: canEdit,
+  );
 }
 
 extension PhotoSharing on Photo {

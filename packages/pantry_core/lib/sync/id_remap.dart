@@ -60,6 +60,9 @@ class IdRemap {
       result = _rewriteItemStoreIds(result);
       result = _rewriteItemLabelIds(result);
     }
+    if (result.entity == SyncEntity.photo) {
+      result = _rewritePhotoOrderIds(result);
+    }
     if (result.entity == SyncEntity.storeCategoryOrder) {
       result = _rewriteArrangementStore(result);
       result = _rewriteArrangementCategoryIds(result);
@@ -76,6 +79,28 @@ class IdRemap {
     if (temp == null) return op;
     final real = resolve(SyncEntity.store, temp);
     return real == null ? op : op.copyWith(entityId: real);
+  }
+
+  /// A photo reorder names every photo in the house, any of which may still be
+  /// a temp id when the picture was taken in the same offline session — the
+  /// board is built to be used away from a connection, so a shutter and a drag
+  /// before the queue drains is ordinary use, not an edge.
+  SyncOp _rewritePhotoOrderIds(SyncOp op) {
+    if (op.op != SyncOpKind.reorder) return op;
+    final order = (op.body['order'] as List?)?.cast<Map>();
+    if (order == null) return op;
+    var changed = false;
+    final mapped = <Map<String, dynamic>>[];
+    for (final entry in order) {
+      final id = entry['id'] as int;
+      final real = id < 0 ? resolve(SyncEntity.photo, id) : null;
+      if (real != null) changed = true;
+      mapped.add({'id': real ?? id, 'sortOrder': entry['sortOrder'] as int});
+    }
+    if (!changed) return op;
+    final body = Map<String, dynamic>.from(op.body);
+    body['order'] = mapped;
+    return op.copyWith(body: body);
   }
 
   /// An arrangement lists bare category ids, any of which may be a temp id

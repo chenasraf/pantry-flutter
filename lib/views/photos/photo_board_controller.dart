@@ -309,16 +309,24 @@ class PhotoBoardController extends ChangeNotifier {
   Future<void> setSortBy(String sort) async {
     if (sort == _sortBy) return;
     _sortBy = sort;
+    _service.setCachedSortBy(houseId, sort);
     notifyListeners();
-    _service.setHousePrefs(houseId, photoSort: sort);
+    unawaited(
+      _service.setHousePrefs(houseId, photoSort: sort).catchError((_) {}),
+    );
     await _reloadPhotos();
   }
 
   Future<void> setFoldersFirst(bool value) async {
     if (value == _foldersFirst) return;
     _foldersFirst = value;
+    _service.setCachedFoldersFirst(houseId, value);
     notifyListeners();
-    _service.setHousePrefs(houseId, photoFoldersFirst: value);
+    unawaited(
+      _service
+          .setHousePrefs(houseId, photoFoldersFirst: value)
+          .catchError((_) {}),
+    );
   }
 
   Future<void> _reloadPhotos() async {
@@ -686,8 +694,19 @@ class PhotoBoardController extends ChangeNotifier {
   int? _draggingId;
   int? get draggingId => _draggingId;
 
+  /// Whether a drag can say anything. `sort_order` is only what the board is
+  /// read by under the custom sort; under any other the server answers by date
+  /// or caption, so a drag would be undone by the next load.
+  bool get canReorder => _sortBy == 'custom';
+
+  /// Whether the photo the user is holding has actually landed somewhere else.
+  /// A lift that ends where it started owes the server nothing.
+  bool _dragMoved = false;
+
   void startDrag(int photoId) {
+    if (!canReorder) return;
     _draggingId = photoId;
+    _dragMoved = false;
     notifyListeners();
   }
 
@@ -705,53 +724,78 @@ class PhotoBoardController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Finalize drag — persist the current order to server.
+  /// Finalize drag — hand the new order to the queue.
+  ///
+  /// Queued rather than sent direct: the drag is the only record of what the
+  /// user arranged, and a board that keeps showing an order the server never
+  /// heard about is the same as having lost it.
   void endDrag() {
     if (_draggingId == null) return;
     _draggingId = null;
-
-    final visible = visiblePhotos;
-    final order = <({int id, int sortOrder})>[];
-    for (var i = 0; i < visible.length; i++) {
-      order.add((id: visible[i].id, sortOrder: i));
+    if (!_dragMoved) {
+      notifyListeners();
+      return;
     }
+    _dragMoved = false;
 
     _service.cachePhotos(houseId, _photos);
     notifyListeners();
-    _service.reorderPhotos(houseId, order);
+    SyncManager.instance.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.photo,
+        op: SyncOpKind.reorder,
+        houseId: houseId,
+        body: {
+          'order': [
+            for (var i = 0; i < _photos.length; i++)
+              {'id': _photos[i].id, 'sortOrder': i},
+          ],
+        },
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
   }
 
   void cancelDrag() {
     _draggingId = null;
+    _dragMoved = false;
     notifyListeners();
   }
 
+  /// Re-slot the dragged photo and renumber the whole house.
+  ///
+  /// `sort_order` is one space across the house, not one per folder: numbering
+  /// a folder's photos 0..n on their own hands them slots the photos outside it
+  /// already hold, and the two orders then depend on which row the server reads
+  /// first. Only the dragged photo moves; every other photo keeps its place.
   void _applyVisibleOrder(List<Photo> visible, int fromIndex, int toIndex) {
-    final item = visible.removeAt(fromIndex);
-    visible.insert(toIndex, item);
+    final dragged = visible.removeAt(fromIndex);
+    visible.insert(toIndex, dragged);
 
-    final updatedOrder = <int, int>{};
-    for (var i = 0; i < visible.length; i++) {
-      updatedOrder[visible[i].id] = i;
+    final predecessor = toIndex > 0 ? visible[toIndex - 1] : null;
+    final successor = toIndex < visible.length - 1
+        ? visible[toIndex + 1]
+        : null;
+
+    final rest = [
+      for (final p in _photos)
+        if (p.id != dragged.id) p,
+    ];
+    final int insertAt;
+    if (predecessor != null) {
+      insertAt = rest.indexWhere((p) => p.id == predecessor.id) + 1;
+    } else if (successor != null) {
+      insertAt = rest.indexWhere((p) => p.id == successor.id);
+    } else {
+      // Alone in its folder — nothing to sit beside, so nothing moves.
+      return;
     }
+    rest.insert(insertAt, dragged);
+    _dragMoved = true;
 
-    _photos = _photos.map((p) {
-      final newSort = updatedOrder[p.id];
-      if (newSort != null) {
-        return Photo(
-          id: p.id,
-          houseId: p.houseId,
-          folderId: p.folderId,
-          fileId: p.fileId,
-          caption: p.caption,
-          uploadedBy: p.uploadedBy,
-          sortOrder: newSort,
-          createdAt: p.createdAt,
-          updatedAt: p.updatedAt,
-        );
-      }
-      return p;
-    }).toList();
-    _photos.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+    _photos = [
+      for (var i = 0; i < rest.length; i++) rest[i].copyWith(sortOrder: i),
+    ];
   }
 }

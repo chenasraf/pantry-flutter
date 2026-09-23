@@ -94,8 +94,9 @@ class PhotoTile extends StatelessWidget {
       );
     }
 
-    // Reordering moves the photo within/between folders — gated by canMovePhotos.
-    if (!controller.permissions.canMovePhotos) {
+    // Reordering moves the photo within/between folders — gated by
+    // canMovePhotos, and by a sort the stored order is actually read by.
+    if (!controller.permissions.canMovePhotos || !controller.canReorder) {
       return _buildTileContent(context, theme, uri, headers);
     }
 

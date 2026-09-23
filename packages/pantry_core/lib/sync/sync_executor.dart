@@ -155,11 +155,21 @@ class SyncExecutor {
     }
   }
 
-  /// A queued photo upload. The bytes sit in [PendingUploadStore] under the
-  /// op's uuid; if they are gone there is nothing left to send, so the op
-  /// resolves empty and drains rather than wedging the queue behind a file that
-  /// will never come back.
+  /// A queued photo upload, or the board's stored order.
+  ///
+  /// An upload's bytes sit in [PendingUploadStore] under the op's uuid; if they
+  /// are gone there is nothing left to send, so the op resolves empty and
+  /// drains rather than wedging the queue behind a file that will never come
+  /// back. A reorder carries the whole house's order in `body['order']`.
   Future<SyncResult> _executePhoto(SyncOp op) async {
+    if (op.op == SyncOpKind.reorder) {
+      final raw = (op.body['order'] as List).cast<Map>();
+      await PhotoService.instance.reorderPhotos(op.houseId, [
+        for (final e in raw)
+          (id: e['id'] as int, sortOrder: e['sortOrder'] as int),
+      ]);
+      return SyncResult.empty;
+    }
     if (op.op != SyncOpKind.create) return SyncResult.empty;
     final bytes = await PendingUploadStore.instance.read(op.uuid);
     if (bytes == null) return SyncResult.empty;
