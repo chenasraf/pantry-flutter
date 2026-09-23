@@ -1,0 +1,13 @@
+Features
+- show an item's description on its row
+- browse settings sections from a sidebar
+- show checklists in the side navigation
+- give the macOS window its own title bar
+- see which file a note is synced to
+- keep the open house in sync across your devices
+Bug Fixes
+- don't warn that your sign-in expired after signing out
+- close the add-item bar with the back button instead of leaving the app
+- fixed width on notifications onboarding
+
+… see full notes on GitHub.
