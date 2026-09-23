@@ -17,6 +17,7 @@ import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/views/home/home_app_bar_spec.dart';
 import 'package:pantry/views/home/home_floating_nav.dart';
+import 'package:pantry/views/home/home_nav_rail.dart';
 import 'checklist_item_list.dart';
 import 'checklist_item_tile.dart';
 import 'checklists_banners.dart';
@@ -51,6 +52,10 @@ class ChecklistsView extends StatefulWidget {
   /// edge, so the floating nav slides out of their way.
   final ValueNotifier<bool>? edgeClaimedHolder;
 
+  /// Slot the side rail reads this house's lists from, to nest them under its
+  /// checklists destination.
+  final ValueNotifier<HomeNavListsSpec?>? navListsHolder;
+
   const ChecklistsView({
     super.key,
     required this.houseId,
@@ -59,6 +64,7 @@ class ChecklistsView extends StatefulWidget {
     this.scrollController,
     this.navActionHolder,
     this.edgeClaimedHolder,
+    this.navListsHolder,
   });
 
   @override
@@ -174,6 +180,7 @@ class _ChecklistsViewState extends State<ChecklistsView>
         scrollController: widget.scrollController,
         navActionHolder: widget.navActionHolder,
         edgeClaimedHolder: widget.edgeClaimedHolder,
+        navListsHolder: widget.navListsHolder,
       ),
     );
   }
@@ -184,12 +191,14 @@ class _Body extends StatefulWidget {
   final ScrollController? scrollController;
   final ValueNotifier<NavPrimaryAction?>? navActionHolder;
   final ValueNotifier<bool>? edgeClaimedHolder;
+  final ValueNotifier<HomeNavListsSpec?>? navListsHolder;
 
   const _Body({
     this.appBarSpecHolder,
     this.scrollController,
     this.navActionHolder,
     this.edgeClaimedHolder,
+    this.navListsHolder,
   });
 
   @override
@@ -223,6 +232,27 @@ class _BodyState extends State<_Body> {
     super.dispose();
   }
 
+  /// The lists the rail draws, in the order the switcher shows them and with
+  /// the same "All lists" entry at their head.
+  HomeNavListsSpec _buildNavListsSpec(ChecklistsController controller) {
+    final realLists = hasFeature('checklist-sort')
+        ? controller.sortedLists
+        : controller.lists;
+    final showAllLists =
+        hasFeature('checklist-all-view') && realLists.length >= 2;
+    return HomeNavListsSpec(
+      lists: [
+        if (showAllLists) allListsSentinel(controller.houseId),
+        ...realLists.where((l) => l.id != kAllListsId),
+      ],
+      currentListId: controller.currentList?.id,
+      onSelect: (list) {
+        if (controller.currentList?.id == list.id) return;
+        controller.selectList(list);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ChecklistsBodyController>.value(
@@ -231,6 +261,16 @@ class _BodyState extends State<_Body> {
         builder: (context) {
           final controller = context.watch<ChecklistsController>();
           final body = context.watch<ChecklistsBodyController>();
+
+          // Offer the lists to the side rail, which nests them under the
+          // checklists destination. Published ahead of the states below so a
+          // house with nothing loaded yet empties the rail instead of leaving
+          // the previous house's lists sitting in it.
+          final navLists = _buildNavListsSpec(controller);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            widget.navListsHolder?.value = navLists;
+          });
 
           if (controller.isLoading && controller.lists.isEmpty) {
             return const Center(child: CircularProgressIndicator());

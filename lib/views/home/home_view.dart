@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/nav_section.dart';
 import 'package:pantry_core/services/checklist_service.dart';
@@ -32,6 +35,7 @@ import 'package:pantry/widgets/notifications_bell.dart';
 import 'package:pantry/widgets/server_app_missing_view.dart';
 import 'package:pantry/widgets/user_menu_button.dart';
 import 'home_floating_nav.dart';
+import 'home_nav_rail.dart';
 import 'home_controller.dart';
 
 class HomeView extends StatefulWidget {
@@ -114,6 +118,10 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   // up on the way past.
   final ValueNotifier<({int from, int to})?> _navJump = ValueNotifier(null);
 
+  // The checklists tab's lists, which the rail nests under its checklists
+  // destination so every list is one click away from any section.
+  final ValueNotifier<HomeNavListsSpec?> _navLists = ValueNotifier(null);
+
   @override
   void initState() {
     super.initState();
@@ -178,6 +186,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
       n.dispose();
     }
     _navJump.dispose();
+    _navLists.dispose();
     for (final n in _tabAppBarSpecs.values) {
       n.dispose();
     }
@@ -511,6 +520,32 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     NavSection.notesWall => EntityIcons.notes,
   };
 
+  /// The checklists the rail draws under its checklists destination. Picking
+  /// one brings the checklists section forward with that list open, so the rail
+  /// reaches a list from any section rather than only from the one it belongs
+  /// to. [active] marks the open list, which only reads as selected while the
+  /// checklists section is the one on screen.
+  List<NavRailNested> _railLists(
+    HomeNavListsSpec? spec, {
+    required int checklistsIndex,
+    required bool active,
+  }) {
+    if (spec == null || checklistsIndex < 0) return const [];
+    return [
+      for (final list in spec.lists)
+        NavRailNested(
+          icon: checklistIcon(list.icon),
+          color: parseHexColor(list.color),
+          label: list.id == kAllListsId ? m.checklists.allLists : list.name,
+          selected: active && spec.currentListId == list.id,
+          onTap: () {
+            spec.onSelect(list);
+            _goToTab(checklistsIndex);
+          },
+        ),
+    ];
+  }
+
   bool _sectionVisible(NavSection s, HousePermissions perms) => switch (s) {
     NavSection.checklists => perms.canViewLists,
     NavSection.photoBoard => perms.canViewPhotos,
@@ -589,6 +624,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
           // actions it wants the shared AppBar to carry.
           final currentSection = order[tabIndex];
           final isChecklistsTab = currentSection == NavSection.checklists;
+          final checklistsIndex = order.indexOf(NavSection.checklists);
 
           final appBar = PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -625,23 +661,26 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                 child: Row(
                   children: [
                     if (showNav) ...[
-                      NavigationRail(
-                        extended: extendedRail,
-                        selectedIndex: tabIndex,
-                        onDestinationSelected: _goToTab,
-                        labelType: extendedRail
-                            ? NavigationRailLabelType.none
-                            : NavigationRailLabelType.all,
-                        leading: PlatformInfo.isMacOS
-                            ? const SizedBox(height: 24)
-                            : null,
-                        destinations: [
-                          for (final s in order)
-                            NavigationRailDestination(
-                              icon: Icon(_sectionIcon(s)),
-                              label: Text(_sectionTitle(s)),
-                            ),
-                        ],
+                      ValueListenableBuilder<HomeNavListsSpec?>(
+                        valueListenable: _navLists,
+                        builder: (context, navLists, _) => HomeNavRail(
+                          extended: extendedRail,
+                          selectedIndex: tabIndex,
+                          onDestinationSelected: _goToTab,
+                          leading: PlatformInfo.isMacOS
+                              ? const SizedBox(height: 24)
+                              : null,
+                          destinations: [
+                            for (final s in order)
+                              (icon: _sectionIcon(s), label: _sectionTitle(s)),
+                          ],
+                          nestedIndex: checklistsIndex,
+                          nested: _railLists(
+                            navLists,
+                            checklistsIndex: checklistsIndex,
+                            active: isChecklistsTab,
+                          ),
+                        ),
                       ),
                       const VerticalDivider(width: 1, thickness: 1),
                     ],
@@ -731,6 +770,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         scrollController: _tabScrollers[NavSection.checklists]!,
         navActionHolder: _tabActions[NavSection.checklists]!,
         edgeClaimedHolder: _tabEdgeClaimed[NavSection.checklists]!,
+        navListsHolder: _navLists,
       ),
       NavSection.photoBoard => PhotoBoardView(
         key: ValueKey('photos-$houseId'),
