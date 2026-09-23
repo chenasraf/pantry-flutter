@@ -21,10 +21,11 @@ management for your self-hosted Nextcloud, on your phone, your desktop, and your
 - **Material Design 3** with dark mode.
 - **Self-hosted** — connects directly to your own Nextcloud server via Login Flow v2.
 
-|                                                                                    |                                                                                     |                                                                                    |
-| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| ![Checklists](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png) | ![Photo board](fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png) | ![Notes wall](fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png) |
-| ![Checklists](fastlane/metadata/android/en-US/images/wearScreenshots/1_en-US.png) | ![Photo board](fastlane/metadata/android/en-US/images/wearScreenshots/2_en-US.png) | ![Notes wall](fastlane/metadata/android/en-US/images/wearScreenshots/3_en-US.png) |
+|         | Checklists                                                                         | Photo Board                                                                         | Notes Wall                                                                         |
+| ------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Android | ![Checklists](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png) | ![Photo board](fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png) | ![Notes wall](fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png) |
+| Wear OS | ![Checklists](fastlane/metadata/android/en-US/images/wearScreenshots/1_en-US.png)  | ![Photo board](fastlane/metadata/android/en-US/images/wearScreenshots/2_en-US.png)  | ![Notes wall](fastlane/metadata/android/en-US/images/wearScreenshots/3_en-US.png)  |
+| macOS   | ![Checklists](fastlane/metadata/macos/en-US/screenshots/0_APP_DESKTOP_0.png)       | ![Photo board](fastlane/metadata/macos/en-US/screenshots/1_APP_DESKTOP_1.png)       | ![Notes wall](fastlane/metadata/macos/en-US/screenshots/2_APP_DESKTOP_2.png)       |
 
 ## Requirements
 
@@ -71,7 +72,8 @@ It may take a few minutes for your tester status to propagate.
 ### Manual (APK)
 
 Download the latest APK from the
-[latest release](https://github.com/chenasraf/pantry-flutter/releases/latest) and sideload onto your device.
+[latest release](https://github.com/chenasraf/pantry-flutter/releases/latest) and sideload onto your
+device.
 
 ### App Store (iOS/macOS)
 
@@ -80,7 +82,8 @@ Download the latest APK from the
 ### Linux
 
 Download `pantry-<version>-linux-x64.tar.gz` from the
-[latest release](https://github.com/chenasraf/pantry-flutter/releases/latest), then extract and run it:
+[latest release](https://github.com/chenasraf/pantry-flutter/releases/latest), then extract and run
+it:
 
 ```bash
 tar -xzf pantry-<version>-linux-x64.tar.gz -C ~/pantry
@@ -93,9 +96,9 @@ desktop distributions (`libgtk-3-0` and `libsecret-1-0` if you need to install t
 ### Windows
 
 Download `pantry-<version>-windows-x64.zip` from the
-[latest release](https://github.com/chenasraf/pantry-flutter/releases/latest), extract it anywhere, and run
-`pantry.exe`. The build is unsigned, so Windows SmartScreen may warn on first launch — choose **More
-info → Run anyway**.
+[latest release](https://github.com/chenasraf/pantry-flutter/releases/latest), extract it anywhere,
+and run `pantry.exe`. The build is unsigned, so Windows SmartScreen may warn on first launch —
+choose **More info → Run anyway**.
 
 ## Development
 
