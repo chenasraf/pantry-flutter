@@ -19,9 +19,17 @@ class FakePhotoBoardController extends PhotoBoardController {
     String sortBy = 'custom',
     bool foldersFirst = true,
     List<UploadTask>? uploads,
+    List<Photo>? photos,
   }) : _sortBy = sortBy,
        _foldersFirst = foldersFirst,
-       _uploads = uploads ?? [];
+       _uploads = uploads ?? [],
+       _photos = photos ?? [];
+
+  /// Stands in for the board's loaded photos, which it holds in the order the
+  /// current sort put them.
+  final List<Photo> _photos;
+  @override
+  List<Photo> get photos => _photos;
 
   String _sortBy;
   @override

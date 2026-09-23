@@ -207,9 +207,9 @@ class PhotoBoardController extends ChangeNotifier {
   /// Items visible in the current view (folders at root + photos in current folder).
   List<Photo> get visiblePhotos {
     if (_currentFolderId != null) {
-      return _photos.where((p) => p.folderId == _currentFolderId).toList();
+      return photos.where((p) => p.folderId == _currentFolderId).toList();
     }
-    return _photos.where((p) => p.folderId == null).toList();
+    return photos.where((p) => p.folderId == null).toList();
   }
 
   List<PhotoFolder> get visibleFolders {
@@ -220,12 +220,12 @@ class PhotoBoardController extends ChangeNotifier {
   int folderPhotoCount(int folderId) =>
       _photos.where((p) => p.folderId == folderId).length;
 
-  /// Most recent 3 photos in a folder for preview thumbnails.
-  List<Photo> folderPreviewPhotos(int folderId) {
-    final inFolder = _photos.where((p) => p.folderId == folderId).toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    return inFolder.take(3).toList();
-  }
+  /// The first 3 photos of a folder, for the tile's preview stack. Ordered the
+  /// way [visiblePhotos] orders the folder once opened — `_photos` is held in
+  /// the board's sort order — so the stack shows the photos the folder leads
+  /// with under any sort, not the newest ones under all of them.
+  List<Photo> folderPreviewPhotos(int folderId) =>
+      photos.where((p) => p.folderId == folderId).take(3).toList();
 
   Future<void> load() async {
     _error = null;
