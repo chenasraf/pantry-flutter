@@ -12,11 +12,16 @@ import 'package:pantry_core/services/checklist_service.dart';
 import 'checklist_widget_service.dart';
 import 'package:pantry_core/services/label_service.dart';
 import 'package:pantry_core/services/store_service.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 
 /// Register the interactive-widget callback so checkbox/row taps on the
 /// single-checklist widget reach [widgetInteractivityCallback]. Call once from
 /// the foreground engine (main).
+///
+/// Only Android ships the home-screen widget, and the channel exists nowhere
+/// else — registering off it raises a `MissingPluginException`.
 void registerWidgetInteractivity() {
+  if (!PlatformInfo.isAndroidPhone) return;
   HomeWidget.registerInteractivityCallback(widgetInteractivityCallback);
 }
 
