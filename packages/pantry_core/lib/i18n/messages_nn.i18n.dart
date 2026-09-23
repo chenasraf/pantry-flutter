@@ -181,6 +181,11 @@ class CommonMessagesNn extends CommonMessages {
   String get more => """Meir""";
 
   /// ```dart
+  /// "Sorter"
+  /// ```
+  String get sort => """Sorter""";
+
+  /// ```dart
   /// "Du har ikkje tilgang til å gjere det"
   /// ```
   String get permissionDenied => """Du har ikkje tilgang til å gjere det""";
@@ -4387,6 +4392,17 @@ class NotesWallMessagesNn extends NotesWallMessages {
       """${_plural(count, one: 'Notat sletta', many: '$count notat sletta')}""";
 
   /// ```dart
+  /// "Vel notat"
+  /// ```
+  String get selectNotes => """Vel notat""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 vald', many: '$count vald')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 vald', many: '$count vald')}""";
+
+  /// ```dart
   /// "Vis papirkorga"
   /// ```
   String get viewTrash => """Vis papirkorga""";
@@ -4621,6 +4637,17 @@ class PhotoBoardMessagesNn extends PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'Bilete sletta', many: '$count bilete sletta')}""";
+
+  /// ```dart
+  /// "Vel bilete"
+  /// ```
+  String get selectPhotos => """Vel bilete""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 vald', many: '$count vald')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 vald', many: '$count vald')}""";
 
   /// ```dart
   /// "Vis papirkorga"
@@ -6760,6 +6787,7 @@ Map<String, String> get messagesNnMap => {
   """common.remove""": """Fjern""",
   """common.clear""": """Tøm""",
   """common.more""": """Meir""",
+  """common.sort""": """Sorter""",
   """common.permissionDenied""": """Du har ikkje tilgang til å gjere det""",
   """common.noAccessTitle""": """Ingen tilgang""",
   """common.noAccessBody""":
@@ -7582,6 +7610,7 @@ Passord: pantry""",
   """notesWall.saveFailed""": """Klarte ikkje lagre notat.""",
   """notesWall.deleteFailed""": """Klarte ikkje slette notatet.""",
   """notesWall.deleteConfirm""": """Slett dette notatet?""",
+  """notesWall.selectNotes""": """Vel notat""",
   """notesWall.viewTrash""": """Vis papirkorga""",
   """notesWall.exitTrash""": """Gå ut av papirkorga""",
   """notesWall.trashTitle""": """Papirkorg""",
@@ -7625,6 +7654,7 @@ Passord: pantry""",
   """photoBoard.waitingForConnection""": """Ventar på tilkopling""",
   """photoBoard.deleteFailed""": """Klarte ikkje slette bilete""",
   """photoBoard.deleteConfirm""": """Slett dette biletet?""",
+  """photoBoard.selectPhotos""": """Vel bilete""",
   """photoBoard.viewTrash""": """Vis papirkorga""",
   """photoBoard.exitTrash""": """Gå ut av papirkorga""",
   """photoBoard.trashTitle""": """Papirkorg""",

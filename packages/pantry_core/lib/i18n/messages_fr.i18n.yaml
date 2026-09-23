@@ -16,6 +16,7 @@ common:
   remove: Retirer
   clear: Effacer
   more: Plus
+  sort: Trier
   permissionDenied: Vous n'avez pas la permission de faire cela
   noAccessTitle: Aucun accès
   noAccessBody: Vous n'avez encore accès à rien dans ce foyer. Un administrateur peut vous accorder des autorisations dans l'application web Pantry.
@@ -833,6 +834,8 @@ notesWall:
   deleteConfirm: Supprimer cette note ?
   deleteSelectedConfirm(int count): "Supprimer ${_plural(count, one: 'cette note', many: '$count notes')} ?"
   noteRemoved(int count): "${_plural(count, one: 'Note supprimée', many: '$count notes supprimées')}"
+  selectNotes: Sélectionner des notes
+  selected(int count): "${_plural(count, one: '1 sélectionnée', many: '$count sélectionnées')}"
   viewTrash: "Voir la corbeille"
   exitTrash: "Quitter la corbeille"
   trashTitle: Corbeille
@@ -880,6 +883,8 @@ photoBoard:
   deleteConfirm: Supprimer cette photo ?
   deleteSelectedConfirm(int count): "Supprimer ${_plural(count, one: 'cette photo', many: '$count photos')} ?"
   photoRemoved(int count): "${_plural(count, one: 'Photo supprimée', many: '$count photos supprimées')}"
+  selectPhotos: Sélectionner des photos
+  selected(int count): "${_plural(count, one: '1 sélectionnée', many: '$count sélectionnées')}"
   viewTrash: "Voir la corbeille"
   exitTrash: "Quitter la corbeille"
   trashTitle: Corbeille

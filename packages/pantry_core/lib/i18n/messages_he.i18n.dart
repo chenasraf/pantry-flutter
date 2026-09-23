@@ -181,6 +181,11 @@ class CommonMessagesHe extends CommonMessages {
   String get more => """עוד""";
 
   /// ```dart
+  /// "מיון"
+  /// ```
+  String get sort => """מיון""";
+
+  /// ```dart
   /// "אין לך הרשאה לבצע פעולה זו"
   /// ```
   String get permissionDenied => """אין לך הרשאה לבצע פעולה זו""";
@@ -4362,6 +4367,17 @@ class NotesWallMessagesHe extends NotesWallMessages {
       """${_plural(count, one: 'הערה נמחקה', many: '$count הערות נמחקו')}""";
 
   /// ```dart
+  /// "בחירת הערות"
+  /// ```
+  String get selectNotes => """בחירת הערות""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'הערה אחת נבחרה', many: '$count נבחרו')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: 'הערה אחת נבחרה', many: '$count נבחרו')}""";
+
+  /// ```dart
   /// "הצג סל מיחזור"
   /// ```
   String get viewTrash => """הצג סל מיחזור""";
@@ -4595,6 +4611,17 @@ class PhotoBoardMessagesHe extends PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'תמונה נמחקה', many: '$count תמונות נמחקו')}""";
+
+  /// ```dart
+  /// "בחירת תמונות"
+  /// ```
+  String get selectPhotos => """בחירת תמונות""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'תמונה אחת נבחרה', many: '$count נבחרו')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: 'תמונה אחת נבחרה', many: '$count נבחרו')}""";
 
   /// ```dart
   /// "הצג סל מיחזור"
@@ -6716,6 +6743,7 @@ Map<String, String> get messagesHeMap => {
   """common.remove""": """הסר""",
   """common.clear""": """נקה""",
   """common.more""": """עוד""",
+  """common.sort""": """מיון""",
   """common.permissionDenied""": """אין לך הרשאה לבצע פעולה זו""",
   """common.noAccessTitle""": """אין גישה""",
   """common.noAccessBody""":
@@ -7504,6 +7532,7 @@ Map<String, String> get messagesHeMap => {
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",
   """notesWall.deleteFailed""": """מחיקת ההערה נכשלה.""",
   """notesWall.deleteConfirm""": """למחוק את ההערה?""",
+  """notesWall.selectNotes""": """בחירת הערות""",
   """notesWall.viewTrash""": """הצג סל מיחזור""",
   """notesWall.exitTrash""": """צא מסל המיחזור""",
   """notesWall.trashTitle""": """סל מיחזור""",
@@ -7545,6 +7574,7 @@ Map<String, String> get messagesHeMap => {
   """photoBoard.waitingForConnection""": """ממתין לחיבור""",
   """photoBoard.deleteFailed""": """מחיקת התמונה נכשלה.""",
   """photoBoard.deleteConfirm""": """למחוק את התמונה?""",
+  """photoBoard.selectPhotos""": """בחירת תמונות""",
   """photoBoard.viewTrash""": """הצג סל מיחזור""",
   """photoBoard.exitTrash""": """צא מסל המיחזור""",
   """photoBoard.trashTitle""": """סל מיחזור""",

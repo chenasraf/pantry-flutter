@@ -16,6 +16,7 @@ common:
   remove: "Entfernen"
   clear: Leeren
   more: Mehr
+  sort: Sortieren
   permissionDenied: "Dazu hast du keine Berechtigung"
   noAccessTitle: "Kein Zugriff"
   noAccessBody: "Du hast noch keinen Zugriff auf Inhalte in diesem Haushalt. Eine Administratorin oder ein Administrator kann dir in der Pantry-Web-App Berechtigungen erteilen."
@@ -833,6 +834,8 @@ notesWall:
   deleteConfirm: "Diese Notiz löschen?"
   deleteSelectedConfirm(int count): "${_plural(count, one: 'Diese Notiz', many: '$count Notizen')} löschen?"
   noteRemoved(int count): "${_plural(count, one: 'Notiz gelöscht', many: '$count Notizen gelöscht')}"
+  selectNotes: Notizen auswählen
+  selected(int count): "${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}"
   viewTrash: "Papierkorb anzeigen"
   exitTrash: "Papierkorb verlassen"
   trashTitle: Papierkorb
@@ -880,6 +883,8 @@ photoBoard:
   deleteConfirm: "Dieses Foto löschen?"
   deleteSelectedConfirm(int count): "${_plural(count, one: 'Dieses Foto', many: '$count Fotos')} löschen?"
   photoRemoved(int count): "${_plural(count, one: 'Foto gelöscht', many: '$count Fotos gelöscht')}"
+  selectPhotos: Fotos auswählen
+  selected(int count): "${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}"
   viewTrash: "Papierkorb anzeigen"
   exitTrash: "Papierkorb verlassen"
   trashTitle: Papierkorb

@@ -44,8 +44,8 @@ import 'package:pantry/widgets/create_store_dialog.dart';
 import 'checklist_switcher_sheet.dart';
 import 'checklists_controller.dart';
 import 'checklists_dev_dialogs.dart';
-import 'checklists_overflow_menu.dart';
-import 'checklists_view.dart' show ChecklistsAppBarSpec;
+import 'package:pantry/widgets/overflow_menu.dart';
+import 'package:pantry/views/home/home_app_bar_spec.dart';
 import 'item_compose_bar.dart';
 import 'markdown_export_dialog.dart';
 import 'markdown_import_dialog.dart';
@@ -73,7 +73,7 @@ class ChecklistsBodyController extends ChangeNotifier
 
   final ChecklistsController domain;
   final ScrollController? scrollController;
-  final ValueNotifier<ChecklistsAppBarSpec?>? appBarSpecHolder;
+  final ValueNotifier<HomeAppBarSpec?>? appBarSpecHolder;
 
   bool searchOpen = false;
   bool composeActive = false;

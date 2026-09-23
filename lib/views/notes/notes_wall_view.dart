@@ -8,9 +8,11 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
+import 'package:pantry_core/utils/note_sort.dart';
 import 'package:pantry/widgets/note_selection_actions.dart';
-import 'package:pantry/widgets/note_sort_button.dart';
 import 'package:pantry/widgets/note_tile.dart';
+import 'package:pantry/widgets/overflow_menu.dart';
+import 'package:pantry/views/home/home_app_bar_spec.dart';
 import 'package:pantry/views/home/home_floating_nav.dart';
 import 'package:provider/provider.dart';
 import 'note_detail_view.dart';
@@ -25,6 +27,9 @@ class NotesWallView extends StatefulWidget {
   /// status-bar-tap can scroll this tab to the top.
   final ScrollController? scrollController;
 
+  /// Slot the shared home AppBar reads from while the notes tab is active.
+  final ValueNotifier<HomeAppBarSpec?>? appBarSpecHolder;
+
   /// Slot for the action this tab contributes to the home floating nav's
   /// trailing button.
   final ValueNotifier<NavPrimaryAction?>? navActionHolder;
@@ -34,6 +39,7 @@ class NotesWallView extends StatefulWidget {
     required this.houseId,
     this.refreshHolder,
     this.scrollController,
+    this.appBarSpecHolder,
     this.navActionHolder,
   });
 
@@ -130,6 +136,7 @@ class _NotesWallViewState extends State<NotesWallView> {
       value: _controller,
       child: _NotesWallBody(
         scrollController: widget.scrollController,
+        appBarSpecHolder: widget.appBarSpecHolder,
         navActionHolder: widget.navActionHolder,
       ),
     );
@@ -138,9 +145,101 @@ class _NotesWallViewState extends State<NotesWallView> {
 
 class _NotesWallBody extends StatelessWidget {
   final ScrollController? scrollController;
+  final ValueNotifier<HomeAppBarSpec?>? appBarSpecHolder;
   final ValueNotifier<NavPrimaryAction?>? navActionHolder;
 
-  const _NotesWallBody({this.scrollController, this.navActionHolder});
+  const _NotesWallBody({
+    this.scrollController,
+    this.appBarSpecHolder,
+    this.navActionHolder,
+  });
+
+  /// Hand the shared home AppBar the wall's own actions. Deferred a frame so a
+  /// listenable isn't mutated mid-build.
+  void _publishAppBarSpec(BuildContext context, NotesController controller) {
+    final holder = appBarSpecHolder;
+    if (holder == null) return;
+    final spec = _appBarSpec(context, controller);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+      holder.value = spec;
+    });
+  }
+
+  HomeAppBarSpec _appBarSpec(BuildContext context, NotesController controller) {
+    // The trash banner carries everything the trash view offers.
+    if (controller.isTrashMode) return const HomeAppBarSpec();
+
+    if (controller.selectMode) {
+      return HomeAppBarSpec(
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          tooltip: m.common.cancel,
+          onPressed: controller.clearSelection,
+        ),
+        title: Text(m.notesWall.selected(controller.selected.length)),
+        actions: [NoteSelectionActions(controller: controller)],
+        hostRefresh: false,
+      );
+    }
+
+    return HomeAppBarSpec(
+      actions: [
+        OverflowButton(
+          entries: _overflowEntries(controller),
+          onSelected: (value) => _onOverflow(context, controller, value),
+        ),
+      ],
+    );
+  }
+
+  List<OverflowEntry> _overflowEntries(NotesController controller) {
+    return normalizeOverflow([
+      // Selection mode only enables bulk delete.
+      if (controller.permissions.canDeleteNotes)
+        OverflowAction(
+          value: 'select',
+          icon: Icons.checklist,
+          label: m.notesWall.selectNotes,
+        ),
+      const OverflowDivider(),
+      OverflowAction(
+        value: 'sort',
+        icon: Icons.sort,
+        label: '${m.common.sort}: ${noteSortLabel(controller.sortBy)}',
+      ),
+      if (hasFeature('note-trash') &&
+          controller.permissions.canDeleteNotes) ...[
+        const OverflowDivider(),
+        OverflowAction(
+          value: 'view_trash',
+          icon: Icons.delete_outline,
+          label: m.notesWall.viewTrash,
+        ),
+      ],
+    ]);
+  }
+
+  Future<void> _onOverflow(
+    BuildContext context,
+    NotesController controller,
+    String value,
+  ) async {
+    switch (value) {
+      case 'select':
+        controller.toggleSelectMode();
+      case 'sort':
+        final picked = await showOverflowSortDialog(
+          context,
+          title: m.common.sort,
+          options: noteSortOptions(),
+          selected: controller.sortBy,
+        );
+        if (picked != null) await controller.setSortBy(picked);
+      case 'view_trash':
+        await controller.setTrashMode(true);
+    }
+  }
 
   /// Hand the nav bar the wall's primary action. Deferred a frame so a
   /// listenable isn't mutated mid-build.
@@ -166,6 +265,7 @@ class _NotesWallBody extends StatelessWidget {
     final controller = context.watch<NotesController>();
     final prefs = context.watch<PrefsService>();
     _publishNavAction(context, controller);
+    _publishAppBarSpec(context, controller);
 
     if (controller.isLoading && controller.notes.isEmpty) {
       return const Center(child: CircularProgressIndicator());
@@ -206,40 +306,7 @@ class _NotesWallBody extends StatelessWidget {
           children: [
             Column(
               children: [
-                if (inTrash)
-                  _TrashBanner(controller: controller)
-                else
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(
-                      end: 4,
-                      top: 8,
-                      bottom: 8,
-                    ),
-                    child: Row(
-                      children: [
-                        const Spacer(),
-                        if (controller.selectMode)
-                          NoteSelectionActions(controller: controller)
-                        else ...[
-                          // Selection mode only enables bulk delete.
-                          if (controller.permissions.canDeleteNotes)
-                            IconButton(
-                              icon: const Icon(Icons.checklist),
-                              tooltip: '',
-                              onPressed: controller.toggleSelectMode,
-                            ),
-                          NoteSortButton(controller: controller),
-                          if (hasFeature('note-trash') &&
-                              controller.permissions.canDeleteNotes)
-                            IconButton(
-                              icon: const Icon(Icons.delete_outline),
-                              tooltip: m.notesWall.viewTrash,
-                              onPressed: () => controller.setTrashMode(true),
-                            ),
-                        ],
-                      ],
-                    ),
-                  ),
+                if (inTrash) _TrashBanner(controller: controller),
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: inTrash

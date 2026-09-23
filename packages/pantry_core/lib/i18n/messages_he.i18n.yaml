@@ -16,6 +16,7 @@ common:
   remove: הסר
   clear: נקה
   more: עוד
+  sort: מיון
   permissionDenied: אין לך הרשאה לבצע פעולה זו
   noAccessTitle: אין גישה
   noAccessBody: עדיין אין לך גישה לשום דבר במשק בית זה. מנהל יכול להעניק לך הרשאות באפליקציית הווב של Pantry.
@@ -833,6 +834,8 @@ notesWall:
   deleteConfirm: למחוק את ההערה?
   deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'הערה זו', many: '$count הערות')}?"
   noteRemoved(int count): "${_plural(count, one: 'הערה נמחקה', many: '$count הערות נמחקו')}"
+  selectNotes: בחירת הערות
+  selected(int count): "${_plural(count, one: 'הערה אחת נבחרה', many: '$count נבחרו')}"
   viewTrash: הצג סל מיחזור
   exitTrash: צא מסל המיחזור
   trashTitle: סל מיחזור
@@ -880,6 +883,8 @@ photoBoard:
   deleteConfirm: למחוק את התמונה?
   deleteSelectedConfirm(int count): "למחוק ${_plural(count, one: 'תמונה זו', many: '$count תמונות')}?"
   photoRemoved(int count): "${_plural(count, one: 'תמונה נמחקה', many: '$count תמונות נמחקו')}"
+  selectPhotos: בחירת תמונות
+  selected(int count): "${_plural(count, one: 'תמונה אחת נבחרה', many: '$count נבחרו')}"
   viewTrash: הצג סל מיחזור
   exitTrash: צא מסל המיחזור
   trashTitle: סל מיחזור

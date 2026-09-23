@@ -181,6 +181,11 @@ class CommonMessagesEs extends CommonMessages {
   String get more => """Más""";
 
   /// ```dart
+  /// "Ordenar"
+  /// ```
+  String get sort => """Ordenar""";
+
+  /// ```dart
   /// "No tienes permiso para hacer eso"
   /// ```
   String get permissionDenied => """No tienes permiso para hacer eso""";
@@ -4394,6 +4399,17 @@ class NotesWallMessagesEs extends NotesWallMessages {
       """${_plural(count, one: 'Nota eliminada', many: '$count notas eliminadas')}""";
 
   /// ```dart
+  /// "Seleccionar notas"
+  /// ```
+  String get selectNotes => """Seleccionar notas""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 seleccionada', many: '$count seleccionadas')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 seleccionada', many: '$count seleccionadas')}""";
+
+  /// ```dart
   /// "Ver papelera"
   /// ```
   String get viewTrash => """Ver papelera""";
@@ -4630,6 +4646,17 @@ class PhotoBoardMessagesEs extends PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'Foto eliminada', many: '$count fotos eliminadas')}""";
+
+  /// ```dart
+  /// "Seleccionar fotos"
+  /// ```
+  String get selectPhotos => """Seleccionar fotos""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 seleccionada', many: '$count seleccionadas')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 seleccionada', many: '$count seleccionadas')}""";
 
   /// ```dart
   /// "Ver papelera"
@@ -6777,6 +6804,7 @@ Map<String, String> get messagesEsMap => {
   """common.remove""": """Quitar""",
   """common.clear""": """Borrar""",
   """common.more""": """Más""",
+  """common.sort""": """Ordenar""",
   """common.permissionDenied""": """No tienes permiso para hacer eso""",
   """common.noAccessTitle""": """Sin acceso""",
   """common.noAccessBody""":
@@ -7610,6 +7638,7 @@ Contraseña: pantry-rocks""",
   """notesWall.saveFailed""": """No se pudo guardar la nota.""",
   """notesWall.deleteFailed""": """No se pudo eliminar la nota.""",
   """notesWall.deleteConfirm""": """¿Eliminar esta nota?""",
+  """notesWall.selectNotes""": """Seleccionar notas""",
   """notesWall.viewTrash""": """Ver papelera""",
   """notesWall.exitTrash""": """Salir de la papelera""",
   """notesWall.trashTitle""": """Papelera""",
@@ -7653,6 +7682,7 @@ Contraseña: pantry-rocks""",
   """photoBoard.waitingForConnection""": """Esperando una conexión""",
   """photoBoard.deleteFailed""": """No se pudo eliminar la foto.""",
   """photoBoard.deleteConfirm""": """¿Eliminar esta foto?""",
+  """photoBoard.selectPhotos""": """Seleccionar fotos""",
   """photoBoard.viewTrash""": """Ver papelera""",
   """photoBoard.exitTrash""": """Salir de la papelera""",
   """photoBoard.trashTitle""": """Papelera""",

@@ -8,15 +8,17 @@ import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/photo_sort.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/folder_tile.dart';
 import 'package:pantry/widgets/photo_add_actions.dart';
+import 'package:pantry/views/home/home_app_bar_spec.dart';
 import 'package:pantry/views/home/home_floating_nav.dart';
 import 'package:pantry/widgets/photo_selection_actions.dart';
-import 'package:pantry/widgets/photo_sort_button.dart';
 import 'package:pantry/widgets/photo_tile.dart';
+import 'package:pantry/widgets/overflow_menu.dart';
 import 'package:pantry/widgets/upload_tile.dart';
 import 'package:provider/provider.dart';
 import 'photo_board_controller.dart';
@@ -30,6 +32,9 @@ class PhotoBoardView extends StatefulWidget {
   /// status-bar-tap can scroll this tab to the top.
   final ScrollController? scrollController;
 
+  /// Slot the shared home AppBar reads from while the photos tab is active.
+  final ValueNotifier<HomeAppBarSpec?>? appBarSpecHolder;
+
   /// Slot for the action this tab contributes to the home floating nav's
   /// trailing button.
   final ValueNotifier<NavPrimaryAction?>? navActionHolder;
@@ -39,6 +44,7 @@ class PhotoBoardView extends StatefulWidget {
     required this.houseId,
     this.refreshHolder,
     this.scrollController,
+    this.appBarSpecHolder,
     this.navActionHolder,
   });
 
@@ -119,6 +125,7 @@ class _PhotoBoardViewState extends State<PhotoBoardView> {
       value: _controller,
       child: _PhotoBoardBody(
         scrollController: widget.scrollController,
+        appBarSpecHolder: widget.appBarSpecHolder,
         navActionHolder: widget.navActionHolder,
       ),
     );
@@ -127,14 +134,133 @@ class _PhotoBoardViewState extends State<PhotoBoardView> {
 
 class _PhotoBoardBody extends StatelessWidget {
   final ScrollController? scrollController;
+  final ValueNotifier<HomeAppBarSpec?>? appBarSpecHolder;
   final ValueNotifier<NavPrimaryAction?>? navActionHolder;
 
-  const _PhotoBoardBody({this.scrollController, this.navActionHolder});
+  const _PhotoBoardBody({
+    this.scrollController,
+    this.appBarSpecHolder,
+    this.navActionHolder,
+  });
+
+  /// Hand the shared home AppBar the folder the board is standing in and the
+  /// board's own actions. Deferred a frame so a listenable isn't mutated
+  /// mid-build.
+  void _publishAppBarSpec(
+    BuildContext context,
+    PhotoBoardController controller,
+  ) {
+    final holder = appBarSpecHolder;
+    if (holder == null) return;
+    final spec = _appBarSpec(context, controller);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+      holder.value = spec;
+    });
+  }
+
+  HomeAppBarSpec _appBarSpec(
+    BuildContext context,
+    PhotoBoardController controller,
+  ) {
+    // The trash banner carries everything the trash view offers.
+    if (controller.isTrashMode) return const HomeAppBarSpec();
+
+    if (controller.selectMode) {
+      return HomeAppBarSpec(
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          tooltip: m.common.cancel,
+          onPressed: controller.clearSelection,
+        ),
+        title: Text(m.photoBoard.selected(controller.selected.length)),
+        actions: [PhotoSelectionActions(controller: controller)],
+        hostRefresh: false,
+      );
+    }
+
+    final folder = controller.currentFolder;
+    return HomeAppBarSpec(
+      leading: folder == null
+          ? null
+          : IconButton(
+              icon: const Icon(Icons.arrow_back),
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              onPressed: controller.exitFolder,
+            ),
+      title: folder == null
+          ? null
+          : Text(folder.name, overflow: TextOverflow.ellipsis),
+      actions: [
+        OverflowButton(
+          entries: _overflowEntries(controller),
+          onSelected: (value) => _onOverflow(context, controller, value),
+        ),
+      ],
+    );
+  }
+
+  List<OverflowEntry> _overflowEntries(PhotoBoardController controller) {
+    final perms = controller.permissions;
+    return normalizeOverflow([
+      // Selection mode only enables bulk move/delete — hide it when the user
+      // can do neither.
+      if (perms.canMovePhotos || perms.canDeletePhotos)
+        OverflowAction(
+          value: 'select',
+          icon: Icons.checklist,
+          label: m.photoBoard.selectPhotos,
+        ),
+      const OverflowDivider(),
+      OverflowAction(
+        value: 'sort',
+        icon: Icons.sort,
+        label: '${m.common.sort}: ${photoSortLabel(controller.sortBy)}',
+      ),
+      OverflowCheckboxAction(
+        value: 'folders_first',
+        label: m.photoBoard.sort.foldersFirst,
+        checked: controller.foldersFirst,
+      ),
+      if (hasFeature('photo-trash') && perms.canDeletePhotos) ...[
+        const OverflowDivider(),
+        OverflowAction(
+          value: 'view_trash',
+          icon: Icons.delete_outline,
+          label: m.photoBoard.viewTrash,
+        ),
+      ],
+    ]);
+  }
+
+  Future<void> _onOverflow(
+    BuildContext context,
+    PhotoBoardController controller,
+    String value,
+  ) async {
+    switch (value) {
+      case 'select':
+        controller.toggleSelectMode();
+      case 'sort':
+        final picked = await showOverflowSortDialog(
+          context,
+          title: m.common.sort,
+          options: photoSortOptions(),
+          selected: controller.sortBy,
+        );
+        if (picked != null) await controller.setSortBy(picked);
+      case 'folders_first':
+        await controller.setFoldersFirst(!controller.foldersFirst);
+      case 'view_trash':
+        await controller.setTrashMode(true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<PhotoBoardController>();
     final prefs = context.watch<PrefsService>();
+    _publishAppBarSpec(context, controller);
 
     // A board that couldn't be fetched still has to show what the user just
     // added: offline is exactly when the fetch fails and exactly when an upload
@@ -188,10 +314,7 @@ class _PhotoBoardBody extends StatelessWidget {
           children: [
             Column(
               children: [
-                if (inTrash)
-                  _TrashBanner(controller: controller)
-                else
-                  _TopBar(controller: controller),
+                if (inTrash) _TrashBanner(controller: controller),
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: inTrash
@@ -217,64 +340,6 @@ class _PhotoBoardBody extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _TopBar extends StatelessWidget {
-  final PhotoBoardController controller;
-
-  const _TopBar({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(
-        start: 16,
-        top: 8,
-        bottom: 8,
-        end: 4,
-      ),
-      child: Row(
-        children: [
-          if (controller.currentFolderId != null) ...[
-            IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: controller.exitFolder,
-            ),
-            const SizedBox(width: 4),
-            Expanded(
-              child: Text(
-                controller.currentFolder?.name ?? '',
-                style: Theme.of(context).textTheme.titleMedium,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ] else
-            const Spacer(),
-          if (controller.selectMode)
-            PhotoSelectionActions(controller: controller)
-          else ...[
-            // Selection mode only enables bulk move/delete — hide it when the
-            // user can do neither.
-            if (controller.permissions.canMovePhotos ||
-                controller.permissions.canDeletePhotos)
-              IconButton(
-                icon: const Icon(Icons.checklist),
-                tooltip: '',
-                onPressed: controller.toggleSelectMode,
-              ),
-            PhotoSortButton(controller: controller),
-            if (hasFeature('photo-trash') &&
-                controller.permissions.canDeletePhotos)
-              IconButton(
-                icon: const Icon(Icons.delete_outline),
-                tooltip: m.photoBoard.viewTrash,
-                onPressed: () => controller.setTrashMode(true),
-              ),
-          ],
-        ],
       ),
     );
   }

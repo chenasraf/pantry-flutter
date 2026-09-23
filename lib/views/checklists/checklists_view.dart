@@ -15,6 +15,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
+import 'package:pantry/views/home/home_app_bar_spec.dart';
 import 'package:pantry/views/home/home_floating_nav.dart';
 import 'checklist_item_list.dart';
 import 'checklist_item_tile.dart';
@@ -27,29 +28,6 @@ import 'checklists_selection_bar.dart';
 import 'item_compose_bar.dart';
 import 'progress_hero.dart';
 
-/// What ChecklistsView wants the shared home AppBar to show while the
-/// checklists tab is active. Home owns the actual `AppBar` widget so the
-/// Scaffold's AppBar stays the same instance across tab switches; we just
-/// hand it the leading / title / actions to display.
-class ChecklistsAppBarSpec {
-  final Widget? leading;
-  final double? leadingWidth;
-  final Widget? title;
-  final double? titleSpacing;
-
-  /// Checklist-specific actions (search toggle + overflow). Home appends its
-  /// own home-level actions (notifications, user menu) after these.
-  final List<Widget> actions;
-
-  const ChecklistsAppBarSpec({
-    this.leading,
-    this.leadingWidth,
-    this.title,
-    this.titleSpacing,
-    this.actions = const [],
-  });
-}
-
 class ChecklistsView extends StatefulWidget {
   final int houseId;
   final ValueNotifier<Future<void> Function()?>? refreshHolder;
@@ -58,7 +36,7 @@ class ChecklistsView extends StatefulWidget {
   /// active. ChecklistsView writes a fresh spec whenever any state that
   /// affects the AppBar changes (list switched, search toggled, sort changed,
   /// etc.).
-  final ValueNotifier<ChecklistsAppBarSpec?>? appBarSpecHolder;
+  final ValueNotifier<HomeAppBarSpec?>? appBarSpecHolder;
 
   /// Vertical scroll controller for the items list. Owned by the host so iOS
   /// status-bar-tap can scroll this tab to the top via the host's
@@ -202,7 +180,7 @@ class _ChecklistsViewState extends State<ChecklistsView>
 }
 
 class _Body extends StatefulWidget {
-  final ValueNotifier<ChecklistsAppBarSpec?>? appBarSpecHolder;
+  final ValueNotifier<HomeAppBarSpec?>? appBarSpecHolder;
   final ScrollController? scrollController;
   final ValueNotifier<NavPrimaryAction?>? navActionHolder;
   final ValueNotifier<bool>? edgeClaimedHolder;

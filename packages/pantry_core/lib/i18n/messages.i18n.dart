@@ -180,6 +180,11 @@ class CommonMessages {
   String get more => """More""";
 
   /// ```dart
+  /// "Sort"
+  /// ```
+  String get sort => """Sort""";
+
+  /// ```dart
   /// "You don't have permission to do that"
   /// ```
   String get permissionDenied => """You don't have permission to do that""";
@@ -4352,6 +4357,17 @@ class NotesWallMessages {
       """${_plural(count, one: 'Note deleted', many: '$count notes deleted')}""";
 
   /// ```dart
+  /// "Select notes"
+  /// ```
+  String get selectNotes => """Select notes""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 selected', many: '$count selected')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 selected', many: '$count selected')}""";
+
+  /// ```dart
   /// "View trash"
   /// ```
   String get viewTrash => """View trash""";
@@ -4586,6 +4602,17 @@ class PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'Photo deleted', many: '$count photos deleted')}""";
+
+  /// ```dart
+  /// "Select photos"
+  /// ```
+  String get selectPhotos => """Select photos""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 selected', many: '$count selected')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 selected', many: '$count selected')}""";
 
   /// ```dart
   /// "View trash"
@@ -6720,6 +6747,7 @@ Map<String, String> get messagesMap => {
   """common.remove""": """Remove""",
   """common.clear""": """Clear""",
   """common.more""": """More""",
+  """common.sort""": """Sort""",
   """common.permissionDenied""": """You don't have permission to do that""",
   """common.noAccessTitle""": """No access""",
   """common.noAccessBody""":
@@ -7519,6 +7547,7 @@ Password: pantry-rocks""",
   """notesWall.saveFailed""": """Failed to save note.""",
   """notesWall.deleteFailed""": """Failed to delete note.""",
   """notesWall.deleteConfirm""": """Delete this note?""",
+  """notesWall.selectNotes""": """Select notes""",
   """notesWall.viewTrash""": """View trash""",
   """notesWall.exitTrash""": """Exit trash""",
   """notesWall.trashTitle""": """Trash""",
@@ -7560,6 +7589,7 @@ Password: pantry-rocks""",
   """photoBoard.waitingForConnection""": """Waiting for a connection""",
   """photoBoard.deleteFailed""": """Failed to delete photo.""",
   """photoBoard.deleteConfirm""": """Delete this photo?""",
+  """photoBoard.selectPhotos""": """Select photos""",
   """photoBoard.viewTrash""": """View trash""",
   """photoBoard.exitTrash""": """Exit trash""",
   """photoBoard.trashTitle""": """Trash""",

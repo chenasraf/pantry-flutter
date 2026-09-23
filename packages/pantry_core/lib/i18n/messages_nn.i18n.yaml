@@ -17,6 +17,7 @@ common:
   remove: Fjern
   clear: Tøm
   more: Meir
+  sort: Sorter
   permissionDenied: Du har ikkje tilgang til å gjere det
   noAccessTitle: Ingen tilgang
   noAccessBody:
@@ -970,6 +971,8 @@ notesWall:
     many: '$count notat')}?"
   noteRemoved(int count): "${_plural(count, one: 'Notat sletta', many: '$count
     notat sletta')}"
+  selectNotes: Vel notat
+  selected(int count): "${_plural(count, one: '1 vald', many: '$count vald')}"
   viewTrash: Vis papirkorga
   exitTrash: Gå ut av papirkorga
   trashTitle: Papirkorg
@@ -1020,6 +1023,8 @@ photoBoard:
     many: '$count bilete')}?"
   photoRemoved(int count): "${_plural(count, one: 'Bilete sletta', many: '$count
     bilete sletta')}"
+  selectPhotos: Vel bilete
+  selected(int count): "${_plural(count, one: '1 vald', many: '$count vald')}"
   viewTrash: Vis papirkorga
   exitTrash: Gå ut av papirkorga
   trashTitle: Papirkorg

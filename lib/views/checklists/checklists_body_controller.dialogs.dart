@@ -247,89 +247,10 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
     }
   }
 
-  /// The AppBar overflow lives in a bottom sheet rather than a popup menu: it
-  /// carries enough entries (view toggles, per-list actions, shopping, dev
-  /// tools) that a sheet reads and scrolls better than a tall anchored menu.
   Future<void> showOverflowSheet(BuildContext context) async {
     final entries = overflowItems();
     if (entries.isEmpty) return;
-    final selected = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        final cs = Theme.of(sheetContext).colorScheme;
-        final media = MediaQuery.of(sheetContext);
-        // Open sized to the content instead of the default ~half-height cap.
-        // Estimate the natural height so a short menu stays short and a long
-        // one grows (up to most of the screen) before it needs to scroll.
-        const rowHeight = 56.0;
-        const handleHeight = 30.0;
-        final contentHeight =
-            handleHeight +
-            media.padding.bottom +
-            entries.fold<double>(
-              0,
-              (h, e) => h + (e is ChecklistsOverflowDivider ? 1.0 : rowHeight),
-            );
-        final available = media.size.height - media.padding.top;
-        final fraction = (contentHeight / available).clamp(0.25, 0.9);
-        // DraggableScrollableSheet ties the inner scroll to the sheet's own
-        // drag: at the top of the list, a downward swipe drags the whole
-        // sheet down (and dismisses it) rather than just overscrolling.
-        return DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: fraction,
-          maxChildSize: fraction,
-          minChildSize: (fraction - 0.2).clamp(0.15, fraction),
-          builder: (context, scrollController) => SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 38,
-                  height: 5,
-                  margin: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: BoxDecoration(
-                    color: cs.outlineVariant,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-                for (final entry in entries)
-                  switch (entry) {
-                    ChecklistsOverflowDivider() => const Divider(height: 1),
-                    ChecklistsOverflowAction(
-                      :final value,
-                      :final icon,
-                      :final label,
-                    ) =>
-                      ListTile(
-                        leading: Icon(icon),
-                        title: Text(label),
-                        onTap: () => Navigator.of(sheetContext).pop(value),
-                      ),
-                    ChecklistsOverflowCheckboxAction(
-                      :final value,
-                      :final label,
-                      :final checked,
-                    ) =>
-                      ListTile(
-                        leading: Icon(
-                          checked
-                              ? Icons.check_box
-                              : Icons.check_box_outline_blank,
-                        ),
-                        title: Text(label),
-                        onTap: () => Navigator.of(sheetContext).pop(value),
-                      ),
-                  },
-                SizedBox(height: media.padding.bottom),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    final selected = await showOverflowMenuSheet(context, entries);
     if (selected != null && context.mounted) {
       await onOverflow(context, selected);
     }
@@ -414,25 +335,11 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
   /// long to inline all of them, so it shows a single "Sort: current" row
   /// that opens this dialog. Applies the choice immediately on selection.
   Future<void> showSortDialog(BuildContext context) async {
-    final effective = domain.effectiveSortBy;
-    final picked = await showDialog<String>(
-      context: context,
-      builder: (ctx) => SimpleDialog(
-        title: Text(m.checklists.sortTooltip),
-        children: [
-          for (final o in checklistSortOptions(showCustom: !domain.isMetaMode))
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(ctx, o.key),
-              child: Row(
-                children: [
-                  ChecklistsRadioIndicator(selected: effective == o.key),
-                  const SizedBox(width: 14),
-                  Expanded(child: Text(o.label)),
-                ],
-              ),
-            ),
-        ],
-      ),
+    final picked = await showOverflowSortDialog(
+      context,
+      title: m.checklists.sortTooltip,
+      options: checklistSortOptions(showCustom: !domain.isMetaMode),
+      selected: domain.effectiveSortBy,
     );
     if (picked != null) {
       await domain.setSortBy(picked);

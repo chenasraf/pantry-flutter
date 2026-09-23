@@ -16,18 +16,12 @@ class NoteSelectionActions extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('$count', style: Theme.of(context).textTheme.titleSmall),
         if (controller.permissions.canDeleteNotes)
           IconButton(
             icon: const Icon(Icons.delete_outlined),
             tooltip: '',
             onPressed: count > 0 ? () => _confirmDelete(context) : null,
           ),
-        IconButton(
-          icon: const Icon(Icons.close),
-          tooltip: '',
-          onPressed: controller.clearSelection,
-        ),
       ],
     );
   }

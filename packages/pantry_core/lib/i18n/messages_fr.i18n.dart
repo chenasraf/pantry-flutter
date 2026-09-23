@@ -181,6 +181,11 @@ class CommonMessagesFr extends CommonMessages {
   String get more => """Plus""";
 
   /// ```dart
+  /// "Trier"
+  /// ```
+  String get sort => """Trier""";
+
+  /// ```dart
   /// "Vous n'avez pas la permission de faire cela"
   /// ```
   String get permissionDenied =>
@@ -4398,6 +4403,17 @@ class NotesWallMessagesFr extends NotesWallMessages {
       """${_plural(count, one: 'Note supprimée', many: '$count notes supprimées')}""";
 
   /// ```dart
+  /// "Sélectionner des notes"
+  /// ```
+  String get selectNotes => """Sélectionner des notes""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 sélectionnée', many: '$count sélectionnées')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 sélectionnée', many: '$count sélectionnées')}""";
+
+  /// ```dart
   /// "Voir la corbeille"
   /// ```
   String get viewTrash => """Voir la corbeille""";
@@ -4634,6 +4650,17 @@ class PhotoBoardMessagesFr extends PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'Photo supprimée', many: '$count photos supprimées')}""";
+
+  /// ```dart
+  /// "Sélectionner des photos"
+  /// ```
+  String get selectPhotos => """Sélectionner des photos""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 sélectionnée', many: '$count sélectionnées')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 sélectionnée', many: '$count sélectionnées')}""";
 
   /// ```dart
   /// "Voir la corbeille"
@@ -6784,6 +6811,7 @@ Map<String, String> get messagesFrMap => {
   """common.remove""": """Retirer""",
   """common.clear""": """Effacer""",
   """common.more""": """Plus""",
+  """common.sort""": """Trier""",
   """common.permissionDenied""":
       """Vous n'avez pas la permission de faire cela""",
   """common.noAccessTitle""": """Aucun accès""",
@@ -7630,6 +7658,7 @@ Mot de passe : pantry-rocks""",
   """notesWall.saveFailed""": """Impossible d'enregistrer la note.""",
   """notesWall.deleteFailed""": """Impossible de supprimer la note.""",
   """notesWall.deleteConfirm""": """Supprimer cette note ?""",
+  """notesWall.selectNotes""": """Sélectionner des notes""",
   """notesWall.viewTrash""": """Voir la corbeille""",
   """notesWall.exitTrash""": """Quitter la corbeille""",
   """notesWall.trashTitle""": """Corbeille""",
@@ -7675,6 +7704,7 @@ Mot de passe : pantry-rocks""",
   """photoBoard.waitingForConnection""": """En attente d'une connexion""",
   """photoBoard.deleteFailed""": """Impossible de supprimer la photo.""",
   """photoBoard.deleteConfirm""": """Supprimer cette photo ?""",
+  """photoBoard.selectPhotos""": """Sélectionner des photos""",
   """photoBoard.viewTrash""": """Voir la corbeille""",
   """photoBoard.exitTrash""": """Quitter la corbeille""",
   """photoBoard.trashTitle""": """Corbeille""",

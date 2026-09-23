@@ -17,7 +17,6 @@ class PhotoSelectionActions extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('$count', style: Theme.of(context).textTheme.titleSmall),
         if (perms.canMovePhotos)
           IconButton(
             icon: const Icon(Icons.drive_file_move_outlined),
@@ -30,11 +29,6 @@ class PhotoSelectionActions extends StatelessWidget {
             tooltip: '',
             onPressed: count > 0 ? () => _confirmDelete(context) : null,
           ),
-        IconButton(
-          icon: const Icon(Icons.close),
-          tooltip: '',
-          onPressed: controller.clearSelection,
-        ),
       ],
     );
   }

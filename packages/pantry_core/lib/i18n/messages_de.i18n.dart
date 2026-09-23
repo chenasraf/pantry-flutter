@@ -181,6 +181,11 @@ class CommonMessagesDe extends CommonMessages {
   String get more => """Mehr""";
 
   /// ```dart
+  /// "Sortieren"
+  /// ```
+  String get sort => """Sortieren""";
+
+  /// ```dart
   /// "Dazu hast du keine Berechtigung"
   /// ```
   String get permissionDenied => """Dazu hast du keine Berechtigung""";
@@ -4404,6 +4409,17 @@ class NotesWallMessagesDe extends NotesWallMessages {
       """${_plural(count, one: 'Notiz gelöscht', many: '$count Notizen gelöscht')}""";
 
   /// ```dart
+  /// "Notizen auswählen"
+  /// ```
+  String get selectNotes => """Notizen auswählen""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}""";
+
+  /// ```dart
   /// "Papierkorb anzeigen"
   /// ```
   String get viewTrash => """Papierkorb anzeigen""";
@@ -4640,6 +4656,17 @@ class PhotoBoardMessagesDe extends PhotoBoardMessages {
   /// ```
   String photoRemoved(int count) =>
       """${_plural(count, one: 'Foto gelöscht', many: '$count Fotos gelöscht')}""";
+
+  /// ```dart
+  /// "Fotos auswählen"
+  /// ```
+  String get selectPhotos => """Fotos auswählen""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}"
+  /// ```
+  String selected(int count) =>
+      """${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}""";
 
   /// ```dart
   /// "Papierkorb anzeigen"
@@ -6792,6 +6819,7 @@ Map<String, String> get messagesDeMap => {
   """common.remove""": """Entfernen""",
   """common.clear""": """Leeren""",
   """common.more""": """Mehr""",
+  """common.sort""": """Sortieren""",
   """common.permissionDenied""": """Dazu hast du keine Berechtigung""",
   """common.noAccessTitle""": """Kein Zugriff""",
   """common.noAccessBody""":
@@ -7638,6 +7666,7 @@ Passwort: pantry-rocks""",
   """notesWall.saveFailed""": """Notiz konnte nicht gespeichert werden.""",
   """notesWall.deleteFailed""": """Notiz konnte nicht gelöscht werden.""",
   """notesWall.deleteConfirm""": """Diese Notiz löschen?""",
+  """notesWall.selectNotes""": """Notizen auswählen""",
   """notesWall.viewTrash""": """Papierkorb anzeigen""",
   """notesWall.exitTrash""": """Papierkorb verlassen""",
   """notesWall.trashTitle""": """Papierkorb""",
@@ -7684,6 +7713,7 @@ Passwort: pantry-rocks""",
   """photoBoard.waitingForConnection""": """Warten auf eine Verbindung""",
   """photoBoard.deleteFailed""": """Foto konnte nicht gelöscht werden.""",
   """photoBoard.deleteConfirm""": """Dieses Foto löschen?""",
+  """photoBoard.selectPhotos""": """Fotos auswählen""",
   """photoBoard.viewTrash""": """Papierkorb anzeigen""",
   """photoBoard.exitTrash""": """Papierkorb verlassen""",
   """photoBoard.trashTitle""": """Papierkorb""",

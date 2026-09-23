@@ -17,6 +17,7 @@ import 'package:pantry/services/share_intent_service.dart';
 import 'package:pantry/services/widget_link_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
+import 'package:pantry/views/home/home_app_bar_spec.dart';
 import 'package:pantry/views/notes/notes_wall_view.dart';
 import 'package:pantry/views/notifications/notifications_controller.dart';
 import 'package:pantry/views/notifications/notifications_view.dart';
@@ -92,11 +93,12 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   final Map<NavSection, ScrollController> _tabScrollers = {
     for (final s in NavSection.values) s: ScrollController(),
   };
-  // Single shared AppBar; ChecklistsView writes its leading/title/actions into
-  // this slot so the AppBar stays the same widget instance across tab swipes
-  // and only its content swaps.
-  final ValueNotifier<ChecklistsAppBarSpec?> _checklistsAppBarSpec =
-      ValueNotifier(null);
+  // Single shared AppBar; each section writes its leading/title/actions into
+  // its own slot so the AppBar stays the same widget instance across tab
+  // swipes and only its content swaps.
+  final Map<NavSection, ValueNotifier<HomeAppBarSpec?>> _tabAppBarSpecs = {
+    for (final s in NavSection.values) s: ValueNotifier(null),
+  };
   // What each section offers the floating nav's trailing button, and whether it
   // has taken the bottom edge for itself (a focused compose bar, a selection
   // action bar) — in which case the nav gets out of the way.
@@ -176,7 +178,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
       n.dispose();
     }
     _navJump.dispose();
-    _checklistsAppBarSpec.dispose();
+    for (final n in _tabAppBarSpecs.values) {
+      n.dispose();
+    }
     super.dispose();
   }
 
@@ -581,33 +585,24 @@ class _HomeViewBodyState extends State<_HomeViewBody>
           final tabIndex = _tabIndex.clamp(0, order.length - 1);
           final body = _buildBody(controller, useRail: useRail, order: order);
 
-          // On the checklists tab, ChecklistsView populates
-          // `_checklistsAppBarSpec` with its leading / title / actions.
+          // The active section populates its slot with the leading / title /
+          // actions it wants the shared AppBar to carry.
           final currentSection = order[tabIndex];
           final isChecklistsTab = currentSection == NavSection.checklists;
 
           final appBar = PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: ValueListenableBuilder<ChecklistsAppBarSpec?>(
-              valueListenable: _checklistsAppBarSpec,
+            child: ValueListenableBuilder<HomeAppBarSpec?>(
+              valueListenable: _tabAppBarSpecs[currentSection]!,
               builder: (context, spec, _) {
-                if (isChecklistsTab && spec != null) {
-                  return AppBar(
-                    leading: spec.leading,
-                    leadingWidth: spec.leadingWidth,
-                    title: spec.title,
-                    titleSpacing: spec.titleSpacing,
-                    actions: [
-                      ...spec.actions,
-                      notificationsBell,
-                      userMenuButton,
-                    ],
-                  );
-                }
                 return AppBar(
-                  title: Text(_sectionTitle(currentSection)),
+                  leading: spec?.leading,
+                  leadingWidth: spec?.leadingWidth,
+                  title: spec?.title ?? Text(_sectionTitle(currentSection)),
+                  titleSpacing: spec?.titleSpacing,
                   actions: [
-                    if (PlatformInfo.isDesktop)
+                    ...?spec?.actions,
+                    if (PlatformInfo.isDesktop && (spec?.hostRefresh ?? true))
                       ValueListenableBuilder<Future<void> Function()?>(
                         valueListenable: _tabRefreshers[currentSection]!,
                         builder: (_, refresh, _) => IconButton(
@@ -732,7 +727,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         key: ValueKey('checklists-$houseId'),
         houseId: houseId,
         refreshHolder: _tabRefreshers[NavSection.checklists]!,
-        appBarSpecHolder: _checklistsAppBarSpec,
+        appBarSpecHolder: _tabAppBarSpecs[NavSection.checklists]!,
         scrollController: _tabScrollers[NavSection.checklists]!,
         navActionHolder: _tabActions[NavSection.checklists]!,
         edgeClaimedHolder: _tabEdgeClaimed[NavSection.checklists]!,
@@ -741,6 +736,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         key: ValueKey('photos-$houseId'),
         houseId: houseId,
         refreshHolder: _tabRefreshers[NavSection.photoBoard]!,
+        appBarSpecHolder: _tabAppBarSpecs[NavSection.photoBoard]!,
         scrollController: _tabScrollers[NavSection.photoBoard]!,
         navActionHolder: _tabActions[NavSection.photoBoard]!,
       ),
@@ -748,6 +744,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         key: ValueKey('notes-$houseId'),
         houseId: houseId,
         refreshHolder: _tabRefreshers[NavSection.notesWall]!,
+        appBarSpecHolder: _tabAppBarSpecs[NavSection.notesWall]!,
         scrollController: _tabScrollers[NavSection.notesWall]!,
         navActionHolder: _tabActions[NavSection.notesWall]!,
       ),

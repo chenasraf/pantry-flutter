@@ -16,6 +16,7 @@ common:
   remove: Quitar
   clear: Borrar
   more: Más
+  sort: Ordenar
   permissionDenied: No tienes permiso para hacer eso
   noAccessTitle: Sin acceso
   noAccessBody: Todavía no tienes acceso a nada en este hogar. Un administrador puede concederte permisos en la aplicación web de Pantry.
@@ -833,6 +834,8 @@ notesWall:
   deleteConfirm: "¿Eliminar esta nota?"
   deleteSelectedConfirm(int count): "¿Eliminar ${_plural(count, one: 'esta nota', many: '$count notas')}?"
   noteRemoved(int count): "${_plural(count, one: 'Nota eliminada', many: '$count notas eliminadas')}"
+  selectNotes: Seleccionar notas
+  selected(int count): "${_plural(count, one: '1 seleccionada', many: '$count seleccionadas')}"
   viewTrash: "Ver papelera"
   exitTrash: "Salir de la papelera"
   trashTitle: Papelera
@@ -880,6 +883,8 @@ photoBoard:
   deleteConfirm: "¿Eliminar esta foto?"
   deleteSelectedConfirm(int count): "¿Eliminar ${_plural(count, one: 'esta foto', many: '$count fotos')}?"
   photoRemoved(int count): "${_plural(count, one: 'Foto eliminada', many: '$count fotos eliminadas')}"
+  selectPhotos: Seleccionar fotos
+  selected(int count): "${_plural(count, one: '1 seleccionada', many: '$count seleccionadas')}"
   viewTrash: "Ver papelera"
   exitTrash: "Salir de la papelera"
   trashTitle: Papelera

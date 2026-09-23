@@ -1,16 +1,14 @@
 part of 'checklists_body_controller.dart';
 
 extension ChecklistsBodyMenus on ChecklistsBodyController {
-  ChecklistsAppBarSpec buildAppBarSpec(
-    BuildContext context,
-    ChecklistList? list,
-  ) {
+  HomeAppBarSpec buildAppBarSpec(BuildContext context, ChecklistList? list) {
     final cs = Theme.of(context).colorScheme;
 
     // While selecting, the shared AppBar becomes a contextual bar: close to
     // exit, and a live count. The group actions live in the bottom bar.
     if (domain.selectionMode) {
-      return ChecklistsAppBarSpec(
+      return HomeAppBarSpec(
+        hostRefresh: false,
         titleSpacing: 4,
         leadingWidth: 56,
         leading: IconButton(
@@ -38,7 +36,9 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         : (parseHexColor(list?.color) ?? cs.primary);
     final iconData = isMeta ? allListsIcon : checklistIcon(list?.icon);
 
-    return ChecklistsAppBarSpec(
+    return HomeAppBarSpec(
+      // Refresh sits among the checklist's own desktop actions below.
+      hostRefresh: false,
       // titleSpacing is the gap between the leading slot and the title — set
       // to 11 to match the prior in-content header (SizedBox(width: 11)
       // between the cart tile and the list name).
@@ -193,35 +193,6 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
     );
   }
 
-  /// Renders the shared overflow [entries] as anchored popup-menu rows for the
-  /// desktop toolbar. The bottom-sheet variant renders the same entries as
-  /// [ListTile]s in [showOverflowSheet].
-  List<PopupMenuEntry<String>> overflowMenuItems(
-    List<ChecklistsOverflowEntry> entries,
-  ) {
-    return [
-      for (final entry in entries)
-        switch (entry) {
-          ChecklistsOverflowDivider() => const PopupMenuDivider(),
-          ChecklistsOverflowAction(:final value, :final icon, :final label) =>
-            menuRow(value: value, leading: Icon(icon, size: 20), label: label),
-          ChecklistsOverflowCheckboxAction(
-            :final value,
-            :final label,
-            :final checked,
-          ) =>
-            menuRow(
-              value: value,
-              leading: Icon(
-                checked ? Icons.check_box : Icons.check_box_outline_blank,
-                size: 20,
-              ),
-              label: label,
-            ),
-        },
-    ];
-  }
-
   /// Sort radio rows lifted out of `overflowItems` so the desktop toolbar's
   /// Sort menu can show only the sort choices, not the rest of the overflow.
   ///
@@ -232,7 +203,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
     final effective = domain.effectiveSortBy;
     return [
       for (final o in checklistSortOptions(showCustom: !domain.isMetaMode))
-        radioRow(
+        overflowRadioRow(
           value: 'sort_${o.key}',
           label: o.label,
           selected: effective == o.key,
@@ -240,11 +211,11 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
     ];
   }
 
-  List<ChecklistsOverflowEntry> overflowItems() {
+  List<OverflowEntry> overflowItems() {
     final prefs = PrefsService.instance;
     if (domain.isTrashMode) {
       return normalizeOverflow([
-        ChecklistsOverflowAction(
+        OverflowAction(
           value: 'exit_trash',
           icon: Icons.arrow_back,
           label: m.checklists.exitTrash,
@@ -252,12 +223,12 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         // Bulk restore / permanent-delete need a selection; surface the entry
         // point here so it's reachable without a long-press (desktop).
         if (domain.canSelectItems && domain.items.isNotEmpty)
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'select_items',
             icon: Icons.checklist,
             label: m.checklists.selectItems,
           ),
-        ChecklistsOverflowAction(
+        OverflowAction(
           value: 'empty_trash',
           icon: Icons.delete_forever,
           label: m.checklists.emptyTrash,
@@ -267,7 +238,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
     // Archive has no "empty" action — archived items are kept indefinitely.
     if (domain.isArchiveMode) {
       return normalizeOverflow([
-        ChecklistsOverflowAction(
+        OverflowAction(
           value: 'exit_archive',
           icon: Icons.arrow_back,
           label: m.checklists.exitArchive,
@@ -275,7 +246,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         // Bulk unarchive / permanent-delete need a selection; surface the
         // entry point here so it's reachable without a long-press (desktop).
         if (domain.canSelectItems && domain.items.isNotEmpty)
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'select_items',
             icon: Icons.checklist,
             label: m.checklists.selectItems,
@@ -291,23 +262,23 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
     final effective = domain.effectiveSortBy;
     return normalizeOverflow([
       if (domain.canSelectItems && domain.items.isNotEmpty) ...[
-        ChecklistsOverflowAction(
+        OverflowAction(
           value: 'select_items',
           icon: Icons.checklist,
           label: m.checklists.selectItems,
         ),
-        const ChecklistsOverflowDivider(),
+        const OverflowDivider(),
       ],
       if (!PlatformInfo.isDesktop) ...[
-        ChecklistsOverflowAction(
+        OverflowAction(
           value: 'sort',
           icon: Icons.sort,
           label:
               '${m.checklists.sortTooltip}: ${checklistSortLabel(effective)}',
         ),
-        const ChecklistsOverflowDivider(),
+        const OverflowDivider(),
         if (domain.currentList != null && !isMeta && PlatformInfo.isMobile)
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'copy_link',
             icon: Icons.link,
             label: m.checklists.copyLink,
@@ -315,20 +286,20 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         if (domain.currentList != null &&
             !isMeta &&
             PlatformInfo.isAndroidPhone)
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'add_to_home',
             icon: Icons.add_to_home_screen,
             label: m.checklists.addToHomeScreen,
           ),
       ],
       if (hasFeature('item-authors'))
-        ChecklistsOverflowCheckboxAction(
+        OverflowCheckboxAction(
           value: 'toggle_added_by',
           label: m.checklists.showAddedBy,
           checked: domain.showAddedBy,
         ),
       if (domain.currentList != null)
-        ChecklistsOverflowCheckboxAction(
+        OverflowCheckboxAction(
           value: 'toggle_progress_hero',
           label: m.checklists.showProgressHero,
           checked: !(domain.currentList!.hideProgressHero),
@@ -339,8 +310,8 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
       if (domain.currentList != null &&
           !isMeta &&
           domain.permissions.canEditLists) ...[
-        const ChecklistsOverflowDivider(),
-        ChecklistsOverflowAction(
+        const OverflowDivider(),
+        OverflowAction(
           value: 'reset_order',
           icon: Icons.sort_by_alpha,
           label: m.checklists.resetOrder.menuLabel,
@@ -349,24 +320,24 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
       // Markdown import/export are per-list only — not offered in the meta
       // "All lists" view, which has no single target.
       if (domain.currentList != null && !isMeta) ...[
-        const ChecklistsOverflowDivider(),
-        ChecklistsOverflowAction(
+        const OverflowDivider(),
+        OverflowAction(
           value: 'export_markdown',
           icon: Icons.file_download_outlined,
           label: m.checklists.markdown.exportTitle,
         ),
         if (domain.canAddItemsHere)
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'import_markdown',
             icon: Icons.file_upload_outlined,
             label: m.checklists.markdown.importTitle,
           ),
       ],
       if (hasFeature('shopping')) ...[
-        const ChecklistsOverflowDivider(),
+        const OverflowDivider(),
         // When the FAB is turned off, its action lives here, above history.
         if (!prefs.startShoppingFabEnabled)
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'start_shopping',
             icon: shoppingSession != null
                 ? Icons.play_arrow
@@ -375,34 +346,34 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
                 ? m.shopping.resumeShopping
                 : m.shopping.startShopping,
           ),
-        ChecklistsOverflowAction(
+        OverflowAction(
           value: 'shopping_history',
           icon: Icons.history,
           label: m.shopping.shoppingHistory,
         ),
-        const ChecklistsOverflowDivider(),
+        const OverflowDivider(),
       ],
       if (!PlatformInfo.isDesktop) ...[
         if (domain.permissions.canEditLists)
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'manage_categories',
             icon: EntityIcons.category,
             label: m.categories.manageTitle,
           ),
         if (domain.permissions.canEditLists && hasFeature('stores'))
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'manage_stores',
             icon: EntityIcons.store,
             label: m.stores.manageTitle,
           ),
         if (domain.permissions.canEditLists && hasFeature('labels'))
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'manage_labels',
             icon: EntityIcons.label,
             label: m.labels.manageTitle,
           ),
         if (domain.permissions.canEditFields && hasFeature('custom-fields'))
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'manage_custom_fields',
             icon: Icons.tune,
             label: m.customFields.manageTitle,
@@ -410,7 +381,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         // Mobile has reliable pull-to-refresh, so it doesn't need a menu row.
         // Web (the other non-desktop host here) doesn't, so keep it there.
         if (PlatformInfo.isWeb)
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'refresh',
             icon: Icons.refresh,
             label: m.common.refresh,
@@ -419,8 +390,8 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
             domain.isCurrentListWritable &&
             domain.permissions.canDeleteItems &&
             (supportsFeature('soft-delete') || hasFeature('item-trash'))) ...[
-          const ChecklistsOverflowDivider(),
-          ChecklistsOverflowAction(
+          const OverflowDivider(),
+          OverflowAction(
             value: 'view_trash',
             icon: Icons.delete_outline,
             label: m.checklists.viewTrash,
@@ -430,25 +401,25 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
             domain.isCurrentListWritable &&
             domain.permissions.canEditLists &&
             hasFeature('item-archive'))
-          ChecklistsOverflowAction(
+          OverflowAction(
             value: 'view_archive',
             icon: Icons.archive_outlined,
             label: m.checklists.viewArchive,
           ),
       ],
       if (kDebugMode) ...[
-        const ChecklistsOverflowDivider(),
-        ChecklistsOverflowAction(
+        const OverflowDivider(),
+        OverflowAction(
           value: 'dev_show_onboarding',
           icon: Icons.bug_report_outlined,
           label: m.onboarding.dev.showOnboarding,
         ),
-        ChecklistsOverflowCheckboxAction(
+        OverflowCheckboxAction(
           value: 'dev_force_all_features',
           label: m.onboarding.dev.forceAllFeatures,
           checked: prefs.devForceAllFeatures,
         ),
-        ChecklistsOverflowAction(
+        OverflowAction(
           value: 'dev_test_notification',
           icon: Icons.notifications_active_outlined,
           label: m.onboarding.dev.sendTestNotification,
@@ -456,54 +427,4 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
       ],
     ]);
   }
-
-  /// Collapses consecutive dividers and strips leading/trailing ones so the
-  /// sheet never shows a stray or doubled separator — e.g. the divider below
-  /// shopping history when nothing follows it.
-  List<ChecklistsOverflowEntry> normalizeOverflow(
-    List<ChecklistsOverflowEntry> entries,
-  ) {
-    final out = <ChecklistsOverflowEntry>[];
-    for (final entry in entries) {
-      if (entry is ChecklistsOverflowDivider &&
-          (out.isEmpty || out.last is ChecklistsOverflowDivider)) {
-        continue;
-      }
-      out.add(entry);
-    }
-    while (out.isNotEmpty && out.last is ChecklistsOverflowDivider) {
-      out.removeLast();
-    }
-    return out;
-  }
-
-  /// Single source of truth for menu-row layout — guarantees that text in
-  /// every row sits at the same x offset regardless of whether its leading
-  /// is an icon, a radio indicator, a checkbox indicator, or nothing.
-  PopupMenuItem<String> menuRow({
-    required String value,
-    required Widget leading,
-    required String label,
-  }) {
-    return PopupMenuItem<String>(
-      value: value,
-      child: Row(
-        children: [
-          SizedBox(width: 20, height: 20, child: Center(child: leading)),
-          const SizedBox(width: 14),
-          Expanded(child: Text(label)),
-        ],
-      ),
-    );
-  }
-
-  PopupMenuItem<String> radioRow({
-    required String value,
-    required String label,
-    required bool selected,
-  }) => menuRow(
-    value: value,
-    leading: ChecklistsRadioIndicator(selected: selected),
-    label: label,
-  );
 }
