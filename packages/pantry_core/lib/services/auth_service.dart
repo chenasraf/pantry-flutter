@@ -77,7 +77,12 @@ class AuthService {
 
   /// Called by [ApiClient] on every `401`. A revoked password answers every
   /// request this way, so nothing will clear the timer and the state stands.
+  ///
+  /// A rejection with no credential behind it describes nothing: signing out
+  /// revokes the password server-side, and whatever was already in flight
+  /// answers `401` once there is no longer a session to call expired.
   void reportUnauthorized() {
+    if (_credentials == null) return;
     if (isUnauthorized.value || _unauthorizedTimer != null) return;
     _unauthorizedTimer = Timer(_unauthorizedGrace, () {
       _unauthorizedTimer = null;

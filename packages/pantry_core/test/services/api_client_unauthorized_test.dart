@@ -135,6 +135,31 @@ void main() {
     expect(notifications, 1);
   });
 
+  testWidgets('a 401 answered after signing out is not an expired session', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const SizedBox());
+    // Signing out revokes the app password, so a request already on the wire
+    // comes back rejected — about a session that no longer exists.
+    final client = MockClient((_) async {
+      await auth.logout(revoke: false);
+      return http.Response('nope', 401);
+    });
+    await http.runWithClient(() async {
+      try {
+        await ApiClient.instance.get<Map<String, dynamic>, int>(
+          '/anything',
+          fromJson: (_) => 0,
+        );
+      } on ApiException {
+        // The status code is the subject; the throw is incidental.
+      }
+    }, () => client);
+    await tester.pump(pastGrace);
+
+    expect(auth.isUnauthorized.value, isFalse);
+  });
+
   testWidgets('a 403 does not trip it', (tester) async {
     await tester.pumpWidget(const SizedBox());
     await request(403);
