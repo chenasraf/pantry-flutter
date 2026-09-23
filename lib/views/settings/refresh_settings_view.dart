@@ -5,7 +5,6 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry/views/settings/settings_tiles.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class RefreshSettingsView extends StatelessWidget {
   /// Drawn beside the settings sidebar rather than as a screen of its own, so
@@ -60,12 +59,7 @@ class RefreshSettingsView extends StatelessWidget {
     final prefs = context.watch<PrefsService>();
 
     return Scaffold(
-      appBar: embedded
-          ? null
-          : AppBar(
-              leading: appBarBackLeading(context),
-              title: Text(m.settings.refreshSection),
-            ),
+      appBar: embedded ? null : AppBar(title: Text(m.settings.refreshSection)),
       body: SettingsList(
         children: [
           const SizedBox(height: 16),

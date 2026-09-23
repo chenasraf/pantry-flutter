@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
 
 class ImagePreview extends StatelessWidget {
@@ -64,7 +63,6 @@ class ImagePreview extends StatelessWidget {
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
           elevation: 0,
-          leading: appBarBackLeading(context),
         ),
         body: InteractiveViewer(
           minScale: 0.5,

@@ -5,7 +5,6 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/item_chip.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/services/prefs_service.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Settings sub-screen letting the user choose which metadata chips appear on
 /// checklist item rows. One switch per [ItemChipKind]; all on by default.
@@ -49,7 +48,6 @@ class ChipVisibilityView extends StatelessWidget {
     final prefs = context.watch<PrefsService>();
     return Scaffold(
       appBar: AppBar(
-        leading: appBarBackLeading(context),
         title: Text(m.settings.visibleChipsTitle),
         actions: [
           TextButton(

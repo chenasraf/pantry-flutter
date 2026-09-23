@@ -5,7 +5,6 @@ import 'package:pantry_core/models/photo.dart';
 import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
 
 class PhotoDetailView extends StatefulWidget {
@@ -125,10 +124,7 @@ class _PhotoDetailViewState extends State<PhotoDetailView> {
   @override
   Widget build(BuildContext context) {
     if (_photos.isEmpty) {
-      return Scaffold(
-        appBar: AppBar(leading: appBarBackLeading(context)),
-        body: const SizedBox.shrink(),
-      );
+      return Scaffold(appBar: AppBar(), body: const SizedBox.shrink());
     }
     final currentPhoto = _photos[_currentIndex];
     final canSwipe = !_isCurrentZoomed;
@@ -136,10 +132,7 @@ class _PhotoDetailViewState extends State<PhotoDetailView> {
     final hasNext = _currentIndex < _photos.length - 1;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(currentPhoto.caption ?? ''),
-      ),
+      appBar: AppBar(title: Text(currentPhoto.caption ?? '')),
       body: Focus(
         focusNode: _focusNode,
         autofocus: true,

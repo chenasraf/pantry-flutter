@@ -10,7 +10,6 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/platform_info.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 
 class LabelsView extends StatefulWidget {
@@ -280,7 +279,6 @@ class _LabelsViewState extends State<LabelsView> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: appBarBackLeading(context),
         title: Text(m.labels.manageTitle),
         actions: [
           PopupMenuButton<String>(

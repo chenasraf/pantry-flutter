@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:pantry_core/i18n.dart';
-import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 /// Every transient message in the app goes through here.
@@ -91,10 +90,7 @@ ToastFuture? showAppToast({
     context: context,
     duration: duration,
     animDuration: _animDuration,
-    position: StyledToastPosition(
-      align: Alignment.topCenter,
-      offset: PlatformInfo.isMacOS ? 104 : 76,
-    ),
+    position: const StyledToastPosition(align: Alignment.topCenter, offset: 76),
     animation: StyledToastAnimation.slideFromTopFade,
     reverseAnimation: StyledToastAnimation.slideToTopFade,
     startOffset: _slide,

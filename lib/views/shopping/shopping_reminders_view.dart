@@ -5,7 +5,6 @@ import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/utils/app_toast.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Full-screen manager for a house's shopping reminders. Three fixed-order
 /// groups by moment (start / between shops / end); each reminder row can be
@@ -191,10 +190,7 @@ class _ShoppingRemindersViewState extends State<ShoppingRemindersView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(m.shopping.remindersTitle),
-      ),
+      appBar: AppBar(title: Text(m.shopping.remindersTitle)),
       body: _loading && _reminders.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : _error != null && _reminders.isEmpty

@@ -11,7 +11,6 @@ import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/store_icons.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Arrange one store's categories into the order its aisles are walked.
 ///
@@ -192,7 +191,6 @@ class _StoreCategoryOrderViewState extends State<StoreCategoryOrderView> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        leading: appBarBackLeading(context),
         title: Text(m.categories.storeOrder.title),
         actions: [
           if (PlatformInfo.isDesktop)

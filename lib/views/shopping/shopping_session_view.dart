@@ -14,7 +14,6 @@ import 'package:pantry/views/checklists/item_detail_view.dart';
 import 'package:pantry/views/shopping/shopping_reminders_view.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 
 import 'shopping_session_widgets.dart';
@@ -297,7 +296,6 @@ class _SessionBodyState extends State<_SessionBody> {
       onRefresh: () => _c.poll(),
       child: Scaffold(
         appBar: AppBar(
-          leading: appBarBackLeading(context),
           title: Text(activeStore?.name ?? m.shopping.startTitle),
           actions: [
             // Privacy belongs to the shopper who started the trip; a housemate

@@ -5,7 +5,6 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/notification.dart';
 import 'package:pantry_core/services/deep_link_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'notifications_controller.dart';
 
 class NotificationsView extends StatefulWidget {
@@ -55,7 +54,6 @@ class _NotificationsBody extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: appBarBackLeading(context),
         title: Text(m.notifications.title),
         actions: [
           if (PlatformInfo.isDesktop)

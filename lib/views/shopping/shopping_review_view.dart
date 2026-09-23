@@ -17,7 +17,6 @@ import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/shopping/shopping_reminder_block.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Which review the screen renders. [advance] shows only the store being left
 /// (a till summary before moving on); [close] shows the whole trip with
@@ -272,11 +271,7 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
     final theme = Theme.of(context);
     final review = _shownReview;
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(_title),
-        actions: _actions,
-      ),
+      appBar: AppBar(title: Text(_title), actions: _actions),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null

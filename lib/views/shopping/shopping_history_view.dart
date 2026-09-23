@@ -15,7 +15,6 @@ import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/date_format.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 
 /// List of closed trips. A Mine/House scope toggle selects which trips are
@@ -192,10 +191,7 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(m.shopping.historyTitle),
-      ),
+      appBar: AppBar(title: Text(m.shopping.historyTitle)),
       body: Column(
         children: [
           Padding(

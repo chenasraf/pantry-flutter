@@ -9,7 +9,6 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/store_icons.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'package:pantry/widgets/store_detail_dialog.dart';
 
@@ -204,7 +203,6 @@ class _StoresViewState extends State<StoresView> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: appBarBackLeading(context),
         title: Text(m.stores.manageTitle),
         actions: [
           PopupMenuButton<String>(

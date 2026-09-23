@@ -7,7 +7,6 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/text_direction.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
@@ -231,7 +230,7 @@ class _CategoryFormViewState extends State<CategoryFormView> {
                 tooltip: m.common.cancel,
                 onPressed: () => Navigator.of(context).maybePop(),
               )
-            : appBarBackLeading(context),
+            : null,
         title: Text(
           _isEditing ? m.categories.editTitle : m.categories.addTitle,
         ),

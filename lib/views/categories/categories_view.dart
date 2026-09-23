@@ -13,7 +13,6 @@ import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/views/categories/store_category_order_view.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class CategoriesView extends StatefulWidget {
   final int houseId;
@@ -298,7 +297,6 @@ class _CategoriesViewState extends State<CategoriesView> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: appBarBackLeading(context),
         title: Text(m.categories.manageTitle),
         actions: [
           PopupMenuButton<String>(

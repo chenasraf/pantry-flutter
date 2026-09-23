@@ -7,7 +7,6 @@ import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
 import 'package:pantry/views/settings/settings_tiles.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class GeneralSettingsView extends StatefulWidget {
   /// Drawn beside the settings sidebar rather than as a screen of its own, so
@@ -74,10 +73,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
     return Scaffold(
       appBar: widget.embedded
           ? null
-          : AppBar(
-              leading: appBarBackLeading(context),
-              title: Text(m.settings.generalSection),
-            ),
+          : AppBar(title: Text(m.settings.generalSection)),
       body: SettingsList(
         children: [
           DropdownSettingTile<String?>(

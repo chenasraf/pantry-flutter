@@ -11,7 +11,6 @@ import 'package:pantry/views/settings/notification_settings_view.dart';
 import 'package:pantry/views/settings/refresh_settings_view.dart';
 import 'package:pantry/views/settings/settings_tiles.dart';
 import 'package:pantry/views/watch/watch_pairing_view.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// Width from which the sections become a sidebar with the open one beside
 /// them, rather than a list that opens each as a screen of its own.
@@ -119,10 +118,7 @@ class _SettingsViewState extends State<SettingsView> {
         : sections.first.section;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(m.settings.title),
-      ),
+      appBar: AppBar(title: Text(m.settings.title)),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final watchTile = _watchTile();

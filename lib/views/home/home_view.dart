@@ -685,9 +685,6 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                           extended: extendedRail,
                           selectedIndex: tabIndex,
                           onDestinationSelected: _goToTab,
-                          leading: PlatformInfo.isMacOS
-                              ? const SizedBox(height: 24)
-                              : null,
                           destinations: [
                             for (final s in order)
                               (icon: _sectionIcon(s), label: _sectionTitle(s)),

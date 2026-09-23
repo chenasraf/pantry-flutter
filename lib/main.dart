@@ -51,6 +51,7 @@ import 'views/onboarding/onboarding_pages.dart';
 import 'views/onboarding/onboarding_view.dart';
 import 'views/widget/checklist_widget_config_view.dart';
 import 'views/widget/widget_config_view.dart';
+import 'widgets/mac_title_bar.dart';
 import 'widgets/session_expired_banner.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -483,9 +484,6 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final color = ThemingService.instance.effectiveColor;
     final locale = LocaleService.instance.effectiveLocale;
-    final appBarTheme = PlatformInfo.isMacOS
-        ? const AppBarTheme(toolbarHeight: 66)
-        : null;
     return ChangeNotifierProvider<PrefsService>.value(
       value: PrefsService.instance,
       child: Directionality(
@@ -506,7 +504,6 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
               seedColor: color,
             ).copyWith(primary: color),
             useMaterial3: true,
-            appBarTheme: appBarTheme,
             popupMenuTheme: PopupMenuThemeData(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -521,7 +518,6 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
               brightness: Brightness.dark,
             ).copyWith(primary: color),
             useMaterial3: true,
-            appBarTheme: appBarTheme,
             popupMenuTheme: PopupMenuThemeData(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -536,15 +532,19 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
             final wrapped = PlatformInfo.isDesktopHost
                 ? _EscapePopWrapper(child: child)
                 : child;
-            // Outermost, so a toast floats over routes, sheets and dialogs
-            // alike. It owns the overlay the toasts are inserted into, and
-            // sets the text direction for everything under it.
-            return AppToastHost(
-              textDirection: LocaleService.instance.textDirection,
-              child: SessionExpiredBanner(
-                suppressed: _reauthOpen,
-                onSignIn: _onReauthRequested,
-                child: wrapped,
+            // The title bar is the window's own chrome and stands outside the
+            // app: above the toasts, which belong to what the app is doing.
+            return MacTitleBar(
+              // Outermost within the app, so a toast floats over routes, sheets
+              // and dialogs alike. It owns the overlay the toasts are inserted
+              // into, and sets the text direction for everything under it.
+              child: AppToastHost(
+                textDirection: LocaleService.instance.textDirection,
+                child: SessionExpiredBanner(
+                  suppressed: _reauthOpen,
+                  onSignIn: _onReauthRequested,
+                  child: wrapped,
+                ),
               ),
             );
           },

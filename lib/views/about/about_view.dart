@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class AboutView extends StatefulWidget {
   const AboutView({super.key});
@@ -45,7 +44,7 @@ class _AboutViewState extends State<AboutView> {
     final pantryServerVersion = ServerVersionService.instance.pantryVersion;
 
     return Scaffold(
-      appBar: AppBar(leading: appBarBackLeading(context), title: Text(a.title)),
+      appBar: AppBar(title: Text(a.title)),
       floatingActionButton: _showDonation
           ? FloatingActionButton.extended(
               onPressed: () => _launch('https://ko-fi.com/casraf'),

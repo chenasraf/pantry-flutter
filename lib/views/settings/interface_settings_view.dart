@@ -9,7 +9,6 @@ import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/settings/chip_visibility_view.dart';
 import 'package:pantry/views/settings/nav_order_view.dart';
 import 'package:pantry/views/settings/settings_tiles.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class InterfaceSettingsView extends StatelessWidget {
   /// Drawn beside the settings sidebar rather than as a screen of its own, so
@@ -306,10 +305,7 @@ class InterfaceSettingsView extends StatelessWidget {
     return Scaffold(
       appBar: embedded
           ? null
-          : AppBar(
-              leading: appBarBackLeading(context),
-              title: Text(m.settings.interfaceSection),
-            ),
+          : AppBar(title: Text(m.settings.interfaceSection)),
       body: SettingsList(
         children: [
           ..._section(m.settings.interfaceNavigationSection, navigation),

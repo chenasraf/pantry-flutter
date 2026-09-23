@@ -9,7 +9,6 @@ import 'package:pantry/views/checklists/import_to_list.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/notes/note_form_view.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/note_sync.dart';
 
 class NoteDetailView extends StatefulWidget {
@@ -88,7 +87,6 @@ class _NoteDetailViewState extends State<NoteDetailView> {
       appBar: AppBar(
         backgroundColor: bgColor,
         foregroundColor: textColor,
-        leading: appBarBackLeading(context),
         title: Directionality(textDirection: titleDir, child: Text(note.title)),
         actions: [
           if (canImportToList)

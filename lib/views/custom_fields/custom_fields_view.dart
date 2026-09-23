@@ -14,7 +14,6 @@ import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/custom_fields/custom_field_drafts.dart';
 import 'package:pantry/views/custom_fields/custom_field_editor.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// The unified custom-fields manager: field definitions grouped by scope,
 /// each editable inline (accordion). Reachable from a list's manage menu,
@@ -433,7 +432,6 @@ class _CustomFieldsViewState extends State<CustomFieldsView> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        leading: appBarBackLeading(context),
         title: Text(m.customFields.manageTitle),
         actions: [
           if (PlatformInfo.isDesktop)

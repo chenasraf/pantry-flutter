@@ -7,7 +7,6 @@ import 'package:pantry/services/background_notification_task.dart';
 import 'package:pantry/services/local_notifications_service.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/settings/settings_tiles.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class NotificationSettingsView extends StatefulWidget {
   /// Drawn beside the settings sidebar rather than as a screen of its own, so
@@ -78,10 +77,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView> {
     return Scaffold(
       appBar: widget.embedded
           ? null
-          : AppBar(
-              leading: appBarBackLeading(context),
-              title: Text(m.settings.notificationsSection),
-            ),
+          : AppBar(title: Text(m.settings.notificationsSection)),
       body: SettingsList(
         children: [
           SwitchListTile(

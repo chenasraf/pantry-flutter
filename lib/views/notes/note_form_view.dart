@@ -6,7 +6,6 @@ import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/utils/markdown_delta.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/notes/notes_controller.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 
 const _colorOptions = <String?>[
@@ -182,7 +181,6 @@ class _NoteFormViewState extends State<NoteFormView> {
         appBar: AppBar(
           backgroundColor: bgColor,
           foregroundColor: textColor,
-          leading: appBarBackLeading(context),
           titleSpacing: 0,
           title: TextField(
             controller: _titleController,

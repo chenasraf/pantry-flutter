@@ -22,7 +22,6 @@ import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/shopping/shopping_item_picker_view.dart';
 import 'package:pantry/views/shopping/shopping_reminder_block.dart';
 import 'package:pantry/views/shopping/shopping_reminders_view.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 /// The start screen: pick lists to shop, toggle & order the stores you'll
 /// visit, choose whether to include unassigned items, then start. Guards the
@@ -377,10 +376,7 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: appBarBackLeading(context),
-        title: Text(m.shopping.startTitle),
-      ),
+      appBar: AppBar(title: Text(m.shopping.startTitle)),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null

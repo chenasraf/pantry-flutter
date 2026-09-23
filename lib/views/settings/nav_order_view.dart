@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/nav_section.dart';
 import 'package:pantry_core/services/prefs_service.dart';
-import 'package:pantry/widgets/app_bar_back_leading.dart';
 
 class NavOrderView extends StatefulWidget {
   const NavOrderView({super.key});
@@ -70,7 +69,6 @@ class _NavOrderViewState extends State<NavOrderView> {
     final enabledCount = _order.where(prefs.isNavSectionEnabled).length;
     return Scaffold(
       appBar: AppBar(
-        leading: appBarBackLeading(context),
         title: Text(m.settings.navOrderTitle),
         actions: [
           TextButton(
