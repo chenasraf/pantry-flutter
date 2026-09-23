@@ -1,0 +1,13 @@
+Features
+- show an item's description on its row
+- a new floating navigation bar
+- move photo and note toolbars into an app bar menu
+- see which file a note is synced to
+- keep the open house in sync across your devices
+Bug Fixes
+- don't warn that your sign-in expired after signing out
+- close the add-item bar with the back button instead of leaving the app
+- keep photo reordering when the connection drops
+- show folder previews in the order the folder is sorted
+
+… see full notes on GitHub.

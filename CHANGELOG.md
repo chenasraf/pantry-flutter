@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.34.0](https://github.com/chenasraf/pantry-flutter/compare/v0.33.0...v0.34.0) (2026-09-23)
+
+
+### Features
+
+* **checklists:** show an item's description on its row ([44cdde1](https://github.com/chenasraf/pantry-flutter/commit/44cdde1e027db9fc5735579d2dbaabc1a72b5c11)), closes [#178](https://github.com/chenasraf/pantry-flutter/issues/178)
+* **desktop:** browse settings sections from a sidebar ([9206d39](https://github.com/chenasraf/pantry-flutter/commit/9206d3941043f218d54f63cbb47341bf90da0ba3))
+* **desktop:** show checklists in the side navigation ([9e347f5](https://github.com/chenasraf/pantry-flutter/commit/9e347f5ea7ceefd00c49e201eb3c46855ebd091c))
+* **macos:** give the macOS window its own title bar ([b8c83f6](https://github.com/chenasraf/pantry-flutter/commit/b8c83f64c625097d41e5c54fef47898daf4db828))
+* **mobile:** a new floating navigation bar ([49082f8](https://github.com/chenasraf/pantry-flutter/commit/49082f850ed57938458d3fe649a452e6ef787c88))
+* **mobile:** move photo and note toolbars into an app bar menu ([cf9cb70](https://github.com/chenasraf/pantry-flutter/commit/cf9cb7080746b6c42ef402df182bc23bd2bba66a))
+* **notes:** see which file a note is synced to ([657abc0](https://github.com/chenasraf/pantry-flutter/commit/657abc0b269f3dd0744813e5ad08c313b1744176))
+* **settings:** keep the open house in sync across your devices ([1865174](https://github.com/chenasraf/pantry-flutter/commit/18651746aba914394f316fd06d35dfe082b6a3d3))
+* **wear:** say when a list is cleared, or a note or folder is empty ([12039fc](https://github.com/chenasraf/pantry-flutter/commit/12039fcffafb47800f1287330647973fc91778b3))
+
+
+### Bug Fixes
+
+* **auth:** don't warn that your sign-in expired after signing out ([40de1fc](https://github.com/chenasraf/pantry-flutter/commit/40de1fcfabe90a4eebe91a77a4af8cce61d6f850))
+* close the add-item bar with the back button instead of leaving the app ([74bc7f8](https://github.com/chenasraf/pantry-flutter/commit/74bc7f86674939f3bcc46d0370d1d6e686113276))
+* **desktop:** fixed width on notifications onboarding ([92cef71](https://github.com/chenasraf/pantry-flutter/commit/92cef714ca5bb490421573f0a715b9e9c45e1811))
+* **desktop:** line up the add-item bar with the action button ([ca47daf](https://github.com/chenasraf/pantry-flutter/commit/ca47daf2b170d883dcad2b148bdc4c8c4b9c76e8))
+* **desktop:** stop a home-screen widget error on launch ([1304cae](https://github.com/chenasraf/pantry-flutter/commit/1304cae262311d312d513c2739511d07a1a944a4))
+* **photos:** keep photo reordering when the connection drops ([88b23d5](https://github.com/chenasraf/pantry-flutter/commit/88b23d59f72f1996b43b7669d6738a1706dcf73b))
+* **photos:** show folder previews in the order the folder is sorted ([73ceaba](https://github.com/chenasraf/pantry-flutter/commit/73ceaba7e72c520ca1faf319ffa578bcc493f28d))
+* **settings:** forget the item name truncation setting when you sign out ([c37691e](https://github.com/chenasraf/pantry-flutter/commit/c37691e1405dd422b7decefbe7a872424ae223db))
+* **wear:** stop a note's name covering its details page ([081b507](https://github.com/chenasraf/pantry-flutter/commit/081b5073b6d43b13fc0c27df724c29b4cdd3ff24))
+
 ## [0.33.0](https://github.com/chenasraf/pantry-flutter/compare/v0.32.0...v0.33.0) (2026-09-20)
 
 
