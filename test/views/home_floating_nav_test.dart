@@ -40,6 +40,7 @@ void main() {
     NavPrimaryAction? action,
     bool visible = true,
     ValueChanged<int>? onTap,
+    ValueNotifier<double>? footprintHolder,
   }) => wrapForTest(
     HomeFloatingNav(
       pageController: PageController(initialPage: index),
@@ -48,6 +49,7 @@ void main() {
       destinations: dests,
       action: action,
       visible: visible,
+      footprintHolder: footprintHolder,
     ),
   );
 
@@ -229,6 +231,77 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Resume shopping'), findsOneWidget);
+  });
+
+  testWidgets('publishes what the trailing button takes of the bottom row', (
+    tester,
+  ) async {
+    final footprint = ValueNotifier<double>(0);
+    addTearDown(footprint.dispose);
+
+    await tester.pumpWidget(
+      harness(
+        const [],
+        action: const NavPrimaryAction(icon: Icons.add, label: 'Add'),
+        footprintHolder: footprint,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final button = tester.getSize(
+      find
+          .ancestor(of: find.byIcon(Icons.add), matching: find.byType(Material))
+          .first,
+    );
+    expect(footprint.value, greaterThan(button.width));
+  });
+
+  testWidgets('an extended button takes more of the row than a round one', (
+    tester,
+  ) async {
+    final round = ValueNotifier<double>(0);
+    final extended = ValueNotifier<double>(0);
+    addTearDown(round.dispose);
+    addTearDown(extended.dispose);
+
+    await tester.pumpWidget(
+      harness(
+        const [],
+        action: const NavPrimaryAction(
+          icon: Icons.shopping_cart,
+          label: 'Start shopping',
+        ),
+        footprintHolder: round,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.pumpWidget(
+      harness(
+        const [],
+        action: const NavPrimaryAction(
+          icon: Icons.play_arrow,
+          label: 'Resume shopping',
+          extended: true,
+        ),
+        footprintHolder: extended,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(extended.value, greaterThan(round.value));
+  });
+
+  testWidgets('publishes nothing to keep clear of without an action', (
+    tester,
+  ) async {
+    final footprint = ValueNotifier<double>(0);
+    addTearDown(footprint.dispose);
+
+    await tester.pumpWidget(harness(destinations, footprintHolder: footprint));
+    await tester.pumpAndSettle();
+
+    expect(footprint.value, 0);
   });
 
   testWidgets('a section claiming the bottom edge slides the bar away', (

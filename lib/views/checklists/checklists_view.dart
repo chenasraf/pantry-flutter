@@ -48,9 +48,10 @@ class ChecklistsView extends StatefulWidget {
   /// trailing button.
   final ValueNotifier<NavPrimaryAction?>? navActionHolder;
 
-  /// Raised while the compose bar or the selection bar has taken the bottom
-  /// edge, so the floating nav slides out of their way.
-  final ValueNotifier<bool>? edgeClaimedHolder;
+  /// How much of the bottom edge this tab is using, so the floating nav can
+  /// share the row with a resting compose bar and get out of the way of a
+  /// focused one.
+  final ValueNotifier<NavEdgeClaim>? edgeClaimHolder;
 
   /// Slot the side rail reads this house's lists from, to nest them under its
   /// checklists destination.
@@ -63,7 +64,7 @@ class ChecklistsView extends StatefulWidget {
     this.appBarSpecHolder,
     this.scrollController,
     this.navActionHolder,
-    this.edgeClaimedHolder,
+    this.edgeClaimHolder,
     this.navListsHolder,
   });
 
@@ -179,7 +180,7 @@ class _ChecklistsViewState extends State<ChecklistsView>
         appBarSpecHolder: widget.appBarSpecHolder,
         scrollController: widget.scrollController,
         navActionHolder: widget.navActionHolder,
-        edgeClaimedHolder: widget.edgeClaimedHolder,
+        edgeClaimHolder: widget.edgeClaimHolder,
         navListsHolder: widget.navListsHolder,
       ),
     );
@@ -190,14 +191,14 @@ class _Body extends StatefulWidget {
   final ValueNotifier<HomeAppBarSpec?>? appBarSpecHolder;
   final ScrollController? scrollController;
   final ValueNotifier<NavPrimaryAction?>? navActionHolder;
-  final ValueNotifier<bool>? edgeClaimedHolder;
+  final ValueNotifier<NavEdgeClaim>? edgeClaimHolder;
   final ValueNotifier<HomeNavListsSpec?>? navListsHolder;
 
   const _Body({
     this.appBarSpecHolder,
     this.scrollController,
     this.navActionHolder,
-    this.edgeClaimedHolder,
+    this.edgeClaimHolder,
     this.navListsHolder,
   });
 
@@ -441,9 +442,20 @@ class _BodyState extends State<_Body> {
                   onTap: () => body.openShopping(context),
                 )
               : null;
-          // The compose bar and the selection bar each take the bottom edge
-          // for themselves; the nav gets out of the way rather than stacking.
-          final edgeClaimed = body.composeActive || controller.selectionMode;
+          final composeOnTop = prefs.composeBarOnTop;
+          final showCompose =
+              !controller.isSoftView &&
+              !controller.selectionMode &&
+              list != null &&
+              controller.canAddItemsHere;
+          // A focused compose bar and the selection bar each take the whole
+          // bottom edge, and the nav gets out of the way rather than stacking.
+          // A resting compose bar only asks the nav not to stack on top of it.
+          final edgeClaim = body.composeActive || controller.selectionMode
+              ? NavEdgeClaim.whole
+              : showCompose && !composeOnTop
+              ? NavEdgeClaim.shared
+              : NavEdgeClaim.none;
 
           // Push the current AppBar contents up to the shared home AppBar slot,
           // and the nav's share of this tab alongside it. Done in a post-frame
@@ -456,7 +468,7 @@ class _BodyState extends State<_Body> {
               list,
             );
             widget.navActionHolder?.value = shoppingAction;
-            widget.edgeClaimedHolder?.value = edgeClaimed;
+            widget.edgeClaimHolder?.value = edgeClaim;
           });
 
           return LayoutBuilder(
@@ -466,12 +478,6 @@ class _BodyState extends State<_Body> {
               // by them. The maxHeight ceiling funnels down to the bar's
               // internal Flexible+scroll view, which scrolls only when even
               // that isn't enough (tiny screen + keyboard up).
-              final composeOnTop = prefs.composeBarOnTop;
-              final showCompose =
-                  !controller.isSoftView &&
-                  !controller.selectionMode &&
-                  list != null &&
-                  controller.canAddItemsHere;
               Widget composeBar(ChecklistList list, double maxHeight) =>
                   ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: maxHeight),
@@ -860,12 +866,14 @@ class _BodyState extends State<_Body> {
                   ),
                   if (!composeOnTop) composeScrim,
                   if (showCompose && !composeOnTop)
-                    Positioned(
-                      left: 0,
-                      right: 0,
+                    PositionedDirectional(
+                      start: 0,
                       // Rests above the floating nav and drops to the edge once
                       // the nav slides away for it — both of which the host
-                      // reports as the obscured bottom inset.
+                      // reports as the obscured bottom inset. Beside a rail the
+                      // nav is a lone button sitting in the corner of this same
+                      // row, and the bar stops short of it instead.
+                      end: FloatingNavEdge.endOf(context),
                       bottom: MediaQuery.paddingOf(context).bottom,
                       child: composeBar(list, constraints.maxHeight),
                     ),

@@ -57,6 +57,36 @@ class NavPrimaryAction {
   );
 }
 
+/// How much of the bottom edge the active section has taken for itself.
+enum NavEdgeClaim {
+  /// Nothing sits along the bottom edge; the nav has the strip to itself.
+  none,
+
+  /// A resting bar of the section's own runs along the edge. Where the nav is
+  /// a lone button — beside a rail — the two share the row; where it is the
+  /// full bar, it keeps its place above.
+  shared,
+
+  /// A focused compose bar or a selection action bar owns the edge, and the
+  /// nav slides out of the way.
+  whole,
+}
+
+/// Width the nav's trailing button takes at the end of the bottom row, for a
+/// section sharing that row to keep clear of. Zero where the nav keeps the row
+/// to itself.
+class FloatingNavEdge extends InheritedWidget {
+  final double end;
+
+  const FloatingNavEdge({super.key, required this.end, required super.child});
+
+  static double endOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<FloatingNavEdge>()?.end ?? 0;
+
+  @override
+  bool updateShouldNotify(FloatingNavEdge oldWidget) => oldWidget.end != end;
+}
+
 /// Height the floating bar occupies above the bottom safe-area inset. Content
 /// under the bar reserves this much so its last row stays reachable.
 const double kFloatingNavReserve =
@@ -100,6 +130,11 @@ class HomeFloatingNav extends StatefulWidget {
   /// of its way.
   final bool visible;
 
+  /// Slot the trailing button's width, plus the gap beside it, is published
+  /// into as it is laid out. An extended button is as wide as its label, so
+  /// what a section must keep clear of is only knowable once drawn.
+  final ValueNotifier<double>? footprintHolder;
+
   const HomeFloatingNav({
     super.key,
     required this.pageController,
@@ -109,6 +144,7 @@ class HomeFloatingNav extends StatefulWidget {
     required this.action,
     this.jump,
     this.visible = true,
+    this.footprintHolder,
   });
 
   @override
@@ -119,6 +155,7 @@ class _HomeFloatingNavState extends State<HomeFloatingNav>
     with SingleTickerProviderStateMixin {
   late final AnimationController _menuController;
   bool _menuOpen = false;
+  final GlobalKey _actionKey = GlobalKey();
 
   @override
   void initState() {
@@ -160,11 +197,23 @@ class _HomeFloatingNavState extends State<HomeFloatingNav>
     _menuController.reverse();
   }
 
+  void _publishFootprint() {
+    final holder = widget.footprintHolder;
+    if (holder == null) return;
+    final box = _actionKey.currentContext?.findRenderObject() as RenderBox?;
+    final footprint = box != null && box.hasSize ? box.size.width + _gap : 0.0;
+    if (holder.value != footprint) holder.value = footprint;
+  }
+
   @override
   Widget build(BuildContext context) {
     final action = widget.action;
     final hasMenu = action != null && action.menu.isNotEmpty;
     final showPill = widget.destinations.length > 1;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _publishFootprint();
+    });
 
     if (!showPill && action == null) return const SizedBox.shrink();
 
@@ -242,6 +291,7 @@ class _HomeFloatingNavState extends State<HomeFloatingNav>
                                   start: _gap,
                                 ),
                                 child: _TrailingButton(
+                                  key: _actionKey,
                                   action: action,
                                   menuController: _menuController,
                                   onTap: hasMenu ? _toggleMenu : action.onTap,
@@ -414,6 +464,7 @@ class _TrailingButton extends StatelessWidget {
   final VoidCallback? onTap;
 
   const _TrailingButton({
+    super.key,
     required this.action,
     required this.menuController,
     required this.onTap,

@@ -103,15 +103,19 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   final Map<NavSection, ValueNotifier<HomeAppBarSpec?>> _tabAppBarSpecs = {
     for (final s in NavSection.values) s: ValueNotifier(null),
   };
-  // What each section offers the floating nav's trailing button, and whether it
-  // has taken the bottom edge for itself (a focused compose bar, a selection
-  // action bar) — in which case the nav gets out of the way.
+  // What each section offers the floating nav's trailing button, and how much
+  // of the bottom edge it has taken for itself (a bar of its own resting there,
+  // a focused compose bar, a selection action bar) — which decides whether the
+  // nav keeps its strip, shares the row, or gets out of the way.
   final Map<NavSection, ValueNotifier<NavPrimaryAction?>> _tabActions = {
     for (final s in NavSection.values) s: ValueNotifier(null),
   };
-  final Map<NavSection, ValueNotifier<bool>> _tabEdgeClaimed = {
-    for (final s in NavSection.values) s: ValueNotifier(false),
+  final Map<NavSection, ValueNotifier<NavEdgeClaim>> _tabEdgeClaim = {
+    for (final s in NavSection.values) s: ValueNotifier(NavEdgeClaim.none),
   };
+  // Width of the nav's trailing button, measured as it is drawn, so a section
+  // sharing the bottom row with it knows what to keep clear of.
+  final ValueNotifier<double> _navFootprint = ValueNotifier(0);
   // Endpoints of a move that skips over destinations. The page animates
   // through the ones in between, and without knowing where the move started
   // and ends the nav would read their distance to the page and light each one
@@ -182,9 +186,10 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     for (final n in _tabActions.values) {
       n.dispose();
     }
-    for (final n in _tabEdgeClaimed.values) {
+    for (final n in _tabEdgeClaim.values) {
       n.dispose();
     }
+    _navFootprint.dispose();
     _navJump.dispose();
     _navLists.dispose();
     for (final n in _tabAppBarSpecs.values) {
@@ -453,20 +458,25 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   ///
   /// [destinations] is empty where something else already switches sections
   /// (the wide layout's rail), leaving the bar to carry the primary action
-  /// alone.
+  /// alone. A lone button takes only the end of the bottom row, so where
+  /// [wide] says the rail is the one switching sections, a section with a bar
+  /// of its own along that edge runs beside the button instead of above it:
+  /// the vertical reserve gives way to an end inset the section keeps clear.
   Widget _withFloatingNav({
     required Widget child,
     required NavSection section,
     required List<NavDestination> destinations,
     required int tabIndex,
+    required bool wide,
   }) {
     return ValueListenableBuilder<NavPrimaryAction?>(
       valueListenable: _tabActions[section]!,
-      builder: (context, action, _) => ValueListenableBuilder<bool>(
-        valueListenable: _tabEdgeClaimed[section]!,
-        builder: (context, edgeClaimed, _) {
+      builder: (context, action, _) => ValueListenableBuilder<NavEdgeClaim>(
+        valueListenable: _tabEdgeClaim[section]!,
+        builder: (context, claim, _) {
           final drawsBar = destinations.length > 1 || action != null;
-          final visible = drawsBar && !edgeClaimed;
+          final visible = drawsBar && claim != NavEdgeClaim.whole;
+          final shareRow = visible && wide && claim == NavEdgeClaim.shared;
           final mq = MediaQuery.of(context);
           return Stack(
             children: [
@@ -476,10 +486,17 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                     padding: mq.padding.copyWith(
                       bottom:
                           mq.padding.bottom +
-                          (visible ? kFloatingNavReserve : 0),
+                          (visible && !shareRow ? kFloatingNavReserve : 0),
                     ),
                   ),
-                  child: child,
+                  child: ValueListenableBuilder<double>(
+                    valueListenable: _navFootprint,
+                    builder: (context, footprint, child) => FloatingNavEdge(
+                      end: shareRow ? footprint : 0,
+                      child: child!,
+                    ),
+                    child: child,
+                  ),
                 ),
               ),
               if (drawsBar)
@@ -492,6 +509,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                     destinations: destinations,
                     action: action,
                     visible: visible,
+                    footprintHolder: _navFootprint,
                   ),
                 ),
             ],
@@ -693,6 +711,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                               section: currentSection,
                               destinations: const [],
                               tabIndex: tabIndex,
+                              wide: true,
                               child: Padding(
                                 padding: EdgeInsetsDirectional.only(
                                   start: isChecklistsTab ? 0 : 16,
@@ -716,6 +735,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
               section: currentSection,
               destinations: showNav ? destinations : const [],
               tabIndex: tabIndex,
+              wide: false,
               child: body,
             ),
           );
@@ -769,7 +789,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         appBarSpecHolder: _tabAppBarSpecs[NavSection.checklists]!,
         scrollController: _tabScrollers[NavSection.checklists]!,
         navActionHolder: _tabActions[NavSection.checklists]!,
-        edgeClaimedHolder: _tabEdgeClaimed[NavSection.checklists]!,
+        edgeClaimHolder: _tabEdgeClaim[NavSection.checklists]!,
         navListsHolder: _navLists,
       ),
       NavSection.photoBoard => PhotoBoardView(
