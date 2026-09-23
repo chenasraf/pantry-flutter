@@ -108,6 +108,7 @@ help:
 	@echo "    android-push        Build APK and push to device via adb"
 	@echo "    ios-build           Build iOS (no codesign)"
 	@echo "    macos-build         Build macOS app (.app bundle, no codesign)"
+	@echo "    macos-provision-dev Create the development profile the macOS debug build signs with"
 	@echo "    macos-build-pkg     Build signed macOS .pkg for App Store"
 	@echo "    linux-build         Build Linux desktop bundle"
 	@echo "    windows-build       Build Windows desktop bundle"
@@ -467,6 +468,23 @@ ios-build-ipa: rsync-shim
 .PHONY: macos-build
 macos-build:
 	flutter build macos --release --build-number=$(MACOS_BUILD_NUMBER) --obfuscate --split-debug-info=build/debug-info-macos
+
+# The debug build carries a bundle identifier of its own so it keeps its storage
+# and login apart from the released app (macos/Runner/Configs/AppInfo.xcconfig),
+# and that identifier needs a development profile of its own. `flutter run`
+# builds without -allowProvisioningUpdates, so it can only fail with "No profiles
+# for 'dev.casraf.pantry.debug' were found" until something creates one. This
+# does; the profile is cached afterwards and a plain `flutter run -d macos`
+# works until it expires.
+.PHONY: macos-provision-dev
+macos-provision-dev:
+	flutter build macos --debug --config-only
+	xcodebuild -workspace macos/Runner.xcworkspace \
+		-scheme Runner \
+		-configuration Debug \
+		-destination 'platform=macOS' \
+		-allowProvisioningUpdates \
+		build
 
 .PHONY: macos-build-pkg
 macos-build-pkg: rsync-shim

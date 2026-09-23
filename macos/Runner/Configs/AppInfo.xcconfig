@@ -4,11 +4,22 @@
 // future. If not, the values below would default to using the project name when this becomes a
 // 'flutter create' template.
 
+// A developer runs the debug build on the same Mac the released app is installed
+// on. macOS keys the sandbox container, the preferences domain and the keychain
+// access group off the bundle identifier, so the two keep separate storage and
+// separate logins only by carrying separate identifiers — the `.debug` suffix
+// Android gives its own debug builds. Profile joins debug: it is a developer's
+// build too, and measuring one should not sign the released app out.
+
 // The application's name. By default this is also the title of the Flutter window.
 PRODUCT_NAME = Pantry
+PRODUCT_NAME[config=Debug] = Pantry Dev
+PRODUCT_NAME[config=Profile] = Pantry Dev
 
 // The application's bundle identifier
 PRODUCT_BUNDLE_IDENTIFIER = dev.casraf.pantry
+PRODUCT_BUNDLE_IDENTIFIER[config=Debug] = dev.casraf.pantry.debug
+PRODUCT_BUNDLE_IDENTIFIER[config=Profile] = dev.casraf.pantry.debug
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 dev.casraf. All rights reserved.
