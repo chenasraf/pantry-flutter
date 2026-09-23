@@ -1279,6 +1279,19 @@ class SettingsMessagesEs extends SettingsMessages {
       """Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.""";
 
   /// ```dart
+  /// "Descripción en los artículos"
+  /// ```
+  String get itemDescription => """Descripción en los artículos""";
+
+  /// ```dart
+  /// "Dónde se muestra la descripción de un artículo en su fila. Una descripción demasiado larga termina con puntos suspensivos en ambos casos."
+  /// ```
+  String get itemDescriptionBody =>
+      """Dónde se muestra la descripción de un artículo en su fila. Una descripción demasiado larga termina con puntos suspensivos en ambos casos.""";
+  ItemDescriptionNamesSettingsMessagesEs get itemDescriptionNames =>
+      ItemDescriptionNamesSettingsMessagesEs(this);
+
+  /// ```dart
   /// "Reutilizar artículos existentes al añadir"
   /// ```
   String get reuseExistingItems =>
@@ -1644,6 +1657,27 @@ class DensityNamesSettingsMessagesEs extends DensityNamesSettingsMessages {
   /// "Muy compacta"
   /// ```
   String get compact => """Muy compacta""";
+}
+
+class ItemDescriptionNamesSettingsMessagesEs
+    extends ItemDescriptionNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const ItemDescriptionNamesSettingsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Solo el icono de nota"
+  /// ```
+  String get off => """Solo el icono de nota""";
+
+  /// ```dart
+  /// "En su propia línea"
+  /// ```
+  String get line => """En su propia línea""";
+
+  /// ```dart
+  /// "En la etiqueta de nota"
+  /// ```
+  String get chip => """En la etiqueta de nota""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesEs
@@ -7072,6 +7106,12 @@ Contraseña: pantry-rocks""",
   """settings.truncateItemNames""": """Truncar nombres de artículos largos""",
   """settings.truncateItemNamesBody""":
       """Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.""",
+  """settings.itemDescription""": """Descripción en los artículos""",
+  """settings.itemDescriptionBody""":
+      """Dónde se muestra la descripción de un artículo en su fila. Una descripción demasiado larga termina con puntos suspensivos en ambos casos.""",
+  """settings.itemDescriptionNames.off""": """Solo el icono de nota""",
+  """settings.itemDescriptionNames.line""": """En su propia línea""",
+  """settings.itemDescriptionNames.chip""": """En la etiqueta de nota""",
   """settings.reuseExistingItems""":
       """Reutilizar artículos existentes al añadir""",
   """settings.reuseExistingItemsBody""":

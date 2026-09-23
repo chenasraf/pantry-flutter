@@ -72,6 +72,11 @@ class EntityChip extends StatelessWidget {
   /// When set the chip becomes tappable. Inert otherwise.
   final VoidCallback? onTap;
 
+  /// Caps the label's height, ellipsising what doesn't fit. Null lets a long
+  /// label wrap to as many lines as it needs, which is right for an entity's
+  /// name; a chip carrying prose the user wrote wants a cap instead.
+  final int? maxLines;
+
   final ChipDensity density;
 
   const EntityChip({
@@ -81,6 +86,7 @@ class EntityChip extends StatelessWidget {
     required this.textColor,
     this.background,
     this.onTap,
+    this.maxLines,
     this.density = ChipDensity.comfortable,
   });
 
@@ -110,6 +116,8 @@ class EntityChip extends StatelessWidget {
             Flexible(
               child: Text(
                 label!,
+                maxLines: maxLines,
+                overflow: maxLines == null ? null : TextOverflow.ellipsis,
                 style: TextStyle(
                   color: textColor,
                   fontSize: density.fontSize,

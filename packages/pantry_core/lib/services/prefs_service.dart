@@ -41,6 +41,8 @@ class PrefsService extends ChangeNotifier {
   static const _swipeActionsEnabledKey = 'swipe_actions_enabled';
   static const _startShoppingFabEnabledKey = 'start_shopping_fab_enabled';
   static const _truncateItemNamesKey = 'truncate_item_names';
+  static const _itemDescriptionDisplayKey = 'item_description_display';
+  static const _validItemDescriptionDisplays = {'off', 'line', 'chip'};
   static const _checklistListFilterKey = 'checklist_list_filter';
   static const _hiddenItemChipsKey = 'hidden_item_chips';
   static const _checklistDoneCollapsedKey = 'checklist_done_collapsed';
@@ -184,6 +186,19 @@ class PrefsService extends ChangeNotifier {
   /// each item name is kept to a single line and truncated with an ellipsis.
   bool _truncateItemNames = false;
   bool get truncateItemNames => _truncateItemNames;
+
+  /// How much of an item's description its row shows: "off" (default) marks an
+  /// item that has one with a note icon alone; "line" opens it on its own line
+  /// under the item's name; "chip" writes it into the note chip beside the
+  /// item's other details. Either of the latter two truncates rather than
+  /// growing the row — the line has the row's full width and so shows the
+  /// most, the chip a share of it and so keeps the row one line tall.
+  ///
+  /// Off by default because description text on every described item is a
+  /// busier list than most people want, and the ones who want it are the ones
+  /// who keep short facts there ("1.5%", "fresh") rather than paragraphs.
+  String _itemDescriptionDisplay = 'off';
+  String get itemDescriptionDisplay => _itemDescriptionDisplay;
 
   /// Selected list IDs for the All-lists view's per-list filter. Empty means
   /// "all lists". Local-only (not synced) so each device keeps its own focus.
@@ -454,6 +469,12 @@ class PrefsService extends ChangeNotifier {
       _truncateItemNames = truncateItemNames == 'true';
     }
 
+    final descriptionDisplay = all[_itemDescriptionDisplayKey];
+    if (descriptionDisplay != null &&
+        _validItemDescriptionDisplays.contains(descriptionDisplay)) {
+      _itemDescriptionDisplay = descriptionDisplay;
+    }
+
     final listFilter = all[_checklistListFilterKey];
     if (listFilter != null && listFilter.isNotEmpty) {
       _checklistListFilter = listFilter
@@ -633,6 +654,7 @@ class PrefsService extends ChangeNotifier {
     _swipeActionsEnabled = true;
     _startShoppingFabEnabled = true;
     _truncateItemNames = false;
+    _itemDescriptionDisplay = 'off';
     _checklistListFilter = {};
     _hiddenItemChips = {};
     _checklistDoneCollapsed = true;
@@ -677,6 +699,7 @@ class PrefsService extends ChangeNotifier {
       _swipeActionsEnabledKey,
       _startShoppingFabEnabledKey,
       _truncateItemNamesKey,
+      _itemDescriptionDisplayKey,
       _checklistListFilterKey,
       _hiddenItemChipsKey,
       _checklistDoneCollapsedKey,

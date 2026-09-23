@@ -1269,6 +1269,19 @@ class SettingsMessagesHe extends SettingsMessages {
       """שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.""";
 
   /// ```dart
+  /// "תיאור על פריטים"
+  /// ```
+  String get itemDescription => """תיאור על פריטים""";
+
+  /// ```dart
+  /// "היכן מוצג התיאור של פריט בשורה שלו. תיאור ארוך מדי מסתיים בשלוש נקודות בשני המקרים."
+  /// ```
+  String get itemDescriptionBody =>
+      """היכן מוצג התיאור של פריט בשורה שלו. תיאור ארוך מדי מסתיים בשלוש נקודות בשני המקרים.""";
+  ItemDescriptionNamesSettingsMessagesHe get itemDescriptionNames =>
+      ItemDescriptionNamesSettingsMessagesHe(this);
+
+  /// ```dart
   /// "שימוש חוזר בפריטים קיימים בעת הוספה"
   /// ```
   String get reuseExistingItems => """שימוש חוזר בפריטים קיימים בעת הוספה""";
@@ -1630,6 +1643,27 @@ class DensityNamesSettingsMessagesHe extends DensityNamesSettingsMessages {
   /// "צפופה מאוד"
   /// ```
   String get compact => """צפופה מאוד""";
+}
+
+class ItemDescriptionNamesSettingsMessagesHe
+    extends ItemDescriptionNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const ItemDescriptionNamesSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "סמל פתק בלבד"
+  /// ```
+  String get off => """סמל פתק בלבד""";
+
+  /// ```dart
+  /// "בשורה נפרדת"
+  /// ```
+  String get line => """בשורה נפרדת""";
+
+  /// ```dart
+  /// "בתגית הפתק"
+  /// ```
+  String get chip => """בתגית הפתק""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesHe
@@ -6998,6 +7032,12 @@ Map<String, String> get messagesHeMap => {
   """settings.truncateItemNames""": """קיצור שמות פריטים ארוכים""",
   """settings.truncateItemNamesBody""":
       """שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.""",
+  """settings.itemDescription""": """תיאור על פריטים""",
+  """settings.itemDescriptionBody""":
+      """היכן מוצג התיאור של פריט בשורה שלו. תיאור ארוך מדי מסתיים בשלוש נקודות בשני המקרים.""",
+  """settings.itemDescriptionNames.off""": """סמל פתק בלבד""",
+  """settings.itemDescriptionNames.line""": """בשורה נפרדת""",
+  """settings.itemDescriptionNames.chip""": """בתגית הפתק""",
   """settings.reuseExistingItems""": """שימוש חוזר בפריטים קיימים בעת הוספה""",
   """settings.reuseExistingItemsBody""":
       """כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים.""",

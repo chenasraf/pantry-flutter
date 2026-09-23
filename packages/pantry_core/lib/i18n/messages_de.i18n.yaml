@@ -249,6 +249,12 @@ settings:
   startShoppingButtonBody: Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.
   truncateItemNames: Lange Eintragsnamen kürzen
   truncateItemNamesBody: Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.
+  itemDescription: Beschreibung bei Einträgen
+  itemDescriptionBody: Wo die Beschreibung eines Eintrags in seiner Zeile erscheint. Eine zu lange Beschreibung endet in beiden Fällen mit Auslassungspunkten.
+  itemDescriptionNames:
+    off: Nur Notizsymbol
+    line: In einer eigenen Zeile
+    chip: Im Notiz-Chip
   reuseExistingItems: Vorhandene Einträge beim Hinzufügen wiederverwenden
   reuseExistingItemsBody: "Wenn du einen Eintrag hinzufügst, der bereits in der Liste vorhanden ist, wird dieser Eintrag wiederverwendet."
   reuseExistingItemsNames:

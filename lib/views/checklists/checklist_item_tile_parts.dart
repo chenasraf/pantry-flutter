@@ -22,6 +22,7 @@ import 'package:pantry_core/utils/color.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/widgets/description_detail_dialog.dart';
+import 'package:pantry/widgets/item_description.dart';
 import 'package:pantry/widgets/item_thumb.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 import 'package:pantry/widgets/store_detail_dialog.dart';
@@ -145,6 +146,15 @@ class ChecklistTileRowContent extends StatelessWidget {
     final checked = item.done;
     final prefs = context.watch<PrefsService>();
     final checkboxAtEnd = prefs.checklistCheckboxPosition == 'end';
+    final description = itemDescription(item, prefs);
+    final descriptionLine =
+        description?.placement == ItemDescriptionPlacement.line
+        ? description!.text
+        : null;
+    final descriptionChip =
+        description?.placement == ItemDescriptionPlacement.chip
+        ? description!.text
+        : null;
 
     final nameStyle = TextStyle(
       fontSize: 16.5,
@@ -239,7 +249,22 @@ class ChecklistTileRowContent extends StatelessWidget {
                               ? TextOverflow.ellipsis
                               : null,
                         ),
-                        if (_hasMeta(prefs)) ...[
+                        if (descriptionLine != null) ...[
+                          SizedBox(height: density.metaGap),
+                          ItemDescriptionLine(
+                            text: descriptionLine,
+                            // In selection mode the row's job is to toggle
+                            // selection, so nothing inside it may open a
+                            // dialog over the list being selected from.
+                            onTap: selectionMode || suggestion
+                                ? null
+                                : () => _showDescription(context),
+                          ),
+                        ],
+                        if (_hasMeta(
+                          prefs,
+                          hideNote: descriptionLine != null,
+                        )) ...[
                           SizedBox(height: density.metaGap),
                           _MetaRow(
                             item: item,
@@ -249,6 +274,8 @@ class ChecklistTileRowContent extends StatelessWidget {
                             catColor: catColor,
                             listBadge: listBadge,
                             priceStoreContext: priceStoreContext,
+                            hideNote: descriptionLine != null,
+                            noteLabel: descriptionChip,
                           ),
                         ],
                       ],
@@ -285,7 +312,25 @@ class ChecklistTileRowContent extends StatelessWidget {
     );
   }
 
-  bool _hasMeta(PrefsService prefs) {
+  /// Opens the item's description in full, editable when the user may edit
+  /// this item — the same dialog the note chip opens.
+  void _showDescription(BuildContext context) {
+    final controller = context.read<ChecklistsController>();
+    final canToggle =
+        controller.isItemWritable(item) && controller.permissions.canEditLists;
+    showItemDescription(
+      context,
+      item.description!,
+      onChanged: canToggle
+          ? (updated) => controller.updateItem(item, description: updated)
+          : null,
+    );
+  }
+
+  /// Whether the chip row has anything to draw. [hideNote] when the
+  /// description already has its own line, so an item whose only detail is a
+  /// description doesn't reserve a gap for an empty row of chips.
+  bool _hasMeta(PrefsService prefs, {required bool hideNote}) {
     final hasCat =
         category != null &&
         !hideCategory &&
@@ -303,6 +348,7 @@ class ChecklistTileRowContent extends StatelessWidget {
         hasFeature('item-price') &&
         prefs.isItemChipVisible(ItemChipKind.price.key);
     final hasDesc =
+        !hideNote &&
         item.description != null &&
         item.description!.trim().isNotEmpty &&
         prefs.isItemChipVisible(ItemChipKind.note.key);
@@ -406,6 +452,14 @@ class _MetaRow extends StatelessWidget {
   final ItemListBadge? listBadge;
   final int? priceStoreContext;
 
+  /// The description is already drawn on its own line above, so the note chip
+  /// would only repeat it.
+  final bool hideNote;
+
+  /// The description, written into the note chip instead of left to its icon.
+  /// Null keeps the chip an icon alone.
+  final String? noteLabel;
+
   const _MetaRow({
     required this.item,
     required this.category,
@@ -414,6 +468,8 @@ class _MetaRow extends StatelessWidget {
     required this.catColor,
     required this.listBadge,
     this.priceStoreContext,
+    this.hideNote = false,
+    this.noteLabel,
   });
 
   @override
@@ -502,13 +558,12 @@ class _MetaRow extends StatelessWidget {
             textColor: cs.onSurfaceVariant,
             background: cs.onSurface.withValues(alpha: 0.06),
           ),
-        if (item.description != null &&
+        if (!hideNote &&
+            item.description != null &&
             item.description!.trim().isNotEmpty &&
             prefs.isItemChipVisible(ItemChipKind.note.key))
-          EntityChip(
-            leading: Icon(Icons.notes, size: 16, color: cs.onSurfaceVariant),
-            textColor: cs.onSurfaceVariant,
-            background: cs.onSurface.withValues(alpha: 0.06),
+          ItemDescriptionChip(
+            text: noteLabel,
             onTap: () {
               final controller = context.read<ChecklistsController>();
               final canToggle =

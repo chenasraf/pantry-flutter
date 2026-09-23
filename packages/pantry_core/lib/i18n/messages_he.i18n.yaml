@@ -249,6 +249,12 @@ settings:
   startShoppingButtonBody: הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט.
   truncateItemNames: קיצור שמות פריטים ארוכים
   truncateItemNamesBody: שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.
+  itemDescription: תיאור על פריטים
+  itemDescriptionBody: היכן מוצג התיאור של פריט בשורה שלו. תיאור ארוך מדי מסתיים בשלוש נקודות בשני המקרים.
+  itemDescriptionNames:
+    off: סמל פתק בלבד
+    line: בשורה נפרדת
+    chip: בתגית הפתק
   reuseExistingItems: שימוש חוזר בפריטים קיימים בעת הוספה
   reuseExistingItemsBody: "כשמנסים להוסיף פריט שכבר קיים ברשימה, השתמש בפריט הקיים."
   reuseExistingItemsNames:

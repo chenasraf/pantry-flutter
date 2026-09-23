@@ -15,18 +15,19 @@ import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
+import 'package:pantry/widgets/item_description.dart';
 import 'package:pantry/widgets/item_thumb.dart';
 
 /// A single to-buy row.
 ///
-/// Built from the same pieces as a checklist row — the item's picture and its
-/// chips — so an item is recognised in the aisle by what it looks like on the
-/// list. What differs is what a tap means: here the whole row checks the item
-/// off, whatever `defaultItemTapAction` says elsewhere, because that is the one
-/// thing a shopper does over and over with a phone in one hand. Reaching the
-/// item itself is the trailing button's job, and no chip takes a tap, so the
-/// only thing in the middle of the row that claims the gesture is the picture,
-/// which opens full-screen for a shopper checking they have the right tin.
+/// Built from the same pieces as a checklist row — the item's picture, its
+/// description line and its chips — so an item is recognised in the aisle by
+/// what it looks like on the list. What differs is what a tap means: here the
+/// whole row checks the item off, whatever `defaultItemTapAction` says
+/// elsewhere, because that is the one thing a shopper does over and over with a
+/// phone in one hand. Reaching the item itself is the trailing button's job,
+/// and nothing in the middle of the row takes a tap except the picture, which
+/// opens full-screen for a shopper checking they have the right tin.
 ///
 /// Swiping the row aside removes the item from this trip only (see [onSkip]).
 class ShoppingItemRow extends StatelessWidget {
@@ -52,7 +53,20 @@ class ShoppingItemRow extends StatelessWidget {
     // The store leg being walked, so a row shows this store's price rather than
     // always the store-less default.
     final storeContext = controller.session.activeStoreId;
-    final chips = _chips(context, prefs, storeContext);
+    final description = itemDescription(item, prefs);
+    final descriptionLine =
+        description?.placement == ItemDescriptionPlacement.line
+        ? description!.text
+        : null;
+    final chips = _chips(
+      context,
+      prefs,
+      storeContext,
+      hideNote: descriptionLine != null,
+      noteLabel: description?.placement == ItemDescriptionPlacement.chip
+          ? description!.text
+          : null,
+    );
 
     return Dismissible(
       key: ValueKey('skip-${item.id}'),
@@ -92,6 +106,13 @@ class ShoppingItemRow extends StatelessWidget {
                       textDirection: detectTextDirection(item.name),
                       style: theme.textTheme.bodyLarge,
                     ),
+                    if (descriptionLine != null) ...[
+                      const SizedBox(height: 5),
+                      // Inert, like the chips: the row's tap is the shopper's
+                      // one repeated gesture, and the trailing button is how
+                      // the description is read in full.
+                      ItemDescriptionLine(text: descriptionLine),
+                    ],
                     if (chips.isNotEmpty) ...[
                       const SizedBox(height: 5),
                       Wrap(spacing: 7, runSpacing: 4, children: chips),
@@ -122,8 +143,10 @@ class ShoppingItemRow extends StatelessWidget {
   List<Widget> _chips(
     BuildContext context,
     PrefsService prefs,
-    int? storeContext,
-  ) {
+    int? storeContext, {
+    required bool hideNote,
+    String? noteLabel,
+  }) {
     final cs = Theme.of(context).colorScheme;
     final chips = <Widget>[];
 
@@ -167,16 +190,11 @@ class ShoppingItemRow extends StatelessWidget {
     }
 
     final description = item.description;
-    if (description != null &&
+    if (!hideNote &&
+        description != null &&
         description.trim().isNotEmpty &&
         prefs.isItemChipVisible(ItemChipKind.note.key)) {
-      chips.add(
-        EntityChip(
-          leading: Icon(Icons.notes, size: 16, color: cs.onSurfaceVariant),
-          textColor: cs.onSurfaceVariant,
-          background: cs.onSurface.withValues(alpha: 0.06),
-        ),
-      );
+      chips.add(ItemDescriptionChip(text: noteLabel));
     }
 
     final lifecycle = lifecycleOf(item);

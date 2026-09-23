@@ -1283,6 +1283,19 @@ class SettingsMessagesFr extends SettingsMessages {
       """Garde chaque nom d'article sur une seule ligne, se terminant par des points de suspension. Désactivé, les noms longs passent sur plusieurs lignes.""";
 
   /// ```dart
+  /// "Description sur les articles"
+  /// ```
+  String get itemDescription => """Description sur les articles""";
+
+  /// ```dart
+  /// "Où la description d'un article apparaît sur sa ligne. Une description trop longue se termine par des points de suspension dans les deux cas."
+  /// ```
+  String get itemDescriptionBody =>
+      """Où la description d'un article apparaît sur sa ligne. Une description trop longue se termine par des points de suspension dans les deux cas.""";
+  ItemDescriptionNamesSettingsMessagesFr get itemDescriptionNames =>
+      ItemDescriptionNamesSettingsMessagesFr(this);
+
+  /// ```dart
   /// "Réutiliser les articles existants lors de l'ajout"
   /// ```
   String get reuseExistingItems =>
@@ -1648,6 +1661,27 @@ class DensityNamesSettingsMessagesFr extends DensityNamesSettingsMessages {
   /// "Très compacte"
   /// ```
   String get compact => """Très compacte""";
+}
+
+class ItemDescriptionNamesSettingsMessagesFr
+    extends ItemDescriptionNamesSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const ItemDescriptionNamesSettingsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Icône de note seule"
+  /// ```
+  String get off => """Icône de note seule""";
+
+  /// ```dart
+  /// "Sur sa propre ligne"
+  /// ```
+  String get line => """Sur sa propre ligne""";
+
+  /// ```dart
+  /// "Dans l'étiquette de note"
+  /// ```
+  String get chip => """Dans l'étiquette de note""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesFr
@@ -7087,6 +7121,12 @@ Mot de passe : pantry-rocks""",
   """settings.truncateItemNames""": """Tronquer les noms d'articles longs""",
   """settings.truncateItemNamesBody""":
       """Garde chaque nom d'article sur une seule ligne, se terminant par des points de suspension. Désactivé, les noms longs passent sur plusieurs lignes.""",
+  """settings.itemDescription""": """Description sur les articles""",
+  """settings.itemDescriptionBody""":
+      """Où la description d'un article apparaît sur sa ligne. Une description trop longue se termine par des points de suspension dans les deux cas.""",
+  """settings.itemDescriptionNames.off""": """Icône de note seule""",
+  """settings.itemDescriptionNames.line""": """Sur sa propre ligne""",
+  """settings.itemDescriptionNames.chip""": """Dans l'étiquette de note""",
   """settings.reuseExistingItems""":
       """Réutiliser les articles existants lors de l'ajout""",
   """settings.reuseExistingItemsBody""":

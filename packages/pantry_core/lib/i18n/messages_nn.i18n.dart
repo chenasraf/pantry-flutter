@@ -1275,6 +1275,19 @@ class SettingsMessagesNn extends SettingsMessages {
       """Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med ellipse. Når slått av, bryt lange namn over fleire linjer.""";
 
   /// ```dart
+  /// "Skildring på oppføringar"
+  /// ```
+  String get itemDescription => """Skildring på oppføringar""";
+
+  /// ```dart
+  /// "Kvar skildringa til ei oppføring blir vist i linja hennar. Ei skildring som er for lang, sluttar med ellipse i begge tilfelle."
+  /// ```
+  String get itemDescriptionBody =>
+      """Kvar skildringa til ei oppføring blir vist i linja hennar. Ei skildring som er for lang, sluttar med ellipse i begge tilfelle.""";
+  ItemDescriptionNamesSettingsMessagesNn get itemDescriptionNames =>
+      ItemDescriptionNamesSettingsMessagesNn(this);
+
+  /// ```dart
   /// "Bruk eksisterande oppføringar på nytt når du leggjer til nye"
   /// ```
   String get reuseExistingItems =>
@@ -1640,6 +1653,27 @@ class DensityNamesSettingsMessagesNn extends DensityNamesSettingsMessages {
   /// "Ekstra tett"
   /// ```
   String get compact => """Ekstra tett""";
+}
+
+class ItemDescriptionNamesSettingsMessagesNn
+    extends ItemDescriptionNamesSettingsMessages {
+  final SettingsMessagesNn _parent;
+  const ItemDescriptionNamesSettingsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Berre notatikon"
+  /// ```
+  String get off => """Berre notatikon""";
+
+  /// ```dart
+  /// "På si eiga linje"
+  /// ```
+  String get line => """På si eiga linje""";
+
+  /// ```dart
+  /// "I notatmerkelappen"
+  /// ```
+  String get chip => """I notatmerkelappen""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesNn
@@ -7051,6 +7085,12 @@ Passord: pantry""",
   """settings.truncateItemNames""": """Forkort lange oppføringsnamn""",
   """settings.truncateItemNamesBody""":
       """Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med ellipse. Når slått av, bryt lange namn over fleire linjer.""",
+  """settings.itemDescription""": """Skildring på oppføringar""",
+  """settings.itemDescriptionBody""":
+      """Kvar skildringa til ei oppføring blir vist i linja hennar. Ei skildring som er for lang, sluttar med ellipse i begge tilfelle.""",
+  """settings.itemDescriptionNames.off""": """Berre notatikon""",
+  """settings.itemDescriptionNames.line""": """På si eiga linje""",
+  """settings.itemDescriptionNames.chip""": """I notatmerkelappen""",
   """settings.reuseExistingItems""":
       """Bruk eksisterande oppføringar på nytt når du leggjer til nye""",
   """settings.reuseExistingItemsBody""":

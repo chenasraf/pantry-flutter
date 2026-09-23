@@ -1271,6 +1271,19 @@ class SettingsMessages {
       """Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.""";
 
   /// ```dart
+  /// "Description on items"
+  /// ```
+  String get itemDescription => """Description on items""";
+
+  /// ```dart
+  /// "Where an item's description is shown on its row. A description too long to fit ends with an ellipsis either way."
+  /// ```
+  String get itemDescriptionBody =>
+      """Where an item's description is shown on its row. A description too long to fit ends with an ellipsis either way.""";
+  ItemDescriptionNamesSettingsMessages get itemDescriptionNames =>
+      ItemDescriptionNamesSettingsMessages(this);
+
+  /// ```dart
   /// "Reuse existing items when adding"
   /// ```
   String get reuseExistingItems => """Reuse existing items when adding""";
@@ -1626,6 +1639,26 @@ class DensityNamesSettingsMessages {
   /// "Extra dense"
   /// ```
   String get compact => """Extra dense""";
+}
+
+class ItemDescriptionNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const ItemDescriptionNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Note icon only"
+  /// ```
+  String get off => """Note icon only""";
+
+  /// ```dart
+  /// "On its own line"
+  /// ```
+  String get line => """On its own line""";
+
+  /// ```dart
+  /// "In the note chip"
+  /// ```
+  String get chip => """In the note chip""";
 }
 
 class ReuseExistingItemsNamesSettingsMessages {
@@ -7005,6 +7038,12 @@ Password: pantry-rocks""",
   """settings.truncateItemNames""": """Truncate long item names""",
   """settings.truncateItemNamesBody""":
       """Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.""",
+  """settings.itemDescription""": """Description on items""",
+  """settings.itemDescriptionBody""":
+      """Where an item's description is shown on its row. A description too long to fit ends with an ellipsis either way.""",
+  """settings.itemDescriptionNames.off""": """Note icon only""",
+  """settings.itemDescriptionNames.line""": """On its own line""",
+  """settings.itemDescriptionNames.chip""": """In the note chip""",
   """settings.reuseExistingItems""": """Reuse existing items when adding""",
   """settings.reuseExistingItemsBody""":
       """When you try to add an item that already exists in the list, reuse that item.""",

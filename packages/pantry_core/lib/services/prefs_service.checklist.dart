@@ -111,6 +111,17 @@ extension PrefsServiceChecklistSetters on PrefsService {
     notifyListeners();
   }
 
+  Future<void> setItemDescriptionDisplay(String value) async {
+    if (!PrefsService._validItemDescriptionDisplays.contains(value)) return;
+    if (_itemDescriptionDisplay == value) return;
+    _itemDescriptionDisplay = value;
+    await _storage.write(
+      key: PrefsService._itemDescriptionDisplayKey,
+      value: value,
+    );
+    notifyListeners();
+  }
+
   Future<void> setChecklistListFilter(Set<int> ids) async {
     _checklistListFilter = {...ids};
     await _storage.write(

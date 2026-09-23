@@ -137,6 +137,66 @@ void main() {
     expect(find.byType(EntityChip), findsNWidgets(2));
   });
 
+  testWidgets('the description takes a line of its own once asked for', (
+    tester,
+  ) async {
+    await PrefsService.instance.setItemDescriptionDisplay('line');
+    addTearDown(() => PrefsService.instance.setItemDescriptionDisplay('off'));
+    await pumpRow(
+      tester,
+      makeListItem(
+        id: 1,
+        name: 'Milk',
+        quantity: '2 L',
+        description: 'the blue cap one',
+      ),
+    );
+
+    expect(find.text('the blue cap one'), findsOneWidget);
+    // Never both: the icon would only repeat the line beside it, leaving the
+    // quantity as the row's one chip.
+    expect(find.byIcon(Icons.notes), findsNothing);
+    expect(find.byType(EntityChip), findsOneWidget);
+  });
+
+  testWidgets('the description line does not swallow the tap that checks '
+      'the item', (tester) async {
+    await PrefsService.instance.setItemDescriptionDisplay('line');
+    addTearDown(() => PrefsService.instance.setItemDescriptionDisplay('off'));
+    await pumpRow(
+      tester,
+      makeListItem(id: 1, name: 'Milk', description: 'the blue cap one'),
+    );
+
+    await tester.tap(find.text('the blue cap one'));
+    await tester.pump();
+
+    expect(taps['check'], 1);
+    expect(taps['view'], isNull);
+  });
+
+  testWidgets('the note chip can carry the description instead', (
+    tester,
+  ) async {
+    await PrefsService.instance.setItemDescriptionDisplay('chip');
+    addTearDown(() => PrefsService.instance.setItemDescriptionDisplay('off'));
+    await pumpRow(
+      tester,
+      makeListItem(
+        id: 1,
+        name: 'Milk',
+        quantity: '2 L',
+        description: 'the blue cap one',
+      ),
+    );
+
+    expect(find.text('the blue cap one'), findsOneWidget);
+    // Still the chip it always was, so the row keeps its height and its two
+    // details sit side by side.
+    expect(find.byIcon(Icons.notes), findsOneWidget);
+    expect(find.byType(EntityChip), findsNWidgets(2));
+  });
+
   testWidgets('a chip does not swallow the tap that checks the item', (
     tester,
   ) async {

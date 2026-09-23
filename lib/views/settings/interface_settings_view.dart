@@ -21,6 +21,7 @@ class InterfaceSettingsView extends StatelessWidget {
   static const _checkboxPositionOptions = ['start', 'end'];
   static const _composeBarPositionOptions = ['bottom', 'top'];
   static const _densityOptions = ['normal', 'dense', 'compact'];
+  static const _itemDescriptionOptions = ['off', 'line', 'chip'];
   static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
   static const _itemLongPressActionOptions = [
     'multiselect',
@@ -107,6 +108,22 @@ class InterfaceSettingsView extends StatelessWidget {
     'dense' => m.settings.densityNames.dense,
     'compact' => m.settings.densityNames.compact,
     _ => m.settings.densityNames.normal,
+  };
+
+  static Future<void> _setItemDescription(
+    BuildContext context,
+    String? value,
+  ) async {
+    if (value == null) return;
+    final prefs = context.read<PrefsService>();
+    if (value == prefs.itemDescriptionDisplay) return;
+    await prefs.setItemDescriptionDisplay(value);
+  }
+
+  static String _itemDescriptionLabel(String value) => switch (value) {
+    'line' => m.settings.itemDescriptionNames.line,
+    'chip' => m.settings.itemDescriptionNames.chip,
+    _ => m.settings.itemDescriptionNames.off,
   };
 
   // -- Reuse existing items (account-scoped, persisted server-side) --
@@ -217,6 +234,15 @@ class InterfaceSettingsView extends StatelessWidget {
         value: prefs.truncateItemNames,
         onChanged: (value) =>
             context.read<PrefsService>().setTruncateItemNames(value),
+      ),
+      DropdownSettingTile<String>(
+        icon: Icons.subject,
+        title: m.settings.itemDescription,
+        subtitle: m.settings.itemDescriptionBody,
+        value: prefs.itemDescriptionDisplay,
+        options: _itemDescriptionOptions,
+        labelOf: _itemDescriptionLabel,
+        onChanged: (value) => _setItemDescription(context, value),
       ),
       SettingsPageTile(
         icon: Icons.label_outline,

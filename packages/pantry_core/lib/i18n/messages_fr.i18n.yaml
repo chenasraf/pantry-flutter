@@ -249,6 +249,12 @@ settings:
   startShoppingButtonBody: "Affiche le bouton flottant « Commencer les courses » sur l'écran des listes. Désactivé, il passe dans le menu."
   truncateItemNames: Tronquer les noms d'articles longs
   truncateItemNamesBody: "Garde chaque nom d'article sur une seule ligne, se terminant par des points de suspension. Désactivé, les noms longs passent sur plusieurs lignes."
+  itemDescription: "Description sur les articles"
+  itemDescriptionBody: "Où la description d'un article apparaît sur sa ligne. Une description trop longue se termine par des points de suspension dans les deux cas."
+  itemDescriptionNames:
+    off: "Icône de note seule"
+    line: "Sur sa propre ligne"
+    chip: "Dans l'étiquette de note"
   reuseExistingItems: "Réutiliser les articles existants lors de l'ajout"
   reuseExistingItemsBody: "Lorsque vous ajoutez un article qui existe déjà dans la liste, réutiliser cet article."
   reuseExistingItemsNames:

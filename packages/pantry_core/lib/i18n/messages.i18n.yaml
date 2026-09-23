@@ -249,6 +249,12 @@ settings:
   startShoppingButtonBody: Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu.
   truncateItemNames: Truncate long item names
   truncateItemNamesBody: Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.
+  itemDescription: Description on items
+  itemDescriptionBody: Where an item's description is shown on its row. A description too long to fit ends with an ellipsis either way.
+  itemDescriptionNames:
+    off: Note icon only
+    line: On its own line
+    chip: In the note chip
   reuseExistingItems: Reuse existing items when adding
   reuseExistingItemsBody: "When you try to add an item that already exists in the list, reuse that item."
   reuseExistingItemsNames:

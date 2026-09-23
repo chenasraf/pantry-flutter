@@ -1279,6 +1279,19 @@ class SettingsMessagesDe extends SettingsMessages {
       """Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.""";
 
   /// ```dart
+  /// "Beschreibung bei Einträgen"
+  /// ```
+  String get itemDescription => """Beschreibung bei Einträgen""";
+
+  /// ```dart
+  /// "Wo die Beschreibung eines Eintrags in seiner Zeile erscheint. Eine zu lange Beschreibung endet in beiden Fällen mit Auslassungspunkten."
+  /// ```
+  String get itemDescriptionBody =>
+      """Wo die Beschreibung eines Eintrags in seiner Zeile erscheint. Eine zu lange Beschreibung endet in beiden Fällen mit Auslassungspunkten.""";
+  ItemDescriptionNamesSettingsMessagesDe get itemDescriptionNames =>
+      ItemDescriptionNamesSettingsMessagesDe(this);
+
+  /// ```dart
   /// "Vorhandene Einträge beim Hinzufügen wiederverwenden"
   /// ```
   String get reuseExistingItems =>
@@ -1643,6 +1656,27 @@ class DensityNamesSettingsMessagesDe extends DensityNamesSettingsMessages {
   /// "Sehr kompakt"
   /// ```
   String get compact => """Sehr kompakt""";
+}
+
+class ItemDescriptionNamesSettingsMessagesDe
+    extends ItemDescriptionNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const ItemDescriptionNamesSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Nur Notizsymbol"
+  /// ```
+  String get off => """Nur Notizsymbol""";
+
+  /// ```dart
+  /// "In einer eigenen Zeile"
+  /// ```
+  String get line => """In einer eigenen Zeile""";
+
+  /// ```dart
+  /// "Im Notiz-Chip"
+  /// ```
+  String get chip => """Im Notiz-Chip""";
 }
 
 class ReuseExistingItemsNamesSettingsMessagesDe
@@ -7086,6 +7120,12 @@ Passwort: pantry-rocks""",
   """settings.truncateItemNames""": """Lange Eintragsnamen kürzen""",
   """settings.truncateItemNamesBody""":
       """Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.""",
+  """settings.itemDescription""": """Beschreibung bei Einträgen""",
+  """settings.itemDescriptionBody""":
+      """Wo die Beschreibung eines Eintrags in seiner Zeile erscheint. Eine zu lange Beschreibung endet in beiden Fällen mit Auslassungspunkten.""",
+  """settings.itemDescriptionNames.off""": """Nur Notizsymbol""",
+  """settings.itemDescriptionNames.line""": """In einer eigenen Zeile""",
+  """settings.itemDescriptionNames.chip""": """Im Notiz-Chip""",
   """settings.reuseExistingItems""":
       """Vorhandene Einträge beim Hinzufügen wiederverwenden""",
   """settings.reuseExistingItemsBody""":

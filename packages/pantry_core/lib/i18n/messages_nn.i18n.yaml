@@ -328,6 +328,14 @@ settings:
   truncateItemNamesBody:
     Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med
     ellipse. Når slått av, bryt lange namn over fleire linjer.
+  itemDescription: Skildring på oppføringar
+  itemDescriptionBody:
+    Kvar skildringa til ei oppføring blir vist i linja hennar. Ei
+    skildring som er for lang, sluttar med ellipse i begge tilfelle.
+  itemDescriptionNames:
+    off: Berre notatikon
+    line: På si eiga linje
+    chip: I notatmerkelappen
   reuseExistingItems: Bruk eksisterande oppføringar på nytt når du leggjer til nye
   reuseExistingItemsBody:
     "Når du prøver å leggje til ei oppføring som allereie finst,
