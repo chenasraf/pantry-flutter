@@ -818,7 +818,12 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       ],
     ];
 
-    final border = BorderSide(color: cs.outlineVariant.withValues(alpha: 0.4));
+    // The separator divides the bar from the list it has expanded over. A
+    // resting bar is floating above that list rather than cutting across it,
+    // and a line along its edge reads as a seam to nothing.
+    final border = _active
+        ? BorderSide(color: cs.outlineVariant.withValues(alpha: 0.4))
+        : BorderSide.none;
 
     // An expanded bar is its own layer as far as the user is concerned, so the
     // platform's "go back" gestures collapse it instead of leaving the route.
@@ -834,7 +839,11 @@ class ItemComposeBarState extends State<ItemComposeBar> {
                 dismissKeepingDraft,
         },
         child: Material(
-          color: cs.surface,
+          // The input carries its own filled pill, so a resting bar needs no
+          // backdrop of its own — it floats over the list like everything else
+          // anchored to the bottom edge. Expanding turns it into a layer, and
+          // a layer has to be opaque over what it covers.
+          color: _active ? cs.surface : Colors.transparent,
           child: Container(
             decoration: BoxDecoration(
               border: widget.onTop

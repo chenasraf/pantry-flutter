@@ -1,6 +1,7 @@
 ---
 common:
   appTitle: Pantry
+  add: Legg til
   cancel: Avbryt
   delete: Slett
   save: Lagre
@@ -90,6 +91,7 @@ home:
   learnMore: Lær meir
 nav:
   checklists: Sjekkliste
+  checklist: Sjekkliste
   photoBoard: Fotovegg
   notesWall: Notatvegg
 

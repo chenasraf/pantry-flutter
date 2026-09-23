@@ -30,7 +30,7 @@ import 'package:pantry/widgets/no_houses_view.dart';
 import 'package:pantry/widgets/notifications_bell.dart';
 import 'package:pantry/widgets/server_app_missing_view.dart';
 import 'package:pantry/widgets/user_menu_button.dart';
-import 'home_bottom_nav.dart';
+import 'home_floating_nav.dart';
 import 'home_controller.dart';
 
 class HomeView extends StatefulWidget {
@@ -97,6 +97,20 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   // and only its content swaps.
   final ValueNotifier<ChecklistsAppBarSpec?> _checklistsAppBarSpec =
       ValueNotifier(null);
+  // What each section offers the floating nav's trailing button, and whether it
+  // has taken the bottom edge for itself (a focused compose bar, a selection
+  // action bar) — in which case the nav gets out of the way.
+  final Map<NavSection, ValueNotifier<NavPrimaryAction?>> _tabActions = {
+    for (final s in NavSection.values) s: ValueNotifier(null),
+  };
+  final Map<NavSection, ValueNotifier<bool>> _tabEdgeClaimed = {
+    for (final s in NavSection.values) s: ValueNotifier(false),
+  };
+  // Endpoints of a move that skips over destinations. The page animates
+  // through the ones in between, and without knowing where the move started
+  // and ends the nav would read their distance to the page and light each one
+  // up on the way past.
+  final ValueNotifier<({int from, int to})?> _navJump = ValueNotifier(null);
 
   @override
   void initState() {
@@ -155,6 +169,13 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     for (final c in _tabScrollers.values) {
       c.dispose();
     }
+    for (final n in _tabActions.values) {
+      n.dispose();
+    }
+    for (final n in _tabEdgeClaimed.values) {
+      n.dispose();
+    }
+    _navJump.dispose();
     _checklistsAppBarSpec.dispose();
     super.dispose();
   }
@@ -245,11 +266,22 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   void _goToTab(int index) {
     if (index == _tabIndex) return;
     if (_pageController.hasClients) {
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 280),
-        curve: Curves.easeInOut,
-      );
+      final jump = (index - _tabIndex).abs() > 1
+          ? (from: _tabIndex, to: index)
+          : null;
+      if (jump != null) _navJump.value = jump;
+      _pageController
+          .animateToPage(
+            index,
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeInOut,
+          )
+          // Only retire our own move: a second one started mid-flight owns the
+          // endpoints now, and clearing them would drop its indicator back onto
+          // the destinations it is passing over.
+          .whenComplete(() {
+            if (_navJump.value == jump) _navJump.value = null;
+          });
     } else {
       setState(() => _tabIndex = index);
     }
@@ -397,10 +429,76 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     _tabRefreshers[section]?.value?.call();
   }
 
+  /// Lays the floating nav over [child] and reserves the strip it obscures, so
+  /// a section's last row stays reachable under the bar.
+  ///
+  /// The reserve rides on `MediaQuery.padding.bottom`, stacked on top of the
+  /// system navigation inset: sections spend it as trailing scroll padding and
+  /// as the offset of anything they anchor to the bottom edge. It is deliberately
+  /// not a `SafeArea` — content is meant to pass under the translucent bar, not
+  /// stop above it.
+  ///
+  /// [destinations] is empty where something else already switches sections
+  /// (the wide layout's rail), leaving the bar to carry the primary action
+  /// alone.
+  Widget _withFloatingNav({
+    required Widget child,
+    required NavSection section,
+    required List<NavDestination> destinations,
+    required int tabIndex,
+  }) {
+    return ValueListenableBuilder<NavPrimaryAction?>(
+      valueListenable: _tabActions[section]!,
+      builder: (context, action, _) => ValueListenableBuilder<bool>(
+        valueListenable: _tabEdgeClaimed[section]!,
+        builder: (context, edgeClaimed, _) {
+          final drawsBar = destinations.length > 1 || action != null;
+          final visible = drawsBar && !edgeClaimed;
+          final mq = MediaQuery.of(context);
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: MediaQuery(
+                  data: mq.copyWith(
+                    padding: mq.padding.copyWith(
+                      bottom:
+                          mq.padding.bottom +
+                          (visible ? kFloatingNavReserve : 0),
+                    ),
+                  ),
+                  child: child,
+                ),
+              ),
+              if (drawsBar)
+                Positioned.fill(
+                  child: HomeFloatingNav(
+                    pageController: _pageController,
+                    jump: _navJump,
+                    currentIndex: tabIndex,
+                    onTap: _goToTab,
+                    destinations: destinations,
+                    action: action,
+                    visible: visible,
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   String _sectionTitle(NavSection s) => switch (s) {
     NavSection.checklists => m.nav.checklists,
     NavSection.photoBoard => m.nav.photoBoard,
     NavSection.notesWall => m.nav.notesWall,
+  };
+
+  /// The floating bar names the one list in front of you, where the rail names
+  /// the section that holds them all.
+  String _sectionNavLabel(NavSection s) => switch (s) {
+    NavSection.checklists => m.nav.checklist,
+    _ => _sectionTitle(s),
   };
 
   IconData _sectionIcon(NavSection s) => switch (s) {
@@ -430,7 +528,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         if (_sectionVisible(s, permissions)) s,
     ];
     final destinations = [
-      for (final s in order) (icon: _sectionIcon(s), label: _sectionTitle(s)),
+      for (final s in order)
+        (icon: _sectionIcon(s), label: _sectionNavLabel(s)),
     ];
 
     return Provider<HousePermissions>.value(
@@ -542,10 +641,10 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                             ? const SizedBox(height: 24)
                             : null,
                         destinations: [
-                          for (final d in destinations)
+                          for (final s in order)
                             NavigationRailDestination(
-                              icon: Icon(d.icon),
-                              label: Text(d.label),
+                              icon: Icon(_sectionIcon(s)),
+                              label: Text(_sectionTitle(s)),
                             ),
                         ],
                       ),
@@ -556,11 +655,16 @@ class _HomeViewBodyState extends State<_HomeViewBody>
                         children: [
                           appBar,
                           Expanded(
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: isChecklistsTab ? 0 : 16,
+                            child: _withFloatingNav(
+                              section: currentSection,
+                              destinations: const [],
+                              tabIndex: tabIndex,
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: isChecklistsTab ? 0 : 16,
+                                ),
+                                child: body,
                               ),
-                              child: body,
                             ),
                           ),
                         ],
@@ -574,19 +678,12 @@ class _HomeViewBodyState extends State<_HomeViewBody>
 
           return Scaffold(
             appBar: appBar,
-            // Android draws its system navigation over the app. The bottom bar
-            // normally reserves that inset for everything anchored to the
-            // bottom of a tab (compose bar, action bars, floating buttons);
-            // without the bar the tab has to reserve it itself.
-            body: showNav ? body : SafeArea(top: false, child: body),
-            bottomNavigationBar: showNav
-                ? AnimatedBottomNav(
-                    pageController: _pageController,
-                    currentIndex: tabIndex,
-                    onTap: _goToTab,
-                    destinations: destinations,
-                  )
-                : null,
+            body: _withFloatingNav(
+              section: currentSection,
+              destinations: showNav ? destinations : const [],
+              tabIndex: tabIndex,
+              child: body,
+            ),
           );
         },
       ),
@@ -637,18 +734,22 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         refreshHolder: _tabRefreshers[NavSection.checklists]!,
         appBarSpecHolder: _checklistsAppBarSpec,
         scrollController: _tabScrollers[NavSection.checklists]!,
+        navActionHolder: _tabActions[NavSection.checklists]!,
+        edgeClaimedHolder: _tabEdgeClaimed[NavSection.checklists]!,
       ),
       NavSection.photoBoard => PhotoBoardView(
         key: ValueKey('photos-$houseId'),
         houseId: houseId,
         refreshHolder: _tabRefreshers[NavSection.photoBoard]!,
         scrollController: _tabScrollers[NavSection.photoBoard]!,
+        navActionHolder: _tabActions[NavSection.photoBoard]!,
       ),
       NavSection.notesWall => NotesWallView(
         key: ValueKey('notes-$houseId'),
         houseId: houseId,
         refreshHolder: _tabRefreshers[NavSection.notesWall]!,
         scrollController: _tabScrollers[NavSection.notesWall]!,
+        navActionHolder: _tabActions[NavSection.notesWall]!,
       ),
     };
     final pages = [for (final s in order) pageFor(s)];

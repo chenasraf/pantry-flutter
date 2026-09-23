@@ -101,6 +101,11 @@ class CommonMessagesNn extends CommonMessages {
   String get appTitle => """Pantry""";
 
   /// ```dart
+  /// "Legg til"
+  /// ```
+  String get add => """Legg til""";
+
+  /// ```dart
   /// "Avbryt"
   /// ```
   String get cancel => """Avbryt""";
@@ -429,6 +434,11 @@ class NavMessagesNn extends NavMessages {
   /// "Sjekkliste"
   /// ```
   String get checklists => """Sjekkliste""";
+
+  /// ```dart
+  /// "Sjekkliste"
+  /// ```
+  String get checklist => """Sjekkliste""";
 
   /// ```dart
   /// "Fotovegg"
@@ -6734,6 +6744,7 @@ class WatchTipsMessagesNn extends WatchTipsMessages {
 
 Map<String, String> get messagesNnMap => {
   """common.appTitle""": """Pantry""",
+  """common.add""": """Legg til""",
   """common.cancel""": """Avbryt""",
   """common.delete""": """Slett""",
   """common.save""": """Lagre""",
@@ -6804,6 +6815,7 @@ Fullfør innlogginga i nettlesaren din.""",
   """home.openAppStore""": """Opne Nextcloud appar""",
   """home.learnMore""": """Lær meir""",
   """nav.checklists""": """Sjekkliste""",
+  """nav.checklist""": """Sjekkliste""",
   """nav.photoBoard""": """Fotovegg""",
   """nav.notesWall""": """Notatvegg""",
   """widget.chooseListsTitle""": """Vel lister""",

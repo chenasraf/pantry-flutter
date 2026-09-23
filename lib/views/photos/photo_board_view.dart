@@ -12,7 +12,8 @@ import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/folder_tile.dart';
-import 'package:pantry/widgets/photo_add_button.dart';
+import 'package:pantry/widgets/photo_add_actions.dart';
+import 'package:pantry/views/home/home_floating_nav.dart';
 import 'package:pantry/widgets/photo_selection_actions.dart';
 import 'package:pantry/widgets/photo_sort_button.dart';
 import 'package:pantry/widgets/photo_tile.dart';
@@ -29,11 +30,16 @@ class PhotoBoardView extends StatefulWidget {
   /// status-bar-tap can scroll this tab to the top.
   final ScrollController? scrollController;
 
+  /// Slot for the action this tab contributes to the home floating nav's
+  /// trailing button.
+  final ValueNotifier<NavPrimaryAction?>? navActionHolder;
+
   const PhotoBoardView({
     super.key,
     required this.houseId,
     this.refreshHolder,
     this.scrollController,
+    this.navActionHolder,
   });
 
   @override
@@ -111,15 +117,19 @@ class _PhotoBoardViewState extends State<PhotoBoardView> {
     _controller.permissions = context.watch<HousePermissions>();
     return ChangeNotifierProvider.value(
       value: _controller,
-      child: _PhotoBoardBody(scrollController: widget.scrollController),
+      child: _PhotoBoardBody(
+        scrollController: widget.scrollController,
+        navActionHolder: widget.navActionHolder,
+      ),
     );
   }
 }
 
 class _PhotoBoardBody extends StatelessWidget {
   final ScrollController? scrollController;
+  final ValueNotifier<NavPrimaryAction?>? navActionHolder;
 
-  const _PhotoBoardBody({this.scrollController});
+  const _PhotoBoardBody({this.scrollController, this.navActionHolder});
 
   @override
   Widget build(BuildContext context) {
@@ -200,8 +210,11 @@ class _PhotoBoardBody extends StatelessWidget {
                 ),
               ],
             ),
-            if (!inTrash)
-              Positioned.fill(child: PhotoAddButton(controller: controller)),
+            PhotoAddActions(
+              controller: controller,
+              holder: navActionHolder,
+              enabled: !inTrash,
+            ),
           ],
         ),
       ),
@@ -369,7 +382,12 @@ class _TrashGrid extends StatelessWidget {
     return GridView.builder(
       controller: scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+      padding: EdgeInsets.fromLTRB(
+        8,
+        8,
+        8,
+        16 + MediaQuery.paddingOf(context).bottom,
+      ),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 180,
         mainAxisSpacing: 8,
@@ -562,7 +580,13 @@ class _PhotoGrid extends StatelessWidget {
     return GridView.builder(
       controller: scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 96),
+      // Trailing room for the floating nav the grid scrolls under.
+      padding: EdgeInsets.fromLTRB(
+        8,
+        8,
+        8,
+        16 + MediaQuery.paddingOf(context).bottom,
+      ),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 180,
         mainAxisSpacing: 8,

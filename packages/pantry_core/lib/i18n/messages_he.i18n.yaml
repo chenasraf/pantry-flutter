@@ -1,5 +1,6 @@
 common:
   appTitle: Pantry
+  add: הוספה
   cancel: ביטול
   delete: מחיקה
   save: שמירה
@@ -66,6 +67,7 @@ home:
 
 nav:
   checklists: רשימות
+  checklist: רשימה
   photoBoard: לוח תמונות
   notesWall: קיר הערות
 

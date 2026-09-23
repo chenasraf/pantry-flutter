@@ -101,6 +101,11 @@ class CommonMessagesDe extends CommonMessages {
   String get appTitle => """Pantry""";
 
   /// ```dart
+  /// "Hinzufügen"
+  /// ```
+  String get add => """Hinzufügen""";
+
+  /// ```dart
   /// "Abbrechen"
   /// ```
   String get cancel => """Abbrechen""";
@@ -431,6 +436,11 @@ class NavMessagesDe extends NavMessages {
   /// "Checklisten"
   /// ```
   String get checklists => """Checklisten""";
+
+  /// ```dart
+  /// "Checkliste"
+  /// ```
+  String get checklist => """Checkliste""";
 
   /// ```dart
   /// "Fotowand"
@@ -6766,6 +6776,7 @@ class WatchTipsMessagesDe extends WatchTipsMessages {
 
 Map<String, String> get messagesDeMap => {
   """common.appTitle""": """Pantry""",
+  """common.add""": """Hinzufügen""",
   """common.cancel""": """Abbrechen""",
   """common.delete""": """Löschen""",
   """common.save""": """Speichern""",
@@ -6838,6 +6849,7 @@ Bitte melde dich in deinem Browser an.""",
   """home.openAppStore""": """Nextcloud-Apps öffnen""",
   """home.learnMore""": """Mehr erfahren""",
   """nav.checklists""": """Checklisten""",
+  """nav.checklist""": """Checkliste""",
   """nav.photoBoard""": """Fotowand""",
   """nav.notesWall""": """Notizwand""",
   """widget.chooseListsTitle""": """Listen auswählen""",

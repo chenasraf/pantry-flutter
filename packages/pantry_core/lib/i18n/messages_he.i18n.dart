@@ -101,6 +101,11 @@ class CommonMessagesHe extends CommonMessages {
   String get appTitle => """Pantry""";
 
   /// ```dart
+  /// "הוספה"
+  /// ```
+  String get add => """הוספה""";
+
+  /// ```dart
   /// "ביטול"
   /// ```
   String get cancel => """ביטול""";
@@ -428,6 +433,11 @@ class NavMessagesHe extends NavMessages {
   /// "רשימות"
   /// ```
   String get checklists => """רשימות""";
+
+  /// ```dart
+  /// "רשימה"
+  /// ```
+  String get checklist => """רשימה""";
 
   /// ```dart
   /// "לוח תמונות"
@@ -6690,6 +6700,7 @@ class WatchTipsMessagesHe extends WatchTipsMessages {
 
 Map<String, String> get messagesHeMap => {
   """common.appTitle""": """Pantry""",
+  """common.add""": """הוספה""",
   """common.cancel""": """ביטול""",
   """common.delete""": """מחיקה""",
   """common.save""": """שמירה""",
@@ -6759,6 +6770,7 @@ Map<String, String> get messagesHeMap => {
   """home.openAppStore""": """פתח אפליקציות Nextcloud""",
   """home.learnMore""": """למד עוד""",
   """nav.checklists""": """רשימות""",
+  """nav.checklist""": """רשימה""",
   """nav.photoBoard""": """לוח תמונות""",
   """nav.notesWall""": """קיר הערות""",
   """widget.chooseListsTitle""": """בחירת רשימות""",

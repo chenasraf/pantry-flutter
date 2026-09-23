@@ -11,6 +11,7 @@ import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/note_selection_actions.dart';
 import 'package:pantry/widgets/note_sort_button.dart';
 import 'package:pantry/widgets/note_tile.dart';
+import 'package:pantry/views/home/home_floating_nav.dart';
 import 'package:provider/provider.dart';
 import 'note_detail_view.dart';
 import 'note_form_view.dart';
@@ -24,11 +25,16 @@ class NotesWallView extends StatefulWidget {
   /// status-bar-tap can scroll this tab to the top.
   final ScrollController? scrollController;
 
+  /// Slot for the action this tab contributes to the home floating nav's
+  /// trailing button.
+  final ValueNotifier<NavPrimaryAction?>? navActionHolder;
+
   const NotesWallView({
     super.key,
     required this.houseId,
     this.refreshHolder,
     this.scrollController,
+    this.navActionHolder,
   });
 
   @override
@@ -51,6 +57,13 @@ class _NotesWallViewState extends State<NotesWallView> {
       });
     }
     PendingNoteShareService.instance.addListener(_handlePendingShare);
+    // Drop whatever the previous wall left in the nav slot. An offer from this
+    // one looks identical and would be discarded as unchanged, leaving the
+    // button wired to a wall that is gone.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      widget.navActionHolder?.value = null;
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) => _handlePendingShare());
   }
 
@@ -115,20 +128,44 @@ class _NotesWallViewState extends State<NotesWallView> {
     _controller.permissions = context.watch<HousePermissions>();
     return ChangeNotifierProvider.value(
       value: _controller,
-      child: _NotesWallBody(scrollController: widget.scrollController),
+      child: _NotesWallBody(
+        scrollController: widget.scrollController,
+        navActionHolder: widget.navActionHolder,
+      ),
     );
   }
 }
 
 class _NotesWallBody extends StatelessWidget {
   final ScrollController? scrollController;
+  final ValueNotifier<NavPrimaryAction?>? navActionHolder;
 
-  const _NotesWallBody({this.scrollController});
+  const _NotesWallBody({this.scrollController, this.navActionHolder});
+
+  /// Hand the nav bar the wall's primary action. Deferred a frame so a
+  /// listenable isn't mutated mid-build.
+  void _publishNavAction(BuildContext context, NotesController controller) {
+    final holder = navActionHolder;
+    if (holder == null) return;
+    final offer =
+        !controller.isTrashMode && controller.permissions.canCreateNotes
+        ? NavPrimaryAction(
+            icon: Icons.add,
+            label: m.notesWall.newNote,
+            onTap: () => _createNote(context, controller),
+          )
+        : null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+      holder.value = offer;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<NotesController>();
     final prefs = context.watch<PrefsService>();
+    _publishNavAction(context, controller);
 
     if (controller.isLoading && controller.notes.isEmpty) {
       return const Center(child: CircularProgressIndicator());
@@ -221,16 +258,6 @@ class _NotesWallBody extends StatelessWidget {
                 ),
               ],
             ),
-            if (!inTrash && controller.permissions.canCreateNotes)
-              PositionedDirectional(
-                end: 16,
-                bottom: 16,
-                child: FloatingActionButton(
-                  heroTag: 'notes-fab',
-                  onPressed: () => _createNote(context, controller),
-                  child: const Icon(Icons.add),
-                ),
-              ),
           ],
         ),
       ),
@@ -268,7 +295,13 @@ class _NotesGrid extends StatelessWidget {
     return GridView.builder(
       controller: scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 96),
+      // Trailing room for the floating nav the grid scrolls under.
+      padding: EdgeInsets.fromLTRB(
+        8,
+        8,
+        8,
+        16 + MediaQuery.paddingOf(context).bottom,
+      ),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 220,
         mainAxisSpacing: 8,
@@ -399,7 +432,12 @@ class _TrashGrid extends StatelessWidget {
     return GridView.builder(
       controller: scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+      padding: EdgeInsets.fromLTRB(
+        8,
+        8,
+        8,
+        16 + MediaQuery.paddingOf(context).bottom,
+      ),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 220,
         mainAxisSpacing: 8,

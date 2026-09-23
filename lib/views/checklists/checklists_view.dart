@@ -15,6 +15,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
+import 'package:pantry/views/home/home_floating_nav.dart';
 import 'checklist_item_list.dart';
 import 'checklist_item_tile.dart';
 import 'checklists_banners.dart';
@@ -64,12 +65,22 @@ class ChecklistsView extends StatefulWidget {
   /// [WidgetsBindingObserver.handleStatusBarTap].
   final ScrollController? scrollController;
 
+  /// Slot for the action this tab contributes to the home floating nav's
+  /// trailing button.
+  final ValueNotifier<NavPrimaryAction?>? navActionHolder;
+
+  /// Raised while the compose bar or the selection bar has taken the bottom
+  /// edge, so the floating nav slides out of their way.
+  final ValueNotifier<bool>? edgeClaimedHolder;
+
   const ChecklistsView({
     super.key,
     required this.houseId,
     this.refreshHolder,
     this.appBarSpecHolder,
     this.scrollController,
+    this.navActionHolder,
+    this.edgeClaimedHolder,
   });
 
   @override
@@ -183,6 +194,8 @@ class _ChecklistsViewState extends State<ChecklistsView>
       child: _Body(
         appBarSpecHolder: widget.appBarSpecHolder,
         scrollController: widget.scrollController,
+        navActionHolder: widget.navActionHolder,
+        edgeClaimedHolder: widget.edgeClaimedHolder,
       ),
     );
   }
@@ -191,8 +204,15 @@ class _ChecklistsViewState extends State<ChecklistsView>
 class _Body extends StatefulWidget {
   final ValueNotifier<ChecklistsAppBarSpec?>? appBarSpecHolder;
   final ScrollController? scrollController;
+  final ValueNotifier<NavPrimaryAction?>? navActionHolder;
+  final ValueNotifier<bool>? edgeClaimedHolder;
 
-  const _Body({this.appBarSpecHolder, this.scrollController});
+  const _Body({
+    this.appBarSpecHolder,
+    this.scrollController,
+    this.navActionHolder,
+    this.edgeClaimedHolder,
+  });
 
   @override
   State<_Body> createState() => _BodyState();
@@ -210,6 +230,13 @@ class _BodyState extends State<_Body> {
       appBarSpecHolder: widget.appBarSpecHolder,
     );
     _body.attach();
+    // Drop whatever the previous tab body left in the nav slot. An offer from
+    // this one looks identical and would be discarded as unchanged, leaving the
+    // button wired to a body that is gone.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      widget.navActionHolder?.value = null;
+    });
   }
 
   @override
@@ -376,15 +403,42 @@ class _BodyState extends State<_Body> {
                     .toList()
               : const <ChecklistList>[];
 
-          // Push the current AppBar contents up to the shared home AppBar slot.
-          // Done in a post-frame callback so we don't mutate a listenable
-          // during build, which would trigger a rebuild storm.
+          // Start / resume shopping, offered to the floating nav's trailing
+          // button. A live trip extends the button into a labelled pill, which
+          // is what separates "resume" from "start" at a glance. When the
+          // action is turned off in settings it lives in the overflow menu
+          // instead and the button collapses.
+          final shoppingAction =
+              hasFeature('shopping') &&
+                  prefs.startShoppingFabEnabled &&
+                  !controller.isSoftView
+              ? NavPrimaryAction(
+                  icon: body.shoppingSession != null
+                      ? Icons.play_arrow
+                      : Icons.shopping_cart,
+                  label: body.shoppingSession != null
+                      ? m.shopping.resumeShopping
+                      : m.shopping.startShopping,
+                  extended: body.shoppingSession != null,
+                  onTap: () => body.openShopping(context),
+                )
+              : null;
+          // The compose bar and the selection bar each take the bottom edge
+          // for themselves; the nav gets out of the way rather than stacking.
+          final edgeClaimed = body.composeActive || controller.selectionMode;
+
+          // Push the current AppBar contents up to the shared home AppBar slot,
+          // and the nav's share of this tab alongside it. Done in a post-frame
+          // callback so we don't mutate a listenable during build, which would
+          // trigger a rebuild storm.
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
             widget.appBarSpecHolder?.value = body.buildAppBarSpec(
               context,
               list,
             );
+            widget.navActionHolder?.value = shoppingAction;
+            widget.edgeClaimedHolder?.value = edgeClaimed;
           });
 
           return LayoutBuilder(
@@ -760,9 +814,11 @@ class _BodyState extends State<_Body> {
                                                 ),
                                             scrollController:
                                                 widget.scrollController,
-                                            bottomInset: body.listBottomInset(
-                                              list,
-                                            ),
+                                            bottomInset:
+                                                body.listBottomInset(list) +
+                                                MediaQuery.paddingOf(
+                                                  context,
+                                                ).bottom,
                                             topInset: body.listTopInset(list),
                                           ),
                                           if (controller.isRefreshing)
@@ -789,7 +845,10 @@ class _BodyState extends State<_Body> {
                     Positioned(
                       left: 0,
                       right: 0,
-                      bottom: 0,
+                      // Rests above the floating nav and drops to the edge once
+                      // the nav slides away for it — both of which the host
+                      // reports as the obscured bottom inset.
+                      bottom: MediaQuery.paddingOf(context).bottom,
                       child: composeBar(list, constraints.maxHeight),
                     ),
                   if (controller.selectionMode)
@@ -798,34 +857,6 @@ class _BodyState extends State<_Body> {
                       end: 0,
                       bottom: 0,
                       child: SelectionActionBar(controller: controller),
-                    ),
-                  // Start / resume shopping. Hidden in soft (trash/archive) and
-                  // selection modes, and while the add-item sheet is active (it
-                  // would float over the sheet); lifted above the resting
-                  // compose bar. When the FAB is turned off it moves into the
-                  // overflow menu.
-                  if (hasFeature('shopping') &&
-                      prefs.startShoppingFabEnabled &&
-                      !controller.isSoftView &&
-                      !controller.selectionMode &&
-                      !body.composeActive)
-                    PositionedDirectional(
-                      end: 16,
-                      bottom: body.fabBottomOffset(list),
-                      child: FloatingActionButton.extended(
-                        heroTag: 'shopping-fab',
-                        onPressed: () => body.openShopping(context),
-                        icon: Icon(
-                          body.shoppingSession != null
-                              ? Icons.play_arrow
-                              : Icons.shopping_cart,
-                        ),
-                        label: Text(
-                          body.shoppingSession != null
-                              ? m.shopping.resumeShopping
-                              : m.shopping.startShopping,
-                        ),
-                      ),
                     ),
                 ],
               );

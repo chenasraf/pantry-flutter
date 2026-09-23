@@ -100,6 +100,11 @@ class CommonMessages {
   String get appTitle => """Pantry""";
 
   /// ```dart
+  /// "Add"
+  /// ```
+  String get add => """Add""";
+
+  /// ```dart
   /// "Cancel"
   /// ```
   String get cancel => """Cancel""";
@@ -429,6 +434,11 @@ class NavMessages {
   /// "Checklists"
   /// ```
   String get checklists => """Checklists""";
+
+  /// ```dart
+  /// "Checklist"
+  /// ```
+  String get checklist => """Checklist""";
 
   /// ```dart
   /// "Photo Board"
@@ -6694,6 +6704,7 @@ class WatchTipsMessages {
 
 Map<String, String> get messagesMap => {
   """common.appTitle""": """Pantry""",
+  """common.add""": """Add""",
   """common.cancel""": """Cancel""",
   """common.delete""": """Delete""",
   """common.save""": """Save""",
@@ -6765,6 +6776,7 @@ Please complete login in your browser.""",
   """home.openAppStore""": """Open Nextcloud apps""",
   """home.learnMore""": """Learn more""",
   """nav.checklists""": """Checklists""",
+  """nav.checklist""": """Checklist""",
   """nav.photoBoard""": """Photo Board""",
   """nav.notesWall""": """Notes Wall""",
   """widget.chooseListsTitle""": """Choose lists""",

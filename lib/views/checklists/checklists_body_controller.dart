@@ -343,29 +343,13 @@ class ChecklistsBodyController extends ChangeNotifier
     }
   }
 
-  /// Bottom inset reserved under the item list so neither the resting compose
-  /// bar nor the floating Start/Resume-shopping FAB overlaps the last row. Takes
-  /// the larger of the two reservations that apply.
+  /// Bottom inset reserved under the item list so the resting compose bar
+  /// doesn't overlap the last row. The host's own obscured inset — the floating
+  /// nav and the system navigation bar — is added to this at the call site.
   double listBottomInset(ChecklistList? list) {
     if (domain.isSoftView) return 36;
-    final composeAtBottom = !PrefsService.instance.composeBarOnTop;
     // Clears the resting compose bar plus a little breathing room.
-    final composeReserve = composeAtBottom ? 112.0 : 0.0;
-    final fabShown = hasFeature('shopping') && !domain.selectionMode;
-    if (!fabShown) return composeReserve;
-    // The FAB's own bottom offset (88 above a compose bar, else 16) plus the
-    // extended FAB's height and a small gap.
-    final fabBottom = fabBottomOffset(list);
-    final fabReserve = fabBottom + 56 + 8;
-    return fabReserve > composeReserve ? fabReserve : composeReserve;
-  }
-
-  /// Distance the floating shopping FAB is lifted off the bottom edge: clear of
-  /// the resting compose bar when that bar shares the edge, otherwise a plain
-  /// margin.
-  double fabBottomOffset(ChecklistList? list) {
-    if (PrefsService.instance.composeBarOnTop) return 16;
-    return (list != null && domain.canAddItemsHere) ? 88 : 16;
+    return PrefsService.instance.composeBarOnTop ? 0.0 : 112.0;
   }
 
   /// Top inset reserved above the item list for a top-anchored compose bar.

@@ -1,5 +1,6 @@
 common:
   appTitle: Pantry
+  add: Add
   cancel: Cancel
   delete: Delete
   save: Save
@@ -66,6 +67,7 @@ home:
 
 nav:
   checklists: Checklists
+  checklist: Checklist
   photoBoard: Photo Board
   notesWall: Notes Wall
 
