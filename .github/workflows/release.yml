@@ -456,6 +456,9 @@ jobs:
         apple: |
           fastlane/metadata/ios/en-US/changelogs
           fastlane/metadata/macos/en-US/changelogs
+        mobile: |
+          fastlane/metadata/android/en-US/changelogs
+          fastlane/metadata/ios/en-US/changelogs
         android: |
           fastlane/metadata/android/en-US/changelogs
           fastlane/metadata/android-wear/en-US/changelogs
