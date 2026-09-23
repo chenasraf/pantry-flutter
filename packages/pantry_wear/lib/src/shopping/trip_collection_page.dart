@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pantry_core/models/checklist.dart';
-import 'package:pantry_core/utils/text_direction.dart';
 
 import '../checklists/checklists_controller.dart';
 import '../checklists/item_card.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/undo_window.dart';
+import '../widgets/wear_empty.dart';
 import '../widgets/wear_metrics.dart';
 
 /// What a trip has behind it: the items bought at it, or the ones passed over.
@@ -96,19 +96,7 @@ class _TripCollectionPageState extends State<TripCollectionPage>
   @override
   Widget build(BuildContext context) {
     final items = widget.items;
-    if (items.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: WearMetrics.bandInsets(context),
-          child: Text(
-            widget.empty,
-            textAlign: TextAlign.center,
-            textDirection: detectTextDirection(widget.empty),
-            style: const TextStyle(fontSize: 12, color: Colors.white38),
-          ),
-        ),
-      );
-    }
+    if (items.isEmpty) return WearEmpty(message: widget.empty);
     final metrics = WearMetrics.of(context);
     return SnapFocusList(
       key: _listKey,

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'focus_list.dart';
+import 'wear_empty.dart';
 import 'wear_ink.dart';
 import 'wear_mechanics.dart';
 import 'wear_metrics.dart';
@@ -215,7 +216,7 @@ class _ChoiceList<T> extends StatelessWidget {
       body: EdgeDismissible(
         onDismiss: () => Navigator.of(context).pop(),
         child: choices.isEmpty
-            ? _Empty(message: empty)
+            ? WearEmpty(message: empty, fontSize: 11)
             : SnapFocusList(
                 key: listKey,
                 controller: scroll,
@@ -247,23 +248,4 @@ class _ChoiceList<T> extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Nothing to choose between, said where the rows would have been.
-class _Empty extends StatelessWidget {
-  final String message;
-
-  const _Empty({required this.message});
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: WearMetrics.bandInsets(context),
-    child: Center(
-      child: Text(
-        message,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 11, color: Colors.white38),
-      ),
-    ),
-  );
 }

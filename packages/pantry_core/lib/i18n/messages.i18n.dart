@@ -5879,6 +5879,11 @@ class WearMessages {
   String get allTasksDone => """All done""";
 
   /// ```dart
+  /// "Nothing in this note"
+  /// ```
+  String get emptyNote => """Nothing in this note""";
+
+  /// ```dart
   /// "No lists here yet"
   /// ```
   String get noLists => """No lists here yet""";
@@ -7806,6 +7811,7 @@ Password: pantry-rocks""",
   """wear.nothingToCheckOff""": """Nothing to check off""",
   """wear.nothingRemoved""": """Nothing removed""",
   """wear.allTasksDone""": """All done""",
+  """wear.emptyNote""": """Nothing in this note""",
   """wear.noLists""": """No lists here yet""",
   """wear.setupTitle""": """Set up Pantry""",
   """wear.setupBody""": """Sign in from your phone — nothing to type here.""",

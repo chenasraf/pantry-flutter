@@ -1281,6 +1281,7 @@ wear:
   nothingRemoved: Ingenting er fjerna
   tasksLeft(int count): "$count igjen"
   allTasksDone: Alt er gjort
+  emptyNote: Dette notatet er tomt
   noLists: Ingen lister her enno
   setupTitle: Set opp Pantry
   setupBody: Logg inn frå telefonen — ingenting å skrive her.

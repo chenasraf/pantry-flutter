@@ -10,6 +10,7 @@ import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/preview_image.dart';
 import '../widgets/preview_sizes.dart';
+import '../widgets/wear_empty.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'photo_detail_page.dart';
@@ -100,7 +101,7 @@ class _PhotosPageState extends State<PhotosPage> {
     final house = _controller.houseId;
     final cells = _controller.boardCells;
     if (house == null || cells.isEmpty) {
-      return _Empty(message: _emptyMessage);
+      return WearEmpty(message: _emptyMessage);
     }
     return PhotoBoard(
       controller: _controller,
@@ -543,6 +544,7 @@ class PhotoFolderRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cells = controller.cellsInFolder(folder.id);
     return EdgeDismissible(
       onDismiss: () => Navigator.of(context).pop(),
       child: Scaffold(
@@ -552,14 +554,16 @@ class PhotoFolderRoute extends StatelessWidget {
         body: Stack(
           children: [
             Positioned.fill(
-              child: PhotoBoard(
-                controller: controller,
-                houseId: houseId,
-                cells: controller.cellsInFolder(folder.id),
-                // A pushed route has no pager to turn, so the crown scrolls its
-                // list whichever way the setting is pointing.
-                rotary: true,
-              ),
+              child: cells.isEmpty
+                  ? WearEmpty(message: m.photoBoard.noPhotos)
+                  : PhotoBoard(
+                      controller: controller,
+                      houseId: houseId,
+                      cells: cells,
+                      // A pushed route has no pager to turn, so the crown
+                      // scrolls its list whichever way the setting is pointing.
+                      rotary: true,
+                    ),
             ),
             RouteTitle(text: folder.name),
           ],
@@ -621,23 +625,4 @@ class RouteTitle extends StatelessWidget {
       ),
     );
   }
-}
-
-class _Empty extends StatelessWidget {
-  final String message;
-
-  const _Empty({required this.message});
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Padding(
-      padding: WearMetrics.bandInsets(context),
-      child: Text(
-        message,
-        textAlign: TextAlign.center,
-        textDirection: detectTextDirection(message),
-        style: const TextStyle(fontSize: 12, color: Colors.white38),
-      ),
-    ),
-  );
 }

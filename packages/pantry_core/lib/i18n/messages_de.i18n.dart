@@ -5946,6 +5946,11 @@ class WearMessagesDe extends WearMessages {
   String get allTasksDone => """Alles erledigt""";
 
   /// ```dart
+  /// "Diese Notiz ist leer"
+  /// ```
+  String get emptyNote => """Diese Notiz ist leer""";
+
+  /// ```dart
   /// "Noch keine Listen hier"
   /// ```
   String get noLists => """Noch keine Listen hier""";
@@ -7940,6 +7945,7 @@ Passwort: pantry-rocks""",
   """wear.nothingToCheckOff""": """Nichts zum Abhaken""",
   """wear.nothingRemoved""": """Nichts entfernt""",
   """wear.allTasksDone""": """Alles erledigt""",
+  """wear.emptyNote""": """Diese Notiz ist leer""",
   """wear.noLists""": """Noch keine Listen hier""",
   """wear.setupTitle""": """Pantry einrichten""",
   """wear.setupBody""":

@@ -9,6 +9,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
+import '../widgets/wear_empty.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'note_blocks.dart';
@@ -105,7 +106,7 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     final notes = _controller.notes;
     if (_controller.hasNoScope || notes.isEmpty) {
-      return _Empty(message: _emptyMessage);
+      return WearEmpty(message: _emptyMessage);
     }
     return NotesWall(
       controller: _controller,
@@ -370,27 +371,4 @@ class _Progress extends StatelessWidget {
       ],
     );
   }
-}
-
-class _Empty extends StatelessWidget {
-  final String message;
-
-  const _Empty({required this.message});
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Padding(
-      padding: WearMetrics.bandInsets(context),
-      child: Text(
-        message,
-        textAlign: TextAlign.center,
-        textDirection: detectTextDirection(message),
-        style: TextStyle(
-          fontSize: 12,
-          height: 1.3,
-          color: Colors.white.withValues(alpha: 0.6),
-        ),
-      ),
-    ),
-  );
 }

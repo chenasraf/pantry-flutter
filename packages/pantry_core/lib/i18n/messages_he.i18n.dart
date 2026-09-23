@@ -5884,6 +5884,11 @@ class WearMessagesHe extends WearMessages {
   String get allTasksDone => """הכול הושלם""";
 
   /// ```dart
+  /// "הפתק הזה ריק"
+  /// ```
+  String get emptyNote => """הפתק הזה ריק""";
+
+  /// ```dart
   /// "אין כאן רשימות עדיין"
   /// ```
   String get noLists => """אין כאן רשימות עדיין""";
@@ -7782,6 +7787,7 @@ Map<String, String> get messagesHeMap => {
   """wear.nothingToCheckOff""": """אין מה לסמן""",
   """wear.nothingRemoved""": """לא הוסר דבר""",
   """wear.allTasksDone""": """הכול הושלם""",
+  """wear.emptyNote""": """הפתק הזה ריק""",
   """wear.noLists""": """אין כאן רשימות עדיין""",
   """wear.setupTitle""": """הגדרת Pantry""",
   """wear.setupBody""": """ההתחברות נעשית מהטלפון — אין מה להקליד כאן.""",

@@ -12,6 +12,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 
 import '../widgets/focus_list.dart';
 import '../widgets/undo_window.dart';
+import '../widgets/wear_empty.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import 'checklists_controller.dart';
@@ -231,6 +232,19 @@ class ChecklistsPageState extends State<ChecklistsPage>
     // Browse keeps the phone's collapsible completed section. A session has a
     // whole page for it instead, so nothing is appended here.
     if (controller.mode == ChecklistMode.browse && controller.done.isNotEmpty) {
+      // Everything ticked off leaves the completed section as the only thing
+      // on the page, which reads as a list of work outstanding until it is
+      // opened. Saying so above it is what tells the two apart at a glance.
+      if (controller.items.isEmpty) {
+        elements.add(
+          FocusElement(
+            extent: metrics.noticeExtent,
+            snappable: false,
+            isHeader: true,
+            builder: (context, _) => const _AllDone(),
+          ),
+        );
+      }
       final label = m.checklists.completedCount(controller.done.length);
       addHeader(
         label,
@@ -349,13 +363,19 @@ class ChecklistsPageState extends State<ChecklistsPage>
     return c != 0 ? c : a.name.toLowerCase().compareTo(b.name.toLowerCase());
   }
 
-  /// Nothing to draw has three causes, and only one of them is an empty list.
+  /// Nothing to draw has four causes, and only one of them is an empty list.
+  ///
+  /// A session's checked rows live on a page of their own, so a shop the
+  /// wearer cleared leaves nothing here either — and that is the opposite of
+  /// arriving at a shop with nothing on its list. A shop whose rows were all
+  /// passed over instead has nothing to buy in it, which is what it says.
   String _emptyMessage(ChecklistsController controller) {
     if (!AuthService.instance.isLoggedIn) return m.wear.notSignedIn;
     if (controller.hasNoScope) return m.wear.noLists;
-    return controller.mode == ChecklistMode.session
+    if (controller.mode != ChecklistMode.session) return m.checklists.noItems;
+    return controller.done.isEmpty
         ? m.shopping.nothingToBuyHere
-        : m.checklists.noItems;
+        : m.shopping.allCheckedHere;
   }
 
   @override
@@ -363,7 +383,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
     final controller = widget.controller;
     if (controller.items.isEmpty &&
         (controller.mode == ChecklistMode.session || controller.done.isEmpty)) {
-      return _Empty(message: _emptyMessage(controller));
+      return WearEmpty(message: _emptyMessage(controller));
     }
     return SnapFocusList(
       key: _listKey,
@@ -391,6 +411,34 @@ class _Group {
     required this.color,
     required this.items,
   });
+}
+
+/// The list cleared, said where its rows were.
+///
+/// A row of the list rather than a page of its own: the completed section is
+/// still below it and still worth scrolling to, so the page has to hold both.
+class _AllDone extends StatelessWidget {
+  const _AllDone();
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: Padding(
+      padding: const EdgeInsetsDirectional.only(start: 16, end: 16),
+      child: Text(
+        m.checklists.allDone,
+        textAlign: TextAlign.center,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textDirection: detectTextDirection(m.checklists.allDone),
+        style: const TextStyle(
+          fontSize: 13,
+          height: 1.1,
+          fontWeight: FontWeight.w600,
+          color: Colors.white60,
+        ),
+      ),
+    ),
+  );
 }
 
 /// A group header, in the phone's language: the category icon and name in that
@@ -454,23 +502,4 @@ class _GroupHeader extends StatelessWidget {
       ),
     );
   }
-}
-
-class _Empty extends StatelessWidget {
-  final String message;
-
-  const _Empty({required this.message});
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Padding(
-      padding: WearMetrics.bandInsets(context),
-      child: Text(
-        message,
-        textAlign: TextAlign.center,
-        textDirection: detectTextDirection(message),
-        style: const TextStyle(fontSize: 12, color: Colors.white38),
-      ),
-    ),
-  );
 }

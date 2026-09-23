@@ -1135,6 +1135,7 @@ wear:
   nothingRemoved: לא הוסר דבר
   tasksLeft(int count): "נותרו $count"
   allTasksDone: הכול הושלם
+  emptyNote: הפתק הזה ריק
   noLists: אין כאן רשימות עדיין
   setupTitle: הגדרת Pantry
   setupBody: ההתחברות נעשית מהטלפון — אין מה להקליד כאן.

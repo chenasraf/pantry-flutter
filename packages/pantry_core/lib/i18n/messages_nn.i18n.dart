@@ -5916,6 +5916,11 @@ class WearMessagesNn extends WearMessages {
   String get allTasksDone => """Alt er gjort""";
 
   /// ```dart
+  /// "Dette notatet er tomt"
+  /// ```
+  String get emptyNote => """Dette notatet er tomt""";
+
+  /// ```dart
   /// "Ingen lister her enno"
   /// ```
   String get noLists => """Ingen lister her enno""";
@@ -7869,6 +7874,7 @@ Passord: pantry""",
   """wear.nothingToCheckOff""": """Ingenting å krysse av""",
   """wear.nothingRemoved""": """Ingenting er fjerna""",
   """wear.allTasksDone""": """Alt er gjort""",
+  """wear.emptyNote""": """Dette notatet er tomt""",
   """wear.noLists""": """Ingen lister her enno""",
   """wear.setupTitle""": """Set opp Pantry""",
   """wear.setupBody""": """Logg inn frå telefonen — ingenting å skrive her.""",

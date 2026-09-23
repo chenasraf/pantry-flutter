@@ -1135,6 +1135,7 @@ wear:
   nothingRemoved: Nichts entfernt
   tasksLeft(int count): "Noch $count"
   allTasksDone: Alles erledigt
+  emptyNote: Diese Notiz ist leer
   noLists: Noch keine Listen hier
   setupTitle: Pantry einrichten
   setupBody: Melde dich vom Telefon aus an — hier musst du nichts tippen.

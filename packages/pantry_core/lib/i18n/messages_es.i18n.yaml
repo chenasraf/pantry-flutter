@@ -1135,6 +1135,7 @@ wear:
   nothingRemoved: No has quitado nada
   tasksLeft(int count): "Quedan $count"
   allTasksDone: Todo hecho
+  emptyNote: Esta nota está vacía
   noLists: Aún no hay listas aquí
   setupTitle: Configurar Pantry
   setupBody: "Inicia sesión desde tu teléfono: aquí no hay que escribir nada."

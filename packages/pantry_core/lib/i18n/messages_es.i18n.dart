@@ -5929,6 +5929,11 @@ class WearMessagesEs extends WearMessages {
   String get allTasksDone => """Todo hecho""";
 
   /// ```dart
+  /// "Esta nota está vacía"
+  /// ```
+  String get emptyNote => """Esta nota está vacía""";
+
+  /// ```dart
   /// "Aún no hay listas aquí"
   /// ```
   String get noLists => """Aún no hay listas aquí""";
@@ -7902,6 +7907,7 @@ Contraseña: pantry-rocks""",
   """wear.nothingToCheckOff""": """Nada que marcar""",
   """wear.nothingRemoved""": """No has quitado nada""",
   """wear.allTasksDone""": """Todo hecho""",
+  """wear.emptyNote""": """Esta nota está vacía""",
   """wear.noLists""": """Aún no hay listas aquí""",
   """wear.setupTitle""": """Configurar Pantry""",
   """wear.setupBody""":

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/note.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/text_direction.dart';
@@ -6,6 +7,7 @@ import 'package:pantry_core/utils/text_direction.dart';
 import '../wear_shape.dart';
 import '../widgets/focus_list.dart';
 import '../widgets/undo_window.dart';
+import '../widgets/wear_empty.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_page_bars.dart';
@@ -218,6 +220,15 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
   Widget _body(Note note, Color ink) {
     const inset = WearMetrics.tallSideInset;
     final blocks = parseNoteBlocks(widget.controller.bodyOf(note) ?? '');
+    // A note is worth opening for its title alone, and one without a body
+    // would otherwise be a page of the note's colour and nothing else — which
+    // reads as a body that failed to arrive.
+    if (blocks.isEmpty) {
+      return WearEmpty(
+        message: m.wear.emptyNote,
+        color: ink.withValues(alpha: 0.6),
+      );
+    }
     return LayoutBuilder(
       builder: (context, constraints) {
         final contentWidth = constraints.maxWidth * (1 - inset * 2) - 20;

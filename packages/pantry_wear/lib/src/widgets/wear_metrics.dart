@@ -86,6 +86,11 @@ class WearMetrics {
   /// says, not what it offers.
   double get summaryLineExtent => 20 * scale;
 
+  /// A line standing where a list's rows would have been. Taller than a header
+  /// because it is not labelling what follows it — it is the answer to a page
+  /// the wearer is reading for one, and it wants the air a row gets.
+  double get noticeExtent => 40 * scale;
+
   /// The rail's second line: the group label, or the degraded state that
   /// outranks it. Deliberately shallow — it is a label, not a target.
   double get railLineExtent => 13 * scale;

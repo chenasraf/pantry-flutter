@@ -87,9 +87,14 @@ void main() {
   }
 
   /// Browse keeps its completed items behind a collapsed header, so the row
-  /// has to be revealed before it can be tapped.
+  /// has to be revealed before it can be tapped — and a list with nothing left
+  /// on it says so above that header, which leaves the row off the centre
+  /// line. The second tap is the list's own rule: a row that is not on the
+  /// line is brought to it and nothing is written.
   Future<void> expandCompleted(WidgetTester tester) async {
     await tester.tap(find.text(m.checklists.completedCount(1)));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Bread'));
     await tester.pumpAndSettle();
   }
 
