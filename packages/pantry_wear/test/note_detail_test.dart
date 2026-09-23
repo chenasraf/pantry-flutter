@@ -9,6 +9,7 @@ import 'package:pantry_wear/src/notes/notes_page.dart';
 import 'package:pantry_wear/src/wear_shape.dart';
 import 'package:pantry_wear/src/widgets/focus_list.dart';
 import 'package:pantry_wear/src/widgets/wear_detail.dart';
+import 'package:pantry_wear/src/widgets/wear_page_bars.dart';
 
 import 'note_fixtures.dart';
 
@@ -96,9 +97,43 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Hardware shop'), findsOneWidget);
       expect(find.text('someone'), findsOneWidget);
       expect(tester.takeException(), isNull);
+    }
+  });
+
+  /// The strip stands over both of the route's pages, so a page that names the
+  /// note as well says it twice — and says it where the strip is already
+  /// drawn, since the band inset a watch page starts at is a fraction of the
+  /// glass where the strip's own offset is fixed.
+  testWidgets('the note is named once, clear of the strip that names it', (
+    tester,
+  ) async {
+    for (final shape in ['round', 'square']) {
+      WearShape.markFrom([shape]);
+      // The dp a watch actually reports, not the 450 a test window defaults
+      // to: at twice the size the band inset clears the strip on its own and
+      // the overlap this guards against cannot happen.
+      tester.view.physicalSize = const Size(225, 225);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      final note = noteOf(sampleNotes.first, houseId: 4);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: NoteRoute(controller: seeded(), note: note, initialPage: 1),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(NoteDetailPage), findsOneWidget);
+      expect(find.text('Hardware shop'), findsOneWidget);
+      // The pin is the topmost thing the facts page draws for this note, so
+      // where it lands is where the page starts.
+      expect(
+        tester.getRect(find.byIcon(Icons.push_pin)).top,
+        greaterThan(tester.getRect(find.byType(WearPageBars)).bottom),
+      );
     }
   });
 

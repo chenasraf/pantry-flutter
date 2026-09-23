@@ -1,10 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/note.dart';
 import 'package:pantry_core/models/note_link.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/date_format.dart';
-import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 
 import '../widgets/wear_detail.dart';
@@ -12,6 +13,7 @@ import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
 import '../widgets/wear_scroll_indicator.dart';
 import 'note_blocks.dart';
+import 'note_header.dart';
 
 /// What is known about one note, and the hand-off to the phone.
 ///
@@ -54,6 +56,16 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
     super.dispose();
   }
 
+  /// The band, with enough of the top given up to clear the route's title
+  /// strip. The band alone leaves this page drawn under the strip at the size
+  /// a watch actually reports — see [NoteHeader].
+  EdgeInsetsDirectional _insets(BuildContext context) {
+    final band = WearMetrics.bandInsets(context);
+    return band.copyWith(
+      top: math.max(band.top, NoteHeader.extentOf(context) + 12),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final note = widget.note;
@@ -65,52 +77,45 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
     final edited = note.updatedAt > note.createdAt;
     final complete = progress.done == progress.total;
 
+    final marked = note.isPinned || note.isSynced;
+
     return RotaryScrollable(
       controller: _scroll,
       active: widget.rotary,
       child: WearScrollIndicator(
         child: ListView(
           controller: _scroll,
-          padding: WearMetrics.bandInsets(context),
+          padding: _insets(context),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (note.isPinned) ...[
-                  Icon(
-                    Icons.push_pin,
-                    size: 13,
-                    color: ink.withValues(alpha: 0.6),
-                  ),
-                  const SizedBox(width: 5),
-                ],
-                Flexible(
-                  child: Text(
-                    note.title,
-                    textAlign: TextAlign.center,
-                    textDirection: detectTextDirection(note.title),
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                      color: ink,
+            // The note's name is not repeated here: the route's own strip
+            // stands over this page too, and the two of them said it twice.
+            // What the strip has no room for are the marks — pinned, and kept
+            // in step with a file in Notes — so they stay.
+            if (marked) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (note.isPinned)
+                    Icon(
+                      Icons.push_pin,
+                      size: 13,
+                      color: ink.withValues(alpha: 0.6),
                     ),
-                  ),
-                ),
-                // Reassurance that this is the same text the wearer keeps in
-                // Notes, and nothing more: the path names a file the watch
-                // cannot open, and a file out of reach is a prompt to go fix
-                // something on a device that cannot.
-                if (note.isSynced) ...[
-                  const SizedBox(width: 5),
-                  Icon(
-                    Icons.sync_alt,
-                    size: 13,
-                    color: ink.withValues(alpha: 0.6),
-                  ),
+                  if (note.isPinned && note.isSynced) const SizedBox(width: 8),
+                  // Reassurance that this is the same text the wearer keeps in
+                  // Notes, and nothing more: the path names a file the watch
+                  // cannot open, and a file out of reach is a prompt to go fix
+                  // something on a device that cannot.
+                  if (note.isSynced)
+                    Icon(
+                      Icons.sync_alt,
+                      size: 13,
+                      color: ink.withValues(alpha: 0.6),
+                    ),
                 ],
-              ],
-            ),
-            const SizedBox(height: 14),
+              ),
+              const SizedBox(height: 14),
+            ],
             WearFact(
               ink: ink,
               label: m.wear.addedBy,

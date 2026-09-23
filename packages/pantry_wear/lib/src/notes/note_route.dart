@@ -10,9 +10,9 @@ import '../widgets/undo_window.dart';
 import '../widgets/wear_empty.dart';
 import '../widgets/wear_mechanics.dart';
 import '../widgets/wear_metrics.dart';
-import '../widgets/wear_page_bars.dart';
 import 'note_blocks.dart';
 import 'note_detail_page.dart';
+import 'note_header.dart';
 import 'note_markdown.dart';
 import 'notes_controller.dart';
 
@@ -164,53 +164,7 @@ class _NoteRouteState extends State<NoteRoute> with TickerProviderStateMixin {
               ],
             ),
           ),
-          PositionedDirectional(
-            start: 0,
-            end: 0,
-            top: WearShape.isRound ? 20 : 10,
-            child: IgnorePointer(
-              child: Container(
-                padding: const EdgeInsetsDirectional.symmetric(
-                  horizontal: 40,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [ground, ground.withValues(alpha: 0)],
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      note.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textDirection: detectTextDirection(note.title),
-                      style: TextStyle(
-                        fontSize: 12,
-                        height: 1.0,
-                        fontWeight: FontWeight.w700,
-                        color: ink.withValues(alpha: 0.8),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    // In the note's own ink rather than the theme accent: on a
-                    // page filled with a user-picked hue the seeded accent is
-                    // one more colour competing with it, and against some of
-                    // them it is close to invisible.
-                    WearPageBars(
-                      page: _page,
-                      pages: 2,
-                      tint: ink.withValues(alpha: 0.8),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          NoteHeader(title: note.title, page: _page, ink: ink, ground: ground),
         ],
       ),
     );
