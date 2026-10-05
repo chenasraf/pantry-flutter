@@ -112,7 +112,10 @@ extension ChecklistsBodyNavigation on ChecklistsBodyController {
   Future<void> openManageCategories(BuildContext context) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => CategoriesView(houseId: domain.houseId),
+        builder: (_) => CategoriesView(
+          houseId: domain.houseId,
+          listId: domain.isMetaMode ? null : domain.currentList?.id,
+        ),
       ),
     );
     await domain.onCategoriesChanged();

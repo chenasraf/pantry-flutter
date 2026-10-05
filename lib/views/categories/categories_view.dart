@@ -17,7 +17,11 @@ import 'package:pantry/views/categories/store_category_order_view.dart';
 class CategoriesView extends StatefulWidget {
   final int houseId;
 
-  const CategoriesView({super.key, required this.houseId});
+  /// The list the manager was opened from; narrows the view to that list's
+  /// categories plus the globals. `null` shows every category in the house.
+  final int? listId;
+
+  const CategoriesView({super.key, required this.houseId, this.listId});
 
   @override
   State<CategoriesView> createState() => _CategoriesViewState();
@@ -35,6 +39,16 @@ class _CategoriesViewState extends State<CategoriesView> {
   /// per-list sections. Only loaded when the `category-lists` feature is on.
   List<ChecklistList> _lists = [];
   bool get _scopingEnabled => hasFeature('category-lists');
+
+  /// [_categories] stays the full house set because reordering renumbers every
+  /// category; narrowing it would drop the hidden ones from the persisted order.
+  List<Category> get _visibleCategories =>
+      (!_scopingEnabled || widget.listId == null)
+      ? _categories
+      : [
+          for (final c in _categories)
+            if (c.listId == null || c.listId == widget.listId) c,
+        ];
   String _sort = 'custom';
   bool _isLoading = true;
   String? _error;
@@ -129,7 +143,7 @@ class _CategoriesViewState extends State<CategoriesView> {
     // Splice the reordered slice back into the full display order, keeping every
     // other group untouched.
     final flat = <Category>[];
-    for (final g in _buildGroups()) {
+    for (final g in _buildGroups(_categories)) {
       flat.addAll(g.listId == group.listId ? reordered : g.categories);
     }
     setState(() => _categories = flat);
@@ -153,17 +167,17 @@ class _CategoriesViewState extends State<CategoriesView> {
     );
   }
 
-  /// Partition [_categories] into scope groups for display: the global ("All
-  /// lists") section first, then one section per list that has categories, in
-  /// the lists' display order. Any category scoped to a list that isn't loaded
-  /// (e.g. mid-removal) still gets a best-effort section so it stays visible.
-  List<_CategoryGroup> _buildGroups() {
+  /// Partition [cats] into scope groups: the global ("All lists") section
+  /// first, then one section per list that has categories, in the lists'
+  /// display order. Any category scoped to a list that isn't loaded (e.g.
+  /// mid-removal) still gets a best-effort section so it stays visible.
+  List<_CategoryGroup> _buildGroups(List<Category> cats) {
     final globals = [
-      for (final c in _categories)
+      for (final c in cats)
         if (c.listId == null) c,
     ];
     final byList = <int, List<Category>>{};
-    for (final c in _categories) {
+    for (final c in cats) {
       final lid = c.listId;
       if (lid != null) byList.putIfAbsent(lid, () => []).add(c);
     }
@@ -208,9 +222,11 @@ class _CategoriesViewState extends State<CategoriesView> {
   }
 
   Future<void> _create() async {
-    final created = await Navigator.of(
-      context,
-    ).push<Category>(itemModalRoute(CategoryFormView(houseId: widget.houseId)));
+    final created = await Navigator.of(context).push<Category>(
+      itemModalRoute(
+        CategoryFormView(houseId: widget.houseId, defaultListId: widget.listId),
+      ),
+    );
     if (created != null) {
       setState(() {
         _categories = CategoryService.sortCategories([
@@ -357,7 +373,7 @@ class _CategoriesViewState extends State<CategoriesView> {
                 ),
               ),
             )
-          : _categories.isEmpty
+          : _visibleCategories.isEmpty
           ? Center(child: Text(m.categories.noCategories))
           : RefreshIndicator(
               onRefresh: _load,
@@ -391,7 +407,7 @@ class _CategoriesViewState extends State<CategoriesView> {
   /// has categories. In custom sort each group is its own reorderable, so drags
   /// stay within a scope.
   Widget _buildGroupedList(ThemeData theme) {
-    final groups = _buildGroups();
+    final groups = _buildGroups(_visibleCategories);
     return ListView(
       padding: const EdgeInsets.only(bottom: 96),
       children: [
