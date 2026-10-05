@@ -2919,6 +2919,32 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
       """Klarte ikkje hente lista ut av arkivet.""";
 
   /// ```dart
+  /// "Dupliser"
+  /// ```
+  String get duplicateList => """Dupliser""";
+
+  /// ```dart
+  /// "Dupliser liste"
+  /// ```
+  String get duplicateListTitle => """Dupliser liste""";
+
+  /// ```dart
+  /// "Kopi av $name"
+  /// ```
+  String duplicateListName(String name) => """Kopi av $name""";
+
+  /// ```dart
+  /// "Merk alle oppføringar som ikkje fullførte"
+  /// ```
+  String get duplicateListResetDone =>
+      """Merk alle oppføringar som ikkje fullførte""";
+
+  /// ```dart
+  /// "Klarte ikkje duplisere lista."
+  /// ```
+  String get duplicateListFailed => """Klarte ikkje duplisere lista.""";
+
+  /// ```dart
   /// "Ny liste"
   /// ```
   String get createList => """Ny liste""";
@@ -2963,6 +2989,11 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   /// "$done av $total fullført"
   /// ```
   String listProgress(int done, int total) => """$done av $total fullført""";
+
+  /// ```dart
+  /// "Fullført · $when"
+  /// ```
+  String completedAt(String when) => """Fullført · $when""";
 
   /// ```dart
   /// "Sjul framgangskort"
@@ -3099,6 +3130,11 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   /// "Ferdig · 0 igjen"
   /// ```
   String get allDoneSummary => """Ferdig · 0 igjen""";
+
+  /// ```dart
+  /// "Ferdig · $when"
+  /// ```
+  String allDoneSummaryAt(String when) => """Ferdig · $when""";
 
   /// ```dart
   /// "Ny sjekkliste"
@@ -7433,6 +7469,11 @@ Passord: pantry""",
   """checklists.archiveListFailed""": """Klarte ikkje arkivere lista.""",
   """checklists.unarchiveListFailed""":
       """Klarte ikkje hente lista ut av arkivet.""",
+  """checklists.duplicateList""": """Dupliser""",
+  """checklists.duplicateListTitle""": """Dupliser liste""",
+  """checklists.duplicateListResetDone""":
+      """Merk alle oppføringar som ikkje fullførte""",
+  """checklists.duplicateListFailed""": """Klarte ikkje duplisere lista.""",
   """checklists.createList""": """Ny liste""",
   """checklists.listName""": """Listenamn""",
   """checklists.listDescription""": """Skildring (valfritt)""",

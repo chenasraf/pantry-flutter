@@ -112,6 +112,19 @@ extension ChecklistServiceLists on ChecklistService {
     );
   }
 
+  Future<ChecklistList> duplicateList(
+    int houseId,
+    int listId, {
+    required String name,
+    required bool resetDone,
+  }) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ChecklistList>(
+      '/houses/$houseId/lists/$listId/duplicate',
+      body: {'name': name, 'resetDone': resetDone},
+      fromJson: (data) => ChecklistList.fromJson(data),
+    );
+  }
+
   Future<ChecklistList> updateList(
     int houseId,
     int listId, {

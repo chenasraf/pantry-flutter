@@ -265,6 +265,48 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     notifyListeners();
   }
 
+  /// Whether [list] can be duplicated: the server copies the list itself, so it
+  /// needs a list it already knows about — not the All-lists sentinel and not a
+  /// list still waiting for its create to sync.
+  bool canDuplicateList(ChecklistList list) =>
+      hasFeature('checklist-duplicate') &&
+      permissions.canCreateLists &&
+      list.id > 0;
+
+  /// Copies [source] server-side and switches to the copy. Online only: the
+  /// server mints ids for the copied items and for any list-scoped categories,
+  /// labels and custom fields it duplicates, so there is nothing to apply
+  /// optimistically or replay from the sync queue.
+  Future<ChecklistList> duplicateList(
+    ChecklistList source, {
+    required String name,
+    required bool resetDone,
+  }) async {
+    if (!canDuplicateList(source)) {
+      throw StateError('List ${source.id} cannot be duplicated');
+    }
+    final created = _withLocalListPrefs(
+      await _checklistService.duplicateList(
+        houseId,
+        source.id,
+        name: name.trim(),
+        resetDone: resetDone,
+      ),
+    );
+    _lists = [..._lists, created];
+    _checklistService.cacheLists(houseId, _lists);
+    notifyListeners();
+    // The copied items point at the duplicated scoped rows, which none of the
+    // caches have seen yet.
+    await Future.wait([
+      _refreshCategories(),
+      if (hasFeature('labels')) _refreshLabels(),
+      if (hasFeature(kCustomFieldsFeature)) _refreshCustomFields(),
+    ]);
+    await selectList(created);
+    return created;
+  }
+
   // -- Lists trash (the lists themselves) --
 
   Future<void> loadTrashedLists() async {

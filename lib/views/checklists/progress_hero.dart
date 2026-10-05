@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/utils/date_format.dart';
 
 /// A card with a circular progress ring and "{N} items left / {done} of
 /// {total} done" labels. Animates the ring on state changes.
@@ -9,15 +10,21 @@ import 'package:pantry_core/i18n.dart';
 /// When [onDismiss] is non-null, a trailing-corner X button lets the card be
 /// dismissed without a swipe — the caller provides it on desktop, where
 /// horizontal swipes aren't reliably available.
+///
+/// [lastCompletedAt] only replaces the progress line while nothing is left:
+/// the stamp outlives the completion it records, so a list with open items
+/// keeps reading as what still needs doing.
 class ProgressHero extends StatelessWidget {
   final int total;
   final int done;
+  final int? lastCompletedAt;
   final VoidCallback? onDismiss;
 
   const ProgressHero({
     super.key,
     required this.total,
     required this.done,
+    this.lastCompletedAt,
     this.onDismiss,
   });
 
@@ -26,6 +33,12 @@ class ProgressHero extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final left = (total - done).clamp(0, total);
     final pct = total == 0 ? 0.0 : done / total;
+    final completedAt = left == 0 ? lastCompletedAt : null;
+    final secondaryStyle = TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      color: cs.onSurfaceVariant,
+    );
 
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -69,15 +82,25 @@ class ProgressHero extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        m.checklists.listProgress(done, total),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: cs.onSurfaceVariant,
+                      if (completedAt == null)
+                        Text(
+                          m.checklists.listProgress(done, total),
+                          style: secondaryStyle,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      else
+                        // The exact moment is the point of the stamp (proof
+                        // of when a checklist was signed off), so keep it a
+                        // hover or long-press away from the relative label.
+                        Tooltip(
+                          message: formatDateTime(completedAt),
+                          triggerMode: TooltipTriggerMode.longPress,
+                          child: Text(
+                            m.checklists.completedAt(relativeTime(completedAt)),
+                            style: secondaryStyle,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
                     ],
                   ),
                 ),

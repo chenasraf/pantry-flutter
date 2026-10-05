@@ -2902,6 +2902,31 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get unarchiveListFailed => """הוצאת הרשימה מהארכיון נכשלה.""";
 
   /// ```dart
+  /// "שכפל"
+  /// ```
+  String get duplicateList => """שכפל""";
+
+  /// ```dart
+  /// "שכפל רשימה"
+  /// ```
+  String get duplicateListTitle => """שכפל רשימה""";
+
+  /// ```dart
+  /// "עותק של $name"
+  /// ```
+  String duplicateListName(String name) => """עותק של $name""";
+
+  /// ```dart
+  /// "סמן את כל הפריטים כלא בוצעו"
+  /// ```
+  String get duplicateListResetDone => """סמן את כל הפריטים כלא בוצעו""";
+
+  /// ```dart
+  /// "שכפול הרשימה נכשל."
+  /// ```
+  String get duplicateListFailed => """שכפול הרשימה נכשל.""";
+
+  /// ```dart
   /// "רשימה חדשה"
   /// ```
   String get createList => """רשימה חדשה""";
@@ -2946,6 +2971,11 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "$done מתוך $total בוצעו"
   /// ```
   String listProgress(int done, int total) => """$done מתוך $total בוצעו""";
+
+  /// ```dart
+  /// "הושלמה · $when"
+  /// ```
+  String completedAt(String when) => """הושלמה · $when""";
 
   /// ```dart
   /// "הסתר כרטיס התקדמות"
@@ -3082,6 +3112,11 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "הכל בוצע · 0 נותרו"
   /// ```
   String get allDoneSummary => """הכל בוצע · 0 נותרו""";
+
+  /// ```dart
+  /// "הכל בוצע · $when"
+  /// ```
+  String allDoneSummaryAt(String when) => """הכל בוצע · $when""";
 
   /// ```dart
   /// "רשימה חדשה"
@@ -7365,6 +7400,10 @@ Map<String, String> get messagesHeMap => {
   """checklists.listArchived""": """הרשימה הועברה לארכיון""",
   """checklists.archiveListFailed""": """העברת הרשימה לארכיון נכשלה.""",
   """checklists.unarchiveListFailed""": """הוצאת הרשימה מהארכיון נכשלה.""",
+  """checklists.duplicateList""": """שכפל""",
+  """checklists.duplicateListTitle""": """שכפל רשימה""",
+  """checklists.duplicateListResetDone""": """סמן את כל הפריטים כלא בוצעו""",
+  """checklists.duplicateListFailed""": """שכפול הרשימה נכשל.""",
   """checklists.createList""": """רשימה חדשה""",
   """checklists.listName""": """שם הרשימה""",
   """checklists.listDescription""": """תיאור (אופציונלי)""",

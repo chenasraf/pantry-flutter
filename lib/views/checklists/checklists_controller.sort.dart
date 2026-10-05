@@ -82,6 +82,15 @@ extension ChecklistsControllerSort on ChecklistsController {
     }
   }
 
+  Future<void> _refreshCustomFields() async {
+    try {
+      _customFieldDefs = await CustomFieldService.instance.getFields(houseId);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[ChecklistsController] Failed to refresh custom fields: $e');
+    }
+  }
+
   Future<void> onStoresChanged() async {
     if (!hasFeature('stores')) return;
     try {

@@ -5,6 +5,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry_core/utils/date_format.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
@@ -16,6 +17,7 @@ class ListStage extends StatelessWidget {
   final Future<int> Function(int listId) itemCountForList;
   final VoidCallback onCreateNew;
   final ValueChanged<ChecklistList> onEdit;
+  final ValueChanged<ChecklistList> onDuplicate;
   final VoidCallback onOpenTrash;
   final VoidCallback onOpenArchive;
 
@@ -25,6 +27,7 @@ class ListStage extends StatelessWidget {
     required this.itemCountForList,
     required this.onCreateNew,
     required this.onEdit,
+    required this.onDuplicate,
     required this.onOpenTrash,
     required this.onOpenArchive,
   });
@@ -137,6 +140,9 @@ class ListStage extends StatelessWidget {
                         onEdit: list.canEditSettingsWith(canEditLists)
                             ? () => onEdit(list)
                             : null,
+                        onDuplicate: controller.canDuplicateList(list)
+                            ? () => onDuplicate(list)
+                            : null,
                         onRemove: showMenu && canDeleteLists
                             ? () => _confirmRemove(context, list)
                             : null,
@@ -165,6 +171,9 @@ class ListStage extends StatelessWidget {
                       },
                       onEdit: list.canEditSettingsWith(canEditLists)
                           ? () => onEdit(list)
+                          : null,
+                      onDuplicate: controller.canDuplicateList(list)
+                          ? () => onDuplicate(list)
                           : null,
                       onRemove: showMenu && canDeleteLists
                           ? () => _confirmRemove(context, list)
@@ -342,6 +351,7 @@ class _ListTile extends StatelessWidget {
   final Future<int> itemCountFuture;
   final VoidCallback onTap;
   final VoidCallback? onEdit;
+  final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onArchive;
   final int? dragIndex;
@@ -353,11 +363,31 @@ class _ListTile extends StatelessWidget {
     required this.itemCountFuture,
     required this.onTap,
     this.onEdit,
+    this.onDuplicate,
     this.onRemove,
     this.onArchive,
     this.dragIndex,
     this.showOverflow = false,
   });
+
+  bool get _hasActions =>
+      onEdit != null ||
+      onDuplicate != null ||
+      onRemove != null ||
+      onArchive != null;
+
+  /// A stamped list with open items reads as its item count: the stamp records
+  /// the last sign-off, and the switcher's job is showing what still needs
+  /// doing.
+  String _summary(int count) {
+    if (count > 0) return m.checklists.itemsSummary(count);
+    final completedAt = hasFeature('checklist-completion-time')
+        ? list.lastCompletedAt
+        : null;
+    return completedAt == null
+        ? m.checklists.allDoneSummary
+        : m.checklists.allDoneSummaryAt(relativeTime(completedAt));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -410,11 +440,7 @@ class _ListTile extends StatelessWidget {
                   future: itemCountFuture,
                   builder: (_, snap) {
                     final count = snap.data ?? -1;
-                    final label = count < 0
-                        ? ''
-                        : (count == 0
-                              ? m.checklists.allDoneSummary
-                              : m.checklists.itemsSummary(count));
+                    final label = count < 0 ? '' : _summary(count);
                     return Text(
                       label,
                       style: TextStyle(
@@ -438,8 +464,7 @@ class _ListTile extends StatelessWidget {
               ),
               child: const Icon(Icons.check, color: Colors.white, size: 16),
             ),
-          if (showOverflow &&
-              (onEdit != null || onRemove != null || onArchive != null))
+          if (showOverflow && _hasActions)
             SizedBox(
               width: 36,
               height: 36,
@@ -453,6 +478,7 @@ class _ListTile extends StatelessWidget {
                 ),
                 onSelected: (v) {
                   if (v == 'edit') onEdit?.call();
+                  if (v == 'duplicate') onDuplicate?.call();
                   if (v == 'archive') onArchive?.call();
                   if (v == 'remove') onRemove?.call();
                 },
@@ -465,6 +491,17 @@ class _ListTile extends StatelessWidget {
                           const Icon(Icons.edit_outlined, size: 18),
                           const SizedBox(width: 10),
                           Text(m.checklists.editList),
+                        ],
+                      ),
+                    ),
+                  if (onDuplicate != null)
+                    PopupMenuItem<String>(
+                      value: 'duplicate',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.copy_outlined, size: 18),
+                          const SizedBox(width: 10),
+                          Text(m.checklists.duplicateList),
                         ],
                       ),
                     ),
@@ -515,16 +552,17 @@ class _ListTile extends StatelessWidget {
       child: tile,
     );
 
-    if (!PlatformInfo.isDesktop ||
-        (onEdit == null && onRemove == null && onArchive == null)) {
+    if (!PlatformInfo.isDesktop || !_hasActions) {
       return interactive;
     }
 
     return ContextMenuRegion(
       onEdit: onEdit,
+      onDuplicate: onDuplicate,
       onRemove: onRemove,
       onArchive: onArchive,
       editLabel: m.checklists.editList,
+      duplicateLabel: m.checklists.duplicateList,
       removeLabel: m.checklists.removeList,
       archiveLabel: m.checklists.archiveList,
       child: interactive,

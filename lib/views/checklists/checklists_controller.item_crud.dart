@@ -548,6 +548,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
 
     _items[index] = item.copyWith(done: !item.done, updatedAt: _now());
     _cacheVisibleItems(item.listId);
+    if (!item.done) _stampCompletionIfClosed(item.listId);
     notifyListeners();
 
     _sync.enqueue(
@@ -562,5 +563,27 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
         createdAt: _now(),
       ),
     );
+  }
+
+  /// Mirrors the server's completion stamp so the progress card shows the new
+  /// sign-off right away instead of the previous one until the next refresh.
+  /// The server applies the same "no open items left" rule when the toggle
+  /// lands, so its own stamp replaces this one then.
+  void _stampCompletionIfClosed(int listId) {
+    if (!hasFeature('checklist-completion-time')) return;
+    final hasOpen = _items.any(
+      (i) =>
+          i.listId == listId &&
+          !i.done &&
+          i.deletedAt == null &&
+          i.archivedAt == null,
+    );
+    if (hasOpen) return;
+    final i = _lists.indexWhere((l) => l.id == listId);
+    if (i == -1) return;
+    final stamped = _lists[i].copyWith(lastCompletedAt: _now() ~/ 1000);
+    _lists[i] = stamped;
+    if (_currentList?.id == listId) _currentList = stamped;
+    _checklistService.cacheLists(houseId, _lists);
   }
 }

@@ -312,6 +312,9 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
         await openShopping(context);
       case 'shopping_history':
         await openShoppingHistory(context);
+      case 'duplicate_list':
+        final current = domain.currentList;
+        if (current != null) await openSwitcher(context, duplicating: current);
       case 'export_markdown':
         await openExport(context);
       case 'import_markdown':

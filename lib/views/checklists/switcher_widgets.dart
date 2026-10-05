@@ -184,9 +184,11 @@ class IconChip extends StatelessWidget {
 class ContextMenuRegion extends StatefulWidget {
   final Widget child;
   final VoidCallback? onEdit;
+  final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onArchive;
   final String editLabel;
+  final String duplicateLabel;
   final String removeLabel;
   final String archiveLabel;
 
@@ -194,9 +196,11 @@ class ContextMenuRegion extends StatefulWidget {
     super.key,
     required this.child,
     required this.onEdit,
+    required this.onDuplicate,
     required this.onRemove,
     required this.onArchive,
     required this.editLabel,
+    required this.duplicateLabel,
     required this.removeLabel,
     required this.archiveLabel,
   });
@@ -226,6 +230,17 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
               ],
             ),
           ),
+        if (widget.onDuplicate != null)
+          PopupMenuItem<String>(
+            value: 'duplicate',
+            child: Row(
+              children: [
+                const Icon(Icons.copy_outlined, size: 18),
+                const SizedBox(width: 10),
+                Text(widget.duplicateLabel),
+              ],
+            ),
+          ),
         if (widget.onArchive != null)
           PopupMenuItem<String>(
             value: 'archive',
@@ -251,6 +266,7 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
       ],
     );
     if (result == 'edit') widget.onEdit?.call();
+    if (result == 'duplicate') widget.onDuplicate?.call();
     if (result == 'archive') widget.onArchive?.call();
     if (result == 'remove') widget.onRemove?.call();
   }

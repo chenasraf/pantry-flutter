@@ -605,6 +605,11 @@ checklists:
   listArchived: הרשימה הועברה לארכיון
   archiveListFailed: העברת הרשימה לארכיון נכשלה.
   unarchiveListFailed: הוצאת הרשימה מהארכיון נכשלה.
+  duplicateList: "שכפל"
+  duplicateListTitle: "שכפל רשימה"
+  duplicateListName(String name): "עותק של $name"
+  duplicateListResetDone: "סמן את כל הפריטים כלא בוצעו"
+  duplicateListFailed: "שכפול הרשימה נכשל."
   createList: רשימה חדשה
   listName: שם הרשימה
   listDescription: תיאור (אופציונלי)
@@ -692,6 +697,7 @@ checklists:
   itemsLeft(int count): "${_plural(count, one: 'פריט אחד נותר', many: '$count פריטים נותרו')}"
   allDone: הכל בוצע 🎉
   listProgress(int done, int total): "$done מתוך $total בוצעו"
+  completedAt(String when): "הושלמה · $when"
   hideProgressHero: "הסתר כרטיס התקדמות"
   sortTooltip: "מיון"
   doneCount(int count): "בוצעו · $count"
@@ -727,6 +733,7 @@ checklists:
   listsCount(int count): "${_plural(count, one: 'רשימה אחת', many: '$count רשימות')}"
   itemsSummary(int count): "${_plural(count, one: 'פריט אחד', many: '$count פריטים')}"
   allDoneSummary: "הכל בוצע · 0 נותרו"
+  allDoneSummaryAt(String when): "הכל בוצע · $when"
   newChecklist: רשימה חדשה
   createListButton: צור רשימה
   view: צפה

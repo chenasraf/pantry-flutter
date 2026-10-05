@@ -728,6 +728,10 @@ class _BodyState extends State<_Body> {
                           child: ProgressHero(
                             total: total,
                             done: done,
+                            lastCompletedAt:
+                                hasFeature('checklist-completion-time')
+                                ? list?.lastCompletedAt
+                                : null,
                             // Desktop mice can't reliably swipe. Surface a tap
                             // affordance there; the Dismissible above still
                             // works for anyone who can swipe.

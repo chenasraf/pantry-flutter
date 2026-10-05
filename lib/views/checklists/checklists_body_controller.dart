@@ -521,11 +521,15 @@ class ChecklistsBodyController extends ChangeNotifier
     }).toList();
   }
 
-  Future<void> openSwitcher(BuildContext context) async {
+  Future<void> openSwitcher(
+    BuildContext context, {
+    ChecklistList? duplicating,
+  }) async {
     await showChecklistSwitcher(
       context,
       controller: domain,
       anchorContext: switcherAnchorKey.currentContext,
+      duplicating: duplicating,
       itemCountForList: (id) async {
         final cached = ChecklistService.instance.getCachedItems(id);
         if (cached != null) {

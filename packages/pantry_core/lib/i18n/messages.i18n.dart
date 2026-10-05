@@ -2897,6 +2897,31 @@ class ChecklistsMessages {
   String get unarchiveListFailed => """Failed to unarchive checklist.""";
 
   /// ```dart
+  /// "Duplicate"
+  /// ```
+  String get duplicateList => """Duplicate""";
+
+  /// ```dart
+  /// "Duplicate list"
+  /// ```
+  String get duplicateListTitle => """Duplicate list""";
+
+  /// ```dart
+  /// "Duplicate of $name"
+  /// ```
+  String duplicateListName(String name) => """Duplicate of $name""";
+
+  /// ```dart
+  /// "Set all items to undone"
+  /// ```
+  String get duplicateListResetDone => """Set all items to undone""";
+
+  /// ```dart
+  /// "Failed to duplicate checklist."
+  /// ```
+  String get duplicateListFailed => """Failed to duplicate checklist.""";
+
+  /// ```dart
   /// "New list"
   /// ```
   String get createList => """New list""";
@@ -2939,6 +2964,11 @@ class ChecklistsMessages {
   /// "$done of $total done"
   /// ```
   String listProgress(int done, int total) => """$done of $total done""";
+
+  /// ```dart
+  /// "Completed · $when"
+  /// ```
+  String completedAt(String when) => """Completed · $when""";
 
   /// ```dart
   /// "Hide progress card"
@@ -3075,6 +3105,11 @@ class ChecklistsMessages {
   /// "All done · 0 left"
   /// ```
   String get allDoneSummary => """All done · 0 left""";
+
+  /// ```dart
+  /// "All done · $when"
+  /// ```
+  String allDoneSummaryAt(String when) => """All done · $when""";
 
   /// ```dart
   /// "New checklist"
@@ -7378,6 +7413,10 @@ Password: pantry-rocks""",
   """checklists.listArchived""": """Checklist archived""",
   """checklists.archiveListFailed""": """Failed to archive checklist.""",
   """checklists.unarchiveListFailed""": """Failed to unarchive checklist.""",
+  """checklists.duplicateList""": """Duplicate""",
+  """checklists.duplicateListTitle""": """Duplicate list""",
+  """checklists.duplicateListResetDone""": """Set all items to undone""",
+  """checklists.duplicateListFailed""": """Failed to duplicate checklist.""",
   """checklists.createList""": """New list""",
   """checklists.listName""": """List name""",
   """checklists.listDescription""": """Description (optional)""",

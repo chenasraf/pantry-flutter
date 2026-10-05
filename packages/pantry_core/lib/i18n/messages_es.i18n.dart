@@ -2925,6 +2925,32 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get unarchiveListFailed => """No se pudo desarchivar la lista.""";
 
   /// ```dart
+  /// "Duplicar"
+  /// ```
+  String get duplicateList => """Duplicar""";
+
+  /// ```dart
+  /// "Duplicar lista"
+  /// ```
+  String get duplicateListTitle => """Duplicar lista""";
+
+  /// ```dart
+  /// "Copia de $name"
+  /// ```
+  String duplicateListName(String name) => """Copia de $name""";
+
+  /// ```dart
+  /// "Marcar todos los artículos como pendientes"
+  /// ```
+  String get duplicateListResetDone =>
+      """Marcar todos los artículos como pendientes""";
+
+  /// ```dart
+  /// "No se pudo duplicar la lista."
+  /// ```
+  String get duplicateListFailed => """No se pudo duplicar la lista.""";
+
+  /// ```dart
   /// "Nueva lista"
   /// ```
   String get createList => """Nueva lista""";
@@ -2969,6 +2995,11 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "$done de $total hechos"
   /// ```
   String listProgress(int done, int total) => """$done de $total hechos""";
+
+  /// ```dart
+  /// "Completada · $when"
+  /// ```
+  String completedAt(String when) => """Completada · $when""";
 
   /// ```dart
   /// "Ocultar tarjeta de progreso"
@@ -3105,6 +3136,11 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "Todo listo · 0 restantes"
   /// ```
   String get allDoneSummary => """Todo listo · 0 restantes""";
+
+  /// ```dart
+  /// "Todo listo · $when"
+  /// ```
+  String allDoneSummaryAt(String when) => """Todo listo · $when""";
 
   /// ```dart
   /// "Nueva lista"
@@ -7461,6 +7497,11 @@ Contraseña: pantry-rocks""",
   """checklists.listArchived""": """Lista archivada""",
   """checklists.archiveListFailed""": """No se pudo archivar la lista.""",
   """checklists.unarchiveListFailed""": """No se pudo desarchivar la lista.""",
+  """checklists.duplicateList""": """Duplicar""",
+  """checklists.duplicateListTitle""": """Duplicar lista""",
+  """checklists.duplicateListResetDone""":
+      """Marcar todos los artículos como pendientes""",
+  """checklists.duplicateListFailed""": """No se pudo duplicar la lista.""",
   """checklists.createList""": """Nueva lista""",
   """checklists.listName""": """Nombre de la lista""",
   """checklists.listDescription""": """Descripción (opcional)""",

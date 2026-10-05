@@ -2929,6 +2929,32 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get unarchiveListFailed => """Impossible de désarchiver la liste.""";
 
   /// ```dart
+  /// "Dupliquer"
+  /// ```
+  String get duplicateList => """Dupliquer""";
+
+  /// ```dart
+  /// "Dupliquer la liste"
+  /// ```
+  String get duplicateListTitle => """Dupliquer la liste""";
+
+  /// ```dart
+  /// "Copie de $name"
+  /// ```
+  String duplicateListName(String name) => """Copie de $name""";
+
+  /// ```dart
+  /// "Marquer tous les articles comme non faits"
+  /// ```
+  String get duplicateListResetDone =>
+      """Marquer tous les articles comme non faits""";
+
+  /// ```dart
+  /// "Impossible de dupliquer la liste."
+  /// ```
+  String get duplicateListFailed => """Impossible de dupliquer la liste.""";
+
+  /// ```dart
   /// "Nouvelle liste"
   /// ```
   String get createList => """Nouvelle liste""";
@@ -2973,6 +2999,11 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "$done sur $total faits"
   /// ```
   String listProgress(int done, int total) => """$done sur $total faits""";
+
+  /// ```dart
+  /// "Terminée · $when"
+  /// ```
+  String completedAt(String when) => """Terminée · $when""";
 
   /// ```dart
   /// "Masquer la carte de progression"
@@ -3109,6 +3140,11 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Tout est fait · 0 restant"
   /// ```
   String get allDoneSummary => """Tout est fait · 0 restant""";
+
+  /// ```dart
+  /// "Tout est fait · $when"
+  /// ```
+  String allDoneSummaryAt(String when) => """Tout est fait · $when""";
 
   /// ```dart
   /// "Nouvelle liste"
@@ -7478,6 +7514,11 @@ Mot de passe : pantry-rocks""",
   """checklists.archiveListFailed""": """Impossible d'archiver la liste.""",
   """checklists.unarchiveListFailed""":
       """Impossible de désarchiver la liste.""",
+  """checklists.duplicateList""": """Dupliquer""",
+  """checklists.duplicateListTitle""": """Dupliquer la liste""",
+  """checklists.duplicateListResetDone""":
+      """Marquer tous les articles comme non faits""",
+  """checklists.duplicateListFailed""": """Impossible de dupliquer la liste.""",
   """checklists.createList""": """Nouvelle liste""",
   """checklists.listName""": """Nom de la liste""",
   """checklists.listDescription""": """Description (facultatif)""",

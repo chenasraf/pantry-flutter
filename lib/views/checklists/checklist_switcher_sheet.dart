@@ -6,6 +6,7 @@ import 'package:pantry/views/checklists/checklists_controller.dart';
 
 import 'switcher_archive_stage.dart';
 import 'switcher_dropdown_route.dart';
+import 'switcher_duplicate_stage.dart';
 import 'switcher_form_stage.dart';
 import 'switcher_list_stage.dart';
 import 'switcher_trash_stage.dart';
@@ -14,11 +15,15 @@ import 'switcher_trash_stage.dart';
 /// on desktop, when [anchorContext] is provided, it opens as a positioned
 /// dropdown panel directly under the anchor (typically the AppBar's title
 /// row) so the interaction reads as a desktop popup menu.
+///
+/// With [duplicating], the switcher opens straight into the duplicate form for
+/// that list, and backing out of it closes the switcher.
 Future<void> showChecklistSwitcher(
   BuildContext context, {
   required ChecklistsController controller,
   required Future<int> Function(int listId) itemCountForList,
   BuildContext? anchorContext,
+  ChecklistList? duplicating,
 }) {
   if (PlatformInfo.isDesktop && anchorContext != null) {
     final anchor = anchorContext.findRenderObject() as RenderBox?;
@@ -28,6 +33,7 @@ Future<void> showChecklistSwitcher(
           anchor: anchor,
           controller: controller,
           itemCountForList: itemCountForList,
+          duplicating: duplicating,
         ),
       );
     }
@@ -36,8 +42,11 @@ Future<void> showChecklistSwitcher(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) =>
-        SheetHost(controller: controller, itemCountForList: itemCountForList),
+    builder: (_) => SheetHost(
+      controller: controller,
+      itemCountForList: itemCountForList,
+      duplicating: duplicating,
+    ),
   );
 }
 
@@ -50,22 +59,28 @@ class SheetHost extends StatefulWidget {
   /// sheets keep the grabber + top-only rounding.
   final bool desktop;
 
+  final ChecklistList? duplicating;
+
   const SheetHost({
     super.key,
     required this.controller,
     required this.itemCountForList,
     this.desktop = false,
+    this.duplicating,
   });
 
   @override
   State<SheetHost> createState() => _SheetHostState();
 }
 
-enum _Stage { list, create, edit, trash, archive }
+enum _Stage { list, create, edit, duplicate, trash, archive }
 
 class _SheetHostState extends State<SheetHost> {
-  _Stage _stage = _Stage.list;
+  late _Stage _stage = widget.duplicating == null
+      ? _Stage.list
+      : _Stage.duplicate;
   ChecklistList? _editing;
+  late ChecklistList? _duplicating = widget.duplicating;
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +133,10 @@ class _SheetHostState extends State<SheetHost> {
                     _editing = list;
                     _stage = _Stage.edit;
                   }),
+                  onDuplicate: (list) => setState(() {
+                    _duplicating = list;
+                    _stage = _Stage.duplicate;
+                  }),
                   onOpenTrash: () => setState(() => _stage = _Stage.trash),
                   onOpenArchive: () => setState(() => _stage = _Stage.archive),
                 ),
@@ -134,6 +153,15 @@ class _SheetHostState extends State<SheetHost> {
                 existing: _editing,
                 onBack: () => setState(() => _stage = _Stage.list),
                 onSaved: () => setState(() => _stage = _Stage.list),
+              )
+            else if (_stage == _Stage.duplicate)
+              DuplicateListStage(
+                controller: widget.controller,
+                source: _duplicating!,
+                onBack: widget.duplicating != null
+                    ? () => Navigator.pop(context)
+                    : () => setState(() => _stage = _Stage.list),
+                onDuplicated: () => Navigator.pop(context),
               )
             else if (_stage == _Stage.trash)
               TrashStage(

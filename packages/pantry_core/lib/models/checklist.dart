@@ -43,6 +43,11 @@ class ChecklistList {
   final int? deletedAt;
   final int? archivedAt;
 
+  /// Epoch seconds of the check that last left this list with no open items.
+  /// Never cleared — unchecking or adding items leaves it standing — so it
+  /// records the last sign-off, not whether the list is complete right now.
+  final int? lastCompletedAt;
+
   /// Whether the current user may edit this list's settings (name/icon/color).
   /// `null` on servers without the `share-users` capability, where gating falls
   /// back to house-level `canEditLists`. See [ChecklistSharing].
@@ -71,6 +76,7 @@ class ChecklistList {
     required this.updatedAt,
     this.deletedAt,
     this.archivedAt,
+    this.lastCompletedAt,
     this.canEdit,
     this.sharedOnly,
   });
@@ -101,6 +107,7 @@ class ChecklistList {
     updatedAt: json['updatedAt'] as int,
     deletedAt: json['deletedAt'] as int?,
     archivedAt: json['archivedAt'] as int?,
+    lastCompletedAt: json['lastCompletedAt'] as int?,
     canEdit: json['canEdit'] as bool?,
     sharedOnly: json['sharedOnly'] as bool?,
   );
@@ -123,6 +130,7 @@ class ChecklistList {
     'updatedAt': updatedAt,
     'deletedAt': deletedAt,
     'archivedAt': archivedAt,
+    'lastCompletedAt': lastCompletedAt,
     'canEdit': canEdit,
     'sharedOnly': sharedOnly,
   };
@@ -145,6 +153,7 @@ class ChecklistList {
     bool clearDeletedAt = false,
     int? archivedAt,
     bool clearArchivedAt = false,
+    int? lastCompletedAt,
   }) => ChecklistList(
     id: id ?? this.id,
     houseId: houseId,
@@ -165,6 +174,7 @@ class ChecklistList {
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
     archivedAt: clearArchivedAt ? null : (archivedAt ?? this.archivedAt),
+    lastCompletedAt: lastCompletedAt ?? this.lastCompletedAt,
     canEdit: canEdit,
     sharedOnly: sharedOnly,
   );

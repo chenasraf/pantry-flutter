@@ -2930,6 +2930,33 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
       """Checkliste konnte nicht aus dem Archiv geholt werden.""";
 
   /// ```dart
+  /// "Duplizieren"
+  /// ```
+  String get duplicateList => """Duplizieren""";
+
+  /// ```dart
+  /// "Liste duplizieren"
+  /// ```
+  String get duplicateListTitle => """Liste duplizieren""";
+
+  /// ```dart
+  /// "Kopie von $name"
+  /// ```
+  String duplicateListName(String name) => """Kopie von $name""";
+
+  /// ```dart
+  /// "Alle Einträge als unerledigt markieren"
+  /// ```
+  String get duplicateListResetDone =>
+      """Alle Einträge als unerledigt markieren""";
+
+  /// ```dart
+  /// "Checkliste konnte nicht dupliziert werden."
+  /// ```
+  String get duplicateListFailed =>
+      """Checkliste konnte nicht dupliziert werden.""";
+
+  /// ```dart
   /// "Neue Liste"
   /// ```
   String get createList => """Neue Liste""";
@@ -2974,6 +3001,11 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "$done von $total erledigt"
   /// ```
   String listProgress(int done, int total) => """$done von $total erledigt""";
+
+  /// ```dart
+  /// "Erledigt · $when"
+  /// ```
+  String completedAt(String when) => """Erledigt · $when""";
 
   /// ```dart
   /// "Fortschrittskarte ausblenden"
@@ -3111,6 +3143,11 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Alles erledigt · 0 übrig"
   /// ```
   String get allDoneSummary => """Alles erledigt · 0 übrig""";
+
+  /// ```dart
+  /// "Alles erledigt · $when"
+  /// ```
+  String allDoneSummaryAt(String when) => """Alles erledigt · $when""";
 
   /// ```dart
   /// "Neue Liste"
@@ -7484,6 +7521,12 @@ Passwort: pantry-rocks""",
       """Checkliste konnte nicht archiviert werden.""",
   """checklists.unarchiveListFailed""":
       """Checkliste konnte nicht aus dem Archiv geholt werden.""",
+  """checklists.duplicateList""": """Duplizieren""",
+  """checklists.duplicateListTitle""": """Liste duplizieren""",
+  """checklists.duplicateListResetDone""":
+      """Alle Einträge als unerledigt markieren""",
+  """checklists.duplicateListFailed""":
+      """Checkliste konnte nicht dupliziert werden.""",
   """checklists.createList""": """Neue Liste""",
   """checklists.listName""": """Listenname""",
   """checklists.listDescription""": """Beschreibung (optional)""",

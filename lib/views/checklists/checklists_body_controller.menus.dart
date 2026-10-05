@@ -319,6 +319,15 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
       ],
       // Markdown import/export are per-list only — not offered in the meta
       // "All lists" view, which has no single target.
+      if (domain.currentList != null &&
+          domain.canDuplicateList(domain.currentList!)) ...[
+        const OverflowDivider(),
+        OverflowAction(
+          value: 'duplicate_list',
+          icon: Icons.copy_outlined,
+          label: m.checklists.duplicateListTitle,
+        ),
+      ],
       if (domain.currentList != null && !isMeta) ...[
         const OverflowDivider(),
         OverflowAction(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 import 'checklist_switcher_sheet.dart';
@@ -11,11 +12,13 @@ class SwitcherDropdownRoute extends PopupRoute<void> {
   final RenderBox anchor;
   final ChecklistsController checklistsController;
   final Future<int> Function(int listId) itemCountForList;
+  final ChecklistList? duplicating;
 
   SwitcherDropdownRoute({
     required this.anchor,
     required ChecklistsController controller,
     required this.itemCountForList,
+    this.duplicating,
   }) : checklistsController = controller;
 
   @override
@@ -48,6 +51,7 @@ class SwitcherDropdownRoute extends PopupRoute<void> {
         controller: checklistsController,
         itemCountForList: itemCountForList,
         desktop: true,
+        duplicating: duplicating,
       ),
     );
   }

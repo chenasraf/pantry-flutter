@@ -724,6 +724,11 @@ checklists:
   listArchived: Liste arkivert
   archiveListFailed: Klarte ikkje arkivere lista.
   unarchiveListFailed: Klarte ikkje hente lista ut av arkivet.
+  duplicateList: "Dupliser"
+  duplicateListTitle: "Dupliser liste"
+  duplicateListName(String name): "Kopi av $name"
+  duplicateListResetDone: "Merk alle oppføringar som ikkje fullførte"
+  duplicateListFailed: "Klarte ikkje duplisere lista."
   createList: Ny liste
   listName: Listenamn
   listDescription: Skildring (valfritt)
@@ -814,6 +819,7 @@ checklists:
     oppføringar igjen')}"
   allDone: "Ferdig \U0001F389"
   listProgress(int done, int total): $done av $total fullført
+  completedAt(String when): "Fullført · $when"
   hideProgressHero: Sjul framgangskort
   sortTooltip: Sorter
   doneCount(int count): Fullført · $count
@@ -854,6 +860,7 @@ checklists:
   itemsSummary(int count): "${_plural(count, one: '1 oppføring', many: '$count
     oppføringar')}"
   allDoneSummary: Ferdig · 0 igjen
+  allDoneSummaryAt(String when): "Ferdig · $when"
   newChecklist: Ny sjekkliste
   createListButton: Opprett liste
   view: Vis

@@ -605,6 +605,11 @@ checklists:
   listArchived: "Lista archivada"
   archiveListFailed: "No se pudo archivar la lista."
   unarchiveListFailed: "No se pudo desarchivar la lista."
+  duplicateList: "Duplicar"
+  duplicateListTitle: "Duplicar lista"
+  duplicateListName(String name): "Copia de $name"
+  duplicateListResetDone: "Marcar todos los artículos como pendientes"
+  duplicateListFailed: "No se pudo duplicar la lista."
   createList: Nueva lista
   listName: Nombre de la lista
   listDescription: "Descripción (opcional)"
@@ -692,6 +697,7 @@ checklists:
   itemsLeft(int count): "${_plural(count, one: '1 artículo restante', many: '$count artículos restantes')}"
   allDone: Todo listo 🎉
   listProgress(int done, int total): "$done de $total hechos"
+  completedAt(String when): "Completada · $when"
   hideProgressHero: "Ocultar tarjeta de progreso"
   sortTooltip: "Ordenar"
   doneCount(int count): "Hechos · $count"
@@ -727,6 +733,7 @@ checklists:
   listsCount(int count): "${_plural(count, one: '1 lista', many: '$count listas')}"
   itemsSummary(int count): "${_plural(count, one: '1 artículo', many: '$count artículos')}"
   allDoneSummary: "Todo listo · 0 restantes"
+  allDoneSummaryAt(String when): "Todo listo · $when"
   newChecklist: Nueva lista
   createListButton: Crear lista
   view: Ver
