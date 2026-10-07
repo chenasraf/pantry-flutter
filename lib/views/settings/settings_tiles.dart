@@ -88,14 +88,11 @@ class SettingsPageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final forward = Directionality.of(context) == TextDirection.rtl
-        ? Icons.chevron_left
-        : Icons.chevron_right;
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
       subtitle: Text(subtitle),
-      trailing: selected == null ? Icon(forward) : null,
+      trailing: selected == null ? const Icon(Icons.chevron_right) : null,
       selected: selected ?? false,
       onTap: onTap,
     );
