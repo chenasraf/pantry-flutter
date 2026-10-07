@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.35.0](https://github.com/chenasraf/pantry-flutter/compare/v0.34.0...v0.35.0) (2026-10-07)
+
+
+### Features
+
+* **lists:** list completion timestamp and list duplication ([ae326bf](https://github.com/chenasraf/pantry-flutter/commit/ae326bf88d7c9c6cc0bc0682755c626caabc312c))
+* **settings:** choose which details a barcode scan fills in ([bfea941](https://github.com/chenasraf/pantry-flutter/commit/bfea941bbb3d079a5add6ecda2640024c9ec0431)), closes [#184](https://github.com/chenasraf/pantry-flutter/issues/184)
+
+
+### Bug Fixes
+
+* **categories:** show only the open list's categories when managing them ([b4f76af](https://github.com/chenasraf/pantry-flutter/commit/b4f76afd79028c76d35dbd8cef774a435ec6d07c))
+* **settings:** keep your first day of the week when the app starts offline ([910df82](https://github.com/chenasraf/pantry-flutter/commit/910df827491f3a0d4552975187b52d31330d8ed8))
+
 ## [0.34.0](https://github.com/chenasraf/pantry-flutter/compare/v0.33.0...v0.34.0) (2026-09-23)
 
 

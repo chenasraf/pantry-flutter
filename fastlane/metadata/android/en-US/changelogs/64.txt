@@ -1,0 +1,6 @@
+Features
+- list completion timestamp and list duplication
+- choose which details a barcode scan fills in
+Bug Fixes
+- show only the open list's categories when managing them
+- keep your first day of the week when the app starts offline
