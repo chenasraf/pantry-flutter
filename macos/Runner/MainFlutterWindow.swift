@@ -32,7 +32,6 @@ class MainFlutterWindow: NSWindow {
   }
 }
 
-@available(macOS 10.15, *)
 final class AuthSessionChannel: NSObject, ASWebAuthenticationPresentationContextProviding {
   private var session: ASWebAuthenticationSession?
   private var pendingResult: FlutterResult?
