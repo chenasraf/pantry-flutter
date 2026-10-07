@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/secure_storage.dart';
 import 'package:pantry_core/services/user_prefs_service.dart';
@@ -166,29 +167,25 @@ class AuthService {
     ]);
   }
 
+  /// Nextcloud's own OCS API, beside the Pantry app's.
+  static const _cloudApi = ApiClient(basePath: '/ocs/v2.php/cloud');
+
   Future<void> fetchUserProfile() async {
     if (_credentials == null) return;
     try {
-      final uri = Uri.parse('${_credentials!.serverUrl}/ocs/v2.php/cloud/user');
-      final response = await http.get(
-        uri,
-        headers: {
-          ..._credentials!.basicAuthHeaders,
-          'Accept': 'application/json',
-        },
-      );
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        final userData = data['ocs']?['data'] as Map<String, dynamic>?;
-        _displayName =
-            userData?['display-name'] as String? ??
-            userData?['displayname'] as String?;
-        // Nextcloud returns language as e.g. "en", "he", "en_GB"
-        final lang = userData?['language'] as String?;
-        if (lang != null && lang.isNotEmpty) {
-          // Normalize "en_GB" → "en"
-          _serverLanguage = lang.split(RegExp(r'[_-]')).first.toLowerCase();
-        }
+      final userData = await _cloudApi
+          .get<Map<String, dynamic>?, Map<String, dynamic>?>(
+            '/user',
+            fromJson: (data) => data,
+          );
+      _displayName =
+          userData?['display-name'] as String? ??
+          userData?['displayname'] as String?;
+      // Nextcloud returns language as e.g. "en", "he", "en_GB"
+      final lang = userData?['language'] as String?;
+      if (lang != null && lang.isNotEmpty) {
+        // Normalize "en_GB" → "en"
+        _serverLanguage = lang.split(RegExp(r'[_-]')).first.toLowerCase();
       }
     } catch (e) {
       debugPrint('[AuthService] Failed to fetch user profile: $e');
@@ -208,34 +205,28 @@ class AuthService {
   Future<void> _fetchUserPrefs() async {
     if (_credentials == null) return;
     try {
-      final uri = Uri.parse(
-        '${_credentials!.serverUrl}/ocs/v2.php/apps/pantry/api/prefs',
-      );
-      final response = await http.get(
-        uri,
-        headers: {
-          ..._credentials!.basicAuthHeaders,
-          'Accept': 'application/json',
-        },
-      );
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        final prefs = data['ocs']?['data'] as Map<String, dynamic>?;
-        final firstDay = prefs?['firstDayOfWeek'] as int?;
-        _firstDayOfWeek = (firstDay != null && firstDay >= 0)
-            ? firstDay
-            : _firstDayFromLocale();
-        // The house the account last opened anywhere — the web app writes it
-        // too. Whether it overrules the house this device is already on is
-        // the user's call; see [PrefsService.syncLastHouse].
-        final lastHouse = prefs?['lastHouseId'] as int?;
-        if (lastHouse != null) {
-          await PrefsService.instance.adoptLastHouseId(lastHouse);
-        }
-        if (prefs != null) {
-          unawaited(UserPrefsService.instance.hydrate(prefs));
-        }
+      final prefs = await ApiClient.instance
+          .get<Map<String, dynamic>?, Map<String, dynamic>?>(
+            '/prefs',
+            fromJson: (data) => data,
+          );
+      final firstDay = prefs?['firstDayOfWeek'] as int?;
+      _firstDayOfWeek = (firstDay != null && firstDay >= 0)
+          ? firstDay
+          : _firstDayFromLocale();
+      // The house the account last opened anywhere — the web app writes it
+      // too. Whether it overrules the house this device is already on is
+      // the user's call; see [PrefsService.syncLastHouse].
+      final lastHouse = prefs?['lastHouseId'] as int?;
+      if (lastHouse != null) {
+        await PrefsService.instance.adoptLastHouseId(lastHouse);
       }
+      if (prefs != null) {
+        unawaited(UserPrefsService.instance.hydrate(prefs));
+      }
+    } on ApiException catch (e) {
+      debugPrint('[AuthService] Failed to fetch user prefs: $e');
+      if (e is OfflineException) _firstDayOfWeek = _firstDayFromLocale();
     } catch (e) {
       debugPrint('[AuthService] Failed to fetch user prefs: $e');
       _firstDayOfWeek = _firstDayFromLocale();
@@ -249,23 +240,11 @@ class AuthService {
   Future<void> publishLastHouseId(int houseId) async {
     if (_credentials == null) return;
     try {
-      final uri = Uri.parse(
-        '${_credentials!.serverUrl}/ocs/v2.php/apps/pantry/api/prefs',
+      await ApiClient.instance.put<Map<String, dynamic>, void>(
+        '/prefs',
+        body: {'lastHouseId': houseId},
+        fromJson: (_) {},
       );
-      final response = await http.put(
-        uri,
-        headers: {
-          ..._credentials!.basicAuthHeaders,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({'lastHouseId': houseId}),
-      );
-      if (response.statusCode >= 400) {
-        debugPrint(
-          '[AuthService] Failed to publish last house: ${response.statusCode}',
-        );
-      }
     } catch (e) {
       debugPrint('[AuthService] Failed to publish last house: $e');
     }
