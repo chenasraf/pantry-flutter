@@ -100,6 +100,25 @@ void main() {
     expect(SyncManager.instance.isOnline, isFalse);
   });
 
+  test('an offline refresh keeps the account first day of week', () async {
+    // Thursday is no locale's first day, so a fallback would show.
+    await withServer(
+      auth.refreshUserState,
+      (r) async => r.url.path.endsWith('/prefs')
+          ? ocs({'firstDayOfWeek': 4})
+          : ocs({'display-name': 'Ada'}),
+    );
+    expect(PrefsService.instance.firstDayOfWeek, 4);
+
+    await withServer(
+      auth.refreshUserState,
+      (_) => Future.error(const SocketException('unreachable')),
+    );
+
+    expect(auth.firstDayOfWeek, 4);
+    expect(PrefsService.instance.firstDayOfWeek, 4);
+  });
+
   test('publishLastHouseId writes the house to the Pantry prefs', () async {
     await withServer(() => auth.publishLastHouseId(9), (_) async => ocs({}));
 

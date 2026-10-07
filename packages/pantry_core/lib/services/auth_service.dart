@@ -224,12 +224,12 @@ class AuthService {
       if (prefs != null) {
         unawaited(UserPrefsService.instance.hydrate(prefs));
       }
-    } on ApiException catch (e) {
-      debugPrint('[AuthService] Failed to fetch user prefs: $e');
-      if (e is OfflineException) _firstDayOfWeek = _firstDayFromLocale();
     } catch (e) {
+      // The first day of week stays as cached (or the locale's, before any
+      // fetch has landed): [refreshUserState] writes it back to the cache, so
+      // falling back here would swap the account's day for the locale's on
+      // every offline launch.
       debugPrint('[AuthService] Failed to fetch user prefs: $e');
-      _firstDayOfWeek = _firstDayFromLocale();
     }
   }
 
