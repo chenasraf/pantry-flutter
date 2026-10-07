@@ -279,6 +279,7 @@ settings:
   interfaceListsSection: Lister
   interfaceItemActionsSection: Handlingar på oppføringar
   interfaceAddingSection: Leggja til oppføringar
+  interfaceBarcodeSection:
   defaultItemTapAction: Standardhandling for rad
   defaultItemTapActionBody: "Kva som skjer når du trykkar på ei rad."
   itemTapActionNames:
@@ -346,6 +347,12 @@ settings:
     never: Aldri bruk igjen
   suggestArchivedItems: Føreslå arkiverte oppføringar
   suggestArchivedItemsBody:
+  barcodeFillName:
+  barcodeFillNameBody:
+  barcodeFillCategory:
+  barcodeFillCategoryBody:
+  barcodeFillImage:
+  barcodeFillImageBody:
     Når du leggjer til ei oppføring, søk òg blant arkiverte oppføringar
     etter forslag til gjenbruk. Å bruke ei arkivert oppføring på nytt hentar
     ho ut av arkivet.

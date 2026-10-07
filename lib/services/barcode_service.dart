@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pantry/main.dart' show appVersion;
 import 'package:pantry_core/services/api_client.dart';
@@ -50,7 +51,18 @@ class BarcodeResult {
 /// house gets it for free next time.
 class BarcodeService {
   BarcodeService._();
-  static final BarcodeService instance = BarcodeService._();
+
+  @visibleForTesting
+  BarcodeService.forTesting();
+
+  static final BarcodeService _instance = BarcodeService._();
+  static BarcodeService? _override;
+  static BarcodeService get instance => _override ?? _instance;
+
+  /// Stands in for the lookup pipeline in widget tests, which have neither a
+  /// server nor Open Food Facts to reach. Null restores the real one.
+  @visibleForTesting
+  static set debugOverride(BarcodeService? service) => _override = service;
 
   /// Open Food Facts read API base. Called directly (not through [ApiClient],
   /// which is scoped to the Nextcloud instance) — mobile has no CORS problem.

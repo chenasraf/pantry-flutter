@@ -1162,6 +1162,11 @@ class SettingsMessages {
   String get interfaceAddingSection => """Adding items""";
 
   /// ```dart
+  /// "Barcode scanning"
+  /// ```
+  String get interfaceBarcodeSection => """Barcode scanning""";
+
+  /// ```dart
   /// "Default item tap action"
   /// ```
   String get defaultItemTapAction => """Default item tap action""";
@@ -1306,6 +1311,39 @@ class SettingsMessages {
   /// ```
   String get suggestArchivedItemsBody =>
       """When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it.""";
+
+  /// ```dart
+  /// "Fill in the name"
+  /// ```
+  String get barcodeFillName => """Fill in the name""";
+
+  /// ```dart
+  /// "Use the product name from a scanned barcode as the item name."
+  /// ```
+  String get barcodeFillNameBody =>
+      """Use the product name from a scanned barcode as the item name.""";
+
+  /// ```dart
+  /// "Fill in the category"
+  /// ```
+  String get barcodeFillCategory => """Fill in the category""";
+
+  /// ```dart
+  /// "Pick the closest matching category for a scanned product."
+  /// ```
+  String get barcodeFillCategoryBody =>
+      """Pick the closest matching category for a scanned product.""";
+
+  /// ```dart
+  /// "Fill in the image"
+  /// ```
+  String get barcodeFillImage => """Fill in the image""";
+
+  /// ```dart
+  /// "Attach the product photo from a scanned barcode to the item."
+  /// ```
+  String get barcodeFillImageBody =>
+      """Attach the product photo from a scanned barcode to the item.""";
 
   /// ```dart
   /// "Navigation order"
@@ -7028,6 +7066,7 @@ Password: pantry-rocks""",
   """settings.interfaceListsSection""": """Lists""",
   """settings.interfaceItemActionsSection""": """Item actions""",
   """settings.interfaceAddingSection""": """Adding items""",
+  """settings.interfaceBarcodeSection""": """Barcode scanning""",
   """settings.defaultItemTapAction""": """Default item tap action""",
   """settings.defaultItemTapActionBody""":
       """What happens when you tap an item row.""",
@@ -7088,6 +7127,15 @@ Password: pantry-rocks""",
   """settings.suggestArchivedItems""": """Suggest archived items""",
   """settings.suggestArchivedItemsBody""":
       """When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it.""",
+  """settings.barcodeFillName""": """Fill in the name""",
+  """settings.barcodeFillNameBody""":
+      """Use the product name from a scanned barcode as the item name.""",
+  """settings.barcodeFillCategory""": """Fill in the category""",
+  """settings.barcodeFillCategoryBody""":
+      """Pick the closest matching category for a scanned product.""",
+  """settings.barcodeFillImage""": """Fill in the image""",
+  """settings.barcodeFillImageBody""":
+      """Attach the product photo from a scanned barcode to the item.""",
   """settings.navOrderTitle""": """Navigation order""",
   """settings.navOrderSubtitle""":
       """Reorder the bottom navigation tabs. The first item is opened on app start.""",

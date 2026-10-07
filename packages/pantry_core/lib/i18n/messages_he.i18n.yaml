@@ -210,6 +210,7 @@ settings:
   interfaceListsSection: רשימות
   interfaceItemActionsSection: פעולות על פריטים
   interfaceAddingSection: הוספת פריטים
+  interfaceBarcodeSection: "סריקת ברקוד"
   defaultItemTapAction: פעולת ברירת מחדל בלחיצה
   defaultItemTapActionBody: מה קורה כאשר לוחצים על שורת פריט.
   itemTapActionNames:
@@ -263,6 +264,12 @@ settings:
     never: לעולם לא להשתמש מחדש
   suggestArchivedItems: הצעת פריטים בארכיון
   suggestArchivedItemsBody: בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון.
+  barcodeFillName: "מילוי השם"
+  barcodeFillNameBody: "שימוש בשם המוצר מברקוד שנסרק כשם הפריט."
+  barcodeFillCategory: "מילוי הקטגוריה"
+  barcodeFillCategoryBody: "בחירת הקטגוריה המתאימה ביותר למוצר שנסרק."
+  barcodeFillImage: "מילוי התמונה"
+  barcodeFillImageBody: "צירוף תמונת המוצר מברקוד שנסרק לפריט."
   navOrderTitle: סדר ניווט
   navOrderSubtitle: שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה.
   navOrderBody: גרור כדי לשנות את סדר הלשוניות. הקטע הגלוי הראשון נפתח עם הפעלת האפליקציה. כבה כל קטע שאינך משתמש בו כדי להסתיר את הלשונית שלו — לפחות אחד חייב להישאר פעיל.

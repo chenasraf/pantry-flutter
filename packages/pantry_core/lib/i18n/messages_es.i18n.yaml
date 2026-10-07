@@ -210,6 +210,7 @@ settings:
   interfaceListsSection: Listas
   interfaceItemActionsSection: Acciones de elementos
   interfaceAddingSection: Añadir elementos
+  interfaceBarcodeSection: "Escaneo de códigos de barras"
   defaultItemTapAction: Acción al tocar un elemento
   defaultItemTapActionBody: "Qué ocurre al tocar la fila de un elemento."
   itemTapActionNames:
@@ -263,6 +264,12 @@ settings:
     never: Nunca reutilizar
   suggestArchivedItems: Sugerir artículos archivados
   suggestArchivedItemsBody: Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.
+  barcodeFillName: "Rellenar el nombre"
+  barcodeFillNameBody: "Usar el nombre del producto de un código de barras escaneado como nombre del artículo."
+  barcodeFillCategory: "Rellenar la categoría"
+  barcodeFillCategoryBody: "Elegir la categoría que mejor coincida con un producto escaneado."
+  barcodeFillImage: "Rellenar la imagen"
+  barcodeFillImageBody: "Adjuntar al artículo la foto del producto de un código de barras escaneado."
   navOrderTitle: Orden de navegación
   navOrderSubtitle: Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.
   navOrderBody: Arrastra para reordenar las pestañas. La primera sección visible se abre al iniciar la app. Desactiva las secciones que no uses para ocultar su pestaña; al menos una debe permanecer activada.

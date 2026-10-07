@@ -1169,6 +1169,11 @@ class SettingsMessagesDe extends SettingsMessages {
   String get interfaceAddingSection => """Einträge hinzufügen""";
 
   /// ```dart
+  /// "Barcode-Scan"
+  /// ```
+  String get interfaceBarcodeSection => """Barcode-Scan""";
+
+  /// ```dart
   /// "Standardaktion beim Tippen"
   /// ```
   String get defaultItemTapAction => """Standardaktion beim Tippen""";
@@ -1315,6 +1320,39 @@ class SettingsMessagesDe extends SettingsMessages {
   /// ```
   String get suggestArchivedItemsBody =>
       """Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf.""";
+
+  /// ```dart
+  /// "Namen ausfüllen"
+  /// ```
+  String get barcodeFillName => """Namen ausfüllen""";
+
+  /// ```dart
+  /// "Den Produktnamen eines gescannten Barcodes als Namen des Eintrags verwenden."
+  /// ```
+  String get barcodeFillNameBody =>
+      """Den Produktnamen eines gescannten Barcodes als Namen des Eintrags verwenden.""";
+
+  /// ```dart
+  /// "Kategorie ausfüllen"
+  /// ```
+  String get barcodeFillCategory => """Kategorie ausfüllen""";
+
+  /// ```dart
+  /// "Die am besten passende Kategorie für ein gescanntes Produkt auswählen."
+  /// ```
+  String get barcodeFillCategoryBody =>
+      """Die am besten passende Kategorie für ein gescanntes Produkt auswählen.""";
+
+  /// ```dart
+  /// "Bild ausfüllen"
+  /// ```
+  String get barcodeFillImage => """Bild ausfüllen""";
+
+  /// ```dart
+  /// "Das Produktfoto eines gescannten Barcodes an den Eintrag anhängen."
+  /// ```
+  String get barcodeFillImageBody =>
+      """Das Produktfoto eines gescannten Barcodes an den Eintrag anhängen.""";
 
   /// ```dart
   /// "Navigationsreihenfolge"
@@ -7112,6 +7150,7 @@ Passwort: pantry-rocks""",
   """settings.interfaceListsSection""": """Listen""",
   """settings.interfaceItemActionsSection""": """Eintragsaktionen""",
   """settings.interfaceAddingSection""": """Einträge hinzufügen""",
+  """settings.interfaceBarcodeSection""": """Barcode-Scan""",
   """settings.defaultItemTapAction""": """Standardaktion beim Tippen""",
   """settings.defaultItemTapActionBody""":
       """Was passiert, wenn du eine Eintragszeile antippst.""",
@@ -7173,6 +7212,15 @@ Passwort: pantry-rocks""",
   """settings.suggestArchivedItems""": """Archivierte Einträge vorschlagen""",
   """settings.suggestArchivedItemsBody""":
       """Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf.""",
+  """settings.barcodeFillName""": """Namen ausfüllen""",
+  """settings.barcodeFillNameBody""":
+      """Den Produktnamen eines gescannten Barcodes als Namen des Eintrags verwenden.""",
+  """settings.barcodeFillCategory""": """Kategorie ausfüllen""",
+  """settings.barcodeFillCategoryBody""":
+      """Die am besten passende Kategorie für ein gescanntes Produkt auswählen.""",
+  """settings.barcodeFillImage""": """Bild ausfüllen""",
+  """settings.barcodeFillImageBody""":
+      """Das Produktfoto eines gescannten Barcodes an den Eintrag anhängen.""",
   """settings.navOrderTitle""": """Navigationsreihenfolge""",
   """settings.navOrderSubtitle""":
       """Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.""",

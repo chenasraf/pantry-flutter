@@ -37,6 +37,7 @@ import 'services/wear_relay_host.dart';
 import 'services/widget_link_service.dart';
 import 'services/checklist_widget_service.dart';
 import 'package:pantry_core/services/theming_service.dart';
+import 'package:pantry_core/services/user_prefs_service.dart';
 import 'services/widget_interactivity.dart';
 import 'services/widget_service.dart';
 import 'services/widget_theme.dart';
@@ -126,6 +127,7 @@ void main() async {
   // Seed the auth profile from cache so display name / server language / first
   // day of week are available on first frame without waiting for the network.
   AuthService.instance.hydrateFromCache();
+  UserPrefsService.instance.init();
   ThemingService.instance.loadCached();
 
   if (AuthService.instance.isLoggedIn) {

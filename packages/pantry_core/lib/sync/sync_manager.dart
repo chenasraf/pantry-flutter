@@ -265,11 +265,23 @@ class SyncManager {
         case SyncEntity.shoppingSkip:
         case SyncEntity.shoppingSession:
         case SyncEntity.storeCategoryOrder:
+        case SyncEntity.userPrefs:
           break;
       }
     }
     return out;
   }
+
+  /// Account-pref values still queued, latest per key.
+  ///
+  /// Read when the server's prefs are fetched, so a fetch that lands before
+  /// the queue drains cannot overwrite a setting changed offline with the
+  /// value it is about to replace.
+  Map<String, Object?> pendingUserPrefs() => {
+    for (final op in _queue.all())
+      if (op.entity == SyncEntity.userPrefs && op.op == SyncOpKind.update)
+        ...op.body,
+  };
 
   /// Item ids in [sessionId] that still have a pending Shopping Mode *check*
   /// (create) op queued for [houseId]. The dense shopping view hides these from
@@ -803,6 +815,9 @@ class SyncManager {
       case SyncEntity.storeCategoryOrder:
         // Nothing is ever created under an arrangement, so no other op can
         // hold a temp reference to one.
+        break;
+      case SyncEntity.userPrefs:
+        // Prefs are never created, only updated.
         break;
     }
     return o;

@@ -210,6 +210,7 @@ settings:
   interfaceListsSection: Listen
   interfaceItemActionsSection: Eintragsaktionen
   interfaceAddingSection: Einträge hinzufügen
+  interfaceBarcodeSection: "Barcode-Scan"
   defaultItemTapAction: Standardaktion beim Tippen
   defaultItemTapActionBody: "Was passiert, wenn du eine Eintragszeile antippst."
   itemTapActionNames:
@@ -263,6 +264,12 @@ settings:
     never: Nie wiederverwenden
   suggestArchivedItems: Archivierte Einträge vorschlagen
   suggestArchivedItemsBody: Beim Hinzufügen eines Eintrags auch archivierte Einträge für Wiederverwendungsvorschläge durchsuchen. Das Wiederverwenden eines archivierten Eintrags hebt die Archivierung auf.
+  barcodeFillName: "Namen ausfüllen"
+  barcodeFillNameBody: "Den Produktnamen eines gescannten Barcodes als Namen des Eintrags verwenden."
+  barcodeFillCategory: "Kategorie ausfüllen"
+  barcodeFillCategoryBody: "Die am besten passende Kategorie für ein gescanntes Produkt auswählen."
+  barcodeFillImage: "Bild ausfüllen"
+  barcodeFillImageBody: "Das Produktfoto eines gescannten Barcodes an den Eintrag anhängen."
   navOrderTitle: Navigationsreihenfolge
   navOrderSubtitle: Reihenfolge der Navigationsleiste anpassen. Der erste Eintrag wird beim Start geöffnet.
   navOrderBody: Zum Neuanordnen ziehen. Der erste sichtbare Bereich wird beim Start der App geöffnet. Schalte nicht genutzte Bereiche aus, um ihren Tab auszublenden – mindestens einer muss aktiviert bleiben.

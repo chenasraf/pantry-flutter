@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pantry_core/i18n.dart';
-import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/services/user_prefs_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/settings/chip_visibility_view.dart';
 import 'package:pantry/views/settings/nav_order_view.dart';
@@ -126,28 +126,15 @@ class InterfaceSettingsView extends StatelessWidget {
     _ => m.settings.itemDescriptionNames.off,
   };
 
-  // -- Reuse existing items (account-scoped, persisted server-side) --
+  // -- Account-scoped prefs, synced to the server through the sync queue --
 
   static Future<void> _setReuseExistingItems(
     BuildContext context,
     String? value,
   ) async {
     if (value == null) return;
-    final prefs = context.read<PrefsService>();
-    final previous = prefs.reuseExistingItems;
-    if (value == previous) return;
-    // Optimistic: update the local cache (rebuilds the dropdown), then push to
-    // the server. Revert the cache if the server rejects it.
-    await prefs.setReuseExistingItemsCache(value);
-    try {
-      await AuthService.instance.setReuseExistingItems(value);
-    } catch (e) {
-      debugPrint(
-        '[InterfaceSettingsView] Failed to persist '
-        'reuseExistingItems: $e',
-      );
-      await prefs.setReuseExistingItemsCache(previous);
-    }
+    if (value == context.read<PrefsService>().reuseExistingItems) return;
+    await UserPrefsService.instance.setReuseExistingItems(value);
   }
 
   static String _reuseExistingItemsLabel(String value) => switch (value) {
@@ -155,29 +142,6 @@ class InterfaceSettingsView extends StatelessWidget {
     'never' => m.settings.reuseExistingItemsNames.never,
     _ => m.settings.reuseExistingItemsNames.ask,
   };
-
-  // -- Suggest archived items (account-scoped, persisted server-side) --
-
-  static Future<void> _toggleSuggestArchivedItems(
-    BuildContext context,
-    bool value,
-  ) async {
-    final prefs = context.read<PrefsService>();
-    final previous = prefs.suggestArchivedItems;
-    if (value == previous) return;
-    // Optimistic: flip the local cache, then push to the server; revert on
-    // failure.
-    await prefs.setSuggestArchivedItemsCache(value);
-    try {
-      await AuthService.instance.setSuggestArchivedItems(value);
-    } catch (e) {
-      debugPrint(
-        '[InterfaceSettingsView] Failed to persist '
-        'suggestArchivedItems: $e',
-      );
-      await prefs.setSuggestArchivedItemsCache(previous);
-    }
-  }
 
   /// A header plus its rows, or nothing at all when the server or platform
   /// leaves the section without a single row.
@@ -324,8 +288,38 @@ class InterfaceSettingsView extends StatelessWidget {
           title: Text(m.settings.suggestArchivedItems),
           subtitle: Text(m.settings.suggestArchivedItemsBody),
           value: prefs.suggestArchivedItems,
-          onChanged: (value) => _toggleSuggestArchivedItems(context, value),
+          onChanged: (value) =>
+              UserPrefsService.instance.setSuggestArchivedItems(value),
         ),
+    ];
+
+    final barcode = <Widget>[
+      if (hasFeature('barcode') && hasFeature('pref-barcode-fill')) ...[
+        SwitchListTile(
+          secondary: const Icon(Icons.label_outline),
+          title: Text(m.settings.barcodeFillName),
+          subtitle: Text(m.settings.barcodeFillNameBody),
+          value: prefs.barcodeFillName,
+          onChanged: (value) =>
+              UserPrefsService.instance.setBarcodeFill(name: value),
+        ),
+        SwitchListTile(
+          secondary: const Icon(Icons.category_outlined),
+          title: Text(m.settings.barcodeFillCategory),
+          subtitle: Text(m.settings.barcodeFillCategoryBody),
+          value: prefs.barcodeFillCategory,
+          onChanged: (value) =>
+              UserPrefsService.instance.setBarcodeFill(category: value),
+        ),
+        SwitchListTile(
+          secondary: const Icon(Icons.image_outlined),
+          title: Text(m.settings.barcodeFillImage),
+          subtitle: Text(m.settings.barcodeFillImageBody),
+          value: prefs.barcodeFillImage,
+          onChanged: (value) =>
+              UserPrefsService.instance.setBarcodeFill(image: value),
+        ),
+      ],
     ];
 
     return Scaffold(
@@ -338,6 +332,7 @@ class InterfaceSettingsView extends StatelessWidget {
           ..._section(m.settings.interfaceListsSection, lists),
           ..._section(m.settings.interfaceItemActionsSection, itemActions),
           ..._section(m.settings.interfaceAddingSection, adding),
+          ..._section(m.settings.interfaceBarcodeSection, barcode),
         ],
       ),
     );

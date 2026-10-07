@@ -54,6 +54,16 @@ enum SyncEntity {
   /// takes positions from array order. Absolute, so a late arrangement says
   /// everything the ones before it did.
   storeCategoryOrder,
+
+  /// A write to the account-scoped Pantry prefs. [SyncOp.op] is
+  /// [SyncOpKind.update]; the body carries only the keys being changed, which
+  /// is what the endpoint takes. Prefs belong to the account rather than a
+  /// house, so [SyncOp.houseId] is 0 and no id is set.
+  ///
+  /// Queued so a setting changed offline sticks instead of snapping back, and
+  /// every write carries absolute values, so queued writes collapse into one
+  /// with the latest value per key.
+  userPrefs,
 }
 
 enum SyncOpKind {

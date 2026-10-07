@@ -1169,6 +1169,11 @@ class SettingsMessagesEs extends SettingsMessages {
   String get interfaceAddingSection => """Añadir elementos""";
 
   /// ```dart
+  /// "Escaneo de códigos de barras"
+  /// ```
+  String get interfaceBarcodeSection => """Escaneo de códigos de barras""";
+
+  /// ```dart
   /// "Acción al tocar un elemento"
   /// ```
   String get defaultItemTapAction => """Acción al tocar un elemento""";
@@ -1315,6 +1320,39 @@ class SettingsMessagesEs extends SettingsMessages {
   /// ```
   String get suggestArchivedItemsBody =>
       """Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.""";
+
+  /// ```dart
+  /// "Rellenar el nombre"
+  /// ```
+  String get barcodeFillName => """Rellenar el nombre""";
+
+  /// ```dart
+  /// "Usar el nombre del producto de un código de barras escaneado como nombre del artículo."
+  /// ```
+  String get barcodeFillNameBody =>
+      """Usar el nombre del producto de un código de barras escaneado como nombre del artículo.""";
+
+  /// ```dart
+  /// "Rellenar la categoría"
+  /// ```
+  String get barcodeFillCategory => """Rellenar la categoría""";
+
+  /// ```dart
+  /// "Elegir la categoría que mejor coincida con un producto escaneado."
+  /// ```
+  String get barcodeFillCategoryBody =>
+      """Elegir la categoría que mejor coincida con un producto escaneado.""";
+
+  /// ```dart
+  /// "Rellenar la imagen"
+  /// ```
+  String get barcodeFillImage => """Rellenar la imagen""";
+
+  /// ```dart
+  /// "Adjuntar al artículo la foto del producto de un código de barras escaneado."
+  /// ```
+  String get barcodeFillImageBody =>
+      """Adjuntar al artículo la foto del producto de un código de barras escaneado.""";
 
   /// ```dart
   /// "Orden de navegación"
@@ -7097,6 +7135,7 @@ Contraseña: pantry-rocks""",
   """settings.interfaceListsSection""": """Listas""",
   """settings.interfaceItemActionsSection""": """Acciones de elementos""",
   """settings.interfaceAddingSection""": """Añadir elementos""",
+  """settings.interfaceBarcodeSection""": """Escaneo de códigos de barras""",
   """settings.defaultItemTapAction""": """Acción al tocar un elemento""",
   """settings.defaultItemTapActionBody""":
       """Qué ocurre al tocar la fila de un elemento.""",
@@ -7158,6 +7197,15 @@ Contraseña: pantry-rocks""",
   """settings.suggestArchivedItems""": """Sugerir artículos archivados""",
   """settings.suggestArchivedItemsBody""":
       """Al añadir un artículo, buscar también sugerencias de reutilización entre los artículos archivados. Reutilizar un artículo archivado lo desarchiva.""",
+  """settings.barcodeFillName""": """Rellenar el nombre""",
+  """settings.barcodeFillNameBody""":
+      """Usar el nombre del producto de un código de barras escaneado como nombre del artículo.""",
+  """settings.barcodeFillCategory""": """Rellenar la categoría""",
+  """settings.barcodeFillCategoryBody""":
+      """Elegir la categoría que mejor coincida con un producto escaneado.""",
+  """settings.barcodeFillImage""": """Rellenar la imagen""",
+  """settings.barcodeFillImageBody""":
+      """Adjuntar al artículo la foto del producto de un código de barras escaneado.""",
   """settings.navOrderTitle""": """Orden de navegación""",
   """settings.navOrderSubtitle""":
       """Reordena las pestañas de navegación. El primer elemento se abre al iniciar la app.""",

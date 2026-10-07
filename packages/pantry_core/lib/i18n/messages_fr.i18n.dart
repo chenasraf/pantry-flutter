@@ -1173,6 +1173,11 @@ class SettingsMessagesFr extends SettingsMessages {
   String get interfaceAddingSection => """Ajout d'éléments""";
 
   /// ```dart
+  /// "Lecture de codes-barres"
+  /// ```
+  String get interfaceBarcodeSection => """Lecture de codes-barres""";
+
+  /// ```dart
   /// "Action par défaut au toucher"
   /// ```
   String get defaultItemTapAction => """Action par défaut au toucher""";
@@ -1319,6 +1324,39 @@ class SettingsMessagesFr extends SettingsMessages {
   /// ```
   String get suggestArchivedItemsBody =>
       """Lors de l'ajout d'un article, rechercher aussi des suggestions de réutilisation parmi les articles archivés. Réutiliser un article archivé le désarchive.""";
+
+  /// ```dart
+  /// "Remplir le nom"
+  /// ```
+  String get barcodeFillName => """Remplir le nom""";
+
+  /// ```dart
+  /// "Utiliser le nom du produit d'un code-barres scanné comme nom de l'article."
+  /// ```
+  String get barcodeFillNameBody =>
+      """Utiliser le nom du produit d'un code-barres scanné comme nom de l'article.""";
+
+  /// ```dart
+  /// "Remplir la catégorie"
+  /// ```
+  String get barcodeFillCategory => """Remplir la catégorie""";
+
+  /// ```dart
+  /// "Choisir la catégorie la plus proche pour un produit scanné."
+  /// ```
+  String get barcodeFillCategoryBody =>
+      """Choisir la catégorie la plus proche pour un produit scanné.""";
+
+  /// ```dart
+  /// "Remplir l'image"
+  /// ```
+  String get barcodeFillImage => """Remplir l'image""";
+
+  /// ```dart
+  /// "Joindre à l'article la photo du produit d'un code-barres scanné."
+  /// ```
+  String get barcodeFillImageBody =>
+      """Joindre à l'article la photo du produit d'un code-barres scanné.""";
 
   /// ```dart
   /// "Ordre de navigation"
@@ -7112,6 +7150,7 @@ Mot de passe : pantry-rocks""",
   """settings.interfaceListsSection""": """Listes""",
   """settings.interfaceItemActionsSection""": """Actions sur les éléments""",
   """settings.interfaceAddingSection""": """Ajout d'éléments""",
+  """settings.interfaceBarcodeSection""": """Lecture de codes-barres""",
   """settings.defaultItemTapAction""": """Action par défaut au toucher""",
   """settings.defaultItemTapActionBody""":
       """Ce qui se passe quand vous touchez la ligne d'un élément.""",
@@ -7173,6 +7212,15 @@ Mot de passe : pantry-rocks""",
   """settings.suggestArchivedItems""": """Suggérer les articles archivés""",
   """settings.suggestArchivedItemsBody""":
       """Lors de l'ajout d'un article, rechercher aussi des suggestions de réutilisation parmi les articles archivés. Réutiliser un article archivé le désarchive.""",
+  """settings.barcodeFillName""": """Remplir le nom""",
+  """settings.barcodeFillNameBody""":
+      """Utiliser le nom du produit d'un code-barres scanné comme nom de l'article.""",
+  """settings.barcodeFillCategory""": """Remplir la catégorie""",
+  """settings.barcodeFillCategoryBody""":
+      """Choisir la catégorie la plus proche pour un produit scanné.""",
+  """settings.barcodeFillImage""": """Remplir l'image""",
+  """settings.barcodeFillImageBody""":
+      """Joindre à l'article la photo du produit d'un code-barres scanné.""",
   """settings.navOrderTitle""": """Ordre de navigation""",
   """settings.navOrderSubtitle""":
       """Réorganisez les onglets de la barre de navigation. Le premier élément s'ouvre au démarrage.""",

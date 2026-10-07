@@ -1165,6 +1165,8 @@ class SettingsMessagesNn extends SettingsMessages {
   /// ```
   String get interfaceAddingSection => """Leggja til oppføringar""";
 
+  String get interfaceBarcodeSection => """null""";
+
   /// ```dart
   /// "Standardhandling for rad"
   /// ```
@@ -1306,10 +1308,22 @@ class SettingsMessagesNn extends SettingsMessages {
   /// ```
   String get suggestArchivedItems => """Føreslå arkiverte oppføringar""";
 
+  String get suggestArchivedItemsBody => """null""";
+
+  String get barcodeFillName => """null""";
+
+  String get barcodeFillNameBody => """null""";
+
+  String get barcodeFillCategory => """null""";
+
+  String get barcodeFillCategoryBody => """null""";
+
+  String get barcodeFillImage => """null""";
+
   /// ```dart
   /// "Når du leggjer til ei oppføring, søk òg blant arkiverte oppføringar etter forslag til gjenbruk. Å bruke ei arkivert oppføring på nytt hentar ho ut av arkivet."
   /// ```
-  String get suggestArchivedItemsBody =>
+  String get barcodeFillImageBody =>
       """Når du leggjer til ei oppføring, søk òg blant arkiverte oppføringar etter forslag til gjenbruk. Å bruke ei arkivert oppføring på nytt hentar ho ut av arkivet.""";
 
   /// ```dart
@@ -7135,7 +7149,7 @@ Passord: pantry""",
   """settings.reuseExistingItemsNames.reuse""": """Alltid bruk igjen""",
   """settings.reuseExistingItemsNames.never""": """Aldri bruk igjen""",
   """settings.suggestArchivedItems""": """Føreslå arkiverte oppføringar""",
-  """settings.suggestArchivedItemsBody""":
+  """settings.barcodeFillImageBody""":
       """Når du leggjer til ei oppføring, søk òg blant arkiverte oppføringar etter forslag til gjenbruk. Å bruke ei arkivert oppføring på nytt hentar ho ut av arkivet.""",
   """settings.navOrderTitle""": """Navigasjonsrekkefylgje""",
   """settings.navOrderSubtitle""":

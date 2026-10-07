@@ -210,6 +210,7 @@ settings:
   interfaceListsSection: Lists
   interfaceItemActionsSection: Item actions
   interfaceAddingSection: Adding items
+  interfaceBarcodeSection: Barcode scanning
   defaultItemTapAction: Default item tap action
   defaultItemTapActionBody: "What happens when you tap an item row."
   itemTapActionNames:
@@ -263,6 +264,12 @@ settings:
     never: Never reuse
   suggestArchivedItems: Suggest archived items
   suggestArchivedItemsBody: When adding an item, also search archived items for reuse suggestions. Reusing an archived item unarchives it.
+  barcodeFillName: Fill in the name
+  barcodeFillNameBody: Use the product name from a scanned barcode as the item name.
+  barcodeFillCategory: Fill in the category
+  barcodeFillCategoryBody: Pick the closest matching category for a scanned product.
+  barcodeFillImage: Fill in the image
+  barcodeFillImageBody: Attach the product photo from a scanned barcode to the item.
   navOrderTitle: Navigation order
   navOrderSubtitle: Reorder the bottom navigation tabs. The first item is opened on app start.
   navOrderBody: Drag to reorder the tabs. The first visible section opens when the app starts. Turn off any section you don't use to hide its tab — at least one must stay on.

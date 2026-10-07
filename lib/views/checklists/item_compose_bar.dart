@@ -12,6 +12,7 @@ import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/quantity.dart';
@@ -510,11 +511,15 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     }
 
     // Prefill from the resolved product, never overwriting input the user has
-    // already made.
-    final matchedCategory = _matchCategory(result.category);
+    // already made, and only the details the account lets a scan fill. The
+    // code itself is always kept, so a later scan still finds the item.
+    final prefs = PrefsService.instance;
+    final matchedCategory = prefs.barcodeFillCategory
+        ? _matchCategory(result.category)
+        : null;
     setState(() {
       _draft.barcode = ean;
-      if (_nameCtrl.text.trim().isEmpty) {
+      if (prefs.barcodeFillName && _nameCtrl.text.trim().isEmpty) {
         _nameCtrl.text = result!.name;
         _draft.name = result.name;
       }
@@ -526,7 +531,9 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     // Download the product image and stage it on the draft so the existing
     // create → uploadItemImage path attaches it after the item is created.
     final imageUrl = result.imageUrl;
-    if (imageUrl != null && _draft.imageBytes == null) {
+    if (prefs.barcodeFillImage &&
+        imageUrl != null &&
+        _draft.imageBytes == null) {
       final bytes = await svc.downloadImage(imageUrl);
       if (bytes != null && mounted) {
         setState(() => _draft.imageBytes = Uint8List.fromList(bytes));

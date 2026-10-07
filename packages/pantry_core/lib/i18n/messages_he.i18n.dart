@@ -1162,6 +1162,11 @@ class SettingsMessagesHe extends SettingsMessages {
   String get interfaceAddingSection => """הוספת פריטים""";
 
   /// ```dart
+  /// "סריקת ברקוד"
+  /// ```
+  String get interfaceBarcodeSection => """סריקת ברקוד""";
+
+  /// ```dart
   /// "פעולת ברירת מחדל בלחיצה"
   /// ```
   String get defaultItemTapAction => """פעולת ברירת מחדל בלחיצה""";
@@ -1304,6 +1309,39 @@ class SettingsMessagesHe extends SettingsMessages {
   /// ```
   String get suggestArchivedItemsBody =>
       """בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון.""";
+
+  /// ```dart
+  /// "מילוי השם"
+  /// ```
+  String get barcodeFillName => """מילוי השם""";
+
+  /// ```dart
+  /// "שימוש בשם המוצר מברקוד שנסרק כשם הפריט."
+  /// ```
+  String get barcodeFillNameBody =>
+      """שימוש בשם המוצר מברקוד שנסרק כשם הפריט.""";
+
+  /// ```dart
+  /// "מילוי הקטגוריה"
+  /// ```
+  String get barcodeFillCategory => """מילוי הקטגוריה""";
+
+  /// ```dart
+  /// "בחירת הקטגוריה המתאימה ביותר למוצר שנסרק."
+  /// ```
+  String get barcodeFillCategoryBody =>
+      """בחירת הקטגוריה המתאימה ביותר למוצר שנסרק.""";
+
+  /// ```dart
+  /// "מילוי התמונה"
+  /// ```
+  String get barcodeFillImage => """מילוי התמונה""";
+
+  /// ```dart
+  /// "צירוף תמונת המוצר מברקוד שנסרק לפריט."
+  /// ```
+  String get barcodeFillImageBody =>
+      """צירוף תמונת המוצר מברקוד שנסרק לפריט.""";
 
   /// ```dart
   /// "סדר ניווט"
@@ -7023,6 +7061,7 @@ Map<String, String> get messagesHeMap => {
   """settings.interfaceListsSection""": """רשימות""",
   """settings.interfaceItemActionsSection""": """פעולות על פריטים""",
   """settings.interfaceAddingSection""": """הוספת פריטים""",
+  """settings.interfaceBarcodeSection""": """סריקת ברקוד""",
   """settings.defaultItemTapAction""": """פעולת ברירת מחדל בלחיצה""",
   """settings.defaultItemTapActionBody""":
       """מה קורה כאשר לוחצים על שורת פריט.""",
@@ -7082,6 +7121,15 @@ Map<String, String> get messagesHeMap => {
   """settings.suggestArchivedItems""": """הצעת פריטים בארכיון""",
   """settings.suggestArchivedItemsBody""":
       """בעת הוספת פריט, לחפש הצעות לשימוש חוזר גם בפריטים שבארכיון. שימוש חוזר בפריט מארכיון מוציא אותו מהארכיון.""",
+  """settings.barcodeFillName""": """מילוי השם""",
+  """settings.barcodeFillNameBody""":
+      """שימוש בשם המוצר מברקוד שנסרק כשם הפריט.""",
+  """settings.barcodeFillCategory""": """מילוי הקטגוריה""",
+  """settings.barcodeFillCategoryBody""":
+      """בחירת הקטגוריה המתאימה ביותר למוצר שנסרק.""",
+  """settings.barcodeFillImage""": """מילוי התמונה""",
+  """settings.barcodeFillImageBody""":
+      """צירוף תמונת המוצר מברקוד שנסרק לפריט.""",
   """settings.navOrderTitle""": """סדר ניווט""",
   """settings.navOrderSubtitle""":
       """שינוי הסדר של לשוניות הניווט. הפריט הראשון הוא זה שנפתח עם הפעלת האפליקציה.""",

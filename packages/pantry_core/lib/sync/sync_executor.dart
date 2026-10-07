@@ -6,6 +6,7 @@ import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/note.dart';
 import 'package:pantry_core/models/photo.dart';
 import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/custom_field_service.dart';
@@ -62,7 +63,21 @@ class SyncExecutor {
         return _executeShoppingSession(op);
       case SyncEntity.storeCategoryOrder:
         return _executeStoreCategoryOrder(op);
+      case SyncEntity.userPrefs:
+        return _executeUserPrefs(op);
     }
+  }
+
+  Future<SyncResult> _executeUserPrefs(SyncOp op) async {
+    if (op.op != SyncOpKind.update || op.body.isEmpty) {
+      return SyncResult.empty;
+    }
+    await ApiClient.instance.put<Map<String, dynamic>, void>(
+      '/prefs',
+      body: op.body,
+      fromJson: (_) {},
+    );
+    return SyncResult.empty;
   }
 
   /// A store's aisle order. `entityId` names the store; the category ids ride

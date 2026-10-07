@@ -33,6 +33,9 @@ class PrefsService extends ChangeNotifier {
   static const _checklistCategorySpacingKey = 'checklist_category_spacing';
   static const _reuseExistingItemsKey = 'reuse_existing_items';
   static const _suggestArchivedItemsKey = 'suggest_archived_items';
+  static const _barcodeFillNameKey = 'barcode_fill_name';
+  static const _barcodeFillCategoryKey = 'barcode_fill_category';
+  static const _barcodeFillImageKey = 'barcode_fill_image';
   static const _checklistViewKey = 'checklist_view';
   static const _checklistCheckboxPositionKey = 'checklist_checkbox_position';
   static const _composeBarPositionKey = 'compose_bar_position';
@@ -139,6 +142,19 @@ class PrefsService extends ChangeNotifier {
   /// `pref-suggest-archived-items` capability.
   bool _suggestArchivedItems = false;
   bool get suggestArchivedItems => _suggestArchivedItems;
+
+  /// Account-scoped prefs synced from the Pantry user-prefs endpoint, deciding
+  /// which details a resolved barcode may prefill. They default to true so a
+  /// server without the `pref-barcode-fill` capability keeps filling
+  /// everything.
+  bool _barcodeFillName = true;
+  bool get barcodeFillName => _barcodeFillName;
+
+  bool _barcodeFillCategory = true;
+  bool get barcodeFillCategory => _barcodeFillCategory;
+
+  bool _barcodeFillImage = true;
+  bool get barcodeFillImage => _barcodeFillImage;
 
   /// "list" or "cards"
   String _checklistView = 'list';
@@ -434,6 +450,15 @@ class PrefsService extends ChangeNotifier {
       _suggestArchivedItems = suggestArchived == 'true';
     }
 
+    final fillName = all[_barcodeFillNameKey];
+    if (fillName != null) _barcodeFillName = fillName == 'true';
+
+    final fillCategory = all[_barcodeFillCategoryKey];
+    if (fillCategory != null) _barcodeFillCategory = fillCategory == 'true';
+
+    final fillImage = all[_barcodeFillImageKey];
+    if (fillImage != null) _barcodeFillImage = fillImage == 'true';
+
     final view = all[_checklistViewKey];
     if (view != null && (view == 'list' || view == 'cards')) {
       _checklistView = view;
@@ -647,6 +672,9 @@ class PrefsService extends ChangeNotifier {
     _defaultItemLongPressAction = 'multiselect';
     _reuseExistingItems = 'ask';
     _suggestArchivedItems = false;
+    _barcodeFillName = true;
+    _barcodeFillCategory = true;
+    _barcodeFillImage = true;
     _checklistView = 'list';
     _checklistCheckboxPosition = 'start';
     _composeBarPosition = 'bottom';
@@ -692,6 +720,9 @@ class PrefsService extends ChangeNotifier {
       _checklistCategorySpacingKey,
       _reuseExistingItemsKey,
       _suggestArchivedItemsKey,
+      _barcodeFillNameKey,
+      _barcodeFillCategoryKey,
+      _barcodeFillImageKey,
       _checklistViewKey,
       _checklistCheckboxPositionKey,
       _composeBarPositionKey,

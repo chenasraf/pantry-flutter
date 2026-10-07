@@ -44,6 +44,36 @@ extension PrefsServiceChecklistSetters on PrefsService {
     notifyListeners();
   }
 
+  Future<void> setBarcodeFillNameCache(bool value) async {
+    if (_barcodeFillName == value) return;
+    _barcodeFillName = value;
+    await _storage.write(
+      key: PrefsService._barcodeFillNameKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
+  Future<void> setBarcodeFillCategoryCache(bool value) async {
+    if (_barcodeFillCategory == value) return;
+    _barcodeFillCategory = value;
+    await _storage.write(
+      key: PrefsService._barcodeFillCategoryKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
+  Future<void> setBarcodeFillImageCache(bool value) async {
+    if (_barcodeFillImage == value) return;
+    _barcodeFillImage = value;
+    await _storage.write(
+      key: PrefsService._barcodeFillImageKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
   Future<void> setChecklistView(String value) async {
     if (value != 'list' && value != 'cards') return;
     _checklistView = value;
