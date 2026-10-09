@@ -91,6 +91,12 @@ enum SyncOpKind {
   /// Remove a checklist item's image. The mirror of [setImage].
   clearImage,
 
+  /// Patch a list's item defaults; the body is an `ItemDefaultsPatch`. Its own
+  /// kind rather than an [update]: the server merges it per key on a separate
+  /// endpoint, and an add-item form sends one after every add, so a run of them
+  /// coalesces by those per-key rules instead of by overwriting fields.
+  setItemDefaults,
+
   /// House-scoped group action over many items (move / copy / delete /
   /// set-category). Unlike every other kind this targets a *list* of items
   /// carried in `body['itemIds']` rather than a single [SyncOp.entityId]; the

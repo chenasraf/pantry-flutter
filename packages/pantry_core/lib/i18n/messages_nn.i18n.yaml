@@ -891,6 +891,24 @@ checklists:
     onceHint: Nye element blir fjerna frå lista når dei blir markerte som fullførte.
     recurring: Gjentek
     recurringHint: Nye element kjem tilbake basert på tidsplanen nedanfor.
+  itemDefaults:
+    title: Standardverdiar for element
+    intro: Nye element på denne lista startar med desse verdiane.
+    readOnly: Berre dei som kan redigere denne lista, kan endre standardverdiane hennar.
+    edit: Rediger standardverdiar
+    modeNone: Ikkje sett
+    modeFixed: Fast
+    modeRemember: Hugs den siste
+    modeFieldDefault: Standard for feltet
+    noneHint: Nye element startar utan verdi.
+    fixedHint: Nye element startar alltid med verdien nedanfor.
+    rememberHint: Nye element startar med verdien til det siste elementet som vart lagt til i denne lista.
+    lastUsed(String field): "${field}: sist brukt"
+    inheritValue(String value): "Brukar standarden for feltet: ${value}"
+    inheritEmpty: Brukar standarden for feltet, som er tom.
+    inDays(int count): "${_plural(count, one: 'Om 1 dag', many: 'Om ${count} dagar')}"
+    fieldsSet(int count): "${_plural(count, one: '1 felt sett', many: '${count} felt sette')}"
+    checked: Kryssa av
   itemTypes:
     label: Gjentaking
     staple: Fest

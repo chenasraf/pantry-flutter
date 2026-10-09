@@ -764,6 +764,24 @@ checklists:
     onceHint: Neue Einträge werden entfernt, sobald sie erledigt wurden.
     recurring: Wiederkehrend
     recurringHint: Neue Einträge kommen nach dem Zeitplan unten zurück.
+  itemDefaults:
+    title: Eintragsvorgaben
+    intro: Neue Einträge auf dieser Liste starten mit diesen Werten.
+    readOnly: Nur wer diese Liste bearbeiten darf, kann ihre Eintragsvorgaben ändern.
+    edit: Eintragsvorgaben bearbeiten
+    modeNone: Nicht gesetzt
+    modeFixed: Fest
+    modeRemember: Letzte merken
+    modeFieldDefault: Feldstandard
+    noneHint: Neue Einträge starten ohne Wert.
+    fixedHint: Neue Einträge starten immer mit dem Wert unten.
+    rememberHint: Neue Einträge starten mit dem Wert des zuletzt zu dieser Liste hinzugefügten Eintrags.
+    lastUsed(String field): "${field}: zuletzt verwendet"
+    inheritValue(String value): "Nutzt den Feldstandard: ${value}"
+    inheritEmpty: Nutzt den Feldstandard, der leer ist.
+    inDays(int count): "${_plural(count, one: 'In 1 Tag', many: 'In ${count} Tagen')}"
+    fieldsSet(int count): "${_plural(count, one: '1 Feld gesetzt', many: '${count} Felder gesetzt')}"
+    checked: Angehakt
   itemTypes:
     label: Wiederholung
     staple: Standard

@@ -156,4 +156,18 @@ extension ChecklistServiceLists on ChecklistService {
       fromJson: (data) => ChecklistList.fromJson(data),
     );
   }
+
+  /// Merge [patch] into a list's item defaults. Needs
+  /// [kListItemDefaultsFeature].
+  Future<ChecklistList> updateItemDefaults(
+    int houseId,
+    int listId,
+    ItemDefaultsPatch patch,
+  ) async {
+    return ApiClient.instance.patch<Map<String, dynamic>, ChecklistList>(
+      '/houses/$houseId/lists/$listId/item-defaults',
+      body: patch.toJson(),
+      fromJson: (data) => ChecklistList.fromJson(data),
+    );
+  }
 }

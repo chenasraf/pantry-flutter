@@ -1,4 +1,5 @@
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 
@@ -59,6 +60,11 @@ class ChecklistList {
   /// item write. `null` on servers without the `share-users` capability.
   final bool? sharedOnly;
 
+  /// What new items on this list start with. `null` from servers without
+  /// [kListItemDefaultsFeature], which describe only the recurrence, through
+  /// the `defaultRecurrence*` fields.
+  final ItemDefaults? itemDefaults;
+
   const ChecklistList({
     required this.id,
     required this.houseId,
@@ -79,6 +85,7 @@ class ChecklistList {
     this.lastCompletedAt,
     this.canEdit,
     this.sharedOnly,
+    this.itemDefaults,
   });
 
   factory ChecklistList.fromJson(Map<String, dynamic> json) => ChecklistList(
@@ -110,6 +117,11 @@ class ChecklistList {
     lastCompletedAt: json['lastCompletedAt'] as int?,
     canEdit: json['canEdit'] as bool?,
     sharedOnly: json['sharedOnly'] as bool?,
+    itemDefaults: json['itemDefaults'] is Map
+        ? ItemDefaults.fromJson(
+            Map<String, dynamic>.from(json['itemDefaults'] as Map),
+          )
+        : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -133,6 +145,7 @@ class ChecklistList {
     'lastCompletedAt': lastCompletedAt,
     'canEdit': canEdit,
     'sharedOnly': sharedOnly,
+    'itemDefaults': ?itemDefaults?.toJson(),
   };
 
   ChecklistList copyWith({
@@ -154,6 +167,7 @@ class ChecklistList {
     int? archivedAt,
     bool clearArchivedAt = false,
     int? lastCompletedAt,
+    ItemDefaults? itemDefaults,
   }) => ChecklistList(
     id: id ?? this.id,
     houseId: houseId,
@@ -177,6 +191,7 @@ class ChecklistList {
     lastCompletedAt: lastCompletedAt ?? this.lastCompletedAt,
     canEdit: canEdit,
     sharedOnly: sharedOnly,
+    itemDefaults: itemDefaults ?? this.itemDefaults,
   );
 }
 
@@ -199,6 +214,11 @@ extension ChecklistSharing on ChecklistList {
 }
 
 extension ChecklistRecurrence on ChecklistList {
+  /// The list's [ChecklistList.itemDefaults] when the server manages them,
+  /// otherwise `null` and the `defaultRecurrence*` fields apply.
+  ItemDefaults? get activeItemDefaults =>
+      hasFeature(kListItemDefaultsFeature) ? itemDefaults : null;
+
   /// The recurrence new items on this list start with. A pinned mode names it
   /// outright; [ListRecurrenceMode.remember] defers to whatever the last item
   /// added used, which the add-item form reports back.
@@ -206,7 +226,22 @@ extension ChecklistRecurrence on ChecklistList {
   /// Servers without [kListDefaultRecurrenceFeature] only ever store the
   /// "one-time" flag, and the add-item form has always rewritten it — which is
   /// exactly the remembering policy, narrowed to two of the three recurrences.
+  ///
+  /// With [itemDefaults] the recurrence is one key among the others, and its
+  /// write-back goes out with theirs, so it never [ListRecurrenceDefault.remembers]
+  /// here.
   ListRecurrenceDefault get recurrenceDefault {
+    final defaults = activeItemDefaults;
+    if (defaults != null) {
+      final value =
+          (defaults.recurrence.prefill ?? RecurrenceDefaultValue.staple)
+              .normalized();
+      return ListRecurrenceDefault(
+        kind: value.kind,
+        rrule: value.rrule,
+        repeatFromCompletion: value.repeatFromCompletion,
+      );
+    }
     if (!hasFeature(kListDefaultRecurrenceFeature)) {
       return ListRecurrenceDefault(
         kind: defaultRecurrenceKind,

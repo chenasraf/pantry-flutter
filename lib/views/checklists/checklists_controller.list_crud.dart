@@ -238,6 +238,36 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     );
   }
 
+  /// Merge [patch] into list [listId]'s item defaults: locally right away, so
+  /// the next item starts from it, and on the server through the queue. Used
+  /// both for an editor's changes and for the write-back after every add.
+  void updateItemDefaults(int listId, ItemDefaultsPatch patch) {
+    if (patch.isEmpty || listId == kAllListsId) return;
+    final list = _lists.where((l) => l.id == listId).firstOrNull;
+    if (list == null) return;
+    final optimistic = list.copyWith(
+      itemDefaults: (list.itemDefaults ?? ItemDefaults.empty).applyPatch(patch),
+      updatedAt: _now(),
+    );
+    _lists = [for (final l in _lists) l.id == listId ? optimistic : l];
+    if (_currentList?.id == listId) _currentList = optimistic;
+    _checklistService.cacheLists(houseId, _lists);
+    notifyListeners();
+
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.setItemDefaults,
+        houseId: houseId,
+        entityId: listId < 0 ? null : listId,
+        tempEntityId: listId < 0 ? listId : null,
+        body: patch.toJson(),
+        createdAt: _now(),
+      ),
+    );
+  }
+
   Future<void> setListHideProgressHero(bool value) async {
     final list = _currentList;
     if (list == null) return;

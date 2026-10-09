@@ -145,7 +145,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
             ),
           if (domain.permissions.canEditFields && hasFeature('custom-fields'))
             IconButton(
-              icon: const Icon(Icons.tune),
+              icon: const Icon(Icons.list_alt),
               tooltip: m.customFields.manageTitle,
               onPressed: () => openManageCustomFields(context),
             ),
@@ -301,6 +301,12 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
           label: m.checklists.showProgressHero,
           checked: !(domain.currentList!.hideProgressHero),
         ),
+      if (!isMeta && domain.currentList?.activeItemDefaults != null)
+        OverflowAction(
+          value: 'item_defaults',
+          icon: Icons.tune,
+          label: m.checklists.itemDefaults.title,
+        ),
       // "Reset custom order" re-seeds sort_order from a chosen basis and leaves
       // the list hand-reorderable. Per-list only (no cross-list custom order in
       // meta) and needs edit permission.
@@ -381,7 +387,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         if (domain.permissions.canEditFields && hasFeature('custom-fields'))
           OverflowAction(
             value: 'manage_custom_fields',
-            icon: Icons.tune,
+            icon: Icons.list_alt,
             label: m.customFields.manageTitle,
           ),
         // Mobile has reliable pull-to-refresh, so it doesn't need a menu row.

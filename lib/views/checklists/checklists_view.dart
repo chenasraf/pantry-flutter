@@ -27,6 +27,7 @@ import 'checklists_empty_states.dart';
 import 'checklists_filter_bar.dart';
 import 'checklists_selection_bar.dart';
 import 'item_compose_bar.dart';
+import 'item_defaults_view.dart';
 import 'progress_hero.dart';
 
 class ChecklistsView extends StatefulWidget {
@@ -478,165 +479,187 @@ class _BodyState extends State<_Body> {
               // by them. The maxHeight ceiling funnels down to the bar's
               // internal Flexible+scroll view, which scrolls only when even
               // that isn't enough (tiny screen + keyboard up).
-              Widget composeBar(ChecklistList list, double maxHeight) =>
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: maxHeight),
-                    child: Builder(
-                      builder: (context) {
-                        final meta = controller.isMetaMode;
-                        // In meta mode, drop the synthetic from the picker —
-                        // it's not a real target.
-                        final realLists = meta
-                            ? controller.lists
-                                  .where((l) => l.id != kAllListsId)
-                                  .toList()
-                            : null;
-                        // Heal an orphaned selection (target list was
-                        // deleted since last add) by clearing it silently.
-                        if (meta &&
-                            body.composeTargetListId != null &&
-                            !realLists!.any(
-                              (l) => l.id == body.composeTargetListId,
-                            )) {
-                          body.composeTargetListId = null;
-                        }
-                        // Existing items on the target list, surfaced as
-                        // fuzzy "reuse instead of duplicate" suggestions
-                        // while typing. Gated on the reuse capability and
-                        // the check permission — reuse un-checks a done
-                        // item.
-                        final reuseTargetId = meta
+              Widget composeBar(
+                ChecklistList list,
+                double maxHeight,
+              ) => ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: maxHeight),
+                child: Builder(
+                  builder: (context) {
+                    final meta = controller.isMetaMode;
+                    // In meta mode, drop the synthetic from the picker —
+                    // it's not a real target.
+                    final realLists = meta
+                        ? controller.lists
+                              .where((l) => l.id != kAllListsId)
+                              .toList()
+                        : null;
+                    // Heal an orphaned selection (target list was
+                    // deleted since last add) by clearing it silently.
+                    if (meta &&
+                        body.composeTargetListId != null &&
+                        !realLists!.any(
+                          (l) => l.id == body.composeTargetListId,
+                        )) {
+                      body.composeTargetListId = null;
+                    }
+                    // Existing items on the target list, surfaced as
+                    // fuzzy "reuse instead of duplicate" suggestions
+                    // while typing. Gated on the reuse capability and
+                    // the check permission — reuse un-checks a done
+                    // item.
+                    final reuseTargetId = meta
+                        ? body.composeTargetListId
+                        : list.id;
+                    final reuseActive =
+                        hasFeature('reuse-existing-items') &&
+                        controller.permissions.canCheckItems &&
+                        reuseTargetId != null;
+                    final reuseCandidates = reuseActive
+                        ? [
+                            for (final i in controller.items)
+                              if (i.deletedAt == null &&
+                                  i.listId == reuseTargetId)
+                                i,
+                          ]
+                        : const <ListItem>[];
+                    // Archived items join the reuse pool only when the
+                    // user opts in and the server advertises the
+                    // capability; the controller fetches them lazily and
+                    // keeps them live.
+                    final suggestArchived =
+                        reuseActive &&
+                        hasFeature('pref-suggest-archived-items') &&
+                        prefs.suggestArchivedItems;
+                    final archivedReuseCandidates = suggestArchived
+                        ? controller.archivedReuseCandidates(reuseTargetId)
+                        : const <ListItem>[];
+                    return ItemComposeBar(
+                      key: body.composeKey,
+                      listName: list.name,
+                      houseId: controller.houseId,
+                      listId: meta ? null : list.id,
+                      recurrenceDefault: meta
+                          ? ListRecurrenceDefault.neutral
+                          : list.recurrenceDefault,
+                      onRecurrenceUsed: meta
+                          ? null
+                          : ({
+                              required kind,
+                              rrule,
+                              required repeatFromCompletion,
+                            }) => controller.setListRecurrenceDefault(
+                              kind: kind,
+                              rrule: rrule,
+                              repeatFromCompletion: repeatFromCompletion,
+                            ),
+                      // In All-lists mode the picked target's defaults
+                      // apply, so the item starts the way that list's own
+                      // composer would start it.
+                      itemDefaults:
+                          (meta
+                                  ? realLists!
+                                        .where(
+                                          (l) =>
+                                              l.id == body.composeTargetListId,
+                                        )
+                                        .firstOrNull
+                                  : list)
+                              ?.activeItemDefaults,
+                      onItemDefaultsUsed: controller.updateItemDefaults,
+                      onEditItemDefaults: (listId) {
+                        final target = controller.lists
+                            .where((l) => l.id == listId)
+                            .firstOrNull;
+                        if (target == null) return;
+                        body.composeKey.currentState?.dismissKeepingDraft();
+                        showItemDefaults(context, controller, target);
+                      },
+                      categories: controller.categoriesForList(
+                        meta ? body.composeTargetListId : list.id,
+                      ),
+                      stores: hasFeature('stores')
+                          ? controller.sortedStores
+                          : const [],
+                      labels: hasFeature('labels')
+                          ? controller.labelsForList(
+                              meta ? body.composeTargetListId : list.id,
+                            )
+                          : const [],
+                      customFieldDefs: controller.customFieldDefs,
+                      priceEnabled: hasFeature('item-price'),
+                      perStorePriceEnabled: hasFeature(
+                        kItemPricePerStoreFeature,
+                      ),
+                      lastCurrency: controller.lastCurrency,
+                      initiallyFocused: false,
+                      targetLists: realLists,
+                      selectedTargetListId: meta
+                          ? body.composeTargetListId
+                          : null,
+                      onTargetListChanged: body.setComposeTargetListId,
+                      reuseCandidates: reuseCandidates,
+                      buildReuseSuggestion: (item, onTap) =>
+                          ChecklistItemTile.suggestion(
+                            item: item,
+                            category: item.categoryId != null
+                                ? controller.categories[item.categoryId]
+                                : null,
+                            stores: controller.storesFor(item),
+                            labels: controller.labelsFor(item),
+                            pendingImage: controller.pendingItemImage(item.id),
+                            houseId: controller.houseId,
+                            onTap: onTap,
+                            archived: item.archivedAt != null,
+                          ),
+                      onReuseExisting: (item) =>
+                          body.reuseFromSuggestion(context, item),
+                      archivedReuseCandidates: archivedReuseCandidates,
+                      onArchivedSearchStarted: suggestArchived
+                          ? controller.ensureArchivedReuseLoaded
+                          : null,
+                      onTop: composeOnTop,
+                      onActiveChanged: body.setComposeActive,
+                      onRequestCreateCategory:
+                          controller.permissions.canEditLists
+                          ? () => body.createCategory(
+                              context,
+                              defaultListId: meta
+                                  ? body.composeTargetListId
+                                  : list.id,
+                            )
+                          : null,
+                      onRequestCreateStore:
+                          hasFeature('stores') &&
+                              controller.permissions.canEditLists
+                          ? () => body.createStore(context)
+                          : null,
+                      onRequestCreateLabel:
+                          hasFeature('labels') &&
+                              controller.permissions.canEditLists
+                          ? () => body.createLabel(
+                              context,
+                              defaultListId: meta
+                                  ? body.composeTargetListId
+                                  : list.id,
+                            )
+                          : null,
+                      onSubmit: (s) async {
+                        final targetListId = meta
                             ? body.composeTargetListId
                             : list.id;
-                        final reuseActive =
-                            hasFeature('reuse-existing-items') &&
-                            controller.permissions.canCheckItems &&
-                            reuseTargetId != null;
-                        final reuseCandidates = reuseActive
-                            ? [
-                                for (final i in controller.items)
-                                  if (i.deletedAt == null &&
-                                      i.listId == reuseTargetId)
-                                    i,
-                              ]
-                            : const <ListItem>[];
-                        // Archived items join the reuse pool only when the
-                        // user opts in and the server advertises the
-                        // capability; the controller fetches them lazily and
-                        // keeps them live.
-                        final suggestArchived =
-                            reuseActive &&
-                            hasFeature('pref-suggest-archived-items') &&
-                            prefs.suggestArchivedItems;
-                        final archivedReuseCandidates = suggestArchived
-                            ? controller.archivedReuseCandidates(reuseTargetId)
-                            : const <ListItem>[];
-                        return ItemComposeBar(
-                          key: body.composeKey,
-                          listName: list.name,
-                          houseId: controller.houseId,
-                          listId: meta ? null : list.id,
-                          recurrenceDefault: meta
-                              ? ListRecurrenceDefault.neutral
-                              : list.recurrenceDefault,
-                          onRecurrenceUsed: meta
-                              ? null
-                              : ({
-                                  required kind,
-                                  rrule,
-                                  required repeatFromCompletion,
-                                }) => controller.setListRecurrenceDefault(
-                                  kind: kind,
-                                  rrule: rrule,
-                                  repeatFromCompletion: repeatFromCompletion,
-                                ),
-                          categories: controller.categoriesForList(
-                            meta ? body.composeTargetListId : list.id,
-                          ),
-                          stores: hasFeature('stores')
-                              ? controller.sortedStores
-                              : const [],
-                          labels: hasFeature('labels')
-                              ? controller.labelsForList(
-                                  meta ? body.composeTargetListId : list.id,
-                                )
-                              : const [],
-                          customFieldDefs: controller.customFieldDefs,
-                          priceEnabled: hasFeature('item-price'),
-                          perStorePriceEnabled: hasFeature(
-                            kItemPricePerStoreFeature,
-                          ),
-                          lastCurrency: controller.lastCurrency,
-                          initiallyFocused: false,
-                          targetLists: realLists,
-                          selectedTargetListId: meta
-                              ? body.composeTargetListId
-                              : null,
-                          onTargetListChanged: body.setComposeTargetListId,
-                          reuseCandidates: reuseCandidates,
-                          buildReuseSuggestion: (item, onTap) =>
-                              ChecklistItemTile.suggestion(
-                                item: item,
-                                category: item.categoryId != null
-                                    ? controller.categories[item.categoryId]
-                                    : null,
-                                stores: controller.storesFor(item),
-                                labels: controller.labelsFor(item),
-                                pendingImage: controller.pendingItemImage(
-                                  item.id,
-                                ),
-                                houseId: controller.houseId,
-                                onTap: onTap,
-                                archived: item.archivedAt != null,
-                              ),
-                          onReuseExisting: (item) =>
-                              body.reuseFromSuggestion(context, item),
-                          archivedReuseCandidates: archivedReuseCandidates,
-                          onArchivedSearchStarted: suggestArchived
-                              ? controller.ensureArchivedReuseLoaded
-                              : null,
-                          onTop: composeOnTop,
-                          onActiveChanged: body.setComposeActive,
-                          onRequestCreateCategory:
-                              controller.permissions.canEditLists
-                              ? () => body.createCategory(
-                                  context,
-                                  defaultListId: meta
-                                      ? body.composeTargetListId
-                                      : list.id,
-                                )
-                              : null,
-                          onRequestCreateStore:
-                              hasFeature('stores') &&
-                                  controller.permissions.canEditLists
-                              ? () => body.createStore(context)
-                              : null,
-                          onRequestCreateLabel:
-                              hasFeature('labels') &&
-                                  controller.permissions.canEditLists
-                              ? () => body.createLabel(
-                                  context,
-                                  defaultListId: meta
-                                      ? body.composeTargetListId
-                                      : list.id,
-                                )
-                              : null,
-                          onSubmit: (s) async {
-                            final targetListId = meta
-                                ? body.composeTargetListId
-                                : list.id;
-                            if (targetListId == null) return false;
-                            return body.addItemHonoringReuse(
-                              context,
-                              targetListId: targetListId,
-                              meta: meta,
-                              s: s,
-                            );
-                          },
+                        if (targetListId == null) return false;
+                        return body.addItemHonoringReuse(
+                          context,
+                          targetListId: targetListId,
+                          meta: meta,
+                          s: s,
                         );
                       },
-                    ),
-                  );
+                    );
+                  },
+                ),
+              );
               // Scrim — fades in/out with compose-active state, always present
               // so AnimatedOpacity has something to interpolate. IgnorePointer
               // prevents the invisible scrim from eating taps when inactive.

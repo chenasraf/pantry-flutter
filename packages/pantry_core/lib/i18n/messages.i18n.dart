@@ -3215,6 +3215,8 @@ class ChecklistsMessages {
   String get listColor => """Color""";
   ListRecurrenceChecklistsMessages get listRecurrence =>
       ListRecurrenceChecklistsMessages(this);
+  ItemDefaultsChecklistsMessages get itemDefaults =>
+      ItemDefaultsChecklistsMessages(this);
   ItemTypesChecklistsMessages get itemTypes =>
       ItemTypesChecklistsMessages(this);
   ComposeChecklistsMessages get compose => ComposeChecklistsMessages(this);
@@ -4028,6 +4030,100 @@ class ListRecurrenceChecklistsMessages {
   /// "New items come back on the schedule below."
   /// ```
   String get recurringHint => """New items come back on the schedule below.""";
+}
+
+class ItemDefaultsChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const ItemDefaultsChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Item defaults"
+  /// ```
+  String get title => """Item defaults""";
+
+  /// ```dart
+  /// "New items on this list start with these values."
+  /// ```
+  String get intro => """New items on this list start with these values.""";
+
+  /// ```dart
+  /// "Only people who can edit this list can change its item defaults."
+  /// ```
+  String get readOnly =>
+      """Only people who can edit this list can change its item defaults.""";
+
+  /// ```dart
+  /// "Edit item defaults"
+  /// ```
+  String get edit => """Edit item defaults""";
+
+  /// ```dart
+  /// "Not set"
+  /// ```
+  String get modeNone => """Not set""";
+
+  /// ```dart
+  /// "Fixed"
+  /// ```
+  String get modeFixed => """Fixed""";
+
+  /// ```dart
+  /// "Remember last"
+  /// ```
+  String get modeRemember => """Remember last""";
+
+  /// ```dart
+  /// "Field default"
+  /// ```
+  String get modeFieldDefault => """Field default""";
+
+  /// ```dart
+  /// "New items start without a value."
+  /// ```
+  String get noneHint => """New items start without a value.""";
+
+  /// ```dart
+  /// "New items always start with the value below."
+  /// ```
+  String get fixedHint => """New items always start with the value below.""";
+
+  /// ```dart
+  /// "New items start with the value of the last item added to this list."
+  /// ```
+  String get rememberHint =>
+      """New items start with the value of the last item added to this list.""";
+
+  /// ```dart
+  /// "${field}: last used"
+  /// ```
+  String lastUsed(String field) => """${field}: last used""";
+
+  /// ```dart
+  /// "Uses the field default: ${value}"
+  /// ```
+  String inheritValue(String value) => """Uses the field default: ${value}""";
+
+  /// ```dart
+  /// "Uses the field default, which is empty."
+  /// ```
+  String get inheritEmpty => """Uses the field default, which is empty.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'In 1 day', many: 'In ${count} days')}"
+  /// ```
+  String inDays(int count) =>
+      """${_plural(count, one: 'In 1 day', many: 'In ${count} days')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 field set', many: '${count} fields set')}"
+  /// ```
+  String fieldsSet(int count) =>
+      """${_plural(count, one: '1 field set', many: '${count} fields set')}""";
+
+  /// ```dart
+  /// "Checked"
+  /// ```
+  String get checked => """Checked""";
 }
 
 class ItemTypesChecklistsMessages {
@@ -7601,6 +7697,25 @@ Password: pantry-rocks""",
   """checklists.listRecurrence.recurring""": """Recurring""",
   """checklists.listRecurrence.recurringHint""":
       """New items come back on the schedule below.""",
+  """checklists.itemDefaults.title""": """Item defaults""",
+  """checklists.itemDefaults.intro""":
+      """New items on this list start with these values.""",
+  """checklists.itemDefaults.readOnly""":
+      """Only people who can edit this list can change its item defaults.""",
+  """checklists.itemDefaults.edit""": """Edit item defaults""",
+  """checklists.itemDefaults.modeNone""": """Not set""",
+  """checklists.itemDefaults.modeFixed""": """Fixed""",
+  """checklists.itemDefaults.modeRemember""": """Remember last""",
+  """checklists.itemDefaults.modeFieldDefault""": """Field default""",
+  """checklists.itemDefaults.noneHint""":
+      """New items start without a value.""",
+  """checklists.itemDefaults.fixedHint""":
+      """New items always start with the value below.""",
+  """checklists.itemDefaults.rememberHint""":
+      """New items start with the value of the last item added to this list.""",
+  """checklists.itemDefaults.inheritEmpty""":
+      """Uses the field default, which is empty.""",
+  """checklists.itemDefaults.checked""": """Checked""",
   """checklists.itemTypes.label""": """Recurrence""",
   """checklists.itemTypes.staple""": """Staple""",
   """checklists.itemTypes.stapleBody""":

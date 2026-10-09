@@ -3216,6 +3216,8 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   String get listColor => """Farge""";
   ListRecurrenceChecklistsMessagesNn get listRecurrence =>
       ListRecurrenceChecklistsMessagesNn(this);
+  ItemDefaultsChecklistsMessagesNn get itemDefaults =>
+      ItemDefaultsChecklistsMessagesNn(this);
   ItemTypesChecklistsMessagesNn get itemTypes =>
       ItemTypesChecklistsMessagesNn(this);
   ComposeChecklistsMessagesNn get compose => ComposeChecklistsMessagesNn(this);
@@ -4035,6 +4037,103 @@ class ListRecurrenceChecklistsMessagesNn
   /// ```
   String get recurringHint =>
       """Nye element kjem tilbake basert på tidsplanen nedanfor.""";
+}
+
+class ItemDefaultsChecklistsMessagesNn extends ItemDefaultsChecklistsMessages {
+  final ChecklistsMessagesNn _parent;
+  const ItemDefaultsChecklistsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Standardverdiar for element"
+  /// ```
+  String get title => """Standardverdiar for element""";
+
+  /// ```dart
+  /// "Nye element på denne lista startar med desse verdiane."
+  /// ```
+  String get intro =>
+      """Nye element på denne lista startar med desse verdiane.""";
+
+  /// ```dart
+  /// "Berre dei som kan redigere denne lista, kan endre standardverdiane hennar."
+  /// ```
+  String get readOnly =>
+      """Berre dei som kan redigere denne lista, kan endre standardverdiane hennar.""";
+
+  /// ```dart
+  /// "Rediger standardverdiar"
+  /// ```
+  String get edit => """Rediger standardverdiar""";
+
+  /// ```dart
+  /// "Ikkje sett"
+  /// ```
+  String get modeNone => """Ikkje sett""";
+
+  /// ```dart
+  /// "Fast"
+  /// ```
+  String get modeFixed => """Fast""";
+
+  /// ```dart
+  /// "Hugs den siste"
+  /// ```
+  String get modeRemember => """Hugs den siste""";
+
+  /// ```dart
+  /// "Standard for feltet"
+  /// ```
+  String get modeFieldDefault => """Standard for feltet""";
+
+  /// ```dart
+  /// "Nye element startar utan verdi."
+  /// ```
+  String get noneHint => """Nye element startar utan verdi.""";
+
+  /// ```dart
+  /// "Nye element startar alltid med verdien nedanfor."
+  /// ```
+  String get fixedHint =>
+      """Nye element startar alltid med verdien nedanfor.""";
+
+  /// ```dart
+  /// "Nye element startar med verdien til det siste elementet som vart lagt til i denne lista."
+  /// ```
+  String get rememberHint =>
+      """Nye element startar med verdien til det siste elementet som vart lagt til i denne lista.""";
+
+  /// ```dart
+  /// "${field}: sist brukt"
+  /// ```
+  String lastUsed(String field) => """${field}: sist brukt""";
+
+  /// ```dart
+  /// "Brukar standarden for feltet: ${value}"
+  /// ```
+  String inheritValue(String value) =>
+      """Brukar standarden for feltet: ${value}""";
+
+  /// ```dart
+  /// "Brukar standarden for feltet, som er tom."
+  /// ```
+  String get inheritEmpty => """Brukar standarden for feltet, som er tom.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Om 1 dag', many: 'Om ${count} dagar')}"
+  /// ```
+  String inDays(int count) =>
+      """${_plural(count, one: 'Om 1 dag', many: 'Om ${count} dagar')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 felt sett', many: '${count} felt sette')}"
+  /// ```
+  String fieldsSet(int count) =>
+      """${_plural(count, one: '1 felt sett', many: '${count} felt sette')}""";
+
+  /// ```dart
+  /// "Kryssa av"
+  /// ```
+  String get checked => """Kryssa av""";
 }
 
 class ItemTypesChecklistsMessagesNn extends ItemTypesChecklistsMessages {
@@ -7627,6 +7726,24 @@ Passord: pantry""",
   """checklists.listRecurrence.recurring""": """Gjentek""",
   """checklists.listRecurrence.recurringHint""":
       """Nye element kjem tilbake basert på tidsplanen nedanfor.""",
+  """checklists.itemDefaults.title""": """Standardverdiar for element""",
+  """checklists.itemDefaults.intro""":
+      """Nye element på denne lista startar med desse verdiane.""",
+  """checklists.itemDefaults.readOnly""":
+      """Berre dei som kan redigere denne lista, kan endre standardverdiane hennar.""",
+  """checklists.itemDefaults.edit""": """Rediger standardverdiar""",
+  """checklists.itemDefaults.modeNone""": """Ikkje sett""",
+  """checklists.itemDefaults.modeFixed""": """Fast""",
+  """checklists.itemDefaults.modeRemember""": """Hugs den siste""",
+  """checklists.itemDefaults.modeFieldDefault""": """Standard for feltet""",
+  """checklists.itemDefaults.noneHint""": """Nye element startar utan verdi.""",
+  """checklists.itemDefaults.fixedHint""":
+      """Nye element startar alltid med verdien nedanfor.""",
+  """checklists.itemDefaults.rememberHint""":
+      """Nye element startar med verdien til det siste elementet som vart lagt til i denne lista.""",
+  """checklists.itemDefaults.inheritEmpty""":
+      """Brukar standarden for feltet, som er tom.""",
+  """checklists.itemDefaults.checked""": """Kryssa av""",
   """checklists.itemTypes.label""": """Gjentaking""",
   """checklists.itemTypes.staple""": """Fest""",
   """checklists.itemTypes.stapleBody""":

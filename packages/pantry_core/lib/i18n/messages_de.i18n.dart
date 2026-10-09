@@ -3253,6 +3253,8 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   String get listColor => """Farbe""";
   ListRecurrenceChecklistsMessagesDe get listRecurrence =>
       ListRecurrenceChecklistsMessagesDe(this);
+  ItemDefaultsChecklistsMessagesDe get itemDefaults =>
+      ItemDefaultsChecklistsMessagesDe(this);
   ItemTypesChecklistsMessagesDe get itemTypes =>
       ItemTypesChecklistsMessagesDe(this);
   ComposeChecklistsMessagesDe get compose => ComposeChecklistsMessagesDe(this);
@@ -4077,6 +4079,101 @@ class ListRecurrenceChecklistsMessagesDe
   /// ```
   String get recurringHint =>
       """Neue Einträge kommen nach dem Zeitplan unten zurück.""";
+}
+
+class ItemDefaultsChecklistsMessagesDe extends ItemDefaultsChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const ItemDefaultsChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Eintragsvorgaben"
+  /// ```
+  String get title => """Eintragsvorgaben""";
+
+  /// ```dart
+  /// "Neue Einträge auf dieser Liste starten mit diesen Werten."
+  /// ```
+  String get intro =>
+      """Neue Einträge auf dieser Liste starten mit diesen Werten.""";
+
+  /// ```dart
+  /// "Nur wer diese Liste bearbeiten darf, kann ihre Eintragsvorgaben ändern."
+  /// ```
+  String get readOnly =>
+      """Nur wer diese Liste bearbeiten darf, kann ihre Eintragsvorgaben ändern.""";
+
+  /// ```dart
+  /// "Eintragsvorgaben bearbeiten"
+  /// ```
+  String get edit => """Eintragsvorgaben bearbeiten""";
+
+  /// ```dart
+  /// "Nicht gesetzt"
+  /// ```
+  String get modeNone => """Nicht gesetzt""";
+
+  /// ```dart
+  /// "Fest"
+  /// ```
+  String get modeFixed => """Fest""";
+
+  /// ```dart
+  /// "Letzte merken"
+  /// ```
+  String get modeRemember => """Letzte merken""";
+
+  /// ```dart
+  /// "Feldstandard"
+  /// ```
+  String get modeFieldDefault => """Feldstandard""";
+
+  /// ```dart
+  /// "Neue Einträge starten ohne Wert."
+  /// ```
+  String get noneHint => """Neue Einträge starten ohne Wert.""";
+
+  /// ```dart
+  /// "Neue Einträge starten immer mit dem Wert unten."
+  /// ```
+  String get fixedHint => """Neue Einträge starten immer mit dem Wert unten.""";
+
+  /// ```dart
+  /// "Neue Einträge starten mit dem Wert des zuletzt zu dieser Liste hinzugefügten Eintrags."
+  /// ```
+  String get rememberHint =>
+      """Neue Einträge starten mit dem Wert des zuletzt zu dieser Liste hinzugefügten Eintrags.""";
+
+  /// ```dart
+  /// "${field}: zuletzt verwendet"
+  /// ```
+  String lastUsed(String field) => """${field}: zuletzt verwendet""";
+
+  /// ```dart
+  /// "Nutzt den Feldstandard: ${value}"
+  /// ```
+  String inheritValue(String value) => """Nutzt den Feldstandard: ${value}""";
+
+  /// ```dart
+  /// "Nutzt den Feldstandard, der leer ist."
+  /// ```
+  String get inheritEmpty => """Nutzt den Feldstandard, der leer ist.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'In 1 Tag', many: 'In ${count} Tagen')}"
+  /// ```
+  String inDays(int count) =>
+      """${_plural(count, one: 'In 1 Tag', many: 'In ${count} Tagen')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Feld gesetzt', many: '${count} Felder gesetzt')}"
+  /// ```
+  String fieldsSet(int count) =>
+      """${_plural(count, one: '1 Feld gesetzt', many: '${count} Felder gesetzt')}""";
+
+  /// ```dart
+  /// "Angehakt"
+  /// ```
+  String get checked => """Angehakt""";
 }
 
 class ItemTypesChecklistsMessagesDe extends ItemTypesChecklistsMessages {
@@ -7718,6 +7815,25 @@ Passwort: pantry-rocks""",
   """checklists.listRecurrence.recurring""": """Wiederkehrend""",
   """checklists.listRecurrence.recurringHint""":
       """Neue Einträge kommen nach dem Zeitplan unten zurück.""",
+  """checklists.itemDefaults.title""": """Eintragsvorgaben""",
+  """checklists.itemDefaults.intro""":
+      """Neue Einträge auf dieser Liste starten mit diesen Werten.""",
+  """checklists.itemDefaults.readOnly""":
+      """Nur wer diese Liste bearbeiten darf, kann ihre Eintragsvorgaben ändern.""",
+  """checklists.itemDefaults.edit""": """Eintragsvorgaben bearbeiten""",
+  """checklists.itemDefaults.modeNone""": """Nicht gesetzt""",
+  """checklists.itemDefaults.modeFixed""": """Fest""",
+  """checklists.itemDefaults.modeRemember""": """Letzte merken""",
+  """checklists.itemDefaults.modeFieldDefault""": """Feldstandard""",
+  """checklists.itemDefaults.noneHint""":
+      """Neue Einträge starten ohne Wert.""",
+  """checklists.itemDefaults.fixedHint""":
+      """Neue Einträge starten immer mit dem Wert unten.""",
+  """checklists.itemDefaults.rememberHint""":
+      """Neue Einträge starten mit dem Wert des zuletzt zu dieser Liste hinzugefügten Eintrags.""",
+  """checklists.itemDefaults.inheritEmpty""":
+      """Nutzt den Feldstandard, der leer ist.""",
+  """checklists.itemDefaults.checked""": """Angehakt""",
   """checklists.itemTypes.label""": """Wiederholung""",
   """checklists.itemTypes.staple""": """Standard""",
   """checklists.itemTypes.stapleBody""":

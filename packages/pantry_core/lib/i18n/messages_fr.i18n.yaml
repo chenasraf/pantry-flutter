@@ -764,6 +764,24 @@ checklists:
     onceHint: "Les nouveaux articles sont supprimés de la liste une fois complétés."
     recurring: "Récurrent"
     recurringHint: "Les nouveaux articles reviennent selon l'horaire ci-dessous."
+  itemDefaults:
+    title: "Valeurs par défaut des articles"
+    intro: "Les nouveaux articles de cette liste démarrent avec ces valeurs."
+    readOnly: "Seules les personnes qui peuvent modifier cette liste peuvent changer ses valeurs par défaut."
+    edit: "Modifier les valeurs par défaut"
+    modeNone: "Non défini"
+    modeFixed: Fixe
+    modeRemember: "Mémoriser le dernier"
+    modeFieldDefault: "Valeur par défaut du champ"
+    noneHint: "Les nouveaux articles démarrent sans valeur."
+    fixedHint: "Les nouveaux articles démarrent toujours avec la valeur ci-dessous."
+    rememberHint: "Les nouveaux articles démarrent avec la valeur du dernier article ajouté à cette liste."
+    lastUsed(String field): "${field} : dernier utilisé"
+    inheritValue(String value): "Utilise la valeur par défaut du champ : ${value}"
+    inheritEmpty: "Utilise la valeur par défaut du champ, qui est vide."
+    inDays(int count): "${_plural(count, one: 'Dans 1 jour', many: 'Dans ${count} jours')}"
+    fieldsSet(int count): "${_plural(count, one: '1 champ défini', many: '${count} champs définis')}"
+    checked: "Coché"
   itemTypes:
     label: "Récurrence"
     staple: Habituel

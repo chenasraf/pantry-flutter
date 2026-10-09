@@ -3250,6 +3250,8 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   String get listColor => """Couleur""";
   ListRecurrenceChecklistsMessagesFr get listRecurrence =>
       ListRecurrenceChecklistsMessagesFr(this);
+  ItemDefaultsChecklistsMessagesFr get itemDefaults =>
+      ItemDefaultsChecklistsMessagesFr(this);
   ItemTypesChecklistsMessagesFr get itemTypes =>
       ItemTypesChecklistsMessagesFr(this);
   ComposeChecklistsMessagesFr get compose => ComposeChecklistsMessagesFr(this);
@@ -4071,6 +4073,104 @@ class ListRecurrenceChecklistsMessagesFr
   /// ```
   String get recurringHint =>
       """Les nouveaux articles reviennent selon l'horaire ci-dessous.""";
+}
+
+class ItemDefaultsChecklistsMessagesFr extends ItemDefaultsChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const ItemDefaultsChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Valeurs par défaut des articles"
+  /// ```
+  String get title => """Valeurs par défaut des articles""";
+
+  /// ```dart
+  /// "Les nouveaux articles de cette liste démarrent avec ces valeurs."
+  /// ```
+  String get intro =>
+      """Les nouveaux articles de cette liste démarrent avec ces valeurs.""";
+
+  /// ```dart
+  /// "Seules les personnes qui peuvent modifier cette liste peuvent changer ses valeurs par défaut."
+  /// ```
+  String get readOnly =>
+      """Seules les personnes qui peuvent modifier cette liste peuvent changer ses valeurs par défaut.""";
+
+  /// ```dart
+  /// "Modifier les valeurs par défaut"
+  /// ```
+  String get edit => """Modifier les valeurs par défaut""";
+
+  /// ```dart
+  /// "Non défini"
+  /// ```
+  String get modeNone => """Non défini""";
+
+  /// ```dart
+  /// "Fixe"
+  /// ```
+  String get modeFixed => """Fixe""";
+
+  /// ```dart
+  /// "Mémoriser le dernier"
+  /// ```
+  String get modeRemember => """Mémoriser le dernier""";
+
+  /// ```dart
+  /// "Valeur par défaut du champ"
+  /// ```
+  String get modeFieldDefault => """Valeur par défaut du champ""";
+
+  /// ```dart
+  /// "Les nouveaux articles démarrent sans valeur."
+  /// ```
+  String get noneHint => """Les nouveaux articles démarrent sans valeur.""";
+
+  /// ```dart
+  /// "Les nouveaux articles démarrent toujours avec la valeur ci-dessous."
+  /// ```
+  String get fixedHint =>
+      """Les nouveaux articles démarrent toujours avec la valeur ci-dessous.""";
+
+  /// ```dart
+  /// "Les nouveaux articles démarrent avec la valeur du dernier article ajouté à cette liste."
+  /// ```
+  String get rememberHint =>
+      """Les nouveaux articles démarrent avec la valeur du dernier article ajouté à cette liste.""";
+
+  /// ```dart
+  /// "${field} : dernier utilisé"
+  /// ```
+  String lastUsed(String field) => """${field} : dernier utilisé""";
+
+  /// ```dart
+  /// "Utilise la valeur par défaut du champ : ${value}"
+  /// ```
+  String inheritValue(String value) =>
+      """Utilise la valeur par défaut du champ : ${value}""";
+
+  /// ```dart
+  /// "Utilise la valeur par défaut du champ, qui est vide."
+  /// ```
+  String get inheritEmpty =>
+      """Utilise la valeur par défaut du champ, qui est vide.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Dans 1 jour', many: 'Dans ${count} jours')}"
+  /// ```
+  String inDays(int count) =>
+      """${_plural(count, one: 'Dans 1 jour', many: 'Dans ${count} jours')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 champ défini', many: '${count} champs définis')}"
+  /// ```
+  String fieldsSet(int count) =>
+      """${_plural(count, one: '1 champ défini', many: '${count} champs définis')}""";
+
+  /// ```dart
+  /// "Coché"
+  /// ```
+  String get checked => """Coché""";
 }
 
 class ItemTypesChecklistsMessagesFr extends ItemTypesChecklistsMessages {
@@ -7709,6 +7809,26 @@ Mot de passe : pantry-rocks""",
   """checklists.listRecurrence.recurring""": """Récurrent""",
   """checklists.listRecurrence.recurringHint""":
       """Les nouveaux articles reviennent selon l'horaire ci-dessous.""",
+  """checklists.itemDefaults.title""": """Valeurs par défaut des articles""",
+  """checklists.itemDefaults.intro""":
+      """Les nouveaux articles de cette liste démarrent avec ces valeurs.""",
+  """checklists.itemDefaults.readOnly""":
+      """Seules les personnes qui peuvent modifier cette liste peuvent changer ses valeurs par défaut.""",
+  """checklists.itemDefaults.edit""": """Modifier les valeurs par défaut""",
+  """checklists.itemDefaults.modeNone""": """Non défini""",
+  """checklists.itemDefaults.modeFixed""": """Fixe""",
+  """checklists.itemDefaults.modeRemember""": """Mémoriser le dernier""",
+  """checklists.itemDefaults.modeFieldDefault""":
+      """Valeur par défaut du champ""",
+  """checklists.itemDefaults.noneHint""":
+      """Les nouveaux articles démarrent sans valeur.""",
+  """checklists.itemDefaults.fixedHint""":
+      """Les nouveaux articles démarrent toujours avec la valeur ci-dessous.""",
+  """checklists.itemDefaults.rememberHint""":
+      """Les nouveaux articles démarrent avec la valeur du dernier article ajouté à cette liste.""",
+  """checklists.itemDefaults.inheritEmpty""":
+      """Utilise la valeur par défaut du champ, qui est vide.""",
+  """checklists.itemDefaults.checked""": """Coché""",
   """checklists.itemTypes.label""": """Récurrence""",
   """checklists.itemTypes.staple""": """Habituel""",
   """checklists.itemTypes.stapleBody""":

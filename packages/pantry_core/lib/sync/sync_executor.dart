@@ -1,6 +1,7 @@
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/note.dart';
@@ -242,6 +243,14 @@ class SyncExecutor {
               op.body['defaultRepeatFromCompletion'] as bool?,
         );
         return SyncResult(list);
+      case SyncOpKind.setItemDefaults:
+        if (id == null) return SyncResult.empty;
+        final list = await svc.updateItemDefaults(
+          houseId,
+          id,
+          ItemDefaultsPatch.fromJson(op.body),
+        );
+        return SyncResult(list);
       case SyncOpKind.delete:
         if (id == null) return SyncResult.empty;
         await svc.deleteList(houseId, id);
@@ -362,6 +371,8 @@ class SyncExecutor {
       case SyncOpKind.clearImage:
         if (listId == null || id == null) return SyncResult.empty;
         await svc.deleteItemImage(houseId, listId, id);
+        return SyncResult.empty;
+      case SyncOpKind.setItemDefaults:
         return SyncResult.empty;
       case SyncOpKind.batch:
         return _executeItemBatch(svc, houseId, op);
@@ -517,6 +528,7 @@ class SyncExecutor {
       case SyncOpKind.unarchive:
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
+      case SyncOpKind.setItemDefaults:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -592,6 +604,7 @@ class SyncExecutor {
       case SyncOpKind.unarchive:
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
+      case SyncOpKind.setItemDefaults:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -659,6 +672,7 @@ class SyncExecutor {
       case SyncOpKind.unarchive:
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
+      case SyncOpKind.setItemDefaults:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -712,6 +726,7 @@ class SyncExecutor {
       case SyncOpKind.unarchive:
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
+      case SyncOpKind.setItemDefaults:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -770,6 +785,7 @@ class SyncExecutor {
       case SyncOpKind.unarchive:
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
+      case SyncOpKind.setItemDefaults:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }

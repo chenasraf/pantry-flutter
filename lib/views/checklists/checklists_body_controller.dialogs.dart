@@ -315,6 +315,9 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       case 'duplicate_list':
         final current = domain.currentList;
         if (current != null) await openSwitcher(context, duplicating: current);
+      case 'item_defaults':
+        final current = domain.currentList;
+        if (current != null) await showItemDefaults(context, domain, current);
       case 'export_markdown':
         await openExport(context);
       case 'import_markdown':
