@@ -89,9 +89,7 @@ class UserMenuButton extends StatelessWidget {
     final value = await showMenu<Object>(
       context: context,
       position: position,
-      elevation: 8,
       constraints: const BoxConstraints(minWidth: 260, maxWidth: 320),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       items: [
         PopupMenuItem(
           enabled: false,

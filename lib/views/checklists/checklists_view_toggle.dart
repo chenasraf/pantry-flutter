@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 class ChecklistsViewToggle extends StatelessWidget {
   final String view;
@@ -14,13 +15,8 @@ class ChecklistsViewToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Container(
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(9),
-      ),
+      decoration: AppSurfaces.of(context).chip(),
       padding: const EdgeInsets.all(3),
       child: Row(
         children: [
@@ -58,22 +54,26 @@ class _ViewToggleBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
+    // Inset within the track, so its corners follow the track's at a smaller
+    // radius.
+    final radius = BorderRadius.circular(SurfaceRadius.chip - 2);
     return Tooltip(
       message: tooltip,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: radius,
         child: Container(
           width: 30,
           height: 28,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: active ? cs.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(7),
+            color: active ? surfaces.accent : Colors.transparent,
+            borderRadius: radius,
           ),
           child: Icon(
             icon,
-            color: active ? cs.onPrimary : cs.onSurfaceVariant,
+            color: active ? surfaces.onAccent : cs.onSurfaceVariant,
             size: 16,
           ),
         ),

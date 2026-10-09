@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 
+import '../theme/app_theme.dart';
+
 /// One row in an AppBar overflow: a section [OverflowDivider], a plain
 /// [OverflowAction], or a toggle [OverflowCheckboxAction].
 sealed class OverflowEntry {
@@ -40,8 +42,8 @@ class OverflowCheckboxAction extends OverflowEntry {
 }
 
 /// Radio-style indicator used by the sort options in an AppBar overflow.
-/// Hollow circle when unselected; filled accent circle with a white check
-/// when selected. Reads as a radio but matches the language of the list-item
+/// Hollow circle when unselected; filled accent circle with a check when
+/// selected. Reads as a radio but matches the language of the list-item
 /// checkbox.
 class OverflowRadioIndicator extends StatelessWidget {
   final bool selected;
@@ -50,20 +52,18 @@ class OverflowRadioIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return Container(
       width: 18,
       height: 18,
-      decoration: BoxDecoration(
-        color: selected ? cs.primary : Colors.transparent,
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: selected ? cs.primary : cs.outlineVariant,
-          width: 2,
-        ),
-      ),
+      decoration: selected
+          ? surfaces.selectionDot()
+          : BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: surfaces.edge, width: 2),
+            ),
       child: selected
-          ? const Icon(Icons.check, size: 12, color: Colors.white)
+          ? Icon(Icons.check, size: 12, color: surfaces.onAccent)
           : null,
     );
   }
@@ -158,7 +158,6 @@ Future<String?> showOverflowMenuSheet(
     context: context,
     isScrollControlled: true,
     builder: (sheetContext) {
-      final cs = Theme.of(sheetContext).colorScheme;
       final media = MediaQuery.of(sheetContext);
       // Open sized to the content instead of the default ~half-height cap.
       // Estimate the natural height so a short menu stays short and a long
@@ -191,10 +190,7 @@ Future<String?> showOverflowMenuSheet(
                 width: 38,
                 height: 5,
                 margin: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: cs.outlineVariant,
-                  borderRadius: BorderRadius.circular(3),
-                ),
+                decoration: AppSurfaces.of(sheetContext).dragHandle(),
               ),
               for (final entry in entries)
                 switch (entry) {

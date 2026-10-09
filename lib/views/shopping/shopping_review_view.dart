@@ -508,7 +508,6 @@ class _StoreSectionState extends State<_StoreSection> {
                         isDense: true,
                         labelText: m.shopping.actualPaid,
                         hintText: _estimateHint,
-                        border: const OutlineInputBorder(),
                       ),
                       onTapOutside: (_) => _persist(),
                       onEditingComplete: _persist,
@@ -519,10 +518,7 @@ class _StoreSectionState extends State<_StoreSection> {
                     child: DropdownButtonFormField<String>(
                       initialValue: _currency,
                       isExpanded: true,
-                      decoration: const InputDecoration(
-                        isDense: true,
-                        border: OutlineInputBorder(),
-                      ),
+                      decoration: const InputDecoration(isDense: true),
                       items: [
                         // Keep an unknown server-supplied code selectable so
                         // the dropdown's value always matches exactly one item.

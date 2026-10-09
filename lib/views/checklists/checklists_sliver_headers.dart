@@ -6,6 +6,7 @@ import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 /// Sticky-header delegate for a store group. Fixed extent so the pinned header
 /// keeps a stable height as it sticks and releases. Mirrors
@@ -54,10 +55,7 @@ class _StoreHeader extends StatelessWidget {
         : cs.onSurfaceVariant;
     final name = store?.name ?? m.checklists.noStore;
     return Container(
-      decoration: BoxDecoration(
-        color: cs.surface,
-        border: Border(bottom: BorderSide(color: cs.outlineVariant)),
-      ),
+      decoration: AppSurfaces.of(context).stickyHeader(),
       padding: const EdgeInsetsDirectional.only(start: 20, end: 20),
       alignment: AlignmentDirectional.centerStart,
       child: Row(
@@ -131,10 +129,7 @@ class _CategoryHeader extends StatelessWidget {
         : cs.onSurfaceVariant;
     final name = category?.name ?? m.checklists.noCategory;
     return Container(
-      decoration: BoxDecoration(
-        color: cs.surface,
-        border: Border(bottom: BorderSide(color: cs.outlineVariant)),
-      ),
+      decoration: AppSurfaces.of(context).stickyHeader(),
       padding: const EdgeInsetsDirectional.only(start: 20, end: 20),
       alignment: AlignmentDirectional.centerStart,
       child: Row(

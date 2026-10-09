@@ -133,7 +133,6 @@ class _MarkdownExportDialogState extends State<MarkdownExportDialog> {
                 keyboardType: TextInputType.multiline,
                 style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
                 decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
                   isDense: true,
                   contentPadding: const EdgeInsets.all(12),
                   filled: true,

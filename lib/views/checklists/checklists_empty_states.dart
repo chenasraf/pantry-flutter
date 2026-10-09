@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 class ChecklistsNoMatchesEmptyState extends StatelessWidget {
   const ChecklistsNoMatchesEmptyState({super.key});
@@ -27,7 +28,7 @@ class ChecklistsNoItemsEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    const success = Color(0xFF5FBF8A);
+    final success = AppSurfaces.of(context).success;
     return Column(
       children: [
         Expanded(
@@ -49,7 +50,7 @@ class ChecklistsNoItemsEmptyState extends StatelessWidget {
                         ],
                       ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.check_box_outlined,
                       color: success,
                       size: 42,
@@ -102,6 +103,7 @@ class ChecklistsNoListsEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Center(
@@ -155,25 +157,18 @@ class ChecklistsNoListsEmptyState extends StatelessWidget {
                   horizontal: 24,
                   vertical: 14,
                 ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [cs.primary, cs.primary.withValues(alpha: 0.8)],
-                  ),
-                  borderRadius: BorderRadius.circular(14),
-                ),
+                decoration: surfaces.primaryButton(),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.add, color: Colors.white, size: 20),
+                    Icon(Icons.add, color: surfaces.onAccent, size: 20),
                     const SizedBox(width: 8),
                     Text(
                       m.checklists.createFirstList,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15.5,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: surfaces.onAccent,
                       ),
                     ),
                   ],

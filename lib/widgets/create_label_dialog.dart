@@ -10,6 +10,8 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 
+import '../theme/app_theme.dart';
+
 const labelColors = [
   '#ef4444',
   '#f97316',
@@ -191,10 +193,7 @@ class _CreateLabelDialogState extends State<CreateLabelDialog> {
     return DropdownButtonFormField<int?>(
       initialValue: value,
       isExpanded: true,
-      decoration: InputDecoration(
-        labelText: m.labels.list,
-        border: const OutlineInputBorder(),
-      ),
+      decoration: InputDecoration(labelText: m.labels.list),
       items: [
         DropdownMenuItem<int?>(value: null, child: Text(m.labels.globalList)),
         for (final list in _lists)
@@ -229,10 +228,7 @@ class _CreateLabelDialogState extends State<CreateLabelDialog> {
                 autofocus: true,
                 textCapitalization: TextCapitalization.sentences,
                 textDirection: detectTextDirection(value.text),
-                decoration: InputDecoration(
-                  labelText: m.labels.name,
-                  border: const OutlineInputBorder(),
-                ),
+                decoration: InputDecoration(labelText: m.labels.name),
               ),
             ),
             if (_scopingEnabled) ...[
@@ -252,18 +248,9 @@ class _CreateLabelDialogState extends State<CreateLabelDialog> {
                   child: Container(
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? theme.colorScheme.primaryContainer
-                          : null,
-                      borderRadius: BorderRadius.circular(8),
-                      border: isSelected
-                          ? Border.all(
-                              color: theme.colorScheme.primary,
-                              width: 2,
-                            )
-                          : null,
-                    ),
+                    decoration: isSelected
+                        ? AppSurfaces.of(context).chip(selected: true)
+                        : null,
                     child: Icon(
                       entry.value,
                       size: 20,

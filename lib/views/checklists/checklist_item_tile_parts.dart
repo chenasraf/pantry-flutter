@@ -19,6 +19,7 @@ import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/widgets/description_detail_dialog.dart';
@@ -423,7 +424,11 @@ class _Checkbox extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: checked
-                ? const Icon(Icons.check, color: Colors.white, size: 16)
+                ? Icon(
+                    Icons.check,
+                    color: AppSurfaces.of(context).onAccent,
+                    size: 16,
+                  )
                 : null,
           );
     return GestureDetector(

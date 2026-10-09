@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/rrule.dart';
 
+import '../theme/app_theme.dart';
+
 /// What a monthly rule repeats on: days of the month, or a weekday pinned to a
 /// position in the month.
 enum RecurrenceMonthlyMode { days, weekday }
@@ -251,25 +253,20 @@ class _MonthDayChip extends StatelessWidget {
       width: 34,
       height: 34,
       child: Material(
-        color: selected ? colors.primaryContainer : colors.surfaceContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            color: selected ? colors.primary : colors.outlineVariant,
-          ),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Center(
-            child: Text(
-              '$day',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-                color: selected
-                    ? colors.onPrimaryContainer
-                    : colors.onSurfaceVariant,
+        type: MaterialType.transparency,
+        child: Ink(
+          decoration: AppSurfaces.of(context).chip(selected: selected),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(SurfaceRadius.chip),
+            child: Center(
+              child: Text(
+                '$day',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                  color: selected ? colors.primary : colors.onSurfaceVariant,
+                ),
               ),
             ),
           ),
@@ -374,7 +371,6 @@ class OrdinalWeekdayPicker extends StatelessWidget {
       initialValue: value,
       isExpanded: true,
       decoration: const InputDecoration(
-        border: OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         isDense: true,
       ),

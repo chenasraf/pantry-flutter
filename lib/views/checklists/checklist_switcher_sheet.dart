@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 import 'switcher_archive_stage.dart';
@@ -85,12 +86,16 @@ class _SheetHostState extends State<SheetHost> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     final desktop = widget.desktop;
+    final radius = desktop
+        ? BorderRadius.circular(SurfaceRadius.menu)
+        : const BorderRadius.vertical(
+            top: Radius.circular(SurfaceRadius.sheet),
+          );
     final panel = Material(
-      color: cs.surface,
-      borderRadius: desktop
-          ? BorderRadius.circular(16)
-          : const BorderRadius.vertical(top: Radius.circular(24)),
+      color: surfaces.base,
+      borderRadius: radius,
       clipBehavior: Clip.antiAlias,
       elevation: desktop ? 8 : 0,
       shadowColor: Colors.black.withValues(alpha: 0.25),
@@ -99,9 +104,7 @@ class _SheetHostState extends State<SheetHost> {
           border: desktop
               ? Border.all(color: cs.outlineVariant)
               : Border(top: BorderSide(color: cs.outlineVariant)),
-          borderRadius: desktop
-              ? BorderRadius.circular(16)
-              : const BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: radius,
         ),
         padding: EdgeInsets.fromLTRB(
           16,
@@ -117,10 +120,7 @@ class _SheetHostState extends State<SheetHost> {
                 width: 38,
                 height: 5,
                 margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: cs.outlineVariant,
-                  borderRadius: BorderRadius.circular(3),
-                ),
+                decoration: surfaces.dragHandle(),
               ),
             if (_stage == _Stage.list)
               AnimatedBuilder(

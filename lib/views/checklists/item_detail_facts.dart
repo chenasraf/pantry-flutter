@@ -6,6 +6,7 @@ import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/rrule.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 class FactTiles extends StatelessWidget {
   final ListItem item;
@@ -63,11 +64,7 @@ class _FactTile extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.fromLTRB(15, 14, 15, 14),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(15),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

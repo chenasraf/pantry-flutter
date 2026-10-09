@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -20,8 +21,7 @@ import 'package:pantry/widgets/note_sync.dart';
 /// Every surface that draws a note asks here, so the wall, the tile and the
 /// detail view a deep link opens all agree on a note's colour.
 ({Color ground, Color ink}) noteColours(Note note, ThemeData theme) {
-  final ground =
-      parseHexColor(note.color) ?? theme.colorScheme.surfaceContainerHighest;
+  final ground = parseHexColor(note.color) ?? AppSurfaces.ofTheme(theme).raised;
   return (ground: ground, ink: noteInk(ground));
 }
 
@@ -90,7 +90,7 @@ class NoteTile extends StatelessWidget {
           onDraggableCanceled: (_, _) => controller.cancelDrag(),
           feedback: Material(
             elevation: 4,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(SurfaceRadius.tile),
             child: SizedBox(
               width: 160,
               height: 160,
@@ -118,7 +118,7 @@ class NoteTile extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: bgColor,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(SurfaceRadius.tile),
         ),
         padding: const EdgeInsets.all(12),
         child: Column(

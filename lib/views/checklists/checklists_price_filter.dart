@@ -114,20 +114,14 @@ class _ChecklistsPriceFilterDropdownState
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final p = m.checklists.price;
     final active = widget.value.isActive;
     final currency = widget.value.currency;
     return MenuAnchor(
       alignmentOffset: const Offset(0, 4),
-      style: MenuStyle(
-        backgroundColor: WidgetStatePropertyAll(cs.surfaceContainerHigh),
-        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-        elevation: const WidgetStatePropertyAll(3),
-        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        ),
+      style: const MenuStyle(
+        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+        padding: WidgetStatePropertyAll(EdgeInsets.zero),
       ),
       menuChildren: [
         SizedBox(
@@ -167,14 +161,6 @@ class _ChecklistsPriceFilterDropdownState
                       12,
                       8,
                       12,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(color: cs.outlineVariant),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(color: cs.outlineVariant),
                     ),
                   ),
                   child: DropdownButtonHideUnderline(
@@ -250,7 +236,6 @@ class _PriceFilterField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return TextField(
       controller: controller,
       onChanged: onChanged,
@@ -262,18 +247,6 @@ class _PriceFilterField extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 12,
           vertical: 12,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.primary, width: 1.5),
         ),
       ),
       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),

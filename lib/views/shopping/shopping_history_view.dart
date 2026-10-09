@@ -14,6 +14,7 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/date_format.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 
@@ -306,7 +307,7 @@ class _HistoryCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(SurfaceRadius.card),
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
@@ -345,14 +346,11 @@ class _HistoryCard extends StatelessWidget {
                   horizontal: 10,
                   vertical: 6,
                 ),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(16),
-                ),
+                decoration: AppSurfaces.of(context).chip(selected: true),
                 child: Text(
                   total ?? '—',
                   style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.onSecondaryContainer,
+                    color: theme.colorScheme.primary,
                   ),
                 ),
               ),
@@ -415,10 +413,7 @@ class _Chip extends StatelessWidget {
         horizontal: 8,
         vertical: 4,
       ),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: AppSurfaces.of(context).chip(),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -28,6 +28,7 @@ import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/categories/categories_view.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
 import 'package:pantry/views/custom_fields/custom_fields_view.dart';

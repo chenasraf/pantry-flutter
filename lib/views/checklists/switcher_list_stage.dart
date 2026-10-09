@@ -7,6 +7,7 @@ import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/date_format.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
@@ -189,25 +190,21 @@ class ListStage extends StatelessWidget {
           const SizedBox(height: 12),
           InkWell(
             onTap: onCreateNew,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(SurfaceRadius.card),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 13),
+              // An action rather than a list, so it is drawn as an accent
+              // outline instead of a filled row.
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: cs.primary.withValues(alpha: 0.6),
-                  style: BorderStyle.solid,
-                ),
-                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: cs.primary.withValues(alpha: 0.6)),
+                borderRadius: BorderRadius.circular(SurfaceRadius.card),
               ),
               child: Row(
                 children: [
                   Container(
                     width: 42,
                     height: 42,
-                    decoration: BoxDecoration(
-                      color: cs.primary.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    decoration: AppSurfaces.of(context).iconTile(cs.primary),
                     child: Icon(Icons.add, color: cs.primary, size: 22),
                   ),
                   const SizedBox(width: 13),
@@ -228,7 +225,7 @@ class ListStage extends StatelessWidget {
           const SizedBox(height: 8),
           InkWell(
             onTap: onOpenTrash,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(SurfaceRadius.card),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
               child: Row(
@@ -256,7 +253,7 @@ class ListStage extends StatelessWidget {
           const SizedBox(height: 4),
           InkWell(
             onTap: onOpenArchive,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(SurfaceRadius.card),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
               child: Row(
@@ -392,6 +389,7 @@ class _ListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     final tint = parseHexColor(list.color) ?? cs.primary;
     final tile = Container(
       padding: EdgeInsetsDirectional.only(
@@ -400,25 +398,13 @@ class _ListTile extends StatelessWidget {
         top: 12,
         bottom: 12,
       ),
-      decoration: BoxDecoration(
-        color: selected
-            ? cs.primary.withValues(alpha: 0.1)
-            : cs.surfaceContainer,
-        border: Border.all(
-          color: selected ? cs.primary : cs.outlineVariant,
-          width: selected ? 1.5 : 1,
-        ),
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: surfaces.row(selected: selected),
       child: Row(
         children: [
           Container(
             width: 42,
             height: 42,
-            decoration: BoxDecoration(
-              color: tint.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(12),
-            ),
+            decoration: surfaces.iconTile(tint),
             child: Icon(checklistIcon(list.icon), color: tint, size: 21),
           ),
           const SizedBox(width: 13),
@@ -458,11 +444,8 @@ class _ListTile extends StatelessWidget {
             Container(
               width: 24,
               height: 24,
-              decoration: BoxDecoration(
-                color: cs.primary,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.check, color: Colors.white, size: 16),
+              decoration: surfaces.selectionDot(),
+              child: Icon(Icons.check, color: surfaces.onAccent, size: 16),
             ),
           if (showOverflow && _hasActions)
             SizedBox(
@@ -548,7 +531,7 @@ class _ListTile extends StatelessWidget {
 
     final interactive = InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(SurfaceRadius.card),
       child: tile,
     );
 

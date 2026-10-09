@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/date_format.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 /// A card with a circular progress ring and "{N} items left / {done} of
 /// {total} done" labels. Animates the ring on state changes.
@@ -53,7 +54,7 @@ class ProgressHero extends StatelessWidget {
           ],
         ),
         border: Border.all(color: cs.primary.withValues(alpha: 0.18)),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(SurfaceRadius.card),
       ),
       child: Stack(
         children: [

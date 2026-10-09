@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 /// Per-list color swatches the user can pick from in the create form. Values
 /// must come from the backend's `ChecklistColor` enum (Material Design 500
@@ -67,9 +68,10 @@ class AllListsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(SurfaceRadius.card),
       child: Container(
         padding: const EdgeInsetsDirectional.only(
           start: 13,
@@ -77,25 +79,13 @@ class AllListsTile extends StatelessWidget {
           top: 12,
           bottom: 12,
         ),
-        decoration: BoxDecoration(
-          color: selected
-              ? cs.primary.withValues(alpha: 0.1)
-              : cs.surfaceContainer,
-          border: Border.all(
-            color: selected ? cs.primary : cs.outlineVariant,
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(14),
-        ),
+        decoration: surfaces.row(selected: selected),
         child: Row(
           children: [
             Container(
               width: 42,
               height: 42,
-              decoration: BoxDecoration(
-                color: cs.primary.withValues(alpha: 0.16),
-                borderRadius: BorderRadius.circular(12),
-              ),
+              decoration: surfaces.iconTile(cs.primary),
               child: Icon(allListsIcon, color: cs.primary, size: 21),
             ),
             const SizedBox(width: 13),
@@ -127,11 +117,8 @@ class AllListsTile extends StatelessWidget {
               Container(
                 width: 24,
                 height: 24,
-                decoration: BoxDecoration(
-                  color: cs.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.check, color: Colors.white, size: 16),
+                decoration: surfaces.selectionDot(),
+                child: Icon(Icons.check, color: surfaces.onAccent, size: 16),
               ),
           ],
         ),
@@ -162,14 +149,9 @@ class IconChip extends StatelessWidget {
       child: Container(
         width: 44,
         height: 44,
-        decoration: BoxDecoration(
-          color: selected ? color.withValues(alpha: 0.16) : cs.surfaceContainer,
-          border: Border.all(
-            color: selected ? color : cs.outlineVariant,
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(11),
-        ),
+        decoration: selected
+            ? AppSurfaces.of(context).chip(tint: color, selected: true)
+            : AppSurfaces.of(context).chip(),
         child: Icon(
           icon,
           color: selected ? color : cs.onSurfaceVariant,

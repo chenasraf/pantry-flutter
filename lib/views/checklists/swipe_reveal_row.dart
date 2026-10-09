@@ -145,6 +145,16 @@ class SwipeRevealRowState extends State<SwipeRevealRow> {
   }
 }
 
+/// The tint of each swipe action, shared with the onboarding pages that
+/// illustrate them so the walkthrough shows the colours the list really uses.
+abstract final class SwipeActionColors {
+  static const view = Color(0xFF5CB3EC);
+  static const move = Color(0xFFD9B441);
+  static const copy = Color(0xFF7AAE8E);
+  static const archive = Color(0xFF9B8AD9);
+  static const delete = Color(0xFFEF7878);
+}
+
 class SwipeAction {
   final IconData icon;
   final String label;

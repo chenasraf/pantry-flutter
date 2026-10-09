@@ -4,6 +4,7 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/services/custom_field_service.dart';
 import 'package:pantry_core/utils/field_type_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/widgets/linkified_text.dart';
 
 /// Read-only display of an item's custom-field values, one row per filled
@@ -67,11 +68,7 @@ class _ItemCustomFieldsDisplayState extends State<ItemCustomFieldsDisplay> {
 
     return Container(
       padding: const EdgeInsets.fromLTRB(15, 14, 15, 14),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(15),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

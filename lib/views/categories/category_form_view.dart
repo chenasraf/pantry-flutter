@@ -10,6 +10,8 @@ import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry/theme/app_theme.dart';
+import 'package:pantry/views/checklists/item_form_fields.dart';
 
 const categoryColors = [
   '#ef4444',
@@ -189,10 +191,7 @@ class _CategoryFormViewState extends State<CategoryFormView> {
     return DropdownButtonFormField<int?>(
       initialValue: value,
       isExpanded: true,
-      decoration: InputDecoration(
-        labelText: m.categories.list,
-        border: const OutlineInputBorder(),
-      ),
+      decoration: InputDecoration(labelText: m.categories.list),
       items: [
         DropdownMenuItem<int?>(
           value: null,
@@ -257,10 +256,7 @@ class _CategoryFormViewState extends State<CategoryFormView> {
                   textCapitalization: TextCapitalization.sentences,
                   textDirection: _nameDir,
                   onChanged: (_) => setState(() {}),
-                  decoration: InputDecoration(
-                    labelText: f.categoryName,
-                    border: const OutlineInputBorder(),
-                  ),
+                  decoration: InputDecoration(labelText: f.categoryName),
                 ),
                 if (_scopingEnabled) ...[
                   const SizedBox(height: 16),
@@ -274,18 +270,15 @@ class _CategoryFormViewState extends State<CategoryFormView> {
                   runSpacing: 6,
                   children: categoryIconMap.entries.map((entry) {
                     final isSelected = _selectedIcon == entry.key;
-                    return GestureDetector(
+                    return InkWell(
                       onTap: () => setState(() => _selectedIcon = entry.key),
+                      borderRadius: BorderRadius.circular(SurfaceRadius.chip),
                       child: Container(
                         width: 46,
                         height: 46,
-                        decoration: BoxDecoration(
-                          color: isSelected ? cs.primaryContainer : null,
-                          borderRadius: BorderRadius.circular(10),
-                          border: isSelected
-                              ? Border.all(color: cs.primary, width: 2)
-                              : Border.all(color: cs.outlineVariant),
-                        ),
+                        decoration: isSelected
+                            ? AppSurfaces.of(context).chip(selected: true)
+                            : null,
                         child: Icon(
                           entry.value,
                           size: 22,
@@ -331,7 +324,7 @@ class _CategoryFormViewState extends State<CategoryFormView> {
               ],
             ),
           ),
-          _DockedSaveBar(
+          DockedSaveBar(
             onCancel: _saving ? null : () => Navigator.of(context).maybePop(),
             onSave: _saving ? null : _save,
             saving: _saving,
@@ -364,11 +357,7 @@ class _CategoryHeaderPreview extends StatelessWidget {
         Container(
           width: 54,
           height: 54,
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.14),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: color.withValues(alpha: 0.3)),
-          ),
+          decoration: AppSurfaces.of(context).iconTile(color, bordered: true),
           child: Icon(categoryIcon(icon), color: color, size: 26),
         ),
         const SizedBox(width: 13),
@@ -406,114 +395,6 @@ class _SectionLabel extends StatelessWidget {
           fontWeight: FontWeight.w700,
           letterSpacing: 0.6,
           color: cs.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
-}
-
-class _DockedSaveBar extends StatelessWidget {
-  final VoidCallback? onCancel;
-  final VoidCallback? onSave;
-  final bool saving;
-  final String label;
-
-  const _DockedSaveBar({
-    required this.onCancel,
-    required this.onSave,
-    required this.saving,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return SafeArea(
-      top: false,
-      child: Container(
-        decoration: BoxDecoration(
-          color: cs.surface,
-          border: Border(
-            top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5)),
-          ),
-        ),
-        padding: const EdgeInsets.fromLTRB(18, 12, 18, 12),
-        child: Row(
-          children: [
-            InkWell(
-              onTap: onCancel,
-              borderRadius: BorderRadius.circular(14),
-              child: Container(
-                height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 18),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: cs.surfaceContainer,
-                  border: Border.all(color: cs.outlineVariant),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Text(
-                  m.common.cancel,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 11),
-            Expanded(
-              child: InkWell(
-                onTap: onSave,
-                borderRadius: BorderRadius.circular(14),
-                child: Container(
-                  height: 48,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [cs.primary, cs.primary.withValues(alpha: 0.78)],
-                    ),
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: cs.primary.withValues(alpha: 0.35),
-                        blurRadius: 22,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (saving)
-                        const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      else
-                        const Icon(Icons.check, color: Colors.white, size: 20),
-                      const SizedBox(width: 9),
-                      Text(
-                        label,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

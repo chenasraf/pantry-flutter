@@ -5,6 +5,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
@@ -262,12 +263,13 @@ class TrashedListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     final tint = parseHexColor(list.color) ?? cs.onSurfaceVariant;
     return Opacity(
       opacity: 0.75,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(SurfaceRadius.card),
         child: Container(
           padding: EdgeInsetsDirectional.only(
             start: 13,
@@ -275,20 +277,13 @@ class TrashedListTile extends StatelessWidget {
             top: 12,
             bottom: 12,
           ),
-          decoration: BoxDecoration(
-            color: cs.surfaceContainer,
-            border: Border.all(color: cs.outlineVariant),
-            borderRadius: BorderRadius.circular(14),
-          ),
+          decoration: surfaces.row(),
           child: Row(
             children: [
               Container(
                 width: 42,
                 height: 42,
-                decoration: BoxDecoration(
-                  color: tint.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                decoration: surfaces.iconTile(tint),
                 child: Icon(checklistIcon(list.icon), color: tint, size: 21),
               ),
               const SizedBox(width: 13),

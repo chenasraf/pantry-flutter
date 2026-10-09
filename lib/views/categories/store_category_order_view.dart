@@ -246,10 +246,7 @@ class _StoreCategoryOrderViewState extends State<StoreCategoryOrderView> {
   Widget _buildStorePicker(ThemeData theme) => DropdownButtonFormField<int>(
     initialValue: _storeId,
     isExpanded: true,
-    decoration: InputDecoration(
-      labelText: m.categories.storeOrder.store,
-      border: const OutlineInputBorder(),
-    ),
+    decoration: InputDecoration(labelText: m.categories.storeOrder.store),
     items: [
       for (final store in _stores)
         DropdownMenuItem<int>(

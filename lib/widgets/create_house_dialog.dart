@@ -68,20 +68,14 @@ class _CreateHouseDialogState extends State<CreateHouseDialog> {
             controller: _nameController,
             autofocus: true,
             textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(
-              labelText: m.home.houseName,
-              border: const OutlineInputBorder(),
-            ),
+            decoration: InputDecoration(labelText: m.home.houseName),
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: 16),
           TextField(
             controller: _descriptionController,
             textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(
-              labelText: m.home.houseDescription,
-              border: const OutlineInputBorder(),
-            ),
+            decoration: InputDecoration(labelText: m.home.houseDescription),
             maxLines: 2,
           ),
         ],

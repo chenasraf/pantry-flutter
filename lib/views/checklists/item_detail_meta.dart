@@ -5,6 +5,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/utils/date_format.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/widgets/dashed_border.dart';
 import 'package:pantry/widgets/markdown_description.dart';
 import 'package:pantry/widgets/member_avatar.dart';
@@ -104,11 +105,7 @@ class _DescriptionCardState extends State<DescriptionCard> {
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 15, 16, 16),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(15),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -242,49 +239,30 @@ class DockedEditBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return SafeArea(
       top: false,
       child: Container(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-        decoration: BoxDecoration(
-          color: cs.surface,
-          border: Border(
-            top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5)),
-          ),
-        ),
+        decoration: surfaces.actionBar(),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(SurfaceRadius.card),
           child: Container(
             height: 48,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [cs.primary, cs.primary.withValues(alpha: 0.78)],
-              ),
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: [
-                BoxShadow(
-                  color: cs.primary.withValues(alpha: 0.35),
-                  blurRadius: 22,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
+            decoration: surfaces.primaryButton(raisedShadow: true),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.edit, color: Colors.white, size: 20),
+                Icon(Icons.edit, color: surfaces.onAccent, size: 20),
                 const SizedBox(width: 9),
                 Text(
                   m.checklists.editItem,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: surfaces.onAccent,
                   ),
                 ),
               ],

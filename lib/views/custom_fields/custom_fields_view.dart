@@ -12,6 +12,7 @@ import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/field_type_icons.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/custom_fields/custom_field_drafts.dart';
 import 'package:pantry/views/custom_fields/custom_field_editor.dart';
 
@@ -498,7 +499,7 @@ class _CustomFieldsViewState extends State<CustomFieldsView> {
             child: Card(
               margin: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(SurfaceRadius.card),
                 side: BorderSide(color: theme.colorScheme.primary),
               ),
               child: Padding(
@@ -556,7 +557,7 @@ class _CustomFieldsViewState extends State<CustomFieldsView> {
         margin: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(SurfaceRadius.card),
           side: BorderSide(color: expanded ? cs.primary : cs.outlineVariant),
         ),
         child: ExpansionTile(

@@ -61,12 +61,9 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
                   height: 40,
                   child: InkWell(
                     onTap: () => openSwitcher(context),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(SurfaceRadius.tile),
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: tint.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      decoration: AppSurfaces.of(context).iconTile(tint),
                       child: Icon(iconData, color: tint, size: 20),
                     ),
                   ),

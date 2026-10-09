@@ -10,6 +10,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/markdown_list.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/checklists/form_components.dart';
 import 'package:pantry/views/checklists/item_compose_bar.dart'
     show ComposeSubmission;
@@ -277,7 +278,6 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
                 decoration: InputDecoration(
                   labelText: m.checklists.markdown.pasteLabel,
                   hintText: m.checklists.markdown.pastePlaceholder,
-                  border: const OutlineInputBorder(),
                   isDense: true,
                 ),
               ),
@@ -327,7 +327,6 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
       isExpanded: true,
       decoration: InputDecoration(
         labelText: m.checklists.markdown.importToLabel,
-        border: const OutlineInputBorder(),
         isDense: true,
       ),
       items: [
@@ -367,7 +366,7 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
       constraints: const BoxConstraints(maxHeight: 220),
       decoration: BoxDecoration(
         border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(SurfaceRadius.card),
       ),
       child: ListView.builder(
         shrinkWrap: true,
@@ -440,7 +439,6 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
           decoration: InputDecoration(
             labelText: m.checklists.compose.chipQuantity,
             hintText: m.checklists.compose.qtyHint,
-            border: const OutlineInputBorder(),
             isDense: true,
           ),
         ),
@@ -454,7 +452,6 @@ class _MarkdownImportDialogState extends State<MarkdownImportDialog> {
           decoration: InputDecoration(
             labelText: m.checklists.compose.chipDescription,
             hintText: m.checklists.compose.descHint,
-            border: const OutlineInputBorder(),
             isDense: true,
           ),
         ),

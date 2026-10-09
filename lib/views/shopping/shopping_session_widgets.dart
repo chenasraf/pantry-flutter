@@ -11,6 +11,7 @@ import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/shopping/shopping_item_row.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
 import 'package:pantry/widgets/member_avatar.dart';
@@ -52,13 +53,12 @@ class ShoppingStoreBar extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.only(end: 8),
                   child: Opacity(
                     opacity: isPast ? 0.5 : 1,
-                    child: Material(
-                      color: isActive
-                          ? cs.primaryContainer
-                          : cs.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(24),
+                    child: Ink(
+                      decoration: AppSurfaces.of(
+                        context,
+                      ).chip(selected: isActive),
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(SurfaceRadius.chip),
                         onTap: () => onJumpToStore(leg.storeId),
                         child: Padding(
                           padding: const EdgeInsetsDirectional.symmetric(
@@ -74,7 +74,7 @@ class ShoppingStoreBar extends StatelessWidget {
                                 color:
                                     parseHexColor(store?.color) ??
                                     (isActive
-                                        ? cs.onPrimaryContainer
+                                        ? cs.primary
                                         : cs.onSurfaceVariant),
                               ),
                               const SizedBox(width: 6),
@@ -82,9 +82,7 @@ class ShoppingStoreBar extends StatelessWidget {
                                 store?.name ?? '',
                                 textDirection: detectTextDirection(store?.name),
                                 style: theme.textTheme.labelLarge?.copyWith(
-                                  color: isActive
-                                      ? cs.onPrimaryContainer
-                                      : cs.onSurface,
+                                  color: isActive ? cs.primary : cs.onSurface,
                                 ),
                               ),
                               if (others.isNotEmpty) ...[
@@ -143,7 +141,7 @@ class ShoppingAvatarStack extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Theme.of(context).colorScheme.surface,
+                        color: AppSurfaces.of(context).base,
                         width: 1.5,
                       ),
                     ),
@@ -202,8 +200,8 @@ class ShoppingProgressRow extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: controller.progress,
                 minHeight: 6,
-                backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                color: Colors.green,
+                backgroundColor: AppSurfaces.of(context).raised,
+                color: AppSurfaces.of(context).success,
               ),
             ),
           ),
@@ -357,7 +355,7 @@ class _CategoryHeader extends StatelessWidget {
     final color = parseHexColor(category?.color) ?? theme.colorScheme.primary;
     final name = category?.name ?? m.shopping.uncategorized;
     return Container(
-      color: theme.colorScheme.surfaceContainerHighest,
+      decoration: AppSurfaces.of(context).stickyHeader(),
       padding: const EdgeInsetsDirectional.symmetric(
         horizontal: 16,
         vertical: 6,
@@ -508,7 +506,7 @@ class ShoppingBottomBar extends StatelessWidget {
                         onTap: () => onUncheck(item),
                         leading: Icon(
                           Icons.check_circle,
-                          color: Colors.green,
+                          color: AppSurfaces.of(context).success,
                           size: 20,
                         ),
                         title: Text(

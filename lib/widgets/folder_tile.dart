@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/photo.dart';
@@ -46,7 +47,7 @@ class FolderTile extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(SurfaceRadius.tile),
               border: isHovering
                   ? Border.all(color: theme.colorScheme.primary, width: 2)
                   : null,
@@ -250,10 +251,7 @@ class FolderTile extends StatelessWidget {
         content: TextField(
           controller: textController,
           autofocus: true,
-          decoration: InputDecoration(
-            labelText: m.photoBoard.folderName,
-            border: const OutlineInputBorder(),
-          ),
+          decoration: InputDecoration(labelText: m.photoBoard.folderName),
         ),
         actions: [
           TextButton(

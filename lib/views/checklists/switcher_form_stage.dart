@@ -7,6 +7,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
@@ -144,6 +145,7 @@ class _ListFormStageState extends State<ListFormStage> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     final selectedColor = parseHexColor(_color) ?? cs.primary;
     return Padding(
       padding: EdgeInsets.only(
@@ -193,17 +195,6 @@ class _ListFormStageState extends State<ListFormStage> {
                     textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
                       labelText: m.checklists.listName,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13),
-                        borderSide: BorderSide(color: cs.outlineVariant),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13),
-                        borderSide: BorderSide(color: cs.primary, width: 1.5),
-                      ),
                     ),
                   ),
                   if (_supportsListColor) ...[
@@ -313,30 +304,23 @@ class _ListFormStageState extends State<ListFormStage> {
             onTap: _saving ? null : _submit,
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [cs.primary, cs.primary.withValues(alpha: 0.8)],
-                ),
-                borderRadius: BorderRadius.circular(14),
-              ),
+              decoration: surfaces.primaryButton(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (_saving)
-                    const SizedBox(
+                    SizedBox(
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.4,
-                        color: Colors.white,
+                        color: surfaces.onAccent,
                       ),
                     )
                   else
                     Icon(
                       _isEdit ? Icons.check : Icons.add,
-                      color: Colors.white,
+                      color: surfaces.onAccent,
                       size: 20,
                     ),
                   const SizedBox(width: 8),
@@ -344,10 +328,10 @@ class _ListFormStageState extends State<ListFormStage> {
                     _isEdit
                         ? m.checklists.saveListButton
                         : m.checklists.createListButton,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: surfaces.onAccent,
                     ),
                   ),
                 ],

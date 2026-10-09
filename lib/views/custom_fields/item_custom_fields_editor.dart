@@ -3,6 +3,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/services/custom_field_service.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/checklists/form_components.dart';
 
 /// The per-item "Custom fields" value-filling section. Renders one control per
@@ -253,7 +254,7 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
           isExpanded: true,
           isDense: true,
           padding: EdgeInsets.zero,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(SurfaceRadius.menu),
           style: _valueStyle,
           hint: Text(
             field.hint ?? m.customFields.noValue,
@@ -474,7 +475,7 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
             isExpanded: true,
             isDense: true,
             padding: EdgeInsets.zero,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(SurfaceRadius.menu),
             style: _valueStyle,
             items: [
               for (final days in _leadOptions)

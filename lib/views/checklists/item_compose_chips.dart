@@ -13,6 +13,7 @@ import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'item_compose_bar.dart';
 import 'item_draft.dart';
 
@@ -278,23 +279,15 @@ class _ComposeChip extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final accent = color ?? cs.onSurfaceVariant;
     final isSet = color != null;
+    final surfaces = AppSurfaces.of(context);
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(SurfaceRadius.chip),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSet
-              ? accent.withValues(alpha: 0.14)
-              : cs.surfaceContainerHighest,
-          border: Border.all(
-            color: isSet
-                ? accent.withValues(alpha: 0.4)
-                : (selected ? cs.primary : cs.outlineVariant),
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
+        decoration: isSet
+            ? surfaces.chip(tint: accent, selected: selected)
+            : surfaces.chip(selected: selected),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -350,24 +343,17 @@ class BarTargetChip extends StatelessWidget {
       waitDuration: const Duration(milliseconds: 600),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(SurfaceRadius.chip),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 160),
           curve: Curves.easeOut,
           height: 30,
           padding: EdgeInsetsDirectional.symmetric(horizontal: hasList ? 9 : 8),
-          decoration: BoxDecoration(
-            color: hasList
-                ? accent.withValues(alpha: 0.14)
-                : Colors.transparent,
-            border: Border.all(
-              color: hasList
-                  ? accent.withValues(alpha: 0.4)
-                  : (highlighted ? cs.primary : cs.outlineVariant),
-              width: highlighted ? 1.5 : 1,
-            ),
-            borderRadius: BorderRadius.circular(9),
-          ),
+          decoration: hasList
+              ? AppSurfaces.of(
+                  context,
+                ).chip(tint: accent, selected: highlighted)
+              : AppSurfaces.of(context).chip(selected: highlighted),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

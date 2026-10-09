@@ -4,6 +4,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry/utils/app_toast.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'checklists_controller.dart';
 import 'item_picker_dialogs.dart';
 
@@ -142,7 +143,7 @@ class SelectionActionBar extends StatelessWidget {
     return Expanded(
       child: InkWell(
         onTap: enabled ? onTap : null,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(SurfaceRadius.card),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Column(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/widgets/dashed_border.dart';
 
 class AddImageButtons extends StatelessWidget {
@@ -62,10 +63,10 @@ class _AddImageTile extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(SurfaceRadius.card),
       child: DashedBorder(
         color: cs.outlineVariant,
-        radius: 14,
+        radius: SurfaceRadius.card,
         strokeWidth: 1.5,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
@@ -140,7 +141,7 @@ class ImagePreviewTile extends StatelessWidget {
     return Stack(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(SurfaceRadius.card),
           child: Image(
             image: image,
             width: double.infinity,

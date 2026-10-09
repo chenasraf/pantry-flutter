@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry/views/checklists/swipe_reveal_row.dart'
+    show SwipeActionColors;
 
 /// Teaches the swipe-to-reveal gesture on list items. Runs a continuous demo
 /// that swipes a mocked row open, holds, then snaps back, so the reader sees
@@ -222,9 +224,9 @@ class _DemoRow extends StatelessWidget {
                       width: actionWidth,
                       icon: Icons.drive_file_move_outlined,
                       label: m.checklists.swipeMove,
-                      tint: const Color(0xFFD9B441),
+                      tint: SwipeActionColors.move,
                       background: Color.alphaBlend(
-                        const Color(0xFFD9B441).withValues(alpha: 0.18),
+                        SwipeActionColors.move.withValues(alpha: 0.18),
                         Theme.of(context).colorScheme.surface,
                       ),
                     ),
@@ -232,9 +234,9 @@ class _DemoRow extends StatelessWidget {
                       width: actionWidth,
                       icon: Icons.delete_outline,
                       label: m.checklists.swipeDelete,
-                      tint: const Color(0xFFEF7878),
+                      tint: SwipeActionColors.delete,
                       background: Color.alphaBlend(
-                        const Color(0xFFEF7878).withValues(alpha: 0.2),
+                        SwipeActionColors.delete.withValues(alpha: 0.2),
                         Theme.of(context).colorScheme.surface,
                       ),
                     ),

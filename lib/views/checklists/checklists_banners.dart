@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 class ChecklistsErrorView extends StatelessWidget {
   final String message;
@@ -40,7 +41,7 @@ class ChecklistsTrashBanner extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
-      color: cs.surfaceContainerHighest,
+      color: AppSurfaces.of(context).raised,
       padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
       child: Row(
         children: [
@@ -73,7 +74,7 @@ class ChecklistsArchiveBanner extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
-      color: cs.surfaceContainerHighest,
+      color: AppSurfaces.of(context).raised,
       padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
       child: Row(
         children: [

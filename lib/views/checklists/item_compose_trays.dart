@@ -14,6 +14,7 @@ import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
 import 'form_components.dart';
 import 'item_draft.dart';
@@ -30,11 +31,7 @@ class _TrayShell extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 13),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -105,21 +102,15 @@ class _TargetListChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(11),
+      borderRadius: BorderRadius.circular(SurfaceRadius.chip),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
-        decoration: BoxDecoration(
-          color: selected
-              ? accent.withValues(alpha: 0.16)
-              : cs.surfaceContainerHighest,
-          border: Border.all(
-            color: selected ? accent : cs.outlineVariant,
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(11),
-        ),
+        decoration: selected
+            ? surfaces.chip(tint: accent, selected: true)
+            : surfaces.chip(),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -321,18 +312,6 @@ class QuantityTray extends StatelessWidget {
                   textCapitalization: TextCapitalization.none,
                   decoration: InputDecoration(
                     hintText: m.checklists.compose.qtyHint,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(color: cs.primary, width: 1.5),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(color: cs.primary, width: 1.5),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(color: cs.primary, width: 1.5),
-                    ),
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -519,7 +498,7 @@ class ImageTray extends StatelessWidget {
           : Row(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(SurfaceRadius.tile),
                   child: AvifMemoryImage(
                     bytes!,
                     width: 64,

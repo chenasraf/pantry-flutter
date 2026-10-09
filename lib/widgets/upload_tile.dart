@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry/views/photos/photo_board_controller.dart';
@@ -19,7 +20,7 @@ class UploadTile extends StatelessWidget {
     return GestureDetector(
       onTap: hasError ? () => controller.retryUpload(task) : null,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(SurfaceRadius.tile),
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -34,12 +35,10 @@ class UploadTile extends StatelessWidget {
                 task.pendingFile!,
                 fit: BoxFit.cover,
                 opacity: const AlwaysStoppedAnimation(0.4),
-                errorWidget: Container(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                ),
+                errorWidget: Container(color: AppSurfaces.of(context).raised),
               )
             else
-              Container(color: theme.colorScheme.surfaceContainerHighest),
+              Container(color: AppSurfaces.of(context).raised),
             Center(
               child: hasError
                   ? Icon(

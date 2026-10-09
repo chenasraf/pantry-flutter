@@ -1,23 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/widgets/recurrence_parts.dart';
 
 export 'package:pantry/widgets/recurrence_parts.dart'
     show RecurrenceMonthlyMode, RecurrenceState;
-
-/// The shared "filled field" frame used across item forms: a `surfaceContainer`
-/// card with a rounded-14 border that flips to the accent when focused. Pair
-/// with [fieldCardLabelStyle] for the uppercase caption.
-BoxDecoration fieldCardDecoration(ColorScheme cs, {bool focused = false}) =>
-    BoxDecoration(
-      color: cs.surfaceContainer,
-      border: Border.all(
-        color: focused ? cs.primary : cs.outlineVariant,
-        width: focused ? 1.5 : 1,
-      ),
-      borderRadius: BorderRadius.circular(14),
-    );
 
 /// The uppercase caption style used on field cards and section labels.
 TextStyle fieldCardLabelStyle(ColorScheme cs, {bool focused = false}) =>
@@ -29,7 +17,7 @@ TextStyle fieldCardLabelStyle(ColorScheme cs, {bool focused = false}) =>
     );
 
 /// A labeled, filled field card: an uppercase caption above [child], wrapped in
-/// [fieldCardDecoration]. The app's standard single-field container (name,
+/// [AppSurfaces.card]. The app's standard single-field container (name,
 /// quantity, custom fields, …).
 class LabeledFieldCard extends StatelessWidget {
   final String label;
@@ -62,7 +50,7 @@ class LabeledFieldCard extends StatelessWidget {
         15,
         trailing != null ? 6 : 12,
       ),
-      decoration: fieldCardDecoration(cs, focused: focused),
+      decoration: AppSurfaces.of(context).card(focused: focused),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -102,23 +90,14 @@ class FormStepperButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(11),
+      borderRadius: BorderRadius.circular(SurfaceRadius.chip),
       child: Container(
         width: 42,
         height: 42,
-        decoration: BoxDecoration(
-          color: accent
-              ? cs.primary.withValues(alpha: 0.14)
-              : cs.surfaceContainer,
-          border: Border.all(
-            color: accent
-                ? cs.primary.withValues(alpha: 0.4)
-                : cs.outlineVariant,
-          ),
-          borderRadius: BorderRadius.circular(11),
-        ),
+        decoration: accent ? surfaces.chip(tint: cs.primary) : surfaces.chip(),
         child: Icon(
           icon,
           color: accent ? cs.primary : cs.onSurfaceVariant,
@@ -151,19 +130,10 @@ class LifecycleRow extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(11),
+      borderRadius: BorderRadius.circular(SurfaceRadius.card),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: selected
-              ? cs.primary.withValues(alpha: 0.1)
-              : cs.surfaceContainer,
-          border: Border.all(
-            color: selected ? cs.primary : cs.outlineVariant,
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(11),
-        ),
+        decoration: AppSurfaces.of(context).row(selected: selected),
         child: Row(
           children: [
             Container(
@@ -230,20 +200,15 @@ class CategorySwatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(9),
+      borderRadius: BorderRadius.circular(SurfaceRadius.chip),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: selected ? color.withValues(alpha: 0.14) : cs.surfaceContainer,
-          border: Border.all(
-            color: selected ? color : cs.outlineVariant,
-            width: selected ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(9),
-        ),
+        decoration: selected
+            ? surfaces.chip(tint: color, selected: true)
+            : surfaces.chip(),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -290,14 +255,10 @@ class NewCategoryChipButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(9),
+      borderRadius: BorderRadius.circular(SurfaceRadius.chip),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          border: Border.all(color: color.withValues(alpha: 0.5)),
-          borderRadius: BorderRadius.circular(9),
-        ),
+        decoration: AppSurfaces.of(context).chip(tint: color),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -349,11 +310,7 @@ class RecurrenceInline extends StatelessWidget {
     };
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerLow,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(11),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

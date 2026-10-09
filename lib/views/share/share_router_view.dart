@@ -278,10 +278,7 @@ class _PhotoDestinationPicker extends StatelessWidget {
           controller: textController,
           autofocus: true,
           textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(
-            labelText: m.share.newFolderName,
-            border: const OutlineInputBorder(),
-          ),
+          decoration: InputDecoration(labelText: m.share.newFolderName),
         ),
         actions: [
           TextButton(

@@ -12,6 +12,7 @@ import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/widgets/entity_icon.dart';
 import 'checklists_price_filter.dart';
 import 'checklists_view_toggle.dart';
@@ -36,7 +37,6 @@ class ChecklistsSearchField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: m.checklists.searchHint,
           prefixIcon: const Icon(Icons.search, size: 20),
-          border: const OutlineInputBorder(),
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 12,
@@ -368,20 +368,12 @@ class _FilterDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     final active = selectedCount > 0;
     return MenuAnchor(
       alignmentOffset: const Offset(0, 4),
-      style: MenuStyle(
-        backgroundColor: WidgetStatePropertyAll(cs.surfaceContainerHigh),
-        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-        elevation: const WidgetStatePropertyAll(3),
-        padding: const WidgetStatePropertyAll(
-          EdgeInsets.symmetric(vertical: 6),
-        ),
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        ),
+      style: const MenuStyle(
+        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 6)),
       ),
       menuChildren: [
         ConstrainedBox(
@@ -483,19 +475,25 @@ class ChecklistsFilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final fg = active ? cs.onPrimary : cs.onSurfaceVariant;
+    final surfaces = AppSurfaces.of(context);
+    final fg = active ? surfaces.onAccent : cs.onSurfaceVariant;
+    final chip = surfaces.chip();
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(9),
+      borderRadius: BorderRadius.circular(SurfaceRadius.chip),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         height: 36,
         padding: const EdgeInsetsDirectional.only(start: 12, end: 8),
-        decoration: BoxDecoration(
-          color: active ? cs.primary : cs.surfaceContainerHighest,
-          border: Border.all(color: active ? cs.primary : cs.outlineVariant),
-          borderRadius: BorderRadius.circular(9),
-        ),
+        // An applied filter fills solid rather than tinting like a selected
+        // chip: it narrows what the list shows, and has to read that way from
+        // across the screen.
+        decoration: active
+            ? chip.copyWith(
+                color: surfaces.accent,
+                border: Border.all(color: surfaces.accent),
+              )
+            : chip,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

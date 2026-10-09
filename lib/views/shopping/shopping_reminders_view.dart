@@ -338,7 +338,6 @@ class _MomentGroupState extends State<_MomentGroup> {
                   decoration: InputDecoration(
                     isDense: true,
                     hintText: m.shopping.addReminderHint,
-                    border: const OutlineInputBorder(),
                   ),
                   onSubmitted: (_) => _submitAdd(),
                 ),

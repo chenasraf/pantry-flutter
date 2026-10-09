@@ -57,7 +57,6 @@ class CategoryPicker extends StatelessWidget {
     return DropdownButtonFormField<int?>(
       initialValue: selectedId,
       decoration: const InputDecoration(
-        border: OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         isDense: true,
       ),

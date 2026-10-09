@@ -9,6 +9,7 @@ import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/store_icons.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'form_components.dart';
 
 class CategoryDropdownRow extends StatelessWidget {
@@ -37,18 +38,11 @@ class CategoryDropdownRow extends StatelessWidget {
     final actionLabel = open ? f.categoryPick : f.categoryChange;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(SurfaceRadius.card),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainer,
-          border: Border.all(
-            color: open ? cs.primary : cs.outlineVariant,
-            width: open ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(14),
-        ),
+        decoration: AppSurfaces.of(context).card(focused: open),
         child: Row(
           children: [
             Container(
@@ -116,11 +110,7 @@ class CategoryPickerPanel extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.fromLTRB(13, 13, 13, 14),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Wrap(
         spacing: 8,
         runSpacing: 8,
@@ -180,18 +170,11 @@ class StoreDropdownRow extends StatelessWidget {
         : cs.onSurfaceVariant;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(SurfaceRadius.card),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainer,
-          border: Border.all(
-            color: open ? cs.primary : cs.outlineVariant,
-            width: open ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(14),
-        ),
+        decoration: AppSurfaces.of(context).card(focused: open),
         child: Row(
           children: [
             Icon(
@@ -263,11 +246,7 @@ class StorePickerPanel extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.fromLTRB(13, 13, 13, 14),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Wrap(
         spacing: 8,
         runSpacing: 8,
@@ -322,18 +301,11 @@ class LabelDropdownRow extends StatelessWidget {
         : cs.onSurfaceVariant;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(SurfaceRadius.card),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
-        decoration: BoxDecoration(
-          color: cs.surfaceContainer,
-          border: Border.all(
-            color: open ? cs.primary : cs.outlineVariant,
-            width: open ? 1.5 : 1,
-          ),
-          borderRadius: BorderRadius.circular(14),
-        ),
+        decoration: AppSurfaces.of(context).card(focused: open),
         child: Row(
           children: [
             Icon(
@@ -405,11 +377,7 @@ class LabelPickerPanel extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.fromLTRB(13, 13, 13, 14),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Wrap(
         spacing: 8,
         runSpacing: 8,

@@ -4,6 +4,8 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
+import 'package:pantry/theme/app_theme.dart';
+
 /// A non-blocking, inline block that surfaces the enabled reminders for one
 /// moment (start / advance / close). Acknowledgement is **client-local only** —
 /// ticking a reminder strikes it through for this render and never persists.
@@ -31,16 +33,12 @@ class _ShoppingReminderBlockState extends State<ShoppingReminderBlock> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final card = AppSurfaces.of(context).card();
 
+    // Ink rather than a Container so the buttons' ink shows over the card.
     if (widget.reminders.isEmpty) {
-      return Card(
-        margin: EdgeInsets.zero,
-        color: cs.surfaceContainerHighest.withValues(alpha: 0.4),
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: cs.outlineVariant),
-        ),
+      return Ink(
+        decoration: card,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Column(
@@ -80,10 +78,8 @@ class _ShoppingReminderBlockState extends State<ShoppingReminderBlock> {
       );
     }
 
-    return Card(
-      margin: EdgeInsets.zero,
-      color: cs.surfaceContainerHighest,
-      elevation: 0,
+    return Ink(
+      decoration: card,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Column(

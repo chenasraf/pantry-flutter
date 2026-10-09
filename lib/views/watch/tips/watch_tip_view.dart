@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 import 'watch_tips.dart';
 
@@ -108,14 +109,10 @@ class _Stage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     return Container(
       height: 250,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(20),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       clipBehavior: Clip.antiAlias,
       padding: const EdgeInsetsDirectional.all(16),
       child: FittedBox(
@@ -149,7 +146,7 @@ class _Step extends StatelessWidget {
     final scheme = theme.colorScheme;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(SurfaceRadius.card),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         margin: const EdgeInsetsDirectional.only(bottom: 4),
@@ -158,7 +155,7 @@ class _Step extends StatelessWidget {
           color: active
               ? scheme.primary.withValues(alpha: 0.10)
               : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(SurfaceRadius.card),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,10 +209,7 @@ class _Note extends StatelessWidget {
     final scheme = theme.colorScheme;
     return Container(
       padding: const EdgeInsetsDirectional.all(12),
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

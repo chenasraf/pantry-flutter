@@ -95,10 +95,7 @@ class _PhotoAddActionsState extends State<PhotoAddActions> {
           controller: textController,
           autofocus: true,
           textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(
-            labelText: m.photoBoard.folderName,
-            border: const OutlineInputBorder(),
-          ),
+          decoration: InputDecoration(labelText: m.photoBoard.folderName),
           onSubmitted: (value) {
             final v = value.trim();
             if (v.isNotEmpty) Navigator.pop(dialogCtx, v);

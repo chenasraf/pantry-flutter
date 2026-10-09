@@ -14,6 +14,7 @@ import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/widgets/image_preview.dart';
 
 Color? _parseColor(String hex) {
@@ -257,11 +258,9 @@ class FallbackHeader extends StatelessWidget {
                 Container(
                   width: 72,
                   height: 72,
-                  decoration: BoxDecoration(
-                    color: catColor.withValues(alpha: 0.16),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: catColor.withValues(alpha: 0.35)),
-                  ),
+                  decoration: AppSurfaces.of(
+                    context,
+                  ).iconTile(catColor, bordered: true),
                   child: Icon(icon, color: catColor, size: 36),
                 ),
                 const SizedBox(width: 15),
@@ -388,16 +387,16 @@ class _CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = onPhoto
-        ? color.withValues(alpha: 0.9)
-        : color.withValues(alpha: 0.16);
     final fg = onPhoto ? Colors.white : color;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 4),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      // Over a photo the chip is near-opaque so it reads against any image.
+      decoration: onPhoto
+          ? BoxDecoration(
+              color: color.withValues(alpha: 0.9),
+              borderRadius: BorderRadius.circular(SurfaceRadius.chip),
+            )
+          : AppSurfaces.of(context).chip(tint: color),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -454,12 +453,12 @@ class _SquareIconButton extends StatelessWidget {
     return Material(
       color: bg,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(SurfaceRadius.tile),
         side: BorderSide(color: borderColor),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(SurfaceRadius.tile),
         child: SizedBox(
           width: 38,
           height: 38,

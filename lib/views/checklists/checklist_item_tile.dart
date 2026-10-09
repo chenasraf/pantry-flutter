@@ -10,6 +10,7 @@ import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'checklist_item_tile_parts.dart';
 import 'swipe_reveal_row.dart';
@@ -234,6 +235,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     // through the revealed action.
     Color tintedSurface(Color tint, double alpha) =>
         Color.alphaBlend(tint.withValues(alpha: alpha), cs.surface);
+    final surfaces = AppSurfaces.of(context);
 
     final selecting = widget.selectionMode;
 
@@ -247,8 +249,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             SwipeAction(
               icon: Icons.restore_from_trash,
               label: m.checklists.restoreItem,
-              tint: const Color(0xFF5FBF8A),
-              background: tintedSurface(const Color(0xFF5FBF8A), 0.16),
+              tint: surfaces.success,
+              background: tintedSurface(surfaces.success, 0.16),
               onPressed: () => widget.onRestore!(item),
             ),
           );
@@ -258,8 +260,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             SwipeAction(
               icon: Icons.unarchive_outlined,
               label: m.checklists.unarchiveItem,
-              tint: const Color(0xFF5FBF8A),
-              background: tintedSurface(const Color(0xFF5FBF8A), 0.16),
+              tint: surfaces.success,
+              background: tintedSurface(surfaces.success, 0.16),
               onPressed: () => widget.onUnarchive!(item),
             ),
           );
@@ -269,8 +271,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             SwipeAction(
               icon: Icons.delete_forever,
               label: m.checklists.permanentlyDeleteItem,
-              tint: const Color(0xFFEF7878),
-              background: tintedSurface(const Color(0xFFEF7878), 0.2),
+              tint: SwipeActionColors.delete,
+              background: tintedSurface(SwipeActionColors.delete, 0.2),
               onPressed: () => widget.onPermanentDelete!(item),
             ),
           );
@@ -285,8 +287,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             SwipeAction(
               icon: Icons.visibility_outlined,
               label: m.checklists.swipeView,
-              tint: const Color(0xFF5CB3EC),
-              background: tintedSurface(const Color(0xFF5CB3EC), 0.16),
+              tint: SwipeActionColors.view,
+              background: tintedSurface(SwipeActionColors.view, 0.16),
               onPressed: () => widget.onView(item),
             ),
           );
@@ -307,8 +309,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             SwipeAction(
               icon: Icons.drive_file_move_outlined,
               label: m.checklists.swipeMove,
-              tint: const Color(0xFFD9B441),
-              background: tintedSurface(const Color(0xFFD9B441), 0.18),
+              tint: SwipeActionColors.move,
+              background: tintedSurface(SwipeActionColors.move, 0.18),
               onPressed: () => widget.onMove!(item),
             ),
           );
@@ -318,8 +320,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             SwipeAction(
               icon: Icons.copy_outlined,
               label: m.checklists.swipeCopy,
-              tint: const Color(0xFF7AAE8E),
-              background: tintedSurface(const Color(0xFF7AAE8E), 0.18),
+              tint: SwipeActionColors.copy,
+              background: tintedSurface(SwipeActionColors.copy, 0.18),
               onPressed: () => widget.onCopy!(item),
             ),
           );
@@ -329,8 +331,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             SwipeAction(
               icon: Icons.archive_outlined,
               label: m.checklists.swipeArchive,
-              tint: const Color(0xFF9B8AD9),
-              background: tintedSurface(const Color(0xFF9B8AD9), 0.18),
+              tint: SwipeActionColors.archive,
+              background: tintedSurface(SwipeActionColors.archive, 0.18),
               onPressed: () => widget.onArchive!(item),
             ),
           );
@@ -340,8 +342,8 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
             SwipeAction(
               icon: Icons.delete_outline,
               label: m.checklists.swipeDelete,
-              tint: const Color(0xFFEF7878),
-              background: tintedSurface(const Color(0xFFEF7878), 0.2),
+              tint: SwipeActionColors.delete,
+              background: tintedSurface(SwipeActionColors.delete, 0.2),
               onPressed: () => widget.onDelete!(item),
             ),
           );
@@ -443,15 +445,16 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       // the rounded corners stay crisp. Painting the border under the
       // child — the default for BoxDecoration — let the swipe row's
       // Material surface antialias over it at the corners and erase them.
+      final card = surfaces.card();
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
         decoration: BoxDecoration(
-          color: cs.surfaceContainer,
-          borderRadius: BorderRadius.circular(16),
+          color: card.color,
+          borderRadius: card.borderRadius,
         ),
         foregroundDecoration: BoxDecoration(
-          border: Border.all(color: cs.outlineVariant),
-          borderRadius: BorderRadius.circular(16),
+          border: card.border,
+          borderRadius: card.borderRadius,
         ),
         clipBehavior: Clip.antiAlias,
         child: body,

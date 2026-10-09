@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
@@ -76,6 +77,7 @@ class _DuplicateListStageState extends State<DuplicateListStage> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return Padding(
       padding: EdgeInsetsDirectional.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -110,20 +112,7 @@ class _DuplicateListStageState extends State<DuplicateListStage> {
             textDirection: _nameDir,
             textCapitalization: TextCapitalization.sentences,
             onSubmitted: (_) => _submit(),
-            decoration: InputDecoration(
-              labelText: m.checklists.listName,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(13),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(13),
-                borderSide: BorderSide(color: cs.outlineVariant),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(13),
-                borderSide: BorderSide(color: cs.primary, width: 1.5),
-              ),
-            ),
+            decoration: InputDecoration(labelText: m.checklists.listName),
           ),
           const SizedBox(height: 8),
           CheckboxListTile(
@@ -138,39 +127,32 @@ class _DuplicateListStageState extends State<DuplicateListStage> {
             onTap: _saving ? null : _submit,
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [cs.primary, cs.primary.withValues(alpha: 0.8)],
-                ),
-                borderRadius: BorderRadius.circular(14),
-              ),
+              decoration: surfaces.primaryButton(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (_saving)
-                    const SizedBox(
+                    SizedBox(
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.4,
-                        color: Colors.white,
+                        color: surfaces.onAccent,
                       ),
                     )
                   else
-                    const Icon(
+                    Icon(
                       Icons.copy_outlined,
-                      color: Colors.white,
+                      color: surfaces.onAccent,
                       size: 20,
                     ),
                   const SizedBox(width: 8),
                   Text(
                     m.checklists.duplicateList,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: surfaces.onAccent,
                     ),
                   ),
                 ],

@@ -171,7 +171,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                             controller: _intervalController,
                             keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 8,
@@ -198,7 +197,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                           DropdownButtonFormField<String>(
                             initialValue: _state.freq,
                             decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 8,
@@ -353,7 +351,6 @@ class _RecurrenceDialogState extends State<_RecurrenceDialog> {
                               controller: _countController,
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
                                 contentPadding: EdgeInsets.symmetric(
                                   horizontal: 8,
                                   vertical: 8,

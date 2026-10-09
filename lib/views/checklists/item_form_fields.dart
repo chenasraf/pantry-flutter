@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/utils/category_icons.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'form_components.dart';
 
 class DeleteIconButton extends StatelessWidget {
@@ -16,14 +17,11 @@ class DeleteIconButton extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(11),
+      borderRadius: BorderRadius.circular(SurfaceRadius.tile),
       child: Container(
         width: 38,
         height: 38,
-        decoration: BoxDecoration(
-          color: cs.error.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(11),
-        ),
+        decoration: AppSurfaces.of(context).iconTile(cs.error),
         child: busy
             ? Padding(
                 padding: const EdgeInsets.all(9),
@@ -58,12 +56,6 @@ class HeaderPreview extends StatelessWidget {
     final catColor = category != null
         ? (parseColor(category!.color) ?? cs.primary)
         : cs.onSurfaceVariant;
-    final tileBg = category != null
-        ? catColor.withValues(alpha: 0.14)
-        : cs.surfaceContainer;
-    final tileBorder = category != null
-        ? catColor.withValues(alpha: 0.3)
-        : cs.outlineVariant;
     final icon = category != null
         ? categoryIcon(category!.icon)
         : Icons.shopping_basket_outlined;
@@ -74,11 +66,9 @@ class HeaderPreview extends StatelessWidget {
         Container(
           width: 54,
           height: 54,
-          decoration: BoxDecoration(
-            color: tileBg,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: tileBorder),
-          ),
+          decoration: AppSurfaces.of(
+            context,
+          ).iconTile(catColor, bordered: true),
           child: Icon(icon, color: catColor, size: 26),
         ),
         const SizedBox(width: 13),
@@ -179,15 +169,10 @@ class QuantityField extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final labelColor = focused ? cs.primary : cs.onSurfaceVariant;
-    final borderColor = focused ? cs.primary : cs.outlineVariant;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
       padding: const EdgeInsets.fromLTRB(14, 11, 14, 12),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        border: Border.all(color: borderColor, width: focused ? 1.5 : 1),
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: AppSurfaces.of(context).card(focused: focused),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -216,18 +201,6 @@ class QuantityField extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 9,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cs.outlineVariant),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cs.outlineVariant),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cs.primary, width: 1.5),
                     ),
                   ),
                   style: const TextStyle(
@@ -272,30 +245,22 @@ class DockedSaveBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return SafeArea(
       top: false,
       child: Container(
-        decoration: BoxDecoration(
-          color: cs.surface,
-          border: Border(
-            top: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.5)),
-          ),
-        ),
+        decoration: surfaces.actionBar(),
         padding: const EdgeInsets.fromLTRB(18, 12, 18, 12),
         child: Row(
           children: [
             InkWell(
               onTap: onCancel,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(SurfaceRadius.card),
               child: Container(
                 height: 48,
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: cs.surfaceContainer,
-                  border: Border.all(color: cs.outlineVariant),
-                  borderRadius: BorderRadius.circular(14),
-                ),
+                decoration: surfaces.secondaryButton(),
                 child: Text(
                   m.common.cancel,
                   style: TextStyle(
@@ -310,46 +275,32 @@ class DockedSaveBar extends StatelessWidget {
             Expanded(
               child: InkWell(
                 onTap: onSave,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(SurfaceRadius.card),
                 child: Container(
                   height: 48,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [cs.primary, cs.primary.withValues(alpha: 0.78)],
-                    ),
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: cs.primary.withValues(alpha: 0.35),
-                        blurRadius: 22,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
+                  decoration: surfaces.primaryButton(raisedShadow: true),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (saving)
-                        const SizedBox(
+                        SizedBox(
                           width: 18,
                           height: 18,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: surfaces.onAccent,
                           ),
                         )
                       else
-                        const Icon(Icons.check, color: Colors.white, size: 20),
+                        Icon(Icons.check, color: surfaces.onAccent, size: 20),
                       const SizedBox(width: 9),
                       Text(
                         label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: surfaces.onAccent,
                         ),
                       ),
                     ],

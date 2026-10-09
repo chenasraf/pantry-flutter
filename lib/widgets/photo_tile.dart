@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/photo.dart';
@@ -35,7 +36,7 @@ class PhotoTile extends StatelessWidget {
       return GestureDetector(
         onTap: () => controller.toggleSelection(photo.id),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(SurfaceRadius.tile),
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -44,7 +45,7 @@ class PhotoTile extends StatelessWidget {
                 headers: headers,
                 fit: BoxFit.cover,
                 errorWidget: Container(
-                  color: theme.colorScheme.surfaceContainerHighest,
+                  color: AppSurfaces.of(context).raised,
                   child: const Icon(Icons.broken_image_outlined, size: 32),
                 ),
               ),
@@ -114,12 +115,12 @@ class PhotoTile extends StatelessWidget {
           onDraggableCanceled: (_, _) => controller.cancelDrag(),
           feedback: Material(
             elevation: 4,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(SurfaceRadius.tile),
             child: SizedBox(
               width: 100,
               height: 100,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(SurfaceRadius.tile),
                 child: AvifNetworkImage(
                   imageUrl: uri.toString(),
                   headers: headers,
@@ -145,7 +146,7 @@ class PhotoTile extends StatelessWidget {
     final tile = GestureDetector(
       onTap: () => _showPhotoDetail(context, uri, headers),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(SurfaceRadius.tile),
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -154,7 +155,7 @@ class PhotoTile extends StatelessWidget {
               headers: headers,
               fit: BoxFit.cover,
               errorWidget: Container(
-                color: theme.colorScheme.surfaceContainerHighest,
+                color: AppSurfaces.of(context).raised,
                 child: const Icon(Icons.broken_image_outlined, size: 32),
               ),
             ),
@@ -270,10 +271,7 @@ class PhotoTile extends StatelessWidget {
           controller: textController,
           autofocus: true,
           textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(
-            labelText: m.photoBoard.caption,
-            border: const OutlineInputBorder(),
-          ),
+          decoration: InputDecoration(labelText: m.photoBoard.caption),
         ),
         actions: [
           TextButton(

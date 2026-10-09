@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 
 import 'login_controller.dart';
@@ -133,7 +134,6 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                       labelText: m.login.serverUrl,
                       hintText: m.login.serverUrlHint,
                       prefixIcon: const Icon(Icons.cloud_outlined),
-                      border: const OutlineInputBorder(),
                       errorText: controller.error,
                     ),
                     keyboardType: TextInputType.url,
@@ -162,7 +162,6 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                       decoration: InputDecoration(
                         labelText: m.login.username,
                         prefixIcon: const Icon(Icons.person_outline),
-                        border: const OutlineInputBorder(),
                       ),
                       textInputAction: TextInputAction.next,
                     ),
@@ -174,7 +173,6 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                       decoration: InputDecoration(
                         labelText: m.login.appPassword,
                         prefixIcon: const Icon(Icons.key_outlined),
-                        border: const OutlineInputBorder(),
                       ),
                       textInputAction: TextInputAction.go,
                       onSubmitted: (_) => controller.startAppPasswordLogin(
@@ -384,10 +382,7 @@ Future<void> _showErrorDetails(BuildContext context, String details) {
         width: double.maxFinite,
         child: Container(
           padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Theme.of(ctx).colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(8),
-          ),
+          decoration: AppSurfaces.of(ctx).card(),
           child: SingleChildScrollView(
             child: SelectableText(
               details,

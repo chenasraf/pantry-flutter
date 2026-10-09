@@ -9,6 +9,7 @@ import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/photo_sort.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry_core/widgets/avif_image.dart';
@@ -355,7 +356,7 @@ class _TrashBanner extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
-      color: cs.surfaceContainerHighest,
+      color: AppSurfaces.of(context).raised,
       padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
       child: Row(
         children: [
@@ -475,7 +476,6 @@ class _TrashedPhotoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final uri = PhotoService.instance.photoPreviewUri(
       controller.houseId,
       photo.id,
@@ -485,7 +485,7 @@ class _TrashedPhotoTile extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showTrashActions(context),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(SurfaceRadius.tile),
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -496,7 +496,7 @@ class _TrashedPhotoTile extends StatelessWidget {
                 headers: headers,
                 fit: BoxFit.cover,
                 errorWidget: Container(
-                  color: theme.colorScheme.surfaceContainerHighest,
+                  color: AppSurfaces.of(context).raised,
                   child: const Icon(Icons.broken_image_outlined, size: 32),
                 ),
               ),
@@ -670,16 +670,7 @@ class _PhotoGrid extends StatelessWidget {
           );
         }
         if (item.isPlaceholder) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.primary,
-                width: 2,
-              ),
-              color: Theme.of(context).colorScheme.primary.withAlpha(20),
-            ),
-          );
+          return Container(decoration: AppSurfaces.of(context).dropTarget());
         }
         if (item.upload != null) {
           return UploadTile(task: item.upload!, controller: controller);

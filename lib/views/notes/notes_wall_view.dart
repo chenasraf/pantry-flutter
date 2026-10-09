@@ -6,6 +6,7 @@ import 'package:pantry_core/services/note_service.dart';
 import 'package:pantry_core/services/pending_note_share_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry_core/utils/note_sort.dart';
@@ -379,17 +380,7 @@ class _NotesGrid extends StatelessWidget {
       itemBuilder: (context, index) {
         final note = notes[index];
         if (note.id == controller.draggingId) {
-          // Placeholder for the dragged note
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.primary,
-                width: 2,
-              ),
-              color: Theme.of(context).colorScheme.primary.withAlpha(20),
-            ),
-          );
+          return Container(decoration: AppSurfaces.of(context).dropTarget());
         }
         return NoteTile(note: note, controller: controller);
       },
@@ -407,7 +398,7 @@ class _TrashBanner extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
-      color: cs.surfaceContainerHighest,
+      color: AppSurfaces.of(context).raised,
       padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
       child: Row(
         children: [
@@ -528,8 +519,8 @@ class _TrashedNoteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final bgColor = _parseColor(note.color) ?? cs.surfaceContainerHighest;
+    final tile = AppSurfaces.of(context).thumbnail();
+    final bgColor = _parseColor(note.color) ?? tile.color!;
     final textColor = bgColor.computeLuminance() > 0.5
         ? Colors.black87
         : Colors.white;
@@ -540,10 +531,7 @@ class _TrashedNoteTile extends StatelessWidget {
         opacity: 0.65,
         child: Container(
           padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(12),
-          ),
+          decoration: tile.copyWith(color: bgColor),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -6,6 +6,7 @@ import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/utils/currencies.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/checklists/price_draft.dart';
 import 'package:pantry/views/checklists/price_input.dart';
 
@@ -31,21 +32,12 @@ class SetRangeToggle extends StatelessWidget {
       return Expanded(
         child: InkWell(
           onTap: () => onChanged(range),
-          borderRadius: BorderRadius.circular(9),
+          borderRadius: BorderRadius.circular(SurfaceRadius.chip),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             height: 40,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: selected
-                  ? cs.primary.withValues(alpha: 0.14)
-                  : Colors.transparent,
-              border: Border.all(
-                color: selected ? cs.primary : cs.outlineVariant,
-                width: selected ? 1.5 : 1,
-              ),
-              borderRadius: BorderRadius.circular(9),
-            ),
+            decoration: AppSurfaces.of(context).chip(selected: selected),
             child: Text(
               label,
               style: TextStyle(
@@ -77,7 +69,6 @@ class AmountField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return TextField(
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -88,18 +79,6 @@ class AmountField extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 12,
           vertical: 12,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.primary, width: 1.5),
         ),
       ),
       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
@@ -119,7 +98,6 @@ class CurrencyDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     // The stored value may be an unknown code; keep it selectable so the
     // dropdown has a valid current item instead of asserting.
     final known = currencyByCode(value);
@@ -128,14 +106,6 @@ class CurrencyDropdown extends StatelessWidget {
         labelText: m.checklists.price.currency,
         isDense: true,
         contentPadding: const EdgeInsetsDirectional.fromSTEB(12, 12, 8, 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -257,14 +227,6 @@ class _StoreSelect extends StatelessWidget {
         labelText: m.checklists.price.store,
         isDense: true,
         contentPadding: const EdgeInsetsDirectional.fromSTEB(12, 12, 8, 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(11),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<int>(

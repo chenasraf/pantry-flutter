@@ -8,6 +8,8 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 
+import '../theme/app_theme.dart';
+
 const storeColors = [
   '#e11d48',
   '#ea580c',
@@ -254,10 +256,7 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
               controller: _nameController,
               autofocus: true,
               textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(
-                labelText: m.stores.name,
-                border: const OutlineInputBorder(),
-              ),
+              decoration: InputDecoration(labelText: m.stores.name),
             ),
             const SizedBox(height: 16),
             Text(m.stores.icon, style: theme.textTheme.bodyMedium),
@@ -272,18 +271,9 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
                   child: Container(
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? theme.colorScheme.primaryContainer
-                          : null,
-                      borderRadius: BorderRadius.circular(8),
-                      border: isSelected
-                          ? Border.all(
-                              color: theme.colorScheme.primary,
-                              width: 2,
-                            )
-                          : null,
-                    ),
+                    decoration: isSelected
+                        ? AppSurfaces.of(context).chip(selected: true)
+                        : null,
                     child: Icon(
                       entry.value,
                       size: 20,
@@ -397,11 +387,7 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
         maxLines: maxLines,
         textCapitalization: TextCapitalization.sentences,
         textDirection: detectTextDirection(value.text),
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          border: const OutlineInputBorder(),
-        ),
+        decoration: InputDecoration(labelText: label, hintText: hint),
       ),
     );
   }
@@ -466,10 +452,7 @@ class _CreateStoreDialogState extends State<CreateStoreDialog> {
   Widget _buildAddRow(ThemeData theme) {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outlineVariant),
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

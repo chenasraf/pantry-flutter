@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pantry/theme/app_theme.dart';
 
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
@@ -45,7 +46,7 @@ class ItemThumb extends StatelessWidget {
     final fallback = Container(
       width: size,
       height: size,
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      color: AppSurfaces.of(context).raised,
       child: const Icon(Icons.broken_image_outlined, size: 18),
     );
     final file = pending;
@@ -78,7 +79,7 @@ class ItemThumb extends StatelessWidget {
     }
 
     final clipped = ClipRRect(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(SurfaceRadius.tile),
       child: thumb,
     );
 

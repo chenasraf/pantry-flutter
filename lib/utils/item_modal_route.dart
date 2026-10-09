@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 
+import '../theme/app_theme.dart';
+
 /// Width of the desktop item modal — sized to the phone form factor so the
 /// layouts (originally designed for mobile) don't stretch awkwardly across a
 /// 1600px monitor.
@@ -62,7 +64,7 @@ class _ItemModalFrame extends StatelessWidget {
             maxHeight: _kItemModalMaxHeight,
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(SurfaceRadius.menu),
             child: child,
           ),
         ),

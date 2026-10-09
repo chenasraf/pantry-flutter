@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry/views/checklists/swipe_reveal_row.dart'
+    show SwipeActionColors;
 
 /// Desktop counterpart to `SwipeActionsOnboardingPage`. Where the mobile flow
 /// teaches a gesture, this one explains that action buttons live permanently
@@ -70,9 +72,9 @@ class QuickActionsOnboardingPage extends StatelessWidget {
                     width: _actionWidth,
                     icon: Icons.drive_file_move_outlined,
                     label: m.checklists.swipeMove,
-                    tint: const Color(0xFFD9B441),
+                    tint: SwipeActionColors.move,
                     background: Color.alphaBlend(
-                      const Color(0xFFD9B441).withValues(alpha: 0.18),
+                      SwipeActionColors.move.withValues(alpha: 0.18),
                       cs.surface,
                     ),
                   ),
@@ -80,9 +82,9 @@ class QuickActionsOnboardingPage extends StatelessWidget {
                     width: _actionWidth,
                     icon: Icons.delete_outline,
                     label: m.checklists.swipeDelete,
-                    tint: const Color(0xFFEF7878),
+                    tint: SwipeActionColors.delete,
                     background: Color.alphaBlend(
-                      const Color(0xFFEF7878).withValues(alpha: 0.2),
+                      SwipeActionColors.delete.withValues(alpha: 0.2),
                       cs.surface,
                     ),
                   ),

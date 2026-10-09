@@ -592,23 +592,9 @@ class _CustomFieldEditorState extends State<CustomFieldEditor> {
     ),
   );
 
-  /// Filled, rounded input matching the app's field cards (surfaceContainer
-  /// fill, radius-14 outlineVariant border, accent on focus).
-  InputDecoration _dec({String? hint}) {
-    final cs = Theme.of(context).colorScheme;
-    OutlineInputBorder border(Color color, double width) => OutlineInputBorder(
-      borderRadius: BorderRadius.circular(14),
-      borderSide: BorderSide(color: color, width: width),
-    );
-    return InputDecoration(
-      isDense: true,
-      hintText: hint,
-      filled: true,
-      fillColor: cs.surfaceContainer,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      border: border(cs.outlineVariant, 1),
-      enabledBorder: border(cs.outlineVariant, 1),
-      focusedBorder: border(cs.primary, 1.5),
-    );
-  }
+  InputDecoration _dec({String? hint}) => InputDecoration(
+    isDense: true,
+    hintText: hint,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+  );
 }

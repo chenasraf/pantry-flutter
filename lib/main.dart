@@ -42,6 +42,7 @@ import 'services/widget_interactivity.dart';
 import 'services/widget_service.dart';
 import 'services/widget_theme.dart';
 import 'services/window_service.dart';
+import 'theme/app_theme.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'utils/app_toast.dart';
@@ -264,19 +265,8 @@ class _LeanConfigApp extends StatelessWidget {
         locale: LocaleService.instance.effectiveLocale,
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: color,
-          ).copyWith(primary: color),
-          useMaterial3: true,
-        ),
-        darkTheme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: color,
-            brightness: Brightness.dark,
-          ).copyWith(primary: color),
-          useMaterial3: true,
-        ),
+        theme: buildAppTheme(color, Brightness.light),
+        darkTheme: buildAppTheme(color, Brightness.dark),
         themeMode: ThemingService.instance.themeMode,
         // The engine's initial route is the deep config path (e.g.
         // /checklist-widget-config/131); resolve any route to [home] so it
@@ -501,33 +491,8 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
           supportedLocales: supportedLocales,
           localizationsDelegates: localizationsDelegates,
           title: m.common.appTitle,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: color,
-            ).copyWith(primary: color),
-            useMaterial3: true,
-            popupMenuTheme: PopupMenuThemeData(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              elevation: 8,
-              position: PopupMenuPosition.under,
-            ),
-          ),
-          darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: color,
-              brightness: Brightness.dark,
-            ).copyWith(primary: color),
-            useMaterial3: true,
-            popupMenuTheme: PopupMenuThemeData(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              elevation: 8,
-              position: PopupMenuPosition.under,
-            ),
-          ),
+          theme: buildAppTheme(color, Brightness.light),
+          darkTheme: buildAppTheme(color, Brightness.dark),
           themeMode: ThemingService.instance.themeMode,
           builder: (context, child) {
             if (child == null) return const SizedBox.shrink();

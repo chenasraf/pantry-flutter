@@ -16,6 +16,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/quantity.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
@@ -959,15 +960,9 @@ class _Bar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final surfaces = AppSurfaces.of(context);
     return Container(
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest,
-        border: Border.all(
-          color: active ? cs.primary : cs.outlineVariant,
-          width: active ? 1.5 : 1,
-        ),
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: surfaces.card(focused: active),
       padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 6, 6),
       child: Row(
         crossAxisAlignment: multiple
@@ -981,10 +976,7 @@ class _Bar extends StatelessWidget {
                 Container(
                   width: 30,
                   height: 30,
-                  decoration: BoxDecoration(
-                    color: cs.primary.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(9),
-                  ),
+                  decoration: surfaces.iconTile(cs.primary),
                   child: Icon(Icons.add, color: cs.primary, size: 18),
                 ),
           ),
@@ -1059,25 +1051,18 @@ class _Bar extends StatelessWidget {
                 child: Container(
                   width: 34,
                   height: 34,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [cs.primary, cs.primary.withValues(alpha: 0.8)],
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  decoration: surfaces.primaryButton(),
                   child: submitting
-                      ? const Padding(
-                          padding: EdgeInsets.all(8),
+                      ? Padding(
+                          padding: const EdgeInsets.all(8),
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: surfaces.onAccent,
                           ),
                         )
-                      : const Icon(
+                      : Icon(
                           Icons.arrow_forward,
-                          color: Colors.white,
+                          color: surfaces.onAccent,
                           size: 18,
                         ),
                 ),
@@ -1113,7 +1098,7 @@ class _BarIconAction extends StatelessWidget {
       waitDuration: const Duration(milliseconds: 600),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(SurfaceRadius.chip),
         child: SizedBox(
           width: 32,
           height: 32,
@@ -1139,18 +1124,13 @@ class MultipleToggle extends StatelessWidget {
       waitDuration: const Duration(milliseconds: 600),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(SurfaceRadius.chip),
         child: Container(
           height: 30,
           padding: const EdgeInsetsDirectional.symmetric(horizontal: 8),
-          decoration: BoxDecoration(
-            color: active ? accent.withValues(alpha: 0.14) : Colors.transparent,
-            border: Border.all(
-              color: active ? accent.withValues(alpha: 0.4) : cs.outlineVariant,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(9),
-          ),
+          decoration: active
+              ? AppSurfaces.of(context).chip(tint: accent)
+              : AppSurfaces.of(context).chip(),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -1190,11 +1170,7 @@ class _ReuseSuggestions extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Container(
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHigh,
-        border: Border.all(color: cs.outlineVariant),
-        borderRadius: BorderRadius.circular(14),
-      ),
+      decoration: AppSurfaces.of(context).card(),
       clipBehavior: Clip.antiAlias,
       child: Column(
         mainAxisSize: MainAxisSize.min,

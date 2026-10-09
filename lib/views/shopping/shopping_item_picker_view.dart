@@ -8,6 +8,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
 
@@ -282,8 +283,8 @@ class _CategoryToggleHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final color = parseHexColor(category?.color) ?? theme.colorScheme.primary;
     final name = category?.name ?? m.shopping.uncategorized;
-    return Material(
-      color: theme.colorScheme.surfaceContainerHighest,
+    return Ink(
+      decoration: AppSurfaces.of(context).stickyHeader(),
       child: InkWell(
         onTap: () => onToggle(picked != total),
         child: Padding(

@@ -6,6 +6,7 @@ import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'checklist_item_tile.dart';
@@ -259,7 +260,11 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
           ),
           child: Row(
             children: [
-              Icon(Icons.check, color: const Color(0xFF5FBF8A), size: 18),
+              Icon(
+                Icons.check,
+                color: AppSurfaces.of(context).success,
+                size: 18,
+              ),
               const SizedBox(width: 11),
               Text(
                 m.checklists.doneCount(widget.doneItems.length),
