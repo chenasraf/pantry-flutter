@@ -25,8 +25,19 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
         (call) async => documents.path,
       );
 
-  tearDownAll(() {
-    if (documents.existsSync()) documents.deleteSync(recursive: true);
+  // A store's write can still land after the last test, and a recursive delete
+  // racing it fails with "Directory not empty". The directory is system temp,
+  // so a cleanup that keeps losing that race is left for the OS rather than
+  // failing a suite whose tests all passed.
+  tearDownAll(() async {
+    for (var attempt = 0; attempt < 5; attempt++) {
+      try {
+        if (documents.existsSync()) documents.deleteSync(recursive: true);
+        return;
+      } on FileSystemException {
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+      }
+    }
   });
 
   await testMain();
