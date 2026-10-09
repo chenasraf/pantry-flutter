@@ -32,7 +32,8 @@ class ItemStartValues {
     DateTime? today,
   }) {
     final fieldValues = {
-      for (final v in seedFieldValues(fieldDefs, listId)) v.fieldId: v,
+      for (final v in seedFieldValues(fieldDefs, listId, today: today))
+        v.fieldId: v,
     };
     final applicable = {
       for (final def in fieldDefs)
@@ -75,20 +76,11 @@ FieldValue fieldValueFromDefault(
     valueBool: value.valueBool ?? false,
     valueDate:
         value.valueDate ??
-        (offset == null ? null : _anchorEpoch(offset, today ?? DateTime.now())),
+        (offset == null ? null : anchorDayEpoch(offset, today: today)),
     valueOptionId: value.valueOptionId,
     offsetDays: offset,
   );
 }
-
-/// Epoch seconds at local midnight, [offset] days after [today].
-int _anchorEpoch(int offset, DateTime today) =>
-    DateTime(
-      today.year,
-      today.month,
-      today.day + offset,
-    ).millisecondsSinceEpoch ~/
-    1000;
 
 /// The part of an item's value a list default keeps: only the column the
 /// field's type uses. Reminder settings belong to a single item and are

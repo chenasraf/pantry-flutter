@@ -384,12 +384,6 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
 
   /// The field definition's own default as text, or `null` when it has none.
   String? _ownDefault(FieldDefinition field) {
-    final offset = field.defaultOffsetDays;
-    if (field.type == FieldType.date &&
-        field.dateMode == FieldDateMode.relative &&
-        offset != null) {
-      return m.checklists.itemDefaults.inDays(offset);
-    }
     final seed = field.seedValue();
     if (seed == null) return null;
     return switch (field.type) {
@@ -401,7 +395,10 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
             .where((o) => o.id == seed.valueOptionId)
             .firstOrNull
             ?.label,
-      FieldType.date => null,
+      FieldType.date => switch (seed.offsetDays) {
+        final offset? => m.checklists.itemDefaults.inDays(offset),
+        null => null,
+      },
     };
   }
 }
