@@ -156,7 +156,7 @@ class _ListFormStageState extends State<ListFormStage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsetsDirectional.only(start: 4, bottom: 16),
+            padding: const EdgeInsetsDirectional.only(start: 4, bottom: 8),
             child: Row(
               children: [
                 IconButton(
@@ -185,6 +185,9 @@ class _ListFormStageState extends State<ListFormStage> {
               maxHeight: MediaQuery.of(context).size.height * 0.5,
             ),
             child: SingleChildScrollView(
+              // Room above the name field for its floating label, which the
+              // scroll view would otherwise clip.
+              padding: const EdgeInsetsDirectional.only(top: 8),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
