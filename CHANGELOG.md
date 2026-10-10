@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.36.0](https://github.com/chenasraf/pantry-flutter/compare/v0.35.0...v0.36.0) (2026-10-10)
+
+
+### Features
+
+* **lists:** per-list item defaults ([#188](https://github.com/chenasraf/pantry-flutter/issues/188)) ([4a61751](https://github.com/chenasraf/pantry-flutter/commit/4a61751e9332fa5fbbf537054434015b63bc7c08))
+
+
+### Bug Fixes
+
+* **checklists:** show the full list name label when creating or editing a list ([4d3aa00](https://github.com/chenasraf/pantry-flutter/commit/4d3aa00a50fd2a932461704fcaabf6206293563c))
+* **settings:** point settings arrows the right way in right-to-left languages ([47935e6](https://github.com/chenasraf/pantry-flutter/commit/47935e6a57c10eb0ab6e18b08dc1265d083d1f21))
+
 ## [0.35.0](https://github.com/chenasraf/pantry-flutter/compare/v0.34.0...v0.35.0) (2026-10-07)
 
 
