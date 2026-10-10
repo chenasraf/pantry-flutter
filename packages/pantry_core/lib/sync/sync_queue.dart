@@ -1,3 +1,4 @@
+import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/services/cache_store.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 
@@ -107,6 +108,7 @@ class SyncQueue {
       changed = _applyTogglePairs(result) || changed;
       changed = _applyUpdateCollapse(result) || changed;
       changed = _applyImageCollapse(result) || changed;
+      changed = _applyItemDefaultsCollapse(result) || changed;
       changed = _applyReorderCollapse(result) || changed;
       changed = _applyCreateFolds(result) || changed;
     }
@@ -220,7 +222,8 @@ class SyncQueue {
         final b = ops[j];
         if ((b.op == SyncOpKind.update ||
                 b.op == SyncOpKind.setImage ||
-                b.op == SyncOpKind.clearImage) &&
+                b.op == SyncOpKind.clearImage ||
+                b.op == SyncOpKind.setItemDefaults) &&
             b.entity == a.entity &&
             b.effectiveEntityId == a.effectiveEntityId) {
           ops.removeAt(j);
@@ -408,6 +411,36 @@ class SyncQueue {
       for (final i in indices.reversed) {
         if (i != indices.last) ops.removeAt(i);
       }
+      changed = true;
+    }
+    return changed;
+  }
+
+  /// Item-defaults patches on one list fold into the latest, in order, so a
+  /// burst of adds made offline sends one write-back. The fold follows the
+  /// server's per-key merge, so the result is what sending each would leave.
+  bool _applyItemDefaultsCollapse(List<SyncOp> ops) {
+    final byList = <int, List<int>>{};
+    for (var i = 0; i < ops.length; i++) {
+      final op = ops[i];
+      if (op.op != SyncOpKind.setItemDefaults) continue;
+      final id = op.effectiveEntityId;
+      if (id == null) continue;
+      byList.putIfAbsent(id, () => []).add(i);
+    }
+    bool changed = false;
+    for (final indices in byList.values) {
+      if (indices.length < 2) continue;
+      var merged = ItemDefaultsPatch.fromJson(ops[indices.first].body);
+      for (final i in indices.skip(1)) {
+        merged = merged.then(ItemDefaultsPatch.fromJson(ops[i].body));
+      }
+      final latest = ops[indices.last].copyWith(body: merged.toJson());
+      for (final i in indices.reversed) {
+        if (i != indices.last) ops.removeAt(i);
+      }
+      final newIdx = ops.indexWhere((o) => o.uuid == latest.uuid);
+      if (newIdx != -1) ops[newIdx] = latest;
       changed = true;
     }
     return changed;

@@ -3222,6 +3222,8 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   String get listColor => """צבע""";
   ListRecurrenceChecklistsMessagesHe get listRecurrence =>
       ListRecurrenceChecklistsMessagesHe(this);
+  ItemDefaultsChecklistsMessagesHe get itemDefaults =>
+      ItemDefaultsChecklistsMessagesHe(this);
   ItemTypesChecklistsMessagesHe get itemTypes =>
       ItemTypesChecklistsMessagesHe(this);
   ComposeChecklistsMessagesHe get compose => ComposeChecklistsMessagesHe(this);
@@ -4038,6 +4040,101 @@ class ListRecurrenceChecklistsMessagesHe
   /// "פריטים חדשים חוזרים לפי לוח הזמנים שלמטה."
   /// ```
   String get recurringHint => """פריטים חדשים חוזרים לפי לוח הזמנים שלמטה.""";
+}
+
+class ItemDefaultsChecklistsMessagesHe extends ItemDefaultsChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const ItemDefaultsChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "ברירות מחדל לפריטים"
+  /// ```
+  String get title => """ברירות מחדל לפריטים""";
+
+  /// ```dart
+  /// "פריטים חדשים ברשימה הזו מתחילים עם הערכים האלה."
+  /// ```
+  String get intro => """פריטים חדשים ברשימה הזו מתחילים עם הערכים האלה.""";
+
+  /// ```dart
+  /// "רק מי שיכולים לערוך את הרשימה הזו יכולים לשנות את ברירות המחדל שלה."
+  /// ```
+  String get readOnly =>
+      """רק מי שיכולים לערוך את הרשימה הזו יכולים לשנות את ברירות המחדל שלה.""";
+
+  /// ```dart
+  /// "עריכת ברירות מחדל לפריטים"
+  /// ```
+  String get edit => """עריכת ברירות מחדל לפריטים""";
+
+  /// ```dart
+  /// "לא מוגדר"
+  /// ```
+  String get modeNone => """לא מוגדר""";
+
+  /// ```dart
+  /// "קבוע"
+  /// ```
+  String get modeFixed => """קבוע""";
+
+  /// ```dart
+  /// "לזכור את האחרון"
+  /// ```
+  String get modeRemember => """לזכור את האחרון""";
+
+  /// ```dart
+  /// "ברירת המחדל של השדה"
+  /// ```
+  String get modeFieldDefault => """ברירת המחדל של השדה""";
+
+  /// ```dart
+  /// "פריטים חדשים מתחילים בלי ערך."
+  /// ```
+  String get noneHint => """פריטים חדשים מתחילים בלי ערך.""";
+
+  /// ```dart
+  /// "פריטים חדשים תמיד מתחילים עם הערך שלמטה."
+  /// ```
+  String get fixedHint => """פריטים חדשים תמיד מתחילים עם הערך שלמטה.""";
+
+  /// ```dart
+  /// "פריטים חדשים מתחילים עם הערך של הפריט האחרון שנוסף לרשימה הזו."
+  /// ```
+  String get rememberHint =>
+      """פריטים חדשים מתחילים עם הערך של הפריט האחרון שנוסף לרשימה הזו.""";
+
+  /// ```dart
+  /// "${field}: אחרון בשימוש"
+  /// ```
+  String lastUsed(String field) => """${field}: אחרון בשימוש""";
+
+  /// ```dart
+  /// "משתמש בברירת המחדל של השדה: ${value}"
+  /// ```
+  String inheritValue(String value) =>
+      """משתמש בברירת המחדל של השדה: ${value}""";
+
+  /// ```dart
+  /// "משתמש בברירת המחדל של השדה, שהיא ריקה."
+  /// ```
+  String get inheritEmpty => """משתמש בברירת המחדל של השדה, שהיא ריקה.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'בעוד יום', many: 'בעוד ${count} ימים')}"
+  /// ```
+  String inDays(int count) =>
+      """${_plural(count, one: 'בעוד יום', many: 'בעוד ${count} ימים')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'שדה אחד מוגדר', many: '${count} שדות מוגדרים')}"
+  /// ```
+  String fieldsSet(int count) =>
+      """${_plural(count, one: 'שדה אחד מוגדר', many: '${count} שדות מוגדרים')}""";
+
+  /// ```dart
+  /// "מסומן"
+  /// ```
+  String get checked => """מסומן""";
 }
 
 class ItemTypesChecklistsMessagesHe extends ItemTypesChecklistsMessages {
@@ -7587,6 +7684,24 @@ Map<String, String> get messagesHeMap => {
   """checklists.listRecurrence.recurring""": """חוזר""",
   """checklists.listRecurrence.recurringHint""":
       """פריטים חדשים חוזרים לפי לוח הזמנים שלמטה.""",
+  """checklists.itemDefaults.title""": """ברירות מחדל לפריטים""",
+  """checklists.itemDefaults.intro""":
+      """פריטים חדשים ברשימה הזו מתחילים עם הערכים האלה.""",
+  """checklists.itemDefaults.readOnly""":
+      """רק מי שיכולים לערוך את הרשימה הזו יכולים לשנות את ברירות המחדל שלה.""",
+  """checklists.itemDefaults.edit""": """עריכת ברירות מחדל לפריטים""",
+  """checklists.itemDefaults.modeNone""": """לא מוגדר""",
+  """checklists.itemDefaults.modeFixed""": """קבוע""",
+  """checklists.itemDefaults.modeRemember""": """לזכור את האחרון""",
+  """checklists.itemDefaults.modeFieldDefault""": """ברירת המחדל של השדה""",
+  """checklists.itemDefaults.noneHint""": """פריטים חדשים מתחילים בלי ערך.""",
+  """checklists.itemDefaults.fixedHint""":
+      """פריטים חדשים תמיד מתחילים עם הערך שלמטה.""",
+  """checklists.itemDefaults.rememberHint""":
+      """פריטים חדשים מתחילים עם הערך של הפריט האחרון שנוסף לרשימה הזו.""",
+  """checklists.itemDefaults.inheritEmpty""":
+      """משתמש בברירת המחדל של השדה, שהיא ריקה.""",
+  """checklists.itemDefaults.checked""": """מסומן""",
   """checklists.itemTypes.label""": """חזרתיות""",
   """checklists.itemTypes.staple""": """קבוע""",
   """checklists.itemTypes.stapleBody""":

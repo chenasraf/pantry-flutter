@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
@@ -12,6 +13,7 @@ import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
 import 'form_components.dart';
+import 'item_defaults_view.dart';
 import 'switcher_widgets.dart';
 
 class ListFormStage extends StatefulWidget {
@@ -51,7 +53,11 @@ class _ListFormStageState extends State<ListFormStage> {
   // "one-time" flag, which the add-item form owns; there is nothing to pick
   // here, so the whole section is hidden.
   bool get _supportsRecurrenceDefault =>
-      hasFeature(kListDefaultRecurrenceFeature);
+      hasFeature(kListDefaultRecurrenceFeature) && !_managesItemDefaults;
+
+  /// The recurrence default is one of the list's item defaults, edited on their
+  /// own screen with the rest of them.
+  bool get _managesItemDefaults => hasFeature(kListItemDefaultsFeature);
 
   bool get _recurringDefault => _recurrenceMode == ListRecurrenceMode.recurring;
 
@@ -297,6 +303,58 @@ class _ListFormStageState extends State<ListFormStage> {
                         onChanged: () => setState(() {}),
                       ),
                     ],
+                  ],
+                  if (_managesItemDefaults && widget.existing != null) ...[
+                    const SizedBox(height: 16),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(SurfaceRadius.card),
+                      onTap: () => showItemDefaults(
+                        context,
+                        widget.controller,
+                        widget.existing!,
+                      ),
+                      child: Ink(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                          14,
+                          12,
+                          10,
+                          12,
+                        ),
+                        decoration: surfaces.card(),
+                        child: Row(
+                          children: [
+                            Icon(Icons.tune, color: cs.primary),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    m.checklists.itemDefaults.title,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    m.checklists.itemDefaults.intro,
+                                    style: TextStyle(
+                                      fontSize: 11.5,
+                                      color: cs.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.chevron_right,
+                              color: cs.onSurfaceVariant,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ],
               ),

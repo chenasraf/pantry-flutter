@@ -60,6 +60,9 @@ class IdRemap {
       result = _rewriteItemStoreIds(result);
       result = _rewriteItemLabelIds(result);
     }
+    if (result.op == SyncOpKind.setItemDefaults) {
+      result = _rewriteItemDefaults(result);
+    }
     if (result.entity == SyncEntity.photo) {
       result = _rewritePhotoOrderIds(result);
     }
@@ -146,6 +149,32 @@ class IdRemap {
     final body = Map<String, dynamic>.from(op.body);
     body['labelIds'] = mapped;
     return op.copyWith(body: body);
+  }
+
+  /// An item-defaults patch names stores, labels and a category by id inside
+  /// its keys' values, any of which may have been created in the same offline
+  /// session.
+  SyncOp _rewriteItemDefaults(SyncOp op) {
+    Object? remap(Object? value, SyncEntity entity) => switch (value) {
+      final int id when id < 0 => resolve(entity, id) ?? id,
+      final List<dynamic> ids => [for (final id in ids) remap(id, entity)],
+      _ => value,
+    };
+    var changed = false;
+    final body = Map<String, dynamic>.from(op.body);
+    for (final (key, entity) in const [
+      ('stores', SyncEntity.store),
+      ('labels', SyncEntity.label),
+      ('category', SyncEntity.category),
+    ]) {
+      final entry = body[key];
+      if (entry is! Map || !entry.containsKey('value')) continue;
+      final mapped = remap(entry['value'], entity);
+      if (mapped.toString() == entry['value'].toString()) continue;
+      body[key] = {...entry, 'value': mapped};
+      changed = true;
+    }
+    return changed ? op.copyWith(body: body) : op;
   }
 
   /// Batch ops carry their references in the body, not [SyncOp.entityId]: the

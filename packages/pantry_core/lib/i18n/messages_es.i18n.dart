@@ -3246,6 +3246,8 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   String get listColor => """Color""";
   ListRecurrenceChecklistsMessagesEs get listRecurrence =>
       ListRecurrenceChecklistsMessagesEs(this);
+  ItemDefaultsChecklistsMessagesEs get itemDefaults =>
+      ItemDefaultsChecklistsMessagesEs(this);
   ItemTypesChecklistsMessagesEs get itemTypes =>
       ItemTypesChecklistsMessagesEs(this);
   ComposeChecklistsMessagesEs get compose => ComposeChecklistsMessagesEs(this);
@@ -4067,6 +4069,104 @@ class ListRecurrenceChecklistsMessagesEs
   /// ```
   String get recurringHint =>
       """Los artículos nuevos vuelven según el horario de abajo.""";
+}
+
+class ItemDefaultsChecklistsMessagesEs extends ItemDefaultsChecklistsMessages {
+  final ChecklistsMessagesEs _parent;
+  const ItemDefaultsChecklistsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Valores predeterminados de artículos"
+  /// ```
+  String get title => """Valores predeterminados de artículos""";
+
+  /// ```dart
+  /// "Los artículos nuevos de esta lista empiezan con estos valores."
+  /// ```
+  String get intro =>
+      """Los artículos nuevos de esta lista empiezan con estos valores.""";
+
+  /// ```dart
+  /// "Solo quien puede editar esta lista puede cambiar sus valores predeterminados."
+  /// ```
+  String get readOnly =>
+      """Solo quien puede editar esta lista puede cambiar sus valores predeterminados.""";
+
+  /// ```dart
+  /// "Editar valores predeterminados"
+  /// ```
+  String get edit => """Editar valores predeterminados""";
+
+  /// ```dart
+  /// "Sin definir"
+  /// ```
+  String get modeNone => """Sin definir""";
+
+  /// ```dart
+  /// "Fijo"
+  /// ```
+  String get modeFixed => """Fijo""";
+
+  /// ```dart
+  /// "Recordar el último"
+  /// ```
+  String get modeRemember => """Recordar el último""";
+
+  /// ```dart
+  /// "Predeterminado del campo"
+  /// ```
+  String get modeFieldDefault => """Predeterminado del campo""";
+
+  /// ```dart
+  /// "Los artículos nuevos empiezan sin valor."
+  /// ```
+  String get noneHint => """Los artículos nuevos empiezan sin valor.""";
+
+  /// ```dart
+  /// "Los artículos nuevos siempre empiezan con el valor de abajo."
+  /// ```
+  String get fixedHint =>
+      """Los artículos nuevos siempre empiezan con el valor de abajo.""";
+
+  /// ```dart
+  /// "Los artículos nuevos empiezan con el valor del último artículo añadido a esta lista."
+  /// ```
+  String get rememberHint =>
+      """Los artículos nuevos empiezan con el valor del último artículo añadido a esta lista.""";
+
+  /// ```dart
+  /// "${field}: último usado"
+  /// ```
+  String lastUsed(String field) => """${field}: último usado""";
+
+  /// ```dart
+  /// "Usa el predeterminado del campo: ${value}"
+  /// ```
+  String inheritValue(String value) =>
+      """Usa el predeterminado del campo: ${value}""";
+
+  /// ```dart
+  /// "Usa el predeterminado del campo, que está vacío."
+  /// ```
+  String get inheritEmpty =>
+      """Usa el predeterminado del campo, que está vacío.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'En 1 día', many: 'En ${count} días')}"
+  /// ```
+  String inDays(int count) =>
+      """${_plural(count, one: 'En 1 día', many: 'En ${count} días')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 campo definido', many: '${count} campos definidos')}"
+  /// ```
+  String fieldsSet(int count) =>
+      """${_plural(count, one: '1 campo definido', many: '${count} campos definidos')}""";
+
+  /// ```dart
+  /// "Marcado"
+  /// ```
+  String get checked => """Marcado""";
 }
 
 class ItemTypesChecklistsMessagesEs extends ItemTypesChecklistsMessages {
@@ -7691,6 +7791,27 @@ Contraseña: pantry-rocks""",
   """checklists.listRecurrence.recurring""": """Recurrente""",
   """checklists.listRecurrence.recurringHint""":
       """Los artículos nuevos vuelven según el horario de abajo.""",
+  """checklists.itemDefaults.title""":
+      """Valores predeterminados de artículos""",
+  """checklists.itemDefaults.intro""":
+      """Los artículos nuevos de esta lista empiezan con estos valores.""",
+  """checklists.itemDefaults.readOnly""":
+      """Solo quien puede editar esta lista puede cambiar sus valores predeterminados.""",
+  """checklists.itemDefaults.edit""": """Editar valores predeterminados""",
+  """checklists.itemDefaults.modeNone""": """Sin definir""",
+  """checklists.itemDefaults.modeFixed""": """Fijo""",
+  """checklists.itemDefaults.modeRemember""": """Recordar el último""",
+  """checklists.itemDefaults.modeFieldDefault""":
+      """Predeterminado del campo""",
+  """checklists.itemDefaults.noneHint""":
+      """Los artículos nuevos empiezan sin valor.""",
+  """checklists.itemDefaults.fixedHint""":
+      """Los artículos nuevos siempre empiezan con el valor de abajo.""",
+  """checklists.itemDefaults.rememberHint""":
+      """Los artículos nuevos empiezan con el valor del último artículo añadido a esta lista.""",
+  """checklists.itemDefaults.inheritEmpty""":
+      """Usa el predeterminado del campo, que está vacío.""",
+  """checklists.itemDefaults.checked""": """Marcado""",
   """checklists.itemTypes.label""": """Recurrencia""",
   """checklists.itemTypes.staple""": """Habitual""",
   """checklists.itemTypes.stapleBody""":

@@ -33,6 +33,9 @@ class ChipRow extends StatelessWidget {
   final bool multiple;
   final VoidCallback onToggleMultiple;
 
+  /// Opens the target list's item defaults; `null` hides the button.
+  final VoidCallback? onEditDefaults;
+
   const ChipRow({
     super.key,
     required this.draft,
@@ -49,6 +52,7 @@ class ChipRow extends StatelessWidget {
     required this.multiple,
     required this.onToggleMultiple,
     this.showImageChip = true,
+    this.onEditDefaults,
   });
 
   @override
@@ -192,7 +196,7 @@ class ChipRow extends StatelessWidget {
             _ComposeChip(
               label: m.customFields.manageTitle,
               color: customFieldsSet ? cs.primary : null,
-              icon: Icons.tune,
+              icon: Icons.list_alt,
               selected: openTray == Tray.customFields,
               onTap: () => onOpen(Tray.customFields),
             ),
@@ -228,6 +232,16 @@ class ChipRow extends StatelessWidget {
               icon: Icons.image_outlined,
               selected: openTray == Tray.image,
               onTap: () => onOpen(Tray.image),
+            ),
+          ],
+          if (onEditDefaults != null) ...[
+            const SizedBox(width: 4),
+            IconButton(
+              tooltip: m.checklists.itemDefaults.edit,
+              icon: const Icon(Icons.tune),
+              color: cs.onSurfaceVariant,
+              visualDensity: VisualDensity.compact,
+              onPressed: onEditDefaults,
             ),
           ],
         ],

@@ -764,6 +764,24 @@ checklists:
     onceHint: New items are removed from the list once marked done.
     recurring: Recurring
     recurringHint: New items come back on the schedule below.
+  itemDefaults:
+    title: Item defaults
+    intro: New items on this list start with these values.
+    readOnly: Only people who can edit this list can change its item defaults.
+    edit: Edit item defaults
+    modeNone: Not set
+    modeFixed: Fixed
+    modeRemember: Remember last
+    modeFieldDefault: Field default
+    noneHint: New items start without a value.
+    fixedHint: New items always start with the value below.
+    rememberHint: New items start with the value of the last item added to this list.
+    lastUsed(String field): "${field}: last used"
+    inheritValue(String value): "Uses the field default: ${value}"
+    inheritEmpty: Uses the field default, which is empty.
+    inDays(int count): "${_plural(count, one: 'In 1 day', many: 'In ${count} days')}"
+    fieldsSet(int count): "${_plural(count, one: '1 field set', many: '${count} fields set')}"
+    checked: Checked
   itemTypes:
     label: Recurrence
     staple: Staple

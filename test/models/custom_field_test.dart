@@ -84,6 +84,8 @@ void main() {
       double? defaultNumber,
       bool defaultBool = false,
       int? defaultOptionId,
+      FieldDateMode? dateMode,
+      int? defaultOffsetDays,
     }) => FieldDefinition(
       id: id,
       houseId: 1,
@@ -95,6 +97,8 @@ void main() {
       defaultNumber: defaultNumber,
       defaultBool: defaultBool,
       defaultOptionId: defaultOptionId,
+      dateMode: dateMode,
+      defaultOffsetDays: defaultOffsetDays,
       createdAt: 0,
       updatedAt: 0,
     );
@@ -107,7 +111,9 @@ void main() {
         def(4, FieldType.checkbox, defaultBool: true),
         def(5, FieldType.checkbox), // false default → skipped
         def(6, FieldType.select, defaultOptionId: 9),
-        def(7, FieldType.date), // date has no default → skipped
+        def(7, FieldType.date), // absolute date has no default → skipped
+        // A relative date without an offset has nothing to anchor → skipped.
+        def(8, FieldType.date, dateMode: FieldDateMode.relative),
       ];
 
       final seeds = seedFieldValues(defs, null);
@@ -117,6 +123,29 @@ void main() {
       expect(seeds[1].valueNumber, 4);
       expect(seeds[2].valueBool, isTrue);
       expect(seeds[3].valueOptionId, 9);
+    });
+
+    test('anchors a relative date default to today', () {
+      final defs = [
+        def(
+          1,
+          FieldType.date,
+          dateMode: FieldDateMode.relative,
+          defaultOffsetDays: 7,
+        ),
+      ];
+
+      final seed = seedFieldValues(
+        defs,
+        null,
+        today: DateTime(2026, 12, 28, 18),
+      ).single;
+
+      expect(seed.offsetDays, 7);
+      expect(
+        seed.valueDate,
+        DateTime(2027, 1, 4).millisecondsSinceEpoch ~/ 1000,
+      );
     });
 
     test('applies the effective-list scope', () {

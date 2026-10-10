@@ -26,7 +26,9 @@ import 'package:pantry_core/widgets/avif_image.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
 import 'package:pantry/widgets/markdown_editor.dart';
+import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/models/item_start_values.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'checklists_controller.dart';
 import 'form_components.dart';
@@ -103,6 +105,15 @@ class _ItemFormViewState extends State<ItemFormView> {
     return current.id;
   }
 
+  /// The item defaults a new item on the current list starts from, or `null`
+  /// when editing, in the All-lists view, or without the server capability.
+  ItemDefaults? get _itemDefaults {
+    if (_isEditing) return null;
+    final current = widget.controller.currentList;
+    if (current == null || current.id == kAllListsId) return null;
+    return current.activeItemDefaults;
+  }
+
   List<models.Category> get _categories =>
       widget.controller.categoriesForList(_effectiveListId);
   List<models.Store> get _stores => widget.controller.sortedStores;
@@ -148,6 +159,19 @@ class _ItemFormViewState extends State<ItemFormView> {
         repeatFromCompletion: recurrenceDefault.repeatFromCompletion,
       );
       _lifecycle = recurrenceDefault.kind.lifecycle;
+      final defaults = _itemDefaults;
+      if (defaults != null) {
+        final start = ItemStartValues.resolve(
+          defaults,
+          widget.controller.customFieldDefs,
+          _effectiveListId,
+        );
+        _quantityController.text = start.quantity;
+        _selectedCategoryId = start.categoryId;
+        _selectedStoreIds.addAll(start.storeIds);
+        _selectedLabelIds.addAll(start.labelIds);
+        _customFields = List.of(start.customFieldValues);
+      }
     }
     _priceEnabled = hasFeature('item-price');
     _prices = item != null
@@ -157,7 +181,9 @@ class _ItemFormViewState extends State<ItemFormView> {
           )
         : PricesDraft.empty(widget.controller.lastCurrency);
     _customFieldsEnabled = hasFeature(kCustomFieldsFeature);
-    _customFields = List.of(item?.customFields ?? const []);
+    if (item != null || _itemDefaults == null) {
+      _customFields = List.of(item?.customFields ?? const []);
+    }
     _nameDir = detectTextDirection(item?.name);
     _nameController.addListener(() {
       final dir = detectTextDirection(_nameController.text);
@@ -269,12 +295,33 @@ class _ItemFormViewState extends State<ItemFormView> {
               : null,
         );
         // Mirror the compose bar: a list that follows the last item added
-        // starts the next one on the recurrence this item used.
-        await widget.controller.setListRecurrenceDefault(
-          kind: _lifecycle.recurrenceKind,
-          rrule: isRecurring ? effectiveRrule : null,
-          repeatFromCompletion: effectiveRepeatFromCompletion,
-        );
+        // starts the next one the way this item was made.
+        final defaults = _itemDefaults;
+        final listId = _effectiveListId;
+        if (defaults != null && listId != null) {
+          widget.controller.updateItemDefaults(
+            listId,
+            rememberPatch(
+              defaults,
+              recurrence: RecurrenceDefaultValue(
+                kind: _lifecycle.recurrenceKind,
+                rrule: isRecurring ? effectiveRrule : null,
+                repeatFromCompletion: effectiveRepeatFromCompletion,
+              ),
+              categoryId: _selectedCategoryId,
+              storeIds: _selectedStoreIds,
+              labelIds: _selectedLabelIds,
+              customFieldValues: _customFields,
+              fieldDefs: widget.controller.customFieldDefs,
+            ),
+          );
+        } else {
+          await widget.controller.setListRecurrenceDefault(
+            kind: _lifecycle.recurrenceKind,
+            rrule: isRecurring ? effectiveRrule : null,
+            repeatFromCompletion: effectiveRepeatFromCompletion,
+          );
+        }
       }
       // Remember the currency only when the saved item actually has a price.
       if (_priceEnabled && _prices.hasAnyPrice) {

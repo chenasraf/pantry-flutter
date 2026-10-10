@@ -197,9 +197,9 @@ class FieldDefinition {
   };
 
   /// The value to seed on a newly-created item, or `null` when the field
-  /// defines no default. `date` fields have no default value (a fixed default
-  /// date isn't meaningful), and an unset default yields nothing.
-  FieldValue? seedValue() {
+  /// defines no default. A relative date's default is its offset from [today];
+  /// an absolute date has none, since a fixed default date isn't meaningful.
+  FieldValue? seedValue({DateTime? today}) {
     switch (type) {
       case FieldType.text:
         final t = defaultText?.trim();
@@ -217,7 +217,13 @@ class FieldDefinition {
             ? null
             : FieldValue(fieldId: id, valueOptionId: defaultOptionId);
       case FieldType.date:
-        return null;
+        final offset = defaultOffsetDays;
+        if (dateMode != FieldDateMode.relative || offset == null) return null;
+        return FieldValue(
+          fieldId: id,
+          valueDate: anchorDayEpoch(offset, today: today),
+          offsetDays: offset,
+        );
     }
   }
 
@@ -271,14 +277,30 @@ class FieldDefinition {
 /// The values a newly-created item should carry: each applicable field's
 /// default ([FieldDefinition.seedValue]), for the fields in scope for [listId]
 /// (house-wide ∪ that list) that define one. Empty when nothing has a default.
-List<FieldValue> seedFieldValues(Iterable<FieldDefinition> defs, int? listId) {
+List<FieldValue> seedFieldValues(
+  Iterable<FieldDefinition> defs,
+  int? listId, {
+  DateTime? today,
+}) {
   final out = <FieldValue>[];
   for (final def in defs) {
     if (def.listId != null && def.listId != listId) continue;
-    final seed = def.seedValue();
+    final seed = def.seedValue(today: today);
     if (seed != null) out.add(seed);
   }
   return out;
+}
+
+/// Epoch seconds at local midnight, [offset] days after [today] (default:
+/// now) — where a relative date lands for an item created today.
+int anchorDayEpoch(int offset, {DateTime? today}) {
+  final day = today ?? DateTime.now();
+  return DateTime(
+        day.year,
+        day.month,
+        day.day + offset,
+      ).millisecondsSinceEpoch ~/
+      1000;
 }
 
 /// A per-item typed value for a custom field. Rides the checklist item (like

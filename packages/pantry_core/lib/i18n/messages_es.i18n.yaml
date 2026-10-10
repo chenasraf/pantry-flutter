@@ -764,6 +764,24 @@ checklists:
     onceHint: Los artículos nuevos se eliminan de la lista al completarlos.
     recurring: Recurrente
     recurringHint: Los artículos nuevos vuelven según el horario de abajo.
+  itemDefaults:
+    title: Valores predeterminados de artículos
+    intro: Los artículos nuevos de esta lista empiezan con estos valores.
+    readOnly: Solo quien puede editar esta lista puede cambiar sus valores predeterminados.
+    edit: Editar valores predeterminados
+    modeNone: Sin definir
+    modeFixed: Fijo
+    modeRemember: Recordar el último
+    modeFieldDefault: Predeterminado del campo
+    noneHint: Los artículos nuevos empiezan sin valor.
+    fixedHint: Los artículos nuevos siempre empiezan con el valor de abajo.
+    rememberHint: Los artículos nuevos empiezan con el valor del último artículo añadido a esta lista.
+    lastUsed(String field): "${field}: último usado"
+    inheritValue(String value): "Usa el predeterminado del campo: ${value}"
+    inheritEmpty: Usa el predeterminado del campo, que está vacío.
+    inDays(int count): "${_plural(count, one: 'En 1 día', many: 'En ${count} días')}"
+    fieldsSet(int count): "${_plural(count, one: '1 campo definido', many: '${count} campos definidos')}"
+    checked: Marcado
   itemTypes:
     label: Recurrencia
     staple: Habitual

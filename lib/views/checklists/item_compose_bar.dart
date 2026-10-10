@@ -12,6 +12,8 @@ import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/item_defaults.dart';
+import 'package:pantry_core/models/item_start_values.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
@@ -54,6 +56,18 @@ class ItemComposeBar extends StatefulWidget {
     required bool repeatFromCompletion,
   })?
   onRecurrenceUsed;
+
+  /// The target list's item defaults, when the server manages them. Replaces
+  /// [recurrenceDefault]: every chip a list can pre-fill starts from these.
+  final ItemDefaults? itemDefaults;
+
+  /// Reports what list [listId] should remember after an add: the keys in
+  /// "remember" mode whose value the item changed. Never fired with an empty
+  /// patch.
+  final void Function(int listId, ItemDefaultsPatch patch)? onItemDefaultsUsed;
+
+  /// Opens list [listId]'s item defaults from the end of the chip row.
+  final ValueChanged<int>? onEditItemDefaults;
   final List<models.Category> categories;
 
   /// Stores offered in the store tray. Empty (and the store chip hidden) when
@@ -161,6 +175,9 @@ class ItemComposeBar extends StatefulWidget {
     this.listId,
     this.recurrenceDefault = ListRecurrenceDefault.neutral,
     this.onRecurrenceUsed,
+    this.itemDefaults,
+    this.onItemDefaultsUsed,
+    this.onEditItemDefaults,
     required this.categories,
     this.stores = const [],
     this.labels = const [],
@@ -207,7 +224,7 @@ enum Tray {
 
 class ItemComposeBarState extends State<ItemComposeBar> {
   late final ItemDraft _draft = ItemDraft()
-    ..applyRecurrenceDefault(widget.recurrenceDefault)
+    ..start(_startValues)
     ..price = PricesDraft.empty(widget.lastCurrency);
   final _nameCtrl = TextEditingController();
   final _qtyCtrl = TextEditingController();
@@ -233,14 +250,44 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   ];
 
   /// The values to carry: the user's edits once they've touched the tray,
-  /// otherwise the defaults seeded from the applicable fields.
+  /// otherwise the defaults seeded for the target.
   List<FieldValue> get _effectiveCustomFields => _customFieldsEdited
       ? _draft.customFields
-      : seedFieldValues(widget.customFieldDefs, _targetListId);
+      : _startValues.customFieldValues;
+
+  /// What a new item on the target starts with: the list's item defaults, or
+  /// without them just its recurrence default and each field's own default.
+  ItemStartValues get _startValues => _startValuesFor(widget.itemDefaults);
+
+  ItemStartValues _startValuesFor(ItemDefaults? defaults) {
+    if (defaults != null) {
+      return ItemStartValues.resolve(
+        defaults,
+        widget.customFieldDefs,
+        _targetListId,
+      );
+    }
+    final recurrence = widget.recurrenceDefault;
+    return ItemStartValues(
+      recurrence: RecurrenceDefaultValue(
+        kind: recurrence.kind,
+        rrule: recurrence.effectiveRrule,
+        repeatFromCompletion: recurrence.repeatFromCompletion,
+      ),
+      customFieldValues: seedFieldValues(widget.customFieldDefs, _targetListId),
+    );
+  }
+
+  /// Put the draft back on [start], keeping the quantity field in step.
+  void _resetDraft(ItemStartValues start) {
+    _draft.reset(start);
+    _qtyCtrl.text = _draft.quantity;
+  }
 
   @override
   void initState() {
     super.initState();
+    _qtyCtrl.text = _draft.quantity;
     if (widget.initiallyFocused) {
       _active = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -261,16 +308,31 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     super.didUpdateWidget(oldWidget);
     // Switching the target list changes which fields apply, so drop any
     // in-progress custom-field edits and fall back to the new list's defaults.
-    if (oldWidget.listId != widget.listId ||
-        oldWidget.selectedTargetListId != widget.selectedTargetListId) {
+    final targetChanged =
+        oldWidget.listId != widget.listId ||
+        oldWidget.selectedTargetListId != widget.selectedTargetListId;
+    if (targetChanged) {
       _customFieldsEdited = false;
       _draft.customFields = const [];
+    }
+    final defaults = widget.itemDefaults;
+    if (defaults != null) {
+      // Re-seed only when the target or what an editor configured changes. A
+      // remembered value landing — this bar's own write-back coming home —
+      // must not clobber chips the user is already setting for the next item.
+      final configChanged =
+          oldWidget.itemDefaults?.configSignature != defaults.configSignature;
+      if (targetChanged || configChanged) {
+        _draft.start(_startValues);
+        _qtyCtrl.text = _draft.quantity;
+      }
+      return;
     }
     // The list (and so its recurrence default) can resolve after the bar mounts,
     // or change under it in All-lists mode. A bar at rest re-seeds; one being
     // composed in keeps whatever the user picked.
     if (!_active && !_hasContent) {
-      _draft.applyRecurrenceDefault(widget.recurrenceDefault);
+      _draft.applyRecurrence(_startValues.recurrence);
     }
   }
 
@@ -357,9 +419,8 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     // Reuse means we're not creating a new item — clear the draft and keep the
     // bar active/focused so the user can carry on adding.
     setState(() {
-      _draft.reset(widget.recurrenceDefault);
+      _resetDraft(_startValues);
       _nameCtrl.clear();
-      _qtyCtrl.clear();
       _openTray = null;
     });
     _focusNode.requestFocus();
@@ -405,26 +466,42 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     super.dispose();
   }
 
-  /// The recurrence the next composed item starts with. A pinned default wins
-  /// back every item; a list that follows the last one added keeps the
-  /// recurrence just used, so a run of matching items needs picking it once.
-  ListRecurrenceDefault _nextRecurrence() {
-    if (!widget.recurrenceDefault.remembers) return widget.recurrenceDefault;
-    return ListRecurrenceDefault(
-      kind: _draft.lifecycle.recurrenceKind,
-      rrule: _draft.rrule,
-      repeatFromCompletion: _draft.repeatFromCompletion,
-      remembers: true,
+  /// What the next composed item starts with, and the write-back for the item
+  /// just added. A pinned default wins back every item; a key that follows the
+  /// last one added keeps what was just used, so a run of matching items needs
+  /// picking it once.
+  (ItemStartValues, ItemDefaultsPatch?) _afterAdd() {
+    final defaults = widget.itemDefaults;
+    if (defaults == null) {
+      final start = _startValues;
+      if (!widget.recurrenceDefault.remembers) return (start, null);
+      return (
+        ItemStartValues(
+          recurrence: _draft.usedRecurrence,
+          customFieldValues: start.customFieldValues,
+        ),
+        null,
+      );
+    }
+    final patch = rememberPatch(
+      defaults,
+      recurrence: _draft.usedRecurrence,
+      categoryId: _draft.categoryId,
+      storeIds: _draft.storeIds,
+      labelIds: _draft.labelIds,
+      customFieldValues: _effectiveCustomFields,
+      // Bulk items carry no custom fields, so there is nothing to remember.
+      fieldDefs: _multiple ? const [] : widget.customFieldDefs,
     );
+    return (_startValuesFor(defaults.applyPatch(patch)), patch);
   }
 
   void _cancel() {
     setState(() {
       _active = false;
       _openTray = null;
-      _draft.reset(widget.recurrenceDefault);
+      _resetDraft(_startValues);
       _nameCtrl.clear();
-      _qtyCtrl.clear();
     });
     _focusNode.unfocus();
     widget.onActiveChanged?.call(false);
@@ -628,8 +705,13 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       }
     }
     if (allOk) {
-      final next = _nextRecurrence();
-      if (widget.recurrenceDefault.remembers) {
+      final (next, patch) = _afterAdd();
+      final target = _targetListId;
+      if (patch != null) {
+        if (patch.isNotEmpty && target != null) {
+          widget.onItemDefaultsUsed?.call(target, patch);
+        }
+      } else if (widget.recurrenceDefault.remembers) {
         widget.onRecurrenceUsed?.call(
           kind: _draft.lifecycle.recurrenceKind,
           rrule: _draft.rrule,
@@ -637,10 +719,9 @@ class ItemComposeBarState extends State<ItemComposeBar> {
         );
       }
       setState(() {
-        _draft.reset(next);
+        _resetDraft(next);
         _customFieldsEdited = false;
         _nameCtrl.clear();
-        _qtyCtrl.clear();
         _openTray = null;
       });
       _focusNode.requestFocus();
@@ -799,6 +880,12 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           showImageChip: !_multiple,
           multiple: _multiple,
           onToggleMultiple: _toggleMultiple,
+          onEditDefaults:
+              widget.itemDefaults != null &&
+                  widget.onEditItemDefaults != null &&
+                  _targetListId != null
+              ? () => widget.onEditItemDefaults!(_targetListId!)
+              : null,
         ),
         const SizedBox(height: 10),
         if (trayChild != null) ...[

@@ -20,12 +20,21 @@ class ItemCustomFieldsEditor extends StatefulWidget {
   final List<FieldValue> initial;
   final void Function(List<FieldValue> values) onChanged;
 
+  /// Limits the editor to these fields; `null` shows every applicable one.
+  final Set<int>? onlyFieldIds;
+
+  /// Edits a value with nothing tied to a particular item — no reminder
+  /// override, no re-anchoring — as a list's item default does.
+  final bool valuesOnly;
+
   const ItemCustomFieldsEditor({
     super.key,
     required this.houseId,
     required this.listId,
     required this.initial,
     required this.onChanged,
+    this.onlyFieldIds,
+    this.valuesOnly = false,
   });
 
   @override
@@ -78,8 +87,13 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
   /// aren't clobbered), only newly-applicable fields are seeded from the
   /// initial values, and controllers for fields that dropped out are released.
   void _applyDefs(List<FieldDefinition> defs) {
+    final only = widget.onlyFieldIds;
     _fields = CustomFieldService.sortFields(
-      defs.where((f) => f.listId == null || f.listId == widget.listId),
+      defs.where(
+        (f) =>
+            (f.listId == null || f.listId == widget.listId) &&
+            (only == null || only.contains(f.id)),
+      ),
     );
     final byField = {for (final v in widget.initial) v.fieldId: v};
     final applicableIds = {for (final f in _fields) f.id};
@@ -318,7 +332,7 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
                 _emit();
               },
             ),
-            if (d.date != null)
+            if (d.date != null && !widget.valuesOnly)
               Padding(
                 padding: const EdgeInsetsDirectional.only(top: 6),
                 child: Row(
@@ -418,6 +432,7 @@ class _ItemCustomFieldsEditorState extends State<ItemCustomFieldsEditor> {
   }
 
   bool _showReminderOverride(FieldDefinition field) =>
+      !widget.valuesOnly &&
       field.type == FieldType.date &&
       field.overridePolicy == FieldOverridePolicy.itemOverride &&
       _draftFor(field.id).date != null;

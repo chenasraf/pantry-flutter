@@ -764,6 +764,24 @@ checklists:
     onceHint: פריטים חדשים מוסרים מהרשימה ברגע שמסמנים אותם כבוצעו.
     recurring: חוזר
     recurringHint: פריטים חדשים חוזרים לפי לוח הזמנים שלמטה.
+  itemDefaults:
+    title: ברירות מחדל לפריטים
+    intro: פריטים חדשים ברשימה הזו מתחילים עם הערכים האלה.
+    readOnly: רק מי שיכולים לערוך את הרשימה הזו יכולים לשנות את ברירות המחדל שלה.
+    edit: עריכת ברירות מחדל לפריטים
+    modeNone: לא מוגדר
+    modeFixed: קבוע
+    modeRemember: לזכור את האחרון
+    modeFieldDefault: ברירת המחדל של השדה
+    noneHint: פריטים חדשים מתחילים בלי ערך.
+    fixedHint: פריטים חדשים תמיד מתחילים עם הערך שלמטה.
+    rememberHint: פריטים חדשים מתחילים עם הערך של הפריט האחרון שנוסף לרשימה הזו.
+    lastUsed(String field): "${field}: אחרון בשימוש"
+    inheritValue(String value): "משתמש בברירת המחדל של השדה: ${value}"
+    inheritEmpty: משתמש בברירת המחדל של השדה, שהיא ריקה.
+    inDays(int count): "${_plural(count, one: 'בעוד יום', many: 'בעוד ${count} ימים')}"
+    fieldsSet(int count): "${_plural(count, one: 'שדה אחד מוגדר', many: '${count} שדות מוגדרים')}"
+    checked: מסומן
   itemTypes:
     label: חזרתיות
     staple: קבוע

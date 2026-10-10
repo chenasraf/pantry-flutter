@@ -4,8 +4,9 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
+import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
-import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/models/item_start_values.dart';
 import 'package:pantry_core/utils/currencies.dart';
 import 'form_components.dart';
 import 'price_input.dart';
@@ -37,29 +38,43 @@ class ItemDraft {
   /// untouched item falls back to the fields' default seeds.
   List<FieldValue> customFields = const [];
 
-  /// Start this draft on the recurrence [recurrenceDefault] describes.
-  void applyRecurrenceDefault(ListRecurrenceDefault recurrenceDefault) {
-    lifecycle = recurrenceDefault.kind.lifecycle;
+  /// Start this draft on the recurrence [value] describes.
+  void applyRecurrence(RecurrenceDefaultValue value) {
+    final normalized = value.normalized();
+    lifecycle = normalized.kind.lifecycle;
     recurrence = RecurrenceState.fromRrule(
-      recurrenceDefault.effectiveRrule,
-      repeatFromCompletion: recurrenceDefault.repeatFromCompletion,
+      normalized.rrule,
+      repeatFromCompletion: normalized.repeatFromCompletion,
     );
   }
 
-  void reset(ListRecurrenceDefault recurrenceDefault) {
+  /// Put [start]'s values on the chips a list can pre-fill, leaving the name,
+  /// description, image and price alone.
+  void start(ItemStartValues start) {
+    quantity = start.quantity;
+    categoryId = start.categoryId;
+    storeIds = {...start.storeIds};
+    labelIds = {...start.labelIds};
+    applyRecurrence(start.recurrence);
+  }
+
+  void reset(ItemStartValues start) {
     name = '';
     description = '';
-    quantity = '';
-    categoryId = null;
-    storeIds = {};
-    labelIds = {};
-    applyRecurrenceDefault(recurrenceDefault);
+    this.start(start);
     imageFile = null;
     imageBytes = null;
     barcode = null;
     price = PricesDraft.empty(price.storeless.currency);
     customFields = const [];
   }
+
+  /// The recurrence the composed item carries, in the shape a list remembers.
+  RecurrenceDefaultValue get usedRecurrence => RecurrenceDefaultValue(
+    kind: lifecycle.recurrenceKind,
+    rrule: rrule,
+    repeatFromCompletion: repeatFromCompletion,
+  ).normalized();
 
   bool get repeatFromCompletion => recurrence.repeatFromCompletion;
 
