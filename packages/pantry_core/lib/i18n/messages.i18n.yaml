@@ -1066,6 +1066,10 @@ shopping:
   noTripsYet: No shopping trips yet.
   noHouseTripsYet: No shopping trips in this house yet.
   loadHistoryFailed: Failed to load history.
+  deleteTrip: Delete trip
+  deleteTripTitle: Delete trip
+  deleteTripBody: This trip and its totals will be permanently removed from shopping history. This cannot be undone.
+  deleteTripFailed: Could not delete the trip.
   # Common
   loadFailed: Something went wrong. Please try again.
   uncategorized: Uncategorized

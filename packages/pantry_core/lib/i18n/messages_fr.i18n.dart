@@ -5560,6 +5560,27 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get loadHistoryFailed => """Impossible de charger l'historique.""";
 
   /// ```dart
+  /// "Supprimer la course"
+  /// ```
+  String get deleteTrip => """Supprimer la course""";
+
+  /// ```dart
+  /// "Supprimer la course"
+  /// ```
+  String get deleteTripTitle => """Supprimer la course""";
+
+  /// ```dart
+  /// "Cette course et ses totaux seront définitivement supprimés de l'historique des courses. Cette action est irréversible."
+  /// ```
+  String get deleteTripBody =>
+      """Cette course et ses totaux seront définitivement supprimés de l'historique des courses. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Impossible de supprimer la course."
+  /// ```
+  String get deleteTripFailed => """Impossible de supprimer la course.""";
+
+  /// ```dart
   /// "Une erreur s'est produite. Veuillez réessayer."
   /// ```
   String get loadFailed => """Une erreur s'est produite. Veuillez réessayer.""";
@@ -8085,6 +8106,11 @@ Mot de passe : pantry-rocks""",
   """shopping.noHouseTripsYet""":
       """Aucune course dans cette maison pour l'instant.""",
   """shopping.loadHistoryFailed""": """Impossible de charger l'historique.""",
+  """shopping.deleteTrip""": """Supprimer la course""",
+  """shopping.deleteTripTitle""": """Supprimer la course""",
+  """shopping.deleteTripBody""":
+      """Cette course et ses totaux seront définitivement supprimés de l'historique des courses. Cette action est irréversible.""",
+  """shopping.deleteTripFailed""": """Impossible de supprimer la course.""",
   """shopping.loadFailed""":
       """Une erreur s'est produite. Veuillez réessayer.""",
   """shopping.uncategorized""": """Sans catégorie""",

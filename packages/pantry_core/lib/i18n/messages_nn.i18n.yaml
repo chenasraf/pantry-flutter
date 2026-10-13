@@ -1200,6 +1200,10 @@ shopping:
   noTripsYet: Ingen handlar enno.
   noHouseTripsYet: Ingen handlar i dette huset enno.
   loadHistoryFailed: Klarte ikkje å laste historikken.
+  deleteTrip: Slett handelen
+  deleteTripTitle: Slett handelen
+  deleteTripBody: Denne handelen og summane hennar blir fjerna for godt frå handlehistorikken. Dette kan ikkje angrast.
+  deleteTripFailed: Klarte ikkje å slette handelen.
   loadFailed: Noko gjekk gale. Prøv igjen.
   uncategorized: Utan kategori
 

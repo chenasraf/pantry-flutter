@@ -5566,6 +5566,28 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get loadHistoryFailed => """Verlauf konnte nicht geladen werden.""";
 
   /// ```dart
+  /// "Einkauf löschen"
+  /// ```
+  String get deleteTrip => """Einkauf löschen""";
+
+  /// ```dart
+  /// "Einkauf löschen"
+  /// ```
+  String get deleteTripTitle => """Einkauf löschen""";
+
+  /// ```dart
+  /// "Dieser Einkauf und seine Summen werden dauerhaft aus dem Einkaufsverlauf entfernt. Das kann nicht rückgängig gemacht werden."
+  /// ```
+  String get deleteTripBody =>
+      """Dieser Einkauf und seine Summen werden dauerhaft aus dem Einkaufsverlauf entfernt. Das kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Der Einkauf konnte nicht gelöscht werden."
+  /// ```
+  String get deleteTripFailed =>
+      """Der Einkauf konnte nicht gelöscht werden.""";
+
+  /// ```dart
   /// "Etwas ist schiefgelaufen. Bitte versuche es erneut."
   /// ```
   String get loadFailed =>
@@ -8096,6 +8118,12 @@ Passwort: pantry-rocks""",
   """shopping.noTripsYet""": """Noch keine Einkäufe.""",
   """shopping.noHouseTripsYet""": """Noch keine Einkäufe in diesem Haushalt.""",
   """shopping.loadHistoryFailed""": """Verlauf konnte nicht geladen werden.""",
+  """shopping.deleteTrip""": """Einkauf löschen""",
+  """shopping.deleteTripTitle""": """Einkauf löschen""",
+  """shopping.deleteTripBody""":
+      """Dieser Einkauf und seine Summen werden dauerhaft aus dem Einkaufsverlauf entfernt. Das kann nicht rückgängig gemacht werden.""",
+  """shopping.deleteTripFailed""":
+      """Der Einkauf konnte nicht gelöscht werden.""",
   """shopping.loadFailed""":
       """Etwas ist schiefgelaufen. Bitte versuche es erneut.""",
   """shopping.uncategorized""": """Ohne Kategorie""",

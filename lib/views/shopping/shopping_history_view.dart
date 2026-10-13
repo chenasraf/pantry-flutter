@@ -6,16 +6,22 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/shopping_estimate.dart';
 import 'package:pantry_core/models/shopping_history_row.dart';
 import 'package:pantry_core/models/store.dart';
+import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/date_format.dart';
+import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/theme/app_theme.dart';
+import 'package:pantry/utils/app_toast.dart';
+import 'package:pantry/views/shopping/delete_trip_dialog.dart';
 import 'package:pantry/views/shopping/shopping_review_view.dart';
+import 'package:pantry/widgets/context_menu_region.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 
 /// List of closed trips. A Mine/House scope toggle selects which trips are
@@ -146,10 +152,52 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
           mode: ShoppingReviewMode.history,
           stores: _stores,
           canEditBilled: row.userId == _currentUserId,
+          onDelete: _canDelete(row) ? () => _deleteAndRemove(row) : null,
         ),
       ),
     );
     if (amended == true) await _refreshRow(row.id);
+  }
+
+  /// Only the shopper who started a trip may delete it; joining one, or seeing
+  /// it in the House scope, is not enough.
+  bool _canDelete(ShoppingHistoryRow row) =>
+      hasFeature('shopping-history-delete') && row.userId == _currentUserId;
+
+  /// Sends the delete and reports whether it landed, toasting when it didn't.
+  /// Removing the row is left to the caller, because a swiped-away card must
+  /// leave the list only once its dismiss animation has finished.
+  Future<bool> _delete(ShoppingHistoryRow row) async {
+    try {
+      await _service.deleteSession(widget.houseId, row.id);
+      return true;
+    } on ApiException catch (e) {
+      showAppToast(message: m.shopping.deleteTripFailed, kind: ToastKind.error);
+      // The trip is still live, so the list no longer matches the server.
+      if (e.statusCode == 409 && mounted) unawaited(_reload());
+      return false;
+    } catch (_) {
+      showAppToast(message: m.shopping.deleteTripFailed, kind: ToastKind.error);
+      return false;
+    }
+  }
+
+  /// The server row is gone too, so dropping it locally keeps the next page's
+  /// offset (`_rows.length`) in line without a refetch.
+  void _removeRow(int sessionId) {
+    if (!mounted) return;
+    setState(() => _rows.removeWhere((r) => r.id == sessionId));
+  }
+
+  Future<bool> _deleteAndRemove(ShoppingHistoryRow row) async {
+    final deleted = await _delete(row);
+    if (deleted) _removeRow(row.id);
+    return deleted;
+  }
+
+  Future<void> _confirmAndDelete(ShoppingHistoryRow row) async {
+    if (!await confirmDeleteTrip(context)) return;
+    await _deleteAndRemove(row);
   }
 
   /// A typed total is queued rather than sent, so it reaches the server — and
@@ -258,10 +306,25 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
               ),
             );
           }
-          return _HistoryCard(
-            row: _rows[index],
-            memberName: _memberNames[_rows[index].userId],
-            onTap: () => _openSummary(_rows[index]),
+          final row = _rows[index];
+          final canDelete = _canDelete(row);
+          final card = _HistoryCard(
+            row: row,
+            memberName: _memberNames[row.userId],
+            onTap: () => _openSummary(row),
+            onDelete: canDelete ? () => _confirmAndDelete(row) : null,
+          );
+          // A swipe is awkward with a mouse or trackpad; desktop reaches the
+          // same action through the card's menu instead.
+          if (!canDelete || !PlatformInfo.isMobile) return card;
+          return Dismissible(
+            key: ValueKey('trip-${row.id}'),
+            direction: DismissDirection.endToStart,
+            confirmDismiss: (_) async =>
+                await confirmDeleteTrip(context) && await _delete(row),
+            onDismissed: (_) => _removeRow(row.id),
+            background: const _DeleteBackground(),
+            child: card,
           );
         },
       ),
@@ -274,11 +337,52 @@ class _HistoryCard extends StatelessWidget {
   final String? memberName;
   final VoidCallback onTap;
 
+  /// Asks to delete the trip; null when the viewer may not.
+  final VoidCallback? onDelete;
+
   const _HistoryCard({
     required this.row,
     required this.memberName,
     required this.onTap,
+    this.onDelete,
   });
+
+  List<PopupMenuEntry<String>> _menuItems(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return [
+      PopupMenuItem(
+        value: 'delete',
+        child: Row(
+          children: [
+            Icon(Icons.delete_outline, size: 20, color: cs.error),
+            const SizedBox(width: 12),
+            Text(m.shopping.deleteTrip, style: TextStyle(color: cs.error)),
+          ],
+        ),
+      ),
+    ];
+  }
+
+  void _onMenuSelected(String value) {
+    if (value == 'delete') onDelete?.call();
+  }
+
+  /// Swiping is the quick path on a phone, but a hidden gesture alone is easy
+  /// to miss, so a long press offers the same action.
+  Future<void> _showActionSheet(BuildContext context) async {
+    final cs = Theme.of(context).colorScheme;
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: ListTile(
+          leading: Icon(Icons.delete_outline, color: cs.error),
+          title: Text(m.shopping.deleteTrip, style: TextStyle(color: cs.error)),
+          onTap: () => Navigator.pop(ctx, 'delete'),
+        ),
+      ),
+    );
+    if (selected != null) _onMenuSelected(selected);
+  }
 
   /// Human trip duration (createdAt → closedAt), or null when still open.
   String? get _duration {
@@ -302,11 +406,15 @@ class _HistoryCard extends StatelessWidget {
     final timeLabel = duration == null
         ? formatDate(when)
         : '${formatDate(when)} · $duration';
+    final desktopMenu = onDelete != null && !PlatformInfo.isMobile;
 
-    return Card(
+    final card = Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: InkWell(
         onTap: onTap,
+        onLongPress: onDelete != null && PlatformInfo.isMobile
+            ? () => _showActionSheet(context)
+            : null,
         borderRadius: BorderRadius.circular(SurfaceRadius.card),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -354,9 +462,62 @@ class _HistoryCard extends StatelessWidget {
                   ),
                 ),
               ),
+              if (desktopMenu) ...[
+                const SizedBox(width: 4),
+                PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.more_vert,
+                    size: 20,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onSelected: _onMenuSelected,
+                  itemBuilder: _menuItems,
+                ),
+              ],
             ],
           ),
         ),
+      ),
+    );
+
+    if (!desktopMenu) return card;
+    return ContextMenuRegion<String>(
+      itemBuilder: () => _menuItems(context),
+      onSelected: _onMenuSelected,
+      child: card,
+    );
+  }
+}
+
+class _DeleteBackground extends StatelessWidget {
+  const _DeleteBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: cs.errorContainer,
+        borderRadius: BorderRadius.circular(SurfaceRadius.card),
+      ),
+      alignment: AlignmentDirectional.centerEnd,
+      padding: const EdgeInsetsDirectional.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            m.shopping.deleteTrip,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: cs.onErrorContainer,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Icon(Icons.delete_outline, color: cs.onErrorContainer),
+        ],
       ),
     );
   }

@@ -5553,6 +5553,27 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get loadHistoryFailed => """No se pudo cargar el historial.""";
 
   /// ```dart
+  /// "Eliminar compra"
+  /// ```
+  String get deleteTrip => """Eliminar compra""";
+
+  /// ```dart
+  /// "Eliminar compra"
+  /// ```
+  String get deleteTripTitle => """Eliminar compra""";
+
+  /// ```dart
+  /// "Esta compra y sus totales se eliminarán permanentemente del historial de compras. Esta acción no se puede deshacer."
+  /// ```
+  String get deleteTripBody =>
+      """Esta compra y sus totales se eliminarán permanentemente del historial de compras. Esta acción no se puede deshacer.""";
+
+  /// ```dart
+  /// "No se pudo eliminar la compra."
+  /// ```
+  String get deleteTripFailed => """No se pudo eliminar la compra.""";
+
+  /// ```dart
   /// "Algo salió mal. Inténtalo de nuevo."
   /// ```
   String get loadFailed => """Algo salió mal. Inténtalo de nuevo.""";
@@ -8062,6 +8083,11 @@ Contraseña: pantry-rocks""",
   """shopping.noTripsYet""": """Aún no hay compras.""",
   """shopping.noHouseTripsYet""": """Aún no hay compras en esta casa.""",
   """shopping.loadHistoryFailed""": """No se pudo cargar el historial.""",
+  """shopping.deleteTrip""": """Eliminar compra""",
+  """shopping.deleteTripTitle""": """Eliminar compra""",
+  """shopping.deleteTripBody""":
+      """Esta compra y sus totales se eliminarán permanentemente del historial de compras. Esta acción no se puede deshacer.""",
+  """shopping.deleteTripFailed""": """No se pudo eliminar la compra.""",
   """shopping.loadFailed""": """Algo salió mal. Inténtalo de nuevo.""",
   """shopping.uncategorized""": """Sin categoría""",
   """share.title""": """Compartir con Pantry""",

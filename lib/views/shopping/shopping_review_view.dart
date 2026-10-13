@@ -16,6 +16,7 @@ import 'package:pantry_core/utils/currencies.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
+import 'package:pantry/views/shopping/delete_trip_dialog.dart';
 import 'package:pantry/views/shopping/shopping_reminder_block.dart';
 
 /// Which review the screen renders. [advance] shows only the store being left
@@ -47,6 +48,11 @@ class ShoppingReviewView extends StatefulWidget {
   /// history belongs to the shopper who ran it; everyone else reads it.
   final bool canEditBilled;
 
+  /// Deletes this finished trip and reports whether it went through; null
+  /// when the viewer may not delete it. The screen asks for confirmation
+  /// first and closes once the trip is gone.
+  final Future<bool> Function()? onDelete;
+
   const ShoppingReviewView({
     super.key,
     required this.houseId,
@@ -57,6 +63,7 @@ class ShoppingReviewView extends StatefulWidget {
     this.reminders = const [],
     this.onManageReminders,
     this.canEditBilled = true,
+    this.onDelete,
   });
 
   @override
@@ -227,13 +234,11 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
       _editing ? m.shopping.editTotalsTitle : m.shopping.reviewTitle,
   };
 
-  /// Opting a finished trip in and out of amending. Absent everywhere else:
-  /// mid-trip the totals are already editable, and a housemate reading someone
-  /// else's trip has nothing to open.
+  /// Opting a finished trip in and out of amending, and deleting it. Absent
+  /// everywhere else: mid-trip the totals are already editable, and a
+  /// housemate reading someone else's trip has nothing to open.
   List<Widget>? get _actions {
-    if (widget.mode != ShoppingReviewMode.history || !widget.canEditBilled) {
-      return null;
-    }
+    if (widget.mode != ShoppingReviewMode.history) return null;
     if (_editing) {
       return [
         TextButton(
@@ -242,13 +247,28 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
         ),
       ];
     }
-    return [
-      IconButton(
-        icon: const Icon(Icons.edit_outlined),
-        tooltip: m.shopping.editTotals,
-        onPressed: () => setState(() => _editing = true),
-      ),
+    final actions = [
+      if (widget.canEditBilled)
+        IconButton(
+          icon: const Icon(Icons.edit_outlined),
+          tooltip: m.shopping.editTotals,
+          onPressed: () => setState(() => _editing = true),
+        ),
+      if (widget.onDelete != null)
+        IconButton(
+          icon: const Icon(Icons.delete_outline),
+          tooltip: m.shopping.deleteTrip,
+          onPressed: _delete,
+        ),
     ];
+    return actions.isEmpty ? null : actions;
+  }
+
+  Future<void> _delete() async {
+    if (!await confirmDeleteTrip(context)) return;
+    final deleted = await widget.onDelete!();
+    if (!deleted || !mounted) return;
+    Navigator.of(context).pop();
   }
 
   @override

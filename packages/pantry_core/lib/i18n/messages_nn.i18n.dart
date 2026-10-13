@@ -5516,6 +5516,27 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get loadHistoryFailed => """Klarte ikkje å laste historikken.""";
 
   /// ```dart
+  /// "Slett handelen"
+  /// ```
+  String get deleteTrip => """Slett handelen""";
+
+  /// ```dart
+  /// "Slett handelen"
+  /// ```
+  String get deleteTripTitle => """Slett handelen""";
+
+  /// ```dart
+  /// "Denne handelen og summane hennar blir fjerna for godt frå handlehistorikken. Dette kan ikkje angrast."
+  /// ```
+  String get deleteTripBody =>
+      """Denne handelen og summane hennar blir fjerna for godt frå handlehistorikken. Dette kan ikkje angrast.""";
+
+  /// ```dart
+  /// "Klarte ikkje å slette handelen."
+  /// ```
+  String get deleteTripFailed => """Klarte ikkje å slette handelen.""";
+
+  /// ```dart
   /// "Noko gjekk gale. Prøv igjen."
   /// ```
   String get loadFailed => """Noko gjekk gale. Prøv igjen.""";
@@ -7992,6 +8013,11 @@ Passord: pantry""",
   """shopping.noTripsYet""": """Ingen handlar enno.""",
   """shopping.noHouseTripsYet""": """Ingen handlar i dette huset enno.""",
   """shopping.loadHistoryFailed""": """Klarte ikkje å laste historikken.""",
+  """shopping.deleteTrip""": """Slett handelen""",
+  """shopping.deleteTripTitle""": """Slett handelen""",
+  """shopping.deleteTripBody""":
+      """Denne handelen og summane hennar blir fjerna for godt frå handlehistorikken. Dette kan ikkje angrast.""",
+  """shopping.deleteTripFailed""": """Klarte ikkje å slette handelen.""",
   """shopping.loadFailed""": """Noko gjekk gale. Prøv igjen.""",
   """shopping.uncategorized""": """Utan kategori""",
   """share.title""": """Del til Pantry""",

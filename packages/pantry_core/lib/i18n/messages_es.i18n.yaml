@@ -1057,6 +1057,10 @@ shopping:
   noTripsYet: Aún no hay compras.
   noHouseTripsYet: Aún no hay compras en esta casa.
   loadHistoryFailed: No se pudo cargar el historial.
+  deleteTrip: Eliminar compra
+  deleteTripTitle: Eliminar compra
+  deleteTripBody: Esta compra y sus totales se eliminarán permanentemente del historial de compras. Esta acción no se puede deshacer.
+  deleteTripFailed: No se pudo eliminar la compra.
   loadFailed: Algo salió mal. Inténtalo de nuevo.
   uncategorized: Sin categoría
 

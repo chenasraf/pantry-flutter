@@ -450,6 +450,13 @@ class ShoppingService {
     );
   }
 
+  /// (22) Permanently delete one of the caller's finished trips. Sent directly
+  /// rather than queued: replaying an irreversible delete long after the
+  /// shopper asked for it is more surprising than a delete that fails.
+  Future<void> deleteSession(int houseId, int sessionId) {
+    return _api.delete('${_base(houseId)}/sessions/$sessionId');
+  }
+
   // -- Helpers ---------------------------------------------------------------
 
   static List<ShoppingPresenceEntry> _parsePresence(List data) => data

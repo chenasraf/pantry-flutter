@@ -1057,6 +1057,10 @@ shopping:
   noTripsYet: Aucune course pour l'instant.
   noHouseTripsYet: Aucune course dans cette maison pour l'instant.
   loadHistoryFailed: Impossible de charger l'historique.
+  deleteTrip: Supprimer la course
+  deleteTripTitle: Supprimer la course
+  deleteTripBody: Cette course et ses totaux seront définitivement supprimés de l'historique des courses. Cette action est irréversible.
+  deleteTripFailed: Impossible de supprimer la course.
   loadFailed: Une erreur s'est produite. Veuillez réessayer.
   uncategorized: Sans catégorie
 

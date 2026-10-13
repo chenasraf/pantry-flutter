@@ -5500,6 +5500,27 @@ class ShoppingMessages {
   String get loadHistoryFailed => """Failed to load history.""";
 
   /// ```dart
+  /// "Delete trip"
+  /// ```
+  String get deleteTrip => """Delete trip""";
+
+  /// ```dart
+  /// "Delete trip"
+  /// ```
+  String get deleteTripTitle => """Delete trip""";
+
+  /// ```dart
+  /// "This trip and its totals will be permanently removed from shopping history. This cannot be undone."
+  /// ```
+  String get deleteTripBody =>
+      """This trip and its totals will be permanently removed from shopping history. This cannot be undone.""";
+
+  /// ```dart
+  /// "Could not delete the trip."
+  /// ```
+  String get deleteTripFailed => """Could not delete the trip.""";
+
+  /// ```dart
   /// "Something went wrong. Please try again."
   /// ```
   String get loadFailed => """Something went wrong. Please try again.""";
@@ -7958,6 +7979,11 @@ Password: pantry-rocks""",
   """shopping.noTripsYet""": """No shopping trips yet.""",
   """shopping.noHouseTripsYet""": """No shopping trips in this house yet.""",
   """shopping.loadHistoryFailed""": """Failed to load history.""",
+  """shopping.deleteTrip""": """Delete trip""",
+  """shopping.deleteTripTitle""": """Delete trip""",
+  """shopping.deleteTripBody""":
+      """This trip and its totals will be permanently removed from shopping history. This cannot be undone.""",
+  """shopping.deleteTripFailed""": """Could not delete the trip.""",
   """shopping.loadFailed""": """Something went wrong. Please try again.""",
   """shopping.uncategorized""": """Uncategorized""",
   """share.title""": """Share to Pantry""",

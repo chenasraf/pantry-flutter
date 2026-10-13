@@ -1057,6 +1057,10 @@ shopping:
   noTripsYet: Noch keine Einkäufe.
   noHouseTripsYet: Noch keine Einkäufe in diesem Haushalt.
   loadHistoryFailed: Verlauf konnte nicht geladen werden.
+  deleteTrip: Einkauf löschen
+  deleteTripTitle: Einkauf löschen
+  deleteTripBody: Dieser Einkauf und seine Summen werden dauerhaft aus dem Einkaufsverlauf entfernt. Das kann nicht rückgängig gemacht werden.
+  deleteTripFailed: Der Einkauf konnte nicht gelöscht werden.
   loadFailed: Etwas ist schiefgelaufen. Bitte versuche es erneut.
   uncategorized: Ohne Kategorie
 

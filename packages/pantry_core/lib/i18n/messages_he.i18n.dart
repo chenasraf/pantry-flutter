@@ -5508,6 +5508,27 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get loadHistoryFailed => """טעינת ההיסטוריה נכשלה.""";
 
   /// ```dart
+  /// "מחיקת קנייה"
+  /// ```
+  String get deleteTrip => """מחיקת קנייה""";
+
+  /// ```dart
+  /// "מחיקת קנייה"
+  /// ```
+  String get deleteTripTitle => """מחיקת קנייה""";
+
+  /// ```dart
+  /// "הקנייה והסכומים שלה יוסרו לצמיתות מהיסטוריית הקניות. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get deleteTripBody =>
+      """הקנייה והסכומים שלה יוסרו לצמיתות מהיסטוריית הקניות. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "מחיקת הקנייה נכשלה."
+  /// ```
+  String get deleteTripFailed => """מחיקת הקנייה נכשלה.""";
+
+  /// ```dart
   /// "משהו השתבש. נסו שוב."
   /// ```
   String get loadFailed => """משהו השתבש. נסו שוב.""";
@@ -7938,6 +7959,11 @@ Map<String, String> get messagesHeMap => {
   """shopping.noTripsYet""": """אין עדיין קניות.""",
   """shopping.noHouseTripsYet""": """אין עדיין קניות בבית הזה.""",
   """shopping.loadHistoryFailed""": """טעינת ההיסטוריה נכשלה.""",
+  """shopping.deleteTrip""": """מחיקת קנייה""",
+  """shopping.deleteTripTitle""": """מחיקת קנייה""",
+  """shopping.deleteTripBody""":
+      """הקנייה והסכומים שלה יוסרו לצמיתות מהיסטוריית הקניות. לא ניתן לבטל פעולה זו.""",
+  """shopping.deleteTripFailed""": """מחיקת הקנייה נכשלה.""",
   """shopping.loadFailed""": """משהו השתבש. נסו שוב.""",
   """shopping.uncategorized""": """ללא קטגוריה""",
   """share.title""": """שיתוף ל-Pantry""",

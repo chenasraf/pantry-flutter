@@ -1057,6 +1057,10 @@ shopping:
   noTripsYet: אין עדיין קניות.
   noHouseTripsYet: אין עדיין קניות בבית הזה.
   loadHistoryFailed: טעינת ההיסטוריה נכשלה.
+  deleteTrip: מחיקת קנייה
+  deleteTripTitle: מחיקת קנייה
+  deleteTripBody: הקנייה והסכומים שלה יוסרו לצמיתות מהיסטוריית הקניות. לא ניתן לבטל פעולה זו.
+  deleteTripFailed: מחיקת הקנייה נכשלה.
   loadFailed: משהו השתבש. נסו שוב.
   uncategorized: ללא קטגוריה
 
