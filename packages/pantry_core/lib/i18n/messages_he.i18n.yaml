@@ -248,6 +248,11 @@ settings:
   itemActionsBody: הצגת פעולות מהירות בכל פריט. כשמכובה, הפעולות עוברות לכפתור תפריט בכל פריט.
   startShoppingButton: כפתור «התחלת קניות»
   startShoppingButtonBody: הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט.
+  listMenuStyle: סגנון תפריט הרשימה
+  listMenuStyleBody: "איך תפריט הרשימה מציג את הפעולות שלו: רשת של קטגוריות, או רשימה אחת עם כל הפעולות."
+  listMenuStyleNames:
+    grid: רשת
+    list: רשימה
   truncateItemNames: קיצור שמות פריטים ארוכים
   truncateItemNamesBody: שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.
   itemDescription: תיאור על פריטים
@@ -525,6 +530,12 @@ checklists:
   itemRemoved: הפריט הוסר
   undo: בטל
   selectItems: בחירה
+  menu:
+    sortAndView: מיון ותצוגה
+    manage: ניהול
+    list: רשימה
+    shopping: קניות
+    developer: מפתחים
   batch:
     selected(int count): "${_plural(count, one: 'פריט אחד נבחר', many: '$count נבחרו')}"
     moveTitle: העברת פריטים אל

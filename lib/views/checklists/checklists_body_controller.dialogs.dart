@@ -247,10 +247,44 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
     }
   }
 
-  Future<void> showOverflowSheet(BuildContext context) async {
-    final entries = overflowItems();
-    if (entries.isEmpty) return;
-    final selected = await showOverflowMenuSheet(context, entries);
+  /// Opens the overflow from the button at [context]: the category grid in a
+  /// sheet (a popover on desktop), or the labelled list in a sheet. Groups in
+  /// [promoted] are already on the toolbar and left out.
+  Future<void> showOverflowSheet(
+    BuildContext context, [
+    Set<String> promoted = const {},
+  ]) async {
+    final String? selected;
+    if (_usesGrid) {
+      List<OverflowGroup> groups() => [
+        for (final g in overflowGroups())
+          if (!promoted.contains(g.id)) g,
+      ];
+      if (groups().isEmpty) return;
+      final listenable = Listenable.merge([
+        domain,
+        this,
+        PrefsService.instance,
+      ]);
+      void onToggle(String value) => onOverflow(context, value);
+      selected = PlatformInfo.isDesktop
+          ? await showOverflowGridPopover(
+              context,
+              groups: groups,
+              listenable: listenable,
+              onToggle: onToggle,
+            )
+          : await showOverflowGridSheet(
+              context,
+              groups: groups,
+              listenable: listenable,
+              onToggle: onToggle,
+            );
+    } else {
+      final entries = overflowItems(promoted);
+      if (entries.isEmpty) return;
+      selected = await showOverflowMenuSheet(context, entries);
+    }
     if (selected != null && context.mounted) {
       await onOverflow(context, selected);
     }

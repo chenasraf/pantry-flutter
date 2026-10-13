@@ -1263,6 +1263,19 @@ class SettingsMessagesHe extends SettingsMessages {
       """הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט.""";
 
   /// ```dart
+  /// "סגנון תפריט הרשימה"
+  /// ```
+  String get listMenuStyle => """סגנון תפריט הרשימה""";
+
+  /// ```dart
+  /// "איך תפריט הרשימה מציג את הפעולות שלו: רשת של קטגוריות, או רשימה אחת עם כל הפעולות."
+  /// ```
+  String get listMenuStyleBody =>
+      """איך תפריט הרשימה מציג את הפעולות שלו: רשת של קטגוריות, או רשימה אחת עם כל הפעולות.""";
+  ListMenuStyleNamesSettingsMessagesHe get listMenuStyleNames =>
+      ListMenuStyleNamesSettingsMessagesHe(this);
+
+  /// ```dart
   /// "קיצור שמות פריטים ארוכים"
   /// ```
   String get truncateItemNames => """קיצור שמות פריטים ארוכים""";
@@ -1681,6 +1694,22 @@ class DensityNamesSettingsMessagesHe extends DensityNamesSettingsMessages {
   /// "צפופה מאוד"
   /// ```
   String get compact => """צפופה מאוד""";
+}
+
+class ListMenuStyleNamesSettingsMessagesHe
+    extends ListMenuStyleNamesSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const ListMenuStyleNamesSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "רשת"
+  /// ```
+  String get grid => """רשת""";
+
+  /// ```dart
+  /// "רשימה"
+  /// ```
+  String get list => """רשימה""";
 }
 
 class ItemDescriptionNamesSettingsMessagesHe
@@ -2645,6 +2674,7 @@ class ChecklistsMessagesHe extends ChecklistsMessages {
   /// "בחירה"
   /// ```
   String get selectItems => """בחירה""";
+  MenuChecklistsMessagesHe get menu => MenuChecklistsMessagesHe(this);
   BatchChecklistsMessagesHe get batch => BatchChecklistsMessagesHe(this);
 
   /// ```dart
@@ -3377,6 +3407,36 @@ class FiltersChecklistsMessagesHe extends FiltersChecklistsMessages {
   /// "כל מטבע"
   /// ```
   String get anyCurrency => """כל מטבע""";
+}
+
+class MenuChecklistsMessagesHe extends MenuChecklistsMessages {
+  final ChecklistsMessagesHe _parent;
+  const MenuChecklistsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "מיון ותצוגה"
+  /// ```
+  String get sortAndView => """מיון ותצוגה""";
+
+  /// ```dart
+  /// "ניהול"
+  /// ```
+  String get manage => """ניהול""";
+
+  /// ```dart
+  /// "רשימה"
+  /// ```
+  String get list => """רשימה""";
+
+  /// ```dart
+  /// "קניות"
+  /// ```
+  String get shopping => """קניות""";
+
+  /// ```dart
+  /// "מפתחים"
+  /// ```
+  String get developer => """מפתחים""";
 }
 
 class BatchChecklistsMessagesHe extends BatchChecklistsMessages {
@@ -7221,6 +7281,11 @@ Map<String, String> get messagesHeMap => {
   """settings.startShoppingButton""": """כפתור «התחלת קניות»""",
   """settings.startShoppingButtonBody""":
       """הצגת הכפתור הצף «התחלת קניות» במסך הרשימות. כשמכובה, הוא עובר לתפריט.""",
+  """settings.listMenuStyle""": """סגנון תפריט הרשימה""",
+  """settings.listMenuStyleBody""":
+      """איך תפריט הרשימה מציג את הפעולות שלו: רשת של קטגוריות, או רשימה אחת עם כל הפעולות.""",
+  """settings.listMenuStyleNames.grid""": """רשת""",
+  """settings.listMenuStyleNames.list""": """רשימה""",
   """settings.truncateItemNames""": """קיצור שמות פריטים ארוכים""",
   """settings.truncateItemNamesBody""":
       """שמירת כל שם פריט בשורה אחת, המסתיימת בשלוש נקודות. כשמכובה, שמות ארוכים נשברים לכמה שורות.""",
@@ -7492,6 +7557,11 @@ Map<String, String> get messagesHeMap => {
   """checklists.itemRemoved""": """הפריט הוסר""",
   """checklists.undo""": """בטל""",
   """checklists.selectItems""": """בחירה""",
+  """checklists.menu.sortAndView""": """מיון ותצוגה""",
+  """checklists.menu.manage""": """ניהול""",
+  """checklists.menu.list""": """רשימה""",
+  """checklists.menu.shopping""": """קניות""",
+  """checklists.menu.developer""": """מפתחים""",
   """checklists.batch.moveTitle""": """העברת פריטים אל""",
   """checklists.batch.copyTitle""": """העתקת פריטים אל""",
   """checklists.batch.categoryTitle""": """הגדרת קטגוריה""",

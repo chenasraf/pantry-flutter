@@ -1273,6 +1273,19 @@ class SettingsMessagesEs extends SettingsMessages {
       """Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú.""";
 
   /// ```dart
+  /// "Estilo del menú de lista"
+  /// ```
+  String get listMenuStyle => """Estilo del menú de lista""";
+
+  /// ```dart
+  /// "Cómo muestra el menú de lista sus acciones: una cuadrícula de categorías o una lista con todas las acciones."
+  /// ```
+  String get listMenuStyleBody =>
+      """Cómo muestra el menú de lista sus acciones: una cuadrícula de categorías o una lista con todas las acciones.""";
+  ListMenuStyleNamesSettingsMessagesEs get listMenuStyleNames =>
+      ListMenuStyleNamesSettingsMessagesEs(this);
+
+  /// ```dart
   /// "Truncar nombres de artículos largos"
   /// ```
   String get truncateItemNames => """Truncar nombres de artículos largos""";
@@ -1695,6 +1708,22 @@ class DensityNamesSettingsMessagesEs extends DensityNamesSettingsMessages {
   /// "Muy compacta"
   /// ```
   String get compact => """Muy compacta""";
+}
+
+class ListMenuStyleNamesSettingsMessagesEs
+    extends ListMenuStyleNamesSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const ListMenuStyleNamesSettingsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Cuadrícula"
+  /// ```
+  String get grid => """Cuadrícula""";
+
+  /// ```dart
+  /// "Lista"
+  /// ```
+  String get list => """Lista""";
 }
 
 class ItemDescriptionNamesSettingsMessagesEs
@@ -2663,6 +2692,7 @@ class ChecklistsMessagesEs extends ChecklistsMessages {
   /// "Seleccionar"
   /// ```
   String get selectItems => """Seleccionar""";
+  MenuChecklistsMessagesEs get menu => MenuChecklistsMessagesEs(this);
   BatchChecklistsMessagesEs get batch => BatchChecklistsMessagesEs(this);
 
   /// ```dart
@@ -3403,6 +3433,36 @@ class FiltersChecklistsMessagesEs extends FiltersChecklistsMessages {
   /// "Cualquier moneda"
   /// ```
   String get anyCurrency => """Cualquier moneda""";
+}
+
+class MenuChecklistsMessagesEs extends MenuChecklistsMessages {
+  final ChecklistsMessagesEs _parent;
+  const MenuChecklistsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Orden y vista"
+  /// ```
+  String get sortAndView => """Orden y vista""";
+
+  /// ```dart
+  /// "Gestionar"
+  /// ```
+  String get manage => """Gestionar""";
+
+  /// ```dart
+  /// "Lista"
+  /// ```
+  String get list => """Lista""";
+
+  /// ```dart
+  /// "Compras"
+  /// ```
+  String get shopping => """Compras""";
+
+  /// ```dart
+  /// "Desarrollador"
+  /// ```
+  String get developer => """Desarrollador""";
 }
 
 class BatchChecklistsMessagesEs extends BatchChecklistsMessages {
@@ -7299,6 +7359,11 @@ Contraseña: pantry-rocks""",
   """settings.startShoppingButton""": """Botón «Empezar a comprar»""",
   """settings.startShoppingButtonBody""":
       """Muestra el botón flotante «Empezar a comprar» en la pantalla de listas. Si se desactiva, pasa al menú.""",
+  """settings.listMenuStyle""": """Estilo del menú de lista""",
+  """settings.listMenuStyleBody""":
+      """Cómo muestra el menú de lista sus acciones: una cuadrícula de categorías o una lista con todas las acciones.""",
+  """settings.listMenuStyleNames.grid""": """Cuadrícula""",
+  """settings.listMenuStyleNames.list""": """Lista""",
   """settings.truncateItemNames""": """Truncar nombres de artículos largos""",
   """settings.truncateItemNamesBody""":
       """Mantén cada nombre de artículo en una sola línea, terminando con puntos suspensivos. Si se desactiva, los nombres largos se ajustan en varias líneas.""",
@@ -7586,6 +7651,11 @@ Contraseña: pantry-rocks""",
   """checklists.itemRemoved""": """Artículo eliminado""",
   """checklists.undo""": """Deshacer""",
   """checklists.selectItems""": """Seleccionar""",
+  """checklists.menu.sortAndView""": """Orden y vista""",
+  """checklists.menu.manage""": """Gestionar""",
+  """checklists.menu.list""": """Lista""",
+  """checklists.menu.shopping""": """Compras""",
+  """checklists.menu.developer""": """Desarrollador""",
   """checklists.batch.moveTitle""": """Mover artículos a""",
   """checklists.batch.copyTitle""": """Copiar artículos a""",
   """checklists.batch.categoryTitle""": """Establecer categoría""",

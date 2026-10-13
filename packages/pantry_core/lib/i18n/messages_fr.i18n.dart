@@ -1277,6 +1277,19 @@ class SettingsMessagesFr extends SettingsMessages {
       """Affiche le bouton flottant « Commencer les courses » sur l'écran des listes. Désactivé, il passe dans le menu.""";
 
   /// ```dart
+  /// "Style du menu de liste"
+  /// ```
+  String get listMenuStyle => """Style du menu de liste""";
+
+  /// ```dart
+  /// "Comment le menu de liste présente ses actions : une grille de catégories, ou une seule liste avec toutes les actions."
+  /// ```
+  String get listMenuStyleBody =>
+      """Comment le menu de liste présente ses actions : une grille de catégories, ou une seule liste avec toutes les actions.""";
+  ListMenuStyleNamesSettingsMessagesFr get listMenuStyleNames =>
+      ListMenuStyleNamesSettingsMessagesFr(this);
+
+  /// ```dart
   /// "Tronquer les noms d'articles longs"
   /// ```
   String get truncateItemNames => """Tronquer les noms d'articles longs""";
@@ -1699,6 +1712,22 @@ class DensityNamesSettingsMessagesFr extends DensityNamesSettingsMessages {
   /// "Très compacte"
   /// ```
   String get compact => """Très compacte""";
+}
+
+class ListMenuStyleNamesSettingsMessagesFr
+    extends ListMenuStyleNamesSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const ListMenuStyleNamesSettingsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Grille"
+  /// ```
+  String get grid => """Grille""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 }
 
 class ItemDescriptionNamesSettingsMessagesFr
@@ -2667,6 +2696,7 @@ class ChecklistsMessagesFr extends ChecklistsMessages {
   /// "Sélectionner"
   /// ```
   String get selectItems => """Sélectionner""";
+  MenuChecklistsMessagesFr get menu => MenuChecklistsMessagesFr(this);
   BatchChecklistsMessagesFr get batch => BatchChecklistsMessagesFr(this);
 
   /// ```dart
@@ -3407,6 +3437,36 @@ class FiltersChecklistsMessagesFr extends FiltersChecklistsMessages {
   /// "N'importe quelle devise"
   /// ```
   String get anyCurrency => """N'importe quelle devise""";
+}
+
+class MenuChecklistsMessagesFr extends MenuChecklistsMessages {
+  final ChecklistsMessagesFr _parent;
+  const MenuChecklistsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Tri et affichage"
+  /// ```
+  String get sortAndView => """Tri et affichage""";
+
+  /// ```dart
+  /// "Gérer"
+  /// ```
+  String get manage => """Gérer""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
+
+  /// ```dart
+  /// "Courses"
+  /// ```
+  String get shopping => """Courses""";
+
+  /// ```dart
+  /// "Développeur"
+  /// ```
+  String get developer => """Développeur""";
 }
 
 class BatchChecklistsMessagesFr extends BatchChecklistsMessages {
@@ -7314,6 +7374,11 @@ Mot de passe : pantry-rocks""",
   """settings.startShoppingButton""": """Bouton « Commencer les courses »""",
   """settings.startShoppingButtonBody""":
       """Affiche le bouton flottant « Commencer les courses » sur l'écran des listes. Désactivé, il passe dans le menu.""",
+  """settings.listMenuStyle""": """Style du menu de liste""",
+  """settings.listMenuStyleBody""":
+      """Comment le menu de liste présente ses actions : une grille de catégories, ou une seule liste avec toutes les actions.""",
+  """settings.listMenuStyleNames.grid""": """Grille""",
+  """settings.listMenuStyleNames.list""": """Liste""",
   """settings.truncateItemNames""": """Tronquer les noms d'articles longs""",
   """settings.truncateItemNamesBody""":
       """Garde chaque nom d'article sur une seule ligne, se terminant par des points de suspension. Désactivé, les noms longs passent sur plusieurs lignes.""",
@@ -7600,6 +7665,11 @@ Mot de passe : pantry-rocks""",
   """checklists.itemRemoved""": """Article supprimé""",
   """checklists.undo""": """Annuler""",
   """checklists.selectItems""": """Sélectionner""",
+  """checklists.menu.sortAndView""": """Tri et affichage""",
+  """checklists.menu.manage""": """Gérer""",
+  """checklists.menu.list""": """Liste""",
+  """checklists.menu.shopping""": """Courses""",
+  """checklists.menu.developer""": """Développeur""",
   """checklists.batch.moveTitle""": """Déplacer les articles vers""",
   """checklists.batch.copyTitle""": """Copier les articles vers""",
   """checklists.batch.categoryTitle""": """Définir la catégorie""",

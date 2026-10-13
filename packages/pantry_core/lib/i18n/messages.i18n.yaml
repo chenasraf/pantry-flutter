@@ -248,6 +248,11 @@ settings:
   itemActionsBody: Show quick actions on each item. When off, actions move to a menu button on each item.
   startShoppingButton: Start shopping button
   startShoppingButtonBody: Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu.
+  listMenuStyle: List menu style
+  listMenuStyleBody: "How the list menu presents its actions: a grid of categories, or one list with every action."
+  listMenuStyleNames:
+    grid: Grid
+    list: List
   truncateItemNames: Truncate long item names
   truncateItemNamesBody: Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.
   itemDescription: Description on items
@@ -525,6 +530,12 @@ checklists:
   itemRemoved: Item removed
   undo: Undo
   selectItems: Select items
+  menu:
+    sortAndView: "Sort & view"
+    manage: Manage
+    list: List
+    shopping: Shopping
+    developer: Developer
   batch:
     selected(int count): "${_plural(count, one: '1 selected', many: '$count selected')}"
     moveTitle: Move items to

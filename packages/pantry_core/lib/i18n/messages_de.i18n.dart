@@ -1273,6 +1273,19 @@ class SettingsMessagesDe extends SettingsMessages {
       """Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.""";
 
   /// ```dart
+  /// "Stil des Listenmenüs"
+  /// ```
+  String get listMenuStyle => """Stil des Listenmenüs""";
+
+  /// ```dart
+  /// "Wie das Listenmenü seine Aktionen zeigt: als Raster aus Kategorien oder als eine Liste mit allen Aktionen."
+  /// ```
+  String get listMenuStyleBody =>
+      """Wie das Listenmenü seine Aktionen zeigt: als Raster aus Kategorien oder als eine Liste mit allen Aktionen.""";
+  ListMenuStyleNamesSettingsMessagesDe get listMenuStyleNames =>
+      ListMenuStyleNamesSettingsMessagesDe(this);
+
+  /// ```dart
   /// "Lange Eintragsnamen kürzen"
   /// ```
   String get truncateItemNames => """Lange Eintragsnamen kürzen""";
@@ -1694,6 +1707,22 @@ class DensityNamesSettingsMessagesDe extends DensityNamesSettingsMessages {
   /// "Sehr kompakt"
   /// ```
   String get compact => """Sehr kompakt""";
+}
+
+class ListMenuStyleNamesSettingsMessagesDe
+    extends ListMenuStyleNamesSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const ListMenuStyleNamesSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Raster"
+  /// ```
+  String get grid => """Raster""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 }
 
 class ItemDescriptionNamesSettingsMessagesDe
@@ -2663,6 +2692,7 @@ class ChecklistsMessagesDe extends ChecklistsMessages {
   /// "Auswählen"
   /// ```
   String get selectItems => """Auswählen""";
+  MenuChecklistsMessagesDe get menu => MenuChecklistsMessagesDe(this);
   BatchChecklistsMessagesDe get batch => BatchChecklistsMessagesDe(this);
 
   /// ```dart
@@ -3411,6 +3441,36 @@ class FiltersChecklistsMessagesDe extends FiltersChecklistsMessages {
   /// "Beliebige Währung"
   /// ```
   String get anyCurrency => """Beliebige Währung""";
+}
+
+class MenuChecklistsMessagesDe extends MenuChecklistsMessages {
+  final ChecklistsMessagesDe _parent;
+  const MenuChecklistsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Sortierung & Ansicht"
+  /// ```
+  String get sortAndView => """Sortierung & Ansicht""";
+
+  /// ```dart
+  /// "Verwalten"
+  /// ```
+  String get manage => """Verwalten""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
+
+  /// ```dart
+  /// "Einkaufen"
+  /// ```
+  String get shopping => """Einkaufen""";
+
+  /// ```dart
+  /// "Entwickler"
+  /// ```
+  String get developer => """Entwickler""";
 }
 
 class BatchChecklistsMessagesDe extends BatchChecklistsMessages {
@@ -7312,6 +7372,11 @@ Passwort: pantry-rocks""",
   """settings.startShoppingButton""": """„Einkaufen starten“-Schaltfläche""",
   """settings.startShoppingButtonBody""":
       """Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.""",
+  """settings.listMenuStyle""": """Stil des Listenmenüs""",
+  """settings.listMenuStyleBody""":
+      """Wie das Listenmenü seine Aktionen zeigt: als Raster aus Kategorien oder als eine Liste mit allen Aktionen.""",
+  """settings.listMenuStyleNames.grid""": """Raster""",
+  """settings.listMenuStyleNames.list""": """Liste""",
   """settings.truncateItemNames""": """Lange Eintragsnamen kürzen""",
   """settings.truncateItemNamesBody""":
       """Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.""",
@@ -7599,6 +7664,11 @@ Passwort: pantry-rocks""",
   """checklists.itemRemoved""": """Eintrag entfernt""",
   """checklists.undo""": """Rückgängig""",
   """checklists.selectItems""": """Auswählen""",
+  """checklists.menu.sortAndView""": """Sortierung & Ansicht""",
+  """checklists.menu.manage""": """Verwalten""",
+  """checklists.menu.list""": """Liste""",
+  """checklists.menu.shopping""": """Einkaufen""",
+  """checklists.menu.developer""": """Entwickler""",
   """checklists.batch.moveTitle""": """Einträge verschieben nach""",
   """checklists.batch.copyTitle""": """Einträge kopieren nach""",
   """checklists.batch.categoryTitle""": """Kategorie festlegen""",

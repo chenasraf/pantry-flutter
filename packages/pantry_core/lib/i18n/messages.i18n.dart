@@ -1265,6 +1265,19 @@ class SettingsMessages {
       """Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu.""";
 
   /// ```dart
+  /// "List menu style"
+  /// ```
+  String get listMenuStyle => """List menu style""";
+
+  /// ```dart
+  /// "How the list menu presents its actions: a grid of categories, or one list with every action."
+  /// ```
+  String get listMenuStyleBody =>
+      """How the list menu presents its actions: a grid of categories, or one list with every action.""";
+  ListMenuStyleNamesSettingsMessages get listMenuStyleNames =>
+      ListMenuStyleNamesSettingsMessages(this);
+
+  /// ```dart
   /// "Truncate long item names"
   /// ```
   String get truncateItemNames => """Truncate long item names""";
@@ -1677,6 +1690,21 @@ class DensityNamesSettingsMessages {
   /// "Extra dense"
   /// ```
   String get compact => """Extra dense""";
+}
+
+class ListMenuStyleNamesSettingsMessages {
+  final SettingsMessages _parent;
+  const ListMenuStyleNamesSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Grid"
+  /// ```
+  String get grid => """Grid""";
+
+  /// ```dart
+  /// "List"
+  /// ```
+  String get list => """List""";
 }
 
 class ItemDescriptionNamesSettingsMessages {
@@ -2639,6 +2667,7 @@ class ChecklistsMessages {
   /// "Select items"
   /// ```
   String get selectItems => """Select items""";
+  MenuChecklistsMessages get menu => MenuChecklistsMessages(this);
   BatchChecklistsMessages get batch => BatchChecklistsMessages(this);
 
   /// ```dart
@@ -3369,6 +3398,36 @@ class FiltersChecklistsMessages {
   /// "Any currency"
   /// ```
   String get anyCurrency => """Any currency""";
+}
+
+class MenuChecklistsMessages {
+  final ChecklistsMessages _parent;
+  const MenuChecklistsMessages(this._parent);
+
+  /// ```dart
+  /// "Sort & view"
+  /// ```
+  String get sortAndView => """Sort & view""";
+
+  /// ```dart
+  /// "Manage"
+  /// ```
+  String get manage => """Manage""";
+
+  /// ```dart
+  /// "List"
+  /// ```
+  String get list => """List""";
+
+  /// ```dart
+  /// "Shopping"
+  /// ```
+  String get shopping => """Shopping""";
+
+  /// ```dart
+  /// "Developer"
+  /// ```
+  String get developer => """Developer""";
 }
 
 class BatchChecklistsMessages {
@@ -7226,6 +7285,11 @@ Password: pantry-rocks""",
   """settings.startShoppingButton""": """Start shopping button""",
   """settings.startShoppingButtonBody""":
       """Show the floating "Start shopping" button on the checklists screen. When off, it moves to the menu.""",
+  """settings.listMenuStyle""": """List menu style""",
+  """settings.listMenuStyleBody""":
+      """How the list menu presents its actions: a grid of categories, or one list with every action.""",
+  """settings.listMenuStyleNames.grid""": """Grid""",
+  """settings.listMenuStyleNames.list""": """List""",
   """settings.truncateItemNames""": """Truncate long item names""",
   """settings.truncateItemNamesBody""":
       """Keep each item name on a single line, ending with an ellipsis. When off, long names wrap onto multiple lines.""",
@@ -7502,6 +7566,11 @@ Password: pantry-rocks""",
   """checklists.itemRemoved""": """Item removed""",
   """checklists.undo""": """Undo""",
   """checklists.selectItems""": """Select items""",
+  """checklists.menu.sortAndView""": """Sort & view""",
+  """checklists.menu.manage""": """Manage""",
+  """checklists.menu.list""": """List""",
+  """checklists.menu.shopping""": """Shopping""",
+  """checklists.menu.developer""": """Developer""",
   """checklists.batch.moveTitle""": """Move items to""",
   """checklists.batch.copyTitle""": """Copy items to""",
   """checklists.batch.categoryTitle""": """Set category""",

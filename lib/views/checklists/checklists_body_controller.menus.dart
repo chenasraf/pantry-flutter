@@ -109,107 +109,103 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
           tooltip: searchOpen ? m.common.cancel : m.checklists.searchHint,
           onPressed: toggleSearch,
         ),
-        // Desktop has plenty of room — promote the top four actions out of
-        // the overflow menu so they're a single click away. Pin is not
-        // surfaced anywhere on desktop because the widget it feeds is
-        // Android-only.
-        if (PlatformInfo.isDesktop && !domain.isSoftView) ...[
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.sort),
-            tooltip: m.checklists.sortTooltip,
-            onSelected: (v) => onOverflow(context, v),
-            itemBuilder: (_) => sortMenuItems(),
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: m.common.refresh,
-            onPressed: () => domain.refresh(),
-          ),
-          if (domain.permissions.canEditLists)
-            IconButton(
-              icon: const Icon(EntityIcons.category),
-              tooltip: m.categories.manageTitle,
-              onPressed: () => openManageCategories(context),
-            ),
-          if (domain.permissions.canEditLists && hasFeature('stores'))
-            IconButton(
-              icon: const Icon(EntityIcons.store),
-              tooltip: m.stores.manageTitle,
-              onPressed: () => openManageStores(context),
-            ),
-          if (domain.permissions.canEditLists && hasFeature('labels'))
-            IconButton(
-              icon: const Icon(EntityIcons.label),
-              tooltip: m.labels.manageTitle,
-              onPressed: () => openManageLabels(context),
-            ),
-          if (domain.permissions.canEditFields && hasFeature('custom-fields'))
-            IconButton(
-              icon: const Icon(Icons.list_alt),
-              tooltip: m.customFields.manageTitle,
-              onPressed: () => openManageCustomFields(context),
-            ),
-          // Meta view has no trash of its own; trash stays per-list.
-          if (!domain.isMetaMode &&
-              domain.isCurrentListWritable &&
-              domain.permissions.canDeleteItems &&
-              (supportsFeature('soft-delete') || hasFeature('item-trash')))
-            IconButton(
-              icon: const Icon(Icons.delete_outline),
-              tooltip: m.checklists.viewTrash,
-              onPressed: () => domain.setTrashMode(true),
-            ),
-          // Archive is per-list too, gated on canEditLists and the
-          // item-archive capability.
-          if (!domain.isMetaMode &&
-              domain.isCurrentListWritable &&
-              domain.permissions.canEditLists &&
-              hasFeature('item-archive'))
-            IconButton(
-              icon: const Icon(Icons.archive_outlined),
-              tooltip: m.checklists.viewArchive,
-              onPressed: () => domain.setArchiveMode(true),
-            ),
-        ],
-        // Desktop shows the overflow as an anchored popup menu; mobile keeps
-        // it in a bottom sheet, which reads and scrolls better on touch.
-        if (PlatformInfo.isDesktop)
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            tooltip: m.common.more,
-            onSelected: (v) => onOverflow(context, v),
-            itemBuilder: (_) => overflowMenuItems(overflowItems()),
-          )
-        else
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            tooltip: m.common.more,
-            onPressed: () => showOverflowSheet(context),
-          ),
+        // Reads the window width, so resizing re-decides which groups earn a
+        // toolbar button and which fold into the overflow.
+        Builder(builder: _toolbarActions),
       ],
     );
   }
 
-  /// Sort radio rows lifted out of `overflowItems` so the desktop toolbar's
-  /// Sort menu can show only the sort choices, not the rest of the overflow.
-  ///
-  /// In the meta (All-lists) view, "custom" is suppressed: the underlying
-  /// sort order is per-list, so there's no coherent custom order across
-  /// lists. The effective sort falls back to "newest".
-  List<PopupMenuEntry<String>> sortMenuItems() {
-    final effective = domain.effectiveSortBy;
-    return [
-      for (final o in checklistSortOptions(showCustom: !domain.isMetaMode))
-        overflowRadioRow(
-          value: 'sort_${o.key}',
-          label: o.label,
-          selected: effective == o.key,
-        ),
-    ];
+  Widget _toolbarActions(BuildContext context) {
+    final promoted = promotedGroupIds(context);
+    final groups = {for (final g in overflowGroups()) g.id: g};
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final id in _toolbarPriority)
+          if (promoted.contains(id) && groups[id] != null)
+            _toolbarButton(context, groups[id]!),
+        _overflowButton(context, promoted),
+      ],
+    );
   }
 
-  List<OverflowEntry> overflowItems() {
-    final prefs = PrefsService.instance;
+  /// Desktop toolbar groups, in the order they earn a button as the window
+  /// widens. Pin is absent because the widget it feeds is Android-only.
+  static const _toolbarPriority = [
+    'view',
+    'refresh',
+    'manage',
+    'trash',
+    'archive',
+  ];
+
+  /// Groups shown as desktop toolbar buttons instead of in the overflow: as
+  /// many of [_toolbarPriority] as the window has room for.
+  Set<String> promotedGroupIds(BuildContext context) {
+    if (!PlatformInfo.isDesktop || domain.isSoftView) return const {};
+    // Room left once the nav rail, the list's icon and name, and the search
+    // and overflow buttons have theirs.
+    var slots = ((MediaQuery.sizeOf(context).width - 560) / 48).floor();
+    final available = {for (final g in overflowGroups()) g.id};
+    final promoted = <String>{};
+    for (final id in _toolbarPriority) {
+      if (slots <= 0) break;
+      if (!available.contains(id)) continue;
+      promoted.add(id);
+      slots--;
+    }
+    return promoted;
+  }
+
+  Widget _toolbarButton(BuildContext context, OverflowGroup group) {
+    final sole = group.soleEntry;
+    if (sole is OverflowAction) {
+      return IconButton(
+        icon: Icon(sole.icon),
+        tooltip: sole.label,
+        onPressed: () => onOverflow(context, sole.value),
+      );
+    }
+    return PopupMenuButton<String>(
+      icon: Icon(group.icon),
+      tooltip: group.label,
+      onSelected: (v) => onOverflow(context, v),
+      itemBuilder: (_) => overflowMenuItems(
+        overflowGroups().where((g) => g.id == group.id).firstOrNull?.entries ??
+            const [],
+      ),
+    );
+  }
+
+  Widget _overflowButton(BuildContext context, Set<String> promoted) {
+    // The list style on desktop is an anchored popup menu; everything else
+    // opens from a plain button.
+    if (PlatformInfo.isDesktop && !_usesGrid) {
+      return PopupMenuButton<String>(
+        icon: const Icon(Icons.more_vert),
+        tooltip: m.common.more,
+        onSelected: (v) => onOverflow(context, v),
+        itemBuilder: (_) => overflowMenuItems(overflowItems(promoted)),
+      );
+    }
+    return Builder(
+      builder: (anchorContext) => IconButton(
+        icon: const Icon(Icons.more_vert),
+        tooltip: m.common.more,
+        onPressed: () => showOverflowSheet(anchorContext, promoted),
+      ),
+    );
+  }
+
+  /// Whether the overflow shows the category grid. Trash and archive keep the
+  /// plain list: their menus hold two or three rows.
+  bool get _usesGrid =>
+      PrefsService.instance.listMenuStyle == 'grid' && !domain.isSoftView;
+
+  /// The overflow rows as one list, for the list menu style and the trash and
+  /// archive views. Groups in [promoted] are on the toolbar and left out.
+  List<OverflowEntry> overflowItems([Set<String> promoted = const {}]) {
     if (domain.isTrashMode) {
       return normalizeOverflow([
         OverflowAction(
@@ -250,193 +246,258 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
           ),
       ]);
     }
-    // Desktop has promoted refresh / sort / categories / trash to dedicated
-    // toolbar buttons, and pinning lists feeds an Android-only widget, so
-    // none of those need to live in the overflow menu here. Everything left
-    // — the view toggles and the dev tools — stays in overflow on every
-    // platform.
-    final isMeta = domain.isMetaMode;
-    final effective = domain.effectiveSortBy;
-    return normalizeOverflow([
-      if (domain.canSelectItems && domain.items.isNotEmpty) ...[
-        OverflowAction(
-          value: 'select_items',
-          icon: Icons.checklist,
-          label: m.checklists.selectItems,
-        ),
-        const OverflowDivider(),
-      ],
-      if (!PlatformInfo.isDesktop) ...[
-        OverflowAction(
-          value: 'sort',
-          icon: Icons.sort,
-          label:
-              '${m.checklists.sortTooltip}: ${checklistSortLabel(effective)}',
-        ),
-        const OverflowDivider(),
-        if (domain.currentList != null && !isMeta && PlatformInfo.isMobile)
-          OverflowAction(
-            value: 'copy_link',
-            icon: Icons.link,
-            label: m.checklists.copyLink,
-          ),
-        if (domain.currentList != null &&
-            !isMeta &&
-            PlatformInfo.isAndroidPhone)
-          OverflowAction(
-            value: 'add_to_home',
-            icon: Icons.add_to_home_screen,
-            label: m.checklists.addToHomeScreen,
-          ),
-      ],
-      if (hasFeature('item-authors'))
-        OverflowCheckboxAction(
-          value: 'toggle_added_by',
-          label: m.checklists.showAddedBy,
-          checked: domain.showAddedBy,
-        ),
-      if (domain.currentList != null)
-        OverflowCheckboxAction(
-          value: 'toggle_progress_hero',
-          label: m.checklists.showProgressHero,
-          checked: !(domain.currentList!.hideProgressHero),
-        ),
-      if (!isMeta && domain.currentList?.activeItemDefaults != null)
-        OverflowAction(
-          value: 'item_defaults',
-          icon: Icons.tune,
-          label: m.checklists.itemDefaults.title,
-        ),
-      // "Reset custom order" re-seeds sort_order from a chosen basis and leaves
-      // the list hand-reorderable. Per-list only (no cross-list custom order in
-      // meta) and needs edit permission.
-      if (domain.currentList != null &&
-          !isMeta &&
-          domain.permissions.canEditLists) ...[
-        const OverflowDivider(),
-        OverflowAction(
-          value: 'reset_order',
-          icon: Icons.sort_by_alpha,
-          label: m.checklists.resetOrder.menuLabel,
-        ),
-      ],
-      // Markdown import/export are per-list only — not offered in the meta
-      // "All lists" view, which has no single target.
-      if (domain.currentList != null &&
-          domain.canDuplicateList(domain.currentList!)) ...[
-        const OverflowDivider(),
-        OverflowAction(
-          value: 'duplicate_list',
-          icon: Icons.copy_outlined,
-          label: m.checklists.duplicateListTitle,
-        ),
-      ],
-      if (domain.currentList != null && !isMeta) ...[
-        const OverflowDivider(),
-        OverflowAction(
-          value: 'export_markdown',
-          icon: Icons.file_download_outlined,
-          label: m.checklists.markdown.exportTitle,
-        ),
-        if (domain.canAddItemsHere)
-          OverflowAction(
-            value: 'import_markdown',
-            icon: Icons.file_upload_outlined,
-            label: m.checklists.markdown.importTitle,
-          ),
-      ],
-      if (hasFeature('shopping')) ...[
-        const OverflowDivider(),
-        // When the FAB is turned off, its action lives here, above history.
-        if (!prefs.startShoppingFabEnabled)
-          OverflowAction(
-            value: 'start_shopping',
-            icon: shoppingSession != null
-                ? Icons.play_arrow
-                : Icons.shopping_cart,
-            label: shoppingSession != null
-                ? m.shopping.resumeShopping
-                : m.shopping.startShopping,
-          ),
-        OverflowAction(
-          value: 'shopping_history',
-          icon: Icons.history,
-          label: m.shopping.shoppingHistory,
-        ),
-        const OverflowDivider(),
-      ],
-      if (!PlatformInfo.isDesktop) ...[
-        if (domain.permissions.canEditLists)
-          OverflowAction(
-            value: 'manage_categories',
-            icon: EntityIcons.category,
-            label: m.categories.manageTitle,
-          ),
-        if (domain.permissions.canEditLists && hasFeature('stores'))
-          OverflowAction(
-            value: 'manage_stores',
-            icon: EntityIcons.store,
-            label: m.stores.manageTitle,
-          ),
-        if (domain.permissions.canEditLists && hasFeature('labels'))
-          OverflowAction(
-            value: 'manage_labels',
-            icon: EntityIcons.label,
-            label: m.labels.manageTitle,
-          ),
-        if (domain.permissions.canEditFields && hasFeature('custom-fields'))
-          OverflowAction(
-            value: 'manage_custom_fields',
-            icon: Icons.list_alt,
-            label: m.customFields.manageTitle,
-          ),
-        // Mobile has reliable pull-to-refresh, so it doesn't need a menu row.
-        // Web (the other non-desktop host here) doesn't, so keep it there.
-        if (PlatformInfo.isWeb)
-          OverflowAction(
-            value: 'refresh',
-            icon: Icons.refresh,
-            label: m.common.refresh,
-          ),
-        if (!isMeta &&
-            domain.isCurrentListWritable &&
-            domain.permissions.canDeleteItems &&
-            (supportsFeature('soft-delete') || hasFeature('item-trash'))) ...[
-          const OverflowDivider(),
-          OverflowAction(
-            value: 'view_trash',
-            icon: Icons.delete_outline,
-            label: m.checklists.viewTrash,
-          ),
-        ],
-        if (!isMeta &&
-            domain.isCurrentListWritable &&
-            domain.permissions.canEditLists &&
-            hasFeature('item-archive'))
-          OverflowAction(
-            value: 'view_archive',
-            icon: Icons.archive_outlined,
-            label: m.checklists.viewArchive,
-          ),
-      ],
-      if (kDebugMode) ...[
-        const OverflowDivider(),
-        OverflowAction(
-          value: 'dev_show_onboarding',
-          icon: Icons.bug_report_outlined,
-          label: m.onboarding.dev.showOnboarding,
-        ),
-        OverflowCheckboxAction(
-          value: 'dev_force_all_features',
-          label: m.onboarding.dev.forceAllFeatures,
-          checked: prefs.devForceAllFeatures,
-        ),
-        OverflowAction(
-          value: 'dev_test_notification',
-          icon: Icons.notifications_active_outlined,
-          label: m.onboarding.dev.sendTestNotification,
-        ),
-      ],
+    // Sort choices collapse to one "Sort: current" row that opens a dialog;
+    // inlined, they would make the list menu much longer.
+    return flattenOverflowGroups([
+      for (final g in overflowGroups(inlineSort: false))
+        if (!promoted.contains(g.id)) g,
     ]);
+  }
+
+  /// Every overflow action of the normal list view, grouped. Groups whose rows
+  /// are all gated off come back empty and are dropped by the renderers.
+  List<OverflowGroup> overflowGroups({bool inlineSort = true}) {
+    final prefs = PrefsService.instance;
+    final list = domain.currentList;
+    final isMeta = domain.isMetaMode;
+    final canEditLists = domain.permissions.canEditLists;
+    final effective = domain.effectiveSortBy;
+    return [
+      OverflowGroup(
+        id: 'select',
+        icon: Icons.checklist,
+        label: m.checklists.selectItems,
+        entries: [
+          if (domain.canSelectItems && domain.items.isNotEmpty)
+            OverflowAction(
+              value: 'select_items',
+              icon: Icons.checklist,
+              label: m.checklists.selectItems,
+            ),
+        ],
+      ),
+      OverflowGroup(
+        id: 'view',
+        icon: Icons.sort,
+        label: m.checklists.menu.sortAndView,
+        entries: [
+          // In the meta (All-lists) view "custom" is suppressed: sort order is
+          // per-list, so there's no coherent custom order across lists.
+          if (inlineSort)
+            for (final o in checklistSortOptions(showCustom: !isMeta))
+              OverflowRadioAction(
+                value: 'sort_${o.key}',
+                label: o.label,
+                selected: effective == o.key,
+              )
+          else
+            OverflowAction(
+              value: 'sort',
+              icon: Icons.sort,
+              label:
+                  '${m.checklists.sortTooltip}: ${checklistSortLabel(effective)}',
+            ),
+          const OverflowDivider(),
+          if (hasFeature('item-authors'))
+            OverflowCheckboxAction(
+              value: 'toggle_added_by',
+              label: m.checklists.showAddedBy,
+              checked: domain.showAddedBy,
+            ),
+          if (list != null)
+            OverflowCheckboxAction(
+              value: 'toggle_progress_hero',
+              label: m.checklists.showProgressHero,
+              checked: !list.hideProgressHero,
+            ),
+          // "Reset custom order" re-seeds sort_order from a chosen basis and
+          // leaves the list hand-reorderable. Per-list only (no cross-list
+          // custom order in meta) and needs edit permission.
+          if (list != null && !isMeta && canEditLists) ...[
+            const OverflowDivider(),
+            OverflowAction(
+              value: 'reset_order',
+              icon: Icons.sort_by_alpha,
+              label: m.checklists.resetOrder.menuLabel,
+            ),
+          ],
+        ],
+      ),
+      OverflowGroup(
+        id: 'manage',
+        icon: Icons.dashboard_customize_outlined,
+        label: m.checklists.menu.manage,
+        entries: [
+          if (!isMeta && list?.activeItemDefaults != null)
+            OverflowAction(
+              value: 'item_defaults',
+              icon: Icons.tune,
+              label: m.checklists.itemDefaults.title,
+            ),
+          const OverflowDivider(),
+          if (canEditLists)
+            OverflowAction(
+              value: 'manage_categories',
+              icon: EntityIcons.category,
+              label: m.categories.manageTitle,
+            ),
+          if (canEditLists && hasFeature('stores'))
+            OverflowAction(
+              value: 'manage_stores',
+              icon: EntityIcons.store,
+              label: m.stores.manageTitle,
+            ),
+          if (canEditLists && hasFeature('labels'))
+            OverflowAction(
+              value: 'manage_labels',
+              icon: EntityIcons.label,
+              label: m.labels.manageTitle,
+            ),
+          if (domain.permissions.canEditFields && hasFeature('custom-fields'))
+            OverflowAction(
+              value: 'manage_custom_fields',
+              icon: Icons.list_alt,
+              label: m.customFields.manageTitle,
+            ),
+        ],
+      ),
+      OverflowGroup(
+        id: 'list',
+        icon: Icons.format_list_bulleted,
+        label: m.checklists.menu.list,
+        entries: [
+          if (list != null && domain.canDuplicateList(list))
+            OverflowAction(
+              value: 'duplicate_list',
+              icon: Icons.copy_outlined,
+              label: m.checklists.duplicateListTitle,
+            ),
+          if (list != null && !isMeta && PlatformInfo.isMobile)
+            OverflowAction(
+              value: 'copy_link',
+              icon: Icons.link,
+              label: m.checklists.copyLink,
+            ),
+          if (list != null && !isMeta && PlatformInfo.isAndroidPhone)
+            OverflowAction(
+              value: 'add_to_home',
+              icon: Icons.add_to_home_screen,
+              label: m.checklists.addToHomeScreen,
+            ),
+          // Markdown import/export are per-list only — not offered in the meta
+          // "All lists" view, which has no single target.
+          if (list != null && !isMeta) ...[
+            const OverflowDivider(),
+            OverflowAction(
+              value: 'export_markdown',
+              icon: Icons.file_download_outlined,
+              label: m.checklists.markdown.exportTitle,
+            ),
+            if (domain.canAddItemsHere)
+              OverflowAction(
+                value: 'import_markdown',
+                icon: Icons.file_upload_outlined,
+                label: m.checklists.markdown.importTitle,
+              ),
+          ],
+        ],
+      ),
+      OverflowGroup(
+        id: 'shopping',
+        icon: Icons.shopping_cart_outlined,
+        label: m.checklists.menu.shopping,
+        entries: [
+          if (hasFeature('shopping')) ...[
+            // When the FAB is turned off, its action lives here, above history.
+            if (!prefs.startShoppingFabEnabled)
+              OverflowAction(
+                value: 'start_shopping',
+                icon: shoppingSession != null
+                    ? Icons.play_arrow
+                    : Icons.shopping_cart,
+                label: shoppingSession != null
+                    ? m.shopping.resumeShopping
+                    : m.shopping.startShopping,
+              ),
+            OverflowAction(
+              value: 'shopping_history',
+              icon: Icons.history,
+              label: m.shopping.shoppingHistory,
+            ),
+          ],
+        ],
+      ),
+      // Trash and archive are per-list; the meta view has neither.
+      OverflowGroup(
+        id: 'trash',
+        icon: Icons.delete_outline,
+        label: m.checklists.viewTrash,
+        entries: [
+          if (!isMeta &&
+              domain.isCurrentListWritable &&
+              domain.permissions.canDeleteItems &&
+              (supportsFeature('soft-delete') || hasFeature('item-trash')))
+            OverflowAction(
+              value: 'view_trash',
+              icon: Icons.delete_outline,
+              label: m.checklists.viewTrash,
+            ),
+        ],
+      ),
+      OverflowGroup(
+        id: 'archive',
+        icon: Icons.archive_outlined,
+        label: m.checklists.viewArchive,
+        entries: [
+          if (!isMeta &&
+              domain.isCurrentListWritable &&
+              canEditLists &&
+              hasFeature('item-archive'))
+            OverflowAction(
+              value: 'view_archive',
+              icon: Icons.archive_outlined,
+              label: m.checklists.viewArchive,
+            ),
+        ],
+      ),
+      // Mobile has pull-to-refresh; desktop has no such gesture.
+      OverflowGroup(
+        id: 'refresh',
+        icon: Icons.refresh,
+        label: m.common.refresh,
+        entries: [
+          if (PlatformInfo.isDesktop)
+            OverflowAction(
+              value: 'refresh',
+              icon: Icons.refresh,
+              label: m.common.refresh,
+            ),
+        ],
+      ),
+      OverflowGroup(
+        id: 'developer',
+        icon: Icons.bug_report_outlined,
+        label: m.checklists.menu.developer,
+        entries: [
+          if (kDebugMode) ...[
+            OverflowAction(
+              value: 'dev_show_onboarding',
+              icon: Icons.bug_report_outlined,
+              label: m.onboarding.dev.showOnboarding,
+            ),
+            OverflowCheckboxAction(
+              value: 'dev_force_all_features',
+              label: m.onboarding.dev.forceAllFeatures,
+              checked: prefs.devForceAllFeatures,
+            ),
+            OverflowAction(
+              value: 'dev_test_notification',
+              icon: Icons.notifications_active_outlined,
+              label: m.onboarding.dev.sendTestNotification,
+            ),
+          ],
+        ],
+      ),
+    ].map((g) => g.normalized()).where((g) => !g.isEmpty).toList();
   }
 }

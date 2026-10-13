@@ -248,6 +248,11 @@ settings:
   itemActionsBody: Schnellaktionen an jedem Eintrag anzeigen. Wenn aus, erscheinen die Aktionen über eine Menütaste an jedem Eintrag.
   startShoppingButton: „Einkaufen starten“-Schaltfläche
   startShoppingButtonBody: Die schwebende Schaltfläche „Einkaufen starten“ auf dem Listen-Bildschirm anzeigen. Wenn aus, wandert sie ins Menü.
+  listMenuStyle: Stil des Listenmenüs
+  listMenuStyleBody: "Wie das Listenmenü seine Aktionen zeigt: als Raster aus Kategorien oder als eine Liste mit allen Aktionen."
+  listMenuStyleNames:
+    grid: Raster
+    list: Liste
   truncateItemNames: Lange Eintragsnamen kürzen
   truncateItemNamesBody: Jeden Eintragsnamen einzeilig halten und mit Auslassungspunkten kürzen. Wenn aus, werden lange Namen auf mehrere Zeilen umgebrochen.
   itemDescription: Beschreibung bei Einträgen
@@ -525,6 +530,12 @@ checklists:
   itemRemoved: Eintrag entfernt
   undo: "Rückgängig"
   selectItems: Auswählen
+  menu:
+    sortAndView: "Sortierung & Ansicht"
+    manage: Verwalten
+    list: Liste
+    shopping: Einkaufen
+    developer: Entwickler
   batch:
     selected(int count): "${_plural(count, one: '1 ausgewählt', many: '$count ausgewählt')}"
     moveTitle: Einträge verschieben nach

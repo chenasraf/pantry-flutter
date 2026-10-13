@@ -43,6 +43,8 @@ class PrefsService extends ChangeNotifier {
   static const _validDensities = {'normal', 'dense', 'compact'};
   static const _swipeActionsEnabledKey = 'swipe_actions_enabled';
   static const _startShoppingFabEnabledKey = 'start_shopping_fab_enabled';
+  static const _listMenuStyleKey = 'list_menu_style';
+  static const _validListMenuStyles = {'grid', 'list'};
   static const _truncateItemNamesKey = 'truncate_item_names';
   static const _itemDescriptionDisplayKey = 'item_description_display';
   static const _validItemDescriptionDisplays = {'off', 'line', 'chip'};
@@ -197,6 +199,12 @@ class PrefsService extends ChangeNotifier {
   /// moves into the overflow menu instead.
   bool _startShoppingFabEnabled = true;
   bool get startShoppingFabEnabled => _startShoppingFabEnabled;
+
+  /// How the checklist overflow menu presents its actions: "grid" (default)
+  /// shows a grid of categories that drill into their actions; "list" shows
+  /// every action in one labelled list.
+  String _listMenuStyle = 'grid';
+  String get listMenuStyle => _listMenuStyle;
 
   /// When false (default), long item names wrap onto multiple lines. When true,
   /// each item name is kept to a single line and truncated with an ellipsis.
@@ -489,6 +497,11 @@ class PrefsService extends ChangeNotifier {
       _startShoppingFabEnabled = startShoppingFab == 'true';
     }
 
+    final listMenuStyle = all[_listMenuStyleKey];
+    if (listMenuStyle != null && _validListMenuStyles.contains(listMenuStyle)) {
+      _listMenuStyle = listMenuStyle;
+    }
+
     final truncateItemNames = all[_truncateItemNamesKey];
     if (truncateItemNames != null) {
       _truncateItemNames = truncateItemNames == 'true';
@@ -681,6 +694,7 @@ class PrefsService extends ChangeNotifier {
     _checklistDensity = 'normal';
     _swipeActionsEnabled = true;
     _startShoppingFabEnabled = true;
+    _listMenuStyle = 'grid';
     _truncateItemNames = false;
     _itemDescriptionDisplay = 'off';
     _checklistListFilter = {};
@@ -729,6 +743,7 @@ class PrefsService extends ChangeNotifier {
       _checklistDensityKey,
       _swipeActionsEnabledKey,
       _startShoppingFabEnabledKey,
+      _listMenuStyleKey,
       _truncateItemNamesKey,
       _itemDescriptionDisplayKey,
       _checklistListFilterKey,

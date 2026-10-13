@@ -131,6 +131,14 @@ extension PrefsServiceChecklistSetters on PrefsService {
     notifyListeners();
   }
 
+  Future<void> setListMenuStyle(String value) async {
+    if (!PrefsService._validListMenuStyles.contains(value)) return;
+    if (_listMenuStyle == value) return;
+    _listMenuStyle = value;
+    await _storage.write(key: PrefsService._listMenuStyleKey, value: value);
+    notifyListeners();
+  }
+
   Future<void> setTruncateItemNames(bool value) async {
     if (_truncateItemNames == value) return;
     _truncateItemNames = value;

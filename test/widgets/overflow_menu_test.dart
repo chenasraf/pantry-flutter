@@ -94,6 +94,115 @@ void main() {
     expect(picked, 'newest');
   });
 
+  group('flattenOverflowGroups', () {
+    const select = OverflowGroup(
+      id: 'select',
+      icon: Icons.checklist,
+      label: 'Select',
+      entries: [
+        OverflowAction(value: 'select', icon: Icons.checklist, label: 'Sel'),
+      ],
+    );
+    const manage = OverflowGroup(
+      id: 'manage',
+      icon: Icons.tune,
+      label: 'Manage',
+      entries: [
+        OverflowAction(value: 'a', icon: Icons.tag, label: 'A'),
+        OverflowAction(value: 'b', icon: Icons.store, label: 'B'),
+      ],
+    );
+    const trash = OverflowGroup(
+      id: 'trash',
+      icon: Icons.delete,
+      label: 'Trash',
+      entries: [OverflowAction(value: 't', icon: Icons.delete, label: 'T')],
+    );
+    const archive = OverflowGroup(
+      id: 'archive',
+      icon: Icons.archive,
+      label: 'Archive',
+      entries: [OverflowAction(value: 'r', icon: Icons.archive, label: 'R')],
+    );
+    const empty = OverflowGroup(
+      id: 'empty',
+      icon: Icons.block,
+      label: 'Empty',
+      entries: [OverflowDivider()],
+    );
+
+    String describe(List<OverflowEntry> entries) => entries
+        .map(
+          (e) => switch (e) {
+            OverflowDivider() => '|',
+            OverflowHeader(:final label) => '#$label',
+            _ => overflowEntryValue(e)!,
+          },
+        )
+        .join(' ');
+
+    test('heads multi-row groups and runs single-row ones together', () {
+      final flat = flattenOverflowGroups([
+        select,
+        manage,
+        empty,
+        trash,
+        archive,
+      ]);
+
+      expect(describe(flat), 'select | #Manage a b | t r');
+    });
+
+    test('a group reduced to one row loses its header', () {
+      expect(
+        describe(
+          flattenOverflowGroups([
+            manage,
+            const OverflowGroup(
+              id: 'view',
+              icon: Icons.sort,
+              label: 'View',
+              entries: [
+                OverflowDivider(),
+                OverflowCheckboxAction(value: 'v', label: 'V', checked: true),
+              ],
+            ),
+          ]),
+        ),
+        '#Manage a b | v',
+      );
+    });
+
+    test('soleEntry ignores dividers and headers', () {
+      expect(trash.soleEntry, isA<OverflowAction>());
+      expect(manage.soleEntry, isNull);
+      expect(empty.isEmpty, isTrue);
+    });
+  });
+
+  testWidgets('sheet renders headers and radio rows', (tester) async {
+    await tester.pumpWidget(
+      wrapForTest(
+        opener((context) {
+          showOverflowMenuSheet(context, const [
+            OverflowHeader('Sort & view'),
+            OverflowRadioAction(value: 'n', label: 'Newest', selected: true),
+          ]);
+        }),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(OverflowHeaderLabel), findsOneWidget);
+    expect(
+      tester
+          .widget<OverflowRadioIndicator>(find.byType(OverflowRadioIndicator))
+          .selected,
+      isTrue,
+    );
+  });
+
   testWidgets('sort dialog lists the note sort options', (tester) async {
     String? picked;
     await tester.pumpWidget(

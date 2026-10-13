@@ -1266,6 +1266,19 @@ class SettingsMessagesNn extends SettingsMessages {
       """Vis den flytande «Start handel»-knappen på sjekklistesida. Når slått av blir han flytta til menyen.""";
 
   /// ```dart
+  /// "Stil på listemenyen"
+  /// ```
+  String get listMenuStyle => """Stil på listemenyen""";
+
+  /// ```dart
+  /// "Korleis listemenyen viser handlingane sine: eit rutenett av kategoriar, eller éi liste med alle handlingane."
+  /// ```
+  String get listMenuStyleBody =>
+      """Korleis listemenyen viser handlingane sine: eit rutenett av kategoriar, eller éi liste med alle handlingane.""";
+  ListMenuStyleNamesSettingsMessagesNn get listMenuStyleNames =>
+      ListMenuStyleNamesSettingsMessagesNn(this);
+
+  /// ```dart
   /// "Forkort lange oppføringsnamn"
   /// ```
   String get truncateItemNames => """Forkort lange oppføringsnamn""";
@@ -1667,6 +1680,22 @@ class DensityNamesSettingsMessagesNn extends DensityNamesSettingsMessages {
   /// "Ekstra tett"
   /// ```
   String get compact => """Ekstra tett""";
+}
+
+class ListMenuStyleNamesSettingsMessagesNn
+    extends ListMenuStyleNamesSettingsMessages {
+  final SettingsMessagesNn _parent;
+  const ListMenuStyleNamesSettingsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Rutenett"
+  /// ```
+  String get grid => """Rutenett""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 }
 
 class ItemDescriptionNamesSettingsMessagesNn
@@ -2633,6 +2662,7 @@ class ChecklistsMessagesNn extends ChecklistsMessages {
   /// "Vel oppføringar"
   /// ```
   String get selectItems => """Vel oppføringar""";
+  MenuChecklistsMessagesNn get menu => MenuChecklistsMessagesNn(this);
   BatchChecklistsMessagesNn get batch => BatchChecklistsMessagesNn(this);
 
   /// ```dart
@@ -3371,6 +3401,36 @@ class FiltersChecklistsMessagesNn extends FiltersChecklistsMessages {
   /// "Kva som helst valuta"
   /// ```
   String get anyCurrency => """Kva som helst valuta""";
+}
+
+class MenuChecklistsMessagesNn extends MenuChecklistsMessages {
+  final ChecklistsMessagesNn _parent;
+  const MenuChecklistsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Sortering og vising"
+  /// ```
+  String get sortAndView => """Sortering og vising""";
+
+  /// ```dart
+  /// "Administrer"
+  /// ```
+  String get manage => """Administrer""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
+
+  /// ```dart
+  /// "Handel"
+  /// ```
+  String get shopping => """Handel""";
+
+  /// ```dart
+  /// "Utviklar"
+  /// ```
+  String get developer => """Utviklar""";
 }
 
 class BatchChecklistsMessagesNn extends BatchChecklistsMessages {
@@ -7252,6 +7312,11 @@ Passord: pantry""",
   """settings.startShoppingButton""": """Knapp for «Start handel»""",
   """settings.startShoppingButtonBody""":
       """Vis den flytande «Start handel»-knappen på sjekklistesida. Når slått av blir han flytta til menyen.""",
+  """settings.listMenuStyle""": """Stil på listemenyen""",
+  """settings.listMenuStyleBody""":
+      """Korleis listemenyen viser handlingane sine: eit rutenett av kategoriar, eller éi liste med alle handlingane.""",
+  """settings.listMenuStyleNames.grid""": """Rutenett""",
+  """settings.listMenuStyleNames.list""": """Liste""",
   """settings.truncateItemNames""": """Forkort lange oppføringsnamn""",
   """settings.truncateItemNamesBody""":
       """Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med ellipse. Når slått av, bryt lange namn over fleire linjer.""",
@@ -7524,6 +7589,11 @@ Passord: pantry""",
   """checklists.itemRemoved""": """Oppføring fjerna""",
   """checklists.undo""": """Angre""",
   """checklists.selectItems""": """Vel oppføringar""",
+  """checklists.menu.sortAndView""": """Sortering og vising""",
+  """checklists.menu.manage""": """Administrer""",
+  """checklists.menu.list""": """Liste""",
+  """checklists.menu.shopping""": """Handel""",
+  """checklists.menu.developer""": """Utviklar""",
   """checklists.batch.moveTitle""": """Flytt oppføringar til""",
   """checklists.batch.copyTitle""": """Kopier oppføringar til""",
   """checklists.batch.categoryTitle""": """Vel kategori""",

@@ -22,6 +22,7 @@ class InterfaceSettingsView extends StatelessWidget {
   static const _composeBarPositionOptions = ['bottom', 'top'];
   static const _densityOptions = ['normal', 'dense', 'compact'];
   static const _itemDescriptionOptions = ['off', 'line', 'chip'];
+  static const _listMenuStyleOptions = ['grid', 'list'];
   static const _itemTapActionOptions = ['done', 'view', 'edit', 'none'];
   static const _itemLongPressActionOptions = [
     'multiselect',
@@ -143,6 +144,11 @@ class InterfaceSettingsView extends StatelessWidget {
     _ => m.settings.reuseExistingItemsNames.ask,
   };
 
+  static String _listMenuStyleLabel(String value) => switch (value) {
+    'list' => m.settings.listMenuStyleNames.list,
+    _ => m.settings.listMenuStyleNames.grid,
+  };
+
   /// A header plus its rows, or nothing at all when the server or platform
   /// leaves the section without a single row.
   static List<Widget> _section(String title, List<Widget> rows) =>
@@ -207,6 +213,19 @@ class InterfaceSettingsView extends StatelessWidget {
         options: _itemDescriptionOptions,
         labelOf: _itemDescriptionLabel,
         onChanged: (value) => _setItemDescription(context, value),
+      ),
+      DropdownSettingTile<String>(
+        icon: Icons.grid_view,
+        title: m.settings.listMenuStyle,
+        subtitle: m.settings.listMenuStyleBody,
+        value: prefs.listMenuStyle,
+        options: _listMenuStyleOptions,
+        labelOf: _listMenuStyleLabel,
+        onChanged: (value) {
+          if (value != null) {
+            context.read<PrefsService>().setListMenuStyle(value);
+          }
+        },
       ),
       SettingsPageTile(
         icon: Icons.label_outline,

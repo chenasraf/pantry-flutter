@@ -325,6 +325,11 @@ settings:
   startShoppingButtonBody:
     Vis den flytande «Start handel»-knappen på sjekklistesida. Når
     slått av blir han flytta til menyen.
+  listMenuStyle: Stil på listemenyen
+  listMenuStyleBody: "Korleis listemenyen viser handlingane sine: eit rutenett av kategoriar, eller éi liste med alle handlingane."
+  listMenuStyleNames:
+    grid: Rutenett
+    list: Liste
   truncateItemNames: Forkort lange oppføringsnamn
   truncateItemNamesBody:
     Hald kvart oppføringsnamn på ei enkelt linje, som sluttar med
@@ -619,6 +624,12 @@ checklists:
   itemRemoved: Oppføring fjerna
   undo: Angre
   selectItems: Vel oppføringar
+  menu:
+    sortAndView: Sortering og vising
+    manage: Administrer
+    list: Liste
+    shopping: Handel
+    developer: Utviklar
   batch:
     selected(int count): "${_plural(count, one: '1 vald', many: '$count vald')}"
     moveTitle: Flytt oppføringar til
