@@ -246,10 +246,10 @@ class ChecklistsController extends ChangeNotifier {
   String _sortBy = 'custom';
   String get sortBy => _sortBy;
 
-  /// Per-list generation bumped by each sort change, so a read of the stored
-  /// sort that was already out when the user changed it is discarded rather
-  /// than reverting their choice.
-  final Map<int, int> _sortWriteGen = {};
+  /// Per-list generation bumped by each sort change (keyed `null` for the
+  /// house-wide sort), so a read of the stored sort that was already out when
+  /// the user changed it is discarded rather than reverting their choice.
+  final Map<int?, int> _sortWriteGen = {};
 
   String _categorySort = 'custom';
   String get categorySort => _categorySort;
@@ -495,12 +495,19 @@ class ChecklistsController extends ChangeNotifier {
 
       // House prefs are non-fatal
       try {
+        final houseSortGen = _sortWriteGen[null];
         final prefs = await _checklistService.getHousePrefs(houseId);
         ServerVersionService.instance.observeHousePrefs(prefs);
+        // A house sort changed while the read was out, or still queued, is
+        // newer than the server's answer.
+        final houseItemSort = _sortWriteGen[null] != houseSortGen
+            ? _checklistService.cache.get<String>('sortBy:$houseId') ?? _sortBy
+            : _sync.pendingItemSort(houseId, null) ??
+                  prefs['checklistItemSort'] as String? ??
+                  'custom';
         // With per-list sorts the house value is only the default for lists
         // without a stored choice; the current list's own sort is resolved in
         // `selectList`.
-        final houseItemSort = prefs['checklistItemSort'] as String? ?? 'custom';
         if (!hasFeature(kListItemSortFeature)) _sortBy = houseItemSort;
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _categorySort = prefs['categorySort'] as String? ?? 'custom';

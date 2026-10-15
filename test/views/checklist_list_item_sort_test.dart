@@ -345,7 +345,7 @@ void main() {
         expect(lastItemsSort('/lists/$groceries/items'), 'oldest');
 
         await controller.setSortBy('name_desc');
-        await tester.pump();
+        await drain();
 
         final written = puts(RegExp(r'/houses/1/prefs$')).toList();
         expect(written, hasLength(1));
@@ -359,6 +359,26 @@ void main() {
 
         await controller.selectList(controller.lists.last);
         expect(controller.sortBy, 'name_desc');
+
+        await quiesce(tester);
+      });
+    });
+
+    testWidgets('a sort changed offline survives a reload and syncs', (
+      tester,
+    ) async {
+      await withServer(() async {
+        final controller = await loaded(tester);
+        writesDown = true;
+
+        await controller.setSortBy('store');
+        await controller.load();
+
+        expect(controller.sortBy, 'store');
+        expect(houseSort, 'oldest');
+
+        await drain();
+        expect(houseSort, 'store');
 
         await quiesce(tester);
       });

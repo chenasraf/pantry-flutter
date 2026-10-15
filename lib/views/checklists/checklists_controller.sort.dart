@@ -8,7 +8,7 @@ extension ChecklistsControllerSort on ChecklistsController {
     _checklistService.rememberItemSort(houseId, listId, sort);
     notifyListeners();
 
-    unawaited(_persistSortPref(listId, sort));
+    _persistSortPref(listId, sort);
 
     if (_currentList != null) {
       // Only the current list's cached snapshot is now stale-ordered; drop just
@@ -20,24 +20,19 @@ extension ChecklistsControllerSort on ChecklistsController {
     }
   }
 
-  Future<void> _persistSortPref(int listId, String sort) async {
-    if (!hasFeature(kListItemSortFeature)) {
-      try {
-        await _checklistService.setItemSortPref(houseId, sort);
-      } catch (e) {
-        debugPrint('[ChecklistsController] Failed to persist sort pref: $e');
-      }
-      return;
-    }
-    _sortWriteGen[listId] = (_sortWriteGen[listId] ?? 0) + 1;
+  /// Queues [sort] for [listId], or for the whole house on servers that keep
+  /// one sort per house.
+  void _persistSortPref(int listId, String sort) {
+    final target = hasFeature(kListItemSortFeature) ? listId : null;
+    _sortWriteGen[target] = (_sortWriteGen[target] ?? 0) + 1;
     _sync.enqueue(
       SyncOp(
         uuid: SyncIds.newOpUuid(),
         entity: SyncEntity.checklistList,
         op: SyncOpKind.setItemSort,
         houseId: houseId,
-        entityId: listId < 0 ? null : listId,
-        tempEntityId: listId < 0 ? listId : null,
+        entityId: target != null && target >= 0 ? target : null,
+        tempEntityId: target != null && target < 0 ? target : null,
         body: {'itemSort': sort},
         createdAt: _now(),
       ),

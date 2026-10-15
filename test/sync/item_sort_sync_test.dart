@@ -43,6 +43,24 @@ void main() {
       expect(q.all().map((o) => o.uuid), ['c', 'd']);
     });
 
+    test('house-wide sorts collapse per house, apart from list sorts', () {
+      SyncOp house(String uuid, int houseId, String sort) => SyncOp(
+        uuid: uuid,
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.setItemSort,
+        houseId: houseId,
+        body: {'itemSort': sort},
+        createdAt: 0,
+      );
+      final q = _newQueue()
+        ..enqueue(house('a', 1, 'name_asc'))
+        ..enqueue(house('b', 2, 'oldest'))
+        ..enqueue(_sort('c', 5, 'store'))
+        ..enqueue(house('d', 1, 'newest'));
+      q.merge();
+      expect(q.all().map((o) => o.uuid), ['b', 'c', 'd']);
+    });
+
     test('a pending sort is dropped when its list is deleted', () {
       final q = _newQueue()
         ..enqueue(_sort('a', 5, 'newest'))

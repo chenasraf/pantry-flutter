@@ -253,8 +253,12 @@ class SyncExecutor {
         return SyncResult(list);
       case SyncOpKind.setItemSort:
         final sort = op.body['itemSort'] as String?;
-        if (id == null || sort == null) return SyncResult.empty;
-        await svc.setListItemSort(houseId, id, sort);
+        if (sort == null) return SyncResult.empty;
+        if (id != null) {
+          await svc.setListItemSort(houseId, id, sort);
+        } else if (op.tempEntityId == null) {
+          await svc.setItemSortPref(houseId, sort);
+        }
         return SyncResult.empty;
       case SyncOpKind.delete:
         if (id == null) return SyncResult.empty;

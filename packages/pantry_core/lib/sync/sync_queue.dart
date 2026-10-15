@@ -446,18 +446,17 @@ class SyncQueue {
     });
   }
 
-  /// A list's item sort is absolute, so only the latest queued choice per list
-  /// needs to be sent.
+  /// An item sort is absolute, so only the latest queued choice per list (or
+  /// per house, for the house-wide sort) needs to be sent.
   bool _applyItemSortCollapse(List<SyncOp> ops) {
-    final byList = <int, List<int>>{};
+    final byTarget = <String, List<int>>{};
     for (var i = 0; i < ops.length; i++) {
       final op = ops[i];
       if (op.op != SyncOpKind.setItemSort) continue;
-      final id = op.effectiveEntityId;
-      if (id == null) continue;
-      byList.putIfAbsent(id, () => []).add(i);
+      final k = '${op.houseId}:${op.effectiveEntityId}';
+      byTarget.putIfAbsent(k, () => []).add(i);
     }
-    return _collapseGroups(ops, byList.values);
+    return _collapseGroups(ops, byTarget.values);
   }
 
   bool _applyReorderCollapse(List<SyncOp> ops) {
