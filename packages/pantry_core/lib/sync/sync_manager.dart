@@ -272,6 +272,30 @@ class SyncManager {
     return out;
   }
 
+  /// List ids in [houseId] whose own row has an un-acked op (create, edit,
+  /// delete, archive, reorder…), so a fetched set of lists keeps the local
+  /// version of each. Unlike [pendingListIds], item ops don't count: they
+  /// leave the list row as the server has it.
+  Set<int> pendingListRecordIds(int houseId) {
+    final out = <int>{};
+    for (final raw in _queue.all()) {
+      if (raw.houseId != houseId || raw.entity != SyncEntity.checklistList) {
+        continue;
+      }
+      final op = _remap.rewrite(raw);
+      final id = op.effectiveEntityId;
+      if (id != null) out.add(id);
+      if (raw.tempEntityId != null) out.add(raw.tempEntityId!);
+      if (op.op == SyncOpKind.reorder) {
+        for (final entry in (op.body['order'] as List? ?? const [])) {
+          final listId = (entry as Map)['id'];
+          if (listId is int) out.add(listId);
+        }
+      }
+    }
+    return out;
+  }
+
   /// Account-pref values still queued, latest per key.
   ///
   /// Read when the server's prefs are fetched, so a fetch that lands before

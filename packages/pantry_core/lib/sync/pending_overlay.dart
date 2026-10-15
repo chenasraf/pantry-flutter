@@ -25,24 +25,51 @@ List<ListItem> overlayPendingItems({
   required List<ListItem> local,
   required Set<int> pending,
   int Function(ListItem item, List<ListItem> into)? insertIndex,
+}) => _overlayPending(
+  server: server,
+  local: local,
+  pending: pending,
+  idOf: (i) => i.id,
+  insertIndex: insertIndex,
+);
+
+/// [overlayPendingItems] for the lists themselves; [pending] comes from
+/// `SyncManager.pendingListRecordIds`.
+List<ChecklistList> overlayPendingLists({
+  required List<ChecklistList> server,
+  required List<ChecklistList> local,
+  required Set<int> pending,
+}) => _overlayPending(
+  server: server,
+  local: local,
+  pending: pending,
+  idOf: (l) => l.id,
+);
+
+List<T> _overlayPending<T>({
+  required List<T> server,
+  required List<T> local,
+  required Set<int> pending,
+  required int Function(T record) idOf,
+  int Function(T record, List<T> into)? insertIndex,
 }) {
   if (pending.isEmpty) return server;
 
-  final localById = {for (final i in local) i.id: i};
-  final out = <ListItem>[];
+  final localById = {for (final l in local) idOf(l): l};
+  final out = <T>[];
   for (final s in server) {
-    if (pending.contains(s.id)) {
-      final mine = localById[s.id];
+    if (pending.contains(idOf(s))) {
+      final mine = localById[idOf(s)];
       if (mine != null) out.add(mine);
     } else {
       out.add(s);
     }
   }
 
-  final present = out.map((i) => i.id).toSet();
+  final present = out.map(idOf).toSet();
   final localOnly = [
     for (final l in local)
-      if (pending.contains(l.id) && !present.contains(l.id)) l,
+      if (pending.contains(idOf(l)) && !present.contains(idOf(l))) l,
   ];
   if (localOnly.isEmpty) return out;
   if (insertIndex == null) return [...out, ...localOnly];

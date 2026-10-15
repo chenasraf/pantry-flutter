@@ -296,6 +296,7 @@ void main() {
 
         await drain();
 
+        expect(controller.currentList?.id, created);
         final written = puts('/lists/$created/prefs').toList();
         expect(written, hasLength(1));
         expect(jsonDecode(written.single.body), {'itemSort': 'name_desc'});
@@ -306,6 +307,30 @@ void main() {
 
         await quiesce(tester);
       });
+    });
+  });
+
+  testWidgets('a reload while a list create is queued keeps it selected', (
+    tester,
+  ) async {
+    seedFeatures(perList: true);
+    await withServer(() async {
+      final controller = await loaded(tester);
+      writesDown = true;
+
+      final pending = await controller.createList(name: 'Camping');
+      await controller.selectList(pending);
+      await controller.load();
+
+      expect(controller.lists.map((l) => l.id), contains(pending.id));
+      expect(controller.currentList?.id, pending.id);
+
+      await drain();
+      await controller.load();
+      expect(controller.lists.map((l) => l.id), [groceries, hardware, created]);
+      expect(controller.currentList?.id, created);
+
+      await quiesce(tester);
     });
   });
 

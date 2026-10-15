@@ -118,4 +118,58 @@ void main() {
       expect(manager.pendingListIds(1), isEmpty);
     });
   });
+
+  group('pendingListRecordIds', () {
+    test('counts list ops and reordered lists, not item ops', () {
+      manager.queueForTest
+        ..enqueue(
+          _op(
+            uuid: 'a',
+            entity: SyncEntity.checklistList,
+            op: SyncOpKind.create,
+            tempEntityId: -1,
+          ),
+        )
+        ..enqueue(
+          _op(
+            uuid: 'b',
+            entity: SyncEntity.checklistList,
+            op: SyncOpKind.update,
+            entityId: 2,
+          ),
+        )
+        ..enqueue(
+          _op(
+            uuid: 'c',
+            entity: SyncEntity.checklistList,
+            op: SyncOpKind.reorder,
+            body: {
+              'order': [
+                {'id': 3, 'sortOrder': 0},
+                {'id': 4, 'sortOrder': 1},
+              ],
+            },
+          ),
+        )
+        ..enqueue(
+          _op(
+            uuid: 'd',
+            entity: SyncEntity.checklistItem,
+            op: SyncOpKind.update,
+            entityId: 50,
+            parentId: 5,
+          ),
+        )
+        ..enqueue(
+          _op(
+            uuid: 'e',
+            entity: SyncEntity.checklistList,
+            op: SyncOpKind.update,
+            houseId: 2,
+            entityId: 6,
+          ),
+        );
+      expect(manager.pendingListRecordIds(1), {-1, 2, 3, 4});
+    });
+  });
 }

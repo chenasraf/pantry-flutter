@@ -447,7 +447,13 @@ class ChecklistsController extends ChangeNotifier {
         _categoryService.getCategories(houseId),
       ]);
 
-      _lists = _applyLocalListPrefs(results[0] as List<ChecklistList>);
+      _lists = _applyLocalListPrefs(
+        overlayPendingLists(
+          server: results[0] as List<ChecklistList>,
+          local: _lists,
+          pending: _sync.pendingListRecordIds(houseId),
+        ),
+      );
       _checklistService.cacheLists(houseId, _lists);
 
       final cats = results[1] as List<models.Category>;
@@ -1093,6 +1099,11 @@ class ChecklistsController extends ChangeNotifier {
           final reconciled = _withLocalListPrefs(entity);
           if (tempId != null) {
             _checklistService.rebindItemSort(houseId, tempId, entity.id);
+            // The next load reopens the persisted selection; left on the
+            // temp id, it would find no such list and fall back to the first.
+            if (_checklistService.selectedListId == tempId) {
+              _checklistService.selectedListId = entity.id;
+            }
             final i = _lists.indexWhere((l) => l.id == tempId);
             if (i != -1) {
               _lists[i] = reconciled;
