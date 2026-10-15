@@ -251,6 +251,11 @@ class SyncExecutor {
           ItemDefaultsPatch.fromJson(op.body),
         );
         return SyncResult(list);
+      case SyncOpKind.setItemSort:
+        final sort = op.body['itemSort'] as String?;
+        if (id == null || sort == null) return SyncResult.empty;
+        await svc.setListItemSort(houseId, id, sort);
+        return SyncResult.empty;
       case SyncOpKind.delete:
         if (id == null) return SyncResult.empty;
         await svc.deleteList(houseId, id);
@@ -373,6 +378,7 @@ class SyncExecutor {
         await svc.deleteItemImage(houseId, listId, id);
         return SyncResult.empty;
       case SyncOpKind.setItemDefaults:
+      case SyncOpKind.setItemSort:
         return SyncResult.empty;
       case SyncOpKind.batch:
         return _executeItemBatch(svc, houseId, op);
@@ -529,6 +535,7 @@ class SyncExecutor {
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
       case SyncOpKind.setItemDefaults:
+      case SyncOpKind.setItemSort:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -605,6 +612,7 @@ class SyncExecutor {
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
       case SyncOpKind.setItemDefaults:
+      case SyncOpKind.setItemSort:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -673,6 +681,7 @@ class SyncExecutor {
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
       case SyncOpKind.setItemDefaults:
+      case SyncOpKind.setItemSort:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -727,6 +736,7 @@ class SyncExecutor {
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
       case SyncOpKind.setItemDefaults:
+      case SyncOpKind.setItemSort:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }
@@ -786,6 +796,7 @@ class SyncExecutor {
       case SyncOpKind.setImage:
       case SyncOpKind.clearImage:
       case SyncOpKind.setItemDefaults:
+      case SyncOpKind.setItemSort:
       case SyncOpKind.batch:
         return SyncResult.empty;
     }

@@ -283,6 +283,24 @@ class SyncManager {
         ...op.body,
   };
 
+  /// The latest item sort still queued for [listId] (a temp id resolves once
+  /// its create binds), or null when none is.
+  ///
+  /// Read when a list's stored sort is fetched, so a fetch that lands before
+  /// the queue drains cannot revert a sort changed offline.
+  String? pendingItemSort(int houseId, int listId) {
+    String? sort;
+    for (final raw in _queue.all()) {
+      if (raw.houseId != houseId || raw.op != SyncOpKind.setItemSort) continue;
+      final op = _remap.rewrite(raw);
+      if (op.effectiveEntityId != listId && raw.tempEntityId != listId) {
+        continue;
+      }
+      sort = op.body['itemSort'] as String? ?? sort;
+    }
+    return sort;
+  }
+
   /// Item ids in [sessionId] that still have a pending Shopping Mode *check*
   /// (create) op queued for [houseId]. The dense shopping view hides these from
   /// its to-buy list so an un-synced offline check — or a still-flushing one —

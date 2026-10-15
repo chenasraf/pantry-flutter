@@ -97,6 +97,12 @@ enum SyncOpKind {
   /// coalesces by those per-key rules instead of by overwriting fields.
   setItemDefaults,
 
+  /// Store the user's item sort for a list (`body['itemSort']`) on servers
+  /// that keep one per list. Absolute, so queued writes for one list collapse
+  /// into the latest; queued rather than sent direct so a sort picked offline,
+  /// or on a list whose create hasn't landed yet, still reaches the server.
+  setItemSort,
+
   /// House-scoped group action over many items (move / copy / delete /
   /// set-category). Unlike every other kind this targets a *list* of items
   /// carried in `body['itemIds']` rather than a single [SyncOp.entityId]; the

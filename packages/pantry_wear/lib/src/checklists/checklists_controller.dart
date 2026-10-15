@@ -497,6 +497,7 @@ class ChecklistsController extends ChangeNotifier {
     if (session == null) {
       final listId = await _scope.resolveList(_lists) ?? _scope.listId;
       _list = _listFor(listId, house);
+      if (listId != null) _itemSort = _checklists.cachedItemSort(house, listId);
       _applyItems(_cachedItems(listId));
       _publishTile();
     } else {
@@ -532,11 +533,14 @@ class ChecklistsController extends ChangeNotifier {
     try {
       final prefs = await _checklists.getHousePrefs(house);
       ServerVersionService.instance.observeHousePrefs(prefs);
-      _itemSort = prefs['checklistItemSort'] as String? ?? 'custom';
+      // With per-list sorts the house value is only the default for lists
+      // without a stored choice; the list's own sort comes from its prefs.
+      final houseItemSort = prefs['checklistItemSort'] as String? ?? 'custom';
+      if (!hasFeature(kListItemSortFeature)) _itemSort = houseItemSort;
       _categorySort = prefs['categorySort'] as String? ?? 'custom';
       _storeSort = prefs['storeSort'] as String? ?? 'name_asc';
       final cache = _checklists.cache;
-      cache.set('sortBy:$house', _itemSort);
+      cache.set('sortBy:$house', houseItemSort);
       cache.set('categorySort:$house', _categorySort);
       cache.set('storeSort:$house', _storeSort);
       cache.set(
@@ -858,6 +862,7 @@ class ChecklistsController extends ChangeNotifier {
 
     final listId = _list?.id;
     if (listId == null) return await references;
+    final sort = _refreshListSort(house, listId);
     try {
       // The cached copy is read before the fetch is written over it: it is the
       // local half of the overlay, and on a device whose process dies as
@@ -875,7 +880,19 @@ class ChecklistsController extends ChangeNotifier {
       }
       _applyItems(overlaid);
     } catch (_) {}
-    await references;
+    await Future.wait([references, sort]);
+  }
+
+  /// The list's own sort, on servers that keep one per list. A failed read
+  /// keeps the cached answer, which falls back to the house's sort.
+  Future<void> _refreshListSort(int house, int listId) async {
+    _itemSort = _checklists.cachedItemSort(house, listId);
+    if (!hasFeature(kListItemSortFeature)) return;
+    try {
+      final sort = await _checklists.getListItemSort(house, listId);
+      _checklists.cacheItemSort(house, listId, sort);
+      if (_list?.id == listId) _itemSort = sort;
+    } catch (_) {}
   }
 
   /// A fetched snapshot describes what the server knew, which is older than

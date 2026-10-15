@@ -51,6 +51,11 @@ Map<String, dynamic> itemPriceBody(
   };
 }
 
+/// Capability advertised by servers that keep the item sort per list and per
+/// person (`/lists/{listId}/prefs`) rather than one `checklistItemSort` per
+/// house.
+const kListItemSortFeature = 'pref-list-item-sort';
+
 /// Capability advertised by servers that store per-item custom-field values.
 const kCustomFieldsFeature = 'custom-fields';
 
@@ -145,6 +150,58 @@ class ChecklistService {
       '/houses/$houseId/prefs',
       fromJson: (data) => data['checklistItemSort'] as String? ?? 'custom',
     );
+  }
+
+  /// The item sort of one list ([kAllListsId] for the All-lists view). A list
+  /// with no stored choice answers with the house-wide `checklistItemSort`.
+  Future<String> getListItemSort(int houseId, int listId) async {
+    return ApiClient.instance.get<Map<String, dynamic>, String>(
+      '/houses/$houseId/lists/$listId/prefs',
+      fromJson: (data) => data['itemSort'] as String? ?? 'custom',
+    );
+  }
+
+  Future<void> setListItemSort(int houseId, int listId, String sort) async {
+    await ApiClient.instance.put<Map<String, dynamic>, void>(
+      '/houses/$houseId/lists/$listId/prefs',
+      body: {'itemSort': sort},
+      fromJson: (_) {},
+    );
+  }
+
+  /// The item sort last seen for [listId], falling back to the house-wide sort
+  /// when the server keeps one sort per house or this list was never fetched.
+  String cachedItemSort(int houseId, int listId) {
+    final perList = hasFeature(kListItemSortFeature)
+        ? cache.get<String>('itemSort:$houseId:$listId')
+        : null;
+    return perList ??
+        cache.get<String>('sortBy:$houseId') ??
+        cache.get<String>('sortBy') ??
+        'custom';
+  }
+
+  void cacheItemSort(int houseId, int listId, String sort) =>
+      cache.set('itemSort:$houseId:$listId', sort);
+
+  /// Caches a user's sort choice for [listId] under the key [cachedItemSort]
+  /// reads it back from: per list on `pref-list-item-sort` servers, per house
+  /// otherwise.
+  void rememberItemSort(int houseId, int listId, String sort) {
+    if (hasFeature(kListItemSortFeature)) {
+      cacheItemSort(houseId, listId, sort);
+    } else {
+      cache.set('sortBy:$houseId', sort);
+    }
+  }
+
+  /// Re-keys a cached per-list sort when an optimistic list's temp id binds to
+  /// its server id.
+  void rebindItemSort(int houseId, int tempId, int realId) {
+    final sort = cache.get<String>('itemSort:$houseId:$tempId');
+    if (sort == null) return;
+    cacheItemSort(houseId, realId, sort);
+    cache.removeKey('itemSort:$houseId:$tempId');
   }
 
   Future<void> setItemSortPref(int houseId, String sort) async {

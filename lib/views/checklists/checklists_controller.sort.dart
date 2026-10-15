@@ -4,10 +4,11 @@ extension ChecklistsControllerSort on ChecklistsController {
   Future<void> setSortBy(String sort) async {
     if (sort == _sortBy) return;
     _sortBy = sort;
-    _checklistService.cache.set('sortBy:$houseId', sort);
+    final listId = _currentList?.id ?? kAllListsId;
+    _checklistService.rememberItemSort(houseId, listId, sort);
     notifyListeners();
 
-    unawaited(_persistSortPref(sort));
+    unawaited(_persistSortPref(listId, sort));
 
     if (_currentList != null) {
       // Only the current list's cached snapshot is now stale-ordered; drop just
@@ -19,12 +20,77 @@ extension ChecklistsControllerSort on ChecklistsController {
     }
   }
 
-  Future<void> _persistSortPref(String sort) async {
-    try {
-      await _checklistService.setItemSortPref(houseId, sort);
-    } catch (e) {
-      debugPrint('[ChecklistsController] Failed to persist sort pref: $e');
+  Future<void> _persistSortPref(int listId, String sort) async {
+    if (!hasFeature(kListItemSortFeature)) {
+      try {
+        await _checklistService.setItemSortPref(houseId, sort);
+      } catch (e) {
+        debugPrint('[ChecklistsController] Failed to persist sort pref: $e');
+      }
+      return;
     }
+    _sortWriteGen[listId] = (_sortWriteGen[listId] ?? 0) + 1;
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistList,
+        op: SyncOpKind.setItemSort,
+        houseId: houseId,
+        entityId: listId < 0 ? null : listId,
+        tempEntityId: listId < 0 ? listId : null,
+        body: {'itemSort': sort},
+        createdAt: _now(),
+      ),
+    );
+  }
+
+  /// Reads [listId]'s stored sort from the server and caches it. `null` when
+  /// the server keeps one sort per house, the read fails, or a sort change for
+  /// the list is queued or was made while the read was out — the server's
+  /// answer may predate it, and the user's choice must not be reverted by it.
+  Future<String?> _fetchListItemSort(int listId) async {
+    if (!hasFeature(kListItemSortFeature) || listId < 0) return null;
+    if (_sync.pendingItemSort(houseId, listId) != null) return null;
+    final gen = _sortWriteGen[listId];
+    try {
+      final sort = await _checklistService.getListItemSort(houseId, listId);
+      if (_sortWriteGen[listId] != gen) return null;
+      _checklistService.cacheItemSort(houseId, listId, sort);
+      return sort;
+    } catch (e) {
+      debugPrint(
+        '[ChecklistsController] Failed to load list sort ($listId): $e',
+      );
+      return null;
+    }
+  }
+
+  /// The order the All-lists view is fetched in: it has no custom order of its
+  /// own, so `custom` reads as newest.
+  static String _allListsSort(String sort) =>
+      sort == 'custom' ? 'newest' : sort;
+
+  /// Fetches [list]'s items in its sort. The request goes out in the cached
+  /// sort alongside a read of the stored one; when they disagree the items are
+  /// fetched again in the stored order, which then becomes the current sort if
+  /// [list] is still the one on screen.
+  Future<List<ListItem>> _fetchItemsInListSort(ChecklistList list) async {
+    final requested = hasFeature(kListItemSortFeature)
+        ? _checklistService.cachedItemSort(houseId, list.id)
+        : _sortBy;
+    Future<List<ListItem>> fetch(String sort) => list.id == kAllListsId
+        ? _checklistService.getHouseItems(houseId, sortBy: _allListsSort(sort))
+        : _checklistService.getItems(houseId, list.id, sortBy: sort);
+
+    final storedFuture = _fetchListItemSort(list.id);
+    final items = await fetch(requested);
+    final stored = await storedFuture;
+    if (stored == null || stored == requested) return items;
+    if (_currentList?.id == list.id) {
+      _sortBy = stored;
+      notifyListeners();
+    }
+    return fetch(stored);
   }
 
   Future<void> onCategoriesChanged() async {

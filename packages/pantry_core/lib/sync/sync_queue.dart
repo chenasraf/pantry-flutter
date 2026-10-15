@@ -109,6 +109,7 @@ class SyncQueue {
       changed = _applyUpdateCollapse(result) || changed;
       changed = _applyImageCollapse(result) || changed;
       changed = _applyItemDefaultsCollapse(result) || changed;
+      changed = _applyItemSortCollapse(result) || changed;
       changed = _applyReorderCollapse(result) || changed;
       changed = _applyCreateFolds(result) || changed;
     }
@@ -223,7 +224,8 @@ class SyncQueue {
         if ((b.op == SyncOpKind.update ||
                 b.op == SyncOpKind.setImage ||
                 b.op == SyncOpKind.clearImage ||
-                b.op == SyncOpKind.setItemDefaults) &&
+                b.op == SyncOpKind.setItemDefaults ||
+                b.op == SyncOpKind.setItemSort) &&
             b.entity == a.entity &&
             b.effectiveEntityId == a.effectiveEntityId) {
           ops.removeAt(j);
@@ -444,6 +446,24 @@ class SyncQueue {
       changed = true;
     }
     return changed;
+  }
+
+  /// A list's item sort is absolute, so only the latest queued choice per list
+  /// needs to be sent. Drops one superseded write per call; [merge] iterates
+  /// to a fixed point.
+  bool _applyItemSortCollapse(List<SyncOp> ops) {
+    final seen = <int>{};
+    for (var i = ops.length - 1; i >= 0; i--) {
+      final op = ops[i];
+      if (op.op != SyncOpKind.setItemSort) continue;
+      final id = op.effectiveEntityId;
+      if (id == null) continue;
+      if (!seen.add(id)) {
+        ops.removeAt(i);
+        return true;
+      }
+    }
+    return false;
   }
 
   bool _applyReorderCollapse(List<SyncOp> ops) {

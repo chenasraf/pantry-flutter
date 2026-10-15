@@ -130,7 +130,7 @@ class ChecklistWidgetService {
     final items = (cs.getCachedItems(config.listId) ?? [])
         .where((i) => i.deletedAt == null && i.archivedAt == null)
         .toList();
-    final sortBy = cs.cache.get<String>('sortBy:${config.houseId}') ?? 'custom';
+    final sortBy = cs.cachedItemSort(config.houseId, config.listId);
 
     final active = items.where((i) => !i.done).toList();
     final done = items.where((i) => i.done).toList();

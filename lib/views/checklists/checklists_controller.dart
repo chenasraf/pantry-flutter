@@ -242,8 +242,14 @@ class ChecklistsController extends ChangeNotifier {
   List<FieldDefinition> get customFieldDefs =>
       hasFeature(kCustomFieldsFeature) ? _customFieldDefs : const [];
 
+  /// The item sort of the current list (or of the All-lists view).
   String _sortBy = 'custom';
   String get sortBy => _sortBy;
+
+  /// Per-list generation bumped by each sort change, so a read of the stored
+  /// sort that was already out when the user changed it is discarded rather
+  /// than reverting their choice.
+  final Map<int, int> _sortWriteGen = {};
 
   String _categorySort = 'custom';
   String get categorySort => _categorySort;
@@ -485,14 +491,18 @@ class ChecklistsController extends ChangeNotifier {
       try {
         final prefs = await _checklistService.getHousePrefs(houseId);
         ServerVersionService.instance.observeHousePrefs(prefs);
-        _sortBy = prefs['checklistItemSort'] as String? ?? 'custom';
+        // With per-list sorts the house value is only the default for lists
+        // without a stored choice; the current list's own sort is resolved in
+        // `selectList`.
+        final houseItemSort = prefs['checklistItemSort'] as String? ?? 'custom';
+        if (!hasFeature(kListItemSortFeature)) _sortBy = houseItemSort;
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _categorySort = prefs['categorySort'] as String? ?? 'custom';
         _storeSort = prefs['storeSort'] as String? ?? 'name_asc';
         _labelSort = prefs['labelSort'] as String? ?? 'name_asc';
         _listSort = prefs['checklistListSort'] as String? ?? 'custom';
         _lastCurrency = prefs['lastCurrency'] as String? ?? 'USD';
-        _checklistService.cache.set('sortBy:$houseId', _sortBy);
+        _checklistService.cache.set('sortBy:$houseId', houseItemSort);
         _checklistService.cache.set('showAddedBy:$houseId', _showAddedBy);
         _checklistService.cache.set('categorySort:$houseId', _categorySort);
         _checklistService.cache.set('storeSort:$houseId', _storeSort);
@@ -576,10 +586,13 @@ class ChecklistsController extends ChangeNotifier {
       if (pendingLists.contains(list.id)) continue;
       if (!_sync.isOnline) return;
       try {
+        final sort =
+            await _fetchListItemSort(list.id) ??
+            _checklistService.cachedItemSort(houseId, list.id);
         final items = await _checklistService.getItems(
           houseId,
           list.id,
-          sortBy: _sortBy,
+          sortBy: sort,
         );
         // A mutation may have landed mid-fetch — don't overwrite a now-pending
         // list's cache with a snapshot that predates the optimistic change.
@@ -605,9 +618,12 @@ class ChecklistsController extends ChangeNotifier {
       return;
     }
     try {
+      final sort =
+          await _fetchListItemSort(kAllListsId) ??
+          _checklistService.cachedItemSort(houseId, kAllListsId);
       final all = await _checklistService.getHouseItems(
         houseId,
-        sortBy: _sortBy == 'custom' ? 'newest' : _sortBy,
+        sortBy: ChecklistsControllerSort._allListsSort(sort),
       );
       if (_sync.pendingListIds(houseId)?.isEmpty ?? false) {
         _checklistService.cacheItems(kAllListsId, all);
@@ -621,12 +637,14 @@ class ChecklistsController extends ChangeNotifier {
 
   void _restoreFromCache() {
     final cache = _checklistService.cache;
+    final shownListId = _currentList?.id ?? _checklistService.selectedListId;
     // Fall back to the legacy global key for installs that cached prefs
     // before they were scoped per-house. First scoped write overwrites it.
-    _sortBy =
-        cache.get<String>('sortBy:$houseId') ??
-        cache.get<String>('sortBy') ??
-        'custom';
+    _sortBy = shownListId != null
+        ? _checklistService.cachedItemSort(houseId, shownListId)
+        : cache.get<String>('sortBy:$houseId') ??
+              cache.get<String>('sortBy') ??
+              'custom';
     _showAddedBy =
         cache.get<bool>('showAddedBy:$houseId') ??
         cache.get<bool>('showAddedBy') ??
@@ -684,6 +702,7 @@ class ChecklistsController extends ChangeNotifier {
         final savedId = _checklistService.selectedListId;
         if (savedId == kAllListsId && hasFeature('checklist-all-view')) {
           _currentList = allListsSentinel(houseId);
+          _sortBy = _checklistService.cachedItemSort(houseId, kAllListsId);
           // The aggregate has its own cache slot (kAllListsId), so the
           // All-lists view restores offline just like a concrete list.
           _items = _checklistService.getCachedItems(kAllListsId) ?? const [];
@@ -698,6 +717,7 @@ class ChecklistsController extends ChangeNotifier {
                     )
                   : null) ??
               _lists.first;
+          _sortBy = _checklistService.cachedItemSort(houseId, _currentList!.id);
           _items =
               _checklistService.getCachedItems(_currentList!.id) ?? const [];
           _isLoading = false;
@@ -719,6 +739,9 @@ class ChecklistsController extends ChangeNotifier {
     final previousListId = _currentList?.id;
     _currentList = list;
     _checklistService.selectedListId = list.id;
+    if (hasFeature(kListItemSortFeature)) {
+      _sortBy = _checklistService.cachedItemSort(houseId, list.id);
+    }
 
     if (isSoftView) {
       _items = [];
@@ -763,10 +786,7 @@ class ChecklistsController extends ChangeNotifier {
         notifyListeners();
       }
       try {
-        final fresh = await _checklistService.getHouseItems(
-          houseId,
-          sortBy: effectiveSortBy,
-        );
+        final fresh = await _fetchItemsInListSort(list);
         if (_currentList?.id == kAllListsId && !isSoftView) {
           _items = _overlayPending(fresh);
           _error = null;
@@ -810,11 +830,7 @@ class ChecklistsController extends ChangeNotifier {
     }
 
     try {
-      final freshItems = await _checklistService.getItems(
-        houseId,
-        list.id,
-        sortBy: _sortBy,
-      );
+      final freshItems = await _fetchItemsInListSort(list);
       if (_currentList?.id == list.id && !isSoftView) {
         // Reconcile against pending ops only while this list is still current;
         // `_items` belongs to a different list otherwise.
@@ -1076,6 +1092,7 @@ class ChecklistsController extends ChangeNotifier {
           // so overlay the local dismissal before adopting them.
           final reconciled = _withLocalListPrefs(entity);
           if (tempId != null) {
+            _checklistService.rebindItemSort(houseId, tempId, entity.id);
             final i = _lists.indexWhere((l) => l.id == tempId);
             if (i != -1) {
               _lists[i] = reconciled;
