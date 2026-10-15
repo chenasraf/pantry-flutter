@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.37.0](https://github.com/chenasraf/pantry-flutter/compare/v0.36.0...v0.37.0) (2026-10-15)
+
+
+### Features
+
+* **lists:** organize the list menu into a grid of categories ([5025183](https://github.com/chenasraf/pantry-flutter/commit/502518324eac1e9378db46898896bd35a989c9fe))
+* **prefs:** per-list item sort ([419bbff](https://github.com/chenasraf/pantry-flutter/commit/419bbff77de9d6d4e8871458cc371a2043d753db))
+* **shopping:** delete trips from history ([25b978f](https://github.com/chenasraf/pantry-flutter/commit/25b978f4c0a5a93b0e5be01770a799212664c5ca))
+
+
+### Bug Fixes
+
+* **lists:** keep a list created offline open while it syncs ([0688a3b](https://github.com/chenasraf/pantry-flutter/commit/0688a3b9a69bcdda6795fa44e36023b0f2061095))
+* **lists:** keep a sort changed offline on servers with one sort per household ([874c49c](https://github.com/chenasraf/pantry-flutter/commit/874c49cf4c99a3578a958a17e7e285d134d4df11))
+* **sync:** keep offline edits to several items when they sync ([122c327](https://github.com/chenasraf/pantry-flutter/commit/122c327e9a5045cbfc400699ccb80fbec551eed0))
+
 ## [0.36.0](https://github.com/chenasraf/pantry-flutter/compare/v0.35.0...v0.36.0) (2026-10-10)
 
 
