@@ -371,25 +371,40 @@ class SyncQueue {
       final k = '${op.entity.name}:${op.parentId}:${op.effectiveEntityId}';
       byRecord.putIfAbsent(k, () => []).add(i);
     }
-    bool changed = false;
-    for (final indices in byRecord.values) {
-      if (indices.length < 2) continue;
+    return _collapseGroups(ops, byRecord.values, (group) {
       final mergedBody = <String, dynamic>{};
-      for (final i in indices) {
-        mergedBody.addAll(ops[i].body);
+      for (final op in group) {
+        mergedBody.addAll(op.body);
       }
-      // Keep the latest op (last index), with merged body.
-      final latest = ops[indices.last].copyWith(body: mergedBody);
-      // Remove earlier ones (in reverse to preserve indices).
-      for (final i in indices.reversed) {
-        if (i != indices.last) ops.removeAt(i);
+      return group.last.copyWith(body: mergedBody);
+    });
+  }
+
+  /// Keeps only the last op of each group in [groups] (ascending indices into
+  /// [ops]), replaced by [fold] of the whole group when given. Every group is
+  /// resolved against the original positions before [ops] changes; removing one
+  /// group's ops first would shift the next group's indices onto other ops.
+  bool _collapseGroups(
+    List<SyncOp> ops,
+    Iterable<List<int>> groups, [
+    SyncOp Function(List<SyncOp> group)? fold,
+  ]) {
+    final drop = <int>[];
+    final replace = <int, SyncOp>{};
+    for (final indices in groups) {
+      if (indices.length < 2) continue;
+      drop.addAll(indices.take(indices.length - 1));
+      if (fold != null) {
+        replace[indices.last] = fold([for (final i in indices) ops[i]]);
       }
-      // Now find the new index of the latest op and replace it.
-      final newIdx = ops.indexWhere((o) => o.uuid == latest.uuid);
-      if (newIdx != -1) ops[newIdx] = latest;
-      changed = true;
     }
-    return changed;
+    if (drop.isEmpty) return false;
+    replace.forEach((i, op) => ops[i] = op);
+    drop.sort((a, b) => b.compareTo(a));
+    for (final i in drop) {
+      ops.removeAt(i);
+    }
+    return true;
   }
 
   /// A record carries one image, and both image ops state what it ends up
@@ -407,15 +422,7 @@ class SyncQueue {
       final k = '${op.entity.name}:${op.effectiveEntityId}';
       byRecord.putIfAbsent(k, () => []).add(i);
     }
-    bool changed = false;
-    for (final indices in byRecord.values) {
-      if (indices.length < 2) continue;
-      for (final i in indices.reversed) {
-        if (i != indices.last) ops.removeAt(i);
-      }
-      changed = true;
-    }
-    return changed;
+    return _collapseGroups(ops, byRecord.values);
   }
 
   /// Item-defaults patches on one list fold into the latest, in order, so a
@@ -430,40 +437,27 @@ class SyncQueue {
       if (id == null) continue;
       byList.putIfAbsent(id, () => []).add(i);
     }
-    bool changed = false;
-    for (final indices in byList.values) {
-      if (indices.length < 2) continue;
-      var merged = ItemDefaultsPatch.fromJson(ops[indices.first].body);
-      for (final i in indices.skip(1)) {
-        merged = merged.then(ItemDefaultsPatch.fromJson(ops[i].body));
+    return _collapseGroups(ops, byList.values, (group) {
+      var merged = ItemDefaultsPatch.fromJson(group.first.body);
+      for (final op in group.skip(1)) {
+        merged = merged.then(ItemDefaultsPatch.fromJson(op.body));
       }
-      final latest = ops[indices.last].copyWith(body: merged.toJson());
-      for (final i in indices.reversed) {
-        if (i != indices.last) ops.removeAt(i);
-      }
-      final newIdx = ops.indexWhere((o) => o.uuid == latest.uuid);
-      if (newIdx != -1) ops[newIdx] = latest;
-      changed = true;
-    }
-    return changed;
+      return group.last.copyWith(body: merged.toJson());
+    });
   }
 
   /// A list's item sort is absolute, so only the latest queued choice per list
-  /// needs to be sent. Drops one superseded write per call; [merge] iterates
-  /// to a fixed point.
+  /// needs to be sent.
   bool _applyItemSortCollapse(List<SyncOp> ops) {
-    final seen = <int>{};
-    for (var i = ops.length - 1; i >= 0; i--) {
+    final byList = <int, List<int>>{};
+    for (var i = 0; i < ops.length; i++) {
       final op = ops[i];
       if (op.op != SyncOpKind.setItemSort) continue;
       final id = op.effectiveEntityId;
       if (id == null) continue;
-      if (!seen.add(id)) {
-        ops.removeAt(i);
-        return true;
-      }
+      byList.putIfAbsent(id, () => []).add(i);
     }
-    return false;
+    return _collapseGroups(ops, byList.values);
   }
 
   bool _applyReorderCollapse(List<SyncOp> ops) {
@@ -481,15 +475,7 @@ class SyncQueue {
       final k = '${op.entity.name}:${scope ?? op.houseId}';
       byParent.putIfAbsent(k, () => []).add(i);
     }
-    bool changed = false;
-    for (final indices in byParent.values) {
-      if (indices.length < 2) continue;
-      for (final i in indices.reversed) {
-        if (i != indices.last) ops.removeAt(i);
-      }
-      changed = true;
-    }
-    return changed;
+    return _collapseGroups(ops, byParent.values);
   }
 
   bool _applyCreateFolds(List<SyncOp> ops) {

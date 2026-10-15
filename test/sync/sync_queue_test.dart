@@ -566,6 +566,75 @@ void main() {
       expect(byId[1]!.body['title'], 'B');
       expect(byId[2]!.body['title'], 'X');
     });
+
+    // Two records' ops alternate, so collapsing the first record shifts the
+    // second record's positions.
+    SyncQueue interleaved(SyncOp Function(String uuid, int record) op) =>
+        _newQueue()
+          ..enqueue(op('a1', 1))
+          ..enqueue(op('b1', 2))
+          ..enqueue(op('a2', 1))
+          ..enqueue(op('b2', 2));
+
+    test('interleaved updates each keep their latest', () {
+      final q = interleaved(
+        (uuid, record) => _op(
+          uuid: uuid,
+          entity: SyncEntity.note,
+          op: SyncOpKind.update,
+          entityId: record,
+          body: {'title': uuid, if (uuid.endsWith('1')) 'content': uuid},
+        ),
+      );
+      q.merge();
+      expect(q.all().map((o) => o.uuid), ['a2', 'b2']);
+      expect(q.all().map((o) => o.body), [
+        {'title': 'a2', 'content': 'a1'},
+        {'title': 'b2', 'content': 'b1'},
+      ]);
+    });
+
+    test('interleaved image swaps each keep their latest', () {
+      final q = interleaved(
+        (uuid, record) => _op(
+          uuid: uuid,
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.setImage,
+          entityId: record,
+        ),
+      );
+      q.merge();
+      expect(q.all().map((o) => o.uuid), ['a2', 'b2']);
+    });
+
+    test('interleaved reorders each keep their latest', () {
+      final q = interleaved(
+        (uuid, record) => _op(
+          uuid: uuid,
+          entity: SyncEntity.checklistItem,
+          op: SyncOpKind.reorder,
+          parentId: record,
+        ),
+      );
+      q.merge();
+      expect(q.all().map((o) => o.uuid), ['a2', 'b2']);
+    });
+
+    test('interleaved item defaults each keep their latest', () {
+      final q = interleaved(
+        (uuid, record) => _op(
+          uuid: uuid,
+          entity: SyncEntity.checklistList,
+          op: SyncOpKind.setItemDefaults,
+          entityId: record,
+          body: {
+            'category': {'value': record},
+          },
+        ),
+      );
+      q.merge();
+      expect(q.all().map((o) => o.uuid), ['a2', 'b2']);
+    });
   });
 
   group('resetAttempts', () {
