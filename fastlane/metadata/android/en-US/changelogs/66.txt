@@ -1,0 +1,8 @@
+Features
+- organize the list menu into a grid of categories
+- per-list item sort
+- delete trips from history
+Bug Fixes
+- keep a list created offline open while it syncs
+- keep a sort changed offline on servers with one sort per household
+- keep offline edits to several items when they sync
