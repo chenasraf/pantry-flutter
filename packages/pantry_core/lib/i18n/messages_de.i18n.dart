@@ -1516,6 +1516,130 @@ class SettingsMessagesDe extends SettingsMessages {
       """Benachrichtigungsberechtigung wurde verweigert. Aktiviere sie in den Systemeinstellungen.""";
 
   /// ```dart
+  /// "Zustellung"
+  /// ```
+  String get delivery => """Zustellung""";
+
+  /// ```dart
+  /// "Regelmäßige Abfrage"
+  /// ```
+  String get deliveryPolling => """Regelmäßige Abfrage""";
+
+  /// ```dart
+  /// "UnifiedPush"
+  /// ```
+  String get deliveryUnifiedPush => """UnifiedPush""";
+
+  /// ```dart
+  /// "Pantry fragt deinen Server regelmäßig nach neuen Aktivitäten ab."
+  /// ```
+  String get deliveryPollingBody =>
+      """Pantry fragt deinen Server regelmäßig nach neuen Aktivitäten ab.""";
+
+  /// ```dart
+  /// "Verbindung über ${distributor} wird hergestellt…"
+  /// ```
+  String deliveryConnecting(String distributor) =>
+      """Verbindung über ${distributor} wird hergestellt…""";
+
+  /// ```dart
+  /// "Benachrichtigungen kommen sofort über ${distributor} an."
+  /// ```
+  String deliveryActive(String distributor) =>
+      """Benachrichtigungen kommen sofort über ${distributor} an.""";
+
+  /// ```dart
+  /// "Kein UnifiedPush-Distributor verfügbar. Pantry fragt regelmäßig ab, bis einer eingerichtet ist."
+  /// ```
+  String get deliveryNoDistributor =>
+      """Kein UnifiedPush-Distributor verfügbar. Pantry fragt regelmäßig ab, bis einer eingerichtet ist.""";
+
+  /// ```dart
+  /// "Dein Server unterstützt kein Web Push. Pantry fragt stattdessen regelmäßig ab."
+  /// ```
+  String get deliveryServerUnsupported =>
+      """Dein Server unterstützt kein Web Push. Pantry fragt stattdessen regelmäßig ab.""";
+
+  /// ```dart
+  /// "Push-Benachrichtigungen konnten nicht abonniert werden. Pantry fragt stattdessen regelmäßig ab."
+  /// ```
+  String get deliveryFailed =>
+      """Push-Benachrichtigungen konnten nicht abonniert werden. Pantry fragt stattdessen regelmäßig ab.""";
+
+  /// ```dart
+  /// "Distributor installieren"
+  /// ```
+  String get noDistributorTitle => """Distributor installieren""";
+
+  /// ```dart
+  /// "UnifiedPush stellt Benachrichtigungen über eine separate Distributor-App zu, etwa ntfy, NextPush oder Sunup. Installiere eine davon und wähle dann erneut UnifiedPush."
+  /// ```
+  String get noDistributorBody =>
+      """UnifiedPush stellt Benachrichtigungen über eine separate Distributor-App zu, etwa ntfy, NextPush oder Sunup. Installiere eine davon und wähle dann erneut UnifiedPush.""";
+
+  /// ```dart
+  /// "Distributor auswählen"
+  /// ```
+  String get chooseDistributor => """Distributor auswählen""";
+
+  /// ```dart
+  /// "Mehr erfahren"
+  /// ```
+  String get learnMore => """Mehr erfahren""";
+
+  /// ```dart
+  /// "Dein Server unterstützt kein Web Push. Dafür ist Nextcloud 34 oder neuer nötig, mit erlaubtem Web Push unter Verwaltungseinstellungen → Benachrichtigungen."
+  /// ```
+  String get serverNoWebPush =>
+      """Dein Server unterstützt kein Web Push. Dafür ist Nextcloud 34 oder neuer nötig, mit erlaubtem Web Push unter Verwaltungseinstellungen → Benachrichtigungen.""";
+
+  /// ```dart
+  /// "Das dauert länger als üblich. Prüfe, ob ${distributor} läuft und mit seinem Server verbunden ist."
+  /// ```
+  String connectingSlow(String distributor) =>
+      """Das dauert länger als üblich. Prüfe, ob ${distributor} läuft und mit seinem Server verbunden ist.""";
+
+  /// ```dart
+  /// "Sofortige Benachrichtigungen sind aktiv."
+  /// ```
+  String get deliveryEnabled => """Sofortige Benachrichtigungen sind aktiv.""";
+
+  /// ```dart
+  /// "UnifiedPush einrichten"
+  /// ```
+  String get pushSetup => """UnifiedPush einrichten""";
+
+  /// ```dart
+  /// "Was sofortige Benachrichtigungen brauchen"
+  /// ```
+  String get pushSetupSubtitle =>
+      """Was sofortige Benachrichtigungen brauchen""";
+
+  /// ```dart
+  /// "Installiere eine UnifiedPush-Distributor-App, etwa ntfy, NextPush oder Sunup."
+  /// ```
+  String get pushSetupStep1 =>
+      """Installiere eine UnifiedPush-Distributor-App, etwa ntfy, NextPush oder Sunup.""";
+
+  /// ```dart
+  /// "Dein Server braucht Nextcloud 34 oder neuer, mit Web Push, das eine Administratorin oder ein Administrator unter Verwaltungseinstellungen → Benachrichtigungen erlaubt hat."
+  /// ```
+  String get pushSetupStep2 =>
+      """Dein Server braucht Nextcloud 34 oder neuer, mit Web Push, das eine Administratorin oder ein Administrator unter Verwaltungseinstellungen → Benachrichtigungen erlaubt hat.""";
+
+  /// ```dart
+  /// "Wähle unter Zustellung UnifiedPush und dann deinen Distributor."
+  /// ```
+  String get pushSetupStep3 =>
+      """Wähle unter Zustellung UnifiedPush und dann deinen Distributor.""";
+
+  /// ```dart
+  /// "Bis dein Server das Abonnement bestätigt, prüft Pantry weiterhin nach Zeitplan."
+  /// ```
+  String get pushSetupNote =>
+      """Bis dein Server das Abonnement bestätigt, prüft Pantry weiterhin nach Zeitplan.""";
+
+  /// ```dart
   /// "Automatische Aktualisierung"
   /// ```
   String get refreshSection => """Automatische Aktualisierung""";
@@ -7453,6 +7577,37 @@ Passwort: pantry-rocks""",
   """settings.pollInterval6h""": """Alle 6 Stunden""",
   """settings.permissionDenied""":
       """Benachrichtigungsberechtigung wurde verweigert. Aktiviere sie in den Systemeinstellungen.""",
+  """settings.delivery""": """Zustellung""",
+  """settings.deliveryPolling""": """Regelmäßige Abfrage""",
+  """settings.deliveryUnifiedPush""": """UnifiedPush""",
+  """settings.deliveryPollingBody""":
+      """Pantry fragt deinen Server regelmäßig nach neuen Aktivitäten ab.""",
+  """settings.deliveryNoDistributor""":
+      """Kein UnifiedPush-Distributor verfügbar. Pantry fragt regelmäßig ab, bis einer eingerichtet ist.""",
+  """settings.deliveryServerUnsupported""":
+      """Dein Server unterstützt kein Web Push. Pantry fragt stattdessen regelmäßig ab.""",
+  """settings.deliveryFailed""":
+      """Push-Benachrichtigungen konnten nicht abonniert werden. Pantry fragt stattdessen regelmäßig ab.""",
+  """settings.noDistributorTitle""": """Distributor installieren""",
+  """settings.noDistributorBody""":
+      """UnifiedPush stellt Benachrichtigungen über eine separate Distributor-App zu, etwa ntfy, NextPush oder Sunup. Installiere eine davon und wähle dann erneut UnifiedPush.""",
+  """settings.chooseDistributor""": """Distributor auswählen""",
+  """settings.learnMore""": """Mehr erfahren""",
+  """settings.serverNoWebPush""":
+      """Dein Server unterstützt kein Web Push. Dafür ist Nextcloud 34 oder neuer nötig, mit erlaubtem Web Push unter Verwaltungseinstellungen → Benachrichtigungen.""",
+  """settings.deliveryEnabled""":
+      """Sofortige Benachrichtigungen sind aktiv.""",
+  """settings.pushSetup""": """UnifiedPush einrichten""",
+  """settings.pushSetupSubtitle""":
+      """Was sofortige Benachrichtigungen brauchen""",
+  """settings.pushSetupStep1""":
+      """Installiere eine UnifiedPush-Distributor-App, etwa ntfy, NextPush oder Sunup.""",
+  """settings.pushSetupStep2""":
+      """Dein Server braucht Nextcloud 34 oder neuer, mit Web Push, das eine Administratorin oder ein Administrator unter Verwaltungseinstellungen → Benachrichtigungen erlaubt hat.""",
+  """settings.pushSetupStep3""":
+      """Wähle unter Zustellung UnifiedPush und dann deinen Distributor.""",
+  """settings.pushSetupNote""":
+      """Bis dein Server das Abonnement bestätigt, prüft Pantry weiterhin nach Zeitplan.""",
   """settings.refreshSection""": """Automatische Aktualisierung""",
   """settings.refreshSectionBody""":
       """Wie oft jeder Bildschirm den Server auf Änderungen prüft, während du ihn ansiehst. Zum manuellen Aktualisieren kannst du jederzeit nach unten ziehen.""",

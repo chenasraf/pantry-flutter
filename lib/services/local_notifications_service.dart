@@ -135,6 +135,11 @@ class LocalNotificationsService {
     if (link != null) DeepLinkService.instance.push(link);
   }
 
+  Future<void> cancel(int id) async {
+    await init();
+    await _plugin.cancel(id);
+  }
+
   Future<void> cancelAll() async {
     await init();
     await _plugin.cancelAll();

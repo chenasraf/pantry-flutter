@@ -1505,6 +1505,129 @@ class SettingsMessages {
       """Notification permission was denied. Enable it in system settings.""";
 
   /// ```dart
+  /// "Delivery"
+  /// ```
+  String get delivery => """Delivery""";
+
+  /// ```dart
+  /// "Scheduled checks"
+  /// ```
+  String get deliveryPolling => """Scheduled checks""";
+
+  /// ```dart
+  /// "UnifiedPush"
+  /// ```
+  String get deliveryUnifiedPush => """UnifiedPush""";
+
+  /// ```dart
+  /// "Pantry checks your server for new activity on a schedule."
+  /// ```
+  String get deliveryPollingBody =>
+      """Pantry checks your server for new activity on a schedule.""";
+
+  /// ```dart
+  /// "Connecting through ${distributor}…"
+  /// ```
+  String deliveryConnecting(String distributor) =>
+      """Connecting through ${distributor}…""";
+
+  /// ```dart
+  /// "Notifications arrive instantly through ${distributor}."
+  /// ```
+  String deliveryActive(String distributor) =>
+      """Notifications arrive instantly through ${distributor}.""";
+
+  /// ```dart
+  /// "No UnifiedPush distributor is available. Pantry checks on a schedule until one is set up."
+  /// ```
+  String get deliveryNoDistributor =>
+      """No UnifiedPush distributor is available. Pantry checks on a schedule until one is set up.""";
+
+  /// ```dart
+  /// "Your server doesn't accept web push. Pantry checks on a schedule instead."
+  /// ```
+  String get deliveryServerUnsupported =>
+      """Your server doesn't accept web push. Pantry checks on a schedule instead.""";
+
+  /// ```dart
+  /// "Couldn't subscribe to push notifications. Pantry checks on a schedule instead."
+  /// ```
+  String get deliveryFailed =>
+      """Couldn't subscribe to push notifications. Pantry checks on a schedule instead.""";
+
+  /// ```dart
+  /// "Install a distributor"
+  /// ```
+  String get noDistributorTitle => """Install a distributor""";
+
+  /// ```dart
+  /// "UnifiedPush delivers notifications through a separate distributor app, such as ntfy, NextPush or Sunup. Install one, then choose UnifiedPush again."
+  /// ```
+  String get noDistributorBody =>
+      """UnifiedPush delivers notifications through a separate distributor app, such as ntfy, NextPush or Sunup. Install one, then choose UnifiedPush again.""";
+
+  /// ```dart
+  /// "Choose a distributor"
+  /// ```
+  String get chooseDistributor => """Choose a distributor""";
+
+  /// ```dart
+  /// "Learn more"
+  /// ```
+  String get learnMore => """Learn more""";
+
+  /// ```dart
+  /// "Your server doesn't accept web push. It needs Nextcloud 34 or later, with web push allowed under Administration settings → Notifications."
+  /// ```
+  String get serverNoWebPush =>
+      """Your server doesn't accept web push. It needs Nextcloud 34 or later, with web push allowed under Administration settings → Notifications.""";
+
+  /// ```dart
+  /// "This is taking longer than usual. Make sure ${distributor} is running and connected to its server."
+  /// ```
+  String connectingSlow(String distributor) =>
+      """This is taking longer than usual. Make sure ${distributor} is running and connected to its server.""";
+
+  /// ```dart
+  /// "Instant notifications are on."
+  /// ```
+  String get deliveryEnabled => """Instant notifications are on.""";
+
+  /// ```dart
+  /// "Setting up UnifiedPush"
+  /// ```
+  String get pushSetup => """Setting up UnifiedPush""";
+
+  /// ```dart
+  /// "What instant notifications need"
+  /// ```
+  String get pushSetupSubtitle => """What instant notifications need""";
+
+  /// ```dart
+  /// "Install a UnifiedPush distributor app, such as ntfy, NextPush or Sunup."
+  /// ```
+  String get pushSetupStep1 =>
+      """Install a UnifiedPush distributor app, such as ntfy, NextPush or Sunup.""";
+
+  /// ```dart
+  /// "Your server needs Nextcloud 34 or later, with web push allowed by an administrator under Administration settings → Notifications."
+  /// ```
+  String get pushSetupStep2 =>
+      """Your server needs Nextcloud 34 or later, with web push allowed by an administrator under Administration settings → Notifications.""";
+
+  /// ```dart
+  /// "Choose UnifiedPush under Delivery, then pick your distributor."
+  /// ```
+  String get pushSetupStep3 =>
+      """Choose UnifiedPush under Delivery, then pick your distributor.""";
+
+  /// ```dart
+  /// "Pantry keeps checking on a schedule until your server confirms the subscription."
+  /// ```
+  String get pushSetupNote =>
+      """Pantry keeps checking on a schedule until your server confirms the subscription.""";
+
+  /// ```dart
   /// "Auto-refresh"
   /// ```
   String get refreshSection => """Auto-refresh""";
@@ -7365,6 +7488,35 @@ Password: pantry-rocks""",
   """settings.pollInterval6h""": """Every 6 hours""",
   """settings.permissionDenied""":
       """Notification permission was denied. Enable it in system settings.""",
+  """settings.delivery""": """Delivery""",
+  """settings.deliveryPolling""": """Scheduled checks""",
+  """settings.deliveryUnifiedPush""": """UnifiedPush""",
+  """settings.deliveryPollingBody""":
+      """Pantry checks your server for new activity on a schedule.""",
+  """settings.deliveryNoDistributor""":
+      """No UnifiedPush distributor is available. Pantry checks on a schedule until one is set up.""",
+  """settings.deliveryServerUnsupported""":
+      """Your server doesn't accept web push. Pantry checks on a schedule instead.""",
+  """settings.deliveryFailed""":
+      """Couldn't subscribe to push notifications. Pantry checks on a schedule instead.""",
+  """settings.noDistributorTitle""": """Install a distributor""",
+  """settings.noDistributorBody""":
+      """UnifiedPush delivers notifications through a separate distributor app, such as ntfy, NextPush or Sunup. Install one, then choose UnifiedPush again.""",
+  """settings.chooseDistributor""": """Choose a distributor""",
+  """settings.learnMore""": """Learn more""",
+  """settings.serverNoWebPush""":
+      """Your server doesn't accept web push. It needs Nextcloud 34 or later, with web push allowed under Administration settings → Notifications.""",
+  """settings.deliveryEnabled""": """Instant notifications are on.""",
+  """settings.pushSetup""": """Setting up UnifiedPush""",
+  """settings.pushSetupSubtitle""": """What instant notifications need""",
+  """settings.pushSetupStep1""":
+      """Install a UnifiedPush distributor app, such as ntfy, NextPush or Sunup.""",
+  """settings.pushSetupStep2""":
+      """Your server needs Nextcloud 34 or later, with web push allowed by an administrator under Administration settings → Notifications.""",
+  """settings.pushSetupStep3""":
+      """Choose UnifiedPush under Delivery, then pick your distributor.""",
+  """settings.pushSetupNote""":
+      """Pantry keeps checking on a schedule until your server confirms the subscription.""",
   """settings.refreshSection""": """Auto-refresh""",
   """settings.refreshSectionBody""":
       """How often each screen checks the server for changes while you're viewing it. You can always pull down to refresh manually.""",

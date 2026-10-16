@@ -83,6 +83,12 @@ class ServerVersionService {
   /// legacy `/apps/theming/manifest/core` endpoint 500s.
   Map<String, dynamic>? get themingCaps => _themingCaps;
 
+  bool _webPush = false;
+
+  /// The Notifications app accepts web push subscriptions from app-password
+  /// clients. An administrator toggle, so it can come and go on one server.
+  bool get supportsWebPush => _webPush;
+
   final Map<String, bool> _features = {};
   bool _featuresAuthoritative = false;
 
@@ -109,6 +115,7 @@ class ServerVersionService {
     }
     _featuresAuthoritative = _cache.get<bool>('featuresAuthoritative') ?? false;
     _themingCaps = _cache.getObject('themingCaps');
+    _webPush = _cache.get<bool>('webPush') ?? false;
   }
 
   void _persist() {
@@ -120,6 +127,7 @@ class ServerVersionService {
     );
     _cache.set<bool>('featuresAuthoritative', _featuresAuthoritative);
     _cache.set<Map<String, dynamic>?>('themingCaps', _themingCaps);
+    _cache.set<bool>('webPush', _webPush);
   }
 
   /// Reads `/ocs/v2.php/cloud/capabilities` and refreshes the version + feature
@@ -160,6 +168,8 @@ class ServerVersionService {
       final pantryCaps = caps?['pantry'] as Map<String, dynamic>?;
       _parsePantryCapability(pantryCaps);
       _themingCaps = caps?['theming'] as Map<String, dynamic>?;
+      final push = (caps?['notifications'] as Map<String, dynamic>?)?['push'];
+      _webPush = push is List && push.contains('webpush');
     } catch (e) {
       debugPrint('[ServerVersionService] Failed to fetch capabilities: $e');
     }
@@ -242,6 +252,7 @@ class ServerVersionService {
     _serverVersion = null;
     _pantryVersion = null;
     _themingCaps = null;
+    _webPush = false;
     _features.clear();
     _featuresAuthoritative = false;
     unawaited(_cache.clear());

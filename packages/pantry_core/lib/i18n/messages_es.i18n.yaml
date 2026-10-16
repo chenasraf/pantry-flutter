@@ -316,6 +316,28 @@ settings:
   pollInterval2h: Cada 2 horas
   pollInterval6h: Cada 6 horas
   permissionDenied: "El permiso de notificaciones fue denegado. Actívalo en los ajustes del sistema."
+  delivery: Entrega
+  deliveryPolling: Comprobaciones periódicas
+  deliveryUnifiedPush: UnifiedPush
+  deliveryPollingBody: Pantry comprueba periódicamente si hay actividad nueva en tu servidor.
+  deliveryConnecting(String distributor): "Conectando a través de ${distributor}…"
+  deliveryActive(String distributor): "Las notificaciones llegan al instante a través de ${distributor}."
+  deliveryNoDistributor: No hay ningún distribuidor de UnifiedPush disponible. Pantry comprobará periódicamente hasta que configures uno.
+  deliveryServerUnsupported: "Tu servidor no admite web push. Pantry comprobará periódicamente en su lugar."
+  deliveryFailed: "No se pudo suscribir a las notificaciones push. Pantry comprobará periódicamente en su lugar."
+  noDistributorTitle: Instala un distribuidor
+  noDistributorBody: "UnifiedPush entrega las notificaciones mediante una app distribuidora aparte, como ntfy, NextPush o Sunup. Instala una y vuelve a elegir UnifiedPush."
+  chooseDistributor: Elige un distribuidor
+  learnMore: Más información
+  serverNoWebPush: "Tu servidor no admite web push. Necesita Nextcloud 34 o posterior, con web push permitido en Configuración de administración → Notificaciones."
+  connectingSlow(String distributor): "Esto está tardando más de lo normal. Comprueba que ${distributor} esté abierto y conectado a su servidor."
+  deliveryEnabled: Las notificaciones instantáneas están activadas.
+  pushSetup: Configurar UnifiedPush
+  pushSetupSubtitle: Qué necesitan las notificaciones instantáneas
+  pushSetupStep1: Instala una app distribuidora de UnifiedPush, como ntfy, NextPush o Sunup.
+  pushSetupStep2: "Tu servidor necesita Nextcloud 34 o posterior, con web push permitido por un administrador en Configuración de administración → Notificaciones."
+  pushSetupStep3: Elige UnifiedPush en Entrega y luego tu distribuidor.
+  pushSetupNote: Pantry sigue comprobando según la programación hasta que tu servidor confirme la suscripción.
   refreshSection: Actualización automática
   refreshSectionBody: Con qué frecuencia cada pantalla comprueba si hay cambios en el servidor mientras la estás viendo. Siempre puedes deslizar hacia abajo para actualizar manualmente.
   refreshSectionSubtitle: Con qué frecuencia cada pantalla busca cambios

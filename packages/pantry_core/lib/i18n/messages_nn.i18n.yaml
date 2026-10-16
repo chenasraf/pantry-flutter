@@ -407,6 +407,28 @@ settings:
   pollInterval2h: Kvart 2. time
   pollInterval6h: Kvart 6. time
   permissionDenied: Tilgang til å sende varslar vart ikkje gitt. Slå det på i systeminnstillingane.
+  delivery: Levering
+  deliveryPolling: Faste kontrollar
+  deliveryUnifiedPush: UnifiedPush
+  deliveryPollingBody: Pantry ser etter ny aktivitet på tenaren din med faste mellomrom.
+  deliveryConnecting(String distributor): "Koplar til gjennom ${distributor}…"
+  deliveryActive(String distributor): "Varslar kjem med ein gong gjennom ${distributor}."
+  deliveryNoDistributor: Ingen UnifiedPush-distributør er tilgjengeleg. Pantry ser etter med faste mellomrom til ein er sett opp.
+  deliveryServerUnsupported: Tenaren din tek ikkje imot web push. Pantry ser etter med faste mellomrom i staden.
+  deliveryFailed: Klarte ikkje å abonnere på push-varslar. Pantry ser etter med faste mellomrom i staden.
+  noDistributorTitle: Installer ein distributør
+  noDistributorBody: UnifiedPush leverer varslar gjennom ein eigen distributør-app, som ntfy, NextPush eller Sunup. Installer ein, og vel UnifiedPush på nytt.
+  chooseDistributor: Vel ein distributør
+  learnMore: Les meir
+  serverNoWebPush: "Tenaren din tek ikkje imot web push. Han treng Nextcloud 34 eller nyare, med web push tillate under Administrasjonsinnstillingar → Varslar."
+  connectingSlow(String distributor): "Dette tek lengre tid enn vanleg. Sjå til at ${distributor} køyrer og er kopla til tenaren sin."
+  deliveryEnabled: Augneblinksvarsel er slått på.
+  pushSetup: Set opp UnifiedPush
+  pushSetupSubtitle: Kva augneblinksvarsel treng
+  pushSetupStep1: Installer ein UnifiedPush-distributør, som ntfy, NextPush eller Sunup.
+  pushSetupStep2: "Tenaren treng Nextcloud 34 eller nyare, med web push tillate av ein administrator under Administrasjonsinnstillingar → Varslar."
+  pushSetupStep3: Vel UnifiedPush under Levering, og vel så distributøren din.
+  pushSetupNote: Pantry held fram med å sjekke etter tidsplan til tenaren stadfestar abonnementet.
   refreshSection: Automatisk oppdatering
   refreshSectionBody: Kor ofte kvar skjerm ser etter endringar på tenaren medan du ser på han. Du kan alltid dra ned for å oppdatere manuelt.
   refreshSectionSubtitle: Kor ofte kvar skjerm ser etter endringar

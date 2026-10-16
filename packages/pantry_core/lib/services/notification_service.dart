@@ -57,6 +57,20 @@ class NotificationService {
     }
   }
 
+  /// Fetch one notification, or null when it is gone or belongs to another app.
+  Future<NcNotification?> getNotification(int notificationId) async {
+    try {
+      final n = await _client.get<Map<String, dynamic>, NcNotification>(
+        '/notifications/$notificationId',
+        fromJson: NcNotification.fromJson,
+      );
+      return n.app == 'pantry' ? n : null;
+    } on ApiException catch (e) {
+      if (e.statusCode == 404) return null;
+      rethrow;
+    }
+  }
+
   /// Delete (mark as read) a single notification.
   Future<void> dismiss(int notificationId) async {
     try {

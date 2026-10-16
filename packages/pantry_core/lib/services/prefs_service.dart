@@ -24,6 +24,7 @@ class PrefsService extends ChangeNotifier {
   static const _notificationsEnabledKey = 'notifications_enabled';
   static const _pollIntervalMinutesKey = 'poll_interval_minutes';
   static const _notificationsIntroSeenKey = 'notifications_intro_seen';
+  static const _unifiedPushEnabledKey = 'unified_push_enabled';
   static const _localeKey = 'locale';
   static const _themeModeKey = 'theme_mode';
   static const _checklistTapRowToToggleKey = 'checklist_tap_row_to_toggle';
@@ -109,6 +110,11 @@ class PrefsService extends ChangeNotifier {
 
   bool _notificationsIntroSeen = false;
   bool get notificationsIntroSeen => _notificationsIntroSeen;
+
+  /// Notifications arrive over UnifiedPush rather than by polling. Polling
+  /// still runs whenever the push subscription isn't active.
+  bool _unifiedPushEnabled = false;
+  bool get unifiedPushEnabled => _unifiedPushEnabled;
 
   /// null = system default, "en" or "he"
   String? _locale;
@@ -418,6 +424,8 @@ class PrefsService extends ChangeNotifier {
     final intro = all[_notificationsIntroSeenKey];
     if (intro != null) _notificationsIntroSeen = intro == 'true';
 
+    _unifiedPushEnabled = all[_unifiedPushEnabledKey] == 'true';
+
     _locale = all[_localeKey];
     _themeMode = all[_themeModeKey];
 
@@ -679,6 +687,7 @@ class PrefsService extends ChangeNotifier {
     _notificationsEnabled = true;
     _pollIntervalMinutes = 15;
     _notificationsIntroSeen = false;
+    _unifiedPushEnabled = false;
     _locale = null;
     _themeMode = null;
     _defaultItemTapAction = 'view';
@@ -726,6 +735,7 @@ class PrefsService extends ChangeNotifier {
       _notificationsEnabledKey,
       _pollIntervalMinutesKey,
       _notificationsIntroSeenKey,
+      _unifiedPushEnabledKey,
       _localeKey,
       _themeModeKey,
       _checklistTapRowToToggleKey,

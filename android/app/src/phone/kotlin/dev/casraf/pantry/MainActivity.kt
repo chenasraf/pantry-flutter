@@ -1,11 +1,15 @@
 package dev.casraf.pantry
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
+import java.io.ByteArrayOutputStream
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -13,6 +17,7 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     private val channel = "dev.casraf.pantry/widget"
     private val shortcutChannel = "dev.casraf.pantry/shortcuts"
+    private val appsChannel = "dev.casraf.pantry/apps"
     private var pendingListId: Int? = null
     private var pendingHouseId: Int? = null
     private val dataLayer by lazy { DataLayerChannel(applicationContext) }
@@ -68,6 +73,35 @@ class MainActivity : FlutterActivity() {
                     result.notImplemented()
                 }
             }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, appsChannel)
+            .setMethodCallHandler { call, result ->
+                if (call.method == "describe") {
+                    val packages = call.argument<List<String>>("packages") ?: emptyList()
+                    result.success(packages.mapNotNull(::describeApp))
+                } else {
+                    result.notImplemented()
+                }
+            }
+    }
+
+    private fun describeApp(packageName: String): Map<String, Any>? {
+        val info = try {
+            packageManager.getApplicationInfo(packageName, 0)
+        } catch (_: PackageManager.NameNotFoundException) {
+            return null
+        }
+        val size = (48 * resources.displayMetrics.density).toInt()
+        val bitmap = packageManager.getApplicationIcon(info).toBitmap(size, size)
+        val png = ByteArrayOutputStream().use {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+            it.toByteArray()
+        }
+        return mapOf(
+            "package" to packageName,
+            "label" to packageManager.getApplicationLabel(info).toString(),
+            "icon" to png,
+        )
     }
 
     override fun onDestroy() {

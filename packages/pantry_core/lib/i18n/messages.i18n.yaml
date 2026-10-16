@@ -316,6 +316,28 @@ settings:
   pollInterval2h: Every 2 hours
   pollInterval6h: Every 6 hours
   permissionDenied: Notification permission was denied. Enable it in system settings.
+  delivery: Delivery
+  deliveryPolling: Scheduled checks
+  deliveryUnifiedPush: UnifiedPush
+  deliveryPollingBody: Pantry checks your server for new activity on a schedule.
+  deliveryConnecting(String distributor): "Connecting through ${distributor}…"
+  deliveryActive(String distributor): "Notifications arrive instantly through ${distributor}."
+  deliveryNoDistributor: No UnifiedPush distributor is available. Pantry checks on a schedule until one is set up.
+  deliveryServerUnsupported: "Your server doesn't accept web push. Pantry checks on a schedule instead."
+  deliveryFailed: "Couldn't subscribe to push notifications. Pantry checks on a schedule instead."
+  noDistributorTitle: Install a distributor
+  noDistributorBody: UnifiedPush delivers notifications through a separate distributor app, such as ntfy, NextPush or Sunup. Install one, then choose UnifiedPush again.
+  chooseDistributor: Choose a distributor
+  learnMore: Learn more
+  serverNoWebPush: "Your server doesn't accept web push. It needs Nextcloud 34 or later, with web push allowed under Administration settings → Notifications."
+  connectingSlow(String distributor): "This is taking longer than usual. Make sure ${distributor} is running and connected to its server."
+  deliveryEnabled: Instant notifications are on.
+  pushSetup: Setting up UnifiedPush
+  pushSetupSubtitle: What instant notifications need
+  pushSetupStep1: Install a UnifiedPush distributor app, such as ntfy, NextPush or Sunup.
+  pushSetupStep2: "Your server needs Nextcloud 34 or later, with web push allowed by an administrator under Administration settings → Notifications."
+  pushSetupStep3: Choose UnifiedPush under Delivery, then pick your distributor.
+  pushSetupNote: Pantry keeps checking on a schedule until your server confirms the subscription.
   refreshSection: Auto-refresh
   refreshSectionBody: How often each screen checks the server for changes while you're viewing it. You can always pull down to refresh manually.
   refreshSectionSubtitle: How often each screen checks for changes

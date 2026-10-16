@@ -1521,6 +1521,131 @@ class SettingsMessagesFr extends SettingsMessages {
       """La permission de notification a été refusée. Activez-la dans les réglages système.""";
 
   /// ```dart
+  /// "Distribution"
+  /// ```
+  String get delivery => """Distribution""";
+
+  /// ```dart
+  /// "Vérifications périodiques"
+  /// ```
+  String get deliveryPolling => """Vérifications périodiques""";
+
+  /// ```dart
+  /// "UnifiedPush"
+  /// ```
+  String get deliveryUnifiedPush => """UnifiedPush""";
+
+  /// ```dart
+  /// "Pantry vérifie régulièrement la nouvelle activité sur votre serveur."
+  /// ```
+  String get deliveryPollingBody =>
+      """Pantry vérifie régulièrement la nouvelle activité sur votre serveur.""";
+
+  /// ```dart
+  /// "Connexion via ${distributor}…"
+  /// ```
+  String deliveryConnecting(String distributor) =>
+      """Connexion via ${distributor}…""";
+
+  /// ```dart
+  /// "Les notifications arrivent instantanément via ${distributor}."
+  /// ```
+  String deliveryActive(String distributor) =>
+      """Les notifications arrivent instantanément via ${distributor}.""";
+
+  /// ```dart
+  /// "Aucun distributeur UnifiedPush n'est disponible. Pantry vérifie régulièrement en attendant qu'un distributeur soit configuré."
+  /// ```
+  String get deliveryNoDistributor =>
+      """Aucun distributeur UnifiedPush n'est disponible. Pantry vérifie régulièrement en attendant qu'un distributeur soit configuré.""";
+
+  /// ```dart
+  /// "Votre serveur n'accepte pas le web push. Pantry vérifie régulièrement à la place."
+  /// ```
+  String get deliveryServerUnsupported =>
+      """Votre serveur n'accepte pas le web push. Pantry vérifie régulièrement à la place.""";
+
+  /// ```dart
+  /// "Impossible de s'abonner aux notifications push. Pantry vérifie régulièrement à la place."
+  /// ```
+  String get deliveryFailed =>
+      """Impossible de s'abonner aux notifications push. Pantry vérifie régulièrement à la place.""";
+
+  /// ```dart
+  /// "Installez un distributeur"
+  /// ```
+  String get noDistributorTitle => """Installez un distributeur""";
+
+  /// ```dart
+  /// "UnifiedPush distribue les notifications via une application distributrice distincte, comme ntfy, NextPush ou Sunup. Installez-en une, puis choisissez à nouveau UnifiedPush."
+  /// ```
+  String get noDistributorBody =>
+      """UnifiedPush distribue les notifications via une application distributrice distincte, comme ntfy, NextPush ou Sunup. Installez-en une, puis choisissez à nouveau UnifiedPush.""";
+
+  /// ```dart
+  /// "Choisissez un distributeur"
+  /// ```
+  String get chooseDistributor => """Choisissez un distributeur""";
+
+  /// ```dart
+  /// "En savoir plus"
+  /// ```
+  String get learnMore => """En savoir plus""";
+
+  /// ```dart
+  /// "Votre serveur n'accepte pas le web push. Il faut Nextcloud 34 ou plus récent, avec le web push autorisé dans Paramètres d'administration → Notifications."
+  /// ```
+  String get serverNoWebPush =>
+      """Votre serveur n'accepte pas le web push. Il faut Nextcloud 34 ou plus récent, avec le web push autorisé dans Paramètres d'administration → Notifications.""";
+
+  /// ```dart
+  /// "Cela prend plus de temps que d'habitude. Vérifiez que ${distributor} est lancé et connecté à son serveur."
+  /// ```
+  String connectingSlow(String distributor) =>
+      """Cela prend plus de temps que d'habitude. Vérifiez que ${distributor} est lancé et connecté à son serveur.""";
+
+  /// ```dart
+  /// "Les notifications instantanées sont activées."
+  /// ```
+  String get deliveryEnabled =>
+      """Les notifications instantanées sont activées.""";
+
+  /// ```dart
+  /// "Configurer UnifiedPush"
+  /// ```
+  String get pushSetup => """Configurer UnifiedPush""";
+
+  /// ```dart
+  /// "Ce dont les notifications instantanées ont besoin"
+  /// ```
+  String get pushSetupSubtitle =>
+      """Ce dont les notifications instantanées ont besoin""";
+
+  /// ```dart
+  /// "Installez une application distributrice UnifiedPush, comme ntfy, NextPush ou Sunup."
+  /// ```
+  String get pushSetupStep1 =>
+      """Installez une application distributrice UnifiedPush, comme ntfy, NextPush ou Sunup.""";
+
+  /// ```dart
+  /// "Votre serveur doit utiliser Nextcloud 34 ou plus récent, avec le web push autorisé par un administrateur dans Paramètres d'administration → Notifications."
+  /// ```
+  String get pushSetupStep2 =>
+      """Votre serveur doit utiliser Nextcloud 34 ou plus récent, avec le web push autorisé par un administrateur dans Paramètres d'administration → Notifications.""";
+
+  /// ```dart
+  /// "Choisissez UnifiedPush sous Distribution, puis votre distributeur."
+  /// ```
+  String get pushSetupStep3 =>
+      """Choisissez UnifiedPush sous Distribution, puis votre distributeur.""";
+
+  /// ```dart
+  /// "Pantry continue de vérifier selon le planning jusqu'à ce que votre serveur confirme l'abonnement."
+  /// ```
+  String get pushSetupNote =>
+      """Pantry continue de vérifier selon le planning jusqu'à ce que votre serveur confirme l'abonnement.""";
+
+  /// ```dart
   /// "Actualisation automatique"
   /// ```
   String get refreshSection => """Actualisation automatique""";
@@ -7456,6 +7581,37 @@ Mot de passe : pantry-rocks""",
   """settings.pollInterval6h""": """Toutes les 6 heures""",
   """settings.permissionDenied""":
       """La permission de notification a été refusée. Activez-la dans les réglages système.""",
+  """settings.delivery""": """Distribution""",
+  """settings.deliveryPolling""": """Vérifications périodiques""",
+  """settings.deliveryUnifiedPush""": """UnifiedPush""",
+  """settings.deliveryPollingBody""":
+      """Pantry vérifie régulièrement la nouvelle activité sur votre serveur.""",
+  """settings.deliveryNoDistributor""":
+      """Aucun distributeur UnifiedPush n'est disponible. Pantry vérifie régulièrement en attendant qu'un distributeur soit configuré.""",
+  """settings.deliveryServerUnsupported""":
+      """Votre serveur n'accepte pas le web push. Pantry vérifie régulièrement à la place.""",
+  """settings.deliveryFailed""":
+      """Impossible de s'abonner aux notifications push. Pantry vérifie régulièrement à la place.""",
+  """settings.noDistributorTitle""": """Installez un distributeur""",
+  """settings.noDistributorBody""":
+      """UnifiedPush distribue les notifications via une application distributrice distincte, comme ntfy, NextPush ou Sunup. Installez-en une, puis choisissez à nouveau UnifiedPush.""",
+  """settings.chooseDistributor""": """Choisissez un distributeur""",
+  """settings.learnMore""": """En savoir plus""",
+  """settings.serverNoWebPush""":
+      """Votre serveur n'accepte pas le web push. Il faut Nextcloud 34 ou plus récent, avec le web push autorisé dans Paramètres d'administration → Notifications.""",
+  """settings.deliveryEnabled""":
+      """Les notifications instantanées sont activées.""",
+  """settings.pushSetup""": """Configurer UnifiedPush""",
+  """settings.pushSetupSubtitle""":
+      """Ce dont les notifications instantanées ont besoin""",
+  """settings.pushSetupStep1""":
+      """Installez une application distributrice UnifiedPush, comme ntfy, NextPush ou Sunup.""",
+  """settings.pushSetupStep2""":
+      """Votre serveur doit utiliser Nextcloud 34 ou plus récent, avec le web push autorisé par un administrateur dans Paramètres d'administration → Notifications.""",
+  """settings.pushSetupStep3""":
+      """Choisissez UnifiedPush sous Distribution, puis votre distributeur.""",
+  """settings.pushSetupNote""":
+      """Pantry continue de vérifier selon le planning jusqu'à ce que votre serveur confirme l'abonnement.""",
   """settings.refreshSection""": """Actualisation automatique""",
   """settings.refreshSectionBody""":
       """À quelle fréquence chaque écran vérifie les changements sur le serveur pendant que vous le consultez. Vous pouvez toujours tirer vers le bas pour actualiser manuellement.""",

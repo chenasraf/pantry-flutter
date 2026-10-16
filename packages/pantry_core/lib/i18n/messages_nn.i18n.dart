@@ -1488,6 +1488,129 @@ class SettingsMessagesNn extends SettingsMessages {
       """Tilgang til å sende varslar vart ikkje gitt. Slå det på i systeminnstillingane.""";
 
   /// ```dart
+  /// "Levering"
+  /// ```
+  String get delivery => """Levering""";
+
+  /// ```dart
+  /// "Faste kontrollar"
+  /// ```
+  String get deliveryPolling => """Faste kontrollar""";
+
+  /// ```dart
+  /// "UnifiedPush"
+  /// ```
+  String get deliveryUnifiedPush => """UnifiedPush""";
+
+  /// ```dart
+  /// "Pantry ser etter ny aktivitet på tenaren din med faste mellomrom."
+  /// ```
+  String get deliveryPollingBody =>
+      """Pantry ser etter ny aktivitet på tenaren din med faste mellomrom.""";
+
+  /// ```dart
+  /// "Koplar til gjennom ${distributor}…"
+  /// ```
+  String deliveryConnecting(String distributor) =>
+      """Koplar til gjennom ${distributor}…""";
+
+  /// ```dart
+  /// "Varslar kjem med ein gong gjennom ${distributor}."
+  /// ```
+  String deliveryActive(String distributor) =>
+      """Varslar kjem med ein gong gjennom ${distributor}.""";
+
+  /// ```dart
+  /// "Ingen UnifiedPush-distributør er tilgjengeleg. Pantry ser etter med faste mellomrom til ein er sett opp."
+  /// ```
+  String get deliveryNoDistributor =>
+      """Ingen UnifiedPush-distributør er tilgjengeleg. Pantry ser etter med faste mellomrom til ein er sett opp.""";
+
+  /// ```dart
+  /// "Tenaren din tek ikkje imot web push. Pantry ser etter med faste mellomrom i staden."
+  /// ```
+  String get deliveryServerUnsupported =>
+      """Tenaren din tek ikkje imot web push. Pantry ser etter med faste mellomrom i staden.""";
+
+  /// ```dart
+  /// "Klarte ikkje å abonnere på push-varslar. Pantry ser etter med faste mellomrom i staden."
+  /// ```
+  String get deliveryFailed =>
+      """Klarte ikkje å abonnere på push-varslar. Pantry ser etter med faste mellomrom i staden.""";
+
+  /// ```dart
+  /// "Installer ein distributør"
+  /// ```
+  String get noDistributorTitle => """Installer ein distributør""";
+
+  /// ```dart
+  /// "UnifiedPush leverer varslar gjennom ein eigen distributør-app, som ntfy, NextPush eller Sunup. Installer ein, og vel UnifiedPush på nytt."
+  /// ```
+  String get noDistributorBody =>
+      """UnifiedPush leverer varslar gjennom ein eigen distributør-app, som ntfy, NextPush eller Sunup. Installer ein, og vel UnifiedPush på nytt.""";
+
+  /// ```dart
+  /// "Vel ein distributør"
+  /// ```
+  String get chooseDistributor => """Vel ein distributør""";
+
+  /// ```dart
+  /// "Les meir"
+  /// ```
+  String get learnMore => """Les meir""";
+
+  /// ```dart
+  /// "Tenaren din tek ikkje imot web push. Han treng Nextcloud 34 eller nyare, med web push tillate under Administrasjonsinnstillingar → Varslar."
+  /// ```
+  String get serverNoWebPush =>
+      """Tenaren din tek ikkje imot web push. Han treng Nextcloud 34 eller nyare, med web push tillate under Administrasjonsinnstillingar → Varslar.""";
+
+  /// ```dart
+  /// "Dette tek lengre tid enn vanleg. Sjå til at ${distributor} køyrer og er kopla til tenaren sin."
+  /// ```
+  String connectingSlow(String distributor) =>
+      """Dette tek lengre tid enn vanleg. Sjå til at ${distributor} køyrer og er kopla til tenaren sin.""";
+
+  /// ```dart
+  /// "Augneblinksvarsel er slått på."
+  /// ```
+  String get deliveryEnabled => """Augneblinksvarsel er slått på.""";
+
+  /// ```dart
+  /// "Set opp UnifiedPush"
+  /// ```
+  String get pushSetup => """Set opp UnifiedPush""";
+
+  /// ```dart
+  /// "Kva augneblinksvarsel treng"
+  /// ```
+  String get pushSetupSubtitle => """Kva augneblinksvarsel treng""";
+
+  /// ```dart
+  /// "Installer ein UnifiedPush-distributør, som ntfy, NextPush eller Sunup."
+  /// ```
+  String get pushSetupStep1 =>
+      """Installer ein UnifiedPush-distributør, som ntfy, NextPush eller Sunup.""";
+
+  /// ```dart
+  /// "Tenaren treng Nextcloud 34 eller nyare, med web push tillate av ein administrator under Administrasjonsinnstillingar → Varslar."
+  /// ```
+  String get pushSetupStep2 =>
+      """Tenaren treng Nextcloud 34 eller nyare, med web push tillate av ein administrator under Administrasjonsinnstillingar → Varslar.""";
+
+  /// ```dart
+  /// "Vel UnifiedPush under Levering, og vel så distributøren din."
+  /// ```
+  String get pushSetupStep3 =>
+      """Vel UnifiedPush under Levering, og vel så distributøren din.""";
+
+  /// ```dart
+  /// "Pantry held fram med å sjekke etter tidsplan til tenaren stadfestar abonnementet."
+  /// ```
+  String get pushSetupNote =>
+      """Pantry held fram med å sjekke etter tidsplan til tenaren stadfestar abonnementet.""";
+
+  /// ```dart
   /// "Automatisk oppdatering"
   /// ```
   String get refreshSection => """Automatisk oppdatering""";
@@ -7384,6 +7507,35 @@ Passord: pantry""",
   """settings.pollInterval6h""": """Kvart 6. time""",
   """settings.permissionDenied""":
       """Tilgang til å sende varslar vart ikkje gitt. Slå det på i systeminnstillingane.""",
+  """settings.delivery""": """Levering""",
+  """settings.deliveryPolling""": """Faste kontrollar""",
+  """settings.deliveryUnifiedPush""": """UnifiedPush""",
+  """settings.deliveryPollingBody""":
+      """Pantry ser etter ny aktivitet på tenaren din med faste mellomrom.""",
+  """settings.deliveryNoDistributor""":
+      """Ingen UnifiedPush-distributør er tilgjengeleg. Pantry ser etter med faste mellomrom til ein er sett opp.""",
+  """settings.deliveryServerUnsupported""":
+      """Tenaren din tek ikkje imot web push. Pantry ser etter med faste mellomrom i staden.""",
+  """settings.deliveryFailed""":
+      """Klarte ikkje å abonnere på push-varslar. Pantry ser etter med faste mellomrom i staden.""",
+  """settings.noDistributorTitle""": """Installer ein distributør""",
+  """settings.noDistributorBody""":
+      """UnifiedPush leverer varslar gjennom ein eigen distributør-app, som ntfy, NextPush eller Sunup. Installer ein, og vel UnifiedPush på nytt.""",
+  """settings.chooseDistributor""": """Vel ein distributør""",
+  """settings.learnMore""": """Les meir""",
+  """settings.serverNoWebPush""":
+      """Tenaren din tek ikkje imot web push. Han treng Nextcloud 34 eller nyare, med web push tillate under Administrasjonsinnstillingar → Varslar.""",
+  """settings.deliveryEnabled""": """Augneblinksvarsel er slått på.""",
+  """settings.pushSetup""": """Set opp UnifiedPush""",
+  """settings.pushSetupSubtitle""": """Kva augneblinksvarsel treng""",
+  """settings.pushSetupStep1""":
+      """Installer ein UnifiedPush-distributør, som ntfy, NextPush eller Sunup.""",
+  """settings.pushSetupStep2""":
+      """Tenaren treng Nextcloud 34 eller nyare, med web push tillate av ein administrator under Administrasjonsinnstillingar → Varslar.""",
+  """settings.pushSetupStep3""":
+      """Vel UnifiedPush under Levering, og vel så distributøren din.""",
+  """settings.pushSetupNote""":
+      """Pantry held fram med å sjekke etter tidsplan til tenaren stadfestar abonnementet.""",
   """settings.refreshSection""": """Automatisk oppdatering""",
   """settings.refreshSectionBody""":
       """Kor ofte kvar skjerm ser etter endringar på tenaren medan du ser på han. Du kan alltid dra ned for å oppdatere manuelt.""",

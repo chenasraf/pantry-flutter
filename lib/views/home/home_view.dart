@@ -17,6 +17,7 @@ import 'package:pantry_core/services/note_service.dart';
 import 'package:pantry_core/services/photo_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/services/share_intent_service.dart';
+import 'package:pantry/services/unified_push_service.dart';
 import 'package:pantry/services/widget_link_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/views/checklists/checklists_view.dart';
@@ -148,6 +149,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     // Listen for deep links and share intents that arrive while the home
     // view is mounted.
     DeepLinkService.instance.pending.addListener(_consumePendingDeepLink);
+    UnifiedPushService.instance.received.addListener(
+      _notificationsController.refresh,
+    );
     ShareIntentService.instance.pending.addListener(_consumePendingShare);
     WidgetLinkService.instance.pending.addListener(_consumePendingWidgetTap);
     ListLinkService.instance.pending.addListener(_consumePendingListLink);
@@ -161,6 +165,9 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   @override
   void dispose() {
     DeepLinkService.instance.pending.removeListener(_consumePendingDeepLink);
+    UnifiedPushService.instance.received.removeListener(
+      _notificationsController.refresh,
+    );
     ShareIntentService.instance.pending.removeListener(_consumePendingShare);
     WidgetLinkService.instance.pending.removeListener(_consumePendingWidgetTap);
     ListLinkService.instance.pending.removeListener(_consumePendingListLink);

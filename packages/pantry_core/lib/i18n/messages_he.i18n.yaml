@@ -316,6 +316,28 @@ settings:
   pollInterval2h: כל שעתיים
   pollInterval6h: כל 6 שעות
   permissionDenied: הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.
+  delivery: אופן קבלה
+  deliveryPolling: בדיקות תקופתיות
+  deliveryUnifiedPush: UnifiedPush
+  deliveryPollingBody: Pantry בודקת בשרת שלך פעילות חדשה לפי לוח זמנים.
+  deliveryConnecting(String distributor): "מתחבר דרך ${distributor}…"
+  deliveryActive(String distributor): "התראות מגיעות מיד דרך ${distributor}."
+  deliveryNoDistributor: אין מפיץ UnifiedPush זמין. Pantry תבדוק לפי לוח זמנים עד שיוגדר מפיץ.
+  deliveryServerUnsupported: השרת שלך לא תומך ב־web push. Pantry תבדוק לפי לוח זמנים במקום.
+  deliveryFailed: ההרשמה להתראות push נכשלה. Pantry תבדוק לפי לוח זמנים במקום.
+  noDistributorTitle: התקנת מפיץ
+  noDistributorBody: UnifiedPush מעביר התראות דרך אפליקציית מפיץ נפרדת, כמו ntfy‏, NextPush או Sunup. יש להתקין אחת ולבחור שוב ב־UnifiedPush.
+  chooseDistributor: בחירת מפיץ
+  learnMore: מידע נוסף
+  serverNoWebPush: "השרת שלך לא תומך ב־web push. נדרש Nextcloud 34 ומעלה, עם web push מופעל בהגדרות ניהול ← התראות."
+  connectingSlow(String distributor): "זה לוקח יותר זמן מהרגיל. יש לוודא ש־${distributor} פועלת ומחוברת לשרת שלה."
+  deliveryEnabled: התראות מיידיות פעילות.
+  pushSetup: הגדרת UnifiedPush
+  pushSetupSubtitle: מה נדרש להתראות מיידיות
+  pushSetupStep1: יש להתקין אפליקציית מפיץ של UnifiedPush, כמו ntfy‏, NextPush או Sunup.
+  pushSetupStep2: "השרת צריך Nextcloud 34 ומעלה, עם web push שמנהל המערכת אישר בהגדרות ניהול ← התראות."
+  pushSetupStep3: יש לבחור UnifiedPush תחת אופן קבלה, ואז את המפיץ.
+  pushSetupNote: Pantry ממשיכה לבדוק לפי לוח זמנים עד שהשרת מאשר את המינוי.
   refreshSection: רענון אוטומטי
   refreshSectionBody: כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני.
   refreshSectionSubtitle: כל כמה זמן כל מסך בודק אם יש שינויים

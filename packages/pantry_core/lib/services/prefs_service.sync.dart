@@ -28,6 +28,15 @@ extension PrefsServiceSyncSetters on PrefsService {
     notifyListeners();
   }
 
+  Future<void> setUnifiedPushEnabled(bool value) async {
+    _unifiedPushEnabled = value;
+    await _storage.write(
+      key: PrefsService._unifiedPushEnabledKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
   Future<void> setChecklistRefreshSeconds(int seconds) async {
     if (!PrefsService._validRefreshSeconds.contains(seconds)) return;
     if (_checklistRefreshSeconds == seconds) return;

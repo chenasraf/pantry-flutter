@@ -30,6 +30,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/reachability_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'services/share_intent_service.dart';
+import 'services/unified_push_service.dart';
 import 'services/wear_mirror_host.dart';
 import 'services/wear_appearance_host.dart';
 import 'services/wear_pairing_host.dart';
@@ -82,8 +83,14 @@ String appVersion = kAppOnboardingFirstVersion;
 const kWidgetConfigRoutePrefix = '/widget-config/';
 const kChecklistWidgetConfigRoutePrefix = '/checklist-widget-config/';
 
-void main() async {
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // A push that arrives with no app engine alive starts this one headless.
+  if (args.contains(unifiedPushBackgroundArg)) {
+    await runUnifiedPushBackground();
+    return;
+  }
   // Ahead of the config-app branch below: those engines draw item tiles too,
   // and core's providers have no store until one is installed.
   ImageCacheService.instance.install();
@@ -179,9 +186,11 @@ void main() async {
     // HomeWidgetPreferences. Also resyncs the launcher quick actions.
     unawaited(WidgetService.instance.refreshAll());
     unawaited(ChecklistWidgetService.instance.refreshAll());
-    if (PrefsService.instance.notificationsEnabled) {
-      unawaited(registerBackgroundNotificationPoll());
-    }
+    unawaited(
+      UnifiedPushService.instance.init().then(
+        (_) => applyNotificationDelivery(),
+      ),
+    );
     // Answers a paired watch for as long as this process lives. It hides
     // itself on a build with no Data Layer, so there is nothing to gate here.
     unawaited(WearMirrorHost.instance.init());
@@ -450,6 +459,7 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
   }
 
   Future<void> _onLogout() async {
+    await UnifiedPushService.instance.disable();
     await cancelBackgroundNotificationPoll();
     await LocalNotificationsService.instance.cancelAll();
     await AuthService.instance.logout();

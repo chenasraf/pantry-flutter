@@ -106,6 +106,7 @@ help:
 	@echo "    wear-variant-apk    Build a Wear OS APK with a platform switch flipped (WEAR_ARGS=)"
 	@echo "    wear-coldstart      Time cold starts of the installed Wear OS build (COLDSTART_ARGS=)"
 	@echo "    android-push        Build APK and push to device via adb"
+	@echo "    webpush-dev         Drive web push on the local Nextcloud stack (WEBPUSH_ARGS=, e.g. \"send admin\")"
 	@echo "    ios-build           Build iOS (no codesign)"
 	@echo "    macos-build         Build macOS app (.app bundle, no codesign)"
 	@echo "    macos-provision-dev Create the development profile the macOS debug build signs with"
@@ -318,6 +319,10 @@ wear-variant-install: wear-variant-apk
 .PHONY: wear-coldstart
 wear-coldstart:
 	tool/wear_coldstart.sh $(COLDSTART_ARGS)
+
+.PHONY: webpush-dev
+webpush-dev:
+	@tool/webpush_dev.sh $(WEBPUSH_ARGS)
 
 # The ambient probe. Its activity, its manifest entry and the androidx.wear
 # dependency behind it are all `wearDebug`, so this is the only way to reach it

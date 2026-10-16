@@ -1503,6 +1503,129 @@ class SettingsMessagesHe extends SettingsMessages {
       """הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.""";
 
   /// ```dart
+  /// "אופן קבלה"
+  /// ```
+  String get delivery => """אופן קבלה""";
+
+  /// ```dart
+  /// "בדיקות תקופתיות"
+  /// ```
+  String get deliveryPolling => """בדיקות תקופתיות""";
+
+  /// ```dart
+  /// "UnifiedPush"
+  /// ```
+  String get deliveryUnifiedPush => """UnifiedPush""";
+
+  /// ```dart
+  /// "Pantry בודקת בשרת שלך פעילות חדשה לפי לוח זמנים."
+  /// ```
+  String get deliveryPollingBody =>
+      """Pantry בודקת בשרת שלך פעילות חדשה לפי לוח זמנים.""";
+
+  /// ```dart
+  /// "מתחבר דרך ${distributor}…"
+  /// ```
+  String deliveryConnecting(String distributor) =>
+      """מתחבר דרך ${distributor}…""";
+
+  /// ```dart
+  /// "התראות מגיעות מיד דרך ${distributor}."
+  /// ```
+  String deliveryActive(String distributor) =>
+      """התראות מגיעות מיד דרך ${distributor}.""";
+
+  /// ```dart
+  /// "אין מפיץ UnifiedPush זמין. Pantry תבדוק לפי לוח זמנים עד שיוגדר מפיץ."
+  /// ```
+  String get deliveryNoDistributor =>
+      """אין מפיץ UnifiedPush זמין. Pantry תבדוק לפי לוח זמנים עד שיוגדר מפיץ.""";
+
+  /// ```dart
+  /// "השרת שלך לא תומך ב־web push. Pantry תבדוק לפי לוח זמנים במקום."
+  /// ```
+  String get deliveryServerUnsupported =>
+      """השרת שלך לא תומך ב־web push. Pantry תבדוק לפי לוח זמנים במקום.""";
+
+  /// ```dart
+  /// "ההרשמה להתראות push נכשלה. Pantry תבדוק לפי לוח זמנים במקום."
+  /// ```
+  String get deliveryFailed =>
+      """ההרשמה להתראות push נכשלה. Pantry תבדוק לפי לוח זמנים במקום.""";
+
+  /// ```dart
+  /// "התקנת מפיץ"
+  /// ```
+  String get noDistributorTitle => """התקנת מפיץ""";
+
+  /// ```dart
+  /// "UnifiedPush מעביר התראות דרך אפליקציית מפיץ נפרדת, כמו ntfy‏, NextPush או Sunup. יש להתקין אחת ולבחור שוב ב־UnifiedPush."
+  /// ```
+  String get noDistributorBody =>
+      """UnifiedPush מעביר התראות דרך אפליקציית מפיץ נפרדת, כמו ntfy‏, NextPush או Sunup. יש להתקין אחת ולבחור שוב ב־UnifiedPush.""";
+
+  /// ```dart
+  /// "בחירת מפיץ"
+  /// ```
+  String get chooseDistributor => """בחירת מפיץ""";
+
+  /// ```dart
+  /// "מידע נוסף"
+  /// ```
+  String get learnMore => """מידע נוסף""";
+
+  /// ```dart
+  /// "השרת שלך לא תומך ב־web push. נדרש Nextcloud 34 ומעלה, עם web push מופעל בהגדרות ניהול ← התראות."
+  /// ```
+  String get serverNoWebPush =>
+      """השרת שלך לא תומך ב־web push. נדרש Nextcloud 34 ומעלה, עם web push מופעל בהגדרות ניהול ← התראות.""";
+
+  /// ```dart
+  /// "זה לוקח יותר זמן מהרגיל. יש לוודא ש־${distributor} פועלת ומחוברת לשרת שלה."
+  /// ```
+  String connectingSlow(String distributor) =>
+      """זה לוקח יותר זמן מהרגיל. יש לוודא ש־${distributor} פועלת ומחוברת לשרת שלה.""";
+
+  /// ```dart
+  /// "התראות מיידיות פעילות."
+  /// ```
+  String get deliveryEnabled => """התראות מיידיות פעילות.""";
+
+  /// ```dart
+  /// "הגדרת UnifiedPush"
+  /// ```
+  String get pushSetup => """הגדרת UnifiedPush""";
+
+  /// ```dart
+  /// "מה נדרש להתראות מיידיות"
+  /// ```
+  String get pushSetupSubtitle => """מה נדרש להתראות מיידיות""";
+
+  /// ```dart
+  /// "יש להתקין אפליקציית מפיץ של UnifiedPush, כמו ntfy‏, NextPush או Sunup."
+  /// ```
+  String get pushSetupStep1 =>
+      """יש להתקין אפליקציית מפיץ של UnifiedPush, כמו ntfy‏, NextPush או Sunup.""";
+
+  /// ```dart
+  /// "השרת צריך Nextcloud 34 ומעלה, עם web push שמנהל המערכת אישר בהגדרות ניהול ← התראות."
+  /// ```
+  String get pushSetupStep2 =>
+      """השרת צריך Nextcloud 34 ומעלה, עם web push שמנהל המערכת אישר בהגדרות ניהול ← התראות.""";
+
+  /// ```dart
+  /// "יש לבחור UnifiedPush תחת אופן קבלה, ואז את המפיץ."
+  /// ```
+  String get pushSetupStep3 =>
+      """יש לבחור UnifiedPush תחת אופן קבלה, ואז את המפיץ.""";
+
+  /// ```dart
+  /// "Pantry ממשיכה לבדוק לפי לוח זמנים עד שהשרת מאשר את המינוי."
+  /// ```
+  String get pushSetupNote =>
+      """Pantry ממשיכה לבדוק לפי לוח זמנים עד שהשרת מאשר את המינוי.""";
+
+  /// ```dart
   /// "רענון אוטומטי"
   /// ```
   String get refreshSection => """רענון אוטומטי""";
@@ -7360,6 +7483,35 @@ Map<String, String> get messagesHeMap => {
   """settings.pollInterval6h""": """כל 6 שעות""",
   """settings.permissionDenied""":
       """הרשאת ההתראות נדחתה. הפעל אותה בהגדרות המערכת.""",
+  """settings.delivery""": """אופן קבלה""",
+  """settings.deliveryPolling""": """בדיקות תקופתיות""",
+  """settings.deliveryUnifiedPush""": """UnifiedPush""",
+  """settings.deliveryPollingBody""":
+      """Pantry בודקת בשרת שלך פעילות חדשה לפי לוח זמנים.""",
+  """settings.deliveryNoDistributor""":
+      """אין מפיץ UnifiedPush זמין. Pantry תבדוק לפי לוח זמנים עד שיוגדר מפיץ.""",
+  """settings.deliveryServerUnsupported""":
+      """השרת שלך לא תומך ב־web push. Pantry תבדוק לפי לוח זמנים במקום.""",
+  """settings.deliveryFailed""":
+      """ההרשמה להתראות push נכשלה. Pantry תבדוק לפי לוח זמנים במקום.""",
+  """settings.noDistributorTitle""": """התקנת מפיץ""",
+  """settings.noDistributorBody""":
+      """UnifiedPush מעביר התראות דרך אפליקציית מפיץ נפרדת, כמו ntfy‏, NextPush או Sunup. יש להתקין אחת ולבחור שוב ב־UnifiedPush.""",
+  """settings.chooseDistributor""": """בחירת מפיץ""",
+  """settings.learnMore""": """מידע נוסף""",
+  """settings.serverNoWebPush""":
+      """השרת שלך לא תומך ב־web push. נדרש Nextcloud 34 ומעלה, עם web push מופעל בהגדרות ניהול ← התראות.""",
+  """settings.deliveryEnabled""": """התראות מיידיות פעילות.""",
+  """settings.pushSetup""": """הגדרת UnifiedPush""",
+  """settings.pushSetupSubtitle""": """מה נדרש להתראות מיידיות""",
+  """settings.pushSetupStep1""":
+      """יש להתקין אפליקציית מפיץ של UnifiedPush, כמו ntfy‏, NextPush או Sunup.""",
+  """settings.pushSetupStep2""":
+      """השרת צריך Nextcloud 34 ומעלה, עם web push שמנהל המערכת אישר בהגדרות ניהול ← התראות.""",
+  """settings.pushSetupStep3""":
+      """יש לבחור UnifiedPush תחת אופן קבלה, ואז את המפיץ.""",
+  """settings.pushSetupNote""":
+      """Pantry ממשיכה לבדוק לפי לוח זמנים עד שהשרת מאשר את המינוי.""",
   """settings.refreshSection""": """רענון אוטומטי""",
   """settings.refreshSectionBody""":
       """כל כמה זמן כל מסך בודק שינויים בשרת בזמן הצפייה. תמיד אפשר למשוך מטה לרענון ידני.""",

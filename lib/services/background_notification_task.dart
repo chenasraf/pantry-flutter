@@ -91,7 +91,7 @@ Future<void> _pollAndNotify() async {
       id: n.notificationId,
       title: n.subject,
       body: n.message.isNotEmpty ? n.message : null,
-      payload: _payloadFor(n),
+      payload: notificationPayloadFor(n),
     );
   }
 
@@ -118,6 +118,22 @@ Future<void> _rememberEtag(String? etag) async {
 /// opens the app so we don't re-alert them.
 Future<void> markCurrentNotificationsAsSeen(List<int> ids) async {
   await secureStorage.write(key: _seenIdsKey, value: ids.join(','));
+}
+
+/// Adds one notification to the seen set, so a poll that runs after a push
+/// already showed it doesn't show it again.
+Future<void> markNotificationAsSeen(int id) async {
+  try {
+    final raw = await secureStorage.read(key: _seenIdsKey);
+    final ids = raw == null || raw.isEmpty ? <String>[] : raw.split(',');
+    if (ids.contains('$id')) return;
+    await secureStorage.write(
+      key: _seenIdsKey,
+      value: [...ids, '$id'].join(','),
+    );
+  } catch (e) {
+    debugPrint('[bg-notify] failed to record seen notification: $e');
+  }
 }
 
 /// workmanager only supports Android and iOS; other platforms throw
@@ -153,7 +169,7 @@ Future<void> rescheduleBackgroundNotificationPoll() async {
   await registerBackgroundNotificationPoll();
 }
 
-String? _payloadFor(NcNotification n) {
+String? notificationPayloadFor(NcNotification n) {
   final target = n.target;
   if (target == null) return null;
   final tab = switch (target) {

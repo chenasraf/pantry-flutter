@@ -413,6 +413,17 @@ class ApiClient {
     return _handleResponse<D, T>(response, fromJson);
   }
 
+  /// A POST whose success status is the answer, for endpoints that tell
+  /// "already done" apart from "done now" by status code alone.
+  Future<int> postForStatus(String path, {Map<String, dynamic>? body}) async {
+    final response = await _send(_jsonRequest('POST', path, body));
+    _notify(response.statusCode);
+    if (response.statusCode >= 400) {
+      throw ApiException(response.statusCode, response.body);
+    }
+    return response.statusCode;
+  }
+
   Future<T> put<D, T>(
     String path, {
     Map<String, dynamic>? body,
