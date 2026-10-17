@@ -1,0 +1,9 @@
+Features
+- instant notifications through UnifiedPush
+- diagnostic logs you can view and share
+Bug Fixes
+- keep long request paths readable
+- changes stuck on one device now sync
+- show unsynced changes when syncing stops
+Miscellaneous Chores
+- set release version
