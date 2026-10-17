@@ -190,6 +190,47 @@ void main() {
     },
   );
 
+  group('a stopped flush', () {
+    late Duration grace;
+    setUp(() {
+      grace = SyncManager.stallGrace;
+      SyncManager.stallGrace = const Duration(milliseconds: 200);
+    });
+    tearDown(() => SyncManager.stallGrace = grace);
+
+    test('shows the changes it left once they have waited', () async {
+      // A 401 holds the queue without marking a backlog or an error.
+      final client = MockClient((req) async => http.Response('', 401));
+      await http.runWithClient(() async {
+        manager.queueForTest.enqueue(toggleReal('held'));
+        await manager.flushNow();
+      }, () => client);
+
+      expect(manager.queueForTest.all(), hasLength(1));
+      expect(manager.hasBacklog.value, isFalse);
+
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+      expect(manager.hasBacklog.value, isTrue);
+    });
+
+    test('stays quiet when the next attempt clears it', () async {
+      var status = 401;
+      final client = MockClient(
+        (req) async => http.Response(status == 200 ? itemBody : '', status),
+      );
+      await http.runWithClient(() async {
+        manager.queueForTest.enqueue(toggleReal('held'));
+        await manager.flushNow();
+        status = 200;
+        await manager.flushNow();
+      }, () => client);
+
+      expect(manager.queueForTest.all(), isEmpty);
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+      expect(manager.hasBacklog.value, isFalse);
+    });
+  });
+
   test('an item added to a list created offline lands in that list', () async {
     manager.queueForTest
       ..enqueue(listCreate())

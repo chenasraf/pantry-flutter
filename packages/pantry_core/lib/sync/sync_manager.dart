@@ -54,10 +54,29 @@ class SyncManager {
   final ValueNotifier<int> pendingCount = ValueNotifier(0);
 
   /// True when the queue holds work from an offline period — an op enqueued
-  /// while disconnected or a queue persisted from a previous session. Drives
-  /// the user-avatar sync indicator (a single-op flush while online does not
-  /// flip it). Cleared once the queue fully drains.
+  /// while disconnected or a queue persisted from a previous session — or
+  /// work a flush stopped short of for longer than [stallGrace]. Drives the
+  /// user-avatar sync indicator (a single-op flush while online does not flip
+  /// it). Cleared once the queue fully drains.
   final ValueNotifier<bool> hasBacklog = ValueNotifier(false);
+
+  /// How long work may wait behind a stopped flush before the indicator
+  /// shows it. Long enough that a hold the next attempt clears never flashes.
+  @visibleForTesting
+  static Duration stallGrace = const Duration(seconds: 10);
+  Timer? _stallTimer;
+
+  void _watchForStall() {
+    if (_queue.isEmpty) {
+      _stallTimer?.cancel();
+      _stallTimer = null;
+      return;
+    }
+    _stallTimer ??= Timer(stallGrace, () {
+      _stallTimer = null;
+      if (!_queue.isEmpty) hasBacklog.value = true;
+    });
+  }
 
   final _appliedController = StreamController<SyncOpApplied>.broadcast();
   Stream<SyncOpApplied> get onApplied => _appliedController.stream;
@@ -173,6 +192,8 @@ class SyncManager {
   Future<void> reset() async {
     _retryTimer?.cancel();
     _retryTimer = null;
+    _stallTimer?.cancel();
+    _stallTimer = null;
     _offlineAttempt = 0;
     await _queue.clear();
     await _remap.clear();
@@ -185,6 +206,8 @@ class SyncManager {
   Future<void> dispose() async {
     _retryTimer?.cancel();
     _retryTimer = null;
+    _stallTimer?.cancel();
+    _stallTimer = null;
     await _appliedController.close();
     await _skippedController.close();
     await _reconnectController.close();
@@ -611,6 +634,7 @@ class SyncManager {
       hasBacklog.value = false;
     } finally {
       _flushing = false;
+      _watchForStall();
     }
   }
 

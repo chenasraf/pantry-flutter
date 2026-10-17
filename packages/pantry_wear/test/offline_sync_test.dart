@@ -202,8 +202,9 @@ void main() {
       }, () => MockClient((_) async => http.Response('{}', 401)));
 
       // The 401 arms the shared grace window before the degraded state is
-      // published; let it fire rather than leaving a timer behind the page.
-      await tester.pump(const Duration(seconds: 4));
+      // published, and the held op arms the backlog indicator's; let both fire
+      // rather than leaving a timer behind the page.
+      await tester.pump(SyncManager.stallGrace + const Duration(seconds: 1));
 
       expect(sync.pendingCount.value, 1);
       expect(find.text(m.wear.signOutSending), findsOneWidget);
