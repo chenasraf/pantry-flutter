@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.37.1](https://github.com/chenasraf/pantry-flutter/compare/v0.37.0...v0.37.1) (2026-10-17)
+
+
+### Features
+
+* **android:** instant notifications through UnifiedPush ([23f7eb9](https://github.com/chenasraf/pantry-flutter/commit/23f7eb9eecc0b723b87ba82ca29f6ba37a356e0f)), closes [#191](https://github.com/chenasraf/pantry-flutter/issues/191)
+* **settings:** diagnostic logs you can view and share ([91bff15](https://github.com/chenasraf/pantry-flutter/commit/91bff151c3d30e2b3bf600b0836374aafd9d796a))
+
+
+### Bug Fixes
+
+* **desktop:** improve toolbar menus layout ([2b23a69](https://github.com/chenasraf/pantry-flutter/commit/2b23a6937ae7f49d8f328f2464fcf4e4400f8d7d))
+* **logs:** keep long request paths readable ([9be9476](https://github.com/chenasraf/pantry-flutter/commit/9be947684a89eaf82fbcc876a6e5eeacdfd544b7))
+* **sync:** changes stuck on one device now sync ([4e936b2](https://github.com/chenasraf/pantry-flutter/commit/4e936b21b50469952ee63396c91515b7fbb3706d))
+* **sync:** show unsynced changes when syncing stops ([17045f7](https://github.com/chenasraf/pantry-flutter/commit/17045f747f47956432ccafbfd8c21a8c38f9b188))
+
+
+### Miscellaneous Chores
+
+* set release version ([c1699ee](https://github.com/chenasraf/pantry-flutter/commit/c1699ee6aafda946bbe89e26e378f406f50bc99c))
+
 ## [0.37.0](https://github.com/chenasraf/pantry-flutter/compare/v0.36.0...v0.37.0) (2026-10-15)
 
 
