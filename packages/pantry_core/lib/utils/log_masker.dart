@@ -29,8 +29,15 @@ class LogMasker {
   static final _ipv4 = RegExp(r'\b(?:\d{1,3}\.){3}\d{1,3}\b');
 
   /// App passwords, push endpoints and session tokens are long runs of the
-  /// base64 / URL-safe alphabet; nothing worth reading in a log is.
-  static final _token = RegExp(r'[A-Za-z0-9+/_-]{32,}={0,2}');
+  /// base64 / URL-safe alphabet; nothing worth reading in a log is. A slash
+  /// ends a run, or every long request path would read as a token.
+  static final _token = RegExp(r'[A-Za-z0-9+_-]{32,}={0,2}');
+
+  /// An app password made by hand in Nextcloud's security settings: five
+  /// groups of five, short enough to slip under [_token].
+  static final _appPassword = RegExp(
+    r'\b[A-Za-z0-9]{5}(?:-[A-Za-z0-9]{5}){4}\b',
+  );
 
   String mask(String input) {
     var out = input.replaceAllMapped(_auth, (m) => '${m[1]} <redacted>');
@@ -60,6 +67,8 @@ class LogMasker {
         '<user>',
       );
     }
-    return out.replaceAll(_token, '<token>');
+    return out
+        .replaceAll(_token, '<token>')
+        .replaceAll(_appPassword, '<token>');
   }
 }
