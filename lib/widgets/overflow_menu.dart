@@ -4,6 +4,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 
 import '../theme/app_theme.dart';
+import 'overflow_grid.dart';
 
 /// One row in an AppBar overflow: a section [OverflowDivider] or
 /// [OverflowHeader], a plain [OverflowAction], a toggle
@@ -453,11 +454,18 @@ class OverflowButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (entries.isEmpty) return const SizedBox.shrink();
     if (PlatformInfo.isDesktop) {
-      return PopupMenuButton<String>(
-        icon: const Icon(Icons.more_vert),
-        tooltip: m.common.more,
-        onSelected: onSelected,
-        itemBuilder: (_) => overflowMenuItems(entries),
+      return Builder(
+        builder: (anchorContext) => IconButton(
+          icon: const Icon(Icons.more_vert),
+          tooltip: m.common.more,
+          onPressed: () async {
+            final selected = await showOverflowListPopover(
+              anchorContext,
+              entries: () => entries,
+            );
+            if (selected != null) onSelected(selected);
+          },
+        ),
       );
     }
     return IconButton(

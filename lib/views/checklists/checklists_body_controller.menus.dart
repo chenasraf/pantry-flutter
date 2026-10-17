@@ -167,26 +167,54 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         onPressed: () => onOverflow(context, sole.value),
       );
     }
+    List<OverflowEntry> entries() =>
+        overflowGroups().where((g) => g.id == group.id).firstOrNull?.entries ??
+        const [];
+    if (PlatformInfo.isDesktop) {
+      return Builder(
+        builder: (anchorContext) => IconButton(
+          icon: Icon(group.icon),
+          tooltip: group.label,
+          onPressed: () => _showListPopover(anchorContext, entries),
+        ),
+      );
+    }
     return PopupMenuButton<String>(
       icon: Icon(group.icon),
       tooltip: group.label,
       onSelected: (v) => onOverflow(context, v),
-      itemBuilder: (_) => overflowMenuItems(
-        overflowGroups().where((g) => g.id == group.id).firstOrNull?.entries ??
-            const [],
-      ),
+      itemBuilder: (_) => overflowMenuItems(entries()),
     );
   }
 
+  /// The desktop list menus open in the same popover as the grid, so every
+  /// toolbar menu enters the same way and a toggle can be flipped without
+  /// the menu closing under the pointer.
+  Future<void> _showListPopover(
+    BuildContext anchorContext,
+    List<OverflowEntry> Function() entries,
+  ) async {
+    if (entries().isEmpty) return;
+    final selected = await showOverflowListPopover(
+      anchorContext,
+      entries: entries,
+      listenable: Listenable.merge([domain, this, PrefsService.instance]),
+      onToggle: (value) => onOverflow(anchorContext, value),
+    );
+    if (selected != null && anchorContext.mounted) {
+      await onOverflow(anchorContext, selected);
+    }
+  }
+
   Widget _overflowButton(BuildContext context, Set<String> promoted) {
-    // The list style on desktop is an anchored popup menu; everything else
-    // opens from a plain button.
     if (PlatformInfo.isDesktop && !_usesGrid) {
-      return PopupMenuButton<String>(
-        icon: const Icon(Icons.more_vert),
-        tooltip: m.common.more,
-        onSelected: (v) => onOverflow(context, v),
-        itemBuilder: (_) => overflowMenuItems(overflowItems(promoted)),
+      return Builder(
+        builder: (anchorContext) => IconButton(
+          icon: const Icon(Icons.more_vert),
+          tooltip: m.common.more,
+          onPressed: () =>
+              _showListPopover(anchorContext, () => overflowItems(promoted)),
+        ),
       );
     }
     return Builder(

@@ -244,4 +244,121 @@ void main() {
     expect(picked, 'categories');
     expect(find.byType(OverflowGroupTile), findsNothing);
   });
+
+  testWidgets('icons in a row line up whatever their labels wrap to', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      wrapForTest(
+        SizedBox(
+          width: 460,
+          child: OverflowGridPanel(
+            dense: true,
+            groups: () => const [
+              OverflowGroup(
+                id: 'short',
+                icon: Icons.checklist,
+                label: 'Short',
+                entries: [
+                  OverflowAction(value: 'a', icon: Icons.checklist, label: 'A'),
+                ],
+              ),
+              OverflowGroup(
+                id: 'long',
+                icon: Icons.history,
+                label: 'History',
+                entries: [
+                  OverflowAction(
+                    value: 'b',
+                    icon: Icons.history,
+                    label: 'A label long enough to wrap onto two lines',
+                  ),
+                ],
+              ),
+            ],
+            onAction: (_) {},
+            onToggle: (_) {},
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      tester.getTopLeft(find.byIcon(Icons.checklist)).dy,
+      tester.getTopLeft(find.byIcon(Icons.history)).dy,
+    );
+  });
+
+  group('the list popover', () {
+    Future<void> openList(WidgetTester tester) async {
+      await tester.pumpWidget(
+        wrapForTest(
+          Align(
+            alignment: AlignmentDirectional.topEnd,
+            child: opener((context) async {
+              picked = await showOverflowListPopover(
+                context,
+                entries: () => groupsFor(state).first.entries,
+                listenable: state,
+                onToggle: onToggle,
+              );
+            }),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+    }
+
+    testWidgets('zooms and fades in from its anchor', (tester) async {
+      await openList(tester);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 40));
+
+      final scale = tester.widget<ScaleTransition>(
+        find
+            .ancestor(
+              of: find.text('Newest'),
+              matching: find.byType(ScaleTransition),
+            )
+            .first,
+      );
+      expect(scale.scale.value, inExclusiveRange(0.94, 1.0));
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('toggles keep it open and an action closes it', (tester) async {
+      await openList(tester);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Oldest'));
+      await tester.pumpAndSettle();
+      expect(toggled, ['sort_oldest']);
+      expect(find.text('Show who added'), findsOneWidget);
+
+      await tester.tapAt(Offset.zero);
+      await tester.pumpAndSettle();
+      expect(find.text('Show who added'), findsNothing);
+      expect(picked, isNull);
+    });
+
+    testWidgets('without onToggle every row closes it', (tester) async {
+      await tester.pumpWidget(
+        wrapForTest(
+          opener((context) async {
+            picked = await showOverflowListPopover(
+              context,
+              entries: () => groupsFor(state).first.entries,
+            );
+          }),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Show who added'));
+      await tester.pumpAndSettle();
+
+      expect(picked, 'toggle');
+      expect(find.text('Show who added'), findsNothing);
+    });
+  });
 }

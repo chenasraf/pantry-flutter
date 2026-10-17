@@ -178,6 +178,7 @@ class _OverflowGridPanelState extends State<OverflowGridPanel> {
     final sole = group.soleEntry;
     if (sole != null) {
       return OverflowGroupTile(
+        dense: widget.dense,
         icon: sole is OverflowAction ? sole.icon : group.icon,
         label: switch (sole) {
           OverflowAction(:final label) => label,
@@ -189,6 +190,7 @@ class _OverflowGridPanelState extends State<OverflowGridPanel> {
       );
     }
     return OverflowGroupTile(
+      dense: widget.dense,
       icon: group.icon,
       label: group.label,
       drillsIn: true,
@@ -248,6 +250,7 @@ class _OverflowGridPanelState extends State<OverflowGridPanel> {
 
 /// A grid-menu tile: an icon over a label, edged like a button. [drillsIn]
 /// adds a chevron marking a tile that opens more choices rather than acting.
+/// [dense] sizes it for a pointer-driven popover.
 class OverflowGroupTile extends StatelessWidget {
   const OverflowGroupTile({
     super.key,
@@ -255,17 +258,25 @@ class OverflowGroupTile extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.drillsIn = false,
+    this.dense = false,
   });
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
   final bool drillsIn;
+  final bool dense;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final surfaces = AppSurfaces.of(context);
+    final labelStyle = dense
+        ? theme.textTheme.labelMedium
+        : theme.textTheme.labelLarge;
+    // Even sides keep the content centered; a chevron on the end edge needs
+    // them wide enough to clear it.
+    final side = drillsIn ? 24.0 : (dense ? 10.0 : 14.0);
     return Material(
       color: surfaces.fill,
       shape: RoundedRectangleBorder(
@@ -276,26 +287,33 @@ class OverflowGroupTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Stack(
-          alignment: Alignment.center,
+          // Top-aligned: a row of tiles is as tall as its longest label, and
+          // centering would set a one-line tile's icon lower than its
+          // neighbor's.
+          alignment: Alignment.topCenter,
           children: [
             Padding(
-              // Even sides keep the content centered while clearing the
-              // chevron on the end edge.
-              padding: const EdgeInsets.fromLTRB(24, 16, 24, 14),
+              padding: EdgeInsets.fromLTRB(
+                side,
+                dense ? 14 : 16,
+                side,
+                dense ? 12 : 14,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(icon, size: 26, color: theme.colorScheme.onSurface),
-                  const SizedBox(height: 10),
+                  Icon(
+                    icon,
+                    size: dense ? 22 : 26,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                  SizedBox(height: dense ? 8 : 10),
                   Text(
                     label,
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: labelStyle?.copyWith(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -351,6 +369,97 @@ Future<String?> showOverflowGridPopover(
   required List<OverflowGroup> Function() groups,
   required ValueChanged<String> onToggle,
   Listenable? listenable,
+}) => _showPopover(
+  anchorContext,
+  // Three tiles a row with room for a two-word label on each.
+  width: 460,
+  builder: (routeContext) => OverflowGridPanel(
+    groups: groups,
+    listenable: listenable,
+    dense: true,
+    onToggle: onToggle,
+    onAction: (value) => Navigator.of(routeContext).pop(value),
+  ),
+);
+
+/// Shows [entries] as a list in a popover anchored under the widget that owns
+/// [anchorContext], resolving to the value of the row picked, or null if it
+/// was dismissed.
+///
+/// With [onToggle], toggles and radio choices apply through it and keep the
+/// popover open, rebuilding from [entries] whenever [listenable] changes;
+/// without it, every row closes the popover.
+Future<String?> showOverflowListPopover(
+  BuildContext anchorContext, {
+  required List<OverflowEntry> Function() entries,
+  ValueChanged<String>? onToggle,
+  Listenable? listenable,
+}) => _showPopover(
+  anchorContext,
+  width: 280,
+  builder: (routeContext) => _OverflowListPanel(
+    entries: entries,
+    listenable: listenable,
+    onToggle: onToggle,
+    onAction: (value) => Navigator.of(routeContext).pop(value),
+  ),
+);
+
+class _OverflowListPanel extends StatelessWidget {
+  const _OverflowListPanel({
+    required this.entries,
+    required this.onAction,
+    this.onToggle,
+    this.listenable,
+  });
+
+  final List<OverflowEntry> Function() entries;
+  final ValueChanged<String> onAction;
+  final ValueChanged<String>? onToggle;
+  final Listenable? listenable;
+
+  void _pick(OverflowEntry entry) {
+    final value = overflowEntryValue(entry);
+    if (value == null) return;
+    final toggle = onToggle;
+    if (toggle != null && overflowEntryIsToggle(entry)) {
+      toggle(value);
+    } else {
+      onAction(value);
+    }
+  }
+
+  Widget _build() => Padding(
+    padding: const EdgeInsetsDirectional.symmetric(vertical: 8),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final entry in entries())
+          OverflowSheetRow(
+            entry: entry,
+            dense: true,
+            onTap: (_) => _pick(entry),
+          ),
+      ],
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final listenable = this.listenable;
+    if (listenable == null) return _build();
+    return ListenableBuilder(
+      listenable: listenable,
+      builder: (_, _) => _build(),
+    );
+  }
+}
+
+Future<String?> _showPopover(
+  BuildContext anchorContext, {
+  required double width,
+  required WidgetBuilder builder,
 }) {
   final box = anchorContext.findRenderObject()! as RenderBox;
   final navigator = Navigator.of(anchorContext);
@@ -371,13 +480,8 @@ Future<String?> showOverflowGridPopover(
         from: anchorContext,
         to: navigator.context,
       ),
-      builder: (routeContext) => OverflowGridPanel(
-        groups: groups,
-        listenable: listenable,
-        dense: true,
-        onToggle: onToggle,
-        onAction: (value) => Navigator.of(routeContext).pop(value),
-      ),
+      width: width,
+      builder: builder,
     ),
   );
 }
@@ -388,6 +492,7 @@ class _PopoverRoute<T> extends PopupRoute<T> {
     required this.textDirection,
     required this.barrierLabel,
     required this.capturedThemes,
+    required this.width,
     required this.builder,
   });
 
@@ -396,9 +501,9 @@ class _PopoverRoute<T> extends PopupRoute<T> {
   @override
   final String barrierLabel;
   final CapturedThemes capturedThemes;
+  final double width;
   final WidgetBuilder builder;
 
-  static const _width = 360.0;
   static const _margin = 8.0;
 
   @override
@@ -430,7 +535,7 @@ class _PopoverRoute<T> extends PopupRoute<T> {
           margin: _margin,
         ),
         child: SizedBox(
-          width: _width,
+          width: width,
           child: ConstrainedBox(
             constraints: BoxConstraints(maxHeight: maxHeight),
             child: Material(
