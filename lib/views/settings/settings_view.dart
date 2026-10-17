@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
+import 'package:pantry/views/settings/diagnostic_logs_view.dart';
 import 'package:pantry/views/settings/general_settings_view.dart';
 import 'package:pantry/views/settings/interface_settings_view.dart';
 import 'package:pantry/views/settings/notification_settings_view.dart';
@@ -18,7 +19,7 @@ const double _sidebarBreakpoint = 720;
 
 const double _sidebarWidth = 300;
 
-enum _Section { general, interface, refresh, notifications }
+enum _Section { general, interface, refresh, notifications, diagnostics }
 
 typedef _SectionEntry = ({
   _Section section,
@@ -80,6 +81,12 @@ class _SettingsViewState extends State<SettingsView> {
         title: m.settings.notificationsSection,
         subtitle: m.settings.notificationsSectionBody,
       ),
+    (
+      section: _Section.diagnostics,
+      icon: Icons.bug_report_outlined,
+      title: m.settings.diagnostics.title,
+      subtitle: m.settings.diagnostics.subtitle,
+    ),
   ];
 
   Widget _page(_Section section, {required bool embedded}) => switch (section) {
@@ -87,6 +94,7 @@ class _SettingsViewState extends State<SettingsView> {
     _Section.interface => InterfaceSettingsView(embedded: embedded),
     _Section.refresh => RefreshSettingsView(embedded: embedded),
     _Section.notifications => NotificationSettingsView(embedded: embedded),
+    _Section.diagnostics => DiagnosticLogsView(embedded: embedded),
   };
 
   void _open(Widget page) {

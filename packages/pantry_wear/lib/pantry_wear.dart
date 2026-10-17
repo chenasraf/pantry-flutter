@@ -3,6 +3,7 @@ export 'src/services/rotary_service.dart';
 export 'src/services/wear_ambient.dart';
 export 'src/services/wear_appearance_client.dart';
 export 'src/services/wear_deep_link.dart';
+export 'src/services/wear_diagnostics_client.dart';
 export 'src/services/wear_host_service.dart';
 export 'src/services/wear_image_cache.dart';
 export 'src/services/wear_mirror_client.dart';

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cache_store.dart';
+import 'package:pantry_core/services/diagnostic_log.dart';
 import 'package:pantry_core/services/pending_upload_store.dart';
 import 'package:pantry_core/sync/id_remap.dart';
 import 'package:pantry_core/sync/sync_executor.dart';
@@ -127,7 +128,7 @@ class SyncManager {
     try {
       await Future.wait([_queue.load(), _remap.load()]);
     } catch (e) {
-      debugPrint('[SyncManager] Failed to load persisted sync state: $e');
+      _log.error('sync', 'Failed to load persisted sync state', e);
       await _queue.clear();
       await _remap.clear();
     }
@@ -141,7 +142,10 @@ class SyncManager {
       _queue.all().map((o) => o.uuid).toSet(),
     );
     pendingCount.value = _queue.length;
-    if (!_queue.isEmpty) hasBacklog.value = true;
+    if (!_queue.isEmpty) {
+      hasBacklog.value = true;
+      _log.info('sync', 'Loaded ${_queue.length} queued change(s)');
+    }
     status.value = _queue.isEmpty
         ? (_online ? SyncStatus.idle : SyncStatus.offline)
         : (_online ? SyncStatus.syncing : SyncStatus.offline);
@@ -159,6 +163,13 @@ class SyncManager {
   void setOnline(bool online) {
     final wasOnline = _online;
     _online = online;
+    if (online != wasOnline) {
+      _log.info(
+        'sync',
+        '${online ? 'Server reachable' : 'Server unreachable'}, '
+            '${_queue.length} queued',
+      );
+    }
     if (online) _offlineAttempt = 0;
     if (!online) {
       // Any unsynced work now becomes a backlog once we reconnect.
@@ -520,6 +531,7 @@ class SyncManager {
   void enqueue(SyncOp op) {
     _queue.enqueue(op);
     pendingCount.value = _queue.length;
+    _log.info('sync', 'Queued ${_describe(op)}, ${_queue.length} queued');
     if (_online) {
       unawaited(flushNow());
       return;
@@ -578,6 +590,7 @@ class SyncManager {
           }
           _queue.pop(op.uuid);
           pendingCount.value = _queue.length;
+          _log.info('sync', 'Sent ${_describe(op)}');
           _appliedController.add(SyncOpApplied(op, result.entity, bound));
         } on ApiException catch (e) {
           if (e.statusCode == 409) {
@@ -605,13 +618,15 @@ class SyncManager {
             // other device's unsynced check-offs in silence. No retry budget
             // spent and no re-attempt scheduled: a password is not something
             // waiting longer produces, so this waits for a new credential.
+            _log.warning(
+              'sync',
+              'Holding ${_describe(op)}: sign-in rejected, '
+                  '${_queue.length} queued',
+            );
             status.value = _online ? SyncStatus.syncing : SyncStatus.offline;
             return;
           }
           if (e.statusCode >= 400 && e.statusCode < 500) {
-            debugPrint(
-              '[SyncManager] dropping op ${op.uuid} on ${e.statusCode}: ${e.message}',
-            );
             _deadLetter(op, 'http_${e.statusCode}');
             continue;
           }
@@ -620,6 +635,11 @@ class SyncManager {
             // timeout, or a certificate this device has not accepted. The op's
             // retry budget goes unspent and the flush resumes from this same
             // head op, on the queue's own clock.
+            _log.info(
+              'sync',
+              'Holding ${_describe(op)}: server unreachable, '
+                  '${_queue.length} queued',
+            );
             _holdForOffline();
             return;
           }
@@ -688,8 +708,10 @@ class SyncManager {
   /// a create that died, which drops or strips every op naming it. The head
   /// goes with them when it cannot survive the loss.
   void _releaseOrphan(SyncOp op, List<(SyncEntity, int)> orphans) {
-    debugPrint(
-      '[SyncManager] releasing op ${op.uuid}: unresolvable temp ids $orphans',
+    _log.warning(
+      'sync',
+      'Releasing ${_describe(op)}: unresolvable temp ids '
+          '${orphans.map((r) => '${r.$1.name} ${r.$2}').join(', ')}',
     );
     for (final (entity, tempId) in orphans) {
       _cascadeDeadCreate(entity, tempId);
@@ -715,15 +737,22 @@ class SyncManager {
   bool _onRetryableFailure(SyncOp op, String error) {
     final attempt = op.attemptCount + 1;
     if (attempt >= _maxAttempts) {
-      debugPrint(
-        '[SyncManager] dead-lettering op ${op.uuid} after $attempt attempts: $error',
+      _deadLetter(
+        op,
+        'exhausted',
+        detail: 'after $attempt attempts: ${_short(error)}',
       );
-      _deadLetter(op, 'exhausted');
       return true;
     }
     _queue.update(op.copyWith(attemptCount: attempt, lastError: error));
     status.value = SyncStatus.error;
-    _armRetry(_backoff(attempt));
+    final delay = _backoff(attempt);
+    _log.warning(
+      'sync',
+      'Retrying ${_describe(op)} in ${delay.inSeconds}s '
+          '(attempt $attempt): ${_short(error)}',
+    );
+    _armRetry(delay);
     return false;
   }
 
@@ -775,7 +804,11 @@ class SyncManager {
   /// syncing, just without the failed category/store. A dangling temp reference
   /// would otherwise re-wedge the queue, since the flush loop holds any op still
   /// pointing at an unresolved temp id.
-  void _deadLetter(SyncOp op, String reason) {
+  void _deadLetter(SyncOp op, String reason, {String? detail}) {
+    _log.warning(
+      'sync',
+      'Dropped ${_describe(op)} ($reason${detail == null ? '' : ', $detail'})',
+    );
     _queue.pop(op.uuid);
     if (op.op == SyncOpKind.create && op.tempEntityId != null) {
       _cascadeDeadCreate(op.entity, op.tempEntityId!);
@@ -783,6 +816,19 @@ class SyncManager {
     pendingCount.value = _queue.length;
     _skippedController.add(SyncOpSkipped(op, reason));
   }
+
+  DiagnosticLog get _log => DiagnosticLog.instance;
+
+  /// What kind of change an op is, and which: never what it says, since its
+  /// body holds what the user typed.
+  static String _describe(SyncOp op) {
+    final id = op.uuid.length > 8 ? op.uuid.substring(0, 8) : op.uuid;
+    return '${op.entity.name}.${op.op.name} $id';
+  }
+
+  /// A server error can carry a whole HTML page.
+  static String _short(String error) =>
+      error.length > 200 ? '${error.substring(0, 200)}…' : error;
 
   void _cascadeDeadCreate(SyncEntity entity, int tempId) {
     final rebuilt = <SyncOp>[];

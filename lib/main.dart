@@ -13,6 +13,7 @@ import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cache_store.dart';
 import 'services/background_notification_task.dart';
 import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/diagnostic_log.dart';
 import 'package:pantry_core/services/locale_service.dart';
 import 'services/localizations_delegates.dart';
 import 'package:pantry_core/services/category_service.dart';
@@ -108,6 +109,11 @@ void main(List<String> args) async {
     return;
   }
 
+  // After the config-app branches: those engines run beside this one, and two
+  // processes appending to one file would interleave their lines.
+  unawaited(DiagnosticLog.instance.init());
+  DiagnosticLog.instance.installErrorHandlers();
+
   if (kDebugMode) {
     WakelockPlus.enable();
   }
@@ -125,6 +131,7 @@ void main(List<String> args) async {
     LocalNotificationsService.instance.init(),
     PackageInfo.fromPlatform().then((info) => appVersion = info.version),
   ]);
+  DiagnosticLog.instance.info('app', 'Started $appVersion');
   // Ahead of the rest of startup: on macOS the window is waiting on this to
   // appear at all, and every desktop wants its frame settled before the first
   // frame is painted into it.

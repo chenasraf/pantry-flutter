@@ -354,6 +354,21 @@ settings:
   refresh5m: Toutes les 5 minutes
   watchSection: Montre
   watchSubtitle: Associer une montre Wear OS et la connecter
+  diagnostics:
+    title: Journaux de diagnostic
+    subtitle: Consulter et partager un journal anonymisé pour signaler un bug
+    body: "Pantry conserve sur cet appareil un court journal de ses requêtes, synchronisations et erreurs. Les adresses du serveur, noms d'utilisateur, mots de passe et jetons sont masqués, et le contenu de vos listes, articles et notes n'est jamais enregistré. Partagez-le lorsque vous signalez un problème."
+    thisDevice: Cet appareil
+    watch: Montre
+    problemsOnly: Problèmes uniquement
+    empty: Rien n'a encore été enregistré
+    copied: Journal copié
+    share: Partager
+    shareFailed: Impossible de partager le journal
+    clearTitle: Effacer le journal ?
+    clearBody: Cela supprime tout ce qui a été enregistré sur cet appareil jusqu'à présent.
+    watchLoading: Interrogation de votre montre…
+    watchUnavailable: Impossible de joindre votre montre. Ouvrez Pantry sur la montre et réessayez.
 
 notifications:
   title: Notifications

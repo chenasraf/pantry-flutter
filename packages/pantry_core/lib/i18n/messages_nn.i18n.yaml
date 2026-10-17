@@ -445,6 +445,21 @@ settings:
   refresh5m: Kvart 5. minutt
   watchSection: Klokke
   watchSubtitle: Kople til ei Wear OS-klokke og logg henne inn
+  diagnostics:
+    title: Diagnoselogg
+    subtitle: Sjå og del ein anonymisert logg for feilrapportar
+    body: Pantry fører ein kort logg over førespurnader, synkronisering og feil på denne eininga. Tenaradresser, brukarnamn, passord og token blir maskerte, og innhaldet i listene, elementa og notata dine blir aldri registrert. Del han når du rapporterer eit problem.
+    thisDevice: Denne eininga
+    watch: Klokke
+    problemsOnly: Berre problem
+    empty: Ingenting er logga enno
+    copied: Loggen er kopiert
+    share: Del
+    shareFailed: Klarte ikkje å dele loggen
+    clearTitle: Tøm loggen?
+    clearBody: Dette slettar alt som er logga på denne eininga så langt.
+    watchLoading: Spør klokka…
+    watchUnavailable: Fekk ikkje kontakt med klokka. Opne Pantry på klokka og prøv igjen.
 notifications:
   title: Varsel
   empty: Ingen nye varsel.

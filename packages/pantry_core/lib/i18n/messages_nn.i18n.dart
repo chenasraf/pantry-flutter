@@ -1692,6 +1692,8 @@ class SettingsMessagesNn extends SettingsMessages {
   /// ```
   String get watchSubtitle =>
       """Kople til ei Wear OS-klokke og logg henne inn""";
+  DiagnosticsSettingsMessagesNn get diagnostics =>
+      DiagnosticsSettingsMessagesNn(this);
 }
 
 class ItemTapActionNamesSettingsMessagesNn
@@ -1932,6 +1934,85 @@ class ThemeNamesSettingsMessagesNn extends ThemeNamesSettingsMessages {
   /// "Mørk"
   /// ```
   String get dark => """Mørk""";
+}
+
+class DiagnosticsSettingsMessagesNn extends DiagnosticsSettingsMessages {
+  final SettingsMessagesNn _parent;
+  const DiagnosticsSettingsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Diagnoselogg"
+  /// ```
+  String get title => """Diagnoselogg""";
+
+  /// ```dart
+  /// "Sjå og del ein anonymisert logg for feilrapportar"
+  /// ```
+  String get subtitle =>
+      """Sjå og del ein anonymisert logg for feilrapportar""";
+
+  /// ```dart
+  /// "Pantry fører ein kort logg over førespurnader, synkronisering og feil på denne eininga. Tenaradresser, brukarnamn, passord og token blir maskerte, og innhaldet i listene, elementa og notata dine blir aldri registrert. Del han når du rapporterer eit problem."
+  /// ```
+  String get body =>
+      """Pantry fører ein kort logg over førespurnader, synkronisering og feil på denne eininga. Tenaradresser, brukarnamn, passord og token blir maskerte, og innhaldet i listene, elementa og notata dine blir aldri registrert. Del han når du rapporterer eit problem.""";
+
+  /// ```dart
+  /// "Denne eininga"
+  /// ```
+  String get thisDevice => """Denne eininga""";
+
+  /// ```dart
+  /// "Klokke"
+  /// ```
+  String get watch => """Klokke""";
+
+  /// ```dart
+  /// "Berre problem"
+  /// ```
+  String get problemsOnly => """Berre problem""";
+
+  /// ```dart
+  /// "Ingenting er logga enno"
+  /// ```
+  String get empty => """Ingenting er logga enno""";
+
+  /// ```dart
+  /// "Loggen er kopiert"
+  /// ```
+  String get copied => """Loggen er kopiert""";
+
+  /// ```dart
+  /// "Del"
+  /// ```
+  String get share => """Del""";
+
+  /// ```dart
+  /// "Klarte ikkje å dele loggen"
+  /// ```
+  String get shareFailed => """Klarte ikkje å dele loggen""";
+
+  /// ```dart
+  /// "Tøm loggen?"
+  /// ```
+  String get clearTitle => """Tøm loggen?""";
+
+  /// ```dart
+  /// "Dette slettar alt som er logga på denne eininga så langt."
+  /// ```
+  String get clearBody =>
+      """Dette slettar alt som er logga på denne eininga så langt.""";
+
+  /// ```dart
+  /// "Spør klokka…"
+  /// ```
+  String get watchLoading => """Spør klokka…""";
+
+  /// ```dart
+  /// "Fekk ikkje kontakt med klokka. Opne Pantry på klokka og prøv igjen."
+  /// ```
+  String get watchUnavailable =>
+      """Fekk ikkje kontakt med klokka. Opne Pantry på klokka og prøv igjen.""";
 }
 
 class NotificationsMessagesNn extends NotificationsMessages {
@@ -7555,6 +7636,24 @@ Passord: pantry""",
   """settings.watchSection""": """Klokke""",
   """settings.watchSubtitle""":
       """Kople til ei Wear OS-klokke og logg henne inn""",
+  """settings.diagnostics.title""": """Diagnoselogg""",
+  """settings.diagnostics.subtitle""":
+      """Sjå og del ein anonymisert logg for feilrapportar""",
+  """settings.diagnostics.body""":
+      """Pantry fører ein kort logg over førespurnader, synkronisering og feil på denne eininga. Tenaradresser, brukarnamn, passord og token blir maskerte, og innhaldet i listene, elementa og notata dine blir aldri registrert. Del han når du rapporterer eit problem.""",
+  """settings.diagnostics.thisDevice""": """Denne eininga""",
+  """settings.diagnostics.watch""": """Klokke""",
+  """settings.diagnostics.problemsOnly""": """Berre problem""",
+  """settings.diagnostics.empty""": """Ingenting er logga enno""",
+  """settings.diagnostics.copied""": """Loggen er kopiert""",
+  """settings.diagnostics.share""": """Del""",
+  """settings.diagnostics.shareFailed""": """Klarte ikkje å dele loggen""",
+  """settings.diagnostics.clearTitle""": """Tøm loggen?""",
+  """settings.diagnostics.clearBody""":
+      """Dette slettar alt som er logga på denne eininga så langt.""",
+  """settings.diagnostics.watchLoading""": """Spør klokka…""",
+  """settings.diagnostics.watchUnavailable""":
+      """Fekk ikkje kontakt med klokka. Opne Pantry på klokka og prøv igjen.""",
   """notifications.title""": """Varsel""",
   """notifications.empty""": """Ingen nye varsel.""",
   """notifications.failedToLoad""": """Klart ikkje laste varslingar.""",

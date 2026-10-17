@@ -1708,6 +1708,8 @@ class SettingsMessages {
   /// "Pair a Wear OS watch and sign it in"
   /// ```
   String get watchSubtitle => """Pair a Wear OS watch and sign it in""";
+  DiagnosticsSettingsMessages get diagnostics =>
+      DiagnosticsSettingsMessages(this);
 }
 
 class ItemTapActionNamesSettingsMessages {
@@ -1938,6 +1940,84 @@ class ThemeNamesSettingsMessages {
   /// "Dark"
   /// ```
   String get dark => """Dark""";
+}
+
+class DiagnosticsSettingsMessages {
+  final SettingsMessages _parent;
+  const DiagnosticsSettingsMessages(this._parent);
+
+  /// ```dart
+  /// "Diagnostic logs"
+  /// ```
+  String get title => """Diagnostic logs""";
+
+  /// ```dart
+  /// "View and share an anonymized log for bug reports"
+  /// ```
+  String get subtitle => """View and share an anonymized log for bug reports""";
+
+  /// ```dart
+  /// "Pantry keeps a short log of its requests, syncing and errors on this device. Server addresses, usernames, passwords and tokens are masked, and what's in your lists, items and notes is never recorded. Share it when you report a problem."
+  /// ```
+  String get body =>
+      """Pantry keeps a short log of its requests, syncing and errors on this device. Server addresses, usernames, passwords and tokens are masked, and what's in your lists, items and notes is never recorded. Share it when you report a problem.""";
+
+  /// ```dart
+  /// "This device"
+  /// ```
+  String get thisDevice => """This device""";
+
+  /// ```dart
+  /// "Watch"
+  /// ```
+  String get watch => """Watch""";
+
+  /// ```dart
+  /// "Problems only"
+  /// ```
+  String get problemsOnly => """Problems only""";
+
+  /// ```dart
+  /// "Nothing logged yet"
+  /// ```
+  String get empty => """Nothing logged yet""";
+
+  /// ```dart
+  /// "Log copied"
+  /// ```
+  String get copied => """Log copied""";
+
+  /// ```dart
+  /// "Share"
+  /// ```
+  String get share => """Share""";
+
+  /// ```dart
+  /// "Couldn't share the log"
+  /// ```
+  String get shareFailed => """Couldn't share the log""";
+
+  /// ```dart
+  /// "Clear the log?"
+  /// ```
+  String get clearTitle => """Clear the log?""";
+
+  /// ```dart
+  /// "This deletes everything logged on this device so far."
+  /// ```
+  String get clearBody =>
+      """This deletes everything logged on this device so far.""";
+
+  /// ```dart
+  /// "Asking your watch…"
+  /// ```
+  String get watchLoading => """Asking your watch…""";
+
+  /// ```dart
+  /// "Couldn't reach your watch. Open Pantry on the watch and try again."
+  /// ```
+  String get watchUnavailable =>
+      """Couldn't reach your watch. Open Pantry on the watch and try again.""";
 }
 
 class NotificationsMessages {
@@ -7535,6 +7615,24 @@ Password: pantry-rocks""",
   """settings.refresh5m""": """Every 5 minutes""",
   """settings.watchSection""": """Watch""",
   """settings.watchSubtitle""": """Pair a Wear OS watch and sign it in""",
+  """settings.diagnostics.title""": """Diagnostic logs""",
+  """settings.diagnostics.subtitle""":
+      """View and share an anonymized log for bug reports""",
+  """settings.diagnostics.body""":
+      """Pantry keeps a short log of its requests, syncing and errors on this device. Server addresses, usernames, passwords and tokens are masked, and what's in your lists, items and notes is never recorded. Share it when you report a problem.""",
+  """settings.diagnostics.thisDevice""": """This device""",
+  """settings.diagnostics.watch""": """Watch""",
+  """settings.diagnostics.problemsOnly""": """Problems only""",
+  """settings.diagnostics.empty""": """Nothing logged yet""",
+  """settings.diagnostics.copied""": """Log copied""",
+  """settings.diagnostics.share""": """Share""",
+  """settings.diagnostics.shareFailed""": """Couldn't share the log""",
+  """settings.diagnostics.clearTitle""": """Clear the log?""",
+  """settings.diagnostics.clearBody""":
+      """This deletes everything logged on this device so far.""",
+  """settings.diagnostics.watchLoading""": """Asking your watch…""",
+  """settings.diagnostics.watchUnavailable""":
+      """Couldn't reach your watch. Open Pantry on the watch and try again.""",
   """notifications.title""": """Notifications""",
   """notifications.empty""": """No new notifications.""",
   """notifications.failedToLoad""": """Failed to load notifications.""",

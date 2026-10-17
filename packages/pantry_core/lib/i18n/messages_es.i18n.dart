@@ -1722,6 +1722,8 @@ class SettingsMessagesEs extends SettingsMessages {
   /// ```
   String get watchSubtitle =>
       """Vincula un reloj Wear OS e inicia sesión en él""";
+  DiagnosticsSettingsMessagesEs get diagnostics =>
+      DiagnosticsSettingsMessagesEs(this);
 }
 
 class ItemTapActionNamesSettingsMessagesEs
@@ -1962,6 +1964,85 @@ class ThemeNamesSettingsMessagesEs extends ThemeNamesSettingsMessages {
   /// "Oscuro"
   /// ```
   String get dark => """Oscuro""";
+}
+
+class DiagnosticsSettingsMessagesEs extends DiagnosticsSettingsMessages {
+  final SettingsMessagesEs _parent;
+  const DiagnosticsSettingsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Registros de diagnóstico"
+  /// ```
+  String get title => """Registros de diagnóstico""";
+
+  /// ```dart
+  /// "Ver y compartir un registro anónimo para informar de errores"
+  /// ```
+  String get subtitle =>
+      """Ver y compartir un registro anónimo para informar de errores""";
+
+  /// ```dart
+  /// "Pantry guarda en este dispositivo un registro breve de sus solicitudes, sincronizaciones y errores. Las direcciones del servidor, los nombres de usuario, las contraseñas y los tokens se ocultan, y el contenido de tus listas, artículos y notas nunca se registra. Compártelo cuando informes de un problema."
+  /// ```
+  String get body =>
+      """Pantry guarda en este dispositivo un registro breve de sus solicitudes, sincronizaciones y errores. Las direcciones del servidor, los nombres de usuario, las contraseñas y los tokens se ocultan, y el contenido de tus listas, artículos y notas nunca se registra. Compártelo cuando informes de un problema.""";
+
+  /// ```dart
+  /// "Este dispositivo"
+  /// ```
+  String get thisDevice => """Este dispositivo""";
+
+  /// ```dart
+  /// "Reloj"
+  /// ```
+  String get watch => """Reloj""";
+
+  /// ```dart
+  /// "Solo problemas"
+  /// ```
+  String get problemsOnly => """Solo problemas""";
+
+  /// ```dart
+  /// "Aún no hay nada registrado"
+  /// ```
+  String get empty => """Aún no hay nada registrado""";
+
+  /// ```dart
+  /// "Registro copiado"
+  /// ```
+  String get copied => """Registro copiado""";
+
+  /// ```dart
+  /// "Compartir"
+  /// ```
+  String get share => """Compartir""";
+
+  /// ```dart
+  /// "No se pudo compartir el registro"
+  /// ```
+  String get shareFailed => """No se pudo compartir el registro""";
+
+  /// ```dart
+  /// "¿Borrar el registro?"
+  /// ```
+  String get clearTitle => """¿Borrar el registro?""";
+
+  /// ```dart
+  /// "Esto elimina todo lo registrado hasta ahora en este dispositivo."
+  /// ```
+  String get clearBody =>
+      """Esto elimina todo lo registrado hasta ahora en este dispositivo.""";
+
+  /// ```dart
+  /// "Consultando tu reloj…"
+  /// ```
+  String get watchLoading => """Consultando tu reloj…""";
+
+  /// ```dart
+  /// "No se pudo contactar con tu reloj. Abre Pantry en el reloj e inténtalo de nuevo."
+  /// ```
+  String get watchUnavailable =>
+      """No se pudo contactar con tu reloj. Abre Pantry en el reloj e inténtalo de nuevo.""";
 }
 
 class NotificationsMessagesEs extends NotificationsMessages {
@@ -7615,6 +7696,25 @@ Contraseña: pantry-rocks""",
   """settings.watchSection""": """Reloj""",
   """settings.watchSubtitle""":
       """Vincula un reloj Wear OS e inicia sesión en él""",
+  """settings.diagnostics.title""": """Registros de diagnóstico""",
+  """settings.diagnostics.subtitle""":
+      """Ver y compartir un registro anónimo para informar de errores""",
+  """settings.diagnostics.body""":
+      """Pantry guarda en este dispositivo un registro breve de sus solicitudes, sincronizaciones y errores. Las direcciones del servidor, los nombres de usuario, las contraseñas y los tokens se ocultan, y el contenido de tus listas, artículos y notas nunca se registra. Compártelo cuando informes de un problema.""",
+  """settings.diagnostics.thisDevice""": """Este dispositivo""",
+  """settings.diagnostics.watch""": """Reloj""",
+  """settings.diagnostics.problemsOnly""": """Solo problemas""",
+  """settings.diagnostics.empty""": """Aún no hay nada registrado""",
+  """settings.diagnostics.copied""": """Registro copiado""",
+  """settings.diagnostics.share""": """Compartir""",
+  """settings.diagnostics.shareFailed""":
+      """No se pudo compartir el registro""",
+  """settings.diagnostics.clearTitle""": """¿Borrar el registro?""",
+  """settings.diagnostics.clearBody""":
+      """Esto elimina todo lo registrado hasta ahora en este dispositivo.""",
+  """settings.diagnostics.watchLoading""": """Consultando tu reloj…""",
+  """settings.diagnostics.watchUnavailable""":
+      """No se pudo contactar con tu reloj. Abre Pantry en el reloj e inténtalo de nuevo.""",
   """notifications.title""": """Notificaciones""",
   """notifications.empty""": """No hay notificaciones nuevas.""",
   """notifications.failedToLoad""":

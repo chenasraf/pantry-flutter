@@ -354,6 +354,21 @@ settings:
   refresh5m: Alle 5 Minuten
   watchSection: Uhr
   watchSubtitle: Eine Wear OS Uhr koppeln und anmelden
+  diagnostics:
+    title: Diagnoseprotokoll
+    subtitle: Ein anonymisiertes Protokoll für Fehlerberichte ansehen und teilen
+    body: Pantry führt auf diesem Gerät ein kurzes Protokoll seiner Anfragen, Synchronisierungen und Fehler. Serveradressen, Benutzernamen, Passwörter und Tokens werden maskiert, und der Inhalt deiner Listen, Einträge und Notizen wird nie aufgezeichnet. Teile es, wenn du ein Problem meldest.
+    thisDevice: Dieses Gerät
+    watch: Uhr
+    problemsOnly: Nur Probleme
+    empty: Noch nichts protokolliert
+    copied: Protokoll kopiert
+    share: Teilen
+    shareFailed: Protokoll konnte nicht geteilt werden
+    clearTitle: Protokoll löschen?
+    clearBody: Dadurch wird alles gelöscht, was bisher auf diesem Gerät protokolliert wurde.
+    watchLoading: Uhr wird abgefragt…
+    watchUnavailable: Deine Uhr ist nicht erreichbar. Öffne Pantry auf der Uhr und versuche es erneut.
 
 notifications:
   title: Benachrichtigungen

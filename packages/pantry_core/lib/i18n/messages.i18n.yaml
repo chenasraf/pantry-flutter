@@ -354,6 +354,21 @@ settings:
   refresh5m: Every 5 minutes
   watchSection: Watch
   watchSubtitle: Pair a Wear OS watch and sign it in
+  diagnostics:
+    title: Diagnostic logs
+    subtitle: View and share an anonymized log for bug reports
+    body: Pantry keeps a short log of its requests, syncing and errors on this device. Server addresses, usernames, passwords and tokens are masked, and what's in your lists, items and notes is never recorded. Share it when you report a problem.
+    thisDevice: This device
+    watch: Watch
+    problemsOnly: Problems only
+    empty: Nothing logged yet
+    copied: Log copied
+    share: Share
+    shareFailed: Couldn't share the log
+    clearTitle: Clear the log?
+    clearBody: This deletes everything logged on this device so far.
+    watchLoading: Asking your watch…
+    watchUnavailable: Couldn't reach your watch. Open Pantry on the watch and try again.
 
 notifications:
   title: Notifications

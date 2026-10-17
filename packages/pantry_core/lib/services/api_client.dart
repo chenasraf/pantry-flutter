@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/diagnostic_log.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
 class ApiException implements Exception {
@@ -204,9 +204,11 @@ class ApiClient {
   /// because all four of them mean the same thing — *this never reached a
   /// server* — and that is exactly the condition another device may not share.
   Future<http.Response> _send(ApiRequest request) async {
+    final watch = Stopwatch()..start();
     try {
       final response = await _perform(request);
       _reachable();
+      _logResponse(request, response, watch);
       return response;
     } on TlsException catch (e) {
       // A refused certificate is neither a socket failure nor an HTTP one, so
@@ -215,30 +217,70 @@ class ApiClient {
       // would travel to callers raw, leaving the app believing it is online
       // while the queue burned its retry budget on a handshake no number of
       // attempts can change.
-      final relayed = await _relay(request);
+      _logFailure(request, e, watch);
+      final relayed = await _relay(request, watch);
       if (relayed != null) return relayed;
       final host = _hostKey;
       SyncManager.instance.setOnline(false);
       CertTrustService.instance.reportUntrusted(host);
       throw CertUntrustedException(host, e.toString());
     } on SocketException catch (e) {
-      final relayed = await _relay(request);
+      _logFailure(request, e, watch);
+      final relayed = await _relay(request, watch);
       if (relayed != null) return relayed;
       SyncManager.instance.setOnline(false);
       throw OfflineException(e.message);
     } on http.ClientException catch (e) {
-      final relayed = await _relay(request);
+      _logFailure(request, e, watch);
+      final relayed = await _relay(request, watch);
       if (relayed != null) return relayed;
       SyncManager.instance.setOnline(false);
       throw OfflineException(e.message);
-    } on TimeoutException {
+    } on TimeoutException catch (e) {
       // A server that accepts the connection and then says nothing inside the
       // budget is unreachable for every purpose the caller has.
-      final relayed = await _relay(request);
+      _logFailure(request, e, watch);
+      final relayed = await _relay(request, watch);
       if (relayed != null) return relayed;
       SyncManager.instance.setOnline(false);
       throw const OfflineException('Request timed out');
     }
+  }
+
+  void _logFailure(ApiRequest request, Object error, Stopwatch watch) {
+    DiagnosticLog.instance.warning(
+      'http',
+      '${request.method} ${_logPath(request)} failed after '
+          '${watch.elapsedMilliseconds} ms: ${error.runtimeType}: $error',
+    );
+  }
+
+  /// The request's path below [basePath], without its query: the base is the
+  /// same on every line, and a query can carry what was typed into a search.
+  String _logPath(ApiRequest request) {
+    final path = request.uri.path;
+    final i = path.indexOf(basePath);
+    return i == -1 ? path : path.substring(i + basePath.length);
+  }
+
+  void _logResponse(
+    ApiRequest request,
+    http.Response response,
+    Stopwatch watch, {
+    bool relayed = false,
+  }) {
+    final status = response.statusCode;
+    final line = StringBuffer(
+      '${request.method} ${_logPath(request)} $status '
+      '(${watch.elapsedMilliseconds} ms${relayed ? ', relayed' : ''})',
+    );
+    final location = response.headers['location'];
+    if (status >= 300 && status < 400 && location != null) {
+      line.write(' -> $location');
+    }
+    final trouble = status >= 400 || (status >= 300 && status != 304);
+    final log = DiagnosticLog.instance;
+    trouble ? log.warning('http', '$line') : log.info('http', '$line');
   }
 
   /// A server answered, which disproves every standing claim that none would.
@@ -255,18 +297,19 @@ class ApiClient {
   /// back to a cache while holding a fresh response. The same goes for the
   /// certificate — the handshake succeeded somewhere, so leaving a refusal
   /// standing would put a *Server not verified* notice above working data.
-  Future<http.Response?> _relay(ApiRequest request) async {
+  Future<http.Response?> _relay(ApiRequest request, Stopwatch watch) async {
     final ask = relay;
     if (ask == null) return null;
     try {
       final response = await ask(request);
       if (response == null) return null;
       _reachable();
+      _logResponse(request, response, watch, relayed: true);
       return response;
     } catch (e) {
       // A relay that throws is a relay that did not deliver, and the direct
       // failure it was asked to rescue is the honest answer to give back.
-      debugPrint('[ApiClient] relay failed: $e');
+      DiagnosticLog.instance.warning('http', 'Relay failed: $e');
       return null;
     }
   }

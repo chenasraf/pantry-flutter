@@ -1726,6 +1726,8 @@ class SettingsMessagesFr extends SettingsMessages {
   /// "Associer une montre Wear OS et la connecter"
   /// ```
   String get watchSubtitle => """Associer une montre Wear OS et la connecter""";
+  DiagnosticsSettingsMessagesFr get diagnostics =>
+      DiagnosticsSettingsMessagesFr(this);
 }
 
 class ItemTapActionNamesSettingsMessagesFr
@@ -1966,6 +1968,85 @@ class ThemeNamesSettingsMessagesFr extends ThemeNamesSettingsMessages {
   /// "Sombre"
   /// ```
   String get dark => """Sombre""";
+}
+
+class DiagnosticsSettingsMessagesFr extends DiagnosticsSettingsMessages {
+  final SettingsMessagesFr _parent;
+  const DiagnosticsSettingsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Journaux de diagnostic"
+  /// ```
+  String get title => """Journaux de diagnostic""";
+
+  /// ```dart
+  /// "Consulter et partager un journal anonymisé pour signaler un bug"
+  /// ```
+  String get subtitle =>
+      """Consulter et partager un journal anonymisé pour signaler un bug""";
+
+  /// ```dart
+  /// "Pantry conserve sur cet appareil un court journal de ses requêtes, synchronisations et erreurs. Les adresses du serveur, noms d'utilisateur, mots de passe et jetons sont masqués, et le contenu de vos listes, articles et notes n'est jamais enregistré. Partagez-le lorsque vous signalez un problème."
+  /// ```
+  String get body =>
+      """Pantry conserve sur cet appareil un court journal de ses requêtes, synchronisations et erreurs. Les adresses du serveur, noms d'utilisateur, mots de passe et jetons sont masqués, et le contenu de vos listes, articles et notes n'est jamais enregistré. Partagez-le lorsque vous signalez un problème.""";
+
+  /// ```dart
+  /// "Cet appareil"
+  /// ```
+  String get thisDevice => """Cet appareil""";
+
+  /// ```dart
+  /// "Montre"
+  /// ```
+  String get watch => """Montre""";
+
+  /// ```dart
+  /// "Problèmes uniquement"
+  /// ```
+  String get problemsOnly => """Problèmes uniquement""";
+
+  /// ```dart
+  /// "Rien n'a encore été enregistré"
+  /// ```
+  String get empty => """Rien n'a encore été enregistré""";
+
+  /// ```dart
+  /// "Journal copié"
+  /// ```
+  String get copied => """Journal copié""";
+
+  /// ```dart
+  /// "Partager"
+  /// ```
+  String get share => """Partager""";
+
+  /// ```dart
+  /// "Impossible de partager le journal"
+  /// ```
+  String get shareFailed => """Impossible de partager le journal""";
+
+  /// ```dart
+  /// "Effacer le journal ?"
+  /// ```
+  String get clearTitle => """Effacer le journal ?""";
+
+  /// ```dart
+  /// "Cela supprime tout ce qui a été enregistré sur cet appareil jusqu'à présent."
+  /// ```
+  String get clearBody =>
+      """Cela supprime tout ce qui a été enregistré sur cet appareil jusqu'à présent.""";
+
+  /// ```dart
+  /// "Interrogation de votre montre…"
+  /// ```
+  String get watchLoading => """Interrogation de votre montre…""";
+
+  /// ```dart
+  /// "Impossible de joindre votre montre. Ouvrez Pantry sur la montre et réessayez."
+  /// ```
+  String get watchUnavailable =>
+      """Impossible de joindre votre montre. Ouvrez Pantry sur la montre et réessayez.""";
 }
 
 class NotificationsMessagesFr extends NotificationsMessages {
@@ -7631,6 +7712,25 @@ Mot de passe : pantry-rocks""",
   """settings.watchSection""": """Montre""",
   """settings.watchSubtitle""":
       """Associer une montre Wear OS et la connecter""",
+  """settings.diagnostics.title""": """Journaux de diagnostic""",
+  """settings.diagnostics.subtitle""":
+      """Consulter et partager un journal anonymisé pour signaler un bug""",
+  """settings.diagnostics.body""":
+      """Pantry conserve sur cet appareil un court journal de ses requêtes, synchronisations et erreurs. Les adresses du serveur, noms d'utilisateur, mots de passe et jetons sont masqués, et le contenu de vos listes, articles et notes n'est jamais enregistré. Partagez-le lorsque vous signalez un problème.""",
+  """settings.diagnostics.thisDevice""": """Cet appareil""",
+  """settings.diagnostics.watch""": """Montre""",
+  """settings.diagnostics.problemsOnly""": """Problèmes uniquement""",
+  """settings.diagnostics.empty""": """Rien n'a encore été enregistré""",
+  """settings.diagnostics.copied""": """Journal copié""",
+  """settings.diagnostics.share""": """Partager""",
+  """settings.diagnostics.shareFailed""":
+      """Impossible de partager le journal""",
+  """settings.diagnostics.clearTitle""": """Effacer le journal ?""",
+  """settings.diagnostics.clearBody""":
+      """Cela supprime tout ce qui a été enregistré sur cet appareil jusqu'à présent.""",
+  """settings.diagnostics.watchLoading""": """Interrogation de votre montre…""",
+  """settings.diagnostics.watchUnavailable""":
+      """Impossible de joindre votre montre. Ouvrez Pantry sur la montre et réessayez.""",
   """notifications.title""": """Notifications""",
   """notifications.empty""": """Aucune nouvelle notification.""",
   """notifications.failedToLoad""":

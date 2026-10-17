@@ -354,6 +354,21 @@ settings:
   refresh5m: Cada 5 minutos
   watchSection: Reloj
   watchSubtitle: Vincula un reloj Wear OS e inicia sesión en él
+  diagnostics:
+    title: Registros de diagnóstico
+    subtitle: Ver y compartir un registro anónimo para informar de errores
+    body: Pantry guarda en este dispositivo un registro breve de sus solicitudes, sincronizaciones y errores. Las direcciones del servidor, los nombres de usuario, las contraseñas y los tokens se ocultan, y el contenido de tus listas, artículos y notas nunca se registra. Compártelo cuando informes de un problema.
+    thisDevice: Este dispositivo
+    watch: Reloj
+    problemsOnly: Solo problemas
+    empty: Aún no hay nada registrado
+    copied: Registro copiado
+    share: Compartir
+    shareFailed: No se pudo compartir el registro
+    clearTitle: ¿Borrar el registro?
+    clearBody: Esto elimina todo lo registrado hasta ahora en este dispositivo.
+    watchLoading: Consultando tu reloj…
+    watchUnavailable: No se pudo contactar con tu reloj. Abre Pantry en el reloj e inténtalo de nuevo.
 
 notifications:
   title: Notificaciones

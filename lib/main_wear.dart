@@ -5,6 +5,7 @@ import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cache_store.dart';
 import 'package:pantry_core/services/cert_trust_service.dart';
+import 'package:pantry_core/services/diagnostic_log.dart';
 import 'package:pantry_core/services/locale_service.dart';
 import 'package:pantry_core/services/nn_localizations.dart';
 import 'package:pantry_core/services/prefs_service.dart';
@@ -26,6 +27,10 @@ void main(List<String> args) async {
   // Before anything reads a platform gate: a watch answers `true` to every
   // Android check, so nothing else can tell this binary from the phone's.
   PlatformInfo.markAsWatch();
+  // A watch's storage is small and its log only needs to cover the last few
+  // sessions.
+  unawaited(DiagnosticLog.instance.init(maxBytes: 256 * 1024));
+  DiagnosticLog.instance.installErrorHandlers();
   WearShape.markFrom(args);
   WearDeepLink.instance.markFrom(args);
   // Core's image providers have no store until one is installed, and the
@@ -79,4 +84,5 @@ void main(List<String> args) async {
   // does belongs on the path to drawing what the watch already knows.
   unawaited(WearMirrorClient.instance.start());
   unawaited(WearDeepLink.instance.start());
+  unawaited(WearDiagnosticsClient.instance.start());
 }

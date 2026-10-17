@@ -1720,6 +1720,8 @@ class SettingsMessagesDe extends SettingsMessages {
   /// "Eine Wear OS Uhr koppeln und anmelden"
   /// ```
   String get watchSubtitle => """Eine Wear OS Uhr koppeln und anmelden""";
+  DiagnosticsSettingsMessagesDe get diagnostics =>
+      DiagnosticsSettingsMessagesDe(this);
 }
 
 class ItemTapActionNamesSettingsMessagesDe
@@ -1960,6 +1962,85 @@ class ThemeNamesSettingsMessagesDe extends ThemeNamesSettingsMessages {
   /// "Dunkel"
   /// ```
   String get dark => """Dunkel""";
+}
+
+class DiagnosticsSettingsMessagesDe extends DiagnosticsSettingsMessages {
+  final SettingsMessagesDe _parent;
+  const DiagnosticsSettingsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Diagnoseprotokoll"
+  /// ```
+  String get title => """Diagnoseprotokoll""";
+
+  /// ```dart
+  /// "Ein anonymisiertes Protokoll für Fehlerberichte ansehen und teilen"
+  /// ```
+  String get subtitle =>
+      """Ein anonymisiertes Protokoll für Fehlerberichte ansehen und teilen""";
+
+  /// ```dart
+  /// "Pantry führt auf diesem Gerät ein kurzes Protokoll seiner Anfragen, Synchronisierungen und Fehler. Serveradressen, Benutzernamen, Passwörter und Tokens werden maskiert, und der Inhalt deiner Listen, Einträge und Notizen wird nie aufgezeichnet. Teile es, wenn du ein Problem meldest."
+  /// ```
+  String get body =>
+      """Pantry führt auf diesem Gerät ein kurzes Protokoll seiner Anfragen, Synchronisierungen und Fehler. Serveradressen, Benutzernamen, Passwörter und Tokens werden maskiert, und der Inhalt deiner Listen, Einträge und Notizen wird nie aufgezeichnet. Teile es, wenn du ein Problem meldest.""";
+
+  /// ```dart
+  /// "Dieses Gerät"
+  /// ```
+  String get thisDevice => """Dieses Gerät""";
+
+  /// ```dart
+  /// "Uhr"
+  /// ```
+  String get watch => """Uhr""";
+
+  /// ```dart
+  /// "Nur Probleme"
+  /// ```
+  String get problemsOnly => """Nur Probleme""";
+
+  /// ```dart
+  /// "Noch nichts protokolliert"
+  /// ```
+  String get empty => """Noch nichts protokolliert""";
+
+  /// ```dart
+  /// "Protokoll kopiert"
+  /// ```
+  String get copied => """Protokoll kopiert""";
+
+  /// ```dart
+  /// "Teilen"
+  /// ```
+  String get share => """Teilen""";
+
+  /// ```dart
+  /// "Protokoll konnte nicht geteilt werden"
+  /// ```
+  String get shareFailed => """Protokoll konnte nicht geteilt werden""";
+
+  /// ```dart
+  /// "Protokoll löschen?"
+  /// ```
+  String get clearTitle => """Protokoll löschen?""";
+
+  /// ```dart
+  /// "Dadurch wird alles gelöscht, was bisher auf diesem Gerät protokolliert wurde."
+  /// ```
+  String get clearBody =>
+      """Dadurch wird alles gelöscht, was bisher auf diesem Gerät protokolliert wurde.""";
+
+  /// ```dart
+  /// "Uhr wird abgefragt…"
+  /// ```
+  String get watchLoading => """Uhr wird abgefragt…""";
+
+  /// ```dart
+  /// "Deine Uhr ist nicht erreichbar. Öffne Pantry auf der Uhr und versuche es erneut."
+  /// ```
+  String get watchUnavailable =>
+      """Deine Uhr ist nicht erreichbar. Öffne Pantry auf der Uhr und versuche es erneut.""";
 }
 
 class NotificationsMessagesDe extends NotificationsMessages {
@@ -7626,6 +7707,25 @@ Passwort: pantry-rocks""",
   """settings.refresh5m""": """Alle 5 Minuten""",
   """settings.watchSection""": """Uhr""",
   """settings.watchSubtitle""": """Eine Wear OS Uhr koppeln und anmelden""",
+  """settings.diagnostics.title""": """Diagnoseprotokoll""",
+  """settings.diagnostics.subtitle""":
+      """Ein anonymisiertes Protokoll für Fehlerberichte ansehen und teilen""",
+  """settings.diagnostics.body""":
+      """Pantry führt auf diesem Gerät ein kurzes Protokoll seiner Anfragen, Synchronisierungen und Fehler. Serveradressen, Benutzernamen, Passwörter und Tokens werden maskiert, und der Inhalt deiner Listen, Einträge und Notizen wird nie aufgezeichnet. Teile es, wenn du ein Problem meldest.""",
+  """settings.diagnostics.thisDevice""": """Dieses Gerät""",
+  """settings.diagnostics.watch""": """Uhr""",
+  """settings.diagnostics.problemsOnly""": """Nur Probleme""",
+  """settings.diagnostics.empty""": """Noch nichts protokolliert""",
+  """settings.diagnostics.copied""": """Protokoll kopiert""",
+  """settings.diagnostics.share""": """Teilen""",
+  """settings.diagnostics.shareFailed""":
+      """Protokoll konnte nicht geteilt werden""",
+  """settings.diagnostics.clearTitle""": """Protokoll löschen?""",
+  """settings.diagnostics.clearBody""":
+      """Dadurch wird alles gelöscht, was bisher auf diesem Gerät protokolliert wurde.""",
+  """settings.diagnostics.watchLoading""": """Uhr wird abgefragt…""",
+  """settings.diagnostics.watchUnavailable""":
+      """Deine Uhr ist nicht erreichbar. Öffne Pantry auf der Uhr und versuche es erneut.""",
   """notifications.title""": """Benachrichtigungen""",
   """notifications.empty""": """Keine neuen Benachrichtigungen.""",
   """notifications.failedToLoad""":

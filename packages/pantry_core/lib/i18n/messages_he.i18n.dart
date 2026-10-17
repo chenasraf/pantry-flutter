@@ -1706,6 +1706,8 @@ class SettingsMessagesHe extends SettingsMessages {
   /// "חיבור שעון Wear OS והתחברות בו"
   /// ```
   String get watchSubtitle => """חיבור שעון Wear OS והתחברות בו""";
+  DiagnosticsSettingsMessagesHe get diagnostics =>
+      DiagnosticsSettingsMessagesHe(this);
 }
 
 class ItemTapActionNamesSettingsMessagesHe
@@ -1946,6 +1948,84 @@ class ThemeNamesSettingsMessagesHe extends ThemeNamesSettingsMessages {
   /// "כהה"
   /// ```
   String get dark => """כהה""";
+}
+
+class DiagnosticsSettingsMessagesHe extends DiagnosticsSettingsMessages {
+  final SettingsMessagesHe _parent;
+  const DiagnosticsSettingsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "יומני אבחון"
+  /// ```
+  String get title => """יומני אבחון""";
+
+  /// ```dart
+  /// "צפייה ושיתוף של יומן אנונימי לדיווח על תקלות"
+  /// ```
+  String get subtitle => """צפייה ושיתוף של יומן אנונימי לדיווח על תקלות""";
+
+  /// ```dart
+  /// "Pantry שומרת במכשיר הזה יומן קצר של הבקשות, הסנכרונים והשגיאות שלה. כתובות שרת, שמות משתמש, סיסמאות ואסימונים מוסתרים, והתוכן של הרשימות, הפריטים והפתקים לעולם לא נרשם. אפשר לשתף אותו כשמדווחים על בעיה."
+  /// ```
+  String get body =>
+      """Pantry שומרת במכשיר הזה יומן קצר של הבקשות, הסנכרונים והשגיאות שלה. כתובות שרת, שמות משתמש, סיסמאות ואסימונים מוסתרים, והתוכן של הרשימות, הפריטים והפתקים לעולם לא נרשם. אפשר לשתף אותו כשמדווחים על בעיה.""";
+
+  /// ```dart
+  /// "המכשיר הזה"
+  /// ```
+  String get thisDevice => """המכשיר הזה""";
+
+  /// ```dart
+  /// "שעון"
+  /// ```
+  String get watch => """שעון""";
+
+  /// ```dart
+  /// "בעיות בלבד"
+  /// ```
+  String get problemsOnly => """בעיות בלבד""";
+
+  /// ```dart
+  /// "עדיין לא נרשם דבר"
+  /// ```
+  String get empty => """עדיין לא נרשם דבר""";
+
+  /// ```dart
+  /// "היומן הועתק"
+  /// ```
+  String get copied => """היומן הועתק""";
+
+  /// ```dart
+  /// "שיתוף"
+  /// ```
+  String get share => """שיתוף""";
+
+  /// ```dart
+  /// "לא ניתן היה לשתף את היומן"
+  /// ```
+  String get shareFailed => """לא ניתן היה לשתף את היומן""";
+
+  /// ```dart
+  /// "לנקות את היומן?"
+  /// ```
+  String get clearTitle => """לנקות את היומן?""";
+
+  /// ```dart
+  /// "פעולה זו מוחקת את כל מה שנרשם במכשיר הזה עד עכשיו."
+  /// ```
+  String get clearBody =>
+      """פעולה זו מוחקת את כל מה שנרשם במכשיר הזה עד עכשיו.""";
+
+  /// ```dart
+  /// "פונה לשעון…"
+  /// ```
+  String get watchLoading => """פונה לשעון…""";
+
+  /// ```dart
+  /// "לא ניתן היה להתחבר לשעון. יש לפתוח את Pantry בשעון ולנסות שוב."
+  /// ```
+  String get watchUnavailable =>
+      """לא ניתן היה להתחבר לשעון. יש לפתוח את Pantry בשעון ולנסות שוב.""";
 }
 
 class NotificationsMessagesHe extends NotificationsMessages {
@@ -7530,6 +7610,24 @@ Map<String, String> get messagesHeMap => {
   """settings.refresh5m""": """כל 5 דקות""",
   """settings.watchSection""": """שעון""",
   """settings.watchSubtitle""": """חיבור שעון Wear OS והתחברות בו""",
+  """settings.diagnostics.title""": """יומני אבחון""",
+  """settings.diagnostics.subtitle""":
+      """צפייה ושיתוף של יומן אנונימי לדיווח על תקלות""",
+  """settings.diagnostics.body""":
+      """Pantry שומרת במכשיר הזה יומן קצר של הבקשות, הסנכרונים והשגיאות שלה. כתובות שרת, שמות משתמש, סיסמאות ואסימונים מוסתרים, והתוכן של הרשימות, הפריטים והפתקים לעולם לא נרשם. אפשר לשתף אותו כשמדווחים על בעיה.""",
+  """settings.diagnostics.thisDevice""": """המכשיר הזה""",
+  """settings.diagnostics.watch""": """שעון""",
+  """settings.diagnostics.problemsOnly""": """בעיות בלבד""",
+  """settings.diagnostics.empty""": """עדיין לא נרשם דבר""",
+  """settings.diagnostics.copied""": """היומן הועתק""",
+  """settings.diagnostics.share""": """שיתוף""",
+  """settings.diagnostics.shareFailed""": """לא ניתן היה לשתף את היומן""",
+  """settings.diagnostics.clearTitle""": """לנקות את היומן?""",
+  """settings.diagnostics.clearBody""":
+      """פעולה זו מוחקת את כל מה שנרשם במכשיר הזה עד עכשיו.""",
+  """settings.diagnostics.watchLoading""": """פונה לשעון…""",
+  """settings.diagnostics.watchUnavailable""":
+      """לא ניתן היה להתחבר לשעון. יש לפתוח את Pantry בשעון ולנסות שוב.""",
   """notifications.title""": """התראות""",
   """notifications.empty""": """אין התראות חדשות.""",
   """notifications.failedToLoad""": """טעינת ההתראות נכשלה.""",
