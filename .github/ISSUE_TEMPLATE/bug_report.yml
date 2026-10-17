@@ -89,6 +89,21 @@ body:
         The following information helps us investigate and fix issues quickly. Please provide as much detail as possible.
 
   - type: textarea
+    id: logs
+    attributes:
+      label: Diagnostic Logs
+      description: |
+        To get the logs:
+        1. Open **Settings → Diagnostic logs**.
+        2. Tap **Copy** and paste it below, or **Share** it as a file and attach it here.
+        3. For a problem on a Wear OS watch, open Pantry on the watch first, then switch to **Watch** on the same page before copying. Copy or Share then includes both logs.
+
+        If you can, reproduce the problem right before copying, so it's at the end of the log. Don't see the page? Update the app first.
+
+        Whatever you paste here is formatted as a code block automatically.
+      render: text
+
+  - type: textarea
     id: screenshots
     attributes:
       label: Screenshots
