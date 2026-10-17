@@ -526,31 +526,15 @@ class SyncManager {
       while (!_queue.isEmpty) {
         final raw = _queue.peek()!;
         final op = _remap.rewrite(raw);
-        if (op.op != SyncOpKind.create &&
-            op.tempEntityId != null &&
-            op.entityId == null) {
-          // References a temp id whose create hasn't resolved yet — retry
-          // after the preceding create completes.
-          break;
-        }
-        if (op.op == SyncOpKind.batch && _batchHasUnresolvedRefs(op)) {
-          // A batch op still points at a temp item / list / category whose
-          // create is ahead of it in the queue — wait for that to flush.
-          break;
-        }
-        if (op.entity == SyncEntity.checklistItem &&
-            (_itemHasUnresolvedStores(op) || _itemHasUnresolvedLabels(op))) {
-          // A checklist-item create/update attaches a store or label whose
-          // create is still ahead in the queue — hold it so we never send a
-          // temp store/label id.
-          break;
-        }
-        if (op.entity == SyncEntity.storeCategoryOrder &&
-            _arrangementHasUnresolvedCategories(op)) {
-          // An arrangement naming a category whose create is still ahead in
-          // the queue would be stored without it — the server drops ids it
-          // doesn't know — so hold it until that create lands.
-          break;
+        final orphans = _unresolvedRefs(op);
+        if (orphans.isNotEmpty) {
+          // The queue flushes in order and every create binds its real id
+          // before it leaves, so a temp id still unresolved at the head names
+          // a create that is gone — rejected, or its binding lost. Nothing
+          // can resolve it now, and holding here would stop every change
+          // queued behind it.
+          _releaseOrphan(op, orphans);
+          continue;
         }
         try {
           final result = await _executor.execute(op);
@@ -574,9 +558,7 @@ class SyncManager {
           _appliedController.add(SyncOpApplied(op, result.entity, bound));
         } on ApiException catch (e) {
           if (e.statusCode == 409) {
-            _queue.pop(op.uuid);
-            pendingCount.value = _queue.length;
-            _skippedController.add(SyncOpSkipped(op, 'conflict'));
+            _deadLetter(op, 'conflict');
             continue;
           }
           if (e.statusCode == 404 &&
@@ -589,9 +571,7 @@ class SyncManager {
                   op.op == SyncOpKind.unarchive ||
                   op.op == SyncOpKind.setImage ||
                   op.op == SyncOpKind.clearImage)) {
-            _queue.pop(op.uuid);
-            pendingCount.value = _queue.length;
-            _skippedController.add(SyncOpSkipped(op, 'gone'));
+            _deadLetter(op, 'gone');
             continue;
           }
           if (e.statusCode == 401) {
@@ -609,9 +589,7 @@ class SyncManager {
             debugPrint(
               '[SyncManager] dropping op ${op.uuid} on ${e.statusCode}: ${e.message}',
             );
-            _queue.pop(op.uuid);
-            pendingCount.value = _queue.length;
-            _skippedController.add(SyncOpSkipped(op, 'http_${e.statusCode}'));
+            _deadLetter(op, 'http_${e.statusCode}');
             continue;
           }
           if (e.statusCode == 0) {
@@ -636,44 +614,72 @@ class SyncManager {
     }
   }
 
-  /// A checklist-item op that attaches stores is dispatchable only once every
-  /// store id in its body has resolved to a real (non-negative) server id.
-  bool _itemHasUnresolvedStores(SyncOp op) {
-    final storeIds = (op.body['storeIds'] as List?)?.cast<int>();
-    if (storeIds == null) return false;
-    return storeIds.any((id) => id < 0);
+  /// Every temp id a rewritten [op] still references, keyed by the entity
+  /// whose create would resolve it. An op is dispatchable only once this is
+  /// empty: the server knows none of these ids.
+  List<(SyncEntity, int)> _unresolvedRefs(SyncOp op) {
+    final refs = <(SyncEntity, int)>[];
+    void add(SyncEntity entity, Object? id) {
+      if (id is int && id < 0) refs.add((entity, id));
+    }
+
+    void addAll(SyncEntity entity, Object? ids) {
+      if (ids is! List) return;
+      for (final id in ids) {
+        add(entity, id);
+      }
+    }
+
+    if (op.op != SyncOpKind.create && op.entityId == null) {
+      // An arrangement is addressed by the store it belongs to.
+      add(
+        op.entity == SyncEntity.storeCategoryOrder
+            ? SyncEntity.store
+            : op.entity,
+        op.tempEntityId,
+      );
+    }
+    if (op.entity == SyncEntity.checklistItem) {
+      add(SyncEntity.checklistList, op.parentId);
+    }
+    if (IdRemap.listScoped.contains(op.entity)) {
+      add(SyncEntity.checklistList, op.body['listId']);
+    }
+    if (op.op == SyncOpKind.batch) {
+      addAll(SyncEntity.checklistItem, op.body['itemIds']);
+      add(SyncEntity.checklistList, op.body['targetListId']);
+    }
+    if (op.entity == SyncEntity.checklistItem) {
+      add(SyncEntity.category, op.body['categoryId']);
+      addAll(SyncEntity.store, op.body['storeIds']);
+      addAll(SyncEntity.label, op.body['labelIds']);
+    }
+    if (op.entity == SyncEntity.storeCategoryOrder) {
+      addAll(SyncEntity.category, op.body['order']);
+    }
+    return refs;
   }
 
-  /// A checklist-item op that attaches labels is dispatchable only once every
-  /// label id in its body has resolved to a real (non-negative) server id.
-  bool _itemHasUnresolvedLabels(SyncOp op) {
-    final labelIds = (op.body['labelIds'] as List?)?.cast<int>();
-    if (labelIds == null) return false;
-    return labelIds.any((id) => id < 0);
-  }
-
-  /// A store arrangement is dispatchable only once every category id it lists
-  /// has resolved to a real (non-negative) server id.
-  bool _arrangementHasUnresolvedCategories(SyncOp op) {
-    final order = (op.body['order'] as List?)?.cast<int>();
-    if (order == null) return false;
-    return order.any((id) => id < 0);
-  }
-
-  /// A rewritten batch op is dispatchable only once every id it references
-  /// resolves to a real (non-negative) server id.
-  bool _batchHasUnresolvedRefs(SyncOp op) {
-    final ids = (op.body['itemIds'] as List?)?.cast<int>() ?? const [];
-    if (ids.any((id) => id < 0)) return true;
-    final target = op.body['targetListId'];
-    if (target is int && target < 0) return true;
-    final cat = op.body['categoryId'];
-    if (cat is int && cat < 0) return true;
-    final storeIds = (op.body['storeIds'] as List?)?.cast<int>();
-    if (storeIds != null && storeIds.any((id) => id < 0)) return true;
-    final labelIds = (op.body['labelIds'] as List?)?.cast<int>();
-    if (labelIds != null && labelIds.any((id) => id < 0)) return true;
-    return false;
+  /// Unblock a head op whose temp references can never resolve: treat each as
+  /// a create that died, which drops or strips every op naming it. The head
+  /// goes with them when it cannot survive the loss.
+  void _releaseOrphan(SyncOp op, List<(SyncEntity, int)> orphans) {
+    debugPrint(
+      '[SyncManager] releasing op ${op.uuid}: unresolvable temp ids $orphans',
+    );
+    for (final (entity, tempId) in orphans) {
+      _cascadeDeadCreate(entity, tempId);
+    }
+    final head = _queue.peek();
+    if (head != null &&
+        head.uuid == op.uuid &&
+        _unresolvedRefs(_remap.rewrite(head)).isNotEmpty) {
+      _queue.pop(op.uuid);
+    }
+    pendingCount.value = _queue.length;
+    if (!_queue.all().any((o) => o.uuid == op.uuid)) {
+      _skippedController.add(SyncOpSkipped(op, 'orphaned'));
+    }
   }
 
   /// React to a transient/server-side failure on the head op. Retries with
@@ -827,6 +833,14 @@ class SyncManager {
         }
         if (o.op == SyncOpKind.batch && o.body['targetListId'] == tempId) {
           return null;
+        }
+        // A category, label or field scoped to it keeps its own changes and
+        // leaves its scope as the server already has it.
+        if (IdRemap.listScoped.contains(o.entity) &&
+            o.body['listId'] == tempId) {
+          return o.copyWith(
+            body: Map<String, dynamic>.of(o.body)..remove('listId'),
+          );
         }
       case SyncEntity.checklistItem:
         final itemIds = (o.body['itemIds'] as List?)?.cast<int>();

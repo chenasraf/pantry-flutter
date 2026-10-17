@@ -44,19 +44,51 @@ class IdRemap {
 
   /// Rewrite a pending op so any temp id it references becomes the real id
   /// once known. Returns the rewritten op (or the same op if nothing changed).
-  SyncOp rewrite(SyncOp op) {
-    if (op.op == SyncOpKind.batch) return _rewriteBatch(op);
+  SyncOp rewrite(SyncOp op) => _rewriteListRefs(
+    op.op == SyncOpKind.batch ? _rewriteBatch(op) : _rewriteRecord(op),
+  );
+
+  /// Entities whose body can scope them to one list via `listId`.
+  static const listScoped = {
+    SyncEntity.category,
+    SyncEntity.label,
+    SyncEntity.customField,
+  };
+
+  /// A list created offline is open and usable before its create lands, so an
+  /// item added to it names the temp list as its parent, and a category, label
+  /// or field scoped to it names it as its `listId`.
+  SyncOp _rewriteListRefs(SyncOp op) {
+    var result = op;
+    final parent = op.parentId;
+    if (op.entity == SyncEntity.checklistItem && parent != null && parent < 0) {
+      final real = resolve(SyncEntity.checklistList, parent);
+      if (real != null) result = result.copyWith(parentId: real);
+    }
+    final scope = op.body['listId'];
+    if (listScoped.contains(op.entity) && scope is int && scope < 0) {
+      final real = resolve(SyncEntity.checklistList, scope);
+      if (real != null) {
+        result = result.copyWith(
+          body: Map<String, dynamic>.from(result.body)..['listId'] = real,
+        );
+      }
+    }
+    return result;
+  }
+
+  SyncOp _rewriteRecord(SyncOp op) {
     var result = op;
     final tempId = op.tempEntityId;
     if (tempId != null) {
       final real = resolve(op.entity, tempId);
       if (real != null) result = result.copyWith(entityId: real);
     }
-    // A checklist-item create/update carries its store attachments in
-    // body['storeIds']; any of those may be a temp id when the store was
-    // created in the same offline session. Remap each to its real id where
-    // resolved (unlike the scalar categoryId, which has this same latent gap).
+    // A checklist-item create/update carries its category, store and label
+    // attachments in its body; any of those may be a temp id when the
+    // attachment was created in the same offline session.
     if (result.entity == SyncEntity.checklistItem) {
+      result = _rewriteItemCategoryId(result);
       result = _rewriteItemStoreIds(result);
       result = _rewriteItemLabelIds(result);
     }
@@ -119,6 +151,16 @@ class IdRemap {
     final body = Map<String, dynamic>.from(op.body);
     body['order'] = mapped;
     return op.copyWith(body: body);
+  }
+
+  SyncOp _rewriteItemCategoryId(SyncOp op) {
+    final cat = op.body['categoryId'];
+    if (cat is! int || cat >= 0) return op;
+    final real = resolve(SyncEntity.category, cat);
+    if (real == null) return op;
+    return op.copyWith(
+      body: Map<String, dynamic>.from(op.body)..['categoryId'] = real,
+    );
   }
 
   SyncOp _rewriteItemStoreIds(SyncOp op) {
