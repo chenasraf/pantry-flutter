@@ -5389,6 +5389,17 @@ class ShoppingMessagesNn extends ShoppingMessages {
   String get noListsToShop => """Ingen lister å handle enno.""";
 
   /// ```dart
+  /// "Handle alt på ein gong"
+  /// ```
+  String get shopAllStores => """Handle alt på ein gong""";
+
+  /// ```dart
+  /// "Dette slår saman alle butikkane til éi fane, så du kan handle alt på ein gong"
+  /// ```
+  String get shopAllStoresHint =>
+      """Dette slår saman alle butikkane til éi fane, så du kan handle alt på ein gong""";
+
+  /// ```dart
   /// "Butikkar"
   /// ```
   String get storesTitle => """Butikkar""";
@@ -5398,6 +5409,16 @@ class ShoppingMessagesNn extends ShoppingMessages {
   /// ```
   String get storesHint =>
       """Slå på eller av butikkane du skal innom, og dra for å setje rekkjefølgja.""";
+
+  /// ```dart
+  /// "Slå på eller av butikkane du handlar for."
+  /// ```
+  String get storesHintAll => """Slå på eller av butikkane du handlar for.""";
+
+  /// ```dart
+  /// "Alle varer"
+  /// ```
+  String get allItems => """Alle varer""";
 
   /// ```dart
   /// "Ingen av dei valde listene har varer knytte til ein butikk."
@@ -8323,9 +8344,14 @@ Passord: pantry""",
   """shopping.selectAll""": """Vel alle""",
   """shopping.selectNone""": """Vel ingen""",
   """shopping.noListsToShop""": """Ingen lister å handle enno.""",
+  """shopping.shopAllStores""": """Handle alt på ein gong""",
+  """shopping.shopAllStoresHint""":
+      """Dette slår saman alle butikkane til éi fane, så du kan handle alt på ein gong""",
   """shopping.storesTitle""": """Butikkar""",
   """shopping.storesHint""":
       """Slå på eller av butikkane du skal innom, og dra for å setje rekkjefølgja.""",
+  """shopping.storesHintAll""": """Slå på eller av butikkane du handlar for.""",
+  """shopping.allItems""": """Alle varer""",
   """shopping.noStoresWithItems""":
       """Ingen av dei valde listene har varer knytte til ein butikk.""",
   """shopping.includeUnassigned""": """Ta med varer utan butikk""",

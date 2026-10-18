@@ -5,6 +5,7 @@ import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/checklist_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
@@ -250,6 +251,9 @@ class StartTripController extends ChangeNotifier {
             for (final id in _availableStoreIds)
               if (_enabledStoreIds.contains(id)) id,
           ],
+          // The phone and web own this pref; the watch follows it.
+          allStores:
+              supportsShopAllStores && PrefsService.instance.shopAllStores,
         );
       } on ShoppingSessionConflict catch (conflict) {
         // A 409 carries the live trip, which is exactly what *resume* means —

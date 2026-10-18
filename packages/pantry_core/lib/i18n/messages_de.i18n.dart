@@ -5434,6 +5434,17 @@ class ShoppingMessagesDe extends ShoppingMessages {
   String get noListsToShop => """Noch keine Listen zum Einkaufen.""";
 
   /// ```dart
+  /// "Alle auf einmal einkaufen"
+  /// ```
+  String get shopAllStores => """Alle auf einmal einkaufen""";
+
+  /// ```dart
+  /// "Damit werden alle Geschäfte in einem einzigen Tab zusammengefasst, um alles in einem Durchgang einzukaufen"
+  /// ```
+  String get shopAllStoresHint =>
+      """Damit werden alle Geschäfte in einem einzigen Tab zusammengefasst, um alles in einem Durchgang einzukaufen""";
+
+  /// ```dart
   /// "Geschäfte"
   /// ```
   String get storesTitle => """Geschäfte""";
@@ -5443,6 +5454,17 @@ class ShoppingMessagesDe extends ShoppingMessages {
   /// ```
   String get storesHint =>
       """Schalte die Geschäfte ein oder aus, die du besuchst, und ziehe sie in die richtige Reihenfolge.""";
+
+  /// ```dart
+  /// "Schalte die Geschäfte ein oder aus, für die du einkaufst."
+  /// ```
+  String get storesHintAll =>
+      """Schalte die Geschäfte ein oder aus, für die du einkaufst.""";
+
+  /// ```dart
+  /// "Alle Artikel"
+  /// ```
+  String get allItems => """Alle Artikel""";
 
   /// ```dart
   /// "Keine der ausgewählten Listen hat Artikel, die einem Geschäft zugewiesen sind."
@@ -8427,9 +8449,15 @@ Passwort: pantry-rocks""",
   """shopping.selectAll""": """Alle auswählen""",
   """shopping.selectNone""": """Keine auswählen""",
   """shopping.noListsToShop""": """Noch keine Listen zum Einkaufen.""",
+  """shopping.shopAllStores""": """Alle auf einmal einkaufen""",
+  """shopping.shopAllStoresHint""":
+      """Damit werden alle Geschäfte in einem einzigen Tab zusammengefasst, um alles in einem Durchgang einzukaufen""",
   """shopping.storesTitle""": """Geschäfte""",
   """shopping.storesHint""":
       """Schalte die Geschäfte ein oder aus, die du besuchst, und ziehe sie in die richtige Reihenfolge.""",
+  """shopping.storesHintAll""":
+      """Schalte die Geschäfte ein oder aus, für die du einkaufst.""",
+  """shopping.allItems""": """Alle Artikel""",
   """shopping.noStoresWithItems""":
       """Keine der ausgewählten Listen hat Artikel, die einem Geschäft zugewiesen sind.""",
   """shopping.includeUnassigned""": """Artikel ohne Geschäft einbeziehen""",

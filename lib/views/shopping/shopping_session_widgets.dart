@@ -19,6 +19,9 @@ import 'package:pantry/widgets/member_avatar.dart';
 /// Horizontal, scrollable row of store pills. The active pill is filled; past
 /// pills (lower position) are dimmed. Each pill carries the avatars of other
 /// shoppers currently at that store.
+///
+/// An all-stores trip is never at one store, so it shows a single "All items"
+/// pill instead, with no presence: housemates on such a trip have no store.
 class ShoppingStoreBar extends StatelessWidget {
   final ShoppingSessionController controller;
   final void Function(int storeId) onJumpToStore;
@@ -34,6 +37,40 @@ class ShoppingStoreBar extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final activePos = controller.activePosition;
+
+    if (controller.session.allStores) {
+      return SizedBox(
+        height: 56,
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
+            child: Ink(
+              decoration: AppSurfaces.of(context).chip(selected: true),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.storefront, size: 18, color: cs.primary),
+                    const SizedBox(width: 6),
+                    Text(
+                      m.shopping.allItems,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: cs.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return SizedBox(
       height: 56,

@@ -1029,8 +1029,12 @@ shopping:
   selectAll: Alle auswählen
   selectNone: Keine auswählen
   noListsToShop: Noch keine Listen zum Einkaufen.
+  shopAllStores: "Alle auf einmal einkaufen"
+  shopAllStoresHint: "Damit werden alle Geschäfte in einem einzigen Tab zusammengefasst, um alles in einem Durchgang einzukaufen"
   storesTitle: Geschäfte
   storesHint: "Schalte die Geschäfte ein oder aus, die du besuchst, und ziehe sie in die richtige Reihenfolge."
+  storesHintAll: "Schalte die Geschäfte ein oder aus, für die du einkaufst."
+  allItems: "Alle Artikel"
   noStoresWithItems: Keine der ausgewählten Listen hat Artikel, die einem Geschäft zugewiesen sind.
   includeUnassigned: Artikel ohne Geschäft einbeziehen
   itemsToShop: Zu kaufende Artikel

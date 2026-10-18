@@ -1172,8 +1172,12 @@ shopping:
   selectAll: Vel alle
   selectNone: Vel ingen
   noListsToShop: Ingen lister å handle enno.
+  shopAllStores: "Handle alt på ein gong"
+  shopAllStoresHint: "Dette slår saman alle butikkane til éi fane, så du kan handle alt på ein gong"
   storesTitle: Butikkar
   storesHint: "Slå på eller av butikkane du skal innom, og dra for å setje rekkjefølgja."
+  storesHintAll: "Slå på eller av butikkane du handlar for."
+  allItems: "Alle varer"
   noStoresWithItems: Ingen av dei valde listene har varer knytte til ein butikk.
   includeUnassigned: Ta med varer utan butikk
   itemsToShop: Varer å handle

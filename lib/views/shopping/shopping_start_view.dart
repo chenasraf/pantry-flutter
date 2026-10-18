@@ -11,9 +11,11 @@ import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/house_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/shopping_service.dart';
 import 'package:pantry_core/services/store_service.dart';
+import 'package:pantry_core/services/user_prefs_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/store_icons.dart';
@@ -289,6 +291,7 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
         listIds: _selectedListIds.toList(),
         storeIds: storeIds,
         includeUnassigned: _includeUnassigned,
+        allStores: _shopAllStores,
         // A full trip sends nothing rather than every id, which is what a
         // server without the capability sees either way.
         itemIds: included.length == candidates.length ? null : included,
@@ -307,6 +310,11 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
       showAppToast(message: m.shopping.startFailed, kind: ToastKind.error);
     }
   }
+
+  /// Whether the trip combines every enabled store into one list. Off on a
+  /// server that can't run such a trip, whatever the synced pref says.
+  bool get _shopAllStores =>
+      supportsShopAllStores && PrefsService.instance.shopAllStores;
 
   Future<void> _resumeGuard() async {
     Navigator.of(context).pop(_guardSession);
@@ -383,7 +391,10 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
           ? _ErrorRetry(message: _error!, onRetry: _load)
           : _guardSession != null
           ? _buildGuard()
-          : _buildPicker(),
+          : ListenableBuilder(
+              listenable: PrefsService.instance,
+              builder: (context, _) => _buildPicker(),
+            ),
     );
   }
 
@@ -452,6 +463,7 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
     final candidates = _candidateItems;
     final included = _includedItemIds(candidates);
     final nothingPicked = candidates.isNotEmpty && included.isEmpty;
+    final shopAllStores = _shopAllStores;
     return Column(
       children: [
         Expanded(
@@ -507,11 +519,23 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
                     ),
                   ),
               const SizedBox(height: 16),
+              if (supportsShopAllStores) ...[
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: shopAllStores,
+                  onChanged: UserPrefsService.instance.setShopAllStores,
+                  title: Text(m.shopping.shopAllStores),
+                  subtitle: Text(m.shopping.shopAllStoresHint),
+                ),
+                const SizedBox(height: 8),
+              ],
               // Stores section.
               Text(m.shopping.storesTitle, style: theme.textTheme.titleMedium),
               const SizedBox(height: 4),
               Text(
-                m.shopping.storesHint,
+                shopAllStores
+                    ? m.shopping.storesHintAll
+                    : m.shopping.storesHint,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -540,6 +564,7 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
                     return _StoreToggleRow(
                       key: ValueKey(id),
                       index: index,
+                      reorderable: !shopAllStores,
                       name: store?.name ?? '',
                       icon: storeIcon(store?.icon),
                       color: parseHexColor(store?.color),
@@ -631,6 +656,7 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
 
 class _StoreToggleRow extends StatelessWidget {
   final int index;
+  final bool reorderable;
   final String name;
   final IconData icon;
   final Color? color;
@@ -640,6 +666,7 @@ class _StoreToggleRow extends StatelessWidget {
   const _StoreToggleRow({
     super.key,
     required this.index,
+    required this.reorderable,
     required this.name,
     required this.icon,
     required this.color,
@@ -651,16 +678,19 @@ class _StoreToggleRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsetsDirectional.symmetric(vertical: 2),
       child: Row(
         children: [
-          ReorderableDragStartListener(
-            index: index,
-            child: const Padding(
-              padding: EdgeInsets.all(8),
-              child: Icon(Icons.drag_handle, size: 20),
-            ),
-          ),
+          if (reorderable)
+            ReorderableDragStartListener(
+              index: index,
+              child: const Padding(
+                padding: EdgeInsets.all(8),
+                child: Icon(Icons.drag_handle, size: 20),
+              ),
+            )
+          else
+            const SizedBox(width: 8),
           Icon(icon, color: color ?? cs.primary, size: 22),
           const SizedBox(width: 12),
           Expanded(

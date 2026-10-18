@@ -152,6 +152,17 @@ class ShoppingSessionController extends ChangeNotifier {
       if (item.labelIds.contains(label.id)) label,
   ];
 
+  /// The stores an item can be bought at on this trip, in trip order: its
+  /// stores that are among the trip's, or all of them on a storeless trip.
+  /// Unresolved store ids are skipped.
+  List<Store> tripStoresOf(ListItem item) {
+    final tripIds = orderedStores.map((s) => s.storeId).toList();
+    final ids = tripIds.isEmpty
+        ? item.storeIds
+        : tripIds.where(item.storeIds.contains);
+    return [for (final id in ids) ?_stores[id]];
+  }
+
   /// The active store's aisle order, as category id to position. Empty when the
   /// store follows the house-wide order.
   Map<int, int> _storeRank = const {};
@@ -341,8 +352,11 @@ class ShoppingSessionController extends ChangeNotifier {
 
     try {
       // A session with stores but no active store yet: land on the first so
-      // the item list is narrowed to somewhere sensible.
-      if (_session.stores.isNotEmpty && _session.activeStoreId == null) {
+      // the item list is narrowed to somewhere sensible. An all-stores trip is
+      // never at one store, and the server refuses to advance it.
+      if (!_session.allStores &&
+          _session.stores.isNotEmpty &&
+          _session.activeStoreId == null) {
         try {
           _session = await _service.advance(
             houseId,
@@ -786,6 +800,7 @@ extension ShoppingSessionPrivacy on ShoppingSession {
         activeStoreId: s.activeStoreId,
         includeUnassigned: s.includeUnassigned,
         isPrivate: isPrivate,
+        allStores: s.allStores,
         billedTotal: s.billedTotal,
         billedCurrency: s.billedCurrency,
         lastSeenAt: s.lastSeenAt,

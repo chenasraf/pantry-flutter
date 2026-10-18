@@ -38,6 +38,10 @@ class ShoppingReviewView extends StatefulWidget {
   final int? activeStoreId;
   final Map<int, Store> stores;
 
+  /// The trip shopped every store as one list, so its storeless group is the
+  /// whole trip rather than items that belong to no store.
+  final bool allStores;
+
   /// Reminders for the moment surfaced at the top (advance → on_store_advance,
   /// close → on_close). Already filtered to enabled and ordered.
   final List<ShoppingReminder> reminders;
@@ -60,6 +64,7 @@ class ShoppingReviewView extends StatefulWidget {
     required this.mode,
     required this.stores,
     this.activeStoreId,
+    this.allStores = false,
     this.reminders = const [],
     this.onManageReminders,
     this.canEditBilled = true,
@@ -365,7 +370,9 @@ class _ShoppingReviewViewState extends State<ShoppingReviewView> {
   }
 
   String _storeName(int? storeId) {
-    if (storeId == null) return m.shopping.anyStore;
+    if (storeId == null) {
+      return widget.allStores ? m.shopping.allItems : m.shopping.anyStore;
+    }
     return widget.stores[storeId]?.name ?? m.shopping.anyStore;
   }
 

@@ -161,17 +161,24 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
       block(_tallyExtent * metrics.scale, _Tally(review: review));
     }
 
+    // An all-stores trip logs everything storeless, so its one group is the
+    // whole trip rather than items that belong to no store.
+    final storelessName = controller.session?.allStores ?? false
+        ? m.shopping.allItems
+        : m.shopping.anyStore;
+
     void storeGroup(int? storeId, List<ListItem> items) {
       final shop = controller.storeById(storeId);
+      final name = shop?.name ?? storelessName;
       appendStoreGroup(
         metrics: metrics,
         elements: elements,
         shop: shop,
+        name: name,
         items: items,
         billed: controller.billedFor(storeId),
         tap: _tap,
-        onEditBilled: () =>
-            unawaited(_editBilled(storeId, shop?.name ?? m.shopping.anyStore)),
+        onEditBilled: () => unawaited(_editBilled(storeId, name)),
       );
     }
 

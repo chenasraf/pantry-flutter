@@ -271,13 +271,18 @@ class ChecklistsController extends ChangeNotifier {
   Category? categoryOf(ListItem item) => _categories[item.categoryId];
 
   /// The store to name on a row. An item can carry several; the one that means
-  /// something on the wrist is the store you are standing in, and otherwise the
-  /// first the item lists.
+  /// something on the wrist is the store you are standing in, then the first of
+  /// the trip's stores it is sold at — an all-stores trip stands in none — and
+  /// otherwise the first the item lists.
   Store? storeOf(ListItem item) {
     if (item.storeIds.isEmpty) return null;
-    final active = _session?.activeStoreId;
+    final session = _session;
+    final active = session?.activeStoreId;
     if (active != null && item.storeIds.contains(active)) {
       return _stores[active];
+    }
+    for (final id in session?.orderedStoreIds ?? const <int>[]) {
+      if (item.storeIds.contains(id)) return _stores[id];
     }
     return _stores[item.storeIds.first];
   }
@@ -1069,7 +1074,12 @@ class ChecklistsController extends ChangeNotifier {
   Future<bool> advanceTo(int storeId) async {
     final house = _houseId;
     final session = _session;
-    if (house == null || session == null || !_sync.isOnline) return false;
+    if (house == null ||
+        session == null ||
+        session.allStores ||
+        !_sync.isOnline) {
+      return false;
+    }
     try {
       _session = await _shopping.advance(house, session.id, storeId: storeId);
     } catch (_) {

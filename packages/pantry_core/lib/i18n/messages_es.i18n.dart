@@ -5427,6 +5427,17 @@ class ShoppingMessagesEs extends ShoppingMessages {
   String get noListsToShop => """Aún no hay listas para comprar.""";
 
   /// ```dart
+  /// "Comprar todo a la vez"
+  /// ```
+  String get shopAllStores => """Comprar todo a la vez""";
+
+  /// ```dart
+  /// "Al activarlo, todas las tiendas se unifican en una sola pestaña para comprar de una vez"
+  /// ```
+  String get shopAllStoresHint =>
+      """Al activarlo, todas las tiendas se unifican en una sola pestaña para comprar de una vez""";
+
+  /// ```dart
   /// "Tiendas"
   /// ```
   String get storesTitle => """Tiendas""";
@@ -5436,6 +5447,17 @@ class ShoppingMessagesEs extends ShoppingMessages {
   /// ```
   String get storesHint =>
       """Activa o desactiva las tiendas que visitarás y arrástralas para ordenarlas.""";
+
+  /// ```dart
+  /// "Activa o desactiva las tiendas para las que compras."
+  /// ```
+  String get storesHintAll =>
+      """Activa o desactiva las tiendas para las que compras.""";
+
+  /// ```dart
+  /// "Todos los artículos"
+  /// ```
+  String get allItems => """Todos los artículos""";
 
   /// ```dart
   /// "Ninguna de las listas seleccionadas tiene artículos asignados a una tienda."
@@ -8395,9 +8417,15 @@ Contraseña: pantry-rocks""",
   """shopping.selectAll""": """Seleccionar todo""",
   """shopping.selectNone""": """No seleccionar nada""",
   """shopping.noListsToShop""": """Aún no hay listas para comprar.""",
+  """shopping.shopAllStores""": """Comprar todo a la vez""",
+  """shopping.shopAllStoresHint""":
+      """Al activarlo, todas las tiendas se unifican en una sola pestaña para comprar de una vez""",
   """shopping.storesTitle""": """Tiendas""",
   """shopping.storesHint""":
       """Activa o desactiva las tiendas que visitarás y arrástralas para ordenarlas.""",
+  """shopping.storesHintAll""":
+      """Activa o desactiva las tiendas para las que compras.""",
+  """shopping.allItems""": """Todos los artículos""",
   """shopping.noStoresWithItems""":
       """Ninguna de las listas seleccionadas tiene artículos asignados a una tienda.""",
   """shopping.includeUnassigned""": """Incluir artículos sin tienda asignada""",

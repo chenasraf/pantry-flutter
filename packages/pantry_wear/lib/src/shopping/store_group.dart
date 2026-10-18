@@ -26,12 +26,13 @@ void appendStoreGroup({
   required WearMetrics metrics,
   required List<FocusElement> elements,
   required Store? shop,
+  String? name,
   required List<ListItem> items,
   required ({double? total, String? currency}) billed,
   required void Function(int index, VoidCallback action) tap,
   required VoidCallback onEditBilled,
 }) {
-  final name = shop?.name ?? m.shopping.anyStore;
+  final label = name ?? shop?.name ?? m.shopping.anyStore;
   final tint = shop == null
       ? Colors.white54
       : parseHexColor(shop.color) ?? Colors.white54;
@@ -41,9 +42,9 @@ void appendStoreGroup({
       extent: metrics.headerExtent,
       snappable: false,
       isHeader: true,
-      groupLabel: name,
+      groupLabel: label,
       builder: (context, _) => _StoreHeader(
-        label: name,
+        label: label,
         icon: shop == null ? EntityIcons.store : storeIcon(shop.icon),
         tint: tint,
       ),

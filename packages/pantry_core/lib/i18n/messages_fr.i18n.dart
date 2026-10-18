@@ -5431,6 +5431,17 @@ class ShoppingMessagesFr extends ShoppingMessages {
   String get noListsToShop => """Aucune liste à faire pour l'instant.""";
 
   /// ```dart
+  /// "Tout acheter en une fois"
+  /// ```
+  String get shopAllStores => """Tout acheter en une fois""";
+
+  /// ```dart
+  /// "Cette option regroupe tous les magasins dans un seul onglet pour tout acheter d'un coup"
+  /// ```
+  String get shopAllStoresHint =>
+      """Cette option regroupe tous les magasins dans un seul onglet pour tout acheter d'un coup""";
+
+  /// ```dart
   /// "Magasins"
   /// ```
   String get storesTitle => """Magasins""";
@@ -5440,6 +5451,17 @@ class ShoppingMessagesFr extends ShoppingMessages {
   /// ```
   String get storesHint =>
       """Activez ou désactivez les magasins que vous visiterez, et glissez pour définir l'ordre.""";
+
+  /// ```dart
+  /// "Activez ou désactivez les magasins pour lesquels vous faites les courses."
+  /// ```
+  String get storesHintAll =>
+      """Activez ou désactivez les magasins pour lesquels vous faites les courses.""";
+
+  /// ```dart
+  /// "Tous les articles"
+  /// ```
+  String get allItems => """Tous les articles""";
 
   /// ```dart
   /// "Aucune des listes sélectionnées n'a d'articles assignés à un magasin."
@@ -8418,9 +8440,15 @@ Mot de passe : pantry-rocks""",
   """shopping.selectAll""": """Tout sélectionner""",
   """shopping.selectNone""": """Ne rien sélectionner""",
   """shopping.noListsToShop""": """Aucune liste à faire pour l'instant.""",
+  """shopping.shopAllStores""": """Tout acheter en une fois""",
+  """shopping.shopAllStoresHint""":
+      """Cette option regroupe tous les magasins dans un seul onglet pour tout acheter d'un coup""",
   """shopping.storesTitle""": """Magasins""",
   """shopping.storesHint""":
       """Activez ou désactivez les magasins que vous visiterez, et glissez pour définir l'ordre.""",
+  """shopping.storesHintAll""":
+      """Activez ou désactivez les magasins pour lesquels vous faites les courses.""",
+  """shopping.allItems""": """Tous les articles""",
   """shopping.noStoresWithItems""":
       """Aucune des listes sélectionnées n'a d'articles assignés à un magasin.""",
   """shopping.includeUnassigned""": """Inclure les articles sans magasin""",

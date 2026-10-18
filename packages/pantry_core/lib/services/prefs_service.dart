@@ -34,6 +34,7 @@ class PrefsService extends ChangeNotifier {
   static const _checklistCategorySpacingKey = 'checklist_category_spacing';
   static const _reuseExistingItemsKey = 'reuse_existing_items';
   static const _suggestArchivedItemsKey = 'suggest_archived_items';
+  static const _shopAllStoresKey = 'shop_all_stores';
   static const _barcodeFillNameKey = 'barcode_fill_name';
   static const _barcodeFillCategoryKey = 'barcode_fill_category';
   static const _barcodeFillImageKey = 'barcode_fill_image';
@@ -150,6 +151,12 @@ class PrefsService extends ChangeNotifier {
   /// `pref-suggest-archived-items` capability.
   bool _suggestArchivedItems = false;
   bool get suggestArchivedItems => _suggestArchivedItems;
+
+  /// Account-scoped pref synced from the Pantry user-prefs endpoint. When true,
+  /// a shopping trip combines every chosen store into one list instead of
+  /// walking them store by store.
+  bool _shopAllStores = false;
+  bool get shopAllStores => _shopAllStores;
 
   /// Account-scoped prefs synced from the Pantry user-prefs endpoint, deciding
   /// which details a resolved barcode may prefill. They default to true so a
@@ -466,6 +473,9 @@ class PrefsService extends ChangeNotifier {
       _suggestArchivedItems = suggestArchived == 'true';
     }
 
+    final shopAllStores = all[_shopAllStoresKey];
+    if (shopAllStores != null) _shopAllStores = shopAllStores == 'true';
+
     final fillName = all[_barcodeFillNameKey];
     if (fillName != null) _barcodeFillName = fillName == 'true';
 
@@ -694,6 +704,7 @@ class PrefsService extends ChangeNotifier {
     _defaultItemLongPressAction = 'multiselect';
     _reuseExistingItems = 'ask';
     _suggestArchivedItems = false;
+    _shopAllStores = false;
     _barcodeFillName = true;
     _barcodeFillCategory = true;
     _barcodeFillImage = true;
@@ -744,6 +755,7 @@ class PrefsService extends ChangeNotifier {
       _checklistCategorySpacingKey,
       _reuseExistingItemsKey,
       _suggestArchivedItemsKey,
+      _shopAllStoresKey,
       _barcodeFillNameKey,
       _barcodeFillCategoryKey,
       _barcodeFillImageKey,

@@ -5370,6 +5370,17 @@ class ShoppingMessages {
   String get noListsToShop => """No lists to shop yet.""";
 
   /// ```dart
+  /// "Shop all at once"
+  /// ```
+  String get shopAllStores => """Shop all at once""";
+
+  /// ```dart
+  /// "Selecting this will unify all stores into a single tab to shop in one go"
+  /// ```
+  String get shopAllStoresHint =>
+      """Selecting this will unify all stores into a single tab to shop in one go""";
+
+  /// ```dart
   /// "Stores"
   /// ```
   String get storesTitle => """Stores""";
@@ -5379,6 +5390,17 @@ class ShoppingMessages {
   /// ```
   String get storesHint =>
       """Turn the stores you'll visit on or off, and drag to set the order.""";
+
+  /// ```dart
+  /// "Turn the stores you are shopping for on or off."
+  /// ```
+  String get storesHintAll =>
+      """Turn the stores you are shopping for on or off.""";
+
+  /// ```dart
+  /// "All items"
+  /// ```
+  String get allItems => """All items""";
 
   /// ```dart
   /// "None of the selected lists have items assigned to a store."
@@ -8285,9 +8307,15 @@ Password: pantry-rocks""",
   """shopping.selectAll""": """Select all""",
   """shopping.selectNone""": """Select none""",
   """shopping.noListsToShop""": """No lists to shop yet.""",
+  """shopping.shopAllStores""": """Shop all at once""",
+  """shopping.shopAllStoresHint""":
+      """Selecting this will unify all stores into a single tab to shop in one go""",
   """shopping.storesTitle""": """Stores""",
   """shopping.storesHint""":
       """Turn the stores you'll visit on or off, and drag to set the order.""",
+  """shopping.storesHintAll""":
+      """Turn the stores you are shopping for on or off.""",
+  """shopping.allItems""": """All items""",
   """shopping.noStoresWithItems""":
       """None of the selected lists have items assigned to a store.""",
   """shopping.includeUnassigned""":

@@ -5382,6 +5382,17 @@ class ShoppingMessagesHe extends ShoppingMessages {
   String get noListsToShop => """אין עדיין רשימות לקנייה.""";
 
   /// ```dart
+  /// "לקנות הכול בבת אחת"
+  /// ```
+  String get shopAllStores => """לקנות הכול בבת אחת""";
+
+  /// ```dart
+  /// "בחירה באפשרות זו תאחד את כל החנויות ללשונית אחת כדי לקנות הכול בסבב אחד"
+  /// ```
+  String get shopAllStoresHint =>
+      """בחירה באפשרות זו תאחד את כל החנויות ללשונית אחת כדי לקנות הכול בסבב אחד""";
+
+  /// ```dart
   /// "חנויות"
   /// ```
   String get storesTitle => """חנויות""";
@@ -5391,6 +5402,16 @@ class ShoppingMessagesHe extends ShoppingMessages {
   /// ```
   String get storesHint =>
       """הפעילו או כבו את החנויות שתבקרו בהן, וגררו כדי לקבוע את הסדר.""";
+
+  /// ```dart
+  /// "הפעילו או כבו את החנויות שעבורן אתם קונים."
+  /// ```
+  String get storesHintAll => """הפעילו או כבו את החנויות שעבורן אתם קונים.""";
+
+  /// ```dart
+  /// "כל הפריטים"
+  /// ```
+  String get allItems => """כל הפריטים""";
 
   /// ```dart
   /// "לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות."
@@ -8271,9 +8292,15 @@ Map<String, String> get messagesHeMap => {
   """shopping.selectAll""": """בחירת הכול""",
   """shopping.selectNone""": """ביטול הבחירה""",
   """shopping.noListsToShop""": """אין עדיין רשימות לקנייה.""",
+  """shopping.shopAllStores""": """לקנות הכול בבת אחת""",
+  """shopping.shopAllStoresHint""":
+      """בחירה באפשרות זו תאחד את כל החנויות ללשונית אחת כדי לקנות הכול בסבב אחד""",
   """shopping.storesTitle""": """חנויות""",
   """shopping.storesHint""":
       """הפעילו או כבו את החנויות שתבקרו בהן, וגררו כדי לקבוע את הסדר.""",
+  """shopping.storesHintAll""":
+      """הפעילו או כבו את החנויות שעבורן אתם קונים.""",
+  """shopping.allItems""": """כל הפריטים""",
   """shopping.noStoresWithItems""":
       """לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות.""",
   """shopping.includeUnassigned""": """לכלול פריטים שאינם משויכים לחנות""",

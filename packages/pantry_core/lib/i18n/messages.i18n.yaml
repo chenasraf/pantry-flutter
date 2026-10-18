@@ -1032,8 +1032,12 @@ shopping:
   selectAll: Select all
   selectNone: Select none
   noListsToShop: No lists to shop yet.
+  shopAllStores: "Shop all at once"
+  shopAllStoresHint: "Selecting this will unify all stores into a single tab to shop in one go"
   storesTitle: Stores
   storesHint: "Turn the stores you'll visit on or off, and drag to set the order."
+  storesHintAll: "Turn the stores you are shopping for on or off."
+  allItems: "All items"
   noStoresWithItems: None of the selected lists have items assigned to a store.
   includeUnassigned: Include items not assigned to any store
   itemsToShop: Items to shop

@@ -275,6 +275,18 @@ class _ProgressionPageState extends State<ProgressionPage> {
       onTap: () => unawaited(_push(TripRemindersPage(reminders: reminders))),
     );
 
+    // An all-stores trip is one leg, walked everywhere at once: there is no
+    // store to move on to.
+    if (session != null && session.allStores) {
+      row(
+        icon: Icons.storefront,
+        label: m.shopping.allItems,
+        value: m.wear.hereNow,
+        onTap: () {},
+      );
+      return elements;
+    }
+
     final legs = session?.orderedStoreIds ?? const <int>[];
     final activeIndex = legs.indexOf(session?.activeStoreId ?? -1);
     for (var i = 0; i < legs.length; i++) {

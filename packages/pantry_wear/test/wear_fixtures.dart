@@ -108,6 +108,7 @@ ShoppingSession testSession({
   Map<int, double> billedByStore = const {},
   String userId = 'casraf',
   List<String> memberIds = const [],
+  bool allStores = false,
 }) {
   final legs = storeIds.isNotEmpty ? storeIds : [?activeStoreId];
   return ShoppingSession(
@@ -128,6 +129,7 @@ ShoppingSession testSession({
     activeStoreId: activeStoreId,
     includeUnassigned: true,
     isPrivate: false,
+    allStores: allStores,
     billedTotal: billedTotal,
     billedCurrency: billedCurrency,
     lastSeenAt: 0,

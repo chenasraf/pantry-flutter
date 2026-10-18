@@ -12,6 +12,7 @@ import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/rrule.dart';
+import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
@@ -139,7 +140,9 @@ class ShoppingItemRow extends StatelessWidget {
   /// Category, store and list are left out: the category is already the header
   /// this row sits under, the store is the shop being stood in — the trip's own
   /// bar names it — and which list an item came from is not what a shopper
-  /// picks it up by. Every chip here is inert, so the row keeps its tap.
+  /// picks it up by. The exception is an all-stores trip, where no single shop
+  /// is being stood in, so the row names which of the trip's stores carry the
+  /// item. Every chip here is inert, so the row keeps its tap.
   List<Widget> _chips(
     BuildContext context,
     PrefsService prefs,
@@ -149,6 +152,21 @@ class ShoppingItemRow extends StatelessWidget {
   }) {
     final cs = Theme.of(context).colorScheme;
     final chips = <Widget>[];
+
+    if (controller.session.allStores &&
+        prefs.isItemChipVisible(ItemChipKind.store.key)) {
+      for (final store in controller.tripStoresOf(item)) {
+        final color = parseHexColor(store.color) ?? cs.primary;
+        chips.add(
+          EntityChip(
+            leading: Icon(storeIcon(store.icon), size: 12, color: color),
+            label: store.name,
+            textColor: color,
+            background: color.withValues(alpha: 0.13),
+          ),
+        );
+      }
+    }
 
     if (prefs.isItemChipVisible(ItemChipKind.label.key)) {
       for (final models.Label label in controller.labelsFor(item)) {

@@ -34,6 +34,7 @@ void main() {
   tearDown(() async {
     await manager.reset();
     await prefs.setSuggestArchivedItemsCache(false);
+    await prefs.setShopAllStoresCache(false);
     await prefs.setBarcodeFillNameCache(true);
     await prefs.setBarcodeFillImageCache(true);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -93,4 +94,28 @@ void main() {
       expect(prefs.barcodeFillImage, isTrue);
     },
   );
+
+  test('hydration caches the shop-all-stores pref', () async {
+    await UserPrefsService.instance.hydrate({'shopAllStores': true});
+
+    expect(prefs.shopAllStores, isTrue);
+  });
+
+  test(
+    'changing the shop-all-stores pref caches it and queues the write',
+    () async {
+      await UserPrefsService.instance.setShopAllStores(true);
+
+      expect(prefs.shopAllStores, isTrue);
+      expect(manager.pendingUserPrefs(), {'shopAllStores': true});
+    },
+  );
+
+  test('clearing the prefs turns shop-all-stores back off', () async {
+    await prefs.setShopAllStoresCache(true);
+
+    await prefs.clear();
+
+    expect(prefs.shopAllStores, isFalse);
+  });
 }

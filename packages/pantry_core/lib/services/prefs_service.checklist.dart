@@ -44,6 +44,16 @@ extension PrefsServiceChecklistSetters on PrefsService {
     notifyListeners();
   }
 
+  Future<void> setShopAllStoresCache(bool value) async {
+    if (_shopAllStores == value) return;
+    _shopAllStores = value;
+    await _storage.write(
+      key: PrefsService._shopAllStoresKey,
+      value: value.toString(),
+    );
+    notifyListeners();
+  }
+
   Future<void> setBarcodeFillNameCache(bool value) async {
     if (_barcodeFillName == value) return;
     _barcodeFillName = value;

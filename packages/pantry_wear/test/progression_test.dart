@@ -32,11 +32,16 @@ void main() {
     int? activeStoreId = 8,
     List<int> storeIds = const [7, 8, 9],
     List<ListItem> done = const [],
+    bool allStores = false,
   }) => ChecklistsController.seeded(
     houseId: 1,
     stores: [corner, hardware, market],
     done: done,
-    session: testSession(activeStoreId: activeStoreId, storeIds: storeIds),
+    session: testSession(
+      activeStoreId: activeStoreId,
+      storeIds: storeIds,
+      allStores: allStores,
+    ),
   );
 
   Future<void> pumpProgression(
@@ -177,6 +182,30 @@ void main() {
     });
   });
 
+  group('a trip shopping every store at once', () {
+    testWidgets('is one leg with nowhere to move on to', (tester) async {
+      await pumpProgression(
+        tester,
+        seeded(activeStoreId: null, allStores: true),
+      );
+
+      expect(find.text(m.shopping.allItems), findsOneWidget);
+      for (final store in [corner, hardware, market]) {
+        expect(find.text(store.name), findsNothing);
+      }
+      expect(find.byKey(const ValueKey('advance-trip')), findsNothing);
+      expect(find.byKey(const ValueKey('finish-trip')), findsOneWidget);
+    });
+
+    test('refuses to be advanced', () async {
+      final controller = seeded(activeStoreId: null, allStores: true);
+      addTearDown(controller.dispose);
+
+      expect(await controller.advanceTo(7), isFalse);
+      expect(controller.session?.activeStoreId, isNull);
+    });
+  });
+
   group('the till on the way out', () {
     testWidgets('moving on asks the leaving shop what it charged', (
       tester,
@@ -267,6 +296,25 @@ void main() {
       expect(find.text('Milk'), findsOneWidget);
       expect(find.text(corner.name), findsOneWidget);
       expect(find.text(m.shopping.finishTrip), findsOneWidget);
+    });
+
+    testWidgets('an all-stores trip names its one group as the whole trip', (
+      tester,
+    ) async {
+      await pumpSummary(
+        tester,
+        ChecklistsController.seeded(
+          houseId: 1,
+          stores: [corner, hardware],
+          session: testSession(storeIds: const [7, 8], allStores: true),
+          review: testReview([
+            (storeId: null, items: [testItem(id: 1, name: 'Milk')]),
+          ]),
+        ),
+      );
+
+      expect(find.text(m.shopping.allItems), findsOneWidget);
+      expect(find.text(m.shopping.anyStore), findsNothing);
     });
 
     testWidgets('a till with no figure says it is not set', (tester) async {

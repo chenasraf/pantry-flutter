@@ -37,6 +37,7 @@ class UserPrefsService {
     final cache = PrefsService.instance;
     final reuse = fresh<String>('reuseExistingItems');
     final suggestArchived = fresh<bool>('suggestArchivedItems');
+    final shopAllStores = fresh<bool>('shopAllStores');
     final fillName = fresh<bool>('barcodeFillName');
     final fillCategory = fresh<bool>('barcodeFillCategory');
     final fillImage = fresh<bool>('barcodeFillImage');
@@ -44,6 +45,7 @@ class UserPrefsService {
       if (reuse != null) cache.setReuseExistingItemsCache(reuse),
       if (suggestArchived != null)
         cache.setSuggestArchivedItemsCache(suggestArchived),
+      if (shopAllStores != null) cache.setShopAllStoresCache(shopAllStores),
       if (fillName != null) cache.setBarcodeFillNameCache(fillName),
       if (fillCategory != null) cache.setBarcodeFillCategoryCache(fillCategory),
       if (fillImage != null) cache.setBarcodeFillImageCache(fillImage),
@@ -58,6 +60,11 @@ class UserPrefsService {
   Future<void> setSuggestArchivedItems(bool value) async {
     await PrefsService.instance.setSuggestArchivedItemsCache(value);
     _enqueue({'suggestArchivedItems': value});
+  }
+
+  Future<void> setShopAllStores(bool value) async {
+    await PrefsService.instance.setShopAllStoresCache(value);
+    _enqueue({'shopAllStores': value});
   }
 
   Future<void> setBarcodeFill({bool? name, bool? category, bool? image}) async {

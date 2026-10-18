@@ -403,6 +403,13 @@ class _WearShellState extends State<WearShell> with WidgetsBindingObserver {
           color: parseHexColor(store.color) ?? _chrome,
         );
       }
+      if (session.allStores) {
+        return (
+          label: m.shopping.allItems,
+          icon: Icons.storefront,
+          color: _chrome,
+        );
+      }
       return (
         label: m.shopping.anyStore,
         icon: EntityIcons.store,

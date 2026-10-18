@@ -8,6 +8,11 @@ import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/shopping_session.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/cache_store.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+
+/// Whether the server can shop every chosen store as one combined list
+/// ([ShoppingSession.allStores]) and syncs the `shopAllStores` pref.
+bool get supportsShopAllStores => isServerPantryVersion('>=', '0.38.0');
 
 /// Scope of a history query: the caller's own trips, or every visible trip in
 /// the house (housemates' private trips excluded server-side).
@@ -91,6 +96,7 @@ class ShoppingService {
     required List<int> listIds,
     required List<int> storeIds,
     bool includeUnassigned = true,
+    bool allStores = false,
     List<int>? itemIds,
   }) async {
     try {
@@ -100,6 +106,7 @@ class ShoppingService {
           'listIds': listIds,
           'storeIds': storeIds,
           'includeUnassigned': includeUnassigned,
+          if (allStores) 'allStores': true,
           if (itemIds != null && itemIds.isNotEmpty) 'itemIds': itemIds,
         },
         fromJson: ShoppingSession.fromJson,

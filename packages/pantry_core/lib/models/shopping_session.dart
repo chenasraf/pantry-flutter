@@ -52,6 +52,10 @@ class ShoppingSession {
   final bool includeUnassigned;
   final bool isPrivate;
 
+  /// Every chosen store is shopped as one combined list: [activeStoreId] stays
+  /// null, there is no "next store", and checks are logged storeless.
+  final bool allStores;
+
   /// Storeless-session grand-total fallback (actual paid), null until entered.
   final double? billedTotal;
   final String? billedCurrency;
@@ -78,6 +82,7 @@ class ShoppingSession {
     required this.activeStoreId,
     required this.includeUnassigned,
     required this.isPrivate,
+    this.allStores = false,
     this.billedTotal,
     this.billedCurrency,
     required this.lastSeenAt,
@@ -104,6 +109,7 @@ class ShoppingSession {
         activeStoreId: json['activeStoreId'] as int?,
         includeUnassigned: json['includeUnassigned'] as bool,
         isPrivate: json['isPrivate'] as bool,
+        allStores: json['allStores'] as bool? ?? false,
         billedTotal: (json['billedTotal'] as num?)?.toDouble(),
         billedCurrency: json['billedCurrency'] as String?,
         lastSeenAt: json['lastSeenAt'] as int,
@@ -125,6 +131,7 @@ class ShoppingSession {
     'activeStoreId': activeStoreId,
     'includeUnassigned': includeUnassigned,
     'isPrivate': isPrivate,
+    'allStores': allStores,
     'billedTotal': billedTotal,
     'billedCurrency': billedCurrency,
     'lastSeenAt': lastSeenAt,
@@ -144,9 +151,10 @@ class ShoppingSession {
   }
 
   /// The store leg after [activeStoreId] in position order, or null when the
-  /// active store is the last one (or there is no active store). Backs the
-  /// "Next store" affordance.
+  /// active store is the last one, or on an [allStores] trip. With no active
+  /// store yet it is the first leg. Backs the "Next store" affordance.
   int? get nextStoreId {
+    if (allStores) return null;
     final ordered = orderedStoreIds;
     if (activeStoreId == null) return ordered.isEmpty ? null : ordered.first;
     final idx = ordered.indexOf(activeStoreId!);

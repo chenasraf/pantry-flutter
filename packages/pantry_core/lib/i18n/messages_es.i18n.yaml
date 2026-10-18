@@ -1029,8 +1029,12 @@ shopping:
   selectAll: Seleccionar todo
   selectNone: No seleccionar nada
   noListsToShop: Aún no hay listas para comprar.
+  shopAllStores: "Comprar todo a la vez"
+  shopAllStoresHint: "Al activarlo, todas las tiendas se unifican en una sola pestaña para comprar de una vez"
   storesTitle: Tiendas
   storesHint: "Activa o desactiva las tiendas que visitarás y arrástralas para ordenarlas."
+  storesHintAll: "Activa o desactiva las tiendas para las que compras."
+  allItems: "Todos los artículos"
   noStoresWithItems: Ninguna de las listas seleccionadas tiene artículos asignados a una tienda.
   includeUnassigned: Incluir artículos sin tienda asignada
   itemsToShop: Artículos para comprar

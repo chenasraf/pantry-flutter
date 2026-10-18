@@ -1029,8 +1029,12 @@ shopping:
   selectAll: בחירת הכול
   selectNone: ביטול הבחירה
   noListsToShop: אין עדיין רשימות לקנייה.
+  shopAllStores: "לקנות הכול בבת אחת"
+  shopAllStoresHint: "בחירה באפשרות זו תאחד את כל החנויות ללשונית אחת כדי לקנות הכול בסבב אחד"
   storesTitle: חנויות
   storesHint: "הפעילו או כבו את החנויות שתבקרו בהן, וגררו כדי לקבוע את הסדר."
+  storesHintAll: "הפעילו או כבו את החנויות שעבורן אתם קונים."
+  allItems: "כל הפריטים"
   noStoresWithItems: לאף אחת מהרשימות שנבחרו אין פריטים המשויכים לחנות.
   includeUnassigned: לכלול פריטים שאינם משויכים לחנות
   itemsToShop: פריטים לקנייה

@@ -170,7 +170,7 @@ class _SessionBodyState extends State<_SessionBody> {
   }
 
   Future<void> _jumpToStore(int storeId) async {
-    if (storeId == _c.session.activeStoreId) return;
+    if (_c.session.allStores || storeId == _c.session.activeStoreId) return;
     try {
       await _c.advance(storeId);
     } catch (_) {
@@ -244,6 +244,7 @@ class _SessionBodyState extends State<_SessionBody> {
           sessionId: controller.sessionId,
           mode: mode,
           activeStoreId: session.activeStoreId,
+          allStores: session.allStores,
           stores: controller.stores,
           reminders: controller.remindersFor(moment),
           onManageReminders: _openReminders,
@@ -296,7 +297,11 @@ class _SessionBodyState extends State<_SessionBody> {
       onRefresh: () => _c.poll(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(activeStore?.name ?? m.shopping.startTitle),
+          title: Text(
+            session.allStores
+                ? m.shopping.allItems
+                : activeStore?.name ?? m.shopping.startTitle,
+          ),
           actions: [
             // Privacy belongs to the shopper who started the trip; a housemate
             // who joined 404s on it.
