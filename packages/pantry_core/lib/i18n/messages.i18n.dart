@@ -6247,6 +6247,66 @@ class MarkdownEditorMessages {
   /// "Rich text"
   /// ```
   String get editRich => """Rich text""";
+
+  /// ```dart
+  /// "Insert table"
+  /// ```
+  String get insertTable => """Insert table""";
+
+  /// ```dart
+  /// "Columns"
+  /// ```
+  String get tableColumns => """Columns""";
+
+  /// ```dart
+  /// "Rows"
+  /// ```
+  String get tableRows => """Rows""";
+
+  /// ```dart
+  /// "Column $n"
+  /// ```
+  String tableColumnHeader(int n) => """Column $n""";
+
+  /// ```dart
+  /// "Insert"
+  /// ```
+  String get insert => """Insert""";
+
+  /// ```dart
+  /// "Add row"
+  /// ```
+  String get addTableRow => """Add row""";
+
+  /// ```dart
+  /// "Add column"
+  /// ```
+  String get addTableColumn => """Add column""";
+
+  /// ```dart
+  /// "Remove row"
+  /// ```
+  String get removeTableRow => """Remove row""";
+
+  /// ```dart
+  /// "Remove column"
+  /// ```
+  String get removeTableColumn => """Remove column""";
+
+  /// ```dart
+  /// "Delete table"
+  /// ```
+  String get deleteTable => """Delete table""";
+
+  /// ```dart
+  /// "Edit table"
+  /// ```
+  String get editTable => """Edit table""";
+
+  /// ```dart
+  /// "Done"
+  /// ```
+  String get doneEditingTable => """Done""";
 }
 
 class WearMessages {
@@ -8378,6 +8438,17 @@ Password: pantry-rocks""",
   """sync.retry""": """Retry now""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Rich text""",
+  """markdownEditor.insertTable""": """Insert table""",
+  """markdownEditor.tableColumns""": """Columns""",
+  """markdownEditor.tableRows""": """Rows""",
+  """markdownEditor.insert""": """Insert""",
+  """markdownEditor.addTableRow""": """Add row""",
+  """markdownEditor.addTableColumn""": """Add column""",
+  """markdownEditor.removeTableRow""": """Remove row""",
+  """markdownEditor.removeTableColumn""": """Remove column""",
+  """markdownEditor.deleteTable""": """Delete table""",
+  """markdownEditor.editTable""": """Edit table""",
+  """markdownEditor.doneEditingTable""": """Done""",
   """wear.notSignedIn""": """Sign in on your phone""",
   """wear.changeList""": """Change list""",
   """wear.progression""": """Progression""",

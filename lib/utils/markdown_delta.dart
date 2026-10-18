@@ -11,17 +11,26 @@ import 'package:markdown_quill/markdown_quill.dart';
 /// gitHubFlavored gives us task-list checkboxes (`- [ ]`) and strikethrough,
 /// which the app relies on. [md.Document] is single-use per parse, so build a
 /// fresh converter each time rather than sharing one instance.
+///
+/// Quill has no table block, so a table is carried as an opaque embed holding
+/// its raw markdown, which is written back verbatim. Without it the table
+/// flattens into its cell text and the pipes and rows are lost on save.
 MarkdownToDelta _mdToDelta() => MarkdownToDelta(
   markdownDocument: md.Document(
     encodeHtml: false,
     extensionSet: md.ExtensionSet.gitHubFlavored,
+    blockSyntaxes: const [EmbeddableTableSyntax()],
   ),
+  customElementToEmbeddable: {
+    EmbeddableTable.tableType: EmbeddableTable.fromMdSyntax,
+  },
 );
 
 /// The relaxed escaper only escapes markdown metacharacters inside styled runs,
 /// so plain prose keeps its punctuation (`bread.` stays `bread.`, not `bread\.`).
 final _deltaToMd = DeltaToMarkdown(
   customContentHandler: DeltaToMarkdown.escapeSpecialCharactersRelaxed,
+  customEmbedHandlers: {EmbeddableTable.tableType: EmbeddableTable.toMdSyntax},
 );
 
 /// Parse [markdown] into a Quill [Delta].

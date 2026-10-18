@@ -1202,6 +1202,18 @@ sync:
 markdownEditor:
   editSource: Markdown
   editRich: Texto enriquecido
+  insertTable: Insertar tabla
+  tableColumns: Columnas
+  tableRows: Filas
+  tableColumnHeader(int n): "Columna $n"
+  insert: Insertar
+  addTableRow: Añadir fila
+  addTableColumn: Añadir columna
+  removeTableRow: Quitar fila
+  removeTableColumn: Quitar columna
+  deleteTable: Eliminar tabla
+  editTable: Editar tabla
+  doneEditingTable: Listo
 wear:
   signedInAs(String name): "Sesión iniciada como ${name}"
   notSignedIn: Inicia sesión en tu teléfono

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill/quill_delta.dart';
+import 'package:markdown_quill/markdown_quill.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry/utils/markdown_delta.dart';
+import 'package:pantry/widgets/markdown_table_embed.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 
 /// A markdown editor with two synced views: a rich WYSIWYG surface
@@ -62,6 +64,16 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   late QuillController _controller;
   late final ScrollController _scrollController = ScrollController();
   late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
+
+  final TableEmbedHost _embedHost = TableEmbedHost();
+  final GlobalKey<EditorState> _editorKey = GlobalKey();
+
+  /// Set while the user works in a table. Quill's gesture layer is removed
+  /// meanwhile: its tap recognizer accepts taps it has lost, and its double
+  /// tap, long press and drag selection act on the table as one character,
+  /// fighting the cell for every gesture. Disposing the layer mid-press also
+  /// withdraws it from that press, so even the first drag lands in the cell.
+  bool _tableActive = false;
   bool get _ownsFocusNode => widget.focusNode == null;
 
   /// Raw-markdown view, populated from the rich document on entering source mode.
@@ -107,6 +119,26 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   void _onRichChanged() => _emit(documentToMarkdown(_controller.document));
 
   void _onSourceChanged(String text) => _emit(text);
+
+  void _onEditorPointerDown(PointerDownEvent event) {
+    final inTable = _embedHost.covers(event.position);
+    if (inTable == _tableActive) return;
+    setState(() => _tableActive = inTable);
+    if (!inTable) _placeCaretAt(event.position);
+  }
+
+  /// With the gesture layer down, the press that leaves a table never reaches
+  /// Quill, so its caret placement and focus are done here.
+  void _placeCaretAt(Offset globalPosition) {
+    final renderEditor = _editorKey.currentState?.renderEditor;
+    if (renderEditor == null) return;
+    final position = renderEditor.getPositionForOffset(globalPosition);
+    _controller.updateSelection(
+      TextSelection.collapsed(offset: position.offset),
+      ChangeSource.local,
+    );
+    _focusNode.requestFocus();
+  }
 
   /// Rich → source: fill the source field with the document's markdown.
   void _enterSourceMode() {
@@ -168,6 +200,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
     _sourceController.dispose();
     _sourceFocus.dispose();
     _scrollController.dispose();
+    _embedHost.dispose();
     if (_ownsFocusNode) _focusNode.dispose();
     super.dispose();
   }
@@ -210,22 +243,35 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
 
   Widget _richEditor() => Directionality(
     textDirection: _dir,
-    child: QuillEditor(
-      controller: _controller,
-      focusNode: _focusNode,
-      scrollController: _scrollController,
-      config: QuillEditorConfig(
-        placeholder: widget.placeholder,
-        padding: widget.contentPadding,
-        autoFocus: widget.autofocus,
-        expands: widget.expands,
-        scrollable: true,
-        // The persistent toolbar sits above the editor, so the OS selection
-        // popover covers it for selections near the top — hiding formatting when
-        // the user wants it. Fold the inline formats into the popover so they
-        // stay reachable.
-        contextMenuBuilder: _buildSelectionMenu,
-        linkActionPickerDelegate: _pickLinkAction,
+    child: Focus(
+      focusNode: _embedHost.focusParent,
+      child: Listener(
+        behavior: HitTestBehavior.translucent,
+        onPointerDown: _onEditorPointerDown,
+        child: QuillEditor(
+          controller: _controller,
+          focusNode: _focusNode,
+          scrollController: _scrollController,
+          config: QuillEditorConfig(
+            editorKey: _editorKey,
+            enableInteractiveSelection: !_tableActive,
+            placeholder: widget.placeholder,
+            padding: widget.contentPadding,
+            autoFocus: widget.autofocus,
+            expands: widget.expands,
+            scrollable: true,
+            // The persistent toolbar sits above the editor, so the OS selection
+            // popover covers it for selections near the top — hiding formatting when
+            // the user wants it. Fold the inline formats into the popover so they
+            // stay reachable.
+            contextMenuBuilder: _buildSelectionMenu,
+            linkActionPickerDelegate: _pickLinkAction,
+            embedBuilders: [TableEmbedBuilder(_embedHost)],
+            // A tap released before the gesture layer is torn down still
+            // reaches Quill, which would pull focus back from the cell.
+            onTapUp: (details, _) => _embedHost.covers(details.globalPosition),
+          ),
+        ),
       ),
     ),
   );
@@ -344,7 +390,15 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
     }
     return Row(
       children: [
-        Expanded(child: _toolbar()),
+        Expanded(
+          child: ListenableBuilder(
+            listenable: _embedHost,
+            builder: (context, _) {
+              final cell = _embedHost.activeCell;
+              return cell != null ? TableCellToolbar(cell: cell) : _toolbar();
+            },
+          ),
+        ),
         if (ownsToggle) ...[const SizedBox(width: 4), _modeToggle()],
       ],
     );
@@ -359,7 +413,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
   Widget _toolbar() {
     return QuillSimpleToolbar(
       controller: _controller,
-      config: const QuillSimpleToolbarConfig(
+      config: QuillSimpleToolbarConfig(
         multiRowsDisplay: false,
         showDividers: false,
         // Blend into whatever sits behind the editor instead of flutter_quill's
@@ -394,7 +448,31 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
         showSuperscript: false,
         showUndo: false,
         showRedo: false,
+        customButtons: [
+          QuillToolbarCustomButtonOptions(
+            tooltip: m.markdownEditor.insertTable,
+            icon: const Icon(
+              Icons.table_chart_outlined,
+              size: kDefaultIconSize * 1.2,
+            ),
+            onPressed: _insertTable,
+          ),
+        ],
       ),
+    );
+  }
+
+  Future<void> _insertTable() async {
+    final selection = _controller.selection.isValid
+        ? _controller.selection
+        : TextSelection.collapsed(offset: _controller.document.length - 1);
+    final table = await showInsertTableDialog(context);
+    if (table == null || !mounted) return;
+    _controller.replaceText(
+      selection.start,
+      selection.end - selection.start,
+      EmbeddableTable(table.toMarkdown()),
+      null,
     );
   }
 }

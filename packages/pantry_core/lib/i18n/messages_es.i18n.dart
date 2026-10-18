@@ -6307,6 +6307,66 @@ class MarkdownEditorMessagesEs extends MarkdownEditorMessages {
   /// "Texto enriquecido"
   /// ```
   String get editRich => """Texto enriquecido""";
+
+  /// ```dart
+  /// "Insertar tabla"
+  /// ```
+  String get insertTable => """Insertar tabla""";
+
+  /// ```dart
+  /// "Columnas"
+  /// ```
+  String get tableColumns => """Columnas""";
+
+  /// ```dart
+  /// "Filas"
+  /// ```
+  String get tableRows => """Filas""";
+
+  /// ```dart
+  /// "Columna $n"
+  /// ```
+  String tableColumnHeader(int n) => """Columna $n""";
+
+  /// ```dart
+  /// "Insertar"
+  /// ```
+  String get insert => """Insertar""";
+
+  /// ```dart
+  /// "Añadir fila"
+  /// ```
+  String get addTableRow => """Añadir fila""";
+
+  /// ```dart
+  /// "Añadir columna"
+  /// ```
+  String get addTableColumn => """Añadir columna""";
+
+  /// ```dart
+  /// "Quitar fila"
+  /// ```
+  String get removeTableRow => """Quitar fila""";
+
+  /// ```dart
+  /// "Quitar columna"
+  /// ```
+  String get removeTableColumn => """Quitar columna""";
+
+  /// ```dart
+  /// "Eliminar tabla"
+  /// ```
+  String get deleteTable => """Eliminar tabla""";
+
+  /// ```dart
+  /// "Editar tabla"
+  /// ```
+  String get editTable => """Editar tabla""";
+
+  /// ```dart
+  /// "Listo"
+  /// ```
+  String get doneEditingTable => """Listo""";
 }
 
 class WearMessagesEs extends WearMessages {
@@ -8490,6 +8550,17 @@ Contraseña: pantry-rocks""",
   """sync.retry""": """Reintentar""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Texto enriquecido""",
+  """markdownEditor.insertTable""": """Insertar tabla""",
+  """markdownEditor.tableColumns""": """Columnas""",
+  """markdownEditor.tableRows""": """Filas""",
+  """markdownEditor.insert""": """Insertar""",
+  """markdownEditor.addTableRow""": """Añadir fila""",
+  """markdownEditor.addTableColumn""": """Añadir columna""",
+  """markdownEditor.removeTableRow""": """Quitar fila""",
+  """markdownEditor.removeTableColumn""": """Quitar columna""",
+  """markdownEditor.deleteTable""": """Eliminar tabla""",
+  """markdownEditor.editTable""": """Editar tabla""",
+  """markdownEditor.doneEditingTable""": """Listo""",
   """wear.notSignedIn""": """Inicia sesión en tu teléfono""",
   """wear.changeList""": """Cambiar de lista""",
   """wear.progression""": """Recorrido""",

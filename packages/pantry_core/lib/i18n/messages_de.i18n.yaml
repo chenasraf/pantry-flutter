@@ -1202,6 +1202,18 @@ sync:
 markdownEditor:
   editSource: Markdown
   editRich: Rich-Text
+  insertTable: Tabelle einfügen
+  tableColumns: Spalten
+  tableRows: Zeilen
+  tableColumnHeader(int n): "Spalte $n"
+  insert: Einfügen
+  addTableRow: Zeile hinzufügen
+  addTableColumn: Spalte hinzufügen
+  removeTableRow: Zeile entfernen
+  removeTableColumn: Spalte entfernen
+  deleteTable: Tabelle löschen
+  editTable: Tabelle bearbeiten
+  doneEditingTable: Fertig
 wear:
   signedInAs(String name): "Angemeldet als ${name}"
   notSignedIn: Melde dich auf deinem Telefon an

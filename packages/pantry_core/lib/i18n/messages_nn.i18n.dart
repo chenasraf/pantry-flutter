@@ -6267,6 +6267,66 @@ class MarkdownEditorMessagesNn extends MarkdownEditorMessages {
   /// "Rik tekst"
   /// ```
   String get editRich => """Rik tekst""";
+
+  /// ```dart
+  /// "Set inn tabell"
+  /// ```
+  String get insertTable => """Set inn tabell""";
+
+  /// ```dart
+  /// "Kolonnar"
+  /// ```
+  String get tableColumns => """Kolonnar""";
+
+  /// ```dart
+  /// "Rader"
+  /// ```
+  String get tableRows => """Rader""";
+
+  /// ```dart
+  /// "Kolonne $n"
+  /// ```
+  String tableColumnHeader(int n) => """Kolonne $n""";
+
+  /// ```dart
+  /// "Set inn"
+  /// ```
+  String get insert => """Set inn""";
+
+  /// ```dart
+  /// "Legg til rad"
+  /// ```
+  String get addTableRow => """Legg til rad""";
+
+  /// ```dart
+  /// "Legg til kolonne"
+  /// ```
+  String get addTableColumn => """Legg til kolonne""";
+
+  /// ```dart
+  /// "Fjern rad"
+  /// ```
+  String get removeTableRow => """Fjern rad""";
+
+  /// ```dart
+  /// "Fjern kolonne"
+  /// ```
+  String get removeTableColumn => """Fjern kolonne""";
+
+  /// ```dart
+  /// "Slett tabell"
+  /// ```
+  String get deleteTable => """Slett tabell""";
+
+  /// ```dart
+  /// "Rediger tabell"
+  /// ```
+  String get editTable => """Rediger tabell""";
+
+  /// ```dart
+  /// "Ferdig"
+  /// ```
+  String get doneEditingTable => """Ferdig""";
 }
 
 class WearMessagesNn extends WearMessages {
@@ -8414,6 +8474,17 @@ Passord: pantry""",
   """sync.retry""": """Prøv igjen no""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Rik tekst""",
+  """markdownEditor.insertTable""": """Set inn tabell""",
+  """markdownEditor.tableColumns""": """Kolonnar""",
+  """markdownEditor.tableRows""": """Rader""",
+  """markdownEditor.insert""": """Set inn""",
+  """markdownEditor.addTableRow""": """Legg til rad""",
+  """markdownEditor.addTableColumn""": """Legg til kolonne""",
+  """markdownEditor.removeTableRow""": """Fjern rad""",
+  """markdownEditor.removeTableColumn""": """Fjern kolonne""",
+  """markdownEditor.deleteTable""": """Slett tabell""",
+  """markdownEditor.editTable""": """Rediger tabell""",
+  """markdownEditor.doneEditingTable""": """Ferdig""",
   """wear.notSignedIn""": """Logg inn på telefonen din""",
   """wear.changeList""": """Byt liste""",
   """wear.progression""": """Runde""",

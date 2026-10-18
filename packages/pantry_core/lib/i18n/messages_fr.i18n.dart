@@ -6314,6 +6314,66 @@ class MarkdownEditorMessagesFr extends MarkdownEditorMessages {
   /// "Texte enrichi"
   /// ```
   String get editRich => """Texte enrichi""";
+
+  /// ```dart
+  /// "Insérer un tableau"
+  /// ```
+  String get insertTable => """Insérer un tableau""";
+
+  /// ```dart
+  /// "Colonnes"
+  /// ```
+  String get tableColumns => """Colonnes""";
+
+  /// ```dart
+  /// "Lignes"
+  /// ```
+  String get tableRows => """Lignes""";
+
+  /// ```dart
+  /// "Colonne $n"
+  /// ```
+  String tableColumnHeader(int n) => """Colonne $n""";
+
+  /// ```dart
+  /// "Insérer"
+  /// ```
+  String get insert => """Insérer""";
+
+  /// ```dart
+  /// "Ajouter une ligne"
+  /// ```
+  String get addTableRow => """Ajouter une ligne""";
+
+  /// ```dart
+  /// "Ajouter une colonne"
+  /// ```
+  String get addTableColumn => """Ajouter une colonne""";
+
+  /// ```dart
+  /// "Supprimer la ligne"
+  /// ```
+  String get removeTableRow => """Supprimer la ligne""";
+
+  /// ```dart
+  /// "Supprimer la colonne"
+  /// ```
+  String get removeTableColumn => """Supprimer la colonne""";
+
+  /// ```dart
+  /// "Supprimer le tableau"
+  /// ```
+  String get deleteTable => """Supprimer le tableau""";
+
+  /// ```dart
+  /// "Modifier le tableau"
+  /// ```
+  String get editTable => """Modifier le tableau""";
+
+  /// ```dart
+  /// "Terminé"
+  /// ```
+  String get doneEditingTable => """Terminé""";
 }
 
 class WearMessagesFr extends WearMessages {
@@ -8514,6 +8574,17 @@ Mot de passe : pantry-rocks""",
   """sync.retry""": """Réessayer""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Texte enrichi""",
+  """markdownEditor.insertTable""": """Insérer un tableau""",
+  """markdownEditor.tableColumns""": """Colonnes""",
+  """markdownEditor.tableRows""": """Lignes""",
+  """markdownEditor.insert""": """Insérer""",
+  """markdownEditor.addTableRow""": """Ajouter une ligne""",
+  """markdownEditor.addTableColumn""": """Ajouter une colonne""",
+  """markdownEditor.removeTableRow""": """Supprimer la ligne""",
+  """markdownEditor.removeTableColumn""": """Supprimer la colonne""",
+  """markdownEditor.deleteTable""": """Supprimer le tableau""",
+  """markdownEditor.editTable""": """Modifier le tableau""",
+  """markdownEditor.doneEditingTable""": """Terminé""",
   """wear.notSignedIn""": """Connectez-vous sur votre téléphone""",
   """wear.changeList""": """Changer de liste""",
   """wear.progression""": """Parcours""",

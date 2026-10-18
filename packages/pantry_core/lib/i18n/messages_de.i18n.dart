@@ -6322,6 +6322,66 @@ class MarkdownEditorMessagesDe extends MarkdownEditorMessages {
   /// "Rich-Text"
   /// ```
   String get editRich => """Rich-Text""";
+
+  /// ```dart
+  /// "Tabelle einfügen"
+  /// ```
+  String get insertTable => """Tabelle einfügen""";
+
+  /// ```dart
+  /// "Spalten"
+  /// ```
+  String get tableColumns => """Spalten""";
+
+  /// ```dart
+  /// "Zeilen"
+  /// ```
+  String get tableRows => """Zeilen""";
+
+  /// ```dart
+  /// "Spalte $n"
+  /// ```
+  String tableColumnHeader(int n) => """Spalte $n""";
+
+  /// ```dart
+  /// "Einfügen"
+  /// ```
+  String get insert => """Einfügen""";
+
+  /// ```dart
+  /// "Zeile hinzufügen"
+  /// ```
+  String get addTableRow => """Zeile hinzufügen""";
+
+  /// ```dart
+  /// "Spalte hinzufügen"
+  /// ```
+  String get addTableColumn => """Spalte hinzufügen""";
+
+  /// ```dart
+  /// "Zeile entfernen"
+  /// ```
+  String get removeTableRow => """Zeile entfernen""";
+
+  /// ```dart
+  /// "Spalte entfernen"
+  /// ```
+  String get removeTableColumn => """Spalte entfernen""";
+
+  /// ```dart
+  /// "Tabelle löschen"
+  /// ```
+  String get deleteTable => """Tabelle löschen""";
+
+  /// ```dart
+  /// "Tabelle bearbeiten"
+  /// ```
+  String get editTable => """Tabelle bearbeiten""";
+
+  /// ```dart
+  /// "Fertig"
+  /// ```
+  String get doneEditingTable => """Fertig""";
 }
 
 class WearMessagesDe extends WearMessages {
@@ -8526,6 +8586,17 @@ Passwort: pantry-rocks""",
   """sync.retry""": """Erneut versuchen""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Rich-Text""",
+  """markdownEditor.insertTable""": """Tabelle einfügen""",
+  """markdownEditor.tableColumns""": """Spalten""",
+  """markdownEditor.tableRows""": """Zeilen""",
+  """markdownEditor.insert""": """Einfügen""",
+  """markdownEditor.addTableRow""": """Zeile hinzufügen""",
+  """markdownEditor.addTableColumn""": """Spalte hinzufügen""",
+  """markdownEditor.removeTableRow""": """Zeile entfernen""",
+  """markdownEditor.removeTableColumn""": """Spalte entfernen""",
+  """markdownEditor.deleteTable""": """Tabelle löschen""",
+  """markdownEditor.editTable""": """Tabelle bearbeiten""",
+  """markdownEditor.doneEditingTable""": """Fertig""",
   """wear.notSignedIn""": """Melde dich auf deinem Telefon an""",
   """wear.changeList""": """Liste wechseln""",
   """wear.progression""": """Verlauf""",

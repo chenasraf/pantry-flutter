@@ -6255,6 +6255,66 @@ class MarkdownEditorMessagesHe extends MarkdownEditorMessages {
   /// "טקסט עשיר"
   /// ```
   String get editRich => """טקסט עשיר""";
+
+  /// ```dart
+  /// "הוספת טבלה"
+  /// ```
+  String get insertTable => """הוספת טבלה""";
+
+  /// ```dart
+  /// "עמודות"
+  /// ```
+  String get tableColumns => """עמודות""";
+
+  /// ```dart
+  /// "שורות"
+  /// ```
+  String get tableRows => """שורות""";
+
+  /// ```dart
+  /// "עמודה $n"
+  /// ```
+  String tableColumnHeader(int n) => """עמודה $n""";
+
+  /// ```dart
+  /// "הוספה"
+  /// ```
+  String get insert => """הוספה""";
+
+  /// ```dart
+  /// "הוספת שורה"
+  /// ```
+  String get addTableRow => """הוספת שורה""";
+
+  /// ```dart
+  /// "הוספת עמודה"
+  /// ```
+  String get addTableColumn => """הוספת עמודה""";
+
+  /// ```dart
+  /// "הסרת שורה"
+  /// ```
+  String get removeTableRow => """הסרת שורה""";
+
+  /// ```dart
+  /// "הסרת עמודה"
+  /// ```
+  String get removeTableColumn => """הסרת עמודה""";
+
+  /// ```dart
+  /// "מחיקת טבלה"
+  /// ```
+  String get deleteTable => """מחיקת טבלה""";
+
+  /// ```dart
+  /// "עריכת טבלה"
+  /// ```
+  String get editTable => """עריכת טבלה""";
+
+  /// ```dart
+  /// "סיום"
+  /// ```
+  String get doneEditingTable => """סיום""";
 }
 
 class WearMessagesHe extends WearMessages {
@@ -8356,6 +8416,17 @@ Map<String, String> get messagesHeMap => {
   """sync.retry""": """נסה שוב""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """טקסט עשיר""",
+  """markdownEditor.insertTable""": """הוספת טבלה""",
+  """markdownEditor.tableColumns""": """עמודות""",
+  """markdownEditor.tableRows""": """שורות""",
+  """markdownEditor.insert""": """הוספה""",
+  """markdownEditor.addTableRow""": """הוספת שורה""",
+  """markdownEditor.addTableColumn""": """הוספת עמודה""",
+  """markdownEditor.removeTableRow""": """הסרת שורה""",
+  """markdownEditor.removeTableColumn""": """הסרת עמודה""",
+  """markdownEditor.deleteTable""": """מחיקת טבלה""",
+  """markdownEditor.editTable""": """עריכת טבלה""",
+  """markdownEditor.doneEditingTable""": """סיום""",
   """wear.notSignedIn""": """היכנס מהטלפון שלך""",
   """wear.changeList""": """החלפת רשימה""",
   """wear.progression""": """מסלול""",

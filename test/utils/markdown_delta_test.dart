@@ -45,4 +45,33 @@ void main() {
       expect(normalizeMarkdown(once), once);
     });
   });
+
+  group('tables', () {
+    const table =
+        '| Item | Qty |\n'
+        '| :--- | ---: |\n'
+        '| Milk | 2 |\n'
+        '| Eggs | 12 |';
+
+    test('a lone table survives verbatim', () {
+      expect(normalizeMarkdown(table), table);
+    });
+
+    test('a table between paragraphs keeps its rows and neighbours', () {
+      const source = 'Before\n\n$table\n\nAfter';
+      final once = normalizeMarkdown(source);
+      expect(once, contains(table));
+      expect(once, startsWith('Before'));
+      expect(once, endsWith('After'));
+      expect(normalizeMarkdown(once), once);
+    });
+
+    test('editing text elsewhere leaves the table intact', () {
+      final document = markdownToDocument('Groceries\n\n$table');
+      document.insert(0, 'My ');
+      final markdown = documentToMarkdown(document);
+      expect(markdown, startsWith('My Groceries'));
+      expect(markdown, contains(table));
+    });
+  });
 }

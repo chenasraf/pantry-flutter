@@ -1212,6 +1212,18 @@ sync:
 markdownEditor:
   editSource: Markdown
   editRich: Rich text
+  insertTable: Insert table
+  tableColumns: Columns
+  tableRows: Rows
+  tableColumnHeader(int n): "Column $n"
+  insert: Insert
+  addTableRow: Add row
+  addTableColumn: Add column
+  removeTableRow: Remove row
+  removeTableColumn: Remove column
+  deleteTable: Delete table
+  editTable: Edit table
+  doneEditingTable: Done
 wear:
   signedInAs(String name): "Signed in as ${name}"
   notSignedIn: Sign in on your phone

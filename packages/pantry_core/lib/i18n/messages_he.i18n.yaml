@@ -1202,6 +1202,18 @@ sync:
 markdownEditor:
   editSource: Markdown
   editRich: טקסט עשיר
+  insertTable: הוספת טבלה
+  tableColumns: עמודות
+  tableRows: שורות
+  tableColumnHeader(int n): "עמודה $n"
+  insert: הוספה
+  addTableRow: הוספת שורה
+  addTableColumn: הוספת עמודה
+  removeTableRow: הסרת שורה
+  removeTableColumn: הסרת עמודה
+  deleteTable: מחיקת טבלה
+  editTable: עריכת טבלה
+  doneEditingTable: סיום
 wear:
   signedInAs(String name): "מחובר בתור ${name}"
   notSignedIn: היכנס מהטלפון שלך

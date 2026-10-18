@@ -1350,6 +1350,18 @@ sync:
 markdownEditor:
   editSource: Markdown
   editRich: Rik tekst
+  insertTable: Set inn tabell
+  tableColumns: Kolonnar
+  tableRows: Rader
+  tableColumnHeader(int n): "Kolonne $n"
+  insert: Set inn
+  addTableRow: Legg til rad
+  addTableColumn: Legg til kolonne
+  removeTableRow: Fjern rad
+  removeTableColumn: Fjern kolonne
+  deleteTable: Slett tabell
+  editTable: Rediger tabell
+  doneEditingTable: Ferdig
 wear:
   signedInAs(String name): "Innlogga som ${name}"
   notSignedIn: Logg inn på telefonen din
