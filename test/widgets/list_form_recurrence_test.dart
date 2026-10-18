@@ -5,6 +5,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/views/checklists/switcher_form_stage.dart';
 
@@ -21,11 +22,7 @@ void main() {
 
   void seedRecurrenceDefault(bool enabled) {
     ServerVersionService.instance.debugSeed(
-      features: {
-        'checklist-color': true,
-        if (enabled) kListDefaultRecurrenceFeature: true,
-      },
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse(enabled ? '0.31.0' : '0.30.0'),
     );
   }
 

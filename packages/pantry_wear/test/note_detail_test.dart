@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry_wear/src/notes/note_detail_page.dart';
 import 'package:pantry_wear/src/notes/note_route.dart';
 import 'package:pantry_wear/src/notes/notes_controller.dart';
@@ -244,8 +245,7 @@ void main() {
   ) async {
     sizeToWatch(tester);
     ServerVersionService.instance.debugSeed(
-      features: {'note-file-sync': true},
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse('0.34.0'),
     );
     addTearDown(ServerVersionService.instance.debugSeed);
 

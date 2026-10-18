@@ -150,10 +150,7 @@ class _BulkSelectOnboardingPageState extends State<BulkSelectOnboardingPage>
               );
             },
           ),
-          const ServerRequirementNote(
-            feature: 'batch-operations',
-            requiredVersion: '0.20.0',
-          ),
+          const ServerRequirementNote(requiredVersion: '0.20.0'),
         ],
       ),
     );

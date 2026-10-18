@@ -209,8 +209,7 @@ class _NotesWallBody extends StatelessWidget {
         icon: Icons.sort,
         label: '${m.common.sort}: ${noteSortLabel(controller.sortBy)}',
       ),
-      if (hasFeature('note-trash') &&
-          controller.permissions.canDeleteNotes) ...[
+      if (ServerFeature.noteTrash && controller.permissions.canDeleteNotes) ...[
         const OverflowDivider(),
         OverflowAction(
           value: 'view_trash',

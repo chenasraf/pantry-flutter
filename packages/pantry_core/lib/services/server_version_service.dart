@@ -9,63 +9,42 @@ import 'package:pantry_core/services/cache_store.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/utils/version.dart';
 
-/// Owns the Nextcloud and Pantry version state, plus the feature-support map.
+/// Owns the Nextcloud and Pantry version state.
 ///
 /// Reads `/ocs/v2.php/cloud/capabilities` (public; can be probed pre-login
-/// with `fetch(serverUrl: ...)`) and consumes the Pantry capability shape:
+/// with `fetch(serverUrl: ...)`) and takes the Pantry version from
+/// `capabilities.pantry.version`:
 ///
 /// ```json
 /// "pantry": {
-///   "version": { "major": 0, "minor": 15, "micro": 0,
-///                "string": "0.15.0", "array": [0, 15, 0] },
-///   "features": [
-///     "houses", "checklists", "categories", "category-sort",
-///     "photos", "notes", "notifications", "item-images",
-///     "recurring-items", "move-items", "one-off-items", "activity",
-///     "soft-delete", "pref-tap-row-to-complete", "pref-category-spacing",
-///     "roles", "share-users"
-///   ]
+///   "version": { "major": 0, "minor": 16, "micro": 0,
+///                "string": "0.16.0", "array": [0, 16, 0] }
 /// }
 /// ```
 ///
-/// Feature names are kebab-case as exposed by the backend.
-///
-/// For Pantry installs that don't yet register the capability (everything
-/// shipped before this rolls out), versions and features are inferred from
-/// runtime probes — each gated feature has a probe request whose response
-/// discriminates "route exists" vs "missing". Only features used for client
-/// gating need an entry in [_featureProbes]; everything else (`houses`,
-/// `checklists`, etc.) has existed since pre-capability releases and never
-/// needs gating, so [hasFeature] returning `false` for them on an old server
-/// is not a problem in practice. Probe results back-feed both [hasFeature]
-/// and version-bound inference in [isServerPantryVersion], so callers don't
-/// need to care which source the answer came from.
+/// Pantry releases before 0.16.0 don't register the capability. For those the
+/// version is bounded by runtime probes — each probe's response discriminates
+/// "route exists" vs "missing" for a feature in [_featureIntroduced], and
+/// [isServerPantryVersion] answers from the resulting bounds.
 class ServerVersionService {
   ServerVersionService._();
   static final ServerVersionService instance = ServerVersionService._();
 
-  /// Pantry feature → minimum version that introduced it. Used to bound the
-  /// server version when the capability isn't reported. Keep in sync with
-  /// what the Pantry backend will eventually publish under
-  /// `capabilities.pantry.features`.
+  /// Probed feature → Pantry version that introduced it. Bounds the server
+  /// version when the capability isn't reported.
   static const Map<String, String> _featureIntroduced = {
     'category-sort': '0.15.0',
     'item-authors': '0.15.0',
   };
 
-  /// Pantry feature → probe to run when capabilities don't cover it. The
-  /// probe must be a no-op for both ancient and current backends; we send it
-  /// on every login.
+  /// Feature → probe to run when the server reports no version. The probe
+  /// must be a no-op for both ancient and current backends; it is sent on
+  /// every login.
   static final Map<String, _FeatureProbe> _featureProbes = {
     'category-sort': const _FeatureProbe(
       path: '/houses/0/categories/reorder',
       body: {'order': []},
     ),
-    'checklist-sort': const _FeatureProbe(
-      path: '/houses/0/lists/reorder',
-      body: {'items': []},
-    ),
-    'stores': const _FeatureProbe(path: '/houses/0/stores', body: {}),
   };
 
   Version? _serverVersion;
@@ -89,16 +68,16 @@ class ServerVersionService {
   /// clients. An administrator toggle, so it can come and go on one server.
   bool get supportsWebPush => _webPush;
 
+  /// Probe results, keyed by names in [_featureIntroduced].
   final Map<String, bool> _features = {};
-  bool _featuresAuthoritative = false;
 
   /// On-disk snapshot of the last successful capabilities fetch. Rehydrated by
   /// [loadCached] before the first frame so cold offline launches gate UI on
-  /// the last-known features instead of having every [hasFeature] return
-  /// false until the network call lands.
+  /// the last-known version instead of having every [isServerPantryVersion]
+  /// fail closed until the network call lands.
   final CacheStore _cache = CacheStore('capabilities_cache.json');
 
-  /// Rehydrate version + feature + theming state from the on-disk snapshot of
+  /// Rehydrate version + probe + theming state from the on-disk snapshot of
   /// the previous successful [fetch]. Safe to call before login (no-op if the
   /// cache file is absent). Callers should still invoke [fetch] afterwards in
   /// the background to refresh against the live server.
@@ -110,10 +89,11 @@ class ServerVersionService {
     if (feats != null) {
       for (final entry in feats.entries) {
         final v = entry.value;
-        if (v is bool) _features[entry.key] = v;
+        if (v is bool && _featureIntroduced.containsKey(entry.key)) {
+          _features[entry.key] = v;
+        }
       }
     }
-    _featuresAuthoritative = _cache.get<bool>('featuresAuthoritative') ?? false;
     _themingCaps = _cache.getObject('themingCaps');
     _webPush = _cache.get<bool>('webPush') ?? false;
   }
@@ -125,17 +105,16 @@ class ServerVersionService {
       'features',
       Map<String, dynamic>.from(_features),
     );
-    _cache.set<bool>('featuresAuthoritative', _featuresAuthoritative);
     _cache.set<Map<String, dynamic>?>('themingCaps', _themingCaps);
     _cache.set<bool>('webPush', _webPush);
   }
 
-  /// Reads `/ocs/v2.php/cloud/capabilities` and refreshes the version + feature
-  /// state. With [serverUrl], runs unauthenticated against a prospective
-  /// server (onboarding); without it, uses the logged-in session.
+  /// Reads `/ocs/v2.php/cloud/capabilities` and refreshes the version state.
+  /// With [serverUrl], runs unauthenticated against a prospective server
+  /// (onboarding); without it, uses the logged-in session.
   ///
-  /// Feature probes run only when the user is authenticated AND the
-  /// capability response didn't already cover the feature.
+  /// Feature probes run only when the user is authenticated AND the server
+  /// reported no Pantry version.
   Future<void> fetch({String? serverUrl}) async {
     final creds = AuthService.instance.credentials;
     final baseUrl = serverUrl ?? creds?.serverUrl;
@@ -189,25 +168,10 @@ class ServerVersionService {
     } else if (versionField is String) {
       _pantryVersion = Version.tryParse(versionField);
     }
-
-    final featuresField = pantryCaps['features'];
-    if (featuresField is List) {
-      // Capability features list is authoritative — anything the server
-      // doesn't list is definitively unsupported. We skip probes for missing
-      // features and [supportsFeature] stops failing open.
-      _featuresAuthoritative = true;
-      final listed = featuresField.whereType<String>().toSet();
-      for (final name in listed) {
-        _features[name] = true;
-      }
-      for (final name in _featureIntroduced.keys) {
-        _features.putIfAbsent(name, () => listed.contains(name));
-      }
-    }
   }
 
   Future<void> _runMissingProbes() async {
-    if (_featuresAuthoritative) return;
+    if (_pantryVersion != null) return;
     for (final entry in _featureProbes.entries) {
       if (_features.containsKey(entry.key)) continue;
       _features[entry.key] = await _probe(entry.value);
@@ -218,9 +182,9 @@ class ServerVersionService {
   /// pass it in instead of forcing an extra request. The presence of the
   /// `showAddedBy` key in the response is the discriminator for
   /// `item-authors` (added in Pantry 0.15). Calls are no-ops once the feature
-  /// status is known, or when the capability list is authoritative.
+  /// status is known, or when the server reports its Pantry version.
   void observeHousePrefs(Map<String, dynamic> prefs) {
-    if (_featuresAuthoritative) return;
+    if (_pantryVersion != null) return;
     _features.putIfAbsent(
       'item-authors',
       () => prefs.containsKey('showAddedBy'),
@@ -254,7 +218,6 @@ class ServerVersionService {
     _themingCaps = null;
     _webPush = false;
     _features.clear();
-    _featuresAuthoritative = false;
     unawaited(_cache.clear());
   }
 
@@ -269,7 +232,13 @@ class ServerVersionService {
   /// feature establishes a lower or upper bound on the server version, and
   /// the comparison only returns `true` when those bounds prove the claim.
   /// Fails closed when the bounds are inconclusive.
+  ///
+  /// With the debug force-all-features pref on, the server is treated as
+  /// newer than any [version], so every [ServerFeature] gate opens.
   bool isServerPantryVersion(String op, String version) {
+    if (PrefsService.instance.devForceAllFeatures) {
+      return op == '>=' || op == '>' || op == '!=';
+    }
     return comparePantryVersion(
       op: op,
       target: Version.parse(version),
@@ -279,41 +248,15 @@ class ServerVersionService {
     );
   }
 
-  /// Strict feature check, e.g. `hasFeature('category-sort')`. Returns `true`
-  /// only when the server has *positively* confirmed support — either listed
-  /// it in `capabilities.pantry.features`, or a probe succeeded. Unknown
-  /// servers (no capability, no probe coverage) return `false`. Use this for
-  /// genuinely new features that won't work on older servers.
-  bool hasFeature(String name) {
-    if (PrefsService.instance.devForceAllFeatures) return true;
-    return _features[name] ?? false;
-  }
-
-  /// Fail-open feature check, e.g. `supportsFeature('soft-delete')`. Returns
-  /// `false` only when the capability list is authoritative AND the feature
-  /// is absent from it. On pre-capability servers (where the capability
-  /// hasn't shipped yet) the answer defaults to `true`, so long-shipped
-  /// features stay visible without needing a per-feature probe. Use this for
-  /// features that have always existed but that the server might opt out of.
-  bool supportsFeature(String name) {
-    if (PrefsService.instance.devForceAllFeatures) return true;
-    final known = _features[name];
-    if (known != null) return known;
-    if (_featuresAuthoritative) return false;
-    return true;
-  }
-
   @visibleForTesting
   void debugSeed({
     Version? pantryVersion,
     Map<String, bool> features = const {},
-    bool featuresAuthoritative = false,
   }) {
     _pantryVersion = pantryVersion;
     _features
       ..clear()
       ..addAll(features);
-    _featuresAuthoritative = featuresAuthoritative;
   }
 }
 
@@ -384,7 +327,71 @@ bool isServerVersion(String op, String version) =>
 bool isServerPantryVersion(String op, String version) =>
     ServerVersionService.instance.isServerPantryVersion(op, version);
 
-bool hasFeature(String name) => ServerVersionService.instance.hasFeature(name);
+/// Server-dependent Pantry features, each gated on the first Pantry release
+/// that shipped it.
+abstract final class ServerFeature {
+  static bool _since(String version) => isServerPantryVersion('>=', version);
 
-bool supportsFeature(String name) =>
-    ServerVersionService.instance.supportsFeature(name);
+  // Pantry servers before 0.16.0 publish no version. These two are detected by
+  // probes, which bound the version to at least 0.15.0.
+  static bool get categorySort => _since('0.15.0');
+  static bool get itemAuthors => _since('0.15.0');
+
+  static bool get checklistColor => _since('0.16.0');
+  static bool get notePinning => _since('0.16.0');
+
+  static bool get checklistSort => _since('0.17.0');
+  static bool get checklistTrash => _since('0.17.0');
+  static bool get noteTrash => _since('0.17.0');
+  static bool get photoTrash => _since('0.17.0');
+
+  static bool get checklistAllView => _since('0.18.0');
+  static bool get copyItems => _since('0.18.0');
+
+  static bool get reuseExistingItems => _since('0.19.0');
+
+  static bool get batchOperations => _since('0.20.0');
+  static bool get roles => _since('0.20.0');
+  static bool get shareUsers => _since('0.20.0');
+
+  static bool get itemArchive => _since('0.21.0');
+
+  static bool get stores => _since('0.22.0');
+
+  static bool get itemPrice => _since('0.24.0');
+
+  static bool get shopping => _since('0.25.0');
+  static bool get storeSort => _since('0.25.0');
+
+  static bool get customOrderWithinGroups => _since('0.27.0');
+  static bool get uncheckAll => _since('0.27.0');
+
+  static bool get labels => _since('0.28.0');
+  static bool get labelSort => _since('0.28.0');
+  static bool get labelLists => _since('0.28.0');
+  static bool get categoryLists => _since('0.28.0');
+  static bool get itemPricePerStore => _since('0.28.0');
+
+  static bool get checklistArchive => _since('0.29.0');
+  static bool get checklistTrashOpen => _since('0.29.0');
+
+  static bool get customFields => _since('0.30.0');
+  static bool get prefSuggestArchivedItems => _since('0.30.0');
+
+  static bool get listDefaultRecurrence => _since('0.31.0');
+
+  static bool get shoppingJoinSession => _since('0.33.0');
+  static bool get shoppingItemSelection => _since('0.33.0');
+  static bool get storeCategoryOrder => _since('0.33.0');
+
+  static bool get noteFileSync => _since('0.34.0');
+
+  static bool get checklistDuplicate => _since('0.35.0');
+  static bool get checklistCompletionTime => _since('0.35.0');
+  static bool get prefBarcodeFill => _since('0.35.0');
+
+  static bool get listItemDefaults => _since('0.36.0');
+
+  static bool get listItemSort => _since('0.37.0');
+  static bool get shoppingHistoryDelete => _since('0.37.0');
+}

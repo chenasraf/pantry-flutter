@@ -1,9 +1,5 @@
 import 'package:pantry_core/utils/rrule.dart';
 
-/// Feature string a server advertises when it stores a per-list recurrence
-/// default. Without it, a list carries only the `deleteOnDoneDefault` flag.
-const String kListDefaultRecurrenceFeature = 'list-default-recurrence';
-
 /// Rule a list repeats new items by when it defaults to recurring ones without
 /// naming a rule, mirroring the server's own fallback.
 const String kDefaultListRrule = 'FREQ=WEEKLY;INTERVAL=1';

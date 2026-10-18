@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 
 Map<String, dynamic> _baseJson() => {
   'id': 1,
@@ -44,7 +45,9 @@ void main() {
       'ignores the permission map when the server lacks the roles feature',
       () {
         // No roles feature confirmed → gating off, everything allowed.
-        ServerVersionService.instance.debugSeed(featuresAuthoritative: true);
+        ServerVersionService.instance.debugSeed(
+          pantryVersion: Version.parse('0.19.0'),
+        );
         final house = House.fromJson({
           ..._baseJson(),
           'permissions': {'canViewLists': false, 'canAddItems': false},
@@ -56,8 +59,7 @@ void main() {
 
     test('honors the permission map when the server advertises roles', () {
       ServerVersionService.instance.debugSeed(
-        features: {'roles': true},
-        featuresAuthoritative: true,
+        pantryVersion: Version.parse('0.20.0'),
       );
       final house = House.fromJson({
         ..._baseJson(),

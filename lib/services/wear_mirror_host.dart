@@ -134,8 +134,7 @@ class WearMirrorHost {
       (entity: MirrorEntity.stores, key: house),
       (entity: MirrorEntity.labels, key: house),
       (entity: MirrorEntity.notes, key: house),
-      if (hasFeature(kCustomFieldsFeature))
-        (entity: MirrorEntity.fields, key: house),
+      if (ServerFeature.customFields) (entity: MirrorEntity.fields, key: house),
       if (report.sessionId != null) ...[
         (entity: MirrorEntity.session, key: report.sessionId!),
         (entity: MirrorEntity.sessionItems, key: report.sessionId!),

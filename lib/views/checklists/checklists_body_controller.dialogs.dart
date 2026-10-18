@@ -39,7 +39,7 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
     final archived = item.archivedAt != null;
     // A server that doesn't advertise the capability never synced a mode, so
     // the local pref reflects nothing it would honor — keep confirming there.
-    final mode = hasFeature('reuse-existing-items')
+    final mode = ServerFeature.reuseExistingItems
         ? PrefsService.instance.reuseExistingItems
         : 'ask';
     if (mode == 'ask') {
@@ -100,7 +100,7 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
     // list, reuse (un-check) the existing item instead of adding a duplicate —
     // silently for "reuse", or after confirming for "ask".
     final mode = forceReuse ? 'reuse' : prefs.reuseExistingItems;
-    if (hasFeature('reuse-existing-items') && mode != 'never') {
+    if (ServerFeature.reuseExistingItems && mode != 'never') {
       final existing = domain.findExistingItem(targetListId, s.name);
       if (existing != null) {
         var reuse = mode == 'reuse';
@@ -221,7 +221,7 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       builder: (_) => MarkdownImportDialog(
         categories: domain.categoriesForList(targetListId),
         reusePref: prefs.reuseExistingItems,
-        reuseFeatureAvailable: hasFeature('reuse-existing-items'),
+        reuseFeatureAvailable: ServerFeature.reuseExistingItems,
         onRequestCreateCategory: () =>
             createCategory(context, defaultListId: targetListId),
       ),

@@ -570,7 +570,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
   /// The server applies the same "no open items left" rule when the toggle
   /// lands, so its own stamp replaces this one then.
   void _stampCompletionIfClosed(int listId) {
-    if (!hasFeature('checklist-completion-time')) return;
+    if (!ServerFeature.checklistCompletionTime) return;
     final hasOpen = _items.any(
       (i) =>
           i.listId == listId &&

@@ -62,7 +62,7 @@ Future<void> showImportToListDialog(
       builder: (_) => MarkdownImportDialog(
         categories: controller.categoriesForList(initialId),
         reusePref: prefs.reuseExistingItems,
-        reuseFeatureAvailable: hasFeature('reuse-existing-items'),
+        reuseFeatureAvailable: ServerFeature.reuseExistingItems,
         initialText: markdown,
         pickableLists: lists,
         initialListId: initialId,
@@ -78,7 +78,7 @@ Future<void> showImportToListDialog(
     await controller.selectList(target);
 
     final mode = result.forceReuse ? 'reuse' : prefs.reuseExistingItems;
-    final canReuse = hasFeature('reuse-existing-items') && mode == 'reuse';
+    final canReuse = ServerFeature.reuseExistingItems && mode == 'reuse';
 
     var added = 0;
     for (final s in result.submissions) {

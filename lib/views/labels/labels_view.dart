@@ -23,7 +23,7 @@ class LabelsView extends StatefulWidget {
 
 class _LabelsViewState extends State<LabelsView> {
   static const _allSortKeys = ['custom', 'name_asc', 'name_desc'];
-  List<String> get _sortKeys => hasFeature('label-sort')
+  List<String> get _sortKeys => ServerFeature.labelSort
       ? _allSortKeys
       : _allSortKeys.where((k) => k != 'custom').toList();
 
@@ -32,7 +32,7 @@ class _LabelsViewState extends State<LabelsView> {
   /// Lists in display order, used to group labels by scope and to label the
   /// per-list sections. Only loaded when the `label-lists` feature is on.
   List<ChecklistList> _lists = [];
-  bool get _scopingEnabled => hasFeature('label-lists');
+  bool get _scopingEnabled => ServerFeature.labelLists;
   String _sort = 'name_asc';
   bool _isLoading = true;
   String? _error;
@@ -68,7 +68,7 @@ class _LabelsViewState extends State<LabelsView> {
       final lists = results[2] as List<ChecklistList>;
       setState(() {
         var sort = prefs['labelSort'] as String? ?? 'name_asc';
-        if (sort == 'custom' && !hasFeature('label-sort')) {
+        if (sort == 'custom' && !ServerFeature.labelSort) {
           sort = 'name_asc';
         }
         _sort = sort;

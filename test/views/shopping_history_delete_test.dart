@@ -8,6 +8,7 @@ import 'package:http/testing.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry/views/shopping/shopping_history_view.dart';
 
 import '../helpers/test_app.dart';
@@ -93,7 +94,7 @@ void main() {
   }
 
   void seed({required bool canDelete}) => ServerVersionService.instance
-      .debugSeed(features: {'shopping-history-delete': canDelete});
+      .debugSeed(pantryVersion: Version.parse(canDelete ? '0.37.0' : '0.36.0'));
 
   setUp(() async {
     deleteStatus = 200;

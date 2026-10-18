@@ -162,7 +162,7 @@ class _ShoppingHistoryViewState extends State<ShoppingHistoryView> {
   /// Only the shopper who started a trip may delete it; joining one, or seeing
   /// it in the House scope, is not enough.
   bool _canDelete(ShoppingHistoryRow row) =>
-      hasFeature('shopping-history-delete') && row.userId == _currentUserId;
+      ServerFeature.shoppingHistoryDelete && row.userId == _currentUserId;
 
   /// Sends the delete and reports whether it landed, toasting when it didn't.
   /// Removing the row is left to the caller, because a swiped-away card must

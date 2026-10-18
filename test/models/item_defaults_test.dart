@@ -5,6 +5,7 @@ import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_start_values.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 
 FieldDefinition _field(
   int id,
@@ -419,11 +420,7 @@ void main() {
 
     test('reads the recurrence key and never remembers on its own', () {
       ServerVersionService.instance.debugSeed(
-        features: {
-          kListItemDefaultsFeature: true,
-          kListDefaultRecurrenceFeature: true,
-        },
-        featuresAuthoritative: true,
+        pantryVersion: Version.parse('0.36.0'),
       );
       final d = list().recurrenceDefault;
       expect(d.kind, ListRecurrenceKind.recurring);
@@ -433,8 +430,7 @@ void main() {
 
     test('without the capability the legacy fields still apply', () {
       ServerVersionService.instance.debugSeed(
-        features: {kListDefaultRecurrenceFeature: true},
-        featuresAuthoritative: true,
+        pantryVersion: Version.parse('0.35.0'),
       );
       final d = list().recurrenceDefault;
       expect(d.kind, ListRecurrenceKind.once);

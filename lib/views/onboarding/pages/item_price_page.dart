@@ -44,10 +44,7 @@ class ItemPriceOnboardingPage extends StatelessWidget {
           const _MockItemRow(),
           const SizedBox(height: 16),
           const _MockPriceInput(),
-          const ServerRequirementNote(
-            feature: 'item-price',
-            requiredVersion: '0.24.0',
-          ),
+          const ServerRequirementNote(requiredVersion: '0.24.0'),
         ],
       ),
     );

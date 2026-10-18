@@ -23,7 +23,7 @@ class StoresView extends StatefulWidget {
 
 class _StoresViewState extends State<StoresView> {
   static const _allSortKeys = ['custom', 'name_asc', 'name_desc'];
-  List<String> get _sortKeys => hasFeature('store-sort')
+  List<String> get _sortKeys => ServerFeature.storeSort
       ? _allSortKeys
       : _allSortKeys.where((k) => k != 'custom').toList();
 
@@ -54,7 +54,7 @@ class _StoresViewState extends State<StoresView> {
       final list = results[1] as List<Store>;
       setState(() {
         var sort = prefs['storeSort'] as String? ?? 'name_asc';
-        if (sort == 'custom' && !hasFeature('store-sort')) {
+        if (sort == 'custom' && !ServerFeature.storeSort) {
           sort = 'name_asc';
         }
         _sort = sort;

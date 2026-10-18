@@ -158,7 +158,7 @@ extension ChecklistServiceLists on ChecklistService {
   }
 
   /// Merge [patch] into a list's item defaults. Needs
-  /// [kListItemDefaultsFeature].
+  /// [ServerFeature.listItemDefaults].
   Future<ChecklistList> updateItemDefaults(
     int houseId,
     int listId,

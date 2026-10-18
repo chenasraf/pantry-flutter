@@ -10,6 +10,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/views/checklists/switcher_duplicate_stage.dart';
@@ -96,12 +97,7 @@ void main() {
     requests = [];
     failDuplicate = false;
     ServerVersionService.instance.debugSeed(
-      features: {
-        'checklist-duplicate': true,
-        'checklist-completion-time': true,
-        'labels': true,
-      },
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse('0.35.0'),
     );
     ChecklistService.instance.cacheLists(1, const []);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -207,8 +203,7 @@ void main() {
       );
 
       ServerVersionService.instance.debugSeed(
-        features: const {},
-        featuresAuthoritative: true,
+        pantryVersion: Version.parse('0.34.0'),
       );
       expect(controller.canDuplicateList(original), isFalse);
 
@@ -269,8 +264,7 @@ void main() {
     await withServer(() async {
       final controller = await loaded(tester);
       ServerVersionService.instance.debugSeed(
-        features: {'checklist-trash': true},
-        featuresAuthoritative: true,
+        pantryVersion: Version.parse('0.34.0'),
       );
 
       await pumpSwitcher(tester, controller);

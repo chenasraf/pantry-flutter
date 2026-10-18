@@ -6,6 +6,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry/views/checklists/checklists_body_controller.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
@@ -70,8 +71,7 @@ void main() {
 
   Future<void> seed(String mode, {bool featureAvailable = true}) async {
     ServerVersionService.instance.debugSeed(
-      features: {if (featureAvailable) 'reuse-existing-items': true},
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse(featureAvailable ? '0.19.0' : '0.18.0'),
     );
     await PrefsService.instance.setReuseExistingItemsCache(mode);
   }

@@ -47,7 +47,7 @@ class PhotoSelectionActions extends StatelessWidget {
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
-              hasFeature('photo-trash') ? m.common.remove : m.common.delete,
+              ServerFeature.photoTrash ? m.common.remove : m.common.delete,
             ),
           ),
         ],
@@ -63,7 +63,7 @@ class PhotoSelectionActions extends StatelessWidget {
             .where((p) => deletedIds.contains(p.id))
             .toList();
         if (!context.mounted) return;
-        if (hasFeature('photo-trash') && deleted.isNotEmpty) {
+        if (ServerFeature.photoTrash && deleted.isNotEmpty) {
           showUndoToast(
             message: m.photoBoard.photoRemoved(deleted.length),
             undoLabel: m.checklists.undo,

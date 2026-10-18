@@ -36,7 +36,7 @@ class ListStage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final realLists = hasFeature('checklist-sort')
+    final realLists = ServerFeature.checklistSort
         ? controller.sortedLists
         : controller.lists;
     final current = controller.currentList;
@@ -44,16 +44,16 @@ class ListStage extends StatelessWidget {
     // than one real list to aggregate. With zero lists the index renders the
     // empty state; with one list, "All lists" would just duplicate that list.
     final showAllLists =
-        hasFeature('checklist-all-view') && realLists.length >= 2;
+        ServerFeature.checklistAllView && realLists.length >= 2;
     final perms = controller.permissions;
     final canEditLists = perms.canEditLists;
     final canDeleteLists = perms.canDeleteLists;
-    final canArchiveLists = hasFeature('checklist-archive') && canEditLists;
+    final canArchiveLists = ServerFeature.checklistArchive && canEditLists;
     final canReorder =
-        hasFeature('checklist-sort') &&
+        ServerFeature.checklistSort &&
         controller.listSort == 'custom' &&
         canEditLists;
-    final showMenu = hasFeature('checklist-trash');
+    final showMenu = ServerFeature.checklistTrash;
     final allListsTile = showAllLists
         ? AllListsTile(
             selected: current?.id == kAllListsId,
@@ -98,7 +98,7 @@ class ListStage extends StatelessWidget {
                       color: cs.onSurfaceVariant,
                     ),
                   ),
-                  if (hasFeature('checklist-sort'))
+                  if (ServerFeature.checklistSort)
                     _SortMenuButton(controller: controller),
                 ],
               ),
@@ -221,7 +221,7 @@ class ListStage extends StatelessWidget {
             ),
           ),
         ],
-        if (hasFeature('checklist-trash') && canDeleteLists) ...[
+        if (ServerFeature.checklistTrash && canDeleteLists) ...[
           const SizedBox(height: 8),
           InkWell(
             onTap: onOpenTrash,
@@ -249,7 +249,7 @@ class ListStage extends StatelessWidget {
             ),
           ),
         ],
-        if (hasFeature('checklist-archive')) ...[
+        if (ServerFeature.checklistArchive) ...[
           const SizedBox(height: 4),
           InkWell(
             onTap: onOpenArchive,
@@ -378,7 +378,7 @@ class _ListTile extends StatelessWidget {
   /// doing.
   String _summary(int count) {
     if (count > 0) return m.checklists.itemsSummary(count);
-    final completedAt = hasFeature('checklist-completion-time')
+    final completedAt = ServerFeature.checklistCompletionTime
         ? list.lastCompletedAt
         : null;
     return completedAt == null

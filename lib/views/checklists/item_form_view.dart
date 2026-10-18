@@ -117,7 +117,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   List<models.Category> get _categories =>
       widget.controller.categoriesForList(_effectiveListId);
   List<models.Store> get _stores => widget.controller.sortedStores;
-  bool get _storesEnabled => hasFeature('stores');
+  bool get _storesEnabled => ServerFeature.stores;
   List<models.Store> get _selectedStores => [
     for (final s in _stores)
       if (_selectedStoreIds.contains(s.id)) s,
@@ -128,7 +128,7 @@ class _ItemFormViewState extends State<ItemFormView> {
   /// [_selectedLabels], which resolves against the full set.
   List<models.Label> get _labels =>
       widget.controller.labelsForList(_effectiveListId);
-  bool get _labelsEnabled => hasFeature('labels');
+  bool get _labelsEnabled => ServerFeature.labels;
   List<models.Label> get _selectedLabels => [
     for (final l in widget.controller.sortedLabels)
       if (_selectedLabelIds.contains(l.id)) l,
@@ -173,14 +173,14 @@ class _ItemFormViewState extends State<ItemFormView> {
         _customFields = List.of(start.customFieldValues);
       }
     }
-    _priceEnabled = hasFeature('item-price');
+    _priceEnabled = ServerFeature.itemPrice;
     _prices = item != null
         ? PricesDraft.fromItem(
             item,
             fallbackCurrency: widget.controller.lastCurrency,
           )
         : PricesDraft.empty(widget.controller.lastCurrency);
-    _customFieldsEnabled = hasFeature(kCustomFieldsFeature);
+    _customFieldsEnabled = ServerFeature.customFields;
     if (item != null || _itemDefaults == null) {
       _customFields = List.of(item?.customFields ?? const []);
     }
@@ -522,7 +522,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ItemPricesEditor(
                     draft: _prices,
                     stores: _storesEnabled ? _stores : const [],
-                    perStoreEnabled: hasFeature(kItemPricePerStoreFeature),
+                    perStoreEnabled: ServerFeature.itemPricePerStore,
                     onChanged: () => setState(() {}),
                   ),
                   const SizedBox(height: 16),

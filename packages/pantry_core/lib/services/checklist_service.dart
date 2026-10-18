@@ -11,10 +11,6 @@ part 'checklist_service.lists.dart';
 part 'checklist_service.items.dart';
 part 'checklist_service.batch.dart';
 
-/// Capability advertised by servers that store a price per store (the `prices`
-/// array). Absent on older servers, which keep the flat single-price fields.
-const kItemPricePerStoreFeature = 'item-price-per-store';
-
 /// Serialize a [prices] value for the item create/update body, adapting to what
 /// the server supports. `null` omits the field entirely (prices unchanged).
 ///
@@ -27,7 +23,7 @@ Map<String, dynamic> itemPriceBody(
   required bool isUpdate,
 }) {
   if (prices == null) return const {};
-  if (hasFeature(kItemPricePerStoreFeature)) {
+  if (ServerFeature.itemPricePerStore) {
     return {'prices': prices.map((p) => p.toJson()).toList()};
   }
   ItemPrice? storeless;
@@ -51,20 +47,12 @@ Map<String, dynamic> itemPriceBody(
   };
 }
 
-/// Capability advertised by servers that keep the item sort per list and per
-/// person (`/lists/{listId}/prefs`) rather than one `checklistItemSort` per
-/// house.
-const kListItemSortFeature = 'pref-list-item-sort';
-
-/// Capability advertised by servers that store per-item custom-field values.
-const kCustomFieldsFeature = 'custom-fields';
-
 /// Serialize [customFields] for the item create/update body. `null` omits the
 /// field (values unchanged); a list — even empty — is sent so an update can
 /// clear every value. Sent only on servers advertising `custom-fields`; older
 /// servers ignore custom fields entirely, so nothing is emitted for them.
 Map<String, dynamic> customFieldsBody(List<FieldValue>? customFields) {
-  if (customFields == null || !hasFeature(kCustomFieldsFeature)) {
+  if (customFields == null || !ServerFeature.customFields) {
     return const {};
   }
   return {'customFields': customFields.map((v) => v.toJson()).toList()};
@@ -172,7 +160,7 @@ class ChecklistService {
   /// The item sort last seen for [listId], falling back to the house-wide sort
   /// when the server keeps one sort per house or this list was never fetched.
   String cachedItemSort(int houseId, int listId) {
-    final perList = hasFeature(kListItemSortFeature)
+    final perList = ServerFeature.listItemSort
         ? cache.get<String>('itemSort:$houseId:$listId')
         : null;
     return perList ??
@@ -188,7 +176,7 @@ class ChecklistService {
   /// reads it back from: per list on `pref-list-item-sort` servers, per house
   /// otherwise.
   void rememberItemSort(int houseId, int listId, String sort) {
-    if (hasFeature(kListItemSortFeature)) {
+    if (ServerFeature.listItemSort) {
       cacheItemSort(houseId, listId, sort);
     } else {
       cache.set('sortBy:$houseId', sort);

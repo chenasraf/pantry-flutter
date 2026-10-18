@@ -87,11 +87,11 @@ class ItemDetailView extends StatelessWidget {
                   sliver: SliverList.list(
                     children: [
                       FactTiles(item: item, lifecycle: lifecycle),
-                      if (hasFeature('item-price') && item.hasPrice) ...[
+                      if (ServerFeature.itemPrice && item.hasPrice) ...[
                         const SizedBox(height: 12),
                         PriceTile(item: item),
                       ],
-                      if (hasFeature('custom-fields') &&
+                      if (ServerFeature.customFields &&
                           item.customFields.isNotEmpty) ...[
                         const SizedBox(height: 12),
                         ItemCustomFieldsDisplay(
@@ -129,11 +129,11 @@ class ItemDetailView extends StatelessWidget {
     final perms = controller.permissions;
     final canMove = hasOtherLists && perms.canMoveItems;
     final canCopy =
-        hasOtherLists && hasFeature('copy-items') && perms.canCopyItems;
+        hasOtherLists && ServerFeature.copyItems && perms.canCopyItems;
     final canArchive =
         !controller.isSoftView &&
         perms.canEditLists &&
-        hasFeature('item-archive');
+        ServerFeature.itemArchive;
     return canMove || canCopy || canArchive || perms.canDeleteItems;
   }
 
@@ -153,11 +153,11 @@ class ItemDetailView extends StatelessWidget {
         .isNotEmpty;
     final canMove = hasOtherLists && perms.canMoveItems;
     final canCopy =
-        hasOtherLists && hasFeature('copy-items') && perms.canCopyItems;
+        hasOtherLists && ServerFeature.copyItems && perms.canCopyItems;
     final canArchive =
         !controller.isSoftView &&
         perms.canEditLists &&
-        hasFeature('item-archive');
+        ServerFeature.itemArchive;
     final actions = <OverflowAction>[
       if (canMove)
         OverflowAction(

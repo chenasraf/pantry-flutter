@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
-import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
@@ -47,17 +46,17 @@ class _ListFormStageState extends State<ListFormStage> {
   // Per-list color only works on servers with the `checklist-color` feature;
   // older servers reject a sent color, so we hide the picker and let the
   // backend assign its default.
-  bool get _supportsListColor => hasFeature('checklist-color');
+  bool get _supportsListColor => ServerFeature.checklistColor;
 
   // Servers without the per-list recurrence default only ever store the
   // "one-time" flag, which the add-item form owns; there is nothing to pick
   // here, so the whole section is hidden.
   bool get _supportsRecurrenceDefault =>
-      hasFeature(kListDefaultRecurrenceFeature) && !_managesItemDefaults;
+      ServerFeature.listDefaultRecurrence && !_managesItemDefaults;
 
   /// The recurrence default is one of the list's item defaults, edited on their
   /// own screen with the rest of them.
-  bool get _managesItemDefaults => hasFeature(kListItemDefaultsFeature);
+  bool get _managesItemDefaults => ServerFeature.listItemDefaults;
 
   bool get _recurringDefault => _recurrenceMode == ListRecurrenceMode.recurring;
 

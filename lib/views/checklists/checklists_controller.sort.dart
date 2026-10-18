@@ -23,7 +23,7 @@ extension ChecklistsControllerSort on ChecklistsController {
   /// Queues [sort] for [listId], or for the whole house on servers that keep
   /// one sort per house.
   void _persistSortPref(int listId, String sort) {
-    final target = hasFeature(kListItemSortFeature) ? listId : null;
+    final target = ServerFeature.listItemSort ? listId : null;
     _sortWriteGen[target] = (_sortWriteGen[target] ?? 0) + 1;
     _sync.enqueue(
       SyncOp(
@@ -44,7 +44,7 @@ extension ChecklistsControllerSort on ChecklistsController {
   /// the list is queued or was made while the read was out — the server's
   /// answer may predate it, and the user's choice must not be reverted by it.
   Future<String?> _fetchListItemSort(int listId) async {
-    if (!hasFeature(kListItemSortFeature) || listId < 0) return null;
+    if (!ServerFeature.listItemSort || listId < 0) return null;
     if (_sync.pendingItemSort(houseId, listId) != null) return null;
     final gen = _sortWriteGen[listId];
     try {
@@ -70,7 +70,7 @@ extension ChecklistsControllerSort on ChecklistsController {
   /// fetched again in the stored order, which then becomes the current sort if
   /// [list] is still the one on screen.
   Future<List<ListItem>> _fetchItemsInListSort(ChecklistList list) async {
-    final requested = hasFeature(kListItemSortFeature)
+    final requested = ServerFeature.listItemSort
         ? _checklistService.cachedItemSort(houseId, list.id)
         : _sortBy;
     Future<List<ListItem>> fetch(String sort) => list.id == kAllListsId
@@ -107,7 +107,7 @@ extension ChecklistsControllerSort on ChecklistsController {
       // (their `categoryId` is cleared), so the current view's cached items may
       // now be stale. Refetch them so a detached item doesn't keep showing a
       // category it no longer has. Only relevant when scoping is available.
-      if (hasFeature('category-lists') && _currentList != null && !isSoftView) {
+      if (ServerFeature.categoryLists && _currentList != null && !isSoftView) {
         await selectList(_currentList!, refreshInPlace: true);
       }
     } catch (e) {
@@ -153,7 +153,7 @@ extension ChecklistsControllerSort on ChecklistsController {
   }
 
   Future<void> onStoresChanged() async {
-    if (!hasFeature('stores')) return;
+    if (!ServerFeature.stores) return;
     try {
       final results = await Future.wait([
         _checklistService.getHousePrefs(houseId),
@@ -173,7 +173,7 @@ extension ChecklistsControllerSort on ChecklistsController {
   }
 
   Future<void> onLabelsChanged() async {
-    if (!hasFeature('labels')) return;
+    if (!ServerFeature.labels) return;
     try {
       final results = await Future.wait([
         _checklistService.getHousePrefs(houseId),
@@ -190,7 +190,7 @@ extension ChecklistsControllerSort on ChecklistsController {
       // so the current view's cached items may now be stale. Refetch them so a
       // detached item doesn't keep showing a label it no longer has. Only
       // relevant when scoping is available.
-      if (hasFeature('label-lists') && _currentList != null && !isSoftView) {
+      if (ServerFeature.labelLists && _currentList != null && !isSoftView) {
         await selectList(_currentList!, refreshInPlace: true);
       }
     } catch (e) {

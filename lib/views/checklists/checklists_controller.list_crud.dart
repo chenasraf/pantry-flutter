@@ -179,7 +179,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
 
     final Map<String, dynamic> body;
     final ChecklistList optimistic;
-    if (hasFeature(kListDefaultRecurrenceFeature)) {
+    if (ServerFeature.listDefaultRecurrence) {
       final recurrence = normalizeRecurrenceDefault(
         mode: list.defaultRecurrenceMode,
         currentKind: kind,
@@ -299,7 +299,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
   /// needs a list it already knows about — not the All-lists sentinel and not a
   /// list still waiting for its create to sync.
   bool canDuplicateList(ChecklistList list) =>
-      hasFeature('checklist-duplicate') &&
+      ServerFeature.checklistDuplicate &&
       permissions.canCreateLists &&
       list.id > 0;
 
@@ -330,8 +330,8 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     // caches have seen yet.
     await Future.wait([
       _refreshCategories(),
-      if (hasFeature('labels')) _refreshLabels(),
-      if (hasFeature(kCustomFieldsFeature)) _refreshCustomFields(),
+      if (ServerFeature.labels) _refreshLabels(),
+      if (ServerFeature.customFields) _refreshCustomFields(),
     ]);
     await selectList(created);
     return created;

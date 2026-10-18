@@ -44,10 +44,7 @@ class JoinTripOnboardingPage extends StatelessWidget {
           const _MockJoinBanner(),
           const SizedBox(height: 20),
           _HowTo(text: ob.joinTripHow),
-          const ServerRequirementNote(
-            feature: 'shopping-join-session',
-            requiredVersion: '0.33.0',
-          ),
+          const ServerRequirementNote(requiredVersion: '0.33.0'),
         ],
       ),
     );

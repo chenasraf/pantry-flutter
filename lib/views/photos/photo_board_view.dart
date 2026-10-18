@@ -223,7 +223,7 @@ class _PhotoBoardBody extends StatelessWidget {
         label: m.photoBoard.sort.foldersFirst,
         checked: controller.foldersFirst,
       ),
-      if (hasFeature('photo-trash') && perms.canDeletePhotos) ...[
+      if (ServerFeature.photoTrash && perms.canDeletePhotos) ...[
         const OverflowDivider(),
         OverflowAction(
           value: 'view_trash',

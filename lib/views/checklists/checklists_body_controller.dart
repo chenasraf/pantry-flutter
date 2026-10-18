@@ -307,7 +307,7 @@ class ChecklistsBodyController extends ChangeNotifier
   /// Re-fetch the caller's live session so the banner / FAB stay current.
   /// Cheap and side-effect-free (`GET /current`); gated on the capability.
   Future<void> refreshShoppingSession() async {
-    if (!hasFeature('shopping')) return;
+    if (!ServerFeature.shopping) return;
     try {
       final session = await ShoppingService.instance.getCurrentSession();
       if (_disposed) return;
@@ -326,7 +326,7 @@ class ChecklistsBodyController extends ChangeNotifier
   /// Joining implies checking things off, so it asks for `canCheckItems` and
   /// not the `canViewLists` the rest of the screen runs on.
   Future<void> refreshJoinableTrip() async {
-    if (!hasFeature('shopping-join-session') ||
+    if (!ServerFeature.shoppingJoinSession ||
         !domain.permissions.canCheckItems ||
         currentUserId == null) {
       return;

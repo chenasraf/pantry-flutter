@@ -69,7 +69,7 @@ class _CreateLabelDialogState extends State<CreateLabelDialog> {
   List<ChecklistList> _lists = [];
 
   bool get _isEditing => widget.existing != null;
-  bool get _scopingEnabled => hasFeature('label-lists');
+  bool get _scopingEnabled => ServerFeature.labelLists;
 
   @override
   void initState() {

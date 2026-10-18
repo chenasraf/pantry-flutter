@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry/views/categories/categories_view.dart';
@@ -102,8 +103,7 @@ void main() {
 
   setUp(() async {
     ServerVersionService.instance.debugSeed(
-      features: {'category-lists': true, 'category-sort': true},
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse('0.28.0'),
     );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(storageChannel, (call) async {

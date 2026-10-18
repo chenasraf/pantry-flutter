@@ -13,8 +13,7 @@ List<({String key, String label})> checklistSortOptions({
     (key: 'name_asc', label: m.checklists.sort.nameAZ),
     (key: 'name_desc', label: m.checklists.sort.nameZA),
     (key: 'category', label: m.checklists.sort.category),
-    if (hasFeature('store-sort'))
-      (key: 'store', label: m.checklists.sort.store),
+    if (ServerFeature.storeSort) (key: 'store', label: m.checklists.sort.store),
     if (showCustom) (key: 'custom', label: m.checklists.sort.custom),
   ];
 }

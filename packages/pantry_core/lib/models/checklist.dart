@@ -30,7 +30,7 @@ class ChecklistList {
 
   /// Whether new items are removed once completed. Derived, and the only shape
   /// of the recurrence default that servers without
-  /// [kListDefaultRecurrenceFeature] understand.
+  /// [ServerFeature.listDefaultRecurrence] understand.
   bool get deleteOnDoneDefault =>
       defaultRecurrenceKind == ListRecurrenceKind.once;
   final int createdAt;
@@ -61,7 +61,7 @@ class ChecklistList {
   final bool? sharedOnly;
 
   /// What new items on this list start with. `null` from servers without
-  /// [kListItemDefaultsFeature], which describe only the recurrence, through
+  /// [ServerFeature.listItemDefaults], which describe only the recurrence, through
   /// the `defaultRecurrence*` fields.
   final ItemDefaults? itemDefaults;
 
@@ -202,7 +202,7 @@ extension ChecklistSharing on ChecklistList {
   /// everything else keeps the normal granular capabilities. Only consulted
   /// when the server advertises `share-users`; otherwise always writable.
   bool get isWritable {
-    if (!hasFeature('share-users')) return true;
+    if (!ServerFeature.shareUsers) return true;
     return !((sharedOnly ?? false) && !(canEdit ?? true));
   }
 
@@ -210,20 +210,20 @@ extension ChecklistSharing on ChecklistList {
   /// the per-list [ChecklistList.canEdit] when the server advertises
   /// `share-users`; otherwise falls back to the house-level [houseCanEdit].
   bool canEditSettingsWith(bool houseCanEdit) =>
-      hasFeature('share-users') ? (canEdit ?? houseCanEdit) : houseCanEdit;
+      ServerFeature.shareUsers ? (canEdit ?? houseCanEdit) : houseCanEdit;
 }
 
 extension ChecklistRecurrence on ChecklistList {
   /// The list's [ChecklistList.itemDefaults] when the server manages them,
   /// otherwise `null` and the `defaultRecurrence*` fields apply.
   ItemDefaults? get activeItemDefaults =>
-      hasFeature(kListItemDefaultsFeature) ? itemDefaults : null;
+      ServerFeature.listItemDefaults ? itemDefaults : null;
 
   /// The recurrence new items on this list start with. A pinned mode names it
   /// outright; [ListRecurrenceMode.remember] defers to whatever the last item
   /// added used, which the add-item form reports back.
   ///
-  /// Servers without [kListDefaultRecurrenceFeature] only ever store the
+  /// Servers without [ServerFeature.listDefaultRecurrence] only ever store the
   /// "one-time" flag, and the add-item form has always rewritten it — which is
   /// exactly the remembering policy, narrowed to two of the three recurrences.
   ///
@@ -242,7 +242,7 @@ extension ChecklistRecurrence on ChecklistList {
         repeatFromCompletion: value.repeatFromCompletion,
       );
     }
-    if (!hasFeature(kListDefaultRecurrenceFeature)) {
+    if (!ServerFeature.listDefaultRecurrence) {
       return ListRecurrenceDefault(
         kind: defaultRecurrenceKind,
         remembers: true,

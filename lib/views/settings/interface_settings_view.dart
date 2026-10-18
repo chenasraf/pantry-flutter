@@ -167,7 +167,7 @@ class InterfaceSettingsView extends StatelessWidget {
           context,
         ).push(MaterialPageRoute(builder: (_) => const NavOrderView())),
       ),
-      if (hasFeature('shopping'))
+      if (ServerFeature.shopping)
         SwitchListTile(
           secondary: const Icon(Icons.shopping_cart_outlined),
           title: Text(m.settings.startShoppingButton),
@@ -238,26 +238,24 @@ class InterfaceSettingsView extends StatelessWidget {
     ];
 
     final itemActions = <Widget>[
-      if (supportsFeature('pref-tap-row-to-complete')) ...[
-        DropdownSettingTile<String>(
-          icon: Icons.touch_app_outlined,
-          title: m.settings.defaultItemTapAction,
-          subtitle: m.settings.defaultItemTapActionBody,
-          value: prefs.defaultItemTapAction,
-          options: _itemTapActionOptions,
-          labelOf: _itemTapActionLabel,
-          onChanged: (value) => _setItemTapAction(context, value),
-        ),
-        DropdownSettingTile<String>(
-          icon: Icons.touch_app,
-          title: m.settings.defaultItemLongPressAction,
-          subtitle: m.settings.defaultItemLongPressActionBody,
-          value: prefs.defaultItemLongPressAction,
-          options: _itemLongPressActionOptions,
-          labelOf: _itemLongPressActionLabel,
-          onChanged: (value) => _setItemLongPressAction(context, value),
-        ),
-      ],
+      DropdownSettingTile<String>(
+        icon: Icons.touch_app_outlined,
+        title: m.settings.defaultItemTapAction,
+        subtitle: m.settings.defaultItemTapActionBody,
+        value: prefs.defaultItemTapAction,
+        options: _itemTapActionOptions,
+        labelOf: _itemTapActionLabel,
+        onChanged: (value) => _setItemTapAction(context, value),
+      ),
+      DropdownSettingTile<String>(
+        icon: Icons.touch_app,
+        title: m.settings.defaultItemLongPressAction,
+        subtitle: m.settings.defaultItemLongPressActionBody,
+        value: prefs.defaultItemLongPressAction,
+        options: _itemLongPressActionOptions,
+        labelOf: _itemLongPressActionLabel,
+        onChanged: (value) => _setItemLongPressAction(context, value),
+      ),
       SwitchListTile(
         secondary: const Icon(Icons.swipe_outlined),
         // On desktop the actions are pinned in view rather than revealed by a
@@ -291,7 +289,7 @@ class InterfaceSettingsView extends StatelessWidget {
           labelOf: _composeBarPositionLabel,
           onChanged: (value) => _setComposeBarPosition(context, value),
         ),
-      if (hasFeature('reuse-existing-items'))
+      if (ServerFeature.reuseExistingItems)
         DropdownSettingTile<String>(
           icon: Icons.autorenew,
           title: m.settings.reuseExistingItems,
@@ -301,7 +299,7 @@ class InterfaceSettingsView extends StatelessWidget {
           labelOf: _reuseExistingItemsLabel,
           onChanged: (value) => _setReuseExistingItems(context, value),
         ),
-      if (hasFeature('pref-suggest-archived-items'))
+      if (ServerFeature.prefSuggestArchivedItems)
         SwitchListTile(
           secondary: const Icon(Icons.archive_outlined),
           title: Text(m.settings.suggestArchivedItems),
@@ -313,7 +311,7 @@ class InterfaceSettingsView extends StatelessWidget {
     ];
 
     final barcode = <Widget>[
-      if (hasFeature('barcode') && hasFeature('pref-barcode-fill')) ...[
+      if (ServerFeature.prefBarcodeFill) ...[
         SwitchListTile(
           secondary: const Icon(Icons.label_outline),
           title: Text(m.settings.barcodeFillName),

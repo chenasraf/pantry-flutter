@@ -54,10 +54,7 @@ class CategoryScopeOnboardingPage extends StatelessWidget {
             label: ob.mockListGroceries,
             caption: ob.categoryScopeScopedCaption,
           ),
-          const ServerRequirementNote(
-            feature: 'category-lists',
-            requiredVersion: '0.28.0',
-          ),
+          const ServerRequirementNote(requiredVersion: '0.28.0'),
         ],
       ),
     );

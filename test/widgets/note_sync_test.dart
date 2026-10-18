@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/models/note.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry/views/notes/note_detail_view.dart';
 import 'package:pantry/widgets/note_tile.dart';
 
@@ -29,8 +30,7 @@ Widget _detail(Note note) => wrapForTest(
 void main() {
   setUp(
     () => ServerVersionService.instance.debugSeed(
-      features: {'note-file-sync': true},
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse('0.34.0'),
     ),
   );
   tearDown(() => ServerVersionService.instance.debugSeed());
@@ -69,7 +69,9 @@ void main() {
     testWidgets('draws nothing on a server without the feature', (
       tester,
     ) async {
-      ServerVersionService.instance.debugSeed(featuresAuthoritative: true);
+      ServerVersionService.instance.debugSeed(
+        pantryVersion: Version.parse('0.33.0'),
+      );
       await tester.pumpWidget(
         _tile(makeNote(syncFileId: 256, syncPath: '/Templates/Weekly shop.md')),
       );

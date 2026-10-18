@@ -340,10 +340,10 @@ class PrefsService extends ChangeNotifier {
   int? _firstDayOfWeek;
   int? get firstDayOfWeek => _firstDayOfWeek;
 
-  /// Debug-only override: when true, [ServerVersionService.hasFeature] and
-  /// [ServerVersionService.supportsFeature] return true for every feature,
-  /// regardless of what the server reports. Lets us drive every gated UI
-  /// against a backend that doesn't (yet) advertise the feature.
+  /// Debug-only override: when true, [ServerVersionService.isServerPantryVersion]
+  /// treats the server as newer than any version, regardless of what it
+  /// reports. Lets us drive every gated UI against a backend that doesn't
+  /// ship the feature.
   bool _devForceAllFeatures = false;
   bool get devForceAllFeatures => _devForceAllFeatures;
 

@@ -6,7 +6,6 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/models/item_start_values.dart';
-import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/quantity.dart';
@@ -82,11 +81,11 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
   bool get _canEdit =>
       _list.canEditSettingsWith(_controller.permissions.canEditLists);
 
-  bool get _storesEnabled => hasFeature('stores');
-  bool get _labelsEnabled => hasFeature('labels');
+  bool get _storesEnabled => ServerFeature.stores;
+  bool get _labelsEnabled => ServerFeature.labels;
 
   List<FieldDefinition> get _fields => [
-    if (hasFeature(kCustomFieldsFeature))
+    if (ServerFeature.customFields)
       for (final f in _controller.customFieldDefs)
         if (f.listId == null || f.listId == _list.id) f,
   ];

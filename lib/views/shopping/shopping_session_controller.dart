@@ -386,7 +386,7 @@ class ShoppingSessionController extends ChangeNotifier {
         StoreService.instance.getStores(houseId),
         HouseService.instance.getMembers(houseId),
         _service.getReminders(houseId).catchError((_) => <ShoppingReminder>[]),
-        hasFeature('labels')
+        ServerFeature.labels
             ? LabelService.instance
                   .getLabels(houseId)
                   .catchError((_) => <Label>[])
@@ -427,7 +427,7 @@ class ShoppingSessionController extends ChangeNotifier {
   /// A failed request is not evidence the trip ended, so only a read that
   /// succeeds and no longer resolves to this trip ends the screen.
   Future<bool> _confirmStillLive() async {
-    if (!hasFeature('shopping-join-session')) return true;
+    if (!ServerFeature.shoppingJoinSession) return true;
     final ShoppingSession? current;
     try {
       current = await _service.getCurrentSession();
@@ -488,7 +488,7 @@ class ShoppingSessionController extends ChangeNotifier {
   /// Take [storeId]'s arrangement from the cache — what a cold offline trip
   /// opens on, and what holds the aisle order until a fresh read lands.
   void _adoptCachedStoreCategoryOrder(int? storeId) {
-    if (storeId == null || !hasFeature('store-category-order')) {
+    if (storeId == null || !ServerFeature.storeCategoryOrder) {
       _setStoreCategoryOrder(storeId, const []);
       return;
     }
@@ -513,7 +513,7 @@ class ShoppingSessionController extends ChangeNotifier {
   /// to be walked on.
   Future<void> _refreshStoreCategoryOrder() async {
     final storeId = _session.activeStoreId;
-    if (storeId == null || !hasFeature('store-category-order')) {
+    if (storeId == null || !ServerFeature.storeCategoryOrder) {
       _setStoreCategoryOrder(storeId, const []);
       return;
     }

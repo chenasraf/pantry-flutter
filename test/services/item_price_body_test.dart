@@ -2,14 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 
 void main() {
   tearDown(() => ServerVersionService.instance.debugSeed());
 
   void seedPerStore(bool enabled) {
     ServerVersionService.instance.debugSeed(
-      features: {if (enabled) kItemPricePerStoreFeature: true},
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse(enabled ? '0.28.0' : '0.27.0'),
     );
   }
 

@@ -326,7 +326,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
                   '${m.checklists.sortTooltip}: ${checklistSortLabel(effective)}',
             ),
           const OverflowDivider(),
-          if (hasFeature('item-authors'))
+          if (ServerFeature.itemAuthors)
             OverflowCheckboxAction(
               value: 'toggle_added_by',
               label: m.checklists.showAddedBy,
@@ -369,19 +369,19 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
               icon: EntityIcons.category,
               label: m.categories.manageTitle,
             ),
-          if (canEditLists && hasFeature('stores'))
+          if (canEditLists && ServerFeature.stores)
             OverflowAction(
               value: 'manage_stores',
               icon: EntityIcons.store,
               label: m.stores.manageTitle,
             ),
-          if (canEditLists && hasFeature('labels'))
+          if (canEditLists && ServerFeature.labels)
             OverflowAction(
               value: 'manage_labels',
               icon: EntityIcons.label,
               label: m.labels.manageTitle,
             ),
-          if (domain.permissions.canEditFields && hasFeature('custom-fields'))
+          if (domain.permissions.canEditFields && ServerFeature.customFields)
             OverflowAction(
               value: 'manage_custom_fields',
               icon: Icons.list_alt,
@@ -435,7 +435,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         icon: Icons.shopping_cart_outlined,
         label: m.checklists.menu.shopping,
         entries: [
-          if (hasFeature('shopping')) ...[
+          if (ServerFeature.shopping) ...[
             // When the FAB is turned off, its action lives here, above history.
             if (!prefs.startShoppingFabEnabled)
               OverflowAction(
@@ -463,8 +463,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         entries: [
           if (!isMeta &&
               domain.isCurrentListWritable &&
-              domain.permissions.canDeleteItems &&
-              (supportsFeature('soft-delete') || hasFeature('item-trash')))
+              domain.permissions.canDeleteItems)
             OverflowAction(
               value: 'view_trash',
               icon: Icons.delete_outline,
@@ -480,7 +479,7 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
           if (!isMeta &&
               domain.isCurrentListWritable &&
               canEditLists &&
-              hasFeature('item-archive'))
+              ServerFeature.itemArchive)
             OverflowAction(
               value: 'view_archive',
               icon: Icons.archive_outlined,

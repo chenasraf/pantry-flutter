@@ -3,14 +3,14 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 
 void main() {
   tearDown(() => ServerVersionService.instance.debugSeed());
 
   void seedRecurrenceDefault(bool enabled) {
     ServerVersionService.instance.debugSeed(
-      features: {if (enabled) kListDefaultRecurrenceFeature: true},
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse(enabled ? '0.31.0' : '0.30.0'),
     );
   }
 

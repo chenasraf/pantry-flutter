@@ -64,10 +64,7 @@ class ShoppingModeOnboardingPage extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           const _MockShoppingCard(),
-          const ServerRequirementNote(
-            feature: 'shopping',
-            requiredVersion: '0.25.0',
-          ),
+          const ServerRequirementNote(requiredVersion: '0.25.0'),
         ],
       ),
     );

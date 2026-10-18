@@ -11,6 +11,7 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/date_format.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
@@ -182,8 +183,7 @@ void main() {
     setUp(() async {
       items = [];
       ServerVersionService.instance.debugSeed(
-        features: {'checklist-completion-time': true},
-        featuresAuthoritative: true,
+        pantryVersion: Version.parse('0.35.0'),
       );
       ChecklistService.instance.cacheLists(1, const []);
       ChecklistService.instance.invalidateItemsFor(10);

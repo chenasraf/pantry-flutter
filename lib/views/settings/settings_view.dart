@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
-import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
 import 'package:pantry/views/settings/diagnostic_logs_view.dart';
 import 'package:pantry/views/settings/general_settings_view.dart';
@@ -74,13 +73,12 @@ class _SettingsViewState extends State<SettingsView> {
       title: m.settings.refreshSection,
       subtitle: m.settings.refreshSectionSubtitle,
     ),
-    if (supportsFeature('notifications'))
-      (
-        section: _Section.notifications,
-        icon: Icons.notifications_outlined,
-        title: m.settings.notificationsSection,
-        subtitle: m.settings.notificationsSectionBody,
-      ),
+    (
+      section: _Section.notifications,
+      icon: Icons.notifications_outlined,
+      title: m.settings.notificationsSection,
+      subtitle: m.settings.notificationsSectionBody,
+    ),
     (
       section: _Section.diagnostics,
       icon: Icons.bug_report_outlined,

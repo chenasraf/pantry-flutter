@@ -196,7 +196,7 @@ class ShoppingItemRow extends StatelessWidget {
     }
 
     if (item.hasPriceFor(storeContext) &&
-        hasFeature('item-price') &&
+        ServerFeature.itemPrice &&
         prefs.isItemChipVisible(ItemChipKind.price.key)) {
       chips.add(
         EntityChip(

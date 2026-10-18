@@ -117,7 +117,7 @@ class _TrashStageState extends State<TrashStage> {
               separatorBuilder: (_, _) => const SizedBox(height: 8),
               itemBuilder: (_, i) {
                 final list = trashed[i];
-                final canOpen = hasFeature('checklist-trash-open');
+                final canOpen = ServerFeature.checklistTrashOpen;
                 return TrashedListTile(
                   list: list,
                   // With the open capability a tap browses the list's items and

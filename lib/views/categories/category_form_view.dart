@@ -63,7 +63,7 @@ class _CategoryFormViewState extends State<CategoryFormView> {
   List<ChecklistList> _lists = [];
 
   bool get _isEditing => widget.existing != null;
-  bool get _scopingEnabled => hasFeature('category-lists');
+  bool get _scopingEnabled => ServerFeature.categoryLists;
 
   @override
   void initState() {

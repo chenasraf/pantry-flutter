@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/models/note.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 
 Map<String, dynamic> _baseJson() => {
   'id': 5,
@@ -14,11 +15,8 @@ Map<String, dynamic> _baseJson() => {
   'updatedAt': 0,
 };
 
-void _seedSyncFeature({bool supported = true}) =>
-    ServerVersionService.instance.debugSeed(
-      features: {'note-file-sync': supported},
-      featuresAuthoritative: true,
-    );
+void _seedSyncFeature({bool supported = true}) => ServerVersionService.instance
+    .debugSeed(pantryVersion: Version.parse(supported ? '0.34.0' : '0.33.0'));
 
 void main() {
   tearDown(() => ServerVersionService.instance.debugSeed());

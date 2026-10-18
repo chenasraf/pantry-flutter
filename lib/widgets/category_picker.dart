@@ -34,7 +34,7 @@ class CategoryPicker extends StatelessWidget {
   /// Categories in scope for [listId] under the effective-list rule. A no-op on
   /// servers without `category-lists`, where every category is global.
   List<Category> get _scopedCategories {
-    if (!hasFeature('category-lists')) return categories;
+    if (!ServerFeature.categoryLists) return categories;
     return [
       for (final c in categories)
         if (c.listId == null || (listId != null && c.listId == listId)) c,

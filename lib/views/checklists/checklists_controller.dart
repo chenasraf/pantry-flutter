@@ -189,7 +189,7 @@ class ChecklistsController extends ChangeNotifier {
   /// only globals apply. A no-op filter on servers without `category-lists`,
   /// where every category is global.
   List<models.Category> categoriesForList(int? listId) {
-    if (!hasFeature('category-lists')) return sortedCategories;
+    if (!ServerFeature.categoryLists) return sortedCategories;
     return [
       for (final c in sortedCategories)
         if (c.listId == null || (listId != null && c.listId == listId)) c,
@@ -221,7 +221,7 @@ class ChecklistsController extends ChangeNotifier {
   /// without `label-lists`, where every label is global. Mirrors
   /// [categoriesForList].
   List<models.Label> labelsForList(int? listId) {
-    if (!hasFeature('label-lists')) return sortedLabels;
+    if (!ServerFeature.labelLists) return sortedLabels;
     return [
       for (final l in sortedLabels)
         if (l.listId == null || (listId != null && l.listId == listId)) l,
@@ -240,7 +240,7 @@ class ChecklistsController extends ChangeNotifier {
   /// `custom-fields` capability is present. Loaded non-fatally with the rest.
   List<FieldDefinition> _customFieldDefs = const [];
   List<FieldDefinition> get customFieldDefs =>
-      hasFeature(kCustomFieldsFeature) ? _customFieldDefs : const [];
+      ServerFeature.customFields ? _customFieldDefs : const [];
 
   /// The item sort of the current list (or of the All-lists view).
   String _sortBy = 'custom';
@@ -341,7 +341,7 @@ class ChecklistsController extends ChangeNotifier {
   /// Whether group actions are available at all in this view. Available in the
   /// active list and in both soft views (trash → bulk restore / permanent
   /// delete; archive → bulk unarchive / permanent delete).
-  bool get canSelectItems => hasFeature('batch-operations');
+  bool get canSelectItems => ServerFeature.batchOperations;
 
   /// The currently-selected items, resolved against the live item list. Ids
   /// whose item has since left the view are silently dropped.
@@ -393,11 +393,11 @@ class ChecklistsController extends ChangeNotifier {
   bool get canBatchCategory => _allSelectedWritable && permissions.canEditLists;
   // Batch store-assignment is gated on the same permission as category, plus the
   // `stores` feature (the action bar hides the button entirely without it).
-  bool get hasStoresFeature => hasFeature('stores');
+  bool get hasStoresFeature => ServerFeature.stores;
   bool get canBatchStores =>
       hasStoresFeature && _allSelectedWritable && permissions.canEditLists;
   // Batch label-assignment mirrors stores, gated on the `labels` feature.
-  bool get hasLabelsFeature => hasFeature('labels');
+  bool get hasLabelsFeature => ServerFeature.labels;
   bool get canBatchLabels =>
       hasLabelsFeature && _allSelectedWritable && permissions.canEditLists;
   bool get canBatchCopy => selectedItems.isNotEmpty && permissions.canCopyItems;
@@ -461,7 +461,7 @@ class ChecklistsController extends ChangeNotifier {
 
       // Stores are gated on the `stores` capability and fetched non-fatally so
       // a server without the feature (404) doesn't break the whole load.
-      if (hasFeature('stores')) {
+      if (ServerFeature.stores) {
         try {
           final stores = await _storeService.getStores(houseId);
           _stores = {for (final s in stores) s.id: s};
@@ -472,7 +472,7 @@ class ChecklistsController extends ChangeNotifier {
 
       // Labels are gated on the `labels` capability and fetched non-fatally so
       // a server without the feature (404) doesn't break the whole load.
-      if (hasFeature('labels')) {
+      if (ServerFeature.labels) {
         try {
           final labels = await _labelService.getLabels(houseId);
           _labels = {for (final l in labels) l.id: l};
@@ -483,7 +483,7 @@ class ChecklistsController extends ChangeNotifier {
 
       // Custom-field definitions back the compose bar's default seeding; gated
       // on the capability and fetched non-fatally.
-      if (hasFeature(kCustomFieldsFeature)) {
+      if (ServerFeature.customFields) {
         try {
           _customFieldDefs = await CustomFieldService.instance.getFields(
             houseId,
@@ -508,7 +508,7 @@ class ChecklistsController extends ChangeNotifier {
         // With per-list sorts the house value is only the default for lists
         // without a stored choice; the current list's own sort is resolved in
         // `selectList`.
-        if (!hasFeature(kListItemSortFeature)) _sortBy = houseItemSort;
+        if (!ServerFeature.listItemSort) _sortBy = houseItemSort;
         _showAddedBy = prefs['showAddedBy'] as bool? ?? false;
         _categorySort = prefs['categorySort'] as String? ?? 'custom';
         _storeSort = prefs['storeSort'] as String? ?? 'name_asc';
@@ -540,7 +540,7 @@ class ChecklistsController extends ChangeNotifier {
         // during normal use the two are identical since `selectList` keeps
         // `selectedListId` in sync.
         final targetId = _checklistService.selectedListId ?? _currentList?.id;
-        if (targetId == kAllListsId && hasFeature('checklist-all-view')) {
+        if (targetId == kAllListsId && ServerFeature.checklistAllView) {
           // Stay on the meta view — falling back to `_lists.first` would
           // flicker the per-list view in between refreshes.
           await selectList(allListsSentinel(houseId));
@@ -625,7 +625,7 @@ class ChecklistsController extends ChangeNotifier {
     // the aggregate is the current view (already fetched above) or the server
     // doesn't offer it.
     if (currentId == kAllListsId ||
-        !hasFeature('checklist-all-view') ||
+        !ServerFeature.checklistAllView ||
         !_sync.isOnline ||
         pendingLists.isNotEmpty) {
       return;
@@ -713,7 +713,7 @@ class ChecklistsController extends ChangeNotifier {
       _lists = _applyLocalListPrefs(cachedLists);
       if (_lists.isNotEmpty) {
         final savedId = _checklistService.selectedListId;
-        if (savedId == kAllListsId && hasFeature('checklist-all-view')) {
+        if (savedId == kAllListsId && ServerFeature.checklistAllView) {
           _currentList = allListsSentinel(houseId);
           _sortBy = _checklistService.cachedItemSort(houseId, kAllListsId);
           // The aggregate has its own cache slot (kAllListsId), so the
@@ -752,7 +752,7 @@ class ChecklistsController extends ChangeNotifier {
     final previousListId = _currentList?.id;
     _currentList = list;
     _checklistService.selectedListId = list.id;
-    if (hasFeature(kListItemSortFeature)) {
+    if (ServerFeature.listItemSort) {
       _sortBy = _checklistService.cachedItemSort(houseId, list.id);
     }
 
@@ -993,13 +993,13 @@ class ChecklistsController extends ChangeNotifier {
   /// on an older server a within-category drag would snap back on refetch, so
   /// gate it on the capability flag. Store within-group ordering is
   /// client-side, but it's gated together for a consistent UX.
-  bool get canReorderWithinGroups => hasFeature('custom-order-within-groups');
+  bool get canReorderWithinGroups => ServerFeature.customOrderWithinGroups;
 
   /// Whether the "Uncheck all" affordance should be offered. Gated on the new
   /// endpoint's capability flag, plus a writable non-meta list and the
   /// check-items permission.
   bool get canUncheckAll =>
-      hasFeature('uncheck-all') &&
+      ServerFeature.uncheckAll &&
       !isMetaMode &&
       isCurrentListWritable &&
       permissions.canCheckItems;
@@ -1017,7 +1017,7 @@ class ChecklistsController extends ChangeNotifier {
   /// should be offered. Same gate as the per-item archive action, on a
   /// writable non-meta list in the active view.
   bool get canArchiveAllDone =>
-      hasFeature('item-archive') &&
+      ServerFeature.itemArchive &&
       !isMetaMode &&
       !isSoftView &&
       isCurrentListWritable &&
@@ -1076,7 +1076,7 @@ class ChecklistsController extends ChangeNotifier {
         // list). Drop the obvious ones locally and refetch so the category
         // cache doesn't keep offering categories that no longer exist.
         final kind = applied.op.op;
-        if (hasFeature('category-lists') &&
+        if (ServerFeature.categoryLists &&
             (kind == SyncOpKind.permanentDelete ||
                 kind == SyncOpKind.emptyTrash)) {
           final deletedListId = applied.op.entityId;
@@ -1089,7 +1089,7 @@ class ChecklistsController extends ChangeNotifier {
         // Labels cascade the same way: a permanent list delete removes that
         // list's scoped labels (globals untouched). Prune and refetch so the
         // label cache stays honest.
-        if (hasFeature('label-lists') &&
+        if (ServerFeature.labelLists &&
             (kind == SyncOpKind.permanentDelete ||
                 kind == SyncOpKind.emptyTrash)) {
           final deletedListId = applied.op.entityId;

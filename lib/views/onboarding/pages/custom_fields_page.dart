@@ -53,10 +53,7 @@ class CustomFieldsOnboardingPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const _TypeChips(),
-          const ServerRequirementNote(
-            feature: 'custom-fields',
-            requiredVersion: '0.30.0',
-          ),
+          const ServerRequirementNote(requiredVersion: '0.30.0'),
         ],
       ),
     );

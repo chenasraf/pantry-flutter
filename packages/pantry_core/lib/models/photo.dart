@@ -74,7 +74,7 @@ extension PhotoSharing on Photo {
   /// per-photo [Photo.canEdit] when the server advertises `share-users`;
   /// otherwise falls back to the house-level [houseCanUpdate].
   bool canEditWith(bool houseCanUpdate) =>
-      hasFeature('share-users') ? (canEdit ?? houseCanUpdate) : houseCanUpdate;
+      ServerFeature.shareUsers ? (canEdit ?? houseCanUpdate) : houseCanUpdate;
 }
 
 class PhotoFolder {
@@ -126,5 +126,5 @@ extension PhotoFolderSharing on PhotoFolder {
   /// per-folder [PhotoFolder.canEdit] when the server advertises `share-users`;
   /// otherwise falls back to the house-level [houseCanMove].
   bool canEditWith(bool houseCanMove) =>
-      hasFeature('share-users') ? (canEdit ?? houseCanMove) : houseCanMove;
+      ServerFeature.shareUsers ? (canEdit ?? houseCanMove) : houseCanMove;
 }

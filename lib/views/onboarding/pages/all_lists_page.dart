@@ -55,10 +55,7 @@ class AllListsOnboardingPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           const _MockComposeWithListChip(),
-          const ServerRequirementNote(
-            feature: 'checklist-all-view',
-            requiredVersion: '0.18.0',
-          ),
+          const ServerRequirementNote(requiredVersion: '0.18.0'),
         ],
       ),
     );

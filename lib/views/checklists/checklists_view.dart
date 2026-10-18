@@ -9,7 +9,6 @@ import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
-import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/price.dart';
@@ -237,11 +236,11 @@ class _BodyState extends State<_Body> {
   /// The lists the rail draws, in the order the switcher shows them and with
   /// the same "All lists" entry at their head.
   HomeNavListsSpec _buildNavListsSpec(ChecklistsController controller) {
-    final realLists = hasFeature('checklist-sort')
+    final realLists = ServerFeature.checklistSort
         ? controller.sortedLists
         : controller.lists;
     final showAllLists =
-        hasFeature('checklist-all-view') && realLists.length >= 2;
+        ServerFeature.checklistAllView && realLists.length >= 2;
     return HomeNavListsSpec(
       lists: [
         if (showAllLists) allListsSentinel(controller.houseId),
@@ -365,7 +364,7 @@ class _BodyState extends State<_Body> {
           // Store filter mirrors categories, gated on the capability. Only
           // stores with at least one (non-trashed) item on this list are
           // offered.
-          final storesEnabled = hasFeature('stores');
+          final storesEnabled = ServerFeature.stores;
           final activeStoreIds = <int>{
             if (storesEnabled)
               for (final i in controller.items)
@@ -388,7 +387,7 @@ class _BodyState extends State<_Body> {
           // Label filter mirrors stores, gated on the `labels` capability. Only
           // labels with at least one (non-trashed) item on this list are
           // offered.
-          final labelsEnabled = hasFeature('labels');
+          final labelsEnabled = ServerFeature.labels;
           final activeLabelIds = <int>{
             if (labelsEnabled)
               for (final i in controller.items)
@@ -411,7 +410,7 @@ class _BodyState extends State<_Body> {
           // when the server supports prices and at least one (non-trashed) item
           // actually carries one.
           final showPriceFilter =
-              hasFeature('item-price') &&
+              ServerFeature.itemPrice &&
               controller.items.any((i) => i.deletedAt == null && i.hasPrice);
 
           // The per-list filter (All-lists view only) offers every list, even
@@ -429,7 +428,7 @@ class _BodyState extends State<_Body> {
           // action is turned off in settings it lives in the overflow menu
           // instead and the button collapses.
           final shoppingAction =
-              hasFeature('shopping') &&
+              ServerFeature.shopping &&
                   prefs.startShoppingFabEnabled &&
                   !controller.isSoftView
               ? NavPrimaryAction(
@@ -512,7 +511,7 @@ class _BodyState extends State<_Body> {
                         ? body.composeTargetListId
                         : list.id;
                     final reuseActive =
-                        hasFeature('reuse-existing-items') &&
+                        ServerFeature.reuseExistingItems &&
                         controller.permissions.canCheckItems &&
                         reuseTargetId != null;
                     final reuseCandidates = reuseActive
@@ -529,7 +528,7 @@ class _BodyState extends State<_Body> {
                     // keeps them live.
                     final suggestArchived =
                         reuseActive &&
-                        hasFeature('pref-suggest-archived-items') &&
+                        ServerFeature.prefSuggestArchivedItems &&
                         prefs.suggestArchivedItems;
                     final archivedReuseCandidates = suggestArchived
                         ? controller.archivedReuseCandidates(reuseTargetId)
@@ -578,19 +577,17 @@ class _BodyState extends State<_Body> {
                       categories: controller.categoriesForList(
                         meta ? body.composeTargetListId : list.id,
                       ),
-                      stores: hasFeature('stores')
+                      stores: ServerFeature.stores
                           ? controller.sortedStores
                           : const [],
-                      labels: hasFeature('labels')
+                      labels: ServerFeature.labels
                           ? controller.labelsForList(
                               meta ? body.composeTargetListId : list.id,
                             )
                           : const [],
                       customFieldDefs: controller.customFieldDefs,
-                      priceEnabled: hasFeature('item-price'),
-                      perStorePriceEnabled: hasFeature(
-                        kItemPricePerStoreFeature,
-                      ),
+                      priceEnabled: ServerFeature.itemPrice,
+                      perStorePriceEnabled: ServerFeature.itemPricePerStore,
                       lastCurrency: controller.lastCurrency,
                       initiallyFocused: false,
                       targetLists: realLists,
@@ -630,12 +627,12 @@ class _BodyState extends State<_Body> {
                             )
                           : null,
                       onRequestCreateStore:
-                          hasFeature('stores') &&
+                          ServerFeature.stores &&
                               controller.permissions.canEditLists
                           ? () => body.createStore(context)
                           : null,
                       onRequestCreateLabel:
-                          hasFeature('labels') &&
+                          ServerFeature.labels &&
                               controller.permissions.canEditLists
                           ? () => body.createLabel(
                               context,
@@ -705,14 +702,14 @@ class _BodyState extends State<_Body> {
                     children: [
                       // Live shopping trip in progress — offer a one-tap resume.
                       if (body.shoppingSession != null &&
-                          hasFeature('shopping'))
+                          ServerFeature.shopping)
                         body.buildResumeBanner(context),
                       // A housemate is out shopping — offer to shop their trip
                       // rather than start a parallel one. Shown alongside the
                       // resume banner: having a trip of your own is a reason to
                       // confirm the swap, not to hide the offer.
                       if (body.joinableTrip != null &&
-                          hasFeature('shopping-join-session'))
+                          ServerFeature.shoppingJoinSession)
                         body.buildJoinBanner(context),
                       // Animate the search row sliding/fading in and out below
                       // the AppBar instead of popping in instantly.
@@ -752,7 +749,7 @@ class _BodyState extends State<_Body> {
                             total: total,
                             done: done,
                             lastCompletedAt:
-                                hasFeature('checklist-completion-time')
+                                ServerFeature.checklistCompletionTime
                                 ? list?.lastCompletedAt
                                 : null,
                             // Desktop mice can't reliably swipe. Surface a tap

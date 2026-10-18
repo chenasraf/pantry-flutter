@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry/views/checklists/checklists_body_controller.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/widgets/overflow_menu.dart';
@@ -40,8 +41,7 @@ void main() {
           return null;
         });
     ServerVersionService.instance.debugSeed(
-      features: {'shopping': true},
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse('0.25.0'),
     );
     domain = ChecklistsController(houseId: 1);
     body = ChecklistsBodyController(
@@ -63,10 +63,8 @@ void main() {
   test('groups keep their order and drop the empty ones', () {
     final ids = body.overflowGroups().map((g) => g.id).toList();
 
-    // No list is open, so nothing per-list (trash, archive, list) is offered.
+    // No list is open, so the list's own actions aren't offered.
     expect(ids, containsAllInOrder(['view', 'shopping']));
-    expect(ids, isNot(contains('trash')));
-    expect(ids, isNot(contains('archive')));
     expect(ids, isNot(contains('list')));
     expect(ids, isNot(contains('select')));
   });

@@ -637,7 +637,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
           writable &&
               controller.lists.length > 1 &&
               !controller.isSoftView &&
-              hasFeature('copy-items') &&
+              ServerFeature.copyItems &&
               controller.permissions.canCopyItems
           ? (i) => _onCopy(context, controller, i)
           : null,
@@ -648,7 +648,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
           writable &&
               !controller.isSoftView &&
               controller.permissions.canEditLists &&
-              hasFeature('item-archive')
+              ServerFeature.itemArchive
           ? (i) => _onArchive(context, controller, i)
           : null,
       onRestore:

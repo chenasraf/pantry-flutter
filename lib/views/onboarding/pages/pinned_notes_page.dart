@@ -42,10 +42,7 @@ class PinnedNotesOnboardingPage extends StatelessWidget {
           Center(
             child: SizedBox(width: 200, height: 180, child: _PinnedNoteMock()),
           ),
-          const ServerRequirementNote(
-            feature: 'note-pinning',
-            requiredVersion: '0.16.0',
-          ),
+          const ServerRequirementNote(requiredVersion: '0.16.0'),
         ],
       ),
     );

@@ -233,7 +233,7 @@ class PhotoTile extends StatelessWidget {
   ];
 
   String get _softDeleteLabel =>
-      hasFeature('photo-trash') ? m.common.remove : m.common.delete;
+      ServerFeature.photoTrash ? m.common.remove : m.common.delete;
 
   void _onMenuSelected(BuildContext context, String value) {
     switch (value) {
@@ -311,7 +311,7 @@ class PhotoTile extends StatelessWidget {
       try {
         await controller.deletePhoto(photo);
         if (!context.mounted) return;
-        if (hasFeature('photo-trash')) {
+        if (ServerFeature.photoTrash) {
           showUndoToast(
             message: m.photoBoard.photoRemoved(1),
             undoLabel: m.checklists.undo,

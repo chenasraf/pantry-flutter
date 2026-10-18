@@ -8,11 +8,10 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/house.dart';
-import 'package:pantry_core/models/item_defaults.dart';
-import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'package:pantry/views/checklists/item_defaults_view.dart';
@@ -80,11 +79,7 @@ void main() {
   setUp(() async {
     requests = [];
     ServerVersionService.instance.debugSeed(
-      features: {
-        kListItemDefaultsFeature: true,
-        kListDefaultRecurrenceFeature: true,
-      },
-      featuresAuthoritative: true,
+      pantryVersion: Version.parse('0.36.0'),
     );
     ChecklistService.instance.cacheLists(1, const []);
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger

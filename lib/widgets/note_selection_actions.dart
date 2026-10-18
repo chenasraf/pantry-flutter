@@ -40,7 +40,7 @@ class NoteSelectionActions extends StatelessWidget {
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
-              hasFeature('note-trash') ? m.common.remove : m.common.delete,
+              ServerFeature.noteTrash ? m.common.remove : m.common.delete,
             ),
           ),
         ],
@@ -56,7 +56,7 @@ class NoteSelectionActions extends StatelessWidget {
             .where((n) => deletedIds.contains(n.id))
             .toList();
         if (!context.mounted) return;
-        if (hasFeature('note-trash') && deleted.isNotEmpty) {
+        if (ServerFeature.noteTrash && deleted.isNotEmpty) {
           showUndoToast(
             message: m.notesWall.noteRemoved(deleted.length),
             undoLabel: m.checklists.undo,

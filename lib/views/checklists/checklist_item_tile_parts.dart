@@ -346,7 +346,7 @@ class ChecklistTileRowContent extends StatelessWidget {
         prefs.isItemChipVisible(ItemChipKind.quantity.key);
     final hasPrice =
         item.hasPriceFor(priceStoreContext) &&
-        hasFeature('item-price') &&
+        ServerFeature.itemPrice &&
         prefs.isItemChipVisible(ItemChipKind.price.key);
     final hasDesc =
         !hideNote &&
@@ -556,7 +556,7 @@ class _MetaRow extends StatelessWidget {
             background: cs.onSurface.withValues(alpha: 0.06),
           ),
         if (item.hasPriceFor(priceStoreContext) &&
-            hasFeature('item-price') &&
+            ServerFeature.itemPrice &&
             prefs.isItemChipVisible(ItemChipKind.price.key))
           EntityChip(
             label: item.formattedPriceFor(priceStoreContext)!,

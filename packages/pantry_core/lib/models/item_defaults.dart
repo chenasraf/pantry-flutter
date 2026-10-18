@@ -4,11 +4,6 @@ import 'package:flutter/foundation.dart';
 
 import 'package:pantry_core/models/list_recurrence.dart';
 
-/// Feature string a server advertises when a list can pre-fill every part of a
-/// new item, not only its recurrence. Without it a list keeps the
-/// `defaultRecurrence*` fields.
-const String kListItemDefaultsFeature = 'list-item-defaults';
-
 /// How one part of a new item is pre-filled.
 enum ItemDefaultMode {
   /// The composer's own empty state.

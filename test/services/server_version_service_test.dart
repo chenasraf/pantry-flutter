@@ -213,104 +213,75 @@ void main() {
     });
   });
 
-  group('ServerVersionService.hasFeature', () {
+  group('ServerFeature', () {
     tearDown(() => ServerVersionService.instance.clear());
 
-    test('returns true for seeded features', () {
+    test('opens on the release that shipped the feature', () {
+      ServerVersionService.instance.debugSeed(
+        pantryVersion: Version.parse('0.22.0'),
+      );
+      expect(ServerFeature.stores, isTrue);
+      expect(ServerFeature.itemArchive, isTrue);
+    });
+
+    test('stays closed on the release before it', () {
+      ServerVersionService.instance.debugSeed(
+        pantryVersion: Version.parse('0.21.0'),
+      );
+      expect(ServerFeature.stores, isFalse);
+    });
+
+    test('stays closed when the version is unknown', () {
+      expect(ServerFeature.checklistColor, isFalse);
+    });
+
+    test('probe-confirmed pre-0.16 features open without a version', () {
       ServerVersionService.instance.debugSeed(
         features: {'category-sort': true},
       );
-      expect(ServerVersionService.instance.hasFeature('category-sort'), isTrue);
-    });
-
-    test('returns false for unseeded features', () {
-      expect(ServerVersionService.instance.hasFeature('whatever'), isFalse);
-    });
-  });
-
-  group('ServerVersionService.supportsFeature (fail-open)', () {
-    tearDown(() => ServerVersionService.instance.clear());
-
-    test('returns true when nothing is known (pre-capability fallback)', () {
-      expect(
-        ServerVersionService.instance.supportsFeature('soft-delete'),
-        isTrue,
-      );
-    });
-
-    test('returns false when capability list is authoritative and absent', () {
-      ServerVersionService.instance.debugSeed(
-        features: {'category-sort': true},
-        featuresAuthoritative: true,
-      );
-      expect(
-        ServerVersionService.instance.supportsFeature('soft-delete'),
-        isFalse,
-      );
-    });
-
-    test('returns true when explicitly present', () {
-      ServerVersionService.instance.debugSeed(
-        features: {'soft-delete': true},
-        featuresAuthoritative: true,
-      );
-      expect(
-        ServerVersionService.instance.supportsFeature('soft-delete'),
-        isTrue,
-      );
-    });
-
-    test('returns true when probe confirmed on pre-capability server', () {
-      ServerVersionService.instance.debugSeed(
-        features: {'category-sort': true},
-        featuresAuthoritative: false,
-      );
-      // Even though the capability list is not present, the probe-derived
-      // feature stays true.
-      expect(
-        ServerVersionService.instance.supportsFeature('category-sort'),
-        isTrue,
-      );
-      // And a feature we have no info on falls through to fail-open.
-      expect(
-        ServerVersionService.instance.supportsFeature('notifications'),
-        isTrue,
-      );
+      expect(ServerFeature.categorySort, isTrue);
+      expect(ServerFeature.itemAuthors, isTrue);
+      expect(ServerFeature.checklistColor, isFalse);
     });
   });
 
   group('ServerVersionService.observeHousePrefs', () {
     tearDown(() => ServerVersionService.instance.clear());
 
-    test('sets item-authors=true when showAddedBy key is present', () {
+    bool atLeast015() =>
+        ServerVersionService.instance.isServerPantryVersion('>=', '0.15.0');
+
+    test('bounds the version at 0.15.0 when showAddedBy is present', () {
       ServerVersionService.instance.observeHousePrefs({
         'showAddedBy': false,
         'categorySort': 'custom',
       });
-      expect(ServerVersionService.instance.hasFeature('item-authors'), isTrue);
+      expect(atLeast015(), isTrue);
     });
 
-    test('sets item-authors=false when showAddedBy key is missing', () {
+    test('bounds the version below 0.15.0 when showAddedBy is missing', () {
       ServerVersionService.instance.observeHousePrefs({
         'categorySort': 'custom',
       });
-      expect(ServerVersionService.instance.hasFeature('item-authors'), isFalse);
+      expect(atLeast015(), isFalse);
+      expect(
+        ServerVersionService.instance.isServerPantryVersion('<', '0.15.0'),
+        isTrue,
+      );
     });
 
-    test('is a no-op when capability list is authoritative', () {
+    test('is a no-op when the server reports its version', () {
       ServerVersionService.instance.debugSeed(
-        features: {'item-authors': true},
-        featuresAuthoritative: true,
+        pantryVersion: Version.parse('0.30.0'),
       );
       ServerVersionService.instance.observeHousePrefs(const {});
-      // Authoritative answer is preserved; observation didn't downgrade it.
-      expect(ServerVersionService.instance.hasFeature('item-authors'), isTrue);
+      expect(atLeast015(), isTrue);
     });
 
     test('does not overwrite a previous observation', () {
       ServerVersionService.instance.observeHousePrefs({'showAddedBy': true});
       ServerVersionService.instance.observeHousePrefs(const {});
-      expect(ServerVersionService.instance.hasFeature('item-authors'), isTrue);
+      expect(atLeast015(), isTrue);
     });
   });
 }

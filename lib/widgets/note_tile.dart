@@ -262,7 +262,7 @@ class NoteTile extends StatelessWidget {
           ],
         ),
       ),
-    if (hasFeature('note-pinning') &&
+    if (ServerFeature.notePinning &&
         note.canEditWith(controller.permissions.canUpdateNotes))
       PopupMenuItem(
         value: 'pin',
@@ -309,7 +309,7 @@ class NoteTile extends StatelessWidget {
       (note.content?.trim().isNotEmpty ?? false);
 
   String get _softDeleteLabel =>
-      hasFeature('note-trash') ? m.common.remove : m.common.delete;
+      ServerFeature.noteTrash ? m.common.remove : m.common.delete;
 
   void _onMenuSelected(BuildContext context, String value) {
     switch (value) {
@@ -360,7 +360,7 @@ class NoteTile extends StatelessWidget {
       try {
         await controller.deleteNote(note);
         if (!context.mounted) return;
-        if (hasFeature('note-trash')) {
+        if (ServerFeature.noteTrash) {
           showUndoToast(
             message: m.notesWall.noteRemoved(1),
             undoLabel: m.checklists.undo,

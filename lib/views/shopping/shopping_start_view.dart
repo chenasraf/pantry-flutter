@@ -586,7 +586,7 @@ class _ShoppingStartViewState extends State<ShoppingStartView> {
                 onChanged: (v) => setState(() => _includeUnassigned = v),
                 title: Text(m.shopping.includeUnassigned),
               ),
-              if (hasFeature('shopping-item-selection')) ...[
+              if (ServerFeature.shoppingItemSelection) ...[
                 const SizedBox(height: 8),
                 ListTile(
                   contentPadding: EdgeInsets.zero,

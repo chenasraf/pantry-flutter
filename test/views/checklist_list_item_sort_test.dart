@@ -8,6 +8,7 @@ import 'package:http/testing.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/version.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
@@ -116,11 +117,8 @@ void main() {
     }
   }
 
-  void seedFeatures({required bool perList}) =>
-      ServerVersionService.instance.debugSeed(
-        features: {if (perList) kListItemSortFeature: true},
-        featuresAuthoritative: true,
-      );
+  void seedFeatures({required bool perList}) => ServerVersionService.instance
+      .debugSeed(pantryVersion: Version.parse(perList ? '0.37.0' : '0.36.0'));
 
   /// The `sortBy` the last items fetch for [path] asked for.
   String? lastItemsSort(String path) => requests

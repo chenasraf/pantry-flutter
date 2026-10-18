@@ -127,14 +127,14 @@ extension NoteSharing on Note {
   /// back to [houseCanUpdate] when the server didn't send it); on older servers
   /// the per-note field is ignored entirely and gating is purely house-level.
   bool canEditWith(bool houseCanUpdate) =>
-      hasFeature('share-users') ? (canEdit ?? houseCanUpdate) : houseCanUpdate;
+      ServerFeature.shareUsers ? (canEdit ?? houseCanUpdate) : houseCanUpdate;
 }
 
 extension NoteFileSync on Note {
   /// Whether this note mirrors a file. Gating the capability here rather than
   /// at each call site makes an older server's nulls and a newer server's
   /// unsynced note read identically.
-  bool get isSynced => hasFeature('note-file-sync') && syncFileId != null;
+  bool get isSynced => ServerFeature.noteFileSync && syncFileId != null;
 
   /// The bound file's path as it is shown, leading slash dropped, or `null`
   /// when the file is out of reach. See [Note.syncPath].

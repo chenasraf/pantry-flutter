@@ -541,7 +541,7 @@ class ChecklistsController extends ChangeNotifier {
       // With per-list sorts the house value is only the default for lists
       // without a stored choice; the list's own sort comes from its prefs.
       final houseItemSort = prefs['checklistItemSort'] as String? ?? 'custom';
-      if (!hasFeature(kListItemSortFeature)) _itemSort = houseItemSort;
+      if (!ServerFeature.listItemSort) _itemSort = houseItemSort;
       _categorySort = prefs['categorySort'] as String? ?? 'custom';
       _storeSort = prefs['storeSort'] as String? ?? 'name_asc';
       final cache = _checklists.cache;
@@ -768,7 +768,7 @@ class ChecklistsController extends ChangeNotifier {
     if (house == null ||
         currentUserId == null ||
         !_canCheckItems ||
-        !hasFeature('shopping-join-session')) {
+        !ServerFeature.shoppingJoinSession) {
       _joinableTrips = const [];
       return;
     }
@@ -892,7 +892,7 @@ class ChecklistsController extends ChangeNotifier {
   /// keeps the cached answer, which falls back to the house's sort.
   Future<void> _refreshListSort(int house, int listId) async {
     _itemSort = _checklists.cachedItemSort(house, listId);
-    if (!hasFeature(kListItemSortFeature)) return;
+    if (!ServerFeature.listItemSort) return;
     try {
       final sort = await _checklists.getListItemSort(house, listId);
       _checklists.cacheItemSort(house, listId, sort);
@@ -927,9 +927,7 @@ class ChecklistsController extends ChangeNotifier {
   /// walked out of range is grouped by.
   void _adoptCachedStoreCategoryOrder(int? storeId) {
     final house = _houseId;
-    if (house == null ||
-        storeId == null ||
-        !hasFeature('store-category-order')) {
+    if (house == null || storeId == null || !ServerFeature.storeCategoryOrder) {
       _storeCategoryOrder = const [];
       _storeCategoryOrderStoreId = storeId;
       return;
@@ -947,9 +945,7 @@ class ChecklistsController extends ChangeNotifier {
   Future<void> _refreshStoreCategoryOrder() async {
     final house = _houseId;
     final storeId = _session?.activeStoreId;
-    if (house == null ||
-        storeId == null ||
-        !hasFeature('store-category-order')) {
+    if (house == null || storeId == null || !ServerFeature.storeCategoryOrder) {
       _adoptCachedStoreCategoryOrder(storeId);
       return;
     }

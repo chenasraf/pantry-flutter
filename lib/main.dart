@@ -164,7 +164,7 @@ void main(List<String> args) async {
     //
     // Exception: with unseen onboarding pending, await the capabilities fetch
     // (short timeout so offline launches still proceed) so onboarding's
-    // `hasFeature(...)` checks don't fire off stale cached capabilities.
+    // server-version checks don't fire off stale cached capabilities.
     if (hasPendingOnboardingCandidates(
       PrefsService.instance.lastSeenOnboardingVersion,
     )) {

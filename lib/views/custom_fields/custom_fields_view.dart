@@ -18,7 +18,7 @@ import 'package:pantry/views/custom_fields/custom_field_editor.dart';
 
 /// The unified custom-fields manager: field definitions grouped by scope,
 /// each editable inline (accordion). Reachable from a list's manage menu,
-/// gated by `hasFeature('custom-fields')` and the `canEditFields` capability.
+/// gated by `ServerFeature.customFields` and the `canEditFields` capability.
 class CustomFieldsView extends StatefulWidget {
   final int houseId;
 

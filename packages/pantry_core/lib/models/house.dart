@@ -162,5 +162,5 @@ extension HouseEffectivePermissions on House {
   /// against un-upgraded servers regardless of what the `permissions` block
   /// happens to contain.
   HousePermissions get effectivePermissions =>
-      hasFeature('roles') ? permissions : HousePermissions.unrestricted;
+      ServerFeature.roles ? permissions : HousePermissions.unrestricted;
 }
