@@ -15,6 +15,21 @@ class ApiException implements Exception {
 
   const ApiException(this.statusCode, this.message);
 
+  /// What the server said about the failure, read out of an OCS or plain JSON
+  /// error body. Null for a body that says nothing readable — an HTML error
+  /// page from a proxy being the usual case.
+  String? get serverMessage {
+    try {
+      final json = jsonDecode(message);
+      if (json is! Map) return null;
+      final text =
+          json['ocs']?['meta']?['message'] ?? json['message'] ?? json['error'];
+      return text is String && text.isNotEmpty ? text : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   @override
   String toString() => 'ApiException($statusCode): $message';
 }

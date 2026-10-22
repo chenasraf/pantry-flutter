@@ -1208,6 +1208,12 @@ sync:
   syncing: "Synchronisation des modifications…"
   pendingChanges(int count): "${_plural(count, one: '1 modification en attente de synchronisation', many: '${count} modifications en attente de synchronisation')}"
   syncError: "Impossible de synchroniser les modifications"
+  refusedNamed(String name, int status): "Impossible d'enregistrer « ${name} » : le serveur a refusé la modification (${status})."
+  refusedOne(int status): "Impossible d'enregistrer une modification : le serveur l'a refusée (${status})."
+  refusedMany(int count, int status): "Impossible d'enregistrer ${count} modifications : le serveur les a refusées (${status})."
+  failedNamed(String name): "Impossible d'enregistrer « ${name} » : le serveur a échoué à plusieurs reprises."
+  failedOne: "Impossible d'enregistrer une modification : le serveur a échoué à plusieurs reprises."
+  failedMany(int count): "Impossible d'enregistrer ${count} modifications : le serveur a échoué à plusieurs reprises."
   retry: "Réessayer"
 markdownEditor:
   editSource: Markdown

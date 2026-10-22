@@ -6284,6 +6284,42 @@ class SyncMessages {
   String get syncError => """Couldn't sync changes""";
 
   /// ```dart
+  /// "Couldn't save “${name}”: the server refused the change (${status})."
+  /// ```
+  String refusedNamed(String name, int status) =>
+      """Couldn't save “${name}”: the server refused the change (${status}).""";
+
+  /// ```dart
+  /// "Couldn't save a change: the server refused it (${status})."
+  /// ```
+  String refusedOne(int status) =>
+      """Couldn't save a change: the server refused it (${status}).""";
+
+  /// ```dart
+  /// "Couldn't save ${count} changes: the server refused them (${status})."
+  /// ```
+  String refusedMany(int count, int status) =>
+      """Couldn't save ${count} changes: the server refused them (${status}).""";
+
+  /// ```dart
+  /// "Couldn't save “${name}”: the server kept failing."
+  /// ```
+  String failedNamed(String name) =>
+      """Couldn't save “${name}”: the server kept failing.""";
+
+  /// ```dart
+  /// "Couldn't save a change: the server kept failing."
+  /// ```
+  String get failedOne =>
+      """Couldn't save a change: the server kept failing.""";
+
+  /// ```dart
+  /// "Couldn't save ${count} changes: the server kept failing."
+  /// ```
+  String failedMany(int count) =>
+      """Couldn't save ${count} changes: the server kept failing.""";
+
+  /// ```dart
   /// "Retry now"
   /// ```
   String get retry => """Retry now""";
@@ -8508,6 +8544,7 @@ Password: pantry-rocks""",
   """sync.offline""": """Offline""",
   """sync.syncing""": """Syncing changes…""",
   """sync.syncError""": """Couldn't sync changes""",
+  """sync.failedOne""": """Couldn't save a change: the server kept failing.""",
   """sync.retry""": """Retry now""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Rich text""",

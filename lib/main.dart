@@ -45,6 +45,7 @@ import 'services/widget_service.dart';
 import 'services/widget_theme.dart';
 import 'services/window_service.dart';
 import 'theme/app_theme.dart';
+import 'package:pantry_core/sync/sync_drop_notices.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'utils/app_toast.dart';
@@ -73,6 +74,18 @@ void _showPermissionDeniedToast() {
   }
   _lastForbiddenToast = now;
   showAppToast(message: m.common.permissionDenied, kind: ToastKind.error);
+}
+
+void _showSyncDropToast(SyncDropReport report) {
+  showAppToast(
+    message: report.message,
+    kind: ToastKind.error,
+    duration: const Duration(seconds: 8),
+    action: ToastAction(
+      label: m.sync.retry,
+      onPressed: () => SyncDropNotices.instance.retry(report),
+    ),
+  );
 }
 
 /// Resolved at startup from `package_info_plus`. Defaulted to the bundled
@@ -205,6 +218,9 @@ void main(List<String> args) async {
   }
   LocaleService.instance.apply();
   ApiClient.onForbidden = _showPermissionDeniedToast;
+  SyncDropNotices.instance
+    ..start()
+    ..reports.listen(_showSyncDropToast);
   // A debounced cache write needs somewhere to land before the process goes,
   // and a queue waiting out a backoff needs telling when a link returns.
   CacheStore.installPauseCheckpoint();

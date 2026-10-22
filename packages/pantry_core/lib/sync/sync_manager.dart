@@ -33,7 +33,25 @@ class SyncOpSkipped {
   final SyncOp op;
   final String reason;
 
-  const SyncOpSkipped(this.op, this.reason);
+  /// The status of the response that dropped the op, when one did.
+  final int? statusCode;
+
+  /// What the server said about it, when it said anything readable.
+  final String? serverMessage;
+
+  const SyncOpSkipped(
+    this.op,
+    this.reason, {
+    this.statusCode,
+    this.serverMessage,
+  });
+
+  /// Whether the user loses something they did not expect to. A conflict and
+  /// a vanished record are the server settling a race the user was part of; an
+  /// orphan follows from a drop already reported. Everything else is a change
+  /// that silently never happened.
+  bool get isUnexpected =>
+      reason != 'conflict' && reason != 'gone' && reason != 'orphaned';
 }
 
 class SyncManager {
@@ -645,11 +663,19 @@ class SyncManager {
               'Holding ${_describe(op)}: sign-in rejected, '
                   '${_queue.length} queued',
             );
-            status.value = _online ? SyncStatus.syncing : SyncStatus.offline;
+            // An error, not "syncing": nothing is in flight, and the sync
+            // indicator reads it together with [AuthService.isUnauthorized] to
+            // ask for a sign-in instead.
+            status.value = SyncStatus.error;
             return;
           }
           if (e.statusCode >= 400 && e.statusCode < 500) {
-            _deadLetter(op, 'http_${e.statusCode}');
+            _deadLetter(
+              op,
+              'http_${e.statusCode}',
+              statusCode: e.statusCode,
+              serverMessage: e.serverMessage,
+            );
             continue;
           }
           if (e.statusCode == 0) {
@@ -665,10 +691,10 @@ class SyncManager {
             _holdForOffline();
             return;
           }
-          if (_onRetryableFailure(op, e.toString())) continue;
+          if (_onRetryableFailure(op, e)) continue;
           return;
         } catch (e) {
-          if (_onRetryableFailure(op, e.toString())) continue;
+          if (_onRetryableFailure(op, e)) continue;
           return;
         }
       }
@@ -756,13 +782,16 @@ class SyncManager {
   ///
   /// Returns true when dead-lettered (caller should `continue` onto the next
   /// op), false when a retry was scheduled (caller should stop and wait).
-  bool _onRetryableFailure(SyncOp op, String error) {
+  bool _onRetryableFailure(SyncOp op, Object failure) {
+    final error = failure.toString();
     final attempt = op.attemptCount + 1;
     if (attempt >= _maxAttempts) {
       _deadLetter(
         op,
         'exhausted',
         detail: 'after $attempt attempts: ${_short(error)}',
+        statusCode: failure is ApiException ? failure.statusCode : null,
+        serverMessage: failure is ApiException ? failure.serverMessage : null,
       );
       return true;
     }
@@ -826,17 +855,47 @@ class SyncManager {
   /// syncing, just without the failed category/store. A dangling temp reference
   /// would otherwise re-wedge the queue, since the flush loop holds any op still
   /// pointing at an unresolved temp id.
-  void _deadLetter(SyncOp op, String reason, {String? detail}) {
-    _log.warning(
-      'sync',
-      'Dropped ${_describe(op)} ($reason${detail == null ? '' : ', $detail'})',
-    );
+  void _deadLetter(
+    SyncOp op,
+    String reason, {
+    String? detail,
+    int? statusCode,
+    String? serverMessage,
+  }) {
+    final notes = [
+      reason,
+      ?detail,
+      if (serverMessage != null) 'server said: ${_short(serverMessage)}',
+    ];
+    _log.warning('sync', 'Dropped ${_describe(op)} (${notes.join(', ')})');
     _queue.pop(op.uuid);
     if (op.op == SyncOpKind.create && op.tempEntityId != null) {
       _cascadeDeadCreate(op.entity, op.tempEntityId!);
     }
     pendingCount.value = _queue.length;
-    _skippedController.add(SyncOpSkipped(op, reason));
+    _skippedController.add(
+      SyncOpSkipped(
+        op,
+        reason,
+        statusCode: statusCode,
+        serverMessage: serverMessage,
+      ),
+    );
+  }
+
+  /// Put dropped ops back on the queue with a fresh retry budget, for a user
+  /// who has fixed whatever refused them. Anything that was queued behind a
+  /// dropped create and went with it stays gone.
+  void requeue(Iterable<SyncOp> ops) {
+    for (final op in ops) {
+      _queue.enqueue(op.copyWith(attemptCount: 0));
+    }
+    pendingCount.value = _queue.length;
+    if (_online) {
+      unawaited(flushNow());
+    } else if (_retryTimer == null) {
+      _scheduleOfflineRetry();
+    }
   }
 
   DiagnosticLog get _log => DiagnosticLog.instance;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
 /// How a sync status should be presented — icon, accent colour and label.
@@ -18,6 +19,25 @@ SyncStatusPresentation? syncStatusPresentation(
   final shouldShow = hasBacklog || status == SyncStatus.error;
   if (!shouldShow) return null;
   final scheme = Theme.of(context).colorScheme;
+  // A held queue waits on the user rather than the network, so it names what
+  // they have to do instead of looking like a sync that is still running.
+  if (status == SyncStatus.error) {
+    final auth = AuthService.instance;
+    if (auth.isUnauthorized.value) {
+      return (
+        icon: Icons.lock_outline,
+        color: scheme.error,
+        label: m.common.sessionExpiredTitle,
+      );
+    }
+    if (auth.serverRedirect.value != null) {
+      return (
+        icon: Icons.swap_horiz,
+        color: scheme.error,
+        label: m.common.serverMovedTitle,
+      );
+    }
+  }
   return switch (status) {
     SyncStatus.offline => (
       icon: Icons.cloud_off_outlined,
@@ -59,14 +79,19 @@ class SyncStatusBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final manager = SyncManager.instance;
-    return ValueListenableBuilder<SyncStatus>(
-      valueListenable: manager.status,
-      builder: (context, status, _) => ValueListenableBuilder<int>(
-        valueListenable: manager.pendingCount,
-        builder: (context, pending, _) => ValueListenableBuilder<bool>(
-          valueListenable: manager.hasBacklog,
-          builder: (context, hasBacklog, _) =>
-              builder(context, status, pending, hasBacklog),
+    final auth = AuthService.instance;
+    return ListenableBuilder(
+      // Read by [syncStatusPresentation] to say why a held queue is held.
+      listenable: Listenable.merge([auth.isUnauthorized, auth.serverRedirect]),
+      builder: (context, _) => ValueListenableBuilder<SyncStatus>(
+        valueListenable: manager.status,
+        builder: (context, status, _) => ValueListenableBuilder<int>(
+          valueListenable: manager.pendingCount,
+          builder: (context, pending, _) => ValueListenableBuilder<bool>(
+            valueListenable: manager.hasBacklog,
+            builder: (context, hasBacklog, _) =>
+                builder(context, status, pending, hasBacklog),
+          ),
         ),
       ),
     );

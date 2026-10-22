@@ -6351,6 +6351,42 @@ class SyncMessagesFr extends SyncMessages {
   String get syncError => """Impossible de synchroniser les modifications""";
 
   /// ```dart
+  /// "Impossible d'enregistrer « ${name} » : le serveur a refusé la modification (${status})."
+  /// ```
+  String refusedNamed(String name, int status) =>
+      """Impossible d'enregistrer « ${name} » : le serveur a refusé la modification (${status}).""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer une modification : le serveur l'a refusée (${status})."
+  /// ```
+  String refusedOne(int status) =>
+      """Impossible d'enregistrer une modification : le serveur l'a refusée (${status}).""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer ${count} modifications : le serveur les a refusées (${status})."
+  /// ```
+  String refusedMany(int count, int status) =>
+      """Impossible d'enregistrer ${count} modifications : le serveur les a refusées (${status}).""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer « ${name} » : le serveur a échoué à plusieurs reprises."
+  /// ```
+  String failedNamed(String name) =>
+      """Impossible d'enregistrer « ${name} » : le serveur a échoué à plusieurs reprises.""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer une modification : le serveur a échoué à plusieurs reprises."
+  /// ```
+  String get failedOne =>
+      """Impossible d'enregistrer une modification : le serveur a échoué à plusieurs reprises.""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer ${count} modifications : le serveur a échoué à plusieurs reprises."
+  /// ```
+  String failedMany(int count) =>
+      """Impossible d'enregistrer ${count} modifications : le serveur a échoué à plusieurs reprises.""";
+
+  /// ```dart
   /// "Réessayer"
   /// ```
   String get retry => """Réessayer""";
@@ -8644,6 +8680,8 @@ Mot de passe : pantry-rocks""",
   """sync.offline""": """Hors ligne""",
   """sync.syncing""": """Synchronisation des modifications…""",
   """sync.syncError""": """Impossible de synchroniser les modifications""",
+  """sync.failedOne""":
+      """Impossible d'enregistrer une modification : le serveur a échoué à plusieurs reprises.""",
   """sync.retry""": """Réessayer""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Texte enrichi""",

@@ -1208,6 +1208,12 @@ sync:
   syncing: Änderungen werden synchronisiert…
   pendingChanges(int count): "${_plural(count, one: '1 Änderung wartet auf Synchronisierung', many: '${count} Änderungen warten auf Synchronisierung')}"
   syncError: Synchronisierung fehlgeschlagen
+  refusedNamed(String name, int status): "„${name}“ konnte nicht gespeichert werden: Der Server hat die Änderung abgelehnt (${status})."
+  refusedOne(int status): "Eine Änderung konnte nicht gespeichert werden: Der Server hat sie abgelehnt (${status})."
+  refusedMany(int count, int status): "${count} Änderungen konnten nicht gespeichert werden: Der Server hat sie abgelehnt (${status})."
+  failedNamed(String name): "„${name}“ konnte nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet."
+  failedOne: "Eine Änderung konnte nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet."
+  failedMany(int count): "${count} Änderungen konnten nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet."
   retry: Erneut versuchen
 markdownEditor:
   editSource: Markdown

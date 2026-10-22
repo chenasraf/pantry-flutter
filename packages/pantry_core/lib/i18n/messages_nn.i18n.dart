@@ -6303,6 +6303,42 @@ class SyncMessagesNn extends SyncMessages {
   String get syncError => """Kunne ikkje synkronisere endringar""";
 
   /// ```dart
+  /// "Kunne ikkje lagre «${name}»: tenaren avviste endringa (${status})."
+  /// ```
+  String refusedNamed(String name, int status) =>
+      """Kunne ikkje lagre «${name}»: tenaren avviste endringa (${status}).""";
+
+  /// ```dart
+  /// "Kunne ikkje lagre ei endring: tenaren avviste ho (${status})."
+  /// ```
+  String refusedOne(int status) =>
+      """Kunne ikkje lagre ei endring: tenaren avviste ho (${status}).""";
+
+  /// ```dart
+  /// "Kunne ikkje lagre ${count} endringar: tenaren avviste dei (${status})."
+  /// ```
+  String refusedMany(int count, int status) =>
+      """Kunne ikkje lagre ${count} endringar: tenaren avviste dei (${status}).""";
+
+  /// ```dart
+  /// "Kunne ikkje lagre «${name}»: tenaren feila gong på gong."
+  /// ```
+  String failedNamed(String name) =>
+      """Kunne ikkje lagre «${name}»: tenaren feila gong på gong.""";
+
+  /// ```dart
+  /// "Kunne ikkje lagre ei endring: tenaren feila gong på gong."
+  /// ```
+  String get failedOne =>
+      """Kunne ikkje lagre ei endring: tenaren feila gong på gong.""";
+
+  /// ```dart
+  /// "Kunne ikkje lagre ${count} endringar: tenaren feila gong på gong."
+  /// ```
+  String failedMany(int count) =>
+      """Kunne ikkje lagre ${count} endringar: tenaren feila gong på gong.""";
+
+  /// ```dart
   /// "Prøv igjen no"
   /// ```
   String get retry => """Prøv igjen no""";
@@ -8542,6 +8578,8 @@ Passord: pantry""",
   """sync.offline""": """Fråkobla""",
   """sync.syncing""": """Synkroniserer endringar…""",
   """sync.syncError""": """Kunne ikkje synkronisere endringar""",
+  """sync.failedOne""":
+      """Kunne ikkje lagre ei endring: tenaren feila gong på gong.""",
   """sync.retry""": """Prøv igjen no""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Rik tekst""",

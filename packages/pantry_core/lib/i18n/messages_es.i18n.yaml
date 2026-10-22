@@ -1208,6 +1208,12 @@ sync:
   syncing: Sincronizando cambios…
   pendingChanges(int count): "${_plural(count, one: '1 cambio esperando a sincronizar', many: '${count} cambios esperando a sincronizar')}"
   syncError: "No se pudieron sincronizar los cambios"
+  refusedNamed(String name, int status): "No se pudo guardar «${name}»: el servidor rechazó el cambio (${status})."
+  refusedOne(int status): "No se pudo guardar un cambio: el servidor lo rechazó (${status})."
+  refusedMany(int count, int status): "No se pudieron guardar ${count} cambios: el servidor los rechazó (${status})."
+  failedNamed(String name): "No se pudo guardar «${name}»: el servidor siguió fallando."
+  failedOne: "No se pudo guardar un cambio: el servidor siguió fallando."
+  failedMany(int count): "No se pudieron guardar ${count} cambios: el servidor siguió fallando."
   retry: Reintentar
 markdownEditor:
   editSource: Markdown

@@ -1218,6 +1218,12 @@ sync:
   syncing: Syncing changes…
   pendingChanges(int count): "${_plural(count, one: '1 change waiting to sync', many: '${count} changes waiting to sync')}"
   syncError: Couldn't sync changes
+  refusedNamed(String name, int status): "Couldn't save “${name}”: the server refused the change (${status})."
+  refusedOne(int status): "Couldn't save a change: the server refused it (${status})."
+  refusedMany(int count, int status): "Couldn't save ${count} changes: the server refused them (${status})."
+  failedNamed(String name): "Couldn't save “${name}”: the server kept failing."
+  failedOne: "Couldn't save a change: the server kept failing."
+  failedMany(int count): "Couldn't save ${count} changes: the server kept failing."
   retry: Retry now
 markdownEditor:
   editSource: Markdown

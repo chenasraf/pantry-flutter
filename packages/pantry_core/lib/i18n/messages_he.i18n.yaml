@@ -1208,6 +1208,12 @@ sync:
   syncing: מסנכרן שינויים…
   pendingChanges(int count): "${_plural(count, one: 'שינוי אחד ממתין לסנכרון', two: '2 שינויים ממתינים לסנכרון', many: '${count} שינויים ממתינים לסנכרון')}"
   syncError: לא ניתן היה לסנכרן את השינויים
+  refusedNamed(String name, int status): "לא ניתן היה לשמור את „${name}”: השרת דחה את השינוי (${status})."
+  refusedOne(int status): "לא ניתן היה לשמור שינוי: השרת דחה אותו (${status})."
+  refusedMany(int count, int status): "לא ניתן היה לשמור ${count} שינויים: השרת דחה אותם (${status})."
+  failedNamed(String name): "לא ניתן היה לשמור את „${name}”: השרת נכשל שוב ושוב."
+  failedOne: "לא ניתן היה לשמור שינוי: השרת נכשל שוב ושוב."
+  failedMany(int count): "לא ניתן היה לשמור ${count} שינויים: השרת נכשל שוב ושוב."
   retry: נסה שוב
 markdownEditor:
   editSource: Markdown

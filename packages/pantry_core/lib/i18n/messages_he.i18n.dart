@@ -6291,6 +6291,41 @@ class SyncMessagesHe extends SyncMessages {
   String get syncError => """לא ניתן היה לסנכרן את השינויים""";
 
   /// ```dart
+  /// "לא ניתן היה לשמור את „${name}”: השרת דחה את השינוי (${status})."
+  /// ```
+  String refusedNamed(String name, int status) =>
+      """לא ניתן היה לשמור את „${name}”: השרת דחה את השינוי (${status}).""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור שינוי: השרת דחה אותו (${status})."
+  /// ```
+  String refusedOne(int status) =>
+      """לא ניתן היה לשמור שינוי: השרת דחה אותו (${status}).""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור ${count} שינויים: השרת דחה אותם (${status})."
+  /// ```
+  String refusedMany(int count, int status) =>
+      """לא ניתן היה לשמור ${count} שינויים: השרת דחה אותם (${status}).""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור את „${name}”: השרת נכשל שוב ושוב."
+  /// ```
+  String failedNamed(String name) =>
+      """לא ניתן היה לשמור את „${name}”: השרת נכשל שוב ושוב.""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור שינוי: השרת נכשל שוב ושוב."
+  /// ```
+  String get failedOne => """לא ניתן היה לשמור שינוי: השרת נכשל שוב ושוב.""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור ${count} שינויים: השרת נכשל שוב ושוב."
+  /// ```
+  String failedMany(int count) =>
+      """לא ניתן היה לשמור ${count} שינויים: השרת נכשל שוב ושוב.""";
+
+  /// ```dart
   /// "נסה שוב"
   /// ```
   String get retry => """נסה שוב""";
@@ -8485,6 +8520,7 @@ Map<String, String> get messagesHeMap => {
   """sync.offline""": """לא מקוון""",
   """sync.syncing""": """מסנכרן שינויים…""",
   """sync.syncError""": """לא ניתן היה לסנכרן את השינויים""",
+  """sync.failedOne""": """לא ניתן היה לשמור שינוי: השרת נכשל שוב ושוב.""",
   """sync.retry""": """נסה שוב""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """טקסט עשיר""",

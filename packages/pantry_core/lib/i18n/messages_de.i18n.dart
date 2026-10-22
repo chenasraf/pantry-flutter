@@ -6359,6 +6359,42 @@ class SyncMessagesDe extends SyncMessages {
   String get syncError => """Synchronisierung fehlgeschlagen""";
 
   /// ```dart
+  /// "„${name}“ konnte nicht gespeichert werden: Der Server hat die Änderung abgelehnt (${status})."
+  /// ```
+  String refusedNamed(String name, int status) =>
+      """„${name}“ konnte nicht gespeichert werden: Der Server hat die Änderung abgelehnt (${status}).""";
+
+  /// ```dart
+  /// "Eine Änderung konnte nicht gespeichert werden: Der Server hat sie abgelehnt (${status})."
+  /// ```
+  String refusedOne(int status) =>
+      """Eine Änderung konnte nicht gespeichert werden: Der Server hat sie abgelehnt (${status}).""";
+
+  /// ```dart
+  /// "${count} Änderungen konnten nicht gespeichert werden: Der Server hat sie abgelehnt (${status})."
+  /// ```
+  String refusedMany(int count, int status) =>
+      """${count} Änderungen konnten nicht gespeichert werden: Der Server hat sie abgelehnt (${status}).""";
+
+  /// ```dart
+  /// "„${name}“ konnte nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet."
+  /// ```
+  String failedNamed(String name) =>
+      """„${name}“ konnte nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet.""";
+
+  /// ```dart
+  /// "Eine Änderung konnte nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet."
+  /// ```
+  String get failedOne =>
+      """Eine Änderung konnte nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet.""";
+
+  /// ```dart
+  /// "${count} Änderungen konnten nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet."
+  /// ```
+  String failedMany(int count) =>
+      """${count} Änderungen konnten nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet.""";
+
+  /// ```dart
   /// "Erneut versuchen"
   /// ```
   String get retry => """Erneut versuchen""";
@@ -8656,6 +8692,8 @@ Passwort: pantry-rocks""",
   """sync.offline""": """Offline""",
   """sync.syncing""": """Änderungen werden synchronisiert…""",
   """sync.syncError""": """Synchronisierung fehlgeschlagen""",
+  """sync.failedOne""":
+      """Eine Änderung konnte nicht gespeichert werden: Der Server hat wiederholt Fehler gemeldet.""",
   """sync.retry""": """Erneut versuchen""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Rich-Text""",

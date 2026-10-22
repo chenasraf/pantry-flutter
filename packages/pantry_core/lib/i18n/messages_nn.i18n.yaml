@@ -1356,6 +1356,12 @@ sync:
     "${_plural(count, one: '1 endring ventar på synkronisering',
     many: '${count} endringar venter på synkronisering')}"
   syncError: Kunne ikkje synkronisere endringar
+  refusedNamed(String name, int status): "Kunne ikkje lagre «${name}»: tenaren avviste endringa (${status})."
+  refusedOne(int status): "Kunne ikkje lagre ei endring: tenaren avviste ho (${status})."
+  refusedMany(int count, int status): "Kunne ikkje lagre ${count} endringar: tenaren avviste dei (${status})."
+  failedNamed(String name): "Kunne ikkje lagre «${name}»: tenaren feila gong på gong."
+  failedOne: "Kunne ikkje lagre ei endring: tenaren feila gong på gong."
+  failedMany(int count): "Kunne ikkje lagre ${count} endringar: tenaren feila gong på gong."
   retry: Prøv igjen no
 markdownEditor:
   editSource: Markdown

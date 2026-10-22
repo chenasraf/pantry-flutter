@@ -6344,6 +6344,42 @@ class SyncMessagesEs extends SyncMessages {
   String get syncError => """No se pudieron sincronizar los cambios""";
 
   /// ```dart
+  /// "No se pudo guardar «${name}»: el servidor rechazó el cambio (${status})."
+  /// ```
+  String refusedNamed(String name, int status) =>
+      """No se pudo guardar «${name}»: el servidor rechazó el cambio (${status}).""";
+
+  /// ```dart
+  /// "No se pudo guardar un cambio: el servidor lo rechazó (${status})."
+  /// ```
+  String refusedOne(int status) =>
+      """No se pudo guardar un cambio: el servidor lo rechazó (${status}).""";
+
+  /// ```dart
+  /// "No se pudieron guardar ${count} cambios: el servidor los rechazó (${status})."
+  /// ```
+  String refusedMany(int count, int status) =>
+      """No se pudieron guardar ${count} cambios: el servidor los rechazó (${status}).""";
+
+  /// ```dart
+  /// "No se pudo guardar «${name}»: el servidor siguió fallando."
+  /// ```
+  String failedNamed(String name) =>
+      """No se pudo guardar «${name}»: el servidor siguió fallando.""";
+
+  /// ```dart
+  /// "No se pudo guardar un cambio: el servidor siguió fallando."
+  /// ```
+  String get failedOne =>
+      """No se pudo guardar un cambio: el servidor siguió fallando.""";
+
+  /// ```dart
+  /// "No se pudieron guardar ${count} cambios: el servidor siguió fallando."
+  /// ```
+  String failedMany(int count) =>
+      """No se pudieron guardar ${count} cambios: el servidor siguió fallando.""";
+
+  /// ```dart
   /// "Reintentar"
   /// ```
   String get retry => """Reintentar""";
@@ -8620,6 +8656,8 @@ Contraseña: pantry-rocks""",
   """sync.offline""": """Sin conexión""",
   """sync.syncing""": """Sincronizando cambios…""",
   """sync.syncError""": """No se pudieron sincronizar los cambios""",
+  """sync.failedOne""":
+      """No se pudo guardar un cambio: el servidor siguió fallando.""",
   """sync.retry""": """Reintentar""",
   """markdownEditor.editSource""": """Markdown""",
   """markdownEditor.editRich""": """Texto enriquecido""",
