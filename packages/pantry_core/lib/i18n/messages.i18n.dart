@@ -484,6 +484,17 @@ class WidgetMessages {
   /// "No lists available."
   /// ```
   String get noLists => """No lists available.""";
+
+  /// ```dart
+  /// "Hide checkboxes"
+  /// ```
+  String get hideCheckbox => """Hide checkboxes""";
+
+  /// ```dart
+  /// "Tap an item to check it off. Tap where the checkbox was to open the item."
+  /// ```
+  String get hideCheckboxBody =>
+      """Tap an item to check it off. Tap where the checkbox was to open the item.""";
 }
 
 class OnboardingMessages {
@@ -7384,6 +7395,9 @@ Please complete login in your browser.""",
   """widget.chooseListTitle""": """Choose a list""",
   """widget.chooseListSubtitle""": """Pick the list this widget shows.""",
   """widget.noLists""": """No lists available.""",
+  """widget.hideCheckbox""": """Hide checkboxes""",
+  """widget.hideCheckboxBody""":
+      """Tap an item to check it off. Tap where the checkbox was to open the item.""",
   """onboarding.next""": """Next""",
   """onboarding.back""": """Back""",
   """onboarding.skip""": """Skip""",

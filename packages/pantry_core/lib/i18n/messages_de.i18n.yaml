@@ -78,6 +78,8 @@ widget:
   chooseListTitle: Liste auswählen
   chooseListSubtitle: Wähle die Liste, die dieses Widget zeigt.
   noLists: Keine Listen verfügbar.
+  hideCheckbox: Kontrollkästchen ausblenden
+  hideCheckboxBody: Tippe auf einen Eintrag, um ihn abzuhaken. Tippe dort, wo das Kontrollkästchen war, um den Eintrag zu öffnen.
 
 onboarding:
   next: Weiter

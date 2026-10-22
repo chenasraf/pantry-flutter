@@ -28,6 +28,7 @@ class _ChecklistWidgetConfigViewState extends State<ChecklistWidgetConfigView> {
   final Map<int, ChecklistList> _byId = {};
   int? _selectedListId;
   final Set<String> _chips = {};
+  bool _hideCheckbox = false;
   bool _loadedSelection = false;
   bool _saving = false;
 
@@ -75,6 +76,7 @@ class _ChecklistWidgetConfigViewState extends State<ChecklistWidgetConfigView> {
                   if (PrefsService.instance.isItemChipVisible(key)) key,
               },
         );
+      _hideCheckbox = config?.hideCheckbox ?? false;
       _loadedSelection = true;
     }
     return result;
@@ -93,6 +95,7 @@ class _ChecklistWidgetConfigViewState extends State<ChecklistWidgetConfigView> {
         listId: list.id,
         chips: {..._chips},
         showAddedBy: false,
+        hideCheckbox: _hideCheckbox,
       ),
     );
     await WidgetService.instance.finishConfig(ok: true);
@@ -190,6 +193,18 @@ class _ChecklistWidgetConfigViewState extends State<ChecklistWidgetConfigView> {
                     }
                   }),
                 ),
+              // Without tap-to-complete, a hidden checkbox would leave no way
+              // to check items off from the widget.
+              if (PrefsService.instance.defaultItemTapAction == 'done') ...[
+                const Divider(height: 24),
+                SwitchListTile(
+                  secondary: const Icon(Icons.check_box_outline_blank),
+                  title: Text(m.widget.hideCheckbox),
+                  subtitle: Text(m.widget.hideCheckboxBody),
+                  value: _hideCheckbox,
+                  onChanged: (v) => setState(() => _hideCheckbox = v),
+                ),
+              ],
               const SizedBox(height: 16),
             ],
           );

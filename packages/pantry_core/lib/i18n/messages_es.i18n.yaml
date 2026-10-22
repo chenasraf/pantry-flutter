@@ -78,6 +78,8 @@ widget:
   chooseListTitle: Elegir una lista
   chooseListSubtitle: Elige la lista que muestra este widget.
   noLists: No hay listas disponibles.
+  hideCheckbox: Ocultar casillas
+  hideCheckboxBody: Toca un elemento para marcarlo. Toca donde estaba la casilla para abrir el elemento.
 
 onboarding:
   next: Siguiente

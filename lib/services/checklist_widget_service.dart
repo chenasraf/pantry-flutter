@@ -12,6 +12,7 @@ import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/services/category_service.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/label_service.dart';
+import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/store_service.dart';
 
 /// Chip kinds the single-checklist widget can render, in display order.
@@ -31,6 +32,10 @@ class ChecklistWidgetService {
   static const _providerName = 'dev.casraf.pantry.ChecklistWidgetProvider';
 
   static bool get _supported => PlatformInfo.isAndroidPhone;
+
+  /// Shared by every checklist widget: the app's item tap action, which the
+  /// native factory applies to taps on an item's name.
+  static const _tapActionKey = 'checklist_widget_tap_action';
 
   // Lookups for the widget currently being rebuilt (rebuilds are sequential).
   Map<int, Category> _cats = const {};
@@ -70,12 +75,14 @@ class ChecklistWidgetService {
       listId: data['listId'] as int,
       chips: {...(data['chips'] as List? ?? const []).cast<String>()},
       showAddedBy: data['showAddedBy'] as bool? ?? true,
+      hideCheckbox: data['hideCheckbox'] as bool? ?? false,
     );
   }
 
   /// Persist [config] for [widgetId], render its rows and refresh it.
   Future<void> setConfig(int widgetId, ChecklistWidgetConfig config) async {
     if (!_supported) return;
+    await _writeTapAction();
     await _writeRows(widgetId, config);
     await _updateWidgets();
   }
@@ -84,12 +91,20 @@ class ChecklistWidgetService {
   /// and resume, and after an item toggles.
   Future<void> refreshAll() async {
     if (!_supported) return;
+    await _writeTapAction();
     for (final id in await liveWidgetIds()) {
       final config = await readConfig(id);
       if (config != null) await _writeRows(id, config);
     }
     await _updateWidgets();
   }
+
+  /// Only called from the foreground app: the widget's background isolate never
+  /// loads prefs, so writing from there would reset the action to its default.
+  Future<void> _writeTapAction() => HomeWidget.saveWidgetData<String>(
+    _tapActionKey,
+    PrefsService.instance.defaultItemTapAction,
+  );
 
   Future<void> refresh(int widgetId) async {
     if (!_supported) return;
@@ -149,6 +164,7 @@ class ChecklistWidgetService {
         'listName': list?.name ?? '',
         'chips': config.chips.toList(),
         'showAddedBy': config.showAddedBy,
+        'hideCheckbox': config.hideCheckbox,
         'locked': locked,
         'rows': rows,
       }),
@@ -290,10 +306,15 @@ class ChecklistWidgetConfig {
   final Set<String> chips;
   final bool showAddedBy;
 
+  /// Drop the checkbox when the item tap action is `done`; the freed leading
+  /// area then opens the item instead.
+  final bool hideCheckbox;
+
   const ChecklistWidgetConfig({
     required this.houseId,
     required this.listId,
     required this.chips,
     required this.showAddedBy,
+    this.hideCheckbox = false,
   });
 }

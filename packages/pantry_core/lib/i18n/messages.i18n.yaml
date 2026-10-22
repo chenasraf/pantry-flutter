@@ -78,6 +78,8 @@ widget:
   chooseListTitle: Choose a list
   chooseListSubtitle: Pick the list this widget shows.
   noLists: No lists available.
+  hideCheckbox: Hide checkboxes
+  hideCheckboxBody: Tap an item to check it off. Tap where the checkbox was to open the item.
 
 onboarding:
   next: Next

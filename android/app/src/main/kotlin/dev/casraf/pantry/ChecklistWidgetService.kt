@@ -34,6 +34,8 @@ private class ChecklistWidgetFactory(
     private var houseId: Int = -1
     private var listId: Int = -1
     private var locked: Boolean = false
+    private var tapAction: String = "view"
+    private var hideCheckbox: Boolean = false
     private var fg: Int = 0
     private var pillRes: Int = R.drawable.widget_count_pill_light
 
@@ -54,18 +56,24 @@ private class ChecklistWidgetFactory(
         }
         val prefs = ctx.getSharedPreferences("HomeWidgetPreferences", Context.MODE_PRIVATE)
         val json = prefs.getString("checklist_widget_$widgetId", null)
+        tapAction = prefs.getString("checklist_widget_tap_action", null) ?: "view"
         rows = try {
             val obj = JSONObject(json ?: "{}")
             houseId = obj.optInt("houseId", -1)
             listId = obj.optInt("listId", -1)
             locked = obj.optBoolean("locked", false)
+            hideCheckbox = obj.optBoolean("hideCheckbox", false)
             obj.optJSONArray("rows") ?: JSONArray()
         } catch (_: Exception) {
             houseId = -1
             listId = -1
             locked = false
+            hideCheckbox = false
             JSONArray()
         }
+        // Without tap-to-complete the checkbox is the only way to check items
+        // off, so it stays regardless of the widget's own setting.
+        if (tapAction != "done") hideCheckbox = false
     }
 
     override fun getCount() = rows.length()
@@ -117,7 +125,23 @@ private class ChecklistWidgetFactory(
         )
         rv.setInt(R.id.widget_item_check, "setColorFilter", fg)
         // setImageAlpha honours alpha on an ImageView; setColorFilter doesn't.
-        rv.setInt(R.id.widget_item_check, "setImageAlpha", if (locked) 90 else 255)
+        // A hidden checkbox keeps its slot (alpha 0, not GONE/INVISIBLE, which
+        // drop clicks) so the leading area stays a tap target.
+        rv.setInt(
+            R.id.widget_item_check,
+            "setImageAlpha",
+            when {
+                hideCheckbox -> 0
+                locked -> 90
+                else -> 255
+            },
+        )
+        rv.setContentDescription(
+            R.id.widget_item_check,
+            ctx.getString(
+                if (hideCheckbox) R.string.widget_open_item else R.string.widget_toggle_item,
+            ),
+        )
 
         val pills = row.optJSONArray("pills") ?: JSONArray()
         val pillIds = intArrayOf(
@@ -140,35 +164,33 @@ private class ChecklistWidgetFactory(
             }
         }
 
-        // Fill-ins on the two child targets: checkbox toggles, content opens.
-        // When locked, set EMPTY fill-ins (a no-op at the trampoline) rather
-        // than omitting them — recycled row views keep a previously-set fill-in,
-        // so the intent must be overwritten to actually disable the tap.
+        // Fill-ins on the two child targets. The checkbox toggles (or opens,
+        // when hidden); the content follows the app's item tap action.
+        // EMPTY fill-ins are a no-op at the trampoline. They are set rather
+        // than omitted because recycled row views keep a previously-set
+        // fill-in, so the intent must be overwritten to actually disable a tap.
         val itemId = row.optInt("id")
+        val toggle = "pantry-widget://toggle/$houseId/$listId/$itemId/$widgetId"
+        val open = "pantry-widget://open/$houseId/$listId/$itemId"
         rv.setOnClickFillInIntent(
             R.id.widget_item_check,
-            if (locked) {
-                Intent()
-            } else {
-                Intent().apply {
-                    data = Uri.parse(
-                        "pantry-widget://toggle/$houseId/$listId/$itemId/$widgetId",
-                    )
-                }
-            },
+            fillIn(if (hideCheckbox) open else toggle),
         )
         rv.setOnClickFillInIntent(
             R.id.widget_item_content,
-            if (locked) {
-                Intent()
-            } else {
-                Intent().apply {
-                    data = Uri.parse("pantry-widget://open/$houseId/$listId/$itemId")
-                }
-            },
+            fillIn(
+                when (tapAction) {
+                    "done" -> toggle
+                    "none" -> null
+                    else -> open
+                },
+            ),
         )
         return rv
     }
+
+    private fun fillIn(uri: String?): Intent =
+        if (locked || uri == null) Intent() else Intent().apply { data = Uri.parse(uri) }
 
     private fun dim(color: Int, alpha: Int): Int =
         (color and 0x00FFFFFF) or (alpha shl 24)

@@ -6,6 +6,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/services/user_prefs_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
+import 'package:pantry/services/checklist_widget_service.dart';
 import 'package:pantry/views/settings/chip_visibility_view.dart';
 import 'package:pantry/views/settings/nav_order_view.dart';
 import 'package:pantry/views/settings/settings_tiles.dart';
@@ -41,6 +42,7 @@ class InterfaceSettingsView extends StatelessWidget {
     final prefs = context.read<PrefsService>();
     if (value == prefs.defaultItemTapAction) return;
     await prefs.setDefaultItemTapAction(value);
+    await ChecklistWidgetService.instance.refreshAll();
   }
 
   static String _itemTapActionLabel(String value) => switch (value) {

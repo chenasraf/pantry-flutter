@@ -7,11 +7,13 @@
     android:padding="14dp">
 
     <LinearLayout
+        android:id="@+id/widget_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:contentDescription="@string/widget_open_list">
 
         <ImageView
             android:layout_width="24dp"

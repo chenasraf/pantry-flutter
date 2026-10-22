@@ -488,6 +488,17 @@ class WidgetMessagesEs extends WidgetMessages {
   /// "No hay listas disponibles."
   /// ```
   String get noLists => """No hay listas disponibles.""";
+
+  /// ```dart
+  /// "Ocultar casillas"
+  /// ```
+  String get hideCheckbox => """Ocultar casillas""";
+
+  /// ```dart
+  /// "Toca un elemento para marcarlo. Toca donde estaba la casilla para abrir el elemento."
+  /// ```
+  String get hideCheckboxBody =>
+      """Toca un elemento para marcarlo. Toca donde estaba la casilla para abrir el elemento.""";
 }
 
 class OnboardingMessagesEs extends OnboardingMessages {
@@ -7454,6 +7465,9 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """widget.chooseListSubtitle""":
       """Elige la lista que muestra este widget.""",
   """widget.noLists""": """No hay listas disponibles.""",
+  """widget.hideCheckbox""": """Ocultar casillas""",
+  """widget.hideCheckboxBody""":
+      """Toca un elemento para marcarlo. Toca donde estaba la casilla para abrir el elemento.""",
   """onboarding.next""": """Siguiente""",
   """onboarding.back""": """Atrás""",
   """onboarding.skip""": """Omitir""",

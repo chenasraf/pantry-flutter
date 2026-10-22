@@ -483,6 +483,17 @@ class WidgetMessagesHe extends WidgetMessages {
   /// "אין רשימות זמינות."
   /// ```
   String get noLists => """אין רשימות זמינות.""";
+
+  /// ```dart
+  /// "הסתרת תיבות סימון"
+  /// ```
+  String get hideCheckbox => """הסתרת תיבות סימון""";
+
+  /// ```dart
+  /// "הקש על פריט כדי לסמן אותו. הקש במקום שבו הייתה תיבת הסימון כדי לפתוח את הפריט."
+  /// ```
+  String get hideCheckboxBody =>
+      """הקש על פריט כדי לסמן אותו. הקש במקום שבו הייתה תיבת הסימון כדי לפתוח את הפריט.""";
 }
 
 class OnboardingMessagesHe extends OnboardingMessages {
@@ -7380,6 +7391,9 @@ Map<String, String> get messagesHeMap => {
   """widget.chooseListTitle""": """בחירת רשימה""",
   """widget.chooseListSubtitle""": """בחר את הרשימה שהווידג'ט הזה יציג.""",
   """widget.noLists""": """אין רשימות זמינות.""",
+  """widget.hideCheckbox""": """הסתרת תיבות סימון""",
+  """widget.hideCheckboxBody""":
+      """הקש על פריט כדי לסמן אותו. הקש במקום שבו הייתה תיבת הסימון כדי לפתוח את הפריט.""",
   """onboarding.next""": """הבא""",
   """onboarding.back""": """חזור""",
   """onboarding.skip""": """דלג""",

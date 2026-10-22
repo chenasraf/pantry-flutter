@@ -149,6 +149,28 @@ class ChecklistWidgetProvider : AppWidgetProvider() {
             )
             views.setOnClickPendingIntent(R.id.widget_config, pendingConfig)
 
+            // The rest of the header (icon, title, empty space) opens the list
+            // in the app; the lock and cog keep their own handlers. Before a
+            // list is configured, it just launches the app.
+            val houseId = obj?.optInt("houseId", -1) ?: -1
+            val listId = obj?.optInt("listId", -1) ?: -1
+            val openIntent = if (houseId != -1 && listId != -1) {
+                Intent(Intent.ACTION_VIEW, Uri.parse("pantry://list/$houseId/$listId"))
+                    .setPackage(ctx.packageName)
+            } else {
+                ctx.packageManager.getLaunchIntentForPackage(ctx.packageName)
+            }
+            openIntent?.let {
+                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val pendingOpen = PendingIntent.getActivity(
+                    ctx,
+                    widgetId,
+                    it,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                )
+                views.setOnClickPendingIntent(R.id.widget_header, pendingOpen)
+            }
+
             mgr.updateAppWidget(widgetId, views)
             mgr.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_list)
         }

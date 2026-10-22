@@ -484,6 +484,17 @@ class WidgetMessagesNn extends WidgetMessages {
   /// "Ingen lister tilgjengelege."
   /// ```
   String get noLists => """Ingen lister tilgjengelege.""";
+
+  /// ```dart
+  /// "Gøym avkryssingsboksar"
+  /// ```
+  String get hideCheckbox => """Gøym avkryssingsboksar""";
+
+  /// ```dart
+  /// "Trykk på ein ting for å krysse han av. Trykk der avkryssingsboksen var for å opne tingen."
+  /// ```
+  String get hideCheckboxBody =>
+      """Trykk på ein ting for å krysse han av. Trykk der avkryssingsboksen var for å opne tingen.""";
 }
 
 class OnboardingMessagesNn extends OnboardingMessages {
@@ -7405,6 +7416,9 @@ Fullfør innlogginga i nettlesaren din.""",
   """widget.chooseListTitle""": """Vel ei liste""",
   """widget.chooseListSubtitle""": """Vel lista denne widgeten viser.""",
   """widget.noLists""": """Ingen lister tilgjengelege.""",
+  """widget.hideCheckbox""": """Gøym avkryssingsboksar""",
+  """widget.hideCheckboxBody""":
+      """Trykk på ein ting for å krysse han av. Trykk der avkryssingsboksen var for å opne tingen.""",
   """onboarding.next""": """Neste""",
   """onboarding.back""": """Tilbake""",
   """onboarding.skip""": """Hopp over""",

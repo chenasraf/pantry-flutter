@@ -490,6 +490,17 @@ class WidgetMessagesFr extends WidgetMessages {
   /// "Aucune liste disponible."
   /// ```
   String get noLists => """Aucune liste disponible.""";
+
+  /// ```dart
+  /// "Masquer les cases à cocher"
+  /// ```
+  String get hideCheckbox => """Masquer les cases à cocher""";
+
+  /// ```dart
+  /// "Touche un élément pour le cocher. Touche l'emplacement de la case pour ouvrir l'élément."
+  /// ```
+  String get hideCheckboxBody =>
+      """Touche un élément pour le cocher. Touche l'emplacement de la case pour ouvrir l'élément.""";
 }
 
 class OnboardingMessagesFr extends OnboardingMessages {
@@ -7463,6 +7474,9 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """widget.chooseListSubtitle""":
       """Choisis la liste affichée par ce widget.""",
   """widget.noLists""": """Aucune liste disponible.""",
+  """widget.hideCheckbox""": """Masquer les cases à cocher""",
+  """widget.hideCheckboxBody""":
+      """Touche un élément pour le cocher. Touche l'emplacement de la case pour ouvrir l'élément.""",
   """onboarding.next""": """Suivant""",
   """onboarding.back""": """Retour""",
   """onboarding.skip""": """Ignorer""",

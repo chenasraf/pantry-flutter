@@ -488,6 +488,17 @@ class WidgetMessagesDe extends WidgetMessages {
   /// "Keine Listen verfügbar."
   /// ```
   String get noLists => """Keine Listen verfügbar.""";
+
+  /// ```dart
+  /// "Kontrollkästchen ausblenden"
+  /// ```
+  String get hideCheckbox => """Kontrollkästchen ausblenden""";
+
+  /// ```dart
+  /// "Tippe auf einen Eintrag, um ihn abzuhaken. Tippe dort, wo das Kontrollkästchen war, um den Eintrag zu öffnen."
+  /// ```
+  String get hideCheckboxBody =>
+      """Tippe auf einen Eintrag, um ihn abzuhaken. Tippe dort, wo das Kontrollkästchen war, um den Eintrag zu öffnen.""";
 }
 
 class OnboardingMessagesDe extends OnboardingMessages {
@@ -7467,6 +7478,9 @@ Bitte melde dich in deinem Browser an.""",
   """widget.chooseListSubtitle""":
       """Wähle die Liste, die dieses Widget zeigt.""",
   """widget.noLists""": """Keine Listen verfügbar.""",
+  """widget.hideCheckbox""": """Kontrollkästchen ausblenden""",
+  """widget.hideCheckboxBody""":
+      """Tippe auf einen Eintrag, um ihn abzuhaken. Tippe dort, wo das Kontrollkästchen war, um den Eintrag zu öffnen.""",
   """onboarding.next""": """Weiter""",
   """onboarding.back""": """Zurück""",
   """onboarding.skip""": """Überspringen""",

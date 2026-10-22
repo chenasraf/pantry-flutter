@@ -78,6 +78,8 @@ widget:
   chooseListTitle: Choisir une liste
   chooseListSubtitle: Choisis la liste affichée par ce widget.
   noLists: Aucune liste disponible.
+  hideCheckbox: Masquer les cases à cocher
+  hideCheckboxBody: Touche un élément pour le cocher. Touche l'emplacement de la case pour ouvrir l'élément.
 
 onboarding:
   next: Suivant

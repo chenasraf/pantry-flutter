@@ -78,6 +78,8 @@ widget:
   chooseListTitle: בחירת רשימה
   chooseListSubtitle: בחר את הרשימה שהווידג'ט הזה יציג.
   noLists: אין רשימות זמינות.
+  hideCheckbox: הסתרת תיבות סימון
+  hideCheckboxBody: הקש על פריט כדי לסמן אותו. הקש במקום שבו הייתה תיבת הסימון כדי לפתוח את הפריט.
 
 onboarding:
   next: הבא

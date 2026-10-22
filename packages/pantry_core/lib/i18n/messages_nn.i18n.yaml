@@ -102,6 +102,8 @@ widget:
   chooseListTitle: Vel ei liste
   chooseListSubtitle: Vel lista denne widgeten viser.
   noLists: Ingen lister tilgjengelege.
+  hideCheckbox: Gøym avkryssingsboksar
+  hideCheckboxBody: Trykk på ein ting for å krysse han av. Trykk der avkryssingsboksen var for å opne tingen.
 
 onboarding:
   next: Neste
