@@ -215,6 +215,28 @@ class CommonMessages {
   /// "Sign in again"
   /// ```
   String get signInAgain => """Sign in again""";
+
+  /// ```dart
+  /// "Server address has moved"
+  /// ```
+  String get serverMovedTitle => """Server address has moved""";
+
+  /// ```dart
+  /// "Your server now answers at ${address}. Changes you make wait here until the app uses the new address."
+  /// ```
+  String serverMovedBody(String address) =>
+      """Your server now answers at ${address}. Changes you make wait here until the app uses the new address.""";
+
+  /// ```dart
+  /// "Your server is sending changes to another address, so they can't be saved. They wait here until you sign in again with the server's current address."
+  /// ```
+  String get serverMovedUnknownBody =>
+      """Your server is sending changes to another address, so they can't be saved. They wait here until you sign in again with the server's current address.""";
+
+  /// ```dart
+  /// "Use new address"
+  /// ```
+  String get useNewAddress => """Use new address""";
 }
 
 class LoginMessages {
@@ -6816,6 +6838,11 @@ class WearMessages {
   String get certUntrustedShort => """Server not verified""";
 
   /// ```dart
+  /// "Server address moved"
+  /// ```
+  String get serverMovedShort => """Server address moved""";
+
+  /// ```dart
   /// "Trust certificate"
   /// ```
   String get trustCertificate => """Trust certificate""";
@@ -7339,6 +7366,10 @@ Map<String, String> get messagesMap => {
   """common.sessionExpiredBody""":
       """The server is no longer accepting your sign-in. Your data is still here, and any changes you make wait until you sign in again.""",
   """common.signInAgain""": """Sign in again""",
+  """common.serverMovedTitle""": """Server address has moved""",
+  """common.serverMovedUnknownBody""":
+      """Your server is sending changes to another address, so they can't be saved. They wait here until you sign in again with the server's current address.""",
+  """common.useNewAddress""": """Use new address""",
   """login.connectToNextcloud""": """Connect to your Nextcloud instance""",
   """login.serverUrl""": """Server URL""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -8570,6 +8601,7 @@ Password: pantry-rocks""",
   """wear.qrExpired""": """The code expired""",
   """wear.qrStartOver""": """Start over""",
   """wear.certUntrustedShort""": """Server not verified""",
+  """wear.serverMovedShort""": """Server address moved""",
   """wear.trustCertificate""": """Trust certificate""",
   """wear.certTrust""": """Trust""",
   """wear.certUnreadable""": """Couldn't read that server's certificate""",

@@ -23,6 +23,10 @@ common:
   sessionExpiredTitle: ההתחברות פגה
   sessionExpiredBody: השרת כבר לא מקבל את ההתחברות שלך. הנתונים שלך עדיין כאן, וכל שינוי ימתין עד שתתחבר מחדש.
   signInAgain: התחברות מחדש
+  serverMovedTitle: "כתובת השרת השתנתה"
+  serverMovedBody(String address): "השרת שלך עונה עכשיו בכתובת ${address}. השינויים שלך ממתינים כאן עד שהאפליקציה תשתמש בכתובת החדשה."
+  serverMovedUnknownBody: "השרת שלך מפנה שינויים לכתובת אחרת, ולכן אי אפשר לשמור אותם. הם ממתינים כאן עד להתחברות מחדש עם הכתובת הנוכחית של השרת."
+  useNewAddress: "שימוש בכתובת החדשה"
 
 login:
   connectToNextcloud: התחבר לשרת ה-Nextcloud שלך
@@ -1313,6 +1317,7 @@ wear:
   qrStartOver: להתחיל מחדש
   certUntrustedBody(String host): "‏${host} שלח אישור שהשעון הזה לא יכול לאמת. תנו בו אמון רק אם טביעת האצבע היא זו שציפיתם לה."
   certUntrustedShort: השרת לא מאומת
+  serverMovedShort: "כתובת השרת השתנתה"
   trustCertificate: לתת אמון באישור
   certTrust: לתת אמון
   certUnreadable: לא הצלחנו לקרוא את האישור של השרת

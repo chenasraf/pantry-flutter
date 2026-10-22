@@ -216,6 +216,28 @@ class CommonMessagesHe extends CommonMessages {
   /// "התחברות מחדש"
   /// ```
   String get signInAgain => """התחברות מחדש""";
+
+  /// ```dart
+  /// "כתובת השרת השתנתה"
+  /// ```
+  String get serverMovedTitle => """כתובת השרת השתנתה""";
+
+  /// ```dart
+  /// "השרת שלך עונה עכשיו בכתובת ${address}. השינויים שלך ממתינים כאן עד שהאפליקציה תשתמש בכתובת החדשה."
+  /// ```
+  String serverMovedBody(String address) =>
+      """השרת שלך עונה עכשיו בכתובת ${address}. השינויים שלך ממתינים כאן עד שהאפליקציה תשתמש בכתובת החדשה.""";
+
+  /// ```dart
+  /// "השרת שלך מפנה שינויים לכתובת אחרת, ולכן אי אפשר לשמור אותם. הם ממתינים כאן עד להתחברות מחדש עם הכתובת הנוכחית של השרת."
+  /// ```
+  String get serverMovedUnknownBody =>
+      """השרת שלך מפנה שינויים לכתובת אחרת, ולכן אי אפשר לשמור אותם. הם ממתינים כאן עד להתחברות מחדש עם הכתובת הנוכחית של השרת.""";
+
+  /// ```dart
+  /// "שימוש בכתובת החדשה"
+  /// ```
+  String get useNewAddress => """שימוש בכתובת החדשה""";
 }
 
 class LoginMessagesHe extends LoginMessages {
@@ -6820,6 +6842,11 @@ class WearMessagesHe extends WearMessages {
   String get certUntrustedShort => """השרת לא מאומת""";
 
   /// ```dart
+  /// "כתובת השרת השתנתה"
+  /// ```
+  String get serverMovedShort => """כתובת השרת השתנתה""";
+
+  /// ```dart
   /// "לתת אמון באישור"
   /// ```
   String get trustCertificate => """לתת אמון באישור""";
@@ -7337,6 +7364,10 @@ Map<String, String> get messagesHeMap => {
   """common.sessionExpiredBody""":
       """השרת כבר לא מקבל את ההתחברות שלך. הנתונים שלך עדיין כאן, וכל שינוי ימתין עד שתתחבר מחדש.""",
   """common.signInAgain""": """התחברות מחדש""",
+  """common.serverMovedTitle""": """כתובת השרת השתנתה""",
+  """common.serverMovedUnknownBody""":
+      """השרת שלך מפנה שינויים לכתובת אחרת, ולכן אי אפשר לשמור אותם. הם ממתינים כאן עד להתחברות מחדש עם הכתובת הנוכחית של השרת.""",
+  """common.useNewAddress""": """שימוש בכתובת החדשה""",
   """login.connectToNextcloud""": """התחבר לשרת ה-Nextcloud שלך""",
   """login.serverUrl""": """כתובת השרת""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -8543,6 +8574,7 @@ Map<String, String> get messagesHeMap => {
   """wear.qrExpired""": """הקוד פג""",
   """wear.qrStartOver""": """להתחיל מחדש""",
   """wear.certUntrustedShort""": """השרת לא מאומת""",
+  """wear.serverMovedShort""": """כתובת השרת השתנתה""",
   """wear.trustCertificate""": """לתת אמון באישור""",
   """wear.certTrust""": """לתת אמון""",
   """wear.certUnreadable""": """לא הצלחנו לקרוא את האישור של השרת""",

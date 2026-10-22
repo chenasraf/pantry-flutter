@@ -98,7 +98,9 @@ class LoginController extends ChangeNotifier {
     _pendingCertHostKey = null;
     notifyListeners();
 
-    final normalizedUrl = normalizeServerUrl(_serverUrl);
+    final normalizedUrl = await AuthService.instance.resolveServerUrl(
+      normalizeServerUrl(_serverUrl),
+    );
     _pendingRetry = startLogin;
     try {
       unawaited(ServerVersionService.instance.fetch(serverUrl: normalizedUrl));
@@ -162,7 +164,9 @@ class LoginController extends ChangeNotifier {
     _pendingCertHostKey = null;
     notifyListeners();
 
-    final normalizedUrl = normalizeServerUrl(_serverUrl);
+    final normalizedUrl = await AuthService.instance.resolveServerUrl(
+      normalizeServerUrl(_serverUrl),
+    );
     _pendingRetry = () => startAppPasswordLogin(username, appPassword);
     try {
       unawaited(ServerVersionService.instance.fetch(serverUrl: normalizedUrl));

@@ -216,6 +216,28 @@ class CommonMessagesNn extends CommonMessages {
   /// "Logg inn att"
   /// ```
   String get signInAgain => """Logg inn att""";
+
+  /// ```dart
+  /// "Tenaradressa er endra"
+  /// ```
+  String get serverMovedTitle => """Tenaradressa er endra""";
+
+  /// ```dart
+  /// "Tenaren din svarar no på ${address}. Endringane dine ventar her til appen brukar den nye adressa."
+  /// ```
+  String serverMovedBody(String address) =>
+      """Tenaren din svarar no på ${address}. Endringane dine ventar her til appen brukar den nye adressa.""";
+
+  /// ```dart
+  /// "Tenaren din sender endringar vidare til ei anna adresse, så dei kan ikkje lagrast. Dei ventar her til du loggar inn att med den gjeldande adressa til tenaren."
+  /// ```
+  String get serverMovedUnknownBody =>
+      """Tenaren din sender endringar vidare til ei anna adresse, så dei kan ikkje lagrast. Dei ventar her til du loggar inn att med den gjeldande adressa til tenaren.""";
+
+  /// ```dart
+  /// "Bruk ny adresse"
+  /// ```
+  String get useNewAddress => """Bruk ny adresse""";
 }
 
 class LoginMessagesNn extends LoginMessages {
@@ -6836,6 +6858,11 @@ class WearMessagesNn extends WearMessages {
   String get certUntrustedShort => """Tenaren er ikkje stadfesta""";
 
   /// ```dart
+  /// "Tenaradressa er endra"
+  /// ```
+  String get serverMovedShort => """Tenaradressa er endra""";
+
+  /// ```dart
   /// "Stol på sertifikatet"
   /// ```
   String get trustCertificate => """Stol på sertifikatet""";
@@ -7361,6 +7388,10 @@ Map<String, String> get messagesNnMap => {
   """common.sessionExpiredBody""":
       """Tenaren godtek ikkje innlogginga di lenger. Dataa dine er framleis her, og alle endringar ventar til du loggar inn att.""",
   """common.signInAgain""": """Logg inn att""",
+  """common.serverMovedTitle""": """Tenaradressa er endra""",
+  """common.serverMovedUnknownBody""":
+      """Tenaren din sender endringar vidare til ei anna adresse, så dei kan ikkje lagrast. Dei ventar her til du loggar inn att med den gjeldande adressa til tenaren.""",
+  """common.useNewAddress""": """Bruk ny adresse""",
   """login.connectToNextcloud""": """Koble til Nextcloud-instansen din""",
   """login.serverUrl""": """Tenaradresse""",
   """login.serverUrlHint""": """sky.example.com""",
@@ -8604,6 +8635,7 @@ Passord: pantry""",
   """wear.qrExpired""": """Koden gjekk ut""",
   """wear.qrStartOver""": """Byrj på nytt""",
   """wear.certUntrustedShort""": """Tenaren er ikkje stadfesta""",
+  """wear.serverMovedShort""": """Tenaradressa er endra""",
   """wear.trustCertificate""": """Stol på sertifikatet""",
   """wear.certTrust""": """Stol på det""",
   """wear.certUnreadable""": """Fekk ikkje lese sertifikatet til tenaren""",

@@ -9,6 +9,7 @@ import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/secure_storage.dart';
 import 'package:pantry_core/services/user_prefs_service.dart';
+import 'package:pantry_core/utils/server_url.dart';
 
 class NextcloudCredentials {
   final String serverUrl;
@@ -51,6 +52,18 @@ class LoginFlowResult {
     required this.pollEndpoint,
     required this.pollToken,
   });
+}
+
+/// A write the server answered by sending it somewhere else.
+class ServerRedirect {
+  /// Where the server pointed, or null when it sent no usable `Location`.
+  final Uri? target;
+
+  /// The server address that would have reached [target] directly — the one
+  /// to sign in against from now on — or null when [target] does not reveal it.
+  final String? serverUrl;
+
+  const ServerRedirect({this.target, this.serverUrl});
 }
 
 class AuthService {
@@ -105,6 +118,90 @@ class AuthService {
     _unauthorizedTimer?.cancel();
     _unauthorizedTimer = null;
     isUnauthorized.value = false;
+  }
+
+  /// Set while the server answers writes with a redirect. `package:http`
+  /// follows one only for a read, so the saved address keeps reading fine while
+  /// every change bounces — typically `http://` on a server that moved to
+  /// `https://`, or a host that canonicalises to another name.
+  final ValueNotifier<ServerRedirect?> serverRedirect = ValueNotifier(null);
+
+  /// Called by [ApiClient] when a write to [request] is answered with a
+  /// redirect to [location].
+  void reportRedirect(Uri request, String? location) {
+    final creds = _credentials;
+    if (creds == null) return;
+    final target = location == null ? null : request.resolve(location);
+    serverRedirect.value = ServerRedirect(
+      target: target,
+      serverUrl: target == null
+          ? null
+          : serverUrlAfterRedirect(creds.serverUrl, request, target),
+    );
+  }
+
+  /// Called by [ApiClient] when a write lands, which disproves a standing
+  /// redirect.
+  void reportWriteLanded() {
+    if (serverRedirect.value != null) serverRedirect.value = null;
+  }
+
+  /// Switch the saved session to the address the server redirected to. The
+  /// credential is unchanged: an app password belongs to the account, not to
+  /// the address it was issued through.
+  Future<bool> adoptRedirectedServerUrl() async {
+    final creds = _credentials;
+    final url = serverRedirect.value?.serverUrl;
+    if (creds == null || url == null) return false;
+    await _saveCredentials(
+      NextcloudCredentials(
+        serverUrl: url,
+        loginName: creds.loginName,
+        appPassword: creds.appPassword,
+      ),
+    );
+    return true;
+  }
+
+  /// How many redirects a sign-in follows before taking the address as typed.
+  static const _maxRedirects = 5;
+
+  /// [serverUrl] after following whatever redirects the server answers it
+  /// with, so a session is saved against the address writes will reach.
+  ///
+  /// Probes `status.php`, which every Nextcloud serves without a sign-in. A
+  /// failure stops at the last address reached rather than throwing: the
+  /// sign-in request that follows meets the same failure and is what reports
+  /// it — including a certificate to accept, which is offered for that address.
+  Future<String> resolveServerUrl(String serverUrl) async {
+    var current = serverUrl;
+    final client = http.Client();
+    try {
+      for (var hop = 0; hop < _maxRedirects; hop++) {
+        final probe = Uri.parse('$current/status.php');
+        final request = http.Request('GET', probe)
+          ..followRedirects = false
+          ..headers['User-Agent'] = _userAgent;
+        final response = await client.send(request).timeout(_requestTimeout);
+        await response.stream.drain<void>();
+        final location = response.headers['location'];
+        final status = response.statusCode;
+        if (status < 300 || status >= 400 || location == null) return current;
+        final next = serverUrlAfterRedirect(
+          current,
+          probe,
+          probe.resolve(location),
+        );
+        if (next == null || next == current) return current;
+        current = next;
+      }
+      return current;
+    } catch (e) {
+      debugPrint('[AuthService] Server address probe failed: $e');
+      return current;
+    } finally {
+      client.close();
+    }
   }
 
   /// First day of week from Nextcloud user settings.
@@ -429,8 +526,12 @@ class AuthService {
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     debugPrint('[AuthService] Poll data keys: ${data.keys.toList()}');
+    // The address is the one the browser signed in through, which a server
+    // behind a proxy can report as one it then redirects away from.
     final creds = NextcloudCredentials(
-      serverUrl: data['server'] as String,
+      serverUrl: await resolveServerUrl(
+        normalizeServerUrl(data['server'] as String),
+      ),
       loginName: data['loginName'] as String,
       appPassword: data['appPassword'] as String,
     );
@@ -443,6 +544,7 @@ class AuthService {
   Future<void> _saveCredentials(NextcloudCredentials creds) async {
     _credentials = creds;
     _clearUnauthorized();
+    serverRedirect.value = null;
     await _storage.write(
       key: _credentialsKey,
       value: jsonEncode(creds.toJson()),
@@ -475,6 +577,7 @@ class AuthService {
     }
     _credentials = null;
     _clearUnauthorized();
+    serverRedirect.value = null;
     await _storage.delete(key: _credentialsKey);
   }
 }

@@ -28,6 +28,10 @@ common:
     Tenaren godtek ikkje innlogginga di lenger. Dataa dine er framleis
     her, og alle endringar ventar til du loggar inn att.
   signInAgain: Logg inn att
+  serverMovedTitle: "Tenaradressa er endra"
+  serverMovedBody(String address): "Tenaren din svarar no på ${address}. Endringane dine ventar her til appen brukar den nye adressa."
+  serverMovedUnknownBody: "Tenaren din sender endringar vidare til ei anna adresse, så dei kan ikkje lagrast. Dei ventar her til du loggar inn att med den gjeldande adressa til tenaren."
+  useNewAddress: "Bruk ny adresse"
 login:
   connectToNextcloud: Koble til Nextcloud-instansen din
   serverUrl: Tenaradresse
@@ -1461,6 +1465,7 @@ wear:
   qrStartOver: Byrj på nytt
   certUntrustedBody(String host): "${host} sender eit sertifikat denne klokka ikkje kan stadfeste. Stol på det berre om fingeravtrykket er det du ventar."
   certUntrustedShort: Tenaren er ikkje stadfesta
+  serverMovedShort: "Tenaradressa er endra"
   trustCertificate: Stol på sertifikatet
   certTrust: Stol på det
   certUnreadable: Fekk ikkje lese sertifikatet til tenaren

@@ -60,6 +60,20 @@ class CertUntrustedException extends OfflineException {
   ]);
 }
 
+/// Thrown when a write is answered with a redirect.
+///
+/// `package:http` follows redirects for reads only, so a write comes back as
+/// the bare 3xx — which, counted as a success, would let the sync queue pop a
+/// change the server never saw. The change itself is fine and would land at
+/// [location]; what is wrong is the saved server address, which
+/// [AuthService.serverRedirect] carries to the user.
+class ServerRedirectException extends ApiException {
+  final String? location;
+
+  const ServerRedirectException(int statusCode, this.location)
+    : super(statusCode, 'Redirected to ${location ?? 'an unknown address'}');
+}
+
 /// One request, described rather than performed.
 ///
 /// A request already wrapped in a closure has nothing left to say about itself,
@@ -203,7 +217,22 @@ class ApiClient {
   /// Every arm that classifies a failure first offers the request to [relay],
   /// because all four of them mean the same thing — *this never reached a
   /// server* — and that is exactly the condition another device may not share.
+  /// A relayed write is checked exactly as a direct one, since the phone
+  /// performing it does not follow a write's redirect either.
   Future<http.Response> _send(ApiRequest request) async {
+    final response = await _exchange(request);
+    if (request.isRead) return response;
+    final status = response.statusCode;
+    if (status >= 300 && status < 400) {
+      final location = response.headers['location'];
+      AuthService.instance.reportRedirect(request.uri, location);
+      throw ServerRedirectException(status, location);
+    }
+    if (status < 300) AuthService.instance.reportWriteLanded();
+    return response;
+  }
+
+  Future<http.Response> _exchange(ApiRequest request) async {
     final watch = Stopwatch()..start();
     try {
       final response = await _perform(request);

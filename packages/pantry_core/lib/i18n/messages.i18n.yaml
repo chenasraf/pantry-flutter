@@ -23,6 +23,10 @@ common:
   sessionExpiredTitle: Sign-in expired
   sessionExpiredBody: The server is no longer accepting your sign-in. Your data is still here, and any changes you make wait until you sign in again.
   signInAgain: Sign in again
+  serverMovedTitle: "Server address has moved"
+  serverMovedBody(String address): "Your server now answers at ${address}. Changes you make wait here until the app uses the new address."
+  serverMovedUnknownBody: "Your server is sending changes to another address, so they can't be saved. They wait here until you sign in again with the server's current address."
+  useNewAddress: "Use new address"
 
 login:
   connectToNextcloud: Connect to your Nextcloud instance
@@ -1323,6 +1327,7 @@ wear:
   qrStartOver: Start over
   certUntrustedBody(String host): "${host} sent a certificate this watch can't verify. Trust it only if the fingerprint is the one you expect."
   certUntrustedShort: Server not verified
+  serverMovedShort: "Server address moved"
   trustCertificate: Trust certificate
   certTrust: Trust
   certUnreadable: "Couldn't read that server's certificate"

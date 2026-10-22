@@ -23,6 +23,10 @@ common:
   sessionExpiredTitle: "Anmeldung abgelaufen"
   sessionExpiredBody: "Der Server akzeptiert deine Anmeldung nicht mehr. Deine Daten sind weiterhin vorhanden, und alle Änderungen warten, bis du dich erneut anmeldest."
   signInAgain: "Erneut anmelden"
+  serverMovedTitle: "Serveradresse hat sich geändert"
+  serverMovedBody(String address): "Dein Server antwortet jetzt unter ${address}. Deine Änderungen warten hier, bis die App die neue Adresse verwendet."
+  serverMovedUnknownBody: "Dein Server leitet Änderungen an eine andere Adresse weiter, daher können sie nicht gespeichert werden. Sie warten hier, bis du dich mit der aktuellen Serveradresse erneut anmeldest."
+  useNewAddress: "Neue Adresse verwenden"
 
 login:
   connectToNextcloud: Mit deiner Nextcloud-Instanz verbinden
@@ -1313,6 +1317,7 @@ wear:
   qrStartOver: Neu beginnen
   certUntrustedBody(String host): "${host} sendet ein Zertifikat, das diese Uhr nicht prüfen kann. Vertraue ihm nur, wenn der Fingerabdruck der erwartete ist."
   certUntrustedShort: Server nicht geprüft
+  serverMovedShort: "Serveradresse geändert"
   trustCertificate: Zertifikat vertrauen
   certTrust: Vertrauen
   certUnreadable: Zertifikat des Servers nicht lesbar

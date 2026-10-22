@@ -111,12 +111,15 @@ class _QrSignInPageState extends State<QrSignInPage> {
   }
 
   Future<void> _start() async {
-    final server = normalizeServerUrl(_address.text);
     setState(() {
-      _server = server;
       _step = _Step.starting;
       _failure = null;
     });
+    final server = await AuthService.instance.resolveServerUrl(
+      normalizeServerUrl(_address.text),
+    );
+    if (!mounted) return;
+    _server = server;
     try {
       final flow = await AuthService.instance.initiateLoginFlow(server);
       if (!mounted) return;

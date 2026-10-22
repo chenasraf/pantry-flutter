@@ -23,6 +23,10 @@ common:
   sessionExpiredTitle: Connexion expirée
   sessionExpiredBody: Le serveur n'accepte plus votre connexion. Vos données sont toujours là, et toute modification attendra que vous vous reconnectiez.
   signInAgain: Se reconnecter
+  serverMovedTitle: "L'adresse du serveur a changé"
+  serverMovedBody(String address): "Votre serveur répond désormais à ${address}. Vos modifications attendent ici jusqu'à ce que l'app utilise la nouvelle adresse."
+  serverMovedUnknownBody: "Votre serveur redirige les modifications vers une autre adresse, elles ne peuvent donc pas être enregistrées. Elles attendent ici jusqu'à ce que vous vous reconnectiez avec l'adresse actuelle du serveur."
+  useNewAddress: "Utiliser la nouvelle adresse"
 
 login:
   connectToNextcloud: "Connectez-vous à votre instance Nextcloud"
@@ -1313,6 +1317,7 @@ wear:
   qrStartOver: Recommencer
   certUntrustedBody(String host): "${host} envoie un certificat que cette montre ne peut pas vérifier. Ne l'acceptez que si l'empreinte est celle attendue."
   certUntrustedShort: Serveur non vérifié
+  serverMovedShort: "Adresse du serveur modifiée"
   trustCertificate: Approuver le certificat
   certTrust: Faire confiance
   certUnreadable: Impossible de lire le certificat du serveur

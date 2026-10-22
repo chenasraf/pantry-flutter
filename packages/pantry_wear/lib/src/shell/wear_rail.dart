@@ -88,30 +88,48 @@ class WearRail extends StatelessWidget {
   /// The credential wins when both stand. It is the shorter road back — a
   /// renewal is one tap against a phone already holding the answer — and a
   /// credential the server rejects is not made good by trusting the server.
+  ///
+  /// A redirected server ranks last: it only shows on a write that reached the
+  /// server, which neither of the others lets happen. Where the redirect names
+  /// the server's new address, tapping the line moves the watch onto it.
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<bool>(
     valueListenable: AuthService.instance.isUnauthorized,
     builder: (context, unauthorized, _) => ValueListenableBuilder<String?>(
       valueListenable: CertTrustService.instance.untrustedHost,
-      builder: (context, untrusted, _) => _build(
-        context,
-        unauthorized
-            ? m.common.sessionExpiredTitle
-            : untrusted != null
-            ? m.wear.certUntrustedShort
-            : null,
-      ),
+      builder: (context, untrusted, _) =>
+          ValueListenableBuilder<ServerRedirect?>(
+            valueListenable: AuthService.instance.serverRedirect,
+            builder: (context, redirect, _) {
+              if (unauthorized) {
+                return _build(context, m.common.sessionExpiredTitle, onNotice);
+              }
+              if (untrusted != null) {
+                return _build(context, m.wear.certUntrustedShort, onNotice);
+              }
+              if (redirect != null) {
+                return _build(
+                  context,
+                  m.wear.serverMovedShort,
+                  redirect.serverUrl == null
+                      ? onNotice
+                      : AuthService.instance.adoptRedirectedServerUrl,
+                );
+              }
+              return _build(context, null, onNotice);
+            },
+          ),
     ),
   );
 
-  Widget _build(BuildContext context, String? notice) {
+  Widget _build(BuildContext context, String? notice, VoidCallback? onTap) {
     final metrics = WearMetrics.of(context);
     return ColoredBox(
       color: wearGround,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _identity(context, notice),
+          _identity(context, notice, onTap),
           // The panel stays in the tree and its height is what animates, so it
           // retracts exactly as it arrived. Adding and removing the subtree
           // instead gives the collapse nothing to animate from.
@@ -150,7 +168,7 @@ class WearRail extends StatelessWidget {
   /// larger system font grows the rail instead of overflowing it — and so that
   /// expanding never moves anything here. The panel drops below; nothing above
   /// it shifts.
-  Widget _identity(BuildContext context, String? notice) {
+  Widget _identity(BuildContext context, String? notice, VoidCallback? onTap) {
     final degraded = notice != null;
     final metrics = WearMetrics.of(context);
     // Where each line ends up, counted back from the bottom of the rail: the
@@ -223,7 +241,7 @@ class WearRail extends StatelessWidget {
                   // element that changes as you scroll, and it is the cheapest
                   // thing here to spend.
                   child: notice != null
-                      ? _DegradedLine(label: notice, onTap: onNotice)
+                      ? _DegradedLine(label: notice, onTap: onTap)
                       : group == null
                       ? const SizedBox.shrink()
                       : _bounded(

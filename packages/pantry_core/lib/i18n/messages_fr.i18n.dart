@@ -217,6 +217,28 @@ class CommonMessagesFr extends CommonMessages {
   /// "Se reconnecter"
   /// ```
   String get signInAgain => """Se reconnecter""";
+
+  /// ```dart
+  /// "L'adresse du serveur a changé"
+  /// ```
+  String get serverMovedTitle => """L'adresse du serveur a changé""";
+
+  /// ```dart
+  /// "Votre serveur répond désormais à ${address}. Vos modifications attendent ici jusqu'à ce que l'app utilise la nouvelle adresse."
+  /// ```
+  String serverMovedBody(String address) =>
+      """Votre serveur répond désormais à ${address}. Vos modifications attendent ici jusqu'à ce que l'app utilise la nouvelle adresse.""";
+
+  /// ```dart
+  /// "Votre serveur redirige les modifications vers une autre adresse, elles ne peuvent donc pas être enregistrées. Elles attendent ici jusqu'à ce que vous vous reconnectiez avec l'adresse actuelle du serveur."
+  /// ```
+  String get serverMovedUnknownBody =>
+      """Votre serveur redirige les modifications vers une autre adresse, elles ne peuvent donc pas être enregistrées. Elles attendent ici jusqu'à ce que vous vous reconnectiez avec l'adresse actuelle du serveur.""";
+
+  /// ```dart
+  /// "Utiliser la nouvelle adresse"
+  /// ```
+  String get useNewAddress => """Utiliser la nouvelle adresse""";
 }
 
 class LoginMessagesFr extends LoginMessages {
@@ -6885,6 +6907,11 @@ class WearMessagesFr extends WearMessages {
   String get certUntrustedShort => """Serveur non vérifié""";
 
   /// ```dart
+  /// "Adresse du serveur modifiée"
+  /// ```
+  String get serverMovedShort => """Adresse du serveur modifiée""";
+
+  /// ```dart
   /// "Approuver le certificat"
   /// ```
   String get trustCertificate => """Approuver le certificat""";
@@ -7414,6 +7441,10 @@ Map<String, String> get messagesFrMap => {
   """common.sessionExpiredBody""":
       """Le serveur n'accepte plus votre connexion. Vos données sont toujours là, et toute modification attendra que vous vous reconnectiez.""",
   """common.signInAgain""": """Se reconnecter""",
+  """common.serverMovedTitle""": """L'adresse du serveur a changé""",
+  """common.serverMovedUnknownBody""":
+      """Votre serveur redirige les modifications vers une autre adresse, elles ne peuvent donc pas être enregistrées. Elles attendent ici jusqu'à ce que vous vous reconnectiez avec l'adresse actuelle du serveur.""",
+  """common.useNewAddress""": """Utiliser la nouvelle adresse""",
   """login.connectToNextcloud""":
       """Connectez-vous à votre instance Nextcloud""",
   """login.serverUrl""": """URL du serveur""",
@@ -8708,6 +8739,7 @@ Mot de passe : pantry-rocks""",
   """wear.qrExpired""": """Le code a expiré""",
   """wear.qrStartOver""": """Recommencer""",
   """wear.certUntrustedShort""": """Serveur non vérifié""",
+  """wear.serverMovedShort""": """Adresse du serveur modifiée""",
   """wear.trustCertificate""": """Approuver le certificat""",
   """wear.certTrust""": """Faire confiance""",
   """wear.certUnreadable""": """Impossible de lire le certificat du serveur""",

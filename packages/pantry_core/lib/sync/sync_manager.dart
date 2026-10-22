@@ -121,6 +121,7 @@ class SyncManager {
     if (_initialized) return;
     _initialized = true;
     _resumeDrain ??= _ResumeDrain(this);
+    AuthService.instance.serverRedirect.addListener(_onRedirectChanged);
     // main() awaits this on the pre-first-frame path, so a corrupt or
     // version-incompatible on-disk queue must degrade to empty rather than
     // throw — an unhandled error here aborts main() before runApp() and
@@ -186,6 +187,14 @@ class SyncManager {
     } else if (_queue.isEmpty) {
       status.value = SyncStatus.idle;
     }
+  }
+
+  /// A queue held on a redirect has nothing scheduled to wake it, so the
+  /// address being corrected — however it was — is what resumes it.
+  void _onRedirectChanged() {
+    if (AuthService.instance.serverRedirect.value != null) return;
+    if (_queue.isEmpty) return;
+    unawaited(flushNow());
   }
 
   /// A network interface came back. Purely an accelerator: it never decides
@@ -609,6 +618,19 @@ class SyncManager {
                   op.op == SyncOpKind.clearImage)) {
             _deadLetter(op, 'gone');
             continue;
+          }
+          if (e is ServerRedirectException) {
+            // The saved server address points somewhere the server moved
+            // away from. The op is well-formed and lands once the address is
+            // corrected, which waiting cannot do — so, like a 401, it holds
+            // without spending budget until the user acts on the notice.
+            _log.warning(
+              'sync',
+              'Holding ${_describe(op)}: server redirected (${e.statusCode}) '
+                  'to ${e.location ?? 'nowhere'}, ${_queue.length} queued',
+            );
+            status.value = SyncStatus.error;
+            return;
           }
           if (e.statusCode == 401) {
             // A credential problem, not a data problem: the op is well-formed

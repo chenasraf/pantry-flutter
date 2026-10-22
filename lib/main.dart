@@ -56,6 +56,7 @@ import 'views/onboarding/onboarding_view.dart';
 import 'views/widget/checklist_widget_config_view.dart';
 import 'views/widget/widget_config_view.dart';
 import 'widgets/mac_title_bar.dart';
+import 'widgets/server_redirect_banner.dart';
 import 'widgets/session_expired_banner.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -527,7 +528,11 @@ class PantryAppState extends State<PantryApp> with WidgetsBindingObserver {
                 child: SessionExpiredBanner(
                   suppressed: _reauthOpen,
                   onSignIn: _onReauthRequested,
-                  child: wrapped,
+                  child: ServerRedirectBanner(
+                    suppressed: _reauthOpen,
+                    onSignIn: _onReauthRequested,
+                    child: wrapped,
+                  ),
                 ),
               ),
             );

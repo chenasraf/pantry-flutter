@@ -216,6 +216,28 @@ class CommonMessagesDe extends CommonMessages {
   /// "Erneut anmelden"
   /// ```
   String get signInAgain => """Erneut anmelden""";
+
+  /// ```dart
+  /// "Serveradresse hat sich geändert"
+  /// ```
+  String get serverMovedTitle => """Serveradresse hat sich geändert""";
+
+  /// ```dart
+  /// "Dein Server antwortet jetzt unter ${address}. Deine Änderungen warten hier, bis die App die neue Adresse verwendet."
+  /// ```
+  String serverMovedBody(String address) =>
+      """Dein Server antwortet jetzt unter ${address}. Deine Änderungen warten hier, bis die App die neue Adresse verwendet.""";
+
+  /// ```dart
+  /// "Dein Server leitet Änderungen an eine andere Adresse weiter, daher können sie nicht gespeichert werden. Sie warten hier, bis du dich mit der aktuellen Serveradresse erneut anmeldest."
+  /// ```
+  String get serverMovedUnknownBody =>
+      """Dein Server leitet Änderungen an eine andere Adresse weiter, daher können sie nicht gespeichert werden. Sie warten hier, bis du dich mit der aktuellen Serveradresse erneut anmeldest.""";
+
+  /// ```dart
+  /// "Neue Adresse verwenden"
+  /// ```
+  String get useNewAddress => """Neue Adresse verwenden""";
 }
 
 class LoginMessagesDe extends LoginMessages {
@@ -6892,6 +6914,11 @@ class WearMessagesDe extends WearMessages {
   String get certUntrustedShort => """Server nicht geprüft""";
 
   /// ```dart
+  /// "Serveradresse geändert"
+  /// ```
+  String get serverMovedShort => """Serveradresse geändert""";
+
+  /// ```dart
   /// "Zertifikat vertrauen"
   /// ```
   String get trustCertificate => """Zertifikat vertrauen""";
@@ -7419,6 +7446,10 @@ Map<String, String> get messagesDeMap => {
   """common.sessionExpiredBody""":
       """Der Server akzeptiert deine Anmeldung nicht mehr. Deine Daten sind weiterhin vorhanden, und alle Änderungen warten, bis du dich erneut anmeldest.""",
   """common.signInAgain""": """Erneut anmelden""",
+  """common.serverMovedTitle""": """Serveradresse hat sich geändert""",
+  """common.serverMovedUnknownBody""":
+      """Dein Server leitet Änderungen an eine andere Adresse weiter, daher können sie nicht gespeichert werden. Sie warten hier, bis du dich mit der aktuellen Serveradresse erneut anmeldest.""",
+  """common.useNewAddress""": """Neue Adresse verwenden""",
   """login.connectToNextcloud""": """Mit deiner Nextcloud-Instanz verbinden""",
   """login.serverUrl""": """Server-URL""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -8719,6 +8750,7 @@ Passwort: pantry-rocks""",
   """wear.qrExpired""": """Der Code ist abgelaufen""",
   """wear.qrStartOver""": """Neu beginnen""",
   """wear.certUntrustedShort""": """Server nicht geprüft""",
+  """wear.serverMovedShort""": """Serveradresse geändert""",
   """wear.trustCertificate""": """Zertifikat vertrauen""",
   """wear.certTrust""": """Vertrauen""",
   """wear.certUnreadable""": """Zertifikat des Servers nicht lesbar""",

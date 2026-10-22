@@ -23,6 +23,10 @@ common:
   sessionExpiredTitle: Sesión caducada
   sessionExpiredBody: El servidor ya no acepta tu inicio de sesión. Tus datos siguen aquí, y cualquier cambio esperará hasta que vuelvas a iniciar sesión.
   signInAgain: Iniciar sesión de nuevo
+  serverMovedTitle: "La dirección del servidor ha cambiado"
+  serverMovedBody(String address): "Tu servidor ahora responde en ${address}. Tus cambios esperan aquí hasta que la app use la nueva dirección."
+  serverMovedUnknownBody: "Tu servidor envía los cambios a otra dirección, así que no se pueden guardar. Esperan aquí hasta que vuelvas a iniciar sesión con la dirección actual del servidor."
+  useNewAddress: "Usar la nueva dirección"
 
 login:
   connectToNextcloud: "Conéctate a tu instancia de Nextcloud"
@@ -1313,6 +1317,7 @@ wear:
   qrStartOver: Empezar de nuevo
   certUntrustedBody(String host): "${host} envía un certificado que este reloj no puede verificar. Confía en él solo si la huella es la que esperas."
   certUntrustedShort: Servidor sin verificar
+  serverMovedShort: "Dirección del servidor cambiada"
   trustCertificate: Confiar en el certificado
   certTrust: Confiar
   certUnreadable: No se pudo leer el certificado del servidor

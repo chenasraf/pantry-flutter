@@ -216,6 +216,28 @@ class CommonMessagesEs extends CommonMessages {
   /// "Iniciar sesión de nuevo"
   /// ```
   String get signInAgain => """Iniciar sesión de nuevo""";
+
+  /// ```dart
+  /// "La dirección del servidor ha cambiado"
+  /// ```
+  String get serverMovedTitle => """La dirección del servidor ha cambiado""";
+
+  /// ```dart
+  /// "Tu servidor ahora responde en ${address}. Tus cambios esperan aquí hasta que la app use la nueva dirección."
+  /// ```
+  String serverMovedBody(String address) =>
+      """Tu servidor ahora responde en ${address}. Tus cambios esperan aquí hasta que la app use la nueva dirección.""";
+
+  /// ```dart
+  /// "Tu servidor envía los cambios a otra dirección, así que no se pueden guardar. Esperan aquí hasta que vuelvas a iniciar sesión con la dirección actual del servidor."
+  /// ```
+  String get serverMovedUnknownBody =>
+      """Tu servidor envía los cambios a otra dirección, así que no se pueden guardar. Esperan aquí hasta que vuelvas a iniciar sesión con la dirección actual del servidor.""";
+
+  /// ```dart
+  /// "Usar la nueva dirección"
+  /// ```
+  String get useNewAddress => """Usar la nueva dirección""";
 }
 
 class LoginMessagesEs extends LoginMessages {
@@ -6877,6 +6899,11 @@ class WearMessagesEs extends WearMessages {
   String get certUntrustedShort => """Servidor sin verificar""";
 
   /// ```dart
+  /// "Dirección del servidor cambiada"
+  /// ```
+  String get serverMovedShort => """Dirección del servidor cambiada""";
+
+  /// ```dart
   /// "Confiar en el certificado"
   /// ```
   String get trustCertificate => """Confiar en el certificado""";
@@ -7406,6 +7433,10 @@ Map<String, String> get messagesEsMap => {
   """common.sessionExpiredBody""":
       """El servidor ya no acepta tu inicio de sesión. Tus datos siguen aquí, y cualquier cambio esperará hasta que vuelvas a iniciar sesión.""",
   """common.signInAgain""": """Iniciar sesión de nuevo""",
+  """common.serverMovedTitle""": """La dirección del servidor ha cambiado""",
+  """common.serverMovedUnknownBody""":
+      """Tu servidor envía los cambios a otra dirección, así que no se pueden guardar. Esperan aquí hasta que vuelvas a iniciar sesión con la dirección actual del servidor.""",
+  """common.useNewAddress""": """Usar la nueva dirección""",
   """login.connectToNextcloud""": """Conéctate a tu instancia de Nextcloud""",
   """login.serverUrl""": """URL del servidor""",
   """login.serverUrlHint""": """cloud.example.com""",
@@ -8683,6 +8714,7 @@ Contraseña: pantry-rocks""",
   """wear.qrExpired""": """El código ha caducado""",
   """wear.qrStartOver""": """Empezar de nuevo""",
   """wear.certUntrustedShort""": """Servidor sin verificar""",
+  """wear.serverMovedShort""": """Dirección del servidor cambiada""",
   """wear.trustCertificate""": """Confiar en el certificado""",
   """wear.certTrust""": """Confiar""",
   """wear.certUnreadable""": """No se pudo leer el certificado del servidor""",

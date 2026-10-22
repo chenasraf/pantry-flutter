@@ -12,6 +12,33 @@ String normalizeServerUrl(String raw) {
   return url;
 }
 
+/// The server address that [request], made against [serverUrl], was redirected
+/// to — or null when [target] does not end in the same path below the server,
+/// so where the server itself lives cannot be read off it.
+///
+/// A request is the server's address plus a path beneath it; a redirect that
+/// preserves that path names the server's new address by what is left in
+/// front. One that sends everything to a fixed page (a sign-in portal, a
+/// parked domain) names nothing the app could sign in to.
+String? serverUrlAfterRedirect(String serverUrl, Uri request, Uri target) {
+  final base = Uri.tryParse(serverUrl);
+  if (base == null || !target.hasScheme || target.host.isEmpty) return null;
+  final basePath = base.path.endsWith('/')
+      ? base.path.substring(0, base.path.length - 1)
+      : base.path;
+  if (!request.path.startsWith(basePath)) return null;
+  final suffix = request.path.substring(basePath.length);
+  if (!target.path.endsWith(suffix)) return null;
+  final newPath = target.path.substring(0, target.path.length - suffix.length);
+  final server = Uri(
+    scheme: target.scheme,
+    host: target.host,
+    port: target.hasPort ? target.port : null,
+    path: newPath,
+  );
+  return normalizeServerUrl(server.toString());
+}
+
 /// Whether [host] names something only reachable from inside the household's
 /// own network.
 ///

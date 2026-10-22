@@ -81,4 +81,52 @@ void main() {
       expect(isPrivateHost('pantry.example.com'), isFalse);
     });
   });
+
+  group('serverUrlAfterRedirect', () {
+    const api = '/ocs/v2.php/apps/pantry/api/houses/1/items/2';
+
+    test('reads a scheme upgrade off the redirect', () {
+      expect(
+        serverUrlAfterRedirect(
+          'http://cloud.example',
+          Uri.parse('http://cloud.example$api'),
+          Uri.parse('https://cloud.example$api'),
+        ),
+        'https://cloud.example',
+      );
+    });
+
+    test('keeps a subpath the server moved to', () {
+      expect(
+        serverUrlAfterRedirect(
+          'https://example.com',
+          Uri.parse('https://example.com$api'),
+          Uri.parse('https://www.example.com/nextcloud$api'),
+        ),
+        'https://www.example.com/nextcloud',
+      );
+    });
+
+    test('drops a subpath the server moved off', () {
+      expect(
+        serverUrlAfterRedirect(
+          'https://example.com/nextcloud',
+          Uri.parse('https://example.com/nextcloud$api'),
+          Uri.parse('https://cloud.example.com:8443$api'),
+        ),
+        'https://cloud.example.com:8443',
+      );
+    });
+
+    test('names nothing when the path was not carried over', () {
+      expect(
+        serverUrlAfterRedirect(
+          'https://cloud.example',
+          Uri.parse('https://cloud.example$api'),
+          Uri.parse('https://portal.example/login'),
+        ),
+        isNull,
+      );
+    });
+  });
 }
