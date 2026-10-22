@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.38.0](https://github.com/chenasraf/pantry-flutter/compare/v0.37.1...v0.38.0) (2026-10-22)
+
+
+### Features
+
+* **notes:** create and edit tables in rich text notes ([3538dc9](https://github.com/chenasraf/pantry-flutter/commit/3538dc930a0aae9234d5500d65aab0a363b0ded3)), closes [#196](https://github.com/chenasraf/pantry-flutter/issues/196)
+* **shopping:** shop all stores at once in a single combined list ([ecbb51e](https://github.com/chenasraf/pantry-flutter/commit/ecbb51ed8bd0e5d02f4a3afd0e5bf1ec71926015))
+* **widget:** tap items to complete them and open the list from the header ([1a341cc](https://github.com/chenasraf/pantry-flutter/commit/1a341cc127c827e6173cf902d7b94f4f2d5b150a)), closes [#198](https://github.com/chenasraf/pantry-flutter/issues/198)
+
+
+### Bug Fixes
+
+* **sync:** let you know when a change couldn't be saved, with an option to retry ([68c3b34](https://github.com/chenasraf/pantry-flutter/commit/68c3b3454215be554fd425dfd51ac8d5a1e107a2))
+* **sync:** save your changes even when your server's address has moved ([0372587](https://github.com/chenasraf/pantry-flutter/commit/03725875ab459da0c42e1ec51ddcc7c98d6fc99e))
+
 ## [0.37.1](https://github.com/chenasraf/pantry-flutter/compare/v0.37.0...v0.37.1) (2026-10-17)
 
 

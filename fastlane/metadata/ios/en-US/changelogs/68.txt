@@ -1,0 +1,7 @@
+Features
+- create and edit tables in rich text notes
+- shop all stores at once in a single combined list
+- tap items to complete them and open the list from the header
+Bug Fixes
+- let you know when a change couldn't be saved, with an option to retry
+- save your changes even when your server's address has moved
