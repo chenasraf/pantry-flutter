@@ -11,6 +11,7 @@ import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
@@ -542,6 +543,13 @@ class _BodyState extends State<_Body> {
                     final archivedReuseCandidates = suggestArchived
                         ? controller.archivedReuseCandidates(reuseTargetId)
                         : const <ListItem>[];
+                    // Drawing a template item happens on the server, so its
+                    // suggestions are offered only while online.
+                    final drawFromTemplates =
+                        reuseTargetId != null &&
+                        controller.drawsFromTemplates(reuseTargetId) &&
+                        controller.permissions.canAddItems &&
+                        SyncManager.instance.isOnline;
                     return ItemComposeBar(
                       key: body.composeKey,
                       listName: list.name,
@@ -606,7 +614,7 @@ class _BodyState extends State<_Body> {
                           : null,
                       onTargetListChanged: body.setComposeTargetListId,
                       reuseCandidates: reuseCandidates,
-                      buildReuseSuggestion: (item, onTap) =>
+                      buildReuseSuggestion: (item, onTap, fromTemplates) =>
                           ChecklistItemTile.suggestion(
                             item: item,
                             category: item.categoryId != null
@@ -617,13 +625,28 @@ class _BodyState extends State<_Body> {
                             pendingImage: controller.pendingItemImage(item.id),
                             houseId: controller.houseId,
                             onTap: onTap,
-                            archived: item.archivedAt != null,
+                            archived:
+                                fromTemplates == null &&
+                                item.archivedAt != null,
+                            fromTemplates: fromTemplates,
                           ),
                       onReuseExisting: (item) =>
                           body.reuseFromSuggestion(context, item),
                       archivedReuseCandidates: archivedReuseCandidates,
                       onArchivedSearchStarted: suggestArchived
                           ? controller.ensureArchivedReuseLoaded
+                          : null,
+                      templateSuggestions: drawFromTemplates
+                          ? controller.templateSuggestions(reuseTargetId)
+                          : const [],
+                      onTemplateSearchStarted: drawFromTemplates
+                          ? controller.ensureTemplateSuggestionsLoaded
+                          : null,
+                      onPickTemplateItem: drawFromTemplates
+                          ? (item, targetListId) => body.drawFromTemplate(
+                              item,
+                              targetListId: targetListId,
+                            )
                           : null,
                       onTop: composeOnTop,
                       onActiveChanged: body.setComposeActive,

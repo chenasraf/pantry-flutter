@@ -991,6 +991,46 @@ listKinds:
     listArchived: התבנית הועברה לארכיון
     listUnarchived: התבנית הוצאה מהארכיון
 
+templates:
+  suggestionsHeader: הצעות
+  fromTemplates(String names): "מתבניות: $names"
+  addedFromTemplate(String name): '"$name" נוסף מתבנית'
+  drawFailed: לא ניתן היה להוסיף את הפריט מהתבנית
+  attachedLabel: "תבניות:"
+  attachedPlaceholder: אין תבניות
+  attachedHint: הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה.
+  attachedEveryListHint(String names): הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה, וגם מ־$names, שמשמשות את כל הרשימות.
+  suggestInLabel: "הצעה ברשימות:"
+  everyList: כל הרשימות
+  suggestInPlaceholder: אין רשימות
+  suggestInHint: הקלדת פריט חדש ברשימות האלה מציעה פריטים תואמים מהתבנית הזו. בחירה ב"כל הרשימות" כוללת גם רשימות שייווצרו בהמשך.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: לא ניתן היה לשמור את התבניות המצורפות
+  fillLabel: מילוי פריטי תבנית מברירות המחדל האלה
+  fillHint: כשפריט נוסף מתבנית, הפרטים שהוא משאיר ריקים מתחילים עם הערכים שלמעלה. כל אחד יכול לשנות זאת בהגדרות האישיות שלו.
+  fillPrefLabel: מילוי פריטי תבנית מברירות המחדל לפריטים
+  fillPrefHint: כשמוסיפים פריט מתבנית, הפרטים שהוא משאיר ריקים מתמלאים מברירות המחדל לפריטים של הרשימה. כל רשימה יכולה לכבות זאת בברירות המחדל לפריטים שלה.
+  fillPrefNames:
+    list: לפי כל רשימה
+    always: תמיד למלא
+    never: אף פעם לא למלא
+  fillPrefFailed: לא ניתן היה לשמור את ההגדרה
+  applyToList: החלה על רשימה
+  applyTemplate: החלת תבנית
+  attachedTemplates: מצורפות לרשימה הזו
+  otherTemplates: תבניות אחרות
+  noTargets: אין רשימות סימון או רשימות מלאי שאפשר להחיל עליהן את התבנית הזו.
+  noItems: אין פריטים בתבנית הזו.
+  alreadyOnList: כבר ברשימה
+  reviewSummary(String template, String list): העתקת הפריטים המסומנים מ־$template אל $list.
+  applyItems(int count): "${_plural(count, one: 'החלת פריט אחד', many: 'החלת $count פריטים')}"
+  appliedAdded(int count, String list): "${_plural(count, one: 'נוסף פריט אחד אל $list', many: 'נוספו $count פריטים אל $list')}"
+  appliedReused(int count, String list): "${_plural(count, one: 'פריט אחד כבר היה ב־$list והוחזר', many: '$count פריטים כבר היו ב־$list והוחזרו')}"
+  appliedMixed(String list, int added, int reused): "$list: $added נוספו, $reused הוחזרו"
+  applyFailed: לא ניתן היה להחיל את התבנית
+  loadFailed: לא ניתן היה לטעון את התבניות
+  back: חזרה
+
 notesWall:
   noNotes: אין הערות עדיין.
   failedToLoad: טעינת ההערות נכשלה.

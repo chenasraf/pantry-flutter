@@ -991,6 +991,46 @@ listKinds:
     listArchived: Plantilla archivada
     listUnarchived: Plantilla desarchivada
 
+templates:
+  suggestionsHeader: Sugerencias
+  fromTemplates(String names): "De plantillas: $names"
+  addedFromTemplate(String name): 'Se añadió "$name" desde una plantilla'
+  drawFailed: No se pudo añadir el artículo desde la plantilla
+  attachedLabel: "Plantillas:"
+  attachedPlaceholder: Sin plantillas
+  attachedHint: Al escribir un artículo nuevo, se sugieren artículos coincidentes de estas plantillas.
+  attachedEveryListHint(String names): Al escribir un artículo nuevo, se sugieren artículos coincidentes de estas plantillas y de $names, que usan todas las listas.
+  suggestInLabel: "Sugerir en:"
+  everyList: Todas las listas
+  suggestInPlaceholder: Sin listas
+  suggestInHint: Al escribir un artículo nuevo en estas listas, se sugieren artículos coincidentes de esta plantilla. Al seleccionar "Todas las listas" también se incluyen las listas creadas más adelante.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: No se pudieron guardar las plantillas adjuntas
+  fillLabel: Rellenar los artículos de plantillas con estos valores
+  fillHint: Cuando se añade un artículo desde una plantilla, los detalles que deja vacíos empiezan con los valores de arriba. Cada persona puede cambiarlo en su configuración personal.
+  fillPrefLabel: Rellenar los artículos de plantillas con los valores predeterminados
+  fillPrefHint: Al añadir un artículo desde una plantilla, los detalles que deja vacíos se rellenan con los valores predeterminados de artículos de la lista. Cada lista puede desactivarlo en sus valores predeterminados.
+  fillPrefNames:
+    list: Según cada lista
+    always: Rellenar siempre
+    never: No rellenar nunca
+  fillPrefFailed: No se pudo guardar la configuración
+  applyToList: Aplicar a una lista
+  applyTemplate: Aplicar plantilla
+  attachedTemplates: Adjuntas a esta lista
+  otherTemplates: Otras plantillas
+  noTargets: No hay listas de verificación ni inventarios a los que aplicar esta plantilla.
+  noItems: Esta plantilla no tiene artículos.
+  alreadyOnList: Ya en la lista
+  reviewSummary(String template, String list): Copiar los artículos marcados de $template a $list.
+  applyItems(int count): "${_plural(count, one: 'Aplicar 1 artículo', many: 'Aplicar $count artículos')}"
+  appliedAdded(int count, String list): "${_plural(count, one: 'Se añadió 1 artículo a $list', many: 'Se añadieron $count artículos a $list')}"
+  appliedReused(int count, String list): "${_plural(count, one: '1 artículo ya estaba en $list y se recuperó', many: '$count artículos ya estaban en $list y se recuperaron')}"
+  appliedMixed(String list, int added, int reused): "$list: $added añadidos, $reused recuperados"
+  applyFailed: No se pudo aplicar la plantilla
+  loadFailed: No se pudieron cargar las plantillas
+  back: Atrás
+
 notesWall:
   noNotes: "Aún no hay notas."
   failedToLoad: No se pudieron cargar las notas.

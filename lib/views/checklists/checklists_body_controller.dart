@@ -43,6 +43,7 @@ import 'package:pantry/views/stores/stores_view.dart';
 import 'package:pantry/widgets/auto_refresh.dart';
 import 'package:pantry/widgets/create_label_dialog.dart';
 import 'package:pantry/widgets/create_store_dialog.dart';
+import 'apply_template_view.dart';
 import 'checklist_switcher_sheet.dart';
 import 'checklists_controller.dart';
 import 'checklists_dev_dialogs.dart';

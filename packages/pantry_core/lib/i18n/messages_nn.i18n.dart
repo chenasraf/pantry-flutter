@@ -80,6 +80,7 @@ class MessagesNn extends Messages {
   LabelsMessagesNn get labels => LabelsMessagesNn(this);
   ChecklistsMessagesNn get checklists => ChecklistsMessagesNn(this);
   ListKindsMessagesNn get listKinds => ListKindsMessagesNn(this);
+  TemplatesMessagesNn get templates => TemplatesMessagesNn(this);
   NotesWallMessagesNn get notesWall => NotesWallMessagesNn(this);
   PhotoBoardMessagesNn get photoBoard => PhotoBoardMessagesNn(this);
   ShoppingMessagesNn get shopping => ShoppingMessagesNn(this);
@@ -5204,6 +5205,214 @@ class TemplateListKindsMessagesNn extends TemplateListKindsMessages {
   String get listUnarchived => """Mal henta ut av arkivet""";
 }
 
+class TemplatesMessagesNn extends TemplatesMessages {
+  final MessagesNn _parent;
+  const TemplatesMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Forslag"
+  /// ```
+  String get suggestionsHeader => """Forslag""";
+
+  /// ```dart
+  /// "Frå malar: $names"
+  /// ```
+  String fromTemplates(String names) => """Frå malar: $names""";
+
+  /// ```dart
+  /// "La til «$name» frå ein mal"
+  /// ```
+  String addedFromTemplate(String name) => """La til «$name» frå ein mal""";
+
+  /// ```dart
+  /// "Klarte ikkje leggje til oppføringa frå malen"
+  /// ```
+  String get drawFailed => """Klarte ikkje leggje til oppføringa frå malen""";
+
+  /// ```dart
+  /// "Malar:"
+  /// ```
+  String get attachedLabel => """Malar:""";
+
+  /// ```dart
+  /// "Ingen malar"
+  /// ```
+  String get attachedPlaceholder => """Ingen malar""";
+
+  /// ```dart
+  /// "Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane."
+  /// ```
+  String get attachedHint =>
+      """Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane.""";
+
+  /// ```dart
+  /// "Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane, og frå $names, som alle lister brukar."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane, og frå $names, som alle lister brukar.""";
+
+  /// ```dart
+  /// "Foreslå i:"
+  /// ```
+  String get suggestInLabel => """Foreslå i:""";
+
+  /// ```dart
+  /// "Alle lister"
+  /// ```
+  String get everyList => """Alle lister""";
+
+  /// ```dart
+  /// "Ingen lister"
+  /// ```
+  String get suggestInPlaceholder => """Ingen lister""";
+
+  /// ```dart
+  /// "Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med."
+  /// ```
+  String get suggestInHint =>
+      """Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "Klarte ikkje lagre dei tilknytte malane"
+  /// ```
+  String get attachFailed => """Klarte ikkje lagre dei tilknytte malane""";
+
+  /// ```dart
+  /// "Fyll maloppføringar frå desse standardverdiane"
+  /// ```
+  String get fillLabel => """Fyll maloppføringar frå desse standardverdiane""";
+
+  /// ```dart
+  /// "Når ei oppføring vert lagd til frå ein mal, startar dei tomme detaljane med verdiane ovanfor. Kvar person kan overstyre dette i dei personlege innstillingane sine."
+  /// ```
+  String get fillHint =>
+      """Når ei oppføring vert lagd til frå ein mal, startar dei tomme detaljane med verdiane ovanfor. Kvar person kan overstyre dette i dei personlege innstillingane sine.""";
+
+  /// ```dart
+  /// "Fyll maloppføringar frå standardverdiane"
+  /// ```
+  String get fillPrefLabel => """Fyll maloppføringar frå standardverdiane""";
+
+  /// ```dart
+  /// "Når du legg til ei oppføring frå ein mal, vert dei tomme detaljane fylte frå standardverdiane til lista. Kvar liste kan slå dette av i standardverdiane sine."
+  /// ```
+  String get fillPrefHint =>
+      """Når du legg til ei oppføring frå ein mal, vert dei tomme detaljane fylte frå standardverdiane til lista. Kvar liste kan slå dette av i standardverdiane sine.""";
+  FillPrefNamesTemplatesMessagesNn get fillPrefNames =>
+      FillPrefNamesTemplatesMessagesNn(this);
+
+  /// ```dart
+  /// "Klarte ikkje lagre innstillinga"
+  /// ```
+  String get fillPrefFailed => """Klarte ikkje lagre innstillinga""";
+
+  /// ```dart
+  /// "Bruk på liste"
+  /// ```
+  String get applyToList => """Bruk på liste""";
+
+  /// ```dart
+  /// "Bruk malen"
+  /// ```
+  String get applyTemplate => """Bruk malen""";
+
+  /// ```dart
+  /// "Knytt til denne lista"
+  /// ```
+  String get attachedTemplates => """Knytt til denne lista""";
+
+  /// ```dart
+  /// "Andre malar"
+  /// ```
+  String get otherTemplates => """Andre malar""";
+
+  /// ```dart
+  /// "Det finst ingen sjekklister eller lagerlister å bruke denne malen på."
+  /// ```
+  String get noTargets =>
+      """Det finst ingen sjekklister eller lagerlister å bruke denne malen på.""";
+
+  /// ```dart
+  /// "Denne malen har ingen oppføringar."
+  /// ```
+  String get noItems => """Denne malen har ingen oppføringar.""";
+
+  /// ```dart
+  /// "Allereie på lista"
+  /// ```
+  String get alreadyOnList => """Allereie på lista""";
+
+  /// ```dart
+  /// "Kopier dei avkryssa oppføringane frå $template til $list."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """Kopier dei avkryssa oppføringane frå $template til $list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Bruk 1 oppføring', many: 'Bruk $count oppføringar')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: 'Bruk 1 oppføring', many: 'Bruk $count oppføringar')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'La til 1 oppføring i $list', many: 'La til $count oppføringar i $list')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: 'La til 1 oppføring i $list', many: 'La til $count oppføringar i $list')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 oppføring var allereie i $list og vart henta fram att', many: '$count oppføringar var allereie i $list og vart henta fram att')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: '1 oppføring var allereie i $list og vart henta fram att', many: '$count oppføringar var allereie i $list og vart henta fram att')}""";
+
+  /// ```dart
+  /// "$list: $added lagt til, $reused henta fram att"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list: $added lagt til, $reused henta fram att""";
+
+  /// ```dart
+  /// "Klarte ikkje bruke malen"
+  /// ```
+  String get applyFailed => """Klarte ikkje bruke malen""";
+
+  /// ```dart
+  /// "Klarte ikkje laste malane"
+  /// ```
+  String get loadFailed => """Klarte ikkje laste malane""";
+
+  /// ```dart
+  /// "Tilbake"
+  /// ```
+  String get back => """Tilbake""";
+}
+
+class FillPrefNamesTemplatesMessagesNn extends FillPrefNamesTemplatesMessages {
+  final TemplatesMessagesNn _parent;
+  const FillPrefNamesTemplatesMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Følg kvar liste"
+  /// ```
+  String get list => """Følg kvar liste""";
+
+  /// ```dart
+  /// "Fyll alltid"
+  /// ```
+  String get always => """Fyll alltid""";
+
+  /// ```dart
+  /// "Fyll aldri"
+  /// ```
+  String get never => """Fyll aldri""";
+}
+
 class NotesWallMessagesNn extends NotesWallMessages {
   final MessagesNn _parent;
   const NotesWallMessagesNn(this._parent) : super(_parent);
@@ -8785,6 +8994,41 @@ Passord: pantry""",
   """listKinds.template.listMovedToTrash""": """Mal flytta til papirkorga""",
   """listKinds.template.listArchived""": """Mal arkivert""",
   """listKinds.template.listUnarchived""": """Mal henta ut av arkivet""",
+  """templates.suggestionsHeader""": """Forslag""",
+  """templates.drawFailed""":
+      """Klarte ikkje leggje til oppføringa frå malen""",
+  """templates.attachedLabel""": """Malar:""",
+  """templates.attachedPlaceholder""": """Ingen malar""",
+  """templates.attachedHint""":
+      """Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane.""",
+  """templates.suggestInLabel""": """Foreslå i:""",
+  """templates.everyList""": """Alle lister""",
+  """templates.suggestInPlaceholder""": """Ingen lister""",
+  """templates.suggestInHint""":
+      """Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med.""",
+  """templates.attachFailed""": """Klarte ikkje lagre dei tilknytte malane""",
+  """templates.fillLabel""":
+      """Fyll maloppføringar frå desse standardverdiane""",
+  """templates.fillHint""":
+      """Når ei oppføring vert lagd til frå ein mal, startar dei tomme detaljane med verdiane ovanfor. Kvar person kan overstyre dette i dei personlege innstillingane sine.""",
+  """templates.fillPrefLabel""": """Fyll maloppføringar frå standardverdiane""",
+  """templates.fillPrefHint""":
+      """Når du legg til ei oppføring frå ein mal, vert dei tomme detaljane fylte frå standardverdiane til lista. Kvar liste kan slå dette av i standardverdiane sine.""",
+  """templates.fillPrefNames.list""": """Følg kvar liste""",
+  """templates.fillPrefNames.always""": """Fyll alltid""",
+  """templates.fillPrefNames.never""": """Fyll aldri""",
+  """templates.fillPrefFailed""": """Klarte ikkje lagre innstillinga""",
+  """templates.applyToList""": """Bruk på liste""",
+  """templates.applyTemplate""": """Bruk malen""",
+  """templates.attachedTemplates""": """Knytt til denne lista""",
+  """templates.otherTemplates""": """Andre malar""",
+  """templates.noTargets""":
+      """Det finst ingen sjekklister eller lagerlister å bruke denne malen på.""",
+  """templates.noItems""": """Denne malen har ingen oppføringar.""",
+  """templates.alreadyOnList""": """Allereie på lista""",
+  """templates.applyFailed""": """Klarte ikkje bruke malen""",
+  """templates.loadFailed""": """Klarte ikkje laste malane""",
+  """templates.back""": """Tilbake""",
   """notesWall.noNotes""": """Ingen notat enno""",
   """notesWall.failedToLoad""": """Klarte ikkje laste notat""",
   """notesWall.saveFailed""": """Klarte ikkje lagre notat.""",

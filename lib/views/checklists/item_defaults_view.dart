@@ -74,9 +74,15 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
     text: _draft.quantity,
   );
   _Section? _open;
+  late bool _fillFromDefaults = widget.list.fillFromDefaults ?? true;
 
   ChecklistsController get _controller => widget.controller;
   ChecklistList get _list => widget.list;
+
+  /// Template items are drawn into checklists and inventories, never into a
+  /// template.
+  bool get _drawnInto =>
+      _list.kind != ListKind.template && _list.fillFromDefaults != null;
 
   bool get _canEdit =>
       _list.canEditSettingsWith(_controller.permissions.canEditLists);
@@ -183,7 +189,14 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
       : _draft.modeOf(_key(s)!) != ItemDefaultMode.none;
 
   void _save() {
-    final patch = _draft.patchAgainst(_list.itemDefaults);
+    var patch = _draft.patchAgainst(_list.itemDefaults);
+    if (_drawnInto && _fillFromDefaults != _list.fillFromDefaults) {
+      patch = ItemDefaultsPatch(
+        entries: patch.entries,
+        fields: patch.fields,
+        fillFromDefaults: _fillFromDefaults,
+      );
+    }
     if (patch.isNotEmpty) _controller.updateItemDefaults(_list.id, patch);
     Navigator.of(context).pop();
   }
@@ -232,6 +245,19 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
           if (open != null) ...[
             const SizedBox(height: 14),
             AbsorbPointer(absorbing: !_canEdit, child: _sectionBody(open)),
+          ],
+          if (_drawnInto) ...[
+            const SizedBox(height: 16),
+            const Divider(height: 1),
+            SwitchListTile(
+              contentPadding: EdgeInsetsDirectional.zero,
+              title: Text(m.templates.fillLabel),
+              subtitle: Text(m.templates.fillHint),
+              value: _fillFromDefaults,
+              onChanged: _canEdit
+                  ? (value) => setState(() => _fillFromDefaults = value)
+                  : null,
+            ),
           ],
         ],
       ),

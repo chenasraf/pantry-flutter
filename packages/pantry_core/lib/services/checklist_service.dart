@@ -3,6 +3,7 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/models/list_template.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cache_store.dart';
@@ -11,6 +12,7 @@ import 'package:pantry_core/services/server_version_service.dart';
 part 'checklist_service.lists.dart';
 part 'checklist_service.items.dart';
 part 'checklist_service.batch.dart';
+part 'checklist_service.templates.dart';
 
 /// Serialize a [prices] value for the item create/update body, adapting to what
 /// the server supports. `null` omits the field entirely (prices unchanged).

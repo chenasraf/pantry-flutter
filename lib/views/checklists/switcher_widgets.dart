@@ -211,10 +211,12 @@ class ContextMenuRegion extends StatefulWidget {
   final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onArchive;
+  final VoidCallback? onApply;
   final String editLabel;
   final String duplicateLabel;
   final String removeLabel;
   final String archiveLabel;
+  final String applyLabel;
 
   const ContextMenuRegion({
     super.key,
@@ -223,10 +225,12 @@ class ContextMenuRegion extends StatefulWidget {
     required this.onDuplicate,
     required this.onRemove,
     required this.onArchive,
+    this.onApply,
     required this.editLabel,
     required this.duplicateLabel,
     required this.removeLabel,
     required this.archiveLabel,
+    this.applyLabel = '',
   });
 
   @override
@@ -265,6 +269,17 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
               ],
             ),
           ),
+        if (widget.onApply != null)
+          PopupMenuItem<String>(
+            value: 'apply',
+            child: Row(
+              children: [
+                const Icon(Icons.playlist_add, size: 18),
+                const SizedBox(width: 10),
+                Text(widget.applyLabel),
+              ],
+            ),
+          ),
         if (widget.onArchive != null)
           PopupMenuItem<String>(
             value: 'archive',
@@ -291,6 +306,7 @@ class _ContextMenuRegionState extends State<ContextMenuRegion> {
     );
     if (result == 'edit') widget.onEdit?.call();
     if (result == 'duplicate') widget.onDuplicate?.call();
+    if (result == 'apply') widget.onApply?.call();
     if (result == 'archive') widget.onArchive?.call();
     if (result == 'remove') widget.onRemove?.call();
   }

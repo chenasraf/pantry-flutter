@@ -80,6 +80,7 @@ class MessagesHe extends Messages {
   LabelsMessagesHe get labels => LabelsMessagesHe(this);
   ChecklistsMessagesHe get checklists => ChecklistsMessagesHe(this);
   ListKindsMessagesHe get listKinds => ListKindsMessagesHe(this);
+  TemplatesMessagesHe get templates => TemplatesMessagesHe(this);
   NotesWallMessagesHe get notesWall => NotesWallMessagesHe(this);
   PhotoBoardMessagesHe get photoBoard => PhotoBoardMessagesHe(this);
   ShoppingMessagesHe get shopping => ShoppingMessagesHe(this);
@@ -5199,6 +5200,214 @@ class TemplateListKindsMessagesHe extends TemplateListKindsMessages {
   String get listUnarchived => """התבנית הוצאה מהארכיון""";
 }
 
+class TemplatesMessagesHe extends TemplatesMessages {
+  final MessagesHe _parent;
+  const TemplatesMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "הצעות"
+  /// ```
+  String get suggestionsHeader => """הצעות""";
+
+  /// ```dart
+  /// "מתבניות: $names"
+  /// ```
+  String fromTemplates(String names) => """מתבניות: $names""";
+
+  /// ```dart
+  /// ""$name" נוסף מתבנית"
+  /// ```
+  String addedFromTemplate(String name) => """"$name" נוסף מתבנית""";
+
+  /// ```dart
+  /// "לא ניתן היה להוסיף את הפריט מהתבנית"
+  /// ```
+  String get drawFailed => """לא ניתן היה להוסיף את הפריט מהתבנית""";
+
+  /// ```dart
+  /// "תבניות:"
+  /// ```
+  String get attachedLabel => """תבניות:""";
+
+  /// ```dart
+  /// "אין תבניות"
+  /// ```
+  String get attachedPlaceholder => """אין תבניות""";
+
+  /// ```dart
+  /// "הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה."
+  /// ```
+  String get attachedHint =>
+      """הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה.""";
+
+  /// ```dart
+  /// "הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה, וגם מ־$names, שמשמשות את כל הרשימות."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה, וגם מ־$names, שמשמשות את כל הרשימות.""";
+
+  /// ```dart
+  /// "הצעה ברשימות:"
+  /// ```
+  String get suggestInLabel => """הצעה ברשימות:""";
+
+  /// ```dart
+  /// "כל הרשימות"
+  /// ```
+  String get everyList => """כל הרשימות""";
+
+  /// ```dart
+  /// "אין רשימות"
+  /// ```
+  String get suggestInPlaceholder => """אין רשימות""";
+
+  /// ```dart
+  /// "הקלדת פריט חדש ברשימות האלה מציעה פריטים תואמים מהתבנית הזו. בחירה ב"כל הרשימות" כוללת גם רשימות שייווצרו בהמשך."
+  /// ```
+  String get suggestInHint =>
+      """הקלדת פריט חדש ברשימות האלה מציעה פריטים תואמים מהתבנית הזו. בחירה ב"כל הרשימות" כוללת גם רשימות שייווצרו בהמשך.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור את התבניות המצורפות"
+  /// ```
+  String get attachFailed => """לא ניתן היה לשמור את התבניות המצורפות""";
+
+  /// ```dart
+  /// "מילוי פריטי תבנית מברירות המחדל האלה"
+  /// ```
+  String get fillLabel => """מילוי פריטי תבנית מברירות המחדל האלה""";
+
+  /// ```dart
+  /// "כשפריט נוסף מתבנית, הפרטים שהוא משאיר ריקים מתחילים עם הערכים שלמעלה. כל אחד יכול לשנות זאת בהגדרות האישיות שלו."
+  /// ```
+  String get fillHint =>
+      """כשפריט נוסף מתבנית, הפרטים שהוא משאיר ריקים מתחילים עם הערכים שלמעלה. כל אחד יכול לשנות זאת בהגדרות האישיות שלו.""";
+
+  /// ```dart
+  /// "מילוי פריטי תבנית מברירות המחדל לפריטים"
+  /// ```
+  String get fillPrefLabel => """מילוי פריטי תבנית מברירות המחדל לפריטים""";
+
+  /// ```dart
+  /// "כשמוסיפים פריט מתבנית, הפרטים שהוא משאיר ריקים מתמלאים מברירות המחדל לפריטים של הרשימה. כל רשימה יכולה לכבות זאת בברירות המחדל לפריטים שלה."
+  /// ```
+  String get fillPrefHint =>
+      """כשמוסיפים פריט מתבנית, הפרטים שהוא משאיר ריקים מתמלאים מברירות המחדל לפריטים של הרשימה. כל רשימה יכולה לכבות זאת בברירות המחדל לפריטים שלה.""";
+  FillPrefNamesTemplatesMessagesHe get fillPrefNames =>
+      FillPrefNamesTemplatesMessagesHe(this);
+
+  /// ```dart
+  /// "לא ניתן היה לשמור את ההגדרה"
+  /// ```
+  String get fillPrefFailed => """לא ניתן היה לשמור את ההגדרה""";
+
+  /// ```dart
+  /// "החלה על רשימה"
+  /// ```
+  String get applyToList => """החלה על רשימה""";
+
+  /// ```dart
+  /// "החלת תבנית"
+  /// ```
+  String get applyTemplate => """החלת תבנית""";
+
+  /// ```dart
+  /// "מצורפות לרשימה הזו"
+  /// ```
+  String get attachedTemplates => """מצורפות לרשימה הזו""";
+
+  /// ```dart
+  /// "תבניות אחרות"
+  /// ```
+  String get otherTemplates => """תבניות אחרות""";
+
+  /// ```dart
+  /// "אין רשימות סימון או רשימות מלאי שאפשר להחיל עליהן את התבנית הזו."
+  /// ```
+  String get noTargets =>
+      """אין רשימות סימון או רשימות מלאי שאפשר להחיל עליהן את התבנית הזו.""";
+
+  /// ```dart
+  /// "אין פריטים בתבנית הזו."
+  /// ```
+  String get noItems => """אין פריטים בתבנית הזו.""";
+
+  /// ```dart
+  /// "כבר ברשימה"
+  /// ```
+  String get alreadyOnList => """כבר ברשימה""";
+
+  /// ```dart
+  /// "העתקת הפריטים המסומנים מ־$template אל $list."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """העתקת הפריטים המסומנים מ־$template אל $list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'החלת פריט אחד', many: 'החלת $count פריטים')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: 'החלת פריט אחד', many: 'החלת $count פריטים')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'נוסף פריט אחד אל $list', many: 'נוספו $count פריטים אל $list')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: 'נוסף פריט אחד אל $list', many: 'נוספו $count פריטים אל $list')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד כבר היה ב־$list והוחזר', many: '$count פריטים כבר היו ב־$list והוחזרו')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: 'פריט אחד כבר היה ב־$list והוחזר', many: '$count פריטים כבר היו ב־$list והוחזרו')}""";
+
+  /// ```dart
+  /// "$list: $added נוספו, $reused הוחזרו"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list: $added נוספו, $reused הוחזרו""";
+
+  /// ```dart
+  /// "לא ניתן היה להחיל את התבנית"
+  /// ```
+  String get applyFailed => """לא ניתן היה להחיל את התבנית""";
+
+  /// ```dart
+  /// "לא ניתן היה לטעון את התבניות"
+  /// ```
+  String get loadFailed => """לא ניתן היה לטעון את התבניות""";
+
+  /// ```dart
+  /// "חזרה"
+  /// ```
+  String get back => """חזרה""";
+}
+
+class FillPrefNamesTemplatesMessagesHe extends FillPrefNamesTemplatesMessages {
+  final TemplatesMessagesHe _parent;
+  const FillPrefNamesTemplatesMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "לפי כל רשימה"
+  /// ```
+  String get list => """לפי כל רשימה""";
+
+  /// ```dart
+  /// "תמיד למלא"
+  /// ```
+  String get always => """תמיד למלא""";
+
+  /// ```dart
+  /// "אף פעם לא למלא"
+  /// ```
+  String get never => """אף פעם לא למלא""";
+}
+
 class NotesWallMessagesHe extends NotesWallMessages {
   final MessagesHe _parent;
   const NotesWallMessagesHe(this._parent) : super(_parent);
@@ -8729,6 +8938,39 @@ Map<String, String> get messagesHeMap => {
   """listKinds.template.listMovedToTrash""": """התבנית הועברה לאשפה""",
   """listKinds.template.listArchived""": """התבנית הועברה לארכיון""",
   """listKinds.template.listUnarchived""": """התבנית הוצאה מהארכיון""",
+  """templates.suggestionsHeader""": """הצעות""",
+  """templates.drawFailed""": """לא ניתן היה להוסיף את הפריט מהתבנית""",
+  """templates.attachedLabel""": """תבניות:""",
+  """templates.attachedPlaceholder""": """אין תבניות""",
+  """templates.attachedHint""":
+      """הקלדת פריט חדש מציעה פריטים תואמים מהתבניות האלה.""",
+  """templates.suggestInLabel""": """הצעה ברשימות:""",
+  """templates.everyList""": """כל הרשימות""",
+  """templates.suggestInPlaceholder""": """אין רשימות""",
+  """templates.suggestInHint""":
+      """הקלדת פריט חדש ברשימות האלה מציעה פריטים תואמים מהתבנית הזו. בחירה ב"כל הרשימות" כוללת גם רשימות שייווצרו בהמשך.""",
+  """templates.attachFailed""": """לא ניתן היה לשמור את התבניות המצורפות""",
+  """templates.fillLabel""": """מילוי פריטי תבנית מברירות המחדל האלה""",
+  """templates.fillHint""":
+      """כשפריט נוסף מתבנית, הפרטים שהוא משאיר ריקים מתחילים עם הערכים שלמעלה. כל אחד יכול לשנות זאת בהגדרות האישיות שלו.""",
+  """templates.fillPrefLabel""": """מילוי פריטי תבנית מברירות המחדל לפריטים""",
+  """templates.fillPrefHint""":
+      """כשמוסיפים פריט מתבנית, הפרטים שהוא משאיר ריקים מתמלאים מברירות המחדל לפריטים של הרשימה. כל רשימה יכולה לכבות זאת בברירות המחדל לפריטים שלה.""",
+  """templates.fillPrefNames.list""": """לפי כל רשימה""",
+  """templates.fillPrefNames.always""": """תמיד למלא""",
+  """templates.fillPrefNames.never""": """אף פעם לא למלא""",
+  """templates.fillPrefFailed""": """לא ניתן היה לשמור את ההגדרה""",
+  """templates.applyToList""": """החלה על רשימה""",
+  """templates.applyTemplate""": """החלת תבנית""",
+  """templates.attachedTemplates""": """מצורפות לרשימה הזו""",
+  """templates.otherTemplates""": """תבניות אחרות""",
+  """templates.noTargets""":
+      """אין רשימות סימון או רשימות מלאי שאפשר להחיל עליהן את התבנית הזו.""",
+  """templates.noItems""": """אין פריטים בתבנית הזו.""",
+  """templates.alreadyOnList""": """כבר ברשימה""",
+  """templates.applyFailed""": """לא ניתן היה להחיל את התבנית""",
+  """templates.loadFailed""": """לא ניתן היה לטעון את התבניות""",
+  """templates.back""": """חזרה""",
   """notesWall.noNotes""": """אין הערות עדיין.""",
   """notesWall.failedToLoad""": """טעינת ההערות נכשלה.""",
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",

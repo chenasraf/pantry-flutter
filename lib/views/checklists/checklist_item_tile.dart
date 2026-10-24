@@ -101,6 +101,10 @@ class ChecklistItemTile extends StatefulWidget {
   /// [suggestion] is true.
   final bool archived;
 
+  /// On a suggestion from the list's templates: the names of those templates,
+  /// shown on a trailing badge.
+  final List<String>? fromTemplates;
+
   const ChecklistItemTile({
     super.key,
     required this.item,
@@ -136,6 +140,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.suggestion = false,
     this.onSuggestionTap,
     this.archived = false,
+    this.fromTemplates,
   });
 
   /// A read-only tile used as a reuse suggestion in the compose bar: name and
@@ -150,6 +155,7 @@ class ChecklistItemTile extends StatefulWidget {
     required VoidCallback onTap,
     this.pendingImage,
     this.archived = false,
+    this.fromTemplates,
   }) : isCardsView = false,
        onToggle = _noop,
        onView = _noop,
@@ -234,6 +240,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
         pendingImage: widget.pendingImage,
         suggestion: true,
         archived: widget.archived,
+        fromTemplates: widget.fromTemplates,
       );
     }
 

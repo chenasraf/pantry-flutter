@@ -409,14 +409,24 @@ class ItemDefaultsPatch {
   final Map<String, ItemDefaultPatchEntry> entries;
   final Map<int, ItemDefaultPatchEntry> fields;
 
-  const ItemDefaultsPatch({this.entries = const {}, this.fields = const {}});
+  /// Whether template items drawn into the list fill their empty details from
+  /// these defaults; `null` leaves it as it is.
+  final bool? fillFromDefaults;
 
-  bool get isEmpty => entries.isEmpty && fields.isEmpty;
+  const ItemDefaultsPatch({
+    this.entries = const {},
+    this.fields = const {},
+    this.fillFromDefaults,
+  });
+
+  bool get isEmpty =>
+      entries.isEmpty && fields.isEmpty && fillFromDefaults == null;
   bool get isNotEmpty => !isEmpty;
 
   /// Whether every key only writes back a value, which anyone who can add
   /// items may send for a remembering key.
   bool get isValueOnly =>
+      fillFromDefaults == null &&
       entries.values.every((e) => e.mode == null) &&
       fields.values.every((e) => e.mode == null);
 
@@ -436,8 +446,14 @@ class ItemDefaultsPatch {
         );
       }
     }
-    return ItemDefaultsPatch(entries: entries, fields: fields);
+    return ItemDefaultsPatch(
+      entries: entries,
+      fields: fields,
+      fillFromDefaults: json[fillFromDefaultsKey] as bool?,
+    );
   }
+
+  static const fillFromDefaultsKey = 'fillFromDefaults';
 
   Map<String, dynamic> toJson() => {
     for (final MapEntry(:key, :value) in entries.entries) key: value.toJson(),
@@ -446,6 +462,7 @@ class ItemDefaultsPatch {
         for (final MapEntry(:key, :value) in fields.entries)
           {'fieldId': key, ...value.toJson()},
       ],
+    fillFromDefaultsKey: ?fillFromDefaults,
   };
 
   /// This patch followed by [later], so queued patches for one list can be
@@ -466,6 +483,7 @@ class ItemDefaultsPatch {
         for (final MapEntry(:key, :value) in later.fields.entries)
           key: merge(fields[key], value),
       },
+      fillFromDefaults: later.fillFromDefaults ?? fillFromDefaults,
     );
   }
 }

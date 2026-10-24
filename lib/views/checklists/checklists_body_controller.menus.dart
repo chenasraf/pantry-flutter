@@ -440,6 +440,14 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
                   ? list.kind.strings.duplicateTitle
                   : m.checklists.duplicateListTitle,
             ),
+          if (list != null && !isMeta && domain.canApplyTemplate(list))
+            OverflowAction(
+              value: 'apply_template',
+              icon: Icons.playlist_add,
+              label: list.kind == ListKind.template
+                  ? m.templates.applyToList
+                  : m.templates.applyTemplate,
+            ),
           // List links and home screen widgets open checklists.
           if (list != null &&
               !isMeta &&

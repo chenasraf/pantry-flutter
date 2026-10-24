@@ -1126,6 +1126,45 @@ listKinds:
     listMovedToTrash: Mal flytta til papirkorga
     listArchived: Mal arkivert
     listUnarchived: Mal henta ut av arkivet
+templates:
+  suggestionsHeader: Forslag
+  fromTemplates(String names): "Frå malar: $names"
+  addedFromTemplate(String name): La til «$name» frå ein mal
+  drawFailed: Klarte ikkje leggje til oppføringa frå malen
+  attachedLabel: "Malar:"
+  attachedPlaceholder: Ingen malar
+  attachedHint: Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane.
+  attachedEveryListHint(String names): Når du skriv inn ei ny oppføring, får du forslag om samsvarande oppføringar frå desse malane, og frå $names, som alle lister brukar.
+  suggestInLabel: "Foreslå i:"
+  everyList: Alle lister
+  suggestInPlaceholder: Ingen lister
+  suggestInHint: Når du skriv inn ei ny oppføring i desse listene, får du forslag om samsvarande oppføringar frå denne malen. Vel du «Alle lister», kjem òg lister som vert oppretta seinare med.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: Klarte ikkje lagre dei tilknytte malane
+  fillLabel: Fyll maloppføringar frå desse standardverdiane
+  fillHint: Når ei oppføring vert lagd til frå ein mal, startar dei tomme detaljane med verdiane ovanfor. Kvar person kan overstyre dette i dei personlege innstillingane sine.
+  fillPrefLabel: Fyll maloppføringar frå standardverdiane
+  fillPrefHint: Når du legg til ei oppføring frå ein mal, vert dei tomme detaljane fylte frå standardverdiane til lista. Kvar liste kan slå dette av i standardverdiane sine.
+  fillPrefNames:
+    list: Følg kvar liste
+    always: Fyll alltid
+    never: Fyll aldri
+  fillPrefFailed: Klarte ikkje lagre innstillinga
+  applyToList: Bruk på liste
+  applyTemplate: Bruk malen
+  attachedTemplates: Knytt til denne lista
+  otherTemplates: Andre malar
+  noTargets: Det finst ingen sjekklister eller lagerlister å bruke denne malen på.
+  noItems: Denne malen har ingen oppføringar.
+  alreadyOnList: Allereie på lista
+  reviewSummary(String template, String list): Kopier dei avkryssa oppføringane frå $template til $list.
+  applyItems(int count): "${_plural(count, one: 'Bruk 1 oppføring', many: 'Bruk $count oppføringar')}"
+  appliedAdded(int count, String list): "${_plural(count, one: 'La til 1 oppføring i $list', many: 'La til $count oppføringar i $list')}"
+  appliedReused(int count, String list): "${_plural(count, one: '1 oppføring var allereie i $list og vart henta fram att', many: '$count oppføringar var allereie i $list og vart henta fram att')}"
+  appliedMixed(String list, int added, int reused): "$list: $added lagt til, $reused henta fram att"
+  applyFailed: Klarte ikkje bruke malen
+  loadFailed: Klarte ikkje laste malane
+  back: Tilbake
 notesWall:
   noNotes: Ingen notat enno
   failedToLoad: Klarte ikkje laste notat

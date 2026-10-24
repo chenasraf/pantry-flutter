@@ -70,6 +70,11 @@ class ChecklistList {
   /// the `defaultRecurrence*` fields.
   final ItemDefaults? itemDefaults;
 
+  /// Whether a template item drawn into this list fills the details it leaves
+  /// empty from [itemDefaults]. `null` on templates, which are never drawn
+  /// into, and from servers without [ServerFeature.templates].
+  final bool? fillFromDefaults;
+
   const ChecklistList({
     required this.id,
     required this.houseId,
@@ -92,6 +97,7 @@ class ChecklistList {
     this.canEdit,
     this.sharedOnly,
     this.itemDefaults,
+    this.fillFromDefaults,
   });
 
   factory ChecklistList.fromJson(Map<String, dynamic> json) => ChecklistList(
@@ -129,6 +135,7 @@ class ChecklistList {
             Map<String, dynamic>.from(json['itemDefaults'] as Map),
           )
         : null,
+    fillFromDefaults: json['fillFromDefaults'] as bool?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -154,6 +161,7 @@ class ChecklistList {
     'canEdit': canEdit,
     'sharedOnly': sharedOnly,
     'itemDefaults': ?itemDefaults?.toJson(),
+    'fillFromDefaults': ?fillFromDefaults,
   };
 
   ChecklistList copyWith({
@@ -176,6 +184,7 @@ class ChecklistList {
     bool clearArchivedAt = false,
     int? lastCompletedAt,
     ItemDefaults? itemDefaults,
+    bool? fillFromDefaults,
   }) => ChecklistList(
     id: id ?? this.id,
     houseId: houseId,
@@ -201,6 +210,7 @@ class ChecklistList {
     canEdit: canEdit,
     sharedOnly: sharedOnly,
     itemDefaults: itemDefaults ?? this.itemDefaults,
+    fillFromDefaults: fillFromDefaults ?? this.fillFromDefaults,
   );
 }
 
@@ -541,10 +551,15 @@ class PantryBatchResult {
   final List<ListItem> items;
   final List<int> skipped;
 
+  /// On a copy of template items: ids among [items] that were already on the
+  /// destination and were brought back rather than added.
+  final List<int> reused;
+
   const PantryBatchResult({
     required this.success,
     required this.items,
     required this.skipped,
+    this.reused = const [],
   });
 
   factory PantryBatchResult.fromJson(Map<String, dynamic> json) =>
@@ -554,6 +569,9 @@ class PantryBatchResult {
             .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
             .toList(),
         skipped: ((json['skipped'] as List?) ?? const [])
+            .map((e) => e as int)
+            .toList(),
+        reused: ((json['reused'] as List?) ?? const [])
             .map((e) => e as int)
             .toList(),
       );

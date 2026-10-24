@@ -991,6 +991,46 @@ listKinds:
     listArchived: Template archived
     listUnarchived: Template unarchived
 
+templates:
+  suggestionsHeader: Suggestions
+  fromTemplates(String names): "From templates: $names"
+  addedFromTemplate(String name): 'Added "$name" from a template'
+  drawFailed: Could not add the item from the template
+  attachedLabel: "Templates:"
+  attachedPlaceholder: No templates
+  attachedHint: Typing a new item suggests matching items from these templates.
+  attachedEveryListHint(String names): Typing a new item suggests matching items from these templates, and from $names, which every list uses.
+  suggestInLabel: "Suggest in:"
+  everyList: Every list
+  suggestInPlaceholder: No lists
+  suggestInHint: Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: Could not save the attached templates
+  fillLabel: Fill template items from these defaults
+  fillHint: When an item is added from a template, the details it leaves empty start with the values above. Each person can override this in their personal settings.
+  fillPrefLabel: Fill template items from item defaults
+  fillPrefHint: When you add an item from a template, fill the details it leaves empty from the list's item defaults. Each list can switch this off in its item defaults.
+  fillPrefNames:
+    list: Follow each list
+    always: Always fill
+    never: Never fill
+  fillPrefFailed: Could not save the setting
+  applyToList: Apply to list
+  applyTemplate: Apply template
+  attachedTemplates: Attached to this list
+  otherTemplates: Other templates
+  noTargets: There are no checklists or inventories to apply this template to.
+  noItems: This template has no items.
+  alreadyOnList: Already on list
+  reviewSummary(String template, String list): Copy the ticked items from $template into $list.
+  applyItems(int count): "${_plural(count, one: 'Apply 1 item', many: 'Apply $count items')}"
+  appliedAdded(int count, String list): "${_plural(count, one: 'Added 1 item to $list', many: 'Added $count items to $list')}"
+  appliedReused(int count, String list): "${_plural(count, one: '1 item was already on $list and was brought back', many: '$count items were already on $list and were brought back')}"
+  appliedMixed(String list, int added, int reused): "$list: $added added, $reused brought back"
+  applyFailed: Could not apply the template
+  loadFailed: Could not load the templates
+  back: Back
+
 notesWall:
   noNotes: No notes yet.
   failedToLoad: Failed to load notes.

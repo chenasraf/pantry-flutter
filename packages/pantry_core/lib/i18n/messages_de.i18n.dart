@@ -80,6 +80,7 @@ class MessagesDe extends Messages {
   LabelsMessagesDe get labels => LabelsMessagesDe(this);
   ChecklistsMessagesDe get checklists => ChecklistsMessagesDe(this);
   ListKindsMessagesDe get listKinds => ListKindsMessagesDe(this);
+  TemplatesMessagesDe get templates => TemplatesMessagesDe(this);
   NotesWallMessagesDe get notesWall => NotesWallMessagesDe(this);
   PhotoBoardMessagesDe get photoBoard => PhotoBoardMessagesDe(this);
   ShoppingMessagesDe get shopping => ShoppingMessagesDe(this);
@@ -5254,6 +5255,219 @@ class TemplateListKindsMessagesDe extends TemplateListKindsMessages {
   String get listUnarchived => """Vorlage dearchiviert""";
 }
 
+class TemplatesMessagesDe extends TemplatesMessages {
+  final MessagesDe _parent;
+  const TemplatesMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Vorschläge"
+  /// ```
+  String get suggestionsHeader => """Vorschläge""";
+
+  /// ```dart
+  /// "Aus Vorlagen: $names"
+  /// ```
+  String fromTemplates(String names) => """Aus Vorlagen: $names""";
+
+  /// ```dart
+  /// ""$name" aus einer Vorlage hinzugefügt"
+  /// ```
+  String addedFromTemplate(String name) =>
+      """"$name" aus einer Vorlage hinzugefügt""";
+
+  /// ```dart
+  /// "Der Eintrag konnte nicht aus der Vorlage hinzugefügt werden"
+  /// ```
+  String get drawFailed =>
+      """Der Eintrag konnte nicht aus der Vorlage hinzugefügt werden""";
+
+  /// ```dart
+  /// "Vorlagen:"
+  /// ```
+  String get attachedLabel => """Vorlagen:""";
+
+  /// ```dart
+  /// "Keine Vorlagen"
+  /// ```
+  String get attachedPlaceholder => """Keine Vorlagen""";
+
+  /// ```dart
+  /// "Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen."
+  /// ```
+  String get attachedHint =>
+      """Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen.""";
+
+  /// ```dart
+  /// "Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen, außerdem aus $names, die für jede Liste gelten."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen, außerdem aus $names, die für jede Liste gelten.""";
+
+  /// ```dart
+  /// "Vorschlagen in:"
+  /// ```
+  String get suggestInLabel => """Vorschlagen in:""";
+
+  /// ```dart
+  /// "Jede Liste"
+  /// ```
+  String get everyList => """Jede Liste""";
+
+  /// ```dart
+  /// "Keine Listen"
+  /// ```
+  String get suggestInPlaceholder => """Keine Listen""";
+
+  /// ```dart
+  /// "Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen."
+  /// ```
+  String get suggestInHint =>
+      """Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "Die angehängten Vorlagen konnten nicht gespeichert werden"
+  /// ```
+  String get attachFailed =>
+      """Die angehängten Vorlagen konnten nicht gespeichert werden""";
+
+  /// ```dart
+  /// "Vorlageneinträge mit diesen Vorgaben füllen"
+  /// ```
+  String get fillLabel => """Vorlageneinträge mit diesen Vorgaben füllen""";
+
+  /// ```dart
+  /// "Wenn ein Eintrag aus einer Vorlage hinzugefügt wird, starten die Details, die er leer lässt, mit den Werten oben. Jede Person kann dies in ihren persönlichen Einstellungen überschreiben."
+  /// ```
+  String get fillHint =>
+      """Wenn ein Eintrag aus einer Vorlage hinzugefügt wird, starten die Details, die er leer lässt, mit den Werten oben. Jede Person kann dies in ihren persönlichen Einstellungen überschreiben.""";
+
+  /// ```dart
+  /// "Vorlageneinträge mit Eintragsvorgaben füllen"
+  /// ```
+  String get fillPrefLabel =>
+      """Vorlageneinträge mit Eintragsvorgaben füllen""";
+
+  /// ```dart
+  /// "Wenn du einen Eintrag aus einer Vorlage hinzufügst, werden die Details, die er leer lässt, mit den Eintragsvorgaben der Liste gefüllt. Jede Liste kann dies in ihren Eintragsvorgaben abschalten."
+  /// ```
+  String get fillPrefHint =>
+      """Wenn du einen Eintrag aus einer Vorlage hinzufügst, werden die Details, die er leer lässt, mit den Eintragsvorgaben der Liste gefüllt. Jede Liste kann dies in ihren Eintragsvorgaben abschalten.""";
+  FillPrefNamesTemplatesMessagesDe get fillPrefNames =>
+      FillPrefNamesTemplatesMessagesDe(this);
+
+  /// ```dart
+  /// "Die Einstellung konnte nicht gespeichert werden"
+  /// ```
+  String get fillPrefFailed =>
+      """Die Einstellung konnte nicht gespeichert werden""";
+
+  /// ```dart
+  /// "Auf Liste anwenden"
+  /// ```
+  String get applyToList => """Auf Liste anwenden""";
+
+  /// ```dart
+  /// "Vorlage anwenden"
+  /// ```
+  String get applyTemplate => """Vorlage anwenden""";
+
+  /// ```dart
+  /// "An diese Liste angehängt"
+  /// ```
+  String get attachedTemplates => """An diese Liste angehängt""";
+
+  /// ```dart
+  /// "Andere Vorlagen"
+  /// ```
+  String get otherTemplates => """Andere Vorlagen""";
+
+  /// ```dart
+  /// "Es gibt keine Checklisten oder Bestandslisten, auf die diese Vorlage angewendet werden kann."
+  /// ```
+  String get noTargets =>
+      """Es gibt keine Checklisten oder Bestandslisten, auf die diese Vorlage angewendet werden kann.""";
+
+  /// ```dart
+  /// "Diese Vorlage hat keine Einträge."
+  /// ```
+  String get noItems => """Diese Vorlage hat keine Einträge.""";
+
+  /// ```dart
+  /// "Bereits auf der Liste"
+  /// ```
+  String get alreadyOnList => """Bereits auf der Liste""";
+
+  /// ```dart
+  /// "Die angehakten Einträge aus $template in $list kopieren."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """Die angehakten Einträge aus $template in $list kopieren.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag anwenden', many: '$count Einträge anwenden')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: '1 Eintrag anwenden', many: '$count Einträge anwenden')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag zu $list hinzugefügt', many: '$count Einträge zu $list hinzugefügt')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: '1 Eintrag zu $list hinzugefügt', many: '$count Einträge zu $list hinzugefügt')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag war bereits auf $list und wurde zurückgeholt', many: '$count Einträge waren bereits auf $list und wurden zurückgeholt')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: '1 Eintrag war bereits auf $list und wurde zurückgeholt', many: '$count Einträge waren bereits auf $list und wurden zurückgeholt')}""";
+
+  /// ```dart
+  /// "$list: $added hinzugefügt, $reused zurückgeholt"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list: $added hinzugefügt, $reused zurückgeholt""";
+
+  /// ```dart
+  /// "Die Vorlage konnte nicht angewendet werden"
+  /// ```
+  String get applyFailed => """Die Vorlage konnte nicht angewendet werden""";
+
+  /// ```dart
+  /// "Die Vorlagen konnten nicht geladen werden"
+  /// ```
+  String get loadFailed => """Die Vorlagen konnten nicht geladen werden""";
+
+  /// ```dart
+  /// "Zurück"
+  /// ```
+  String get back => """Zurück""";
+}
+
+class FillPrefNamesTemplatesMessagesDe extends FillPrefNamesTemplatesMessages {
+  final TemplatesMessagesDe _parent;
+  const FillPrefNamesTemplatesMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Wie die jeweilige Liste"
+  /// ```
+  String get list => """Wie die jeweilige Liste""";
+
+  /// ```dart
+  /// "Immer füllen"
+  /// ```
+  String get always => """Immer füllen""";
+
+  /// ```dart
+  /// "Nie füllen"
+  /// ```
+  String get never => """Nie füllen""";
+}
+
 class NotesWallMessagesDe extends NotesWallMessages {
   final MessagesDe _parent;
   const NotesWallMessagesDe(this._parent) : super(_parent);
@@ -8892,6 +9106,43 @@ Passwort: pantry-rocks""",
       """Vorlage in den Papierkorb verschoben""",
   """listKinds.template.listArchived""": """Vorlage archiviert""",
   """listKinds.template.listUnarchived""": """Vorlage dearchiviert""",
+  """templates.suggestionsHeader""": """Vorschläge""",
+  """templates.drawFailed""":
+      """Der Eintrag konnte nicht aus der Vorlage hinzugefügt werden""",
+  """templates.attachedLabel""": """Vorlagen:""",
+  """templates.attachedPlaceholder""": """Keine Vorlagen""",
+  """templates.attachedHint""":
+      """Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen.""",
+  """templates.suggestInLabel""": """Vorschlagen in:""",
+  """templates.everyList""": """Jede Liste""",
+  """templates.suggestInPlaceholder""": """Keine Listen""",
+  """templates.suggestInHint""":
+      """Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen.""",
+  """templates.attachFailed""":
+      """Die angehängten Vorlagen konnten nicht gespeichert werden""",
+  """templates.fillLabel""": """Vorlageneinträge mit diesen Vorgaben füllen""",
+  """templates.fillHint""":
+      """Wenn ein Eintrag aus einer Vorlage hinzugefügt wird, starten die Details, die er leer lässt, mit den Werten oben. Jede Person kann dies in ihren persönlichen Einstellungen überschreiben.""",
+  """templates.fillPrefLabel""":
+      """Vorlageneinträge mit Eintragsvorgaben füllen""",
+  """templates.fillPrefHint""":
+      """Wenn du einen Eintrag aus einer Vorlage hinzufügst, werden die Details, die er leer lässt, mit den Eintragsvorgaben der Liste gefüllt. Jede Liste kann dies in ihren Eintragsvorgaben abschalten.""",
+  """templates.fillPrefNames.list""": """Wie die jeweilige Liste""",
+  """templates.fillPrefNames.always""": """Immer füllen""",
+  """templates.fillPrefNames.never""": """Nie füllen""",
+  """templates.fillPrefFailed""":
+      """Die Einstellung konnte nicht gespeichert werden""",
+  """templates.applyToList""": """Auf Liste anwenden""",
+  """templates.applyTemplate""": """Vorlage anwenden""",
+  """templates.attachedTemplates""": """An diese Liste angehängt""",
+  """templates.otherTemplates""": """Andere Vorlagen""",
+  """templates.noTargets""":
+      """Es gibt keine Checklisten oder Bestandslisten, auf die diese Vorlage angewendet werden kann.""",
+  """templates.noItems""": """Diese Vorlage hat keine Einträge.""",
+  """templates.alreadyOnList""": """Bereits auf der Liste""",
+  """templates.applyFailed""": """Die Vorlage konnte nicht angewendet werden""",
+  """templates.loadFailed""": """Die Vorlagen konnten nicht geladen werden""",
+  """templates.back""": """Zurück""",
   """notesWall.noNotes""": """Noch keine Notizen.""",
   """notesWall.failedToLoad""": """Notizen konnten nicht geladen werden.""",
   """notesWall.saveFailed""": """Notiz konnte nicht gespeichert werden.""",

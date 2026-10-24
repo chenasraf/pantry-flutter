@@ -222,7 +222,12 @@ extension ChecklistServiceLists on ChecklistService {
     ItemDefaultsPatch patch,
   ) async {
     final body = patch.toJson();
-    if (!kindOf(listId).hasRecurrence) body.remove(ItemDefaults.recurrenceKey);
+    final kind = kindOf(listId);
+    if (!kind.hasRecurrence) body.remove(ItemDefaults.recurrenceKey);
+    // Templates are drawn from, never into.
+    if (kind == ListKind.template) {
+      body.remove(ItemDefaultsPatch.fillFromDefaultsKey);
+    }
     return ApiClient.instance.patch<Map<String, dynamic>, ChecklistList>(
       '${listPath(houseId, listId)}/item-defaults',
       body: body,

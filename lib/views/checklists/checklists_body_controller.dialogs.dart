@@ -81,6 +81,30 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
     return true;
   }
 
+  /// Draws a picked template suggestion onto [targetListId]. Returns true when
+  /// the item landed, so the compose bar clears its input.
+  Future<bool> drawFromTemplate(
+    ListItem templateItem, {
+    required int targetListId,
+  }) async {
+    try {
+      final result = await domain.drawTemplateItem(
+        templateItem.id,
+        targetListId: targetListId,
+      );
+      showAppToast(
+        message: result.reused
+            ? m.checklists.reuse.reusedSnack(result.item.name)
+            : m.templates.addedFromTemplate(result.item.name),
+      );
+      return true;
+    } catch (e) {
+      debugPrint('[ChecklistsBody] Failed to draw template item: $e');
+      showAppToast(message: m.templates.drawFailed, kind: ToastKind.error);
+      return false;
+    }
+  }
+
   /// Adds a single item to [targetListId], honoring the reuse-existing-items
   /// pref (reuse silently / ask per duplicate / add). [forceReuse] forces the
   /// "reuse" behavior for this add regardless of the global pref — used by the
@@ -349,6 +373,9 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       case 'duplicate_list':
         final current = domain.currentList;
         if (current != null) await openSwitcher(context, duplicating: current);
+      case 'apply_template':
+        final current = domain.currentList;
+        if (current != null) await showApplyTemplate(context, domain, current);
       case 'item_defaults':
         final current = domain.currentList;
         if (current != null) await showItemDefaults(context, domain, current);

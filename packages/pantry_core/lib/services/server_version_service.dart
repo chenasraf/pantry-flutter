@@ -396,4 +396,5 @@ abstract final class ServerFeature {
   static bool get shoppingHistoryDelete => _since('0.37.0');
 
   static bool get listKinds => _since('0.38.0');
+  static bool get templates => _since('0.38.0');
 }

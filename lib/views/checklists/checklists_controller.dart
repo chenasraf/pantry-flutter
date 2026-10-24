@@ -11,6 +11,7 @@ import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/models/list_template.dart';
 import 'package:pantry_core/models/member.dart';
 import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/services/api_client.dart';
@@ -33,11 +34,13 @@ import 'package:pantry_core/sync/sync_op.dart';
 import 'checklists_ordering.dart';
 export 'checklists_ordering.dart';
 export 'package:pantry_core/models/list_kind.dart';
+export 'package:pantry_core/models/list_template.dart';
 
 part 'checklists_controller.batch.dart';
 part 'checklists_controller.item_crud.dart';
 part 'checklists_controller.list_crud.dart';
 part 'checklists_controller.sort.dart';
+part 'checklists_controller.templates.dart';
 
 class ChecklistsController extends ChangeNotifier {
   final int houseId;
@@ -350,6 +353,13 @@ class ChecklistsController extends ChangeNotifier {
   /// Lists whose archived-reuse set has a fetch in flight or completed, so the
   /// lazy load fires at most once per list per session.
   final Set<int> _archivedReuseRequested = {};
+
+  /// Items of the templates attached to each list, offered in its add box.
+  /// Fetched lazily on the first search of a list, and dropped when moving to
+  /// another list or changing attachments, since the templates may have
+  /// changed in between.
+  final Map<int, List<TemplateSuggestion>> _templateSuggestions = {};
+  final Set<int> _templateSuggestionsRequested = {};
 
   bool _isLoading = true;
   bool get isLoading => _isLoading;
@@ -803,6 +813,7 @@ class ChecklistsController extends ChangeNotifier {
     bool refreshInPlace = false,
   }) async {
     final previousListId = _currentList?.id;
+    if (previousListId != list.id) _resetTemplateSuggestions();
     _currentList = list;
     _kind = list.kind;
     _checklistService.selectedListId = list.id;
@@ -1085,6 +1096,7 @@ class ChecklistsController extends ChangeNotifier {
     // offline cache via `_precacheListItems`. Wiping the non-current caches
     // here (the old behavior) raced that warm-up and, if the user went offline
     // before it finished, left those lists showing nothing.
+    _resetTemplateSuggestions();
     await load();
   }
 

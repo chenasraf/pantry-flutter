@@ -262,6 +262,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     if (list == null) return;
     final optimistic = list.copyWith(
       itemDefaults: (list.itemDefaults ?? ItemDefaults.empty).applyPatch(patch),
+      fillFromDefaults: patch.fillFromDefaults,
       updatedAt: _now(),
     );
     _lists = [for (final l in _lists) l.id == listId ? optimistic : l];

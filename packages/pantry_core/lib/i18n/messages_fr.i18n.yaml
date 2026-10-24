@@ -991,6 +991,46 @@ listKinds:
     listArchived: Modèle archivé
     listUnarchived: Modèle désarchivé
 
+templates:
+  suggestionsHeader: Suggestions
+  fromTemplates(String names): "Depuis les modèles : $names"
+  addedFromTemplate(String name): '"$name" ajouté depuis un modèle'
+  drawFailed: Impossible d'ajouter l'article depuis le modèle
+  attachedLabel: "Modèles :"
+  attachedPlaceholder: Aucun modèle
+  attachedHint: La saisie d'un nouvel article suggère les articles correspondants de ces modèles.
+  attachedEveryListHint(String names): La saisie d'un nouvel article suggère les articles correspondants de ces modèles, ainsi que de $names, utilisés par toutes les listes.
+  suggestInLabel: "Suggérer dans :"
+  everyList: Toutes les listes
+  suggestInPlaceholder: Aucune liste
+  suggestInHint: La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: Impossible d'enregistrer les modèles associés
+  fillLabel: Remplir les articles de modèle avec ces valeurs
+  fillHint: Lorsqu'un article est ajouté depuis un modèle, les détails qu'il laisse vides démarrent avec les valeurs ci-dessus. Chaque personne peut modifier ce comportement dans ses paramètres personnels.
+  fillPrefLabel: Remplir les articles de modèle avec les valeurs par défaut
+  fillPrefHint: Lorsque vous ajoutez un article depuis un modèle, les détails qu'il laisse vides sont remplis avec les valeurs par défaut des articles de la liste. Chaque liste peut désactiver ce comportement dans ses valeurs par défaut.
+  fillPrefNames:
+    list: Selon chaque liste
+    always: Toujours remplir
+    never: Ne jamais remplir
+  fillPrefFailed: Impossible d'enregistrer le paramètre
+  applyToList: Appliquer à une liste
+  applyTemplate: Appliquer le modèle
+  attachedTemplates: Associés à cette liste
+  otherTemplates: Autres modèles
+  noTargets: Aucune liste de contrôle ni aucun inventaire auquel appliquer ce modèle.
+  noItems: Ce modèle ne contient aucun article.
+  alreadyOnList: Déjà dans la liste
+  reviewSummary(String template, String list): Copier les articles cochés de $template dans $list.
+  applyItems(int count): "${_plural(count, one: 'Appliquer 1 article', many: 'Appliquer $count articles')}"
+  appliedAdded(int count, String list): "${_plural(count, one: '1 article ajouté à $list', many: '$count articles ajoutés à $list')}"
+  appliedReused(int count, String list): "${_plural(count, one: '1 article était déjà dans $list et a été rétabli', many: '$count articles étaient déjà dans $list et ont été rétablis')}"
+  appliedMixed(String list, int added, int reused): "$list : $added ajoutés, $reused rétablis"
+  applyFailed: Impossible d'appliquer le modèle
+  loadFailed: Impossible de charger les modèles
+  back: Retour
+
 notesWall:
   noNotes: Aucune note pour le moment.
   failedToLoad: Impossible de charger les notes.

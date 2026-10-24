@@ -14,7 +14,9 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/item_start_values.dart';
+import 'package:pantry_core/models/list_template.dart';
 import 'package:pantry_core/services/prefs_service.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/services/barcode_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/quantity.dart';
@@ -144,8 +146,13 @@ class ItemComposeBar extends StatefulWidget {
 
   /// Builds a read-only suggestion tile for [item]. Provided by the host so the
   /// tile resolves categories/stores through the controller; tapping the tile
-  /// runs [onTap].
-  final Widget Function(ListItem item, VoidCallback onTap)?
+  /// runs [onTap]. [fromTemplates] names the templates a template row comes
+  /// from, and is null on the list's own items.
+  final Widget Function(
+    ListItem item,
+    VoidCallback onTap,
+    List<String>? fromTemplates,
+  )?
   buildReuseSuggestion;
 
   /// Runs the host's confirm-then-reuse flow for a tapped suggestion. Returns
@@ -162,6 +169,20 @@ class ItemComposeBar extends StatefulWidget {
   /// host can lazily load that list's archived items (fed back through
   /// [archivedReuseCandidates]). Null disables archived suggestions.
   final ValueChanged<int>? onArchivedSearchStarted;
+
+  /// Items of the templates attached to the current target list, offered after
+  /// the list's own matches. The host keeps this live, loading it when
+  /// [onTemplateSearchStarted] fires.
+  final List<TemplateSuggestion> templateSuggestions;
+
+  /// Called whenever the user searches a resolved target list, so the host can
+  /// lazily load its template suggestions. Null disables them.
+  final ValueChanged<int>? onTemplateSearchStarted;
+
+  /// Draws a picked template row onto the target list. Returns true when the
+  /// item landed, so the bar clears its input afterwards.
+  final Future<bool> Function(ListItem templateItem, int targetListId)?
+  onPickTemplateItem;
 
   /// Mirrors the bar for a host that anchors it to the top of the list: the
   /// input sits above the chip row and trays, which grow downward, and the
@@ -205,6 +226,9 @@ class ItemComposeBar extends StatefulWidget {
     this.onReuseExisting,
     this.archivedReuseCandidates = const [],
     this.onArchivedSearchStarted,
+    this.templateSuggestions = const [],
+    this.onTemplateSearchStarted,
+    this.onPickTemplateItem,
     this.onTop = false,
   });
 
@@ -342,43 +366,30 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   }
 
   void _onNameChanged() {
-    _maybeLoadArchived();
+    _maybeLoadSuggestions();
     // Rebuild so the bulk-add hint tracks input in multiple mode, and the
     // single-mode reuse suggestions re-filter as the user types.
     if (_multiple ||
         widget.reuseCandidates.isNotEmpty ||
         widget.archivedReuseCandidates.isNotEmpty ||
-        widget.onArchivedSearchStarted != null) {
+        widget.templateSuggestions.isNotEmpty ||
+        widget.onArchivedSearchStarted != null ||
+        widget.onTemplateSearchStarted != null) {
       setState(() {});
     }
   }
 
-  /// Ask the host to lazily load the current target list's archived items the
-  /// first time the user searches it. Gated to single-item mode with a resolved
-  /// target and a non-empty query, so nothing loads on screen open or in bulk
-  /// mode. The host de-dupes the actual fetch.
-  void _maybeLoadArchived() {
-    final onSearch = widget.onArchivedSearchStarted;
-    if (onSearch == null || _multiple) return;
+  /// Ask the host to lazily load the current target list's archived items and
+  /// template suggestions the first time the user searches it. Gated to
+  /// single-item mode with a resolved target and a non-empty query, so nothing
+  /// loads on screen open or in bulk mode. The host de-dupes the actual fetch.
+  void _maybeLoadSuggestions() {
+    if (_multiple) return;
     final listId = _targetListId;
     if (listId == null) return;
     if (_nameCtrl.text.trim().isEmpty) return;
-    onSearch(listId);
-  }
-
-  /// The reuse-match pool: the host's active candidates plus any archived
-  /// candidates for the current target, with archived duplicates of an active
-  /// item dropped so an item can't be offered twice.
-  List<ListItem> _reusePool() {
-    final active = widget.reuseCandidates;
-    final archived = widget.archivedReuseCandidates;
-    if (archived.isEmpty) return active;
-    final activeIds = {for (final i in active) i.id};
-    return [
-      ...active,
-      for (final a in archived)
-        if (!activeIds.contains(a.id)) a,
-    ];
+    widget.onArchivedSearchStarted?.call(listId);
+    widget.onTemplateSearchStarted?.call(listId);
   }
 
   /// Max reuse suggestions surfaced at once — enough to catch the near matches
@@ -396,31 +407,76 @@ class ItemComposeBarState extends State<ItemComposeBar> {
   /// clearly the same category.
   static const _categoryMatchCutoff = 65;
 
-  /// Single-mode fuzzy matches of the typed name against [reuseCandidates],
-  /// best-ranked first. fuzzywuzzy's weighted ratio blends token and partial
-  /// matching, so a longer query ("Organic milk") still matches a shorter name
-  /// ("Milk"). Empty in multiple mode, with no query, or when unwired.
-  List<ListItem> _reuseMatches() {
+  /// Single-mode fuzzy matches of the typed name, best-ranked first: the
+  /// list's active items, then its archived ones, then its template items,
+  /// under one shared limit. A template item the list already has is never
+  /// offered over the list's own copy. fuzzywuzzy's weighted ratio blends token
+  /// and partial matching, so a longer query ("Organic milk") still matches a
+  /// shorter name ("Milk"). Empty in multiple mode, with no query, or when
+  /// unwired.
+  List<_Suggestion> _reuseMatches() {
     if (_multiple || widget.buildReuseSuggestion == null) return const [];
-    final pool = _reusePool();
-    if (pool.isEmpty) return const [];
     final query = _nameCtrl.text.trim();
     if (query.isEmpty) return const [];
-    final results = extractTop<ListItem>(
-      query: query,
-      choices: pool,
-      getter: (item) => item.name,
-      limit: _maxReuseSuggestions,
-      cutoff: _reuseMatchCutoff,
+    final active = widget.reuseCandidates;
+    final activeIds = {for (final i in active) i.id};
+    final archived = [
+      for (final a in widget.archivedReuseCandidates)
+        if (!activeIds.contains(a.id)) a,
+    ];
+    final ownNames = {
+      for (final i in [...active, ...archived]) itemNameKey(i.name),
+    };
+    final templates = widget.onPickTemplateItem == null
+        ? const <TemplateSuggestion>[]
+        : [
+            for (final s in widget.templateSuggestions)
+              if (!ownNames.contains(itemNameKey(s.item.name))) s,
+          ];
+
+    final rows = <_Suggestion>[];
+    void take<T>(
+      List<T> candidates,
+      ListItem Function(T) itemOf,
+      _Suggestion Function(T) toRow,
+    ) {
+      final room = _maxReuseSuggestions - rows.length;
+      if (room <= 0 || candidates.isEmpty) return;
+      final results = extractTop<T>(
+        query: query,
+        choices: candidates,
+        getter: (c) => itemOf(c).name,
+        limit: room,
+        cutoff: _reuseMatchCutoff,
+      );
+      rows.addAll([for (final r in results) toRow(r.choice)]);
+    }
+
+    _Suggestion own(ListItem i) => _Suggestion(i);
+    take<ListItem>(active, (i) => i, own);
+    take<ListItem>(archived, (i) => i, own);
+    take<TemplateSuggestion>(
+      templates,
+      (s) => s.item,
+      (s) => _Suggestion(s.item, fromTemplates: s.templateNames),
     );
-    return [for (final r in results) r.choice];
+    return rows;
   }
 
-  Future<void> _onSuggestionTap(ListItem item) async {
-    final handler = widget.onReuseExisting;
-    if (handler == null || _submitting) return;
-    final reused = await handler(item);
-    if (!mounted || !reused) return;
+  Future<void> _onSuggestionTap(_Suggestion suggestion) async {
+    if (_submitting) return;
+    final bool landed;
+    if (suggestion.fromTemplates != null) {
+      final handler = widget.onPickTemplateItem;
+      final listId = _targetListId;
+      if (handler == null || listId == null) return;
+      landed = await handler(suggestion.item, listId);
+    } else {
+      final handler = widget.onReuseExisting;
+      if (handler == null) return;
+      landed = await handler(suggestion.item);
+    }
+    if (!mounted || !landed) return;
     // Reuse means we're not creating a new item — clear the draft and keep the
     // bar active/focused so the user can carry on adding.
     setState(() {
@@ -743,7 +799,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
     // surface while no tray is open (i.e. while the user is typing the name).
     final reuseMatches = _openTray == null
         ? _reuseMatches()
-        : const <ListItem>[];
+        : const <_Suggestion>[];
 
     Widget? trayChild;
     switch (_openTray) {
@@ -908,7 +964,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
             fit: FlexFit.loose,
             child: SingleChildScrollView(
               child: _ReuseSuggestions(
-                items: reuseMatches,
+                suggestions: reuseMatches,
                 buildTile: widget.buildReuseSuggestion!,
                 onTap: _onSuggestionTap,
               ),
@@ -1245,16 +1301,32 @@ class MultipleToggle extends StatelessWidget {
   }
 }
 
-/// Panel of fuzzy-matched existing items shown above the input while composing
-/// a single item. Each row is a read-only [ChecklistItemTile.suggestion] built
-/// by the host; tapping one runs the reuse-confirm flow.
+/// One row of the suggestions panel: an item of the list, or of one of its
+/// templates.
+class _Suggestion {
+  final ListItem item;
+
+  /// Set on a template row: the names of the templates it comes from.
+  final List<String>? fromTemplates;
+
+  const _Suggestion(this.item, {this.fromTemplates});
+}
+
+/// Panel of fuzzy-matched items shown above the input while composing a single
+/// item. Each row is a read-only [ChecklistItemTile.suggestion] built by the
+/// host; tapping one reuses the list's item or draws the template's.
 class _ReuseSuggestions extends StatelessWidget {
-  final List<ListItem> items;
-  final Widget Function(ListItem item, VoidCallback onTap) buildTile;
-  final ValueChanged<ListItem> onTap;
+  final List<_Suggestion> suggestions;
+  final Widget Function(
+    ListItem item,
+    VoidCallback onTap,
+    List<String>? fromTemplates,
+  )
+  buildTile;
+  final ValueChanged<_Suggestion> onTap;
 
   const _ReuseSuggestions({
-    required this.items,
+    required this.suggestions,
     required this.buildTile,
     required this.onTap,
   });
@@ -1272,7 +1344,10 @@ class _ReuseSuggestions extends StatelessWidget {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(14, 11, 14, 9),
             child: Text(
-              m.checklists.reuse.suggestionsHeader.toUpperCase(),
+              (ServerFeature.templates
+                      ? m.templates.suggestionsHeader
+                      : m.checklists.reuse.suggestionsHeader)
+                  .toUpperCase(),
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
@@ -1281,14 +1356,14 @@ class _ReuseSuggestions extends StatelessWidget {
               ),
             ),
           ),
-          for (var i = 0; i < items.length; i++) ...[
+          for (final (i, s) in suggestions.indexed) ...[
             if (i > 0)
               Divider(
                 height: 1,
                 thickness: 1,
                 color: cs.outlineVariant.withValues(alpha: 0.5),
               ),
-            buildTile(items[i], () => onTap(items[i])),
+            buildTile(s.item, () => onTap(s), s.fromTemplates),
           ],
         ],
       ),

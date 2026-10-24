@@ -80,6 +80,7 @@ class MessagesFr extends Messages {
   LabelsMessagesFr get labels => LabelsMessagesFr(this);
   ChecklistsMessagesFr get checklists => ChecklistsMessagesFr(this);
   ListKindsMessagesFr get listKinds => ListKindsMessagesFr(this);
+  TemplatesMessagesFr get templates => TemplatesMessagesFr(this);
   NotesWallMessagesFr get notesWall => NotesWallMessagesFr(this);
   PhotoBoardMessagesFr get photoBoard => PhotoBoardMessagesFr(this);
   ShoppingMessagesFr get shopping => ShoppingMessagesFr(this);
@@ -5248,6 +5249,218 @@ class TemplateListKindsMessagesFr extends TemplateListKindsMessages {
   String get listUnarchived => """Modèle désarchivé""";
 }
 
+class TemplatesMessagesFr extends TemplatesMessages {
+  final MessagesFr _parent;
+  const TemplatesMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Suggestions"
+  /// ```
+  String get suggestionsHeader => """Suggestions""";
+
+  /// ```dart
+  /// "Depuis les modèles : $names"
+  /// ```
+  String fromTemplates(String names) => """Depuis les modèles : $names""";
+
+  /// ```dart
+  /// ""$name" ajouté depuis un modèle"
+  /// ```
+  String addedFromTemplate(String name) =>
+      """"$name" ajouté depuis un modèle""";
+
+  /// ```dart
+  /// "Impossible d'ajouter l'article depuis le modèle"
+  /// ```
+  String get drawFailed =>
+      """Impossible d'ajouter l'article depuis le modèle""";
+
+  /// ```dart
+  /// "Modèles :"
+  /// ```
+  String get attachedLabel => """Modèles :""";
+
+  /// ```dart
+  /// "Aucun modèle"
+  /// ```
+  String get attachedPlaceholder => """Aucun modèle""";
+
+  /// ```dart
+  /// "La saisie d'un nouvel article suggère les articles correspondants de ces modèles."
+  /// ```
+  String get attachedHint =>
+      """La saisie d'un nouvel article suggère les articles correspondants de ces modèles.""";
+
+  /// ```dart
+  /// "La saisie d'un nouvel article suggère les articles correspondants de ces modèles, ainsi que de $names, utilisés par toutes les listes."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """La saisie d'un nouvel article suggère les articles correspondants de ces modèles, ainsi que de $names, utilisés par toutes les listes.""";
+
+  /// ```dart
+  /// "Suggérer dans :"
+  /// ```
+  String get suggestInLabel => """Suggérer dans :""";
+
+  /// ```dart
+  /// "Toutes les listes"
+  /// ```
+  String get everyList => """Toutes les listes""";
+
+  /// ```dart
+  /// "Aucune liste"
+  /// ```
+  String get suggestInPlaceholder => """Aucune liste""";
+
+  /// ```dart
+  /// "La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite."
+  /// ```
+  String get suggestInHint =>
+      """La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "Impossible d'enregistrer les modèles associés"
+  /// ```
+  String get attachFailed =>
+      """Impossible d'enregistrer les modèles associés""";
+
+  /// ```dart
+  /// "Remplir les articles de modèle avec ces valeurs"
+  /// ```
+  String get fillLabel => """Remplir les articles de modèle avec ces valeurs""";
+
+  /// ```dart
+  /// "Lorsqu'un article est ajouté depuis un modèle, les détails qu'il laisse vides démarrent avec les valeurs ci-dessus. Chaque personne peut modifier ce comportement dans ses paramètres personnels."
+  /// ```
+  String get fillHint =>
+      """Lorsqu'un article est ajouté depuis un modèle, les détails qu'il laisse vides démarrent avec les valeurs ci-dessus. Chaque personne peut modifier ce comportement dans ses paramètres personnels.""";
+
+  /// ```dart
+  /// "Remplir les articles de modèle avec les valeurs par défaut"
+  /// ```
+  String get fillPrefLabel =>
+      """Remplir les articles de modèle avec les valeurs par défaut""";
+
+  /// ```dart
+  /// "Lorsque vous ajoutez un article depuis un modèle, les détails qu'il laisse vides sont remplis avec les valeurs par défaut des articles de la liste. Chaque liste peut désactiver ce comportement dans ses valeurs par défaut."
+  /// ```
+  String get fillPrefHint =>
+      """Lorsque vous ajoutez un article depuis un modèle, les détails qu'il laisse vides sont remplis avec les valeurs par défaut des articles de la liste. Chaque liste peut désactiver ce comportement dans ses valeurs par défaut.""";
+  FillPrefNamesTemplatesMessagesFr get fillPrefNames =>
+      FillPrefNamesTemplatesMessagesFr(this);
+
+  /// ```dart
+  /// "Impossible d'enregistrer le paramètre"
+  /// ```
+  String get fillPrefFailed => """Impossible d'enregistrer le paramètre""";
+
+  /// ```dart
+  /// "Appliquer à une liste"
+  /// ```
+  String get applyToList => """Appliquer à une liste""";
+
+  /// ```dart
+  /// "Appliquer le modèle"
+  /// ```
+  String get applyTemplate => """Appliquer le modèle""";
+
+  /// ```dart
+  /// "Associés à cette liste"
+  /// ```
+  String get attachedTemplates => """Associés à cette liste""";
+
+  /// ```dart
+  /// "Autres modèles"
+  /// ```
+  String get otherTemplates => """Autres modèles""";
+
+  /// ```dart
+  /// "Aucune liste de contrôle ni aucun inventaire auquel appliquer ce modèle."
+  /// ```
+  String get noTargets =>
+      """Aucune liste de contrôle ni aucun inventaire auquel appliquer ce modèle.""";
+
+  /// ```dart
+  /// "Ce modèle ne contient aucun article."
+  /// ```
+  String get noItems => """Ce modèle ne contient aucun article.""";
+
+  /// ```dart
+  /// "Déjà dans la liste"
+  /// ```
+  String get alreadyOnList => """Déjà dans la liste""";
+
+  /// ```dart
+  /// "Copier les articles cochés de $template dans $list."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """Copier les articles cochés de $template dans $list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Appliquer 1 article', many: 'Appliquer $count articles')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: 'Appliquer 1 article', many: 'Appliquer $count articles')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article ajouté à $list', many: '$count articles ajoutés à $list')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: '1 article ajouté à $list', many: '$count articles ajoutés à $list')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article était déjà dans $list et a été rétabli', many: '$count articles étaient déjà dans $list et ont été rétablis')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: '1 article était déjà dans $list et a été rétabli', many: '$count articles étaient déjà dans $list et ont été rétablis')}""";
+
+  /// ```dart
+  /// "$list : $added ajoutés, $reused rétablis"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list : $added ajoutés, $reused rétablis""";
+
+  /// ```dart
+  /// "Impossible d'appliquer le modèle"
+  /// ```
+  String get applyFailed => """Impossible d'appliquer le modèle""";
+
+  /// ```dart
+  /// "Impossible de charger les modèles"
+  /// ```
+  String get loadFailed => """Impossible de charger les modèles""";
+
+  /// ```dart
+  /// "Retour"
+  /// ```
+  String get back => """Retour""";
+}
+
+class FillPrefNamesTemplatesMessagesFr extends FillPrefNamesTemplatesMessages {
+  final TemplatesMessagesFr _parent;
+  const FillPrefNamesTemplatesMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Selon chaque liste"
+  /// ```
+  String get list => """Selon chaque liste""";
+
+  /// ```dart
+  /// "Toujours remplir"
+  /// ```
+  String get always => """Toujours remplir""";
+
+  /// ```dart
+  /// "Ne jamais remplir"
+  /// ```
+  String get never => """Ne jamais remplir""";
+}
+
 class NotesWallMessagesFr extends NotesWallMessages {
   final MessagesFr _parent;
   const NotesWallMessagesFr(this._parent) : super(_parent);
@@ -8885,6 +9098,43 @@ Mot de passe : pantry-rocks""",
       """Modèle déplacé vers la corbeille""",
   """listKinds.template.listArchived""": """Modèle archivé""",
   """listKinds.template.listUnarchived""": """Modèle désarchivé""",
+  """templates.suggestionsHeader""": """Suggestions""",
+  """templates.drawFailed""":
+      """Impossible d'ajouter l'article depuis le modèle""",
+  """templates.attachedLabel""": """Modèles :""",
+  """templates.attachedPlaceholder""": """Aucun modèle""",
+  """templates.attachedHint""":
+      """La saisie d'un nouvel article suggère les articles correspondants de ces modèles.""",
+  """templates.suggestInLabel""": """Suggérer dans :""",
+  """templates.everyList""": """Toutes les listes""",
+  """templates.suggestInPlaceholder""": """Aucune liste""",
+  """templates.suggestInHint""":
+      """La saisie d'un nouvel article dans ces listes suggère les articles correspondants de ce modèle. Sélectionner « Toutes les listes » inclut aussi les listes créées par la suite.""",
+  """templates.attachFailed""":
+      """Impossible d'enregistrer les modèles associés""",
+  """templates.fillLabel""":
+      """Remplir les articles de modèle avec ces valeurs""",
+  """templates.fillHint""":
+      """Lorsqu'un article est ajouté depuis un modèle, les détails qu'il laisse vides démarrent avec les valeurs ci-dessus. Chaque personne peut modifier ce comportement dans ses paramètres personnels.""",
+  """templates.fillPrefLabel""":
+      """Remplir les articles de modèle avec les valeurs par défaut""",
+  """templates.fillPrefHint""":
+      """Lorsque vous ajoutez un article depuis un modèle, les détails qu'il laisse vides sont remplis avec les valeurs par défaut des articles de la liste. Chaque liste peut désactiver ce comportement dans ses valeurs par défaut.""",
+  """templates.fillPrefNames.list""": """Selon chaque liste""",
+  """templates.fillPrefNames.always""": """Toujours remplir""",
+  """templates.fillPrefNames.never""": """Ne jamais remplir""",
+  """templates.fillPrefFailed""": """Impossible d'enregistrer le paramètre""",
+  """templates.applyToList""": """Appliquer à une liste""",
+  """templates.applyTemplate""": """Appliquer le modèle""",
+  """templates.attachedTemplates""": """Associés à cette liste""",
+  """templates.otherTemplates""": """Autres modèles""",
+  """templates.noTargets""":
+      """Aucune liste de contrôle ni aucun inventaire auquel appliquer ce modèle.""",
+  """templates.noItems""": """Ce modèle ne contient aucun article.""",
+  """templates.alreadyOnList""": """Déjà dans la liste""",
+  """templates.applyFailed""": """Impossible d'appliquer le modèle""",
+  """templates.loadFailed""": """Impossible de charger les modèles""",
+  """templates.back""": """Retour""",
   """notesWall.noNotes""": """Aucune note pour le moment.""",
   """notesWall.failedToLoad""": """Impossible de charger les notes.""",
   """notesWall.saveFailed""": """Impossible d'enregistrer la note.""",

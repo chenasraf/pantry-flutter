@@ -991,6 +991,46 @@ listKinds:
     listArchived: Vorlage archiviert
     listUnarchived: Vorlage dearchiviert
 
+templates:
+  suggestionsHeader: Vorschläge
+  fromTemplates(String names): "Aus Vorlagen: $names"
+  addedFromTemplate(String name): '"$name" aus einer Vorlage hinzugefügt'
+  drawFailed: Der Eintrag konnte nicht aus der Vorlage hinzugefügt werden
+  attachedLabel: "Vorlagen:"
+  attachedPlaceholder: Keine Vorlagen
+  attachedHint: Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen.
+  attachedEveryListHint(String names): Beim Eintippen eines neuen Eintrags werden passende Einträge aus diesen Vorlagen vorgeschlagen, außerdem aus $names, die für jede Liste gelten.
+  suggestInLabel: "Vorschlagen in:"
+  everyList: Jede Liste
+  suggestInPlaceholder: Keine Listen
+  suggestInHint: Beim Eintippen eines neuen Eintrags auf diesen Listen werden passende Einträge aus dieser Vorlage vorgeschlagen. Mit „Jede Liste“ werden auch später erstellte Listen einbezogen.
+  listWithKind(String list, String kind): "$list ($kind)"
+  attachFailed: Die angehängten Vorlagen konnten nicht gespeichert werden
+  fillLabel: Vorlageneinträge mit diesen Vorgaben füllen
+  fillHint: Wenn ein Eintrag aus einer Vorlage hinzugefügt wird, starten die Details, die er leer lässt, mit den Werten oben. Jede Person kann dies in ihren persönlichen Einstellungen überschreiben.
+  fillPrefLabel: Vorlageneinträge mit Eintragsvorgaben füllen
+  fillPrefHint: Wenn du einen Eintrag aus einer Vorlage hinzufügst, werden die Details, die er leer lässt, mit den Eintragsvorgaben der Liste gefüllt. Jede Liste kann dies in ihren Eintragsvorgaben abschalten.
+  fillPrefNames:
+    list: Wie die jeweilige Liste
+    always: Immer füllen
+    never: Nie füllen
+  fillPrefFailed: Die Einstellung konnte nicht gespeichert werden
+  applyToList: Auf Liste anwenden
+  applyTemplate: Vorlage anwenden
+  attachedTemplates: An diese Liste angehängt
+  otherTemplates: Andere Vorlagen
+  noTargets: Es gibt keine Checklisten oder Bestandslisten, auf die diese Vorlage angewendet werden kann.
+  noItems: Diese Vorlage hat keine Einträge.
+  alreadyOnList: Bereits auf der Liste
+  reviewSummary(String template, String list): Die angehakten Einträge aus $template in $list kopieren.
+  applyItems(int count): "${_plural(count, one: '1 Eintrag anwenden', many: '$count Einträge anwenden')}"
+  appliedAdded(int count, String list): "${_plural(count, one: '1 Eintrag zu $list hinzugefügt', many: '$count Einträge zu $list hinzugefügt')}"
+  appliedReused(int count, String list): "${_plural(count, one: '1 Eintrag war bereits auf $list und wurde zurückgeholt', many: '$count Einträge waren bereits auf $list und wurden zurückgeholt')}"
+  appliedMixed(String list, int added, int reused): "$list: $added hinzugefügt, $reused zurückgeholt"
+  applyFailed: Die Vorlage konnte nicht angewendet werden
+  loadFailed: Die Vorlagen konnten nicht geladen werden
+  back: Zurück
+
 notesWall:
   noNotes: Noch keine Notizen.
   failedToLoad: Notizen konnten nicht geladen werden.

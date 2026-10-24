@@ -80,6 +80,7 @@ class MessagesEs extends Messages {
   LabelsMessagesEs get labels => LabelsMessagesEs(this);
   ChecklistsMessagesEs get checklists => ChecklistsMessagesEs(this);
   ListKindsMessagesEs get listKinds => ListKindsMessagesEs(this);
+  TemplatesMessagesEs get templates => TemplatesMessagesEs(this);
   NotesWallMessagesEs get notesWall => NotesWallMessagesEs(this);
   PhotoBoardMessagesEs get photoBoard => PhotoBoardMessagesEs(this);
   ShoppingMessagesEs get shopping => ShoppingMessagesEs(this);
@@ -5246,6 +5247,219 @@ class TemplateListKindsMessagesEs extends TemplateListKindsMessages {
   String get listUnarchived => """Plantilla desarchivada""";
 }
 
+class TemplatesMessagesEs extends TemplatesMessages {
+  final MessagesEs _parent;
+  const TemplatesMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Sugerencias"
+  /// ```
+  String get suggestionsHeader => """Sugerencias""";
+
+  /// ```dart
+  /// "De plantillas: $names"
+  /// ```
+  String fromTemplates(String names) => """De plantillas: $names""";
+
+  /// ```dart
+  /// "Se añadió "$name" desde una plantilla"
+  /// ```
+  String addedFromTemplate(String name) =>
+      """Se añadió "$name" desde una plantilla""";
+
+  /// ```dart
+  /// "No se pudo añadir el artículo desde la plantilla"
+  /// ```
+  String get drawFailed =>
+      """No se pudo añadir el artículo desde la plantilla""";
+
+  /// ```dart
+  /// "Plantillas:"
+  /// ```
+  String get attachedLabel => """Plantillas:""";
+
+  /// ```dart
+  /// "Sin plantillas"
+  /// ```
+  String get attachedPlaceholder => """Sin plantillas""";
+
+  /// ```dart
+  /// "Al escribir un artículo nuevo, se sugieren artículos coincidentes de estas plantillas."
+  /// ```
+  String get attachedHint =>
+      """Al escribir un artículo nuevo, se sugieren artículos coincidentes de estas plantillas.""";
+
+  /// ```dart
+  /// "Al escribir un artículo nuevo, se sugieren artículos coincidentes de estas plantillas y de $names, que usan todas las listas."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """Al escribir un artículo nuevo, se sugieren artículos coincidentes de estas plantillas y de $names, que usan todas las listas.""";
+
+  /// ```dart
+  /// "Sugerir en:"
+  /// ```
+  String get suggestInLabel => """Sugerir en:""";
+
+  /// ```dart
+  /// "Todas las listas"
+  /// ```
+  String get everyList => """Todas las listas""";
+
+  /// ```dart
+  /// "Sin listas"
+  /// ```
+  String get suggestInPlaceholder => """Sin listas""";
+
+  /// ```dart
+  /// "Al escribir un artículo nuevo en estas listas, se sugieren artículos coincidentes de esta plantilla. Al seleccionar "Todas las listas" también se incluyen las listas creadas más adelante."
+  /// ```
+  String get suggestInHint =>
+      """Al escribir un artículo nuevo en estas listas, se sugieren artículos coincidentes de esta plantilla. Al seleccionar "Todas las listas" también se incluyen las listas creadas más adelante.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "No se pudieron guardar las plantillas adjuntas"
+  /// ```
+  String get attachFailed =>
+      """No se pudieron guardar las plantillas adjuntas""";
+
+  /// ```dart
+  /// "Rellenar los artículos de plantillas con estos valores"
+  /// ```
+  String get fillLabel =>
+      """Rellenar los artículos de plantillas con estos valores""";
+
+  /// ```dart
+  /// "Cuando se añade un artículo desde una plantilla, los detalles que deja vacíos empiezan con los valores de arriba. Cada persona puede cambiarlo en su configuración personal."
+  /// ```
+  String get fillHint =>
+      """Cuando se añade un artículo desde una plantilla, los detalles que deja vacíos empiezan con los valores de arriba. Cada persona puede cambiarlo en su configuración personal.""";
+
+  /// ```dart
+  /// "Rellenar los artículos de plantillas con los valores predeterminados"
+  /// ```
+  String get fillPrefLabel =>
+      """Rellenar los artículos de plantillas con los valores predeterminados""";
+
+  /// ```dart
+  /// "Al añadir un artículo desde una plantilla, los detalles que deja vacíos se rellenan con los valores predeterminados de artículos de la lista. Cada lista puede desactivarlo en sus valores predeterminados."
+  /// ```
+  String get fillPrefHint =>
+      """Al añadir un artículo desde una plantilla, los detalles que deja vacíos se rellenan con los valores predeterminados de artículos de la lista. Cada lista puede desactivarlo en sus valores predeterminados.""";
+  FillPrefNamesTemplatesMessagesEs get fillPrefNames =>
+      FillPrefNamesTemplatesMessagesEs(this);
+
+  /// ```dart
+  /// "No se pudo guardar la configuración"
+  /// ```
+  String get fillPrefFailed => """No se pudo guardar la configuración""";
+
+  /// ```dart
+  /// "Aplicar a una lista"
+  /// ```
+  String get applyToList => """Aplicar a una lista""";
+
+  /// ```dart
+  /// "Aplicar plantilla"
+  /// ```
+  String get applyTemplate => """Aplicar plantilla""";
+
+  /// ```dart
+  /// "Adjuntas a esta lista"
+  /// ```
+  String get attachedTemplates => """Adjuntas a esta lista""";
+
+  /// ```dart
+  /// "Otras plantillas"
+  /// ```
+  String get otherTemplates => """Otras plantillas""";
+
+  /// ```dart
+  /// "No hay listas de verificación ni inventarios a los que aplicar esta plantilla."
+  /// ```
+  String get noTargets =>
+      """No hay listas de verificación ni inventarios a los que aplicar esta plantilla.""";
+
+  /// ```dart
+  /// "Esta plantilla no tiene artículos."
+  /// ```
+  String get noItems => """Esta plantilla no tiene artículos.""";
+
+  /// ```dart
+  /// "Ya en la lista"
+  /// ```
+  String get alreadyOnList => """Ya en la lista""";
+
+  /// ```dart
+  /// "Copiar los artículos marcados de $template a $list."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """Copiar los artículos marcados de $template a $list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Aplicar 1 artículo', many: 'Aplicar $count artículos')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: 'Aplicar 1 artículo', many: 'Aplicar $count artículos')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Se añadió 1 artículo a $list', many: 'Se añadieron $count artículos a $list')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: 'Se añadió 1 artículo a $list', many: 'Se añadieron $count artículos a $list')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo ya estaba en $list y se recuperó', many: '$count artículos ya estaban en $list y se recuperaron')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: '1 artículo ya estaba en $list y se recuperó', many: '$count artículos ya estaban en $list y se recuperaron')}""";
+
+  /// ```dart
+  /// "$list: $added añadidos, $reused recuperados"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list: $added añadidos, $reused recuperados""";
+
+  /// ```dart
+  /// "No se pudo aplicar la plantilla"
+  /// ```
+  String get applyFailed => """No se pudo aplicar la plantilla""";
+
+  /// ```dart
+  /// "No se pudieron cargar las plantillas"
+  /// ```
+  String get loadFailed => """No se pudieron cargar las plantillas""";
+
+  /// ```dart
+  /// "Atrás"
+  /// ```
+  String get back => """Atrás""";
+}
+
+class FillPrefNamesTemplatesMessagesEs extends FillPrefNamesTemplatesMessages {
+  final TemplatesMessagesEs _parent;
+  const FillPrefNamesTemplatesMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Según cada lista"
+  /// ```
+  String get list => """Según cada lista""";
+
+  /// ```dart
+  /// "Rellenar siempre"
+  /// ```
+  String get always => """Rellenar siempre""";
+
+  /// ```dart
+  /// "No rellenar nunca"
+  /// ```
+  String get never => """No rellenar nunca""";
+}
+
 class NotesWallMessagesEs extends NotesWallMessages {
   final MessagesEs _parent;
   const NotesWallMessagesEs(this._parent) : super(_parent);
@@ -8874,6 +9088,43 @@ Contraseña: pantry-rocks""",
       """Plantilla movida a la papelera""",
   """listKinds.template.listArchived""": """Plantilla archivada""",
   """listKinds.template.listUnarchived""": """Plantilla desarchivada""",
+  """templates.suggestionsHeader""": """Sugerencias""",
+  """templates.drawFailed""":
+      """No se pudo añadir el artículo desde la plantilla""",
+  """templates.attachedLabel""": """Plantillas:""",
+  """templates.attachedPlaceholder""": """Sin plantillas""",
+  """templates.attachedHint""":
+      """Al escribir un artículo nuevo, se sugieren artículos coincidentes de estas plantillas.""",
+  """templates.suggestInLabel""": """Sugerir en:""",
+  """templates.everyList""": """Todas las listas""",
+  """templates.suggestInPlaceholder""": """Sin listas""",
+  """templates.suggestInHint""":
+      """Al escribir un artículo nuevo en estas listas, se sugieren artículos coincidentes de esta plantilla. Al seleccionar "Todas las listas" también se incluyen las listas creadas más adelante.""",
+  """templates.attachFailed""":
+      """No se pudieron guardar las plantillas adjuntas""",
+  """templates.fillLabel""":
+      """Rellenar los artículos de plantillas con estos valores""",
+  """templates.fillHint""":
+      """Cuando se añade un artículo desde una plantilla, los detalles que deja vacíos empiezan con los valores de arriba. Cada persona puede cambiarlo en su configuración personal.""",
+  """templates.fillPrefLabel""":
+      """Rellenar los artículos de plantillas con los valores predeterminados""",
+  """templates.fillPrefHint""":
+      """Al añadir un artículo desde una plantilla, los detalles que deja vacíos se rellenan con los valores predeterminados de artículos de la lista. Cada lista puede desactivarlo en sus valores predeterminados.""",
+  """templates.fillPrefNames.list""": """Según cada lista""",
+  """templates.fillPrefNames.always""": """Rellenar siempre""",
+  """templates.fillPrefNames.never""": """No rellenar nunca""",
+  """templates.fillPrefFailed""": """No se pudo guardar la configuración""",
+  """templates.applyToList""": """Aplicar a una lista""",
+  """templates.applyTemplate""": """Aplicar plantilla""",
+  """templates.attachedTemplates""": """Adjuntas a esta lista""",
+  """templates.otherTemplates""": """Otras plantillas""",
+  """templates.noTargets""":
+      """No hay listas de verificación ni inventarios a los que aplicar esta plantilla.""",
+  """templates.noItems""": """Esta plantilla no tiene artículos.""",
+  """templates.alreadyOnList""": """Ya en la lista""",
+  """templates.applyFailed""": """No se pudo aplicar la plantilla""",
+  """templates.loadFailed""": """No se pudieron cargar las plantillas""",
+  """templates.back""": """Atrás""",
   """notesWall.noNotes""": """Aún no hay notas.""",
   """notesWall.failedToLoad""": """No se pudieron cargar las notas.""",
   """notesWall.saveFailed""": """No se pudo guardar la nota.""",

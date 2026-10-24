@@ -4,6 +4,7 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/list_kind_strings.dart';
@@ -15,6 +16,7 @@ import 'package:pantry/views/checklists/checklists_controller.dart';
 import 'form_components.dart';
 import 'item_defaults_view.dart';
 import 'switcher_widgets.dart';
+import 'template_attachments_field.dart';
 
 class ListFormStage extends StatefulWidget {
   final ChecklistsController controller;
@@ -45,6 +47,18 @@ class _ListFormStageState extends State<ListFormStage> {
   late ListRecurrenceMode _recurrenceMode;
   late RecurrenceState _recurrence;
   bool _saving = false;
+
+  /// Whether the attachments section shows: once loaded when editing, right
+  /// away when creating. Attaching happens on the server, so offline it stays
+  /// hidden.
+  bool _attachmentsReady = false;
+  List<int> _templateIds = const [];
+  List<int> _everyListTemplateIds = const [];
+  TemplateLists _templateLists = const TemplateLists();
+
+  /// What was attached when the form opened, to save only a change.
+  List<int> _initialTemplateIds = const [];
+  TemplateLists _initialTemplateLists = const TemplateLists();
 
   bool get _isEdit => widget.existing != null;
 
@@ -83,7 +97,55 @@ class _ListFormStageState extends State<ListFormStage> {
       existing?.defaultRrule,
       repeatFromCompletion: existing?.defaultRepeatFromCompletion ?? false,
     );
+    if (ServerFeature.templates && SyncManager.instance.isOnline) {
+      if (existing == null) {
+        _attachmentsReady = true;
+      } else if (existing.id > 0) {
+        _loadAttachments(existing);
+      }
+    }
   }
+
+  Future<void> _loadAttachments(ChecklistList list) async {
+    try {
+      if (list.kind == ListKind.template) {
+        final value = await widget.controller.loadTemplateLists(list.id);
+        _templateLists = _initialTemplateLists = value;
+      } else {
+        final attached = await widget.controller.loadAttachedTemplates(list.id);
+        _templateIds = _initialTemplateIds = attached.templateIds;
+        _everyListTemplateIds = attached.everyListTemplateIds;
+      }
+      if (mounted) setState(() => _attachmentsReady = true);
+    } catch (e) {
+      // Left hidden; the rest of the form still saves.
+      debugPrint('[ListFormStage] Failed to load attachments: $e');
+    }
+  }
+
+  /// Saves the attachments onto [list] when they changed. Failing leaves the
+  /// list itself saved.
+  Future<void> _saveAttachments(ChecklistList list) async {
+    if (!_attachmentsReady || list.id <= 0) return;
+    try {
+      if (list.kind == ListKind.template) {
+        final changed =
+            _templateLists.everyList != _initialTemplateLists.everyList ||
+            !_sameIds(_templateLists.listIds, _initialTemplateLists.listIds);
+        if (changed) {
+          await widget.controller.setTemplateLists(list.id, _templateLists);
+        }
+      } else if (!_sameIds(_templateIds, _initialTemplateIds)) {
+        await widget.controller.setAttachedTemplates(list.id, _templateIds);
+      }
+    } catch (e) {
+      debugPrint('[ListFormStage] Failed to save attachments: $e');
+      showAppToast(message: m.templates.attachFailed, kind: ToastKind.error);
+    }
+  }
+
+  static bool _sameIds(List<int> a, List<int> b) =>
+      a.length == b.length && a.toSet().containsAll(b);
 
   @override
   void dispose() {
@@ -125,6 +187,7 @@ class _ListFormStageState extends State<ListFormStage> {
           defaultRrule: rrule,
           defaultRepeatFromCompletion: repeatFromCompletion,
         );
+        await _saveAttachments(existing);
       } else {
         final fresh = await widget.controller.createList(
           kind: widget.kind,
@@ -135,6 +198,7 @@ class _ListFormStageState extends State<ListFormStage> {
           defaultRrule: rrule,
           defaultRepeatFromCompletion: repeatFromCompletion,
         );
+        await _saveAttachments(fresh);
         if (!mounted) return;
         await widget.controller.selectList(fresh);
       }
@@ -311,6 +375,23 @@ class _ListFormStageState extends State<ListFormStage> {
                         onChanged: () => setState(() {}),
                       ),
                     ],
+                  ],
+                  if (_attachmentsReady) ...[
+                    const SizedBox(height: 16),
+                    if ((widget.existing?.kind ?? widget.kind) ==
+                        ListKind.template)
+                      TemplateListsField(
+                        controller: widget.controller,
+                        value: _templateLists,
+                        onChanged: (v) => setState(() => _templateLists = v),
+                      )
+                    else
+                      ListTemplatesField(
+                        controller: widget.controller,
+                        templateIds: _templateIds,
+                        everyListTemplateIds: _everyListTemplateIds,
+                        onChanged: (ids) => setState(() => _templateIds = ids),
+                      ),
                   ],
                   if (_managesItemDefaults && widget.existing != null) ...[
                     const SizedBox(height: 16),

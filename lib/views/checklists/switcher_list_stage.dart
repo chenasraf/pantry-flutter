@@ -12,6 +12,7 @@ import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/checklists_controller.dart';
 
+import 'apply_template_view.dart';
 import 'switcher_widgets.dart';
 
 class ListStage extends StatelessWidget {
@@ -195,6 +196,9 @@ class ListStage extends StatelessWidget {
                         onArchive: canArchiveLists
                             ? () => _archiveList(context, list)
                             : null,
+                        onApply: controller.canApplyTemplate(list)
+                            ? () => showApplyTemplate(context, controller, list)
+                            : null,
                       ),
                     );
                   },
@@ -226,6 +230,9 @@ class ListStage extends StatelessWidget {
                           : null,
                       onArchive: canArchiveLists
                           ? () => _archiveList(context, list)
+                          : null,
+                      onApply: controller.canApplyTemplate(list)
+                          ? () => showApplyTemplate(context, controller, list)
                           : null,
                     );
                   },
@@ -402,6 +409,7 @@ class _ListTile extends StatelessWidget {
   final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onArchive;
+  final VoidCallback? onApply;
   final int? dragIndex;
   final bool showOverflow;
 
@@ -414,9 +422,14 @@ class _ListTile extends StatelessWidget {
     this.onDuplicate,
     this.onRemove,
     this.onArchive,
+    this.onApply,
     this.dragIndex,
     this.showOverflow = false,
   });
+
+  String get _applyLabel => list.kind == ListKind.template
+      ? m.templates.applyToList
+      : m.templates.applyTemplate;
 
   String get _editLabel => ServerFeature.listKinds
       ? list.kind.strings.editTitle
@@ -430,7 +443,8 @@ class _ListTile extends StatelessWidget {
       onEdit != null ||
       onDuplicate != null ||
       onRemove != null ||
-      onArchive != null;
+      onArchive != null ||
+      onApply != null;
 
   /// A stamped list with open items reads as its item count: the stamp records
   /// the last sign-off, and the switcher's job is showing what still needs
@@ -523,6 +537,7 @@ class _ListTile extends StatelessWidget {
                 onSelected: (v) {
                   if (v == 'edit') onEdit?.call();
                   if (v == 'duplicate') onDuplicate?.call();
+                  if (v == 'apply') onApply?.call();
                   if (v == 'archive') onArchive?.call();
                   if (v == 'remove') onRemove?.call();
                 },
@@ -546,6 +561,17 @@ class _ListTile extends StatelessWidget {
                           const Icon(Icons.copy_outlined, size: 18),
                           const SizedBox(width: 10),
                           Text(m.checklists.duplicateList),
+                        ],
+                      ),
+                    ),
+                  if (onApply != null)
+                    PopupMenuItem<String>(
+                      value: 'apply',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.playlist_add, size: 18),
+                          const SizedBox(width: 10),
+                          Text(_applyLabel),
                         ],
                       ),
                     ),
@@ -605,10 +631,12 @@ class _ListTile extends StatelessWidget {
       onDuplicate: onDuplicate,
       onRemove: onRemove,
       onArchive: onArchive,
+      onApply: onApply,
       editLabel: _editLabel,
       duplicateLabel: m.checklists.duplicateList,
       removeLabel: _removeLabel,
       archiveLabel: m.checklists.archiveList,
+      applyLabel: _applyLabel,
       child: interactive,
     );
   }

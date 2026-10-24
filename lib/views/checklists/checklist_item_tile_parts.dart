@@ -13,6 +13,7 @@ import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/label_icons.dart';
 import 'package:pantry_core/utils/rrule.dart';
@@ -113,6 +114,9 @@ class ChecklistTileRowContent extends StatelessWidget {
   /// Suggestion drawn from the archive: adds the trailing "Archived" badge.
   final bool archived;
 
+  /// Suggestion drawn from templates: adds a trailing badge naming them.
+  final List<String>? fromTemplates;
+
   /// Whether the item can be checked off at all. Template and inventory items
   /// can't, so their rows have no checkbox.
   final bool checkable;
@@ -142,6 +146,7 @@ class ChecklistTileRowContent extends StatelessWidget {
     this.pendingImage,
     this.suggestion = false,
     this.archived = false,
+    this.fromTemplates,
     this.checkable = true,
   });
 
@@ -307,6 +312,31 @@ class ChecklistTileRowContent extends StatelessWidget {
                       label: m.checklists.reuse.archivedBadge,
                       textColor: cs.onSurfaceVariant,
                       background: cs.surfaceContainerHighest,
+                    ),
+                  ],
+                  if (suggestion && (fromTemplates?.isNotEmpty ?? false)) ...[
+                    const SizedBox(width: 10),
+                    // A row can come from several templates; their names
+                    // shorten rather than squeeze the item's own.
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 160),
+                      child: Semantics(
+                        label: m.templates.fromTemplates(
+                          fromTemplates!.join(', '),
+                        ),
+                        excludeSemantics: true,
+                        child: EntityChip(
+                          leading: Icon(
+                            EntityIcons.templates,
+                            size: 13,
+                            color: cs.onSurfaceVariant,
+                          ),
+                          label: fromTemplates!.join(', '),
+                          maxLines: 1,
+                          textColor: cs.onSurfaceVariant,
+                          background: cs.surfaceContainerHighest,
+                        ),
+                      ),
                     ),
                   ],
                   if (checkboxAtEnd && showLeading) leadingControl,

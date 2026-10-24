@@ -79,6 +79,7 @@ class Messages {
   LabelsMessages get labels => LabelsMessages(this);
   ChecklistsMessages get checklists => ChecklistsMessages(this);
   ListKindsMessages get listKinds => ListKindsMessages(this);
+  TemplatesMessages get templates => TemplatesMessages(this);
   NotesWallMessages get notesWall => NotesWallMessages(this);
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
   ShoppingMessages get shopping => ShoppingMessages(this);
@@ -5184,6 +5185,214 @@ class TemplateListKindsMessages {
   String get listUnarchived => """Template unarchived""";
 }
 
+class TemplatesMessages {
+  final Messages _parent;
+  const TemplatesMessages(this._parent);
+
+  /// ```dart
+  /// "Suggestions"
+  /// ```
+  String get suggestionsHeader => """Suggestions""";
+
+  /// ```dart
+  /// "From templates: $names"
+  /// ```
+  String fromTemplates(String names) => """From templates: $names""";
+
+  /// ```dart
+  /// "Added "$name" from a template"
+  /// ```
+  String addedFromTemplate(String name) => """Added "$name" from a template""";
+
+  /// ```dart
+  /// "Could not add the item from the template"
+  /// ```
+  String get drawFailed => """Could not add the item from the template""";
+
+  /// ```dart
+  /// "Templates:"
+  /// ```
+  String get attachedLabel => """Templates:""";
+
+  /// ```dart
+  /// "No templates"
+  /// ```
+  String get attachedPlaceholder => """No templates""";
+
+  /// ```dart
+  /// "Typing a new item suggests matching items from these templates."
+  /// ```
+  String get attachedHint =>
+      """Typing a new item suggests matching items from these templates.""";
+
+  /// ```dart
+  /// "Typing a new item suggests matching items from these templates, and from $names, which every list uses."
+  /// ```
+  String attachedEveryListHint(String names) =>
+      """Typing a new item suggests matching items from these templates, and from $names, which every list uses.""";
+
+  /// ```dart
+  /// "Suggest in:"
+  /// ```
+  String get suggestInLabel => """Suggest in:""";
+
+  /// ```dart
+  /// "Every list"
+  /// ```
+  String get everyList => """Every list""";
+
+  /// ```dart
+  /// "No lists"
+  /// ```
+  String get suggestInPlaceholder => """No lists""";
+
+  /// ```dart
+  /// "Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later."
+  /// ```
+  String get suggestInHint =>
+      """Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later.""";
+
+  /// ```dart
+  /// "$list ($kind)"
+  /// ```
+  String listWithKind(String list, String kind) => """$list ($kind)""";
+
+  /// ```dart
+  /// "Could not save the attached templates"
+  /// ```
+  String get attachFailed => """Could not save the attached templates""";
+
+  /// ```dart
+  /// "Fill template items from these defaults"
+  /// ```
+  String get fillLabel => """Fill template items from these defaults""";
+
+  /// ```dart
+  /// "When an item is added from a template, the details it leaves empty start with the values above. Each person can override this in their personal settings."
+  /// ```
+  String get fillHint =>
+      """When an item is added from a template, the details it leaves empty start with the values above. Each person can override this in their personal settings.""";
+
+  /// ```dart
+  /// "Fill template items from item defaults"
+  /// ```
+  String get fillPrefLabel => """Fill template items from item defaults""";
+
+  /// ```dart
+  /// "When you add an item from a template, fill the details it leaves empty from the list's item defaults. Each list can switch this off in its item defaults."
+  /// ```
+  String get fillPrefHint =>
+      """When you add an item from a template, fill the details it leaves empty from the list's item defaults. Each list can switch this off in its item defaults.""";
+  FillPrefNamesTemplatesMessages get fillPrefNames =>
+      FillPrefNamesTemplatesMessages(this);
+
+  /// ```dart
+  /// "Could not save the setting"
+  /// ```
+  String get fillPrefFailed => """Could not save the setting""";
+
+  /// ```dart
+  /// "Apply to list"
+  /// ```
+  String get applyToList => """Apply to list""";
+
+  /// ```dart
+  /// "Apply template"
+  /// ```
+  String get applyTemplate => """Apply template""";
+
+  /// ```dart
+  /// "Attached to this list"
+  /// ```
+  String get attachedTemplates => """Attached to this list""";
+
+  /// ```dart
+  /// "Other templates"
+  /// ```
+  String get otherTemplates => """Other templates""";
+
+  /// ```dart
+  /// "There are no checklists or inventories to apply this template to."
+  /// ```
+  String get noTargets =>
+      """There are no checklists or inventories to apply this template to.""";
+
+  /// ```dart
+  /// "This template has no items."
+  /// ```
+  String get noItems => """This template has no items.""";
+
+  /// ```dart
+  /// "Already on list"
+  /// ```
+  String get alreadyOnList => """Already on list""";
+
+  /// ```dart
+  /// "Copy the ticked items from $template into $list."
+  /// ```
+  String reviewSummary(String template, String list) =>
+      """Copy the ticked items from $template into $list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Apply 1 item', many: 'Apply $count items')}"
+  /// ```
+  String applyItems(int count) =>
+      """${_plural(count, one: 'Apply 1 item', many: 'Apply $count items')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Added 1 item to $list', many: 'Added $count items to $list')}"
+  /// ```
+  String appliedAdded(int count, String list) =>
+      """${_plural(count, one: 'Added 1 item to $list', many: 'Added $count items to $list')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item was already on $list and was brought back', many: '$count items were already on $list and were brought back')}"
+  /// ```
+  String appliedReused(int count, String list) =>
+      """${_plural(count, one: '1 item was already on $list and was brought back', many: '$count items were already on $list and were brought back')}""";
+
+  /// ```dart
+  /// "$list: $added added, $reused brought back"
+  /// ```
+  String appliedMixed(String list, int added, int reused) =>
+      """$list: $added added, $reused brought back""";
+
+  /// ```dart
+  /// "Could not apply the template"
+  /// ```
+  String get applyFailed => """Could not apply the template""";
+
+  /// ```dart
+  /// "Could not load the templates"
+  /// ```
+  String get loadFailed => """Could not load the templates""";
+
+  /// ```dart
+  /// "Back"
+  /// ```
+  String get back => """Back""";
+}
+
+class FillPrefNamesTemplatesMessages {
+  final TemplatesMessages _parent;
+  const FillPrefNamesTemplatesMessages(this._parent);
+
+  /// ```dart
+  /// "Follow each list"
+  /// ```
+  String get list => """Follow each list""";
+
+  /// ```dart
+  /// "Always fill"
+  /// ```
+  String get always => """Always fill""";
+
+  /// ```dart
+  /// "Never fill"
+  /// ```
+  String get never => """Never fill""";
+}
+
 class NotesWallMessages {
   final Messages _parent;
   const NotesWallMessages(this._parent);
@@ -8744,6 +8953,39 @@ Password: pantry-rocks""",
   """listKinds.template.listMovedToTrash""": """Template moved to trash""",
   """listKinds.template.listArchived""": """Template archived""",
   """listKinds.template.listUnarchived""": """Template unarchived""",
+  """templates.suggestionsHeader""": """Suggestions""",
+  """templates.drawFailed""": """Could not add the item from the template""",
+  """templates.attachedLabel""": """Templates:""",
+  """templates.attachedPlaceholder""": """No templates""",
+  """templates.attachedHint""":
+      """Typing a new item suggests matching items from these templates.""",
+  """templates.suggestInLabel""": """Suggest in:""",
+  """templates.everyList""": """Every list""",
+  """templates.suggestInPlaceholder""": """No lists""",
+  """templates.suggestInHint""":
+      """Typing a new item on these lists suggests matching items from this template. Selecting "Every list" includes lists made later.""",
+  """templates.attachFailed""": """Could not save the attached templates""",
+  """templates.fillLabel""": """Fill template items from these defaults""",
+  """templates.fillHint""":
+      """When an item is added from a template, the details it leaves empty start with the values above. Each person can override this in their personal settings.""",
+  """templates.fillPrefLabel""": """Fill template items from item defaults""",
+  """templates.fillPrefHint""":
+      """When you add an item from a template, fill the details it leaves empty from the list's item defaults. Each list can switch this off in its item defaults.""",
+  """templates.fillPrefNames.list""": """Follow each list""",
+  """templates.fillPrefNames.always""": """Always fill""",
+  """templates.fillPrefNames.never""": """Never fill""",
+  """templates.fillPrefFailed""": """Could not save the setting""",
+  """templates.applyToList""": """Apply to list""",
+  """templates.applyTemplate""": """Apply template""",
+  """templates.attachedTemplates""": """Attached to this list""",
+  """templates.otherTemplates""": """Other templates""",
+  """templates.noTargets""":
+      """There are no checklists or inventories to apply this template to.""",
+  """templates.noItems""": """This template has no items.""",
+  """templates.alreadyOnList""": """Already on list""",
+  """templates.applyFailed""": """Could not apply the template""",
+  """templates.loadFailed""": """Could not load the templates""",
+  """templates.back""": """Back""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",
   """notesWall.saveFailed""": """Failed to save note.""",
