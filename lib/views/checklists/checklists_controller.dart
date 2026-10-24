@@ -9,6 +9,7 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/label.dart' as models;
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/member.dart';
 import 'package:pantry_core/models/store.dart' as models;
@@ -31,6 +32,7 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'checklists_ordering.dart';
 export 'checklists_ordering.dart';
+export 'package:pantry_core/models/list_kind.dart';
 
 part 'checklists_controller.batch.dart';
 part 'checklists_controller.item_crud.dart';
@@ -168,11 +170,52 @@ class ChecklistsController extends ChangeNotifier {
     super.notifyListeners();
   }
 
+  /// Active lists of every kind.
   List<ChecklistList> _lists = [];
   List<ChecklistList> get lists => _lists;
 
+  List<ChecklistList> listsOfKind(ListKind kind) => [
+    for (final l in _lists)
+      if (l.kind == kind) l,
+  ];
+
   ChecklistList? _currentList;
   ChecklistList? get currentList => _currentList;
+
+  /// The kind whose section is open. Follows the current list, and outlives it
+  /// when the last list of a kind is removed, so the section shows its empty
+  /// state instead of jumping to another kind.
+  ListKind _kind = ListKind.checklist;
+  ListKind get kind => _currentList?.kind ?? _kind;
+
+  /// Whether the open section's items are checked off, recur and shop.
+  bool get isChecklistKind => kind.isChecklist;
+
+  /// Opens [kind]'s section on its first list, or on its empty state.
+  Future<void> selectKind(ListKind kind) async {
+    if (kind == this.kind) return;
+    final first = sortedListsOfKind(kind).firstOrNull;
+    if (first != null) {
+      await selectList(first);
+      return;
+    }
+    _kind = kind;
+    _currentList = null;
+    _checklistService.selectedListId = null;
+    _items = [];
+    _isLoading = false;
+    _isRefreshing = false;
+    _error = null;
+    _isTrashMode = false;
+    _isArchiveMode = false;
+    exitSelection();
+    notifyListeners();
+  }
+
+  /// The list to land on once [removed] leaves the active index: another list
+  /// of the same kind, so the section stays put.
+  ChecklistList? _nextAfterRemoving(ChecklistList removed) =>
+      sortedListsOfKind(removed.kind).firstOrNull;
 
   List<ListItem> _items = [];
   List<ListItem> get items => _items;
@@ -265,6 +308,9 @@ class ChecklistsController extends ChangeNotifier {
 
   List<ChecklistList> get sortedLists =>
       ChecklistService.sortLists(_lists, _listSort);
+
+  List<ChecklistList> sortedListsOfKind(ListKind kind) =>
+      ChecklistService.sortLists(listsOfKind(kind), _listSort);
 
   bool _showAddedBy = false;
   bool get showAddedBy => _showAddedBy;
@@ -443,7 +489,7 @@ class ChecklistsController extends ChangeNotifier {
 
     try {
       final results = await Future.wait([
-        _checklistService.getLists(houseId),
+        _checklistService.getListsOfEveryKind(houseId),
         _categoryService.getCategories(houseId),
       ]);
 
@@ -454,7 +500,7 @@ class ChecklistsController extends ChangeNotifier {
           pending: _sync.pendingListRecordIds(houseId),
         ),
       );
-      _checklistService.cacheLists(houseId, _lists);
+      _checklistService.cacheListsOfEveryKind(houseId, _lists);
 
       final cats = results[1] as List<models.Category>;
       _categories = {for (final c in cats) c.id: c};
@@ -545,14 +591,21 @@ class ChecklistsController extends ChangeNotifier {
           // flicker the per-list view in between refreshes.
           await selectList(allListsSentinel(houseId));
         } else {
-          final target = targetId != null
-              ? _lists.cast<ChecklistList?>().firstWhere(
-                      (l) => l!.id == targetId,
-                      orElse: () => null,
-                    ) ??
-                    _lists.first
-              : _lists.first;
-          await selectList(target);
+          if (!ServerFeature.listKinds) _kind = ListKind.checklist;
+          final target =
+              _lists.where((l) => l.id == targetId).firstOrNull ??
+              sortedListsOfKind(_kind).firstOrNull ??
+              // An emptied template or inventory section stays open on its
+              // empty state.
+              (_kind.isChecklist ? _lists.first : null);
+          if (target != null) {
+            await selectList(target);
+          } else {
+            _currentList = null;
+            _items = [];
+            _isLoading = false;
+            notifyListeners();
+          }
         }
       } else {
         _isLoading = false;
@@ -708,7 +761,7 @@ class ChecklistsController extends ChangeNotifier {
       _labels = {for (final l in cachedLabels) l.id: l};
     }
 
-    final cachedLists = _checklistService.getCachedLists(houseId);
+    final cachedLists = _checklistService.getCachedListsOfEveryKind(houseId);
     if (cachedLists != null && _lists.isEmpty) {
       _lists = _applyLocalListPrefs(cachedLists);
       if (_lists.isNotEmpty) {
@@ -751,6 +804,7 @@ class ChecklistsController extends ChangeNotifier {
   }) async {
     final previousListId = _currentList?.id;
     _currentList = list;
+    _kind = list.kind;
     _checklistService.selectedListId = list.id;
     if (ServerFeature.listItemSort) {
       _sortBy = _checklistService.cachedItemSort(houseId, list.id);
@@ -999,6 +1053,7 @@ class ChecklistsController extends ChangeNotifier {
   /// endpoint's capability flag, plus a writable non-meta list and the
   /// check-items permission.
   bool get canUncheckAll =>
+      isChecklistKind &&
       ServerFeature.uncheckAll &&
       !isMetaMode &&
       isCurrentListWritable &&
@@ -1008,6 +1063,7 @@ class ChecklistsController extends ChangeNotifier {
   /// should be offered. A writable non-meta list in the active view, plus the
   /// delete-items permission.
   bool get canRemoveAllDone =>
+      isChecklistKind &&
       !isMetaMode &&
       !isSoftView &&
       isCurrentListWritable &&
@@ -1017,6 +1073,7 @@ class ChecklistsController extends ChangeNotifier {
   /// should be offered. Same gate as the per-item archive action, on a
   /// writable non-meta list in the active view.
   bool get canArchiveAllDone =>
+      isChecklistKind &&
       ServerFeature.itemArchive &&
       !isMetaMode &&
       !isSoftView &&
@@ -1115,7 +1172,7 @@ class ChecklistsController extends ChangeNotifier {
             if (i != -1) {
               _lists[i] = reconciled;
               if (_currentList?.id == tempId) _currentList = reconciled;
-              _checklistService.cacheLists(houseId, _lists);
+              _checklistService.cacheListsOfEveryKind(houseId, _lists);
               notifyListeners();
               return;
             }
@@ -1124,7 +1181,7 @@ class ChecklistsController extends ChangeNotifier {
           if (j != -1) {
             _lists[j] = reconciled;
             if (_currentList?.id == entity.id) _currentList = reconciled;
-            _checklistService.cacheLists(houseId, _lists);
+            _checklistService.cacheListsOfEveryKind(houseId, _lists);
             notifyListeners();
           }
         }

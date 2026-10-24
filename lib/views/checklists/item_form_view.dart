@@ -114,6 +114,13 @@ class _ItemFormViewState extends State<ItemFormView> {
     return current.activeItemDefaults;
   }
 
+  /// Inventory items don't recur, so their form has no recurrence section.
+  bool get _hasRecurrence {
+    final listId = _effectiveListId;
+    return listId == null ||
+        ChecklistService.instance.kindOf(listId).hasRecurrence;
+  }
+
   List<models.Category> get _categories =>
       widget.controller.categoriesForList(_effectiveListId);
   List<models.Store> get _stores => widget.controller.sortedStores;
@@ -613,16 +620,18 @@ class _ItemFormViewState extends State<ItemFormView> {
                     onChanged: (values) => _customFields = values,
                   ),
                 ],
-                const SizedBox(height: 16),
-                SectionLabel(text: m.checklists.itemTypes.label),
-                const SizedBox(height: 10),
-                LifecyclePicker(value: _lifecycle, onChanged: _setLifecycle),
-                if (_lifecycle == ItemLifecycle.recurring) ...[
-                  const SizedBox(height: 8),
-                  RecurrenceInline(
-                    state: _recurrence,
-                    onChanged: () => setState(() {}),
-                  ),
+                if (_hasRecurrence) ...[
+                  const SizedBox(height: 16),
+                  SectionLabel(text: m.checklists.itemTypes.label),
+                  const SizedBox(height: 10),
+                  LifecyclePicker(value: _lifecycle, onChanged: _setLifecycle),
+                  if (_lifecycle == ItemLifecycle.recurring) ...[
+                    const SizedBox(height: 8),
+                    RecurrenceInline(
+                      state: _recurrence,
+                      onChanged: () => setState(() {}),
+                    ),
+                  ],
                 ],
                 const SizedBox(height: 16),
                 SectionLabel(text: f.image),

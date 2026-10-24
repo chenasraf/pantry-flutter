@@ -79,6 +79,7 @@ class MessagesHe extends Messages {
   StoresMessagesHe get stores => StoresMessagesHe(this);
   LabelsMessagesHe get labels => LabelsMessagesHe(this);
   ChecklistsMessagesHe get checklists => ChecklistsMessagesHe(this);
+  ListKindsMessagesHe get listKinds => ListKindsMessagesHe(this);
   NotesWallMessagesHe get notesWall => NotesWallMessagesHe(this);
   PhotoBoardMessagesHe get photoBoard => PhotoBoardMessagesHe(this);
   ShoppingMessagesHe get shopping => ShoppingMessagesHe(this);
@@ -465,6 +466,16 @@ class NavMessagesHe extends NavMessages {
   /// "רשימה"
   /// ```
   String get checklist => """רשימה""";
+
+  /// ```dart
+  /// "רשימות"
+  /// ```
+  String get lists => """רשימות""";
+
+  /// ```dart
+  /// "רשימה"
+  /// ```
+  String get list => """רשימה""";
 
   /// ```dart
   /// "לוח תמונות"
@@ -4825,6 +4836,369 @@ class MarkdownChecklistsMessagesHe extends MarkdownChecklistsMessages {
       """${_plural(count, one: 'יובא פריט אחד', many: 'יובאו $count פריטים')}""";
 }
 
+class ListKindsMessagesHe extends ListKindsMessages {
+  final MessagesHe _parent;
+  const ListKindsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "שכפל בתור:"
+  /// ```
+  String get duplicateAs => """שכפל בתור:""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד דולג כי אין לך הרשאה לערוך אותו.', many: '$count פריטים דולגו כי אין לך הרשאה לערוך אותם.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: 'פריט אחד דולג כי אין לך הרשאה לערוך אותו.', many: '$count פריטים דולגו כי אין לך הרשאה לערוך אותם.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'לא ניתן היה לבטל את הסימון של פריט אחד.', many: 'לא ניתן היה לבטל את הסימון של $count פריטים.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: 'לא ניתן היה לבטל את הסימון של פריט אחד.', many: 'לא ניתן היה לבטל את הסימון של $count פריטים.')}""";
+  ChecklistListKindsMessagesHe get checklist =>
+      ChecklistListKindsMessagesHe(this);
+  InventoryListKindsMessagesHe get inventory =>
+      InventoryListKindsMessagesHe(this);
+  TemplateListKindsMessagesHe get template => TemplateListKindsMessagesHe(this);
+}
+
+class ChecklistListKindsMessagesHe extends ChecklistListKindsMessages {
+  final ListKindsMessagesHe _parent;
+  const ChecklistListKindsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "רשימות סימון"
+  /// ```
+  String get title => """רשימות סימון""";
+
+  /// ```dart
+  /// "רשימת סימון"
+  /// ```
+  String get name => """רשימת סימון""";
+
+  /// ```dart
+  /// "רשימת סימון חדשה"
+  /// ```
+  String get newList => """רשימת סימון חדשה""";
+
+  /// ```dart
+  /// "צוררשימת סימון"
+  /// ```
+  String get createTitle => """צוררשימת סימון""";
+
+  /// ```dart
+  /// "ערוךרשימת סימון"
+  /// ```
+  String get editTitle => """ערוךרשימת סימון""";
+
+  /// ```dart
+  /// "שכפלרשימת סימון"
+  /// ```
+  String get duplicateTitle => """שכפלרשימת סימון""";
+
+  /// ```dart
+  /// "לא ניתן היה לשכפל את רשימת הסימון"
+  /// ```
+  String get duplicateFailed => """לא ניתן היה לשכפל את רשימת הסימון""";
+
+  /// ```dart
+  /// "פעולות רשימת סימון"
+  /// ```
+  String get listMenu => """פעולות רשימת סימון""";
+
+  /// ```dart
+  /// "הסררשימת סימון"
+  /// ```
+  String get deleteDialogTitle => """הסררשימת סימון""";
+
+  /// ```dart
+  /// "אין רשימות סימון עדיין"
+  /// ```
+  String get emptyTitle => """אין רשימות סימון עדיין""";
+
+  /// ```dart
+  /// "צור את רשימת הסימון הראשונה שלך כדי להתחיל להוסיף פריטים."
+  /// ```
+  String get emptyBody =>
+      """צור את רשימת הסימון הראשונה שלך כדי להתחיל להוסיף פריטים.""";
+
+  /// ```dart
+  /// "אשפת רשימות סימון"
+  /// ```
+  String get trashTitle => """אשפת רשימות סימון""";
+
+  /// ```dart
+  /// "רשימות סימון שנמחקו יופיעו כאן."
+  /// ```
+  String get trashEmptyBody => """רשימות סימון שנמחקו יופיעו כאן.""";
+
+  /// ```dart
+  /// "רשימות סימון בארכיון"
+  /// ```
+  String get archiveTitle => """רשימות סימון בארכיון""";
+
+  /// ```dart
+  /// "אין רשימות סימון בארכיון"
+  /// ```
+  String get archiveEmptyTitle => """אין רשימות סימון בארכיון""";
+
+  /// ```dart
+  /// "רשימות סימון שהועברו לארכיון יופיעו כאן."
+  /// ```
+  String get archiveEmptyBody => """רשימות סימון שהועברו לארכיון יופיעו כאן.""";
+
+  /// ```dart
+  /// "פעולה זו תמחק לצמיתות את כל רשימות הסימון שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get emptyTrashBody =>
+      """פעולה זו תמחק לצמיתות את כל רשימות הסימון שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "רשימת הסימון שוחזרה"
+  /// ```
+  String get listRestored => """רשימת הסימון שוחזרה""";
+
+  /// ```dart
+  /// "רשימת הסימון הועברה לאשפה"
+  /// ```
+  String get listMovedToTrash => """רשימת הסימון הועברה לאשפה""";
+
+  /// ```dart
+  /// "רשימת הסימון הועברה לארכיון"
+  /// ```
+  String get listArchived => """רשימת הסימון הועברה לארכיון""";
+
+  /// ```dart
+  /// "רשימת הסימון הוצאה מהארכיון"
+  /// ```
+  String get listUnarchived => """רשימת הסימון הוצאה מהארכיון""";
+}
+
+class InventoryListKindsMessagesHe extends InventoryListKindsMessages {
+  final ListKindsMessagesHe _parent;
+  const InventoryListKindsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "רשימות מלאי"
+  /// ```
+  String get title => """רשימות מלאי""";
+
+  /// ```dart
+  /// "רשימת מלאי"
+  /// ```
+  String get name => """רשימת מלאי""";
+
+  /// ```dart
+  /// "רשימת מלאי חדשה"
+  /// ```
+  String get newList => """רשימת מלאי חדשה""";
+
+  /// ```dart
+  /// "צוררשימת מלאי"
+  /// ```
+  String get createTitle => """צוררשימת מלאי""";
+
+  /// ```dart
+  /// "ערוךרשימת מלאי"
+  /// ```
+  String get editTitle => """ערוךרשימת מלאי""";
+
+  /// ```dart
+  /// "שכפלרשימת מלאי"
+  /// ```
+  String get duplicateTitle => """שכפלרשימת מלאי""";
+
+  /// ```dart
+  /// "לא ניתן היה לשכפל את רשימת המלאי"
+  /// ```
+  String get duplicateFailed => """לא ניתן היה לשכפל את רשימת המלאי""";
+
+  /// ```dart
+  /// "פעולות רשימת מלאי"
+  /// ```
+  String get listMenu => """פעולות רשימת מלאי""";
+
+  /// ```dart
+  /// "הסררשימת מלאי"
+  /// ```
+  String get deleteDialogTitle => """הסררשימת מלאי""";
+
+  /// ```dart
+  /// "אין רשימות מלאי עדיין"
+  /// ```
+  String get emptyTitle => """אין רשימות מלאי עדיין""";
+
+  /// ```dart
+  /// "צור את רשימת המלאי הראשונה שלך כדי להתחיל להוסיף פריטים."
+  /// ```
+  String get emptyBody =>
+      """צור את רשימת המלאי הראשונה שלך כדי להתחיל להוסיף פריטים.""";
+
+  /// ```dart
+  /// "אשפת רשימות מלאי"
+  /// ```
+  String get trashTitle => """אשפת רשימות מלאי""";
+
+  /// ```dart
+  /// "רשימות מלאי שנמחקו יופיעו כאן."
+  /// ```
+  String get trashEmptyBody => """רשימות מלאי שנמחקו יופיעו כאן.""";
+
+  /// ```dart
+  /// "רשימות מלאי בארכיון"
+  /// ```
+  String get archiveTitle => """רשימות מלאי בארכיון""";
+
+  /// ```dart
+  /// "אין רשימות מלאי בארכיון"
+  /// ```
+  String get archiveEmptyTitle => """אין רשימות מלאי בארכיון""";
+
+  /// ```dart
+  /// "רשימות מלאי שהועברו לארכיון יופיעו כאן."
+  /// ```
+  String get archiveEmptyBody => """רשימות מלאי שהועברו לארכיון יופיעו כאן.""";
+
+  /// ```dart
+  /// "פעולה זו תמחק לצמיתות את כל רשימות המלאי שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get emptyTrashBody =>
+      """פעולה זו תמחק לצמיתות את כל רשימות המלאי שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "רשימת המלאי שוחזרה"
+  /// ```
+  String get listRestored => """רשימת המלאי שוחזרה""";
+
+  /// ```dart
+  /// "רשימת המלאי הועברה לאשפה"
+  /// ```
+  String get listMovedToTrash => """רשימת המלאי הועברה לאשפה""";
+
+  /// ```dart
+  /// "רשימת המלאי הועברה לארכיון"
+  /// ```
+  String get listArchived => """רשימת המלאי הועברה לארכיון""";
+
+  /// ```dart
+  /// "רשימת המלאי הוצאה מהארכיון"
+  /// ```
+  String get listUnarchived => """רשימת המלאי הוצאה מהארכיון""";
+}
+
+class TemplateListKindsMessagesHe extends TemplateListKindsMessages {
+  final ListKindsMessagesHe _parent;
+  const TemplateListKindsMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "תבניות"
+  /// ```
+  String get title => """תבניות""";
+
+  /// ```dart
+  /// "תבנית"
+  /// ```
+  String get name => """תבנית""";
+
+  /// ```dart
+  /// "תבנית חדשה"
+  /// ```
+  String get newList => """תבנית חדשה""";
+
+  /// ```dart
+  /// "צורתבנית"
+  /// ```
+  String get createTitle => """צורתבנית""";
+
+  /// ```dart
+  /// "ערוךתבנית"
+  /// ```
+  String get editTitle => """ערוךתבנית""";
+
+  /// ```dart
+  /// "שכפלתבנית"
+  /// ```
+  String get duplicateTitle => """שכפלתבנית""";
+
+  /// ```dart
+  /// "לא ניתן היה לשכפל את התבנית"
+  /// ```
+  String get duplicateFailed => """לא ניתן היה לשכפל את התבנית""";
+
+  /// ```dart
+  /// "פעולות תבנית"
+  /// ```
+  String get listMenu => """פעולות תבנית""";
+
+  /// ```dart
+  /// "הסרתבנית"
+  /// ```
+  String get deleteDialogTitle => """הסרתבנית""";
+
+  /// ```dart
+  /// "אין תבניות עדיין"
+  /// ```
+  String get emptyTitle => """אין תבניות עדיין""";
+
+  /// ```dart
+  /// "צור את התבנית הראשונה שלך כדי להתחיל להוסיף פריטים."
+  /// ```
+  String get emptyBody =>
+      """צור את התבנית הראשונה שלך כדי להתחיל להוסיף פריטים.""";
+
+  /// ```dart
+  /// "אשפת תבניות"
+  /// ```
+  String get trashTitle => """אשפת תבניות""";
+
+  /// ```dart
+  /// "תבניות שנמחקו יופיעו כאן."
+  /// ```
+  String get trashEmptyBody => """תבניות שנמחקו יופיעו כאן.""";
+
+  /// ```dart
+  /// "תבניות בארכיון"
+  /// ```
+  String get archiveTitle => """תבניות בארכיון""";
+
+  /// ```dart
+  /// "אין תבניות בארכיון"
+  /// ```
+  String get archiveEmptyTitle => """אין תבניות בארכיון""";
+
+  /// ```dart
+  /// "תבניות שהועברו לארכיון יופיעו כאן."
+  /// ```
+  String get archiveEmptyBody => """תבניות שהועברו לארכיון יופיעו כאן.""";
+
+  /// ```dart
+  /// "פעולה זו תמחק לצמיתות את כל התבניות שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו."
+  /// ```
+  String get emptyTrashBody =>
+      """פעולה זו תמחק לצמיתות את כל התבניות שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""";
+
+  /// ```dart
+  /// "התבנית שוחזרה"
+  /// ```
+  String get listRestored => """התבנית שוחזרה""";
+
+  /// ```dart
+  /// "התבנית הועברה לאשפה"
+  /// ```
+  String get listMovedToTrash => """התבנית הועברה לאשפה""";
+
+  /// ```dart
+  /// "התבנית הועברה לארכיון"
+  /// ```
+  String get listArchived => """התבנית הועברה לארכיון""";
+
+  /// ```dart
+  /// "התבנית הוצאה מהארכיון"
+  /// ```
+  String get listUnarchived => """התבנית הוצאה מהארכיון""";
+}
+
 class NotesWallMessagesHe extends NotesWallMessages {
   final MessagesHe _parent;
   const NotesWallMessagesHe(this._parent) : super(_parent);
@@ -7450,6 +7824,8 @@ Map<String, String> get messagesHeMap => {
   """home.learnMore""": """למד עוד""",
   """nav.checklists""": """רשימות""",
   """nav.checklist""": """רשימה""",
+  """nav.lists""": """רשימות""",
+  """nav.list""": """רשימה""",
   """nav.photoBoard""": """לוח תמונות""",
   """nav.notesWall""": """קיר הערות""",
   """widget.chooseListsTitle""": """בחירת רשימות""",
@@ -8276,6 +8652,83 @@ Map<String, String> get messagesHeMap => {
   """checklists.markdown.reuseExisting""":
       """שימוש חוזר בפריטים קיימים במקום הוספת כפילויות""",
   """checklists.markdown.defaultFields""": """ערכים שיחולו על כל פריט מיובא""",
+  """listKinds.duplicateAs""": """שכפל בתור:""",
+  """listKinds.checklist.title""": """רשימות סימון""",
+  """listKinds.checklist.name""": """רשימת סימון""",
+  """listKinds.checklist.newList""": """רשימת סימון חדשה""",
+  """listKinds.checklist.createTitle""": """צוררשימת סימון""",
+  """listKinds.checklist.editTitle""": """ערוךרשימת סימון""",
+  """listKinds.checklist.duplicateTitle""": """שכפלרשימת סימון""",
+  """listKinds.checklist.duplicateFailed""":
+      """לא ניתן היה לשכפל את רשימת הסימון""",
+  """listKinds.checklist.listMenu""": """פעולות רשימת סימון""",
+  """listKinds.checklist.deleteDialogTitle""": """הסררשימת סימון""",
+  """listKinds.checklist.emptyTitle""": """אין רשימות סימון עדיין""",
+  """listKinds.checklist.emptyBody""":
+      """צור את רשימת הסימון הראשונה שלך כדי להתחיל להוסיף פריטים.""",
+  """listKinds.checklist.trashTitle""": """אשפת רשימות סימון""",
+  """listKinds.checklist.trashEmptyBody""":
+      """רשימות סימון שנמחקו יופיעו כאן.""",
+  """listKinds.checklist.archiveTitle""": """רשימות סימון בארכיון""",
+  """listKinds.checklist.archiveEmptyTitle""": """אין רשימות סימון בארכיון""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """רשימות סימון שהועברו לארכיון יופיעו כאן.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """פעולה זו תמחק לצמיתות את כל רשימות הסימון שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""",
+  """listKinds.checklist.listRestored""": """רשימת הסימון שוחזרה""",
+  """listKinds.checklist.listMovedToTrash""": """רשימת הסימון הועברה לאשפה""",
+  """listKinds.checklist.listArchived""": """רשימת הסימון הועברה לארכיון""",
+  """listKinds.checklist.listUnarchived""": """רשימת הסימון הוצאה מהארכיון""",
+  """listKinds.inventory.title""": """רשימות מלאי""",
+  """listKinds.inventory.name""": """רשימת מלאי""",
+  """listKinds.inventory.newList""": """רשימת מלאי חדשה""",
+  """listKinds.inventory.createTitle""": """צוררשימת מלאי""",
+  """listKinds.inventory.editTitle""": """ערוךרשימת מלאי""",
+  """listKinds.inventory.duplicateTitle""": """שכפלרשימת מלאי""",
+  """listKinds.inventory.duplicateFailed""":
+      """לא ניתן היה לשכפל את רשימת המלאי""",
+  """listKinds.inventory.listMenu""": """פעולות רשימת מלאי""",
+  """listKinds.inventory.deleteDialogTitle""": """הסררשימת מלאי""",
+  """listKinds.inventory.emptyTitle""": """אין רשימות מלאי עדיין""",
+  """listKinds.inventory.emptyBody""":
+      """צור את רשימת המלאי הראשונה שלך כדי להתחיל להוסיף פריטים.""",
+  """listKinds.inventory.trashTitle""": """אשפת רשימות מלאי""",
+  """listKinds.inventory.trashEmptyBody""":
+      """רשימות מלאי שנמחקו יופיעו כאן.""",
+  """listKinds.inventory.archiveTitle""": """רשימות מלאי בארכיון""",
+  """listKinds.inventory.archiveEmptyTitle""": """אין רשימות מלאי בארכיון""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """רשימות מלאי שהועברו לארכיון יופיעו כאן.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """פעולה זו תמחק לצמיתות את כל רשימות המלאי שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""",
+  """listKinds.inventory.listRestored""": """רשימת המלאי שוחזרה""",
+  """listKinds.inventory.listMovedToTrash""": """רשימת המלאי הועברה לאשפה""",
+  """listKinds.inventory.listArchived""": """רשימת המלאי הועברה לארכיון""",
+  """listKinds.inventory.listUnarchived""": """רשימת המלאי הוצאה מהארכיון""",
+  """listKinds.template.title""": """תבניות""",
+  """listKinds.template.name""": """תבנית""",
+  """listKinds.template.newList""": """תבנית חדשה""",
+  """listKinds.template.createTitle""": """צורתבנית""",
+  """listKinds.template.editTitle""": """ערוךתבנית""",
+  """listKinds.template.duplicateTitle""": """שכפלתבנית""",
+  """listKinds.template.duplicateFailed""": """לא ניתן היה לשכפל את התבנית""",
+  """listKinds.template.listMenu""": """פעולות תבנית""",
+  """listKinds.template.deleteDialogTitle""": """הסרתבנית""",
+  """listKinds.template.emptyTitle""": """אין תבניות עדיין""",
+  """listKinds.template.emptyBody""":
+      """צור את התבנית הראשונה שלך כדי להתחיל להוסיף פריטים.""",
+  """listKinds.template.trashTitle""": """אשפת תבניות""",
+  """listKinds.template.trashEmptyBody""": """תבניות שנמחקו יופיעו כאן.""",
+  """listKinds.template.archiveTitle""": """תבניות בארכיון""",
+  """listKinds.template.archiveEmptyTitle""": """אין תבניות בארכיון""",
+  """listKinds.template.archiveEmptyBody""":
+      """תבניות שהועברו לארכיון יופיעו כאן.""",
+  """listKinds.template.emptyTrashBody""":
+      """פעולה זו תמחק לצמיתות את כל התבניות שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.""",
+  """listKinds.template.listRestored""": """התבנית שוחזרה""",
+  """listKinds.template.listMovedToTrash""": """התבנית הועברה לאשפה""",
+  """listKinds.template.listArchived""": """התבנית הועברה לארכיון""",
+  """listKinds.template.listUnarchived""": """התבנית הוצאה מהארכיון""",
   """notesWall.noNotes""": """אין הערות עדיין.""",
   """notesWall.failedToLoad""": """טעינת ההערות נכשלה.""",
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",

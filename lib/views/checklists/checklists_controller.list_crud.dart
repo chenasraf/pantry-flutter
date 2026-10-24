@@ -1,13 +1,25 @@
 part of 'checklists_controller.dart';
 
 extension ChecklistsControllerListCrud on ChecklistsController {
-  Future<void> reorderLists(int oldIndex, int newIndex) async {
+  /// Moves a list within [kind]'s section. Sort order is shared by every kind,
+  /// so the section's lists trade places among the slots they already hold and
+  /// the other kinds keep theirs.
+  Future<void> reorderLists(
+    int oldIndex,
+    int newIndex, {
+    ListKind kind = ListKind.checklist,
+  }) async {
     if (_listSort != 'custom') return;
     if (oldIndex == newIndex) return;
 
-    final ordered = sortedLists;
-    final moved = ordered.removeAt(oldIndex);
-    ordered.insert(newIndex, moved);
+    final section = sortedListsOfKind(kind);
+    final moved = section.removeAt(oldIndex);
+    section.insert(newIndex, moved);
+    final queue = section.iterator;
+    final ordered = [
+      for (final l in sortedLists)
+        if (l.kind == kind && queue.moveNext()) queue.current else l,
+    ];
 
     final order = <Map<String, int>>[];
     for (var i = 0; i < ordered.length; i++) {
@@ -19,7 +31,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
       for (var i = 0; i < ordered.length; i++)
         byId[ordered[i].id]!.copyWith(sortOrder: i),
     ];
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
     notifyListeners();
 
     _sync.enqueue(
@@ -35,6 +47,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
   }
 
   Future<ChecklistList> createList({
+    ListKind kind = ListKind.checklist,
     required String name,
     String? description,
     String? icon,
@@ -59,6 +72,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
       icon: icon ?? 'list',
       color: color,
       sortOrder: _lists.length,
+      kind: kind,
       defaultRecurrenceMode: mode,
       defaultRecurrenceKind: recurrence.kind,
       defaultRrule: recurrence.rrule,
@@ -67,7 +81,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
       updatedAt: _now(),
     );
     _lists = [..._lists, synthetic];
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
     notifyListeners();
     _sync.enqueue(
       SyncOp(
@@ -77,6 +91,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
         houseId: houseId,
         tempEntityId: tempId,
         body: {
+          'kind': kind.wire,
           'name': name,
           'description': ?description,
           'icon': ?icon,
@@ -139,7 +154,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     );
     _lists = [for (final l in _lists) l.id == list.id ? optimistic : l];
     if (_currentList?.id == list.id) _currentList = optimistic;
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
     notifyListeners();
 
     _sync.enqueue(
@@ -221,7 +236,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
 
     _currentList = optimistic;
     _lists = [for (final l in _lists) l.id == optimistic.id ? optimistic : l];
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
     notifyListeners();
 
     _sync.enqueue(
@@ -251,7 +266,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     );
     _lists = [for (final l in _lists) l.id == listId ? optimistic : l];
     if (_currentList?.id == listId) _currentList = optimistic;
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
     notifyListeners();
 
     _sync.enqueue(
@@ -291,7 +306,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     final updated = list.copyWith(hideProgressHero: value);
     _currentList = updated;
     _lists = [for (final l in _lists) l.id == updated.id ? updated : l];
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
     notifyListeners();
   }
 
@@ -303,28 +318,44 @@ extension ChecklistsControllerListCrud on ChecklistsController {
       permissions.canCreateLists &&
       list.id > 0;
 
-  /// Copies [source] server-side and switches to the copy. Online only: the
-  /// server mints ids for the copied items and for any list-scoped categories,
-  /// labels and custom fields it duplicates, so there is nothing to apply
-  /// optimistically or replay from the sync queue.
+  /// Kinds [source] can be duplicated into: any kind on servers with
+  /// [ServerFeature.listKinds], otherwise only its own.
+  List<ListKind> duplicateKindsFor(ChecklistList source) =>
+      ServerFeature.listKinds ? ListKind.values : [source.kind];
+
+  /// Copies [source] server-side into a list of kind [as] (its own kind by
+  /// default) and switches to the copy, in that kind's section. Online only:
+  /// the server mints ids for the copied items and for any list-scoped
+  /// categories, labels and custom fields it duplicates, so there is nothing to
+  /// apply optimistically or replay from the sync queue.
   Future<ChecklistList> duplicateList(
     ChecklistList source, {
     required String name,
     required bool resetDone,
+    ListKind? as,
   }) async {
     if (!canDuplicateList(source)) {
       throw StateError('List ${source.id} cannot be duplicated');
     }
+    final target = as ?? source.kind;
     final created = _withLocalListPrefs(
-      await _checklistService.duplicateList(
-        houseId,
-        source.id,
-        name: name.trim(),
-        resetDone: resetDone,
-      ),
+      target == source.kind
+          ? await _checklistService.duplicateList(
+              houseId,
+              source.id,
+              name: name.trim(),
+              resetDone: resetDone,
+            )
+          : await _checklistService.duplicateListAs(
+              houseId,
+              source.id,
+              kind: target,
+              name: name.trim(),
+              resetDone: resetDone,
+            ),
     );
     _lists = [..._lists, created];
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
     notifyListeners();
     // The copied items point at the duplicated scoped rows, which none of the
     // caches have seen yet.
@@ -339,9 +370,13 @@ extension ChecklistsControllerListCrud on ChecklistsController {
 
   // -- Lists trash (the lists themselves) --
 
-  Future<void> loadTrashedLists() async {
+  /// Loads [kind]'s trash (the open section's by default) into [trashedLists].
+  Future<void> loadTrashedLists({ListKind? kind}) async {
     try {
-      _trashedLists = await _checklistService.getDeletedLists(houseId);
+      _trashedLists = await _checklistService.getDeletedLists(
+        houseId,
+        kind: kind ?? this.kind,
+      );
       notifyListeners();
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load trashed lists: $e');
@@ -351,9 +386,9 @@ extension ChecklistsControllerListCrud on ChecklistsController {
 
   Future<void> deleteList(ChecklistList list) async {
     _lists.removeWhere((l) => l.id == list.id);
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
     if (_currentList?.id == list.id) {
-      final next = _lists.isNotEmpty ? _lists.first : null;
+      final next = _nextAfterRemoving(list);
       if (next != null) {
         await selectList(next);
       } else {
@@ -382,7 +417,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     final exists = _lists.any((l) => l.id == list.id);
     if (!exists) {
       _lists = [..._lists, list];
-      _checklistService.cacheLists(houseId, _lists);
+      _checklistService.cacheListsOfEveryKind(houseId, _lists);
     }
     notifyListeners();
     _sync.enqueue(
@@ -392,6 +427,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
         op: SyncOpKind.restore,
         houseId: houseId,
         entityId: list.id,
+        body: {'kind': list.kind.wire},
         createdAt: _now(),
       ),
     );
@@ -407,12 +443,15 @@ extension ChecklistsControllerListCrud on ChecklistsController {
         op: SyncOpKind.permanentDelete,
         houseId: houseId,
         entityId: list.id,
+        body: {'kind': list.kind.wire},
         createdAt: _now(),
       ),
     );
   }
 
-  Future<void> emptyListsTrash() async {
+  /// Empties [kind]'s trash (the open section's by default).
+  Future<void> emptyListsTrash({ListKind? kind}) async {
+    kind ??= this.kind;
     _trashedLists = [];
     notifyListeners();
     _sync.enqueue(
@@ -421,6 +460,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
         entity: SyncEntity.checklistList,
         op: SyncOpKind.emptyTrash,
         houseId: houseId,
+        body: {'kind': kind.wire},
         createdAt: _now(),
       ),
     );
@@ -434,9 +474,14 @@ extension ChecklistsControllerListCrud on ChecklistsController {
   // archive/unarchive call the service directly (rather than the offline sync
   // queue the trash actions use) and reconcile the active index optimistically.
 
-  Future<void> loadArchivedLists() async {
+  /// Loads [kind]'s archive (the open section's by default) into
+  /// [archivedLists].
+  Future<void> loadArchivedLists({ListKind? kind}) async {
     try {
-      _archivedLists = await _checklistService.getArchivedLists(houseId);
+      _archivedLists = await _checklistService.getArchivedLists(
+        houseId,
+        kind: kind ?? this.kind,
+      );
       notifyListeners();
     } catch (e) {
       debugPrint('[ChecklistsController] Failed to load archived lists: $e');
@@ -447,9 +492,9 @@ extension ChecklistsControllerListCrud on ChecklistsController {
   Future<void> archiveList(ChecklistList list) async {
     // Optimistically drop it from the active index and step off it if current.
     _lists.removeWhere((l) => l.id == list.id);
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
     if (_currentList?.id == list.id) {
-      final next = _lists.isNotEmpty ? _lists.first : null;
+      final next = _nextAfterRemoving(list);
       if (next != null) {
         await selectList(next);
       } else {
@@ -466,7 +511,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
       // Roll the list back onto the active index so it isn't lost on failure.
       if (!_lists.any((l) => l.id == list.id)) {
         _lists = [..._lists, _withLocalListPrefs(list)];
-        _checklistService.cacheLists(houseId, _lists);
+        _checklistService.cacheListsOfEveryKind(houseId, _lists);
         notifyListeners();
       }
       rethrow;
@@ -478,7 +523,7 @@ extension ChecklistsControllerListCrud on ChecklistsController {
     final existed = _lists.any((l) => l.id == list.id);
     if (!existed) {
       _lists = [..._lists, _withLocalListPrefs(list)];
-      _checklistService.cacheLists(houseId, _lists);
+      _checklistService.cacheListsOfEveryKind(houseId, _lists);
     }
     notifyListeners();
     try {
@@ -488,14 +533,14 @@ extension ChecklistsControllerListCrud on ChecklistsController {
       if (i != -1) {
         _lists[i] = reconciled;
         if (_currentList?.id == list.id) _currentList = reconciled;
-        _checklistService.cacheLists(houseId, _lists);
+        _checklistService.cacheListsOfEveryKind(houseId, _lists);
         notifyListeners();
       }
     } catch (e) {
       // Undo the optimistic re-add so the list stays put in the archive view.
       if (!existed) {
         _lists.removeWhere((l) => l.id == list.id);
-        _checklistService.cacheLists(houseId, _lists);
+        _checklistService.cacheListsOfEveryKind(houseId, _lists);
       }
       if (!_archivedLists.any((l) => l.id == list.id)) {
         _archivedLists = [..._archivedLists, list];

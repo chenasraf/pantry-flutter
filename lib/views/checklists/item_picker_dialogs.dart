@@ -4,11 +4,13 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/label.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/utils/category_icons.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/label_icons.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 
 /// Sentinel returned by [pickCategory] for the "No category" choice, so callers
@@ -23,22 +25,40 @@ Future<int?> pickTargetList(
   required String title,
   required List<ChecklistList> lists,
 }) {
+  // Lists of more than one kind are grouped under the kind titles.
+  final grouped = lists.map((l) => l.kind).toSet().length > 1;
+  Widget option(BuildContext ctx, ChecklistList list) => SimpleDialogOption(
+    onPressed: () => Navigator.pop(ctx, list.id),
+    child: Row(
+      children: [
+        Icon(checklistIcon(list.icon), size: 20),
+        const SizedBox(width: 12),
+        Expanded(child: Text(list.name)),
+      ],
+    ),
+  );
   return showDialog<int>(
     context: context,
     builder: (ctx) => SimpleDialog(
       title: Text(title),
       children: [
-        for (final list in lists)
-          SimpleDialogOption(
-            onPressed: () => Navigator.pop(ctx, list.id),
-            child: Row(
-              children: [
-                Icon(checklistIcon(list.icon), size: 20),
-                const SizedBox(width: 12),
-                Expanded(child: Text(list.name)),
-              ],
-            ),
-          ),
+        if (!grouped)
+          for (final list in lists) option(ctx, list)
+        else
+          for (final kind in ListKind.values)
+            if (lists.any((l) => l.kind == kind)) ...[
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 4),
+                child: Text(
+                  kind.strings.title,
+                  style: Theme.of(ctx).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(ctx).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              for (final list in lists)
+                if (list.kind == kind) option(ctx, list),
+            ],
       ],
     ),
   );

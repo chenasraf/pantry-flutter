@@ -59,7 +59,7 @@ login:
 
 home:
   noHouses: No houses yet.
-  noHousesBody: "Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes."
+  noHousesBody: "Houses are shared spaces for your household. Create your first house to start adding lists, photos and notes."
   createHouse: Create house
   houseName: House name
   houseDescription: Description (optional)
@@ -73,6 +73,8 @@ home:
 nav:
   checklists: Checklists
   checklist: Checklist
+  lists: Lists
+  list: List
   photoBoard: Photo Board
   notesWall: Notes Wall
 
@@ -183,7 +185,7 @@ onboarding:
 
 notificationsIntro:
   title: Stay in the loop
-  body: "Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
+  body: "Pantry can notify you when household members add items to lists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
   bullet1: Household activity alerts
   bullet2: Fetched directly from your server
   bullet3: Works even when the app is closed
@@ -917,6 +919,77 @@ checklists:
     itemsFound(int count): "${_plural(count, one: '1 item found', many: '$count items found')}"
     addItems(int count): "${_plural(count, one: 'Add 1 item', many: 'Add $count items')}"
     imported(int count): "${_plural(count, one: 'Imported 1 item', many: 'Imported $count items')}"
+
+listKinds:
+  duplicateAs: "Duplicate as:"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: '1 item was skipped because you cannot edit it.', many: '$count items were skipped because you cannot edit them.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: '1 item could not be unchecked.', many: '$count items could not be unchecked.')}"
+  checklist:
+    title: Checklists
+    name: Checklist
+    newList: New checklist
+    createTitle: Create a checklist
+    editTitle: Edit checklist
+    duplicateTitle: Duplicate checklist
+    duplicateFailed: Could not duplicate the checklist
+    listMenu: Checklist actions
+    deleteDialogTitle: Remove checklist
+    emptyTitle: No checklists yet
+    emptyBody: Create your first checklist to start adding items.
+    trashTitle: Checklists trash
+    trashEmptyBody: Deleted checklists will appear here.
+    archiveTitle: Archived checklists
+    archiveEmptyTitle: No archived checklists
+    archiveEmptyBody: Archived checklists will appear here.
+    emptyTrashBody: This will permanently delete every checklist in the trash, along with all of their items. This cannot be undone.
+    listRestored: Checklist restored
+    listMovedToTrash: Checklist moved to trash
+    listArchived: Checklist archived
+    listUnarchived: Checklist unarchived
+  inventory:
+    title: Inventories
+    name: Inventory
+    newList: New inventory
+    createTitle: Create an inventory
+    editTitle: Edit inventory
+    duplicateTitle: Duplicate inventory
+    duplicateFailed: Could not duplicate the inventory
+    listMenu: Inventory actions
+    deleteDialogTitle: Remove inventory
+    emptyTitle: No inventories yet
+    emptyBody: Create your first inventory to start adding items.
+    trashTitle: Inventories trash
+    trashEmptyBody: Deleted inventories will appear here.
+    archiveTitle: Archived inventories
+    archiveEmptyTitle: No archived inventories
+    archiveEmptyBody: Archived inventories will appear here.
+    emptyTrashBody: This will permanently delete every inventory in the trash, along with all of their items. This cannot be undone.
+    listRestored: Inventory restored
+    listMovedToTrash: Inventory moved to trash
+    listArchived: Inventory archived
+    listUnarchived: Inventory unarchived
+  template:
+    title: Templates
+    name: Template
+    newList: New template
+    createTitle: Create a template
+    editTitle: Edit template
+    duplicateTitle: Duplicate template
+    duplicateFailed: Could not duplicate the template
+    listMenu: Template actions
+    deleteDialogTitle: Remove template
+    emptyTitle: No templates yet
+    emptyBody: Create your first template to start adding items.
+    trashTitle: Templates trash
+    trashEmptyBody: Deleted templates will appear here.
+    archiveTitle: Archived templates
+    archiveEmptyTitle: No archived templates
+    archiveEmptyBody: Archived templates will appear here.
+    emptyTrashBody: This will permanently delete every template in the trash, along with all of their items. This cannot be undone.
+    listRestored: Template restored
+    listMovedToTrash: Template moved to trash
+    listArchived: Template archived
+    listUnarchived: Template unarchived
 
 notesWall:
   noNotes: No notes yet.

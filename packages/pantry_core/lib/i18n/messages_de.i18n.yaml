@@ -59,7 +59,7 @@ login:
 
 home:
   noHouses: "Noch keine Häuser."
-  noHousesBody: "Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen."
+  noHousesBody: "Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Listen, Fotos und Notizen hinzuzufügen."
   createHouse: Haus erstellen
   houseName: Hausname
   houseDescription: Beschreibung (optional)
@@ -73,6 +73,8 @@ home:
 nav:
   checklists: Checklisten
   checklist: Checkliste
+  lists: Listen
+  list: Liste
   photoBoard: Fotowand
   notesWall: Notizwand
 
@@ -183,7 +185,7 @@ onboarding:
 
 notificationsIntro:
   title: Bleib auf dem Laufenden
-  body: "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."
+  body: "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Listen hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."
   bullet1: "Benachrichtigungen über Haushaltsaktivitäten"
   bullet2: Direkt von deinem Server abgerufen
   bullet3: "Funktioniert auch bei geschlossener App"
@@ -917,6 +919,77 @@ checklists:
     itemsFound(int count): "${_plural(count, one: '1 Eintrag gefunden', many: '$count Einträge gefunden')}"
     addItems(int count): "${_plural(count, one: '1 Eintrag hinzufügen', many: '$count Einträge hinzufügen')}"
     imported(int count): "${_plural(count, one: '1 Eintrag importiert', many: '$count Einträge importiert')}"
+
+listKinds:
+  duplicateAs: "Duplizieren als:"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: '1 Element wurde übersprungen, da du es nicht bearbeiten kannst.', many: '$count Elemente wurden übersprungen, da du sie nicht bearbeiten kannst.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: '1 Element konnte nicht als unerledigt markiert werden.', many: '$count Elemente konnten nicht als unerledigt markiert werden.')}"
+  checklist:
+    title: Checklisten
+    name: Checkliste
+    newList: Neue Checkliste
+    createTitle: Checkliste erstellen
+    editTitle: Checkliste bearbeiten
+    duplicateTitle: Checkliste duplizieren
+    duplicateFailed: Die Checkliste konnte nicht dupliziert werden
+    listMenu: Checklisten-Aktionen
+    deleteDialogTitle: Checkliste entfernen
+    emptyTitle: Noch keine Checklisten
+    emptyBody: Erstelle deine erste Checkliste, um mit dem Hinzufügen von Elementen zu beginnen.
+    trashTitle: Checklisten-Papierkorb
+    trashEmptyBody: Gelöschte Checklisten werden hier angezeigt.
+    archiveTitle: Archivierte Checklisten
+    archiveEmptyTitle: Keine archivierten Checklisten
+    archiveEmptyBody: Archivierte Checklisten werden hier angezeigt.
+    emptyTrashBody: Dadurch werden alle Checklisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.
+    listRestored: Checkliste wiederhergestellt
+    listMovedToTrash: Checkliste in den Papierkorb verschoben
+    listArchived: Checkliste archiviert
+    listUnarchived: Checkliste dearchiviert
+  inventory:
+    title: Bestandslisten
+    name: Bestandsliste
+    newList: Neue Bestandsliste
+    createTitle: Bestandsliste erstellen
+    editTitle: Bestandsliste bearbeiten
+    duplicateTitle: Bestandsliste duplizieren
+    duplicateFailed: Die Bestandsliste konnte nicht dupliziert werden
+    listMenu: Bestandslisten-Aktionen
+    deleteDialogTitle: Bestandsliste entfernen
+    emptyTitle: Noch keine Bestandslisten
+    emptyBody: Erstelle deine erste Bestandsliste, um mit dem Hinzufügen von Elementen zu beginnen.
+    trashTitle: Bestandslisten-Papierkorb
+    trashEmptyBody: Gelöschte Bestandslisten werden hier angezeigt.
+    archiveTitle: Archivierte Bestandslisten
+    archiveEmptyTitle: Keine archivierten Bestandslisten
+    archiveEmptyBody: Archivierte Bestandslisten werden hier angezeigt.
+    emptyTrashBody: Dadurch werden alle Bestandslisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.
+    listRestored: Bestandsliste wiederhergestellt
+    listMovedToTrash: Bestandsliste in den Papierkorb verschoben
+    listArchived: Bestandsliste archiviert
+    listUnarchived: Bestandsliste dearchiviert
+  template:
+    title: Vorlagen
+    name: Vorlage
+    newList: Neue Vorlage
+    createTitle: Vorlage erstellen
+    editTitle: Vorlage bearbeiten
+    duplicateTitle: Vorlage duplizieren
+    duplicateFailed: Die Vorlage konnte nicht dupliziert werden
+    listMenu: Vorlagen-Aktionen
+    deleteDialogTitle: Vorlage entfernen
+    emptyTitle: Noch keine Vorlagen
+    emptyBody: Erstelle deine erste Vorlage, um mit dem Hinzufügen von Elementen zu beginnen.
+    trashTitle: Vorlagen-Papierkorb
+    trashEmptyBody: Gelöschte Vorlagen werden hier angezeigt.
+    archiveTitle: Archivierte Vorlagen
+    archiveEmptyTitle: Keine archivierten Vorlagen
+    archiveEmptyBody: Archivierte Vorlagen werden hier angezeigt.
+    emptyTrashBody: Dadurch werden alle Vorlagen, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.
+    listRestored: Vorlage wiederhergestellt
+    listMovedToTrash: Vorlage in den Papierkorb verschoben
+    listArchived: Vorlage archiviert
+    listUnarchived: Vorlage dearchiviert
 
 notesWall:
   noNotes: Noch keine Notizen.

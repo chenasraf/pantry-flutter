@@ -1,5 +1,6 @@
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 
@@ -16,6 +17,10 @@ class ChecklistList {
   final String icon;
   final String? color;
   final int sortOrder;
+
+  /// What the list is for. Lists from servers without
+  /// [ServerFeature.listKinds] are all checklists.
+  final ListKind kind;
 
   /// The recurrence policy an editor picked for this list's new items. See
   /// [ChecklistRecurrence.recurrenceDefault] for what it resolves to.
@@ -73,6 +78,7 @@ class ChecklistList {
     required this.icon,
     this.color,
     required this.sortOrder,
+    this.kind = ListKind.checklist,
     this.defaultRecurrenceMode = ListRecurrenceMode.remember,
     this.defaultRecurrenceKind = ListRecurrenceKind.none,
     this.defaultRrule,
@@ -96,6 +102,7 @@ class ChecklistList {
     icon: json['icon'] as String,
     color: json['color'] as String?,
     sortOrder: json['sortOrder'] as int,
+    kind: ListKind.parse(json['kind']),
     defaultRecurrenceMode: ListRecurrenceMode.parse(
       json['defaultRecurrenceMode'],
     ),
@@ -132,6 +139,7 @@ class ChecklistList {
     'icon': icon,
     'color': color,
     'sortOrder': sortOrder,
+    'kind': kind.wire,
     'deleteOnDoneDefault': deleteOnDoneDefault,
     'defaultRecurrenceMode': defaultRecurrenceMode.wire,
     'defaultRecurrenceKind': defaultRecurrenceKind.wire,
@@ -176,6 +184,7 @@ class ChecklistList {
     icon: icon ?? this.icon,
     color: color ?? this.color,
     sortOrder: sortOrder ?? this.sortOrder,
+    kind: kind,
     defaultRecurrenceMode: defaultRecurrenceMode ?? this.defaultRecurrenceMode,
     defaultRecurrenceKind: defaultRecurrenceKind ?? this.defaultRecurrenceKind,
     defaultRrule: clearDefaultRrule
@@ -374,11 +383,13 @@ class ListItem {
         .map((e) => e as int)
         .toList(),
     quantity: json['quantity'] as String?,
-    done: json['done'] as bool,
+    // Template and inventory items are never checked off and carry no done
+    // state; inventory items carry no recurrence either.
+    done: json['done'] as bool? ?? false,
     doneAt: json['doneAt'] as int?,
     doneBy: json['doneBy'] as String?,
     rrule: json['rrule'] as String?,
-    repeatFromCompletion: json['repeatFromCompletion'] as bool,
+    repeatFromCompletion: json['repeatFromCompletion'] as bool? ?? false,
     deleteOnDone: json['deleteOnDone'] as bool? ?? false,
     nextDueAt: json['nextDueAt'] as int?,
     imageFileId: json['imageFileId'] as int?,

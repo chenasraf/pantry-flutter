@@ -79,6 +79,7 @@ class MessagesDe extends Messages {
   StoresMessagesDe get stores => StoresMessagesDe(this);
   LabelsMessagesDe get labels => LabelsMessagesDe(this);
   ChecklistsMessagesDe get checklists => ChecklistsMessagesDe(this);
+  ListKindsMessagesDe get listKinds => ListKindsMessagesDe(this);
   NotesWallMessagesDe get notesWall => NotesWallMessagesDe(this);
   PhotoBoardMessagesDe get photoBoard => PhotoBoardMessagesDe(this);
   ShoppingMessagesDe get shopping => ShoppingMessagesDe(this);
@@ -403,10 +404,10 @@ class HomeMessagesDe extends HomeMessages {
   String get noHouses => """Noch keine Häuser.""";
 
   /// ```dart
-  /// "Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen."
+  /// "Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Listen, Fotos und Notizen hinzuzufügen."
   /// ```
   String get noHousesBody =>
-      """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen.""";
+      """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Listen, Fotos und Notizen hinzuzufügen.""";
 
   /// ```dart
   /// "Haus erstellen"
@@ -468,6 +469,16 @@ class NavMessagesDe extends NavMessages {
   /// "Checkliste"
   /// ```
   String get checklist => """Checkliste""";
+
+  /// ```dart
+  /// "Listen"
+  /// ```
+  String get lists => """Listen""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 
   /// ```dart
   /// "Fotowand"
@@ -1044,10 +1055,10 @@ class NotificationsIntroMessagesDe extends NotificationsIntroMessages {
   String get title => """Bleib auf dem Laufenden""";
 
   /// ```dart
-  /// "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."
+  /// "Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Listen hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter."
   /// ```
   String get body =>
-      """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""";
+      """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Listen hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""";
 
   /// ```dart
   /// "Benachrichtigungen über Haushaltsaktivitäten"
@@ -4871,6 +4882,378 @@ class MarkdownChecklistsMessagesDe extends MarkdownChecklistsMessages {
       """${_plural(count, one: '1 Eintrag importiert', many: '$count Einträge importiert')}""";
 }
 
+class ListKindsMessagesDe extends ListKindsMessages {
+  final MessagesDe _parent;
+  const ListKindsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Duplizieren als:"
+  /// ```
+  String get duplicateAs => """Duplizieren als:""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Element wurde übersprungen, da du es nicht bearbeiten kannst.', many: '$count Elemente wurden übersprungen, da du sie nicht bearbeiten kannst.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: '1 Element wurde übersprungen, da du es nicht bearbeiten kannst.', many: '$count Elemente wurden übersprungen, da du sie nicht bearbeiten kannst.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Element konnte nicht als unerledigt markiert werden.', many: '$count Elemente konnten nicht als unerledigt markiert werden.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: '1 Element konnte nicht als unerledigt markiert werden.', many: '$count Elemente konnten nicht als unerledigt markiert werden.')}""";
+  ChecklistListKindsMessagesDe get checklist =>
+      ChecklistListKindsMessagesDe(this);
+  InventoryListKindsMessagesDe get inventory =>
+      InventoryListKindsMessagesDe(this);
+  TemplateListKindsMessagesDe get template => TemplateListKindsMessagesDe(this);
+}
+
+class ChecklistListKindsMessagesDe extends ChecklistListKindsMessages {
+  final ListKindsMessagesDe _parent;
+  const ChecklistListKindsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Checklisten"
+  /// ```
+  String get title => """Checklisten""";
+
+  /// ```dart
+  /// "Checkliste"
+  /// ```
+  String get name => """Checkliste""";
+
+  /// ```dart
+  /// "Neue Checkliste"
+  /// ```
+  String get newList => """Neue Checkliste""";
+
+  /// ```dart
+  /// "Checkliste erstellen"
+  /// ```
+  String get createTitle => """Checkliste erstellen""";
+
+  /// ```dart
+  /// "Checkliste bearbeiten"
+  /// ```
+  String get editTitle => """Checkliste bearbeiten""";
+
+  /// ```dart
+  /// "Checkliste duplizieren"
+  /// ```
+  String get duplicateTitle => """Checkliste duplizieren""";
+
+  /// ```dart
+  /// "Die Checkliste konnte nicht dupliziert werden"
+  /// ```
+  String get duplicateFailed =>
+      """Die Checkliste konnte nicht dupliziert werden""";
+
+  /// ```dart
+  /// "Checklisten-Aktionen"
+  /// ```
+  String get listMenu => """Checklisten-Aktionen""";
+
+  /// ```dart
+  /// "Checkliste entfernen"
+  /// ```
+  String get deleteDialogTitle => """Checkliste entfernen""";
+
+  /// ```dart
+  /// "Noch keine Checklisten"
+  /// ```
+  String get emptyTitle => """Noch keine Checklisten""";
+
+  /// ```dart
+  /// "Erstelle deine erste Checkliste, um mit dem Hinzufügen von Elementen zu beginnen."
+  /// ```
+  String get emptyBody =>
+      """Erstelle deine erste Checkliste, um mit dem Hinzufügen von Elementen zu beginnen.""";
+
+  /// ```dart
+  /// "Checklisten-Papierkorb"
+  /// ```
+  String get trashTitle => """Checklisten-Papierkorb""";
+
+  /// ```dart
+  /// "Gelöschte Checklisten werden hier angezeigt."
+  /// ```
+  String get trashEmptyBody =>
+      """Gelöschte Checklisten werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Archivierte Checklisten"
+  /// ```
+  String get archiveTitle => """Archivierte Checklisten""";
+
+  /// ```dart
+  /// "Keine archivierten Checklisten"
+  /// ```
+  String get archiveEmptyTitle => """Keine archivierten Checklisten""";
+
+  /// ```dart
+  /// "Archivierte Checklisten werden hier angezeigt."
+  /// ```
+  String get archiveEmptyBody =>
+      """Archivierte Checklisten werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Dadurch werden alle Checklisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get emptyTrashBody =>
+      """Dadurch werden alle Checklisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Checkliste wiederhergestellt"
+  /// ```
+  String get listRestored => """Checkliste wiederhergestellt""";
+
+  /// ```dart
+  /// "Checkliste in den Papierkorb verschoben"
+  /// ```
+  String get listMovedToTrash => """Checkliste in den Papierkorb verschoben""";
+
+  /// ```dart
+  /// "Checkliste archiviert"
+  /// ```
+  String get listArchived => """Checkliste archiviert""";
+
+  /// ```dart
+  /// "Checkliste dearchiviert"
+  /// ```
+  String get listUnarchived => """Checkliste dearchiviert""";
+}
+
+class InventoryListKindsMessagesDe extends InventoryListKindsMessages {
+  final ListKindsMessagesDe _parent;
+  const InventoryListKindsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Bestandslisten"
+  /// ```
+  String get title => """Bestandslisten""";
+
+  /// ```dart
+  /// "Bestandsliste"
+  /// ```
+  String get name => """Bestandsliste""";
+
+  /// ```dart
+  /// "Neue Bestandsliste"
+  /// ```
+  String get newList => """Neue Bestandsliste""";
+
+  /// ```dart
+  /// "Bestandsliste erstellen"
+  /// ```
+  String get createTitle => """Bestandsliste erstellen""";
+
+  /// ```dart
+  /// "Bestandsliste bearbeiten"
+  /// ```
+  String get editTitle => """Bestandsliste bearbeiten""";
+
+  /// ```dart
+  /// "Bestandsliste duplizieren"
+  /// ```
+  String get duplicateTitle => """Bestandsliste duplizieren""";
+
+  /// ```dart
+  /// "Die Bestandsliste konnte nicht dupliziert werden"
+  /// ```
+  String get duplicateFailed =>
+      """Die Bestandsliste konnte nicht dupliziert werden""";
+
+  /// ```dart
+  /// "Bestandslisten-Aktionen"
+  /// ```
+  String get listMenu => """Bestandslisten-Aktionen""";
+
+  /// ```dart
+  /// "Bestandsliste entfernen"
+  /// ```
+  String get deleteDialogTitle => """Bestandsliste entfernen""";
+
+  /// ```dart
+  /// "Noch keine Bestandslisten"
+  /// ```
+  String get emptyTitle => """Noch keine Bestandslisten""";
+
+  /// ```dart
+  /// "Erstelle deine erste Bestandsliste, um mit dem Hinzufügen von Elementen zu beginnen."
+  /// ```
+  String get emptyBody =>
+      """Erstelle deine erste Bestandsliste, um mit dem Hinzufügen von Elementen zu beginnen.""";
+
+  /// ```dart
+  /// "Bestandslisten-Papierkorb"
+  /// ```
+  String get trashTitle => """Bestandslisten-Papierkorb""";
+
+  /// ```dart
+  /// "Gelöschte Bestandslisten werden hier angezeigt."
+  /// ```
+  String get trashEmptyBody =>
+      """Gelöschte Bestandslisten werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Archivierte Bestandslisten"
+  /// ```
+  String get archiveTitle => """Archivierte Bestandslisten""";
+
+  /// ```dart
+  /// "Keine archivierten Bestandslisten"
+  /// ```
+  String get archiveEmptyTitle => """Keine archivierten Bestandslisten""";
+
+  /// ```dart
+  /// "Archivierte Bestandslisten werden hier angezeigt."
+  /// ```
+  String get archiveEmptyBody =>
+      """Archivierte Bestandslisten werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Dadurch werden alle Bestandslisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get emptyTrashBody =>
+      """Dadurch werden alle Bestandslisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Bestandsliste wiederhergestellt"
+  /// ```
+  String get listRestored => """Bestandsliste wiederhergestellt""";
+
+  /// ```dart
+  /// "Bestandsliste in den Papierkorb verschoben"
+  /// ```
+  String get listMovedToTrash =>
+      """Bestandsliste in den Papierkorb verschoben""";
+
+  /// ```dart
+  /// "Bestandsliste archiviert"
+  /// ```
+  String get listArchived => """Bestandsliste archiviert""";
+
+  /// ```dart
+  /// "Bestandsliste dearchiviert"
+  /// ```
+  String get listUnarchived => """Bestandsliste dearchiviert""";
+}
+
+class TemplateListKindsMessagesDe extends TemplateListKindsMessages {
+  final ListKindsMessagesDe _parent;
+  const TemplateListKindsMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Vorlagen"
+  /// ```
+  String get title => """Vorlagen""";
+
+  /// ```dart
+  /// "Vorlage"
+  /// ```
+  String get name => """Vorlage""";
+
+  /// ```dart
+  /// "Neue Vorlage"
+  /// ```
+  String get newList => """Neue Vorlage""";
+
+  /// ```dart
+  /// "Vorlage erstellen"
+  /// ```
+  String get createTitle => """Vorlage erstellen""";
+
+  /// ```dart
+  /// "Vorlage bearbeiten"
+  /// ```
+  String get editTitle => """Vorlage bearbeiten""";
+
+  /// ```dart
+  /// "Vorlage duplizieren"
+  /// ```
+  String get duplicateTitle => """Vorlage duplizieren""";
+
+  /// ```dart
+  /// "Die Vorlage konnte nicht dupliziert werden"
+  /// ```
+  String get duplicateFailed =>
+      """Die Vorlage konnte nicht dupliziert werden""";
+
+  /// ```dart
+  /// "Vorlagen-Aktionen"
+  /// ```
+  String get listMenu => """Vorlagen-Aktionen""";
+
+  /// ```dart
+  /// "Vorlage entfernen"
+  /// ```
+  String get deleteDialogTitle => """Vorlage entfernen""";
+
+  /// ```dart
+  /// "Noch keine Vorlagen"
+  /// ```
+  String get emptyTitle => """Noch keine Vorlagen""";
+
+  /// ```dart
+  /// "Erstelle deine erste Vorlage, um mit dem Hinzufügen von Elementen zu beginnen."
+  /// ```
+  String get emptyBody =>
+      """Erstelle deine erste Vorlage, um mit dem Hinzufügen von Elementen zu beginnen.""";
+
+  /// ```dart
+  /// "Vorlagen-Papierkorb"
+  /// ```
+  String get trashTitle => """Vorlagen-Papierkorb""";
+
+  /// ```dart
+  /// "Gelöschte Vorlagen werden hier angezeigt."
+  /// ```
+  String get trashEmptyBody => """Gelöschte Vorlagen werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Archivierte Vorlagen"
+  /// ```
+  String get archiveTitle => """Archivierte Vorlagen""";
+
+  /// ```dart
+  /// "Keine archivierten Vorlagen"
+  /// ```
+  String get archiveEmptyTitle => """Keine archivierten Vorlagen""";
+
+  /// ```dart
+  /// "Archivierte Vorlagen werden hier angezeigt."
+  /// ```
+  String get archiveEmptyBody =>
+      """Archivierte Vorlagen werden hier angezeigt.""";
+
+  /// ```dart
+  /// "Dadurch werden alle Vorlagen, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden."
+  /// ```
+  String get emptyTrashBody =>
+      """Dadurch werden alle Vorlagen, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""";
+
+  /// ```dart
+  /// "Vorlage wiederhergestellt"
+  /// ```
+  String get listRestored => """Vorlage wiederhergestellt""";
+
+  /// ```dart
+  /// "Vorlage in den Papierkorb verschoben"
+  /// ```
+  String get listMovedToTrash => """Vorlage in den Papierkorb verschoben""";
+
+  /// ```dart
+  /// "Vorlage archiviert"
+  /// ```
+  String get listArchived => """Vorlage archiviert""";
+
+  /// ```dart
+  /// "Vorlage dearchiviert"
+  /// ```
+  String get listUnarchived => """Vorlage dearchiviert""";
+}
+
 class NotesWallMessagesDe extends NotesWallMessages {
   final MessagesDe _parent;
   const NotesWallMessagesDe(this._parent) : super(_parent);
@@ -7523,7 +7906,7 @@ Bitte melde dich in deinem Browser an.""",
       """Das Zertifikat des Servers konnte nicht zur Überprüfung gelesen werden. Die Verbindung ist möglicherweise instabil oder der Server nicht erreichbar.""",
   """home.noHouses""": """Noch keine Häuser.""",
   """home.noHousesBody""":
-      """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Checklisten, Fotos und Notizen hinzuzufügen.""",
+      """Häuser sind gemeinsame Bereiche für deinen Haushalt. Erstelle dein erstes Haus, um Listen, Fotos und Notizen hinzuzufügen.""",
   """home.createHouse""": """Haus erstellen""",
   """home.houseName""": """Hausname""",
   """home.houseDescription""": """Beschreibung (optional)""",
@@ -7536,6 +7919,8 @@ Bitte melde dich in deinem Browser an.""",
   """home.learnMore""": """Mehr erfahren""",
   """nav.checklists""": """Checklisten""",
   """nav.checklist""": """Checkliste""",
+  """nav.lists""": """Listen""",
+  """nav.list""": """Liste""",
   """nav.photoBoard""": """Fotowand""",
   """nav.notesWall""": """Notizwand""",
   """widget.chooseListsTitle""": """Listen auswählen""",
@@ -7664,7 +8049,7 @@ Passwort: pantry-rocks""",
   """onboarding.dev.sendTestNotification""": """Testbenachrichtigung senden""",
   """notificationsIntro.title""": """Bleib auf dem Laufenden""",
   """notificationsIntro.body""":
-      """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Checklisten hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""",
+      """Pantry kann dich benachrichtigen, wenn Haushaltsmitglieder Einträge zu Listen hinzufügen, Fotos hochladen oder Notizen hinterlassen. Benachrichtigungen werden direkt von deinem Nextcloud-Server abgerufen — nichts geht über Google oder Drittanbieter.""",
   """notificationsIntro.bullet1""":
       """Benachrichtigungen über Haushaltsaktivitäten""",
   """notificationsIntro.bullet2""": """Direkt von deinem Server abgerufen""",
@@ -8423,6 +8808,90 @@ Passwort: pantry-rocks""",
       """Vorhandene Einträge wiederverwenden statt Duplikate hinzuzufügen""",
   """checklists.markdown.defaultFields""":
       """Standardwerte für jeden importierten Eintrag""",
+  """listKinds.duplicateAs""": """Duplizieren als:""",
+  """listKinds.checklist.title""": """Checklisten""",
+  """listKinds.checklist.name""": """Checkliste""",
+  """listKinds.checklist.newList""": """Neue Checkliste""",
+  """listKinds.checklist.createTitle""": """Checkliste erstellen""",
+  """listKinds.checklist.editTitle""": """Checkliste bearbeiten""",
+  """listKinds.checklist.duplicateTitle""": """Checkliste duplizieren""",
+  """listKinds.checklist.duplicateFailed""":
+      """Die Checkliste konnte nicht dupliziert werden""",
+  """listKinds.checklist.listMenu""": """Checklisten-Aktionen""",
+  """listKinds.checklist.deleteDialogTitle""": """Checkliste entfernen""",
+  """listKinds.checklist.emptyTitle""": """Noch keine Checklisten""",
+  """listKinds.checklist.emptyBody""":
+      """Erstelle deine erste Checkliste, um mit dem Hinzufügen von Elementen zu beginnen.""",
+  """listKinds.checklist.trashTitle""": """Checklisten-Papierkorb""",
+  """listKinds.checklist.trashEmptyBody""":
+      """Gelöschte Checklisten werden hier angezeigt.""",
+  """listKinds.checklist.archiveTitle""": """Archivierte Checklisten""",
+  """listKinds.checklist.archiveEmptyTitle""":
+      """Keine archivierten Checklisten""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """Archivierte Checklisten werden hier angezeigt.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """Dadurch werden alle Checklisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""",
+  """listKinds.checklist.listRestored""": """Checkliste wiederhergestellt""",
+  """listKinds.checklist.listMovedToTrash""":
+      """Checkliste in den Papierkorb verschoben""",
+  """listKinds.checklist.listArchived""": """Checkliste archiviert""",
+  """listKinds.checklist.listUnarchived""": """Checkliste dearchiviert""",
+  """listKinds.inventory.title""": """Bestandslisten""",
+  """listKinds.inventory.name""": """Bestandsliste""",
+  """listKinds.inventory.newList""": """Neue Bestandsliste""",
+  """listKinds.inventory.createTitle""": """Bestandsliste erstellen""",
+  """listKinds.inventory.editTitle""": """Bestandsliste bearbeiten""",
+  """listKinds.inventory.duplicateTitle""": """Bestandsliste duplizieren""",
+  """listKinds.inventory.duplicateFailed""":
+      """Die Bestandsliste konnte nicht dupliziert werden""",
+  """listKinds.inventory.listMenu""": """Bestandslisten-Aktionen""",
+  """listKinds.inventory.deleteDialogTitle""": """Bestandsliste entfernen""",
+  """listKinds.inventory.emptyTitle""": """Noch keine Bestandslisten""",
+  """listKinds.inventory.emptyBody""":
+      """Erstelle deine erste Bestandsliste, um mit dem Hinzufügen von Elementen zu beginnen.""",
+  """listKinds.inventory.trashTitle""": """Bestandslisten-Papierkorb""",
+  """listKinds.inventory.trashEmptyBody""":
+      """Gelöschte Bestandslisten werden hier angezeigt.""",
+  """listKinds.inventory.archiveTitle""": """Archivierte Bestandslisten""",
+  """listKinds.inventory.archiveEmptyTitle""":
+      """Keine archivierten Bestandslisten""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """Archivierte Bestandslisten werden hier angezeigt.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """Dadurch werden alle Bestandslisten, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""",
+  """listKinds.inventory.listRestored""": """Bestandsliste wiederhergestellt""",
+  """listKinds.inventory.listMovedToTrash""":
+      """Bestandsliste in den Papierkorb verschoben""",
+  """listKinds.inventory.listArchived""": """Bestandsliste archiviert""",
+  """listKinds.inventory.listUnarchived""": """Bestandsliste dearchiviert""",
+  """listKinds.template.title""": """Vorlagen""",
+  """listKinds.template.name""": """Vorlage""",
+  """listKinds.template.newList""": """Neue Vorlage""",
+  """listKinds.template.createTitle""": """Vorlage erstellen""",
+  """listKinds.template.editTitle""": """Vorlage bearbeiten""",
+  """listKinds.template.duplicateTitle""": """Vorlage duplizieren""",
+  """listKinds.template.duplicateFailed""":
+      """Die Vorlage konnte nicht dupliziert werden""",
+  """listKinds.template.listMenu""": """Vorlagen-Aktionen""",
+  """listKinds.template.deleteDialogTitle""": """Vorlage entfernen""",
+  """listKinds.template.emptyTitle""": """Noch keine Vorlagen""",
+  """listKinds.template.emptyBody""":
+      """Erstelle deine erste Vorlage, um mit dem Hinzufügen von Elementen zu beginnen.""",
+  """listKinds.template.trashTitle""": """Vorlagen-Papierkorb""",
+  """listKinds.template.trashEmptyBody""":
+      """Gelöschte Vorlagen werden hier angezeigt.""",
+  """listKinds.template.archiveTitle""": """Archivierte Vorlagen""",
+  """listKinds.template.archiveEmptyTitle""": """Keine archivierten Vorlagen""",
+  """listKinds.template.archiveEmptyBody""":
+      """Archivierte Vorlagen werden hier angezeigt.""",
+  """listKinds.template.emptyTrashBody""":
+      """Dadurch werden alle Vorlagen, mit all ihren Elementen, im Papierkorb endgültig gelöscht. Dies kann nicht rückgängig gemacht werden.""",
+  """listKinds.template.listRestored""": """Vorlage wiederhergestellt""",
+  """listKinds.template.listMovedToTrash""":
+      """Vorlage in den Papierkorb verschoben""",
+  """listKinds.template.listArchived""": """Vorlage archiviert""",
+  """listKinds.template.listUnarchived""": """Vorlage dearchiviert""",
   """notesWall.noNotes""": """Noch keine Notizen.""",
   """notesWall.failedToLoad""": """Notizen konnten nicht geladen werden.""",
   """notesWall.saveFailed""": """Notiz konnte nicht gespeichert werden.""",

@@ -2,6 +2,7 @@ import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/label.dart';
 import 'package:pantry_core/models/note.dart';
@@ -209,6 +210,7 @@ class SyncExecutor {
       case SyncOpKind.create:
         final list = await svc.createList(
           houseId,
+          kind: ListKind.parse(op.body['kind']),
           name: op.body['name'] as String,
           description: op.body['description'] as String?,
           icon: op.body['icon'] as String?,
@@ -273,7 +275,10 @@ class SyncExecutor {
         await svc.permanentlyDeleteList(houseId, id);
         return SyncResult.empty;
       case SyncOpKind.emptyTrash:
-        await svc.emptyListsTrash(houseId);
+        await svc.emptyListsTrash(
+          houseId,
+          kind: ListKind.parse(op.body['kind']),
+        );
         return SyncResult.empty;
       case SyncOpKind.reorder:
         final raw = (op.body['order'] as List).cast<Map>();

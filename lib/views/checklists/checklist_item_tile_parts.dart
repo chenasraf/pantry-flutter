@@ -113,6 +113,10 @@ class ChecklistTileRowContent extends StatelessWidget {
   /// Suggestion drawn from the archive: adds the trailing "Archived" badge.
   final bool archived;
 
+  /// Whether the item can be checked off at all. Template and inventory items
+  /// can't, so their rows have no checkbox.
+  final bool checkable;
+
   const ChecklistTileRowContent({
     super.key,
     required this.item,
@@ -138,6 +142,7 @@ class ChecklistTileRowContent extends StatelessWidget {
     this.pendingImage,
     this.suggestion = false,
     this.archived = false,
+    this.checkable = true,
   });
 
   @override
@@ -145,6 +150,7 @@ class ChecklistTileRowContent extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final checked = item.done;
+    final showLeading = !suggestion && (checkable || selectionMode);
     final prefs = context.watch<PrefsService>();
     final checkboxAtEnd = prefs.checklistCheckboxPosition == 'end';
     final description = itemDescription(item, prefs);
@@ -215,14 +221,14 @@ class ChecklistTileRowContent extends StatelessWidget {
               ),
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(
-                (suggestion || checkboxAtEnd) ? 18 : 0,
+                (!showLeading || checkboxAtEnd) ? 18 : 0,
                 density.rowPadV,
-                (suggestion || !checkboxAtEnd) ? 16 : 0,
+                (!showLeading || !checkboxAtEnd) ? 16 : 0,
                 density.rowPadV,
               ),
               child: Row(
                 children: [
-                  if (!checkboxAtEnd && !suggestion) leadingControl,
+                  if (!checkboxAtEnd && showLeading) leadingControl,
                   if (item.imageFileId != null || pendingImage != null) ...[
                     ItemThumb(
                       houseId: houseId,
@@ -303,7 +309,7 @@ class ChecklistTileRowContent extends StatelessWidget {
                       background: cs.surfaceContainerHighest,
                     ),
                   ],
-                  if (checkboxAtEnd && !suggestion) leadingControl,
+                  if (checkboxAtEnd && showLeading) leadingControl,
                 ],
               ),
             ),

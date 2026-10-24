@@ -6,6 +6,7 @@ import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
@@ -17,6 +18,9 @@ import 'switcher_widgets.dart';
 
 class ListFormStage extends StatefulWidget {
   final ChecklistsController controller;
+
+  /// The kind created, or [existing]'s kind.
+  final ListKind kind;
   final ChecklistList? existing;
   final VoidCallback onBack;
   final VoidCallback onSaved;
@@ -24,6 +28,7 @@ class ListFormStage extends StatefulWidget {
   const ListFormStage({
     super.key,
     required this.controller,
+    this.kind = ListKind.checklist,
     this.existing,
     required this.onBack,
     required this.onSaved,
@@ -52,7 +57,9 @@ class _ListFormStageState extends State<ListFormStage> {
   // "one-time" flag, which the add-item form owns; there is nothing to pick
   // here, so the whole section is hidden.
   bool get _supportsRecurrenceDefault =>
-      ServerFeature.listDefaultRecurrence && !_managesItemDefaults;
+      ServerFeature.listDefaultRecurrence &&
+      !_managesItemDefaults &&
+      widget.kind.isChecklist;
 
   /// The recurrence default is one of the list's item defaults, edited on their
   /// own screen with the rest of them.
@@ -119,7 +126,8 @@ class _ListFormStageState extends State<ListFormStage> {
           defaultRepeatFromCompletion: repeatFromCompletion,
         );
       } else {
-        await widget.controller.createList(
+        final fresh = await widget.controller.createList(
+          kind: widget.kind,
           name: name,
           icon: _icon,
           color: _supportsListColor ? _color : null,
@@ -128,7 +136,6 @@ class _ListFormStageState extends State<ListFormStage> {
           defaultRepeatFromCompletion: repeatFromCompletion,
         );
         if (!mounted) return;
-        final fresh = widget.controller.lists.firstWhere((l) => l.name == name);
         await widget.controller.selectList(fresh);
       }
       if (!mounted) return;
@@ -171,8 +178,10 @@ class _ListFormStageState extends State<ListFormStage> {
                 const SizedBox(width: 4),
                 Text(
                   _isEdit
-                      ? m.checklists.editListTitle
-                      : m.checklists.newChecklist,
+                      ? (ServerFeature.listKinds
+                            ? widget.kind.strings.editTitle
+                            : m.checklists.editListTitle)
+                      : widget.kind.strings.newList,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,

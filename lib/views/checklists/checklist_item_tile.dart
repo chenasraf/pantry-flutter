@@ -40,6 +40,10 @@ class ChecklistItemTile extends StatefulWidget {
   /// When false, the done/undone checkbox is shown but disabled (greyed).
   /// Mirrors `canCheckItems`: viewing is allowed, toggling completion is not.
   final bool canCheck;
+
+  /// Whether the item can be checked off at all. When false the row has no
+  /// checkbox, and a "done" tap or long-press opens the item instead.
+  final bool checkable;
   final ValueChanged<ListItem>? onMove;
   final ValueChanged<ListItem>? onCopy;
   final ValueChanged<ListItem>? onDelete;
@@ -110,6 +114,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.onDelete,
     this.onEdit,
     this.canCheck = true,
+    this.checkable = true,
     this.onMove,
     this.onCopy,
     this.trashMode = false,
@@ -151,6 +156,7 @@ class ChecklistItemTile extends StatefulWidget {
        onDelete = null,
        onEdit = null,
        canCheck = false,
+       checkable = false,
        onMove = null,
        onCopy = null,
        trashMode = false,
@@ -196,6 +202,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
     final longPressAction = prefs.defaultItemLongPressAction;
     final density = ChecklistDensity.fromPref(prefs.checklistDensity);
     final swipeEnabled = prefs.swipeActionsEnabled;
+    final canCheck = widget.canCheck && widget.checkable;
 
     final catColor = cat != null
         ? (_parseColor(cat.color) ?? cs.primary)
@@ -358,8 +365,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       rowTap = () => widget.onView(item);
     } else {
       rowTap = switch (tapAction) {
-        'done' =>
-          widget.canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
+        'done' => canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
         'edit' =>
           widget.onEdit != null
               ? () => widget.onEdit!(item)
@@ -384,8 +390,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       rowLongPress = () => widget.onView(item);
     } else {
       rowLongPress = switch (longPressAction) {
-        'done' =>
-          widget.canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
+        'done' => canCheck ? _toggleAndCloseSwipe : () => widget.onView(item),
         'edit' =>
           widget.onEdit != null
               ? () => widget.onEdit!(item)
@@ -411,12 +416,13 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       listBadge: widget.listBadge,
       hideCategory: widget.hideCategory,
       priceStoreContext: widget.priceStoreContext,
-      onCheckboxTap: widget.canCheck ? _toggleAndCloseSwipe : null,
+      onCheckboxTap: canCheck ? _toggleAndCloseSwipe : null,
       onRowTap: rowTap,
       onRowLongPress: rowLongPress,
       selectionMode: selecting,
       selected: widget.selected,
       pendingImage: widget.pendingImage,
+      checkable: widget.checkable,
     );
 
     // In selection mode the row toggles selection and shows no swipe actions,

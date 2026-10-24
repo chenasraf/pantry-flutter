@@ -6,10 +6,7 @@ extension ChecklistServiceItems on ChecklistService {
     int listId, {
     String sortBy = 'custom',
   }) async {
-    return _fetchAllItems(
-      '/houses/$houseId/lists/$listId/items',
-      sortBy: sortBy,
-    );
+    return _fetchAllItems('${listPath(houseId, listId)}/items', sortBy: sortBy);
   }
 
   /// Aggregate items across every (non-deleted) list in the house. Backs the
@@ -70,7 +67,7 @@ extension ChecklistServiceItems on ChecklistService {
     required int targetListId,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
-      '/houses/$houseId/lists/$listId/items/$itemId',
+      '${listPath(houseId, listId)}/items/$itemId',
       body: {'targetListId': targetListId},
       fromJson: (data) => ListItem.fromJson(data),
     );
@@ -83,7 +80,7 @@ extension ChecklistServiceItems on ChecklistService {
     required int targetListId,
   }) async {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
-      '/houses/$houseId/lists/$listId/items/$itemId/copy',
+      '${listPath(houseId, listId)}/items/$itemId/copy',
       body: {'targetListId': targetListId},
       fromJson: (data) => ListItem.fromJson(data),
     );
@@ -107,7 +104,7 @@ extension ChecklistServiceItems on ChecklistService {
   }) async {
     final loginName = AuthService.instance.credentials?.loginName;
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
-      '/houses/$houseId/lists/$listId/items',
+      '${listPath(houseId, listId)}/items',
       body: {
         'name': name,
         if (description != null && description.isNotEmpty)
@@ -116,9 +113,11 @@ extension ChecklistServiceItems on ChecklistService {
         'categoryId': ?categoryId,
         'storeIds': ?storeIds,
         'labelIds': ?labelIds,
-        if (rrule != null && rrule.isNotEmpty) 'rrule': rrule,
-        'repeatFromCompletion': ?repeatFromCompletion,
-        'deleteOnDone': ?deleteOnDone,
+        if (kindOf(listId).hasRecurrence) ...{
+          if (rrule != null && rrule.isNotEmpty) 'rrule': rrule,
+          'repeatFromCompletion': ?repeatFromCompletion,
+          'deleteOnDone': ?deleteOnDone,
+        },
         'addedBy': ?loginName,
         'barcode': ?barcode,
         // Adapts to the server: `prices` array on item-price-per-store servers,
@@ -151,7 +150,7 @@ extension ChecklistServiceItems on ChecklistService {
     List<FieldValue>? customFields,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
-      '/houses/$houseId/lists/$listId/items/$itemId',
+      '${listPath(houseId, listId)}/items/$itemId',
       body: {
         'name': ?name,
         'description': ?description,
@@ -162,9 +161,11 @@ extension ChecklistServiceItems on ChecklistService {
         'storeIds': ?storeIds,
         // Labels mirror stores: null omits (unchanged), [] clears.
         'labelIds': ?labelIds,
-        'rrule': ?rrule,
-        'repeatFromCompletion': ?repeatFromCompletion,
-        'deleteOnDone': ?deleteOnDone,
+        if (kindOf(listId).hasRecurrence) ...{
+          'rrule': ?rrule,
+          'repeatFromCompletion': ?repeatFromCompletion,
+          'deleteOnDone': ?deleteOnDone,
+        },
         'barcode': ?barcode,
         // Prices mirror stores: null omits (unchanged), an empty list clears
         // all prices, otherwise the full set replaces the item's prices. On
@@ -180,7 +181,7 @@ extension ChecklistServiceItems on ChecklistService {
 
   Future<void> deleteItem(int houseId, int listId, int itemId) async {
     await ApiClient.instance.delete(
-      '/houses/$houseId/lists/$listId/items/$itemId',
+      '${listPath(houseId, listId)}/items/$itemId',
     );
   }
 
@@ -191,7 +192,7 @@ extension ChecklistServiceItems on ChecklistService {
     int offset = 0,
   }) async {
     return ApiClient.instance.get<List, List<ListItem>>(
-      '/houses/$houseId/lists/$listId/items/trash',
+      '${listPath(houseId, listId)}/items/trash',
       query: {'limit': limit.toString(), 'offset': offset.toString()},
       fromJson: (data) => data
           .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
@@ -201,7 +202,7 @@ extension ChecklistServiceItems on ChecklistService {
 
   Future<ListItem> restoreItem(int houseId, int listId, int itemId) async {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
-      '/houses/$houseId/lists/$listId/items/$itemId/restore',
+      '${listPath(houseId, listId)}/items/$itemId/restore',
       fromJson: (data) => ListItem.fromJson(data),
     );
   }
@@ -212,14 +213,12 @@ extension ChecklistServiceItems on ChecklistService {
     int itemId,
   ) async {
     await ApiClient.instance.delete(
-      '/houses/$houseId/lists/$listId/items/$itemId/permanent',
+      '${listPath(houseId, listId)}/items/$itemId/permanent',
     );
   }
 
   Future<void> emptyTrash(int houseId, int listId) async {
-    await ApiClient.instance.delete(
-      '/houses/$houseId/lists/$listId/items/trash',
-    );
+    await ApiClient.instance.delete('${listPath(houseId, listId)}/items/trash');
   }
 
   Future<List<ListItem>> getArchivedItems(
@@ -229,7 +228,7 @@ extension ChecklistServiceItems on ChecklistService {
     int offset = 0,
   }) async {
     return ApiClient.instance.get<List, List<ListItem>>(
-      '/houses/$houseId/lists/$listId/items/archive',
+      '${listPath(houseId, listId)}/items/archive',
       query: {'limit': limit.toString(), 'offset': offset.toString()},
       fromJson: (data) => data
           .map((e) => ListItem.fromJson(e as Map<String, dynamic>))
@@ -239,21 +238,21 @@ extension ChecklistServiceItems on ChecklistService {
 
   Future<ListItem> archiveItem(int houseId, int listId, int itemId) async {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
-      '/houses/$houseId/lists/$listId/items/$itemId/archive',
+      '${listPath(houseId, listId)}/items/$itemId/archive',
       fromJson: (data) => ListItem.fromJson(data),
     );
   }
 
   Future<ListItem> unarchiveItem(int houseId, int listId, int itemId) async {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
-      '/houses/$houseId/lists/$listId/items/$itemId/unarchive',
+      '${listPath(houseId, listId)}/items/$itemId/unarchive',
       fromJson: (data) => ListItem.fromJson(data),
     );
   }
 
   Future<ListItem> toggleItem(int houseId, int listId, int itemId) async {
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
-      '/houses/$houseId/lists/$listId/items/$itemId/toggle',
+      '${listPath(houseId, listId)}/items/$itemId/toggle',
       fromJson: (data) => ListItem.fromJson(data),
     );
   }
@@ -267,7 +266,7 @@ extension ChecklistServiceItems on ChecklistService {
     required String mimeType,
   }) async {
     return ApiClient.instance.uploadMultipart<Map<String, dynamic>, ListItem>(
-      '/houses/$houseId/lists/$listId/items/$itemId/image',
+      '${listPath(houseId, listId)}/items/$itemId/image',
       bytes: bytes,
       fileName: fileName,
       mimeType: mimeType,
@@ -278,7 +277,7 @@ extension ChecklistServiceItems on ChecklistService {
 
   Future<void> deleteItemImage(int houseId, int listId, int itemId) async {
     await ApiClient.instance.delete(
-      '/houses/$houseId/lists/$listId/items/$itemId/image',
+      '${listPath(houseId, listId)}/items/$itemId/image',
     );
   }
 
@@ -288,7 +287,7 @@ extension ChecklistServiceItems on ChecklistService {
     List<({int id, int sortOrder})> order,
   ) async {
     await ApiClient.instance.post<Map<String, dynamic>, void>(
-      '/houses/$houseId/lists/$listId/items/reorder',
+      '${listPath(houseId, listId)}/items/reorder',
       body: {
         'items': order
             .map((e) => {'id': e.id, 'sortOrder': e.sortOrder})

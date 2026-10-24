@@ -622,6 +622,7 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
       priceStoreContext: priceStoreContext,
       onToggle: (i) => _onToggle(context, controller, i),
       canCheck: writable && controller.permissions.canCheckItems,
+      checkable: controller.isChecklistKind,
       onView: (i) => _openView(context, controller, i),
       onEdit: writable && controller.permissions.canEditLists
           ? (i) => _openEdit(context, controller, i)
@@ -705,7 +706,13 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
     );
     if (targetId == null) return;
     try {
-      await controller.moveItem(item, targetId);
+      final skipped = await controller.moveItem(item, targetId);
+      if (skipped > 0) {
+        showAppToast(
+          message: m.listKinds.itemsSkippedNoEdit(skipped),
+          kind: ToastKind.error,
+        );
+      }
     } catch (_) {
       if (context.mounted) {
         showAppToast(message: m.checklists.moveFailed, kind: ToastKind.error);
@@ -734,7 +741,13 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
     );
     if (targetId == null) return;
     try {
-      await controller.copyItem(item, targetId);
+      final skipped = await controller.copyItem(item, targetId);
+      if (skipped > 0) {
+        showAppToast(
+          message: m.listKinds.itemsSkippedNoEdit(skipped),
+          kind: ToastKind.error,
+        );
+      }
     } catch (_) {
       if (context.mounted) {
         showAppToast(message: m.checklists.copyFailed, kind: ToastKind.error);

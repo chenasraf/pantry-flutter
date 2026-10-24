@@ -79,6 +79,7 @@ class MessagesFr extends Messages {
   StoresMessagesFr get stores => StoresMessagesFr(this);
   LabelsMessagesFr get labels => LabelsMessagesFr(this);
   ChecklistsMessagesFr get checklists => ChecklistsMessagesFr(this);
+  ListKindsMessagesFr get listKinds => ListKindsMessagesFr(this);
   NotesWallMessagesFr get notesWall => NotesWallMessagesFr(this);
   PhotoBoardMessagesFr get photoBoard => PhotoBoardMessagesFr(this);
   ShoppingMessagesFr get shopping => ShoppingMessagesFr(this);
@@ -470,6 +471,16 @@ class NavMessagesFr extends NavMessages {
   /// "Liste"
   /// ```
   String get checklist => """Liste""";
+
+  /// ```dart
+  /// "Listes"
+  /// ```
+  String get lists => """Listes""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 
   /// ```dart
   /// "Tableau photos"
@@ -4868,6 +4879,375 @@ class MarkdownChecklistsMessagesFr extends MarkdownChecklistsMessages {
       """${_plural(count, one: '1 élément importé', many: '$count éléments importés')}""";
 }
 
+class ListKindsMessagesFr extends ListKindsMessages {
+  final MessagesFr _parent;
+  const ListKindsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Dupliquer en tant que :"
+  /// ```
+  String get duplicateAs => """Dupliquer en tant que :""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article a été ignoré, car vous n’êtes pas autorisé à le modifier.', many: '$count articles ont été ignorés, car vous n’êtes pas autorisé à les modifier.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: '1 article a été ignoré, car vous n’êtes pas autorisé à le modifier.', many: '$count articles ont été ignorés, car vous n’êtes pas autorisé à les modifier.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 article n’a pas pu être décoché.', many: '$count articles n’ont pas pu être décochés.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: '1 article n’a pas pu être décoché.', many: '$count articles n’ont pas pu être décochés.')}""";
+  ChecklistListKindsMessagesFr get checklist =>
+      ChecklistListKindsMessagesFr(this);
+  InventoryListKindsMessagesFr get inventory =>
+      InventoryListKindsMessagesFr(this);
+  TemplateListKindsMessagesFr get template => TemplateListKindsMessagesFr(this);
+}
+
+class ChecklistListKindsMessagesFr extends ChecklistListKindsMessages {
+  final ListKindsMessagesFr _parent;
+  const ChecklistListKindsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Listes de contrôle"
+  /// ```
+  String get title => """Listes de contrôle""";
+
+  /// ```dart
+  /// "Liste de contrôle"
+  /// ```
+  String get name => """Liste de contrôle""";
+
+  /// ```dart
+  /// "Nouvelle liste de contrôle"
+  /// ```
+  String get newList => """Nouvelle liste de contrôle""";
+
+  /// ```dart
+  /// "Créer une liste de contrôle"
+  /// ```
+  String get createTitle => """Créer une liste de contrôle""";
+
+  /// ```dart
+  /// "Modifier la liste de contrôle"
+  /// ```
+  String get editTitle => """Modifier la liste de contrôle""";
+
+  /// ```dart
+  /// "Dupliquer la liste de contrôle"
+  /// ```
+  String get duplicateTitle => """Dupliquer la liste de contrôle""";
+
+  /// ```dart
+  /// "Impossible de dupliquer la liste de contrôle"
+  /// ```
+  String get duplicateFailed =>
+      """Impossible de dupliquer la liste de contrôle""";
+
+  /// ```dart
+  /// "Actions de la liste de contrôle"
+  /// ```
+  String get listMenu => """Actions de la liste de contrôle""";
+
+  /// ```dart
+  /// "Supprimer la liste de contrôle"
+  /// ```
+  String get deleteDialogTitle => """Supprimer la liste de contrôle""";
+
+  /// ```dart
+  /// "Aucune liste de contrôle pour le moment"
+  /// ```
+  String get emptyTitle => """Aucune liste de contrôle pour le moment""";
+
+  /// ```dart
+  /// "Créez votre première liste de contrôle pour commencer à ajouter des articles."
+  /// ```
+  String get emptyBody =>
+      """Créez votre première liste de contrôle pour commencer à ajouter des articles.""";
+
+  /// ```dart
+  /// "Corbeille des listes de contrôle"
+  /// ```
+  String get trashTitle => """Corbeille des listes de contrôle""";
+
+  /// ```dart
+  /// "Les listes de contrôle supprimées apparaîtront ici."
+  /// ```
+  String get trashEmptyBody =>
+      """Les listes de contrôle supprimées apparaîtront ici.""";
+
+  /// ```dart
+  /// "Listes de contrôle archivées"
+  /// ```
+  String get archiveTitle => """Listes de contrôle archivées""";
+
+  /// ```dart
+  /// "Aucune liste de contrôle archivée"
+  /// ```
+  String get archiveEmptyTitle => """Aucune liste de contrôle archivée""";
+
+  /// ```dart
+  /// "Les listes de contrôle archivées apparaîtront ici."
+  /// ```
+  String get archiveEmptyBody =>
+      """Les listes de contrôle archivées apparaîtront ici.""";
+
+  /// ```dart
+  /// "Toutes les listes de contrôle présentes dans la corbeille, ainsi que leurs articles, seront définitivement supprimées. Cette action est irréversible."
+  /// ```
+  String get emptyTrashBody =>
+      """Toutes les listes de contrôle présentes dans la corbeille, ainsi que leurs articles, seront définitivement supprimées. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Liste de contrôle restaurée"
+  /// ```
+  String get listRestored => """Liste de contrôle restaurée""";
+
+  /// ```dart
+  /// "Liste de contrôle déplacée vers la corbeille"
+  /// ```
+  String get listMovedToTrash =>
+      """Liste de contrôle déplacée vers la corbeille""";
+
+  /// ```dart
+  /// "Liste de contrôle archivée"
+  /// ```
+  String get listArchived => """Liste de contrôle archivée""";
+
+  /// ```dart
+  /// "Liste de contrôle désarchivée"
+  /// ```
+  String get listUnarchived => """Liste de contrôle désarchivée""";
+}
+
+class InventoryListKindsMessagesFr extends InventoryListKindsMessages {
+  final ListKindsMessagesFr _parent;
+  const InventoryListKindsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Inventaires"
+  /// ```
+  String get title => """Inventaires""";
+
+  /// ```dart
+  /// "Inventaire"
+  /// ```
+  String get name => """Inventaire""";
+
+  /// ```dart
+  /// "Nouvel inventaire"
+  /// ```
+  String get newList => """Nouvel inventaire""";
+
+  /// ```dart
+  /// "Créer un inventaire"
+  /// ```
+  String get createTitle => """Créer un inventaire""";
+
+  /// ```dart
+  /// "Modifier l'inventaire"
+  /// ```
+  String get editTitle => """Modifier l'inventaire""";
+
+  /// ```dart
+  /// "Dupliquer l'inventaire"
+  /// ```
+  String get duplicateTitle => """Dupliquer l'inventaire""";
+
+  /// ```dart
+  /// "Impossible de dupliquer l'inventaire"
+  /// ```
+  String get duplicateFailed => """Impossible de dupliquer l'inventaire""";
+
+  /// ```dart
+  /// "Actions de l'inventaire"
+  /// ```
+  String get listMenu => """Actions de l'inventaire""";
+
+  /// ```dart
+  /// "Supprimer l'inventaire"
+  /// ```
+  String get deleteDialogTitle => """Supprimer l'inventaire""";
+
+  /// ```dart
+  /// "Aucun inventaire pour le moment"
+  /// ```
+  String get emptyTitle => """Aucun inventaire pour le moment""";
+
+  /// ```dart
+  /// "Créez votre premier inventaire pour commencer à ajouter des articles."
+  /// ```
+  String get emptyBody =>
+      """Créez votre premier inventaire pour commencer à ajouter des articles.""";
+
+  /// ```dart
+  /// "Corbeille des inventaires"
+  /// ```
+  String get trashTitle => """Corbeille des inventaires""";
+
+  /// ```dart
+  /// "Les inventaires supprimés apparaîtront ici."
+  /// ```
+  String get trashEmptyBody =>
+      """Les inventaires supprimés apparaîtront ici.""";
+
+  /// ```dart
+  /// "Inventaires archivés"
+  /// ```
+  String get archiveTitle => """Inventaires archivés""";
+
+  /// ```dart
+  /// "Aucun inventaire archivé"
+  /// ```
+  String get archiveEmptyTitle => """Aucun inventaire archivé""";
+
+  /// ```dart
+  /// "Les inventaires archivés apparaîtront ici."
+  /// ```
+  String get archiveEmptyBody =>
+      """Les inventaires archivés apparaîtront ici.""";
+
+  /// ```dart
+  /// "Tous les inventaires présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible."
+  /// ```
+  String get emptyTrashBody =>
+      """Tous les inventaires présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Inventaire restauré"
+  /// ```
+  String get listRestored => """Inventaire restauré""";
+
+  /// ```dart
+  /// "Inventaire déplacé vers la corbeille"
+  /// ```
+  String get listMovedToTrash => """Inventaire déplacé vers la corbeille""";
+
+  /// ```dart
+  /// "Inventaire archivé"
+  /// ```
+  String get listArchived => """Inventaire archivé""";
+
+  /// ```dart
+  /// "Inventaire désarchivé"
+  /// ```
+  String get listUnarchived => """Inventaire désarchivé""";
+}
+
+class TemplateListKindsMessagesFr extends TemplateListKindsMessages {
+  final ListKindsMessagesFr _parent;
+  const TemplateListKindsMessagesFr(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Modèles"
+  /// ```
+  String get title => """Modèles""";
+
+  /// ```dart
+  /// "Modèle"
+  /// ```
+  String get name => """Modèle""";
+
+  /// ```dart
+  /// "Nouveau modèle"
+  /// ```
+  String get newList => """Nouveau modèle""";
+
+  /// ```dart
+  /// "Créer un modèle"
+  /// ```
+  String get createTitle => """Créer un modèle""";
+
+  /// ```dart
+  /// "Modifier le modèle"
+  /// ```
+  String get editTitle => """Modifier le modèle""";
+
+  /// ```dart
+  /// "Dupliquer le modèle"
+  /// ```
+  String get duplicateTitle => """Dupliquer le modèle""";
+
+  /// ```dart
+  /// "Impossible de dupliquer le modèle"
+  /// ```
+  String get duplicateFailed => """Impossible de dupliquer le modèle""";
+
+  /// ```dart
+  /// "Actions du modèle"
+  /// ```
+  String get listMenu => """Actions du modèle""";
+
+  /// ```dart
+  /// "Supprimer le modèle"
+  /// ```
+  String get deleteDialogTitle => """Supprimer le modèle""";
+
+  /// ```dart
+  /// "Aucun modèle pour le moment"
+  /// ```
+  String get emptyTitle => """Aucun modèle pour le moment""";
+
+  /// ```dart
+  /// "Créez votre premier modèle pour commencer à ajouter des articles."
+  /// ```
+  String get emptyBody =>
+      """Créez votre premier modèle pour commencer à ajouter des articles.""";
+
+  /// ```dart
+  /// "Corbeille des modèles"
+  /// ```
+  String get trashTitle => """Corbeille des modèles""";
+
+  /// ```dart
+  /// "Les modèles supprimés apparaîtront ici."
+  /// ```
+  String get trashEmptyBody => """Les modèles supprimés apparaîtront ici.""";
+
+  /// ```dart
+  /// "Modèles archivés"
+  /// ```
+  String get archiveTitle => """Modèles archivés""";
+
+  /// ```dart
+  /// "Aucun modèle archivé"
+  /// ```
+  String get archiveEmptyTitle => """Aucun modèle archivé""";
+
+  /// ```dart
+  /// "Les modèles archivés apparaîtront ici."
+  /// ```
+  String get archiveEmptyBody => """Les modèles archivés apparaîtront ici.""";
+
+  /// ```dart
+  /// "Tous les modèles présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible."
+  /// ```
+  String get emptyTrashBody =>
+      """Tous les modèles présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.""";
+
+  /// ```dart
+  /// "Modèle restauré"
+  /// ```
+  String get listRestored => """Modèle restauré""";
+
+  /// ```dart
+  /// "Modèle déplacé vers la corbeille"
+  /// ```
+  String get listMovedToTrash => """Modèle déplacé vers la corbeille""";
+
+  /// ```dart
+  /// "Modèle archivé"
+  /// ```
+  String get listArchived => """Modèle archivé""";
+
+  /// ```dart
+  /// "Modèle désarchivé"
+  /// ```
+  String get listUnarchived => """Modèle désarchivé""";
+}
+
 class NotesWallMessagesFr extends NotesWallMessages {
   final MessagesFr _parent;
   const NotesWallMessagesFr(this._parent) : super(_parent);
@@ -7532,6 +7912,8 @@ Veuillez terminer la connexion dans votre navigateur.""",
   """home.learnMore""": """En savoir plus""",
   """nav.checklists""": """Listes""",
   """nav.checklist""": """Liste""",
+  """nav.lists""": """Listes""",
+  """nav.list""": """Liste""",
   """nav.photoBoard""": """Tableau photos""",
   """nav.notesWall""": """Mur de notes""",
   """widget.chooseListsTitle""": """Choisir les listes""",
@@ -8417,6 +8799,92 @@ Mot de passe : pantry-rocks""",
       """Réutiliser les éléments existants au lieu d'ajouter des doublons""",
   """checklists.markdown.defaultFields""":
       """Valeurs appliquées à chaque élément importé""",
+  """listKinds.duplicateAs""": """Dupliquer en tant que :""",
+  """listKinds.checklist.title""": """Listes de contrôle""",
+  """listKinds.checklist.name""": """Liste de contrôle""",
+  """listKinds.checklist.newList""": """Nouvelle liste de contrôle""",
+  """listKinds.checklist.createTitle""": """Créer une liste de contrôle""",
+  """listKinds.checklist.editTitle""": """Modifier la liste de contrôle""",
+  """listKinds.checklist.duplicateTitle""":
+      """Dupliquer la liste de contrôle""",
+  """listKinds.checklist.duplicateFailed""":
+      """Impossible de dupliquer la liste de contrôle""",
+  """listKinds.checklist.listMenu""": """Actions de la liste de contrôle""",
+  """listKinds.checklist.deleteDialogTitle""":
+      """Supprimer la liste de contrôle""",
+  """listKinds.checklist.emptyTitle""":
+      """Aucune liste de contrôle pour le moment""",
+  """listKinds.checklist.emptyBody""":
+      """Créez votre première liste de contrôle pour commencer à ajouter des articles.""",
+  """listKinds.checklist.trashTitle""": """Corbeille des listes de contrôle""",
+  """listKinds.checklist.trashEmptyBody""":
+      """Les listes de contrôle supprimées apparaîtront ici.""",
+  """listKinds.checklist.archiveTitle""": """Listes de contrôle archivées""",
+  """listKinds.checklist.archiveEmptyTitle""":
+      """Aucune liste de contrôle archivée""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """Les listes de contrôle archivées apparaîtront ici.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """Toutes les listes de contrôle présentes dans la corbeille, ainsi que leurs articles, seront définitivement supprimées. Cette action est irréversible.""",
+  """listKinds.checklist.listRestored""": """Liste de contrôle restaurée""",
+  """listKinds.checklist.listMovedToTrash""":
+      """Liste de contrôle déplacée vers la corbeille""",
+  """listKinds.checklist.listArchived""": """Liste de contrôle archivée""",
+  """listKinds.checklist.listUnarchived""": """Liste de contrôle désarchivée""",
+  """listKinds.inventory.title""": """Inventaires""",
+  """listKinds.inventory.name""": """Inventaire""",
+  """listKinds.inventory.newList""": """Nouvel inventaire""",
+  """listKinds.inventory.createTitle""": """Créer un inventaire""",
+  """listKinds.inventory.editTitle""": """Modifier l'inventaire""",
+  """listKinds.inventory.duplicateTitle""": """Dupliquer l'inventaire""",
+  """listKinds.inventory.duplicateFailed""":
+      """Impossible de dupliquer l'inventaire""",
+  """listKinds.inventory.listMenu""": """Actions de l'inventaire""",
+  """listKinds.inventory.deleteDialogTitle""": """Supprimer l'inventaire""",
+  """listKinds.inventory.emptyTitle""": """Aucun inventaire pour le moment""",
+  """listKinds.inventory.emptyBody""":
+      """Créez votre premier inventaire pour commencer à ajouter des articles.""",
+  """listKinds.inventory.trashTitle""": """Corbeille des inventaires""",
+  """listKinds.inventory.trashEmptyBody""":
+      """Les inventaires supprimés apparaîtront ici.""",
+  """listKinds.inventory.archiveTitle""": """Inventaires archivés""",
+  """listKinds.inventory.archiveEmptyTitle""": """Aucun inventaire archivé""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """Les inventaires archivés apparaîtront ici.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """Tous les inventaires présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.""",
+  """listKinds.inventory.listRestored""": """Inventaire restauré""",
+  """listKinds.inventory.listMovedToTrash""":
+      """Inventaire déplacé vers la corbeille""",
+  """listKinds.inventory.listArchived""": """Inventaire archivé""",
+  """listKinds.inventory.listUnarchived""": """Inventaire désarchivé""",
+  """listKinds.template.title""": """Modèles""",
+  """listKinds.template.name""": """Modèle""",
+  """listKinds.template.newList""": """Nouveau modèle""",
+  """listKinds.template.createTitle""": """Créer un modèle""",
+  """listKinds.template.editTitle""": """Modifier le modèle""",
+  """listKinds.template.duplicateTitle""": """Dupliquer le modèle""",
+  """listKinds.template.duplicateFailed""":
+      """Impossible de dupliquer le modèle""",
+  """listKinds.template.listMenu""": """Actions du modèle""",
+  """listKinds.template.deleteDialogTitle""": """Supprimer le modèle""",
+  """listKinds.template.emptyTitle""": """Aucun modèle pour le moment""",
+  """listKinds.template.emptyBody""":
+      """Créez votre premier modèle pour commencer à ajouter des articles.""",
+  """listKinds.template.trashTitle""": """Corbeille des modèles""",
+  """listKinds.template.trashEmptyBody""":
+      """Les modèles supprimés apparaîtront ici.""",
+  """listKinds.template.archiveTitle""": """Modèles archivés""",
+  """listKinds.template.archiveEmptyTitle""": """Aucun modèle archivé""",
+  """listKinds.template.archiveEmptyBody""":
+      """Les modèles archivés apparaîtront ici.""",
+  """listKinds.template.emptyTrashBody""":
+      """Tous les modèles présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.""",
+  """listKinds.template.listRestored""": """Modèle restauré""",
+  """listKinds.template.listMovedToTrash""":
+      """Modèle déplacé vers la corbeille""",
+  """listKinds.template.listArchived""": """Modèle archivé""",
+  """listKinds.template.listUnarchived""": """Modèle désarchivé""",
   """notesWall.noNotes""": """Aucune note pour le moment.""",
   """notesWall.failedToLoad""": """Impossible de charger les notes.""",
   """notesWall.saveFailed""": """Impossible d'enregistrer la note.""",

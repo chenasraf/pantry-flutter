@@ -9,6 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/list_kind.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
+import 'package:pantry/views/checklists/switcher_widgets.dart'
+    show listKindIcon;
 import 'package:pantry_core/models/nav_section.dart';
 import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/deep_link_service.dart';
@@ -527,7 +532,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   }
 
   String _sectionTitle(NavSection s) => switch (s) {
-    NavSection.checklists => m.nav.checklists,
+    NavSection.checklists =>
+      ServerFeature.listKinds ? m.nav.lists : m.nav.checklists,
     NavSection.photoBoard => m.nav.photoBoard,
     NavSection.notesWall => m.nav.notesWall,
   };
@@ -535,7 +541,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   /// The floating bar names the one list in front of you, where the rail names
   /// the section that holds them all.
   String _sectionNavLabel(NavSection s) => switch (s) {
-    NavSection.checklists => m.nav.checklist,
+    NavSection.checklists =>
+      ServerFeature.listKinds ? m.nav.list : m.nav.checklist,
     _ => _sectionTitle(s),
   };
 
@@ -556,20 +563,40 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     required bool active,
   }) {
     if (spec == null || checklistsIndex < 0) return const [];
+    final onSelectKind = spec.onSelectKind;
     return [
-      for (final list in spec.lists)
-        NavRailNested(
-          icon: checklistIcon(list.icon),
-          color: parseHexColor(list.color),
-          label: list.id == kAllListsId ? m.checklists.allLists : list.name,
-          selected: active && spec.currentListId == list.id,
-          onTap: () {
-            spec.onSelect(list);
-            _goToTab(checklistsIndex);
-          },
-        ),
+      for (final kind in ListKind.values) ...[
+        if (onSelectKind != null)
+          NavRailNested.header(
+            icon: listKindIcon(kind),
+            label: kind.strings.title,
+            onTap: () {
+              onSelectKind(kind);
+              _goToTab(checklistsIndex);
+            },
+          ),
+        for (final list in spec.lists)
+          if (list.kind == kind)
+            _nestedList(spec, list, checklistsIndex, active),
+      ],
     ];
   }
+
+  NavRailNested _nestedList(
+    HomeNavListsSpec spec,
+    ChecklistList list,
+    int checklistsIndex,
+    bool active,
+  ) => NavRailNested(
+    icon: checklistIcon(list.icon),
+    color: parseHexColor(list.color),
+    label: list.id == kAllListsId ? m.checklists.allLists : list.name,
+    selected: active && spec.currentListId == list.id,
+    onTap: () {
+      spec.onSelect(list);
+      _goToTab(checklistsIndex);
+    },
+  );
 
   bool _sectionVisible(NavSection s, HousePermissions perms) => switch (s) {
     NavSection.checklists => perms.canViewLists,

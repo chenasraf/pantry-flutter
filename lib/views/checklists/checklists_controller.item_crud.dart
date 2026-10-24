@@ -1,10 +1,34 @@
 part of 'checklists_controller.dart';
 
 extension ChecklistsControllerItemCrud on ChecklistsController {
-  Future<void> moveItem(ListItem item, int targetListId) async {
-    // Cross-list move is online-only for v1 — its semantics interact with
-    // both source and target list caches in ways that don't simplify well
-    // through the basic SyncOp shapes. Falls back to a direct API call.
+  /// Whether moving or copying between these lists crosses kinds, which only
+  /// the house-wide batch endpoints do.
+  bool _crossesKinds(int sourceListId, int targetListId) =>
+      _checklistService.kindOf(sourceListId) !=
+      _checklistService.kindOf(targetListId);
+
+  /// Moves [item] onto another list, of any kind. Returns how many items the
+  /// server skipped (0 or 1).
+  Future<int> moveItem(ListItem item, int targetListId) async {
+    // Cross-list move is online-only — its semantics interact with both source
+    // and target list caches in ways that don't simplify well through the
+    // basic SyncOp shapes. Falls back to a direct API call.
+    if (_crossesKinds(item.listId, targetListId)) {
+      final result = await _checklistService.batchMoveItems(
+        houseId,
+        itemIds: [item.id],
+        targetListId: targetListId,
+      );
+      if (result.skipped.isEmpty) {
+        // The item now has another kind's shape, so no view of this kind
+        // keeps it.
+        _items.removeWhere((i) => i.id == item.id);
+        _cacheVisibleItems();
+        _checklistService.invalidateItemsFor(targetListId);
+        notifyListeners();
+      }
+      return result.skipped.length;
+    }
     final updated = await _checklistService.moveItem(
       houseId,
       item.listId,
@@ -22,12 +46,24 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       _checklistService.cacheItems(_currentList!.id, List.of(_items));
     }
     notifyListeners();
+    return 0;
   }
 
-  Future<void> copyItem(ListItem item, int targetListId) async {
+  /// Copies [item] onto another list, of any kind. Returns how many items the
+  /// server skipped (0 or 1).
+  Future<int> copyItem(ListItem item, int targetListId) async {
     // Online-only for the same reason as [moveItem] — the new item lives on
     // a list the user isn't currently viewing, so cache reconciliation
     // doesn't fit the per-list SyncOp shapes.
+    if (_crossesKinds(item.listId, targetListId)) {
+      final result = await _checklistService.batchCopyItems(
+        houseId,
+        itemIds: [item.id],
+        targetListId: targetListId,
+      );
+      _checklistService.invalidateItemsFor(targetListId);
+      return result.skipped.length;
+    }
     final created = await _checklistService.copyItem(
       houseId,
       item.listId,
@@ -41,6 +77,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       _cacheVisibleItems();
     }
     notifyListeners();
+    return 0;
   }
 
   Future<ListItem> addItem({
@@ -584,6 +621,6 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     final stamped = _lists[i].copyWith(lastCompletedAt: _now() ~/ 1000);
     _lists[i] = stamped;
     if (_currentList?.id == listId) _currentList = stamped;
-    _checklistService.cacheLists(houseId, _lists);
+    _checklistService.cacheListsOfEveryKind(houseId, _lists);
   }
 }

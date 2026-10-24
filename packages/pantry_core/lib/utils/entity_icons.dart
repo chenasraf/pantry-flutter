@@ -12,6 +12,8 @@ abstract final class EntityIcons {
   static const store = Icons.storefront_outlined;
   static const price = Icons.attach_money;
   static const checklists = Icons.checklist;
+  static const inventories = Icons.inventory_2_outlined;
+  static const templates = Icons.library_books_outlined;
   static const photos = Icons.photo_library_outlined;
   static const notes = Icons.sticky_note_2_outlined;
 }

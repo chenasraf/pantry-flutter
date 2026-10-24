@@ -23,6 +23,7 @@ import 'package:pantry_core/utils/checklist_icons.dart';
 import 'package:pantry_core/utils/checklist_sort.dart';
 import 'package:pantry_core/utils/color.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/price.dart';

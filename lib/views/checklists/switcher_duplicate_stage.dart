@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/utils/app_toast.dart';
@@ -30,6 +32,11 @@ class _DuplicateListStageState extends State<DuplicateListStage> {
   late TextDirection _nameDir;
   bool _resetDone = true;
   bool _saving = false;
+  late ListKind _as = widget.source.kind;
+
+  /// Done state only carries from a checklist into a checklist.
+  bool get _offersResetDone =>
+      widget.source.kind.isChecklist && _as.isChecklist;
 
   @override
   void initState() {
@@ -58,14 +65,17 @@ class _DuplicateListStageState extends State<DuplicateListStage> {
       await widget.controller.duplicateList(
         widget.source,
         name: name,
-        resetDone: _resetDone,
+        resetDone: _offersResetDone && _resetDone,
+        as: _as,
       );
       if (!mounted) return;
       widget.onDuplicated();
     } catch (_) {
       if (mounted) {
         showAppToast(
-          message: m.checklists.duplicateListFailed,
+          message: ServerFeature.listKinds
+              ? widget.source.kind.strings.duplicateFailed
+              : m.checklists.duplicateListFailed,
           kind: ToastKind.error,
         );
       }
@@ -78,6 +88,7 @@ class _DuplicateListStageState extends State<DuplicateListStage> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final surfaces = AppSurfaces.of(context);
+    final kinds = widget.controller.duplicateKindsFor(widget.source);
     return Padding(
       padding: EdgeInsetsDirectional.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -96,7 +107,9 @@ class _DuplicateListStageState extends State<DuplicateListStage> {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  m.checklists.duplicateListTitle,
+                  ServerFeature.listKinds
+                      ? widget.source.kind.strings.duplicateTitle
+                      : m.checklists.duplicateListTitle,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
@@ -115,13 +128,42 @@ class _DuplicateListStageState extends State<DuplicateListStage> {
             decoration: InputDecoration(labelText: m.checklists.listName),
           ),
           const SizedBox(height: 8),
-          CheckboxListTile(
-            value: _resetDone,
-            onChanged: (v) => setState(() => _resetDone = v ?? true),
-            title: Text(m.checklists.duplicateListResetDone),
-            controlAffinity: ListTileControlAffinity.leading,
-            contentPadding: EdgeInsetsDirectional.zero,
-          ),
+          if (kinds.length > 1) ...[
+            Padding(
+              padding: const EdgeInsetsDirectional.only(top: 8, bottom: 4),
+              child: Text(
+                m.listKinds.duplicateAs,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: cs.onSurfaceVariant,
+                ),
+              ),
+            ),
+            RadioGroup<ListKind>(
+              groupValue: _as,
+              onChanged: (v) => setState(() => _as = v ?? _as),
+              child: Column(
+                children: [
+                  for (final kind in kinds)
+                    RadioListTile<ListKind>(
+                      value: kind,
+                      title: Text(kind.strings.name),
+                      dense: true,
+                      contentPadding: EdgeInsetsDirectional.zero,
+                    ),
+                ],
+              ),
+            ),
+          ],
+          if (_offersResetDone)
+            CheckboxListTile(
+              value: _resetDone,
+              onChanged: (v) => setState(() => _resetDone = v ?? true),
+              title: Text(m.checklists.duplicateListResetDone),
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsetsDirectional.zero,
+            ),
           const SizedBox(height: 14),
           GestureDetector(
             onTap: _saving ? null : _submit,

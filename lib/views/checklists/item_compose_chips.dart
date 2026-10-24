@@ -30,6 +30,7 @@ class ChipRow extends StatelessWidget {
   final Tray? openTray;
   final ValueChanged<Tray> onOpen;
   final bool showImageChip;
+  final bool showTypeChip;
   final bool multiple;
   final VoidCallback onToggleMultiple;
 
@@ -52,6 +53,7 @@ class ChipRow extends StatelessWidget {
     required this.multiple,
     required this.onToggleMultiple,
     this.showImageChip = true,
+    this.showTypeChip = true,
     this.onEditDefaults,
   });
 
@@ -212,16 +214,18 @@ class ChipRow extends StatelessWidget {
             selected: openTray == Tray.description,
             onTap: () => onOpen(Tray.description),
           ),
-          const SizedBox(width: 8),
-          _ComposeChip(
-            label: hasType
-                ? _typeChipLabel(draft)
-                : m.checklists.compose.chipType,
-            color: hasType ? cs.primary : null,
-            icon: Icons.cached,
-            selected: openTray == Tray.type,
-            onTap: () => onOpen(Tray.type),
-          ),
+          if (showTypeChip) ...[
+            const SizedBox(width: 8),
+            _ComposeChip(
+              label: hasType
+                  ? _typeChipLabel(draft)
+                  : m.checklists.compose.chipType,
+              color: hasType ? cs.primary : null,
+              icon: Icons.cached,
+              selected: openTray == Tray.type,
+              onTap: () => onOpen(Tray.type),
+            ),
+          ],
           if (showImageChip) ...[
             const SizedBox(width: 8),
             _ComposeChip(

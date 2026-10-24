@@ -168,11 +168,16 @@ class ItemComposeBar extends StatefulWidget {
   /// separating border moves to the bottom edge.
   final bool onTop;
 
+  /// Whether items here recur. Inventory items don't, so their bar has no
+  /// recurrence chip.
+  final bool recurrenceEnabled;
+
   const ItemComposeBar({
     super.key,
     required this.listName,
     required this.houseId,
     this.listId,
+    this.recurrenceEnabled = true,
     this.recurrenceDefault = ListRecurrenceDefault.neutral,
     this.onRecurrenceUsed,
     this.itemDefaults,
@@ -878,6 +883,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           openTray: _openTray,
           onOpen: _toggleTray,
           showImageChip: !_multiple,
+          showTypeChip: widget.recurrenceEnabled,
           multiple: _multiple,
           onToggleMultiple: _toggleMultiple,
           onEditDefaults:

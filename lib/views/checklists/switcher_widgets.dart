@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/entity_icons.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry/theme/app_theme.dart';
 
 /// Per-list color swatches the user can pick from in the create form. Values
@@ -52,6 +55,45 @@ class SwitcherColorSwatch extends StatelessWidget {
               : null,
         ),
       ),
+    );
+  }
+}
+
+IconData listKindIcon(ListKind kind) => switch (kind) {
+  ListKind.checklist => EntityIcons.checklists,
+  ListKind.inventory => EntityIcons.inventories,
+  ListKind.template => EntityIcons.templates,
+};
+
+/// Picks which kind's lists the switcher shows.
+class ListKindPicker extends StatelessWidget {
+  final ListKind selected;
+  final ValueChanged<ListKind> onChanged;
+
+  const ListKindPicker({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SegmentedButton<ListKind>(
+      showSelectedIcon: false,
+      segments: [
+        for (final kind in ListKind.values)
+          ButtonSegment(
+            value: kind,
+            icon: Icon(listKindIcon(kind), size: 18),
+            label: Text(
+              kind.strings.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+      ],
+      selected: {selected},
+      onSelectionChanged: (s) => onChanged(s.first),
     );
   }
 }

@@ -73,6 +73,8 @@ home:
 nav:
   checklists: Listas
   checklist: Lista
+  lists: Listas
+  list: Lista
   photoBoard: Tablero de fotos
   notesWall: Muro de notas
 
@@ -917,6 +919,77 @@ checklists:
     itemsFound(int count): "${_plural(count, one: '1 elemento encontrado', many: '$count elementos encontrados')}"
     addItems(int count): "${_plural(count, one: 'Añadir 1 elemento', many: 'Añadir $count elementos')}"
     imported(int count): "${_plural(count, one: '1 elemento importado', many: '$count elementos importados')}"
+
+listKinds:
+  duplicateAs: "Duplicar como:"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: 'Se omitió 1 artículo porque no puedes editarlo.', many: 'Se omitieron $count artículos porque no puedes editarlos.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: 'No se pudo desmarcar 1 artículo.', many: 'No se pudieron desmarcar $count artículos.')}"
+  checklist:
+    title: Listas de verificación
+    name: Lista de verificación
+    newList: Nueva lista de verificación
+    createTitle: Crear una lista de verificación
+    editTitle: Editar lista de verificación
+    duplicateTitle: Duplicar lista de verificación
+    duplicateFailed: No se pudo duplicar la lista de verificación
+    listMenu: Acciones de la lista de verificación
+    deleteDialogTitle: Quitar lista de verificación
+    emptyTitle: Aún no hay listas de verificación
+    emptyBody: Crea tu primera lista de verificación para empezar a agregar artículos.
+    trashTitle: Papelera de listas de verificación
+    trashEmptyBody: Las listas de verificación eliminadas aparecerán aquí.
+    archiveTitle: Listas de verificación archivadas
+    archiveEmptyTitle: No hay listas de verificación archivadas
+    archiveEmptyBody: Las listas de verificación archivadas aparecerán aquí.
+    emptyTrashBody: Se eliminarán permanentemente todas las listas de verificación de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer.
+    listRestored: Lista de verificación restaurada
+    listMovedToTrash: Lista de verificación movida a la papelera
+    listArchived: Lista de verificación archivada
+    listUnarchived: Lista de verificación desarchivada
+  inventory:
+    title: Inventarios
+    name: Inventario
+    newList: Nuevo inventario
+    createTitle: Crear un inventario
+    editTitle: Editar inventario
+    duplicateTitle: Duplicar inventario
+    duplicateFailed: No se pudo duplicar el inventario
+    listMenu: Acciones del inventario
+    deleteDialogTitle: Quitar inventario
+    emptyTitle: Aún no hay inventarios
+    emptyBody: Crea tu primer inventario para empezar a agregar artículos.
+    trashTitle: Papelera de inventarios
+    trashEmptyBody: Los inventarios eliminados aparecerán aquí.
+    archiveTitle: Inventarios archivados
+    archiveEmptyTitle: No hay inventarios archivados
+    archiveEmptyBody: Los inventarios archivados aparecerán aquí.
+    emptyTrashBody: Se eliminarán permanentemente todos los inventarios de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer.
+    listRestored: Inventario restaurado
+    listMovedToTrash: Inventario movido a la papelera
+    listArchived: Inventario archivado
+    listUnarchived: Inventario desarchivado
+  template:
+    title: Plantillas
+    name: Plantilla
+    newList: Nueva plantilla
+    createTitle: Crear una plantilla
+    editTitle: Editar plantilla
+    duplicateTitle: Duplicar plantilla
+    duplicateFailed: No se pudo duplicar la plantilla
+    listMenu: Acciones de la plantilla
+    deleteDialogTitle: Quitar plantilla
+    emptyTitle: Aún no hay plantillas
+    emptyBody: Crea tu primera plantilla para empezar a agregar artículos.
+    trashTitle: Papelera de plantillas
+    trashEmptyBody: Las plantillas eliminadas aparecerán aquí.
+    archiveTitle: Plantillas archivadas
+    archiveEmptyTitle: No hay plantillas archivadas
+    archiveEmptyBody: Las plantillas archivadas aparecerán aquí.
+    emptyTrashBody: Se eliminarán permanentemente todas las plantillas de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer.
+    listRestored: Plantilla restaurada
+    listMovedToTrash: Plantilla movida a la papelera
+    listArchived: Plantilla archivada
+    listUnarchived: Plantilla desarchivada
 
 notesWall:
   noNotes: "Aún no hay notas."

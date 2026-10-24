@@ -80,7 +80,7 @@ home:
   noHouses: Ingen hus enno.
   noHousesBody:
     "Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for
-    å kunne leggje til sjekklister, bilete og notat."
+    å kunne leggje til lister, bilete og notat."
   createHouse: Opprett hus
   houseName: Namn på hus
   houseDescription: Skildring (valfritt)
@@ -97,6 +97,8 @@ home:
 nav:
   checklists: Sjekkliste
   checklist: Sjekkliste
+  lists: Lister
+  list: Liste
   photoBoard: Fotovegg
   notesWall: Notatvegg
 
@@ -1054,6 +1056,76 @@ checklists:
     imported(int count):
       "${_plural(count, one: 'Importert 1 oppføring', many: 'Importert
       $count oppføringar')}"
+listKinds:
+  duplicateAs: "Dupliser som:"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: '1 oppføring vart hoppa over fordi du ikkje har tilgang til å redigere han.', many: '$count oppføringar vart hoppa over fordi du ikkje har tilgang til å redigere dei.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: 'Klarte ikkje fjerne avkryssinga på 1 oppføring.', many: 'Klarte ikkje fjerne avkryssinga på $count oppføringar.')}"
+  checklist:
+    title: Sjekklister
+    name: Sjekkliste
+    newList: Ny sjekkliste
+    createTitle: Opprett ei sjekkliste
+    editTitle: Rediger ei sjekkliste
+    duplicateTitle: Dupliser sjekkliste
+    duplicateFailed: Klarte ikkje duplisere sjekklista
+    listMenu: Handlingar for sjekkliste
+    deleteDialogTitle: Fjern sjekkliste
+    emptyTitle: Ingen sjekklister enno
+    emptyBody: Opprett din fyrste sjekkliste for å leggje til oppføringar.
+    trashTitle: Papirkorg for sjekklister
+    trashEmptyBody: Sletta sjekklister kjem opp her.
+    archiveTitle: Arkiverte sjekklister
+    archiveEmptyTitle: Ingen arkiverte sjekklister
+    archiveEmptyBody: Arkiverte sjekklister kjem opp her.
+    emptyTrashBody: Dette vil permanent slette alle sjekklister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.
+    listRestored: Sjekkliste gjenoppretta
+    listMovedToTrash: Sjekkliste flytta til papirkorga
+    listArchived: Sjekkliste arkivert
+    listUnarchived: Sjekkliste henta ut av arkivet
+  inventory:
+    title: Lagerlister
+    name: Lagerliste
+    newList: Ny lagerliste
+    createTitle: Opprett ei lagerliste
+    editTitle: Rediger ei lagerliste
+    duplicateTitle: Dupliser lagerliste
+    duplicateFailed: Klarte ikkje duplisere lagerlista
+    listMenu: Handlingar for lagerliste
+    deleteDialogTitle: Fjern lagerliste
+    emptyTitle: Ingen lagerlister enno
+    emptyBody: Opprett din fyrste lagerliste for å leggje til oppføringar.
+    trashTitle: Papirkorg for lagerlister
+    trashEmptyBody: Sletta lagerlister kjem opp her.
+    archiveTitle: Arkiverte lagerlister
+    archiveEmptyTitle: Ingen arkiverte lagerlister
+    archiveEmptyBody: Arkiverte lagerlister kjem opp her.
+    emptyTrashBody: Dette vil permanent slette alle lagerlister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.
+    listRestored: Lagerliste gjenoppretta
+    listMovedToTrash: Lagerliste flytta til papirkorga
+    listArchived: Lagerliste arkivert
+    listUnarchived: Lagerliste henta ut av arkivet
+  template:
+    title: Malar
+    name: Mal
+    newList: Ny mal
+    createTitle: Opprett ein mal
+    editTitle: Rediger ein mal
+    duplicateTitle: Dupliser mal
+    duplicateFailed: Klarte ikkje duplisere malen
+    listMenu: Handlingar for mal
+    deleteDialogTitle: Fjern mal
+    emptyTitle: Ingen malar enno
+    emptyBody: Opprett din fyrste mal for å leggje til oppføringar.
+    trashTitle: Papirkorg for malar
+    trashEmptyBody: Sletta malar kjem opp her.
+    archiveTitle: Arkiverte malar
+    archiveEmptyTitle: Ingen arkiverte malar
+    archiveEmptyBody: Arkiverte malar kjem opp her.
+    emptyTrashBody: Dette vil permanent slette alle malar i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.
+    listRestored: Mal gjenoppretta
+    listMovedToTrash: Mal flytta til papirkorga
+    listArchived: Mal arkivert
+    listUnarchived: Mal henta ut av arkivet
 notesWall:
   noNotes: Ingen notat enno
   failedToLoad: Klarte ikkje laste notat

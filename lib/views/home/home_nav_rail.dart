@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/utils/color.dart';
 
 import 'home_floating_nav.dart' show NavDestination;
@@ -8,14 +9,20 @@ import 'home_floating_nav.dart' show NavDestination;
 /// The checklists the checklists section hands the side rail, so the rail can
 /// draw one entry per list beneath its own destination and switch between them.
 class HomeNavListsSpec {
+  /// Every list, grouped by kind in navigation order.
   final List<ChecklistList> lists;
   final int? currentListId;
   final void Function(ChecklistList list) onSelect;
+
+  /// Opens a kind's section. Set when the server has list kinds, which the
+  /// rail then heads with their names.
+  final void Function(ListKind kind)? onSelectKind;
 
   const HomeNavListsSpec({
     required this.lists,
     required this.currentListId,
     required this.onSelect,
+    this.onSelectKind,
   });
 
   // The section re-offers this on every build, each offer carrying a freshly
@@ -25,6 +32,7 @@ class HomeNavListsSpec {
   bool operator ==(Object other) =>
       other is HomeNavListsSpec &&
       other.currentListId == currentListId &&
+      (other.onSelectKind == null) == (onSelectKind == null) &&
       other.lists.length == lists.length &&
       Iterable<int>.generate(lists.length).every(
         (i) =>
@@ -52,13 +60,24 @@ class NavRailNested {
   final bool selected;
   final VoidCallback onTap;
 
+  /// Heads a group of entries rather than standing for one.
+  final bool header;
+
   const NavRailNested({
     required this.icon,
     required this.color,
     required this.label,
     required this.selected,
     required this.onTap,
-  });
+  }) : header = false;
+
+  const NavRailNested.header({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  }) : color = null,
+       selected = false,
+       header = true;
 }
 
 /// Vertical navigation rail for the wide layout: the sections, with [nested]
@@ -221,8 +240,62 @@ class _RailNestedEntry extends StatelessWidget {
 
   const _RailNestedEntry({required this.entry, required this.extended});
 
+  Widget _buildHeader(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    if (!extended) {
+      return Tooltip(
+        message: entry.label,
+        child: InkWell(
+          onTap: entry.onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+            child: Divider(height: 1, color: cs.outlineVariant),
+          ),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(
+        start: 28,
+        end: 12,
+        top: 8,
+        bottom: 2,
+      ),
+      child: InkWell(
+        onTap: entry.onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: 8,
+            vertical: 4,
+          ),
+          child: Row(
+            children: [
+              Icon(entry.icon, size: 14, color: cs.onSurfaceVariant),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  entry.label.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.6,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (entry.header) return _buildHeader(context);
     final cs = Theme.of(context).colorScheme;
     final tint = entry.color ?? cs.primary;
     final badge = Container(

@@ -394,4 +394,6 @@ abstract final class ServerFeature {
 
   static bool get listItemSort => _since('0.37.0');
   static bool get shoppingHistoryDelete => _since('0.37.0');
+
+  static bool get listKinds => _since('0.38.0');
 }

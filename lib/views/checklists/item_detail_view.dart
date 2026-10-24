@@ -5,6 +5,7 @@ import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_display.dart';
@@ -86,7 +87,13 @@ class ItemDetailView extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
                   sliver: SliverList.list(
                     children: [
-                      FactTiles(item: item, lifecycle: lifecycle),
+                      FactTiles(
+                        item: item,
+                        lifecycle: lifecycle,
+                        showType: ChecklistService.instance
+                            .kindOf(item.listId)
+                            .hasRecurrence,
+                      ),
                       if (ServerFeature.itemPrice && item.hasPrice) ...[
                         const SizedBox(height: 12),
                         PriceTile(item: item),
@@ -278,7 +285,14 @@ class ItemDetailView extends StatelessWidget {
     );
     if (targetId == null || !context.mounted) return;
     try {
-      await controller.moveItem(item, targetId);
+      final skipped = await controller.moveItem(item, targetId);
+      if (skipped > 0) {
+        showAppToast(
+          message: m.listKinds.itemsSkippedNoEdit(skipped),
+          kind: ToastKind.error,
+        );
+        return;
+      }
       // Item left the current list; close the detail view.
       if (context.mounted) Navigator.of(context).pop(true);
     } catch (_) {
@@ -300,10 +314,13 @@ class ItemDetailView extends StatelessWidget {
     );
     if (targetId == null || !context.mounted) return;
     try {
-      await controller.copyItem(item, targetId);
-      if (context.mounted) {
-        showAppToast(message: m.checklists.itemCopied, kind: ToastKind.success);
-      }
+      final skipped = await controller.copyItem(item, targetId);
+      showAppToast(
+        message: skipped > 0
+            ? m.listKinds.itemsSkippedNoEdit(skipped)
+            : m.checklists.itemCopied,
+        kind: skipped > 0 ? ToastKind.error : ToastKind.success,
+      );
     } catch (_) {
       if (context.mounted) {
         showAppToast(message: m.checklists.copyFailed, kind: ToastKind.error);

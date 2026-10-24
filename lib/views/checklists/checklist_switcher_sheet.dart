@@ -83,6 +83,10 @@ class _SheetHostState extends State<SheetHost> {
   ChecklistList? _editing;
   late ChecklistList? _duplicating = widget.duplicating;
 
+  /// The kind whose lists the switcher shows. Browsing another kind leaves the
+  /// open list alone until one of its lists is picked.
+  late ListKind _kind = widget.controller.kind;
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -127,6 +131,8 @@ class _SheetHostState extends State<SheetHost> {
                 animation: widget.controller,
                 builder: (_, _) => ListStage(
                   controller: widget.controller,
+                  kind: _kind,
+                  onKindChanged: (kind) => setState(() => _kind = kind),
                   itemCountForList: widget.itemCountForList,
                   onCreateNew: () => setState(() => _stage = _Stage.create),
                   onEdit: (list) => setState(() {
@@ -144,12 +150,14 @@ class _SheetHostState extends State<SheetHost> {
             else if (_stage == _Stage.create)
               ListFormStage(
                 controller: widget.controller,
+                kind: _kind,
                 onBack: () => setState(() => _stage = _Stage.list),
                 onSaved: () => Navigator.pop(context),
               )
             else if (_stage == _Stage.edit)
               ListFormStage(
                 controller: widget.controller,
+                kind: _editing!.kind,
                 existing: _editing,
                 onBack: () => setState(() => _stage = _Stage.list),
                 onSaved: () => setState(() => _stage = _Stage.list),
@@ -166,11 +174,13 @@ class _SheetHostState extends State<SheetHost> {
             else if (_stage == _Stage.trash)
               TrashStage(
                 controller: widget.controller,
+                kind: _kind,
                 onBack: () => setState(() => _stage = _Stage.list),
               )
             else
               ArchiveStage(
                 controller: widget.controller,
+                kind: _kind,
                 onBack: () => setState(() => _stage = _Stage.list),
               ),
           ],

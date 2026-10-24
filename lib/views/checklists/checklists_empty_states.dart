@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:pantry_core/i18n.dart';
+import 'package:pantry_core/models/list_kind.dart';
+import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/list_kind_strings.dart';
 import 'package:pantry/theme/app_theme.dart';
+
+import 'switcher_widgets.dart' show listKindIcon;
 
 class ChecklistsNoMatchesEmptyState extends StatelessWidget {
   const ChecklistsNoMatchesEmptyState({super.key});
@@ -96,14 +101,21 @@ class ChecklistsNoItemsEmptyState extends StatelessWidget {
 }
 
 class ChecklistsNoListsEmptyState extends StatelessWidget {
+  /// The section with no lists.
+  final ListKind kind;
   final VoidCallback onCreate;
 
-  const ChecklistsNoListsEmptyState({super.key, required this.onCreate});
+  const ChecklistsNoListsEmptyState({
+    super.key,
+    this.kind = ListKind.checklist,
+    required this.onCreate,
+  });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final surfaces = AppSurfaces.of(context);
+    final hasKinds = ServerFeature.listKinds;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Center(
@@ -123,14 +135,14 @@ class ChecklistsNoListsEmptyState extends StatelessWidget {
                 ),
               ),
               child: Icon(
-                Icons.shopping_cart_outlined,
+                hasKinds ? listKindIcon(kind) : Icons.shopping_cart_outlined,
                 color: cs.primary,
                 size: 46,
               ),
             ),
             const SizedBox(height: 26),
             Text(
-              m.checklists.noListsTitle,
+              hasKinds ? kind.strings.emptyTitle : m.checklists.noListsTitle,
               style: TextStyle(
                 fontSize: 21,
                 fontWeight: FontWeight.w800,
@@ -140,7 +152,7 @@ class ChecklistsNoListsEmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 9),
             Text(
-              m.checklists.noListsBody,
+              hasKinds ? kind.strings.emptyBody : m.checklists.noListsBody,
               style: TextStyle(
                 fontSize: 14.5,
                 fontWeight: FontWeight.w500,
@@ -164,7 +176,9 @@ class ChecklistsNoListsEmptyState extends StatelessWidget {
                     Icon(Icons.add, color: surfaces.onAccent, size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      m.checklists.createFirstList,
+                      hasKinds
+                          ? kind.strings.createTitle
+                          : m.checklists.createFirstList,
                       style: TextStyle(
                         fontSize: 15.5,
                         fontWeight: FontWeight.w700,

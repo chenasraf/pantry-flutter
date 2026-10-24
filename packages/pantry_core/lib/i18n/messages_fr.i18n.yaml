@@ -73,6 +73,8 @@ home:
 nav:
   checklists: Listes
   checklist: Liste
+  lists: Listes
+  list: Liste
   photoBoard: Tableau photos
   notesWall: Mur de notes
 
@@ -917,6 +919,77 @@ checklists:
     itemsFound(int count): "${_plural(count, one: '1 élément trouvé', many: '$count éléments trouvés')}"
     addItems(int count): "${_plural(count, one: 'Ajouter 1 élément', many: 'Ajouter $count éléments')}"
     imported(int count): "${_plural(count, one: '1 élément importé', many: '$count éléments importés')}"
+
+listKinds:
+  duplicateAs: "Dupliquer en tant que :"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: '1 article a été ignoré, car vous n’êtes pas autorisé à le modifier.', many: '$count articles ont été ignorés, car vous n’êtes pas autorisé à les modifier.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: '1 article n’a pas pu être décoché.', many: '$count articles n’ont pas pu être décochés.')}"
+  checklist:
+    title: Listes de contrôle
+    name: Liste de contrôle
+    newList: Nouvelle liste de contrôle
+    createTitle: Créer une liste de contrôle
+    editTitle: Modifier la liste de contrôle
+    duplicateTitle: Dupliquer la liste de contrôle
+    duplicateFailed: Impossible de dupliquer la liste de contrôle
+    listMenu: Actions de la liste de contrôle
+    deleteDialogTitle: Supprimer la liste de contrôle
+    emptyTitle: Aucune liste de contrôle pour le moment
+    emptyBody: Créez votre première liste de contrôle pour commencer à ajouter des articles.
+    trashTitle: Corbeille des listes de contrôle
+    trashEmptyBody: Les listes de contrôle supprimées apparaîtront ici.
+    archiveTitle: Listes de contrôle archivées
+    archiveEmptyTitle: Aucune liste de contrôle archivée
+    archiveEmptyBody: Les listes de contrôle archivées apparaîtront ici.
+    emptyTrashBody: Toutes les listes de contrôle présentes dans la corbeille, ainsi que leurs articles, seront définitivement supprimées. Cette action est irréversible.
+    listRestored: Liste de contrôle restaurée
+    listMovedToTrash: Liste de contrôle déplacée vers la corbeille
+    listArchived: Liste de contrôle archivée
+    listUnarchived: Liste de contrôle désarchivée
+  inventory:
+    title: Inventaires
+    name: Inventaire
+    newList: Nouvel inventaire
+    createTitle: Créer un inventaire
+    editTitle: Modifier l'inventaire
+    duplicateTitle: Dupliquer l'inventaire
+    duplicateFailed: Impossible de dupliquer l'inventaire
+    listMenu: Actions de l'inventaire
+    deleteDialogTitle: Supprimer l'inventaire
+    emptyTitle: Aucun inventaire pour le moment
+    emptyBody: Créez votre premier inventaire pour commencer à ajouter des articles.
+    trashTitle: Corbeille des inventaires
+    trashEmptyBody: Les inventaires supprimés apparaîtront ici.
+    archiveTitle: Inventaires archivés
+    archiveEmptyTitle: Aucun inventaire archivé
+    archiveEmptyBody: Les inventaires archivés apparaîtront ici.
+    emptyTrashBody: Tous les inventaires présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.
+    listRestored: Inventaire restauré
+    listMovedToTrash: Inventaire déplacé vers la corbeille
+    listArchived: Inventaire archivé
+    listUnarchived: Inventaire désarchivé
+  template:
+    title: Modèles
+    name: Modèle
+    newList: Nouveau modèle
+    createTitle: Créer un modèle
+    editTitle: Modifier le modèle
+    duplicateTitle: Dupliquer le modèle
+    duplicateFailed: Impossible de dupliquer le modèle
+    listMenu: Actions du modèle
+    deleteDialogTitle: Supprimer le modèle
+    emptyTitle: Aucun modèle pour le moment
+    emptyBody: Créez votre premier modèle pour commencer à ajouter des articles.
+    trashTitle: Corbeille des modèles
+    trashEmptyBody: Les modèles supprimés apparaîtront ici.
+    archiveTitle: Modèles archivés
+    archiveEmptyTitle: Aucun modèle archivé
+    archiveEmptyBody: Les modèles archivés apparaîtront ici.
+    emptyTrashBody: Tous les modèles présents dans la corbeille, ainsi que leurs articles, seront définitivement supprimés. Cette action est irréversible.
+    listRestored: Modèle restauré
+    listMovedToTrash: Modèle déplacé vers la corbeille
+    listArchived: Modèle archivé
+    listUnarchived: Modèle désarchivé
 
 notesWall:
   noNotes: Aucune note pour le moment.

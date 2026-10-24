@@ -79,6 +79,7 @@ class MessagesNn extends Messages {
   StoresMessagesNn get stores => StoresMessagesNn(this);
   LabelsMessagesNn get labels => LabelsMessagesNn(this);
   ChecklistsMessagesNn get checklists => ChecklistsMessagesNn(this);
+  ListKindsMessagesNn get listKinds => ListKindsMessagesNn(this);
   NotesWallMessagesNn get notesWall => NotesWallMessagesNn(this);
   PhotoBoardMessagesNn get photoBoard => PhotoBoardMessagesNn(this);
   ShoppingMessagesNn get shopping => ShoppingMessagesNn(this);
@@ -401,10 +402,10 @@ class HomeMessagesNn extends HomeMessages {
   String get noHouses => """Ingen hus enno.""";
 
   /// ```dart
-  /// "Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til sjekklister, bilete og notat."
+  /// "Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til lister, bilete og notat."
   /// ```
   String get noHousesBody =>
-      """Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til sjekklister, bilete og notat.""";
+      """Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til lister, bilete og notat.""";
 
   /// ```dart
   /// "Opprett hus"
@@ -466,6 +467,16 @@ class NavMessagesNn extends NavMessages {
   /// "Sjekkliste"
   /// ```
   String get checklist => """Sjekkliste""";
+
+  /// ```dart
+  /// "Lister"
+  /// ```
+  String get lists => """Lister""";
+
+  /// ```dart
+  /// "Liste"
+  /// ```
+  String get list => """Liste""";
 
   /// ```dart
   /// "Fotovegg"
@@ -4830,6 +4841,369 @@ class MarkdownChecklistsMessagesNn extends MarkdownChecklistsMessages {
       """${_plural(count, one: 'Importert 1 oppføring', many: 'Importert $count oppføringar')}""";
 }
 
+class ListKindsMessagesNn extends ListKindsMessages {
+  final MessagesNn _parent;
+  const ListKindsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Dupliser som:"
+  /// ```
+  String get duplicateAs => """Dupliser som:""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 oppføring vart hoppa over fordi du ikkje har tilgang til å redigere han.', many: '$count oppføringar vart hoppa over fordi du ikkje har tilgang til å redigere dei.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: '1 oppføring vart hoppa over fordi du ikkje har tilgang til å redigere han.', many: '$count oppføringar vart hoppa over fordi du ikkje har tilgang til å redigere dei.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Klarte ikkje fjerne avkryssinga på 1 oppføring.', many: 'Klarte ikkje fjerne avkryssinga på $count oppføringar.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: 'Klarte ikkje fjerne avkryssinga på 1 oppføring.', many: 'Klarte ikkje fjerne avkryssinga på $count oppføringar.')}""";
+  ChecklistListKindsMessagesNn get checklist =>
+      ChecklistListKindsMessagesNn(this);
+  InventoryListKindsMessagesNn get inventory =>
+      InventoryListKindsMessagesNn(this);
+  TemplateListKindsMessagesNn get template => TemplateListKindsMessagesNn(this);
+}
+
+class ChecklistListKindsMessagesNn extends ChecklistListKindsMessages {
+  final ListKindsMessagesNn _parent;
+  const ChecklistListKindsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Sjekklister"
+  /// ```
+  String get title => """Sjekklister""";
+
+  /// ```dart
+  /// "Sjekkliste"
+  /// ```
+  String get name => """Sjekkliste""";
+
+  /// ```dart
+  /// "Ny sjekkliste"
+  /// ```
+  String get newList => """Ny sjekkliste""";
+
+  /// ```dart
+  /// "Opprett ei sjekkliste"
+  /// ```
+  String get createTitle => """Opprett ei sjekkliste""";
+
+  /// ```dart
+  /// "Rediger ei sjekkliste"
+  /// ```
+  String get editTitle => """Rediger ei sjekkliste""";
+
+  /// ```dart
+  /// "Dupliser sjekkliste"
+  /// ```
+  String get duplicateTitle => """Dupliser sjekkliste""";
+
+  /// ```dart
+  /// "Klarte ikkje duplisere sjekklista"
+  /// ```
+  String get duplicateFailed => """Klarte ikkje duplisere sjekklista""";
+
+  /// ```dart
+  /// "Handlingar for sjekkliste"
+  /// ```
+  String get listMenu => """Handlingar for sjekkliste""";
+
+  /// ```dart
+  /// "Fjern sjekkliste"
+  /// ```
+  String get deleteDialogTitle => """Fjern sjekkliste""";
+
+  /// ```dart
+  /// "Ingen sjekklister enno"
+  /// ```
+  String get emptyTitle => """Ingen sjekklister enno""";
+
+  /// ```dart
+  /// "Opprett din fyrste sjekkliste for å leggje til oppføringar."
+  /// ```
+  String get emptyBody =>
+      """Opprett din fyrste sjekkliste for å leggje til oppføringar.""";
+
+  /// ```dart
+  /// "Papirkorg for sjekklister"
+  /// ```
+  String get trashTitle => """Papirkorg for sjekklister""";
+
+  /// ```dart
+  /// "Sletta sjekklister kjem opp her."
+  /// ```
+  String get trashEmptyBody => """Sletta sjekklister kjem opp her.""";
+
+  /// ```dart
+  /// "Arkiverte sjekklister"
+  /// ```
+  String get archiveTitle => """Arkiverte sjekklister""";
+
+  /// ```dart
+  /// "Ingen arkiverte sjekklister"
+  /// ```
+  String get archiveEmptyTitle => """Ingen arkiverte sjekklister""";
+
+  /// ```dart
+  /// "Arkiverte sjekklister kjem opp her."
+  /// ```
+  String get archiveEmptyBody => """Arkiverte sjekklister kjem opp her.""";
+
+  /// ```dart
+  /// "Dette vil permanent slette alle sjekklister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast."
+  /// ```
+  String get emptyTrashBody =>
+      """Dette vil permanent slette alle sjekklister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""";
+
+  /// ```dart
+  /// "Sjekkliste gjenoppretta"
+  /// ```
+  String get listRestored => """Sjekkliste gjenoppretta""";
+
+  /// ```dart
+  /// "Sjekkliste flytta til papirkorga"
+  /// ```
+  String get listMovedToTrash => """Sjekkliste flytta til papirkorga""";
+
+  /// ```dart
+  /// "Sjekkliste arkivert"
+  /// ```
+  String get listArchived => """Sjekkliste arkivert""";
+
+  /// ```dart
+  /// "Sjekkliste henta ut av arkivet"
+  /// ```
+  String get listUnarchived => """Sjekkliste henta ut av arkivet""";
+}
+
+class InventoryListKindsMessagesNn extends InventoryListKindsMessages {
+  final ListKindsMessagesNn _parent;
+  const InventoryListKindsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Lagerlister"
+  /// ```
+  String get title => """Lagerlister""";
+
+  /// ```dart
+  /// "Lagerliste"
+  /// ```
+  String get name => """Lagerliste""";
+
+  /// ```dart
+  /// "Ny lagerliste"
+  /// ```
+  String get newList => """Ny lagerliste""";
+
+  /// ```dart
+  /// "Opprett ei lagerliste"
+  /// ```
+  String get createTitle => """Opprett ei lagerliste""";
+
+  /// ```dart
+  /// "Rediger ei lagerliste"
+  /// ```
+  String get editTitle => """Rediger ei lagerliste""";
+
+  /// ```dart
+  /// "Dupliser lagerliste"
+  /// ```
+  String get duplicateTitle => """Dupliser lagerliste""";
+
+  /// ```dart
+  /// "Klarte ikkje duplisere lagerlista"
+  /// ```
+  String get duplicateFailed => """Klarte ikkje duplisere lagerlista""";
+
+  /// ```dart
+  /// "Handlingar for lagerliste"
+  /// ```
+  String get listMenu => """Handlingar for lagerliste""";
+
+  /// ```dart
+  /// "Fjern lagerliste"
+  /// ```
+  String get deleteDialogTitle => """Fjern lagerliste""";
+
+  /// ```dart
+  /// "Ingen lagerlister enno"
+  /// ```
+  String get emptyTitle => """Ingen lagerlister enno""";
+
+  /// ```dart
+  /// "Opprett din fyrste lagerliste for å leggje til oppføringar."
+  /// ```
+  String get emptyBody =>
+      """Opprett din fyrste lagerliste for å leggje til oppføringar.""";
+
+  /// ```dart
+  /// "Papirkorg for lagerlister"
+  /// ```
+  String get trashTitle => """Papirkorg for lagerlister""";
+
+  /// ```dart
+  /// "Sletta lagerlister kjem opp her."
+  /// ```
+  String get trashEmptyBody => """Sletta lagerlister kjem opp her.""";
+
+  /// ```dart
+  /// "Arkiverte lagerlister"
+  /// ```
+  String get archiveTitle => """Arkiverte lagerlister""";
+
+  /// ```dart
+  /// "Ingen arkiverte lagerlister"
+  /// ```
+  String get archiveEmptyTitle => """Ingen arkiverte lagerlister""";
+
+  /// ```dart
+  /// "Arkiverte lagerlister kjem opp her."
+  /// ```
+  String get archiveEmptyBody => """Arkiverte lagerlister kjem opp her.""";
+
+  /// ```dart
+  /// "Dette vil permanent slette alle lagerlister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast."
+  /// ```
+  String get emptyTrashBody =>
+      """Dette vil permanent slette alle lagerlister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""";
+
+  /// ```dart
+  /// "Lagerliste gjenoppretta"
+  /// ```
+  String get listRestored => """Lagerliste gjenoppretta""";
+
+  /// ```dart
+  /// "Lagerliste flytta til papirkorga"
+  /// ```
+  String get listMovedToTrash => """Lagerliste flytta til papirkorga""";
+
+  /// ```dart
+  /// "Lagerliste arkivert"
+  /// ```
+  String get listArchived => """Lagerliste arkivert""";
+
+  /// ```dart
+  /// "Lagerliste henta ut av arkivet"
+  /// ```
+  String get listUnarchived => """Lagerliste henta ut av arkivet""";
+}
+
+class TemplateListKindsMessagesNn extends TemplateListKindsMessages {
+  final ListKindsMessagesNn _parent;
+  const TemplateListKindsMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Malar"
+  /// ```
+  String get title => """Malar""";
+
+  /// ```dart
+  /// "Mal"
+  /// ```
+  String get name => """Mal""";
+
+  /// ```dart
+  /// "Ny mal"
+  /// ```
+  String get newList => """Ny mal""";
+
+  /// ```dart
+  /// "Opprett ein mal"
+  /// ```
+  String get createTitle => """Opprett ein mal""";
+
+  /// ```dart
+  /// "Rediger ein mal"
+  /// ```
+  String get editTitle => """Rediger ein mal""";
+
+  /// ```dart
+  /// "Dupliser mal"
+  /// ```
+  String get duplicateTitle => """Dupliser mal""";
+
+  /// ```dart
+  /// "Klarte ikkje duplisere malen"
+  /// ```
+  String get duplicateFailed => """Klarte ikkje duplisere malen""";
+
+  /// ```dart
+  /// "Handlingar for mal"
+  /// ```
+  String get listMenu => """Handlingar for mal""";
+
+  /// ```dart
+  /// "Fjern mal"
+  /// ```
+  String get deleteDialogTitle => """Fjern mal""";
+
+  /// ```dart
+  /// "Ingen malar enno"
+  /// ```
+  String get emptyTitle => """Ingen malar enno""";
+
+  /// ```dart
+  /// "Opprett din fyrste mal for å leggje til oppføringar."
+  /// ```
+  String get emptyBody =>
+      """Opprett din fyrste mal for å leggje til oppføringar.""";
+
+  /// ```dart
+  /// "Papirkorg for malar"
+  /// ```
+  String get trashTitle => """Papirkorg for malar""";
+
+  /// ```dart
+  /// "Sletta malar kjem opp her."
+  /// ```
+  String get trashEmptyBody => """Sletta malar kjem opp her.""";
+
+  /// ```dart
+  /// "Arkiverte malar"
+  /// ```
+  String get archiveTitle => """Arkiverte malar""";
+
+  /// ```dart
+  /// "Ingen arkiverte malar"
+  /// ```
+  String get archiveEmptyTitle => """Ingen arkiverte malar""";
+
+  /// ```dart
+  /// "Arkiverte malar kjem opp her."
+  /// ```
+  String get archiveEmptyBody => """Arkiverte malar kjem opp her.""";
+
+  /// ```dart
+  /// "Dette vil permanent slette alle malar i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast."
+  /// ```
+  String get emptyTrashBody =>
+      """Dette vil permanent slette alle malar i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""";
+
+  /// ```dart
+  /// "Mal gjenoppretta"
+  /// ```
+  String get listRestored => """Mal gjenoppretta""";
+
+  /// ```dart
+  /// "Mal flytta til papirkorga"
+  /// ```
+  String get listMovedToTrash => """Mal flytta til papirkorga""";
+
+  /// ```dart
+  /// "Mal arkivert"
+  /// ```
+  String get listArchived => """Mal arkivert""";
+
+  /// ```dart
+  /// "Mal henta ut av arkivet"
+  /// ```
+  String get listUnarchived => """Mal henta ut av arkivet""";
+}
+
 class NotesWallMessagesNn extends NotesWallMessages {
   final MessagesNn _parent;
   const NotesWallMessagesNn(this._parent) : super(_parent);
@@ -7463,7 +7837,7 @@ Fullfør innlogginga i nettlesaren din.""",
       """Klarte ikkje å lese sertifikatet til tenaren for å bekrefte det. Tilkoblinga kan vere ustabil, eller tenaren kan vere utilgjengeleg.""",
   """home.noHouses""": """Ingen hus enno.""",
   """home.noHousesBody""":
-      """Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til sjekklister, bilete og notat.""",
+      """Hus er eit område for hushaldninga di. Opprett ditt fyrste hus for å kunne leggje til lister, bilete og notat.""",
   """home.createHouse""": """Opprett hus""",
   """home.houseName""": """Namn på hus""",
   """home.houseDescription""": """Skildring (valfritt)""",
@@ -7476,6 +7850,8 @@ Fullfør innlogginga i nettlesaren din.""",
   """home.learnMore""": """Lær meir""",
   """nav.checklists""": """Sjekkliste""",
   """nav.checklist""": """Sjekkliste""",
+  """nav.lists""": """Lister""",
+  """nav.list""": """Liste""",
   """nav.photoBoard""": """Fotovegg""",
   """nav.notesWall""": """Notatvegg""",
   """widget.chooseListsTitle""": """Vel lister""",
@@ -8326,6 +8702,89 @@ Passord: pantry""",
       """Bruk eksisterande oppføringar i staden for å opprette duplikatar""",
   """checklists.markdown.defaultFields""":
       """Standardinnstillingar som blir brukt på kvar oppføring""",
+  """listKinds.duplicateAs""": """Dupliser som:""",
+  """listKinds.checklist.title""": """Sjekklister""",
+  """listKinds.checklist.name""": """Sjekkliste""",
+  """listKinds.checklist.newList""": """Ny sjekkliste""",
+  """listKinds.checklist.createTitle""": """Opprett ei sjekkliste""",
+  """listKinds.checklist.editTitle""": """Rediger ei sjekkliste""",
+  """listKinds.checklist.duplicateTitle""": """Dupliser sjekkliste""",
+  """listKinds.checklist.duplicateFailed""":
+      """Klarte ikkje duplisere sjekklista""",
+  """listKinds.checklist.listMenu""": """Handlingar for sjekkliste""",
+  """listKinds.checklist.deleteDialogTitle""": """Fjern sjekkliste""",
+  """listKinds.checklist.emptyTitle""": """Ingen sjekklister enno""",
+  """listKinds.checklist.emptyBody""":
+      """Opprett din fyrste sjekkliste for å leggje til oppføringar.""",
+  """listKinds.checklist.trashTitle""": """Papirkorg for sjekklister""",
+  """listKinds.checklist.trashEmptyBody""":
+      """Sletta sjekklister kjem opp her.""",
+  """listKinds.checklist.archiveTitle""": """Arkiverte sjekklister""",
+  """listKinds.checklist.archiveEmptyTitle""":
+      """Ingen arkiverte sjekklister""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """Arkiverte sjekklister kjem opp her.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """Dette vil permanent slette alle sjekklister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""",
+  """listKinds.checklist.listRestored""": """Sjekkliste gjenoppretta""",
+  """listKinds.checklist.listMovedToTrash""":
+      """Sjekkliste flytta til papirkorga""",
+  """listKinds.checklist.listArchived""": """Sjekkliste arkivert""",
+  """listKinds.checklist.listUnarchived""":
+      """Sjekkliste henta ut av arkivet""",
+  """listKinds.inventory.title""": """Lagerlister""",
+  """listKinds.inventory.name""": """Lagerliste""",
+  """listKinds.inventory.newList""": """Ny lagerliste""",
+  """listKinds.inventory.createTitle""": """Opprett ei lagerliste""",
+  """listKinds.inventory.editTitle""": """Rediger ei lagerliste""",
+  """listKinds.inventory.duplicateTitle""": """Dupliser lagerliste""",
+  """listKinds.inventory.duplicateFailed""":
+      """Klarte ikkje duplisere lagerlista""",
+  """listKinds.inventory.listMenu""": """Handlingar for lagerliste""",
+  """listKinds.inventory.deleteDialogTitle""": """Fjern lagerliste""",
+  """listKinds.inventory.emptyTitle""": """Ingen lagerlister enno""",
+  """listKinds.inventory.emptyBody""":
+      """Opprett din fyrste lagerliste for å leggje til oppføringar.""",
+  """listKinds.inventory.trashTitle""": """Papirkorg for lagerlister""",
+  """listKinds.inventory.trashEmptyBody""":
+      """Sletta lagerlister kjem opp her.""",
+  """listKinds.inventory.archiveTitle""": """Arkiverte lagerlister""",
+  """listKinds.inventory.archiveEmptyTitle""":
+      """Ingen arkiverte lagerlister""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """Arkiverte lagerlister kjem opp her.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """Dette vil permanent slette alle lagerlister i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""",
+  """listKinds.inventory.listRestored""": """Lagerliste gjenoppretta""",
+  """listKinds.inventory.listMovedToTrash""":
+      """Lagerliste flytta til papirkorga""",
+  """listKinds.inventory.listArchived""": """Lagerliste arkivert""",
+  """listKinds.inventory.listUnarchived""":
+      """Lagerliste henta ut av arkivet""",
+  """listKinds.template.title""": """Malar""",
+  """listKinds.template.name""": """Mal""",
+  """listKinds.template.newList""": """Ny mal""",
+  """listKinds.template.createTitle""": """Opprett ein mal""",
+  """listKinds.template.editTitle""": """Rediger ein mal""",
+  """listKinds.template.duplicateTitle""": """Dupliser mal""",
+  """listKinds.template.duplicateFailed""": """Klarte ikkje duplisere malen""",
+  """listKinds.template.listMenu""": """Handlingar for mal""",
+  """listKinds.template.deleteDialogTitle""": """Fjern mal""",
+  """listKinds.template.emptyTitle""": """Ingen malar enno""",
+  """listKinds.template.emptyBody""":
+      """Opprett din fyrste mal for å leggje til oppføringar.""",
+  """listKinds.template.trashTitle""": """Papirkorg for malar""",
+  """listKinds.template.trashEmptyBody""": """Sletta malar kjem opp her.""",
+  """listKinds.template.archiveTitle""": """Arkiverte malar""",
+  """listKinds.template.archiveEmptyTitle""": """Ingen arkiverte malar""",
+  """listKinds.template.archiveEmptyBody""":
+      """Arkiverte malar kjem opp her.""",
+  """listKinds.template.emptyTrashBody""":
+      """Dette vil permanent slette alle malar i papirkorga, saman med alle oppføringane deira. Dette kan ikkje angrast.""",
+  """listKinds.template.listRestored""": """Mal gjenoppretta""",
+  """listKinds.template.listMovedToTrash""": """Mal flytta til papirkorga""",
+  """listKinds.template.listArchived""": """Mal arkivert""",
+  """listKinds.template.listUnarchived""": """Mal henta ut av arkivet""",
   """notesWall.noNotes""": """Ingen notat enno""",
   """notesWall.failedToLoad""": """Klarte ikkje laste notat""",
   """notesWall.saveFailed""": """Klarte ikkje lagre notat.""",

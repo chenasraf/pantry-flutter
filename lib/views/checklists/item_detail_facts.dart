@@ -12,7 +12,15 @@ class FactTiles extends StatelessWidget {
   final ListItem item;
   final ItemLifecycle lifecycle;
 
-  const FactTiles({super.key, required this.item, required this.lifecycle});
+  /// Whether the item's recurrence is shown. Inventory items have none.
+  final bool showType;
+
+  const FactTiles({
+    super.key,
+    required this.item,
+    required this.lifecycle,
+    this.showType = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +47,16 @@ class FactTiles extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 11),
-          Expanded(
-            flex: 14,
-            child: _FactTile(
-              label: v.typeLabel,
-              child: _TypeValue(item: item, lifecycle: lifecycle),
+          if (showType) ...[
+            const SizedBox(width: 11),
+            Expanded(
+              flex: 14,
+              child: _FactTile(
+                label: v.typeLabel,
+                child: _TypeValue(item: item, lifecycle: lifecycle),
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

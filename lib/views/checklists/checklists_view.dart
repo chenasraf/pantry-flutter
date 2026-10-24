@@ -240,7 +240,8 @@ class _BodyState extends State<_Body> {
         ? controller.sortedLists
         : controller.lists;
     final showAllLists =
-        ServerFeature.checklistAllView && realLists.length >= 2;
+        ServerFeature.checklistAllView &&
+        controller.listsOfKind(ListKind.checklist).length >= 2;
     return HomeNavListsSpec(
       lists: [
         if (showAllLists) allListsSentinel(controller.houseId),
@@ -251,6 +252,7 @@ class _BodyState extends State<_Body> {
         if (controller.currentList?.id == list.id) return;
         controller.selectList(list);
       },
+      onSelectKind: ServerFeature.listKinds ? controller.selectKind : null,
     );
   }
 
@@ -282,8 +284,18 @@ class _BodyState extends State<_Body> {
               onRetry: controller.load,
             );
           }
-          if (controller.lists.isEmpty) {
+          if (controller.lists.isEmpty ||
+              (controller.currentList == null && ServerFeature.listKinds)) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              widget.appBarSpecHolder?.value = body.buildAppBarSpec(
+                context,
+                null,
+              );
+              widget.navActionHolder?.value = null;
+            });
             return ChecklistsNoListsEmptyState(
+              kind: controller.kind,
               onCreate: () => body.openSwitcher(context),
             );
           }
@@ -417,9 +429,7 @@ class _BodyState extends State<_Body> {
           // ones with no items in the current view — unlike categories, an
           // empty list is still a meaningful thing to focus on.
           final filterLists = isMeta
-              ? controller.sortedLists
-                    .where((l) => l.id != kAllListsId)
-                    .toList()
+              ? controller.sortedListsOfKind(ListKind.checklist)
               : const <ChecklistList>[];
 
           // Start / resume shopping, offered to the floating nav's trailing
@@ -430,6 +440,7 @@ class _BodyState extends State<_Body> {
           final shoppingAction =
               ServerFeature.shopping &&
                   prefs.startShoppingFabEnabled &&
+                  controller.isChecklistKind &&
                   !controller.isSoftView
               ? NavPrimaryAction(
                   icon: body.shoppingSession != null
@@ -489,9 +500,7 @@ class _BodyState extends State<_Body> {
                     // In meta mode, drop the synthetic from the picker —
                     // it's not a real target.
                     final realLists = meta
-                        ? controller.lists
-                              .where((l) => l.id != kAllListsId)
-                              .toList()
+                        ? controller.listsOfKind(ListKind.checklist)
                         : null;
                     // Heal an orphaned selection (target list was
                     // deleted since last add) by clearing it silently.
@@ -538,6 +547,7 @@ class _BodyState extends State<_Body> {
                       listName: list.name,
                       houseId: controller.houseId,
                       listId: meta ? null : list.id,
+                      recurrenceEnabled: list.kind.hasRecurrence,
                       recurrenceDefault: meta
                           ? ListRecurrenceDefault.neutral
                           : list.recurrenceDefault,
@@ -735,6 +745,7 @@ class _BodyState extends State<_Body> {
                       ),
                       if (!isEmptyList &&
                           !controller.isSoftView &&
+                          controller.isChecklistKind &&
                           !(list?.hideProgressHero ?? false))
                         Dismissible(
                           key: const ValueKey('progress-hero'),

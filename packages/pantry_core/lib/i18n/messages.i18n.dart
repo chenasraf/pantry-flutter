@@ -78,6 +78,7 @@ class Messages {
   StoresMessages get stores => StoresMessages(this);
   LabelsMessages get labels => LabelsMessages(this);
   ChecklistsMessages get checklists => ChecklistsMessages(this);
+  ListKindsMessages get listKinds => ListKindsMessages(this);
   NotesWallMessages get notesWall => NotesWallMessages(this);
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
   ShoppingMessages get shopping => ShoppingMessages(this);
@@ -401,10 +402,10 @@ class HomeMessages {
   String get noHouses => """No houses yet.""";
 
   /// ```dart
-  /// "Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes."
+  /// "Houses are shared spaces for your household. Create your first house to start adding lists, photos and notes."
   /// ```
   String get noHousesBody =>
-      """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""";
+      """Houses are shared spaces for your household. Create your first house to start adding lists, photos and notes.""";
 
   /// ```dart
   /// "Create house"
@@ -466,6 +467,16 @@ class NavMessages {
   /// "Checklist"
   /// ```
   String get checklist => """Checklist""";
+
+  /// ```dart
+  /// "Lists"
+  /// ```
+  String get lists => """Lists""";
+
+  /// ```dart
+  /// "List"
+  /// ```
+  String get list => """List""";
 
   /// ```dart
   /// "Photo Board"
@@ -1038,10 +1049,10 @@ class NotificationsIntroMessages {
   String get title => """Stay in the loop""";
 
   /// ```dart
-  /// "Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
+  /// "Pantry can notify you when household members add items to lists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties."
   /// ```
   String get body =>
-      """Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""";
+      """Pantry can notify you when household members add items to lists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""";
 
   /// ```dart
   /// "Household activity alerts"
@@ -4812,6 +4823,367 @@ class MarkdownChecklistsMessages {
       """${_plural(count, one: 'Imported 1 item', many: 'Imported $count items')}""";
 }
 
+class ListKindsMessages {
+  final Messages _parent;
+  const ListKindsMessages(this._parent);
+
+  /// ```dart
+  /// "Duplicate as:"
+  /// ```
+  String get duplicateAs => """Duplicate as:""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item was skipped because you cannot edit it.', many: '$count items were skipped because you cannot edit them.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: '1 item was skipped because you cannot edit it.', many: '$count items were skipped because you cannot edit them.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item could not be unchecked.', many: '$count items could not be unchecked.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: '1 item could not be unchecked.', many: '$count items could not be unchecked.')}""";
+  ChecklistListKindsMessages get checklist => ChecklistListKindsMessages(this);
+  InventoryListKindsMessages get inventory => InventoryListKindsMessages(this);
+  TemplateListKindsMessages get template => TemplateListKindsMessages(this);
+}
+
+class ChecklistListKindsMessages {
+  final ListKindsMessages _parent;
+  const ChecklistListKindsMessages(this._parent);
+
+  /// ```dart
+  /// "Checklists"
+  /// ```
+  String get title => """Checklists""";
+
+  /// ```dart
+  /// "Checklist"
+  /// ```
+  String get name => """Checklist""";
+
+  /// ```dart
+  /// "New checklist"
+  /// ```
+  String get newList => """New checklist""";
+
+  /// ```dart
+  /// "Create a checklist"
+  /// ```
+  String get createTitle => """Create a checklist""";
+
+  /// ```dart
+  /// "Edit checklist"
+  /// ```
+  String get editTitle => """Edit checklist""";
+
+  /// ```dart
+  /// "Duplicate checklist"
+  /// ```
+  String get duplicateTitle => """Duplicate checklist""";
+
+  /// ```dart
+  /// "Could not duplicate the checklist"
+  /// ```
+  String get duplicateFailed => """Could not duplicate the checklist""";
+
+  /// ```dart
+  /// "Checklist actions"
+  /// ```
+  String get listMenu => """Checklist actions""";
+
+  /// ```dart
+  /// "Remove checklist"
+  /// ```
+  String get deleteDialogTitle => """Remove checklist""";
+
+  /// ```dart
+  /// "No checklists yet"
+  /// ```
+  String get emptyTitle => """No checklists yet""";
+
+  /// ```dart
+  /// "Create your first checklist to start adding items."
+  /// ```
+  String get emptyBody =>
+      """Create your first checklist to start adding items.""";
+
+  /// ```dart
+  /// "Checklists trash"
+  /// ```
+  String get trashTitle => """Checklists trash""";
+
+  /// ```dart
+  /// "Deleted checklists will appear here."
+  /// ```
+  String get trashEmptyBody => """Deleted checklists will appear here.""";
+
+  /// ```dart
+  /// "Archived checklists"
+  /// ```
+  String get archiveTitle => """Archived checklists""";
+
+  /// ```dart
+  /// "No archived checklists"
+  /// ```
+  String get archiveEmptyTitle => """No archived checklists""";
+
+  /// ```dart
+  /// "Archived checklists will appear here."
+  /// ```
+  String get archiveEmptyBody => """Archived checklists will appear here.""";
+
+  /// ```dart
+  /// "This will permanently delete every checklist in the trash, along with all of their items. This cannot be undone."
+  /// ```
+  String get emptyTrashBody =>
+      """This will permanently delete every checklist in the trash, along with all of their items. This cannot be undone.""";
+
+  /// ```dart
+  /// "Checklist restored"
+  /// ```
+  String get listRestored => """Checklist restored""";
+
+  /// ```dart
+  /// "Checklist moved to trash"
+  /// ```
+  String get listMovedToTrash => """Checklist moved to trash""";
+
+  /// ```dart
+  /// "Checklist archived"
+  /// ```
+  String get listArchived => """Checklist archived""";
+
+  /// ```dart
+  /// "Checklist unarchived"
+  /// ```
+  String get listUnarchived => """Checklist unarchived""";
+}
+
+class InventoryListKindsMessages {
+  final ListKindsMessages _parent;
+  const InventoryListKindsMessages(this._parent);
+
+  /// ```dart
+  /// "Inventories"
+  /// ```
+  String get title => """Inventories""";
+
+  /// ```dart
+  /// "Inventory"
+  /// ```
+  String get name => """Inventory""";
+
+  /// ```dart
+  /// "New inventory"
+  /// ```
+  String get newList => """New inventory""";
+
+  /// ```dart
+  /// "Create an inventory"
+  /// ```
+  String get createTitle => """Create an inventory""";
+
+  /// ```dart
+  /// "Edit inventory"
+  /// ```
+  String get editTitle => """Edit inventory""";
+
+  /// ```dart
+  /// "Duplicate inventory"
+  /// ```
+  String get duplicateTitle => """Duplicate inventory""";
+
+  /// ```dart
+  /// "Could not duplicate the inventory"
+  /// ```
+  String get duplicateFailed => """Could not duplicate the inventory""";
+
+  /// ```dart
+  /// "Inventory actions"
+  /// ```
+  String get listMenu => """Inventory actions""";
+
+  /// ```dart
+  /// "Remove inventory"
+  /// ```
+  String get deleteDialogTitle => """Remove inventory""";
+
+  /// ```dart
+  /// "No inventories yet"
+  /// ```
+  String get emptyTitle => """No inventories yet""";
+
+  /// ```dart
+  /// "Create your first inventory to start adding items."
+  /// ```
+  String get emptyBody =>
+      """Create your first inventory to start adding items.""";
+
+  /// ```dart
+  /// "Inventories trash"
+  /// ```
+  String get trashTitle => """Inventories trash""";
+
+  /// ```dart
+  /// "Deleted inventories will appear here."
+  /// ```
+  String get trashEmptyBody => """Deleted inventories will appear here.""";
+
+  /// ```dart
+  /// "Archived inventories"
+  /// ```
+  String get archiveTitle => """Archived inventories""";
+
+  /// ```dart
+  /// "No archived inventories"
+  /// ```
+  String get archiveEmptyTitle => """No archived inventories""";
+
+  /// ```dart
+  /// "Archived inventories will appear here."
+  /// ```
+  String get archiveEmptyBody => """Archived inventories will appear here.""";
+
+  /// ```dart
+  /// "This will permanently delete every inventory in the trash, along with all of their items. This cannot be undone."
+  /// ```
+  String get emptyTrashBody =>
+      """This will permanently delete every inventory in the trash, along with all of their items. This cannot be undone.""";
+
+  /// ```dart
+  /// "Inventory restored"
+  /// ```
+  String get listRestored => """Inventory restored""";
+
+  /// ```dart
+  /// "Inventory moved to trash"
+  /// ```
+  String get listMovedToTrash => """Inventory moved to trash""";
+
+  /// ```dart
+  /// "Inventory archived"
+  /// ```
+  String get listArchived => """Inventory archived""";
+
+  /// ```dart
+  /// "Inventory unarchived"
+  /// ```
+  String get listUnarchived => """Inventory unarchived""";
+}
+
+class TemplateListKindsMessages {
+  final ListKindsMessages _parent;
+  const TemplateListKindsMessages(this._parent);
+
+  /// ```dart
+  /// "Templates"
+  /// ```
+  String get title => """Templates""";
+
+  /// ```dart
+  /// "Template"
+  /// ```
+  String get name => """Template""";
+
+  /// ```dart
+  /// "New template"
+  /// ```
+  String get newList => """New template""";
+
+  /// ```dart
+  /// "Create a template"
+  /// ```
+  String get createTitle => """Create a template""";
+
+  /// ```dart
+  /// "Edit template"
+  /// ```
+  String get editTitle => """Edit template""";
+
+  /// ```dart
+  /// "Duplicate template"
+  /// ```
+  String get duplicateTitle => """Duplicate template""";
+
+  /// ```dart
+  /// "Could not duplicate the template"
+  /// ```
+  String get duplicateFailed => """Could not duplicate the template""";
+
+  /// ```dart
+  /// "Template actions"
+  /// ```
+  String get listMenu => """Template actions""";
+
+  /// ```dart
+  /// "Remove template"
+  /// ```
+  String get deleteDialogTitle => """Remove template""";
+
+  /// ```dart
+  /// "No templates yet"
+  /// ```
+  String get emptyTitle => """No templates yet""";
+
+  /// ```dart
+  /// "Create your first template to start adding items."
+  /// ```
+  String get emptyBody =>
+      """Create your first template to start adding items.""";
+
+  /// ```dart
+  /// "Templates trash"
+  /// ```
+  String get trashTitle => """Templates trash""";
+
+  /// ```dart
+  /// "Deleted templates will appear here."
+  /// ```
+  String get trashEmptyBody => """Deleted templates will appear here.""";
+
+  /// ```dart
+  /// "Archived templates"
+  /// ```
+  String get archiveTitle => """Archived templates""";
+
+  /// ```dart
+  /// "No archived templates"
+  /// ```
+  String get archiveEmptyTitle => """No archived templates""";
+
+  /// ```dart
+  /// "Archived templates will appear here."
+  /// ```
+  String get archiveEmptyBody => """Archived templates will appear here.""";
+
+  /// ```dart
+  /// "This will permanently delete every template in the trash, along with all of their items. This cannot be undone."
+  /// ```
+  String get emptyTrashBody =>
+      """This will permanently delete every template in the trash, along with all of their items. This cannot be undone.""";
+
+  /// ```dart
+  /// "Template restored"
+  /// ```
+  String get listRestored => """Template restored""";
+
+  /// ```dart
+  /// "Template moved to trash"
+  /// ```
+  String get listMovedToTrash => """Template moved to trash""";
+
+  /// ```dart
+  /// "Template archived"
+  /// ```
+  String get listArchived => """Template archived""";
+
+  /// ```dart
+  /// "Template unarchived"
+  /// ```
+  String get listUnarchived => """Template unarchived""";
+}
+
 class NotesWallMessages {
   final Messages _parent;
   const NotesWallMessages(this._parent);
@@ -7442,7 +7814,7 @@ Please complete login in your browser.""",
       """Couldn't read the server's certificate to verify it. The connection may be unstable, or the server may be unreachable.""",
   """home.noHouses""": """No houses yet.""",
   """home.noHousesBody""":
-      """Houses are shared spaces for your household. Create your first house to start adding checklists, photos and notes.""",
+      """Houses are shared spaces for your household. Create your first house to start adding lists, photos and notes.""",
   """home.createHouse""": """Create house""",
   """home.houseName""": """House name""",
   """home.houseDescription""": """Description (optional)""",
@@ -7455,6 +7827,8 @@ Please complete login in your browser.""",
   """home.learnMore""": """Learn more""",
   """nav.checklists""": """Checklists""",
   """nav.checklist""": """Checklist""",
+  """nav.lists""": """Lists""",
+  """nav.list""": """List""",
   """nav.photoBoard""": """Photo Board""",
   """nav.notesWall""": """Notes Wall""",
   """widget.chooseListsTitle""": """Choose lists""",
@@ -7578,7 +7952,7 @@ Password: pantry-rocks""",
   """onboarding.dev.sendTestNotification""": """Send test notification""",
   """notificationsIntro.title""": """Stay in the loop""",
   """notificationsIntro.body""":
-      """Pantry can notify you when household members add items to checklists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""",
+      """Pantry can notify you when household members add items to lists, upload photos, or leave notes. Notifications are fetched from your own Nextcloud server — nothing goes through Google or third parties.""",
   """notificationsIntro.bullet1""": """Household activity alerts""",
   """notificationsIntro.bullet2""": """Fetched directly from your server""",
   """notificationsIntro.bullet3""": """Works even when the app is closed""",
@@ -8291,6 +8665,85 @@ Password: pantry-rocks""",
       """Reuse existing items instead of adding duplicates""",
   """checklists.markdown.defaultFields""":
       """Defaults applied to every imported item""",
+  """listKinds.duplicateAs""": """Duplicate as:""",
+  """listKinds.checklist.title""": """Checklists""",
+  """listKinds.checklist.name""": """Checklist""",
+  """listKinds.checklist.newList""": """New checklist""",
+  """listKinds.checklist.createTitle""": """Create a checklist""",
+  """listKinds.checklist.editTitle""": """Edit checklist""",
+  """listKinds.checklist.duplicateTitle""": """Duplicate checklist""",
+  """listKinds.checklist.duplicateFailed""":
+      """Could not duplicate the checklist""",
+  """listKinds.checklist.listMenu""": """Checklist actions""",
+  """listKinds.checklist.deleteDialogTitle""": """Remove checklist""",
+  """listKinds.checklist.emptyTitle""": """No checklists yet""",
+  """listKinds.checklist.emptyBody""":
+      """Create your first checklist to start adding items.""",
+  """listKinds.checklist.trashTitle""": """Checklists trash""",
+  """listKinds.checklist.trashEmptyBody""":
+      """Deleted checklists will appear here.""",
+  """listKinds.checklist.archiveTitle""": """Archived checklists""",
+  """listKinds.checklist.archiveEmptyTitle""": """No archived checklists""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """Archived checklists will appear here.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """This will permanently delete every checklist in the trash, along with all of their items. This cannot be undone.""",
+  """listKinds.checklist.listRestored""": """Checklist restored""",
+  """listKinds.checklist.listMovedToTrash""": """Checklist moved to trash""",
+  """listKinds.checklist.listArchived""": """Checklist archived""",
+  """listKinds.checklist.listUnarchived""": """Checklist unarchived""",
+  """listKinds.inventory.title""": """Inventories""",
+  """listKinds.inventory.name""": """Inventory""",
+  """listKinds.inventory.newList""": """New inventory""",
+  """listKinds.inventory.createTitle""": """Create an inventory""",
+  """listKinds.inventory.editTitle""": """Edit inventory""",
+  """listKinds.inventory.duplicateTitle""": """Duplicate inventory""",
+  """listKinds.inventory.duplicateFailed""":
+      """Could not duplicate the inventory""",
+  """listKinds.inventory.listMenu""": """Inventory actions""",
+  """listKinds.inventory.deleteDialogTitle""": """Remove inventory""",
+  """listKinds.inventory.emptyTitle""": """No inventories yet""",
+  """listKinds.inventory.emptyBody""":
+      """Create your first inventory to start adding items.""",
+  """listKinds.inventory.trashTitle""": """Inventories trash""",
+  """listKinds.inventory.trashEmptyBody""":
+      """Deleted inventories will appear here.""",
+  """listKinds.inventory.archiveTitle""": """Archived inventories""",
+  """listKinds.inventory.archiveEmptyTitle""": """No archived inventories""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """Archived inventories will appear here.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """This will permanently delete every inventory in the trash, along with all of their items. This cannot be undone.""",
+  """listKinds.inventory.listRestored""": """Inventory restored""",
+  """listKinds.inventory.listMovedToTrash""": """Inventory moved to trash""",
+  """listKinds.inventory.listArchived""": """Inventory archived""",
+  """listKinds.inventory.listUnarchived""": """Inventory unarchived""",
+  """listKinds.template.title""": """Templates""",
+  """listKinds.template.name""": """Template""",
+  """listKinds.template.newList""": """New template""",
+  """listKinds.template.createTitle""": """Create a template""",
+  """listKinds.template.editTitle""": """Edit template""",
+  """listKinds.template.duplicateTitle""": """Duplicate template""",
+  """listKinds.template.duplicateFailed""":
+      """Could not duplicate the template""",
+  """listKinds.template.listMenu""": """Template actions""",
+  """listKinds.template.deleteDialogTitle""": """Remove template""",
+  """listKinds.template.emptyTitle""": """No templates yet""",
+  """listKinds.template.emptyBody""":
+      """Create your first template to start adding items.""",
+  """listKinds.template.trashTitle""": """Templates trash""",
+  """listKinds.template.trashEmptyBody""":
+      """Deleted templates will appear here.""",
+  """listKinds.template.archiveTitle""": """Archived templates""",
+  """listKinds.template.archiveEmptyTitle""": """No archived templates""",
+  """listKinds.template.archiveEmptyBody""":
+      """Archived templates will appear here.""",
+  """listKinds.template.emptyTrashBody""":
+      """This will permanently delete every template in the trash, along with all of their items. This cannot be undone.""",
+  """listKinds.template.listRestored""": """Template restored""",
+  """listKinds.template.listMovedToTrash""": """Template moved to trash""",
+  """listKinds.template.listArchived""": """Template archived""",
+  """listKinds.template.listUnarchived""": """Template unarchived""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",
   """notesWall.saveFailed""": """Failed to save note.""",

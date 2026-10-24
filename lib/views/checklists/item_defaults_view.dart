@@ -91,7 +91,7 @@ class _ItemDefaultsViewState extends State<ItemDefaultsView> {
   ];
 
   List<_Section> get _sections => [
-    _Section.recurrence,
+    if (_list.kind.hasRecurrence) _Section.recurrence,
     _Section.category,
     if (_storesEnabled) _Section.stores,
     if (_labelsEnabled) _Section.labels,

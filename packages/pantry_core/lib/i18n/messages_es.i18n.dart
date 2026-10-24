@@ -79,6 +79,7 @@ class MessagesEs extends Messages {
   StoresMessagesEs get stores => StoresMessagesEs(this);
   LabelsMessagesEs get labels => LabelsMessagesEs(this);
   ChecklistsMessagesEs get checklists => ChecklistsMessagesEs(this);
+  ListKindsMessagesEs get listKinds => ListKindsMessagesEs(this);
   NotesWallMessagesEs get notesWall => NotesWallMessagesEs(this);
   PhotoBoardMessagesEs get photoBoard => PhotoBoardMessagesEs(this);
   ShoppingMessagesEs get shopping => ShoppingMessagesEs(this);
@@ -469,6 +470,16 @@ class NavMessagesEs extends NavMessages {
   /// "Lista"
   /// ```
   String get checklist => """Lista""";
+
+  /// ```dart
+  /// "Listas"
+  /// ```
+  String get lists => """Listas""";
+
+  /// ```dart
+  /// "Lista"
+  /// ```
+  String get list => """Lista""";
 
   /// ```dart
   /// "Tablero de fotos"
@@ -4864,6 +4875,377 @@ class MarkdownChecklistsMessagesEs extends MarkdownChecklistsMessages {
       """${_plural(count, one: '1 elemento importado', many: '$count elementos importados')}""";
 }
 
+class ListKindsMessagesEs extends ListKindsMessages {
+  final MessagesEs _parent;
+  const ListKindsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Duplicar como:"
+  /// ```
+  String get duplicateAs => """Duplicar como:""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Se omitió 1 artículo porque no puedes editarlo.', many: 'Se omitieron $count artículos porque no puedes editarlos.')}"
+  /// ```
+  String itemsSkippedNoEdit(int count) =>
+      """${_plural(count, one: 'Se omitió 1 artículo porque no puedes editarlo.', many: 'Se omitieron $count artículos porque no puedes editarlos.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'No se pudo desmarcar 1 artículo.', many: 'No se pudieron desmarcar $count artículos.')}"
+  /// ```
+  String itemsSkippedUncheck(int count) =>
+      """${_plural(count, one: 'No se pudo desmarcar 1 artículo.', many: 'No se pudieron desmarcar $count artículos.')}""";
+  ChecklistListKindsMessagesEs get checklist =>
+      ChecklistListKindsMessagesEs(this);
+  InventoryListKindsMessagesEs get inventory =>
+      InventoryListKindsMessagesEs(this);
+  TemplateListKindsMessagesEs get template => TemplateListKindsMessagesEs(this);
+}
+
+class ChecklistListKindsMessagesEs extends ChecklistListKindsMessages {
+  final ListKindsMessagesEs _parent;
+  const ChecklistListKindsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Listas de verificación"
+  /// ```
+  String get title => """Listas de verificación""";
+
+  /// ```dart
+  /// "Lista de verificación"
+  /// ```
+  String get name => """Lista de verificación""";
+
+  /// ```dart
+  /// "Nueva lista de verificación"
+  /// ```
+  String get newList => """Nueva lista de verificación""";
+
+  /// ```dart
+  /// "Crear una lista de verificación"
+  /// ```
+  String get createTitle => """Crear una lista de verificación""";
+
+  /// ```dart
+  /// "Editar lista de verificación"
+  /// ```
+  String get editTitle => """Editar lista de verificación""";
+
+  /// ```dart
+  /// "Duplicar lista de verificación"
+  /// ```
+  String get duplicateTitle => """Duplicar lista de verificación""";
+
+  /// ```dart
+  /// "No se pudo duplicar la lista de verificación"
+  /// ```
+  String get duplicateFailed =>
+      """No se pudo duplicar la lista de verificación""";
+
+  /// ```dart
+  /// "Acciones de la lista de verificación"
+  /// ```
+  String get listMenu => """Acciones de la lista de verificación""";
+
+  /// ```dart
+  /// "Quitar lista de verificación"
+  /// ```
+  String get deleteDialogTitle => """Quitar lista de verificación""";
+
+  /// ```dart
+  /// "Aún no hay listas de verificación"
+  /// ```
+  String get emptyTitle => """Aún no hay listas de verificación""";
+
+  /// ```dart
+  /// "Crea tu primera lista de verificación para empezar a agregar artículos."
+  /// ```
+  String get emptyBody =>
+      """Crea tu primera lista de verificación para empezar a agregar artículos.""";
+
+  /// ```dart
+  /// "Papelera de listas de verificación"
+  /// ```
+  String get trashTitle => """Papelera de listas de verificación""";
+
+  /// ```dart
+  /// "Las listas de verificación eliminadas aparecerán aquí."
+  /// ```
+  String get trashEmptyBody =>
+      """Las listas de verificación eliminadas aparecerán aquí.""";
+
+  /// ```dart
+  /// "Listas de verificación archivadas"
+  /// ```
+  String get archiveTitle => """Listas de verificación archivadas""";
+
+  /// ```dart
+  /// "No hay listas de verificación archivadas"
+  /// ```
+  String get archiveEmptyTitle =>
+      """No hay listas de verificación archivadas""";
+
+  /// ```dart
+  /// "Las listas de verificación archivadas aparecerán aquí."
+  /// ```
+  String get archiveEmptyBody =>
+      """Las listas de verificación archivadas aparecerán aquí.""";
+
+  /// ```dart
+  /// "Se eliminarán permanentemente todas las listas de verificación de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer."
+  /// ```
+  String get emptyTrashBody =>
+      """Se eliminarán permanentemente todas las listas de verificación de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer.""";
+
+  /// ```dart
+  /// "Lista de verificación restaurada"
+  /// ```
+  String get listRestored => """Lista de verificación restaurada""";
+
+  /// ```dart
+  /// "Lista de verificación movida a la papelera"
+  /// ```
+  String get listMovedToTrash =>
+      """Lista de verificación movida a la papelera""";
+
+  /// ```dart
+  /// "Lista de verificación archivada"
+  /// ```
+  String get listArchived => """Lista de verificación archivada""";
+
+  /// ```dart
+  /// "Lista de verificación desarchivada"
+  /// ```
+  String get listUnarchived => """Lista de verificación desarchivada""";
+}
+
+class InventoryListKindsMessagesEs extends InventoryListKindsMessages {
+  final ListKindsMessagesEs _parent;
+  const InventoryListKindsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Inventarios"
+  /// ```
+  String get title => """Inventarios""";
+
+  /// ```dart
+  /// "Inventario"
+  /// ```
+  String get name => """Inventario""";
+
+  /// ```dart
+  /// "Nuevo inventario"
+  /// ```
+  String get newList => """Nuevo inventario""";
+
+  /// ```dart
+  /// "Crear un inventario"
+  /// ```
+  String get createTitle => """Crear un inventario""";
+
+  /// ```dart
+  /// "Editar inventario"
+  /// ```
+  String get editTitle => """Editar inventario""";
+
+  /// ```dart
+  /// "Duplicar inventario"
+  /// ```
+  String get duplicateTitle => """Duplicar inventario""";
+
+  /// ```dart
+  /// "No se pudo duplicar el inventario"
+  /// ```
+  String get duplicateFailed => """No se pudo duplicar el inventario""";
+
+  /// ```dart
+  /// "Acciones del inventario"
+  /// ```
+  String get listMenu => """Acciones del inventario""";
+
+  /// ```dart
+  /// "Quitar inventario"
+  /// ```
+  String get deleteDialogTitle => """Quitar inventario""";
+
+  /// ```dart
+  /// "Aún no hay inventarios"
+  /// ```
+  String get emptyTitle => """Aún no hay inventarios""";
+
+  /// ```dart
+  /// "Crea tu primer inventario para empezar a agregar artículos."
+  /// ```
+  String get emptyBody =>
+      """Crea tu primer inventario para empezar a agregar artículos.""";
+
+  /// ```dart
+  /// "Papelera de inventarios"
+  /// ```
+  String get trashTitle => """Papelera de inventarios""";
+
+  /// ```dart
+  /// "Los inventarios eliminados aparecerán aquí."
+  /// ```
+  String get trashEmptyBody =>
+      """Los inventarios eliminados aparecerán aquí.""";
+
+  /// ```dart
+  /// "Inventarios archivados"
+  /// ```
+  String get archiveTitle => """Inventarios archivados""";
+
+  /// ```dart
+  /// "No hay inventarios archivados"
+  /// ```
+  String get archiveEmptyTitle => """No hay inventarios archivados""";
+
+  /// ```dart
+  /// "Los inventarios archivados aparecerán aquí."
+  /// ```
+  String get archiveEmptyBody =>
+      """Los inventarios archivados aparecerán aquí.""";
+
+  /// ```dart
+  /// "Se eliminarán permanentemente todos los inventarios de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer."
+  /// ```
+  String get emptyTrashBody =>
+      """Se eliminarán permanentemente todos los inventarios de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer.""";
+
+  /// ```dart
+  /// "Inventario restaurado"
+  /// ```
+  String get listRestored => """Inventario restaurado""";
+
+  /// ```dart
+  /// "Inventario movido a la papelera"
+  /// ```
+  String get listMovedToTrash => """Inventario movido a la papelera""";
+
+  /// ```dart
+  /// "Inventario archivado"
+  /// ```
+  String get listArchived => """Inventario archivado""";
+
+  /// ```dart
+  /// "Inventario desarchivado"
+  /// ```
+  String get listUnarchived => """Inventario desarchivado""";
+}
+
+class TemplateListKindsMessagesEs extends TemplateListKindsMessages {
+  final ListKindsMessagesEs _parent;
+  const TemplateListKindsMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Plantillas"
+  /// ```
+  String get title => """Plantillas""";
+
+  /// ```dart
+  /// "Plantilla"
+  /// ```
+  String get name => """Plantilla""";
+
+  /// ```dart
+  /// "Nueva plantilla"
+  /// ```
+  String get newList => """Nueva plantilla""";
+
+  /// ```dart
+  /// "Crear una plantilla"
+  /// ```
+  String get createTitle => """Crear una plantilla""";
+
+  /// ```dart
+  /// "Editar plantilla"
+  /// ```
+  String get editTitle => """Editar plantilla""";
+
+  /// ```dart
+  /// "Duplicar plantilla"
+  /// ```
+  String get duplicateTitle => """Duplicar plantilla""";
+
+  /// ```dart
+  /// "No se pudo duplicar la plantilla"
+  /// ```
+  String get duplicateFailed => """No se pudo duplicar la plantilla""";
+
+  /// ```dart
+  /// "Acciones de la plantilla"
+  /// ```
+  String get listMenu => """Acciones de la plantilla""";
+
+  /// ```dart
+  /// "Quitar plantilla"
+  /// ```
+  String get deleteDialogTitle => """Quitar plantilla""";
+
+  /// ```dart
+  /// "Aún no hay plantillas"
+  /// ```
+  String get emptyTitle => """Aún no hay plantillas""";
+
+  /// ```dart
+  /// "Crea tu primera plantilla para empezar a agregar artículos."
+  /// ```
+  String get emptyBody =>
+      """Crea tu primera plantilla para empezar a agregar artículos.""";
+
+  /// ```dart
+  /// "Papelera de plantillas"
+  /// ```
+  String get trashTitle => """Papelera de plantillas""";
+
+  /// ```dart
+  /// "Las plantillas eliminadas aparecerán aquí."
+  /// ```
+  String get trashEmptyBody => """Las plantillas eliminadas aparecerán aquí.""";
+
+  /// ```dart
+  /// "Plantillas archivadas"
+  /// ```
+  String get archiveTitle => """Plantillas archivadas""";
+
+  /// ```dart
+  /// "No hay plantillas archivadas"
+  /// ```
+  String get archiveEmptyTitle => """No hay plantillas archivadas""";
+
+  /// ```dart
+  /// "Las plantillas archivadas aparecerán aquí."
+  /// ```
+  String get archiveEmptyBody =>
+      """Las plantillas archivadas aparecerán aquí.""";
+
+  /// ```dart
+  /// "Se eliminarán permanentemente todas las plantillas de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer."
+  /// ```
+  String get emptyTrashBody =>
+      """Se eliminarán permanentemente todas las plantillas de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer.""";
+
+  /// ```dart
+  /// "Plantilla restaurada"
+  /// ```
+  String get listRestored => """Plantilla restaurada""";
+
+  /// ```dart
+  /// "Plantilla movida a la papelera"
+  /// ```
+  String get listMovedToTrash => """Plantilla movida a la papelera""";
+
+  /// ```dart
+  /// "Plantilla archivada"
+  /// ```
+  String get listArchived => """Plantilla archivada""";
+
+  /// ```dart
+  /// "Plantilla desarchivada"
+  /// ```
+  String get listUnarchived => """Plantilla desarchivada""";
+}
+
 class NotesWallMessagesEs extends NotesWallMessages {
   final MessagesEs _parent;
   const NotesWallMessagesEs(this._parent) : super(_parent);
@@ -7524,6 +7906,8 @@ Por favor, completa el inicio de sesión en tu navegador.""",
   """home.learnMore""": """Más información""",
   """nav.checklists""": """Listas""",
   """nav.checklist""": """Lista""",
+  """nav.lists""": """Listas""",
+  """nav.list""": """Lista""",
   """nav.photoBoard""": """Tablero de fotos""",
   """nav.notesWall""": """Muro de notas""",
   """widget.chooseListsTitle""": """Elegir listas""",
@@ -8398,6 +8782,98 @@ Contraseña: pantry-rocks""",
       """Reutilizar elementos existentes en lugar de añadir duplicados""",
   """checklists.markdown.defaultFields""":
       """Valores aplicados a cada elemento importado""",
+  """listKinds.duplicateAs""": """Duplicar como:""",
+  """listKinds.checklist.title""": """Listas de verificación""",
+  """listKinds.checklist.name""": """Lista de verificación""",
+  """listKinds.checklist.newList""": """Nueva lista de verificación""",
+  """listKinds.checklist.createTitle""": """Crear una lista de verificación""",
+  """listKinds.checklist.editTitle""": """Editar lista de verificación""",
+  """listKinds.checklist.duplicateTitle""":
+      """Duplicar lista de verificación""",
+  """listKinds.checklist.duplicateFailed""":
+      """No se pudo duplicar la lista de verificación""",
+  """listKinds.checklist.listMenu""":
+      """Acciones de la lista de verificación""",
+  """listKinds.checklist.deleteDialogTitle""":
+      """Quitar lista de verificación""",
+  """listKinds.checklist.emptyTitle""": """Aún no hay listas de verificación""",
+  """listKinds.checklist.emptyBody""":
+      """Crea tu primera lista de verificación para empezar a agregar artículos.""",
+  """listKinds.checklist.trashTitle""":
+      """Papelera de listas de verificación""",
+  """listKinds.checklist.trashEmptyBody""":
+      """Las listas de verificación eliminadas aparecerán aquí.""",
+  """listKinds.checklist.archiveTitle""":
+      """Listas de verificación archivadas""",
+  """listKinds.checklist.archiveEmptyTitle""":
+      """No hay listas de verificación archivadas""",
+  """listKinds.checklist.archiveEmptyBody""":
+      """Las listas de verificación archivadas aparecerán aquí.""",
+  """listKinds.checklist.emptyTrashBody""":
+      """Se eliminarán permanentemente todas las listas de verificación de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer.""",
+  """listKinds.checklist.listRestored""":
+      """Lista de verificación restaurada""",
+  """listKinds.checklist.listMovedToTrash""":
+      """Lista de verificación movida a la papelera""",
+  """listKinds.checklist.listArchived""": """Lista de verificación archivada""",
+  """listKinds.checklist.listUnarchived""":
+      """Lista de verificación desarchivada""",
+  """listKinds.inventory.title""": """Inventarios""",
+  """listKinds.inventory.name""": """Inventario""",
+  """listKinds.inventory.newList""": """Nuevo inventario""",
+  """listKinds.inventory.createTitle""": """Crear un inventario""",
+  """listKinds.inventory.editTitle""": """Editar inventario""",
+  """listKinds.inventory.duplicateTitle""": """Duplicar inventario""",
+  """listKinds.inventory.duplicateFailed""":
+      """No se pudo duplicar el inventario""",
+  """listKinds.inventory.listMenu""": """Acciones del inventario""",
+  """listKinds.inventory.deleteDialogTitle""": """Quitar inventario""",
+  """listKinds.inventory.emptyTitle""": """Aún no hay inventarios""",
+  """listKinds.inventory.emptyBody""":
+      """Crea tu primer inventario para empezar a agregar artículos.""",
+  """listKinds.inventory.trashTitle""": """Papelera de inventarios""",
+  """listKinds.inventory.trashEmptyBody""":
+      """Los inventarios eliminados aparecerán aquí.""",
+  """listKinds.inventory.archiveTitle""": """Inventarios archivados""",
+  """listKinds.inventory.archiveEmptyTitle""":
+      """No hay inventarios archivados""",
+  """listKinds.inventory.archiveEmptyBody""":
+      """Los inventarios archivados aparecerán aquí.""",
+  """listKinds.inventory.emptyTrashBody""":
+      """Se eliminarán permanentemente todos los inventarios de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer.""",
+  """listKinds.inventory.listRestored""": """Inventario restaurado""",
+  """listKinds.inventory.listMovedToTrash""":
+      """Inventario movido a la papelera""",
+  """listKinds.inventory.listArchived""": """Inventario archivado""",
+  """listKinds.inventory.listUnarchived""": """Inventario desarchivado""",
+  """listKinds.template.title""": """Plantillas""",
+  """listKinds.template.name""": """Plantilla""",
+  """listKinds.template.newList""": """Nueva plantilla""",
+  """listKinds.template.createTitle""": """Crear una plantilla""",
+  """listKinds.template.editTitle""": """Editar plantilla""",
+  """listKinds.template.duplicateTitle""": """Duplicar plantilla""",
+  """listKinds.template.duplicateFailed""":
+      """No se pudo duplicar la plantilla""",
+  """listKinds.template.listMenu""": """Acciones de la plantilla""",
+  """listKinds.template.deleteDialogTitle""": """Quitar plantilla""",
+  """listKinds.template.emptyTitle""": """Aún no hay plantillas""",
+  """listKinds.template.emptyBody""":
+      """Crea tu primera plantilla para empezar a agregar artículos.""",
+  """listKinds.template.trashTitle""": """Papelera de plantillas""",
+  """listKinds.template.trashEmptyBody""":
+      """Las plantillas eliminadas aparecerán aquí.""",
+  """listKinds.template.archiveTitle""": """Plantillas archivadas""",
+  """listKinds.template.archiveEmptyTitle""":
+      """No hay plantillas archivadas""",
+  """listKinds.template.archiveEmptyBody""":
+      """Las plantillas archivadas aparecerán aquí.""",
+  """listKinds.template.emptyTrashBody""":
+      """Se eliminarán permanentemente todas las plantillas de la papelera, junto con todos sus artículos. Esta acción no se puede deshacer.""",
+  """listKinds.template.listRestored""": """Plantilla restaurada""",
+  """listKinds.template.listMovedToTrash""":
+      """Plantilla movida a la papelera""",
+  """listKinds.template.listArchived""": """Plantilla archivada""",
+  """listKinds.template.listUnarchived""": """Plantilla desarchivada""",
   """notesWall.noNotes""": """Aún no hay notas.""",
   """notesWall.failedToLoad""": """No se pudieron cargar las notas.""",
   """notesWall.saveFailed""": """No se pudo guardar la nota.""",

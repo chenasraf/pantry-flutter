@@ -73,6 +73,8 @@ home:
 nav:
   checklists: רשימות
   checklist: רשימה
+  lists: רשימות
+  list: רשימה
   photoBoard: לוח תמונות
   notesWall: קיר הערות
 
@@ -917,6 +919,77 @@ checklists:
     itemsFound(int count): "${_plural(count, one: 'נמצא פריט אחד', many: 'נמצאו $count פריטים')}"
     addItems(int count): "${_plural(count, one: 'הוספת פריט אחד', many: 'הוספת $count פריטים')}"
     imported(int count): "${_plural(count, one: 'יובא פריט אחד', many: 'יובאו $count פריטים')}"
+
+listKinds:
+  duplicateAs: "שכפל בתור:"
+  itemsSkippedNoEdit(int count): "${_plural(count, one: 'פריט אחד דולג כי אין לך הרשאה לערוך אותו.', many: '$count פריטים דולגו כי אין לך הרשאה לערוך אותם.')}"
+  itemsSkippedUncheck(int count): "${_plural(count, one: 'לא ניתן היה לבטל את הסימון של פריט אחד.', many: 'לא ניתן היה לבטל את הסימון של $count פריטים.')}"
+  checklist:
+    title: רשימות סימון
+    name: רשימת סימון
+    newList: רשימת סימון חדשה
+    createTitle: צוררשימת סימון
+    editTitle: ערוךרשימת סימון
+    duplicateTitle: שכפלרשימת סימון
+    duplicateFailed: לא ניתן היה לשכפל את רשימת הסימון
+    listMenu: פעולות רשימת סימון
+    deleteDialogTitle: הסררשימת סימון
+    emptyTitle: אין רשימות סימון עדיין
+    emptyBody: צור את רשימת הסימון הראשונה שלך כדי להתחיל להוסיף פריטים.
+    trashTitle: אשפת רשימות סימון
+    trashEmptyBody: רשימות סימון שנמחקו יופיעו כאן.
+    archiveTitle: רשימות סימון בארכיון
+    archiveEmptyTitle: אין רשימות סימון בארכיון
+    archiveEmptyBody: רשימות סימון שהועברו לארכיון יופיעו כאן.
+    emptyTrashBody: פעולה זו תמחק לצמיתות את כל רשימות הסימון שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.
+    listRestored: רשימת הסימון שוחזרה
+    listMovedToTrash: רשימת הסימון הועברה לאשפה
+    listArchived: רשימת הסימון הועברה לארכיון
+    listUnarchived: רשימת הסימון הוצאה מהארכיון
+  inventory:
+    title: רשימות מלאי
+    name: רשימת מלאי
+    newList: רשימת מלאי חדשה
+    createTitle: צוררשימת מלאי
+    editTitle: ערוךרשימת מלאי
+    duplicateTitle: שכפלרשימת מלאי
+    duplicateFailed: לא ניתן היה לשכפל את רשימת המלאי
+    listMenu: פעולות רשימת מלאי
+    deleteDialogTitle: הסררשימת מלאי
+    emptyTitle: אין רשימות מלאי עדיין
+    emptyBody: צור את רשימת המלאי הראשונה שלך כדי להתחיל להוסיף פריטים.
+    trashTitle: אשפת רשימות מלאי
+    trashEmptyBody: רשימות מלאי שנמחקו יופיעו כאן.
+    archiveTitle: רשימות מלאי בארכיון
+    archiveEmptyTitle: אין רשימות מלאי בארכיון
+    archiveEmptyBody: רשימות מלאי שהועברו לארכיון יופיעו כאן.
+    emptyTrashBody: פעולה זו תמחק לצמיתות את כל רשימות המלאי שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.
+    listRestored: רשימת המלאי שוחזרה
+    listMovedToTrash: רשימת המלאי הועברה לאשפה
+    listArchived: רשימת המלאי הועברה לארכיון
+    listUnarchived: רשימת המלאי הוצאה מהארכיון
+  template:
+    title: תבניות
+    name: תבנית
+    newList: תבנית חדשה
+    createTitle: צורתבנית
+    editTitle: ערוךתבנית
+    duplicateTitle: שכפלתבנית
+    duplicateFailed: לא ניתן היה לשכפל את התבנית
+    listMenu: פעולות תבנית
+    deleteDialogTitle: הסרתבנית
+    emptyTitle: אין תבניות עדיין
+    emptyBody: צור את התבנית הראשונה שלך כדי להתחיל להוסיף פריטים.
+    trashTitle: אשפת תבניות
+    trashEmptyBody: תבניות שנמחקו יופיעו כאן.
+    archiveTitle: תבניות בארכיון
+    archiveEmptyTitle: אין תבניות בארכיון
+    archiveEmptyBody: תבניות שהועברו לארכיון יופיעו כאן.
+    emptyTrashBody: פעולה זו תמחק לצמיתות את כל התבניות שבאשפה, יחד עם כל הפריטים שלהן. לא ניתן לבטל פעולה זו.
+    listRestored: התבנית שוחזרה
+    listMovedToTrash: התבנית הועברה לאשפה
+    listArchived: התבנית הועברה לארכיון
+    listUnarchived: התבנית הוצאה מהארכיון
 
 notesWall:
   noNotes: אין הערות עדיין.

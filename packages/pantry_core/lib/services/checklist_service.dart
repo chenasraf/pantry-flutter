@@ -1,6 +1,7 @@
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
@@ -85,6 +86,61 @@ class ChecklistService {
   /// loaded — set by an item deep link, consumed by the checklists view.
   int? pendingOpenItemId;
 
+  // -- List kinds --
+
+  static const _kindsKey = 'listKinds';
+
+  /// The kind of every list seen, so a call that only knows a list id (a
+  /// queued op replayed after a relaunch, an item edit) reaches the resource
+  /// serving that kind. Persisted alongside the lists themselves.
+  Map<int, ListKind>? _kinds;
+
+  Map<int, ListKind> get _kindMap => _kinds ??= {
+    for (final MapEntry(:key, :value)
+        in (cache.get<Map>(_kindsKey) ?? const {}).entries)
+      ?int.tryParse('$key'): ListKind.parse(value),
+  };
+
+  /// The kind of list [listId], or a checklist when it has never been seen —
+  /// which is every list on servers without [ServerFeature.listKinds].
+  ListKind kindOf(int listId) => _kindMap[listId] ?? ListKind.checklist;
+
+  void rememberKinds(Iterable<ChecklistList> lists) {
+    var changed = false;
+    for (final l in lists) {
+      if (l.id == kAllListsId) continue;
+      if (_kindMap[l.id] != l.kind) {
+        _kindMap[l.id] = l.kind;
+        changed = true;
+      }
+    }
+    if (!changed) return;
+    cache.set(_kindsKey, {
+      for (final e in _kindMap.entries) '${e.key}': e.value.wire,
+    });
+  }
+
+  ChecklistList _remember(ChecklistList list) {
+    rememberKinds([list]);
+    return list;
+  }
+
+  List<ChecklistList> _rememberAll(List<ChecklistList> lists) {
+    rememberKinds(lists);
+    return lists;
+  }
+
+  /// `/houses/{houseId}/{resource}/{listId}` for the resource serving the
+  /// list's kind.
+  String listPath(int houseId, int listId) =>
+      '/houses/$houseId/${kindOf(listId).resource}/$listId';
+
+  String kindPath(int houseId, ListKind kind) =>
+      '/houses/$houseId/${kind.resource}';
+
+  /// The cached checklists of [houseId]. Templates and inventories are kept
+  /// apart (see [getCachedListsOfEveryKind]) so the widgets, shopping and the
+  /// watch, which only ever deal in checklists, never see them.
   List<ChecklistList>? getCachedLists(int houseId) {
     final scoped = cache.getKeyedList(
       _listsPrefix,
@@ -103,6 +159,46 @@ class ChecklistService {
   void cacheLists(int houseId, List<ChecklistList> lists) {
     cache.setKeyedList(_listsPrefix, '$houseId', lists, (l) => l.toJson());
   }
+
+  /// Every cached list of [houseId], checklists first, then the other kinds in
+  /// navigation order. `null` when not even the checklists were ever cached.
+  List<ChecklistList>? getCachedListsOfEveryKind(int houseId) {
+    final checklists = getCachedLists(houseId);
+    if (checklists == null || !ServerFeature.listKinds) return checklists;
+    return [
+      ...checklists,
+      for (final kind in ListKind.values)
+        if (!kind.isChecklist)
+          ...?cache.getKeyedList(
+            _kindListsPrefix(kind),
+            '$houseId',
+            ChecklistList.fromJson,
+          ),
+    ];
+  }
+
+  /// Cache lists of any kind, each kind under its own key.
+  void cacheListsOfEveryKind(int houseId, List<ChecklistList> lists) {
+    rememberKinds(lists);
+    for (final kind in ListKind.values) {
+      final ofKind = [
+        for (final l in lists)
+          if (l.kind == kind) l,
+      ];
+      if (kind.isChecklist) {
+        cacheLists(houseId, ofKind);
+      } else {
+        cache.setKeyedList(
+          _kindListsPrefix(kind),
+          '$houseId',
+          ofKind,
+          (l) => l.toJson(),
+        );
+      }
+    }
+  }
+
+  static String _kindListsPrefix(ListKind kind) => '${kind.resource}Lists';
 
   List<ListItem>? getCachedItems(int listId) =>
       cache.getKeyedList(_itemsPrefix, '$listId', ListItem.fromJson);
