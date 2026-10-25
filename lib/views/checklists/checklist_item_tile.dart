@@ -13,6 +13,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'package:pantry/views/checklists/checklist_density.dart';
 import 'checklist_item_tile_parts.dart';
+import 'inventory_row_parts.dart';
 import 'swipe_reveal_row.dart';
 
 class ChecklistItemTile extends StatefulWidget {
@@ -105,6 +106,10 @@ class ChecklistItemTile extends StatefulWidget {
   /// shown on a trailing badge.
   final List<String>? fromTemplates;
 
+  /// On an inventory item: what the row's stock controls change. See
+  /// [ChecklistTileRowContent.inventory].
+  final InventoryRowActions? inventory;
+
   const ChecklistItemTile({
     super.key,
     required this.item,
@@ -141,6 +146,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.onSuggestionTap,
     this.archived = false,
     this.fromTemplates,
+    this.inventory,
   });
 
   /// A read-only tile used as a reuse suggestion in the compose bar: name and
@@ -181,7 +187,8 @@ class ChecklistItemTile extends StatefulWidget {
        onSelectToggle = null,
        onLongPressSelect = null,
        suggestion = true,
-       onSuggestionTap = onTap;
+       onSuggestionTap = onTap,
+       inventory = null;
 
   static void _noop(ListItem _) {}
 
@@ -430,6 +437,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       selected: widget.selected,
       pendingImage: widget.pendingImage,
       checkable: widget.checkable,
+      inventory: widget.inventory,
     );
 
     // In selection mode the row toggles selection and shows no swipe actions,

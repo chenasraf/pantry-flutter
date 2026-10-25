@@ -1031,6 +1031,106 @@ templates:
   loadFailed: Impossible de charger les modèles
   back: Retour
 
+stock:
+  inStock: En stock
+  full: Plein
+  low: Bas
+  out: Épuisé
+  lowBuy(String amount): "Bas · acheter $amount"
+  outBuy(String amount): "Épuisé · acheter $amount"
+  notCounted: Non compté
+  expiredOn(String date): "Périmé le $date"
+  expiredOnBuy(String date, String amount): "Périmé le $date · acheter $amount"
+  expiresToday: Périme aujourd’hui
+  expiresTodayBuy(String amount): "Périme aujourd’hui · acheter $amount"
+  expiresTomorrow: Périme demain
+  expiresTomorrowBuy(String amount): "Périme demain · acheter $amount"
+  expiresInDays(int count): "${_plural(count, one: 'Périme dans 1 jour', many: 'Périme dans $count jours')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'Périme dans 1 jour · acheter $amount', many: 'Périme dans $count jours · acheter $amount')}"
+  goodUntil(String date): "Bon jusqu’au $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: Diminuer la quantité disponible
+  increase: Augmenter la quantité disponible
+  onHandEdit: Quantité disponible
+  levelButton(String level): "Niveau de stock : $level"
+  needsRestockCount(int count): "${_plural(count, one: '1 article à réapprovisionner', many: '$count articles à réapprovisionner')}"
+  filter: Stock
+  filterAll: Tous les articles
+  filterNeedsRestock: À réapprovisionner
+  filterInStock: En stock
+  writeRefused: Impossible d’enregistrer la modification du stock. L’inventaire affiche maintenant les données du serveur.
+  settings:
+    action: Paramètres de l’inventaire
+    title: Paramètres de l’inventaire
+    name: Nom
+    nameHint: L’icône, la couleur et le partage fonctionnent comme pour les listes de contrôle.
+    expiryWarning: Alerte de péremption
+    warnBefore(String days): "Avertir $days jours avant la péremption"
+    daysBefore: Jours avant la péremption
+    warnHint: Indiquez 0 pour être averti le jour même de la péremption.
+    cancel: Annuler
+    save: Enregistrer
+  card:
+    title: Stock
+    mode: Mode de stock
+    count: Quantité
+    level: Niveau
+    countHint: Suivez combien vous en avez, p. ex. 4 œufs sur 12.
+    levelHint: Suivez-le en Plein, Bas ou Épuisé, p. ex. farine ou épices.
+    onHand: Disponible
+    onHandPlaceholder: p. ex. 4
+    target: Objectif
+    targetPlaceholder: p. ex. 12 œufs
+    reorderPoint: Seuil de réapprovisionnement
+    reorderPlaceholder: p. ex. 4
+    stockLevel: Niveau de stock
+    restockAmount: Quantité à racheter
+    restockPlaceholder: p. ex. sachet de 1 kg
+    convertedLevelAmount(String level, String amount): "Converti : niveau $level, quantité à racheter « $amount »."
+    convertedLevel(String level): "Converti : niveau $level."
+    convertedCount(String onHand, String target): "Converti : disponible « $onHand », objectif « $target »."
+    convertedTargetOnly(String target): "Converti : objectif « $target ». Saisissez la quantité disponible."
+    convertedBlank: Converti en quantité. Saisissez la quantité disponible et un objectif.
+    statusExpiredBuy(String amount): "Périmé : acheter $amount."
+    statusExpired: Périmé.
+    statusExpiringBuy(String amount): "Bientôt périmé : acheter $amount."
+    statusExpiring: Bientôt périmé.
+    statusLowBuy(String amount): "Bas : acheter $amount."
+    statusLow: Bas.
+    statusOutBuy(String amount): "Épuisé : acheter $amount."
+    statusOut: Épuisé.
+    statusUncountedTarget: "Non compté : l’objectif n’a pas de nombre, il n’est donc jamais bas."
+    statusUncountedOnHand: "Non compté : la quantité disponible n’a pas de nombre, il n’est donc jamais bas."
+    statusInStock: En stock.
+    templateDefaultMode: Sans mode de stock choisi, il utilise celui de l’inventaire par défaut.
+    templateStartsCount(String amount): "Ajouté à un inventaire, il démarre plein avec $amount disponible."
+    templateStartsLevelAmount(String amount): "Ajouté à un inventaire, il démarre Plein et se réapprovisionne de $amount."
+    templateStartsLevel: Ajouté à un inventaire, il démarre Plein.
+    templateUncounted: Ajouté à un inventaire sans objectif, il n’est pas compté.
+  expiry:
+    title: Péremption
+    mode: Comment l’article se périme
+    none: Aucune
+    date: Date
+    keeps: Se conserve N jours
+    expiryDate: Date de péremption
+    daysItKeeps: Jours de conservation
+    expiredSummary(String date): "Périmé le $date."
+    goodUntilSummary(String date): "Bon jusqu’au $date."
+    renews(int count): "${_plural(count, one: 'Chaque réapprovisionnement la repousse à 1 jour à partir de ce jour.', many: 'Chaque réapprovisionnement la repousse à $count jours à partir de ce jour.')}"
+    templateExpires(int count): "${_plural(count, one: 'Ajouté à un inventaire, il périme 1 jour plus tard.', many: 'Ajouté à un inventaire, il périme $count jours plus tard.')}"
+    chip: Péremption
+    chipExpires(String date): "Périme le $date"
+    chipExpired(String date): "Périmé le $date"
+    chipKeeps(int count): "${_plural(count, one: 'Se conserve 1 jour', many: 'Se conserve $count jours')}"
+  compose:
+    chip: Stock
+    count: Quantité
+    level: Niveau
+    levelAmount(String amount): "Niveau · $amount"
+    targetValue(String target): "Objectif : $target"
+    fullWhenEmpty: Plein si vide
+
 notesWall:
   noNotes: Aucune note pour le moment.
   failedToLoad: Impossible de charger les notes.

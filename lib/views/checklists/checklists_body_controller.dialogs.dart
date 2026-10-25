@@ -171,6 +171,12 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
           barcode: s.barcode,
           prices: s.prices,
           customFields: s.customFields,
+          stockMode: s.stockMode,
+          stockLevel: s.stockLevel,
+          target: s.target,
+          reorderPoint: s.reorderPoint,
+          expiresAt: s.expiresAt,
+          shelfLifeDays: s.shelfLifeDays,
         );
       } else {
         created = await domain.addItem(
@@ -186,6 +192,12 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
           barcode: s.barcode,
           prices: s.prices,
           customFields: s.customFields,
+          stockMode: s.stockMode,
+          stockLevel: s.stockLevel,
+          target: s.target,
+          reorderPoint: s.reorderPoint,
+          expiresAt: s.expiresAt,
+          shelfLifeDays: s.shelfLifeDays,
         );
       }
       // Remember the chosen currency when the new item actually has a price:
@@ -376,6 +388,11 @@ extension ChecklistsBodyDialogs on ChecklistsBodyController {
       case 'apply_template':
         final current = domain.currentList;
         if (current != null) await showApplyTemplate(context, domain, current);
+      case 'inventory_settings':
+        final current = domain.currentList;
+        if (current != null) {
+          await showInventorySettings(context, domain, current);
+        }
       case 'item_defaults':
         final current = domain.currentList;
         if (current != null) await showItemDefaults(context, domain, current);

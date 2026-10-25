@@ -13,6 +13,7 @@ import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/list_template.dart';
 import 'package:pantry_core/models/member.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
@@ -31,6 +32,7 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/pending_overlay.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 import 'checklists_ordering.dart';
 export 'checklists_ordering.dart';
 export 'package:pantry_core/models/list_kind.dart';
@@ -40,6 +42,7 @@ part 'checklists_controller.batch.dart';
 part 'checklists_controller.item_crud.dart';
 part 'checklists_controller.list_crud.dart';
 part 'checklists_controller.sort.dart';
+part 'checklists_controller.stock.dart';
 part 'checklists_controller.templates.dart';
 
 class ChecklistsController extends ChangeNotifier {
@@ -53,6 +56,7 @@ class ChecklistsController extends ChangeNotifier {
 
   ChecklistsController({required this.houseId}) {
     _appliedSub = SyncManager.instance.onApplied.listen(_onSyncApplied);
+    _skippedSub = SyncManager.instance.onSkipped.listen(_onSyncSkipped);
     _reconnectSub = SyncManager.instance.onReconnect.listen(_onReconnect);
     // Every enqueue and every drain moves the queue's length, which is the one
     // signal that the set of waiting images may have changed.
@@ -105,6 +109,7 @@ class ChecklistsController extends ChangeNotifier {
 
   bool _disposed = false;
   StreamSubscription<SyncOpApplied>? _appliedSub;
+  StreamSubscription<SyncOpSkipped>? _skippedSub;
   StreamSubscription<void>? _reconnectSub;
 
   /// Images the queue still owes the server, keyed by every id their item
@@ -154,6 +159,7 @@ class ChecklistsController extends ChangeNotifier {
   void dispose() {
     _disposed = true;
     _appliedSub?.cancel();
+    _skippedSub?.cancel();
     _reconnectSub?.cancel();
     SyncManager.instance.pendingCount.removeListener(_onQueueLengthChanged);
     super.dispose();
@@ -1125,6 +1131,7 @@ class ChecklistsController extends ChangeNotifier {
     final key = isMetaMode ? kAllListsId : (listId ?? _currentList?.id);
     if (key == null) return;
     _checklistService.cacheItems(key, List.of(_items));
+    _recountNeedsRestock();
   }
 
   void _cacheCurrentItems() => _cacheVisibleItems();
@@ -1222,6 +1229,12 @@ class ChecklistsController extends ChangeNotifier {
               notifyListeners();
               return;
             }
+          }
+          // A later stock write is still queued: this answer is older than
+          // what the row shows, and the newer write's answer replaces it.
+          if (_isInventoryList(entity.listId) &&
+              _sync.pendingItemIds(houseId).contains(entity.id)) {
+            return;
           }
           final j = _items.indexWhere((it) => it.id == entity.id);
           if (j != -1) {

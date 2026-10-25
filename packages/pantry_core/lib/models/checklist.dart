@@ -2,6 +2,7 @@ import 'package:pantry_core/models/custom_field.dart';
 import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 
 /// Sentinel id used by the synthetic "All lists" meta view. Real list ids on
@@ -75,6 +76,13 @@ class ChecklistList {
   /// into, and from servers without [ServerFeature.templates].
   final bool? fillFromDefaults;
 
+  /// Inventories only: how many items are low, out, expiring or expired.
+  final int? needsRestock;
+
+  /// Inventories only: how many days before its date an item counts as
+  /// expiring.
+  final int? expiryLeadDays;
+
   const ChecklistList({
     required this.id,
     required this.houseId,
@@ -98,6 +106,8 @@ class ChecklistList {
     this.sharedOnly,
     this.itemDefaults,
     this.fillFromDefaults,
+    this.needsRestock,
+    this.expiryLeadDays,
   });
 
   factory ChecklistList.fromJson(Map<String, dynamic> json) => ChecklistList(
@@ -136,6 +146,8 @@ class ChecklistList {
           )
         : null,
     fillFromDefaults: json['fillFromDefaults'] as bool?,
+    needsRestock: json['needsRestock'] as int?,
+    expiryLeadDays: json['expiryLeadDays'] as int?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -162,6 +174,8 @@ class ChecklistList {
     'sharedOnly': sharedOnly,
     'itemDefaults': ?itemDefaults?.toJson(),
     'fillFromDefaults': ?fillFromDefaults,
+    'needsRestock': ?needsRestock,
+    'expiryLeadDays': ?expiryLeadDays,
   };
 
   ChecklistList copyWith({
@@ -185,6 +199,8 @@ class ChecklistList {
     int? lastCompletedAt,
     ItemDefaults? itemDefaults,
     bool? fillFromDefaults,
+    int? needsRestock,
+    int? expiryLeadDays,
   }) => ChecklistList(
     id: id ?? this.id,
     houseId: houseId,
@@ -211,6 +227,8 @@ class ChecklistList {
     sharedOnly: sharedOnly,
     itemDefaults: itemDefaults ?? this.itemDefaults,
     fillFromDefaults: fillFromDefaults ?? this.fillFromDefaults,
+    needsRestock: needsRestock ?? this.needsRestock,
+    expiryLeadDays: expiryLeadDays ?? this.expiryLeadDays,
   );
 }
 
@@ -345,6 +363,27 @@ class ListItem {
   /// carries none. Gated behind the `custom-fields` capability; mirrors
   /// [prices] in how it rides the item's create/update payload.
   final List<FieldValue> customFields;
+
+  /// Inventory and template items. Null on checklist items, and on template
+  /// items that leave it to the inventory's default.
+  final StockMode? stockMode;
+
+  /// Inventory items in [StockMode.level].
+  final StockLevel? stockLevel;
+
+  /// Free text; its first number is the value ("12 eggs").
+  final String? target;
+  final String? reorderPoint;
+
+  /// Server-computed on inventory items; recomputed locally after an edit
+  /// until the server's answer replaces it.
+  final StockStatus? stockStatus;
+  final String? shortfall;
+  final ExpiryStatus? expiryStatus;
+
+  /// Midnight, in epoch seconds, of the last day the item is good.
+  final int? expiresAt;
+  final int? shelfLifeDays;
   final int sortOrder;
   final int createdAt;
   final int updatedAt;
@@ -373,6 +412,15 @@ class ListItem {
     this.barcode,
     this.prices = const [],
     this.customFields = const [],
+    this.stockMode,
+    this.stockLevel,
+    this.target,
+    this.reorderPoint,
+    this.stockStatus,
+    this.shortfall,
+    this.expiryStatus,
+    this.expiresAt,
+    this.shelfLifeDays,
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -408,6 +456,15 @@ class ListItem {
     barcode: json['barcode'] as String?,
     prices: _pricesFromJson(json),
     customFields: _customFieldsFromJson(json),
+    stockMode: StockMode.tryParse(json['stockMode']),
+    stockLevel: StockLevel.tryParse(json['stockLevel']),
+    target: json['target'] as String?,
+    reorderPoint: json['reorderPoint'] as String?,
+    stockStatus: StockStatus.tryParse(json['stockStatus']),
+    shortfall: json['shortfall'] as String?,
+    expiryStatus: ExpiryStatus.tryParse(json['expiryStatus']),
+    expiresAt: json['expiresAt'] as int?,
+    shelfLifeDays: json['shelfLifeDays'] as int?,
     sortOrder: json['sortOrder'] as int,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
@@ -475,6 +532,15 @@ class ListItem {
     'barcode': barcode,
     'prices': prices.map((p) => p.toJson()).toList(),
     'customFields': customFields.map((v) => v.toJson()).toList(),
+    'stockMode': ?stockMode?.wire,
+    'stockLevel': ?stockLevel?.wire,
+    'target': ?target,
+    'reorderPoint': ?reorderPoint,
+    'stockStatus': ?stockStatus?.wire,
+    'shortfall': ?shortfall,
+    'expiryStatus': ?expiryStatus?.wire,
+    'expiresAt': ?expiresAt,
+    'shelfLifeDays': ?shelfLifeDays,
     'sortOrder': sortOrder,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
@@ -504,6 +570,20 @@ class ListItem {
     String? barcode,
     List<ItemPrice>? prices,
     List<FieldValue>? customFields,
+    StockMode? stockMode,
+    StockLevel? stockLevel,
+    String? target,
+    bool clearTarget = false,
+    String? reorderPoint,
+    bool clearReorderPoint = false,
+    StockStatus? stockStatus,
+    String? shortfall,
+    bool clearShortfall = false,
+    ExpiryStatus? expiryStatus,
+    int? expiresAt,
+    bool clearExpiresAt = false,
+    int? shelfLifeDays,
+    bool clearShelfLifeDays = false,
     int? sortOrder,
     int? updatedAt,
     int? deletedAt,
@@ -534,6 +614,19 @@ class ListItem {
     barcode: barcode ?? this.barcode,
     prices: prices ?? this.prices,
     customFields: customFields ?? this.customFields,
+    stockMode: stockMode ?? this.stockMode,
+    stockLevel: stockLevel ?? this.stockLevel,
+    target: clearTarget ? null : (target ?? this.target),
+    reorderPoint: clearReorderPoint
+        ? null
+        : (reorderPoint ?? this.reorderPoint),
+    stockStatus: stockStatus ?? this.stockStatus,
+    shortfall: clearShortfall ? null : (shortfall ?? this.shortfall),
+    expiryStatus: expiryStatus ?? this.expiryStatus,
+    expiresAt: clearExpiresAt ? null : (expiresAt ?? this.expiresAt),
+    shelfLifeDays: clearShelfLifeDays
+        ? null
+        : (shelfLifeDays ?? this.shelfLifeDays),
     sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,

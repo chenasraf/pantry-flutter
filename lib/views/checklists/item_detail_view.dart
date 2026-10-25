@@ -87,13 +87,18 @@ class ItemDetailView extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
                   sliver: SliverList.list(
                     children: [
-                      FactTiles(
-                        item: item,
-                        lifecycle: lifecycle,
-                        showType: ChecklistService.instance
-                            .kindOf(item.listId)
-                            .hasRecurrence,
-                      ),
+                      if (ServerFeature.inventoryStock &&
+                          ChecklistService.instance.kindOf(item.listId) ==
+                              ListKind.inventory)
+                        StockFactTiles(item: item)
+                      else
+                        FactTiles(
+                          item: item,
+                          lifecycle: lifecycle,
+                          showType: ChecklistService.instance
+                              .kindOf(item.listId)
+                              .hasRecurrence,
+                        ),
                       if (ServerFeature.itemPrice && item.hasPrice) ...[
                         const SizedBox(height: 12),
                         PriceTile(item: item),

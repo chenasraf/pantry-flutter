@@ -37,6 +37,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     required this.accent,
     required this.onAccent,
     required this.success,
+    required this.warning,
   });
 
   factory AppSurfaces.fromScheme(ColorScheme cs) => AppSurfaces(
@@ -47,6 +48,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     accent: cs.primary,
     onAccent: cs.onPrimary,
     success: const Color(0xFF5FBF8A),
+    warning: const Color(0xFFE5A50A),
   );
 
   /// The page behind every surface.
@@ -67,6 +69,9 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
 
   /// Something completed: a checked item, a finished trip.
   final Color success;
+
+  /// Something that needs attention soon: stock running low, a date coming up.
+  final Color warning;
 
   /// Falls back to deriving from the ambient [ColorScheme] so a widget pumped
   /// under a bare [MaterialApp] — a test, a widget-config engine — still draws.
@@ -192,6 +197,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     Color? accent,
     Color? onAccent,
     Color? success,
+    Color? warning,
   }) => AppSurfaces(
     base: base ?? this.base,
     fill: fill ?? this.fill,
@@ -200,6 +206,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
     accent: accent ?? this.accent,
     onAccent: onAccent ?? this.onAccent,
     success: success ?? this.success,
+    warning: warning ?? this.warning,
   );
 
   @override
@@ -213,6 +220,7 @@ class AppSurfaces extends ThemeExtension<AppSurfaces> {
       accent: Color.lerp(accent, other.accent, t)!,
       onAccent: Color.lerp(onAccent, other.onAccent, t)!,
       success: Color.lerp(success, other.success, t)!,
+      warning: Color.lerp(warning, other.warning, t)!,
     );
   }
 }

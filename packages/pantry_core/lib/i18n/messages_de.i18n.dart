@@ -81,6 +81,7 @@ class MessagesDe extends Messages {
   ChecklistsMessagesDe get checklists => ChecklistsMessagesDe(this);
   ListKindsMessagesDe get listKinds => ListKindsMessagesDe(this);
   TemplatesMessagesDe get templates => TemplatesMessagesDe(this);
+  StockMessagesDe get stock => StockMessagesDe(this);
   NotesWallMessagesDe get notesWall => NotesWallMessagesDe(this);
   PhotoBoardMessagesDe get photoBoard => PhotoBoardMessagesDe(this);
   ShoppingMessagesDe get shopping => ShoppingMessagesDe(this);
@@ -5468,6 +5469,530 @@ class FillPrefNamesTemplatesMessagesDe extends FillPrefNamesTemplatesMessages {
   String get never => """Nie füllen""";
 }
 
+class StockMessagesDe extends StockMessages {
+  final MessagesDe _parent;
+  const StockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Vorrätig"
+  /// ```
+  String get inStock => """Vorrätig""";
+
+  /// ```dart
+  /// "Voll"
+  /// ```
+  String get full => """Voll""";
+
+  /// ```dart
+  /// "Knapp"
+  /// ```
+  String get low => """Knapp""";
+
+  /// ```dart
+  /// "Leer"
+  /// ```
+  String get out => """Leer""";
+
+  /// ```dart
+  /// "Knapp · $amount kaufen"
+  /// ```
+  String lowBuy(String amount) => """Knapp · $amount kaufen""";
+
+  /// ```dart
+  /// "Leer · $amount kaufen"
+  /// ```
+  String outBuy(String amount) => """Leer · $amount kaufen""";
+
+  /// ```dart
+  /// "Nicht gezählt"
+  /// ```
+  String get notCounted => """Nicht gezählt""";
+
+  /// ```dart
+  /// "Abgelaufen am $date"
+  /// ```
+  String expiredOn(String date) => """Abgelaufen am $date""";
+
+  /// ```dart
+  /// "Abgelaufen am $date · $amount kaufen"
+  /// ```
+  String expiredOnBuy(String date, String amount) =>
+      """Abgelaufen am $date · $amount kaufen""";
+
+  /// ```dart
+  /// "Läuft heute ab"
+  /// ```
+  String get expiresToday => """Läuft heute ab""";
+
+  /// ```dart
+  /// "Läuft heute ab · $amount kaufen"
+  /// ```
+  String expiresTodayBuy(String amount) =>
+      """Läuft heute ab · $amount kaufen""";
+
+  /// ```dart
+  /// "Läuft morgen ab"
+  /// ```
+  String get expiresTomorrow => """Läuft morgen ab""";
+
+  /// ```dart
+  /// "Läuft morgen ab · $amount kaufen"
+  /// ```
+  String expiresTomorrowBuy(String amount) =>
+      """Läuft morgen ab · $amount kaufen""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Läuft in 1 Tag ab', many: 'Läuft in $count Tagen ab')}"
+  /// ```
+  String expiresInDays(int count) =>
+      """${_plural(count, one: 'Läuft in 1 Tag ab', many: 'Läuft in $count Tagen ab')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Läuft in 1 Tag ab · $amount kaufen', many: 'Läuft in $count Tagen ab · $amount kaufen')}"
+  /// ```
+  String expiresInDaysBuy(int count, String amount) =>
+      """${_plural(count, one: 'Läuft in 1 Tag ab · $amount kaufen', many: 'Läuft in $count Tagen ab · $amount kaufen')}""";
+
+  /// ```dart
+  /// "Haltbar bis $date"
+  /// ```
+  String goodUntil(String date) => """Haltbar bis $date""";
+
+  /// ```dart
+  /// "$onHand / $target"
+  /// ```
+  String amount(String onHand, String target) => """$onHand / $target""";
+
+  /// ```dart
+  /// "Vorhandene Menge verringern"
+  /// ```
+  String get decrease => """Vorhandene Menge verringern""";
+
+  /// ```dart
+  /// "Vorhandene Menge erhöhen"
+  /// ```
+  String get increase => """Vorhandene Menge erhöhen""";
+
+  /// ```dart
+  /// "Vorhandene Menge"
+  /// ```
+  String get onHandEdit => """Vorhandene Menge""";
+
+  /// ```dart
+  /// "Bestandsstufe: $level"
+  /// ```
+  String levelButton(String level) => """Bestandsstufe: $level""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag muss nachgekauft werden', many: '$count Einträge müssen nachgekauft werden')}"
+  /// ```
+  String needsRestockCount(int count) =>
+      """${_plural(count, one: '1 Eintrag muss nachgekauft werden', many: '$count Einträge müssen nachgekauft werden')}""";
+
+  /// ```dart
+  /// "Bestand"
+  /// ```
+  String get filter => """Bestand""";
+
+  /// ```dart
+  /// "Alle Einträge"
+  /// ```
+  String get filterAll => """Alle Einträge""";
+
+  /// ```dart
+  /// "Nachkaufen nötig"
+  /// ```
+  String get filterNeedsRestock => """Nachkaufen nötig""";
+
+  /// ```dart
+  /// "Vorrätig"
+  /// ```
+  String get filterInStock => """Vorrätig""";
+
+  /// ```dart
+  /// "Die Bestandsänderung konnte nicht gespeichert werden. Die Bestandsliste zeigt jetzt den Stand des Servers."
+  /// ```
+  String get writeRefused =>
+      """Die Bestandsänderung konnte nicht gespeichert werden. Die Bestandsliste zeigt jetzt den Stand des Servers.""";
+  SettingsStockMessagesDe get settings => SettingsStockMessagesDe(this);
+  CardStockMessagesDe get card => CardStockMessagesDe(this);
+  ExpiryStockMessagesDe get expiry => ExpiryStockMessagesDe(this);
+  ComposeStockMessagesDe get compose => ComposeStockMessagesDe(this);
+}
+
+class SettingsStockMessagesDe extends SettingsStockMessages {
+  final StockMessagesDe _parent;
+  const SettingsStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Bestandslisten-Einstellungen"
+  /// ```
+  String get action => """Bestandslisten-Einstellungen""";
+
+  /// ```dart
+  /// "Bestandslisten-Einstellungen"
+  /// ```
+  String get title => """Bestandslisten-Einstellungen""";
+
+  /// ```dart
+  /// "Name"
+  /// ```
+  String get name => """Name""";
+
+  /// ```dart
+  /// "Symbol, Farbe und Teilen funktionieren wie bei Checklisten."
+  /// ```
+  String get nameHint =>
+      """Symbol, Farbe und Teilen funktionieren wie bei Checklisten.""";
+
+  /// ```dart
+  /// "Ablaufwarnung"
+  /// ```
+  String get expiryWarning => """Ablaufwarnung""";
+
+  /// ```dart
+  /// "$days Tage vor Ablauf warnen"
+  /// ```
+  String warnBefore(String days) => """$days Tage vor Ablauf warnen""";
+
+  /// ```dart
+  /// "Tage vor Ablauf"
+  /// ```
+  String get daysBefore => """Tage vor Ablauf""";
+
+  /// ```dart
+  /// "0 eingeben, um am Ablaufdatum selbst zu warnen."
+  /// ```
+  String get warnHint => """0 eingeben, um am Ablaufdatum selbst zu warnen.""";
+
+  /// ```dart
+  /// "Abbrechen"
+  /// ```
+  String get cancel => """Abbrechen""";
+
+  /// ```dart
+  /// "Speichern"
+  /// ```
+  String get save => """Speichern""";
+}
+
+class CardStockMessagesDe extends CardStockMessages {
+  final StockMessagesDe _parent;
+  const CardStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Bestand"
+  /// ```
+  String get title => """Bestand""";
+
+  /// ```dart
+  /// "Bestandsmodus"
+  /// ```
+  String get mode => """Bestandsmodus""";
+
+  /// ```dart
+  /// "Anzahl"
+  /// ```
+  String get count => """Anzahl""";
+
+  /// ```dart
+  /// "Stufe"
+  /// ```
+  String get level => """Stufe""";
+
+  /// ```dart
+  /// "Verfolge, wie viele du hast, z. B. 4 von 12 Eiern."
+  /// ```
+  String get countHint =>
+      """Verfolge, wie viele du hast, z. B. 4 von 12 Eiern.""";
+
+  /// ```dart
+  /// "Verfolge es als Voll, Knapp oder Leer, z. B. Mehl oder Gewürze."
+  /// ```
+  String get levelHint =>
+      """Verfolge es als Voll, Knapp oder Leer, z. B. Mehl oder Gewürze.""";
+
+  /// ```dart
+  /// "Vorhanden"
+  /// ```
+  String get onHand => """Vorhanden""";
+
+  /// ```dart
+  /// "z. B. 4"
+  /// ```
+  String get onHandPlaceholder => """z. B. 4""";
+
+  /// ```dart
+  /// "Ziel"
+  /// ```
+  String get target => """Ziel""";
+
+  /// ```dart
+  /// "z. B. 12 Eier"
+  /// ```
+  String get targetPlaceholder => """z. B. 12 Eier""";
+
+  /// ```dart
+  /// "Nachkaufschwelle"
+  /// ```
+  String get reorderPoint => """Nachkaufschwelle""";
+
+  /// ```dart
+  /// "z. B. 4"
+  /// ```
+  String get reorderPlaceholder => """z. B. 4""";
+
+  /// ```dart
+  /// "Bestandsstufe"
+  /// ```
+  String get stockLevel => """Bestandsstufe""";
+
+  /// ```dart
+  /// "Nachkaufmenge"
+  /// ```
+  String get restockAmount => """Nachkaufmenge""";
+
+  /// ```dart
+  /// "z. B. 1-kg-Packung"
+  /// ```
+  String get restockPlaceholder => """z. B. 1-kg-Packung""";
+
+  /// ```dart
+  /// "Umgewandelt: Stufe $level, Nachkaufmenge „$amount“."
+  /// ```
+  String convertedLevelAmount(String level, String amount) =>
+      """Umgewandelt: Stufe $level, Nachkaufmenge „$amount“.""";
+
+  /// ```dart
+  /// "Umgewandelt: Stufe $level."
+  /// ```
+  String convertedLevel(String level) => """Umgewandelt: Stufe $level.""";
+
+  /// ```dart
+  /// "Umgewandelt: vorhanden „$onHand“, Ziel „$target“."
+  /// ```
+  String convertedCount(String onHand, String target) =>
+      """Umgewandelt: vorhanden „$onHand“, Ziel „$target“.""";
+
+  /// ```dart
+  /// "Umgewandelt: Ziel „$target“. Gib die vorhandene Menge ein."
+  /// ```
+  String convertedTargetOnly(String target) =>
+      """Umgewandelt: Ziel „$target“. Gib die vorhandene Menge ein.""";
+
+  /// ```dart
+  /// "In eine Anzahl umgewandelt. Gib die vorhandene Menge und ein Ziel ein."
+  /// ```
+  String get convertedBlank =>
+      """In eine Anzahl umgewandelt. Gib die vorhandene Menge und ein Ziel ein.""";
+
+  /// ```dart
+  /// "Abgelaufen: $amount kaufen."
+  /// ```
+  String statusExpiredBuy(String amount) => """Abgelaufen: $amount kaufen.""";
+
+  /// ```dart
+  /// "Abgelaufen."
+  /// ```
+  String get statusExpired => """Abgelaufen.""";
+
+  /// ```dart
+  /// "Läuft bald ab: $amount kaufen."
+  /// ```
+  String statusExpiringBuy(String amount) =>
+      """Läuft bald ab: $amount kaufen.""";
+
+  /// ```dart
+  /// "Läuft bald ab."
+  /// ```
+  String get statusExpiring => """Läuft bald ab.""";
+
+  /// ```dart
+  /// "Knapp: $amount kaufen."
+  /// ```
+  String statusLowBuy(String amount) => """Knapp: $amount kaufen.""";
+
+  /// ```dart
+  /// "Knapp."
+  /// ```
+  String get statusLow => """Knapp.""";
+
+  /// ```dart
+  /// "Leer: $amount kaufen."
+  /// ```
+  String statusOutBuy(String amount) => """Leer: $amount kaufen.""";
+
+  /// ```dart
+  /// "Leer."
+  /// ```
+  String get statusOut => """Leer.""";
+
+  /// ```dart
+  /// "Nicht gezählt: Das Ziel hat keine Zahl, daher wird es nie knapp."
+  /// ```
+  String get statusUncountedTarget =>
+      """Nicht gezählt: Das Ziel hat keine Zahl, daher wird es nie knapp.""";
+
+  /// ```dart
+  /// "Nicht gezählt: Die vorhandene Menge hat keine Zahl, daher wird es nie knapp."
+  /// ```
+  String get statusUncountedOnHand =>
+      """Nicht gezählt: Die vorhandene Menge hat keine Zahl, daher wird es nie knapp.""";
+
+  /// ```dart
+  /// "Vorrätig."
+  /// ```
+  String get statusInStock => """Vorrätig.""";
+
+  /// ```dart
+  /// "Ohne gewählten Bestandsmodus gilt die Vorgabe der Bestandsliste."
+  /// ```
+  String get templateDefaultMode =>
+      """Ohne gewählten Bestandsmodus gilt die Vorgabe der Bestandsliste.""";
+
+  /// ```dart
+  /// "In eine Bestandsliste übernommen, startet es voll mit $amount vorhanden."
+  /// ```
+  String templateStartsCount(String amount) =>
+      """In eine Bestandsliste übernommen, startet es voll mit $amount vorhanden.""";
+
+  /// ```dart
+  /// "In eine Bestandsliste übernommen, startet es mit Voll und wird mit $amount nachgekauft."
+  /// ```
+  String templateStartsLevelAmount(String amount) =>
+      """In eine Bestandsliste übernommen, startet es mit Voll und wird mit $amount nachgekauft.""";
+
+  /// ```dart
+  /// "In eine Bestandsliste übernommen, startet es mit Voll."
+  /// ```
+  String get templateStartsLevel =>
+      """In eine Bestandsliste übernommen, startet es mit Voll.""";
+
+  /// ```dart
+  /// "In eine Bestandsliste ohne Ziel übernommen, wird es nicht gezählt."
+  /// ```
+  String get templateUncounted =>
+      """In eine Bestandsliste ohne Ziel übernommen, wird es nicht gezählt.""";
+}
+
+class ExpiryStockMessagesDe extends ExpiryStockMessages {
+  final StockMessagesDe _parent;
+  const ExpiryStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Ablauf"
+  /// ```
+  String get title => """Ablauf""";
+
+  /// ```dart
+  /// "Wie der Eintrag abläuft"
+  /// ```
+  String get mode => """Wie der Eintrag abläuft""";
+
+  /// ```dart
+  /// "Keiner"
+  /// ```
+  String get none => """Keiner""";
+
+  /// ```dart
+  /// "Datum"
+  /// ```
+  String get date => """Datum""";
+
+  /// ```dart
+  /// "Hält N Tage"
+  /// ```
+  String get keeps => """Hält N Tage""";
+
+  /// ```dart
+  /// "Ablaufdatum"
+  /// ```
+  String get expiryDate => """Ablaufdatum""";
+
+  /// ```dart
+  /// "Haltbarkeit in Tagen"
+  /// ```
+  String get daysItKeeps => """Haltbarkeit in Tagen""";
+
+  /// ```dart
+  /// "Abgelaufen am $date."
+  /// ```
+  String expiredSummary(String date) => """Abgelaufen am $date.""";
+
+  /// ```dart
+  /// "Haltbar bis $date."
+  /// ```
+  String goodUntilSummary(String date) => """Haltbar bis $date.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Jedes Nachkaufen setzt den Ablauf auf 1 Tag ab diesem Tag.', many: 'Jedes Nachkaufen setzt den Ablauf auf $count Tage ab diesem Tag.')}"
+  /// ```
+  String renews(int count) =>
+      """${_plural(count, one: 'Jedes Nachkaufen setzt den Ablauf auf 1 Tag ab diesem Tag.', many: 'Jedes Nachkaufen setzt den Ablauf auf $count Tage ab diesem Tag.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'In eine Bestandsliste übernommen, läuft es 1 Tag später ab.', many: 'In eine Bestandsliste übernommen, läuft es $count Tage später ab.')}"
+  /// ```
+  String templateExpires(int count) =>
+      """${_plural(count, one: 'In eine Bestandsliste übernommen, läuft es 1 Tag später ab.', many: 'In eine Bestandsliste übernommen, läuft es $count Tage später ab.')}""";
+
+  /// ```dart
+  /// "Ablauf"
+  /// ```
+  String get chip => """Ablauf""";
+
+  /// ```dart
+  /// "Läuft am $date ab"
+  /// ```
+  String chipExpires(String date) => """Läuft am $date ab""";
+
+  /// ```dart
+  /// "Abgelaufen am $date"
+  /// ```
+  String chipExpired(String date) => """Abgelaufen am $date""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Hält 1 Tag', many: 'Hält $count Tage')}"
+  /// ```
+  String chipKeeps(int count) =>
+      """${_plural(count, one: 'Hält 1 Tag', many: 'Hält $count Tage')}""";
+}
+
+class ComposeStockMessagesDe extends ComposeStockMessages {
+  final StockMessagesDe _parent;
+  const ComposeStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Bestand"
+  /// ```
+  String get chip => """Bestand""";
+
+  /// ```dart
+  /// "Anzahl"
+  /// ```
+  String get count => """Anzahl""";
+
+  /// ```dart
+  /// "Stufe"
+  /// ```
+  String get level => """Stufe""";
+
+  /// ```dart
+  /// "Stufe · $amount"
+  /// ```
+  String levelAmount(String amount) => """Stufe · $amount""";
+
+  /// ```dart
+  /// "Ziel: $target"
+  /// ```
+  String targetValue(String target) => """Ziel: $target""";
+
+  /// ```dart
+  /// "Voll, wenn leer"
+  /// ```
+  String get fullWhenEmpty => """Voll, wenn leer""";
+}
+
 class NotesWallMessagesDe extends NotesWallMessages {
   final MessagesDe _parent;
   const NotesWallMessagesDe(this._parent) : super(_parent);
@@ -9143,6 +9668,79 @@ Passwort: pantry-rocks""",
   """templates.applyFailed""": """Die Vorlage konnte nicht angewendet werden""",
   """templates.loadFailed""": """Die Vorlagen konnten nicht geladen werden""",
   """templates.back""": """Zurück""",
+  """stock.inStock""": """Vorrätig""",
+  """stock.full""": """Voll""",
+  """stock.low""": """Knapp""",
+  """stock.out""": """Leer""",
+  """stock.notCounted""": """Nicht gezählt""",
+  """stock.expiresToday""": """Läuft heute ab""",
+  """stock.expiresTomorrow""": """Läuft morgen ab""",
+  """stock.decrease""": """Vorhandene Menge verringern""",
+  """stock.increase""": """Vorhandene Menge erhöhen""",
+  """stock.onHandEdit""": """Vorhandene Menge""",
+  """stock.filter""": """Bestand""",
+  """stock.filterAll""": """Alle Einträge""",
+  """stock.filterNeedsRestock""": """Nachkaufen nötig""",
+  """stock.filterInStock""": """Vorrätig""",
+  """stock.writeRefused""":
+      """Die Bestandsänderung konnte nicht gespeichert werden. Die Bestandsliste zeigt jetzt den Stand des Servers.""",
+  """stock.settings.action""": """Bestandslisten-Einstellungen""",
+  """stock.settings.title""": """Bestandslisten-Einstellungen""",
+  """stock.settings.name""": """Name""",
+  """stock.settings.nameHint""":
+      """Symbol, Farbe und Teilen funktionieren wie bei Checklisten.""",
+  """stock.settings.expiryWarning""": """Ablaufwarnung""",
+  """stock.settings.daysBefore""": """Tage vor Ablauf""",
+  """stock.settings.warnHint""":
+      """0 eingeben, um am Ablaufdatum selbst zu warnen.""",
+  """stock.settings.cancel""": """Abbrechen""",
+  """stock.settings.save""": """Speichern""",
+  """stock.card.title""": """Bestand""",
+  """stock.card.mode""": """Bestandsmodus""",
+  """stock.card.count""": """Anzahl""",
+  """stock.card.level""": """Stufe""",
+  """stock.card.countHint""":
+      """Verfolge, wie viele du hast, z. B. 4 von 12 Eiern.""",
+  """stock.card.levelHint""":
+      """Verfolge es als Voll, Knapp oder Leer, z. B. Mehl oder Gewürze.""",
+  """stock.card.onHand""": """Vorhanden""",
+  """stock.card.onHandPlaceholder""": """z. B. 4""",
+  """stock.card.target""": """Ziel""",
+  """stock.card.targetPlaceholder""": """z. B. 12 Eier""",
+  """stock.card.reorderPoint""": """Nachkaufschwelle""",
+  """stock.card.reorderPlaceholder""": """z. B. 4""",
+  """stock.card.stockLevel""": """Bestandsstufe""",
+  """stock.card.restockAmount""": """Nachkaufmenge""",
+  """stock.card.restockPlaceholder""": """z. B. 1-kg-Packung""",
+  """stock.card.convertedBlank""":
+      """In eine Anzahl umgewandelt. Gib die vorhandene Menge und ein Ziel ein.""",
+  """stock.card.statusExpired""": """Abgelaufen.""",
+  """stock.card.statusExpiring""": """Läuft bald ab.""",
+  """stock.card.statusLow""": """Knapp.""",
+  """stock.card.statusOut""": """Leer.""",
+  """stock.card.statusUncountedTarget""":
+      """Nicht gezählt: Das Ziel hat keine Zahl, daher wird es nie knapp.""",
+  """stock.card.statusUncountedOnHand""":
+      """Nicht gezählt: Die vorhandene Menge hat keine Zahl, daher wird es nie knapp.""",
+  """stock.card.statusInStock""": """Vorrätig.""",
+  """stock.card.templateDefaultMode""":
+      """Ohne gewählten Bestandsmodus gilt die Vorgabe der Bestandsliste.""",
+  """stock.card.templateStartsLevel""":
+      """In eine Bestandsliste übernommen, startet es mit Voll.""",
+  """stock.card.templateUncounted""":
+      """In eine Bestandsliste ohne Ziel übernommen, wird es nicht gezählt.""",
+  """stock.expiry.title""": """Ablauf""",
+  """stock.expiry.mode""": """Wie der Eintrag abläuft""",
+  """stock.expiry.none""": """Keiner""",
+  """stock.expiry.date""": """Datum""",
+  """stock.expiry.keeps""": """Hält N Tage""",
+  """stock.expiry.expiryDate""": """Ablaufdatum""",
+  """stock.expiry.daysItKeeps""": """Haltbarkeit in Tagen""",
+  """stock.expiry.chip""": """Ablauf""",
+  """stock.compose.chip""": """Bestand""",
+  """stock.compose.count""": """Anzahl""",
+  """stock.compose.level""": """Stufe""",
+  """stock.compose.fullWhenEmpty""": """Voll, wenn leer""",
   """notesWall.noNotes""": """Noch keine Notizen.""",
   """notesWall.failedToLoad""": """Notizen konnten nicht geladen werden.""",
   """notesWall.saveFailed""": """Notiz konnte nicht gespeichert werden.""",

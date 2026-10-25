@@ -1,3 +1,4 @@
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/custom_field.dart';
@@ -243,6 +244,7 @@ class SyncExecutor {
           defaultRrule: op.body['defaultRrule'] as String?,
           defaultRepeatFromCompletion:
               op.body['defaultRepeatFromCompletion'] as bool?,
+          expiryLeadDays: op.body['expiryLeadDays'] as int?,
         );
         return SyncResult(list);
       case SyncOpKind.setItemDefaults:
@@ -320,6 +322,12 @@ class SyncExecutor {
           barcode: op.body['barcode'] as String?,
           prices: _pricesFromBody(op.body['prices']),
           customFields: _customFieldsFromBody(op.body['customFields']),
+          stockMode: StockMode.tryParse(op.body['stockMode']),
+          stockLevel: StockLevel.tryParse(op.body['stockLevel']),
+          target: op.body['target'] as String?,
+          reorderPoint: op.body['reorderPoint'] as String?,
+          expiresAt: op.body['expiresAt'] as int?,
+          shelfLifeDays: op.body['shelfLifeDays'] as int?,
         );
         return SyncResult(item);
       case SyncOpKind.update:
@@ -341,6 +349,12 @@ class SyncExecutor {
           barcode: op.body['barcode'] as String?,
           prices: _pricesFromBody(op.body['prices']),
           customFields: _customFieldsFromBody(op.body['customFields']),
+          stockMode: StockMode.tryParse(op.body['stockMode']),
+          stockLevel: StockLevel.tryParse(op.body['stockLevel']),
+          target: op.body['target'] as String?,
+          reorderPoint: op.body['reorderPoint'] as String?,
+          expiresAt: op.body['expiresAt'] as int?,
+          shelfLifeDays: op.body['shelfLifeDays'] as int?,
         );
         return SyncResult(item);
       case SyncOpKind.delete:

@@ -397,4 +397,5 @@ abstract final class ServerFeature {
 
   static bool get listKinds => _since('0.38.0');
   static bool get templates => _since('0.38.0');
+  static bool get inventoryStock => _since('0.38.0');
 }

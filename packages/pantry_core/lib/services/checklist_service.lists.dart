@@ -192,6 +192,7 @@ extension ChecklistServiceLists on ChecklistService {
     ListRecurrenceKind? defaultRecurrenceKind,
     String? defaultRrule,
     bool? defaultRepeatFromCompletion,
+    int? expiryLeadDays,
   }) async {
     final isChecklist = kindOf(listId).isChecklist;
     return ApiClient.instance.patch<Map<String, dynamic>, ChecklistList>(
@@ -209,6 +210,8 @@ extension ChecklistServiceLists on ChecklistService {
           'defaultRrule': ?defaultRrule,
           'defaultRepeatFromCompletion': ?defaultRepeatFromCompletion,
         },
+        if (kindOf(listId) == ListKind.inventory)
+          'expiryLeadDays': ?expiryLeadDays,
       },
       fromJson: (data) => ChecklistList.fromJson(data),
     );

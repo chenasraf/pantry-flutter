@@ -39,14 +39,16 @@ class HomeNavListsSpec {
             other.lists[i].id == lists[i].id &&
             other.lists[i].name == lists[i].name &&
             other.lists[i].icon == lists[i].icon &&
-            other.lists[i].color == lists[i].color,
+            other.lists[i].color == lists[i].color &&
+            other.lists[i].needsRestock == lists[i].needsRestock,
       );
 
   @override
   int get hashCode => Object.hash(
     currentListId,
     Object.hashAll([
-      for (final l in lists) Object.hash(l.id, l.name, l.icon, l.color),
+      for (final l in lists)
+        Object.hash(l.id, l.name, l.icon, l.color, l.needsRestock),
     ]),
   );
 }
@@ -63,12 +65,19 @@ class NavRailNested {
   /// Heads a group of entries rather than standing for one.
   final bool header;
 
+  /// A count drawn beside the entry, with [counterLabel] spelling it out.
+  /// Nothing is drawn at 0.
+  final int counter;
+  final String? counterLabel;
+
   const NavRailNested({
     required this.icon,
     required this.color,
     required this.label,
     required this.selected,
     required this.onTap,
+    this.counter = 0,
+    this.counterLabel,
   }) : header = false;
 
   const NavRailNested.header({
@@ -77,7 +86,9 @@ class NavRailNested {
     required this.onTap,
   }) : color = null,
        selected = false,
-       header = true;
+       header = true,
+       counter = 0,
+       counterLabel = null;
 }
 
 /// Vertical navigation rail for the wide layout: the sections, with [nested]
@@ -307,6 +318,20 @@ class _RailNestedEntry extends StatelessWidget {
       ),
       child: Icon(entry.icon, size: 16, color: noteInk(tint)),
     );
+    final counter = entry.counter > 0
+        ? Tooltip(
+            message: entry.counterLabel ?? '',
+            child: Semantics(
+              label: entry.counterLabel,
+              excludeSemantics: true,
+              child: Badge(
+                label: Text('${entry.counter}'),
+                backgroundColor: cs.error,
+                textColor: cs.onError,
+              ),
+            ),
+          )
+        : null;
     final indicator = entry.selected
         ? cs.secondaryContainer
         : Colors.transparent;
@@ -347,6 +372,7 @@ class _RailNestedEntry extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (counter != null) ...[const SizedBox(width: 8), counter],
               ],
             ),
           ),
@@ -367,7 +393,16 @@ class _RailNestedEntry extends StatelessWidget {
               color: indicator,
               borderRadius: BorderRadius.circular(18),
             ),
-            child: Center(child: badge),
+            child: Center(
+              child: counter == null
+                  ? badge
+                  : Badge(
+                      label: Text('${entry.counter}'),
+                      backgroundColor: cs.error,
+                      textColor: cs.onError,
+                      child: badge,
+                    ),
+            ),
           ),
         ),
       ),

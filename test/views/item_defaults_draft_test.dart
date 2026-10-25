@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pantry/views/checklists/item_defaults_draft.dart';
 import 'package:pantry_core/models/item_defaults.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 
 ItemDefaults _defaults() => ItemDefaults.fromJson({
@@ -125,4 +126,20 @@ void main() {
       });
     },
   );
+
+  test('stock defaults send only what changed', () {
+    final stored = ItemDefaults.fromJson({
+      'stockMode': {'mode': 'remember', 'value': 'level'},
+      'shelfLifeDays': {'mode': 'fixed', 'value': 7},
+    });
+    final draft = ItemDefaultsDraft.from(stored)
+      ..modes[ItemDefaults.targetKey] = ItemDefaultMode.fixed
+      ..target = ' 12 eggs '
+      ..shelfLifeDays = 10;
+    expect(draft.stockMode, StockMode.level);
+    expect(draft.patchAgainst(stored).toJson(), {
+      'target': {'mode': 'fixed', 'value': '12 eggs'},
+      'shelfLifeDays': {'mode': 'fixed', 'value': 10},
+    });
+  });
 }

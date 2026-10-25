@@ -11,6 +11,7 @@ import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/platform_info.dart';
@@ -334,6 +335,7 @@ class _BodyState extends State<_Body> {
               body.selectedLabelIds.isEmpty &&
               !body.noLabelSelected &&
               !body.priceFilter.isActive &&
+              !(controller.isInventoryKind && body.stockFilterActive) &&
               body.query.isEmpty &&
               controller.isCurrentListWritable;
           final canReorder =
@@ -425,6 +427,18 @@ class _BodyState extends State<_Body> {
           final showPriceFilter =
               ServerFeature.itemPrice &&
               controller.items.any((i) => i.deletedAt == null && i.hasPrice);
+
+          final showStockFilter =
+              controller.isInventoryKind && ServerFeature.inventoryStock;
+          final stockNeedsRestockCount = showStockFilter
+              ? controller.items
+                    .where((i) => i.deletedAt == null && i.needsStockRestock)
+                    .length
+              : 0;
+          final stockInStockCount = showStockFilter
+              ? controller.items.where((i) => i.deletedAt == null).length -
+                    stockNeedsRestockCount
+              : 0;
 
           // The per-list filter (All-lists view only) offers every list, even
           // ones with no items in the current view — unlike categories, an
@@ -556,6 +570,13 @@ class _BodyState extends State<_Body> {
                       houseId: controller.houseId,
                       listId: meta ? null : list.id,
                       recurrenceEnabled: list.kind.hasRecurrence,
+                      stockKind:
+                          !meta &&
+                              !list.kind.isChecklist &&
+                              ServerFeature.inventoryStock
+                          ? list.kind
+                          : null,
+                      expiryLeadDays: controller.expiryLeadDaysFor(list.id),
                       recurrenceDefault: meta
                           ? ListRecurrenceDefault.neutral
                           : list.recurrenceDefault,
@@ -831,6 +852,16 @@ class _BodyState extends State<_Body> {
                           showPriceFilter: showPriceFilter,
                           priceFilter: body.priceFilter,
                           onPriceFilterChanged: body.setPriceFilter,
+                          showStockFilter: showStockFilter,
+                          stockNeedsRestockSelected:
+                              body.stockNeedsRestockSelected,
+                          stockInStockSelected: body.stockInStockSelected,
+                          stockNeedsRestockCount: stockNeedsRestockCount,
+                          stockInStockCount: stockInStockCount,
+                          onToggleStockNeedsRestock:
+                              body.toggleStockNeedsRestock,
+                          onToggleStockInStock: body.toggleStockInStock,
+                          onClearStock: body.clearStockFilter,
                           view: prefs.checklistView,
                           onViewChanged: (v) => prefs.setChecklistView(v),
                         ),

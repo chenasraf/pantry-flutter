@@ -1031,6 +1031,106 @@ templates:
   loadFailed: No se pudieron cargar las plantillas
   back: Atrás
 
+stock:
+  inStock: En existencia
+  full: Lleno
+  low: Bajo
+  out: Agotado
+  lowBuy(String amount): "Bajo · comprar $amount"
+  outBuy(String amount): "Agotado · comprar $amount"
+  notCounted: Sin contar
+  expiredOn(String date): "Caducó el $date"
+  expiredOnBuy(String date, String amount): "Caducó el $date · comprar $amount"
+  expiresToday: Caduca hoy
+  expiresTodayBuy(String amount): "Caduca hoy · comprar $amount"
+  expiresTomorrow: Caduca mañana
+  expiresTomorrowBuy(String amount): "Caduca mañana · comprar $amount"
+  expiresInDays(int count): "${_plural(count, one: 'Caduca en 1 día', many: 'Caduca en $count días')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'Caduca en 1 día · comprar $amount', many: 'Caduca en $count días · comprar $amount')}"
+  goodUntil(String date): "Válido hasta el $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: Reducir la cantidad disponible
+  increase: Aumentar la cantidad disponible
+  onHandEdit: Cantidad disponible
+  levelButton(String level): "Nivel de existencias: $level"
+  needsRestockCount(int count): "${_plural(count, one: '1 artículo necesita reposición', many: '$count artículos necesitan reposición')}"
+  filter: Existencias
+  filterAll: Todos los artículos
+  filterNeedsRestock: Necesita reposición
+  filterInStock: En existencia
+  writeRefused: No se pudo guardar el cambio de existencias. El inventario muestra ahora lo que tiene el servidor.
+  settings:
+    action: Ajustes del inventario
+    title: Ajustes del inventario
+    name: Nombre
+    nameHint: El icono, el color y el uso compartido funcionan igual que en las listas de verificación.
+    expiryWarning: Aviso de caducidad
+    warnBefore(String days): "Avisar $days días antes de la caducidad"
+    daysBefore: Días antes de la caducidad
+    warnHint: Pon 0 para avisar el mismo día de la caducidad.
+    cancel: Cancelar
+    save: Guardar
+  card:
+    title: Existencias
+    mode: Modo de existencias
+    count: Cantidad
+    level: Nivel
+    countHint: Controla cuántos tienes, p. ej. 4 de 12 huevos.
+    levelHint: Contrólalo como Lleno, Bajo o Agotado, p. ej. harina o especias.
+    onHand: Disponible
+    onHandPlaceholder: p. ej. 4
+    target: Objetivo
+    targetPlaceholder: p. ej. 12 huevos
+    reorderPoint: Punto de reposición
+    reorderPlaceholder: p. ej. 4
+    stockLevel: Nivel de existencias
+    restockAmount: Cantidad de reposición
+    restockPlaceholder: p. ej. bolsa de 1 kg
+    convertedLevelAmount(String level, String amount): 'Convertido: nivel $level, cantidad de reposición "$amount".'
+    convertedLevel(String level): "Convertido: nivel $level."
+    convertedCount(String onHand, String target): 'Convertido: disponible "$onHand", objetivo "$target".'
+    convertedTargetOnly(String target): 'Convertido: objetivo "$target". Introduce la cantidad disponible.'
+    convertedBlank: Convertido a cantidad. Introduce la cantidad disponible y un objetivo.
+    statusExpiredBuy(String amount): "Caducado: comprar $amount."
+    statusExpired: Caducado.
+    statusExpiringBuy(String amount): "Caduca pronto: comprar $amount."
+    statusExpiring: Caduca pronto.
+    statusLowBuy(String amount): "Bajo: comprar $amount."
+    statusLow: Bajo.
+    statusOutBuy(String amount): "Agotado: comprar $amount."
+    statusOut: Agotado.
+    statusUncountedTarget: "Sin contar: el objetivo no tiene número, así que nunca baja."
+    statusUncountedOnHand: "Sin contar: la cantidad disponible no tiene número, así que nunca baja."
+    statusInStock: En existencia.
+    templateDefaultMode: Si no se elige un modo de existencias, se usa el predeterminado del inventario.
+    templateStartsCount(String amount): "Al añadirse a un inventario, empieza lleno con $amount disponible."
+    templateStartsLevelAmount(String amount): "Al añadirse a un inventario, empieza Lleno y se repone con $amount."
+    templateStartsLevel: Al añadirse a un inventario, empieza Lleno.
+    templateUncounted: Al añadirse a un inventario sin objetivo, no se cuenta.
+  expiry:
+    title: Caducidad
+    mode: Cómo caduca el artículo
+    none: Ninguna
+    date: Fecha
+    keeps: Dura N días
+    expiryDate: Fecha de caducidad
+    daysItKeeps: Días que dura
+    expiredSummary(String date): "Caducó el $date."
+    goodUntilSummary(String date): "Válido hasta el $date."
+    renews(int count): "${_plural(count, one: 'Cada reposición lo renueva a 1 día desde ese día.', many: 'Cada reposición lo renueva a $count días desde ese día.')}"
+    templateExpires(int count): "${_plural(count, one: 'Al añadirse a un inventario, caduca 1 día después.', many: 'Al añadirse a un inventario, caduca $count días después.')}"
+    chip: Caducidad
+    chipExpires(String date): "Caduca el $date"
+    chipExpired(String date): "Caducó el $date"
+    chipKeeps(int count): "${_plural(count, one: 'Dura 1 día', many: 'Dura $count días')}"
+  compose:
+    chip: Existencias
+    count: Cantidad
+    level: Nivel
+    levelAmount(String amount): "Nivel · $amount"
+    targetValue(String target): "Objetivo: $target"
+    fullWhenEmpty: Lleno si está vacío
+
 notesWall:
   noNotes: "Aún no hay notas."
   failedToLoad: No se pudieron cargar las notas.

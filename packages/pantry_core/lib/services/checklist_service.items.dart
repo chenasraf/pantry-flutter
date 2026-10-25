@@ -101,6 +101,12 @@ extension ChecklistServiceItems on ChecklistService {
     String? barcode,
     List<ItemPrice>? prices,
     List<FieldValue>? customFields,
+    StockMode? stockMode,
+    StockLevel? stockLevel,
+    String? target,
+    String? reorderPoint,
+    int? expiresAt,
+    int? shelfLifeDays,
   }) async {
     final loginName = AuthService.instance.credentials?.loginName;
     return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
@@ -126,6 +132,14 @@ extension ChecklistServiceItems on ChecklistService {
         // Custom-field values ride the item; null omits, sent only when the
         // server advertises the capability.
         ...customFieldsBody(customFields),
+        if (!kindOf(listId).isChecklist) ...{
+          'stockMode': ?stockMode?.wire,
+          'stockLevel': ?stockLevel?.wire,
+          'target': ?target,
+          'reorderPoint': ?reorderPoint,
+          'expiresAt': ?expiresAt,
+          'shelfLifeDays': ?shelfLifeDays,
+        },
       },
       fromJson: (data) => ListItem.fromJson(data),
     );
@@ -148,6 +162,12 @@ extension ChecklistServiceItems on ChecklistService {
     String? barcode,
     List<ItemPrice>? prices,
     List<FieldValue>? customFields,
+    StockMode? stockMode,
+    StockLevel? stockLevel,
+    String? target,
+    String? reorderPoint,
+    int? expiresAt,
+    int? shelfLifeDays,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
       '${listPath(houseId, listId)}/items/$itemId',
@@ -174,6 +194,14 @@ extension ChecklistServiceItems on ChecklistService {
         // Custom fields mirror prices: null omits (unchanged), an empty list
         // clears every value, otherwise the set replaces the item's values.
         ...customFieldsBody(customFields),
+        if (!kindOf(listId).isChecklist) ...{
+          'stockMode': ?stockMode?.wire,
+          'stockLevel': ?stockLevel?.wire,
+          'target': ?target,
+          'reorderPoint': ?reorderPoint,
+          'expiresAt': ?expiresAt,
+          'shelfLifeDays': ?shelfLifeDays,
+        },
       },
       fromJson: (data) => ListItem.fromJson(data),
     );

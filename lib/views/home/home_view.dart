@@ -592,6 +592,8 @@ class _HomeViewBodyState extends State<_HomeViewBody>
     color: parseHexColor(list.color),
     label: list.id == kAllListsId ? m.checklists.allLists : list.name,
     selected: active && spec.currentListId == list.id,
+    counter: list.kind == ListKind.inventory ? list.needsRestock ?? 0 : 0,
+    counterLabel: m.stock.needsRestockCount(list.needsRestock ?? 0),
     onTap: () {
       spec.onSelect(list);
       _goToTab(checklistsIndex);

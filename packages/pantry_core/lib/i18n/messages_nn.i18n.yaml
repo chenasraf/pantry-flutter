@@ -1165,6 +1165,106 @@ templates:
   applyFailed: Klarte ikkje bruke malen
   loadFailed: Klarte ikkje laste malane
   back: Tilbake
+stock:
+  inStock: På lager
+  full: Full
+  low: Lite
+  out: Tom
+  lowBuy(String amount): "Lite · kjøp $amount"
+  outBuy(String amount): "Tom · kjøp $amount"
+  notCounted: Ikkje talt
+  expiredOn(String date): "Gjekk ut $date"
+  expiredOnBuy(String date, String amount): "Gjekk ut $date · kjøp $amount"
+  expiresToday: Går ut i dag
+  expiresTodayBuy(String amount): "Går ut i dag · kjøp $amount"
+  expiresTomorrow: Går ut i morgon
+  expiresTomorrowBuy(String amount): "Går ut i morgon · kjøp $amount"
+  expiresInDays(int count): "${_plural(count, one: 'Går ut om 1 dag', many: 'Går ut om $count dagar')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'Går ut om 1 dag · kjøp $amount', many: 'Går ut om $count dagar · kjøp $amount')}"
+  goodUntil(String date): "Haldbar til $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: Minsk mengda på lager
+  increase: Auk mengda på lager
+  onHandEdit: Mengd på lager
+  levelButton(String level): "Lagernivå: $level"
+  needsRestockCount(int count): "${_plural(count, one: '1 oppføring må fyllast på', many: '$count oppføringar må fyllast på')}"
+  filter: Lager
+  filterAll: Alle oppføringar
+  filterNeedsRestock: Må fyllast på
+  filterInStock: På lager
+  writeRefused: Klarte ikkje lagre lagerendringa. Lagerlista viser no det tenaren har.
+  settings:
+    action: Innstillingar for lagerlista
+    title: Innstillingar for lagerlista
+    name: Namn
+    nameHint: Ikon, farge og deling fungerer som på sjekklister.
+    expiryWarning: Varsel om utløp
+    warnBefore(String days): "Varsle $days dagar før utløp"
+    daysBefore: Dagar før utløp
+    warnHint: Set 0 for å varsle på sjølve utløpsdatoen.
+    cancel: Avbryt
+    save: Lagre
+  card:
+    title: Lager
+    mode: Lagermodus
+    count: Tal
+    level: Nivå
+    countHint: Hald oversikt over kor mange du har, t.d. 4 av 12 egg.
+    levelHint: Hald oversikt som Full, Lite eller Tom, t.d. mjøl eller krydder.
+    onHand: På lager
+    onHandPlaceholder: t.d. 4
+    target: Mål
+    targetPlaceholder: t.d. 12 egg
+    reorderPoint: Påfyllingspunkt
+    reorderPlaceholder: t.d. 4
+    stockLevel: Lagernivå
+    restockAmount: Påfyllingsmengd
+    restockPlaceholder: t.d. 1 kg-pose
+    convertedLevelAmount(String level, String amount): 'Konvertert: nivå $level, påfyllingsmengd "$amount".'
+    convertedLevel(String level): "Konvertert: nivå $level."
+    convertedCount(String onHand, String target): 'Konvertert: på lager "$onHand", mål "$target".'
+    convertedTargetOnly(String target): 'Konvertert: mål "$target". Skriv inn mengda på lager.'
+    convertedBlank: Konvertert til tal. Skriv inn mengda på lager og eit mål.
+    statusExpiredBuy(String amount): "Gått ut: kjøp $amount."
+    statusExpired: Gått ut.
+    statusExpiringBuy(String amount): "Går snart ut: kjøp $amount."
+    statusExpiring: Går snart ut.
+    statusLowBuy(String amount): "Lite: kjøp $amount."
+    statusLow: Lite.
+    statusOutBuy(String amount): "Tom: kjøp $amount."
+    statusOut: Tom.
+    statusUncountedTarget: "Ikkje talt: målet har ikkje noko tal, så det blir aldri lite."
+    statusUncountedOnHand: "Ikkje talt: mengda på lager har ikkje noko tal, så det blir aldri lite."
+    statusInStock: På lager.
+    templateDefaultMode: Utan vald lagermodus blir standarden til lagerlista brukt.
+    templateStartsCount(String amount): "Når han blir lagd i ei lagerliste, startar han full med $amount på lager."
+    templateStartsLevelAmount(String amount): "Når han blir lagd i ei lagerliste, startar han som Full og blir fylt på med $amount."
+    templateStartsLevel: Når han blir lagd i ei lagerliste, startar han som Full.
+    templateUncounted: Når han blir lagd i ei lagerliste utan mål, blir han ikkje talt.
+  expiry:
+    title: Utløp
+    mode: Korleis oppføringa går ut
+    none: Ingen
+    date: Dato
+    keeps: Held seg N dagar
+    expiryDate: Utløpsdato
+    daysItKeeps: Dagar han held seg
+    expiredSummary(String date): "Gjekk ut $date."
+    goodUntilSummary(String date): "Haldbar til $date."
+    renews(int count): "${_plural(count, one: 'Kvar påfylling fornyar han til 1 dag frå den dagen.', many: 'Kvar påfylling fornyar han til $count dagar frå den dagen.')}"
+    templateExpires(int count): "${_plural(count, one: 'Når han blir lagd i ei lagerliste, går han ut 1 dag seinare.', many: 'Når han blir lagd i ei lagerliste, går han ut $count dagar seinare.')}"
+    chip: Utløp
+    chipExpires(String date): "Går ut $date"
+    chipExpired(String date): "Gjekk ut $date"
+    chipKeeps(int count): "${_plural(count, one: 'Held seg 1 dag', many: 'Held seg $count dagar')}"
+  compose:
+    chip: Lager
+    count: Tal
+    level: Nivå
+    levelAmount(String amount): "Nivå · $amount"
+    targetValue(String target): "Mål: $target"
+    fullWhenEmpty: Full når tom
+
 notesWall:
   noNotes: Ingen notat enno
   failedToLoad: Klarte ikkje laste notat

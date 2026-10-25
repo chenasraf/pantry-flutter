@@ -25,11 +25,14 @@ import 'package:pantry/utils/app_toast.dart';
 import 'package:pantry/views/checklists/barcode_scan_view.dart';
 import 'package:pantry/views/custom_fields/item_custom_fields_editor.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 import 'item_compose_chips.dart';
 import 'item_compose_trays.dart';
 import 'item_draft.dart';
 import 'price_input.dart';
+import 'stock_cards.dart';
 
 export 'item_draft.dart' show ComposeSubmission;
 
@@ -193,12 +196,21 @@ class ItemComposeBar extends StatefulWidget {
   /// recurrence chip.
   final bool recurrenceEnabled;
 
+  /// An inventory or template: the bar adds Stock and Expiry chips. Null on
+  /// checklists.
+  final ListKind? stockKind;
+
+  /// The expiry warning of the inventory the bar adds to.
+  final int expiryLeadDays;
+
   const ItemComposeBar({
     super.key,
     required this.listName,
     required this.houseId,
     this.listId,
     this.recurrenceEnabled = true,
+    this.stockKind,
+    this.expiryLeadDays = defaultExpiryLeadDays,
     this.recurrenceDefault = ListRecurrenceDefault.neutral,
     this.onRecurrenceUsed,
     this.itemDefaults,
@@ -244,6 +256,8 @@ enum Tray {
   store,
   label,
   quantity,
+  stock,
+  expiry,
   price,
   customFields,
   description,
@@ -253,6 +267,12 @@ enum Tray {
 
 class ItemComposeBarState extends State<ItemComposeBar> {
   late final ItemDraft _draft = ItemDraft()
+    ..stock = widget.stockKind == null
+        ? null
+        : StockDraft.forItem(
+            null,
+            template: widget.stockKind == ListKind.template,
+          )
     ..start(_startValues)
     ..price = PricesDraft.empty(widget.lastCurrency);
   final _nameCtrl = TextEditingController();
@@ -553,6 +573,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       customFieldValues: _effectiveCustomFields,
       // Bulk items carry no custom fields, so there is nothing to remember.
       fieldDefs: _multiple ? const [] : widget.customFieldDefs,
+      stockMode: _draft.stock?.template == false ? _draft.stock?.mode : null,
     );
     return (_startValuesFor(defaults.applyPatch(patch)), patch);
   }
@@ -712,12 +733,24 @@ class ItemComposeBarState extends State<ItemComposeBar> {
       _multiple ? _bulkNames().isNotEmpty : _nameCtrl.text.trim().isNotEmpty;
 
   ComposeSubmission _buildSubmission(String name) {
+    final stock = _draft.stock;
+    final inventory = stock != null && !stock.template;
+    final quantity = inventory ? (stock.quantity ?? '') : _draft.quantity;
+    final expiry = stock?.expiryPatch(null);
+    String? blankToNull(String? v) =>
+        (v ?? '').trim().isEmpty ? null : v!.trim();
     return ComposeSubmission(
       name: name,
       description: _draft.description.trim().isEmpty
           ? null
           : _draft.description.trim(),
-      quantity: _draft.quantity.trim().isEmpty ? null : _draft.quantity.trim(),
+      quantity: quantity.trim().isEmpty ? null : quantity.trim(),
+      stockMode: stock?.mode,
+      stockLevel: inventory && stock.isLevel ? stock.level : null,
+      target: blankToNull(stock?.target),
+      reorderPoint: blankToNull(stock?.reorderPoint),
+      expiresAt: expiry?.expiresAt,
+      shelfLifeDays: expiry?.shelfLifeDays,
       categoryId: _draft.categoryId,
       storeIds: _draft.storeIds.toList(),
       labelIds: _draft.labelIds.toList(),
@@ -878,6 +911,20 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           onMinus: () => _stepQty(-1),
           onPlus: () => _stepQty(1),
         );
+      case Tray.stock:
+        trayChild = StockCard(
+          key: ObjectKey(_draft.stock),
+          draft: _draft.stock!,
+          leadDays: widget.expiryLeadDays,
+          compose: true,
+          onChanged: () => setState(() {}),
+        );
+      case Tray.expiry:
+        trayChild = ExpiryCard(
+          key: ObjectKey(_draft.stock),
+          draft: _draft.stock!,
+          onChanged: () => setState(() {}),
+        );
       case Tray.price:
         trayChild = PriceTray(
           draft: _draft.price,
@@ -940,6 +987,7 @@ class ItemComposeBarState extends State<ItemComposeBar> {
           onOpen: _toggleTray,
           showImageChip: !_multiple,
           showTypeChip: widget.recurrenceEnabled,
+          showQuantityChip: _draft.stock == null || _draft.stock!.template,
           multiple: _multiple,
           onToggleMultiple: _toggleMultiple,
           onEditDefaults:

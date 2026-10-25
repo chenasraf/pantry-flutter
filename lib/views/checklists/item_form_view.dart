@@ -18,6 +18,7 @@ import 'package:pantry/utils/item_modal_route.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry/utils/apple_host_info.dart';
 import 'package:pantry_core/utils/quantity.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry/views/categories/category_form_view.dart';
@@ -36,6 +37,7 @@ import 'item_form_fields.dart';
 import 'item_form_image.dart';
 import 'item_form_pickers.dart';
 import 'price_input.dart';
+import 'stock_cards.dart';
 
 class ItemFormView extends StatefulWidget {
   final ChecklistsController controller;
@@ -67,6 +69,12 @@ class _ItemFormViewState extends State<ItemFormView> {
   /// Composed custom-field values, kept up to date by the editor's `onChanged`
   /// (no rebuild needed — it's only read on save).
   late List<FieldValue> _customFields;
+
+  /// Stock and expiry, on inventory and template items.
+  StockDraft? _stock;
+
+  /// What a new item started from, when its list has item defaults.
+  ItemStartValues? _startValues;
   bool _saving = false;
   bool _deleting = false;
   bool _catPickerOpen = false;
@@ -119,6 +127,13 @@ class _ItemFormViewState extends State<ItemFormView> {
     final listId = _effectiveListId;
     return listId == null ||
         ChecklistService.instance.kindOf(listId).hasRecurrence;
+  }
+
+  ListKind get _kind {
+    final listId = _effectiveListId;
+    return listId == null
+        ? ListKind.checklist
+        : ChecklistService.instance.kindOf(listId);
   }
 
   List<models.Category> get _categories =>
@@ -178,7 +193,13 @@ class _ItemFormViewState extends State<ItemFormView> {
         _selectedStoreIds.addAll(start.storeIds);
         _selectedLabelIds.addAll(start.labelIds);
         _customFields = List.of(start.customFieldValues);
+        _startValues = start;
       }
+    }
+    if (ServerFeature.inventoryStock && !_kind.isChecklist) {
+      _stock = StockDraft.forItem(item, template: _kind == ListKind.template);
+      final start = _startValues;
+      if (item == null && start != null) _stock!.applyStart(start);
     }
     _priceEnabled = ServerFeature.itemPrice;
     _prices = item != null
@@ -255,14 +276,26 @@ class _ItemFormViewState extends State<ItemFormView> {
       final effectiveRrule = isRecurring ? _recurrence.toRrule() : '';
       final effectiveRepeatFromCompletion =
           isRecurring && _recurrence.repeatFromCompletion;
+      final stock = _stock;
+      final inventory = stock != null && !stock.template;
+      String? stockText(String? value, {required bool editing}) {
+        final trimmed = value?.trim() ?? '';
+        if (trimmed.isNotEmpty) return trimmed;
+        return editing ? '' : null;
+      }
+
+      final quantity = inventory
+          ? (stock.quantity?.trim() ?? '')
+          : _quantityController.text.trim();
       ListItem savedItem;
       if (_isEditing) {
         final item = widget.item!;
+        final expiry = stock?.expiryPatch(item);
         savedItem = await widget.controller.updateItem(
           item,
           name: name,
           description: _description.trim(),
-          quantity: _quantityController.text.trim(),
+          quantity: quantity,
           categoryId: _selectedCategoryId,
           clearCategory: _selectedCategoryId == null && item.categoryId != null,
           // null leaves stores unchanged; [] clears them. Only send when the
@@ -278,12 +311,21 @@ class _ItemFormViewState extends State<ItemFormView> {
           prices: _priceEnabled ? _prices.toItemPrices() : null,
           // Full value set on edit (empty clears); omitted without the feature.
           customFields: _customFieldsEnabled ? _customFields : null,
+          stockMode: stock?.mode,
+          stockLevel: inventory && stock.isLevel ? stock.level : null,
+          target: stock == null ? null : stockText(stock.target, editing: true),
+          reorderPoint: stock == null
+              ? null
+              : stockText(stock.reorderPoint, editing: true),
+          expiresAt: expiry?.expiresAt,
+          shelfLifeDays: expiry?.shelfLifeDays,
         );
       } else {
+        final expiry = stock?.expiryPatch(null);
         savedItem = await widget.controller.addItem(
           name: name,
           description: _description.trim(),
-          quantity: _quantityController.text.trim(),
+          quantity: quantity,
           categoryId: _selectedCategoryId,
           storeIds: _storesEnabled && _selectedStoreIds.isNotEmpty
               ? _selectedStoreIds.toList()
@@ -300,6 +342,12 @@ class _ItemFormViewState extends State<ItemFormView> {
           customFields: _customFieldsEnabled && _customFields.isNotEmpty
               ? _customFields
               : null,
+          stockMode: stock?.mode,
+          stockLevel: inventory && stock.isLevel ? stock.level : null,
+          target: stockText(stock?.target, editing: false),
+          reorderPoint: stockText(stock?.reorderPoint, editing: false),
+          expiresAt: expiry?.expiresAt,
+          shelfLifeDays: expiry?.shelfLifeDays,
         );
         // Mirror the compose bar: a list that follows the last item added
         // starts the next one the way this item was made.
@@ -320,6 +368,7 @@ class _ItemFormViewState extends State<ItemFormView> {
               labelIds: _selectedLabelIds,
               customFieldValues: _customFields,
               fieldDefs: widget.controller.customFieldDefs,
+              stockMode: _stock?.template == false ? _stock?.mode : null,
             ),
           );
         } else {
@@ -515,13 +564,28 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ),
                 ),
                 const SizedBox(height: 11),
-                QuantityField(
-                  controller: _quantityController,
-                  focusNode: _qtyFocus,
-                  focused: _focusedField == 'qty',
-                  onMinus: () => _stepQty(-1),
-                  onPlus: () => _stepQty(1),
-                ),
+                if (_stock == null || _stock!.template)
+                  QuantityField(
+                    controller: _quantityController,
+                    focusNode: _qtyFocus,
+                    focused: _focusedField == 'qty',
+                    onMinus: () => _stepQty(-1),
+                    onPlus: () => _stepQty(1),
+                  ),
+                if (_stock != null) ...[
+                  if (_stock!.template) const SizedBox(height: 11),
+                  StockCard(
+                    draft: _stock!,
+                    leadDays: _effectiveListId == null
+                        ? defaultExpiryLeadDays
+                        : widget.controller.expiryLeadDaysFor(
+                            _effectiveListId!,
+                          ),
+                    onChanged: () => setState(() {}),
+                  ),
+                  const SizedBox(height: 11),
+                  ExpiryCard(draft: _stock!, onChanged: () => setState(() {})),
+                ],
                 const SizedBox(height: 16),
                 if (_priceEnabled) ...[
                   SectionLabel(text: m.checklists.price.label),

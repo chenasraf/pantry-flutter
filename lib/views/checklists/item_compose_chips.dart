@@ -6,7 +6,10 @@ import 'package:pantry_core/models/store.dart' as models;
 import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/date_format.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/label_icons.dart';
@@ -16,6 +19,7 @@ import 'package:pantry_core/utils/color.dart';
 import 'package:pantry/theme/app_theme.dart';
 import 'item_compose_bar.dart';
 import 'item_draft.dart';
+import 'stock_cards.dart';
 
 class ChipRow extends StatelessWidget {
   final ItemDraft draft;
@@ -31,6 +35,9 @@ class ChipRow extends StatelessWidget {
   final ValueChanged<Tray> onOpen;
   final bool showImageChip;
   final bool showTypeChip;
+
+  /// Off on inventories, whose Stock chip carries on hand instead.
+  final bool showQuantityChip;
   final bool multiple;
   final VoidCallback onToggleMultiple;
 
@@ -54,6 +61,7 @@ class ChipRow extends StatelessWidget {
     required this.onToggleMultiple,
     this.showImageChip = true,
     this.showTypeChip = true,
+    this.showQuantityChip = true,
     this.onEditDefaults,
   });
 
@@ -175,14 +183,46 @@ class ChipRow extends StatelessWidget {
               onTap: () => onOpen(Tray.label),
             ),
           ],
-          const SizedBox(width: 8),
-          _ComposeChip(
-            label: hasQty ? draft.quantity : m.checklists.compose.chipQuantity,
-            color: hasQty ? cs.primary : null,
-            icon: Icons.format_list_numbered,
-            selected: openTray == Tray.quantity,
-            onTap: () => onOpen(Tray.quantity),
-          ),
+          if (showQuantityChip) ...[
+            const SizedBox(width: 8),
+            _ComposeChip(
+              label: hasQty
+                  ? draft.quantity
+                  : m.checklists.compose.chipQuantity,
+              color: hasQty ? cs.primary : null,
+              icon: Icons.format_list_numbered,
+              selected: openTray == Tray.quantity,
+              onTap: () => onOpen(Tray.quantity),
+            ),
+          ],
+          if (draft.stock case final stock?) ...[
+            const SizedBox(width: 8),
+            Builder(
+              builder: (context) {
+                final label = _stockChipLabel(stock);
+                return _ComposeChip(
+                  label: label ?? m.stock.compose.chip,
+                  color: label != null ? cs.primary : null,
+                  icon: Icons.inventory_2_outlined,
+                  selected: openTray == Tray.stock,
+                  onTap: () => onOpen(Tray.stock),
+                );
+              },
+            ),
+            const SizedBox(width: 8),
+            Builder(
+              builder: (context) {
+                final label = _expiryChipLabel(stock);
+                return _ComposeChip(
+                  label: label ?? m.stock.expiry.chip,
+                  color: label != null ? cs.primary : null,
+                  icon: Icons.event_outlined,
+                  selected: openTray == Tray.expiry,
+                  onTap: () => onOpen(Tray.expiry),
+                );
+              },
+            ),
+          ],
           if (showPriceChip) ...[
             const SizedBox(width: 8),
             _ComposeChip(
@@ -251,6 +291,48 @@ class ChipRow extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// What the Stock chip shows once something is set, or null while it is
+  /// still the bare "Stock".
+  static String? _stockChipLabel(StockDraft stock) {
+    final target = (stock.target ?? '').trim();
+    final onHand = (stock.quantity ?? '').trim();
+    switch (stock.mode) {
+      case null:
+        return target.isEmpty ? null : m.stock.compose.targetValue(target);
+      case StockMode.level:
+        if (stock.template || onHand.isEmpty) return m.stock.compose.level;
+        return m.stock.compose.levelAmount(onHand);
+      case StockMode.count:
+        if (stock.template) {
+          return target.isEmpty
+              ? m.stock.compose.count
+              : m.stock.compose.targetValue(target);
+        }
+        if (onHand.isNotEmpty && target.isNotEmpty) {
+          return m.stock.amount(onHand, target);
+        }
+        if (target.isNotEmpty) return m.stock.compose.targetValue(target);
+        return onHand.isEmpty ? null : onHand;
+    }
+  }
+
+  static String? _expiryChipLabel(StockDraft stock) {
+    switch (stock.expiryMode) {
+      case ExpiryMode.none:
+        return null;
+      case ExpiryMode.date:
+        final date = stock.expiresAt;
+        if (date == null) return null;
+        final formatted = formatShortDate(date);
+        return daysUntil(date, todayEpoch()) < 0
+            ? m.stock.expiry.chipExpired(formatted)
+            : m.stock.expiry.chipExpires(formatted);
+      case ExpiryMode.keeps:
+        final days = stock.shelfLifeDays;
+        return days == null ? null : m.stock.expiry.chipKeeps(days);
+    }
   }
 
   static String _typeChipLabel(ItemDraft d) {

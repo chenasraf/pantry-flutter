@@ -80,6 +80,7 @@ class Messages {
   ChecklistsMessages get checklists => ChecklistsMessages(this);
   ListKindsMessages get listKinds => ListKindsMessages(this);
   TemplatesMessages get templates => TemplatesMessages(this);
+  StockMessages get stock => StockMessages(this);
   NotesWallMessages get notesWall => NotesWallMessages(this);
   PhotoBoardMessages get photoBoard => PhotoBoardMessages(this);
   ShoppingMessages get shopping => ShoppingMessages(this);
@@ -5393,6 +5394,527 @@ class FillPrefNamesTemplatesMessages {
   String get never => """Never fill""";
 }
 
+class StockMessages {
+  final Messages _parent;
+  const StockMessages(this._parent);
+
+  /// ```dart
+  /// "In stock"
+  /// ```
+  String get inStock => """In stock""";
+
+  /// ```dart
+  /// "Full"
+  /// ```
+  String get full => """Full""";
+
+  /// ```dart
+  /// "Low"
+  /// ```
+  String get low => """Low""";
+
+  /// ```dart
+  /// "Out"
+  /// ```
+  String get out => """Out""";
+
+  /// ```dart
+  /// "Low · buy $amount"
+  /// ```
+  String lowBuy(String amount) => """Low · buy $amount""";
+
+  /// ```dart
+  /// "Out · buy $amount"
+  /// ```
+  String outBuy(String amount) => """Out · buy $amount""";
+
+  /// ```dart
+  /// "Not counted"
+  /// ```
+  String get notCounted => """Not counted""";
+
+  /// ```dart
+  /// "Expired $date"
+  /// ```
+  String expiredOn(String date) => """Expired $date""";
+
+  /// ```dart
+  /// "Expired $date · buy $amount"
+  /// ```
+  String expiredOnBuy(String date, String amount) =>
+      """Expired $date · buy $amount""";
+
+  /// ```dart
+  /// "Expires today"
+  /// ```
+  String get expiresToday => """Expires today""";
+
+  /// ```dart
+  /// "Expires today · buy $amount"
+  /// ```
+  String expiresTodayBuy(String amount) => """Expires today · buy $amount""";
+
+  /// ```dart
+  /// "Expires tomorrow"
+  /// ```
+  String get expiresTomorrow => """Expires tomorrow""";
+
+  /// ```dart
+  /// "Expires tomorrow · buy $amount"
+  /// ```
+  String expiresTomorrowBuy(String amount) =>
+      """Expires tomorrow · buy $amount""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Expires in 1 day', many: 'Expires in $count days')}"
+  /// ```
+  String expiresInDays(int count) =>
+      """${_plural(count, one: 'Expires in 1 day', many: 'Expires in $count days')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Expires in 1 day · buy $amount', many: 'Expires in $count days · buy $amount')}"
+  /// ```
+  String expiresInDaysBuy(int count, String amount) =>
+      """${_plural(count, one: 'Expires in 1 day · buy $amount', many: 'Expires in $count days · buy $amount')}""";
+
+  /// ```dart
+  /// "Good until $date"
+  /// ```
+  String goodUntil(String date) => """Good until $date""";
+
+  /// ```dart
+  /// "$onHand / $target"
+  /// ```
+  String amount(String onHand, String target) => """$onHand / $target""";
+
+  /// ```dart
+  /// "Decrease the amount on hand"
+  /// ```
+  String get decrease => """Decrease the amount on hand""";
+
+  /// ```dart
+  /// "Increase the amount on hand"
+  /// ```
+  String get increase => """Increase the amount on hand""";
+
+  /// ```dart
+  /// "Amount on hand"
+  /// ```
+  String get onHandEdit => """Amount on hand""";
+
+  /// ```dart
+  /// "Stock level: $level"
+  /// ```
+  String levelButton(String level) => """Stock level: $level""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item needs restock', many: '$count items need restock')}"
+  /// ```
+  String needsRestockCount(int count) =>
+      """${_plural(count, one: '1 item needs restock', many: '$count items need restock')}""";
+
+  /// ```dart
+  /// "Stock"
+  /// ```
+  String get filter => """Stock""";
+
+  /// ```dart
+  /// "All items"
+  /// ```
+  String get filterAll => """All items""";
+
+  /// ```dart
+  /// "Needs restock"
+  /// ```
+  String get filterNeedsRestock => """Needs restock""";
+
+  /// ```dart
+  /// "In stock"
+  /// ```
+  String get filterInStock => """In stock""";
+
+  /// ```dart
+  /// "Could not save the stock change. The inventory now shows what the server has."
+  /// ```
+  String get writeRefused =>
+      """Could not save the stock change. The inventory now shows what the server has.""";
+  SettingsStockMessages get settings => SettingsStockMessages(this);
+  CardStockMessages get card => CardStockMessages(this);
+  ExpiryStockMessages get expiry => ExpiryStockMessages(this);
+  ComposeStockMessages get compose => ComposeStockMessages(this);
+}
+
+class SettingsStockMessages {
+  final StockMessages _parent;
+  const SettingsStockMessages(this._parent);
+
+  /// ```dart
+  /// "Inventory settings"
+  /// ```
+  String get action => """Inventory settings""";
+
+  /// ```dart
+  /// "Inventory settings"
+  /// ```
+  String get title => """Inventory settings""";
+
+  /// ```dart
+  /// "Name"
+  /// ```
+  String get name => """Name""";
+
+  /// ```dart
+  /// "Icon, colour and sharing work as they do on checklists."
+  /// ```
+  String get nameHint =>
+      """Icon, colour and sharing work as they do on checklists.""";
+
+  /// ```dart
+  /// "Expiry warning"
+  /// ```
+  String get expiryWarning => """Expiry warning""";
+
+  /// ```dart
+  /// "Warn $days days before expiry"
+  /// ```
+  String warnBefore(String days) => """Warn $days days before expiry""";
+
+  /// ```dart
+  /// "Days before expiry"
+  /// ```
+  String get daysBefore => """Days before expiry""";
+
+  /// ```dart
+  /// "Set 0 to warn on the expiry date itself."
+  /// ```
+  String get warnHint => """Set 0 to warn on the expiry date itself.""";
+
+  /// ```dart
+  /// "Cancel"
+  /// ```
+  String get cancel => """Cancel""";
+
+  /// ```dart
+  /// "Save"
+  /// ```
+  String get save => """Save""";
+}
+
+class CardStockMessages {
+  final StockMessages _parent;
+  const CardStockMessages(this._parent);
+
+  /// ```dart
+  /// "Stock"
+  /// ```
+  String get title => """Stock""";
+
+  /// ```dart
+  /// "Stock mode"
+  /// ```
+  String get mode => """Stock mode""";
+
+  /// ```dart
+  /// "Count"
+  /// ```
+  String get count => """Count""";
+
+  /// ```dart
+  /// "Level"
+  /// ```
+  String get level => """Level""";
+
+  /// ```dart
+  /// "Track how many you have, e.g. 4 of 12 eggs."
+  /// ```
+  String get countHint => """Track how many you have, e.g. 4 of 12 eggs.""";
+
+  /// ```dart
+  /// "Track it as Full, Low or Out, e.g. flour or spices."
+  /// ```
+  String get levelHint =>
+      """Track it as Full, Low or Out, e.g. flour or spices.""";
+
+  /// ```dart
+  /// "On hand"
+  /// ```
+  String get onHand => """On hand""";
+
+  /// ```dart
+  /// "e.g. 4"
+  /// ```
+  String get onHandPlaceholder => """e.g. 4""";
+
+  /// ```dart
+  /// "Target"
+  /// ```
+  String get target => """Target""";
+
+  /// ```dart
+  /// "e.g. 12 eggs"
+  /// ```
+  String get targetPlaceholder => """e.g. 12 eggs""";
+
+  /// ```dart
+  /// "Reorder point"
+  /// ```
+  String get reorderPoint => """Reorder point""";
+
+  /// ```dart
+  /// "e.g. 4"
+  /// ```
+  String get reorderPlaceholder => """e.g. 4""";
+
+  /// ```dart
+  /// "Stock level"
+  /// ```
+  String get stockLevel => """Stock level""";
+
+  /// ```dart
+  /// "Restock amount"
+  /// ```
+  String get restockAmount => """Restock amount""";
+
+  /// ```dart
+  /// "e.g. 1 kg bag"
+  /// ```
+  String get restockPlaceholder => """e.g. 1 kg bag""";
+
+  /// ```dart
+  /// "Converted: level $level, restock amount "$amount"."
+  /// ```
+  String convertedLevelAmount(String level, String amount) =>
+      """Converted: level $level, restock amount "$amount".""";
+
+  /// ```dart
+  /// "Converted: level $level."
+  /// ```
+  String convertedLevel(String level) => """Converted: level $level.""";
+
+  /// ```dart
+  /// "Converted: on hand "$onHand", target "$target"."
+  /// ```
+  String convertedCount(String onHand, String target) =>
+      """Converted: on hand "$onHand", target "$target".""";
+
+  /// ```dart
+  /// "Converted: target "$target". Enter the amount on hand."
+  /// ```
+  String convertedTargetOnly(String target) =>
+      """Converted: target "$target". Enter the amount on hand.""";
+
+  /// ```dart
+  /// "Converted to a count. Enter the amount on hand and a target."
+  /// ```
+  String get convertedBlank =>
+      """Converted to a count. Enter the amount on hand and a target.""";
+
+  /// ```dart
+  /// "Expired: buy $amount."
+  /// ```
+  String statusExpiredBuy(String amount) => """Expired: buy $amount.""";
+
+  /// ```dart
+  /// "Expired."
+  /// ```
+  String get statusExpired => """Expired.""";
+
+  /// ```dart
+  /// "Expiring soon: buy $amount."
+  /// ```
+  String statusExpiringBuy(String amount) => """Expiring soon: buy $amount.""";
+
+  /// ```dart
+  /// "Expiring soon."
+  /// ```
+  String get statusExpiring => """Expiring soon.""";
+
+  /// ```dart
+  /// "Low: buy $amount."
+  /// ```
+  String statusLowBuy(String amount) => """Low: buy $amount.""";
+
+  /// ```dart
+  /// "Low."
+  /// ```
+  String get statusLow => """Low.""";
+
+  /// ```dart
+  /// "Out: buy $amount."
+  /// ```
+  String statusOutBuy(String amount) => """Out: buy $amount.""";
+
+  /// ```dart
+  /// "Out."
+  /// ```
+  String get statusOut => """Out.""";
+
+  /// ```dart
+  /// "Not counted: the target has no number, so it never runs low."
+  /// ```
+  String get statusUncountedTarget =>
+      """Not counted: the target has no number, so it never runs low.""";
+
+  /// ```dart
+  /// "Not counted: on hand has no number, so it never runs low."
+  /// ```
+  String get statusUncountedOnHand =>
+      """Not counted: on hand has no number, so it never runs low.""";
+
+  /// ```dart
+  /// "In stock."
+  /// ```
+  String get statusInStock => """In stock.""";
+
+  /// ```dart
+  /// "With no stock mode picked, it uses the inventory's default."
+  /// ```
+  String get templateDefaultMode =>
+      """With no stock mode picked, it uses the inventory's default.""";
+
+  /// ```dart
+  /// "Drawn into an inventory, it starts full with $amount on hand."
+  /// ```
+  String templateStartsCount(String amount) =>
+      """Drawn into an inventory, it starts full with $amount on hand.""";
+
+  /// ```dart
+  /// "Drawn into an inventory, it starts Full and restocks $amount."
+  /// ```
+  String templateStartsLevelAmount(String amount) =>
+      """Drawn into an inventory, it starts Full and restocks $amount.""";
+
+  /// ```dart
+  /// "Drawn into an inventory, it starts Full."
+  /// ```
+  String get templateStartsLevel =>
+      """Drawn into an inventory, it starts Full.""";
+
+  /// ```dart
+  /// "Drawn into an inventory without a target, it is not counted."
+  /// ```
+  String get templateUncounted =>
+      """Drawn into an inventory without a target, it is not counted.""";
+}
+
+class ExpiryStockMessages {
+  final StockMessages _parent;
+  const ExpiryStockMessages(this._parent);
+
+  /// ```dart
+  /// "Expiry"
+  /// ```
+  String get title => """Expiry""";
+
+  /// ```dart
+  /// "How the item expires"
+  /// ```
+  String get mode => """How the item expires""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get none => """None""";
+
+  /// ```dart
+  /// "Date"
+  /// ```
+  String get date => """Date""";
+
+  /// ```dart
+  /// "Keeps N days"
+  /// ```
+  String get keeps => """Keeps N days""";
+
+  /// ```dart
+  /// "Expiry date"
+  /// ```
+  String get expiryDate => """Expiry date""";
+
+  /// ```dart
+  /// "Days it keeps"
+  /// ```
+  String get daysItKeeps => """Days it keeps""";
+
+  /// ```dart
+  /// "Expired $date."
+  /// ```
+  String expiredSummary(String date) => """Expired $date.""";
+
+  /// ```dart
+  /// "Good until $date."
+  /// ```
+  String goodUntilSummary(String date) => """Good until $date.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Each restock renews it to 1 day from that day.', many: 'Each restock renews it to $count days from that day.')}"
+  /// ```
+  String renews(int count) =>
+      """${_plural(count, one: 'Each restock renews it to 1 day from that day.', many: 'Each restock renews it to $count days from that day.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Drawn into an inventory, it expires 1 day later.', many: 'Drawn into an inventory, it expires $count days later.')}"
+  /// ```
+  String templateExpires(int count) =>
+      """${_plural(count, one: 'Drawn into an inventory, it expires 1 day later.', many: 'Drawn into an inventory, it expires $count days later.')}""";
+
+  /// ```dart
+  /// "Expiry"
+  /// ```
+  String get chip => """Expiry""";
+
+  /// ```dart
+  /// "Expires $date"
+  /// ```
+  String chipExpires(String date) => """Expires $date""";
+
+  /// ```dart
+  /// "Expired $date"
+  /// ```
+  String chipExpired(String date) => """Expired $date""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Keeps 1 day', many: 'Keeps $count days')}"
+  /// ```
+  String chipKeeps(int count) =>
+      """${_plural(count, one: 'Keeps 1 day', many: 'Keeps $count days')}""";
+}
+
+class ComposeStockMessages {
+  final StockMessages _parent;
+  const ComposeStockMessages(this._parent);
+
+  /// ```dart
+  /// "Stock"
+  /// ```
+  String get chip => """Stock""";
+
+  /// ```dart
+  /// "Count"
+  /// ```
+  String get count => """Count""";
+
+  /// ```dart
+  /// "Level"
+  /// ```
+  String get level => """Level""";
+
+  /// ```dart
+  /// "Level · $amount"
+  /// ```
+  String levelAmount(String amount) => """Level · $amount""";
+
+  /// ```dart
+  /// "Target: $target"
+  /// ```
+  String targetValue(String target) => """Target: $target""";
+
+  /// ```dart
+  /// "Full when empty"
+  /// ```
+  String get fullWhenEmpty => """Full when empty""";
+}
+
 class NotesWallMessages {
   final Messages _parent;
   const NotesWallMessages(this._parent);
@@ -8986,6 +9508,77 @@ Password: pantry-rocks""",
   """templates.applyFailed""": """Could not apply the template""",
   """templates.loadFailed""": """Could not load the templates""",
   """templates.back""": """Back""",
+  """stock.inStock""": """In stock""",
+  """stock.full""": """Full""",
+  """stock.low""": """Low""",
+  """stock.out""": """Out""",
+  """stock.notCounted""": """Not counted""",
+  """stock.expiresToday""": """Expires today""",
+  """stock.expiresTomorrow""": """Expires tomorrow""",
+  """stock.decrease""": """Decrease the amount on hand""",
+  """stock.increase""": """Increase the amount on hand""",
+  """stock.onHandEdit""": """Amount on hand""",
+  """stock.filter""": """Stock""",
+  """stock.filterAll""": """All items""",
+  """stock.filterNeedsRestock""": """Needs restock""",
+  """stock.filterInStock""": """In stock""",
+  """stock.writeRefused""":
+      """Could not save the stock change. The inventory now shows what the server has.""",
+  """stock.settings.action""": """Inventory settings""",
+  """stock.settings.title""": """Inventory settings""",
+  """stock.settings.name""": """Name""",
+  """stock.settings.nameHint""":
+      """Icon, colour and sharing work as they do on checklists.""",
+  """stock.settings.expiryWarning""": """Expiry warning""",
+  """stock.settings.daysBefore""": """Days before expiry""",
+  """stock.settings.warnHint""": """Set 0 to warn on the expiry date itself.""",
+  """stock.settings.cancel""": """Cancel""",
+  """stock.settings.save""": """Save""",
+  """stock.card.title""": """Stock""",
+  """stock.card.mode""": """Stock mode""",
+  """stock.card.count""": """Count""",
+  """stock.card.level""": """Level""",
+  """stock.card.countHint""": """Track how many you have, e.g. 4 of 12 eggs.""",
+  """stock.card.levelHint""":
+      """Track it as Full, Low or Out, e.g. flour or spices.""",
+  """stock.card.onHand""": """On hand""",
+  """stock.card.onHandPlaceholder""": """e.g. 4""",
+  """stock.card.target""": """Target""",
+  """stock.card.targetPlaceholder""": """e.g. 12 eggs""",
+  """stock.card.reorderPoint""": """Reorder point""",
+  """stock.card.reorderPlaceholder""": """e.g. 4""",
+  """stock.card.stockLevel""": """Stock level""",
+  """stock.card.restockAmount""": """Restock amount""",
+  """stock.card.restockPlaceholder""": """e.g. 1 kg bag""",
+  """stock.card.convertedBlank""":
+      """Converted to a count. Enter the amount on hand and a target.""",
+  """stock.card.statusExpired""": """Expired.""",
+  """stock.card.statusExpiring""": """Expiring soon.""",
+  """stock.card.statusLow""": """Low.""",
+  """stock.card.statusOut""": """Out.""",
+  """stock.card.statusUncountedTarget""":
+      """Not counted: the target has no number, so it never runs low.""",
+  """stock.card.statusUncountedOnHand""":
+      """Not counted: on hand has no number, so it never runs low.""",
+  """stock.card.statusInStock""": """In stock.""",
+  """stock.card.templateDefaultMode""":
+      """With no stock mode picked, it uses the inventory's default.""",
+  """stock.card.templateStartsLevel""":
+      """Drawn into an inventory, it starts Full.""",
+  """stock.card.templateUncounted""":
+      """Drawn into an inventory without a target, it is not counted.""",
+  """stock.expiry.title""": """Expiry""",
+  """stock.expiry.mode""": """How the item expires""",
+  """stock.expiry.none""": """None""",
+  """stock.expiry.date""": """Date""",
+  """stock.expiry.keeps""": """Keeps N days""",
+  """stock.expiry.expiryDate""": """Expiry date""",
+  """stock.expiry.daysItKeeps""": """Days it keeps""",
+  """stock.expiry.chip""": """Expiry""",
+  """stock.compose.chip""": """Stock""",
+  """stock.compose.count""": """Count""",
+  """stock.compose.level""": """Level""",
+  """stock.compose.fullWhenEmpty""": """Full when empty""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",
   """notesWall.saveFailed""": """Failed to save note.""",

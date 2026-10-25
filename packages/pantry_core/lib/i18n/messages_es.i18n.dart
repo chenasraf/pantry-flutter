@@ -81,6 +81,7 @@ class MessagesEs extends Messages {
   ChecklistsMessagesEs get checklists => ChecklistsMessagesEs(this);
   ListKindsMessagesEs get listKinds => ListKindsMessagesEs(this);
   TemplatesMessagesEs get templates => TemplatesMessagesEs(this);
+  StockMessagesEs get stock => StockMessagesEs(this);
   NotesWallMessagesEs get notesWall => NotesWallMessagesEs(this);
   PhotoBoardMessagesEs get photoBoard => PhotoBoardMessagesEs(this);
   ShoppingMessagesEs get shopping => ShoppingMessagesEs(this);
@@ -5460,6 +5461,529 @@ class FillPrefNamesTemplatesMessagesEs extends FillPrefNamesTemplatesMessages {
   String get never => """No rellenar nunca""";
 }
 
+class StockMessagesEs extends StockMessages {
+  final MessagesEs _parent;
+  const StockMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "En existencia"
+  /// ```
+  String get inStock => """En existencia""";
+
+  /// ```dart
+  /// "Lleno"
+  /// ```
+  String get full => """Lleno""";
+
+  /// ```dart
+  /// "Bajo"
+  /// ```
+  String get low => """Bajo""";
+
+  /// ```dart
+  /// "Agotado"
+  /// ```
+  String get out => """Agotado""";
+
+  /// ```dart
+  /// "Bajo · comprar $amount"
+  /// ```
+  String lowBuy(String amount) => """Bajo · comprar $amount""";
+
+  /// ```dart
+  /// "Agotado · comprar $amount"
+  /// ```
+  String outBuy(String amount) => """Agotado · comprar $amount""";
+
+  /// ```dart
+  /// "Sin contar"
+  /// ```
+  String get notCounted => """Sin contar""";
+
+  /// ```dart
+  /// "Caducó el $date"
+  /// ```
+  String expiredOn(String date) => """Caducó el $date""";
+
+  /// ```dart
+  /// "Caducó el $date · comprar $amount"
+  /// ```
+  String expiredOnBuy(String date, String amount) =>
+      """Caducó el $date · comprar $amount""";
+
+  /// ```dart
+  /// "Caduca hoy"
+  /// ```
+  String get expiresToday => """Caduca hoy""";
+
+  /// ```dart
+  /// "Caduca hoy · comprar $amount"
+  /// ```
+  String expiresTodayBuy(String amount) => """Caduca hoy · comprar $amount""";
+
+  /// ```dart
+  /// "Caduca mañana"
+  /// ```
+  String get expiresTomorrow => """Caduca mañana""";
+
+  /// ```dart
+  /// "Caduca mañana · comprar $amount"
+  /// ```
+  String expiresTomorrowBuy(String amount) =>
+      """Caduca mañana · comprar $amount""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Caduca en 1 día', many: 'Caduca en $count días')}"
+  /// ```
+  String expiresInDays(int count) =>
+      """${_plural(count, one: 'Caduca en 1 día', many: 'Caduca en $count días')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Caduca en 1 día · comprar $amount', many: 'Caduca en $count días · comprar $amount')}"
+  /// ```
+  String expiresInDaysBuy(int count, String amount) =>
+      """${_plural(count, one: 'Caduca en 1 día · comprar $amount', many: 'Caduca en $count días · comprar $amount')}""";
+
+  /// ```dart
+  /// "Válido hasta el $date"
+  /// ```
+  String goodUntil(String date) => """Válido hasta el $date""";
+
+  /// ```dart
+  /// "$onHand / $target"
+  /// ```
+  String amount(String onHand, String target) => """$onHand / $target""";
+
+  /// ```dart
+  /// "Reducir la cantidad disponible"
+  /// ```
+  String get decrease => """Reducir la cantidad disponible""";
+
+  /// ```dart
+  /// "Aumentar la cantidad disponible"
+  /// ```
+  String get increase => """Aumentar la cantidad disponible""";
+
+  /// ```dart
+  /// "Cantidad disponible"
+  /// ```
+  String get onHandEdit => """Cantidad disponible""";
+
+  /// ```dart
+  /// "Nivel de existencias: $level"
+  /// ```
+  String levelButton(String level) => """Nivel de existencias: $level""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo necesita reposición', many: '$count artículos necesitan reposición')}"
+  /// ```
+  String needsRestockCount(int count) =>
+      """${_plural(count, one: '1 artículo necesita reposición', many: '$count artículos necesitan reposición')}""";
+
+  /// ```dart
+  /// "Existencias"
+  /// ```
+  String get filter => """Existencias""";
+
+  /// ```dart
+  /// "Todos los artículos"
+  /// ```
+  String get filterAll => """Todos los artículos""";
+
+  /// ```dart
+  /// "Necesita reposición"
+  /// ```
+  String get filterNeedsRestock => """Necesita reposición""";
+
+  /// ```dart
+  /// "En existencia"
+  /// ```
+  String get filterInStock => """En existencia""";
+
+  /// ```dart
+  /// "No se pudo guardar el cambio de existencias. El inventario muestra ahora lo que tiene el servidor."
+  /// ```
+  String get writeRefused =>
+      """No se pudo guardar el cambio de existencias. El inventario muestra ahora lo que tiene el servidor.""";
+  SettingsStockMessagesEs get settings => SettingsStockMessagesEs(this);
+  CardStockMessagesEs get card => CardStockMessagesEs(this);
+  ExpiryStockMessagesEs get expiry => ExpiryStockMessagesEs(this);
+  ComposeStockMessagesEs get compose => ComposeStockMessagesEs(this);
+}
+
+class SettingsStockMessagesEs extends SettingsStockMessages {
+  final StockMessagesEs _parent;
+  const SettingsStockMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Ajustes del inventario"
+  /// ```
+  String get action => """Ajustes del inventario""";
+
+  /// ```dart
+  /// "Ajustes del inventario"
+  /// ```
+  String get title => """Ajustes del inventario""";
+
+  /// ```dart
+  /// "Nombre"
+  /// ```
+  String get name => """Nombre""";
+
+  /// ```dart
+  /// "El icono, el color y el uso compartido funcionan igual que en las listas de verificación."
+  /// ```
+  String get nameHint =>
+      """El icono, el color y el uso compartido funcionan igual que en las listas de verificación.""";
+
+  /// ```dart
+  /// "Aviso de caducidad"
+  /// ```
+  String get expiryWarning => """Aviso de caducidad""";
+
+  /// ```dart
+  /// "Avisar $days días antes de la caducidad"
+  /// ```
+  String warnBefore(String days) =>
+      """Avisar $days días antes de la caducidad""";
+
+  /// ```dart
+  /// "Días antes de la caducidad"
+  /// ```
+  String get daysBefore => """Días antes de la caducidad""";
+
+  /// ```dart
+  /// "Pon 0 para avisar el mismo día de la caducidad."
+  /// ```
+  String get warnHint => """Pon 0 para avisar el mismo día de la caducidad.""";
+
+  /// ```dart
+  /// "Cancelar"
+  /// ```
+  String get cancel => """Cancelar""";
+
+  /// ```dart
+  /// "Guardar"
+  /// ```
+  String get save => """Guardar""";
+}
+
+class CardStockMessagesEs extends CardStockMessages {
+  final StockMessagesEs _parent;
+  const CardStockMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Existencias"
+  /// ```
+  String get title => """Existencias""";
+
+  /// ```dart
+  /// "Modo de existencias"
+  /// ```
+  String get mode => """Modo de existencias""";
+
+  /// ```dart
+  /// "Cantidad"
+  /// ```
+  String get count => """Cantidad""";
+
+  /// ```dart
+  /// "Nivel"
+  /// ```
+  String get level => """Nivel""";
+
+  /// ```dart
+  /// "Controla cuántos tienes, p. ej. 4 de 12 huevos."
+  /// ```
+  String get countHint => """Controla cuántos tienes, p. ej. 4 de 12 huevos.""";
+
+  /// ```dart
+  /// "Contrólalo como Lleno, Bajo o Agotado, p. ej. harina o especias."
+  /// ```
+  String get levelHint =>
+      """Contrólalo como Lleno, Bajo o Agotado, p. ej. harina o especias.""";
+
+  /// ```dart
+  /// "Disponible"
+  /// ```
+  String get onHand => """Disponible""";
+
+  /// ```dart
+  /// "p. ej. 4"
+  /// ```
+  String get onHandPlaceholder => """p. ej. 4""";
+
+  /// ```dart
+  /// "Objetivo"
+  /// ```
+  String get target => """Objetivo""";
+
+  /// ```dart
+  /// "p. ej. 12 huevos"
+  /// ```
+  String get targetPlaceholder => """p. ej. 12 huevos""";
+
+  /// ```dart
+  /// "Punto de reposición"
+  /// ```
+  String get reorderPoint => """Punto de reposición""";
+
+  /// ```dart
+  /// "p. ej. 4"
+  /// ```
+  String get reorderPlaceholder => """p. ej. 4""";
+
+  /// ```dart
+  /// "Nivel de existencias"
+  /// ```
+  String get stockLevel => """Nivel de existencias""";
+
+  /// ```dart
+  /// "Cantidad de reposición"
+  /// ```
+  String get restockAmount => """Cantidad de reposición""";
+
+  /// ```dart
+  /// "p. ej. bolsa de 1 kg"
+  /// ```
+  String get restockPlaceholder => """p. ej. bolsa de 1 kg""";
+
+  /// ```dart
+  /// "Convertido: nivel $level, cantidad de reposición "$amount"."
+  /// ```
+  String convertedLevelAmount(String level, String amount) =>
+      """Convertido: nivel $level, cantidad de reposición "$amount".""";
+
+  /// ```dart
+  /// "Convertido: nivel $level."
+  /// ```
+  String convertedLevel(String level) => """Convertido: nivel $level.""";
+
+  /// ```dart
+  /// "Convertido: disponible "$onHand", objetivo "$target"."
+  /// ```
+  String convertedCount(String onHand, String target) =>
+      """Convertido: disponible "$onHand", objetivo "$target".""";
+
+  /// ```dart
+  /// "Convertido: objetivo "$target". Introduce la cantidad disponible."
+  /// ```
+  String convertedTargetOnly(String target) =>
+      """Convertido: objetivo "$target". Introduce la cantidad disponible.""";
+
+  /// ```dart
+  /// "Convertido a cantidad. Introduce la cantidad disponible y un objetivo."
+  /// ```
+  String get convertedBlank =>
+      """Convertido a cantidad. Introduce la cantidad disponible y un objetivo.""";
+
+  /// ```dart
+  /// "Caducado: comprar $amount."
+  /// ```
+  String statusExpiredBuy(String amount) => """Caducado: comprar $amount.""";
+
+  /// ```dart
+  /// "Caducado."
+  /// ```
+  String get statusExpired => """Caducado.""";
+
+  /// ```dart
+  /// "Caduca pronto: comprar $amount."
+  /// ```
+  String statusExpiringBuy(String amount) =>
+      """Caduca pronto: comprar $amount.""";
+
+  /// ```dart
+  /// "Caduca pronto."
+  /// ```
+  String get statusExpiring => """Caduca pronto.""";
+
+  /// ```dart
+  /// "Bajo: comprar $amount."
+  /// ```
+  String statusLowBuy(String amount) => """Bajo: comprar $amount.""";
+
+  /// ```dart
+  /// "Bajo."
+  /// ```
+  String get statusLow => """Bajo.""";
+
+  /// ```dart
+  /// "Agotado: comprar $amount."
+  /// ```
+  String statusOutBuy(String amount) => """Agotado: comprar $amount.""";
+
+  /// ```dart
+  /// "Agotado."
+  /// ```
+  String get statusOut => """Agotado.""";
+
+  /// ```dart
+  /// "Sin contar: el objetivo no tiene número, así que nunca baja."
+  /// ```
+  String get statusUncountedTarget =>
+      """Sin contar: el objetivo no tiene número, así que nunca baja.""";
+
+  /// ```dart
+  /// "Sin contar: la cantidad disponible no tiene número, así que nunca baja."
+  /// ```
+  String get statusUncountedOnHand =>
+      """Sin contar: la cantidad disponible no tiene número, así que nunca baja.""";
+
+  /// ```dart
+  /// "En existencia."
+  /// ```
+  String get statusInStock => """En existencia.""";
+
+  /// ```dart
+  /// "Si no se elige un modo de existencias, se usa el predeterminado del inventario."
+  /// ```
+  String get templateDefaultMode =>
+      """Si no se elige un modo de existencias, se usa el predeterminado del inventario.""";
+
+  /// ```dart
+  /// "Al añadirse a un inventario, empieza lleno con $amount disponible."
+  /// ```
+  String templateStartsCount(String amount) =>
+      """Al añadirse a un inventario, empieza lleno con $amount disponible.""";
+
+  /// ```dart
+  /// "Al añadirse a un inventario, empieza Lleno y se repone con $amount."
+  /// ```
+  String templateStartsLevelAmount(String amount) =>
+      """Al añadirse a un inventario, empieza Lleno y se repone con $amount.""";
+
+  /// ```dart
+  /// "Al añadirse a un inventario, empieza Lleno."
+  /// ```
+  String get templateStartsLevel =>
+      """Al añadirse a un inventario, empieza Lleno.""";
+
+  /// ```dart
+  /// "Al añadirse a un inventario sin objetivo, no se cuenta."
+  /// ```
+  String get templateUncounted =>
+      """Al añadirse a un inventario sin objetivo, no se cuenta.""";
+}
+
+class ExpiryStockMessagesEs extends ExpiryStockMessages {
+  final StockMessagesEs _parent;
+  const ExpiryStockMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Caducidad"
+  /// ```
+  String get title => """Caducidad""";
+
+  /// ```dart
+  /// "Cómo caduca el artículo"
+  /// ```
+  String get mode => """Cómo caduca el artículo""";
+
+  /// ```dart
+  /// "Ninguna"
+  /// ```
+  String get none => """Ninguna""";
+
+  /// ```dart
+  /// "Fecha"
+  /// ```
+  String get date => """Fecha""";
+
+  /// ```dart
+  /// "Dura N días"
+  /// ```
+  String get keeps => """Dura N días""";
+
+  /// ```dart
+  /// "Fecha de caducidad"
+  /// ```
+  String get expiryDate => """Fecha de caducidad""";
+
+  /// ```dart
+  /// "Días que dura"
+  /// ```
+  String get daysItKeeps => """Días que dura""";
+
+  /// ```dart
+  /// "Caducó el $date."
+  /// ```
+  String expiredSummary(String date) => """Caducó el $date.""";
+
+  /// ```dart
+  /// "Válido hasta el $date."
+  /// ```
+  String goodUntilSummary(String date) => """Válido hasta el $date.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Cada reposición lo renueva a 1 día desde ese día.', many: 'Cada reposición lo renueva a $count días desde ese día.')}"
+  /// ```
+  String renews(int count) =>
+      """${_plural(count, one: 'Cada reposición lo renueva a 1 día desde ese día.', many: 'Cada reposición lo renueva a $count días desde ese día.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Al añadirse a un inventario, caduca 1 día después.', many: 'Al añadirse a un inventario, caduca $count días después.')}"
+  /// ```
+  String templateExpires(int count) =>
+      """${_plural(count, one: 'Al añadirse a un inventario, caduca 1 día después.', many: 'Al añadirse a un inventario, caduca $count días después.')}""";
+
+  /// ```dart
+  /// "Caducidad"
+  /// ```
+  String get chip => """Caducidad""";
+
+  /// ```dart
+  /// "Caduca el $date"
+  /// ```
+  String chipExpires(String date) => """Caduca el $date""";
+
+  /// ```dart
+  /// "Caducó el $date"
+  /// ```
+  String chipExpired(String date) => """Caducó el $date""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Dura 1 día', many: 'Dura $count días')}"
+  /// ```
+  String chipKeeps(int count) =>
+      """${_plural(count, one: 'Dura 1 día', many: 'Dura $count días')}""";
+}
+
+class ComposeStockMessagesEs extends ComposeStockMessages {
+  final StockMessagesEs _parent;
+  const ComposeStockMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Existencias"
+  /// ```
+  String get chip => """Existencias""";
+
+  /// ```dart
+  /// "Cantidad"
+  /// ```
+  String get count => """Cantidad""";
+
+  /// ```dart
+  /// "Nivel"
+  /// ```
+  String get level => """Nivel""";
+
+  /// ```dart
+  /// "Nivel · $amount"
+  /// ```
+  String levelAmount(String amount) => """Nivel · $amount""";
+
+  /// ```dart
+  /// "Objetivo: $target"
+  /// ```
+  String targetValue(String target) => """Objetivo: $target""";
+
+  /// ```dart
+  /// "Lleno si está vacío"
+  /// ```
+  String get fullWhenEmpty => """Lleno si está vacío""";
+}
+
 class NotesWallMessagesEs extends NotesWallMessages {
   final MessagesEs _parent;
   const NotesWallMessagesEs(this._parent) : super(_parent);
@@ -9125,6 +9649,79 @@ Contraseña: pantry-rocks""",
   """templates.applyFailed""": """No se pudo aplicar la plantilla""",
   """templates.loadFailed""": """No se pudieron cargar las plantillas""",
   """templates.back""": """Atrás""",
+  """stock.inStock""": """En existencia""",
+  """stock.full""": """Lleno""",
+  """stock.low""": """Bajo""",
+  """stock.out""": """Agotado""",
+  """stock.notCounted""": """Sin contar""",
+  """stock.expiresToday""": """Caduca hoy""",
+  """stock.expiresTomorrow""": """Caduca mañana""",
+  """stock.decrease""": """Reducir la cantidad disponible""",
+  """stock.increase""": """Aumentar la cantidad disponible""",
+  """stock.onHandEdit""": """Cantidad disponible""",
+  """stock.filter""": """Existencias""",
+  """stock.filterAll""": """Todos los artículos""",
+  """stock.filterNeedsRestock""": """Necesita reposición""",
+  """stock.filterInStock""": """En existencia""",
+  """stock.writeRefused""":
+      """No se pudo guardar el cambio de existencias. El inventario muestra ahora lo que tiene el servidor.""",
+  """stock.settings.action""": """Ajustes del inventario""",
+  """stock.settings.title""": """Ajustes del inventario""",
+  """stock.settings.name""": """Nombre""",
+  """stock.settings.nameHint""":
+      """El icono, el color y el uso compartido funcionan igual que en las listas de verificación.""",
+  """stock.settings.expiryWarning""": """Aviso de caducidad""",
+  """stock.settings.daysBefore""": """Días antes de la caducidad""",
+  """stock.settings.warnHint""":
+      """Pon 0 para avisar el mismo día de la caducidad.""",
+  """stock.settings.cancel""": """Cancelar""",
+  """stock.settings.save""": """Guardar""",
+  """stock.card.title""": """Existencias""",
+  """stock.card.mode""": """Modo de existencias""",
+  """stock.card.count""": """Cantidad""",
+  """stock.card.level""": """Nivel""",
+  """stock.card.countHint""":
+      """Controla cuántos tienes, p. ej. 4 de 12 huevos.""",
+  """stock.card.levelHint""":
+      """Contrólalo como Lleno, Bajo o Agotado, p. ej. harina o especias.""",
+  """stock.card.onHand""": """Disponible""",
+  """stock.card.onHandPlaceholder""": """p. ej. 4""",
+  """stock.card.target""": """Objetivo""",
+  """stock.card.targetPlaceholder""": """p. ej. 12 huevos""",
+  """stock.card.reorderPoint""": """Punto de reposición""",
+  """stock.card.reorderPlaceholder""": """p. ej. 4""",
+  """stock.card.stockLevel""": """Nivel de existencias""",
+  """stock.card.restockAmount""": """Cantidad de reposición""",
+  """stock.card.restockPlaceholder""": """p. ej. bolsa de 1 kg""",
+  """stock.card.convertedBlank""":
+      """Convertido a cantidad. Introduce la cantidad disponible y un objetivo.""",
+  """stock.card.statusExpired""": """Caducado.""",
+  """stock.card.statusExpiring""": """Caduca pronto.""",
+  """stock.card.statusLow""": """Bajo.""",
+  """stock.card.statusOut""": """Agotado.""",
+  """stock.card.statusUncountedTarget""":
+      """Sin contar: el objetivo no tiene número, así que nunca baja.""",
+  """stock.card.statusUncountedOnHand""":
+      """Sin contar: la cantidad disponible no tiene número, así que nunca baja.""",
+  """stock.card.statusInStock""": """En existencia.""",
+  """stock.card.templateDefaultMode""":
+      """Si no se elige un modo de existencias, se usa el predeterminado del inventario.""",
+  """stock.card.templateStartsLevel""":
+      """Al añadirse a un inventario, empieza Lleno.""",
+  """stock.card.templateUncounted""":
+      """Al añadirse a un inventario sin objetivo, no se cuenta.""",
+  """stock.expiry.title""": """Caducidad""",
+  """stock.expiry.mode""": """Cómo caduca el artículo""",
+  """stock.expiry.none""": """Ninguna""",
+  """stock.expiry.date""": """Fecha""",
+  """stock.expiry.keeps""": """Dura N días""",
+  """stock.expiry.expiryDate""": """Fecha de caducidad""",
+  """stock.expiry.daysItKeeps""": """Días que dura""",
+  """stock.expiry.chip""": """Caducidad""",
+  """stock.compose.chip""": """Existencias""",
+  """stock.compose.count""": """Cantidad""",
+  """stock.compose.level""": """Nivel""",
+  """stock.compose.fullWhenEmpty""": """Lleno si está vacío""",
   """notesWall.noNotes""": """Aún no hay notas.""",
   """notesWall.failedToLoad""": """No se pudieron cargar las notas.""",
   """notesWall.saveFailed""": """No se pudo guardar la nota.""",

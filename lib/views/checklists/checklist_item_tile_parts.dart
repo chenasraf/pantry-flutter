@@ -12,7 +12,9 @@ import 'package:pantry_core/models/item_chip.dart';
 import 'package:pantry_core/models/item_lifecycle.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/utils/checklist_icons.dart';
+import 'package:pantry_core/utils/layout_breakpoints.dart';
 import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/label_icons.dart';
@@ -28,6 +30,7 @@ import 'package:pantry/widgets/item_description.dart';
 import 'package:pantry/widgets/item_thumb.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 import 'package:pantry/widgets/store_detail_dialog.dart';
+import 'inventory_row_parts.dart';
 import 'swipe_reveal_row.dart';
 
 /// Row layout used when swipe actions are turned off: the item content fills
@@ -121,6 +124,11 @@ class ChecklistTileRowContent extends StatelessWidget {
   /// can't, so their rows have no checkbox.
   final bool checkable;
 
+  /// Set on an inventory item's row: a status icon replaces the checkbox, the
+  /// stock chips and gauge join the meta, and a stepper or level control
+  /// trails the row.
+  final InventoryRowActions? inventory;
+
   const ChecklistTileRowContent({
     super.key,
     required this.item,
@@ -148,14 +156,27 @@ class ChecklistTileRowContent extends StatelessWidget {
     this.archived = false,
     this.fromTemplates,
     this.checkable = true,
+    this.inventory,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (inventory == null) return _build(context, narrow: false);
+    return LayoutBuilder(
+      builder: (context, constraints) =>
+          _build(context, narrow: isNarrowListPane(constraints.maxWidth)),
+    );
+  }
+
+  Widget _build(BuildContext context, {required bool narrow}) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final checked = item.done;
-    final showLeading = !suggestion && (checkable || selectionMode);
+    final stock = inventory;
+    final showLeading =
+        !suggestion && (checkable || selectionMode || stock != null);
+    final showStockControl =
+        stock != null && !selectionMode && !trashMode && !archiveMode;
     final prefs = context.watch<PrefsService>();
     final checkboxAtEnd = prefs.checklistCheckboxPosition == 'end';
     final description = itemDescription(item, prefs);
@@ -191,6 +212,12 @@ class ChecklistTileRowContent extends StatelessWidget {
               size: 24,
               color: selected ? cs.primary : cs.onSurfaceVariant,
             ),
+          )
+        : showStockControl
+        ? StockStatusIcon(
+            item: item,
+            padding: checkboxPadding,
+            hitHeight: density.checkboxHitHeight,
           )
         : _Checkbox(
             checked: checked,
@@ -274,9 +301,10 @@ class ChecklistTileRowContent extends StatelessWidget {
                           ),
                         ],
                         if (_hasMeta(
-                          prefs,
-                          hideNote: descriptionLine != null,
-                        )) ...[
+                              prefs,
+                              hideNote: descriptionLine != null,
+                            ) ||
+                            stock != null) ...[
                           SizedBox(height: density.metaGap),
                           _MetaRow(
                             item: item,
@@ -288,11 +316,25 @@ class ChecklistTileRowContent extends StatelessWidget {
                             priceStoreContext: priceStoreContext,
                             hideNote: descriptionLine != null,
                             noteLabel: descriptionChip,
+                            stock: stock,
+                            narrow: narrow,
                           ),
+                        ],
+                        if (stock != null && StockGauge.showsFor(item)) ...[
+                          const SizedBox(height: 6),
+                          StockGauge(item: item),
                         ],
                       ],
                     ),
                   ),
+                  if (showStockControl) ...[
+                    const SizedBox(width: 8),
+                    InventoryRowControl(
+                      item: item,
+                      narrow: narrow,
+                      actions: stock,
+                    ),
+                  ],
                   if (addedByUserId != null && addedByUserId!.isNotEmpty) ...[
                     const SizedBox(width: 10),
                     MemberAvatar(
@@ -377,6 +419,7 @@ class ChecklistTileRowContent extends StatelessWidget {
     final hasLabels =
         labels.isNotEmpty && prefs.isItemChipVisible(ItemChipKind.label.key);
     final hasQty =
+        inventory == null &&
         item.quantity != null &&
         item.quantity!.trim().isNotEmpty &&
         prefs.isItemChipVisible(ItemChipKind.quantity.key);
@@ -501,6 +544,11 @@ class _MetaRow extends StatelessWidget {
   /// Null keeps the chip an icon alone.
   final String? noteLabel;
 
+  /// An inventory row's actions; their presence swaps the quantity chip for
+  /// the stock chips.
+  final InventoryRowActions? stock;
+  final bool narrow;
+
   const _MetaRow({
     required this.item,
     required this.category,
@@ -511,6 +559,8 @@ class _MetaRow extends StatelessWidget {
     this.priceStoreContext,
     this.hideNote = false,
     this.noteLabel,
+    this.stock,
+    this.narrow = false,
   });
 
   @override
@@ -528,6 +578,12 @@ class _MetaRow extends StatelessWidget {
       spacing: 7,
       runSpacing: 4,
       children: [
+        if (stock != null) ...[
+          if (narrow && item.stockMode != StockMode.level)
+            StockAmountChip(item: item, onSetOnHand: stock!.onSetOnHand),
+          for (final spec in stockStatusChips(item))
+            StockStatusChip(spec: spec),
+        ],
         if (listBadge != null && prefs.isItemChipVisible(ItemChipKind.list.key))
           EntityChip(
             leading: Icon(
@@ -583,7 +639,8 @@ class _MetaRow extends StatelessWidget {
                 alpha: 0.13,
               ),
             ),
-        if (item.quantity != null &&
+        if (stock == null &&
+            item.quantity != null &&
             item.quantity!.trim().isNotEmpty &&
             prefs.isItemChipVisible(ItemChipKind.quantity.key))
           EntityChip(

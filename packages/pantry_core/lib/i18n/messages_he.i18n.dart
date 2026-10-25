@@ -81,6 +81,7 @@ class MessagesHe extends Messages {
   ChecklistsMessagesHe get checklists => ChecklistsMessagesHe(this);
   ListKindsMessagesHe get listKinds => ListKindsMessagesHe(this);
   TemplatesMessagesHe get templates => TemplatesMessagesHe(this);
+  StockMessagesHe get stock => StockMessagesHe(this);
   NotesWallMessagesHe get notesWall => NotesWallMessagesHe(this);
   PhotoBoardMessagesHe get photoBoard => PhotoBoardMessagesHe(this);
   ShoppingMessagesHe get shopping => ShoppingMessagesHe(this);
@@ -5408,6 +5409,524 @@ class FillPrefNamesTemplatesMessagesHe extends FillPrefNamesTemplatesMessages {
   String get never => """אף פעם לא למלא""";
 }
 
+class StockMessagesHe extends StockMessages {
+  final MessagesHe _parent;
+  const StockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "במלאי"
+  /// ```
+  String get inStock => """במלאי""";
+
+  /// ```dart
+  /// "מלא"
+  /// ```
+  String get full => """מלא""";
+
+  /// ```dart
+  /// "נמוך"
+  /// ```
+  String get low => """נמוך""";
+
+  /// ```dart
+  /// "אזל"
+  /// ```
+  String get out => """אזל""";
+
+  /// ```dart
+  /// "נמוך · לקנות $amount"
+  /// ```
+  String lowBuy(String amount) => """נמוך · לקנות $amount""";
+
+  /// ```dart
+  /// "אזל · לקנות $amount"
+  /// ```
+  String outBuy(String amount) => """אזל · לקנות $amount""";
+
+  /// ```dart
+  /// "לא נספר"
+  /// ```
+  String get notCounted => """לא נספר""";
+
+  /// ```dart
+  /// "פג תוקף ב-$date"
+  /// ```
+  String expiredOn(String date) => """פג תוקף ב-$date""";
+
+  /// ```dart
+  /// "פג תוקף ב-$date · לקנות $amount"
+  /// ```
+  String expiredOnBuy(String date, String amount) =>
+      """פג תוקף ב-$date · לקנות $amount""";
+
+  /// ```dart
+  /// "פג תוקף היום"
+  /// ```
+  String get expiresToday => """פג תוקף היום""";
+
+  /// ```dart
+  /// "פג תוקף היום · לקנות $amount"
+  /// ```
+  String expiresTodayBuy(String amount) => """פג תוקף היום · לקנות $amount""";
+
+  /// ```dart
+  /// "פג תוקף מחר"
+  /// ```
+  String get expiresTomorrow => """פג תוקף מחר""";
+
+  /// ```dart
+  /// "פג תוקף מחר · לקנות $amount"
+  /// ```
+  String expiresTomorrowBuy(String amount) => """פג תוקף מחר · לקנות $amount""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פג תוקף בעוד יום אחד', many: 'פג תוקף בעוד $count ימים')}"
+  /// ```
+  String expiresInDays(int count) =>
+      """${_plural(count, one: 'פג תוקף בעוד יום אחד', many: 'פג תוקף בעוד $count ימים')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פג תוקף בעוד יום אחד · לקנות $amount', many: 'פג תוקף בעוד $count ימים · לקנות $amount')}"
+  /// ```
+  String expiresInDaysBuy(int count, String amount) =>
+      """${_plural(count, one: 'פג תוקף בעוד יום אחד · לקנות $amount', many: 'פג תוקף בעוד $count ימים · לקנות $amount')}""";
+
+  /// ```dart
+  /// "בתוקף עד $date"
+  /// ```
+  String goodUntil(String date) => """בתוקף עד $date""";
+
+  /// ```dart
+  /// "$onHand / $target"
+  /// ```
+  String amount(String onHand, String target) => """$onHand / $target""";
+
+  /// ```dart
+  /// "הפחתת הכמות הקיימת"
+  /// ```
+  String get decrease => """הפחתת הכמות הקיימת""";
+
+  /// ```dart
+  /// "הגדלת הכמות הקיימת"
+  /// ```
+  String get increase => """הגדלת הכמות הקיימת""";
+
+  /// ```dart
+  /// "כמות קיימת"
+  /// ```
+  String get onHandEdit => """כמות קיימת""";
+
+  /// ```dart
+  /// "רמת מלאי: $level"
+  /// ```
+  String levelButton(String level) => """רמת מלאי: $level""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד צריך חידוש מלאי', many: '$count פריטים צריכים חידוש מלאי')}"
+  /// ```
+  String needsRestockCount(int count) =>
+      """${_plural(count, one: 'פריט אחד צריך חידוש מלאי', many: '$count פריטים צריכים חידוש מלאי')}""";
+
+  /// ```dart
+  /// "מלאי"
+  /// ```
+  String get filter => """מלאי""";
+
+  /// ```dart
+  /// "כל הפריטים"
+  /// ```
+  String get filterAll => """כל הפריטים""";
+
+  /// ```dart
+  /// "צריך חידוש מלאי"
+  /// ```
+  String get filterNeedsRestock => """צריך חידוש מלאי""";
+
+  /// ```dart
+  /// "במלאי"
+  /// ```
+  String get filterInStock => """במלאי""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור את שינוי המלאי. רשימת המלאי מציגה כעת את מה שיש בשרת."
+  /// ```
+  String get writeRefused =>
+      """לא ניתן היה לשמור את שינוי המלאי. רשימת המלאי מציגה כעת את מה שיש בשרת.""";
+  SettingsStockMessagesHe get settings => SettingsStockMessagesHe(this);
+  CardStockMessagesHe get card => CardStockMessagesHe(this);
+  ExpiryStockMessagesHe get expiry => ExpiryStockMessagesHe(this);
+  ComposeStockMessagesHe get compose => ComposeStockMessagesHe(this);
+}
+
+class SettingsStockMessagesHe extends SettingsStockMessages {
+  final StockMessagesHe _parent;
+  const SettingsStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "הגדרות רשימת המלאי"
+  /// ```
+  String get action => """הגדרות רשימת המלאי""";
+
+  /// ```dart
+  /// "הגדרות רשימת המלאי"
+  /// ```
+  String get title => """הגדרות רשימת המלאי""";
+
+  /// ```dart
+  /// "שם"
+  /// ```
+  String get name => """שם""";
+
+  /// ```dart
+  /// "סמל, צבע ושיתוף פועלים כמו ברשימות סימון."
+  /// ```
+  String get nameHint => """סמל, צבע ושיתוף פועלים כמו ברשימות סימון.""";
+
+  /// ```dart
+  /// "התראת תפוגה"
+  /// ```
+  String get expiryWarning => """התראת תפוגה""";
+
+  /// ```dart
+  /// "התראה $days ימים לפני התפוגה"
+  /// ```
+  String warnBefore(String days) => """התראה $days ימים לפני התפוגה""";
+
+  /// ```dart
+  /// "ימים לפני התפוגה"
+  /// ```
+  String get daysBefore => """ימים לפני התפוגה""";
+
+  /// ```dart
+  /// "יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו."
+  /// ```
+  String get warnHint => """יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו.""";
+
+  /// ```dart
+  /// "ביטול"
+  /// ```
+  String get cancel => """ביטול""";
+
+  /// ```dart
+  /// "שמירה"
+  /// ```
+  String get save => """שמירה""";
+}
+
+class CardStockMessagesHe extends CardStockMessages {
+  final StockMessagesHe _parent;
+  const CardStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "מלאי"
+  /// ```
+  String get title => """מלאי""";
+
+  /// ```dart
+  /// "מצב מלאי"
+  /// ```
+  String get mode => """מצב מלאי""";
+
+  /// ```dart
+  /// "כמות"
+  /// ```
+  String get count => """כמות""";
+
+  /// ```dart
+  /// "רמה"
+  /// ```
+  String get level => """רמה""";
+
+  /// ```dart
+  /// "מעקב אחר כמה יש לך, למשל 4 מתוך 12 ביצים."
+  /// ```
+  String get countHint => """מעקב אחר כמה יש לך, למשל 4 מתוך 12 ביצים.""";
+
+  /// ```dart
+  /// "מעקב כמלא, נמוך או אזל, למשל קמח או תבלינים."
+  /// ```
+  String get levelHint => """מעקב כמלא, נמוך או אזל, למשל קמח או תבלינים.""";
+
+  /// ```dart
+  /// "קיים"
+  /// ```
+  String get onHand => """קיים""";
+
+  /// ```dart
+  /// "למשל 4"
+  /// ```
+  String get onHandPlaceholder => """למשל 4""";
+
+  /// ```dart
+  /// "יעד"
+  /// ```
+  String get target => """יעד""";
+
+  /// ```dart
+  /// "למשל 12 ביצים"
+  /// ```
+  String get targetPlaceholder => """למשל 12 ביצים""";
+
+  /// ```dart
+  /// "סף הזמנה מחדש"
+  /// ```
+  String get reorderPoint => """סף הזמנה מחדש""";
+
+  /// ```dart
+  /// "למשל 4"
+  /// ```
+  String get reorderPlaceholder => """למשל 4""";
+
+  /// ```dart
+  /// "רמת מלאי"
+  /// ```
+  String get stockLevel => """רמת מלאי""";
+
+  /// ```dart
+  /// "כמות לחידוש"
+  /// ```
+  String get restockAmount => """כמות לחידוש""";
+
+  /// ```dart
+  /// "למשל שקית של 1 ק״ג"
+  /// ```
+  String get restockPlaceholder => """למשל שקית של 1 ק״ג""";
+
+  /// ```dart
+  /// "הומר: רמה $level, כמות לחידוש "$amount"."
+  /// ```
+  String convertedLevelAmount(String level, String amount) =>
+      """הומר: רמה $level, כמות לחידוש "$amount".""";
+
+  /// ```dart
+  /// "הומר: רמה $level."
+  /// ```
+  String convertedLevel(String level) => """הומר: רמה $level.""";
+
+  /// ```dart
+  /// "הומר: קיים "$onHand", יעד "$target"."
+  /// ```
+  String convertedCount(String onHand, String target) =>
+      """הומר: קיים "$onHand", יעד "$target".""";
+
+  /// ```dart
+  /// "הומר: יעד "$target". יש להזין את הכמות הקיימת."
+  /// ```
+  String convertedTargetOnly(String target) =>
+      """הומר: יעד "$target". יש להזין את הכמות הקיימת.""";
+
+  /// ```dart
+  /// "הומר לכמות. יש להזין את הכמות הקיימת ויעד."
+  /// ```
+  String get convertedBlank => """הומר לכמות. יש להזין את הכמות הקיימת ויעד.""";
+
+  /// ```dart
+  /// "פג תוקף: לקנות $amount."
+  /// ```
+  String statusExpiredBuy(String amount) => """פג תוקף: לקנות $amount.""";
+
+  /// ```dart
+  /// "פג תוקף."
+  /// ```
+  String get statusExpired => """פג תוקף.""";
+
+  /// ```dart
+  /// "תוקף עומד לפוג: לקנות $amount."
+  /// ```
+  String statusExpiringBuy(String amount) =>
+      """תוקף עומד לפוג: לקנות $amount.""";
+
+  /// ```dart
+  /// "תוקף עומד לפוג."
+  /// ```
+  String get statusExpiring => """תוקף עומד לפוג.""";
+
+  /// ```dart
+  /// "נמוך: לקנות $amount."
+  /// ```
+  String statusLowBuy(String amount) => """נמוך: לקנות $amount.""";
+
+  /// ```dart
+  /// "נמוך."
+  /// ```
+  String get statusLow => """נמוך.""";
+
+  /// ```dart
+  /// "אזל: לקנות $amount."
+  /// ```
+  String statusOutBuy(String amount) => """אזל: לקנות $amount.""";
+
+  /// ```dart
+  /// "אזל."
+  /// ```
+  String get statusOut => """אזל.""";
+
+  /// ```dart
+  /// "לא נספר: ליעד אין מספר, ולכן הוא אף פעם לא נמוך."
+  /// ```
+  String get statusUncountedTarget =>
+      """לא נספר: ליעד אין מספר, ולכן הוא אף פעם לא נמוך.""";
+
+  /// ```dart
+  /// "לא נספר: לכמות הקיימת אין מספר, ולכן הוא אף פעם לא נמוך."
+  /// ```
+  String get statusUncountedOnHand =>
+      """לא נספר: לכמות הקיימת אין מספר, ולכן הוא אף פעם לא נמוך.""";
+
+  /// ```dart
+  /// "במלאי."
+  /// ```
+  String get statusInStock => """במלאי.""";
+
+  /// ```dart
+  /// "כשלא נבחר מצב מלאי, נעשה שימוש בברירת המחדל של רשימת המלאי."
+  /// ```
+  String get templateDefaultMode =>
+      """כשלא נבחר מצב מלאי, נעשה שימוש בברירת המחדל של רשימת המלאי.""";
+
+  /// ```dart
+  /// "כשהוא נוסף לרשימת מלאי, הוא מתחיל מלא עם $amount קיים."
+  /// ```
+  String templateStartsCount(String amount) =>
+      """כשהוא נוסף לרשימת מלאי, הוא מתחיל מלא עם $amount קיים.""";
+
+  /// ```dart
+  /// "כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא ומתחדש ב-$amount."
+  /// ```
+  String templateStartsLevelAmount(String amount) =>
+      """כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא ומתחדש ב-$amount.""";
+
+  /// ```dart
+  /// "כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא."
+  /// ```
+  String get templateStartsLevel =>
+      """כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא.""";
+
+  /// ```dart
+  /// "כשהוא נוסף לרשימת מלאי ללא יעד, הוא לא נספר."
+  /// ```
+  String get templateUncounted =>
+      """כשהוא נוסף לרשימת מלאי ללא יעד, הוא לא נספר.""";
+}
+
+class ExpiryStockMessagesHe extends ExpiryStockMessages {
+  final StockMessagesHe _parent;
+  const ExpiryStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "תפוגה"
+  /// ```
+  String get title => """תפוגה""";
+
+  /// ```dart
+  /// "איך פג תוקף הפריט"
+  /// ```
+  String get mode => """איך פג תוקף הפריט""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get none => """ללא""";
+
+  /// ```dart
+  /// "תאריך"
+  /// ```
+  String get date => """תאריך""";
+
+  /// ```dart
+  /// "נשמר N ימים"
+  /// ```
+  String get keeps => """נשמר N ימים""";
+
+  /// ```dart
+  /// "תאריך תפוגה"
+  /// ```
+  String get expiryDate => """תאריך תפוגה""";
+
+  /// ```dart
+  /// "ימים שהוא נשמר"
+  /// ```
+  String get daysItKeeps => """ימים שהוא נשמר""";
+
+  /// ```dart
+  /// "פג תוקף ב-$date."
+  /// ```
+  String expiredSummary(String date) => """פג תוקף ב-$date.""";
+
+  /// ```dart
+  /// "בתוקף עד $date."
+  /// ```
+  String goodUntilSummary(String date) => """בתוקף עד $date.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'כל חידוש מלאי מאריך את התוקף ליום אחד מאותו יום.', many: 'כל חידוש מלאי מאריך את התוקף ל-$count ימים מאותו יום.')}"
+  /// ```
+  String renews(int count) =>
+      """${_plural(count, one: 'כל חידוש מלאי מאריך את התוקף ליום אחד מאותו יום.', many: 'כל חידוש מלאי מאריך את התוקף ל-$count ימים מאותו יום.')}""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'כשהוא נוסף לרשימת מלאי, תוקפו פג יום אחד לאחר מכן.', many: 'כשהוא נוסף לרשימת מלאי, תוקפו פג $count ימים לאחר מכן.')}"
+  /// ```
+  String templateExpires(int count) =>
+      """${_plural(count, one: 'כשהוא נוסף לרשימת מלאי, תוקפו פג יום אחד לאחר מכן.', many: 'כשהוא נוסף לרשימת מלאי, תוקפו פג $count ימים לאחר מכן.')}""";
+
+  /// ```dart
+  /// "תפוגה"
+  /// ```
+  String get chip => """תפוגה""";
+
+  /// ```dart
+  /// "יפוג ב-$date"
+  /// ```
+  String chipExpires(String date) => """יפוג ב-$date""";
+
+  /// ```dart
+  /// "פג תוקף ב-$date"
+  /// ```
+  String chipExpired(String date) => """פג תוקף ב-$date""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'נשמר יום אחד', many: 'נשמר $count ימים')}"
+  /// ```
+  String chipKeeps(int count) =>
+      """${_plural(count, one: 'נשמר יום אחד', many: 'נשמר $count ימים')}""";
+}
+
+class ComposeStockMessagesHe extends ComposeStockMessages {
+  final StockMessagesHe _parent;
+  const ComposeStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "מלאי"
+  /// ```
+  String get chip => """מלאי""";
+
+  /// ```dart
+  /// "כמות"
+  /// ```
+  String get count => """כמות""";
+
+  /// ```dart
+  /// "רמה"
+  /// ```
+  String get level => """רמה""";
+
+  /// ```dart
+  /// "רמה · $amount"
+  /// ```
+  String levelAmount(String amount) => """רמה · $amount""";
+
+  /// ```dart
+  /// "יעד: $target"
+  /// ```
+  String targetValue(String target) => """יעד: $target""";
+
+  /// ```dart
+  /// "מלא כשריק"
+  /// ```
+  String get fullWhenEmpty => """מלא כשריק""";
+}
+
 class NotesWallMessagesHe extends NotesWallMessages {
   final MessagesHe _parent;
   const NotesWallMessagesHe(this._parent) : super(_parent);
@@ -8971,6 +9490,78 @@ Map<String, String> get messagesHeMap => {
   """templates.applyFailed""": """לא ניתן היה להחיל את התבנית""",
   """templates.loadFailed""": """לא ניתן היה לטעון את התבניות""",
   """templates.back""": """חזרה""",
+  """stock.inStock""": """במלאי""",
+  """stock.full""": """מלא""",
+  """stock.low""": """נמוך""",
+  """stock.out""": """אזל""",
+  """stock.notCounted""": """לא נספר""",
+  """stock.expiresToday""": """פג תוקף היום""",
+  """stock.expiresTomorrow""": """פג תוקף מחר""",
+  """stock.decrease""": """הפחתת הכמות הקיימת""",
+  """stock.increase""": """הגדלת הכמות הקיימת""",
+  """stock.onHandEdit""": """כמות קיימת""",
+  """stock.filter""": """מלאי""",
+  """stock.filterAll""": """כל הפריטים""",
+  """stock.filterNeedsRestock""": """צריך חידוש מלאי""",
+  """stock.filterInStock""": """במלאי""",
+  """stock.writeRefused""":
+      """לא ניתן היה לשמור את שינוי המלאי. רשימת המלאי מציגה כעת את מה שיש בשרת.""",
+  """stock.settings.action""": """הגדרות רשימת המלאי""",
+  """stock.settings.title""": """הגדרות רשימת המלאי""",
+  """stock.settings.name""": """שם""",
+  """stock.settings.nameHint""":
+      """סמל, צבע ושיתוף פועלים כמו ברשימות סימון.""",
+  """stock.settings.expiryWarning""": """התראת תפוגה""",
+  """stock.settings.daysBefore""": """ימים לפני התפוגה""",
+  """stock.settings.warnHint""":
+      """יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו.""",
+  """stock.settings.cancel""": """ביטול""",
+  """stock.settings.save""": """שמירה""",
+  """stock.card.title""": """מלאי""",
+  """stock.card.mode""": """מצב מלאי""",
+  """stock.card.count""": """כמות""",
+  """stock.card.level""": """רמה""",
+  """stock.card.countHint""": """מעקב אחר כמה יש לך, למשל 4 מתוך 12 ביצים.""",
+  """stock.card.levelHint""":
+      """מעקב כמלא, נמוך או אזל, למשל קמח או תבלינים.""",
+  """stock.card.onHand""": """קיים""",
+  """stock.card.onHandPlaceholder""": """למשל 4""",
+  """stock.card.target""": """יעד""",
+  """stock.card.targetPlaceholder""": """למשל 12 ביצים""",
+  """stock.card.reorderPoint""": """סף הזמנה מחדש""",
+  """stock.card.reorderPlaceholder""": """למשל 4""",
+  """stock.card.stockLevel""": """רמת מלאי""",
+  """stock.card.restockAmount""": """כמות לחידוש""",
+  """stock.card.restockPlaceholder""": """למשל שקית של 1 ק״ג""",
+  """stock.card.convertedBlank""":
+      """הומר לכמות. יש להזין את הכמות הקיימת ויעד.""",
+  """stock.card.statusExpired""": """פג תוקף.""",
+  """stock.card.statusExpiring""": """תוקף עומד לפוג.""",
+  """stock.card.statusLow""": """נמוך.""",
+  """stock.card.statusOut""": """אזל.""",
+  """stock.card.statusUncountedTarget""":
+      """לא נספר: ליעד אין מספר, ולכן הוא אף פעם לא נמוך.""",
+  """stock.card.statusUncountedOnHand""":
+      """לא נספר: לכמות הקיימת אין מספר, ולכן הוא אף פעם לא נמוך.""",
+  """stock.card.statusInStock""": """במלאי.""",
+  """stock.card.templateDefaultMode""":
+      """כשלא נבחר מצב מלאי, נעשה שימוש בברירת המחדל של רשימת המלאי.""",
+  """stock.card.templateStartsLevel""":
+      """כשהוא נוסף לרשימת מלאי, הוא מתחיל במצב מלא.""",
+  """stock.card.templateUncounted""":
+      """כשהוא נוסף לרשימת מלאי ללא יעד, הוא לא נספר.""",
+  """stock.expiry.title""": """תפוגה""",
+  """stock.expiry.mode""": """איך פג תוקף הפריט""",
+  """stock.expiry.none""": """ללא""",
+  """stock.expiry.date""": """תאריך""",
+  """stock.expiry.keeps""": """נשמר N ימים""",
+  """stock.expiry.expiryDate""": """תאריך תפוגה""",
+  """stock.expiry.daysItKeeps""": """ימים שהוא נשמר""",
+  """stock.expiry.chip""": """תפוגה""",
+  """stock.compose.chip""": """מלאי""",
+  """stock.compose.count""": """כמות""",
+  """stock.compose.level""": """רמה""",
+  """stock.compose.fullWhenEmpty""": """מלא כשריק""",
   """notesWall.noNotes""": """אין הערות עדיין.""",
   """notesWall.failedToLoad""": """טעינת ההערות נכשלה.""",
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",

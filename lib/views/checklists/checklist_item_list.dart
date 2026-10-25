@@ -12,6 +12,7 @@ import 'package:pantry/utils/app_toast.dart';
 import 'checklist_item_tile.dart';
 import 'checklists_controller.dart';
 import 'checklists_sliver_headers.dart';
+import 'inventory_row_parts.dart';
 import 'item_detail_view.dart';
 import 'item_form_view.dart';
 import 'item_picker_dialogs.dart';
@@ -623,6 +624,16 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
       onToggle: (i) => _onToggle(context, controller, i),
       canCheck: writable && controller.permissions.canCheckItems,
       checkable: controller.isChecklistKind,
+      inventory: controller.isInventoryKind && ServerFeature.inventoryStock
+          ? InventoryRowActions(
+              onSetOnHand: writable && controller.permissions.canEditLists
+                  ? (q) => controller.setOnHand(item, q)
+                  : null,
+              onSetLevel: writable && controller.permissions.canEditLists
+                  ? (l) => controller.setStockLevel(item, l)
+                  : null,
+            )
+          : null,
       onView: (i) => _openView(context, controller, i),
       onEdit: writable && controller.permissions.canEditLists
           ? (i) => _openEdit(context, controller, i)

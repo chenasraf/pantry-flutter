@@ -1031,6 +1031,106 @@ templates:
   loadFailed: Die Vorlagen konnten nicht geladen werden
   back: Zurück
 
+stock:
+  inStock: Vorrätig
+  full: Voll
+  low: Knapp
+  out: Leer
+  lowBuy(String amount): "Knapp · $amount kaufen"
+  outBuy(String amount): "Leer · $amount kaufen"
+  notCounted: Nicht gezählt
+  expiredOn(String date): "Abgelaufen am $date"
+  expiredOnBuy(String date, String amount): "Abgelaufen am $date · $amount kaufen"
+  expiresToday: Läuft heute ab
+  expiresTodayBuy(String amount): "Läuft heute ab · $amount kaufen"
+  expiresTomorrow: Läuft morgen ab
+  expiresTomorrowBuy(String amount): "Läuft morgen ab · $amount kaufen"
+  expiresInDays(int count): "${_plural(count, one: 'Läuft in 1 Tag ab', many: 'Läuft in $count Tagen ab')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'Läuft in 1 Tag ab · $amount kaufen', many: 'Läuft in $count Tagen ab · $amount kaufen')}"
+  goodUntil(String date): "Haltbar bis $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: Vorhandene Menge verringern
+  increase: Vorhandene Menge erhöhen
+  onHandEdit: Vorhandene Menge
+  levelButton(String level): "Bestandsstufe: $level"
+  needsRestockCount(int count): "${_plural(count, one: '1 Eintrag muss nachgekauft werden', many: '$count Einträge müssen nachgekauft werden')}"
+  filter: Bestand
+  filterAll: Alle Einträge
+  filterNeedsRestock: Nachkaufen nötig
+  filterInStock: Vorrätig
+  writeRefused: Die Bestandsänderung konnte nicht gespeichert werden. Die Bestandsliste zeigt jetzt den Stand des Servers.
+  settings:
+    action: Bestandslisten-Einstellungen
+    title: Bestandslisten-Einstellungen
+    name: Name
+    nameHint: Symbol, Farbe und Teilen funktionieren wie bei Checklisten.
+    expiryWarning: Ablaufwarnung
+    warnBefore(String days): "$days Tage vor Ablauf warnen"
+    daysBefore: Tage vor Ablauf
+    warnHint: 0 eingeben, um am Ablaufdatum selbst zu warnen.
+    cancel: Abbrechen
+    save: Speichern
+  card:
+    title: Bestand
+    mode: Bestandsmodus
+    count: Anzahl
+    level: Stufe
+    countHint: Verfolge, wie viele du hast, z. B. 4 von 12 Eiern.
+    levelHint: Verfolge es als Voll, Knapp oder Leer, z. B. Mehl oder Gewürze.
+    onHand: Vorhanden
+    onHandPlaceholder: z. B. 4
+    target: Ziel
+    targetPlaceholder: z. B. 12 Eier
+    reorderPoint: Nachkaufschwelle
+    reorderPlaceholder: z. B. 4
+    stockLevel: Bestandsstufe
+    restockAmount: Nachkaufmenge
+    restockPlaceholder: z. B. 1-kg-Packung
+    convertedLevelAmount(String level, String amount): "Umgewandelt: Stufe $level, Nachkaufmenge „$amount“."
+    convertedLevel(String level): "Umgewandelt: Stufe $level."
+    convertedCount(String onHand, String target): "Umgewandelt: vorhanden „$onHand“, Ziel „$target“."
+    convertedTargetOnly(String target): "Umgewandelt: Ziel „$target“. Gib die vorhandene Menge ein."
+    convertedBlank: In eine Anzahl umgewandelt. Gib die vorhandene Menge und ein Ziel ein.
+    statusExpiredBuy(String amount): "Abgelaufen: $amount kaufen."
+    statusExpired: Abgelaufen.
+    statusExpiringBuy(String amount): "Läuft bald ab: $amount kaufen."
+    statusExpiring: Läuft bald ab.
+    statusLowBuy(String amount): "Knapp: $amount kaufen."
+    statusLow: Knapp.
+    statusOutBuy(String amount): "Leer: $amount kaufen."
+    statusOut: Leer.
+    statusUncountedTarget: "Nicht gezählt: Das Ziel hat keine Zahl, daher wird es nie knapp."
+    statusUncountedOnHand: "Nicht gezählt: Die vorhandene Menge hat keine Zahl, daher wird es nie knapp."
+    statusInStock: Vorrätig.
+    templateDefaultMode: Ohne gewählten Bestandsmodus gilt die Vorgabe der Bestandsliste.
+    templateStartsCount(String amount): "In eine Bestandsliste übernommen, startet es voll mit $amount vorhanden."
+    templateStartsLevelAmount(String amount): "In eine Bestandsliste übernommen, startet es mit Voll und wird mit $amount nachgekauft."
+    templateStartsLevel: In eine Bestandsliste übernommen, startet es mit Voll.
+    templateUncounted: In eine Bestandsliste ohne Ziel übernommen, wird es nicht gezählt.
+  expiry:
+    title: Ablauf
+    mode: Wie der Eintrag abläuft
+    none: Keiner
+    date: Datum
+    keeps: Hält N Tage
+    expiryDate: Ablaufdatum
+    daysItKeeps: Haltbarkeit in Tagen
+    expiredSummary(String date): "Abgelaufen am $date."
+    goodUntilSummary(String date): "Haltbar bis $date."
+    renews(int count): "${_plural(count, one: 'Jedes Nachkaufen setzt den Ablauf auf 1 Tag ab diesem Tag.', many: 'Jedes Nachkaufen setzt den Ablauf auf $count Tage ab diesem Tag.')}"
+    templateExpires(int count): "${_plural(count, one: 'In eine Bestandsliste übernommen, läuft es 1 Tag später ab.', many: 'In eine Bestandsliste übernommen, läuft es $count Tage später ab.')}"
+    chip: Ablauf
+    chipExpires(String date): "Läuft am $date ab"
+    chipExpired(String date): "Abgelaufen am $date"
+    chipKeeps(int count): "${_plural(count, one: 'Hält 1 Tag', many: 'Hält $count Tage')}"
+  compose:
+    chip: Bestand
+    count: Anzahl
+    level: Stufe
+    levelAmount(String amount): "Stufe · $amount"
+    targetValue(String target): "Ziel: $target"
+    fullWhenEmpty: Voll, wenn leer
+
 notesWall:
   noNotes: Noch keine Notizen.
   failedToLoad: Notizen konnten nicht geladen werden.

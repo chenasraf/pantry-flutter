@@ -8,6 +8,14 @@ String formatDate(int timestamp) {
   return DateFormat.yMMMd().format(date);
 }
 
+/// Month and day ("Oct 31"), with the year only when it is not this year.
+String formatShortDate(int timestamp) {
+  final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  return date.year == DateTime.now().year
+      ? DateFormat.MMMd().format(date)
+      : DateFormat.yMMMd().format(date);
+}
+
 /// Format a unix timestamp (seconds) as a localized date and time. Drawn
 /// beside [relativeTime] where "2 weeks ago" is the answer at a glance and the
 /// exact moment is the one worth checking.

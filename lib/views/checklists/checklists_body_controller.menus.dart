@@ -394,6 +394,16 @@ extension ChecklistsBodyMenus on ChecklistsBodyController {
         icon: Icons.dashboard_customize_outlined,
         label: m.checklists.menu.manage,
         entries: [
+          if (!isMeta &&
+              list != null &&
+              list.kind == ListKind.inventory &&
+              ServerFeature.inventoryStock &&
+              domain.canEditCurrentListSettings)
+            OverflowAction(
+              value: 'inventory_settings',
+              icon: Icons.settings_outlined,
+              label: m.stock.settings.action,
+            ),
           if (!isMeta && list?.activeItemDefaults != null)
             OverflowAction(
               value: 'item_defaults',

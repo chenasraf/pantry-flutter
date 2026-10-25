@@ -515,6 +515,22 @@ class _ListTile extends StatelessWidget {
               ],
             ),
           ),
+          if (list.kind == ListKind.inventory && (list.needsRestock ?? 0) > 0)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8),
+              child: Tooltip(
+                message: m.stock.needsRestockCount(list.needsRestock!),
+                child: Semantics(
+                  label: m.stock.needsRestockCount(list.needsRestock!),
+                  excludeSemantics: true,
+                  child: Badge(
+                    label: Text('${list.needsRestock}'),
+                    backgroundColor: cs.error,
+                    textColor: cs.onError,
+                  ),
+                ),
+              ),
+            ),
           if (selected)
             Container(
               width: 24,

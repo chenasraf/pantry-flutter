@@ -1031,6 +1031,106 @@ templates:
   loadFailed: Could not load the templates
   back: Back
 
+stock:
+  inStock: In stock
+  full: Full
+  low: Low
+  out: Out
+  lowBuy(String amount): "Low · buy $amount"
+  outBuy(String amount): "Out · buy $amount"
+  notCounted: Not counted
+  expiredOn(String date): "Expired $date"
+  expiredOnBuy(String date, String amount): "Expired $date · buy $amount"
+  expiresToday: Expires today
+  expiresTodayBuy(String amount): "Expires today · buy $amount"
+  expiresTomorrow: Expires tomorrow
+  expiresTomorrowBuy(String amount): "Expires tomorrow · buy $amount"
+  expiresInDays(int count): "${_plural(count, one: 'Expires in 1 day', many: 'Expires in $count days')}"
+  expiresInDaysBuy(int count, String amount): "${_plural(count, one: 'Expires in 1 day · buy $amount', many: 'Expires in $count days · buy $amount')}"
+  goodUntil(String date): "Good until $date"
+  amount(String onHand, String target): "$onHand / $target"
+  decrease: Decrease the amount on hand
+  increase: Increase the amount on hand
+  onHandEdit: Amount on hand
+  levelButton(String level): "Stock level: $level"
+  needsRestockCount(int count): "${_plural(count, one: '1 item needs restock', many: '$count items need restock')}"
+  filter: Stock
+  filterAll: All items
+  filterNeedsRestock: Needs restock
+  filterInStock: In stock
+  writeRefused: Could not save the stock change. The inventory now shows what the server has.
+  settings:
+    action: Inventory settings
+    title: Inventory settings
+    name: Name
+    nameHint: Icon, colour and sharing work as they do on checklists.
+    expiryWarning: Expiry warning
+    warnBefore(String days): "Warn $days days before expiry"
+    daysBefore: Days before expiry
+    warnHint: Set 0 to warn on the expiry date itself.
+    cancel: Cancel
+    save: Save
+  card:
+    title: Stock
+    mode: Stock mode
+    count: Count
+    level: Level
+    countHint: Track how many you have, e.g. 4 of 12 eggs.
+    levelHint: Track it as Full, Low or Out, e.g. flour or spices.
+    onHand: On hand
+    onHandPlaceholder: e.g. 4
+    target: Target
+    targetPlaceholder: e.g. 12 eggs
+    reorderPoint: Reorder point
+    reorderPlaceholder: e.g. 4
+    stockLevel: Stock level
+    restockAmount: Restock amount
+    restockPlaceholder: e.g. 1 kg bag
+    convertedLevelAmount(String level, String amount): 'Converted: level $level, restock amount "$amount".'
+    convertedLevel(String level): "Converted: level $level."
+    convertedCount(String onHand, String target): 'Converted: on hand "$onHand", target "$target".'
+    convertedTargetOnly(String target): 'Converted: target "$target". Enter the amount on hand.'
+    convertedBlank: Converted to a count. Enter the amount on hand and a target.
+    statusExpiredBuy(String amount): "Expired: buy $amount."
+    statusExpired: Expired.
+    statusExpiringBuy(String amount): "Expiring soon: buy $amount."
+    statusExpiring: Expiring soon.
+    statusLowBuy(String amount): "Low: buy $amount."
+    statusLow: Low.
+    statusOutBuy(String amount): "Out: buy $amount."
+    statusOut: Out.
+    statusUncountedTarget: "Not counted: the target has no number, so it never runs low."
+    statusUncountedOnHand: "Not counted: on hand has no number, so it never runs low."
+    statusInStock: In stock.
+    templateDefaultMode: With no stock mode picked, it uses the inventory's default.
+    templateStartsCount(String amount): "Drawn into an inventory, it starts full with $amount on hand."
+    templateStartsLevelAmount(String amount): "Drawn into an inventory, it starts Full and restocks $amount."
+    templateStartsLevel: Drawn into an inventory, it starts Full.
+    templateUncounted: Drawn into an inventory without a target, it is not counted.
+  expiry:
+    title: Expiry
+    mode: How the item expires
+    none: None
+    date: Date
+    keeps: Keeps N days
+    expiryDate: Expiry date
+    daysItKeeps: Days it keeps
+    expiredSummary(String date): "Expired $date."
+    goodUntilSummary(String date): "Good until $date."
+    renews(int count): "${_plural(count, one: 'Each restock renews it to 1 day from that day.', many: 'Each restock renews it to $count days from that day.')}"
+    templateExpires(int count): "${_plural(count, one: 'Drawn into an inventory, it expires 1 day later.', many: 'Drawn into an inventory, it expires $count days later.')}"
+    chip: Expiry
+    chipExpires(String date): "Expires $date"
+    chipExpired(String date): "Expired $date"
+    chipKeeps(int count): "${_plural(count, one: 'Keeps 1 day', many: 'Keeps $count days')}"
+  compose:
+    chip: Stock
+    count: Count
+    level: Level
+    levelAmount(String amount): "Level · $amount"
+    targetValue(String target): "Target: $target"
+    fullWhenEmpty: Full when empty
+
 notesWall:
   noNotes: No notes yet.
   failedToLoad: Failed to load notes.
