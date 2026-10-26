@@ -370,7 +370,7 @@ class _StockCardState extends State<StockCard> {
         ? _templateSummary(draft)
         : widget.compose
         ? null
-        : _statusLine(draft, widget.leadDays);
+        : stockStatusLine(draft.fields, widget.leadDays);
 
     return LabeledFieldCard(
       label: c.title,
@@ -461,52 +461,7 @@ class _StockCardState extends State<StockCard> {
   );
 }
 
-typedef _StatusLine = ({String text, StockTone? tone});
-
-_StatusLine _statusLine(StockDraft draft, int leadDays) {
-  final c = m.stock.card;
-  final fields = draft.fields;
-  final stock = evaluateStock(fields);
-  final expiry = evaluateExpiry(fields, leadDays, todayEpoch());
-  final amount = fullAmount(fields);
-  if (expiry == ExpiryStatus.expired) {
-    return (
-      text: amount == null ? c.statusExpired : c.statusExpiredBuy(amount),
-      tone: StockTone.error,
-    );
-  }
-  if (stock.status == StockStatus.out) {
-    final s = stock.shortfall;
-    return (
-      text: s == null ? c.statusOut : c.statusOutBuy(s),
-      tone: StockTone.error,
-    );
-  }
-  if (expiry == ExpiryStatus.expiring) {
-    return (
-      text: amount == null ? c.statusExpiring : c.statusExpiringBuy(amount),
-      tone: StockTone.warning,
-    );
-  }
-  if (stock.status == StockStatus.low) {
-    final s = stock.shortfall;
-    return (
-      text: s == null ? c.statusLow : c.statusLowBuy(s),
-      tone: StockTone.warning,
-    );
-  }
-  if (stock.status == StockStatus.uncounted) {
-    return (
-      text: firstNumber(fields.target) == null
-          ? c.statusUncountedTarget
-          : c.statusUncountedOnHand,
-      tone: null,
-    );
-  }
-  return (text: c.statusInStock, tone: null);
-}
-
-_StatusLine? _templateSummary(StockDraft draft) {
+StockStatusLine? _templateSummary(StockDraft draft) {
   final c = m.stock.card;
   final target = (draft.target ?? '').trim();
   switch (draft.mode) {

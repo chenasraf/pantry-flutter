@@ -7,8 +7,6 @@ import 'package:pantry_core/utils/entity_icons.dart';
 import 'package:pantry_core/utils/price.dart';
 import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/models/stock.dart';
-import 'package:pantry_core/utils/date_format.dart';
-import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry/theme/app_theme.dart';
 
 import 'inventory_row_parts.dart';
@@ -87,20 +85,7 @@ class StockFactTiles extends StatelessWidget {
               : '${stockLevelName(item.stockLevel ?? StockLevel.full)} · $restock')
         : stockAmountLabel(item);
     final chips = stockStatusChips(item);
-    final expiresAt = item.expiresAt;
-    final shelfLife = item.shelfLifeDays;
-    String? expiry;
-    if (expiresAt != null) {
-      final date = formatShortDate(expiresAt);
-      final head = daysUntil(expiresAt, todayEpoch()) < 0
-          ? m.stock.expiry.expiredSummary(date)
-          : m.stock.expiry.goodUntilSummary(date);
-      expiry = shelfLife == null
-          ? head
-          : '$head ${m.stock.expiry.renews(shelfLife)}';
-    } else if (shelfLife != null) {
-      expiry = m.stock.expiry.chipKeeps(shelfLife);
-    }
+    final expiry = expirySummary(item);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

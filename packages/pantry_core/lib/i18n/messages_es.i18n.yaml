@@ -1627,6 +1627,12 @@ wear:
   accent: Color de acento
   accentServer: Tu color de Nextcloud
   accentApp: Color de Pantry
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockRaised(String amount): "+$amount"
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockLowered(String amount): "−$amount"
+  stockClose: Terminar de ajustar
+  nothingNeedsRestock: No hace falta reponer nada
 
 watch:
   title: Reloj

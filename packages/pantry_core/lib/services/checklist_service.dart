@@ -205,6 +205,27 @@ class ChecklistService {
     }
   }
 
+  /// The cached lists of one [kind], without touching the other kinds' caches.
+  List<ChecklistList>? getCachedListsOfKind(int houseId, ListKind kind) {
+    if (kind.isChecklist) return getCachedLists(houseId);
+    return cache.getKeyedList(
+      _kindListsPrefix(kind),
+      '$houseId',
+      ChecklistList.fromJson,
+    );
+  }
+
+  void cacheListsOfKind(int houseId, ListKind kind, List<ChecklistList> lists) {
+    rememberKinds(lists);
+    if (kind.isChecklist) return cacheLists(houseId, lists);
+    cache.setKeyedList(
+      _kindListsPrefix(kind),
+      '$houseId',
+      lists,
+      (l) => l.toJson(),
+    );
+  }
+
   static String _kindListsPrefix(ListKind kind) => '${kind.resource}Lists';
 
   List<ListItem>? getCachedItems(int listId) =>

@@ -8564,6 +8564,26 @@ class WearMessagesDe extends WearMessages {
   /// "Pantry-Farbe"
   /// ```
   String get accentApp => """Pantry-Farbe""";
+
+  /// ```dart
+  /// "+$amount"
+  /// ```
+  String stockRaised(String amount) => """+$amount""";
+
+  /// ```dart
+  /// "−$amount"
+  /// ```
+  String stockLowered(String amount) => """−$amount""";
+
+  /// ```dart
+  /// "Anpassen beenden"
+  /// ```
+  String get stockClose => """Anpassen beenden""";
+
+  /// ```dart
+  /// "Nichts muss nachgekauft werden"
+  /// ```
+  String get nothingNeedsRestock => """Nichts muss nachgekauft werden""";
 }
 
 class WatchMessagesDe extends WatchMessages {
@@ -10606,6 +10626,8 @@ Passwort: pantry-rocks""",
   """wear.accent""": """Akzentfarbe""",
   """wear.accentServer""": """Deine Nextcloud-Farbe""",
   """wear.accentApp""": """Pantry-Farbe""",
+  """wear.stockClose""": """Anpassen beenden""",
+  """wear.nothingNeedsRestock""": """Nichts muss nachgekauft werden""",
   """watch.title""": """Uhr""",
   """watch.requestWarning""":
       """Erlaube das nur, wenn die Uhr dir gehört. Sie erhält denselben Zugriff auf deinen Haushalt wie dieses Telefon.""",

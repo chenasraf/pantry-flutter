@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/utils/color.dart';
+import 'package:pantry_core/utils/stock_display.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
@@ -13,41 +14,6 @@ import 'package:pantry/theme/app_theme.dart';
 import 'checklists_controller.dart';
 import 'form_components.dart';
 import 'restock_feedback.dart';
-
-/// How an inventory item reaches a shopping list.
-enum StockLinkStatus {
-  linked,
-
-  /// Several same-name checklist items match and none is linked.
-  needsPick,
-
-  /// Unlinked, and finds or adds one by name when it needs restock.
-  autoOn,
-
-  /// Unlinked, and never reaches a shopping list on its own.
-  autoOff,
-}
-
-StockLinkStatus stockLinkStatusOf(ListItem item) {
-  if (item.stockLink != null) return StockLinkStatus.linked;
-  if (item.linkCandidates.isNotEmpty) return StockLinkStatus.needsPick;
-  return (item.autoLink ?? true)
-      ? StockLinkStatus.autoOn
-      : StockLinkStatus.autoOff;
-}
-
-String stockLinkTooltip(ListItem item) {
-  final l = m.stock.links;
-  return switch (stockLinkStatusOf(item)) {
-    StockLinkStatus.linked => l.tooltipLinked(
-      item.stockLink!.name,
-      item.stockLink!.listName,
-    ),
-    StockLinkStatus.needsPick => l.tooltipNeedsPick(item.linkCandidates.length),
-    StockLinkStatus.autoOn => l.tooltipAutoOn,
-    StockLinkStatus.autoOff => l.tooltipAutoOff,
-  };
-}
 
 /// What a member can do to an inventory item's link. Absent where they can't
 /// edit it, which leaves the link state readable but inert.

@@ -8466,6 +8466,26 @@ class WearMessages {
   /// "Pantry color"
   /// ```
   String get accentApp => """Pantry color""";
+
+  /// ```dart
+  /// "+$amount"
+  /// ```
+  String stockRaised(String amount) => """+$amount""";
+
+  /// ```dart
+  /// "−$amount"
+  /// ```
+  String stockLowered(String amount) => """−$amount""";
+
+  /// ```dart
+  /// "Done adjusting"
+  /// ```
+  String get stockClose => """Done adjusting""";
+
+  /// ```dart
+  /// "Nothing needs restock"
+  /// ```
+  String get nothingNeedsRestock => """Nothing needs restock""";
 }
 
 class WatchMessages {
@@ -10423,6 +10443,8 @@ Password: pantry-rocks""",
   """wear.accent""": """Accent""",
   """wear.accentServer""": """Your Nextcloud color""",
   """wear.accentApp""": """Pantry color""",
+  """wear.stockClose""": """Done adjusting""",
+  """wear.nothingNeedsRestock""": """Nothing needs restock""",
   """watch.title""": """Watch""",
   """watch.requestWarning""":
       """Only allow this if the watch is yours. It gets the same access to your household as this phone.""",

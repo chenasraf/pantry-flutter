@@ -6,11 +6,14 @@ import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/utils/date_format.dart';
 import 'package:pantry_core/utils/quantity.dart';
+import 'package:pantry_core/utils/stock_display.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry/theme/app_theme.dart';
 
 import 'stock_link_parts.dart';
+
+export 'package:pantry_core/utils/stock_display.dart';
 
 /// What an inventory row can change on its own, without opening the item.
 /// A null callback disables that control.
@@ -51,20 +54,6 @@ class RenewExpiryChip extends StatelessWidget {
   }
 }
 
-enum StockTone { success, warning, error, muted }
-
-StockTone stockToneOf(ListItem item) {
-  final stock = item.stockStatus ?? StockStatus.ok;
-  final expiry = item.expiryStatus ?? ExpiryStatus.none;
-  if (stock == StockStatus.out || expiry == ExpiryStatus.expired) {
-    return StockTone.error;
-  }
-  if (stock == StockStatus.low || expiry == ExpiryStatus.expiring) {
-    return StockTone.warning;
-  }
-  return stock == StockStatus.uncounted ? StockTone.muted : StockTone.success;
-}
-
 Color stockToneColor(BuildContext context, StockTone tone) {
   final surfaces = AppSurfaces.of(context);
   final cs = Theme.of(context).colorScheme;
@@ -74,101 +63,6 @@ Color stockToneColor(BuildContext context, StockTone tone) {
     StockTone.error => cs.error,
     StockTone.muted => cs.onSurfaceVariant,
   };
-}
-
-String stockLevelName(StockLevel level) => switch (level) {
-  StockLevel.full => m.stock.full,
-  StockLevel.low => m.stock.low,
-  StockLevel.out => m.stock.out,
-};
-
-/// On hand as the stepper reads it: a blank on hand is 0, in the target's
-/// wording when the target has a number.
-String effectiveOnHand(ListItem item) {
-  final onHand = (item.quantity ?? '').trim();
-  if (onHand.isNotEmpty) return onHand;
-  final target = (item.target ?? '').trim();
-  return firstNumber(target) != null ? withNumber(target, 0) : '0';
-}
-
-/// The on-hand text with its first number swapped for [value], for a typed or
-/// held amount.
-String onHandWith(ListItem item, num value) =>
-    withNumber(effectiveOnHand(item), value);
-
-typedef StockChipSpec = ({String label, StockTone? tone});
-
-/// The status chips of an inventory row, most urgent first. A null tone is a
-/// neutral chip.
-List<StockChipSpec> stockStatusChips(ListItem item, {int? today}) {
-  final stock = item.stockStatus ?? StockStatus.ok;
-  final expiry = item.expiryStatus ?? ExpiryStatus.none;
-  final fields = item.stockFields;
-  final out = <StockChipSpec>[];
-  if (stock.isShort) {
-    final low = stock == StockStatus.low;
-    final shortfall = item.shortfall;
-    // While expiry asks for the shopping row, it names the amount.
-    final label = expiry.isDue || shortfall == null
-        ? (low ? m.stock.low : m.stock.out)
-        : (low ? m.stock.lowBuy(shortfall) : m.stock.outBuy(shortfall));
-    out.add((label: label, tone: low ? StockTone.warning : StockTone.error));
-  }
-  final expiresAt = item.expiresAt;
-  if (expiresAt != null && expiry != ExpiryStatus.none) {
-    final amount = fullAmount(fields);
-    final date = formatShortDate(expiresAt);
-    switch (expiry) {
-      case ExpiryStatus.expired:
-        out.add((
-          label: amount == null
-              ? m.stock.expiredOn(date)
-              : m.stock.expiredOnBuy(date, amount),
-          tone: StockTone.error,
-        ));
-      case ExpiryStatus.expiring:
-        final days = daysUntil(expiresAt, today ?? todayEpoch());
-        final label = switch (days) {
-          <= 0 =>
-            amount == null
-                ? m.stock.expiresToday
-                : m.stock.expiresTodayBuy(amount),
-          1 =>
-            amount == null
-                ? m.stock.expiresTomorrow
-                : m.stock.expiresTomorrowBuy(amount),
-          _ =>
-            amount == null
-                ? m.stock.expiresInDays(days)
-                : m.stock.expiresInDaysBuy(days, amount),
-        };
-        out.add((label: label, tone: StockTone.warning));
-      case ExpiryStatus.ok:
-        out.add((label: m.stock.goodUntil(date), tone: null));
-      case ExpiryStatus.none:
-        break;
-    }
-  }
-  if (stock == StockStatus.uncounted) {
-    out.add((label: m.stock.notCounted, tone: null));
-  }
-  return out;
-}
-
-/// The row's status spelled out, for the status icon's tooltip and screen
-/// readers.
-String stockStatusDescription(ListItem item) {
-  final chips = stockStatusChips(item);
-  return chips.isEmpty ? m.stock.inStock : chips.map((c) => c.label).join(', ');
-}
-
-/// "4 / 12 eggs": on hand's number over the target's text.
-String stockAmountLabel(ListItem item) {
-  final onHand = effectiveOnHand(item);
-  final number = firstNumber(onHand);
-  final target = (item.target ?? '').trim();
-  final shown = number != null ? formatNumber(number) : onHand;
-  return target.isEmpty ? shown : m.stock.amount(shown, target);
 }
 
 class StockStatusChip extends StatelessWidget {

@@ -1627,6 +1627,12 @@ wear:
   accent: צבע הדגשה
   accentServer: צבע ה־Nextcloud שלך
   accentApp: צבע Pantry
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockRaised(String amount): "+$amount"
+  # TRANSLATORS: {amount} is the amount on hand that changed, in the item's own wording, e.g. "3 eggs". Keep the sign in front of it.
+  stockLowered(String amount): "−$amount"
+  stockClose: סיום עדכון
+  nothingNeedsRestock: אין פריטים שצריך להשלים
 
 watch:
   title: שעון

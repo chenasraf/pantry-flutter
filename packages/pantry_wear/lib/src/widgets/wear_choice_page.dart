@@ -17,11 +17,17 @@ class WearChoice<T> {
   final IconData? icon;
   final Color tint;
 
+  /// A count drawn on the row's trailing edge, and what it is read out as.
+  final String? badge;
+  final String? badgeLabel;
+
   const WearChoice({
     required this.value,
     required this.label,
     this.icon,
     this.tint = Colors.white70,
+    this.badge,
+    this.badgeLabel,
   });
 }
 
@@ -238,6 +244,8 @@ class _ChoiceList<T> extends StatelessWidget {
                           label: choices[i].label,
                           checkbox: checkbox,
                           selected: isSelected(choices[i]),
+                          badge: choices[i].badge,
+                          badgeLabel: choices[i].badgeLabel,
                           distance: d,
                           onTap: () => onTap(choices[i]),
                         ),

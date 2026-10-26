@@ -8492,6 +8492,26 @@ class WearMessagesNn extends WearMessages {
   /// "Pantry-fargen"
   /// ```
   String get accentApp => """Pantry-fargen""";
+
+  /// ```dart
+  /// "+$amount"
+  /// ```
+  String stockRaised(String amount) => """+$amount""";
+
+  /// ```dart
+  /// "−$amount"
+  /// ```
+  String stockLowered(String amount) => """−$amount""";
+
+  /// ```dart
+  /// "Ferdig med å justere"
+  /// ```
+  String get stockClose => """Ferdig med å justere""";
+
+  /// ```dart
+  /// "Ingenting treng påfyll"
+  /// ```
+  String get nothingNeedsRestock => """Ingenting treng påfyll""";
 }
 
 class WatchMessagesNn extends WatchMessages {
@@ -10472,6 +10492,8 @@ Passord: pantry""",
   """wear.accent""": """Aksentfarge""",
   """wear.accentServer""": """Nextcloud-fargen din""",
   """wear.accentApp""": """Pantry-fargen""",
+  """wear.stockClose""": """Ferdig med å justere""",
+  """wear.nothingNeedsRestock""": """Ingenting treng påfyll""",
   """watch.title""": """Klokke""",
   """watch.requestWarning""":
       """Tillat berre dette om klokka er di. Ho får same tilgang til husstanden som denne telefonen.""",

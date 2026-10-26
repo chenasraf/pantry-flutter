@@ -5,11 +5,13 @@ import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
+import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/member.dart';
 import 'package:pantry_core/models/shopping_presence_entry.dart';
 import 'package:pantry_core/models/shopping_reminder.dart';
 import 'package:pantry_core/models/shopping_review.dart';
 import 'package:pantry_core/models/shopping_session.dart';
+import 'package:pantry_core/models/stock.dart';
 import 'package:pantry_core/models/store.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/category_service.dart';
@@ -24,6 +26,8 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/currencies.dart';
+import 'package:pantry_core/utils/stock_display.dart';
+import 'package:pantry_core/utils/stock_rules.dart';
 
 import '../scope/wear_scope.dart';
 import '../services/wear_mirror_client.dart';
@@ -58,6 +62,7 @@ class ChecklistsController extends ChangeNotifier {
     required int houseId,
     ChecklistList? list,
     List<ChecklistList> lists = const [],
+    List<ChecklistList> inventories = const [],
     List<ListItem> items = const [],
     List<ListItem> done = const [],
     List<ListItem> removed = const [],
@@ -76,6 +81,7 @@ class ChecklistsController extends ChangeNotifier {
     _houseId = houseId;
     _list = list;
     _lists = lists;
+    _inventories = inventories;
     _items = items;
     _done = done;
     _removed = removed;
@@ -118,7 +124,20 @@ class ChecklistsController extends ChangeNotifier {
   ChecklistList? get list => _list;
 
   List<ChecklistList> _lists = const [];
+
+  /// The house's checklists. Inventories are kept apart in [inventories]:
+  /// the Tile, trips and the all-lists view only ever deal in checklists.
   List<ChecklistList> get lists => _lists;
+
+  List<ChecklistList> _inventories = const [];
+
+  /// The house's inventories, each carrying its needs-restock count. Empty on
+  /// servers without inventory stock.
+  List<ChecklistList> get inventories => _inventories;
+
+  /// Whether the list being browsed is an inventory, whose rows adjust stock
+  /// instead of being checked off.
+  bool get isInventory => _list?.kind == ListKind.inventory;
 
   ShoppingSession? _session;
   ShoppingSession? get session => _session;
@@ -234,8 +253,11 @@ class ChecklistsController extends ChangeNotifier {
   /// picker that *sets* the pref, and the watch has no picker. A house whose
   /// pref already says `store` is grouped by store, the same way the phone
   /// renders it.
+  ///
+  /// An inventory is always in category order, so status filtering never moves
+  /// a row between groups.
   ChecklistGrouping get grouping =>
-      _itemSort == 'store' && mode == ChecklistMode.browse
+      _itemSort == 'store' && mode == ChecklistMode.browse && !isInventory
       ? ChecklistGrouping.store
       : ChecklistGrouping.category;
 
@@ -292,7 +314,7 @@ class ChecklistsController extends ChangeNotifier {
   /// The list a row is on. A house holds a handful, so the scan costs less
   /// than the map it would otherwise be kept in.
   ChecklistList? listOf(ListItem item) {
-    for (final l in _lists) {
+    for (final l in [..._lists, ..._inventories]) {
       if (l.id == item.listId) return l;
     }
     return null;
@@ -488,6 +510,10 @@ class ChecklistsController extends ChangeNotifier {
     };
     _restoreHousePrefs(house);
     _lists = _checklists.getCachedLists(house) ?? const [];
+    _inventories = ServerFeature.inventoryStock
+        ? _checklists.getCachedListsOfKind(house, ListKind.inventory) ??
+              const []
+        : const [];
     _reminders = _shopping.getCachedReminders(house) ?? _reminders;
     // The cache is where the trip lives, and memory is a projection of it —
     // every writer records the trip before this runs. A watch's process dies
@@ -500,7 +526,7 @@ class ChecklistsController extends ChangeNotifier {
     _mirror.setSession(session?.id);
     _adoptCachedStoreCategoryOrder(session?.activeStoreId);
     if (session == null) {
-      final listId = await _scope.resolveList(_lists) ?? _scope.listId;
+      final listId = await _scope.resolveList(_browsable) ?? _scope.listId;
       _list = _listFor(listId, house);
       if (listId != null) _itemSort = _checklists.cachedItemSort(house, listId);
       _applyItems(_cachedItems(listId));
@@ -568,11 +594,14 @@ class ChecklistsController extends ChangeNotifier {
         updatedAt: 0,
       );
     }
-    for (final l in _lists) {
+    for (final l in _browsable) {
       if (l.id == id) return l;
     }
     return null;
   }
+
+  /// Every list the switcher offers, checklists first.
+  List<ChecklistList> get _browsable => [..._lists, ..._inventories];
 
   /// The all-lists view has no cache key of its own: it is the union of the
   /// per-list snapshots, which is exactly what a fetch writes back.
@@ -857,10 +886,14 @@ class ChecklistsController extends ChangeNotifier {
     // once, from all of it.
     final references = _loadReferenceSets();
     try {
-      final lists = await _checklists.getLists(house);
+      final (lists, inventories) = await (
+        _checklists.getLists(house),
+        _fetchInventories(house),
+      ).wait;
       _lists = lists;
       _checklists.cacheLists(house, lists);
-      final listId = await _scope.resolveList(lists) ?? _scope.listId;
+      if (inventories != null) _inventories = inventories;
+      final listId = await _scope.resolveList(_browsable) ?? _scope.listId;
       _list = _listFor(listId, house);
       _publishTile();
     } catch (_) {}
@@ -886,6 +919,25 @@ class ChecklistsController extends ChangeNotifier {
       _applyItems(overlaid);
     } catch (_) {}
     await Future.wait([references, sort]);
+  }
+
+  /// The house's inventories, or null when the server has none to give or
+  /// could not be reached — which keeps the cached ones on the switcher.
+  Future<List<ChecklistList>?> _fetchInventories(int house) async {
+    if (!ServerFeature.inventoryStock) {
+      _inventories = const [];
+      return null;
+    }
+    try {
+      final inventories = await _checklists.getLists(
+        house,
+        kind: ListKind.inventory,
+      );
+      _checklists.cacheListsOfKind(house, ListKind.inventory, inventories);
+      return inventories;
+    } catch (_) {
+      return null;
+    }
   }
 
   /// The list's own sort, on servers that keep one per list. A failed read
@@ -1024,9 +1076,10 @@ class ChecklistsController extends ChangeNotifier {
     }
     final resolved = [
       for (final item in fetched)
-        _doneOverride.containsKey(item.id)
-            ? item.copyWith(done: _doneOverride[item.id])
-            : item,
+        _heldStock[item.id] ??
+            (_doneOverride.containsKey(item.id)
+                ? item.copyWith(done: _doneOverride[item.id])
+                : item),
     ];
     _items = [
       for (final i in resolved)
@@ -1036,6 +1089,7 @@ class ChecklistsController extends ChangeNotifier {
       for (final i in resolved)
         if (i.done) i,
     ];
+    _recountNeedsRestock();
   }
 
   /// Whether the server answered the last request that reached it. What the
@@ -1305,6 +1359,136 @@ class ChecklistsController extends ChangeNotifier {
     }
   }
 
+  // -- Adjusting stock -------------------------------------------------------
+
+  /// Stock the wearer has changed but not yet written: an open row, or a
+  /// closed one whose undo window is still draining. A poll landing meanwhile
+  /// must not put the server's older numbers back under the wearer's thumb.
+  final _heldStock = <int, ListItem>{};
+
+  /// What each held item was before its row was opened, which is what the
+  /// net change is measured from and what undo puts back.
+  final _stockBefore = <int, ListItem>{};
+
+  /// Show [item] at [quantity] or [level] without writing anything. Each step
+  /// is applied to the item as it was when its row opened, so a raise from
+  /// empty that a later step takes back takes its renewed expiry with it.
+  void stepStock(ListItem item, {String? quantity, StockLevel? level}) {
+    final before = _stockBefore.putIfAbsent(item.id, () => item);
+    final today = todayEpoch();
+    var after = before.copyWith(
+      quantity: quantity,
+      stockLevel: level,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    );
+    // The server renews the date itself on a raise from empty; mirroring it
+    // keeps the detail page from showing the date the restock replaced.
+    if (isStockEmpty(before.stockFields) && !isStockEmpty(after.stockFields)) {
+      final renewed = renewedExpiry(after.shelfLifeDays, today);
+      after = after.copyWith(
+        expiresAt: renewed,
+        clearExpiresAt: renewed == null,
+      );
+    }
+    after = after.withLocalStock(
+      leadDays: _leadDaysFor(after.listId),
+      today: today,
+    );
+    _heldStock[item.id] = after;
+    _replaceItem(after);
+    _emit();
+  }
+
+  /// End the visit to [itemId]'s row. Null when it ended where it began,
+  /// which writes nothing; the row is put back exactly as it was.
+  StockChange? closeStock(int itemId) {
+    final before = _stockBefore[itemId];
+    final after = _heldStock[itemId];
+    if (before == null || after == null) return null;
+    final change = StockChange(before: before, after: after);
+    if (!change.isNone) return change;
+    _release(itemId);
+    _replaceItem(before);
+    _emit();
+    return null;
+  }
+
+  /// Queue [change] as one write.
+  void commitStock(StockChange change) {
+    final house = _houseId;
+    final item = change.before;
+    _release(item.id);
+    if (house == null) return;
+    final current = _itemById(item.id) ?? change.after;
+    _writeThrough(current);
+    _sync.enqueue(
+      SyncOp(
+        uuid: SyncIds.newOpUuid(),
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.update,
+        houseId: house,
+        parentId: item.listId,
+        entityId: item.id < 0 ? null : item.id,
+        tempEntityId: item.id < 0 ? item.id : null,
+        body: change.isLevel
+            ? {'stockLevel': change.after.stockLevel?.wire}
+            : {'quantity': change.after.quantity},
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+  }
+
+  /// Put the item back as it was before its row opened, writing nothing.
+  void revertStock(StockChange change) {
+    _release(change.before.id);
+    _replaceItem(change.before);
+    _emit();
+  }
+
+  void _release(int itemId) {
+    _heldStock.remove(itemId);
+    _stockBefore.remove(itemId);
+  }
+
+  ListItem? _itemById(int id) {
+    for (final item in _items) {
+      if (item.id == id) return item;
+    }
+    return null;
+  }
+
+  void _replaceItem(ListItem item) {
+    _items = [for (final i in _items) i.id == item.id ? item : i];
+    _recountNeedsRestock();
+  }
+
+  int _leadDaysFor(int listId) {
+    for (final l in _inventories) {
+      if (l.id == listId) return l.expiryLeadDays ?? defaultExpiryLeadDays;
+    }
+    return defaultExpiryLeadDays;
+  }
+
+  /// Keeps the switcher's counter in step with the rows on screen, which only
+  /// the inventory being browsed holds in full.
+  void _recountNeedsRestock() {
+    final list = _list;
+    if (list == null || list.kind != ListKind.inventory) return;
+    final count = _items
+        .where((i) => i.listId == list.id && i.needsStockRestock)
+        .length;
+    if (count == list.needsRestock) return;
+    final recounted = list.copyWith(needsRestock: count);
+    _list = recounted;
+    _inventories = [
+      for (final l in _inventories) l.id == list.id ? recounted : l,
+    ];
+    final house = _houseId;
+    if (house != null) {
+      _checklists.cacheListsOfKind(house, ListKind.inventory, _inventories);
+    }
+  }
+
   // -- Reconciling with the queue -------------------------------------------
 
   void _onApplied(SyncOpApplied event) {
@@ -1326,3 +1510,34 @@ class ChecklistsController extends ChangeNotifier {
 }
 
 enum _Collection { items, done, removed }
+
+/// One visit to an inventory row: the item before it was opened and after it
+/// was closed.
+@immutable
+class StockChange {
+  final ListItem before;
+  final ListItem after;
+
+  const StockChange({required this.before, required this.after});
+
+  bool get isLevel => before.stockMode == StockMode.level;
+
+  /// A blank on hand and "0 eggs" are the same amount, so a run of steps that
+  /// comes back to where it started is no change at all.
+  bool get isNone => isLevel
+      ? (before.stockLevel ?? StockLevel.full) ==
+            (after.stockLevel ?? StockLevel.full)
+      : effectiveOnHand(before) == effectiveOnHand(after);
+
+  /// The change as the undo window names it: "+3 eggs", "−2 eggs", or the
+  /// new level.
+  String get label {
+    if (isLevel) return stockLevelName(after.stockLevel ?? StockLevel.full);
+    final from = firstNumber(effectiveOnHand(before)) ?? 0;
+    final to = firstNumber(effectiveOnHand(after)) ?? 0;
+    final amount = withNumber(effectiveOnHand(after), (to - from).abs());
+    return to >= from
+        ? m.wear.stockRaised(amount)
+        : m.wear.stockLowered(amount);
+  }
+}
