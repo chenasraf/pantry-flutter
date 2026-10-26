@@ -233,18 +233,85 @@ void main() {
       expect(controller.currentList!.id, shelf);
       expect(controller.currentList!.needsRestock, 2);
 
-      await controller.setOnHand(byId(controller, eggs), '4 eggs');
+      controller.setOnHand(byId(controller, eggs), '4 eggs');
       final local = byId(controller, eggs);
       expect(local.stockStatus, StockStatus.low);
       expect(local.shortfall, '8 eggs');
       expect(controller.currentList!.needsRestock, 3);
 
+      await tester.pump(const Duration(seconds: 1));
       await manager.flushNow();
       await tester.pump();
       final body =
           jsonDecode(hits('PATCH', '/items/$eggs').single.body)
               as Map<String, dynamic>;
       expect(body, {'quantity': '4 eggs'});
+
+      await quiesce(tester);
+    });
+  });
+
+  testWidgets('a run of steps goes out as one write once they pause', (
+    tester,
+  ) async {
+    await withServer(() async {
+      final controller = await opened(tester);
+
+      controller.setOnHand(byId(controller, eggs), '11 eggs');
+      await tester.pump(const Duration(milliseconds: 300));
+      controller.setOnHand(byId(controller, eggs), '10 eggs');
+      await tester.pump(const Duration(milliseconds: 300));
+      controller.setOnHand(byId(controller, eggs), '9 eggs');
+      expect(byId(controller, eggs).quantity, '9 eggs');
+      expect(hits('PATCH', '/items/$eggs'), isEmpty);
+
+      await tester.pump(const Duration(seconds: 1));
+      await manager.flushNow();
+      await tester.pump();
+      final bodies = hits(
+        'PATCH',
+        '/items/$eggs',
+      ).map((r) => jsonDecode(r.body)).toList();
+      expect(bodies, [
+        {'quantity': '9 eggs'},
+      ]);
+
+      await quiesce(tester);
+    });
+  });
+
+  testWidgets('steps that end where they started send nothing', (tester) async {
+    await withServer(() async {
+      final controller = await opened(tester);
+
+      controller.setOnHand(byId(controller, eggs), '11 eggs');
+      controller.setOnHand(byId(controller, eggs), '12 eggs');
+      expect(byId(controller, eggs).quantity, '12 eggs');
+
+      await tester.pump(const Duration(seconds: 1));
+      await manager.flushNow();
+      await tester.pump();
+      expect(hits('PATCH', '/items/$eggs'), isEmpty);
+
+      await quiesce(tester);
+    });
+  });
+
+  testWidgets('another edit sends a waiting step first', (tester) async {
+    await withServer(() async {
+      final controller = await opened(tester);
+
+      controller.setOnHand(byId(controller, eggs), '11 eggs');
+      await controller.updateItem(byId(controller, eggs), name: 'Big eggs');
+      expect(byId(controller, eggs).quantity, '11 eggs');
+      expect(byId(controller, eggs).name, 'Big eggs');
+
+      await manager.flushNow();
+      await tester.pump();
+      final merged = hits('PATCH', '/items/$eggs')
+          .map((r) => jsonDecode(r.body) as Map)
+          .fold<Map>({}, (a, b) => a..addAll(b));
+      expect(merged, {'quantity': '11 eggs', 'name': 'Big eggs'});
 
       await quiesce(tester);
     });
@@ -257,12 +324,13 @@ void main() {
       final controller = await opened(tester);
       expect(byId(controller, milk).expiryStatus, ExpiryStatus.none);
 
-      await controller.setOnHand(byId(controller, milk), '1');
+      controller.setOnHand(byId(controller, milk), '1');
       final local = byId(controller, milk);
       expect(local.expiresAt, addDays(today, 7));
       expect(local.stockStatus, StockStatus.low);
       expect(local.expiryStatus, ExpiryStatus.ok);
 
+      await tester.pump(const Duration(seconds: 1));
       await manager.flushNow();
       await tester.pump();
       final body =
@@ -280,9 +348,10 @@ void main() {
       patchStatus = 409;
       final fetchesBefore = hits('GET', '/inventories/$shelf/items').length;
 
-      await controller.setStockLevel(byId(controller, flour), StockLevel.full);
+      controller.setStockLevel(byId(controller, flour), StockLevel.full);
       expect(byId(controller, flour).stockStatus, StockStatus.ok);
 
+      await tester.pump(const Duration(seconds: 1));
       await manager.flushNow();
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 100));

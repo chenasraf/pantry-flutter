@@ -10,16 +10,98 @@ extension ChecklistsControllerStock on ChecklistsController {
       _lists.where((l) => l.id == listId).firstOrNull?.expiryLeadDays ??
       defaultExpiryLeadDays;
 
-  Future<void> setOnHand(ListItem item, String quantity) async {
+  void setOnHand(ListItem item, String quantity) {
     if (quantity == (item.quantity ?? '')) return;
-    final after = await updateItem(item, quantity: quantity);
-    _offerRenewal(item, after);
+    _stageStockWrite(item, quantity: quantity);
   }
 
-  Future<void> setStockLevel(ListItem item, StockLevel level) async {
+  void setStockLevel(ListItem item, StockLevel level) {
     if (level == item.stockLevel) return;
-    final after = await updateItem(item, stockLevel: level);
-    _offerRenewal(item, after);
+    _stageStockWrite(item, level: level);
+  }
+
+  /// Steps and level taps show at once but reach the server only once the
+  /// member pauses: every write the server takes can notify the household,
+  /// so a run of taps goes out as one write, and a run that ends where it
+  /// started sends none.
+  void _stageStockWrite(ListItem item, {String? quantity, StockLevel? level}) {
+    final index = _items.indexWhere((i) => i.id == item.id);
+    if (index == -1) {
+      unawaited(
+        updateItem(
+          item,
+          quantity: quantity,
+          stockLevel: level,
+        ).then((after) => _offerRenewal(item, after)),
+      );
+      return;
+    }
+    final staged = _stagedStock.remove(item.id);
+    staged?.timer.cancel();
+    final before = staged?.before ?? _items[index];
+    final nextQuantity = quantity ?? staged?.quantity;
+    final nextLevel = level ?? staged?.level;
+    _renewOffers.remove(item.id);
+
+    final unchanged =
+        (nextQuantity == null || nextQuantity == (before.quantity ?? '')) &&
+        (nextLevel == null || nextLevel == before.stockLevel);
+    if (unchanged) {
+      _items[index] = before;
+    } else {
+      // Built from the item before the run, so a renewal an earlier step
+      // implied goes away again when a later step takes it back.
+      final after = _withLocalStock(
+        before,
+        before.copyWith(
+          quantity: nextQuantity,
+          stockLevel: nextLevel,
+          updatedAt: _now(),
+        ),
+        raisesFromEmpty: true,
+      );
+      _items[index] = after;
+      _stagedStock[item.id] = (
+        before: before,
+        quantity: nextQuantity,
+        level: nextLevel,
+        timer: Timer(
+          ChecklistsController._stockWriteDelay,
+          () => _sendStagedStock(item.id, keepOffer: true),
+        ),
+      );
+      final date = ServerFeature.inventoryStock
+          ? renewOffer(before.stockFields, after.stockFields, todayEpoch())
+          : null;
+      if (date != null) _renewOffers[item.id] = date;
+    }
+    _cacheVisibleItems(item.listId);
+    notifyListeners();
+  }
+
+  /// Sends [itemId]'s staged stock write now, if it has one. The renew offer
+  /// staging made stays up unless another edit is what sends it.
+  void _sendStagedStock(int itemId, {bool keepOffer = false}) {
+    final staged = _stagedStock.remove(itemId);
+    if (staged == null) return;
+    staged.timer.cancel();
+    // Deleted or moved away while the write waited.
+    if (!_items.any((i) => i.id == itemId)) return;
+    final offer = _renewOffers[itemId];
+    unawaited(
+      updateItem(
+        staged.before,
+        quantity: staged.quantity,
+        stockLevel: staged.level,
+      ),
+    );
+    if (keepOffer && offer != null) _renewOffers[itemId] = offer;
+  }
+
+  void _sendAllStagedStock() {
+    for (final id in _stagedStock.keys.toList()) {
+      _sendStagedStock(id);
+    }
   }
 
   /// The date the open renew offer on [item] would set its expiry to.

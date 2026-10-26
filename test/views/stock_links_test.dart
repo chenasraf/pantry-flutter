@@ -601,7 +601,7 @@ void main() {
       eggsOnServer = eggsItem(expiresAt: addDays(today, 1), shelfLifeDays: 10);
       await withServer(() async {
         final controller = await opened(tester);
-        await controller.setOnHand(byId(controller, eggs), '5 eggs');
+        controller.setOnHand(byId(controller, eggs), '5 eggs');
         expect(
           controller.renewOfferFor(byId(controller, eggs)),
           addDays(today, 10),
@@ -627,7 +627,7 @@ void main() {
       eggsOnServer = eggsItem(expiresAt: addDays(today, 1), shelfLifeDays: 10);
       await withServer(() async {
         final controller = await opened(tester);
-        await controller.setOnHand(byId(controller, eggs), '5 eggs');
+        controller.setOnHand(byId(controller, eggs), '5 eggs');
         await controller.updateItem(byId(controller, eggs), name: 'Big eggs');
         expect(controller.renewOfferFor(byId(controller, eggs)), isNull);
 

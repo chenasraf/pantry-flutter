@@ -345,6 +345,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     int? expiresAt,
     int? shelfLifeDays,
   }) async {
+    _sendStagedStock(item.id);
     _renewOffers.remove(item.id);
     var updated = item.copyWith(
       name: name,

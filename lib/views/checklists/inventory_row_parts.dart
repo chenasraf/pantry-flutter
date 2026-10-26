@@ -242,6 +242,9 @@ class StockGauge extends StatelessWidget {
 
   final ListItem item;
 
+  static const _gaugeDuration = Duration(milliseconds: 300);
+  static const _gaugeCurve = Curves.easeOutCubic;
+
   static bool showsFor(ListItem item) =>
       item.stockStatus != StockStatus.uncounted;
 
@@ -269,7 +272,9 @@ class StockGauge extends StatelessWidget {
             for (var i = 0; i < 3; i++) ...[
               if (i > 0) const SizedBox(width: 3),
               Expanded(
-                child: DecoratedBox(
+                child: AnimatedContainer(
+                  duration: _gaugeDuration,
+                  curve: _gaugeCurve,
                   decoration: BoxDecoration(
                     color: i < filled ? color : track,
                     borderRadius: BorderRadius.circular(height),
@@ -298,7 +303,9 @@ class StockGauge extends StatelessWidget {
                   borderRadius: BorderRadius.circular(height),
                 ),
               ),
-              Container(
+              AnimatedContainer(
+                duration: _gaugeDuration,
+                curve: _gaugeCurve,
                 width: width * fill,
                 height: height,
                 decoration: BoxDecoration(

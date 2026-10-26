@@ -118,6 +118,16 @@ class ChecklistsController extends ChangeNotifier {
   /// take. See [renewOfferFor].
   final Map<int, int> _renewOffers = {};
 
+  static const _stockWriteDelay = Duration(milliseconds: 800);
+
+  /// Stock changes shown on screen whose write waits for the member to pause,
+  /// with the item as it was before the first of them.
+  final Map<
+    int,
+    ({ListItem before, String? quantity, StockLevel? level, Timer timer})
+  >
+  _stagedStock = {};
+
   /// A tick or uncheck changed stock that the inventory in view may not show
   /// yet; it reloads once the queue drains.
   bool _stockChangedElsewhere = false;
@@ -174,6 +184,7 @@ class ChecklistsController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _sendAllStagedStock();
     _disposed = true;
     _appliedSub?.cancel();
     _skippedSub?.cancel();
@@ -837,6 +848,7 @@ class ChecklistsController extends ChangeNotifier {
   }) async {
     final previousListId = _currentList?.id;
     if (previousListId != list.id) {
+      _sendAllStagedStock();
       _resetTemplateSuggestions();
       _renewOffers.clear();
     }
