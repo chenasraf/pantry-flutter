@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart'
+    show AppLifecycleListener, AppLifecycleState;
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/category.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
@@ -63,7 +65,16 @@ class ChecklistsController extends ChangeNotifier {
     // signal that the set of waiting images may have changed.
     SyncManager.instance.pendingCount.addListener(_onQueueLengthChanged);
     unawaited(_refreshPendingItemImages());
+    // A backgrounded app may be killed before a staged stock write's delay
+    // runs out, which would lose it.
+    _lifecycle = AppLifecycleListener(
+      onStateChange: (state) {
+        if (state != AppLifecycleState.resumed) _sendAllStagedStock();
+      },
+    );
   }
+
+  late final AppLifecycleListener _lifecycle;
 
   /// True when the synthetic "All lists" entry is selected.
   bool get isMetaMode => _currentList?.id == kAllListsId;
@@ -189,6 +200,7 @@ class ChecklistsController extends ChangeNotifier {
     _appliedSub?.cancel();
     _skippedSub?.cancel();
     _reconnectSub?.cancel();
+    _lifecycle.dispose();
     SyncManager.instance.pendingCount.removeListener(_onQueueLengthChanged);
     super.dispose();
   }

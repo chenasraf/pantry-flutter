@@ -297,6 +297,32 @@ void main() {
     });
   });
 
+  testWidgets('leaving the app sends a waiting step at once', (tester) async {
+    await withServer(() async {
+      final controller = await opened(tester);
+      addTearDown(
+        () => tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        ),
+      );
+
+      controller.setOnHand(byId(controller, eggs), '11 eggs');
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+
+      await manager.flushNow();
+      await tester.pump();
+      final bodies = hits(
+        'PATCH',
+        '/items/$eggs',
+      ).map((r) => jsonDecode(r.body)).toList();
+      expect(bodies, [
+        {'quantity': '11 eggs'},
+      ]);
+
+      await quiesce(tester);
+    });
+  });
+
   testWidgets('another edit sends a waiting step first', (tester) async {
     await withServer(() async {
       final controller = await opened(tester);
