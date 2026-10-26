@@ -5542,6 +5542,41 @@ class StockMessages {
   CardStockMessages get card => CardStockMessages(this);
   ExpiryStockMessages get expiry => ExpiryStockMessages(this);
   ComposeStockMessages get compose => ComposeStockMessages(this);
+
+  /// ```dart
+  /// "This inventory has no restock checklist, so these items are only marked here. Pick one in the inventory settings."
+  /// ```
+  String get noRestockChecklist =>
+      """This inventory has no restock checklist, so these items are only marked here. Pick one in the inventory settings.""";
+
+  /// ```dart
+  /// "Renew expiry → $date"
+  /// ```
+  String renewChip(String date) => """Renew expiry → $date""";
+
+  /// ```dart
+  /// "Renew expiry"
+  /// ```
+  String get renewAction => """Renew expiry""";
+
+  /// ```dart
+  /// "Daily stock summary"
+  /// ```
+  String get summaryPref => """Daily stock summary""";
+
+  /// ```dart
+  /// "Once a day, what newly ran low or started expiring in this house's inventories."
+  /// ```
+  String get summaryPrefHint =>
+      """Once a day, what newly ran low or started expiring in this house's inventories.""";
+
+  /// ```dart
+  /// "Could not save the stock summary setting."
+  /// ```
+  String get summaryPrefFailed =>
+      """Could not save the stock summary setting.""";
+  LinksStockMessages get links => LinksStockMessages(this);
+  RestockStockMessages get restock => RestockStockMessages(this);
 }
 
 class SettingsStockMessages {
@@ -5588,6 +5623,44 @@ class SettingsStockMessages {
   /// "Set 0 to warn on the expiry date itself."
   /// ```
   String get warnHint => """Set 0 to warn on the expiry date itself.""";
+
+  /// ```dart
+  /// "Restock checklist"
+  /// ```
+  String get restockChecklist => """Restock checklist""";
+
+  /// ```dart
+  /// "None"
+  /// ```
+  String get restockNone => """None""";
+
+  /// ```dart
+  /// "Items that run low or start expiring are added to this checklist."
+  /// ```
+  String get restockSetHint =>
+      """Items that run low or start expiring are added to this checklist.""";
+
+  /// ```dart
+  /// "Without one, low and expiring items are only marked here."
+  /// ```
+  String get restockUnsetHint =>
+      """Without one, low and expiring items are only marked here.""";
+
+  /// ```dart
+  /// "Notifications"
+  /// ```
+  String get notifications => """Notifications""";
+
+  /// ```dart
+  /// "Daily stock summary"
+  /// ```
+  String get stockSummary => """Daily stock summary""";
+
+  /// ```dart
+  /// "Once a day, tell members what newly ran low or started expiring here. Each member can also turn it off in their personal settings."
+  /// ```
+  String get stockSummaryHint =>
+      """Once a day, tell members what newly ran low or started expiring here. Each member can also turn it off in their personal settings.""";
 
   /// ```dart
   /// "Cancel"
@@ -5913,6 +5986,364 @@ class ComposeStockMessages {
   /// "Full when empty"
   /// ```
   String get fullWhenEmpty => """Full when empty""";
+}
+
+class LinksStockMessages {
+  final StockMessages _parent;
+  const LinksStockMessages(this._parent);
+
+  /// ```dart
+  /// "Shopping list"
+  /// ```
+  String get caption => """Shopping list""";
+
+  /// ```dart
+  /// "Linked to $row on $list"
+  /// ```
+  String tooltipLinked(String row, String list) =>
+      """Linked to $row on $list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Not linked: 1 match, pick one', many: 'Not linked: $count matches, pick one')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'Not linked: 1 match, pick one', many: 'Not linked: $count matches, pick one')}""";
+
+  /// ```dart
+  /// "Not linked yet: added to the shopping list when low"
+  /// ```
+  String get tooltipAutoOn =>
+      """Not linked yet: added to the shopping list when low""";
+
+  /// ```dart
+  /// "Not linked: never added to a shopping list"
+  /// ```
+  String get tooltipAutoOff => """Not linked: never added to a shopping list""";
+
+  /// ```dart
+  /// "$row on $list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row on $list · $state""";
+
+  /// ```dart
+  /// "open"
+  /// ```
+  String get stateOpen => """open""";
+
+  /// ```dart
+  /// "checked"
+  /// ```
+  String get stateChecked => """checked""";
+
+  /// ```dart
+  /// "archived"
+  /// ```
+  String get stateArchived => """archived""";
+
+  /// ```dart
+  /// "in the trash"
+  /// ```
+  String get stateTrashed => """in the trash""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Unlink"
+  /// ```
+  String get unlink => """Unlink""";
+
+  /// ```dart
+  /// "Which one is it?"
+  /// ```
+  String get whichOne => """Which one is it?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "Add to shopping list when low"
+  /// ```
+  String get autoLink => """Add to shopping list when low""";
+
+  /// ```dart
+  /// "Link by hand"
+  /// ```
+  String get linkByHand => """Link by hand""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Not linked · 1 match, pick one', many: 'Not linked · $count matches, pick one')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'Not linked · 1 match, pick one', many: 'Not linked · $count matches, pick one')}""";
+
+  /// ```dart
+  /// "Not added to a shopping list"
+  /// ```
+  String get chipNotAdded => """Not added to a shopping list""";
+
+  /// ```dart
+  /// "Linked to $row on $list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """Linked to $row on $list · $state""";
+
+  /// ```dart
+  /// "Link to a different item …"
+  /// ```
+  String get linkDifferent => """Link to a different item …""";
+
+  /// ```dart
+  /// "When it runs low or starts expiring, this item is put back on that list."
+  /// ```
+  String get linkedHint =>
+      """When it runs low or starts expiring, this item is put back on that list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 item matches', many: '$count items match')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: '1 item matches', many: '$count items match')}""";
+
+  /// ```dart
+  /// "$matches on the restock checklist. Which one is this?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches on the restock checklist. Which one is this?""";
+
+  /// ```dart
+  /// "Link"
+  /// ```
+  String get link => """Link""";
+
+  /// ```dart
+  /// "Finds or adds "$item" on $list when it is needed."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """Finds or adds "$item" on $list when it is needed.""";
+
+  /// ```dart
+  /// "Pick a restock checklist in the inventory settings to find or add this item there."
+  /// ```
+  String get autoHintNoChecklist =>
+      """Pick a restock checklist in the inventory settings to find or add this item there.""";
+
+  /// ```dart
+  /// "This item is only marked here when it runs low."
+  /// ```
+  String get autoHintOff =>
+      """This item is only marked here when it runs low.""";
+
+  /// ```dart
+  /// "Link to an item …"
+  /// ```
+  String get linkToItem => """Link to an item …""";
+
+  /// ```dart
+  /// "Link to a checklist item"
+  /// ```
+  String get pickerTitle => """Link to a checklist item""";
+
+  /// ```dart
+  /// "Checklist item"
+  /// ```
+  String get pickerField => """Checklist item""";
+
+  /// ```dart
+  /// "Search checklist items …"
+  /// ```
+  String get pickerSearch => """Search checklist items …""";
+
+  /// ```dart
+  /// "Searching …"
+  /// ```
+  String get pickerSearching => """Searching …""";
+
+  /// ```dart
+  /// "No checklist items found"
+  /// ```
+  String get pickerEmpty => """No checklist items found""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "archived"
+  /// ```
+  String get pickerArchived => """archived""";
+
+  /// ```dart
+  /// "Could not load checklist items. Check your connection and try again."
+  /// ```
+  String get pickerFailed =>
+      """Could not load checklist items. Check your connection and try again.""";
+
+  /// ```dart
+  /// "Cancel"
+  /// ```
+  String get cancel => """Cancel""";
+}
+
+class RestockStockMessages {
+  final StockMessages _parent;
+  const RestockStockMessages(this._parent);
+
+  /// ```dart
+  /// "Added $what to $list"
+  /// ```
+  String added(String what, String list) => """Added $what to $list""";
+
+  /// ```dart
+  /// "Back on $list: $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """Back on $list: $row × $quantity""";
+
+  /// ```dart
+  /// "Back on $list: $row"
+  /// ```
+  String revived(String list, String row) => """Back on $list: $row""";
+
+  /// ```dart
+  /// "$list: $row now × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list: $row now × $quantity""";
+
+  /// ```dart
+  /// "$row on $list was set by hand, left at $quantity"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row on $list was set by hand, left at $quantity""";
+
+  /// ```dart
+  /// "$row on $list was set by hand, left as it is"
+  /// ```
+  String pinned(String row, String list) =>
+      """$row on $list was set by hand, left as it is""";
+
+  /// ```dart
+  /// "No longer needed: $row on $list"
+  /// ```
+  String recovered(String row, String list) =>
+      """No longer needed: $row on $list""";
+
+  /// ```dart
+  /// "Linked $item to $row on $list"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """Linked $item to $row on $list""";
+
+  /// ```dart
+  /// "Unlinked $item from $row on $list. It will not be added to a shopping list."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """Unlinked $item from $row on $list. It will not be added to a shopping list.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item matches 1 item on $list. Pick one to link.', many: '$item matches $count items on $list. Pick one to link.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item matches 1 item on $list. Pick one to link.', many: '$item matches $count items on $list. Pick one to link.')}""";
+
+  /// ```dart
+  /// "Restocked $parts"
+  /// ```
+  String restocked(String parts) => """Restocked $parts""";
+
+  /// ```dart
+  /// "Replaced $parts"
+  /// ```
+  String replaced(String parts) => """Replaced $parts""";
+
+  /// ```dart
+  /// "Restocked $restock, replaced $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """Restocked $restock, replaced $replace""";
+
+  /// ```dart
+  /// "Undid: restocked $parts"
+  /// ```
+  String undidRestocked(String parts) => """Undid: restocked $parts""";
+
+  /// ```dart
+  /// "Undid: replaced $parts"
+  /// ```
+  String undidReplaced(String parts) => """Undid: replaced $parts""";
+
+  /// ```dart
+  /// "Undid: restocked $restock, replaced $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """Undid: restocked $restock, replaced $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) to Full"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) to Full""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), Full"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), Full""";
+
+  /// ```dart
+  /// "$restock · uncheck to undo"
+  /// ```
+  String uncheckToUndo(String restock) => """$restock · uncheck to undo""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "Restocks $items"
+  /// ```
+  String restocks(String items) => """Restocks $items""";
+
+  /// ```dart
+  /// "× $quantity · set by hand"
+  /// ```
+  String setByHand(String quantity) => """× $quantity · set by hand""";
+
+  /// ```dart
+  /// "Set by hand"
+  /// ```
+  String get setByHandBare => """Set by hand""";
+
+  /// ```dart
+  /// "Set by hand. Tap to let stock set it."
+  /// ```
+  String get setByHandTooltip => """Set by hand. Tap to let stock set it.""";
+
+  /// ```dart
+  /// "No longer needed"
+  /// ```
+  String get noLongerNeeded => """No longer needed""";
 }
 
 class NotesWallMessages {
@@ -9532,6 +9963,16 @@ Password: pantry-rocks""",
   """stock.settings.expiryWarning""": """Expiry warning""",
   """stock.settings.daysBefore""": """Days before expiry""",
   """stock.settings.warnHint""": """Set 0 to warn on the expiry date itself.""",
+  """stock.settings.restockChecklist""": """Restock checklist""",
+  """stock.settings.restockNone""": """None""",
+  """stock.settings.restockSetHint""":
+      """Items that run low or start expiring are added to this checklist.""",
+  """stock.settings.restockUnsetHint""":
+      """Without one, low and expiring items are only marked here.""",
+  """stock.settings.notifications""": """Notifications""",
+  """stock.settings.stockSummary""": """Daily stock summary""",
+  """stock.settings.stockSummaryHint""":
+      """Once a day, tell members what newly ran low or started expiring here. Each member can also turn it off in their personal settings.""",
   """stock.settings.cancel""": """Cancel""",
   """stock.settings.save""": """Save""",
   """stock.card.title""": """Stock""",
@@ -9579,6 +10020,50 @@ Password: pantry-rocks""",
   """stock.compose.count""": """Count""",
   """stock.compose.level""": """Level""",
   """stock.compose.fullWhenEmpty""": """Full when empty""",
+  """stock.noRestockChecklist""":
+      """This inventory has no restock checklist, so these items are only marked here. Pick one in the inventory settings.""",
+  """stock.renewAction""": """Renew expiry""",
+  """stock.summaryPref""": """Daily stock summary""",
+  """stock.summaryPrefHint""":
+      """Once a day, what newly ran low or started expiring in this house's inventories.""",
+  """stock.summaryPrefFailed""":
+      """Could not save the stock summary setting.""",
+  """stock.links.caption""": """Shopping list""",
+  """stock.links.tooltipAutoOn""":
+      """Not linked yet: added to the shopping list when low""",
+  """stock.links.tooltipAutoOff""":
+      """Not linked: never added to a shopping list""",
+  """stock.links.stateOpen""": """open""",
+  """stock.links.stateChecked""": """checked""",
+  """stock.links.stateArchived""": """archived""",
+  """stock.links.stateTrashed""": """in the trash""",
+  """stock.links.unlink""": """Unlink""",
+  """stock.links.whichOne""": """Which one is it?""",
+  """stock.links.autoLink""": """Add to shopping list when low""",
+  """stock.links.linkByHand""": """Link by hand""",
+  """stock.links.chipNotAdded""": """Not added to a shopping list""",
+  """stock.links.linkDifferent""": """Link to a different item …""",
+  """stock.links.linkedHint""":
+      """When it runs low or starts expiring, this item is put back on that list.""",
+  """stock.links.link""": """Link""",
+  """stock.links.autoHintNoChecklist""":
+      """Pick a restock checklist in the inventory settings to find or add this item there.""",
+  """stock.links.autoHintOff""":
+      """This item is only marked here when it runs low.""",
+  """stock.links.linkToItem""": """Link to an item …""",
+  """stock.links.pickerTitle""": """Link to a checklist item""",
+  """stock.links.pickerField""": """Checklist item""",
+  """stock.links.pickerSearch""": """Search checklist items …""",
+  """stock.links.pickerSearching""": """Searching …""",
+  """stock.links.pickerEmpty""": """No checklist items found""",
+  """stock.links.pickerArchived""": """archived""",
+  """stock.links.pickerFailed""":
+      """Could not load checklist items. Check your connection and try again.""",
+  """stock.links.cancel""": """Cancel""",
+  """stock.restock.setByHandBare""": """Set by hand""",
+  """stock.restock.setByHandTooltip""":
+      """Set by hand. Tap to let stock set it.""",
+  """stock.restock.noLongerNeeded""": """No longer needed""",
   """notesWall.noNotes""": """No notes yet.""",
   """notesWall.failedToLoad""": """Failed to load notes.""",
   """notesWall.saveFailed""": """Failed to save note.""",

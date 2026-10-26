@@ -1068,6 +1068,13 @@ stock:
     warnBefore(String days): "Avertir $days jours avant la péremption"
     daysBefore: Jours avant la péremption
     warnHint: Indiquez 0 pour être averti le jour même de la péremption.
+    restockChecklist: Liste de réapprovisionnement
+    restockNone: Aucune
+    restockSetHint: Les articles qui s’épuisent ou arrivent à péremption sont ajoutés à cette liste de contrôle.
+    restockUnsetHint: Sans elle, les articles bas ou bientôt périmés sont seulement signalés ici.
+    notifications: Notifications
+    stockSummary: Résumé quotidien du stock
+    stockSummaryHint: Une fois par jour, indique aux membres ce qui vient de s’épuiser ou arrive à péremption ici. Chaque membre peut aussi le désactiver dans ses paramètres personnels.
     cancel: Annuler
     save: Enregistrer
   card:
@@ -1130,6 +1137,78 @@ stock:
     levelAmount(String amount): "Niveau · $amount"
     targetValue(String target): "Objectif : $target"
     fullWhenEmpty: Plein si vide
+  noRestockChecklist: Cet inventaire n’a pas de liste de réapprovisionnement, ces articles sont donc seulement signalés ici. Choisissez-en une dans les paramètres de l’inventaire.
+  renewChip(String date): "Renouveler la péremption → $date"
+  renewAction: Renouveler la péremption
+  summaryPref: Résumé quotidien du stock
+  summaryPrefHint: Une fois par jour, ce qui vient de s’épuiser ou arrive à péremption dans les inventaires de ce foyer.
+  summaryPrefFailed: Impossible d’enregistrer le réglage du résumé du stock.
+  links:
+    caption: Liste de courses
+    tooltipLinked(String row, String list): "Lié à $row sur $list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'Non lié : 1 correspondance, choisissez-en une', many: 'Non lié : $count correspondances, choisissez-en une')}"
+    tooltipAutoOn: "Pas encore lié : ajouté à la liste de courses quand il est bas"
+    tooltipAutoOff: "Non lié : jamais ajouté à une liste de courses"
+    rowOnList(String row, String list, String state): "$row sur $list · $state"
+    stateOpen: à faire
+    stateChecked: coché
+    stateArchived: archivé
+    stateTrashed: dans la corbeille
+    stateQuantity(String quantity): "× $quantity"
+    unlink: Délier
+    whichOne: Lequel est-ce ?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: Ajouter à la liste de courses quand il est bas
+    linkByHand: Lier à la main
+    chipNeedsPick(int count): "${_plural(count, one: 'Non lié · 1 correspondance, choisissez-en une', many: 'Non lié · $count correspondances, choisissez-en une')}"
+    chipNotAdded: Jamais ajouté à une liste de courses
+    cardLinked(String row, String list, String state): "Lié à $row sur $list · $state"
+    linkDifferent: Lier à un autre article …
+    linkedHint: Quand il s’épuise ou arrive à péremption, cet article revient sur cette liste.
+    matches(int count): "${_plural(count, one: '1 article correspond', many: '$count articles correspondent')}"
+    matchesQuestion(String matches): "$matches sur la liste de réapprovisionnement. Lequel est-ce ?"
+    link: Lier
+    autoHintOn(String item, String list): "Trouve ou ajoute « $item » sur $list quand il le faut."
+    autoHintNoChecklist: Choisissez une liste de réapprovisionnement dans les paramètres de l’inventaire pour y trouver ou ajouter cet article.
+    autoHintOff: Cet article est seulement signalé ici quand il est bas.
+    linkToItem: Lier à un article …
+    pickerTitle: Lier à un article de liste
+    pickerField: Article de liste
+    pickerSearch: Rechercher des articles …
+    pickerSearching: Recherche …
+    pickerEmpty: Aucun article trouvé
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: archivé
+    pickerFailed: Impossible de charger les articles. Vérifiez la connexion et réessayez.
+    cancel: Annuler
+  restock:
+    added(String what, String list): "$what ajouté à $list"
+    revivedQuantity(String list, String row, String quantity): "De retour sur $list : $row × $quantity"
+    revived(String list, String row): "De retour sur $list : $row"
+    changed(String list, String row, String quantity): "$list : $row maintenant × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row sur $list a été fixé à la main, laissé à $quantity"
+    pinned(String row, String list): "$row sur $list a été fixé à la main, laissé tel quel"
+    recovered(String row, String list): "Plus nécessaire : $row sur $list"
+    linked(String item, String row, String list): "$item lié à $row sur $list"
+    unlinked(String item, String row, String list): "$item délié de $row sur $list. Il ne sera ajouté à aucune liste de courses."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item correspond à 1 article sur $list. Choisissez-en un à lier.', many: '$item correspond à $count articles sur $list. Choisissez-en un à lier.')}"
+    restocked(String parts): "Réapprovisionné $parts"
+    replaced(String parts): "Remplacé $parts"
+    restockedReplaced(String restock, String replace): "Réapprovisionné $restock, remplacé $replace"
+    undidRestocked(String parts): "Annulé : réapprovisionné $parts"
+    undidReplaced(String parts): "Annulé : remplacé $parts"
+    undidRestockedReplaced(String restock, String replace): "Annulé : réapprovisionné $restock, remplacé $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) à Plein"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), Plein"
+    uncheckToUndo(String restock): "$restock · décochez pour annuler"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "Réapprovisionne $items"
+    setByHand(String quantity): "× $quantity · fixé à la main"
+    setByHandBare: Fixé à la main
+    setByHandTooltip: Fixé à la main. Touchez pour laisser le stock le fixer.
+    noLongerNeeded: Plus nécessaire
 
 notesWall:
   noNotes: Aucune note pour le moment.

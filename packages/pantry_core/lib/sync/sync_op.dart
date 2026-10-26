@@ -1,3 +1,8 @@
+/// An inventory item update's body key naming the checklist item to link it
+/// to, or 0 to unlink it. Not a field of the item: the executor sends it to
+/// the link endpoints after the item's own fields.
+const stockLinkTargetKey = 'stockLinkTarget';
+
 enum SyncEntity {
   checklistList,
   checklistItem,

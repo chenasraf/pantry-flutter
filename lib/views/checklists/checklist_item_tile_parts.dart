@@ -31,6 +31,8 @@ import 'package:pantry/widgets/item_thumb.dart';
 import 'package:pantry/widgets/member_avatar.dart';
 import 'package:pantry/widgets/store_detail_dialog.dart';
 import 'inventory_row_parts.dart';
+import 'restock_markers.dart';
+import 'stock_link_parts.dart';
 import 'swipe_reveal_row.dart';
 
 /// Row layout used when swipe actions are turned off: the item content fills
@@ -129,6 +131,10 @@ class ChecklistTileRowContent extends StatelessWidget {
   /// trails the row.
   final InventoryRowActions? inventory;
 
+  /// Hands a set-by-hand quantity back to stock. Null where the member can't
+  /// edit the item.
+  final VoidCallback? onUnpinQuantity;
+
   const ChecklistTileRowContent({
     super.key,
     required this.item,
@@ -157,6 +163,7 @@ class ChecklistTileRowContent extends StatelessWidget {
     this.fromTemplates,
     this.checkable = true,
     this.inventory,
+    this.onUnpinQuantity,
   });
 
   @override
@@ -280,14 +287,26 @@ class ChecklistTileRowContent extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          item.name,
-                          style: nameStyle,
-                          maxLines: prefs.truncateItemNames ? 1 : null,
-                          overflow: prefs.truncateItemNames
-                              ? TextOverflow.ellipsis
-                              : null,
+                        Row(
+                          children: [
+                            if (item.restocks.isNotEmpty)
+                              RestocksMarker(sources: item.restocks),
+                            Flexible(
+                              child: Text(
+                                item.name,
+                                style: nameStyle,
+                                maxLines: prefs.truncateItemNames ? 1 : null,
+                                overflow: prefs.truncateItemNames
+                                    ? TextOverflow.ellipsis
+                                    : null,
+                              ),
+                            ),
+                          ],
                         ),
+                        if (RestockStatusLine.showsFor(item)) ...[
+                          SizedBox(height: density.metaGap),
+                          RestockStatusLine(item: item),
+                        ],
                         if (descriptionLine != null) ...[
                           SizedBox(height: density.metaGap),
                           ItemDescriptionLine(
@@ -318,6 +337,7 @@ class ChecklistTileRowContent extends StatelessWidget {
                             noteLabel: descriptionChip,
                             stock: stock,
                             narrow: narrow,
+                            onUnpinQuantity: onUnpinQuantity,
                           ),
                         ],
                         if (stock != null && StockGauge.showsFor(item)) ...[
@@ -327,6 +347,10 @@ class ChecklistTileRowContent extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (showStockControl && !narrow) ...[
+                    const SizedBox(width: 4),
+                    StockLinkButton(item: item, actions: stock.links),
+                  ],
                   if (showStockControl) ...[
                     const SizedBox(width: 8),
                     InventoryRowControl(
@@ -420,9 +444,10 @@ class ChecklistTileRowContent extends StatelessWidget {
         labels.isNotEmpty && prefs.isItemChipVisible(ItemChipKind.label.key);
     final hasQty =
         inventory == null &&
-        item.quantity != null &&
-        item.quantity!.trim().isNotEmpty &&
-        prefs.isItemChipVisible(ItemChipKind.quantity.key);
+        (item.showsPinnedQuantity ||
+            item.quantity != null &&
+                item.quantity!.trim().isNotEmpty &&
+                prefs.isItemChipVisible(ItemChipKind.quantity.key));
     final hasPrice =
         item.hasPriceFor(priceStoreContext) &&
         ServerFeature.itemPrice &&
@@ -548,6 +573,7 @@ class _MetaRow extends StatelessWidget {
   /// the stock chips.
   final InventoryRowActions? stock;
   final bool narrow;
+  final VoidCallback? onUnpinQuantity;
 
   const _MetaRow({
     required this.item,
@@ -561,6 +587,7 @@ class _MetaRow extends StatelessWidget {
     this.noteLabel,
     this.stock,
     this.narrow = false,
+    this.onUnpinQuantity,
   });
 
   @override
@@ -583,6 +610,9 @@ class _MetaRow extends StatelessWidget {
             StockAmountChip(item: item, onSetOnHand: stock!.onSetOnHand),
           for (final spec in stockStatusChips(item))
             StockStatusChip(spec: spec),
+          if (stock!.renewTo != null)
+            RenewExpiryChip(date: stock!.renewTo!, onTap: stock!.onRenew),
+          if (narrow && StockLinkChip.showsFor(item)) StockLinkChip(item: item),
         ],
         if (listBadge != null && prefs.isItemChipVisible(ItemChipKind.list.key))
           EntityChip(
@@ -639,7 +669,9 @@ class _MetaRow extends StatelessWidget {
                 alpha: 0.13,
               ),
             ),
-        if (stock == null &&
+        if (stock == null && item.showsPinnedQuantity)
+          PinnedQuantityChip(quantity: item.quantity, onClear: onUnpinQuantity)
+        else if (stock == null &&
             item.quantity != null &&
             item.quantity!.trim().isNotEmpty &&
             prefs.isItemChipVisible(ItemChipKind.quantity.key))

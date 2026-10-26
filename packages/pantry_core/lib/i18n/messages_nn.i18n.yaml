@@ -1202,6 +1202,13 @@ stock:
     warnBefore(String days): "Varsle $days dagar før utløp"
     daysBefore: Dagar før utløp
     warnHint: Set 0 for å varsle på sjølve utløpsdatoen.
+    restockChecklist: Sjekkliste for påfylling
+    restockNone: Ingen
+    restockSetHint: Oppføringar som blir lite av eller snart går ut, blir lagde til på denne sjekklista.
+    restockUnsetHint: Utan ho blir oppføringar med lite att eller som snart går ut, berre merkte her.
+    notifications: Varsel
+    stockSummary: Dagleg lageroversikt
+    stockSummaryHint: Ein gong om dagen, fortel medlemene kva som nyleg har blitt lite av eller snart går ut her. Kvart medlem kan òg slå det av i sine eigne innstillingar.
     cancel: Avbryt
     save: Lagre
   card:
@@ -1264,6 +1271,78 @@ stock:
     levelAmount(String amount): "Nivå · $amount"
     targetValue(String target): "Mål: $target"
     fullWhenEmpty: Full når tom
+  noRestockChecklist: Denne lagerlista har inga sjekkliste for påfylling, så desse oppføringane blir berre merkte her. Vel ei i innstillingane for lagerlista.
+  renewChip(String date): "Forny utløp → $date"
+  renewAction: Forny utløp
+  summaryPref: Dagleg lageroversikt
+  summaryPrefHint: Ein gong om dagen, kva som nyleg har blitt lite av eller snart går ut i lagerlistene i dette huset.
+  summaryPrefFailed: Klarte ikkje lagre innstillinga for lageroversikta.
+  links:
+    caption: Handleliste
+    tooltipLinked(String row, String list): "Kopla til $row på $list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'Ikkje kopla: 1 treff, vel eitt', many: 'Ikkje kopla: $count treff, vel eitt')}"
+    tooltipAutoOn: "Ikkje kopla enno: blir lagd til på handlelista når det blir lite"
+    tooltipAutoOff: "Ikkje kopla: blir aldri lagd til på ei handleliste"
+    rowOnList(String row, String list, String state): "$row på $list · $state"
+    stateOpen: open
+    stateChecked: kryssa av
+    stateArchived: arkivert
+    stateTrashed: i papirkorga
+    stateQuantity(String quantity): "× $quantity"
+    unlink: Kople frå
+    whichOne: Kva for ein er det?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: Legg til på handlelista når det blir lite
+    linkByHand: Kople for hand
+    chipNeedsPick(int count): "${_plural(count, one: 'Ikkje kopla · 1 treff, vel eitt', many: 'Ikkje kopla · $count treff, vel eitt')}"
+    chipNotAdded: Blir ikkje lagd til på ei handleliste
+    cardLinked(String row, String list, String state): "Kopla til $row på $list · $state"
+    linkDifferent: Kople til ei anna oppføring …
+    linkedHint: Når det blir lite av ho eller ho snart går ut, kjem denne oppføringa tilbake på den lista.
+    matches(int count): "${_plural(count, one: '1 oppføring passar', many: '$count oppføringar passar')}"
+    matchesQuestion(String matches): "$matches på sjekklista for påfylling. Kva for ei er det?"
+    link: Kople
+    autoHintOn(String item, String list): "Finn eller legg til «$item» på $list når det trengst."
+    autoHintNoChecklist: Vel ei sjekkliste for påfylling i innstillingane for lagerlista for å finne eller leggje til denne oppføringa der.
+    autoHintOff: Denne oppføringa blir berre merkt her når det blir lite av ho.
+    linkToItem: Kople til ei oppføring …
+    pickerTitle: Kople til ei oppføring på ei sjekkliste
+    pickerField: Oppføring på sjekkliste
+    pickerSearch: Søk i oppføringar på sjekklister …
+    pickerSearching: Søkjer …
+    pickerEmpty: Fann ingen oppføringar
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: arkivert
+    pickerFailed: Klarte ikkje laste oppføringar. Sjekk tilkoplinga og prøv igjen.
+    cancel: Avbryt
+  restock:
+    added(String what, String list): "La til $what på $list"
+    revivedQuantity(String list, String row, String quantity): "Tilbake på $list: $row × $quantity"
+    revived(String list, String row): "Tilbake på $list: $row"
+    changed(String list, String row, String quantity): "$list: $row no × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row på $list vart sett for hand, står att på $quantity"
+    pinned(String row, String list): "$row på $list vart sett for hand, står att som det er"
+    recovered(String row, String list): "Ikkje lenger nødvendig: $row på $list"
+    linked(String item, String row, String list): "Kopla $item til $row på $list"
+    unlinked(String item, String row, String list): "Kopla $item frå $row på $list. Det blir ikkje lagt til på ei handleliste."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item passar med 1 oppføring på $list. Vel ei å kople til.', many: '$item passar med $count oppføringar på $list. Vel ei å kople til.')}"
+    restocked(String parts): "Fylte på $parts"
+    replaced(String parts): "Bytte ut $parts"
+    restockedReplaced(String restock, String replace): "Fylte på $restock, bytte ut $replace"
+    undidRestocked(String parts): "Angra: fylte på $parts"
+    undidReplaced(String parts): "Angra: bytte ut $parts"
+    undidRestockedReplaced(String restock, String replace): "Angra: fylte på $restock, bytte ut $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) til Full"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), Full"
+    uncheckToUndo(String restock): "$restock · fjern krysset for å angre"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "Fyller på $items"
+    setByHand(String quantity): "× $quantity · sett for hand"
+    setByHandBare: Sett for hand
+    setByHandTooltip: Sett for hand. Trykk for å la lageret setje det.
+    noLongerNeeded: Ikkje lenger nødvendig
 
 notesWall:
   noNotes: Ingen notat enno

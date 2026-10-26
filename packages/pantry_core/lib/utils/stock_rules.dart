@@ -214,6 +214,30 @@ ExpiryStatus evaluateExpiry(StockFields item, int leadDays, int today) {
 int? renewedExpiry(int? shelfLifeDays, int today) =>
     shelfLifeDays != null ? addDays(today, shelfLifeDays) : null;
 
+/// The date a hand raise from [before] to [after] offers to renew the expiry
+/// to, or null when it offers none. A raise from empty renews the date on its
+/// own; a raise while some is on hand only offers to, and only when the
+/// renewed date would be later than the one the item has.
+int? renewOffer(StockFields before, StockFields after, int today) {
+  if (isStockEmpty(before) || !_raises(before, after)) return null;
+  final renewed = renewedExpiry(before.shelfLifeDays, today);
+  if (renewed == null) return null;
+  final current = before.expiresAt;
+  return current == null || renewed > current ? renewed : null;
+}
+
+bool _raises(StockFields before, StockFields after) {
+  if (before.isLevel) {
+    // Full, Low, Out: a lower index holds more.
+    final from = (before.stockLevel ?? StockLevel.full).index;
+    final to = (after.stockLevel ?? StockLevel.full).index;
+    return to < from;
+  }
+  final from = firstNumber(before.quantity);
+  final to = firstNumber(after.quantity);
+  return from != null && to != null && to > from;
+}
+
 bool needsRestock(StockStatus? stock, ExpiryStatus? expiry) =>
     (stock?.isShort ?? false) || (expiry?.isDue ?? false);
 

@@ -5556,6 +5556,40 @@ class StockMessagesHe extends StockMessages {
   CardStockMessagesHe get card => CardStockMessagesHe(this);
   ExpiryStockMessagesHe get expiry => ExpiryStockMessagesHe(this);
   ComposeStockMessagesHe get compose => ComposeStockMessagesHe(this);
+
+  /// ```dart
+  /// "לרשימת המלאי הזו אין רשימת סימון לחידוש מלאי, ולכן הפריטים האלה רק מסומנים כאן. אפשר לבחור אחת בהגדרות רשימת המלאי."
+  /// ```
+  String get noRestockChecklist =>
+      """לרשימת המלאי הזו אין רשימת סימון לחידוש מלאי, ולכן הפריטים האלה רק מסומנים כאן. אפשר לבחור אחת בהגדרות רשימת המלאי.""";
+
+  /// ```dart
+  /// "חידוש תפוגה ← $date"
+  /// ```
+  String renewChip(String date) => """חידוש תפוגה ← $date""";
+
+  /// ```dart
+  /// "חידוש תפוגה"
+  /// ```
+  String get renewAction => """חידוש תפוגה""";
+
+  /// ```dart
+  /// "סיכום מלאי יומי"
+  /// ```
+  String get summaryPref => """סיכום מלאי יומי""";
+
+  /// ```dart
+  /// "פעם ביום, מה נגמר או התחיל להתקרב לתפוגה ברשימות המלאי של הבית הזה."
+  /// ```
+  String get summaryPrefHint =>
+      """פעם ביום, מה נגמר או התחיל להתקרב לתפוגה ברשימות המלאי של הבית הזה.""";
+
+  /// ```dart
+  /// "לא ניתן היה לשמור את הגדרת סיכום המלאי."
+  /// ```
+  String get summaryPrefFailed => """לא ניתן היה לשמור את הגדרת סיכום המלאי.""";
+  LinksStockMessagesHe get links => LinksStockMessagesHe(this);
+  RestockStockMessagesHe get restock => RestockStockMessagesHe(this);
 }
 
 class SettingsStockMessagesHe extends SettingsStockMessages {
@@ -5601,6 +5635,44 @@ class SettingsStockMessagesHe extends SettingsStockMessages {
   /// "יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו."
   /// ```
   String get warnHint => """יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו.""";
+
+  /// ```dart
+  /// "רשימת סימון לחידוש מלאי"
+  /// ```
+  String get restockChecklist => """רשימת סימון לחידוש מלאי""";
+
+  /// ```dart
+  /// "ללא"
+  /// ```
+  String get restockNone => """ללא""";
+
+  /// ```dart
+  /// "פריטים שנגמרים או מתקרבים לתפוגה נוספים לרשימת הסימון הזו."
+  /// ```
+  String get restockSetHint =>
+      """פריטים שנגמרים או מתקרבים לתפוגה נוספים לרשימת הסימון הזו.""";
+
+  /// ```dart
+  /// "בלעדיה, פריטים נמוכים או שמתקרבים לתפוגה רק מסומנים כאן."
+  /// ```
+  String get restockUnsetHint =>
+      """בלעדיה, פריטים נמוכים או שמתקרבים לתפוגה רק מסומנים כאן.""";
+
+  /// ```dart
+  /// "התראות"
+  /// ```
+  String get notifications => """התראות""";
+
+  /// ```dart
+  /// "סיכום מלאי יומי"
+  /// ```
+  String get stockSummary => """סיכום מלאי יומי""";
+
+  /// ```dart
+  /// "פעם ביום, לספר לחברים מה נגמר או התחיל להתקרב לתפוגה כאן. כל חבר יכול גם לכבות זאת בהגדרות האישיות."
+  /// ```
+  String get stockSummaryHint =>
+      """פעם ביום, לספר לחברים מה נגמר או התחיל להתקרב לתפוגה כאן. כל חבר יכול גם לכבות זאת בהגדרות האישיות.""";
 
   /// ```dart
   /// "ביטול"
@@ -5925,6 +5997,361 @@ class ComposeStockMessagesHe extends ComposeStockMessages {
   /// "מלא כשריק"
   /// ```
   String get fullWhenEmpty => """מלא כשריק""";
+}
+
+class LinksStockMessagesHe extends LinksStockMessages {
+  final StockMessagesHe _parent;
+  const LinksStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "רשימת קניות"
+  /// ```
+  String get caption => """רשימת קניות""";
+
+  /// ```dart
+  /// "מקושר ל$row ב$list"
+  /// ```
+  String tooltipLinked(String row, String list) => """מקושר ל$row ב$list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'לא מקושר: התאמה אחת, יש לבחור', many: 'לא מקושר: $count התאמות, יש לבחור אחת')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'לא מקושר: התאמה אחת, יש לבחור', many: 'לא מקושר: $count התאמות, יש לבחור אחת')}""";
+
+  /// ```dart
+  /// "עדיין לא מקושר: יתווסף לרשימת הקניות כשיהיה נמוך"
+  /// ```
+  String get tooltipAutoOn =>
+      """עדיין לא מקושר: יתווסף לרשימת הקניות כשיהיה נמוך""";
+
+  /// ```dart
+  /// "לא מקושר: לעולם לא יתווסף לרשימת קניות"
+  /// ```
+  String get tooltipAutoOff => """לא מקושר: לעולם לא יתווסף לרשימת קניות""";
+
+  /// ```dart
+  /// "$row ב$list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row ב$list · $state""";
+
+  /// ```dart
+  /// "פתוח"
+  /// ```
+  String get stateOpen => """פתוח""";
+
+  /// ```dart
+  /// "מסומן"
+  /// ```
+  String get stateChecked => """מסומן""";
+
+  /// ```dart
+  /// "בארכיון"
+  /// ```
+  String get stateArchived => """בארכיון""";
+
+  /// ```dart
+  /// "בסל המחזור"
+  /// ```
+  String get stateTrashed => """בסל המחזור""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "ביטול קישור"
+  /// ```
+  String get unlink => """ביטול קישור""";
+
+  /// ```dart
+  /// "איזה מהם?"
+  /// ```
+  String get whichOne => """איזה מהם?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "להוסיף לרשימת הקניות כשנמוך"
+  /// ```
+  String get autoLink => """להוסיף לרשימת הקניות כשנמוך""";
+
+  /// ```dart
+  /// "קישור ידני"
+  /// ```
+  String get linkByHand => """קישור ידני""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'לא מקושר · התאמה אחת, יש לבחור', many: 'לא מקושר · $count התאמות, יש לבחור אחת')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'לא מקושר · התאמה אחת, יש לבחור', many: 'לא מקושר · $count התאמות, יש לבחור אחת')}""";
+
+  /// ```dart
+  /// "לא מתווסף לרשימת קניות"
+  /// ```
+  String get chipNotAdded => """לא מתווסף לרשימת קניות""";
+
+  /// ```dart
+  /// "מקושר ל$row ב$list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """מקושר ל$row ב$list · $state""";
+
+  /// ```dart
+  /// "קישור לפריט אחר …"
+  /// ```
+  String get linkDifferent => """קישור לפריט אחר …""";
+
+  /// ```dart
+  /// "כשהפריט נגמר או מתקרב לתפוגה, הוא חוזר לרשימה הזו."
+  /// ```
+  String get linkedHint =>
+      """כשהפריט נגמר או מתקרב לתפוגה, הוא חוזר לרשימה הזו.""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'פריט אחד מתאים', many: '$count פריטים מתאימים')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: 'פריט אחד מתאים', many: '$count פריטים מתאימים')}""";
+
+  /// ```dart
+  /// "$matches ברשימת הסימון לחידוש מלאי. איזה מהם זה?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches ברשימת הסימון לחידוש מלאי. איזה מהם זה?""";
+
+  /// ```dart
+  /// "קישור"
+  /// ```
+  String get link => """קישור""";
+
+  /// ```dart
+  /// "מוצא או מוסיף את "$item" ב$list כשצריך."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """מוצא או מוסיף את "$item" ב$list כשצריך.""";
+
+  /// ```dart
+  /// "יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט."
+  /// ```
+  String get autoHintNoChecklist =>
+      """יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט.""";
+
+  /// ```dart
+  /// "הפריט הזה רק מסומן כאן כשהוא נמוך."
+  /// ```
+  String get autoHintOff => """הפריט הזה רק מסומן כאן כשהוא נמוך.""";
+
+  /// ```dart
+  /// "קישור לפריט …"
+  /// ```
+  String get linkToItem => """קישור לפריט …""";
+
+  /// ```dart
+  /// "קישור לפריט ברשימת סימון"
+  /// ```
+  String get pickerTitle => """קישור לפריט ברשימת סימון""";
+
+  /// ```dart
+  /// "פריט ברשימת סימון"
+  /// ```
+  String get pickerField => """פריט ברשימת סימון""";
+
+  /// ```dart
+  /// "חיפוש פריטים ברשימות סימון …"
+  /// ```
+  String get pickerSearch => """חיפוש פריטים ברשימות סימון …""";
+
+  /// ```dart
+  /// "מחפש …"
+  /// ```
+  String get pickerSearching => """מחפש …""";
+
+  /// ```dart
+  /// "לא נמצאו פריטים"
+  /// ```
+  String get pickerEmpty => """לא נמצאו פריטים""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "בארכיון"
+  /// ```
+  String get pickerArchived => """בארכיון""";
+
+  /// ```dart
+  /// "לא ניתן היה לטעון פריטים. יש לבדוק את החיבור ולנסות שוב."
+  /// ```
+  String get pickerFailed =>
+      """לא ניתן היה לטעון פריטים. יש לבדוק את החיבור ולנסות שוב.""";
+
+  /// ```dart
+  /// "ביטול"
+  /// ```
+  String get cancel => """ביטול""";
+}
+
+class RestockStockMessagesHe extends RestockStockMessages {
+  final StockMessagesHe _parent;
+  const RestockStockMessagesHe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "$what נוסף ל$list"
+  /// ```
+  String added(String what, String list) => """$what נוסף ל$list""";
+
+  /// ```dart
+  /// "שוב ב$list: $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """שוב ב$list: $row × $quantity""";
+
+  /// ```dart
+  /// "שוב ב$list: $row"
+  /// ```
+  String revived(String list, String row) => """שוב ב$list: $row""";
+
+  /// ```dart
+  /// "$list: $row עכשיו × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list: $row עכשיו × $quantity""";
+
+  /// ```dart
+  /// "$row ב$list נקבע ידנית ונשאר על $quantity"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row ב$list נקבע ידנית ונשאר על $quantity""";
+
+  /// ```dart
+  /// "$row ב$list נקבע ידנית ונשאר כפי שהוא"
+  /// ```
+  String pinned(String row, String list) =>
+      """$row ב$list נקבע ידנית ונשאר כפי שהוא""";
+
+  /// ```dart
+  /// "כבר לא נחוץ: $row ב$list"
+  /// ```
+  String recovered(String row, String list) => """כבר לא נחוץ: $row ב$list""";
+
+  /// ```dart
+  /// "$item קושר ל$row ב$list"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """$item קושר ל$row ב$list""";
+
+  /// ```dart
+  /// "הקישור של $item ל$row ב$list בוטל. הוא לא יתווסף לרשימת קניות."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """הקישור של $item ל$row ב$list בוטל. הוא לא יתווסף לרשימת קניות.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item מתאים לפריט אחד ב$list. יש לבחור אחד לקישור.', many: '$item מתאים ל-$count פריטים ב$list. יש לבחור אחד לקישור.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item מתאים לפריט אחד ב$list. יש לבחור אחד לקישור.', many: '$item מתאים ל-$count פריטים ב$list. יש לבחור אחד לקישור.')}""";
+
+  /// ```dart
+  /// "חודש מלאי: $parts"
+  /// ```
+  String restocked(String parts) => """חודש מלאי: $parts""";
+
+  /// ```dart
+  /// "הוחלף: $parts"
+  /// ```
+  String replaced(String parts) => """הוחלף: $parts""";
+
+  /// ```dart
+  /// "חודש מלאי: $restock; הוחלף: $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """חודש מלאי: $restock; הוחלף: $replace""";
+
+  /// ```dart
+  /// "בוטל: חידוש מלאי $parts"
+  /// ```
+  String undidRestocked(String parts) => """בוטל: חידוש מלאי $parts""";
+
+  /// ```dart
+  /// "בוטל: החלפה $parts"
+  /// ```
+  String undidReplaced(String parts) => """בוטל: החלפה $parts""";
+
+  /// ```dart
+  /// "בוטל: חידוש מלאי $restock; החלפה $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """בוטל: חידוש מלאי $restock; החלפה $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) למלא"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) למלא""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), מלא"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), מלא""";
+
+  /// ```dart
+  /// "$restock · ביטול הסימון יבטל"
+  /// ```
+  String uncheckToUndo(String restock) => """$restock · ביטול הסימון יבטל""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "מחדש מלאי: $items"
+  /// ```
+  String restocks(String items) => """מחדש מלאי: $items""";
+
+  /// ```dart
+  /// "× $quantity · נקבע ידנית"
+  /// ```
+  String setByHand(String quantity) => """× $quantity · נקבע ידנית""";
+
+  /// ```dart
+  /// "נקבע ידנית"
+  /// ```
+  String get setByHandBare => """נקבע ידנית""";
+
+  /// ```dart
+  /// "נקבע ידנית. הקשה תחזיר את הקביעה למלאי."
+  /// ```
+  String get setByHandTooltip => """נקבע ידנית. הקשה תחזיר את הקביעה למלאי.""";
+
+  /// ```dart
+  /// "כבר לא נחוץ"
+  /// ```
+  String get noLongerNeeded => """כבר לא נחוץ""";
 }
 
 class NotesWallMessagesHe extends NotesWallMessages {
@@ -9515,6 +9942,16 @@ Map<String, String> get messagesHeMap => {
   """stock.settings.daysBefore""": """ימים לפני התפוגה""",
   """stock.settings.warnHint""":
       """יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו.""",
+  """stock.settings.restockChecklist""": """רשימת סימון לחידוש מלאי""",
+  """stock.settings.restockNone""": """ללא""",
+  """stock.settings.restockSetHint""":
+      """פריטים שנגמרים או מתקרבים לתפוגה נוספים לרשימת הסימון הזו.""",
+  """stock.settings.restockUnsetHint""":
+      """בלעדיה, פריטים נמוכים או שמתקרבים לתפוגה רק מסומנים כאן.""",
+  """stock.settings.notifications""": """התראות""",
+  """stock.settings.stockSummary""": """סיכום מלאי יומי""",
+  """stock.settings.stockSummaryHint""":
+      """פעם ביום, לספר לחברים מה נגמר או התחיל להתקרב לתפוגה כאן. כל חבר יכול גם לכבות זאת בהגדרות האישיות.""",
   """stock.settings.cancel""": """ביטול""",
   """stock.settings.save""": """שמירה""",
   """stock.card.title""": """מלאי""",
@@ -9562,6 +9999,48 @@ Map<String, String> get messagesHeMap => {
   """stock.compose.count""": """כמות""",
   """stock.compose.level""": """רמה""",
   """stock.compose.fullWhenEmpty""": """מלא כשריק""",
+  """stock.noRestockChecklist""":
+      """לרשימת המלאי הזו אין רשימת סימון לחידוש מלאי, ולכן הפריטים האלה רק מסומנים כאן. אפשר לבחור אחת בהגדרות רשימת המלאי.""",
+  """stock.renewAction""": """חידוש תפוגה""",
+  """stock.summaryPref""": """סיכום מלאי יומי""",
+  """stock.summaryPrefHint""":
+      """פעם ביום, מה נגמר או התחיל להתקרב לתפוגה ברשימות המלאי של הבית הזה.""",
+  """stock.summaryPrefFailed""": """לא ניתן היה לשמור את הגדרת סיכום המלאי.""",
+  """stock.links.caption""": """רשימת קניות""",
+  """stock.links.tooltipAutoOn""":
+      """עדיין לא מקושר: יתווסף לרשימת הקניות כשיהיה נמוך""",
+  """stock.links.tooltipAutoOff""":
+      """לא מקושר: לעולם לא יתווסף לרשימת קניות""",
+  """stock.links.stateOpen""": """פתוח""",
+  """stock.links.stateChecked""": """מסומן""",
+  """stock.links.stateArchived""": """בארכיון""",
+  """stock.links.stateTrashed""": """בסל המחזור""",
+  """stock.links.unlink""": """ביטול קישור""",
+  """stock.links.whichOne""": """איזה מהם?""",
+  """stock.links.autoLink""": """להוסיף לרשימת הקניות כשנמוך""",
+  """stock.links.linkByHand""": """קישור ידני""",
+  """stock.links.chipNotAdded""": """לא מתווסף לרשימת קניות""",
+  """stock.links.linkDifferent""": """קישור לפריט אחר …""",
+  """stock.links.linkedHint""":
+      """כשהפריט נגמר או מתקרב לתפוגה, הוא חוזר לרשימה הזו.""",
+  """stock.links.link""": """קישור""",
+  """stock.links.autoHintNoChecklist""":
+      """יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט.""",
+  """stock.links.autoHintOff""": """הפריט הזה רק מסומן כאן כשהוא נמוך.""",
+  """stock.links.linkToItem""": """קישור לפריט …""",
+  """stock.links.pickerTitle""": """קישור לפריט ברשימת סימון""",
+  """stock.links.pickerField""": """פריט ברשימת סימון""",
+  """stock.links.pickerSearch""": """חיפוש פריטים ברשימות סימון …""",
+  """stock.links.pickerSearching""": """מחפש …""",
+  """stock.links.pickerEmpty""": """לא נמצאו פריטים""",
+  """stock.links.pickerArchived""": """בארכיון""",
+  """stock.links.pickerFailed""":
+      """לא ניתן היה לטעון פריטים. יש לבדוק את החיבור ולנסות שוב.""",
+  """stock.links.cancel""": """ביטול""",
+  """stock.restock.setByHandBare""": """נקבע ידנית""",
+  """stock.restock.setByHandTooltip""":
+      """נקבע ידנית. הקשה תחזיר את הקביעה למלאי.""",
+  """stock.restock.noLongerNeeded""": """כבר לא נחוץ""",
   """notesWall.noNotes""": """אין הערות עדיין.""",
   """notesWall.failedToLoad""": """טעינת ההערות נכשלה.""",
   """notesWall.saveFailed""": """שמירת ההערה נכשלה.""",

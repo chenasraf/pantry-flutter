@@ -9,6 +9,7 @@ import 'package:pantry_core/models/label.dart' as models;
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/house.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
+import 'package:pantry_core/services/checklist_service.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
@@ -435,6 +436,14 @@ class _BodyState extends State<_Body> {
                     .where((i) => i.deletedAt == null && i.needsStockRestock)
                     .length
               : 0;
+          if (showStockFilter &&
+              ChecklistService.instance.pendingNeedsRestockFilter &&
+              !controller.isLoading) {
+            ChecklistService.instance.pendingNeedsRestockFilter = false;
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) => body.showNeedsRestock(),
+            );
+          }
           final stockInStockCount = showStockFilter
               ? controller.items.where((i) => i.deletedAt == null).length -
                     stockNeedsRestockCount
@@ -873,6 +882,11 @@ class _BodyState extends State<_Body> {
                         ChecklistsArchiveBanner(
                           onExit: () => controller.setArchiveMode(false),
                         ),
+                      if (showStockFilter &&
+                          !controller.isSoftView &&
+                          controller.currentList?.restockChecklistId == null &&
+                          stockNeedsRestockCount > 0)
+                        const NoRestockChecklistNotice(),
                       Expanded(
                         // While a fresh list (no cached items yet) is loading,
                         // show a spinner rather than the empty state — the list

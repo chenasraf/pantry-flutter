@@ -34,6 +34,7 @@ import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
 import 'checklists_ordering.dart';
+import 'restock_feedback.dart';
 export 'checklists_ordering.dart';
 export 'package:pantry_core/models/list_kind.dart';
 export 'package:pantry_core/models/list_template.dart';
@@ -108,6 +109,19 @@ class ChecklistsController extends ChangeNotifier {
       isMetaMode && _sortBy == 'custom' ? 'newest' : _sortBy;
 
   bool _disposed = false;
+
+  /// This member's item writes whose answers may still bring stock feedback,
+  /// each with the item as it was before the write.
+  final _stockFeedback = RestockFeedbackTracker<ListItem>();
+
+  /// Items whose expiry may be renewed after a raise, and the date it would
+  /// take. See [renewOfferFor].
+  final Map<int, int> _renewOffers = {};
+
+  /// A tick or uncheck changed stock that the inventory in view may not show
+  /// yet; it reloads once the queue drains.
+  bool _stockChangedElsewhere = false;
+
   StreamSubscription<SyncOpApplied>? _appliedSub;
   StreamSubscription<SyncOpSkipped>? _skippedSub;
   StreamSubscription<void>? _reconnectSub;
@@ -125,7 +139,10 @@ class ChecklistsController extends ChangeNotifier {
   /// never had one.
   File? pendingItemImage(int itemId) => _pendingItemImages[itemId];
 
-  void _onQueueLengthChanged() => unawaited(_refreshPendingItemImages());
+  void _onQueueLengthChanged() {
+    unawaited(_refreshPendingItemImages());
+    _refreshStockOnceDrained();
+  }
 
   /// Rebuilds overlap, and they do not finish in the order they started: an
   /// empty queue resolves without touching the disk, while the rebuild that
@@ -819,7 +836,10 @@ class ChecklistsController extends ChangeNotifier {
     bool refreshInPlace = false,
   }) async {
     final previousListId = _currentList?.id;
-    if (previousListId != list.id) _resetTemplateSuggestions();
+    if (previousListId != list.id) {
+      _resetTemplateSuggestions();
+      _renewOffers.clear();
+    }
     _currentList = list;
     _kind = list.kind;
     _checklistService.selectedListId = list.id;
@@ -1175,6 +1195,7 @@ class ChecklistsController extends ChangeNotifier {
           notifyListeners();
           unawaited(_refreshLabels());
         }
+        _onInventorySettingsApplied(applied);
         final entity = applied.entity;
         if (entity is ChecklistList) {
           // Server entities never carry the client-only progress-card state,
@@ -1205,6 +1226,7 @@ class ChecklistsController extends ChangeNotifier {
           }
         }
       case SyncEntity.checklistItem:
+        _onStockWriteApplied(applied);
         final entity = applied.entity;
         if (entity is PantryBatchResult) {
           _reconcileBatchApplied(applied.op, entity);

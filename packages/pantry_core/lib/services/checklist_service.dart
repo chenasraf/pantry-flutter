@@ -89,6 +89,10 @@ class ChecklistService {
   /// loaded — set by an item deep link, consumed by the checklists view.
   int? pendingOpenItemId;
 
+  /// Transient request to open the next inventory shown on its Needs restock
+  /// filter — set by a stock summary notification.
+  bool pendingNeedsRestockFilter = false;
+
   // -- List kinds --
 
   static const _kindsKey = 'listKinds';
@@ -295,6 +299,22 @@ class ChecklistService {
     await ApiClient.instance.put<Map<String, dynamic>, void>(
       '/houses/$houseId/prefs',
       body: {'checklistItemSort': sort},
+      fromJson: (_) {},
+    );
+  }
+
+  /// Whether this member gets the house's daily stock summaries.
+  Future<bool> getStockSummaryPref(int houseId) async {
+    return ApiClient.instance.get<Map<String, dynamic>, bool>(
+      '/houses/$houseId/prefs',
+      fromJson: (data) => data['notifyStockSummary'] as bool? ?? true,
+    );
+  }
+
+  Future<void> setStockSummaryPref(int houseId, bool value) async {
+    await ApiClient.instance.put<Map<String, dynamic>, void>(
+      '/houses/$houseId/prefs',
+      body: {'notifyStockSummary': value},
       fromJson: (_) {},
     );
   }

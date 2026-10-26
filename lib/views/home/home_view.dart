@@ -329,6 +329,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         listId: link.listId!,
         houseId: link.houseId,
         itemId: link.itemId,
+        needsRestock: link.needsRestock,
       );
       return;
     }
@@ -412,7 +413,12 @@ class _HomeViewBodyState extends State<_HomeViewBody>
   /// [listId], and jump to the checklists tab. Shared sink for widget taps,
   /// `pantry://` URL deep links, launcher quick actions and pinned shortcuts.
   /// When [itemId] is given, the checklists view opens that item once loaded.
-  void _openList({required int listId, int? houseId, int? itemId}) {
+  void _openList({
+    required int listId,
+    int? houseId,
+    int? itemId,
+    bool needsRestock = false,
+  }) {
     _openSection(
       NavSection.checklists,
       houseId: houseId,
@@ -420,6 +426,7 @@ class _HomeViewBodyState extends State<_HomeViewBody>
         // Pre-select the list so ChecklistsController picks it up on load.
         ChecklistService.instance.selectedListId = listId;
         ChecklistService.instance.pendingOpenItemId = itemId;
+        ChecklistService.instance.pendingNeedsRestockFilter = needsRestock;
       },
     );
   }

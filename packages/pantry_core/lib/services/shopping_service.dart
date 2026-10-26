@@ -270,19 +270,28 @@ class ShoppingService {
   }
 
   /// (9) Mark an item bought — an explicit action, not a field edit. Returns
-  /// only success; re-fetch [getItems] to reconcile.
-  Future<void> checkItem(int houseId, int sessionId, int itemId) async {
-    await _api.post<Map<String, dynamic>, void>(
+  /// what the tick did to stock; re-fetch [getItems] to reconcile the list.
+  Future<ShoppingCheckResult> checkItem(
+    int houseId,
+    int sessionId,
+    int itemId,
+  ) async {
+    return _api.post<Map<String, dynamic>, ShoppingCheckResult>(
       '${_base(houseId)}/sessions/$sessionId/items/$itemId/check',
-      fromJson: (_) {},
+      fromJson: ShoppingCheckResult.fromJson,
     );
   }
 
-  /// (10) Reverse a check. Returns only success; re-fetch [getItems].
-  Future<void> uncheckItem(int houseId, int sessionId, int itemId) async {
-    await _api.post<Map<String, dynamic>, void>(
+  /// (10) Reverse a check, taking back what it restocked. Re-fetch
+  /// [getItems] to reconcile the list.
+  Future<ShoppingCheckResult> uncheckItem(
+    int houseId,
+    int sessionId,
+    int itemId,
+  ) async {
+    return _api.post<Map<String, dynamic>, ShoppingCheckResult>(
       '${_base(houseId)}/sessions/$sessionId/items/$itemId/uncheck',
-      fromJson: (_) {},
+      fromJson: ShoppingCheckResult.fromJson,
     );
   }
 

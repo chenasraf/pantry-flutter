@@ -13,6 +13,7 @@ import 'checklist_item_tile.dart';
 import 'checklists_controller.dart';
 import 'checklists_sliver_headers.dart';
 import 'inventory_row_parts.dart';
+import 'stock_link_parts.dart';
 import 'item_detail_view.dart';
 import 'item_form_view.dart';
 import 'item_picker_dialogs.dart';
@@ -632,7 +633,16 @@ class _ChecklistItemListState extends State<ChecklistItemList> {
               onSetLevel: writable && controller.permissions.canEditLists
                   ? (l) => controller.setStockLevel(item, l)
                   : null,
+              links: stockLinkActionsFor(context, controller, item),
+              renewTo: controller.renewOfferFor(item),
+              onRenew: writable && controller.permissions.canEditLists
+                  ? () => controller.renewExpiry(item)
+                  : null,
             )
+          : null,
+      onUnpinQuantity:
+          item.quantityPinned && writable && controller.permissions.canEditLists
+          ? () => controller.unpinQuantity(item)
           : null,
       onView: (i) => _openView(context, controller, i),
       onEdit: writable && controller.permissions.canEditLists

@@ -110,6 +110,9 @@ class ChecklistItemTile extends StatefulWidget {
   /// [ChecklistTileRowContent.inventory].
   final InventoryRowActions? inventory;
 
+  /// See [ChecklistTileRowContent.onUnpinQuantity].
+  final VoidCallback? onUnpinQuantity;
+
   const ChecklistItemTile({
     super.key,
     required this.item,
@@ -147,6 +150,7 @@ class ChecklistItemTile extends StatefulWidget {
     this.archived = false,
     this.fromTemplates,
     this.inventory,
+    this.onUnpinQuantity,
   });
 
   /// A read-only tile used as a reuse suggestion in the compose bar: name and
@@ -188,7 +192,8 @@ class ChecklistItemTile extends StatefulWidget {
        onLongPressSelect = null,
        suggestion = true,
        onSuggestionTap = onTap,
-       inventory = null;
+       inventory = null,
+       onUnpinQuantity = null;
 
   static void _noop(ListItem _) {}
 
@@ -299,6 +304,18 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
           );
         }
       } else {
+        final onRenew = widget.inventory?.onRenew;
+        if (widget.inventory?.renewTo != null && onRenew != null) {
+          actions.add(
+            SwipeAction(
+              icon: Icons.autorenew,
+              label: m.stock.renewAction,
+              tint: cs.primary,
+              background: tintedSurface(cs.primary, 0.14),
+              onPressed: onRenew,
+            ),
+          );
+        }
         // Drop any swipe action the row tap already performs, so swipe never
         // duplicates the tap. When tap does nothing, both View and Edit show.
         // In overflow-menu mode there's no tap-gesture overlap, so the menu
@@ -438,6 +455,7 @@ class _ChecklistItemTileState extends State<ChecklistItemTile> {
       pendingImage: widget.pendingImage,
       checkable: widget.checkable,
       inventory: widget.inventory,
+      onUnpinQuantity: widget.onUnpinQuantity,
     );
 
     // In selection mode the row toggles selection and shows no swipe actions,

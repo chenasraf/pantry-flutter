@@ -24,6 +24,8 @@ import 'package:pantry_core/sync/sync_ids.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
 
+import 'package:pantry/views/checklists/restock_feedback.dart';
+
 /// All the items under one category, for the grouped dense view. [category] is
 /// null for the Uncategorized group, which always renders last.
 class ShoppingItemGroup {
@@ -125,10 +127,15 @@ class ShoppingSessionController extends ChangeNotifier {
   /// Flat list of everything checked off on this trip, for the Done drawer.
   /// Items unchecked locally but still reported as checked by the server (see
   /// [_uncheckedPending]) are filtered out so the drawer reacts instantly.
+  ///
+  /// A linked item whose tick fell short of what several inventories needed
+  /// comes straight back unchecked; it belongs on the buy list, not here.
   List<ListItem> get doneItems => [
     for (final s in _review?.stores ?? const <ShoppingReviewStore>[])
       for (final i in s.items)
-        if (!_uncheckedPending.contains(i.id)) i,
+        if (!_uncheckedPending.contains(i.id) &&
+            (i.done || !ServerFeature.inventoryStock))
+          i,
   ];
 
   /// Per-currency estimate of this trip's checked items — the Done drawer total.
@@ -190,6 +197,11 @@ class ShoppingSessionController extends ChangeNotifier {
   String? get error => _error;
 
   bool _disposed = false;
+
+  /// This shopper's checks and unchecks whose answers may still bring stock
+  /// feedback, by the item checked.
+  final _stockFeedback = RestockFeedbackTracker<int>();
+
   StreamSubscription<SyncOpApplied>? _appliedSub;
   StreamSubscription<SyncOpSkipped>? _skippedSub;
 
@@ -220,6 +232,18 @@ class ShoppingSessionController extends ChangeNotifier {
       // An uncheck (delete) landing instead pulls the full list so the item
       // slots back onto the to-buy list in server-sorted order.
       if (_isOwnCheckOp(e.op)) {
+        final itemId = _stockFeedback.claim(e.op.uuid);
+        final result = e.entity;
+        if (itemId != null && result is ShoppingCheckResult) {
+          showRestockFeedback(
+            checkMessages(
+              rowId: itemId,
+              restocked: result.restocked,
+              restockUndone: result.restockUndone,
+              restockSync: result.restockSync,
+            ),
+          );
+        }
         if (e.op.op == SyncOpKind.delete) {
           unawaited(
             _refreshLiveData(includeHeartbeat: false).catchError((_) {}),
@@ -646,9 +670,11 @@ class ShoppingSessionController extends ChangeNotifier {
     _checkedPending.add(item.id);
     _items = _items.where((i) => i.id != item.id).toList();
     notifyListeners();
+    final opUuid = SyncIds.newOpUuid();
+    if (ServerFeature.inventoryStock) _stockFeedback.track(opUuid, item.id);
     SyncManager.instance.enqueue(
       SyncOp(
-        uuid: SyncIds.newOpUuid(),
+        uuid: opUuid,
         entity: SyncEntity.shoppingCheck,
         op: SyncOpKind.create,
         houseId: houseId,
@@ -671,9 +697,11 @@ class ShoppingSessionController extends ChangeNotifier {
       if (!_items.any((i) => i.id == item.id)) _items = [..._items, item];
     }
     notifyListeners();
+    final opUuid = SyncIds.newOpUuid();
+    if (ServerFeature.inventoryStock) _stockFeedback.track(opUuid, item.id);
     SyncManager.instance.enqueue(
       SyncOp(
-        uuid: SyncIds.newOpUuid(),
+        uuid: opUuid,
         entity: SyncEntity.shoppingCheck,
         op: SyncOpKind.delete,
         houseId: houseId,

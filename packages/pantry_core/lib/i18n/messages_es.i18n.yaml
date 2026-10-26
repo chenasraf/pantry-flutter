@@ -1068,6 +1068,13 @@ stock:
     warnBefore(String days): "Avisar $days días antes de la caducidad"
     daysBefore: Días antes de la caducidad
     warnHint: Pon 0 para avisar el mismo día de la caducidad.
+    restockChecklist: Lista de reposición
+    restockNone: Ninguna
+    restockSetHint: Los artículos que se agotan o empiezan a caducar se añaden a esta lista de verificación.
+    restockUnsetHint: Sin ella, los artículos bajos o que caducan solo se marcan aquí.
+    notifications: Notificaciones
+    stockSummary: Resumen diario de existencias
+    stockSummaryHint: Una vez al día, avisa a los miembros de lo que se ha quedado bajo o empieza a caducar aquí. Cada miembro también puede desactivarlo en sus ajustes personales.
     cancel: Cancelar
     save: Guardar
   card:
@@ -1130,6 +1137,78 @@ stock:
     levelAmount(String amount): "Nivel · $amount"
     targetValue(String target): "Objetivo: $target"
     fullWhenEmpty: Lleno si está vacío
+  noRestockChecklist: Este inventario no tiene lista de reposición, así que estos artículos solo se marcan aquí. Elige una en los ajustes del inventario.
+  renewChip(String date): "Renovar caducidad → $date"
+  renewAction: Renovar caducidad
+  summaryPref: Resumen diario de existencias
+  summaryPrefHint: Una vez al día, lo que se ha quedado bajo o empieza a caducar en los inventarios de esta casa.
+  summaryPrefFailed: No se pudo guardar el ajuste del resumen de existencias.
+  links:
+    caption: Lista de la compra
+    tooltipLinked(String row, String list): "Vinculado a $row en $list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'Sin vincular: 1 coincidencia, elige una', many: 'Sin vincular: $count coincidencias, elige una')}"
+    tooltipAutoOn: "Aún sin vincular: se añade a la lista de la compra cuando baja"
+    tooltipAutoOff: "Sin vincular: nunca se añade a una lista de la compra"
+    rowOnList(String row, String list, String state): "$row en $list · $state"
+    stateOpen: pendiente
+    stateChecked: marcado
+    stateArchived: archivado
+    stateTrashed: en la papelera
+    stateQuantity(String quantity): "× $quantity"
+    unlink: Desvincular
+    whichOne: ¿Cuál es?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: Añadir a la lista de la compra cuando baje
+    linkByHand: Vincular a mano
+    chipNeedsPick(int count): "${_plural(count, one: 'Sin vincular · 1 coincidencia, elige una', many: 'Sin vincular · $count coincidencias, elige una')}"
+    chipNotAdded: No se añade a ninguna lista de la compra
+    cardLinked(String row, String list, String state): "Vinculado a $row en $list · $state"
+    linkDifferent: Vincular a otro artículo …
+    linkedHint: Cuando baje o empiece a caducar, este artículo vuelve a esa lista.
+    matches(int count): "${_plural(count, one: '1 artículo coincide', many: '$count artículos coinciden')}"
+    matchesQuestion(String matches): "$matches en la lista de reposición. ¿Cuál es?"
+    link: Vincular
+    autoHintOn(String item, String list): "Busca o añade «$item» en $list cuando haga falta."
+    autoHintNoChecklist: Elige una lista de reposición en los ajustes del inventario para buscar o añadir este artículo allí.
+    autoHintOff: Este artículo solo se marca aquí cuando baja.
+    linkToItem: Vincular a un artículo …
+    pickerTitle: Vincular a un artículo de una lista
+    pickerField: Artículo de la lista
+    pickerSearch: Buscar artículos de listas …
+    pickerSearching: Buscando …
+    pickerEmpty: No se encontraron artículos
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: archivado
+    pickerFailed: No se pudieron cargar los artículos. Comprueba la conexión e inténtalo de nuevo.
+    cancel: Cancelar
+  restock:
+    added(String what, String list): "Añadido $what a $list"
+    revivedQuantity(String list, String row, String quantity): "De nuevo en $list: $row × $quantity"
+    revived(String list, String row): "De nuevo en $list: $row"
+    changed(String list, String row, String quantity): "$list: $row ahora × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row en $list se fijó a mano, se queda en $quantity"
+    pinned(String row, String list): "$row en $list se fijó a mano, se queda como está"
+    recovered(String row, String list): "Ya no hace falta: $row en $list"
+    linked(String item, String row, String list): "$item vinculado a $row en $list"
+    unlinked(String item, String row, String list): "$item desvinculado de $row en $list. No se añadirá a ninguna lista de la compra."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item coincide con 1 artículo en $list. Elige uno para vincular.', many: '$item coincide con $count artículos en $list. Elige uno para vincular.')}"
+    restocked(String parts): "Repuesto $parts"
+    replaced(String parts): "Sustituido $parts"
+    restockedReplaced(String restock, String replace): "Repuesto $restock, sustituido $replace"
+    undidRestocked(String parts): "Deshecho: repuesto $parts"
+    undidReplaced(String parts): "Deshecho: sustituido $parts"
+    undidRestockedReplaced(String restock, String replace): "Deshecho: repuesto $restock, sustituido $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) a Lleno"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), Lleno"
+    uncheckToUndo(String restock): "$restock · desmarca para deshacer"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "Repone $items"
+    setByHand(String quantity): "× $quantity · fijado a mano"
+    setByHandBare: Fijado a mano
+    setByHandTooltip: Fijado a mano. Toca para que lo fijen las existencias.
+    noLongerNeeded: Ya no hace falta
 
 notesWall:
   noNotes: "Aún no hay notas."

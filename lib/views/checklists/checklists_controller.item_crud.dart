@@ -345,6 +345,7 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     int? expiresAt,
     int? shelfLifeDays,
   }) async {
+    _renewOffers.remove(item.id);
     var updated = item.copyWith(
       name: name,
       description: description,
@@ -389,9 +390,11 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
       _cacheVisibleItems(item.listId);
       notifyListeners();
     }
+    final opUuid = SyncIds.newOpUuid();
+    _trackStockFeedback(opUuid, item);
     _sync.enqueue(
       SyncOp(
-        uuid: SyncIds.newOpUuid(),
+        uuid: opUuid,
         entity: SyncEntity.checklistItem,
         op: SyncOpKind.update,
         houseId: houseId,
@@ -657,14 +660,22 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index == -1) return;
 
-    _items[index] = item.copyWith(done: !item.done, updatedAt: _now());
+    // An uncheck takes back what the tick restocked; the server says what a
+    // tick restocks once it lands.
+    _items[index] = item.copyWith(
+      done: !item.done,
+      clearRestock: item.done,
+      updatedAt: _now(),
+    );
     _cacheVisibleItems(item.listId);
     if (!item.done) _stampCompletionIfClosed(item.listId);
     notifyListeners();
 
+    final opUuid = SyncIds.newOpUuid();
+    _trackStockFeedback(opUuid, item);
     _sync.enqueue(
       SyncOp(
-        uuid: SyncIds.newOpUuid(),
+        uuid: opUuid,
         entity: SyncEntity.checklistItem,
         op: SyncOpKind.toggle,
         houseId: houseId,

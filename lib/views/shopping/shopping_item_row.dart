@@ -15,6 +15,7 @@ import 'package:pantry_core/utils/rrule.dart';
 import 'package:pantry_core/utils/store_icons.dart';
 import 'package:pantry_core/utils/text_direction.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
+import 'package:pantry/views/checklists/restock_markers.dart';
 import 'package:pantry/views/shopping/shopping_session_controller.dart';
 import 'package:pantry/widgets/item_description.dart';
 import 'package:pantry/widgets/item_thumb.dart';
@@ -102,10 +103,18 @@ class ShoppingItemRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      item.name,
-                      textDirection: detectTextDirection(item.name),
-                      style: theme.textTheme.bodyLarge,
+                    Row(
+                      children: [
+                        if (item.restocks.isNotEmpty)
+                          RestocksMarker(sources: item.restocks),
+                        Flexible(
+                          child: Text(
+                            item.name,
+                            textDirection: detectTextDirection(item.name),
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
                     ),
                     if (descriptionLine != null) ...[
                       const SizedBox(height: 5),
@@ -183,7 +192,9 @@ class ShoppingItemRow extends StatelessWidget {
     }
 
     final quantity = item.quantity;
-    if (quantity != null &&
+    if (item.showsPinnedQuantity) {
+      chips.add(PinnedQuantityChip(quantity: quantity));
+    } else if (quantity != null &&
         quantity.trim().isNotEmpty &&
         prefs.isItemChipVisible(ItemChipKind.quantity.key)) {
       chips.add(

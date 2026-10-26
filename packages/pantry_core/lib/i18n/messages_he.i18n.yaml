@@ -1068,6 +1068,13 @@ stock:
     warnBefore(String days): "התראה $days ימים לפני התפוגה"
     daysBefore: ימים לפני התפוגה
     warnHint: יש להזין 0 כדי לקבל התראה ביום התפוגה עצמו.
+    restockChecklist: רשימת סימון לחידוש מלאי
+    restockNone: ללא
+    restockSetHint: פריטים שנגמרים או מתקרבים לתפוגה נוספים לרשימת הסימון הזו.
+    restockUnsetHint: בלעדיה, פריטים נמוכים או שמתקרבים לתפוגה רק מסומנים כאן.
+    notifications: התראות
+    stockSummary: סיכום מלאי יומי
+    stockSummaryHint: פעם ביום, לספר לחברים מה נגמר או התחיל להתקרב לתפוגה כאן. כל חבר יכול גם לכבות זאת בהגדרות האישיות.
     cancel: ביטול
     save: שמירה
   card:
@@ -1130,6 +1137,78 @@ stock:
     levelAmount(String amount): "רמה · $amount"
     targetValue(String target): "יעד: $target"
     fullWhenEmpty: מלא כשריק
+  noRestockChecklist: לרשימת המלאי הזו אין רשימת סימון לחידוש מלאי, ולכן הפריטים האלה רק מסומנים כאן. אפשר לבחור אחת בהגדרות רשימת המלאי.
+  renewChip(String date): "חידוש תפוגה ← $date"
+  renewAction: חידוש תפוגה
+  summaryPref: סיכום מלאי יומי
+  summaryPrefHint: פעם ביום, מה נגמר או התחיל להתקרב לתפוגה ברשימות המלאי של הבית הזה.
+  summaryPrefFailed: לא ניתן היה לשמור את הגדרת סיכום המלאי.
+  links:
+    caption: רשימת קניות
+    tooltipLinked(String row, String list): "מקושר ל$row ב$list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'לא מקושר: התאמה אחת, יש לבחור', many: 'לא מקושר: $count התאמות, יש לבחור אחת')}"
+    tooltipAutoOn: "עדיין לא מקושר: יתווסף לרשימת הקניות כשיהיה נמוך"
+    tooltipAutoOff: "לא מקושר: לעולם לא יתווסף לרשימת קניות"
+    rowOnList(String row, String list, String state): "$row ב$list · $state"
+    stateOpen: פתוח
+    stateChecked: מסומן
+    stateArchived: בארכיון
+    stateTrashed: בסל המחזור
+    stateQuantity(String quantity): "× $quantity"
+    unlink: ביטול קישור
+    whichOne: איזה מהם?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: להוסיף לרשימת הקניות כשנמוך
+    linkByHand: קישור ידני
+    chipNeedsPick(int count): "${_plural(count, one: 'לא מקושר · התאמה אחת, יש לבחור', many: 'לא מקושר · $count התאמות, יש לבחור אחת')}"
+    chipNotAdded: לא מתווסף לרשימת קניות
+    cardLinked(String row, String list, String state): "מקושר ל$row ב$list · $state"
+    linkDifferent: קישור לפריט אחר …
+    linkedHint: כשהפריט נגמר או מתקרב לתפוגה, הוא חוזר לרשימה הזו.
+    matches(int count): "${_plural(count, one: 'פריט אחד מתאים', many: '$count פריטים מתאימים')}"
+    matchesQuestion(String matches): "$matches ברשימת הסימון לחידוש מלאי. איזה מהם זה?"
+    link: קישור
+    autoHintOn(String item, String list): 'מוצא או מוסיף את "$item" ב$list כשצריך.'
+    autoHintNoChecklist: יש לבחור רשימת סימון לחידוש מלאי בהגדרות רשימת המלאי כדי למצוא או להוסיף שם את הפריט.
+    autoHintOff: הפריט הזה רק מסומן כאן כשהוא נמוך.
+    linkToItem: קישור לפריט …
+    pickerTitle: קישור לפריט ברשימת סימון
+    pickerField: פריט ברשימת סימון
+    pickerSearch: חיפוש פריטים ברשימות סימון …
+    pickerSearching: מחפש …
+    pickerEmpty: לא נמצאו פריטים
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: בארכיון
+    pickerFailed: לא ניתן היה לטעון פריטים. יש לבדוק את החיבור ולנסות שוב.
+    cancel: ביטול
+  restock:
+    added(String what, String list): "$what נוסף ל$list"
+    revivedQuantity(String list, String row, String quantity): "שוב ב$list: $row × $quantity"
+    revived(String list, String row): "שוב ב$list: $row"
+    changed(String list, String row, String quantity): "$list: $row עכשיו × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row ב$list נקבע ידנית ונשאר על $quantity"
+    pinned(String row, String list): "$row ב$list נקבע ידנית ונשאר כפי שהוא"
+    recovered(String row, String list): "כבר לא נחוץ: $row ב$list"
+    linked(String item, String row, String list): "$item קושר ל$row ב$list"
+    unlinked(String item, String row, String list): "הקישור של $item ל$row ב$list בוטל. הוא לא יתווסף לרשימת קניות."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item מתאים לפריט אחד ב$list. יש לבחור אחד לקישור.', many: '$item מתאים ל-$count פריטים ב$list. יש לבחור אחד לקישור.')}"
+    restocked(String parts): "חודש מלאי: $parts"
+    replaced(String parts): "הוחלף: $parts"
+    restockedReplaced(String restock, String replace): "חודש מלאי: $restock; הוחלף: $replace"
+    undidRestocked(String parts): "בוטל: חידוש מלאי $parts"
+    undidReplaced(String parts): "בוטל: החלפה $parts"
+    undidRestockedReplaced(String restock, String replace): "בוטל: חידוש מלאי $restock; החלפה $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) למלא"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), מלא"
+    uncheckToUndo(String restock): "$restock · ביטול הסימון יבטל"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "מחדש מלאי: $items"
+    setByHand(String quantity): "× $quantity · נקבע ידנית"
+    setByHandBare: נקבע ידנית
+    setByHandTooltip: נקבע ידנית. הקשה תחזיר את הקביעה למלאי.
+    noLongerNeeded: כבר לא נחוץ
 
 notesWall:
   noNotes: אין הערות עדיין.

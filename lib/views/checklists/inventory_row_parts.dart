@@ -10,13 +10,45 @@ import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/widgets/entity_chip.dart';
 import 'package:pantry/theme/app_theme.dart';
 
+import 'stock_link_parts.dart';
+
 /// What an inventory row can change on its own, without opening the item.
 /// A null callback disables that control.
 class InventoryRowActions {
-  const InventoryRowActions({this.onSetOnHand, this.onSetLevel});
+  const InventoryRowActions({
+    this.onSetOnHand,
+    this.onSetLevel,
+    this.links,
+    this.renewTo,
+    this.onRenew,
+  });
 
   final ValueChanged<String>? onSetOnHand;
   final ValueChanged<StockLevel>? onSetLevel;
+  final StockLinkActions? links;
+
+  /// The date the open renew offer would set the expiry to.
+  final int? renewTo;
+  final VoidCallback? onRenew;
+}
+
+/// The accent chip offering to renew the expiry after a raise.
+class RenewExpiryChip extends StatelessWidget {
+  const RenewExpiryChip({super.key, required this.date, required this.onTap});
+
+  final int date;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return EntityChip(
+      leading: Icon(Icons.autorenew, size: 13, color: cs.primary),
+      label: m.stock.renewChip(formatShortDate(date)),
+      textColor: cs.primary,
+      onTap: onTap,
+    );
+  }
 }
 
 enum StockTone { success, warning, error, muted }

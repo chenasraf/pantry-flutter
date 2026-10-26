@@ -168,6 +168,8 @@ extension ChecklistServiceItems on ChecklistService {
     String? reorderPoint,
     int? expiresAt,
     int? shelfLifeDays,
+    bool? autoLink,
+    bool? quantityPinned,
   }) async {
     return ApiClient.instance.patch<Map<String, dynamic>, ListItem>(
       '${listPath(houseId, listId)}/items/$itemId',
@@ -202,8 +204,49 @@ extension ChecklistServiceItems on ChecklistService {
           'expiresAt': ?expiresAt,
           'shelfLifeDays': ?shelfLifeDays,
         },
+        if (kindOf(listId) == ListKind.inventory) 'autoLink': ?autoLink,
+        if (kindOf(listId).isChecklist) 'quantityPinned': ?quantityPinned,
       },
       fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
+  /// Link inventory item [itemId] to checklist item [targetItemId], replacing
+  /// any link it has.
+  Future<ListItem> linkItem(
+    int houseId,
+    int listId,
+    int itemId,
+    int targetItemId,
+  ) async {
+    return ApiClient.instance.post<Map<String, dynamic>, ListItem>(
+      '${listPath(houseId, listId)}/items/$itemId/link',
+      body: {'targetItemId': targetItemId},
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
+  /// Unlink inventory item [itemId]. The server turns its auto-link off too.
+  Future<ListItem> unlinkItem(int houseId, int listId, int itemId) async {
+    return ApiClient.instance.deleteWithResult<Map<String, dynamic>, ListItem>(
+      '${listPath(houseId, listId)}/items/$itemId/link',
+      fromJson: (data) => ListItem.fromJson(data),
+    );
+  }
+
+  /// Checklist items inventory [listId]'s items can be linked to: live and
+  /// archived items on checklists the caller can edit, minus those already
+  /// linked from this inventory.
+  Future<List<StockLinkRow>> linkTargets(
+    int houseId,
+    int listId, {
+    String search = '',
+    int limit = 50,
+  }) async {
+    return ApiClient.instance.get<List, List<StockLinkRow>>(
+      '${listPath(houseId, listId)}/link-targets',
+      query: {'search': search, 'limit': '$limit'},
+      fromJson: StockLinkRow.listFrom,
     );
   }
 

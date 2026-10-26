@@ -169,7 +169,11 @@ Future<void> rescheduleBackgroundNotificationPoll() async {
   await registerBackgroundNotificationPoll();
 }
 
-String? notificationPayloadFor(NcNotification n) {
+String? notificationPayloadFor(NcNotification n) =>
+    notificationDeepLinkFor(n)?.encode();
+
+/// Where tapping [n] leads, or null when it leads nowhere.
+DeepLink? notificationDeepLinkFor(NcNotification n) {
   final target = n.target;
   if (target == null) return null;
   final tab = switch (target) {
@@ -186,7 +190,16 @@ String? notificationPayloadFor(NcNotification n) {
       houseId: itemTarget.houseId,
       listId: itemTarget.listId,
       itemId: itemTarget.itemId,
-    ).encode();
+    );
   }
-  return DeepLink(tabIndex: tab, houseId: n.houseId).encode();
+  final inventory = n.inventoryLinkTarget;
+  if (inventory != null) {
+    return DeepLink(
+      tabIndex: tab,
+      houseId: inventory.houseId,
+      listId: inventory.listId,
+      needsRestock: inventory.needsRestock,
+    );
+  }
+  return DeepLink(tabIndex: tab, houseId: n.houseId);
 }

@@ -1068,6 +1068,13 @@ stock:
     warnBefore(String days): "$days Tage vor Ablauf warnen"
     daysBefore: Tage vor Ablauf
     warnHint: 0 eingeben, um am Ablaufdatum selbst zu warnen.
+    restockChecklist: Nachkauf-Checkliste
+    restockNone: Keine
+    restockSetHint: Einträge, die knapp werden oder bald ablaufen, kommen auf diese Checkliste.
+    restockUnsetHint: Ohne sie werden knappe und bald ablaufende Einträge nur hier markiert.
+    notifications: Benachrichtigungen
+    stockSummary: Tägliche Bestandsübersicht
+    stockSummaryHint: Einmal am Tag den Mitgliedern sagen, was hier neu knapp wurde oder bald abläuft. Jedes Mitglied kann sie auch in den eigenen Einstellungen abschalten.
     cancel: Abbrechen
     save: Speichern
   card:
@@ -1130,6 +1137,78 @@ stock:
     levelAmount(String amount): "Stufe · $amount"
     targetValue(String target): "Ziel: $target"
     fullWhenEmpty: Voll, wenn leer
+  noRestockChecklist: Diese Bestandsliste hat keine Nachkauf-Checkliste, daher werden diese Einträge nur hier markiert. Wähle eine in den Bestandslisten-Einstellungen.
+  renewChip(String date): "Ablauf erneuern → $date"
+  renewAction: Ablauf erneuern
+  summaryPref: Tägliche Bestandsübersicht
+  summaryPrefHint: Einmal am Tag, was in den Bestandslisten dieses Haushalts neu knapp wurde oder bald abläuft.
+  summaryPrefFailed: Die Einstellung zur Bestandsübersicht konnte nicht gespeichert werden.
+  links:
+    caption: Einkaufsliste
+    tooltipLinked(String row, String list): "Verknüpft mit $row auf $list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'Nicht verknüpft: 1 Treffer, wähle einen aus', many: 'Nicht verknüpft: $count Treffer, wähle einen aus')}"
+    tooltipAutoOn: "Noch nicht verknüpft: kommt auf die Einkaufsliste, wenn es knapp wird"
+    tooltipAutoOff: "Nicht verknüpft: kommt nie auf eine Einkaufsliste"
+    rowOnList(String row, String list, String state): "$row auf $list · $state"
+    stateOpen: offen
+    stateChecked: abgehakt
+    stateArchived: archiviert
+    stateTrashed: im Papierkorb
+    stateQuantity(String quantity): "× $quantity"
+    unlink: Verknüpfung lösen
+    whichOne: Welcher ist es?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: Auf die Einkaufsliste, wenn knapp
+    linkByHand: Von Hand verknüpfen
+    chipNeedsPick(int count): "${_plural(count, one: 'Nicht verknüpft · 1 Treffer, wähle einen aus', many: 'Nicht verknüpft · $count Treffer, wähle einen aus')}"
+    chipNotAdded: Kommt auf keine Einkaufsliste
+    cardLinked(String row, String list, String state): "Verknüpft mit $row auf $list · $state"
+    linkDifferent: Mit einem anderen Eintrag verknüpfen …
+    linkedHint: Wenn er knapp wird oder bald abläuft, kommt dieser Eintrag wieder auf diese Liste.
+    matches(int count): "${_plural(count, one: '1 Eintrag passt', many: '$count Einträge passen')}"
+    matchesQuestion(String matches): "$matches auf der Nachkauf-Checkliste. Welcher ist es?"
+    link: Verknüpfen
+    autoHintOn(String item, String list): "Findet oder ergänzt „$item“ auf $list, wenn er gebraucht wird."
+    autoHintNoChecklist: Wähle in den Bestandslisten-Einstellungen eine Nachkauf-Checkliste, um diesen Eintrag dort zu finden oder zu ergänzen.
+    autoHintOff: Dieser Eintrag wird nur hier markiert, wenn er knapp wird.
+    linkToItem: Mit einem Eintrag verknüpfen …
+    pickerTitle: Mit einem Checklisten-Eintrag verknüpfen
+    pickerField: Checklisten-Eintrag
+    pickerSearch: Checklisten-Einträge suchen …
+    pickerSearching: Suche …
+    pickerEmpty: Keine Checklisten-Einträge gefunden
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: archiviert
+    pickerFailed: Checklisten-Einträge konnten nicht geladen werden. Prüfe die Verbindung und versuche es erneut.
+    cancel: Abbrechen
+  restock:
+    added(String what, String list): "$what zu $list hinzugefügt"
+    revivedQuantity(String list, String row, String quantity): "Wieder auf $list: $row × $quantity"
+    revived(String list, String row): "Wieder auf $list: $row"
+    changed(String list, String row, String quantity): "$list: $row jetzt × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row auf $list wurde von Hand gesetzt, bleibt bei $quantity"
+    pinned(String row, String list): "$row auf $list wurde von Hand gesetzt, bleibt wie es ist"
+    recovered(String row, String list): "Nicht mehr nötig: $row auf $list"
+    linked(String item, String row, String list): "$item mit $row auf $list verknüpft"
+    unlinked(String item, String row, String list): "Verknüpfung von $item mit $row auf $list gelöst. Es kommt auf keine Einkaufsliste."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item passt zu 1 Eintrag auf $list. Wähle einen zum Verknüpfen.', many: '$item passt zu $count Einträgen auf $list. Wähle einen zum Verknüpfen.')}"
+    restocked(String parts): "Nachgefüllt: $parts"
+    replaced(String parts): "Ersetzt: $parts"
+    restockedReplaced(String restock, String replace): "Nachgefüllt: $restock; ersetzt: $replace"
+    undidRestocked(String parts): "Rückgängig: nachgefüllt $parts"
+    undidReplaced(String parts): "Rückgängig: ersetzt $parts"
+    undidRestockedReplaced(String restock, String replace): "Rückgängig: nachgefüllt $restock; ersetzt $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) auf Voll"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), Voll"
+    uncheckToUndo(String restock): "$restock · zum Rückgängigmachen abhaken aufheben"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "Füllt nach: $items"
+    setByHand(String quantity): "× $quantity · von Hand gesetzt"
+    setByHandBare: Von Hand gesetzt
+    setByHandTooltip: Von Hand gesetzt. Tippen, damit der Bestand es setzt.
+    noLongerNeeded: Nicht mehr nötig
 
 notesWall:
   noNotes: Noch keine Notizen.

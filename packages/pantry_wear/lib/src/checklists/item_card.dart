@@ -104,6 +104,15 @@ class ItemCard extends StatelessWidget {
                   color: marked ? scheme.primary : Colors.white38,
                 ),
                 const SizedBox(width: 8),
+                // An item that restocks an inventory, as on the phone.
+                if (item.restocks.isNotEmpty) ...[
+                  Icon(
+                    Icons.inventory_2_outlined,
+                    size: 12,
+                    color: scheme.primary,
+                  ),
+                  const SizedBox(width: 4),
+                ],
                 Expanded(
                   child: Text(
                     item.name,
@@ -132,11 +141,19 @@ class ItemCard extends StatelessWidget {
                 if (item.quantity != null &&
                     PrefsService.instance.isItemChipVisible(
                       ItemChipKind.quantity.key,
-                    ))
+                    )) ...[
+                  // Set by hand, so stock leaves it alone.
+                  if (item.quantityPinned && !item.done)
+                    Icon(
+                      Icons.push_pin_outlined,
+                      size: 11,
+                      color: scheme.primary,
+                    ),
                   Text(
                     item.quantity!,
                     style: const TextStyle(fontSize: 11, color: Colors.white54),
                   ),
+                ],
               ],
             ),
             if (expansion > 0)

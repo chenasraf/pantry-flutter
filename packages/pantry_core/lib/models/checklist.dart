@@ -3,7 +3,10 @@ import 'package:pantry_core/models/item_defaults.dart';
 import 'package:pantry_core/models/list_kind.dart';
 import 'package:pantry_core/models/list_recurrence.dart';
 import 'package:pantry_core/models/stock.dart';
+import 'package:pantry_core/models/stock_links.dart';
 import 'package:pantry_core/services/server_version_service.dart';
+
+export 'package:pantry_core/models/stock_links.dart';
 
 /// Sentinel id used by the synthetic "All lists" meta view. Real list ids on
 /// the backend are always positive; temp ids minted by SyncManager are
@@ -83,6 +86,14 @@ class ChecklistList {
   /// expiring.
   final int? expiryLeadDays;
 
+  /// Inventories only: the checklist items needing restock are put on. Null
+  /// when unset, or when that checklist is archived or gone.
+  final int? restockChecklistId;
+
+  /// Inventories only: whether members get a daily summary of what newly ran
+  /// low or started expiring here.
+  final bool? stockSummary;
+
   const ChecklistList({
     required this.id,
     required this.houseId,
@@ -108,6 +119,8 @@ class ChecklistList {
     this.fillFromDefaults,
     this.needsRestock,
     this.expiryLeadDays,
+    this.restockChecklistId,
+    this.stockSummary,
   });
 
   factory ChecklistList.fromJson(Map<String, dynamic> json) => ChecklistList(
@@ -148,6 +161,8 @@ class ChecklistList {
     fillFromDefaults: json['fillFromDefaults'] as bool?,
     needsRestock: json['needsRestock'] as int?,
     expiryLeadDays: json['expiryLeadDays'] as int?,
+    restockChecklistId: json['restockChecklistId'] as int?,
+    stockSummary: json['stockSummary'] as bool?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -176,6 +191,8 @@ class ChecklistList {
     'fillFromDefaults': ?fillFromDefaults,
     'needsRestock': ?needsRestock,
     'expiryLeadDays': ?expiryLeadDays,
+    'restockChecklistId': ?restockChecklistId,
+    'stockSummary': ?stockSummary,
   };
 
   ChecklistList copyWith({
@@ -201,6 +218,9 @@ class ChecklistList {
     bool? fillFromDefaults,
     int? needsRestock,
     int? expiryLeadDays,
+    int? restockChecklistId,
+    bool clearRestockChecklistId = false,
+    bool? stockSummary,
   }) => ChecklistList(
     id: id ?? this.id,
     houseId: houseId,
@@ -229,6 +249,10 @@ class ChecklistList {
     fillFromDefaults: fillFromDefaults ?? this.fillFromDefaults,
     needsRestock: needsRestock ?? this.needsRestock,
     expiryLeadDays: expiryLeadDays ?? this.expiryLeadDays,
+    restockChecklistId: clearRestockChecklistId
+        ? null
+        : (restockChecklistId ?? this.restockChecklistId),
+    stockSummary: stockSummary ?? this.stockSummary,
   );
 }
 
@@ -384,6 +408,35 @@ class ListItem {
   /// Midnight, in epoch seconds, of the last day the item is good.
   final int? expiresAt;
   final int? shelfLifeDays;
+
+  /// Inventory items: whether an unlinked item finds or adds a same-name item
+  /// on the restock checklist when it needs restock. Null elsewhere.
+  final bool? autoLink;
+
+  /// Inventory items: the checklist item it is linked to.
+  final StockLinkRow? stockLink;
+
+  /// Inventory items: same-name checklist items to pick from, while several
+  /// match and none is linked.
+  final List<StockLinkRow> linkCandidates;
+
+  /// Checklist items: the inventory items this one restocks, earliest linked
+  /// first.
+  final List<StockLinkSource> restocks;
+
+  /// Checklist items: the quantity was set by hand, so the restock sync leaves
+  /// it alone until the item is next done.
+  final bool quantityPinned;
+
+  /// Checklist items: what checking it off put into stock, until unchecked.
+  final List<RestockEntry>? restock;
+
+  /// Only on the response of the write that caused them, never cached: what
+  /// the restock sync did, what a tick restocked, what an uncheck undid.
+  final List<RestockSyncEvent> restockSync;
+  final List<RestockEntry> restocked;
+  final List<RestockEntry> restockUndone;
+
   final int sortOrder;
   final int createdAt;
   final int updatedAt;
@@ -421,6 +474,15 @@ class ListItem {
     this.expiryStatus,
     this.expiresAt,
     this.shelfLifeDays,
+    this.autoLink,
+    this.stockLink,
+    this.linkCandidates = const [],
+    this.restocks = const [],
+    this.quantityPinned = false,
+    this.restock,
+    this.restockSync = const [],
+    this.restocked = const [],
+    this.restockUndone = const [],
     required this.sortOrder,
     required this.createdAt,
     required this.updatedAt,
@@ -465,6 +527,21 @@ class ListItem {
     expiryStatus: ExpiryStatus.tryParse(json['expiryStatus']),
     expiresAt: json['expiresAt'] as int?,
     shelfLifeDays: json['shelfLifeDays'] as int?,
+    autoLink: json['autoLink'] as bool?,
+    stockLink: json['stockLink'] is Map
+        ? StockLinkRow.fromJson(
+            Map<String, dynamic>.from(json['stockLink'] as Map),
+          )
+        : null,
+    linkCandidates: StockLinkRow.listFrom(json['linkCandidates']),
+    restocks: StockLinkSource.listFrom(json['restocks']),
+    quantityPinned: json['quantityPinned'] as bool? ?? false,
+    restock: json['restock'] is List
+        ? RestockEntry.listFrom(json['restock'])
+        : null,
+    restockSync: RestockSyncEvent.listFrom(json['restockSync']),
+    restocked: RestockEntry.listFrom(json['restocked']),
+    restockUndone: RestockEntry.listFrom(json['restockUndone']),
     sortOrder: json['sortOrder'] as int,
     createdAt: json['createdAt'] as int,
     updatedAt: json['updatedAt'] as int,
@@ -541,6 +618,14 @@ class ListItem {
     'expiryStatus': ?expiryStatus?.wire,
     'expiresAt': ?expiresAt,
     'shelfLifeDays': ?shelfLifeDays,
+    'autoLink': ?autoLink,
+    'stockLink': ?stockLink?.toJson(),
+    if (linkCandidates.isNotEmpty)
+      'linkCandidates': linkCandidates.map((r) => r.toJson()).toList(),
+    if (restocks.isNotEmpty)
+      'restocks': restocks.map((r) => r.toJson()).toList(),
+    if (quantityPinned) 'quantityPinned': true,
+    'restock': ?restock?.map((r) => r.toJson()).toList(),
     'sortOrder': sortOrder,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
@@ -584,6 +669,14 @@ class ListItem {
     bool clearExpiresAt = false,
     int? shelfLifeDays,
     bool clearShelfLifeDays = false,
+    bool? autoLink,
+    StockLinkRow? stockLink,
+    bool clearStockLink = false,
+    List<StockLinkRow>? linkCandidates,
+    bool? quantityPinned,
+    List<RestockEntry>? restock,
+    bool clearRestock = false,
+    List<RestockSyncEvent> restockSync = const [],
     int? sortOrder,
     int? updatedAt,
     int? deletedAt,
@@ -627,12 +720,25 @@ class ListItem {
     shelfLifeDays: clearShelfLifeDays
         ? null
         : (shelfLifeDays ?? this.shelfLifeDays),
+    autoLink: autoLink ?? this.autoLink,
+    stockLink: clearStockLink ? null : (stockLink ?? this.stockLink),
+    linkCandidates: linkCandidates ?? this.linkCandidates,
+    restocks: restocks,
+    quantityPinned: quantityPinned ?? this.quantityPinned,
+    restock: clearRestock ? null : (restock ?? this.restock),
+    restockSync: restockSync,
     sortOrder: sortOrder ?? this.sortOrder,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: clearDeletedAt ? null : (deletedAt ?? this.deletedAt),
     archivedAt: clearArchivedAt ? null : (archivedAt ?? this.archivedAt),
   );
+
+  /// This answer, carrying the sync feedback of [earlier] — an answer to the
+  /// same write — ahead of its own.
+  ListItem withSyncFeedbackOf(ListItem earlier) => earlier.restockSync.isEmpty
+      ? this
+      : copyWith(restockSync: [...earlier.restockSync, ...restockSync]);
 }
 
 /// Envelope returned by the house-scoped batch item endpoints (move / copy /

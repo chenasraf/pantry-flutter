@@ -5609,6 +5609,41 @@ class StockMessagesEs extends StockMessages {
   CardStockMessagesEs get card => CardStockMessagesEs(this);
   ExpiryStockMessagesEs get expiry => ExpiryStockMessagesEs(this);
   ComposeStockMessagesEs get compose => ComposeStockMessagesEs(this);
+
+  /// ```dart
+  /// "Este inventario no tiene lista de reposición, así que estos artículos solo se marcan aquí. Elige una en los ajustes del inventario."
+  /// ```
+  String get noRestockChecklist =>
+      """Este inventario no tiene lista de reposición, así que estos artículos solo se marcan aquí. Elige una en los ajustes del inventario.""";
+
+  /// ```dart
+  /// "Renovar caducidad → $date"
+  /// ```
+  String renewChip(String date) => """Renovar caducidad → $date""";
+
+  /// ```dart
+  /// "Renovar caducidad"
+  /// ```
+  String get renewAction => """Renovar caducidad""";
+
+  /// ```dart
+  /// "Resumen diario de existencias"
+  /// ```
+  String get summaryPref => """Resumen diario de existencias""";
+
+  /// ```dart
+  /// "Una vez al día, lo que se ha quedado bajo o empieza a caducar en los inventarios de esta casa."
+  /// ```
+  String get summaryPrefHint =>
+      """Una vez al día, lo que se ha quedado bajo o empieza a caducar en los inventarios de esta casa.""";
+
+  /// ```dart
+  /// "No se pudo guardar el ajuste del resumen de existencias."
+  /// ```
+  String get summaryPrefFailed =>
+      """No se pudo guardar el ajuste del resumen de existencias.""";
+  LinksStockMessagesEs get links => LinksStockMessagesEs(this);
+  RestockStockMessagesEs get restock => RestockStockMessagesEs(this);
 }
 
 class SettingsStockMessagesEs extends SettingsStockMessages {
@@ -5656,6 +5691,44 @@ class SettingsStockMessagesEs extends SettingsStockMessages {
   /// "Pon 0 para avisar el mismo día de la caducidad."
   /// ```
   String get warnHint => """Pon 0 para avisar el mismo día de la caducidad.""";
+
+  /// ```dart
+  /// "Lista de reposición"
+  /// ```
+  String get restockChecklist => """Lista de reposición""";
+
+  /// ```dart
+  /// "Ninguna"
+  /// ```
+  String get restockNone => """Ninguna""";
+
+  /// ```dart
+  /// "Los artículos que se agotan o empiezan a caducar se añaden a esta lista de verificación."
+  /// ```
+  String get restockSetHint =>
+      """Los artículos que se agotan o empiezan a caducar se añaden a esta lista de verificación.""";
+
+  /// ```dart
+  /// "Sin ella, los artículos bajos o que caducan solo se marcan aquí."
+  /// ```
+  String get restockUnsetHint =>
+      """Sin ella, los artículos bajos o que caducan solo se marcan aquí.""";
+
+  /// ```dart
+  /// "Notificaciones"
+  /// ```
+  String get notifications => """Notificaciones""";
+
+  /// ```dart
+  /// "Resumen diario de existencias"
+  /// ```
+  String get stockSummary => """Resumen diario de existencias""";
+
+  /// ```dart
+  /// "Una vez al día, avisa a los miembros de lo que se ha quedado bajo o empieza a caducar aquí. Cada miembro también puede desactivarlo en sus ajustes personales."
+  /// ```
+  String get stockSummaryHint =>
+      """Una vez al día, avisa a los miembros de lo que se ha quedado bajo o empieza a caducar aquí. Cada miembro también puede desactivarlo en sus ajustes personales.""";
 
   /// ```dart
   /// "Cancelar"
@@ -5982,6 +6055,366 @@ class ComposeStockMessagesEs extends ComposeStockMessages {
   /// "Lleno si está vacío"
   /// ```
   String get fullWhenEmpty => """Lleno si está vacío""";
+}
+
+class LinksStockMessagesEs extends LinksStockMessages {
+  final StockMessagesEs _parent;
+  const LinksStockMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Lista de la compra"
+  /// ```
+  String get caption => """Lista de la compra""";
+
+  /// ```dart
+  /// "Vinculado a $row en $list"
+  /// ```
+  String tooltipLinked(String row, String list) =>
+      """Vinculado a $row en $list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Sin vincular: 1 coincidencia, elige una', many: 'Sin vincular: $count coincidencias, elige una')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'Sin vincular: 1 coincidencia, elige una', many: 'Sin vincular: $count coincidencias, elige una')}""";
+
+  /// ```dart
+  /// "Aún sin vincular: se añade a la lista de la compra cuando baja"
+  /// ```
+  String get tooltipAutoOn =>
+      """Aún sin vincular: se añade a la lista de la compra cuando baja""";
+
+  /// ```dart
+  /// "Sin vincular: nunca se añade a una lista de la compra"
+  /// ```
+  String get tooltipAutoOff =>
+      """Sin vincular: nunca se añade a una lista de la compra""";
+
+  /// ```dart
+  /// "$row en $list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row en $list · $state""";
+
+  /// ```dart
+  /// "pendiente"
+  /// ```
+  String get stateOpen => """pendiente""";
+
+  /// ```dart
+  /// "marcado"
+  /// ```
+  String get stateChecked => """marcado""";
+
+  /// ```dart
+  /// "archivado"
+  /// ```
+  String get stateArchived => """archivado""";
+
+  /// ```dart
+  /// "en la papelera"
+  /// ```
+  String get stateTrashed => """en la papelera""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Desvincular"
+  /// ```
+  String get unlink => """Desvincular""";
+
+  /// ```dart
+  /// "¿Cuál es?"
+  /// ```
+  String get whichOne => """¿Cuál es?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "Añadir a la lista de la compra cuando baje"
+  /// ```
+  String get autoLink => """Añadir a la lista de la compra cuando baje""";
+
+  /// ```dart
+  /// "Vincular a mano"
+  /// ```
+  String get linkByHand => """Vincular a mano""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Sin vincular · 1 coincidencia, elige una', many: 'Sin vincular · $count coincidencias, elige una')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'Sin vincular · 1 coincidencia, elige una', many: 'Sin vincular · $count coincidencias, elige una')}""";
+
+  /// ```dart
+  /// "No se añade a ninguna lista de la compra"
+  /// ```
+  String get chipNotAdded => """No se añade a ninguna lista de la compra""";
+
+  /// ```dart
+  /// "Vinculado a $row en $list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """Vinculado a $row en $list · $state""";
+
+  /// ```dart
+  /// "Vincular a otro artículo …"
+  /// ```
+  String get linkDifferent => """Vincular a otro artículo …""";
+
+  /// ```dart
+  /// "Cuando baje o empiece a caducar, este artículo vuelve a esa lista."
+  /// ```
+  String get linkedHint =>
+      """Cuando baje o empiece a caducar, este artículo vuelve a esa lista.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 artículo coincide', many: '$count artículos coinciden')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: '1 artículo coincide', many: '$count artículos coinciden')}""";
+
+  /// ```dart
+  /// "$matches en la lista de reposición. ¿Cuál es?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches en la lista de reposición. ¿Cuál es?""";
+
+  /// ```dart
+  /// "Vincular"
+  /// ```
+  String get link => """Vincular""";
+
+  /// ```dart
+  /// "Busca o añade «$item» en $list cuando haga falta."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """Busca o añade «$item» en $list cuando haga falta.""";
+
+  /// ```dart
+  /// "Elige una lista de reposición en los ajustes del inventario para buscar o añadir este artículo allí."
+  /// ```
+  String get autoHintNoChecklist =>
+      """Elige una lista de reposición en los ajustes del inventario para buscar o añadir este artículo allí.""";
+
+  /// ```dart
+  /// "Este artículo solo se marca aquí cuando baja."
+  /// ```
+  String get autoHintOff => """Este artículo solo se marca aquí cuando baja.""";
+
+  /// ```dart
+  /// "Vincular a un artículo …"
+  /// ```
+  String get linkToItem => """Vincular a un artículo …""";
+
+  /// ```dart
+  /// "Vincular a un artículo de una lista"
+  /// ```
+  String get pickerTitle => """Vincular a un artículo de una lista""";
+
+  /// ```dart
+  /// "Artículo de la lista"
+  /// ```
+  String get pickerField => """Artículo de la lista""";
+
+  /// ```dart
+  /// "Buscar artículos de listas …"
+  /// ```
+  String get pickerSearch => """Buscar artículos de listas …""";
+
+  /// ```dart
+  /// "Buscando …"
+  /// ```
+  String get pickerSearching => """Buscando …""";
+
+  /// ```dart
+  /// "No se encontraron artículos"
+  /// ```
+  String get pickerEmpty => """No se encontraron artículos""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "archivado"
+  /// ```
+  String get pickerArchived => """archivado""";
+
+  /// ```dart
+  /// "No se pudieron cargar los artículos. Comprueba la conexión e inténtalo de nuevo."
+  /// ```
+  String get pickerFailed =>
+      """No se pudieron cargar los artículos. Comprueba la conexión e inténtalo de nuevo.""";
+
+  /// ```dart
+  /// "Cancelar"
+  /// ```
+  String get cancel => """Cancelar""";
+}
+
+class RestockStockMessagesEs extends RestockStockMessages {
+  final StockMessagesEs _parent;
+  const RestockStockMessagesEs(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Añadido $what a $list"
+  /// ```
+  String added(String what, String list) => """Añadido $what a $list""";
+
+  /// ```dart
+  /// "De nuevo en $list: $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """De nuevo en $list: $row × $quantity""";
+
+  /// ```dart
+  /// "De nuevo en $list: $row"
+  /// ```
+  String revived(String list, String row) => """De nuevo en $list: $row""";
+
+  /// ```dart
+  /// "$list: $row ahora × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list: $row ahora × $quantity""";
+
+  /// ```dart
+  /// "$row en $list se fijó a mano, se queda en $quantity"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row en $list se fijó a mano, se queda en $quantity""";
+
+  /// ```dart
+  /// "$row en $list se fijó a mano, se queda como está"
+  /// ```
+  String pinned(String row, String list) =>
+      """$row en $list se fijó a mano, se queda como está""";
+
+  /// ```dart
+  /// "Ya no hace falta: $row en $list"
+  /// ```
+  String recovered(String row, String list) =>
+      """Ya no hace falta: $row en $list""";
+
+  /// ```dart
+  /// "$item vinculado a $row en $list"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """$item vinculado a $row en $list""";
+
+  /// ```dart
+  /// "$item desvinculado de $row en $list. No se añadirá a ninguna lista de la compra."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """$item desvinculado de $row en $list. No se añadirá a ninguna lista de la compra.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item coincide con 1 artículo en $list. Elige uno para vincular.', many: '$item coincide con $count artículos en $list. Elige uno para vincular.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item coincide con 1 artículo en $list. Elige uno para vincular.', many: '$item coincide con $count artículos en $list. Elige uno para vincular.')}""";
+
+  /// ```dart
+  /// "Repuesto $parts"
+  /// ```
+  String restocked(String parts) => """Repuesto $parts""";
+
+  /// ```dart
+  /// "Sustituido $parts"
+  /// ```
+  String replaced(String parts) => """Sustituido $parts""";
+
+  /// ```dart
+  /// "Repuesto $restock, sustituido $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """Repuesto $restock, sustituido $replace""";
+
+  /// ```dart
+  /// "Deshecho: repuesto $parts"
+  /// ```
+  String undidRestocked(String parts) => """Deshecho: repuesto $parts""";
+
+  /// ```dart
+  /// "Deshecho: sustituido $parts"
+  /// ```
+  String undidReplaced(String parts) => """Deshecho: sustituido $parts""";
+
+  /// ```dart
+  /// "Deshecho: repuesto $restock, sustituido $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """Deshecho: repuesto $restock, sustituido $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) a Lleno"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) a Lleno""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), Lleno"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), Lleno""";
+
+  /// ```dart
+  /// "$restock · desmarca para deshacer"
+  /// ```
+  String uncheckToUndo(String restock) =>
+      """$restock · desmarca para deshacer""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "Repone $items"
+  /// ```
+  String restocks(String items) => """Repone $items""";
+
+  /// ```dart
+  /// "× $quantity · fijado a mano"
+  /// ```
+  String setByHand(String quantity) => """× $quantity · fijado a mano""";
+
+  /// ```dart
+  /// "Fijado a mano"
+  /// ```
+  String get setByHandBare => """Fijado a mano""";
+
+  /// ```dart
+  /// "Fijado a mano. Toca para que lo fijen las existencias."
+  /// ```
+  String get setByHandTooltip =>
+      """Fijado a mano. Toca para que lo fijen las existencias.""";
+
+  /// ```dart
+  /// "Ya no hace falta"
+  /// ```
+  String get noLongerNeeded => """Ya no hace falta""";
 }
 
 class NotesWallMessagesEs extends NotesWallMessages {
@@ -9674,6 +10107,16 @@ Contraseña: pantry-rocks""",
   """stock.settings.daysBefore""": """Días antes de la caducidad""",
   """stock.settings.warnHint""":
       """Pon 0 para avisar el mismo día de la caducidad.""",
+  """stock.settings.restockChecklist""": """Lista de reposición""",
+  """stock.settings.restockNone""": """Ninguna""",
+  """stock.settings.restockSetHint""":
+      """Los artículos que se agotan o empiezan a caducar se añaden a esta lista de verificación.""",
+  """stock.settings.restockUnsetHint""":
+      """Sin ella, los artículos bajos o que caducan solo se marcan aquí.""",
+  """stock.settings.notifications""": """Notificaciones""",
+  """stock.settings.stockSummary""": """Resumen diario de existencias""",
+  """stock.settings.stockSummaryHint""":
+      """Una vez al día, avisa a los miembros de lo que se ha quedado bajo o empieza a caducar aquí. Cada miembro también puede desactivarlo en sus ajustes personales.""",
   """stock.settings.cancel""": """Cancelar""",
   """stock.settings.save""": """Guardar""",
   """stock.card.title""": """Existencias""",
@@ -9722,6 +10165,51 @@ Contraseña: pantry-rocks""",
   """stock.compose.count""": """Cantidad""",
   """stock.compose.level""": """Nivel""",
   """stock.compose.fullWhenEmpty""": """Lleno si está vacío""",
+  """stock.noRestockChecklist""":
+      """Este inventario no tiene lista de reposición, así que estos artículos solo se marcan aquí. Elige una en los ajustes del inventario.""",
+  """stock.renewAction""": """Renovar caducidad""",
+  """stock.summaryPref""": """Resumen diario de existencias""",
+  """stock.summaryPrefHint""":
+      """Una vez al día, lo que se ha quedado bajo o empieza a caducar en los inventarios de esta casa.""",
+  """stock.summaryPrefFailed""":
+      """No se pudo guardar el ajuste del resumen de existencias.""",
+  """stock.links.caption""": """Lista de la compra""",
+  """stock.links.tooltipAutoOn""":
+      """Aún sin vincular: se añade a la lista de la compra cuando baja""",
+  """stock.links.tooltipAutoOff""":
+      """Sin vincular: nunca se añade a una lista de la compra""",
+  """stock.links.stateOpen""": """pendiente""",
+  """stock.links.stateChecked""": """marcado""",
+  """stock.links.stateArchived""": """archivado""",
+  """stock.links.stateTrashed""": """en la papelera""",
+  """stock.links.unlink""": """Desvincular""",
+  """stock.links.whichOne""": """¿Cuál es?""",
+  """stock.links.autoLink""": """Añadir a la lista de la compra cuando baje""",
+  """stock.links.linkByHand""": """Vincular a mano""",
+  """stock.links.chipNotAdded""":
+      """No se añade a ninguna lista de la compra""",
+  """stock.links.linkDifferent""": """Vincular a otro artículo …""",
+  """stock.links.linkedHint""":
+      """Cuando baje o empiece a caducar, este artículo vuelve a esa lista.""",
+  """stock.links.link""": """Vincular""",
+  """stock.links.autoHintNoChecklist""":
+      """Elige una lista de reposición en los ajustes del inventario para buscar o añadir este artículo allí.""",
+  """stock.links.autoHintOff""":
+      """Este artículo solo se marca aquí cuando baja.""",
+  """stock.links.linkToItem""": """Vincular a un artículo …""",
+  """stock.links.pickerTitle""": """Vincular a un artículo de una lista""",
+  """stock.links.pickerField""": """Artículo de la lista""",
+  """stock.links.pickerSearch""": """Buscar artículos de listas …""",
+  """stock.links.pickerSearching""": """Buscando …""",
+  """stock.links.pickerEmpty""": """No se encontraron artículos""",
+  """stock.links.pickerArchived""": """archivado""",
+  """stock.links.pickerFailed""":
+      """No se pudieron cargar los artículos. Comprueba la conexión e inténtalo de nuevo.""",
+  """stock.links.cancel""": """Cancelar""",
+  """stock.restock.setByHandBare""": """Fijado a mano""",
+  """stock.restock.setByHandTooltip""":
+      """Fijado a mano. Toca para que lo fijen las existencias.""",
+  """stock.restock.noLongerNeeded""": """Ya no hace falta""",
   """notesWall.noNotes""": """Aún no hay notas.""",
   """notesWall.failedToLoad""": """No se pudieron cargar las notas.""",
   """notesWall.saveFailed""": """No se pudo guardar la nota.""",

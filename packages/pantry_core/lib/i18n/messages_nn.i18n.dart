@@ -5562,6 +5562,41 @@ class StockMessagesNn extends StockMessages {
   CardStockMessagesNn get card => CardStockMessagesNn(this);
   ExpiryStockMessagesNn get expiry => ExpiryStockMessagesNn(this);
   ComposeStockMessagesNn get compose => ComposeStockMessagesNn(this);
+
+  /// ```dart
+  /// "Denne lagerlista har inga sjekkliste for påfylling, så desse oppføringane blir berre merkte her. Vel ei i innstillingane for lagerlista."
+  /// ```
+  String get noRestockChecklist =>
+      """Denne lagerlista har inga sjekkliste for påfylling, så desse oppføringane blir berre merkte her. Vel ei i innstillingane for lagerlista.""";
+
+  /// ```dart
+  /// "Forny utløp → $date"
+  /// ```
+  String renewChip(String date) => """Forny utløp → $date""";
+
+  /// ```dart
+  /// "Forny utløp"
+  /// ```
+  String get renewAction => """Forny utløp""";
+
+  /// ```dart
+  /// "Dagleg lageroversikt"
+  /// ```
+  String get summaryPref => """Dagleg lageroversikt""";
+
+  /// ```dart
+  /// "Ein gong om dagen, kva som nyleg har blitt lite av eller snart går ut i lagerlistene i dette huset."
+  /// ```
+  String get summaryPrefHint =>
+      """Ein gong om dagen, kva som nyleg har blitt lite av eller snart går ut i lagerlistene i dette huset.""";
+
+  /// ```dart
+  /// "Klarte ikkje lagre innstillinga for lageroversikta."
+  /// ```
+  String get summaryPrefFailed =>
+      """Klarte ikkje lagre innstillinga for lageroversikta.""";
+  LinksStockMessagesNn get links => LinksStockMessagesNn(this);
+  RestockStockMessagesNn get restock => RestockStockMessagesNn(this);
 }
 
 class SettingsStockMessagesNn extends SettingsStockMessages {
@@ -5608,6 +5643,44 @@ class SettingsStockMessagesNn extends SettingsStockMessages {
   /// "Set 0 for å varsle på sjølve utløpsdatoen."
   /// ```
   String get warnHint => """Set 0 for å varsle på sjølve utløpsdatoen.""";
+
+  /// ```dart
+  /// "Sjekkliste for påfylling"
+  /// ```
+  String get restockChecklist => """Sjekkliste for påfylling""";
+
+  /// ```dart
+  /// "Ingen"
+  /// ```
+  String get restockNone => """Ingen""";
+
+  /// ```dart
+  /// "Oppføringar som blir lite av eller snart går ut, blir lagde til på denne sjekklista."
+  /// ```
+  String get restockSetHint =>
+      """Oppføringar som blir lite av eller snart går ut, blir lagde til på denne sjekklista.""";
+
+  /// ```dart
+  /// "Utan ho blir oppføringar med lite att eller som snart går ut, berre merkte her."
+  /// ```
+  String get restockUnsetHint =>
+      """Utan ho blir oppføringar med lite att eller som snart går ut, berre merkte her.""";
+
+  /// ```dart
+  /// "Varsel"
+  /// ```
+  String get notifications => """Varsel""";
+
+  /// ```dart
+  /// "Dagleg lageroversikt"
+  /// ```
+  String get stockSummary => """Dagleg lageroversikt""";
+
+  /// ```dart
+  /// "Ein gong om dagen, fortel medlemene kva som nyleg har blitt lite av eller snart går ut her. Kvart medlem kan òg slå det av i sine eigne innstillingar."
+  /// ```
+  String get stockSummaryHint =>
+      """Ein gong om dagen, fortel medlemene kva som nyleg har blitt lite av eller snart går ut her. Kvart medlem kan òg slå det av i sine eigne innstillingar.""";
 
   /// ```dart
   /// "Avbryt"
@@ -5934,6 +6007,367 @@ class ComposeStockMessagesNn extends ComposeStockMessages {
   /// "Full når tom"
   /// ```
   String get fullWhenEmpty => """Full når tom""";
+}
+
+class LinksStockMessagesNn extends LinksStockMessages {
+  final StockMessagesNn _parent;
+  const LinksStockMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Handleliste"
+  /// ```
+  String get caption => """Handleliste""";
+
+  /// ```dart
+  /// "Kopla til $row på $list"
+  /// ```
+  String tooltipLinked(String row, String list) =>
+      """Kopla til $row på $list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Ikkje kopla: 1 treff, vel eitt', many: 'Ikkje kopla: $count treff, vel eitt')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'Ikkje kopla: 1 treff, vel eitt', many: 'Ikkje kopla: $count treff, vel eitt')}""";
+
+  /// ```dart
+  /// "Ikkje kopla enno: blir lagd til på handlelista når det blir lite"
+  /// ```
+  String get tooltipAutoOn =>
+      """Ikkje kopla enno: blir lagd til på handlelista når det blir lite""";
+
+  /// ```dart
+  /// "Ikkje kopla: blir aldri lagd til på ei handleliste"
+  /// ```
+  String get tooltipAutoOff =>
+      """Ikkje kopla: blir aldri lagd til på ei handleliste""";
+
+  /// ```dart
+  /// "$row på $list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row på $list · $state""";
+
+  /// ```dart
+  /// "open"
+  /// ```
+  String get stateOpen => """open""";
+
+  /// ```dart
+  /// "kryssa av"
+  /// ```
+  String get stateChecked => """kryssa av""";
+
+  /// ```dart
+  /// "arkivert"
+  /// ```
+  String get stateArchived => """arkivert""";
+
+  /// ```dart
+  /// "i papirkorga"
+  /// ```
+  String get stateTrashed => """i papirkorga""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Kople frå"
+  /// ```
+  String get unlink => """Kople frå""";
+
+  /// ```dart
+  /// "Kva for ein er det?"
+  /// ```
+  String get whichOne => """Kva for ein er det?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "Legg til på handlelista når det blir lite"
+  /// ```
+  String get autoLink => """Legg til på handlelista når det blir lite""";
+
+  /// ```dart
+  /// "Kople for hand"
+  /// ```
+  String get linkByHand => """Kople for hand""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Ikkje kopla · 1 treff, vel eitt', many: 'Ikkje kopla · $count treff, vel eitt')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'Ikkje kopla · 1 treff, vel eitt', many: 'Ikkje kopla · $count treff, vel eitt')}""";
+
+  /// ```dart
+  /// "Blir ikkje lagd til på ei handleliste"
+  /// ```
+  String get chipNotAdded => """Blir ikkje lagd til på ei handleliste""";
+
+  /// ```dart
+  /// "Kopla til $row på $list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """Kopla til $row på $list · $state""";
+
+  /// ```dart
+  /// "Kople til ei anna oppføring …"
+  /// ```
+  String get linkDifferent => """Kople til ei anna oppføring …""";
+
+  /// ```dart
+  /// "Når det blir lite av ho eller ho snart går ut, kjem denne oppføringa tilbake på den lista."
+  /// ```
+  String get linkedHint =>
+      """Når det blir lite av ho eller ho snart går ut, kjem denne oppføringa tilbake på den lista.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 oppføring passar', many: '$count oppføringar passar')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: '1 oppføring passar', many: '$count oppføringar passar')}""";
+
+  /// ```dart
+  /// "$matches på sjekklista for påfylling. Kva for ei er det?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches på sjekklista for påfylling. Kva for ei er det?""";
+
+  /// ```dart
+  /// "Kople"
+  /// ```
+  String get link => """Kople""";
+
+  /// ```dart
+  /// "Finn eller legg til «$item» på $list når det trengst."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """Finn eller legg til «$item» på $list når det trengst.""";
+
+  /// ```dart
+  /// "Vel ei sjekkliste for påfylling i innstillingane for lagerlista for å finne eller leggje til denne oppføringa der."
+  /// ```
+  String get autoHintNoChecklist =>
+      """Vel ei sjekkliste for påfylling i innstillingane for lagerlista for å finne eller leggje til denne oppføringa der.""";
+
+  /// ```dart
+  /// "Denne oppføringa blir berre merkt her når det blir lite av ho."
+  /// ```
+  String get autoHintOff =>
+      """Denne oppføringa blir berre merkt her når det blir lite av ho.""";
+
+  /// ```dart
+  /// "Kople til ei oppføring …"
+  /// ```
+  String get linkToItem => """Kople til ei oppføring …""";
+
+  /// ```dart
+  /// "Kople til ei oppføring på ei sjekkliste"
+  /// ```
+  String get pickerTitle => """Kople til ei oppføring på ei sjekkliste""";
+
+  /// ```dart
+  /// "Oppføring på sjekkliste"
+  /// ```
+  String get pickerField => """Oppføring på sjekkliste""";
+
+  /// ```dart
+  /// "Søk i oppføringar på sjekklister …"
+  /// ```
+  String get pickerSearch => """Søk i oppføringar på sjekklister …""";
+
+  /// ```dart
+  /// "Søkjer …"
+  /// ```
+  String get pickerSearching => """Søkjer …""";
+
+  /// ```dart
+  /// "Fann ingen oppføringar"
+  /// ```
+  String get pickerEmpty => """Fann ingen oppføringar""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "arkivert"
+  /// ```
+  String get pickerArchived => """arkivert""";
+
+  /// ```dart
+  /// "Klarte ikkje laste oppføringar. Sjekk tilkoplinga og prøv igjen."
+  /// ```
+  String get pickerFailed =>
+      """Klarte ikkje laste oppføringar. Sjekk tilkoplinga og prøv igjen.""";
+
+  /// ```dart
+  /// "Avbryt"
+  /// ```
+  String get cancel => """Avbryt""";
+}
+
+class RestockStockMessagesNn extends RestockStockMessages {
+  final StockMessagesNn _parent;
+  const RestockStockMessagesNn(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "La til $what på $list"
+  /// ```
+  String added(String what, String list) => """La til $what på $list""";
+
+  /// ```dart
+  /// "Tilbake på $list: $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """Tilbake på $list: $row × $quantity""";
+
+  /// ```dart
+  /// "Tilbake på $list: $row"
+  /// ```
+  String revived(String list, String row) => """Tilbake på $list: $row""";
+
+  /// ```dart
+  /// "$list: $row no × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list: $row no × $quantity""";
+
+  /// ```dart
+  /// "$row på $list vart sett for hand, står att på $quantity"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row på $list vart sett for hand, står att på $quantity""";
+
+  /// ```dart
+  /// "$row på $list vart sett for hand, står att som det er"
+  /// ```
+  String pinned(String row, String list) =>
+      """$row på $list vart sett for hand, står att som det er""";
+
+  /// ```dart
+  /// "Ikkje lenger nødvendig: $row på $list"
+  /// ```
+  String recovered(String row, String list) =>
+      """Ikkje lenger nødvendig: $row på $list""";
+
+  /// ```dart
+  /// "Kopla $item til $row på $list"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """Kopla $item til $row på $list""";
+
+  /// ```dart
+  /// "Kopla $item frå $row på $list. Det blir ikkje lagt til på ei handleliste."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """Kopla $item frå $row på $list. Det blir ikkje lagt til på ei handleliste.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item passar med 1 oppføring på $list. Vel ei å kople til.', many: '$item passar med $count oppføringar på $list. Vel ei å kople til.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item passar med 1 oppføring på $list. Vel ei å kople til.', many: '$item passar med $count oppføringar på $list. Vel ei å kople til.')}""";
+
+  /// ```dart
+  /// "Fylte på $parts"
+  /// ```
+  String restocked(String parts) => """Fylte på $parts""";
+
+  /// ```dart
+  /// "Bytte ut $parts"
+  /// ```
+  String replaced(String parts) => """Bytte ut $parts""";
+
+  /// ```dart
+  /// "Fylte på $restock, bytte ut $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """Fylte på $restock, bytte ut $replace""";
+
+  /// ```dart
+  /// "Angra: fylte på $parts"
+  /// ```
+  String undidRestocked(String parts) => """Angra: fylte på $parts""";
+
+  /// ```dart
+  /// "Angra: bytte ut $parts"
+  /// ```
+  String undidReplaced(String parts) => """Angra: bytte ut $parts""";
+
+  /// ```dart
+  /// "Angra: fylte på $restock, bytte ut $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """Angra: fylte på $restock, bytte ut $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) til Full"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) til Full""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), Full"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), Full""";
+
+  /// ```dart
+  /// "$restock · fjern krysset for å angre"
+  /// ```
+  String uncheckToUndo(String restock) =>
+      """$restock · fjern krysset for å angre""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "Fyller på $items"
+  /// ```
+  String restocks(String items) => """Fyller på $items""";
+
+  /// ```dart
+  /// "× $quantity · sett for hand"
+  /// ```
+  String setByHand(String quantity) => """× $quantity · sett for hand""";
+
+  /// ```dart
+  /// "Sett for hand"
+  /// ```
+  String get setByHandBare => """Sett for hand""";
+
+  /// ```dart
+  /// "Sett for hand. Trykk for å la lageret setje det."
+  /// ```
+  String get setByHandTooltip =>
+      """Sett for hand. Trykk for å la lageret setje det.""";
+
+  /// ```dart
+  /// "Ikkje lenger nødvendig"
+  /// ```
+  String get noLongerNeeded => """Ikkje lenger nødvendig""";
 }
 
 class NotesWallMessagesNn extends NotesWallMessages {
@@ -9577,6 +10011,16 @@ Passord: pantry""",
   """stock.settings.daysBefore""": """Dagar før utløp""",
   """stock.settings.warnHint""":
       """Set 0 for å varsle på sjølve utløpsdatoen.""",
+  """stock.settings.restockChecklist""": """Sjekkliste for påfylling""",
+  """stock.settings.restockNone""": """Ingen""",
+  """stock.settings.restockSetHint""":
+      """Oppføringar som blir lite av eller snart går ut, blir lagde til på denne sjekklista.""",
+  """stock.settings.restockUnsetHint""":
+      """Utan ho blir oppføringar med lite att eller som snart går ut, berre merkte her.""",
+  """stock.settings.notifications""": """Varsel""",
+  """stock.settings.stockSummary""": """Dagleg lageroversikt""",
+  """stock.settings.stockSummaryHint""":
+      """Ein gong om dagen, fortel medlemene kva som nyleg har blitt lite av eller snart går ut her. Kvart medlem kan òg slå det av i sine eigne innstillingar.""",
   """stock.settings.cancel""": """Avbryt""",
   """stock.settings.save""": """Lagre""",
   """stock.card.title""": """Lager""",
@@ -9625,6 +10069,50 @@ Passord: pantry""",
   """stock.compose.count""": """Tal""",
   """stock.compose.level""": """Nivå""",
   """stock.compose.fullWhenEmpty""": """Full når tom""",
+  """stock.noRestockChecklist""":
+      """Denne lagerlista har inga sjekkliste for påfylling, så desse oppføringane blir berre merkte her. Vel ei i innstillingane for lagerlista.""",
+  """stock.renewAction""": """Forny utløp""",
+  """stock.summaryPref""": """Dagleg lageroversikt""",
+  """stock.summaryPrefHint""":
+      """Ein gong om dagen, kva som nyleg har blitt lite av eller snart går ut i lagerlistene i dette huset.""",
+  """stock.summaryPrefFailed""":
+      """Klarte ikkje lagre innstillinga for lageroversikta.""",
+  """stock.links.caption""": """Handleliste""",
+  """stock.links.tooltipAutoOn""":
+      """Ikkje kopla enno: blir lagd til på handlelista når det blir lite""",
+  """stock.links.tooltipAutoOff""":
+      """Ikkje kopla: blir aldri lagd til på ei handleliste""",
+  """stock.links.stateOpen""": """open""",
+  """stock.links.stateChecked""": """kryssa av""",
+  """stock.links.stateArchived""": """arkivert""",
+  """stock.links.stateTrashed""": """i papirkorga""",
+  """stock.links.unlink""": """Kople frå""",
+  """stock.links.whichOne""": """Kva for ein er det?""",
+  """stock.links.autoLink""": """Legg til på handlelista når det blir lite""",
+  """stock.links.linkByHand""": """Kople for hand""",
+  """stock.links.chipNotAdded""": """Blir ikkje lagd til på ei handleliste""",
+  """stock.links.linkDifferent""": """Kople til ei anna oppføring …""",
+  """stock.links.linkedHint""":
+      """Når det blir lite av ho eller ho snart går ut, kjem denne oppføringa tilbake på den lista.""",
+  """stock.links.link""": """Kople""",
+  """stock.links.autoHintNoChecklist""":
+      """Vel ei sjekkliste for påfylling i innstillingane for lagerlista for å finne eller leggje til denne oppføringa der.""",
+  """stock.links.autoHintOff""":
+      """Denne oppføringa blir berre merkt her når det blir lite av ho.""",
+  """stock.links.linkToItem""": """Kople til ei oppføring …""",
+  """stock.links.pickerTitle""": """Kople til ei oppføring på ei sjekkliste""",
+  """stock.links.pickerField""": """Oppføring på sjekkliste""",
+  """stock.links.pickerSearch""": """Søk i oppføringar på sjekklister …""",
+  """stock.links.pickerSearching""": """Søkjer …""",
+  """stock.links.pickerEmpty""": """Fann ingen oppføringar""",
+  """stock.links.pickerArchived""": """arkivert""",
+  """stock.links.pickerFailed""":
+      """Klarte ikkje laste oppføringar. Sjekk tilkoplinga og prøv igjen.""",
+  """stock.links.cancel""": """Avbryt""",
+  """stock.restock.setByHandBare""": """Sett for hand""",
+  """stock.restock.setByHandTooltip""":
+      """Sett for hand. Trykk for å la lageret setje det.""",
+  """stock.restock.noLongerNeeded""": """Ikkje lenger nødvendig""",
   """notesWall.noNotes""": """Ingen notat enno""",
   """notesWall.failedToLoad""": """Klarte ikkje laste notat""",
   """notesWall.saveFailed""": """Klarte ikkje lagre notat.""",

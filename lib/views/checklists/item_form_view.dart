@@ -38,6 +38,7 @@ import 'item_form_image.dart';
 import 'item_form_pickers.dart';
 import 'price_input.dart';
 import 'stock_cards.dart';
+import 'stock_link_parts.dart';
 
 class ItemFormView extends StatefulWidget {
   final ChecklistsController controller;
@@ -585,6 +586,15 @@ class _ItemFormViewState extends State<ItemFormView> {
                   ),
                   const SizedBox(height: 11),
                   ExpiryCard(draft: _stock!, onChanged: () => setState(() {})),
+                  if (_isEditing &&
+                      !_stock!.template &&
+                      widget.item!.id > 0) ...[
+                    const SizedBox(height: 11),
+                    _ShoppingListCard(
+                      controller: widget.controller,
+                      item: widget.item!,
+                    ),
+                  ],
                 ],
                 const SizedBox(height: 16),
                 if (_priceEnabled) ...[
@@ -825,5 +835,32 @@ class _ItemFormViewState extends State<ItemFormView> {
         _removeExistingImage = true;
       });
     }
+  }
+}
+
+/// The Shopping list card of an inventory item being edited. Its controls act
+/// at once rather than on save, so it follows the item as the list holds it.
+class _ShoppingListCard extends StatelessWidget {
+  const _ShoppingListCard({required this.controller, required this.item});
+
+  final ChecklistsController controller;
+  final ListItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        final live =
+            controller.items.where((i) => i.id == item.id).firstOrNull ?? item;
+        return StockLinkCard(
+          item: live,
+          restockChecklistName: controller
+              .restockChecklistOf(live.listId)
+              ?.name,
+          actions: stockLinkActionsFor(context, controller, live),
+        );
+      },
+    );
   }
 }

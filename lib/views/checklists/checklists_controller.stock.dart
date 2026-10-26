@@ -12,12 +12,156 @@ extension ChecklistsControllerStock on ChecklistsController {
 
   Future<void> setOnHand(ListItem item, String quantity) async {
     if (quantity == (item.quantity ?? '')) return;
-    await updateItem(item, quantity: quantity);
+    final after = await updateItem(item, quantity: quantity);
+    _offerRenewal(item, after);
   }
 
   Future<void> setStockLevel(ListItem item, StockLevel level) async {
     if (level == item.stockLevel) return;
-    await updateItem(item, stockLevel: level);
+    final after = await updateItem(item, stockLevel: level);
+    _offerRenewal(item, after);
+  }
+
+  /// The date the open renew offer on [item] would set its expiry to.
+  int? renewOfferFor(ListItem item) => _renewOffers[item.id];
+
+  void _offerRenewal(ListItem before, ListItem after) {
+    if (!ServerFeature.inventoryStock) return;
+    final date = renewOffer(
+      before.stockFields,
+      after.stockFields,
+      todayEpoch(),
+    );
+    if (date == null) return;
+    _renewOffers[before.id] = date;
+    notifyListeners();
+  }
+
+  Future<void> renewExpiry(ListItem item) async {
+    final date = _renewOffers[item.id];
+    if (date == null) return;
+    await updateItem(item, expiresAt: date);
+  }
+
+  /// Whether [item]'s stock link can be changed from here: an inventory item
+  /// the server already knows.
+  bool canLinkStock(ListItem item) =>
+      ServerFeature.inventoryStock &&
+      item.id > 0 &&
+      _isInventoryList(item.listId) &&
+      isItemWritable(item) &&
+      permissions.canEditLists;
+
+  void linkStock(ListItem item, StockLinkRow row) => _patchStockLink(
+    item,
+    (i) => i.copyWith(stockLink: row, linkCandidates: const []),
+    {stockLinkTargetKey: row.itemId},
+  );
+
+  /// Unlinking also stops the item finding a row by name again.
+  void unlinkStock(ListItem item) => _patchStockLink(
+    item,
+    (i) => i.copyWith(clearStockLink: true, autoLink: false),
+    {stockLinkTargetKey: 0, 'autoLink': false},
+  );
+
+  void setAutoLink(ListItem item, bool value) => _patchStockLink(
+    item,
+    (i) => i.copyWith(autoLink: value),
+    {'autoLink': value},
+  );
+
+  /// Lets stock set a checklist item's quantity again after a member set it
+  /// by hand.
+  void unpinQuantity(ListItem row) {
+    if (!row.quantityPinned) return;
+    _patchStockLink(row, (i) => i.copyWith(quantityPinned: false), {
+      'quantityPinned': false,
+    });
+  }
+
+  /// [change] applies to the item as the list holds it now: a control built
+  /// from an older copy must not take back what changed since.
+  void _patchStockLink(
+    ListItem item,
+    ListItem Function(ListItem) change,
+    Map<String, dynamic> body,
+  ) {
+    final index = _items.indexWhere((i) => i.id == item.id);
+    if (index != -1) item = _items[index];
+    if (index != -1) {
+      _items[index] = change(item);
+      _cacheVisibleItems(item.listId);
+      notifyListeners();
+    }
+    final opUuid = SyncIds.newOpUuid();
+    _trackStockFeedback(opUuid, item);
+    _sync.enqueue(
+      SyncOp(
+        uuid: opUuid,
+        entity: SyncEntity.checklistItem,
+        op: SyncOpKind.update,
+        houseId: houseId,
+        parentId: item.listId,
+        entityId: item.id,
+        body: body,
+        createdAt: _now(),
+      ),
+    );
+  }
+
+  /// Checklist items [item] can be linked to, matching [search].
+  Future<List<StockLinkRow>> stockLinkTargets(ListItem item, String search) =>
+      _checklistService.linkTargets(houseId, item.listId, search: search);
+
+  /// The checklist inventory [listId] puts what it needs on, while it has one.
+  ChecklistList? restockChecklistOf(int listId) {
+    final id = _lists
+        .where((l) => l.id == listId)
+        .firstOrNull
+        ?.restockChecklistId;
+    return id == null ? null : _lists.where((l) => l.id == id).firstOrNull;
+  }
+
+  void _trackStockFeedback(String opUuid, ListItem before) {
+    if (!ServerFeature.inventoryStock) return;
+    _stockFeedback.track(opUuid, before);
+  }
+
+  /// Tells the member what the answer to their own write did to stock and
+  /// shopping lists, while the list they made it on is still in view.
+  void _onStockWriteApplied(SyncOpApplied applied) {
+    final entity = applied.entity;
+    if (entity is! ListItem) return;
+    if (entity.restocked.isNotEmpty || entity.restockUndone.isNotEmpty) {
+      _stockChangedElsewhere = true;
+      // The queue's length drops before its answer arrives here, so the last
+      // write of a drain has to check on its own.
+      _refreshStockOnceDrained();
+    }
+    final before = _stockFeedback.claim(applied.op.uuid);
+    if (before == null) return;
+    if (_currentList?.id != before.listId && !isMetaMode) return;
+    showRestockFeedback(itemWriteMessages(applied.op, before, entity));
+  }
+
+  void _refreshStockOnceDrained() {
+    if (!_stockChangedElsewhere || _sync.pendingCount.value > 0) return;
+    _stockChangedElsewhere = false;
+    if (_currentList?.kind == ListKind.inventory && !isSoftView) {
+      unawaited(refresh());
+    }
+  }
+
+  /// A new restock checklist links the inventory's items on the server, which
+  /// the rows in view only show after a reload.
+  void _onInventorySettingsApplied(SyncOpApplied applied) {
+    final op = applied.op;
+    if (op.op != SyncOpKind.update ||
+        !op.body.containsKey('restockChecklistId')) {
+      return;
+    }
+    if (_currentList?.id == op.effectiveEntityId) unawaited(refresh());
   }
 
   /// [after] as the server will answer it: the expiry pair settled the way the
@@ -86,16 +230,30 @@ extension ChecklistsControllerStock on ChecklistsController {
     ChecklistList list, {
     required String name,
     required int expiryLeadDays,
+    int? restockChecklistId,
+    bool? stockSummary,
   }) {
     final trimmed = name.trim();
     final nameChanged = trimmed.isNotEmpty && trimmed != list.name;
     final leadChanged =
         expiryLeadDays != (list.expiryLeadDays ?? defaultExpiryLeadDays);
-    if (!nameChanged && !leadChanged) return;
+    final restockChanged =
+        ServerFeature.inventoryStock &&
+        restockChecklistId != list.restockChecklistId;
+    final summaryChanged =
+        ServerFeature.inventoryStock &&
+        stockSummary != null &&
+        stockSummary != (list.stockSummary ?? true);
+    if (!nameChanged && !leadChanged && !restockChanged && !summaryChanged) {
+      return;
+    }
 
     final optimistic = list.copyWith(
       name: nameChanged ? trimmed : null,
       expiryLeadDays: expiryLeadDays,
+      restockChecklistId: restockChecklistId,
+      clearRestockChecklistId: restockChecklistId == null,
+      stockSummary: stockSummary,
       updatedAt: _now(),
     );
     _lists = [for (final l in _lists) l.id == list.id ? optimistic : l];
@@ -125,6 +283,9 @@ extension ChecklistsControllerStock on ChecklistsController {
         body: {
           if (nameChanged) 'name': trimmed,
           if (leadChanged) 'expiryLeadDays': expiryLeadDays,
+          // 0 clears it.
+          if (restockChanged) 'restockChecklistId': restockChecklistId ?? 0,
+          if (summaryChanged) 'stockSummary': stockSummary,
         },
         createdAt: _now(),
       ),

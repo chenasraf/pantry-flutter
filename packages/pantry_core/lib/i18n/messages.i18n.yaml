@@ -1068,6 +1068,13 @@ stock:
     warnBefore(String days): "Warn $days days before expiry"
     daysBefore: Days before expiry
     warnHint: Set 0 to warn on the expiry date itself.
+    restockChecklist: Restock checklist
+    restockNone: None
+    restockSetHint: Items that run low or start expiring are added to this checklist.
+    restockUnsetHint: Without one, low and expiring items are only marked here.
+    notifications: Notifications
+    stockSummary: Daily stock summary
+    stockSummaryHint: Once a day, tell members what newly ran low or started expiring here. Each member can also turn it off in their personal settings.
     cancel: Cancel
     save: Save
   card:
@@ -1130,6 +1137,78 @@ stock:
     levelAmount(String amount): "Level · $amount"
     targetValue(String target): "Target: $target"
     fullWhenEmpty: Full when empty
+  noRestockChecklist: This inventory has no restock checklist, so these items are only marked here. Pick one in the inventory settings.
+  renewChip(String date): "Renew expiry → $date"
+  renewAction: Renew expiry
+  summaryPref: Daily stock summary
+  summaryPrefHint: Once a day, what newly ran low or started expiring in this house's inventories.
+  summaryPrefFailed: Could not save the stock summary setting.
+  links:
+    caption: Shopping list
+    tooltipLinked(String row, String list): "Linked to $row on $list"
+    tooltipNeedsPick(int count): "${_plural(count, one: 'Not linked: 1 match, pick one', many: 'Not linked: $count matches, pick one')}"
+    tooltipAutoOn: "Not linked yet: added to the shopping list when low"
+    tooltipAutoOff: "Not linked: never added to a shopping list"
+    rowOnList(String row, String list, String state): "$row on $list · $state"
+    stateOpen: open
+    stateChecked: checked
+    stateArchived: archived
+    stateTrashed: in the trash
+    stateQuantity(String quantity): "× $quantity"
+    unlink: Unlink
+    whichOne: Which one is it?
+    candidate(String row, String list, String state): "$row, $list, $state"
+    autoLink: Add to shopping list when low
+    linkByHand: Link by hand
+    chipNeedsPick(int count): "${_plural(count, one: 'Not linked · 1 match, pick one', many: 'Not linked · $count matches, pick one')}"
+    chipNotAdded: Not added to a shopping list
+    cardLinked(String row, String list, String state): "Linked to $row on $list · $state"
+    linkDifferent: Link to a different item …
+    linkedHint: When it runs low or starts expiring, this item is put back on that list.
+    matches(int count): "${_plural(count, one: '1 item matches', many: '$count items match')}"
+    matchesQuestion(String matches): "$matches on the restock checklist. Which one is this?"
+    link: Link
+    autoHintOn(String item, String list): 'Finds or adds "$item" on $list when it is needed.'
+    autoHintNoChecklist: Pick a restock checklist in the inventory settings to find or add this item there.
+    autoHintOff: This item is only marked here when it runs low.
+    linkToItem: Link to an item …
+    pickerTitle: Link to a checklist item
+    pickerField: Checklist item
+    pickerSearch: Search checklist items …
+    pickerSearching: Searching …
+    pickerEmpty: No checklist items found
+    pickerRow(String row, String list): "$row — $list"
+    pickerArchived: archived
+    pickerFailed: Could not load checklist items. Check your connection and try again.
+    cancel: Cancel
+  restock:
+    added(String what, String list): "Added $what to $list"
+    revivedQuantity(String list, String row, String quantity): "Back on $list: $row × $quantity"
+    revived(String list, String row): "Back on $list: $row"
+    changed(String list, String row, String quantity): "$list: $row now × $quantity"
+    pinnedAt(String row, String list, String quantity): "$row on $list was set by hand, left at $quantity"
+    pinned(String row, String list): "$row on $list was set by hand, left as it is"
+    recovered(String row, String list): "No longer needed: $row on $list"
+    linked(String item, String row, String list): "Linked $item to $row on $list"
+    unlinked(String item, String row, String list): "Unlinked $item from $row on $list. It will not be added to a shopping list."
+    severalMatches(String item, int count, String list): "${_plural(count, one: '$item matches 1 item on $list. Pick one to link.', many: '$item matches $count items on $list. Pick one to link.')}"
+    restocked(String parts): "Restocked $parts"
+    replaced(String parts): "Replaced $parts"
+    restockedReplaced(String restock, String replace): "Restocked $restock, replaced $replace"
+    undidRestocked(String parts): "Undid: restocked $parts"
+    undidReplaced(String parts): "Undid: replaced $parts"
+    undidRestockedReplaced(String restock, String replace): "Undid: restocked $restock, replaced $replace"
+    partAdded(String item, String inventory, String amount): "$item ($inventory) +$amount"
+    partFull(String item, String inventory): "$item ($inventory) to Full"
+    partReplaced(String item, String inventory, String amount): "$item ($inventory) ×$amount"
+    partReplacedFull(String item, String inventory): "$item ($inventory), Full"
+    uncheckToUndo(String restock): "$restock · uncheck to undo"
+    source(String item, String inventory): "$item ($inventory)"
+    restocks(String items): "Restocks $items"
+    setByHand(String quantity): "× $quantity · set by hand"
+    setByHandBare: Set by hand
+    setByHandTooltip: Set by hand. Tap to let stock set it.
+    noLongerNeeded: No longer needed
 
 notesWall:
   noNotes: No notes yet.

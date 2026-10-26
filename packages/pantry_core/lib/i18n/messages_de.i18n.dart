@@ -5618,6 +5618,41 @@ class StockMessagesDe extends StockMessages {
   CardStockMessagesDe get card => CardStockMessagesDe(this);
   ExpiryStockMessagesDe get expiry => ExpiryStockMessagesDe(this);
   ComposeStockMessagesDe get compose => ComposeStockMessagesDe(this);
+
+  /// ```dart
+  /// "Diese Bestandsliste hat keine Nachkauf-Checkliste, daher werden diese Einträge nur hier markiert. Wähle eine in den Bestandslisten-Einstellungen."
+  /// ```
+  String get noRestockChecklist =>
+      """Diese Bestandsliste hat keine Nachkauf-Checkliste, daher werden diese Einträge nur hier markiert. Wähle eine in den Bestandslisten-Einstellungen.""";
+
+  /// ```dart
+  /// "Ablauf erneuern → $date"
+  /// ```
+  String renewChip(String date) => """Ablauf erneuern → $date""";
+
+  /// ```dart
+  /// "Ablauf erneuern"
+  /// ```
+  String get renewAction => """Ablauf erneuern""";
+
+  /// ```dart
+  /// "Tägliche Bestandsübersicht"
+  /// ```
+  String get summaryPref => """Tägliche Bestandsübersicht""";
+
+  /// ```dart
+  /// "Einmal am Tag, was in den Bestandslisten dieses Haushalts neu knapp wurde oder bald abläuft."
+  /// ```
+  String get summaryPrefHint =>
+      """Einmal am Tag, was in den Bestandslisten dieses Haushalts neu knapp wurde oder bald abläuft.""";
+
+  /// ```dart
+  /// "Die Einstellung zur Bestandsübersicht konnte nicht gespeichert werden."
+  /// ```
+  String get summaryPrefFailed =>
+      """Die Einstellung zur Bestandsübersicht konnte nicht gespeichert werden.""";
+  LinksStockMessagesDe get links => LinksStockMessagesDe(this);
+  RestockStockMessagesDe get restock => RestockStockMessagesDe(this);
 }
 
 class SettingsStockMessagesDe extends SettingsStockMessages {
@@ -5664,6 +5699,44 @@ class SettingsStockMessagesDe extends SettingsStockMessages {
   /// "0 eingeben, um am Ablaufdatum selbst zu warnen."
   /// ```
   String get warnHint => """0 eingeben, um am Ablaufdatum selbst zu warnen.""";
+
+  /// ```dart
+  /// "Nachkauf-Checkliste"
+  /// ```
+  String get restockChecklist => """Nachkauf-Checkliste""";
+
+  /// ```dart
+  /// "Keine"
+  /// ```
+  String get restockNone => """Keine""";
+
+  /// ```dart
+  /// "Einträge, die knapp werden oder bald ablaufen, kommen auf diese Checkliste."
+  /// ```
+  String get restockSetHint =>
+      """Einträge, die knapp werden oder bald ablaufen, kommen auf diese Checkliste.""";
+
+  /// ```dart
+  /// "Ohne sie werden knappe und bald ablaufende Einträge nur hier markiert."
+  /// ```
+  String get restockUnsetHint =>
+      """Ohne sie werden knappe und bald ablaufende Einträge nur hier markiert.""";
+
+  /// ```dart
+  /// "Benachrichtigungen"
+  /// ```
+  String get notifications => """Benachrichtigungen""";
+
+  /// ```dart
+  /// "Tägliche Bestandsübersicht"
+  /// ```
+  String get stockSummary => """Tägliche Bestandsübersicht""";
+
+  /// ```dart
+  /// "Einmal am Tag den Mitgliedern sagen, was hier neu knapp wurde oder bald abläuft. Jedes Mitglied kann sie auch in den eigenen Einstellungen abschalten."
+  /// ```
+  String get stockSummaryHint =>
+      """Einmal am Tag den Mitgliedern sagen, was hier neu knapp wurde oder bald abläuft. Jedes Mitglied kann sie auch in den eigenen Einstellungen abschalten.""";
 
   /// ```dart
   /// "Abbrechen"
@@ -5991,6 +6064,367 @@ class ComposeStockMessagesDe extends ComposeStockMessages {
   /// "Voll, wenn leer"
   /// ```
   String get fullWhenEmpty => """Voll, wenn leer""";
+}
+
+class LinksStockMessagesDe extends LinksStockMessages {
+  final StockMessagesDe _parent;
+  const LinksStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "Einkaufsliste"
+  /// ```
+  String get caption => """Einkaufsliste""";
+
+  /// ```dart
+  /// "Verknüpft mit $row auf $list"
+  /// ```
+  String tooltipLinked(String row, String list) =>
+      """Verknüpft mit $row auf $list""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Nicht verknüpft: 1 Treffer, wähle einen aus', many: 'Nicht verknüpft: $count Treffer, wähle einen aus')}"
+  /// ```
+  String tooltipNeedsPick(int count) =>
+      """${_plural(count, one: 'Nicht verknüpft: 1 Treffer, wähle einen aus', many: 'Nicht verknüpft: $count Treffer, wähle einen aus')}""";
+
+  /// ```dart
+  /// "Noch nicht verknüpft: kommt auf die Einkaufsliste, wenn es knapp wird"
+  /// ```
+  String get tooltipAutoOn =>
+      """Noch nicht verknüpft: kommt auf die Einkaufsliste, wenn es knapp wird""";
+
+  /// ```dart
+  /// "Nicht verknüpft: kommt nie auf eine Einkaufsliste"
+  /// ```
+  String get tooltipAutoOff =>
+      """Nicht verknüpft: kommt nie auf eine Einkaufsliste""";
+
+  /// ```dart
+  /// "$row auf $list · $state"
+  /// ```
+  String rowOnList(String row, String list, String state) =>
+      """$row auf $list · $state""";
+
+  /// ```dart
+  /// "offen"
+  /// ```
+  String get stateOpen => """offen""";
+
+  /// ```dart
+  /// "abgehakt"
+  /// ```
+  String get stateChecked => """abgehakt""";
+
+  /// ```dart
+  /// "archiviert"
+  /// ```
+  String get stateArchived => """archiviert""";
+
+  /// ```dart
+  /// "im Papierkorb"
+  /// ```
+  String get stateTrashed => """im Papierkorb""";
+
+  /// ```dart
+  /// "× $quantity"
+  /// ```
+  String stateQuantity(String quantity) => """× $quantity""";
+
+  /// ```dart
+  /// "Verknüpfung lösen"
+  /// ```
+  String get unlink => """Verknüpfung lösen""";
+
+  /// ```dart
+  /// "Welcher ist es?"
+  /// ```
+  String get whichOne => """Welcher ist es?""";
+
+  /// ```dart
+  /// "$row, $list, $state"
+  /// ```
+  String candidate(String row, String list, String state) =>
+      """$row, $list, $state""";
+
+  /// ```dart
+  /// "Auf die Einkaufsliste, wenn knapp"
+  /// ```
+  String get autoLink => """Auf die Einkaufsliste, wenn knapp""";
+
+  /// ```dart
+  /// "Von Hand verknüpfen"
+  /// ```
+  String get linkByHand => """Von Hand verknüpfen""";
+
+  /// ```dart
+  /// "${_plural(count, one: 'Nicht verknüpft · 1 Treffer, wähle einen aus', many: 'Nicht verknüpft · $count Treffer, wähle einen aus')}"
+  /// ```
+  String chipNeedsPick(int count) =>
+      """${_plural(count, one: 'Nicht verknüpft · 1 Treffer, wähle einen aus', many: 'Nicht verknüpft · $count Treffer, wähle einen aus')}""";
+
+  /// ```dart
+  /// "Kommt auf keine Einkaufsliste"
+  /// ```
+  String get chipNotAdded => """Kommt auf keine Einkaufsliste""";
+
+  /// ```dart
+  /// "Verknüpft mit $row auf $list · $state"
+  /// ```
+  String cardLinked(String row, String list, String state) =>
+      """Verknüpft mit $row auf $list · $state""";
+
+  /// ```dart
+  /// "Mit einem anderen Eintrag verknüpfen …"
+  /// ```
+  String get linkDifferent => """Mit einem anderen Eintrag verknüpfen …""";
+
+  /// ```dart
+  /// "Wenn er knapp wird oder bald abläuft, kommt dieser Eintrag wieder auf diese Liste."
+  /// ```
+  String get linkedHint =>
+      """Wenn er knapp wird oder bald abläuft, kommt dieser Eintrag wieder auf diese Liste.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '1 Eintrag passt', many: '$count Einträge passen')}"
+  /// ```
+  String matches(int count) =>
+      """${_plural(count, one: '1 Eintrag passt', many: '$count Einträge passen')}""";
+
+  /// ```dart
+  /// "$matches auf der Nachkauf-Checkliste. Welcher ist es?"
+  /// ```
+  String matchesQuestion(String matches) =>
+      """$matches auf der Nachkauf-Checkliste. Welcher ist es?""";
+
+  /// ```dart
+  /// "Verknüpfen"
+  /// ```
+  String get link => """Verknüpfen""";
+
+  /// ```dart
+  /// "Findet oder ergänzt „$item“ auf $list, wenn er gebraucht wird."
+  /// ```
+  String autoHintOn(String item, String list) =>
+      """Findet oder ergänzt „$item“ auf $list, wenn er gebraucht wird.""";
+
+  /// ```dart
+  /// "Wähle in den Bestandslisten-Einstellungen eine Nachkauf-Checkliste, um diesen Eintrag dort zu finden oder zu ergänzen."
+  /// ```
+  String get autoHintNoChecklist =>
+      """Wähle in den Bestandslisten-Einstellungen eine Nachkauf-Checkliste, um diesen Eintrag dort zu finden oder zu ergänzen.""";
+
+  /// ```dart
+  /// "Dieser Eintrag wird nur hier markiert, wenn er knapp wird."
+  /// ```
+  String get autoHintOff =>
+      """Dieser Eintrag wird nur hier markiert, wenn er knapp wird.""";
+
+  /// ```dart
+  /// "Mit einem Eintrag verknüpfen …"
+  /// ```
+  String get linkToItem => """Mit einem Eintrag verknüpfen …""";
+
+  /// ```dart
+  /// "Mit einem Checklisten-Eintrag verknüpfen"
+  /// ```
+  String get pickerTitle => """Mit einem Checklisten-Eintrag verknüpfen""";
+
+  /// ```dart
+  /// "Checklisten-Eintrag"
+  /// ```
+  String get pickerField => """Checklisten-Eintrag""";
+
+  /// ```dart
+  /// "Checklisten-Einträge suchen …"
+  /// ```
+  String get pickerSearch => """Checklisten-Einträge suchen …""";
+
+  /// ```dart
+  /// "Suche …"
+  /// ```
+  String get pickerSearching => """Suche …""";
+
+  /// ```dart
+  /// "Keine Checklisten-Einträge gefunden"
+  /// ```
+  String get pickerEmpty => """Keine Checklisten-Einträge gefunden""";
+
+  /// ```dart
+  /// "$row — $list"
+  /// ```
+  String pickerRow(String row, String list) => """$row — $list""";
+
+  /// ```dart
+  /// "archiviert"
+  /// ```
+  String get pickerArchived => """archiviert""";
+
+  /// ```dart
+  /// "Checklisten-Einträge konnten nicht geladen werden. Prüfe die Verbindung und versuche es erneut."
+  /// ```
+  String get pickerFailed =>
+      """Checklisten-Einträge konnten nicht geladen werden. Prüfe die Verbindung und versuche es erneut.""";
+
+  /// ```dart
+  /// "Abbrechen"
+  /// ```
+  String get cancel => """Abbrechen""";
+}
+
+class RestockStockMessagesDe extends RestockStockMessages {
+  final StockMessagesDe _parent;
+  const RestockStockMessagesDe(this._parent) : super(_parent);
+
+  /// ```dart
+  /// "$what zu $list hinzugefügt"
+  /// ```
+  String added(String what, String list) => """$what zu $list hinzugefügt""";
+
+  /// ```dart
+  /// "Wieder auf $list: $row × $quantity"
+  /// ```
+  String revivedQuantity(String list, String row, String quantity) =>
+      """Wieder auf $list: $row × $quantity""";
+
+  /// ```dart
+  /// "Wieder auf $list: $row"
+  /// ```
+  String revived(String list, String row) => """Wieder auf $list: $row""";
+
+  /// ```dart
+  /// "$list: $row jetzt × $quantity"
+  /// ```
+  String changed(String list, String row, String quantity) =>
+      """$list: $row jetzt × $quantity""";
+
+  /// ```dart
+  /// "$row auf $list wurde von Hand gesetzt, bleibt bei $quantity"
+  /// ```
+  String pinnedAt(String row, String list, String quantity) =>
+      """$row auf $list wurde von Hand gesetzt, bleibt bei $quantity""";
+
+  /// ```dart
+  /// "$row auf $list wurde von Hand gesetzt, bleibt wie es ist"
+  /// ```
+  String pinned(String row, String list) =>
+      """$row auf $list wurde von Hand gesetzt, bleibt wie es ist""";
+
+  /// ```dart
+  /// "Nicht mehr nötig: $row auf $list"
+  /// ```
+  String recovered(String row, String list) =>
+      """Nicht mehr nötig: $row auf $list""";
+
+  /// ```dart
+  /// "$item mit $row auf $list verknüpft"
+  /// ```
+  String linked(String item, String row, String list) =>
+      """$item mit $row auf $list verknüpft""";
+
+  /// ```dart
+  /// "Verknüpfung von $item mit $row auf $list gelöst. Es kommt auf keine Einkaufsliste."
+  /// ```
+  String unlinked(String item, String row, String list) =>
+      """Verknüpfung von $item mit $row auf $list gelöst. Es kommt auf keine Einkaufsliste.""";
+
+  /// ```dart
+  /// "${_plural(count, one: '$item passt zu 1 Eintrag auf $list. Wähle einen zum Verknüpfen.', many: '$item passt zu $count Einträgen auf $list. Wähle einen zum Verknüpfen.')}"
+  /// ```
+  String severalMatches(String item, int count, String list) =>
+      """${_plural(count, one: '$item passt zu 1 Eintrag auf $list. Wähle einen zum Verknüpfen.', many: '$item passt zu $count Einträgen auf $list. Wähle einen zum Verknüpfen.')}""";
+
+  /// ```dart
+  /// "Nachgefüllt: $parts"
+  /// ```
+  String restocked(String parts) => """Nachgefüllt: $parts""";
+
+  /// ```dart
+  /// "Ersetzt: $parts"
+  /// ```
+  String replaced(String parts) => """Ersetzt: $parts""";
+
+  /// ```dart
+  /// "Nachgefüllt: $restock; ersetzt: $replace"
+  /// ```
+  String restockedReplaced(String restock, String replace) =>
+      """Nachgefüllt: $restock; ersetzt: $replace""";
+
+  /// ```dart
+  /// "Rückgängig: nachgefüllt $parts"
+  /// ```
+  String undidRestocked(String parts) => """Rückgängig: nachgefüllt $parts""";
+
+  /// ```dart
+  /// "Rückgängig: ersetzt $parts"
+  /// ```
+  String undidReplaced(String parts) => """Rückgängig: ersetzt $parts""";
+
+  /// ```dart
+  /// "Rückgängig: nachgefüllt $restock; ersetzt $replace"
+  /// ```
+  String undidRestockedReplaced(String restock, String replace) =>
+      """Rückgängig: nachgefüllt $restock; ersetzt $replace""";
+
+  /// ```dart
+  /// "$item ($inventory) +$amount"
+  /// ```
+  String partAdded(String item, String inventory, String amount) =>
+      """$item ($inventory) +$amount""";
+
+  /// ```dart
+  /// "$item ($inventory) auf Voll"
+  /// ```
+  String partFull(String item, String inventory) =>
+      """$item ($inventory) auf Voll""";
+
+  /// ```dart
+  /// "$item ($inventory) ×$amount"
+  /// ```
+  String partReplaced(String item, String inventory, String amount) =>
+      """$item ($inventory) ×$amount""";
+
+  /// ```dart
+  /// "$item ($inventory), Voll"
+  /// ```
+  String partReplacedFull(String item, String inventory) =>
+      """$item ($inventory), Voll""";
+
+  /// ```dart
+  /// "$restock · zum Rückgängigmachen abhaken aufheben"
+  /// ```
+  String uncheckToUndo(String restock) =>
+      """$restock · zum Rückgängigmachen abhaken aufheben""";
+
+  /// ```dart
+  /// "$item ($inventory)"
+  /// ```
+  String source(String item, String inventory) => """$item ($inventory)""";
+
+  /// ```dart
+  /// "Füllt nach: $items"
+  /// ```
+  String restocks(String items) => """Füllt nach: $items""";
+
+  /// ```dart
+  /// "× $quantity · von Hand gesetzt"
+  /// ```
+  String setByHand(String quantity) => """× $quantity · von Hand gesetzt""";
+
+  /// ```dart
+  /// "Von Hand gesetzt"
+  /// ```
+  String get setByHandBare => """Von Hand gesetzt""";
+
+  /// ```dart
+  /// "Von Hand gesetzt. Tippen, damit der Bestand es setzt."
+  /// ```
+  String get setByHandTooltip =>
+      """Von Hand gesetzt. Tippen, damit der Bestand es setzt.""";
+
+  /// ```dart
+  /// "Nicht mehr nötig"
+  /// ```
+  String get noLongerNeeded => """Nicht mehr nötig""";
 }
 
 class NotesWallMessagesDe extends NotesWallMessages {
@@ -9693,6 +10127,16 @@ Passwort: pantry-rocks""",
   """stock.settings.daysBefore""": """Tage vor Ablauf""",
   """stock.settings.warnHint""":
       """0 eingeben, um am Ablaufdatum selbst zu warnen.""",
+  """stock.settings.restockChecklist""": """Nachkauf-Checkliste""",
+  """stock.settings.restockNone""": """Keine""",
+  """stock.settings.restockSetHint""":
+      """Einträge, die knapp werden oder bald ablaufen, kommen auf diese Checkliste.""",
+  """stock.settings.restockUnsetHint""":
+      """Ohne sie werden knappe und bald ablaufende Einträge nur hier markiert.""",
+  """stock.settings.notifications""": """Benachrichtigungen""",
+  """stock.settings.stockSummary""": """Tägliche Bestandsübersicht""",
+  """stock.settings.stockSummaryHint""":
+      """Einmal am Tag den Mitgliedern sagen, was hier neu knapp wurde oder bald abläuft. Jedes Mitglied kann sie auch in den eigenen Einstellungen abschalten.""",
   """stock.settings.cancel""": """Abbrechen""",
   """stock.settings.save""": """Speichern""",
   """stock.card.title""": """Bestand""",
@@ -9741,6 +10185,50 @@ Passwort: pantry-rocks""",
   """stock.compose.count""": """Anzahl""",
   """stock.compose.level""": """Stufe""",
   """stock.compose.fullWhenEmpty""": """Voll, wenn leer""",
+  """stock.noRestockChecklist""":
+      """Diese Bestandsliste hat keine Nachkauf-Checkliste, daher werden diese Einträge nur hier markiert. Wähle eine in den Bestandslisten-Einstellungen.""",
+  """stock.renewAction""": """Ablauf erneuern""",
+  """stock.summaryPref""": """Tägliche Bestandsübersicht""",
+  """stock.summaryPrefHint""":
+      """Einmal am Tag, was in den Bestandslisten dieses Haushalts neu knapp wurde oder bald abläuft.""",
+  """stock.summaryPrefFailed""":
+      """Die Einstellung zur Bestandsübersicht konnte nicht gespeichert werden.""",
+  """stock.links.caption""": """Einkaufsliste""",
+  """stock.links.tooltipAutoOn""":
+      """Noch nicht verknüpft: kommt auf die Einkaufsliste, wenn es knapp wird""",
+  """stock.links.tooltipAutoOff""":
+      """Nicht verknüpft: kommt nie auf eine Einkaufsliste""",
+  """stock.links.stateOpen""": """offen""",
+  """stock.links.stateChecked""": """abgehakt""",
+  """stock.links.stateArchived""": """archiviert""",
+  """stock.links.stateTrashed""": """im Papierkorb""",
+  """stock.links.unlink""": """Verknüpfung lösen""",
+  """stock.links.whichOne""": """Welcher ist es?""",
+  """stock.links.autoLink""": """Auf die Einkaufsliste, wenn knapp""",
+  """stock.links.linkByHand""": """Von Hand verknüpfen""",
+  """stock.links.chipNotAdded""": """Kommt auf keine Einkaufsliste""",
+  """stock.links.linkDifferent""": """Mit einem anderen Eintrag verknüpfen …""",
+  """stock.links.linkedHint""":
+      """Wenn er knapp wird oder bald abläuft, kommt dieser Eintrag wieder auf diese Liste.""",
+  """stock.links.link""": """Verknüpfen""",
+  """stock.links.autoHintNoChecklist""":
+      """Wähle in den Bestandslisten-Einstellungen eine Nachkauf-Checkliste, um diesen Eintrag dort zu finden oder zu ergänzen.""",
+  """stock.links.autoHintOff""":
+      """Dieser Eintrag wird nur hier markiert, wenn er knapp wird.""",
+  """stock.links.linkToItem""": """Mit einem Eintrag verknüpfen …""",
+  """stock.links.pickerTitle""": """Mit einem Checklisten-Eintrag verknüpfen""",
+  """stock.links.pickerField""": """Checklisten-Eintrag""",
+  """stock.links.pickerSearch""": """Checklisten-Einträge suchen …""",
+  """stock.links.pickerSearching""": """Suche …""",
+  """stock.links.pickerEmpty""": """Keine Checklisten-Einträge gefunden""",
+  """stock.links.pickerArchived""": """archiviert""",
+  """stock.links.pickerFailed""":
+      """Checklisten-Einträge konnten nicht geladen werden. Prüfe die Verbindung und versuche es erneut.""",
+  """stock.links.cancel""": """Abbrechen""",
+  """stock.restock.setByHandBare""": """Von Hand gesetzt""",
+  """stock.restock.setByHandTooltip""":
+      """Von Hand gesetzt. Tippen, damit der Bestand es setzt.""",
+  """stock.restock.noLongerNeeded""": """Nicht mehr nötig""",
   """notesWall.noNotes""": """Noch keine Notizen.""",
   """notesWall.failedToLoad""": """Notizen konnten nicht geladen werden.""",
   """notesWall.saveFailed""": """Notiz konnte nicht gespeichert werden.""",

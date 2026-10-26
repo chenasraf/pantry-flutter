@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
+import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/utils/text_direction.dart';
@@ -65,6 +66,8 @@ class _InventorySettingsViewState extends State<InventorySettingsView> {
   late final TextEditingController _days = TextEditingController(
     text: '${widget.list.expiryLeadDays ?? defaultExpiryLeadDays}',
   );
+  late int? _restockChecklistId = widget.list.restockChecklistId;
+  late bool _stockSummary = widget.list.stockSummary ?? true;
 
   @override
   void dispose() {
@@ -87,6 +90,8 @@ class _InventorySettingsViewState extends State<InventorySettingsView> {
       widget.list,
       name: _name.text,
       expiryLeadDays: _leadDays!,
+      restockChecklistId: _restockChecklistId,
+      stockSummary: _stockSummary,
     );
     Navigator.of(context).pop();
   }
@@ -166,6 +171,31 @@ class _InventorySettingsViewState extends State<InventorySettingsView> {
               ],
             ),
           ),
+          if (ServerFeature.inventoryStock) ...[
+            const SizedBox(height: 12),
+            _RestockChecklistCard(
+              checklists: widget.controller.listsOfKind(ListKind.checklist),
+              value: _restockChecklistId,
+              hintStyle: hintStyle,
+              onChanged: (id) => setState(() => _restockChecklistId = id),
+            ),
+            const SizedBox(height: 12),
+            LabeledFieldCard(
+              label: m.stock.settings.notifications,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SwitchListTile(
+                    contentPadding: EdgeInsetsDirectional.zero,
+                    title: Text(m.stock.settings.stockSummary),
+                    value: _stockSummary,
+                    onChanged: (v) => setState(() => _stockSummary = v),
+                  ),
+                  Text(m.stock.settings.stockSummaryHint, style: hintStyle),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -180,6 +210,64 @@ class _InventorySettingsViewState extends State<InventorySettingsView> {
                 child: Text(m.stock.settings.save),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RestockChecklistCard extends StatelessWidget {
+  const _RestockChecklistCard({
+    required this.checklists,
+    required this.value,
+    required this.hintStyle,
+    required this.onChanged,
+  });
+
+  final List<ChecklistList> checklists;
+  final int? value;
+  final TextStyle? hintStyle;
+  final ValueChanged<int?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    // A checklist that has gone since the setting was made reads as none.
+    final selected = checklists.any((l) => l.id == value) ? value : null;
+    return LabeledFieldCard(
+      label: m.stock.settings.restockChecklist,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownButtonFormField<int?>(
+            initialValue: selected,
+            isExpanded: true,
+            decoration: const InputDecoration(
+              isDense: true,
+              border: InputBorder.none,
+            ),
+            items: [
+              DropdownMenuItem<int?>(
+                value: null,
+                child: Text(m.stock.settings.restockNone),
+              ),
+              for (final list in checklists)
+                DropdownMenuItem<int?>(
+                  value: list.id,
+                  child: Text(
+                    list.name,
+                    overflow: TextOverflow.ellipsis,
+                    textDirection: detectTextDirection(list.name),
+                  ),
+                ),
+            ],
+            onChanged: onChanged,
+          ),
+          Text(
+            selected == null
+                ? m.stock.settings.restockUnsetHint
+                : m.stock.settings.restockSetHint,
+            style: hintStyle,
           ),
         ],
       ),

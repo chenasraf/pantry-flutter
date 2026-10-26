@@ -280,6 +280,12 @@ class ChecklistsBodyController extends ChangeNotifier
     _safeNotify();
   }
 
+  void showNeedsRestock() {
+    stockNeedsRestockSelected = true;
+    stockInStockSelected = false;
+    _safeNotify();
+  }
+
   void clearStockFilter() {
     stockNeedsRestockSelected = false;
     stockInStockSelected = false;
