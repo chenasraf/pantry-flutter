@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:pantry_core/services/api_client.dart';
+import 'package:pantry_core/services/http_pool.dart';
 
 /// The disk store the AVIF-aware image providers read their bytes from.
 ///
@@ -53,8 +54,8 @@ class ImageBytesCache {
   /// `HttpOverrides.global` once, when it is constructed, so a client that
   /// predates the overrides accepting a user-pinned certificate can never
   /// reach a self-signed server for as long as the process lives. Everything
-  /// else in the app builds a client per request and is under that policy by
-  /// construction; a store, which holds one, has to defer it.
+  /// else in the app goes through [HttpPool], which defers its client the
+  /// same way; a store's goes through a pool of its own.
   static FileService get fileService =>
       HttpFileService(httpClient: deferredClient());
 
@@ -68,9 +69,9 @@ class ImageBytesCache {
   static http.Client deferredClient() => _DeferredClient();
 }
 
-/// An [http.Client] that opens its connection on the first request rather than
-/// when it is constructed, so the TLS policy it runs under is the one the app
-/// has by then.
+/// An [http.Client] backed by an [HttpPool] of its own, which opens its
+/// connection on the first request rather than when it is constructed, so the
+/// TLS policy it runs under is the one the app has by then.
 ///
 /// It also honours [ApiClient.relay], because an image is the one thing the app
 /// fetches that does not go through [ApiClient] at all — a store holds its own
@@ -78,12 +79,12 @@ class ImageBytesCache {
 /// whose server it has no route to would otherwise read every list and note
 /// through the relay and still draw an empty photo board.
 class _DeferredClient extends http.BaseClient {
-  http.Client? _inner;
+  final _pool = HttpPool();
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     try {
-      return await (_inner ??= http.Client()).send(request);
+      return await _pool.client.send(request);
     } catch (e) {
       if (!_neverArrived(e)) rethrow;
       final relayed = await _viaRelay(request);
@@ -133,5 +134,5 @@ class _DeferredClient extends http.BaseClient {
   }
 
   @override
-  void close() => _inner?.close();
+  void close() => _pool.close();
 }

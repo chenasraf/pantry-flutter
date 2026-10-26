@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:pantry_core/services/api_client.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cache_store.dart';
+import 'package:pantry_core/services/http_pool.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/utils/version.dart';
 
@@ -132,7 +132,7 @@ class ServerVersionService {
       final uri = Uri.parse(
         '$baseUrl/ocs/v2.php/cloud/capabilities?format=json',
       );
-      final response = await http.get(uri, headers: headers);
+      final response = await HttpPool.shared.client.get(uri, headers: headers);
       if (response.statusCode != 200) return;
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -194,7 +194,7 @@ class ServerVersionService {
   Future<bool> _probe(_FeatureProbe spec) async {
     try {
       final uri = ApiClient.instance.buildUri(spec.path);
-      final response = await http.post(
+      final response = await HttpPool.shared.client.post(
         uri,
         headers: {
           ...ApiClient.instance.authHeaders,

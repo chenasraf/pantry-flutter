@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pantry/main.dart' show appVersion;
 import 'package:pantry_core/services/api_client.dart';
+import 'package:pantry_core/services/http_pool.dart';
 
 /// A resolved product for a barcode (EAN/UPC). Mirrors the server's
 /// `PantryBarcode` shape — the shared cache and the Open Food Facts resolve
@@ -146,7 +147,9 @@ class BarcodeService {
   /// attach step rather than failing the whole add.
   Future<List<int>?> downloadImage(String url) async {
     try {
-      final response = await http.get(Uri.parse(url)).timeout(_timeout);
+      final response = await HttpPool.shared.client
+          .get(Uri.parse(url))
+          .timeout(_timeout);
       if (response.statusCode != 200) return null;
       return response.bodyBytes;
     } catch (_) {

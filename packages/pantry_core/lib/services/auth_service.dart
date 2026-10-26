@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:pantry_core/utils/platform_info.dart';
 import 'package:pantry_core/services/api_client.dart';
+import 'package:pantry_core/services/http_pool.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/secure_storage.dart';
 import 'package:pantry_core/services/user_prefs_service.dart';
@@ -175,7 +176,7 @@ class AuthService {
   /// it — including a certificate to accept, which is offered for that address.
   Future<String> resolveServerUrl(String serverUrl) async {
     var current = serverUrl;
-    final client = http.Client();
+    final client = HttpPool.shared.client;
     try {
       for (var hop = 0; hop < _maxRedirects; hop++) {
         final probe = Uri.parse('$current/status.php');
@@ -199,8 +200,6 @@ class AuthService {
     } catch (e) {
       debugPrint('[AuthService] Server address probe failed: $e');
       return current;
-    } finally {
-      client.close();
     }
   }
 
@@ -508,7 +507,7 @@ class AuthService {
     LoginFlowResult flow,
   ) async {
     debugPrint('[AuthService] Polling ${flow.pollEndpoint}');
-    final response = await http.post(
+    final response = await HttpPool.shared.client.post(
       Uri.parse(flow.pollEndpoint),
       body: {'token': flow.pollToken},
     );
@@ -570,7 +569,10 @@ class AuthService {
         final uri = Uri.parse(
           '${_credentials!.serverUrl}/ocs/v2.php/core/apppassword',
         );
-        await http.delete(uri, headers: _credentials!.basicAuthHeaders);
+        await HttpPool.shared.client.delete(
+          uri,
+          headers: _credentials!.basicAuthHeaders,
+        );
       } catch (e) {
         debugPrint('Failed to revoke app password: $e');
       }

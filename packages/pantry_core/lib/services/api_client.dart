@@ -7,6 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:pantry_core/services/auth_service.dart';
 import 'package:pantry_core/services/cert_trust_service.dart';
 import 'package:pantry_core/services/diagnostic_log.dart';
+import 'package:pantry_core/services/http_pool.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 
 class ApiException implements Exception {
@@ -360,16 +361,17 @@ class ApiClient {
 
   Future<http.Response> _perform(ApiRequest r) {
     final body = r.body;
+    final client = HttpPool.shared.client;
     return switch (r.method) {
-      'GET' => http.get(r.uri, headers: r.headers).timeout(r.timeout),
+      'GET' => client.get(r.uri, headers: r.headers).timeout(r.timeout),
       'POST' =>
-        http.post(r.uri, headers: r.headers, body: body).timeout(r.timeout),
+        client.post(r.uri, headers: r.headers, body: body).timeout(r.timeout),
       'PUT' =>
-        http.put(r.uri, headers: r.headers, body: body).timeout(r.timeout),
+        client.put(r.uri, headers: r.headers, body: body).timeout(r.timeout),
       'PATCH' =>
-        http.patch(r.uri, headers: r.headers, body: body).timeout(r.timeout),
+        client.patch(r.uri, headers: r.headers, body: body).timeout(r.timeout),
       'DELETE' =>
-        http.delete(r.uri, headers: r.headers, body: body).timeout(r.timeout),
+        client.delete(r.uri, headers: r.headers, body: body).timeout(r.timeout),
       _ => throw ArgumentError('Unsupported method ${r.method}'),
     };
   }

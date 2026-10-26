@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/http_pool.dart';
 import 'package:pantry_core/services/wear_link_service.dart';
 import 'package:pantry_core/services/wear_relay.dart';
 
@@ -134,12 +135,13 @@ class WearRelayHost {
 
   Future<http.Response> _dispatch(WearRelayRequest request, Uri url) {
     final body = request.bodyBytes;
+    final client = HttpPool.shared.client;
     return switch (request.method) {
-      'GET' => http.get(url, headers: request.headers),
-      'POST' => http.post(url, headers: request.headers, body: body),
-      'PUT' => http.put(url, headers: request.headers, body: body),
-      'PATCH' => http.patch(url, headers: request.headers, body: body),
-      'DELETE' => http.delete(url, headers: request.headers, body: body),
+      'GET' => client.get(url, headers: request.headers),
+      'POST' => client.post(url, headers: request.headers, body: body),
+      'PUT' => client.put(url, headers: request.headers, body: body),
+      'PATCH' => client.patch(url, headers: request.headers, body: body),
+      'DELETE' => client.delete(url, headers: request.headers, body: body),
       _ => throw ArgumentError('Unsupported method ${request.method}'),
     };
   }

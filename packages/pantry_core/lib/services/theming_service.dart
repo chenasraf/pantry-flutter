@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:pantry_core/services/auth_service.dart';
+import 'package:pantry_core/services/http_pool.dart';
 import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 
@@ -90,7 +90,7 @@ class ThemingService extends ChangeNotifier {
         final uri = Uri.parse(
           '${creds.serverUrl}/index.php/apps/theming/manifest/core',
         );
-        final response = await http.get(uri);
+        final response = await HttpPool.shared.client.get(uri);
 
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body) as Map<String, dynamic>;
