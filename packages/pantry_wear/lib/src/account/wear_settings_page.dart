@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/services/prefs_service.dart';
@@ -161,6 +162,27 @@ class _WearSettingsPageState extends State<WearSettingsPage>
       value: m.wear.nSelected(visibleChipCount()),
       onTap: () => unawaited(_open(const ChipVisibilityPage())),
     );
+    if (kDebugMode) {
+      final prefs = PrefsService.instance;
+      elements.add(
+        FocusElement(
+          extent: metrics.itemExtent,
+          builder: (context, d) => Padding(
+            padding: EdgeInsetsDirectional.only(bottom: metrics.cardGap),
+            child: WearRow(
+              icon: Icons.bug_report_outlined,
+              label: m.onboarding.dev.forceAllFeatures,
+              toggled: prefs.devForceAllFeatures,
+              distance: d,
+              onTap: () async {
+                await prefs.setDevForceAllFeatures(!prefs.devForceAllFeatures);
+                if (mounted) setState(() {});
+              },
+            ),
+          ),
+        ),
+      );
+    }
 
     return elements;
   }
