@@ -1370,6 +1370,28 @@ class ChecklistsController extends ChangeNotifier {
   /// net change is measured from and what undo puts back.
   final _stockBefore = <int, ListItem>{};
 
+  /// Held items whose wearer took the offer to renew the expiry date.
+  final _renewTaken = <int>{};
+
+  /// The date a raise while some is still on hand offers to renew [item]'s
+  /// expiry to, or null when its open visit offers none.
+  int? renewOfferFor(ListItem item) {
+    final before = _stockBefore[item.id];
+    final after = _heldStock[item.id];
+    if (before == null || after == null) return null;
+    return renewOffer(before.stockFields, after.stockFields, todayEpoch());
+  }
+
+  bool renewTaken(ListItem item) => _renewTaken.contains(item.id);
+
+  /// Take the renew offer on [item]'s open row. It goes out with the visit's
+  /// one write, so nothing is sent here either.
+  void takeRenew(ListItem item) {
+    final held = _heldStock[item.id];
+    if (held == null || !_renewTaken.add(item.id)) return;
+    stepStock(held, quantity: held.quantity, level: held.stockLevel);
+  }
+
   /// Show [item] at [quantity] or [level] without writing anything. Each step
   /// is applied to the item as it was when its row opened, so a raise from
   /// empty that a later step takes back takes its renewed expiry with it.
@@ -1389,6 +1411,10 @@ class ChecklistsController extends ChangeNotifier {
         expiresAt: renewed,
         clearExpiresAt: renewed == null,
       );
+    }
+    if (_renewTaken.contains(item.id)) {
+      final offer = renewOffer(before.stockFields, after.stockFields, today);
+      if (offer != null) after = after.copyWith(expiresAt: offer);
     }
     after = after.withLocalStock(
       leadDays: _leadDaysFor(after.listId),
@@ -1417,6 +1443,7 @@ class ChecklistsController extends ChangeNotifier {
   void commitStock(StockChange change) {
     final house = _houseId;
     final item = change.before;
+    final renewed = _renewTaken.contains(item.id);
     _release(item.id);
     if (house == null) return;
     final current = _itemById(item.id) ?? change.after;
@@ -1430,9 +1457,13 @@ class ChecklistsController extends ChangeNotifier {
         parentId: item.listId,
         entityId: item.id < 0 ? null : item.id,
         tempEntityId: item.id < 0 ? item.id : null,
-        body: change.isLevel
-            ? {'stockLevel': change.after.stockLevel?.wire}
-            : {'quantity': change.after.quantity},
+        body: {
+          if (change.isLevel)
+            'stockLevel': change.after.stockLevel?.wire
+          else
+            'quantity': change.after.quantity,
+          if (renewed) 'expiresAt': change.after.expiresAt,
+        },
         createdAt: DateTime.now().millisecondsSinceEpoch,
       ),
     );
@@ -1448,6 +1479,7 @@ class ChecklistsController extends ChangeNotifier {
   void _release(int itemId) {
     _heldStock.remove(itemId);
     _stockBefore.remove(itemId);
+    _renewTaken.remove(itemId);
   }
 
   ListItem? _itemById(int id) {

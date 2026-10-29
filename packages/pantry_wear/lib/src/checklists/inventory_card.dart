@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pantry_core/i18n.dart';
 import 'package:pantry_core/models/checklist.dart';
 import 'package:pantry_core/models/stock.dart';
+import 'package:pantry_core/utils/date_format.dart';
 import 'package:pantry_core/utils/quantity.dart';
 import 'package:pantry_core/utils/stock_display.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
@@ -333,11 +334,11 @@ class _Hairline extends StatelessWidget {
   }
 }
 
-/// What an open row shows instead: the name over the controls, with the ✕
-/// that closes it on the leading edge.
-///
-/// Scaled down rather than clipped when a small screen's card is shorter than
-/// the two lines, so no control is ever cut in half.
+const _closeSize = 30.0;
+const _closeGap = 6.0;
+
+/// What an open row shows instead: the controls across the card's width, all
+/// on its centre line, and the ✓ that closes it on the trailing edge.
 class _Controls extends StatelessWidget {
   final ListItem item;
   final ValueChanged<String> onSetOnHand;
@@ -353,58 +354,53 @@ class _Controls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final level = item.stockMode == StockMode.level;
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: AlignmentDirectional.centerStart,
-      child: SizedBox(
-        width: 180,
-        child: Row(
-          children: [
-            _RoundButton(
-              icon: Icons.close,
-              label: m.wear.stockClose,
-              onTap: onClose,
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    item.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    textDirection: detectTextDirection(item.name),
-                    style: const TextStyle(
-                      fontSize: 11,
-                      height: 1.1,
-                      color: Colors.white60,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  level
-                      ? _LevelPicker(item: item, onSetLevel: onSetLevel)
-                      : _Stepper(item: item, onSetOnHand: onSetOnHand),
-                ],
-              ),
-            ),
-          ],
+    final name = Text(
+      item.name,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+      textDirection: detectTextDirection(item.name),
+      style: const TextStyle(fontSize: 11, height: 1.1, color: Colors.white60),
+    );
+    return Row(
+      children: [
+        Expanded(
+          child: item.stockMode == StockMode.level
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    name,
+                    const SizedBox(height: 3),
+                    _LevelPicker(item: item, onSetLevel: onSetLevel),
+                  ],
+                )
+              : _Stepper(item: item, name: name, onSetOnHand: onSetOnHand),
         ),
-      ),
+        const SizedBox(width: _closeGap),
+        _RoundButton(
+          icon: Icons.check,
+          label: m.wear.stockClose,
+          size: _closeSize,
+          onTap: onClose,
+        ),
+      ],
     );
   }
 }
 
-/// − {on hand} +. The phone's rules: − is off at 0, both are off when on hand
-/// has no number, and holding one empties or fills it.
+/// − {name over on hand} +. The phone's rules: − is off at 0, both are off
+/// when on hand has no number, and holding one empties or fills it.
 class _Stepper extends StatelessWidget {
   final ListItem item;
+  final Widget name;
   final ValueChanged<String> onSetOnHand;
 
-  const _Stepper({required this.item, required this.onSetOnHand});
+  const _Stepper({
+    required this.item,
+    required this.name,
+    required this.onSetOnHand,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -419,29 +415,46 @@ class _Stepper extends StatelessWidget {
         _RoundButton(
           icon: Icons.remove,
           label: m.stock.decrease,
+          size: 36,
+          fill: stockToneInk(context, StockTone.error),
           onTap: canDown ? () => onSetOnHand(stepQuantity(onHand, -1)) : null,
           onLongPress: canDown
               ? () => onSetOnHand(withNumber(onHand, 0))
               : null,
         ),
         Expanded(
-          child: Text(
-            onHand,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            textDirection: detectTextDirection(onHand),
-            style: const TextStyle(
-              fontSize: 15,
-              height: 1.1,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.symmetric(horizontal: 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                name,
+                // Shrunk rather than cut: the amount is what the wearer is
+                // stepping, and "0 cart…" does not say it.
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    onHand,
+                    maxLines: 1,
+                    textDirection: detectTextDirection(onHand),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      height: 1.15,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
         _RoundButton(
           icon: Icons.add,
           label: m.stock.increase,
+          size: 36,
+          fill: stockToneInk(context, StockTone.success),
           onTap: counted ? () => onSetOnHand(stepQuantity(onHand, 1)) : null,
           onLongPress: canFill
               ? () => onSetOnHand(withNumber(onHand, target))
@@ -533,22 +546,162 @@ class _LevelButton extends StatelessWidget {
   );
 }
 
+/// The offer a raise while some is still on hand makes, risen from the bottom
+/// edge. The old stock may still be in the cupboard, so renewing its date is
+/// the wearer's call, and the row it belongs to is still being stepped while
+/// it is up.
+///
+/// Not modal: only the drawer itself takes touches, so the list above it stays
+/// live and the offer comes and goes with the raise. A tap anywhere on it
+/// takes the offer.
+class RenewDrawer extends StatefulWidget {
+  /// The date taking the offer sets, or null to lower the drawer.
+  final int? date;
+  final VoidCallback onTap;
+
+  const RenewDrawer({super.key, required this.date, required this.onTap});
+
+  @override
+  State<RenewDrawer> createState() => _RenewDrawerState();
+}
+
+class _RenewDrawerState extends State<RenewDrawer> {
+  /// Drawn while the drawer lowers, after the offer itself has gone.
+  int? _shown;
+
+  @override
+  Widget build(BuildContext context) {
+    final date = widget.date ?? _shown;
+    _shown = date;
+    final up = widget.date != null;
+    final height = MediaQuery.sizeOf(context).height * 0.3;
+
+    // Built lowered even before the first offer, so that offer slides up
+    // rather than appearing in place.
+    return IgnorePointer(
+      ignoring: !up,
+      child: AnimatedSlide(
+        offset: up ? Offset.zero : const Offset(0, 1),
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+        child: date == null
+            ? SizedBox(height: height)
+            : _drawer(context, date, height),
+      ),
+    );
+  }
+
+  Widget _drawer(BuildContext context, int date, double height) {
+    final scheme = Theme.of(context).colorScheme;
+    final fill = stockToneInk(context, StockTone.success);
+    final label = m.stock.renewChip(formatShortDate(date));
+    return Semantics(
+      button: true,
+      liveRegion: true,
+      label: label,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          height: height,
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerHigh,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            boxShadow: const [BoxShadow(color: Colors.black54, blurRadius: 12)],
+          ),
+          padding: EdgeInsetsDirectional.only(
+            top: 6,
+            // Round glass narrows towards the bottom; the button has to sit
+            // inside the chord at its own height.
+            start: WearShape.isRound ? 44 : 14,
+            end: WearShape.isRound ? 44 : 14,
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: 28,
+                height: 3,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 34,
+                padding: const EdgeInsetsDirectional.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: fill,
+                  borderRadius: BorderRadius.circular(17),
+                ),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.autorenew,
+                        size: 16,
+                        color: Colors.black87,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        label,
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _RoundButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+  final double size;
+
+  /// Null draws the neutral button.
+  final Color? fill;
 
   const _RoundButton({
     required this.icon,
     required this.label,
     required this.onTap,
+    required this.size,
     this.onLongPress,
+    this.fill,
   });
 
   @override
   Widget build(BuildContext context) {
     final enabled = onTap != null;
+    final fill = this.fill;
+    final Color background;
+    final Color ink;
+    if (fill == null) {
+      background = Colors.white.withValues(alpha: enabled ? 0.14 : 0.05);
+      ink = enabled ? Colors.white : Colors.white24;
+    } else {
+      background = enabled ? fill : fill.withValues(alpha: 0.2);
+      final onFill = fill.computeLuminance() > 0.4
+          ? Colors.black87
+          : Colors.white;
+      ink = enabled ? onFill : onFill.withValues(alpha: 0.35);
+    }
     return Semantics(
       button: true,
       enabled: enabled,
@@ -561,17 +714,10 @@ class _RoundButton extends StatelessWidget {
         // through to the row and land as something else.
         behavior: HitTestBehavior.opaque,
         child: Container(
-          width: 26,
-          height: 26,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white.withValues(alpha: enabled ? 0.14 : 0.05),
-          ),
-          child: Icon(
-            icon,
-            size: 16,
-            color: enabled ? Colors.white : Colors.white24,
-          ),
+          width: size,
+          height: size,
+          decoration: BoxDecoration(shape: BoxShape.circle, color: background),
+          child: Icon(icon, size: size * 0.6, color: ink),
         ),
       ),
     );

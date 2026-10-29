@@ -38,7 +38,7 @@ import 'item_detail_page.dart';
 /// work already done.
 ///
 /// An inventory's rows adjust stock instead (see [InventoryCard]): a tap opens
-/// the row's controls, and closing it — its ✕, or scrolling it away — queues
+/// the row's controls, and closing it — its ✓, or scrolling it away — queues
 /// the net change behind the same window.
 class ChecklistsPage extends StatefulWidget {
   final ChecklistsController controller;
@@ -553,7 +553,7 @@ class ChecklistsPageState extends State<ChecklistsPage>
         (controller.mode == ChecklistMode.session || controller.done.isEmpty)) {
       return WearEmpty(message: _emptyMessage(controller));
     }
-    return SnapFocusList(
+    final list = SnapFocusList(
       key: _listKey,
       controller: _controller,
       elements: _elements(),
@@ -564,6 +564,38 @@ class ChecklistsPageState extends State<ChecklistsPage>
       geometry: widget.geometry,
       underRail: true,
     );
+    if (!controller.isInventory) return list;
+    final open = _openItem();
+    return Stack(
+      children: [
+        Positioned.fill(child: list),
+        PositionedDirectional(
+          start: 0,
+          end: 0,
+          bottom: 0,
+          child: RenewDrawer(
+            date: open == null || controller.renewTaken(open)
+                ? null
+                : controller.renewOfferFor(open),
+            onTap: () {
+              if (open == null) return;
+              // Renewing is the end of a restock, so it closes the row too.
+              controller.takeRenew(open);
+              closeStock();
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  ListItem? _openItem() {
+    final id = _openId;
+    if (id == null) return null;
+    for (final item in widget.controller.items) {
+      if (item.id == id) return item;
+    }
+    return null;
   }
 }
 

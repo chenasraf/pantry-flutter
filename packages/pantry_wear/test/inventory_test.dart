@@ -14,6 +14,7 @@ import 'package:pantry_core/services/prefs_service.dart';
 import 'package:pantry_core/services/server_version_service.dart';
 import 'package:pantry_core/sync/sync_manager.dart';
 import 'package:pantry_core/sync/sync_op.dart';
+import 'package:pantry_core/utils/date_format.dart';
 import 'package:pantry_core/utils/quantity.dart';
 import 'package:pantry_core/utils/stock_rules.dart';
 import 'package:pantry_core/utils/version.dart';
@@ -86,6 +87,8 @@ void main() {
     String? reorderPoint,
     StockMode mode = StockMode.count,
     StockLevel? level,
+    int? expiresAt,
+    int? shelfLifeDays,
   }) => ListItem(
     id: id,
     listId: pantry.id,
@@ -96,6 +99,8 @@ void main() {
     reorderPoint: reorderPoint,
     stockMode: mode,
     stockLevel: level,
+    expiresAt: expiresAt,
+    shelfLifeDays: shelfLifeDays,
     done: false,
     repeatFromCompletion: false,
     deleteOnDone: false,
@@ -104,7 +109,7 @@ void main() {
     updatedAt: 0,
   ).withLocalStock(leadDays: defaultExpiryLeadDays);
 
-  ChecklistsController seeded() {
+  ChecklistsController seeded({List<ListItem> extra = const []}) {
     final controller = ChecklistsController.seeded(
       houseId: 1,
       list: pantry,
@@ -126,6 +131,7 @@ void main() {
           mode: StockMode.level,
           level: StockLevel.full,
         ),
+        ...extra,
       ],
     );
     addTearDown(controller.dispose);
@@ -160,7 +166,7 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('steps then ✕ queue one write with the net change', (
+  testWidgets('steps then ✓ queue one write with the net change', (
     tester,
   ) async {
     final controller = seeded();
@@ -183,7 +189,7 @@ void main() {
     expect(controller.inventories.single.needsRestock, 0);
     expect(stockWrites(), isEmpty);
 
-    await tapIcon(tester, Icons.close);
+    await tapIcon(tester, Icons.check);
     await tester.pump(const Duration(milliseconds: 100));
     // The window drains first, named for what it would write.
     expect(stockWrites(), isEmpty);
@@ -206,7 +212,7 @@ void main() {
 
     await tapIcon(tester, Icons.add);
     await tapIcon(tester, Icons.remove);
-    await tapIcon(tester, Icons.close);
+    await tapIcon(tester, Icons.check);
     await tester.pump(const Duration(milliseconds: 100));
 
     // Nothing to undo, so no window and no label.
@@ -223,7 +229,7 @@ void main() {
     await open(tester, 'Eggs');
 
     await tapIcon(tester, Icons.add);
-    await tapIcon(tester, Icons.close);
+    await tapIcon(tester, Icons.check);
     await tester.pump(const Duration(milliseconds: 100));
     await tester.tap(find.text('Eggs'));
     await tester.pump(undoWindow);
@@ -234,14 +240,14 @@ void main() {
     expect(controller.inventories.single.needsRestock, 1);
   });
 
-  testWidgets('scrolling the row away closes it like ✕', (tester) async {
+  testWidgets('scrolling the row away closes it like ✓', (tester) async {
     final controller = seeded();
     await pump(tester, controller);
     await open(tester, 'Eggs');
     await tapIcon(tester, Icons.add);
 
     await revealRow(tester, 'Flour');
-    expect(find.byIcon(Icons.close), findsNothing);
+    expect(find.byIcon(Icons.check), findsNothing);
     await tester.pump(undoWindow);
     await tester.pumpAndSettle();
 
@@ -280,7 +286,7 @@ void main() {
     expect(itemOf(controller, 2).stockStatus, StockStatus.low);
     await tester.tap(find.text(m.stock.full));
     await tester.pump();
-    await tapIcon(tester, Icons.close);
+    await tapIcon(tester, Icons.check);
     await tester.pump(undoWindow);
     await tester.pumpAndSettle();
 
@@ -294,7 +300,7 @@ void main() {
 
     await tester.tap(find.text(m.stock.out));
     await tester.pump();
-    await tapIcon(tester, Icons.close);
+    await tapIcon(tester, Icons.check);
     await tester.pump(const Duration(milliseconds: 100));
     // The undo label is the level the row went to, beside its amount chip.
     expect(find.text(m.stock.out), findsNWidgets(2));
@@ -302,6 +308,93 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(stockWrites().single.body, {'stockLevel': 'out'});
+  });
+
+  group('renewing the expiry on a raise', () {
+    final today = todayEpoch();
+    final renewed = renewedExpiry(2, today)!;
+    // The drawer stays drawn while it lowers, so "offered" is whether it can
+    // be reached.
+    final drawer = find
+        .text(m.stock.renewChip(formatShortDate(renewed)))
+        .hitTestable();
+
+    ChecklistsController withMilk() => seeded(
+      extra: [
+        stockItem(
+          id: 3,
+          name: 'Milk',
+          quantity: '1 carton',
+          target: '1 carton',
+          expiresAt: addDays(today, -3),
+          shelfLifeDays: 2,
+        ),
+      ],
+    );
+
+    testWidgets('a taken offer goes out with the one write', (tester) async {
+      final controller = withMilk();
+      await pump(tester, controller);
+      await open(tester, 'Milk');
+
+      expect(drawer, findsNothing);
+      await tapIcon(tester, Icons.add);
+      await tester.pumpAndSettle();
+      expect(drawer, findsOne);
+      expect(itemOf(controller, 3).expiryStatus, ExpiryStatus.expired);
+
+      // A tap approves and closes the row, as ✓ would.
+      await tester.tap(drawer);
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(drawer, findsNothing);
+      expect(find.byIcon(Icons.check), findsNothing);
+      expect(itemOf(controller, 3).expiresAt, renewed);
+      expect(itemOf(controller, 3).expiryStatus, isNot(ExpiryStatus.expired));
+      expect(stockWrites(), isEmpty);
+
+      await tester.pump(undoWindow);
+      await tester.pumpAndSettle();
+      expect(stockWrites().single.body, {
+        'quantity': '2 carton',
+        'expiresAt': renewed,
+      });
+    });
+
+    testWidgets('an offer left alone keeps the old date', (tester) async {
+      final controller = withMilk();
+      await pump(tester, controller);
+      await open(tester, 'Milk');
+
+      await tapIcon(tester, Icons.add);
+      await tester.pumpAndSettle();
+      expect(drawer, findsOne);
+      // The row stays live while the drawer is up.
+      await tapIcon(tester, Icons.check);
+      await tester.pumpAndSettle();
+      expect(drawer, findsNothing);
+      await tester.pump(undoWindow);
+      await tester.pumpAndSettle();
+      expect(stockWrites().single.body, {'quantity': '2 carton'});
+      expect(itemOf(controller, 3).expiresAt, addDays(today, -3));
+    });
+
+    testWidgets('undo takes the renewal back with the amount', (tester) async {
+      final controller = withMilk();
+      await pump(tester, controller);
+      await open(tester, 'Milk');
+
+      await tapIcon(tester, Icons.add);
+      await tester.pumpAndSettle();
+      await tester.tap(drawer);
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.tap(find.text('Milk'));
+      await tester.pump(undoWindow);
+      await tester.pumpAndSettle();
+
+      expect(stockWrites(), isEmpty);
+      expect(itemOf(controller, 3).quantity, '1 carton');
+      expect(itemOf(controller, 3).expiresAt, addDays(today, -3));
+    });
   });
 
   testWidgets('the Needs restock chip filters without regrouping', (
@@ -329,7 +422,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text(m.stock.low));
     await tester.pump();
-    await tapIcon(tester, Icons.close);
+    await tapIcon(tester, Icons.check);
     await tester.pump(undoWindow);
     await tester.pumpAndSettle();
 
@@ -365,6 +458,33 @@ void main() {
     await revealRow(tester, 'Garage');
     expect(find.text('0'), findsNothing);
     semantics.dispose();
+  });
+
+  testWidgets('the switcher heads each kind of list', (tester) async {
+    tester.view.physicalSize = const Size(450, 450);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    Future<void> show(List<ChecklistList> inventories) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ListSwitcherPage(
+            lists: [testList()],
+            inventories: inventories,
+            selectedId: null,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await show([pantry]);
+    expect(find.text(m.listKinds.checklist.title), findsOne);
+    await revealRow(tester, 'Pantry');
+    expect(find.text(m.listKinds.inventory.title), findsOne);
+
+    // One kind needs no heading.
+    await show([]);
+    expect(find.text(m.listKinds.checklist.title), findsNothing);
   });
 
   group('older servers', () {
