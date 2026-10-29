@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pantry_core/utils/text_direction.dart';
 
 import 'focus_list.dart';
 import 'wear_empty.dart';
@@ -21,6 +22,10 @@ class WearChoice<T> {
   final String? badge;
   final String? badgeLabel;
 
+  /// The heading this choice is listed under. A header is drawn wherever it
+  /// differs from the choice before.
+  final String? section;
+
   const WearChoice({
     required this.value,
     required this.label,
@@ -28,7 +33,25 @@ class WearChoice<T> {
     this.tint = Colors.white70,
     this.badge,
     this.badgeLabel,
+    this.section,
   });
+}
+
+/// Where [choices] place a header: before each index whose section differs
+/// from the one before it.
+bool _headsSection<T>(List<WearChoice<T>> choices, int i) {
+  final section = choices[i].section;
+  return section != null && (i == 0 || choices[i - 1].section != section);
+}
+
+/// The list element [choice] is drawn as, headers counted.
+int _elementIndex<T>(List<WearChoice<T>> choices, int choice) {
+  if (choice < 0) return choice;
+  var headers = 0;
+  for (var i = 0; i <= choice; i++) {
+    if (_headsSection(choices, i)) headers++;
+  }
+  return choice + headers;
 }
 
 /// A pushed page that asks the wearer to pick one of a short list.
@@ -84,7 +107,10 @@ class _WearChoicePageState<T> extends State<WearChoicePage<T>> {
   @override
   void initState() {
     super.initState();
-    _landOnSelection(_listKey, widget.choices.indexWhere(_isSelected));
+    _landOnSelection(
+      _listKey,
+      _elementIndex(widget.choices, widget.choices.indexWhere(_isSelected)),
+    );
   }
 
   @override
@@ -152,7 +178,10 @@ class _WearMultiChoicePageState<T> extends State<WearMultiChoicePage<T>> {
     // part of it they can amend.
     _landOnSelection(
       _listKey,
-      widget.choices.indexWhere((c) => _selected.contains(c.value)),
+      _elementIndex(
+        widget.choices,
+        widget.choices.indexWhere((c) => _selected.contains(c.value)),
+      ),
     );
   }
 
@@ -231,7 +260,16 @@ class _ChoiceList<T> extends StatelessWidget {
                 rotaryActive: true,
                 horizontalInset: WearMetrics.sideInset,
                 elements: [
-                  for (var i = 0; i < choices.length; i++)
+                  for (var i = 0; i < choices.length; i++) ...[
+                    if (_headsSection(choices, i))
+                      FocusElement(
+                        extent: metrics.headerExtent,
+                        snappable: false,
+                        isHeader: true,
+                        groupLabel: choices[i].section,
+                        builder: (context, _) =>
+                            _SectionHeader(choices[i].section!),
+                      ),
                     FocusElement(
                       extent: metrics.itemExtent,
                       builder: (context, d) => Padding(
@@ -251,9 +289,41 @@ class _ChoiceList<T> extends StatelessWidget {
                         ),
                       ),
                     ),
+                  ],
                 ],
               ),
       ),
     );
   }
+}
+
+/// A section's name over a hairline, as the checklist page heads its groups.
+class _SectionHeader extends StatelessWidget {
+  final String label;
+
+  const _SectionHeader(this.label);
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+    child: Container(
+      alignment: AlignmentDirectional.centerStart,
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.white24)),
+      ),
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textDirection: detectTextDirection(label),
+        style: const TextStyle(
+          fontSize: 10,
+          height: 1.1,
+          letterSpacing: 0.4,
+          fontWeight: FontWeight.w700,
+          color: Colors.white54,
+        ),
+      ),
+    ),
+  );
 }
