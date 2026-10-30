@@ -250,6 +250,20 @@ extension ChecklistsControllerSort on ChecklistsController {
     );
   }
 
+  void _reslotRecategorized(Set<int> movedIds) {
+    if (effectiveSortBy != 'category' || movedIds.isEmpty) return;
+    final sorted = sortedCategories;
+    final rank = <int, int>{};
+    for (var i = 0; i < sorted.length; i++) {
+      rank[sorted[i].id] = i;
+    }
+    const uncategorizedRank = 1 << 30;
+    int rankOf(int? id) =>
+        id == null ? uncategorizedRank : (rank[id] ?? uncategorizedRank);
+
+    _items = reslotRecategorized(_items, movedIds, rankOf);
+  }
+
   Future<void> setListSort(String sort) async {
     if (sort == _listSort) return;
     _listSort = sort;

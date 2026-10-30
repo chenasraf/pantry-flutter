@@ -124,6 +124,7 @@ extension ChecklistsControllerBatch on ChecklistsController {
               )
             : i,
     ];
+    _reslotRecategorized(idSet);
     _cacheCurrentItems();
     _enqueueBatch('category', ids, extra: {'categoryId': categoryId});
     exitSelection();
@@ -389,6 +390,7 @@ extension ChecklistsControllerBatch on ChecklistsController {
         else
           i,
     ];
+    _reslotRecategorized(byId.keys.toSet());
     _cacheCurrentItems();
     final byCategory = <int?, List<int>>{};
     for (final it in items) {

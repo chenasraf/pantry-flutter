@@ -111,6 +111,48 @@ void main() {
     });
   });
 
+  group('reslotRecategorized', () {
+    int rankOf(int? id) => switch (id) {
+      10 => 0,
+      20 => 1,
+      30 => 2,
+      _ => 1 << 30,
+    };
+    List<int> ids(List<ListItem> items) => [for (final i in items) i.id];
+
+    test('a recategorised item joins its new category block', () {
+      // Item 2 was in category 20 and is now 10; in place it would split the
+      // 20 block and open a second 10 header.
+      final items = [
+        makeListItem(id: 1, name: 'a', categoryId: 10),
+        makeListItem(id: 2, name: 'b', categoryId: 10),
+        makeListItem(id: 3, name: 'c', categoryId: 20),
+        makeListItem(id: 4, name: 'd', categoryId: 30),
+      ];
+      final reordered = [items[0], items[2], items[1], items[3]];
+      expect(ids(reslotRecategorized(reordered, {2}, rankOf)), [1, 2, 3, 4]);
+    });
+
+    test('clearing a category moves the item to the uncategorised end', () {
+      final items = [
+        makeListItem(id: 1, name: 'a', categoryId: 10),
+        makeListItem(id: 2, name: 'b'),
+        makeListItem(id: 3, name: 'c', categoryId: 20),
+      ];
+      expect(ids(reslotRecategorized(items, {2}, rankOf)), [1, 3, 2]);
+    });
+
+    test('several moved items keep their relative order', () {
+      final items = [
+        makeListItem(id: 1, name: 'a', categoryId: 30),
+        makeListItem(id: 2, name: 'b', categoryId: 10),
+        makeListItem(id: 3, name: 'c', categoryId: 30),
+        makeListItem(id: 4, name: 'd', categoryId: 20),
+      ];
+      expect(ids(reslotRecategorized(items, {1, 3}, rankOf)), [2, 4, 1, 3]);
+    });
+  });
+
   group('checklistInsertIndex — custom sort', () {
     test('new item appends at the bottom of custom order', () {
       // The server assigns max(sortOrder)+1 on add, so the optimistic slot is

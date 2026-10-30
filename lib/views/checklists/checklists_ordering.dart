@@ -92,6 +92,29 @@ int checklistInsertIndex(
   }
 }
 
+/// Moves the items in [movedIds] into their category's block after a category
+/// change, leaving every other item where it is. Category headers group
+/// adjacent rows, so an item recategorised in place would otherwise sit under a
+/// stray header of its own until the next refetch. Pure.
+List<ListItem> reslotRecategorized(
+  List<ListItem> items,
+  Set<int> movedIds,
+  int Function(int? categoryId) categoryRankOf,
+) {
+  final moved = [
+    for (final i in items)
+      if (movedIds.contains(i.id)) i,
+  ];
+  final rest = reconcileRemoveIds(items, movedIds);
+  for (final item in moved) {
+    rest.insert(
+      checklistInsertIndex(rest, 'category', item, categoryRankOf),
+      item,
+    );
+  }
+  return rest;
+}
+
 /// True-order reconstruction for a drag-to-reorder. Only
 /// [dragId] moves; every other item — checked items *and* items in other groups
 /// — keeps its stored `sortOrder` slot. The dragged item is re-slotted next to

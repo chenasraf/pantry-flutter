@@ -388,6 +388,9 @@ extension ChecklistsControllerItemCrud on ChecklistsController {
     final index = _items.indexWhere((i) => i.id == item.id);
     if (index != -1) {
       _items[index] = updated;
+      if (updated.categoryId != item.categoryId) {
+        _reslotRecategorized({item.id});
+      }
       _cacheVisibleItems(item.listId);
       notifyListeners();
     }
